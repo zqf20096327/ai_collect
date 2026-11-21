@@ -85,7 +85,7 @@ Release builds send anonymous usage statistics to Umami: how often and how long 
 
 ## Use in your app
 
-`scenraview` gives other NSGo apps Scenra's editor for `.scenra` files: an `Editor` of a folder and the file shown, and views of it, the `Window` as Scenra shows it, or a `Header`, `Sidebar`, `Workspace` and `Assistant` to lay out themselves. The assistant runs the agents of an [Agio](https://github.com/oneo-me/nsgo-agio) backend; give them the skill in `cmd/scenra/resources/skills/scenra`, which teaches the format, `scenra-app` beside it, which teaches the `Server`, and the `Server` that tells them what the user sees, which tells several editors apart by the ID each conversation's instructions give. `Cover` draws a project small, as Scenra's recent folders show.
+`scenraview` gives other NSGo apps Scenra's editor for `.scenra` files: an `Editor` of a folder and the file shown, and views of it, the `Window` as Scenra shows it, or a `Header`, `Sidebar`, `Workspace` and `Assistant` to lay out themselves. The assistant runs the agents of an [Agio](https://github.com/oneo-me/nsgo-agio) backend; give them the skill in `cmd/scenra/resources/skills/scenra`, which teaches the format, `scenra-app` beside it, which teaches the `Server`, and the `Server` that tells them what the user sees, which tells several editors apart by the ID each conversation's instructions give. `Cover` draws a project small, as Scenra's recent folders show, and `Still` and `Showcase` draw a file or a project's components as the editor does, without editing, on a canvas of the app's own.
 
 ```sh
 go get github.com/oneo-me/nsgo-scenra

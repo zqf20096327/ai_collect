@@ -89,6 +89,7 @@ interesting part of building it.
 ### 🆕 Recently shipped
 BagIdea Office is updated **constantly** — every office gets a 🔄 banner and one-click `bagidea update`. The latest:
 
+- **v1.11.0 — 🇮🇹 Italiano, the 15th language:** the whole office UI, the Dev Mode strings and the Godot editor's language list in Italian — about 880 strings, every key the other seeds carry — by [@PZminer85](https://github.com/PZminer85) in [#71](https://github.com/bagidea/bagidea-office/pull/71). The website, the Tools Hub catalog and the Plugins Hub catalog follow in the same release (written, not left to fall back), so picking Italiano anywhere gives Italian end to end; every "14 languages" across the README, the guides and the site now says 15, in all 15 languages.
 - **v1.10.0 — 🧭 walk the team, a Director copilot on any brain, a 🐞 report button:** ‹ › arrows (and Alt+←/→) step through the agents *inside* Edit Agent without closing it, unsaved edits are saved first, and every form panel now asks *Save · Discard · Keep editing* instead of closing on a stray click. The Director's copilot — ✨ persona, 🪄 workflow draft, 🔍 analysis — runs on the brain you pick (Claude, LM Studio, Ollama with live running-status, or any connected provider), one-shot and never queued behind the Director's chats. A failure popup can prepare a **redacted** problem report (keys, tokens, user and machine names stripped, conversation lines left out of the log tail) and open it as a prefilled GitHub issue — nothing leaves the machine until you press Submit. HIRE A TEAM works again, the fallback-brain picker lists local and cloud brains with live status, model ids up to 160 characters pass validation. By [@f2dac](https://github.com/f2dac) in [#68](https://github.com/bagidea/bagidea-office/pull/68), with maintainer follow-ups (tests isolated from the live office, a Windows launcher that keeps the whole URL, copilot calls behind the local-model slot gate). 🏛️ **Mnemosyne OS** joins the Tools Hub catalog (54 entries) by [@yaka0007](https://github.com/yaka0007) in [#69](https://github.com/bagidea/bagidea-office/pull/69).
 - **v1.9.2 — 🌐 the daemon speaks English:** an English office was still being nudged toward Thai by the daemon's *own* voice — the memory block in every prompt, the workflow-analysis and auto-compact summary prompts, the wrapper around a Telegram/Discord/… message, the meeting nudge, the image-transcription wrapper, every system notice in the chat (limits, brain fail-over, AUTO rounds, hook approvals), every log label, the `/help` `/status` `/agents` replies on channels, and the provider / plugin error strings. All English now, the office language decides only how the *agents* reply, the break-room banter is a th/en table like the mood lines, and the overlay's own feed/log lines (👻 ghost spawned, 📋 delegated, 🔄 new version, 🤝 meeting) are translated in all 14 languages. Six new tests keep it that way ([#67](https://github.com/bagidea/bagidea-office/issues/67)).
 - **v1.9.1 — 🖼️ under the icons again:** on Windows 11 build 26200 (the 14 Oct 2026 update) the office could come up **over** the desktop instead of behind it — Progman now creates the wallpaper layer as its own child beside the icon view, and an office auto-started at login embedded before Explorer had built the desktop. The shell now waits for the desktop, validates the layer it picks, keeps the world at the bottom of the stack under the icons, and moves it out of Progman the moment a real layer exists. Verified on the live desktop.
@@ -299,7 +300,7 @@ Sponsorship is a **recurring monthly subscription handled entirely by GitHub Spo
 - **🎨 Office Editor**: rearrange the **room grid** (click two rooms to swap), place furniture / walls / decor on a top-down grid, and **import your own models (.glb/.gltf/.fbx) and images** — spawned on top of the world, atmosphere intact
 - **Agent skill library**: every office ships with **15 builtin capability packs** you can assign from the editor — deep-research, web-automation, office-control, office-ops, plugin-builder, code-review, doc-writer, debug-detective, data-wrangler, project-kickoff, diagram-maker, archive-search, build-workflow, **file-media-toolkit**, and **schedule-via-office-job** — plus Hermes-style auto-learned skills that grow at runtime. Four of them (**file-media-toolkit, archive-search, doc-writer, schedule-via-office-job**) are carried by *every* agent by default. Skills are delivered **natively & on demand** (Claude Code progressive disclosure) so a skill's instructions load only when it's actually relevant, never bloating every prompt
 - **📄 File & Media Toolkit** (built into every agent): the office can actually *work with your files*, not just talk about them. Any agent can **read and convert PDFs**, turn **Excel / Word / PowerPoint** into data or the other way around (via LibreOffice), **author documents and slide decks** (via `pandoc`), **transcribe a YouTube link or a local video** (via `yt-dlp` + `ffmpeg`), edit and convert images (ImageMagick), and slice JSON (`jq`) — so "summarize this PDF", "make a deck from these notes", or "get me the transcript of that video" are one message, no setup. It degrades gracefully: whichever helper binaries are present are used, and the agent tells you if one is missing
-- **🌐 Multi-language UI — 14 languages**: English default + ไทย/中文/Español/हिन्दी/العربية/Português/Русский/日本語/Deutsch/Français/한국어/Indonesia/Tiếng Việt. Now **ships fully pre-translated** — switching is instant and works even **without a Gemini key**; picker in settings (office-wide, per-machine default)
+- **🌐 Multi-language UI — 15 languages**: English default + ไทย/中文/Español/हिन्दी/العربية/Português/Русский/日本語/Deutsch/Français/한국어/Indonesia/Tiếng Việt/Italiano. Now **ships fully pre-translated** — switching is instant and works even **without a Gemini key**; picker in settings (office-wide, per-machine default)
 - **🌍 Official website** in [`web/`](web/) — landing page + browsable docs, deployable to any static host
 
 ### 🎤 Voice, channels, memory & media (2026-06)
@@ -654,20 +655,4 @@ Hold **Right Ctrl**, talk, release. In normal mode the words land in the input b
 you to review; in 📡 feed mode they're sent to the Director automatically.
 (Right Ctrl is Windows-only for now — on macOS/Linux use the in-overlay mic button.)
 
-### Simulate events (no Claude needed)
-```powershell
-node daemon\send.js task.started rin
-node daemon\send.js perm.requested rin
-node daemon\send.js task.completed rin
-node daemon\send.js agent.offline rin
-```
-
-## The `bagidea` CLI
-
-The installer puts `bagidea` on your PATH (manual installs: the repo root has
-`bagidea.cmd`). It talks to the running office — and can start it.
-
-```
-bagidea start | stop | restart    launch / stop / restart the whole suite
-bagidea status                    health + agents + projects + who's working
-bagidea doctor                    why won't it load? port · proxy · f
+### Simulate even

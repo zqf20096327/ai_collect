@@ -1,390 +1,199 @@
 # Vibe CNC
 
-```
-██╗   ██╗██╗██████╗ ███████╗     ██████╗███╗   ██╗ ██████╗
-██║   ██║██║██╔══██╗██╔════╝    ██╔════╝████╗  ██║██╔════╝
-██║   ██║██║██████╔╝█████╗      ██║     ██╔██╗ ██║██║
-╚██╗ ██╔╝██║██╔══██╗██╔══╝      ██║     ██║╚██╗██║██║
- ╚████╔╝ ██║██████╔╝███████╗    ╚██████╗██║ ╚████║╚██████╗
-  ╚═══╝  ╚═╝╚═════╝ ╚══════╝     ╚═════╝╚═╝  ╚═══╝ ╚═════╝
-```
+A desktop simulator and editor for FANUC lathe programs (0i-TF, G-code
+system A), with a rule-based checker and optional AI review and generation.
 
-**A modern, Fanuc-style CNC simulator with AI-powered G-Code assistance**
+[![CI](https://github.com/burnshall-ui/vibeCNC/actions/workflows/ci.yml/badge.svg)](https://github.com/burnshall-ui/vibeCNC/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-> ### ⚠️ Never run generated G-code on a real machine unverified
->
-> Vibe CNC is a **simulator and an editing aid**. Its collision detection, lint
-> rules and AI review are heuristics — they find common mistakes, they do not
-> prove a program safe. An LLM will confidently produce plausible G-code that is
-> wrong about your tooling, your offsets, your chuck and your stock.
->
-> Before any program touches a machine: read every line yourself, verify the
-> tool table and work offsets on the control, dry-run above the part with
-> generous Z clearance, and keep a hand on the feed hold. Treat the output the
-> way you would treat code from a stranger — because that is what it is.
->
-> The authors accept no liability for crashes, scrapped parts or injury.
+> [!WARNING]
+> Vibe CNC simulates; it does not prove a program safe. The collision check,
+> the lint rules and the AI review are heuristics, and a language model writes
+> plausible G-code that can be wrong about your tools, offsets, chuck and
+> stock. Before a program reaches a machine, read every line, check the tool
+> table and work offsets on the control, dry-run it well clear of the part,
+> and keep a hand on feed hold. The authors accept no liability for crashes,
+> scrapped parts or injury.
 
-[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
-[![PyQt6](https://img.shields.io/badge/PyQt-6-green.svg)](https://www.riverbankcomputing.com/software/pyqt/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+![Vibe CNC: a turning program in the editor beside the simulation, which shows the insert cutting a roughing pass of G71 on a half section of the shaft, the position display above it and the timeline below](docs/images/vibe-cnc.png)
 
----
+## Features
 
-##  Features
+- **Editor**: syntax highlighting, line numbers, find and replace,
+  autocomplete, tool and macro libraries with their own editors.
+- **Simulation**: the toolpath drawn to scale and played back block by block,
+  with CYCLE START, FEED HOLD, SINGLE BLOCK and OPT STOP. The tool -- insert
+  and holder at their real size, or the drill -- travels along each move,
+  and the stock is cut as it goes, shown as a half section: hatched above the
+  centre line, the turned part below it. Moves ahead are drawn faint, the
+  move being made in yellow. Moves into the chuck are reported.
+- **Position display and timeline**: above the simulation X and Z, the tool,
+  spindle speed and feed (under G96 the speed at the tool's diameter) and the
+  modal codes in force; below it the program as a band to jump around in,
+  with playback at 0.5× to 5×.
+- **Layout**: the program and the simulation side by side, each the full
+  height of the window; the tool and macro libraries and the assist share a
+  panel under the simulation that folds away (Ctrl+J).
+- **Cycles**: G70–G76 and the one-block cycles G90, G92 and G94 are expanded
+  into the moves they make. G32 threading and G41/G42 nose radius
+  compensation are drawn as well.
+- **Linter**: header, units and work offset; G50 before G96; spindle start;
+  retract before M30; decimal points and value ranges in cycle words; the
+  contour rules of G70–G73; protected M-codes. Every finding has a severity and
+  a stable rule id, and most a suggested fix.
+- **AI, optional**: reviews the program in the editor against the shop rules,
+  or writes G-code from a request. A generated draft is linted and the
+  findings are sent back for correction, up to three times. Works with Claude,
+  Ollama or any OpenAI-compatible server.
 
-###  Live Simulation
-- **Progressive Path Drawing** - Toolpaths appear line-by-line as the program executes, just like a real CNC
-- **Real-Time Position Display** - Live X, Z, Tool, Spindle Speed, and Feedrate overlay
-- **2D Visualization** - Interactive lathe simulation with zoom, pan, and click-to-jump
-- **Collision Detection** - Automatic chuck limit warnings with visual highlights
-- **Canned Cycles** - G71/G72 roughing, G73 pattern repeating, G70 finishing (drawn in cyan), G76 and G92 threading (drawn in yellow), G75 grooving and G74 face grooving or peck drilling are expanded into the moves they make and played back one at a time; every cycle from G70 to G76 is drawn. G73 cuts the contour between P and Q R times, each pass a copy of it shifted along the axes: the first by the relief U/W of its first block (U a radius) plus the allowance, the last by the allowance alone, the ones between evenly spaced, each pass starting from and returning straight to the start point — that spacing is the usual reading of the cycle and is not confirmed by any source this was built from. G75 pecks in X (P, a radius) with a return after each peck (R of its first block), steps along Z (Q) and makes the last step short so the groove ends on the programmed Z; G74 is the same turned through 90 degrees, pecking along Z (Q) and stepping in X (P, a radius), and without X it drills a deep hole on the centre line; the relief at the bottom (R of the second block) is not drawn, because the sources it was built from disagree about its direction, and the width of the grooving tool is not drawn either. G76 follows the control's usual depth schedule (shallower passes, a minimum cut, finishing passes at full depth) and feeds straight in rather than along the flank. A decimal point in P or Q of G70–G76 (`P1.5` instead of `P1500`) is drawn as meant, and the linter reports it, because the control rejects it with an alarm
+Nothing the AI writes goes into the editor by itself. *Lint clean* means the
+linter finds nothing it knows about, not that the program is right.
 
-###  AI-Powered Assistance
-- **Dual AI Support** - Works with both Claude (cloud) and Ollama (local)
-- **Smart Code Review** - Analyzes G-Code for policy violations and safety issues
-- **Code Generation** - Generate G-Code snippets from natural language
-- **Context-Aware** - Understands your tooling, material, and machine configuration
+## Installation
 
-###  Professional Tools
-- **Syntax Highlighting** - Fanuc-style color coding with line numbers
-- **Autocomplete & IntelliSense** - Context-aware G/M-code completion with Ctrl+Space
-- **Tool Library** - Quick access with double-click insertion, right-click to edit (in-app editor)
-- **Macro Library** - Reusable G-Code macros (G65, M98) with in-app editor
-- **Find & Replace** - Full-featured search with Ctrl+F/Ctrl+H, regex support
-- **Recent Files** - Quick access to last 5 programs
-- **Settings Dialog** - In-app configuration editor (machine, AI, paths, UI)
-- **Policy Engine** - Enforce safety rules and coding standards
-- **G41/G42 Compensation** - Tool nose radius compensation with arc handling and corner intersections
-- **CAMotics Integration** - 3D simulation support (optional)
-
-###  Fanuc-Style UI
-- **Authentic Look** - CRT green on black, yellow highlights
-- **Control Panel** - CYCLE START, FEED HOLD, OPT STOP, SINGLE BLOCK
-- **Keyboard Shortcuts** - F5 for quick sim, Spacebar for cycle start
-- **Adaptive Scaling** - Responsive font sizing for any screen
-
----
-
-##  Screenshots
-
-*Coming soon - Add your screenshots to `/docs/screenshots/`*
-
----
-
-##  Installation
-
-### Prerequisites
-- **Python 3.13** (or 3.10+)
-- **Ollama** (for local AI) - [Download](https://ollama.com)
-- **CAMotics** (optional, for 3D simulation) - [Download](https://camotics.org)
-
-### Quick Start
+Requires Python 3.11 or newer.
 
 ```bash
-# Clone the repository
 git clone https://github.com/burnshall-ui/vibeCNC.git
 cd vibeCNC
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Run the application
-python vibe_cnc.py
+python3 vibe_cnc.py
 ```
 
-### For Local AI (Ollama)
+`run.sh` (macOS, Linux) and `run.bat` (Windows) create a virtual
+environment, install the requirements and start the app. On Linux, PyQt6
+needs the Qt system libraries listed in
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
-Ollama needs macOS 14 (Sonoma) or newer, Windows or Linux. On an Intel Mac it runs on the CPU only.
+On first start `config.example.yaml` is copied to `config.yaml`, which the
+settings dialog edits.
 
-```bash
-# Install Ollama from https://ollama.com
+## AI backends
 
-# Pull a model. The default is qwen3.8:27b: about 18 GB of weights, so a
-# 32 GB machine or a GPU with 24 GB. For less memory try a smaller one, for
-# example qwen3.5:4b (about 3.5 GB), and check it on your own programs.
-ollama pull qwen3.8:27b
+Editor, simulation and linter work without AI; set `ai.offline: true` to run
+without a backend. Otherwise `ai.mode` selects one:
 
-# Start Ollama (if not running as service)
-ollama serve
-```
+| `ai.mode` | Backend | API key |
+|---|---|---|
+| `claude` | Anthropic API, default model `claude-sonnet-5-5` | `ANTHROPIC_API_KEY` |
+| `ollama` | A local or networked Ollama server | none |
+| `openai` | Any OpenAI Chat Completions server: OpenAI, OpenRouter, LM Studio, llama.cpp, vLLM | the variable named in `ai.openai.api_key_env`, if the server needs one |
 
-Ollama can also run on another machine on the network: set `ai.ollama.base_url`
-to `http://<host>:11434/api/chat`.
+**Settings → AI → Test connection** checks the address, the key and the model
+without running the model, so it cannot see a credit balance. Setup and
+pitfalls for each backend: [docs/ai-backends.md](docs/ai-backends.md).
 
-### For Cloud AI (Claude)
+Whatever is reviewed or generated is sent to that backend. Decide which
+programs may leave the shop.
 
-```bash
-# Set your API key
-export ANTHROPIC_API_KEY="sk-ant-..."     # macOS / Linux: put it in your shell profile
-setx ANTHROPIC_API_KEY "sk-ant-..."       # Windows
+## Usage
 
-# Update config.yaml
-# Change ai.mode to "claude"
-```
-
-Then open **Settings → AI** and press **Test connection**: it asks the API whether
-the key works and the model exists, without running the model. It does not see the
-credit balance: an account without API credits passes the test and is turned away on
-the first analysis ("Your credit balance is too low"). API credits are bought in the
-Anthropic Console and are separate from a claude.ai subscription. The default model is
-`claude-sonnet-5-5`; the Claude SDK (`anthropic`) is installed with `requirements.txt`.
-
----
-
-##  Usage
-
-### Basic Workflow
-
-1. **Load a Program** - `OPEN` button or `Ctrl+O`
-2. **Edit G-Code** - Syntax highlighting and line numbers
-3. **Run Simulation** - Press `CYCLE START` (green button) or `Spacebar`
-4. **Watch Live** - Toolpaths draw progressively with real-time position info
-5. **AI Review** - Click `KI: ANALYZE` for safety checks
-6. **Generate Code** - Use `KI: GEN-CODE` or type in chat
-
-### Keyboard Shortcuts
+1. Open a program (Ctrl+O) or write one.
+2. **CYCLE START** (Space) runs the simulation, **FEED HOLD** (F) pauses it,
+   Esc resets. A click on the timeline under the simulation jumps there.
+3. Ctrl+L lints the program. **AI ANALYZE** lints it and asks the model for a
+   review.
+4. Describe what you need in the assist box and press **AI GENERATE**
+   (Ctrl+Enter). Tick *Generate a piece of a program* when the result goes
+   into an existing program: the header, spindle start, retract and M30 are
+   then not checked.
 
 | Key | Action |
-|-----|--------|
-| `Space` | CYCLE START (run/resume simulation) |
-| `F` | FEED HOLD (pause simulation) |
-| `Esc` | Stop simulation |
-| `F5` | Quick CAMotics simulation |
-| `Ctrl+Space` | Trigger autocomplete (IntelliSense) |
-| `Ctrl+L` | Lint only (no AI) |
-| `Ctrl+F` | Find dialog |
-| `Ctrl+H` | Find & Replace dialog |
-| `Ctrl+S` | Save file |
-| `Ctrl+Shift+S` | Save and copy to VM |
-| `Ctrl+O` | Open file |
-| `Ctrl++` | Zoom in |
-| `Ctrl+-` | Zoom out |
+|---|---|
+| Space · F · Esc | Cycle start · feed hold · reset |
+| Ctrl+O · Ctrl+S | Open · save |
+| Ctrl+L | Lint only |
+| Ctrl+J | Fold or open the tools, macros and assist panel |
+| Right click on the simulation | Menu: half section on or off, fit the view |
+| Double click on the simulation | Fit the view again |
+| Ctrl+F · Ctrl+H | Find · find and replace |
+| Ctrl+Space | Autocomplete: G- and M-codes, tools after `T`, macros after `M98 P`. ↑/↓ to choose, Enter or Tab to insert, Esc to close |
+| Enter · Ctrl+Enter | In the assist box: analyse · generate |
+| Ctrl++ · Ctrl+- | Larger · smaller text |
+| F5 | Open the program in CAMotics (optional, 3D) |
+| Ctrl+Shift+S | Save, lint and copy to the simulation share (`paths.sim_share`) |
 
-### Simulation Controls
+## Configuration
 
-- **CYCLE START** (Green) - Start or resume program execution
-- **FEED HOLD** (Orange) - Pause at current line
-- **OPT STOP** (Gray) - Enable/disable M01 stops
-- **SINGLE BLOCK** (Gray) - Execute one line at a time
+[`config.example.yaml`](config.example.yaml) documents every setting. For a
+machine, these matter most:
 
----
+- `machine.chuck_z_limit` and `machine.chuck_diameter`: where the chuck is.
+  Measure the diameter; while it is unset, every diameter behind the chuck
+  face counts as a collision.
+- `policies`: the header codes, units and work offset the linter expects, and
+  the M-codes that must never be commented out.
+- [`tools/tools.json`](tools/tools.json): the tool library. The simulation
+  draws a tool from its ISO codes: the holder in `holder` (ISO 5608, e.g.
+  `PCLNR2525`) and the insert at the start of `name` (ISO 1832, e.g.
+  `CNMG1204...`); a drill from its `d_mm`. A tool without them is drawn as a
+  ring. Nose radius compensation reads `insert_radius_mm` and
+  `nose_direction`, the Fanuc tip number:
 
-##  Configuration
+| Tip | Programmed point relative to the radius centre | Typical tool |
+|---|---|---|
+| 1 · 2 · 3 · 4 | −X+Z · −X−Z · +X−Z · +X+Z | 2 = OD turning, 3 = boring |
+| 5 · 6 · 7 · 8 | −X · −Z · +X · +Z | facing and grooving |
+| 0 · 9 | on the centre | probe, or no compensation wanted |
 
-**Quick Config:** Use the in-app **⚙️ SETTINGS** button for GUI-based configuration.
+Fanuc prints this figure twice, mirrored in X for the two tool post
+positions. The table above matches this shop's machine; if yours is the other
+way round, mirror `NOSE_OFFSETS` in `vibe_cnc/tool_data.py` rather than
+renumbering the tools. Without a `nose_direction` the simulation assumes 0 and
+says so.
 
-**Manual Config:** Edit `config.yaml` to customize:
+The shop rules sent with every review are in [`policies.md`](policies.md).
 
-### UI Settings
-```yaml
-ui:
-  font_base_pt: 12          # Base font size
-  dark_bg: "#1A1A1A"        # Dark background
-  fanuc_yellow: "#FFC800"   # Accent color
-```
+## The control model
 
-### AI Settings
-```yaml
-ai:
-  mode: "ollama"            # "claude" or "ollama"
-  offline: false            # true = no AI calls
+What the simulator knows about the control is data, in
+[`specs/fanuc_0i_tf/`](specs/fanuc_0i_tf): `dialect.toml` lists the G- and
+M-codes of G-code system A, and one card per cycle G70–G76 gives its blocks,
+words, units, where a decimal point is forbidden, value ranges and what the
+simulator assumes about the cycle. The linter checks against the cards, the AI
+is shown them, and autocomplete reads the dialect.
 
-  ollama:
-    base_url: "http://127.0.0.1:11434/api/chat"
-    model: "qwen3.8:27b"    # about 18 GB; smaller: qwen3.5:4b
-    num_ctx: 8192           # Ollama's default is 4096 below 24 GiB of VRAM
-    think: false            # skip the thinking of qwen3.x / gpt-oss; remove for other models
+The cards were checked against the FANUC Series 0i-MODEL F operator's manual
+for the lathe system (B-64604EN-1/01, section 4.2), and each assumption names
+the section that supports it. None of it has been confirmed on a 0i-TF Plus
+yet, so every card says `verified = false`. Known simplifications:
 
-  anthropic:
-    model: "claude-sonnet-5-5"
-    api_key_env: "ANTHROPIC_API_KEY"
-    max_output_tokens: 16000   # thinking counts too; about 21000 is the most without streaming
-    effort: "medium"           # low | medium | high | xhigh | max; empty for models without it
-```
+- G76 is drawn feeding straight in; the control feeds along one flank.
+- The relief at the bottom of G74/G75 and the width of a grooving tool are
+  not drawn.
+- G73 spaces its passes evenly between the first and the last; the manual
+  does not say how.
+- Inch input (G20) is not supported.
+- The material removed takes each tool's body from its tip number, and the
+  clearance behind the tip from its holder and insert codes (5° for a CNMG
+  in a 95° holder). Without the codes the body is a square shoulder behind
+  the tip, so a move running down towards the chuck shows a gouge sooner
+  than a real insert would cut one. Drills bore their `d_mm` with a 118°
+  point. Grooving, parting and thread tools remove nothing (the table has
+  no width), and neither do thread passes.
+- The position display shows speeds and feeds as the control would command
+  them, not as measured, and no cycle time: rapid rates are not known, and
+  G70 runs at the feeds of its contour blocks, which are not tracked per
+  move.
 
-`claude-sonnet-4-20250514`, the earlier default, was retired on 2026-06-15 and
-requests to it fail. `ai.system_prompt` and `ai.generate_prompt` set what a review and
-a generation are told to do.
+## Development
 
-### Measuring a model: the review eval
-
-Does a model find what the linter finds? `evals/review_eval.py` puts one known fault
-into a copy of your program: G40 taken out of the header, the G50 before G96 removed,
-no retract before M30, F0 on a G71, a decimal point in P/Q, and so on, eleven kinds
-in all. It then sends exactly what **AI ANALYZE** sends and checks whether the answer
-names the fault at the right block:
-
-```bash
-python3 -m evals.review_eval                 # lists the cases, sends nothing
-python3 -m evals.review_eval --run           # asks the model config.yaml names
-python3 -m evals.review_eval --run --model claude-haiku-5-5 --repeat 3
-python3 -m evals.review_eval --rescore _tmp/review_eval/<file>.jsonl
-```
-
-By default it reads `programs/*.nc`; pass files to use others
-(`tests/fixtures/reference.nc` adds compensation and arcs outside a cycle). The linter
-is the ground truth. A fault is used only where the linter reports it on the copy, so the eval
-measures nothing the linter cannot see. Each program is also sent once unchanged, to
-count how much a model reports on a program the linter finds clean. Every answer is
-saved to `_tmp/review_eval/`, so `--rescore` can score them again without paying for
-them twice. A failed call (no credits, wrong key) stops the run. The scoring looks for
-the block's N number or line number and a word for the fault in the same item of the
-answer. It is a heuristic, so read the saved answers before trusting a number.
-
-### Machine Settings
-```yaml
-machine:
-  chuck_z_limit: -5.0       # Collision warning threshold
-
-policies:
-  protected_m_codes: [62, 63, 64, 65]  # Don't modify these
-  require_header_codes: ["G18", "G40", "G80", "G97"]
-  require_units: "G21"      # Metric only
-  require_origin: "G54"     # Work coordinate system
-```
-
-### Tool Library
-
-**Quick Edit:** Right-click any tool in the app → Tool Editor, or use **+ NEW TOOL** button.
-
-**Manual Edit:** Edit `tools/tools.json`:
-```json
-{
-  "units": "metric",
-  "tool_table": [
-    {
-      "t": 1,
-      "name": "CNMG1204P-S External",
-      "type": "turn_rough",
-      "insert_radius_mm": 0.8,
-      "nose_direction": 3,
-      "holder": "PCLNR2525",
-      "limits": {
-        "vc_max": 180,
-        "ap_max": 2.0,
-        "f_max": 0.35
-      }
-    }
-  ]
-}
-```
-
-**Nose radius compensation** (G41/G42) reads two of those fields.
-`insert_radius_mm` is the corner radius of the insert; `nose_direction` is the
-Fanuc tip number 0-9, saying where the programmed point — the imaginary tool
-nose — sits relative to the centre of that radius:
-
-| Tip | Nose sits | Typical tool |
-|-----|-----------|--------------|
-| 1 / 2 / 3 / 4 | -X+Z / -X-Z / +X-Z / +X+Z | 2 = OD turning, 3 = boring |
-| 5 / 6 / 7 / 8 | -X / -Z / +X / +Z | facing and grooving tools |
-| 0 / 9 | on the centre | probe, or a radius you do not want compensated |
-
-Fanuc prints two of these figures, one per tool post position, mirrored in X
-against each other. The table above is the one that matches this shop's
-machine; if your tools are set the other way round, mirror `NOSE_OFFSETS` in
-`vibe_cnc/tool_data.py` rather than renumbering the tools.
-
-Leave the field out and the simulation assumes 0 and says so in the lint pane,
-rather than guessing a tip for you.
-
----
-
-##  Architecture
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the two test suites and the
+conventions, and [docs/PLAN.md](docs/PLAN.md) for the architecture and what
+comes next. [`evals/`](evals) measures how well a model reviews and generates
+programs: [docs/evals.md](docs/evals.md).
 
 ```
-vibe_cnc/
-├── vibe_cnc.py                 # Main application (UI + wiring)
-├── config.yaml                 # Configuration file
-├── requirements.txt            # Python dependencies
-│
-├── vibe_cnc/
-│   ├── claude_client.py        # AI client (Claude + Ollama)
-│   ├── analysis_prompt.py      # What AI ANALYZE sends (shared with the eval)
-│   ├── gcode_highlighter.py    # Syntax highlighting + editor
-│   ├── gcode_plotter.py        # 2D visualization + live drawing
-│   ├── lint_engine.py          # Policy enforcement
-│   ├── camotics_bridge.py      # 3D simulation integration
-│   ├── settings_manager.py     # Config loader
-│   ├── tool_model.py           # Tool library
-│   └── macro_model.py          # Macro library
-│
-├── tools/
-│   ├── tools.json              # Tool database
-│   └── macros.db               # SQLite macro storage
-│
-├── evals/
-│   └── review_eval.py          # Does a model find the faults the linter knows?
-│
-└── programs/                   # Sample G-Code programs
+vibe_cnc.py           main window
+vibe_cnc/             parser, linter, specs, verifier, AI client, plotter, UI
+specs/fanuc_0i_tf/    dialect and cycle cards (TOML)
+tools/                tool and macro libraries (JSON)
+evals/                model evaluations
+tests/                unit tests; fixtures/reference.nc exercises every parser branch
+policies.md           shop rules for the linter and the AI
 ```
 
----
+## License
 
-##  Roadmap
-
-###  Completed
-- [x] Live simulation with progressive drawing
-- [x] Real-time position tracking
-- [x] Dual AI support (Claude + Ollama)
-- [x] Interactive 2D plotter
-- [x] Tool and macro libraries with in-app editors
-- [x] Fanuc-style controls
-- [x] Find & Replace in editor
-- [x] G41/G42 tool nose radius compensation
-- [x] Settings dialog for configuration
-- [x] Recent files list
-- [x] Autocomplete & IntelliSense (context-aware G-Code completion)
-
-###  In Progress
-- [ ] Program statistics (cycle time, tool changes)
-- [ ] Snippet library / favorites
-
-###  Planned
-- [ ] Network simulation (RPC to LinuxCNC VM)
-- [ ] DXF import for geometry
-- [ ] Conversational programming wizard
-- [ ] Multi-language support (EN/DE)
-
----
-
-##  Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-##  License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
-
----
-
-##  Acknowledgments
-
-- **Fanuc** - For inspiring the UI design
-- **CAMotics** - 3D simulation integration
-- **Ollama** - Local LLM inference
-- **Anthropic** - Claude AI API
-- **PyQt6** - UI framework
-- **Matplotlib** - 2D plotting
-
----
-
-## 📧 Contact
-
-**Project Link:** [https://github.com/burnshall-ui/vibeCNC](https://github.com/burnshall-ui/vibeCNC)
-
----
-
-<div align="center">
-  <p>Built by machinist and CNC enthusiast</p>
-  <p> Enhanced with AI by <a href="https://claude.ai">Claude Code</a></p>
-</div>
+Apache License 2.0, see [LICENSE](LICENSE).

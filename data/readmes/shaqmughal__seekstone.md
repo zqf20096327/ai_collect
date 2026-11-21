@@ -6,7 +6,7 @@
 </p>
 
 <p align="center"><strong>The Obsidian MCP server that needs no plugin, no running Obsidian app — and doesn't blow your context window.</strong></p>
-<p align="center"><em>Filesystem-direct · single-digit-ms keyword search · ~26 ms semantic · ~2 KB payloads · 25 tools · macOS · Linux · Windows</em></p>
+<p align="center"><em>Filesystem-direct · single-digit-ms keyword search · ~26 ms semantic · ~2 KB payloads · 26 tools · macOS · Linux · Windows</em></p>
 
 <p align="center"><a href="https://seekstone.dev"><strong>seekstone.dev →</strong></a></p>
 
@@ -112,7 +112,7 @@ Every competitor spawns a subprocess or makes HTTP round-trips per query, and mo
 
 **Tool list — tokens loaded before the first call (lower is better)**
 
-When a session starts, most MCP clients load the server's tool list (each tool's name, description, and input schema) into the model's context, before any tool is called. Some, such as Claude Code with tool search, load only the names until a tool is needed. Loaded in full, Seekstone's 25 tools cost **~5,742 tokens** (26 KB). With `SEEKSTONE_READ_ONLY=1` the 11 write tools drop out of the list and it falls to **~3,261 tokens**, 43% less. The harness measures this from the built server over MCP (`npm run harness -- schema-tax`), and CI re-measures it on every commit, so a change to any tool's description or schema fails the build until the published number is updated.
+When a session starts, most MCP clients load the server's tool list (each tool's name, description, and input schema) into the model's context, before any tool is called. Some, such as Claude Code with tool search, load only the names until a tool is needed. Loaded in full, Seekstone's 26 tools cost **~5,821 tokens** (26 KB). With `SEEKSTONE_READ_ONLY=1` the 11 write tools drop out of the list and it falls to **~3,340 tokens**, 43% less. The harness measures this from the built server over MCP (`npm run harness -- schema-tax`), and CI re-measures it on every commit, so a change to any tool's description or schema fails the build until the published number is updated.
 
 **Seekstone is the only server in our benchmark set that delivers both ~2 KB payloads and single-digit-ms keyword latency at every vault size** — and, as far as we know, the only Obsidian MCP server with published, reproducible benchmarks. The harness, the synthetic vaults, and the full results are open source: see [`benchmark-scaling.md`](packages/harness/fixtures/baseline-reports/scaling/benchmark-scaling.md) and the [harness](packages/harness). Clone, run, verify.
 
@@ -264,7 +264,7 @@ Seekstone is a standard MCP stdio server — any MCP client can run it. Use the 
 
 ---
 
-After installing, restart the client. On startup Seekstone walks the vault, builds an in-memory full-text index (a few seconds for thousands of notes), and keeps it live as you edit. The 25 tools below are then available to Claude.
+After installing, restart the client. On startup Seekstone walks the vault, builds an in-memory full-text index (a few seconds for thousands of notes), and keeps it live as you edit. The 26 tools below are then available to Claude.
 
 Requires [Node.js](https://nodejs.org) ≥ 22.22 for the CLI options. The one-click `.mcpb` bundle has no external requirements.
 
@@ -277,6 +277,7 @@ If Seekstone saves you context, consider [⭐ starring the repo](https://github.
 Once Seekstone is connected, you can ask Claude things like:
 
 - **"Search my notes for everything about [topic] and give me a summary"** — uses `search`, returns ranked excerpts, not full files
+- **"How big is my vault, and how much of it changed this week?"** — uses `vault_stats`, one call that returns counts and sizes instead of paging through a listing
 - **"Find all notes tagged #project and list their titles"** — uses `list_notes` with a tag filter
 - **"What's still open across my daily notes this week?"** — uses `list_tasks`, returns one compact row per checkbox instead of whole notes; `update_task` checks one off with a single-character edit
 - **"Read just the 'Decisions' section of my [project] note"** — uses `read_note` with a section selector, so only that slice enters context
@@ -306,6 +307,7 @@ Claude never sees your full vault at once — it searches and reads selectively,
 | `list_notes` | List notes, optionally filtered by folder prefix or tag. |
 | `list_tags` | List all tags in the vault sorted by usage count (or alphabetically). |
 | `list_tasks` | List Markdown checkbox tasks as compact structured rows (path, line, state, text, nearest heading) — vault-wide or filtered by note, folder, tag, state, or modified time. Custom markers (`- [/]`, `- [-]`, …) are first-class single-char states. |
+| `vault_stats` | How big the vault is and what's in it, in one call (230 bytes on the 10k-note benchmark vault): counts of notes, folders, tags and resolved links, total/median/largest note size, and how many notes changed in the last 1, 7 and 30 days. Served from the in-memory index. To see *which* notes changed, follow up with `query_notes` and `modifiedAfter`. |
 | `outline_note` | Return a note's heading and block structure without its full content — cheap navigation before a targeted read. |
 | `get_backlinks` | Find all notes that link to a given note. |
 | `get_links` | List all outgoing wikilinks and markdown links from a note. |
@@ -331,7 +333,7 @@ Claude never sees your full vault at once — it searches and reads selectively,
 
 Every write tool (`append_note`, `patch_note`, `patch_frontmatter`, `replace_in_note`, `rename_heading`, `move_note`, `delete_note`, `append_periodic_note`, `update_task`, and `create_note` with `overwrite: true`) supports optional **compare-and-swap**: pass the `contentHash` you got from `read_note` as `prevHash` and the call fails cleanly if the note changed underneath you — no silently discarded concurrent edit, no moving or deleting content you haven't seen. Every mutating result returns the new `contentHash`, so chained edits need no re-reads.
 
-**Every write is reversible.** Before any write tool changes a byte, it journals the pre-image of every file it is about to touch under `<vault>/.seekstone/history/` — content-addressed (identical states are stored once) and fsync'd before the vault write commits. `list_writes` shows the journal; `undo_write` restores byte-identically: a multi-file `move_note` or `rename_heading` is restored whole (the note *and* every link rewrite), and a `delete_note` comes back even if it was `permanent`. An undo after an external edit is refused with a structured `undo_conflict` unless you pass `force: true` — and even then the clobbered state is journaled first, so nothing is ever lost. Undo is itself journaled: repeated default undos walk backwards through the history, and `undo_write({ seq })` on an undo entry redoes it. `.seekstone/` is excluded from indexing and search like `.trash/`; add it to your vault's `.gitignore`. This complements git and Obsidian's File Recovery rather than replacing them — it is the recovery path the *agent* can drive.
+**Every write is reversible.** Before any write tool changes a byte, it journals the pre-image of every file it is about to touch under `<vault>/.seekstone/history/` — content-addressed (identical states are stored once) and fsync'd before the vault write commits. `list_writes` shows the journal; `undo_write` restores byte-identically: a multi-file `move_note` or `rename_heading` is restored whole (the note *and* every link rewrite), and a `delete_note` comes back even if it was `permanent`. An undo after an external edit is refused with a structured `undo_conflict` unless you pass `force: true` — and even then the clobbered state is journaled first, so nothing is ever lost. Undo is itself journaled: repeated default undos walk backwards through the history, and `undo_write({ seq })` on an undo entry redoes it. `.seekstone/` is excluded from indexing and search like `.trash/`; add it to your vault's `.gitignore`. Write tools refuse paths inside either folder, so an agent can't overwrite its own history; moving a note out of `.trash/` to restore it is still allowed, and `undo_write` can undo that restore. This complements git and Obsidian's File Recovery rather than replacing them — it is the recovery path the *agent* can drive.
 
 **Every write leaves a receipt.** Set `SEEKSTONE_AUDIT_FILE` and every write-tool call — successful *or refused* — appends one JSON line: tool, vault-relative paths, sha-256 before/after, outcome (`ok`, `hash_conflict`, `undo_conflict`, `policy_denied`, `error`), and op metadata such as replacement counts or the `.trash/` destination — never note content, frontmatter values, or search queries, so the file is safe to attach to a bug report.
 
@@ -458,7 +460,7 @@ npx tsc -p packages/server/tsconfig.json --noEmit        # typecheck
 
 | Package | Purpose |
 |---|---|
-| `packages/server` | The published `seekstone` MCP server (25 tools, stdio, MiniSearch index, chokidar watcher). |
+| `packages/server` | The published `seekstone` MCP server (26 tools, stdio, MiniSearch index, chokidar watcher). |
 | `packages/core` | Shared vault primitives — walk, frontmatter parser, link/tag extractor, outline, task parser, percentiles, pmap, and the Model2Vec embedder. Bundled into the server build. |
 | `packages/harness` | Profiler + benchmark + write-safety harness (REST vs filesystem) that produced the payload numbers above. Dev-only; not published. |
 

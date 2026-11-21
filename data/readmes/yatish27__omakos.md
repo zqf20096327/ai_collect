@@ -57,7 +57,7 @@ Just follow the prompts and you'll be fine. 👌
 
 The setup process will install and configure the following tools and applications.
 Homebrew packages are defined in [`configs/Brewfile`](configs/Brewfile).
-Safari extensions are installed from the Mac App Store by [`scripts/safari-extensions.sh`](scripts/safari-extensions.sh).
+Safari extension apps are installed from the Mac App Store by [`scripts/safari-extensions.sh`](scripts/safari-extensions.sh).
 
 ### Command Line Tools
 
@@ -82,7 +82,7 @@ Safari extensions are installed from the Mac App Store by [`scripts/safari-exten
 - [Zed](https://zed.dev/) - High-performance code editor
 - [cmux](https://www.cmux.dev/) - Terminal with the existing Ghostty colors and Google Sans Code font settings
 - [Bruno](https://www.usebruno.com/) - API client
-- [Elixir](https://elixir-lang.org/) with Erlang for Elixir/EEx/HEEx language support
+- [Elixir](https://elixir-lang.org/) with Erlang, managed by mise, for Elixir/EEx/HEEx language support
 - [Docker](https://www.docker.com/) for containerization
 - [OrbStack](https://orbstack.dev/) for Docker and Linux development on macOS
 - [PostgreSQL 18](https://www.postgresql.org/) with `libpq` for database management
@@ -97,6 +97,8 @@ Safari extensions are installed from the Mac App Store by [`scripts/safari-exten
   - Rust
   - Go
   - Node
+  - Erlang/OTP
+  - Elixir
 - [UV](https://github.com/astral-sh/uv) for Python packaging
 - [pnpm](https://pnpm.io/) for Node.js package management
 
@@ -126,14 +128,9 @@ Safari extensions are installed from the Mac App Store by [`scripts/safari-exten
 
 - [1Password for Safari](https://apps.apple.com/app/id1569813296) for passwords and autofill (free download; requires a 1Password account)
 - [Consent-O-Matic](https://apps.apple.com/app/id1606897889) for automatically answering cookie consent popups using your preferences (free and open source)
+- [uBlock Origin Lite](https://apps.apple.com/app/id6745342698) for blocking ads and trackers (free)
+- [GoodLinks](https://apps.apple.com/app/id1474335294) for saving links to read later (paid; purchase in the App Store before setup)
 - [Wipr 2](https://apps.apple.com/app/id1662217862) for blocking ads and trackers (paid; purchase in the App Store before setup)
-
-Sign in to the Mac App Store before setup and approve authentication prompts for
-the downloads. If installation fails, setup continues and prints a retry command.
-Wipr 2 is installed using an existing purchase; setup cannot buy it for you.
-After installation, enable 1Password and Consent-O-Matic in **Safari > Settings > Extensions**
-and approve their website access. Choose your cookie preferences in Consent-O-Matic.
-Open Wipr 2 and follow its setup instructions to enable its Safari extensions.
 
 ### Fonts
 
@@ -166,6 +163,7 @@ The setup applies developer-optimized macOS configurations including:
 - **Safari**: Website tinting and notification permission prompts disabled; video autoplay defaults to Never Auto-Play, preserving website exceptions
 - **Widgets**: Hidden on the desktop and in Stage Manager; Safari start-page sections hidden with empty new tabs/windows
 - **System**: Disabled automatic corrections, expanded dialogs, local saves by default
+- **Hosts**: Installs the bundled hosts file for system-wide domain blocking
 
 ## Features
 
@@ -187,6 +185,7 @@ Each script in the [`scripts/`](scripts/) directory can be run independently:
 ./scripts/irbrc.sh     # Only setup IRB configuration
 ./scripts/zshrc.sh     # Only setup Zsh configuration
 ./scripts/ssh.sh       # Only configure SSH settings
+./scripts/hosts.sh     # Install the bundled hosts file and refresh DNS
 ```
 
 The scripts are designed to be:
@@ -208,6 +207,7 @@ omakos/
 │   ├── cmux.sh             # cmux terminal configuration
 │   ├── gemrc.sh            # Gem configuration
 │   ├── git.sh              # Git configuration
+│   ├── hosts.sh            # System hosts file installation
 │   ├── irbrc.sh            # IRB configuration
 │   ├── mac.sh              # macOS system preferences
 │   ├── mise.sh             # Mise runtime manager setup
@@ -225,8 +225,10 @@ omakos/
 │   ├── git/                # Git configuration files
 │   ├── sol/                # Sol launcher settings
 │   ├── ssh/                # SSH configuration files
+│   ├── ublock-origin-lite/  # Safari custom filter export
 │   ├── zed/                # Zed editor settings
 │   ├── gemrc              # Ruby gems configuration
+│   ├── hosts              # System hosts file snapshot
 │   ├── irbrc              # IRB (Interactive Ruby) configuration
 │   ├── mise.toml          # Mise runtime versions config
 │   ├── rubocop.yml        # Ruby code style config
@@ -238,11 +240,23 @@ omakos/
 
 The [`configs/`](configs/) directory contains all config files.
 
+[`configs/hosts`](configs/hosts) is an exact snapshot of `/etc/hosts` taken on
+November 21, 2026, including the StevenBlack blocklist and local additions. At the
+end of setup, [`scripts/hosts.sh`](scripts/hosts.sh) installs it as `/etc/hosts`
+using administrator privileges. If the file differs, setup asks before replacing
+it and saves the previous file to a unique `/etc/hosts.backup.*` path. An identical
+file is skipped. Installation sets `root:wheel` ownership and `644` permissions,
+then refreshes the macOS DNS cache. Edit `configs/hosts` to change the bundled
+entries; setup installs this snapshot without downloading blocklist updates.
+
 Zed automatically installs the GitHub Dark Default theme and the Ruby, HTML, and
 Elixir extensions. When you first open a matching file, Zed downloads the required
 language servers: Ruby LSP and RuboCop, Herb for HTML+ERB, TypeScript Language Server
-and ESLint, HTML/CSS and Tailwind CSS servers, and ElixirLS. Ruby and Node come from
-mise; Elixir and Erlang come from Homebrew. Formatting uses Zed-managed RuboCop,
+and ESLint, HTML/CSS and Tailwind CSS servers, and ElixirLS. Ruby, Node, Elixir, and
+Erlang come from mise. The bundled configuration uses `latest` for both Erlang and
+Elixir; if you pin an Erlang major, select an Elixir build with the matching OTP
+suffix as described in [mise's Elixir guide](https://mise.jdx.dev/lang/elixir.html).
+Formatting uses Zed-managed RuboCop,
 Herb, and Prettier. Projects still need their own dependencies and ESLint/Tailwind
 configuration. See [Zed's language-server management](https://zed.dev/docs/configuring-languages#managing-language-servers).
 

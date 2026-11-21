@@ -15,11 +15,11 @@ RustXNG does not maintain a web-scale search index. You can add a local index of
 
 ## Quick start
 
-Install from the [releases page](https://github.com/sahenjp/RustXNG/releases) or with Cargo. Release binaries are available for Linux, macOS and Windows; check the matching asset and its SHA-256 sidecar before running it.
+Install from the [releases page](https://github.com/RustXNG/RustXNG/releases) or with Cargo. Release binaries are available for Linux, macOS and Windows; check the matching asset and its SHA-256 sidecar before running it.
 
 <!-- x-release-please-start-version -->
 ```bash
-cargo install --git https://github.com/sahenjp/RustXNG.git --tag v0.32.0 --locked
+cargo install --git https://github.com/RustXNG/RustXNG.git --tag v0.32.0 --locked
 ```
 <!-- x-release-please-end -->
 
@@ -113,6 +113,12 @@ A custom settings file is layered over the selected profile; avoid copying all s
 
 The `/healthz` endpoint checks the process, not the availability of upstream providers. `/readyz` reports whether any source is configured at all (`engines`, `local_index`) and answers 503 when a profile can serve pages but cannot search; it never contacts a provider. Use a real JSON search to verify that results are returned. Runtime metrics are exposed at `/stats` and `/metrics`.
 
+## Checking the providers
+
+`rustxng --check-engines` probes every enabled engine once and prints one line per engine with its status (`ok`, `empty`, `blocked`, `broken`, `timeout`, `needs_config`), the number of results and the latency. Add `--json` for a machine-readable summary, `--query` to probe with a different term, and `--timeout` to bound each request. It opens no socket for the HTTP API and never writes to the response cache; `needs_config` means the entry cannot run until its key or endpoint is configured.
+
+A blocked or broken entry is a fact about the provider, not about the instance: rate limits, CAPTCHAs and protocol changes happen continuously. Suspended engines are reported with their reason and remaining time in the JSON response (`suspended_engines`) and on the results page, so a smaller result set is explainable.
+
 ## Search quality and limitations
 
 The [November 4 comparison](docs/COMPARISON-2026-11-04.md) covers **older** search profiles and is not a benchmark of v0.30.0. After provider permission changes, the [November 5 Standard runs](docs/ISSUE-RESOLUTION-2026-11-05.md) recorded Hit@5 of **67–69/100**, down from the earlier configuration's 84/100 on the same documentation question set. The newer *offline-only* Clean profile reached **85/254 Hit@10** on SealQA with a 42.7 ms median in its [recorded run](docs/CLEAN-PROFILE.md). These are different datasets and cannot be ranked against each other.
@@ -133,6 +139,6 @@ Also note the structural difference behind any comparison to Exa or Tavily: Rust
 
 ## Contributing and license
 
-Bug reports and contributions are welcome through [Issues](https://github.com/sahenjp/RustXNG/issues), [Discussions](https://github.com/sahenjp/RustXNG/discussions) and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md) and [MAINTAINERS.md](MAINTAINERS.md).
+Bug reports and contributions are welcome through [Issues](https://github.com/RustXNG/RustXNG/issues), [Discussions](https://github.com/RustXNG/RustXNG/discussions) and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md) and [MAINTAINERS.md](MAINTAINERS.md).
 
 RustXNG is licensed under [AGPL-3.0-or-later](LICENSE). It builds on SearXNG's design and engine behavior; upstream and third-party attribution is preserved in [NOTICE](NOTICE). A code license does not grant permission to collect or redistribute data from external search providers.

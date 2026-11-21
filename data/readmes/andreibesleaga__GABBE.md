@@ -52,11 +52,11 @@ It contains:
 - **100 Templates** (standardized documents)
 - **86 Guides** (language & domain expertise)
 - **36 Personas** (specialized roles)
-- **50+ MCP servers** (configuration and guides for AI tools)
+- **66 MCP servers** (configuration and guides for AI tools)
 - **Brain Mode** (meta-cognitive orchestration)
 - **Loki Mode** (multi-agent swarm engineering personas team for large projects)
 
-> **214 Skills · 100 Templates · 86 Guides · 36 Personas · 50+ MCPs · Loki / Brain Mode CLI**
+> **214 Skills · 100 Templates · 86 Guides · 36 Personas · 66 MCPs · Loki / Brain Mode CLI**
 
 ---
 
@@ -82,7 +82,7 @@ It contains:
 
 | Channel | One-command install | Notes |
 |---|---|---|
-| **npm / Node** | `npx gabbe-kit init` | Python-independent; bundles the kit & wires detected agents |
+| **npm / Node** | `npx gabbe-kit init` | Python-independent; bundles the kit & wires the agents you name with `--agents` |
 | **PyPI** | `pipx install gabbe` | adds the `gabbe` **CLI** (doctor/brain/route/gateway); install the kit via npx / curl / checkout |
 | **Shell bootstrap** | `curl -fsSL https://raw.githubusercontent.com/andreibesleaga/GABBE/main/install.sh \| sh` | picks the best available installer |
 | **Git checkout** | `git clone https://github.com/andreibesleaga/GABBE && cd GABBE && python3 scripts/init.py` | the interactive wizard |
@@ -91,14 +91,14 @@ It contains:
 
 **Universal, Python-independent (one command):**
 ```bash
-npx gabbe-kit init                       # Node installer — bundles the kit, wires every agent
+npx gabbe-kit init                       # Node installer — bundles the kit, wires AGENTS.md + .agents/skills
 npx gabbe-kit init --agents claude,cursor,antigravity,opencode --yes   # non-interactive
 npx gabbe-kit init --force               # re-template even preserved files (each is backed up first)
 # or, without npm:
 curl -fsSL https://raw.githubusercontent.com/andreibesleaga/GABBE/main/install.sh | sh
 ```
 
-> **Safe on existing projects.** Any file the installer would change is backed up first (`<name>.gabbe-bak`), and your `AGENTS.md`, `CONSTITUTION.md`, `TASKS.md`, `policies.yml` and `config.json` are only replaced with `--force`.
+> **Safe on existing projects (since 1.1.4).** A file you already have is kept or backed up first (`<name>.gabbe-bak`; a backup is never overwritten). Your root `AGENTS.md` and other instruction files stay yours: the installer adds a short block that points to `agents/AGENTS.md`. Your `docs/` folder is not touched. Every path is recorded in `.gabbe/manifest.json`, so `gabbe uninstall` removes exactly what was installed. Details: [`docs/INSTALL.md`](docs/INSTALL.md).
 
 **Python / PyPI:**
 ```bash
@@ -266,7 +266,7 @@ Uses Active Inference to plan, route between local/remote models, and learn from
 
 ### Activate Loki Mode (Large Projects)
 **Using Pure Agent Mode (No CLI):**
-> "Activate `agents/skills/brain/loki-mode.skill.md`. Goal: [build X]. Do not ask me for permission unless you hit a mandatory Human Approval Gate or a task requires True A2A Delegation."
+> "Activate `agents/skills/brain/loki-mode.skill.md`. Goal: [build X]. Work through the phases on your own and stop at every Human Approval Gate, before any commit, push, publish or deploy, and when a task requires True A2A Delegation."
 
 Multi-agent swarm with 30+ specialized personas for projects >5 features or >20 files.
 
@@ -661,7 +661,7 @@ Full catalog: `agents/templates/00-index.md`
 
 | Server | Purpose |
 |---|---|
-| **Context-7** | Up-to-date SDK docs (prevents hallucination) |
+| **Context-7** | Up-to-date SDK docs (reduces guessed or outdated API calls) |
 | **Sequential Thinking** | Chain-of-thought reasoning |
 | **GitHub MCP** | PR review, code search |
 | **GitHits** | Navigate open-source dependency source/docs (no clone, no key) |
@@ -816,7 +816,7 @@ gabbe --help
 | `gabbe brain` | **Meta-Cognition**: Activates Active Inference loop or Evolutionary Prompt Optimization (Requires API Key). |
 | `gabbe route` | **Cost Router**: Arbitrates between Local and Remote LLMs based on task complexity (prompts of 100+ characters or with code blocks are rated by the LLM and need `GABBE_API_KEY`; without a key a fallback heuristic is used). |
 | `gabbe forecast`| **Strategic Forecast**: Projects remaining work cost and tokens based on historical run data. |
-| `gabbe serve-mcp` | **MCP Gateway**: Zero-dependency JSON-RPC Model Context Protocol server for standalone agents to access tools safely. |
+| `gabbe serve-mcp` | **MCP Gateway**: Minimal-dependency JSON-RPC Model Context Protocol server for standalone agents to access tools safely. |
 | `gabbe runs` | **Run History**: List recent agent runs with status, cost, and timestamps. |
 | `gabbe audit <run-id>` | **Audit Trace**: Display structured span-level trace for a past run (`--format json\|table`). |
 | `gabbe replay <run-id>` | **Deterministic Replay**: Replay a past run from its checkpoints (`--from-step N`). |

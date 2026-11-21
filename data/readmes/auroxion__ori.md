@@ -2,9 +2,9 @@
 
 <div align=center>
 
-![GitHub last commit](https://img.shields.io/github/last-commit/piratheon/ori?style=for-the-badge&labelColor=101418&color=9ccbfb)
-![GitHub Repo stars](https://img.shields.io/github/stars/piratheon/ori?style=for-the-badge&labelColor=101418&color=b9c8da)
-![GitHub repo size](https://img.shields.io/github/repo-size/piratheon/ori?style=for-the-badge&labelColor=101418&color=d3bfe6)
+![GitHub last commit](https://img.shields.io/github/last-commit/auroxion/ori?style=for-the-badge&labelColor=101418&color=9ccbfb)
+![GitHub Repo stars](https://img.shields.io/github/stars/auroxion/ori?style=for-the-badge&labelColor=101418&color=b9c8da)
+![GitHub repo size](https://img.shields.io/github/repo-size/auroxion/ori?style=for-the-badge&labelColor=101418&color=d3bfe6)
 
 </div>
 
@@ -19,7 +19,7 @@
 
 ---
 ## Quick links
-- GitHub: https://github.com/piratheon/ori
+- GitHub: https://github.com/auroxion/ori
 - AUR: https://aur.archlinux.org/packages/ori
 ### Core
 - **OpenRouter integration:** Connect to multiple AI models.

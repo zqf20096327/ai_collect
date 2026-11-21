@@ -31,7 +31,15 @@ Built for researchers and practitioners across the stack — from foundations to
 
 <p align="center">
 
+
+  <sub><strong>Last updated:</strong> 2026-11-12 &middot; <strong>258 entries</strong> across 14 canonical categories</sub>
+
+
+  <sub><strong>Last updated:</strong> 2026-10-28 &middot; <strong>238 entries</strong> across 14 canonical categories</sub>
+
   <sub><strong>Last updated:</strong> 2026-11-5 &middot; <strong>258 entries</strong> across 14 canonical categories</sub>
+
+
 
 </p>
 
@@ -148,6 +156,8 @@ Physics engines and high-fidelity simulation environments for robotics and embod
 - [RaiSim](https://raisim.com/) — High-performance rigid-body simulator widely used for legged-locomotion research and control.
 <!-- tags: simulator, tool, commercial -->
 - [Newton](https://github.com/newton-physics/newton) — GPU-accelerated open-source physics engine built on NVIDIA Warp with MuJoCo Warp as its main solver, initiated by Disney Research, Google DeepMind and NVIDIA and hosted by the Linux Foundation.
+<!-- tags: simulator, open-source -->
+- [Alloy](https://github.com/argonrobotics-ai/alloy) — Multi-material, GPU-parallel physics engine for robot learning that simulates robots, cloth, cables, liquids, sand and soft bodies, built on Newton and MuJoCo Warp.
 <!-- tags: simulator, open-source -->
 
 ## Datasets
@@ -282,7 +292,7 @@ Generative and predictive models of physical dynamics used for planning, simulat
 <!-- tags: paper, framework -->
 - [NVIDIA Cosmos](https://developer.nvidia.com/cosmos) — World foundation model platform whose current [Cosmos 3](https://github.com/nvidia/cosmos) family (Edge, Nano and Super) provides open omnimodal models that act as world models and as backbones for world-action models.
 <!-- tags: tool, commercial -->
-- [Genie 2 (DeepMind)](https://deepmind.google/discover/blog/genie-2-a-large-scale-foundation-world-model/) — Foundation world model that generates interactive, controllable 3D environments.
+- [Genie (DeepMind)](https://deepmind.google/models/genie) — Foundation world model family that generates interactive, controllable 3D environments, from Genie 2 to the real-time Genie 3 and Genie 4.
 <!-- tags: paper, framework -->
 - [DreamerV3](https://danijar.com/project/dreamerv3/) — General world-model algorithm achieving strong results across 150+ tasks with fixed hyperparameters.
 - [DayDreamer](https://danijar.com/project/daydreamer/) — World models applied to physical robot learning for sample-efficient skill acquisition.
@@ -391,6 +401,8 @@ Tools, benchmarks, and methodology for safe exploration, robustness testing, and
 - [Safety Gym (OpenAI)](https://github.com/openai/safety-gym) — Environments for benchmarking constrained and safe-exploration RL.
 - [Safe Control Gym](https://github.com/utiasDSL/safe-control-gym) — Benchmark suite for safe learning-based control with constraints and disturbances.
 - [Constrained Policy Optimization (Achiam et al.)](https://arxiv.org/abs/1705.10528) — Canonical algorithmic framework for constrained safe RL.
+- [Provael](https://github.com/provael/provael) — Red-team harness for VLA robot policies in simulation on LIBERO, reporting attack success rate beside a benign control with 95% intervals.
+<!-- tags: tool, open-source, research-only -->
 - [Realistic Adversarial Driving (Wang et al.)](https://arxiv.org/abs/2003.01197) — Methodology for stress-testing autonomous driving policies under adversarial conditions.
 - [Robot Trust & Safety (Stanford CRFM)](https://crfm.stanford.edu/) — Foundation-model centre research including robotic safety, evaluation, and failure modes.
 - [Scenic](https://scenic-lang.org/) — Probabilistic scenario-description language for specifying and generating stress-test scenes for autonomy.
@@ -535,6 +547,7 @@ Hands-on learning resources.
 - [PyBullet Quickstart](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA/) - Getting started with PyBullet simulation.
 - [Open X-Embodiment Tutorial](https://colab.research.google.com/github/google-deepmind/open_x_embodiment/blob/main/colabs/Open_X_Embodiment_Datasets.ipynb) - Working with the largest robotics dataset.
 - [Diffusion Policy Tutorial](https://diffusion-policy.cs.columbia.edu/) - Implementation guide for diffusion-based robot policies.
+- [Physical AI Glossary](https://maxversace.com/physical-ai-glossary) - Defines 26 Physical AI terms in plain words, from Sim2Real and world models to continual learning.
 
 ## Key Papers
 

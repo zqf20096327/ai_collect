@@ -439,7 +439,6 @@ After your text, one question, "Anything to add for future-you, or skip?", and o
 - **Done always confirms first,** because the file moves out of view. Passing mentions never mark anything done.
 - **Craft offers, you decide.** On "later", "don't let me forget" or "side note", one ignorable line: "Worth dropping in /craft:notebook? I'd tag it #verifier #cycle-9. Otherwise I'll continue." Yes captures silently with the conversation as context.
 - **Notes come back as "as of".** Every session loads a one-line index of your notes, and craft reads the full note when the work matches. A recalled note is true as of its date: verify before acting.
-- **Not TaskCreate.** TaskCreate lasts one conversation. Notebook todos persist across sessions and survive cycle completion.
 
 Entries link. `graduated_to` can point at a story, fix, tweak or dial, and a `source` written as `[[slug]]` points back at the record that spawned the entry. `/craft:dashboard` resolves them into one graph.
 
@@ -588,7 +587,7 @@ Not for new features or for choosing between creative directions; adding somethi
 
 ## Agents
 
-27 agents across six categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
+28 agents across six categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
 
 **Core Workflow** - run inside the implementation pipeline
 
@@ -596,6 +595,7 @@ Not for new features or for choosing between creative directions; adding somethi
 |-------|------|
 | `implementer` | Owns the implement → validate → refine loop per chunk |
 | `tester` | Integration tests, E2E, final validation |
+| `smith` | Takes one adhoc fix end to end, reading the code around the problem first |
 | `chunk-validator` | Runs quality checks, returns structured report (haiku model) |
 | `plan-chunks-agent` | Autonomous chunk planning per story - used in batch mode |
 | `project-scanner` | Full project analysis for documentation updates |

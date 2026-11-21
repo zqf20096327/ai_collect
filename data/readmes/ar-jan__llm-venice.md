@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/llm-venice.svg)](https://pypi.org/project/llm-venice/)
 [![Changelog](https://img.shields.io/github/v/release/ar-jan/llm-venice?label=changelog)](https://github.com/ar-jan/llm-venice/releases)
 [![Tests](https://github.com/ar-jan/llm-venice/actions/workflows/test.yml/badge.svg)](https://github.com/ar-jan/llm-venice/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/ar-jan/llm-venice/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/ar-jan/llm-venice/blob/develop/LICENSE)
 
 [LLM](https://llm.datasette.io/) plugin to access models available via the [Venice AI](https://venice.ai/chat?ref=Oeo9ku) API.
 
@@ -96,6 +96,10 @@ Vision models (for example `qwen-3-8-27b`, Venice's default vision model) suppor
 
 > `llm -m venice/qwen-3-8-27b -a https://upload.wikimedia.org/wikipedia/commons/a/a9/Corvus_corone_-near_Canford_Cliffs%2C_Poole%2C_England-8.jpg "Identify"` \
 > The bird in the image is a carrion crow (Corvus corone). [...]
+
+Models that list `supportsAudioInput` in the catalog also accept WAV and MP3 attachments:
+
+`llm -m venice/<audio-model> -a recording.wav "Transcribe this"`
 
 ### venice_parameters
 
@@ -390,7 +394,9 @@ Use a registered model's `.Options` for its published limits and choices; class
 JSON methods return ordinary typed dictionaries and unwrap `data` envelopes:
 `list_models()`, `list_characters(web_enabled=True, adult=False)`, `list_api_keys()`,
 `get_rate_limits()`, and `get_rate_limits_log()`. Unknown JSON fields and wire-format
-timestamps are preserved. Key management requires an ADMIN key; `create_api_key()`
+timestamps are preserved. `list_characters()` returns one page: pass `limit=` (Venice's
+default is 50, the maximum 100) and `offset=`, and stop at a page shorter than `limit`.
+`llm venice characters` fetches every page. Key management requires an ADMIN key; `create_api_key()`
 takes `key_type=`, `description=`, optional `limit_usd=`/`limit_vcu=`, and an optional
 timezone-aware `expires_at` datetime. `delete_api_key(id)` returns `None`.
 Resource annotations are available from `llm_venice.types`.
@@ -494,7 +500,7 @@ the same path/key until explicit successful refresh. Offline models are skipped;
 deprecation notices appear when a model is used. There is no automatic TTL refresh,
 trait routing, or trait alias registration.
 
-See [the 0.9-to-0.10 migration guide](CHANGELOG.md) for removed helpers and options.
+See [the 0.9-to-0.10 migration guide](https://github.com/ar-jan/llm-venice/blob/develop/CHANGELOG.md) for removed helpers and options.
 
 ## Development
 

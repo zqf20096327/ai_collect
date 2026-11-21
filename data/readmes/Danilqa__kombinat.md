@@ -1,10 +1,10 @@
 <img src=".github/assets/banner.png" alt="Kombinat: routines in your repo, run by AI agents 24/7" width="100%" />
 
-> ✨ Run AI agents on a schedule or webhook, from markdown files in your repo. On your Mac or Linux machine, with the plan you already pay for.
+> 🏃‍♀️ Run AI agents on a schedule or webhook, from markdown files in your repo. On your Mac or Linux machine, with the plan you already pay for.
 
 [Live demo](https://kombinat.tech/) · [80-second video](https://www.youtube.com/watch?v=P6f0QCEyr68) · [Quickstart](#-quickstart) · ⭐ [Star on GitHub](https://github.com/Danilqa/kombinat)
 
-## 💡 Features
+## ✨ Features
 
 - **Routines in git.** One markdown file each, live within 5 minutes of the merge.
 - **Schedule or webhook.** Cron, or a request from Linear, GitHub or any other app.
@@ -18,17 +18,17 @@
 - **Guardrails.** Timeouts, a budget cap, no overlapping runs and catch-up after sleep.
 - **Small.** One command, two dependencies, no cloud, no database, no telemetry.
 
-## 🤖 What to run
+## 😄 Fun fact
+
+Kombinat runs as a **software factory** that improves and promotes itself. See for yourself in the [closed issues](https://github.com/Danilqa/kombinat/issues?q=is%3Aissue%20state%3Aclosed).
+
+## 🤨 What to run?
 
 A routine can be basically any automation, for your team or at home. Teams use them to work through issues overnight, fix bugs and flaky tests, remove dead code, watch production and draft release notes. At home, routines can look for discounts, book appointments, check the weather or tell you when a website changes.
 
 See example routines in the [live demo](https://kombinat.tech/).
 
-## 😄 Fun fact
-
-Kombinat runs as a **software factory** that improves and promotes itself. See for yourself in the [closed issues](https://github.com/Danilqa/kombinat/issues?q=is%3Aissue%20state%3Aclosed).
-
-## 🚀 Quickstart
+## ⚡ Quickstart
 
 You need Node 24 and Claude Code or Codex, logged in. On Linux, see [docs/linux.md](docs/linux.md).
 
@@ -51,7 +51,7 @@ You need Node 24 and Claude Code or Codex, logged in. On Linux, see [docs/linux.
 
 3. Add your own routines to `routines/`, see [Writing a routine](#-writing-a-routine). No restart needed.
 
-## 📊 Monitoring
+## 👀 Monitoring
 
 <img src=".github/assets/dashboard.gif" alt="A tour of the Kombinat dashboard: routines, calendar, runs, inbox, daemon status, search and a run transcript" width="100%" />
 
@@ -70,19 +70,19 @@ The daemon serves a dashboard at http://localhost:7433.
 
 `pnpm kombinat tui` shows the same in the terminal. It works over ssh. Press `?` for keys.
 
-## 🌐 Remote access
+## 🗺️ Remote access
 
 To open the dashboard from your laptop or phone, connect over SSH with `npx kombinat connect`, or share it in your tailnet with Tailscale Serve. See [docs/remote-access.md](docs/remote-access.md).
 
-## 🧩 How it works
+## 🤓 How it works
 
 A small daemon starts the agents of due routines, serves the dashboard and keeps the run history. See [docs/how-it-works.md](docs/how-it-works.md).
 
-## 🔒 Security
+## 👮🏻 Security
 
 The dashboard has no login, and agents can do whatever their routine's permissions allow. Read [docs/security.md](docs/security.md) before you open the dashboard to other people or let a routine read issues, chats or webhooks.
 
-## 💻 Commands
+## 🫵 Commands
 
 Run them from the folder with `routines/`. With npm, use `npx kombinat` instead of `pnpm kombinat`, with Yarn `yarn kombinat`.
 
@@ -97,7 +97,7 @@ pnpm kombinat readme         # update the routines table in README.md
 pnpm kombinat uninstall      # stop and remove the daemon
 ```
 
-## 📝 Writing a routine
+## ✍️ Writing a routine
 
 ```markdown
 ---
@@ -118,14 +118,22 @@ timeoutMinutes: 55
 - `name` must match the file name.
 - `schedule` is a 5-field cron in local time, or `manual` to run only on demand.
 - `cwd` is where the agent starts.
+- `worktree: true` gives each run a git worktree of its own, on a new branch, so the agent never touches your checkout in `cwd`, see [docs/worktrees.md](docs/worktrees.md).
 - `agent` is `claude` (default), `codex` or `command`.
 - `timeoutMinutes` stops the run after this time. Default 55.
 - `before` is an optional shell command that runs first. If it fails or takes more than 3 minutes, the run fails.
 - `after` is an optional shell command that runs last, whatever the outcome, for example to post failures to Slack. It gets the finished run on stdin and cannot change it, see [docs/hooks.md](docs/hooks.md).
 - `enabled: false` keeps the file but stops the schedule.
 - `webhook: true` lets other apps start the routine with a request, see [docs/webhook.md](docs/webhook.md).
+- `memory: true` keeps notes that carry over between runs, see below. Off by default.
 
 Changes apply on the next check, no restart needed. Write the prompt so the agent never has to ask a question: nobody will answer. When there is nothing to do, have it start its answer with "No" or "Nothing", such as "No open incidents.", so the dashboard's Inbox files the run under Nothing to report.
+
+### Memory
+
+With `memory: true`, a `claude` or `codex` routine keeps notes for its next runs, such as the issues it filed, how to sign in to the app and where to start next time. Kombinat adds the notes to the prompt of each run, and the agent ends its last message with the updated notes, which Kombinat saves. Replies to a run get the notes as they are now and can update them too.
+
+The routine's Memory tab in the dashboard shows the notes and the run that changed them last. Edit them to tell the next run something, or Clear them to start fresh. If you save notes while a run is at work, your notes win over the ones that run ends with. The notes stay on this machine in `~/.kombinat/memory/<routine>.md`, not in git, and can be up to 20,000 characters.
 
 ### Agents
 
@@ -139,7 +147,7 @@ Changes apply on the next check, no restart needed. Write the prompt so the agen
 | `onUsageLimit`   | `wait` (default), `fail`                                                          | -                                                              | -         |
 | `command`        | -                                                                                 | -                                                              | required  |
 
-- `claude` runs `claude -p`. Anything that needs approval is denied.
+- `claude` runs `claude -p`. Anything that needs approval is denied, and the run still succeeds. The dashboard marks such a run with how many actions were blocked, files it under Needs a look and lists each action with a rule that allows it, such as `Bash(git push *)`. Allow and continue resumes the session with those rules, for that reply only. To allow them in every run, add the rules to `permissions.allow` in `.claude/settings.json` in the routine's folder.
 - `fallbackModel` is the model Claude switches to when `model` is not available, overloaded or fails, such as `claude-sonnet-5-5`. A comma-separated list is tried in order. The run's transcript says when it switched.
 - `onUsageLimit` says what a run does when it hits the 5-hour or weekly limit of the Claude plan. With `wait`, the run shows Waiting for limit, and a minute after the reset, once a run slot is free, Kombinat continues its session where it stopped. The run's page has Continue now and Stop waiting, and its transcript marks the pause. With `fail`, the run fails at the limit.
 - `codex` runs `codex exec`. `permissionMode` sets its sandbox.
@@ -154,12 +162,13 @@ A setting the agent does not support fails validation.
 - A routine never runs twice at the same time. If it is still running at its next time, that run is skipped. A run that waits for a usage limit to reset counts as running.
 - At most 3 routines run at once. A run that waits for a usage limit does not count toward this.
 - To run a routine once at another time, such as tonight, open the menu next to Run now and pick a time, or press `L` in the terminal. The time is kept on this machine, not in the routine file. The run waits while the routine is still running, and the routine's page lists it with Cancel. After a sleep, missed one-time runs count as missed times: the routine runs once.
+- To run a one-off task, press New run on the Runs page of the dashboard, write the prompt and pick a routine. The prompt runs once in that routine's folder, with its agent and settings, and the routine file stays as it is.
 
 ## 🪝 Webhooks
 
 A routine with `webhook: true` also runs when another app, such as Linear or GitHub, sends it a request. The request body goes into the prompt, an optional `webhookGate` command checks and filters requests, and requests that arrive while the routine runs wait in a queue. The gate can also tie requests to a conversation, so that follow-ups, such as messages to a Linear agent, continue the run that the first request started. See [docs/webhook.md](docs/webhook.md).
 
-## 🔄 Updating
+## 🎉 Updating
 
 Merged changes to your routines go live within 5 minutes. To update Kombinat, bump `kombinat` in `package.json`, and the daemon installs it and restarts. See [docs/updating.md](docs/updating.md).
 

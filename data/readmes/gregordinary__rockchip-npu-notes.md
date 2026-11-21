@@ -144,9 +144,8 @@ gives its full conditions.
 - **[Decode](perf/decode-gemv.md).** Single-row [decode](GLOSSARY.md) is a GEMV, bound by the DDR bandwidth the
   NPU shares with the CPU, so decode stays on the CPU. At 928 MHz the NPU streams resident weights
   at ~16 GB/s over three cores under `rocket`, which only matches the CPU's decode stream
-  [HW sweep 2026-10-21]. The same register program streams 2.1x as fast a core under the vendor
-  `rknpu` driver on the same board [HW sweep 2026-11-20]. The platform state under `rocket`
-  therefore sets that rate, not the program.
+  [HW sweep 2026-10-21]. That rate is the part's. A second RK1 streams 2x as fast a core under the
+  same software, and 24 GB/s on three, the CPU decode's range [HW sweep 2026-11-20] ([chips/rk3588.md](chips/rk3588.md) §"Part-to-part variation").
   The NPU's fp16 throughput at M=1 is ~82x below its batched-GEMM peak, as an external benchmark
   measured it through the vendor RKNN matmul API.
 - **[Clock](perf/clock.md).** The NPU clock boots at 198 MHz, one fifth of its 1 GHz maximum
@@ -314,6 +313,9 @@ Most findings come from devices running mainline 7.1 and 7.2 kernels:
 
 A second Turing RK1, on Rockchip's 6.1 BSP kernel with the vendor `rknpu` 0.9.8 driver, provides
 the vendor-driver results. Its boot firmware is BL31 v1.48 and DDR init v1.16 [live 2026-11-20].
+The two RK1 parts are not equivalent. The second one's NPU streams DDR reads about twice as fast
+under the same software ([chips/rk3588.md](chips/rk3588.md) §"Part-to-part variation"). A figure
+that sets a vendor-driver result against a `rocket` one therefore compares the boards too.
 
 The same work produced a FOSS inference stack on `rocket`: a userspace library, frontends for
 ggml, TFLite and ONNX Runtime, and kernel patches. The [guide](guide/) is a start-to-finish

@@ -6,15 +6,25 @@ A studio for whole videos, plus images, video with sound, speech, music and 3D m
 
 | | |
 |---|---|
-| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.29.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.29/NVAI-open-Setup-0.5.29.exe) |
-| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.5.10.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.29/NVAI-open-0.5.10.dmg) |
+| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.31.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.31/NVAI-open-Setup-0.5.31.exe) |
+| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.5.12.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.31/NVAI-open-0.5.12.dmg) |
 
 Install, open, download a model under "Models", generate. The setup brings everything else along. [Installation details](docs/INSTALL.md) · [All releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-November 2026: NVAI-open 0.5.29 for Windows and 0.5.10 for the Mac ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29))
+November 2026: NVAI-open 0.5.31 for Windows and 0.5.12 for the Mac ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.31))
 
+- **Bug fixes** (0.5.31, Mac 0.5.12): five independent reviews went through everything since 0.5.20. Among the fixes: a speaking clip in the Studio no longer ends mid-word, sound effects get their own track instead of cutting holes into the music, a LoRA training interrupted by a restart can be resumed, notes in audio forensics no longer get lost, and the Mac's speech recognition no longer misses talk while the radio is on. [All fixes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.31)
+- **Studio, scenes by hand:** a new scene starts like one from the assistant, with the best model of its lane, "Expand prompt", "Generate start image" and notes when a clip is too long for the card or a face would be invented. [Details](docs/STUDIO.md#step-by-step)
+- **Mac 0.5.11:** audio forensics on the Mac itself: new cases from recordings and VDR exports, speech recognition with Whisper large-v3 and translation with Qwen3.5. [Details](docs/AUDIO.md#review-package-and-review-app)
+
+<details><summary><kbd>&nbsp;Read more&nbsp;▾&nbsp;</kbd></summary>
+
+- **Bug fixes** (0.5.31, Mac 0.5.12): fixes from five independent reviews of the Studio, LoRA training, audio forensics, the web interface and the Mac app; the full list is in the [release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.31).
+- **Scenes by hand in the Studio** (0.5.30, Mac 0.5.11): a new scene gets the best downloaded model of its lane (LTX-2.5, Qwen3-TTS, Stable Audio 3, Stable Audio Open), music as long as the film and sound effects 4 s. "Expand prompt" turns a few words into a full English description, and "Generate start image" makes two start images from the prompt as the assistant does (with the characters of the scene, without black bars). Notes under the properties warn about a clip longer than 6 s at 1080p on a card with 16 GB, a character without a start image, a prompt not in English and a voice line under a video that makes its own sound. [Details](docs/STUDIO.md#step-by-step)
+- **Mac 0.5.11, audio forensics:** "New case …" makes a case from audio or video files, "Import VDR export …" from a voyage data recorder (VR-7000) with heading, speed, alarms, AIS and radar pictures; it shows the space the case needs first and stops before the drive runs full. "Recognise speech" runs Whisper large-v3 (Core ML) where Silero VAD hears speech, "Translate" uses Qwen3.5 (9B from 16 GB of memory, otherwise 4B). Everything runs on the Mac. [Details](docs/AUDIO.md#review-package-and-review-app)
+- **Older Radeons** (0.5.30): cards that AMD's PyTorch for Windows does not support (RX 5000, Vega, Radeon VII, Polaris and older) no longer hang at the start. The setup installs PyTorch for the processor, and the top bar says that NVAI-open runs on the CPU; hovering over it explains what that means and what helps. [Details](docs/INSTALL.md#amd-radeon-and-several-graphics-cards-experimental)
 - **Mac 0.5.10:** the History also shows music, sounds and speech with a play button, and "Clear history" deletes everything at once; whatever a Studio project uses stays. The Hugging Face token is checked with Hugging Face when you save it, and "Check" also tells you whether LTX-2.5 is unlocked. Interrupted downloads continue where they stopped, and uploads over the API are no longer limited to 64 MB. The review app can burn subtitles into an exported video, and its SRT files now load in the Windows Media Player. [Details](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29)
 - **Mac 0.5.9:** a face from a photo now lands reliably in a new scene: put the photo under "Reference images" and say who it is (woman or man, age, hair). A start image is cropped to the format instead of stretched, and the assistant asks who is in the photo. A full bug hunt fixed, among other things: Studio projects from Windows with video now open on the Mac, FLUX.2 no longer tears an image when two sizes with the same number of pixels follow each other, Studio exports below 1080p no longer get stuck, the Hugging Face token has a field in the settings, and deleting a file no longer breaks a clip in a project. [All fixes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29)
 - **Audio forensics** (0.5.29): a long recording with many channels becomes a case: tracks, spectrogram, speech activity, events, notes and a translation track. Whisper large-v3 writes down what is said, Qwen3.5-9B translates it, and every block stays a draft until a person has checked it; a note says which models, under which license and on which graphics card. It also reads the data files of a voyage data recorder (VR-7000 format). [Details](docs/AUDIO.md#audio-forensics)
@@ -30,22 +40,9 @@ November 2026: NVAI-open 0.5.29 for Windows and 0.5.10 for the Mac ([release not
 - **Characters in the Studio** (0.5.24): a character bundles a look (one or more LoRAs) and a voice. Picture scenes show it, voice scenes speak with its voice, and on Windows a video scene with LTX-2.5 speaks a voice line with its lips. [Details](docs/STUDIO.md#characters)
 - **MiniMax H3, with a license warning** (since 0.5.18): video with stereo sound, 9 seconds in about 7 minutes. **Its license forbids any use in the EU, the UK, South Korea and the USA without a separate license from MiniMax, and nothing made with it may be published.** The app marks it in red. [Details](docs/MODELS.md#minimax-h3-since-0518)
 
-Neu in 0.5.29 und für den Mac in 0.5.10:
+</details>
 
-- **Mac 0.5.10:** Der Verlauf zeigt auch Musik, Klänge und Sprache mit Abspielknopf, und „Verlauf leeren“ löscht alles auf einmal; was ein Studio-Projekt nutzt, bleibt. Das Hugging-Face-Token wird beim Speichern bei Hugging Face geprüft, und „Prüfen“ sagt auch, ob LTX-2.5 freigeschaltet ist. Abgebrochene Downloads setzen dort fort, wo sie standen, und Uploads über die Schnittstelle sind nicht mehr auf 64 MB begrenzt. Die Prüf-App brennt Untertitel auf Wunsch ins exportierte Video, und ihre SRT-Dateien laden jetzt im Windows Media Player. [Einzelheiten](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29)
-- **Mac 0.5.9:** Ein Gesicht aus einem Foto kommt jetzt zuverlässig in eine neue Szene: das Foto unter „Referenzbilder“ legen und sagen, wer es ist (Frau oder Mann, Alter, Haare). Ein Ausgangsbild wird aufs Format zugeschnitten statt gestreckt, und der Assistent fragt, wer auf dem Foto ist. Eine große Fehlersuche hat unter anderem behoben: Studio-Projekte von Windows mit Video öffnen jetzt auf dem Mac, FLUX.2 zerreißt kein Bild mehr, wenn zwei Formate mit gleich vielen Bildpunkten aufeinander folgen, Studio-Exporte unter 1080p bleiben nicht mehr stehen, das Hugging-Face-Token hat ein Feld in den Einstellungen, und Löschen zerstört keinen Clip in einem Projekt mehr. [Alle Korrekturen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29)
-- **Ton-Forensik** (0.5.29): Aus einer langen Aufnahme mit vielen Kanälen wird ein Fall: Spuren, Spektrogramm, Sprachaktivität, Ereignisse, Notizen und eine Übersetzer-Spur. Whisper large-v3 schreibt auf, was gesprochen wird, Qwen3.5-9B übersetzt es, und jeder Block bleibt Entwurf, bis ein Mensch ihn geprüft hat; ein Vermerk nennt Modelle, Lizenzen und Grafikkarte. Sie liest auch die Datendateien eines Schiffsdatenschreibers (Format VR-7000). [Einzelheiten](docs/de/AUDIO.md#ton-forensik)
-- **Prüf-App** (0.5.29): „Export“ → „Prüfpaket“ ergibt einen Ordner mit dem Fall, dem Originalton und der Prüf-App NVAI-Pruefer.html, für Menschen ohne NVAI-open, etwa eine Kanzlei. Sie läuft in Edge oder Chrome ohne Installation, Internet und KI; Änderungen kommen mit einem verketteten Protokoll in einen Unterordner, und der Name des Bearbeiters lässt sich oben rechts ändern. Auf dem Mac (0.5.7) im neuen Reiter „Ton-Forensik“. [Einzelheiten](docs/de/AUDIO.md#prüfpaket-und-prüf-app)
-- **Audio** (0.5.29): Stimmen von Musik trennen und Sprache von Rauschen, dazu ein wiederkehrendes Geräusch wie einen Alarm entfernen, gelernt aus ein paar markierten Beispielen. [Einzelheiten](docs/de/AUDIO.md)
-- **Eigene LoRA trainieren** (0.5.29): Der Bereich „LoRA erstellen/Bearbeiten“ stellt einen Datensatz zusammen (aus dem Verlauf, aus Dateien oder aus einer Vorlage in 24 Haltungen gezeichnet), trainiert ihn auf deiner Grafikkarte und nimmt das Ergebnis in die Modellliste. [Einzelheiten](docs/de/LORAS.md#eigene-lora-trainieren)
-- **Dateiname im Studio** (0.5.29): Die Eigenschaften einer Datei zeigen ihren Namen; ein Klick markiert ihn, „Kopieren“ kopiert ihn. Windows und Mac.
-- **Ein Assistent für Einsteiger** (0.5.28): „✨ Assistent“ im Studio führt in sieben kurzen Schritten durch ein ganzes Video. Du wählst einen Weg (von der durchgehenden Einstellung bis zum Gesicht aus einem Foto), schreibst deine Idee, beschreibst eine Figur oder lässt sie weg, wählst die Anzahl der Szenen, nimmst die Musik aus 22 Vorschlägen oder schreibst einen eigenen Prompt, und der Assistent schlägt die besten Modelle für deine Hardware mit der zu erwartenden Zeit vor. Fehlende Modelle lädt er erst nach Rückfrage. Danach erzeugt er je Szene zwei Startbilder zur Auswahl und die Videos. Windows und Mac. [Einzelheiten](docs/de/STUDIO.md#der-assistent)
-- **Deine Hardware** (0.5.28): Ein Katalog mit 110 Grafikkarten und Apple-Chips schätzt, wie lange jedes Modell auf deinem Rechner braucht; „Modelle“ zeigt deine Karte und die Zeit je Modell. [Einzelheiten](docs/de/MODELLE.md#deine-hardware)
-- **Startbild im Studio** (0.5.27): In den Eigenschaften einer Videoszene gibt es jetzt das Feld „Startbild“. Ein Bild aus dem Material darauf ziehen oder aus dem Projektordner wählen. Der Clip beginnt damit, so sieht eine Figur in jeder Einstellung gleich aus. Bisher ging das nur über Claude Code per MCP. [Einzelheiten](docs/de/STUDIO.md#schritt-für-schritt)
-- **Kandinsky 6 Pro und Lite, mit Ton** (0.5.25): zwei weitere Videomodelle, die Bild und Ton in einem Durchgang machen, 5 s in 864 × 480, aus Text oder einem Startbild (nur NVIDIA). Was zu hören ist, kommt in ein eigenes Feld „Ton“. Pro hielt im Test Handlung und Gesicht, braucht aber rund 17 Minuten für 5 s. **Der Ton ist nicht kommerziell nutzbar, und die Video-VAE ist in der EU nicht lizenziert.** [Einzelheiten](docs/de/MODELLE.md#weitere-videomodelle)
-- **Eigene LoRAs** (0.5.24): „Modelle“ → „LoRA-Datei hinzufügen“ nimmt eine LoRA, die du selbst trainiert oder anderswo gefunden hast. NVAI-open liest zuerst den Dateikopf und zeigt, zu welchen Modellen sie passt; du bestätigst oder änderst die Zuordnung, auch später. Beim Generieren steht „+ Eigene LoRA-Datei hinzufügen“ direkt in der LoRA-Liste. Auf dem Mac für FLUX.2 Klein 4B. [Alles zu LoRAs](docs/de/LORAS.md)
-- **Figuren im Studio** (0.5.24): Eine Figur bündelt Aussehen (eine oder mehrere LoRAs) und Stimme. Bildszenen zeigen sie, Sprecher-Szenen sprechen mit ihrer Stimme, und unter Windows spricht eine Videoszene mit LTX-2.5 einen Satz mit den Lippen. [Einzelheiten](docs/de/STUDIO.md#figuren)
-- **MiniMax H3 mit Lizenzwarnung** (seit 0.5.18): Video mit Stereoton, 9 Sekunden in rund 7 Minuten. **Die Lizenz verbietet jede Nutzung in der EU, in Großbritannien, Südkorea und den USA ohne eigene Lizenz von MiniMax, und nichts damit Erzeugtes darf veröffentlicht werden.** Die App markiert es rot. [Einzelheiten](docs/de/MODELLE.md#minimax-h3-seit-0518)
+**Deutsch:** [Was gibt's Neues?](#was-gibts-neues) (Neuigkeiten im deutschen Teil)
 
 [English](#english) · [Video](#video) · [Deutsch](#deutsch)
 
@@ -243,7 +240,7 @@ NVAI-open has no content filter of its own. The model list marks every model as 
 ### Mac app, PhotoCraft add-on, iOS
 
 - **Mac:** a native app for Apple Silicon. Images with FLUX.2 Klein and Z-Image Turbo (generate, edit, fill, reference images, LoRAs), restoring old photos, music and sounds with Stable Audio 3, short videos with LTX-Video (bigger video models with sound from 16 GB of memory), the Studio, and review packages from audio forensics. On a Mac mini M1 with 8 GB, 30 seconds of music take about 13 seconds and 2 seconds of video about 95 seconds.
-- **[PhotoCraft](https://github.com/storytold/photocraft) add-on:** select an area in this great open-source photo editor, fill it, rework it or restore it, and the result comes back as a layer. Needs PhotoCraft 0.10.0 or newer. Thanks to the PhotoCraft developers for such a well-scriptable editor.
+- **[PhotoCraft](https://github.com/storytold/photocraft) add-on:** select an area in this great open-source photo editor, fill it, rework it or restore it, and the result comes back as a layer. Tested with PhotoCraft 0.23.1. Thanks to the PhotoCraft developers for such a well-scriptable editor.
 - **iOS (closed beta):** a 3D scanner that turns photos of real objects into models. Tell me in an issue if you would use it.
 
 ### Requirements
@@ -251,7 +248,7 @@ NVAI-open has no content filter of its own. The model list marks every model as 
 | | Windows | macOS |
 |---|---|---|
 | System | Windows 10 (2004+) or 11, 64-bit | macOS 15 or newer, Apple Silicon |
-| Graphics / memory | 12 GB+ VRAM recommended (8 GB works with the INT8 models). NVIDIA: driver 580.88+. AMD Radeon: driver 26.2.2+ | 16 GB RAM or more recommended (8 GB works for small images) |
+| Graphics / memory | 12 GB+ VRAM recommended (8 GB works with the INT8 models). NVIDIA: driver 580.88+. AMD Radeon RX 7000/9000 (RX 6000 experimental): driver 26.2.2+; older Radeons only on the CPU, very slow | 16 GB RAM or more recommended (8 GB works for small images) |
 | Disk | about 10 GB for the program, plus 5 to 40 GB per model | about 1 GB for the app, plus about 10 GB for FLUX.2 Klein |
 | Internet | for setup (about 3 GB) and model downloads | for model downloads |
 
@@ -270,11 +267,20 @@ The code is under the [MIT License](LICENSE): do whatever you want with it. Thir
 - [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md): using NVAI-open from Claude Code
 - [docs/MAKING_OF.md](docs/MAKING_OF.md): how Claude built a video in the Studio
 - [docs/SHORT_FILM.md](docs/SHORT_FILM.md): a short film from a hand sketch, step by step with screenshots
+- [docs/DOCK_ORGANIZER_VIDEO.md](docs/DOCK_ORGANIZER_VIDEO.md): a promo video for a Mac app, with automated screen recordings
 - [photocraft-addon/](photocraft-addon/): source of the PhotoCraft add-on
 
 ---
 
 ## Video
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=zeig-Rml4gA"><img src="https://i.ytimg.com/vi/zeig-Rml4gA/maxresdefault.jpg" width="480" alt="YouTube: Dock Organizer for macOS, a promo video made with NVAI-open"></a>
+</p>
+
+<p align="center">A promo video for the Mac app Dock Organizer: music from Stable Audio 3, cut in the Studio, on YouTube (<a href="docs/DOCK_ORGANIZER_VIDEO.md">how it was made</a>).<br>
+Ein Werbevideo für die Mac-App Dock Organizer: Musik von Stable Audio 3, geschnitten im Studio, auf YouTube (<a href="docs/de/DOCK_ORGANIZER_VIDEO.md">wie es entstand</a>).<br>
+<a href="https://www.youtube.com/watch?v=zeig-Rml4gA">youtube.com/watch?v=zeig-Rml4gA</a></p>
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=cDhmiLMU6WQ"><img src="https://i.ytimg.com/vi/cDhmiLMU6WQ/maxresdefault.jpg" width="480" alt="YouTube: a short film with the rabbit Somi, made in the NVAI Studio"></a>
@@ -317,6 +323,37 @@ Das Update: das Studio für den Mac und neue lokale KI-Modelle, auf YouTube.<br>
 Ich habe diese App „vibegecodet“, weil ich sie selbst brauchte: Bilder, Sounds und 3D-Modelle für meine Spieleprojekte, ohne pro Bild zu zahlen oder alles in die Cloud zu schicken. Jetzt teile ich sie. Alles rechnet auf deiner eigenen Grafikkarte, nichts verlässt deinen Rechner.
 
 Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) und ein Mac mini M1 (8 GB). Über Feedback als [Issue](https://github.com/Mantux775/NVAI-open/issues) freue ich mich sehr, am einfachsten mit „Problem melden“ in der App, das hängt einen anonymisierten Bericht an. Ich habe einen Vollzeitjob, Antworten können also dauern. Alle Apps gibt es auf Deutsch und Englisch.
+
+### Was gibt's Neues?
+
+November 2026: NVAI-open 0.5.31 für Windows und 0.5.12 für den Mac ([Release-Notizen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.31))
+
+- **Fehlerbehebungen** (0.5.31, Mac 0.5.12): Fünf unabhängige Durchsichten haben alles seit 0.5.20 geprüft. Unter anderem endet ein sprechender Clip im Studio nicht mehr mitten im Wort, Geräusche bekommen eine eigene Spur, statt Löcher in die Musik zu schneiden, ein durch einen Neustart unterbrochenes LoRA-Training lässt sich fortsetzen, Notizen in der Ton-Forensik gehen nicht mehr verloren, und die Spracherkennung auf dem Mac überhört kein Gespräch mehr, während Funk läuft. [Alle Korrekturen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.31)
+- **Studio, Szenen von Hand:** Eine neue Szene beginnt wie eine aus dem Assistenten, mit dem besten Modell ihrer Bahn, „Prompt ausbauen“, „Startbild erzeugen“ und Hinweisen, wenn ein Clip zu lang für die Karte ist oder ein Gesicht erfunden würde. [Einzelheiten](docs/de/STUDIO.md#schritt-für-schritt)
+- **Mac 0.5.11:** Ton-Forensik auf dem Mac selbst: neue Fälle aus Aufnahmen und VDR-Exporten, Spracherkennung mit Whisper large-v3 und Übersetzung mit Qwen3.5. [Einzelheiten](docs/de/AUDIO.md#prüfpaket-und-prüf-app)
+
+<details><summary><kbd>&nbsp;Weiterlesen&nbsp;▾&nbsp;</kbd></summary>
+
+- **Fehlerbehebungen** (0.5.31, Mac 0.5.12): Korrekturen aus fünf unabhängigen Durchsichten von Studio, LoRA-Training, Ton-Forensik, Weboberfläche und Mac-App; die ganze Liste steht in den [Release-Notizen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.31).
+- **Szenen von Hand im Studio** (0.5.30, Mac 0.5.11): Eine neue Szene bekommt das beste geladene Modell ihrer Bahn (LTX-2.5, Qwen3-TTS, Stable Audio 3, Stable Audio Open), Musik so lang wie der Film, Geräusche 4 s. „Prompt ausbauen“ macht aus ein paar Worten eine volle englische Beschreibung, und „Startbild erzeugen“ macht wie der Assistent zwei Startbilder aus dem Prompt (mit den Figuren der Szene, ohne schwarze Balken). Hinweise unter den Eigenschaften warnen vor einem Clip über 6 s in 1080p auf einer Karte mit 16 GB, einer Figur ohne Startbild, einem Prompt nicht auf Englisch und einem Sprechersatz unter einem Video, das eigenen Ton macht. [Einzelheiten](docs/de/STUDIO.md#schritt-für-schritt)
+- **Mac 0.5.11, Ton-Forensik:** „Neuer Fall …“ legt einen Fall aus Audio- oder Videodateien an, „VDR-Export einlesen …“ aus einem Schiffsdatenschreiber (VR-7000) mit Kurs, Geschwindigkeit, Alarmen, AIS und Radarbildern; vorher zeigt es den Platzbedarf und bricht ab, bevor der Datenträger voll ist. „Sprache erkennen“ lässt Whisper large-v3 (Core ML) dort hören, wo Silero VAD Sprache findet, „Übersetzen“ nimmt Qwen3.5 (ab 16 GB Speicher 9B, sonst 4B). Alles läuft auf dem Mac. [Einzelheiten](docs/de/AUDIO.md#prüfpaket-und-prüf-app)
+- **Ältere Radeons** (0.5.30): Karten, die AMDs PyTorch für Windows nicht kennt (RX 5000, Vega, Radeon VII, Polaris und älter), hängen nicht mehr beim Start. Das Setup installiert PyTorch für den Prozessor, und oben in der Leiste steht, dass NVAI-open auf der CPU rechnet; mit der Maus darüber steht, was das bedeutet und was hilft. [Einzelheiten](docs/de/INSTALL.md#amd-radeon-und-mehrere-grafikkarten-experimentell)
+- **Mac 0.5.10:** Der Verlauf zeigt auch Musik, Klänge und Sprache mit Abspielknopf, und „Verlauf leeren“ löscht alles auf einmal; was ein Studio-Projekt nutzt, bleibt. Das Hugging-Face-Token wird beim Speichern bei Hugging Face geprüft, und „Prüfen“ sagt auch, ob LTX-2.5 freigeschaltet ist. Abgebrochene Downloads setzen dort fort, wo sie standen, und Uploads über die Schnittstelle sind nicht mehr auf 64 MB begrenzt. Die Prüf-App brennt Untertitel auf Wunsch ins exportierte Video, und ihre SRT-Dateien laden jetzt im Windows Media Player. [Einzelheiten](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29)
+- **Mac 0.5.9:** Ein Gesicht aus einem Foto kommt jetzt zuverlässig in eine neue Szene: das Foto unter „Referenzbilder“ legen und sagen, wer es ist (Frau oder Mann, Alter, Haare). Ein Ausgangsbild wird aufs Format zugeschnitten statt gestreckt, und der Assistent fragt, wer auf dem Foto ist. Eine große Fehlersuche hat unter anderem behoben: Studio-Projekte von Windows mit Video öffnen jetzt auf dem Mac, FLUX.2 zerreißt kein Bild mehr, wenn zwei Formate mit gleich vielen Bildpunkten aufeinander folgen, Studio-Exporte unter 1080p bleiben nicht mehr stehen, das Hugging-Face-Token hat ein Feld in den Einstellungen, und Löschen zerstört keinen Clip in einem Projekt mehr. [Alle Korrekturen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.29)
+- **Ton-Forensik** (0.5.29): Aus einer langen Aufnahme mit vielen Kanälen wird ein Fall: Spuren, Spektrogramm, Sprachaktivität, Ereignisse, Notizen und eine Übersetzer-Spur. Whisper large-v3 schreibt auf, was gesprochen wird, Qwen3.5-9B übersetzt es, und jeder Block bleibt Entwurf, bis ein Mensch ihn geprüft hat; ein Vermerk nennt Modelle, Lizenzen und Grafikkarte. Sie liest auch die Datendateien eines Schiffsdatenschreibers (Format VR-7000). [Einzelheiten](docs/de/AUDIO.md#ton-forensik)
+- **Prüf-App** (0.5.29): „Export“ → „Prüfpaket“ ergibt einen Ordner mit dem Fall, dem Originalton und der Prüf-App NVAI-Pruefer.html, für Menschen ohne NVAI-open, etwa eine Kanzlei. Sie läuft in Edge oder Chrome ohne Installation, Internet und KI; Änderungen kommen mit einem verketteten Protokoll in einen Unterordner, und der Name des Bearbeiters lässt sich oben rechts ändern. Auf dem Mac (0.5.7) im neuen Reiter „Ton-Forensik“. [Einzelheiten](docs/de/AUDIO.md#prüfpaket-und-prüf-app)
+- **Audio** (0.5.29): Stimmen von Musik trennen und Sprache von Rauschen, dazu ein wiederkehrendes Geräusch wie einen Alarm entfernen, gelernt aus ein paar markierten Beispielen. [Einzelheiten](docs/de/AUDIO.md)
+- **Eigene LoRA trainieren** (0.5.29): Der Bereich „LoRA erstellen/Bearbeiten“ stellt einen Datensatz zusammen (aus dem Verlauf, aus Dateien oder aus einer Vorlage in 24 Haltungen gezeichnet), trainiert ihn auf deiner Grafikkarte und nimmt das Ergebnis in die Modellliste. [Einzelheiten](docs/de/LORAS.md#eigene-lora-trainieren)
+- **Dateiname im Studio** (0.5.29): Die Eigenschaften einer Datei zeigen ihren Namen; ein Klick markiert ihn, „Kopieren“ kopiert ihn. Windows und Mac.
+- **Ein Assistent für Einsteiger** (0.5.28): „✨ Assistent“ im Studio führt in sieben kurzen Schritten durch ein ganzes Video. Du wählst einen Weg (von der durchgehenden Einstellung bis zum Gesicht aus einem Foto), schreibst deine Idee, beschreibst eine Figur oder lässt sie weg, wählst die Anzahl der Szenen, nimmst die Musik aus 22 Vorschlägen oder schreibst einen eigenen Prompt, und der Assistent schlägt die besten Modelle für deine Hardware mit der zu erwartenden Zeit vor. Fehlende Modelle lädt er erst nach Rückfrage. Danach erzeugt er je Szene zwei Startbilder zur Auswahl und die Videos. Windows und Mac. [Einzelheiten](docs/de/STUDIO.md#der-assistent)
+- **Deine Hardware** (0.5.28): Ein Katalog mit 110 Grafikkarten und Apple-Chips schätzt, wie lange jedes Modell auf deinem Rechner braucht; „Modelle“ zeigt deine Karte und die Zeit je Modell. [Einzelheiten](docs/de/MODELLE.md#deine-hardware)
+- **Startbild im Studio** (0.5.27): In den Eigenschaften einer Videoszene gibt es jetzt das Feld „Startbild“. Ein Bild aus dem Material darauf ziehen oder aus dem Projektordner wählen. Der Clip beginnt damit, so sieht eine Figur in jeder Einstellung gleich aus. Bisher ging das nur über Claude Code per MCP. [Einzelheiten](docs/de/STUDIO.md#schritt-für-schritt)
+- **Kandinsky 6 Pro und Lite, mit Ton** (0.5.25): zwei weitere Videomodelle, die Bild und Ton in einem Durchgang machen, 5 s in 864 × 480, aus Text oder einem Startbild (nur NVIDIA). Was zu hören ist, kommt in ein eigenes Feld „Ton“. Pro hielt im Test Handlung und Gesicht, braucht aber rund 17 Minuten für 5 s. **Der Ton ist nicht kommerziell nutzbar, und die Video-VAE ist in der EU nicht lizenziert.** [Einzelheiten](docs/de/MODELLE.md#weitere-videomodelle)
+- **Eigene LoRAs** (0.5.24): „Modelle“ → „LoRA-Datei hinzufügen“ nimmt eine LoRA, die du selbst trainiert oder anderswo gefunden hast. NVAI-open liest zuerst den Dateikopf und zeigt, zu welchen Modellen sie passt; du bestätigst oder änderst die Zuordnung, auch später. Beim Generieren steht „+ Eigene LoRA-Datei hinzufügen“ direkt in der LoRA-Liste. Auf dem Mac für FLUX.2 Klein 4B. [Alles zu LoRAs](docs/de/LORAS.md)
+- **Figuren im Studio** (0.5.24): Eine Figur bündelt Aussehen (eine oder mehrere LoRAs) und Stimme. Bildszenen zeigen sie, Sprecher-Szenen sprechen mit ihrer Stimme, und unter Windows spricht eine Videoszene mit LTX-2.5 einen Satz mit den Lippen. [Einzelheiten](docs/de/STUDIO.md#figuren)
+- **MiniMax H3 mit Lizenzwarnung** (seit 0.5.18): Video mit Stereoton, 9 Sekunden in rund 7 Minuten. **Die Lizenz verbietet jede Nutzung in der EU, in Großbritannien, Südkorea und den USA ohne eigene Lizenz von MiniMax, und nichts damit Erzeugtes darf veröffentlicht werden.** Die App markiert es rot. [Einzelheiten](docs/de/MODELLE.md#minimax-h3-seit-0518)
+
+</details>
 
 ### Was geht damit?
 
@@ -503,7 +540,7 @@ NVAI-open hat keinen eigenen Inhaltsfilter. Die Modellliste kennzeichnet jedes M
 ### Mac-App, PhotoCraft-Add-on, iOS
 
 - **Mac:** eine native App für Apple Silicon. Bilder mit FLUX.2 Klein und Z-Image Turbo (generieren, überarbeiten, füllen, Referenzbilder, LoRAs), alte Fotos restaurieren, Musik und Klänge mit Stable Audio 3, kurze Videos mit LTX-Video (größere Videomodelle mit Ton ab 16 GB Speicher), das Studio und Prüfpakete aus der Ton-Forensik. Auf einem Mac mini M1 mit 8 GB dauern 30 Sekunden Musik rund 13 Sekunden und 2 Sekunden Video rund 95 Sekunden.
-- **Add-on für [PhotoCraft](https://github.com/storytold/photocraft):** in diesem tollen Open-Source-Bildeditor einen Bereich auswählen, füllen, überarbeiten oder restaurieren, das Ergebnis kommt als Ebene zurück. Braucht PhotoCraft ab 0.10.0. Danke an die PhotoCraft-Entwickler für einen so gut steuerbaren Editor.
+- **Add-on für [PhotoCraft](https://github.com/storytold/photocraft):** in diesem tollen Open-Source-Bildeditor einen Bereich auswählen, füllen, überarbeiten oder restaurieren, das Ergebnis kommt als Ebene zurück. Getestet mit PhotoCraft 0.23.1. Danke an die PhotoCraft-Entwickler für einen so gut steuerbaren Editor.
 - **iOS (geschlossene Beta):** ein 3D-Scanner, der aus Fotos echter Gegenstände Modelle macht. Schreibt mir gern in einem Issue, wenn ihr ihn nutzen würdet.
 
 ### Voraussetzungen
@@ -511,7 +548,7 @@ NVAI-open hat keinen eigenen Inhaltsfilter. Die Modellliste kennzeichnet jedes M
 | | Windows | macOS |
 |---|---|---|
 | System | Windows 10 (ab 2004) oder 11, 64 Bit | macOS 15 oder neuer, Apple Silicon |
-| Grafik / Speicher | empfohlen ab 12 GB VRAM (8 GB gehen mit den INT8-Modellen). NVIDIA: Treiber ab 580.88. AMD Radeon: Treiber ab 26.2.2 | empfohlen ab 16 GB RAM (8 GB reichen für kleine Bilder) |
+| Grafik / Speicher | empfohlen ab 12 GB VRAM (8 GB gehen mit den INT8-Modellen). NVIDIA: Treiber ab 580.88. AMD Radeon RX 7000/9000 (RX 6000 experimentell): Treiber ab 26.2.2; ältere Radeons nur auf dem Prozessor, sehr langsam | empfohlen ab 16 GB RAM (8 GB reichen für kleine Bilder) |
 | Platte | rund 10 GB für das Programm, dazu 5 bis 40 GB pro Modell | rund 1 GB für die App, dazu etwa 10 GB für FLUX.2 Klein |
 | Internet | fürs Einrichten (rund 3 GB) und die Modelle | für die Modelle |
 
@@ -530,4 +567,5 @@ Der Code steht unter der [MIT-Lizenz](LICENSE): Jeder darf damit machen, was er 
 - [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md): NVAI-open aus Claude Code nutzen (englisch)
 - [docs/de/MAKING_OF.md](docs/de/MAKING_OF.md): wie Claude ein Video im Studio gebaut hat
 - [docs/de/KURZFILM.md](docs/de/KURZFILM.md): ein Kurzfilm von der Handskizze an, Schritt für Schritt mit Bildern
+- [docs/de/DOCK_ORGANIZER_VIDEO.md](docs/de/DOCK_ORGANIZER_VIDEO.md): ein Werbevideo für eine Mac-App, mit automatischen Bildschirmaufnahmen
 - [photocraft-addon/](photocraft-addon/): Quelltext des PhotoCraft-Add-ons

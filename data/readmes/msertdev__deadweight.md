@@ -82,6 +82,8 @@ cargo install deadweight
 
 Or grab a prebuilt binary for macOS, Linux or Windows from [Releases](https://github.com/msertdev/deadweight/releases). It's a single binary with no runtime dependencies.
 
+deadweight is not on npm or PyPI. Packages named `deadweight` there are unrelated projects, so `npx deadweight` will not run this tool.
+
 ## Usage
 
 ```sh
@@ -92,7 +94,8 @@ deadweight --json          # machine-readable output
 
 deadweight fix --dry-run   # show what would change
 deadweight fix             # disable unused plugins, hide unused skills (asks first)
-deadweight undo            # put everything back
+deadweight scope           # load what you use in a few projects only in those (asks first)
+deadweight undo            # put back the latest fix or scope
 
 deadweight card            # save your totals as a PNG to share (no names on it)
 ```
@@ -107,7 +110,35 @@ deadweight card            # save your totals as a PNG to share (no names on it)
 | `--yes` | don't ask for confirmation |
 | `--force` | run even with fewer than 5 sessions of history |
 
-Restart Claude Code after `fix` or `undo` to load the new setup.
+Restart Claude Code after `fix`, `scope` or `undo` to load the new setup.
+
+### Load things only where you use them
+
+`fix` only touches what you never use. But most setups also carry things you *do* use, just not everywhere: the frontend plugin you need in two web projects still loads in your CLI project, your infra repo and everything else, on every request.
+
+`deadweight scope` finds them in your session history and keeps each one on only in the projects that used it:
+
+```text
+$ deadweight scope --dry-run
+
+  Load these only in the projects that use them
+  off in ~/.claude/settings.json, on in each project's .claude/settings.local.json
+    plugin frontend-kit              ~5.4k   saved in 9 projects (19 of 49 sessions)
+      on /home/me/code/shop
+      on /home/me/code/landing
+    plugin workflow-kit              ~1.2k   saved in 11 projects (45 of 49 sessions)
+      on /home/me/code/api
+    skill video-render               ~286    saved in 11 projects (45 of 49 sessions)
+      on /home/me/code/promo
+
+  Saves ~6.9k tokens per request in the projects that never use them. Undo any time with deadweight undo.
+```
+
+Nothing changes in the projects that use them: Claude Code reads `.claude/settings.local.json` over your user settings. A plugin is picked when it was used in at most 5 projects and at most half of the projects you worked in. `scope` takes the same `--keep`, `--include-hooked`, `--dry-run`, `--yes` and `--force` flags as `fix`.
+
+Plugins whose hooks act on your work in any project (on every edit or shell command, or when Claude stops) are left alone unless you pass `--include-hooked`. Plugins whose hooks only add context at session start, or react to their own skills, are scoped like any other.
+
+User-scope MCP servers used in a few projects are listed with where to move them in `.claude.json`; deadweight doesn't edit that file, because it can hold credentials and Claude Code rewrites it while running.
 
 ### Share your numbers
 
@@ -141,13 +172,14 @@ deadweight reads those records:
 2. **Attribute.** Each skill line, tool name, instruction block, agent and hook injection is traced to the plugin, skill, MCP server or connector that added it. Hook commands are matched against each plugin's `hooks.json`. Sizes are converted to tokens from text length; whatever your setup doesn't explain is Claude Code's own system prompt and tools.
 3. **Check usage.** Every transcript from the last 30 days (including subagents) is scanned for `Skill` calls, MCP tool calls, agent launches and slash commands.
 4. **Diagnose.** Failed and never-authenticated MCP servers, duplicate skill names, skills that lost their description, and single skills with very large descriptions.
-5. **Scope.** A user-scope MCP server loads in every project. If its tools were only ever called from one or two projects, deadweight says which ones, so you can move it to those projects and stop paying for it everywhere else. (A project's `.mcp.json` works too, if the team should share it.)
+5. **Scope.** Usage is also counted per project (the folder each session ran in). A plugin, user skill or user-scope MCP server that was only used in a few projects is loaded everywhere else for nothing; `deadweight scope` moves plugins and skills, and for MCP servers deadweight says where to move them.
 
 On the author's machine, 1.4 GB of transcripts (41 sessions, 400+ subagent runs) are scanned in about a second, in parallel.
 
 ## Safety
 
-- **Read-only by default.** Only `fix` and `undo` write anything, and both ask first.
+- **Read-only by default.** Only `fix`, `scope` and `undo` write anything, and all three ask first.
+- **Project files are left the way they were.** `scope` adds two keys to a project's `.claude/settings.local.json` and keeps everything else in it. A file it creates is kept out of git the way Claude Code does it (a line in the repository's `.git/info/exclude`, unless git already ignores it), and `undo` removes the file, the folder and that line again.
 - **No secrets are read.** From `.claude.json` deadweight takes only MCP server *names*, never commands, environment variables or headers. A test checks that secret values never reach the output.
 - **Nothing is deleted.** Plugins are disabled in `settings.json` (`enabledPlugins: false`), not uninstalled. Unused user skills are hidden from the model with `skillOverrides` (`"user-invocable-only"`), so `/name` still runs them; `--park-skills` moves them into the backup folder instead. If none of your claude.ai connectors was used, `disableClaudeAiConnectors` switches them off in Claude Code (they stay connected on claude.ai).
 - **Everything is backed up.** Each `fix` writes a manifest and a copy of `settings.json` to `~/.claude/deadweight/backups/<timestamp>/`. `undo` reverts the latest one.
@@ -162,13 +194,15 @@ MCP servers in `.claude.json` are never edited, and neither is a single claude.a
 
 **Why does `fix` skip a plugin I never use?** It runs hooks. Review it, then run `deadweight fix --include-hooked`, or disable it yourself with `/plugin`.
 
+**I started using a scoped plugin in another project.** Turn it on there with `claude plugin enable <name>@<marketplace> --scope local`, or run `deadweight undo` to go back to loading it everywhere.
+
 **My usage looks wrong.** Claude Code deletes transcripts older than `cleanupPeriodDays` (30 by default), so deadweight can't see further back than that. Use `--keep` for anything you use rarely but want to keep.
 
 **Is it affiliated with Anthropic?** No. It's an independent open-source tool that reads files Claude Code writes on your machine.
 
 ## Contributing
 
-Issues and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/msertdev/deadweight/labels/good%20first%20issue); the whole codebase is about 2,600 lines of Rust.
+Issues and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/msertdev/deadweight/labels/good%20first%20issue); the whole codebase is about 4,200 lines of Rust.
 
 If deadweight misattributes something in your setup, run `deadweight --json`, remove anything private, and open an issue with the relevant part.
 

@@ -4,13 +4,15 @@
 >
 > 👈 **返回主站对应模块**：[Vibe Coding 作品展](https://soycodetrail.top/vibe-coding)  ·  🏠 全站：[https://soycodetrail.top](https://soycodetrail.top)
 >
-> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-19 21:54:22 UTC
+> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-21 21:08:21 UTC
 
 ## 📚 系列展示站（更多精选内容，互相导流）
 
 - [DeepSeek Harness 插件库](https://github.com/soycodetrail/deepseek-harness-plugins) · [主站模块 ↗](https://soycodetrail.top/dsh-plugins) · [在线浏览 ↗](https://soycodetrail.github.io/deepseek-harness-plugins/)
+- [AI 技能工坊](https://github.com/soycodetrail/ai-skills-workshop) · [主站模块 ↗](https://soycodetrail.top/skills) · [在线浏览 ↗](https://soycodetrail.github.io/ai-skills-workshop/)
+- [开源书籍宝库](https://github.com/soycodetrail/ai-books-treasury) · [主站模块 ↗](https://soycodetrail.top/books) · [在线浏览 ↗](https://soycodetrail.github.io/ai-books-treasury/)
 
-## 📑 内容导航（790 个条目 / 15 个分类）
+## 📑 内容导航（804 个条目 / 15 个分类）
 
 - [📁 Web 应用](#cat-web-应用)
 - [📁 AI 工具](#cat-ai-工具)
@@ -369,6 +371,10 @@
   标签：3.6万 Star / 周涨5000+ / 无头浏览器 / Agent 基建 / 开源
 - [Google Skills - 谷歌官方 Agent Skills 标准库](https://github.com/google/skills) — Google 官方为 Claude Code、Cursor、Codex 等 40+ 编码 Agent 打造的 Agent Skills 集合，覆盖 Google 搜索、地图、Gemini、Workspace 等产品能力，一行 npx skills add 即可安装。GitHub 24,451★（REST API 2026-11-20 实测），是继 Anthropic Skills 之后又一官方技能标准，把大厂工具链直接装进你的 Agent。  
   标签：2.4万 Star / Google 官方 / Agent Skills / 编码 Agent / 开源
+- [Scalekit - 让 Agent 安全调用 5.5 万个工具的 MCP 网关](https://www.scalekit.com) — 为生产环境 Agent 打造的 MCP 网关与身份层：一个端点接入 1100+ 连接器、55,000+ 工具，用户各自授权、令牌加密托管、按角色限定工具权限、每次调用全量可审计并支持 SOC 2/HIPAA。2026-11-03 登 Product Hunt 当日榜 #1（约 438 票），是 Agent 从「能聊」到「能安全地干活」的关键基础设施。  
+  标签：PH 日榜#1 / 438 票 / MCP 网关 / 55000+ 工具 / Agent 基建
+- [Kimi K3 in C - 纯 C99 在单 CPU 上跑通 2.78 万亿参数大模型](https://github.com/FareedKhan-dev/kimi-k3-in-c) — 用零依赖的可移植 C99 从头实现推理引擎，在单颗 CPU、8.24GB 内存上跑通 2.78 万亿参数的 Kimi K3 MoE 大模型——不用 BLAS、不用框架、不用 GPU，从 8GB 笔记本到 128GB 工作站输出字节级一致。GitHub 12,516 Star、1,940 Fork，2026 年 11 月 GitHub Trending 上榜项目，Apache-2.0 开源。  
+  标签：12.5K Star / 2.78T 参数 / 单 CPU 推理 / Apache-2.0 / Trending
 
 <a id="cat-agent" name="cat-agent"></a>
 
@@ -578,6 +584,12 @@
   标签：1.2万 Star / Git Worktree / 并行 Agent / CLI / Trending
 - [Beacon - 让 AI 编码 Agent 拥有跨工具自我进化记忆](https://beacon.sh) — Asymptote Labs 开源的跨工具自我进化记忆层：把散落在 Claude Code、Cursor、Codex 等 20+ 编码工具里的会话经验，自动提炼成可复用的 Agent Skills，让一个工具踩过的坑另一个不再重犯。上线即登顶 Product Hunt 2026-11-02 日榜 #1（520 票），团队豪掷 550 万美元种子轮押注，GitHub 3,570★（API 实测），被 Karpathy 转发级话题热度刷屏。  
   标签：PH 日榜#1 / 550万种子轮 / 3570 Star / 自我进化记忆 / 开源
+- [Glasshand - 租一台真 iPhone 和 Mac 给 AI Agent 用](https://glasshand.com) — 给 AI Agent 配「真手」：数据中心里托管真实 iPhone 与 Mac（非模拟器），用一条提示词即可让 Claude Code、Codex、Cursor 远程租用，像真人一样发 TikTok/IG、叫 Uber、在 Xcode 写 iOS App 并在真机测试，还能配 eSIM 用自己的号码收验证码。由做出 Solid 的 MIT/伯克利/滑铁卢团队打造，已融资 600 万美元。2026-11-05 登 Product Hunt 当日榜 #1（约 401 票）。  
+  标签：PH 日榜#1 / $600万融资 / 真机 Agent / eSIM 验证码 / MIT 团队
+- [Plurai Simulation - 让 AI Agent 每次运行都变强的模拟世界](https://simulation.plurai.ai/connect) — 给 AI Agent 造一个隔离沙盒里的「模拟世界」做递归自我改进：把 Agent 可能遇到的所有情境与转移概率建成概率流图，自动扫描生成场景与评测、用模拟用户逐个跑并打分，诊断失败后给出有证据的修复方案，再用生产 trace 验证回归。一行命令接入 Claude Code、Codex、Cursor 等。2026-11-12 登 Product Hunt 当日榜 #1（约 418 票、139 评论）。  
+  标签：PH 日榜#1 / 418 票 / Agent 自我改进 / 模拟世界 / 回归评测
+- [ClawsGO Science - 自带云实验室、能连跑数天写出论文的 AI 科研 Agent](https://clawsgo.ai) — 把「研究问题 → 做实验 → 写成带引用的论文」全自动化的科研 Agent：每台任务配常开云工作站，预装 500+ 科研工具与 90+ 数据集（GATK、GROMACS、Quantum ESPRESSO、QGIS 等），Claude 与 GPT Agent 集群协同连跑数天并自我校验，最终交出 LaTeX 编译的引用论文——官网示例 24 页、17 图、59 参考文献。2026-11-01 登 Product Hunt 当日榜 #2（279 票、57 评论）。  
+  标签：PH 日榜#2 / 279 票 / AI 科研 Agent / 云实验室 / 自动写论文
 
 <a id="cat-效率工具" name="cat-效率工具"></a>
 
@@ -966,6 +978,8 @@
   标签：游戏开发 / 多智能体 / MIT 开源 / GitHub 37K★ / Godot/Unity
 - [Slotbound 转运军团 - 48 小时狂赚 35.6 万美元的 AI 肉鸽塔防](https://store.steampowered.com/app/4459590/) — 零编程经验的独立开发者 OptimaArch 用 100% AI 生成的 6 个月做出这款「老虎机 + 自走战斗 + 塔防」肉鸽游戏：转动 3×3 老虎机召唤单位、用道具操控概率。2026-11 上线 Steam 后头 48 小时收入突破 35.6 万美元、销量 5 万份、同时在线峰值 9,377 人（新浪财经报道），被称作 vibe coding 做游戏的最佳成绩。  
   标签：48h $35.6万 / 5万份销量 / AI 生成代码 / 肉鸽塔防 / Steam
+- [Wanaka Studio - 用一句话做可发布 3D 游戏的 AI 原生引擎](https://studio.wanaka.app) — 首个 AI 原生 3D 游戏引擎：自然语言生成场景后可在同步可视化编辑器里拖动素材、改地形与多人玩法，AI Agent 自带 30+ 原子引擎工具与自玩自测回滚闭环，一键链接发布。创始人 Yang Zhang 曾把字节 Helo 做到 5000 万 DAU、联合创办 AnswerAI（北美 Top3 教育 App、600 万用户），CTO 来自字节 Seed，团队兼具字节与米哈游背景。2026-11-04 上线即登 Product Hunt 当日榜 #1（约 500 票、118 评论）。  
+  标签：PH 日榜#1 / 500 票 / AI 游戏引擎 / 字节+米哈游团队 / 一键发布
 
 <a id="cat-金融财经" name="cat-金融财经"></a>
 
@@ -1108,35 +1122,4 @@
   标签：PH #2 / 252 票 / Agent 邮箱 / JMAP
 - [DeepCell - 职场截稿日生存包](https://deepcell.net) — Product Hunt 2026-10-22 当日榜 #1（341 票）：「职场截稿日生存包」，用 .deepcell 格式把文档、任务与 AI 协作封装进统一工作空间，帮打工人对抗 deadline 焦虑。  
   标签：PH #1 / 341 票 / .deepcell / 办公协作
-- [TheySaid 4.0 - 用合成测试员做用户验证](https://www.theysaid.io/v4) — Product Hunt 2026-10-27 当日榜 #1（380 票）：客户验证平台，用 AI 合成测试员（Synthetic Testers）以对话形式快速收集真实用户反馈，替代漫长问卷；面向产品与增长团队。  
-  标签：PH #1 / 380 票 / 用户验证 / 合成测试员
-- [Inbox Zero - 开源 AI 邮件助手](https://www.getinboxzero.com/) — 开源（AGPL）AI 邮件助手，自动分类、用你的语气预拟回复、拦截冷邮件、一键退订；GitHub 13K★、登上 GitHub Trending 与 Product Hunt 当日榜、25,000+ 用户，被誉为免费开源版 Superhuman。  
-  标签：13K★ / 开源 / AI 邮件 / 25K+ 用户
-- [Rerun - 把 AI 订阅变成一队会排班的同事](https://github.com/rerun-build/rerun) — rerun-build 开源（AGPL-3.0）的 AI 同事平台：每位同事有自己的工具、电脑与共享工作区，按排班/触发自动干活，发送/付款/删除前主动确认。Product Hunt 2026-11-05 当日榜第 3（248 票），GitHub 744 Star。  
-  标签：AI 同事 / 定时任务 / AGPL 开源 / PH 当日第3 / 人机协同
-- [Alsona - 用购买信号自动约到销售的 AI Agent](https://alsona.com) — 曾做出首个云端 LinkedIn 自动化平台并已在 2021 年退出的团队新作：输入官网 30 秒生成 ICP 与话术，追踪招聘、融资、技术栈变更等 32+ 类购买信号，AI Agent 自动写出个性化开发信并帮你约会议。上线即拿下 Product Hunt 2026-11-10 日榜 #1（485 票、109 条评论），被 hunter Ben Lang 精选，是信号驱动型销售 Agent 的当日爆款。  
-  标签：PH 日榜#1 / 485 票 / 32+ 购买信号 / 销售 Agent / MCP
-
-<a id="cat-教育学习" name="cat-教育学习"></a>
-
-### 📁 教育学习
-
-- [灵珠 - 人人可用的 AI 创造平台](https://lzhu.cn/) — 上海语生科学出品的国产 Vibe Coding 平台，已深入教育、医疗、中小企业与政务。学生 AI 应用生成成功率 98.1%，更有 10 岁小学生独立做出「超级吃豆大冒险」。  
-  标签：国产 / 教育 / 中小学生 / 98%成功率
-- [Easy-Vibe (DataWhale)](https://datawhalechina.github.io/easy-vibe/zh-cn/) — DataWhale 开源的中文 Vibe Coding 教程，三阶段体系从零基础 5 分钟做第一个 AI 应用到全栈上线，GitHub 4.6k+ stars，免费系统实战。  
-  标签：开源教程 / DataWhale / 零基础 / 4.6k Star
-- [Paradigm 自适应学习路径](https://paradigm.study) — 大学一年级学生 Scott Fan 自 2023 年起独立打磨的个人 AI 导师：把任意学习目标拆成随进度动态调整的自适应路径（对话、编码沙箱、桌面环境随时切换）。2026-07-16 登上 Product Hunt 当日 #1，斩获 689 upvotes 与 130+ 评论，被用户盛赞"真正因材施教的 AI 导师"。  
-  标签：自适应学习 / PH 当日 #1 / 689 upvotes
-- [Open Vibe - Wasp 团队开源的「AI 导师」](https://openvibe.sh) — Wasp 团队开源的「AI 导师」：把 Claude Code / Codex / Cursor 等 Agent 变成边建边教的生产级 SaaS 教练，配套 Open SaaS 模板与交互式架构图解，100% 免费、MIT 协议。Product Hunt 当日 #2（2026-05-12），专治「不懂也能发布」的 Vibe Coding 踩坑症。  
-  标签：开源 / PH 当日 #2 / AI 导师 / MIT
-- [Wondering - 万物版 Duolingo 学习助手](https://wondering.app) — 被称为「万物版 Duolingo」的 AI 个性化学习助手：输入想学的内容，自动生成短视频课程 + 播客 + 互动练习，把复杂主题拆成记得住、用得上的知识。Product Hunt 当日 #2（2026-08-04，372 票）。  
-  标签：PH 当日 #2 / 372 票 / 个性化学习 / 教育
-- [Nora AI](https://noratutor.xyz) — 支持视频对话的 AI 家教应用，可根据学生情况制定学习计划。  
-  标签：AI 家教 / 视频对话 / LLM
-- [Stories of Life](https://stories-of-life.vercel.app) — 根据孩子当下情绪生成个性化睡前故事的 Web 应用。  
-  标签：儿童故事 / AIGC / LLM
-- [DrawCraft](https://drawcraft.io) — 按难度分级的绘画生成练习应用，辅助用户进行绘画创作训练。  
-  标签：绘画 / AIGC / 分级练习
-- [StudentOS](https://student-os.net) — 面向学生的 AI 学习平台，整合笔记、测验与学习计划管理功能。  
-  标签：笔记 / 测验 / 学习计划
-- [GradLoom](https://
+- [TheySaid 4.0 - 用合成测试员做用户验证](https://www.theysaid.io/v4) — Product Hunt 2026-10-27 当日榜 #1（380 票）：客户验证平台，用 A

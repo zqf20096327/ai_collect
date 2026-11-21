@@ -8,13 +8,13 @@ Voice input for macOS on local models: press a shortcut in any app, speak, and t
 
 **English** · [简体中文](./README.zh-CN.md) · [Report Issues][github-issues-link]
 
+[![][website-shield]][website-link]
 [![][github-release-shield]][github-release-link]
 [![][macos-version-shield]][macos-version-link]
 [![][license-shield]][license-link]
 [![][release-date-shield]][release-date-link]
 
-<!-- Placeholder: Voxt's screenshot, until VoxtMini has its own. -->
-<img width="2664" height="1752" alt="VoxtMini" src="https://github.com/user-attachments/assets/67f6e1d7-0761-4685-992d-15cc89821475" />
+<img width="1600" height="1037" alt="VoxtMini on a Mac: History, a result with its recording and a follow-up question" src="docs/images/history.webp" />
 
 </div>
 
@@ -28,18 +28,16 @@ Voice input for macOS on local models: press a shortcut in any app, speak, and t
 - Live text while you speak, an optional clean-up by a language model (fillers out, punctuation in)
 - An optional end word ("over", 完毕, 以上) stops the recording
 
-<!-- Placeholder: Voxt's demo video. -->
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/75f08906-3e69-4ab5-9b29-f5c3745cebac" width="500px"></video>
+  <img width="720" alt="Transcribe: the recording overlay with the live text under a notes window" src="docs/images/transcribe.webp" />
 </p>
 
 **Translate — into English, Chinese or Japanese**
 
 - Translate what you say, or select text and press the shortcut
 
-<!-- Placeholder: Voxt's demo video. -->
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/e69c2737-5d8c-4bd6-9f5b-1123947c7e39" width="500px"></video>
+  <img width="720" alt="Translate: a selection translated into Chinese, in the answer card" src="docs/images/translate.webp" />
 </p>
 
 **Rewrite — say what you want**
@@ -47,11 +45,20 @@ Voice input for macOS on local models: press a shortcut in any app, speak, and t
 - Select text and say how to change it ("shorter", "more formal"), or ask for new text
 - Ask follow-ups in the answer card (Space starts one)
 
+<p align="center">
+  <img width="720" alt="Rewrite: a message written from a spoken request, then made shorter by a follow-up" src="docs/images/rewrite.webp" />
+</p>
+
 **App enhancement** — groups of apps and websites with their own prompt and a key pressed after inserting (a casual tone in chats, Return to send).
 
 **Dictionary** — names and jargon, heard right and written your way; categories, usage counts, per-group terms.
 
 **History** — every result with its recording (optional): play it, retry it, ask follow-up questions.
+
+<p align="center">
+  <img width="49%" alt="Models: the speech models, installed or to download, local or remote" src="docs/images/models.webp" />
+  <img width="49%" alt="Dictionary: terms by category, with what speech recognition hears and how often each is used" src="docs/images/dictionary.webp" />
+</p>
 
 Chinese results are always in Simplified characters; Japanese text is never altered.
 
@@ -96,6 +103,8 @@ Apache 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 <!-- LINK GROUP: the releases page, not /releases/latest, which is Voxt's v1.15.0 until a VoxtMini release is marked latest. -->
 
 [back-to-top]: https://img.shields.io/badge/-BACK_TO_TOP-151515?style=flat-square
+[website-link]: https://actnow.dev/voxtmini
+[website-shield]: https://img.shields.io/badge/website-actnow.dev%2Fvoxtmini-0d9384?style=flat-square&labelColor=000000
 [github-issues-link]: https://github.com/hehehai/VoxtMini/issues/new/choose
 [github-release-link]: https://github.com/hehehai/VoxtMini/releases
 [macos-version-link]: https://github.com/hehehai/VoxtMini/releases

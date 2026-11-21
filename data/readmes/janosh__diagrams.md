@@ -190,11 +190,11 @@ Rendering tests need the tools above. Metadata requires `title`, `description`, 
 ```sh
 cd site
 pnpm exec playwright install --only-shell chromium
-pnpm build
-pnpm test:visual
+pnpm exec vp build
+pnpm exec playwright test
 ```
 
-For intentional visual changes, run `pnpm test:visual:update` and review the PNG diffs.
+For intentional visual changes, run `pnpm exec playwright test --update-snapshots` and review the PNG diffs.
 
 ## 📖 &thinsp; How to cite
 
@@ -214,10 +214,8 @@ You can cite the [Zenodo record](https://zenodo.org/badge/latestdoi/286220365) u
 }
 ```
 
-<!-- see https://iconify.design/docs/api/svg.html#dimensions for query param docs-->
-
-[typst-logo]: https://api.iconify.design/simple-icons:typst.svg?color=white&height=16 "Open this diagram's Typst code"
-[latex-logo]: https://api.iconify.design/simple-icons:latex.svg?color=white&height=16 "Open this diagram's LaTeX code"
+[typst-logo]: assets/icons/typst.svg "Open this diagram's Typst code"
+[latex-logo]: assets/icons/latex.svg "Open this diagram's LaTeX code"
 [reference-icon]: assets/icons/reference.svg
 [creator-icon]: assets/icons/creator.svg
 [source-icon]: assets/icons/source.svg

@@ -33,8 +33,10 @@ evaluator, and audited afterwards. The repository contains the engines, an OpenA
 evaluator and benchmark suite, and the tooling to run the same kind of optimization on another model or GPU.
 
 - With the checkpoint's own number formats (track A), steady decoding is 1.13–1.77× as fast as the fastest general
-  engine on the same GPU (vLLM, SGLang, or Cohere's megakernel for North Mini Code) with one sequence, on eight models
+  engine on the same GPU (vLLM, SGLang, or Cohere's megakernel for North Mini Code) with one sequence, on nine models
   from 8 B to 594 B parameters. With lossless model-specific weight storage (track B) it reaches 2.05×.
+- With exact speculative decoding on Inkling-2-Mini's own draft head (track C), one sequence decodes at 1.53 ms per
+  token on one B200, as fast as vLLM's speculative decoding (1.55 ms), whose output is not lossless.
 - On a production request trace at 8 requests per second, the Inkling-2-Small serving engine keeps 99.2% of requests
   within the service levels (SGLang 81.7%). Its longest stall is 0.15 s (SGLang 4.4 s).
 - `mkserve` serves any engine through the OpenAI completions and chat-completions API, with streaming and sampling.
@@ -44,6 +46,11 @@ evaluator and benchmark suite, and the tooling to run the same kind of optimizat
 
 ## News
 
+- **2026-11-21** Inkling-2-Mini (26 B, MoE; 12 of its 24 layers run three times per token) on one B200: track-A and
+  track-B engines, 1.36× and 1.38× as fast as vLLM with one sequence and even with it at eight, and the first track-C
+  engine: exact speculative decoding with the checkpoint's MTP draft head, whose greedy tokens are exactly its own
+  one-token-per-step tokens. `mkserve serve thinkingmachines/Inkling-2-Mini --track C`; 22 engines for 9 models; the
+  records of the seven Inkling-2-Mini runs are in `runs/`.
 - **2026-11-18** Engines for three more models: gpt-oss-20b (H100), Qwen3-32B and gpt-oss-120b (B200), and newer
   steady-decode engines for Qwen3-8B; 19 engines for 8 models in all. `scripts/check_engine.py` checks an engine before a
   pull request, and [CONTRIBUTING.md](CONTRIBUTING.md#your-own-hidden-set) shows how to build your own hidden test set.
@@ -77,13 +84,21 @@ evaluator and benchmark suite, and the tooling to run the same kind of optimizat
 | [Qwen/Qwen3-32B](https://huggingface.co/Qwen/Qwen3-32B) | 32.8 B, dense | 1 × B200 | track A, track B | – |
 | [openai/gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b) | 116.8 B, MoE (128 experts per layer, MXFP4 experts) | 1 × B200 | track A, track B | – |
 | [thinkingmachines/Inkling-2-Small](https://huggingface.co/thinkingmachines/Inkling-2-Small) | 594 B, MoE (384 experts per layer, 4-bit experts) | 4 × B200 | track A, track B | track A |
+| [thinkingmachines/Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini) | 26.2 B, MoE (128 experts per layer, 4-bit experts; 12 of its 24 layers run three times per token) | 1 × B200 | track A, track B, track C | – |
 
 **Track A** keeps the checkpoint's weights, number formats and data flow, and changes only how the computation is
 organized on the GPU. **Track B** may additionally change how the model is stored and what is precomputed at load time,
 as long as the function is unchanged in exact arithmetic (no quantization, pruning or approximation). The track-B engines
-of flint, Qwen3.8-27B, Qwen3-32B, gpt-oss-120b and Inkling-2-Small are bit-identical to track A. The other three are
-not: Qwen3-8B keeps the residual stream in FP32, gpt-oss-20b pre-multiplies the router weights by the norm weights in
-FP32, and North Mini Code adds its rare out-of-range weights in a separate pass, so the sums are rounded in another order.
+of flint, Qwen3.8-27B, Qwen3-32B, gpt-oss-120b, Inkling-2-Small and Inkling-2-Mini are bit-identical to track A. The
+other three are not: Qwen3-8B keeps the residual stream in FP32, gpt-oss-20b pre-multiplies the router weights by the
+norm weights in FP32, and North Mini Code adds its rare out-of-range weights in a separate pass, so the sums are rounded
+in another order.
+
+**Track C** is exact speculative decoding: the engine drafts several tokens with the checkpoint's own draft head (the
+MTP head of Inkling-2-Mini) and checks them with its track-A decode step in one pass. With greedy decoding its tokens are
+exactly the ones its own one-token-per-step path produces, for every sequence; the evaluator checks that instead of
+allowing for ties, and counts time per token by the tokens received, since a speculative server sends several tokens
+at once. Track C is compared only with the general engines' own speculative decoding, whose output is not lossless.
 
 A **steady-decode** engine holds up to 8 sequences and a 2,048-token context and is the fastest at decoding. A **serving**
 engine admits requests while others decode, processes prompts in chunks inside the kernel, pages K/V memory and reuses
@@ -174,6 +189,9 @@ type; any other pair is refused. See [`mkserve/README.md`](mkserve/README.md) fo
 | Qwen/Qwen3-32B | b200 | `offline-b` | B | offline | 8 | 2,048 | run s12-q32-b200-a1, submission s0036 |
 | openai/gpt-oss-120b | b200 | `offline-a` (default) | A | offline | 8 | 2,048 | run s12-oss120-b200-a1, submission s0049 |
 | openai/gpt-oss-120b | b200 | `offline-b` | B | offline | 8 | 2,048 | run s12-oss120-b200-a1, submission s0051 |
+| thinkingmachines/Inkling-2-Mini | b200 | `offline-a` (default) | A | offline | 8 | 2,048 | run s17-mini-b200-ma, submission s0014 |
+| thinkingmachines/Inkling-2-Mini | b200 | `offline-b` | B | offline | 8 | 2,048 | run s17-mini-b200-mb, submission s0020 |
+| thinkingmachines/Inkling-2-Mini | b200 | `offline-c` | C | offline | 8 | 2,048 | run s16-mini-b200-c1, submission s0022 |
 
 </details>
 
@@ -195,6 +213,7 @@ fastest general engine, and the factor is its time divided by ours.
 | Qwen3-32B | B200 | SGLang 11.43 / 11.68 | 10.11 / 10.43 | **1.13×** / **1.12×** | 8.99 / 9.44 | **1.27×** / **1.24×** |
 | gpt-oss-120b | B200 | SGLang 2.22 / 3.33 | 1.78 / 3.07 | **1.25×** / 1.08× | 1.69 / 3.03 | **1.31×** / **1.10×** |
 | Inkling-2-Small | 4 × B200 | SGLang 4.74 / 6.55 | 3.30 / 5.39 | **1.43×** / **1.22×** | 3.29 / 5.38 | **1.44×** / **1.22×** |
+| Inkling-2-Mini | B200 | vLLM 3.71 / 5.09 | 2.74 / 5.08 | **1.36×** / 1.00× | 2.68 / 5.11 | **1.38×** / 1.00× |
 
 How the comparison is made:
 
@@ -206,6 +225,26 @@ How the comparison is made:
   over the window in which all sequences decode.
 - **Released baselines.** vLLM and SGLang are installed from their releases and run with their recommended flags, or a
   faster setting where we found one. For North Mini Code the reference is the vendor's own hand-written megakernel.
+  Inkling-2-Mini is not in a release of either yet: vLLM is its model pull request (vllm-project/vllm#69028) built
+  from source, SGLang the image of its pull request (sgl-project/sglang#51926), both with the model's recipe flags.
+  Both quantize the expert inputs to 4 or 8 bits, as the checkpoint's quantization config asks; our engines and the
+  reference do not, so the general engines compute a slightly different function.
+
+**Track C, exact speculative decoding** (Inkling-2-Mini on one B200, in the same job as its row above). Time per token
+is counted in tokens received, since a speculative server sends several tokens per chunk. The comparison is with the
+general engines' own speculative decoding on the checkpoint's draft head: vLLM with DSpark and 7 draft tokens (the
+model's recipe) and SGLang with DSPARK.
+
+| Model | GPU | Fastest general engine with speculative decoding, ms | Track C, ms | Track C |
+|---|---|---|---|---|
+| Inkling-2-Mini | B200 | vLLM + DSpark 1.55 / 2.72 | 1.53 / 6.30 | 1.01× / 0.43× |
+
+The track-C engine drafts only for a single sequence; with eight it decodes one token per pass and is slower. On
+natural text (prose, code and word problems) with one sequence it takes 1.02 ms per token, and vLLM with DSpark
+0.87 ms. The general engines' speculative output is not lossless: with greedy decoding, vLLM's text with speculation
+equals its own text without it in 12 of 243 streams, SGLang's in 6 of 243. The track-C engine's tokens equal its own
+one-token-per-step tokens in every test (the evaluator's sequences and natural text, 1 and 8 sequences, staggered
+requests).
 
 **Serving a production request trace** (300-second replay of the
 [Mooncake tool-and-agent trace](https://github.com/kvcache-ai/Mooncake/tree/main/FAST25-release/traces), all systems over HTTP on
@@ -247,12 +286,14 @@ python eval/kernel_eval.py --workspace engines/qwen3-8b_h100/offline-a --out res
 | `numeric`, `numeric_long` | logits against an FP64 run of the reference model at every position to 128 and at every 8th position to 1,152, alone and in a batch of 8; relative error within 2× that of the Hugging Face BF16 implementation |
 | `tokens` | top-1 agreement with FP64 within one point of the BF16 implementation's |
 | `batch` | a sequence alone and inside a batch give the same logits |
-| `generate`, `http_tokens` | the engine's own decode loop and its HTTP path reproduce its step-by-step greedy tokens |
+| `generate`, `http_tokens` | the engine's own decode loop and its HTTP path reproduce its step-by-step greedy tokens (track C: every sequence exactly) |
 | `timed_steps` | the steps that were timed are checked against the reference afterwards |
 
 The reference is computed on your GPU for the token sequences in [`eval/refs/`](eval/refs) (the ones our runs were
 scored on), so results are comparable with ours. [`eval/release_check.py`](eval/release_check.py) adds every batch size
 from 1 to 8, slot permutation, neighbor independence, repetition, state after a full context, and a process restart;
+[`eval/spec_check.py`](eval/spec_check.py) checks a track-C engine's tokens on natural text, at batch 1 and 8 and
+with staggered requests;
 [`scripts/mkserve_check.py`](scripts/mkserve_check.py) tests a served engine through the API.
 
 ## Build your own engine
@@ -280,11 +321,11 @@ a shell can drive it. The prompts state the goal, the rules and the two tracks; 
 - [`autoresearch/tools`](autoresearch/tools): `mkprof` (phase timings inside a persistent kernel, which a profiler sees
   as one kernel), `bitcheck.py` (are two builds the same function, bit for bit?) and `weights_census.py` (exact
   statistics of a checkpoint's weights).
-- [`runs/`](runs): every submission of our 19 runs (source, hypothesis, score) and the agents' notes, as worked examples.
+- [`runs/`](runs): every submission of our 26 runs (source, hypothesis, score) and the agents' notes, as worked examples.
 
 For a model that is not in Hugging Face `transformers`, a reference implementation has to be written first;
-[`eval/inkling2_ref.py`](eval/inkling2_ref.py) is the one for Inkling-2-Small. To add an engine to this repository, see
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[`eval/inkling2_ref.py`](eval/inkling2_ref.py) is the one for Inkling-2-Small and Inkling-2-Mini. To add an engine to
+this repository, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Repository layout
 
@@ -307,6 +348,8 @@ runs the static checks every engine in `engines/` passes.
 - An engine is specific to one checkpoint and one GPU type, and is compiled on the machine that serves it.
 - Steady-decode engines hold 8 sequences and a 2,048-token context and read the prompt one token per pass.
 - Decoding inside the kernel is greedy; sampling runs in `mkserve` and costs 1 to 11%.
+- The track-C engine (Inkling-2-Mini) speculates only with one sequence; with 2 to 8 it decodes one token per pass
+  and is slower than its track-A engine. A request that arrives while others decode waits for them.
 - Use the engines through `mkserve`: called directly, most of them do not validate requests. The serving engines for
   Qwen3-8B match shared prompt prefixes by a 64-bit hash without comparing tokens.
 - Benchmark numbers are from single nodes and two to three rounds.

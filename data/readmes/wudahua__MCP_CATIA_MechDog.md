@@ -1,8 +1,8 @@
-# MCP_CATIA_MechDog 0.3.155
+# MCP_CATIA_MechDog 0.3.158
 
-![version](https://img.shields.io/badge/version-0.3.155-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![CATIA](https://img.shields.io/badge/CATIA-V5%20R30%20(B30)-orange) ![MCP](https://img.shields.io/badge/MCP-stdio%20%7C%20http-purple)
+![version](https://img.shields.io/badge/version-0.3.158-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![CATIA](https://img.shields.io/badge/CATIA-V5%20R30%20(B30)-orange) ![MCP](https://img.shields.io/badge/MCP-stdio%20%7C%20http-purple)
 
-当前正式版 **0.3.155**——只改一段工具描述，不改行为：把 17 实例装配的冷启动**预算**写进 `catia_get_bounding_box` 的说明里。0.3.153 把它从 200 s 降到 87 s，0.3.154 量了这个场景，但两版都没告调用者**动手之前该预期多久**——旧文只对 70 实例说「分钟级」，对撑起这个数的零件只字未提。现在写实：7 个零件 / 17 实例，每件首次 1.8 s（小框）、3.9–13.6 s（曲柄臂、腿杆）、19.0 s（连杆，还付了一次 STL 导出），合计 `method='vertices'` **冷 87 s / 暖 13 s**；默认 mesh 路线 **冷 128 s**（每件付的是导出而不是建拓扑）。同时写明**没有更便宜的路可换**：`Measurable`/`Part`/`Body`/`SPAWorkbench` 都没有包围盒成员，`ExportData` 的 STL 精度是 CATIA **全局设置**、不能按次传参（改了等于改用户配置）——免得下一轮再撞死三次。可操作的说法也在同一句里：**按零件预算、不按实例**（零件量过，实例免费），只量需要的就用 `component=`。 · [变更日志](CHANGELOG.md) · [Releases](https://github.com/wudahua/MCP_CATIA_MechDog/releases)
+当前正式版 **0.3.158**——把 2026-11-21 报告剩下的条目收尾：三条答案、一条「做不到」、一条带回双侧实测的提示。**P2-8 诊断可读**：`catia_diagnose` 全量 **80 219 字符**（`capability_ceilings` 占 63 752，79%），客户端直接截断、只能去工具结果文件里 grep；现在 `brief=true` 保留每个 section 和**每一条 ceiling 成员及其 status**，把证据段落换成 `detail_chars`（**23 011 字符**），`sections=['mcp','session']` 只要 **3 584**；截断时**不删条目**——删一条会被读成「没有这个成员」，正是这个工具要防的误读。**P2-20 顶点可对**：报告里的 P01 在本机精确复现 **33 面/65 边/30 顶点**；报告猜「被消费草图线与实体棱边重合，规则把真顶点一起丢了」，新参数 `include_vertex_points=true` 用**坐标**回答：26 个被排除的草图角点**离每个计入顶点都 ≥5.0 mm**，没有任何重合。另建一格反证：让切槽轮廓角点**正落在**实体底边上，新角点照样被计入（10 面/24 边/**16** 顶点）。**P1-13 中面切削**：提示加进了回执，但不是报告说的那个机制——报告那里 37 面对 33 面、多出的是等面积面对（28.901/1191.621 mm²），而本机受控对照组（100×60×20 块中面穿孔）**10 面，与单侧切完全相同**；两种实测都写进同一句，因为「必然分裂」和「从不分裂」一样是错的。**P2-15 残架必报**：批量删除原来只走「本调用自己删掉的草图」，`quiet=True` 又把拒绝吞了——按工具自己推荐的方式删被消费草图（`names=['凸台.1','FR_A']`）会**级联**带走草图，于是既不清理也不出声；现在级联的草图进同一循环，回执逐条说明还剩几个元素、为什么 `auto` 拒绝、以及草图名失效后仍可用的**按名删除**路径。**P2-19 规范树关不掉，也裁不准**：实测 18 个候选成员（SpecTreeWidth / SpecTreeVisible / DisplaySpecifications / ViewportWidth / Layout…）全部「不存在」，`Viewer3D.Width/Height` 答的是**截图尺寸**，`Window.Width/Height` 对同一张 300×400 答 **116/0**，`Viewpoint3D` 没有 Eye/SightDirection 所以也算不出投影；隐藏实体再差分同样不行（整个视口连同地面网格一起重画）。`crop` 仍是唯一路径，这些实测写进了描述，免得下一个人再问。  · [变更日志](CHANGELOG.md) · [Releases](https://github.com/wudahua/MCP_CATIA_MechDog/releases)
 
 > 让 AI 客户端通过 MCP，在 CATIA V5 里建**原生可编辑的实体特征**——并且每一步都能量回来。
 
@@ -20,7 +20,7 @@ MCP_CATIA_MechDog 是运行在你自己 Windows 电脑上的本地 MCP 服务（
 - **草图可回改**：`catia_sketch_edit` 重开已关闭的草图，`catia_sketch_delete_element` 删掉画错的一条，零件随之重建——错一条线不必整件重做。
 - **量不到就说量不到**：超范围、超能力或读数失败时，回执以 `UNVERIFIED:` 开头并说明哪一个测量失败，不会把失败写成成功。
 - **能力可发现**：诊断文字旁边给一行能直接粘贴的调用；「有工具但没人知道怎么调」和「没有这个工具」一样是缺陷。
-- **离线可测**：**2473** 个测试不需要 CATIA，`pytest` 在本机就能跑全绿；真机验收脚本在 `scripts/b30_*`。
+- **离线可测**：**2484** 个测试不需要 CATIA，`pytest` 在本机就能跑全绿；真机验收脚本在 `scripts/b30_*`。
 
 ## 环境要求
 

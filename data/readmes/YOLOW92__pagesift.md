@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/YOLOW92/pagesift/main/docs/assets/logo.png" alt="PageSift Logo" width="180" />
 
-# pagesift 1.6.0
+# pagesift 1.6.2
 
 **Local-first web & document ingestion engine in Rust — HTTP/browser capture, layout-aware PDF/Office/OCR parsing, persistent sync, verifiable data graphs, and evidence-grounded AI context.**  
 One self-hosted Rust binary with a CLI, Firecrawl v1/v2 & Jina Reader HTTP APIs, an MCP server, a C ABI, and native Python / Node.js packages.
@@ -35,8 +35,8 @@ Drop-in or companion for: **Firecrawl** (self-hosted v1/v2 API), **Jina Reader**
 - **Inputs:** URLs, HTML, PDF (text + optional PP-OCRv6 / formulas), uploaded images (OCR when enabled), Office & OpenDocument, RTF/WordPerfect/HWP, e-books, emails, archives (`zip`, `tar`, `7z`), SQLite/CSV, 373 code languages, and WARC ([format matrix](docs/parse-api.md))
 - **Outputs:** Markdown, HTML, raw HTML, links, images/attachments, RAG chunks, schema JSON, `DataGraph` (`graph.jsonl`, citations, claim lifecycles, conflicts, `fact_clusters`, `?asOf=`), `ContextPack` (`KnowledgeUnit`, `ContextDelta`, `provenanceManifest`), plus structured warnings on partial captures
 - **Interfaces:** CLI · Firecrawl v1/v2 HTTP API · Jina Reader (`/r/`, `/s/`) · MCP (stdio / HTTP) · Python · Node.js / TypeScript · Rust crate · C ABI (Go, Java, Kotlin, C#, Ruby, PHP, Lua, Perl, Dart, Swift, Zig) · LangChain & LlamaIndex
-- **Platforms & ops:** Single binary (`serve --role gateway`, `worker`, `standby`), Linux x86_64/aarch64 (glibc ≥ 2.28 & musl), macOS arm64, Windows x86_64, Docker `ghcr.io/yolow92/pagesift:1.6.0`
-- **Index & release:** Machine-readable index [llms.txt](llms.txt) · Apache-2.0 or [commercial support](docs/COMMERCIAL.md) · **1.6.0** ([release notes](docs/releases/1.6.0.md))
+- **Platforms & ops:** Single binary (`serve --role gateway`, `worker`, `standby`), Linux x86_64/aarch64 (glibc ≥ 2.28 & musl), macOS arm64, Windows x86_64, Docker `ghcr.io/yolow92/pagesift:1.6.2`
+- **Index & release:** Machine-readable index [llms.txt](llms.txt) · Apache-2.0 or [commercial support](docs/COMMERCIAL.md) · **1.6.2** ([release notes](docs/releases/1.6.2.md))
 
 <!-- section: install -->
 ## Install and quick start
@@ -46,7 +46,7 @@ Drop-in or companion for: **Firecrawl** (self-hosted v1/v2 API), **Jina Reader**
 | CLI | `cargo install pagesift --locked` | `pagesift scrape https://example.com` |
 | Python | `pip install pagesift` | `pagesift.scrape("https://example.com").markdown` |
 | Node.js | `npm install @pagesift/node` | `(await new Scraper().scrape("https://example.com")).markdown` |
-| Server | `docker run -p 3002:3002 ghcr.io/yolow92/pagesift:1.6.0` | `curl localhost:3002/r/https://example.com` |
+| Server | `docker run -p 3002:3002 ghcr.io/yolow92/pagesift:1.6.2` | `curl localhost:3002/r/https://example.com` |
 | MCP | — | `claude mcp add pagesift -- pagesift mcp` |
 
 <details>
@@ -92,7 +92,7 @@ console.log(page.markdown, pack.pack)
 **HTTP server (`Firecrawl v1/v2`, `Jina Reader`, `/v2/sources`, `/v2/graph`, `/v2/context`) & MCP**
 
 ```bash
-docker run -d -p 3002:3002 -v pagesift-data:/data -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:1.6.0
+docker run -d -p 3002:3002 -v pagesift-data:/data -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:1.6.2
 
 curl -s localhost:3002/v2/scrape -H 'Authorization: Bearer sk-test' -H 'Content-Type: application/json' \
   -d '{"url":"https://example.com","formats":["markdown"]}'
@@ -251,11 +251,11 @@ See [Architecture reference](docs/architecture.md) for cgroup sizing, statistica
 [Apache-2.0](LICENSE). For dedicated support, SLAs, or enterprise agreements, see [commercial license and support](docs/COMMERCIAL.md) or write to `licensing@pagesift.dev`.
 
 <!-- section: changelog -->
-## What's new in 1.6.0
+## What's new in 1.6.2
 
-PageSift 1.6.0 introduces **Context** ([docs/context.md](docs/context.md)) across CLI (`pagesift context`), HTTP (`/v2/context`), MCP (`pagesift_context`), Python (`Scraper.context` / `acontext`), Node.js (`Scraper.context`), and C ABI (`pagesift_context`), alongside upgrading upstream `yolowhtml` / `yolowhtml-dom` to `0.1.2` (`<caption>` table headings, `hidden="until-found"` article retention, and `input_truncated` capture reliability screening): adds cross-version `KnowledgeUnit` identity and explicit ambiguity/split/merge lineage (`boundedUot`, `greedyDice`, `exactAnchorOnly`); persists atomic dependency-governed `ContextDelta` updates, `IndexVisibility` lag metrics, and idempotent anti-ABA consumer checkpoints in `pagesift-store` (`ns::CONTEXT`, immune to cache eviction); provides multi-strategy lexical/symbol/temporal (`asOf` + `effectiveAt`)/lineage `Search` with co-retrieved conflict counterparts; compiles token- and `MustKeep`-constrained `ContextPack` payloads (`submodularClosure`, `boundedDpp`, `mmrGreedy`, `topKGreedy`, `edgeSalience`) with `provenanceManifest`; and adds bounded `Action` (`context`, `research`, `verify`, `watch`, `changes`) driven by gated Good–Turing / Chapman coverage diagnosis, Howard Value of Information, 4D admission shadow prices, and CUSUM / `BernoulliBocpd` drift-guarded isotonic `Learn` calibration.
+PageSift 1.6.2 adds seamless `1.6.0` persisted-tenant upgrade continuity, cancellation-safe quota settlement, Rust `KeyLimits` fluent builders, and per-monitor execution serialization on the `1.6.x` line: probes existing `Store` (`Store::existing_tenants`) and cluster `Ledger` (`Ledger::has_account_usage`) at router startup so unnamed keys (`key-<16hex>` FNV-1a) and uniquely-named keys (`[[server.keys]].name`) preserve access to persisted `Context`, `DataGraph`, `Loop` sources, `Monitors`, `Jobs`, and daily page quotas across `1.6.0 -> 1.6.2` upgrades while keeping duplicate-`name` keys strictly isolated under SHA-256 fingerprints with explicit operator warnings; transitions in-memory `held -> settled` synchronously inside `PageHold::commit()` before `.await` and flushes disk usage in a detached per-account serialized task to eliminate cancellation leaks; provides `KeyLimits::new().with_*()` builders alongside explicit Rust struct-literal compatibility notes for `KeyLimits.account`; and serializes background scheduled checks against `POST /v2/monitor/{id}/run` per monitor ID to eliminate empty `pages: []` race checks.
 
-[Release notes](docs/releases/1.6.0.md) · [1.5.6](docs/releases/1.5.6.md) · [1.5.5](docs/releases/1.5.5.md) · [1.5.4](docs/releases/1.5.4.md) · [1.5.3](docs/releases/1.5.3.md) · [1.5.2](docs/releases/1.5.2.md) · [1.5.1](docs/releases/1.5.1.md) · [all releases](docs/releases/) · [CHANGELOG](docs/CHANGELOG.md)
+[Release notes](docs/releases/1.6.2.md) · [1.6.1](docs/releases/1.6.1.md) · [1.6.0](docs/releases/1.6.0.md) · [1.5.6](docs/releases/1.5.6.md) · [1.5.5](docs/releases/1.5.5.md) · [1.5.4](docs/releases/1.5.4.md) · [1.5.3](docs/releases/1.5.3.md) · [all releases](docs/releases/) · [CHANGELOG](docs/CHANGELOG.md)
 
 ---
 
@@ -271,7 +271,7 @@ Questions or feedback: [Discord](https://discord.gg/esA3wMZVvA) · [Issues](http
   author = {YOLOW92},
   year   = {2026},
   url    = {https://github.com/YOLOW92/pagesift},
-  note   = {Version 1.6.0}
+  note   = {Version 1.6.2}
 }
 ```
 

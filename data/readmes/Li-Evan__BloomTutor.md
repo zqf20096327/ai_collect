@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <a href="https://bloomtutor.app"><strong>🌐 Website</strong></a> · <a href="./README.zh.md">Chinese</a> · English
+  <a href="https://bloomtutor.app"><strong>🌐 Website</strong></a> · <a href="https://chromewebstore.google.com/detail/bloom-web-clipper-save-pa/jhkhmidaakaibdbgmnpmlbbgpfofbgei?hl=en"><strong>🧩 Chrome extension</strong></a> · <a href="./README.zh.md">Chinese</a> · English
 </p>
 
 <p align="center">
@@ -174,7 +174,7 @@ Upload files / a folder / a link / PDFs → each one becomes a page (no outline)
 - **Topic** — describe what you want to learn; Bloom asks a few clarifying questions about your goal, then designs an outline at the depth you pick (simple / standard / deep)
 - **Your materials** — upload PDFs, Word, PowerPoint, Excel, EPUB, Markdown or text (or a ZIP); Bloom reads everything into a knowledge pack and grounds the outline and lessons in it, with source citations
 - **Project files** — upload files or a whole folder; each file becomes a page you can read and ask about, no outline needed
-- **Web articles** — paste a link to import the article text and images, or use the [browser clipper](./extension/) to save the page you are reading
+- **Web articles** — paste a link to import the article text and images, or use the [browser clipper](./extension/) to save the page you are reading. The [Chrome Web Store version](https://chromewebstore.google.com/detail/bloom-web-clipper-save-pa/jhkhmidaakaibdbgmnpmlbbgpfofbgei?hl=en) saves to bloomtutor.app; for a self-hosted Bloom, build the clipper from `extension/` with your own address
 - **PDF reading** (experimental) — a vision model turns each PDF page into reflowable Markdown with formulas, tables and figures, next to the original PDF
 
 **Learning**

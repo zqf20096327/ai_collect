@@ -24,7 +24,7 @@ UniEmployee 是一套面向企业的**数字员工构建与运行平台**：把�
 - 🔐 **HITL + 多层安全护栏**：高风险动作触发流程中途中断，等待人工批准后自动继续；敏感词、工具白名单、内置文件/命令工具裁剪、SQL 只读校验和审计日志共同限制越权执行。
 - ⏱️ **自动任务**：支持 cron 定时和 webhook 事件触发，执行链路复用对话运行时的记忆、护栏、Trace 和审批能力，结果可回到会话继续追问或经审批后发布。
 - 🧰 **多执行后端**：按员工选择 `state`、`local_shell`、`standard` 或 `sandbox` 后端；`net-ops` 可按会话路由到 OpenSandbox 容器，未启用沙箱时按当前配置回退本地后端。
-- 📱 **Web 聊天 + IM 扩展架构**：当前支持平台内 Web 聊天和平台内 IM 频道框架；微信 / 企业微信 / 飞书 / 钉钉等外部渠道仍在规划中。
+- 📱 **Web 聊天 + 原生多平台 IM**：复用 Octop MIT 许可协议适配器，支持飞书、钉钉、企业微信、微信 iLink、QQ、元宝、Telegram、Discord、华为小艺和 MQTT；通道页面可配置平台凭据、绑定员工并探测连接状态。
 
 ## 功能演示
 
@@ -257,7 +257,7 @@ UniEmployee/
 | `JWT_EXPIRE_HOURS` | `24` | token 有效期（小时） |
 | `LOG_LEVEL` / `LOG_FILE` | `INFO` / 空 | 日志级别 / 文件路径 |
 | `DB_BACKEND` / `POSTGRES_*` | `postgres` | 数据库后端与连接参数（host/port/user/password/db 前缀） |
-| `APP_VERSION` | `0.24.1` | 打印在 /health 与日志；可用环境变量覆盖 |
+| `APP_VERSION` | `0.25.0` | 打印在 /health 与日志；可用环境变量覆盖 |
 | `PRODUCT_WIKI_DIR` | `product-wiki/` | 销售技能的产品知识库 markdown 目录 |
 | `RAGFLOW_BASE_URL` / `RAGFLOW_API_KEY` / `RAGFLOW_DATASET_IDS` | — | RAGFlow 知识库接入（可选） |
 | `SANDBOX_ENABLED` / `SANDBOX_DOMAIN` / `SANDBOX_IMAGE` | 未启用 / `localhost:8090` / `uniemployee/sandbox:py312-data` | OpenSandbox 开关、服务地址和沙箱镜像 |
@@ -295,11 +295,10 @@ PostgreSQL 集成套件只允许在一次性本机/CI 实例中运行，数据�
 
 ## 渠道接入
 
-当前支持平台内 **Web 聊天**，覆盖对话 / 历史 / 执行过程全链路。
+当前支持平台内 **Web 聊天**，并可将数字员工接入飞书、钉钉、企业微信、微信 iLink、QQ、腾讯元宝、Telegram、Discord、华为小艺和 MQTT。
+原生通道在「IM 频道」页面配置机器人凭据并绑定一个数字员工；平台消息会进入 UniEmployee 的会话、记忆、护栏与 Trace 链路。外部 Webhook 接入继续兼容。
 
-平台底层已实现 IM 频道扩展架构：每个频道可配置 provider 并挂载多个数字员工，
-平台内 IM 页面复用 SSE 对话链路。微信 / 企业微信 / 飞书 / 钉钉等外部渠道的
-provider 尚未随当前版本发布。
+原生 IM 通道凭据使用 `CONNECTOR_OAUTH_ENCRYPTION_KEY` 在数据库中加密保存。首次配置前需设置稳定的 Fernet 密钥；更换密钥前应先迁移已有 OAuth 和 IM 加密数据。各平台机器人仍需在平台后台创建并授予消息权限，部署服务器也需访问对应的平台服务。配置步骤见[原生 IM 多平台接入指南](docs/guide/im-multi-platform.md)。
 
 ## 常见问题
 

@@ -1,14 +1,14 @@
-<img src="https://wso2.cachefly.net/wso2/sites/all/image_resources/wso2-branding-logos/wso2-logo-orange.png" alt="WSO2 logo" width=30% height=30% />
+<img src="docs/images/choreo-labs-logo.svg" alt="Choreo Labs logo" width=40% />
 
-# WSO2 Agent Builder
+# Choreo Agent Builder
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Join the community on Discord](https://img.shields.io/badge/Join%20us%20on%20Discord-wso2-orange)](https://discord.com/invite/wso2)
-[![X](https://img.shields.io/twitter/follow/wso2.svg?style=social&label=Follow%20Us)](https://twitter.com/intent/follow?screen_name=wso2)
+[![Join the community on Discord](https://img.shields.io/badge/Join%20us%20on%20Discord-Choreo%20Labs-orange)](https://discord.com/invite/wso2)
+[![X](https://img.shields.io/twitter/follow/choreo_labs.svg?style=social&label=Follow%20Us)](https://x.com/choreo_labs)
 
-WSO2 Agent Builder is an open source, low-code IDE for building AI agents. Design an agent visually by connecting triggers, a model, memory and tools, or write it in Ballerina code. The diagram and the code stay in sync in both directions. Run, trace, evaluate and deploy your agents from the same place, with a Copilot that helps you build them.
+Choreo Agent Builder is an open source IDE for building AI agents in code, in a visual designer or with Copilot. Design an agent visually by connecting triggers, a model, memory and tools, or write it in Ballerina code. The diagram and the code stay in sync in both directions. Run, trace, evaluate and deploy your agents from the same place.
 
-![WSO2 Agent Builder](docs/images/agent-builder.png)
+![Choreo Agent Builder](docs/images/agent-builder.png)
 
 ## Key Features
 
@@ -30,10 +30,10 @@ Download the installer for your platform from the [releases page](https://github
 
 See the following topics to get started with the product:
 
-- [Get Started](https://wso2.com/integration-platform/docs/agent-builder/get-started)
-- [Build an AI Agent](https://wso2.com/integration-platform/docs/agent-builder/get-started/quickstarts/build-ai-agent)
-- [Build a Durable Agent](https://wso2.com/integration-platform/docs/agent-builder/get-started/quickstarts/build-durable-agent)
-- [Guides](https://wso2.com/integration-platform/docs/agent-builder/guides)
+- [Get Started](https://choreolabs.com/integration-platform/docs/agent-builder/get-started)
+- [Build an AI Agent](https://choreolabs.com/integration-platform/docs/agent-builder/get-started/quickstarts/build-ai-agent)
+- [Build a Durable Agent](https://choreolabs.com/integration-platform/docs/agent-builder/get-started/quickstarts/build-durable-agent)
+- [Guides](https://choreolabs.com/integration-platform/docs/agent-builder/guides)
 
 ## Source Code
 
@@ -50,17 +50,17 @@ Submit bug reports and feature requests in the [issue tracker](https://github.co
 
 ### Report Security Issues
 
-Do **not** report security issues in GitHub issues. Follow the [WSO2 Security Vulnerability Reporting Guidelines](https://security.docs.wso2.com/en/latest/security-reporting/vulnerability-reporting-guidelines/).
+Do **not** report security issues in GitHub issues. Follow the [Choreo Labs Security Vulnerability Reporting Guidelines](https://security.docs.choreolabs.com/en/latest/security-reporting/vulnerability-reporting-guidelines/).
 
 ## Join the Community
 
-- Read our [documentation](https://wso2.com/integration-platform/docs/agent-builder/).
+- Read our [documentation](https://choreolabs.com/integration-platform/docs/agent-builder/).
 - Join the conversation on [Discord](https://discord.gg/wso2).
-- Read articles in the [WSO2 library](https://wso2.com/library/).
+- Read articles on the [Choreo Labs blog](https://choreolabs.com/blogs/).
 
 ## License
 
-WSO2 Agent Builder is licensed under the [Apache License 2.0](LICENSE).
+Choreo Agent Builder is licensed under the [Apache License 2.0](LICENSE).
 
 --------------------------------------------------------------------------------
-(c) Copyright 2026 WSO2 LLC.
+(c) Copyright 2026 Choreo Labs LLC.

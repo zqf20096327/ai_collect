@@ -57,7 +57,7 @@ Nothing leaves your PC.</p>
 A fork of [Strata](https://github.com/Niko1221/Strata) by Niko1221 and contributors (MIT). Strata keeps Qwen's experts in
 RAM and reads from the SSD when RAM is short; its docs call that path much slower. This fork works on that path: it
 spreads the experts over the card, RAM and the SSD and guesses ahead which ones to read, so the 78 GB IQ3_S runs on 30 GB
-of RAM at 50-70 tokens/s (131K context, short answers; the table below has the long prompts) as confirmed by [NoPlaceLikeLocalhost - (scorbo2) Benchmark](https://github.com/scorbo2/ai-playground/tree/master/benchmarking) , and Unsloth's 111 GB UD-Q4_K_XL
+of RAM at 50-70 tokens/s (131K context, short answers; the table below has the long prompts) further tested on their rig by [NoPlaceLikeLocalhost - (scorbo2) Benchmark](https://github.com/scorbo2/ai-playground/tree/master/benchmarking) , and Unsloth's 111 GB UD-Q4_K_XL
 on the same PC at 15-25 tokens/s in short tests on 14 Nov (131K context, three questions, a 29K-token prompt read at 300-420
 tokens/s; the learners were still cold, and it has not been measured as widely as IQ3_S).
 
@@ -136,7 +136,7 @@ already read. A 262K context costs about 8% against 131K, because more of the at
 <tr><td align="left"><b>System</b></td><td align="left">Rocky Linux 9.6, built with gcc-toolset-13</td></tr>
 <tr><td align="left"><b>Engine</b></td><td align="left">Strata 0.1.45 (upstream, merged 17 Oct 2026) plus this fork's changes</td></tr>
 <tr><td align="left"><b>Model</b></td><td align="left"><a href="https://huggingface.co/Qwen/Qwen3.8-Flash-Next">Qwen3.8-Flash-Next</a>, IQ3_S (about 3.5 bits per weight, 78 GB of files) by <a href="https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF">ISTA-DASLab</a></td></tr>
-<tr><td align="left"><b>Context</b></td><td align="left">262K tokens (the longest prompt served so far: 114K)</td></tr>
+<tr><td align="left"><b>Context</b></td><td align="left">262K tokens (the longest prompt served here: 114K; a community run served 196K)</td></tr>
 </table>
 </details>
 
@@ -555,8 +555,9 @@ Every option: [docs/DETAILS.md](docs/DETAILS.md) (upstream's reference; it cover
 
 - Any other graphics card, any AMD card, Windows, macOS or another Linux.
 - Any other model or size (Q2_0, IQ2_XS, IQ3_XXS, Coder, Swift, Unsloth's files).
-- Several requests at once, or two graphics cards.
-- A prompt that fills the whole 262K window (the longest served: 114K tokens).
+- Several requests at once.
+- Two graphics cards beyond one community run (2x RTX 3060 12 GB, issue #2: the peer tier, +2 to +4 tok/s decode, long-prompt reads 25-30% faster; see docs/SECOND_GPU.md).
+- A prompt that fills the whole 262K window on the reference PC (the longest served here: 114K tokens; a community run served 196K in the 262K window on 64 GB, issue #2).
 
 </div>
 </details>

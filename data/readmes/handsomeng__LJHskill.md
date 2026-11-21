@@ -1,10 +1,10 @@
 # LJHskill 电商增长工具箱
 
-LJHskill（老家伙 skill）电商增长工具箱：全网首个免费开源的内容电商增长赋能 skill 合集，总共 25 个业务工具。你只需要告诉我你的业务困惑是什么，我会自动选择合适的工具帮你解决问题。
+LJHskill（老家伙 skill）电商增长工具箱：全网首个免费开源的内容电商增长赋能 skill 合集，总共 29 个业务工具。你只需要告诉我你的业务困惑是什么，我会自动选择合适的工具帮你解决问题。
 
 LJH 取自李解、瀚森，「老家伙」是 LJH 三个字母的谐音。
 
-**最新版本 v1.2.1**。最近一次大更新新增了千川素材复盘、直播间周复盘、同行直播间录屏拆解、竞品全量拆解、六要素定义与素材体检 5 个工具，旧工具全部改成大白话。历次更新见 [CHANGELOG.md](CHANGELOG.md)。
+**最新版本 v1.3.1**。这次更新按最新的内容电商课口径校准了全部工具：卖点和买点、促销、定价权、需求分类的判断统一成一套；照爆款拍时前三秒照原版用；KOC 拿到逐句口播；拆解不再只凭销量下结论。历次更新见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 我们是谁
 
@@ -16,7 +16,7 @@ LJH 取自李解、瀚森，「老家伙」是 LJH 三个字母的谐音。
 
 1. **安装**：打开终端，贴下面的命令。
 2. **开个新会话，输入 `/ljh`，或者直接说「调用老家伙」**：这是总入口，它会先问你卡在哪。
-3. **用一句话说你的困惑**：比如「这个品值不值得做」「视频跑量很猛，直播间没人下单」「千川这周哪些素材该加预算」，它会带你去对的工具。
+3. **用一句话说你的困惑**：比如「这个品值不值得做」「视频跑量很猛，直播间没人下单」「千川这周哪些素材值得复刻」，它会带你去对的工具。
 
 ### Claude Code
 
@@ -63,14 +63,18 @@ npx -y skills add handsomeng/LJHskill -g --all
 | `/ljh-changjing` | 场景机会地图：竞品都在打哪些使用场景，哪个场景值得我们去测 |
 | `/ljh-duiqi` | 对齐表：把定好的定位和卖点，翻译成编导和主播能直接拍、直接说的话 |
 | `/ljh-jiaoben` | 脚本评审：带货脚本哪一步没说服人、哪句缺证据或缺画面 |
+| `/ljh-xiegao` | 照范本写稿：学 2 到 8 条爆款的结构，给你的产品写 3 版口播或一篇小红书 |
 | `/ljh-yinzi` | 内容因子：拆一条爆款，找出能单独测试的部件，比较几个方向先做哪个 |
+| `/ljh-tishici` | AI 视频提示词：把拍摄表写成即梦、可灵能用的提示词 |
 | `/ljh-shangxiang` | 商详页：详情页每一屏讲什么、放什么证据 |
 
 **验证和投放**
 
 | 工具 | 做什么 |
 |---|---|
-| `/ljh-koc-brief` | KOC 测试 Brief：把产品拆成 4 到 6 个场景，每个场景一份 Brief 直接发给 KOC 去拍 |
+| `/ljh-brand-brief` | 品牌 Brief 整理：把品牌方的长 Brief 只摘不编整理成一张要求表 |
+| `/ljh-koc-brief` | KOC 测试 Brief：按 KOC 总数把产品拆成 2 到 6 个场景，每个场景一份 Brief 直接发给 KOC 去拍 |
+| `/ljh-koc-review` | KOC 成片审核：拍回来的视频发布前按 Brief 逐条审，出给达人的修改意见 |
 | `/ljh-koc` | 小范围验证：先找几个 KOC 或投一点钱，测这个卖点或场景行不行 |
 | `/ljh-daren` | 达人选号：这个号能不能投、数据是不是刷的、报价值不值 |
 | `/ljh-brief` | 主播 Brief：给合作主播的一份资料，讲清卖点、证据、演示和不能说的话 |
@@ -80,7 +84,7 @@ npx -y skills add handsomeng/LJHskill -g --all
 | 工具 | 做什么 |
 |---|---|
 | `/ljh-qianchuan` | 千川掉量：消耗或成交突然掉了，一步步找到先做什么 |
-| `/ljh-qianchuan-fupan` | 千川素材复盘：这周赚没赚，哪些素材可以复刻、先观察、该降预算 |
+| `/ljh-qianchuan-fupan` | 千川素材复盘：这周赚没赚，哪些素材可以复刻、先观察、哪些拖后腿先别照着拍 |
 | `/ljh-zhibo-fupan` | 直播间周复盘：这周多卖的钱从哪来，是流量变了还是直播间变了 |
 | `/ljh-zhibiao` | 指标诊断：GMV、转化、ROI、复购这些数为什么涨跌 |
 | `/ljh-suanzhang` | 算账：开品前预估，跑起来以后算清楚到底赚不赚、ROI 定多少 |
@@ -99,10 +103,10 @@ npx -y skills add handsomeng/LJHskill -g --all
 ## 按岗位怎么用
 
 - **老板、操盘手**：`/ljh-xuanpin` 判断品值不值得做，`/ljh-suanzhang` 算账，`/ljh-zhibiao` 看指标为什么变
-- **编导**：`/ljh-liuyaosu` 定六要素，`/ljh-jiaoben` 评审脚本，`/ljh-yinzi` 拆爆款，`/ljh-jingpin` 拆竞品
+- **编导**：`/ljh-liuyaosu` 定六要素，`/ljh-jiaoben` 评审脚本，`/ljh-xiegao` 照范本写稿，`/ljh-yinzi` 拆爆款，`/ljh-jingpin` 拆竞品
 - **投手**：`/ljh-qianchuan` 查掉量，`/ljh-qianchuan-fupan` 每周复盘素材
 - **直播负责人**：`/ljh-zhibo-fupan` 每周复盘，`/ljh-zhibo-chaijie` 拆同行直播间
-- **商务**：`/ljh-daren` 选达人，`/ljh-koc-brief` 给 KOC 发 Brief，`/ljh-brief` 给主播准备资料
+- **商务**：`/ljh-daren` 选达人，`/ljh-brand-brief` 整理品牌方的 Brief，`/ljh-koc-brief` 给 KOC 发 Brief，`/ljh-koc-review` 审拍回来的成片，`/ljh-brief` 给主播准备资料
 - **产品**：`/ljh-kaipin` 开品，`/ljh-jiazhi` 和 `/ljh-dingwei` 想清楚价值和定位
 
 ## 两个省事的功能

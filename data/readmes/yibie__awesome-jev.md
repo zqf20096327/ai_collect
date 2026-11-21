@@ -67,7 +67,7 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Scoring & Ranking](categories/scoring-ranking.md) — 45 entries
 - [Agent Decisions](categories/agent-decisions.md) — 70 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 53 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 54 entries
 - [Calibration & Research](categories/calibration-research.md) — 63 entries
 - [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 138 entries
 - [Game & Simulation](categories/game-simulation.md) — 30 entries

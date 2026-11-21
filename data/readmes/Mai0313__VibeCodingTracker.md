@@ -173,6 +173,10 @@ vct usage --text
 # JSON for data processing (every row has cost_usd; matched_model only when priced under another model name)
 vct usage --json
 
+# Per-day JSON with `priced` flag and synced remote metadata (composes with time-range flags)
+vct usage --json --by-day
+vct usage --json --by-day --monthly
+
 # Save enriched JSON with shell redirection
 vct usage --json > report.json
 
@@ -184,13 +188,15 @@ vct usage --json --daily
 # Merge same model reported under different provider prefixes
 # (e.g. openai/gpt-5.5 + azure/gpt-5.5 + gpt-5.5 -> one row)
 vct usage --table --merge-providers
+vct usage --json --merge-providers
+vct usage --json --by-day --merge-providers
 ```
 
 > [!NOTE]
-> `--table` and `--text` sort model rows by cost in ascending order, so the highest-spending model is listed last (right above the `TOTAL` row in `--table`); `--json` lists its rows in no fixed order. The app sorts by cost, highest first, and `←` / `→` move the sort to the column on that side, whose header is highlighted. The right side of the table title names the current sort (`sort: cost ▼`). The app also hides models with zero usage in the selected range.
+> `--table` and `--text` sort model rows by cost in ascending order, so the highest-spending model is listed last (right above the `TOTAL` row in `--table`); `--json` lists its rows in no fixed order unless `--merge-providers` or `--by-day` is set (both sort model rows by ascending cost, then model name; `--by-day` sorts dates ascending). The app sorts by cost, highest first, and `←` / `→` move the sort to the column on that side, whose header is highlighted. The right side of the table title names the current sort (`sort: cost ▼`). The app also hides models with zero usage in the selected range.
 
 > [!TIP]
-> The same model can show up under different provider prefixes (`openai/gpt-5.5`, `azure/gpt-5.5`, plain `gpt-5.5`). By default, `vct` collapses rows that share the base name after the first `/` (versions like `gpt-5.5` vs `gpt-5.4` stay separate) and sums their already-priced cost (`Merge models across providers` under `Settings > Usage`, `usage.merge_models = true` in `~/.vct/config.toml`). When turned off in Settings, `--merge-providers` forces merging on for that run. `--json` is left as the raw per-model export.
+> The same model can show up under different provider prefixes (`openai/gpt-5.5`, `azure/gpt-5.5`, plain `gpt-5.5`). By default, `vct` collapses rows that share the base name after the first `/` (versions like `gpt-5.5` vs `gpt-5.4` stay separate) and sums their already-priced cost (`Merge models across providers` under `Settings > Usage`, `usage.merge_models = true` in `~/.vct/config.toml`). When turned off in Settings, `--merge-providers` forces merging on for that run. `--json` stays a raw per-model export unless `--merge-providers` is passed explicitly.
 
 ### Preview: Usage Tab (`vct usage`)
 
@@ -276,7 +282,7 @@ The tool automatically scans these directories:
 - `~/.hermes/state.db` (Hermes — SQLite database, honors `$HERMES_HOME`; `usage` only)
 - `$GROK_HOME/sessions/*/*/signals.json` (Grok CLI — defaults to `~/.grok`; sibling `updates.jsonl` supplies `analysis` data)
 - `$DSH_HOME/sessions/*/*/session.jsonl.zstd` (DeepSeek Harness — defaults to `~/.dsh`; a root configured with `compression = "none"` writes `session.jsonl` instead, and both are read)
-- `~/.gemini/{antigravity-cli,antigravity,jetski}/brain/*/.system_generated/logs/transcript_full.jsonl` (Antigravity — the `agy` CLI, the Desktop app and other Antigravity builds, counted as one provider; each conversation's model comes from the sibling `conversations/<id>.db`)
+- `~/.gemini/*/brain/*/.system_generated/logs/transcript_full.jsonl` (Antigravity — the `agy` CLI, the Desktop app, and other Antigravity builds, counted as one provider; each conversation's model comes from the sibling `conversations/<id>.db`)
 
 Grok `usage` is one point-in-time local context estimate: vct records `signals.json`'s `contextTokensUsed` as cache-read tokens and estimates cost at the model's cache-read price. It is not cumulative billed usage. `analysis` reconstructs completed Read / Write / Edit / Bash / TodoWrite operations from the sibling `updates.jsonl`. For your actual billed allowance, see the Grok quota panel under [Quota Command](#quota-command).
 
@@ -470,11 +476,11 @@ vct version --json   # Machine-readable JSON
 
 ## Quota Command
 
-**The live quota panels full screen, or one provider's raw quota/usage API response.**
+**The live quota panels full screen, normalized multi-provider quota JSON, or one provider's raw quota/usage API response.**
 
 ### Quota Tab
 
-`vct quota` opens the app on the Quota tab (or switch to it with `Tab` or by clicking `Quota` in the top bar). It shows **live quota usage for Claude Code, Codex, GitHub Copilot, Cursor, Grok, and Antigravity with zero setup**: vct reads each provider's own credentials, calls its usage API (for Antigravity, asks the `agy` CLI) on a background thread, and keeps the cards current while you work. Every gauge is percent **used**, so a full bar means the window is spent, not untouched. Cards stretch their gauge bars to the available width, fitting as many providers as the terminal allows (a `+N hidden, enlarge the terminal` note counts the rest). It scans no session, so it opens at once and is light enough to leave running in a spare pane. Trim `panels` under `[usage.quota]` in [`config.toml`](#configuration), or set it to `[]` to hide every quota card.
+`vct quota` opens the app on the Quota tab (or switch to it with `Tab` or by clicking `Quota` in the top bar). It shows **live quota usage for Claude Code, Codex, GitHub Copilot, Cursor, Grok, and Antigravity with zero setup**: vct reads each provider's own credentials (or local Antigravity Language Server), calls its usage API over HTTP on a background thread, and keeps the cards current while you work. Every gauge is percent **used**, so a full bar means the window is spent, not untouched. Cards stretch their gauge bars to the available width, fitting as many providers as the terminal allows (a `+N hidden, enlarge the terminal` note counts the rest). It scans no session, so it opens at once and is light enough to leave running in a spare pane. Trim `panels` under `[usage.quota]` in [`config.toml`](#configuration), or set it to `[]` to hide every quota card.
 
 ```bash
 vct quota
@@ -499,9 +505,9 @@ vct quota
 - **Copilot** — plan tier plus your premium-request quota, shown as two gauges: percent used and the used / total request count (e.g. `45/1500`), from GitHub's Copilot API (`GET /copilot_internal/user`), read from `~/.copilot/config.json`. The request impersonates the Copilot CLI. The token is long-lived, so there is no refresh; a `401` / `403` shows a `run: copilot login` hint.
 - **Cursor** — plan tier, total / auto / API percent **used**, and on-demand spend from cursor.com (`GET /api/usage-summary`), using the session token in `~/.config/cursor/auth.json`.
 - **Grok** — plan tier plus your included-allowance usage for the current weekly or monthly period, from the Grok CLI's own billing endpoint (`GET /v1/billing?format=credits`), read from `~/.grok/auth.json`. A prepaid balance is shown only once it is non-zero, and pay-as-you-go spend once you have either spent something or set a cap. The request impersonates the Grok CLI; a `401` / `403` shows a `run: grok login` hint.
-- **Antigravity** — the limits of each shared model pool (for agy: Gemini, and Claude / GPT, each with a 5-hour and a weekly limit), from the `agy` CLI's own `/usage` command (`agy -p /usage --output-format json`). The card names each pool as agy does and labels each limit by agy's own window (`5h` first, then `weekly`); a card too short for every pool flags the rest with `+N`. `/usage` reports no plan, so the first line shows only the age. vct runs `agy` from your `PATH`, or else from where agy installs (`~/.local/bin/agy`, `%LOCALAPPDATA%\agy\bin\agy.exe`) or from `/google/bin/releases/jetski-devs/tools/cli` on Linux or `/usr/local/bin/jetski` on macOS; an agy that has not signed in never hides a build found there. agy keeps its own sign-in fresh, so vct only checks whether agy's sign-in entry exists (Windows Credential Manager `gemini:antigravity`, macOS Keychain `gemini` / `antigravity`, or `~/.gemini/antigravity-cli/antigravity-oauth-token`) and reads its modification time, never reading or writing the token; a build at those two paths signs in its own way, so finding it is enough. Each poll starts agy (a few seconds and about 260 MB), so this card refreshes at most every 5 minutes. When agy cannot sign in, the card shows a `run: agy acp --login` hint and the dashboard does not run agy again until that sign-in entry changes.
+- **Antigravity** — the limits of each shared model pool (for example Gemini, and Claude / GPT, each with a 5-hour and a weekly limit), fetched over pure HTTP on the same poll cadence as every other quota card. The card names each pool as the server does and labels each limit by its window (`5h` first, then `weekly`); a card too short for every pool flags the rest with `+N`. The quota summary reports no plan, so the first line shows only the age. vct first queries a running local Antigravity Language Server (`RetrieveUserQuotaSummary` via `ANTIGRAVITY_LS_ADDRESS`, local daemon discovery files under `$ANTIGRAVITY_APP_DATA_DIR/daemon` or `~/.gemini/*/daemon/{ls_,hub_}*.json`, or on Linux own-user `*-hub-server` / `agy --hub` processes). When no local server is running, it falls back to direct Cloud Code HTTP (`v1internal:retrieveUserQuotaSummary`) using the stored OAuth credential (Windows Credential Manager `gemini:antigravity`, macOS Keychain `gemini` / `antigravity`, or `~/.gemini/antigravity-cli/antigravity-oauth-token`) read-only with no OAuth refresh. When the stored token is missing, expired, or rejected (`401` / `403`), the card shows a `run: agy models` hint.
 
-**Automatic token refresh.** For Claude, Codex, and Grok, when a token is near expiry or rejected, vct refreshes it and writes the new token back to the provider's own credential file (in that CLI's exact format). For Grok, every other login in the file is preserved on write. If a refresh cannot proceed, the panel shows a `run: <provider> auth login` hint instead of breaking. Copilot (long-lived token) and Cursor (kept fresh by its own client) are read-only — vct never writes their credential files. Antigravity's token belongs to agy, which refreshes it whenever vct asks it for `/usage`.
+**Automatic token refresh.** For Claude, Codex, and Grok, when a token is near expiry or rejected, vct refreshes it and writes the new token back to the provider's own credential file (in that CLI's exact format). For Grok, every other login in the file is preserved on write. If a refresh cannot proceed, the panel shows a `run: <provider> auth login` hint instead of breaking. Copilot (long-lived token), Cursor (kept fresh by its own client), and Antigravity (local Language Server or read-only OAuth fallback) are read-only — vct never writes their credential files.
 
 A card appears only for a provider whose credentials are present, placed on a uniform grid that fits as many cards per row as the terminal allows and wraps the rest onto the next row.
 
@@ -509,11 +515,19 @@ A card appears only for a provider whose credentials are present, placed on a un
 
 > `vct monitor` and the hidden alias `vct fetch` are removed. Use `vct quota` for the cards and `vct quota <provider>` for a raw response.
 
+### Normalized Quota JSON (`vct quota --json`)
+
+With `--json` and no provider, `vct quota --json` fetches every enabled provider in `[usage.quota].panels` that has credentials in parallel, runs the same OAuth refresh, Codex session fallback, and `~/.vct/quota/<provider>.json` caching as the Quota tab, and prints a normalized JSON array of cards for scripts and external dashboards. Providers without credentials are skipped; a single provider's auth or fetch error is reported on its card (`needs_login` / `error`) without aborting the command.
+
+```bash
+vct quota --json
+```
+
 ### Raw Response (`vct quota <provider>`)
 
-With a provider, `vct quota` prints that provider's raw response with no parsing or aggregation. It calls the same quota endpoint the `usage` dashboard uses (Claude / Codex / Copilot / Cursor / Grok) and prints the raw body, so you can inspect the exact API shape or sanity-check your credentials. For Claude, Codex, and Grok it refreshes an expiring or rejected OAuth token once and writes the rotated token back to that CLI's credential file, matching the dashboard; Copilot and Cursor are read-only, and if a refresh cannot proceed you can re-auth with that provider's own CLI (`claude` / `codex` / `copilot` / `cursor-agent` / `grok`). `vct quota antigravity` instead runs `agy -p /usage --output-format json` once (found the way the dashboard finds it) and prints what it printed; agy refreshes its own token as it does so.
+With a provider, `vct quota` prints that provider's raw response with no parsing or aggregation. It calls the same quota endpoint the `usage` dashboard uses (Claude / Codex / Copilot / Cursor / Grok / Antigravity) and prints the raw body, so you can inspect the exact API shape or sanity-check your credentials. For Claude, Codex, and Grok it refreshes an expiring or rejected OAuth token once and writes the rotated token back to that CLI's credential file, matching the dashboard; Copilot, Cursor, and Antigravity are read-only, and if a token is rejected you can re-auth with that provider's own CLI (`claude` / `codex` / `copilot` / `cursor-agent` / `grok` / `agy models`).
 
-`--json`, `--text` and `--table` print one provider's response, so `vct quota --json` without a provider is an error.
+`--text` and `--table` print one provider's response, so `vct quota --text` or `vct quota --table` without a provider is an error.
 
 ```bash
 # Raw JSON (default)
@@ -532,7 +546,7 @@ vct quota copilot --table
 ```
 
 > [!NOTE]
-> The response body is printed to stdout as-is. On an HTTP error the body is still printed and the process exits non-zero; a 401/403 additionally prints a `run: <cli> login` hint on stderr. A failed `agy` run is reported the same way, with the `run: agy acp --login` hint when agy could not sign in.
+> The response body is printed to stdout as-is. On an HTTP error the body is still printed and the process exits non-zero; a 401/403 additionally prints a `run: <cli> login` (or `run: agy models` for Antigravity) hint on stderr.
 
 ---
 
@@ -629,8 +643,8 @@ Generic placeholder names (e.g. `default`, what cursor-agent records for auto-mo
 
 - **Context tiers are per request**: LiteLLM's "above Nk tokens" rates (e.g. GPT-5.x above 272k, Gemini above 200k) and its Qwen / doubao volume rows alike apply only to requests whose own prompt context crossed the boundary — never to a whole scan's token sum. Each request bills at whichever of the model's published rows its own context reached, so a model priced in four bands charges its top band for the requests that got there. Providers without per-request granularity — and offline scans — bill at the lowest rate, so tiered-model costs are a lower bound there.
 - **Beyond tokens**: Claude web-search tool calls (`server_tool_use.web_search_requests`) are billed per query on top of the token cost; every other model's per-query charge is $0.
-- **OpenCode**: a novel model name is priced from its tokens only on an **exact** LiteLLM match; with no exact match, vct trusts the assistant message's own stored cost instead of guessing from a loosely-similar name.
-- **Hermes**: priced the same way as OpenCode — an **exact** LiteLLM match prices from tokens, otherwise vct uses Hermes's own stored cost.
+- **OpenCode**: a model is priced from its tokens on an **exact** or **official normalized** LiteLLM match (matching provider prefix, unprefixed canonical key, or the model vendor's own prefix — skipping substring/fuzzy stages and third-party resellers); otherwise vct trusts the assistant message's own stored cost instead of guessing from a loosely-similar name or reseller markup.
+- **Hermes**: priced the same way as OpenCode — an **exact** or **official normalized** LiteLLM match prices from tokens, otherwise vct uses Hermes's own stored cost.
 - **DeepSeek Harness**: `dsh` records no cost of its own, so every model is priced from LiteLLM through the same lookup chain as the other file-based providers — there is no stored-cost fallback like OpenCode's or Hermes's. It routes to whatever the deployment configures, so expect deployment-defined model names, which land at $0 when nothing in LiteLLM matches.
 - **Antigravity**: priced from LiteLLM like the other file-based providers, under the model each request's generation record names. Compaction requests name no model, so their tokens are priced as the model in use when they ran.
 - **Grok**: `contextTokensUsed` is priced as cache-read tokens only (falling back to the input rate when the model publishes no cache-read price); this is a point-in-time local context estimate, not cumulative billed usage.

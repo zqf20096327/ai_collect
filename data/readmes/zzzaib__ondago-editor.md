@@ -4,6 +4,8 @@
 
 OnDaGo Editor is a one-click desktop app for **Windows and macOS** (Apple Silicon M1/M2/M3/M4 and Intel Macs). It cuts silences, filler words and retakes, adds animated captions (English or **Hinglish**), B-roll, **hand-drawn animated doodles**, zooms, sound effects, thumbnails, titles and descriptions. It exports a 16:9 YouTube video and a 9:16 Reel, and can upload both. All the AI runs **locally on your own computer** (NVIDIA GPU on Windows, Apple Silicon on Mac). It's free, with no subscriptions and no cloud processing.
 
+**New in v2.3:** turn a long video or a **game stream into ready-to-post clips** (same resolution, plus 9:16 Reels), cut **unfinished sentences**, join **several clips** into one edit, switch **captions on/off** after the edit, and **copyright-safe B-roll videos** with no key needed.
+
 **New in v2:** leave the laptop on and **edit from your phone** (Android, iPhone or any browser) from anywhere, no static IP needed, plus **animated doodles** that draw themselves next to you.
 
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011%20%7C%20macOS%2012%2B-blue)
@@ -16,6 +18,8 @@ OnDaGo Editor is a one-click desktop app for **Windows and macOS** (Apple Silico
 
 ### Editing
 - **Removes dead air automatically:** silences, "um/uh" (including ones the speech model didn't write down), false starts and repeated takes.
+- **Cuts unfinished sentences (new in v2.3):** "so what we need to… so the main thing is" keeps only the finished version; stutters ("the the"), cut-off words ("basi-") and abandoned clauses go too. Lists like "you can do this, you can do that" are left alone. Every cut is listed in Review → Cuts, where you can bring it back.
+- **Several clips in one edit (new in v2.3):** pick or drop multiple clips (desktop or phone). They're joined in the order you choose; same-camera clips are joined without re-encoding, mixed clips are matched to the first clip's size and frame rate.
 - **Never chops real content:** a sentence is only removed as a "retake" when you actually say it again right after; your opening hook and closing lines are protected.
 - **Word-safe cuts:** every word keeps a safety margin and cut points land on the quietest audio, so words don't get clipped.
 - **Jump-cut punch-ins, emphasis zooms** and slow camera push-ins keep the frame moving.
@@ -26,13 +30,15 @@ OnDaGo Editor is a one-click desktop app for **Windows and macOS** (Apple Silico
 
 ### Captions & text
 - **Word-by-word animated captions** with keyword highlights, in three styles (Bold Pop, Clean box, Minimal).
+- **Captions on/off** with one tap when you start (💬 Captions), and later per output in Review or on your phone: switch, re-render, nothing is analysed again.
 - **Hinglish support:** a dedicated Hindi→Hinglish speech model writes captions in Roman script ("aaj hum video edit karenge"). English words stay in English.
 - **AI proof-reading** fixes misheard names and brands. Add your own terms (e.g. *Meta Quest, Ray-Ban*) in Settings.
 - **Pop-up callouts, an opening hook title** and an end card ("Follow for more").
 
 ### B-roll
 - **Offline:** your own clip/image folder, searched by meaning with SigLIP.
-- **Online, out of the box:** openly-licensed photos from Openverse with no key needed; add a free Pexels or Pixabay key (also from the phone app) for real video clips.
+- **Online, copyright-safe only (updated in v2.3):** with no key, real **public-domain / CC0 videos** from Wikimedia Commons and NASA, plus CC0 / public-domain photos from Openverse. Add a free Pixabay or Pexels key (also from the phone app) for a lot more stock video (free licence, no credit needed).
+- **"Public domain / CC0 only"** licence option skips the stock sites entirely. The licence and source link of every clip are saved next to your export (`*_broll_licenses.txt`) and credited in the description.
 - **Decides for you:** when nothing fits it uses an animated keyword card instead of stopping to ask (choose "Ask me" if you prefer to pick).
 - **A vision model checks every clip** (Qwen 3.5 VL) and rejects ones that don't match.
 - **Animated text cards** when no footage fits.
@@ -53,6 +59,13 @@ OnDaGo Editor is a one-click desktop app for **Windows and macOS** (Apple Silico
 - Every doodle gets a matching sound (pencil scribble, ding, sparkle chime).
 - **AI custom doodles (RTX only):** FLUX draws a doodle of anything ("a VR headset"), then it's traced and animated the same way. Greyed out on GPUs that can't run it.
 - Change, add or switch off any doodle in **Review → Doodles** (or on your phone).
+
+### Best clips from long videos and streams (new in v2.3)
+- Choose **Make → The best clips** (desktop) or **✂️ Best clips** (phone) and drop a stream VOD, gameplay or any long recording.
+- It reads the whole video: moments that get much **louder** than the minute around them, **on-screen action**, and **reactions** in what you say ("no way", "let's go", "bhai kya"…). A 3-hour stream is read from keyframes, so it's quick.
+- Each candidate gets the build-up and the reaction, snapped to sentence boundaries. The local editor model rates it 0-10 *"worth a Reel?"* and writes a title and a hook.
+- The best ones above your bar are cut in the **same resolution and frame rate** as the source, plus a **9:16 Reel version** (blurred background or centre crop) with captions and the hook on top.
+- Review shows every clip with its score and reason, plus the runners-up: tick, retitle or trim (m:ss), then **Re-cut**. Works the same on your phone.
 
 ### Titles behind you (new in v2.2)
 - Big bold titles appear **behind** you (your head stays in front of the letters), word by word with the key word highlighted, like professional edits. On in Talking head / Energetic Reel.
@@ -239,8 +252,8 @@ raw video
   ├─ orientation check (YuNet face detector)
   ├─ speech → text with word timings (Whisper / Hinglish Whisper) + voice activity (Silero VAD)
   ├─ editor LLM (Qwen 3.5 via Ollama): proof-read, retakes, B-roll plan, callouts, zooms, doodles, highlight, metadata
-  ├─ cuts: silences, fillers, retakes → word-safe, quiet-point edges
-  ├─ B-roll: library (SigLIP) / Pexels / Pixabay → vision-model check → text cards / ask you
+  ├─ cuts: silences, fillers, retakes, unfinished sentences → word-safe, quiet-point edges
+  ├─ B-roll: library (SigLIP) / Pexels / Pixabay / Commons PD+CC0 / NASA / Openverse CC0 → vision-model check → text cards / ask you
   ├─ thumbnails: frame scoring → vision pick → background removal → text
   └─ render (FFmpeg + NVENC): cuts + zooms → outline → B-roll → doodles → captions/callouts → SFX + music + loudness
         ├─ YouTube 16:9
@@ -297,5 +310,6 @@ OnDaGo Editor's own code is released under the MIT License (see `LICENSE`). The 
 - Fonts: Anton, Poppins, Libre Baskerville, Noto Sans Devanagari (SIL Open Font License)
 - Map outlines: [Natural Earth](https://www.naturalearthdata.com) (public domain)
 - Stock footage: [Pexels](https://www.pexels.com/license/) and [Pixabay](https://pixabay.com/service/license-summary/), under their own licences
+- Public-domain / CC0 footage: [Wikimedia Commons](https://commons.wikimedia.org) (only files marked public domain or CC0), [NASA Image and Video Library](https://images.nasa.gov) ([media guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/)), [Openverse](https://openverse.org) (CC0 / Public Domain Mark only)
 
 Built by **Syed Zaib Farooq**, with the help of Claude (Anthropic).

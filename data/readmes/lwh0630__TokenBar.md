@@ -15,11 +15,11 @@ English | [简体中文](README.zh-CN.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Platforms](https://img.shields.io/badge/platforms-Windows%20%C2%B7%20Android%20%C2%B7%20macOS%20%C2%B7%20Linux%20%C2%B7%20iOS-2ea44f)
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter&logoColor=white)
-![Providers](https://img.shields.io/badge/providers-53-8A63D2)
+![Providers](https://img.shields.io/badge/providers-57-8A63D2)
 
 </div>
 
-> Inspired by [CodexBar](https://github.com/steipete/CodexBar) for macOS. TokenBar brings the same idea to Windows, Android, Linux and iOS (and ships a macOS build too), and covers 53 services.
+> Inspired by [CodexBar](https://github.com/steipete/CodexBar) for macOS. TokenBar brings the same idea to Windows, Android, Linux and iOS (and ships a macOS build too), and covers 57 services.
 
 ## Why TokenBar
 
@@ -81,13 +81,13 @@ Three ways to read a service:
 
 - **Local login**: reuses the login of the official client already on the machine (read-only). Desktop only.
 - **API key / token**: paste it once. Works on desktop, phone and web. On desktop, an empty field falls back to the provider's usual environment variable.
-- **Cookie**: copy the `Cookie` request header from your browser's developer tools. These endpoints are not public and may change without notice.
+- **Cookie**: on desktop TokenBar can read the session cookie of the browser you are already signed in with (Firefox, Chrome, Edge, Brave, ... — read-only, only that service's cookies, nothing stored; Settings → Data sources can turn it off, and each account can use a pasted cookie instead). Otherwise copy the `Cookie` request header from your browser's developer tools. These endpoints are not public and may change without notice. Chrome / Edge 127+ on Windows protect their cookies with app-bound encryption, which TokenBar does not bypass: use Firefox or paste the cookie there.
 
 ### Subscriptions (local login)
 
 | Service | How it is read | What you see |
 | --- | --- | --- |
-| Codex (ChatGPT) | `~/.codex/auth.json` (run `codex login` first); falls back to `codex app-server` when the token expired | 5-hour, weekly, credits |
+| Codex (ChatGPT) | Official browser sign-in from TokenBar or an existing Codex login. Expired tokens fall back to `codex app-server`. | 5-hour and weekly usage, credits, earned reset credits |
 | Claude (Pro / Max) | Claude Code login (`~/.claude/.credentials.json`, Keychain on macOS) | 5-hour, weekly, Opus / Sonnet weekly, extra usage |
 | Cursor | Cursor desktop login (read-only `state.vscdb`) or a pasted cursor.com cookie | Monthly quota, Auto / API split, on-demand usage |
 | Gemini | Firefox login (auto-read, recommended — the browser rotates tokens, so pasted copies die fast), Gemini CLI login (`~/.gemini/oauth_creds.json`, read-only), or a pasted OAuth token / gemini.google.com cookie | Gemini app 5-hour and weekly limits, or Pro / Flash / Flash Lite quota |
@@ -95,7 +95,7 @@ Three ways to read a service:
 For **Gemini**, desktop users can reuse the Gemini CLI's Google login (read-only; since Google stopped serving Gemini CLI OAuth for individual, AI Pro and Ultra accounts in June 2026, this path needs a Workspace, education or Code Assist Standard/Enterprise account). Alternatively paste an OAuth access token from `~/.gemini/oauth_creds.json`, or a `Cookie` header copied from a request to gemini.google.com/usage in your browser's developer tools — the cookie path shows the Gemini app's 5-hour and weekly limits and works for consumer plans. Add it in **Accounts → Add account → Gemini**. Tokens and cookies are never refreshed; re-login in the Gemini CLI or paste a new cookie when they expire. On desktop, when a fetch reports a signed-out session and Firefox holds a live gemini.google.com login, TokenBar automatically reads the session from Firefox's own cookie store (`cookies.sqlite`, plain SQLite, read-only while Firefox runs) — the browser keeps the short-lived session tokens fresh, so this path keeps working without re-pasting. Cookies and tokens are never written back.
 
 <details>
-<summary><b>Official API keys (23)</b></summary>
+<summary><b>Official API keys (27)</b></summary>
 
 | Service | What you see |
 | --- | --- |
@@ -122,6 +122,10 @@ For **Gemini**, desktop users can reuse the Gemini CLI's Google login (read-only
 | Warp | AI request quota, bonus credits |
 | Synthetic | Rolling, weekly and search quotas |
 | Chutes | 4-hour rolling and monthly quotas |
+| abliteration.ai | Prepaid USD credits and cumulative usage |
+| TrustedRouter | Key limit remaining, daily / weekly / monthly / total spend |
+| Tripo | Available and reserved credits |
+| SiliconFlow | USD balance (international API key; the China balance API was retired) |
 
 </details>
 
@@ -171,13 +175,13 @@ For **Gemini**, desktop users can reuse the Gemini CLI's Google login (read-only
 | Chatbox AI | Plan / bonus / top-up / image quota (license key) |
 | IBM Bob | Bobcoin budget per team |
 | GitHub Copilot | Metered quota and credits usage reported by GitHub (GitHub token) |
-| Xiaomi MiMo | Account balance and Token Plan usage (pasted platform cookie) |
+| Xiaomi MiMo | Token Plan quota (`tp-` key) or account balance + plan usage (platform cookie) |
 
 For **GitHub Copilot**, paste a GitHub token authorized for the account's Copilot usage in **Accounts → Add account → GitHub Copilot**. The [CodexBar integration](https://github.com/steipete/CodexBar/blob/5f93dc3068b3bee3f8753f3772614cc2949c335d/Sources/CodexBarCore/Providers/Copilot/CopilotUsageFetcher.swift) uses the GitHub OAuth token itself (`gho_...`), rather than a short-lived Copilot service token. Desktop users can also supply `COPILOT_API_TOKEN`; an optional Enterprise host selects that account's API host. TokenBar does not provide a device-login flow or automatically discover other clients' saved Copilot logins.
 
 Copilot usage comes from the non-public `/copilot_internal/user` endpoint and depends on the token's access. When GitHub returns metered quota values, they are shown directly; if it returns only `credits_used`, TokenBar shows credits used without inventing a remaining amount or percentage. Unlimited or placeholder quotas do not become 100% remaining bars. GitHub web billing budgets and a user-entered seat allowance are not included in this integration.
 
-For **Xiaomi MiMo**, sign in to `platform.xiaomimimo.com` and copy a request's `Cookie` header from your browser's developer tools. It must include `api-platform_serviceToken` and `userId`. Paste it in **Accounts → Add account → Xiaomi MiMo**. The app reads the platform's non-public balance and Token Plan endpoints using this session cookie; inference API keys and automatic browser-cookie import are not supported for MiMo. Replace the cookie when the platform session expires. Plan usage is shown only when returned by the platform; a balance-only account does not gain a synthetic quota window.
+For **Xiaomi MiMo** there are two ways. A **Token Plan key** (starts with `tp-`, created in the Token Plan console; pick the China mainland or Singapore region) needs no cookie, works on phones and shows the plan quota; ordinary inference API keys cannot be used. Or sign in to `platform.xiaomimimo.com`: on desktop the signed-in browser session is read automatically, otherwise copy a request's `Cookie` header (it must include `api-platform_serviceToken` and `userId`) and paste it in **Accounts → Add account → Xiaomi MiMo**; this also shows the account balance from the platform's non-public endpoints. Replace the cookie when the platform session expires. Plan usage is shown only when returned by the platform; a balance-only account does not gain a synthetic quota window.
 
 </details>
 
@@ -201,7 +205,7 @@ Each provider reads documented or reverse-documented endpoints taken from CodexB
 
 - **Credentials stay on your device**, in the platform secure store (`flutter_secure_storage`). They never go into logs, snapshots or the sync server, and they are not part of any exported JSON.
 - **Read-only by default.** TokenBar never refreshes or rewrites another tool's tokens (refreshing rotates the refresh token and can sign the official client out). Refreshing Claude's token is an explicit opt-in setting, off by default.
-- **No passwords, no simulated logins.** Only an existing local login, or a key / cookie that you paste yourself.
+- **No passwords, no simulated logins.** Only an existing local login, a key / cookie that you paste yourself, or (desktop, switchable) the session cookie of a browser you are already signed in with. Browser cookies are read-only, limited to the service being queried, never stored, logged or synced, and a locked browser database is only read from a temporary copy that is deleted again.
 - **The sync server is optional** and only receives usage snapshots.
 - **The update check is one anonymous request** to the GitHub API. See [Updates](#updates).
 
@@ -262,11 +266,17 @@ Runtime libraries: GTK 3, `libsecret` (credential storage, with a running keyrin
 
 ## Getting started
 
+TokenBar uses the current user's manual HTTP proxy settings on Windows, macOS and Linux (GNOME `gsettings`) for provider queries. Proxy environment variables take precedence when set.
+
 1. Launch TokenBar. On desktop it detects the services you are already signed in to (Codex, Claude, Cursor) and adds them.
-2. Open **Accounts → Add account** to add anything else: pick a service (the list is searchable), paste the key or cookie, save. Several accounts of the same service are fine (for example, different `CODEX_HOME` directories).
+2. Open **Accounts → Add account** to add a service. Select the service and follow its sign-in or configuration instructions. You can add several accounts for the same service.
 3. The dashboard refreshes every few minutes (configurable). Tap an account for per-window detail and history.
 
-**Tray panel (desktop).** Click the tray icon to open it. It lists each account's two tightest windows with reset countdowns, closes when it loses focus, and **Open TokenBar** brings back the main window. Clicking the tray icon again steps through the states: panel → full window → hidden, so a quick double click opens the full window directly. On Windows 11 the panel has rounded corners. On macOS, Settings → Desktop → *Menu bar only* hides the Dock icon (⌘Q is then unavailable; quit from the tray menu).
+**Codex (desktop).** Choose **Accounts → Add account → Codex → Sign in with ChatGPT**. Complete sign-in in your browser and TokenBar adds the account and fetches its usage. Each sign-in uses its own `CODEX_HOME`. You can also enter the config directory of an existing login. On Windows, TokenBar can use the CLI included with the official Codex desktop app.
+
+Codex cards on the dashboard and the account detail page show the available reset credit count and the expiration of each credit returned by OpenAI. TokenBar reads the inventory in the background during quota refreshes. Select **Use** next to a credit and confirm the account to redeem it. The requests use the selected account's existing ChatGPT login and the [same reset credit routes as the Codex client](https://github.com/openai/codex/blob/1af47ac084303b7bab777394e8b704a21f8e73c1/codex-rs/backend-client/src/client/rate_limit_resets.rs).
+
+**Tray panel (desktop).** Click the tray icon to open it. It lists quota windows with reset countdowns and shows the sign-in email when the provider reports it. Drag the handle on a card to reorder the tray list. TokenBar saves the order on this device. The panel closes when it loses focus. **Open TokenBar** brings back the main window. Clicking the tray icon again steps through the states: panel → full window → hidden, so a quick double click opens the full window directly. On Windows 11 the panel has rounded corners. On macOS, Settings → Desktop → *Menu bar only* hides the Dock icon (⌘Q is then unavailable; quit from the tray menu).
 
 **Usage history.** On an account's page choose 24 hours, 7 days or 30 days. Each bar is the usage added in a time slot, stacked by item:
 

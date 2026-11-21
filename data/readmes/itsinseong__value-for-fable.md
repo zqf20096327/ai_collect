@@ -1,12 +1,38 @@
-# 𝐕𝐚𝐥𝐮𝐞-𝐟𝐨𝐫-𝐅𝐚𝐛𝐥𝐞 (𝐕𝐅𝐅) 
+<p align="center"><img src="assets/vff_banner_d.svg" alt="Value-for-Fable: Opus에 근접한 품질을 Sonnet 단가에" width="100%"></p>
 
-**Opus에 근접한 품질을 Sonnet 단가에** · *Near-Opus quality at Sonnet pricing*
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin-1F3D6E?labelColor=0A1631&logo=claude&logoColor=D97757" alt="Claude Code plugin">
+  <img src="https://img.shields.io/badge/version-1.0.1-1F3D6E?labelColor=0A1631" alt="version 1.0.1">
+  <img src="https://img.shields.io/badge/license-AGPL--3.0-1F3D6E?labelColor=0A1631" alt="license AGPL-3.0">
+  <img src="https://img.shields.io/github/stars/itsinseong/value-for-fable?style=flat&color=1F3D6E&labelColor=0A1631&logo=github&logoColor=white" alt="GitHub stars">
+</p>
 
-***🡒 PRO 사용자들에겐 추천, OPUS 사용자 들에겐 비추천***
+<p align="center">
+  <a href="#설치"><img src="assets/btn_install_ko_d.svg" alt="설치하기" height="40"></a>&nbsp;
+  <a href="bench/RESULTS.md"><img src="assets/btn_bench_ko_d.svg" alt="벤치 결과" height="40"></a>&nbsp;
+  <a href="README.en.md"><img src="assets/btn_lang_en_d.svg" alt="English" height="40"></a>
+</p>
 
-Fable5 구조를 넣은 Sonnet이 Opus와 블라인드 테스트에서 사실상 비겼다!!
-그것도 답 1건당 비용 3분의 1로!!
-*Sonnet + Fable 5 structure virtually tied Opus in a blind test — at 1/3 the cost per response. ([bench/](bench/RESULTS.md))*
+<p align="center">Claude Code 플러그인, <code>/model sonnet</code>과 함께 사용. 수치는 2026-06 측정(Sonnet 4.6, Opus 4.8 기준)</p>
+
+# Value-for-Fable (VFF)
+
+**Opus에 근접한 품질을 Sonnet 단가에.** *Near-Opus quality at Sonnet pricing.*
+
+> PRO 사용자들에겐 추천, OPUS 사용자들에겐 비추천
+
+Fable5 구조를 넣은 Sonnet이 Opus와 블라인드 테스트에서 사실상 비겼다. 그것도 답 1건당 비용 3분의 1로.
+*Sonnet + Fable 5 structure virtually tied Opus in a blind test, at 1/3 the cost per response. ([bench/](bench/RESULTS.md))*
+
+[동작 방식](#동작-방식) | [왜 Sonnet+VFF인가](#왜-sonnetvff인가) | [구성](#구성) | [8섹션 운영 구조](#8섹션-운영-구조) | [언제 Opus로](#언제-opus로-라우팅해야-하는가) | [설치](#설치) | [한계](#한계) | [출처](#출처)
+
+## 동작 방식
+
+<p align="center"><img src="assets/vff_iso_d.svg" alt="사용자 요청이 VFF 8섹션 운영 구조를 거쳐 같은 Sonnet에 들어가 답이 나오고, 깊은 추론만 Opus로 라우팅되는 개념도" width="100%"></p>
+
+VFF가 품질을 끌어올리는 방식은 모델을 바꾸는 게 아니라 **행동 패턴을 바꾸는 것**이다. Fable 5에서 관찰되는 운영 패턴(단서 우선 가설, 측정 먼저, 결론 첫 문장, 검증 후 완료 선언)을 **재구성해** Sonnet에게 주입한다. 이 패턴들은 Fable 5만의 비법이 아니라 널리 통용되는 운영 규율이고, VFF가 한 일은 원문 복제가 아니라 그걸 Sonnet용 output-style로 묶은 재구성이다.
+
+오해를 막자면, 이건 **Opus의 추론능력을 베끼는 게 아니다.** 프롬프트로 상위 모델을 복제할 수는 없다. 그건 학습(distillation)의 영역이지 프롬프트의 영역이 아니다. VFF가 하는 건 **Sonnet이 평소 덜 쓰던 자기 능력을 더 끌어내는 것(elicitation)**이고, 따라서 **Sonnet의 천장 자체를 넘지는 않는다.** "단계적으로 생각하라" 한 줄이 같은 모델의 점수를 끌어올리는 chain-of-thought 류 현상과 같은 원리다. 모델이 똑똑해지는 게 아니라, 안 쓰던 능력을 쓰게 되는 것. 그래서 행동이 병목인 과제(진단, 조언, 구조화 설명)에선 그 차이가 작아 Opus와 비등하지만, **순수 추론 천장이 필요한 과제는 Opus가 여전히 앞선다**(아래 [한계](#한계) 참조). 벤치에서 어려운 추론 과제만 Opus가 5~7점 이긴 것도 이 천장이 데이터에 찍힌 결과다.
 
 ## 왜 Sonnet+VFF인가
 
@@ -20,31 +46,35 @@ Fable5 구조를 넣은 Sonnet이 Opus와 블라인드 테스트에서 사실상
 
 Sonnet은 Opus 대비 40%, Fable 대비 70% 저렴하다. 문제는 구조 없이 쓰면 그 차이가 품질 격차로 그대로 드러난다는 것이다. VFF는 그 격차를 운영 구조로 메운다.
 
-작업 종류별 실제 절감폭(입력형 코딩 vs 출력형 글쓰기) 계산과 라우팅 기준은 [COST.md](COST.md) 참고.
+작업 종류별 실제 절감폭(입력형 코딩 대 출력형 글쓰기) 계산과 라우팅 기준은 [COST.md](COST.md) 참고.
 
 ### 실측 결과 (2026-06-14 재검증)
 
-> 원판은 **Fable 5 ultracode 환경, 2026.06.11**에서 생성됐고(단판이라 재현 실패), 재검증은 **Opus 4.8 ultracode 멀티에이전트 하네스**로 수십 개 블라인드 심판·선수 에이전트를 병렬 실행했다. 원자료까지 [bench/](bench/)에 공개.
+<p align="center"><img src="assets/vff_band_result_d.svg" alt="+10.9점(v1 → v2), 기본 Opus 대비 95~100%, 출력 비용 0.30배" width="100%"></p>
 
-원래 2026-06-11 단판 벤치("5/6승·257점")는 원자료가 안 남아 재현 불가였고, 공정 베이스라인·중립 채점표로 다시 재니 재현되지 않았다. 재현 가능한 하네스와 원자료는 [bench/](bench/), 상세는 [bench/RESULTS.md](bench/RESULTS.md)에 있다.
+> 원판은 **Fable 5 ultracode 환경, 2026.06.11**에서 생성됐고(단판이라 재현 실패), 재검증은 **Opus 4.8 ultracode 멀티에이전트 하네스**로 수십 개 블라인드 심판, 선수 에이전트를 병렬 실행했다. 원자료까지 [bench/](bench/)에 공개.
 
-핵심 수치(중립 채점표, 독립 심판 2명 평균, 0–100):
+원래 2026-06-11 단판 벤치("5/6승, 257점")는 원자료가 안 남아 재현 불가였고, 공정 베이스라인과 중립 채점표로 다시 재니 재현되지 않았다. 재현 가능한 하네스와 원자료는 [bench/](bench/), 상세는 [bench/RESULTS.md](bench/RESULTS.md)에 있다.
+
+핵심 수치(중립 채점표, 독립 심판 2명 평균, 0~100):
 
 | 비교 | 결과 |
 |---|---|
 | v1 → v2 (압축 제거) | 76.2 → **87.1** (+10.9점) |
-| Sonnet+v2 vs 맨 Opus | 두 재채점에서 87.1 vs 86.2, 84.8 vs 89.4 → **노이즈 안 동률(약 95–100%)** |
+| Sonnet+v2 대 기본 Opus | 두 재채점에서 87.1 대 86.2, 84.8 대 89.4 → **노이즈 안 동률(약 95~100%)** |
 | 출력 비용 (v2 / Opus) | 약 **0.30배** (70% 저렴) → 품질당 비용효율 약 3배 |
 
-v2는 기본 진단·분량글에선 Opus와 같거나 앞서고(분량 과제는 Opus가 글자 수 초과로 감점), 깊은 추론(아키텍처 결정·복잡 성능진단)에선 Opus가 5–7점 앞선다. **압축 규칙이 품질 부채였고 그걸 들어낸 v2가 진짜 개선이다.** v3(복합진단 분해 추가)는 중립 기준 효과가 없어 폐기했다.
+<p align="center"><img src="assets/vff_scores_d.svg" alt="재채점 A: Sonnet+v1 76.2, Sonnet+v2 87.1, 기본 Opus 86.2. 재채점 B: Sonnet+v2 84.8, 기본 Opus 89.4" width="100%"></p>
 
-⚠️ 한계: 과제당 1–2회·심판 2명·Claude 단일 가족·진단/조언 중심 표본. 두 재채점이 약 5점 흔들리는 노이즈가 있어 방향(v2≫v1, v2≈Opus)은 견고하나 소수점은 단정하지 않는다.
+v2는 기본 진단, 분량글에선 Opus와 같거나 앞서고(분량 과제는 Opus가 글자 수 초과로 감점), 깊은 추론(아키텍처 결정, 복잡 성능진단)에선 Opus가 5~7점 앞선다. **압축 규칙이 품질 부채였고 그걸 들어낸 v2가 진짜 개선이다.** v3(복합진단 분해 추가)는 중립 기준 효과가 없어 폐기했다.
+
+> ⚠️ 한계: 과제당 1~2회, 심판 2명, Claude 단일 가족, 진단/조언 중심 표본. 두 재채점이 약 5점 흔들리는 노이즈가 있어 방향(v2≫v1, v2≈Opus)은 견고하나 소수점은 단정하지 않는다.
 
 ### Before / After
 
 질문: "배포 후 API가 가끔 500을 뱉어요. 왜죠?"
 
-**맨 Sonnet (VFF 없음)**
+**기본 Sonnet (VFF 없음)**
 ```
 ## 가능한 원인
 1. DB 연결 문제
@@ -65,12 +95,6 @@ v2는 기본 진단·분량글에선 Opus와 같거나 앞서고(분량 과제�
 ```
 '가끔'을 후보를 갈라내는 단서로 쓰고, 처방 전에 가장 싼 측정을 먼저 제시한다.
 
-### 핵심 원리
-
-VFF가 품질을 끌어올리는 방식은 모델을 바꾸는 게 아니라 **행동 패턴을 바꾸는 것**이다. Fable 5에서 관찰되는 운영 패턴 — 단서 우선 가설, 측정 먼저, 결론 첫 문장, 검증 후 완료 선언 — 을 **재구성해** Sonnet에게 주입한다. 이 패턴들은 Fable 5만의 비법이 아니라 널리 통용되는 운영 규율이고, VFF가 한 일은 원문 복제가 아니라 그걸 Sonnet용 output-style로 묶은 재구성이다.
-
-오해를 막자면, 이건 **Opus의 추론능력을 베끼는 게 아니다.** 프롬프트로 상위 모델을 복제할 수는 없다 — 그건 학습(distillation)의 영역이지 프롬프트의 영역이 아니다. VFF가 하는 건 **Sonnet이 평소 덜 쓰던 자기 능력을 더 끌어내는 것(elicitation)**이고, 따라서 **Sonnet의 천장 자체를 넘지는 않는다.** "단계적으로 생각하라" 한 줄이 같은 모델의 점수를 끌어올리는 chain-of-thought 류 현상과 같은 원리다 — 모델이 똑똑해지는 게 아니라, 안 쓰던 능력을 쓰게 되는 것. 그래서 행동이 병목인 과제(진단·조언·구조화 설명)에선 그 차이가 작아 Opus와 비등하지만, **순수 추론 천장이 필요한 과제는 Opus가 여전히 앞선다**(아래 [한계](#한계) 참조). 벤치에서 어려운 추론 과제만 Opus가 5–7점 이긴 것도 이 천장이 데이터에 찍힌 결과다.
-
 ---
 
 ## 구성
@@ -78,18 +102,19 @@ VFF가 품질을 끌어올리는 방식은 모델을 바꾸는 게 아니라 **�
 ```
 value-for-fable/
 ├── .claude-plugin/
-│   ├── plugin.json             # 플러그인 매니페스트 (name·메타데이터)
+│   ├── plugin.json             # 플러그인 매니페스트 (name, 메타데이터)
 │   └── marketplace.json        # 마켓플레이스 카탈로그 (단일 플러그인, source "./")
-├── skills/itsvff/SKILL.md      # 세션 모드 — 트리거로 수동 발동
+├── skills/itsvff/SKILL.md      # 세션 모드: 트리거로 수동 발동
 ├── agents/itsvff.md            # 위임 전용 에이전트 (2-pass 리뷰 백엔드)
 ├── output-styles/vff.md        # 상시 모드 v1 (원본 보존)
-├── output-styles/vff-v2.md     # 상시 모드 v2 (권장 — 압축 제거판, bench 재검증)
+├── output-styles/vff-v2.md     # 상시 모드 v2 (권장, 압축 제거판, bench 재검증)
 ├── bench/                      # 재현 가능한 벤치 하네스 + 원자료 + RESULTS.md
+├── assets/                     # README 그림
 ├── hooks/hooks.json            # 훅 등록 설정 (reminder.sh를 UserPromptSubmit에 연결)
 └── hooks/reminder.sh           # 장기 세션 드리프트 방지 훅
 ```
 
-### 스킬 (`skills/itsvff/SKILL.md`) — 세션 모드
+### 스킬 (`skills/itsvff/SKILL.md`): 세션 모드
 
 아래 트리거 중 하나를 입력하면 발동한다. 해당 대화에만 적용되며, 다음 세션에서 다시 트리거해야 한다.
 
@@ -98,23 +123,23 @@ value-for-fable/
 
 발동 시 "VFF 적용" 한 줄, 해제 시 "VFF 해제됨" 한 줄을 출력한다(생략 불가). 세션 끝까지 유지된다.
 
-### 에이전트 (`agents/itsvff.md`) — 2-pass 리뷰 백엔드
+### 에이전트 (`agents/itsvff.md`): 2-pass 리뷰 백엔드
 
 사용자가 직접 부르는 게 아니다. 스킬이 내부적으로 위임하는 Sonnet 단가 서브에이전트다.
 
-고난도 과제(원인 진단·기술 심층 분석·고위험 결정 문서)이거나 대화에서 "2-pass" 또는 "리뷰 패스"라고 입력하면 스킬이 자동으로 이 에이전트에 리뷰를 위임한다. 리뷰 기준은 4가지로 고정된다: ①요구사항 누락 ②사실·수치 오류 ③설명되지 않는 단서 ④분량 초과. 기준 밖의 지적은 하지 않는다.
+고난도 과제(원인 진단, 기술 심층 분석, 고위험 결정 문서)이거나 대화에서 "2-pass" 또는 "리뷰 패스"라고 입력하면 스킬이 자동으로 이 에이전트에 리뷰를 위임한다. 리뷰 기준은 4가지로 고정된다: ①요구사항 누락 ②사실, 수치 오류 ③설명되지 않는 단서 ④분량 초과. 기준 밖의 지적은 하지 않는다.
 
 리뷰어는 기본 Sonnet이되, 지식 격차가 의심되는 과제는 Opus로 오버라이드할 수 있다. Sonnet 초안 + Opus 리뷰는 풀 Opus 1회보다 싸면서 Sonnet이 모르는 깊이를 보강한다.
 
-### Output Style (`output-styles/vff.md`) — 상시 모드
+### Output Style (`output-styles/vff.md`): 상시 모드
 
 `/config` → Output style → **VFF** 선택 시 활성화된다. 트리거 없이 모든 세션에 자동 적용되는 패시브 모드다. `/clear` 이후에도 유지되며, 스킬 트리거와 동시에 쓸 필요 없다(중복 주입 방지).
 
 비용 목표는 `/model sonnet`과 함께 쓸 때 달성된다. 끄려면 `/config` → Output style → default.
 
-> **권장 버전 = v2** (`output-styles/vff-v2.md`). 재검증(bench/)에서 v1의 압축 강제가 품질 부채로 확인돼, 그걸 들어내고 진단·검증 구조만 남긴 v2가 v1보다 중립 채점표 +10.9점 높다. 신규 사용은 v2 권장, v1(`vff.md`)은 원본 보존용. (한때 시도한 v3=복합진단 분해 추가는 중립 기준 효과가 없어 폐기.)
+> **권장 버전 = v2** (`output-styles/vff-v2.md`). 재검증(bench/)에서 v1의 압축 강제가 품질 부채로 확인돼, 그걸 들어내고 진단, 검증 구조만 남긴 v2가 v1보다 중립 채점표 +10.9점 높다. 신규 사용은 v2 권장, v1(`vff.md`)은 원본 보존용. (한때 시도한 v3=복합진단 분해 추가는 중립 기준 효과가 없어 폐기.)
 
-### 훅 (`hooks/reminder.sh`) — 드리프트 방지
+### 훅 (`hooks/reminder.sh`): 드리프트 방지
 
 세션이 길어지면 초기에 주입된 스킬 본문이 컨텍스트 뒤로 밀려 구조가 흐려진다. 훅은 아래 두 조건을 모두 충족할 때만 매 턴 리마인더를 주입한다.
 
@@ -127,12 +152,14 @@ value-for-fable/
 
 ## 8섹션 운영 구조
 
+<p align="center"><img src="assets/vff_band_rules_d.svg" alt="결론 첫 문장, 단서 먼저, 측정 먼저, 검증 후 완료" width="100%"></p>
+
 VFF가 주입하는 구조는 8개 섹션으로 구성된다.
 
 | 섹션 | 핵심 규칙 |
 |---|---|
-| communication | 첫 문장=결론, 산문 우선, 헤더·불릿은 정말 필요할 때만 |
-| style_reference | 맨 Sonnet과 VFF의 실제 응답 차이를 예시로 고정 |
+| communication | 첫 문장=결론, 산문 우선, 헤더와 불릿은 정말 필요할 때만 |
+| style_reference | 기본 Sonnet과 VFF의 실제 응답 차이를 예시로 고정 |
 | effort_and_reasoning | 난이도 비례 추론, 확정 사실 재도출 금지, 추천만 |
 | tool_discipline | 독립 호출 병렬화, 읽기 전 편집 금지, 불필요한 검색 금지 |
 | verification | 완료 전 검증 필수, 단서를 설명하는 가설 우선, 측정 먼저 |
@@ -141,7 +168,7 @@ VFF가 주입하는 구조는 8개 섹션으로 구성된다.
 | tone_and_conduct | 필요한 반박 포함, 빈 칭찬 금지, 과잉 사과 금지 |
 | token_economy | diff 수준 보고, 완료 후 꼬리 제안 금지 |
 
-> **v2(권장)는 위 v1 기준에서 변경됨**: `token_economy`의 압축 압박을 들어내고 `communication`·`writing_and_research`의 "짧게/분량 상한" 강제를 완화했다(분량은 상한이 아니라 정확히 맞춤). 재검증에서 압축 강제가 품질 부채로 확인됐기 때문이며, 자산인 `verification`(단서 우선·측정 먼저)은 그대로 유지한다. 상세 [bench/RESULTS.md](bench/RESULTS.md).
+> **v2(권장)는 위 v1 기준에서 변경됨**: `token_economy`의 압축 압박을 들어내고 `communication`, `writing_and_research`의 "짧게/분량 상한" 강제를 완화했다(분량은 상한이 아니라 정확히 맞춤). 재검증에서 압축 강제가 품질 부채로 확인됐기 때문이며, 자산인 `verification`(단서 우선, 측정 먼저)은 그대로 유지한다. 상세 [bench/RESULTS.md](bench/RESULTS.md).
 
 ---
 
@@ -151,7 +178,7 @@ VFF는 행동 패턴만 바꾼다. Sonnet이 모르는 도메인 지식은 채�
 
 - 낯선 도메인이 겹겹인 심층 기술 진단 (async 이벤트루프, 복잡한 분산 시스템 등)
 - 여러 도메인 지식이 동시에 필요한 복합 분석
-- 추론 자체가 병목인 수학·논리 과제
+- 추론 자체가 병목인 수학, 논리 과제
 
 VFF 스킬은 이 상황을 만나면 본 작업 전에 한 줄 안내한다: "이 과제는 `/effort max`로 올리거나 Opus 라우팅이 더 나을 수 있습니다." 안내 후에는 현재 설정에서 최선을 다하며, 이 안내를 면책으로 쓰지 않는다.
 
@@ -161,9 +188,11 @@ Sonnet에서 전역 `effortLevel: xhigh`는 조용히 `high`로 클램프된다.
 
 ## 설치
 
-### 방법 1 — 플러그인 설치 (권장)
+<p align="center"><img src="assets/vff_band_install_d.svg" alt="/plugin install value-for-fable@itsinseong" width="100%"></p>
 
-Claude Code 플러그인으로 한 번에 설치한다. 스킬·에이전트·output style(VFF)·훅이 모두 자동 등록된다.
+### 방법 1: 플러그인 설치 (권장)
+
+Claude Code 플러그인으로 한 번에 설치한다. 스킬, 에이전트, output style(VFF), 훅이 모두 자동 등록된다.
 
 ```
 /plugin marketplace add https://github.com/itsinseong/value-for-fable
@@ -175,7 +204,7 @@ Claude Code 플러그인으로 한 번에 설치한다. 스킬·에이전트·ou
 - 갱신: `/plugin marketplace update itsinseong` 후 재설치
 - 제거: `/plugin uninstall value-for-fable@itsinseong`
 
-### 방법 2 — 수동 복사
+### 방법 2: 수동 복사
 
 플러그인을 쓰지 않고 파일만 직접 둘 경우:
 
@@ -188,7 +217,7 @@ cp hooks/reminder.sh ~/.claude/hooks/reminder.sh
 chmod +x ~/.claude/hooks/reminder.sh
 ```
 
-훅 등록 — `~/.claude/settings.json`의 `UserPromptSubmit` 배열에 아래 블록 추가:
+훅 등록: `~/.claude/settings.json`의 `UserPromptSubmit` 배열에 아래 블록 추가:
 
 ```json
 {
@@ -216,14 +245,16 @@ VFF는 행동 패턴만 바꾼다. Sonnet이 모르는 도메인 지식을 채�
 
 ### 실업무 검증은 직접 해보시길 권합니다
 
-VFF의 효과는 **진단·조언·설명형 응답 품질**에 한해 LLM 심판 + 3가족(Claude·Gemini·GPT) 교차검증으로 측정했습니다([bench/RESULTS.md](bench/RESULTS.md)). 다만 아래 같은 **실제 업무 지표는 이 벤치의 범위를 넘습니다** — 코드가 더 잘 돌아가는가, 수정 횟수가 줄었는가, 환각이 줄었는가, 긴 세션에서 덜 무너지는가, 복잡한 코드베이스를 더 잘 이해하는가, 실운영 비용까지 포함해도 이득인가. VFF는 응답을 더 구조적으로 만드는 output style이지, 코딩 에이전트 하네스가 아니기 때문입니다.
+VFF의 효과는 **진단, 조언, 설명형 응답 품질**에 한해 LLM 심판 + 3가족(Claude, Gemini, GPT) 교차검증으로 측정했습니다([bench/RESULTS.md](bench/RESULTS.md)). 다만 아래 같은 **실제 업무 지표는 이 벤치의 범위를 넘습니다**: 코드가 더 잘 돌아가는가, 수정 횟수가 줄었는가, 환각이 줄었는가, 긴 세션에서 덜 무너지는가, 복잡한 코드베이스를 더 잘 이해하는가, 실운영 비용까지 포함해도 이득인가. VFF는 응답을 더 구조적으로 만드는 output style이지, 코딩 에이전트 하네스가 아니기 때문입니다.
 
-그러니 **여러분의 실제 워크플로에서 직접 켜 보고 판단해 주시길 권합니다.** 도움이 되는 영역(구조적 진단·조언)과 한계가 드러나는 영역(깊은 추론·복잡 코딩 → Opus 라우팅)은 작업마다 다를 수 있고, 과장 없이 직접 확인하시는 게 가장 정확합니다.
+그러니 **여러분의 실제 워크플로에서 직접 켜 보고 판단해 주시길 권합니다.** 도움이 되는 영역(구조적 진단, 조언)과 한계가 드러나는 영역(깊은 추론, 복잡 코딩 → Opus 라우팅)은 작업마다 다를 수 있고, 과장 없이 직접 확인하시는 게 가장 정확합니다.
+
+측정 시점: 위 수치는 2026-06 모델(Sonnet 4.6, Opus 4.8) 기준입니다.
 
 ---
 
 ## 출처
 
-- **Fable 5 운영 구조 원본**: [elder-plinius/CL4R1T4S — CLAUDE-FABLE-5.md](https://github.com/elder-plinius/CL4R1T4S/blob/main/ANTHROPIC/CLAUDE-FABLE-5.md). VFF의 8섹션(커뮤니케이션·추론·도구 규율·검증·코드·글쓰기·톤·토큰 절약) 구조는 Fable 5에서 관찰한 운영 원칙을 **독립적으로 재구성**한 것이다 — 원문 시스템 프롬프트를 복제한 게 아니며, repo 어디에도 원문 블록은 없다(위 링크는 Fable 5 구조가 공개돼 있는 참고처다). 이 운영 원칙은 특정 모델 전용 비법이 아니라 널리 통용되는 패턴이고, VFF의 실제 기여는 그 패턴의 재구성 + output-style화 + repo 고유 장치(VFF 핸드셰이크·한국어 트리거·Opus 라우팅·서브에이전트 위임)다.
-- 실측 데이터: 초기 2026-06-11 단판 표본은 재현에 실패했다. 현재 근거는 2026-06-14 재검증([bench/RESULTS.md](bench/RESULTS.md)) — 중립 채점표·독립 심판 2명·재현 가능한 하네스(원자료 포함). 심판은 Claude 계열, 과제는 진단·조언·결정 중심(한계 명시).
-- 스킬·에이전트·훅 코드: 전체 자작.
+- **Fable 5 운영 구조 원본**: [elder-plinius/CL4R1T4S, CLAUDE-FABLE-5.md](https://github.com/elder-plinius/CL4R1T4S/blob/main/ANTHROPIC/CLAUDE-FABLE-5.md). VFF의 8섹션(커뮤니케이션, 추론, 도구 규율, 검증, 코드, 글쓰기, 톤, 토큰 절약) 구조는 Fable 5에서 관찰한 운영 원칙을 **독립적으로 재구성**한 것이다. 원문 시스템 프롬프트를 복제한 게 아니며, repo 어디에도 원문 블록은 없다(위 링크는 Fable 5 구조가 공개돼 있는 참고처다). 이 운영 원칙은 특정 모델 전용 비법이 아니라 널리 통용되는 패턴이고, VFF의 실제 기여는 그 패턴의 재구성 + output-style화 + repo 고유 장치(VFF 핸드셰이크, 한국어 트리거, Opus 라우팅, 서브에이전트 위임)다.
+- 실측 데이터: 초기 2026-06-11 단판 표본은 재현에 실패했다. 현재 근거는 2026-06-14 재검증([bench/RESULTS.md](bench/RESULTS.md)): 중립 채점표, 독립 심판 2명, 재현 가능한 하네스(원자료 포함). 심판은 Claude 계열, 과제는 진단, 조언, 결정 중심(한계 명시).
+- 스킬, 에이전트, 훅 코드: 전체 자작.

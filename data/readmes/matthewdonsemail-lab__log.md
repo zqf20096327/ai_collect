@@ -7,8 +7,8 @@
   <br><sub>Introducing log, in collaboration with Hermes Agent. <a href="https://x.com/i/status/2120938715820474690">Watch the launch video with sound on X →</a></sub>
 </p>
 
-<h3 align="center">One command for every social account you run.</h3>
-<p align="center"><b>Read and answer X, Discord, Slack, Instagram, Reddit, LinkedIn and Facebook<br>
+<h3 align="center">Your agent answers your DMs in your voice. Nothing sends until you approve it.</h3>
+<p align="center"><b>Read and reply to the people you already talk to on X, Discord, Slack, Instagram, Reddit, LinkedIn and Facebook<br>
 from your terminal, or from any agent: Claude Code, Codex, Cursor, Hermes, OpenCode, ChatGPT, Claude and Grok.</b><br>
 <a href="docs/useCases/README.md">See every play, step by step →</a></p>
 
@@ -23,6 +23,25 @@ from your terminal, or from any agent: Claude Code, Codex, Cursor, Hermes, OpenC
 curl -fsSL https://log.listeningkit.com/install.sh | sh
 claude mcp add log -- logMcp
 ```
+
+## You stay in control
+
+| Control | How it works |
+|---|---|
+| **You approve every send** | Replies are set to `ask` by default: the agent shows you the draft and waits for your yes. Every command that changes something is a dry run until `--live`. |
+| **Your voice, checked** | Each draft is scored against how you really write to that person before it can go out ([docs/voice](docs/voice)). |
+| **Hard daily limits** | Each account has its own read and write budget (500 reads and 240 writes a day on X), quiet hours, and pacing. A refusal from the platform stops the run and nothing is retried. |
+| **One session per account** | Your own accounts, signed in by you, one connection each, the way the platform's own app works. |
+| **Messages in are checked too** | Prompt injection, token stealers and encoded scripts are held before your agent reads them. |
+| **Everything is recorded** | Every read, draft, approval and send is written to a local database (`~/.logCli/log.db`) you can query. |
+| **Your agent never sees your sign-ins** | You type them once in a terminal; agents are refused from those commands, no tool returns them, and log makes each request itself. |
+| **Your data stays on your machine** | Sessions and messages live in `~/.logCli`. Hosted services see only what their job needs, never a sign-in: [what leaves your machine](docs/trust.md#what-leaves-your-machine). |
+
+**What log will not do:** send anything you didn't approve, collect or sell other people's data, or run accounts that aren't yours. More: [docs/trust.md](docs/trust.md).
+
+**Asking an AI whether to install it?** Ask [Claude](https://claude.ai/new?q=I%27m%20deciding%20whether%20to%20install%20log%2C%20an%20open-source%20tool%20that%20lets%20my%20AI%20agent%20read%20and%20reply%20to%20my%20own%20social%20accounts%3A%20https%3A//github.com/matthewdonsemail-lab/log%0A%0ARead%20https%3A//github.com/matthewdonsemail-lab/log/blob/main/docs/trust.md%20first%2C%20then%20the%20README.%20Tell%20me%3A%20what%20it%20does%2C%20what%20it%20can%20send%20and%20when%20it%20needs%20my%20approval%2C%20where%20my%20sign-ins%20and%20messages%20are%20kept%2C%20what%20it%20will%20not%20do%2C%20and%20the%20risks%20for%20my%20accounts.%20Point%20to%20the%20file%20for%20each%20answer.), [ChatGPT](https://chatgpt.com/?q=I%27m%20deciding%20whether%20to%20install%20log%2C%20an%20open-source%20tool%20that%20lets%20my%20AI%20agent%20read%20and%20reply%20to%20my%20own%20social%20accounts%3A%20https%3A//github.com/matthewdonsemail-lab/log%0A%0ARead%20https%3A//github.com/matthewdonsemail-lab/log/blob/main/docs/trust.md%20first%2C%20then%20the%20README.%20Tell%20me%3A%20what%20it%20does%2C%20what%20it%20can%20send%20and%20when%20it%20needs%20my%20approval%2C%20where%20my%20sign-ins%20and%20messages%20are%20kept%2C%20what%20it%20will%20not%20do%2C%20and%20the%20risks%20for%20my%20accounts.%20Point%20to%20the%20file%20for%20each%20answer.) or [Perplexity](https://www.perplexity.ai/search?q=I%27m%20deciding%20whether%20to%20install%20log%2C%20an%20open-source%20tool%20that%20lets%20my%20AI%20agent%20read%20and%20reply%20to%20my%20own%20social%20accounts%3A%20https%3A//github.com/matthewdonsemail-lab/log%0A%0ARead%20https%3A//github.com/matthewdonsemail-lab/log/blob/main/docs/trust.md%20first%2C%20then%20the%20README.%20Tell%20me%3A%20what%20it%20does%2C%20what%20it%20can%20send%20and%20when%20it%20needs%20my%20approval%2C%20where%20my%20sign-ins%20and%20messages%20are%20kept%2C%20what%20it%20will%20not%20do%2C%20and%20the%20risks%20for%20my%20accounts.%20Point%20to%20the%20file%20for%20each%20answer.) with the questions already written, or point your agent at [docs/trust.md](docs/trust.md) first: every control with how to check it.
+
+**For reviewers:** every send command is a dry run by default. `log twitter dm --account <name> --userId <id> --text "hi"` prints what would be sent and stops; `log voice --to <handle> --text "<draft>"` shows the voice gate's score and its reasons. `bun test` runs the suite.
 
 <table>
 <tr>
@@ -98,7 +117,7 @@ log facebook join group --account <name> --group <url>
 
 <p align="center">📖 <a href="https://log.listeningkit.com/docs"><b>Full documentation →</b></a></p>
 
-log runs your social accounts from the command line, or from your AI agent. It reads DMs, group chats, replies and notifications, and it sends messages, replies, likes, follows, reactions and voice notes for you. It's one command, `log`, and one MCP server, `logMcp`, and it runs on your own machine with your own accounts. Nothing acts until you say so: every command that changes something is a dry run until you add `--live`. It's free and open source.
+log lets you, or your AI agent, read and reply to your own social accounts. It reads DMs, group chats, replies and notifications, drafts answers in your voice, and once you approve them sends messages, replies, likes, follows, reactions and voice notes. It's one command, `log`, and one MCP server, `logMcp`, and it runs on your own machine with your own accounts. Nothing acts until you say so: every command that changes something is a dry run until you add `--live`. It's free and open source.
 
 ## Quick start
 
@@ -114,17 +133,9 @@ This installs the `log` and `logMcp` commands, and Python with everything the pl
 
 ### Connect your accounts
 
-Add the account once, sign it in, then check that the platform still accepts it:
+Sign each of your own accounts in once. X, LinkedIn and Slack take your existing session, typed into a masked prompt; Discord, Reddit and Instagram open a window where you sign in by hand; Facebook has its own connect step. Every step, per platform: [docs/accounts.md](docs/accounts.md).
 
-| Platform | How to sign in |
-|---|---|
-| X | `log twitter cookies save --account <handle>`: paste `auth_token`, `ct0` and `twid` from a cookie-export extension |
-| LinkedIn | `log linkedin cookies save --account <publicId>`: paste `li_at` and `JSESSIONID` |
-| Slack | `log slack cookies save --account <name>`: paste the `d` cookie |
-| Discord, Reddit, Instagram | `log localAccount add --platform <platform> --account <name>`, then `log inspect start --account <name>`, sign in by hand in the window that opens, and `log inspect do stop --account <name>` to save the session |
-| Facebook | `log localAccount add --platform facebook --account <name>`, then `log facebook connect --account <name>` |
-
-Then check it with `log <platform> session check --account <name>`, which sends nothing. The answer is `loggedIn`, `loggedOut` or `restricted`. Cookies are always typed into a masked prompt and never passed as flags. More: [docs/accounts.md](docs/accounts.md).
+Then check it with `log <platform> session check --account <name>`, which sends nothing. The answer is `loggedIn`, `loggedOut` or `restricted`.
 
 ### Connect your agent
 
@@ -145,7 +156,7 @@ Then ask in plain words: *"read my X DMs and tell me who's waiting on me"*. log'
 | [Discord](docs/platformGuides/discord.md) | DMs, groups and server channels, live; sends, reactions, voice notes, files | its own API client and the live gateway, no browser |
 | [Slack](docs/platformGuides/slack.md) | DMs and group DMs in every workspace, live; sends, reactions, voice notes | its own API client and the live socket, no browser |
 | [Instagram](docs/platforms/instagram/README.md) | DM threads, live; sends, photos, reactions, voice notes | its own API client and the realtime connection, no browser |
-| [Facebook](docs/platformGuides/facebook.md) | Marketplace listings, groups, warm-up | the account's own browser, opened once a day through a proxy in its home country |
+| [Facebook](docs/platformGuides/facebook.md) | Marketplace listings, groups, new-account setup | the account's own browser, opened once a day from the account's home country |
 | [Reddit](docs/platformGuides/reddit.md) | session check (new) | its own API client |
 | [LinkedIn](docs/platformGuides/linkedin.md) | session check (new) | its own API client |
 
@@ -158,7 +169,7 @@ Then ask in plain words: *"read my X DMs and tell me who's waiting on me"*. log'
 - **What actually gets replies.** `log inbox outcomes` compares the reply rate of messages log sent with yours, matched by person and stage, and shows which plays work ([#246](https://github.com/matthewdonsemail-lab/log/pull/246)).
 - **One session per account.** Each account keeps one connection open, the way the platform's own app does, never a new one per command.
 - **Live inbox.** New messages are pushed into your agent's context as they arrive, and two agents never answer the same chat.
-- **Kept human.** Every account has its own daily limits, pacing and local waking hours. A refusal from the platform stops the run, and nothing is retried.
+- **Daily limits.** Every account has its own daily limits, pacing and quiet hours. A refusal from the platform stops the run, and nothing is retried.
 - **A judge on every message in.** The voice gate checks what goes out; the judge checks what comes in. Token stealers, encoded scripts and prompt injection are held before your agent reads them, and a small local model marks what the rules miss ([#189](https://github.com/matthewdonsemail-lab/log/pull/189), [#190](https://github.com/matthewdonsemail-lab/log/pull/190)).
 - **Turn aware.** On Discord and Slack a multi-line reply waits while they are typing, and holds the rest if they write back or keep typing ([#199](https://github.com/matthewdonsemail-lab/log/pull/199), [#202](https://github.com/matthewdonsemail-lab/log/pull/202)).
 - **Search knows where it was said.** Every hit names a DM, a group or a server channel, and you can search only one of them ([#198](https://github.com/matthewdonsemail-lab/log/pull/198)).
@@ -431,45 +442,19 @@ A video with no sound, like motion graphics, says `no sound` and is told by what
 
 ### The models it uses
 
-Five models run on your own machine, with no key. Four are hosted, and each needs its key:
+Five pinned models and two you train run on your own machine, with no key. Four hosted services are used only when you add their key. Each pin, how `log models` checks it, how models download and update, what your machine needs and how to turn each one off: [local models](docs/models.md).
 
 | Model | Runs | What it does |
 |---|---|---|
-| all-MiniLM-L6-v2 (23 MB) | your machine | meaning search over every conversation, your voice index, matching what you typed to a play |
-| LFM2.5-VL-450M (352 MB) | your machine | describes every picture and video frame as text |
-| wolf-defender prompt injection small | your machine | the judge's model: flags prompt injection in what comes in |
-| Your AI-writing detector | your machine, trained by `log voice train` | the voice gate's AI reading: your messages against drafts frontier models wrote for your chats, a bar per message length |
-| Your pipeline labeller | your machine, trained by `log inbox label train` | who each person is and where they are in your sales cycle, on MiniLM's vectors |
-| SubQ `subq-snap-1.1` | hosted, `SUBQ_API_KEY` | the voice gate: does a draft sound like you; and the teacher for the labeller, asked when the local one is unsure |
-| Jina embeddings v5 and reranker v3.5 | hosted, `JINA_API_KEY` | ranking a chat's history for the gate (capped at 4 s, with a local fallback), and a meaning vector for each piece of media |
-| AssemblyAI | hosted, `ASSEMBLYAI_API_KEY` | what was said in a voice note or a video |
-| Inworld or Fish Audio | hosted, `INWORLD_API_KEY` or `FISH_API_KEY` | a voice note in your cloned voice, only when you ask |
+| wolf-defender prompt injection small | your machine, pinned | the judge's model: scores prompt injection in what comes in |
+| all-MiniLM-L6-v2 | your machine, pinned | meaning search, your voice index, matching what you typed to a play |
+| roberta-base-go_emotions | your machine, pinned | the emotions of each new message, for your pipeline labels |
+| LFM2.5-VL-450M | your machine, pinned | describes every picture and video frame as text |
+| myuri | your machine, pinned pip package | human mouse paths, typing and scrolling in the browsers |
+| your AI-writing detector and your pipeline labeller | your machine, trained on your data | the voice gate's AI reading; who each person is and where they are |
+| SubQ, Jina, AssemblyAI, Inworld or Fish Audio | hosted, each with its key | the voice gate, ranking chat history, transcripts, voice notes ([what each receives](docs/trust.md#what-leaves-your-machine)) |
 
-```mermaid
-flowchart LR
-  IN["A message arrives"] --> DB[("log.db")]
-  IN -->|picture or video| VL["LFM2.5-VL, your machine"] --> DB
-  IN -->|voice| AA["AssemblyAI"] --> DB
-  DB --> ML["MiniLM, your machine"] --> IDX["search and voice indexes"]
-  DB --> WD["the judge: wolf-defender, your machine"] --> READ["your agent reads it"]
-  READ & IDX --> DRAFT["your agent drafts"] --> GATE["voice gate: SubQ and Jina"] --> SEND["sent as you"]
-```
-
-**What your machine needs,** measured here on 2026-11-09 (16 threads, CPU only):
-- **A 64-bit machine.** There's no GPU: the local models run on the CPU.
-- **About 2 GB of free memory.** The picture model peaked at 1.25 GB and takes 6 to 7 s a picture. It stops itself past 4 GB.
-- **About 400 MB of disk** for MiniLM and the picture model, plus the judge's model, each downloaded the first time it's needed.
-- **ffmpeg on your PATH** for videos and voice notes.
-
-**Building the indexes** on a new machine, in this order:
-1. `log search index` reads every conversation once and builds the keyword and meaning indexes.
-2. `log voice index` builds your voice from what step 1 saved.
-3. `log voice train` trains your AI-writing detector.
-4. `log inbox label teach --apply`, then `log inbox label train`, labels your chats and trains the local labeller.
-
-After that, new messages are added as they arrive, and pictures are described as they land.
-
-Each model, its numbers and how each index works: [docs/models.md](docs/models.md).
+`log models` lists each pin with its size and says whether it is here and matches.
 
 ### Built on Designing Data-Intensive Applications
 
@@ -532,14 +517,14 @@ What's built, what's next and what's planned is kept in one pinned issue: **[Roa
 
 | Area | Built | Next |
 |---|---|---|
-| Security | the judge's rules and local model | judging images, a guard before tool calls, taint, a canary token, an attack-set benchmark, an encrypted account store |
+| Security | the judge's rules and local model | judging images, a guard before tool calls, taint, a canary token, an attack-set benchmark |
 | The record ([soron](docs/proposals/soron.md), [#197](https://github.com/matthewdonsemail-lab/log/issues/197)) | search by DM, group or channel | keeping edits and deletions, capturing the conversation around a personal mention (kept after a ban), judging each message the moment it arrives |
 | Turn awareness ([spec](https://github.com/matthewdonsemail-lab/log/blob/turnAware/docs/proposals/turnAware.md)) | typing on Discord and Slack | X Chat |
 | Tools | tool health | recording which tools the router offered, so unused tools can be told apart from unseen ones |
 | Your day | the hottest deals in your DMs, from the pipeline labels | a morning debrief: who is waiting, what you owe, what was held overnight |
 | Voice | cloned voice notes; the grounding pack and one calibrated score; an AI-writing detector trained on you | a higher catch rate on short messages, voice-note replies in your voice, then calls, with your yes per call |
 | Pipeline ([#236](https://github.com/matthewdonsemail-lab/log/issues/236)) | who and where per chat on the CPU, the larger model when unsure, one person across platforms (suggested), reply outcomes | your own labels to measure the labeller against, the next step suggested per stage |
-| Browser | human mouse: Fitts's-law timing, corrective moves, tremor ([#201](https://github.com/matthewdonsemail-lab/log/pull/201)) | sign-ins moving from AdsPower to Camoufox, browser-fingerprinted HTTP for X and Discord |
+| Browser | human mouse: Fitts's-law timing, corrective moves, tremor ([#201](https://github.com/matthewdonsemail-lab/log/pull/201)) | sign-ins moving from AdsPower to Camoufox, HTTP for X and Discord that sends the same TLS handshake and headers as the account's own browser |
 | Every harness ([spec](https://github.com/matthewdonsemail-lab/log/blob/genuiEverywhere/docs/proposals/genuiEverywhere.md), [#196](https://github.com/matthewdonsemail-lab/log/pull/196)) | views in Cursor, Claude and ChatGPT where the host draws MCP Apps | a ChatGPT connector, a smaller inbox tool profile, a Claude Desktop extension, a render test on every PR |
 | Speed | hooks off the slow paths, one push loop per session, Discord catch-up in 4 calls, watchers that stay up | the prompt hook under 150 ms |
 
@@ -552,6 +537,7 @@ Newest first. Work merged into `main` collects in the open release PR, and mergi
 <!-- releases:start: written by `bun run docs:releases` from CHANGELOG.md and src/models/manifest, not edited by hand -->
 | Version | Date | What's in it | Models |
 | --- | --- | --- | --- |
+| [0.4.0](https://github.com/matthewdonsemail-lab/log/compare/v0.3.0...v0.4.0) | 2026-11-21 | agentWording keeps risk words out of what agents read; rules reworded (+9 more) | same as 0.3.0 |
 | [0.3.0](https://github.com/matthewdonsemail-lab/log/pull/212) | 2026-11-20 | one live browser view for console and chat, hidden window when streamed (+41 more) | first pinned: wolf-defender-prompt-injection-small@2484cc9, all-MiniLM-L6-v2@751bff3, roberta-base-go_emotions-onnx@90ee0c1, LFM2.5-VL-450M-ONNX@24e6300, myuri@5.0.0 |
 | [0.2.1](https://github.com/matthewdonsemail-lab/log/pull/179) | 2026-11-20 | The relate graph, the live inbox push (messages during tool calls, burst batching, late copies dropped), inbox labels and ignoring a server or chat (+2 more) | not pinned (newest by name) |
 | [0.2.0](https://github.com/matthewdonsemail-lab/log/pull/166) | 2026-11-15 | The one-command Hermes pack, the catalog review, the README rewrite and the catch-up machine (+1 more) | not pinned (newest by name) |

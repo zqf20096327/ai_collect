@@ -19,9 +19,9 @@
 </p>
 
 <p align="center">
-  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.23.1" alt="Support on Patreon" height="28"/></a>
+  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.23.4" alt="Support on Patreon" height="28"/></a>
   &nbsp;
-  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.23.1" alt="Facebook Page" height="28"/></a>
+  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.23.4" alt="Facebook Page" height="28"/></a>
 </p>
 
 ---
@@ -77,7 +77,7 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
   </td>
   <td align="center" valign="top">
     <img src="https://download.openpublisher.app/images/icon_linux_deb.png" width="48" height="48" alt="Linux"/><br/>
-    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-linux.flatpak"><strong>Flatpak</strong></a> · <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-linux.AppImage"><strong>AppImage</strong></a><br/>
+    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-linux.flatpak"><strong>Flatpak</strong></a> · <a href="https://github.com/rmellis/open-publisher/releases/download/5.23.2/openpublisher5_amd64-linux.AppImage"><strong>AppImage</strong></a><br/>
     <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-linux.deb">.deb</a> · <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-linux.rpm">.rpm</a><br/>
     <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-linux.run">.run Installer</a>
   </td>
@@ -94,6 +94,8 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
 </table>
 
 </div>
+
+> **Online vs. Offline Note:** The prebuilt Windows/Linux/macOS desktop packages use a **hybrid architecture** that requires an active internet connection on launch to load the latest live workspace automatically (while still processing your PDF and `.opub` files locally on your device with no server uploads). For **100% air-gapped offline use**, clone this GitHub repository and run the project locally.
 
 
 ---
@@ -159,6 +161,7 @@ The web app at `openpublisher.app` remains completely clean on Google Safe Brows
 - [Document Security and Privacy](#document-security-and-privacy)
 - [The .opub File Format](#the-opub-file-format)
 - [Keyboard Shortcuts Reference](#keyboard-shortcuts-reference)
+- [Supporters of Open Source](#supporters-of-open-source)
 - [Developers](#developers)
 
 ---
@@ -1040,6 +1043,17 @@ Open Publisher's native format is `.opub`:
 | `Enter` (Multi-Page Overview) | Open selected page for editing |
 | `Ctrl + Enter` (AI Assistant) | Generate AI layout |
 | `Escape` | Exit text editing mode / return to Single-Page from Overview |
+
+---
+
+<a id="supporters-of-open-source"></a>
+## ❤️ Supporters of Open Source
+
+OpenPublisher is 100% free, ad-free, and open source (GNU GPL v2). A huge thank you to the Patreon supporter(s) helping keep the project independent and actively developed:
+
+- **Frank Reibold** *(Founding Supporter)*
+
+Want to support ongoing development? [Support OpenPublisher on Patreon](https://patreon.com/OpenPublisher)
 
 ---
 

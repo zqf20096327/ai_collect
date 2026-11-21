@@ -2,15 +2,15 @@
 
 **深度学习经典论文精读与技术演进路线**
 
-从经典论文出发，理解深度学习中的关键问题、方法选择与技术演进。每篇中文精读围绕“为什么提出、怎样实现、证据是什么、局限在哪里”展开，并配套可在 CPU 上运行的小实验。
+从经典论文出发，理解深度学习中的关键问题、方法选择与技术演进。每篇中文精读围绕“为什么提出、怎样实现、证据是什么、局限在哪里”展开，部分论文配有可在 CPU 上运行的小实验。
 
-**[开始阅读](docs/roadmaps/README.md) · [论文索引](docs/papers.md) · [技术关联](docs/connections.md) · [实验指南](experiments/README.md) · [历史资料](docs/archive/README.md)**
+**[专题总览](topics/README.md) · [开始阅读](docs/roadmaps/README.md) · [论文索引](docs/papers.md) · [技术关联](docs/connections.md) · [实验指南](experiments/README.md) · [历史资料](docs/archive/README.md)**
 
 适合已经接触过 Python 和神经网络、希望系统阅读原论文的学习者。建议具备矩阵运算、链式法则和基础概率知识；具体先修要求见各条路线。
 
 ## 从哪里开始
 
-1. **刚开始读论文**：先看 [阅读方法与核心顺序](docs/roadmaps/README.md)，再从 [ResNet：为什么加深网络之后反而更难训练？](notes/resnet.md) 开始。
+1. **刚开始读论文**：先看 [阅读方法与核心顺序](docs/roadmaps/README.md)，再从 [ResNet：为什么加深网络之后反而更难训练？](topics/03-vision/notes/resnet.md) 开始。
 2. **已有研究方向**：从下面选择路线，结合原论文与中文精读阅读；需要补前置概念时，再返回相关笔记。
 3. **想验证自己的理解**：运行配套实验，比较预测与结果，再回到论文检查解释是否成立。
 
@@ -18,7 +18,7 @@
 
 | 方向 | 围绕什么问题阅读 | 路线入口 |
 |---|---|---|
-| 训练与视觉 | 网络为什么能加深？归一化与优化器各自改变什么？ | [卷积网络 → 残差连接 → 训练方法 → ViT](docs/roadmaps/training-and-vision.md) |
+| 训练与视觉 | 网络怎样加深或轻量化？检测和分割怎样利用空间特征？ | [分类骨干、训练方法、目标检测与像素分割](docs/roadmaps/training-and-vision.md) |
 | 序列与注意力 | 模型如何读取上下文？注意力怎样组织序列计算？ | [Encoder–Decoder → Attention → Transformer](docs/roadmaps/sequence-and-attention.md) |
 | 生成模型 | 模型如何学习数据分布？不同生成目标怎样比较？ | [VAE / GAN → DDPM → Flow Matching](docs/roadmaps/generative-models.md) |
 
@@ -26,32 +26,13 @@
 
 ## 已有中文精读
 
-| 论文 | 这篇精读回答什么 | 配套实验 |
-|---|---|---|
-| [ResNet](notes/resnet.md) | 为什么增加恒等捷径会改变深层网络的梯度传播？ | 普通路径与残差路径的导数对照 |
-| [Batch Normalization](notes/batch-normalization.md) | 归一化统计量来自哪里，为什么会受同批样本影响？ | 改变同批样本，观察输出变化 |
-| [Layer Normalization](notes/layer-normalization.md) | 改变统计轴后，哪些批次依赖消失了？ | 与 BatchNorm 使用相同输入对照 |
-| [Adam](notes/adam.md) | 梯度历史如何影响参数更新，为什么需要偏差校正？ | 二次函数优化与手算第一步更新 |
-| [AdamW](notes/adamw.md) | 为什么 L2 正则不等于自适应优化中的权重衰减？ | 首步手算、矩状态与累计衰减对照 |
-| [Bahdanau Attention](notes/bahdanau-attention.md) | 每一步解码如何重新读取源端信息，padding 怎样排除？ | 加性打分、非线性消融与变长掩码 |
-| [Transformer](notes/transformer.md) | Q、K、V 怎样协作，因果掩码如何限制信息可见性？ | 修改未来位置，检查前缀输出 |
-| [BERT](notes/bert.md) | 输入遮盖、双向可见性与监督位置怎样配合？ | 可见性与 MLM 损失权重；预训练未复现 |
-| [ViT](notes/vit.md) | 图像块如何投影，位置标签怎样改变排列关系？ | 块投影/卷积等价与位置排列干预 |
-| [CLIP](notes/clip.md) | 图文配对怎样变成双向对比目标，候选集怎样影响概率？ | 配对置换、重复向量与温度尺度；预训练未复现 |
-| [LoRA](notes/lora.md) | 冻结权重后梯度怎样流动，低秩增量何时可合并？ | 初始化、有限差分与合并负对照 |
-| [VAE](notes/vae.md) | 近似后验、下界和重参数化怎样配合？ | 高斯闭式参照与采样梯度 |
-| [VAE 输入跳跃](notes/vae-input-skip.md) | 重构误差下降为何不保证生成分布更好？ | 与 VAE 共用实验：密度、坐标缩放与负对照 |
-| [GAN](notes/gan.md) | 最优判别器怎样关联 JS 散度，两种生成器损失怎样影响梯度？ | 有限概率表与 logit 梯度对照 |
-| [WGAN](notes/wgan.md) | 分布靠近时距离如何变化，critic 约束起什么作用？ | 一维运输、JS 与 critic 容量对照 |
-| [EBGAN](notes/ebgan.md) | 能量间隔怎样影响两方目标，表示分散怎样衡量？ | 有限能量表、间隔导数与 PT 几何 |
-| [DDPM](notes/ddpm.md) | 加噪过程怎样产生监督信号，预测噪声意味着什么？ | 高斯加噪与独立测试集上的线性去噪 |
-| [Flow Matching](notes/flow-matching.md) | 条件速度怎样变成边缘速度，时间方向如何对齐？ | 高斯与双峰回归、解析流及积分对照 |
-| [Robust Flow Matching](notes/robust-flow-matching.md) | 数据污染和错标签怎样改变监督？ | 残差、类间评分与 TRS 缓冲区；训练未复现 |
-| [LipsFlower](notes/lipsflower.md) | 初值与条件扰动怎样影响恢复流？ | 标量 ODE 敏感性与积分反例；图像训练未复现 |
-| [Flow 直线性与 Euler 误差](notes/flow-straightness.md) | 回归指标怎样关联数值误差？ | 主误差传播；匹配耦合实验未复现 |
-| [DualCast](notes/dualcast.md) | 双参考角色与区域权重如何组织？ | 区域损失机制，预印本，视频训练未复现 |
+目前有 **58 篇精读初版、32 个机制实验专题**。从 [AlexNet](topics/03-vision/notes/alexnet.md) 开始可对照小核堆叠、多尺度分支与残差连接。从 [word2vec](topics/04-language/notes/word2vec.md) 和 [Seq2Seq](topics/04-language/notes/seq2seq.md) 开始可追踪词向量、固定句向量与注意力之间的联系。
 
-目前有 **22 篇精读初版、20 个机制实验**。笔记中提供原文链接、关键公式、证据位置与延伸问题；实验用于理解局部机制，完整论文基准复现尚未完成。
+沿[视觉路线](docs/roadmaps/training-and-vision.md)可从批内对比、动量字典读到无负样本回归和掩码重建。沿[序列路线](docs/roadmaps/sequence-and-attention.md)可比较上下文特征、因果预测、排列预测与片段去噪，再读指令微调与偏好优化；沿[生成路线](docs/roadmaps/generative-models.md)可从 GAN 读到 StyleGAN 的分层风格控制，也可从 DDPM 读到潜空间扩散。
+
+近年的两个读点是 [Mamba-2 的状态递推](topics/04-language/notes/mamba-2.md)与 [LLaDA 的离散去噪](topics/05-generative/notes/llada.md)，均可运行 CPU 对照。
+
+[按年份浏览全部精读](docs/roadmaps/timeline.md) · [逐篇查看原文和验证状态](docs/papers.md)
 
 ## 动手验证
 
@@ -61,19 +42,19 @@
 python3 experiments/run.py --experiment all --seed 7
 ```
 
-上面的命令运行核心五项实验。加性注意力、VAE 目标与评价、AdamW 衰减、LoRA、ViT、BERT MLM、CLIP、GAN、WGAN、EBGAN、DualCast、Flow Matching、Robust Flow Matching、LipsFlower、Euler 误差十五个专题的独立命令见[实验指南](experiments/README.md)。
+上面的命令运行核心五项实验。其余专题的命令和验收条件见[实验指南](experiments/README.md)。
 
 也可以把 `all` 替换为 `residual`、`normalization`、`adam`、`attention` 或 `diffusion`，单独运行感兴趣的实验。
 
 [查看输入、对照与验收条件](experiments/README.md) · [查看实测结果](experiments/results/README.md)
 
-## 经典资料与其他方向
+## 统一目录与资料状态
 
-原有资料涵盖深度学习基础、语音识别、强化学习、迁移学习、单样本学习、目标检测、跟踪、分割、图像描述、机器翻译、机器人及风格迁移。
+所有学习内容按专题放在 `topics/`：专题首页给出阅读顺序，`notes/` 放中文精读，`papers/` 保存原有 PDF。教材、旧论文和新解读从同一个专题入口阅读；实验集中在 `experiments/`，由笔记链接到对应配置和实测。
 
-- [按专题查找资料](docs/archive/README.md)：保留 22 个原分类目录和 112 个 PDF 的路径。
-- [查看历史论文清单](docs/archive/reading-list-2018.md)：主体整理于 2018 年，阅读时注意版本与时代背景。
-- [查看已核实的勘误](docs/errata.md)：包括归一化、跟踪方法和书目信息的修正。
+[查看 12 个专题与覆盖状态](topics/README.md)。语音、外部记忆、强化学习、机器人、跟踪等方向仍有精读缺口，已在各专题标明；58 篇精读并不代表 112 个历史文件都已解读。
+
+本次重编排移动了文件位置，112 个 PDF 内容逐一保持不变。旧收藏链接请使用 [旧路径 → 新位置对照](docs/archive/path-migration.md)，其中保留迁移前的固定版本入口。
 
 ## 参与维护
 

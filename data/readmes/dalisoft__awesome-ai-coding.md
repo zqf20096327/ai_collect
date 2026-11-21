@@ -141,6 +141,7 @@ See [AI providers](https://github.com/dalisoft/awesome-hosting#llminference-api)
 |------------------|-------------------------------------------------------------|
 | DevForth         | <https://devforth.io/agents-for-code/?sortby=monthly-value> |
 | Real API Pricing | <https://realapipricing.com/#lang=en&view=allowance>        |
+| TokenMost        | <https://tokenmost.com/en.html>                             |
 | WokeyAI          | <https://wokey.ai/claude-usage-limits>                      |
 
 ---
@@ -281,6 +282,7 @@ List of AI-powered command-line coding-agent tools. See [feature matrix](./FEATU
 | [Paseo](https://paseo.sh)                      | GUI  | -            | Your sub | -      | -     | -         | Yes         |
 | [super.engineering](https://super.engineering) | GUI  | -            | Your sub | -      | -     | -         | No          |
 | [T3 Code](https://t3.codes)                    | GUI  | -            | Your sub | -      | -     | -         | Yes         |
+| [Tesseract](https://tesseract.dev)             | GUI  | -            | Your sub | -      | -     | Yes       | No          |
 
 ---
 

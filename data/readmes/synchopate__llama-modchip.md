@@ -1,20 +1,20 @@
 <div align="center">
 
-# llama-modchip (v3.1.1)
+# llama-modchip (v3.2.0)
 
 ### Unified 16 GB · 32 GB · 64 GB MaxQ Inference Engine for `Qwen3.8-Flash-Next`, `DeepSeek-V4 284B` & `Nemotron-3.5 30B`
-**100% Donor-Free `MaxQ` Compression · Unified `RouteCrack 2.0` (`L1 Micro-Arbiter` + `NextN` MTP + `Two-Zone Suffix` + `Stockfish-PVS`) · Zero-Collision ABI · Linux, macOS Metal, CUDA, Vulkan & Windows 11**
+**100% Donor-Free `MaxQ` Compression · Unified `RouteCrack 2.0` (`L1 Micro-Arbiter`) · Quantized Split-KV Decode · Native C++ HARP-Cache v2 · Zero-Collision ABI · Linux, macOS Metal, CUDA, Vulkan & Windows 11**
 
-[![Release](https://img.shields.io/badge/release-v3.1.1-3fb950?style=flat-square)](RELEASE_NOTES.md)
+[![Release](https://img.shields.io/badge/release-v3.2.0-3fb950?style=flat-square)](RELEASE_NOTES.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-58a6ff?style=flat-square)](LICENSE)
 [![Quality Gate](https://img.shields.io/badge/blind%20wiki--alt%20PPL-3.43%20(64GB)%20%C2%B7%206.86%20(284B)%20%C2%B7%20100%2F100%20(30B)-2ea043?style=flat-square)](benchmarks/QUALITY_GATE_VQ3_64.md)
-[![Technical Paper PDF](https://img.shields.io/badge/PDF-v3.1.1%20technical%20paper-b31b1b?style=flat-square)](paper/llama-modchip-paper.pdf)
+[![Technical Paper PDF](https://img.shields.io/badge/PDF-v3.2.0%20technical%20paper-b31b1b?style=flat-square)](paper/llama-modchip-paper.pdf)
 [![Architecture](https://img.shields.io/badge/docs-ARCHITECTURE.md-bc8cff?style=flat-square)](ARCHITECTURE.md)
 [![Drafter](https://img.shields.io/badge/drafter-RouteCrack%202.0%20(L1%20Micro--Arbiter)-d29922?style=flat-square)](speculative/ROUTECRACK_TECHNIQUES.md)
-[![HF Collection](https://img.shields.io/badge/Hugging%20Face-MaxQ%20v3.1.1%20Fleet-ffcc00?style=flat-square)](https://huggingface.co/collections/Synchopate/maxq-zero-gpu-frontier-fleet-v311-6afb6e2d63dfd573b4b1a95f)
+[![HF Collection](https://img.shields.io/badge/Hugging%20Face-MaxQ%20v3.2.0%20Fleet-ffcc00?style=flat-square)](https://huggingface.co/collections/Synchopate/maxq-zero-gpu-frontier-fleet-v311-6afb6e2d63dfd573b4b1a95f)
 [![Submit Benchmark](https://img.shields.io/badge/leaderboard-Submit%20Your%20CPU-2ea043?style=flat-square)](https://github.com/synchopate/llama-modchip/issues/new?template=cpu_benchmark_submission.yml)
 
-[**Quickstart (`./modchip setup`)**](#quickstart) · [**3-Tier RAM Matrix**](#the-3-tier-maxq-v311-ram-matrix) · [**`RouteCrack 2.0` & Fidelity Benchmarks**](#empirical-signal-fidelity-and-end-to-end-benchmarks) · [**Engine Architecture (`v3.1.1`)**](#what-is-new-in-llama-modchip-v311) · [**Supported Hardware**](#supported-chips-and-processor-specific-optimizations) · [**Leaderboard**](#community-cpu-and-hybrid-leaderboard) · [**FAQ**](FAQ.md)
+[**Quickstart (`./modchip setup`)**](#quickstart) · [**3-Tier RAM Matrix**](#the-3-tier-maxq-v320-ram-matrix) · [**`RouteCrack 2.0` & Fidelity Benchmarks**](#empirical-signal-fidelity-and-end-to-end-benchmarks) · [**Engine Architecture (`v3.2.0`)**](#what-is-new-in-llama-modchip-v320) · [**Supported Hardware**](#supported-chips-and-processor-specific-optimizations) · [**Leaderboard**](#community-cpu-and-hybrid-leaderboard) · [**FAQ**](FAQ.md)
 
 <table>
 <tr>
@@ -32,9 +32,9 @@
 
 ---
 
-## The 3-Tier `MaxQ v3.1.1` RAM Matrix
+## The 3-Tier `MaxQ v3.2.0` RAM Matrix
 
-One unified `llama-modchip v3.1.1` binary (`GLIBC <= 2.30`, static `libstdc++` & `libgomp`, zero external OpenMP `.so` needed) automatically detects your CPU ISA (`AVX-512 VBMI/VNNI`, `AVX2`, `ARM64 NEON`, `Apple Metal`), system RAM, and model family (`MTP` vs `30B` Mamba-2 vs `284B` Heavy-MoE) to run **`RouteCrack 2.0` (`--spec-type routecrack2`)** on the strongest open-weights model that fits cleanly on your machine:
+One unified `llama-modchip v3.2.0` binary (`GLIBC <= 2.30`, static `libstdc++` & `libgomp`, zero external OpenMP `.so` needed, rebased onto `llama.cpp @ 46eb1742d` / `b12604`) automatically detects your CPU ISA (`AVX-512 VBMI/VNNI`, `AVX2`, `ARM64 NEON`, `Apple Metal`), system RAM, and model family (`MTP` vs `30B` Mamba-2 vs `284B` Heavy-MoE) to run **`RouteCrack 2.0` (`--spec-type routecrack2`)** with **Quantized Split-KV Decode** and **Native C++ Chained-Prefix HARP-Cache v2** on the strongest open-weights model that fits cleanly on your machine:
 
 | System RAM Tier | Recommended Aligned Checkpoint | Disk Footprint (`Shards`) | Cold-Cache Cgroup v2 (`-c 32768`, `Swap=0`) | Verified `v3.1.1` Speed (`16C Zen 5`, `0 GPU`) | Backend Compatibility |
 | :---: | :--- | :---: | :---: | :---: | :--- |
@@ -64,13 +64,13 @@ curl -sL https://raw.githubusercontent.com/synchopate/llama-modchip/main/install
 
 ### Direct Portable Binary Run (`GLIBC_2.30` Linux `x86_64` `-avx512` / `-avx2`)
 
-All 12 `v3.1.1` Linux `x86_64` binaries link `libstdc++`, `libgcc`, and `libgomp.a` statically (`NEEDED = [libdl.so.2, libpthread.so.0, libm.so.6, libc.so.6, ld-linux-x86-64.so.2]`, `max_glibc <= 2.30`, `0` `%zmm` instructions in `-avx2`, `0` `vdpbf16ps` in `-avx512`):
+All 12 `v3.2.0` Linux `x86_64` binaries link `libstdc++`, `libgcc`, and `libgomp.a` statically (`NEEDED = [libdl.so.2, libpthread.so.0, libm.so.6, libc.so.6, ld-linux-x86-64.so.2]`, `max_glibc <= 2.30`, `0` `%zmm` instructions in `-avx2`, `0` `vdpbf16ps` in `-avx512`):
 
 ```bash
 # 1. Auto-select -avx512 (Zen 4/5, Ice Lake+) or -avx2 (Haswell+, Zen 1-3, Alder/Raptor Lake) and verify SHA-256:
 BIN_ISA=$(grep -q "avx512f" /proc/cpuinfo && grep -Eq "avx512_?vbmi" /proc/cpuinfo && grep -Eq "avx512_?vnni" /proc/cpuinfo && echo "avx512" || echo "avx2")
-curl -fLO "https://github.com/synchopate/llama-modchip/releases/download/v3.1.1/llama-server-modchip-linux-x86_64-${BIN_ISA}"
-curl -fLO "https://github.com/synchopate/llama-modchip/releases/download/v3.1.1/SHA256SUMS"
+curl -fLO "https://github.com/synchopate/llama-modchip/releases/download/v3.2.0/llama-server-modchip-linux-x86_64-${BIN_ISA}"
+curl -fLO "https://github.com/synchopate/llama-modchip/releases/download/v3.2.0/SHA256SUMS"
 sha256sum -c SHA256SUMS --ignore-missing
 chmod +x "llama-server-modchip-linux-x86_64-${BIN_ISA}"
 
@@ -101,16 +101,16 @@ env RC_TABLES_DIR=/nonexistent "./llama-server-modchip-linux-x86_64-${BIN_ISA}" 
 ```
 
 > [!IMPORTANT]
-> **Critical Runtime Best Practices (`v3.1.1`):**
+> **Critical Runtime Best Practices (`v3.2.0`):**
 > - **Non-Convoy Threading (`-t $((N_CORES - 1)) -tb $((N_CORES - 1)) --poll 0 --poll-batch 0`):** Leaving 1 core free for HTTP/OS dispatch and disabling busy-polling eliminates thread-pool barrier convoys (`+25.9%` `pp512`, `+31.3%` `tg128` over oversubscribed `-t N --poll 50`). `./modchip` configures this automatically.
 > - **Vocabulary Isolation (`RC_TABLES_DIR=/nonexistent` on Non-Nemotron Models):** When serving `Qwen3.8` (`248K` vocab) or `DeepSeek-V4` (`129K` vocab) from a working directory containing `./workspace/routecrack` Nemotron tables, always set `RC_TABLES_DIR=/nonexistent` (not merely unset) so `RouteCrack 2.0` runs in clean online session mode. `./modchip` enforces this automatically.
-> - **Default `--repack` ON (`v3.1.1`) vs. Unpatched Upstream `llama.cpp`:** `llama-modchip v3.1.1` fixes upstream `CPU_REPACK` `q8_cache` / `repack.cpp` bugs while preserving zero-copy `mmap` on 3D MoE tensors (`RssAnon = 1.81–1.92 GiB`). Users loading `Qwen3.8` GGUFs on **unpatched upstream `llama.cpp`** should pass `--no-repack` (`-nr`); `--no-repack` is **not** needed on `llama-modchip v3.1.1`.
+> - **Default `--repack` ON (`v3.2.0`) vs. Unpatched Upstream `llama.cpp`:** `llama-modchip v3.2.0` fixes upstream `CPU_REPACK` `q8_cache` / `repack.cpp` bugs while preserving zero-copy `mmap` on 3D MoE tensors (`RssAnon = 1.81–1.92 GiB`). Users loading `Qwen3.8` GGUFs on **unpatched upstream `llama.cpp`** should pass `--no-repack` (`-nr`); `--no-repack` is **not** needed on `llama-modchip v3.2.0`.
 > - **`MaxQ-32GB` Anti-Repetition Sampling & `<think>` Token Budgets:** At `1.63 bpw`, `MaxQ-32GB` must be run with `temperature=0.6`, `top_p=0.95`, `top_k=20`, `presence_penalty=0.2`–`1.0`, `repeat_penalty=1.05` (`4 / 4 = 100%` loop-free on Blind-4 vs. greedy `temp=0` tail loops without penalties; `./modchip` passes these flags automatically on 32 GB presets). Whenever `enable_thinking=True`, set **`max_tokens >= 16384` on `Qwen3.8`** and **`max_tokens >= 4096` on `Nemotron-3.5`** (whose default Jinja template enables `<think>...</think>` unless `enable_thinking: false` / `--reasoning-budget 0` is passed).
 
 | `./modchip` Command | Description |
 | :--- | :--- |
-| **`./modchip setup`** | Auto-detects RAM tier (`16 / 32 / 64 GB`) & CPU ISA, installs `v3.1.1` engine + SHA-256 verified GGUF |
-| **`./modchip download-bin [--all-tools]`** | Installs portable `GLIBC_2.30` Linux `x86_64` `-avx512` or `-avx2` `v3.1.1` binaries (`--all-tools` adds `bench`/`perplexity`/`quantize`) |
+| **`./modchip setup`** | Auto-detects RAM tier (`16 / 32 / 64 GB`) & CPU ISA, installs `v3.2.0` engine + SHA-256 verified GGUF |
+| **`./modchip download-bin [--all-tools]`** | Installs portable `GLIBC_2.30` Linux `x86_64` `-avx512` or `-avx2` `v3.2.0` binaries (`--all-tools` adds `bench`/`perplexity`/`quantize`) |
 | **`./modchip start` / `stop`** | Starts or stops background `llama-server` (`:8789`) + Agentic SSE Gateway (`:8787`) |
 | **`./modchip chat`** | Interactive terminal chat with live `tok/s`, TTFT, and `RouteCrack 2.0` telemetry |
 | **`./modchip web`** | Opens the Dark-Mode Web Chat & Live Telemetry HUD (`http://127.0.0.1:8787`) |
@@ -151,7 +151,7 @@ Evaluated on `40 x 512` blind `wiki-alt.txt` chunks (`0.000000%` 8-gram and 13-g
 </details>
 
 <details>
-<summary><b>Pinned <code>v3.1.1</code> Fleet GGUF, Binary &amp; Patch <code>SHA-256</code> Checksums (`./modchip checksums`)</b></summary>
+<summary><b>Pinned <code>v3.2.0</code> Fleet GGUF, Binary &amp; Patch <code>SHA-256</code> Checksums (`./modchip checksums`)</b></summary>
 <br/>
 
 ```text
@@ -174,19 +174,19 @@ a8654d4d5fedf748d6f2b6404a8b7f9e19435a8aa8e2bb97ce9a66bc012c0f3a  DeepSeek-V4-Fl
 3a3a09eac29b5906397ca6a93d2ff0f566fca0bdd365294d067aeb5d0ebf4a1b  NVIDIA-Nemotron-3.5-30B-A3B-Fractal-64.gguf (15,420,034,624 B · type 44)
 75da8372f3896bfacd103f3cb85bf22b729d39cb1efce82fb3c838ab2af53e57  NVIDIA-Nemotron-3.5-30B-A3B-Abliterated-VQ3-64.gguf (14,282,559,488 B · types 44/45)
 
-# Portable llama-modchip v3.1.1 Linux x86_64 Binaries, Tarball & Patch (GLIBC <= 2.30)
-abc54c7960ca1cff00bcd9e0fd9b78f7400cc1f86629492127f8d481245d81b2  patches/llama-modchip-v3.1.patch
-b216b71a2f6939ff9396465a7ba2e8d220473d7a27050da0b87abd4a7bc430a4  llama-server-modchip-linux-x86_64-avx512
-e1b90dc9d289aa91a2802db2b2694695663ea862205ab999fb22424d49a3cc47  llama-server-modchip-linux-x86_64-avx2 (and llama-server-modchip-linux-x86_64)
-492b8084cf6cc11eea8317a07cb2f99b7323292036c108b02069a0bae81589ba  llama-cli-modchip-linux-x86_64-avx512
-dee9ef216ef9ce106738b4ac78dcee45b1330982bf98eefd02f9258b017f3bfa  llama-cli-modchip-linux-x86_64-avx2 (and llama-cli-modchip-linux-x86_64)
-1de967eea3fec56f970dcffd9fa9d4153b7039ace3f882b024f425b747371c09  llama-bench-modchip-linux-x86_64-avx512
-068203c9fae5b7e4341b1f5f848d9fb633e8553c14315ebda987e8dbcfd76dd8  llama-bench-modchip-linux-x86_64-avx2
-3efc000b4d07af4a09bd5b5f05f7fc76e7b8737e67a6ea513fe5cacedfd7ffc0  llama-perplexity-modchip-linux-x86_64-avx512
-e76a9227572d494586fa62eaedac2ea02da467118877bcaf8b553dad8f9d5dde  llama-perplexity-modchip-linux-x86_64-avx2
-023f9d2074585f2833d12e842ca8fa985025792b3751d69692d8b69ad399bfad  llama-quantize-modchip-linux-x86_64-avx512
-8d3fde844ed36df5710266170542d403e0029cc14c1d9830cb1500785ad6e4ea  llama-quantize-modchip-linux-x86_64-avx2
-956a8b734892cdc001e8fe677d4c180b58d94f2af4951798ec5e66b58eadaebd  llama-modchip-v3.1.1-linux-x86_64.tar.gz
+# Portable llama-modchip v3.2.0 Linux x86_64 Binaries, Tarball & Patch (GLIBC <= 2.30)
+43a090791e3d062be28106e65101418f644bb21c13feab681f4a471ce84419ab  patches/llama-modchip-v3.2.patch
+0cf2d3bcd31349d98bcef1d23af3545912b70930049437e8aa7f6cf5e2ff2082  llama-server-modchip-linux-x86_64-avx512
+d96745036cb44f76bce70237fc1e474058958e4d2eff739b85415eac4c78131d  llama-server-modchip-linux-x86_64-avx2 (and llama-server-modchip-linux-x86_64)
+dc4c9da5016a8bf4407e14691407b0471625bb775cf76ad2a71e7bc25e0a98af  llama-cli-modchip-linux-x86_64-avx512
+08c6236eec64d645b0528d1752f8423bfa028753c8f974c46b6556b1a9022709  llama-cli-modchip-linux-x86_64-avx2 (and llama-cli-modchip-linux-x86_64)
+9e40525f859214dc36aab36cb99bc81b68762816e1dbe07b31dc8d92b2a037e6  llama-bench-modchip-linux-x86_64-avx512
+5d6f9c7a8fd63d3ba6243f3c96b64fe7ae1fd762d814e8b509b9589465a7cff6  llama-bench-modchip-linux-x86_64-avx2
+b52c9b537ec9dc6f635b2d45e20b6d6b48123eacb7218584be5e1056a51e5913  llama-perplexity-modchip-linux-x86_64-avx512
+edae007a49e88e14d2d9a79f0d07fb2b32ee003c6016f55610806bf2ddbdfcc0  llama-perplexity-modchip-linux-x86_64-avx2
+f24985fa7f595aded7bc9cb523bbf4153362126e80f7bf161b339d5c07352cbe  llama-quantize-modchip-linux-x86_64-avx512
+d8a00d6853b9c345a48c66ffa8948ac52d08b48db65c949831bfd2e890d49424  llama-quantize-modchip-linux-x86_64-avx2
+5f3cd4d73e7407817d6da2680150f27202d85291275d56221502709782d5ed1c  llama-modchip-v3.2.0-linux-x86_64.tar.gz
 ```
 
 </details>
@@ -237,19 +237,19 @@ Full quality gate breakdowns, `ref5632.kld` 51-chunk / 49-chunk blind logs, and 
 
 ---
 
-## What Is New in `llama-modchip v3.1.1`
+## What Is New in `llama-modchip v3.2.0`
 
-1. **`RouteCrack 2.0` (`--spec-type routecrack2`) & Cross-ISA Bit-Identical `832 B` `L1 Micro-Arbiter` ([`speculative/cpp/rc_arbiter_l1.h`](speculative/cpp/rc_arbiter_l1.h), [`speculative/cpp/rc_routecrack2.h`](speculative/cpp/rc_routecrack2.h)):**
-   - Unifies **NextN MTP / `RCPredictor`**, **O(1) Two-Zone 40K Suffix Indexing**, and **Stockfish-PVS (`192 KB` Zobrist TT + 28-bit Tagged Mode Refutation)** under an **`832 B` (`13` cache lines) L1-resident `[10 -> 16 -> 1]` SIMD Micro-Arbiter** (`AVX-512` `zmm`, `AVX2+FMA` `2x ymm`, `ARM64 NEON` `vfmaq_n_f32`) with three hardware-calibrated cost profiles (`kRC2DefaultArbiter`, `kRC2DraftlessArbiter`, and MoE-bandwidth-aware `kRC2HeavyMoEDraftlessArbiter` for `> 35 GiB` MoE models, plus `mr=4` single-pass cap `n_max=3` on dense CPU models).
-   - `v3.1.1` adds pre-vector `sanitize_feature()` (`std::isfinite(v) ? v : 0.0f`) in `rc_arbiter_l1.h` (verified bit-identical across AVX-512, AVX2+FMA, and scalar on adversarial `NaN`/`±Inf` inputs), reconciles all flagship `Qwen3.8` benchmarks directly to the Aligned `Qwen3.8-Flash-Next-MaxQ-64GB` checkpoint (`15.34 avg / 21.38 peak tok/s`), hardens per-UID `/dev/shm` IPC snapshots (`0600` + `O_NOFOLLOW`), and enforces a **12-Gate Automated Release Preflight** (`scripts/preflight_release_check.py`).
-   - Default across all `./modchip`, `install.sh`, `apple-silicon/`, `windows/`, `fedora/`, and `systemd/` presets while preserving `--spec-type draft-mtp`, `--spec-type ngram-map-k`, and `--spec-type ngram-simple`.
-2. **Zero-Collision Custom Tensor Type IDs (`44` & `45`) + Single Unified Patch ([`patches/llama-modchip-v3.1.patch`](patches/llama-modchip-v3.1.patch)):**
-   - Upstream `GGML_TYPE_Q2_0 = 42` (`18 B / 64 W` = `2.25 bpw`, `QK2_0 = 64`, used by `Qwen3.8` signed-scale `Q2_0` and `Nemotron MaxQ-16GB`) and `GGML_TYPE_F8_E4M3 = 43` remain **100% untouched**.
-   - `Fractal-64` (`30 B / 64 W = 3.75 bpw`) uses `GGML_TYPE_FRACTAL_64 = 44` (CPU AVX-512/AVX2/NEON + Apple Metal GPU) and `LUT-VQ3-64` (`24 B / 64 W = 3.00 bpw`, 128-entry 3D spherical codebook in `ggml/src/vq3_codebook.h`) uses `GGML_TYPE_VQ3_64 = 45` (AVX-512 VBMI `VPERMI2B` + AVX2/NEON/scalar).
-   - One binary (`de32b268c` / `b12416` + `llama-modchip-v3.1.patch`) natively runs `qwen4exp`, `deepseek4`, `nemotron_h_moe`, and `qwen35moe`.
-3. **512-Bit `Q1_0`/`Q2_0`/`MXFP4` SIMD Kernels, Multi-Threaded `GATED_DELTA_NET` & Zero-Copy 3D MoE `--repack`:**
-   - Dedicated AVX-512 VNNI/BW kernels for `Q1_0 (41)` (`RaBitQ` PLE), signed-scale `Q2_0 (42)`, overflow-free `Q8_0`, and `MXFP4`, plus fused 8-`zmm` FMA multi-threaded `GATED_DELTA_NET` (`36` layers, inner barrier eliminated) and dynamic `4*nth` `FLASH_ATTN_EXT` prefill load balancing.
-   - Fixes upstream `q8_cache` / `params->wdata` aliasing in `tiled.cpp` and `repack.cpp` while keeping 3D MoE tensors (`ne[2] >= 64`) zero-copy `mmap`-backed under default `--repack` and aligning `MADV_HUGEPAGE` inward to `2 MiB` boundaries so lazy PLE pages are never pre-faulted.
+1. **Quantized & Heterogeneous Split-KV Decode (`+15.1%`–`+61.4%` at `32K`) + Upstream `llama.cpp @ 46eb1742d` (`b12604`) Rebase ([`patches/llama-modchip-v3.2.patch`](patches/llama-modchip-v3.2.patch)):**
+   - Unlocks CPU Split-KV decode (`use_split_kv_path`) for quantized and heterogeneous KV caches (`Q8_0/Q4_0`, `Q4_0/Q4_0`) whenever `n_head < n_threads` or `nek1 >= 2048 && n_head % n_threads != 0` (`LLAMA_MODCHIP_SPLIT_KV_QUANT=0|1|2`, default `1`), fixing `+ CACHE_LINE_SIZE_F32` decode scratch sizing (`ggml-cpu.c`) and SWA/NTA `cur_pos`/`n_kv_cols` boundaries (`ops.cpp`). Verified persistent-threadpool `32K` attention speedup: **`+61.4%`** (`Q=12/KV=4/D=256 q8_0/q4_0`, `4.356 -> 2.699 ms`), **`+39.7%`** (`Q=24/KV=8/D=128 q8_0/q4_0`), **`+21.6%`** (`q4_0/q4_0`), **`+15.1%`** (`Q=32/KV=4/12T`) with `~2e-8` parity vs `nth=1`.
+   - Rebased onto `ggml-org/llama.cpp @ 46eb1742d` (`b12604`), including native `Inkling-2` (`src/models/inkling2.cpp`), with zero ABI collisions (`41..45`).
+2. **Native C++ Chained-Prefix HARP-Cache v2 & Causal Divergence Fix ([`speculative/cpp/rc_harp_radix.h`](speculative/cpp/rc_harp_radix.h), [`kv_cache/harp_cache.py`](kv_cache/harp_cache.py)):**
+   - Adds an O(L/256) chained FNV-64 Radix index (`H_k = FNV64(H_{k-1} || B_k)` + model fingerprint), True LRU eviction, and non-destructive multi-branch shared-prefix preservation (fixing the `f_keep < 0.25` cliff for `lcp >= 512`) natively inside `llama-server` (`server-slot-sched.{h,cpp}` & `server-context.cpp`), plus fixing unchained-hash false positives in `kv_cache/harp_cache.py`.
+   - Opt-in `/dev/shm` persistent slot mirror (`LLAMA_MODCHIP_HARP_SHM=1` + `--slot-save-path`, `0600` + `O_NOFOLLOW` + atomic rename) restores `105.20 MiB` (`1,302/1,319` tokens) after a cold server restart in **`16.40 ms` (`6.41 GiB/s`, `10.7×` TTFT speedup)** while cleanly dropping causally diverged prefixes (`cache_n=0`).
+3. **`RouteCrack 2.0` (`--spec-type routecrack2`) & Cross-ISA Bit-Identical `832 B` `L1 Micro-Arbiter` ([`speculative/cpp/rc_arbiter_l1.h`](speculative/cpp/rc_arbiter_l1.h), [`speculative/cpp/rc_routecrack2.h`](speculative/cpp/rc_routecrack2.h)):**
+   - Unifies **NextN MTP / `RCPredictor`**, **O(1) Two-Zone 40K Suffix Indexing**, and **Stockfish-PVS (`192 KB` Zobrist TT + 28-bit Tagged Mode Refutation)** under an **`832 B` (`13` cache lines) L1-resident `[10 -> 16 -> 1]` SIMD Micro-Arbiter** (`AVX-512` `zmm`, `AVX2+FMA` `2x ymm`, `ARM64 NEON` `vfmaq_n_f32`) with cross-ISA bit-identical `NaN`/`±Inf` sanitization and three hardware-calibrated cost profiles (`kRC2DefaultArbiter`, `kRC2DraftlessArbiter`, `kRC2HeavyMoEDraftlessArbiter`).
+4. **Zero-Collision Custom Tensor Type IDs (`44` & `45`), 512-Bit SIMD Kernels & Zero-Copy 3D MoE `--repack`:**
+   - Preserves upstream `GGML_TYPE_Q1_0 = 41`, `GGML_TYPE_Q2_0 = 42`, and `GGML_TYPE_F8_E4M3 = 43` **100% untouched**; registers `Fractal-64` (`3.75 bpw`, CPU + Apple Metal) at `GGML_TYPE_FRACTAL_64 = 44` and `LUT-VQ3-64` (`3.00 bpw`, AVX-512 VBMI `VPERMI2B` + AVX2/NEON/scalar) at `GGML_TYPE_VQ3_64 = 45`.
+   - Dedicated AVX-512 VNNI/BW kernels for `Q1_0`, `Q2_0`, `Q8_0`, `MXFP4`, fused 8-`zmm` FMA multi-threaded `GATED_DELTA_NET`, zero-copy 3D MoE `mmap` under default `--repack`, and inward `2 MiB` `MADV_HUGEPAGE` alignment.
 
 ---
 
@@ -320,27 +320,27 @@ llama-modchip/
 ├── install.sh                                 # Zero-to-Running 3-Tier Installer (16 GB / 32 GB / 64 GB, pinned HF SHAs)
 ├── release_manifest.json                      # Canonical Single Source of Truth (version, ABI 41..45, SHA-256s, benchmarks)
 ├── README.md / ARCHITECTURE.md / FAQ.md       # Overview, Systems Architecture & Engineering FAQ
-├── RELEASE_NOTES.md                           # v3.1.1 & Historical Release Notes
+├── RELEASE_NOTES.md                           # v3.2.0 & Historical Release Notes
 ├── patches/
-│   ├── llama-modchip-v3.1.patch               # Unified v3.1.1 RouteCrack 2.0 patch onto llama.cpp de32b268c (Linux, macOS Metal, Windows, CUDA, Vulkan)
-│   └── archive/llama-modchip-v3.0.patch       # Archived v3.0 unified patch
+│   ├── llama-modchip-v3.2.patch               # Unified v3.2.0 patch onto llama.cpp 46eb1742d (Linux, macOS Metal, Windows, CUDA, Vulkan)
+│   └── archive/                               # Archived v3.1 & v3.0 unified patches
 ├── scripts/
-│   ├── build_zen5_llama.sh                    # Cross-platform CMake builder (applies llama-modchip-v3.1.patch, pins b12416 UI)
+│   ├── build_zen5_llama.sh                    # Cross-platform CMake builder (applies llama-modchip-v3.2.patch, pins b12604 UI)
 │   ├── build_trunk_quant.sh                   # Nemotron trunk-q5 / trunk-q4 selective quantizer (PR #49)
 │   ├── gguf_tensor_type.py                    # GGUF routed-expert tensor type inspector (ABI 0..45)
 │   ├── preflight_release_check.py             # Mandatory 12-Gate Release Preflight Verifier
 │   ├── llama_modchip.py                       # <5ms GGUF & CPU/Cache Topology Profiler + Live SHM TUI
 │   ├── chat.py                                # Zero-dependency Streaming Chat & 2-Stage CPU Scorecard
 │   └── check_cpu_readiness.py                 # Standalone CPU/RAM/THP & DRAM Bandwidth Estimator
-├── speculative/                               # RouteCrack 2.0 + 832 B L1 Micro-Arbiter + Stockfish-PVS (C++17 headers & ASan tests)
+├── speculative/                               # RouteCrack 2.0 + 832 B L1 Micro-Arbiter + HARP Radix + Stockfish-PVS (C++17 & ASan tests)
 ├── gateway/sse_gateway.py                     # Multi-Model Agentic SSE Proxy + HARP-Cache + Dark-Mode Web HUD (:8787)
 ├── kv_cache/                                  # HARP-Cache & Entropy-Adaptive KV Compression + unit tests
 ├── apple-silicon/                             # Apple Silicon M1–M5 Metal + ARM64 NEON setup & run scripts
 ├── windows/                                   # Windows 10/11 MinGW-w64 & CUDA Builder + Hybrid GPU/CPU Launcher
 ├── fedora/                                    # Fedora 44 / Ryzen 7 8745HS (GEEKOM A8) script
 ├── systemd/                                   # Production systemd service units & madvise THP tmpfiles.d config
-├── paper/                                     # v3.1.1 Technical Paper (main.tex, figures/*.pdf, llama-modchip-paper.pdf, arxiv-submission.tar.gz)
-├── benchmarks/                                # v3.1.1 Quality Gate reports, KLD/PPL evaluators & raw JSON logs
+├── paper/                                     # v3.2.0 Technical Paper (main.tex, figures/*.pdf, llama-modchip-paper.pdf, arxiv-submission.tar.gz)
+├── benchmarks/                                # v3.2.0 Quality Gate reports, KLD/PPL evaluators & raw JSON logs
 └── docs/                                      # Model, hardware, Windows port & release procedure guides
 ```
 

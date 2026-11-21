@@ -1,5 +1,3 @@
-<!-- <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a> -->
-
 <!-- <img src="docs/table-video.gif" width="900" alt="Agent! demo" /> -->
 <img width="1628" height="1152" alt="image" src="https://github.com/user-attachments/assets/5184c93a-9255-4404-98ce-44a319de109a" />
 
@@ -12,7 +10,6 @@
 [![GitHub Forks](https://img.shields.io/github/forks/AgentiLoop/Agent?style=for-the-badge&logo=github&label=Forks&color=white)](https://github.com/AgentiLoop/Agent/fork)
 [![macOS 14.6+](https://img.shields.io/badge/macOS-14.6+-green?style=for-the-badge)](https://github.com/apple)
 [![Swift 6.4](https://img.shields.io/badge/Swift-6.4-orange?style=for-the-badge)](https://www.swift.org)
-<a href="https://github.com/sponsors/AgentiLoop"><img src="https://img.shields.io/badge/Sponsor-AgentiLoop-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor AgentiLoop" /></a>
 
 <a href="https://launchnest.io/p/agentiloop-agent" target="_blank"><img src="https://launchnest.io/badge/agentiloop-agent.svg?variant=featured" alt="AgentiLoop Agent! on LaunchNest" width="220" height="56" /></a>
 
@@ -26,7 +23,7 @@ Meet the Agent! family's newest members: two cross-platform CLIs with the **exac
 
 <a href="https://github.com/AgentiLoop/AgentiLoopCLI"><img src="docs/agentiloop-cli-ad-v2.svg" width="900" alt="AgentiLoop CLI: two versions, Rust and Go, with the exact same capabilities. macOS, Windows, Linux." /></a>
 
-*Built by AgentiLoop Agent! for Mac. Yes, the agent wrote its own little siblings.* 🤖✨ **v0.0.5 is out:** a bigger toolbox — glob/grep search, web_fetch, todos, AGENTS.md, /undo, custom slash commands and --json. Download it today!
+*Built by AgentiLoop Agent! for Mac. Yes, the agent wrote its own little siblings.* 🤖✨ **v0.0.10 is out:** a bigger toolbox — glob/grep search, web_fetch, todos, AGENTS.md, /undo, custom slash commands and --json. Download it today!
 
 <a href="https://github.com/AgentiLoop/AgentiLoopCLI"><img src="docs/agentiloop-rust-cli-button.svg" width="222" height="44" alt="Rust CLI on GitHub" /></a>
 <a href="https://github.com/AgentiLoop/AgentiLoopGo"><img src="docs/agentiloop-go-cli-button.svg" width="212" height="44" alt="Go CLI on GitHub" /></a>
@@ -42,7 +39,7 @@ Meet the Agent! family's newest members: two cross-platform CLIs with the **exac
 
 **One app. Any AI. Total command over your Mac.**
 
-Agent! is a 100% native Swift 6.4 / SwiftUI app that wires **23 LLM providers** — Claude, Codex, OpenAI, <!-- Sidrune AI, -->Gemini, Grok, Mistral, Mistral Vibe, DeepSeek, Hugging Face, Z.ai, BigModel, Alibaba DashScope, Qwen, Qwen Code, Meta Muse, MiniMax, OpenRouter, Requesty, A2Agent, OrcaRouter, Ollama (cloud and local), vLLM, and LM Studio — plus on-device **Apple Intelligence** — into an autonomous task loop that actually *does things*: reads your codebase, fixes the bug, builds the Xcode project, commits the diff, drives any Mac app through the Accessibility API, runs shell commands as you or as root, texts you results over iMessage, and answers to a spoken *"Agent!"*.
+Agent! is a 100% native Swift 6.4 / SwiftUI app that wires **27 LLM providers** — Claude, Codex, OpenAI, Gemini, Grok, Mistral, Mistral Vibe, DeepSeek, Hugging Face, Z.ai, BigModel, Alibaba DashScope, Qwen, Qwen Code, Meta Muse, Muse Code, MiniMax, OpenRouter, Requesty, TheRouter, A2Agent, OrcaRouter, Fluxion AI, Ollama (cloud and local), vLLM, and LM Studio — plus on-device **Apple Intelligence** — into an autonomous task loop that actually *does things*: reads your codebase, fixes the bug, builds the Xcode project, commits the diff, drives any Mac app through the Accessibility API, runs shell commands as you or as root, texts you results over iMessage, and answers to a spoken *"Agent!"*.
 
 No NPM, no Electron, no subscription, no telemetry. Bring your own API key, run fully local, or run free on Apple Intelligence. Every Swift package it depends on was written by the same author. See [Backstory](#backstory) below.
 
@@ -93,6 +90,24 @@ open "build/DerivedData/Build/Products/Debug/Agent!.app"
 
 Just type what you want. Agent! figures out how and makes it happen.
 
+### What Agent! can really do
+
+* **🪄 Automates any app, on the fly** — AppleScript and Accessibility automation are built in. Agent! reads an app's scripting dictionary (`lookup_sdef`), finds buttons, fields and menus by name, then clicks, types and reads its way through. No plugin, no setup, no app it has to know in advance.
+* **📜 Writes its own reusable code** — with [AgentScript](#agentscript--swift-scripts-with-full-tcc), Agent! writes Swift scripts, compiles them at runtime and runs them with the app's own permissions. Scripts stay in your library to reuse, edit or combine on the next task.
+* **♾️ `/auto` goal mode** — give it a goal and walk away. Each cycle reads the progress log, picks the next most valuable step, builds, fixes and commits, then starts the next cycle. It doesn't stop until the goal is reached and verified, or you press Stop All.
+* **🎮 Builds complex games** — 3D racers, a multiplayer dungeon crawler, a fighting game drawn pixel by pixel from code, and board games like Go and Chess:
+
+| Game | What it is | Play / source |
+|---|---|---|
+| **Umbravault** | New: online first-person dungeon crawler for 1–8 players, six classes, a boss every third floor. Three.js on Cloudflare Workers | [Play](https://umbravault.xcf.ai) · [GitHub](https://github.com/AgentiLoop/Umbravault) |
+| **Batman v Superman** | Street-fighter style 3D fighting game where every pixel is drawn from code: no model files, textures or audio samples | [Play](https://bvs.agentiloop.ai/) · [GitHub](https://github.com/AgentiLoop/bvs) |
+| **GoKart.games** | Arcade kart racer built with Godot 4 for macOS, Windows and Linux | [Play](https://gokart.games) · [GitHub](https://github.com/AgentiLoop/GoKart) |
+| **AgentiLoop Racing F1** | F1 in the browser: 18 real circuits, pit stops, tyres, ERS and DRS on 240 Hz physics | [Play](https://f1.gokart.games) · [GitHub](https://github.com/AgentiLoop/F1) |
+| **CrazyTaxi** | three.js reconstruction of the Dreamcast *Crazy Taxi* | [Play](https://ct.gokart.games) · [GitHub](https://github.com/AgentiLoop/CrazyTaxi) |
+| **MarioKart64JS** | MarioKart64 ported to JavaScript with Auto-Pilot | [Play](https://mk64js.gokart.games) · [GitHub](https://github.com/AgentiLoop/MarioKart64JS) |
+| **Go** | Native SwiftUI Go for the Mac: 9×9 to 19×19, ko, handicaps, Japanese or Chinese scoring, computer opponent | [Play](https://go.xcf.ai) · [GitHub](https://github.com/AgentiLoop/go.xcf.ai) |
+| **Chess** | Plays chess right in its output panel ([above](#chess-within-agent)); also built AgenticChess, a SwiftUI chess app with Apple Intelligence as the opponent | [Play](https://chess.xcf.ai) · [GitHub](https://github.com/AgentiLoop/chess.xcf.ai) |
+
 ---
 
 ## Key Features
@@ -136,46 +151,34 @@ Just type what you want. Agent! figures out how and makes it happen.
 - **🗂 Tabs, history, memory, plans, skills** — each tab has its own project folder and log; persistent user memory; multi-plan checklists surfaced in every prompt.
 - **🔄 Fallback chain** — auto-switch to the next configured provider on 429/timeout/network failure.
 
-### Sponsors
+## 🤖 27 LLM Providers
 
-<!-- <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a> -->
-
-<!--
-| Logo | Sponsor | &nbsp;&nbsp;&nbsp;Level&nbsp;&nbsp;&nbsp; | |
-|:---:|---|:---:|---|
-| <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/sidrune-logo-white.svg"><img src="docs/sponsors/sidrune-logo.svg" width="200" alt="Sidrune AI logo" /></picture></a> | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><b>Sidrune&nbsp;AI</b></a> | <img src="docs/badges/sponsor-silver-offset.svg" width="66" height="29" alt="Silver" /> | One API for GPT, Claude and other leading AI models. [Sign up and get $3 in API credits](https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP) (Promo code `SDRAGENTLOOP`). |
--->
-
-## Sponsoring
-
-Companies and LLM providers who want to support the project: see [docs/SPONSORSHIP.md](./docs/SPONSORSHIP.md) (levels, placements) and [docs/PROVIDER_PROGRAM.md](./docs/PROVIDER_PROGRAM.md) (LLM provider integration), or sponsor directly via [GitHub Sponsors](https://github.com/sponsors/AgentiLoop). All billing via GitHub Sponsors.
-
-## 🤖 23 LLM Providers
-
-| Provider | &nbsp;&nbsp;&nbsp;Sponsor&nbsp;&nbsp;&nbsp; | Cost | Best for |
-|---|:---:|---|---|
-| **A2Agent** | | Cheap | DeepSeek, GLM, Kimi, MiniMax and Qwen via one OpenAI-compatible key at a fraction of official pricing |
-| **Apple Intelligence** | | Free, on-device | Triage, summaries, token compression (brain icon, not available on the provider picker) |
-| **Claude** | | Per-token (API key) or subscription (OAuth) | Long autonomous tasks, extended thinking, prompt caching |
-| **Codex** | | ChatGPT subscription | OpenAI models via ChatGPT OAuth — no API key, no per-token charges |
-| **DeepSeek** | | Cheap | Budget coding, cache-hit reporting |
-| **Google Gemini** | | Paid (free tier) | Long context, vision |
-| **Grok** (xAI) | | Paid | Real-time info |
-| **Hugging Face** | | Varies | Open models, serverless or dedicated endpoints |
-| **Local Ollama** / **vLLM** / **LM Studio** | | Free + hardware | Fully offline; real per-model context window detected |
-| **Meta Muse** | | Paid | Muse Spark via the Meta Model API (`api.meta.ai`), OpenAI-compatible `LLM_…` key |
-| **MiniMax** | | Cheap | 1M-token context |
-| **Mistral** / **Mistral Vibe** | | Paid | Open-weight cloud, code, agent product |
-| **Ollama** (cloud) | | Free tier | Hosted open models |
-| **OpenAI** | | Paid | General purpose, tool calling, vision, `reasoning_effort` |
-| **OpenRouter** | | Paid | 200+ models, one key; Claude routed via Anthropic protocol |
-| **OrcaRouter** | | Paid | 190+ models via one OpenAI-compatible key at provider cost; auto/fusion/fallback routing |
-| **Alibaba DashScope** | | Cheap | Qwen 3.8 via DashScope; Model Studio `sk-` and QwenCloud `sk-ws-` keys |
-| **Qwen** (qwen.ai Token Plan) | | Subscription | QwenCloud Token Plan (`sk-sp-` key, `token-plan.*.maas.aliyuncs.com`): qwen3.8-max, qwen3.7-plus, GLM-5.2, DeepSeek V4 |
-| **Qwen Code** | | Subscription | Alibaba Coding Plan (`sk-sp-` key): qwen3-coder-plus, qwen3.7-plus, GLM-5, Kimi K2.5, MiniMax-M2.5 |
-| **Requesty** | | Paid | 300+ models via one OpenAI-compatible key; per-model pricing and capability metadata |
-| **Z.ai** / **BigModel** | | Cheap | GLM-5.3 — recommended starting point |
-<!-- | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><b>Sidrune&nbsp;AI</b></a> | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/sidrune-logo-white.svg"><img src="docs/sponsors/sidrune-logo.svg" width="110" alt="Sidrune AI logo" /></picture></a> | Paid (API credits) | One API for GPT, Claude and other leading AI models; $3 credit with promo `SDRAGENTLOOP` | -->
+| Provider | Cost | Best for |
+|---|---|---|
+| **A2Agent** | Cheap | DeepSeek, GLM, Kimi, MiniMax and Qwen via one OpenAI-compatible key at a fraction of official pricing |
+| **Alibaba DashScope** | Cheap | Qwen 3.8 via DashScope; Model Studio `sk-` and QwenCloud `sk-ws-` keys |
+| **Apple Intelligence** | Free, on-device | Triage, summaries, token compression (brain icon, not available on the provider picker) |
+| **Claude** | Per-token (API key) or subscription (OAuth) | Long autonomous tasks, extended thinking, prompt caching |
+| **Codex** | ChatGPT subscription | OpenAI models via ChatGPT OAuth — no API key, no per-token charges |
+| **DeepSeek** | Cheap | Budget coding, cache-hit reporting |
+| **Fluxion AI** | Paid | OpenAI-compatible gateway, `sk-fx-` keys |
+| **Google Gemini** | Paid (free tier) | Long context, vision |
+| **Grok** (xAI) | Paid | Real-time info |
+| **Hugging Face** | Varies | Open models, serverless or dedicated endpoints |
+| **Local Ollama** / **vLLM** / **LM Studio** | Free + hardware | Fully offline; real per-model context window detected |
+| **Meta Muse** | Paid | Muse Spark via the Meta Model API (`api.meta.ai`), OpenAI-compatible `LLM_…` key |
+| **Muse Code** | Subscription | Muse Code plan — reuses your `muse login` key |
+| **MiniMax** | Cheap | 1M-token context |
+| **Mistral** / **Mistral Vibe** | Paid | Open-weight cloud, code, agent product |
+| **Ollama** (cloud) | Free tier | Hosted open models |
+| **OpenAI** | Paid | General purpose, tool calling, vision, `reasoning_effort` |
+| **OpenRouter** | Paid | 200+ models, one key; Claude routed via Anthropic protocol |
+| **OrcaRouter** | Paid | 190+ models via one OpenAI-compatible key at provider cost; auto/fusion/fallback routing |
+| **Qwen** (qwen.ai Token Plan) | Subscription | QwenCloud Token Plan (`sk-sp-` key, `token-plan.*.maas.aliyuncs.com`): qwen3.8-max, qwen3.7-plus, GLM-5.2, DeepSeek V4 |
+| **Qwen Code** | Subscription | Alibaba Coding Plan (`sk-sp-` key): qwen3-coder-plus, qwen3.7-plus, GLM-5, Kimi K2.5, MiniMax-M2.5 |
+| **Requesty** | Paid | 300+ models via one OpenAI-compatible key; per-model pricing and capability metadata |
+| **TheRouter** | Paid | OpenAI-compatible gateway (`api.therouter.ai`), vendor/model ids |
+| **Z.ai** / **BigModel** | Cheap | GLM-5.3 — recommended starting point |
 
 > 💡 Self-hosted providers are free only in the API-fee sense — a usable 30B+ model needs an M2/M3/M4 Ultra Mac Studio (64–128GB). Without that hardware, the cheap cloud paths above are dramatically cheaper.
 
@@ -185,10 +188,10 @@ Canonical names come from `AgentTools.Name.*` (source of truth: the [AgentTools]
 
 | Group | Tools |
 |---|---|
-| **Core** | `done` · `list_tools` · `search` · `web_search` · `fetch` · `chat` · `memory` · `plan` · `goal_state` · `restore_tool_result` · `directory` · `skill` · `ask_user` · `index` |
+| **Core** | `done` · `list_tools` · `search` · `web_search` · `fetch` · `chat` · `memory` · `plan` · `goal_state` · `restore_tool_result` · `directory` · `skill` · `ask_user` · `index` · `mcp` |
 | **Code / build** | `file` (read/write/edit/diff_apply/undo/list/search/mkdir/…) · `git` · `xcode` (build/run/analyze/snippet/code_review/add_file/bump_version/…) · `agent_script` |
 | **Shell** | `user_shell` (Launch Agent) · `root_shell` (Launch Daemon) · `shell` (in-process fallback) · `batch` · `multi` |
-| **macOS automation** | `accessibility` (25 element-based actions) · `applescript` (with `lookup_sdef`) · `javascript` (JXA) |
+| **macOS automation** | `accessibility` (35 element-based actions) · `applescript` (with `lookup_sdef`) · `javascript` (JXA) |
 | **Web** | `safari` · `selenium` · `mcp_playwright_browser_*` (optional) |
 | **Sub-agents** | `spawn_agent` · `tell_agent` |
 
@@ -196,7 +199,7 @@ Full per-action reference: [docs/TECHNICAL.md](docs/TECHNICAL.md).
 
 ## AgentScript — Swift scripts with full TCC
 
-AgentScripts are plain Swift files in `~/Documents/AgentScript/agents/Sources/Scripts/`. Agent! compiles each one to a `.dylib` with SwiftPM (`Package.swift` lists every script plus the 51 ScriptingBridge app bridges), then `dlopen`s it with Agent!'s own TCC grants — Accessibility, Automation, Calendar, Contacts, Mail, Photos, etc. The LLM manages them with `agent_script` (`create` / `edit` / `run` / `delete` / `restore` / `pull`); ~35 examples ship in the folder (`Hello`, `TodayEvents`, `NowPlaying`, `CheckMail`, `CreateDmg`, `ArchiveXcode`, …).
+AgentScripts are plain Swift files in `~/Documents/AgentScript/agents/Sources/Scripts/`. Agent! compiles each one to a `.dylib` with SwiftPM (`Package.swift` lists every script plus the 51 ScriptingBridge app bridges), then `dlopen`s it with Agent!'s own TCC grants — Accessibility, Automation, Calendar, Contacts, Mail, Photos, etc. The LLM manages them with `agent_script` (`create` / `edit` / `run` / `delete` / `restore` / `pull`); ~70 examples ship in the folder (`Hello`, `TodayEvents`, `NowPlaying`, `CheckMail`, `CreateDmg`, `ArchiveXcode`, …).
 
 **Entry point** — no top-level code, no `exit()`; `stdout` is returned to the LLM, the return value is the exit status:
 
@@ -384,6 +387,7 @@ Runs the task loop in unattended cycles — on the main tab or any LLM tab — u
 |---|---|
 | `/auto <goal>` | Work toward the goal until the LLM reports it reached |
 | `/auto 4h <goal>` | Same, but stop after 4 hours (`30m`, `1.5h` also work) |
+| `/auto --worktree <goal>` | Work in an isolated git worktree and branch (`-w`); `--shared` forces the shared checkout. By default a worktree is used only when another tab is already running `/auto` on the same project |
 | `/auto` | Review the project first, then ask you for the goal via `ask_user` |
 | `/auto history` | List previous auto-pilot goals |
 | `/auto last` / `/auto #N` | Restart the most recent / Nth goal from history |
@@ -391,7 +395,7 @@ Runs the task loop in unattended cycles — on the main tab or any LLM tab — u
 | `/auto remove <folder>` | Remove a parity folder |
 | `/auto status` / `/auto stop` | Show the session / end it after the current cycle (immediately if between cycles) |
 
-Each cycle is a normal task; its summary is appended to `.agent/autopilot/progress.md` and fed into the next cycle's prompt. The LLM ends the session by starting its final summary with `AUTOPILOT: GOAL REACHED`. Cycles that end with no summary (errors, cancellations) never end the session — the next cycle just waits longer (15s, 30s, 60s… up to 5 min). `/auto` commands are recorded in prompt history (arrow-up) and goals are saved to the `/auto history` list. Active sessions survive app restarts: quitting (or a crash) pauses them, and on the next launch each one resumes on its tab with the next cycle.
+Each cycle is a normal task; its summary is appended to `.agent/tabs/<key>/progress.md` and fed into the next cycle's prompt. The LLM ends the session by starting its final summary with `AUTOPILOT: GOAL REACHED`. Cycles that end with no summary (errors, cancellations) never end the session — the next cycle just waits longer (15s, 30s, 60s… up to 5 min). `/auto` commands are recorded in prompt history (arrow-up) and goals are saved to the `/auto history` list. Active sessions survive app restarts: quitting (or a crash) pauses them, and on the next launch each one resumes on its tab with the next cycle. The session also ends when the LLM starts its summary with `AUTOPILOT: BLOCKED` (it needs you: input, a hands-on test, or your uncommitted changes), or after 3 completed cycles in a row with no new git commit, so it never loops on "nothing to do".
 
 ## FAQ
 
@@ -404,7 +408,7 @@ More: [docs/FAQ.md](docs/FAQ.md) · [Technical Architecture](docs/TECHNICAL.md) 
 
 ## Backstory
 
-Agent! is the result of three years of building agentic AI apps — ANIE, Game Changer, BattleScript, XCF MCP Server and Client, D1F, and about eight original Swift packages. The missing piece was an intelligent autonomous loop; once achieved, the best of those projects came together into Agent!. It has written video games ([Boss-Man](https://github.com/AgentiLoop/bossman)), created apps, written poetry into Pages via AppleScript, generated disk images and attached them to GitHub releases. Where Claude Code relies on ~65 third-party NPM packages, Agent! is 100% native, uses very little RAM, and ships Xcode automation, Swift Syntax 6.2 analysis, Accessibility, AppleScript, AgentScript/ScriptingBridge, Safari automation and MCP support out of the box.
+Agent! is the result of three years of building agentic AI apps — ANIE, Game Changer, BattleScript, XCF MCP Server and Client, D1F, and about eight original Swift packages. The missing piece was an intelligent autonomous loop; once achieved, the best of those projects came together into Agent!. It has written video games ([Boss-Man](https://github.com/AgentiLoop/bossman) · [Umbravault](https://github.com/AgentiLoop/Umbravault) · [BvS](https://github.com/AgentiLoop/bvs) · Go · Chess), created apps, written poetry into Pages via AppleScript, generated disk images and attached them to GitHub releases. Where Claude Code relies on ~65 third-party NPM packages, Agent! is 100% native, uses very little RAM, and ships Xcode automation, Swift Syntax 6.2 analysis, Accessibility, AppleScript, AgentScript/ScriptingBridge, Safari automation and MCP support out of the box.
 
 ## Reverse Engineering with Agent!
 
@@ -491,4 +495,3 @@ See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) — build from source in ~5 min
 
 ---
 
-<!-- <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a> -->

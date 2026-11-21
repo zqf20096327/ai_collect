@@ -30,6 +30,9 @@ Used as the definitive source in:
 
 | What | Date | Link |
 |------|------|------|
+| **Claude API tools** | November 20, 2026 | [Claude API tool prompts and definitions](Anthropic/tools) |
+| **Claude for Outlook and Claude for Google Workspace** | November 20, 2026 | [Outlook](Anthropic/claude-for-microsoft-365/claude-for-outlook.md) · [Google Docs](Anthropic/claude-for-google-workspace/claude-in-google-docs.md) · [Google Sheets](Anthropic/claude-for-google-workspace/claude-in-google-sheets.md) · [Google Slides](Anthropic/claude-for-google-workspace/claude-in-google-slides.md) |
+| **Claude Opus 3 (claude.ai)** | November 20, 2026 | [Claude Opus 3 system prompt](Anthropic/claude-opus-3.md) |
 | **GPT-6.2 Sol and Astra (Codex)** | November 20, 2026 | [GPT-6.2-Sol Codex core system prompt](OpenAI/Codex/gpt-6.2-sol.md) · [Astra](OpenAI/Codex/gpt-6.2-astra.md) |
 | **Claude Code Desktop (Fable 5.2)** | November 18, 2026 | [Claude Code desktop app system prompt (Fable 5.2)](Anthropic/claude-code/claude-code-desktop-fable-5.2.md) |
 | **Claude Docs connector** | November 14, 2026 | [Claude Docs connector guide and tools](Anthropic/claude-docs) |
@@ -39,9 +42,6 @@ Used as the definitive source in:
 | **Claude Tag (Slack)** | November 6, 2026 | [Claude Tag channel-session system prompt](Anthropic/claude-tag.md) |
 | **Claude Code auto mode classifier** | November 3, 2026 | [Auto mode safety classifier prompt (139 KB, as sent to Sonnet 5)](Anthropic/claude-code/prompts/auto-mode-classifier.md) |
 | **Kagi Assistant (updated)** | October 29, 2026 | [Kagi assistant system prompt](Misc/kagi-assistant.md) |
-| **Perplexity Computer (updated) + Model Council** | October 29, 2026 | [Perplexity Computer system prompt](Perplexity/perplexity-computer.md) · [Model Council skill](Perplexity/skills/model-council/SKILL.md) |
-| **MiniMax M3 (Mavis / MiniMax Agent)** | October 29, 2026 | [MiniMax Agent system prompt and tools](MiniMax/minimax-m3-mavis.md) |
-| **LM Studio Bionic** | October 29, 2026 | [LM Studio Bionic system prompt and tools](Misc/lm-studio-bionic.md) |
 
 ---
 ## Anthropic — Claude
@@ -62,6 +62,7 @@ Used as the definitive source in:
 | Claude Opus 4.7 | [Claude Opus 4.7 system prompt](Anthropic/claude-opus-4.7.md) |
 | Claude Opus 4.6 | [Claude Opus 4.6 system prompt](Anthropic/claude-opus-4.6.md) · [No tools](Anthropic/claude-opus-4.6-no-tools.md) |
 | Claude Sonnet 4.6 | [Claude Sonnet 4.6 system prompt](Anthropic/claude-sonnet-4.6.md) · [No tools](Anthropic/claude-sonnet-4.6-no-tools.md) |
+| Claude Opus 3 | [Claude Opus 3 system prompt](Anthropic/claude-opus-3.md) |
 | Injected reminders | [Claude.ai injected reminders](Anthropic/anthropic_reminders.md) |
 
 ### Claude Code system prompts
@@ -81,6 +82,7 @@ Used as the definitive source in:
 | Opus 4.8 Claude Code | [Claude Code system prompt (Opus 4.8)](Anthropic/claude-code/claude-code-opus-4.8.md) |
 | Sonnet 5 Claude Code | [Claude Code system prompt (Sonnet 5)](Anthropic/claude-code/claude-code-sonnet-5.md) |
 | Claude Code (older models) | [Opus 4.7](Anthropic/claude-code/claude-code-opus-4.7.md) · [Opus 4.6](Anthropic/claude-code/claude-code-opus-4.6.md) · [Sonnet 4.6](Anthropic/claude-code/claude-code-sonnet-4.6.md) · [Haiku 4.5](Anthropic/claude-code/claude-code-haiku-4.5.md) |
+| Claude Code for VS Code | [VS Code extension context prompt](Anthropic/claude-code/claude-code-for-vs-code.md) |
 | Subagents | [Claude Code subagent system prompts](Anthropic/claude-code/agents) |
 | Advisor tool | [Advisor tool prompts (both sides)](Anthropic/claude-code/prompts/advisor-tool.md) |
 | Auto mode classifier | [Auto mode safety classifier prompt](Anthropic/claude-code/prompts/auto-mode-classifier.md) |
@@ -111,9 +113,11 @@ Used as the definitive source in:
 | **Claude Design** | [**Claude Design system prompt**](Anthropic/claude-design/claude-design.md) · [skills](Anthropic/claude-design/skills) · [starter components](Anthropic/claude-design/starter-components) |
 | **Claude Cowork** | [**Claude Cowork system prompt**](Anthropic/claude-cowork/claude-cowork.md) · [Dispatch](Anthropic/claude-cowork/claude-cowork-dispatch.md) · [setup skills](Anthropic/claude-cowork) |
 | **Claude Science** | [**Claude Science system prompt**](Anthropic/claude-science.md) |
-| Claude for Microsoft 365 | [Claude for Excel](Anthropic/claude-for-excel.md) · [Claude for Word](Anthropic/claude-for-word.md) · [Claude in PowerPoint](Anthropic/claude-in-powerpoint.md) |
+| Claude for Microsoft 365 | [Claude for Excel](Anthropic/claude-for-microsoft-365/claude-for-excel.md) · [Claude for Word](Anthropic/claude-for-microsoft-365/claude-for-word.md) · [Claude for PowerPoint](Anthropic/claude-for-microsoft-365/claude-for-powerpoint.md) · [Claude for Outlook](Anthropic/claude-for-microsoft-365/claude-for-outlook.md) |
+| Claude for Google Workspace | [Google Docs](Anthropic/claude-for-google-workspace/claude-in-google-docs.md) · [Google Sheets](Anthropic/claude-for-google-workspace/claude-in-google-sheets.md) · [Google Slides](Anthropic/claude-for-google-workspace/claude-in-google-slides.md) |
 | Claude in Chrome | [Claude in Chrome extension system prompt](Anthropic/claude-in-chrome.md) |
 | Claude iOS app | [Claude mobile iOS system prompt](Anthropic/claude-mobile-ios.md) |
+| Claude API tools | [Advisor](Anthropic/tools/advisor-tool.md) · [Bash](Anthropic/tools/bash-tool.md) · [Browser use](Anthropic/tools/browser-use-tool.md) · [Code execution](Anthropic/tools/code-execution-tool.md) · [Computer use](Anthropic/tools/computer-use-tool.md) · [Web fetch](Anthropic/tools/web-fetch-tool.md) · [Web search](Anthropic/tools/web-search-tool.md) |
 
 ## OpenAI — ChatGPT
 
@@ -339,7 +343,7 @@ Used as the definitive source in:
 | Pi (Inflection) | [Pi system prompt](Pi/instructions.md) |
 | Proton Lumo AI | [Proton Lumo AI system prompt](Misc/proton-lumo-ai.md) |
 | Raycast AI | [Raycast AI system prompt](Misc/raycast-ai.md) |
-| Sesame AI Maya | [Sesame AI Maya system prompt](Misc/sesame-ai-maya.md) |
+| Sesame AI Maya & Miles | [Sesame AI Maya and Miles system prompts](Misc/sesame-ai-maya-miles.md) |
 | Stack Overflow AI Assist | [Stack Overflow AI Assist system prompt](Misc/stack-overflow-ai-assist.md) |
 | t3.chat | [t3.chat system prompt](Misc/t3.chat.md) |
 | t3 Code | [t3 Code system prompt](Misc/t3-code.md) |

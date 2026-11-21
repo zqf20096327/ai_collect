@@ -1,0 +1,162 @@
+# AF4J
+
+**Build AI agents you can trust in production.**
+
+AF4J is a framework and runtime for governed, stateful multi-agent systems on the JVM.
+
+Human approvals · Checkpoints · Budget controls · Tool policies · Durable execution
+
+---
+
+## Why AF4J?
+
+- Build multi-agent workflows with explicit orchestration
+- Persist execution across failures and restarts
+- Add human approval where it matters
+- Control tool access and AI spend
+- Run natively on the JVM and Spring ecosystem
+
+---
+
+<p align="center">
+<img width="1536" height="768" alt="AF4J: Build · Govern · Run" src="docs/images/hero.jpg" />
+</p>
+
+[![GitHub stars](https://img.shields.io/github/stars/datallmhub/agentflow4j?style=social)](https://github.com/datallmhub/agentflow4j/stargazers)
+[![build](https://github.com/datallmhub/agentflow4j/actions/workflows/build.yml/badge.svg)](https://github.com/datallmhub/agentflow4j/actions)
+[![Java 17+](https://img.shields.io/badge/Java-17%2B-blue)](https://adoptium.net/)
+[![Spring AI](https://img.shields.io/badge/Spring%20AI-1.0-green)](https://docs.spring.io/spring-ai/reference/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/datallmhub/agentflow4j)](https://github.com/datallmhub/agentflow4j/releases/latest)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.datallmhub/agentflow4j-starter)](https://central.sonatype.com/artifact/io.github.datallmhub/agentflow4j-starter)
+
+---
+
+## ⚡ In 60 seconds
+
+```java
+// Define your agents
+ExecutorAgent analyst = ExecutorAgent.builder()
+    .chatClient(chatClient)
+    .systemPrompt("Analyse this request.")
+    .toolPolicy(ToolPolicy.allowList("search", "fetch"))
+    .build();
+
+// Compose a governed graph
+AgentGraph graph = AgentGraph.builder()
+    .addNode("analyse", analyst)
+    .budgetPolicy(BudgetPolicy.hierarchical(BudgetLimits.run(0.50), estimator, meter))
+    .approvalGate(ApprovalGate.requireFor("analyse"))
+    .checkpointStore(new JdbcCheckpointStore(jdbcTemplate, txManager, codec))
+    .build();
+
+AgentResult result = graph.invoke(AgentContext.of("Process this refund request"),
+                                 RunOptions.ofRunId("refund-4521"));
+```
+
+`ToolPolicy` restricts which tools the agent can call. `BudgetPolicy` caps spend at $0.50 per run. `ApprovalGate` pauses execution until a human approves. `CheckpointStore` persists graph state: `graph.resume("refund-4521", ResumeOptions.ofApproval("analyse"))` continues the run after the approval, or after a restart.
+
+⭐ **Useful? [Star AF4J on GitHub](https://github.com/datallmhub/agentflow4j#top).** It takes one click, and it is how other Java teams find the project.
+
+---
+
+## 🚀 Try the demo in 5 minutes
+
+```bash
+git clone https://github.com/datallmhub/agentflow4j.git
+cd agentflow4j
+mvn install -DskipTests -q
+mvn -pl agentflow4j-samples exec:java
+```
+
+Runs `SupportTriageDemo` by default: a governed multi-agent workflow with `ToolPolicy` and `ApprovalGate` active. No API key required; falls back to deterministic stubs, or calls Mistral when `MISTRAL_API_KEY` is set.
+
+See [all samples](docs/samples.md) to explore other demos.
+
+▶ [See it in action](https://huggingface.co/spaces/datallmhub/multi-agent-customer-ops): live demo of a sample implementation, a governed multi-agent customer-support workflow.
+
+---
+
+## Core capabilities
+
+| Capability | What it does | AF4J |
+|---|---|---|
+| **Multi-agent orchestration** | Build agent teams with routing and fan-out | `AgentGraph`, `CoordinatorAgent`, `ParallelAgent` |
+| **Governance** | Control what agents can call, change, or spend | `ToolPolicy`, `StatePolicy`, `BudgetPolicy`, `ApprovalGate` |
+| **Durable execution** | Survive restarts, resume from last checkpoint | `JdbcCheckpointStore`, `RedisCheckpointStore` |
+| **Human-in-the-loop** | Pause before critical actions, resume on approval | `ApprovalGate` |
+| **Resilience** | Classify failures, retry smart, route to fallback | `RetryPolicy`, `FailureClassifier`, `BudgetAwareRouter` |
+| **Parallel branches** | Run independent branches at once, join deterministically | fan-out on direct edges, `maxConcurrency`, `StateConflictException` |
+| **MCP tools** | Govern the tools an MCP server exposes | `ExecutorAgent.toolProviders(...)` |
+| **Coding agent** | Delegate a coding task, keep the governance | `OpenHandsAgent` |
+| **Observability** | Metrics, run logs, lifecycle hooks, streaming events | Micrometer, `RunLog`, `AgentListener`, `Flux<AgentEvent>` |
+
+Two API levels: **Squad API** for dynamic routing with minimal setup, **Graph API** for explicit flows, loops and full control. See [Two API levels](docs/two-api-levels.md).
+
+Since **1.0** the public API of `agentflow4j-core`, `agentflow4j-graph`, `agentflow4j-checkpoint`, `agentflow4j-squad` and `agentflow4j-test` is stable: a breaking change waits for 2.0. Types marked `@Experimental` are the exception, including the `agentflow4j-openhands` module, which tracks the OpenHands V1 API.
+
+---
+
+## 🛠 Installation
+
+```xml
+<dependency>
+    <groupId>io.github.datallmhub</groupId>
+    <artifactId>agentflow4j-starter</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
+Available on Maven Central. See [Getting started](docs/getting-started.md) for Gradle setup and module reference.
+
+---
+
+## 📚 Documentation
+
+- [Two API levels (Squad + Graph)](docs/two-api-levels.md): when to use which, with code
+- [LLM providers](docs/llm-providers.md): swap between Mistral, OpenAI, Claude, Gemini, Ollama with two lines of config
+- [Typed state](docs/state.md): `StateKey<T>` instead of `Map<String, Object>`
+- [Tool policy](docs/tool-policy.md): allow/deny tool calls per agent, with argument-aware rules
+- [State policy](docs/state-policy.md): allow/deny writes to specific `StateKey<T>`, with argument-aware rules
+- [Parallel branches](docs/parallel.md): fan-out, join, state merge, and an approval that pauses one branch
+- [MCP tools](docs/mcp.md): MCP tools under a `ToolPolicy`, with the audit trail
+- [OpenHands](docs/openhands.md): delegate a coding task, asynchronously and idempotently
+- [Approval gate](docs/approval-gate.md): human-in-the-loop pause/resume on sensitive nodes
+  - [Recipe: approval via Slack](docs/recipes/approval-via-slack.md): async, non-blocking, ~30 lines
+- [Resilience & error handling](docs/resilience.md): retries, circuit breaker, budget policy
+  - [Recipe: durable runs](docs/recipes/durable-runs.md): crash mid-workflow, resume from the last checkpoint
+- [Observability](docs/observability.md): Micrometer metrics, tags, listeners
+- [Run log](docs/run-log.md): structured, replayable execution timeline per run
+- [Streaming](docs/streaming.md): `Flux<AgentEvent>` tokens, transitions, tool calls
+- [Testing without an LLM](docs/testing.md): `MockAgent` + `TestGraph`
+- [Validation](docs/validation.md): every guarantee, the test behind it, and what that test does not prove
+- [Samples](docs/samples.md): runnable examples shipped with the repo
+- Migration guides: [0.7 to 0.8](docs/migration-0.8.md), [0.8 to 0.9](docs/migration-0.9.md)
+
+**Cookbook:** [AF4J Cookbook](https://github.com/datallmhub/agentflow4j-cookbook): eleven standalone, copy-paste recipes (RAG agent, ticket triage, web research, Slack bot, batch processing, cost-aware routing, governed MCP agent, self-correcting writer, LLM as a judge, parallel research squad, governed OpenHands workflow), each a self-contained Maven module that runs locally against Ollama.
+
+**Tutorial:** [Stop your AI agent from burning $1000 overnight](docs/tutorials/stop-your-agent-burning-money.md): governed execution end to end.
+
+---
+
+## 📈 Roadmap
+
+| Version | Status | Focus |
+|---------|--------|-------|
+| **0.5** | shipped | Subgraphs, parallel fan-out, cancellation, typed output, retry/circuit-breaker/budget policies, JDBC/Redis checkpoint store, web playground |
+| **0.6** | shipped | Governed execution: `ToolPolicy`, `StatePolicy`, `ApprovalGate`: allow/deny tools, guard state writes, human-in-the-loop pause/resume |
+| **0.7** | shipped | Adaptive execution: reason-aware retry (`FailureClassifier`), cost-aware routing (`BudgetAwareRouter`) |
+| **0.8** | shipped | API stabilization: `RunOptions` / `ResumeOptions`, governed streaming, lifecycle hooks, MCP tool providers |
+| **0.9** | shipped | Parallel execution: fan-out and join, deterministic state merge, approval that pauses one branch, reruns that skip completed nodes |
+| **0.10** | shipped | OpenHands: delegate a coding task from a node, asynchronously and idempotently |
+| **1.0** | shipped | Stable API: core, graph, checkpoint, squad and test are frozen until 2.0 |
+| **1.x** | next | Lifecycle hook coverage, a streaming scheduler for parallel branches, more cookbook recipes |
+| **2.0** | exploring | Temporal-like interruption, compensation/saga, OpenTelemetry tracing |
+
+---
+
+## 🤝 Contributing & License
+
+The simplest contribution is a ⭐ on [the repository](https://github.com/datallmhub/agentflow4j): it tells us the project is worth pushing further. Issues, ideas and pull requests are welcome too: see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Released under the [Apache 2.0 License](LICENSE). Not an official Spring project.

@@ -207,7 +207,7 @@ off until you switch it on, and none of it is used for any result in this README
 | OpenCode | `opencode run` headless, locked to its task folder | live, on Windows |
 | Qoder CLI | `qodercli -p` headless, built-in tools limited to read and edit, hub tools through a config file | live, on Windows (Qwen3.8-Flash; model host not verified) |
 | Claude Code | `claude -p` headless | unit tests only; not logged in on the dev machine |
-| Antigravity | `agy` print mode | experimental: its headless mode printed one line and then waited, so runs stop after 2 minutes of silence |
+| Antigravity | `agy` print mode | experimental: no answer seen yet. It waited without output because the account's quota was exhausted (agy 1.5.11 retries silently; its log says so), so runs stop after 2 minutes of silence |
 
 The coding agents use whatever provider each program is signed in to (for example a ChatGPT account for Codex) or the
 free hosted models OpenCode offers. They are labelled as not verified open-weight. You turn each one on, and pick a
@@ -367,6 +367,10 @@ Tested with Codex headless and no board running. Asked "does 1.0.0rc1 satisfy `>
 1.9.12 is newest?", it called `check_version_requirement` and `sort_versions` and answered correctly. The first answer
 is *no*: PEP 440 leaves pre-releases out by default.
 
+Also tested with Claude Code (2.1.327, `claude -p`, no board running): asked for the shortest path weight in a small
+weighted graph, it called `shortest_path_weight` from the verified `graph_algorithms` skill, which ran in the sandbox, and
+answered 11, the same as networkx. Docker must be running: if it is not, the agent is told so in words.
+
 ### Verify any MCP server
 
 `zyven verify` checks an MCP server Zyven did not build, from the outside: a command over stdio or a URL.
@@ -504,6 +508,11 @@ srt --settings srt.json python server/server.py
 The check makes only a few calls, so a server can need more hosts or a writable folder in real use; add them to the
 file by hand.
 
+CI runs the file under srt 0.0.83 on macOS and Linux (`scripts/check_srt.py`): the allowed host answers, another
+host is refused, nothing can be written, and a credential folder cannot be read. On macOS, programs that use Apple's
+own TLS stack (the system `curl`) cannot verify certificates inside srt's sandbox; Python and Node servers bring their
+own certificate roots and are not affected. Windows needs srt's one-time `windows-install` and was not tried.
+
 **As a pre-commit hook.** Checks every server in an MCP client config you commit (`.mcp.json`, `.cursor/mcp.json`,
 `.vscode/mcp.json`, `claude_desktop_config.json`, `.codex/config.toml`):
 
@@ -519,6 +528,12 @@ repos:
 
 The servers run on your machine as your client would run them, unless you add the `--docker` argument. A failing
 server stops the commit; `git commit --no-verify` skips the hook.
+
+**A hosted server behind a sign-in.** `zyven verify --connection NAME` checks a server connected on the board with
+its stored key or OAuth sign-in, so servers like Notion's or Google's can be verified too. A name prefix is enough
+(`--connection notion`). The tokens are used through the board's own store and refreshed there, never copied, so the
+board stays signed in. Checked live against Notion's hosted server: 77 tools, every check passed, still signed in
+afterwards.
 
 **On the Connections page**, the same checks run every time you press **Test**:
 - **The result is shown on the card.** A server that fails, for example on tool poisoning, offers only a
@@ -652,7 +667,7 @@ Open work is tracked in [issues](https://github.com/VirajSawad1021/Zyven/issues)
 [CONTRIBUTING.md](CONTRIBUTING.md) explains how to help.
 
 Known gaps in the optional extras: Claude Code and the GitHub connector have not been run against the real services;
-Antigravity's headless mode does not work on the development machine; Gmail and hosted Slack sign-in were not run
+Antigravity has not answered yet, because the development account's quota was exhausted; Gmail and hosted Slack sign-in were not run
 against the real services; the Qoder CLI runtime was checked with a Qwen model whose host and exact weights are not
 verified; and everything was checked on Windows only. `LIMITATIONS.md` lists the trust assumptions.
 

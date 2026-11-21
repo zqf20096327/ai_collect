@@ -151,6 +151,87 @@ What users keep reporting:
 
 ---
 
+## Compression that is not a summary
+
+`--compress` reduces Python files to their API surface — imports, signatures,
+docstrings, class shape — and drops the bodies. On a typical module that is roughly half
+the characters.
+
+It is a **fixed syntactic transform**, not a summary: the standard library parser reads
+the file and re-serialises it. Nothing is inferred, nothing is ranked, and the same file
+always produces the same bytes. That is why it belongs here even though "no AI" is the
+whole point.
+
+Three limits, stated plainly:
+
+- **Python only.** A multi-language parser would mean a compiled dependency in a
+  pure-Python package. Saying "Python only" is more honest than a claim to maintain.
+- **Formatting is normalised.** The file is re-serialised, so `"` may become `'` and
+  blank lines collapse. Compressed output is for reading, not for diffing.
+- **Files that do not parse are left exactly as they are.** Never rewritten.
+
+```bash
+llmscribe overview --compress
+llmscribe read src/service.py --compress
+llmscribe overview --compress --max-tokens 20000
+```
+
+## Budgets are spent in a fixed order
+
+`--max-tokens N` stops once the content reaches roughly N tokens, taking files in
+**path order** until the budget is gone. That is the whole rule, and it is the only
+acceptable one: choose files by relevance and you are ranking, which is the thing this
+project exists not to do.
+
+The cost is honest — a budget can cut off a file that mattered. A predictable wrong
+answer beats an unpredictable right one, because you can always raise the budget or read
+a specific file. Token counts are estimated at four characters each; an exact count needs
+a model-specific vocabulary and would make the same file cost different amounts depending
+on which model you meant.
+
+## Secrets are masked before they leave
+
+This tool exists to put your code in front of a model, which makes it the last place a
+credential should pass through untouched. Every result is scrubbed first — file contents,
+search hits, diffs — and the result tells you what it masked:
+
+```json
+{ "content": "API_KEY = \"[REDACTED:openai_key]\"", "metadata": { "redacted": ["openai_key"] } }
+```
+
+Detected shapes include AWS keys, GitHub and Slack tokens, Stripe and Google keys, JWTs,
+`Authorization: Bearer` headers, credentials inside connection strings, private-key
+blocks, and `password = "..."` assignments. Matching is conservative on purpose:
+high-confidence token shapes with fixed replacements, so ordinary code is left alone and
+output stays repeatable.
+
+On by default everywhere, including the MCP server. `--no-redact` (CLI) or
+`redact=False` (Python) turns it off when you need the raw text. An agent cannot: one
+that can see raw secrets will eventually read one.
+
+## Where this fits
+
+There is already a filesystem MCP server — `@modelcontextprotocol/server-filesystem`.
+It is a good tool, and it does something this deliberately does not: it **writes**.
+`write_file`, `edit_file`, `move_file`, `create_directory`.
+
+LLMScribe is the read half. Run both if your agent needs to change files as well as
+understand them:
+
+| | server-filesystem | LLMScribe |
+| --- | --- | --- |
+| read / write / move / create | yes | **read only** |
+| binary and media reads | yes | opt-in (`read --binary`) |
+| per-file size and mtime | `get_file_info` | on every read, plus `map --sizes` |
+| `.gitignore`-aware | no | yes, real pathspec semantics |
+| dependency graph (imports **and** `used_by`) | no | yes |
+| git diff and status | no | yes |
+| truncation reported | no | yes, with `omitted_files` |
+
+The trade is deliberate. An agent holding a write-capable filesystem server can delete
+your repository; one holding LLMScribe structurally cannot. That is why `VISION.md` says
+LLMScribe does not edit your code — it is a property, not a missing feature.
+
 ## Feature Overview
 
 **Core Tools**
@@ -199,6 +280,7 @@ project_map()
 ```bash
 llmscribe map
 llmscribe map --depth 2          # only the first two levels, like `tree -L 2`
+llmscribe map --sizes            # add each file's size in bytes
 llmscribe map --json
 ```
 
@@ -282,6 +364,7 @@ read(file_path="src/auth/service.py")
 **CLI**
 ```bash
 llmscribe read src/auth/service.py
+llmscribe read logo.png --binary      # base64 + media type, for images and PDFs
 ```
 
 **MCP**
@@ -290,14 +373,18 @@ read
 ```
 </details>
 
-Every read also reports `byte_size` and `line_count` for the **whole file**, not just the
-part returned — so the agent can answer "how big is this" and "how many lines" without a
+Every read also reports `byte_size`, `line_count` and `modified` (ISO 8601 UTC) for the
+**whole file**, not just the part returned — so the agent can answer "how big is this" and "how many lines" without a
 second command, and without being misled when the body was clipped. That is the
 `stat` / `wc -l` / `file` information, in the same shape on every OS.
 
 ```json
-{ "file_path": "src/main.py", "byte_size": 2841, "line_count": 96, "character_count": 2841, "truncated": false }
+{ "file_path": "src/main.py", "byte_size": 2841, "line_count": 96, "modified": "2026-11-21T04:13:16+00:00", "truncated": false }
 ```
+
+`--binary` is the one way to get a non-text file: `content` becomes base64 and
+`media_type` carries the guessed MIME type. Binaries are still excluded from `overview`
+and `read_many`, so they cannot quietly fill a context window.
 
 ---
 
@@ -699,6 +786,9 @@ llmscribe diff
 # only the first two levels (like `tree -L 2`)
 llmscribe map --depth 2
 llmscribe overview --depth 3
+
+# fit a context budget: takes files in path order until it is spent
+llmscribe overview --max-tokens 20000
 
 # machine-readable output
 llmscribe map --json

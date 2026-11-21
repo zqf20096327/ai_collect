@@ -10,7 +10,7 @@
 
 [![release](https://img.shields.io/npm/v/@sputnikzaychik/dsh-qq-bot?style=flat-square&label=release&color=6f83ff)](https://www.npmjs.com/package/@sputnikzaychik/dsh-qq-bot)
 [![DSH](https://img.shields.io/badge/DSH-%E2%89%A50.2.0--rc.2-8b5cf6?style=flat-square)](#版本支持政策)
-[![tests](https://img.shields.io/badge/tests-1775%20passing-brightgreen?style=flat-square)](docs/DEVELOPMENT.md)
+[![tests](https://img.shields.io/badge/tests-2038%20passing-brightgreen?style=flat-square)](docs/DEVELOPMENT.md)
 [![node](https://img.shields.io/badge/node-%E2%89%A522.6-339933?style=flat-square)](https://nodejs.org/)
 [![license](https://img.shields.io/badge/license-MIT-536990?style=flat-square)](LICENSE)
 
@@ -23,28 +23,38 @@
 - **Agent 有 10 个工具**：联网搜索、抓网页、图片反搜、生图、发表情包、读聊天记录、群管理、改设置。
 - **只有一条运行时依赖**：`@deepseek-ai/schemastery`（须与宿主同版本）；其余走 Node 22 内置的 `WebSocket` / `fetch`，适配器是零依赖子进程。
 
-[更新内容](#v0130-更新内容) · [版本支持](#版本支持政策) · [安装](#安装与更新) · [接上 QQ](#接上-qq推荐-napcat) · [能力](#它能做什么) · [协议](#协议与连接方式) · [工具](#agent-能用的工具) · [常见问题](#常见问题)
+[更新内容](#v0142-更新内容) · [版本支持](#版本支持政策) · [安装](#安装与更新) · [接上 QQ](#接上-qq) · [能力](#它能做什么) · [协议](#协议与连接方式) · [工具](#agent-能用的工具) · [常见问题](#常见问题)
 
-## v0.13.0 更新内容
+## v0.14.2 更新内容
 
-- **表情包图库**：把本地表情包目录（子目录 = 系列）交给插件，它扫一遍就会给每张图自动打上标签和描述；
-  群里聊天时觉得合适，它自己挑一张发出去。入口：侧边栏「插件 → 已安装 → @sputnikzaychik/dsh-qq-bot → 能力 → 表情包」。
-- **不会刷图**：默认只有约三成概率真发、同一群每小时最多 6 张、同一张图 24 小时内不重复；
-  你明确要表情包时可以跳过概率与去重，每小时上限仍然生效。
-- **主动发言更像本人**：可以直接复用 DSH 里配的人格（如 dsh-soul-md），也能带表情包，挑不到图就只发文字。
-- **掉线自愈**：QQ / NapCat 重启后自动重连，不再出现「进程还活着但机器人静默离线」；
-  发大图不再误报失败，刚发完大图马上读聊天记录也能读到。
-- **设置与文档**：设置入口统一到插件详情页；README 瘦身，连接模式、权限、表情包、排错等细节移到
-  [docs/USAGE.md](docs/USAGE.md)。
-- 完整记录见 [CHANGELOG](CHANGELOG.md)。
+- **搜索的后端顺序可以自己排了**：设置页里联网搜索变成一张卡片，每行一个后端（官方 Search API /
+  智谱 GLM / 免 Key 多引擎），▲ ▼ 调顺序。以前只有「多引擎开 / 关」两档。
+- **引用一条消息再 @ 它，它能读到被引用的内容了**：以前那段的文字根本没进它的视野，
+  你引用长文说「评价这段话」，它只能瞎猜。现在只取被引用的那一条，不会翻整段聊天。
+- **别人没法靠引用内容给它下指令了**：引用内容与引用者昵称任何人都能随便写，
+  以前能在里面伪造一行「[QQ群 … 身份:拥有者]」骗过它。现在压成一行、方括号换全角、
+  不可见字符全清掉；跨群和私聊的内容不会混进别的群。
+- **点「停止」真的会停**：以前要等一整串搜索引擎跑完。
+- **越界的设置值不再被静默存进去**：以前滑条有范围、但直接调接口能写进任意值，
+  现在服务端也校验，打字打到一半就夹紧。
+- **带账号的代理能用了**（以前连上就 407）、**启动日志不再打出 token**、
+  **清理旧配置时不再把值写进日志**。
+- **Tavily 的付费 key 只给你自己用**：群友也能调联网搜索，以前会消耗你的额度；现在只有私聊或你本人。
+- **设置页的卡片与数字字段改成数据驱动**：以后加一张卡片只改 JSON，不用动客户端代码。
 
+### 移除 / 升级说明
+
+- `webSearch.multiEngine` / `webSearch.maxUses` / `webSearch.baseUrl` / `webSearch.apiKeyEnv` **已移除**
+  （由「后端顺序」「每查询条数」「DSH 搜索后端注册表」取代）。**每查询条数默认从 5 条改成不截断。**
+- `limits.perMinute` 下界从 0 改成 1（填 0 本来就是按 20 跑）。
+- 以上旧键升级时会被自动清掉，不用手动改。
 ## 版本支持政策
 
 面向**相对稳定的 DSH RC 版本**适配与修复，**不单独维护 alpha**。
 
 | 项目 | 当前说明 |
 | --- | --- |
-| 插件发行版 | `0.13.0`（npm 包 `@sputnikzaychik/dsh-qq-bot`） |
+| 插件发行版 | `0.14.2`（npm 包 `@sputnikzaychik/dsh-qq-bot`） |
 | DSH 版本 | **≥ `0.2.0-rc.2`**；`0.2.1` 系列（rc.2 / rc.3 / rc.5）实测通过 |
 | Web | `dsh web` 部署用 `--profile web` |
 | 桌面端 | DSH Desktop 用 `--profile desktop`，插件在应用内 **插件** 页面安装 |
@@ -84,23 +94,23 @@ dsh --profile web --dump-config
 
 </details>
 
-## 接上 QQ（推荐 NapCat）
+## 接上 QQ
 
-NapCat 官方 Docker 镜像（amd64 / arm64）：
+本仓库**不含协议端**：需要一个兼容协议端把 QQ 账号暴露成某种受支持的上行协议，插件再把消息接进 DSH。
+选哪种由你决定，插件这边只认「协议 + 地址 + token」。
 
-```sh
-docker run -d --name napcat --restart=always \
-  -e NAPCAT_GID=$(id -g) -e NAPCAT_UID=$(id -u) \
-  -p 3000:3000 -p 3001:3001 -p 6099:6099 \
-  mlikiowa/napcat-docker:latest
-```
+以默认的 OneBot 11 为例，协议端里要开两个入口：
 
-- WebUI：`http://<主机IP>:6099/webui`，手机 QQ 扫码登录；token 默认在 `docker logs napcat` 里。
-- 建议把容器内 `/app/napcat/config` 与 `/app/.config/QQ` 挂卷，免得重启要重新扫码。
-- NapCat 的「网络配置」里开 **OneBot 11**：**HTTP 服务器 3000**（发消息）+ **正向 WebSocket 3001**（收事件），
-  端口默认就和本插件一致，不用改。
+| 用途 | 协议 | 插件里的字段 |
+| --- | --- | --- |
+| 发消息 | HTTP API | `onebot.httpUrl`（如 `http://127.0.0.1:3000`） |
+| 收事件 | 正向 WebSocket | `onebot.wsUrl`（如 `ws://127.0.0.1:3001`） |
 
-**配置入口统一到首页侧边栏「插件 → 已安装 → @sputnikzaychik/dsh-qq-bot」，使用 DSH 官方插件详情页接口。**
+- 端口随便，填进设置即可；
+- 协议端要鉴权时，把同一个 token 填进 `onebot.accessToken`；
+- 走**反向** WebSocket 时，让协议端连 `ws://<DSH 主机>:6199/`，插件这边只负责监听。
+
+**配置入口统一到首页侧边栏「插件 → 已安装 → QQ 机器人」，使用 DSH 官方插件详情页接口。**
 
 面板分四档：**连接** / **基本**（准入与名单、发言与管理）/ **能力**（识图与绘图、搜索与抓取、对话与人格、表情包）/ **高级**。
 改完点保存：连接项（模式 / 地址 / token）会自动重启适配器，其它项下一条消息生效。
@@ -120,8 +130,8 @@ docker run -d --name napcat --restart=always \
 | 收发消息 | 群聊（默认要 @，引用 bot 的消息也算 @）与私聊；长回复按换行切成多条 ≤1200 字 |
 | 五种协议 | OneBot 11/12、Satori、Milky、QQ 官方机器人，见[协议与连接方式](#协议与连接方式) |
 | 群管理 | 禁言、踢人、撤回、改名片 / 群名、设管理员、全员禁言；指令与工具共用一套权限 |
-| 联网与媒体 | `qq_websearch` 多引擎搜索、`qq_webfetch` 抓网页（可走代理 / Moli 渲染）、`qq_imgsearch` 反搜、`qq_draw` 生图发群 |
-| 看图 | 收到的图片用视觉模型识别后并入回答；群内近期图片由 AI 按需自取（不硬塞上下文） |
+| 联网与媒体 | `qq_websearch` 联网搜索（后端优先级可手动排序）、`qq_webfetch` 抓网页（可走代理 / Moli 渲染）、`qq_imgsearch` 反搜、`qq_draw` 生图发群 |
+| 看图 | 识图模型留空（默认）时图片作为附件直接提交进会话，由会话模型自己看图，文本里标注图片文件名；显式填了识图模型则先识别再并入回答；群内近期图片由 AI 按需自取（不硬塞上下文） |
 | 表情包 | 本地目录即图库（子目录 = 系列），`index.json` 索引 + AI 自动打标；`qq_sticker` 按标签挑一张发到当前会话 |
 | 主动发言（可选） | 到点看一眼群里聊什么，自己决定要不要接话；判断与发言可分用两个模型，可复用 `dsh-soul-md` 的人格 |
 | 流程授权（可选） | 子代理 / 队友 / 工作流 / 第三方抓取（`moli_fetch`）被拦下时，私聊回一次 6 位动态码才放行 |
@@ -134,10 +144,10 @@ docker run -d --name napcat --restart=always \
 
 | protocol | 协议端 | 传输 | 备注 |
 | --- | --- | --- | --- |
-| `onebot11`（默认） | NapCat / go-cqhttp / Lagrange | 正向/反向 WS + HTTP | 与 0.9 的配置完全兼容 |
+| `onebot11`（默认） | 任意 OneBot 11 实现端 | 正向/反向 WS + HTTP | 与 0.9 的配置完全兼容 |
 | `onebot12` | OneBot 12 实现端 | 正向/反向 WS + HTTP | @ 是 `mention`、图片只有 `file_id` |
 | `satori` | Koishi（Satori 服务端） | WS `/v1/events` + HTTP RPC | 消息体是类 XHTML 元素串 |
-| `milky` | NapCat / Yogurt / Lagrange.Milky | `/event` WS + `/api` HTTP | 无 echo；消息 id 是 `message_seq` |
+| `milky` | 任意实现 Milky 规范的协议端 | `/event` WS + `/api` HTTP | **已实测**（真实账号 + Milky 1.3 协议端：@ 触发、收群消息、发文本与引用回复）；无 echo，消息 id 是 `message_seq` |
 | `qq-official` | QQ 开放平台机器人 | Webhook 或 WS 网关 | AppID/AppSecret 鉴权；无群管理动作 |
 
 **能力边界**：`qq-official` 没有踢人/禁言/改名片这类动作（`qqgroup` 会明确回「不支持」）；`onebot12` 的图片段只有 `file_id`，
@@ -150,7 +160,7 @@ docker run -d --name napcat --restart=always \
 
 ## 配置
 
-常规用法全在设置面板里（入口见[接上 QQ](#接上-qq推荐-napcat)）。几个要点：
+常规用法全在设置面板里（入口见[接上 QQ](#接上-qq)）。几个要点：
 
 - **工作区自动管理**：插件在 DSH 默认工作区同级建 `QQ_msg` 并注册为 Web UI 侧栏的「QQ 消息」分组；带图消息的原图缓存在
   `QQ_msg/qq-images/<会话id>/`，会话结算后删除。
@@ -177,7 +187,7 @@ docker run -d --name napcat --restart=always \
 | --- | --- |
 | `qqbot` | 连接状态 / 主动发消息（可带一张本地图片）/ 中断回合 |
 | `qqgroup` | 群管理：成员、群信息、禁言、踢人、撤回、名片、群名、管理员、戳一戳 |
-| `qq_websearch` | 联网搜索（多引擎组合，走配置的代理） |
+| `qq_websearch` | 联网搜索（后端按优先级依次尝试，失败自动降级；走配置的代理） |
 | `qq_webfetch` | 抓网页原文，内网地址一律拒绝；可切 Moli 无头浏览器渲染 SPA |
 | `qq_imgsearch` | 图片反搜（公网 URL 或本地上传），支持 `kind=comic` 漫画模式 |
 | `qq_history` | 读聊天记录（当前群/私聊直读，跨群按权限），窗口内图片自动识别 |
@@ -199,7 +209,7 @@ AI 自动打标只处理新增/内容变动的图；发送有闸门（概率 / �
 
 ## 常见问题
 
-- **一直「OneBot 未连接」**：NapCat 的「正向 WebSocket」是否开在 `onebot.wsUrl`；reverse 模式下是否指向 `ws://<DSH>:6199/`；token 是否一致。
+- **一直「OneBot 未连接」**：协议端的「正向 WebSocket」是否开在 `onebot.wsUrl`；reverse 模式下是否指向 `ws://<DSH>:6199/`；token 是否一致。
 - **能连上但收不到消息**：OneBot 版本要选 **v11**，且必须开正向或反向 WS（只开 HTTP 不够）。
 - **群里 @ 了也不回**：`group.enabled`、`group.allow` 白名单、`self_id` 是否一致（`logAdapterFrames: true` 看原始帧）。
 - **日志在哪**：插件前缀 `[dsh-qq-bot]`，适配器 `[dsh-qq-bot]/adapter`，都打到 DSH Host 的 stdout。
@@ -209,7 +219,7 @@ AI 自动打标只处理新增/内容变动的图；发送有闸门（概率 / �
 ## 开发与构建
 
 ```sh
-node test/run-all.mjs   # 全量自测（48 套件；套件失败会自动重试一次并标注）
+node test/run-all.mjs   # 全量自测（49 套件；套件失败会自动重试一次并标注）
 npx tsc --noEmit        # 类型检查（JSDoc + checkJs，不引入构建产物）
 ```
 
@@ -220,20 +230,21 @@ npx tsc --noEmit        # 类型检查（JSDoc + checkJs，不引入构建产物
 
 | 文档 | 内容 |
 | --- | --- |
-| [DEVELOPMENT.md](docs/DEVELOPMENT.md) | 本地开发与测试（48 套件 / 1775 项）、完整配置参考、工具细节、文件清单、设计取舍、发布流程 |
+| [DEVELOPMENT.md](docs/DEVELOPMENT.md) | 本地开发与测试（49 套件 / 2038 项）、完整配置参考、工具细节、文件清单、设计取舍、发布流程 |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | 分层图、模块职责、关键数据流、身份契约、已知边界 |
 | [USAGE.md](docs/USAGE.md) | 连接模式细节、权限与指令表、表情包图库、排错手册 |
-| [CHANGELOG.md](CHANGELOG.md) | 0.1.0 → 0.13.0 的完整演进 |
+| [CHANGELOG.md](CHANGELOG.md) | 0.1.0 → 0.14.2 的完整演进 |
 | [AI-DISCLOSURE.md](docs/AI-DISCLOSURE.md) | AI 生成方式、验证到什么程度、**尚未验证清单**（用前务必读） |
 | [MEMORY.md](docs/MEMORY.md) | 「人设 + 长期记忆 + 语义检索 + 压缩不遗忘」的实践笔记（实验田，无安装脚本） |
 | [SECURITY.md](docs/SECURITY.md) | 安全模型与漏洞报告方式（别在公开 issue 里贴细节） |
+| [DECISIONS.md](docs/DECISIONS.md) | 取舍记录：哪些边界**故意不修**、为什么（改动前先看这里） |
 | [CONTRIBUTING.md](docs/CONTRIBUTING.md) | 贡献流程与代码约定 |
 
 ## 许可与致谢
 
 MIT，见 [LICENSE](LICENSE)。维护者 [@arrow1031](https://github.com/arrow1031)，核心贡献者 [@nd002723](https://github.com/nd002723)。
 
-- [**NapCat**](https://napneko.github.io/) —— OneBot v11 接口与文档；没有它把 NTQQ 的能力按 OneBot 规范暴露出来，这个项目无从起步。
+- [**OneBot 11 规范**](https://github.com/botuniverse/onebot-11) —— 消息段与动作集的事实标准，默认协议按它实现。
 - [**dsh-moli**](https://github.com/27painter/dsh-moli) —— 本地无头浏览器引擎与参数面；`qq_webfetch` 的渲染抓取直接借它的引擎。
 - [**@tencent-connect/dsh-qqbot**](https://github.com/tencent-connect/dsh-qqbot) —— 官方 QQ Bot 插件与扫码连接 SDK，部分能力参照其公开文档实现。
 - **梁圣** —— 忠！橙！

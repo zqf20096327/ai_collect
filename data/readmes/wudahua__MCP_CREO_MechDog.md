@@ -1,8 +1,8 @@
-# MCP_CREO_MechDog 0.34.0
+# MCP_CREO_MechDog 0.35.5
 
-![version](https://img.shields.io/badge/version-0.34.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
+![version](https://img.shields.io/badge/version-0.35.5-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
 
-当前正式版 **0.34.0**（MINOR——0.31.1/0.32.0 反馈剩余项 + BUG-120 实体化链路收官：[FEAT-070](docs/work-items/FEAT-070.md) 新增公开工具 `creo_redefine_solidify_body`，以 `strategy=new` 重建失效主体参照、解除 `BOW_BULB_SOLID` 自锁，公开工具 109→110，本机 Creo 10/release 42 实机体积 55087038135.823044 mm³ 与基线一致、保存重载通过；[BUG-137](docs/work-items/BUG-137.md) 隔离 `subprocess.Popen` 消除全量单测 teardown WinError 32，并加“全量通过”口径须 `success=true` 报告的发布门禁；[BUG-138](docs/work-items/BUG-138.md) 去除验收脚本硬编码工具数 82/84、改以 `creo_capabilities` 为准，`dev_check` 新增离线验收门禁；[BUG-139](docs/work-items/BUG-139.md) 启动协调器探测超时可配/循环外成功落地/相位/预算分段/准入降级/身份归因/文案修复，本机冷启动走到 `ready`；[DEV-097](docs/work-items/DEV-097.md) Release 正文自证门禁（四附件名 + sidecar 指引 + 摘要比对，≥0.34.0 强制执行，历史版本祖父化）。承接 0.33.0。实机为本机 Creo 10.0.0.0（release 42）；未验：Creo 12.4/9、WorkBuddy 黑盒、FEAT-070 `strategy=existing` 在该几何的 Creo 10 不稳定） · [版本说明](docs/RELEASE_NOTES_0.34.0.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
+当前正式版 **0.35.5**（PATCH——[BUG-144](docs/work-items/BUG-144.md) 修复打包单测跨轮次污染：`tools/test_unit.py` 运行前原子写 `build/unit_test_run.json` 并绑定本轮 `run_id`/源码指纹，`release_integrity` 自本版起要求状态与报告共同支撑“全量通过”声明，`tools/package.py` 新增 `--source-root`/`--unit-report` 并把门禁移到任何产物之前；[DEV-099](docs/work-items/DEV-099.md) 让 README 工具数引用 `creo_capabilities.tool_count`；[BUG-142](docs/work-items/BUG-142.md) 以默认关闭的断开延迟钩子在本机 Creo 10 实机核验被中断的 disconnect 仍保留 `unknown_outcome` 与预发布事实。公开工具仍 110。承接 0.35.4；未验：其他 Creo 版本、外部反馈环境与 WorkBuddy 黑盒） · [版本说明](docs/RELEASE_NOTES_0.35.5.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
 
 > 让 AI 客户端通过 MCP，直接在 Creo Parametric 里创建**原生可编辑的参数化特征**——不是导出网格，也不是脚本模拟。
 
@@ -14,7 +14,7 @@ MCP_CREO_MechDog 是运行在你自己 Windows 电脑上的本地 MCP 服务（s
 ## 特性
 
 - **原生参数化**：Creo 内可编辑的草图、拉伸、旋转、孔、圆角、抽壳、钣金、装配，保留尺寸与依赖关系。
-- **109 个公开工具**（以 `creo_capabilities` 返回为准；`creo_surface_boundary_fill` 已定义但门禁隐藏，不计入）：实体特征、装配、工程图、放样／翼型、曲面修剪／投影曲线／法向偏置、两截面直纹曲面放样、quilt 合并、曲面边圆角、曲面组级缝合测量、数值曲率/G1 分析（不提供斑马纹/曲率梳图像）、参数与关系式、特征树查询、标准螺纹孔、只读质量属性、离线产品变体规划、作业取消（不承诺几何回滚）、保存与导出。
+- **公开工具清单**（数量以 `creo_capabilities` 返回的 `tool_count` 为准；`creo_surface_boundary_fill` 已定义但门禁隐藏，不计入）：实体特征、装配、工程图、放样／翼型、曲面修剪／投影曲线／法向偏置、两截面直纹曲面放样、quilt 合并、曲面边圆角、曲面组级缝合测量、数值曲率/G1 分析（不提供斑马纹/曲率梳图像）、参数与关系式、特征树查询、标准螺纹孔、只读质量属性、离线产品变体规划、作业取消（不承诺几何回滚）、保存与导出。
 - **保存即校验**：每次修改后保存 `.prt.N` / `.asm.N`、从磁盘重载并比对特征、尺寸、体积与参数（`saved_file_reloaded_and_verified`）。
 - **可回滚**：revision 保护、失败自动回滚、`unknown_outcome` 保留现场，旧请求不会改坏模型。
 - **本地可控**：几何计算全在 Creo 进程内完成；服务不执行任意命令、不改动 Creo 安装目录、不上传模型。

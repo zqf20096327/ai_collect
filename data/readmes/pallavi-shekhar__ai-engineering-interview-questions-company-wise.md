@@ -1128,10 +1128,11 @@
 - How is KL divergence loss different from cross-entropy loss? And from contrastive loss?
   - Answer: [Math Behind Cross-Entropy Loss](https://outcomeschool.com/blog/math-behind-cross-entropy-loss) and [What is Contrastive Learning?](https://outcomeschool.com/blog/contrastive-learning) and [What is KL Divergence? The Math Explained Step by Step](https://outcomeschool.com/blog/kl-divergence)
 - How do bagging and boosting differ? What is the computational difference between XGBoost and Random Forest?
+  - Answer: [How does Gradient Boosting work?](https://outcomeschool.com/blog/gradient-boosting)
 - Explain the bias-variance trade-off, cross-validation, and the curse of dimensionality.
   - Answer: [How does the Bias-Variance Tradeoff work?](https://outcomeschool.com/blog/bias-variance-tradeoff) and [How does Cross-Validation work?](https://outcomeschool.com/blog/cross-validation)
 - How do GRU cells work, and how do they address the vanishing gradient problem? How does a BiLSTM work?
-  - Answer: [Recurrent Neural Network (RNN)](https://outcomeschool.com/blog/recurrent-neural-network)
+  - Answer: [Recurrent Neural Network (RNN)](https://outcomeschool.com/blog/recurrent-neural-network) and [How do LSTM and GRU work?](https://outcomeschool.com/blog/lstm-and-gru)
 - What is Attention in machine learning models? What happens in a neural network if you remove all the hidden layers?
   - Answer: [Math behind Attention - Q, K, and V](https://outcomeschool.com/blog/math-behind-attention-qkv)
 - Discuss precision, recall and F1: when would you prioritise one over the others?
@@ -1286,8 +1287,4 @@
 
 #### AI System Design
 
-- Design the data engine: fleet triggers → upload → labelling → retraining → shadow-mode validation → release.
-
-#### Evaluation and Observability
-
-- Disengagement rate is a weak proxy. How would you actually measure whether an auton
+- Design the data engine: fleet triggers → upload → labell

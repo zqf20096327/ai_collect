@@ -2,14 +2,13 @@
 
 > A small, readable Agent Runtime built from first principles.
 
-SunAgent is a modular, provider-agnostic runtime for tool-calling agents. The engine (loop, tracing, events, executors) stays stable; everything that shapes an agent's behavior — prompt, tools, limits, context, recovery, verification — is versioned data in a YAML **harness manifest**. Change one gene, rerun a benchmark, and attribute the score change to that mutation.
+SunAgent is a modular, provider-agnostic runtime for tool-calling agents. The engine (loop, tracing, events, executors) stays stable; everything that shapes an agent's behavior — prompt, tools, limits, context, recovery, skills — is versioned data in a YAML **harness manifest**. Change one gene, rerun a benchmark, and attribute the score change to that mutation.
 
 - Any OpenAI-compatible Chat Completions endpoint, with streaming and reasoning replay
 - Harness genome with lineage, content hashes, and immutable evaluation records
 - Schema-validated tool calls; malformed model output never enters history
 - Context strategies (`full_history`, `compact_observations`, `llm_summary`) with output spilling
 - Per-category LLM retries, tool-error feedback, and a context-window hard gate
-- Optional verification gate with evidence grounding and command re-execution
 - Two event streams: internal `RunTrace` JSONL and user-facing `EventEmitter`
 - CLI and browser UI over the same runtime; Harbor adapters for benchmarks
 
@@ -20,7 +19,7 @@ CLI · Web UI · Harbor adapter
         │  AgentEvent / frames
 Channels (CLIRenderer · WebUIChannel)
         │  run_turn(...)
-AgentTurn (loop · context · recovery · verification)
+AgentTurn (loop · context · recovery)
         │
 HarnessSpec · LLM provider · Tool registry · Execution
         │
@@ -83,7 +82,7 @@ Basic auth is not encryption — keep it on localhost, use an SSH tunnel, or ter
 
 | Path | Contents |
 |---|---|
-| `src/agent_runtime/agent/` | Turn orchestration, tool loop, context, observations, verification |
+| `src/agent_runtime/agent/` | Turn orchestration, tool loop, context, observations |
 | `src/agent_runtime/tools/` | Shell, file, search, patch, code, and symbol tools |
 | `src/agent_runtime/harness/` | Genome schema, YAML loader, lineage CLI |
 | `src/agent_runtime/execution/` | Local/Harbor executors, workspaces, command guard |
@@ -97,7 +96,7 @@ Basic auth is not encryption — keep it on localhost, use an SSH tunnel, or ter
 
 ## Harnesses
 
-Seven genes define a run: `prompt`, `tools`, `control`, `context`, `recovery`, `verification`, and `skills`. Lineage lives beside them as `id`, `parent`, `mutation`, and `reason`. `genes_hash` covers genes only, so editing `reason` changes nothing behaviorally. Every trace starts with a harness header, keeping each run attributable.
+Six behavior genes define a run: `prompt`, `tools`, `control`, `context`, `recovery`, and `skills`. Manifests also reserve a no-op `verification: {enabled: false}` block for a future gate; it is parsed and versioned but ignored at runtime. Lineage lives beside them as `id`, `parent`, `mutation`, and `reason`. `genes_hash` covers genes only, so editing `reason` changes nothing behaviorally. Every trace starts with a harness header, keeping each run attributable.
 
 ```bash
 uv run python -m agent_runtime.harness tree      # family tree + warnings
@@ -132,13 +131,12 @@ Never edit an existing harness in place; derive a child so changes stay attribut
 | `grep_search` / `find_files` | Regex content search; wildcard discovery |
 | `find_symbol` / `find_references` | Tree-sitter Python symbol lookup and usages |
 | `execute_code` | Run a complete Python, Bash, R, or Node script |
-| `submit_result` | Structured finish signal, validated under verification harnesses |
 
 Scripts are saved under `.scripts/`; long observations spill to `.outputs/`.
 
 ## Context, Memory, Skills
 
-Context strategies are `full_history`, `compact_observations` (deterministic folding over budget), and `llm_summary` (structured LLM snapshot plus a verbatim recent tail). Set `AGENT_RUNTIME_MEMORY=1` to inject a `workspace/memory/` listing; the agent maintains it with file tools. The directory lives under the runtime home (`<home>/memory`), not under the sandbox root, so it survives a change of `AGENT_RUNTIME_WORKSPACE`; the prompt spells the paths relative to the sandbox because the file tools reject anything outside it. A harness declaring `skills: [coder]` loads `skills/coder/SKILL.md` into the prompt.
+Context strategies are `full_history`, `compact_observations` (deterministic folding over budget), and `llm_summary` (structured LLM snapshot plus a verbatim recent tail). Set `AGENT_RUNTIME_MEMORY=1` to inject a `workspace/memory/` listing; the agent maintains it with file tools. The directory lives under the runtime home (`<home>/memory`), not under the sandbox root, so it survives a change of `AGENT_RUNTIME_WORKSPACE`; the prompt spells the paths relative to the sandbox because the file tools reject anything outside it. A harness declaring `skills: [name]` loads `skills/<name>/SKILL.md` into the prompt, looked up next to the harness files (`AGENT_RUNTIME_SKILLS_DIR` overrides the location; no skills ship with the repo today).
 
 ## Configuration
 
@@ -189,7 +187,7 @@ Details: [`evaluation/terminal_bench/readme.md`](evaluation/terminal_bench/readm
 
 ## Observability and Tests
 
-`RunTrace` records spans (`agent`, `llm`, `tool`) and policy events (context, retries, verification, budgets, guards, skills). Each record carries `run_id`, `event_id`, `event_type`, `timestamp`, `iteration`, and `data`; tool arguments and results are intentionally not stored. Traces default to `workspace/traces/`.
+`RunTrace` records spans (`agent`, `llm`, `tool`) and policy events (context, retries, budgets, guards, skills). Each record carries `run_id`, `event_id`, `event_type`, `timestamp`, `iteration`, and `data`; tool arguments and results are intentionally not stored. Traces default to `workspace/traces/`.
 
 ```python
 from agent_runtime.agent import RunTrace, run_turn

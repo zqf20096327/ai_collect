@@ -4,18 +4,19 @@
 
 # 🧬 AlphaEvo
 
-**An Open-Source Recursive Self-Improvement (RSI) Agent for Stock Strategy Research**
+**An Open-Source Self-Evolving Equity Strategy Research Studio, Live Arena & Anti-Delusion RSI Engine**
 
-*Diagnose, mutate, falsify, and shadow-verify equity strategies with a full evidence trail*
+*Go from plain-language trading idea -> YAML DSL -> self-evolving AI loop -> falsification gates -> shareable HTML & bitemporal shadow verification*
 
 [![GitHub stars](https://img.shields.io/github/stars/ZhuLinsen/alphaevo?style=social)](https://github.com/ZhuLinsen/alphaevo/stargazers)
 [![CI](https://github.com/ZhuLinsen/alphaevo/actions/workflows/ci.yml/badge.svg)](https://github.com/ZhuLinsen/alphaevo/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![MCP Ready](https://img.shields.io/badge/MCP-STDIO%20Ready-10b981.svg)](SKILL.md)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-[**Overview**](#-overview) · [**Core Capabilities**](#-core-capabilities) · [**Quick Start**](#-quick-start) · [**Architecture**](#-architecture) · [**Validation**](#-real-world-validation-april-10-2026) · [**CLI**](#-cli-commands)
+[**Studio & Arena**](#-visual-research-studio--live-arena) · [**Why AlphaEvo**](#-why-alphaevo) · [**4 Ways to Start**](#-4-zero-friction-ways-to-start) · [**MCP & Skill**](#-3-connect-to-claude-code-openclaw-cursor-codex-or-antigravity-native-mcp--skillmd) · [**CLI**](#-cli-commands)
 
 [English](README.md) | [中文](docs/README_CN.md)
 
@@ -23,22 +24,80 @@
 
 ---
 
-## ✨ Overview
+## ✨ Why AlphaEvo
 
-AlphaEvo is a self-evolving stock strategy research agent. It turns a readable YAML strategy into a disciplined recursive self-improvement (RSI) loop: backtest, diagnose failure, propose a controlled mutation or new factor, stress-test against overfitting, and keep the full evidence trail.
+Most open-source AI finance projects stop at **one-shot LLM stock chatter**, **opaque Python code generation**, or **overfitted backtest curves**.
+
+**AlphaEvo treats trading strategies as inspectable, falsifiable research assets** stored as human-readable **YAML DSLs**:
+
+1. **Draft & Evolve Transparently**: Turn plain English/Chinese ideas into readable YAML rules (`triggers`, `guards`, `exit.triggers`), mutate one lever at a time, and inspect exact YAML diffs across generations.
+2. **Enforce Anti-Delusion Falsification**: A zero-bypass `EvaluationKernel` couples **O(N) 28.9× vectorized daily MTM backtesting**, `TrialLedger` **Deflated Sharpe Ratio (DSR)**, cross-sectional **shuffled-return Null Controls**, **Locked Holdout Vault**, and **runtime Point-in-Time (PIT) leakage probes**.
+3. **Separate Search from Promotion**: Historical backtests can *only veto*; promotion requires chronological commitments in a **SHA-256 hash-chained Forward Shadow Ledger** (`T+5` / `T+10` / `T+20`).
+4. **Ship Ready-to-Use Interfaces**: Zero-dep local **Web Studio** (`alphaevo web`), self-contained single-file **Live Arena HTML dashboards** (`alphaevo arena run`), **Fork-and-Run daily GitHub Actions + 7-channel push alerts**, and a native **STDIO MCP server** (`alphaevo mcp` + `SKILL.md`).
+
+<p align="center" id="visual-research-studio--live-arena">
+  <img src="sources/alphaevo_studio_preview.svg" alt="AlphaEvo Web Research Studio & Live Self-Evolving Arena" width="820">
+</p>
+
+## ⚡ 4 Zero-Friction Ways to Start
+
+### 1. Local Web Research Studio & Live SSE Evolution (Zero Extra Dependencies)
+```bash
+git clone https://github.com/ZhuLinsen/alphaevo.git && cd alphaevo
+pip install -e .
+alphaevo web
+# Or run via Docker in one command:
+# docker compose up --build
+```
+Open `http://127.0.0.1:8765` to draft YAML strategies from plain language, X-Ray entry condition pass-rate bottlenecks (`POST /api/strategies/diagnose`), stream round-by-round Stock RSI evolution over SSE (`/api/rsi/stream`) with **L2 Co-STEER PIT-safe factor synthesis**, inspect **Proposer vs. Prosecutor debate cards**, explore the **3×3 MAP-Elites Behavioral Niche Archive**, view **Evolution Lineage Trees** & **Overfit Graveyard** veto bars, export **DPO preference pairs**, replay trades on **OHLC K-line charts**, run **L3 Meta-RSI Harness A/B calibration**, and allocate causal risk budgets.
+
+### 2. Evolution Observatory, Overfit Graveyard & HTML Reports (30s, No Key Required)
+```bash
+alphaevo showcase                       # 30s bundled snapshot evolution (report.md + interactive K-line report.html)
+alphaevo arena run --rounds 2           # Strategy Evolution Observatory -> reports/arena/index.html + digest.md
+```
+
+### 3. Connect to Claude Code, OpenClaw, Cursor, Codex, or Antigravity (Native MCP + `SKILL.md`)
+```json
+{
+  "mcpServers": {
+    "alphaevo": { "command": "alphaevo", "args": ["mcp"] }
+  }
+}
+```
+Exposes 11 research tools (`alphaevo_draft_strategy`, `alphaevo_diagnose_bottlenecks`, `alphaevo_evaluate_strategy`, `alphaevo_evolve_rsi`, `alphaevo_mechanism_ab`, `alphaevo_null_audit`, `alphaevo_shadow_simulate`, `alphaevo_audit_factors`, `alphaevo_allocate_portfolio`, etc.) plus `alphaevo://program` and `alphaevo://strategies` resources. See [SKILL.md](SKILL.md).
+
+### 4. Fork & Deploy GitHub Pages Evolution Observatory + Push Alerts (Free Cloud via Actions)
+1. Fork this repository, enable **GitHub Actions**, and optionally enable **GitHub Pages -> GitHub Actions** (`Settings -> Pages`) to publish `https://<owner>.github.io/<repo>/`.
+2. Optionally add Secrets (`ALPHAEVO_FEISHU_WEBHOOK`, `ALPHAEVO_WECOM_WEBHOOK`, `ALPHAEVO_DINGTALK_WEBHOOK`, `ALPHAEVO_TELEGRAM_BOT_TOKEN` + `ALPHAEVO_TELEGRAM_CHAT_ID`, `ALPHAEVO_DISCORD_WEBHOOK`, `ALPHAEVO_SLACK_WEBHOOK`, `ALPHAEVO_WEBHOOK_URL`, `ALPHAEVO_API_KEY`).
+3. [arena-daily.yml](.github/workflows/arena-daily.yml) automatically evolves strategies on weekdays, builds the **Evolution Observatory & Overfit Graveyard** single-file dashboard, deploys to GitHub Pages (when enabled), posts `digest.md` to Step Summary, and notifies your channels.
+
+## 🧭 Why AlphaEvo vs. Alternatives
+
+| Dimension | Traditional Backtesters (`Backtrader` / `VectorBT`) | Multi-Agent Trading (`TradingAgents` / `ai-hedge-fund`) | Code Auto-Research (`RD-Agent` / `autoresearch`) | **AlphaEvo** |
+|-----------|----------------------------------------------------|-----------------------------------------------------------|----------------------------------------------------|--------------|
+| **Unit of Evolution** | Manual Python scripts | Ephemeral chat/agent votes | Arbitrary Python code patches | **Readable YAML DSL + L2 AST/PIT-safe factors** |
+| **Multiple-Testing & Null Control** | DIY | None by default | Single holdout metric | **`EvaluationKernel` + `TrialLedger` DSR + Shuffled Null Worlds + Locked Holdout** |
+| **Forward Verification** | Manual paper script | Replay / episodic calls | Offline split only | **SHA-256 Bitemporal Shadow Ledger (`T+5/10/20`, `N_eff`, `HALTED` trips)** |
+| **Out-of-Box UI & Agent Hub** | Library only | Terminal / per-project scripts | Server / heavy setup | **Stdlib `alphaevo web`, single-file HTML Arena/Run reports, `alphaevo mcp` + `SKILL.md`** |
+| **Portfolio & Factor Governance** | External libraries | Basic sizing | Manual factor cleanup | **Causal `RegimeAdaptiveAllocator` + OOS/PIT `FactorGovernanceEngine`** |
+
+---
+
+### Real-World Benchmark Snapshot
 
 To keep self-evolution honest on noisy equity data, AlphaEvo separates **fast offline hypothesis search** from **slow forward promotion**: historical backtests can only veto weak candidates, while a bitemporal forward shadow ledger tracks out-of-sample commitments (`T+5` / `T+10` / `T+20`) before any promotion.
 
 ### Reproducible no-key showcase
 
-Bundled frozen yfinance snapshot, US tech basket, 2025-02-11 to 2026-04-10:
+Bundled frozen yfinance snapshot, US tech basket, 2025-02-11 to 2026-04-10 (evaluated under chronological equal-weight **daily MTM**, gap-aware open SL/TP fills, and **measured parameter sensitivity**):
 
 | Strategy | Signals | Win Rate | Avg Return | Max DD | Score |
 |----------|---------|----------|------------|--------|-------|
-| `rsi_reversion_v1` baseline | 0 | 0.0% | 0.00% | 0.0% | 8.1% |
-| `rsi_reversion_v7` champion | 37 | 48.6% | 2.94% | 23.6% | 68.7% |
+| `rsi_reversion_v1` baseline | 0 | 0.0% | 0.00% | 0.0% | 6.6% |
+| `rsi_reversion_v7` champion | 37 | 48.6% | 2.94% | 26.7% | 65.9% |
 
-What happened: the deterministic research committee flagged an over-confirmed entry stack, unlocked enough signals, widened the stop, extended holding, raised the payoff target, switched support context to MA60, then tightened volume confirmation. Each change was accepted only after retest. The champion keeps train-val and val-test gaps at 7.1% / 7.1% on this snapshot. See [showcase_rsi_reversion_real_snapshot.md](docs/reports/showcase_rsi_reversion_real_snapshot.md).
+What happened: the deterministic research committee flagged an over-confirmed entry stack, unlocked enough signals (`22.1%`), widened the stop (Sharpe/expectancy bridge), extended holding, raised the payoff target, switched support context to MA60, then tightened volume confirmation. Each change was accepted only after retest. The champion keeps train-val and val-test gaps at 7.1% / 7.1% on this snapshot. See [showcase_rsi_reversion_real_snapshot.md](docs/reports/showcase_rsi_reversion_real_snapshot.md).
 
 ### Live-data LLM evolution path
 
@@ -51,12 +110,26 @@ Live yfinance data, configured external LLM provider, `alphaevo evolve rsi_rever
 
 Different data windows and protocols should not be ranked directly; the snapshot showcase is the stable no-key first run, while this path demonstrates the LLM research loop on live market data.
 
-## 🧠 Core Capabilities
+## 🧠 Core Capabilities & Maturity Status
 
-- **Backtesting and evaluation**: run strategies on real data with regime sampling, multi-metric scoring, and walk-forward anti-overfitting checks.
-- **Recursive self-improvement (`alphaevo rsi`)**: drive `program.md`-steered L1 strategy mutations, L2 Co-STEER factor synthesis, `(regime × style × horizon)` MAP-Elites archives, executable reflection scars, and heterogeneous proposer/prosecutor reviews with `results.tsv` provenance.
-- **L0 truth kernel & forward shadow ledger (`truth` / `shadow`)**: enforce an append-only `TrialLedger` with Deflated Sharpe Ratio (DSR), shuffled-return null-signal controls, runtime point-in-time (PIT) leak probes, and SHA-256 hash-chained forward commitments.
-- **Traceable research workflow**: keep deterministic or LLM research committee verdicts, evolution trees, and SFT/DPO trajectory exports for every iteration.
+- **Vectorized Quant Engine & Execution Realism**: O(N) precomputed indicators (`IndicatorRegistry.precompute`), O(N) causal regime detection, date-aligned benchmark context, gap-aware open stop/take-profit fills, frozen entry ATR, `next_open` entry-bar A-share limit/ST/suspension enforcement, and dual-layer evaluation (`daily_mtm` primary basket DD/Sharpe + `trade_sequence_*` diagnostics).
+- **Recursive self-improvement (`alphaevo rsi`)**: `program.md`-steered L1 strategy mutations, L2 Co-STEER factor synthesis, `(regime × style × horizon)` MAP-Elites archives, persistent executable reflection scars, and heterogeneous proposer/prosecutor reviews (CLI + LiteLLM) with `results.tsv` provenance.
+- **L0 truth kernel & forward shadow ledger (`truth` / `shadow`)**: fail-closed SQLite `TrialLedger` with Deflated Sharpe Ratio (DSR), synchronous cross-sectional block-shuffled null controls & strategy-rerun null worlds, restricted-namespace subprocess/runtime point-in-time (PIT) probes, and SHA-256 hash-chained forward commitments with monotonic `as_of`, replay-gate isolation, per-stage `CANARY -> ACTIVE` dwell, and `HALTED` protection.
+- **Traceable research workflow**: deterministic or LLM research committee verdicts, evolution trees, and SFT/DPO trajectory exports for every iteration.
+
+| Capability Area | Status | Notes |
+|-----------------|--------|-------|
+| YAML Strategy DSL v0.5, O(N) Backtest & Dual-Layer MTM Evaluator | **Implemented** | Bundled assets in wheel; cross-platform cache & lazy CLI startup (~0.1s) |
+| Unified `EvaluationKernel` & Locked Holdout Vault | **Implemented** | Chronological holdout isolation, Layer-2 portfolio veto gate, Optimizer `TrialLedger` tracking & CI all-indicator PIT invariance tests |
+| L0 Truth Kernel (`TrialLedger`, DSR, Joint Null Controls, PIT Probe) | **Implemented** | Fail-closed persistence, runtime PIT truncation on custom factors & CI Tier-2 0-false-promotion audit |
+| Dual-Clock RSI Ratchet & Forward Shadow Ledger | **Implemented** | `FactorStore`-persisted Co-STEER L2 factors, unified `ExperienceStore` metrics, SHA-256 hash chain & optional auto-enrollment |
+| Immutable Run Provenance & Scoped Leaderboard | **Implemented** | `RunArtifactStore` manifests, secret-free config snapshots, `DataBundleStore` SHA-256 bundles, `runs rerun-official` & `leaderboard --scope local\|official` |
+| Multi-Strategy Regime-Adaptive Allocator | **Implemented** | Causal inverse-vol, regime haircut, pairwise correlation penalty & drawdown deleveraging (`alphaevo portfolio allocate`) |
+| Alpha Factory Lifecycle Governance | **Implemented** | OOS IC/IR decay auditing, PIT re-probing, pairwise redundancy pruning & strategy lineage (`alphaevo factor audit/prune`) |
+| Heterogeneous CLI / LiteLLM Multi-Model Council | **Implemented** | Deterministic general heuristic fallback when API keys unavailable |
+| Event/News & Sector Context Indicators (L2/L3) | **Experimental** | Degrades to price/volume proxy or static snapshot with explicit warnings |
+| Web UI Dashboard (`alphaevo web`) & Live Arena | **Implemented** | Zero-dep stdlib HTTP Research Studio, inline SVG/HTML Arena & single-file run reports + 7-channel webhook notifier |
+| Native AI Agent Integration (`alphaevo mcp` & `SKILL.md`) | **Implemented** | Stdlib JSON-RPC 2.0 STDIO MCP server + agent charter resources for Claude Code, OpenClaw, Cursor & Codex |
 
 ## 🚀 Quick Start
 
@@ -78,14 +151,14 @@ This runs a real historical-data showcase from a bundled yfinance snapshot:
 ```
 Showcase Chain: baseline + up to 6 validated mutations
 
-Round 1 │ rsi_reversion_v1 │ Signals: 0  │ Score: 8.1%
+Round 1 │ rsi_reversion_v1 │ Signals: 0  │ Score: 6.6%
   Committee: entry stack is too strict
   Mutation: entry.logic and -> or
 
-Round 2 │ rsi_reversion_v2 │ Signals: 79 │ Score: 17.8%
+Round 2 │ rsi_reversion_v2 │ Signals: 79 │ Score: 22.1%
   Mutation: exit.stop_loss.value 0.05 -> 0.08
 
-Round 7 │ rsi_reversion_v7 │ Signals: 37 │ Score: 68.7% 🏆
+Round 7 │ rsi_reversion_v7 │ Signals: 37 │ Score: 65.9% 🏆
 ```
 
 ### Choose the right path
@@ -313,16 +386,30 @@ data_manager = DataManager([DSAAdapter(dsa_path="/path/to/dsa")])
 ## 📊 CLI Commands
 
 ```bash
-alphaevo showcase                 # Real-data 30s snapshot showcase (no API key)
+alphaevo web                       # Zero-dependency local Web Research Studio (http://127.0.0.1:8765)
+alphaevo arena run --rounds 2     # Multi-strategy Live Arena -> single-file interactive index.html + notify
+alphaevo arena notify-test        # Dry-run or test Feishu/WeCom/DingTalk/Telegram/Discord/Slack alerts
+alphaevo mcp                      # STDIO MCP JSON-RPC 2.0 server for AI coding/research agents
+alphaevo showcase                 # Real-data 30s snapshot showcase (report.md + report.html, no API key)
 alphaevo demo --real              # Real data demo without API key
-alphaevo run <id>                 # Full research loop
+alphaevo data bundle create       # Freeze & SHA-256 hash market data into an immutable bundle
+alphaevo run <id> --bundle <bid>  # Run full loop on an immutable verified bundle
+alphaevo runs list                # Inspect indexed run/evolve/optimize/rsi artifacts
+alphaevo runs html <run_id>       # Export any immutable run as standalone single-file HTML
+alphaevo runs rerun-official <id> --bundle <bid>  # Verify candidate under official_v1
+alphaevo runs compare <r1> <r2>   # Compare immutable manifests & strategy YAML diffs
+alphaevo portfolio allocate <s1> <s2>  # Causal regime-adaptive multi-strategy risk budget
 alphaevo evolve <id> --method llm --rounds 3 --output reports/  # LLM-first evolution
-alphaevo rsi run <id> --program examples/rsi_stock_program.md   # Stock RSI ratchet loop
+alphaevo rsi run <id> --holdout-pct 0.20 --portfolio-gate --enroll-shadow
 alphaevo rsi null-audit <id>      # Verify 0 false promotions under shuffled returns
+alphaevo rsi mechanism-ab <id> --cutoffs 0.55,0.70  # L3 multi-cutoff kernel mechanism audit
+alphaevo shadow simulate <id>     # Rolling bitemporal forward shadow ledger simulation
 alphaevo shadow status            # Forward shadow ledger & promotion stages
 alphaevo truth trials             # Inspect append-only TrialLedger & DSR records
+alphaevo factor audit             # Audit OOS IC/IR decay, PIT invariance & redundancy
+alphaevo factor prune --dry-run   # Retire decayed, redundant, or PIT-unsafe factors
 alphaevo factor discover <symbol> # LLM-driven factor discovery
-alphaevo leaderboard              # Strategy rankings
+alphaevo leaderboard --scope local  # Strategy rankings (use --scope official for verified runs)
 alphaevo tree <id>                # Evolution tree visualization
 ```
 
@@ -345,8 +432,8 @@ AlphaEvo adapts these ideas to falsifiable quantitative equity strategy research
 - [x] Phase 3: CLI & Orchestration — full command suite, strategy store, leaderboard
 - [x] Phase 4: Open-Source Polish — CI/CD, docs, English templates, CHANGELOG
 - [x] Phase 5: Recursive Stock Self-Improvement & Shadow Ledger — `TrialLedger` + DSR, null controls, runtime PIT probe, MAP-Elites, heterogeneous council, bitemporal forward tracking
-- [ ] Phase 6: Market Regime Adaptive Gating — multi-strategy portfolio allocation, risk budgets & PIT event caches
-- [ ] Phase 7: Web UI Dashboard — interactive strategy lineage, RSI ratchets & shadow ledger exploration
+- [x] Phase 6: Market Regime Adaptive Gating & Canonical Data Bundles — causal multi-strategy `RegimeAdaptiveAllocator`, risk budgets, SHA-256 `DataBundleStore`, unified `EvaluationKernel`, and `runs rerun-official`
+- [x] Phase 7: Web Studio, Evolution Observatory & Agent Ecosystem — zero-dep `alphaevo web` with live SSE `/api/rsi/stream`, Adversarial Council Debate cards, Evolution Lineage Tree & Trade K-Line Replay SVGs, Overfit Graveyard `alphaevo arena`, `alphaevo mcp` + `SKILL.md`, 7-channel push alerts, Docker Web Studio & GitHub Pages deployment
 
 ## 🤝 Contributing
 

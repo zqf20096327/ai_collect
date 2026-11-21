@@ -38,13 +38,32 @@
 
 **Document version: v1.5.3**
 
-**Engineered for solo users and enterprises alike, providing a domain-specific knowledge base that scales seamlessly while maintaining accuracy through autonomous self-optimization.**
+**An LLM wiki you can trust and operate: compiled at ingest, cited to the source line, governed by an audit trail and spend limits, and kept accurate by agentic maintenance. Built for solo users and enterprises alike.**
 
 > Built for individuals, small teams, and large organizations who need a knowledge base that stays accurate as documents accumulate.
 
 **Documentation, FAQ and articles:** https://axoviq.com/resources/synthadoc
 
 Synthadoc reads your raw source documents — PDFs, spreadsheets, PPTs, web pages, images, videos, Word files, TXTs, and AI session transcripts (.jsonl) — and uses an LLM to synthesize them into a persistent, structured wiki. Cross-references are built automatically, contradictions are detected and surfaced, orphan pages are flagged, and every answer cites its sources. Outputs are stored as local Markdown files, ensuring seamless integration and autonomous management within [Obsidian](https://obsidian.md) or any wiki-compliant ecosystem.
+
+<a name="what-sets-synthadoc-apart"></a>
+
+## What Sets Synthadoc Apart
+
+Compiling documents into a wiki is the starting point. What decides whether you can rely on that wiki a year from now is what happens after ingest. Synthadoc builds that in, with no add-ons:
+
+| | What you get | Learn more |
+| --- | --- | --- |
+| **An audit trail for everything** | Every ingest, query, lifecycle change and cost event is written to an immutable `audit.db`, with the source hash, token counts and timestamps. You can always answer *what changed, when, and what did it cost* | [Audit features](docs/user-quick-start-guide.md#step-15--audit-features) |
+| **Spend you control** | Soft-warn and hard-gate cost thresholds, a 3-layer cache, and a small model (Claude Haiku 5.5, DeepSeek or MiniMax) that is enough for every task. Measured with Haiku 5.5: ingesting 17 pages costs about 4 cents | [Choosing a model](docs/user-quick-start-guide.md#appendix-c--switching-llm-providers) |
+| **A wiki that maintains itself** | Nine conversational maintenance workflows: contradiction, orphan, broken-citation and content-health resolvers, stale-page re-ingest, wikilink repair, scaffold regeneration. Each one previews a diff, waits for your confirmation before writing, and can be rolled back | [Agentic workflows](docs/user-quick-start-guide.md#agentic-workflows) |
+| **Every claim traceable** | A `^[file:L-L]` citation on every claim, a Source Viewer in Obsidian, and an on-demand check that each claim is actually supported by the lines it cites | [Citation faithfulness](docs/user-quick-start-guide.md#checking-citation-faithfulness) |
+| **Query across your wikis** | One question fans out across every registered wiki, with knowledge-gap detection and citations that name the wiki they came from | [Cross-wiki queries](docs/user-quick-start-guide.md#appendix-l--cross-wiki-queries) |
+| **Built for scale and recovery** | Hybrid keyword and semantic search with a published [benchmark](benchmarks/retrieval/README.md), a graph that opens a 5,000-page wiki as named clusters, and a resumable job queue that survives a crash | [Job queue](docs/design.md#14-job-queue) |
+| **Open and integrable** | Full REST API, a 12-tool MCP server, hooks, Docker image, single-zip backup and restore, plain Markdown with OKF export, AGPL-3.0 licence | [MCP server](docs/design.md#27-mcp-server), [Docker](docs/docker-deploy.md) |
+| **Hardened input and a security policy** | Source text is sanitised before any LLM call, file access is confined to the wiki root, and vulnerabilities are reported privately | [Source sanitizer](docs/design.md#29-pre-llm-source-sanitizer), [SECURITY.md](SECURITY.md) |
+
+For the capability-by-capability comparison with typical RAG, NotebookLM and Notion AI, see [Why Synthadoc?](#why-synthadoc).
 
 ---
 
@@ -1406,72 +1425,4 @@ tail -f .synthadoc/logs/synthadoc.log | jq 'select(.job_id == "abc123")'
 ```bash
 synthadoc audit history -w my-wiki          # table: timestamp, source file, wiki page, tokens, cost
 synthadoc audit history -n 100 -w my-wiki   # last 100 records (default 50)
-synthadoc audit history --json -w my-wiki   # raw JSON for scripting
-
-synthadoc audit cost -w my-wiki             # total tokens + daily breakdown, last 30 days
-synthadoc audit cost --days 7 -w my-wiki    # weekly view
-synthadoc audit cost --json -w my-wiki      # {total_tokens, total_cost_usd, daily: [...]}
-
-synthadoc audit events -w my-wiki           # table: timestamp, job_id, event type, metadata
-synthadoc audit events --json -w my-wiki    # raw JSON
-
-synthadoc audit citations -w my-wiki                     # all claim citations (last 50)
-synthadoc audit citations --page alan-turing -w my-wiki  # citations for one page
-synthadoc audit citations --source turing.pdf -w my-wiki # citations from one source file
-synthadoc audit citations --broken -w my-wiki            # validation failures only
-synthadoc audit citations --json -w my-wiki              # raw JSON for scripting
-```
-
-> **Note:** Per-model cost tracking is live from v0.2.0 — pricing tables cover all 7 API providers. Token counts and USD cost are recorded for every ingest and query operation in `audit.db`.
-
-> **Lifecycle transitions** are also recorded in `audit.db` — every state change (slug, from/to state, triggered_by, reason, timestamp) is permanently stored as an immutable audit event. Query the log with `synthadoc lifecycle log` or `GET /lifecycle/events`.
-
-### Cache management
-
-```bash
-# Remove all cached LLM responses
-# Output: "Cache cleared: N entries removed."
-synthadoc cache clear -w my-wiki
-```
-
-Cache invalidation happens automatically when:
-
-- A source file's SHA-256 hash changes (content changed)
-- The internal cache version is bumped (after prompt template edits)
-- `--force` is passed to ingest
-
-### OpenTelemetry integration
-
-By default, traces and metrics are written to `<wiki-root>/.synthadoc/logs/traces.jsonl`. To send to any OTLP backend (Jaeger, Grafana Tempo, Honeycomb, Datadog):
-
-```toml
-# ~/.synthadoc/config.toml
-[observability]
-exporter      = "otlp"
-otlp_endpoint = "http://localhost:4317"
-```
-
-### Debugging
-
-```bash
-# Start server with DEBUG console logging
-synthadoc serve -w my-wiki --verbose
-
-# Check for configuration problems
-synthadoc status -w my-wiki     # prints pre-flight warnings
-
-# View recent job failures
-synthadoc jobs list --status failed -w my-wiki
-synthadoc jobs status <job-id> -w my-wiki    # shows error message + traceback
-
-# Force a re-ingest to rule out cache issues
-synthadoc ingest --force problem.pdf -w my-wiki
-```
-
----
-
-## Understanding Logs and the Audit Trail
-
-Synthadoc writes three log artefacts per wiki: `log.md` (human-readable Markdown, open in Obsidian), `synthadoc.log` (JSON lines, rotate-by-size, grep with `jq`), and `audit.db` (append-only SQLite — source hashes, cost records, job history).
-
-For the full field reference, log levels, rotation config, OTel integration, and audit query examples see 
+synthadoc audit history --json -

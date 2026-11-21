@@ -27,7 +27,7 @@ made with it, shot by shot.
 - **Set how loud each clip is.** A clip on the timeline has its own volume,
   from silent to twice as loud, and the export applies it. The viewer has a
   volume of its own beside the play controls, which changes only what you hear.
-- **Make a game sprite (experimental).** In an independent shot, open **Sprite Draft**, choose a facing and camera, and select a jog, a planted idle, the shot prompt or an imported motion guide. Select your character in Cast. Sprite Draft prefers installed HyperFlow H3 Flash, then H3 Turbo. Render a draft and inspect the 64-pixel cells. Auto cutout uses BiRefNet when installed in ComfyUI’s `background_removal` model folder and otherwise uses the background key. In **Sprite loop → Export size**, choose **64**, **128** or **256 px** per cell and download the illustrated or indexed PNG. Set **Frame rate** to **24 fps** for the frames between the sampled poses. The export uses the saved take and its original crop. The editor reuses both PNGs on subsequent downloads. **Finish draft** refines the selected motion with the same loop and pivot.
+- **Make a game sprite (experimental).** In an independent shot, open **Sprite Draft**, choose a facing, camera, canvas (**Square 512×512**, **Portrait 256×384** or **Landscape 384×256**) and clip length (**39**, **56** or **73 frames**), and select a jog, a planted idle, the shot prompt or an imported motion guide. Tag cast pictures by view (**front**, **side**, **back**, **left**) so directional renders route only heading-matched plates. Sprite Draft prefers installed HyperFlow H3 Flash, then H3 Turbo, skipping audio decode on drafts. Auto cutout uses BiRefNet with `H3DefringeMatte` edge defringing when installed in ComfyUI’s `background_removal` model folder and otherwise uses the background key. Each take caches lossless RGBA frames so **Export size** (**64**, **128**, **160**, **256 px** or any even width × height in `32..512`) and **24 fps** re-export without re-decoding video. **Close loop** pins a clean mid-stride frame at `0`, `stride` and `2×stride`. **Finish draft** refines the selected motion with the same loop and pivot. **Props & plates…** renders 4+ MP static props, paired state variants (`unlit → lit`) and character turnaround plates with P-H3-Image.
 - **Try fast, finish large.** Drafts are small and quick. Finals are refined at
   up to 1920 pixels, with a realism LoRA for natural skin.
 - **Pick the model, per project or per clip.** HyperFlow H3 Flash, MiniMax H3,
@@ -196,6 +196,18 @@ voice. Choose who is in each clip, and write @Name in **What happens** to place
 them, or drag their card into the text. Write @Name in **Who speaks** to use
 their voice. A voice can be uploaded, or taken from a clip on the timeline.
 
+**RefMods.** A RefMod is a reference saved as one file by the
+ComfyUI-MiniMaxH3Mod pack. With that pack installed and the file in ComfyUI's
+`models/refmods` folder, there are two ways to use one you already have. **Add**,
+**Add RefMod** in the Cast panel makes a cast member from a RefMod alone, with
+no pictures to upload. Or open a cast member and choose the file under
+**RefMod**, with its strength. The menu lists what the pack's **Load H3
+RefMods** node lists, subfolders included; reload the editor after adding a file,
+and restart ComfyUI if it still does not appear. A member that is only a RefMod renders on the prompt-only
+model, so describe them in the member's description. A member with pictures can
+also get a RefMod made from them: **Make a RefMod from these pictures** in the
+same section.
+
 **The cast catalog.** Press **Save** beside **Catalog** on a cast member to keep
 them for every project, with their pictures and voice. In another project,
 **Add**, **From the catalog** brings in a copy. When you change someone and save
@@ -231,16 +243,21 @@ optionally supply a replacement first frame. The result appears under **Takes**
 as a full-length alternate with the original sound and the picture outside the
 edit range intact.
 
-**Motion transfer (experimental).** Choose **Motion transfer** on an imported
-or generated take. Mark 2–15 seconds with one visible performer and choose a
-full-body character image. Adjust **Motion strength** to change how closely the
-render follows the tracked pose. Use **Scene direction** to describe the framing
-and background. The model regenerates the scene, so background details,
-hands, and foot contact can drift. The result is a new take with source audio.
-This mode uses the standard MiniMax H3 checkpoint (with Turbo when installed)
-and requires the native SDPose, RT-DETR, and H3 Fun ControlNet Union models.
-See the [ComfyUI pose-control workflow](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/video_minimax_h3_fun_controlnet_union.json)
-for the model files and their installation folders.
+**Motion transfer.** Choose **Motion transfer** in **Generate**, the clip's
+context menu, or **Takes** on imported footage or a generated clip, and select
+2–30 seconds of one performer. Pick a cast member or upload a character image,
+then choose **Replace character in scene** (masked replacement on the original
+background using SAM 3.1, Character Swap LoRA, and zero-halo plate compositing,
+with **Keep reference style** for stylized/anime characters or **Match scene
+lighting** for photorealistic people) or **New scene from pose** (pose-guided
+choreography via RT-DETR, gated SDPose, and H3 Fun ControlNet Union 2.0). Clips
+longer than 5.9 seconds automatically tile into seamless 124-frame latent-locked
+relay windows (`22`-frame overlap) in a single graph so VRAM stays constant.
+The result is a normal clip placed right after the source on the timeline with
+the exact source audio, so you can trim, split, extend, add VFX, or re-render
+Draft → Final / Sharp 2× from the inspector. Missing optional models download
+from Hugging Face with sha256 verification right inside the Motion transfer
+dialog; see [motion transfer models](docs/models.md#motion-transfer-models).
 
 **Compare takes.** In **Takes**, click **Compare takes**, Ctrl-click or
 Command-click a second take, or drag it into the viewer. Play or step
@@ -331,6 +348,13 @@ on the server, so closing the editor never loses one. Every change is a
 revision you can go back to, and two editors, or an editor and an agent, can
 work on one project at once.
 
+**Project storage.** Open the menu beside the project name and choose **Project
+storage** to see how much space its `.hold.safetensors` files use. **Clear unused
+files** removes cached latents the current project no longer references. Choose
+**All cached latents** to clear those for existing takes too. Your videos still
+play and export. Extensions can use frames from the video, and you can render a
+new draft when you need its original latents for finishing.
+
 | Key | Does |
 |---|---|
 | Space | Play or pause |
@@ -376,13 +400,15 @@ Press ? in the editor for this list.
 
 ## Sprites workspace
 
-Choose **Sprites** beside **Video** to review a character's animations. Add a reference sheet or use an existing cast member. Choose the camera, four or eight directions, and a motion. Click a direction to compare its takes in sync. Focus the game preview and move with WASD, the arrow keys, or by holding a point on the ground.
+Choose **Sprites** beside **Video** to review a character's animations. Add a reference sheet or use an existing cast member, and tag each cast photo's view (**front**, **side**, **back**, **left**) in **Edit references** so directional drafts automatically route heading-matched plates. Choose the camera, canvas (**Square 512×512**, **Portrait 256×384** or **Landscape 384×256**), clip length (**39**, **56** or **73 frames**), four or eight directions, and a motion. Click a direction to compare its takes in sync. Focus the game preview and move with WASD, the arrow keys, or by holding a point on the ground.
 
-Choose **Add animation…** to name a loop and describe the movement once for this character. Select a direction and click **New draft**. Each direction uses the shared motion prompt, character references and selected camera. **Edit prompt…** changes the description for subsequent drafts. Existing takes retain their original prompt. The atlas lists each named animation by direction, such as `Wing stretch_NE`.
+Choose **Add animation…** to name a loop and describe the movement once for this character. Select a direction and click **New draft**. Each direction uses the shared motion prompt, heading-matched character references and selected camera. **Edit prompt…** changes the description for subsequent drafts. Existing takes retain their original prompt. The atlas lists each named animation by direction, such as `Wing stretch_NE`.
 
-**New draft** queues one seed for the selected direction. Click a take to use it for that slot. **Preview mirrored** reflects the opposite direction. Click **Use mirrored** to keep it. **Edit take** opens the source shot in Video, and **Open in Sprites** returns from its Sprite Draft controls. **Finish this take** refines the selected draft.
+**New draft** queues one seed for the selected direction. Click a take to use it for that slot. **Preview mirrored** reflects the opposite direction. Click **Use mirrored** to keep it. **Close loop** extracts a clean non-edge-touching mid-stride frame from the selected take and queues a self-pinned draft (anchoring frames `0`, `stride` and `2×stride`) for seamless walk/run closure. **Edit take** opens the source shot in Video, and **Open in Sprites** returns from its Sprite Draft controls. **Finish this take** refines the selected draft.
 
-**Export atlas** packs available loops for that character and camera into a ZIP containing a PNG and an Animwright-format JSON file. Each loop records its frame rectangles, ground anchor, frame rate, source take, seed and mirror choice. Export size, output style and frame rate apply to the whole atlas. **Original per loop** keeps each motion’s timing. Choose **24 fps** to include intermediate frames from the saved takes at the same playback speed. A seven-pose run becomes 14 frames, and a two-second idle becomes 48 frames.
+Choose **Props & plates…** to queue ≥ 4 MP **P-H3-Image** renders (`2048×2048`, `1664×2496` or `2496×1664`) with BiRefNet cutout and `H3DefringeMatte` edge defringing: style-locked static game props (with optional 42° top-canopy framing), pixel-aligned paired state variants (`unlit → lit`), or neutral standing character turnaround plates. It needs a ComfyUI with the `PH3ImageConditioning` node and these files: `p-h3-image_int8_convrot.safetensors` or `p-h3-image_bf16.safetensors` in `diffusion_models` (or `p-h3-image_lora_bf16.safetensors` in `loras`, applied to `minimax_h3_ref2va_pruned_int8_convrot.safetensors`), `p-h3-image_text_encoder_int8_convrot.safetensors` or the H3 text encoder in `text_encoders`, and `p-h3-image_vae_bf16.safetensors` in `vae`.
+
+**Export atlas** packs available loops for that character and camera into a ZIP containing `sprites.png`, optional `sprites.webp` (**Include WebP**, on by default), an Animwright-format `sprites.json`, and an offline `preview.html`. Each loop records its frame rectangles, ground anchor, frame rate, source take, seed and mirror choice. Export size (**64**, **128**, **160**, **256 px** or any even **Custom…** size / `W×H` in `32..512`), output style and frame rate apply to the whole atlas, re-packing from each take's lossless RGBA frame cache when present. **Original per loop** keeps each motion’s timing. Choose **24 fps** to include intermediate frames from the saved takes at the same playback speed. A seven-pose run becomes 14 frames, and a two-second idle becomes 48 frames.
 
 ### Test an atlas without installing H3 Editor
 

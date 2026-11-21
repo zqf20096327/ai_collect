@@ -33,7 +33,9 @@ npx webkineforge add default-site
 | Interactive animations, clean static HTML templates | **WebKineForge** | Zero-framework runtime | HTML / JS / CSS (optional: Tailwind) | Built-in Agent, simple and secure | Build and generate / One-click `npx` to pull |
 | Content-focused with minimal interaction | **[Astro](https://astro.build)** | No JS by default (Islands on demand) | Astro component syntax + basic front-end knowledge | Relies on its own conventions; no dedicated index | Official themes / Starlight |
 | Full-stack applications, real-time data | **[Next.js](https://nextjs.org)** / **[Nuxt](https://nuxt.com)** | React/Vue runtime | Full suite of frameworks | Mature ecosystem but no unified structural conventions | Extensive template marketplace |
-| Visual website building for designers | **[Framer](https://framer.com)** / **[Webflow](https://webflow.com)** | Platform-hosted | Virtually no coding required | Built-in AI | Platform template library |
+| Visual website building for designers | **[Framer](https://framer.com)** / **[Webflow](https://webflow.com)** | Platform-hosted | Little to no coding required | Built-in AI | Platform template library |
+| Design and publish websites using a visual design tool | **[Figma Sites](https://www.figma.com/sites)** | Platform-hosted | Basic design skills | Built-in AI | Platform template library |
+| Build websites quickly without coding | **[Wix](https://www.wix.com)** / **[Squarespace](https://www.squarespace.com)** | Platform-hosted | Little to no coding required | Built-in AI | Platform template library |
 | Minimalist websites | **[11ty](https://www.11ty.dev)** / Hand-coded | None | Almost none | Entirely based on manual conventions | None |
 
 ## ⚠️ When Not to Choose Me

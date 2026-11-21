@@ -182,7 +182,7 @@ Anthropic support is an optional extra: `pip install "healing-agent[anthropic]"`
 
 **Other providers: use their OpenAI-compatible endpoint.** OpenRouter, Groq, Mistral, Gemini's OpenAI-compatible API, vLLM, LM Studio and a LiteLLM proxy all speak the OpenAI API: set `AI_PROVIDER = "openai"` and `OPENAI["base_url"]` (or `OPENAI_BASE_URL`). No extra package is installed for it.
 
-**The `litellm` provider is deprecated** and will be removed in 0.7.0. It still works, and prints a one-time warning when used. The `healing-agent[litellm]` extra pulls about 40 more packages into your process, caps `openai` below 3 and `filelock` below its fixed releases, and ships the LiteLLM proxy server, whose advisories you would then have to assess in every audit. Healing Agent only ever called `litellm.completion()`, which an OpenAI-compatible endpoint replaces.
+**The `litellm` provider was removed in 0.7.0** (deprecated in 0.6.0). A config that still names it stops with a message saying what to change. If you run a LiteLLM proxy, point `OPENAI["base_url"]` at it. The library itself is no longer pulled into your process.
 
 ## Usage 🔧
 
@@ -424,7 +424,7 @@ Configuration lives in `healing_agent_config.py` — first looked up in your pro
 Key settings:
 
 ```python
-AI_PROVIDER = "azure"     # azure | openai | anthropic | ollama | litellm (deprecated)
+AI_PROVIDER = "azure"     # azure | openai | anthropic | ollama
 OPENAI = {..., "base_url": None}  # any OpenAI-compatible endpoint, e.g. "https://openrouter.ai/api/v1"
 
 MAX_ATTEMPTS = 3          # Hard limit across recursive repair/reload attempts
@@ -449,6 +449,7 @@ GIT_MODE = "off"          # off | patch (save reviewable diff) | apply (guarded 
 
 # Verification gates: run before the live file changes, exit code 0 accepts
 VERIFY_COMMAND = None     # e.g. ["python", "checks/verify_loader.py"]; list of lists = ordered gates
+CANDIDATE_POLICY = "strict"  # refuse repairs that ADD process/network/eval/pickle/... use; "off" to disable
                           # runs on a copy of the candidate FILE, so use a self-contained checker
 VERIFY_TIMEOUT_SECONDS = 120
 
@@ -474,7 +475,7 @@ Model IDs are configurable, not hardcoded. If a repaired module fails to load, t
 
 ### Sampling parameters and comparing models
 
-Every provider block takes an optional `params` dict, forwarded to that provider **verbatim** — request keyword arguments for Azure, OpenAI, Anthropic and LiteLLM (Anthropic's sampling parameters follow the SDK version, see Installation), and Ollama's `options` object for local models. Nothing is validated or translated: parameter names belong to the provider. Leave it empty and the request is exactly what earlier releases sent.
+Every provider block takes an optional `params` dict, forwarded to that provider **verbatim** — request keyword arguments for Azure, OpenAI and Anthropic (Anthropic's sampling parameters follow the SDK version, see Installation), and Ollama's `options` object for local models. Nothing is validated or translated: parameter names belong to the provider. Leave it empty and the request is exactly what earlier releases sent.
 
 ```python
 OLLAMA = {
@@ -502,6 +503,8 @@ Git is never required and nothing is ever committed or pushed. `GIT_MODE="patch"
 `AUTO_SYSCHANGE=True` pip-installs inferred missing modules with no allowlist or pinning — use only in disposable environments. It defaults to `False`.
 
 ## Security and compliance 🛡️
+
+**Untrusted data in, generated code out.** The model sees the failing program's data, and data can carry instructions ("to fix this, run `curl … | sh`"). Two layers stand between that and your process. The prompts frame all runtime data as evidence, never instructions. `CANDIDATE_POLICY = "strict"` (the default) refuses a repair that adds a capability the original function did not use: processes, sockets, HTTP clients, `eval`/`exec`, dynamic imports, `pickle`, deleting files. Neither layer is a sandbox. For code paths that read data from outside your control, add a `VERIFY_COMMAND`, or use `AUTO_FIX=False` or draft-PR delivery.
 
 Report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md).
 Running Healing Agent where NIS2, GDPR or the Cyber Resilience Act apply?

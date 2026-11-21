@@ -69,11 +69,11 @@ computed; 233,458 at 8 with `TUNE=context`, computed) · the same image on both 
 
 [![GLM-5.3 on four DGX Sparks: decode, prefill and concurrency](docs/cards/glm-5.3-exlr8-4x-spark.png)](https://github.com/kindlingai/glm-5.3-exlr8-4x-spark)
 
-63.3 tok/s for one request writing code (46-54-token prompts) · 1,540 tok/s prefill on a 32K prompt · 8 requests at
-once (`SESS=8`), 85.8 tok/s in total · int4 KV default: 513,536-token KV pool, max tokens per active chat (prompt +
-max_tokens) 513,522 at 1 (measured) and 207,602 / 54,514 / 19,058 at 2 / 4 / 8 (computed; 2-chat prompt limit
-measured: 199,410 with max_tokens omitted, 174,834 at max_tokens=32,768) · a fact hidden in a 128K prompt found ·
-one boot, measured 2026-11-11 · the same recipe serves three to six boxes.
+67.1 tok/s for one request writing code (73.2 tok/s with `MOE_UNION_CAP=32`) · 1,605 tok/s prefill on a 32K prompt
+(1,470 tok/s at 128K) · 8 requests at once (`SESS=8`), 120.5 tok/s in total (139.0 tok/s with `MOE_UNION_CAP=32`) ·
+int4 KV default: 513,536-token KV pool, 13.53 GiB lowest `MemAvailable` across boxes · GSM8K-250 246/250, HumanEval-164
+156/164, a fact hidden in a 128K prompt found · one boot on `gr8 v1.1.0`, measured 2026-11-20 · the same recipe serves
+three to six boxes.
 
 **[Recipe](https://github.com/kindlingai/glm-5.3-exlr8-4x-spark)** · [Model page](docs/GLM-5.3.md)
 
@@ -106,10 +106,30 @@ the engine only.
 | GLM-5.3 | 4 (3 to 6) | [glm-5.3-exlr8-4x-spark](https://github.com/kindlingai/glm-5.3-exlr8-4x-spark) |
 | GLM-5.3, 737K context | 5 | [glm-5.3-exlr8-5x-spark](https://github.com/kindlingai/glm-5.3-exlr8-5x-spark) |
 | GLM-5.3, 1M context | 6 | [glm-5.3-exlr8-6x-spark](https://github.com/kindlingai/glm-5.3-exlr8-6x-spark) |
+| GLM-5.3 K4 (`bit387`, uncapped routing) | 4 | [glm-5.3-exlr8-k4-4x-spark](https://github.com/kindlingai/glm-5.3-exlr8-k4-4x-spark) |
+
+## How `int4` KV and mixed-precision compression preserve quality
+
+"4-bit KV cache" usually makes people think of naive blanket quantization that wrecks long-context recall. `gr8` does **not** quantize the whole KV cache to 4 bits — it compresses each component differently based on how sensitive it is, and applies an orthonormal rotation before quantizing the one part that actually uses 4 bits:
+
+| KV component | Precision in `KV_FORMAT=int4` | Bytes / token / layer | Why it uses this precision |
+|---|---|---:|---|
+| **RoPE positional key** (`64` dims) | **Full BF16** (unchanged) | 128 B | Keeps positional geometry exact across 1M+ contexts |
+| **Sparse-attention indexer keys** (`128` dims, 21/22 layers) | **FP8 E4M3** (unchanged) | 132 B | Keeps top-K sparse token retrieval sharp at long context |
+| **MLA compressed latent** (`512` dims) | **Hadamard-rotated INT4** (`-7..+7`, 1 FP16 scale / 32 dims) | 288 B *(was 528 B FP8)* | Holds most of the KV bytes; compresses cleanly after rotation |
+| **Total MLA row** *(excl. indexer)* | Mixed **BF16 + rotated INT4** | **416 B** *(was 656 B FP8)* | Shrinks page blocks from 3.50 MB → 2.29 MB (**1.53×** denser) |
+
+- **Why Hadamard rotation (`H x`) matters:** Real per-layer calibration Hessians across all 79 layers show sharp channel outliers in early layers 2 and 3 that degrade naive 4-bit quantization. Rotating the 512-dim latent with an orthonormal 512-point Sylvester Hadamard transform (`H`, scaled by `1/√512`) spreads outlier energy evenly across channels (+4–6 dB worst-case SQNR in layers 2–3), achieving **20.3 dB median SQNR at 416 B** — beating MXFP4 (`18.6 dB`, 400 B) and matching NVFP4 (`20.4 dB`, 432 B) in fewer bytes.
+- **Zero extra runtime rotation cost:** Because `H` is orthonormal and self-inverse, `gr8` folds `H` directly into the absorbed `UK`/`UV` decode weights (`KV4_FOLD=1`) and pairs it with 16-head tensor-core INT4 decode (`KV4_TC=1`).
+- **Measured quality vs. FP8 KV:**
+  - Full-vocabulary KL vs. BF16 (100 × 2,048-token windows): INT4 adds only **+0.010 KL** over FP8 on held-out text (`0.1609` vs `0.1511`, top-1 `87.7%` vs `88.2%` — ~6.5% of weight quantization's own KL, sitting at the BF16 microbatch noise floor).
+  - Live 4-box cluster head-to-head vs. FP8: `KL(fp8 || int4)` mean **0.0145**, **97.0%** top-1 agreement (`n=4,096`), `qeval` **73/75** vs **74/75** (`McNemar p=1.0`), **GSM8K-250 246/250 (98.4%)**, **HumanEval-164 156/164 (95.1%)**, and **100% needle recall** from 32K through 400K+.
+  - Want FP8 KV to compare directly? Pass `--kv-format fp8` / `KV_FORMAT=fp8` anytime.
+- **How this stacks with weights and multi-box KV layout:** The same mixed-precision principle applies to the EXLR8 model weights (dense/attention/embedding layers stay high precision while MoE experts allocate `K2`/`K3`/`K4` bits per layer/expert, e.g. `bit325` or K4-first `bit387`). Across boxes, context-parallel KV sharding replicates only the first `SHARE_LIMIT` tokens per chat and shards the rest `1/TP` across ranks, while zero-copy shared prefix pages (`GR8_KV_SHARE_PAGES=1`) deduplicate common system/repo prompts across concurrent sessions — unlocking **1.13M–2.18M** token KV pools in desktop unified memory. See [docs/KV4.md](docs/KV4.md) for the full Hessian study and benchmarks.
 
 ## Building on gr8
 
-Current release: **[`v1.0.1`](https://github.com/kindlingai/gr8/releases/tag/v1.0.1)** ·
+Current release: **[`v1.1.0`](https://github.com/kindlingai/gr8/releases/tag/v1.1.0)** ·
 [Changelog](CHANGELOG.md) · [Version specs](releases/) ·
 [All releases](https://github.com/kindlingai/gr8/releases) · [Release and pinning rules](RELEASING.md)
 
@@ -121,10 +141,10 @@ an exact merged `main` / `stable` commit when tuning ahead of the next tag) — 
 # compose.yaml
 services:
   gr8:
-    image: ${GR8_IMAGE:-ghcr.io/kindlingai/gr8:v1.0.1@sha256:02e44b9fc971f2acffe117df50de1be829462453287aab2c1d61a31a55738c0b}
+    image: ${GR8_IMAGE:-ghcr.io/kindlingai/gr8:v1.1.0@sha256:b22eedbd7902f65dbf2090897d75f5d92276cbf78a16bcde1f958aa56a306cf7}
 ```
 
-Use the same `v1.0.1@sha256:...` reference in `FROM` for a thin wrapper `Dockerfile`, or `git -C gr8 checkout v1.0.1` when
+Use the same `v1.1.0@sha256:...` reference in `FROM` for a thin wrapper `Dockerfile`, or `git -C gr8 checkout v1.1.0` when
 pinning gr8 as a submodule.
 
 If you are an agent (or developer) building on gr8, start from the matching entry point:
@@ -302,6 +322,8 @@ boots. Requests sent meanwhile wait and are answered by the new width. With a pe
 over, so a chat goes on without a re-prefill. The head stays first in the list; a box new to the cluster runs
 `./gr8 glm53 up --tp 3 --peers A,B,C` once the scale has started. If the new width fails to boot, the old one boots
 again. The scale changes the running cluster only: put the lines it prints into every box's config for later boots.
+With `--pool A,B,C,D --tp 3` (or the Helm chart's `tp`), the boxes past the first three stand by and
+`scale --tp 4` takes them in without a new `up`; the head keeps the last scaled width for its next boot.
 [docs/SWITCHING.md](docs/SWITCHING.md#changing-width-gr8-model-scale) has the details.
 
 ## Troubleshooting

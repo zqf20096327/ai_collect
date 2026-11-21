@@ -37,6 +37,8 @@ cargo install --git https://github.com/dmavrotas/pacenote
 pacenote stats                       # all projects
 pacenote stats -p myrepo --since 2026-10-01
 pacenote stats --json | jq .tools    # machine-readable
+pacenote stats --agent codex         # OpenAI Codex CLI rollouts
+pacenote stats --agent all           # Claude Code + Codex, with a BY AGENT table
 pacenote lint "fix the bug"
 ```
 
@@ -132,6 +134,25 @@ To have the hook do it, run `pacenote hook install --rewrite`. Then:
 
 **Privacy:** local mode sends nothing anywhere. `--mode llm` is the only pacenote feature that sends data: it sends the prompt (and, unless `--no-context`, the file list) to Anthropic under your own account, and only when you choose it.
 
+## Agents
+
+| | Claude Code | OpenAI Codex | Cursor |
+|---|---|---|---|
+| `stats` | yes | yes (`~/.codex/sessions`, honours `$CODEX_HOME`) | not yet: Cursor keeps no readable token data locally |
+| prompt hook | `UserPromptSubmit` | `UserPromptSubmit` (same protocol) | `beforeSubmitPrompt` |
+| install | `pacenote hook install` | `pacenote hook install --agent codex` | `pacenote hook install --agent cursor` |
+
+```sh
+pacenote hook install --agent codex    # ~/.codex/hooks.json; then approve it in /hooks inside Codex
+pacenote hook install --agent cursor   # ~/.cursor/hooks.json (or --scope project: .cursor/hooks.json)
+```
+
+- **Codex** only runs hooks you've trusted, so open `/hooks` once after installing. Warnings, file hints and held prompts behave as in Claude Code.
+- **Cursor's hook can only allow or block a prompt**: it can't show a non-blocking warning or add context. So the Cursor hook *holds* prompts with a warn-level finding (a vague target, a large paste) and shows the local rewrite in the message; everything else passes silently. Resubmit the original unchanged to send it as-is. Held prompts are remembered in `$PACENOTE_STATE_DIR`, else `$XDG_STATE_HOME/pacenote`, else `~/.local/state/pacenote` (created private to you); if that directory can't be created, nothing is held.
+- `--scope local` is Claude Code only.
+
+Codex support follows the rollout layout described in public issue reports; OpenAI doesn't document it, and it hasn't been verified against every Codex version. Codex's `input_tokens` includes cached tokens, so pacenote reports them as uncached input plus cache reads (Codex has no cache-write charge).
+
 ## Languages
 
 Prompts are linted in **English, Greek, French, Spanish and German**, and findings are reported in the prompt's language. Mixed prompts ("διόρθωσε το bug στο `auth.rs`") work, because English technical vocabulary is always recognised alongside the detected language.
@@ -197,6 +218,9 @@ Latest results: [offline](bench/results/offline.md) · [end-to-end](bench/result
 - [ ] `PostToolUse` analysis of repeated reads of the same file
 - [x] Opt-in prompt rewriting with your own Claude access (API key or Claude Code login), experimental
 - [x] Grounded local rewriting: trim pastes, name the likely file, otherwise leave the prompt alone
+- [x] Codex CLI: `stats` and the prompt hook
+- [x] Cursor: the prompt hook (holds flagged prompts)
+- [ ] Cursor `stats` (needs a verified read of its local usage data)
 - [ ] Parallel scanning for very large transcript directories
 
 ## Development

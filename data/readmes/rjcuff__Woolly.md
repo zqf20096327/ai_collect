@@ -118,6 +118,6 @@ If Woolly saved you from re-explaining your stack one more time, a star helps ot
 
 - [Docs](https://usewoolly.com/docs) and [all commands](https://usewoolly.com/docs/cli)
 - [Security](SECURITY.md)
-- [Bluesky](https://bsky.app/profile/usewoolly.com) · [LinkedIn](https://www.linkedin.com/company/usewoolly)
+- [LinkedIn](https://www.linkedin.com/company/usewoolly)
 
 MIT license.

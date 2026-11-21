@@ -257,7 +257,7 @@ bash scripts/build-shell.sh      # build the NSIS installer
 bash scripts/ci.sh               # full checks; SKIP_SHELL=1 skips the shell build
 ```
 
-Debugging and running the API or frontend on their own: [Development](doc/development.en.md). Releases: [Release](doc/release.en.md).
+Debugging and running the API or frontend on their own: [Development](doc/development.en.md).
 
 ### Project Layout
 

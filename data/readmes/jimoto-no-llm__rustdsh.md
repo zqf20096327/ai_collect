@@ -106,10 +106,12 @@ cargo install rdsh
 archives. Debian/Ubuntu and Fedora/RHEL users can also install the release
 [`.deb`/`.rpm`](#native-packages-deb--rpm) with `apt`/`dnf`.
 
-The released v0.15.0 installers do not prepare Node.js or pnpm. Conversations
-through the bundled DSH adapter also need an existing DSH runtime: the Unix
-installer prints guidance, while the Windows installer can offer a global npm
-install at an interactive console when npm is already available. Check the
+Current installers provision a user-local Node.js, pnpm and DSH runtime when
+they are missing (no sudo and no global npm install; pass `--no-runtime` on
+Unix or `-NoRuntime` on Windows to keep an existing environment). The bundled
+DSH adapter still requires a DSH runtime for conversations; a Windows installer
+at an interactive console can offer a global npm install when npm is already
+available. Check the
 [feature-specific compatibility and upstream dependency audit](docs/DSH-COMPATIBILITY.md)
 before choosing a version or accepting an unpinned `latest` installation.
 
@@ -142,7 +144,7 @@ rdsh --profile web              # start with Web profile
 | OS | Linux, macOS, WSL, Windows (native) |
 | DSH runtime | Required for conversations and agent runs (native tools and diagnostics run standalone) |
 | Rust | 1.85+ (only needed when building from source; prebuilt binaries require no Rust) |
-| Optional | Node.js 22+ for the [Node.js dashboard](dashboard/README.md); SearXNG or an Ollama API key for `search-web` |
+| Optional | Node.js 22+ for the [Node.js dashboard](dashboard/README.md); SearXNG, keyless Keenable, or Ollama / Keenable API credentials for `search-web` |
 
 ## Installation
 
@@ -379,7 +381,9 @@ rdsh settings get extras.enable
 | Extra | Command | Notes |
 | --- | --- | --- |
 | `serve` | `rdsh serve` (default :38080) | Local status page, localhost only, per-launch key. |
-| `search-web` | `rdsh search-web "query" --limit 5` | SearXNG by default; `--provider ollama` uses `OLLAMA_API_KEY`; `--auto-start` starts the bundled local SearXNG compose service. The local rustxng sidecar installed by rdsh follows the latest RustXNG release in the background (sha256-verified, one previous version kept; `rdsh rustxng update [--check]`, off with `RUSTXNG_SKIP_UPDATE=1`). See [Web search](docs/WEB-SEARCH.md). |
+| `search-web` | `rdsh search-web "query" --limit 5` | SearXNG by default; explicitly select `--provider ollama` or `--provider keenable`; `--auto-start` starts the bundled local SearXNG compose service. The local rustxng sidecar installed by rdsh follows the latest RustXNG release in the background (sha256-verified, one previous version kept; `rdsh rustxng update [--check]`, off with `RUSTXNG_SKIP_UPDATE=1`). See [Web search](docs/WEB-SEARCH.md). |
+
+A Keenable search sends its query to Keenable's hosted API. Keyless calls use IP quota, consume no credits, and log the query, IP address, and app title `rdsh`; setting `KEENABLE_API_KEY` draws on organization credits. Provider selection is explicit and never auto-falls back.
 
 To connect Mistral through Chat Completions or an OpenAI-compatible endpoint that dsh does not ship (HAI, Command Code, Sarashina, a home llama.cpp / vLLM / LM Studio / Ollama server), add it as a profile route:
 
@@ -622,8 +626,9 @@ The opt-in agent tool sandbox supports Linux x86_64 with bubblewrap, prlimit,
 and unprivileged user namespaces. Its audited DSH/tool-runtime pairs are
 `0.2.0-rc.2`, `0.2.1-alpha.1`, `0.2.1-alpha.3`, `0.2.1-rc.3`,
 `0.2.1-rc.4`, `0.2.2-alpha.2`, `0.2.2-alpha.3`, `0.2.2-rc.1`,
-`0.2.2-rc.2`, and `0.2.2-rc.3`, with matching versions in
-each pair. It verifies package metadata, runtime bytes and the loaded module,
+`0.2.2-rc.2`, `0.2.2-rc.3`, `0.2.2-rc.4`, and `0.2.2-rc.5`, with
+matching versions in each pair. The rc.4/rc.5 audit is recorded in
+[docs/evidence/dsh-rc5](docs/evidence/dsh-rc5/README.md). It verifies package metadata, runtime bytes and the loaded module,
 then limits inspection to explicitly shared files. Unknown, mixed, modified or
 unexpectedly resolved runtimes stop before delegation. macOS and Windows
 refuse protected delegation; ordinary delegation keeps the original tools.

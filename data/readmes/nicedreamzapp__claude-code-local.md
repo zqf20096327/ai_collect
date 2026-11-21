@@ -18,8 +18,8 @@ Mac and Linux. Windows is [one PowerShell line](#-on-linux-or-a-windows-pc). On 
 
 <!-- live-stats:start -->
 
-⭐ **3,739** GitHub stars ([github.com/nicedreamzapp](https://github.com/nicedreamzapp)) · ⬇️ **56,960** all-time downloads ([huggingface.co/divinetribe](https://huggingface.co/divinetribe))<br>
-Models on Hugging Face: [18 MLX builds at huggingface.co/divinetribe](https://huggingface.co/divinetribe) (⬇️ **50,680** all-time downloads) · this repo ⭐ **3,523** stars
+⭐ **3,741** GitHub stars ([github.com/nicedreamzapp](https://github.com/nicedreamzapp)) · ⬇️ **58,315** all-time downloads ([huggingface.co/divinetribe](https://huggingface.co/divinetribe))<br>
+Models on Hugging Face: [18 MLX builds at huggingface.co/divinetribe](https://huggingface.co/divinetribe) (⬇️ **51,726** all-time downloads) · this repo ⭐ **3,525** stars
 
 <!-- live-stats:end -->
 
@@ -568,17 +568,8 @@ We especially love hearing from people on older or smaller Macs about which mode
 [@zwolf25](https://github.com/zwolf25). What each of them fixed is in
 the [full guide](docs/FULL-GUIDE.md#-credits).
 
+Vision model tests run at full precision on a 512GB M5 Ultra, results published here. Sponsors on [GitHub Sponsors](https://github.com/sponsors/nicedreamzapp) get to pick what's tested next.
 
-<div align="center">
-
-Built by **[Matt Macosko](https://x.com/NiceDreamzApps)** in Humboldt, California.
-**Open to work** on local AI and Apple Silicon: matt@ineedhemp.com
-
-[Nice Dreamz software](https://nicedreamzwholesale.com/software/) · [YouTube demos](https://www.youtube.com/@nicedreamzapps) · [Discord](https://discord.gg/ZdSqgAxUW)
-
-📜 **MIT License**, use it however you want. ⭐ **Star the repo if it helped you!**
-
-</div>
 
 <img src="https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/ce65065a5327476e7fc1f6435116bd31c0e0e80d/assets/readme/s07-rule.svg" width="100%" alt="">
 

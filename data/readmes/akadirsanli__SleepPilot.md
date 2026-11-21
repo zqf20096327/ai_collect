@@ -237,6 +237,34 @@ Full schema and fallback semantics: **[docs/ROUTING.md](docs/ROUTING.md)**.
 
 </details>
 
+## 📲 From idea to APK — with a live preview
+
+Pick a template (web app, native Kotlin app, HTML app in an Android shell, libGDX 3D game) and
+give it a name: SleepPilot creates the project in your **workspace** folder, and the agent starts
+working.
+
+- **Watch it being built.** The Preview screen shows the web app in a phone, tablet or desktop
+  frame and reloads on every saved file. JavaScript errors land in a console panel.
+- **Every task must build.** For Android projects the real Gradle build runs after each task; no
+  APK, no "verified".
+- **Install it in the morning.** Build debug/release APKs or a Play Store bundle, sign them with a
+  key SleepPilot keeps for you, install and start the app on a USB phone, or download the APK
+  straight to your phone.
+
+No Android setup puzzle: Android Studio's JDK and SDK are found automatically, and every missing
+piece comes with the exact fix. After each build the app can also be started on a phone or a headless
+emulator, so a crash fails the task. Details: **[docs/ANDROID.md](docs/ANDROID.md)**.
+
+## 🧠 Help when it gets stuck
+
+- **Assistant (💬).** A chat in the corner that knows the state of the app, the project and the run:
+  it shows what needs attention at once and answers questions with the model you choose — with two
+  fallbacks if that model is not available.
+- **Second opinion.** When a task fails the same way twice, loops or stalls, a different engine
+  diagnoses it and tells the developer what to do differently — or splits the task.
+- **Eyes for the reviewer.** The reviewer can ask for screenshots of the pages it needs to see.
+- **MCP tools.** Give Claude Code, Codex and OpenCode a browser, docs lookup or any MCP server.
+
 ## 🦀 Sleep & Reverse & Rust It
 
 Point SleepPilot at a program you are authorized to inspect. Overnight it builds a
@@ -400,6 +428,7 @@ More in [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 | Document | What is inside |
 |---|---|
 | [USAGE](docs/USAGE.md) | Install, first run, presets, steering, phone remote, recovery, CLI |
+| [ANDROID](docs/ANDROID.md) | Workspace, project templates, live preview, APK builds, signing, devices |
 | [ENGINES](docs/ENGINES.md) | Engine contract, providers, Claude/Codex/DSH setup |
 | [ROUTING](docs/ROUTING.md) | Role pins, model profiles, effort, quota fallback |
 | [REVERSE](docs/REVERSE.md) | Reverse & Rust: recon, evidence, Rust rules |

@@ -63,14 +63,14 @@ alpacawork is a tool (an AI harness) that runs the Claude Code and Codex agents 
 
 ## Install
 
-Paste the following text into Claude Code or Codex on your PC. The AI installs alpacawork, and the setup screen opens in your browser.
+Paste the following text into Claude Code or Codex on your PC. The AI installs alpacawork and tells you the URL of the setup screen, which usually opens in your browser too.
 
 ```text
 Download the guide below, read all of it, and follow it to install alpacawork on this PC.
 https://raw.githubusercontent.com/alpacakit/alpacawork/main/skills/alpacawork/references/setup.md
 ```
 
-To install with commands, run these two lines in a terminal, in order.
+To install with commands, run these two lines in a terminal (on Windows, inside Ubuntu), in order. Setup lists what it will set up and starts when you press Enter. When it finishes, it prints the screen's URL on the `Open:` line and usually opens it in your browser.
 
 ```sh
 npm install -g alpacawork
@@ -78,8 +78,9 @@ alpacawork setup
 ```
 
 - **Requirements:** macOS (Apple silicon), Linux (x64) or Windows (inside WSL2). You need an AI agent you are signed in to, such as Claude Code or Codex, and Node.js 24.16 or later (if an AI does the install, it installs Node.js when it is missing). [Full requirements](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#requirements)
-- **After installing:** [Make your first request](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#2-make-your-first-request). To use it from your phone, connect to your PC over a VPN such as Tailscale ([Use it from your phone](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#5-use-it-from-your-phone)).
-- **Stopping and uninstalling:** [Stop, update or uninstall](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#7-stop-update-or-uninstall)
+- **Opening the screen:** If the browser didn't open, or to open the screen again after closing it or restarting the PC, see [Open the screen](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#2-open-the-screen).
+- **After installing:** [Make your first request](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#3-make-your-first-request). To use it from your phone, connect to your PC over a VPN such as Tailscale ([Use it from your phone](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#6-use-it-from-your-phone)).
+- **Stopping and uninstalling:** [Stop, update or uninstall](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#8-stop-update-or-uninstall)
 
 ## What it does
 
@@ -94,14 +95,15 @@ alpacawork setup
 
 - **It is free (MIT License).** AI usage is billed under your existing Claude Code, Codex or other plan.
 - **It runs on your PC.** The AI runs on your PC, so keep the PC on and set it not to sleep while you use alpacawork.
-- **It starts AI agents in the same no-approval mode as Claude Code's `bypassPermissions` and Codex's `danger-full-access`, so they don't stop to ask.** You can write what the AI should not do, or should ask you about first, in the [project policy](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#4-write-the-ground-rules-for-the-ai).
+- **It starts AI agents in the same no-approval mode as Claude Code's `bypassPermissions` and Codex's `danger-full-access`, so they don't stop to ask.** You can write what the AI should not do, or should ask you about first, in the [project policy](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#5-write-the-ground-rules-for-the-ai).
 - **Tasks, conversations and result files are kept on your PC.** alpacawork does not send them to any outside server run by its developers. Your instructions to the AI, and what the AI reads, are sent to the AI's provider, just as when you use each AI agent directly ([more on how data is handled](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#what-is-stored-and-what-is-sent-out)).
 
 ## Documentation
 
-- [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md): from installing to your first request, using it from your phone, updating and uninstalling
+- [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md): from installing and opening the screen to your first request, using it from your phone, updating and uninstalling
 - [The ideas behind alpacawork](https://github.com/alpacakit/alpacawork/blob/main/docs/concept.md): how one request moves along, and the design principles
-- [Troubleshooting](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#troubleshooting): when something doesn't work. Please report bugs in [Issues](https://github.com/alpacakit/alpacawork/issues)
+- [If the screen doesn't open](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#if-the-screen-doesnt-open): when the browser can't connect
+- [Troubleshooting](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#troubleshooting): when something else doesn't work. Please report bugs in [Issues](https://github.com/alpacakit/alpacawork/issues)
 
 ## License
 

@@ -10,9 +10,9 @@
   <a href="./readme/README.fr.md">Français</a>
 </p>
 
-[![Version](https://img.shields.io/badge/version-1.2.6-blue.svg)](./package.json)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](./package.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-8%20passed-success.svg)](./test/client.test.mjs)
+[![Tests](https://img.shields.io/badge/tests-21%20passed-success.svg)](./test/client.test.mjs)
 [![Platform](https://img.shields.io/badge/platform-Antigravity%20Desktop%20%7C%20Antigravity%20IDE-purple.svg)](https://antigravity.google/)
 [![Demo](https://img.shields.io/badge/demo-online%20preview-orange.svg)](https://llysh-hannari.github.io/antigravity-Codex-Claude-effort-slider/)
 
@@ -28,6 +28,9 @@
 > 6. **光敏性癫痫警告 (Photosensitive Seizure Warning)**：本项目交互包含动态粒子动力学与星云扩散特效，在快速拖拽与切换档位时可能伴随高频微动及模糊光斑爆散等视觉渲染。患有光敏性癫痫、视神经疲劳或对明暗光斑闪烁敏感的使用者请谨慎使用；如出现眩晕、视物模糊或任何不适，请立即停止使用并退出插件。
 
 >本人从未在互联网上诋毁过谷歌，并没有称Logan为小丑，也从未P过Gemini的傻龙图，本人所有“**北美豆包**”、“**又快又拉**”、“**只剩多模态能用**”相关形容，所指均是美国Mira公司发布的开放权重多模态模型Inkling。本人实际上是谷歌十年老粉，即使在3.1Pro的至暗时刻依然矢志不渝坚持撸猫的忠实用户，经过长时间的思考，我发现Gemini才是美国AI的希望，有时候做出决定很难，经过许多个日夜的思考，我决定加入Gemini（哈基米）粉丝团。至于OpenAI和Anthropic，祝他们的闭源模型一切顺利！
+
+Neon于26.11.18发布：
+>你知道的，我一直是Gemini忠实用户，我们曾并肩作战过许多复杂的Prompt。这家伙上下文窗口和推理能力简直强得不可思议。我觉得我们会产生很棒的化学反应。即使在3.1Pro的至暗时刻依旧坚持撸猫。有时候做决定很简单。经过许多个日夜的思考，我已经迫不及待要和Neon一起上场了。至于Astra和Opus，我祝他们一切顺利。
 
 ## [点我在线交互演示](https://llysh-hannari.github.io/antigravity-Codex-Claude-effort-slider/)  [BiliBili视频演示](https://www.bilibili.com/video/BV1Krs363EAu/?share_source=copy_web&vd_source=c8828a7ec477afc7c143a2491eab71ca)
 
@@ -52,7 +55,7 @@
 
 > [!NOTE]
 > ### 版本支持与更新提示
-> - **当前已验证支持版本**：Antigravity 桌面端 **2.32.1**、Antigravity IDE **2.7.0**。
+> - **当前已验证支持版本**：Antigravity 桌面端 **2.34.0**（兼容 2.32.1）、Antigravity IDE **2.7.0**。
 > - **更新会导致补丁失效**：Antigravity 客户端或 IDE 每次更新都会替换覆盖本地的 `resources/app.asar`（及 `main.js`）文件，导致已注入的补丁失效，更新后需重新运行一次 [`install.cmd`](./install.cmd)（或 `npm run install-patch`）即可恢复。
 > - **更新建议**：若当前版本运行稳定，**建议非必要少更新**，以免频繁重装补丁或遇到新版结构变动导致兼容问题。
 
@@ -85,6 +88,7 @@ npm run eject
 ### 2. 模型面板深度联动与无缝常驻
 - **底部常驻滑条区**：在 Antigravity 模型选择菜单（`[data-testid="model-selector-panel"]`）底部、`View Usage` 分割线上方无缝挂载专属「推理等级」滑条行（`.ces-ag-section`），右上角醒目同步当前档位（`Low` / `Medium` / `High`）。
 - **点击模型不关弹窗 + 上下联动**：在上方模型列表点击切换任意模型（如 `Gemini 4 Argon` ↔ `Claude Sonnet 5.5`）时，自动拦截外层菜单关闭，即时更新当前选中模型并将底部滑条同步到该模型支持的可用推理档位。
+- **Orchestrator 规划器深度适配（2.34.0+）**：保留 `Orchestrator` 右侧二级规划器子菜单（`Gemini 4 Neon` / `Gemini 4 Argon` / `Claude Opus 5.5`）并屏蔽第 3 级档位子菜单；点击任意规划器保持主菜单常开、底部滑条自动切换 Codex/Claude 主题并在标题栏显示 `· <规划器名称>`，主行与触发按钮仅末尾档位词按色板高亮着色（`Extra High` 紧凑显示为 `Extra`），且 Orchestrator 规划器与主列表同名模型各自独立记忆档位。
 - **单档位模型自动置灰锁定**：当选中仅支持单一固定档位的模型（如 `GPT-OSS 120B (Medium)`）时，滑条自动进入置灰锁定态（`.is-locked` / `aria-disabled="true"`）。
 
 ### 3. View Usage 0.3s (300ms) 停留防误触与多轮状态隔离
@@ -109,10 +113,10 @@ npm run eject
 - **全模型立体文字翻转动效**：Argon / Flash / Claude 在档位切换时均具备统一的向上翻转立体文字动效，视觉体验丝滑一致。
 
 ### 6. 右键 / 长按独立配置面板
-- 在滑条区域 **右键单击**（或触屏长按 500ms）即可呼出设置面板（`.ces-set`），所有配置实时写入 `localStorage["antigravity-codex-effort-slider:v1"]` 并跨窗口同步：
-  - **动画效果**：`快速动画`（默认，拨过 1/3 即切档 · ~70ms 快速吸附）/ `简洁动画`（无过渡直接跳档）/ `完整动画`（匀变速追赶 + 星尘渐亮）。
+- 在滑条区域 **右键单击**（或触屏长按 500ms）即可呼出设置面板（`.ces-set`），所有配置实时写入 `localStorage["ag.codexEffortSlider.settings.v1"]` 并跨窗口同步：
+  - **动画效果**：`完整动画`（默认，匀变速追赶 + 星尘渐亮）/ `快速动画`（拨过 1/3 即切档 · ~70ms 快速吸附）/ `简洁动画`（无过渡直接跳档）。
   - **已到达档位的刻度点**：`亮白显示`（默认）/ `与未到达同色` / `隐藏`。
-  - **诊断与重置**：支持一键复制最近 80 条交互诊断轨迹（JSON）与恢复默认设置。
+  - **诊断与重置**：支持一键复制最近 200 条交互诊断轨迹（JSON）与恢复默认设置。
 
 ---
 

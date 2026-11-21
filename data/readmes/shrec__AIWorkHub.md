@@ -177,9 +177,13 @@ inherit the manager's launch capability.
 - **semantic-edit-historical-cap-boundary**: historical capped a/b observation at 20k/200k ops shows a 29.329% reduction; this is a capped historical sample, not eligible as a live guarantee.
 - **context-bundle-v2-structural-only**: structural-only validation; live fleet remeasurement pending.
 
-## What's new in 0.13.5
+## What's new in 0.13.8
 
-- Hub mail discovery keeps resending its probe until the deadline, so one lost UDP datagram on a busy machine no longer reports zero hubs.
+- Manager Chat (Claude): text the Claude CLI injects into the conversation (its compaction summary, interrupt notices, hook output) no longer appears as a phantom manager reply.
+- Manager Chat (Claude): when the CLI compacts its own context, the chat shows a "Provider compacted context" marker and rotates into a clean successor session instead of continuing on the CLI's lossy summary.
+- Manager Chat: a turn ends at the provider's terminal event, a stop kills the whole CLI process tree, an empty turn or a provider error is an error, every finished card the chat launched reaches that chat, and closing the panel no longer kills the running turn.
+- Dashboard: no more "Dashboard snapshot delayed" loop, and a running Claude Code manager shows as ✓ Route / ✓ Callback.
+- 0.13.8 includes everything in 0.13.6 and 0.13.7, which were tagged but not published because their Linux CI failed; 0.13.8 fixes that failure.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Documentation

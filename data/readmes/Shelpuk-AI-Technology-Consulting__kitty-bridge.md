@@ -165,7 +165,8 @@ profile gets its own independent session.
 
 The Model value is sent to OpenAI's subscription backend (Kitty strips a `vendor/` prefix if you typed one — unlike the
 Claude subscription relay below, which never rewrites the model), and OpenAI rotates that list independently of Kitty releases
-— `gpt-5.3-codex` (the wizard's suggested default), `gpt-5.4` and `gpt-5.5` have all retired from it. Current ids at
+— `gpt-5.3-codex` (the wizards' earlier suggested default), `gpt-5.4` and `gpt-5.5` have all retired from it.
+The wizards now suggest `gpt-6-sol`; pressing Enter at the model prompt accepts it. Current ids at
 the time of writing: `gpt-6-sol`, `gpt-6-luna` and the newer `gpt-6.1-sol` from the GPT-6 generation, plus the
 still-served GPT-5.6 generation `gpt-5.6-terra` (mid-tier — OpenAI's ["balance of capability, speed, and cost for
 everyday work"](https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt)) and `gpt-5.6-luna`
@@ -272,7 +273,7 @@ through the same backend Kitty already uses. After signing in, pick the Astra mo
 ```bash
 $ kitty auth openai
   ... (device-code or browser login as above) ...
-  ? Model name (default: gpt-5.3-codex): gpt-6-astra
+  ? Model name (default: gpt-6-sol): gpt-6-astra
   ? Profile name (default: openai-sub): astra
 
 $ kitty claude
@@ -391,6 +392,16 @@ than five minutes of that plan. Only a connection that keeps failing past that w
 applies in the other direction: if your agent disconnects mid-answer — you close the terminal, hit Ctrl+C, or your
 network blips — that is charged to the agent, never to the provider, so the next request still finds every plan
 healthy.
+
+**Claude Code's startup check does not cost you the pool.** When a session starts, Claude Code sends a one-token
+`quota` request to read its rate limits. Kitty answers it from the one member it picked, without trying the others,
+and a rate limit, an upstream error or a dropped connection on that request puts no member in cooldown. Only a
+rejected credential, or a 403 the bridge recognises as a plan rejection (from a subscription member or a
+custom-transport provider such as Bedrock), still does, since your first real turn would hit the same error.
+
+Kitty's own bugs do not count against a member either. If kitty fails while handling a provider's reply, it fails over
+as before but cools nobody down, and the error is logged with its stack trace — to `~/.cache/kitty/bridge.log` when you
+run with `--debug`, and to stderr otherwise.
 
 One caveat: a member that cannot handle streaming is skipped for streaming requests regardless of tier, so a streaming
 request can reach a backup member while a non-streaming primary is still healthy. This only affects providers without

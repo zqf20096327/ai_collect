@@ -111,4 +111,4 @@ Run the engine tests with `make test`, which also needs the FFmpeg development l
 
 ## License
 
-Apache-2.0. The engine links x264, which is licensed under GPL-2.0-or-later, from your system when `screen-relay install` builds it. See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Apache-2.0. The engine links x264, which is licensed under GPL-2.0-or-later, from your system when `screen-relay install` builds it. The prebuilt engine in the Vercel Sandbox image links x264, so it is distributed under GPL-3.0 ([LICENSES/GPL-3.0.txt](LICENSES/GPL-3.0.txt)). See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

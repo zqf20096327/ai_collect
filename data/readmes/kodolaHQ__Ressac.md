@@ -106,7 +106,7 @@ Ressac stands on the work of others:
 - [Firefox](https://www.mozilla.org/firefox/) by Mozilla (MPL 2.0), the engine and most of the browser.
 - [surfer](https://github.com/zen-browser/surfer) by the Zen Browser team (MPL 2.0), the build tool.
 - [Node.js](https://nodejs.org) and [node-pty](https://github.com/microsoft/node-pty) (MIT), bundled for the agent's host.
-- [d1-2B](https://huggingface.co/LiquidAI/d1-2B-GGUF) by Liquid AI (LFM Open License v1.0), the small model that sorts widget items and watches the agent; Ressac downloads it itself, it is not bundled.
+- [d1-2B](https://huggingface.co/LiquidAI/d1-2B-GGUF) by Liquid AI (LFM Open License v1.0), the small model that sorts widget items and decides the workflow steps; Ressac downloads it itself, it is not bundled.
 - [EmbeddingGemma](https://ai.google.dev/gemma/docs/embeddinggemma) 300M by Google, the search model of the ⌘T bar; Ressac downloads it itself from Hugging Face ([ggml-org's Q8_0 GGUF](https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF)), it is not bundled. Gemma is provided under and subject to the Gemma Terms of Use found at [ai.google.dev/gemma/terms](https://ai.google.dev/gemma/terms).
 - [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT), its `llama-server` ships in the app and runs d1-2B and EmbeddingGemma.
 - [Claude Code](https://claude.com/claude-code) by Anthropic and [Codex](https://github.com/openai/codex) by OpenAI, the agents, installed in the container and used with your own account.

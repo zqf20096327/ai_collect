@@ -7,20 +7,18 @@ English | [Simplified Chinese](README_zh-CN.md)
 > HTML in. Markdown out.
 > When the client asks for it, or when you decide to serve it.
 
-> Current release line: v0.9.3, published 2026-11-02 as the latest public
-> stable release. v0.9.3 is a compatibility maintenance release, so it keeps
-> the v0.9.2 directive, HTTP, metrics, diagnostics, reason-code, and FFI ABI
-> contracts. v0.9.2 is the final planned breaking release before v1.0. Use
-> release-tag downloads.
+> Current release line: v0.9.4, published 2026-11-22 as the latest public
+> stable release. v0.9.4 is a compatibility maintenance release that keeps
+> the 20 active directives and their defaults, HTTP representation, metrics,
+> diagnostics, reason codes, and FFI ABI version 3 unchanged. v0.9.2 is the
+> final planned breaking release before v1.0. Use release-tag downloads.
 
-> v0.9.4 remains an unpublished release candidate. Rows marked `verified` in
-> its compatibility matrix have CI build, load, and request evidence tied to
-> one candidate commit and workflow run. Other rows remain pending. The latest
-> public stable release remains v0.9.3. Candidate assets become available
-> only after publication and approval of the exact candidate SHA. See the
-> [0.9.4 candidate notes](docs/releases/0.9.4-release-notes.md).
+> Release publication requires CI build, load, and request evidence for each
+> `verified` compatibility row, bound to the approved release commit and its
+> workflow run. Check each target's state in the matrix. See the
+> [0.9.4 release notes](docs/releases/0.9.4-release-notes.md).
 
-The v0.9.4 candidate also moves error handling, configuration merge, large
+The v0.9.4 release also moves error handling, configuration merge, large
 responses, streaming failure and cache tests, and module benchmark threshold
 decisions to Rust. The existing test and performance commands still work.
 
@@ -248,16 +246,16 @@ installation-specific details.
 
 | NGINX | Channel | OS | libc | Arch | Artifact | Tier | State | Blocking |
 |-------|---------|-----|------|------|----------|------|-------|----------|
-| 1.31.9 | mainline | linux | glibc | arm64 | dynamic-module | supported | pending | Yes |
-| 1.31.9 | mainline | linux | musl | arm64 | dynamic-module | supported | pending | Yes |
-| 1.31.9 | mainline | linux | glibc | amd64 | dynamic-module | supported | pending | Yes |
-| 1.31.9 | mainline | linux | musl | amd64 | dynamic-module | supported | pending | Yes |
-| 1.30.7 | stable | linux | glibc | arm64 | dynamic-module | supported | pending | Yes |
-| 1.30.7 | stable | linux | musl | arm64 | dynamic-module | supported | pending | Yes |
-| 1.30.7 | stable | linux | glibc | amd64 | dynamic-module | supported | pending | Yes |
-| 1.30.7 | stable | linux | musl | amd64 | dynamic-module | supported | pending | Yes |
-| 1.28.3 | stable | ubuntu-26.04 | glibc | arm64 | deb-package | supported | pending | Yes |
-| 1.28.3 | stable | ubuntu-26.04 | glibc | amd64 | deb-package | supported | pending | Yes |
+| 1.31.9 | mainline | linux | glibc | arm64 | dynamic-module | supported | verified | Yes |
+| 1.31.9 | mainline | linux | musl | arm64 | dynamic-module | supported | verified | Yes |
+| 1.31.9 | mainline | linux | glibc | amd64 | dynamic-module | supported | verified | Yes |
+| 1.31.9 | mainline | linux | musl | amd64 | dynamic-module | supported | verified | Yes |
+| 1.30.7 | stable | linux | glibc | arm64 | dynamic-module | supported | verified | Yes |
+| 1.30.7 | stable | linux | musl | arm64 | dynamic-module | supported | verified | Yes |
+| 1.30.7 | stable | linux | glibc | amd64 | dynamic-module | supported | verified | Yes |
+| 1.30.7 | stable | linux | musl | amd64 | dynamic-module | supported | verified | Yes |
+| 1.28.3 | stable | ubuntu-26.04 | glibc | arm64 | deb-package | supported | verified | Yes |
+| 1.28.3 | stable | ubuntu-26.04 | glibc | amd64 | deb-package | supported | verified | Yes |
 | 1.28.3 | stable | linux | glibc | arm64 | dynamic-module | supported | verified | Yes |
 | 1.28.3 | stable | linux | musl | arm64 | dynamic-module | supported | verified | Yes |
 | 1.28.3 | stable | linux | glibc | amd64 | dynamic-module | supported | verified | Yes |
@@ -273,16 +271,16 @@ installation-specific details.
 | 1.26.3 | stable | linux | glibc | amd64 | dynamic-module | supported | verified | Yes |
 | 1.26.3 | stable | linux | musl | amd64 | dynamic-module | supported | verified | Yes |
 | 1.26.3 | stable | debian12 | glibc | arm64 | deb-package | supported | verified | Yes |
-| 1.26.3 | stable | debian12 | glibc | arm64 | docker-image | supported | pending | Yes |
+| 1.26.3 | stable | debian12 | glibc | arm64 | docker-image | supported | verified | Yes |
 | 1.26.3 | stable | debian12 | glibc | amd64 | deb-package | supported | verified | Yes |
-| 1.26.3 | stable | debian12 | glibc | amd64 | docker-image | supported | pending | Yes |
+| 1.26.3 | stable | debian12 | glibc | amd64 | docker-image | supported | verified | Yes |
 | 1.26.3 | stable | any | n/a | any | source | best-effort | pending | No |
-| 1.26.3 | stable | alpine3.20 | musl | arm64 | docker-image | supported | pending | Yes |
-| 1.26.3 | stable | alpine3.20 | musl | amd64 | docker-image | supported | pending | Yes |
+| 1.26.3 | stable | alpine3.20 | musl | arm64 | docker-image | supported | verified | Yes |
+| 1.26.3 | stable | alpine3.20 | musl | amd64 | docker-image | supported | verified | Yes |
 | 1.26.3 | stable | almalinux9 | glibc | arm64 | rpm-package | supported | verified | Yes |
 | 1.26.3 | stable | almalinux9 | glibc | amd64 | rpm-package | supported | verified | Yes |
-| 1.24.0 | stable | ubuntu-24.04 | glibc | arm64 | deb-package | supported | pending | Yes |
-| 1.24.0 | stable | ubuntu-24.04 | glibc | amd64 | deb-package | supported | pending | Yes |
+| 1.24.0 | stable | ubuntu-24.04 | glibc | arm64 | deb-package | supported | verified | Yes |
+| 1.24.0 | stable | ubuntu-24.04 | glibc | amd64 | deb-package | supported | verified | Yes |
 | 1.24.0 | stable | linux | glibc | arm64 | dynamic-module | supported | verified | Yes |
 | 1.24.0 | stable | linux | musl | arm64 | dynamic-module | supported | verified | Yes |
 | 1.24.0 | stable | linux | glibc | amd64 | dynamic-module | supported | verified | Yes |

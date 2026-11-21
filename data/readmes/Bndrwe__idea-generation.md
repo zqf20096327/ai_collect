@@ -14,6 +14,8 @@ Ask three chatbots for side-project ideas and you get the same ten answers. Rese
 
 ## What the skill does about it
 
+![The eight steps: pin the brief, write the cliché wall, draw a map and generate ideas, then the vector check, a skeptical judge, the shortlist and the write-up. Ideas that land too close to the wall send the skill back to write more.](docs/images/pipeline.svg)
+
 1. It pins down the brief: who it's for, skills, budget, time, limits. If you say "just go", it assumes and lists its assumptions. It also names the kind of idea, which sets what "workable" means (the payoff test in the next section).
 2. It writes a cliché wall. It starts with the exact list it would give with no skill, then adds the other ideas any AI would give, plus "clever-sounding defaults" like "AI-powered X" or "a marketplace for Y". Nothing later may be a reworded version of these. You can see the wall in a collapsed section.
 3. It draws a map of two axes that matter for the brief, such as who it's for × how it works. The goal is ideas spread across cells, a version of quality-diversity search ([Bradley et al., ICLR 2024](https://arxiv.org/abs/2310.13032)). Only cells where the payoff test can pass count.
@@ -48,6 +50,8 @@ An embedding model turns a sentence into a list of numbers (a vector) that captu
 2. The script measures how close the obvious ideas sit to their nearest neighbours. The median of that is the radius of the crowded zone, so the threshold adapts to each brief.
 3. Each candidate idea gets embedded and compared with its nearest obvious idea. INSIDE means it sits as close to an obvious idea as obvious ideas sit to each other, and the skill drops or reworks it. EDGE is close but outside. OUT is clear.
 4. It also flags near-duplicate candidates and lists the candidates farthest from both the wall and each other. The skill writes a few more ideas in those directions, as long as someone already pays for something similar there.
+
+![Obvious ideas sit in a crowded zone. A candidate inside it gets dropped or reworked, one at the edge stays, and the skill writes more ideas in the open space farthest from the wall.](docs/images/vector-check.svg)
 
 Distance only measures how unusual an idea is, so the feasibility and demand checks still decide what makes the shortlist.
 
@@ -105,6 +109,8 @@ I tested it on three ordinary briefs: a side project for a solo developer with 5
 | Same idea in both runs | 9 | 6 | 2 | 6 |
 | Workability (1-5) | 3.7 | 3.1 | 3.1 | 3.3 |
 
+![Bar charts of the three-brief test: picks on the obvious list, repeats across runs, and workability for no skill, v1, v2 and this version.](docs/images/test-results.svg)
+
 What the tests changed:
 
 - The skill's own examples became the new cliché. v1 and v2 listed sample fields for the collision technique (beekeeping, maritime law, geology and so on). Those words showed up in 10 of 12 runs, including a beehive voice log as a *software* side project. This version names no examples and has the model list ten unrelated fields and use the last three. The leak went to 0 of 6 runs.
@@ -125,6 +131,10 @@ Same three briefs, three runs each, with the model allowed to run code. I compar
 | Novelty (1-5) | 3.69 | 3.97 | 3.81 |
 | Workability (1-5) | 3.23 | 3.23 | 3.32 |
 | Rated 4+ on both | 4 | 6 | 7 |
+
+![Bar charts of the vector check test: repeats, novelty, workability and ideas rated 4+ on both, before the check, on the first try and as shipped.](docs/images/vector-test-results.svg)
+
+The charts come from the tables above. `docs/make_figures.py` redraws them.
 
 The first try was the most novel, but when the same version was judged against the previous one alone, its workability came out 0.3 lower. The shipped version gives up a little novelty and comes out ahead of the previous version on every row except obvious matches, where it ties. The model ran the script in 17 of 18 runs. Nine runs per version and one judge is still a small sample.
 

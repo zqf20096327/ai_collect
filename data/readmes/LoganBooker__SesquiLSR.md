@@ -7,7 +7,7 @@ Latent upscaler supporting arbitrary scales between 1.0-2.0x for various models/
 - **Multi-model support** - SDXL, Flux, Z-Image Turbo, Flux2 Klein, Krea 2, Wan 2.1, Qwen Image and Anima from a single architecture
 - **Arbitrary scale** in [1.0x, 2.0x] - not limited to fixed 2x
 - **~3M parameters, ~12MB weights** across all variants
-- **Sub-6ms inference** in latent space, with no VAE round-trip
+- **~6ms inference** in latent space, with no VAE round-trip
 - **ComfyUI node included** - drop-in, no model or VAE connection required
 
 ## Use case
@@ -34,12 +34,10 @@ Each model is trained on VAE latents directly. The format adaptors handle any pi
 ```python
 import torch
 from safetensors.torch import load_file
-from sesqui_lsr import LatentUpscaler
+from sesqui_lsr import load_upscaler
 
-model = LatentUpscaler(in_channels=4)
 state_dict = load_file("models/upscaler_SDXL.safetensors")
-model.load_state_dict(state_dict)
-model.eval().requires_grad_(False)
+model = load_upscaler(state_dict)
 
 latent = torch.randn(1, 4, 128, 128)          # SDXL 1024px (8x downsampled latent)
 target_size = (192, 192)                      # upscale to 1536px
@@ -89,10 +87,10 @@ Each test image is Lanczos-downsampled to the low-resolution size, encoded to a 
 
 | Model | Sesqui LPIPS ↓ | Bicubic LPIPS ↓ | Improvement |
 |---|---:|---:|---:|
-| SDXL | 0.1249 | 0.4484 | 72% lower |
-| Flux | 0.0974 | 0.2915 | 67% lower |
-| Flux2 | 0.0587 | 0.1732 | 66% lower |
-| Wan 2.1 | 0.0919 | 0.1909 | 52% lower |
+| SDXL | 0.1484 | 0.4642 | 68% lower |
+| Flux | 0.1131 | 0.3212 | 65% lower |
+| Flux2 | 0.0702 | 0.1971 | 64% lower |
+| Wan 2.1 | 0.1046 | 0.2153 | 51% lower |
 
 ### SDXL comparison with other latent upscalers
 
@@ -124,7 +122,7 @@ Sesqui is capable of substantially cleaner output than the SDXL comparison table
 
 ![Flux2 quality comparison 2.0x](benchmark/images/flux2_quality_2.0x.png)
 
-At 2.0×, Sesqui scores LPIPS 0.1031 versus 0.2817 for bicubic latent upscaling (63% lower). Again, Sesqui favours perceptual detail (texture) over strict pixel accuracy (structure), hence the weaker reconstruction of the fine grid in the building image, but excellent results in the other three crops.
+At 2.0×, Sesqui scores LPIPS 0.1172 versus 0.3138 for bicubic latent upscaling (63% lower). Again, Sesqui favours perceptual detail (texture) over strict pixel accuracy (structure), hence the weaker reconstruction of the fine grid in the building image, but excellent results in the other three crops.
 
 ## Training
 
@@ -134,7 +132,7 @@ This section provides a general overview of the training methodology; training c
 
 Each model is trained in 1-3 progressive stages, where later stages finetune from the previous stage's weights with different loss configurations and lower learning rates. This approach was inspired by the findings in "[One Small Step in Latent, One Giant Leap for Pixels: Fast Latent Upscale Adapter for Your Diffusion Models](https://arxiv.org/abs/2511.10629)".
 
-All stages use batch size 1, random 512x512 HR crops with log-uniform scale sampling in [1.0, 2.0]. The first stage uses latent and FFT loss, the second latent and multi-band pixel loss, with the third depending on the type of model but usually some combination of pixel loss, 1-2 perceptual losses and DC shift loss (for SDXL to combat hue shift). Luminance-based sharpening is also used on HR targets during the last stage to promote sharper outputs from the upscaler.
+All stages use batch size 1, random 512x512 HR crops with uniform scale sampling in [1.0, 2.0]. The first stage uses latent and FFT loss, the second latent and multi-band pixel loss, with the third depending on the type of model but usually some combination of pixel loss, 1-2 perceptual losses and DC shift loss (for SDXL to combat hue shift). Luminance-based sharpening is also used on HR targets during the last stage to promote sharper outputs from the upscaler.
 
 A modified version of Meta's Schedule-Free AdamW is used as an optimizer.
 

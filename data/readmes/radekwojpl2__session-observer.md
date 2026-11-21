@@ -127,6 +127,9 @@ Pull the latest marketplace, then update the plugin:
 ```
 Restart Claude Code afterwards.
 
+Or ask Claude to do it with `/session-observer:update`: it runs both commands (reinstalling if
+the version did not change), stops the old dashboard server and starts the new one.
+
 An update is only picked up when `version` in `.claude-plugin/plugin.json` changes. If the
 version is the same, reinstall to get the latest commit:
 ```

@@ -71,6 +71,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 - **Library** – intros and outros, logos, stickers, b-roll, music and sound effects (PNG, JPG, GIF, WebP, SVG, video, audio). Drop many files at once (duplicates are detected), search your items plus a bundled catalog and, with an admin key, Pexels, Pixabay, Freesound, Iconify, Giphy and Klipy. Each clip is rendered as intro + clip + outro in a single encode, fitted to vertical over a blurred background.
 - **Per project and per clip** – a project follows the default intro/outro, uses none or a specific item; each clip can follow the project, use none or pick its own. An unusable asset is skipped with a plain-language event instead of failing the clip.
 - **Layers** – one timeline lane for image/video overlays, text and sound (`update_clip { layers }`, `reelsaw clip-layers`): position, size, opacity, fade in / out, any of the instance's fonts (shipped in the image or uploaded by an admin), several music tracks with fade, loop and sidechain ducking under speech. Right-click a layer on the 9:16 preview to edit, centre, reorder, copy or remove; double-click text to retype it. ⌘C / ⌘V copy and paste layers.
+- **Even loudness** – every clip's speech is measured on the range it comes from (EBU R128) and brought to −14 LUFS, the level TikTok, Reels and Shorts play at, with one gain so the voice keeps its shape; the finished mix (speech, music, intro and outro) goes through a peak limiter, so no clip clips. The measured level and the gain are in the clip's diagnostics (`get_clip`).
 - **Fades and transitions** – fade the clip in from black and out to black (picture and sound), and join the intro and outro with a cut, a dip to black or a crossfade; previewed live in the editor's Style tab, per clip or for every clip, and in Project defaults. Over MCP and the CLI they are style fields (`fadeIn`, `fadeOut`, `bumperTransition`, `bumperTransitionSec` on `update_clip { style }`, `update_project_style`, `reelsaw update-style --set`); a picture or text layer takes `fade`. See [docs/specs/transitions.md](docs/specs/transitions.md).
 - **Layer templates** – save a look once (a logo pop in the first seconds, a follow card at the end, a watermark or a music bed, plus an intro and outro) with timing from the start, the end, the whole clip or a share of its length, then apply it to selected clips or set it on a project so every new clip gets it (`list_layer_templates`, `apply_layer_template`, `reelsaw templates`).
 
@@ -388,19 +389,29 @@ them), so a single-user box stays as it is:
   with per-user overrides on the Users page. Storage counts sources, uploads (an upload already copied into
   a project counts once), rendered clips and intros/outros, and is checked on every way a file arrives. A refusal is a sentence that says what to do ("Monthly limit of 300 minutes reached (312
   used); resets on 1 November"). The monthly window is the account's billing period when it has a
-  plan, else the UTC calendar month. On an account with a minutes limit, a link whose site reports its
-  length is refused when the project is created (with the upgrade offer), so no project is made for it.
-  Otherwise the length is checked again before the download and once the file is probed, so an over-long
-  video fails the project with that reason, once, without being fetched again. The first video of a plan with a free allowance is the first
-  one whose length is known. New Project checks before you submit: once a link is pasted (or a file picked, by its
-  length) it says what your minutes cover, and a video that would be refused shows the reason and the upgrade
-  offer, with its price, before anything is created or uploaded. Agents ask the same with `check_source`, operators
-  with `reelsaw check-source`.
+  plan, else the UTC calendar month. A video longer than the account's minutes cover is not refused: Reelsaw
+  processes its start (whole 10-minute transcription chunks; a Free account's long first video gets its first
+  60 minutes) and the project says how much is left. "Clip the rest" (`extend_project`, `reelsaw
+  extend-project`) processes more when the minutes are there. An upgrade started from a project (its
+  offer or its Download) finishes that project and renders its clips without the watermark by itself; the other
+  projects wait for the account's pick in the welcome dialog after checkout or on the Billing page
+  (`list_upgrade_work` / `start_upgrade_work`, `reelsaw upgrade-work` / `start-upgrade-work`), so a plan change
+  never spends the new minutes on videos nobody asked for. It picks up where it stopped: the transcript gets the new words appended (fixes and decisions on the
+  part already done stay), and new clips are picked only in the new part, around the clips you have. An
+  extension's minutes count in the period it runs in. Only a video of which not even 10 minutes fit is refused:
+  a link whose site reports its length when the project is created (with the upgrade offer), otherwise before
+  the download or once the file is probed, once, without being fetched again. The first video of a plan with a
+  free allowance is the first one whose length is known. New Project checks before you submit: once a link is
+  pasted (or a file picked, by its length) it says what your minutes cover, how much of a long video is clipped
+  now, and the reason and the upgrade offer, with its price, for a video that would be refused, before anything
+  is created or uploaded. Agents ask the same with `check_source`, operators with `reelsaw check-source`.
 - **Watermark**: `WATERMARK_NON_ADMINS` (default on) burns the logo (`WATERMARK_LOGO_PATH`) with
   `WATERMARK_TEXT` ("reelsaw.com") under it into the clips of accounts that are not admins; a paid plan
   removes it, and an admin can switch it per user on the Users page (Limits). Decided at render time,
-  so a re-render after the change applies it. Clips already rendered keep what they were rendered with.
-  On a hosted instance, a project whose finished clips carry it names the plan that takes it off and its price.
+  so a re-render after the change applies it. Clips already rendered keep what they were rendered with until
+  a plan change takes the watermark off: then the account's watermarked clips (its 20 most recent projects)
+  are rendered again without it, by themselves. On a hosted instance, a project whose finished clips carry it
+  names the plan that takes it off and its price, and Download on a watermarked clip asks first.
 - **Usage** (Users → Usage): projects, minutes of source, clips rendered, model calls and tokens
   (every model call writes a `llm_usage` row attributed to the project's owner), stored bytes.
 - **Retention**: `SOURCE_RETENTION_DAYS` / `CLIP_RETENTION_DAYS` delete stored files from finished
@@ -479,7 +490,9 @@ Design and decisions: [docs/specs/ee.md](docs/specs/ee.md).
 
 ## MCP: drive Reelsaw from an agent
 
-Reelsaw is an MCP server (Model Context Protocol, Streamable HTTP) at `/api/mcp`. With
+Reelsaw is an MCP server (Model Context Protocol, Streamable HTTP) at `/api/mcp`. It speaks the
+2026-07-28 protocol and every 2025 revision (2024-10-07 through 2025-11-25), so newer and older
+clients both connect; `reelsaw mcp` (stdio) does the same. With
 `MCP_OAUTH=true` (on at app.reelsaw.com), a client needs only the address: you sign in and approve
 it in the browser, and **Settings → API keys and MCP** shows the command and connector address.
 
@@ -561,7 +574,7 @@ schema say what it returns, whether it runs in the background and which neighbou
 | Tool | What it does |
 | --- | --- |
 | `list_projects` | Your projects, most recently updated first. |
-| `get_project` | One of your projects: status, settings, effective intro/outro, transcript summary, and every clip (id, title, hook, bounds, score, status, download links); replacedClips lists deleted or replaced clips for restore_clip. |
+| `get_project` | One of your projects: status, settings, effective intro/outro, transcript summary, and every clip (id, title, hook, bounds, score, status, download links); replacedClips lists deleted or replaced clips for restore_clip; partial (non-null): only the video's start was processed (extend_project clips more). |
 | `check_source` | Before create_project: would this video be accepted now? |
 | `create_project` | Start clipping a video from a URL (anything yt-dlp fetches) or a file you uploaded: POST /api/upload with the file as the body, header x-filename and your API key as Authorization: Bearer, then pass the uploadId it returns. |
 | `update_project` | Rename a project and/or change its saved settings (focus, instructions, clip length, maxClips, caption style, framing, pauses, refineEntities, refineDisfluency, disfluencyLlm, refineScenes); only the fields you pass change. |
@@ -593,6 +606,9 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `resend_webhook_delivery` | Send a delivery again (a new series of attempts, same webhook-id and body, signed afresh). |
 | `export_project` | A download link for a zip of the project's rendered clips with YouTube/TikTok metadata; a share link that needs no sign-in by default for connectors signed in through OAuth. |
 | `report_issue` | A download link for an issue-report zip (the same file Report an issue in the app saves; admins may include instance-wide diagnostics). |
+| `extend_project` | Process more of a video only the start of which was processed (get_project partial: the account's minutes covered that much). |
+| `list_upgrade_work` | After a plan change: your other projects it could improve. |
+| `start_upgrade_work` | Start the picked projects from list_upgrade_work: finish clips the rest of each video as far as the minutes go (like extend_project), rerender renders each project's watermarked clips again without the watermark. |
 | `retry_project` | Resume a failed or stuck project from its furthest completed stage: re-render unfinished clips if there are clips, else pick clips, refine or transcribe again. |
 | `retry_projects` | Resume several failed projects, each from its furthest completed stage (as retry_project). |
 | `rerender_projects` | Re-render every finished or failed clip of several projects (the Projects page selection bar's Re-render), for instance after a change to your default intro/outro. |
@@ -701,6 +717,9 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw check-source <url> [--user <email\|id>] \| --minutes <n> [--user <email\|id>]` | would a project from this link (or a file this long) be accepted for the account now: its length, the minutes left, and the refusal with its upgrade offer (same as projects.checkSource and check_source) |
 | `reelsaw create-project <url> [--user <email\|id>] [--title t] [--set key=value]…` | start a project from a link for an account (the given user, else the only account); same as projects.create and create_project; takes the same settings as update-project |
 | `reelsaw retry <projectId>` | resume a failed or stuck project from its furthest completed stage (same as the Retry button, projects.retry and retry_project) |
+| `reelsaw extend-project <projectId>` | clip more of a video only the start of which was processed (projects.extend and extend_project) |
+| `reelsaw upgrade-work [--user <email\|id>]` | after a plan change: the account's projects with watermarked clips and its partly processed videos (same as projects.upgradeWork and list_upgrade_work) |
+| `reelsaw start-upgrade-work [--rerender id,id] [--finish id,id]` | re-render those projects' watermarked clips without it and clip the rest of those videos (same as projects.startUpgradeWork and start_upgrade_work) |
 | `reelsaw reanalyze <projectId> [--set key=value]…` | pick clips again from the existing transcript, optionally with new selection settings; clips made or edited by hand stay (same as projects.reanalyze and reanalyze_project) |
 | `reelsaw refine <projectId> [--steps entities,disfluency,scenes] [--vocabulary text]` | re-run refine steps on the existing transcript, then re-render (same as projects.refine and refine_project) |
 | `reelsaw delete-project <projectId> [--forget-decisions]` | delete a project, restorable like a clip (same as projects.delete and delete_project); --forget-decisions forgets its decisions when it is purged |
@@ -809,45 +828,4 @@ packages/shared  zod schemas and types shared by both
 
 Server composition (`apps/server/src/services.ts`): `createServices()` builds `config → media tools → ai → storage → database (+migrations) → events → queue → auth`, checking each one. The resulting `Services` object is injected into the tRPC context, the HTTP app and every pipeline stage (`StageContext`), so nothing reaches for a global. Boot logs one `boot step ok` line per step (JSON, or pretty on a terminal) with the step name and its duration in `ms`: config, data dir, resources, media tools, LLM call capture, AI models, the on-device detectors, storage, database, model settings, event bus, job queue, email, auth. Steps whose feature is switched off say so in their name (`face detector (disabled)`). A failing step stops the process with exit code 78 and a message that names the step and the fix, for example a transcription model that returns no word timestamps or a model server that is unreachable. Some steps depend on the process's role: a process with `RUN_WORKERS=false` only warns when free disk is under `MIN_FREE_DISK_MB` (so a full disk cannot lock out the admin UI that frees it) and skips the face, text and voice detectors; a process with `RUN_HTTP=false` skips the mail server check. The AI-models step checks the environment's models; once the database is up the effective models (after an admin's runtime override) are checked too.
 
-Pipeline (each box is a pg-boss queue; each stage emits events and enqueues the next):
-
-```
-project.ingest ─▶ project.transcribe ─┬▶ refine.entities   ─┐
- yt-dlp / upload   audio → chunks       ├▶ refine.disfluency ─┼▶ project.analyze ─▶ clip.render (×N)
- ffprobe           parallel transcribe  └▶ refine.scenes     ─┘  LLM picks moments    layout + captions
- store source      checkpoint per chunk    (fan-out, fan-in       snap to sentences    cuts + crossfades
-                                            on the transcript row)                     finalize project
-```
-
-The three refine jobs are independent: each writes its result under a row lock on the transcript (entity flags win over overlapping disfluency flags), and the last one to finish enqueues analyze. A refine step that exhausts its retries is marked failed and skipped; it never blocks the project. "Re-run refine" re-queues any subset on the existing transcript, e.g. after editing the vocabulary. Chunk transcription runs `TRANSCRIBE_CONCURRENCY` calls in parallel (auto: 1 for a self-hosted whisper, 3 for cloud vendors).
-
-Durability model:
-
-- `pgboss.job` is the source of truth for "what should run". `projects.status` / `clips.status` is the source of truth for "what happened".
-- Each stage checks for existing output first (source file in storage, transcript chunk rows, clip rows, rendered clip in storage) and skips work that is done.
-- Queues use `policy: exclusive` + `singletonKey` so a stage can never run twice concurrently for the same project/clip.
-- `heartbeatSeconds` (15 s) on every queue: if a worker dies, pg-boss notices the missed heartbeat on its next supervisor pass (every 60 s), fails the job and retries it elsewhere after a 15 s delay that doubles per retry. Budget a minute or two, not seconds; each interruption uses one retry.
-- On boot and every 5 minutes a reconciler re-enqueues any in-progress project or clip that has no live job.
-- Manual **Retry** resumes from the furthest completed stage; **Re-analyze** keeps the transcript and picks new clips.
-
-## Development
-
-Live-reload loop in Docker (source mounted, no image rebuilds; rebuild the dev image only when dependencies change):
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile local-ai up -d app
-open http://localhost:5173      # Vite + HMR; /api and /media proxied to the server (tsx watch)
-docker compose exec app reelsaw stuck
-```
-
-Models for running outside Docker: `pnpm models:download` (face, on-screen text, voice activity, forced alignment; ~105 MB).
-
-
-```bash
-pnpm install
-docker compose up -d db
-cp .env.example .env   # set DATABASE_URL=postgres://reelsaw:reelsaw@localhost:5432/reelsaw
-pnpm dev               # server on :3000 (tsx watch), web on :5173 (vite, proxies /api and /media)
-```
-
-Requires ffmpeg, ffprobe and yt-dlp on your PATH
+Pipeline (each box 

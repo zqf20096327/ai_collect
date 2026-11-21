@@ -110,9 +110,10 @@ Pick a folder and an engine. Give it a prompt and a schedule, or leave both empt
 - **Context.** A meter shows how full a Claude Code bee's session is. `/compact` summarises it on the spot, and `/new` starts over.
 - **Token savers.** A session that is half full (100k tokens at most), or large and idle for an hour, is compacted before its next round. Scheduled runs start a new session. Each bee's settings list your MCP servers, so you tick only the ones it needs. Reports and the night bees use a smaller model. All adjustable.
 - **Spend.** Cost and tokens per round, and a daily budget that holds back automatic runs once it is used up.
-- **Memory and skills.** Overnight, *Dreamer* tidies long-term memory and *Gardener* turns the day's conversations into reusable skills. New sessions start with both.
+- **Memory and skills.** Overnight, *Dreamer* keeps the long-term memory and *Gardener* turns the day's conversations into reusable skills. New sessions start with both. Memory has layers: what a bee said is kept as facts, facts add up to observations, and the page a new session gets is made from the observations confirmed most. Every line on the Memory page shows how often it was confirmed; click it to see the sentences it rests on and open that chat. A corrected line is kept as replaced, not rewritten away; a line you write yourself is never changed, and "This is wrong" takes one off for good. Search covers everything that was learned, also what is not on a page.
 - **Dashboard.** A 24-hour activity timeline, spend, and Queen's daily report.
 - **Upgrades.** When a newer release is out, an Upgrade button appears in the sidebar. It downloads the release, checks that it is signed by the same developer, swaps the app and restarts. Settings (the gear at the bottom of the sidebar) can install new versions automatically once no bee is working, and notify you when one is out.
+- **Skins.** Settings → Appearance changes who the bees are drawn as: sticker-style honey bees, anime maids, or the classic bee. Each bee keeps its own colour, has seven faces, and moves while it works, idles, sleeps or hits an error.
 - **Ranks.** Every finished round counts. A bee climbs from Bronze through Silver, Gold, Platinum and Diamond to Master, and its look changes with each rank.
 - **Files page.** Everything the bees produced in one list, newest first: files they wrote or named in a reply (PDFs, decks, charts, CSVs) and links they gave (artifacts, Google Slides, pull requests). Each row shows the bee and its project; filter by kind or bee, open the file, or jump to it in the bee's window.
 - **Chats in the sidebar.** Every bee and squad in one list: its name and what it is for, or what it is doing right now. A squad folds into one line and opens when something is going on.
@@ -197,7 +198,9 @@ No build step and no framework: plain HTML, CSS and JS in the renderer, Electron
 | `core.js` | Engines and command lines, schedule keys, output parsers, relay planning, git and worktree helpers |
 | `team.js` | Relay-team graph helpers, shared by main and renderer |
 | `queen.js` | Queen's tools, dispatch rules and result parsing |
-| `garden.js` | Skills and memory files, Dreamer and Gardener prompts |
+| `garden.js` | Skills and memory files, Gardener's prompt |
+| `skins/` | Picture skins: for each skin and bee colour, seven faces and four moving loops (WebP) |
+| `layers.js` | Layered memory: facts, observations and the pages made from them; Dreamer's prompt |
 | `events.js` | Event triggers: checking the settings, telling what is new on GitHub, matching a finished bee |
 | `outputs.js` | Files page: finding the files and links a bee produced in its log |
 | `update.js` | Upgrade: finding, downloading, verifying and installing a newer release |

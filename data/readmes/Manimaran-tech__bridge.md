@@ -6,7 +6,7 @@
 
 **Universal Local-to-Web AI Coding Harness**
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.10-D2FF00.svg?style=flat-square&logo=npm)](https://www.npmjs.com/package/@markmayandi/bridge)
+[![npm version](https://img.shields.io/badge/npm-v1.1.1-D2FF00.svg?style=flat-square&logo=npm)](https://www.npmjs.com/package/@markmayandi/bridge)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=flat-square)](https://github.com/Manimaran-tech/bridge)
@@ -64,11 +64,20 @@ Or pass a specific project directory directly:
 node bridge.js /path/to/project
 ```
 
+### Command-Line Options
+
+| Command | Description |
+| :--- | :--- |
+| `bridge [folder]` | Start Bridge for a project folder (opens the folder navigator if omitted). |
+| `bridge . --mode=<mode>` | Start with an approval mode: `turbo`, `review`, `default` or `auto` (see [Approval Modes](#approval-modes)). |
+| `bridge setup` | One-time setup for a fixed URL via a Cloudflare named tunnel. |
+| `bridge rotate-token` | Replace the saved auth token. Connected AI clients must re-paste the new URL. |
+
 ---
 
 ## Universal MCP Connection
 
-Bridge automatically creates an Anycast HTTPS tunnel, generates a secure session token, and copies the authenticated endpoint to your clipboard:
+Bridge automatically creates an Anycast HTTPS tunnel, attaches your auth token, and copies the authenticated endpoint to your clipboard:
 
 ```text
 https://xxxx.trycloudflare.com/mcp?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -78,10 +87,10 @@ https://xxxx.trycloudflare.com/mcp?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Bridge features built-in zero-trust security:
 - **Bearer Token Auth**: Every HTTP/SSE endpoint (`/mcp`, `/call`, `/api/set-directory`, `/api/status`, `/openapi.json`) requires a valid token via `Authorization: Bearer <token>` or `?token=<token>`. Unauthenticated requests are rejected with `401 Unauthorized`.
-- **Automatic Token Generation**: On startup, Bridge generates a 24-byte cryptographic hex token and automatically embeds it in your clipboard URL.
-- **Custom Token**: Supply your own token using the `--token <secret>` option or `BRIDGE_TOKEN` environment variable.
+- **Persistent Token**: On first run, Bridge generates a 24-byte cryptographic hex token and saves it in `~/.bridge/config.json`, so your AI connectors keep working across restarts. Run `bridge rotate-token` to replace it.
+- **Custom Token**: Supply your own token with the `BRIDGE_TOKEN` environment variable.
 - **Strict Loopback Binding**: The local MCP server listens exclusively on `127.0.0.1`, isolating it from local network eavesdropping.
-- **Shell Disablement**: Run with `--disable-shell` to restrict tool execution to sandboxed file operations only.
+- **Shell Disablement**: When running the MCP server directly (`node secure-folder-mcp/server.js <folder> --disable-shell`), shell tools are turned off and only sandboxed file operations remain.
 
 ### Optional: Fixed MCP URL (Cloudflare Named Tunnels)
 
@@ -117,6 +126,8 @@ Modern web AI clients (Claude Web, ChatGPT Web, Gemini, and MCP extensions) conn
 
 No legacy JSON configuration files or manual port forwarding required.
 
+> **Gemini tip:** Gemini shows its own "Let Gemini use …?" card before tool calls. This is Gemini's permission system, separate from Bridge's approval modes. To stop the cards, open **Gemini → Customize → Connectors → Bridge** ([gemini.google.com/customize/connectors](https://gemini.google.com/customize/connectors)) and set each action under **App actions** to **Always allow**. A quick tunnel gets a new URL on every restart, so use a [named tunnel](#optional-fixed-mcp-url-cloudflare-named-tunnels) if you want these settings to stick.
+
 ---
 
 ## What Bridge Does
@@ -124,9 +135,32 @@ No legacy JSON configuration files or manual port forwarding required.
 Cloud-based AI models cannot safely access files on your physical machine without open ports or copy-pasting code snippets. Bridge solves this with a high-performance local daemon:
 
 * **Strict Directory Jail:** AI operations are strictly restricted to the specified project folder with zero parent-directory traversal.
-* **Native Tool Suite:** Exposes native coding tools (`read`, `write`, `edit`, `str_replace_editor`, `pwsh`, `bash`, `jobs`, `plan_mode`).
+* **Native Tool Suite:** Files (`read_file`, `read_files`, `write_file`, `write_files`, `edit_file`, `str_replace_editor`, `delete_file`, `revert_file`, `search_files`, `list_directory`), shell (`execute_command`, `pwsh`, `bash`, background `jobs`), git (`git_status`, `git_diff`), plus planning, dependency inspection and web documentation fetching.
+* **Approval Modes:** Choose how often Bridge asks you before acting: never, always, only for deletes, or let Bridge decide.
+* **Undo & Trash:** Every write keeps an undo snapshot, and deleted files move to `~/.bridge/trash` instead of being erased.
+* **Long-Running Calls:** Tool replies stream over SSE with keepalives, so long builds and tests survive Cloudflare's 100-second timeout.
 * **Zero-Setup Anycast Tunnel:** Public HTTPS tunneling powered by Cloudflare with automatic SSL and clipboard sync. Run `bridge setup` once if you prefer a fixed named-tunnel URL.
-* **Terminal Dashboard:** Monospaced LN4 Volt interface with live traffic streaming and real-time directory switching.
+* **Terminal Dashboard:** Monospaced LN4 Volt interface with live traffic streaming and real-time directory switching. Adapts to any terminal size, from small windows to full screen.
+* **Self-Healing Server:** If the MCP server crashes, Bridge restarts it automatically with backoff, and cleans up every child process on exit.
+
+---
+
+## Approval Modes
+
+Press `[M]` in the dashboard (or launch with `--mode=<mode>`) to choose when Bridge asks you for permission. Your choice is saved for next time.
+
+| Mode | Reads | Writes / Edits | Normal Commands | Deletes, Destructive Git, Secret Files | Harmful Commands |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Turbo** | Allowed | Allowed | Allowed | Allowed | Always blocked |
+| **Review** | Allowed | Asks | Asks | Asks | Always blocked |
+| **Default** | Allowed | Allowed | Allowed | Asks | Always blocked |
+| **Auto** | Allowed | Allowed | Allowed | Asks, except `delete_file` (recoverable from trash) and rebuildable folders (`node_modules`, `dist`, `build`, caches) | Always blocked |
+
+When Bridge asks, the request appears in the dashboard with the full command. Press `[Y]` to approve or `[N]` to deny. Unanswered requests are denied automatically after 90 seconds.
+
+**Always blocked:** disk formatting, shutdown/reboot, `sudo`/`runas`, registry and boot configuration edits, user and service changes, disabling Defender or the firewall, scheduled tasks, piping downloads into a shell (`curl … | sh`, `iwr … | iex`), encoded PowerShell, and changes to system folders.
+
+**Switching folders:** an AI can move to another project folder when you ask it to. Drive roots, your home folder and system folders are always refused. Depending on the mode, Bridge asks you first.
 
 ---
 
@@ -135,11 +169,16 @@ Cloud-based AI models cannot safely access files on your physical machine withou
 | Security Vector | Implementation |
 | :--- | :--- |
 | **Authentication & Authorization** | All HTTP and SSE endpoints enforce Bearer authentication (`Authorization: Bearer <token>` or `?token=<token>`). Unauthenticated requests are rejected with `401 Unauthorized`. |
-| **Path Traversal Protection** | Evaluates canonical `fs.realpathSync`. Access outside the targeted root jail is immediately blocked. |
-| **Symlink Boundary Checks** | Validates symlink resolution. Denies read/write operations targeting locations outside the project folder. |
+| **Path Traversal Protection** | Evaluates canonical `fs.realpathSync`, including for files that don't exist yet. Access outside the targeted root jail is immediately blocked. |
+| **Symlink Boundary Checks** | Validates symlink and junction resolution. Denies read/write operations targeting locations outside the project folder; search and listing skip outside links. |
+| **Data Integrity** | Writes are atomic (temp file + rename), multi-file writes roll back on failure, `.git` internals are write-protected, and every change keeps an undo snapshot. |
+| **Secrets Protection** | Search skips sensitive files, and commands that read `.env`, keys, `.ssh` or `.npmrc` ask you first. |
+| **SSRF Protection** | Web documentation fetches allow public HTTPS only, block private and local addresses (including after redirects), and enforce size and time limits. |
+| **Resource Limits** | Request, read and output size limits, a cap on concurrent background jobs, and full process-tree cleanup on stop and exit. |
 | **Local Port Isolation** | Local server binds strictly to `127.0.0.1`. Remote traffic routes through secure single-session Anycast tunnels. |
 | **Execution Policy & Disablement** | Shell tools (`pwsh`, `bash`, `execute_command`) are protected by safety policies, restricted to root directory, and can be disabled completely with `--disable-shell`. |
 | **Live Traffic Audit** | Press `[L]` at any time to stream every incoming JSON-RPC request and tool call in real time. |
+| **Diagnostic Log** | `~/.bridge/logs/server_requests.log` records requests, SSE stream open/close, client disconnects, approvals and per-call timing. Tokens are redacted; the log rotates at 10 MB. |
 
 ---
 
@@ -151,7 +190,18 @@ Cloud-based AI models cannot safely access files on your physical machine withou
 | `[T]` | Copies the Bearer authentication token to your clipboard. |
 | `[D]` | Opens the In-Terminal Directory Navigator to switch project folders without restarting. |
 | `[L]` | Toggles real-time streaming traffic and tool execution logs. |
-| `[Q]` | Gracefully closes the tunnel, releases ports, and exits. |
+| `[M]` | Opens the approval mode picker (`1` Turbo, `2` Review, `3` Default, `4` Auto). |
+| `[Y]` / `[N]` | Approves or denies a pending permission request. |
+| `[Q]` | Asks for confirmation (`Y`/`N`), then closes the tunnel, stops all jobs, releases ports, and exits. |
+
+---
+
+## Troubleshooting
+
+* **Gemini keeps showing "Connecting to Bridge":** Check `~/.bridge/logs/server_requests.log`. If no new lines appear, the request never left Gemini, so resend your prompt. A `[CLIENT-ABORT]` or `[SSE-CLOSE]` line shows the connection dropped and why.
+* **Gemini keeps asking for permission:** See the Gemini tip under [Connecting to Any AI Client](#connecting-to-any-ai-client).
+* **Port 3000 is busy:** Quick tunnels pick a free port from 3001–3020 automatically. Named tunnels need port 3000; Bridge only stops old Bridge servers on it and never other apps.
+* **Update banner:** Bridge checks npm on startup and shows an update only when a newer version exists. Upgrade with `npm install -g @markmayandi/bridge@latest`.
 
 ---
 

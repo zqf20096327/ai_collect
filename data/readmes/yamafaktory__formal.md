@@ -257,6 +257,31 @@ run. A committed file is the same every time, so a proof is written once and reu
 A committed file is also reviewable. It shows what was checked last week, and a diff
 shows when the answer changes.
 
+### A Lean spec
+
+A spec file asks each proof to bring its own Lean model of the code, and two proofs can
+model the same function differently. A Lean spec holds one model for all of them. It
+defines the model inside one namespace, and states each property as `def <name> : Prop`.
+This excerpt is shortened from `spec/Pystr.lean`:
+
+```lean
+namespace Pystr
+
+def rstrip (s : List Char) : List Char := (s.reverse.dropWhile isSpace).reverse
+
+def rstrip_idempotent : Prop :=
+  ∀ s, rstrip (rstrip s) = rstrip s
+
+end Pystr
+```
+
+Open a session with `{"spec": "/abs/path/to/Pystr.lean"}`. Each property comes back as
+work under `<Namespace>.<name>`, here `Pystr.rstrip_idempotent`. Its proof leaves the
+spec out and declares `theorem Pystr.rstrip_idempotent.holds : Pystr.rstrip_idempotent`.
+formal puts the spec before the proof and holds the proof to the spec's own statement.
+A proof that redefines a name of the spec fails. The cache key covers the whole spec, so
+an edit to the spec sends every property back as work.
+
 ### Stale properties
 
 A committed property can outlive its code. Each property records the function source it
@@ -282,6 +307,10 @@ formal checks itself. `formal.properties.json` in this repository is formal's ow
 with the proofs in `proofs/`. Two of its properties guard against collisions that really
 happened in formal's cache key: an operator spelled as a word counts only at a word
 boundary, and no field of the key can imitate the boundary between two others.
+
+The Python string rules the cache key depends on have a spec instead: `spec/Pystr.lean`.
+Their proofs are in `proofs/Pystr/`. The test `formal-service/tests/spec_sessions.rs` checks
+each proof, and `formal-lean/tests/spec.rs` compares the Rust with the spec.
 
 ## What a result means
 
@@ -324,18 +353,27 @@ checked. formal closes both gaps:
   fake verdict. formal refuses `#eval`, `#exit`, `#guard_msgs`, `run_cmd` and the other
   `run_` commands, `elab`, `macro`, `syntax`, `initialize`, `unsafe`, `implemented_by`,
   `extern`, and the `IO` and `Lean` namespaces. It ignores these words inside comments.
-- **It audits the axiomatic dependencies of every declaration.** formal appends a command
-  to the proof. The command lists every declaration that depends, directly or through
-  other declarations in the file, on an axiom other than `propext`, `Classical.choice`
-  and `Quot.sound`. A declared axiom, a `sorry` (`sorryAx`) or `native_decide` fails the
-  check at the line of that declaration. This also catches a `sorry` whose warning
-  `#guard_msgs` suppresses.
+- **It audits the axiomatic dependencies of every declaration.** The audit is a Lean
+  module, `FormalAudit`, that formal compiles on first use. Each check imports it, so
+  Lean elaborates the audit before it reads the proof, and nothing the proof declares,
+  a notation included, can change what the audit does. The audit lists every
+  declaration that depends, directly or through other declarations in the file, on an
+  axiom other than `propext`, `Classical.choice` and `Quot.sound`. That includes an
+  `example`, which Lean checks and then discards. A declared axiom, a
+  `sorry` (`sorryAx`) or `native_decide` fails the check at the line of that
+  declaration. This also catches a `sorry` whose warning `#guard_msgs` suppresses.
+- **It checks every declaration with the kernel again.** The audit adds a copy of each
+  declaration in the file under a new name, and the kernel checks the copy. An option
+  such as `debug.skipKernelTC` lets a declaration skip the kernel, but its copy cannot,
+  so the check fails however the option is spelled.
 - **It requires the audit to report.** The report carries a random nonce that the proof
   cannot know. If no report comes back, the check fails. This happens when elaboration
-  stops before the end of the file, for example at an unclosed comment.
+  stops before the end of the file, for example at an unclosed comment. A file that ends
+  in `... in` fails before Lean runs, because the `in` would apply to the audit.
 
 The audit takes imported Mathlib declarations as built, the same trust Lean extends to
-them. It costs about 0.27 s on a cold check, and nothing measurable on a warm one.
+them. formal compiles the audit once for each version of formal and of Lean, which takes about
+a second.
 
 ### Check the statement yourself
 
@@ -390,7 +428,7 @@ is not the property you meant.
 | `GET /openapi.json` | The full schema |
 | `GET /guide` | The workflow, the spec file schema and the topic list |
 | `GET /guide/{extract\|formalize\|tactics}` | The instructions for one phase |
-| `POST /session` | `{"spec_file": path, "root"?: path}`, or `{"properties": [...]}` |
+| `POST /session` | `{"spec_file": path, "root"?: path}`, `{"spec": path}`, or `{"properties": [...]}` |
 | `GET /session/{id}` | The current state of a session |
 | `POST /session/{id}/check` | `{"proofs": {id: lean}}`, or `{"proof_files": {id: path}}` |
 | `GET /session/{id}/proof/{property_id}` | The proof Lean accepted for one property |
@@ -398,7 +436,7 @@ is not the property you meant.
 
 A session expires after `SESSION_TTL_MINUTES` of inactivity (default 60). Inline
 `properties` suit a one off check, but nothing carries over to a later run. Paths in
-`proof_files` must be absolute, like `spec_file`.
+`proof_files` must be absolute, like `spec_file` and `spec`.
 
 ## Running formal
 

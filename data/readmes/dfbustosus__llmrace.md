@@ -157,6 +157,12 @@ llmrace openai groq --ramp 1,2,4,8 -n 3
 # CI gate: fail if any provider exceeds 500ms TTFB
 llmrace openai groq --max-ttfb 500 --quiet
 
+# Reproducible race: pin sampling and stamp it into the report.
+# Omit the flags to keep each provider's own default.
+llmrace openai groq --temperature 0 --top-p 1 --seed 1 --system "Be concise."
+# Or fill only the controls still unset (temperature 0, top-p 1, seed 0).
+llmrace openai groq --reproducible
+
 # Declare an overall winner (weighted ttfb/tps/p95/cost composite)
 llmrace openai groq --winner
 llmrace openai groq --winner --weights ttfb=50,tps=50
@@ -188,6 +194,9 @@ llmrace --suite examples/llmrace.suite.toml
 # Custom prompt (inline or from a file), JSON + CSV output for CI
 llmrace openai groq -p "Explain transformer attention in 3 sentences." -n 5 --json --csv
 llmrace openai groq --prompt-file prompts/attention.txt
+
+# Same workload on every lane: a race, a suite entry, or a ramp
+llmrace openai groq --workload examples/workloads/short-answer.jsonl --ramp 1,2,4
 ```
 
 Every provider with a matching env var races automatically — no config file:
@@ -196,7 +205,7 @@ Every provider with a matching env var races automatically — no config file:
 |----------|---------|---------------|
 | `openai` | `OPENAI_API_KEY` | `gpt-4o-mini` |
 | `anthropic` | `ANTHROPIC_API_KEY` | `claude-3-5-haiku-latest` |
-| `gemini` | `GEMINI_API_KEY` | `gemini-2.0-flash` |
+| `gemini` | `GEMINI_API_KEY` | `gemini-3.5-flash-lite` |
 | `groq` | `GROQ_API_KEY` | `llama-3.3-70b-versatile` |
 | `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-chat` |
 | `mistral` | `MISTRAL_API_KEY` | `mistral-small-latest` |
@@ -211,7 +220,7 @@ Every provider with a matching env var races automatically — no config file:
 | `openrouter` | `OPENROUTER_API_KEY` | `openai/gpt-4o-mini` |
 | `ollama` | — (local) | `llama3.2` |
 | `bedrock` | `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` + `AWS_REGION` | `anthropic.claude-3-5-haiku-20241022-v1:0` — **experimental**¹ |
-| `vertex` | `GOOGLE_APPLICATION_CREDENTIALS` + `GOOGLE_CLOUD_PROJECT` + `GOOGLE_CLOUD_REGION` | `gemini-2.0-flash` — **experimental**¹ |
+| `vertex` | `GOOGLE_APPLICATION_CREDENTIALS` + `GOOGLE_CLOUD_PROJECT` + `GOOGLE_CLOUD_REGION` | `gemini-3.5-flash-lite` — **experimental**¹ |
 | `lmstudio` | — (opt-in local, port 1234) | loaded model |
 | `llamacpp` | — (opt-in local, port 8080) | loaded model |
 | azure | `AZURE_OPENAI_API_KEY` (library: `ProviderSpec::azure_openai`) | per deployment |
@@ -219,32 +228,36 @@ Every provider with a matching env var races automatically — no config file:
 
 Opt-in local daemons (`lmstudio`, `llamacpp`) only race when named explicitly, so they never pollute auto-detected runs with error lanes.
 
-¹ Bedrock's SigV4 signing and binary event-stream decoding are verified against published AWS test vectors and fuzzed, but the end-to-end path has not been run against a live AWS account yet — reports from Bedrock and Vertex users are especially welcome ([#126](https://github.com/dfbustosus/llmrace/issues/126), [#127](https://github.com/dfbustosus/llmrace/issues/127)).
+¹ Bedrock speaks the Converse Stream API (one request body for every model family) and Vertex speaks Gemini `streamGenerateContent`. SigV4, the event-stream decoder and the Vertex JWT are verified against published test vectors. The Gemini and Vertex default model id is `gemini-3.5-flash-lite`. On 2026-12-01 Google routes `gemini-2.5-flash` to that id and bills it at the Flash-Lite rate. The live account path has still not been run here — no AWS or Google credentials were available — so both stay experimental ([#126](https://github.com/dfbustosus/llmrace/issues/126), [#127](https://github.com/dfbustosus/llmrace/issues/127)).
 
 ## What it measures
 
 | Metric | Definition |
 |--------|------------|
-| **TTFB** | Time from just before the request is sent to the first streamed token (includes connection, TLS and queueing) |
-| **Saturation peak** | `--ramp` races at each concurrency level and marks each provider's peak throughput (⬇ flags >10% degradation past it) |
+| **TTFT** | Time to first token. Same clock as TTFB: from just before the request is sent to the first streamed token (includes connection, TLS and queueing). Reports print TTFT; JSON keeps `mean_ttfb_ms` and adds `ttft_ms` |
+| **TPOT** | Time per output token: the effective generation window divided by completion tokens. JSON reports the median (`tpot_p50_ms`) and p95 (`tpot_p95_ms`) across rounds |
+| **Saturation peak** | `--ramp` races at each concurrency level and marks the concurrency where goodput peaks (⬇ flags a goodput drop of more than 10% past it). JSON names the first level whose failure rate crosses 5% |
 | **Tokens/s** | Completion tokens divided by the *effective generation window* (total − TTFB, widened to the provider-reported server processing time when longer); with `--concurrency N`, total tokens of all N parallel requests over the round window — i.e. saturation throughput |
 | **ITL p50 / p95** | Distribution of inter-token gaps while streaming — how *smooth* the stream feels, not just how fast it finishes |
 | **Stutters** | Inter-token gaps over 250 ms — visible streaming hiccups, counted per lane |
 | **Latency p50 / p95** | Distribution of round time-to-last-token (linear-interpolation percentiles) |
 | **Mean ± 95% CI** | Student-t confidence interval on the mean latency |
 | **Significance** | Welch's t-test on per-run latencies between the top two lanes — the report states whether the gap is real or could be noise (p < 0.05) |
-| **Cost/run** | Provider-reported token counts × public per-model prices (editable in `src/cost.rs`) |
+| **Cost/run** | Public per-model prices × billed input and output tokens. Input tokens come from the provider's usage report (system prompt and tool schemas included). Cache reads and cache writes use the published discount when this crate has one for the model; a model with cache tokens but no cached price is billed at the input rate and the report says so. Hourly cache storage is not in the per-request usage and is not included. When a provider omits usage, the user prompt is estimated and the markdown table marks the figure with `~` |
 
 Methodology notes:
 
-- One **warmup round** per provider (excluded from stats) to absorb connection setup and TLS handshakes
+- One **warmup round** per provider (excluded from stats) to absorb connection setup and TLS handshakes. A warmup failure is not a measured failure
+- **Failed measured rounds stay in the report.** Latency, tokens/s and cost/run use successful rounds only. The rank uses goodput (tokens/s × the success rate), so a provider that timed out half its calls cannot win on the calls that happened to succeed. Retries are counted and not priced: a failed attempt does not return token usage. `--record`, `--baseline` and `--recommend` keep the same failure rate, goodput, retry count and cost. A history file or baseline written before those fields existed still loads; the gate skips a metric the baseline did not record
 - Rounds are **concurrent across providers** but sequential within a provider, so providers don't throttle each other. Exception: `provider=model` lanes of the *same* provider race concurrently — the provider's rate limits and capacity are then shared between those lanes, which is exactly what a mixed-model race measures in practice
 - Rounds with 3σ latency outliers are flagged with `†`
 - **ITL caveat**: inter-token gaps are timestamped when the runtime polls the event, so they include local scheduling jitter (sub-millisecond on a quiet machine, more under heavy concurrent load) — compare ITL across providers measured in the *same* race, not across machines
 - Token counts prefer **provider-reported usage** (`include_usage` on OpenAI-compatible APIs, `message_delta` on Anthropic) and fall back to stream-event counting
-- All requests use the same prompt, `max_tokens` and sampling defaults per run
+- `--workload` is a JSONL file (`id`, `prompt`, optional `expect`, optional `match`). `match` is `exact` when omitted, or `contains` or `regex`. `contains` is a case-sensitive substring of the trimmed answer. `regex` is compiled when the file is read, with a 1 MiB size limit, and an invalid pattern is rejected before any request. An exact line keeps the request hash it has today. Every lane draws the same prompt on a given round, in order, and wraps. The report adds a per-prompt table so a slow prompt is visible, with a pass count when that prompt had a task. The gate fails when one prompt's success falls by more than the threshold, even when the lane average stays inside it. A baseline that omitted per-prompt rates skips them. `--suite` entries set `workload` to the same file. `--prompt-file` is still one prompt
+- **Pass** is task successes over measured rounds. `--tools` checks that the tool arguments are valid. `expect` checks an exact short answer (the trimmed text, a JSON object, or a number). A wrong answer is still a successful request, and `--winner` can rank it last. A race with no task leaves Pass blank and the podium weights unchanged
+- All requests in a run share `max_tokens` and sampling parameters. Omit a workload and they also share one prompt. Omit `--temperature`, `--top-p`, `--seed` and `--system` to keep each provider's own default. `--reproducible` fills whichever of temperature, top-p and seed are still unset, after the profile is applied, with 0, 1 and 0. A flag or a profile value already set wins. When you set them, the values are stamped into the markdown, JSON and HTML reports, and the request hash changes, so the gate will not compare a pinned race with an unpinned one. OpenAI reasoning models (gpt-5, o-series) ignore temperature, top-p and seed, because those APIs reject the fields; the system prompt is still sent
 - Per-request timeouts (`--timeout`) are enforced mid-stream; panics in a single request never abort the race
-- **Reasoning models** (gpt-5, o-series): TTFB honestly includes thinking time — the model emits nothing visible while it reasons. When the provider reports server processing time, tokens/s uses the wider of the observed streaming window and the server window, so burst delivery after thinking cannot inflate throughput ([#125](https://github.com/dfbustosus/llmrace/issues/125))
+- **Reasoning models** (gpt-5, o-series): TTFT honestly includes thinking time — the model emits nothing visible while it reasons. When the provider reports server processing time, tokens/s uses the wider of the observed streaming window and the server window, so burst delivery after thinking cannot inflate throughput ([#125](https://github.com/dfbustosus/llmrace/issues/125)). Gemini `thoughtsTokenCount` is billed as output on top of `candidatesTokenCount`. OpenAI `completion_tokens` already includes `reasoning_tokens`, so that count is recorded and not added again. When the provider sends no count, the visible-stream estimate remains
 
 ## Reports
 
@@ -253,7 +266,7 @@ llmrace openai groq --out race.md --json --csv --html
 ```
 
 - `race.md` — ranked table with **mean ± 95% CI**, p50/p95, TTFB, tokens/s and cost, ready to paste into GitHub issues or blog posts
-- `race.json` — full per-run data, confidence intervals and outliers for CI pipelines
+- `race.json` — full per-run data, confidence intervals and outliers for CI pipelines. It names `pricing_as_of`, the workload ids in measured-round order (empty for one prompt), `prompt_sha256` of the prompt texts those rounds sent, and `request_sha256` of the whole request (prompt or workload, `expect`, `max_tokens`, sampling, system prompt, tool task). A baseline that recorded a different `request_sha256` fails the gate without comparing metrics. A baseline that omitted the field still compares. `--trend` only averages rows that share the latest request
 - `race.csv` — per-run rows for spreadsheets and dashboards
 - `race.html` — self-contained dark-theme page with podium, ranked table and per-run latency bars (TTFB vs generation split), shareable as a single file
 
@@ -294,10 +307,11 @@ Any HTTP response counts as endpoint reachability — even a 401 proves DNS, TLS
 
 ## Pricing
 
-Cost columns use a built-in table that can drift as providers change prices. Override per model (repeatable, USD per million tokens):
+Cost columns use a built-in table. OpenAI, Anthropic and Gemini rows were read on 2026-11-20 from [OpenAI pricing](https://developers.openai.com/api/docs/pricing), [Anthropic pricing](https://platform.claude.com/docs/en/about-claude/pricing) and [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing). Those rows include the models people race now (`gpt-5.4` and its mini and nano, `claude-sonnet-4-6`, `claude-haiku-4-5`, `gemini-2.5-flash`). `gemini-3.5-flash-lite` was read on 2026-11-21 from the same Gemini page ($0.30 / $2.50, cache read $0.03). The table is not a row for every model id. Other providers were not re-read that day. Cache reads and cache writes use the published discount for models whose cached rate is in the table. Override per model (repeatable, USD per million tokens). A two-part override replaces the whole row and does not keep the built-in cache discount; add `:cached`, `:write` and `:write_1h` when you want those rates:
 
 ```bash
 llmrace openai --price openai/gpt-4o-mini=1.25:5
+llmrace openai --price openai/gpt-4o-mini=0.15:0.60:0.075
 ```
 
 ## Tracking providers over time
@@ -344,7 +358,7 @@ llmrace openai groq --json --out llmrace-report.json
 llmrace openai groq --baseline llmrace-report.json --max-regression 15
 ```
 
-The check compares mean latency, p95, TTFB (increases) and tokens/s (decreases) against the threshold, prints an old → new diff table with per-metric Welch p-values, and flags providers that are new or missing from the baseline. With `--require-significance`, a threshold breach only fails the gate when the difference is statistically significant (p < 0.05 on per-run data) — the flake-resistant mode for CI:
+The check compares mean latency, p95 and TTFT (increases) and tokens/s (decreases) against the threshold. When the baseline recorded them, it also fails if the failure rate rises by more than the threshold in percentage points, if goodput or task success falls by more than the threshold, or if cost/run rises by more than the threshold. A baseline that omits those fields skips them. When both the baseline and this race record `request_sha256` and the hashes differ, the gate fails and does not compare metrics. A baseline that omitted the hash still compares. A race with no task has no task-success metric, so a plain latency gate does not move. The report prints an old → new diff table with per-metric Welch p-values, and flags providers that are new or missing from the baseline. With `--require-significance`, a latency or tokens/s breach fails the gate only when the difference is statistically significant (p < 0.05 on per-run data). Failure rate, goodput, cost and task success are ratios of the whole sample, so a threshold breach on those counts without a t-test:
 
 ```bash
 llmrace openai groq --baseline llmrace-report.json --max-regression 15 --require-significance
@@ -383,13 +397,16 @@ PRs with results from other regions are welcome — record with `--json` and ext
 | Alert webhooks (Slack/Discord) | ✅ `--alert-webhook` | ❌ | ✝ custom | ❌ |
 | Desktop notifications | ✅ `--notify-desktop` | ❌ | ❌ | ❌ |
 | TTFB / tokens/s / p95 / t-CI / ITL | ✅ built-in | varies | ✝ you build it | ✅ but only routed traffic |
+| Failed rounds kept; rank is goodput (tokens/s × success rate) | ✅ | ❌ | partial | partial |
 | Reasoning-model honesty (🧠 split) | ✅ built-in | ❌ | ❌ | ❌ |
 | Live terminal race view | ✅ | ❌ | ❌ | ❌ |
 | CI regression gate with significance | ✅ `--require-significance` | ❌ | ✝ heavy scripting | ❌ |
 | Saturation curves (`--ramp`) | ✅ built-in | ❌ | ✝ complex | ❌ |
 | Longitudinal trends + model-swap detection | ✅ | ❌ | ❌ | partial |
-| Cost per run from real token usage | ✅ | ❌ | ❌ | partial |
+| Cost per run from billed input, cached input and output tokens | ✅ | ❌ | ❌ | partial |
 | Cross-region probe merging | ✅ `--merge` | ❌ | ❌ | ❌ |
+| Reproducible sampling (temperature, top-p, seed, system) stamped on the report | ✅ | ❌ | ✝ | ❌ |
+| Retries honor `Retry-After`; permanent 4xx fails fast | ✅ | ❌ | partial | ❌ |
 | Single static binary, no config file | ✅ | ❌ | ❌ | ❌ |
 | 100% safe Rust, fuzzed parsers | ✅ | — | — | — |
 | Docker (2.9 MB scratch) + GitHub Action | ✅ | ❌ | partial | ❌ |
@@ -402,6 +419,7 @@ Missing a capability you need? [Open an issue](https://github.com/dfbustosus/llm
 - `#![deny(missing_docs)]`, `#![deny(clippy::unwrap_used)]` and `#![forbid(unsafe_code)]` — **100% safe Rust, enforced at compile time**; the binary's runtime paths contain zero `unwrap`/`expect` calls
 - Typed errors via `thiserror`; `anyhow` only at the binary edge
 - Zero-alignment-allocation SSE parser that survives arbitrary network chunk boundaries (exhaustively tested at every split point)
+- The race HTTP client sizes its idle pool to the concurrency, caps the connect timeout at 10s, and keeps TCP and HTTP/2 connections alive so warmup is the round that pays for the handshake
 - Criterion benchmarks for the parsing and statistics hot paths
 - Panic containment: a failing request becomes an error row, never a crash
 - CI on Linux/macOS/Windows: fmt + clippy `-D warnings` + tests + end-to-end mock race

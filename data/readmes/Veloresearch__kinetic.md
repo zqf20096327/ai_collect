@@ -29,12 +29,12 @@ speed-up ever changes the answer.
 
 <a name="status"></a>
 
-## Status: 0.1.0 Beta 1
+## Status: beta
 
-Kinetic is a week old in public and it is a beta. Thank you to everyone who ran it, told
+Kinetic is a week old in public and every release before 1.0 is a beta. Thank you to everyone who ran it, told
 us what broke and sent pull requests.
 
-### Now, in 0.1.0 Beta 1
+### Now, in 0.1
 
 - A model split between the GPU and the CPU can give a different answer on the second and
   later requests, and `kinetic bench` then says "not identical".
@@ -42,7 +42,7 @@ us what broke and sent pull requests.
   llama.cpp is up to 2.5x on edits and up to 1.4x on plain generation on our machine.
 - With thinking on, tool calls can end up inside the reasoning
   ([#5](https://github.com/Veloresearch/kinetic/issues/5)); send
-  `"chat_template_kwargs": {"enable_thinking": false}` until Beta 2.
+  `"chat_template_kwargs": {"enable_thinking": false}` until 0.2.
 - Unsloth UD quants (IQ4_XS, IQ3_XXS, IQ2_XS, IQ2_XXS) run on the CPU only
   ([#1](https://github.com/Veloresearch/kinetic/issues/1)).
 - Speculative decoding can be slower than plain decoding on a model split between the GPU
@@ -52,7 +52,10 @@ us what broke and sent pull requests.
 - A crash report on the AMD RX 9070 under Linux, and older AMD integrated GPUs with 64-wide
   subgroups (Vega, GCN) run on the CPU.
 
-### Coming in Beta 2
+### Coming in 0.2
+
+Want a fix before then? The [nightly build](https://github.com/Veloresearch/kinetic/releases/tag/nightly)
+is main as it was last night, untested: `install.sh --nightly` or `install.ps1 -Nightly`.
 
 - The same answer on every request when a model is split between the GPU and the CPU; this
   fits the one report of the exactness check failing on an RTX 4060.
@@ -759,8 +762,8 @@ more architectures are coming. Other models run on the CPU on those machines.
 <details>
 <summary><b>Does it run on a Mac?</b></summary>
 
-Not in 0.1.0. Apple Silicon support, on the CPU and on the GPU through Metal,
-is on main and ships with Beta 2; until then, build it from source. Intel
+Not in 0.1. Apple Silicon support, on the CPU and on the GPU through Metal,
+is on main and ships with 0.2; until then, take the nightly build. Intel
 Macs are not planned.
 
 </details>

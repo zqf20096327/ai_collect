@@ -11,7 +11,7 @@
 
 ![Fluxo do Simplicio: entrada → passos → saídas](docs/flow/simplicio.svg)
 
-O fluxo (8 entradas, 24 passos, 7 saídas) é gerado de `docs/flow/simplicio.flow.json` (fonte única) e cobre todos os comandos públicos da CLI e todas as MCP tools documentadas:
+O fluxo (8 entradas, 27 passos, 7 saídas) é gerado de `docs/flow/simplicio.flow.json` (fonte única) e cobre todos os comandos públicos da CLI e todas as MCP tools documentadas:
 
 ```bash
 python3 scripts/generate_flow.py            # regenera mmd/svg/langflow
@@ -22,7 +22,7 @@ python3 -m pytest tests/test_flow_contract.py -q
 Artefatos: `simplicio.mmd`, `simplicio.svg` e `langflow/simplicio.langflow.json`.
 
 Render Mermaid validado com `mmdc` (evidência e hashes em `docs/flow/render/`).
-O import no Langflow 1.12.0 foi **verificado** localmente: recibo em `docs/flow/evidence/langflow-verify.json`
+O import do artefato atual (42 nós, 63 arestas) no Langflow 1.12.0 foi **verificado** localmente em 2026-11-21: recibo em `docs/flow/evidence/langflow-verify.json`
 e `GET /api/v1/flows/{id}` em `docs/flow/evidence/langflow-readback.json`.
 Sem servidor, `scripts/verify_flow_langflow.py` é fail-closed (exit 2, `status=blocked`).
 Requisitos e repro: [docs/flow/README.md](docs/flow/README.md).
@@ -40,7 +40,7 @@ Requisitos e repro: [docs/flow/README.md](docs/flow/README.md).
   <a href="#-measured-benchmark-simplicio-3108-vs-392-vs-no-mcp">Benchmarks</a> •
   <a href="#-first-60-seconds">First 60 Seconds</a> •
   <a href="#-mcp--ide-integration">MCP & IDEs</a> •
-  <a href="#-core-architecture">Architecture</a> •
+  <a href="#core-architecture">Architecture</a> •
   <a href="https://simpleti.com.br/simplicio/docs">Full Documentation</a>
 </p>
 
@@ -198,6 +198,8 @@ Exposed MCP tools (full profile):
 - `simplicio_run`: Governed task execution with receipts.
 
 ---
+
+<a id="core-architecture"></a>
 
 ## ⚙️ Core Architecture Highlights
 

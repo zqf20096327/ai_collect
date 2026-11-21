@@ -71,6 +71,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Applications of Large Language Models in Legal Tasks
 
+- Quantifying Cultural-Psychological Constructs in Four Centuries of Ottoman Court Registers [paper](https://arxiv.org/abs/2611.24981) — Adapts masked-language encoders and an embedding model to Ottoman legal language through summary–court-record training. Included for legal-document representation and retrieval; its cultural-construct scores describe recorded legal discourse, not population-level psychological traits or legal correctness.
+
 - From Arraignment to Resolution: Transformer Models of Court Cases [paper](https://arxiv.org/abs/2611.23518) — Combines frozen BERT clerk-note features with a temporally masked sequence model to predict the next criminal-court proceeding's outcomes. Intended for retrospective aggregate oversight, not individual bail, charging, plea or sentencing decisions.
 
 - TUSI: A Citation-Grounded Graph-Based Benchmark [paper](https://arxiv.org/abs/2611.21823) — Combines dense retrieval with one-hop expansion over Iranian statutes, expert interpretations and judicial unification rulings for Persian legal QA. Graph quality and additional retrieved context affect results; model-graded answers do not establish legal correctness.
@@ -447,6 +449,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Legal Problems of Large Language Models
 
+- HireWatch: Evaluating LLM Compliance with U.S. Employment Law Under Contextual Pressure [paper](https://arxiv.org/abs/2611.24970) — Tests whether organizational pressure makes hiring assistants select interview questions labeled unlawful under US federal employment-law sources. Explicit legal reminders reduce but do not eliminate violations of the benchmark labels; binary labels cannot resolve every context-dependent legal distinction.
+
 - Right Reason, Wrong Advice: Evaluating Recourse in LLM Explanations of Denied Requests [paper](https://arxiv.org/abs/2611.21545) — Distinguishes a true denial reason from changes sufficient to reverse the decision. Included for executable US statutory-benefit eligibility ports; broader access-control results are not legal-only findings, and valid recourse under a simplified port does not establish a real legal entitlement.
 
 - When Local Definitions Are Missing: Stable Errors in Language Models [paper](https://arxiv.org/abs/2611.15597) — CUAD contract questions show stable wrong answers when local definitions are omitted; repeated answers and stated confidence do not reliably reveal errors. Definitions can refer to absent exhibits or other clauses, and the separate error-ranking proxy uses answer keys.
@@ -560,6 +564,9 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Data Resources for Large Language Models in Law
 
+- HireWatch: Evaluating LLM Compliance with U.S. Employment Law Under Contextual Pressure [paper](https://arxiv.org/abs/2611.24970) — Provides a 200-item interview-question bank with 50 unlawful and 150 lawful labels grounded in federal statutes, regulations and agency guidance, audited by nine licensed US attorneys. Label agreement is 86.7% for unlawful and 97.7% for lawful items; disagreement includes context-dependent interpretations. [Code and data](https://github.com/hnghiem-nlp/hirewatch_repo).
+- Quantifying Cultural-Psychological Constructs in Four Centuries of Ottoman Court Registers [paper](https://arxiv.org/abs/2611.24981) — Reuses 54,670 historical court records and adds a 440-document expert-annotated construct set and legal-language evaluation materials. The paper states that models, annotations and code are released, but the linked Zenodo download was not verified; full court texts are not redistributed because of copyright restrictions.
+
 - Grading Executable Legal Rules Against Independent Records: Transitional Provisions and Korean SME Status [paper](https://arxiv.org/abs/2611.24055) — LexTemporis pairs 10,901 Korean firm-years with versioned legal rules and independent disclosure labels, with US tax and German hospital comparison cases. Disclosures are not legal ground truth; the German case table awaits redistribution clearance.
 - From Arraignment to Resolution: Transformer Models of Court Cases [paper](https://arxiv.org/abs/2611.23518) — Constructs 2,533 criminal cases with 19,459 proceedings and 20 extracted outcome labels. The authors release a pipeline and schema-matched synthetic data, not the source court records; extraction recall and record errors remain limitations.
 
@@ -589,14 +596,4 @@ This repository tracks papers and resources about large language models (LLMs) i
 - Follow the Policy, Fail the Benchmark: Auditing and Revising Policy-Based Decision Benchmarks [paper](https://arxiv.org/abs/2611.07042) — BAR provides versioned audit evidence, 300 paired RuleArena Tax references, and revised scorers including LegalBench SARA; supported corrections are separated from conditional or unresolved targets, and not all nine audited benchmarks are legal.
 
 - The Harness Is the Model: Agent Scaffolding Changes a Fixed LLM's Compliance with Banking Conduct Rules, Unevenly Across Models [paper](https://arxiv.org/abs/2611.06116) — Releases a simulated banking-conduct test suite with 156 cases across 11 rule families and 3,120 two-turn episode traces; rules are paraphrases plus internal controls, not a verbatim statutory benchmark.
-- Discourse Analysis of Legislative Bill Discussions [paper](https://arxiv.org/abs/2611.05381) — Annotates 2,619 utterances from 100 California bill hearings within Digital Democracy. Language-model-assisted labels were manually reviewed; the resource concerns legislative procedure and discourse stages, not adjudication labels.
-
-- PROSE: Preservation-Constrained Selective Editing for Guilty Bias in Legal Judgment Prediction [paper](https://arxiv.org/abs/2611.04921) — Introduces CAIL-MC with 11,478 legally reviewed matched pairs across 261 Chinese criminal charges, plus an evidence-sufficiency track built from LeCaRD and Criminal-S; these are controlled contrasts, not a prospective court-deployment study.
-
-- NitiBench+: A Temporal Thai Legal Question Answering Benchmark Across 17 Domains [paper](https://arxiv.org/abs/2611.03576) — Provides 1,670 Thai legal QA items across 17 domains, pairing cited law at the decision date with current text and a versioned statutory retrieval corpus.
-- ICJ-Graph: A Citation Graph and a Layered Document Corpus of the International Court of Justice [paper](https://arxiv.org/abs/2611.02630) — Links 6,396 ICJ documents and 505 other legal documents to provisions and UN resolutions, preserving separate court-decision, written-pleading, and oral-record layers.
-
-- Do Open Language Models Invent Scripture? BILAL-BENCH: Benchmarking Islamic-Source Fabrication in Bengali [paper](https://arxiv.org/abs/2610.40996) — A 240-item Bengali source-fabrication benchmark containing 45 Hanafi fiqh-ruling questions; inclusion is limited to this jurisprudence subset, not the entire religious-knowledge collection.
-
-- IndicIPR-QA: A Benchmark for Extractive Question Answering on Indian IPR Laws [paper](https://arxiv.org/abs/2610.40518) — Contains 4,462 generated QA pairs from 1,116 contexts across seven Indian IPR Acts, with automatic/LLM checks and a 200-pair human audit.
-- HEARSAYBENCH: Can AI Navigate from Abstract Human Rights to Lived Lives? [paper](https://arxiv.org/abs/2610.39062) — A 400-scenario human-authored benchmark; 236 scenarios fall under the authors' Public Pol
+- Discourse Analysis of Legislative Bill Discussions [paper](https://arxiv.org/abs/2611.05381) — Annotates 2,619 utterances from 100 California bill hearings within Digital Democracy. Language-model-assisted labels were manually reviewed; the resource concerns legis

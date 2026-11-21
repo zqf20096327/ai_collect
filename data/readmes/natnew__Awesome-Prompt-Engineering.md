@@ -68,6 +68,7 @@ The field has evolved from crafting individual prompts to architecting complete 
 - [Langfuse](https://langfuse.com/) — Open-source LLM engineering platform with prompt management
 - [Opik](https://github.com/comet-ml/opik) — Open-source platform for LLM observability, evaluations, and prompt optimization
 - [Helicone](https://helicone.ai/) — Lightweight prompt logging and analytics
+- [Possible](https://possible.sh/?utm_source=natnew-awesome-prompt-engineering&utm_medium=listing) — Directory of AI-made results with the exact prompt, model and steps behind each; its CLI captures Claude Code or Codex sessions as reusable recipes
 
 ### Development Frameworks
 
@@ -124,6 +125,7 @@ The field has evolved from crafting individual prompts to architecting complete 
 ##### [Prompt Engineering Guide by Learn Prompting](https://learnprompting.org/docs/introduction)
 ##### [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)
 ##### [Prompt Engineering Techniques (NirDiamant)](https://github.com/NirDiamant/Prompt_Engineering)
+##### [Awesome AI Prompts: verification-first prompts for AI coding agents](https://github.com/shauryagangrade/awesome-ai-prompts)
 ##### [OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering)
 ##### [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
 

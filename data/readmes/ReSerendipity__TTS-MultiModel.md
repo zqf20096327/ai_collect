@@ -132,6 +132,92 @@ tts-multimodel batch --input texts.txt --output-dir ./outs --reference-audio ref
 
 CLI 目前覆盖 VoxCPM2 的 design / clone / batch 三种模式；IndexTTS 合成、极致克隆、剧本工坊、音色库、语音转换与音频编辑、LoRA 训练等请使用 Web UI 或 HTTP API（含 OpenAI 兼容的 `POST /v1/audio/speech`）。
 
+**给 AI Agent / 脚本用（结构化输出）**：任意命令加 `--json` 可输出单行 JSON 到 stdout（日志走 stderr，可直接 `json.loads`），并带语义化退出码（0 成功 / 1 业务失败 / 2 参数错误 / 3 环境未就绪）：
+
+```bash
+# 统一服务层入口：--engine 真正生效（voxcpm2 / indextts2）
+tts-multimodel generate design --text "你好" --control "warm female voice" --engine voxcpm2 --json
+# 返回: {"ok":true,"command":"design","data":{"audio_path":"...","duration":3.5,"engine":"voxcpm2",...}}
+
+# 顶层 design/clone 加 --service 也可走统一服务层（默认仍为 legacy 直调，保持兼容）
+tts-multimodel design --service --text "你好" -o out.wav --json
+```
+
+多引擎 / 多动作入口（`generate --help` 查看全部）：
+
+```bash
+tts-multimodel generate ultimate  --text "..." --reference-audio ref.wav [--ref-text "..."]
+tts-multimodel generate emotion   --text "..." --reference-audio ref.wav --emotion-text "开心"
+tts-multimodel generate script    --input script.txt --persona-map 旁白=narr.wav
+tts-multimodel generate edge      --text "..." --lang zh          # 在线兜底，无需权重
+tts-multimodel generate convert   --source-audio a.wav --target-audio b.wav   # 需 openvoice
+tts-multimodel generate edit      --source-audio a.wav --source-text "..." --edit-type emotion --edit-info happy
+tts-multimodel postprocess        --audio a.wav --tempo 1.1 --enhance
+```
+
+> 依赖缺失的引擎（如 Breeze / Voicebox / Step-Audio）会返回 `NOT_READY`（退出码 3）并给出明确指引，不会静默失败。
+
+#### Breeze TTS 2 的依赖隔离（重要）
+
+Breeze 上游要求 **transformers 4.57.3 + qwen-tts 0.1.1**，而本项目全局锁 `transformers>=5.20.2`（其它引擎与安全公告所需）。实测在 5.x 兼容层下 Breeze 产物是**噪音**（人工试听确认）；4.57.3 下正常。因此 CLI 在检测到 transformers 5.x 时会**自动把 Breeze 生成委托给隔离 venv**：
+
+```bash
+python scripts/setup_breeze_venv.py        # 一键创建（默认 D:/breeze-venv，或项目根 .venv-breeze）
+# 也可用 TTS_BREEZE_VENV 环境变量指定已有 venv
+tts-multimodel generate breeze-design --text "..." --control "一位低沉成熟的男声" --json
+```
+
+未创建隔离环境时，Breeze 命令返回 `NOT_READY` 并给出上述指引，不会退回 5.x 噪音路径。环境路径优先级：`TTS_BREEZE_VENV` > `D:/breeze-venv` > 项目根 `.venv-breeze`。
+
+完整命令族（`--help` 查看每个子命令）：
+
+```bash
+tts-multimodel persona  list|show|save|delete          # 音色库
+tts-multimodel history  list|stats|hide|clear|recycle|restore|purge|export|sync
+tts-multimodel model    status|load|unload|switch       # 模型生命周期
+tts-multimodel engines  list|info                       # 引擎能力发现
+tts-multimodel download catalog|status|start|uninstall   # 环境包/模型下载
+tts-multimodel lora     list|load|unload|toggle|state    # LoRA 权重
+tts-multimodel train    start|stop|log                   # LoRA 微调
+tts-multimodel system   health|gpu|logs|settings         # 只读运维视图
+tts-multimodel serve                                    # 完整 HTTP：/v1 + SSE + Web UI
+```
+
+> `serve` 用于需要 OpenAI 兼容接口（`POST /v1/audio/speech`）或 SSE 的场景；其余能力均可由 CLI 直调，无需起服务。
+
+#### 复用已运行的服务（省去每次生成的模型加载）
+
+CLI 每条命令都是独立进程，`generate *` 直调时每次都要重新加载模型（约 36–41s）。若本机已有常驻 HTTP 服务（桌面版 GUI 运行时会自动拉起，或手工 `tts-multimodel serve` 放在后台），`generate` 与 `batch` 会**自动发现并复用**它，单次生成可降到约 7–9s：
+
+```bash
+tts-multimodel serve --port 7901 &                # 起一次常驻服务（也可用桌面版 GUI）
+tts-multimodel generate design --text "你好" --control "calm male voice" --json
+# 第 1 次含模型加载（≤60s）；此后每次走 HTTP 复用常驻模型（约 7–9s），
+# JSON 的 data.transport 字段为 "http"（直调时无此字段），日志可见「发现常驻服务」
+```
+
+- **服务发现优先级**：`--server URL` > 环境变量 `TTS_CLI_SERVER` > `app/.server_port`（服务启动时自动写入，已 gitignore）。
+- **降级保证**：没有服务、服务停止或超时时，自动回落现有直调路径（stderr 有一条提示）；`--no-remote` 可强制直调（CI/测试用）。
+- **模型自动补载**：服务端引擎未加载时，CLI 自动调用一次 `/api/model/load` 并重试一次，仍失败报 `NOT_READY`(3)。
+- 走 HTTP 的范围：`generate` 全部生成类子命令与 `batch`；`persona`/`history`/`model` 等毫秒级操作始终直调。`generate script --persona-map`（角色→任意路径映射）HTTP 端点无法表达，自动回落直调。
+
+#### 模型来源回退链（离线优先）
+
+未显式指定模型来源时，CLI 按以下优先级解析（`load_model`）：
+
+| 优先级 | 来源 | 触发条件 |
+|---|---|---|
+| 1 | `--model-path <dir>` | 用户显式指定本地目录 |
+| 2 | `--hf-model-id <repo>` | 用户显式指定 Hub 仓库（尊重联网意图，不再回退本地） |
+| 3 | `config.yaml` 的 `voxcpm2.model_path` | **默认**：本地权重存在即用（离线可用） |
+| 4 | `openbmb/VoxCPM2` | 本地也不存在时回落 Hub 默认仓库 |
+
+> 第 3 步是离线优先的保证。项目交付形态不带 HuggingFace 缓存（桌面包只带 `model/`），此前实现会无条件走 Hub，导致离线环境下 `batch` 等 legacy 命令失败；若 HF 缓存残缺（`config.json` 为空），报错表现为 `Expecting value: line 1 column 1 (char 0)`。`generate`（service 层）与 HTTP 路径一直读本地权重，此处补齐一致性。
+
+> CLI 全功能扩展的架构与分阶段路线图见 [`docs/adr/0005-cli-full-feature-expansion.md`](docs/adr/0005-cli-full-feature-expansion.md)。
+
+**桌面安装包用户**：安装器会把 `tts-multimodel` 命令注册到当前用户 PATH（开始菜单也有「TTSMultiModel CLI」快捷方式），因此桌面版同样能直接用上面的命令，无需 `pip install`。前提是在桌面应用「下载管理」页装好运行环境（torch 家族）与至少一套模型；命令默认使用随包目录下的 VoxCPM2 权重，也可显式传 `--model-path` / `--hf-model-id` 覆盖。卸载时安装器会从 PATH 精确移除该条目。若安装前已打开终端/AI Agent，需重开一个会话才能看到新命令。
+
 ### 常见问题（FAQ）
 
 1. **一定要有 GPU 吗？** 本地引擎建议 GPU，但项目注册了 Edge-TTS 在线兜底引擎，无 GPU 也能在 CPU 上体验完整界面与在线合成；要跑 VoxCPM2 / IndexTTS 等本地引擎则建议 6.5 GB+ 显存。

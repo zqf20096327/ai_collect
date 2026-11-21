@@ -16,7 +16,7 @@
   <a href="https://github.com/bimwright/rvt-mcp/actions/workflows/build.yml"><img src="https://github.com/bimwright/rvt-mcp/actions/workflows/build.yml/badge.svg" alt="build" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="license" /></a>
   <a href="#supported-revit-versions"><img src="https://img.shields.io/badge/Revit-2022--2027-186BFF" alt="Revit 2022-2027" /></a>
-  <a href="#tools"><img src="https://img.shields.io/badge/MCP-255%20tools-6C47FF" alt="MCP tools" /></a>
+  <a href="#tools"><img src="https://img.shields.io/badge/MCP-257%20tools-6C47FF" alt="MCP tools" /></a>
   <a href="https://github.com/bimwright/rvt-mcp/releases/latest"><img src="https://img.shields.io/github/v/release/bimwright/rvt-mcp" alt="latest release" /></a>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-version%20history-informational" alt="changelog" /></a>
 </p>
@@ -31,7 +31,7 @@
 
 **An early all-C# MCP implementation for Revit — researched and implemented since March 2026.**
 
-`rvt-mcp` is a **local** bridge between an MCP client and a running Revit session. A .NET 8 server talks MCP over stdio; a thin add-in per Revit year (2022–2027) runs inside Revit and is reached over localhost TCP (≤2024) or a named pipe (≥2025). Nothing leaves the machine, it is C# end to end, and lengths are millimetres at the tool boundary. Details: [ARCHITECTURE.md](ARCHITECTURE.md).
+`rvt-mcp` is a **local** bridge between an MCP client and a running Revit session. A .NET 10 server talks MCP over stdio; a thin add-in per Revit year (2022–2027) runs inside Revit and is reached over localhost TCP (≤2024) or a named pipe (≥2025). Nothing leaves the machine, it is C# end to end, and lengths are millimetres at the tool boundary. Details: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 Agents get a **typed tool surface** for common Revit work, a C# escape hatch for everything else, and an **optional** way to turn repeated patterns into personal tools (ToolBaker): start from a shared runtime and grow *your* tools on top. Family Editor authoring is out of scope for now.
 
@@ -94,12 +94,12 @@ Counts below describe the current development source. The **v1.2.2 release** has
 
 | Mode | Tools | Notes |
 |------|------:|-------|
-| Fresh install | **255** | `install.ps1` seeds `"toolsets": ["all"]` in `rvtmcp.config.json` |
-| Bare `rvt-mcp.exe` | **61** | `query` + `create` + `view` + `meta` |
-| `--toolsets all` | **255** | Full catalog |
-| `all` + adaptive bake | **258** | Adds 3 suggestion-lifecycle tools |
+| Fresh install | **257** | `install.ps1` seeds `"toolsets": ["all"]` in `rvtmcp.config.json` |
+| Bare `rvt-mcp.exe` | **63** | `query` + `create` + `view` + `meta` |
+| `--toolsets all` | **257** | Full catalog |
+| `all` + adaptive bake | **260** | Adds 3 suggestion-lifecycle tools |
 
-Counts exclude your personal baked tools. The installer writes the seeded default only when `rvtmcp.config.json` doesn't already set `toolsets` — your own list survives upgrades, and removing the key (or setting your own CSV) returns a bare server to the 61-tool surface. Read-only filters individual tools by `ReadOnly=true`, including reads inside mixed toolsets. Tools that can write files are excluded even when their default output is inline; agent reports are allowed because they only write per-user report data.
+Counts exclude your personal baked tools. The installer writes the seeded default only when `rvtmcp.config.json` doesn't already set `toolsets` — your own list survives upgrades, and removing the key (or setting your own CSV) returns a bare server to the 62-tool surface. Read-only filters individual tools by `ReadOnly=true`, including reads inside mixed toolsets. Tools that can write files are excluded even when their default output is inline; agent reports are allowed because they only write per-user report data.
 
 | Toolset | What it covers |
 |---------|----------------|
@@ -141,7 +141,7 @@ A call missing a required parameter does not run. It returns `INVALID_ARGUMENT` 
 - **`revit_send_code_to_revit`** (on by default) compiles C# inside Revit when no typed tool fits. Use `data` for JSON inputs, `modules` for reusable helpers, `compile_only` to validate without execution, and `result_contract="task_v1"` with `McpTaskResult.Pass/Fail` for goal checks. Enhanced calls require a gateway/add-in pair supporting `send_code_v2`; old code-only calls keep their existing wire shape. See [docs/send-code.md](docs/send-code.md), and [docs/stairs-workflow.md](docs/stairs-workflow.md) for stairs.
 - **Helper modules:** `revit_save_code_module` validates on the selected Revit host before saving; list/delete work without Revit. `--read-only` or `--disable-send-code` hides save/delete and script execution, while `revit_list_code_modules` stays available under `meta` or `toolbaker`. Module source persists only after an explicit save; it is separate from script body-cache/journal opt-ins.
 - **ToolBaker:** `revit_list_baked_tools` / `revit_run_baked_tool` need `--toolsets toolbaker`. Adaptive bake (`--enable-adaptive-bake`, off by default) suggests tools from repeated calls; nothing is added until you accept one. Bake compiles inside Revit — no Visual Studio needed. See [docs/bake.md](docs/bake.md).
-- **Agent reports:** `revit_report_task_result` (in `meta`) lets the agent leave one report when a job is finished. Revit shows a toast and lists the report in the **Reports** window, with links that select elements or open views, and the changes rvt-mcp recorded. It does not change the model and works with `--read-only`. See [docs/agent-reports.md](docs/agent-reports.md).
+- **Agent reports:** `revit_report_task_result` (in `meta`) lets the agent leave one report when a job is finished. Revit shows a toast and lists the report in the **Reports** window, with links that select elements or open views, and the changes rvt-mcp recorded. It does not change the model and works with `--read-only`. `revit_show_report` opens the window on one report when the user asks to see it. See [docs/agent-reports.md](docs/agent-reports.md).
 
   <img src="docs/images/agent-reports-demo.gif" alt="An agent tags doors in Revit through rvt-mcp, sends a report, and a link in the Reports window selects a door in Revit; Japanese and German reports from other models appear in the same list" width="720" />
 
@@ -159,7 +159,7 @@ Toasts are work feedback, not just decoration. They grew out of three practical 
 
 A toast reports a tool result, **not progress inside a running tool or completion of the entire task**. Repeated results share one card; notifications may wait while Revit is minimized or blocked by a modal dialog. They do not replace reviewing the agent's work.
 
-Each card names the gateway, Revit year and owning Revit process PID (for example `rvt-mcp 2022 · PID: 12345`), the latest tool, and the Success · Failed · Capture counts. A capture preview stays on the card for at least 5 seconds.
+Each card names the gateway, Revit year and the agent of the latest call (for example `rvt-mcp 2022 · Claude`; the owning Revit process PID, `· PID 12345`, fades in when you point at the card), the latest tool, and the Success · Failed · Capture counts. A capture preview stays on the card for at least 5 seconds.
 
 Deliberate hover opens an activity timeline showing the newest three results, each with its local completion time (`HH:mm:ss`). Scroll up for earlier calls in that card. Incoming results follow the bottom with a short glide-in (the rows rise, the new row fades in and its outcome dot pops; none of this with reduced motion); while you read older calls, your position stays put. Click inside the timeline to read without closing it; clicking the rest of the card opens History. This works with branding off. Summaries are bounded and redacted, stay in memory only, and clear when the card closes. Script objects/arrays show counts; an incomplete survey remains explicitly incomplete. Server-local tools do not gain toast coverage from this UI change.
 
@@ -209,6 +209,7 @@ Precedence, high wins: **CLI → env (`BIMWRIGHT_*`) →** `%LOCALAPPDATA%\Bimwr
 | Spill retention (default 36 h) | `--spill-retention-hours <n>` | `BIMWRIGHT_SPILL_RETENTION_HOURS` | `spillRetentionHours` |
 | Agent report retention (default 30 days) | — | — | `reportRetentionDays` |
 | LAN bind (plugin) | — | `BIMWRIGHT_ALLOW_LAN_BIND=1` | `allowLanBind` |
+| Extra folders for `revit_capture_view_image` (plugin; default none) | — | `BIMWRIGHT_CAPTURE_ROOTS=D:\Out;E:\Shots` | `captureRoots` |
 | Remember MCP On/Off at startup (plugin; default on) | ribbon **MCP: ON / OFF** | `BIMWRIGHT_AUTO_START_TRANSPORT=0/1` | `autoStartTransport` |
 | ToolBaker surface | `--enable-toolbaker` / `--disable-toolbaker` | `BIMWRIGHT_ENABLE_TOOLBAKER` | `enableToolbaker` |
 | Adaptive bake | `--enable-adaptive-bake` / `--disable-adaptive-bake` | `BIMWRIGHT_ENABLE_ADAPTIVE_BAKE=1` | `enableAdaptiveBake` |
@@ -217,6 +218,7 @@ Precedence, high wins: **CLI → env (`BIMWRIGHT_*`) →** `%LOCALAPPDATA%\Bimwr
 | Journal TTL (1h-14d) | `--persist-send-code-bodies-for 4h` | `BIMWRIGHT_PERSIST_SEND_CODE_BODIES_TTL` | `persistSendCodeBodiesUntil` |
 | Completion toast (default on) | ribbon **Toast** | `BIMWRIGHT_ENABLE_TOAST=0` | `enableToast` |
 | Toast branding (default off, saved) | Settings → Toast → **Show branding** | — | `showBranding` |
+| Pause toasts for today (every Revit, until local midnight) | toast card **Pause for today**, Settings → Toast → **Pause for today** | — | `toastSnoozedDate` |
 | Toast idle duration (default 20 s) | Settings → Toast → **Idle duration** | — | `toastIdleSeconds` |
 | Toast position (default top-left, no drag; saved) | Settings → Toast → **Horizontal / Vertical alignment**, **Allow dragging the card**, **Reset position** | — | `toastHorizontalAlign`, `toastVerticalAlign`, `toastDragEnabled`, `toastDragOffset` |
 | UI language (add-in) | ribbon **Language** | `BIMWRIGHT_UI_LANGUAGE` | `uiLanguage` |
@@ -262,6 +264,7 @@ MCP annotations describe each tool's document/file effects. Transient selection,
       "mcp__rvt-mcp__revit_compute_element_volume",
       "mcp__rvt-mcp__revit_detect_firm_profile",
       "mcp__rvt-mcp__revit_detect_system_elements",
+      "mcp__rvt-mcp__revit_describe_api",
       "mcp__rvt-mcp__revit_find_elements_in_volume",
       "mcp__rvt-mcp__revit_find_mep_disconnects",
       "mcp__rvt-mcp__revit_find_overlapping_elements",
@@ -347,6 +350,7 @@ MCP annotations describe each tool's document/file effects. Transient selection,
       "mcp__rvt-mcp__revit_show_element_in_view",
       "mcp__rvt-mcp__revit_show_issue",
       "mcp__rvt-mcp__revit_show_message",
+      "mcp__rvt-mcp__revit_show_report",
       "mcp__rvt-mcp__revit_suggest_view_name_corrections",
       "mcp__rvt-mcp__revit_survey_change_impact",
       "mcp__rvt-mcp__revit_workflow_model_audit"
@@ -375,6 +379,8 @@ The response guard defaults **on**: UTF-8 warnings at 65536 bytes, strong warnin
 | 2027 | .NET 10 (`net10.0-windows7.0`) | Named Pipe |
 
 Full Revit desktop only; Revit Viewer is not a supported target. CI builds all six add-ins, but runtime depth varies by year — recheck baked tools and custom C# on the years you use.
+
+The server runs separately from Revit, so its .NET 10 runtime does not change the Revit 2022–2024 add-ins' .NET Framework 4.8 requirement. Revit 2025.5 and 2026.5 use .NET 10; the corresponding plugin shells retain their .NET 8 target for earlier updates. Validate add-ins against the actual Revit update in use.
 
 ---
 

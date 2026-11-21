@@ -27,6 +27,25 @@ your rules live in a file in your own repo. No telemetry, no license check.
 - **Checks that need no model** catch secrets, risky workflow changes, and packages that don't exist: a typo, or a name an AI invented that someone could register. Together they caught 98 of 99 planted risks, with no false alarms on 184 merged Python PRs.
 - **One triage label per PR**, with its reasons, and a queue of every open PR, cheapest to review first.
 
+## Try it on your repo
+
+See what Stratum would have said on your own last 50 closed PRs, before you install it: the label each would have got, beside whether it was merged. `replay` runs the checks and the triage only, so it needs no model, and it posts nothing. With [uv](https://docs.astral.sh/uv/) or [pipx](https://pipx.pypa.io/) there's nothing to install:
+
+```sh
+uvx stratum-open replay owner/repo
+pipx run stratum-open replay owner/repo
+```
+
+It needs a GitHub token, from `GITHUB_TOKEN` or the GitHub CLI (`gh auth login`): a PR takes about 5 API requests (6 from the release after 0.3.0, which also reads each PR's commits), and GitHub allows 60 an hour without a token. If GitHub's rate limit stops it anyway, it says how far it got and when the limit resets.
+
+From the release after 0.3.0, `--format markdown` gives a report to paste into an issue or a discussion, and `--format html --out replay.html` one page to open in a browser. Both start with the labels against what became of the PRs, then the PRs where the two disagree (marked ready but closed, or marked needs work but merged), and both say what a replay can't rebuild, such as the model's review. The Markdown report writes PR and issue numbers in code, so GitHub doesn't link them: pasted into an issue, a linked number would add a "mentioned this" line to that PR or issue, one for each PR in the report. The HTML page links each PR.
+
+![The HTML report of a replay: a table of the labels against merged and closed PRs, then each PR with its label and the reasons for it](docs/images/replay.png)
+
+<sub>The HTML report for this repo's last 40 closed PRs.</sub>
+
+Or, with nothing to run on your machine: copy [examples/try-stratum.yml](examples/try-stratum.yml) to `.github/workflows/` in your repo and run it from the Actions tab. It replays your repo with the workflow's own read-only token and writes the Markdown report to the run's summary page, which anyone who can see the repo can open; on a private repo, it holds your PR titles. Nothing is posted to issues or PRs. Until the release after 0.3.0, the workflow installs Stratum Open from a pinned commit, since 0.3.0 has no `--format`.
+
 ## Quick start: the GitHub Action
 
 Copy [examples/stratum.yml](examples/stratum.yml) to `.github/workflows/stratum.yml`. That's all.
@@ -35,7 +54,7 @@ That workflow runs `gpt-oss:20b` with Ollama on GitHub's own runner, so you need
 
 To hear from Stratum sooner, set `review.early_checks: true` in your policy file. The Action then runs the checks before it starts the model and posts what they found straight away: on the lines, in the summary comment (with a line saying the model's review is still running), and as a check run in progress. That's usually within a minute of the job starting, since the checks need no model. When the model is done, the same comment becomes the full review and the check run gets its result. The end result is the same as without the setting. A check's early comment that the full review wouldn't have posted is deleted then: when the model reported the same problem on the same lines, or when `review.max_inline_comments` gives its place to a more serious finding. One that someone has replied to stays. If the model's review never finishes (Ollama doesn't start, or the job fails, times out or is cancelled), the summary says so, and the check run is completed with what the checks found.
 
-The workflow uses `pull_request_target` so it can comment on PRs from forks. It's safe here because the workflow checks out your default branch, never the PR, and Stratum reads the PR only through GitHub's API: no code from the PR ever runs. Keep it that way: don't add a step that checks out the PR.
+The workflow uses `pull_request_target` so it can comment on PRs from forks. It's safe here because the workflow checks out your default branch, never the PR, and Stratum reads the PR only through GitHub's API: no code from the PR ever runs. Keep it that way: don't add a step that checks out the PR, unless you opt in to the [checks that build it](#go-vet-and-clippy-checks-that-build-the-pr), whose setup refuses forks and bots.
 
 ### actionlint on the runner
 
@@ -50,6 +69,73 @@ The workflow uses `pull_request_target` so it can comment on PRs from forks. It'
           tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP/actionlint" actionlint
           echo "$RUNNER_TEMP/actionlint" >> "$GITHUB_PATH"
 ```
+
+### go vet and Clippy: checks that build the PR
+
+`checks.go_vet` and `checks.clippy` (both off by default) compile the PR's code, so they need a checkout of the PR on disk, and **compiling code runs it**: `cargo clippy` runs build scripts and procedural macros, and obeys a `.cargo/config.toml` that names a program to run in rustc's place; `go vet` runs cgo, and so the C compiler, and downloads the modules `go.mod` names. In a `pull_request_target` workflow that would hand a fork's code a token that can write to your repository.
+
+So they're safe by default:
+- With `stratum-open review --local` they run on your checkout, and say on stderr that they're about to build it, since that runs its code: don't run it on a branch checked out from a PR you don't trust. They need a clean checkout: if any change isn't committed, new files included, they don't run, since the review reads HEAD and a build reads more than the changed files.
+- The Action never checks out the PR, so they don't run there, and the summary says so, unless the workflow checks the PR out in a folder of its own and passes it as `head-checkout`. Even then, Stratum doesn't build a PR whose branch isn't in your repository (one from a fork), a PR a bot opened, or a checkout that isn't at the PR's head. A PR from a branch of your own repository was pushed by someone who can already run code in its workflows. A bot's PR (Dependabot, Renovate) is different: it brings in a new release of a dependency, and building it runs that release's build scripts. Your CI runs those PRs under `pull_request`, with a read-only token and no secrets, while Stratum's job holds a token that can write and the model's key. So bots' PRs aren't built unless your policy sets `checks.build_bot_prs: true`. The check looks at who opened the PR, not at who pushed its latest commit, and an author GitHub doesn't plainly call a person counts as a bot. Whatever runs, a build never gets Stratum's own variables (`STRATUM_*`, so its token and the model's key), `GITHUB_TOKEN`, `ACTIONS_*`, `INPUT_*`, or the files that set variables and PATH for later steps (`GITHUB_ENV`, `GITHUB_PATH`, `GITHUB_OUTPUT`) in its environment, though code running as the job's user can still find them elsewhere.
+- The GitHub App has no checkout, so they never run there.
+
+A build that fails, a run past its time limit (5 minutes for go vet, 10 for Clippy) and a missing tool are each a line in the review's coverage, never a finding. A run past its limit is stopped along with everything it started. To opt in, for PRs from your own branches only:
+
+```yaml
+      # Next to the example workflow's checkout of the default branch, which stays as it is.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.user.type != 'Bot'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr-head
+          persist-credentials: false
+      - uses: stratum-org/stratum-open@main  # `head-checkout` comes after 0.3.0
+        with:
+          head-checkout: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.user.type != 'Bot' && 'pr-head' || '' }}
+```
+
+GitHub's Ubuntu runners come with Go, and with Rust and Clippy. If your `go.mod` or `rust-toolchain.toml` asks for a newer version, Go or rustup downloads it, which counts towards the time limit. `staticcheck` you install yourself (`go install honnef.co/go/tools/cmd/staticcheck@latest`); once it's on PATH, go vet adds its SA checks.
+
+### Findings in code scanning (SARIF)
+
+From the release after 0.3.0, the Action can also write a PR's findings as SARIF 2.1.0, which GitHub's code scanning reads, and so do many editors and other tools. Code scanning is free on public repositories; a private one needs GitHub Code Security. To turn it on, add `security-events: write` to the workflow's `permissions:`, set the `sarif` input, and upload the file after Stratum's step. Code scanning then adds its own inline comment on the PR for each new alert (from `github-advanced-security[bot]`, and GitHub refuses to delete those, even for an admin), a check run, and, the first time, a comment saying code scanning has been set up, so each finding shows twice. `security-events: write` also lets the job's token change and dismiss the repository's code scanning alerts, in a job that runs for anyone's PR, though no code from the PR runs in it.
+
+```yaml
+      - uses: stratum-org/stratum-open@<the release after 0.3.0>
+        with:
+          ollama-model: gpt-oss:20b
+          sarif: stratum.sarif
+      - name: Upload the findings to code scanning
+        if: github.event_name == 'pull_request_target' && hashFiles('stratum.sarif') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gzip -c stratum.sarif | base64 -w0 > "$RUNNER_TEMP/stratum.sarif.b64"
+          id=$(gh api "repos/$GITHUB_REPOSITORY/code-scanning/sarifs" -f commit_sha="$SHA" -f ref="refs/pull/$PR/head" \
+            -f tool_name="Stratum Open" -F sarif=@"$RUNNER_TEMP/stratum.sarif.b64" --jq .id)
+          for _ in $(seq 60); do
+            status=$(gh api "repos/$GITHUB_REPOSITORY/code-scanning/sarifs/$id" --jq .processing_status)
+            [ "$status" = pending ] || break
+            sleep 5
+          done
+          echo "Code scanning: $status"
+          [ "$status" = complete ] || { gh api "repos/$GITHUB_REPOSITORY/code-scanning/sarifs/$id"; exit 1; }
+```
+
+[examples/stratum.yml](examples/stratum.yml) has these lines commented out until that release, since 0.3.0's action has no `sarif` input.
+
+- **The PR's head:** the step files the findings under the PR's ref (`refs/pull/<n>/head`) and head commit, whose lines they're on. On `pull_request_target`, a run's `GITHUB_REF` and `GITHUB_SHA` are the default branch's. It then waits until code scanning has processed the file, and fails the job if it couldn't.
+- **Why not `github/codeql-action/upload-sarif`:** it takes the commit from `git rev-parse HEAD` in its checkout, and uses its `sha` input only when git fails there (`uploadPostProcessedFiles` in its `upload-lib.ts`, and `getCommitOid` in `git-utils.ts`). In this workflow the checkout is the default branch, so it would file a PR's findings under the default branch's latest commit.
+- **PRs from forks:** on `pull_request_target`, the job has the base repository's token for a fork's PR too, so the upload is the same for it. A `pull_request` workflow couldn't upload there, since GitHub gives a fork's PR a read-only token.
+- **What code scanning does with it**, as seen on one upload to a PR: an alert for each result, on the PR's ref (the Security tab lists them under `pr:<n>`, not with the default branch's), the inline comments above, and a check run named "Stratum Open", which failed there with "2 new alerts including 2 errors".
+- **When:** the file is written when the review of a PR event (opened, pushed to, reopened, ready for review) is posted, and only if the review read the event's commit, which the upload step names. A run started again after a newer push reviews the newer commit, so it writes none, and that push's own run writes it. `/stratum review` and a CI re-sort don't write it.
+- **What's in it:** one result per finding on a line, with the check's rule id, or `model/<category>` for the model's findings, since their wording changes from run to run and code scanning tracks an alert by its rule. Critical and high findings are errors, medium ones warnings, low ones notes. `properties.source` says `check` or `model`, and the rules are tagged the same way, so you can leave the model's findings out. Each finding's fingerprint is its `primaryLocationLineHash`, which code scanning uses to match an alert across runs.
+- **Findings without a line** (about a whole file, or the PR): code scanning shows a result only on a line, so they're in the run's `properties.findingsWithoutLine` instead, in the same shape.
+- **Limits:** code scanning keeps the 5,000 most severe results of a run and takes files up to 10 MB, so the file holds no more, the most severe first. The job's log says how many were left out, and so does the run's `properties.leftOut`.
+
+With the CLI, `--sarif FILE` writes the same file for `stratum-open review --local main` and `stratum-open review owner/repo#123`, and a line on stderr says what's in it. It uploads nothing.
 
 ## What it does on each PR
 
@@ -67,6 +153,8 @@ The workflow uses `pull_request_target` so it can comment on PRs from forks. It'
   - Python security issues via Bandit, when it's installed;
   - Python errors Ruff can see without running the code (a name nothing defines, a format string that doesn't fit its arguments, `return` outside a function), when it's installed and your policy sets `checks.ruff: true`;
   - in shell scripts, when your policy sets `checks.shellcheck: true` and `shellcheck` is on PATH (GitHub's Ubuntu runners have it), ShellCheck's errors (`x = 1`, `[ $n > 3 ]`, `local` outside a function) and four of its warnings that name a real bug, such as `cmd 2>&1 >log`, on the lines a PR adds. On [65 merged PRs](benchmark/results/2026-11-14-shell-checks/summary.md) that change a script it reported nothing, and on the 23,997 lines of those scripts read as if new, one false alarm, so what it catches is proven on planted cases only. Scripts over 100,000 characters (acme.sh, nvm.sh) aren't read, since ShellCheck can take a minute on one;
+  - in Go, when your policy sets `checks.go_vet: true` and there's a checkout of the PR to build ([where that is](#go-vet-and-clippy-checks-that-build-the-pr)), what `go vet` reports on the lines a PR adds (a `Printf` whose arguments don't fit, a cancel func that's never called, a lock copied by value, unreachable code), and staticcheck's SA checks when it's installed. Not yet measured on merged PRs;
+  - in Rust, when your policy sets `checks.clippy: true`, with a checkout to build the same way, Clippy's `correctness` lints on the lines a PR adds (`a == a`, an index past the end of an array, `vec.resize(0, x)`), never its style ones. Not yet measured on merged PRs;
   - in GitHub workflows, when your policy sets `checks.actionlint: true` and `actionlint` is on PATH, which GitHub's runners don't have ([how to add it](#actionlint-on-the-runner)), what actionlint finds on the lines a PR adds: a `needs:` naming no job, a key GitHub doesn't know, a matrix key that isn't there. On [129 merged PRs](benchmark/results/2026-11-14-shell-checks/summary.md) that change a workflow it reported nothing. On the 24,353 lines of those workflows read as if new it made 21 findings: 9 right but harmless, and 11 false alarms, each something GitHub added after the actionlint release it ran with.
 - **A review by the model:**
   - a summary of what the PR does, and whether that matches its description;
@@ -77,10 +165,33 @@ The workflow uses `pull_request_target` so it can comment on PRs from forks. It'
   - code that only one person has changed lately;
   - hotspots that change often and are complex, or keep needing reverts and hotfixes, which get a stricter review;
   - who owns the changed files, from CODEOWNERS.
-- **One triage label:** `ready`, `needs work`, `low effort` or `needs a maintainer`, with the reasons spelled out. It judges what's in front of it: CI, tests, a linked issue, size, and whether the change matches its description. CI that GitHub holds until a maintainer approves the workflows, as on a first-time contributor's PR, is never a pass: the PR gets `needs a maintainer`, or `needs work` or `low effort` if the author has something to fix. GitHub doesn't say which PR a fork's finished CI run belongs to, so that label stays until the next push or `/stratum review`. It doesn't try to guess whether AI wrote the PR, because detectors for that aren't reliable. Labels are off until your policy turns them on, and it closes nothing unless your policy says so.
+- **One triage label:** `ready`, `needs work`, `low effort` or `needs a maintainer`, with the reasons spelled out. It judges what's in front of it: CI, tests, a linked issue, size, and whether the change matches its description. CI that GitHub holds until a maintainer approves the workflows, as on a first-time contributor's PR, is never a pass: the PR gets `needs a maintainer`, or `needs work` or `low effort` if the author has something to fix. Once the workflows have run, the PR is sorted again if your workflow re-sorts PRs when CI finishes (the optional `workflow_run` trigger in [examples/stratum.yml](examples/stratum.yml)); otherwise the label stays until the next push or `/stratum review`. It doesn't guess from the code who wrote the PR; [PRs written by coding agents](#prs-written-by-coding-agents) says what it can tell instead, when your policy asks. Labels are off until your policy turns them on, and it closes nothing unless your policy says so.
 - **A check run** that fails on a critical finding and is neutral on a high one. Make it required in branch protection if you want it to block merging.
-- **A triage queue:** one issue listing every open PR, cheapest to review and best supported first. The example workflow rebuilds it once a day, and from the release after 0.3.0 also after each review or label-changing command, and when a PR closes or turns back into a draft ([Upgrading from 0.3.0](#upgrading-from-030)). A rebuild needs no model, but it costs about one GitHub API call per open PR, out of the 1,000 an hour that `GITHUB_TOKEN` gets and the reviews share. So after an event it waits a minute, and a newer event cancels it while it waits. [#200](https://github.com/stratum-org/stratum-open/issues/200) would cut a rebuild to a call or two. `triage.queue: false` stops rebuilding it, and `stratum-open triage --post` then refuses to post it; close the issue yourself. The GitHub App doesn't keep one yet ([#197](https://github.com/stratum-org/stratum-open/issues/197)).
+- **A triage queue:** one issue listing every open PR, cheapest to review and best supported first. The example workflow rebuilds it once a day, and from the release after 0.3.0 also after each review or label-changing command, and when a PR closes or turns back into a draft ([Upgrading from 0.3.0](#upgrading-from-030)). A rebuild needs no model. From the release after 0.3.0 it reads the open PRs and their comments in one GraphQL query per 50 PRs, which GitHub [counts as 1 point](https://docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api) of the 1,000 an hour that `GITHUB_TOKEN` gets for GraphQL: 2 points for 100 open PRs, plus 1 for each further 100 comments on a PR with more than 100. If GitHub gives up on 50 PRs within its 10-second limit on a query, the rebuild asks for 10 at a time instead. Its only REST calls, out of the token's separate 1,000 an hour that the reviews share, are the issue list (one call per 100 open issues and PRs, until it finds the queue issue) and the edit. 0.3.0 makes one REST call per open PR instead. After an event it waits a minute, and a newer event cancels it while it waits, so a burst costs one rebuild. `triage.queue: false` stops rebuilding it, and `stratum-open triage --post` then refuses to post it; close the issue yourself. The GitHub App keeps one too ([GitHub App](#other-ways-to-run-it)).
 - **Track records:** each author's merged PRs that were later reverted or fixed, read from git history. Every contributor can see their own, with `/stratum record`. A record affects nothing unless your policy says so.
+
+### PRs written by coding agents
+
+Coding agents leave their own signatures on the PRs they open, and Stratum can read them. It doesn't guess from the code: a person who used an editor's completions leaves none of these. The author of a PR can remove every one of them (open it from their own account, rewrite the commits, edit the description, rename the branch), so treat the result as a hint for sorting your queue, not as a way to keep agent PRs out.
+
+| Signal | Example | Strength |
+| --- | --- | --- |
+| The PR's author is an agent's account | `Copilot`, `devin-ai-integration[bot]` | Strong |
+| A commit is by an agent, or names one in a `Co-authored-by:` trailer | `cursoragent@cursor.com` | Strong |
+| The description has an agent's footer | a `chatgpt.com/codex/tasks/` link | Medium |
+| The branch is named the way an agent names its own | `copilot/...`, `devin/...`, `cursor/...` | Weak |
+| The PR changes the files that steer agents | `AGENTS.md`, `.cursor/rules/**` | Weak |
+
+A strong or medium signal makes the PR *likely* written by a coding agent; weak ones alone make it *possible*, which is a line in the summary and changes nothing else. The accounts, addresses, footers and branch names are in [`stratum_open/agent_prs.yml`](stratum_open/agent_prs.yml), each with a public PR or the vendor's docs that shows it; add an agent there.
+
+It's all off by default. Any of these keys turns it on, and each review then reads the PR's commits (one more API call) and says in the summary which signals fired:
+
+- `triage.agent_prs.label: true` adds `triage: agent-written` (`triage.labels.agent_written`) to a likely PR, when `triage.enabled` is on. The label says who probably wrote the PR, not whether it's any good;
+- `triage.agent_prs.needs_maintainer: true` sorts a likely PR as `needs a maintainer`;
+- `triage.agent_prs.require_tests: true` sorts a likely PR that changes code and no test as `needs work`;
+- `review.agent_prs_logic_pass: true` runs `review.logic_pass` on likely PRs only.
+
+`stratum-open replay owner/repo` shows the result on each of your closed PRs, with whatever your policy says, so you can see what it would mark before you turn it on. Set the keys back to `false` to turn it off.
 
 ## Your rules: `.stratum/policy.yml`
 
@@ -103,6 +214,8 @@ Every key, with its default, is in [policy.example.yml](policy.example.yml).
 ## Commands
 
 Comment on a PR, with the command at the start of a line. One inside a code block (between ``` lines) is shown, not run.
+
+The "Who" column shows the defaults. The policy's `commands:` changes who may run each one, and `/stratum help` on a PR says what that repo's policy allows.
 
 | Command | Who | What it does |
 | --- | --- | --- |
@@ -151,16 +264,88 @@ Gitea and Forgejo aren't supported yet; [docs/gitea-forgejo.md](docs/gitea-forge
 - **Create the App:**
   - Permissions: contents and actions read; pull requests, issues and checks read & write. Actions read lets it see CI that waits for a maintainer's approval on a private repo.
   - Events: pull request, issue comment, pull request review comment.
+- **The triage queue:** with `triage.queue` on (the default), the App keeps the "Stratum triage queue" issue as the workflow does, posted as its bot. It rebuilds it after each review (a skipped one too), after `/stratum review` and `/stratum ignore`, and when a PR closes or turns back into a draft: once a minute has gone by with no new job for the repo and none waiting or running, so a burst of reviews costs one rebuild, or 10 minutes after the first of them on a repo that's never that quiet. A rebuild needs no model or clone. There's no daily rebuild, and a rebuild still waiting when the App restarts is lost until the repo's next job.
 - **Run it:** `docker build -t stratum-open .` and run it with `STRATUM_APP_ID`, `STRATUM_APP_PRIVATE_KEY_FILE`, `STRATUM_WEBHOOK_SECRET` and `STRATUM_MODEL_ENDPOINT` set (see the [Dockerfile](Dockerfile)). Point the App's webhook at `https://your-host/webhook`.
 
 **CLI.** `pip install stratum-open` for:
 - `stratum-open review --local main`: review your branch against `main` before you open a PR. Handy for contributors too.
+- `stratum-open review --staged`: review what's staged for the next commit, one line per finding. `--fail-on high` (with `--local` too) exits 1 on a high or critical finding; the default is critical.
 - `stratum-open review owner/repo#123`: a dry run on any PR; `--post` publishes it.
 - `stratum-open record <login>`: a record from a local clone's history.
 - `stratum-open policy check`: validate a policy file.
 - `stratum-open replay owner/repo`: the label each of your last 50 closed PRs would have got, beside whether it was merged. No model, and nothing is posted.
 - `stratum-open triage owner/repo`: the sorted queue.
 - `stratum-open data …`: see or delete what the App stored.
+- `stratum-open mcp`: the same checks and review for a coding agent ([below](#use-it-from-your-coding-agent)).
+
+## Use it from your coding agent
+
+`stratum-open mcp` is an [MCP](https://modelcontextprotocol.io) server, so a coding agent (VS Code's agent mode, Cursor, Zed, Cline, Continue and others) can have its own changes reviewed before it opens a PR, and fix what's found first. It runs on your machine, with your model or none, and sends nothing to Stratum. It needs the `mcp` extra: `pip install "stratum-open[mcp]"`.
+
+Its tools only read: none writes to GitHub, comments, labels or pushes.
+
+| Tool | What it does | Model |
+| --- | --- | --- |
+| `check_local(base)` | `review --local` without the model: the checks on the commits between `base` and HEAD, in seconds. `checks.go_vet` and `checks.clippy` don't run here, since building the code runs it. | No |
+| `review_local(base, timeout=600)` | `review --local`: the checks and the model's review. It makes no model call after `timeout` seconds and answers with what it has; a call already sent gets the time that's left, though the model client's retries of a server error can run past it. It reports progress to a client that asks for it. With no model answering, it returns the checks and says so. | Yes |
+| `explain_finding(fingerprint)` | One finding from an earlier call, with the code around it and how to fix it. Kept in memory until the server stops. | No |
+| `check_policy(path=".stratum/policy.yml")` | `policy check`, on a file in the checkout. | No |
+| `triage_pr(repo, number)` | The triage label an open PR would get from the checks, with its reasons, as `review owner/repo#N --no-model` would give it. Reads GitHub with `GITHUB_TOKEN` or the GitHub CLI's sign-in. | No |
+
+A finding comes back as JSON: `fingerprint`, `rule`, `severity`, `category`, `source`, `path`, `line`, `line_end`, `title`, `message`, `suggestion` and `code`, the lines it's on. An answer holds at most 50, most severe first, and `omitted` counts the rest. Without a `base`, the local tools compare with the remote's default branch (`origin/HEAD`), or `main` when that isn't set, and the answer's `base` and `notes` say which. They review HEAD, as a PR would show it, so an edit that isn't committed isn't read; `uncommitted` lists those. The model comes from the same `STRATUM_MODEL_*` variables as the CLI, and the policy from `.stratum/policy.yml` as it is on `base`.
+
+**VS Code**, in `.vscode/mcp.json` ([format](https://code.visualstudio.com/docs/copilot/reference/mcp-configuration)):
+
+```json
+{
+  "servers": {
+    "stratum-open": {
+      "type": "stdio",
+      "command": "stratum-open",
+      "args": ["mcp"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
+```
+
+**Cursor**, in `.cursor/mcp.json` ([format](https://cursor.com/docs/context/mcp)). Cursor doesn't document the folder a server starts in, so the checkout is passed:
+
+```json
+{
+  "mcpServers": {
+    "stratum-open": {
+      "type": "stdio",
+      "command": "stratum-open",
+      "args": ["mcp", "--repo", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+**Any other client** that starts a server on stdio: the command is `stratum-open mcp --repo /path/to/your/checkout`. It speaks MCP on stdin and stdout and logs on stderr ([the stdio transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)). Many clients take the same `mcpServers` shape as Cursor.
+
+If `stratum-open` is installed in a virtual environment, give its full path as `command`. A client may start the server with only a few of your environment variables, so put the ones it needs in the entry's `env`: `STRATUM_MODEL_ENDPOINT` and `STRATUM_MODEL_NAME` for another model than the policy's, and for `triage_pr` the token, as `"GITHUB_TOKEN": "${env:GITHUB_TOKEN}"` in VS Code and Cursor, never the token itself in a file you commit. Stratum's agent-files check flags a PR that changes `.vscode/mcp.json`: an MCP server added to a repo runs in every contributor's agent, so a maintainer should read it.
+
+**pre-commit hook.** The checks that need no model, on what you've staged, before each commit: a leaked secret, a `pull_request_target` workflow that runs untrusted code or a typo-squatted dependency is caught before it's pushed. Add to your `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/stratum-org/stratum-open
+    rev: vX.Y.Z  # the first release after 0.3.0: v0.3.0 has no hook
+    hooks:
+      - id: stratum-open-checks
+        additional_dependencies: [bandit]  # optional: Bandit too (and `ruff`, with checks.ruff on)
+```
+
+- **It needs the first release after 0.3.0**, since `v0.3.0` doesn't have the hook. Until that release is out, `rev:` can be the commit of `main` that added it, or a later one.
+- It runs `stratum-open review --staged --no-model --fail-on high`: the change is what's staged (`git diff --cached`, the files as the index holds them), the policy is `.stratum/policy.yml` as it is on HEAD, and a high or critical finding stops the commit. `git commit --no-verify` skips it.
+- Bandit and Ruff run only when they're installed in the hook's environment, through `additional_dependencies`. Without them, the output says they didn't run (pre-commit shows it when the hook fails, or with `verbose: true`), and the commit isn't stopped for it. go vet and Clippy don't run, since they build the code.
+- When a commit adds a dependency, the registry is asked about it, as on a PR (`dependencies.registry_lookup`), with 3 s for all of the commit's lookups. Offline, or past those 3 s, the rest go unchecked and a line says how many; look-alikes of popular packages are still found, since that list comes with Stratum.
+- With `checks.unknown_names` or `checks.removed_names` on, the modules a commit doesn't touch are read from the working tree, so those two don't run when a Python file there differs from what's staged: a new file you haven't added, for example. pre-commit stashes unstaged edits first, but not new files.
+- It needs Python 3.11 or newer: set `language_version` on the hook if pre-commit runs on an older one.
+- It reads what's staged, so `pre-commit run --all-files` with nothing staged has nothing to check.
+- On Windows, a few paths in this repository are 165 characters long, which fits under pre-commit's default cache folder; if `PRE_COMMIT_HOME` is a long path, git needs `core.longpaths` to check the hook out.
 
 ## Models
 
@@ -230,7 +415,7 @@ The release after 0.3.0 rebuilds the triage queue issue after each PR's review, 
 
 - `closed` and `converted_to_draft` in the `pull_request_target` types;
 - the `stratum` job's `if:` filter, which starts no review for those two: replace `github.event_name == 'pull_request_target' ||` with `(github.event_name == 'pull_request_target' && github.event.action != 'closed' && github.event.action != 'converted_to_draft') ||`;
-- the `queue` job, named `Stratum triage queue` and pinned to the same release or commit as the review job. It runs `stratum-org/stratum-open/queue`, which starts no model, after the review job. Each rebuild costs about one API call per open PR, so after an event it waits a minute first, and a newer rebuild cancels it, so a burst of events costs one rebuild. A comment starts it only after the review job ran a command, and only `/stratum review` and `/stratum ignore` on a PR rebuild, from someone `commands.review` or `commands.ignore` lets run them; a CI result rebuilds only when it re-sorted a PR. Keep its name: Stratum leaves check runs by that name out of a PR's CI, and a cancelled one would otherwise read as failing CI;
+- the `queue` job, named `Stratum triage queue` and pinned to the same release or commit as the review job. It runs `stratum-org/stratum-open/queue`, which starts no model, after the review job. Each rebuild costs a few API calls ([the triage queue](#what-it-does-on-each-pr) says how many), and after an event it waits a minute first, and a newer rebuild cancels it, so a burst of events costs one rebuild. A comment starts it only after the review job ran a command, and only `/stratum review` and `/stratum ignore` on a PR rebuild, from someone `commands.review` or `commands.ignore` lets run them; a CI result rebuilds only when it re-sorted a PR. Keep its name: Stratum leaves check runs by that name out of a PR's CI, and a cancelled one would otherwise read as failing CI;
 - `triage-queue: false` on the review job's Stratum step, so the daily and manual runs leave the rebuild to the `queue` job and no two rebuilds overlap. The `stratum` job still runs on them, since its scheduled run is what keeps Ollama in the Actions cache.
 
 The first two work on 0.3.0 and are in the example already. The `queue` job and `triage-queue: false` are commented out there until the release that has the `queue` action, since `stratum-org/stratum-open/queue@v0.3.0` doesn't exist. Uncomment them together when you pin that release: `triage-queue: false` without the job stops the daily rebuild. Without either, the daily run rebuilds the queue as before.

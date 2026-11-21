@@ -10,10 +10,11 @@
 
 **Antigravity Context Mode** is a free, local-first plugin built specifically for the **Google Antigravity App**. It prevents terminal commands, build logs, and multi-megabyte source files from flooding your conversation history — saving thousands of tokens per turn and stopping "agent amnesia" in its tracks.
 
+## Major 2.0 update - Update now. See below for details
+
 > 🌐 **Interactive Live Simulator & Documentation:** [domush.github.io/antigravity-plugin-context-mode](https://domush.github.io/antigravity-plugin-context-mode/)
 
-<img width="715" height="632" alt="image" src="https://github.com/user-attachments/assets/952b84a0-3e71-4bd6-99ae-e604532c1c7f" />
-
+<img width="823" height="646" alt="image" src="https://github.com/user-attachments/assets/06998c76-1735-4c35-a727-ac41ac47803b" />
 ---
 
 ## Quick Install (10 Seconds)
@@ -89,6 +90,8 @@ Tested live on real-world build logs and source files in the Antigravity App:
 ## Key Features
 
 * 🛡️ **Automated Interception**: Blocks unbounded file dumps and commands before they bloat your context window.
+* 🧠 **Intelligent Language-Aware Chunking (v2.0)**: Intelligently chunks source code (JS, TS, Python, Java, C#, Go, Rust, Ruby, PHP, C/C++, Shell, SQL), Markdown, JSON, YAML, TOML, HTML/XML, and logs. Never slices methods, headings, or stack traces mid-block.
+* 🎯 **Context-Expanding Search Results**: `ctx_search` returns complete source code methods, paragraphs, or markdown sections intact, along with `startLine`, `endLine`, and enclosing scope metadata.
 * ⚡ **Thinking in Code**: Filters multi-thousand-line outputs in 50 ms via local sandboxed scripts.
 * 🔍 **Local SQLite FTS5 Search**: Indexes files and logs locally on your machine with BM25 keyword matching and trigram search.
 * 📊 **Built-In Sidecar Dashboard**: Real-time stats pane inside Antigravity showing tokens kept out of context.
@@ -96,16 +99,31 @@ Tested live on real-world build logs and source files in the Antigravity App:
 * 📦 **Zero Dependencies**: Pure native Node.js (`node:sqlite`). No native builds, no `node-gyp`.
 
 ---
+### 📊 Release Summary Matrix
+
+| Feature / Capability | v1.4.0 | v1.5.0 | v2.0.0 |
+| :--- | :---: | :---: | :---: |
+| **Tool Read Cutoff & Hook Interception** | ✅ Dynamic line scaling | ✅ Auto-index on hook | ✅ Auto-index on hook |
+| **File Exemption Controls** | ✅ 1-click category pills | ✅ Injected into agent context | ✅ Injected into agent context |
+| **Indexing Model** | Manual (`ctx_index`) | ✅ Just-In-Time (`ctx_search`) | ✅ Just-In-Time (`ctx_search`) |
+| **MCP Tool Surface** | 8 tools (with `ctx_index`) | ✅ 7 streamlined tools | ✅ 7 streamlined tools |
+| **Log Search Strategy** | Standard | ✅ Reverse / Tail-First | ✅ Tail-First + Stack Trace Grouping |
+| **Chunking Engine** | Byte & line buckets | Byte & line buckets | ✅ **AST & Syntax-Aware Semantic Engine** |
+| **Code Structure Preservation** | Partial | Partial | ✅ **15+ Languages, Classes & Methods Intact** |
+| **Markdown Chunking** | Line-based | Line-based | ✅ **Heading Breadcrumbs (`# H1 > ## H2`)** |
+| **Search Result Snippets** | Centered window slice | Centered window slice | ✅ **Complete Intact Method (up to 2 KB)** |
+| **Search Metadata** | Score & source | Path & score | ✅ **Lines X–Y, Enclosing Scope Context** |
+| **SQLite Schema** | Schema v2 | Schema v3 (`path` PK) | ✅ **Schema v4 (Unindexed Scope Metadata)** |
+---
 
 ## Available MCP Tools
 
-Once installed, Context Mode provides 8 specialized tools for your agent:
+Once installed, Context Mode provides 7 specialized tools for your agent:
 
 | Tool | What It Does |
 | :--- | :--- |
 | **`ctx_execute`** | Runs sandboxed Node.js, Python, or PowerShell scripts to inspect files and extract answers without context dumps. |
-| **`ctx_search`** | Searches indexed logs and documentation using local SQLite FTS5 BM25 stemming. |
-| **`ctx_index`** | Indexes local files or documentation into searchable chunks for the agent. |
+| **`ctx_search`** | Searches files, directories, or URLs with Just-In-Time auto-indexing using local SQLite FTS5 BM25 + Trigram RRF. |
 | **`ctx_batch`** | Runs multiple terminal commands in batch and indexes the combined output. |
 | **`ctx_stats`** | Displays a formatted context savings report and token metrics. |
 | **`ctx_resume`** | Returns recent indexed sources and state pointers after context compactions. |

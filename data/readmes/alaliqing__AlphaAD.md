@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--20-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1393-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--21-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1386-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1393 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1386 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 217 | 2026-11-19 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 216 | 2026-11-19 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 114 | 2026-11-18 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 94 | 2026-11-18 | [View papers](#category-planning-decision-making) |
+| Planning & Decision-Making | 93 | 2026-11-18 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 60 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 163 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 200 | 2026-11-18 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 156 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 162 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 199 | 2026-11-18 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 155 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 32 | 2026-11-19 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 309 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 307 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,25 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Dataset | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 195 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 31 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Synthetic Data | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Cooperative / V2X | 109 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 121 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 142 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Reinforcement Learning | 141 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 105 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 217 papers
+## Perception & Sensor Fusion · 216 papers
 
 <a id="paper-2611-26191"></a>
 
@@ -405,7 +405,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-29618"></a>
 
-### FogTTA: Online Test-Time Adaptation for Robust Transformer-based Object Detection in Foggy Weather ![Recent](https://img.shields.io/badge/Recent-orange)
+### FogTTA: Online Test-Time Adaptation for Robust Transformer-based Object Detection in Foggy Weather ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Ali Abedi, Q. M. Jonathan Wu, Ning Zhang, Shiqi Tian<br>
 **Published:** 2026-10-21<br>
@@ -416,7 +416,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-30340"></a>
 
-### Foundation4D: Towards a unified perception and reconstruction model for autonomous vehicles ![Recent](https://img.shields.io/badge/Recent-orange)
+### Foundation4D: Towards a unified perception and reconstruction model for autonomous vehicles ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** NVIDIA, :, Sérgio Agostinho, Maximilian Apodaca, Emmanuel Attia, et al.<br>
 **Published:** 2026-10-21<br>
@@ -1168,7 +1168,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-22023"></a>
 
-### Spectral Pre-Filtering for Context-Adaptive Sensor Fusion: A Four-Role FFT-GDCB Integration for High-Stakes Decision Systems ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Spectral Pre-Filtering for Context-Adaptive Sensor Fusion: A Four-Role FFT-GDCB Integration for High-Stakes Decision Systems
 
 **Authors:** Oleg Miroshnichenko<br>
 **Published:** 2026-08-22<br>
@@ -1660,4 +1660,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-09787"></a>
 
-### A
+### Adversarially Guided Diffusion for LiDAR Range Image Synth

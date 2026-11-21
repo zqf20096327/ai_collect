@@ -9,17 +9,15 @@
 
 You make the decisions: answer a few questions. The agents run the factory: they write the spec and the tickets, build, review and merge. You watch it ship.
 
-**Status:** before 0.1.0. 0.1.0 is coming soon. OpenWiz builds itself, in public, in this repo.
+**Status:** OpenWiz 0.1.0 ("OpenWiz 0.01") is out: the [release](https://github.com/openwizdev/OpenWiz/releases/tag/v0.1.0) installs on macOS on Apple silicon and on Linux on x86_64 (glibc 2.34 or later). Intel Macs are not supported for 0.1.0: the install needs CloudRoom, and CloudRoom offers no Intel Mac build today, though the `openwiz` program itself runs there. OpenWiz builds itself, in public, in this repo.
 
 ## Quick start
 
-**0.1.0: coming soon.** It will start your factory on your computer or a VPS, on Cloudroom, or on boat.dev.
-
-To try today's pre-release (0.0.12, Cloudroom only), paste this line into your coding agent:
+You need [CloudRoom](https://cloudroom.dev), signed in: the 0.1.0 install sets up through it. You also need Python 3.9 or later, `git`, and the GitHub CLI (`gh`). Then paste this line into your coding agent (Claude Code, Codex or another):
 
 > Install OpenWiz from github.com/openwizdev/OpenWiz
 
-Your agent follows the [install skill](https://github.com/openwizdev/WizSkills/blob/v0.1.2/skills/install/SKILL.md). Nothing starts until you approve a plan. People: see the [install guide](docs/install.md). OpenWiz is free. Your model and host charges are your own.
+Your agent follows the [install skill](https://github.com/openwizdev/WizSkills/blob/maint/0.2/skills/install/SKILL.md). It checks your computer, installs the verified prebuilt release (no Rust or Node), puts OpenWiz's skills into your agents, and checks each connection. Nothing starts until you approve a plan. People: see the [install guide](docs/install.md) for every step and command. OpenWiz is free. Your model and host charges are your own.
 
 ## How it works
 
@@ -31,7 +29,7 @@ Your agent follows the [install skill](https://github.com/openwizdev/WizSkills/b
 The kernel is small. Three parts:
 
 - **Records on GitHub.** Specs, tickets and one status note per agent live in your repo's issues. Anything that follows [the rules](kernel/records.v1.md) can read and write your factory. The [records kit](kernel/records-kit/README.md) checks them.
-- **Drivers.** A driver is a tiny program, in any language, that answers four commands: `version`, `start`, `wake`, `stop` ([driver v1](kernel/driver.v1.md)). Copy [the template](adapters/template/README.md) to plug in your own host. Drivers for your computer or a VPS, Cloudroom and boat.dev are coming in 0.1.0.
+- **Drivers.** A driver is a tiny program, in any language, that answers four commands: `version`, `start`, `wake`, `stop` ([driver v1](kernel/driver.v1.md)). Copy [the template](adapters/template/README.md) to plug in your own host. The release carries drivers for your computer or a VPS, CloudRoom and boat.dev.
 - **A test kit.** The [driver kit](kernel/driver-kit/README.md) checks a driver on its real host. A driver that passes can merge.
 
 OpenWiz never touches a login. Your agents use their own signed-in tools, and there is no server of ours.

@@ -54,13 +54,15 @@ https://github.com/user-attachments/assets/5bf9bea8-e5ac-4632-a292-a80a45831dff
 - ✅ **Verdicts the agent cannot write**: acceptance contracts (commands, HTTP probes, screenshots, diff policy, file
   assertions) run by the runtime. A run ends `verified`, `refuted` or `unverified`, and editing the tests its contract
   runs refutes it ([guide](./skills/references/verification.md)).
-- 🔀 **Many vendors, one API**: Claude Code, Codex, Antigravity, Grok Build, OpenCode, any ACP agent and custom CLIs.
+- 🔀 **Many vendors, one API**: Claude Code, Codex, Antigravity, Grok Build, OpenCode, any ACP agent and custom CLIs,
+  behind one set of CLI flags: pick the engine with `--codex`, `--agy`, … and set the default once with `clawo config`.
   `clawo fanout` asks several at once; `session_handoff` moves a live conversation to another engine in the same
   workspace ([guide](./skills/references/multi-engine.md)).
 - 💾 **Survives a crash**: every state transition is checkpointed; resume, retry, timeout, cancel and steer come from
   the kernel ([guide](./skills/references/workflow.md)).
-- 🎯 **Long goals**: `clawo goal` runs a Codex `/goal` unattended on one thread, resumes it after usage limits within a
-  bound, optionally inside your own sandbox ([guide](./skills/references/workflow.md#goal)).
+- 🎯 **Long goals**: `clawo goal` keeps one agent working toward an objective unattended, on any engine (Claude Code's
+  and Codex's own `/goal`, a loop clawo runs on the others), resumes it after usage limits within a bound, optionally
+  inside your own sandbox ([guide](./skills/references/workflow.md#goal)).
 - 💰 **Known cost**: one per-turn ledger across engines (`clawo runs`) and a `maxBudgetUsd` cap the runtime enforces on
   every engine ([guide](./skills/references/observability.md)).
 - 🔌 **Fits your tools**: a CLI, an MCP server, an ACP agent for editors, an OpenAI-compatible endpoint, a TypeScript
@@ -81,7 +83,7 @@ clawo serve &    # local runtime + dashboard on 127.0.0.1:18796
 ```
 
 ```bash
-clawo solve "The test fails. Fix price.js." --engine codex \
+clawo solve "The test fails. Fix price.js." --codex \
   --check "npm test" --check "node ../holdout/price.spec.mjs" --wait
 clawo verify <runId>    # each check, why it failed, the files that changed
 clawo runs --since 1h   # every turn on every engine: model, tokens, cost, verdict
@@ -104,14 +106,14 @@ including running commands as the server's user, so keep it private; see
 
 ## Ways to run
 
-|                                | For                                                                                       | Start here                                                                        |
-| ------------------------------ | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| **CLI and dashboard**          | Terminals and scripts                                                                     | `clawo serve`, then [`cli.md`](./skills/references/cli.md)                        |
-| **MCP server**                 | Claude Code, Claude Desktop, Cursor, Cline, Continue, Zed, Windsurf, Goose, Hermes Agent | `claude mcp add clawo -- clawo-mcp`, then [`mcp.md`](./skills/references/mcp.md)  |
-| **ACP agent**                  | Zed, JetBrains, Neovim, Emacs, the VS Code ACP extension, dsh                             | `clawo acp`, then [`acp.md`](./skills/references/acp.md)                          |
-| **OpenAI-compatible endpoint** | Any OpenAI SDK client or webchat, without changing call sites                             | `POST /v1/chat/completions` ([`openai-compat.md`](./skills/references/openai-compat.md)) |
-| **TypeScript SDK**             | Embedding the runtime in your own service                                                 | `import { SessionManager } from '@enderfga/claw-orchestrator'` (below)            |
-| **OpenClaw plugin**            | Every OpenClaw agent gets all 81 tools                                                    | `curl -fsSL https://raw.githubusercontent.com/Enderfga/claw-orchestrator/main/install.sh \| bash` |
+|                                | For                                                                                      | Start here                                                                                        |
+| ------------------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **CLI and dashboard**          | Terminals and scripts                                                                    | `clawo serve`, then [`cli.md`](./skills/references/cli.md)                                        |
+| **MCP server**                 | Claude Code, Claude Desktop, Cursor, Cline, Continue, Zed, Windsurf, Goose, Hermes Agent | `claude mcp add clawo -- clawo-mcp`, then [`mcp.md`](./skills/references/mcp.md)                  |
+| **ACP agent**                  | Zed, JetBrains, Neovim, Emacs, the VS Code ACP extension, dsh                            | `clawo acp`, then [`acp.md`](./skills/references/acp.md)                                          |
+| **OpenAI-compatible endpoint** | Any OpenAI SDK client or webchat, without changing call sites                            | `POST /v1/chat/completions` ([`openai-compat.md`](./skills/references/openai-compat.md))          |
+| **TypeScript SDK**             | Embedding the runtime in your own service                                                | `import { SessionManager } from '@enderfga/claw-orchestrator'` (below)                            |
+| **OpenClaw plugin**            | Every OpenClaw agent gets all 81 tools                                                   | `curl -fsSL https://raw.githubusercontent.com/Enderfga/claw-orchestrator/main/install.sh \| bash` |
 
 ```ts
 import { SessionManager } from '@enderfga/claw-orchestrator';
@@ -129,10 +131,10 @@ engine, so one dropdown switches between Claude, Codex, Antigravity and Grok mod
 
 | Engine      | CLI        | Tested version                  |
 | ----------- | ---------- | ------------------------------- |
-| Claude Code | `claude`   | 2.1.327                         |
-| Codex       | `codex`    | 0.169.1                         |
-| Antigravity | `agy`      | 1.5.10                          |
-| Grok Build  | `grok`     | 1.0.88                          |
+| Claude Code | `claude`   | 2.1.330                         |
+| Codex       | `codex`    | 0.171.0                         |
+| Antigravity | `agy`      | 1.5.13                          |
+| Grok Build  | `grok`     | 1.0.92                          |
 | OpenCode    | `opencode` | 1.19.6, 2.3.2                   |
 | ACP agent   | any        | Kimi Code 2.3.1, dsh 0.2.1-rc.2 |
 | Custom CLI  | any        | —                               |
@@ -158,23 +160,23 @@ orchestrator does not edit its own code unattended.
 
 ## All features
 
-| Capability                  | What it does                                                                                                                  | Reference                                                   |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **Persistent sessions**     | Long-lived agents kept alive across requests, with context, tool, model and worktree control.                                 | [`sessions.md`](./skills/references/sessions.md)            |
-| **Multi-engine runtime**    | One interface over the engines above, any ACP agent, and custom CLIs.                                                         | [`multi-engine.md`](./skills/references/multi-engine.md)    |
-| **Session handoff**         | Moves a live conversation to another engine or model in the same workspace; the old session keeps running.                   | [`sessions.md`](./skills/references/sessions.md)            |
-| **Claude accounts**         | Several Claude accounts, keys or gateways; a session moves to the next one at its usage limit and keeps its conversation.    | [`multi-engine.md`](./skills/references/multi-engine.md#claude-accounts-and-rotation)|
-| **Verification plane**      | Acceptance contracts the runtime runs itself, with an evidence bundle on disk; a run without a contract ends `unverified`.    | [`verification.md`](./skills/references/verification.md)    |
-| **Durable run kernel**      | Declarative workflows over `agent`, `goal`, `fanout`, `council`, `verifier`, `human_gate`, `router` and more, checkpointed.   | [`workflow.md`](./skills/references/workflow.md)            |
-| **Fan-out**                 | One task across N engine/model agents in parallel, with an optional synthesis pass.                                           | [`tools.md`](./skills/references/tools.md)                  |
-| **Team forum**              | Agents of a workflow run share titled posts through `clawo forum`; an ASK or FAIL that names one reaches its turn.            | [`workflow.md`](./skills/references/workflow.md)            |
-| **Council**                 | Parallel agents in isolated git worktrees, voting until they reach consensus.                                                 | [`council.md`](./skills/references/council.md)              |
-| **Autoloop**                | A Planner, Coder and Reviewer iterating on a workspace, each with its own engine and model; you chat with the Planner.        | [`autoloop.md`](./skills/references/autoloop.md)            |
-| **Ultraapp**                | A short structured interview turned into a deployed web app at `localhost:19000/forge/<slug>/`.                               | [`ultraapp.md`](./skills/references/ultraapp.md)            |
-| **ultracode**               | `session_start({ ultracode: true })` lets Claude orchestrate a dynamic workflow of subagents.                                 | [`tools.md`](./skills/references/tools.md)                  |
-| **Run ledger, spend caps**  | Every turn on every engine in one JSONL ledger (`clawo runs`), and a `maxBudgetUsd` cap enforced on every engine.             | [`observability.md`](./skills/references/observability.md)  |
-| **OpenAI-compatible proxy** | `POST /v1/chat/completions` routed to persistent sessions on the engine the model name selects, streamed back in OpenAI shape. | [`openai-compat.md`](./skills/references/openai-compat.md) |
-| **Dashboard**               | Autoloop, Council and Forge tabs with lifecycle controls and live event streams, and a Runs tab of durable workflow runs.      | [`dashboard.md`](./skills/references/dashboard.md)          |
+| Capability                  | What it does                                                                                                                   | Reference                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| **Persistent sessions**     | Long-lived agents kept alive across requests, with context, tool, model and worktree control.                                  | [`sessions.md`](./skills/references/sessions.md)                                      |
+| **Multi-engine runtime**    | One interface and one set of CLI flags over the engines above, any ACP agent, and custom CLIs; a configurable default engine.  | [`multi-engine.md`](./skills/references/multi-engine.md)                              |
+| **Session handoff**         | Moves a live conversation to another engine or model in the same workspace; the old session keeps running.                     | [`sessions.md`](./skills/references/sessions.md)                                      |
+| **Claude accounts**         | Several Claude accounts, keys or gateways; a session moves to the next one at its usage limit and keeps its conversation.      | [`multi-engine.md`](./skills/references/multi-engine.md#claude-accounts-and-rotation) |
+| **Verification plane**      | Acceptance contracts the runtime runs itself, with an evidence bundle on disk; a run without a contract ends `unverified`.     | [`verification.md`](./skills/references/verification.md)                              |
+| **Durable run kernel**      | Declarative workflows over `agent`, `goal`, `fanout`, `council`, `verifier`, `human_gate`, `router` and more, checkpointed.    | [`workflow.md`](./skills/references/workflow.md)                                      |
+| **Fan-out**                 | One task across N engine/model agents in parallel, with an optional synthesis pass.                                            | [`tools.md`](./skills/references/tools.md)                                            |
+| **Team forum**              | Agents of a workflow run share titled posts through `clawo forum`; an ASK or FAIL that names one reaches its turn.             | [`workflow.md`](./skills/references/workflow.md)                                      |
+| **Council**                 | Parallel agents in isolated git worktrees, voting until they reach consensus.                                                  | [`council.md`](./skills/references/council.md)                                        |
+| **Autoloop**                | A Planner, Coder and Reviewer iterating on a workspace, each with its own engine and model; you chat with the Planner.         | [`autoloop.md`](./skills/references/autoloop.md)                                      |
+| **Ultraapp**                | A short structured interview turned into a deployed web app at `localhost:19000/forge/<slug>/`.                                | [`ultraapp.md`](./skills/references/ultraapp.md)                                      |
+| **ultracode**               | `session_start({ ultracode: true })` lets Claude orchestrate a dynamic workflow of subagents.                                  | [`tools.md`](./skills/references/tools.md)                                            |
+| **Run ledger, spend caps**  | Every turn on every engine in one JSONL ledger (`clawo runs`), and a `maxBudgetUsd` cap enforced on every engine.              | [`observability.md`](./skills/references/observability.md)                            |
+| **OpenAI-compatible proxy** | `POST /v1/chat/completions` routed to persistent sessions on the engine the model name selects, streamed back in OpenAI shape. | [`openai-compat.md`](./skills/references/openai-compat.md)                            |
+| **Dashboard**               | Autoloop, Council and Forge tabs with lifecycle controls and live event streams, and a Runs tab of durable workflow runs.      | [`dashboard.md`](./skills/references/dashboard.md)                                    |
 
 ## Built on Claw Orchestrator
 

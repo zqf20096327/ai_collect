@@ -4,6 +4,15 @@
 
 <p align="center">A choose-your-own visual novel, written as you play.</p>
 
+<p align="center">
+  <a href="https://github.com/brianh014/inkandthread/actions/workflows/ci.yml"><img src="https://github.com/brianh014/inkandthread/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/brianh014/inkandthread/releases/latest"><img src="https://img.shields.io/github/v/release/brianh014/inkandthread" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/brianh014/inkandthread" alt="License: AGPL-3.0"></a>
+  <a href="https://github.com/brianh014/inkandthread/actions/workflows/codeql.yml"><img src="https://github.com/brianh014/inkandthread/actions/workflows/codeql.yml/badge.svg" alt="CodeQL"></a>
+  <a href="https://ko-fi.com/brianh014"><img src="https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&amp;logoColor=white" alt="Support on Ko-fi"></a>
+  <a href="https://github.com/sponsors/brianh014"><img src="https://img.shields.io/badge/GitHub-sponsor-db61a2?logo=githubsponsors&amp;logoColor=white" alt="Sponsor on GitHub"></a>
+</p>
+
 Ink & Thread is a single-player story game, played like a Telltale game or a choose-your-own-adventure book. You build a world and a character, then act and speak only as that character, while an AI plays the Narrator: it plots in secret, so the story turns in ways you don't see coming, runs the story, voices everyone else, keeps track of the world, and quietly decides whether what you try works. An image AI draws the Cover, the portraits and a picture for each scene, as in a visual novel.
 
 It runs on your own computer and talks to models you choose. Bring an OpenAI-compatible text API (OpenRouter, DeepInfra, a local server) and, for pictures, OpenRouter, Wiro or your own ComfyUI.
@@ -235,4 +244,4 @@ The code is TypeScript on Bun, with a React page bundled by Bun itself. Start wi
 
 ## License
 
-Copyright © 2026 Brian Holt. Ink & Thread is free software under the [GNU Affero General Public License 3.0](LICENSE). You may use, change, share and sell it. If you share a changed version, or run one as a server that other people use, you must offer them its source under the same license.
+Copyright © 2026 Brian Holt. Ink & Thread is free software under the [GNU Affero General Public License](LICENSE), version 3 only. You may use, change, share and sell it. If you share a changed version, or run one as a server that other people use, you must offer them its source under the same license.

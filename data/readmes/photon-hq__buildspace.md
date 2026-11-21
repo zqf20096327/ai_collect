@@ -39,6 +39,7 @@ BuildSpace gives you three layers of CI/CD automation:
   - [Blocks (Composite Actions)](#blocks-composite-actions)
   - [check-pr-label](#check-pr-label)
   - [check-readme](#check-readme-1)
+  - [validate-image-source](#validate-image-source)
   - [generate-release-info](#generate-release-info)
   - [determine-publish-version](#determine-publish-version)
   - [create-github-release](#create-github-release)
@@ -48,6 +49,7 @@ BuildSpace gives you three layers of CI/CD automation:
   - [publish-github-packages](#publish-github-packages)
   - [publish-npm-packages](#publish-npm-packages)
   - [rust-build](#rust-build)
+  - [typescript-install](#typescript-install)
   - [typescript-build](#typescript-build)
   - [sync-crates-version](#sync-crates-version)
   - [update-tap](#update-tap)
@@ -396,8 +398,19 @@ source commit, and moves `latest`.
   continues to select Bun in its place.
 - **Several packages** from one repository are staged and promoted together, all
   at the build's version, so dependencies between them pin `$RELEASE_VERSION`.
-  They are published in dependency order, and the build is named after
-  `package` (default `@<owner>/<repository>`), which must be one of them.
+  The publisher reads dependencies, optional dependencies and peer dependencies
+  from each channel's verified tarballs. It publishes independent packages
+  up to five at a time under temporary candidate tags. Five splits Spectrum's
+  observed ten-adapter layer into two batches rather than ten simultaneous
+  writes; it is a rollout limit, not an npm quota. Dependents wait until the registry
+  serves the expected integrity for all their prerequisites. A failed package
+  drains its in-flight batch and stops later batches and layers. This includes
+  a final npm publish error such as `E429` or an HTTP 429 reading package
+  metadata. No GitHub release or channel tag advances until every package is
+  verified. Once the limit clears, rerun the failed publish job with the same
+  artifact: it verifies versions already accepted and publishes the missing
+  ones. A mismatched integrity blocks the retry. The build is named after `package` (default
+  `@<owner>/<repository>`), which must be one of them.
   `tag-prefix` overrides the staging tag prefix.
 - **Packages of one repository released separately** each get their own call
   to the stage workflow, in one run, with their own `package`, `tag-prefix`,
@@ -553,10 +566,15 @@ source commit, and moves `latest`.
   release missing assets. Anything else stops before writing. Channel tags never
   move to an older version; a temporary `candidate-<run>-<attempt>` dist-tag is
   left only by a failed run.
-- `ci-workflow` waits up to `ci-wait-minutes` (default 20) for that workflow's
-  push run on the exact commit to succeed. `dry-run: true` verifies and packs
-  without publishing and is the only mode allowed outside `main`, so a pull
-  request branch can dispatch it.
+- **Exact-commit verification.** Set `ci-workflow`, inline `verify`, or both
+  for a real publication. After version selection, the read-only build runs
+  inline verification on the source SHA; a separate job waits only when a
+  workflow is named, up to `ci-wait-minutes` (default 20) for its main push on
+  that SHA. Without a workflow, this job reports that the build is responsible
+  and does not poll. The publisher needs both jobs to succeed. Neither a
+  missing gate nor a failed, skipped, or cancelled prerequisite can publish.
+  `dry-run: true` verifies and packs without publishing and is the only mode
+  allowed outside `main`.
 - **Checking a pull request.** Run the stage call as a dry run on
   `pull_request` to find on the pull request what staging would refuse after
   it merges. The run builds the merge commit GitHub tests, and the version job
@@ -1543,6 +1561,57 @@ first-release base is Git's empty tree. Missing tags fail. The diff is capped at
     release-notes: ${{ github.event.release.body }}
 ```
 
+### validate-image-source
+
+**Path:** `.github/blocks/validate-image-source/action.yaml`
+
+Validates the source identity for a service image and emits one immutable
+`tag`. On a `main` push it takes the event SHA directly and does not check out
+the repository or query a release. On a `hotfix/<namespace>/<baseline>` push it
+checks out the complete history at the event SHA, requires the matching stable
+release, proves that the release tag identifies the baseline commit, and proves
+that the event commit descends from that baseline. Any malformed namespace,
+branch, release, tag, or ancestry check fails closed.
+
+This block owns release eligibility, while `publish-image.yml` owns image
+building, digest tagging, and provenance. The publisher validates the supplied
+tag and source ref; it does not decide whether a hotfix baseline is a stable
+release or whether the source is descended from it. Keep this block before
+both CI and publishing when a caller's image policy requires that guard.
+
+#### Inputs
+
+| Input | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `namespace` | string | Yes | — | Lowercase service namespace used in the hotfix branch and release name |
+
+#### Outputs
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `tag` | string | `main-<event-sha>` or `hotfix-<baseline>-<event-sha>` |
+
+#### Usage
+
+```yaml
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.identity.outputs.tag }}
+    steps:
+      - id: identity
+        uses: photon-hq/buildspace/.github/blocks/validate-image-source@<reviewed-commit-sha>
+        with:
+          namespace: account
+```
+
+The caller's job should grant only `contents: read` and pass the resulting
+output to the publisher. The block does not publish, deploy, dispatch, mutate
+settings, or retain checkout credentials.
+
+---
+
 ### check-pr-label
 
 **Path:** `.github/blocks/check-pr-label/action.yaml`
@@ -1983,98 +2052,9 @@ Builds a TypeScript project using Bun.
 
 ---
 
-### sync-crates-version
+### typescript-install
 
-**Path:** `.github/blocks/sync-crates-version/action.yaml`
+**Path:** `.github/blocks/typescript-install/action.yaml`
 
-Sets a single version across all workspace crates using `cargo-edit`, commits, and pushes.
-
-Use optional `commit-user-name` and `commit-user-email` inputs to change the Git identity for these commits.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `version` | string | Yes | — | Version to set across all crates |
-| `commit-changes` | boolean | No | `true` | Whether to commit and push |
-| `commit-user-name` | string | No | `photon-release[bot]` | Git user name for release commits |
-| `commit-user-email` | string | No | `photon-release[bot]@users.noreply.github.com` | Git user email for release commits |
-| `github-token` | secret | Yes | — | GitHub token for pushing |
-
-#### Outputs
-
-| Output | Type | Description |
-|--------|------|-------------|
-| `updated-crates` | JSON | Array of crate names that were updated |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/sync-crates-version@main
-  with:
-    version: "1.2.3"
-    github-token: ${{ github.token }}
-```
-
----
-
-### update-tap
-
-**Path:** `.github/blocks/update-tap/action.yaml`
-
-Updates a Homebrew formula's version and checksums, then commits and pushes to the tap.
-Use optional `commit-user-name` and `commit-user-email` inputs to change the Git identity for that commit.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `formula-name` | string | Yes | — | Name of the formula to update |
-| `version` | string | Yes | — | Version to set |
-| `tap-repo` | string | Yes | — | Homebrew tap repository |
-| `app-id` | secret | Yes | — | GitHub App ID with access to the tap |
-| `app-private-key` | secret | Yes | — | GitHub App private key |
-| `commit-user-name` | string | No | `photon-release[bot]` | Git user name for release commits |
-| `commit-user-email` | string | No | `photon-release[bot]@users.noreply.github.com` | Git user email for release commits |
-
----
-
-### publish-crates
-
-**Path:** `.github/blocks/publish-crates/action.yaml`
-
-Publishes workspace crates to crates.io in dependency order with retry logic and rate limit handling.
-
-> **Order matters.** List dependencies before dependents.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `crates` | string | Yes | — | JSON array of crate paths in publish order |
-| `dry-run` | boolean | No | `false` | Run `cargo publish --dry-run` |
-| `cargo-registry-token` | secret | Yes | — | crates.io API token |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/publish-crates@main
-  with:
-    crates: '["crates/shared", "crates/client"]'
-    cargo-registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-```
-
----
-
-### publish-npm
-
-**Path:** `.github/blocks/publish-npm/action.yaml`
-
-Publishes a single package to npm (installs dependencies, builds, publishes). Tries npm OIDC Trusted Publishing first (when the calling job has `id-token: write`), then falls back to token-based publishing with `npm-token`.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `bun-version` | string | No | `latest` | Bun version |
-| `node-version` | string | No | `
+Run this block **after checkout**; the caller selects the source ref, history
+de

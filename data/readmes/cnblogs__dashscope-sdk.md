@@ -294,6 +294,8 @@ Client level configuration also applies to the WebSocket API (e.g. CosyVoice), w
 - [Text-to-Speech](#text-to-speech) - CosyVoice, Sambert, etc. For TTS applications
 - [Real-Time Speech Recognition](#real-time-speech-recognition) - Paraformer. For streaming ASR applications
 - [Image Generation](#image-generation) - qwen-image-2.0-pro, wanx2.1, etc. For text-to-image, image editing, portrait style transfer and image translation
+- [Video Generation](#video-generation) - wan2.7/wan3.0, PixVerse, Kling, Vidu, etc. For text-to-video, image-to-video and video editing
+- [3D Generation (Tripo)](#3d-generation-tripo) - Tripo-H3.1/P1.0 3D generation, Gaussian Splat, mesh post-processing and animation
 - [Application Call](#application-call)
 - [Batch](#batch)
 - [Text Embeddings](#text-embeddings)
@@ -1982,6 +1984,31 @@ await foreach (var b in tts.GetAudioAsync())
 }
 Console.WriteLine($"Audio saved to {file.FullName}");
 ```
+The session is shared by the cosyvoice models and the qwen-audio-3.1-tts / qwen-audio-3.0-tts models (e.g. `qwen-audio-3.1-tts-flash`), which report token based usage (`InputTokens` / `OutputTokens` / `TotalTokens` alongside `Characters`) in sentence-end and task-finished events, and additionally support the opus output format.
+
+The Sambert models (`sambert-*-v1`, Beijing region only, the voice is part of the model name) use the one-shot calling mode instead: the whole text is passed to `SynthesizeAsync` in a single run-task (streaming: out) and continue-task / finish-task are not supported. Sambert sentence events carry sentence level `BeginTime`/`EndTime`, word timestamps without index fields, and phoneme level timestamps (enable `WordTimestampEnabled` + `PhonemeTimestampEnabled`):
+```csharp
+using var tts = await dashScopeClient.CreateSpeechSynthesizerSocketSessionAsync("sambert-zhichu-v1");
+await tts.SynthesizeAsync(
+    new SpeechSynthesizerParameters { Format = "wav", WordTimestampEnabled = true, PhonemeTimestampEnabled = true },
+    "床前明月光，疑是地上霜");
+// audio in tts.GetAudioAsync(), sentences with phoneme timestamps in tts.GetMessagesAsync()
+```
+
+The qwen3-tts-*-realtime models (e.g. `qwen3-tts-flash-realtime`) use a different realtime API (`CreateTtsRealtimeSocketSessionAsync`): the connection is established and `session.created` awaited before the session is returned, configure it with `UpdateSessionAsync` (voice, output format, and the `server_commit` / `commit` interaction mode), append text with `AppendTextAsync`, force the synthesis with `CommitTextAsync` and end it with `FinishAsync`. The audio is delivered as base64 chunks inside `response.audio.delta` events and exposed decoded via `GetAudioAsync()`, the raw events (including `response.done` with the billing usage) via `GetEventsAsync()`. Unlike the speech synthesizer session, the server closes the connection after `session.finished`, so a realtime session cannot be reused for a second run:
+```csharp
+using var tts = await dashScopeClient.CreateTtsRealtimeSocketSessionAsync("qwen3-tts-flash-realtime");
+await tts.UpdateSessionAsync(new TtsRealtimeSession { Voice = "Cherry", ResponseFormat = "mp3", SampleRate = 24000 });
+await tts.AppendTextAsync("你好，我是千问。");
+await tts.CommitTextAsync();
+await tts.FinishAsync();
+var file = new FileInfo("tts-realtime.mp3");
+using var stream = file.OpenWrite();
+await foreach (var b in tts.GetAudioAsync())
+{
+    stream.WriteByte(b);
+}
+```
 ## Real-Time Speech Recognition
 Create a real-time speech recognition session using `dashScopeClient.CreateSpeechRecognitionSocketSessionAsync()`.
 
@@ -2113,7 +2140,95 @@ var url = response.Output.Choices[0].Message.Content[0].Image;
 Console.WriteLine($"Generated image url: {url}");
 ```
 
+The lightweight `z-image-turbo` model generates a single image fast over the same API, with Chinese/English text rendering. `size` defaults to `1024*1536` with total pixels in [512*512, 2048*2048]; note that `prompt_extend` defaults to `false` and is billed higher when enabled — when set to `true` the response also carries the rewritten prompt and the reasoning process (`ReasoningContent`).
+```csharp
+var response = await client.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "z-image-turbo",
+        Input = new MultimodalInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                    new List<MultimodalMessageContent>()
+                    {
+                        MultimodalMessageContent.TextContent("一只坐着的橘黄色的猫，表情愉悦，活泼可爱，逼真准确。")
+                    })
+            }
+        },
+        Parameters = new MultimodalParameters() { PromptExtend = false, Seed = 233, Size = "1120*1440" }
+    });
+var url = response.Output.Choices[0].Message.Content[0].Image;
+Console.WriteLine($"Generated image url: {url}");
+```
+
 ### Image Editing
+Qwen-image edit models (`qwen-image-2.0-pro`, `qwen-image-2.0`, and the unified generation-and-editing models `qwen-image-3.0-pro`, `qwen-image-3.0`, `qwen-image-2.1-pro`, `qwen-image-2.1-turbo`) edit images by instruction through the same multimodal API: 1~3 input images (up to 10 for the qwen-image-2.1 series) followed by one text instruction, generating 1~6 images. When multiple images are provided, the output aspect ratio follows the last one.
+```csharp
+var response = await client.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "qwen-image-2.0-pro",
+        Input = new MultimodalInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                [
+                    MultimodalMessageContent.ImageContent("<base-image-url>"),
+                    MultimodalMessageContent.ImageContent("<style-image-url>"),
+                    MultimodalMessageContent.TextContent("Use the city photo in image 1 as the base. Do not change the buildings, streets, vehicles or people. Draw three cartoon figures from image 2 around the building in a flat poster illustration style.")
+                ])
+            }
+        },
+        Parameters = new MultimodalParameters()
+        {
+            NegativePrompt = "low resolution, low quality, chaotic composition",
+            N = 1,
+            PromptExtend = true,
+            PromptExtendMode = "direct",
+            Seed = 233,
+            Size = "1328*1328",
+            Watermark = false
+        }
+    });
+var url = response.Output.Choices[0].Message.Content[0].Image;
+Console.WriteLine($"Edited image url: {url}");
+```
+`PromptExtendMode` controls how `PromptExtend` rewrites the prompt: `direct` (default, DPE) or `agent` (APE, text-to-image only, rejected for image editing). The unified models also accept the same message-based input as an async task via `CreateImageGenerationTaskAsync` / `GetImageGenerationTaskAsync`.
+
+To edit a local image, upload it first and pass the returned OSS link:
+```csharp
+await using var image = File.OpenRead("input.jpg");
+var ossLink = await client.UploadTemporaryFileAsync("qwen-image-2.0-pro", image, "input.jpg");
+Console.WriteLine($"File uploaded: {ossLink}");
+var messages = new List<MultimodalMessage>
+{
+    MultimodalMessage.User(
+    [
+        MultimodalMessageContent.ImageContent(ossLink),
+        MultimodalMessageContent.TextContent("Please enhance the clarity of this photo")
+    ])
+};
+var response = await client.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "qwen-image-2.0-pro",
+        Input = new MultimodalInput() { Messages = messages },
+        Parameters = new MultimodalParameters()
+        {
+            NegativePrompt = "low resolution, low quality, deformed limbs, distorted fingers, oversaturated, wax figure, lack of facial detail, overly smooth, AI artifacts, chaotic composition, blurry or distorted text.",
+            N = 1,
+            PromptExtend = true,
+            Watermark = false,
+            Size = "2048*2048"
+        }
+    });
+var url = response.Output.Choices[0].Message.Content[0].Image;
+Console.WriteLine($"Generated image url: {url}");
+```
+
 `wan2.6-image` supports image editing with 1~4 reference images, and interleaved text-image output when `EnableInterleave` is set to `true` (streaming only).
 ```csharp
 var response = await client.GetMultimodalGenerationAsync(
@@ -2175,35 +2290,27 @@ Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}");
 ```
 Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization_local`, `remove_watermark`, `expand`, `super_resolution`, `colorization`, `doodle` and `control_cartoon_feature`; function-specific parameters like `Strength`, `UpscaleFactor` and the four `*Scale` properties live on `Image2ImageSynthesisParameters`.
 
-Upload an image and provide editing instructions using the multimodal API.
+The `wanx-sketch-to-image-lite` model turns a doodle/sketch into a complete image via the same task API, taking the sketch url on `SketchImageUrl` (aspect ratio should match the output, white background recommended). `SketchWeight` (0-10, defaults to 10) controls how close the output stays to the sketch; `SketchExtraction = true` extracts sketch edges from an RGB input; `SketchColor` lists the RGB pen-stroke colors when the sketch lines are colored (ignored with `SketchExtraction`):
 ```csharp
-await using var image = File.OpenRead("input.jpg");
-var ossLink = await client.UploadTemporaryFileAsync("qwen-image-2.0-pro", image, "input.jpg");
-Console.WriteLine($"File uploaded: {ossLink}");
-var messages = new List<MultimodalMessage>
-{
-    MultimodalMessage.User(
-    [
-        MultimodalMessageContent.ImageContent(ossLink),
-        MultimodalMessageContent.TextContent("Please enhance the clarity of this photo")
-    ])
-};
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+var response = await client.CreateImage2ImageSynthesisTaskAsync(
+    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
     {
-        Model = "qwen-image-2.0-pro",
-        Input = new MultimodalInput() { Messages = messages },
-        Parameters = new MultimodalParameters()
+        Model = "wanx-sketch-to-image-lite",
+        Input = new Image2ImageSynthesisInput()
         {
-            NegativePrompt = "low resolution, low quality, deformed limbs, distorted fingers, oversaturated, wax figure, lack of facial detail, overly smooth, AI artifacts, chaotic composition, blurry or distorted text.",
+            Prompt = "一棵参天大树",
+            SketchImageUrl = "<your-sketch-url>"
+        },
+        Parameters = new Image2ImageSynthesisParameters()
+        {
+            Size = "768*768",
             N = 1,
-            PromptExtend = true,
-            Watermark = false,
-            Size = "2048*2048"
+            SketchWeight = 3,
+            Style = "<watercolor>"
         }
     });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
+var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
+Console.WriteLine($"Generated image url: {task.Output.Results?[0].Url}");
 ```
 
 ### Text-to-Image (Async Task)
@@ -2267,6 +2374,40 @@ var response = await client.CreateImageGenerationTaskAsync(
 var task = await client.GetImageGenerationTaskAsync(response.Output.TaskId);
 var url = task.Output.Choices?[0].Message.Content[0].Image;
 Console.WriteLine($"Generated image url: {url}");
+```
+
+Kling (`kling/kling-v3-image-generation`, `kling/kling-v3-omni-image-generation`) and Vidu (`vidu/vidu-image_reference2image`, `vidu/vidu-image-pro_reference2image`, `vidu/vidu-image-lite_reference2image`, `vidu/viduq3-fast_reference2image`, `vidu/viduq2-pro_reference2image`, `vidu/viduq2-fast_reference2image`) image models run on the same task API with optional reference images in the message content. Kling takes `AspectRatio` (16:9 / 9:16 / 1:1) with `Resolution` (1k / 2k, 4k on omni) instead of `Size`; `kling-v3-omni` additionally generates a storyboard series with `ResultType = "series"` + `SeriesAmount` (2-9) and can keep subjects from the Kling subject list via `ElementList` on the input. Vidu takes `Size` / `Seed` and always returns one image (`N = 1`).
+```csharp
+var response = await client.CreateImageGenerationTaskAsync(
+    new ModelRequest<ImageGenerationInput, IMultimodalParameters>()
+    {
+        Model = "kling/kling-v3-omni-image-generation",
+        Input = new ImageGenerationInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                    new List<MultimodalMessageContent>()
+                    {
+                        MultimodalMessageContent.TextContent("参考图1的风格和图2的背景，生成番茄炒蛋"),
+                        MultimodalMessageContent.ImageContent("<reference-image-1-url>"),
+                        MultimodalMessageContent.ImageContent("<reference-image-2-url>")
+                    })
+            }
+        },
+        Parameters = new MultimodalParameters()
+        {
+            N = 4,
+            ResultType = "series",
+            SeriesAmount = 4,
+            AspectRatio = "1:1",
+            Resolution = "1k"
+        }
+    });
+var task = await client.GetImageGenerationTaskAsync(response.Output.TaskId);
+// series mode returns all images in the content of the single choice
+var urls = task.Output.Choices?[0].Message.Content.Select(c => c.Image).ToList();
+Console.WriteLine($"Usage: count({task.Usage?.ImageCount}) size({task.Usage?.Size}) tier({task.Usage?.SR})");
 ```
 
 ### Image Translation
@@ -2345,6 +2486,39 @@ Use `CreateImageGenerationTaskAsync` and `GetImageGenerationTaskAsync`
 #### Background Generation
 Use `CreateBackgroundGenerationTaskAsync` and `GetBackgroundGenerationTaskAsync`
 
+### Portrait (FaceChain)
+FaceChain trains a dedicated portrait model from 1~10 face images of a person (model `facechain-finetune`, billed per training run), then uses the trained model to generate portrait photos in various styles. Validate the images first with `DetectFacesAsync` (model `facechain-facedetect`, synchronous, currently free):
+```csharp
+var response = await client.DetectFacesAsync(
+    new ModelRequest<FaceDetectionInput>()
+    {
+        Model = "facechain-facedetect",
+        Input = new FaceDetectionInput() { Images = ["<face-image-1-url>", "<face-image-2-url>"] }
+    });
+foreach (var (isFace, reason) in response.Output.IsFace!.Zip(response.Output.FailedReason!))
+{
+    Console.WriteLine($"{isFace}: {reason}");
+}
+```
+
+Create the fine-tune job with the image urls (or file ids from `UploadFilesAsync`) and poll until it finishes; the trained model name is in `FinetunedOutput`:
+```csharp
+var job = await client.CreateFineTuneJobAsync(
+    new DashScopeCreateFineTuneJobRequest()
+    {
+        Model = "facechain-finetune",
+        TrainingFileIds = ["<face-image-1-url>", "<face-image-2-url>"]
+    });
+DashScopeFineTuneJob finished;
+do
+{
+    await Task.Delay(TimeSpan.FromSeconds(30));
+    finished = await client.GetFineTuneJobAsync(job.Output.JobId);
+} while (finished.Output.Status is DashScopeTaskStatus.Pending or DashScopeTaskStatus.Running);
+Console.WriteLine($"Trained model: {finished.Output.FinetunedOutput}");
+```
+The Bailian documentation does not cover a portrait generation API for the trained model yet, use `FinetunedOutput` with the generation API documented for your workspace once available.
+
 ## Video Generation
 Video generation and editing are async tasks: create the task with `CreateVideoSynthesisTaskAsync` and poll `GetVideoSynthesisTaskAsync`. The endpoint is shared by the HappyHorse, wan2.7, wan3.0, legacy wan2.1-2.6, wanx2.1-vace, PixVerse, Kling, Vidu and MiniMax models — one input type covers them all, the supported members depend on the model. Text-to-video (HappyHorse / wan2.7 / wan3.0):
 ```csharp
@@ -2422,195 +2596,4 @@ var response = await client.CreateVideoSynthesisTaskAsync(
             Media =
             [
                 new VideoSynthesisMedia("feature", "https://example.com/motion.mp4", KeepOriginalSound: "no"),
-                new VideoSynthesisMedia("refer", "https://example.com/man.jpg")
-            ]
-        },
-        Parameters = new VideoSynthesisParameters() { Mode = "std", AspectRatio = "16:9", Duration = 5 }
-    });
-```
-
-The Vidu models (`vidu/viduq2*` / `viduq3*` with the `_text2video` / `_img2video` / `_start-end2video` / `_reference2video` suffix selecting the calling mode) use plain `image` / `video` media items (ordered first/last frame for keyframe-to-video) and the existing resolution / duration / audio (q3 models) / watermark / seed parameters; `viduq2-pro_reference2video` also accepts reference videos and `Duration = 0` (auto-planned duration, up to 10 seconds).
-
-The MiniMax model (`MiniMax/MiniMax-H3`) supports text-to-video, image-to-video (first / last / both frames) and multimodal reference-to-video (`image_url` / `feature` video / `driving_audio` media items, not combinable with frame images). It uses `Resolution` (768P or 2K), `Ratio` (adaptive by default, text-to-video requires a concrete ratio) and reports the extra usage fields `ImageCount`, `InputSeconds`, `OutputSeconds` and `TotalSeconds`.
-
-Wan2.2 keyframe image-to-video (first and last frames) and the animate models (wan2.2-animate-move image-to-motion, wan2.2-animate-mix subject replacement) live on a separate endpoint and share `Image2VideoSynthesisInput` / `IImage2VideoSynthesisParameters`, call them with `CreateImage2VideoSynthesisTaskAsync`:
-```csharp
-var response = await client.CreateImage2VideoSynthesisTaskAsync(
-    new ModelRequest<Image2VideoSynthesisInput, IImage2VideoSynthesisParameters>()
-    {
-        Model = "wan2.2-kf2v-flash",
-        Input = new Image2VideoSynthesisInput()
-        {
-            Prompt = "镜头从平视逐渐上升",
-            FirstFrameUrl = "<first-frame-image-url>",
-            LastFrameUrl = "<last-frame-image-url>"
-        },
-        Parameters = new Image2VideoSynthesisParameters() { Resolution = "480P" }
-    });
-```
-The animate models fill `ImageUrl`/`VideoUrl` and a required `Mode` ("wan-std"/"wan-pro") instead, and take the watermark on the input rather than the parameters. The wan2.2-s2v digital human model fills `ImageUrl` plus an `AudioUrl` and generates a talking/performing video. The videoretalk lip sync model fills `VideoUrl` plus an `AudioUrl`, optionally `RefImageUrl` to pick the face when the video contains multiple faces, and takes `VideoExtension` (whether to extend the video to the audio length with a reverse-forward replay) and `QueryFaceThreshold` (face matching strictness, 120-200, requires `RefImageUrl`) on the parameters. Poll the task with `GetImage2VideoSynthesisTaskAsync`; kf2v and videoretalk tasks expose the video in `Output.VideoUrl`, animate and s2v tasks in `Output.Results.VideoUrl`.
-
-Check whether an image is suitable for digital human generation with the synchronous `GetFaceDetectAsync` (model wan2.2-s2v-detect):
-```csharp
-var response = await client.GetFaceDetectAsync(
-    new ModelRequest<FaceDetectInput>() { Model = "wan2.2-s2v-detect", Input = new FaceDetectInput() { ImageUrl = "<person-image-url>" } });
-Console.WriteLine($"Check passed: {response.Output.CheckPass}, humanoid detected: {response.Output.Humanoid}");
-```
-
-## Application Call
-```csharp
-var request =
-    new ApplicationRequest()
-    {
-        Input = new ApplicationInput() { Prompt = "Summarize this file." },
-        Parameters = new ApplicationParameters()
-        {
-            TopK = 100,
-            TopP = 0.8f,
-            Seed = 1234,
-            Temperature = 0.85f,
-            RagOptions = new ApplicationRagOptions()
-            {
-                PipelineIds = ["thie5bysoj"],
-                FileIds = ["file_d129d632800c45aa9e7421b30561f447_10207234"]
-            }
-        }
-    };
-var response = await client.GetApplicationResponseAsync("your-application-id", request);
-Console.WriteLine(response.Output.Text);
-```
-`ApplicationRequest` uses `Dictionary<string, object?>` as the default type for `BizParams`.
-
-```csharp
-var request =
-    new ApplicationRequest()
-    {
-        Input = new ApplicationInput()
-        {
-            Prompt = "Summarize this file.",
-            BizParams = new Dictionary<string, object?>()
-            {
-                { "customKey1", "custom-value" }
-            }
-        }
-    };
-var response = await client.GetApplicationResponseAsync("your-application-id", request);
-Console.WriteLine(response.Output.Text);
-```
-For strong typing support, you can use the generic class `ApplicationRequest<TBizParams>`.
-Note that the SDK uses `snake_case` for JSON serialization. If your application uses different naming conventions, manually specify the serialized property names using `[JsonPropertyName("camelCase")]`.
-
-```csharp
-public record TestApplicationBizParam(
-    [property: JsonPropertyName("sourceCode")]
-    string SourceCode);
-var request =
-    new ApplicationRequest<TestApplicationBizParam>()
-    {
-        Input = new ApplicationInput<TestApplicationBizParam>()
-        {
-            Prompt = "Summarize this file.",
-            BizParams = new TestApplicationBizParam("test")
-        }
-    };
-var response = await client.GetApplicationResponseAsync("your-application-id", request);
-Console.WriteLine(response.Output.Text);
-```
-
-## Batch
-
-Use `OpenAiCompatibleUploadFileAsync`, `OpenAiCompatibleCreateBatchAsync`, `OpenAiCompatibleGetBatchAsync`, `OpenAiCompatibleListBatchesAsync`, and `OpenAiCompatibleCancelBatchAsync` to manage batch jobs.
-
-Batch API allows you to submit multiple requests in a single JSONL file for asynchronous processing, which is useful for large-scale tasks.
-
-### Upload File and Create Batch Job
-
-```csharp
-var client = new DashScopeClient("your-api-key", region: DashScopeRegion.Singapore);
-
-// Prepare JSONL content
-var jsonl =
-    """
-    {"custom_id":"1","method":"POST","url":"/v1/chat/ds-test","body":{"model":"batch-test-model","messages":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"你好！有什么可以帮助你的吗？"}]}}
-    {"custom_id":"2","method":"POST","url":"/v1/chat/ds-test","body":{"model":"batch-test-model","messages":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"What is 2+2?"}]}}
-    """;
-using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonl));
-
-// Upload file with purpose "batch"
-var inputFile = await client.OpenAiCompatibleUploadFileAsync(stream, "batch_input.jsonl", "batch");
-
-// Create batch job
-var batch = await client.OpenAiCompatibleCreateBatchAsync(new DashScopeCreateBatchRequest()
-{
-    InputFileId = inputFile.Id.Value,
-    CompletionWindow = "24h", // Supports "h" (hours) and "d" (days), range: 24h to 336h
-    Endpoint = "/v1/chat/ds-test",
-    Metadata = new DashScopeBatchMetadata()
-    {
-        DsName = "My Batch Job",           // Optional, max 100 characters
-        DsDescription = "Description",      // Optional, max 200 characters
-        DsBatchFinishCallback = "https://example.com/callback" // Optional callback URL
-    }
-});
-```
-
-### Poll for Completion and Get Results
-
-```csharp
-// Poll batch status
-batch = await client.OpenAiCompatibleGetBatchAsync(batch.Id);
-
-// When completed, download the output file
-if (batch.Status == "completed" && batch.OutputFileId != null)
-{
-    await using var result = await client.OpenAiCompatibleGetFileContentAsync(batch.OutputFileId);
-    using var streamReader = new StreamReader(result);
-    var content = await streamReader.ReadToEndAsync();
-    // or save to a jsonl file
-    // using var fileStream = new FileStream($"{batch.OutputFileId}.jsonl", FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
-    // await result.CopyToAsync(fileStream);
-}
-```
-
-### List and Cancel Batches
-
-```csharp
-// List batches with optional filters
-var batches = await client.OpenAiCompatibleListBatchesAsync(
-    limit: 20,
-    dsName: "keyword"); // Search by name
-
-// Cancel a batch
-var cancelled = await client.OpenAiCompatibleCancelBatchAsync(batchId);
-```
-
-### Cleanup
-
-```csharp
-// Delete uploaded files when no longer needed
-var deletion = await client.OpenAiCompatibleDeleteFileAsync(fileId);
-Console.WriteLine(deletion.Deleted ? $"Deleted: {deletion.Id}" : $"Deletion failed: {deletion.Id}");
-```
-
-## Text Embeddings
-
-Call the text embedding API via `GetTextEmbeddingsAsync`. Supported models are `text-embedding-v1` ~ `v4` plus the qwen3.7 series:
-
-- `qwen3.7-text-embedding`: 2560/2048/1536/1024(default)/768/512/256 dimensions, up to 128,000 tokens per text and 20 texts per request.
-- `qwen3.7-text-embedding-flash`: 1024(default)/768/512/256 dimensions.
-
-The qwen3.7 series also returns an extra `prompt_tokens` or `input_tokens` in `usage` (same value as `total_tokens`), and flash additionally returns a `prompt_tokens_details` breakdown.
-
-```csharp
-var text = "Sample text for embedding";
-var response = await dashScopeClient.GetTextEmbeddingsAsync(
-    "text-embedding-v4",
-    [text],
-    new TextEmbeddingParameters { Dimension = 512 });
-var embedding = response.Output.Embeddings.First().Embedding;
-Console.WriteLine($"Embedding vector length: {embedding.Length}");
-```
-
-See [Snapshot Files](./test/Cnblogs.DashScope.Tests.Shared/Utils/Snapshots.cs) for API parameter examples.
-
-Review [Tests](./test) for comprehensive usage examples.
+                new VideoSynthesisMedia("refer",

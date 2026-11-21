@@ -602,6 +602,7 @@
     - [My ip address](https://whatismyipaddress.com/ip-lookup) - IP 주소 조회
     - [내도메인.한국](https://xn--220b31d95hq8o.xn--3e0b707e) - 무료 한국 도메인 발급
     - [Fast.com <sub>F</sub>](https://fast.com/ko/) - 넷플릭스에서 제공하는 인터넷 속도 측정기 (브라우저)
+    - [ZoneBI <sub>KR, EN, F, $</sub>](https://zonebi.com/ko/) - 도메인 만료·DNS·SSL 인증서·사이트 가동·메일 설정(SPF·DKIM·DMARC)·Spamhaus 블랙리스트를 외부에서 점검하고 고칠 점을 알려주는 모니터링 서비스. 첫 화면의 간이 진단은 계정 없이 사용 가능하고, 감시 등록은 계정(이메일) 필요. 무료 플랜은 카드 없이 도메인 3개·5분 간격 점검, 유료 플랜은 더 많은 도메인, 더 짧은 점검 간격, SMS 알림을 제공. 데이터는 일본의 서버에 저장됨. 제작자 기여
 
   - <span id="git-tool">Git</span>
     - [Gitmoji](https://gitmoji.dev) - 깃 커밋 이모지 모음
@@ -631,6 +632,7 @@
   - <span id="json">JSON</span>
     - [Formatter](https://formatter.org/json-formatter) - CSS/JSON/HTML 포맷 도구
     - [Jsonformatter](https://jsonformatter.curiousconcept.com) - JSON 포맷 도구
+    - [Online JSON Formatter <sub>EN, F</sub>](https://online-json-formatter-ten.vercel.app/) - JSON 포맷·검증과 흔한 오류(작은따옴표, 후행 쉼표, 주석, True/None) 자동 수정, CSV·YAML·TypeScript 등으로 변환. 계정 없이 무료이며 변환은 브라우저에서 처리됨(공유 링크는 데이터를 URL에 담음). 제작자 기여
 
   - <span id="regex">정규 표현식</span>
     - [Regex101](https://regex101.com) - 온라인 정규 표현식 학습 및 테스트

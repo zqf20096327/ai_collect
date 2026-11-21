@@ -2,7 +2,7 @@
 
 **A local-first desktop workspace for branching AI conversations.** Ask a question, fork a reply into two lines of inquiry, then bring their answers together. Each branch keeps its own conversation history. Notes, sources, code, charts, and model replies sit next to the question they came from.
 
-[Install Graphlink](#getting-started) · [Connect a model](#connect-a-model) · [Build your first graph](#build-your-first-graph) · [Workspace agent guide](docs/WORKSPACE_AGENT.md) · [API providers](#api-providers) · [Developer guide](#development)
+[Install Graphlink](#getting-started) · [Connect a model](#connect-a-model) · [Knowledge Library](#knowledge-library) · [Build your first graph](#build-your-first-graph) · [Workspace agent guide](docs/WORKSPACE_AGENT.md) · [API providers](#api-providers) · [Developer guide](#development)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/node-detail.png">
@@ -51,11 +51,19 @@ On first launch, choose **Load Sample Workspace** in the welcome wizard to explo
 
 | Where the model runs | How to get your first reply |
 | --- | --- |
-| **Ollama** on your machine | Start Ollama and pull a chat model with `ollama pull MODEL`, replacing `MODEL` with an Ollama model tag. Open **Settings → Ollama (Local) → System Scan**. Leave **Chat Model** on **Auto** to use a compatible installed model, or pick one by name. Ollama is the default on a fresh install. |
+| **Ollama** on your machine | Open **Settings → Ollama (Local)** to check server status or **Start Ollama** if it is installed but stopped. Use **Pull** to download a model, then choose it under **Model Selection (per task) → Chat Model**. Ollama is the default on a fresh install. |
 | **Llama.cpp** on your machine | In Graphlink’s Python environment, install `llama-cpp-python` with `python -m pip install llama-cpp-python`. Open **Settings → Llama.cpp (Local)**, choose a GGUF under **Chat Model File**, then **Save Settings**. Choose **Use This Provider** if it is inactive. |
 | **Hosted API** or a **custom endpoint** | Open **Settings → API Endpoint**. Pick a provider, supply its credential and any requested **Base URL**, then choose **Load available models** or type the exact ID into **Default text model**. Select **Save and activate**. |
 
-The composer shows the active route. Use its model picker to switch models on that connection. Under **Per-task models** in API Endpoint settings, you can assign a different model for naming, charts, or web research. To pin the currently selected model to a branch, open the branch root’s chat card menu and choose **Pin to Current Model**. Switch back to that provider before continuing a cloud-pinned branch.
+The composer shows the selected model. Its searchable picker lists installed local models and configured cloud models. Use **Model Selection (per task)** in Ollama settings or **Per-task models** in API Endpoint settings to choose separate models for naming, charts, or web research. To pin a model to a branch, open the branch root’s chat card menu and choose **Pin to Current Model**. Switch back to that provider before continuing a cloud-pinned branch.
+
+### Local models
+
+Graphlink can start an already-installed Ollama server, download and remove models in Settings, display capability badges, and configure a **per-model context window** with a memory estimate. It also supports locally selected llama.cpp GGUF files. For downloads, model cards, **Check**, composer and Agent model pickers, and capability warnings, see the [Local models setup guide](docs/LOCAL_MODELS.md).
+
+## Knowledge Library
+
+Open **Knowledge** in the top bar to import files or folders, search indexed passages, inspect sources in **Document View**, and manage watched folders that sync about every 10 minutes. **Settings → Knowledge** defaults to local keyword search; installed Ollama models or explicitly consented cloud embeddings can add semantic matches. The composer’s **Use knowledge** toggle controls retrieval for chat. See the [Knowledge Library guide](docs/KNOWLEDGE_LIBRARY.md) for imports, privacy choices, citations and agent tools.
 
 ## Build your first graph
 
@@ -65,6 +73,12 @@ The composer shows the active route. Use its model picker to switch models on th
 2. Right-click the **reply’s header** and choose **Branch from Here**. Ask *“How would I test whether a database query regressed?”* Return to the **same original reply**, branch again, and ask *“How would I test the application layer?”* The two follow-ups now share an ancestor. Each can continue independently.
 3. Click the header of the first branch’s answer, then **Ctrl-click** the second (**Cmd-click** on macOS). Open the command palette with **Ctrl+K** or **Cmd+K**, choose **Synthesize Branches**, and send *“Give me one test that distinguishes these explanations.”* The resulting card records both source branches.
 4. Use **Fit All** to see the whole graph. **Save** keeps it in the **Chat Library**. To share an editable workspace, choose **Export Workspace…** in the Library. To share a snapshot, use **Export Canvas as PNG** in the command palette.
+
+### Edit and re-run branches
+
+![Editing the incident question in place, switching between its two saved versions, then opening Re-run from here and widening the scope to All branches below so the preview lists four replies and the skipped tool and code nodes.](assets/gifs/branch-edit-rerun.gif)
+
+You can edit a sent **You** message in place or save the revision as a new branch. Message versions can be switched and compared in Document View; changed inputs can mark replies **Out of date** and derived cards **Upstream changed**. **Re-run from here** previews one path or all branches below and regenerates only ordinary chat replies—not agents, Builder, code sandbox, tool, plugin, or data-bound nodes. See the [branch editing and re-run user guide](docs/BRANCH_RERUN.md) for keyboard steps, scope choices, cancellation, and undo.
 
 ### Connect text to a note
 

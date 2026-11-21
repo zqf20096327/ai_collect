@@ -12,6 +12,7 @@ A curated list of resources dedicated to Python libraries, llms, dictionaries, a
 - Listed information on [898 GitHub repositories](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.full.md)
 - Listed information on [497 Hugging Face repositories](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/huggingface.md) (models and datasets)
 - Listed information on [158 multilingual libraries, models, and datasets that also support Japanese](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/multilingual.md)
+- 🎉 We are excited to announce the release of [awesome-japanese-nlp.org](https://www.awesome-japanese-nlp.org/en), a site to explore Japanese NLP resources by task, popularity, and freshness!
 
 [English](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.en.md) | [日本語 (Japanese) ](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.ja.md) | [繁體中文 (Chinese) ](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.zh-hant.md) | [简体中文 (Chinese) ](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.zh-hans.md)
 
@@ -1106,6 +1107,4 @@ Supplementary crates for Japanese text and IME processing
 |Name|downloads/week|total downloads|stars|last commit|
 -|-|-|-|-
 | 🔗 [daachorse](https://github.com/daac-tools/daachorse) | - | 📦 13M | ⭐ 286 | 🟢 october|
-| 🔗 [find-simdoc](https://github.com/daac-tools/find-simdoc) | - | 📦 29k | ⭐ 62 | 🔴 march 2025|
-| 🔗 [crawdad](https://github.com/daac-tools/crawdad) | - | 📦 486k | ⭐ 40 | 🟡 august|
-| 🔗 [tokenizer-speed-bench](https://github.com/legalfor
+| 🔗 [find-simdoc](https://github.com/daac-to

@@ -10,8 +10,8 @@ Home Assistant integration that turns your ESPAltherma sensor into a **complete 
 
 **Local-only. No cloud. No accounts.** Everything runs inside your Home Assistant box.
 
-[![Version](https://img.shields.io/badge/version-1.26.1-orange.svg)](https://github.com/elRadix/daikin_cycle_ml/releases/latest)
-[![Tests](https://img.shields.io/badge/tests-7122-brightgreen.svg)](#quality)
+[![Version](https://img.shields.io/badge/version-1.28.1-orange.svg)](https://github.com/elRadix/daikin_cycle_ml/releases/latest)
+[![Tests](https://img.shields.io/badge/tests-7436-brightgreen.svg)](#quality)
 [![Coverage](https://img.shields.io/badge/coverage-100.00%25-brightgreen.svg)](#quality)
 [![Ruff](https://img.shields.io/badge/ruff-clean-brightgreen.svg)](https://github.com/astral-sh/ruff)
 [![Pylint](https://img.shields.io/badge/pylint-10.00%2F10-brightgreen.svg)](https://pylint.readthedocs.io/)
@@ -23,7 +23,7 @@ Home Assistant integration that turns your ESPAltherma sensor into a **complete 
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=elRadix&repository=daikin_cycle_ml&category=integration)
 
-**IoT class:** `calculated` · **Integration type:** `hub` · **50 sensors · 17 binary sensors · 13 services · 19 alerts**
+**IoT class:** `calculated` · **Integration type:** `hub` · **50 sensors · 17 binary sensors · 14 services · 19 alerts**
 
 ---
 
@@ -59,8 +59,10 @@ Home Assistant integration that turns your ESPAltherma sensor into a **complete 
 > entities regardless of language, and keep working after you rename entity
 > IDs. After updating the integration, re-paste the card YAML from
 > `dashboard/cards/` — HACS does not update pasted cards. The native
-> [Daily Summary card](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-daily-summary-card)
-> updates by itself.
+> [Daily Summary](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-daily-summary-card),
+> [Efficiency](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-efficiency-card)
+> and [Performance](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-performance-card)
+> cards update by themselves.
 
 ### ⭐ Featured: Daily Summary — the first native card
 
@@ -84,6 +86,33 @@ it updates with every release.
 In YAML: `type: custom:daikin-daily-summary-card`.
 
 **[📖 Full documentation](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-daily-summary-card)**
+
+### ⭐ Featured: Efficiency — the second native card, a verdict on every graph
+
+[<img src="https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/preview.png" width="440" alt="Efficiency native card — Live tab">](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/screenshot-live.png)
+
+| Today | Efficiency | Curve | Advice | Dark |
+|---|---|---|---|---|
+| [<img src="https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/thumb-today.png" width="140" alt="Efficiency card — Today">](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/screenshot-today.png) | [<img src="https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/thumb-eff.png" width="140" alt="Efficiency card — Efficiency">](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/screenshot-eff.png) | [<img src="https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/thumb-curve.png" width="140" alt="Efficiency card — Curve">](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/screenshot-curve.png) | [<img src="https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/thumb-advice.png" width="140" alt="Efficiency card — Advice">](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/screenshot-advice.png) | [<img src="https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/thumb-dark-live.png" width="140" alt="Efficiency card — Dark">](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/screenshot-dark-live.png) |
+
+<sub>Tap an image for the full tab.</sub>
+
+LWT fine-tuning, COP & energy and the heating curve in one native card.
+Add **Daikin Cycle ML · Efficiency** from the card picker.
+
+- **Live** — COP (10-min mean), power → heat, setpoint tracker, graphs of
+  water temperatures, compressor (starts / stops), flow and ΔT, comfort
+  (30 min / 3 h / 24 h)
+- **Today · Efficiency · Curve · Advice** — COP per hour, per period and
+  against the datasheet, SPF vs SCOP, the heating curve with Carnot
+  efficiency and heat balance, the curve advice with comfort guard
+- **Every graph says good / watch / act**, within the datasheet limits of
+  your model, and a help section explains it
+- **English / Dutch / French**, light and dark theme, visual editor
+
+In YAML: `type: custom:daikin-efficiency-card`.
+
+**[📖 Full documentation](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-efficiency-card)**
 
 ---
 
@@ -141,9 +170,9 @@ Four-tab advisor: **Advice** (Lower/Raise/Optimal + COP impact), **Buckets** (in
 
 ### More cards
 
-| Daily Summary (native) | Simple Card | Heating Curve | Daily Summary | COP & Energie | Pattern Analysis | LWT Fine-Tuning |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [![Daikin Cycle ML - Daily Summary (native)](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-daily-summary-card/showcase.gif)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-daily-summary-card) | [![Daikin Cycle ML - Simple Card](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/simple-card/showcase.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/simple-card) | [![Daikin Cycle ML - Heating Curve](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/heating-curve/preview.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/heating-curve) | [![Daikin Cycle ML - Daily Summary](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daily-summary/showcase.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daily-summary) | [![Daikin Cycle ML - COP & Energie](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/cop-energy/showcase.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/cop-energy) | [![Daikin Cycle ML - Pattern Analysis](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/pattern-analysis/showcase.gif)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/pattern-analysis) | [![Daikin Cycle ML - LWT Fine-Tuning](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/lwt-fine-tuning/showcase.gif)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/lwt-fine-tuning) |
+| Daily Summary (native) | Efficiency (native) | Simple Card | Heating Curve | Daily Summary | COP & Energie | Pattern Analysis | LWT Fine-Tuning |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| [![Daikin Cycle ML - Daily Summary (native)](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-daily-summary-card/showcase.gif)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-daily-summary-card) | [![Daikin Cycle ML - Efficiency (native)](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daikin-efficiency-card/thumb-curve.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daikin-efficiency-card) | [![Daikin Cycle ML - Simple Card](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/simple-card/showcase.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/simple-card) | [![Daikin Cycle ML - Heating Curve](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/heating-curve/preview.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/heating-curve) | [![Daikin Cycle ML - Daily Summary](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/daily-summary/showcase.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/daily-summary) | [![Daikin Cycle ML - COP & Energie](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/cop-energy/showcase.png)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/cop-energy) | [![Daikin Cycle ML - Pattern Analysis](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/pattern-analysis/showcase.gif)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/pattern-analysis) | [![Daikin Cycle ML - LWT Fine-Tuning](https://raw.githubusercontent.com/elRadix/daikin_cycle_ml/main/dashboard/cards/lwt-fine-tuning/showcase.gif)](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard/cards/lwt-fine-tuning) |
 | *One-glance overview* | *LWT vs outdoor* | *8-day cycle history* | *Live COP + SPF gauge* | *Distribution / Scatter / COP* | *4-tab LWT advisor* |
 
 *All Lovelace dashboard cards — see [dashboard/](https://github.com/elRadix/daikin_cycle_ml/tree/main/dashboard) for installation. Every card shows your heat pump model in the header, speaks English, Dutch and French, and has a dark mode ([shared card settings](https://github.com/elRadix/daikin_cycle_ml/blob/main/dashboard/cards/README.md)).*

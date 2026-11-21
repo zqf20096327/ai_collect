@@ -1,31 +1,32 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/EvannZhongg/BrowserAttach/main/extension/icons/BrowserAttach.png" width="112" alt="BrowserAttach logo">
-</p>
-
 # BrowserAttach
 
 <p align="center">
+  <strong>Attach an MCP client to the browser you already use.</strong><br>
   <strong>English</strong> · <a href="README.zh.md">简体中文</a>
 </p>
 
-[![M8ven Score](https://m8ven.ai/badge/mcp/evannzhongg-browserattach-kisqie?v=ad2528ebe8a0fa35e3cf933630840bac)](https://m8ven.ai/mcp/evannzhongg-browserattach-kisqie?s=readme) [![BrowserAttach MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/EvannZhongg/BrowserAttach/badges/score.svg)](https://glama.ai/mcp/servers/EvannZhongg/BrowserAttach) [![BrowserAttach on Agensi](https://img.shields.io/badge/BrowserAttach-on_Agensi-1f6feb)](https://www.agensi.io/skills/browserattach) [![BrowserAttach MCP on mcprush](https://mcprush.com/badge/browserattach-mcp/compact.svg)](https://mcprush.com/to/browserattach-mcp?ref=badge)
+[![M8ven Score](https://m8ven.ai/badge/mcp/evannzhongg-browserattach-kisqie?v=ad2528ebe8a0fa35e3cf933630840bac)](https://m8ven.ai/mcp/evannzhongg-browserattach-kisqie?s=readme) [![BrowserAttach MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/EvannZhongg/BrowserAttach/badges/score.svg)](https://glama.ai/mcp/servers/EvannZhongg/BrowserAttach) [![BrowserAttach on Agensi](https://img.shields.io/badge/BrowserAttach-on_Agensi-1f6feb)](https://www.agensi.io/skills/browserattach) [![BrowserAttach MCP on mcprush](https://mcprush.com/badge/browserattach-mcp/compact.svg)](https://mcprush.com/to/browserattach-mcp?ref=badge) [![Ask DeepWiki](https://img.shields.io/badge/-Ask_DeepWiki-007ec6?labelColor=000000&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAPoAAAD6AG1e1JrAAACIUlEQVRYw%2B2XP2gUQRTGv7d3JhYWQawkIBaCVWzETos0gmAnVoKNTSoLK0E7EQQrC20sBVFBtLPQRgTBtBaKjYgIQUSxiJq7fT%2BLvCGPJZdNLt4dQj5Y3u7sznzfzLw%2Fs9IO%2FicANiniCujEfWdsQgBLxAbsbraPZcmBfcAt4DNwKQsZNfEUsAB8YRV12LfA6ZHuedg7AO7ed%2Fc%2BUBcbQhbiu%2B6wXIM6EnZWkszMJe2Ke0n6I2la0v51hFeSMLN6OwIK6jJwEBdUYb2MAxRSz6sY4geiahFgLe1Hwq6YWe3us8AN4FQQU4QM64SPY69Xyr43fADgNjAPXHb3peSsD4FDQ0VLEjAHvIhBPS6AHvA1bBO9JPAXcHFbIRtJ5yzwIQZ9CZwAusDJENIkLqsG8DpNyIZJwSUk9wLHgakcesC1JCCjiHm1kYDNOEjptCxpSVK%2F8f73OFLxPLAYM3oCzEX7MXf%2FlJbc%2F8kWpA4HgQdpYI9IWAbeh83whi84cHXL%2B58EPBoQhnmm94EzwE3gZ2p%2FDhzdbhg%2BTaRr01x7ftb4%2FjBwFzjXrCvDpmLW9crVLNeR9CaapoGemb2TdCERW1tNaBNQ8jktwmozqwtpqRNtdWAjARYk39IS12ZWRX7vmJmA71nQZgi36gN7gCvAj5xc3P0jcH7kx7Ik5IC73wsh14GZsZySow5002l4Jr0b6%2Bm4eSyvpAn8lEzsx2QHo8RfUrlN%2BuPq4ksAAAAASUVORK5CYII%3D)](https://deepwiki.com/EvannZhongg/BrowserAttach)
 
 [![npm version](https://img.shields.io/npm/v/@evan_zhong/browser-attach)](https://www.npmjs.com/package/@evan_zhong/browser-attach) [![license](https://img.shields.io/npm/l/@evan_zhong/browser-attach)](LICENSE)
 
-Drive the Chrome / Edge tabs you already have open and already signed in from an MCP client. BrowserAttach connects to the browser through a locally paired extension, keeps your existing sign-in state, and needs neither a remote debugging port nor a separate automation browser.
+Your agent can read files and call APIs, but it cannot touch the page you are already signed in to. BrowserAttach lets an MCP client drive the Chrome / Edge tabs you already have open and already signed in — through a locally paired extension, with no remote debugging port and no separate automation browser.
 
 [npm](https://www.npmjs.com/package/@evan_zhong/browser-attach) · [Usage guide](docs/USAGE.md) · [Architecture](docs/ARCHITECTURE.md) · [Agent integration](docs/AGENT-INTEGRATION.md) · [Test report](docs/TEST-REPORT.md) · [Issues](https://github.com/EvannZhongg/BrowserAttach/issues) · [Contributing](CONTRIBUTING.md)
 
-## What it does
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="An MCP client claims the already signed-in GitHub tab in the user's own Chrome, reads a snapshot with refs, clicks Go to file, types a query natively and opens package.json" width="900">
+</p>
 
-- Discover multiple browser profiles, pick one precisely, claim a tab exclusively, and release it when done.
-- Control existing ordinary `file://` tabs after enabling BrowserAttach's **Allow access to file URLs** setting in the browser's extension details; use the same discovery, claim, observation and input tools.
-- Read the accessibility tree, query names/values/nearby field context, inspect field values and supported editor models; click, fill and type through refs or strict CSS/XPath, HTML label, placeholder and AX role/name locators. Type can also target the currently focused field explicitly.
-- Native pointer hover, stepped drags and conditional waits; select HTML options without opening a native popup.
-- Navigate and go back/forward, open or close tabs, handle JavaScript dialogs, upload local files, and capture the whole page or a single element.
-- Evaluate JavaScript expressions in the main page; read console, page-error, network and navigation logs captured after claiming, with bounded available stacks and request initiators; opt in to bounded, redacted request/response details when XHR/fetch needs verification.
-- Read one HTTP(S) URL in a temporary background tab with the profile's sign-in, returning rendered text, current DOM, or complete JSON with the main-document HTTP status when observed.
-- Standard stdio MCP with 24 tools. The Hub listens on loopback only and pairs with the extension through a random key.
+<p align="center"><sub>Claim → accessibility snapshot → native click → native typing → the page follows. Captured from a real Chrome profile, with no automation browser involved.</sub></p>
+
+## What it solves
+
+- **Your existing sign-in is reused** — actions run in the tabs that are already open and already logged in; no cookie export and no second browser to authenticate.
+- **No debugging port, no browser restart** — nothing to relaunch with flags; the Hub listens on loopback only and pairs with the extension through a random key.
+- **Explicit takeover instead of concurrent trampling** — discover, claim a tab exclusively, release it when done; one owner per tab and serialized operations.
+- **The agent can actually read the page** — accessibility-tree snapshots with refs that survive actions, targeted reads of field values, popups and selected options, or strict CSS/XPath, HTML label, placeholder and AX role/name locators.
+- **Input semantics stay transparent** — native pointer click/hover/drag/scroll is kept distinct from DOM-synthesized events, an unknown outcome is never replayed automatically, and ordinary operations never steal focus.
+- **A whole sequence in one call** — 1–30 batch steps, conditional waits and `diff_since` observation; plus screenshots, uploads, dialogs, JavaScript evaluation, console/network logs and background `fetch` — 24 tools over standard stdio MCP.
 
 ## Requirements
 

@@ -111,6 +111,18 @@ java -jar gaia-workflow-app/target/gaia-workflow-app-0.0.1-SNAPSHOT.jar
 
 API 服务运行在 48080 端口。SQLite 数据库文件 `gaia_workflow.db` 创建于进程工作目录，首次启动自动建库建表并写入默认配置。
 
+### macOS 桌面版（Electron）
+
+无需手动起前后端：桌面版把 console 前端打进 Electron 壳，并**内嵌后端 jar 自动拉起**（运行机器需 JDK 21+）。在仓库根执行：
+
+```bash
+cd apps/desktop
+pnpm install
+pnpm build:mac        # 产出 out/Gaia-<version>-mac-{arm64,x64}.dmg 与 .zip
+```
+
+双击 dmg 拖入 Applications 即用。关闭窗口后应用与后端继续在后台运行（菜单栏 Gaia 图标 / Dock 可唤回，支持「开机自启动（后台）」）；首次打开未签名包需 `xattr -cr /Applications/Gaia.app` 或右键→打开；SQLite 数据独立存放在 `~/Library/Application Support/Gaia/data/`，与仓库/部署实例互不影响。细节见 [apps/desktop/README](./apps/desktop/README.md)。
+
 ### LLM 配置（必需）
 
 Agent 对话需要一个 OpenAI 兼容的 LLM 端点（vLLM / Ollama / LM Studio / 各类网关均可）。启动后在浏览器进入 **管理 → 配置 → 模型配置**，填写 API Host / API Key / 模型名并保存。配置写入 `agent_config` 表，即时生效，无需重启。
@@ -159,6 +171,33 @@ GAIA_MCP_PUBLIC_URL=https://gaia.example.com
 ```
 
 公网反向代理或入口必须将该地址的 `/mcp/`（以及使用界面所需的 `/api/`）转发到本 Compose 的 Nginx `web` 服务。仅在本机运行 Compose、使用内置 Agent 时保持该值为空即可。若已在管理界面保存过托管 Agent 的 provider 配置，界面中的 `mcpPublicUrl` 会优先于应用配置，应同步更新为该 HTTPS 地址。
+
+### 外部 Coding Agent 接入（MCP）
+
+DeepSeek、Claude Code、Cherry Studio 等任何支持 streamable-http 的 MCP 客户端，都可以直接在 Gaia 里构建工作流。URL 自带会话键（自定义即可，首次连接自动创建「外部构建」会话）：
+
+```
+http://127.0.0.1:48080/mcp/gaia/ext-deepseek-01
+```
+
+- **实时观看**：构建期间在 Gaia console 会话列表打开该会话（`/chat/ext-deepseek-01`），画布按每次工具调用增量渲染；agent 的 `ask_user` 提问也在该页作答。
+- **工具面**：与内置 Agent 完全同一份（`get` 查节点契约、`node`/`edge` 增量建流、`run` 试跑、`test_case` 测试等），先 `get(target=knowledge, nodeType=...)` 查契约再构建。
+- **落版边界**：外部 agent 只产出会话草稿，由人在会话页确认「保存为版本」。
+- **鉴权**（可选）：设置环境变量 `GAIA_API_KEY`（逗号分隔可配多个）后，`/mcp/gaia/**` 要求匹配的 `X-API-Key` 头；未设置则放行（本地单机信任模式）。
+
+curl 直调示例（MCP 即普通 HTTP POST + JSON）：
+
+```bash
+# initialize（返回观看引导，并自动创建会话）
+curl -s -X POST http://127.0.0.1:48080/mcp/gaia/ext-deepseek-01 \
+  -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","clientInfo":{"name":"DeepSeek Coder"}}}'
+
+# 添加 start 节点（SSE /api/agent/session/ext-deepseek-01/events 可实时收到 tool_call/document 事件）
+curl -s -X POST http://127.0.0.1:48080/mcp/gaia/ext-deepseek-01 \
+  -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"node","arguments":{"action":"add","type":"start"}}}'
+```
 
 常见故障：
 

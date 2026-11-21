@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.10`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.12`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,68 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.10 and earlier)</summary>
+<summary>Recent release notes (v11.25.12 and earlier)</summary>
+
+## What's New in v11.25.12
+
+**Failed domain-continuity maintenance now backs off instead of repeatedly
+minting expensive consensus blocks.** When an app-v25 continuity proposal is
+deterministically refused, the worker waits 30 seconds, then 1, 2, 4, 8 and 16
+minutes, and finally retries at most every 30 minutes. Progress, inactivity or
+a clean pass resets the delay, and each warning reports `retry_in`.
+
+This bounds the CPU cost of a persistent state conflict. Before this fix, one
+rejected proposal could produce two blocks about every 31 seconds, with each
+block rescanning the full public-memory index for the AppHash. The underlying
+conflict still requires repair; this release keeps it from consuming a core
+while it remains unresolved.
+
+No consensus state-machine change, app-version change or chain reset. App-v29
+remains active and app30 remains explicit. Container:
+`ghcr.io/l33tdawg/sage:11.25.12`. SDK 11.25.12.
+
+## What's New in v11.25.11
+
+**macOS startup no longer races itself at login.** The open-at-login agent now
+opens `SAGE.app` instead of starting a second `sage-gui serve`. Existing
+direct-daemon launch agents are migrated on the next node start, and the tray
+now adopts an already-running healthy node and delivers the startup passphrase
+to its local vault instead of abandoning supervision. This removes the lock
+conflict that left some MCP clients disconnected until every SAGE process was
+manually killed and restarted.
+
+**RFC #443 Phase B connects roster-introduced links end to end.** One owner
+acceptance on each side now drives the signed introduction wire to an active
+link with no QR exchange. Host and guest pin each other's CA from the roster
+card during the TLS handshake, session state is bounded and restart-safe, and
+the guest retries and reconciles the final binding. The policy pass now applies
+owner-envelope and roster pauses, follows endpoint-only card changes, requires
+owner acceptance for CA rekeys, rotates the pair seed and sync-control pin, and
+reports stale-gate refusals without creating a link.
+
+**Recall outcome feedback is recorded without silently changing ranking.**
+Agents can report whether a recalled memory helped, hurt or was unused through
+the node-local, off-chain outcome route; recall always returns the aggregate
+counts. Reordering remains opt-in with
+`SAGE_RECALL_OUTCOME_RANKING=on`, moves a result at most three places within the
+page already returned, and currently applies to SQLite only.
+
+**Agents can exclude lesson generations and replace memories in one SDK
+call.** Query, search and hybrid recall accept a local-only `not_tags` exclusion
+filter with the same validation as stored tags. The Python SDK adds
+commit-first sync and async `replace()` helpers: the replacement is committed
+before the old memory is challenged, so an interruption can leave both records
+but never neither.
+
+**SQLite vector recall uses packed float32 embeddings.** New vectors take about
+one third of their previous JSON storage and decode without parsing; measured
+recall over 2,000 full-size vectors falls from roughly 1.08 seconds to 80 ms.
+Legacy rows stay readable and are rewritten through a bounded compare-and-set
+migration at boot and after vault unlock.
+
+No consensus state-machine change, app-version change or chain reset. App-v29
+remains active and app30 remains explicit. Container:
+`ghcr.io/l33tdawg/sage:11.25.11`. SDK 11.25.11.
 
 ## What's New in v11.25.10
 
@@ -999,20 +1060,4 @@ Container: `ghcr.io/l33tdawg/sage:11.20.1`. SDK 11.20.1.
 
 **You can now prove whether message storage is encrypted.** `GET /v1/messages/storage` reports the honest storage posture of this node, and `POST /v1/messages` accepts a strict signed `require_encrypted_storage` boolean: an agent that must not be stored in the clear now gets a `503` instead of a silent downgrade, and a malformed or unsigned value is rejected rather than ignored. The authenticated request-body limit became route-aware for exactly one route: a canonical-UUID private-media `PUT` gets one extra MiB, everything else keeps the 1 MiB ceiling.
 
-**Local durability is no longer taken on faith.** SQLite opens with `synchronous=FULL` in both DSN and `PRAGMA` form and the node verifies `journal_mode` and `synchronous` at boot, refusing to serve when the durability posture is not provable. Vault publication is atomic in the same vein: attaching a vault and marking encryption required can no longer be observed separately, so an unlock cannot leave a window where a write is accepted against a store that does not yet require encryption.
-
-**Managed appliance bring-up, with no product names in core.** `sage-gui init-fresh-personal-sage --profile <path> --unit <id> --owner-approved-companion-bootstrap` creates a fresh-only personal identity from a root-owned, mode-0600 provisioning profile. It refuses an existing or mismatched node rather than reusing it, takes its companion-key bootstrap explicitly, and never installs services or enables public enrollment. A profile that sets `private_listeners: true` makes a missing config an explicit error rather than a default, and the policy is re-checked when the YAML is loaded so an edit cannot silently weaken it. The product that ships a profile owns its home path, Unix account, unit ids and artifact filenames; SAGE core knows none of them.
-
-**A public-memory Merkle index ships dormant, and no fork is opened.** The sparse SHA-256 index over committed `PUBLIC=0` records, its migration builder and its stage/promote path are in the tree with their tests, and no production code calls any of them. Staged rows live under a local namespace that is excluded from the AppHash; promotion is what writes into AppHash-covered state, it is explicitly named for app-v28, and it is not reachable from a running node. Read that as preparation, not as activation.
-
-**Federation: you decide which of your agents the other side can find.** A trusted link advertised every eligible ordinary agent to the peer, which is convenient with one agent and confusing with a dozen — the other operator sees names they do not recognise and sends work to the wrong one. Each connection now carries an explicit discovery policy: **All agents** (the default), **Only the ones I pick**, or **None**. Ticking one agent narrows the connection to exactly that agent, ticking more adds them, and **Save discovery policy** commits it under the same revision-bound agreement the rest of federation uses. It governs listing and exact-name search only: it grants no memory Read and authorises no delivery, and an agent that still refuses federated delivery stays visible as **Not accepting** by design so the peer is never promised a route it cannot use.
-
-No consensus change or chain migration; app-v27 remains the ceiling.
-
-Container: `ghcr.io/l33tdawg/sage:11.20.0`. SDK 11.20.0.
-
-## What's New in v11.19.22
-
-**The Go build floor moves to patched 1.26.8.** Both modules now declare `go 1.26.8`, up from `1.25.13`, and every Go container builder moved with them: `Dockerfile`, `deploy/Dockerfile.abci`, `deploy/Dockerfile.node`, both federation-acceptance Dockerfiles and `deploy/init-testnet.sh`. Building from source now requires Go 1.26.8 or later.
-
-This is not a fix for a hole you have. v11.19.21 and everything before it were built with Go 1.25.13, and that toolchain scans clean on its own standard library. It is a deliberate move forward: the dependency group below requires Go 1.26, and the bare `1.26.0` those tools would otherwise have pinned is precisely the version `govulncheck` reports 26 reachable standard-library advisories against — among them `net/url` (GO-2026-6218), `html/template` (GO-2026-6091), `crypto/tls` (GO-2026-6090, GO-2026-5856), `net/http` (GO-2026-6089, GO-202
+**Local durability is no longer taken on faith.** SQLite opens with `synchronous=FULL` in both DSN and `PRAGMA` form and the node verifies `journal_mode` and `synchronous` at boot, refusing to serve when the durability posture is not provable. Vault publication is atomic 

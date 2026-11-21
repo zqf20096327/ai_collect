@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3442** |
+| 📝 Total Prompts | **3445** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-20** |
+| 🔄 Last Updated | **2026-11-21** |
 
 ---
 
@@ -189,6 +189,44 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Grok Imagine Video Prompt: Glass Observatory Butterflies
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed video prompt describing a glass observatory on a snowy peak at dusk surrounded by glowing butterflies.
+
+#### 📝 Prompt
+
+```
+An enormous glass observatory perched on a northern mountain peak, at dusk waiting for the northern sky. Fresh fallen snow with hundreds of glowing colorful butterflies gathering around its dome...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2123825252799250432/img/bsUrU5rA4nd5TGcx.jpg" width="600" alt="Grok Imagine Video Prompt: Glass Observatory Butterflies">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14120)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2123825272348889247) | **Published:** Nov 20, 2026
+
+---
+### Liquid Gold Heart Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed video generation prompt for Grok Imagine creating a macro shot of liquid gold threads weaving into a beating heart with specific audio instructions.
+
+#### 📝 Prompt
+
+```
+VIDEO: A continuous macro orbit under a cool, moody spotlight. Thin threads of reflective liquid gold slide across black glass and converge at the center. They weave upward into a smooth, sculptural heart, polished like fine gold jewelry rather than a biological organ. The heart pulses gently, each beat sending a luminous ripple across its mirror surface, while a fine gold chain flows outward onto the glass. Fade to black. Hypnotic liquid-metal craftsmanship. AUDIO: Fine metallic trickles, soft heartbeat pulses, a liquid folding sound and precise clock ticks. Minimal ambient electronica with celesta-like notes and a deep pulse that transitions into ticking. No vocals. Fade sound during the final two seconds.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2123411321806802944/img/wXhtRpb88snVeYkZ.jpg" width="600" alt="Liquid Gold Heart Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14119)**
+
+**Author:** [AI Aimee](https://x.com/RockGrokAI) | **Source:** [Link](https://x.com/RockGrokAI/status/2123789657842328011) | **Published:** Nov 20, 2026
+
+---
 ### Biomechanical Muse Cathedral
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -1992,35 +2030,4 @@ Ultra Cinematic • Photorealistic
 
 Prompt:
 
-A beautiful, elegant female Optimus Transformer with a stunning futuristic white-and-silver robotic body walks confidently through a crowded modern city street, carrying a stylish high-tech backpack. Suddenly, heavy rain begins pouring from the sky. While continuing to walk naturally, she reaches behind her shoulder and presses a glowing transformation button on her backpack. Instantly, the backpack activates with mechanical sounds, unfolding into hundreds of tiny robotic components and extending transparent waterproof plastic material that rapidly wraps around her entire body, creating a perfectly fitted futuristic rain-protection suit. The transformation happens seamlessly without stopping her walk. Pedestrians around her stop, stare in complete amazement, and pull out their smartphones to record this unbelievable technology. Cinematic close-up shots reveal every mechanical detail as rain droplets slide across the transparent protective covering.
-
-Visual Style: Ultra-realistic 3D CGI, photorealistic robotics, next-level sci-fi engineering, incredibly detailed mechanical transformation, realistic rain physics, cinematic camera movements, dramatic lighting, 8K HDR, realistic reflections, immersive city atmosphere, smooth continuous motion, masterpiece.
-
-Disclaimer: 
-This video is AI-generated for creative and entertainment purposes only. The futuristic robot, backpack transformation, and technology are fictional and do not represent real-world technology.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2119004090092974080/img/M55uu6ZEiUVUBidb.jpg" width="600" alt="Sci-Fi Rain Suit Transformation Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13721)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2119004183089074322) | **Published:** Nov 7, 2026
-
----
-### Wind Blown Yellow Ribbon Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video prompt for Grok Imagine featuring a yellow ribbon blowing in the wind on grass under a blue sky.
-
-#### 📝 Prompt
-
-```
-bright blue sky, grass with flowers, yellow ribbon caught in grass blowing in the wind
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118934348334571520/img/QCbLeXA2bUs1ko4a.jpg" width="600" alt="Wind Blown Yellow Ribbon Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13644)**
-
-**Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2118934426633785
+A beautiful, elegant female Optimus Transformer with a stunning futuristic white-and-silver robotic body walks confidently through a crowded modern city street, carrying a stylish high-tech backpack. Suddenly, heavy rain begins pouring from the sky. While continuing to walk naturally, she reaches behind her sho

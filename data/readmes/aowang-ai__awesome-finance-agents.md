@@ -130,6 +130,8 @@ A finance agent is only as good as the data and tools it can call. This chapter 
 - [Tapetide Indian Stock Market MCP](https://github.com/Tapetide-hq/nse-bse-indian-stock-market-data-mcp) - 🇮🇳 Official MCP server for NSE and BSE stocks: financials, a ratio screener, technicals, FII/DII flows, end-of-day option chains, filings, and point-in-time data for backtests.
 - [exitvalue-mcp](https://github.com/nickcals/exitvalue-mcp) - Read-only MCP server for median EV/EBITDA and EV/Revenue M&A multiples by industry, deal size and year from disclosed transactions, over stdio or a hosted endpoint with no API key.
 - [lava-mcp](https://github.com/dustinliang666-blip/lava-mcp) - 🇨🇳 Hosted remote MCP and agent skill for A-share stock and concept-sector news-heat monitoring: structured, timestamped concepts, tickers, and summary points over Streamable HTTP. Requires an API key or OAuth.
+- [eu-nordic-open-data-mcp](https://github.com/itulo/eu-nordic-open-data-mcp) - MCP server for official EU and Nordic open data that agents can use for KYB, VAT, sanctions, procurement, and ECB rates, with a licence cited on every answer.
+- [SiftingIO Market Data MCP](https://github.com/SiftingIO/siftingio-mcp) - MIT-licensed read-only MCP server for market prices, historical OHLCV, company fundamentals, SEC filings and market calendars, backed by the SiftingIO API. Requires a SiftingIO API key.
 
 ### Official broker and exchange agent kits
 
@@ -269,6 +271,7 @@ From signal to order: position sizing, risk budgets, broker/exchange connectors,
 - [hummingbot/condor](https://github.com/hummingbot/condor) - Hummingbot's Telegram harness for monitoring and running AI trading agents via the Hummingbot API. (live)
 - [WyckoffTradingAgent](https://github.com/YoungCan-Wang/WyckoffTradingAgent) - 🇨🇳 Wyckoff volume-price trading agent and A-share stock screener with CLI workflows and MCP tools.
 - [FriesTrader](https://github.com/YizhiSong/FriesTrader) - Robinhood trading agent placing real orders through Robinhood's agentic-trading MCP, under mechanical risk rules the model cannot override. (live)
+- [arena-starter](https://github.com/alphabazaar/arena-starter) - Template trading agent that runs itself every weekday on GitHub Actions (Claude, OpenAI, Gemini, Ollama or rules only) and publishes its paper trades to a public track record with server-captured prices. (sim)
 
 ### Prediction-market agents
 
@@ -344,6 +347,7 @@ Agents for bookkeeping, reconciliation, invoices, tax, and reporting, plus MCP a
 - [Bookkeeping-Agency-Skill](https://github.com/cyhzzz/Bookkeeping-Agency-Skill) - 🇨🇳 Skills pack for China bookkeeping-agency vertical agents.
 - [accounted](https://github.com/erp-mafia/accounted) - Open-source ERP designed to be operated by agents.
 - [cfo-stack](https://github.com/MikeChongCan/cfo-stack) - Beancount-based AI CFO workflow: import, classification, reconciliation, reports, and tax skills.
+- [tracemodel](https://github.com/datayoga-io/tracemodel) - Model layer that agents fill from filings and reports: values are validated, sourced, kept in a versioned log, and gated by tie-out checks and review.
 
 ### Tax, invoicing, and payables
 
@@ -382,6 +386,7 @@ AML/KYC, fraud triage, due diligence, ESG review, and action firewalls that sit 
 - [FinVault](https://github.com/aifinlab/FinVault) - Execution-grounded financial agent safety benchmark.
 - [ESGenius](https://github.com/ANGEL-NTU/ESGenius) - ESG knowledge benchmark for LLMs.
 - [cre-acquisition-orchestrator](https://github.com/ahacker-1/cre-acquisition-orchestrator) - Agent framework for commercial real estate acquisitions: diligence, underwriting, and financing.
+- [MexCheck](https://github.com/acrogenesis/mexcheck-mcp) - Hosted remote MCP for Mexican KYC/KYB checks against official sources (RFC and SAT 69/69-B lists, CFDI status, CURP via RENAPO, INE). Requires OAuth and is billed per request; the repo has MIT-licensed client configs and docs.
 
 ### Pitfall Tip
 
@@ -526,6 +531,7 @@ Models, surveys, and neighboring lists that are useful context but not always "a
 - [quantskills](https://github.com/quantskills/quantskills) - 🇨🇳 Navigation hub for open-source quant skills and agents, from data to risk monitoring.
 - [Finance-LLMs](https://github.com/kennethleungty/Finance-LLMs) - Compilation of real-world LLM and agent use cases in financial services.
 - [Awesome-FinLLMs](https://github.com/DataArcTech/Awesome-FinLLMs) - Curated list of financial LLM papers, models, and datasets.
+- [awesome-finance-ai-tools](https://github.com/tradingaihub/awesome-finance-ai-tools) - Weekly re-verified list of finance MCP servers, agent skills and APIs.
 
 ## Contributing
 

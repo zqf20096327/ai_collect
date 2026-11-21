@@ -4,7 +4,9 @@
 
 **按主题整理的机器学习论文、中文导读与历史资料库。**
 
-[主题目录](papers/README.md) · [经典阅读路线](docs/classics.md) · [每日收录](docs/daily/README.md) · [历史 PDF](library/README.md) · [收录规范](CONTRIBUTING.md)
+[年份导航](docs/years/README.md) · [学习路线](docs/reading-paths.md) · [主题目录](papers/README.md) · [按年份查历史补录](docs/backfill/README.md) · [经典阅读路线](docs/classics.md) · [每日收录](docs/daily/README.md) · [历史 PDF](library/README.md) · [收录规范](CONTRIBUTING.md)
+
+编排方式：按主题内子方向查找，按全库年份回看发展，按学习路线选读。文章主文件和历史资料路径保持稳定。[本次编排说明](docs/organization.md)。
 
 ## 从哪里开始
 
@@ -17,27 +19,30 @@
 
 | 主题 | 内容范围 | 导读 | 历史 PDF |
 | --- | --- | ---: | ---: |
-| [数学、学习理论与概率模型](papers/foundations/README.md) | 学习理论、优化、概率推断、图模型 | 3 | 9 |
-| [传统机器学习](papers/classical-ml/README.md) | 分类、回归、集成、聚类、特征选择、主动/在线/迁移学习 | 6 | 34 |
-| [深度学习与表征学习](papers/deep-learning/README.md) | 网络训练、优化、自监督表征、神经网络基础 | 5 | 3 |
-| [计算机视觉](papers/computer-vision/README.md) | 图像分类、检测、跟踪、人体运动、视觉编码器 | 4 | 7 |
-| [自然语言处理与大语言模型](papers/nlp/README.md) | 文本、序列、语言模型、检索增强、适配与对齐 | 9 | 15 |
-| [生成模型](papers/generative-models/README.md) | VAE、GAN、扩散模型 | 5 | 0 |
-| [多模态学习](papers/multimodal/README.md) | 图文对齐与跨模态表示 | 1 | 0 |
-| [强化学习与决策](papers/reinforcement-learning/README.md) | 策略/价值学习、Bandit、规划 | 4 | 6 |
-| [图学习与网络分析](papers/graph-learning/README.md) | 图神经网络、社区发现、链接挖掘 | 2 | 9 |
-| [推荐系统](papers/recommender-systems/README.md) | 协同过滤、矩阵分解、ALS、神经推荐 | 2 | 6 |
-| [机器学习系统](papers/ml-systems/README.md) | 分布式训练、计算框架、参数服务器 | 2 | 10 |
-| [数据挖掘与数据管理](papers/data-mining/README.md) | 时序、流数据、模式/规则、Web、实体匹配 | 2 | 25 |
-| [领域应用](papers/applications/README.md) | 机器人、生物信息、金融、可持续发展、业务应用 | 3 | 20 |
-| [评估与实验方法](papers/evaluation/README.md) | 实验设计、A/B 测试、验证与指标 | 14 | 3 |
+| [数学、学习理论与概率模型](papers/foundations/README.md) | 学习理论、优化、概率推断、图模型 | 7 | 9 |
+| [传统机器学习](papers/classical-ml/README.md) | 分类、回归、集成、聚类、特征选择、主动/在线/迁移学习 | 12 | 34 |
+| [深度学习与表征学习](papers/deep-learning/README.md) | 网络训练、初始化、优化、自监督表征与高效结构 | 14 | 3 |
+| [计算机视觉](papers/computer-vision/README.md) | 图像分类、检测、跟踪、人体运动、视觉编码器 | 12 | 7 |
+| [自然语言处理与大语言模型](papers/nlp/README.md) | 文本、序列、语言模型、检索增强、适配与对齐 | 14 | 15 |
+| [生成模型](papers/generative-models/README.md) | 能量模型、VAE、GAN、自回归、扩散、流与世界模型 | 13 | 0 |
+| [多模态学习](papers/multimodal/README.md) | 图文对齐、图像描述与跨模态表示 | 5 | 0 |
+| [强化学习与决策](papers/reinforcement-learning/README.md) | 策略/价值学习、Bandit、规划 | 9 | 6 |
+| [图学习与网络分析](papers/graph-learning/README.md) | 图神经网络、社区发现、链接挖掘 | 6 | 9 |
+| [推荐系统](papers/recommender-systems/README.md) | 协同过滤、矩阵分解、ALS、神经推荐 | 8 | 6 |
+| [机器学习系统](papers/ml-systems/README.md) | 分布式数据处理、编译、高效训练、推理加速与环境接口 | 9 | 10 |
+| [数据挖掘与数据管理](papers/data-mining/README.md) | 异常检测、时序、流数据、模式挖掘与数据管理 | 3 | 25 |
+| [领域应用](papers/applications/README.md) | 机器人、生物信息、金融、可持续发展、业务应用 | 5 | 20 |
+| [评估与实验方法](papers/evaluation/README.md) | 实验设计、A/B 测试、验证与指标 | 18 | 3 |
 
-截至 2026-11-20：62 篇独立导读、147 份历史 PDF。PDF 包含译文与技术资料，不代表 147 篇独立论文。后续收录同步维护目录和数量。
+截至 2026-11-21：135 篇独立导读、147 份历史 PDF。PDF 包含译文与技术资料，不代表 147 篇独立论文。后续收录同步维护目录和数量。
+
+<!-- pdf-count -->导读配套 PDF：新增文件区 135 份，复用历史文件 0 篇，尚无本地 PDF 的条目 0 篇。[逐篇查看](docs/pdf-index.md)。
 
 ## 存放方式
 
 ```text
 papers/<主题>/<年份>-<英文短名>.md       每篇论文或文章的唯一导读
+pdfs/<主题>/<年份>-<英文短名>.pdf       中文导读对应的原文 PDF
 library/<主题>/<子主题>/*.pdf           迁移后的历史资料
 docs/classics.md                      经典阅读路线（保留原锚点）
 docs/daily/YYYY/MM/YYYY-MM-DD.md       每日新增/修订链接
@@ -58,7 +63,7 @@ docs/migration.md                     旧文件路径对照
 
 ## 持续维护
 
-最新收录新增 1 篇时序预测交叉验证导读，补充专题缺口。[2026-11-20 · 跨序列泛化与交叉验证](docs/daily/2026/11/2026-11-20.md)
+四批历史补录已完成，共新增 72 篇导读。各年份篇数与未覆盖的问题见[分年总览](docs/backfill/README.md)。同日常规收录新增 1 篇推荐系统导读，关注偏好验证与时间约束。[2026-11-21 · 偏好验证与推荐](docs/daily/2026/11/2026-11-21.md)
 
 每天北京时间 11:00 由 Codex 自动任务检索、核实并精选最多 5 篇机器学习论文或技术文章。新增内容按主题存放，并登记到[每日收录](docs/daily/README.md)。没有合格新增时不生成空记录。此计划由 Codex 任务执行，仓库本身未配置 GitHub Actions 定时器。
 
@@ -66,4 +71,4 @@ docs/migration.md                     旧文件路径对照
 
 ## 资料归属
 
-论文与译文权利归各自权利人。新增内容使用原文链接与原创简短导读，不上传新的论文副本。本库整理不构成对第三方材料的重新授权。欢迎通过 [Issues](https://github.com/RayXBuilds/Machine-Learning-Papers/issues) 推荐文章或纠正信息，并附原始来源。
+论文与译文权利归各自权利人。中文导读附原始来源和已核验的仓库内 PDF；无可用文件时在 PDF 对照表注明原因。本库整理不构成对第三方材料的重新授权。欢迎通过 [Issues](https://github.com/RayXBuilds/Machine-Learning-Papers/issues) 推荐文章或纠正信息，并附原始来源。

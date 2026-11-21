@@ -33,6 +33,7 @@ The platform integrates with a wide range of LLM providers:
 - Image generation: OpenAI DALL-E, Google Gemini, xAI
 - Speech-to-text: OpenAI Whisper, Mistral, Azure Speech, Microsoft MAI-Transcribe (realtime)
 - Text-to-speech: OpenAI TTS, Azure Speech, xAI
+- Music generation: Google Lyria 3.5
 
 ### Document Processing & RAG
 
@@ -522,6 +523,7 @@ providers:
       - gemini-4-hydrogen
       - gemini-3.8-flash
       - gemini-3.8-flash-tts
+      - lyria-3.5 # music generation via /v1/audio/speech
       - gemini-3.5-transcribe
       - gemini-nano-banana-2.1
       - gemini-3.1-flash-lite-image
@@ -529,6 +531,10 @@ providers:
       - gemini-embedding-2
       - gemini-decision-1 # native decisions, detected automatically
 ```
+
+[Lyria 3.5](https://aistudio.google.com/docs/music-generation) uses the Gemini
+Interactions API with `store=false`. It needs a paid-tier Gemini API key and
+accepts music prompts through [`POST /v1/audio/speech`](./API.md#audio-speech-tts).
 
 Gemini decisions use the [Decisions API](https://aistudio.google.com/docs/decisions-api)
 over REST with API-key authentication. They support shared text, images, audio,
@@ -731,13 +737,15 @@ routers:
         when: Difficult debugging, architectural design, or work that needs sustained reasoning.
 ```
 
-Each `model` names a configured completer or another router, declared in any order. Omitting `decider` uses the first configured decision model. The picker sees an excerpt of the latest user request (the beginning and the end of a long one), up to four preceding user or assistant messages, attachment markers, tool availability, counts of intervening tool results and failures, and any requested reasoning effort. The selected model receives the conversation through Wingman's usual completion path.
+Each `model` names a configured completer or another router, declared in any order. Omitting `decider` uses the first configured decision model. The picker sees an excerpt of the latest user request (the beginning and the end of a long one), up to four preceding user or assistant messages, and markers for images, audio, video, PDFs, or other attachments. It also sees whether tools are available or required, counts of intervening tool results and failures, and any request for structured output or reasoning effort. The selected model receives the conversation through Wingman's usual completion path.
 
-Wingman decides once per user turn. The requests that follow while the model calls tools reuse that decision, so a turn stays on one model. It uses the first healthy route in configuration order if there is no user input to evaluate, the decision takes over five seconds, or the decider returns an error, refusal, tie, or confidence below 0.4. A single healthy route skips the decision call. After `failure_threshold` failed decisions in a row, Wingman stops asking the decider for `recovery_timeout`; each failed decision is logged. Caller cancellation and local budget rejections propagate to the client.
+Tool results reuse the turn's ranking. Changes to the request excerpt, recent conversation, tool availability or requirement, structured output, or reasoning effort get a separate decision. If a circuit opens, Wingman uses the highest-ranked healthy route. It asks again when a previously unranked route becomes available. A single healthy route skips the decision call.
 
-The routes of an auto router are different models. A request that one route rejects, for example because it exceeds the context window or forces a tool call the model cannot make, is tried on the other routes. If every route rejects it, the client receives the first rejection. Load balancers return a rejection directly.
+Wingman uses configuration order if there is no user input to evaluate, the decision takes over five seconds, or the decider returns an error, refusal, incomplete distribution, tied winner, or confidence below 0.4. After `failure_threshold` failed decisions in a row, Wingman stops asking the decider for `recovery_timeout` and logs each failed decision. Caller cancellation and local budget rejections propagate to the client.
 
-For load balancing, `roundrobin` rotates across healthy backends. On most requests `adaptive` samples two available backends and chooses using latency, error rate, and in-flight requests.
+An auto router retries in descending order of the decision model's probabilities. Equally scored backups keep their configuration order. A retry can succeed when the first model is unavailable or rejects the request, for example because its context window is too small. If every route rejects it, the client receives the first rejection. Load balancers return a rejection directly.
+
+For a pool where every backend can serve the same requests, `roundrobin` rotates across healthy members. On most requests `adaptive` samples two available backends and chooses using latency, error rate, and in-flight requests.
 
 All three routers share circuit breakers and streaming failover. Wingman buffers stream metadata until the first content arrives. A retryable provider error, a stream without any response, or a first-token timeout (default `2m`) can then switch to another healthy model. Once content reaches the client, a stream error ends that response. A turn that ends without content is returned as the model's answer.
 

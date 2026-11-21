@@ -3,10 +3,11 @@
 Codjiva is a desktop app that looks like a code editor but shows a **picture of the code** in place of its text.
 You open a folder, pick a file, and an AI agent you already use reads the code and draws how it works.
 
-[![A film made by Codjiva. An order moves through the machines of a Go order handler, and a caption explains each step.](docs/images/film.gif)](https://aayushch.github.io/codjiva/#demo)
+[![The Codjiva window. The source of a Go file is on screen. The Visuals menu opens and Film is chosen. The film then plays: an order moves through the machines of a Go order handler, and a caption explains each step.](docs/images/film.gif)](https://aayushch.github.io/codjiva/#demo)
 
-*A film Codjiva made from [one Go file](fixtures/go-orders/internal/orders/handler.go). This recording is
-silent. [The project's web page](https://aayushch.github.io/codjiva/#demo) plays the same film with sound.*
+*Codjiva playing a film it made from [one Go file](fixtures/go-orders/internal/orders/handler.go). This
+recording is silent. [The project's web page](https://aayushch.github.io/codjiva/#demo) plays the same film
+with sound.*
 
 - **Visualise** makes a still, interactive blueprint of one file or one folder. You can pan and zoom, click a
   part to see what it does and where it is in the code, and switch layers on and off.
@@ -37,7 +38,8 @@ One of these, to do the reading and drawing:
 |---|---|
 | **Claude Code** | The `claude` program, signed in. This is the best tested path. |
 | **Cursor Agent** | The `cursor-agent` program, signed in. Tested with a real run. |
-| **Codex CLI, Gemini CLI, Antigravity CLI, Pi** | Supported by definition files that have not yet been confirmed against the real programs. Settings marks them so. |
+| **Codex CLI** | The `codex` program, signed in. Tested with a real run. |
+| **Gemini CLI, Antigravity CLI, Pi** | Supported by definition files that have not yet been confirmed against the real programs. Settings marks them so. |
 | **An API key** | For Anthropic, OpenAI, Google Gemini, or any server that speaks the OpenAI chat format (OpenRouter, Ollama, LM Studio). Codjiva then talks to the provider itself and no agent program is needed. |
 
 Open **Settings** (the sliders icon in the title bar, or Cmd/Ctrl+,) to see which agents were found and to add a key.
@@ -45,44 +47,47 @@ Open **Settings** (the sliders icon in the title bar, or Cmd/Ctrl+,) to see whic
 ## Using it
 
 1. **Open a folder.** The explorer on the left lists it. Folders named in `.gitignore` are left out.
-2. **Select a file.** Its card lists the six views that can be made of it. Click **Visual**. You can say what
-   the picture should show, or leave that empty. The job panel at the bottom shows what the agent is doing. A
-   visual takes about three minutes.
-3. **Explore the visual.** Click a part to see its role, the lines of its code, what it reads and writes, where
-   the work goes from it, and the edge cases the agent found in it. The **Source** tab shows the file itself,
-   read-only.
+2. **Select a file.** Its card lists the six views that can be made of it. Click **Blueprint**. You can say
+   what the picture should show, or leave that empty. The job panel at the bottom shows what the agent is
+   doing. A blueprint takes about three minutes.
+3. **Explore the blueprint.** Click a part to see its role, the lines of its code, what it reads and writes,
+   where the work goes from it, and the edge cases the agent found in it. The **Source** button, the `</>`
+   icon at the right end of the bar above the file, shows the file itself, read-only.
 4. **Film** on the card asks which companion files the agent should read, what the film should show, and how
    long it should be. Codjiva suggests companions from the file's imports, its tests and the files that use
    it. Use **Ignore always…** next to a suggestion to keep that file, or a whole folder it is in, out of the
    suggestions for good. The story outline appears while the film is being made, and you can change it. The
-   film opens on the **Film** tab as soon as it is finished, and plays at 0.75×, 1×, 1.25×, 2× or 4×.
+   film is shown as soon as it is finished, and plays at 0.75×, 1×, 1.25×, 2× or 4×.
 5. **Step through.** Click **Step-through** on the card of a file. It suits a parser, a state machine,
    a validator or any other code whose behaviour depends on its input. The agent draws the states and writes
    a step function that restates the code. You then run it on the examples it chose or on your own input,
    one step at a time. The same command is in the menu that a right-click on a file opens.
-6. **The other views of a file** are behind the **More** tab: Schema, Lanes and Structure. Its menu says what
-   each one is for. Choose one to open its tab, and click its small card there to make it. A folder has a
-   **Map** tab. The same commands are in the menu that a right-click in the explorer opens. On a map, click a
-   box twice to see what is inside it.
+6. **Schema, Lanes and Structure** are the other three views of a file. Each has a small card on the card of
+   the file, and a click on it starts making it. A folder has a **Map** tab beside its **Blueprint** tab. The
+   same commands are in the menu that a right-click in the explorer opens. On a map, click a box twice to see
+   what is inside it.
 
-   **Not sure which one to make?** A file can be shown in six ways: Visual, Film, Step-through, Schema, Lanes
-   and Structure. The card of a file has a small card for each, and a click on one starts making it. Click
-   **Which view fits this file?** under them, or choose the same command in the menu of the **More** tab.
+   **Switching between them.** The **Visuals** button at the right end of the bar above the file opens a menu
+   of all six: Blueprint, Film, Step-through, Schema, Lanes and Structure. Point at one to read what it is
+   for, and choose one to show it. While one of them is on screen, the button has its name.
+
+   **Not sure which one to make?** Click **Which view fits this file?** under the small cards, or choose the
+   same command in the menu of the **Visuals** button.
    Your agent reads the file and ranks the six, with one sentence of reason for each. The first is marked as
-   suggested on the card and its tab is underlined. Point at a small card to read the agent's reason for
-   that view. The answer takes a few seconds and is kept until the file changes. It only suggests: you can
+   suggested on the card and in the menu, and the **Visuals** button is underlined. Point at a small card to
+   read the agent's reason for that view. The answer takes a few seconds and is kept until the file changes. It only suggests: you can
    make any of the six.
 7. **Feedback.** Under the inspector, write what should change. Codjiva attaches the moment of the film you are
    at and, with **Point at…**, the element you mean. A new version is made with only that change.
 8. **Compose.** Tick two or more artifacts in the library and click **Compose**. Codjiva proposes joins between
    their ports, and you confirm them.
 
-**Rationale.** A visual or a film says what the code does. Where the code also shows why it is built that
+**Rationale.** A blueprint or a film says what the code does. Where the code also shows why it is built that
 way, the agent records that as a rationale, with the line that gives the reason. Each one is marked "Stated
 in the code" when a comment or a name gives the reason, and "Inferred from the code" when the agent concluded
 it from how the code works. A rationale is never drawn until you ask for it:
 
-- In a visual, select a part to read its rationale in the inspector. The **Rationale** switch under Layers
+- In a blueprint, select a part to read its rationale in the inspector. The **Rationale** switch under Layers
   puts a **?** on every part that has one, and a click on the **?** opens it.
 - In a film, a bubble that has one carries a small **rationale** chip. Clicking it pauses the film and opens
   the reason inside the bubble. The inspector lists all rationales of the film.
@@ -112,7 +117,7 @@ The sidebar on the left, the inspector on the right and the job panel at the bot
 
 ### Following names in the Source view
 
-The **Source** tab shows a file read-only, and the names in its code can be followed.
+The **Source** view shows a file read-only, and the names in its code can be followed.
 
 - Click a name to select it. Its other uses in the file are marked, and the panel on the right lists where
   the name is defined and where it is used. Click a place in a list to go there. Esc selects nothing.
@@ -159,10 +164,10 @@ what it does when the pointer is over it.
 
 **Back** and **Forward**, at the left end of the toolbar, move through the files, tabs and pipelines you have
 looked at (⌘[ and ⌘] on macOS, Alt+← and Alt+→ elsewhere). A film that you return to continues
-from the moment you left it, for example after you followed a link to a line of code or looked at the Source
-tab.
+from the moment you left it, for example after you followed a link to a line of code or looked at the
+source.
 
-In the explorer, a file that has a visual or a film has a dot, and every folder above it has a smaller dot, so a
+In the explorer, a file that has a blueprint or a film has a dot, and every folder above it has a smaller dot, so a
 closed folder shows that it leads to one. Only the selected row has a coloured background. The library under the explorer lists everything that was made. Click its
 heading to close it, or drag its top edge to change its height.
 
@@ -179,12 +184,12 @@ agent run.
 - After every agent run, Codjiva compares the whole project with a snapshot taken before the run. If a file
   outside `.codjiva/` changed, the job panel lists it, with a button that restores the files git tracks to
   their last commit. Codjiva cannot tell whether the agent or you changed a file, so the job is not stopped,
-  and a visual or film made from a changed file is marked stale. A job that changes an already saved version
+  and a blueprint or film made from a changed file is marked stale. A job that changes an already saved version
   is stopped and its result is discarded.
 - The answer to **Which view fits this file?** is kept in `.codjiva/suggestions/`. The agent is given the
   file's text for that question and draws nothing. With Claude Code it is asked with the small model, `haiku`,
   whatever model Settings names for jobs.
-- Several jobs can run at the same time. Only a second job for the same visual, film or pipeline has to wait
+- Several jobs can run at the same time. Only a second job for the same blueprint, film or pipeline has to wait
   until the first has ended.
 - Artifacts are shown in a sandboxed frame that can run scripts and nothing else, with a policy that blocks
   every network request. An artifact cannot reach the app, your files or the internet.
@@ -204,12 +209,13 @@ agent run.
 |---|---|---|
 | Agent | the first one found | Claude Code is used first when it is installed. |
 | Model | `sonnet` for Claude Code | The model a job asks the agent for. Type another model's name to use that one. |
-| Thinking effort | Automatic | Low for a visual, medium for a film or a pipeline. |
-| Fix rounds | 3 | How often a result that fails its checks is sent back to the agent. |
+| Let the agent load my own setup | off | Shown for an agent that can be started without your own setup for it. With the switch off, Claude Code is started with `--safe-mode`, which keeps out your own `CLAUDE.md` files, skills, plugins, hooks and custom agents. Codex is started without the project's `AGENTS.md` files, your hooks and your plugins, Gemini CLI without your extensions, and Pi without `AGENTS.md` and `CLAUDE.md` files. Settings names the exact arguments. Turn the switch on to start the agent without them. |
+| Thinking effort | Automatic | Low for a blueprint, medium for a film or a pipeline. |
+| Fix rounds | 3 | How often a result that fails its checks is sent back to the agent. A round that only repairs a result that could not be built or drawn is not counted, once per job. |
 | Spending limit per job | none | For agents that can enforce one. |
 | Never suggest these files and folders | `vendor/`, `third_party/`, `node_modules/` | Patterns for third-party and generated code that should not be suggested as companion files. One per line, written like a line of a `.gitignore` file: `vendor/` is every folder of that name, `/internal/generated/` is that one folder, `*.pb.go` is every file with that ending. |
 | Look for updates automatically | on | Asks GitHub for the newest release shortly after the app starts and every two hours. With this off, the app looks only when you click **Check for updates**. |
-| Theme | Match the system | Light or dark, for the window and for the visuals and films shown in it. An artifact made by an earlier version stays dark until it is made again, and an exported film is dark. |
+| Theme | Match the system | Light or dark, for the window and for the blueprints and films shown in it. An artifact made by an earlier version stays dark until it is made again, and an exported film is dark. |
 
 ## Building from source
 

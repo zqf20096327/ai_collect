@@ -47,7 +47,7 @@ npm install
 npm run build
 
 # Copy config template
-cp config/config.example.json config/config.json
+cp ../config/config.example.json ../config/config.json
 # Edit config.json with your Yuque API token
 
 # Run
@@ -55,7 +55,48 @@ npm start              # stdio mode
 npm run dev:http       # HTTP SSE mode (http://localhost:3099)
 ```
 
-> **Note**: `npm run dev:http` uses `tsx` for hot-reload during development.
+> **Note**: `npm run dev:http` uses `tsx` for hot-reload during development, but it shares the production HTTP entry — it **also requires `YUQUE_MCP_HTTP_TOKEN`** or the process exits.
+
+### Install from npm (no clone needed)
+
+```bash
+npm install -g yuque-ai-mcp
+yuque-mcp            # stdio transport
+yuque-mcp-http       # HTTP SSE transport (needs YUQUE_MCP_HTTP_TOKEN)
+
+# or run straight from the registry without a global install
+npx -y -p yuque-ai-mcp yuque-mcp
+```
+
+The package ships two binaries: `yuque-mcp` (stdio, what MCP clients should point at) and `yuque-mcp-http` (SSE). Config is read from `--config <path>` first, then `./yuque-config.json`, then `~/.yuque-mcp/config.json` (there is no environment-variable token override — the token must be in the config file).
+
+**Windows**: when a client config rejects `npx`, use `"command": "npx.cmd"` (PowerShell) or `"command": "node", "args": ["C:/path/to/node_modules/yuque-ai-mcp/dist/cli.js"]`. If PowerShell blocks `.ps1` shims, call `npx.cmd` instead of `npx`.
+
+### Export output is sandboxed by default
+
+`yuque_export_repo` / `yuque_export_doc` / `yuque_export_resources` only write inside the current working directory (or `YUQUE_EXPORT_ROOT`); absolute paths outside it return `INVALID_OUTPUT_DIR` instead of writing. To allow another location:
+
+```bash
+export YUQUE_EXPORT_ROOT="/path/to/exports"
+```
+
+### HTTP / SSE mode requires an access token
+
+`dist/http.js` exposes all tools over the network, so it **refuses to start** unless a shared token is set:
+
+```bash
+export YUQUE_MCP_HTTP_TOKEN="$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'))")"
+npm run start:http                        # binds 127.0.0.1:3099 by default
+curl http://127.0.0.1:3099/health         # /health stays public
+curl -N "http://127.0.0.1:3099/sse?token=$YUQUE_MCP_HTTP_TOKEN"
+```
+
+Clients that can set headers should send `Authorization: Bearer <token>` instead of the query parameter
+(browsers' `EventSource` cannot set headers, hence the query form).
+Optional env: `HOST` (default `127.0.0.1`), `PORT` (default `3099`),
+`YUQUE_MCP_CORS_ORIGINS` (comma-separated allowlist; empty means no CORS headers),
+`YUQUE_TRUSTED_RESOURCE_HOSTS` (host allowlist for resource downloads in `yuque_export_resources`, default `yuque.com,nlark.com,yuque.net`).
+Set `DEBUG=1` to log retry attempts to stderr.
 
 ## Tool Overview
 

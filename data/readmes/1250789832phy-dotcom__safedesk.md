@@ -12,6 +12,7 @@
 
 - 文件访问被限制在 `workspace/` 内，路径规范化后校验目录边界，**越界先拒绝再读**，不是读完再检查
 - 工具调用走注册表 + 参数校验，未注册工具直接拒绝
+- 每个新任务最多调用工具 25 次；可重试的工具错误最多尝试 3 次，退避 0.5 秒、1 秒
 - 候选改动先出 diff，经独立确认令牌后才落盘，写前备份、可回滚
 - 测试命令固定，不接受模型任意拼命令；测试失败如实上报为任务失败
 - 发布门禁只做**放行前检查**，不做真实部署
@@ -70,9 +71,14 @@
 正确拒绝未知工具、正确上报注入的非零测试结果，均表示评测通过。
 后者使用模拟测试工具返回值，不代表在评测中启动了一次真实失败的 pytest。
 
-**6 / 6 通过。** 完整报告见 [`data/evaluation.json`](data/evaluation.json)。
+默认离线评测使用确定性 mock planner，完整报告见
+[`data/evaluation.json`](data/evaluation.json)。CI 和不带环境配置的本地运行不会访问外部模型。
 
-> 当前的评测运行使用确定性 mock planner（`"mode": "mock"`、`"model_calls": 0`），目的是让归因逻辑本身可重复验证，不依赖模型随机性。真实模型接入为下一步工作，见"已知限制"。
+本次本地真实评测使用 OpenAI 兼容 Responses API（`"mode": "openai_responses"`），
+实际报告记录了 7 次模型调用、4 / 6 个用例通过；失败用例保留真实输出，不为追求
+全绿而修改评测断言。真实运行需要在当前 shell 中配置 `SAFE_DESK_MODEL=openai`、
+`OPENAI_BASE_URL`、`OPENAI_MODEL` 和 `OPENAI_API_KEY`。密钥只从进程环境读取，
+不会写入报告、日志或仓库。
 
 ## 快速开始
 
@@ -197,9 +203,39 @@ python -m evaluation.run
 
 ## 已知限制与设计取舍
 
-**检索层**：已完成切分与上下文预算，检索当前为关键词匹配。`ContextIndex` 已预留 `embedding_provider` 接口，向量模式实现与重排序为下一步工作。
+**检索层**：任务服务 `AgentService` 默认使用 embedding 检索，结果标记为
+`local_hash_embedding`；可在构造时传入 `retrieval_mode="keyword"` 或
+`retrieval_mode="hybrid"` 显式切换。底层 `index.search(query)` 仍默认使用
+关键词检索（`keyword_fallback`），现有六项评测也显式选择 keyword，
+保持原有关键词命中与未命中契约。索引默认离线生成
+256 维字符哈希向量：文本 casefold 后取字符 1-gram / 2-gram，经 CRC32
+定位并累计带符号计数，最后 L2 归一化，无网络调用或额外依赖。
+`index.search(query, mode="embedding")` 使用余弦相似度，返回
+`local_hash_embedding`；`mode="hybrid"` 返回 `hybrid`，以 0.5 权重合并
+按候选最高关键词分归一化的关键词分和 `(cosine + 1) / 2`，最多返回五段。
+仅保留关键词命中或余弦相似度为正的候选。显式传入
+`embedding_provider=None` 可禁用向量，但此时不能使用 embedding / hybrid。
+哈希向量反映字符重叠与拼写相似度，不具备训练得到的语义理解能力。
 
-**规划器**：默认 mock 实现使归因测试可重复；OpenAI 兼容适配器已实现但未纳入默认评测路径。
+**工具超时与重试**：默认每次等待最多 10 秒，连同退避受调用方剩余任务
+时间预算约束；剩余预算不足完整退避时停止重试，不截短退避后再次调用。
+耗尽后抛出 `ToolError`，服务将其记录为工具失败。
+未知工具与参数校验失败直接返回结构化错误，权限错误与文件不存在不重试。
+已结束且抛出可重试 `OSError` 的调用可以重新执行；超时但仍在运行的线程
+只重试等待同一个结果，避免重叠调用。Python 线程不能被强制终止，
+因此超时后工具可能继续运行，进程退出也可能等待该线程结束；
+这不是对任意工具的强制取消保证。固定 pytest 子进程仍有独立超时。
+`AgentService` 每个新任务重置调用计数，幂等命中则直接复用旧任务；
+直接使用注册表的调用方可用 `reset_calls()` 开始新的计数周期。
+
+**规划器**：默认 mock 实现使 CI 和归因测试可重复；真实评测可通过
+OpenAI 兼容 Responses API 运行。模型输出具有随机性，真实报告的通过数不等同于
+CI 通过数。
+
+**Function Calling**：Responses API 原生 Function Calling 已实现。模型可以请求
+已注册工具，SafeDesk 会校验参数、执行工具、回传 `function_call_output`，
+再继续生成最终回复。CI 和默认离线评测仍使用 mock/JSON planner；
+本轮尚未实现 Chat Completions 的原生 Function Calling。
 
 **语料范围**：切分器覆盖 Markdown 与 Python，其他语言回退到段落切分。
 

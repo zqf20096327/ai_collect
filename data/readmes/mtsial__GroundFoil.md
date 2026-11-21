@@ -1,6 +1,7 @@
 # GroundFoil: deep learning for inverted airfoils in ground effect
 
-[![DOI](https://zenodo.org/badge/1454795941.svg)](https://doi.org/10.5281/zenodo.24176980)
+[![Code DOI](https://zenodo.org/badge/1454795941.svg)](https://doi.org/10.5281/zenodo.24176980)
+[![Dataset DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24424329.svg)](https://doi.org/10.5281/zenodo.24424329)
 
 **GroundFoil** predicts the flow around **inverted airfoils in ground effect**
 (F1 front wings) with a U-Net trained on our own RANS simulations. It builds on
@@ -11,21 +12,23 @@ reproduced on current software: OpenFOAM v2606, gmsh 4 and Docker on Windows
 checked against high-resolution LES (skin friction within 7–8%), wind-tunnel
 tests of an F1 wing (downforce gain near the ground within 4%) and finer meshes
 (0.04–3%).
-Trained on 3,096 of these simulations, the U-Net predicts the flow around 28
-airfoils it has not seen with a 0.9% error, against 20% for the free-air
+Trained on 6,177 of these simulations, the U-Net predicts the flow around 28
+airfoils it has not seen with a 0.8% error, against 20% for the free-air
 model used as it is. The downforce computed from its pressure is off by
-3.9%, after three changes: a loss that counts the cells next to the wing
-more, the distance to the wing's surface as an extra input, and random
-starting weights instead of the free-air model's (9.9% before them). On two
-wings it has never seen, its downforce at every ride height is within 4%
-(the NACA 4412) and 1.1% (the Tyrrell 026, the F1 wing of the wind-tunnel
-tests) of the downforce that the simulated pressure gives on the same grid,
-and it puts the NACA 4412's peak at the CFD's ride height. Against
-OpenFOAM's own force, after a straight-line correction for the grid, it is
-within 3.0% and 2.0%.
-For the downforce alone, smaller models that skip the flow do two to three
-times better, and one that predicts the pressure along the wing's surface
-also gives the drag, the moment and where the flow separates.
+3.3%. With 3,096 samples, three changes had brought it from 9.9% to 3.9%: a
+loss that counts the cells next to the wing more, the distance to the wing's
+surface as an extra input, and random starting weights instead of the
+free-air model's; twice the data then took it to 3.3%. On two wings it has
+never seen, its downforce at every ride height is within 2.0% (the NACA
+4412) and 2.6% (the Tyrrell 026, the F1 wing of the wind-tunnel tests) of
+the downforce that the simulated pressure gives on the same grid, and it
+puts the NACA 4412's peak at the CFD's ride height. Against OpenFOAM's own
+force, after a straight-line correction for the grid, it is within 1.9% and
+3.0%.
+For the downforce alone, smaller models that skip the flow do about three
+times better (1.2%), the smallest in under a millisecond per prediction, and
+one that predicts the pressure along the wing's surface also gives the drag,
+the moment and where the flow separates.
 
 - Thuerey et al.'s paper: https://arxiv.org/abs/1810.08217
 - Their code: https://github.com/thunil/Deep-Flow-Prediction (Apache-2.0)
@@ -34,7 +37,7 @@ Words used here are explained in the [glossary](docs/glossary.md).
 
 ## Workflow
 
-The study in fifteen steps, each with its own page:
+The study in sixteen steps, each with its own page:
 
 1. **[Reproduction](docs/01-reproduction.md):** we first ran the original
    free-air study on current software, to start from a working pipeline and a
@@ -88,12 +91,16 @@ The study in fifteen steps, each with its own page:
     surface gets the downforce as close as step 14's (1.3%), and also the
     drag (2–3% on the two wings), the moment and where the flow separates.
     On the F1 wing its suction peak is too low, as the U-Net's was.
+16. **[All the data](docs/16-final-models.md):** the three models again,
+    on 6,177 training samples from 8,000 runs. All three are 12–15% better:
+    the U-Net's field error is 0.8% and its downforce error 3.3%; the two
+    small models are 1.2% off OpenFOAM's force. With up to about 200
+    samples, a Gaussian process predicts the downforce best. More data still
+    helps the U-Net; twice the training does not.
 
-**Next:** four more batches of 1000 runs (about 6,200 training samples),
-then the final versions of the three models with all the data, the learning
-curves (with a Gaussian process for the downforce) and both sweeps again;
-figures of predicted and simulated flow fields. All commands are in
-[How to run it](docs/howto.md).
+**Data:** the simulations, the trained models and the NACA 4412 sweep are on
+Zenodo, https://doi.org/10.5281/zenodo.24424329. **Next:** a paper on these
+results. All commands are in [How to run it](docs/howto.md).
 
 ## What the network learns
 
@@ -114,22 +121,24 @@ the simulated pressure and velocity.*
 | Mesh study | numerical uncertainty of the downforce 0.04–3%, largest closest to the ground | [Steps 3 and 4](docs/03-mesh-study.md) |
 | Airfoil shapes | 1,462 of the 1,497 UIUC files smoothed: pressure wiggles above 0.1 in 453 files before, in none after | [Step 5](docs/05-airfoil-shapes.md) |
 | Where steady RANS converges | Cl becomes steady in 86% of the dataset's runs; close to the ground the flow separates, and part of the range has no steady solution | [Step 6](docs/06-parameter-scan.md) |
-| U-Net in ground effect | 0.9% error on 28 unseen airfoils with 3,096 training samples and the distance input (1.4% without it; the free-air model as it is: 20%) | [Steps 8, 10 and 13](docs/13-distance-input.md) |
-| Downforce from the U-Net | 3.9% error with the loss weighted next to the wing, the distance input and random starting weights (from the free-air model: 6.2% with the weighting alone, 9.9% with the plain loss; from random weights without the distance: 6.8%) | [Steps 9, 10 and 13](docs/13-distance-input.md) |
-| Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.6% error on the 28 test airfoils (1.5% against OpenFOAM's force, where the U-Net is 4.3%); 0.13 ms per prediction | [Step 14](docs/14-downforce-model.md) |
-| Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.3%, drag 8.7% on the test airfoils (2–3% on the two wings), moment 2.5%; the separated part of the surface, 10% of it on average, is off by 0.3% of the surface | [Step 15](docs/15-surface-model.md) |
-| Unseen wing: NACA 4412 | at 11 ride heights: downforce within 5% (within 4% with the distance input)¹, peak at the same height as the CFD | [Steps 11 and 13](docs/11-naca4412-sweep.md) |
-| Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 1.1% with the distance input (10–19% low without it)¹; the suction peak still too weak | [Steps 12 and 13](docs/13-distance-input.md) |
+| U-Net in ground effect | 0.8% error on 28 unseen airfoils with all 6,177 training samples and the distance input (0.9% with 3,096 samples, 1.4% without the distance input; the free-air model as it is: 20%) | [Steps 8, 10, 13 and 16](docs/16-final-models.md) |
+| Downforce from the U-Net | 3.3% error with all the samples (3.9% with 3,096), the loss weighted next to the wing, the distance input and random starting weights (with 3,096 samples, from the free-air model: 6.2% with the weighting alone, 9.9% with the plain loss; from random weights without the distance: 6.8%); twice the training does not lower it | [Steps 9, 10, 13 and 16](docs/16-final-models.md) |
+| Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.5% error on the 28 test airfoils (1.2% against OpenFOAM's force, where the U-Net is 4.0%); 0.65 ms per prediction from the airfoil file, against 28 ms for the U-Net and 318 s for a simulation | [Steps 14 and 16](docs/16-final-models.md) |
+| Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.2%, drag 7.5% on the test airfoils (4–5% on the two wings), moment 2.2%; the separated part of the surface, 10% of it on average, is off by 0.2% of the surface | [Steps 15 and 16](docs/16-final-models.md) |
+| Downforce from little data | a Gaussian process is the most accurate model of the downforce with up to about 200 training samples (7.4% with 97, where the small network is 12.4%), and says how sure it is; from 386 samples on, the small network is better | [Step 16](docs/16-final-models.md) |
+| Unseen wing: NACA 4412 | at 11 ride heights: downforce within 2.0% with all the samples (5% and 4% with 3,096, without and with the distance input)¹, peak at the same height as the CFD | [Steps 11, 13 and 16](docs/16-final-models.md) |
+| Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 2.6% with all the samples (1.1% with 3,096 and the distance input, 10–19% low without it)¹; the suction peak still too weak | [Steps 12, 13 and 16](docs/16-final-models.md) |
 
 ¹ Against the downforce that the simulated pressure gives on the same
 128 × 128 grid. Against OpenFOAM's own force, with the straight-line
-correction of [step 14](docs/14-downforce-model.md), the U-Net with the
-distance input is within 3.0% (NACA 4412) and 2.0% (Tyrrell 026).
+correction of [step 14](docs/14-downforce-model.md), the final U-Net is
+within 1.9% (NACA 4412) and 3.0% (Tyrrell 026), and the two small models
+within 0.9% on both wings.
 
 The test errors are those of all 102 test samples. Two test airfoils are
 near copies of training airfoils (see [step 7](docs/07-dataset.md)); without
-their 7 samples the errors are 3–5% higher (0.9% stays 0.9%, 3.9% becomes
-4.0%).
+their 7 samples the errors are 3–5% higher (0.8% stays 0.8%, 3.3% becomes
+3.4%).
 
 ---
 
@@ -157,7 +166,7 @@ checks, the dataset and the training) is in [How to run it](docs/howto.md).
 
 ```
 README.md                   this page: summary, the steps, results, quick start
-docs/                       one page per step (01-reproduction.md to 15-surface-model.md), howto.md, glossary.md, references.md
+docs/                       one page per step (01-reproduction.md to 16-final-models.md), howto.md, glossary.md, references.md
 Dockerfile                  OpenFOAM v2606 + gmsh + Python environment
 patches/openfoam-v2606.patch  fixes to the original code for OpenFOAM v2606
 scripts/view_sample.py      plots all six channels of a training sample
@@ -227,10 +236,15 @@ Deep-Flow-Prediction/       the original code, which you clone here (see Quick s
 
 To cite this repository: M. T. A. Sial, *GroundFoil: deep learning for
 inverted airfoils in ground effect*, Zenodo,
-https://doi.org/10.5281/zenodo.24176980 (all versions; v0.1.0, under its first
-title *Deep Flow Prediction on OpenFOAM v2606, extended to inverted airfoils in
-ground effect*, is https://doi.org/10.5281/zenodo.24176981). GitHub's "Cite
-this repository" button gives the same in other formats.
+https://doi.org/10.5281/zenodo.24176980 (all versions; v1.0.0, the version of
+the final results, is https://doi.org/10.5281/zenodo.24425137; v0.1.0, under
+its first title *Deep Flow Prediction on OpenFOAM v2606, extended to inverted
+airfoils in ground effect*, is https://doi.org/10.5281/zenodo.24176981).
+GitHub's "Cite this repository" button gives the same in other formats.
+
+To cite the dataset and the trained models: M. T. A. Sial, *GroundFoil dataset:
+RANS simulations of inverted airfoils in ground effect, and trained surrogate
+models*, version 1.0, Zenodo, https://doi.org/10.5281/zenodo.24424329.
 
 Other references used on these pages: [References](docs/references.md).
 

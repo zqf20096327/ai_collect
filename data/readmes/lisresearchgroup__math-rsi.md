@@ -8,9 +8,27 @@
 
 </div>
 
-[![Actual MathRSI v0 through v6 homepage evolution](figures/mathrsi/media/evolution.gif?v=6-q7-20261120)](figures/mathrsi/media/evolution.mp4?v=6-q7-20261120)
+<a id="news"></a>
 
-*Actual v0 → v6 homepage replay, ending at v6 Current. Click for MP4; [interactive homepage](https://lisresearchgroup.github.io/math-rsi/) · [six case studies and verification status](case-studies/README.md).*
+## 📢 News
+
+- **[v7](https://github.com/lisresearchgroup/math-rsi/releases/tag/v7)** · 2026-11-22 — The working proof now extends every matching in the seven-dimensional cube to a Hamilton cycle. The Happy Ending manuscripts give ES(8) ≤ 294, ES(9) ≤ 1,100 and ES(10) ≤ 3,980.
+- **[v6](https://github.com/lisresearchgroup/math-rsi/releases/tag/v6)** · 2026-11-20 — The Q₇ matching threshold fell from 57 edges to 56. For square-free subgraphs of Q₈, the maximum number of edges was narrowed to 682 or 683.
+- **[v5](https://github.com/lisresearchgroup/math-rsi/releases/tag/v5)** · 2026-11-14 — In Q₇, every matching with at least 57 edges was shown to extend to a Hamilton cycle. The proof showed how to reuse a theorem by choosing a different representation of the same matching.
+
+<details>
+<summary>Earlier versions (v1–v4)</summary>
+
+- **[v4](https://github.com/lisresearchgroup/math-rsi/releases/tag/v4)** · 2026-11-08 — Convex polygon proofs taught the workflow to trace which inequalities must be tight together. The degree–diameter plugin gained methods for constructing larger graphs.
+- **[v3](https://github.com/lisresearchgroup/math-rsi/tree/v3)** · 2026-11-04 — Three new plugins brought MathRSI to six domains, adding square-free subgraphs of cubes, matching extension in cubes, and convex polygons.
+- **[v2](https://github.com/lisresearchgroup/math-rsi/tree/v2)** · 2026-11-03 — The degree–diameter plugin joined MathRSI. It was the first plugin used to test a new maintenance workflow for turning research findings into changes to the shared base.
+- **[v1](https://github.com/lisresearchgroup/math-rsi/tree/v1)** · 2026-11-03 — Property B and coding theory supplied the first shared workflow, from defining a problem and exploring proof routes to checking and handing off a proof.
+
+</details>
+
+[![Historical MathRSI v0 through v6 homepage evolution](figures/mathrsi/media/evolution.gif?v=6-q7-20261120)](figures/mathrsi/media/evolution.mp4?v=6-q7-20261120)
+
+*Historical v0 → v6 homepage replay; “Current” in the recording refers to v6 at that time. Click for MP4; [interactive homepage](https://lisresearchgroup.github.io/math-rsi/) · [six case studies and verification status](case-studies/README.md).*
 
 MathRSI pairs a shared base workflow with domain plugins and a per-problem research wiki, guiding Claude Code and Codex from literature survey and route selection through proof development, review, verification, and handoff. Validated results and diagnosed failures feed back to refine both the workflow and plugins.
 
@@ -57,7 +75,7 @@ Research across six domains supplies results and reusable methods. [Public homep
 - **Degree–diameter:** our constructions reach 2,567 vertices at $(10,4)$, 37,632 at $(11,5)$, 42,433 at $(12,5)$ and 16,416 at $(16,4)$. [Constructions, dated comparisons & scope](case-studies/degree-diameter/README.md)
 - **Erdős Problem 86:** $Q_7$ at $304$ (304-edge construction verified; 304 upper bound as reported in the source package, not re-verified in this pass), $682\le\mathrm{ex}(Q_8,C_4)\le683$, and asymptotic density improved from $0.60318$ to $\le0.5912405943$ (`T3`) / $\le0.5912405942$ (`T4`). [Results & verification scope](case-studies/erdos-86/README.md)
 - **Ruskey–Savage:** a complete author working proof covers every matching in $Q_7$, including empty and perfect matchings; the universal $Q_6$ result is retained. External peer review pending; no Lean. [Proof, local checks & release history](case-studies/ruskey-savage-q7/README.md)
-- **Happy Ending & $N(m,r,s)$:** replayed CNF+DRAT and native-trace integer duals give $N(8,6,6)\le 61$ and $N(9,8,8)\le 688, D_9\le 458$; combined with structural working proofs (independent review pending), they yield signotope $N(8,8,8)\le 318$ (planar $\mathrm{ES}(8)\le 319$ is Schroeder's bound) and working planar corollaries $\mathrm{ES}(7)\le 77$ and $\mathrm{ES}(9)\le 1148$ (vs. $1508$ / $1501^*$). [Results & status](case-studies/happy-ending/README.md)
+- **Happy Ending & $N(m,r,s)$:** new same-input sector-deficit manuscripts give working planar corollaries $\mathrm{ES}(7)\le77$, $\mathrm{ES}(8)\le294$, $\mathrm{ES}(9)\le1100$ and $\mathrm{ES}(10)\le3980$; independent mathematical review remains incomplete. Earlier replayable finite certificates retain their separate scope and provenance. [Current results, evidence & replay](plugins/happy-ending/archive/nmrs-20261120/HANDOFF.md) · [Case guide](case-studies/happy-ending/README.md)
 
 <a id="three-layers"></a>
 
@@ -95,22 +113,9 @@ Two tracks evolve together: **shared base behavior** becomes stronger, while **d
 - **Q₇ follow-up · 2026-11-20:** `main` absorbs the full R7 author working proof accepted in the source project on 19 November. The research used v3 with local adaptations; fixed v5 (≥57 edges) and v6 (≥56 edges) snapshots remain unchanged. [Proof guide](https://github.com/lisresearchgroup/math-rsi/blob/main/plugins/hypercube-hamilton/knowledge/q7-closure-proof.md) · [Recomputation scope](https://github.com/lisresearchgroup/math-rsi/blob/main/plugins/hypercube-hamilton/archive/q7-closure/README.md)
 - **Inherited behavior:** v5's controlled auxiliary choices, cross-representation theorem reuse and consuming returned results before dispatching new work, together with v4's equality-to-witness steps, global progress checks and ECC branch reuse.
 
-**[v6 is the current workflow on `main`](docs/V6_CHANGES.md).** Download the [v6 snapshot ZIP](https://github.com/lisresearchgroup/math-rsi/archive/refs/tags/v6.zip) or [`main` ZIP](https://github.com/lisresearchgroup/math-rsi/archive/refs/heads/main.zip), or clone the repository. Release tags `v1`–`v6` remain fixed snapshots; record the commit hash when handing off a reproducible run. [Evolution & implementation records](development/README.md) · [Maintenance guide](docs/EVOLUTION_WORKFLOW.md)
+**[MathRSI v7 is the latest release](https://github.com/lisresearchgroup/math-rsi/releases/tag/v7).** [Release notes](docs/V7_CHANGES.md) · [Download v7](https://github.com/lisresearchgroup/math-rsi/archive/refs/tags/v7.zip) · [Download main](https://github.com/lisresearchgroup/math-rsi/archive/refs/heads/main.zip) · [Evolution records](development/README.md) · [Maintenance guide](docs/EVOLUTION_WORKFLOW.md)
 
-<details>
-<summary>Release history (v0–v6)</summary>
-
-- **v0:** standalone Property B and ECC research tools prior to the shared harness (no Git tag).
-- **[v1](https://github.com/lisresearchgroup/math-rsi/tree/v1):** five solving stages, three-layer separation, adversarial route iteration and initial plugins.
-- **[v2](https://github.com/lisresearchgroup/math-rsi/tree/v2):** separate maintenance workflow, Degree–Diameter plugin, evidence transfer and shared coverage checks. [Changes](docs/V2_CHANGES.md)
-- **[v3](https://github.com/lisresearchgroup/math-rsi/tree/v3):** full-domain counterexample checks, marked-object transport, finite universal certificates and explicit Lean-premise checks; upgraded ECC and three new domains. [Changes](docs/V3_CHANGES.md)
-- **[v4](https://github.com/lisresearchgroup/math-rsi/tree/v4):** turning tight equalities into usable witnesses, plus Happy Ending and Degree–Diameter methods. [Changes](docs/V4_CHANGES.md)
-- **[v5](https://github.com/lisresearchgroup/math-rsi/tree/v5):** controlled auxiliary choices, theorem reuse across legal representations and finite-plan coverage; deeper Hamilton and DD D5 methods. [Changes](docs/V5_CHANGES.md)
-- **[v6](https://github.com/lisresearchgroup/math-rsi/tree/v6):** hardest-branch split probes, primal–dual coevolution and repair-residual stopping; deeper hypercube extremal and complete $Q_7$ E16 Hamilton methods. [Changes](docs/V6_CHANGES.md)
-
-[Historical v2/v3 architecture diagrams](figures/mathrsi/README.md#historical-diagrams)
-
-</details>
+v0 records the Property B and coding research that preceded the shared workflow. Version tags begin at v1. [Version news](#news) · [Historical architecture diagrams](figures/mathrsi/README.md#historical-diagrams)
 
 <a id="documentation--provenance"></a>
 

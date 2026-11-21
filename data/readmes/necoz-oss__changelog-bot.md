@@ -632,7 +632,28 @@ precedence are treated as the public compatibility contract.
 | CLI package version     | none                                                 | `npm-version`              | `npm_version`              | Action-only, default `latest`                               |
 | Package age guard       | none                                                 | `minimum-package-age-days` | `minimum_package_age_days` | Action-only, default `0`                                    |
 
-Outputs: None.
+Outputs:
+
+| Output          | Description                                                                                                                             |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `release-notes` | The generated release section as Markdown, multi-line content preserved. Set only when the `output` input is `stdout`; empty otherwise. |
+
+```yaml
+- uses: necoz-oss/changelog-bot@v0
+  id: changelog
+  with:
+    release-tag: HEAD
+    release-name: 1.2.0
+    output: stdout
+- name: Use the release notes
+  env:
+    RELEASE_NOTES: ${{ steps.changelog.outputs.release-notes }}
+  run: printf '%s\n' "$RELEASE_NOTES"
+```
+
+The default `pull-request` destination is unchanged and sets no output. An
+`output: stdout` set only in the config file is not detected by the Action, so
+pass `output: stdout` as an input to receive `release-notes`.
 
 ### Package install guard
 

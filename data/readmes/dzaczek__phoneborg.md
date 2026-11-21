@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/diagrams/wordmark.png" alt="PhoneBorg banner: 'Resistance is futile. Your Android will be assimilated.' Four phones with the collective's grid on their screens and a fifth still being assimilated hang on a USB bus into a cube labelled the collective: host, one endpoint" width="820">
+  <img src="assets/diagrams/wordmark.png" alt="PhoneBorg banner: 'Resistance is futile. Your Android will be assimilated.' Four phones with the collective's grid on their screens and a fifth still being assimilated hang on a USB bus into a cube labelled the collective: host, one endpoint. A TV box joins the cube over a dashed 'network adb' line, and a faint kitchen appliance in the far corner is marked 'scanning…'" width="820">
 </p>
 
 <p align="center">
@@ -14,22 +14,23 @@
   <img src="assets/demo.gif" alt="Terminal demo: pbctl nodes lists five ACTIVE phones with their models and tok/s, a streaming chat completion is answered by one phone, and pbctl pools lists spread, affinity, Super Borg and Big Brain pools" width="820">
 </p>
 
-**Turn a drawer full of old Android phones into an AI inference cluster.**
+**Turn a drawer full of old Android phones and TV boxes into an AI inference cluster.**
 
 > *We are PhoneBorg. Your phones will be added to the collective. Their
 > tokens will be added to our own.*
 
 ## Overview
 
-Plug phones into a Linux or macOS host over USB. PhoneBorg installs a small
-node agent on each phone over adb; the phone benchmarks itself, joins the
+Plug phones into a Linux or macOS host over USB. Android TV boxes, which have
+no USB device port, join over network adb ([A new era: TV boxes](#a-new-era-tv-boxes)).
+PhoneBorg installs a small node agent on each phone over adb; the phone benchmarks itself, joins the
 cluster and serves a GGUF model with
 [llama.cpp](https://github.com/ggml-org/llama.cpp). Clients talk to **one
 OpenAI-compatible endpoint**. The controller decides which phone serves which
 model, routes each request to a phone, fails over when one freezes, and
 exports everything to Prometheus and Grafana.
 
-[![PhoneBorg at a glance: API clients and operators call the controller on :18080 (and Ollama apps on :11434). The controller is one Go process with the gateway, registry, catalog and placement, admin API and web panel, Big Brain head and /metrics. pcprov watches USB and provisions phones through the adb server. Requests reach each phone's llama-server through adb forward to :18090; phones register, heartbeat and download models through adb reverse :18080. Prometheus scrapes /metrics every 5 s and Grafana shows three dashboards.](assets/diagrams/overview-pipeline.png)](assets/diagrams/src/overview-pipeline.svg)
+[![PhoneBorg at a glance: API clients and operators call the controller on :18080 (and Ollama apps on :11434). The controller is one Go process with the gateway, registry, catalog and placement, admin API and web panel, Big Brain head and /metrics. pcprov watches USB hot-plug and scans the LAN (pcprov -scan), and provisions phones and TV boxes through the adb server. Requests reach each phone's llama-server through adb forward to :18090; phones register, heartbeat and download models through adb reverse :18080. TV boxes join over network adb on LAN :5555. Prometheus scrapes /metrics every 5 s and Grafana shows three dashboards.](assets/diagrams/overview-pipeline.png)](assets/diagrams/src/overview-pipeline.svg)
 
 > **Status: proof of concept.** It runs end to end on a production cluster of
 > five phones and on emulated phones. APIs, metrics and file layout will
@@ -43,6 +44,7 @@ exports everything to Prometheus and Grafana.
 - [Pools and Super Borg](#pools-and-super-borg)
 - [Jobs and agents](#jobs-and-agents)
 - [Big Brain](#big-brain)
+- [A new era: TV boxes](#a-new-era-tv-boxes)
 - [Model benchmark (MMB)](#model-benchmark-mmb)
 - [Platform features](#platform-features)
 - [Quick start](#quick-start)
@@ -173,6 +175,27 @@ prefer MoE models. Full results:
 [BENCHMARKS.md](docs/BENCHMARKS.md#big-brain-one-model-across-phones) and
 [issue #6](https://github.com/dzaczek/phoneborg/issues/6).
 
+## A new era: TV boxes
+
+> *The collective has outgrown the drawer. Android TV boxes are now
+> assimilated over the network. A Thermomix in the kitchen is under
+> long-range scanning.*
+
+Since 2026-11-21 PhoneBorg also assimilates Android TV boxes, which have no
+USB device port and run adb over the network. `pcprov watch -scan` probes an
+IP, range or subnet every two minutes and connects any new box with network
+debugging on; from there it is provisioned like a phone:
+
+```sh
+pcprov watch -model models/qwen2.5-0.5b-instruct-q4_k_m.gguf -scan 192.168.50.0/24
+```
+
+The first drone, an NVIDIA Shield TV (2017, 3 GB), reached `ACTIVE` about
+30 s after pcprov started. With `pcprov slim`, which now knows the TV apps,
+it serves LFM2-350M at 17.9 tok/s and Qwen2.5-0.5B at 10.3 tok/s. Keep the
+boxes on their own network: anything there with adb open gets connected.
+Details, buying advice and measurements: [docs/TVBOXES.md](docs/TVBOXES.md).
+
 ## Model benchmark (MMB)
 
 MMB loads every model that fits on the chosen phones and measures load time,
@@ -220,6 +243,8 @@ llama.cpp and a first model over USB. Details:
 [INSTALL.md](docs/INSTALL.md#installer). Step by step instead:
 [QUICKSTART.md](docs/QUICKSTART.md) (a test cluster with one or two phones)
 or [INSTALL.md](docs/INSTALL.md) (a permanent install as services).
+A TV box needs no USB: enable network debugging on it and see
+[docs/TVBOXES.md](docs/TVBOXES.md#network-discovery).
 
 Phones: ARM64 Android with 4 GB RAM or more; which phones and models fit:
 [REAL_PHONES.md](docs/REAL_PHONES.md). **Emulated phones** with Prometheus
@@ -281,7 +306,8 @@ The drones do not need to be asked twice.
 | [docs/DEV_EMULATION.md](docs/DEV_EMULATION.md) | developer environment with emulated phones, e2e and load tests |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | how it works: components, routing, placement, ports, security |
 | [docs/BENCHMARKS.md](docs/BENCHMARKS.md) | every measurement, with setup and method |
-| [docs/DECISIONS.md](docs/DECISIONS.md) | architecture decision records (ADR-001..034) |
+| [docs/TVBOXES.md](docs/TVBOXES.md) | Android TV boxes: network discovery, buying advice, Shield measurements |
+| [docs/DECISIONS.md](docs/DECISIONS.md) | architecture decision records (ADR-001..035) |
 
 ## Repository layout
 
@@ -309,7 +335,8 @@ docs/                  guides, architecture, benchmarks, ADRs
   spreading across cheap, poorly secured devices. Its demo splits a 26B model
   over 15 off-brand Android TV boxes (~$55 each), the same layer-split idea
   as [Big Brain](#big-brain). It is also a reminder of why PhoneBorg keeps
-  phones on USB, the gateway local by default and adb off the network.
+  phones on USB, the gateway local by default, and network adb (TV boxes)
+  opt-in, limited to the subnets given to `-scan`.
 - [llama.cpp](https://github.com/ggml-org/llama.cpp): the inference engine on
   every phone, and its RPC backend behind Big Brain.
 

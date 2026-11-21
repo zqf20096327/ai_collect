@@ -74,6 +74,14 @@ Home Connect, Nuki, Somfy, Home Assistant and many more.
 Your data stays on your phone: DoSync has no servers that receive it.
 [Privacy policy](https://giulianireg-spec.github.io/dosync-adapters/privacy/).
 
+## Research paper
+
+The protocol behind this app is described in a peer-reviewed paper:
+**"DoSync: Governing AI-Agent Intents over Heterogeneous IoT Devices"**, Rodrigo Giuliani.
+It was accepted for the IIWOT workshop at IEEE CCNC 2027; the author withdrew it before the
+conference because he could not travel to present it, so it does not appear in the proceedings.
+[Read the paper (PDF)](paper/DoSync-IIWOT2027.pdf).
+
 ## About this repository
 
 This repository hosts the downloadable versions, release notes and feedback. The
@@ -175,6 +183,14 @@ Desde la app también puedes reportar una respuesta rara de la IA (Ajustes).
 
 Tus datos quedan en tu teléfono: DoSync no tiene servidores que los reciban.
 [Política de privacidad](https://giulianireg-spec.github.io/dosync-adapters/privacidad/).
+
+## Artículo de investigación
+
+El protocolo en el que se basa esta app está descrito en un artículo revisado por pares:
+**"DoSync: Governing AI-Agent Intents over Heterogeneous IoT Devices"**, Rodrigo Giuliani.
+Fue aceptado en el workshop IIWOT de IEEE CCNC 2027; el autor lo retiró antes de la conferencia
+porque no podía viajar a presentarlo, así que no figura en las actas.
+[Leer el artículo (PDF, en inglés)](paper/DoSync-IIWOT2027.pdf).
 
 ## Sobre este repositorio
 

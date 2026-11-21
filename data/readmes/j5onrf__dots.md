@@ -1,5 +1,14 @@
 # Hyprdots
 
+<details open><summary>(2026-Nov21) RS Rail <sup>Rust + html</sup></summary>
+<p>
+    
+[Noctalia Theme Sync](https://j5onrf.github.io/rs-agent/)
+<img alt="2026-11-21_08-13-48" src="https://github.com/user-attachments/assets/89009214-e2fa-4af4-981c-350c13bf9cfa" />
+
+
+</details>
+
 </details>
 
 <details open><summary>(2026-Oct23) Noctalia v5.4 <sup> left autohide rail</sup></summary>
@@ -11,20 +20,11 @@
 
 </details>
 
-<details open><summary>(2026-Aug19) C-Shell Precision<sup> quattro</sup></summary>
+<details><summary>(2026-Aug19) C-Shell Precision<sup> quattro</sup></summary>
 <p>
     
 [Omarchy-v4 | Left Rail Dock](https://github.com/j5onrf/dots/tree/main/omarchy-v4)
 <img alt="2026-08-22_12-08-51" src="https://github.com/user-attachments/assets/089c3e8a-1464-4ca1-bb8e-2b396f8b182c" />
-
-</details>
-
-<details><summary>(2026-May31) Py-Agent <sup>beta</sup></summary>
-<p>
-    
-[∿ PyCode | Desktop IDE](https://github.com/j5onrf/py-agent)
-<img alt="2026-08-22_09-19-37" src="https://github.com/user-attachments/assets/7ee497e6-151a-40ac-8839-7e7df7191ba2" />
-
 
 </details>
 
@@ -61,7 +61,7 @@
 
 </details>
 
-<details open><summary>(2026-April14) DankMaterialShell <sup>top list</sup></summary>
+<details><summary>(2026-April14) DankMaterialShell <sup>top list</sup></summary>
 <p>
     
 [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell)
@@ -117,7 +117,7 @@ That is the ultimate "Best of Both Worlds" strategy. Having a toggle script that
 </p>
 </details>
 
-<details open><summary>(2026-April11) Noctalia-Shell <sup>expansive-feature-set</sup></summary>
+<details><summary>(2026-April11) Noctalia-Shell <sup>expansive-feature-set</sup></summary>
 <p>
     
 [Noctalia-Shell](https://github.com/noctalia-dev/noctalia-shell)
@@ -135,7 +135,7 @@ That is the ultimate "Best of Both Worlds" strategy. Having a toggle script that
 
 </details>
 
-<details open><summary>(2026-March27) Caelestia-Shell <sup>modernity</sup></summary>
+<details><summary>(2026-March27) Caelestia-Shell <sup>modernity</sup></summary>
 <p>
 
 [Caelestia-Shell](https://github.com/caelestia-dots/shell)
@@ -360,9 +360,8 @@ https://github.com/j5onrf/dots/blob/main/waybar/Screenshot%20Archive/Screenshots
 
 # Ai<sup> local-ai</sup>
 
-(2026-May-26) [Py-Agent <sup> beta</sup> ](https://github.com/j5onrf/py-agent) 
-<img alt="202" src="https://github.com/user-attachments/assets/bfdb833a-05e5-4c83-9f75-b288c2ec2e83" />
-`Qwen3.5-2B` `Qwen3.6-35B-A3B` `Qwen3.8-27B`
+(2026-May-26) [Rs-Agent + Rs Rail <sup> beta</sup> ](https://j5onrf.github.io/rs-agent/) 
+<h1><a href="https://github.com/j5onrf/rs-agent"><img alt="Rs-Agent" src="https://github.com/j5onrf/j5onrf/blob/main/assets/logo.svg" width="36" height="36" /></a> Rs-Agent &nbsp;&nbsp;<a href="https://github.com/j5onrf/rs-agent"><img alt="rs-rail" src="https://github.com/j5onrf/j5onrf/blob/main/assets/rs-agent-rail.svg" width="36" height="36" /></a> RS Rail</h1>
 
 ---
 

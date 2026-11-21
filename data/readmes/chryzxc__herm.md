@@ -21,7 +21,7 @@ When Hermes supplies edit previews, completed replies show a changes card with e
 
 While browsing chat history, prepared messages appear in order as they become ready, keeping the current reading position stable.
 
-Performance captures record callback timing and workspace updates locally; optional stack samples can add overhead while recording.
+Performance captures record callback timing and workspace updates locally. Enable stack samples to include the call sites responsible for model updates.
 
 Unread session badges and the floating “new messages” control count AI responses only. User messages, tools, activity, system notices, errors, and empty streaming placeholders do not increase the count. Opening an unread session takes you to its first unread reply and marks the captured updates reviewed; a blue-tinted unread divider remains visible for that visit. A session you already viewed since Herm launched reopens where you left it instead; the divider still marks the first unread reply. The Bot picker counts unread sessions per Bot in a red badge, with a plus sign when the available session inventory is incomplete. Scrolling to the latest reply clears the floating count.
 
@@ -165,6 +165,8 @@ The Tasks preview opens on **Activity** by default. Its list/grid toggle switche
 
 The Activity preview separates **Needs your attention**, **In progress**, and **Finished, not opened**. Approval requests and clarification questions show their own status and a short summary, including requests from other sessions. New requests open the preview; select the row to review and respond in the workspace.
 
+Working and waiting Bots in the notch keep animating while you scroll the workspace. Core Animation handles their whole-face movement. Reduce Motion and motion-free skins keep them still.
+
 Activity rows in the side notch and top island have no background fill at rest, including the current session. Both previews offer a labelled **Quick message** entry. Reply controls reserve their space so activity titles stay still on hover.
 
 Conversation approvals, clarification choices, and secret/login requests share a compact neutral card with explicit status, labeled inputs, and grouped actions that stack in narrow panes. Multi-select answers show their selected state; submitting keeps an in-place progress indicator and disables duplicate responses.
@@ -271,9 +273,18 @@ and suppress repeat submission. See [the loading-state audit](docs/loading-state
 
 ### Generative UI
 
+Generated replies can show category breakdowns with labelled horizontal bars and expandable Q&A with Markdown answers.
+
 Generated replies use a macOS-style document surface with a tonal toolbar, visible
 Expand action, grouped provenance, inset sections, and rounded metric figures.
 The treatment follows your current Herm theme, including Glass and Monochrome.
+
+A finished assistant reply can also use ordinary Markdown. A pipe table with a header
+and separator gets sortable columns and a filter above ten rows. A quoted GitHub
+alert such as `> [!TIP]` followed by `> Keep a copy of the original.` appears as a native
+callout. A list of two or more bullets like `- **Format:** CSV` becomes a fact sheet.
+These work with the default Generative UI setting, including in earlier replies.
+Copying the message preserves its Markdown.
 
 [![A Herm reply rendered as an interactive visual answer](docs/media/genui-demo-poster.webp)](docs/media/genui-demo.mp4)
 
@@ -291,7 +302,7 @@ Bot mentions also request visual replies in the recipient's Bot Chat, even while
 |---|---|
 | Data | Sortable, filterable tables with aligned numbers; bar, line, area, and point charts with multiple series linked to a shared dataset (selecting a row highlights it in the chart); metric tiles with comparisons |
 | Decisions and plans | Option comparisons against shared criteria, checklists, timelines with dependencies, and workflow steps (proposed, running, passed, failed, blocked, skipped) |
-| Structure | Graphs (up to 200 nodes, solid or dashed edges, with status) and collapsible trees |
+| Structure | Label–value fact sheets, callouts (note, tip, important, warning, caution), graphs (up to 200 nodes, solid or dashed edges, with status) and collapsible trees |
 | Development | Copyable code blocks, review findings with severity, location, and recommendation, and runnable command cards |
 | Media and sources | Source link lists, image galleries, and before/after image comparisons |
 | Input | Forms with text, number, choice, multiple-choice, and yes/no fields |
@@ -410,10 +421,10 @@ Floating and springy skins lift actions subtly on hover and settle on press;
 surface reveals follow each skin’s motion style. Reduce Motion disables these
 effects, and Retro, Pixel, and E-Ink remain still.
 
-Choose from the skin gallery in **Settings → Appearance**. Every tile previews
+Choose from the skin gallery in **Settings → Appearance**. Each card is labeled **Built-in** or **Imported** and previews
 its own material, geometry, and selection treatment. Switching skins
 keeps the Appearance page selected while the new skin applies immediately. The gallery
-reflows into fewer columns in narrow windows, keeping previews inside their cards. The 21 skins
+reflows into fewer columns in narrow windows, keeping previews inside their cards. The 25 built-in skins
 range from Hermes' desktop look (Nous blue with the etched backdrop from Hermes
 desktop) and Ares' oxblood panels to folded
 Origami, ruled Notebook, molded Clay, and silver-beveled Retro. Terminal has
@@ -424,6 +435,20 @@ way: Hermes snaps like its desktop app, instrument skins move crisply, Cartoon
 and Clay spring, and Glass, Dusk, Storm, and Island settle softly. E-Ink,
 Pixel, and Retro remain motion-free; other skins respect Reduce Motion.
 
+Skin changes also reshape controls. Terminal uses phosphor keys, Notebook marks actions with an
+ink swipe, Swiss uses ruled actions, and mechanical skins use ridged slide switches. The gallery
+shows each skin’s switch beside its type sample.
+
+Canopy pairs matte evergreen with a lichen-colored frond. Capiz has pearl-rimmed ivory panels and teal underlines. Hi-Fi has graphite faceplates and amber tuning marks. High Contrast adds bold outlines and checked navigation in both macOS appearances.
+
+To use a T3Code palette, choose **Copy theme JSON** on the theme page, then
+open the sidebar gear → **Skins** and choose **Import from clipboard**. The same
+action is available in **Settings → Appearance**. Herm applies the palette to its Clean skin and saves it
+on this Mac. Embedded SVG conversation wallpapers such as Pixel Quest animate behind chat messages.
+Reimport older copies to pick up their artwork. Reduce Motion uses the plain palette.
+Palettes with light and dark variants follow macOS. Reimport a
+theme to update it. To remove an imported skin, right-click its card and choose **Remove skin**. [T3 Themes](https://t3themes.com/)
+
 Herm uses one centralized solid accent palette throughout the app: teal, amber,
 violet, coral, blue, orange, pink, green, cyan, indigo, and tangerine. Neutral skins use gray actions and selection;
 character skins use their own hue. Live work indicators use the shared blue status tone across sessions, bots, automations, and the overview. Status, charts, agent identities, and file icons reuse the
@@ -431,6 +456,8 @@ same approved solid color families. The [color-system audit](docs/color-system.m
 records the mapping for each app area; `make color-contract` guards future features.
 Solid fills stay the same in Light/Dark; text ink adapts for readable contrast on each
 theme, including Light/Dark, Monochrome, and E-Ink.
+
+The desktop workspace card clears the full toolbar in both density settings.
 
 The expanded floating workspace fills the panel vertically without extra top or bottom shell padding.
 
@@ -441,7 +468,7 @@ orange is reserved for attention rather than normal draft or modified state.
 
 Shared tabs carry their selection highlight between choices. Navigation glyphs respond to selection, floating-skin controls lift gently on hover, and retained disclosures ease open and closed while preserving nested inputs.
 
-Shared interface motion includes smoothly updating progress meters and section counts, in-place pending-action spinners, short tab and navigation selection transitions, rotating disclosures, and subtle page/modal content reveals. Effects follow the active skin and respect Reduce Motion; controls remain immediately usable and content keeps its layout footprint.
+Shared interface motion includes smoothly updating progress meters and section counts, short tab and navigation selection transitions, rotating disclosures, and subtle page and modal reveals. Loading screens, pending actions, and running session indicators use the same three rounded bars. They follow the active skin and stay still with Reduce Motion or a motion-free skin. Controls remain usable and keep their layout footprint.
 
 ### Conversations
 
@@ -466,7 +493,8 @@ status marks, timestamps, inline project pills, previews, and session actions.
 
 Workspace pages share Calendar’s top titlebar treatment, with sidebar toggles aligned
 beside the traffic lights. Chat uses three full-height panes: the session list,
-conversation, and inspector. The session title uses the available header space,
+conversation, and inspector. Session rows stay visible while scrolling, and live replies
+keep their place above the composer. The session title uses the available header space,
 with actions inside the conversation pane; the inspector's tabs extend to the top of its own pane.
 The Bots and Sessions switch responds across each tab, not just its label.
 The session sidebar places **New chat** above Pinned. Navigation distinguishes Chats (speech bubbles), Integrations (puzzle piece),
@@ -486,17 +514,21 @@ bot picker to merge every bot's pinned and recent conversations into one list; e
 row then shows a pill with its bot's avatar and name, and opening it switches to
 that bot. The sidebar reuses the loaded session list for unread counts while you hover, scroll, or search. Each section header stays at the top of the scrolling
 list until the next section replaces it; rows remain lazily rendered.
-Background polls and runtime notifications refresh the latest history page,
-reusing older loaded sessions for up to a minute. Explicit refreshes reconcile
-the full saved history immediately.
+Recent chats and pins appear as soon as the first page arrives. Older chats load
+in the background and join search as they become available. Background polls and
+runtime notifications refresh the latest history page, reusing older loaded sessions
+for up to five minutes. Explicit refreshes reconcile the full saved history immediately.
 One Hermes request loads recent chats for all bots. Switching to a bot shows its
 conversations at once: the list Herm last showed for that bot, or on a first visit
 its rows from that all-bot request. Hermes is then re-read quietly in the
 background. Returning to a bot reopens the chat it was left on, at the same
 reading position when that transcript is still cached. Retained lists stay keyed
 to their own profile and are cleared when the Hermes sign-in changes.
-Startup restoration shares the sidebar's session load, so reopening the latest
-conversation preserves the complete recent list without a manual refresh.
+Startup confirms the selected bot before reopening its last chat. Bot avatars and
+live status load independently of restoration.
+Recently opened chats can show a cached transcript while Hermes refreshes it.
+The conversation lands on the last reading position, unread messages, or the
+latest message using the new chat's layout.
 
 Talk, Pull requests and Issues open as inspector tabs from its **Open a new tab** grid; voice runs while the Talk tab shows. Opening the inspector in the floating desktop panel keeps the conversation visible beside it, with the inspector tab row matching the chat header. The three panes default to roughly 25% list, 40% conversation, and 35% inspector, with adjustable dividers and minimum readable widths.
 
@@ -582,14 +614,15 @@ unavailable items, and links to anchors or subpages retain the browser fallback.
 - **Streaming chat** with Markdown (including tables with optional outer pipes and table text sized to match reply prose), images, tool output, and inline clarification requests. Response text reflows at the current pane width, keeping its action rail beneath the content when resizing.
 - **Image previews** preserve their original proportions without square padding, so wide and tall screenshots fill their intended thumbnail size. Click an image to open the full preview.
 - **Website links** show an inline favicon beside their underlined label. GitHub links use a bundled, theme-aware mark; bare PR and issue URLs display as `PR #123` or `Issue #123`. Other public sites load `/favicon.ico` over HTTPS with a globe fallback.
-- **Working bot**: a larger, borderless 40pt avatar reacts to activity with reaches, tilts, and hops, including a soft landing and the current activity icon. Rapid updates blend smoothly, and new activity rows appear immediately. Reduce Motion and motion-free themes keep it still.
+- **Working bot**: three diamond tiles light in sequence beneath the avatar as it leans into a hop. The borderless 40pt avatar reacts to activity with reaches, tilts, and hops, including a soft landing and the current activity icon. Rapid updates blend smoothly, and new activity rows appear immediately. Reduce Motion and motion-free themes keep it still.
 - **Running activity** keeps duration text free of shimmer while elapsed time continues updating, with a separate live-work sweep that pauses when Herm loses focus and stays still under Reduce Motion or motion-free themes. Running and completed tool durations align at the right end of each chat activity row.
 - **Completed activity** starts expanded when the response has no text or images; the activity disclosure can still be toggled.
 - **Edit activity** can expand to a selectable, wrapped diff preview that scrolls vertically.
 - **Reply files** combine delivered files and edit previews when their paths match exactly; diff counts reflect only available previews, not the complete working tree.
-- **Transcript scrolling** follows new output only while you are at the bottom. Scrolling up keeps your reading position through streamed replies, new questions, and transcript refreshes; return to the bottom or choose the floating **Scroll to bottom** arrow above the composer to resume following. The arrow appears whenever you are away from the latest content and shows a count when new messages arrived, with an opaque background that keeps it legible over the transcript. A single travelling rim highlights unread messages or an active response; the down arrow stays still. The control eases into view and animates count changes. Loops stop under Reduce Motion, motion-free skins, or a hidden workspace. Completed assistant replies of every length create nearby text sections as needed while preserving their full height and selected text. History paging reveals eight messages at a time and preserves ongoing scroll movement instead of restoring an earlier offset. Replies with tool activity and hidden entries also continue loading older pages. A session-scoped coordinator owns paging and navigation; unrelated workspace refreshes leave transcript snapshots unchanged. Activity in other sessions and streaming activity outside the mounted history window also leave the visible transcript unchanged; returning to the live reply shows its current activity. Requested history pages prepare during scrolling and stay pending until their measurements are ready; bounded in-memory height measurements survive row remounts. Long streaming replies reuse stable Markdown sections and prepare only changed chunks. Navigator history is reused across activity updates, and ordinary Markdown streaming avoids restarting visual-reply parsing tasks. Find scans full message text off the UI thread, cancels obsolete queries, and reuses matches when Return selects a result. Activity updates reach only the message owning the relevant bot dispatch. During manual scrolling, live replies defer text reflow and show the latest received text when scrolling settles. Jump to latest respects Reduce Motion.
-- Adjacent history prepares its text layout in small slices before it appears. The current page stays visible while it prepares; an unusually slow preparation falls back to normal rendering so older messages remain reachable. Timeline updates its row window only when the buffered rows change.
-- **Jump to message** sits on the left edge of wide conversations, with hover previews opening to the right. Find opens along the same left edge.
+- **Transcript scrolling** follows new output only while you are at the bottom. Scrolling up keeps your reading position through streamed replies, new questions, and transcript refreshes; return to the bottom or choose the floating **Scroll to bottom** arrow above the composer to resume following. The arrow appears whenever you are away from the latest content and shows a count when new messages arrived, with an opaque background that keeps it legible over the transcript. A single travelling rim highlights unread messages or an active response; the down arrow stays still. The control eases into view and animates count changes. Loops stop under Reduce Motion, motion-free skins, or a hidden workspace. Completed assistant replies of every length create nearby text sections as needed while preserving their full height and selected text. History paging reveals eight messages at a time and preserves ongoing scroll movement instead of restoring an earlier offset. Replies with tool activity and hidden entries also continue loading older pages. A session-scoped coordinator owns paging and navigation; unrelated workspace refreshes leave transcript snapshots unchanged. Activity in other sessions and streaming activity outside the mounted history window also leave the visible transcript unchanged; returning to the live reply shows its current activity. Requested history pages prepare during scrolling and stay pending until their measurements are ready; bounded in-memory height measurements survive row remounts. Long streaming replies reuse stable Markdown sections and prepare only changed chunks. Navigator history is reused across activity updates, and ordinary Markdown streaming avoids restarting visual-reply parsing tasks. Find scans full message text off the UI thread, cancels obsolete queries, and reuses matches when Return selects a result. Activity updates reach only the message owning the relevant bot dispatch. During manual scrolling, live replies defer text reflow and show the latest received text when scrolling settles. Jump to latest respects Reduce Motion and lands immediately if the window is hidden.
+- Adjacent history prepares its text layout in small slices before it appears. The current page stays visible while it prepares; an unusually slow preparation falls back to normal rendering so older messages remain reachable. While a split pane scrolls, it updates its own constraints and skips an extra layout pass in the surrounding window. Timeline updates its row window only when the buffered rows change.
+- **Jump to message** sits on the left edge of wide conversations, with hover previews opening to the right. Find opens along the same left edge. Herm prepares message previews when either control needs them.
+- **Reply activity**: tool steps fold into a summary when a reply finishes. Long streamed replies stay visible while final Markdown preparation yields to input. Matching text sections keep their selection, and opening or closing the steps updates the transcript in one layout change.
 - **Message actions**: completed replies show Copy, Retry, and More, with timing metadata aligned to the right. More contains read aloud, branch, reply, pin/unpin, open in a tab, and forwarding to a bot. Active playback keeps a Stop control visible.
 - **Bot replies** expand beneath their activity pill into padded cards with vertical breathing room and fully selectable text.
 - **Pinned conversations** use Hermes' own pin, so pins are shared with Hermes Agent Desktop and `hermes sessions pin`. Pin changes appear after acknowledgement; older refreshes cannot undo them. Saved TUI sessions without an HTTP execution owner use Hermes' verified, profile-scoped pin/unpin command.
@@ -602,7 +635,7 @@ unavailable items, and links to anchors or subpages retain the browser fallback.
   Message pin updates open the pinned list after verification. Errors remain visible across refreshes until another attempt or conversation reset; an unavailable or mismatched reread leaves the saved state uncertain.
 - **Dangerous-command approvals**: *Deny*, *Allow once*, or *Always allow*. *Always allow* is saved to the Hermes allowlist.
 - **Split session panes**: drag a session from the sidebar into the chat area, or use **Open in Split View**, to work in up to three columns side by side. Each column is a tab group with its own transcript and composer. Click any tab to make it the active session; the header and session menu move to its column, and the inspector opens beside it. Drop onto a column to add a tab, or at the trailing edge to open a new column. New tabs and columns open beside the session you came from. Bot main chats split the same way from the Bots page, and group chats can be dragged in or picked from the **Group chat** menu as tabs. Tabs show the same status as the sidebar (working spinner, unread count), and Bot tabs show the Bot's avatar and name. Columns last for the current app run.
-- **Pop-out conversations**: choose **Pop Out Conversation** from a session's, Bot's or group chat's context menu (or **Pop out conversation** in the Conversation actions menu) to move that conversation into its own small floating window, which you can drag to any screen. It shows the transcript and composer with the same chat tools as the main window (folder and worktree bar, ⌘F search, quota), without the inspector, and stays above other apps. Clicking the session in the sidebar brings its window forward. Closing the window keeps any running work going in Hermes Agent, but discards an unsent draft and any queued follow-up prompts. Group chat rows also offer **Open in Split View**, like Bot rows.
+- **Pop-out conversations**: choose **Pop Out Conversation** from a session's, Bot's or group chat's context menu (or **Pop out conversation** in the Conversation actions menu) to move that conversation into its own small floating window, which you can drag to any screen. It shows the transcript and composer with the same chat tools as the main window (folder and worktree bar, ⌘F search, quota) and stays above other apps. Opening a message, file, tool call, or bot preview expands a panel beside the transcript. Clicking the session in the sidebar brings its window forward. Closing the window keeps any running work going in Hermes Agent, but discards an unsent draft and any queued follow-up prompts. Group chat rows also offer **Open in Split View**, like Bot rows.
 
 ### Chat views
 
@@ -625,12 +658,12 @@ Tiles are grouped into **Needs you** (approval, question, failure), **In progres
 unread states as Chats. The status filter shows each group's count; you can also filter
 by project or search titles and previews.
 
-Tiles have a compact status and age row, a two-line linked title, project context,
+Tiles lead with the chat title and age, followed by a compact line for status, bot and project,
 and a readable preview of the most recent saved reply (read from the latest eight
 messages without activating the session). Click anywhere on a tile to open its chat.
 Working tiles show the current tool and keep a steady order while they run.
-Search and project controls sit above the status filters, which scroll at narrow
-widths. Reply fields and tile outlines highlight keyboard focus and follow the
+On wide boards the filters share one row. In narrow windows the status filters
+scroll beneath search and project selection. Reply fields and tile outlines highlight keyboard focus and follow the
 selected skin. Cards appear and change status without fading. The header uses consistently
 sized compact controls, a layout menu, bot avatars in the picker and its choices,
 and New chat at the trailing edge. From a tile you can:
@@ -683,6 +716,7 @@ The composer’s **@** picker shows each bot’s actual name, with its descripti
 - **Attachments**: files, pasted images, prompt snippets, several images or PDFs at once (up to 25 MB per PDF). PDFs are sent as original files for the agent to read, without requiring `pdftoppm`; sent images show previews and documents show file-type labels. Drop Markdown, text, source, and other files into the composer as removable attachments (up to 8 MB each); uploads require Hermes protected file attachment support. **Files** and **Images** open a native attachment picker; **Folder** opens a directory picker and inserts its path into the draft.
 - **Video replies** play inline with native playback, seeking, volume, and fullscreen controls. Playback starts when you press Play and stops when the attachment leaves the view. Open and Download remain available; formats or codecs macOS cannot play show an unavailable message.
 - **Model picker** grouped by provider, with search. A conversation's reported model can appear before the model catalog finishes loading; provider routing still comes from the catalog. **Edit available models… → Unselect All** hides every model except the active one; selections are saved locally.
+- Provider labels in chats, model pickers, settings, and Usage include the provider icon. Completed replies show the reported provider and model below the response when Hermes supplies a turn receipt.
 - Confirmed model switches appear inline in chat with the model, provider, and time. Notices come from Hermes session history and return when you reopen the chat.
 - **Mixture of Agents**: Settings → Models & tools edits Hermes' MoA presets (reference models, aggregator, enabled). Enabled presets appear in model pickers as `MoA · <preset>`; while a MoA turn runs, advisor output, fan-out progress and the aggregating phase stream into the thinking block. Settings → Models & tools also sets the default thinking level for new sessions.
 - **Context guardrails**: the composer shows context progress without a session token total. Its percentage measures the full context window; Hermes can compact earlier based on its configured token limit or other runtime triggers. During compaction, the composer shows **Compacting**, including during streaming turns, and refreshes usage afterward. Context usage is labelled normal, warning (80%), or critical (90%), with actions to branch, compress, or hand off.
@@ -912,50 +946,3 @@ Timeline uses a single horizontal gutter and compact 36pt bot faces, and shows b
 - **⌘K command palette** for app actions and Inbox filters; in a workspace window it opens the same Command Center action palette as the Activity sidebar button, with registry shortcuts in the View and Go menus.
 - **⌘N** starts a new chat and **⌘.** stops the current generation; both appear in the command palette and menu bar.
 - **⌘,** opens Settings; **⌘[ / ⌘]** navigate backward and forward through visited workspace destinations.
-
-### Native review and workflow tools
-
-![A split diff in Herm review](docs/media/pr-split.webp)
-
-Source control alongside a real Herm conversation:
-
-![Herm source control showing changed files, a stash, and commit graph beside a chat](docs/media/source-control.webp)
-
-- Source Control uses matching outlined **Review comparisons** and **Actions** controls with leading icons and a dropdown chevron for Actions. Section icons and count badges use a consistent neutral tint; file statuses and graph lanes retain their semantic colors.
-- Source Control's **Review comparisons** opens staged, working-tree, branch, and
-  commit comparisons from local Git, without fetching. Search covers loaded files;
-  incomplete coverage and changed sources remain visible.
-- Shared native diffs support syntax colors, split/unified layouts, wrapping, Find,
-  expanded review, private line-range revision notes, and validated local context expansion.
-- Revision notes stage context in the source conversation. Use **+** beside a PR
-  diff line to compose an inline review in the file, including expanded file views.
-  Line comments stay private and can be edited beside the file or in **Reviews**;
-  **Submit review** publishes them together with the summary after confirmation.
-  The Reviews panel explains unavailable submission actions and links directly to Code.
-- Highlight diff lines to open a revision-note popover beside the code. Annotated
-  lines stay tinted; click one to edit or delete its note. A note icon with a count
-  badge appears in the review toolbar once notes exist; open it to **Send to chat**.
-  The tray keeps **Send revision** in its header and explains when an owning
-  conversation is required.
-- **Generate review guide** requests analysis in a separate Hermes conversation. It
-  preserves the original task and draft and does not claim an execution sandbox.
-  **Generate review guide** is the single AI-review entry point; the PR toolbar
-  keeps **Attach to chat** for general questions inside session tabs. PR **More**
-  offers **Generate review guide**; a current guide exposes **Read review guide**
-  beside Reviews. The tooltip identifies Hermes Agent's bundled `github` skill.
-  The request asks Hermes to load that skill's code-review workflow, report if
-  unavailable, and keep findings private without changing files or posting to GitHub.
-  Choose a reviewer when Bots is enabled, or use the default bot. The guide opens
-  immediately, shows a waiting state, and refreshes saved replies automatically
-  while open. Open its conversation to follow tool activity or answer the reviewer.
-- Terminals survive inspector and session navigation, support splits, and attach
-  selected output to chat. Closing the app or a Terminal tab ends its shells (Herm
-  asks first if a command is running); reopening starts fresh ones. Closing the
-  Browser tab unloads its page until you reopen it; the profile's agent browser keeps running.
-- Source Control provides Git changes, commits, stash, and review comparisons without a project Actions menu.
-- **Previews** finds loopback
-  servers in Herm's terminal process trees. Its themed panel lists process names and
-  addresses, supports Refresh, and labels stale results. Nothing runs or opens automatically.
-- PR watching is opt-in and passive while Herm runs. It never starts agent work.
-
-Review actions group pull-request watching and guide actions in a compact menu. Raw submission diagnostics stay in the guide; startup shows a loading indicator. New review sessions wait 

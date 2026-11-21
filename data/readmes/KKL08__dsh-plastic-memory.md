@@ -10,7 +10,7 @@
 
 **简体中文** · [English](README.en.md)
 
-![Version](https://img.shields.io/badge/version-0.2.0--beta.4-yellow)
+![Version](https://img.shields.io/badge/version-0.2.0-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness%20%E2%89%A5v0.2.2--rc.1-4D6BFF)
 
@@ -34,18 +34,14 @@
 内置通用、编码、办公三种模式，也支持自定义场景与记忆类别。记什么，怎么记都可由你按需设置组合。注入预算、溯源策略与记忆健康提醒灵敏度，均可在设置页按需调节。
 
 <table align="center">
-  <tr><td><img src="assets/screenshots/sidebar-and-card.png" alt="对话里的记忆卡片和右侧栏" width="560"></td></tr>
-  <tr><td align="center">对话卡片和右侧栏</td></tr>
-</table>
-
-<table align="center">
-  <tr><td><img src="assets/screenshots/settings.png" alt="设置页：场景和记忆类型" width="560"></td></tr>
-  <tr><td align="center">设置页：场景和记忆类型</td></tr>
-</table>
-
-<table align="center">
-  <tr><td><img src="assets/screenshots/memory-pending.png" alt="记忆页：记忆优化建议" width="560"></td></tr>
-  <tr><td align="center">记忆页：记忆优化建议</td></tr>
+  <tr>
+    <td align="center" width="50%"><img src="assets/screenshots/chat-card-quiet-open.png" alt="回复下方的记忆卡片" width="100%"><br>对话卡片：这轮记了什么、改了什么</td>
+    <td align="center" width="50%"><img src="assets/screenshots/sidebar-memory.png" alt="右侧栏的记忆页签" width="100%"><br>右侧栏：这次对话带入的记忆</td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="assets/screenshots/memory-page.png" alt="记忆页的处理视图" width="100%"><br>记忆页：体检发现的问题等你决定</td>
+    <td align="center" width="50%"><img src="assets/screenshots/settings-scenes.png" alt="设置页的场景和记忆类型" width="100%"><br>设置页：场景和记忆类型</td>
+  </tr>
 </table>
 
 ## 设计理念
@@ -59,18 +55,29 @@
 - **可塑性记忆**  
 每个人与 Agent 协作的方式都不尽相同，记忆不该是一套死板的预设模板。插件在提供开箱即用的基础模式之外，也支持通过自定义场景与类别以及设置页选项按需调整记忆的运行策略。目前插件仍处于早期阶段，很多地方有待进一步优化，后续会设计更多可组合的模块，增强自由可塑性，帮你搭建最契合自己的个性化记忆。
 
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="assets/screenshots/memory-status.png" alt="健康分和扣分明细" width="100%"><br>记忆健康与待办处理</td>
+    <td align="center" width="50%"><img src="assets/screenshots/conflict-compare.png" alt="改写建议和原文的对照" width="100%"><br>模型给优化建议，由你来拍板</td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="assets/screenshots/chat-card-quiet.png" alt="收起成一行的记忆卡片" width="100%"><br>卡片默认收起，不打断对话心流，需要时可展开</td>
+    <td align="center" width="50%"><img src="assets/screenshots/settings-type-dialog.png" alt="自己加的记忆类型" width="100%"><br>可自定义记忆类型、场景组合</td>
+  </tr>
+</table>
+
 ## 安装
 
 需要 DeepSeek Harness v0.2.2-rc.1 及以上版本。桌面版和 web 版都支持，目前桌面版的体验最佳。
 
-**桌面版（推荐）**：打开侧边栏的「插件」页，点「添加插件」，输入 `dsh-plastic-memory@0.2.0-beta.4`，确认后安装。
+**桌面版（推荐）**：打开侧边栏的「插件」页，点「添加插件」，输入 `dsh-plastic-memory`，确认后安装。
 
 **web 版**：同样在「插件」页添加，需要本机装有 pnpm。
 
 **命令行**：把 `web` 换成你要装进的 Profile 名，装完重启。
 
 ```bash
-dsh plugin --profile web add dsh-plastic-memory@0.2.0-beta.4
+dsh plugin --profile web add dsh-plastic-memory
 ```
 
 安装细节和升级说明

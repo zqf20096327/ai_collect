@@ -76,7 +76,7 @@ Run `dwim` in a project directory. It opens a shell: type what you want, and
 the model reads files, runs commands, and answers.
 
 <div align="center">
-  <img src=".github/assets/session.png" width="760" alt="A dwim session: after typing Explain this codebase to me in one sentence, the model reads README.md and replies with one sentence">
+  <img src="https://dwim.sh/demo.gif" width="720" alt="A dwim session: the user types Hello!, the model thinks, and replies that it is in the dwim project and asks what to work on">
 </div>
 
 Run `dwim` in another terminal and it connects to the same server, ready in
@@ -99,6 +99,20 @@ it reads:
 ```console
 man dwim
 ```
+
+## Performance
+
+How fast the local model, Qwen3.8-27B at four bits, reads a prompt
+(prefill) and writes its reply (decode), measured on the prompt "Summarize
+this repository in one paragraph":
+
+| Machine               |   Prefill |   Decode |
+|-----------------------|----------:|---------:|
+| NVIDIA DGX Spark      | 882 tok/s | 33 tok/s |
+| MacBook Pro, Apple M5 |  88 tok/s | 10 tok/s |
+
+`dwim --bench` measures both on your machine, at several depths of
+context.
 
 ## Using dwim as a sub-agent
 

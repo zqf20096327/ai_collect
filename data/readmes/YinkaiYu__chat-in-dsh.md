@@ -95,3 +95,7 @@
 - 深色模式、公式、图表等界面细节按官网样式对齐
 
 没有二次包装，也没有替你「优化」提示词——模型拿到的就是网页上那一份。
+
+## Star History
+
+[![chat-in-dsh 的 GitHub Star 增长曲线](https://api.star-history.com/svg?repos=YinkaiYu%2Fchat-in-dsh&type=date)](https://www.star-history.com/?type=date&repos=YinkaiYu%2Fchat-in-dsh)

@@ -1,7 +1,5 @@
-<h1><img src="assets/logo.png" alt="SpillOT" width="306"></h1>
-
-<a href="assets/spillot-overview.png">
-  <img src="assets/spillot-overview.png" alt="Wide crop of the SpillOT microscopy artwork, with a diagonal divider between the original and restored image regions and a cyan-to-magenta frame.">
+<a href="assets/spillot-header.png">
+  <img src="assets/spillot-header.png" width="100%" alt="SpillOT logo and microscopy artwork on a dark background, with a diagonal divider between the original and restored image regions and a cyan-to-magenta frame.">
 </a>
 
 Highly multiplexed imaging techniques are widely used to study tissue architecture, cell states, and cell-cell interactions, but they can suffer from channel spillover and noise. **SpillOT** is a spillover-removal and denoising toolkit. Available as both a Fiji and python script, SpillOT provides user-guided removal of suspected spillover in highly multiplexed image stacks.
@@ -19,6 +17,7 @@ Unlike ordinary linear compensation, SpillOT does not simply subtract one channe
   - [Outputs](#outputs)
   - [Command-line use](#command-line-use-terminal--cluster)
   - [Opal / Vectra export note](#opal--vectra-export-note)
+- [QuPath extension](#qupath-extension)
 - [Denoiser](#denoiser)
   - [Multi-channel data](#multi-channel-data)
   - [2D data](#2d-data)
@@ -267,6 +266,19 @@ Image → Stacks → Images to Stack…
 ```
 
 Make sure the channel order matches the row/column order of any CSV matrix you use.
+
+---
+
+# QuPath extension
+
+SpillOT is also available as a QuPath extension (QuPath 0.7.0 or later). It has the same workflow as the Fiji plugin and calls the same Python backend, so it needs the same `spillot` conda environment.
+
+1. Create the `spillot` conda environment as described in the [Fiji quick start](#quick-start).
+2. Drag `qupath-extension-spillot-<version>.jar` onto the QuPath window and restart QuPath.
+3. Open a multiplexed image. For whole-slide images, draw and select an annotation around the area to clean.
+4. Run **Extensions → SpillOT → Run SpillOT...**
+
+See [qupath-extension-spillot/README.md](qupath-extension-spillot/README.md) for details, scripting, and build instructions.
 
 ---
 

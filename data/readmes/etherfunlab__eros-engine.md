@@ -60,9 +60,9 @@ cargo add eros-engine-core eros-engine-store eros-engine-llm
 
 ```toml
 [dependencies]
-eros-engine-core  = "2.7"
-eros-engine-store = "2.7"   # optional: Postgres + pgvector persistence
-eros-engine-llm   = "2.7"   # optional: model and embedding clients
+eros-engine-core  = "2.8"
+eros-engine-store = "2.8"   # optional: Postgres + pgvector persistence
+eros-engine-llm   = "2.8"   # optional: model and embedding clients
 ```
 
 `eros-engine-server` is not published to crates.io; run it as a Docker image instead.
@@ -72,14 +72,14 @@ eros-engine-llm   = "2.7"   # optional: model and embedding clients
 Multi-architecture images are published to GitHub Container Registry for every `v*` tag:
 
 ```bash
-docker pull ghcr.io/etherfunlab/eros-engine:2.7.3
+docker pull ghcr.io/etherfunlab/eros-engine:2.8.0
 # Or follow the latest tagged release
 docker pull ghcr.io/etherfunlab/eros-engine:latest
 ```
 
 ```bash
 docker run --rm -p 8080:8080 --env-file .env \
-  ghcr.io/etherfunlab/eros-engine:2.7.3 serve
+  ghcr.io/etherfunlab/eros-engine:2.8.0 serve
 ```
 
 Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed to any container host. See [Deploying](docs/deploying.md).
@@ -118,7 +118,7 @@ The server listens on `0.0.0.0:8080` by default, with Scalar API docs at `/docs`
 
 ## API surface
 
-The main flow is simple: start a persona session, then send turns to the SSE streaming endpoint. Voice runs on its own channel — start the session with `channel: "voice"` and use the voice turn endpoint, which carries a leaner prompt and a barge-in call; the two channels never write into each other's sessions. A separate enqueue-only endpoint (`POST /v2/comp/session/{session_id}/message/async`) exists for bot-style callers that cannot hold a stream open; a background worker generates the reply and it lands in history/Realtime instead of a stream frame. The engine also exposes history, session, profile, and affinity routes, group management under `/v2/comp/group*`, and a route that asks for a life event in the persona's day (`POST /v2/comp/session/{session_id}/events`). Authentication uses Supabase JWTs by default and can be replaced through `AuthValidator`. Setting `CALLER_SECRET` also requires an `x-caller-secret` header on those routes, so only the deployment's own server can call them, not an end user holding a JWT. The optional `/svc/v1/*` service routes are admitted by shared secrets instead, in three sub-trees that are each mounted only when their own secret is set: `INSIGHTS_EXPORT_SECRET` (the profile and memory exports and the erased-user stream), `FACTS_EXPORT_SECRET` (the fact ledger export) and `USER_ERASE_SECRET` (user erasure). See the [API reference](docs/api-reference.md) for paths, payloads, and stream frames.
+The main flow is simple: start a persona session, then send turns to the SSE streaming endpoint. Voice runs on its own channel — start the session with `channel: "voice"` and use the voice turn endpoint, which carries a leaner prompt and a barge-in call; the two channels never write into each other's sessions. A separate enqueue-only endpoint (`POST /v2/comp/session/{session_id}/message/async`) exists for bot-style callers that cannot hold a stream open; a background worker generates the reply and it lands in history/Realtime instead of a stream frame. The engine also exposes history, session, profile, and affinity routes, group management under `/v2/comp/group*`, and a route that asks for a life event in the persona's day (`POST /v2/comp/session/{session_id}/events`). Authentication uses Supabase JWTs by default and can be replaced through `AuthValidator`. Setting `CALLER_SECRET` also requires an `x-caller-secret` header on those routes, so only the deployment's own server can call them, not an end user holding a JWT. The optional `/svc/v1/*` service routes are admitted by shared secrets instead, in four sub-trees that are each mounted only when their own secret is set: `INSIGHTS_EXPORT_SECRET` (the profile and memory exports and the erased-user stream), `FACTS_EXPORT_SECRET` (the fact ledger export), `USER_ERASE_SECRET` (user erasure) and `GENOME_WRITE_SECRET` (creating and updating a persona genome). See the [API reference](docs/api-reference.md) for paths, payloads, and stream frames.
 
 ## Configuration
 

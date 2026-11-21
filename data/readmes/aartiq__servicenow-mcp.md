@@ -13,7 +13,7 @@
 
 500+ tools across ITSM, ITOM, CMDB, HRSD, CSM, Flow Designer, scripting & portal. Read, build, query and automate any instance in plain English.
 
-New in 4.4 to 4.7: impact analysis (list_table_config / find_field_references / find_script_references) to see what depends on a table, field or script before you change it, Local Sync to pull artifacts to local files, and aggregate_report for server-side reports (count plus averages, no truncation).
+New in 5.1: zero-day and CISA KEV response across Vulnerability Response and Security Incident Response, Platform Analytics dashboards, Deny Unless ACLs, CSDM life cycle, AI platform insight and grounded reports. New in 5.0: real ServiceNow forms and approvals inside Claude, ChatGPT and VS Code. [Read what's new](https://nowaikit.com/blog/nowaikit-5-1).
 
 </div>
 
@@ -91,7 +91,7 @@ Full guides & product home → **[nowaikit.com](https://nowaikit.com)**
 
 - 🌐 **[nowaikit.com](https://nowaikit.com)** — docs, guides & product home
 - ☁️ **[NowAIKit Cloud](https://cloud.nowaikit.com)** — the toolkit in your browser, no install
-- 📦 **[`nowaikit-sdk`](https://www.npmjs.com/package/nowaikit-sdk)** — TypeScript ServiceNow client library
+- 📦 **[`nowaikit-sdk`](https://www.npmjs.com/package/nowaikit-sdk)**: TypeScript ServiceNow client library
 - 🧰 **NowAIKit Builder** (VS Code) · **NowAIKit Utils** (browser extension)
 
 > **⚠️ Official distribution only:** install from **npm (`nowaikit`)** or **[nowaikit.com](https://nowaikit.com)**. NowAIKit is never shipped as a downloadable GitHub `.zip` — beware copycat "download" repos.
@@ -99,3 +99,5 @@ Full guides & product home → **[nowaikit.com](https://nowaikit.com)**
 ---
 
 © 2026 NowAIKit · Source available under the [Elastic License 2.0](LICENSE)
+
+NowAIKit is an independent product and is not affiliated with, endorsed by or sponsored by ServiceNow, Inc. ServiceNow, Now Assist, Otto and related marks are trademarks of ServiceNow, Inc., used here only to describe compatibility.

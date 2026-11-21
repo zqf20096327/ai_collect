@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.164) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.165) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -55,7 +55,7 @@ release-by-release view see [`REVISIONS.md`](REVISIONS.md) and the
 | Capability | What you get |
 |---|---|
 | **Providers** | Anthropic, OpenAI, DeepSeek, Gemini, Ollama (cloud + local) over native HTTP with no vendor SDK, behind one `Provider` interface. Config-driven `providers:` map, per-tier/effort routing, user-tier fallback cascade, `PinAfterSuccess`, model aliases and `model_pattern` globs. Plus a synthetic **`code-js`** provider (deterministic, zero token cost) and a **mock** provider for load tests. Model aliases now carry **`kind: chat \| decision \| embedder`**; a wrong-slot wire fails config load with a named error. |
-| **Built-in tools** | Read / Write / Edit / Grep / Glob / NotebookEdit / HTTP / WebFetch / WebSearch / Bash / Agent / Skill / Memory / Recall / Channel / History / Path / Document / AgentDef / SkillDef / TeamDef / **Decision** / **Crypto** (keys the model never sees: held by loomcycle or in Vault / AWS KMS / Google Cloud KMS) / **Git** (no `git` process, push credential held by the runtime) / **File** (files tools return, kept in a run inbox; download, upload, extract DOCX / XLSX / PPTX / HTML / PDF to Markdown, OCR scanned pages and images through a vision model, import as a Document) / Evaluation / Interruption / Context. |
+| **Built-in tools** | Read / Write / Edit / Grep / Glob / NotebookEdit / HTTP / WebFetch / WebSearch / Bash / Agent / Skill / Memory / Recall / Channel / History / Path / Document / AgentDef / SkillDef / TeamDef / **Decision** / **Crypto** (keys the model never sees: held by loomcycle or in Vault / AWS KMS / Google Cloud KMS) / **Git** (no `git` process, push credential held by the runtime) / **File** (files tools return, kept in a run inbox; download, upload, extract DOCX / XLSX / PPTX / HTML / PDF to Markdown, OCR scanned pages and images through a vision model, import as a Document) / **Calc** (exact arithmetic, on for every agent; [docs/CALC.md](docs/CALC.md)) / Evaluation / Interruption / Context. |
 | **Memory** | Four facets on one tool: key-value, **vector** (sqlite-vec / pgvector), **SQL** (a per-scope database, sqlite + postgres tiers), and the agentic **bi-temporal entity graph** with **subject-document identity** — the subject IS its own Document in the Path tree at `/entities/<type>/<name>`, placement is one decision, both halves of a fact land together. Rows carry `observed_at` (when a thing was said) and `valid_at`/`invalid_at` (when it was true), so an `as_of` query reads the timeline at any past instant and a correction never destroys the record. Every row carries a provenance envelope: tenant, session, run, agent, model, compaction generation, server-stamped `origin`, source-quote span. An optional `recall_attach_traces` runtime grant reattaches source turns to a facts recall — **LoCoMo paired-benchmark retrieval final 0.74**. |
 | **Documents & paths** | Chunked-graph **Documents** (chunk bodies in Memory, structure in SQL Memory) with **per-piece derived search units** — a chunk with a heading, prose, code block and transclusion generates one embedding per piece, so a query for the code block does not compete with the heading for the same vector. **Documents retrieval final 0.966.** Inline `[[name]]` links become graph edges, `![[…]]` embeds transclude, plus backlinks / related / unlinked-mentions discovery, a per-chunk body-history with diff, queryable tags and type/status, search filtered by path, document, type, status, tag and `as_of` inside every retrieval leg, a validity period on any chunk, images and Mermaid diagrams, and Markdown + JSON Canvas import/export — all addressed through a Unix-like **Path** VFS. |
 | **Substrate** | Content-addressed (SHA-256), runtime-mutable, tenant-scoped defs pushed at boot: Agent / Skill / **Team** / MCPServer / Schedule / Webhook / MemoryBackend / A2A / Volume / Credential / OperatorToken / **HookDef**. Authored over every transport; verify-or-fork across deployments. |
@@ -212,14 +212,14 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.164.0) stops an in-run fork that changes an agent's
-code from keeping grants its author lacks, plans every directive change of an
-ontology entry in use, and gives workspace workers streamed file transfer and a
-disk quota. Read the upgrade notes in [`REVISIONS.md`](REVISIONS.md).
+The most recent line (v1.165.0) gives every agent `Calc`, exact arithmetic with
+units, dates, statistics and finance, lets the File tool copy, convert, OCR and
+unpack files inside a workspace on its worker, and reads legacy-encoded text.
+Read the upgrade notes in [`REVISIONS.md`](REVISIONS.md).
 
-Before it, v1.163.0 made workspace workers usable on one machine
-(`workspace.mode: local`), let the knowledge-base walker walk the taxonomy and
-place a set of documents, and read Russian CHM files that name no encoding.
+Before it, v1.164.0 stopped an in-run fork that changes an agent's code from
+keeping grants its author lacks, planned every directive change of an ontology
+entry in use, and gave workspace workers streamed file transfer and a quota.
 
 Before that, v1.155.0 rendered a Document back into a file: `File op=render`
 writes Markdown, HTML, Word or PDF (typeset by Typst in the conversion

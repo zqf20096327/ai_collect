@@ -6,7 +6,7 @@
 >
 > Fresh papers land every day, grouped by topic so you can pick what matters to you and skim the rest.
 
-**6617 papers** across **142 days** · **1094** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
+**6634 papers** across **143 days** · **1100** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
 
 **Star scale:** most papers carry no star. ⭐ = clearly notable; ⭐⭐ = exceptional (rare); ⭐⭐⭐ = landmark (very rare — often zero per day).
 
@@ -41,6 +41,8 @@ Hand-picked work, including some of my own, that anchors the four topics this fe
 
 _LLMs simulating humans, personas, or societies for scientific study._
 
+- ⭐ [**How Large Language Models Misrepresent American Climate Opinions**](https://arxiv.org/abs/2512.23889) — Uses LLMs to simulate human respondents (silicon samples) for population opinion study, directly applying STEP 2 criterion of LLMs simulating humans for scientific study. <sub>_Sola Kim, 2026-11-20_</sub>
+- ⭐ [**When AI Analysts Disagree: Agentic Multiverse Analysis and the Robustness of Empirical Research**](https://arxiv.org/abs/2611.25198) — Multi-agent system where autonomous AI agents simulate analytical workflows, disagree on defensible methodological choices, and cross-examine one another's work to study robustness of empirical resear <sub>_Ruijiang Gao, 2026-11-20_</sub>
 - ⭐ [**A Foundation Model to Measure and Predict Human Behaviour**](https://arxiv.org/abs/2611.24830) — LLM foundation model fine-tuned to represent psychological constructs and simulate human behavior across 78 social science experiments with population statistics alignment. <sub>_Haoran Ye, 2026-11-19_</sub>
 - ⭐ [**ABSClaw: From Invented Worlds to Reality-Grounded Social Simulation**](https://arxiv.org/abs/2611.24517) — LLM-based framework grounding personas and environments in real survey/census/geospatial data to simulate large-scale populations, demonstrating behavioral fidelity and societal dynamics. <sub>_Shaobin He, 2026-11-19_</sub>
 - ⭐ [**MANGO Arena: Same Seeds, Different Chains Evaluating LLM Agents in a Disrupted Supply Chain**](https://arxiv.org/abs/2611.23613) — Multi-agent LLM supply-chain simulation studying emergent economic behavior (bullwhip effect) and agent rule adherence under coordination pressure. <sub>_Sara Amar, 2026-11-19_</sub>
@@ -328,6 +330,4 @@ _LLMs simulating humans, personas, or societies for scientific study._
 - [**Data-Driven Personas for Survey Simulation: Insights into Simulation Alignment Across Data-Access Regimes**](https://arxiv.org/abs/2610.05828) — Uses LLMs to simulate human survey responses across demographic groups via data-driven personas, a form of LLM-based human behavioral simulation for scientific study. <sub>_Dongryeol Lee, 2026-10-06_</sub>
 - [**InvestigationWorlds: An Agentic Environment for Legal Investigation**](https://arxiv.org/abs/2610.04129) — Creates a multi-document legal investigation environment where LLM agents retrieve evidence and form hypotheses, simulating human investigative reasoning in a structured benchmark. <sub>_Albert Yu Sun, 2026-10-06_</sub>
 - [**Large Language Models and Augmented Democracy**](https://arxiv.org/abs/2610.04412) — LLM-based digital twins simulate citizens' and lawmakers' political preferences; deliberation agents test emergent collective behavior; studies vulnerability to prompt-injection attacks on multi-agent <sub>_Jairo Gudiño-Rosero, 2026-10-06_</sub>
-- [**Mitigating Social Desirability Bias in Random Silicon Sampling**](https://arxiv.org/abs/2512.22725) — Uses LLMs to simulate human population responses via Silicon Sampling and systematically studies behavioral bias mitigation to improve alignment with real human survey data. <sub>_Sashank Chapala, 2026-10-06_</sub>
-- [**PB-GRPO: Learning Socially Adaptive LLM Agents from Persona-Driven Simulation with Preference-Batched GRPO**](https://arxiv.org/abs/2610.04132) — Paper uses LLM-based user simulators in a persona-driven simulation to train socially adaptive agents via preference-based RL, combining agent simulation with alignment-motivated post-training. <sub>_Jingquan Wang, 2026-10-06_</sub>
-- [**VIRENA: Virtual Arena for Research, Education, and Democratic Innovation**](https://arxiv.org/abs/2602.12207) — Platform enabling controlled behaviora
+- [**Mitigating Social Desirability Bias in Random Silicon Sampling**](https://arxiv.org/abs/2512.22725) — Uses LLMs to simulate human population responses via Sili

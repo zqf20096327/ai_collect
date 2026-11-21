@@ -120,7 +120,14 @@ builds plug extra connectors and MCP tools into.
 repo, 1,600 real issues/PRs — RFC 0062), Confluence, local documents
 (PDF/DOCX/text/Markdown/HTML/email, XLSX/CSV sheets, PPTX slides and notes, PNG/JPEG/TIFF/WebP
 images through local Tesseract OCR — text, tables, image OCR; RFC 0253), Pentaho Kettle (`.ktr`/`.kjb` —
-RFC 0027), Python/PySpark source (real AST parsing, DataFrame chains recovered into the
+RFC 0027), Talend projects (a directory holding `talend.project` — jobs, components, links, contexts,
+connections and schemas as `Talend*` objects, `tRunJob` calls, SQL folded from Java strings, each job's data
+components in the Transformation IR, joblets inlined (as Studio saves them), column lineage per target column back
+through tMap, aggregates, joins, ELT maps (SQL run in the database) and jobs — tables, files and `tBufferOutput` — to
+the first source; items-export
+`.zip` files read in place; passwords redacted, including in component JSON settings; `ekos talend assess` — a
+migration assessment of probable defects, copies, environment ties, unused items, clone clusters and migration
+order — and `talend/` pages in the estate documentation — RFC 0262–0265), Python/PySpark source (real AST parsing, DataFrame chains recovered into the
 Transformation IR — RFC 0038/0040), Rust source (real AST parsing, real function-call graph —
 RFC 0041), Elixir and JavaScript/TypeScript source (real AST + `Calls` recovery — RFC 0081/0082),
 Perl source (`.pl`/`.pm`/`.t`/`.psgi`, plus `.cgi` with a real `perl` shebang — packages, subs,
@@ -1576,11 +1583,4 @@ ekos conflicts resolve "account.category = 'A'.label" --pick 1 --as ann
 A decision holds while the claims are unchanged; when one changes, the conflict reopens with the old
 decision kept. Agents read conflicts over MCP (`ekos_conflicts`, and `open_conflicts` on
 `ekos_state`) and are told to present an open one as a disagreement, never one side as fact; no MCP
-tool can resolve one. Answers say so too (RFC 0173): an `ekos_query` / `ekos_retrieve` claim about an
-attribute with an open conflict carries `disputed: true` and the conflict ids, since its value is
-only the side EKOS kept, and `ekos ask` tells the model the same in the evidence it reads. A label
-conflict is also linked to the table its column belongs to, so a question about the table surfaces
-it. The web console's **Conflicts** tab lists every conflict with each claim's file and line, lets a
-write-role user pick the right claim or mark both valid, and the graph rings objects with an open
-conflict (RFC 0174). On LedgerSMB: 3 conflicts — `user_preference` (re-created by a 1.9 migration)
-and 2 order-class labels where an API query names the counterparty (`customer`) rather than th
+tool can resolve one. Answers 

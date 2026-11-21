@@ -1298,6 +1298,7 @@ paths. `--no-plots` skips the `figures/*.png` files; `results_fairness.csv`, `re
 and `summary.csv` are still written.
 By default, progress is written to stderr after each audit/strategy/model combination completes.
 `--quiet` suppresses those progress lines; the existing final summary and warnings remain on stderr.
+When a fit stops at its iteration limit the run prints one `warning:` line per audit instead of scikit-learn's own text, and `--quiet` does not hide it (see [Convergence warnings](#convergence-warnings)).
 `--merge` replaces rows only for the audits passed to that run, preserves other audits and prior run records,
 and refreshes the provenance hashes. It requires a complete existing output with valid `PROVENANCE.json`;
 legacy or inconsistent output is left untouched and rejected.
@@ -1307,6 +1308,16 @@ Writes `results_fairness.csv`, `results_performance.csv`, `summary.csv`, and one
 the CSVs, so re-plotting a different metric never requires re-running a model). One code path, same
 seed, same splits, same metric definitions, for every domain - that uniformity is what makes "we
 measured every audit identically" a true statement rather than an assertion.
+
+#### Convergence warnings
+
+The benchmark's logistic regression runs for at most 1,000 iterations on unscaled, label-encoded features. When a fit reaches that
+limit scikit-learn raises a `ConvergenceWarning`: the coefficients, and the numbers built on them, then depend on where the solver
+stopped. `faircode benchmark` counts those warnings per strategy/model combination instead of printing each one and ends with one
+line per audit, for example `German Credit Lending: 5 of 15 combinations had a fit stop at max_iter (...)`. Nothing is changed or
+hidden in the results: the line says which rows rest on a fit that did not converge. The combinations known to stop early today
+are German Credit Lending, Healthcare Readmission and the baseline and unawareness sets of Benefits Denial; the test that pins them
+is `tests/test_benchmark_convergence.py`, which fails if a new combination starts warning and says when one of them is fixed.
 
 **Layer 3 - the dashboard (`benchmark.html`).** An interactive, client-side explorer for
 `results_fairness.csv`/`results_performance.csv` - filter by audit, strategy, model, protected
@@ -1333,7 +1344,7 @@ pip install -r requirements-lock.txt
 
 **For new audits and reruns:** Update `results/` as usual. Do not regenerate `paper/results-frozen/` or move the `v1.0-paper` tag as part of an ordinary audit. Run `scripts/freeze_paper_results.py` only when deliberately creating a new reference snapshot; it replaces the existing frozen snapshot and mirrors its CSV files into `faircode/_results_frozen/`.
 
-`results/PROVENANCE.json` records what produced the live files: the commit and whether the tree was dirty, the Python and library versions, the hash of `requirements-lock.txt`, the resample and permutation counts, the audits included, the seconds each strategy/model combination took (a `timings` list on the run's entry, written by `faircode benchmark` and ignored by `scripts/diff_results.py`) and the SHA-256 of each CSV. `faircode benchmark` writes it, a test fails if a CSV changes without it, and `scripts/diff_results.py` prints both sides' provenance and the library versions that differ, so a moved row can be told from a library bump.
+`results/PROVENANCE.json` records what produced the live files: the commit and whether the tree was dirty, the Python and library versions, the hash of `requirements-lock.txt`, the resample and permutation counts, the audits included, the seconds each strategy/model combination took (a `timings` list on the run's entry with each combination's seconds and its count of fits that stopped at max_iter, written by `faircode benchmark`; `scripts/diff_results.py` reports how the stopping combinations changed and which combinations' seconds changed most) and the SHA-256 of each CSV. `faircode benchmark` writes it, a test fails if a CSV changes without it, and `scripts/diff_results.py` prints both sides' provenance and the library versions that differ, so a moved row can be told from a library bump.
 
 To see how far `results/` has moved from that snapshot, run `python3 scripts/diff_results.py`. It joins the two tables per audit, strategy, model, protected attribute and metric and prints the per-row change, flagging rows that moved by more than `--threshold` (default 0.01) or exist on one side only (`--json`, `--all`, `--kind` and `--fail-on-change` are also available; `--audit NAME` limits it to one or more audits and `--summary` prints one line per audit; each row has a `sample` field, `same`, `different` or `unknown`, and rows whose group sizes differ between the two files (so they were scored on different test rows) are marked `~` and counted; it only reads).
 
@@ -1471,40 +1482,4 @@ This copies `results/` into a snapshot alongside a `MANIFEST.md` recording the e
 - [x] Explainer: Partial Dependence by Group
 - [x] Explainer: Explanation Disagreement
 - [x] Explainer: Hiring Pipeline Adverse Impact
-- [x] Explainer: Compounding Disparities
-- [x] Explainer: Differential Validity
-- [x] Explainer: Minimum Detectable Gap
-- [x] Explainer: Small-Group Shrinkage
-- [x] Explainer: Confidence Intervals for Ratios
-- [x] Explainer: Monitoring Fairness in Production
-- [x] Explainer: Label Shift and Fairness
-- [x] Explainer: Delayed Feedback
-- [x] Explainer: Causal Graphs for Fairness
-- [x] Explainer: Path-Specific Effects
-- [x] Explainer: Randomized Post-Processing
-- [x] Explainer: Fairness-Accuracy Pareto Frontier
-- [x] Explainer: Choosing a Mitigation Strategy
-- [x] Explainer: What Is an AUC Gap Between Groups?
-- [x] Explainer: What Is Decision Curve Analysis by Group?
-- [x] Explainer: How Does Unequal Cost Change a Fairness Evaluation?
-- [x] Explainer: What Is Popularity Bias?
-- [x] Explainer: What Is Two-Sided Fairness in a Marketplace?
-- [x] Explainer: How Does Position Bias Distort What a Ranking Learns?
-- [x] Fairness audit web dashboard - [Open Dataset Profiler](#open-dataset-profiler)
-- [x] Bias detection utility library (`faircode/` module)
-
-</details>
-
-Want to contribute an audit or explainer? See [CONTRIBUTING.md](CONTRIBUTING.md).
-
----
-
-## Roadmap
-
-The full public roadmap - with phases, completion status, and content schedule - is in [ROADMAP.md](ROADMAP.md).
-
----
-
-## Traction
-
-| Metric | Count |
+- [x] Explainer: Compoundi

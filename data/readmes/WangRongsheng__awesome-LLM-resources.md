@@ -18,7 +18,7 @@
 
 #### 📢友情赞助
 
-<table>
+<!-- <table>
 <tr>
 <td width="180"><a href="https://go.apimart.ai/gh-awesome-llm-resources"><img src="assets/cache/D86EFC7485D763E251A5C1674E110AE5.png" alt="Infistar.cc" width="150"></a></td>
 <td>感谢 Infistar.cc 无限星河 赞助本项目！</br>
@@ -29,7 +29,7 @@
 
 </br>🎁 专属福利：通过 [<a href="https://www.infistar.cc/register?aff=W8XCMZ49&ref_source=link">专属推广链接</a>] 注册即可领取 5 美元等值测试额度 / 首充专属优惠，快速接入并开始调用！</td>
 </tr>
-</table>
+</table> -->
 
 <!-- <table>
 <tr>
@@ -447,6 +447,7 @@ To speed up Long-context LLMs' inference, approximate and dynamic sparse calcula
 4. [PenguinHarness](https://github.com/Prism-Shadow/penguin-harness): Your Automated Agent Builder, Right on Your Desktop / Server.
 5. [FrontierAgent](https://github.com/ApodexAI/FrontierAgent): an open-source agent runtime, terminal product, and evaluation suite for long-horizon research and file-based work.
 6. [oh-my-agent](https://github.com/first-fluke/oh-my-agent): Vendor-agnostic harness that adds planner, engineer, reviewer and debugger roles to the coding agent you already use (Claude Code, Codex CLI, Cursor and others), from one portable `.agents/` folder.
+7. [oh-my-pi](https://github.com/can1357/oh-my-pi): Coding agent with the IDE wired in. Built by Stencil Labs.
 
 <div align="right">
     <b><a href="#Contents">↥ back to top</a></b>
@@ -1450,4 +1451,4 @@ MCP工具聚合：
 3. [What We Learned from a Year of Building with LLMs (Part III): Strategy](https://www.oreilly.com/radar/what-we-learned-from-a-year-of-building-with-llms-part-iii-strategy/)
 4. [轻松入门大语言模型（LLM）](https://www.bilibili.com/video/BV1pF4m1V7FB/?spm_id_from=333.999.0.0&vd_source=c739db1ebdd361d47af5a0b8497417db)
 5. [LLMs for Text Classification: A Guide to Supervised Learning](https://www.striveworks.com/blog/llms-for-text-classification-a-guide-to-supervised-learning)
-6. [Unsupervised Text Classification: Categorize Natural Language With LLMs](https://www.striveworks.com/blog/unsupervised-text-classification-how-to-use-llms-to-categorize-natural-la
+6. [Unsupervised Text Classification: Categorize Natural Langua

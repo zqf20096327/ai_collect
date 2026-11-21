@@ -37,9 +37,14 @@ Intel Macs and Linux: [build from source](docs/building.md).
 
 ## An AI in every project
 
-**Conversations** shows each project's AI as a card: its character, whether it
-is working (and on what), waiting for you or resting, and its last words. A bot
-that waits can be approved or answered from its card.
+**Bots** shows each project's AI as a card: its character, whether it is
+working (and on what), waiting for you or resting, and its last words. A bot
+that waits can be approved or answered from its card. A project's
+conversations run at the same time, and any folder on the computer can become
+a project. **New conversation** asks anything of any AI installed, with its
+model, outside any project. A conversation also opens the project's files in an
+editor, its Git changes and a terminal, beside the chat (on this computer only,
+never from the phone).
 
 ![A chat with a project's AI that has full access: it fixed a bug test-first, committed and pushed, started the app and checked its screenshot](docs/screenshots/chat.webp)
 
@@ -180,7 +185,7 @@ before you flip them.
 
 ## Status
 
-Early (0.1.9). Developed on macOS; tested on Windows 11 (in a VM, ARM64 and
+Early (0.1.12). Developed on macOS; tested on Windows 11 (in a VM, ARM64 and
 x64); Linux should work.
 
 ## License

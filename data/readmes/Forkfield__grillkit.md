@@ -76,10 +76,10 @@ Coding modes need a running [Judge0](https://github.com/judge0/judge0) instance 
 - **Timer** — optional per-round limit on theory and coding; expired rounds score 0 and the session moves on
 - **Voice** — offline Whisper dictation; optional Piper TTS to read theory questions aloud
 - **Audio answers** — record a WAV theory answer when your model supports audio input and Whisper is ready
-- **Results hub** — after you finish, `/interview/{id}/results` shows overall evaluation and links to **theory** and **coding** review pages with full chat/code history
-- **Known questions** — mark theory or coding bank items as **I know this** during an interview or on review pages; optionally exclude them on **New interview** setup; manage the list at `/known-questions/manage`
+- **Results hub** — after you finish, `#/interview/{id}/results` shows overall evaluation and links to **theory** and **coding** review pages with full chat/code history
+- **Known questions** — mark theory or coding bank items as **I know this** during an interview or on review pages; optionally exclude them on **New interview** setup; manage the list at `#/known-questions`
 - **Dashboard** — recent sessions on the home page (completed sessions link to results)
-- **Setup** — model catalog on `/config`, interview locale, Whisper/Piper downloads from the UI
+- **Setup** — model catalog on `#/config`, interview locale, Whisper/Piper downloads from the UI
 - **Theme** — light theme by default with a **dark mode toggle** (sun/moon) in the navbar; your choice is remembered and follows your system preference on first visit
 - **Deployment** — Docker Compose on port 8000 with `./data` volume for config, DB, and models
 
@@ -107,7 +107,7 @@ Optional **question voice** (Piper TTS, same `app` container):
 3. On the Configuration page, use **Download question voice** when prompted (~60 MB per locale voice from Hugging Face).
 4. Start an interview — questions can play aloud; WAV cache lives under `data/tts-cache/v2/{locale}/`.
 
-`./data` on the host holds SQLite, `config.json`, `llm_models.json`, Whisper/Piper models, and TTS cache. Question banks, templates, and static files ship in the image.
+`./data` on the host holds SQLite, `config.json`, `llm_models.json`, Whisper/Piper models, and TTS cache. Question banks ship in the backend image; the SPA (page, styles, and JS modules) ships in the frontend nginx image.
 
 If bind-mounted `data/` is not writable (Linux UID mismatch):
 

@@ -1,12 +1,40 @@
-# RAG Financial Multimodal — Enterprise v2.0
+# filing-qa
 
-> **Production-grade multimodal RAG for financial document intelligence.**
-> Chart understanding · hybrid retrieval · numeric guardrails · multi-tenancy · full observability.
+> **A research prototype for question answering over financial filings.** Multimodal RAG with
+> hybrid retrieval and numeric grounding checks, measured on a 119-question golden set. It has
+> not been run as a real deployment.
 
 [![CI/CD](https://github.com/Mattral/filing-qa/actions/workflows/ci.yml/badge.svg)](https://github.com/Mattral/filing-qa/actions)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![HF Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/Mattral/RAG-Financial-Multimodal)
+
+## Status
+
+**Measured** by scripts in this repo, with raw outputs in [`evals/results/`](evals/results/)
+([BENCHMARK_RESULTS.md](BENCHMARK_RESULTS.md)):
+
+* Golden-set integrity: 119 questions over 16 public filings. All 209 evidence strings were found
+  in the source documents, and all 42 calculations reproduce.
+* Offline retrieval on those filings, with no reranker: an answer-bearing chunk is in the top 5
+  for 71% of questions at default settings.
+* Answer quality for one model (`gemini-3.8-flash`) in one run, scored by deterministic checks
+  with no LLM judge: the asked-for figure is stated in 68% of answers.
+
+**Not measured:**
+
+* The full ingest path: unstructured parsing, vision chart extraction, reranking, and the
+  guardrails and Program-of-Thought calculator inside the pipeline.
+* Chart extraction accuracy. The 9 chart questions can also be answered from tables, so they do
+  not test the vision path.
+* RAGAS or LLM-judged scores, latency under load, and cost per query.
+* Any real deployment. The Helm chart and Kubernetes manifests only pass lint and schema checks
+  in CI.
+
+Feature claims below carry one of three labels. **Implemented, tested**: covered by tests that
+gate CI, and measured where a figure is given. **Implemented, not evaluated**: the code exists,
+but its output quality or effect has not been measured, and any unit tests use mocked models or
+services. **Not deployed**: the configuration exists but has never run in a real environment.
 
 > **About the history:** this codebase was rebuilt from scratch in 2026. The commits from
 > February 2024 at the start of the history are an earlier, unrelated upload: a notebook,
@@ -26,15 +54,17 @@
 
 ## Why This System
 
-Financial documents are mixed-media: narrative text, tables, charts, footnotes, cross-references. Standard RAG pipelines fail on charts and hallucinate numbers.
+Financial documents are mixed-media: narrative text, tables, charts, footnotes, cross-references.
+Text-only RAG misses data that appears only in charts, and LLMs can state numbers that their
+sources do not contain.
 
-| Problem | Solution |
-|---|---|
-| Charts contain the most important data but RAG ignores them | GPT-4o / Gemini / Qwen2-VL vision extraction — every chart yields exact axis values |
-| Exact figures like `$23.35B` or `TSLA` miss semantic search | Hybrid RRF: dense embeddings + BM25 keyword fused with Reciprocal Rank Fusion |
-| LLMs fabricate financial numbers | Numeric grounding guardrail — every stated number verified against source context |
-| PII in analyst queries leaks to APIs | Presidio + CUSIP/ISIN/account number redaction before any external call |
-| One broken vendor = full outage | Fallback chains — primary → secondary → local for every model-facing layer |
+| Problem | Approach | Status |
+|---|---|---|
+| Some data appears only in charts | A vision LLM (GPT-4o / Gemini / Qwen2-VL / local vLLM) describes each chart image at ingest, and the description is indexed with the text | **Implemented, not evaluated.** Whether the extracted values are correct has not been measured |
+| Exact figures like `$23.35B` or `TSLA` miss semantic search | Hybrid RRF: dense embeddings + BM25 keyword fused with Reciprocal Rank Fusion | **Implemented, tested.** Evidence hit@5 0.71 at default chunks, tying BM25 alone; 0.53 vs 0.42 at 1,000-char chunks ([Retrieval Quality](#retrieval-quality)) |
+| LLMs can state numbers their sources do not contain | Numeric grounding guardrail: flags any number in the answer that does not appear in the retrieved context | **Implemented, tested** by unit tests. The pipeline guardrail has not been run on the golden set. The answer eval uses its own check of the same kind ([Evaluation Quality](#evaluation-quality)) |
+| PII in documents reaches external APIs | Parsed document text is redacted before embedding and indexing: Presidio when installed, plus regex patterns for CUSIP, ISIN and account numbers | **Implemented, tested** for the ISIN and CUSIP patterns. Account-number patterns have no test, and CI does not install Presidio. Queries are not redacted |
+| One failing provider stops a stage | Vision: ordered provider chain, then skip the image. Parser: fallback to `pypdf`. Generator: retry on a configured fallback model after a 429/503 | **Implemented, tested** for the vision chain and parser fallback, with mocked providers. The generator fallback has no test |
 
 ---
 
@@ -142,11 +172,19 @@ vllm serve Qwen/Qwen2-VL-7B-Instruct --port 8080 --host 0.0.0.0
   | Asked-for figure stated | 0.68 | 0.84 |
   | Cites an expected document | 0.75 | 0.95 |
   | Abstained ("not available") | 0.35 | 0.16 |
-  | Fabricated numbers found | 0 | 0 |
+  | States a number absent from its context | 0.05 (6 answers) | 0.06 (4 answers) |
 
-  Six answers stated numbers absent from their context, and all six were correct derivations.
-  Most misses are honest abstentions caused by retrieval. Calculation questions are weakest:
-  the model abstained on 15 of 24. Details are in
+  **Number grounding, and its scope.** One model (`gemini-3.8-flash`), one run, on this repo's
+  own single-author golden set. All 119 answers were scored automatically by
+  `evals/answer_eval.py`, with no LLM judge. Six answers stated a number that does not appear in
+  their context. Those six were checked by hand (the repo does not record by whom), and all were
+  correct derivations: shares, differences, a ratio, and "flat" restated as 0%. The check cannot
+  catch a real number used for the wrong thing. One such case turned up among the headline
+  misses: a full-year question answered with Q3 figures. Only flagged answers and headline misses
+  were read by hand.
+
+  Most misses are abstentions caused by retrieval. Calculation questions are weakest: the model
+  abstained on 15 of 24. Details are in
   [BENCHMARK_RESULTS.md](BENCHMARK_RESULTS.md#3-answer-quality-gemini-38-flash-all-119-questions).
 
 ```bash
@@ -181,61 +219,76 @@ SRE Workbook, with four alert tiers (14.4×, 6×, 3×, 1× burn rate) routing to
 
 ## Architecture Layers
 
-| Layer | Component | Technology |
-|---|---|---|
-| **Parsing** | PDF text + tables | Unstructured.io / Docling / Marker |
-| **Vision** | Chart + graph extraction | GPT-4o / Gemini 2.5 Flash / Qwen2-VL / Local vLLM (fallback chain) |
-| **Layout** | Semantic grouping | Table-caption pairing, multi-page merge, HTML wrapping |
-| **Embedding** | Dense vectors + cache | OpenAI / Voyage / Cohere / local BAAI/bge, Redis cached |
-| **Indexing** | Vector store | DeepLake / pgvector / Qdrant |
-| **Retrieval** | Hybrid (dense + BM25) | Reciprocal Rank Fusion, k=60 |
-| **Reranking** | Cross-encoder | ms-marco-MiniLM / Cohere Rerank v3 |
-| **Generation** | Cost-routed, multi-provider | OpenAI / Gemini / Anthropic / Local vLLM |
-| **Guardrails** | Numeric grounding + PII | Presidio + custom regex + restricted-interpreter PoT calculator |
-| **API** | REST + OpenAPI | FastAPI + uvicorn |
-| **Observability** | Traces + metrics | OpenTelemetry + Prometheus + Grafana |
-| **Security** | Auth + audit trail | API key + SHA-256 tamper-evident audit log |
-| **Multi-tenancy** | Isolated namespaces | Per-tenant vector partitions + quotas + rate limits |
-| **Deployment** | Container + K8s | Docker + Helm + HPA + NetworkPolicy |
+| Layer | Component | Technology | Status |
+|---|---|---|---|
+| **Parsing** | PDF text + tables | Unstructured.io / Docling / Marker | **Implemented, tested** for Unstructured, which the CI image smoke test runs on a text-only PDF. Docling and Marker: **implemented, not evaluated**, with no CI test |
+| **Vision** | Chart + graph description | GPT-4o / Gemini / Qwen2-VL / local vLLM (fallback chain) | **Implemented, not evaluated.** Unit tests use mocked providers |
+| **Layout** | Semantic grouping | Table-caption pairing, multi-page merge, HTML wrapping | **Implemented, tested** |
+| **Embedding** | Dense vectors + cache | OpenAI / Voyage / Cohere / local BAAI/bge, Redis cache | **Implemented, tested.** Local `bge-small` is used in the retrieval benchmark. The other providers are tested with mocks. The Redis cache has no test |
+| **Indexing** | Vector store | DeepLake / pgvector / Qdrant | **Implemented, tested.** CI runs upsert/reopen/query round trips against real backends |
+| **Retrieval** | Hybrid (dense + BM25) | Reciprocal Rank Fusion, k=60 | **Implemented, tested.** Measured offline ([Retrieval Quality](#retrieval-quality)) |
+| **Reranking** | Cross-encoder | ms-marco-MiniLM / Cohere Rerank v3 | **Implemented, not evaluated.** On by default, but not part of the retrieval benchmark |
+| **Generation** | Cost-routed, multi-provider | OpenAI / Gemini / Anthropic / Local vLLM | **Implemented, tested** with mocked APIs. Only Gemini has been evaluated, with cost routing off |
+| **Guardrails** | Numeric grounding + PII | Presidio + custom regex + restricted-interpreter PoT calculator | **Implemented, tested** by unit tests. Not run on the golden set. CI does not install Presidio |
+| **API** | REST + OpenAPI | FastAPI + uvicorn | **Implemented, tested** by API tests and the CI image smoke test |
+| **Observability** | Traces + metrics | OpenTelemetry + Prometheus + Grafana dashboards | **Implemented, not evaluated.** Grafana dashboards: **not deployed** |
+| **Security** | Auth + audit trail | API key; JSONL audit log with a SHA-256 hash of each event | **Implemented, tested.** Event hashes are not chained or keyed |
+| **Multi-tenancy** | Isolated namespaces | Per-tenant partitions (BM25, vector-store filters, cache, document registry) + monthly token quotas | **Implemented, tested** by unit tests. A per-tenant rate-limiter module exists, but no API route calls it |
+| **Deployment** | Container + K8s | Docker; Helm + HPA + NetworkPolicy | Docker: **implemented, tested**, since CI builds and smoke-tests the image. Helm/K8s: **not deployed**, only linted and schema-validated in CI |
 
 ---
 
 ## Key Features
 
 ### Multimodal ingestion
-- **Vision LLM fallback chain**: primary → secondary → local, never silently fails
-- **Layout-aware chunker**: tables stay with their captions; multi-page tables merged
-- **ColPali visual retrieval** (component only, not yet called by the query pipeline):
-  late-interaction MaxSim scoring on page images (no OCR)
-- **Delta detection**: skip unchanged documents on re-ingest; version history for rollback
+- **Vision LLM fallback chain** (*implemented, not evaluated*): providers are tried in order,
+  and the image is skipped with a logged error if all fail. Extraction quality is unmeasured
+- **Layout-aware chunker** (*implemented, tested*): tables stay with their captions; multi-page
+  tables merged
+- **ColPali visual retrieval** (*implemented, not evaluated*; component only, not yet called by
+  the query pipeline): late-interaction MaxSim scoring on page images (no OCR)
+- **Delta detection** (*implemented, tested*): skip unchanged documents on re-ingest; per-document
+  version history with point-in-time lookup
 
 ### Retrieval
-- **Hybrid RRF (k=60)**: dense + BM25, equal-weight Reciprocal Rank Fusion. Measured: beats
-  both dense-only and BM25 at 1,000-char chunks (evidence hit@5 0.53 vs 0.46 and 0.42), and
-  ties BM25 at the default 4,000-char chunks (0.71). See [Retrieval Quality](#retrieval-quality)
-- **Cross-encoder reranking**: ms-marco-MiniLM-L-6-v2 or Cohere Rerank v3
-- **Query analyzer**: intent classification → cost routing, entity extraction, query rewriting
-- **Semantic cache**: a query whose embedding is close enough to a cached one (cosine ≥ 0.92)
-  is answered from cache, skipping retrieval and generation. The saving has not been measured
-- **Knowledge graph (optional, `ENABLE_KNOWLEDGE_GRAPH=true`)**: LLM-extracted entities/relations
-  (COMPANY, METRIC, DATE; REPORTED_METRIC, FOR_PERIOD, …) and graph-augmented retrieval that walks
-  query entities to related metrics/periods and RRF-fuses the linked chunks with hybrid results.
+- **Hybrid RRF (k=60)** (*implemented, tested*): dense + BM25, equal-weight Reciprocal Rank
+  Fusion. Measured: beats both dense-only and BM25 at 1,000-char chunks (evidence hit@5 0.53 vs
+  0.46 and 0.42), and ties BM25 at the default 4,000-char chunks (0.71). See
+  [Retrieval Quality](#retrieval-quality)
+- **Cross-encoder reranking** (*implemented, not evaluated*): ms-marco-MiniLM-L-6-v2 or Cohere
+  Rerank v3
+- **Query analyzer** (*implemented, tested*): intent classification → cost routing, entity
+  extraction, query rewriting. The effect of routing has not been measured
+- **Semantic cache** (*implemented, tested*): a query whose embedding is close enough to a
+  cached one (cosine ≥ 0.92) is answered from cache, skipping retrieval and generation. The
+  saving has not been measured
+- **Knowledge graph** (*implemented, tested*; optional, `ENABLE_KNOWLEDGE_GRAPH=true`):
+  LLM-extracted entities/relations (COMPANY, METRIC, DATE; REPORTED_METRIC, FOR_PERIOD, …) and
+  graph-augmented retrieval that walks query entities to related metrics/periods and RRF-fuses
+  the linked chunks with hybrid results. Measured: evidence hit@5 0.72 vs 0.71, within noise.
   The graph is in memory only ([tutorial](docs/tutorials/graphrag.md))
 
 ### Quality assurance
-- **Numeric grounding guardrail**: every number in the answer is verified against context
-- **Program-of-Thought calculator**: the LLM writes the calculation; a restricted arithmetic
-  interpreter (no `exec()`, no attribute access) evaluates it
-- **RAGAS evaluation**: faithfulness, answer relevancy, context precision + LLM-as-judge
-- **Test suite**: unit, integration, property-based (Hypothesis), API, chaos engineering. CI
-  runs it on every PR, with lint, mypy and a 70% coverage floor, and blocks on failure
+- **Numeric grounding guardrail** (*implemented, tested*): flags numbers in the answer that do
+  not appear in the retrieved context. Not run on the golden set
+- **Program-of-Thought calculator** (*implemented, tested*): the LLM writes the calculation; a
+  restricted arithmetic interpreter (no `exec()`, no attribute access) evaluates it. Not part of
+  the answer eval
+- **RAGAS evaluation** (*implemented, not evaluated*): faithfulness, answer relevancy, context
+  precision + LLM-as-judge. No RAGAS run has been recorded, and the judge needs an OpenAI key
+- **Test suite**: unit, integration, property-based (Hypothesis) and API tests. CI runs them on
+  every PR, with lint, mypy (on two core modules) and a 70% coverage floor, and blocks on failure
 
-### Production operations
-- **OpenTelemetry**: distributed traces with ingest/retrieve/generate spans
-- **17 Prometheus metrics**: latency, cost, hallucination score, citation coverage, cache hit rate
-- **Multi-window SLO alerting**: Google SRE workbook burn-rate pattern, PagerDuty/OpsGenie
-- **Kubernetes**: HPA 2–10 replicas, PodDisruptionBudget, NetworkPolicy, IRSA
-- **Terraform**: full EKS + RDS(pgvector) + ElastiCache + S3 + KMS infrastructure-as-code
+### Operations
+- **OpenTelemetry** (*implemented, not evaluated*): trace spans around pipeline stages
+- **18 Prometheus metrics** (*implemented, not evaluated*): latency, cost, hallucination score,
+  citation coverage, cache hits, tenant token usage. Tests cover only the tenant-quota gauges
+- **Multi-window SLO alerting** (*not deployed*): alert rules following the Google SRE workbook
+  burn-rate pattern, with PagerDuty/OpsGenie routing. CI does not validate the rules
+- **Kubernetes** (*not deployed*): HPA 2–10 replicas, PodDisruptionBudget, NetworkPolicy, and a
+  commented-out IRSA annotation. CI lints the Helm chart and schema-validates the manifests
+- **Terraform** (*not deployed*): EKS + RDS(pgvector) + ElastiCache + S3 + KMS modules. CI does
+  not validate them
 
 ---
 
@@ -298,7 +351,7 @@ src/filing_qa/
 
 terraform/        EKS + RDS(pgvector) + ElastiCache + S3 + IAM + KMS (IaC)
 k8s/               Base manifests + Kustomize overlays (dev/prod)
-helm/              Production Helm chart
+helm/              Helm chart (linted in CI, not deployed)
 spaces/            Standalone HuggingFace Space demos
 └── rag-financial/ Gradio app — OpenAI + Gemini, hybrid retrieval, guardrails
 ```

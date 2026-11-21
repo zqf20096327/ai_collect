@@ -2,13 +2,13 @@
 
 **简体中文** | [English](README.en.md)
 
-[GitHub](https://github.com/nimcap/nimcap-screenshot) · [Gitee](https://gitee.com/lilongjiang/SnapSharp) · [官方网站](https://jietu.nimcap.com/) · [下载发布版](https://github.com/nimcap/nimcap-screenshot/releases)
+[GitHub](https://github.com/nimcap/nimcap-screenshot) · [Gitee 镜像（旧仓库名）](https://gitee.com/lilongjiang/SnapSharp) · [官方网站](https://jietu.nimcap.com/) · [下载发布版](https://github.com/nimcap/nimcap-screenshot/releases)
 
 NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌面工具，把**截图、标注、贴图、长截图和录屏**，与**本地 OCR、翻译、表格与公式识别、抠图、去水印及图像修复**放在同一个工作流程中。从屏幕取一张图，既可以直接分享，也可以继续提取文字、整理表格、生成 LaTeX、移除背景，或将参考资料贴在桌面。
 
 **离线 AI 是它的核心能力：图片和文字在本机处理，无需上传云端完成本地识别、翻译与图像处理。** 提前准备好程序、对应模型和运行依赖后，这些功能可在断网电脑或无互联网连接的内网中使用，适合整理内部资料、制作教程、阅读外文文档和日常办公。基础截图、标注、贴图、取色、测量与条码解码无需下载 AI 模型。
 
-项目属于 `nimcap`，原名 SnapSharp，当前仓库为 `nimcap/nimcap-screenshot`；已有用户数据目录保持兼容。软件使用 C#、WPF 和 .NET 10 构建，面向 Windows x64，通过系统托盘和全局快捷键调用。
+项目属于 `nimcap`，原名 SnapSharp，当前 GitHub 主仓库为 `nimcap/nimcap-screenshot`；Gitee 作为镜像入口保留旧仓库名。软件使用 C#、WPF 和 .NET 10 构建，面向 Windows x64，通过系统托盘和全局快捷键调用。旧版升级与数据目录选择见[迁移说明](#upgrade)。
 
 ## 离线 AI 可以做什么
 
@@ -22,6 +22,12 @@ NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌�
 | 移除图片背景 | U²-Net、BiRefNet 系列模型 | 保留原尺寸和透明度的图片，可保存 PNG／WebP |
 | 去水印与图像修复 | MI-GAN、LaMa、Moebius；SLBR 辅助自动检测 | 对照原图检查结果，撤销、复制、保存或贴图 |
 | 分享前遮盖敏感文字 | 本地 OCR + 规则；可选本地 Qwen 辅助识别人名、地址 | 模糊敏感文字所在范围 |
+
+### 模型大小与识别效果
+
+**识别效果受所选 AI 模型的大小与能力影响。** 对同一系列、同一任务且训练与量化条件相近的模型，较大的参数规模通常有助于提高识别准确率和复杂内容的处理能力；轻量模型则更适合低资源设备和快速处理。OCR、表格、公式和本地翻译分别使用各自的模型，应按任务与设备资源选择兼容模型。
+
+模型越大，内存、显存和处理时间的需求通常也越高。实际效果还取决于模型结构、训练数据、量化方式、语言覆盖及图片清晰度，不能只按下载文件大小判断。对复杂内容，可在兼容范围内选用能力更强的模型，并结合原图检查关键文字、数字和符号。
 
 ### 离线使用如何准备
 
@@ -53,7 +59,7 @@ NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌�
 
 ### 一键脱敏：分享截图前检查敏感信息
 
-截图和贴图编辑工具栏提供一键脱敏。本地 OCR 与规则定位手机号、身份证号、银行卡号、邮箱、车牌号、姓名字段和地址，对对应文字范围应用模糊；可选本地 Qwen 辅助识别人名和地址。此功能需要先配置 OCR，分享前仍应核对漏识别和误识别。
+截图和贴图编辑工具栏提供一键脱敏。本地 OCR 与规则定位手机号、身份证号、银行卡号、邮箱、车牌号、姓名字段和地址，对对应文字范围应用模糊；可选本地 Qwen 辅助识别人名和地址。检测效果受 OCR 模型的规模与能力、图片清晰度影响，人名和地址的辅助分析还取决于所选 Qwen 模型。先配置适合任务的模型，分享前再对照原图检查处理范围，按需补充手动模糊。
 
 ![一键脱敏后的图片示例](Screenshot/一键脱敏-脱敏后.png)
 
@@ -63,7 +69,7 @@ NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌�
 
 在“图像工具”中选择文字 OCR，识别后可编辑、复制和导出文本，识别框与文字结果支持互相定位。PaddleOCR、Windows OCR 和 Tesseract 均为本地引擎，分别需要相应模型、系统语言包或字库。
 
-证件模式复用本地 OCR，提取身份证正反面及合图、驾驶证、行驶证、户口本、护照、银行卡和营业执照的当前页字段，可编辑后复制或导出 TXT。二维码和一维码可直接离线解码，无需 AI 模型。证件字段提取基于 OCR 与规则，不提供真伪鉴定。
+证件模式复用本地 OCR，提取身份证正反面及合图、驾驶证、行驶证、户口本、护照、银行卡和营业执照的当前页字段。字段识别效果受 OCR 模型规模、语言覆盖和图片清晰度影响，可按任务选择兼容模型，编辑后复制或导出 TXT。此模式用于字段提取，不提供证件真伪鉴定。二维码和一维码可直接离线解码，无需 AI 模型。
 
 ![本地 PaddleOCR 的中文识别结果示例](Screenshot/Blog/14-ai-ocr-chinese.png)
 
@@ -73,13 +79,13 @@ NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌�
 
 ![本地表格识别与单元格校正示例](Screenshot/Blog/16-ai-table-recognition.png)
 
-公式模式将单个公式图片转为可编辑 LaTeX，可复制或导出 `.tex`。表格与公式各需配置配套模型，复杂结构和识别结果应对照原图校正。
+公式模式将单个公式图片转为可编辑 LaTeX，可复制或导出 `.tex`。表格与公式各需配置配套模型，识别效果受对应模型的规模、训练覆盖和图片清晰度影响。在兼容模型中选择更强的模型通常有助于处理复杂结构，导出前可对照原图校正行列、符号和上下标。
 
 ![本地公式识别为 LaTeX 的示例](Screenshot/Blog/17-ai-formula-latex.png)
 
 ### 本地翻译与屏幕取词：在本机阅读外文
 
-先识别图片文字，再翻译全文或选中的一段；也可输入文字进行翻译。本地翻译使用 Qwen3.5 与 llama.cpp，在 CPU 或 Vulkan 设备上运行，不需要云端 API。按设备资源选择模型并完成首次配置后，即可离线使用。
+先识别图片文字，再翻译全文或选中的一段；也可输入文字进行翻译。本地翻译使用 Qwen3.5 与 llama.cpp，在 CPU 或 Vulkan 设备上运行，不需要云端 API。同系列较大参数模型通常能更好地处理复杂语义，也需要更多内存、显存和处理时间；按设备资源选择模型并完成首次配置后，即可离线使用。
 
 托盘“屏幕取词”在本次会话中启用，鼠标停留后对附近内容做局部 OCR。界面语言、OCR 语言和翻译源／目标语言分别配置。
 
@@ -172,6 +178,16 @@ MP4 使用 H.264，可选择系统声音、麦克风和摄像头，音频使用 
 
 可在“设置 → 快捷键”修改绑定，为屏幕尺子、恢复贴图等动作配置快捷键。界面支持中文、英文、日文、韩文、德文、法文等语言／地区资源包，在“设置 → 常规 → 界面语言”选择并保存；部分翻译为机器翻译初稿。
 
+<a id="upgrade"></a>
+
+### 从 SnapSharp 升级与数据目录
+
+**SnapSharp v1.1.3 及更早版本需要手动升级。** 从 [GitHub Releases](https://github.com/nimcap/nimcap-screenshot/releases) 下载 v1.1.4 或更新版本的 Windows x64 完整压缩包，完整解压后运行 `NimCap.Screenshot.exe`，此后可使用新版的在线更新。首次更名版本的说明见 [v1.1.4 发版说明](docs/releases/v1.1.4.md)。
+
+新版优先读取 exe 旁的 `data-location.json`。没有该文件时，只有 exe 目录没有应用数据项、且 `%LocalAppData%\SnapSharp` 存在 `settings.json`、`models`、`History` 等应用数据项，才继续使用这个旧目录；否则使用 exe 所在目录。可在“设置 → 常规 → 本地数据”查看或安排迁移，确认后重新启动生效。
+
+手动升级时保留原数据目录和 `data-location.json`。若把新版解压到另一目录，请核对数据位置；旧 exe 旁或自选目录中的数据不会仅凭更名自动被找到。详细规则见[使用指南](docs/使用指南.md#data-directory)。
+
 <a id="settings"></a>
 
 ## 首次配置与运行要求
@@ -204,7 +220,7 @@ ONNX 图像推理在独立子进程中执行；GPU 初始化、推理失败或�
 
 ## 反馈与联系
 
-欢迎反馈使用问题和功能建议。请优先通过 [GitHub Issues](https://github.com/nimcap/nimcap-screenshot/issues) 提交，并附上软件版本、Windows 版本、复现步骤和必要截图。涉及隐私的内容请勿公开，可通过邮箱或微信联系。
+欢迎反馈使用问题和功能建议。请统一通过主仓库的 [GitHub Issues](https://github.com/nimcap/nimcap-screenshot/issues) 提交，并附上软件版本、Windows 版本、复现步骤和必要截图。检索旧问题时可同时搜索 `NimCap Screenshot` 和 `SnapSharp`；反馈旧版问题时注明旧名与具体版本，便于关联历史记录。涉及隐私的内容请勿公开，可通过邮箱或微信联系。
 
 - 邮箱：[509918688@qq.com](mailto:509918688@qq.com)
 - 微信号：`nimcap`

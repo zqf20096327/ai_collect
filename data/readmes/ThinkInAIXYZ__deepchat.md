@@ -476,6 +476,10 @@ Common commands include `/start`, `/help`, `/pair`, `/new`, `/sessions`, `/use`,
       <img src="./src/renderer/src/assets/llm-icons/worldrouter.svg" width="50" height="50" alt="WorldRouter Icon"><br/>
       <a href="https://www.worldrouter.ai/">WorldRouter</a>
     </td>
+    <td>
+      <img src="./src/renderer/src/assets/llm-icons/aigrow.svg" width="50" height="50" alt="AIGROW Icon"><br/>
+      <a href="https://aigrow.gg/ai-api">AIGROW</a>
+    </td>
   </tr>
 
 </table>
@@ -517,6 +521,12 @@ $ pip install setuptools
 ```bash
 $ pnpm run dev
 ```
+
+Development requires Rust 1.98.1 (via rustup; Windows also needs the Visual Studio C++ Build Tools).
+`pnpm dev` prepares the pinned Node/dim release, plugin runtime and native host before starting
+Electron. The first run needs network access and builds the host; subsequent runs reuse verified
+local assets until runtime sources or locks change. See the [setup guide](docs/guides/getting-started.md).
+Packaged applications include these runtimes; end users do not need Rust.
 
 ### Build
 

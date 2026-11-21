@@ -16,6 +16,7 @@ Anysub (formerly Whishper) makes subtitles from audio and video. Upload a record
 - Word-level timings.
 - A subtitle editor with a waveform timeline, undo and autosave.
 - Warnings for subtitles that are too fast, too long, or overlap.
+- Translation into other languages, on your server or with a provider's chat model.
 - Export to SRT, WebVTT, LRC, plain text or JSON.
 - Uploads that resume, for hours-long files.
 - A searchable library.
@@ -66,7 +67,6 @@ Whishper 3 is no longer maintained, and Anysub can't read its data. [Coming from
 
 ## Not built yet
 
-- Translation.
 - Speaker labels.
 - Watched folders.
 - Import from a URL or an existing subtitle file.

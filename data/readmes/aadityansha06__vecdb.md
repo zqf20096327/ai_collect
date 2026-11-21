@@ -22,7 +22,7 @@ out locally, by a human, on the server itself. Read the full design here:
   connections).
 <br>
 
->"The server's configuration supports up to 100,000 concurrent connections (file descriptor limits, accept queue depth). This has not been verified with a single-client load test, since one client machine is itself limited to roughly 28,000 simultaneous outbound connections by its local TCP port range (net.ipv4.ip_local_port_range) — testing genuine 100k concurrency would require a distributed load-generation setup across multiple client machines, a standard limitation of single-machine load testing at this scale."
+>"The server's configuration supports up to 28,000 concurrent connections when tested with 100k total request (file descriptor limits, accept queue depth). This has not been verified with a single-client load test, since one client machine is itself limited to roughly 28,000 simultaneous outbound connections by its local TCP port range (net.ipv4.ip_local_port_range) — testing genuine 100k concurrency would require a distributed load-generation setup across multiple client machines, a standard limitation of single-machine load testing at this scale."
 
 
 # Why this exists

@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Java-25+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-4.1.2-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.2.0-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
@@ -81,7 +81,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-proxy](bus-proxy)         | Dynamic proxy tool, simplifying JDK/CGLIB proxy implementation                                                                   |
 | [√]    | [bus-sensitive](bus-sensitive) | Sensitive data masking, providing annotation-based/rule-based data obfuscation solutions                                         |
 | [√]    | [bus-setting](bus-setting)     | Configuration management tool, supporting multi-environment configuration/dynamic refresh/encrypted storage                      |
-| [√]    | [bus-shade](bus-shade)         | Code generator, one-click generation of basic code like Entity/Service/Mapper                                                    |
+| [√]    | [bus-shade](bus-shade)         | Executable JAR protection: encrypts Spring Boot archives and launches them through custom loaders (executable JAR only, WAR is not supported yet) |
 | [√]    | [bus-spring](bus-spring)       | Shared Spring and Spring Boot integration infrastructure                                                                         |
 | [√]    | [bus-starter](bus-starter)     | SpringBoot starter, auto-assembly of core components and configurations                                                          |
 | [√]    | [bus-storage](bus-storage)     | Object storage service, supporting storage solutions like Alibaba Cloud OSS/Tencent Cloud COS/MinIO                              |

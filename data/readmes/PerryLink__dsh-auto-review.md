@@ -36,6 +36,10 @@ dsh plugin --profile <name> add dsh-auto-review
 
 ## 它是什么
 
+![dsh-auto-review 真实终端运行](docs/assets/dsh-auto-review-demo.gif)
+
+*本仓库一次真实运行的动图回放。*
+
 当某个动作越过沙箱边界，`dsh-auto-review` 把审批决定交给第二个模型：一个只读审查子代理读取真实工作区（经 `read`/`glob`/`grep` 白名单）、已流式传出的工具调用参数（敏感值已脱敏）、请求理由与你的风险规则，返回结构化裁决 `{ decision, reason, riskLevel }`——人类无需批准任何事，也没有任何不安全的东西蒙混过关。拒绝裁决会把理由反馈给调用模型，让代理学会原因而不是盲目重试；每一次决策都能从会话日志重建。
 
 <picture>
@@ -547,7 +551,7 @@ config:
 
 | 方面 | 状态 |
 |---|---|
-| 宿主 | DeepSeek Harness `dsh-v0.2.2-rc.4`（2026-11-18 验证）：`engines.dsh >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0`；P0 兼容路径已有回归测试。 |
+| 宿主 | DeepSeek Harness `dsh-v0.2.2-rc.4`（2026-11-18 验证）：`engines.dsh >=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0`；P0 兼容路径已有回归测试。 |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | 平台 | 全部（宿主 answerer；可选 Web 审查面板，依赖会话投影能力） |
 | 模型 | 任意生成式模型（审查器默认继承会话代理的路由；`reviewerModel` 可覆盖），或本机非生成式的 `Phocinae-Largha-150M-v1` 决策模型（`reviewerBackend: phocinae`） |
@@ -586,7 +590,7 @@ Topics：`deepseek-harness`、`dsh`、`dsh-plugin`、`cordis`、`approval`、`au
 
 ## 家族与致谢
 
-本项目是 [PerryLink](https://github.com/PerryLink) 维护的 DeepSeek Harness 插件家族成员（95 个，全部 Apache-2.0）。如果这个插件帮到了你，**给个 star**——它不解锁任何功能，但会让下一个人更容易找到它。
+本项目是 [PerryLink](https://github.com/PerryLink) 维护的 DeepSeek Harness 插件家族成员（99 个，全部 Apache-2.0）。如果这个插件帮到了你，**给个 star**——它不解锁任何功能，但会让下一个人更容易找到它。
 
 - [@PerryLink](https://github.com/PerryLink) —— 创建者与维护者：审批 answerer、审查子代理、风险策略与熔断器、会话投影审查面板、invariant 配套插件、dsh-eval，以及五语文档。
 - [@renleihaokun](https://github.com/renleihaokun) —— shell 参数密钥、截断证据、空审查面板（#65）与 0.2.1 激活恢复（#71）；修复随 0.13.4/0.13.5 发布。
@@ -603,17 +607,27 @@ Topics：`deepseek-harness`、`dsh`、`dsh-plugin`、`cordis`、`approval`、`au
 | **[dsh-archive-check](https://github.com/PerryLink/dsh-archive-check)** |  |
 | **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** |  |
 | **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | 🚫 已退役 — 见仓库 README |
 | **[dsh-bid-ca-precheck](https://github.com/PerryLink/dsh-bid-ca-precheck)** |  |
 | **[dsh-bid-qual-check](https://github.com/PerryLink/dsh-bid-qual-check)** |  |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-check-pack](https://github.com/PerryLink/dsh-check-pack)** |  |
 | **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** |  |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-click](https://github.com/PerryLink/dsh-click)** |  |
+| **[dsh-clinic](https://github.com/PerryLink/dsh-clinic)** |  |
+| **[dsh-codemod](https://github.com/PerryLink/dsh-codemod)** |  |
+| **[dsh-community-bench](https://github.com/PerryLink/dsh-community-bench)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** |  |
 | **[dsh-contract-stance](https://github.com/PerryLink/dsh-contract-stance)** |  |
 | **[dsh-customs-doc-check](https://github.com/PerryLink/dsh-customs-doc-check)** |  |
 | **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-demurrage-ledger](https://github.com/PerryLink/dsh-demurrage-ledger)** |  |
+| **[dsh-dida](https://github.com/PerryLink/dsh-dida)** |  |
 | **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** |  |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-drill-script-check](https://github.com/PerryLink/dsh-drill-script-check)** |  |
 | **[dsh-eia-guide-check](https://github.com/PerryLink/dsh-eia-guide-check)** |  |
 | **[dsh-emergency-plan](https://github.com/PerryLink/dsh-emergency-plan)** |  |
@@ -624,7 +638,7 @@ Topics：`deepseek-harness`、`dsh`、`dsh-plugin`、`cordis`、`approval`、`au
 | **[dsh-fmea-table-check](https://github.com/PerryLink/dsh-fmea-table-check)** |  |
 | **[dsh-forecast-penalty](https://github.com/PerryLink/dsh-forecast-penalty)** |  |
 | **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** |  |
-| **[dsh-github](https://github.com/PerryLink/dsh-github)** |  |
+| **[dsh-github-bot](https://github.com/PerryLink/dsh-github-bot)** |  |
 | **[dsh-gongwen-flow-check](https://github.com/PerryLink/dsh-gongwen-flow-check)** |  |
 | **[dsh-gongwen-word-check](https://github.com/PerryLink/dsh-gongwen-word-check)** |  |
 | **[dsh-guard-plan-qc](https://github.com/PerryLink/dsh-guard-plan-qc)** |  |
@@ -652,48 +666,42 @@ Topics：`deepseek-harness`、`dsh`、`dsh-plugin`、`cordis`、`approval`、`au
 | **[dsh-ota-review-check](https://github.com/PerryLink/dsh-ota-review-check)** |  |
 | **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** |  |
 | **[dsh-paper-doc-adapter](https://github.com/PerryLink/dsh-paper-doc-adapter)** |  |
+| **[dsh-param-repair](https://github.com/PerryLink/dsh-param-repair)** |  |
 | **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** |  |
 | **[dsh-permit-report-check](https://github.com/PerryLink/dsh-permit-report-check)** |  |
+| **[dsh-phocinae](https://github.com/PerryLink/dsh-phocinae)** |  |
+| **[dsh-phone-inbox](https://github.com/PerryLink/dsh-phone-inbox)** |  |
 | **[dsh-pipeline-check](https://github.com/PerryLink/dsh-pipeline-check)** |  |
 | **[dsh-pleading-draft](https://github.com/PerryLink/dsh-pleading-draft)** |  |
-| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | 🚫 已退役（仓库已归档） |
-| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** |  |
-| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | 🚫 已退役（仓库已归档） |
-| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | 🚫 已退役（仓库已归档） |
 | **[dsh-policy-brief-draft](https://github.com/PerryLink/dsh-policy-brief-draft)** |  |
 | **[dsh-power-loss-split](https://github.com/PerryLink/dsh-power-loss-split)** |  |
 | **[dsh-power-ticket-check](https://github.com/PerryLink/dsh-power-ticket-check)** |  |
 | **[dsh-ppap-check](https://github.com/PerryLink/dsh-ppap-check)** |  |
+| **[dsh-primer](https://github.com/PerryLink/dsh-primer)** |  |
 | **[dsh-protest-deadline](https://github.com/PerryLink/dsh-protest-deadline)** |  |
 | **[dsh-railway-window](https://github.com/PerryLink/dsh-railway-window)** |  |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-repair-order-qc](https://github.com/PerryLink/dsh-repair-order-qc)** |  |
 | **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** |  |
 | **[dsh-review-reply-check](https://github.com/PerryLink/dsh-review-reply-check)** |  |
 | **[dsh-rulefile-check](https://github.com/PerryLink/dsh-rulefile-check)** |  |
 | **[dsh-safety-brief-check](https://github.com/PerryLink/dsh-safety-brief-check)** |  |
+| **[dsh-scaffold](https://github.com/PerryLink/dsh-scaffold)** |  |
 | **[dsh-score](https://github.com/PerryLink/dsh-score)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-security-pack](https://github.com/PerryLink/dsh-security-pack)** |  |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 已退役 — 见仓库 README |
 | **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** |  |
 | **[dsh-site-log-check](https://github.com/PerryLink/dsh-site-log-check)** |  |
-| **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** |  |
 | **[dsh-soe-decision-check](https://github.com/PerryLink/dsh-soe-decision-check)** |  |
 | **[dsh-soilwater-check](https://github.com/PerryLink/dsh-soilwater-check)** |  |
 | **[dsh-sop-sync-check](https://github.com/PerryLink/dsh-sop-sync-check)** |  |
 | **[dsh-spc-gbt-adapter](https://github.com/PerryLink/dsh-spc-gbt-adapter)** |  |
 | **[dsh-talk](https://github.com/PerryLink/dsh-talk)** |  |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 已退役 — 见仓库 README |
 | **[dsh-tender-extract](https://github.com/PerryLink/dsh-tender-extract)** |  |
 | **[dsh-tender-matrix](https://github.com/PerryLink/dsh-tender-matrix)** |  |
 | **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** |  |
-| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | 🚫 已退役（仓库已归档） |
-| **[dsh-translate](https://github.com/PerryLink/dsh-translate)** |  |
 | **[dsh-warranty-calc](https://github.com/PerryLink/dsh-warranty-calc)** |  |
-| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | 🧊 已冻结 — 见仓库 README |
-| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | 🧊 已冻结 — 见仓库 README |
-| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | 🧊 已冻结 — 见仓库 README |
-| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | 🧊 已冻结 — 见仓库 README |
-| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | 🧊 已冻结 — 见仓库 README |
-| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | 🚫 已退役（仓库已归档） |
-| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 已退役（仓库已归档） |
-| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 已退役（仓库已归档） |
 
 </details>
 

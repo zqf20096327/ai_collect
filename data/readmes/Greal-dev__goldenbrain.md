@@ -4,11 +4,17 @@ English · [Français](README.fr.md) · [Deutsch](README.de.md) · [Español](RE
 
 GoldenBrain is a local control desk for work handed to AI coding agents. Each task is a Markdown note in your vault (a plain folder of notes, Obsidian or not) and its work is an ordinary conversation of a command-line harness — Claude Code, Codex, OpenCode, GitHub Copilot CLI or Antigravity — that you can resume at any time. GoldenBrain places, queues, supervises and links these conversations; the agent reports a short summary card into the note, and you validate.
 
-![Task tree as a cascade, with status, live activity and engine](docs/captures/arbre.png)
+![Task tree as a cascade, with status, live activity and engine](docs/captures/arbre-en.png)
 
-![A task: conversation and personal notes side by side](docs/captures/tache.png)
+![A task: conversation with the agent and personal notes side by side](docs/captures/tache-en.png)
 
-Configuration keys and design documents are in French; this README, the contribution guide and the security policy exist in four languages. Screenshots come from a fictitious demonstration vault (`python scripts/captures.py`).
+![In progress: what each agent is doing, its sub-agents and its progress](docs/captures/travaux-en.png)
+
+![Second brain: notes and tasks linked in a graph](docs/captures/graphe-en.png)
+
+[▶ Demonstration video (about 40 s)](docs/captures/demo-en.webm)
+
+Configuration keys and design documents are in French; this README, the contribution guide and the security policy exist in four languages. Screenshots and video come from a fictitious demonstration vault (`python scripts/captures.py`).
 
 ## Quick install
 

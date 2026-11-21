@@ -1,4 +1,7 @@
 # Alaska: Google Summer of Code (GSoC) 
+
+# Please note that our project ideas page for 2027 is not complete yet. We are still collecting project ideas for GSoC 2027. By early January, we will have around 15 project ideas listed. 
+
 <img src="https://raw.githubusercontent.com/uaanchorage/GSoC/main/figures/Alaska.png" width="150" height="150" align="left" style="padding:10px;"/> 2027 will be our fourth time participating in the Google Summer of Code (GSoC) as a mentoring organization, and we are already excited about the potential and opportunities. We had four enthusiastic contributors as a [first-time organization in 2024](https://github.com/uaanchorage/GSoC/tree/GSoC-2024) and we doubled in 2025 with our excellent 8 contributors and had 8 more contributors in 2026 as well. We consist of stable open-source projects in production use in research and relatively young projects. We also have mentors who have participated in several GSoC instances over the past several years and have been active in open-source software development for decades.
 
 We represent the 49th state, Alaska. Anchorage, the largest city in Alaska, has a vibrant open-source community. Through this GSoC initiative, researchers from the [University of Alaska Anchorage (UAA)](https://www.uaa.alaska.edu/) and [University of Alaska Fairbanks (UAF)](https://www.uaf.edu/) join hands with the Alaska-based software experts that are part of open-source entities such as [Healthy](https://github.com/healthyinc/) and [Alaska Developer Alliance](https://www.akdevalliance.com/) to provide a perfect mentoring experience for interested contributors globally. We provide a glimpse of this northern state and its tech landscape to the Lower 48 and the outside world through this open-source remote summer coding program organized and funded by Google. Our projects focus on healthcare, climate science, polar science, and other research fields critical to the Circumpolar North and the rest of the world.
@@ -97,32 +100,7 @@ _Potential areas of improvement:_
 
 ***
 
-**[4] Creating shareable "albums" from locally stored DICOM images**
-
-**Mentors:** Ananth Reddy (bananthreddy30 -at- gmail.com) and Pradeeban Kathiravelu (pkathiravelu -at- alaska.edu)
-
-**Overview:**  DICOM data sets downloaded from PACS environments typically remain in the local environments, such as a research server or a cluster where the DICOM retriever (C-MOVE) is run. To use this data, researchers must identify certain subsets of data. This can be achieved by querying the retrieved data. DICOM images consist of textual metadata. By querying the metadata, subsets of images can be identified. However, currently, creating "albums" from locally stored DICOM images is not seamless.
-
-**Current Status:** This feature does not exist in our open-source frameworks. We share images through other orthogonal approaches (via rclone, for example). This project will implement a stand-alone utility to effectively create albums from locally stored DICOM images.
-
-**Expected Outcomes:** Several approaches to implementing such album features exist. One approach is to use [Kheops](https://docs.kheops.online/) to provide an interface to create and view the albums. [MEDIator](https://github.com/sharmalab/MEDIator) can be extended to create subsets and share the images via a unique URL as well. The proposed feature will make the images accessible to more researchers for their experiments by replacing the current manual data sharing efforts. Moreover, Kheops natively integrates with OHIF Viewer. As such, images retrieved locally can be viewed through OHIF Viewer by creating albums with Kheops. Contributors are encouraged to use Kheops or alternatives rather than reinventing the wheel (unless there is a convincing reason).
- 
-**Required Skills:** Python or Java.
-
-**Code Challenge:** Experience working with DICOM images from previous projects or through a sample dummy project will be a plus.
-
-**Source Code:** https://github.com/KathiraveluLab/Diomede
-
-**Discussion Forum**: https://github.com/KathiraveluLab/Diomede/discussions
-
-**Effort:** 90 Hours
-
-**Difficulty Level:** Easy
-
-***
-
-
-**[5] Usability enhancements to CONTROL-CORE**
+**[4] Usability enhancements to CONTROL-CORE**
 
 **Mentors:** Rahul Jagwani (rahuljagwani1012 -at- gmail.com) and Mayuresh Kothare (mvk2 -at- lehigh.edu)
 

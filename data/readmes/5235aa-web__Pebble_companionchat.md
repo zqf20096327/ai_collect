@@ -5,7 +5,7 @@
 <br />
 
 <h3>Pebble Companion Chat (P.C.C)</h3>
-<p>Lightweight, customizable local &amp; cloud model-based character card chat dialogues — combining multiple conversations, multi-character group rooms, cascaded streaming voice calls, long-term memory, and an integrated picture studio.</p>
+<p>Lightweight, focusing on multi-sensory immersive chat, customizable local &amp; cloud model-based character card chat dialogues — combining multiple conversations, multi-character group rooms, cascaded streaming voice calls, long-term memory, and an integrated picture studio.</p>
 
 <p>
   <a href="https://github.com/5235aa-web/Pebble_companionchat/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/5235aa-web/Pebble_companionchat/ci.yml?branch=main&style=flat-square&labelColor=14110f&label=CI" alt="CI" /></a>
@@ -51,6 +51,8 @@ Whether running local GGUF weights, calling cloud LLM APIs, holding live voice c
 
 ### 3. Character Cards 
 - **SillyTavern Ecosystem**: Import and export **PNG / JSON** character cards, with a built-in editor covering identity, dialogue fields (first message, conversation examples, advanced prompt), bound TTS voice clip/ID, system instructions, and raw JSON.
+- **CHARX Containers & Bundled Assets**: Import and export **CHARX** (`.charx` / `.zip` and polyglot image+ZIP Character Card V3 packages) via streaming extraction and chunked transfer for large archives. Alongside card text and `alternate_greetings`, Pebble extracts CCv3 `data.assets` (`embeded://`, `embedded://`, `__asset:`, inline base64 data URLs), RisuAI `emotions` / `additionalAssets`, and bundled images, audio, and video into per-character storage manageable in the editor (world book / `character_book` entries and RisuAI display scripts are not imported).
+- **Inline Media & Stage HUD**: Greetings and chat replies render sanitized Markdown/HTML and resolve bundled CHARX media inline — supporting `{{img::...}}`, `{{audio::...}}`, `{{bgm::...}}`, `{{video::...}}`, Markdown images, `<img src="...">`, `<video>`, and RisuAI `<img="...">` shorthand tags. For cards with bundled assets in single chat, an optional per-branch Stage HUD parses stripped `<<<STATE>>>` blocks to track mood, affection, location, and outfit while swapping stage portraits and cueing BGM/SFX automatically.
 - **Global Rules**: Append shared scope, behaviour, and post-history instructions across all characters without editing individual cards.
 
 ### 4. Script Mode

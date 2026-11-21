@@ -28,7 +28,7 @@
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/swastiksingh-dev/Aura-Components-MCP/main/assets/heart-demo.mp4"><b>▲ WATCH THE 12-SECOND TOUR (MP4) ▲</b></a>
-</p>
+</p>  
 
 > I got tired of opening twenty Aura tabs every time I started a landing page. So I built the MCP server I wanted: every free thing on aura.build, one stdio call away, no account, no key, no browser.
 
@@ -41,11 +41,15 @@
 ## Contents
 
 
+
+
+
+
 - [Why not the official MCP](#why-i-built-this-instead-of-using-the-official-mcp)
 - [What is inside](#what-is-inside)
 - [Install](#install)
 - [Demo](#demo)
-- [The 35 tools](#the-35-tools)
+- [The 35 tools](#the-35-tools)  
 - [Fallback rules](#fallback-rules-read-this-once)
 - [Prompt for AI agents](#prompt-for-ai-agents-start-here)
 - [Free only, no login](#free-only-no-login)
@@ -159,6 +163,7 @@ claude mcp add aura-components -- node ./dist/server.js
 ```
 
 ---
+
 ## Demo
 
 
@@ -436,6 +441,7 @@ Server code by [swastiksingh-dev](https://github.com/swastiksingh-dev), MIT. Fre
 
 ---
 ## License
+
 
 
 MIT — see [LICENSE](https://github.com/swastiksingh-dev/Aura-Components-MCP/blob/main/LICENSE).

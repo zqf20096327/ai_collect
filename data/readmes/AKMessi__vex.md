@@ -1,7 +1,7 @@
 # Vex
 
 <p align="center">
-  <strong>Terminal-first AI video editing, driven by plain English.</strong>
+  <strong>AI video generation and editing from your browser or terminal.</strong>
 </p>
 
 <p align="center">
@@ -11,13 +11,48 @@
   <img alt="Terminal native" src="https://img.shields.io/badge/terminal-native-1F2937?style=for-the-badge">
 </p>
 
-<p align="center">
-  <img src="assets/terminal.png" alt="Vex running in a terminal" width="900">
-</p>
+Vex is a source-available, non-commercial AI video studio. Describe a video to
+make from scratch or import footage and ask for edits in plain English. Run
+`vex web --open` for Studio or `vex` for the terminal.
 
-Vex is a source-available, non-commercial AI video editing agent for the terminal. Launch `vex`, talk to it in plain English, point it at a video file, and it edits a safe working copy of your footage using FFmpeg, MoviePy, transcript intelligence, generated visuals, and an LLM-driven tool loop.
+## Video demo
 
-It is built for creators and builders who want CLI speed without memorizing editing commands, FFmpeg flags, subtitle workflows, color-correction knobs, or export presets.
+### Where Light Meets
+
+A 13.5-second explainer showing how a camera lens brings light into focus and
+how the image blurs as the sensor moves away from the focal plane.
+
+[![Animated preview of Where Light Meets. Light rays converge through a camera lens, spread across a moving sensor, and return to a sharp point.](assets/demos/where-light-meets/where-light-meets-preview.gif)](assets/demos/where-light-meets/where-light-meets.mp4)
+
+[Download the 1080p MP4 with narration](assets/demos/where-light-meets/where-light-meets.mp4?raw=true)
+
+**How it was made**
+
+1. Vex sent the camera-focus brief to DeepSeek V4.1 Flash (`deepseek-flash`). The
+   model wrote the narration and drafted three animated shots.
+2. In a manual motion pass, the blur circle was attached to the moving sensor
+   using Vex's layer controls. A local pivot let the circle grow and shrink
+   around its own center while following the sensor.
+3. Vex synthesized the voiceover with HyperFrames, timed the captions, and
+   assembled and exported all three shots in Remotion.
+
+<details>
+<summary>Recreate the finished cut</summary>
+
+Run these commands from a clone of the repository with Vex 0.1.0rc26 or later
+and FFmpeg installed. The saved direction supplies the finished artwork, motion,
+and narration.
+
+```bash
+vex renderers install hyperframes
+vex renderers install remotion
+vex generate-video "Where Light Meets" --title "Where Light Meets" --renderer hybrid --film-direction assets/demos/where-light-meets/film-direction.json --duration 16 --resolution 1920x1080 --fps 24 --voice af_heart --no-transcribe
+```
+
+The requested duration is 16 seconds. Vex paces the finished cut to the
+recorded narration. [Saved film direction](assets/demos/where-light-meets/film-direction.json) · [Hybrid film workflow](docs/hybrid-film-production.md)
+
+</details>
 
 ## Highlights
 
@@ -48,6 +83,7 @@ Generated visuals share source-grounded meaning checks, actual browser typograph
 
 ## Contents
 
+- [Video demo](#video-demo)
 - [What Vex Can Do](#what-vex-can-do)
 - [What's New: Auto Visuals](#whats-new-auto-visuals)
 - [Auto Color Grading](#auto-color-grading)
@@ -447,6 +483,10 @@ See [docs/local-llms.md](docs/local-llms.md) for the full setup guide and troubl
 
 ## Quick Start
 
+<p align="center">
+  <img src="assets/terminal.png" alt="Vex running in a terminal" width="900">
+</p>
+
 ### First run
 
 ```bash
@@ -488,11 +528,27 @@ Open [http://127.0.0.1:5173](http://127.0.0.1:5173) in a browser. To open it aut
 vex web --open
 ```
 
-Studio v1 provides local video upload or local-path project creation, a working-cut preview backed by the project file on disk, plain-English editing through the existing intent compiler and agent loop, live plan/tool trace updates, project metadata, timeline history, creative runs, and a project library.
+![Vex Studio editor with Where Light Meets open in the video preview beside the conversation and timeline](assets/demos/where-light-meets/vex-studio.png)
 
-The Studio server binds to `127.0.0.1` by default and does not add a cloud service or database. Because the API can open local media paths, Vex deliberately rejects non-loopback interfaces. Use `--host` only to select another loopback address such as `localhost` or `::1`, and use `--port` to choose a different local port.
+Use **Create video** to start from a brief. Choose a format, duration, and
+voiceover setting. Studio follows the production stages while the shared Vex
+pipeline runs. A verified result can be downloaded or opened immediately as an
+editable project. You can stop a production after its current stage and reuse
+the brief from its run record.
 
-Uploads are streamed into a private temporary file and then copied into the project workspace; the browser never needs to hold the complete video in memory. Studio also resumes active task progress after a refresh and rejects cross-site API writes.
+Use **Import footage** for a file or local path. The editor keeps the conversation
+beside the current cut and its timeline. Switch between the cut and the source,
+click a timeline clip to seek, or use Undo and Redo. If your browser cannot play
+a file directly, select **Prepare browser preview** to build a compatible
+playback copy. Open the project and command search with **Ctrl+K** or **Cmd+K**.
+
+Studio uses Vex's local project catalog and binds to `127.0.0.1` by default.
+Use `--host` to select another loopback address such as `localhost` or `::1`,
+and `--port` to choose a different port.
+
+Uploads stream into a private temporary file and enter the project workspace
+as a managed copy. Active edits and productions remain visible after a refresh.
+Studio rejects cross-site API writes.
 
 ## Natural-Language Examples
 
@@ -989,8 +1045,14 @@ Show the installed version.
 
 These commands work only inside the interactive session.
 
+Type `/` to see commands, press **Alt+Enter** to add a line to a brief, and
+use **Ctrl+R** to search input history. **Enter** sends the instruction.
+
 | Command | Action |
 |---|---|
+| `/generate-video <brief>` | Start a film without loading footage |
+| `/load <path or URL>` | Import footage or open its saved project |
+| `/open <project id>` | Switch to a saved project inside the current session |
 | `/status` | Show the current project summary |
 | `/timeline` | Show the applied timeline |
 | `/undo` | Undo the last edit |
@@ -1051,7 +1113,7 @@ You can override that with `AGENT_PROJECTS_DIR`.
 | `tools/` | Agent-callable editing tools |
 | `video_generation/` | Standalone audio-first HyperFrames video generation, beat graphs, project writing, rendering, and QA |
 | `effects/` | Context-aware auto-effects modeling, scoring, planning, FFmpeg compilation, and validation |
-| `engine.py` | FFmpeg and MoviePy operations |
+| `engine.py` | FFmpeg media operations and Pillow text overlays |
 | `color_grading.py` | Sampled-frame color analysis and reusable FFmpeg grade planning |
 | `state.py` | Persistent project state and timeline history |
 | `visual_intelligence.py` | Transcript beat mining, visual planning, and renderer-aware spec normalization |
@@ -1091,16 +1153,6 @@ Installing Whisper into a separate system Python does not expose it to a Vex
 installation managed by pipx directly. Vex bridges that boundary through a
 bounded external worker when the interpreter is discoverable on `PATH` or
 configured with `WHISPER_PYTHON_PATH`.
-
-### Text overlays on Windows may require ImageMagick
-
-MoviePy text rendering on Windows can require ImageMagick.
-
-If timed text overlays fail, install it from:
-
-```text
-https://imagemagick.org/script/download.php#windows
-```
 
 ### Subtitle burning depends on FFmpeg ASS subtitle support
 

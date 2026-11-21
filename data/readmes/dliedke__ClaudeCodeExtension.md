@@ -198,6 +198,12 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 316.0
+- "Keep planning" on a plan card with no feedback now stops the agent and waits for your next message instead of opening a question card.
+- Plan cards can now approve in Manual mode (▾ menu), so the agent carries out the plan but asks before every tool, file edits included; the Approve button's tooltip now says it continues in Accept edits.
+- New *Settings → Automation → Return to Plan mode after an approved plan* option (on by default): turn it off to stay in the mode you approved the plan with.
+- Thanks to [@zhangzikai](https://github.com/zhangzikai) for the suggestions (#268).
+
 ### Version 315.0
 - Background agents no longer flood the chat with their own steps and reports, which could bury a question or plan card so it looked like no Approve button had appeared.
 
@@ -1560,22 +1566,4 @@ Native mode now in beta phase
 - Fixed Windows Terminal paste and text selection.
 
 ### Version 8.4
-- Detach Terminal: prompt area auto-expands on detach.
-- Terminal and prompt zoom persistence across sessions.
-- Detached state persistence fix.
-
-### Version 8.3
-- Detach Terminal: splitter stays visible; prompt font zoom (8–24pt).
-
-### Version 8.2
-- Multiple Detach Terminal fixes (fill tab, re-attach layout, double re-attach, prompt sending with diff open).
-
-### Version 8.0
-- **Detach Terminal** into a separate VS tool window tab; state persists.
-
-### Version 7.8
-- Fixed **Show Usage** for Windows Terminal.
-- Adjusted Windows Terminal initial zoom.
-
-### Version 7.7
-- **Windows Terminal support** with seamless embedding, auto-detection, and
+- Detach Terminal: prompt area auto-expand

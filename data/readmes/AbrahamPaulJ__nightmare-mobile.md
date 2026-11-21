@@ -29,7 +29,7 @@ touch. No server, no account, no cloud.
   Hugging Face inside the app.
 - **The desktop toolbox**: inpaint and outpaint, tap to select (Segment Anything), ControlNet, IP-Adapter,
   LoRAs, hires fix, Fix faces and hands (ADetailer), editing by instruction (FLUX.2 Klein, Qwen Image,
-  Fibo 2.0), upscalers, seed and setting sweeps as grids, and A1111 `parameters` in every saved PNG.
+  Fibo 2.0), background removal (RMBG 3.0), upscalers, seed, setting and prompt sweeps as grids, and A1111 `parameters` in every saved PNG.
 - **Offline and private**: nothing is uploaded. A local API (off by default) also speaks AUTOMATIC1111's
   `/sdapi/v1/txt2img`, so other apps can use your phone as their image generator.
 
@@ -56,8 +56,8 @@ Z-Image). The rest is Nightmare's own work, and every engine change is public in
   FLUX.2 Klein and NitroFusion 2 on the Adreno GPU, in pieces small enough that the screen keeps responding. On
   the 8s Gen 3 and 8s Gen 4 the NPU's matrix unit turned out to return wrong results on every model, so those
   chips run with it off.
-- **Drop-in fine-tunes**: a CivitAI DiT checkpoint imports as it is; int8, fp8, ConvRot and mxfp8 files become
-  Q8_0 on the phone, and a self-made GGUF the engine cannot read is repaired on import.
+- **Drop-in fine-tunes**: a CivitAI DiT checkpoint imports as it is; int8, fp8, ConvRot and mxfp8 files, and 16-bit
+  MOSS-Image and Anima ones, become Q8_0 on the phone, and a self-made GGUF the engine cannot read is repaired on import.
 - **LoRA, ControlNet and IP-Adapter chosen per render** on SD 1.5 and SDXL, on an NPU whose models are compiled
   ahead of time (the Swap models, converted with our [npuforge](https://github.com/AbrahamPaulJ/npuforge)).
 - **Diagnose a wrong picture**: it renders again with each part of the NPU moved to the CPU in turn, and the

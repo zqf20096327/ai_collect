@@ -890,11 +890,11 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/DeaDBeeF-Player/deadbeef) [DeaDBeeF Player](https://github.com/DeaDBeeF-Player/deadbeef)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/strawberrymusicplayer/strawberry) [🍓 Strawberry Music Player](https://github.com/strawberrymusicplayer/strawberry) Clementine的升级版、专为无损发烧友设计
 - [GarageBand](https://apps.apple.com/us/app/garageband/id408709785) 库乐队，制作手机铃声🎧
-- ![GitHub Repo stars](https://img.shields.io/github/stars/mostafaalagamy/Metrolist) [Metrolist](https://github.com/mostafaalagamy/Metrolist) YouTube Music client for Android
+- ![GitHub Repo stars](https://img.shields.io/github/stars/MetrolistGroup/Metrolist) [Metrolist](https://github.com/MetrolistGroup/Metrolist) (Windows, macOS, Android, iOS) YouTube Music client ⭐
 - [Cotton Music](https://apps.apple.com/app/id6752617064) 棉花音乐
 - [Musify](https://apps.apple.com/us/app/musify-music-player/id1575902185)
 - [Spotify](https://www.spotify.com/us/download/other)  (Windows, Android, iOS) 总部位于瑞典斯德哥尔摩，只有Spotify Premium用户可以在移动端播放本地文件
-  - ![GitHub Repo stars](https://img.shields.io/github/stars/crmne/spotifast) [Spotifast](https://github.com/crmne/spotifast) (Linux, macOS, and Windows) Playback needs Spotify Premium. Free accounts can browse and search, but cannot play music through Spotifast.
+  - ![GitHub Repo stars](https://img.shields.io/github/stars/crmne/spotifast) [Spotifast](https://github.com/crmne/spotifast) (Linux, macOS, Windows) Playback needs Spotify Premium. Free accounts can browse and search, but cannot play music through Spotifast.
   - ![GitHub Repo stars](https://img.shields.io/github/stars/KRTirtho/spotube) [Spotube](https://github.com/KRTirtho/spotube) 开源免费跨平台 Spotify 第三方客户端 ⭐ ![Last Commit](https://img.shields.io/github/release-date/KRTirtho/spotube) ![commit-activity](https://img.shields.io/github/commit-activity/m/KRTirtho/spotube)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/sjdonado/idonthavespotify) [I Don't Have Spotify](https://github.com/sjdonado/idonthavespotify) Effortlessly convert Spotify links to your preferred streaming service ![Last Commit](https://img.shields.io/github/release-date/sjdonado/idonthavespotify)
 - [AIMP](https://www.aimp.ru) (Windows, Android, Linux) Artem Izmaylov Media Player 来自俄罗斯的免费专业级音频播放器 ⭐
@@ -904,7 +904,7 @@ Enjoy 🤩
 - [foobar2000](https://www.foobar2000.org) (Windows, iOS) 开源的音乐播放器
   - ![GitHub Repo stars](https://img.shields.io/github/stars/dream7180/foobox-cn) [foobox-cn](https://github.com/dream7180/foobox-cn) foobar2000 DUI配置 ![Last Commit](https://img.shields.io/github/release-date/dream7180/foobox-cn)
   - [columns_ui](https://github.com/reupen/columns_ui/) Alternative UI for the foobar2000 audio player
-- ![GitHub Repo stars](https://img.shields.io/github/stars/digimezzo/dopamine) [Dopamine](https://github.com/digimezzo/dopamine) (Windows, Linux and Mac)
+- ![GitHub Repo stars](https://img.shields.io/github/stars/digimezzo/dopamine) [Dopamine](https://github.com/digimezzo/dopamine) (Windows, Linux, macOS)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/GStreamer/gstreamer) [GStreamer](https://github.com/GStreamer/gstreamer) GStreamer open-source multimedia framework
 - [Winamp](https://winamp.com) (Android, iOS)
 - [Qmmp](https://qmmp.yloftware.com) (Windows) 开源的音乐播放器，Qt-based Multimedia Player，支持winamp的皮肤
@@ -1285,4 +1285,4 @@ Enjoy 🤩
 
 > 所见即所得（WYSIWYG）编辑器：Marktext、Typora、Obsidian、VS Code（需安装插件）和思源（Siyuan）。本地编辑工具：Typora、Visual Studio Code、Notepad++、Obsidian和Trilium。富文本编辑器（如Word、OneNote）也支持所见即所得。Obsidian、Joplin、Logseq和Typora都扩展了Markdown语法。Typora和Obsidian在Markdown编辑上存在缺陷，如手动换行和某些LaTeX符号无法。
 
-- ![GitHub Repo stars](https://i
+- ![GitHub Repo 

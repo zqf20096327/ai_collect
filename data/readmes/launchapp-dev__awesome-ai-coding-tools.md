@@ -100,6 +100,7 @@ Lower-level CLI tooling that pairs with agents or runs solo.
 - [codex-profiles](https://github.com/Ducksss/codex-profiles) 🟢 — Small Bash utility for switching Codex CLI and Desktop accounts with isolated `CODEX_HOME` profiles.
 - [dev-diagnosis](https://github.com/WJDdidi-1/dev-doctor) 🟢 — Zero-dependency Node.js CLI that scores a repo 0–100 for AI-agent context hygiene and reports the token cost of files agents shouldn't read, with the .aiignore fixes to exclude them.
 - [Flisk](https://github.com/flisk-sh/flisk) 🟢 🆓 — Local environment CLI for coding agents that generates Dockerfiles, Tiltfiles, and Traefik routing from service manifests and runs stacks with Docker and Tilt.
+- [Folkbench Switch](https://folkbench.com/en/switch?utm_source=github&utm_medium=awesome&utm_campaign=launchapp-dev-awesome-ai-coding-tools) 🟢 🆓 — Desktop app (macOS/Windows, beta) that writes a saved API endpoint and key into Claude Code, Codex and Gemini CLI configs after showing a diff, and parks Codex's official login credentials until you switch back.
 - [Hyperconsciousness](https://github.com/louis030195/hyperconsciousness) 🟢 🏠 - Developer-alpha Rust store for coding-agent memory with encrypted, append-only records and scoped MCP access.
 - [Kolega Code](https://github.com/kolega-ai/kolega-code) 🆓 🏠 — Source-available terminal coding agent where the model writes its own multi-agent workflows (Gigacode), provider-agnostic with MCP support.
 - [llm](https://github.com/simonw/llm) 🟢 — Simon Willison's CLI for talking to any LLM. Plugin ecosystem.
@@ -158,6 +159,7 @@ Tools that review pull requests, suggest improvements, or gate merges.
 - [Greptile](https://www.greptile.com/) 💰 — Codebase-aware PR review.
 - [HeyDeer](https://heydeer.ai/) 💰 🆓 — AI code review for GitHub pull requests that verifies findings before posting them and creates separate fix PRs from selected findings.
 - [heygrc](https://heygrc.com) - GitHub App for compliance-focused PR review (ISO 27001, SOC 2, GDPR, EU AI Act, and more). Cites the control clause and says what to fix. Public repositories always free. By ISMS Copilot.
+- [How Could I Be Hacked](https://github.com/sandhiveio/How-Could-I-Be-Hacked) 🟢 — Coding-agent skill that adapts security checks from real open-source reviews to PR diffs and reports coverage beyond existing tests.
 - [IonWarp](https://ionwarp.com/) 💰 🆓 — AI code review for GitHub pull requests that adds specialist reviewers (security, docs, logs and errors) per diff and publishes an open benchmark of review apps and models.
 - [Bito](https://bito.ai/) 💰 🆓 — AI code review & chat.
 - [Ellipsis](https://www.ellipsis.dev/) 💰 — Async AI reviewer that fixes its own comments.
@@ -209,6 +211,7 @@ For when you want to own the stack.
 - [Codex Quota Overlay](https://github.com/cpys/codex-quota-overlay) 🟢 — Independent Codex Desktop overlay that keeps current quota and reset timing visible, with a local Quota Center for pace and history; not affiliated with OpenAI.
 - [Continue](https://github.com/continuedev/continue) 🟢 🏠 — Self-hostable IDE assistant.
 - [TabbyML](https://github.com/TabbyML/tabby) 🟢 🏠 — Self-hosted Copilot alternative.
+- [Open Agent API](https://github.com/jiangxingfan1-coder/Open-Agent-API) 🟢 🏠 — Self-hosted gateway that lets existing SDK clients invoke configured coding agents through an OpenAI-compatible API while keeping action approvals separate.
 - [OpenHands](https://github.com/All-Hands-AI/OpenHands) 🟢 🏠 — Self-host an autonomous SWE agent.
 - [LiteLLM](https://github.com/BerriAI/litellm) 🟢 🏠 — Unified gateway for 100+ LLM providers.
 - [Ollama](https://github.com/ollama/ollama) 🟢 🏠 — Run LLMs locally.
@@ -251,6 +254,7 @@ Frontier and open-weight models with strong code performance.
 
 ## Prompt & Context Engineering
 
+- [Apparent](https://app.tryapparent.com/) 🟢 🆓 — A macOS and Linux screen recorder that turns a narrated visual bug report into annotated frames, a timed transcript, and a click timeline for coding agents.
 - [CLAUDE.md convention](https://docs.claude.com/en/docs/claude-code/memory) — Project-level instructions for Claude Code.
 - [Clogmeter](https://clogmeter.vercel.app) 🆓 💰 — Browser-only AGENTS.md / CLAUDE.md / Cursor rules / skills inspector: token weight, duplicate and conflict detection, trimmed export.
 - [coding-agent-prompts](https://github.com/Ai-VibeCheck/coding-agent-prompts) 🟢 🆓 — CC0 set of 10 copy-paste prompts for Claude Code, Codex and Cursor (secret hunt, two-pass security review, sandbox reach map, agent-config audit, PR split) that each make the agent report findings before editing any file.

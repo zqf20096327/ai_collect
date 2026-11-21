@@ -28,9 +28,13 @@
 </p>
 
 <p align="center">
-  <a href="https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss"><b>Start free, no card required &rarr;</b></a>
+  <b>Shared codebase context for agents and humans.</b>
   <br/>
-  <b>Graphify Cloud</b> is always-on memory that governs your agents, keeps code quality high, and proves correctness with formal verification.
+  Turn your codebase into a queryable knowledge graph. Trace dependencies, understand how components connect, and give your coding agent reusable context across sessions.
+</p>
+
+<p align="center">
+  <a href="https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss"><b>Start free, no card required &rarr;</b></a> &nbsp;&middot;&nbsp; <b>Graphify Cloud</b> keeps that graph always-on across your whole SDLC.
 </p>
 
 Type `/graphify` in your AI coding assistant and it maps your entire project (code, docs, PDFs, images, videos) into a **knowledge graph** you can **query instead of grepping** through files.
@@ -43,18 +47,27 @@ Type `/graphify` in your AI coding assistant and it maps your entire project (co
 > **Want this always-on?** [Graphify Cloud](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss) keeps the graph live across your entire SDLC: monorepo and cross-repo support, formal verification, and code review with a bird's-eye view of your SDLC, plus connectors for Sentry, Jira, and more so incidents and tickets sit in the same graph as your code. **[Start free, no card required](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss)**.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Graphify-Labs/graphify/v8/docs/graph-hero.png" alt="graphify's interactive graph.html showing the FastAPI codebase as a force-directed knowledge graph with a legend of detected communities" width="900">
+  <img src="https://raw.githubusercontent.com/Graphify-Labs/graphify/v8/docs/graph-hero.png" alt="graphify's interactive graph.html showing the FastAPI codebase as a force-directed knowledge graph with a legend of detected subsystems" width="900">
 </p>
 <p align="center">
-  <em>The FastAPI codebase mapped by graphify. Every node is a concept, colors are detected communities, and the whole thing is clickable in graph.html.</em>
+  <em>The FastAPI codebase mapped by graphify. Every node is a concept, colors are detected subsystems, and the whole thing is clickable in graph.html.</em>
 </p>
 
-**Get started** (30 seconds). Needs Python 3.11+ and uv (or pipx):
+**Get started** (30 seconds). Needs Python 3.11.5–3.14 and uv (or pipx):
 
 ```bash
 uv tool install graphifyy      # install the CLI (or: pipx install graphifyy)
-graphify install               # detects your assistant and registers the skill
+graphify install               # sets up Claude Code (the default)
 ```
+
+Using a different assistant? Name it explicitly:
+
+```bash
+graphify cursor install              # Cursor
+graphify install --platform codex    # Codex (invoke with $graphify, not /graphify)
+```
+
+See [pick your platform](#install) for all 20+ assistants.
 
 Then, in your AI assistant:
 
@@ -116,8 +129,8 @@ What you get out of the box:
 
 | Capability | What you get |
 |---|---|
-| **God nodes** | The most-connected concepts, so you see what everything flows through |
-| **Communities** | The graph split into subsystems (Leiden), with LLM-free labels |
+| **Most-connected components** | The concepts everything flows through, the hubs of the graph (also called *god nodes*) |
+| **Subsystems** | The graph split into cohesive groups (Leiden *communities*), each with an LLM-free label |
 | **Cross-file links** | `calls` / `imports` / `inherits` / `mixes_in` resolved across ~40 languages via tree-sitter AST |
 | **Query, path, explain** | Ask a question, trace the path between two things, or explain one concept, all against `graph.json` |
 | **Rationale + doc refs** | `# NOTE:` / `# WHY:` comments and ADR/RFC citations become first-class nodes linked to the code |
@@ -126,6 +139,19 @@ What you get out of the box:
 
 > [!TIP]
 > Running this across many repos or a monorepo? [Graphify Cloud](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss) does it continuously, with cross-repo links, SDLC-wide code review, formal verification, and Sentry/Jira connectors. [Start free, no card required &rarr;](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss)
+
+---
+
+## When to reach for Graphify
+
+Reach for the graph when you need to understand a codebase, not just read through it:
+
+| Situation | What to ask Graphify |
+|---|---|
+| Joining an unfamiliar project | "Explain how the main components connect." |
+| Changing a shared component | "Trace its callers and dependencies." |
+| Investigating a bug | "Show the path between this endpoint and storage." |
+| Revisiting previous work | "Find the relevant design decisions and notes." |
 
 ---
 
@@ -161,7 +187,7 @@ Full guides and reference live at **[docs.graphify.com](https://docs.graphify.co
 
 | Requirement | Minimum | Check | Install |
 |---|---|---|---|
-| Python | 3.11+ | `python --version` | [python.org](https://www.python.org/downloads/) |
+| Python | 3.11.5–3.14 | `python --version` | [python.org](https://www.python.org/downloads/) |
 | uv *(recommended)* | any | `uv --version` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | pipx *(alternative)* | any | `pipx --version` | `pip install pipx` |
 
@@ -230,7 +256,7 @@ for example `graphify claude install --project` or `graphify codex install --pro
 | Claude Code (Linux/Mac) | `graphify install` |
 | Claude Code (Windows) | `graphify install` (auto-detected) or `graphify install --platform windows` |
 | CodeBuddy | `graphify install --platform codebuddy` |
-| Codex | `graphify install --platform codex` |
+| Codex | `graphify install --platform codex` (invoke with `$graphify`) |
 | OpenCode | `graphify install --platform opencode` |
 | Kilo Code | `graphify install --platform kilo` |
 | GitHub Copilot CLI | `graphify install --platform copilot` |
@@ -347,6 +373,8 @@ codex mcp add graphify --url https://api.graphify.com/mcp
 gemini extensions install https://github.com/Graphify-Labs/Graphify-gemini-extension
 ```
 
+[![Install in Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Install%20extension-4285F4?logo=googlegemini&logoColor=white)](https://github.com/Graphify-Labs/Graphify-gemini-extension)
+
 Prefer to stay local? Install the stdio server with `uv tool install "graphifyy[mcp]"` and run `graphify-mcp` against your own `graph.json` — no account needed.
 
 Once connected, your agent gets these tools:
@@ -366,7 +394,7 @@ The server also exposes PR tooling (`list_prs`, `get_pr_impact`, `triage_prs`) s
 
 ## What's in the report
 
-`GRAPH_REPORT.md` summarizes the god nodes, communities, and key paths for broad architecture review. How the graph is built and what it contains: **[How graphify works](https://docs.graphify.com/concepts/architecture)**.
+`GRAPH_REPORT.md` summarizes the most-connected components, subsystems, and key paths for broad architecture review. How the graph is built and what it contains: **[How graphify works](https://docs.graphify.com/concepts/architecture)**.
 
 ---
 
@@ -382,8 +410,8 @@ graphify parses ~40 programming languages locally with tree-sitter AST, and maps
 /graphify .                        # build graph for current folder
 /graphify ./docs --update          # re-extract only changed files
 /graphify . --cluster-only         # rerun clustering without re-extracting
-/graphify . --cluster-only --resolution 1.5      # more granular communities
-/graphify . --cluster-only --exclude-hubs 99     # suppress utility super-hubs from god-node rankings
+/graphify . --cluster-only --resolution 1.5      # more granular subsystems
+/graphify . --cluster-only --exclude-hubs 99     # suppress utility super-hubs from most-connected-component rankings
 /graphify . --no-viz               # skip the HTML, just the report + JSON
 /graphify . --wiki                 # build a markdown wiki from the graph
 graphify export callflow-html      # Mermaid architecture/call-flow HTML (auto-regenerates on every git commit if hook is installed)
@@ -401,7 +429,7 @@ graphify merge-graphs a.json b.json              # combine two graphs
 graphify prs                       # PR dashboard: CI state, review status, worktree mapping
 graphify prs 42                    # deep dive on PR #42 with graph impact
 graphify prs --triage              # AI ranks your review queue (uses whatever backend is configured)
-graphify prs --conflicts           # PRs sharing graph communities: merge-order risk
+graphify prs --conflicts           # PRs sharing graph subsystems: merge-order risk
 ```
 
 See the [full command reference](#full-command-reference) below.

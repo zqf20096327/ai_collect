@@ -10,7 +10,7 @@
 [![React 19](https://img.shields.io/badge/React-19.2-B7F34D?style=flat-square&logo=react&logoColor=11140F)](https://react.dev/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.14-B7F34D?style=flat-square&logo=pytorch&logoColor=11140F)](https://pytorch.org/)
 [![Ultralytics YOLOv8](https://img.shields.io/badge/Ultralytics-YOLOv8-B7F34D?style=flat-square&logo=yolo&logoColor=11140F)](https://docs.ultralytics.com/)
-[![License MIT](https://img.shields.io/badge/License-MIT-B7F34D?style=flat-square)](wagon%20number%20detection/LICENSE)
+[![License Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-B7F34D?style=flat-square)](LICENSE)
 [![Repository](https://img.shields.io/badge/GitHub-ayushcmd%2FCargoVision--AI-1B2118?style=flat-square&logo=github&logoColor=B7F34D)](https://github.com/ayushcmd/CargoVision-AI)
 
 <p align="center">
@@ -652,12 +652,17 @@ Contributions, feature proposals, and bug reports are welcome!
 
 ## License and Attribution
 
-### License
-This project is licensed under the **MIT License** — see the [LICENSE](wagon%20number%20detection/LICENSE) file for details.
+### Project ownership and maintenance
+**Project lead and maintainer: Ayush Raj (`ayushcmd`).** CargoVision AI was initiated and directed by Ayush Raj, who maintains the combined platform. Ayush Raj reports having received a copyright assignment for the incorporated wagon-number-detection contribution from its original contributor. Historical authorship and the original MIT copyright notice for that component are retained.
 
-### Upstream Attribution & Academic Acknowledgements
-CargoVision AI is an independently maintained, local-first computer vision engineering platform derived from and building upon foundational open-source research:
-- **GARUD Project:** Foundational railway wagon inspection research (`low-light-image-deblur`) created by Tamal Das (Parzival) and collaborators under the MIT License.
+### License
+Original CargoVision AI code and contributions whose rights have been validly assigned to Ayush Raj are distributed under the **[Apache License, Version 2.0](LICENSE)**. See [NOTICE](NOTICE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+
+The bundled [wagon number detection component](wagon%20number%20detection/LICENSE) has a separate, pre-existing **MIT License** that remains intact. Third-party source code, models, weights, datasets, artwork, and other materials remain subject to their own applicable terms; the top-level license does not change those terms.
+
+### Third-party acknowledgements
+CargoVision AI integrates prior research and tooling, including the historical wagon-inspection / GARUD research components. The incorporated wagon-number-detection component originally credited Tamal Das; its copyright and license notice is preserved in that component's directory.
+
 - **Ultralytics YOLOv8:** Object detection and segmentation architecture ([Ultralytics](https://github.com/ultralytics/ultralytics)).
 - **NAFNet (Megvii Research):** Non-linear Activation Free network for image restoration ([Chen et al., ECCV 2022](https://github.com/megvii-research/NAFNet)).
 - **Zero-DCE:** Zero-Reference Deep Curve Estimation for low-light image enhancement ([Guo et al., CVPR 2020](https://github.com/Li-Chongyi/Zero-DCE)).

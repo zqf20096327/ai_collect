@@ -71,7 +71,7 @@ the `full` profile adds catalogue and schema listings, lineage, grants, pipeline
 
 | | Rule | Where |
 |---|---|---|
-| **1** | **The model is a setting.** 13 models from 4 providers ship in the catalogue (Databricks serving endpoints, OpenAI, Anthropic, Google Vertex), and the serving endpoints your workspace exposes are discovered at run time. Personal provider keys are envelope-encrypted with a key held in a Databricks secret. | [`seed/llm_models.yaml`](apps/coding-agent/seed/llm_models.yaml), [`api/adapters/llm/`](apps/coding-agent/api/adapters/llm) |
+| **1** | **The model is a setting.** 18 models from 5 providers ship in the catalogue (Databricks serving endpoints, OpenAI, Anthropic, Google Vertex, and the Generic AI Gateway). Serving endpoints your workspace exposes are discovered at run time. Personal provider keys are envelope-encrypted with a key held in a Databricks secret. | [`seed/llm_models.yaml`](apps/coding-agent/seed/llm_models.yaml), [`api/adapters/llm/`](apps/coding-agent/api/adapters/llm) |
 | **2** | **Writes stay inside the fence.** The tool server is started with one folder, one schema and one job-name prefix. A write anywhere else is refused by that server with the reason; a write made from the app outside the folder waits for your approval. | [`api/adapters/mcp/registry.py`](apps/coding-agent/api/adapters/mcp/registry.py), [`api/domain/scope.py`](apps/coding-agent/api/domain/scope.py) |
 | **3** | **Done means proven.** When the agent says a requirement is met, the claim is matched against the tool calls it actually made. A citation to a call that never happened is reported as such. | [`api/domain/evidence.py`](apps/coding-agent/api/domain/evidence.py) |
 
@@ -118,6 +118,7 @@ agent ran; or you want to read, change and self-host the code.
 | Check the numbers | [**The evidence**](https://raphaelmansuy.github.io/opengenie/evidence/): every score with its fraction and caveat |
 | Track changes | [**Releases**](https://github.com/raphaelmansuy/opengenie/releases): what v1.1.0 contains, and what comes next |
 | Read the design | [001](specs/001-databricks-coding-agents/README.md) app · [005](specs/005-llm-models/README.md) models · [006](specs/006-databricks/README.md) Genie Code parity · [010](specs/010-long-running/README.md) durable sessions · [011](specs/011-ux-coding-mission/README.md) missions |
+| Configure the Generic AI Gateway | [**XAIA configuration**](specs/07-ai-gateway/13-configuration.md): base URL, subscription key, and what appears in the picker |
 | Read the architecture | [**Architecture**](docs/08-architecture.md) context, containers, deployment · [**Security**](docs/09-security.md) authn, authz, the fence · [**Data model**](docs/10-data-model.md) what is stored |
 
 ### Prerequisites
@@ -150,6 +151,19 @@ make check                                 # TypeScript types, 2061 Python tests
 `make dev` replaces the model with a deterministic agent that plays scripted scenarios, which is how the
 interface is developed and tested. Both use your `databricks auth login` session, so the workspace browser
 shows your real files.
+
+### Configure the Generic AI Gateway
+
+The fifth provider is Azure API Management. OpenGenie calls it XAIA. It is off until you
+set a base URL and a subscription key. Serving endpoints are unchanged: they still use
+the workspace host, `Authorization: Bearer`, and `DATABRICKS_TOKEN`.
+
+The steps, the environment names, and the picker rows are in
+[Configure the Generic AI Gateway](specs/07-ai-gateway/13-configuration.md).
+In short, set `APP_LLM_ALLOW_EXTERNAL=true`, `APP_LLM_GATEWAY_BASE_URL` to the `https`
+root (the path on that host includes `/gaia`), and `LLM_GATEWAY_KEY` from a Databricks
+secret named `gateway-api-key`. `XAIA_BASE_URL` and `XAIA_API_KEY` are the fallbacks.
+Do not prefix those two, or `LLM_GATEWAY_KEY`, with `APP_`.
 
 ### Which version is running
 

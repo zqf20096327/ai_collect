@@ -43,8 +43,6 @@ Upgrading from 8.x: the plugin is now called `p2p` (it was `p2p-v8c3`) — remov
 
 The more context you give — what you want, for whom, what the result should look like — the better the prompt. Write in any language; P2P answers in yours (`/p2p:lang` to fix it).
 
-A real example: [a technical brief for publishing a repository](examples/github-release-brief.txt) — dictated in plain words, turned by P2P into a ready start prompt for Claude Code (8.x era).
-
 `/p2p:menu` opens the full menu — over forty functions, from quick prompts to prompt audits.
 
 ## P2P in a few pictures

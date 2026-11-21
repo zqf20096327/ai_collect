@@ -1,131 +1,177 @@
 <p align="center">
-  <img src="docs/cover.png" alt="Morrow desktop window: an AI agent session with a completed plan beside a workspace file tree" width="100%">
+  <img src="docs/cover.png" alt="Morrow desktop window on the left and the Studio timeline on the right, both from the running application" width="100%">
 </p>
 
 <h1 align="center">Morrow</h1>
-<p align="center">A local-first AI workspace for Windows that turns a request into a finished file.</p>
+
+<p align="center">A local-first AI workbench for Windows. You say what you want; a finished file is waiting where you work.</p>
+
 <p align="center"><a href="README.zh.md">中文</a></p>
 
 <p align="center">
-  <a href="https://www.electronjs.org/docs/latest"><img alt="Electron" src="https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white"></a>
-  <a href="https://react.dev"><img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black"></a>
-  <a href="https://www.typescriptlang.org/docs"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white"></a>
+  <a href="https://www.electronjs.org/docs/latest"><img alt="Electron 44" src="https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white"></a>
+  <a href="https://react.dev"><img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black"></a>
+  <a href="https://www.typescriptlang.org/docs"><img alt="TypeScript 5.9" src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white"></a>
   <a href="https://learn.microsoft.com/windows/"><img alt="Windows 10 and 11" src="https://img.shields.io/badge/Windows-10%2F11-0078D6?logo=windows&logoColor=white"></a>
+  <a href="https://developer.android.com/jetpack/compose"><img alt="Android Companion" src="https://img.shields.io/badge/Android-companion-3DDC84?logo=android&logoColor=white"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2EA043"></a>
-  <a href="https://github.com/youyuwangzi0001/Morrow/releases"><img alt="Release" src="https://img.shields.io/badge/release-v0.2.0-2EA043"></a>
+  <a href="https://github.com/youyuwangzi0001/Morrow/releases/tag/v0.2.0"><img alt="Release v0.2.0" src="https://img.shields.io/badge/release-v0.2.0-2EA043"></a>
+</p>
+
+<p align="center">
+  <a href="docs/README.md">Docs map</a> ·
+  <a href="docs/GETTING-STARTED.md">Get started</a> ·
+  <a href="docs/PAIRING.md">Pair a phone</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
 </p>
 
 ## Overview
 
-Morrow is a desktop AI agent for Windows 10/11 x64. You describe the result you want; it reads the workspace, writes files, runs commands, checks its own work, and leaves the result where you can open it. Conversations, memory, workspaces and keys stay on the machine — model access is yours to configure.
+Morrow is a desktop AI agent for Windows 10/11 (x64). You describe the result you want — a cleaned-up spreadsheet, an HTML review, a report, a working script — and Morrow reads your folder, edits files, runs commands, checks its own output, and leaves an artifact you can open. Sessions, memory, workspace files and API keys stay on your machine; you choose which model provider to plug in.
 
-It also ships a Studio for long-form work: a short story, a novel or a 30–180-second comic film, taken from a one-line premise to a deliverable through a blueprint you approve first. The blueprint itself is a model call billed by tokens; chapters, frames and media start only after you approve it and are billed separately.
+Three surfaces share one product. The **desktop app** is where work happens. **Studio** writes long-form work — short stories, serialized novels and 60–120 second comic dramas — from one sentence to a deliverable file. The **Android companion** shows progress on your phone, lets you approve permission requests, and browses finished work. The phone is a viewer and an approval surface: every tool call still executes on the desktop.
 
-## Features
+## What you can do
 
-### An agent that works inside the folder you choose
+### Work inside a folder you choose
 
-- Five ways to work: chat, work, plan, deep research and long-running goals.
-- Real file tree, CodeMirror editor, multi-tab canvas and previews for HTML, Markdown, PDF, Office, images, audio and video.
-- A real PTY terminal (Git Bash by default, PowerShell 7 or WSL), a Git workbench, a multi-tab browser and Windows UI Automation.
-- Three permission levels — read-only, ask, full access. Dangerous commands, out-of-workspace paths and external side effects are approved one at a time, and a denial always beats an approval.
-- Checkpoints per turn and file snapshots before writes, so a session or a file can be rolled back.
+- Five ways to work: chat, work, plan, deep research and long-running goals. Chat only reads; research stays inside a tool allowlist; goals keep running across turns until there is real file evidence of completion.
+- A real file tree, a CodeMirror editor, a multi-tab canvas, and previews for HTML, Markdown, PDF, Office files, images, audio and video.
+- A real PTY terminal (Git Bash by default, PowerShell 7 or WSL), a Git panel, a multi-tab browser and Windows UI Automation for desktop tasks.
+- Three permission levels — read-only, ask, full access — plus per-call approval cards. Read-only refuses every write; ask auto-runs ordinary work inside the folder and asks about destructive commands, outside paths and external side effects; full access stops asking and should only be used on work you trust.
+- One checkpoint per ordinary work turn, with file snapshots taken before writes. Rewinding restores the conversation and the files together, and refuses to proceed if the current files no longer match the recorded hashes.
 
-![Agent session with a completed plan and a generated report notice](docs/screens/guide-chat.png)
+![Agent session: a completed plan and the generated report hint](docs/screens/guide-chat.png)
 
-### A Studio that finishes the work
+Screenshots in this README come from the application's test mode and built-in demo workspace; the interface is the released one.
 
-- Short story (30–80k characters), novel (200–1000k) and comic film (30–180 seconds).
-- Blueprint, outline, storyboard, frames, voice, timeline, review and delivery — with a paper-like editor, a five-track timeline and a node canvas for comic workflows.
-- Collaborators turn a plain-language request into a reviewable change plan; nothing is applied before you confirm it, and changes can be undone.
-- Deterministic local checks plus real model review. When no model or engine is available, it fails and says so instead of inventing a result.
+### Finish long-form work in Studio
 
-![Studio timeline with monitor, five tracks and real audio waveforms](docs/screens/studio-timeline.png)
+- Short story (18,000 words by default, presets at 30k / 50k / 80k), serialized novel (300,000 by default, presets up to one million) and comic drama (96 seconds by default, presets at 60 / 96 / 120).
+- Ten stages — blueprint, outline, writing, storyboard, visuals, voice, music, timeline, review, delivery — with a subset per form. The blueprint is generated by a real text model and billed; later stages only start after you confirm it, and they are billed separately.
+- A paper-page editor, a storyboard board, a node canvas for drama shots, a six-track timeline (picture, dialogue, ambience, music, sound effects, subtitles) and real waveforms.
+- A collaborator that turns plain-language feedback into a reviewable edit plan; nothing is applied until you confirm, and an applied plan can be undone while no newer edits exist.
+- Eight check categories. Errors block the final export; intermediate files can still be exported. Without a real model or engine the step fails loudly instead of inventing a result.
+- Delivery as TXT, MD, DOCX, EPUB, PDF, cover, subtitles or a project package; drama adds MP4/MOV/MKV/WebM, WAV/MP3/AAC/FLAC, four-panel comics and a publish bundle.
 
-### One place for models, memory and automation
+![Studio timeline: monitor, six tracks and a real audio waveform](docs/screens/studio-timeline.png)
 
-- API keys for OpenAI-compatible and Anthropic providers, subscription channels, and local models through Ollama, llama.cpp or LM Studio.
-- Projects, a memory centre, 20 built-in skills, workspace skills, MCP servers and scheduled tasks.
-- Cloud media providers for image, video, voice and music sit beside local ComfyUI, FFmpeg and TTS engines.
+The works shown are built-in samples seeded by the test harness.
 
-![Approval card showing the tool, target, impact and parameters](docs/screens/guide-permission.png)
+### Watch and approve from your phone
 
-## Installation
+- The Android companion renders a workbench (device state, running task, pending decisions, today's counters, recent artifacts), the approval queue, member tasks, works and the pairing screen.
+- It is designed to talk to your desktop over the local network only: the desktop opens a WSS channel with a self-signed certificate, and the phone pins the certificate fingerprint it received in the pairing ticket. Public relay is not implemented.
+- Your action is the approval. Dangerous tools cannot be allowed from the phone, and the desktop keeps executing everything.
 
-### Use a release build
+![Pairing panel on the desktop: channel switch, generated request and paired devices](docs/screens/pair-panel-devices.png)
 
-Download both files from [the v0.2.0 release](https://github.com/youyuwangzi0001/Morrow/releases/tag/v0.2.0):
+The companion is no longer built or released from this repository: its source, documentation and APK live in [Morrow-Android](https://github.com/youyuwangzi0001/Morrow-Android), and the two projects now version and ship independently. This repository owns the desktop app and the shared channel protocol.
+
+### Keep models, memory and automation in one place
+
+- 15 provider configurations (OpenAI-compatible services, Anthropic native, and Ollama, llama.cpp or LM Studio on the same machine), 12 subscription routes including ChatGPT/Codex and nine coding-plan channels, and seven thinking levels.
+- 20 built-in skills, workspace skills under `.morrow/skills`, eight MCP catalog entries, projects, a memory center where suggestions only land after you accept them, and scheduled tasks.
+- 17 cloud media presets (image, video, speech, music) next to local ComfyUI, FFmpeg and TTS engines.
+
+![Approval card: tool, target, scope and arguments before anything runs](docs/screens/guide-permission.png)
+
+## Install
 
 | File | What it is |
 |---|---|
-| `Morrow-0.2.0-portable.exe` | Single-file portable build; unpacks a runtime cache next to the executable on first run |
-| `Morrow-0.2.0-setup.exe` | NSIS installer with a selectable install directory and shortcuts |
+| `Morrow-0.2.0-portable.exe` | Single-file portable build; extracts its runtime next to the exe on first run |
+| `Morrow-0.2.0-setup.exe` | NSIS installer; choose a directory, creates shortcuts |
 
-Neither executable is code-signed, so Windows SmartScreen may show "Windows protected your PC". Choose **More info → Run anyway**. Verify downloads against `SHA256SUMS.txt` before running them.
+Download from the [v0.2.0 release](https://github.com/youyuwangzi0001/Morrow/releases/tag/v0.2.0) and check the files against `SHA256SUMS.txt`. Both Windows builds are signed with a self-signed certificate: the chain is not trusted by a CA, so SmartScreen may still block the first launch — choose **More info → Run anyway**.
 
-### Run from source
+The Android companion (API 26+, sideload, release-signed) is published from its own repository: [Morrow-Android releases](https://github.com/youyuwangzi0001/Morrow-Android/releases).
 
-Requirements: Windows 10/11 x64, Node.js 22.12+, and Git (Git Bash is the default terminal).
+## Quick start
+
+1. Launch Morrow and finish the three-step onboarding: meet Morrow, connect a model, choose a working folder.
+2. Say what you want in plain language, for example “turn this sales export into an HTML review and flag the anomalies”.
+3. Approve what needs approval. When it finishes, open the artifact from the canvas, the workspace or Studio.
+
+No API key yet? A subscription route such as ChatGPT/Codex reuses a local login, or you can start with the offline demo that spends no quota. Phone pairing takes three minutes and is documented step by step in [docs/PAIRING.md](docs/PAIRING.md).
+
+## Build from source
+
+Requirements: Windows 10/11 x64, Node.js 22.12+, Git (Git Bash is the default terminal).
 
 ```powershell
 npm install
 npm run dev
 ```
 
-Useful checks:
+A clean clone cannot build on its own: the prompt bundle is generated at build time from a private source (`%APPDATA%\Morrow-build\prompts`, override with `MORROW_PROMPT_SOURCE`) and `src/generated/` is not committed, so `npm run build` fails loudly without it. This is documented in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+Common checks:
 
 ```powershell
-npm run typecheck    # type check both processes
-npm run test:unit    # 573 unit tests
-npm run test:e2e     # 86 Electron flows (builds first)
-npm run verify       # type check, UI audit, docs, suite, unit and Electron
-npm run dist:final   # rebuild the two release executables
+npm run typecheck    # both processes
+npm run test:unit    # 1014 unit tests
+npm run test:e2e     # 96 Electron flows (builds first)
+npm run docs:check   # links, anchors, screenshot sizes
+npm run verify       # the full local chain
 ```
 
-## Usage
+## Documentation
 
-1. Start Morrow and finish the three-step onboarding: what Morrow is, a model connection, and a workspace folder.
-2. Ask for the result in plain language, for example "turn this sales export into an HTML review with the anomalies marked".
-3. Approve the actions that need it. When the run finishes, open the result from the canvas, the workspace or the Studio library.
-
-If you have no API key yet, the ChatGPT/Codex subscription route reuses a local Codex login. The full walkthrough, including model setup and failure recovery, is in [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
-
-## Configuration
-
-Models, subscriptions and media engines are configured in **Settings**. Data lives in `%APPDATA%\Morrow` for the installer, or in `Morrow Data` next to the executable for the portable build. `MORROW_DATA_DIR` and a few engine paths can be set through environment variables.
-
-The complete list of providers, subscription channels, media services, shortcuts, data paths and environment variables is in [docs/REFERENCE.md](docs/REFERENCE.md).
+| Start here | What it covers |
+|---|---|
+| [docs/README.md](docs/README.md) | Map of the whole documentation set and the rules it follows |
+| [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) | Install, onboarding, first task, first phone pairing |
+| [docs/DESKTOP-GUIDE.md](docs/DESKTOP-GUIDE.md) | Interface, modes, permissions, checkpoints, terminal, Git, browser |
+| [docs/STUDIO.md](docs/STUDIO.md) | Studio: forms, stages, checks, delivery |
+| [docs/MOBILE.md](docs/MOBILE.md) | Phone side from the desktop's point of view; pages and limits live in the [Morrow-Android](https://github.com/youyuwangzi0001/Morrow-Android) repository |
+| [docs/PAIRING.md](docs/PAIRING.md) | Desktop–phone pairing, LAN channel, protocol |
+| [docs/MODELS.md](docs/MODELS.md) | Providers, subscriptions, local models, thinking levels |
+| [docs/MEDIA.md](docs/MEDIA.md) | Cloud media presets, ComfyUI, FFmpeg, TTS |
+| [docs/REFERENCE.md](docs/REFERENCE.md) | Shortcuts, data paths, environment variables, skills, commands |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Symptom-first troubleshooting, including phone pairing |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Processes, IPC, agent loop, permission order, Studio pipeline, phone channel |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Environment, tests, CI, screenshots, packaging, licenses |
+| [docs/VERIFICATION.md](docs/VERIFICATION.md) | Artifacts, hashes, checks, screenshot inventory, what is not verified |
 
 ## Project structure
 
 ```text
-src/main/       Electron main process: window, agent, studio, media, subscriptions
-src/core/       Agent loop, providers, tools, permissions, context, collaboration
-src/renderer/   React UI, feature components and styles
-src/shared/     IPC and data contracts
-tests/          Vitest units and Playwright Electron flows
-docs/           Documentation and 2100×1200 screenshots
+src/main/       Electron main process: windows, agent, Studio, media, relay, subscriptions
+src/core/       Agent loop, providers, tools, permissions, context, compaction
+src/renderer/   React interface, feature components and styles
+src/shared/     IPC contracts and data types
+src/generated/  Prompt bundle generated at build time (not committed)
+tests/          Vitest unit suites and Playwright Electron flows
+docs/           Documentation, screenshots, diagrams and evidence
 scripts/        Build, test, packaging, smoke and documentation checks
 ```
 
+The Android companion's source, documentation and distribution package live in the [Morrow-Android](https://github.com/youyuwangzi0001/Morrow-Android) repository; this repository contains no Android source. The channel protocol and pairing flow the two sides share are documented in [docs/PAIRING.md](docs/PAIRING.md).
+
 ## Releases
 
-Release builds, source archives and checksums live in [Releases](https://github.com/youyuwangzi0001/Morrow/releases). Version-by-version changes, in Chinese and English, are in [CHANGELOG.md](CHANGELOG.md).
+Desktop builds, checksums and release notes live in [Releases](https://github.com/youyuwangzi0001/Morrow/releases); per-version bilingual notes are in [CHANGELOG.md](CHANGELOG.md). The Android companion is released from [Morrow-Android](https://github.com/youyuwangzi0001/Morrow-Android/releases).
 
 ## Security
 
-- The renderer runs with `contextIsolation` and sandboxing, without `nodeIntegration`; it reaches the system only through a preload whitelist.
+- The renderer runs with `contextIsolation` and sandboxing, `nodeIntegration` is off, and system access goes through a preload allowlist.
 - File tools stay inside the workspace; reading outside it requires an explicit attachment.
-- Keys are encrypted by the system credential store and are never shown again in the UI.
-- Web pages, MCP servers and desktop content are treated as untrusted input. Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
+- Keys are encrypted with the OS credential store and are never echoed back in the interface.
+- Web pages, MCP servers and desktop content are treated as untrusted input.
+- The phone channel pins a certificate fingerprint and encrypts every frame; see [docs/PAIRING.md](docs/PAIRING.md).
+
+Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
 
 ## Known limitations
 
-- Windows x64 only. Both executables are unsigned.
-- ComfyUI, llama.cpp, Ollama, LM Studio, FFmpeg, MiniMax Music3 and TTS engines are not bundled; when they are missing, the related action fails with an explanation.
-- Subscription logins and quotas belong to the provider. Channels that have not been verified on a real machine are not shown as connected.
-- Model quality, engine speed and long media runs depend on your environment.
+- Windows x64 only for the desktop build; no other platform is built or tested.
+- The two Windows executables are signed with a self-signed certificate (`CN=Morrow Studio`); SmartScreen still prompts because the certificate is not issued by a trusted CA. It is not a store-distributed build.
+- ComfyUI, FFmpeg, local model servers and TTS models are not bundled; when they are missing the related action fails with a message instead of producing a placeholder.
+- Studio sample works are seeded by the test harness. The packaged build does not ship the demo media, so a fresh install starts with an empty library.
+- The Android companion is released from its own repository and is a viewer and approval surface, not a remote control for arbitrary commands: the channel works on the same local network only, there is no cloud messaging, product preview is capped at 4 MiB per file, and editing or exporting works is desktop-only. It has no real-device evidence either; the limits are listed one by one in the [Android documentation](https://github.com/youyuwangzi0001/Morrow-Android/blob/main/docs/SCREENS.md).
+- Model quality, engine speed and long-media behaviour depend on your own environment and accounts.
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Third-party components and built-in skill sources are listed in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#第三方组件与许可).
+MIT, see [LICENSE](LICENSE). Third-party components and built-in skill sources are listed in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).

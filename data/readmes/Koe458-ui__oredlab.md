@@ -191,8 +191,8 @@
   </tr>
   <tr>
     <td align="center">250M</td>
-    <td align="center">⏳ Pending</td>
-    <td align="center">Planned</td>
+    <td align="center">🔄 In Progress</td>
+    <td align="center">Architecture configured; training a checkpoint remains</td>
     <td align="center">-</td>
   </tr>
   <tr>
@@ -255,6 +255,10 @@ See the ""LICENSE"" (LICENSE) file for the complete license terms.
   <tr>
     <td align="center"><b>Edu web</b> (Hugging face)</td>
     <td>Training data collection</td>
+  </tr>
+ <tr>
+    <td align="center"><b>Magnific</b> (Hugging face)</td>
+    <td>Website innovative ideas</td>
   </tr>
 </table>
 

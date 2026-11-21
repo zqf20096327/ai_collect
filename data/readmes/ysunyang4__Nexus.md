@@ -280,9 +280,7 @@ Header: `Authorization: Bearer lb_your_token_here`
 
 ---
 
-## 9. Official Communities & Developer Contact
-
-### Official Communities (Discussion Groups)
+## 9. Official Communities
 Join our developer communities for live troubleshooting, feature requests, and updates:
 
 <div align="center">
@@ -304,34 +302,31 @@ Join our developer communities for live troubleshooting, feature requests, and u
   </table>
 </div>
 
-### Direct Developer Contacts
-Reach out to the author directly via WeChat, Telegram, WhatsApp, or LINE:
+## 10. 💖 Sponsor & Support
+
+If Nexus has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕!
+
+Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
 
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
-        <img src="docs/assets/contact/wechat.jpg" width="180" alt="WeChat" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WeChat (微信)</b><br>
-        <code>sunny</code>
+        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>WeChat Pay (微信支付)</b>
       </td>
       <td align="center" width="220">
-        <img src="docs/assets/contact/telegram.jpg" width="180" alt="Telegram" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram</b><br>
-        <a href="https://t.me/SUNNY744"><code>@SUNNY744</code></a>
+        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>Alipay (支付宝)</b>
       </td>
       <td align="center" width="220">
-        <img src="docs/assets/contact/whatsapp.png" width="180" alt="WhatsApp" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WhatsApp</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/line.jpg" width="180" alt="LINE" style="border-radius: 12px;" /><br>
-        <br>
-        <b>LINE</b>
+        <img src="docs/assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>Binance Pay (币安支付)</b><br />
+        <code>UID: 1292741809</code><br />
+        <span style="font-size: 11px; color: #888;">Ryan Sunv · No Network Needed</span>
       </td>
     </tr>
   </table>
@@ -339,7 +334,7 @@ Reach out to the author directly via WeChat, Telegram, WhatsApp, or LINE:
 
 ---
 
-## 10. Development & Quality Verification
+## 11. Development & Quality Verification
 
 ```powershell
 # Typecheck across all 7 workspace packages (0 errors)
@@ -357,7 +352,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ---
 
-## 11. License, Anti-Rebranding & Security Disclaimer
+## 12. License, Anti-Rebranding & Security Disclaimer
 
 - **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.2 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
   - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.

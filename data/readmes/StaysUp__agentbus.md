@@ -66,7 +66,7 @@ installed, and a Claude and a ChatGPT subscription.
    ```
 
    It prints a sign-in link, `http://127.0.0.1:8787/?t=…`, and with `-open` opens it in your
-   browser. Without `-open` (on a server, say) it only prints the link. The cockpit comes with
+   browser. Without `-open` it only prints the link. The cockpit comes with
    `agentbus up`: nothing else to install. The link works once, for 10 minutes. The link expired?
    Stop `agentbus up` (Ctrl-C) and start it again for a new one.
 
@@ -116,6 +116,25 @@ An agent reaches its model in one of three ways, its **access**:
 - `api`: the vendor's own API key set in Settings (Anthropic for Claude Code, OpenAI for Codex, Gemini
   for Antigravity). The model is optional.
 
+### Use any model
+
+Claude Code can run on any model OpenRouter offers: the agent still runs Claude Code, but the model
+behind it changes. From an empty AgentBus:
+
+1. **Add an OpenRouter key.** Open **Settings**, **Subscriptions**, and paste your OpenRouter key
+   once. AgentBus keeps it and adds it only to OpenRouter model calls.
+2. **Add a Claude Code agent.** Press **+ Agent**, pick Claude Code, name it, set access to
+   `openrouter` and model to an id in OpenRouter's naming, such as `openai/gpt-oss-120b` (GPT) or
+   `deepseek/deepseek-v4.1-flash` (DeepSeek), then press **Create agent**. `openrouter` needs a model.
+3. **Start a session.** Press **+ Session**, pick the agent, type your project folder, write a first
+   message such as "what does this project do?", and press **Start**.
+4. **Have another model check it.** Add a second Claude Code agent the same way with a different
+   model id. In the same session, switch the agent beside Send to it and send "check the work
+   above". Its reply comes back into the session, as Codex's does in the Quickstart.
+
+Claude Code's tools are tuned for Claude, so other models may behave differently; give clear steps
+and read what they reply.
+
 ## Settings
 
 Settings apply to every session, from the next turn. Change them on the cockpit's Settings page, or
@@ -161,6 +180,11 @@ their defaults are in `/docs`, under Settings).
 - Antigravity cannot start with the sandbox on, on macOS: it opens a local port, and the macOS sandbox cannot
   limit a port to this machine, so AgentBus does not allow it. Turn the sandbox off to use Antigravity on a Mac.
   Linux runners are not affected. A fix that keeps the sandbox is planned.
+- The sandbox hides your secret folders (`~/.ssh`, `~/.aws`, `~/.gnupg`, `~/.config/gh`,
+  `~/.docker/config.json`, `~/.npmrc`, `~/.netrc`, the Keychains) and any `.env` outside the copy,
+  even from a folder you grant for reading. On macOS this is enforced in full. On Linux the agent
+  sees only what the wall binds in, so an ungranted secret is invisible, but a secret that sits
+  inside a folder you grant is not yet hidden there. Grant narrowly on Linux until that lands.
 - Claude's browser (Chrome) cannot run in AgentBus sessions: it needs the tool's own sign-in.
 - Antigravity: use it with a Gemini API key (Settings, Subscriptions). Its Google sign-in does not
   work through AgentBus yet: before any work it checks your account with Google directly, outside

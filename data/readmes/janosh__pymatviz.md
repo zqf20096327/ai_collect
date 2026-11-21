@@ -31,7 +31,7 @@ A toolkit for visualizations in materials informatics.
 pip install pymatviz
 ```
 
-See `pyproject.toml` for available extras like `pip install 'pymatviz[brillouin]'` to render 3d Brillouin zones.
+See `pyproject.toml` for available extras like `pip install 'pymatviz[export]'` for static image export.
 
 ## API Docs
 
@@ -46,59 +46,51 @@ See the Jupyter notebooks under [`examples/`](examples) for how to use `pymatviz
 |                                                                           |                                                                                                                                                             |                                   |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
 | [matbench_dielectric_eda.ipynb](examples/matbench_dielectric_eda.ipynb)   | [![Open in Google Colab][Open in Google Colab]](https://colab.research.google.com/github/janosh/pymatviz/blob/main/examples/matbench_dielectric_eda.ipynb)  | [Launch Codespace][codespace url] |
-| [mp_bimodal_e_form.ipynb](examples/mp_bimodal_e_form.ipynb)               | [![Open in Google Colab][Open in Google Colab]](https://colab.research.google.com/github/janosh/pymatviz/blob/main/examples/mp_bimodal_e_form.ipynb)        | [Launch Codespace][codespace url] |
 | [matbench_perovskites_eda.ipynb](examples/matbench_perovskites_eda.ipynb) | [![Open in Google Colab][Open in Google Colab]](https://colab.research.google.com/github/janosh/pymatviz/blob/main/examples/matbench_perovskites_eda.ipynb) | [Launch Codespace][codespace url] |
-| [mprester_ptable.ipynb](examples/mprester_ptable.ipynb)                   | [![Open in Google Colab][Open in Google Colab]](https://colab.research.google.com/github/janosh/pymatviz/blob/main/examples/mprester_ptable.ipynb)          | [Launch Codespace][codespace url] |
 
 [Open in Google Colab]: https://colab.research.google.com/assets/colab-badge.svg
 [codespace url]: https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=340898532
 
 ## Periodic Table
 
-See [`pymatviz/ptable/figures.py`](pymatviz/ptable/figures.py). The module supports heatmaps, heatmap splits (multiple values per element), histograms, scatter plots and line plots. All visualizations are interactive through [Plotly](https://plotly.com) and support displaying additional data on hover.
+See [`pymatviz/ptable/figures.py`](pymatviz/ptable/figures.py). The module supports heatmaps, heatmap splits (multiple values per element), histograms, scatter plots and line plots. All visualizations are interactive [MatterViz](https://github.com/janosh/matterviz) widgets: hovering a tile shows its plot enlarged with axes.
 
-|                                     [`ptable_heatmap(atomic_masses)`](pymatviz/ptable/figures.py#L39)                                     | [`ptable_heatmap(compositions, log=True)`](pymatviz/ptable/figures.py#L39) [![fig-icon]](assets/scripts/ptable/ptable_heatmap.py) |
+|                                     [`ptable_heatmap(atomic_masses)`](pymatviz/ptable/figures.py#L104)                                     | [`ptable_heatmap(compositions, log=True)`](pymatviz/ptable/figures.py#L104) [![fig-icon]](assets/scripts/ptable/ptable_heatmap.py) |
 | :---------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------: |
-|                                                 ![ptable-heatmap-plotly-more-hover-data]                                                  |                                                   ![ptable-heatmap-plotly-log]                                                    |
-|               [`ptable_hists(data)`](pymatviz/ptable/figures.py#L456) [![fig-icon]](assets/scripts/ptable/ptable_hists.py)                | [`ptable_scatter(data, mode="markers")`](pymatviz/ptable/figures.py#L1494) [![fig-icon]](assets/scripts/ptable/ptable_scatter.py) |
-|                                                          ![ptable-hists-plotly]                                                           |                                                 ![ptable-scatter-plotly-markers]                                                  |
-| [`ptable_heatmap_splits(2_vals_per_elem)`](pymatviz/ptable/figures.py#L1027) [![fig-icon]](assets/scripts/ptable/ptable_heatmap_splits.py) |                            [`ptable_heatmap_splits(3_vals_per_elem)`](pymatviz/ptable/figures.py#L1027)                            |
-|                                                     ![ptable-heatmap-splits-plotly-2]                                                     |                                                 ![ptable-heatmap-splits-plotly-3]                                                 |
+|                                                 ![ptable-heatmap-atomic-mass]                                                  |                                                   ![ptable-heatmap-log]                                                    |
+|               [`ptable_hists(data)`](pymatviz/ptable/figures.py#L268) [![fig-icon]](assets/scripts/ptable/ptable_hists.py)                | [`ptable_scatter(data, mode="markers")`](pymatviz/ptable/figures.py#L338) [![fig-icon]](assets/scripts/ptable/ptable_scatter.py) |
+|                                                          ![ptable-hists]                                                           |                                                 ![ptable-scatter-markers]                                                  |
+| [`ptable_heatmap_splits(2_vals_per_elem)`](pymatviz/ptable/figures.py#L204) [![fig-icon]](assets/scripts/ptable/ptable_heatmap_splits.py) |                            [`ptable_heatmap_splits(3_vals_per_elem)`](pymatviz/ptable/figures.py#L204)                            |
+|                                                     ![ptable-heatmap-splits-2]                                                     |                                                 ![ptable-heatmap-splits-3]                                                 |
 
-[ptable-heatmap-plotly-log]: assets/svg/ptable-heatmap-plotly-log.svg
-[ptable-heatmap-plotly-more-hover-data]: assets/svg/ptable-heatmap-plotly-more-hover-data.svg
-[ptable-heatmap-splits-plotly-2]: assets/svg/ptable-heatmap-splits-plotly-2.svg
-[ptable-heatmap-splits-plotly-3]: assets/svg/ptable-heatmap-splits-plotly-3.svg
-[ptable-hists-plotly]: assets/svg/ptable-hists-plotly.svg
-[ptable-scatter-plotly-markers]: assets/svg/ptable-scatter-plotly-markers.svg
-
-### Dash app using `ptable_heatmap()`
-
-See [`examples/mprester_ptable.ipynb`](examples/mprester_ptable.ipynb).
-
-[https://user-images.githubusercontent.com/30958850/181644052-b330f0a2-70fc-451c-8230-20d45d3af72f.mp4](https://user-images.githubusercontent.com/30958850/181644052-b330f0a2-70fc-451c-8230-20d45d3af72f.mp4)
+[ptable-heatmap-log]: assets/svg/ptable-heatmap-log.svg
+[ptable-heatmap-atomic-mass]: assets/svg/ptable-heatmap-atomic-mass.svg
+[ptable-heatmap-splits-2]: assets/svg/ptable-heatmap-splits-2.svg
+[ptable-heatmap-splits-3]: assets/svg/ptable-heatmap-splits-3.svg
+[ptable-hists]: assets/svg/ptable-hists.svg
+[ptable-scatter-markers]: assets/svg/ptable-scatter-markers.svg
 
 ## Phonons
 
-| [`phonon_bands(bands_dict)`](pymatviz/phonons/figures.py#L42) [![fig-icon]](assets/scripts/phonons/phonon_bands.py) |                  [`phonon_dos(doses_dict)`](pymatviz/phonons/figures.py#L319) [![fig-icon]](assets/scripts/phonons/phonon_dos.py)                  |
+| [`band_structure(band_structs=bands_dict)`](pymatviz/widgets/band_structure.py) [![fig-icon]](assets/scripts/phonons/phonon_bands.py) |                  [`phonon_dos(doses_dict)`](pymatviz/phonons/figures.py) [![fig-icon]](assets/scripts/phonons/phonon_dos.py)                  |
 | :-----------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                                                   ![phonon-bands]                                                   |                                                                   ![phonon-dos]                                                                    |
-|                 [`phonon_bands_and_dos(bands_dict, doses_dict)`](pymatviz/phonons/figures.py#L552)                  | [`phonon_bands_and_dos(single_bands, single_dos)`](pymatviz/phonons/figures.py#L552) [![fig-icon]](assets/scripts/phonons/phonon_bands_and_dos.py) |
+|                 [`bands_and_dos(band_structs=bands_dict, doses=doses_dict)`](pymatviz/widgets/bands_and_dos.py)                  | [`bands_and_dos(band_structs=single_bands, doses=single_dos)`](pymatviz/widgets/bands_and_dos.py) [![fig-icon]](assets/scripts/phonons/phonon_bands_and_dos.py) |
 |                                           ![phonon-bands-and-dos-mp-2758]                                           |                                                          ![phonon-bands-and-dos-mp-23907]                                                          |
 
 [phonon-bands]: assets/svg/phonon-bands-mp-2758.svg
 [phonon-dos]: assets/svg/phonon-dos-mp-2758.svg
-[phonon-bands-and-dos-mp-2758]: assets/svg/phonon-bands-and-dos-mp-2758.svg
-[phonon-bands-and-dos-mp-23907]: assets/svg/phonon-bands-and-dos-mp-23907.svg
+[phonon-bands-and-dos-mp-2758]: assets/png/phonon-bands-and-dos-mp-2758.png
+[phonon-bands-and-dos-mp-23907]: assets/png/phonon-bands-and-dos-mp-23907.png
 
 ### Composition Clustering
 
-| [`cluster_compositions(compositions, properties, embedding_method, projection_method, n_components=2)`](pymatviz/cluster/composition/plot.py#L290) [![fig-icon]](assets/scripts/cluster/composition/cluster_compositions_matbench.py) | [`cluster_compositions(compositions, properties, embedding_method, projection_method, n_components=3)`](pymatviz/cluster/composition/plot.py#L290) |
+| [`cluster_compositions(df, *, composition_col, prop_name, embedding_method, projection, n_components=2)`](pymatviz/cluster/composition/plot.py#L122) [![fig-icon]](assets/scripts/cluster/composition/cluster_compositions_matbench.py) | [`cluster_compositions(df, *, composition_col, prop_name, embedding_method, projection, n_components=3)`](pymatviz/cluster/composition/plot.py#L122) |
 | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                                                                                                 ![matbench-perovskites-magpie-pca-2d]                                                                                                 |                                                       ![matbench-perovskites-magpie-tsne-3d]                                                       |
 
 [matbench-perovskites-magpie-pca-2d]: assets/svg/matbench-perovskites-magpie-pca-2d.svg
-[matbench-perovskites-magpie-tsne-3d]: assets/svg/matbench-perovskites-magpie-tsne-3d.svg
+[matbench-perovskites-magpie-tsne-3d]: assets/png/matbench-perovskites-magpie-tsne-3d.png
 
 Visualize 2D or 3D relationships between compositions and properties using multiple embedding and dimensionality reduction techniques:
 
@@ -109,26 +101,21 @@ Dimensionality reduction methods: **PCA** (linear), **t-SNE** (non-linear), **UM
 Example usage:
 
 ```py
+import pandas as pd
 import pymatviz as pmv
-from pymatgen.core import Composition
 
-compositions = ("Fe2O3", "Al2O3", "SiO2", "TiO2")
-
-# Create embeddings
-embeddings = pmv.cluster.composition.one_hot_encode(compositions)
-comp_emb_map = dict(zip(compositions, embeddings, strict=True))
-
-# Plot with optional property coloring
-fig = pmv.cluster_compositions(
-    compositions=comp_emb_map,
-    properties=[1.0, 2.0, 3.0, 4.0],  # Optional property values
-    prop_name="Property",  # Optional property label
+df_comp = pd.DataFrame(
+    {"composition": ["Fe2O3", "Al2O3", "SiO2", "TiO2"], "property": [1.0, 2.0, 3.0, 4.0]}
+)
+widget = pmv.cluster_compositions(
+    df_comp,
+    prop_name="property",  # optional property to color points by
     embedding_method="one-hot",  # or "magpie", "matscholar_el", "megnet_el", etc.
-    projection_method="pca",  # or "tsne", "umap", "isomap", "kernel_pca", etc.
-    show_chem_sys="shape",  # works best for small number of compositions; "color" | "shape" | "color+shape" | None
+    projection="pca",  # or "tsne", "umap", "isomap", "kernel_pca", etc.
+    show_chem_sys="shape",  # "color" | "shape" | "color+shape" | None
     n_components=2,  # or 3 for 3D plots
 )
-fig.show()
+widget.show()
 ```
 
 ## Structure Clustering
@@ -137,41 +124,36 @@ On the roadmap but no ETA yet.
 
 ## Structure
 
-See [`pymatviz/structure/figures.py`](pymatviz/structure/figures.py).
+See [`pymatviz/widgets/structure.py`](pymatviz/widgets/structure.py).
 
-|                            [`structure_3d(hea_structure)`](pymatviz/structure/figures.py)                            | [`structure_3d(lco_supercell)`](pymatviz/structure/figures.py) [![fig-icon]](assets/scripts/structure/structure_3d.py) |
+|                            [`structure(structure=hea_structure)`](pymatviz/widgets/structure.py)                            | [`structure(structure=lco_supercell)`](pymatviz/widgets/structure.py) [![fig-icon]](assets/scripts/structure/structure_widget.py) |
 | :------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
 |                                                 ![hea-structure-3d]                                                  |                                                  ![lco-structure-3d]                                                   |
-| [`structure_2d(six_structs)`](pymatviz/structure/figures.py) [![fig-icon]](assets/scripts/structure/structure_2d.py) |  [`structure_3d(six_structs)`](pymatviz/structure/figures.py) [![fig-icon]](assets/scripts/structure/structure_3d.py)  |
-|                                          ![matbench-phonons-structures-2d]                                           |                                           ![matbench-phonons-structures-3d]                                            |
+| [`structure(structure=batio3)`](pymatviz/widgets/structure.py) [![fig-icon]](assets/scripts/structure/structure_widget.py) | [`structure(structure=mos2)`](pymatviz/widgets/structure.py) [![fig-icon]](assets/scripts/structure/structure_widget.py) |
+|                                          ![batio3-structure-3d]                                           | ![mos2-structure-3d] |
 
-[matbench-phonons-structures-2d]: assets/svg/matbench-phonons-structures-2d.svg
-[matbench-phonons-structures-3d]: assets/svg/matbench-phonons-structures-3d.svg
-[hea-structure-3d]: assets/svg/hea-structure-3d.svg
-[lco-structure-3d]: assets/svg/lco-structure-3d.svg
+[batio3-structure-3d]: assets/png/batio3-structure-3d.png
+[hea-structure-3d]: assets/png/hea-structure-3d.png
+[lco-structure-3d]: assets/png/lco-structure-3d.png
+[mos2-structure-3d]: assets/png/mos2-structure-3d.png
 
 ## Interactive Widgets
 
 See [`pymatviz/widgets`](pymatviz/widgets). Interactive 3D structure, molecular dynamics trajectory and composition visualization widgets for [Jupyter](https://jupyter.org), [Marimo](https://marimo.io), and VSCode notebooks, powered by [anywidget](https://anywidget.dev) and [MatterViz](https://matterviz.janosh.dev) (<https://github.com/janosh/matterviz>). Supports pymatgen `Structure`, ASE `Atoms`, and `PhonopyAtoms`, as well as ASE, `pymatgen` and plain Python trajectory formats.
 
 ```py
-from pymatviz import StructureWidget, CompositionWidget, TrajectoryWidget
+import pymatviz as pmv
 from pymatgen.core import Structure, Composition
 
 # Interactive 3D structure visualization
-structure = Structure.from_file("structure.cif")
-struct_widget = StructureWidget(structure=structure)
+struct_widget = pmv.structure(Structure.from_file("structure.cif"))
 
 # Interactive composition visualization
-composition = Composition("Fe2O3")
-comp_widget = CompositionWidget(composition=composition)
+comp_widget = pmv.composition(Composition("Fe2O3"))
 
-# Interactive trajectory visualization
-trajectory1 = [struct1, struct2, struct3]  # List of structures
-traj_widget1 = TrajectoryWidget(trajectory=trajectory1)
-
-trajectory2 = [{"structure": struct1, "energy": 1.0}, {"structure": struct2, "energy": 2.0}, {"structure": struct3, "energy": 3.0}]  # dicts with "structure" and property values
-traj_widget2 = TrajectoryWidget(trajectory=trajectory2)
+# Interactive trajectory visualization from structures or dicts of structure and properties
+traj_widget1 = pmv.trajectory([struct1, struct2, struct3])
+traj_widget2 = pmv.trajectory([{"structure": struct1, "energy": 1.0}, {"structure": struct2, "energy": 2.0}])
 ```
 
 All widgets support export and inspection APIs that work in plain Python scripts, CI, and agent workflows — no notebook frontend required:
@@ -181,11 +163,16 @@ widget.to_html("structure.html")  # standalone interactive HTML page (pan/zoom/r
 widget.to_img("structure.png", dpi=150)  # PNG/JPEG/SVG/PDF via headless Chromium
 widget.describe()  # machine-readable facts: counts, ranges, formula, chemical system
 widget.render_report()  # headless render health check: blank fraction, warnings
+widget.to_json("structure.json")  # save the widget; pmv.from_json("structure.json") restores it
 ```
 
-`to_img` and `render_report` require [Playwright](https://playwright.dev/python): `pip install pymatviz[export] && playwright install chromium` (on Linux CI runners without Chromium system libraries, use `playwright install --with-deps chromium`). Widget exports run in Chromium without Kaleido. Static export of Plotly figures still requires Kaleido. Set the `PYMATVIZ_STATIC` env var to make `widget.show()` render static PNGs instead of live widgets (useful for CI notebook execution).
+`pmv.export_widgets({name: widget, ...}, "figures/", fmt="png")` exports many widgets at once (SVG only works for 2D plots, not 3D viewers like `structure`), rendering up to 4 concurrently in one headless browser (about 2.4x faster than calling `to_img` on each).
 
-Widget constructor kwargs mirror the props of the matching MatterViz component one-to-one (e.g. `BandStructureWidget(band_structs=...)`, `DosWidget(doses=...)`, `HeatmapMatrixWidget(color_scale={"type": "log"})`), and every plot widget takes `show_controls`, `controls_open`, `controls_toggle_props` and `controls_pane_props` for its control pane. The frontend is the prebuilt [`matterviz-anywidget`](https://www.npmjs.com/package/matterviz-anywidget) bundle selected by `MATTERVIZ_ANYWIDGET_VERSION` in [`pymatviz/widgets/matterviz.py`](pymatviz/widgets/matterviz.py): `"main"` between releases (matterviz main's bundle from `matterviz.janosh.dev/anywidget/`, re-fetched each session), a published npm version in releases (fetched from jsDelivr and cached on disk); set `MATTERVIZ_ANYWIDGET_DIR` to a local `matterviz/extensions/anywidget/build` to develop against an unreleased MatterViz.
+Lay out several widgets with `widget_grid({title: widget, ...}, n_cols=3)`, e.g. one `structure` widget per structure. It returns an `ipywidgets.GridBox` of titled cells: export each widget from its `.children`.
+
+`to_img` and `render_report` require [Playwright](https://playwright.dev/python): `pip install pymatviz[export] && playwright install chromium` (on Linux CI runners without Chromium system libraries, use `playwright install --with-deps chromium`). Exports render in headless Chromium. Set the `PYMATVIZ_STATIC` env var to make `widget.show()` render static PNGs instead of live widgets (useful for CI notebook execution).
+
+Each MatterViz component has a pymatviz function of the same name in snake_case (`ScatterPlot` → `pmv.scatter_plot`, `BrillouinZone` → `pmv.brillouin_zone`), returning its widget. The widget classes live in `pymatviz.widgets` for type hints and `isinstance` checks. The generic charts also take DataFrame columns, e.g. `pmv.scatter_plot(df, x="volume", y="energy", color="crystal_system")` draws one labeled series per crystal system, and `pmv.heatmap_matrix(df)` plots a DataFrame matrix. Their keyword arguments mirror the props of the matching MatterViz component one-to-one (e.g. `band_structure(band_structs=...)`, `dos(doses=...)`, `heatmap_matrix(color_scale={"type": "log"})`), every widget takes `show_controls`, and those whose component has a control pane (e.g. `scatter_plot`, `bar_plot`, `histogram`, `dos`) also `controls_open`, `controls_toggle_props` and `controls_pane_props`. The frontend is the prebuilt [`matterviz-anywidget`](https://www.npmjs.com/package/matterviz-anywidget) bundle selected by `MATTERVIZ_ANYWIDGET_VERSION` in [`pymatviz/widgets/matterviz.py`](pymatviz/widgets/matterviz.py): `"main"` between releases (matterviz main's bundle from `matterviz.janosh.dev/anywidget/`, re-fetched each session), a published npm version in releases (fetched from jsDelivr and cached on disk); set `MATTERVIZ_ANYWIDGET_DIR` to a local `matterviz/extensions/anywidget/build` to develop against an unreleased MatterViz.
 
 **Examples:**
 
@@ -196,44 +183,39 @@ Widget constructor kwargs mirror the props of the matching MatterViz component o
 > [!TIP]
 > Checkout the **✅ MatterViz VSCode extension** for using the same viewers directly in VSCode/Cursor editor tabs for rendering local and remote files: [marketplace.visualstudio.com/items?itemName=janosh.matterviz](https://marketplace.visualstudio.com/items?itemName=janosh.matterviz)
 
-Importing `pymatviz` auto-registers all widgets for their respective sets of supported objects via [`register_matterviz_widgets()`](pymatviz/widgets/mime.py).
+In Jupyter, VS Code and marimo, importing `pymatviz` renders pymatgen, ASE and phonopy objects (structures, band structures, DOS, XRD patterns, phase diagrams, compositions) as their widgets. Toggle it with [`notebook_mode(on=False)`](pymatviz/notebook.py).
 
 ## Brillouin Zone
 
-See [`pymatviz/brillouin.py`](pymatviz/brillouin.py).
+See [`pymatviz/widgets/brillouin_zone.py`](pymatviz/widgets/brillouin_zone.py). MatterViz standardizes any input cell, so the zone and its high-symmetry k-path labels match the Setyawan-Curtarolo convention.
 
-|   [`brillouin_zone_3d(cubic_struct)`](pymatviz/brillouin.py#L15) [![fig-icon]](assets/scripts/brillouin/brillouin_zone_3d.py)    |  [`brillouin_zone_3d(hexagonal_struct)`](pymatviz/brillouin.py#L15)   |
+|   [`brillouin_zone(structure=cubic_struct)`](pymatviz/widgets/brillouin_zone.py) [![fig-icon]](assets/scripts/brillouin/brillouin_zone_widget.py)    |  [`brillouin_zone(structure=hexagonal_struct)`](pymatviz/widgets/brillouin_zone.py)   |
 | :------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------: |
 |                                                   ![brillouin-cubic-mp-10018]                                                    |                   ![brillouin-hexagonal-mp-862690]                    |
-| [`brillouin_zone_3d(monoclinic_struct)`](pymatviz/brillouin.py#L15) [![fig-icon]](assets/scripts/brillouin/brillouin_zone_3d.py) | [`brillouin_zone_3d(orthorhombic_struct)`](pymatviz/brillouin.py#L15) |
-|                                                ![brillouin-monoclinic-mp-1183089]                                                |                      ![brillouin-volumes-3-cols]                      |
+| [`brillouin_zone(structure=monoclinic_struct)`](pymatviz/widgets/brillouin_zone.py) [![fig-icon]](assets/scripts/brillouin/brillouin_zone_widget.py) | [`brillouin_zone(structure=orthorhombic_struct)`](pymatviz/widgets/brillouin_zone.py) |
+|                                                ![brillouin-monoclinic-mp-1183089]                                                |                  ![brillouin-orthorhombic-mp-1183085]                 |
 
-[brillouin-cubic-mp-10018]: assets/svg/brillouin-cubic-mp-10018.svg
-[brillouin-hexagonal-mp-862690]: assets/svg/brillouin-hexagonal-mp-862690.svg
-[brillouin-monoclinic-mp-1183089]: assets/svg/brillouin-monoclinic-mp-1183089.svg
-[brillouin-orthorhombic-mp-1183085]: assets/svg/brillouin-orthorhombic-mp-1183085.svg
-[brillouin-volumes-3-cols]: assets/svg/brillouin-volumes-3-cols.svg
+[brillouin-cubic-mp-10018]: assets/png/brillouin-cubic-mp-10018.png
+[brillouin-hexagonal-mp-862690]: assets/png/brillouin-hexagonal-mp-862690.png
+[brillouin-monoclinic-mp-1183089]: assets/png/brillouin-monoclinic-mp-1183089.png
+[brillouin-orthorhombic-mp-1183085]: assets/png/brillouin-orthorhombic-mp-1183085.png
 
 ## X-Ray Diffraction
 
 See [`pymatviz/xrd.py`](pymatviz/xrd.py).
 
-|             [`xrd_pattern(pattern)`](pymatviz/xrd.py#L47) [![fig-icon]](assets/scripts/xrd/xrd_pattern.py)             |  [`xrd_pattern({key1: patt1, key2: patt2})`](pymatviz/xrd.py#L47)   |
+|             [`xrd_plot(pattern)`](pymatviz/xrd.py#L53) [![fig-icon]](assets/scripts/xrd/xrd_plot.py)             |  [`xrd_plot({key1: patt1, key2: patt2})`](pymatviz/xrd.py#L53)   |
 | :--------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
 |                                                     ![xrd-pattern]                                                     |                       ![xrd-pattern-multiple]                       |
-| [`xrd_pattern(struct_dict, stack="horizontal")`](pymatviz/xrd.py#L47) [![fig-icon]](assets/scripts/xrd/xrd_pattern.py) | [`xrd_pattern(struct_dict, stack="vertical")`](pymatviz/xrd.py#L47) |
-|                                            ![xrd-pattern-horizontal-stack]                                             |                    ![xrd-pattern-vertical-stack]                    |
 
 [xrd-pattern]: assets/svg/xrd-pattern.svg
 [xrd-pattern-multiple]: assets/svg/xrd-pattern-multiple.svg
-[xrd-pattern-horizontal-stack]: assets/svg/xrd-pattern-horizontal-stack.svg
-[xrd-pattern-vertical-stack]: assets/svg/xrd-pattern-vertical-stack.svg
 
 ## Radial Distribution Functions
 
 See [`pymatviz/rdf/figures.py`](pymatviz/rdf/figures.py).
 
-| [`element_pair_rdfs(pmg_struct)`](pymatviz/rdf/figures.py#L101) | [`element_pair_rdfs({"A": struct1, "B": struct2})`](pymatviz/rdf/figures.py#L101) [![fig-icon]](assets/scripts/rdf/element_pair_rdfs.py) |
+| [`rdf_plot(pmg_struct)`](pymatviz/rdf/figures.py) | [`rdf_plot({"A": struct1, "B": struct2}, element_pairs=[...])`](pymatviz/rdf/figures.py) [![fig-icon]](assets/scripts/rdf/rdf_plot.py) |
 | :------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: |
 |                 ![element-pair-rdfs-Na8Nb8O24]                 |                                                ![element-pair-rdfs-crystal-vs-amorphous]                                                |
 
@@ -244,25 +226,25 @@ See [`pymatviz/rdf/figures.py`](pymatviz/rdf/figures.py).
 
 See [`pymatviz/coordination/figures.py`](pymatviz/coordination/figures.py).
 
-|              [`coordination_hist(struct_dict)`](pymatviz/coordination/figures.py#L60)              |            [`coordination_hist(struct_dict, by_element=True)`](pymatviz/coordination/figures.py#L60) [![fig-icon]](assets/scripts/coordination/coordination_hist.py)             |
+|              [`coordination_bar_plot(struct_dict)`](pymatviz/coordination/figures.py#L74)              |            [`coordination_bar_plot(struct_dict, split_mode="by_element")`](pymatviz/coordination/figures.py#L74) [![fig-icon]](assets/scripts/coordination/coordination_bar_plot.py)             |
 | :------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                    ![coordination-hist-single]                                     |                                                                  ![coordination-hist-by-structure-and-element]                                                                   |
-| [`coordination_vs_cutoff_line(struct_dict, strategy=None)`](pymatviz/coordination/figures.py#L319) | [`coordination_vs_cutoff_line(struct_dict, strategy=None)`](pymatviz/coordination/figures.py#L319) [![fig-icon]](assets/scripts/coordination/coordination_vs_cutoff_line.py#L52) |
+|                                    ![coordination-hist-single]                                     |                                                                  ![coordination-hist-by-element]                                                                   |
+| [`coordination_vs_cutoff_line(struct_dict)`](pymatviz/coordination/figures.py#L190) | [`coordination_vs_cutoff_line(struct_dict)`](pymatviz/coordination/figures.py#L190) [![fig-icon]](assets/scripts/coordination/coordination_vs_cutoff_line.py#L52) |
 |                                  ![coordination-vs-cutoff-single]                                  |                                                                        ![coordination-vs-cutoff-multiple]                                                                        |
 
 [coordination-hist-single]: assets/svg/coordination-hist-single.svg
-[coordination-hist-by-structure-and-element]: assets/svg/coordination-hist-by-structure-and-element.svg
+[coordination-hist-by-element]: assets/svg/coordination-hist-by-element.svg
 [coordination-vs-cutoff-single]: assets/svg/coordination-vs-cutoff-single.svg
 [coordination-vs-cutoff-multiple]: assets/svg/coordination-vs-cutoff-multiple.svg
 
 ## Sunburst
 
-`chem_sys_sunburst` and `chem_env_sunburst` return interactive MatterViz `SunburstWidget` instances. Pass the same nested `data` to `SunburstWidget` or `TreemapWidget` to switch views. Use `widget.to_html("hierarchy.html", inline=True)` for a self-contained interactive file (the default `to_html` loads the MatterViz bundle from the network) or `widget.to_img("hierarchy.svg")` for a vector figure.
+`chem_sys_hierarchy` and `chem_env_hierarchy` draw interactive MatterViz sunbursts by default, or treemaps with `kind="treemap"`. Pass your own nested `data` to `pmv.sunburst` or `pmv.treemap`. Use `widget.to_html("hierarchy.html", inline=True)` for a self-contained interactive file (the default `to_html` loads the MatterViz bundle from the network) or `widget.to_img("hierarchy.svg")` for a vector figure.
 
-| [`spacegroup_sunburst([65, 134, 225, ...])`](pymatviz/sunburst/spacegroup.py) [![fig-icon]](assets/scripts/sunburst/spacegroup_sunburst.py) | [`chem_sys_sunburst(["FeO", "Fe2O3", "LiPO4", ...])`](pymatviz/sunburst/chem_sys.py) [![fig-icon]](assets/scripts/sunburst/chem_sys_sunburst.py) |
+| [`spacegroup_sunburst([65, 134, 225, ...])`](pymatviz/sunburst/spacegroup.py) [![fig-icon]](assets/scripts/sunburst/spacegroup_sunburst.py) | [`chem_sys_hierarchy(["FeO", "Fe2O3", "LiPO4", ...])`](pymatviz/hierarchy.py) [![fig-icon]](assets/scripts/sunburst/chem_sys_sunburst.py) |
 | :-----------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
 |                                                             ![spg-num-sunburst]                                                             |                                                          ![chem-sys-sunburst-ward-bmg]                                                           |
-|                                     [`chem_env_sunburst(single_struct)`](pymatviz/sunburst/chem_env.py)                                     |                                      [`chem_env_sunburst(structures, normalize=True)`](pymatviz/sunburst/chem_env.py)                                      |
+|                                     [`chem_env_hierarchy(single_struct)`](pymatviz/chem_env.py)                                     |                                      [`chem_env_hierarchy(structures, normalize=True)`](pymatviz/chem_env.py)                                      |
 |                                                         ![chem-env-sunburst-basic]                                                          |                                                          ![chem-env-sunburst-normalized]                                                          |
 
 [spg-num-sunburst]: assets/svg/spg-num-sunburst.svg
@@ -272,19 +254,19 @@ See [`pymatviz/coordination/figures.py`](pymatviz/coordination/figures.py).
 
 ## Treemap
 
-Chemical-system and coordination-environment treemaps return MatterViz `TreemapWidget` instances. `max_systems` limits systems per arity. Set `mode="drop"` to omit the remaining systems or use the default `"other"` to retain their combined count.
+Chemical-system and coordination-environment treemaps return MatterViz treemap widgets. `max_systems` limits systems per arity. Set `overflow="drop"` to omit the remaining systems or use the default `"other"` to retain their combined count.
 
-| [`chem_sys_treemap(formulas, group_by="formula")`](pymatviz/treemap/chem_sys.py#L19) [![fig-icon]](assets/scripts/treemap/chem_sys_treemap.py) | [`chem_sys_treemap(ward_compositions)`](pymatviz/treemap/chem_sys.py#L19) |
+| [`chem_sys_hierarchy(formulas, group_by="formula", kind="treemap")`](pymatviz/hierarchy.py) [![fig-icon]](assets/scripts/treemap/chem_sys_treemap.py) | [`chem_sys_hierarchy(ward_compositions, kind="treemap")`](pymatviz/hierarchy.py) |
 | :----------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
 |                                                           ![chem-sys-treemap-formula]                                                            |                                        ![chem-sys-treemap-ward-bmg]                                        |
-|           [`chem_env_treemap(structure, chem_env_settings="chemenv")`](pymatviz/treemap/chem_env.py#L18) [![fig-icon]](assets/scripts/treemap/chem_env_treemap.py)           |     [`chem_env_treemap(structures, max_coordination_numbers=3, max_environments=4)`](pymatviz/treemap/chem_env.py#L18)     |
+|           [`chem_env_hierarchy(structure, chem_env_settings="chemenv", kind="treemap")`](pymatviz/chem_env.py) [![fig-icon]](assets/scripts/treemap/chem_env_treemap.py)           |     [`chem_env_hierarchy(structures, max_coordination_numbers=3, max_environments=4, kind="treemap")`](pymatviz/chem_env.py)     |
 |                                                            ![chem-env-treemap-basic]                                                             |                                     ![chem-env-treemap-large-dataset]                                      |
-|             [`py_pkg_treemap("pymatviz")`](pymatviz/treemap/py_pkg.py#L442) [![fig-icon]](assets/scripts/treemap/py_pkg_treemap.py)              |           [`py_pkg_treemap(["pymatviz", "flame", "pymatgen"])`](pymatviz/treemap/py_pkg.py#L425)           |
+|             [`py_pkg_treemap("pymatviz")`](pymatviz/treemap/py_pkg.py#L392) [![fig-icon]](assets/scripts/treemap/py_pkg_treemap.py)              |           [`py_pkg_treemap(["pymatviz", "flame", "pymatgen"])`](pymatviz/treemap/py_pkg.py#L392)           |
 |                                                            ![py-pkg-treemap-pymatviz]                                                            |                                         ![py-pkg-treemap-multiple]                                         |
-|   [`py_pkg_treemap("pymatviz", color_by=coverage_by_path)`](pymatviz/treemap/py_pkg.py#L442) [![fig-icon]](assets/scripts/treemap/py_pkg_treemap.py)   | [`py_pkg_treemap("pymatgen", color_by=coverage_by_path, color_range=(0, 100))`](pymatviz/treemap/py_pkg.py#L442) |
+|   [`py_pkg_treemap("pymatviz", color_by=coverage_by_path)`](pymatviz/treemap/py_pkg.py#L392) [![fig-icon]](assets/scripts/treemap/py_pkg_treemap.py)   | [`py_pkg_treemap("pymatgen", color_by=coverage_by_path, color_range=(0, 100))`](pymatviz/treemap/py_pkg.py#L392) |
 |                                                       ![py-pkg-treemap-pymatviz-coverage]                                                        |                                    ![py-pkg-treemap-pymatgen-coverage]                                     |
 
-For coverage coloring, pass a `color_by` dictionary mapping file paths to coverage percentages. Use `color_range=(0, 100)` and `labels={"color_value": "Coverage (%)"}` for a fixed percentage scale. The gallery script shows how to read a coverage.py JSON report.
+For coverage coloring, pass a `color_by` dictionary mapping file paths to coverage percentages. Use `color_range=(0, 100)` for a fixed percentage scale. The gallery script shows how to read a coverage.py JSON report.
 
 [chem-sys-treemap-formula]: assets/svg/chem-sys-treemap-formula.svg
 [chem-sys-treemap-ward-bmg]: assets/svg/chem-sys-treemap-ward-bmg.svg
@@ -299,7 +281,7 @@ For coverage coloring, pass a `color_by` dictionary mapping file paths to covera
 
 See [`pymatviz/rainclouds.py`](pymatviz/rainclouds.py).
 
-| [`rainclouds(two_key_dict)`](pymatviz/rainclouds.py#L22) [![fig-icon]](assets/scripts/rainclouds/rainclouds.py) | [`rainclouds(three_key_dict)`](pymatviz/rainclouds.py#L22) |
+| [`rainclouds(two_key_dict)`](pymatviz/rainclouds.py#L19) [![fig-icon]](assets/scripts/rainclouds/rainclouds.py) | [`rainclouds(three_key_dict)`](pymatviz/rainclouds.py#L19) |
 | :-------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------: |
 |                                              ![rainclouds-bimodal]                                              |                   ![rainclouds-trimodal]                   |
 
@@ -310,42 +292,41 @@ See [`pymatviz/rainclouds.py`](pymatviz/rainclouds.py).
 
 See [`pymatviz/sankey.py`](pymatviz/sankey.py).
 
-| [`sankey_from_2_df_cols(df_perovskites)`](pymatviz/sankey.py#L18) [![fig-icon]](examples/matbench_perovskites_eda.ipynb) | [`sankey_from_2_df_cols(df_space_groups)`](pymatviz/sankey.py#L18) |
-| :----------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------: |
-|                                          ![sankey-moyopy-vs-aflow-spacegroups]                                           |                ![sankey-crystal-sys-to-spg-symbol]                 |
+| [`sankey(df_space_groups, crystal_system, spg_num)`](pymatviz/sankey.py) [![fig-icon]](assets/scripts/sankey/sankey.py) |
+| :---: |
+| ![sankey-crystal-sys-to-spg-num] |
 
-[sankey-moyopy-vs-aflow-spacegroups]: assets/svg/sankey-moyopy-vs-aflow-spacegroups.svg
-[sankey-crystal-sys-to-spg-symbol]: assets/svg/sankey-crystal-sys-to-spg-symbol.svg
+[sankey-crystal-sys-to-spg-num]: assets/svg/sankey-crystal-sys-to-spg-num.svg
 
 ## Bar Plots
 
 See [`pymatviz/bar.py`](pymatviz/bar.py).
 
-| [`spacegroup_bar([65, 134, 225, ...])`](pymatviz/bar.py#L29) [![fig-icon]](assets/scripts/bar/spacegroup_bar.py) | [`spacegroup_bar(["C2/m", "P-43m", "Fm-3m", ...])`](pymatviz/bar.py#L29) |
+| [`spacegroup_bar_plot([65, 134, 225, ...])`](pymatviz/bar.py#L20) [![fig-icon]](assets/scripts/bar/spacegroup_bar_plot.py) | [`spacegroup_bar_plot(["C2/m", "P-43m", "Fm-3m", ...])`](pymatviz/bar.py#L20) |
 | :--------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------: |
-|                                              ![spg-num-hist-plotly]                                              |                        ![spg-symbol-hist-plotly]                         |
+|                                              ![spg-num-bar]                                              |                        ![spg-symbol-bar]                         |
 
-[spg-symbol-hist-plotly]: assets/svg/spg-symbol-hist-plotly.svg
-[spg-num-hist-plotly]: assets/svg/spg-num-hist-plotly.svg
+[spg-symbol-bar]: assets/svg/spg-symbol-bar.svg
+[spg-num-bar]: assets/svg/spg-num-bar.svg
 
 ## Histograms
 
 See [`pymatviz/histogram.py`](pymatviz/histogram.py).
 
-| [`elements_hist(compositions, log_y=True, show_values='count')`](pymatviz/histogram.py#L23) [![fig-icon]](assets/scripts/histogram/elements_hist.py) | [`histogram({'key1': values1, 'key2': values2})`](pymatviz/histogram.py#L90) [![fig-icon]](assets/scripts/histogram/histogram.py) |
+| [`elements_hist(compositions, log_y=True, show_values='count')`](pymatviz/histogram.py#L27) [![fig-icon]](assets/scripts/histogram/elements_hist.py) | [`histogram({'key1': values1, 'key2': values2})`](pymatviz/histogram.py#L101) [![fig-icon]](assets/scripts/histogram/histogram.py) |
 | :-----------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------: |
-|                                                                 ![elements-hist]                                                                  |                                                         ![histogram-ecdf]                                                         |
+|                                                                 ![elements-hist]                                                                  |                                                         ![histogram]                                                         |
 
-[histogram-ecdf]: assets/svg/histogram-ecdf.svg
+[histogram]: assets/svg/histogram.svg
 
 ## Scatter Plots
 
 See [`pymatviz/scatter.py`](pymatviz/scatter.py).
 
-| [`density_scatter(xs, ys, ...)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_scatter.py) | [`density_scatter_with_hist(xs, ys, ...)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_scatter.py) |
+| [`density_scatter(xs, ys, ...)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_scatter.py) | [`density_hexbin(xs, ys, bin_px=1.5, marginal_bins=100)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_scatter.py) |
 | :------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------: |
 |                                               ![density-scatter]                                               |                                               ![density-scatter-with-hist]                                               |
-|  [`density_hexbin(xs, ys, ...)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_hexbin.py)  |  [`density_hexbin_with_hist(xs, ys, ...)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_hexbin.py)  |
+|  [`density_hexbin(xs, ys, ...)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_hexbin.py)  |  [`density_hexbin(xs, ys, bin_px=8, marginal_bins=100)`](pymatviz/scatter.py) [![fig-icon]](assets/scripts/scatter/density_hexbin.py)  |
 |                                               ![density-hexbin]                                                |                                               ![density-hexbin-with-hist]                                                |
 
 [density-hexbin-with-hist]: assets/svg/density-hexbin-with-hist.svg
@@ -357,28 +338,28 @@ See [`pymatviz/scatter.py`](pymatviz/scatter.py).
 
 See [`pymatviz/uncertainty.py`](pymatviz/uncertainty.py).
 
-|             [`qq_gaussian(y_true, y_pred, y_std)`](pymatviz/uncertainty.py#L70) [![fig-icon]](assets/scripts/uncertainty/qq_gaussian.py)              |       [`qq_gaussian(y_true, y_pred, y_std: dict)`](pymatviz/uncertainty.py#L70)        |
+|             [`qq_gaussian(y_true, y_pred, y_std)`](pymatviz/uncertainty.py#L73) [![fig-icon]](assets/scripts/uncertainty/qq_gaussian.py)              |       [`qq_gaussian(y_true, y_pred, y_std: dict)`](pymatviz/uncertainty.py#L73)        |
 | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
 |                                                                    ![qq-gaussian]                                                                     |                                ![qq-gaussian-multiple]                                 |
-| [`error_decay_with_uncert(y_true, y_pred, y_std)`](pymatviz/uncertainty.py#L163) [![fig-icon]](assets/scripts/uncertainty/error_decay_with_uncert.py) | [`error_decay_with_uncert(y_true, y_pred, y_std: dict)`](pymatviz/uncertainty.py#L163) |
+| [`error_decay_with_uncert(y_true, y_pred, y_std)`](pymatviz/uncertainty.py#L160) [![fig-icon]](assets/scripts/uncertainty/error_decay_with_uncert.py) | [`error_decay_with_uncert(y_true, y_pred, y_std: dict)`](pymatviz/uncertainty.py#L160) |
 |                                                              ![error-decay-with-uncert]                                                               |                          ![error-decay-with-uncert-multiple]                           |
 
 ## Classification
 
 See [`pymatviz/classify/confusion_matrix.py`](pymatviz/classify/confusion_matrix.py).
 
-| [`confusion_matrix(conf_mat, ...)`](pymatviz/classify/confusion_matrix.py#L16) | [`confusion_matrix(y_true, y_pred, ...)`](pymatviz/classify/confusion_matrix.py#L16) [![fig-icon]](assets/scripts/classify/confusion_matrix.py) |
+| [`confusion_matrix(conf_mat, ...)`](pymatviz/classify/confusion_matrix.py#L34) | [`confusion_matrix(y_true, y_pred, ...)`](pymatviz/classify/confusion_matrix.py#L34) [![fig-icon]](assets/scripts/classify/confusion_matrix.py) |
 | :----------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------: |
 |                         ![stability-confusion-matrix]                          |                                                       ![crystal-system-confusion-matrix]                                                        |
 
 See [`pymatviz/classify/curves.py`](pymatviz/classify/curves.py).
 
-| [`roc_curve(targets, probs_positive)`](pymatviz/classify/curves.py#L120) [![fig-icon]](assets/scripts/classify/roc_curve.py) | [`precision_recall_curve(targets, probs_positive)`](pymatviz/classify/curves.py#L203) [![fig-icon]](assets/scripts/classify/precision_recall_curve.py) |
+| [`roc_curve(targets, probs_positive)`](pymatviz/classify/curves.py#L150) [![fig-icon]](assets/scripts/classify/roc_curve.py) | [`precision_recall_curve(targets, probs_positive)`](pymatviz/classify/curves.py#L240) [![fig-icon]](assets/scripts/classify/precision_recall_curve.py) |
 | :-------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                                ![roc-curve-plotly-multiple]                                                 |                                                       ![precision-recall-curve-plotly-multiple]                                                        |
+|                                                ![roc-curve-multiple]                                                 |                                                       ![precision-recall-curve-multiple]                                                        |
 
-[roc-curve-plotly-multiple]: assets/svg/roc-curve-plotly-multiple.svg
-[precision-recall-curve-plotly-multiple]: assets/svg/precision-recall-curve-plotly-multiple.svg
+[roc-curve-multiple]: assets/svg/roc-curve-multiple.svg
+[precision-recall-curve-multiple]: assets/svg/precision-recall-curve-multiple.svg
 [stability-confusion-matrix]: assets/svg/stability-confusion-matrix.svg
 [crystal-system-confusion-matrix]: assets/svg/crystal-system-confusion-matrix.svg
 [error-decay-with-uncert-multiple]: assets/svg/error-decay-with-uncert-multiple.svg

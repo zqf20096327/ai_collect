@@ -14,7 +14,7 @@
     <a href="https://github.com/hephaestus-build/Hephaestus/discussions"><strong>Discussions</strong></a>
   </p>
   <p>
-    <a href="https://github.com/hephaestus-build/Hephaestus/releases/latest"><img alt="Latest Hephaestus release" height="20" src="https://img.shields.io/github/v/release/hephaestus-build/Hephaestus?display_name=tag&amp;sort=semver"></a>
+    <a href="https://github.com/hephaestus-build/Hephaestus/releases"><img alt="Latest Hephaestus release" height="20" src="https://img.shields.io/github/v/release/hephaestus-build/Hephaestus?display_name=tag&amp;sort=semver&amp;include_prereleases"></a>
     <a href="https://github.com/hephaestus-build/Hephaestus/actions/workflows/cicd.yml?query=branch%3Amain"><img alt="Hephaestus CI status on main" height="20" src="https://github.com/hephaestus-build/Hephaestus/actions/workflows/cicd.yml/badge.svg?branch=main"></a>
     <a href="https://scorecard.dev/viewer/?uri=github.com/hephaestus-build/Hephaestus"><img alt="Hephaestus OpenSSF Scorecard report" height="20" src="https://img.shields.io/ossf-scorecard/github.com/hephaestus-build/Hephaestus?label=OpenSSF%20Scorecard&amp;style=flat"></a>
     <a href="./LICENSE"><img alt="MIT license" height="20" src="https://img.shields.io/github/license/hephaestus-build/Hephaestus?style=flat"></a>
@@ -29,6 +29,10 @@ The profile shows how each practice develops over time.
 Work drafted with a coding agent gets the same feedback.
 
 In a conversation, anyone can ask Hephaestus why, ask for an example, or disagree.
+
+Hephaestus gives formative, self-directed feedback on the work.
+It is not designed to grade, appraise, rank, or set allocation or pay for people.
+See [Intended purpose](./docs/admin/intended-purpose.mdx).
 
 <div align="center">
   <img alt="An illustration of one change through a project. Issue #412 has no acceptance criteria. The pull request grows to 34 files. A reviewer raises a vague concern about large exports. The pull request merges with that thread unresolved. Hephaestus points back to the issue." src="./docs/images/readme/landing-hero-dark.png#gh-dark-mode-only" width="1280">
@@ -56,6 +60,7 @@ Hephaestus gives feedback on every piece of work it can assess, so experienced p
 - **Feedback on the Work**: A comment on the pull request, merge request, or issue.
 - **Practice Page**: Each developer's private view of feedback and progress per practice.
   Workspace admins see the observations and delivery status behind it.
+  They see names only with **Per-person results for admins** on.
 - **Ask Hephaestus**: A weekly digest you can turn on arrives in the conversation.
   Developers ask why, ask for an example, or disagree.
   Conversations run in the web app and, if Slack is connected, in a direct message.
@@ -75,7 +80,7 @@ Each member chooses which models may handle their work: **In-house**, **Cloud**,
 
 > [!IMPORTANT]
 > **Hephaestus is pre-1.0.** Releases are continuous.
-> Only the [latest release](https://github.com/hephaestus-build/Hephaestus/releases/latest) has support.
+> Only the latest release, a release candidate included, has support ([Support statement](https://docs.hephaestus.build/admin/compatibility-policy#support-statement)).
 > Every fix ships in the next release.
 > Until 1.0, a *minor* release can change configuration or the API in ways that need you to act.
 > Read the release notes before every upgrade.

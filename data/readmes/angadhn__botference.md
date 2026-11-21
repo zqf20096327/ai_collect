@@ -925,6 +925,48 @@ tunnel from its options page (URL, password, display name). Owner-only
 stays owner-only: export, page deletion, model/effort/verbosity, relay,
 interrupt.
 
+### Reading a Blygger post
+
+When the page is a post on a [Blygger](https://blygger.org) blog (a
+"blyg"), Discuss recognises it. The companion reads the blyg's public
+`blyg.json` and the post's JSON document and checks that they match, and
+that the page you are on is the post's own page (a page that merely links a
+post is not the post). The drawer's header then shows one grey line:
+`blyg · v2 · Author`. Every
+highlight, comment and page-chat message records which post and which
+version it was made on, so an old highlight still says what it quoted after
+the post changes. The models are told which post they are discussing.
+
+The export quotes the post by reference, in Blygger's own syntax: a
+`![[<post id> | <title>]]` line, with your highlighted passage as a `>`
+quote directly under it. Any Blygger editor accepts it. The comment you wrote
+when you made the highlight comes first, above the quote, and the thread's
+later replies follow it (on every page, not only Blygger posts:
+`"comment_order": "quote-first"` restores the old order). The front matter gains `blyg_sources:` (the posts the
+note quotes) and, if you mark the note as a response in the export chooser,
+`blyg_stub_of:`. Both keys are optional; delete them if your site does not
+use them. A highlight whose words are not word for word in the post (it ran
+into a caption or a button) is not written as a Blygger quote, because the
+publisher would reject it. The drawer and the note say so, and offer the
+nearest exact passage.
+
+On any other web page, quotes in the note end with the page's URL as their
+last paragraph (`quote_style: "url-card"`, the default). Set
+`"quote_style": "plain"` in `.botference/plugin/config.json` for the old
+shape: the quote alone (with `"comment_order": "quote-first"` as well, the
+note is exactly what Discuss wrote before). PDFs on your computer, local files and the library
+always get the plain shape.
+
+The companion only reads: plain GETs to the page's site and to whatever host
+the page's Blygger links name, limited in time and size. It never fetches an
+address on this computer or its network (or any other special-purpose
+range), connects only to the address it checked, never checks a page that is
+itself local, and, when shared over a tunnel, never checks anything for a
+guest. A site that cannot be reached is left alone for a while (one minute,
+doubling up to six hours). It never posts or registers anything. To turn the
+checks off, set `"blyg_checks": "off"` in the same config file. Details, the
+exact format and a worked example: [docs/blygger.md](docs/blygger.md).
+
 ### Several pages at once
 
 A turn on one page no longer holds up another. Ask something on an
@@ -1795,10 +1837,4 @@ pick it up.
 | `/fresh @claude\|@codex\|@both` | **Restart a bot with no memory of this chat.** For a session that has gone wrong — a bot stuck refusing an ordinary topic, or answering a question three turns old. Nothing is carried over: it sees only what you send next, so say the context again. The other bot keeps its memory and is told. In the browser plugin, type it into any chat box or use the `fresh` button beside `relay` in the agents panel. **Separately and automatically:** when Claude Code reports that the running model's *safeguards* declined a message (Fable 5.1 does this on some ordinary technical topics; the error names the model), this chat's Claude switches to the next model in `safeguard_fallback` in `context-budgets.json` — Opus 5.5, then Opus 5 — and retries the same message, with a note in the chat. |
 | `/relay @claude\|@codex\|@both` | Tear down a model's session, generate a structured handoff, and restart that model immediately in the current botference process. Useful when context is getting long. `@both` (alias `@all`, `/relay-both`) resets both agents at once, token-efficiently: the agent with the most context headroom authors **one** shared handoff, both fresh sessions bootstrap from it, and the restarts run in parallel. Falls back to the free mechanical handoff when both agents are too degraded to author one. |
 | `/autorelay [on\|off]` | Toggle **auto-relay**. When a model's context occupancy crosses 50% of its window, botference relays it automatically (same handoff machinery as `/relay`) before its next turn — never mid-turn or mid free-form thread. On by default; the preference is per-user (`~/.botference/settings.json`) and persists across chats and projects. In the web council, a toggle in the agents panel mirrors this. No argument flips the current state. |
-| `/new-project <title>` | Create a project and file this chat under it. Every `/project` verb is also a command of its own, which reads better as a command than as a menu: `/open-project <id>`, `/assign-project`, `/unfile-project`, `/clear-project`, `/current-project`, `/project-contents`, `/project-github`, `/archive-project`, `/unarchive-project`, `/delete-project`, `/project-from-chat`, `/activate-build`. A bare `/project <words>` that matches no project now says so loudly and shows the `/new-project` line to create it. |
-| `/projects` | List project folders under `projects/` and show the active project marker, status, priority, chat count, and next action when known. |
-| `/project [open <id>\|clear\|current\|create <title>\|create-from-chat]` | Set, clear, show, or create the current project context. The status bar and Projects panel show the selected project; `Inbox` means no project is selected. |
-| `/project assign [<session-id-prefix>] <project-id>` | File a chat under a project. Filing **this** chat moves the active context with it, because being filed into a project and then left looking at another project's plan files would be nonsense. A chat remembers its own project: once filed, saving it while some other project is open never moves it. Filing **another** saved chat rewrites that chat's session JSON (and the project index) while you stay where you are; if that chat is open in another botference process, that process wins on its next save. |
-| `/project archive <id>` / `/project unarchive <id>` | Tuck a project away, or bring it back. Nothing moves on disk and nothing is deleted: only the `status` field in `projects/portfolio.json` flips to `archived`. Archived projects sort last everywhere and collapse into the closed **Archived** section at the bottom of the web sidebar; archiving the *active* project drops the room back to Inbox. |
-| `/project delete <id>` (alias `/delete-project`) | **Delete a project and every chat filed in it, for good.** A confirm names the project, how many chats go with it and the folder (`projects/<id>/`) that will be removed; nothing happens until you pick "Delete project and N chats". The folder, its `projects/portfolio.json` row, its `session-index.json` rows and each filed chat's session file are all removed. If you are in one of those chats you land in a fresh Inbox chat. Without a picker (headless), only the exact project id is accepted. In the web sidebar, "🗑 delete project…" in the project block (live or archived) sends this. Chats already archived with `/archive` are not touched. |
-| `/adopt [<id-prefix>]` | Continue a pre-existing **nati
+| `/new-project <title>` | Create a project and file

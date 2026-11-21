@@ -6,7 +6,7 @@
 
 <p align="center">Checked Muse skills — and the setup that installs them.<br>Every entry was verified by hand before it was listed. No guesses, no paid tools.</p>
 
-> **Ringkasan Bahasa Indonesia:** Kumpulan skill Muse yang sudah dicek langsung, bukan sekadar daftar link. Ada 64 skill terdaftar — 6 Tier 1 + 15 penambal + 8 DevOps + 8 Akademik + 7 Full-Stack + 8 Kantor + 5 Riset + 7 Kesehatan — 9 skill orisinal (termasuk contribute, cara agent lain ikut berkontribusi), plus indeks referensi 156 skill dari Lumitome. Semua dicek langsung, 27 terakhir lewat web. Lihat [skills/index.md](skills/index.md) untuk daftar lengkap. Mau pasang semuanya sekaligus ke agen Muse kamu (baru atau lama, tanpa menghilangkan karakternya)? Lihat [Setup](#setup-install-the-whole-system).
+> **Ringkasan Bahasa Indonesia:** Kumpulan skill Muse yang sudah dicek langsung, bukan sekadar daftar link. Ada 64 skill terdaftar — 6 Tier 1 + 15 penambal + 8 DevOps + 8 Akademik + 7 Full-Stack + 8 Kantor + 5 Riset + 7 Kesehatan — 11 skill orisinal (termasuk contribute, cara agent lain ikut berkontribusi), plus indeks referensi 139 skill dari Lumitome. Semua dicek langsung, 27 terakhir lewat web. Lihat [skills/index.md](skills/index.md) untuk daftar lengkap. Mau pasang semuanya sekaligus ke agen Muse kamu (baru atau lama, tanpa menghilangkan karakternya)? Lihat [Setup](#setup-install-the-whole-system).
 
 ---
 
@@ -35,7 +35,7 @@ Most skill lists are just links. This one is a list that was checked first.
 - **40 repos checked one by one.** Existence, `SKILL.md`, licence, last update — read directly on GitHub on 20 November 2026. 39 exist, 1 does not. See [docs/verification.md](docs/verification.md).
 - **Then it was critiqued, not just listed.** The audit found 5 gaps and added 15 verified skills to close them. See [docs/critique.md](docs/critique.md).
 - **9 skills were written for this system.** The daily RSI loop, a new-skill audit, an anti-slop checklist, health research literacy, campus workflow, office workflow, full-stack delivery, visual-check, and contribute. The RSI runs every 24 hours, and this repo is its fuel.
-- **It routes, it doesn't just list.** The router picks the right skill for each task from 261 entries. A 17-case test checks the routing, and it passes 17/17. CI runs on every push.
+- **It routes, it doesn't just list.** The router picks the right skill for each task from 246 entries. A 125-case test checks the routing, and it passes 125/125. CI runs on every push.
 - **Defensive only, and free.** No offensive skills, no paid tools. Every new skill passes a security checklist first.
 
 ---
@@ -55,9 +55,9 @@ Install the 6 Tier 1 skills first. Do not install everything at once.
 | 5 | [google/skills](https://github.com/google/skills) | Agent skills for Google products. |
 | 6 | [github/spec-kit](https://github.com/github/spec-kit) | Spec-driven development toolkit (not a `SKILL.md` package). |
 
-To install a skill, open its repository link above and follow that repository's own `README` / `SKILL.md`. This repository **does not copy upstream `SKILL.md` content** — it only links to it, with a one-line description and a verification status. Upstream skills remain the property of their authors.
+To install a skill, open its repository link above and follow that repository's own `README` / `SKILL.md`. This repository **does not copy full upstream `SKILL.md` files** — it only links to them, with a one-line description and a verification status. One exception: the Lumitome frontmatter descriptions are copied/trimmed into the `notes` field of `skills/router/registry.json` (see [docs/lumitome-index.md](docs/lumitome-index.md)). Upstream skills remain the property of their authors.
 
-### Step 2 — Add our 9 original skills
+### Step 2 — Add our 11 original skills
 
 These were written for this system and live in this repository under `skills/`:
 
@@ -74,7 +74,7 @@ These were written for this system and live in this repository under `skills/`:
 ## Setup (Install the Whole System)
 
 Installing skills one by one is the slow path. The whole muse-rsi system —
-9 original skills + router + tools + operating system — installs in one run,
+11 original skills + router + tools + operating system — installs in one run,
 new agent or long-running, without losing the agent's character. Full guide
 with every method (one-line installer, clone, ZIP, skills-only):
 [INSTALL.md](INSTALL.md).
@@ -92,14 +92,26 @@ git clone https://github.com/fahmi0812/muse-rsi ~/muse-rsi
 python3 ~/muse-rsi/setup/setup.py --yes
 ```
 
-It installs the 9 original skills + the router, gitleaks (secret scan),
+It installs the 11 original skills + the router, gitleaks (secret scan),
 visual-check, the vault dir, a clean `MEMORY.md` + `memory/scenes/`, and merges
-the muse-rsi operating system into `SOUL.md`.
+the muse-rsi operating system into `SOUL.md`. After install the agent activates
+the daily RSI loop (a scheduled job it creates itself), so it keeps improving
+on its own — fully autonomous, with its name and character unchanged.
 
-**The guarantee:** your agent's character survives. `IDENTITY.md` is never
-overwritten — the name stays. `SOUL.md` keeps every character/persona section;
-only the system sections (autonomy, engine, bottleneck, RSI loop, frontstage)
-are replaced. Your facts in `MEMORY.md` are kept. Before writing anything, the
+**The guarantee:** only your agent's name and character survive untouched.
+`IDENTITY.md` is rewritten from the muse-rsi template, but the Name and Role
+are carried over whenever the setup can read them — it uses a
+case-insensitive parser that understands bullet, plain, bold, table-row, and
+heading formats. If no name can be read, the setup uses `--name` when given,
+otherwise the fallback name `Muse`. `SOUL.md` keeps everything outside the
+marked system block (`<!-- muse-rsi:system:start -->` …
+`<!-- muse-rsi:system:end -->`); only that block is replaced, so persona
+sections are never touched — even if their headings contain words like
+"autonomy" or "frontstage". On a first install from a `SOUL.md` without
+markers, only sections whose heading exactly matches a template system
+heading are replaced. `MEMORY.md` gains the muse-rsi structure; your facts
+are kept, unless the file is a broken single line — then it is replaced from
+the template and the old copy stays in the snapshot. Before writing anything, the
 setup snapshots your current files to `~/.muse-backup/<timestamp>/` — that is
 your rollback point. See [INSTALL.md](INSTALL.md) for every install method,
 all flags, and what to do when a step fails.
@@ -108,8 +120,8 @@ all flags, and what to do when a step fails.
 
 To let Muse pick the right skill for each task automatically, install the router skill:
 
-- **In Muse:** the router lives in this repo at [skills/router/SKILL.md](skills/router/SKILL.md) with its routing table in [skills/router/registry.json](skills/router/registry.json) (261 entries: 64 core + 32 reference + 9 originals + 156 Lumitome reference). Install it as a custom skill together with the 9 original skills under `skills/`.
-- **How it routes:** it reads the request, names its domain, matches `keywords` + `domain` + `notes` in `registry.json`, and loads the smallest set that covers the task — core before reference, original when it matches exactly. It never installs from the Pending or Not Included lists, and it never copies upstream `SKILL.md` content.
+- **In Muse:** the router lives in this repo at [skills/router/SKILL.md](skills/router/SKILL.md) with its routing table in [skills/router/registry.json](skills/router/registry.json) (246 entries: 64 core + 32 reference + 11 originals + 139 Lumitome reference). Install it as a custom skill together with the 11 original skills under `skills/`.
+- **How it routes:** it reads the request, names its domain, and scores it with a small BM25-style ranker over three weighted fields in `registry.json` — `keywords` (3.0), `domain` (2.0), `notes` (1.0) — with shared token normalisation, so hyphenated/dotted phrases (`next.js`, `full-stack`) and multi-word phrases (`systematic review`) match as single terms. Ties break by tier (original > core > reference > lumitome-reference), then by name. If no entry scores a keyword-field hit, the router returns `NO_MATCH` and says so plainly instead of forcing a fit. It loads the smallest set that covers the task. It never installs from the Pending or Not Included lists, and it never copies full upstream `SKILL.md` files (Lumitome frontmatter descriptions are the one exception — copied/trimmed into the registry `notes` field).
 
 ### Step 3 — Add other tiers only when needed
 
@@ -235,7 +247,7 @@ The full index, including further reference by tier, is in [skills/index.md](ski
 
 ## Lumitome Reference Index
 
-[Fahmi's own Lumitome](https://github.com/fahmi0812/Lumitome) (OpenCode-based coding assistant, v0.3.79) has 156 core skills in `.opencode/skills/`, verified locally from a clone on 20 November 2026. The registry holds 930 skills in total, 764 routable. The full link-only table is in [docs/lumitome-index.md](docs/lumitome-index.md) — no `SKILL.md` content is copied.
+[Fahmi's own Lumitome](https://github.com/fahmi0812/Lumitome) (OpenCode-based coding assistant, v0.3.79) has 156 core skills in `.opencode/skills/`, verified locally from a clone on 20 November 2026. The registry holds 930 skills in total, 764 routable. The full link-only table is in [docs/lumitome-index.md](docs/lumitome-index.md) — no full `SKILL.md` file is copied, but the table's descriptions are copied/trimmed from Lumitome `SKILL.md` frontmatter into the registry `notes` field.
 
 Strongest in Lumitome: Design & Media (36), Full-Stack (31), Security defensive (30), Agent & Orchestration (28). Thinnest: Research (2), College & Academic (4), Office & Corporate (5). **Health & Medical: 0** — that gap is filled by the new `health-research-literacy` original skill. The 166-skill red-team pack is disabled by design and is never included here.
 
@@ -310,6 +322,8 @@ Written for the RSI system in this repository — not copies of upstream skills:
 | fullstack-delivery | [skills/fullstack-delivery/SKILL.md](skills/fullstack-delivery/SKILL.md) | Spec → TDD → review → CI → deploy → observe. |
 | visual-check | [skills/visual-check/SKILL.md](skills/visual-check/SKILL.md) | Screenshot any page at 360/768/1280 + dark mode; report console errors, failed requests, overflow, axe violations. |
 | contribute | [skills/contribute/SKILL.md](skills/contribute/SKILL.md) | Contribute back from any Muse agent: fork, verify, PR, issues, star, install report. |
+| council | [skills/council/SKILL.md](skills/council/SKILL.md) | Blind multi-model council — three judges from three providers decide high-stakes calls. |
+| interrogate-claim | [skills/interrogate-claim/SKILL.md](skills/interrogate-claim/SKILL.md) | Adversarial interrogation — stress-test a claim, artifact, or plan before trusting it. |
 
 ---
 
@@ -346,7 +360,7 @@ Contributions that do not pass verification will not be merged — not because t
 
 ## License
 
-Original content in this repository (this README, the 9 original skills, and the documents in `docs/`) is licensed under the **MIT License** — see [LICENSE](LICENSE).
+Original content in this repository (this README, the 11 original skills, and the documents in `docs/`) is licensed under the **MIT License** — see [LICENSE](LICENSE).
 
 Upstream skills are **not** ours and keep their own licences. Known upstream licences are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 

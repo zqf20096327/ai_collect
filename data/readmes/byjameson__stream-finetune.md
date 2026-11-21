@@ -1,4 +1,57 @@
-# stream-finetune — fine-tune a 32B model on a 6 GB laptop GPU
+# Atom Zero — a 49.2M local assistant that cites its sources
+
+[![local only](https://img.shields.io/badge/local-100%25-2b6f6a)](#) [![params](https://img.shields.io/badge/core-49.2M-4b6f9e)](#) [![tests](https://img.shields.io/badge/tests-392-6b4a8a)](#) [![license](https://img.shields.io/badge/license-Apache--2.0-555)](#)
+
+> A 49 million parameter model that says “I don’t know”, retrieves **your** documents with citations, keeps personal notes and tasks, and asks before it researches. No cloud, no telemetry, no giant model.
+
+![Atom Zero architecture](docs/figures/atomzero_architecture.svg)
+
+## 60-second demo
+
+```powershell
+git clone https://github.com/byjameson/stream-finetune.git
+cd stream-finetune
+pip install -e .
+powershell -ExecutionPolicy Bypass -File scripts/quickstart_atomzero.ps1
+```
+
+Full guide: [`docs/QUICKSTART_ATOMZERO.md`](docs/QUICKSTART_ATOMZERO.md). The script seeds a small demo corpus (launch code, warranty, travel, visitor badge), starts the local server, and opens the browser. Try:
+
+```text
+What is the launch code?                         -> cited local answer
+What is the population of Paris?                 -> "I don't have a source"; gap recorded
+Propose curiosity topics                         -> pending research, approval required
+Add task buy milk / My name is Alex              -> local tools + memory
+```
+
+Optional stronger local chat (RAG/tools stay local):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/quickstart_atomzero.ps1 -WithProvider
+```
+
+## What it is
+
+- **Source-cited RAG** over your own text files, with a hybrid FTS + MiniLM retriever.
+- **Deterministic tools**: arithmetic, time, tasks, name/likes memory, document search.
+- **Honest missing-source path**: no note means “I don’t have a source”, not an invented answer.
+- **Curiosity queue**: unanswered questions become pending research; you approve before any fetch or teacher call.
+- **Optional provider**: plug in a local Ollama/OpenAI-compatible model for general chat.
+- **No telemetry, no hosted service**; all state is local SQLite/JSON.
+
+## Honest benchmark snapshot
+
+| check | result |
+|---|---:|
+| raw 49.2M, no RAG/tools | **2/10** |
+| product with RAG/tools | **21/21** |
+| behavior checks | **16/16** |
+| source-cited retrieval top-1 | **1.000** (FTS 0.850) |
+| test suite | **392 passed** |
+
+The 21/21 is the **product**, not the bare model. See the [model card](docs/MODEL_CARD.md), [benchmarks](docs/BENCHMARKS.md), [curiosity flow](docs/CURIOSITY.md), [capability ladder](docs/POTENTIAL.md), and [launch notes](docs/LAUNCH.md).
+
+## streamft: fine-tune a 32B model on a 6 GB laptop GPU
 
 [![PyPI](https://img.shields.io/pypi/v/streamft)](https://pypi.org/project/streamft/) [![try it](https://img.shields.io/badge/try-will%20it%20fit%3F-6ee7b7)](https://huggingface.co/spaces/byjameson/will-it-fit)
 
@@ -14,6 +67,62 @@ measured speed where a measurement exists (and says so where it doesn't).
 **7B end-to-end on 6 GB:** [train an adapter, serve it on the 4-bit base, call it through
 `/v1/chat/completions`](docs/DEMO_7B.md) — 20 steps in 88.6 s, 5.65 GB peak, 32 tokens in
 3.14 s. This is the concrete “it works” scenario, not a benchmark.
+
+## Atom Zero runtime details
+
+**Atom Zero — local daily assistant (from scratch, 50M):** [tasks, personal
+notes and source-cited document lookup](docs/TINY_TRANSFORMER_CHAT.md) — start
+with `powershell -ExecutionPolicy Bypass -File scripts/demo_all.ps1`. The
+Python package and CLI remain `streamft`; Atom Zero is the product name. Paste or
+upload your own UTF-8 documents over HTTP; the response keeps source, title and
+sha256. A reviewed research queue (browser + API/CLI) fetches only
+user-approved Wikipedia topics on a schedule. Unanswered questions become
+knowledge gaps; **Propose curiosity topics** turns them into pending research
+items, and nothing runs until you approve it. See
+[`docs/CURIOSITY.md`](docs/CURIOSITY.md). ChatGPT/other answers can be
+pasted manually as unverified teacher notes with a source URL, or an explicit
+local [Ollama](docs/TEACHER_OLLAMA.md)/OpenAI-compatible provider can answer on request or synthesize
+approved research topics. Teacher notes start unverified and can be marked
+verified by a named reviewer with a timestamp. Unknown questions become
+**knowledge gaps**; approving a proposed topic lets the scheduled worker fetch
+a source into RAG. Chat feedback can be reviewed, exported and sent through a
+gated LoRA update; accepted `vNNNN` versions are recorded with metrics, can be
+compared with `research/compare_adapters.py`, evaluated on a non-training
+holdout, and rolled back with `learning_loop.py activate`. The active adapter
+loads with `--adapter auto`. An opt-in `--safety-filter` runs exact rules first
+and then a small local MiniLM linear ML head; it refuses explicit harmful
+requests and filters output (multilingual red-team 72/72, held-out semantic
+paraphrases 10/10, 0/26 benign false blocks). Missing model/head falls back to
+exact rules; `--no-safety-ml` forces the rule baseline. It is **off by
+default**: this is a local tool, not a hosted content policy. The optional
+safety layer is an operator tool, not a moral gate.
+
+An optional **local provider backend** can answer free-form chat with a
+user-supplied Ollama/OpenAI-compatible model while RAG, tools and memory stay
+local. The default remains the 50M model. See
+[`docs/POTENTIAL.md`](docs/POTENTIAL.md) for the capability ladder and
+[`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) for the shareable benchmark summary.
+
+Indexed sources and session memory have tested delete paths
+(`docs/PRIVACY.md`). The current product checkpoint is the 49.2M scaled run
+`checkpoints/transformer_behavior_50m_scaled` (40k steps); the original
+`transformer_behavior_50m_long` is retained for comparison. The optional 368k
+LoRA adapter and SQLite FTS5 memory run locally. RAG uses a hybrid candidate
+stage: FTS plus cached chunk embeddings, with hashed character n-grams as the
+dependency-free fallback. When `models/all-MiniLM-L6-v2` is present,
+`--reranker auto` uses a local MiniLM neural pool; on the held-out authored
+retrieval benchmark this reaches **1.000** top-1/citation vs **0.850** for FTS,
+at about 8.8 ms per query on CPU. A prewarmed in-memory matrix makes the vector
+stage **166x** faster than the linear scan on 3000 chunks with identical top-5;
+above 256 chunks an IVF ANN index is used, with an exact cosine fallback and
+recall@10 **1.000** on the 20k-vector benchmark. Facts stay in RAG; style/skill
+updates go through the gate. It is not a general assistant. The project is open source; no hosted
+service is operated. See the [decision pack](docs/RELEASE_DECISIONS.md),
+[product audit](docs/PRODUCT_AUDIT.md),
+[safety filter](docs/SAFETY.md),
+[scaling plan](docs/SCALING_PLAN.md),
+[data-scaling run](docs/DATA_SCALING.md) and
+[research worker](docs/RESEARCH_WORKER.md) for what is still required.
 
 **The smallest demo:** [130 KB AI](https://huggingface.co/spaces/byjameson/mini-ai) — a
 news classifier that trains in your browser from 500 labelled examples and scores 78.3% on
@@ -604,6 +713,16 @@ with **24.8 MB** peak VRAM; 21M runs at 563/204 tok/s with 88.3 MB. This is not
 a general model; packaging/licence/model card are still missing.
 [`research/SPIKING_TINY_LAB.md`](research/SPIKING_TINY_LAB.md)
 
+**Tiny Transformer Chat (product path):** a **20.2M from-scratch transformer**
+on the same clean chat data reaches chat bpb **1.359**, assistant loss **4.01**,
+alpha min **0.731** and 0 empty samples. With role tokens banned at decoding it
+passes the smoke gate; the 21M/50M spiking chat models remain BLOCKED at
+2.29-2.31 bpb / 6.7-6.8 loss. A 49.2M transformer adds only 0.015 bpb, so the
+20M checkpoint is the product model. It is a tiny, repetitive character model,
+not a general assistant. Model card:
+[`docs/TINY_TRANSFORMER_CHAT.md`](docs/TINY_TRANSFORMER_CHAT.md); local server:
+`python -m streamft.chat_server`; demo: `scripts/chat_demo.ps1`.
+
 **Sleep-like replay:** during a TinyStories -> WikiText phase, mixing 20% old windows
 into every batch keeps old bpb at **2.079** (phase-A 2.077; naive 2.632) and retains
 **99.2%** of the new-task gain. Replay is much better than post-hoc shadow rollback
@@ -799,6 +918,27 @@ statement curriculum trained with the copy loss only reaches spike **0.412**
 the self-supervised matching-attention loss at this budget.
 [`research/SPIKING_BINDING_CONJ.md`](research/SPIKING_BINDING_CONJ.md)
 
+## Support the work / Destek
+
+This project is developed on a 6 GB laptop GPU. If you find it useful and want
+to support further experiments, donations go toward more compute and larger
+runs. There is no paid support, token, or investment offer.
+
+- **EVM-compatible networks** (Ethereum, BNB Smart Chain, Polygon, Optimism,
+  Arbitrum One, Base, Avalanche C-Chain):
+  `0xa4dEc84Fe6F13c8A3b8707446D6892a6E272285c`
+- **Solana:**
+  `EDqs8w4JkS5vAAfxmsB7fAQwoauEYufYXvMWFW9aYPdc`
+- **Bitcoin:**
+  `bc1qsq4mdtf0dlfvppllqwdaknxrq6xkjgsrx6ctgm`
+
+Please double-check the network and the full address before sending; crypto
+transfers are irreversible. Donations are voluntary and do not buy influence
+over results or reviews.
+
 ## License
 
-Apache-2.0 — see [`LICENSE`](LICENSE).
+Apache-2.0 for code and model weights — see [`LICENSE`](LICENSE) and
+[`NOTICE`](NOTICE). The notice lists the training-data sources and their
+original licences; dataset text remains under those terms. Atom Zero is
+open source; third-party hosting is the host's responsibility.

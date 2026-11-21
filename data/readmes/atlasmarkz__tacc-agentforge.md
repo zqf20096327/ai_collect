@@ -13,10 +13,10 @@
 TACC AgentForge is the course project for **Advanced AI Computing and Systems (CSIT6000V)**. A user describes what they need and how much they can spend. The agent searches a source-linked product catalog, compares offers, checks the plan against the budget with exact decimal arithmetic, and explains its recommendation with citations. The model is the course-provided **Qwen3.8-27B AWQ INT4** checkpoint, served by vLLM on two GPUs on the TACC cluster.
 
 <p align="center">
-  <img src="docs/images/browser-demo.gif" width="900" alt="Live run with the real model on TACC (about 3x speed): asked what to buy for a trip to Bali with a $200 budget, the agent asks what is needed, then searches the catalog and returns a backpack, earbuds and a power bank with photos, an itemised receipt checked against the budget, and the sources.">
+  <img src="docs/images/browser-demo.gif" width="900" alt="Live run of current main with the real model on TACC (waits sped up about 4x): asked what to buy for a trip to Bali with a $200 budget, the agent asks what kind of items are needed, then searches the catalog and returns a backpack, earbuds and a power bank with photos, why they fit, an itemised receipt checked against the budget, and the sources.">
 </p>
 
-*Recorded on TACC with the real model: asked what to buy for a trip to Bali with a $200 budget, the agent asks what is needed, then recommends a backpack, earbuds and a power bank for **$87.34 before tax** and shows the **$112.66** left in the budget. Idle waits are shortened.*
+*Recorded on 2026-11-21 with current `main` and the real model on TACC: asked what to buy for a trip to Bali with a $200 budget, the agent asks what kind of items are needed, then recommends a backpack, earbuds and a power bank for **$47.94 before tax** and shows the **$152.06** left in the budget. The agent took 46 s; waits are sped up (the badge shows by how much).*
 
 <p align="center"><img src="docs/images/architecture.png" width="900" alt="Dual-branch architecture of TACC AgentForge: Branch A (main, evaluated) connects a local backend over SSH to a two-GPU TACC job running the agent harness, budget validator, frozen SQLite/FTS5 snapshot and vLLM; Branch B (feat/cloud-agent-service, extension) runs the public frontend, backend, agent and 7-category GCS snapshot on Cloudflare Pages, Tailscale Funnel and GCE while sharing the TACC vLLM engine; right shows offline SerpApi collection, frozen evaluation (C1–C3, C7) and serving/SFT experiments (C4–C6)."></p>
 
@@ -57,7 +57,7 @@ All numbers come from runs on TACC. The raw data is committed, and `scripts/repr
 | **C4** | Serving, one flag changed at a time: CUDA graphs give **+202% output throughput** over eager mode (67.4 → 203.9 tok/s, distinct prompts, concurrency 8). In eager mode, prefix caching cuts TTFT p50 by 71% on shared-prefix prompts. FlashInfer attention and the FP8 KV cache fail on this setup. | §4.3, Table 6, Fig. 4 | [inference/RESULTS.md](inference/RESULTS.md), `inference/results/` |
 | **C5** | MTP speculative decoding crashed during CUDA-graph capture on this hybrid model. A one-line vLLM patch fixes it; with CUDA graphs, MTP k=3 then gives **+42% single-request throughput** (57.7 → 81.8 tok/s), but little or no gain at 4 concurrent requests (−2% to +9%). Each cell is a single measurement. | §4.4, Table 7 | [private-vLLM report, E5c](docs/experiments/2026-11-06-private-vllm-feasibility/PLAN.md), [patch](deploy/tacc/private-vllm/patches/E5c-warmup-spec-decode-metadata.patch), `inference/results/private-spec-mtp-28403/` |
 | **C6** | SFT pipeline pilot: a LoRA adapter trained on the INT4 checkpoint and served by vLLM picks the correct catalog category on the first step in **8/8** prompts, vs. 2/8 for the base model. **This is a pipeline check, not a quality result**: 10 prompts, dev cases only (partly seen in training), first action only. | §4.5, Table 8 | [training/README.md](training/README.md) §3–5, `training/results/` |
-| **C7** | Post-freeze fix for issue #21 (PR #29, merged into `main` after the freeze): in targeted replays with the real model (3 requests × 3 repeats), dev-07 (no feasible plan) ends in 3 model calls with `no_feasible_plan` instead of 8 calls at the limit, and dev-04 still completes with a verified plan in 5 calls. **The held-out split was not rerun**, so there is no new overall TSR. | §4.2, Table 5 | [finalization report](docs/experiments/2026-11-17-agent-finalization/MAIN_REPLAY.md), `docs/experiments/2026-11-17-agent-finalization/main-real-replay.json` |
+| **C7** | Post-freeze fix for issue #21 (PR #29, merged into `main` after the freeze): in targeted replays with the real model (3 requests × 3 repeats), dev-07 (no feasible plan) ends in 3 model calls with `no_feasible_plan` instead of 8 calls at the limit, and dev-04 still completes with a verified plan in 5 calls. On current `main`, after a later prompt-layout change (the per-call runtime policy moved to the end of the prompt so that vLLM's prefix cache works; dev-04 took 15.6 s instead of about 29 s), dev-07 ends in 4 calls with the same end state; the other results are unchanged. **The held-out split was not rerun**, so there is no new overall TSR. | §4.2, Table 5 | [finalization report](docs/experiments/2026-11-17-agent-finalization/MAIN_REPLAY.md), `docs/experiments/2026-11-17-agent-finalization/main-real-replay.json`, `main-prefix-layout-replay.json` |
 
 **v1 benchmark (additional, not part of C1–C3):** a synthetic-fixture track with 10 dev + 32 heldout cases, its own independent oracle and six configurations. Its runbook is [evaluations/v1/README.md](evaluations/v1/README.md). The reported dev numbers use 10 cases and one repeat; they are not a formal heldout result and do not replace the frozen baseline above.
 
@@ -71,7 +71,7 @@ After [Setup](#setup), one command runs every check of this section and Step 1 o
 
 ## Prerequisites
 
-- macOS or Linux. This README was verified on macOS with Python 3.12. The team also developed on Windows; there, set `PYTHONUTF8=1` (issue #5) and use `.venv\Scripts\python.exe`.
+- macOS or Linux. This README was verified from a fresh clone on macOS with Python 3.12 and, on 2026-11-21, on Linux (Docker image `python:3.12`). **On Windows, use WSL2**: native Windows is not supported, because `knowledge/acquisition.py` needs the POSIX `fcntl` module and Git's CRLF line endings on Windows change the hashed v1 fixture files (stages 3 and 7 fail).
 - Python **3.12**
 - [`uv`](https://docs.astral.sh/uv/) (recommended) or `pip`
 - `git` and `curl`
@@ -107,7 +107,7 @@ uv pip install --python .venv/bin/python -r agent/requirements.lock pytest pytho
 ```text
 [1/7] environment          SUCCESS (0 s): Python 3.12.x, dependencies import
 [2/7] catalog snapshot     SUCCESS (1 s): snapshot_5bcd00723fb0b7589cbe50c8 installed and verified (FTS5: True)
-[3/7] automated tests      SUCCESS (85 s): 697 passed, 1 skipped, 14 subtests passed in ...
+[3/7] automated tests      SUCCESS (85 s): 699 passed, 1 skipped, 14 subtests passed in ...
 [4/7] harness self-test    SUCCESS (1 s): SELFTEST OK (10/10 checks true)
 [5/7] end-to-end request   SUCCESS (3 s): verified plan offer_640a303bc366430cfd53139e: total 16.87 USD, 83.13 left; without a budget the run asks for one
 [6/7] main results         SUCCESS (1 s): ALL MATCH (6 comparisons: C1-C7 recomputed from the committed raw data)
@@ -124,7 +124,7 @@ A failed stage prints the reason and the end of the failing command's output, an
 .venv/bin/python -m pytest tests agent/tests -q
 ```
 
-**Expected:** `697 passed, 1 skipped` and no failures. The single skip is expected: one `test_sft.py` test because PyTorch is not installed (training runs on TACC). Without `python-dotenv` (part of the Setup command), six more tests are skipped.
+**Expected:** `699 passed, 1 skipped` and no failures. The single skip is expected: one `test_sft.py` test because PyTorch is not installed (training runs on TACC). Without `python-dotenv` (part of the Setup command), six more tests are skipped.
 
 ## Example 2: end-to-end request without a GPU (about 1 minute)
 
@@ -174,7 +174,17 @@ bash deploy/tacc/service/qwen-service/stage.sh serve --harness
 (cd deploy/tacc/service/qwen-service && tcloud submit)
 ```
 
-After 5–8.5 minutes, once the job has published `harness-url.txt` on the cluster, run `.venv/bin/python -m app.backend` locally and open http://127.0.0.1:8765. The backend reaches the cluster over SSH, so first set the SSH host and key as described in [app/README.md](app/README.md). Stopping the service is covered in the [runbook](deploy/tacc/service/RUNBOOK.md) §6. In the evaluation, a full-system request took 19 s at the median and 37 s at p95, measured on the cluster (baseline report §5).
+After 5–8.5 minutes, once the job has published `harness-url.txt` on the cluster, start the backend locally and open http://127.0.0.1:8765. The backend reaches the cluster over SSH with your own account; its defaults are the authors' account, so set these first ([app/README.md](app/README.md)):
+
+```bash
+export TACC_SSH=<TACC username>@gw.turing.ust.hk
+export TACC_SSH_PORT=30041
+export TACC_SSH_KEY=~/.ssh/<your TACC private key>
+export TACC_REMOTE_USERDIR=/mnt/home/<TACC username>/USERDIR
+.venv/bin/python -m app.backend
+```
+
+The page shows `Online · job <id>` once it reaches the harness. Stopping the service is covered in the [runbook](deploy/tacc/service/RUNBOOK.md) §6. In the evaluation, a full-system request took 19 s at the median and 37 s at p95, measured on the cluster (baseline report §5).
 
 ---
 
@@ -211,7 +221,7 @@ The script does six checks:
 - **C4:** regenerates `inference/RESULTS.md` from `inference/results/`.
 - **C5:** recomputes the MTP throughput table from the raw benchmark output.
 - **C6:** recounts the SFT first-step check from the raw model outputs.
-- **C7:** tallies model calls and end states of the 9 post-freeze replays.
+- **C7:** tallies model calls and end states of the 9 post-freeze replays, both as the fix was merged and after the later prompt-layout change.
 
 Each result is compared with the committed copy and marked `MATCH` or `DIFFERS`. The script must end with `ALL MATCH`; stage 6 of `scripts/check_artifact.py` runs it and checks this.
 
@@ -246,9 +256,14 @@ MATCH: ...
   asks for the missing budget first: base 1/2, adapter 0/2
 MATCH: ...
 == Post-freeze issue #21 fix: real-model replays on main (3 repeats each)
-  issue-21-charger  1 calls, waiting_user | 1 calls, waiting_user | 1 calls, waiting_user
-  dev-07            3 calls, no_feasible_plan | 3 calls, no_feasible_plan | 3 calls, no_feasible_plan
-  dev-04            5 calls, completed | 5 calls, completed | 5 calls, completed
+  as merged, dde58f3:
+    issue-21-charger  1 calls, waiting_user | 1 calls, waiting_user | 1 calls, waiting_user
+    dev-07            3 calls, no_feasible_plan | 3 calls, no_feasible_plan | 3 calls, no_feasible_plan
+    dev-04            5 calls, completed | 5 calls, completed | 5 calls, completed
+  after the prompt-layout change:
+    issue-21-charger  1 calls, waiting_user | 1 calls, waiting_user | 1 calls, waiting_user
+    dev-07            4 calls, no_feasible_plan | 4 calls, no_feasible_plan | 4 calls, no_feasible_plan
+    dev-04            5 calls, completed | 5 calls, completed | 5 calls, completed
 MATCH: ...
 ALL MATCH
 ```
@@ -269,8 +284,10 @@ unzip -oq assets/knowledge/pilot-snapshot.zip -d /tmp/agentforge-snapshot
 
 ```bash
 git checkout cc6059d
-# Keep the portable Miniconda path from main so any TACC account can install harness deps (not part of freeze.json)
-git checkout main -- deploy/tacc/service/agent-e2e/job.sh deploy/tacc/service/app-service/harness-lib.sh
+# Keep from main (none of these is in freeze.json): the portable Miniconda path, so any TACC account can install
+# harness deps, and the model service's node exclusions (10-0-4-10 was added after the freeze, see Limitations)
+git checkout main -- deploy/tacc/service/agent-e2e/job.sh deploy/tacc/service/app-service/harness-lib.sh \
+  deploy/tacc/service/qwen-service/tuxiv.conf
 .venv/bin/python -m evaluations.freeze check      # expected: "matches the freeze"
 ```
 
@@ -352,9 +369,9 @@ Then follow [deploy/tacc/private-vllm/README.md](deploy/tacc/private-vllm/README
 
 ## Step 4: rerun the post-freeze replays on TACC (C7)
 
-The replay command is in [MAIN_REPLAY.md](docs/experiments/2026-11-17-agent-finalization/MAIN_REPLAY.md) (`scripts/replay_agent_finalization.py`; use `.venv/bin/python` where it says `agent/.venv/bin/python`). It needs a running model service (Step 2) reachable through `--base-url` or `--address-file`, and runs dev-07, dev-04 and the original issue #21 charger request 3 times each on current `main`. The documented run used vLLM in eager mode, so compare call counts and end states, not latency. To reach the service from your machine, forward a local port to the address in `$TACC_USERDIR/tacc-agentforge-service/service-url.txt`, for example `ssh -N -L 18084:<node IP>:8000 <TACC username>@gw.turing.ust.hk -p 30041`, and pass `--base-url http://127.0.0.1:18084/v1`.
+The replay command is in [MAIN_REPLAY.md](docs/experiments/2026-11-17-agent-finalization/MAIN_REPLAY.md) (`scripts/replay_agent_finalization.py`; use `.venv/bin/python` where it says `agent/.venv/bin/python`). It needs a running model service (Step 2) reachable through `--base-url` or `--address-file`, and runs dev-07, dev-04 and the original issue #21 charger request 3 times each on current `main`. Compare call counts and end states, not latency (the first documented run used vLLM in eager mode). **Expected on current `main`:** issue-21-charger 1 call, `waiting_user`; dev-07 4 calls, `no_feasible_plan`; dev-04 5 calls, `completed`. dev-07 took 3 calls before the prompt-layout change of 2026-11-21 (MAIN_REPLAY.md); to reproduce that number, check out the commit before it. To reach the service from your machine, forward a local port to the address in `$TACC_USERDIR/tacc-agentforge-service/service-url.txt`, for example `ssh -N -L 18084:<node IP>:8000 <TACC username>@gw.turing.ust.hk -p 30041`, and pass `--base-url http://127.0.0.1:18084/v1`.
 
-Our check from a fresh clone on 2026-11-19 (service job 29905, CUDA graphs) gave the same call counts and end states in all 9 runs: issue-21-charger 1 call, `waiting_user`; dev-07 3 calls, `no_feasible_plan`; dev-04 5 calls, `completed`.
+Our check from a fresh clone on 2026-11-19 (service job 29905, CUDA graphs, before the prompt-layout change) gave the documented call counts and end states in all 9 runs: issue-21-charger 1 call, `waiting_user`; dev-07 3 calls, `no_feasible_plan`; dev-04 5 calls, `completed`. After the change, on 2026-11-21 (service job 30320, CUDA graphs), all 9 runs gave 1 / 4 / 5 calls with the same end states, and the scorer accepted all six dev runs (`main-prefix-layout-replay.json`).
 
 ## Step 5: rerun the SFT pilot on TACC (C6)
 
@@ -388,7 +405,7 @@ A new run needs a model endpoint (`BENCHMARK_BASE_URL` or `BENCHMARK_ADDRESS_FIL
 | Model serving on TACC (vLLM, 2 GPUs, hourly handover between jobs) | Done; measured in [the runbook](deploy/tacc/service/RUNBOOK.md) |
 | Knowledge base (SerpApi collection, versioned snapshots, retrieval tools) | Done; 4 categories in the evaluated snapshot |
 | Agent loop, tools, exact budget validator, pause and resume | Done |
-| Browser page and backend | Done (in-cluster deployment); a separate public cloud deployment is on the [`feat/cloud-agent-service`](https://github.com/atlasmarkz/tacc-agentforge/tree/feat/cloud-agent-service) branch and is not part of the evaluation |
+| Browser page and backend | Done (in-cluster deployment). The public cloud deployment (https://tacc-agentforge.pages.dev, branch [`feat/cloud-agent-service`](https://github.com/atlasmarkz/tacc-agentforge/tree/feat/cloud-agent-service)) adds a 7-category catalog and live web search; not evaluated |
 | Evaluation: cases, independent ground truth, frozen baselines | Done (C1–C3) |
 | Serving experiments, private vLLM build and MTP fix | Done (C4–C5); n-gram speculation was not retested after the fix |
 | SFT | Pilot only (C6); no end-to-end evaluation of the adapter |
@@ -401,7 +418,7 @@ A new run needs a model endpoint (`BENCHMARK_BASE_URL` or `BENCHMARK_ADDRESS_FIL
 - **Step 1 is exact.** Rescoring and report generation are deterministic (the bootstrap is seeded), so the script must print `ALL MATCH`.
 - **A TACC rerun of the agent will not give identical counts.** All configurations use temperature 0, but vLLM batching and prefix-cache state are not bit-deterministic, so individual multi-step (B3/B3v) attempts can change. We expect, but have not measured across reruns, that held-out TSRs stay within the reported per-case 95% intervals; for example, the interval for B3v (42/96) is 0.28–0.60.
 - **Latency and throughput depend on the node.** GPU model and co-located jobs vary across TACC nodes; the logs suggest RTX 3090-class GPUs with about 23.7 GiB. Compare relative changes within one job, not absolute numbers across jobs. The serving report marks changes under 3% as "~same". C5 has one measurement per cell.
-- **TACC node quirks are handled in the job scripts.** All GPU jobs exclude 10-0-1-10 and 10-0-1-11, whose GPUs are held by processes outside Slurm. On the other `-11` nodes Slurm assigns GPU IDs 2,3 while the job sees 0,1; the job scripts renumber them (log line `CUDA_VISIBLE_DEVICES 2 3 is outside the 2 visible GPUs; using 0,1`). Before this fix, which the 2026-11-19 check added to the serving-experiment, SFT-serving and private-vLLM jobs, every variant there failed with `NVMLError_InvalidArgument`. If a job log says `GPUs already in use by processes outside this job`, another node has the same problem: submit again, and Slurm usually picks another node.
+- **TACC node quirks are handled in the job scripts.** The GPU jobs exclude 10-0-1-10, 10-0-1-11 and 10-0-4-10, whose GPUs are held by processes outside Slurm (10-0-4-10 was added on 2026-11-21 after several service jobs in a row failed there). On the other `-11` nodes Slurm assigns GPU IDs 2,3 while the job sees 0,1; the job scripts renumber them (log line `CUDA_VISIBLE_DEVICES 2 3 is outside the 2 visible GPUs; using 0,1`). Before this fix, which the 2026-11-19 check added to the serving-experiment, SFT-serving and private-vLLM jobs, every variant there failed with `NVMLError_InvalidArgument`. If a job log says `GPUs already in use by processes outside this job`, another node has the same problem. Resubmitting often lands on the same node again, so add that node to the `exclude` line of the job's `tuxiv.conf` (or pass `--exclude=` with the full list, since a command-line `--exclude` replaces the one in the script) and submit again.
 - **The model-call limit dominates the frozen system's failures** (C3, issue #21). There, the agent does not know how many calls it has left, and paginated searches that include unknown-price items keep it searching. The fix on `main` (C7) is supported only by 9 targeted replays, not by a held-out rerun.
 - **Correctness is relative to the frozen snapshot**, not to the real world. All 251 offers have unknown tax, so budgets are compared before tax. Known data errors in the snapshot carry over into the ground truth ([evaluations/README.md](evaluations/README.md) §4).
 - **The validator checks money, not requirements.** It approved three B3v plans even though a required attribute was unknown (baseline report §6).

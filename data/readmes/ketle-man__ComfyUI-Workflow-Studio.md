@@ -23,7 +23,7 @@ A comprehensive workflow, asset management, and generation UI plugin for [ComfyU
 - Built-in AI tools (translation and more)
 
 ![Workflow Studio](https://img.shields.io/badge/ComfyUI-Custom_Node-blue)
-![Version](https://img.shields.io/badge/version-0.10.4-green)
+![Version](https://img.shields.io/badge/version-0.10.5-green)
 
 ## Screenshots
 
@@ -440,7 +440,7 @@ An experimental batch generator: runs the workflow currently loaded in GenerateU
 </details>
 
 <details>
-<summary><h3>Game Tab (v0.10.0 – v0.10.3, experimental)</h3></summary>
+<summary><h3>Game Tab (v0.10.0 – v0.10.5, experimental)</h3></summary>
 
 - **Game list and How to play** — the left pane lists the game titles; the selected game's overview, controls and image timing are in a collapsible "About" section at the top of the Result tab
 - **Play, then generate** — a tab for mini games that end in image generation. The games come from a separate pack, [ComfyUI-WFS-Games](https://github.com/ketle-man/ComfyUI-WFS-Games); the tab appears only when the pack is installed (Workflow Studio checks `/wfs_games/manifest` on start), so without it nothing changes
@@ -451,5 +451,5 @@ An experimental batch generator: runs the workflow currently loaded in GenerateU
 - **Smash Heart** (fifth game, pack v0.4.0) — a 1980s-style tennis game seen from behind your court. Nanami plays 5 rivals with different styles on their own courts; 4 games per match (2-2 is a draw: rematch or quit), aim with ← → at contact, deep shots, drop shots and lobs. No music: recorded sounds and the umpire's calls by speech synthesis
 - **Shutter Heart** (seventh game, pack v0.5.0) — a photographer game: the framing you set with the viewfinder (zoom, tilt, camera height), the shooting spot you pick and Yui's random pose and expression become the image prompt. Time the shutter to her biorhythm for a BEST SHOT; the best photo you pick and the worst photo of the stage are both generated
 - **Dungeon Heart** (eighth game, pack v0.5.0, built with three.js) — a first-person 3D dungeon RPG with turn-based command battles and magic. Sera explores 5 floors with hidden walls, pitfalls, spinning floors and Mimics; equipment (bikini armors, robes, weapons, accessories) is put on automatically and changes her pixel portrait and the generated picture, and gear that suits the floor raises the critical chance. Save at fountains, retry from the last save
-- **Knight Heart** (sixth game, pack v0.4.0) — a 1980s-style side-scrolling action game built around steps and speed. Apprentice knight Kanon runs, jumps and throws her weapon through 5 stages with bosses: momentum that carries after a downhill run, slopes that speed you up or slow you down, a slide that ploughs through small enemies, ramps, armor that breaks on the first hit and a VITA gauge refilled by fruit. Boss rooms have platforms and telegraphed attacks; you can throw straight up / down, and retry the stage on game over
-- **An image at every stage clear** — a card is added to the Result panel and a victory shot of Rina with that stage in the background is generated in the background while you keep playing (one at a time, in order). Five flashing enemies per stage drop hearts; catch all 5 and that stage's image becomes a private photo of Rina instead (more casual clothes each stage, up to a swimsuit — the game adds negative tags so it goes no further). Clearing all 5 stages adds the ending scene; a 
+- **Variant Heart** (ninth game, pack v0.6.0) — an all-direction shooter where the transforming mech, enemies, bosses and scenery are all drawn with voxel sprite stacking. Tsubasa's XV-7 Swallow switches between fighter mode (fast, steered with ← → only; machine gun and lock-on homing missiles) and robot mode (slow but sturdy; piercing beam rifle and a 3-hit beam saber that cuts bullets), morphing part by part. 5 stages from the sea to orbit, where enemies rise from deep space and the flagship fires giant beams fore and aft. The stage image includes the weapon that finished the boss; continue from the stage on game over
+- **Knight Heart** (sixth game, pack v0.4.0) — a 1980s-style side-scrolling action game built around steps and speed. Apprentice knight Kanon runs, jumps and throws her weapon through 5 stages with bosses: momentum that carries after a downhill run, slopes that speed you up or slow you down, a slide that ploughs through small enemies, ramps, armor that breaks on the first hit and a VITA ga

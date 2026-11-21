@@ -172,6 +172,10 @@ requirements.txt      Python dependencies
 
 Next steps include a verified AI tool loop, isolated per-run workspaces, persistent run history, authentication, and repository integration.
 
+## License
+
+Original contributions controlled by the copyright holder are offered under the [Apache License, Version 2.0](LICENSE) for new distributions. The [previous MIT license](LICENSES/MIT-previous.txt) and prior grants remain valid. See [NOTICE](NOTICE).
+
 ## Author
 
 Built by **Ayush Raj** at **IIT Patna**, studying BS in Computer Science & Data Analytics. The project earned **3rd place at the Hack-N-Tech 24-hour hackathon** during its author's first year.

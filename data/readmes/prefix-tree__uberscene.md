@@ -3,7 +3,7 @@
 <h1 align="center">UberScene</h1>
 
 <p align="center">
-  <b>A React library for making videos and building editors around them.</b>
+  <b>A whole multimedia pipeline written as code.</b>
 </p>
 
 <p align="center">
@@ -25,8 +25,18 @@
 
 ---
 
-UberScene is a React library where one TSX file is the video: clips, captions, audio, transitions, effects, and any
-React, Motion or three.js on top. Play it in the browser, adjust it on a timeline, export it to MP4.
+> [!WARNING]
+> **Work in progress.** UberScene is early. The API is still being shaped and changes between releases, often in
+> breaking ways, and will keep changing until 1.0. Each release's changelog says how to move a file, and
+> `uberscene lint --fix` moves most of it for you.
+
+UberScene is a React library for making videos and building editors around them. One TSX file is the video: clips,
+captions, audio, transitions, effects, and any React, Motion or three.js on top. Play it in the browser, adjust it on a timeline, export it to MP4.
+
+<p align="center">
+  <a href="https://uberscene.prefixtree.xyz/examples/coffee"><img src="docs/public/readme/coffee.gif" width="640" alt="The coffee film: an espresso pours under FAST SHOT, a Warm LUT badge comes in as the grade warms, then three glasses under EVERY GLASS, A LINE OF CODE"></a>
+  <br><sub><b>The coffee film</b>, four stock shots cut in one TSX file. <a href="https://uberscene.prefixtree.xyz/examples/coffee">Watch it with sound →</a></sub>
+</p>
 
 ## Why
 
@@ -34,12 +44,21 @@ React, Motion or three.js on top. Play it in the browser, adjust it on a timelin
 - **Models write code, not math.** Cuts name a transcript word or a camera shot (`in="word:12"`), not seconds, and
   UberScene works out every frame.
 - **One file, every editor.** Your agent edits the text, you edit on a timeline; both change the same file, with undo.
+- **No FFmpeg.** The export draws and encodes in headless Chrome, with nothing else to install.
 - **MIT.** No paid tier, no watermark.
+
+### Native codecs (experimental)
+
+UberScene can also decode footage and encode the export with its own codecs, written in Rust on FilmCraft's
+[craft-video, craft-media and craft-audio](https://github.com/storytold/craft-libs). They decode H.264, HEVC, VP8,
+VP9, AV1, ProRes and DNxHR, and encode H.264, ProRes and the soundtrack, still with no FFmpeg and no C libraries. They
+are off unless `UBERSCENE_CODECS` turns them on, are built from source for now, and Chrome stays the default.
+[Native codecs](https://uberscene.prefixtree.xyz/guide/native-codecs) has the details.
 
 ## Aim
 
-> **A whole multimedia pipeline written as code.** Agents work better with code than with ffmpeg flags or a mouse,
-> so the video, its graphics and its 3D scenes all live in one file.
+Agents work better with code than with ffmpeg flags or a mouse, so the video, its graphics and its 3D scenes all live
+in one file.
 
 ```mermaid
 flowchart LR
@@ -112,6 +131,23 @@ export default function Video({ product, founder, accent }) {
 ```
 
 Trim `talk` and every callout moves with its word. Full file: [`examples/showcase/launch.tsx`](examples/showcase/launch.tsx).
+
+## Editor
+
+<p align="center">
+  <img src="docs/public/readme/editor.webp" width="820" alt="The UberScene editor: layers on the left, the title A video is a file in the preview, its fields in the inspector, and the titles as bars on a timeline">
+</p>
+
+A video editor built from [shadcn/ui](https://ui.shadcn.com) components, copied into your app as source you own:
+
+```sh
+npx shadcn add https://uberscene.prefixtree.xyz/r/editor.json
+```
+
+Drag a bar to move it, drag its end to trim it, or type in the inspector. Every edit can be undone, and each one lands
+in the file as the one value it changed.
+
+[Try it](https://uberscene.prefixtree.xyz/editor/) or read [the shadcn editor](https://uberscene.prefixtree.xyz/guide/editor).
 
 ## License
 

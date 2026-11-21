@@ -76,6 +76,15 @@ individual Dogwood decisions. To apply a policy to file operations, use the
 interpreters and keep those files out of the agent's direct grants. See
 [filesystem access](docs/user/security.md) and [policy](docs/user/policy.md).
 
+## The `box` command-line tool
+
+`box` runs a coding agent, such as Claude Code, Codex, or Kiro, in a box set up from a profile.
+A profile names the agent, its tools, and what it may reach, and `box` turns it into the box's
+configuration and policies on each run. Its source is in [`crates/cli/`](crates/cli/), with the
+packs, policies, and starters it ships in [`resources/`](resources/). Its user guide starts at
+[docs/cli/README.md](docs/cli/README.md). To install it, follow [Install Box](docs/cli/install.md).
+To build it, run `just build-cli`; the programs are in `target/debug`.
+
 ## Use Box as a Rust library
 
 Link the `strands-box` package in `crates/box`, then call:
@@ -265,9 +274,10 @@ for the offline dependency guards.
 Common tasks run through [`just`](https://github.com/casey/just):
 
 ```sh
-just build         # the CLI, the alias image, and the containment trampoline
-just test          # workspace tests
-just check         # pre-push gate: fmt-check + clippy + test
+just build         # strands-box, the alias image, and the containment trampoline
+just build-cli     # the box CLI and the Box Core binaries it runs
+just test          # build-cli, then the workspace tests
+just check         # pre-push gate: fmt-check + clippy + prose + test
 just test-all      # workspace tests and box example checks
 ```
 
@@ -299,7 +309,7 @@ cargo test --locked -p strands-box --no-default-features --test box_killed_run -
 ```
 
 On Linux, follow the namespace and launcher-image setup in the
-[`history-persistence` workflow job](.github/workflows/rust-test-lint.yml) before running the tests.
+history persistence steps of the [`unit-test` workflow job](.github/workflows/rust-test-lint.yml) before running the tests.
 
 In pull-request CI, changes to `docs/site-manifest.json`,
 `docs/site-manifest-retirements.json`, or a publishable page under `docs/user/` run the focused
@@ -312,7 +322,8 @@ is removed.
 Run `python3 -m unittest discover -s scripts -p 'test_*.py' -v` to test release packaging and the downloader.
 Continuous integration runs the downloader tests on Linux and macOS. These tests use local fixture archives
 and simulated HTTP clients; they do not qualify a published binary or its containment behavior.
-The [release guide](docs/dev/releases.md#rehearse) describes the architecture and system-library checks for Linux ARM64 and x86-64 packages.
+The [release guide](docs/dev/releases.md#rehearse) describes the architecture, system-library, and packaged-workload checks for Linux ARM64 and x86-64.
+Both Linux build jobs must pass the packaged-workload checks before publication.
 On Linux, the mount test requires util-linux and permission to create a user and mount namespace.
 It creates a `noexec` temporary mount only inside the test process's private namespace.
 

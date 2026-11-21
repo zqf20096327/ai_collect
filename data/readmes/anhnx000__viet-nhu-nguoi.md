@@ -1,6 +1,6 @@
-# Viết như người
+# Viết như người · Vietnamese Humanizer
 
-Skill cho Claude Code, Codex, Cursor: nhờ AI viết tiếng Việt mà đọc lên vẫn ra giọng mình. Bỏ câu sáo, xưng hô đúng vai, số liệu đưa sao để vậy.
+Skill cho Claude Code, Codex, Cursor: nhờ AI viết tiếng Việt mà đọc lên vẫn ra giọng mình. Bỏ câu sáo, xưng hô đúng vai, số liệu đưa sao để vậy. Bản mới nhất đã chạy 76 đề thử trên cả Claude lẫn Codex, [kết quả ở dưới](#đo-bằng-bộ-đề).
 
 [![test](https://github.com/anhnx000/viet-nhu-nguoi/actions/workflows/test.yml/badge.svg)](https://github.com/anhnx000/viet-nhu-nguoi/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -61,7 +61,7 @@ Xong thì kiểm tra có `SKILL.md` trong thư mục đích, báo đường dẫ
 
 ## Cách dùng
 
-Cứ nói như nhờ đồng nghiệp.
+Cứ nói như nhờ đồng nghiệp. Cùng một đoạn, “sửa để mình gửi” sẽ trả bản dùng ngay, còn “chỉ soi giúp” sẽ chỉ ra câu gượng và dẫn số mục. Skill tự chọn hướng dẫn theo lời nhờ.
 
 | Gõ thế này | Skill làm gì |
 | --- | --- |
@@ -78,10 +78,11 @@ Nhờ soạn thứ gì đứng tên bạn thì skill tự bật. Gõ `/viet-nhu-
 <summary>Mẹo dùng</summary>
 
 - Nói rõ ai đọc và vai vế: "gửi chị trưởng phòng, xưng em" ra email khác hẳn "gửi khách hàng, xưng chúng tôi".
-- Dán kèm một đoạn bạn tự viết cùng loại, skill học nhịp câu và chữ bạn hay dùng.
+- Dán kèm một đoạn bạn tự viết cùng loại. Muốn dùng lại ở phiên sau, nhờ lưu giọng vào một file Markdown. Lần sau đưa đường dẫn đó cùng dữ kiện của bài mới.
 - Số liệu, tên, ngày tháng đưa bản thật, thiếu thì skill hỏi lại.
 - Câu nào không giống mình thì bảo "mình không nói thế", skill nhớ tới hết cuộc trò chuyện.
 - Bài bạn tự viết thì skill chỉ sửa nhẹ.
+- Tin nhắn, bình luận, bài chê do bạn tự viết thì giữ nguyên chữ viết thường, viết tắt và độ gắt. Skill chỉ bỏ lời chatbot còn sót, như "Chắc chắn rồi! Đây là bài review...".
 
 </details>
 
@@ -158,6 +159,19 @@ Dấu hiệu xếp theo nhóm, nhóm nào cũng kèm số dòng và cụm bị b
 
 </details>
 
+## Đo bằng bộ đề
+
+Mỗi bản chạy lại 63 đề thường gặp và 13 đề để riêng (không dùng để chỉnh skill), mỗi đề trong một thư mục tạm chỉ có skill và file đầu vào. Script chấm phần đếm được: cụm phải giữ, số liệu tự thêm, số chữ, số câu hỏi lại, điểm của bộ kiểm tra. Phần còn lại đọc tay. Một bộ 73 lời nhờ khác thử xem skill có tự bật đúng lúc không, kể cả không bật cho câu hỏi về code hay kiến thức.
+
+| Bản 2.13.0, Opus và GPT mức medium | Claude Code | Codex |
+| --- | --- | --- |
+| 63 đề thường gặp | 60/63 | 59/63 |
+| 13 đề để riêng | 10/13 | 10/13 |
+| Tự bật khi nên bật | 68/68 lượt | 104/104 lượt |
+| Bật nhầm | 0/63 lượt | 2/83 lượt |
+
+Đề trượt và câu trả lời của từng đề ghi ở [evals/README.md](evals/README.md), lệnh chạy lại cũng ở đó. Bộ kiểm tra chỉ đếm dấu hiệu bề mặt: với tin tức do AI viết lại, nó vẫn bỏ sót hơn một nửa.
+
 ## Dấu hiệu văn AI
 
 Danh mục dấu hiệu vẫn đang thêm dần, cái nào cũng kèm ví dụ trước và sau ([xem đủ](skills/viet-nhu-nguoi/references/patterns.md)). Mấy cái hay gặp trong tiếng Việt:
@@ -192,9 +206,9 @@ Tin nhắn thì icon, kiểu cười, viết tắt học từ 30 lượt chat g�
 </details>
 
 <details>
-<summary>Bộ kiểm tra và script so dữ kiện</summary>
+<summary>Tra dấu hiệu, quét file và so dữ kiện</summary>
 
-Hai script chỉ dùng thư viện chuẩn của Python. `scan.py` chấm file `.md`, `.txt`, `.pptx`:
+Từ thư mục repo, chạy `python3 -I skills/viet-nhu-nguoi/scripts/patterns.py 46` để lấy ví dụ ở mục 46. Thay số bằng chữ `H` để tra nhóm slide, bỏ đối số để xem các tiêu đề. Các script chỉ dùng thư viện chuẩn của Python. `scan.py` chấm file `.md`, `.txt`, `.pptx`:
 
 ```bash
 python3 -I skills/viet-nhu-nguoi/scripts/scan.py file.md
@@ -240,12 +254,16 @@ Gặp câu AI tiếng Việt skill chưa bắt, hay skill sửa hỏng một câ
 
 ```text
 skills/viet-nhu-nguoi/
-├── SKILL.md                 quy tắc chính, trợ lý đọc mỗi lần dùng skill
-├── references/patterns.md   các dấu hiệu, ví dụ trước/sau
-├── references/slides.md     slide, lời thuyết trình
-├── references/chat.md       tin nhắn theo giọng người dùng
-├── references/spoken.md     trợ từ, lời nhờ, lời hứa
-├── references/sources.md    nguồn tham khảo
+├── SKILL.md                 quy tắc chung và bảng chọn theo lời nhờ
+├── references/
+│   ├── draft.md, edit*.md, review.md       viết mới, sửa, soi lỗi
+│   ├── patterns.md                        tra dấu hiệu theo số mục
+│   ├── voice.md, spoken.md                mẫu giọng, lời thoại và lời họp
+│   ├── vietnamese.md, long-form.md        văn dịch, bài dài
+│   ├── chat*.md                           nhắn tin, đổi người nhận, giọng miền
+│   ├── slides*.md                         soạn slide, soát file, đọc thử
+│   └── sources.md                         nguồn và bảng đối chiếu 20 repo
+├── scripts/patterns.py      tra ví dụ theo số mục hoặc nhóm
 ├── scripts/scan.py          bộ kiểm tra, thang điểm 0-100
 ├── scripts/check_facts.py   so dữ kiện giữa hai bản
 └── scripts/slides.py        đọc chữ và ghi chú trong .pptx

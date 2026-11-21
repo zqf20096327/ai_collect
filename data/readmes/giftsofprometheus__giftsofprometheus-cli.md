@@ -49,6 +49,8 @@ giftsofprometheus feed                              # подборка по ва
 
 Для транскриптов, избранного и ленты нужен бесплатный аккаунт: [войдите на сайте](https://giftsofprometheus.com/login?utm_source=github&utm_medium=readme&utm_campaign=cli) по ссылке из письма, без пароля. `login` подключает к этому аккаунту устройство через подтверждение в браузере, токены копировать не нужно. Сессия живёт 30 дней и хранится в `$XDG_CONFIG_HOME/giftsofprometheus/credentials.json` (по умолчанию `~/.config/giftsofprometheus/`), читать её можете только вы. В [кабинете](https://giftsofprometheus.com/account?utm_source=github&utm_medium=readme&utm_campaign=cli) видны все подключённые устройства, любое можно отключить. `giftsofprometheus logout` отключает текущее.
 
+В той же папке лежит `client.json` со случайным идентификатором установки. CLI отправляет его заголовком `X-Client-Id`, чтобы сервис считал запросы без входа одним клиентом в аналитике. С аккаунтом он не связан, удалите файл, чтобы получить новый.
+
 ## Для AI-агентов: Claude Code, Codex, Cursor
 
 В репозитории есть skill: он объясняет агенту, когда и как пользоваться CLI. Поставить его можно через [skills](https://skills.sh):

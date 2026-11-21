@@ -161,41 +161,50 @@ AI.
 
 <img src="assets/readme/road.jpg" width="100%" alt="Stepping stones made of constellations leading across dark water to a lighthouse">
 
-*Research snapshot: 25 October 2026, 16:45 UTC. Figures are measured and author-checked;
-no independently adjudicated replication or scientific sense admission is claimed.*
+*Research snapshot: 21 November 2026. Figures are measured and author-checked;
+no independently adjudicated replication is claimed.*
+
+**One checkable claim first.** Since 7 November 2026 the work is narrowed to a single test:
+in court opinions, given the text up to a citing sentence, name the authority cited next.
+JIK answers with the address of a real stored authority. The comparison is a token transformer
+trained from scratch on the same documents with the same compute, which writes the next
+sentence and is read for its citations. Both are scored by one unchanged scorer on 49,978
+events never used for development, with checks declared before each scoring.
+
+| On 49,978 query events | JIK, whole memory (v12) | JIK, atoms only (v12-atoms) | Matched token model |
+|---|---|---|---|
+| First answer right | **45.9 %** | **32.7 %** | 17.9 % |
+| Right answer in the top ten | **63.5 %** | **51.7 %** | 20.3 % |
+| Selective score at confidence 0.5 | **0.284** | **0.117** | 0.100 |
+| Selective score at confidence 0.8 | **0.147** | 0.032 | 0.066 |
+
+The result holds again on 35,418 further unseen events (46.4 % and 31.7 % first answer).
+The atoms-only model keeps no stored sentence, no word lookup and no document: its memory is
+one learned point per authority per sense, 155,109 authorities in 238 MB. It beats the token model
+on everything except the strictest confidence cutoff. It is right more often but knows
+it less well.
 
 | | What it can do |
 |---|---|
 | **Works** | Take in a 115,053-record legal corpus (8.19 million atoms) without loss, split by case with no leakage. |
-| | Read all 6.36 million distinct inputs with six instruments and prove every reading from the stored bytes. |
-| | Build six full association graphs (381.6 million typed edges) and walk typed evidence paths. |
-| | Train a region codebook on the full training split without collapse (13–33 % better reconstruction than constant baselines). |
-| | Complete surface-decoder training on 6,547,176 TRAIN atoms over 51,150 updates. |
-| | Complete 91,540 document updates in the shared placement arm. |
-| | Execute a full 3,210-atom CPU optimizer update and exactly reproduce the named restart proof. |
-| **Partly** | On 6,434 unseen-in-TRAIN atom identities, teacher-forced byte loss is 2.169 nats with correct readings versus 3.971 with shuffled readings; 6,424 favor correct conditioning, but none reconstruct exactly. The evaluation documents were already exposed development probes. |
-| | Four of six source/split groups beat all five declared region-probability baselines. Autonomous native-output scores still lose to simple controls. |
-| | In the same small predicted-input probe, valid UTF-8 plus atom EOS rises from 0/16 to 14/16. These repeat two target atoms across eight proposals; none establishes a correct complete answer. |
+| | Read every sentence with 18 frozen instruments and prove every reading from the stored bytes. |
+| | Answer the next citation better than a matched token model, from its whole memory or from atoms alone (above). |
+| | Show where training is needed: the step from what was just said to what is cited next. A closed-form map gets 1.6 %, the trained step 29.4 %. |
+| **Partly** | Senses: three to four instruments pass the differentiation contract when measured inside the model (a word lookup, the trained constellation, counted context atoms, the association walk). Five is the floor, so no meaning is asserted yet. |
+| | A small kernel: no subset of stored rows answers like the whole store (best 0.67 agreement against the 0.95 gate). The atoms are the new candidate kernel. Fitted to 48 bytes per authority, they keep 71 % of their accuracy. |
 | **Not yet** | Produce useful complete free-text answers with a calibrated per-slot guard. |
 | | Hold quality when reading its own generated output. |
-| | Admit any instrument as a sense under the contract above. Until five pass, no meaning is asserted. |
-| | Calibrate the output guard; learn the Identity Loop inside the model. |
+| | Learn the Identity Loop inside the model. |
 
-**Current work:** own-slot placement is running; whole-proposal and complete-answer
-comparisons remain downstream. Larger correction training, native output guards and
-full-task CUDA free rendering are queued stages, not completed capability results.
-Sense admission, integrated native-media learning and the complete continuous-learning
-cycle remain open.
+**Current work (v13):** atoms trained until they stop improving, on all 18 instruments; each
+instrument's atoms answering on its own, so agreement across them can show when the model is sure;
+and byte codes for the atoms learned during training instead of after it. The checks were
+declared before any reading.
 
-**A concrete example:** a 13-byte TRAIN-present atom, `Per Curiam.\n\n`, reconstructs
-exactly from its true readings. Predicted readings can still produce repetition such as
-"The court the court the court." Text completion and correctness are separate results.
-The previous 132/170 stopping figure came from a reference-length-bounded observer;
-it does not establish autonomous complete-answer generation.
-
-The [machine-readable research snapshot](assets/readme/research-status-2026-10-25.json)
-records these scopes and retained-report digests. It is a public summary of author-checked
-receipts, not a redistribution of the private evidence archive or an independent reproduction.
+Earlier figures (October 2026 decoder and placement work) are in the
+[research snapshot of 25 October](assets/readme/research-status-2026-10-25.json). It is a public
+summary of author-checked receipts, not a redistribution of the private evidence archive or an
+independent reproduction.
 
 ## Repository map
 

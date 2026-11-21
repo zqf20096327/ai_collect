@@ -1,5 +1,7 @@
 # ssd-llm 🚀
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/redbasecap)
+
 **Run 70B+ LLMs on Apple Silicon by using SSD as extended memory.**
 
 Intelligent layer streaming and caching for Mac — no need for 128GB RAM.

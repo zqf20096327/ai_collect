@@ -21,7 +21,7 @@ models, and one OpenAI- and Anthropic-compatible endpoint on top.
 ![Quick tour: Flow Visualizer, model editor, hardware placement, downloads, tests, launch, and themes](docs/img/tour.gif)
 
 - **Good fit:** spare GPUs across a few boxes, mixed OSes, one endpoint,
-  stock llama.cpp flags, per-user model access.
+  stock llama.cpp flags, per-user model access and request limits.
 - **Not the goal:** public multi-tenant serving, a new inference runtime,
   or automatic device discovery with its own scheduler. The farm drives
   stock llama.cpp builds; placement stays explicit and visible.
@@ -156,12 +156,22 @@ reports anything still missing. Full walkthrough:
 
 > **LAN/VPN only.** llama.cpp's RPC server is unauthenticated by design.
 > Keep RPC ports, the UI, and the gateway on a trusted network or VPN — do
-> not port-forward them to the internet. Details: **[SECURITY.md](SECURITY.md)**.
+> not port-forward them to the internet. The optional
+> **[secure RPC transport](docs/secure-rpc.md)** wraps RPC in mutual TLS
+> without changing llama.cpp or the existing port allocation. Details:
+> **[SECURITY.md](SECURITY.md)** · [reverse-proxy.md](docs/reverse-proxy.md).
 
 **No cluster yet?** Run it solo on one machine first — one GPU, several
 GPUs, or CPU/RAM only. The same UI, model configs, and endpoint work when
 you add peers later; nothing needs to be rebuilt. A two-machine test path
 is in **[docs/examples.md](docs/examples.md)**.
+
+For models that fit on one machine, the model editor can **load balance
+full replicas**: select hardware across two or more machines, enable load
+balance, and the farm runs one complete copy per machine, keeps them warm,
+and distributes requests through the same public model name on `:8090`
+instead of splitting the model with RPC. Details:
+**[docs/models-and-variants.md](docs/models-and-variants.md)**.
 
 ### Let your AI agent do it
 
@@ -177,7 +187,8 @@ This repo ships an agent playbook (`AGENTS.md`). Tell your coding agent:
 Point any OpenAI- or Anthropic-compatible client at the gateway (`:8090`)
 or llama-swap directly (`:8080`). The in-app **Connect** tab generates
 copyable configs and can test the endpoint. Keys, per-user model grants,
-and client configs: **[docs/access.md](docs/access.md)**.
+optional daily/weekly/monthly request limits, and client configs:
+**[docs/access.md](docs/access.md)**.
 
 ```bash
 curl http://<master-ip>:8090/v1/chat/completions \
@@ -281,6 +292,7 @@ control over where every layer runs. More:
 |-----|----------------|
 | [docs/quickstart.md](docs/quickstart.md) | One-command demo, Docker profiles, starter recipes |
 | [docs/setup.md](docs/setup.md) | Step-by-step install, machines, stores, engines, clients |
+| [docs/model-loading.md](docs/model-loading.md) | **How a model can load**: single machine, remote-local, RPC split, load-balanced replicas |
 | [docs/topologies.md](docs/topologies.md) | Single-box, RPC, peer-local, custom, MLX; recipes and anti-patterns |
 | [docs/access.md](docs/access.md) | Users, API keys, per-key model grants, gateway, client config |
 | [docs/benchmarks.md](docs/benchmarks.md) | Real measured runs, reproduction, submit your numbers |
@@ -291,6 +303,8 @@ control over where every layer runs. More:
 | [docs/configuration.md](docs/configuration.md) | Every config file, what owns it — incl. `storage_mode` / model sync and engine selection |
 | [docs/api.md](docs/api.md) | Full HTTP/WebSocket endpoint reference |
 | [docs/distribution.md](docs/distribution.md) | Docker/GHCR, Homebrew, winget, Proxmox, Unraid, CasaOS |
+| [docs/reverse-proxy.md](docs/reverse-proxy.md) | nginx TLS, trusted proxy headers, public exposure rules |
+| [docs/public-api.md](docs/public-api.md) | Tailscale or public 443 API setup (one-command nginx installer) |
 | [docs/README.md](docs/README.md) | Full documentation index |
 
 Security: **[SECURITY.md](SECURITY.md)**. Contributing:

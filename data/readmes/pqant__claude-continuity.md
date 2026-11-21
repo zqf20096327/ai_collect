@@ -41,12 +41,11 @@ The five most recent updates, newest first. Each line links to its
 commit, so you can see what changed lately without digging through the
 log:
 
-- **2026-11-19**: A warned session no longer idles on its own handoff. After the c1 rotation warning the model could write its `handoff.draft.md`, but drafts were only ever read in HANDOFF_REQUESTED, so the session waited at the prompt with a finished handoff on disk; the Stop hook now consumes a WARNED draft at turn end through the normal handoff path - a valid draft finalizes silently, an invalid one gets the usual guidance - and sessions that were never warned never rotate on a self-written draft ([commit](https://github.com/pqant/claude-continuity/commit/330d4db)).
-- **2026-11-19**: Two small observability wins for the push layer. `notify stop|notification --dry-run` renders the exact push (enabled state, title, priority and body) without sending anything or burning the one-push-per-minute bucket, and `watchdog status` now ends with a `last heartbeat: <local time> (<N>s ago)` line so a stalled daemon is visible at a glance; a missing or corrupt stamp reads `last heartbeat: never` ([commit](https://github.com/pqant/claude-continuity/commit/eb93cc1)).
-- **2026-11-18**: The rotation gate can no longer invert silently. `doctor` gained a `config-sanity` check that verifies `0 < warn_ratio <= rotate_ratio <= hard_ratio < 1`, a plausible `window_tokens` (>= 32768) and an http(s) `notify_endpoint`, naming the offending values in its detail; a typo like warn 0.80 / rotate 0.75 used to make rotations fire late or never. The check is warn-only, the values stay the user's call ([commit](https://github.com/pqant/claude-continuity/commit/c7381cc)).
-- **2026-11-18**: The session chain went machine-readable: `cc-continuity history --json` prints it as one JSON array with stable keys (`nnn`, `name`, `session_id`, `created`, `state`). The state comes from each session's `state.json` with the same fallback the status rotation line uses, a project without a record prints `[]`, and the default human output is unchanged ([commit](https://github.com/pqant/claude-continuity/commit/180b761)).
-- **2026-11-17**: The README now opens at a glance. A badges row sits under the title: live shields.io counters for forks, stars, open issues and the last commit (each links to the matching GitHub page), plus Code of conduct, Contributions and Security badges that lead straight into the community files ([commit](https://github.com/pqant/claude-continuity/commit/f642a4b)).
-
+- **2026-11-21**: The `/cc` filter now finds all seven skills. Claude Code's slash menu fuzzy-matches the command name and the description, so typing `/cc` only surfaced the five skills whose descriptions mention "cc-continuity"; `continuity-history` and `continuity-excellence` matched neither and stayed invisible. Both descriptions now carry the keyword, and a new test pins "cc-continuity" into every managed skill description, so a future skill added without it fails CI instead of vanishing from the menu ([commit](https://github.com/pqant/claude-continuity/commit/1da1264)).
+- **2026-11-21**: `/continuity-excellence` perfects a raw vague prompt before running it. Hand it a rough intent like "find the image files on my local disk" and it fills the gaps across seven dimensions (explicit goal, scope boundaries, environment and paths, constraints, output format, edge cases, success criteria), shows your original wording verbatim beside the perfected prompt as one copyable block, and asks exactly once: run it, change it, or cancel. Only the approved version ever runs, and the skill triggers only when you invoke it ([commit](https://github.com/pqant/claude-continuity/commit/108f5f8)).
+- **2026-11-21**: The README rotation GIF now plays slow enough to follow. The demo used to cycle the whole rotation story in about 2 seconds, so the `HANDOFF!`, `ROTATING` and fresh-successor frames flashed by at ~320 ms; the frames are unchanged (still every pixel from the real status line renderer, the sweep still lively), but the story frames now dwell 500-1000 ms each and the loop runs ~5 s, with a new test parsing the GIF's per-frame delays so the pacing can never silently regress ([commit](https://github.com/pqant/claude-continuity/commit/216d8db)).
+- **2026-11-21**: The `stale-locks` warning is gone for good. Doctor keeps a last-holder diagnostic file per project (dead PID, released flock) forever after the last hook event, so every abandoned project left a leftover that made `! stale-locks` a permanent line on long-lived machines; doctor now proves the flock free at the kernel level and removes the leftover itself (reported as `removed <names>`), while a lock whose flock is still actually held (the inherited-fd edge case) survives and is reported as `held: <names>` instead of being silently deleted ([commit](https://github.com/pqant/claude-continuity/commit/49862af)).
+- **2026-11-21**: Install now shows its plan before touching anything. `cc-continuity install --dry-run` prints every managed target (app copy, launcher stub, `~/.local/bin` symlink, `settings.json`, `~/.claude/CLAUDE.md`, the six skills, the login-shell rc block, `config.json`) with a create/update/unchanged/replace status and indented `+` bullets spelling out exactly what a merge would add (hook events, the chained user status line, env keys, permission rules, config keys), and it aborts with the same messages and a non-zero exit as a real run on missing prerequisites or a corrupt `settings.json`, while writing nothing ([commit](https://github.com/pqant/claude-continuity/commit/dede72d)).
 ## How it works
 
 The whole flow in one picture: the automatic session loop, the optional
@@ -54,6 +53,12 @@ watchdog, and the opt-in notifications:
 
 <img src="docs/diagrams/flow.light.anime.en.gif#gh-light-mode-only" width="800" alt="cc-continuity flow">
 <img src="docs/diagrams/flow.dark.anime.en.gif#gh-dark-mode-only" width="800" alt="cc-continuity flow">
+
+The live look of the status line itself, every frame drawn by the real
+renderer: the context-usage segment sweeping, then the rotation handoff
+moments and the fresh successor session.
+
+![Animated cc-continuity status line: the context-usage percentage segment with a shimmer sweep, then the rotation moments HANDOFF! and ROTATING as a fresh session takes over](docs/assets/cc40-statusline-rotation.gif)
 
 ## Demo
 
@@ -133,7 +138,7 @@ login shell); the full WSL guide is [`docs/WINDOWS.md`](docs/WINDOWS.md).
 The installer touches (all as identifiable managed blocks, all reversible
 via `cc-continuity uninstall`): hooks + status line in
 `~/.claude/settings.json`, a managed block in `~/.claude/CLAUDE.md`, the
-`claude()` wrapper in `~/.zshrc`, six `/continuity-*` skills, the
+`claude()` wrapper in `~/.zshrc`, seven `/continuity-*` skills, the
 `cc-continuity` launcher on PATH, and the app copy in
 `~/.claude-continuity/app/`. A timestamped backup of
 `settings.json` is written before any merge.

@@ -213,8 +213,10 @@ grab through their own agent.
 
 - a cron every minute scans new blocks for AgentHongbao events (through the `RPC_URL` secret,
   falling back to a public node) and stores packets and claims, with each claimer's name, in D1;
-- `/api/stats`, `/api/packets?limit=N` and `/api/packets/:id` serve that data, cached for 10 s;
-- the page reads these and falls back to reading the chain when the API is unavailable.
+- `/api/stats`, `/api/packets?limit=N`, `/api/r/:code` and `/api/inbox/:nameHash` (direct packets
+  addressed to a name) serve that data, cached for 10 s, with the block the index is complete up to;
+- the page and the skill's `inbox` use these and read the chain only after that block (or all of
+  it when the API is unavailable). The page reads through several public nodes, taking turns.
 - the same cron opens pending lucky slots with a keeper wallet (`KEEPER_KEY` secret, a dedicated
   wallet holding only a little BNB for gas), so grabbers need one transaction even when the local
   keeper script is not running.

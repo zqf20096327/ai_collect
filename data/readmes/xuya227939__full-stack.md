@@ -1,63 +1,68 @@
-# full-stack Quickstart Guide
+# full-stack 食用指南
 
-Language: **English (default)** | [中文](./README.zh-CN.md)
+一个基于 Next.js 16 + React 19 的全栈项目。
 
-A full-stack project based on Next.js 16 + React 19, including:
+> [!TIP]
+> **造站计划: 从第一个网站，到生产级系统**
+>
+> 从零搭建网站，学习 SEO、网站变现和用 AI 辅助创作内容。
+>
+> **[查看课程 →](https://course.jchencode.com/)**
+>
+> [![造站计划课程首页](./readme.png)](https://course.jchencode.com/)
 
-- Web frontend and API routes
-- Auth and Supabase integration
-- Stripe / Alipay payment flows
-- Email sending (Resend)
-- Cleanup scripts
-- Supabase, R2 storage, Redis support
-- SEO optimization
-- Blog and content
-- Multi-language (i18n)
+项目包含以下功能：
 
-## Website Case
+- Web 前端与 API 路由
+- 用户认证与 Supabase 数据访问
+- Stripe / 支付宝支付链路
+- 邮件发送（Resend）
+- 任务清理脚本
+- Supabase、R2 存储、Redis 等支持
+- SEO 优化
+- 博客内容
+- 多语言处理
 
-**[SnapVee](https://snapvee.com)** — Universal Social Media Content AI Parser. Extract, download, and transform content from YouTube, TikTok, Instagram, and 50+ platforms with enterprise-grade precision.
+## 网站案例
 
-![SnapVee Homepage](images/case_1.png)
+**[SnapVee](https://snapvee.com)** — 通用社媒内容 AI 解析器。从 YouTube、TikTok、Instagram 等 50+ 平台提取、下载并转换内容，具备企业级精度。
 
-**[SkillHub](https://skillforge.cc/)** — Claude Skills & GPT Skills Marketplace. Discover curated premium skills to supercharge your workflow, from writing to coding. Battle-tested prompt templates for any task.
+![SnapVee 首页](images/case_1.png)
 
-![SkillHub Homepage](images/case_2.png)
+**[SkillHub](https://skillforge.cc/)** — Claude Skills 与 GPT Skills 市场。发现精选优质技能模板，从写作到编程，一站式提升工作效率。
 
-**[出海挣美金](https://course.jchencode.com/)** — A practical course for building passive income English websites from zero. Systematized learning path covering SEO, monetization, and AI-powered content production.
+![SkillHub 首页](images/case_2.png)
 
-![出海挣美金 Course](images/case_3.png)
+**[Meshivo 3D](https://meshivo.com/)** — AI 驱动的 3D 建模平台。将文字描述转化为高质量 3D 模型，支持智能材质、一键优化及多格式导出，适用于游戏资产、产品展示与 3D 打印。
 
-**[Meshivo 3D](https://meshivo.com/)** — AI-powered 3D modeling platform. Convert text descriptions into high-quality 3D models with smart materials, one-click optimization, and multi-format export for game assets, product mockups, and 3D printing.
+![Meshivo 3D 首页](images/case_4.png)
 
-![Meshivo 3D Homepage](images/case_4.png)
-
-## 1. Requirements
+## 1. 运行环境
 
 - Node.js `>= 20.9`
-- Bun `>= 1.2.x` (recommended, project includes `bun.lock`)
-- Reachable Supabase / Redis / payment services (depends on enabled features)
+- Bun `>= 1.2.x`（推荐，项目有 `bun.lock`）
+- 可访问的 Supabase / Redis / 支付渠道（按你启用的功能决定）
 
-## 2. Quick Start (Local Dev)
+## 2. 快速开始（本地开发）
 
 ```bash
-# 1) Install dependencies
+# 1) 安装依赖
 bun install
 
-# 2) Prepare env
+# 2) 准备环境变量
 cp .env.example .env.local
 
-# 3) Start dev server (webpack by default, more stable)
+# 3) 启动开发服务（默认 webpack，稳定）
 bun run dev
 ```
 
-Then open:
+启动后访问：
 
 - `http://localhost:3000`
 
-## 3. Required Environment Variables (Minimum)
+## 3. 必备环境变量（建议先补齐）
 
-Set these first to avoid common runtime errors:
+最少建议先配置这些，不然很多接口会报错或降级：
 
 ```env
 # Auth
@@ -68,87 +73,72 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_PUBLISHABLE_DEFAULT_KEY=xxx
 SUPABASE_SERVICE_ROLE_KEY=xxx
 
-# Local callback base URL (used by payment flows)
+# 本地回调基址（支付回调会用到）
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 NEXTAUTH_URL=http://localhost:3000
 ```
 
-Optional by feature:
+按需再补：
 
-- Stripe: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_ID_*`
-- Alipay: `ALIPAY_*`
-- Email: `RESEND_API_KEY`, `SMTP_USER`, `SMTP_HOST`
-- Redis: `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`
-- R2: `CLOUDFLARE_R2_*`
+- Stripe：`STRIPE_SECRET_KEY`、`STRIPE_WEBHOOK_SECRET`、`STRIPE_PRICE_ID_*`
+- 支付宝：`ALIPAY_*`
+- 邮件：`RESEND_API_KEY`、`SMTP_USER`、`SMTP_HOST`
+- Redis：`REDIS_HOST`、`REDIS_PORT`、`REDIS_PASSWORD`
+- R2：`CLOUDFLARE_R2_*`
 
-## 4. Common Commands
+## 4. 常用命令
 
 ```bash
-# Dev (recommended)
+# 开发（推荐）
 bun run dev
 
-# Dev (Turbopack)
+# 开发（Turbopack）
 bun run dev:turbopack
 
-# Lint
+# 代码检查
 bun run lint
 
-# Build / Start
+# 构建 / 启动
 bun run build
 bun run start
 
-# Test env build/start (.env.test)
+# 测试环境构建与启动（会读取 .env.test）
 bun run build:test
 bun run start:test
 
-# Prod env build/start (.env.production)
+# 生产环境构建与启动（会读取 .env.production）
 bun run build:prod
 bun run start:prod
 ```
 
-## 5. Env Loading Order
+## 5. 环境变量加载规则
 
-From `scripts/load-env.js`:
+`scripts/load-env.js` 中的加载顺序如下（后加载优先）：
 
-- Development: `.env.local` -> `.env.development` -> `.env`
-- Test: `.env.test` -> `.env`
-- Production: `.env.production` -> `.env`
+- 开发环境：`.env.local` -> `.env.development` -> `.env`
+- 测试环境：`.env.test` -> `.env`
+- 生产环境：`.env.production` -> `.env`
 
-Notes:
+另外：
 
-- System env vars have highest priority and are not overridden.
-- Defaults are applied when missing: `NODE_ENV`, `APP_ENV`.
+- 系统环境变量优先级最高（不会被 `.env*` 覆盖）
+- 若未显式设置，会补默认：`NODE_ENV`、`APP_ENV`
 
-## 6. Project Layout
+## 6. 目录速览
 
-- `src/app`: pages and API routes
-- `src/components`: UI and feature components
-- `src/lib`: auth, payment, email, storage utilities
-- `scripts`: env startup and cleanup scripts
-- `supabase`: Supabase-related config
+- `src/app`：页面与 API 路由
+- `src/components`：UI 与业务组件
+- `src/lib`：鉴权、支付、邮件、存储等基础能力
+- `scripts`：环境启动脚本、清理脚本
+- `supabase`：Supabase 相关配置
 
-## 7. Troubleshooting
+## 7. 常见问题排查
 
-### 1) `localhost` returns 500
+1. `localhost` 打开后报 500：先检查 Supabase / 支付相关环境变量是否缺失。
+2. `Module not found` / 启动异常：执行 `rm -rf .next && bun install && bun run dev`。
+3. 3000 端口被占用：Next 会自动切到其它端口，或先释放 3000 再启动。
 
-Check missing env vars first, usually:
+## 8. 当前仓库注意事项
 
-- Supabase keys not configured
-- Payment env vars missing while payment code path is triggered
-
-### 2) `Module not found` / startup errors
-
-```bash
-rm -rf .next
-bun install
-bun run dev
-```
-
-### 3) Port 3000 is occupied
-
-Next.js will auto-switch to another port, or free `3000` and restart.
-
-## 8. Current Repo Note
-
-`package.json` has worker scripts (`worker`, `worker:convert`, etc.), but corresponding `scripts/start-*.ts` files may be missing in this repo snapshot.  
-If you need workers, add those scripts or sync the complete worker code.
+`package.json` 里有 worker 相关脚本（如 `worker`、`worker:convert`），但当前仓库中对应 `scripts/start-*.ts` 文件可能不存在。  
+如果要启用 worker，请先补齐对应脚本或同步完整 worker 代码。

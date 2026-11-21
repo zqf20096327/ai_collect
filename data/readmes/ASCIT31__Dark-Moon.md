@@ -21,13 +21,14 @@
 </div>
 
 > [!IMPORTANT]
-> **License change.** Darkmoon Community is moving from the GNU GPL v3.0 to the GNU AGPL v3.0. Every commit published up to `edfe9cb` (27 October 2026) stays under the GNU GPL v3.0; `master` is under the AGPL v3.0 since 19 November 2026 (PR #59), and no AGPL release has been tagged yet (the latest release, v1.6.0, is GPL v3.0). The contributions made by outside contributors before the switch also stay under the GNU GPL v3.0 (they are not relicensed). Details: [LICENSING.md](https://github.com/ASCIT31/Dark-Moon/blob/master/LICENSING.md).
+> **License change.** Darkmoon Community is moving from the GNU GPL v3.0 to the GNU AGPL v3.0. Every commit published up to `edfe9cb` (27 October 2026) stays under the GNU GPL v3.0; `master` is under the AGPL v3.0 since 19 November 2026 (PR #59), and [v1.7.0](https://github.com/ASCIT31/Dark-Moon/releases/tag/v1.7.0) (20 November 2026) is the first AGPL release (v1.6.0 and earlier stay GPL v3.0). The contributions made by outside contributors before the switch also stay under the GNU GPL v3.0 (they are not relicensed). Details: [LICENSING.md](https://github.com/ASCIT31/Dark-Moon/blob/master/LICENSING.md).
 
 **DarkMoon is autonomous AI penetration testing for your own infrastructure.** Point it at an authorized target and it runs the whole assessment on its own, then documents every finding with the exact command and raw output.
 
 - 🟢 **Truly open source.** AGPLv3 and self-hosted, every agent's methodology is plain Markdown you can read, diff and fork.
 - 🎯 **Finds AND proves.** Each vulnerability ships with the exact command and raw output (exploitation is agent-asserted; the Pro remediation retest is the machine-verified step), so there is almost nothing to triage.
 - 🔒 **Runs on a local LLM + Privacy Gateway.** The gateway tokenizes your real IPs, hosts and credentials locally, so the model reasons on placeholders while real values stay on your perimeter.
+- 🕸️ **An attack-path graph you can check.** Agents declare what enabled what; the server keeps each link as a hypothesis (**Possible Attack Path**) and promotes it to **Evidence-Backed** only on its own records, with no model call to qualify it. Paths, their limits and the research behind them, including our local expert-AI prototype (research, not shipped): [Attack paths](https://dark-moon.org/infrastructure-graph/) · [Research](https://github.com/ASCIT31/darkmoon-attack-paths-research).
 - 🧩 **Everywhere you build.** Run it from GitHub, GitLab, Jenkins, VS Code, JetBrains, n8n, Grafana or Splunk — the open-source edition works with the CLI-based ones. [See the integrations ↓](#-darkmoon-everywhere)
 
 ---
@@ -180,19 +181,35 @@ The screenshots below are the **paid Darkmoon Pro** web dashboard. They are **no
 
 <table>
 <tr>
-<td width="50%" valign="top">
-<img src="docs/pics/pro/dashboard.png" alt="Darkmoon Pro dashboard: projects, targets, campaigns and vulnerabilities counters, vulnerabilities by severity with percentages, and a security posture table with a Cyber Score grade, latest assessment and first action per project" />
-<p align="center"><b>Pro: live web dashboard.</b> Projects, targets, campaigns and vulnerabilities at a glance, findings split by severity, and a security posture table giving each project its Cyber Score grade, latest assessment and first treatment action.</p>
-</td>
-<td width="50%" valign="top">
-<img src="docs/pics/pro/campaign-overview.png" alt="Darkmoon Pro campaign overview: campaign header with Map, Attack paths, Findings, Overview and Reports tabs, status chips, and an executive Cyber Score block with grade, what holds the grade, the weakness classes that weigh most, and the first three actions" />
-<p align="center"><b>Pro: campaign overview with an executive Cyber Score.</b> The campaign header (map, attack paths, findings, reports) above an executive block: grade out of 100, what holds the grade, which weakness classes weigh most, and the first actions to take.</p>
+<td colspan="2" valign="top">
+<img src="docs/pics/pro/campaign-map.png" alt="Darkmoon Pro campaign map of the anonymised OWASP Juice Shop campaign: Internet, Edge, Application and Data zones holding 30 assets (target host, open ports, technologies, endpoints, databases), edges labelled contains, stack, endpoint, runs and root, and per-asset finding counts with the Juice Shop Express application carrying 47 findings" />
+<p align="center"><b>Pro: campaign map.</b> Every asset the agents found, placed in its zone (Internet, Edge, Application, Data) and wired with labelled edges (<code>contains</code>, <code>stack</code>, <code>endpoint</code>, <code>runs</code>, <code>root</code>), with the finding count on each asset. Shown here: an anonymised real OWASP Juice Shop campaign, 30 assets and 57 findings.</p>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<img src="docs/pics/pro/finding-detail.png" alt="Darkmoon Pro finding detail: asset tree rail with exploited findings, a critical SQL injection with Exploited status and CVSS 9.8, description, evidence and a details rail with CVSS vector, endpoint, asset and agent" />
-<p align="center"><b>Pro: findings with CVSS, proof and ATT&amp;CK mapping.</b> Each finding sits in its asset tree with severity, proof status (<code>Exploited</code>), CVSS score and vector, evidence, remediation, classification (MITRE ATT&amp;CK, ISO 27001) and a link to its attack path.</p>
+<img src="docs/pics/pro/infra-orbital.png" alt="Darkmoon Pro orbital 3D infrastructure map of the OWASP Juice Shop campaign: assets on Internet and Edge, Application and Data rings, with Prometheus Metrics, FTP Directory, SQLite Database, the Juice Shop Express application with 47 findings, JWT Public Key, JWT RS256 and Application Config labelled with their finding counts, and the list of six inferred attack paths in the side rail" />
+<p align="center"><b>Pro: orbital 3D infrastructure map.</b> The same campaign as a three.js scene: assets on Internet / Edge, Application and Data rings, the assets that carry findings labelled with their counts, and the attack paths in the side rail. Renders in the browser and in VR.</p>
+</td>
+<td width="50%" valign="top">
+<img src="docs/pics/pro/attack-paths.png" alt="Darkmoon Pro attack paths view of the OWASP Juice Shop campaign: six possible attack paths marked Inferred in the side rail, an explanation that no path could be proven from the evidence, and the first inferred path drawn as a dashed two-step route on the zoned map" />
+<p align="center"><b>Pro: attack paths.</b> Paths are labelled by provenance: proven paths come from chained evidence, possible paths are inferred from topology and confirmed findings and are marked <code>Inferred</code>, never shown as proof. The selected path is drawn step by step on the map.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/pics/pro/dashboard.png" alt="Darkmoon Pro dashboard: 5 projects, 5 targets, 19 campaigns and 442 vulnerabilities, vulnerabilities by severity with percentages, a security posture table with Cyber Score grade, latest assessment and first action per project (OWASP Juice Shop first), and the start of the Last campaigns table with per-severity counts, risk, date and comparison with the previous scan" />
+<p align="center"><b>Pro: live web dashboard with campaign history.</b> Projects, targets, campaigns and vulnerabilities at a glance, findings split by severity, a security posture table giving each project its Cyber Score grade, latest assessment and first treatment action, and every campaign with its counts and a comparison with the previous scan.</p>
+</td>
+<td width="50%" valign="top">
+<img src="docs/pics/pro/project-sunburst.png" alt="Darkmoon Pro project sunburst of the OWASP Juice Shop project: latest campaign of 29 Sep with 31 findings across 37 assets, rings from Internet to the host, service, application and one segment per finding coloured by severity, assets with no finding in green, and a Findings per campaign chart tracking critical, high, medium and low counts across 11 campaigns from 26 Apr to 29 Sep" />
+<p align="center"><b>Pro: project sunburst and history.</b> The latest campaign at a glance, from the zone in the centre out to host, service, application and one segment per finding coloured by severity, and <b>Findings per campaign</b> tracking how the counts move over time. Here: 11 anonymised real campaigns against OWASP Juice Shop.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/pics/pro/campaign-overview.png" alt="Darkmoon Pro campaign overview: campaign header with Map, Attack paths, Findings, Overview and Reports tabs, status chips, and an executive Cyber Score block with grade, what holds the grade, the weakness classes that weigh most, and the first three actions" />
+<p align="center"><b>Pro: campaign overview with an executive Cyber Score.</b> The campaign header (map, attack paths, findings, reports) above an executive block: grade out of 100, what holds the grade, which weakness classes weigh most, and the first actions to take.</p>
 </td>
 <td width="50%" valign="top">
 <img src="docs/pics/pro/treatment-plan.png" alt="Darkmoon Pro prioritized treatment plan: one action per weakness class and asset, status chips from proposed to reproduced at retest, and a table with findings, attack paths, controls, priority and verification status per action" />
@@ -205,14 +222,14 @@ The screenshots below are the **paid Darkmoon Pro** web dashboard. They are **no
 <p align="center"><b>Pro: exportable assessment reports.</b> A full Security Assessment Report in the browser (Cyber Score, executive summary, critical risks, framework assessment, treatment plan, attack paths, detailed findings, evidence and limitations), exportable to PDF and Markdown.</p>
 </td>
 <td width="50%" valign="top">
-<img src="docs/pics/pro/frameworks.png" alt="Darkmoon Pro frameworks technical assessment: ISO 27001 Annex A, GDPR Art. 32 and 25, NIS2 Art. 21(2) and EU AI Act cards with controls assessed, weakness observed, none observed, not tested and not assessable counts, plus ATT&CK techniques and Annex A controls tiles" />
-<p align="center"><b>Pro: frameworks technical assessment.</b> Findings mapped to ISO 27001 Annex A, GDPR, NIS2 and the EU AI Act, with per-framework counts of controls with a weakness observed, none observed, not tested and not assessable, plus ATT&amp;CK technique coverage. A technical reading of one tested scope, not an audit.</p>
+<img src="docs/pics/pro/finding-detail.png" alt="Darkmoon Pro finding detail: asset tree rail with exploited findings, a critical SQL injection with Exploited status and CVSS 9.8, description, evidence and a details rail with CVSS vector, endpoint, asset and agent" />
+<p align="center"><b>Pro: findings with CVSS, proof and ATT&amp;CK mapping.</b> Each finding sits in its asset tree with severity, proof status (<code>Exploited</code>), CVSS score and vector, evidence, remediation, classification (MITRE ATT&amp;CK, ISO 27001) and a link to its attack path.</p>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<img src="docs/pics/pro/infra-orbital.png" alt="Darkmoon Pro orbital infrastructure map: concentric Internet, Edge, Application and Data zones, an observed attack path from the web app choke point to the users database critical asset, and an attack surface mapped summary card" />
-<p align="center"><b>Pro: orbital attack-surface map.</b> Assets placed on Internet, Edge, Application and Data rings, with evidence-backed attack paths, the choke point to break and the critical asset they reach, and <b>every finding linked to its proposed remediation as a reviewed pull request</b>. Renders in the browser and in VR.</p>
+<img src="docs/pics/pro/frameworks.png" alt="Darkmoon Pro frameworks technical assessment: ISO 27001 Annex A, GDPR Art. 32 and 25, NIS2 Art. 21(2) and EU AI Act cards with controls assessed, weakness observed, none observed, not tested and not assessable counts, plus ATT&CK techniques and Annex A controls tiles" />
+<p align="center"><b>Pro: frameworks technical assessment.</b> Findings mapped to ISO 27001 Annex A, GDPR, NIS2 and the EU AI Act, with per-framework counts of controls with a weakness observed, none observed, not tested and not assessable, plus ATT&amp;CK technique coverage. A technical reading of one tested scope, not an audit.</p>
 </td>
 <td width="50%" valign="top">
 <img src="docs/pics/pro/scheduler.png" alt="Darkmoon Pro campaign scheduler: target field with Schedule, Details, Attack Strategy, Settings and Remediation options, a schedule panel with date, time and recurrence, and the list of scheduled campaigns" />
@@ -531,7 +548,7 @@ DarkMoon is open source and welcomes contributions. Whether you want to add new 
 
 ## License
 
-Darkmoon Community is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0-only). See [LICENSE](LICENSE) and [LICENSING.md](LICENSING.md) for what this means for users, service operators and contributors. `master` is under the AGPL-3.0 since 19 November 2026 (PR #59); no AGPL release has been tagged yet. Every commit up to `edfe9cb` (27 October 2026), including release v1.6.0, remains under the GNU GPL v3.0.
+Darkmoon Community is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0-only). See [LICENSE](LICENSE) and [LICENSING.md](LICENSING.md) for what this means for users, service operators and contributors. `master` is under the AGPL-3.0 since 19 November 2026 (PR #59); v1.7.0 (20 November 2026) is the first AGPL release. Every commit up to `edfe9cb` (27 October 2026), including release v1.6.0, remains under the GNU GPL v3.0.
 
 ---
 

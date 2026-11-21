@@ -4,6 +4,12 @@
 [![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)
 [![DOI](https://zenodo.org/badge/436989758.svg)](https://zenodo.org/badge/latestdoi/436989758)
 
+<p>
+  <a href="https://buymeacoffee.com/valeman"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+  &nbsp;&nbsp;
+  <a href="https://buymeacoffee.com/valeman"><img src="docs/assets/buymeacoffee-qr.png" alt="QR code for buymeacoffee.com/valeman" width="110"></a>
+</p>
+
 A curated guide to **conformal prediction**, also known as conformal inference. Find tutorials, research papers, Python and R libraries, and runnable examples for prediction intervals, classification sets, time-series forecasting, anomaly detection, and LLM uncertainty. Curated by [Valery Manokhin, PhD][author].
 
 Valery's resources lead each relevant section. The other entries prioritise editorial importance and recent work. 🔥 marks a reviewed core reference. 🕒 marks time-series resources.
@@ -623,5 +629,4 @@ Leo Dreyfus-Schmidt (Dataiku, 2020).
 34. [SafeImpute: Reliable Clinical Data Imputation via Conformal Selection](https://arxiv.org/abs/2607.05613) by Xinrui He et al. (KDD 2026). Uses conformal p-values and multiple-testing correction to control unacceptable errors among released clinical imputations.
 35. [Spectral and Conformal: Neural Network Methods for Calibrated Trajectory Prediction and Control-Point Intervals](https://tmlr.infinite-conf.org/paper_pages/zKLMev1mnQ.html) by Jasmine Ratchford and Raffaele Romagnoli (TMLR 2026). Uses modified conformal quantile regression for trajectory-level coverage and interval arithmetic to extend the result to control points under the specified dynamics.
 36. [Uncertainty Quantification for Named Entity Recognition via Conformal Prediction](https://proceedings.mlr.press/v300/singer26a.html) by Matthew Singer et al. (AISTATS 2026). Calibrates prediction sets over complete named-entity label sequences and tests scores tailored to sentence length and language.
-37. [A Quiet Failure in Calibrated Virtual Screening: Marginal Conformal Prediction Under-Covers the Minority Class, and a Class-Conditional Fix Recovers It](https://arxiv.org/abs/2607.06605) by Muhammadjon Tursunbadalov and Mustafojon Tursunbadalov (2026 preprint). Documents rare-class undercoverage in virtual screening under marginal calibration and tests class-conditional calibration as a remedy.
-38. [Abstention Spends Its Budget on Local Label Variance More Than on Novelty: Auditing Conformal Calibration and Selective Prediction under Molecular Scaffold Shift](https://arxiv.org/abs/2611.01512) by Arnav Srivastava and Krishna Kassetty (2026 p
+37. [A Quiet Failure in Calibrated Virtual Screening: Marginal Conformal Prediction Under-Covers the Minority Class, and a Class-Conditional Fix Recovers It](https://arxiv.org/abs/2607.06605) by Muhammadjon Tursunbadalov and Mustafojon Tursunbadalov (2026 preprint). Documents rare-class undercoverage in virtual scre

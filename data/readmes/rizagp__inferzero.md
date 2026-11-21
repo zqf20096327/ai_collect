@@ -78,19 +78,21 @@ builds everything, downloads the models you pick and connects the [Pi](https://p
 
 ## Results at a glance
 
-On the laptop (Core Ultra 5 125H, 32 GB, Windows 11; `bench/website_bench.ps1`, 2026-11-09, the 27B's 131K row and
-Gemma's KL again on 2026-11-10). Prompt in tok/s with the wait for the first token; generation in tok/s for 256
-tokens, plain and with the model's drafters; KL on 480 tokens of USAGE.md:
+On the laptop (Core Ultra 5 125H, 32 GB LPDDR5x-6400 shared by the CPU and the iGPU: 102 GB/s in theory, 75-77 GB/s
+measured by the GPU, which bounds generation; Windows 11; `bench/website_bench.ps1`, 2026-11-09, the 27B's 131K row
+and Gemma's KL again on 2026-11-10). Every speed is in tokens per second: prompt processing (pp) with the wait for the
+first token in brackets, generation (tg) over 256 tokens, plain and with the model's drafters; KL on 480 tokens of
+USAGE.md:
 
-| Model | 8K prompt | 32K prompt | 131K prompt | Generation | With drafting | KL vs f32 |
+| Model | pp 8K, tok/s (wait) | pp 32K, tok/s (wait) | pp 131K, tok/s (wait) | tg, tok/s | tg with drafting, tok/s | KL vs f32 |
 |---|---|---|---|---|---|---|
-| Qwen3.6 35B-A3B (MoE, experts on the SSD) | 851, 9.6 s | 637, 51 s | 324, 6.7 min | 21.6 | 38.1 (MTP + DFlash2) | 0.0040 |
-| Qwen3.8 Flash Next (MoE, 52 GB of experts on the SSD) | 205, 40 s | 174, 3.1 min | 146, 15 min | 6.3 | 7.6 (DFlash2) | 0.0117 |
-| Qwen3.8 27B (dense) | 135, 61 s | 125, 4.4 min | 81, 27 min | 5.1 | 12.9 (MTP + DFlash2) | 0.0005 |
-| Gemma 4 26B-A4B (MoE) | 232, 35 s | 124, 4.4 min | 44, 50 min | 19.8 | – | 0.0048 |
-| Qwen3.5 9B | 487, 17 s | 435, 75 s | 278, 7.8 min | 11.8 | 21.6 (MTP) | 0.0014 |
-| Gemma 4 E4B | 707, 12 s | 494, 66 s | 222, 9.8 min | 19.1 | 41.8 (drafter) | 0.0027 |
-| Qwen3.5 4B | 896, 9.2 s | 705, 47 s | 366, 6.0 min | 21.0 | 35.8 (MTP) | 0.0010 |
+| Qwen3.6 35B-A3B (MoE, experts on the SSD) | 851 (9.6 s) | 637 (51 s) | 324 (6.7 min) | 21.6 | 38.1 (MTP + DFlash2) | 0.0040 |
+| Qwen3.8 Flash Next (MoE, 52 GB of experts on the SSD) | 205 (40 s) | 174 (3.1 min) | 146 (15 min) | 6.3 | 7.6 (DFlash2) | 0.0117 |
+| Qwen3.8 27B (dense) | 135 (61 s) | 125 (4.4 min) | 81 (27 min) | 5.1 | 12.9 (MTP + DFlash2) | 0.0005 |
+| Gemma 4 26B-A4B (MoE) | 232 (35 s) | 124 (4.4 min) | 44 (50 min) | 19.8 | – | 0.0048 |
+| Qwen3.5 9B | 487 (17 s) | 435 (75 s) | 278 (7.8 min) | 11.8 | 21.6 (MTP) | 0.0014 |
+| Gemma 4 E4B | 707 (12 s) | 494 (66 s) | 222 (9.8 min) | 19.1 | 41.8 (drafter) | 0.0027 |
+| Qwen3.5 4B | 896 (9.2 s) | 705 (47 s) | 366 (6.0 min) | 21.0 | 35.8 (MTP) | 0.0010 |
 
 Flash Next's precise mode (`-Precise`) lowers its KL on prose to 0.0060 (3,584 tokens, 0.0105 by default) at about
 half the prompt speed. The discrete cards' numbers: [Discrete GPUs](#discrete-arc-gpus-experimental).
@@ -142,7 +144,10 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
 140T's preset (H8 on the 8-lane XMX GEMM). Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named):
 - **One Pro B60** ([issue #4](https://github.com/rizagp/inferzero/issues/4)): 4K prompt 1,874 tok/s under Linux with the
   FFN's gate and up in one GEMM launch (skipzx-lab, issue #57, release 2026.11.20.03, where it is the default; 1,800
-  without it); 1,726 on Windows (release 2026.11.17.08; 1,522 on
+  without it), 1,945-1,957 with the 64 x 32 tile, the B60's default since release 2026.11.21.17 (skipzx-lab, #57); 1,922 on
+  Windows (MaineTim, issue #19, main 0cf5283), 1,909 (manoreken2, release 2026.11.21.01; 1,836 with the fused gate /
+  up off; 1,726 on
+  2026.11.17.08, 1,522 on
   2026.11.14.09, 1,322 before the weight prefetch), generation 22.7-23.7 tok/s (two runs,
   2026.11.14.09; 23.7 under Linux, skipzx-lab, issue #58), 51.6 with MTP (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation
   82.4 tok/s, 111.9 with MTP (2026.11.13.11). What each switch measured there: [docs/xe2-tuning.md](docs/xe2-tuning.md).
@@ -150,7 +155,9 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
   4K prompt 3,100 tok/s (main e93fac1 with the FFN's gate and up in one GEMM launch, the default since 2026-11-20 and in
   release 2026.11.20.03; 2,972 without it, main 7368768 with `ARC_H8_NORM`; 2,897 with the 2D GEMM and its prefetch alone), 8K 2,727
   (2026.11.16.12), generation 35.2 tok/s, 70.6 with MTP (2026.11.16.02). Qwen3.6 35B-A3B: 8K prompt 5,647 tok/s
-  (2026.11.17.04), 4K 5,177, 16K 5,445, generation 117.2 tok/s after a 4K prompt (main e93fac1; 95-98 on 2026.11.16.15). Flash Next, 46 % of its experts in the
+  (2026.11.17.04), 4K 5,177, 16K 5,445, generation 117.2 tok/s after a 4K prompt (main e93fac1; 95-98 on 2026.11.16.15). Another B70 on
+  Ubuntu (Daleang, [issue #73](https://github.com/rizagp/inferzero/issues/73), main 6b99c2a, a Threadripper with PCIe 3.0): the 27B's 4K
+  prompt 3,086-3,135 tok/s, generation 33.8; over two of them 3,105 / 47.4. Flash Next, 46 % of its experts in the
   card's 32 GB: 4K prompt 1,414 (2026.11.17.04), 16K 1,145, generation 38.6 tok/s once the expert cache holds what
   the text uses (6.6 from a cold cache). Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
   release 2026.11.13.06, before the weight prefetch; a rerun is asked for): 2,105 tok/s, generation 32.2, 75.2 with MTP.
@@ -164,8 +171,9 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
   `ARC_GEMM_SPLIT=17`, the default on Alchemist since 2026.11.18.02), generation 21.6-22.7 tok/s, 30.1-31.3 with MTP, with `ARC_BATCH=64`, the default on Alchemist on Windows since 2026.11.18.08 (12.6-12.8 without).
   Qwen3.5 4B: 4K prompt 4,821 tok/s through the preset (2026.11.18.02, the default since 2026.11.18.03), generation
   37.8-38.2; Qwen3.5 9B: 2,969-3,017 (2026.11.17.08). Under Linux (skipzx-lab, issue #45, release 2026.11.18.08,
-  xe driver, the card held to 150 W): 27B 4K prompt **1,289 tok/s** (main 9675fa5, its defaults: a tile per GEMM shape and
-  the 32 x 16 GEMMs' reads one step ahead; 16K 1,190), generation 22.6-22.9 tok/s, **40.4 with MTP**; 4B 80.7-82.1 (105.7 with MTP), 9B 51.2-51.6 (84.4).
+  xe driver, the card held to 150 W): 27B 4K prompt **1,528 tok/s** (the copy into local memory with its addresses set once, 2026.11.21.10's default; 1,491 with main d252b86's, the 32 x 32 tile through local memory, the default since
+  2026-11-21; 1,289 before it, with a tile per GEMM shape and
+  the 32 x 16 GEMMs' reads one step ahead; 16K 1,190), generation 22.4-22.9 tok/s, **48.6 with MTP** on a real coding prompt (2026-11-21); 4B 80.7-82.1 (105.7 with MTP), 9B 51.2-51.6 (84.4).
 - **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
   405 tok/s (release 2026.11.18.07, its defaults; 390 on 2026.11.17.07 with `ARC_GEMM_XW_WGX=2`, 357 on
   2026.11.15.11), generation 6.1 tok/s, 14.6 with MTP (at its memory's limit).
@@ -176,11 +184,11 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
   35B-A3B: 4K prompt 1,370 tok/s, generation 26 tok/s, 46 with MTP.
 - **One model over several GPUs** (`runz` / `serverz --gpus N`, tensor parallel):
   - 4 Pro B60s on Windows (issue #4; no peer access there, so the sums go through host memory): the 27B's 4K prompt
-    1,597 / 1,724 / 1,888 tok/s over 2 / 3 / 4 cards (2026.11.13.05 and .11, before the weight prefetch), generation
-    35.7 / 43 / 53 tok/s (run of 2026-10-31). Long prompts over 4 (2026.11.14.05, the middle of three passes):
+    1,902 / 1,996 / 2,195 tok/s over 2 / 3 / 4 cards (release 2026.11.21.01; one card 1,837), generation
+    35.7 / 43 / 53 tok/s (run of 2026-10-31; 19.0 / 19.0 / 18.6 on 2026.11.21.01, a regression being fixed, #4). The
+    35B-A3B's 4K prompt over 4: 4,704 tok/s. Long prompts over 4 (2026.11.14.05, the middle of three passes):
     64K / 131K / 262K tokens at 2,152 / 1,267 / 700 tok/s (the 35B), 1,258 / 970 / 640 (the 27B) and 948 / 778 / 526
-    (Flash Next); after 131K the 27B generates 32 tok/s. The 35B's 4K
-    prompt over 4: 4,264 tok/s (2026-11-02).
+    (Flash Next); after 131K the 27B generates 32 tok/s.
   - 2 Pro B60s on Linux (scenic6942, [issue #17](https://github.com/rizagp/inferzero/issues/17), PCIe 4.0 x8 each):
     the sums go straight from GPU to GPU (`ARC_TP_P2P`, chosen at load since 2026.11.14.06): 4K prompt 1,630 tok/s
     against 1,442 through host memory, generation 37.8 tok/s, the same logits.

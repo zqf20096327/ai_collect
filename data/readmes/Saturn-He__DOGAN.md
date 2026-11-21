@@ -130,7 +130,7 @@ The implementation builds on [Parallel-GAN](https://doi.org/10.1109/TGRS.2022.32
 
 We thank the authors for making their code publicly available.
 
-## 🔗 Related Projects
+## 🔗 Our Related Projects
 
 Explore our related work on optical priors, colour control, and cross-tile consistency in SAR-to-optical image translation. Click an overview to view the full-size figure.
 
@@ -144,7 +144,7 @@ Explore our related work on optical priors, colour control, and cross-tile consi
   </a>
 </p>
 
-ColorS2O uses sparse colour anchors from an optical observation to guide the colours of SAR-to-optical translation. Mask-Guided Sparse Embedding (MGSE) encodes these anchors, and gated cross-attention injects them into the transformer. A time-epoch curriculum coordinates chromatic and perceptual supervision; the repository includes anchor sampling, training, and inference.
+ColorS2O uses sparse colour anchors from an optical observation to control the colours of translated images.
 
 ### [XTile-S2O](https://github.com/Saturn-He/XTile-S2O)
 
@@ -156,4 +156,16 @@ ColorS2O uses sparse colour anchors from an optical observation to guide the col
   </a>
 </p>
 
-XTile-S2O addresses consistency across tile boundaries when translating large SAR scenes. Cross-patch attention shares context among neighbouring tiles, while block-reassembly and overlap losses supervise cross-tile agreement. The repository provides training and inference code, dataset manifests, and evaluation tools for both image fidelity and full-scene coherence.
+XTile-S2O shares context across neighbouring tiles to improve spatial consistency in full-scene SAR-to-optical translation.
+
+### [SADBM](https://github.com/AproZC/SADBM)
+
+**Structure-Aware Diffusion Bridge Model for SAR-to-Optical Image Translation**
+
+<p>
+  <a href="https://github.com/Saturn-He/DOGAN/blob/main/assets/sadbm-teaser.jpg">
+    <img src="https://raw.githubusercontent.com/Saturn-He/DOGAN/main/assets/sadbm-teaser.jpg" width="360" alt="SADBM comparison with conditional diffusion models and GANs">
+  </a>
+</p>
+
+SADBM uses an edge-enhanced SAR image as the starting point of a diffusion bridge to preserve scene structure in SAR-to-optical image translation.

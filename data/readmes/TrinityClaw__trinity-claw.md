@@ -55,6 +55,7 @@ This project follows responsible AI agent design practices, but **no system is u
 - **Open Promises Tracking**: A lightweight open-loops list keeps the agent accountable for unfinished promises, follow-ups, and suggestions — surfaced in every session, auto-expired after 14 days, checkable off with a 4-character ID
 - **Ambient Heartbeat**: A background loop that ticks every 15 minutes when your agent is idle — reviews its own memory, follows up on open loops, reads its improvement idea backlog, and pings you on Telegram only when something is worth saying; everything else is silent and logged to an audit file
 - **Multi-Step Reasoning**: Agent loop for complex tasks
+- **Background Jobs**: Long independent work runs in a parallel agent session — research, builds, and audits continue while you keep chatting; results surface in the next turn
 - **Dynamic Skills**: Core system skills + user-created skills
 - **Web Browsing**: Fetch and analyze web content, including JS-rendered pages
 - **Browser Automation**: Full Playwright-powered browser control — navigate, click, type, screenshot, evaluate JS, fill forms
@@ -167,6 +168,96 @@ During installation you will be asked to choose:
 - **Local** — use Ollama with `qwen3.5:9b` running on your machine — no API key needed (~6.6 GB download) if you have 16GB or more VRAM recomendation is to go with qwen3.8 27b quantized to 12gb
 
 After installation, open the Web UI at: **http://localhost:8080**
+
+---
+
+## 🖥️ VPS / Public-Facing Deployment
+
+⚠️ **Security Warning:** TrinityClaw is designed for local use. The agent has code-execution capabilities (`terminal`, `code_executor` skills) and a single API key protects everything. Running on a public VPS requires additional hardening — see [SECURITY.md](./SECURITY.md) for full details.
+
+### Prerequisites
+- A VPS with Docker and Docker Compose installed
+- A domain name pointing to your VPS IP
+- A reverse proxy with TLS (Caddy, Nginx, Traefik, or Cloudflare Tunnel)
+
+### Step 1 — Clone the repo on your VPS
+```bash
+git clone https://github.com/TrinityClaw/trinity-claw.git
+cd trinity-claw
+```
+
+### Step 2 — Create strong secrets
+Generate random keys on your VPS:
+```bash
+openssl rand -hex 32   # TRINITY_API_KEY
+openssl rand -hex 32   # LITELLM_MASTER_KEY
+```
+
+Create `.env.production`:
+```bash
+TRINITY_API_KEY=<paste-your-random-key-here>
+LITELLM_MASTER_KEY=<paste-your-random-key-here>
+POSTGRES_PASSWORD=<strong-random-password>
+CORS_ORIGINS=https://your-domain.com
+RATE_LIMIT_RPM=30
+SESSION_AUTO_COMPRESS_HOURS=2
+```
+
+> Never commit `.env.production` to git.
+
+### Step 3 — Create a localhost-only compose override
+Create `docker-compose.override.yml` (do not commit this to git):
+
+```yaml
+services:
+  trinity-agent:
+    ports:
+      - "127.0.0.1:8001:8001"   # localhost only — reverse proxy handles public
+      - "127.0.0.1:8090:8090"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"   # read-only
+      - "./.env:/app/.env:ro"                             # read-only
+    environment:
+      - CORS_ORIGINS=https://your-domain.com
+      - RATE_LIMIT_RPM=30
+  updater:
+    ports:
+      - "127.0.0.1:8002:8002"   # never expose publicly
+```
+
+### Step 4 — Set up a reverse proxy with TLS
+
+**Example — Caddyfile:**
+```caddyfile
+your-domain.com {
+    reverse_proxy localhost:8001
+    encode zstd gzip
+    rate_limit {
+        zone per_ip {
+            key {remote_host}
+            requests 30
+            window 1 minute
+        }
+    }
+}
+```
+
+Or use Nginx, Traefik, or Cloudflare Tunnel. The key requirements are TLS termination and rate limiting.
+
+### Step 5 — Start TrinityClaw
+```bash
+docker compose -f docker-compose.yml -f docker-compose.override.yml --env-file .env.production up -d
+```
+
+### Critical Do's and Don'ts
+- ✅ Bind `trinity-agent` ports to `127.0.0.1` only; let the reverse proxy handle public traffic
+- ✅ Use TLS (HTTPS) — never expose plain HTTP
+- ✅ Use strong, randomly-generated `TRINITY_API_KEY` and `LITELLM_MASTER_KEY`
+- ✅ Keep the updater on `127.0.0.1:8002` — never expose it publicly
+- ✅ Keep Docker socket read-only (`:ro`) inside the agent container
+- ❌ Do not publish ports 8001, 8080, 8090, or 8002 to `0.0.0.0`
+- ❌ Do not commit `.env` or `.env.production` to git
+- ❌ Do not disable CORS restrictions
 
 ---
 
@@ -392,10 +483,38 @@ HEARTBEAT_MAX_CLOUD=1             # max cloud escalations per rolling hour (0 = 
 
 ---
 
-## Core Skills (37)
+## Background Jobs
+
+Long work no longer has to block the conversation. Ask for it in the background — or let the agent decide — and a second agent session works on it while you keep chatting:
+
+> "Research three competitors and draft a comparison — run it in the background."
+> "While that runs, summarize this PDF."
+
+| Function | What it does |
+|----------|-------------|
+| `delegate(prompt, name, model)` | Start a job; returns its id immediately |
+| `list(state)` | All jobs, newest first — status, elapsed, and name |
+| `result(id)` | A finished job's output (marks it read) |
+| `cancel(id)` | Stop a queued or running job |
+
+**How it works**
+
+- A job is a POST to the agent's own `/chat` with a dedicated `session_id` (`job_<id>`) — the same self-dispatch pattern the scheduler uses. It gets its own history, JSONL transcript, and cancellation event.
+- Defaults: **2 concurrent** workers (`JOBS_MAX_WORKERS`), **4 active** jobs (`JOBS_MAX_ACTIVE`), **30-minute** cap (`JOBS_TIMEOUT_SECONDS`). Extra jobs queue.
+- Jobs are denied `browser_session`, `web_builder`, `create_skill`, `autoimprove`, and `mcp_client` — these hold process-wide state or rewrite the skill registry (override with `JOBS_DENY_SKILLS`).
+- Jobs cannot delegate again (depth limit 1), and they cannot ask the user questions — give them a self-contained prompt.
+- On each new turn the agent sees a compact `<BACKGROUND_JOBS>` block with running jobs and unread results; it calls `jobs__result(id)` and reports.
+- On completion a Telegram message is sent (disable with `JOBS_NOTIFY=0`).
+- The Web UI has a **Jobs** panel (status, elapsed, preview, cancel). Jobs interrupted by a restart are marked `interrupted` on boot.
+- Storage: `memory/jobs.json` + `memory/jobs/<id>.log`; capped at the 100 most recent finished jobs (`JOBS_KEEP`).
+
+---
+
+## Core Skills
 
 | Skill | Description | Functions |
 |-------|-------------|-----------|
+| `jobs` | Background jobs — run independent work in a separate agent session while the chat stays responsive; results surface in the next turn's `<BACKGROUND_JOBS>` block | `delegate`, `list`, `result`, `cancel` |
 | `memory` | Agent-curated persistent memory — two capped stores: `MEMORY.md` (agent/project facts) and `USER.md` (user profile); writes persist immediately and surface in the next session's snapshot | `add`, `patch`, `remove`, `batch`, `consolidate` |
 | `memory_search` | Recall past context on demand — keyword search over conversation history (FTS5) and semantic search over lessons/memory (ChromaDB) | `session_search`, `semantic_search`, `prune_memory_db` |
 | `open_loops` | Track unfinished promises, follow-ups, and suggestions; rendered into every session snapshot; loops auto-expire after 14 days | `add`, `done`, `list` |

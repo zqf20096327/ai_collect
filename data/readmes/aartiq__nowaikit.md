@@ -11,11 +11,24 @@
 
 **Connect Claude, ChatGPT, Gemini, Cursor, Copilot, or any AI, to ServiceNow.**
 
-500+ tools across ITSM, ITOM, CMDB, HRSD, CSM, Flow Designer, scripting & portal. Read, build, query and automate any instance in plain English.
+550+ tools across ITSM, ITOM, CMDB, HRSD, CSM, Flow Designer, scripting & portal. Read, build, query and automate any instance in plain English.
 
-500+ does not mean a heavy context. Your AI does not load every tool. It finds the right one on demand with `search_tools`, you can expose a role package instead of the full set, and clients that load tools only when needed pull just what a task requires, so token cost stays low.
+550+ does not mean a heavy context. Your AI does not load every tool. It finds the right one on demand with `search_tools`, you can expose a role package instead of the full set, and clients that load tools only when needed pull just what a task requires, so token cost stays low.
 
 </div>
+
+---
+
+## What's new in 5.1
+
+- **Zero-day and KEV response.** `get_threat_status` follows one named threat across CVEs, vulnerable items, services, remediation tasks, changes, exceptions and security incidents. `get_kev_compliance` checks KEV items against their CISA due dates, and `create_change_from_remediation_task` uses Vulnerability Response's own Create Change.
+- **Ten new Apex skills**, including `zero-day-response`, `kev-compliance-report`, `vuln-exposure-brief`, `ai-governance-audit`, `csdm-data-foundations` and `mcp-exposure-review`.
+- **Australia and Brazil ready:** Platform Analytics dashboards, Deny Unless ACLs with a check for missing roles, CSDM life cycle in the CMDB tools, and `get_release_info`.
+- **AI platform insight:** the model provider behind each Otto skill, who can run each AI agent, runtime metrics and external agent runs.
+- **Grounded reports:** every skill gathers its data first, links each record, scores 0 to 100, and writes a CSV and JSON findings register next to the PDF.
+- `trace_table_operation` shows everything that runs for one table operation, in order, with a diagram.
+
+Read the full write-up: [NowAIKit 5.1](https://nowaikit.com/blog/nowaikit-5-1).
 
 ---
 
@@ -119,18 +132,18 @@ Set `SN_PERSONA` (or `--persona`) to a short name, or `MCP_TOOL_PACKAGE` to the 
 
 | `SN_PERSONA` | `MCP_TOOL_PACKAGE` | Tools |
 |--------------|--------------------|------:|
-| `full` | `full` (default) | 558 |
+| `full` | `full` (default) | 581 |
 | `itsm` | `service_desk` | 27 |
 | `change` | `change_coordinator` | 21 |
 | `knowledge` | `knowledge_author` | 14 |
 | `catalog` | `catalog_builder` | 17 |
-| `admin` | `system_administrator` | 87 |
-| `developer` | `platform_developer` | 70 |
-| `itom` | `itom_engineer` | 25 |
+| `admin` | `system_administrator` | 96 |
+| `developer` | `platform_developer` | 78 |
+| `itom` | `itom_engineer` | 28 |
 | `agile` | `agile_manager` | 14 |
-| `ai` | `ai_developer` | 61 |
+| `ai` | `ai_developer` | 69 |
 | `portal` | `portal_developer` | 38 |
-| `integration` | `integration_engineer` | 33 |
+| `integration` | `integration_engineer` | 35 |
 | `devops` | `devops_engineer` | 28 |
 | `itam` | `itam_analyst` | 13 |
 
@@ -192,3 +205,7 @@ Providing NowAIKit as a hosted or managed service, reselling it, or embedding it
 ---
 
 © 2026 NowAIKit · Source available under the [Elastic License 2.0](LICENSE)
+
+---
+
+NowAIKit is an independent product and is not affiliated with, endorsed by or sponsored by ServiceNow, Inc. ServiceNow, Now Assist, Otto and related marks are trademarks of ServiceNow, Inc., used here only to describe compatibility.

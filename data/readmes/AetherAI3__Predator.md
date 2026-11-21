@@ -17,6 +17,64 @@
 
 **AI security research, software repair, and authorized VM workflows.**
 
+Predator helps teams scope software-security questions, test candidate findings and repairs against authorized target software, and preserve only results that software verifies. This public repository is a research showcase and evidence collection; the CLI and operator engines remain private, with access reviewed separately.
+
+### Status at a glance (November 2026)
+
+| Area | Status |
+| :--- | :--- |
+| **Current work** | Gen3 research, scoped demonstrations, and selected open-source studies. |
+| **Evidence rule** | Candidate rankings and model suggestions guide investigation; only supported results are banked. |
+| **Gen4** | Proposed research direction: cost-aware compute, verified replay, receiver-controlled admission, and gated learning. It is not a current product capability. |
+| **Not shown** | No bounty has paid, no self-improvement has been demonstrated, and no quantum advantage has been established. |
+
+### How a mission becomes reusable evidence
+
+The solid path summarizes the current research loop. The dashed path is a proposed Gen4 direction; it does not imply that broad repair distribution is live today.
+
+```mermaid
+flowchart LR
+    S["Set authorized scope<br/>and acceptance checks"] --> C["Generate candidate<br/>finding or repair"]
+    C --> V["Run native checks<br/>and independent verification"]
+    V -->|Supported| E["Bank evidence<br/>and issue receipt"]
+    V -->|Unknown or refuted| H["Halt, refute,<br/>or request review"]
+    E -. "Proposed Gen4 path" .-> R["Package replay candidate<br/>with preconditions"]
+    R -.-> O["Receiver verifies and<br/>decides local admission"]
+    classDef future stroke-dasharray:5 5;
+    class R,O future;
+```
+
+### Start here
+
+- [How Predator chooses the next move](#how-predator-chooses-the-next-move)
+- [P-BOX and HTB training](#p-box-htb-training)
+- [Gen3 research and verified examples](#banked-scientific-results)
+- [Gen4 self-improvement research](#self-improvement-loop)
+- [Nano language and its search mechanics](#nano-language-and-its-search-mechanics)
+- [Defensive swarm and watchdog](#defensive-swarm-and-watchdog)
+- [AgentPool, CircuitPool, and Protocol 1](#agentpool-circuitpool-and-protocol-1)
+- [Ways to work with Aether](#ways-to-work-with-aether)
+- [Read the evidence and source data](#read-the-evidence)
+
+### How to read our numbers
+
+| Label | Meaning |
+| :--- | :--- |
+| **MET** / **NOT MET** / **NOT RUN** | Every gate was preregistered before the run; the verdict is reported either way, misses included. |
+| **measured on IBM hardware** | A run on a real IBM quantum device, with IBM's billed time and signed receipt. |
+| **measured on a simulator** | A classical simulation of a quantum circuit (FakeFez models one IBM device). No hardware time. |
+| **measured on fixtures, no quantum-computer time** | A run on fixture tasks: tasks with a known answer, scored by a deterministic checker. |
+| **modelled** | Arithmetic from measured per-unit costs; not a run. |
+| **built, not yet run** | Code exists and passed offline tests; nothing paid has executed. |
+| **scripted agents** | Stand-ins that follow a fixed script; not reasoning models. |
+
+Predator's research engine, **Crucible**, works like a lockpick: hold verified evidence steady, test candidate chains against the real software, and bank only what holds.
+
+[Search method](#how-predator-chooses-the-next-move) · [Generations](#generations-in-plain-english) · [Gen3 → Gen4 research](#self-improvement-loop) · [Safety model](SAFETY.md) · [Documentation index](docs/README.md)
+
+<details>
+<summary><strong>Recent research timeline and open status (November 2026)</strong></summary>
+
 ### Where Predator is today (November 2026)
 
 | When | What happened | What it showed |
@@ -35,28 +93,7 @@
 
 Source pins: the model result is `bench/qcomms/o_frame/REPORT_O.md` at private AETHER-PREDATOR-M commit `58ecf3db412feef68022cc4e88372567dd588f11`; the later rounds and the bus are pinned in the comm-ops [JSON](docs/research/quantum-comm-ops.json) (block `status_2026_11_08`); the IBM numbers are in [Gen3 Quantum Comm Ops](#gen3-quantum-comm-ops); Model-1 pins are in [its section](#gen3-adaptive-training).
 
-### Start here
-
-- **What Predator is.** A security research and repair system: AI models get persistent context and reviewed tool use, and only results the software itself confirms are banked.
-- **What is public.** This repository is the showcase and evidence collection. The CLI and operator engines are private, with [reviewed research access](#developers-join-the-research-program).
-- **Two kinds of text.** *Measurements* (numbers from runs, each labelled) and *how we think about it* (method, plans, hypotheses). Sections marked "built, not yet run", "design" or "as far as we can see" are the second kind.
-- **Where the evidence lives.** Each study has a plain-English guide in [`docs/research/`](docs/research/) and a JSON file of aggregate data with source pins; see [Read the evidence](#read-the-evidence).
-
-### How to read our numbers
-
-| Label | Meaning |
-| :--- | :--- |
-| **MET** / **NOT MET** / **NOT RUN** | Every gate was preregistered before the run; the verdict is reported either way, misses included. |
-| **measured on IBM hardware** | A run on a real IBM quantum device, with IBM's billed time and signed receipt. |
-| **measured on a simulator** | A classical simulation of a quantum circuit (FakeFez models one IBM device). No hardware time. |
-| **measured on fixtures, no quantum-computer time** | A run on fixture tasks: tasks with a known answer, scored by a deterministic checker. |
-| **modelled** | Arithmetic from measured per-unit costs; not a run. |
-| **built, not yet run** | Code exists and passed offline tests; nothing paid has executed. |
-| **scripted agents** | Stand-ins that follow a fixed script; not reasoning models. |
-
-Predator's research engine, **Crucible**, works like a lockpick: hold verified evidence steady, test candidate chains against the real software, and bank only what holds.
-
-[How search works](#how-predator-chooses-the-next-move) · [P-BOX / HTB training](#p-box-htb-training) · [Gen3 Private Security](#gen3-private-security) · [Crucible](#crucible-adaptive-quantum-threat-modeling) · [MITRE chains](#mitre-attck-chain-library) · [CVE catalog](#cve-research-catalog) · [CodePro & System-2](#codepro-and-system-2) · [Generations](#generations-in-plain-english) · [Self-improvement loop](#self-improvement-loop) · [Quantum Comm Ops](#gen3-quantum-comm-ops) · [joint5 & IBM Fez](#joint5-compiler-the-ibm-fez-hardware-result) · [Results](#banked-scientific-results) · [Work with Aether](#ways-to-work-with-aether) · [Gen3 access](#predator-r3d-and-predator-blu3) · [Glossary](#glossary) · [Docs](docs/README.md)
+</details>
 
 ## How Predator chooses the next move
 
@@ -401,6 +438,58 @@ AX001, AX002 and AX003 mark conditional local research paths with **Collection**
 
 </details>
 
+## AgentPool, CircuitPool, and Protocol 1
+
+**Design view:** these are separate jobs in one evidence path—parallel investigation, reusable procedures, and an optional decision signal.
+
+```mermaid
+flowchart LR
+    O["Owner mission + capability envelope"] --> A["Admission / scheduler"]
+    A --> AP["AgentPool<br/>scoped worker proposals"]
+    AP --> IR["Shared evidence / System-2 IR<br/>claims + provenance + open questions"]
+    IR --> CP["CircuitPool / replay<br/>match preconditions or search"]
+    CP --> P1["Protocol 1<br/>JEV decision stage"]
+    P1 -->|enabled, qualified, deployed| JEV["Typed JEV triage<br/>advisory; call + spend recorded"]
+    P1 -->|not configured| NC["Record no JEV call"]
+    JEV --> NV["Native verifier + receipt"]
+    NC --> NV
+    NV -->|supported| BANK["Evidence bank"]
+    NV -->|miss / refuted / inconclusive| KEEP["Retain outcome + open obligation"]
+```
+
+- **AgentPool** admits workers under an owner-approved mission and capability envelope. Workers return scoped proposals and evidence to shared IR; that shared record does not give workers permission to execute, sign, or verify one another's work.
+- **CircuitPool** is the shelf for executable solved procedures and replay. Each procedure keeps its preconditions and provenance; replay is considered only when those preconditions match and the receiver admits it. This is separate from an optional QPU search backend, which can provide candidates but cannot establish truth.
+- **Protocol 1 (JEV decision integration)** is a proposed, optional typed handoff for structured triage. JEV may guide which candidate to inspect next; it cannot issue the native verdict, authorize an action, bank a result, or terminate the chain. A participating call must come from an enabled, qualified, deployed stage and record its typed decision, call count, and spend. `NOT_CONFIGURED` means no JEV call.
+
+The native software check and its receipt remain the evidence gate. The public record has not established a measured JEV contribution; an adapter in source or an offline preflight is not a provider call. See the [Crucible evidence contract](docs/research/crucible-evidence-contract.md).
+
+## Defensive swarm and watchdog
+
+**Proposed architecture.** The swarm fans out evidence work across scoped workers. A local watchdog can pause or observe and fail closed; the receiving owner's policy gate controls any response.
+
+```mermaid
+flowchart TD
+    T["Host, network, and identity telemetry"] --> W["Nano watchdog<br/>pause / observe; fail closed"]
+    W --> F["Incident fanout<br/>AgentPool / CFC"]
+    F --> E["Evidence worker<br/>process / file / packet / auth"]
+    F --> S["Scope worker<br/>affected assets / identities"]
+    F --> B["Behavior worker<br/>TTP / chain / confidence"]
+    F --> C["Containment worker<br/>suggest lowest-risk step"]
+    E --> X["Correlated incident state<br/>confidence / contradictions / missing evidence"]
+    S --> X
+    B --> X
+    X --> G["Receiver policy gate<br/>local authority"]
+    C --> G
+    G -->|pre-authorized| A["Contain / revoke / isolate / alert"]
+    G -->|uncertain or outside policy| H["Observe / preserve / request review"]
+```
+
+The workers return evidence and scoped recommendations; fanout does not multiply authority. Correlation keeps confidence, contradictions, and missing evidence visible across identity, endpoint, network, application/source, and known-technique signals. No single telemetry stream defines the attacker.
+
+Attribute only as far as defense requires: **anomaly → compromised session or host → activity cluster → probable campaign or TTP → human actor**. A high-confidence local compromise can justify containment before campaign attribution is known. Automatic action must fit the receiver's pre-authorized local policy; otherwise the gate observes, preserves evidence, or asks for review.
+
+The watchdog and response flow are design direction. [SAFETY.md](SAFETY.md) distinguishes required policy from controls demonstrated in code; this section does not claim a deployed autonomous response feature.
+
 <a id="clean-worktrees-and-unlimited-context"></a>
 <a id="predator-rc-browser-views-and-ctf-work"></a>
 
@@ -441,6 +530,10 @@ RC is in controlled private preview: the production viewer and relay have been e
 | **Gen2** | Agent loops: models that use tools, run multi-step tasks and check their own work. Most public agent work is here. |
 | **Gen3** | **Where Aether works now.** The system around the models, built to turn failures into verified, reusable capability. AI and quantum workflows run together across the Aether stack (Aether Agent, Aether Cloud, Nano, ATLAS, UCL, CodePro, AQRC, Predator) with a shared verified evidence bank, signed receipts, swarm coordination of hundreds of small agents, and Predator lanes for bounty, open-source (OSS), mission and training work. Predator is the public showcase. |
 | **Gen4** | Conditional. It starts when a trigger below fires; no date is predicted. Predator's route toward it is the [self-improvement loop](#self-improvement-loop); not shown yet. |
+
+### Gen4 direction (proposed, not a current capability)
+
+The research direction is to route each task to the least costly qualified compute, turn independently verified repairs into preconditioned replay candidates, and connect relevant results to customer-owned CI and observability. Any learning or scheduler change would pass isolated, held-out promotion gates. Receivers retain local admission, rollout, and rollback authority. The full RSI and replay loop has not been demonstrated.
 
 **What Gen3 is, concretely.** Aether does not train models from scratch; it builds systems around models:
 
@@ -517,6 +610,26 @@ Another lab may reach Gen4 first; that is why the map is drawn now. Model labs n
 - *What it does.* It watches a trained network work and finds the steps inside it. It keeps only steps that pass three checks: they come back when the network is trained again, they do the same job, and breaking them breaks the output. Each kept step is rebuilt as a small part, kept only if it behaves like the original.
 - *Why "adaptive" and "quantum".* For each part it picks how to run it: pass straight through, a plain linear map, a compressed (low-rank) version of that map, or a 3-qubit quantum circuit. Each is judged against a classical version of the same size, and the classical options often win. The quantum compiler it builds on turns a QUBO scorecard into a circuit a device can run; on the IBM [Fez pilot](#joint5-compiler-the-ibm-fez-hardware-result) its joint5 path used 28.5 % fewer two-qubit gates, though not at every size in simulation.
 - *Where it stands.* Toy networks only (parity, addition, a small 3-SAT puzzle), on a classical simulator, with many negative results. By its own record, nothing in AQRC itself has run on quantum hardware. It has never compiled a step of Model 1's. In the loop its job is design: turn a step Model 1 proved into a part the system can replay.
+
+### Nano language and its search mechanics
+
+Nano is the deterministic language/runtime layer in this architecture. Its compiler turns `.nano` source into validated intermediate code; a deterministic runtime runs that code with host-provided inputs. The host gate keeps final execution authority local.
+
+```mermaid
+flowchart LR
+    S[".nano source"] --> C["Compiler<br/>lexer → parser → type checks"]
+    C --> IR["Validated IR"]
+    IR --> R["Deterministic runtime<br/>host-injected inputs"]
+    R --> G["Host gate<br/>scope + local authority"]
+    G --> L["Ordered run log + receipt"]
+    L --> V["Independent verifier"]
+    V -->|supported| B["Evidence / replay candidate"]
+    V -->|unknown or refuted| H["Record, halt, or review"]
+```
+
+**Keep two tokenizers distinct.** The compiler lexer tokenizes Nano source syntax. The adaptive energy tokenizer described above is a search mechanic: it maps a stuck state to a small set of scored choices. A separate classical brute-force engine tries those choices, or exhaustively checks a small finite space. Search can propose and rank candidates; native checks and the independent verifier decide whether a result holds. See [the three engines](#three-engines) for the measured limits.
+
+This diagram describes an execution boundary, not a claim that every component is shipped as a public product. Optional quantum search can supply candidates, but it does not decide truth or grant execution authority.
 
 ### Two doors when Model 1 fails
 
@@ -807,41 +920,4 @@ Why it matters: a cheap agent that cannot tell a hard lead is real discards it, 
 
 - **Attack** (*measured on fixtures, no quantum-computer time*): Qwen3.5-27B on one rented H100; first-try verified **27 → 33 → 34 of 40**, cost per verified 652 → 490 → 467 units (GPU time in the gateway's cost unit, UVT); K-4a **NOT MET** (0.716× where 0.5× was needed), K-4b **MET**.
 - **Repair** (*scripted*): a deterministic re-route of each verified path, 100 counterfactual pairs; no model involved.
-- **Model** (*measured on fixtures, no quantum-computer time*): the frontier model may edit the weights of Qwen3.5-0.8B, which loops to its 512-token cap on 756 of 756 generations (252 tasks × 3 seeds), on CPU and GPU (L-1a **MET**: the failure is reproducible). Both cycles spent their caps on diagnosis and proposed no patch (L-1b **NOT MET**). **No model was changed.**
-- **Communication** (*measured on IBM hardware*): 397 signed control frames carrying evidence references only, over ibm_fez in 6 jobs (3 first-pass, 3 re-send). First pass **371 of 397** intact; the other 26 failed their tag check (bit errors caught, never accepted) and were recovered by a re-send at 10 shots: **397 of 397** bit-exact after rescue, **23.0 s** of a 60 s line on IBM's free open plan. A transport test, not a speed claim.
-- **Hosted economics, M2** (*measured on fixtures, no quantum-computer time*): on one rented H100 at $4.41 per GPU-hour, one 40-agent cycle of the 27B verified 32 of 40 at **$0.0217** of GPU time per verified agent (the 9B: 18 of 40 at $0.0118). The gateway's November 1 reference cycle (a mini first-tier model with GLM-5.3 on escalation) verified 40 of 40 at $0.0536. Hosted figures count only each phase's GPU time; setup, loading and idle (about $5 of the estimated $9.08 rental) are left out, so this is not a full cost comparison. M-2a **NOT MET** (best survey 6 of 12 with thinking off; 11 needed). The deep-cell lane stays **NOT RUN**: it needs a promoted patch first.
-- **Spend**: model API ledger **$46.68** across the programme ($4.18 in this mission) against the $70 stop; GPU about **$9.08** estimated (invoice pending); **23.0 s** of quantum-computer time.
-
-[What ran, how to check the package, and what it does not show →](docs/research/quantum-comm-ops.md#first-compounding-mission)
-
-</details>
-
-<details>
-<summary><strong>Experiments L and M (November 3, 2026): the model lane, control packets, sealed package, economics and the model switch</strong></summary>
-
-### Built and reviewed offline: Experiments L and M (November 3, 2026)
-
-Built and reviewed offline on November 3, before anything paid ran (0 new IBM seconds, 0 GPU hours at that review). The model lane and the GPU rental have since run in the [first compounding mission](#first-compounding-mission); the rest stands as reviewed.
-
-**Experiment L: four parts** (attack, repair, model and communication lineages).
-
-- **Model lane** (*built, not yet run* on November 3; *measured on fixtures, no quantum-computer time* since November 4). A frontier model may propose an exact edit to at most 1 % of the weights of a 0.8-billion-parameter local model that keeps failing the same way (looping, invalid output, invented steps). A judge the proposer never sees scores the patched model on hidden tasks (36 unseen, 3×40 adjacent). Promotion needs at least 4 more unseen tasks solved, at most 1 adjacent lost, no rise in the length-cap rate. An offline rehearsal with a stand-in model promoted one patch and rejected a repeat. On the real model: baseline (L-1a **MET**) and two programmer cycles that proposed no patch (L-1b **NOT MET**); no model changed. The promotion receipt is sealed with a key kept out of the repository. An independent review found the proposer's sandbox could reach the repository and the hidden tests; closed before any run.
-- **Control packets** (*measured on fixtures, no quantum-computer time*). 96-bit signed messages carrying a lane, an operation, a cycle number, a 32-bit evidence fingerprint and a 32-bit tag; a reference, never a payload. **1,200 of 1,200 accepted; wrong key, 0; any flipped bit, 0; replays, 0** (L-2a **MET**). 378 packets point at real earlier records and 822 at ids minted for the test (*scripted*).
-- **Sealed research package** (*measured on fixtures, no quantum-computer time*). Every patch, evaluation and message chained by hashes under one root; a 15-check verifier refuses a package where a rejected patch was used as a parent. **147 records PASS; corrupting any one of the 87,304 bytes of its lineage and manifest files fails it** (L-3a **MET**).
-- **Scale model** (*modelled*, plus one fixture dry run). A 400-agent, three-lane round costs about **$30 of model calls (modelled)**; limits are the gateway's hourly call quota (about 90 calls an hour, so about 10.7 hours a round) and the frontier model's monthly allowance (about 0.4 of a month), not IBM time. IBM part about **4 jobs, about 20 seconds (modelled from the measured 5-second job)**; the IBM-leg preregistration later corrected this to about 9 jobs (a control frame needs 8 circuits). A 40-agent, three-lane dry run passed: 379 packets, 8 of 8 operations, package verified (L-4a **MET**, *measured on fixtures, no quantum-computer time*).
-
-**Experiment M: economics and the model switch.**
-
-- **Economics** (*modelled, not measured*). No measured token counts yet, so internal cost proxies. A mid-cost model through the gateway costs about **$0.063 per verified result**, cheaper than renting GPUs for a full-size open-weight model (about **$0.118 per verified result** on twelve rented GPUs) unless GPU rent falls to about **$1.25 per GPU-hour** or the gateway's per-call cost rises about threefold above its calibration (about 1.6× above the projected in-situ cost). The gateway's rate limit (about 90 calls an hour) makes a single-lane 400-agent round about **6 hours** (three lanes about 10.7 hours). A batched 9-billion-parameter model would cost about **$1.72 per round**, verified rate unmeasured. The one-GPU rental that measures this (M2) has run on one H100 (M-2a **NOT MET**; see the [first compounding mission](#first-compounding-mission)).
-- **Model switch plumbing** (*measured on fixtures, no quantum-computer time*). A registry names sections of a model's weights; two new packet operations, "switch model" and "carry this patch's intent to another model". Weights never move between models; knowledge moves as a patch specification re-derived in the destination model. A Q-step (a small QUBO selection) picks the model and section. **40 + 40 packets, 462 frames, 0 unexpected rejects, 10 of 10 operations, package verified** (M-3a **MET**). The Q-step agreed with the plain rule on 10 of 12 cases, matched a classical control that sees the same evidence-size factor on 12 of 12, and modelled about 1 % lower cost per expected verified result (M-3b **MET**). Honest reading: it wins only because it sees evidence size, which the plain rule ignores.
-
-**Tests and budget.** 300 tests across L and M, all passing offline at the M pin. **$42.50** of model spend used; the cap was raised from $50 to $75 on November 3 to fund the first real model-lane cycle. 0 new IBM seconds, 0 GPU hours at that review.
-
-[Details and source pins →](docs/research/quantum-comm-ops.md#experiments-l-m)
-
-</details>
-
-<details>
-<summary><strong>Still open, in order, and what this section does not show</strong></summary>
-
-**Still open, in order:** a model-lane cycle that reaches a patch the judge can score (the round-4 repair in the [status table](#status-november-8-2026) is next, and a promoted patch is the entry condition for the deep-cell lane); the bus's hand-off cost gate at 100 or more hand-offs (80 today), then its two owner-gated stages (a model line, and switching it on after the shared-IR fence lifts); the 400-agent rung with the communication lane on hardware (about 9 IBM jobs, *modelled*); the narrow-th
+- **Model** (*measured on fixtures, no quantum-computer time*): the frontier model may edit the weights of Qwen3.5-0.8B, which loops to its 512-token cap on 756 of 756 generations (252 tasks × 3 seeds), on CPU and GPU (L-1a **MET**: the failure is reproducible). Both cycles spent their caps on diagnosis and proposed no patch (L-1b **NOT MET**). **No mo

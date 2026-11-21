@@ -11,6 +11,7 @@
 
 | Resource | Category | Description |
 |----------|----------|-------------|
+| [artgen](https://artgen.net/en/tools/image-to-pixel-art) | Image Design | Free browser AI image tools (pixel art, bg removal, ASCII) |
 | [LangGraph](https://github.com/langchain-ai/langgraph) | Agent Frameworks | Stateful multi-agent orchestration |
 | [Inspect AI](https://inspect.ai-safety-institute.org.uk/) | Evaluation | UK AISI's open-source eval framework |
 | [DSPy](https://github.com/stanfordnlp/dspy) | Frameworks | Programming (not prompting) LLMs |
@@ -491,6 +492,7 @@ CLI tools for interacting with AI models and building AI-powered workflows.
 * [Codeium](https://codeium.com/) - Free AI code completion for multiple IDEs.
 * [Aider](https://github.com/paul-gauthier/aider) - CLI pair programming tool for terminal-based coding.
 * [Continue](https://continue.dev/) - Open-source AI coding assistant, extensible.
+* [AppWizzy](https://appwizzy.com/) - AI web app builder with dedicated cloud development VMs, runtime templates, and Git-backed source editing.
 
 **[⬆ back to top](#contents)**
 
@@ -585,6 +587,7 @@ CLI tools for interacting with AI models and building AI-powered workflows.
 * [Colormind](http://colormind.io/) - AI-powered color scheme generator learning from art and photos.
 * [Designs.ai](https://designs.ai/) - Helps users create designs and logos without technical expertise.
 * [Fronty AI](https://fronty.com/) - Converts images to HTML CSS for website design.
+* [objekto.io](https://objekto.io/en) - Designs print-ready multi-part 3D models from a few words, a photo or a sketch, then has them 3D printed and delivered in France.
 
 **[⬆ back to top](#contents)**
 
@@ -710,6 +713,7 @@ CLI tools for interacting with AI models and building AI-powered workflows.
   
 ##### Image Design
 
+* [artgen](https://artgen.net/en/tools/image-to-pixel-art) - Free browser AI image tools: image-to-pixel-art, background removal, ASCII art, and more (no signup for core tools).
 * [Midjourney](https://beta.midjourney.com/) - Image design tool.
 * [DALL·E 3 by OpenAI](https://openai.com/) - AI model for image synthesis from text prompts.
 * [NightCafe](https://creator.nightcafe.studio/) - Art generator using Stable Diffusion and DALL-E 2 models.
@@ -724,6 +728,7 @@ CLI tools for interacting with AI models and building AI-powered workflows.
 * [Ideogram](https://ideogram.ai/) - Strong text-in-image generation capabilities.
 * [Leonardo.AI](https://leonardo.ai/) - AI image generation focused on game assets and consistency.
 * [Seedream](https://seed.bytedance.com/en/seedream4_0) - ByteDance image generation and editing model family for high-resolution image creation, multimodal editing, and reference-guided visual workflows.
+* [MakeImg](https://makeimg.ai/) - AI photo generator that turns a text prompt or reference photo into a new image, with 11 models (Nano Banana 2.1, GPT Image 2.5, FLUX.2 Pro, Imagen 4) and free daily credits.
 
 **[⬆ back to top](#contents)**
 
@@ -882,6 +887,7 @@ Structured learning paths and certifications for AI skills.
 | [Qwen2-VL](https://github.com/QwenLM/Qwen2-VL) | Alibaba | Text, vision (open weights) |
 | [Boogu-Image-0.1](https://github.com/Boogu-Project/Boogu-Image) | Boogu Project | Image understanding, text-to-image generation, image editing, bilingual text rendering (open weights) |
 | [MiMo-V2.6](https://huggingface.co/collections/XiaomiMiMo/mimo-v26) | Xiaomi | Text, vision, audio; agentic coding and tool use (open weights) |
+| [Gemini 4 Neon](https://deepmind.google/models/model-cards/gemini-4-neon/) | Google DeepMind | Coding and agentic tasks; adapted from Gemini 4 Carbon (model card) |
 
 **[⬆ back to top](#contents)**
 
@@ -930,6 +936,7 @@ Structured learning paths and certifications for AI skills.
 | [vLLM](https://github.com/vllm-project/vllm) | High-throughput serving | PagedAttention optimization |
 | [Axolotl](https://github.com/OpenAccess-AI-Collective/axolotl) | Fine-tuning | Easy configuration-based training |
 | [Unsloth](https://github.com/unslothai/unsloth) | Fast fine-tuning | 2x faster, 60% less memory |
+| [Delta League](https://deltaleague.ai/) | Crowdsourced model improvement | Public contest scoring LoRA, weight-diff or checkpoint submissions to an open model on held-out data, with model lineage preserved |
 
 **[⬆ back to top](#contents)**
 
@@ -1310,6 +1317,7 @@ AI governance frameworks and regulations by jurisdiction.
 
 * [OrkasVideoStudio](https://github.com/Orkas-AI/Orkas-VideoStudio) - MIT-licensed, local-first TypeScript CLI and MCP toolkit for composing, editing, generating, and assembling videos from editable plan.json timelines.
 * [shortshort](https://www.shortshort.io/) - Turns one long talk, podcast, or course into vertical 9:16 shorts with word-by-word captions.
+* [OpenMontage Drama Studio](https://github.com/charliewwdev/OpenMontage) - Open-source, self-hosted studio that turns a one-line idea into a short drama, short video or product ad through script, characters, scenes, props, storyboard shots, voice and edit.
 
 **[⬆ back to top](#contents)**
 
@@ -1324,31 +1332,4 @@ AI governance frameworks and regulations by jurisdiction.
 * [Writesonic](https://writesonic.com/) - Optimizes content for search and has a chatbot for content generation.
 * [Rytr](https://rytr.me/) - Generates SEO-optimized content in seconds using machine learning.
 * [Scribe](https://scribehow.com/) - AI writing assistant for summarizing articles and aiding academic writing.
-* [AlphaCode](https://alphacode.deepmind.com/) - Coding assistant for writing code, resolving bugs, and suggesting programming solutions.
-* [GitHub Copilot](https://github.com/) - Collaborative coding tool offering code snippets and context-based guidance.
-* [GPT-4 by OpenAI](https://openai.com/) - Advanced AI language model for content creation and data analysis.
-* [Bard by Google](https://bard.google.com/) - Chatbot and content-generation tool using LaMDA.
-* [Cohere Generate](https://cohere.com/) - Creates personalized email content and interactive conversational agents.
-* [Claude by Anthropic](https://www.anthropic.com/) - AI assistant for text data processing and engaging in natural conversations.
-* [Frase IO](https://www.frase.io/) - Optimizes high-quality SEO content and creates content briefs.
-* [Peppertype.ai](https://www.peppercontent.io/) -  Generates content for blogs, product descriptions, and social media.
-* [ImagineYourBook](https://www.imagineyourbook.com/) - Plans and drafts full-length books chapter by chapter, with series story bibles and EPUB, Word, and Markdown export.
-
-**[⬆ back to top](#contents)**
-
----
-
-## Connect with Us
-- [Follow us on Twitter](LINK_TO_TWITTER)
-- [Join our Discord Community](LINK_TO_DISCORD)
-- [Subscribe to our YouTube Channel](LINK_TO_YOUTUBE)
-
----
-
-## APIs and Frameworks
-```mermaid
-flowchart LR
-  API[Generative AI APIs] -->|Integration| FW[Frameworks]
-  FW -->|Customization| AI[AI Projects]
-
- 
+* [AlphaCode](https://alphacode.deepm

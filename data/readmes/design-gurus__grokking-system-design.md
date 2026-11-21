@@ -9,19 +9,25 @@
 
 Most candidates prepare by memorizing answers to a list of questions, then meet a question that is not on the list. This repo takes the other approach. You learn a small set of building blocks, like caching, sharding, replication, and consistency, then apply them to any design problem. Everything here is free to read in your browser, with no account.
 
-**30 patterns · 59 questions · 122 company guides · 19 deep dives · 27 cheat sheets · 4 roadmaps · 134 diagrams**
+**30 patterns · 59 questions · 122 company guides · 19 deep dives · 35 cheat sheets · 8 roadmaps · 146 diagrams**
 
-Prefer to read offline? **[Download the free cheat sheet PDF](https://github.com/design-gurus/grokking-system-design/releases/latest/download/grokking-system-design-cheat-sheets.pdf)**, all 27 cheat sheets and 4 study plans in one file.
+Prefer to read offline? **[Download the free cheat sheet PDF](https://github.com/design-gurus/grokking-system-design/releases/latest/download/grokking-system-design-cheat-sheets.pdf)**, 27 cheat sheets and 4 study plans in one file.
 
 ## Start here
 
 | Your situation | Start with |
 |----------------|-----------|
+| My interview is tomorrow | [1-day plan](roadmaps/1-day-plan.md), about 6 hours of strict triage |
 | My interview is in days | [1-week crash plan](roadmaps/1-week-plan.md), then [system design in one page](cheat-sheets/system-design-in-one-page.md) |
 | I have a few weeks | [6-week study plan](roadmaps/6-week-plan.md), working through [patterns/](patterns/) as you go |
+| I am a student or a new graduate | [New grad and junior plan](roadmaps/new-grad-plan.md), four weeks for an entry-level round |
 | I am senior and have not interviewed in years | [Senior and staff refresher](roadmaps/senior-staff-refresher.md), which opens with a diagnostic |
+| I am interviewing for a staff role | [Staff Engineer Interview](https://github.com/design-gurus/staff-engineer-interview), a free guide to every round of the staff loop |
+| I am interviewing for a manager role | [Engineering manager plan](roadmaps/engineering-manager-plan.md) for the design round, then [Engineering Manager Interview](https://github.com/design-gurus/engineering-manager-interview) for the other rounds |
+| My round is API, frontend, or mobile design | [API Design Interview](https://github.com/design-gurus/api-design-interview), [Frontend System Design Interview](https://github.com/design-gurus/frontend-system-design-interview), or [Mobile System Design Interview](https://github.com/design-gurus/mobile-system-design-interview) |
 | I have an interview at a named company | [Company guides](companies/README.md), covering 122 companies |
 | I just want to practice | [Question catalog](questions/README.md) and the [practice bank](questions/practice-bank.md) |
+| I am choosing a course | [Best System Design Courses](https://github.com/design-gurus/best-system-design-courses), which compares free and paid courses by format, price, and goal |
 
 ## The system design interview framework
 
@@ -96,19 +102,23 @@ To add a new question, copy [questions/_template.md](questions/_template.md).
 
 ## Cheat sheets
 
-Twenty-seven quick-reference pages, grouped by how you use them. Full index at [cheat-sheets/](cheat-sheets/).
+Thirty-five quick-reference pages, grouped by how you use them. Full index at [cheat-sheets/](cheat-sheets/).
 
 **Running the interview.** [Interview framework](cheat-sheets/interview-framework.md) · [system design in one page](cheat-sheets/system-design-in-one-page.md) · [non-functional requirements](cheat-sheets/non-functional-requirements.md) · [communication tips](cheat-sheets/communication-tips.md) · [common mistakes](cheat-sheets/common-mistakes.md) · [senior vs staff expectations](cheat-sheets/senior-vs-staff-expectations.md) · [a mock interview, annotated](cheat-sheets/mock-interview-walkthrough.md)
 
 **Numbers and recall.** [Back-of-the-envelope estimation](cheat-sheets/estimation.md) · [latency numbers, visualized](cheat-sheets/latency-numbers.md) · [core components reference](cheat-sheets/core-components.md) · [flashcards](cheat-sheets/flashcards.md)
 
-**Choosing a technology.** [Trade-off decision guides](cheat-sheets/trade-offs.md) · [SQL vs NoSQL](cheat-sheets/sql-vs-nosql.md) · [PostgreSQL vs DynamoDB vs Cassandra](cheat-sheets/postgres-vs-dynamodb-vs-cassandra.md) · [DynamoDB vs MongoDB](cheat-sheets/dynamodb-vs-mongodb.md) · [Redis vs Memcached](cheat-sheets/redis-vs-memcached.md) · [Kafka vs RabbitMQ vs SQS](cheat-sheets/kafka-vs-rabbitmq-vs-sqs.md) · [Kafka vs Kinesis vs Pub/Sub](cheat-sheets/kafka-vs-kinesis-vs-pubsub.md) · [REST vs gRPC vs GraphQL](cheat-sheets/rest-vs-grpc-vs-graphql.md) · [WebSockets vs SSE vs long polling](cheat-sheets/websockets-vs-sse-vs-long-polling.md) · [AWS vs GCP vs Azure](cheat-sheets/aws-vs-gcp-vs-azure.md) · [caching strategies](cheat-sheets/caching-strategies.md) · [push vs pull feeds](cheat-sheets/push-vs-pull-feeds.md) · [rate limiting algorithms](cheat-sheets/rate-limiting-algorithms.md) · [sharding strategies](cheat-sheets/sharding-strategies.md) · [strong vs eventual consistency](cheat-sheets/strong-vs-eventual-consistency.md) · [L4 vs L7 load balancing](cheat-sheets/l4-vs-l7-load-balancing.md)
+**Choosing a technology.** [Trade-off decision guides](cheat-sheets/trade-offs.md) · [SQL vs NoSQL](cheat-sheets/sql-vs-nosql.md) · [PostgreSQL vs DynamoDB vs Cassandra](cheat-sheets/postgres-vs-dynamodb-vs-cassandra.md) · [DynamoDB vs MongoDB](cheat-sheets/dynamodb-vs-mongodb.md) · [Redis vs Memcached](cheat-sheets/redis-vs-memcached.md) · [Kafka vs RabbitMQ vs SQS](cheat-sheets/kafka-vs-rabbitmq-vs-sqs.md) · [Kafka vs Kinesis vs Pub/Sub](cheat-sheets/kafka-vs-kinesis-vs-pubsub.md) · [REST vs gRPC vs GraphQL](cheat-sheets/rest-vs-grpc-vs-graphql.md) · [WebSockets vs SSE vs long polling](cheat-sheets/websockets-vs-sse-vs-long-polling.md) · [AWS vs GCP vs Azure](cheat-sheets/aws-vs-gcp-vs-azure.md) · [caching strategies](cheat-sheets/caching-strategies.md) · [push vs pull feeds](cheat-sheets/push-vs-pull-feeds.md) · [rate limiting algorithms](cheat-sheets/rate-limiting-algorithms.md) · [sharding strategies](cheat-sheets/sharding-strategies.md) · [strong vs eventual consistency](cheat-sheets/strong-vs-eventual-consistency.md) · [L4 vs L7 load balancing](cheat-sheets/l4-vs-l7-load-balancing.md) · [API gateway vs load balancer vs reverse proxy](cheat-sheets/api-gateway-vs-load-balancer-vs-reverse-proxy.md) · [monolith vs microservices](cheat-sheets/monolith-vs-microservices.md) · [horizontal vs vertical scaling](cheat-sheets/horizontal-vs-vertical-scaling.md) · [B-tree vs LSM tree](cheat-sheets/b-tree-vs-lsm-tree.md) · [optimistic vs pessimistic locking](cheat-sheets/optimistic-vs-pessimistic-locking.md) · [two-phase commit vs saga](cheat-sheets/two-phase-commit-vs-saga.md) · [object vs block vs file storage](cheat-sheets/object-vs-block-vs-file-storage.md) · [sessions vs JWT vs OAuth](cheat-sheets/sessions-vs-jwt-vs-oauth.md)
 
 ## Study roadmaps
 
+- [1-day plan](roadmaps/1-day-plan.md): when the interview is tomorrow.
 - [1-week crash plan](roadmaps/1-week-plan.md): when your interview is days away.
 - [2-week sprint](roadmaps/2-week-plan.md): a focused sprint before an interview.
 - [6-week study plan](roadmaps/6-week-plan.md): build depth from a baseline.
+- [3-month study plan](roadmaps/3-month-plan.md): a start from zero, at 30 to 45 minutes a day.
+- [New grad and junior plan](roadmaps/new-grad-plan.md): for students and engineers with under two years of experience.
+- [Engineering manager plan](roadmaps/engineering-manager-plan.md): for managers and tech leads in a management loop.
 - [Senior and staff refresher](roadmaps/senior-staff-refresher.md): for experienced engineers who have not interviewed in years. Starts with a recorded diagnostic, then fixes only the gaps it finds.
 
 Each roadmap states its own coverage, and [roadmaps/](roadmaps/) has a decision tree for picking one.
@@ -127,6 +137,27 @@ Case studies of landmark systems, the "how does X work" questions common in seni
 
 New to the vocabulary? Start with the [glossary](glossary.md).
 
+## More free interview guides
+
+System design is one round in a loop. These free guides from DesignGurus.io cover the other rounds and the topics that sit next to this repository. Each one follows the same format: short pages, tables, and a question bank.
+
+| Guide | What it covers |
+|-------|----------------|
+| [System Design Numbers](https://github.com/design-gurus/system-design-numbers) | Latency numbers, powers of two, availability tables, traffic formulas, and ten worked capacity estimations |
+| [API Design Interview](https://github.com/design-gurus/api-design-interview) | A six-step method for the API design round, the core concepts, and eight question walkthroughs |
+| [Frontend System Design Interview](https://github.com/design-gurus/frontend-system-design-interview) | The client side of system design: rendering, state, caching, performance, and eight question walkthroughs |
+| [Microservices Interview Questions](https://github.com/design-gurus/microservices-interview-questions) | About 100 questions with short model answers, from service boundaries to sagas and migration |
+| [Staff Engineer Interview](https://github.com/design-gurus/staff-engineer-interview) | What changes at staff level: the loop, system design at staff scope, the project deep dive, and down-leveling |
+| [Engineering Manager Interview](https://github.com/design-gurus/engineering-manager-interview) | The manager loop round by round: people management, project retrospective, behavioral, and system design for managers |
+| [Software Engineer Levels](https://github.com/design-gurus/software-engineer-levels) | Engineering ladders at 16 companies, how levels map across them, and what interviews expect at each level |
+| [Amazon Leadership Principles](https://github.com/design-gurus/amazon-leadership-principles) | All 16 principles with interview questions, sample answers, and how the Amazon loop works |
+| [Forward Deployed Engineer Interview](https://github.com/design-gurus/forward-deployed-engineer-interview) | The forward deployed engineer loop, the decomposition round, and company loops at Palantir, OpenAI, Anthropic, and Google |
+| [Solutions Architect Interview](https://github.com/design-gurus/solutions-architect-interview) | Architecture design, customer discovery, and presentation rounds, with loops at the major cloud and data companies |
+| [Mobile System Design Interview](https://github.com/design-gurus/mobile-system-design-interview) | The client side of system design for iOS and Android: offline sync, caching, push, performance, and eight question walkthroughs |
+| [DevOps and SRE Interview](https://github.com/design-gurus/devops-sre-interview) | The loop round by round: troubleshooting, Linux and networking, SRE system design, and incident response |
+| [Data Engineering Interview](https://github.com/design-gurus/data-engineering-interview) | SQL, data modeling, and pipeline design rounds, with six pipeline design walkthroughs |
+| [Concurrency Interview](https://github.com/design-gurus/concurrency-interview) | Core concepts and nine classic problems solved in Java, Python, and Go |
+
 ## Go deeper: the full course
 
 This repo gives you the map. The course gives you the territory: interactive diagrams, video lessons, worked solutions, and practice.
@@ -134,7 +165,12 @@ This repo gives you the map. The course gives you the territory: interactive dia
 - Course: [Grokking the System Design Interview](https://www.designgurus.io/course/grokking-the-system-design-interview?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
 - The whole series: [every Grokking course in one place](https://www.designgurus.io/grokking?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), with the level each one is written for and the order to take them in
 - Patterns course: [System Design Patterns: From Fundamentals to Real Systems](https://www.designgurus.io/course/system-design-patterns?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), built around the same building blocks as [patterns/](patterns/)
+- Short on time: [System Design Interview Crash Course](https://www.designgurus.io/course/system-design-interview-crash-course?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), thirty designs in fourteen days
+- Senior and staff rounds: [Advanced System Design Interview, Volume II](https://www.designgurus.io/course/grokking-system-design-interview-ii?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), [Advanced System Design Fundamentals](https://www.designgurus.io/course/advanced-system-design-fundamentals?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), and [Grokking Staff Engineer Interview](https://www.designgurus.io/course/grokking-staff-engineer-interview?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
+- New to the subject: [Grokking System Design Fundamentals](https://www.designgurus.io/course/grokking-system-design-fundamentals?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
 - AI and ML rounds: [Grokking the AI System Design Interview](https://www.designgurus.io/course/grokking-the-ai-system-design-interview?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), and its free companion repository [Grokking AI System Design](https://github.com/design-gurus/grokking-ai-system-design)
+- Frontend, mobile, and API rounds: [Grokking the Modern Frontend System Design Interview](https://www.designgurus.io/course/grokking-the-modern-frontend-system-design-interview?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), [Grokking Modern Mobile System Design Interview](https://www.designgurus.io/course/grokking-modern-mobile-system-design-interview?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), and [Grokking Modern API Design Interview](https://www.designgurus.io/course/grokking-modern-api-design-interview?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
+- Microservices and the tools behind most designs: [Grokking Microservices for System Design Interviews](https://www.designgurus.io/course/grokking-microservices-for-system-design-interviews?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), [Grokking Redis](https://www.designgurus.io/course/grokking-redis?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme), and [Grokking Kafka and Event-Driven Architecture](https://www.designgurus.io/course/grokking-kafka-and-event-driven-architecture?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
 - Practice live: [Mock interviews with ex-FAANG engineers](https://www.designgurus.io/mock-interviews?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
 - More reading: [DesignGurus blog](https://www.designgurus.io/blog?utm_source=github&utm_medium=repo&utm_campaign=grokking-system-design&utm_content=readme)
 

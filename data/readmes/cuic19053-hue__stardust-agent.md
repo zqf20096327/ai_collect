@@ -8,9 +8,11 @@
 
 项目提供 35 个领域指南。后端使用 Python 和 FastAPI，支持 Ollama 本地模型和 OpenAI 兼容接口。这里的覆盖指指南与赛道目录，各赛道的模型写作、模板、图表和导出支持程度不同，尚未完成全部场景的端到端验收。仓库改动不代表已经在线上部署。
 
-[![GitHub stars](https://img.shields.io/github/stars/cuic19053-hue/stardust-agent?style=social)](https://github.com/cuic19053-hue/stardust-agent/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE) [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![MCP Protocol](https://img.shields.io/badge/MCP-Protocol-blue.svg)](https://modelcontextprotocol.io/) [![Online Platform](https://img.shields.io/badge/Online-agent.stardust.website-7952CC.svg)](https://agent.stardust.website)
+[![GitHub stars](https://img.shields.io/github/stars/cuic19053-hue/stardust-agent?style=social)](https://github.com/cuic19053-hue/stardust-agent/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE) [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![MCP Protocol](https://img.shields.io/badge/MCP-Protocol-blue.svg)](https://modelcontextprotocol.io/) [![Online Platform](https://img.shields.io/badge/Online-agent.stardust.website-7952CC.svg)](https://agent.stardust.website)
 
 [打开在线工作台](https://agent.stardust.website) · [查看大创 Word 样例](./examples/demos/demo_innovation_research.docx) · [Agent 设计说明](./docs/design/AGENT_REFACTOR.md) · [English](./README_EN.md)
+
+[下载桌面客户端](https://github.com/cuic19053-hue/stardust-agent/releases/latest) · [桌面版使用说明](./desktop/README.md)
 
 ## 快速上手
 
@@ -69,11 +71,10 @@
 
 当前试点覆盖预算冲突、无依据成果、正确研究计划、材料注入、空章节和外校旧通知六类样例。样例由 Agent 编写，语义指标区分 Agent 辅助复核与独立人工复核；程序测试通过数和引文逐字匹配率不作为模型准确率。它用于检查规则、检索和输出约束的作用，不能外推为全部赛道的质量结论。
 
-在已安装服务端依赖并启动本机 Ollama 的环境中运行：
+按下文安装锁定依赖并启动本机 Ollama 后运行。
 
 ```bash
-python -m pip install 'langgraph-checkpoint-sqlite==3.1.3'
-python server/evals/review_benchmark.py --output outputs/evals/review-pilot
+uv run --no-sync python server/evals/review_benchmark.py --output outputs/evals/review-pilot
 ```
 
 [首轮 Qwen 本机试点](./docs/reports/REVIEW_BENCHMARK_2026-11-17.md)：按 Agent 辅助复核口径，直接模型命中 5 个目标问题中的 3 个，现有流程命中 5 个；两条路径各有 13 条误报（含重复提醒）。独立人工校准尚未完成，结果不代表线上模型效果。原始请求、响应和判定依据均可核对。
@@ -84,24 +85,22 @@ python server/evals/review_benchmark.py --output outputs/evals/review-pilot
 
 ## 本地运行与复现
 
-需要 Python 3.11 或更高版本，并启动本机 Ollama。在终端运行以下命令。
+先安装 [uv](https://docs.astral.sh/uv/getting-started/installation/)。以下命令按 `.python-version` 安装 Python 3.12，并按 `uv.lock` 安装工作台和测试依赖。
 
 ```bash
 git clone https://github.com/cuic19053-hue/stardust-agent.git
 cd stardust-agent
-python3 -m venv .venv
-.venv/bin/python -m pip install -r utils/requirements.txt -r server/requirements.txt
-ollama pull qwen2.5:7b
-ollama pull bge-m3
-.venv/bin/python -m uvicorn app:app --app-dir server --host 127.0.0.1 --port 8765
+uv python install
+uv sync --locked --extra full --extra review --group test
+uv run --no-sync uvicorn server.app:app --host 127.0.0.1 --port 8765
 ```
 
-打开本机工作台，在「模型配置」中选择 Ollama。点击「开始新对话」描述申报目标，上传并核对资料后即可提问。本机模式使用 SQLite，数据保存在 `.agent-data/`。云端使用 Supabase 按账号管理项目。平台模型使用工作台积分，自带 API Key 时按模型服务商规则计费。[本机工作台](http://127.0.0.1:8765) · [模型、存储和服务配置](./server/README.md)
+打开本机工作台即可整理材料。需要本机模型时，启动 Ollama，运行 `ollama pull qwen2.5:7b` 和 `ollama pull bge-m3`，再在「模型配置」中选择 Ollama。点击「开始新对话」描述申报目标，上传并核对资料后即可提问。本机模式使用 SQLite，数据保存在 `.agent-data/`。云端使用 Supabase 按账号管理项目。平台模型使用工作台积分，自带 API Key 时按模型服务商规则计费。[本机工作台](http://127.0.0.1:8765) · [模型、存储和服务配置](./server/README.md)
 
 在仓库根目录运行下面的命令，可以用本机模型复现上面的提问。脚本使用临时项目，输出实际调用的工具、答复片段和各用例的通过情况。
 
 ```bash
-.venv/bin/python server/evals/run.py
+uv run --no-sync python server/evals/run.py
 ```
 
 ## 场景、样例与扩展
@@ -110,7 +109,7 @@ ollama pull bge-m3
 
 仓库公共语料包含 **42 篇正式高校官方通知及 1 篇院级科创活动报道**，检索需匹配学校、年度与适用对象，并回源核验。**已获授权、脱敏并审核通过的真实范文当前为 0 篇**；详见 [RAG 状态说明](./docs/rag-status.md)。
 
-开发者可以从 Codex、Cursor 或其他 MCP 客户端连接本机项目工具，也可以直接加载某一赛道的 `SKILL.md`。本机项目 MCP 与网页共享项目和材料，使用 stdio 启动的命令为 `.venv/bin/python server/mcp_server.py --transport stdio`。[项目 MCP 实现](./server/mcp_server.py) · [Skills 入口](./SKILL.md)
+开发者可以从 Codex、Cursor 或其他 MCP 客户端连接本机项目工具，也可以直接加载某一赛道的 `SKILL.md`。本机项目 MCP 与网页共享项目和材料，使用 stdio 启动的命令为 `uv run --no-sync python server/mcp_server.py --transport stdio`。[项目 MCP 实现](./server/mcp_server.py) · [Skills 入口](./SKILL.md)
 
 <details>
 <summary><b>展开 35 个领域指南及文件大小</b></summary>

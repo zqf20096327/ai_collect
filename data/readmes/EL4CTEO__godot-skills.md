@@ -12,7 +12,7 @@
 
 Godot **4.7** skills for AI coding agents (Claude Code, Codex, OpenCode, Gemini CLI, GitHub Copilot, Cursor), based on **Godot 4.7.2**. They cover GDScript and C#/.NET equally.
 
-There are 18 compact skills. Agents look up exact APIs from **your installed engine** instead of guessing, edit scenes safely through Godot itself, and check their work with real compile, test and export runs. Every code example in the skills is compiled on Godot 4.7.2 by the test suite.
+There are 27 compact skills. Agents look up exact APIs from **your installed engine** instead of guessing, edit scenes safely through Godot itself, and check their work with real compile, test and export runs. Every code example in the skills is compiled on Godot 4.7.2 by the test suite.
 
 ## Recommended: Godot .NET (C#)
 
@@ -60,12 +60,23 @@ The default installs into `~/.claude/skills` and `~/.agents/skills`. `.agents/sk
 | `godot-editor-tooling` | Tool scripts, editor plugins, importers |
 | `godot-testing-debug` | GdUnit4, gdUnit4Net, debugging |
 | `godot-xr` | OpenXR VR/AR |
+| `godot-navigation-ai` | Pathfinding, avoidance, enemy AI, behavior trees |
+| `godot-3d-gameplay` | Third-person cameras, GridMap and CSG levels |
+| `godot-procedural` | Noise, dungeons, caves, terrain meshes, chunks |
+| `godot-migration` | Godot 3 or older 4.x to 4.7, Unity porting, API scanner |
+| `godot-mobile-web` | Safe areas, app lifecycle, purchases, Web hosting |
+| `godot-narrative` | Dialogue, choices, quests, cutscenes |
+| `godot-modding-dlc` | Mod loading, PCK packs, DLC, patches |
+| `godot-game-feel` | Screen shake, hit-stop, juice, trailer capture |
+| `godot-addons` | Vetting and installing plugins, curated 4.7 list |
 
 ## Try it
 
 > "Add a player with coyote-time jumping and a camera that shakes on landing."
 > "My C# build fails after upgrading to 4.7, fix it."
 > "Make a main menu that works with a gamepad, then export for Windows and Android."
+> "Upgrade my Godot 3 project to 4.7 and list what the converter missed."
+> "Add enemies that patrol, spot the player and chase them around obstacles."
 
 ## Development
 

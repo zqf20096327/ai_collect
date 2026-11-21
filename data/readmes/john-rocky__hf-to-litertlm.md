@@ -45,6 +45,8 @@ uv run litert-lm run out/<model>/*.litertlm --prompt "Hello"
 
 `convert.py` handles finetunes of Qwen3.5, LFM2.5, MiniCPM5, granite-4.0-h, Falcon-H1 and Nemotron-H, and every dense architecture the stock exporter handles. LoRA and PEFT repos merge automatically. It refuses gated, remote-code and pre-quantized repos and says why. It then asks the converted model 8 test questions and reports a failure if fewer than 6 are right. [All the flags and steps](docs/convert.md) are in the docs.
 
+A Gemma 4 E2B finetune saved in a local folder (merged weights or a LoRA adapter) converts on Linux x86-64: `uvx hf-to-litertlm <folder>` ([details](pypi/README.md)). It needs at least 22 GiB of available memory, and a container with a 24 GiB limit worked.
+
 [LiteRT CLI](https://github.com/google-ai-edge/LiteRT-CLI#7-run-and-benchmark-a-generative-llm-model-using-litert-lm-cli) also takes a repo id: after `pip install -U litert-cli-nightly`, `litert lm run <org>/<model>` converts the checkpoint once with the stock exporter, caches the `.litertlm` file and runs it.
 
 ## Converted models

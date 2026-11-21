@@ -19,6 +19,18 @@ Left alone, most agent sessions forget everything between runs, call work done w
 
 [Request a free setup review](https://aiyourwork.chat/services?utm_source=github&utm_medium=readme&utm_campaign=agent-harness-setup#implementation-request) to plan a harness installation in one repository. Share the coding agent you use and one workflow you want to verify. We agree on scope and price before any paid work.
 
+<details>
+<summary>Copy an example workflow brief</summary>
+
+```plaintext
+Agent: Codex
+Task: Verify one documentation change on a preview.
+Pass when: The changed page opens at its intended URL and the existing checks pass.
+Ask before: Merging or publishing.
+```
+
+</details>
+
 **Try a working example:** [Apps and starter projects](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#projects) · [Full portfolio and concepts](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#portfolio) · [Open-source tools](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#open-source).
 
 **Try a pre-launch website check.** The demo site served the page over both HTTP and HTTPS. [Run the free check on your public URL](https://betterloopai.com/check/from-agent-readme) without signing up. Pick one finding to verify and fix. When you rerun the check, allow the 15-minute report cache to expire. [Watch the 30-second redirect walkthrough](https://github.com/fainir#two-things-i-built-and-tested).
@@ -27,9 +39,9 @@ If `/docs` redirects to `/docs/` and `/docs/` is the intended search URL, check 
 
 For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
 
-If you maintain several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
+**Verify a first monitoring event.** [Run one Betterloop pageview on localhost](examples/betterloop-first-pageview.md) using your Free project. [Check a deployed site](https://betterloopai.com/docs/install#verify) with the same snippet. For several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
 
-**Test that a browser edit persists.** In a fresh private browser session, open [Plainer’s editable launch checklist](https://plainer.app/try/from-agent-guide). Add a line such as “Confirm Retry restores the controls,” reload, and check that the line is still there. To save it to a free account, choose **Keep workspace** and follow the verification link in the same private session.
+**Test that a browser edit persists.** In a fresh private browser session, open [Plainer’s editable launch checklist](https://plainer.app/try/from-agent-guide). Add a line such as “Confirm Retry restores the controls,” reload, and check that the line is still there. To keep the edit in a free account, choose **Sign up** in the note. Open the email verification link in the same private window, then sign in there.
 
 I build Plainer. [Plainer Pro](https://plainer.app/pricing/from-agent-guide) gives you a personal allowance for its built-in assistant. The 14-day trial requires a card. The monthly plan renews at $8 a month unless cancelled.
 
@@ -72,7 +84,7 @@ In a new project folder, paste the system prompt into your coding agent. Then [t
 
 [Test whether an assistant can undo its own edit](examples/plainer-assistant-undo.md). Save a manual note, let the assistant create a second one, and check what survives Undo.
 
-[Verify a project handoff in Gemini CLI](examples/plainer-gemini-handoff.md). Give the agent read access to a sample workspace, then check that it can quote the note and spot a missing detail.
+[Read a project note from Gemini CLI](examples/plainer-gemini-handoff.md). Install the Plainer extension on Free, grant read access to a sample workspace, and check that the answer quotes the source note and spots a missing detail.
 
 **Try a screen-reading task on Android.** Handy AI uses Claude and needs Android 11 or later and Accessibility permission. [Install Handy AI from Google Play](https://play.google.com/store/apps/details?id=com.claudeagent.phone&utm_source=github&utm_campaign=mcasp_handy_screen_read), then [follow the setup guide](https://gethandyai.app/#install). Open a screen with text you know and are comfortable sharing. Say or type “Read the text on this screen,” then check that Handy AI reads a line that is actually there.
 
@@ -88,7 +100,9 @@ For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com
 
 ### Test the first click in a browser
 
-[Walk through the OpenWorld startup repair](examples/openworld-first-play.md). Fail a single Three.js request, recover with Retry, and check that the game reaches its controls. Use the same sequence to test an agent’s claim that a UI fix works.
+[Play Enchanted Forest](https://open-world.gg/play/from-agent-guide). Choose **Tap to play** on a phone or **Start game** on desktop.
+
+[See the first-play preview and startup check](examples/openworld-first-play.md#play-enchanted-forest). Recover a failed Three.js load with Retry and check that the same game reaches its controls.
 
 To test a file upload, open [pocket-test.csv](examples/pocket-test.csv). On desktop, choose **Download raw file**. On a phone, open **Edit and raw actions** and choose **Download**. In a signed-out browser, open [the KeepFinding guest importer](https://keepfind.ing/pocket?utm_source=github&utm_medium=readme&utm_campaign=mcasp-pocket-preview).
 
@@ -2644,38 +2658,4 @@ Examples:
 - a memory project ships a better retrieval pattern -> test it on long-horizon tasks
 - a benchmark appears for a domain you care about -> add it to your eval suite
 - a company-ops project ships a better KPI or decision-queue model -> test it as a control-plane object and dashboard change
-- a workflow project ships a better pause or resume pattern -> test it as a harness/runtime change
-
-EXTERNAL KNOWLEDGE MEMORY
-
-Maintain a dedicated memory layer for outside intelligence with fields like:
-- source
-- url
-- date
-- category
-- claim
-- relevance
-- confidence
-- suggested experiment
-- status
-- outcome
-
-This memory should make it easy to answer:
-- What changed in the agent ecosystem this week?
-- Which new ideas actually improved our system?
-- Which popular ideas did we reject and why?
-- Which assumptions in our architecture are getting stale?
-
-SELF-IMPROVEMENT TARGETS
-
-Allow the system to improve:
-- prompts
-- skills
-- playbooks
-- rules
-- tool adapters
-- automations
-- specialized harnesses
-- dashboards
-- workflows
--
+- a workflow project ships a better pause or resume pattern -> test it as a

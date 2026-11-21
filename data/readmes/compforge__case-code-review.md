@@ -1,0 +1,134 @@
+# case-code-review (`ccr`)
+
+> A trajectory-evaluation-driven agentic code review pipeline that turns code changes into evidence-backed Findings. Built on [open-code-review](https://github.com/alibaba/open-code-review). ｜ 中文见 [README.zh-CN.md](./README.zh-CN.md)
+
+## Philosophy
+
+Code review is not “send every changed file to a model.” File boundaries describe storage, not behavior; a diff alone is often too narrow, while reading the whole repository is usually too expensive and still cannot reveal unstated business rules.
+
+ccr follows three principles:
+
+1. **Review behavior, not files.** A review should cover the smallest scope that explains a change and its effects. ccr calls that scope a **Unit**.
+2. **Use a pipeline to separate discovery from verification.** Finding a plausible issue is open-ended; proving that it is real, caused by the current change, actionable, and new is narrower. Different jobs deserve different stages and agent loops.
+3. **Bring relevant knowledge, not maximum context.** Language knowledge explains code structure and binds authored declarations to code; Project Knowledge explains both project structure and the contracts and scenarios that the code must preserve.
+
+ccr does not try to enumerate every possible defect. It focuses bounded agent exploration on concrete mistakes that are easy to miss while implementing a requirement: broken caller assumptions, boundary handling, error paths, API misuse, and similar reviewable failures. Syntax remains lint's job; hidden business constraints still need explicit background or authored knowledge.
+
+![CCR agentic review pipeline from Diff to Finding](docs/review-pipeline.svg)
+
+## How to use
+
+### Install
+
+```bash
+git clone https://github.com/compforge/case-code-review && cd case-code-review
+make install        # installs `ccr` into ~/.local/bin; re-signs on macOS
+# or: go install github.com/qiankunli/case-code-review/cmd/ccr@latest
+```
+
+### Configure the model
+
+```bash
+ccr config provider     # choose or add a provider
+ccr config model        # choose a model
+ccr llm test            # verify connectivity
+```
+
+Configuration lives in `~/.casecodereview/config.json`. Built-in and OpenAI-compatible custom providers can also be configured non-interactively; see `ccr config --help`.
+
+### Review a change
+
+```bash
+ccr review                              # staged + unstaged + untracked changes
+ccr review --from main --to my-branch  # branch against merge base
+ccr review --commit abc123              # one commit against its first parent
+ccr review --background "requirement"   # add business or requirement context
+ccr review --format json                # machine-readable output for CI/bots
+ccr review --format jsonl               # stream accepted Findings before the run finishes
+```
+
+`ccr review --timeout` sets the total time limit in minutes for each Unit, including discovery, verification queueing, Trial and wrap-up (default 10; 0 disables the Unit time limit).
+
+For continuous PR/MR review, pass all PR comments with `--history comments.json` as a JSON array of RepoKit Python Comment fields. The caller fetches the complete discussion for each revision, including human comments and unanchored replies. R1 and R2 share this context to understand feedback and avoid repeat delivery.
+
+Use `--max-tokens-budget 200000` with `review` or `scan` to set a run-wide input + output token budget (default: unlimited). Once reported usage reaches it, new model calls stop and accepted results are retained. In-flight calls can finish, so this is a soft limit.
+
+### Inspect before spending tokens
+
+```bash
+ccr review --preview            # changed files and their review/exclusion roles
+ccr review --dry-run            # formed Units and assembled context, without an LLM call
+ccr review --dry-run --format json
+```
+
+### Observe a run
+
+```bash
+ccr viewer                      # sessions, token/time/tool totals, prompts and decisions
+```
+
+Session JSONL preserves the actual messages, model responses, tool calls, artifacts, warnings, and completion state. The Viewer opens a Review in Global View for aggregate metrics, with Job and Session views for business decisions and continuous agent execution. Context opens as the detail of one selected model call within Job or Session. Execution status, recording gaps and quality verdicts remain distinct.
+
+Local session recordings rotate automatically during review/scan: 7 days and 5 GiB by default, with active and recently written sessions protected. Use `ccr clean --dry-run` to preview cleanup; see [retention settings](docs/observability.md#本地记录保留与清理) for configuration and legacy unfinished recordings. Copy evaluation samples outside the session store for long-term retention.
+
+### Optional authored context and feature gates
+
+Place a generated `spec.json` at `.casecodereview/spec.json`, pass `--spec`, or configure user-level contracts to add authored spec/case/rule/link context. Named feature gates support ablation, for example:
+
+```bash
+ccr review --feature caller_callee=off
+ccr review --feature callchain=off
+ccr review --feature doc=off
+```
+
+Run `ccr review --help` for the full command and feature list.
+
+## Core model
+
+### Unit: the review boundary
+
+A **Unit** brings related changes into a complete, bounded review context. It can cover one declaration, a region of a file, or cooperating changes across files.
+
+CCR uses [`CodeGraph`](https://github.com/compforge/codegraph) to locate changed declarations and bindings and follow their source relationships, so changes such as a caller and its callee can be reviewed together. Deleted code is interpreted against the pre-change source.
+
+Grouping stays within capacity limits. When those limits prevent further merging, CCR retains the changes for review and reports the boundary. See [Unit formation](docs/unit-model.md) for grouping rules and configuration.
+
+### Review 1 discovers; Review 2 verifies; Review 3 gates
+
+| stage | responsibility | output | public-prosecution analogy |
+|---|---|---|---|
+| **Unit Review (Review 1)** | explore a Unit, follow evidence, identify plausible defects | `Hypothesis` | investigation proposes a case theory |
+| **Hypothesis Review (Review 2)** | independently check source, diff, baseline, impact, attribution, and duplication | `Assessment` | prosecutor reviews whether evidence supports the allegation |
+| **Trial (Review 3)** | apply deterministic delivery gates | `Finding` or rejection | court gate decides what may be delivered |
+
+The analogy explains separation of duties; these are code-review stages, not legal simulations. Review 1 is encouraged to discover. Review 2 is encouraged to disprove weak hypotheses. **Review 3** is an alias for deterministic Trial, not another agent loop, so incomplete or unsupported work cannot silently become a public comment. The three passes also echo the Chinese mnemonic “吾日三省吾身”: review the result repeatedly before delivering it.
+
+These stages form an incremental pipeline rather than three global batches. A mature Hypothesis can enter Review 2 and Trial while other Units are still being investigated, so accepted work survives later timeouts. Conversely, a simple change with no remaining material lead can finish immediately; a budget is a ceiling, not a target runtime.
+
+Large repositories can raise snapshot capture budgets with `--max-files` and
+`--max-snapshot-bytes`. These limits control preparation, independently of model
+context and output limits; exceeding them fails explicitly rather than reviewing
+a truncated snapshot.
+
+[Review pipeline](docs/review-pipeline.md)
+
+### Language Knowledge and Project Knowledge
+
+Two knowledge foundations support Unit formation and both review stages:
+
+| knowledge | what it contributes |
+|---|---|
+| **Language Knowledge** | syntax-aware symbols, spans, outlines, definitions, references, calls, imports, symbol/file proximity, plus the syntax and identities used to bind authored declarations to code |
+| **Project Knowledge** | structural knowledge such as Repository, Component, FileRole and entrypoints; authored biz knowledge such as `spec`, `case`, `link`, `rule`, and `doc` |
+
+Language owns how authored knowledge is extracted and attached; Project Knowledge owns what those declarations mean in the reviewed project. This `spec / case / link / rule / doc` model is the origin of the “case” in case-code-review. [`spec-case`](https://github.com/compforge/spec-case) remains an optional way to author and distribute it; ccr also works without it.
+
+[Developer guide](AGENTS.md)
+
+## Status
+
+Actively developed. Current foundations include project-aware file roles, language analysis, Unit formation, two agent review stages plus deterministic Trial, cross-revision history, bounded agent execution, and an observable session viewer.
+
+## License
+
+Apache-2.0 (see `LICENSE` / `NOTICE`).

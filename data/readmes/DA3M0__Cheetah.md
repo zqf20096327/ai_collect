@@ -5,14 +5,15 @@
 | | |
 |---|---|
 | 🧠 **Ant tiered memory** | per-tensor VRAM/RAM/Disk residency acting on real pages — 123 MB steady RSS on a 0.5B model (vs 2.5 GB untiered) |
-| 🚀 **native CPU backend** | mmap-backed BF16 weights, AVX2 SIMD kernels — up to 8 tok/s on Qwen2-0.5B |
+| 🚀 **native CPU backend** | mmap-backed BF16 weights, AVX2 SIMD kernels — up to 8 tok/s on Qwen2-0.5B; chunked prefill runs batched GEMMs (`CHEETAH_PREFILL_CHUNK`), an LRU KV-prefix cache skips re-prefilling shared history across turns, and serve warms the model up before binding |
 | 🧩 **declarative model registry** | one registration file per family — architecture, chat template, stop markers, both backends, family constants; build.rs generates the registry, lookups derive from it |
 | 🔌 **OpenAI-compatible API** | `/v1/chat/completions` with SSE streaming, tool calls, API keys |
+| 🧰 **MCP, both directions** | **Server**: built into `cheetah serve` — the model is exposed at `POST /mcp` for any MCP agent, no flags needed. **Client**: `--mcp-server` / `--mcp-config` connects MCP servers whose tools the model calls in an agentic loop. Guide: [docs/MCP.md](docs/MCP.md) |
 | 🛠️ **no GGUF** | Safetensors in, self-describing prepared directory out (`cheetah init`) |
 
 ```
                  ┌─────────────────────────────────────────────┐
-  CLI / OpenAI ──▶ Engine (chat/serve) ──▶ ModelRuntime boundary ──▶ ┐
+  CLI / OpenAI ──▶ Engine (chat/serve) ──▶ ModelForward boundary ──▶ ┐
                  └─────────────────────────────────────────────┘      │
                                                                       ▼
                     ┌──────────────────────┬──────────────────────────┐
@@ -107,6 +108,8 @@ Key variables (full list in [docs/CODEBASE.md](docs/CODEBASE.md) §4):
 |----------|--------|---------|
 | `CHEETAH_DEVICE` | `cpu` / `vulkan` | `cpu` (native backend) |
 | `CHEETAH_QUANT_Q8` | `1` / `0` | `0` (full precision; Vulkan only) |
+| `CHEETAH_PREFILL_CHUNK` | positive integer | `256` (rows per chunked-prefill GEMM batch, native backend) |
+| `RUST_LOG` | env-filter | `info` in serve (per-request TTFT/prefill timing on stderr) |
 | `CHEETAH_VRAM_POOL_SIZE` | bytes | `838860800` (800 MiB; Vulkan C substrate pool) |
 
 ### 5. Run a chat
@@ -212,7 +215,7 @@ On Windows, GPU builds under WSL2 additionally require the relevant GPU and driv
 
 The optional Vulkan feature uses native C compute operators for all registered architectures (Qwen2, Llama, Qwen3, Gemma, Mistral, Mixtral, Phi). See the beginner build guide above for the Vulkan build command and prerequisites. The compute shaders are compiled with `glslc`.
 
-**Supported weight precisions:** F32, F16, BF16, and **Q8** (row-wise int8 with per-row f32 scales, enabled by `CHEETAH_QUANT_Q8=1`). Q8 roughly halves the weight footprint compared to BF16. Mixtral uses the sparse-expert architecture with per-token expert routing (`num_experts_per_tok`). Not every configuration is supported (for example, Vulkan Llama does not support RoPE scaling); unavailable devices or model initialization/loading errors report a diagnostic and stop with guidance (there is no silent CPU fallback). An error during active Vulkan inference is returned rather than silently switching devices.
+**Supported weight precisions:** F32, F16, BF16, **Q8** (row-wise int8, `CHEETAH_QUANT_Q8=1`) and **Q4** (row-wise int4, `CHEETAH_QUANT_Q4=1`) with per-row f32 scales. Q8 roughly halves the weight footprint compared to BF16; Q4 quarters it. Mixtral uses the sparse-expert architecture with per-token expert routing (`num_experts_per_tok`). Not every configuration is supported (for example, Vulkan Llama does not support RoPE scaling); unavailable devices or model initialization/loading errors report a diagnostic and stop with guidance (there is no silent CPU fallback). An error during active Vulkan inference is returned rather than silently switching devices.
 
 **Ant bucketed residency:** VRAM-tier weights are uploaded once into DEVICE_LOCAL memory (real VRAM); disk-tier weights stream through a HOST_COHERENT pool each step. Ant page-in/evict moves weights between the two buckets. On GPUs with small VRAM, oversized uploads automatically fall back to the streaming path per weight.
 
@@ -262,6 +265,8 @@ cheetah /path/to/prepared-model --system "You are a concise assistant."
 | `--system "..."` | Built-in concise assistant prompt | System prompt, injected at the beginning of the conversation |
 | `--context <name>` | None | Restore a saved conversation |
 | `--context-dir <path>` | Platform application-data directory | Override context archive storage |
+| `--mcp-server name=cmd [args...]` | None | Connect one MCP stdio server; its tools are offered to the model and executed server-side in the agentic loop (repeatable) |
+| `--mcp-config <path>` | None | JSON file: `{servers: [{name, command, args: [...]}]}` (once); see [docs/MCP.md](docs/MCP.md) |
 
 After each reply, interactive chat displays the number of generated tokens and decoding speed in tokens per second. The speed excludes prompt prefill; it is unavailable when no tokens are generated.
 
@@ -323,6 +328,8 @@ The startup banner prints the backend capability list per architecture (`backend
 - [docs/CODEBASE.md](docs/CODEBASE.md) — repository map: every file's role, request data flows, module index, environment surface, test matrix, and the invariants that must not break.
 - [docs/ANT_MEMORY.md](docs/ANT_MEMORY.md) — Ant memory manager and the native backend: file formats, the parameter-resolution chain, the residency planner, page-level tier control, SIMD kernels, the comparison-test infrastructure, and the add-a-family checklist.
 - [docs/REGISTRY.md](docs/REGISTRY.md) — the model resolution layer: architecture → chat template / backend capability / family constants, backend selection, and how to add an architecture, family, or backend.
+- [docs/MCP.md](docs/MCP.md) — MCP, both directions: the built-in `POST /mcp` server endpoint, client configuration, the agentic loop, streaming hold-back, and testing.
+- [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md) — coding conventions and the complete per-function reference (every function in the codebase, analyzed).
 
 ## Model inspection
 
@@ -358,7 +365,10 @@ The service prints its URL and, when enabled, its API key at startup. Press `Ctr
 | `--max-concurrent-generations N` | 1 | Maximum simultaneous inference requests |
 | `--generate-key` | Disabled | Generate and print an API key |
 | `--api-key <KEY>` | None | Set an API key; mutually exclusive with `--generate-key` |
+| `--mcp-server name=cmd [args...]` | None | Connect one MCP stdio server; its tools join every request and execute server-side (repeatable) |
+| `--mcp-config <path>` | None | JSON file: `{servers: [{name, command, args: [...]}]}` (once) |
 
+`POST /mcp` exposes the model **as** an MCP server for agents on the same HTTP server (see [docs/MCP.md](docs/MCP.md) §1) — one JSON-RPC 2.0 message per request (`initialize`, `tools/list`, `tools/call` with `chat_generate`/`model_info`), sharing the OpenAI endpoints' auth and FIFO generation queue.
 Chat options can also be supplied to `serve` to set generation defaults. Without authentication, the server refuses non-loopback listen addresses. Requests other than `GET /health` require `Authorization: Bearer <key>`.
 
 ### Endpoints
@@ -406,13 +416,13 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-The chat endpoint accepts `model`, `messages`, `stream`, `temperature`, `top_p`, `top_k`, `max_tokens` or `max_completion_tokens`, `stop`, `seed`, `n` (only `1`), `tools`, and `tool_choice`. Supported roles are `system`, `developer` (mapped to system), `user`, `assistant`, and `tool`. Tool calls are returned to the client; Cheetah does not execute external functions. The text-completion endpoint supports `prompt`, `stream` (streaming is not supported), `temperature`, `top_p`, `max_tokens`, `stop`, `seed`, and `echo` (not currently supported).
+The chat endpoint accepts `model`, `messages`, `stream`, `temperature`, `top_p`, `top_k`, `max_tokens` or `max_completion_tokens`, `stop`, `seed`, `n` (only `1`), `tools`, and `tool_choice`. Supported roles are `system`, `developer` (mapped to system), `user`, `assistant`, and `tool`. Tool-call handling depends on where the tool lives: calls to **MCP-configured tools execute server-side** in the agentic loop (the answer incorporates their results), while **client-declared tool calls are returned to the client** in the OpenAI `tool_calls` shape for client-side execution. See [docs/MCP.md](docs/MCP.md). The text-completion endpoint supports `prompt`, `stream` (streaming is not supported), `temperature`, `top_p`, `max_tokens`, `stop`, `seed`, and `echo` (not currently supported).
 
 The server loads one model at a time. Generation requests are queued in arrival order, with concurrency limited by `--max-concurrent-generations`; raising the limit may increase memory use. Hot-loading multiple models, embeddings, audio, and image endpoints are not supported.
 
 ## Supported models and limitations
 
-- **Inference:** Safetensors decoder models resolved for Qwen2, Llama, Qwen3, Mixtral (native CPU backend, Ant-tiered; Mixtral is the mixture-of-experts with per-token expert routing via `num_experts_per_tok`), plus the dense delta families Mistral (decoding-time sliding window), Gemma (offset norms, sqrt(hidden) embedding scale, GeGLU), and Phi (biased LayerNorms, parallel residual, fused projections, partial rotary). Every family also runs on the independent Vulkan executor with F32, F16, BF16, or Q8 (row-wise int8) weights, subject to model configuration compatibility.
+- **Inference:** Safetensors decoder models resolved for Qwen2, Llama, Qwen3, Mixtral (native CPU backend, Ant-tiered; Mixtral is the mixture-of-experts with per-token expert routing via `num_experts_per_tok`), plus the dense delta families Mistral (decoding-time sliding window), Gemma (offset norms, sqrt(hidden) embedding scale, GeGLU), and Phi (biased LayerNorms, parallel residual, fused projections, partial rotary). Every family also runs on the independent Vulkan executor with F32, F16, BF16, Q8 (row-wise int8) or Q4 (row-wise int4) weights, subject to model configuration compatibility.
 - **Inspection and preparation:** Safetensors model directories and weight files.
 - **Not supported:** GGUF inference, ONNX, and PyTorch `.bin`/pickle inference. Cheetah's `formats` command lists its supported inputs.
 
@@ -422,11 +432,11 @@ Model inference requires enough system or GPU memory for the weights, context, a
 
 Contributions are welcome — the codebase is structured so the common tasks are mechanical:
 
-- **Add a native model family** (highest value): declare the family's deltas in `DenseFeatures` (offset norms, embedding scale, GeGLU, LayerNorm, parallel residual, fused projections, partial rotary — existing flags cover all published dense deltas), add a declarative registration file in `src/chat/models/registrations/` (build.rs picks it up and regenerates the registry), and extend the native forward-parity tests. Step-by-step: [docs/REGISTRY.md](docs/REGISTRY.md) §4 and [docs/ANT_MEMORY.md](docs/ANT_MEMORY.md) §11. Reference migrations: llama (optional bias, untied lm_head), qwen3 (per-head q/k RMSNorm), mistral (sliding window), gemma (offset norms + embedding scale + GeGLU), phi (LayerNorm + parallel residual + fused projections).
-- **Kernels / memory control**: the hot path is the fused BF16 gemv in `src/chat/models/native/kernels.rs` (AVX2 intrinsics with a portable fallback); Ant page control lives in `native/store.rs`. Isolation tests and the native forward-parity checks guard correctness.
+- **Add a native model family** (highest value): add a registration file in `src/chat/registrations/` (build.rs picks it up and regenerates the registry) that declares the family's capability **and implements its `ModelForward` assembly** — the layer stacking composes the shared `OpsToolbox` ops, so a new shape is new composition, not core-code changes. Extend the native forward-parity tests. Step-by-step: [docs/REGISTRY.md](docs/REGISTRY.md) §4 and [docs/ANT_MEMORY.md](docs/ANT_MEMORY.md) §11. Reference files: llama (baseline), qwen3 (per-head q/k RMSNorm), mistral (sliding window), gemma (offset norms + embedding scale + GeGLU), phi (LayerNorm + parallel residual + fused projections), mixtral (sparse MoE).
+- **Kernels / memory control**: the hot path is the fused BF16 gemv in `src/chat/native/ops.rs` — the OpsToolbox module (AVX2 intrinsics with a portable fallback; `native/kernels.rs` re-exports it for compatibility); Ant page control lives in `native/store.rs`. Isolation tests and the native forward-parity checks guard correctness.
 - **Server / CLI work**: `src/serve/` and `src/cli.rs` are self-contained.
 
-Start with [CONTRIBUTING.md](CONTRIBUTING.md) (workflows, debugging toolbox, error-message cheat sheet, review checklist) and the [repository map](docs/CODEBASE.md). Model-specific Vulkan compute shaders (optional `src/chat/models/<name>.comp`) are discovered at build time and exposed through the generated shader registry.
+Start with [CONTRIBUTING.md](CONTRIBUTING.md) (workflows, debugging toolbox, error-message cheat sheet, review checklist) and the [repository map](docs/CODEBASE.md). Model-specific Vulkan compute shaders (optional `src/chat/registrations/<name>.comp`) are discovered at build time and exposed through the generated shader registry.
 
 ## FAQ
 
@@ -434,7 +444,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md) (workflows, debugging toolbox, err
 `cpu` (default) → the native backend for architecture-resolved families (Qwen2, Llama, Qwen3, Mixtral, Mistral, Gemma, Phi); `vulkan` → the independent executor (requires `--features vulkan` build). The startup banner prints `backends: ...` for the loaded architecture.
 
 **Why did I get "no native CPU backend available"?**
-That architecture has no native implementation yet. Use `CHEETAH_DEVICE=vulkan` (independent executor), or contribute the family — see §3.1 above.
+That architecture has no native implementation yet. Use `CHEETAH_DEVICE=vulkan` (independent executor), or contribute the family — see [Contributing](#contributing) below.
 
 **Why is the model directory missing `config.json` after `cheetah init`?**
 It is not required: init snapshots the model parameters into `cheetah_manifest.json`, and loading falls back to that snapshot (plus registered family defaults) when the file is absent.

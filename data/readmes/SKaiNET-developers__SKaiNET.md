@@ -90,8 +90,8 @@ StreamingGGUFReader.open(source).use { reader ->
     // Load specific tensor on demand (no whole-file loading)
     val bytes = reader.loadTensor("token_embd.weight")
 
-    // Or get a TensorStorage descriptor with encoding/placement metadata
-    val storage = reader.loadTensorStorage("token_embd.weight")
+    // Or get a view over the tensor's bytes: its format, and values decoded on read
+    val view = reader.loadTensorView("token_embd.weight")
 }
 ```
 
@@ -447,7 +447,7 @@ Browse the full codebase documentation on [DeepWiki](https://deepwiki.com/SKaiNE
 
 - **Michal Harakal** ([@michalharakal](https://github.com/michalharakal)) — the billion-parameter
   export arc: allocation-free void tracing, aliased constant extraction, strict StableHLO
-  conversion, the array-free `BufferHandle.Floats` path, and the sharded SafeTensors loader
+  conversion, the array-free `ConstantSource.Floats` path, and the sharded SafeTensors loader
 
 ### Contributors (0.52.0)
 

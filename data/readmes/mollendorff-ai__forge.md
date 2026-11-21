@@ -95,11 +95,11 @@ It names the project exactly, since "Forge" is a crowded name; it installs the r
 
 It needs an AI that can run commands. Tried by the maintainer on 2026-11-15: it worked on Claude and on Grok, free tiers included; the free tiers of ChatGPT and Gemini had no sandbox to run it in. For those, the prompt's last lines ask the AI to say so rather than make numbers up, and to send you to [Forge Studio](https://forge.mollendorff.ai/), which needs nothing but a browser.
 
-**Five more prompts** in [docs/PROMPTS.md](docs/PROMPTS.md), each run by a fresh agent before it went in: build a model from a description, bring a workbook in from Excel and back, budget against actual, what-if (scenarios, break-even, goal seek, sensitivity), and risk and decisions (simulation, tornado, decision tree, real options). Each ends with the model's YAML, to open in Studio, and the page ends with what to keep in a prompt of your own.
+**Six more prompts** in [docs/PROMPTS.md](docs/PROMPTS.md), each run by a fresh agent before it went in: build a model from a description, bring a workbook in from Excel and back, budget against actual, what-if (scenarios, break-even, goal seek, sensitivity), risk and decisions (simulation, tornado, decision tree, real options), and games (what will the other side do?). Each ends with the model's YAML, to open in Studio, and the page ends with what to keep in a prompt of your own.
 
 ## Status and known limitations
 
-Forge is a release candidate (v10.0.0-rc.30) and an R&D prototype: read its claims as hypotheses to check, not facts to trust. It was built with AI assistance under the author's direction (Claude is listed as a co-author in `Cargo.toml`). Do not rely on it for real financial decisions without checking the results independently.
+Forge is a release candidate (v10.0.0-rc.32) and an R&D prototype: read its claims as hypotheses to check, not facts to trust. It was built with AI assistance under the author's direction (Claude is listed as a co-author in `Cargo.toml`). Do not rely on it for real financial decisions without checking the results independently.
 
 Forge began in 2025 as the core of a trading-engine idea, built closed-source for a few months. Making the YAML calculator showed it was worth more as a financial-modelling tool, and it was opened under MIT OR Apache-2.0 in February 2026; it is not a trading engine and does not plan to become one ([ADR-063](docs/architecture/ADR-063-ORIGIN-OF-FORGE.md)).
 
@@ -313,7 +313,7 @@ Forge's results are checked against engines it does not control, and none of the
 
 | Check | What it covers | Latest result |
 | --- | --- | --- |
-| Unit tests (this repo) | over 2,650 tests and 2 doctests, including Black-Scholes and binomial option prices checked against QuantLib reference values | all pass, 0 fail, on every push (the CI badge above) |
+| Unit tests (this repo) | over 2,750 tests and 2 doctests, including Black-Scholes and binomial option prices checked against QuantLib reference values | all pass, 0 fail, on every push (the CI badge above) |
 | [forge-e2e-gnumeric](validation/gnumeric) | 2,162 formula cases. A case passes only if `forge calculate`, Gnumeric's recalculation of the exported `.xlsx` (LibreOffice's for the 175 cases Gnumeric cannot read), and Forge after export and import all match the expected value | 2,137 pass, 0 fail, 1 skipped, the 168 by LibreOffice included (2026-11-17); CI runs them on every pull request |
 | [forge-e2e-r](validation/r) | Math, date and financial functions, and analytics (Monte Carlo, bootstrap, tornado, sensitivity, decision trees, real options, Bayesian networks) compared with R | 136 function checks pass (2026-11-14); 70 of 77 analytics specs compared with R, 7 skipped (2026-11-12) |
 | [validation/games](validation/games) | Games: equilibria compared with Gambit, tournaments with the axelrod library, 2 x 2 closed forms with R | 0 disagreements in 3,000 generated games, 372 tournament values and the named games (2026-11-20) |

@@ -8,6 +8,13 @@ A standalone, visual LoRA loader node for ComfyUI — organize LoRAs into groups
 
 Only notable changes are listed here; minor visual or text tweaks are omitted.
 
+### 1.0.8
+
+- LORA string import now ignores common personal prefixes (krea2, k2, anima) and tolerates small filename differences, including OCR-confusable 1/i/I/l/L and 0/o/O; near matches open a picker with local candidates
+- Replacing a LoRA now resyncs trigger words, note, and recommended weight from the new file while keeping model/CLIP weights and enabled state
+- Dragging LoRAs now treats folder top/bottom edges and inter-folder gaps as easier insert targets, while the header center still drops into the folder
+- Folder ignore now uses a crossed-out eye icon and supports separate global colors for ignored and normal states
+
 ### 1.0.7
 
 - Added ComfyUI Desktop compatibility by replacing native prompt/confirm/alert dialogs with in-page dialogs across presets, folders, weights, and metadata actions

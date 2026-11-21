@@ -55,6 +55,48 @@ Competitors sell ephemeral summaries. Omnitome sells **traceable, navigable prov
 
 ---
 
+## How Omnitome Works in Practice (In Plain English)
+
+If you've ever tried using generic cloud AI tools to "read" a book, you already know the disappointment: you upload a 400-page book, and the AI spits out six superficial bullet points like *"Chapter 4: Alice travels to the mountains and meets Bob."* They skip 90% of the book, ignore the mathematical formulas, erase character subtleties, and hallucinate details that were never there.
+
+Omnitome takes a completely different, mathematically grounded approach called **Loss-Bounded Semantic Compression**:
+
+```
+ Raw Document               Ingestion & Clean                Dynamic Slicing                 Omni Reading Archive
+ ┌──────────────┐          ┌───────────────────┐          ┌───────────────────┐          ┌────────────────────────┐
+ │ • Clean PDF  │          │ Strips Headers,   │          │ Mathematically    │          │ 250–360 Words/Chapter  │
+ │ • Dirty PDF  │ ───────► │ Footers, Artifacts│ ───────► │ Balanced Slices   │ ───────► │ (Dynamic Max 500 W)    │
+ │ • EPUB/DOCX  │          │ & Circular Fluff  │          │ Across Whole Book │          │ 100% Clickable Citations│
+ └──────────────┘          └───────────────────┘          └───────────────────┘          └────────────────────────┘
+```
+
+### 1. Ingestion of Any Document (Even "Dirty" Scans)
+Drop in clean PDFs, scanned or "dirty" PDFs with misaligned OCR headers and footers, EPUBs, DOCX, Markdown, or raw TXT. Omnitome's local extraction pipeline isolates the true body text, cleans OCR artifacts, and strips repetitive filler without touching the original source prose.
+
+### 2. Dynamic, Mathematically Balanced Word Slices
+Instead of treating a book as disconnected chunks, Omnitome calculates dynamic, equally distributed semantic slices across the **entire length of your document**. It guarantees complete coverage from Page 1 to the final chapter—no chapters are dropped, no subplots are forgotten, and no technical arguments are skipped.
+
+### 3. The 250–360 Word "Omni Chapter" Sweet Spot
+Each slice is transformed into a dense, high-clarity **Omni Chapter**:
+* **Target Word Count:** **250 to 360 words per chapter** (dynamically expanding up to a hard ceiling of **500 words** for dense technical formulas, mathematical derivations, or complex multi-character dialogues).
+* **Why This Specific Range?** Based on cognitive reading retention research and working memory chunking limits (such as cognitive load theory and optimal reading speeds), ~300 words represents the ideal human focus threshold. You can absorb a complete, high-density chapter in under 90 seconds with 100% comprehension, allowing an entire 400-page book to be deeply internalized in a single afternoon.
+* **Full Context Preserved:** Creative voice, conceptual depth, key mathematical equations, and tactical maneuvers are preserved—never flattened into generic summaries.
+
+### 4. 100% Verifiable Provenance (The "Anti-Hallucination" Moat)
+Every single synthesized sentence in an Omni Chapter carries an interactive, clickable citation badge (e.g., `[p12]`). Clicking any badge immediately brings up the verbatim source paragraph in the side-by-side Research Pane. If a claim cannot be verified against the source text, Omnitome flags it with a dotted underline as an ungrounded defect.
+
+### 5. 100% Local & Private (Zero-Egress by Default)
+* **Your Data Stays on Your Disk:** Your documents, reading history, notes, and vector embeddings are stored inside a local SQLite database (`storage/data.db`) on your machine. No telemetry logs, no cloud databases, and zero unconsented data sharing.
+* **Bring Your Own Intelligence:** You have total freedom. Run 100% offline and air-gapped using local inference engines like **Ollama** (Local LLaMA, Mistral, Qwen) or **LM Studio**, or plug in your personal API keys for **OpenRouter**, Gemini, Claude, or OpenAI.
+
+### 6. Hardware Requirements: Built for Real Consumer Hardware
+You don't need a multi-thousand-dollar server rack to run Omnitome:
+* **System RAM:** Light memory footprint! Thanks to the **F65 sequential await barrier**, Node's ingestion orchestrator runs comfortably capped at **~296 MB RAM** (down from 14.6 GB).
+* **GPU / VRAM:** Minimum **4 GB VRAM** (e.g., NVIDIA GeForce RTX 3050 Laptop GPU or desktop equivalent). Omnitome uses FP16 CUDA for local BGE-M3 (1024d) vector search, BGE Reranker v2, and Kokoro-82M neural audio, with automatic idle VRAM eviction (**F43 LifecycleManager**) reclaiming 3.2 GB of GPU memory when idle.
+* **Storage:** ~3 GB free disk space for the pre-packaged neural models and sidecar runtime.
+
+---
+
 ## The Three Foundational Laws
 
 Every pipeline and interface in Omnitome adheres to three inviolable operational laws:

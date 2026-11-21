@@ -1,0 +1,56 @@
+# Blandskron Documental
+
+Aplicación de código abierto para la gestión y consulta documental, desarrollada por Blandskron. Permite cargar y organizar documentos, buscar por contenido y hacer preguntas con respuestas que citan sus fuentes. Desde la interfaz puedes revisar los fragmentos recuperados, guardar conversaciones y exportar respuestas a PDF.
+
+La web usa React y TypeScript. Django administra la identidad y once servicios de aplicación en total cubren el recorrido documental. La ingesta y el chat calculan embeddings en CPU. PostgreSQL con pgvector almacena los vectores y el chat envía a Groq la pregunta y el contexto recuperado según los permisos vigentes.
+
+| Guía | Contenido |
+| --- | --- |
+| [Arquitectura](docs/architecture.md) | Topología, límites de confianza, secuencia de ingesta, RAG y exportación, y mapa de servicios. |
+| [Operación local](docs/operations.md) | Arranque, configuración, diagnóstico, actualización y mantenimiento. |
+| [Verificación de entrega](docs/release/README.md) | Suite sintética, evidencias fechadas, auditoría de imágenes y alcance de CI. |
+| [Backend](backend/README.md) | Inventario y documentación de los once microservicios. |
+| [Base de datos](scripts/database/README.md) | Esquema, roles, preflight y migraciones. |
+| [Skills y documentación](docs/maintainers.md) | Convenciones y rutas de trabajo para agentes. |
+| [Frontend](frontend/README.md) | Estructura, convenciones, diseño y pruebas de la interfaz. |
+
+```mermaid
+flowchart LR
+    web["Web documental"] --> backend["APIs de identidad y documentos"]
+    backend --> store["PostgreSQL, pgvector y originales"]
+    backend --> groq["Groq para respuestas con fuentes"]
+```
+
+## Probar en local
+
+Necesitas Git y Docker con Compose compatible con `include` y `additional_contexts`. Clona el repositorio y, desde su raíz, crea el archivo de configuración en PowerShell si aún no existe.
+
+```powershell
+git clone https://github.com/Blandskron/AgenteIADocumental.git
+cd AgenteIADocumental
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+Edita `.env` y configura `POSTGRES_PASSWORD`, `DJANGO_SECRET_KEY`, `INITIAL_ADMIN_USERNAME` e `INITIAL_ADMIN_PASSWORD`. Añade `GROQ_API_KEY` para probar respuestas con el proveedor real. Usa valores propios y conserva el archivo fuera de Git.
+
+```powershell
+docker compose --env-file .env -f docker/docker-compose.yml up -d --build --wait
+```
+
+La construcción inicial descarga y verifica el modelo E5 de aproximadamente 471 MB. Si actualizas una instalación que usaba la imagen PostgreSQL anterior, sigue la guía de migración antes del arranque. [Operación y migración](docs/operations.md#migrar-la-imagen-de-postgresql)
+
+1. Abre [la aplicación local](http://localhost:3000) e inicia sesión con el administrador inicial.
+2. Carga un archivo de texto sintético que diga «El plazo del contrato de prueba es de 97 días». La ingesta calcula los embeddings localmente con los archivos incluidos en la imagen.
+3. Busca el documento, selecciónalo y pregunta «¿Cuál es el plazo del contrato?». Abre una fuente de la respuesta y exporta el mensaje a PDF. Puedes volver a descargarlo desde **Mis PDFs**.
+
+Compose publica los puertos en loopback para desarrollo local. Google Drive es opcional y arranca deshabilitado. Para ejecutar el recorrido integral con Groq simulado y sin credenciales personales, sigue la [guía de verificación](docs/release/README.md).
+
+## Colaboración
+
+Usa las [issues del repositorio](https://github.com/Blandskron/AgenteIADocumental/issues) para reportar errores y proponer mejoras. Para preparar un cambio, sigue las [pautas de contribución](CONTRIBUTING.md) y las [instrucciones para colaboradores](AGENTS.md). Para hallazgos de seguridad, sigue el [procedimiento de reporte privado](SECURITY.md).
+
+## Licencia y atribuciones
+
+El código y la documentación propios de Blandskron se publican bajo la [licencia MIT](LICENSE) (© 2026 Blandskron). Puedes usarlos, modificarlos y redistribuirlos, incluso con fines comerciales, conservando los avisos de copyright y licencia.
+
+Los componentes de terceros se rigen por sus propias licencias. Noto Sans usa [SIL Open Font License 1.1](backend/DocumentExportServices/app/infrastructure/pdf/fonts/LICENSE.txt). Las imágenes de ingesta y chat incluyen la licencia MIT y la ficha del modelo multilingual-e5-small. [Ficha de E5](https://huggingface.co/intfloat/multilingual-e5-small/tree/614241f622f53c4eeff9890bdc4f31cfecc418b3)

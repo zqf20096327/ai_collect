@@ -4,9 +4,11 @@
 
 **Big MoE models on two retired Tesla P100s. Loud fans, fast tokens.**
 
-Qwen3.8-Flash-Next and Edge0-145B with a 512k context on a pair of 2016 server cards.<br>
+Qwen3.8-Flash-Next and Edge0-145B with a 512k context on a pair of 2016 server cards,<br>
+and Thinking Machines' **Inkling 2 Mini** on an engine of its own, `ink2`.<br>
 Built and measured for exactly **two Tesla P100 16 GB, each on its own PCIe 3.0 x16 link**.<br>
-Flash-Next IQ3_S: **~67 tok/s writing · 110+ tok/s edits · ~1,000 tok/s reading a 38k-token prompt**.
+Flash-Next IQ3_S: **~67 tok/s writing · 110+ tok/s edits · ~1,000 tok/s reading a 38k-token prompt**.<br>
+Inkling 2 Mini (`ink2`, exact): **~79 tok/s writing · 100-127 tok/s edits · ~800 tok/s reading · 256k context**.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![GPU: 2× Tesla P100](https://img.shields.io/badge/GPU-2%C3%97%20Tesla%20P100%2016%20GB-76b900?logo=nvidia&logoColor=white)
@@ -15,9 +17,17 @@ Flash-Next IQ3_S: **~67 tok/s writing · 110+ tok/s edits · ~1,000 tok/s readin
 ![Context 512k](https://img.shields.io/badge/context-524%2C288%20tokens-orange)
 ![API: OpenAI-compatible](https://img.shields.io/badge/API-OpenAI--compatible-412991)
 
-[Quick start](#-quick-start) · [Speed](#-speed) · [Models](#-models) · [2× M40 test build](#-test-build-two-tesla-m40-24-gb) · [How it works](#-how-it-works) · [Full guide](docs/GUIDE.md)
+[Quick start](#-quick-start) · [Speed](#-speed) · [Models](#-models) · [Inkling 2 engine](#-inkling-2-mini-an-engine-of-its-own) · [2× M40 test build](#-test-build-two-tesla-m40-24-gb) · [Hy4 test build](#-test-build-tencent-hy4-flash) · [How it works](#-how-it-works) · [Full guide](docs/GUIDE.md)
 
 </div>
+
+> 🦑 **New: Inkling 2 Mini on the same two P100s**, with an engine of its own (`ink2`): the whole model in VRAM, every sum
+> exact, 78.8 tok/s writing with its DSpark drafter, ~800 tok/s reading, up to 256k context; llama.cpp did 13 / 143 on the
+> same cards. On branch [`inkling2`](https://github.com/Megla123/Scream-P100/tree/inkling2): [what it is and how to run it](#-inkling-2-mini-an-engine-of-its-own).
+
+> 🧪 **Tencent Hy4 flash on the same two P100s**, with an engine of its own: 27 tok/s writing, 337 tok/s reading (442
+> with f16 sums). A test build on branch [`hy4-test`](https://github.com/Megla123/Scream-P100/tree/hy4-test):
+> [what it is and how to run it](#-test-build-tencent-hy4-flash).
 
 ---
 
@@ -81,17 +91,20 @@ Building by hand, preparing the files and every option are in the [full guide](d
 `bench/bench.py` on our server, tok/s, each a single run on a freshly loaded engine, exact routing (`FNX_ROUTE_PRIOR=0`),
 built from this repository's 17 Nov sources (`e56c3f60`, before the 18 Nov switch):
 
-| Model | Context | RAM | ✍️ Fresh writing | ✏️ Edits (Python / Markdown) | 📖 Cold read, 38,862 tokens |
+| Model | Context | RAM (most used) | ✍️ Fresh writing | ✏️ Edits (Python / Markdown) | 📖 Cold read, 38,862 tokens |
 |---|---:|---:|---:|---:|---:|
 | **Flash-Next IQ3_S** (ISTA-DASLab GSQ-RCO) | 512k | 96 GB | **66.5** | **110.7 / 115.8** | **1,012** |
-| Flash-Next IQ3_S, 64 GB mode ¹ | 256k | 64 GB | 63.8 | 93.6 / 99.2 | 807 |
+| Flash-Next IQ3_S, 64 GB mode ¹ | 256k | 64 GB (55.6 GiB) | 63.8 | 93.6 / 99.2 | 807 |
 | Flash-Next UD-Q4_K_XL (Unsloth) ² | 512k | 96 GB | 52.3 | 60.2 / 63.6 | 963 |
-| Flash-Next UD-Q4_K_XL, **64 GB mode** ⁶ | 512k | 64 GB | 37.6 | 38.9 / 42.8 | 429 |
+| Flash-Next UD-Q4_K_XL, **64 GB mode** ⁶ | 512k | 64 GB (55.5 GiB) | 37.6 | 38.9 / 42.8 | 429 |
+| Flash-Next UD-Q4_K_XL, **Coder** experts ⁷ | 512k | 96 GB | 59.3 | 100.6 / 91.8 | 802 |
+| Flash-Next UD-Q4_K_XL, **Coder** experts, **32 GB mode** ⁷ | 512k | 32 GB (22.5 GiB) | 50.1 | 73.6 / 63.4 | 987 |
 | Edge0-145B NVFP4 | 512k | 96 GB | 55.0 | 96.6 / 98.9 | 691 |
 | ⚠️ Fast UD-Q4_K_XL, **lossy** ⁴ | 512k | 96 GB | 73.9 | 125.1 / 126.4 | 1,007 |
-| ⚠️ Fast UD-Q4_K_XL, lossy, **32 GB mode** ⁵ | 512k | 32 GB | 67.1 | 118.5 / 120.2 | 754 |
+| ⚠️ Fast UD-Q4_K_XL, lossy, **32 GB mode** ⁵ | 512k | 32 GB (22.5 GiB) | 67.1 | 118.5 / 120.2 | 754 |
 
-¹ We have no 64 GB machine: this ran in a 58 GiB memory cgroup on our 96 GB server.<br>
+¹ We have no 64 GB machine: this ran in a 58 GiB memory cgroup on our 96 GB server. In brackets for the low-RAM modes:
+the most RAM the engine used in these tests (page-locked and its own memory, not the page cache, which Linux gives back).<br>
 ² With 18 Nov's switch and settings, our own test chain on 18-19 Nov (not `bench.py`), the same window as the fast
 profile; its long read is 36,424 tokens on a freshly loaded engine with the lookup table in the page cache, as it
 mostly is in use (a 29,700-token read in our production on the night of 18 Nov: 974 tok/s). `bench.py` on 16 Nov, before the switch:
@@ -107,7 +120,14 @@ the model files on our SAS array (about 0.5 GB/s for these reads): the same firs
 The edits' first runs read their prompts from the disk; the second and third ran at 43.0-43.1 / 46.5-46.8. Each new
 prompt of more than 144 tokens reads about 13.5 GB from the disk (6,000 characters: 23.6 s, with 96 GB 4.0 s), so the
 SSD sets the reading speed. At 510k tokens it read at 368 and wrote at 23.5 tok/s. See
-[UD-Q4_K_XL on 64 GB](docs/GUIDE.md#ud-q4_k_xl-on-64-gb).
+[UD-Q4_K_XL on 64 GB](docs/GUIDE.md#ud-q4_k_xl-on-64-gb).<br>
+⁷ The Coder's experts (a different, smaller model than the full one, see [Coder](docs/GUIDE.md#coder)) with exact
+routing (λ 0), our own test chain on 21 Nov, both in the same window. The 32 GB mode ran in a 28 GiB memory cgroup on
+our 96 GB server, the model files on our SAS array: the same first-token logits as with 96 GB in 150 of 150 requests
+(KL 0) and every answer the same to the character. It pins 19.6 GiB of RAM, at most 22.5 GiB with the engine's own
+memory. Writing code with reasoning: 73.6 / 54.0 tok/s, edits through an `edit` tool 69.2 / 42.4. A new 6,000-character
+prompt right after the long read took 8.9 s (96 GB: 3.1 s): it reads from the disk. See
+[32 GB of RAM](docs/GUIDE.md#32-gb-of-ram).
 
 <details>
 <summary><b>Our machine</b></summary>
@@ -129,11 +149,12 @@ Every number, including deep contexts, conversation reads and pictures, is in th
 |---|---|---|---|---|---:|---|
 | [ISTA-DASLab GSQ-RCO **IQ3_S**](https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF) | 96 GB, or **64 GB** with `--ram 64` | 512k (256k with 64 GB) | exact | `setup.sh /data/flash-next` | 85 GB | The fastest. |
 | [Unsloth **UD-Q4_K_XL**](https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF) | 96 GB | 512k | exact | `setup.sh /data/flash-next-q4 --model q4_k_xl` | 112 GB | The larger quantization. Fewer experts fit on the cards, so edits wait for PCIe, and 96 GB of RAM is tight. |
-| **UD-Q4_K_XL, 64 GB** | **64 GB** + the model on an SSD | 512k | exact | `build.sh --32g`, then `setup.sh /data/flash-next-q4-64 --models /data/flash-next-q4/models --model q4_k_xl --ram 64` | none | The exact UD-Q4_K_XL on a 64 GB machine, on the low-RAM engine of the 32 GB mode: no expert pinned in RAM, the ones the cards do not hold come from a 50 GiB RAM tier and the model files. The same answers as with 96 GB, writing at about 70 % of its speed; each new prompt reads about 13.5 GB from the SSD, so the SSD sets the reading speed. [Details](docs/GUIDE.md#ud-q4_k_xl-on-64-gb). |
+| **UD-Q4_K_XL, 64 GB** | **64 GB** + the model on an SSD (uses up to 55.5 GiB) | 512k | exact | `build.sh --32g`, then `setup.sh /data/flash-next-q4-64 --models /data/flash-next-q4/models --model q4_k_xl --ram 64` | none | The exact UD-Q4_K_XL on a 64 GB machine, on the low-RAM engine of the 32 GB mode: no expert pinned in RAM, the ones the cards do not hold come from a 50 GiB RAM tier and the model files. The same answers as with 96 GB, writing at about 70 % of its speed; each new prompt reads about 13.5 GB from the SSD, so the SSD sets the reading speed. [Details](docs/GUIDE.md#ud-q4_k_xl-on-64-gb). |
 | [Edge0 **Edge0-145B NVFP4**](https://huggingface.co/Edge0/Edge0-145B-NVFP4) | 96 GB | 512k | exact | `setup.sh /data/edge0 --model edge0` | 87 GB ³ | Flash-Next with its experts in a latent space (Edge0 Community Model License). Weaker Slovenian in our tests. |
 | **Coder** expert mask | as its file | as its file | ⚠️ lossy | `setup.sh /data/flash-next-coder --models /data/flash-next/models --coder` | none | Flash-Next only: the experts ISTA-DASLab's Coder keeps. At λ 0.15, code edits ran 11 % (IQ3_S) to 43 % (UD-Q4_K_XL) faster, but it is worse outside code and ignored instructions in Slovenian. |
+| **Coder UD-Q4_K_XL, 32 GB** | **32 GB** + the model on an SSD (uses up to 22.5 GiB) | 512k | the Coder's, exact | `build.sh --32g`, then `setup.sh /data/flash-next-q4-coder-32 --models /data/flash-next-q4/models --model q4_k_xl --coder --ram 32` | none | The Coder mask on UD-Q4_K_XL without the fast profile's lossy switches, on the low-RAM engine: the Coder's answers of 96 GB bit for bit (KL 0). Pins 19.6 GiB, at most 22.5 GiB with the engine's own memory. Writing 50.1 tok/s, code edits 70-75, a 36k read 987; 45 of 45 functions, 26 of 26 edits, 16 of 16 English questions. As the Coder, worse outside code. [Details](docs/GUIDE.md#32-gb-of-ram). |
 | ⚠️ **Fast UD-Q4_K_XL** | 96 GB | 512k | ⚠️ lossy | `setup.sh /data/flash-next-q4-fast --models /data/flash-next-q4/models --model q4_k_xl --fast` | none | The UD-Q4_K_XL file with the Coder mask, `FNX_ROUTE_PRIOR=1.0` and `FNX_ONEHOP=2`: 1.4x fresh writing, 2x code edits. **Answers are worded differently** from the exact profile; in our 87 code, edit and English tasks it did about as well (four loads: 0, 0, 2 and 0 failed tasks, the exact profile 1), but it may ignore instructions in other languages and is not repeatable at temperature 0. For code and English. [Details and warning](docs/GUIDE.md#fast-ud-q4_k_xl). |
-| ⚠️ **Fast UD-Q4_K_XL, 32 GB** | **32 GB** + the model on an SSD | 512k | ⚠️ lossy | `build.sh --32g`, then `setup.sh /data/flash-next-q4-32 --models /data/flash-next-q4/models --model q4_k_xl --fast --ram 32` | none | The fast profile on a 32 GB machine, with an engine of its own (`build-32g/`; the other profiles' engine is not touched): no expert pinned in RAM, the ones the cards do not hold come from the model files through a 17 GiB RAM tier. About as fast as with 96 GB when writing, reads 17 % slower; 45 of 45 functions, 16 of 16 English questions. [Details](docs/GUIDE.md#32-gb-of-ram). |
+| ⚠️ **Fast UD-Q4_K_XL, 32 GB** | **32 GB** + the model on an SSD (uses up to 22.5 GiB) | 512k | ⚠️ lossy | `build.sh --32g`, then `setup.sh /data/flash-next-q4-32 --models /data/flash-next-q4/models --model q4_k_xl --fast --ram 32` | none | The fast profile on a 32 GB machine, with an engine of its own (`build-32g/`; the other profiles' engine is not touched): no expert pinned in RAM, the ones the cards do not hold come from the model files through a 17 GiB RAM tier. About as fast as with 96 GB when writing, reads 17 % slower; 45 of 45 functions, 16 of 16 English questions. Pins 19.6 GiB. 1.4x the Coder profile's fresh writing on 32 GB, 1.7-1.9x its code edits. [Details](docs/GUIDE.md#32-gb-of-ram). |
 
 ³ 28.8 GB of it is the IQ3_S's second shard: point `--models` at the IQ3_S folder to share it.
 
@@ -152,6 +173,48 @@ f16 arithmetic), on **32 GB of RAM**: ISTA-DASLab's GSQ-RCO IQ3_XXS, 256k contex
 **45.7 tok/s** fresh writing, **62.9 / 66.7** edits (Python / Markdown), **420 tok/s** reading a 38,862-token prompt. Strata's
 layer-split engine did 35.2 tok/s writing and 275 tok/s reading on the same machine. Build with `bash build.sh --m40`, set up
 with `setup.sh DATA --model iq3_xxs`. Only the 24 GB M40 was run.
+
+## 🦑 Inkling 2 Mini: an engine of its own
+
+[![Inkling 2 Mini on two Tesla P100: an engine of its own](docs/inkling2-scream-p100.jpg)](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md)
+
+> ⚠️ **Measured on one machine only**, on branch [`inkling2`](https://github.com/Megla123/Scream-P100/tree/inkling2)
+> ([docs/INKLING2.md](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md)). Written on 21 Nov 2026; nobody else has run it yet. Reports
+> are welcome.
+
+Thinking Machines' **Inkling 2 Mini** (26.4B looped MoE: layers 6-17 run three times, 128 experts, NVFP4) on the same two
+P100 16 GB with an **engine of its own**, `ink2` (`engine-inkling2/`): both cards on every layer at once, and here the whole
+model fits in VRAM (8.9 GB a card), so nothing streams over PCIe. Xylolabs's NVFP4-Q8_0 GGUF with Unsloth's DSpark drafter
+(the model's MTP). On our machine, everything exact: **56.6 tok/s** fresh writing without drafts and **78.8** with them,
+**~100-127 tok/s** edits, **794 tok/s** reading a 4k prompt (757 at 14k, 646 at 36k), context up to **262,144** (a needle found
+at 239k). llama.cpp did 13.0 tok/s writing and 143 reading on the same cards; its greedy outputs match ours. On the test
+set of our Flash-Next builds it writes fresh answers at 66.3 tok/s (Flash-Next UD-Q4_K_XL: 59.3 exact, 68.9 lossy) and
+edits Markdown at 126.8 (92.2 / 125.6). Tool calls work; greedy only for now, no pictures.
+
+```bash
+git clone -b inkling2 https://github.com/Megla123/Scream-P100.git && cd Scream-P100
+bash engine-inkling2/build.sh && bash engine-inkling2/setup.sh /data/inkling2 && bash engine-inkling2/run.sh /data/inkling2
+```
+
+## 🧪 Test build: Tencent Hy4 flash
+
+[![Hy4 flash on two Tesla P100: an engine of its own](docs/hy4-scream-p100.jpg)](https://github.com/Megla123/Scream-P100/blob/hy4-test/docs/HY4.md)
+
+> ⚠️ **Test build, measured on one machine only**, on branch [`hy4-test`](https://github.com/Megla123/Scream-P100/tree/hy4-test)
+> ([docs/HY4.md](https://github.com/Megla123/Scream-P100/blob/hy4-test/docs/HY4.md)). Written in the two days before
+> 21 Nov 2026; nobody else has run it yet. Reports are welcome.
+
+Tencent's **Hy4 flash** on the same two P100 16 GB, with an **engine of its own** (`engine-hy4/`): Strata's split engine does
+not know Hy4's Engram tables, indexed sparse attention and latent experts, so we wrote one with the same idea (both cards
+on every layer, the experts that do not fit streamed in over PCIe). Xylolabs's IQ3_XXS GGUF, 64k context, tools and
+thinking, 96 GB of RAM. On our machine: **27-28 tok/s** fresh writing, **28-35** edits (Python and Markdown files),
+**337 tok/s** reading a 14,302-token prompt, or **442 tok/s** with f16 sums (`HY4_PF_F16=7`, on our test sets within one
+question of the first build); llama.cpp with Hy4 support did 6-9 tok/s writing on the same cards.
+
+```bash
+git clone -b hy4-test https://github.com/Megla123/Scream-P100.git && cd Scream-P100
+bash engine-hy4/build.sh && bash engine-hy4/setup.sh /data/hy4 && bash engine-hy4/run.sh /data/hy4
+```
 
 ## 🔧 How it works
 
@@ -185,7 +248,7 @@ The build-by-build story, with the gain of each step, is in [docs/HISTORY.md](do
   the [test build](#-test-build-two-tesla-m40-24-gb) on branch `m40-2x`.
 - **Above 4G Decoding** on in the BIOS, so each card gets its 16 GiB BAR1. The engine refuses a card without one.
 - **96 GB of RAM**, or 64 GB with the IQ3_S 64 GB mode or the exact UD-Q4_K_XL's 64 GB mode (model files on an SSD), or
-  32 GB with the fast UD-Q4_K_XL's 32 GB mode (lossy, model files on an SSD).
+  32 GB with UD-Q4_K_XL's 32 GB mode, the Coder's experts exact or the fast profile (lossy), model files on an SSD.
 - **CUDA 12.x** (CUDA 13 dropped sm_60) with a host compiler it accepts (CUDA 12.4: gcc 13 at most), CMake 3.22+,
   git and Python 3.10+. The driver must support both CUDA 12 and Pascal (the 580 branch is NVIDIA's last for Pascal).
 - **Disk:** about 95 GB for IQ3_S, 112 GB of files for UD-Q4_K_XL, and 87 GB for Edge0-145B (less when it shares the
@@ -206,12 +269,35 @@ settles. What has and has not been tested is in [Known limitations](docs/GUIDE.m
 | [tune/README.md](tune/README.md) | `check.py` and `tune.py`: diagnose and tune your own machine |
 | [Branch `poc-4x-p100`](https://github.com/Megla123/Scream-P100/tree/poc-4x-p100/docs/POC-4X.md) | ⚠️ **Unverified proof of concept**, never run on four cards: a build for four P100 behind one PCIe switch (`build.sh --4x`) |
 | [Branch `m40-2x`](https://github.com/Megla123/Scream-P100/blob/m40-2x/docs/M40.md) | ⚠️ **Test build** for two Tesla M40 24 GB (sm_52), measured on one machine only: IQ3_XXS, 256k, 32 GB of RAM (`build.sh --m40`) |
+| [Branch `inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md) | Thinking Machines' Inkling 2 Mini on the same two P100, an engine of its own (`ink2`), measured on one machine only: the whole model in VRAM, exact, 78.8 tok/s writing, 794 tok/s reading, 256k context (`engine-inkling2/`) |
+| [Branch `hy4-test`](https://github.com/Megla123/Scream-P100/blob/hy4-test/docs/HY4.md) | ⚠️ **Test build** for Tencent Hy4 flash on the same two P100, an engine of its own, measured on one machine only: IQ3_XXS, 64k, 96 GB of RAM, 337 / 442 tok/s reading (`engine-hy4/`) |
 | [NOTICE.md](NOTICE.md) · [docs/PROVENANCE.md](docs/PROVENANCE.md) · [docs/upstream-v0.2.10.diff](docs/upstream-v0.2.10.diff) | What is ours and what is Strata's, file by file and line by line |
 
 Our scripts and docs refer to sections as *(README, "Section")*. Those sections are now in [docs/GUIDE.md](docs/GUIDE.md).
 
 ## 📰 News
 
+- **21 Nov 2026 (evening):** 🦑 **Inkling 2 Mini with an engine of its own** on branch [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md):
+  Thinking Machines' 26.4B looped MoE on the same two P100, the whole model in VRAM, every sum exact. 56.6 tok/s fresh
+  writing (78.8 with the DSpark drafter and prompt lookup), edits 100-127, reading 794 tok/s at 4k and 646 at 36k, context
+  up to 262,144; llama.cpp `690b87d` on the same cards: 13.0 and 143. Its greedy outputs match llama.cpp's. Measured on our
+  machine only.
+- **21 Nov 2026 (afternoon):** the **Coder on 32 GB of RAM** without lossy speed-ups (`bash build.sh --32g`, then
+  `setup.sh ... --model q4_k_xl --coder --ram 32`): the Coder's experts on UD-Q4_K_XL with exact routing (λ 0, no
+  `FNX_ONEHOP`), on the 32 GB mode's low-RAM engine. Its answers are the Coder's with 96 GB, bit for bit (KL 0 in 150 of
+  150 requests, every answer the same to the character). In a 28 GiB memory cgroup: fresh writing 50.1 tok/s (96 GB:
+  59.3), code edits 70-75 (100-101), a 36k read 987 (802); the fast 32 GB profile in the same window: 68.9, 124.0-124.5
+  and 987 (lossy). It pins 19.6 GiB of RAM, at most 22.5 GiB with the engine's own memory. There is no Q4 file of the
+  Coder on Hugging Face; the mask over Unsloth's file picks the same experts ([details](docs/GUIDE.md#32-gb-of-ram)).
+  Nothing to rebuild if your `build-32g/` is from 19 Nov's evening release or later.
+- **21 Nov 2026 (morning):** the Hy4 flash test build reads faster: 337 tok/s instead of 294 on a 14,302-token prompt, and
+  **442 tok/s** with f16 sums (`HY4_PF_F16=7`, off by default; on our test sets within one question of the first build). The sparse
+  attention in one pass straight from the cache, expert kernels that skip empty token columns (the same bits), and f16 sums
+  for the dense matrices, the experts and the window attention ([branch `hy4-test`](https://github.com/Megla123/Scream-P100/blob/hy4-test/docs/HY4.md)).
+- **21 Nov 2026:** ⚠️ a **test build for Tencent Hy4 flash** on branch [`hy4-test`](https://github.com/Megla123/Scream-P100/blob/hy4-test/docs/HY4.md):
+  an engine of its own for Hy4's Engram tables, sparse attention and latent experts, on the same two P100. Xylolabs's
+  IQ3_XXS, 64k context, 96 GB of RAM: 27.0 tok/s fresh writing, 28-35 edits, 294 tok/s reading. Measured on
+  our machine only.
 - **20 Nov 2026:** ⚠️ a **test build for two Tesla M40 24 GB** (Maxwell) on branch [`m40-2x`](https://github.com/Megla123/Scream-P100/blob/m40-2x/docs/M40.md):
   the engine we ran on our second server until we sold it. ISTA-DASLab's IQ3_XXS, 256k context, 32 GB of RAM: 45.7 tok/s
   fresh writing, 62.9 / 66.7 edits, 420 tok/s reading 38.9k tokens. Measured on that one machine only.

@@ -6,6 +6,8 @@ Sync-Strata runs Qwen3.8-Flash-Next (a 125B MoE model) on a single home PC.
 The engine is a fork of [Strata](https://github.com/Niko1221/Strata), and the models, **Sync-XS, Sync-S and Sync-M**, are re-quantized to run faster than upstream's Gyro.
 A chat app ([dsh](https://www.npmjs.com/package/@deepseek-ai/dsh)) comes with the engine, and you can use it from the desktop app, your phone, the command line or an OpenAI-compatible API.
 
+The engine source, with upstream Strata's history and authors, is in [hiruhiru2005/sync-strata-engine](https://github.com/hiruhiru2005/sync-strata-engine) (`engine/` here is a submodule of it; clone with `--recursive`). Thank you to Niko1221 and the Strata contributors ([CREDITS.md](CREDITS.md)).
+
 > **Experimental.** Windows and Linux, with NVIDIA RTX 30/40 series supported (other GPUs: see the table below). The model and engine formats are not compatible with upstream Strata or llama.cpp.
 
 ## Requirements

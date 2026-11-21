@@ -96,7 +96,7 @@ web/
 - SQLite 数据目录：真实字段名 / 坐标系 / 范围 / 要素数（懒扫描，启动不阻塞）
 - 48 个配方：投影 / 缓冲 / 空间连接 / 核密度 / 局部莫兰 / 可达性 / 栅格运算…
   每个配方自带 validation 断言
-- 配方沉淀：`gis-agent distill` 把一次成功运行泛化成候选配方（静态门禁 → 回放验证 → 采纳入库），
+- 配方沉淀：`giscli distill` 把一次成功运行泛化成候选配方（静态门禁 → 回放验证 → 采纳入库），
   采纳后下次启动自动加载并回流进 prompt；UI 里 `/distill` 同样可用
 - SKILL.md 技能：启动只注入名字+描述，`run_skill` 读全文（渐进披露）
 
@@ -140,46 +140,31 @@ web/
 
 #### 快速测试
 
-在开始之前，建议先运行自动化测试验证系统状态：
+在开始之前，建议先体检环境：
 
 ```powershell
-# 运行完整测试套件
-python auto_test.py
+# 体检：Pro 是否装好、arcpy 能否 import、依赖是否齐（约 10 秒）
+giscli doctor
 
-# 或使用批处理脚本
-.\运行自动测试.bat
-
-# 诊断 LLM 配置（如果使用 LLM 增强）
-.\诊断LLM.bat
+# 加 --deep 会多跑一次持久内核启动检查（约 20 秒）
+giscli doctor --deep
 ```
 
-测试内容包括：
-- ✅ 模块导入验证
-- ✅ 参数规范化测试（LLM 参数映射）
-- ✅ 执行器多步骤测试
-- ✅ Agent 聊天流程测试
-- ✅ 完整用户会话模拟
-
-所有测试应该显示 `Passed: 5/5`。
+7 项检查逐项给「通过 / 跳过」，全过时最后一行是 `环境正常`。跑测试套件见下文「测试覆盖」。
 
 #### 启动 Agent
 
 启动交互式 GIS Agent 会话：
 
 ```powershell
-# 安装
-pip install -e .
-
 # 启动 Agent 交互式会话（新引擎：过程可见、运行中可纠偏、Esc 中断）
-gis-agent chat --workspace .\workspace
+# giscli 是仓库自带入口：自己找 Pro 的 Python，不需要 pip 安装
+giscli chat --workspace .\workspace
 
 # 接续上一次会话
-gis-agent chat --continue
+giscli chat --continue
 
-# 或使用快捷脚本
-.\start_agent.bat
-
-# 或使用 ArcGIS Pro Python 环境
+# 或使用一键启动（Windows：装依赖 + 进入对话）
 .\一键启动.bat
 
 # 示例对话：
@@ -193,7 +178,7 @@ gis-agent chat --continue
 # Agent 将引导你完成专题图制作流程
 ```
 
-> 启动时会在后台自动拉起 Web 控制台（`pythonw` 无窗口、单实例、日志在 `workspace/.gis_agent/web.log`），地址见启动输出里的 `控制台: http://127.0.0.1:8760/?token=…` 一行；`GIS_NO_WEB=1` 或 `--no-web` 可关掉，`gis-agent web --stop` 停止后台面板（自己手动 `gis-agent web` 起的实例同样会落 `workspace/.gis_agent/web.pid`，`--stop` 一样能停）。
+> 启动时会在后台自动拉起 Web 控制台（`pythonw` 无窗口、单实例、日志在 `workspace/.gis_agent/web.log`），地址见启动输出里的 `控制台: http://127.0.0.1:8760/?token=…` 一行；`GIS_NO_WEB=1` 或 `--no-web` 可关掉，`giscli web --stop` 停止后台面板（自己手动 `giscli web` 起的实例同样会落 `workspace/.gis_agent/web.pid`，`--stop` 一样能停）。
 >
 > CLI 细节（快捷键、斜杠命令、配色、会话续聊）见 [docs/cli.md](docs/cli.md)。
 > 启动为何很快、流式输出、以及各段耗时的实测数字见 [docs/performance.md](docs/performance.md)。
@@ -208,7 +193,7 @@ gis-agent chat --continue
 
 2. **启动 Agent**：
    ```powershell
-   gis-agent chat
+   giscli chat
    ```
 
 3. **Agent 会自动识别数据**：
@@ -231,22 +216,22 @@ gis-agent chat --continue
 Agent 单次任务执行：
 
 ```powershell
-# 执行单个任务（预览模式）
-gis-agent run "整合数据并导出专题图" --dry-run
-
-# 执行单个任务（实际执行）
-gis-agent run "扫描并合并所有图层" --workspace ./data
+# 执行单个任务（不进交互，跑完即退出）
+giscli loop "扫描并合并所有图层" --workspace ./data
 ```
 
-查看可用工具和技能：
+查看可用工具和技能：在交互会话里用斜杠命令
 
 ```powershell
-gis-agent tools    # 列出所有工具
-gis-agent skills   # 列出所有技能
-gis-agent status   # 查看 Agent 状态
-gis-agent eval-loop -n 30   # 运行评测闭环并生成改进建议
-gis-agent benchmark-models --models "gpt-4o-mini,claude-3-5-sonnet-20241022,Qwen/Qwen3.5-32B" --repeats 2
-# 运行跨模型基准评测，输出成功率差、解析错误率、平均时延
+/tools      # 列出所有工具
+/skills     # 列出所有技能
+/status     # 查看 Agent 状态
+```
+
+跨模型基准（跑真实引擎循环，测任务是否真的做完）：
+
+```powershell
+giscli benchmark-models --models "gpt-4o-mini,claude-3-5-sonnet-20241022,Qwen/Qwen3.5-32B" --repeats 2
 ```
 
 **启用 LLM 增强（可选但推荐）：**
@@ -301,7 +286,7 @@ cp config/llm_config.example.json config/llm_config.json
 
 > **版本说明（3.7 / 3.6）**
 >
-> - Pro **3.7** 已真机实测通过：`gis-agent doctor --deep` 7 项全过，全量 `pytest -m "not arcpy"` 0 failed，`CalculateField` / 持久内核 / 制图导出均正常（Pro 3.7 自带 Python 3.13）。
+> - Pro **3.7** 已真机实测通过：`giscli doctor --deep` 7 项全过，全量 `pytest -m "not arcpy"` 0 failed，`CalculateField` / 持久内核 / 制图导出均正常（Pro 3.7 自带 Python 3.13）。
 > - 解释器发现是多级回退：注册表四值 → 已知安装目录一层扫描 → `ARCGIS_PRO_PYTHON` 覆盖；`ARCGIS_PRO_PYTHON` 指到 `propy.bat` 时也会先探活再采用，不会把 `.bat` 直接丢给子进程。多版本并存时按版本降序取最高版。
 > - 3.7 把图例样式改了名（3.6 的 `图例 1..6` → 3.7 的 `中心标题图例` / `手动列图例` / `透明背景图例` 等），`config/cartography_styles.json` 已按 3.7 重生成，同时**保留 3.6 关键字**，两个版本都能出图。
 > - 换机器或重装 Pro 后若遇到 `ERROR 000574: 未安装 Python`，那是 Pro 自身的 Python 运行时注册没跟上（`HKLM\SOFTWARE\ESRI\ArcGISPro` 的 `PythonCondaRoot` 仍指向已删除的旧目录），不是本项目的代码问题：改注册表这两项，或用 `ARCGIS_PRO_PYTHON` 指向 `...\ArcGISPro3.7\bin\Python\envs\arcgispro-py3\python.exe`。

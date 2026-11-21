@@ -75,7 +75,7 @@ pi install npm:@edgehero/pi-dispatch-admin
 
 ```bash
 mkdir my-dispatch && cd my-dispatch
-npx --yes --ignore-scripts @edgehero/pi-dispatch@5.4.1 up --console
+npx --yes --ignore-scripts @edgehero/pi-dispatch@5.4.2 up --console
 ```
 
 It checks the folder first, then lists what it will do and asks before it starts anything. It installs into that folder and
@@ -85,7 +85,7 @@ opens your browser on the checklist, already signed in.
 
 ```bash
 mkdir my-dispatch && cd my-dispatch && npm init -y
-npm install --save-exact @edgehero/pi-dispatch@5.4.1 @edgehero/pi-dispatch-admin@5.4.1 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
+npm install --save-exact @edgehero/pi-dispatch@5.4.2 @edgehero/pi-dispatch-admin@5.4.2 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
 ./node_modules/.bin/pi-dispatch up --console
 ```
 
@@ -698,8 +698,8 @@ under one cap, and the Models page shows the comparison. A person adopts it, and
 
 ## Triggers
 
-**A trigger is what starts a job.** All standing triggers live in one `triggers.json`, which the worker and the receiver read
-live, and which the console and the panel can edit, or you by hand. Each entry is an `{ on, run }` pair: **`on` says what fires it**, and
+**A trigger is what starts a job.** All standing triggers live in one `triggers.json`, which the worker, the receiver and the
+poller read live, and which the console and the panel can edit, or you by hand. Each entry is an `{ on, run }` pair: **`on` says what fires it**, and
 **`run` says what it runs**.
 
 ```jsonc

@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 19, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 21, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 19, 2026
+- **Last Updated**: November 21, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -169,6 +169,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Tensor Art](https://tensor.art)** 🔄 - Community-driven AI art platform
 - **[Visual Maker AI](https://visualmakerai.com)** 🆕🔄 - Workspace for AI images, image-to-video and script-to-scene films
 - **[MakeImg](https://makeimg.ai)** 🔄 - AI photo generator: text prompt or reference photo to image with 11 models and free daily credits
+- **[TattooTryOn](https://tattootryon.app/)** 🔄 - Upload a photo of the spot, place a design and see it as a healed tattoo
 
 #### 🆕 Specialized Tools
 - **[ArtImageHub](https://artimagehub.com/old-photo-restoration)** 🔄 - AI old photo restoration that fixes scratches, fading and water damage
@@ -228,6 +229,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 #### 🛠️ Self-Hosted Options
 - **[AI Runner](https://github.com/Capsize-Games/airunner)** 🆓 - Local AI model runner with GUI
 - **[Jan](https://jan.ai)** 🆓 - Open-source ChatGPT alternative
+- **[Trina AX](https://github.com/trina-app/trina-ax)** 🔄 - Self-hosted team AI workspace that runs Claude Code and Codex for a whole company
 
 ---
 
@@ -274,6 +276,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Yi-1.5](https://huggingface.co/01-ai)** 🆕🆓 - 01.AI's bilingual model
 - **[Vicuna](https://vicuna.lmsys.org)** 🆓 - UC Berkeley's ChatGPT alternative
 - **[WizardLM 2](https://github.com/nlpxucan/WizardLM)** 🆕🆓 - Improved instruction-following
+- **[CAEL](https://github.com/Vovala14/CAEL)** 🆕🆓 - Non-neural chat and reasoning assistant on CPU; ARC grid solver
 
 ---
 
@@ -470,6 +473,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
 - **[OneTag AI](https://onetagai.com)** 🔄 - Add AI to any static site with one script tag, no backend
 - **[HiAPI](https://hiapi.ai)** 💰 - Pay-as-you-go API for image, video, audio and text models; OpenAI-compatible
+- **[Wiro AI](https://wiro.ai)** 💰 - One API for 1,000+ image, video, audio and LLM models, plus workflows, agents and MCP
 - **[HopBase](https://hop-base.com)** 💰 - AI API gateway: one base URL for Claude, GPT, Gemini, DeepSeek plus image and video models
 - **[CloudGPU](https://cloudgpu.app)** 💰 - Per-minute RTX 4090/5090 GPU rental, OpenAI-compatible model API and MCP server
 - **[Vectoree](https://vectoree.ai)** 💰 - Hosted backend for coding agents with one OpenAI-compatible project key, auth, Postgres and storage
@@ -506,6 +510,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Murf](https://murf.ai)** 🔄 - AI voice generator for content
 - **[Speechify](https://speechify.com)** 🔄 - Text-to-speech with natural voices
 - **[Resemble AI](https://resemble.ai)** 💰 - Custom voice cloning
+- **[Voiceshard](https://voiceshard.com)** 🔄 - Free AI text to speech: create and listen with no signup, sign in free to download
 
 #### 🎵 Music Generation
 - **[Suno AI](https://suno.ai)** 🆕 - AI music and song generation
@@ -562,6 +567,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Twistavo](https://twistavo.com)** 💰 - AI character swap: replace a person in a video from 1 to 4 photos
 - **[HoneyVid](https://honeyvid.ai)** 🆕💰 - Put anyone from one photo into a viral video, or generate with Kling, Veo and Seedance
 - **[Angry Dance](https://angrydance.com)** 🆕💰 - Turn one photo into 9:16 AI pet dance, meme, and two-step scene clips without watermarks
+- **[PawMambo](https://pawmambo.com/)** 🔄 - Dog photo and dance-reference clip to AI video; 20 one-time signup credits
 - **[BeatMV](https://beatmv.ai)** 🔄 - AI music video generator that turns any song into a beat-synced music video
 
 #### 🆕 Emerging Platforms
@@ -621,6 +627,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Auferet](https://auferet.com/)** - AI game master for text adventures and tabletop RPGs with story memory
 - **[Poe](https://poe.com)** 🔄 - Multiple AI models in one platform
 - **[Adoree](https://adoree.ai)** 🔄 - AI relationship assistant that helps couples say what they mean and find next steps
+- **[Quock](https://apps.apple.com/app/quock/id6785608333)** 🆓 - Open-source iPhone app to chat with Ollama Cloud models using your ollama.com account
 
 #### 🌐 Browser Integration
 - **[Brave Search](https://search.brave.com)** 🆓 - Privacy-focused search with AI
@@ -726,6 +733,8 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - Unbounce
 - CodeWP
 - Framer
+- **[PolyDraft](https://polydraft.ai)** 🔄 - AI website builder that researches, writes and builds a complete site from a business brief
+- **[Ginta](https://ginta.app)** 🔄 - AI website builder for small businesses, with forms, bookings and a shop
 
 ## ChatGPT Plugins
 - Expedia
@@ -797,6 +806,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[AgentGPT](https://agentgpt.reworkd.ai)** 🆓 - Browser-based autonomous agent
 - **[AnyModelBot](https://github.com/modelflare-ai/AnyModelBot)** 🆕🆓 - Open-source desktop assistant, first out-of-the-box DeepSeek Super Agent
 - **[kwant](https://github.com/alexsergivan/kwant)** 🆕🆓 - Self-hosted team of AI bots in one Rust binary with @mention handoffs, routines and approvals
+- **[5dive](https://github.com/5dive-ai/5dive)** 🆓 - Self-hosted AI team that runs Claude Code, Codex and other agents on your own server
 
 #### 🛠️ Agent Frameworks
 - **[LangGraph](https://langchain.com)** 🆕🆓 - Stateful agent workflows
@@ -910,6 +920,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 #### ⚡ Personal Assistants
 - **[Notion AI](https://notion.so/ai)** 💰 - AI-powered note-taking and organization
 - **[Remio](https://remio.ai/)** 🔄 - Local-first AI knowledge base for personal context retrieval
+- **[AFFiNE](https://affine.pro)** 🔄 - Open-source, local-first knowledge base with AI for docs, whiteboards and databases
 - **[Todoist](https://todoist.com)** 🔄 - Task management with AI assistance
 - **[Motion](https://usemotion.com)** 💰 - AI calendar and task planner
 - **[NeverApply](https://neverapply.co)** 🔄 - AI job-search agent: matches jobs, tailors resumes, and applies with your approval.

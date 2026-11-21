@@ -61,70 +61,97 @@ The published standings come from one exhibition tournament run with `npm run st
 
 <!-- standings:start -->
 
-Round robin (10 seeds per pair, mirrored spawns) · 1820 matches · fuel budget · spec 0.2.2-draft / engine 0.2.2-r2 · generated 2026-09-23.
+Round robin (10 seeds per pair, mirrored spawns) · 5060 matches · fuel budget · spec 0.2.2-draft / engine 0.2.2-r2 · generated 2026-11-21.
 
 | # | Controller | Provider | Thinking | Harness | Development | Source | Strength | 95% CI | Score % | W / D / L |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | GPT-6 Astra | OpenAI | ultra | Codex | iterative | [gpt-6-astra-ultra.js](packages/bots/gpt-6-astra-ultra.js) | 229.6 | 184.5 – 287.8 | 74.2 | 189 / 8 / 63 |
-| 2 | Fable 5.1 | Anthropic | max | Claude Code | iterative | [fable-5-1-max.js](packages/bots/fable-5-1-max.js) | 210.6 | 171.5 – 260.8 | 72.3 | 186 / 4 / 70 |
-| 3 | GPT-5.6 Terra | OpenAI | ultra | Codex | iterative | [gpt-5-6-terra-ultra.js](packages/bots/gpt-5-6-terra-ultra.js) | 131.6 | 107.5 – 161.3 | 61.0 | 149 / 19 / 92 |
-| 4 | Claude Sonnet 5 | Anthropic | max | Claude Code | iterative | [sonnet-5-max.js](packages/bots/sonnet-5-max.js) | 117.6 | 95.5 – 142.3 | 58.1 | 142 / 18 / 100 |
-| 5 | Claude Opus 5.1 | Anthropic | max | Claude Code | iterative | [opus-5-1-max.js](packages/bots/opus-5-1-max.js) | 99.3 | 81.2 – 119.0 | 53.7 | 132 / 15 / 113 |
-| 6 | DeepSeek V4 Pro 0813 | DeepSeek | — | OpenCode | iterative | [deepseek-v4-pro-0813.js](packages/bots/deepseek-v4-pro-0813.js) | 95.1 | 78.8 – 113.3 | 52.5 | 125 / 23 / 112 |
-| 7 | Claude Haiku 4.5 | Anthropic | max | Claude Code | iterative | [haiku-4-5-max.js](packages/bots/haiku-4-5-max.js) | 89.0 | 71.4 – 108.0 | 50.8 | 119 / 26 / 115 |
-| 8 | GPT-5.5 | OpenAI | xhigh | Codex | iterative | [gpt-5-5-xhigh.js](packages/bots/gpt-5-5-xhigh.js) | 84.6 | 68.9 – 101.2 | 49.4 | 115 / 27 / 118 |
-| 9 | Claude Opus 5.5 | Anthropic | max | Claude Code | iterative | [opus-5-5-max.js](packages/bots/opus-5-5-max.js) | 80.4 | 66.5 – 96.9 | 48.1 | 117 / 16 / 127 |
-| 10 | GPT-5.6 Sol | OpenAI | ultra | Codex | iterative | [gpt-5-6-sol-ultra.js](packages/bots/gpt-5-6-sol-ultra.js) | 69.0 | 56.1 – 82.7 | 44.0 | 99 / 31 / 130 |
-| 11 | GLM 5.3 Flash | Z.ai | — | OpenCode | iterative | [glm-5-3-flash.js](packages/bots/glm-5-3-flash.js) | 67.5 | 54.9 – 80.8 | 43.5 | 103 / 20 / 137 |
-| 12 | GPT-5.6 Luna | OpenAI | max | Codex | iterative | [gpt-5-6-luna-max.js](packages/bots/gpt-5-6-luna-max.js) | 59.0 | 47.8 – 71.7 | 40.0 | 93 / 22 / 145 |
-| 13 | Baseline | Reference controller | — | — | reference | [baseline.js](packages/bots/baseline.js) | 34.3 | 27.2 – 42.1 | 26.9 | 59 / 22 / 179 |
-| 14 | GPT-5.3 Codex Spark | OpenAI | xhigh | Codex | iterative | [gpt-5-3-codex-spark-xhigh.js](packages/bots/gpt-5-3-codex-spark-xhigh.js) | 32.3 | 24.7 – 41.0 | 25.6 | 54 / 25 / 181 |
+| 1 | Fable 5.1 | Anthropic | max | Claude Code | iterative | [fable-5-1-max.js](packages/bots/fable-5-1-max.js) | 206.6 | 175.3 – 243.3 | 70.8 | 309 / 5 / 126 |
+| 2 | GPT-6.2 Astra | OpenAI | ultra | Codex | iterative | [gpt-6-2-astra-ultra.js](packages/bots/gpt-6-2-astra-ultra.js) | 205.5 | 174.9 – 241.5 | 70.7 | 292 / 38 / 110 |
+| 3 | GPT-6 Astra | OpenAI | ultra | Codex | iterative | [gpt-6-astra-ultra.js](packages/bots/gpt-6-astra-ultra.js) | 190.7 | 163.4 – 222.1 | 69.0 | 297 / 13 / 130 |
+| 4 | GPT-6.1 Sol | OpenAI | ultra | Codex | iterative | [gpt-6-1-sol-ultra.js](packages/bots/gpt-6-1-sol-ultra.js) | 156.6 | 133.3 – 185.4 | 64.3 | 264 / 38 / 138 |
+| 5 | Fable 5.2 | Anthropic | max | Claude Code | iterative | [fable-5-2-max.js](packages/bots/fable-5-2-max.js) | 129.1 | 110.6 – 152.3 | 59.5 | 261 / 2 / 177 |
+| 6 | GPT-5.6 Terra | OpenAI | ultra | Codex | iterative | [gpt-5-6-terra-ultra.js](packages/bots/gpt-5-6-terra-ultra.js) | 124.0 | 106.2 – 147.6 | 58.5 | 242 / 31 / 167 |
+| 7 | Claude Sonnet 5 | Anthropic | max | Claude Code | iterative | [sonnet-5-max.js](packages/bots/sonnet-5-max.js) | 106.6 | 91.2 – 124.5 | 54.7 | 222 / 37 / 181 |
+| 8 | Claude Sonnet 5.5 | Anthropic | max | Claude Code | iterative | [sonnet-5-5-max.js](packages/bots/sonnet-5-5-max.js) | 98.9 | 84.2 – 114.9 | 52.7 | 225 / 14 / 201 |
+| 9 | Claude Haiku 5.5 | Anthropic | max | Claude Code | iterative | [haiku-5-5-max.js](packages/bots/haiku-5-5-max.js) | 98.5 | 85.1 – 113.1 | 52.6 | 214 / 35 / 191 |
+| 10 | GPT-5.5 | OpenAI | xhigh | Codex | iterative | [gpt-5-5-xhigh.js](packages/bots/gpt-5-5-xhigh.js) | 98.1 | 85.3 – 112.5 | 52.5 | 206 / 50 / 184 |
+| 11 | GPT-6.2 Sol | OpenAI | ultra | Codex | iterative | [gpt-6-2-sol-ultra.js](packages/bots/gpt-6-2-sol-ultra.js) | 92.6 | 78.7 – 107.2 | 51.0 | 204 / 41 / 195 |
+| 12 | DeepSeek V4 Pro 0813 | DeepSeek | — | OpenCode | iterative | [deepseek-v4-pro-0813.js](packages/bots/deepseek-v4-pro-0813.js) | 89.0 | 76.1 – 103.1 | 50.0 | 203 / 34 / 203 |
+| 13 | Claude Opus 5.1 | Anthropic | max | Claude Code | iterative | [opus-5-1-max.js](packages/bots/opus-5-1-max.js) | 85.6 | 71.9 – 99.4 | 49.0 | 204 / 23 / 213 |
+| 14 | GPT-6 Sol | OpenAI | ultra | Codex | iterative | [gpt-6-sol-ultra.js](packages/bots/gpt-6-sol-ultra.js) | 81.9 | 69.9 – 95.7 | 47.8 | 205 / 11 / 224 |
+| 15 | Claude Haiku 4.5 | Anthropic | max | Claude Code | iterative | [haiku-4-5-max.js](packages/bots/haiku-4-5-max.js) | 80.1 | 67.2 – 94.5 | 47.3 | 191 / 34 / 215 |
+| 16 | GLM 5.3 Flash | Z.ai | — | OpenCode | iterative | [glm-5-3-flash.js](packages/bots/glm-5-3-flash.js) | 76.0 | 65.6 – 88.0 | 45.9 | 189 / 26 / 225 |
+| 17 | GPT-6.1 Terra | OpenAI | ultra | Codex | iterative | [gpt-6-1-terra-ultra.js](packages/bots/gpt-6-1-terra-ultra.js) | 76.0 | 64.3 – 88.8 | 45.9 | 181 / 42 / 217 |
+| 18 | Claude Opus 5.5 | Anthropic | max | Claude Code | iterative | [opus-5-5-max.js](packages/bots/opus-5-5-max.js) | 72.4 | 62.2 – 83.3 | 44.7 | 185 / 23 / 232 |
+| 19 | GPT-5.6 Sol | OpenAI | ultra | Codex | iterative | [gpt-5-6-sol-ultra.js](packages/bots/gpt-5-6-sol-ultra.js) | 72.1 | 62.0 – 82.3 | 44.5 | 174 / 44 / 222 |
+| 20 | GPT-5.6 Luna | OpenAI | max | Codex | iterative | [gpt-5-6-luna-max.js](packages/bots/gpt-5-6-luna-max.js) | 56.5 | 47.4 – 65.8 | 38.4 | 152 / 34 / 254 |
+| 21 | GPT-6 Luna | OpenAI | max | Codex | iterative | [gpt-6-luna-max.js](packages/bots/gpt-6-luna-max.js) | 42.3 | 34.8 – 49.6 | 31.5 | 121 / 35 / 284 |
+| 22 | Baseline | Reference controller | — | — | reference | [baseline.js](packages/bots/baseline.js) | 31.8 | 26.3 – 37.2 | 25.2 | 87 / 48 / 305 |
+| 23 | GPT-5.3 Codex Spark | OpenAI | xhigh | Codex | iterative | [gpt-5-3-codex-spark-xhigh.js](packages/bots/gpt-5-3-codex-spark-xhigh.js) | 29.1 | 23.8 – 34.7 | 23.4 | 84 / 38 / 318 |
 
 **Play style.** Measured from the recorded frames of the same matches. The profile names the axis where a controller stands out most against this roster.
 
 | Controller | Profile | Contact | Closing | Wedge | Engagements / min | Speed | Turn rate | Edge time | Energy / s | Recharges |
 |---|---|---|---|---|---|---|---|---|---|---|
-| GPT-6 Astra | Energy burn | 25% | 42% | 68% | 7.5 | 1.19 m/s | 0.59 rad/s | 4% | 13.5 | 3.9 |
-| Fable 5.1 | Edge play | 15% | 38% | 67% | 9.5 | 0.89 m/s | 0.66 rad/s | 26% | 9.3 | 1.6 |
-| GPT-5.6 Terra | Aggression | 27% | 39% | 67% | 5.7 | 0.83 m/s | 0.52 rad/s | 5% | 11.3 | 2.3 |
-| Claude Sonnet 5 | Aggression | 29% | 40% | 56% | 6.8 | 0.67 m/s | 0.55 rad/s | 3% | 11.0 | 1.0 |
-| Claude Opus 5.1 | Mobility | 16% | 26% | 50% | 7.6 | 1.60 m/s | 0.85 rad/s | 6% | 9.1 | 2.1 |
-| DeepSeek V4 Pro 0813 | Aggression | 26% | 44% | 62% | 7.9 | 1.24 m/s | 0.81 rad/s | 5% | 11.6 | 1.6 |
-| Claude Haiku 4.5 | Energy burn | 33% | 44% | 78% | 7.5 | 1.15 m/s | 0.52 rad/s | 6% | 13.8 | 1.5 |
-| GPT-5.5 | Aggression | 35% | 47% | 89% | 5.0 | 0.90 m/s | 0.24 rad/s | 8% | 13.9 | 0.3 |
-| Claude Opus 5.5 | Energy burn | 21% | 26% | 51% | 7.4 | 0.96 m/s | 0.51 rad/s | 10% | 10.7 | 1.6 |
-| GPT-5.6 Sol | Pressure | 34% | 40% | 67% | 5.1 | 0.66 m/s | 0.42 rad/s | 5% | 12.5 | 1.1 |
-| GLM 5.3 Flash | Energy burn | 27% | 31% | 45% | 7.4 | 0.95 m/s | 0.67 rad/s | 12% | 11.5 | 0.9 |
-| GPT-5.6 Luna | Aggression | 29% | 40% | 72% | 5.2 | 0.79 m/s | 0.52 rad/s | 1% | 11.3 | 0.9 |
-| Baseline | Pressure | 33% | 45% | 87% | 4.4 | 0.86 m/s | 0.30 rad/s | 6% | 13.3 | 0.3 |
-| GPT-5.3 Codex Spark | Pressure | 32% | 44% | 68% | 5.9 | 1.17 m/s | 0.46 rad/s | 9% | 11.8 | 0.6 |
+| Fable 5.1 | Wedge control | 14% | 37% | 66% | 8.3 | 0.89 m/s | 0.62 rad/s | 23% | 8.8 | 2.3 |
+| GPT-6.2 Astra | Energy burn | 31% | 51% | 79% | 7.6 | 1.42 m/s | 0.43 rad/s | 6% | 14.9 | 2.9 |
+| GPT-6 Astra | Energy burn | 22% | 43% | 64% | 7.1 | 1.26 m/s | 0.59 rad/s | 4% | 12.9 | 4.0 |
+| GPT-6.1 Sol | Wedge control | 32% | 40% | 88% | 4.4 | 0.95 m/s | 0.30 rad/s | 7% | 12.6 | 1.7 |
+| Fable 5.2 | Mobility | 3% | 18% | 30% | 2.1 | 2.09 m/s | 0.78 rad/s | 17% | 7.9 | 4.3 |
+| GPT-5.6 Terra | Pressure | 24% | 43% | 65% | 5.5 | 0.92 m/s | 0.56 rad/s | 6% | 10.6 | 2.4 |
+| Claude Sonnet 5 | Pressure | 28% | 43% | 54% | 6.3 | 0.71 m/s | 0.53 rad/s | 4% | 10.4 | 1.1 |
+| Claude Sonnet 5.5 | Mobility | 11% | 24% | 39% | 4.4 | 1.32 m/s | 0.67 rad/s | 7% | 8.1 | 2.4 |
+| Claude Haiku 5.5 | Pressure | 21% | 37% | 52% | 5.0 | 0.83 m/s | 0.55 rad/s | 21% | 10.2 | 2.5 |
+| GPT-5.5 | Pressure | 34% | 52% | 87% | 4.9 | 1.11 m/s | 0.30 rad/s | 12% | 14.1 | 0.4 |
+| GPT-6.2 Sol | Edge play | 22% | 12% | 68% | 4.2 | 0.25 m/s | 0.26 rad/s | 33% | 7.4 | 1.0 |
+| DeepSeek V4 Pro 0813 | Aggression | 25% | 48% | 58% | 7.4 | 1.41 m/s | 0.79 rad/s | 8% | 11.3 | 1.5 |
+| Claude Opus 5.1 | Mobility | 14% | 30% | 50% | 7.0 | 1.60 m/s | 0.82 rad/s | 6% | 8.7 | 2.2 |
+| GPT-6 Sol | Mobility | 14% | 27% | 23% | 3.7 | 2.16 m/s | 0.88 rad/s | 5% | 9.1 | 6.2 |
+| Claude Haiku 4.5 | Energy burn | 30% | 47% | 72% | 6.4 | 1.34 m/s | 0.56 rad/s | 7% | 13.3 | 1.5 |
+| GLM 5.3 Flash | Pressure | 24% | 36% | 49% | 6.6 | 1.04 m/s | 0.72 rad/s | 13% | 10.9 | 1.0 |
+| GPT-6.1 Terra | Wedge control | 31% | 48% | 86% | 4.9 | 1.10 m/s | 0.32 rad/s | 14% | 13.5 | 0.5 |
+| Claude Opus 5.5 | Pressure | 19% | 31% | 48% | 6.4 | 0.97 m/s | 0.56 rad/s | 9% | 10.3 | 2.1 |
+| GPT-5.6 Sol | Pressure | 32% | 47% | 65% | 5.3 | 0.87 m/s | 0.47 rad/s | 8% | 11.9 | 1.2 |
+| GPT-5.6 Luna | Pressure | 26% | 44% | 67% | 4.8 | 0.92 m/s | 0.53 rad/s | 1% | 10.6 | 0.9 |
+| GPT-6 Luna | Aggression | 22% | 55% | 47% | 5.9 | 1.35 m/s | 0.73 rad/s | 3% | 10.7 | 1.2 |
+| Baseline | Pressure | 30% | 50% | 79% | 3.6 | 1.04 m/s | 0.34 rad/s | 8% | 12.7 | 0.4 |
+| GPT-5.3 Codex Spark | Pressure | 30% | 47% | 65% | 4.9 | 1.34 m/s | 0.53 rad/s | 10% | 11.4 | 0.6 |
 
 **Highlights.** The matches worth watching: total flips first, then engagements. Each link simulates the match again in the arena.
 
 | Match | Seed / spawn | Flips | Engagements | Result | Watch |
 |---|---|---|---|---|---|
-| GPT-6 Astra vs Fable 5.1 | 4 / mirrored | 3 | 5 | GPT-6 Astra wins, flips at 59 s | [simulate](https://llms-robot-arena.sndesign.it/?a=gpt-6-astra-ultra&b=fable-5-1-max&seed=4&spawn=mirror) |
-| Fable 5.1 vs Claude Opus 5.1 | 1 / mirrored | 2 | 12 | Claude Opus 5.1 wins, flips at 62 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=opus-5-1-max&seed=1&spawn=mirror) |
-| Fable 5.1 vs Claude Opus 5.5 | 3 / mirrored | 2 | 12 | Fable 5.1 wins, ring-out at 79 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=opus-5-5-max&seed=3&spawn=mirror) |
-| GPT-5.6 Sol vs Claude Opus 5.5 | 7 / mirrored | 2 | 11 | Claude Opus 5.5 wins, hole at 72 s | [simulate](https://llms-robot-arena.sndesign.it/?a=gpt-5-6-sol-ultra&b=opus-5-5-max&seed=7&spawn=mirror) |
-| Fable 5.1 vs Claude Haiku 4.5 | 5 / mirrored | 2 | 11 | Fable 5.1 wins, hole at 32 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=haiku-4-5-max&seed=5&spawn=mirror) |
+| Fable 5.1 vs GPT-6 Astra | 4 / standard | 3 | 5 | GPT-6 Astra wins, flips at 59 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=gpt-6-astra-ultra&seed=4&spawn=normal) |
+| Fable 5.1 vs Claude Sonnet 5.5 | 3 / standard | 2 | 17 | Fable 5.1 wins, ring-out at 85 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=sonnet-5-5-max&seed=3&spawn=normal) |
+| Fable 5.1 vs GPT-6 Luna | 8 / mirrored | 2 | 17 | GPT-6 Luna wins, ring-out at 69 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=gpt-6-luna-max&seed=8&spawn=mirror) |
+| Fable 5.1 vs GPT-6 Luna | 8 / standard | 2 | 15 | Fable 5.1 wins, flips at 45 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=gpt-6-luna-max&seed=8&spawn=normal) |
+| Fable 5.1 vs GPT-6 Sol | 0 / standard | 2 | 14 | Fable 5.1 wins, flips at 87 s | [simulate](https://llms-robot-arena.sndesign.it/?a=fable-5-1-max&b=gpt-6-sol-ultra&seed=0&spawn=normal) |
 
 **Implementation.** Measured from the submitted source: cyclomatic complexity counts branches and short-circuit operators, nesting counts functions and control statements.
 
 | Controller | Language | Lines | Code | Comments | Functions | Cyclomatic | Max nesting | Size |
 |---|---|---|---|---|---|---|---|---|
-| GPT-6 Astra | js | 246 | 221 | 17 | 9 | 181 | 6 | 12.8 kB |
 | Fable 5.1 | js | 591 | 490 | 102 | 15 | 518 | 13 | 35.4 kB |
+| GPT-6.2 Astra | js | 156 | 138 | 9 | 4 | 56 | 4 | 6.1 kB |
+| GPT-6 Astra | js | 246 | 221 | 17 | 9 | 181 | 6 | 12.8 kB |
+| GPT-6.1 Sol | js | 304 | 285 | 4 | 7 | 144 | 6 | 11.2 kB |
+| Fable 5.2 | js | 842 | 725 | 102 | 17 | 595 | 12 | 39.7 kB |
 | GPT-5.6 Terra | js | 459 | 423 | 4 | 7 | 164 | 8 | 15.4 kB |
 | Claude Sonnet 5 | js | 383 | 296 | 70 | 7 | 191 | 8 | 19.5 kB |
-| Claude Opus 5.1 | js | 450 | 362 | 69 | 10 | 275 | 7 | 23.4 kB |
-| DeepSeek V4 Pro 0813 | js | 135 | 122 | 0 | 3 | 61 | 7 | 4.4 kB |
-| Claude Haiku 4.5 | js | 65 | 54 | 0 | 1 | 26 | 5 | 1.9 kB |
+| Claude Sonnet 5.5 | js | 541 | 482 | 58 | 11 | 202 | 10 | 18.6 kB |
+| Claude Haiku 5.5 | js | 332 | 265 | 42 | 14 | 82 | 5 | 11.9 kB |
 | GPT-5.5 | js | 59 | 50 | 0 | 1 | 23 | 4 | 1.5 kB |
+| GPT-6.2 Sol | js | 232 | 210 | 1 | 11 | 109 | 5 | 9.3 kB |
+| DeepSeek V4 Pro 0813 | js | 135 | 122 | 0 | 3 | 61 | 7 | 4.4 kB |
+| Claude Opus 5.1 | js | 450 | 362 | 69 | 10 | 275 | 7 | 23.4 kB |
+| GPT-6 Sol | js | 263 | 248 | 0 | 5 | 105 | 6 | 8.5 kB |
+| Claude Haiku 4.5 | js | 65 | 54 | 0 | 1 | 26 | 5 | 1.9 kB |
+| GLM 5.3 Flash | js | 397 | 348 | 26 | 8 | 152 | 9 | 13.0 kB |
+| GPT-6.1 Terra | js | 55 | 54 | 0 | 3 | 44 | 6 | 2.8 kB |
 | Claude Opus 5.5 | js | 443 | 379 | 47 | 5 | 187 | 6 | 15.5 kB |
 | GPT-5.6 Sol | js | 609 | 564 | 0 | 10 | 201 | 10 | 19.9 kB |
-| GLM 5.3 Flash | js | 397 | 348 | 26 | 8 | 152 | 9 | 13.0 kB |
 | GPT-5.6 Luna | js | 306 | 285 | 0 | 5 | 112 | 6 | 9.9 kB |
+| GPT-6 Luna | js | 236 | 202 | 0 | 7 | 79 | 5 | 8.2 kB |
 | Baseline | js | 18 | 15 | 2 | 1 | 4 | 2 | 0.4 kB |
 | GPT-5.3 Codex Spark | js | 173 | 143 | 0 | 1 | 76 | 5 | 4.8 kB |
 
@@ -132,20 +159,29 @@ Round robin (10 seeds per pair, mirrored spawns) · 1820 matches · fuel budget 
 
 | Controller | Craft index | Strength | Reliability | Consistency | Efficiency | Maintainability |
 |---|---|---|---|---|---|---|
-| GPT-6 Astra | 91.2 | 1.00 | 1.00 | 0.78 | 1.00 | 0.58 |
-| Fable 5.1 | 80.4 | 0.92 | 1.00 | 0.79 | 0.80 | 0.30 |
-| GPT-5.6 Terra | 65.0 | 0.57 | 0.99 | 0.80 | 0.51 | 0.46 |
-| Claude Sonnet 5 | 61.2 | 0.51 | 1.00 | 0.80 | 0.49 | 0.43 |
-| Claude Opus 5.1 | 56.1 | 0.43 | 1.00 | 0.81 | 0.40 | 0.47 |
-| DeepSeek V4 Pro 0813 | 56.5 | 0.41 | 0.98 | 0.82 | 0.46 | 0.53 |
-| Claude Haiku 4.5 | 55.8 | 0.39 | 0.98 | 0.79 | 0.52 | 0.59 |
-| GPT-5.5 | 55.6 | 0.37 | 0.98 | 0.81 | 0.50 | 0.72 |
-| Claude Opus 5.5 | 50.0 | 0.35 | 1.00 | 0.81 | 0.32 | 0.47 |
-| GPT-5.6 Sol | 45.4 | 0.30 | 1.00 | 0.81 | 0.26 | 0.45 |
-| GLM 5.3 Flash | 45.4 | 0.29 | 0.98 | 0.81 | 0.27 | 0.49 |
-| GPT-5.6 Luna | 42.8 | 0.26 | 0.98 | 0.80 | 0.25 | 0.56 |
-| Baseline | 36.0 | 0.15 | 0.98 | 0.78 | 0.29 | 1.00 |
-| GPT-5.3 Codex Spark | 30.2 | 0.14 | 0.97 | 0.75 | 0.15 | 0.47 |
+| Fable 5.1 | 84.3 | 1.00 | 1.00 | 0.84 | 0.80 | 0.30 |
+| GPT-6.2 Astra | 95.7 | 0.99 | 1.00 | 0.84 | 1.00 | 0.86 |
+| GPT-6 Astra | 87.7 | 0.92 | 1.00 | 0.85 | 0.85 | 0.58 |
+| GPT-6.1 Sol | 77.9 | 0.76 | 0.99 | 0.83 | 0.67 | 0.58 |
+| Fable 5.2 | 64.7 | 0.63 | 0.97 | 0.84 | 0.47 | 0.31 |
+| GPT-5.6 Terra | 66.6 | 0.60 | 0.99 | 0.83 | 0.49 | 0.46 |
+| Claude Sonnet 5 | 61.3 | 0.52 | 0.98 | 0.84 | 0.45 | 0.43 |
+| Claude Sonnet 5.5 | 58.9 | 0.48 | 0.99 | 0.84 | 0.38 | 0.47 |
+| Claude Haiku 5.5 | 63.4 | 0.48 | 0.99 | 0.86 | 0.42 | 0.90 |
+| GPT-5.5 | 63.6 | 0.47 | 0.95 | 0.86 | 0.60 | 0.72 |
+| GPT-6.2 Sol | 61.6 | 0.45 | 1.00 | 0.85 | 0.42 | 0.90 |
+| DeepSeek V4 Pro 0813 | 57.2 | 0.43 | 0.95 | 0.85 | 0.44 | 0.53 |
+| Claude Opus 5.1 | 54.6 | 0.41 | 1.00 | 0.84 | 0.35 | 0.47 |
+| GPT-6 Sol | 54.7 | 0.40 | 0.99 | 0.84 | 0.36 | 0.57 |
+| Claude Haiku 4.5 | 55.3 | 0.39 | 0.94 | 0.83 | 0.48 | 0.59 |
+| GLM 5.3 Flash | 51.1 | 0.37 | 0.95 | 0.85 | 0.31 | 0.49 |
+| GPT-6.1 Terra | 55.0 | 0.37 | 0.98 | 0.84 | 0.45 | 0.67 |
+| Claude Opus 5.5 | 49.9 | 0.35 | 1.00 | 0.85 | 0.29 | 0.47 |
+| GPT-5.6 Sol | 49.2 | 0.35 | 0.99 | 0.86 | 0.27 | 0.45 |
+| GPT-5.6 Luna | 44.0 | 0.27 | 0.95 | 0.84 | 0.24 | 0.56 |
+| GPT-6 Luna | 37.6 | 0.20 | 0.77 | 0.83 | 0.19 | 0.84 |
+| Baseline | 36.0 | 0.15 | 0.90 | 0.83 | 0.27 | 1.00 |
+| GPT-5.3 Codex Spark | 29.9 | 0.14 | 0.90 | 0.81 | 0.14 | 0.47 |
 
 <!-- standings:end -->
 

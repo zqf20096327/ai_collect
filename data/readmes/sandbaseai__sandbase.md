@@ -185,7 +185,7 @@ Open [`examples/http/sandbase.http`](examples/http/sandbase.http) and click *Sen
 <!-- inside:en -->
 | | Count | Includes |
 |---|---|---|
-| **AI models** | 550+ | 100+ LLMs, 200+ video, 150+ image, 30+ audio: Alibaba, Google, OpenAI, Kling, Meshy, ByteDance, MiniMax, Tencent, … |
+| **AI models** | 550+ | 100+ LLMs, 200+ video, 200+ image, 30+ audio: Alibaba, Google, OpenAI, Kling, Meshy, ByteDance, Tripo3D, MiniMax, … |
 | Social & content | 1,200+ | Douyin, TikTok, Instagram, Xiaohongshu, Weibo, YouTube, Zhihu, Bilibili, Kuaishou, LinkedIn, … |
 | Search, SEO & web data | 250+ | DataForSEO, Ahrefs, Google, Similarweb, Brave, Bing, DuckDuckGo, Firecrawl, Artificial Analysis, arXiv, … |
 | E-commerce, apps & reviews | 150+ | 1688, Amazon, GetApp, Temu, Google Maps, Taobao, TikTok Shop, Clutch, Google Play, JD.com, … |

@@ -90,7 +90,7 @@ curl -s -X POST http://localhost:16395/api/v1/chat \
 
 Resources run in dependency order. Independent resources run in parallel. The model can write a different answer each time. But for the same request, kdeps always runs the same steps in the same order.
 
-A chat puts its keys in these groups: `model`, `context`, `harness`, `tools`, `rag`, and `guardrails`. Guardrail judges review and revise the answer. `tools.list` names built-in tools (`web_search`, `calculator`, `subagent`, ...), or `auto` for all of them. Judges (`guardrails.judges: auto`), prompt refine, the planning council, turo and the efficiency governor (`harness.refine`, `harness.plan`, `harness.turo`, `harness.efficiency`) are opt-in. They make a small local model answer better. `harness.promptMode` sends short harness text after the first request. A workflow ships its own limits and prompts in `events/` and `harness/` folders; every package and image carries them. See [Answer quality](https://kdeps.com/workflow/quality).
+A chat puts its keys in these groups: `model`, `context`, `harness`, `tools`, `rag`, and `guardrails`. Guardrail judges review and revise the answer. `tools.list` names built-in tools (`web_search`, `calculator`, `subagent`, ...), or `auto` for all of them. Judges (`guardrails.judges: auto`) are opt-in. They make a small local model answer better. `harness.promptMode` sends short harness text after the first request. A workflow ships its own limits and prompts in `events/` and `harness/` folders; every package and image carries them. See [Answer quality](https://kdeps.com/workflow/quality).
 
 `kdeps test .` runs the `evals:` of a workflow in the process. It runs assertions, judges, and repeated runs against a pass-rate threshold.
 
@@ -98,12 +98,11 @@ For more data, see the [workflow docs](https://kdeps.com/workflow/), [examples](
 
 ## 2. Agents
 
-An agent is a workflow whose `chat` has a `loop:` block: the model calls tools over many rounds and keeps one conversation per session.
+An agent is a workflow whose `chat` has a `loop:` block: the model calls tools over many rounds and keeps one conversation per `loop.session` id.
 
 ```bash
 kdeps new helper --template assistant   # interactive prompt + chat with loop:
 cd helper && kdeps                      # bare kdeps runs ./workflow.yaml
-kdeps --agent-loop                      # the agent REPL, with slash commands and a model picker
 ```
 
 ```yaml
@@ -116,9 +115,9 @@ chat:
     session: "{{ get('session') }}"           # one conversation across prompts
 ```
 
-File tools stay inside the working directory. In the REPL, a path outside it asks you first; `~/.kdeps` and `/tmp` are exceptions.
+File tools stay inside the working directory. `~/.kdeps` and `/tmp` are exceptions.
 
-For more data, see the [agent docs](https://kdeps.com/agent/) and the [desktop app](https://kdeps.com/agent/desktop#install).
+For more data, see the [agent docs](https://kdeps.com/workflow/agent-loop/).
 
 ## 3. Deploy on your infrastructure
 
@@ -141,7 +140,7 @@ llm:
     - llama3.2
 ```
 
-`kdeps llm wizard` builds that server. For more data, see [deploy](https://kdeps.com/deploy/), [LLM server](https://kdeps.com/llm-server/), and [security](https://kdeps.com/reference/security).
+`kdeps llm run` builds and runs that server. For more data, see [deploy](https://kdeps.com/deploy/), [LLM server](https://kdeps.com/llm-server/), and [security](https://kdeps.com/reference/security).
 
 ## Contributing
 

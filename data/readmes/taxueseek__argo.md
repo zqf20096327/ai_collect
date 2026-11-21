@@ -26,14 +26,14 @@
   <a href="https://skills.sh/taxueseek/argo"><img alt="skills.sh" src="https://img.shields.io/badge/skills.sh-argo-black"></a>
   <img alt="license" src="https://img.shields.io/badge/license-Apache_2.0-blue">
   <img alt="python" src="https://img.shields.io/badge/python-3.9+-green">
-  <img alt="version" src="https://img.shields.io/badge/version-2.16.0-informational">
+  <img alt="version" src="https://img.shields.io/badge/version-2.17.0-informational">
   <img alt="engines" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftaxueseek%2Fargo%2Fmain%2Fassets%2Freadme%2Fcounts.json">
   <img alt="mcp" src="https://img.shields.io/badge/MCP-19%20tools-purple">
 </p>
 
-> **Part of the taxueseek skill series** (search &amp; deep research): [plainspoken-writing](https://github.com/taxueseek/plainspoken-writing) 75★ (AI-tone removal) · [session-digger](https://github.com/taxueseek/session-digger) 34★ (cross-environment session mining) · [taxue-invest](https://github.com/taxueseek/taxue-invest) 30★ (investment analysis) · [taxueskills](https://github.com/taxueseek/taxueskills) 25★ (decision system) · [taxue-creative-style](https://github.com/taxueseek/taxue-creative-style) 19★ (creative illustration styles) · [ime-lexicon](https://github.com/taxueseek/ime-lexicon) 15★ (IME lexicon toolkit).
+> **Part of the taxueseek skill series** (search &amp; deep research): [plainspoken-writing](https://github.com/taxueseek/plainspoken-writing) 77★ (AI-tone removal) · [session-digger](https://github.com/taxueseek/session-digger) 34★ (cross-environment session mining) · [taxue-invest](https://github.com/taxueseek/taxue-invest) 30★ (investment analysis) · [taxueskills](https://github.com/taxueseek/taxueskills) 25★ (decision system) · [taxue-creative-style](https://github.com/taxueseek/taxue-creative-style) 19★ (creative illustration styles) · [ime-lexicon](https://github.com/taxueseek/ime-lexicon) 16★ (IME lexicon toolkit).
 >
-> **DeepSeek Harness (DSH) plugin ecosystem**: [dsh-files](https://github.com/taxueseek/dsh-files) 43★ (folder upload + document parsing) · [plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt) 15★ (plugin upgrade adapter) · [taxue-dsh-artisan](https://github.com/taxueseek/taxue-dsh-artisan) 3★ (visual creation) · [dsh-plugin-guard](https://github.com/taxueseek/dsh-plugin-guard) 2★ (pre-install audit).
+> **DeepSeek Harness (DSH) plugin ecosystem**: [plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt) 48★ (plugin upgrade adapter) · [dsh-files](https://github.com/taxueseek/dsh-files) 44★ (folder upload + document parsing) · [taxue-dsh-artisan](https://github.com/taxueseek/taxue-dsh-artisan) 3★ (visual creation) · [dsh-plugin-guard](https://github.com/taxueseek/dsh-plugin-guard) 2★ (pre-install audit).
 
 **Argo** is an open-source metasearch, web-fetch, and evidence-verification engine that lives inside your AI agent. It routes queries across **hundreds of sources** in **18 languages** (web, academic, finance, code, local files, and leading **AI search engines**), falls back to **keyless &amp; local engines** when API keys are absent, and verifies facts from full page text instead of trusting search snippets.
 
@@ -209,6 +209,7 @@ The built-in **Argo Workbench** provides a browser UI with 5 modes (Web Search, 
 
 | Version | Highlights |
 | :--- | :--- |
+| **v2.17.0** | Native query operator pushdown, 4-state browser auth &amp; `ego-search` OS-locked pacing, deterministic evidence grounding, Workbench daily hotspots &amp; TCP loopback fence (313 sources) |
 | **v2.16.0** | DSH Argo Workbench UI, direct 4-stage CLI verification, `linux.do` + Keenable free channel (312 sources), Jina keyless fallback, concurrency &amp; cache hardening |
 | **v2.15.0** | Zhihu full chain, evidence-layer authority passthrough, keyless 3-tier semantic fallback, MCP generic connector (`type: mcp`), route zero-based domain scoring, 311 sources |
 | **v2.14.1** | Architecture slimming, MCP 3+1 orthogonal tools + backward-compat aliases, 304 sources, fail-closed `secret_guard.py` redaction |
@@ -216,11 +217,15 @@ The built-in **Argo Workbench** provides a browser UI with 5 modes (Web Search, 
 | **v2.13.0** | Documentation consolidation, 22-state-machine SSOT, dispatch tail grace |
 
 <details>
-<summary>v2.16.0 Release Summary &amp; Capability Snapshot</summary>
+<summary>v2.17.0 Release Summary &amp; Capability Snapshot</summary>
 
-### Capabilities (v2.16.0)
+### Capabilities (v2.17.0)
 
-v2.16.0 introduces the browser-based **Argo Workbench** in the DSH plugin (5 modes, adaptive home suggestions, theme cards, and side-by-side verified citations) backed by a direct `bin/argo` CLI 4-stage verification pipeline and `local-seek` integration; adds the `linux.do` community source (311→312 sources) and activates the `keenable` free channel (100k/mo); refactors Jina Reader to keyed-with-keyless-fallback; and hardens circuit-breaker, quota, cache-slot, and routing-latency behaviour.
+v2.17.0 hardens core retrieval, auth governance, and workbench reliability: adds native query operator pushdown (including Tavily native `language`), 4-state browser auth debouncing with CDP capture, OS-file-locked cross-process pacing and unified auth state vocabulary in `ego-search`, deterministic numeric evidence grounding, isolated HAR/protocol source discovery (`argo engine add`), daily real-time hotspot recommendations and TCP loopback fencing in Argo Workbench (DSH `v0.2.2-rc.5`), circuit-breaker fingerprint self-healing, the `helve` paid source (312→313 sources), and data-driven README SVGs.
+
+### v2.17.0: Native Query Pushdown + Auth &amp; Evidence Hardening + Workbench Daily Hotspots
+
+See [docs/RELEASE_NOTES_v2.17.0.md](docs/RELEASE_NOTES_v2.17.0.md) and [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ### v2.16.0: Argo Workbench UI + Direct 4-Stage Pipeline + Sources &amp; Concurrency Hardening
 

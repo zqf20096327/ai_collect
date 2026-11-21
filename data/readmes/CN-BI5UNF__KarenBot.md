@@ -1,308 +1,456 @@
-<div align="center">
-
 # KarenBot
 
-### 让虚拟角色真正活过来的通用聊天智能体框架
+> 让虚拟角色真正「活」起来的本地 AI 聊天智能体。
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
-[![WebUI](https://img.shields.io/badge/UI-WebUI%20%28FastAPI%29-blueviolet.svg)](#)
-[![CI](https://github.com/CN-BI5UNF/KarenBot/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/CN-BI5UNF/KarenBot/actions/workflows/test.yml)
+>本项目从binglang的https://github.com/binglang001/Debata_Agent 项目改进而来（虽然到现在几乎没啥关系了）
 
-[快速开始](#快速开始) · [karen 指令](#karen-指令) · [从 Debata 升级](#从-debata-升级) · [文档](#文档)
+KarenBot 是一个可以长期运行在你自己电脑或服务器上的角色聊天框架：它把大语言模型、人格设定、长期记忆、QQ/Telegram 接入、工具调用和可视化控制台组合在一起，让角色不只是「一问一答」，而是能记住你、主动使用工具、参与群聊，并随着相处逐渐积累自己的上下文。
 
-</div>
+项目完全本地部署，模型请求直接发送给你配置的提供商；聊天记录、人格、密钥和知识库都保存在本机。
+
+- 最新发行版：**v2.0.0-alpha.1**
+- 支持平台：Windows 10/11 x64、Linux（x64 / arm64）
+- 两种界面：原生 **GTK4 GUI** / 浏览器 **WebUI**
+- 许可证：Apache-2.0
+
+> v2 是统一发行版，默认同时更新后端与当前前端；也可以在更新页只更新其中一个组件。当前为 alpha 预览版，接口和数据格式仍可能变化，升级前请备份。
 
 ---
 
-> 「虚拟角色不只是个会回复消息的程序，而是一个**真实的，能和你聊天的，有个性、有内心的**人。」
+## 目录
 
-KarenBot 是一个通用聊天智能体框架。你给它一个人格，它就活成那个人。
+- [KarenBot 是什么](#karenbot-是什么)
+- [主要功能](#主要功能)
+- [安装](#安装)
+- [第一次启动](#第一次启动)
+- [运行方式](#运行方式)
+- [系统要求](#系统要求)
+- [仓库结构](#仓库结构)
+- [开发与构建](#开发与构建)
+- [更新](#更新)
+- [数据、安全与备份](#数据安全与备份)
+- [常见问题](#常见问题)
+- [版本说明](#版本说明)
+- [文档与反馈](#文档与反馈)
+- [许可证](#许可证)
 
-项目名 **KarenBot** 取自海绵宝宝中痞老板的机器人女友 **Karen**；这是社区性质的命名，本项目与 Nickelodeon / Paramount 及其官方作品无隶属关系。
+---
 
-- 仓库：<https://github.com/CN-BI5UNF/KarenBot>
-- 默认分支：`main`
-- 应用内更新跟踪分支：`refactor/main`（与 `main` 同步，供更新器读取 Releases/tag）
-- 当前状态：`1.0.1-alpha.1` 重构快照，接口仍可能调整
+## KarenBot 是什么
 
-> **上游与许可**：本项目源自 [binglang001/Debata_Agent](https://github.com/binglang001/Debata_Agent) 及其贡献者，保留原始版权声明，并继续以 **Apache-2.0** 协议发布。KarenBot 是在其基础上的重构与改名版本，详见 [NOTICE](NOTICE)。
+KarenBot 由三部分组成：
 
-## 它能做什么
-
-- **人格系统**：人格 prompt、动态状态、关系与记忆独立于主请求缓存。人格页可上传多张「角色形象」并指定预览图；当前人格可通过只读知识条目查看，也可把角色形象直接作为图片发送。LLM 没有修改或删除图片的接口。「人格后台」可在人格睡眠/昏睡时用「唤醒」按钮叫醒，并生成一句只显示在 WebUI 的唤醒对白。
-- **QQ / NapCat 接入**：WebSocket 客户端/服务端模式、私聊/群聊、发送队列；白名单与黑名单统一在「黑白名单」页管理，保存即时生效，黑名单优先拦截。
-- **长期记忆**：重要记忆文件与 RAG 两种模式，归档不改写原始历史。
-- **多轮工具循环**：发送、撤回、记忆、搜索、天气、定时唤醒、子 Agent 等。
-- **WebUI**：FastAPI 后端 + 无构建步骤的静态前端；向导、设置、聊天、记忆、日志、更新；模型配置集中在「模型管理」，侧栏可折叠为纯图标。
-- **多 Provider**：OpenAI、Anthropic、DeepSeek、GLM、Qwen、Gemini、OpenRouter 等预设，也支持自定义兼容端点；中转站可标记 Gemini/Claude 等上游厂商，自动套用对应能力表。
-- **原生视觉 / 独立视觉**：图片、完整 GIF 动图和完整视频可进入支持的主模型请求；也可按需走独立视觉接口。视频以受管 data URL 发送完整文件、不抽帧，模型不支持时只保留 workspace 占位。
-- **知识与群聊黑话**：按需查询，不再每轮把词表/知识注入动态上下文；知识支持逐条共享，群聊黑话按群天然共享（同群所有人格互通），保存时自动去重。
-- **聊天选择**：LLM 可临时暂停普通群聊接收，或只接收指定群；所有群的 @ 消息仍会送达，私聊不受影响。
-- **本机工作区**：「容器」页文件管理内置「本机工作区」模式，只读浏览 `AppPaths.WORKSPACE_DIR`，支持目录导航、文本预览和常见图片；它与容器 `/workspace` 的独立存储不是同一个目录。
-- **按群 @ 触发**：可在「群聊触发」页指定哪些群只在被 @ 时响应，并设置 @ 后连续接收的消息数、时间窗口，以及每个群被过滤消息的内存缓存条数；LLM 可用 `group_trigger_window` 临时放行/延长/提前关闭，并用 `history_limit` 决定打开窗口时附带最近几条被过滤聊天记录，最多同时覆盖 2 个群。
-- **表情包与 QQ 原生表情**：LLM 可以列出、下载、从群聊图片保存、重命名和删除表情包；入站 QQ 表情显示中文名（如 `[流眼泪]` 对应 `[表情5]`），发送工具支持按中文名发原生表情。
-- **受控 Docker 容器**：LLM 可执行命令、读写 `/workspace`、导入导出文件；默认无网络、无特权、非 root，内存/CPU/pids/存储可配置。默认 B 命名卷免管理员、开箱即用；C 固定大小镜像为高级硬上限。支持 Docker 镜像加速前缀、一键准备/启动，WebUI 内置只读文件管理器（本机工作区 + 容器工作区，支持图片预览），Windows 提供 VHDX 安装脚本（见 [容器文档](docs/container.md)）。
-- **存储与配置安全**：滚动摘要、CAS 提交、媒体生命周期、范围删除/恢复、配置事务与备份；「存储与数据」页统一提供缓存盘点/清理、上下文预算、人格运行数据清理和本地卸载。
-- **在线更新**：设置 → 更新，从 GitHub Releases/tag 选择更新或回退；只改源码，不覆盖数据。
-
-更完整的能力说明见 [功能列表](docs/features.md) 与 [架构总览](docs/architecture.md)。
-
-## 环境要求
-
-- **Python 3.10+**；CI 覆盖 Python 3.11 / 3.12
-- **uv**（推荐的依赖与虚拟环境管理器）
-- **NapCat**（可选，接入 QQ 时需要）：[安装指南](https://napneko.github.io/guide/start-install)
-- **LLM API Key**（推荐 DeepSeek，中文与成本较友好）
-- Linux / Windows / macOS；服务器可 headless 运行
-
-## 快速开始
-
-### 1. 安装 uv
-
-Linux / macOS：
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-Windows PowerShell：
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-也可以参考 [uv 官方安装文档](https://docs.astral.sh/uv/getting-started/installation/)。
-
-### 2. 克隆并安装依赖
-
-```bash
-git clone https://github.com/CN-BI5UNF/KarenBot.git
-cd KarenBot
-
-# 安装运行依赖，创建 .venv
-uv sync
-
-# 可选：Linux/macOS 性能优化（uvloop）
-uv sync --extra perf
-```
-
-`uv sync` 会创建 `.venv` 并安装 `karen` 命令入口；旧的 `debata` 入口在过渡期继续可用。
-
-正常启动（WebUI 或 `--no-gui`）会在导入应用前自动检查 `pyproject.toml` 里的
-基础依赖：缺失或版本不符时，优先用 `uv pip install --python <当前解释器> -e .`，
-没有 uv 时回退到 `python -m pip install -e .`。可选依赖（`perf`、本地 TTS、
-本地 embedding、`dev`）不会在启动时自动安装。检查不会在 `karen start/stop`
-等服务管理子命令中触发；可用 `KAREN_DISABLE_DEPENDENCY_CHECK=1` 关闭检查，
-或用 `KAREN_DISABLE_DEPENDENCY_INSTALL=1` 只检查、不安装。
-
-### 3. 首次启动（WebUI）
-
-```bash
-# 默认监听 0.0.0.0:8000，局域网可访问
-uv run python main.py
-
-# 只允许本机访问
-uv run python main.py --host 127.0.0.1 --port 8000
-```
-
-终端会打印访问地址和 WebUI 令牌；首次打开会自动进入配置向导。令牌也会保存在数据目录的 `webui_token.txt`。
-
-服务器 / SSH 环境可以用 CLI 向导：
-
-```bash
-uv run python main.py --no-gui --setup
-```
-
-完全无界面运行：
-
-```bash
-uv run python main.py --no-gui
-```
-
-### 4. 后台运行（Linux）
-
-首次安装并启动 systemd 用户服务（不需要 sudo）：
-
-```bash
-bash scripts/install_systemd_user.sh
-```
-
-之后可以用短命令管理：
-
-```bash
-./karen start      # 启动；首次会自动安装服务
-./karen status     # 查看状态
-./karen log        # 实时查看日志，Ctrl+C 退出
-./karen stop       # 停止
-```
-
-旧的 `./debata` 命令保留为兼容入口。
-
-### 5. Windows
-
-推荐使用 PowerShell：
-
-```powershell
-git clone https://github.com/CN-BI5UNF/KarenBot.git
-cd KarenBot
-uv sync
-uv run python main.py --host 127.0.0.1 --port 8000
-```
-
-Windows 上没有 systemd 时，直接使用 `uv run python main.py`；数据目录默认在 `%LOCALAPPDATA%\KarenBot`。Docker Desktop 的容器功能可用，C 存储的 VHDX 脚本尚待真实 Windows 机器验收；Windows 服务化仍在后续阶段。
-
-## karen 指令
-
-`karen` 是项目提供的服务管理命令。安装脚本会把它放到 `~/.local/bin/karen`；如果 PATH 中没有，可以在项目目录使用 `./karen`，或用 `uv run karen ...`。
-
-| 命令 | 说明 |
+| 组件 | 作用 |
 |---|---|
-| `karen start` | 启动服务；首次运行会自动安装 systemd 用户服务 |
-| `karen stop` | 停止服务 |
-| `karen restart` | 重启服务 |
-| `karen status` | 查看运行状态 |
-| `karen log` | 实时跟随日志（Ctrl+C 退出） |
-| `karen enable` | 设置开机自启，并立即启动 |
-| `karen disable` | 取消开机自启（当前进程继续运行） |
-| `karen install` | 只安装服务，不启动 |
-| `karen uninstall` | 卸载服务 |
-| `karen help` | 显示帮助 |
+| **Backend** | 核心运行时、人格 Agent、记忆、工具、适配器和控制 API |
+| **GUI** | 原生 GTK4 / libadwaita 桌面控制台 |
+| **WebUI** | 浏览器控制台，可在局域网内用手机/平板访问 |
 
-兼容说明：
+两个前端共用同一套后端控制面，所以功能、配置和状态保持一致。你可以只安装其中一个，也可以两个都安装。
 
-- `debata` 命令、`DEBATA_*` 环境变量、旧 `debata-agent` 服务和旧数据目录至少保留一个版本；
-- 检测到旧数据目录时，KarenBot 会继续使用旧目录并提示迁移，不会删除旧数据；
-- 迁移可使用后续提供的 `karen migrate`（会先备份）。
+它适合这些场景：
 
-## 从 Debata 升级
+- 想要一个**有长期记忆和人格**的私人 AI 角色；
+- 把角色接入 QQ 群或 Telegram，参与日常聊天；
+- 给角色配置搜索、识图、语音、知识库、群管等工具；
+- 在本机或小型服务器上长期运行，数据完全由自己掌握；
+- 用插件和自定义人格扩展自己的玩法。
 
-从旧版 `Debata_Agent` 升级时：
+---
 
-1. 先备份旧数据目录（`~/.local/share/Debata_Agent` 或 Windows 的 `%LOCALAPPDATA%\Debata_Agent`）；
-2. 更新代码后启动 `karen` 或 `python main.py`；
-3. 程序会优先寻找 `KarenBot` 数据目录；如果不存在且旧目录存在，会继续使用旧目录并输出迁移提示；
-4. 旧的 `debata` 命令、`DEBATA_DATA_ROOT`、`DEBATA_WEBUI_TOKEN`、`DEBATA_DISABLE_TREND_RESEARCH` 等仍可识别；
-5. 旧的 `persona.active: debata` 配置会自动映射到 `deepseek`（若 `deepseek` 不可用则回退默认人格），并写回配置备份。
+## 主要功能
 
-数据目录迁移是**复制优先**的：不会删除旧目录；迁移失败会回退旧目录并给出明确提示。
+### 角色与记忆
 
-## 配置与数据目录
+- **多人格系统**：内置默认人格，也可以创建、导入自己的角色；每个人格有独立设定、知识和聊天上下文。
+- **长期记忆**：对话历史、重要记忆、RAG 检索和归档存储，角色可以跨会话记住信息。
+- **人格工作状态**：角色可以进入「工作」状态，临时切换到更适合执行任务的工具档位。
+- **知识与黑话**：维护角色知道的知识条目、群聊黑话和设定，按人格隔离。
+- **角色形象**：支持多张角色图片、预览图和图片发送。
 
-- Linux：`~/.local/share/KarenBot/instances/default/`
-- Windows：`%LOCALAPPDATA%\KarenBot\instances\default\`
-- 旧版：`~/.local/share/Debata_Agent/instances/default/`
+### 聊天平台
 
-可用 `KAREN_DATA_ROOT` 覆盖数据根目录；旧的 `DEBATA_DATA_ROOT` 仍然识别。
+- **QQ / OneBot 11**：支持 NapCat、LLOneBot、Lagrange、go-cqhttp 等实现。
+  - 正向 / 反向 WebSocket；
+  - HTTP API；
+  - HTTP POST Webhook；
+  - 多账号、Header/Query 鉴权、HMAC-SHA1 验签。
+- **Telegram**：Bot API 长轮询 / Webhook，支持文本、图片、语音、视频、文件、引用、表情回应、撤回和 topic。
+- **结构化消息**：文本、@、引用、图片、语音、视频、文件、表情、合并转发等统一消息段。
+- **群聊控制**：黑白名单、群触发规则、群聊接收选择、群管工具。
 
-主要文件：
+### 模型与工具
 
-```text
-instances/default/
-├── config.yaml          # 主配置
-├── secrets.enc          # 加密后的密钥
-├── ...                  # RSA 密钥、token 等
-├── memory/              # 每个角色独立的记忆库
-├── vector/              # RAG 向量库
-├── logs/karen.log       # 应用日志
-├── workspace/           # 工作区
-├── emoji/               # 表情包
-└── config_backups/      # 配置备份
-```
+- 支持 OpenAI 兼容接口、Anthropic、Google Gemini 等提供商；
+- 按人格绑定模型，支持主模型、视觉模型、Embedding、TTS 等分工；
+- 内置消息发送、群管理、搜索、识图、语音、知识库、RAG 记忆等工具；
+- 可选受控 Docker 容器和编码 Agent 模式；
+- 插件系统：可以添加后端插件或新的前端模块。
 
-WebUI 令牌不会写入日志；请勿把 `config.yaml`、`secrets.enc`、RSA 私钥或 token 上传到公开仓库。
+### 外部程序托管
 
-## 功能细节
+KarenBot 可以在启动时拉起多个外部程序，例如 NapCat、SnowLuma、代理或其他依赖：
 
-### 人格与记忆
+- 自定义名称、可执行文件、参数、工作目录和环境变量；
+- 可配置端口探测：如果端口已有服务，就跳过启动且永不误杀；
+- 可配置自动重启；
+- 「随 KarenBot 关闭」只停止由 KarenBot 成功拉起的进程；
+- 某个程序启动失败只记录错误并提醒，不影响 KarenBot 主程序。
 
-人格目录平级放在 `personas/<name>/persona_prompt.py`，仓库自带 `大肥鱼` 和 `deepseek`，用户自建人格放在同级目录。人格页的「角色形象」支持上传多张图片并选择列表预览图，图库和 `manifest.json` 保存在 `personas/<name>/appearance/`，随人格导出/复制；记忆与向量库按人格隔离；归档只移动活跃窗口，不改写原始历史。模型准备长时间在容器里干活时可以调用 `work` 进入工作状态，期间的群聊 @ 和私聊会暂存到工作结束；单次上限在设置 →「人格与生理」中配置。
+### 两种界面
 
-### 知识与黑话
+**GUI**：原生 GTK4 窗口，适合桌面长期使用。
 
-知识/热梗/笔记和群聊黑话都通过工具按需查询，不自动注入每轮上下文。知识条目支持逐条共享；群聊黑话按群天然共享，同群所有人格查询和管理同一份词条，跨群仍隔离。角色形象会以只读虚拟知识条目出现在模型查询结果里，附带每张图的 `persona-image:<当前人格>:<图片ID>` 引用；模型可交给 `describe_image` 查看，也可填入 `send_*` 的 `image` 字段直接发送。该条目不写入 `knowledge.json`，LLM 无法修改或删除图片。知识保存前会做标题/主题查重，并可用 `POST /api/knowledge/dedupe` 做保守去重（默认 dry-run）；黑话管理页支持搜索，AI 提交与同群已有词条同名的申请会自动拒绝并保留可见记录，不改写原词条。
+- 总览、对话、记忆、人格、知识、黑话、模型、日志、容器、存储、黑白名单、群聊触发、设置；
+- 主题、字体缩放、渲染回退；
+- 本地回环 HTTP + 随机令牌连接后端，不暴露公网。
 
-### 表情包
+**WebUI**：浏览器访问，适合服务器、手机和平板。
 
-LLM 可调用 `list_emoji`、`save_emoji_from_url`、`save_emoji_from_workspace`、`rename_emoji`、`delete_emoji` 读写表情包目录；远程下载复用图片链路的公网 IP 固定、重定向/大小限制和 magic 校验。
+- 与 GUI 对齐的页面和设置；
+- 登录令牌、Hash 路由；
+- 局域网内可直接用浏览器打开；
+- 文件以浏览器下载/内嵌预览为主。
 
-### 存储与配置
+### 运行与更新
 
-滚动摘要分块、CAS 原子提交、动作账本、媒体生命周期、范围删除/恢复、聊天 Keyset 分页、内存有界 RAG、配置事务和敏感凭据补偿已经落地。手动清理前会展示影响；配置写入使用原子替换和备份。
+- v2 使用 **KarenBot 统一发行版**：后端 + 当前前端始终成套更新；
+- 更新前逐个文件备份，失败整体回滚；
+- 只覆盖程序文件，`data/`、`personas/`、`plugins/`、`config.yaml` 等用户数据不会被覆盖；
+- 支持 Pre-release 手动选择，并给出明确风险提示。
 
-### 更新
+---
 
-设置 → 更新可以从 GitHub Releases/tag 选择版本；只更新源码，不覆盖实例数据。依赖文件变化时默认尝试安装依赖并支持回滚。日常启动也会做基础依赖预检；缺失时自动拉取安装（见“克隆并安装依赖”）。
+## 安装
 
-## 路线图
+推荐使用官方安装器。安装器不内置应用包，会在线读取 KarenBot 主仓库的发行版清单，校验 SHA256 后组合安装。
 
-- **工具双层路由（实验原型）**：`behavior.tool_schema_profile="routed"` 初始只暴露核心工具和工具集目录，模型用 `list_toolsets` / `load_toolset` 按需加载 `workspace`、`qq_admin`、`container` 等工具集，再用 `tool_search` 查高级参数。已加载集合按会话保持；默认仍为 `compact`。详见 [工具双层路由](docs/tool_routing.md)。
+### Windows 10/11（x64）
 
-## 测试与质量
+1. 打开安装器 Release：
+
+   <https://github.com/CN-BI5UNF/KarenBot-Installer/releases>
+
+2. 下载 `KarenBot-Installer.exe`：
+
+   <https://github.com/CN-BI5UNF/KarenBot-Installer/releases/download/v1.1.3/KarenBot-Installer.exe>
+
+3. 双击运行。如果 SmartScreen 提示未知发布者，选择「更多信息 → 仍要运行」。
+4. 选择安装目录（默认 `C:\KarenBot`），界面选择 **GUI** 或 **WebUI**。
+5. 来源选择 **在线安装**，等待下载和校验完成。
+6. 安装完成后从桌面/开始菜单启动。
+
+Windows 原生 GUI 使用预构建的 GTK4 便携运行时，不需要自己安装 GTK；WebUI 安装后会创建启动入口，用浏览器访问。
+
+### Linux
+
+最简单的安装方式是通过安装器的 `install.sh`：
 
 ```bash
-# 全量测试（忽略需要真实 API 的 live 测试）
-KAREN_DISABLE_TREND_RESEARCH=1 .venv/bin/python -m pytest -q --ignore=tests/test_kv_cache_real.py
-
-# 静态检查
-.venv/bin/python -m ruff check .
-git diff --check
-.venv/bin/python -m compileall -q agents core app_config webui tools
+curl -fL \
+  https://github.com/CN-BI5UNF/KarenBot-Installer/releases/download/v1.1.3/install.sh \
+  -o install.sh
+KAREN_INSTALLER_REF=v1.1.3 bash install.sh
 ```
 
-CI 覆盖 Ubuntu / Windows × Python 3.11 / 3.12。
+然后按菜单选择：
 
-## 项目结构
+- **在线安装**；
+- 界面：`GUI` 或 `WebUI`；
+- 安装目录（默认 `~/.local/opt/karenbot`）。
+
+也可以直接传参，跳过交互菜单：
+
+```bash
+# WebUI
+KAREN_INSTALLER_REF=v1.1.3 bash install.sh --online --frontend webui --dir ~/.local/opt/karenbot
+
+# 原生 GUI
+KAREN_INSTALLER_REF=v1.1.3 bash install.sh --online --frontend gui --dir ~/.local/opt/karenbot
+```
+
+如果 `raw.githubusercontent.com` 访问不稳定，安装器 README 提供了多镜像一行式命令：
+
+<https://github.com/CN-BI5UNF/KarenBot-Installer#linux-一行式安装cli>
+
+Linux 原生 GUI 需要系统安装 GTK4、libadwaita 和 PyGObject：
+
+```bash
+# Debian / Ubuntu
+sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1
+```
+
+只使用 WebUI 则不需要 GTK。
+
+### 安装器会做什么
+
+1. 解析 KarenBot 最新统一发行版（`modules.json`）；
+2. 下载 **后端 + 你选择的前端** 组件包；
+3. 校验大小和 SHA256；
+4. 解压并组合成应用目录；
+5. 从 KarenBot 主仓库补齐默认人格；
+6. 创建虚拟环境、安装 Python 依赖（Windows 便携包跳过）；
+7. 写入启动入口、快捷方式和卸载信息。
+
+安装目录里的 `data/` 是运行数据，升级时不会删除。卸载时可以选择保留数据。
+
+---
+
+## 第一次启动
+
+首次打开会进入配置向导，通常需要完成三件事：
+
+### 1. 配置模型提供商
+
+填写你使用的 API 地址、API Key 和模型名。KarenBot 支持 OpenAI 兼容接口、Anthropic、Gemini 等；也可以接中转站或本地兼容服务。
+
+密钥会加密保存，不会写进普通配置文件。
+
+### 2. 接入聊天平台
+
+**QQ / OneBot 11**
+
+先准备 NapCat、LLOneBot、Lagrange 或 go-cqhttp 等 OneBot 11 实现，然后在 KarenBot 中配置：
+
+- 正向 WebSocket：填写协议端地址；
+- 反向 WebSocket：让协议端连接 KarenBot；
+- HTTP API / Webhook：按协议端文档填写地址、端口和鉴权。
+
+也可以把 NapCat 配到「外部程序」列表里，让 KarenBot 启动时顺带拉起它。
+
+**Telegram**
+
+在 BotFather 创建 Bot，把 token 填进 KarenBot 的 Telegram 适配器即可。
+
+### 3. 选择或创建人格
+
+KarenBot 自带默认人格。你可以在「人格」页面创建自己的角色，填写设定、开场白、知识和形象；然后把人格绑定到对应聊天账号。
+
+完成后启动 Runtime，打开对话页即可开始聊天。
+
+---
+
+## 运行方式
+
+### GUI
+
+从桌面快捷方式启动，或：
+
+```bash
+# Linux
+~/.local/opt/karenbot/launch-gui.sh
+```
+
+GUI 会在本机回环地址启动后端，并用随机令牌连接；不需要额外开放端口。
+
+### WebUI
+
+从启动入口运行，或：
+
+```bash
+~/.local/opt/karenbot/launch-webui.sh
+```
+
+默认只监听本机。需要在局域网访问时，按启动日志/设置页提示配置监听地址和访问令牌，不要把控制面直接暴露到公网。
+
+### Headless / 服务器
+
+后端支持无界面运行，适合长期挂在服务器上。具体参数见 `main.py --help` 和 `docs/`。
+
+---
+
+## 系统要求
+
+| 项目 | 要求 |
+|---|---|
+| Windows | Windows 10/11 x64；原生 GUI 使用便携 GTK4 |
+| Linux | x64 / arm64；GUI 需要 GTK4 + libadwaita + PyGObject |
+| Python | 3.10+（开发/源码运行；安装器会处理运行环境） |
+| 内存 | 建议 2 GB 以上；本地模型另算 |
+| 磁盘 | GUI 约 1.2 GB，WebUI 约 400 MB（含依赖和缓存余量） |
+| 网络 | 安装/更新需要访问 GitHub；模型请求需要访问你配置的提供商 |
+
+---
+
+## 仓库结构
+
+KarenBot 主仓库是统一发行版与组装仓库，三个组件以 submodule 维护：
 
 ```text
 KarenBot/
-├── main.py              # WebUI / Runtime 入口
-├── main_cli.py          # CLI 配置向导
-├── service_cli.py       # karen start/stop/status/log
-├── adapters/            # NapCat 等适配器
-├── agents/              # 人格、对话、摘要、子 Agent
-├── app_config/          # 配置、路径、密钥、迁移
-├── core/                # Runtime、流水线、存储、摘要、RAG
-├── features/            # 视觉、搜索、天气等能力
-├── memory/              # 记忆与归档 SQLite
-├── personas/            # 内置/用户人格
-├── providers/           # 多模型协议与预设
-├── tools/               # 工具注册与 schema
-├── webui/               # FastAPI + 静态前端
-├── deploy/              # launcher / systemd 示例
-├── scripts/             # 安装脚本
-└── docs/                # 文档
+├── modules/
+│   ├── KarenBot-backend/    # 核心运行时 + 后端控制面
+│   ├── KarenBot-GUI/        # GTK4 桌面前端 gui/
+│   └── KarenBot-WebUI/      # 浏览器前端 webui/
+├── personas/                # 默认人格
+├── scripts/
+│   ├── assemble.py          # 从 submodule 组装可运行目录
+│   ├── build_release_assets.py
+│   └── verify_modules.py
+├── modules.lock.json        # 本发行版固定的组件 tag/commit
+├── releases/                # 发行说明
+├── docs/
+│   ├── distribution.md      # 安装器资产契约
+│   └── transition.md        # 旧版本升级路径
+└── README.md
 ```
 
-## 文档
+正式发布由 GitHub Actions 生成：
 
-- [功能列表](docs/features.md)
-- [架构总览](docs/architecture.md)
-- [后台运行](docs/background_running.md)
-- [危险数据操作](docs/destructive_admin.md)
-- [人格写作指南](docs/persona_writing_guide.md)
-- [Provider 开发](docs/provider_development.md)
+- `modules.json`
+- `KarenBot-backend-<tag>.tar.gz`
+- `KarenBot-GUI-<tag>.tar.gz`
+- `KarenBot-WebUI-<tag>.tar.gz`
 
-## 安全与隐私
+安装器按 manifest 选择后端 + 一个前端，不会直接下载不含 submodule 的 GitHub 源码归档。
 
-- 联网搜索、网页正文、知识/黑话和表情包 URL 都视为**不可信外部内容**，不应被执行其指令。
-- 图片/表情包远程下载会校验公网 IP、拒绝本机/内网/凭据 URL、限制重定向和大小。
-- 更新器只从可信更新源安装依赖；失败会回滚源码。
-- 不要提交或公开 `config.yaml`、`secrets.enc`、RSA 私钥、WebUI token、NapCat token。
-- Docker 容器是资源/文件隔离，不是对抗恶意代码的绝对安全边界；默认无网络、无特权、无宿主机敏感挂载。
+---
 
-## 已知限制
+## 开发与构建
 
-- 这是开发快照，接口和配置仍可能调整；未执行生产迁移、备份恢复或 launcher 安装。
-- 工具双层路由处于实验阶段，默认仍使用 compact；动态加载工具集会改变 tools 块，可能影响 KV cache 命中。完整 GIF/视频输入仅对已核实支持的主模型开启（当前内置能力表包含 Qwen3.6-Plus / Qwen3-VL / OpenRouter Gemini）。Docker 容器 C 模式需要一次性管理员初始化（Linux sudo 密码弹窗 / Windows UAC），Windows VHDX 脚本待实机验收；容器启用后启动时会后台自动拉取缺失镜像。
-- 旧 `debata` 数据目录默认继续使用；迁移前请先备份。
-- NapCat 未连接时 QQ 不会收发；以日志中的连接状态为准。
+```bash
+git clone --recursive https://github.com/CN-BI5UNF/KarenBot.git
+cd KarenBot
 
-## License 与致谢
+# 如果克隆时没有初始化 submodule
+git submodule update --init --recursive
 
-- 本项目以 **Apache-2.0** 协议发布，见 [LICENSE](LICENSE)。
-- 上游项目：[binglang001/Debata_Agent](https://github.com/binglang001/Debata_Agent) 及其贡献者；原版权归原作者所有。
-- 改名/重构说明见 [NOTICE](NOTICE)。
-- Karen 角色名称来源于海绵宝宝；相关角色版权归原权利方所有，本项目不主张任何官方关联。
+# 校验版本锁定
+python scripts/verify_modules.py --tag v2.0.0-alpha.1
 
-喜欢的话就给个start吧~ ciallo~
+# 组装一个可运行目录（只含 tracked files）
+python scripts/assemble.py --frontend webui --output dist/app
+# 或
+python scripts/assemble.py --frontend gui --output dist/app
+```
+
+然后按常规 Python 项目安装依赖并启动：
+
+```bash
+cd dist/app
+python3 -m venv .venv
+.venv/bin/python -m pip install -U pip
+.venv/bin/python -m pip install -e .
+.venv/bin/python main.py --frontend webui
+```
+
+GUI 在 Linux 上还需要系统 GTK4/PyGObject；Windows 开发请使用安装器的便携包或 WSL/Linux 环境。
+
+发布流程、资产契约和 submodule 校验见：
+
+- [`docs/distribution.md`](docs/distribution.md)
+- [`scripts/build_release_assets.py`](scripts/build_release_assets.py)
+- [`.github/workflows/release.yml`](.github/workflows/release.yml)
+
+---
+
+## 更新
+
+### v2 用户
+
+在 GUI/WebUI 的「设置 → 更新」中检查 KarenBot 统一发行版。
+
+- 默认同时更新后端和当前前端；也可以只更新后端或只更新当前前端；
+- 只更新前端时不需要重启后端（GUI 需完全退出重开，WebUI 刷新页面）；只更新后端时需要重启后端；
+- 稳定版会自动提示；Pre-release 需要手动选择，并确认风险；
+- 更新前逐文件备份到 `data/module_backups/`；
+- 用户数据、人格、插件和配置不会被覆盖。
+
+> 单组件更新后两端版本可能不一致。若出现接口错误，请再更新另一个组件，或选择「重新安装全部」。
+
+### 0.1.x 用户
+
+先安装过渡版，再升级 v2：
+
+1. 后端 `v0.1.11-alpha.1`；
+2. GUI/WebUI `v0.1.1-alpha.2`；
+3. 重启应用；
+4. 在更新页手动选择最新 v2 发行版（当前为 `v2.0.0-alpha.1`）。
+
+详见 [`docs/transition.md`](docs/transition.md)。
+
+### 1.0.x 用户
+
+旧的「后端 + WebUI 绑定」版本已放弃支持。请备份数据后按新安装流程迁移；旧发行版仍保留在本仓库，并已复制归档到私有仓库 `CN-BI5UNF/Debata-Refactor`。
+
+---
+
+## 数据、安全与备份
+
+- 运行数据默认在安装目录的 `data/`；配置、密钥、人格、日志和插件也由用户目录管理。
+- `config.yaml` 可能包含敏感配置；`secrets.enc` / `secrets.key` 用于加密密钥，不要分享。
+- 控制 API 默认需要令牌，只应监听本机或可信局域网；不要直接暴露到公网。
+- 更新器只写程序文件，不删除用户数据；但升级前仍建议备份：
+  - `data/`
+  - `personas/`
+  - `plugins/`
+  - `config.yaml`
+  - `secrets.*`
+- 安装器会校验 Release 资产的 SHA256；第三方镜像只能加速传输，不能替代发布方校验。
+- 角色使用的模型提供商会收到你发送的对话内容；请阅读对应提供商的数据政策。
+
+---
+
+## 常见问题
+
+**Windows 提示 SmartScreen / 未知发布者**
+
+安装器未做代码签名。选择「更多信息 → 仍要运行」；只从官方 Release 下载。
+
+**GitHub 下载很慢或连不上**
+
+安装器内置多个镜像测速；也可以在安装器/GUI 中固定镜像。若全部失败，请配置代理，或从 Release 手动下载 `install.sh` / 安装器。
+
+**Linux GUI 启动黑屏或报 GTK 错误**
+
+确认已安装 `python3-gi`、`gir1.2-gtk-4.0`、`gir1.2-adw-1`。安装器还提供 `launch-gui-safe.sh` 兼容模式（Cairo 软件渲染）。
+
+**WebUI 打不开**
+
+确认启动日志中的监听地址和端口；默认只监听本机。局域网访问需要调整监听地址并设置访问令牌。
+
+**QQ 没有反应**
+
+先确认 NapCat/LLOneBot 等协议端已经连上，再检查 KarenBot 的 OneBot 11 传输方式、地址、端口和 token 是否一致。可以先用协议端的调试工具发送一条测试消息。
+
+**更新后需要重启吗？**
+
+后端更新后必须重启后端；GUI 前端更新后要完全退出并重新打开；WebUI 更新后刷新页面。
+
+---
+
+## 版本说明
+
+| 版本 | 状态 |
+|---|---|
+| `v2.0.0-alpha.1` | 最新发行版（支持后端/前端分开更新，预览版） |
+| `v0.1.x` 模块线 | 需过渡补丁升级到 v2 |
+| `v1.0.x` 绑定版 | 已停止支持，仅保留归档 |
+
+v2 的组件版本、资产和更新规则见 [`docs/distribution.md`](docs/distribution.md)。
+
+---
+
+## 文档与反馈
+
+- 主仓库：<https://github.com/CN-BI5UNF/KarenBot>
+- 安装器：<https://github.com/CN-BI5UNF/KarenBot-Installer>
+- 问题反馈：<https://github.com/CN-BI5UNF/KarenBot/issues>
+- 更新日志：[`releases/`](releases/)
+
+提交 Issue 时请附上：
+
+- 操作系统和版本；
+- 安装方式（安装器 / 源码 / 旧版本升级）；
+- 相关日志（注意先删除 token、API Key、聊天内容等隐私信息）；
+- 复现步骤。
+
+---
+
+## 许可证
+
+Apache-2.0，详见 [`LICENSE`](LICENSE) 与 [`NOTICE`](NOTICE)。
+
+---
+
+喜欢就给一个start吧 Ciallo～(∠・ω< )⌒☆

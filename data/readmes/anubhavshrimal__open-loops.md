@@ -4,9 +4,9 @@
 </picture>
 <img alt="Wick, the Open Loops mascot: a small lantern robot" src="assets/wick-sticker-96.png" height="48">
 
-### Specs in, reviewed PRs out.
+### You stop being the loop.
 
-**Stop watching your coding agents work.** Write the next Spec while Workers build the last one. Review PRs as they arrive. And it keeps going while you sleep.
+**You write the Spec and you review the result.** Open Loops starts the coding agent, keeps the work moving through builds, tests and your Review comments, and tells you when it needs you. Specs in, reviewed PRs out.
 
 <p align="center">
   <picture>
@@ -23,6 +23,11 @@ Open Loops takes Tasks from your Tracker and gives each one to a coding-agent Wo
 - **No agent merges.** Workers open PRs. You merge or close them.
 - **Only trusted comments count.** A Review comment or Follow-up acts only if it comes from you or a user with write access. Comments from bots and other people are skipped.
 - **It runs on your machine,** with your tools for each Slot. Nothing runs on a server of this project.
+
+<p align="center">
+  <a href="https://youtu.be/BWgLZJAIL9A"><img src="assets/tour-video.jpg" width="560" alt="Watch the guided tour on YouTube, 2 minutes 38 seconds"></a><br>
+  <sub>▶ <a href="https://youtu.be/BWgLZJAIL9A">Watch the guided tour</a> (2:38), or step through the <a href="https://anubhavshrimal.github.io/open-loops/tour.html">interactive tour</a> at your own pace.</sub>
+</p>
 
 > [!WARNING]
 > **Preview (v0.2).** The agents run unattended, with your logins. Use a machine or account that holds only what Open Loops needs, and read [Safety](#safety) first.
@@ -73,21 +78,6 @@ The states, the Cycle and the invariants are in [`SPEC.md`](SPEC.md). The words 
 </picture>
 
 <sub>Illustrative Tasks. A train has the color of its state. No motion: still version (<a href="assets/state-map-still-light.png">light</a>, <a href="assets/state-map-still-dark.png">dark</a>). The rules are in <a href="SPEC.md">SPEC.md</a>.</sub>
-
-## See it run
-
-<details>
-<summary><b>Watch one Task go through the whole Open Loop</b> (terminal re-enactment, about 110 seconds, captions in the clip)</summary>
-
-<br>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/terminal-demo-dark.gif">
-  <source media="(prefers-color-scheme: light)" srcset="assets/terminal-demo-light.gif">
-  <img alt="Terminal re-enactment with burned-in captions. You tell your coding agent: Set up Open Loops. Setup asks one question at a time; the Host question lists Claude Code, Codex, KiroCrew and OpenClaw. The sample Task Add hello.txt goes to Ready. At 10:30 a Cycle spawns the Worker ol-hello-file in its own git worktree in a Herdr pane. The Worker builds, tests and reviews, then opens draft PR #2 itself and moves the Task to In Review. At 11:00 the next Cycle only sends in_review and writes the Cycle log. You leave a Review comment; a comment from a bot on the PR is skipped because bots are not trusted authors. At 11:30 the next Cycle respawns the Worker in the same worktree; it adds a commit, pushes and replies. You mark the draft PR ready and merge it; you do not approve your own PR. At 12:30 the next Cycle moves the Task to Done and sends done. No agent merges." src="assets/terminal-demo-light.gif" width="100%">
-</picture>
-
-<sub>A re-enactment with cron + <code>claude -p</code> as the Host, the Herdr TUI as the Runtime, GitHub Issues, a log file and GitHub PR. Task #1, PR #2 and the repo <code>you/my-app</code> are illustrative. Time is sped up; the clock shows the time of day in the story. The commands and log lines follow <a href="core/orchestrator.md"><code>core/orchestrator.md</code></a>, <a href="core/worker-rules.md"><code>core/worker-rules.md</code></a> and the <a href="adapters/"><code>adapters/</code></a> notes files; the wording follows a real <a href="tests/cycle_fixture/README.md">Cycle fixture</a> run.</sub>
-</details>
 
 ## Slots
 
@@ -162,12 +152,13 @@ Open Loops installs these projects from their upstream source. None of their fil
 |---|---|---|---|
 | [mattpocock/skills](https://github.com/mattpocock/skills) | Matt Pocock | MIT | The default review skill `code-review` in the Worker's completion steps. Optional modules: the refine skills `spec-task` and `spec-exploration` are derived in part from its skills (MIT, attribution in each `SKILL.md`) and use its `domain-modeling`; the capture rules name its `wayfinder`. Installed by setup from upstream. |
 | [obra/superpowers](https://github.com/obra/superpowers) | Jesse Vincent | MIT | The Worker rules use `verification-before-completion`, `systematic-debugging`, `receiving-code-review` and `subagent-driven-development`. Installed by setup from upstream. |
-| [herdrdev/herdr](https://github.com/herdrdev/herdr) | The Herdr authors | Apache-2.0 | An alternative Runtime (the Herdr TUI). The Owner installs the `herdr` program from its own docs. Not installed by setup. |
-| [herdrdev/herdr-core](https://github.com/herdrdev/herdr-core) | The Herdr authors | Apache-2.0 | The recommended Runtime. The Owner installs the `hc` program (herdr-core) from its own docs. Not installed by setup. |
+| [herdrdev/herdr-core](https://github.com/herdrdev/herdr-core), [herdrdev/herdr](https://github.com/herdrdev/herdr) | The Herdr authors | Apache-2.0 | herdr-core (`hc`) is the recommended Runtime; the Herdr TUI (`herdr`) is an alternative Runtime. The Owner installs the program from its own docs. Not installed by setup. |
 | [tobi/qmd](https://github.com/tobi/qmd) | Tobi Lutke | MIT | Optional local search for the wiki module. The Owner installs the `qmd` program from its own docs. Not installed by setup. |
 <!-- credits:end -->
 
 The wiki module follows Andrej Karpathy's ["LLM Wiki" pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). The Exploration Worker's experiment loop follows Andrej Karpathy's [autoresearch](https://github.com/karpathy/autoresearch). The repo layout and the idea of a `SPEC.md` next to the code come from [openai/symphony](https://github.com/openai/symphony). The fonts in the images are Inter and JetBrains Mono (SIL Open Font License 1.1), drawn as outlines.
+
+If Open Loops is useful to you, <a href="https://github.com/anubhavshrimal/open-loops">give it a ★ on GitHub</a>. It helps other people find it.
 
 ## License
 

@@ -1,46 +1,61 @@
 <div align="center">
 
-# 给 AI 一张自由画布。<br>把设计带回 Axure。
-
-**用 RP/1 写下设计，让 AI 起稿、你来精修，交付可继续编辑的 `.rp`。**
-
-**Axure RP 9 / RP 11 · AI 原生画布 · CLI 与 MCP**
-
-[开始使用](#quickstart)　·　[30 秒了解](#overview)　·　[Studio](#studio)　·　[RP/1](#rp1)　·　[版本对齐](#parity)　·　[常见问题](#faq)　·　[English](README.en.md)
-
-[![Release](https://img.shields.io/github/v/release/karlmoriaty/AxurePR-return-rp?style=flat-square&label=release&labelColor=202825&color=D5FF70)](https://github.com/karlmoriaty/AxurePR-return-rp/releases) [![Checks](https://img.shields.io/github/actions/workflow/status/karlmoriaty/AxurePR-return-rp/test.yml?branch=main&style=flat-square&label=checks&labelColor=202825&color=637E51)](https://github.com/karlmoriaty/AxurePR-return-rp/actions) [![Axure RP 9 | 11](https://img.shields.io/badge/Axure_RP-9_%7C_11-637E51?style=flat-square&labelColor=202825)](docs/version-parity.md) [![MIT](https://img.shields.io/badge/MIT-open_source-D5FF70?style=flat-square&labelColor=202825)](LICENSE)
-
-</div>
-
-<a id="overview"></a>
-
-## 00　30 秒了解 return_rp
-
-**一句话：把截图、需求描述或 RP/1 源码，变成可继续编辑的 Axure 原生工程，而不是一张原型截图。**
-
-| 你给它 | 它交给你 |
-| :--- | :--- |
-| 一张截图、一段需求、一份 PRD，或一份 RP/1 源码 | 原生 `.rp`、浏览器预览、HTML / CSS / JS 导出，以及检查报告 |
-
-**AI 起稿，人来定稿：**
-
-| AI 起稿 | 人来精修 | 原生交付 |
-| :--- | :--- | :--- |
-| 用自然语言或 RP/1 生成多页流程，按图层与语义局部改稿。 | 在 Studio 里双击改字、框选、拖拽、测距、撤销重做。 | 文字、按钮与输入框保持独立元件，在 Axure 中继续编辑。 |
-
-**它不是又一个 UI 生成器：**
-
-| 对比项 | 多数截图转代码工具 | return_rp |
-| :--- | :--- | :--- |
-| 输出物 | HTML、图片或不可编辑稿 | 原生 `.rp`，也可导出 HTML / CSS / JS |
-| 设计源码 | 一次性生成，难以 diff 与回改 | RP/1 文本源码，可版本管理、按图层局部修改 |
-| Agent 协作 | 往往只能整页重来 | 按图层、语义与范围查询，改具体对象 |
-| Axure 版本 | 通常只覆盖一个版本 | RP 9 / RP 11 双向能力对齐 |
-| 验证方式 | 看截图 | 结构检查 + 浏览器交互 + Axure 保存重开 / 预览 |
+<img src="assets/readme/hero-canvas.jpg" alt="return_rp：一块由人和 AI 共同编辑的原生设计画布" width="100%">
 
 <br>
 
-## 01　一条链路，从想法到 Axure。
+# return_rp
+
+### 给 AI 一张画布，把设计带回 Axure。
+
+把截图、需求或 RP/1 源码，变成可以在 Axure 里继续编辑的原生 `.rp`，而不是一张原型截图。
+
+**Axure RP 9 / RP 11　·　AI 原生画布　·　CLI 与 MCP**
+
+[![Release](https://img.shields.io/github/v/release/karlmoriaty/AxurePR-return-rp?style=flat-square&label=release&labelColor=202825&color=D5FF70)](https://github.com/karlmoriaty/AxurePR-return-rp/releases) [![npm](https://img.shields.io/npm/v/return_rp?style=flat-square&label=npm&labelColor=202825&color=637E51)](https://www.npmjs.com/package/return_rp) [![Checks](https://img.shields.io/github/actions/workflow/status/karlmoriaty/AxurePR-return-rp/test.yml?branch=main&style=flat-square&label=checks&labelColor=202825&color=637E51)](https://github.com/karlmoriaty/AxurePR-return-rp/actions) [![Axure RP 9 | 11](https://img.shields.io/badge/Axure_RP-9_%7C_11-637E51?style=flat-square&labelColor=202825)](docs/version-parity.md) [![MIT](https://img.shields.io/badge/MIT-open_source-D5FF70?style=flat-square&labelColor=202825)](LICENSE)
+
+[开始使用](#quickstart)　·　[工作流](#workflow)　·　[Studio](#studio)　·　[RP/1](#rp1)　·　[版本对齐](#parity)　·　[常见问题](#faq)　·　[English](README.en.md)
+
+</div>
+
+<br>
+
+## 一句话，说清楚它是什么
+
+> **AI 负责起稿，你负责定稿，Axure 负责收尾。**<br>
+> 页面、组件、变量与交互都写进一份可版本管理的 RP/1 源码，再编译成原生工程。
+
+| 你给它 | 它交给你 |
+| :--- | :--- |
+| 一张截图、一段需求、一份 PRD，或一份 RP/1 源码 | 原生 `.rp`、浏览器预览、HTML / CSS / JS 导出，以及结构检查与验收报告 |
+
+<br>
+
+## 为什么不是又一个 UI 生成器
+
+| | 多数截图转代码工具 | **return_rp** |
+| :--- | :--- | :--- |
+| **输出物** | HTML、图片或不可编辑稿 | 原生 `.rp`，也可导出 HTML / CSS / JS |
+| **设计源码** | 一次性生成，难以 diff 与回改 | RP/1 文本源码，可版本管理、按图层局部修改 |
+| **Agent 协作** | 往往只能整页重来 | 按图层、语义与范围查询，只改具体对象 |
+| **Axure 版本** | 通常只覆盖一个版本 | RP 9 / RP 11 双向能力对齐 |
+| **验证方式** | 看截图 | 结构检查 + 浏览器交互 + Axure 保存重开与预览 |
+
+<br>
+
+<a id="workflow"></a>
+
+## 从想法到 Axure，只有一条链路
+
+```mermaid
+flowchart TD
+  A["截图 / 需求 / PRD"] --> B["RP/1 设计源码"]
+  B --> C["Studio 画布"]
+  C --> D["原生 .rp"]
+  C --> E["浏览器预览"]
+  D --> F["Axure 继续编辑"]
+  E --> G["HTML / CSS / JS 导出"]
+```
 
 1. **把意图写成源码。** 截图走临摹管线，需求与 PRD 直接写成 RP/1；页面、组件、变量、交互都在同一份文本里。
 2. **在画布里推敲。** Agent 搭第一版，你直接点选、改字、调整布局；也可以把局部交还 AI，继续探索另一种构图。
@@ -51,11 +66,11 @@
 
 <a id="studio"></a>
 
-## 02　在画布里，把设计推敲到位。
+## Studio：一块人和 AI 都能编辑的画布
 
-Studio 是一块 AI 和人都能编辑的自由画布。让 Agent 搭好第一版，再直接点选、改字、调整布局；也可以把局部交还 AI，继续探索另一种构图。
+<img src="assets/readme/studio-canvas.jpg" alt="Studio 画布示意：图层、画板、选择框与属性面板" width="100%">
 
-**AI 起稿。** RP/1 或命令创作，按图层、语义和范围查询，局部改稿。<br>
+**AI 起稿。** 通过 RP/1 或命令创作，按图层、语义和范围查询，局部改稿。<br>
 **人来精修。** 双击改字、Shift 框选、Option / Alt 悬停测距，撤销重做。<br>
 **一起验证。** 查看真实截图、运行交互场景，再交付原型。
 
@@ -65,16 +80,16 @@ Studio 是一块 AI 和人都能编辑的自由画布。让 Agent 搭好第一�
 
 <a id="rp1"></a>
 
-## 03　设计意图，有自己的源码。
+## RP/1：设计意图，有自己的源码
 
-**RP/1** 把页面、布局、组件、变量和交互写在一起。AI 改动有明确目标，设计也能保留结构、版本和继续迭代的起点。
+**RP/1** 把页面、布局、组件、变量和交互写在一起。AI 的改动有明确目标，设计也保留结构、版本和继续迭代的起点。
 
 ```text
 rp/1 target=9 name="下一次相遇" domain=mobile theme=mobile-hifi
 
 page #home name="发现" device=iphone-17-pro
   phone-shell #shell title="去自然里，遇见飞羽。" gap=16
-    card #bird [fillxhug] title="今天，认识一只翠鸟" body="从水边的一抹蓝绿，开始你的观鸟手记。" actionText="记下这次遇见" goto="notes"
+    card #bird [fillxhug] title="认识翠鸟" body="从一抹蓝绿开始。" actionText="记下遇见" goto="notes"
 
 page #notes name="手记" device=iphone-17-pro
   phone-shell #shell title="我的第一篇手记" gap=16
@@ -88,9 +103,7 @@ page #notes name="手记" device=iphone-17-pro
 
 <br>
 
-## 04　交到 Axure，仍然握得住设计。
-
-生成原生 **`.rp`**，在 Axure 中继续修改支持的文字、控件和布局。页面、变量、动态面板与跳转可以一起交付，源稿、预览和检查报告也一并保留。
+## 交到 Axure，仍然握得住设计
 
 | 从哪里继续 | 可以做什么 |
 | :--- | :--- |
@@ -105,18 +118,20 @@ page #notes name="手记" device=iphone-17-pro
 | 代码导出 | 独立 HTML / CSS / JS，便于评审或嵌入 |
 | 结构与验收报告 | 三零检查（未解析记录、悬空引用、问题数均为 0）、浏览器断言与 Axure 往返结果分开记录 |
 
+页面、变量、动态面板与跳转可以一起交付，源稿、预览和检查报告也一并保留。
+
 [原生导出与回填](docs/studio-native-roundtrip.md)　↗　[代码导出](docs/studio-code-export.md)
 
 <br>
 
 <a id="parity"></a>
 
-## 05　RP 9 与 RP 11，走同一条流水线。
+## RP 9 与 RP 11，走同一条流水线
 
 两个版本共用同一套 CLI、MCP 与 Studio。任一版本能做的事，另一版本不会以 `unsupported` 收场；缺口必须登记，并在运行时告警或写入前明确诊断，绝不静默丢参数。
 
 | 能力 | RP 9 | RP 11 |
-| :--- | :--- | :--- |
+| :--- | :---: | :---: |
 | RP/1 原生编译与场景写入 | 支持 | 支持 |
 | 空白模板检测、裁剪与动态面板克隆 | 支持 | 支持 |
 | 原生表单控件与状态样式 | 支持 | 支持 |
@@ -171,10 +186,6 @@ npx -y -p return_rp return_rp --help
 npx -y -p return_rp return_rp-mcp
 ```
 
-MCP 客户端配置可以直接写 `"command": "npx", "args": ["-y", "-p", "return_rp", "return_rp-mcp"]`。
-
-> MCP 工具列表依赖可选依赖 `@modelcontextprotocol/sdk`（`npm ci` 会一并安装）。只跑 CLI 不装也能用；缺少依赖时 MCP 启动会提示在项目目录执行 `npm ci --ignore-scripts`，而不是静默返回空工具列表。
-
 <details>
 <summary><b>连接你的 MCP 客户端</b> · 展开配置</summary>
 
@@ -215,9 +226,9 @@ MCP 客户端配置可以直接写 `"command": "npx", "args": ["-y", "-p", "retu
 
 Agent 从 `studio_describe({"topic":"workflow"})` 开始。导入已有 RP/1 可为 `studio_open_project` 指定 `sourcePath`；完整原生生成使用 `generate_prototype`。截图临摹走 `generate_from_image` 或 `scripts/trace.mjs`，局部创作和完整编译的支持范围分别记录。
 
-原生生成默认目标 RP 11，也可用 `target=9` 或 `AXURE_TARGET_VERSION=9` 切到 RP9。宿主证据覆盖 macOS + Axure RP9，以及 Windows + Axure RP9 / RP11（GUI 保存重开与预览往返）。部分效果采用嵌入位图，字体和预览可能受宿主影响。任意小数缩放清晰度、单画板海量节点仍有边界。
+原生生成默认目标 RP 11，也可用 `target=9` 或 `AXURE_TARGET_VERSION=9` 切到 RP 9。宿主证据覆盖 macOS + Axure RP 9，以及 Windows + Axure RP 9 / RP 11（GUI 保存重开与预览往返）。部分效果采用嵌入位图，字体和预览可能受宿主影响。任意小数缩放清晰度、单画板海量节点仍有边界。
 
-结构检查、浏览器行为与 Axure 保存重开分别验证。[能力范围](references/capabilities.md) · [RP9 / RP11 能力对齐](docs/version-parity.md) · [验收层级](docs/studio-acceptance.md) · [故障排查](references/troubleshooting.md)
+结构检查、浏览器行为与 Axure 保存重开分别验证。[能力范围](references/capabilities.md) · [RP 9 / RP 11 能力对齐](docs/version-parity.md) · [验收层级](docs/studio-acceptance.md) · [故障排查](references/troubleshooting.md)
 
 </details>
 
@@ -249,7 +260,7 @@ Agent 从 `studio_describe({"topic":"workflow"})` 开始。导入已有 RP/1 可
 </details>
 
 <details>
-<summary><b>为什么宿主返回 `saved: false`？</b></summary>
+<summary><b>为什么宿主返回 <code>saved: false</code>？</b></summary>
 
 Axure 对未修改的文档可能跳过写盘。此时宿主如实返回 `saved: false`，并单独记录 `saveCommandIssued: true`；任务验收以保存命令已执行为准，是否真正写入由文件 mtime 判断。这比把保存键一律当成成功更接近真实行为。
 
@@ -271,7 +282,8 @@ Axure 对未修改的文档可能跳过写盘。此时宿主如实返回 `saved:
 
 <br>
 
-## 项目结构
+<details>
+<summary><b>项目结构</b></summary>
 
 | 目录 | 作用 |
 | :--- | :--- |
@@ -285,16 +297,22 @@ Axure 对未修改的文档可能跳过写盘。此时宿主如实返回 `saved:
 
 Node 源码以 TypeScript（`*.mts` / `studio/web/*.ts`）编写，`npm run build` 生成同路径 `.mjs` / `.js`；仓库与发布包同时包含源码和生成后的运行时文件，直接使用不需要先构建。
 
+</details>
+
 <br>
 
 ---
 
-[Agent Skill](SKILL.md)　/　[贡献指南](CONTRIBUTING.md)　/　[变更记录](CHANGELOG.md)　/　[Releases](https://github.com/karlmoriaty/AxurePR-return-rp/releases)　/　[MIT License](LICENSE)
+<div align="center">
 
-## 问题反馈
+[Agent Skill](SKILL.md)　·　[贡献指南](CONTRIBUTING.md)　·　[变更记录](CHANGELOG.md)　·　[Releases](https://github.com/karlmoriaty/AxurePR-return-rp/releases)　·　[MIT License](LICENSE)
 
-- 原作者 / 维护者：**karlmoriaty**（GitHub：[github.com/karlmoriaty](https://github.com/karlmoriaty)）
-- 问题反馈：[GitHub Issues](https://github.com/karlmoriaty/AxurePR-return-rp/issues)　或　QQ 邮箱：**3070687583@qq.com**
-- 如果这个项目帮你省下了画原型的时间，欢迎 Star、分享给同事，或带着真实案例来提 Issue。
+<br>
 
-<sub>由 karlmoriaty 独立开发 · 与 Axure 无隶属关系 · 第三方案例照片按各自许可与署名使用</sub>
+**问题反馈**　[GitHub Issues](https://github.com/karlmoriaty/AxurePR-return-rp/issues)　·　QQ 邮箱：**3070687583@qq.com**
+
+如果这个项目帮你省下了画原型的时间，欢迎 Star、分享给同事，或带着真实案例来提 Issue。
+
+<sub>由 karlmoriaty 独立开发 · 与 Axure 无隶属关系</sub>
+
+</div>
