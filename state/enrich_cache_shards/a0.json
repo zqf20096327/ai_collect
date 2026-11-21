@@ -272,7 +272,7 @@
   "commit_7d": 7,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-02-28",
-  "rel_days": 259,
+  "rel_days": 266,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -323,11 +323,11 @@
   }
  },
  "Besty0728/Unity-Skills": {
-  "commit_90d": 359,
-  "commit_7d": 50,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "commit_90d": 350,
+  "commit_7d": 6,
+  "rel_ver": "v3.0.2",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -340,10 +340,10 @@
    "C#": 98,
    "Python": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -378,11 +378,11 @@
   }
  },
  "ginlix-ai/LangAlpha": {
-  "commit_90d": 2482,
-  "commit_7d": 318,
-  "rel_ver": "desktop-v0.3.1",
-  "rel_pub": "2026-11-09",
-  "rel_days": 5,
+  "commit_90d": 2809,
+  "commit_7d": 384,
+  "rel_ver": "desktop-v0.3.2",
+  "rel_pub": "2026-11-14",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -398,10 +398,10 @@
    "CSS": 1,
    "Jinja": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -545,10 +545,10 @@
  },
  "uxlfoundation/scikit-learn-intelex": {
   "commit_90d": 126,
-  "commit_7d": 7,
+  "commit_7d": 5,
   "rel_ver": "2026.2.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -564,10 +564,10 @@
    "Cython": 1,
    "CMake": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4724,6 +4724,46 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "1250789832phy-dotcom/safedesk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "HTML": 13,
+   "JavaScript": 12
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "marian-kamenistak/sap-ai-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

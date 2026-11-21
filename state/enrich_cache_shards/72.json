@@ -3122,11 +3122,11 @@
   }
  },
  "yreidev/workbuddy2api-panel": {
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-10-21",
-  "rel_days": 1,
-  "rel_n90": 8,
-  "rel_pre": false,
+  "rel_ver": "v1.14.0-rc.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -3140,9 +3140,9 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "release": "20261022",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022",
@@ -5390,6 +5390,55 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "itsdecodingai/second-brain-ai-assistant-course": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Jupyter Notebook": 71,
+   "Python": 28,
+   "Makefile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "commit": "20261121",
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "kentzjh-cmd/tmem": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "Python": 4
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -169,11 +169,11 @@
   }
  },
  "Simon-He95/markstream-vue": {
-  "commit_7d": 27,
-  "commit_90d": 437,
-  "rel_ver": "stream-markdown-parser@1.2.26",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_7d": 60,
+  "commit_90d": 402,
+  "rel_ver": "stream-markdown-parser@1.2.28",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -189,10 +189,10 @@
    "Svelte": 5,
    "HTML": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -225,12 +225,12 @@
   }
  },
  "NVIDIA-NeMo/DataDesigner": {
-  "commit_7d": 4,
-  "commit_90d": 109,
-  "rel_ver": "v0.10.0",
-  "rel_pub": "2026-11-02",
-  "rel_days": 12,
-  "rel_n90": 7,
+  "commit_7d": 6,
+  "commit_90d": 112,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -245,20 +245,20 @@
    "HTML": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "openai/openai-java": {
-  "commit_7d": 13,
-  "commit_90d": 402,
-  "rel_ver": "v4.105.0",
-  "rel_pub": "2026-11-13",
+  "commit_7d": 30,
+  "commit_90d": 399,
+  "rel_ver": "v4.111.0",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -275,10 +275,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2791,11 +2791,11 @@
   }
  },
  "Sidiora-Labs/paxeer-monorepo": {
-  "commit_90d": 6787,
-  "commit_7d": 668,
+  "commit_90d": 35790,
+  "commit_7d": 2580,
   "rel_ver": "hpx-registry-87945ae90ce045296d595537c140faabd028d724",
   "rel_pub": "2026-10-04",
-  "rel_days": 18,
+  "rel_days": 48,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -2811,10 +2811,10 @@
    "C": 7,
    "Elixir": 7
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"

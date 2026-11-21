@@ -87,12 +87,12 @@
   }
  },
  "i-am-bee/beeai-framework": {
-  "commit_90d": 220,
-  "commit_7d": 22,
+  "commit_90d": 242,
+  "commit_7d": 35,
   "rel_ver": "typescript_v0.1.32",
   "rel_pub": "2026-11-02",
-  "rel_days": 12,
-  "rel_n90": 6,
+  "rel_days": 19,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -107,10 +107,10 @@
    "Jupyter Notebook": 3,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1202,8 +1202,8 @@
   }
  },
  "AI-sandbox/gnomix": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1215,10 +1215,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5217,6 +5217,27 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "aerth/orchard-tui": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Go": 95,
+   "Makefile": 4,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -200,11 +200,11 @@
   }
  },
  "whiteguo233/OpenBiliClaw": {
-  "commit_90d": 872,
-  "commit_7d": 80,
-  "rel_ver": "openbiliclaw-v0.3.238",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 782,
+  "commit_7d": 10,
+  "rel_ver": "sponsored-runtime-2026-11-16.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -220,10 +220,10 @@
    "HTML": 2,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -259,11 +259,11 @@
   }
  },
  "NxcoreAI/EverRoom": {
-  "commit_90d": 670,
+  "commit_90d": 389,
   "commit_7d": 0,
   "rel_ver": "desktop-v0.1.9-nightly.20261031.123",
   "rel_pub": "2026-10-31",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -319,11 +319,11 @@
   }
  },
  "openai/openai-dotnet": {
-  "commit_90d": 109,
-  "commit_7d": 3,
+  "commit_90d": 88,
+  "commit_7d": 5,
   "rel_ver": "OpenAI_2.15.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -338,10 +338,10 @@
    "PowerShell": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -400,11 +400,11 @@
   }
  },
  "golemcloud/golem": {
-  "commit_90d": 610,
-  "commit_7d": 47,
+  "commit_90d": 735,
+  "commit_7d": 135,
   "rel_ver": "v1.6.4-rc1",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -420,18 +420,18 @@
    "Scala": 4,
    "MoonBit": 4
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "EthicalML/awesome-artificial-intelligence-regulation": {
-  "commit_90d": 71,
-  "commit_7d": 17,
+  "commit_90d": 77,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -440,10 +440,10 @@
   "sec_ids": [],
   "contrib_n": 48,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -472,11 +472,11 @@
   }
  },
  "cognizant-ai-lab/neuro-san-studio": {
-  "commit_90d": 514,
-  "commit_7d": 13,
-  "rel_ver": "0.4.4",
-  "rel_pub": "2026-10-29",
-  "rel_days": 16,
+  "commit_90d": 512,
+  "commit_7d": 10,
+  "rel_ver": "0.4.5",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -492,10 +492,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2788,9 +2788,9 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261105",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "release": "20261022",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022",
@@ -4884,6 +4884,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "prp/oscar": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 87,
+   "Metal": 8,
+   "Jinja": 3,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

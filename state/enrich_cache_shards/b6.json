@@ -133,12 +133,12 @@
   }
  },
  "antoinezambelli/forge": {
-  "commit_90d": 16,
-  "commit_7d": 1,
-  "rel_ver": "v0.10.1",
-  "rel_pub": "2026-11-02",
-  "rel_days": 12,
-  "rel_n90": 7,
+  "commit_90d": 13,
+  "commit_7d": 2,
+  "rel_ver": "v0.10.2",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -153,22 +153,22 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "uzairansaruzi/hermex": {
-  "commit_90d": 639,
-  "commit_7d": 48,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-11-09",
-  "rel_days": 5,
-  "rel_n90": 6,
+  "commit_90d": 669,
+  "commit_7d": 40,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -182,10 +182,10 @@
    "Ruby": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -270,7 +270,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.2.0",
   "rel_pub": "2025-10-23",
-  "rel_days": 387,
+  "rel_days": 394,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -286,10 +286,10 @@
    "CMake": 2,
    "Python": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -456,11 +456,11 @@
   }
  },
  "woaiys3/deepseek-harness-android-app": {
-  "commit_90d": 298,
-  "commit_7d": 4,
+  "commit_90d": 266,
+  "commit_7d": 0,
   "rel_ver": "v1.20.1",
   "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "rel_days": 34,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -476,10 +476,10 @@
    "Python": 1,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4432,6 +4432,26 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "sandbase-lab/awesome-gpt-6-2-astra": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 96,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

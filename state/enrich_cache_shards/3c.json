@@ -1411,8 +1411,8 @@
   }
  },
  "hhopke/intervals-icu-mcp": {
-  "commit_7d": 6,
-  "commit_90d": 56,
+  "commit_7d": 0,
+  "commit_90d": 69,
   "rel_ver": "v5.9.1",
   "rel_pub": "2026-11-07",
   "rel_days": 11,
@@ -1429,9 +1429,9 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261020",
+   "commit": "20261121",
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",

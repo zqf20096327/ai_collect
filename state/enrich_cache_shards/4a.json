@@ -166,11 +166,11 @@
   }
  },
  "pytorch/TensorRT": {
-  "commit_7d": 23,
-  "commit_90d": 416,
+  "commit_7d": 2,
+  "commit_90d": 350,
   "rel_ver": "v2.15.0",
   "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -186,10 +186,10 @@
    "Starlark": 1,
    "CMake": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -226,11 +226,11 @@
   }
  },
  "google-deepmind/android_env": {
-  "commit_7d": 1,
-  "commit_90d": 21,
+  "commit_7d": 7,
+  "commit_90d": 28,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-06-30",
-  "rel_days": 137,
+  "rel_days": 144,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -243,10 +243,10 @@
    "Python": 94,
    "Starlark": 6
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -254,11 +254,11 @@
  },
  "Mininglamp-OSS/octo-web": {
   "commit_7d": 0,
-  "commit_90d": 210,
+  "commit_90d": 167,
   "rel_ver": "v1.20.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 26,
-  "rel_n90": 8,
+  "rel_days": 33,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -273,10 +273,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -793,11 +793,11 @@
   }
  },
  "depalmar/ai_for_the_win": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 5,
+  "commit_90d": 6,
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-01-10",
-  "rel_days": 281,
+  "rel_days": 315,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -811,10 +811,10 @@
    "Jupyter Notebook": 35,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4428,6 +4428,60 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "EvanDavidMS/taskai": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 50,
+   "Rust": 23,
+   "CSS": 19,
+   "Python": 4,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "IsacHassle/Swedish-doomsdaykit": {
+  "rel_ver": "v1.9",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "HTML": 34,
+   "Shell": 18,
+   "CSS": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

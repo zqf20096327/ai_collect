@@ -140,11 +140,11 @@
   }
  },
  "pykeio/ort": {
-  "commit_90d": 120,
-  "commit_7d": 9,
+  "commit_90d": 119,
+  "commit_7d": 2,
   "rel_ver": "v2.0.0-rc.15",
   "rel_pub": "2026-10-19",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -159,10 +159,10 @@
    "TypeScript": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -229,12 +229,12 @@
   }
  },
  "Toni-SM/skrl": {
-  "commit_90d": 43,
-  "commit_7d": 4,
-  "rel_ver": "2.1.1",
-  "rel_pub": "2026-10-21",
-  "rel_days": 24,
-  "rel_n90": 1,
+  "commit_90d": 45,
+  "commit_7d": 2,
+  "rel_ver": "2.1.2",
+  "rel_pub": "2026-11-15",
+  "rel_days": 6,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -245,20 +245,20 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "anush008/fastembed-rs": {
-  "commit_90d": 75,
-  "commit_7d": 2,
-  "rel_ver": "v7.7.0",
-  "rel_pub": "2026-11-09",
+  "commit_90d": 78,
+  "commit_7d": 5,
+  "rel_ver": "v7.7.1",
+  "rel_pub": "2026-11-16",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -273,10 +273,10 @@
    "Nix": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

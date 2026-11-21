@@ -1,6 +1,6 @@
 {
  "rasbt/LLMs-from-scratch": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
@@ -14,10 +14,10 @@
    "Python": 27,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -239,12 +239,12 @@
   }
  },
  "vllm-project/vllm-ascend": {
-  "commit_90d": 2003,
-  "commit_7d": 143,
+  "commit_90d": 2156,
+  "commit_7d": 248,
   "rel_ver": "v0.32.0rc1",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
-  "rel_n90": 8,
+  "rel_days": 11,
+  "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -259,10 +259,10 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4442,6 +4442,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "Oaklight/toolregistry": {
+  "rel_ver": "v0.21.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 12,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 5,
+   "CSS": 2,
+   "HTML": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

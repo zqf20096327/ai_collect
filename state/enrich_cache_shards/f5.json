@@ -317,12 +317,12 @@
   }
  },
  "infinispan/infinispan": {
-  "commit_7d": 31,
-  "commit_90d": 269,
-  "rel_ver": "16.3.1",
-  "rel_pub": "2026-10-20",
-  "rel_days": 25,
-  "rel_n90": 4,
+  "commit_7d": 41,
+  "commit_90d": 296,
+  "rel_ver": "16.3.2",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -337,10 +337,10 @@
    "Python": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -402,8 +402,8 @@
   }
  },
  "Jenqyang/Awesome-AI-Agents": {
-  "commit_7d": 47,
-  "commit_90d": 325,
+  "commit_7d": 33,
+  "commit_90d": 351,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -416,10 +416,10 @@
    "CSS": 40,
    "HTML": 13
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

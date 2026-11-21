@@ -296,11 +296,11 @@
   }
  },
  "qufei1993/skills-hub": {
-  "commit_7d": 5,
-  "commit_90d": 328,
+  "commit_7d": 3,
+  "commit_90d": 322,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -316,10 +316,10 @@
    "JavaScript": 5,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3023,10 +3023,10 @@
  },
  "ibm-self-serve-assets/SuperKnowa": {
   "commit_90d": 1,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v1.0",
   "rel_pub": "2024-02-16",
-  "rel_days": 979,
+  "rel_days": 1009,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -3042,10 +3042,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -5303,6 +5303,45 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "microsoft/dstoolkit-phi2-finetune": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "AlirezaShamsoshoara/RL-from-zero": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

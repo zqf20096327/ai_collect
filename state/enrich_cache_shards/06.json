@@ -48,10 +48,10 @@
   }
  },
  "rlaope/oh-my-hermes": {
-  "commit_90d": 6395,
-  "commit_7d": 1292,
-  "rel_ver": "omher-v0.2.8",
-  "rel_pub": "2026-11-13",
+  "commit_90d": 7151,
+  "commit_7d": 945,
+  "rel_ver": "v4.0.9",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -68,10 +68,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -140,10 +140,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -205,12 +205,12 @@
   }
  },
  "kubeshop/testkube": {
-  "commit_90d": 432,
-  "commit_7d": 15,
+  "commit_90d": 415,
+  "commit_7d": 28,
   "rel_ver": "2.15.2",
   "rel_pub": "2026-11-12",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "rel_days": 9,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -227,10 +227,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4284,6 +4284,60 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "JUNERDD/Atd": {
+  "rel_ver": "v0.12.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 53,
+   "Swift": 36,
+   "HTML": 3,
+   "JavaScript": 3,
+   "CSS": 3
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "hrabanazviking/WYRD-Protocol-World-Yielding-Real-time-Data-AI-world-model": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-04-05",
+  "rel_days": 230,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "JavaScript": 6,
+   "C#": 5,
+   "C++": 3,
+   "Lua": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

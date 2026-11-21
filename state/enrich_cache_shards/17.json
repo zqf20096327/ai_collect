@@ -190,10 +190,10 @@
    "Jupyter Notebook": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -285,11 +285,11 @@
   }
  },
  "okou-ai/okou": {
-  "commit_90d": 11464,
-  "commit_7d": 727,
-  "rel_ver": "ui-v1.21.9",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 11808,
+  "commit_7d": 1002,
+  "rel_ver": "ui-v1.21.77",
+  "rel_pub": "2026-11-21",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -305,10 +305,10 @@
    "Swift": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

@@ -30,11 +30,11 @@
   }
  },
  "PaddlePaddle/PaddleFormers": {
-  "commit_7d": 2,
-  "commit_90d": 56,
+  "commit_7d": 1,
+  "commit_90d": 46,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-06-19",
-  "rel_days": 148,
+  "rel_days": 155,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,12 +172,12 @@
   }
  },
  "aws/sagemaker-python-sdk": {
-  "commit_7d": 12,
-  "commit_90d": 205,
-  "rel_ver": "v3.29.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 9,
-  "rel_n90": 11,
+  "commit_7d": 7,
+  "commit_90d": 203,
+  "rel_ver": "v3.30.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -201,10 +201,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -299,10 +299,10 @@
  },
  "python-adaptive/adaptive": {
   "commit_7d": 1,
-  "commit_90d": 4,
+  "commit_90d": 5,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-06-10",
-  "rel_days": 157,
+  "rel_days": 164,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -315,10 +315,10 @@
    "Python": 90,
    "Jupyter Notebook": 10
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2083,9 +2083,9 @@
    "JavaScript": 57,
    "TypeScript": 43
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "release": "20261022",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022",
@@ -4816,13 +4816,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261118",
    "security": "20261118",
    "contrib": "20261118",
-   "lang": "20261118"
-  }
+   "lang": "20261118",
+   "commit": "20261121"
+  },
+  "commit_90d": 11,
+  "commit_7d": 11
  },
  "sanchorelaxo/openclaw-raspberry-installer": {
   "rel_ver": null,

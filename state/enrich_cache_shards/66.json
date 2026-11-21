@@ -58,7 +58,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.15.2",
   "rel_pub": "2026-01-12",
-  "rel_days": 277,
+  "rel_days": 313,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -406,11 +406,11 @@
   }
  },
  "nicobailon/pi-mcp-adapter": {
-  "commit_90d": 374,
+  "commit_90d": 330,
   "commit_7d": 2,
   "rel_ver": "v7.0.1",
   "rel_pub": "2026-11-04",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -424,10 +424,10 @@
    "JavaScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4736,6 +4736,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "Leooleo1/ai-ray-x": {
+  "rel_ver": "v0.1.9",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 47,
+   "TypeScript": 35,
+   "CSS": 13,
+   "Python": 5,
+   "HTML": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

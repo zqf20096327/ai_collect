@@ -84,11 +84,11 @@
   }
  },
  "cogwheel0/conduit": {
-  "commit_7d": 127,
-  "commit_90d": 716,
+  "commit_7d": 118,
+  "commit_90d": 814,
   "rel_ver": "v4.3.1",
   "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -104,21 +104,21 @@
    "Shell": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "skrub-data/skrub": {
-  "commit_7d": 16,
-  "commit_90d": 113,
+  "commit_7d": 18,
+  "commit_90d": 123,
   "rel_ver": "0.11.0",
   "rel_pub": "2026-10-01",
-  "rel_days": 44,
+  "rel_days": 51,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -134,10 +134,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5050,6 +5050,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "Greal-dev/goldenbrain": {
+  "rel_ver": "v2026.11.20",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "JavaScript": 16,
+   "CSS": 3,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

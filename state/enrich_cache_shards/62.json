@@ -73,11 +73,11 @@
   }
  },
  "beelzebub-labs/beelzebub": {
-  "commit_7d": 0,
+  "commit_7d": 3,
   "commit_90d": 30,
   "rel_ver": "v3.10.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -93,10 +93,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4397,6 +4397,28 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "openticketai/open-ticket-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 97,
+   "Mermaid": 2,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -240,11 +240,11 @@
   }
  },
  "Capsize-Games/airunner": {
-  "commit_90d": 548,
-  "commit_7d": 10,
+  "commit_90d": 472,
+  "commit_7d": 0,
   "rel_ver": "v6.1.11",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -260,21 +260,21 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "liliu-z/stashbase": {
-  "commit_90d": 1032,
-  "commit_7d": 27,
-  "rel_ver": "v2.18.12",
-  "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "commit_90d": 979,
+  "commit_7d": 66,
+  "rel_ver": "v2.18.13",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -290,21 +290,21 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "qwdwqfwq/topconf-paper-figure-gallery": {
-  "commit_90d": 377,
-  "commit_7d": 80,
+  "commit_90d": 447,
+  "commit_7d": 70,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-09-23",
-  "rel_days": 52,
+  "rel_days": 59,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -319,10 +319,10 @@
    "Python": 17,
    "CSS": 4
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1542,16 +1542,16 @@
    "Python": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261022"
+   "commit": "20261121"
   },
-  "commit_90d": 454,
-  "commit_7d": 12
+  "commit_90d": 439,
+  "commit_7d": 0
  },
  "Ditectrev/Amazon-Web-Services-Certified-AWS-Certified-Machine-Learning-MLS-C01-Practice-Tests-Exams-Question": {
   "rel_ver": "v1.1.1",
@@ -4476,12 +4476,12 @@
   }
  },
  "deepseek-ai/chat-demo": {
-  "commit_90d": 2,
-  "commit_7d": 2,
-  "rel_ver": "v0.1.1",
-  "rel_pub": "2026-11-13",
+  "commit_90d": 7,
+  "commit_7d": 5,
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
-  "rel_n90": 2,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4494,10 +4494,10 @@
    "CSS": 15,
    "HTML": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"

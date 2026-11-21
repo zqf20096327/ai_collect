@@ -169,11 +169,11 @@
   }
  },
  "NVIDIA-NeMo/Nemotron": {
-  "commit_90d": 32,
-  "commit_7d": 0,
+  "commit_90d": 31,
+  "commit_7d": 1,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 30,
+  "rel_days": 37,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -189,21 +189,21 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "beam-cloud/beta9": {
-  "commit_90d": 231,
-  "commit_7d": 16,
-  "rel_ver": "worker-0.1.834",
-  "rel_pub": "2026-11-12",
-  "rel_days": 2,
+  "commit_90d": 243,
+  "commit_7d": 22,
+  "rel_ver": "gateway-0.1.865",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -219,10 +219,10 @@
    "HCL": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4880,6 +4880,58 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "google/agents-cli-extensions": {
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "WASDEngine/WASD-Engine": {
+  "rel_ver": "v0.2.4",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 53,
+  "lang": {
+   "TypeScript": 94,
+   "Python": 2,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

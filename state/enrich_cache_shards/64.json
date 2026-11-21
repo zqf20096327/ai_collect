@@ -4960,5 +4960,58 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "mthines/reaper-mcp": {
+  "rel_ver": "v0.100.1",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 74,
+   "Lua": 16,
+   "Python": 4,
+   "CSS": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "KAYOYAK/mimo-local": {
+  "rel_ver": "v1.2.3",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "PowerShell": 3,
+   "HTML": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
  }
 }

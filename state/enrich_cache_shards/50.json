@@ -169,11 +169,11 @@
   }
  },
  "TimefoldAI/timefold-solver": {
-  "commit_90d": 159,
-  "commit_7d": 18,
+  "commit_90d": 154,
+  "commit_7d": 14,
   "rel_ver": "v2.8.0",
   "rel_pub": "2026-11-03",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -189,10 +189,10 @@
    "CSS": 0,
    "XSLT": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -245,11 +245,11 @@
   }
  },
  "Xilinx/brevitas": {
-  "commit_90d": 52,
-  "commit_7d": 0,
+  "commit_90d": 55,
+  "commit_7d": 12,
   "rel_ver": "v0.13.4",
   "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -265,10 +265,10 @@
    "Makefile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -298,11 +298,11 @@
   }
  },
  "Azure/agent-landing-zone": {
-  "commit_90d": 410,
-  "commit_7d": 32,
-  "rel_ver": "v7.5.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 488,
+  "commit_7d": 76,
+  "rel_ver": "v7.5.16",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -318,10 +318,10 @@
    "Shell": 2,
    "Jinja": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

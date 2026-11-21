@@ -111,11 +111,11 @@
   }
  },
  "undertheseanlp/underthesea": {
-  "commit_90d": 30,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 2,
   "rel_ver": "underthesea-v9.5.0",
   "rel_pub": "2026-05-17",
-  "rel_days": 181,
+  "rel_days": 188,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "Rust": 10,
    "CSS": 6
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -153,21 +153,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langchain-ai/deepagentsjs": {
-  "commit_90d": 105,
-  "commit_7d": 12,
-  "rel_ver": "deepagents-acp@0.1.43",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 102,
+  "commit_7d": 8,
+  "rel_ver": "deepagents@1.17.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -216,12 +216,12 @@
   }
  },
  "fmaclen/hollama": {
-  "commit_90d": 27,
-  "commit_7d": 1,
-  "rel_ver": "0.37.0",
-  "rel_pub": "2026-10-30",
-  "rel_days": 15,
-  "rel_n90": 5,
+  "commit_90d": 34,
+  "commit_7d": 7,
+  "rel_ver": "0.39.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -236,10 +236,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4403,13 +4403,16 @@
    "Python": 97,
    "HTML": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261116",
    "security": "20261116",
    "contrib": "20261116",
-   "lang": "20261116"
-  }
+   "lang": "20261116",
+   "commit": "20261121"
+  },
+  "commit_90d": 36,
+  "commit_7d": 32
  },
  "xrzlizheng/BidCopilot": {
   "rel_ver": null,
@@ -4580,6 +4583,53 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "geovanneb/meetlaud": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Swift": 56,
+   "Kotlin": 39,
+   "Python": 4,
+   "C++": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "ulises-bravo/teu-rag-de-bolso-devfest": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 87,
+   "Shell": 13
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

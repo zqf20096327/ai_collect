@@ -454,11 +454,11 @@
   }
  },
  "HelgeSverre/ollama-gui": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 38,
   "rel_ver": "v2.0.5",
   "rel_pub": "2026-10-23",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -474,10 +474,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4252,11 +4252,11 @@
   }
  },
  "OpenByteInc/QuantDinger": {
-  "commit_90d": 293,
-  "commit_7d": 11,
-  "rel_ver": "v5.8.8",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 296,
+  "commit_7d": 10,
+  "rel_ver": "v5.9.3",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4272,10 +4272,10 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"

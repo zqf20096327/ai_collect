@@ -60,11 +60,11 @@
   }
  },
  "mlfoundations/open_clip": {
-  "commit_7d": 4,
-  "commit_90d": 73,
+  "commit_7d": 20,
+  "commit_90d": 93,
   "rel_ver": "v4.2.2",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -262,12 +262,12 @@
   }
  },
  "felinics/Memoh": {
-  "commit_7d": 32,
-  "commit_90d": 533,
+  "commit_7d": 21,
+  "commit_90d": 523,
   "rel_ver": "v1.0.2",
   "rel_pub": "2026-11-08",
-  "rel_days": 6,
-  "rel_n90": 8,
+  "rel_days": 13,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -282,10 +282,10 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -293,11 +293,11 @@
  },
  "Kritt-ai/open-kritt": {
   "commit_7d": 0,
-  "commit_90d": 59,
+  "commit_90d": 42,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-08-16",
-  "rel_days": 90,
-  "rel_n90": 1,
+  "rel_days": 97,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -312,10 +312,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -484,11 +484,11 @@
   }
  },
  "mariadb-operator/mariadb-operator": {
-  "commit_7d": 0,
-  "commit_90d": 205,
+  "commit_7d": 1,
+  "commit_90d": 206,
   "rel_ver": "26.10.2",
   "rel_pub": "2026-10-24",
-  "rel_days": 21,
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -504,10 +504,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4543,6 +4543,29 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "lza6/ai-prompt-library": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "JavaScript": 16,
+   "Shell": 2,
+   "TypeScript": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

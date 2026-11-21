@@ -131,7 +131,7 @@
   "commit_90d": 2,
   "rel_ver": "1.3.10.0",
   "rel_pub": "2025-07-28",
-  "rel_days": 474,
+  "rel_days": 481,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -147,18 +147,18 @@
    "Shell": 1,
    "Cuda": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/tflite-micro": {
-  "commit_7d": 10,
-  "commit_90d": 202,
+  "commit_7d": 5,
+  "commit_90d": 203,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -173,10 +173,10 @@
    "Shell": 2,
    "Makefile": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -247,7 +247,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.2.0",
   "rel_pub": "2020-09-04",
-  "rel_days": 2262,
+  "rel_days": 2269,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -303,11 +303,11 @@
   }
  },
  "trycompai/comp": {
-  "commit_7d": 13,
-  "commit_90d": 34,
+  "commit_7d": 2,
+  "commit_90d": 36,
   "rel_ver": "v3.111.1",
   "rel_pub": "2026-08-05",
-  "rel_days": 101,
+  "rel_days": 108,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -323,10 +323,10 @@
    "JavaScript": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -446,11 +446,11 @@
   }
  },
  "neo4j/neo4j-graphrag-python": {
-  "commit_7d": 23,
-  "commit_90d": 113,
+  "commit_7d": 5,
+  "commit_90d": 109,
   "rel_ver": "1.24.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -462,10 +462,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4450,13 +4450,16 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261025",
    "security": "20261025",
    "contrib": "20261025",
-   "lang": "20261025"
-  }
+   "lang": "20261025",
+   "commit": "20261121"
+  },
+  "commit_90d": 626,
+  "commit_7d": 136
  },
  "facebey/Glyvex-Group-AI-Suite-Open-Source": {
   "rel_ver": "v0.10.0-beta",
@@ -5108,6 +5111,77 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "OleksiyM/groq-cli-chat": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2025-07-01",
+  "rel_days": 508,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 90,
+   "Makefile": 10,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "jiiim/llmenubar": {
+  "rel_ver": "v0.0.3",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 97,
+   "Shell": 2,
+   "Makefile": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "tirandagan/agentic-paper-reviewer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

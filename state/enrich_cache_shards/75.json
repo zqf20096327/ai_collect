@@ -2756,10 +2756,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261116",
-   "security": "20261022",
+   "security": "20261121",
    "contrib": "20261022",
    "lang": "20261022",
    "commit": "20261116"

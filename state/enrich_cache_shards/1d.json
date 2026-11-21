@@ -168,10 +168,10 @@
   }
  },
  "zeronsh/zeron": {
-  "commit_7d": 730,
-  "commit_90d": 2422,
-  "rel_ver": "v0.3.4",
-  "rel_pub": "2026-11-13",
+  "commit_7d": 232,
+  "commit_90d": 2397,
+  "rel_ver": "v0.3.13",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -188,10 +188,10 @@
    "JavaScript": 1,
    "Python": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4691,6 +4691,30 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "fxhack/hipfire-windows": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 31,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "Batchfile": 46
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

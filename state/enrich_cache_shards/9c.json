@@ -194,11 +194,11 @@
   }
  },
  "google-deepmind/mujoco_playground": {
-  "commit_90d": 107,
-  "commit_7d": 14,
+  "commit_90d": 128,
+  "commit_7d": 22,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-11-09",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -212,10 +212,10 @@
    "Jupyter Notebook": 43,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -291,10 +291,10 @@
   "lang": {
    "Rust": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4905,6 +4905,25 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "bostonaholic/grokbot-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

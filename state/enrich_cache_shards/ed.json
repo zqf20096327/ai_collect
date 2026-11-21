@@ -319,11 +319,11 @@
   }
  },
  "datastax/jvector": {
-  "commit_7d": 3,
-  "commit_90d": 35,
+  "commit_7d": 1,
+  "commit_90d": 33,
   "rel_ver": "4.0.2",
   "rel_pub": "2026-10-19",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -339,10 +339,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "anthropics/oss-scanner": {
-  "commit_7d": 56,
-  "commit_90d": 997,
+  "commit_7d": 68,
+  "commit_90d": 1111,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -496,10 +496,10 @@
    "Dockerfile": 72,
    "Python": 28
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1865,8 +1865,8 @@
   }
  },
  "DemonGatanjieu/Anomalous_Model_Browser": {
-  "commit_7d": 17,
-  "commit_90d": 712,
+  "commit_7d": 100,
+  "commit_90d": 1191,
   "rel_ver": "v1.63.3",
   "rel_pub": "2026-11-16",
   "rel_days": 2,
@@ -1883,9 +1883,9 @@
    "Python": 24,
    "CSS": 13
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261021",
+   "commit": "20261121",
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
@@ -2413,16 +2413,16 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261022"
+   "commit": "20261121"
   },
-  "commit_90d": 1318,
-  "commit_7d": 246
+  "commit_90d": 1444,
+  "commit_7d": 61
  },
  "ShenzheZhu/A2A-NT": {
   "rel_ver": null,
@@ -4907,6 +4907,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "ihsan-sa/hive": {
+  "rel_ver": "v2.3.154",
+  "rel_pub": "2026-11-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 43,
+   "Python": 41,
+   "CSS": 9,
+   "HTML": 3,
+   "Shell": 3
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

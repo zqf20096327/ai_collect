@@ -38,12 +38,12 @@
   }
  },
  "spmallick/learnopencv": {
-  "commit_7d": 15,
-  "commit_90d": 64,
-  "rel_ver": "sam-3-1-api-notebooks-2026.09.20",
-  "rel_pub": "2026-09-20",
-  "rel_days": 50,
-  "rel_n90": 3,
+  "commit_7d": 10,
+  "commit_90d": 65,
+  "rel_ver": "yolo26-depth-estimation-2026.11.19",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -58,10 +58,10 @@
    "Java": 0,
    "C++": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -374,13 +374,13 @@
   }
  },
  "agent-of-empires/agent-of-empires": {
-  "commit_7d": 134,
-  "commit_90d": 1139,
-  "rel_ver": "v1.23.0",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "commit_7d": 114,
+  "commit_90d": 1196,
+  "rel_ver": "nightly-20261120",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -394,10 +394,10 @@
    "Astro": 0,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -432,11 +432,11 @@
   }
  },
  "oceanbase/seekdb": {
-  "commit_7d": 18,
-  "commit_90d": 210,
+  "commit_7d": 31,
+  "commit_90d": 191,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-08-27",
-  "rel_days": 79,
+  "rel_days": 86,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -452,10 +452,10 @@
    "Starlark": 1,
    "Python": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -491,8 +491,8 @@
   }
  },
  "fangwei123456/spikingjelly": {
-  "commit_7d": 3,
-  "commit_90d": 203,
+  "commit_7d": 4,
+  "commit_90d": 174,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -506,21 +506,21 @@
    "Cuda": 2,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "SeekStorm/SeekStorm": {
-  "commit_7d": 2,
+  "commit_7d": 3,
   "commit_90d": 89,
-  "rel_ver": "v5.0.0",
-  "rel_pub": "2026-11-12",
-  "rel_days": 2,
+  "rel_ver": "v5.1.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -535,10 +535,10 @@
    "SCSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -6154,6 +6154,43 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "lidambrunel309-ship-it/coregold-usdt-vcc-agentic-ai-token-burn-finops-deep-dive": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "VKVstudio/StrataSmartToggle": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 90,
+   "PowerShell": 10
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

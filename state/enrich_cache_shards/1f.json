@@ -51,7 +51,7 @@
  },
  "Anil-matcha/AI-Youtube-Shorts-Generator": {
   "commit_90d": 15,
-  "commit_7d": 4,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -62,10 +62,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1164,10 +1164,10 @@
   }
  },
  "Saganaki22/ComfyUI-Breeze-TTS-2": {
-  "rel_ver": "v1.4.6",
-  "rel_pub": "2026-09-15",
-  "rel_days": 34,
-  "rel_n90": 11,
+  "rel_ver": "v1.4.8",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1179,9 +1179,9 @@
    "Python": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261121",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

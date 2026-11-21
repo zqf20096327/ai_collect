@@ -145,11 +145,11 @@
   }
  },
  "MemTensor/memmy-agent": {
-  "commit_90d": 1881,
-  "commit_7d": 22,
-  "rel_ver": "v1.2.6",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "commit_90d": 2048,
+  "commit_7d": 145,
+  "rel_ver": "v1.2.7",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -165,10 +165,10 @@
    "PowerShell": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -205,10 +205,10 @@
   }
  },
  "tomasz-tomczyk/crit": {
-  "commit_90d": 242,
-  "commit_7d": 16,
-  "rel_ver": "v0.23.3",
-  "rel_pub": "2026-11-13",
+  "commit_90d": 246,
+  "commit_7d": 19,
+  "rel_ver": "v0.24.0",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -227,21 +227,21 @@
    "CSS": 4,
    "Shell": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "FranciscoMoretti/chat-js": {
-  "commit_90d": 851,
-  "commit_7d": 12,
+  "commit_90d": 862,
+  "commit_7d": 11,
   "rel_ver": "@chat-js/cli@0.8.0",
   "rel_pub": "2026-09-05",
-  "rel_days": 70,
+  "rel_days": 77,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -257,10 +257,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -326,10 +326,10 @@
   }
  },
  "datadrivenconstruction/OpenConstructionERP": {
-  "commit_90d": 5447,
-  "commit_7d": 125,
-  "rel_ver": "v19.4.0",
-  "rel_pub": "2026-11-13",
+  "commit_90d": 5454,
+  "commit_7d": 385,
+  "rel_ver": "v20.0.1",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -353,10 +353,10 @@
    "HTML": 0,
    "Rust": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

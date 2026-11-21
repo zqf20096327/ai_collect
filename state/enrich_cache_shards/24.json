@@ -168,11 +168,11 @@
   }
  },
  "pytorch/ao": {
-  "commit_7d": 6,
-  "commit_90d": 92,
+  "commit_7d": 9,
+  "commit_90d": 86,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-08-03",
-  "rel_days": 103,
+  "rel_days": 110,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -188,10 +188,10 @@
    "Metal": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -744,14 +744,14 @@
   }
  },
  "TristanBilot/mlx-benchmark": {
-  "commit_7d": 0,
-  "commit_90d": 1,
-  "rel_ver": "v0.0.1",
+  "commit_7d": 3,
+  "commit_90d": 4,
+  "rel_ver": null,
   "rel_pub": "2024-03-06",
   "rel_days": 956,
   "rel_n90": 0,
   "rel_pre": false,
-  "rel_none": false,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -760,10 +760,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

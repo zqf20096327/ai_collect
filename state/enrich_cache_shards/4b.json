@@ -268,12 +268,12 @@
   }
  },
  "vmoranv/jshookmcp": {
-  "commit_90d": 692,
-  "commit_7d": 105,
-  "rel_ver": "v0.4.3",
-  "rel_pub": "2026-10-30",
-  "rel_days": 15,
-  "rel_n90": 2,
+  "commit_90d": 727,
+  "commit_7d": 90,
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-11-16",
+  "rel_days": 5,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -291,22 +291,22 @@
    "Python": 0,
    "AppleScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "hyperfield/ai-file-sorter": {
-  "commit_90d": 13,
-  "commit_7d": 0,
-  "rel_ver": "v1.9.2",
-  "rel_pub": "2026-08-14",
-  "rel_days": 92,
-  "rel_n90": 0,
+  "commit_90d": 202,
+  "commit_7d": 23,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -321,10 +321,10 @@
    "Python": 3,
    "CMake": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -355,8 +355,8 @@
   }
  },
  "antoniolupetti/algebrica": {
-  "commit_90d": 105,
-  "commit_7d": 17,
+  "commit_90d": 90,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -365,10 +365,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4131,6 +4131,28 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "krishnasharma2212/stream-clip-machine": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "JavaScript": 23,
+   "PowerShell": 2,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

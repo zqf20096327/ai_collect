@@ -414,11 +414,11 @@
   }
  },
  "openonion/connectonion": {
-  "commit_90d": 2225,
-  "commit_7d": 172,
-  "rel_ver": "v1.9.6rc9",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 2459,
+  "commit_7d": 375,
+  "rel_ver": "v1.9.6rc48",
+  "rel_pub": "2026-11-21",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1091,11 +1091,11 @@
   }
  },
  "dogxii/iFace": {
-  "commit_90d": 7,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": "v1.4.2",
   "rel_pub": "2026-06-17",
-  "rel_days": 123,
+  "rel_days": 157,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1111,10 +1111,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4916,6 +4916,51 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "hounddogai/protomap": {
+  "rel_ver": "0.6.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 73,
+   "PowerShell": 23,
+   "Dockerfile": 4
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "daofang74-lab/infinite-deferral": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 83,
+   "Python": 17
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

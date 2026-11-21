@@ -111,8 +111,8 @@
   }
  },
  "CCOSTAN/Home-AssistantConfig": {
-  "commit_90d": 158,
-  "commit_7d": 2,
+  "commit_90d": 171,
+  "commit_7d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -127,10 +127,10 @@
    "Shell": 7,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -167,12 +167,12 @@
   }
  },
  "NVIDIA/physicsnemo": {
-  "commit_90d": 191,
-  "commit_7d": 31,
-  "rel_ver": "v2.2.2",
-  "rel_pub": "2026-09-11",
-  "rel_days": 64,
-  "rel_n90": 3,
+  "commit_90d": 202,
+  "commit_7d": 16,
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 0,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -187,10 +187,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

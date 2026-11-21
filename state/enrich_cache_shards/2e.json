@@ -117,11 +117,11 @@
   }
  },
  "datachain-ai/datachain": {
-  "commit_7d": 23,
-  "commit_90d": 156,
-  "rel_ver": "0.62.4",
-  "rel_pub": "2026-11-09",
-  "rel_days": 5,
+  "commit_7d": 17,
+  "commit_90d": 164,
+  "rel_ver": "0.62.6",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

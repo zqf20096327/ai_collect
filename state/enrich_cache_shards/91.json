@@ -255,11 +255,11 @@
   }
  },
  "beehive-lab/TornadoVM": {
-  "commit_90d": 974,
-  "commit_7d": 0,
+  "commit_90d": 1003,
+  "commit_7d": 15,
   "rel_ver": "v8.1.0",
   "rel_pub": "2026-11-06",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -275,21 +275,21 @@
    "C": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "NPC-Worldwide/npcpy": {
-  "commit_90d": 182,
-  "commit_7d": 19,
-  "rel_ver": "v2.1.27",
-  "rel_pub": "2026-10-31",
-  "rel_days": 14,
+  "commit_90d": 193,
+  "commit_7d": 24,
+  "rel_ver": "v2.1.29",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

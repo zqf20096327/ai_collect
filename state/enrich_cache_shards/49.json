@@ -313,12 +313,12 @@
   }
  },
  "dphnAI/sonar": {
-  "commit_90d": 61,
-  "commit_7d": 21,
-  "rel_ver": "v0.25.0",
-  "rel_pub": "2026-11-08",
-  "rel_days": 6,
-  "rel_n90": 3,
+  "commit_90d": 63,
+  "commit_7d": 2,
+  "rel_ver": "v0.26.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -333,10 +333,10 @@
    "Cuda": 3,
    "C": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -531,11 +531,11 @@
   }
  },
  "process-intelligence-solutions/pm4py": {
-  "commit_90d": 56,
-  "commit_7d": 2,
+  "commit_90d": 63,
+  "commit_7d": 16,
   "rel_ver": "2.7.22",
   "rel_pub": "2026-03-20",
-  "rel_days": 236,
+  "rel_days": 246,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -549,10 +549,10 @@
    "Jupyter Notebook": 32,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5654,6 +5654,66 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "annadeters-gif/coregold-usdt-vcc-multimodal-video-creator-payment-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "valentineRutto/OrbMotionKMPLibrary": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 94,
+   "Swift": 6,
+   "Ruby": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "chenx5452321/ysm-ai-engine": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 44,
+   "Python": 43,
+   "HTML": 8,
+   "CSS": 6
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -259,11 +259,11 @@
   }
  },
  "alicevision/AliceVision": {
-  "commit_90d": 319,
-  "commit_7d": 25,
+  "commit_90d": 327,
+  "commit_7d": 10,
   "rel_ver": "nightly",
   "rel_pub": "2026-06-10",
-  "rel_days": 157,
+  "rel_days": 164,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "CMake": 5,
    "Modula-3": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -372,11 +372,11 @@
   }
  },
  "kitops-ml/kitops": {
-  "commit_90d": 39,
-  "commit_7d": 2,
+  "commit_90d": 49,
+  "commit_7d": 10,
   "rel_ver": "v1.17.0",
   "rel_pub": "2026-11-06",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -394,10 +394,10 @@
    "Dockerfile": 1,
    "Awk": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -434,8 +434,8 @@
   }
  },
  "udecode/dotai": {
-  "commit_90d": 572,
-  "commit_7d": 26,
+  "commit_90d": 671,
+  "commit_7d": 100,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -449,10 +449,10 @@
    "Swift": 1,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

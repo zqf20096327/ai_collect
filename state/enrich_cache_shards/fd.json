@@ -75,12 +75,12 @@
   }
  },
  "magefree/mage": {
-  "commit_90d": 1153,
-  "commit_7d": 95,
-  "rel_ver": "xmage_1.4.63V1",
-  "rel_pub": "2026-10-31",
-  "rel_days": 14,
-  "rel_n90": 2,
+  "commit_90d": 1151,
+  "commit_7d": 40,
+  "rel_ver": "xmage_1.4.63V2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Go Template": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -132,7 +132,7 @@
   "commit_7d": 0,
   "rel_ver": "v10.1.0",
   "rel_pub": "2025-04-06",
-  "rel_days": 587,
+  "rel_days": 594,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -145,10 +145,10 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -273,12 +273,12 @@
   }
  },
  "agents-flex/agents-flex": {
-  "commit_90d": 187,
-  "commit_7d": 12,
+  "commit_90d": 177,
+  "commit_7d": 7,
   "rel_ver": "v2.3.2",
   "rel_pub": "2026-10-28",
-  "rel_days": 17,
-  "rel_n90": 4,
+  "rel_days": 24,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -289,10 +289,10 @@
   "lang": {
    "Java": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

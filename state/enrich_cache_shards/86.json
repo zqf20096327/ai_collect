@@ -4563,10 +4563,10 @@
   }
  },
  "DIYgod/pinky": {
-  "commit_90d": 1330,
-  "commit_7d": 1228,
-  "rel_ver": "v2026.1114.2",
-  "rel_pub": "2026-11-14",
+  "commit_90d": 1516,
+  "commit_7d": 186,
+  "rel_ver": "v2026.1121.1",
+  "rel_pub": "2026-11-21",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4583,10 +4583,10 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
@@ -4766,13 +4766,16 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261119",
    "security": "20261119",
    "contrib": "20261119",
-   "lang": "20261119"
-  }
+   "lang": "20261119",
+   "commit": "20261121"
+  },
+  "commit_90d": 191,
+  "commit_7d": 145
  },
  "libondev/pxd": {
   "rel_ver": null,

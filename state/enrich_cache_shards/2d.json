@@ -223,10 +223,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "jx-sec/jxwaf": {
-  "commit_90d": 27,
-  "commit_7d": 5,
+  "commit_90d": 29,
+  "commit_7d": 4,
   "rel_ver": "v4.5",
   "rel_pub": "2025-03-28",
-  "rel_days": 596,
+  "rel_days": 603,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -358,10 +358,10 @@
    "Go Template": 3,
    "CSS": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4659,6 +4659,31 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "huynguyenvietwork/StackScout": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 62,
+   "HTML": 38,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -309,11 +309,11 @@
   }
  },
  "agentconnect-md/agentconnect": {
-  "commit_7d": 308,
-  "commit_90d": 2696,
-  "rel_ver": "v2.13.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "commit_7d": 197,
+  "commit_90d": 2544,
+  "rel_ver": "v2.16.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -329,10 +329,10 @@
    "Ruby": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -369,12 +369,12 @@
   }
  },
  "langchain-ai/openevals": {
-  "commit_7d": 30,
-  "commit_90d": 109,
+  "commit_7d": 4,
+  "commit_90d": 83,
   "rel_ver": "openevals==0.2.5",
   "rel_pub": "2026-11-12",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "rel_days": 9,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -388,10 +388,10 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -399,7 +399,7 @@
  },
  "ant-research/AntOmniEvo": {
   "commit_7d": 2,
-  "commit_90d": 72,
+  "commit_90d": 74,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -414,21 +414,21 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "OSGeo/grass": {
-  "commit_7d": 17,
-  "commit_90d": 251,
+  "commit_7d": 23,
+  "commit_90d": 260,
   "rel_ver": "8.5.0",
   "rel_pub": "2026-05-08",
-  "rel_days": 190,
+  "rel_days": 197,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -444,10 +444,10 @@
    "C++": 6,
    "AGS Script": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5243,6 +5243,91 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "mankidev/antialgorithm": {
+  "commit_90d": 19,
+  "commit_7d": 19,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "commit": "20261121",
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "wozniakalan323-bit/opencode-project-workbench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 96,
+   "TypeScript": 4
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "edugca/xlRcode": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "R": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "datweb07/ga-eho-tsp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 91,
+   "Python": 9
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

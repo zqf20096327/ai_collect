@@ -320,11 +320,11 @@
   }
  },
  "Bitterbot-AI/bitterbot-desktop": {
-  "commit_7d": 13,
-  "commit_90d": 533,
-  "rel_ver": "v1.13.0",
-  "rel_pub": "2026-11-08",
-  "rel_days": 6,
+  "commit_7d": 8,
+  "commit_90d": 539,
+  "rel_ver": "v1.14.2",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -343,22 +343,22 @@
    "Rust": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "learnhouse/learnhouse": {
-  "commit_7d": 24,
-  "commit_90d": 525,
-  "rel_ver": "1.4.4",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
-  "rel_n90": 9,
+  "commit_7d": 57,
+  "commit_90d": 554,
+  "rel_ver": "1.4.5",
+  "rel_pub": "2026-11-14",
+  "rel_days": 7,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -373,10 +373,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -414,11 +414,11 @@
  },
  "fancydirty/mediary-scout": {
   "commit_7d": 2,
-  "commit_90d": 107,
-  "rel_ver": "v2026.11.05",
-  "rel_pub": "2026-11-05",
-  "rel_days": 9,
-  "rel_n90": 8,
+  "commit_90d": 105,
+  "rel_ver": "v2026.11.16",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -433,10 +433,10 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

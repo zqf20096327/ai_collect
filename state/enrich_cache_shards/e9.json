@@ -4717,5 +4717,105 @@
    "contrib": "20261119",
    "lang": "20261119"
   }
+ },
+ "scumble-app/scumble": {
+  "commit_90d": 1590,
+  "commit_7d": 146,
+  "rel_ver": "v0.1.59",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 69,
+   "Python": 28,
+   "Rust": 2,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "commit": "20261121",
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "plokmklo/freegem": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 1,
+   "TypeScript": 0,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "betoxf/universal-computer-use": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Rust": 71,
+   "PowerShell": 12,
+   "Python": 7,
+   "MDX": 2,
+   "C#": 2
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "abualnassr/hermes-committee": {
+  "rel_ver": "v0.4.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 70,
+   "JavaScript": 30
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
  }
 }

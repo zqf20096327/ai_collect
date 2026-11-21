@@ -275,11 +275,11 @@
   }
  },
  "steven-jianhao-li/zotero-AI-Butler": {
-  "commit_90d": 102,
-  "commit_7d": 16,
+  "commit_90d": 98,
+  "commit_7d": 0,
   "rel_ver": "v5.1.2-beta.1",
   "rel_pub": "2026-11-08",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
@@ -295,10 +295,10 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4955,6 +4955,32 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "galyavin/pi-tuck": {
+  "rel_ver": "v1.3.4",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 89,
+   "Python": 9,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

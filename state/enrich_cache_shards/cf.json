@@ -380,11 +380,11 @@
   }
  },
  "bghira/SimpleTuner": {
-  "commit_90d": 513,
-  "commit_7d": 27,
-  "rel_ver": "v4.11.0",
-  "rel_pub": "2026-10-28",
-  "rel_days": 17,
+  "commit_90d": 713,
+  "commit_7d": 347,
+  "rel_ver": "v4.12.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -400,10 +400,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5332,12 +5332,15 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261120",
    "security": "20261120",
    "contrib": "20261120",
-   "lang": "20261120"
-  }
+   "lang": "20261120",
+   "commit": "20261121"
+  },
+  "commit_90d": 18,
+  "commit_7d": 11
  }
 }

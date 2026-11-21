@@ -264,8 +264,8 @@
   }
  },
  "openvinotoolkit/openvino_notebooks": {
-  "commit_90d": 190,
-  "commit_7d": 22,
+  "commit_90d": 208,
+  "commit_7d": 25,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -280,22 +280,22 @@
    "TypeScript": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "papersgpt/papersgpt-for-zotero": {
-  "commit_90d": 30,
-  "commit_7d": 2,
-  "rel_ver": "papersgpt-v2.3.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
-  "rel_n90": 8,
+  "commit_90d": 36,
+  "commit_7d": 6,
+  "rel_ver": "papersgpt-v2.4.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -308,10 +308,10 @@
    "TypeScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4869,6 +4869,31 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "KevalParikh22/conductor-ai": {
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 13,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "HTML": 10,
+   "Shell": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -23,8 +23,8 @@
   }
  },
  "Arindam200/awesome-ai-apps": {
-  "commit_7d": 1,
-  "commit_90d": 50,
+  "commit_7d": 4,
+  "commit_90d": 42,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -39,10 +39,10 @@
    "JavaScript": 6,
    "HTML": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -160,8 +160,8 @@
   }
  },
  "google/mantis": {
-  "commit_90d": 189,
-  "commit_7d": 51,
+  "commit_90d": 207,
+  "commit_7d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -174,21 +174,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "xuanyustudio/LocalMiniDrama": {
-  "commit_90d": 25,
-  "commit_7d": 1,
+  "commit_90d": 29,
+  "commit_7d": 4,
   "rel_ver": "v1.2.9",
   "rel_pub": "2026-10-16",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -204,10 +204,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

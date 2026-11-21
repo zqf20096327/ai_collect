@@ -194,11 +194,11 @@
   }
  },
  "siddsachar/row-bot": {
-  "commit_7d": 306,
-  "commit_90d": 3407,
-  "rel_ver": "v5.3.3",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "commit_7d": 518,
+  "commit_90d": 3917,
+  "rel_ver": "v5.3.4",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -216,21 +216,21 @@
    "MDX": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "amd/gaia": {
-  "commit_7d": 621,
-  "commit_90d": 2692,
-  "rel_ver": "v0.26.0-rc25",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_7d": 351,
+  "commit_90d": 3028,
+  "rel_ver": "v0.27.0-rc5",
+  "rel_pub": "2026-11-21",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -246,10 +246,10 @@
    "C++": 4,
    "HTML": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -617,11 +617,11 @@
   }
  },
  "GoogleCloudPlatform/cymbal-air-toolbox-demo": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 1,
   "rel_ver": "v0.5.0",
   "rel_pub": "2025-09-26",
-  "rel_days": 387,
+  "rel_days": 421,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -637,10 +637,10 @@
    "HTML": 6,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -648,11 +648,11 @@
  },
  "Micrurus-Ai/Corvid-lang": {
   "commit_7d": 0,
-  "commit_90d": 71,
+  "commit_90d": 0,
   "rel_ver": "nightly-2026-07-24-ecd38e7",
   "rel_pub": "2026-07-24",
-  "rel_days": 86,
-  "rel_n90": 12,
+  "rel_days": 120,
+  "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -667,10 +667,10 @@
    "TypeScript": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4082,13 +4082,16 @@
    "TypeScript": 80,
    "CSS": 20
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261120",
    "security": "20261120",
    "contrib": "20261120",
-   "lang": "20261120"
-  }
+   "lang": "20261120",
+   "commit": "20261121"
+  },
+  "commit_90d": 17,
+  "commit_7d": 11
  },
  "haoyu8717-ship-it/muse-local-agent": {
   "rel_ver": null,

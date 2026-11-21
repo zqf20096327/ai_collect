@@ -314,11 +314,11 @@
   }
  },
  "tianma-if/edgeever": {
-  "commit_7d": 65,
-  "commit_90d": 1978,
-  "rel_ver": "v2.26.0",
-  "rel_pub": "2026-11-12",
-  "rel_days": 2,
+  "commit_7d": 99,
+  "commit_90d": 1947,
+  "rel_ver": "v2.31.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -334,10 +334,10 @@
    "Swift": 5,
    "CSS": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

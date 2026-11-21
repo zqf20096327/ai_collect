@@ -402,11 +402,11 @@
   }
  },
  "kantord/SeaGOAT": {
-  "commit_7d": 8,
-  "commit_90d": 101,
+  "commit_7d": 4,
+  "commit_90d": 105,
   "rel_ver": "v1.6.1",
   "rel_pub": "2026-10-25",
-  "rel_days": 20,
+  "rel_days": 27,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -419,10 +419,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

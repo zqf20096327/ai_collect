@@ -217,10 +217,10 @@
  },
  "huggingface/optimum": {
   "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_90d": 10,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-08-04",
-  "rel_days": 102,
+  "rel_days": 109,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -234,10 +234,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

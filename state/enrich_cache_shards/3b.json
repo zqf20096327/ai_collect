@@ -366,8 +366,8 @@
   }
  },
  "unipds-engenharia-de-ia-aplicada/engenharia-de-software-com-ia-aplicada": {
-  "commit_7d": 5,
-  "commit_90d": 41,
+  "commit_7d": 0,
+  "commit_90d": 35,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -382,10 +382,10 @@
    "Python": 11,
    "Shell": 9
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -423,10 +423,10 @@
  "microsoft/skills-for-fabric": {
   "commit_7d": 2,
   "commit_90d": 21,
-  "rel_ver": "v0.3.21",
-  "rel_pub": "2026-11-05",
-  "rel_days": 9,
-  "rel_n90": 9,
+  "rel_ver": "v0.3.23",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -440,10 +440,10 @@
    "PowerShell": 5,
    "Shell": 4
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

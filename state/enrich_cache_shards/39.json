@@ -132,11 +132,11 @@
   }
  },
  "biolab/orange3": {
-  "commit_90d": 99,
-  "commit_7d": 16,
+  "commit_90d": 121,
+  "commit_7d": 17,
   "rel_ver": "3.41.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 5,
+  "rel_days": 13,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -152,10 +152,10 @@
    "Jupyter Notebook": 0,
    "C++": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -275,11 +275,11 @@
   }
  },
  "TNT-Likely/PanWatch": {
-  "commit_90d": 76,
-  "commit_7d": 1,
-  "rel_ver": "0.20.4",
-  "rel_pub": "2026-11-08",
-  "rel_days": 6,
+  "commit_90d": 84,
+  "commit_7d": 8,
+  "rel_ver": "0.21.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -295,10 +295,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5338,6 +5338,75 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "1Better-Boy/open-zread": {
+  "rel_ver": "@open-zread/cli@1.2.2",
+  "rel_pub": "2026-07-16",
+  "rel_days": 128,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 2,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "agentid-im/agent-redpackets": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 91,
+   "CSS": 3,
+   "Solidity": 3,
+   "HTML": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "Jutqe/local-coach": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 89,
+   "HTML": 11
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

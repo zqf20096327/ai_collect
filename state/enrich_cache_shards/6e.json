@@ -28,8 +28,8 @@
   }
  },
  "huggingface/candle": {
-  "commit_7d": 0,
-  "commit_90d": 51,
+  "commit_7d": 1,
+  "commit_90d": 52,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -44,10 +44,10 @@
    "C++": 6,
    "HTML": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -892,8 +892,8 @@
   }
  },
  "Akun-python/autumn-recruitment": {
-  "commit_90d": 58,
-  "commit_7d": 18,
+  "commit_90d": 61,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -906,10 +906,10 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -2288,21 +2288,24 @@
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 2,
+  "sec_worst": "low",
+  "sec_last": "2026-11-20",
+  "sec_ids": [
+   "GHSA-xv63-6g95-cc2w(-,medium)",
+   "GHSA-2jrr-h8pp-42r8(-,low)"
+  ],
   "contrib_n": 92,
   "lang": {
    "Python": 65,
    "TypeScript": 34,
    "TeX": 1
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261121",
   "dim_ts": {
    "commit": "20261119",
    "release": "20261119",
-   "security": "20261022",
+   "security": "20261121",
    "contrib": "20261022",
    "lang": "20261022"
   }
@@ -4422,6 +4425,50 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "itsdecodingai/building-a-coding-agent-from-scratch-course": {
+  "commit_90d": 39,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 94,
+   "HTML": 4,
+   "Shell": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "commit": "20261121",
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "anupamchoudhari/enterprise-ai-evals": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

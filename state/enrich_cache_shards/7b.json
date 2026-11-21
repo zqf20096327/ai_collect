@@ -444,11 +444,11 @@
   }
  },
  "microsoft/azure-devops-mcp": {
-  "commit_7d": 5,
-  "commit_90d": 70,
+  "commit_7d": 9,
+  "commit_90d": 76,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -461,10 +461,10 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4997,6 +4997,27 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "blkdmr/pixagon": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 66,
+   "Lua": 27,
+   "HTML": 8
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

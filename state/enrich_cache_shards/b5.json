@@ -316,8 +316,8 @@
   }
  },
  "felladrin/awesome-ai-web-search": {
-  "commit_90d": 14,
-  "commit_7d": 0,
+  "commit_90d": 17,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -328,10 +328,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4978,6 +4978,51 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "ItlaStudent/DevAgents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 46,
+   "Zig": 37,
+   "TypeScript": 7,
+   "C++": 6,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "gaia-family/agentic-data-room": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 72,
+   "Python": 23,
+   "CSS": 5,
+   "Makefile": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

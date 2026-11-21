@@ -250,11 +250,11 @@
   }
  },
  "diodiogod/TTS-Audio-Suite": {
-  "commit_7d": 1,
-  "commit_90d": 51,
+  "commit_7d": 18,
+  "commit_90d": 63,
   "rel_ver": "v5.6.0",
   "rel_pub": "2026-07-25",
-  "rel_days": 112,
+  "rel_days": 119,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -270,10 +270,10 @@
    "CSS": 0,
    "C": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -306,10 +306,10 @@
   }
  },
  "asheshgoplani/agent-deck": {
-  "commit_7d": 68,
-  "commit_90d": 1749,
-  "rel_ver": "v1.16.38",
-  "rel_pub": "2026-11-07",
+  "commit_7d": 33,
+  "commit_90d": 1719,
+  "rel_ver": "v1.16.39",
+  "rel_pub": "2026-11-14",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -326,10 +326,10 @@
    "TypeScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4352,6 +4352,32 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "fernandogarzaaa/project-away": {
+  "rel_ver": "v0.1.35",
+  "rel_pub": "2026-10-25",
+  "rel_days": 27,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Swift": 1,
+   "Shell": 0,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

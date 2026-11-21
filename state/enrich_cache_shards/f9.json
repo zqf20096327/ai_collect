@@ -178,11 +178,11 @@
   }
  },
  "nteract/semiotic": {
-  "commit_90d": 992,
-  "commit_7d": 44,
-  "rel_ver": "v3.13.3",
-  "rel_pub": "2026-10-29",
-  "rel_days": 16,
+  "commit_90d": 914,
+  "commit_7d": 29,
+  "rel_ver": "v3.14.1",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -198,10 +198,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -228,12 +228,12 @@
   }
  },
  "theagentrouter/agent-router": {
-  "commit_90d": 168,
-  "commit_7d": 12,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-11-06",
-  "rel_days": 8,
-  "rel_n90": 6,
+  "commit_90d": 172,
+  "commit_7d": 13,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 24,
@@ -257,10 +257,10 @@
    "CSS": 1,
    "Go Template": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -316,11 +316,11 @@
   }
  },
  "e2b-dev/desktop": {
-  "commit_90d": 28,
+  "commit_90d": 24,
   "commit_7d": 0,
   "rel_ver": "@e2b/desktop-python@2.4.2",
   "rel_pub": "2026-07-23",
-  "rel_days": 114,
+  "rel_days": 121,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -333,10 +333,10 @@
    "Python": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

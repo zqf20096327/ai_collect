@@ -230,11 +230,11 @@
   }
  },
  "huggingface/huggingface.js": {
-  "commit_7d": 42,
-  "commit_90d": 290,
-  "rel_ver": "tasks-v0.22.12",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_7d": 25,
+  "commit_90d": 308,
+  "rel_ver": "tasks-v0.22.22",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -250,10 +250,10 @@
    "Python": 1,
    "Jinja": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -318,13 +318,13 @@
   }
  },
  "microsoft/azure-pipelines-agent": {
-  "commit_7d": 4,
-  "commit_90d": 52,
-  "rel_ver": "v5.282.0",
-  "rel_pub": "2026-10-30",
-  "rel_days": 15,
-  "rel_n90": 5,
-  "rel_pre": false,
+  "commit_7d": 11,
+  "commit_90d": 54,
+  "rel_ver": "v5.283.1",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -338,10 +338,10 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -402,11 +402,11 @@
   }
  },
  "Denys88/rl_games": {
-  "commit_7d": 1,
-  "commit_90d": 19,
+  "commit_7d": 29,
+  "commit_90d": 46,
   "rel_ver": "v1.6.5",
   "rel_pub": "2026-02-20",
-  "rel_days": 267,
+  "rel_days": 274,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -419,10 +419,10 @@
    "Jupyter Notebook": 97,
    "Python": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5653,6 +5653,78 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "itsdecodingai/llm-twin-course": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 96,
+   "Makefile": 2,
+   "Dockerfile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "commit": "20261121",
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "Codehagen/Quincy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 3,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "Geekhyt/dsh-genui-a2ui": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 80,
+   "JavaScript": 11,
+   "CSS": 9
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

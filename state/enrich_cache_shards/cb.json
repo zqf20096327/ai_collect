@@ -266,7 +266,7 @@
   "commit_7d": 0,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 32,
+  "rel_days": 39,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -282,10 +282,10 @@
    "Shell": 6,
    "CSS": 5
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -347,12 +347,12 @@
   }
  },
  "pytorch/FBGEMM": {
-  "commit_90d": 542,
-  "commit_7d": 54,
-  "rel_ver": "v1.8.0",
-  "rel_pub": "2026-07-22",
-  "rel_days": 115,
-  "rel_n90": 0,
+  "commit_90d": 555,
+  "commit_7d": 39,
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -367,21 +367,21 @@
    "HIP": 3,
    "CMake": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "datalevin/datalevin": {
-  "commit_90d": 445,
-  "commit_7d": 0,
+  "commit_90d": 498,
+  "commit_7d": 21,
   "rel_ver": "1.2.10",
   "rel_pub": "2026-10-28",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -397,10 +397,10 @@
    "JavaScript": 4,
    "Shell": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4509,6 +4509,36 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "dllm-labs/mojo-dllm": {
+  "commit_90d": 493,
+  "commit_7d": 14,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 11,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 57,
+   "Mojo": 39,
+   "Shell": 2,
+   "C++": 1,
+   "Tape": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "commit": "20261121",
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -145,12 +145,12 @@
   }
  },
  "SemiAnalysisAI/InferenceX": {
-  "commit_7d": 106,
-  "commit_90d": 1205,
+  "commit_7d": 52,
+  "commit_90d": 1207,
   "rel_ver": "h3-v2-release-v1-references",
   "rel_pub": "2026-11-07",
-  "rel_days": 7,
-  "rel_n90": 2,
+  "rel_days": 14,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -165,21 +165,21 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ovg-project/kvcached": {
-  "commit_7d": 10,
-  "commit_90d": 118,
+  "commit_7d": 5,
+  "commit_90d": 115,
   "rel_ver": "v0.1.6",
   "rel_pub": "2026-10-03",
-  "rel_days": 42,
+  "rel_days": 49,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "Shell": 4,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -893,7 +893,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.5.9",
   "rel_pub": "2026-04-12",
-  "rel_days": 189,
+  "rel_days": 223,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -905,10 +905,10 @@
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1920,8 +1920,8 @@
   }
  },
  "AndrewDryga/coop": {
-  "rel_ver": "v12.0.1",
-  "rel_pub": "2026-10-21",
+  "rel_ver": "v15.2.1",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1938,9 +1938,9 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "release": "20261022",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022",
@@ -4458,6 +4458,31 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "TranBaDat2607/claude-code-kaggle-grandmaster": {
+  "rel_ver": "kaggle-grandmaster--v1.25.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 89,
+   "TypeScript": 11,
+   "Shell": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

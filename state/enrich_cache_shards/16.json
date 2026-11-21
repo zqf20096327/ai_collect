@@ -415,10 +415,10 @@
  },
  "asreview/asreview": {
   "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_90d": 4,
   "rel_ver": "v3.0.8",
   "rel_pub": "2026-06-18",
-  "rel_days": 149,
+  "rel_days": 156,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4756,6 +4756,48 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "chenjunxing888-beep/FREE-huangguo-ai-drama-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
+  }
+ },
+ "typemaid/typemaid": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 83,
+   "CSS": 8,
+   "Astro": 5,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

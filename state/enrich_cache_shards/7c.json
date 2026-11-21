@@ -283,11 +283,11 @@
   }
  },
  "nilearn/nilearn": {
-  "commit_90d": 172,
-  "commit_7d": 3,
+  "commit_90d": 171,
+  "commit_7d": 19,
   "rel_ver": "0.14.1",
   "rel_pub": "2026-09-04",
-  "rel_days": 71,
+  "rel_days": 78,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -971,8 +971,8 @@
   }
  },
  "FatemehTarashi/awesome-tda": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -981,10 +981,10 @@
   "sec_ids": [],
   "contrib_n": 6,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -2861,8 +2861,8 @@
   }
  },
  "appleweiping/WEIPING_WHALE": {
-  "commit_90d": 13,
-  "commit_7d": 10,
+  "commit_90d": 17,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2874,10 +2874,10 @@
    "TypeScript": 77,
    "JavaScript": 23
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4705,6 +4705,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "sammy995/Local-LLM-Arena": {
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-01-27",
+  "rel_days": 298,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 67,
+   "Python": 19,
+   "HTML": 6,
+   "CSS": 6,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

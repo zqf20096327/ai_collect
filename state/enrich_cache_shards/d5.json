@@ -438,11 +438,11 @@
   }
  },
  "mw00/project-maya": {
-  "commit_90d": 1146,
-  "commit_7d": 76,
-  "rel_ver": "v1.1.63",
-  "rel_pub": "2026-11-14",
-  "rel_days": 0,
+  "commit_90d": 1442,
+  "commit_7d": 288,
+  "rel_ver": "v1.1.70",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -458,10 +458,10 @@
    "C": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2530,8 +2530,8 @@
   }
  },
  "AIPMAndy/FreeToken": {
-  "commit_90d": 4,
-  "commit_7d": 4,
+  "commit_90d": 10,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2543,10 +2543,10 @@
    "HTML": 94,
    "Python": 6
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4534,6 +4534,29 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "dennis-akimov/Strata": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 214,
+  "lang": {
+   "C++": 64,
+   "Python": 15,
+   "Cuda": 9,
+   "Rust": 8,
+   "CMake": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

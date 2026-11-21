@@ -392,10 +392,10 @@
   }
  },
  "Syngnat/GoNavi": {
-  "commit_90d": 2402,
-  "commit_7d": 118,
+  "commit_90d": 2381,
+  "commit_7d": 63,
   "rel_ver": "dev-latest",
-  "rel_pub": "2026-11-13",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -412,10 +412,10 @@
    "Python": 1,
    "HTML": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -452,8 +452,8 @@
   }
  },
  "koreainvestment/open-trading-api": {
-  "commit_90d": 18,
-  "commit_7d": 1,
+  "commit_90d": 20,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -468,21 +468,21 @@
    "C": 1,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "skforecast/skforecast": {
-  "commit_90d": 1067,
-  "commit_7d": 234,
+  "commit_90d": 1052,
+  "commit_7d": 4,
   "rel_ver": "v0.27.0",
   "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -497,10 +497,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -537,11 +537,11 @@
   }
  },
  "FalkorDB/GraphRAG-SDK": {
-  "commit_90d": 510,
-  "commit_7d": 13,
+  "commit_90d": 535,
+  "commit_7d": 7,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -555,10 +555,10 @@
    "Jupyter Notebook": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4165,11 +4165,11 @@
   }
  },
  "ForeactLabs/OpenExecutive": {
-  "commit_90d": 916,
-  "commit_7d": 105,
-  "rel_ver": "v0.7.3",
-  "rel_pub": "2026-11-12",
-  "rel_days": 2,
+  "commit_90d": 1043,
+  "commit_7d": 127,
+  "rel_ver": "v0.7.7",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4185,10 +4185,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
@@ -4456,6 +4456,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "baseguard/hangar": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Swift": 76,
+   "Rust": 23,
+   "C": 1,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

@@ -349,12 +349,12 @@
   }
  },
  "MacPaw/OpenAI": {
-  "commit_90d": 212,
-  "commit_7d": 14,
-  "rel_ver": "0.6.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 18,
-  "rel_n90": 3,
+  "commit_90d": 224,
+  "commit_7d": 12,
+  "rel_ver": "0.6.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 6,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -367,10 +367,10 @@
    "Python": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -598,8 +598,8 @@
   }
  },
  "openai/codex-action": {
-  "commit_90d": 6,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -611,21 +611,21 @@
    "JavaScript": 57,
    "TypeScript": 43
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Farama-Foundation/Stable-Retro": {
-  "commit_90d": 18,
+  "commit_90d": 19,
   "commit_7d": 1,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-25",
-  "rel_days": 142,
+  "rel_days": 149,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -641,10 +641,10 @@
    "GLSL": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

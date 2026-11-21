@@ -192,12 +192,12 @@
   }
  },
  "utkuozdemir/nvidia_gpu_exporter": {
-  "commit_90d": 162,
-  "commit_7d": 12,
-  "rel_ver": "v1.18.0",
-  "rel_pub": "2026-11-07",
-  "rel_days": 7,
-  "rel_n90": 5,
+  "commit_90d": 179,
+  "commit_7d": 24,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -212,21 +212,21 @@
    "Dockerfile": 1,
    "Go Template": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "dynamiq-ai/dynamiq": {
-  "commit_90d": 165,
-  "commit_7d": 16,
-  "rel_ver": "v0.73.0",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
+  "commit_90d": 170,
+  "commit_7d": 21,
+  "rel_ver": "v0.74.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -240,10 +240,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4622,6 +4622,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "VirtualHatch-Inc/Vardock": {
+  "rel_ver": "vardock-v0.1.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 53,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 1,
+   "Python": 1,
+   "JavaScript": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

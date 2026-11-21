@@ -357,11 +357,11 @@
   }
  },
  "xuzhougeng/wisp-science": {
-  "commit_90d": 1013,
-  "commit_7d": 23,
-  "rel_ver": "v1.24.0",
-  "rel_pub": "2026-11-03",
-  "rel_days": 11,
+  "commit_90d": 889,
+  "commit_7d": 25,
+  "rel_ver": "v1.25.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -377,10 +377,10 @@
    "TypeScript": 7,
    "C#": 4
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2930,8 +2930,8 @@
   }
  },
  "mindspore-ai/models": {
-  "commit_90d": 1,
-  "commit_7d": 1,
+  "commit_90d": 4,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2946,10 +2946,10 @@
    "Java": 1,
    "CMake": 1
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -5379,6 +5379,29 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "Bijoy2406/GridPilot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 36,
+   "CSS": 5,
+   "Jupyter Notebook": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

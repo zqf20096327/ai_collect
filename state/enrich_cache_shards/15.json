@@ -1,11 +1,11 @@
 {
  "tirth8205/code-review-graph": {
-  "commit_7d": 327,
-  "commit_90d": 1119,
+  "commit_7d": 0,
+  "commit_90d": 1045,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-11-11",
-  "rel_days": 3,
-  "rel_n90": 3,
+  "rel_days": 10,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "Tape": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -230,12 +230,12 @@
   }
  },
  "deepmodeling/deepmd-kit": {
-  "commit_7d": 10,
-  "commit_90d": 77,
+  "commit_7d": 5,
+  "commit_90d": 78,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-08-19",
-  "rel_days": 87,
-  "rel_n90": 1,
+  "rel_days": 94,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -250,10 +250,10 @@
    "C": 1,
    "CMake": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

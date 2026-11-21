@@ -317,11 +317,11 @@
   }
  },
  "microsoft/powerbi-modeling-mcp": {
-  "commit_7d": 1,
-  "commit_90d": 4,
+  "commit_7d": 2,
+  "commit_90d": 5,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-11-06",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -331,10 +331,10 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1415,16 +1415,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261022"
+   "commit": "20261121"
   },
-  "commit_90d": 93,
-  "commit_7d": 12
+  "commit_90d": 103,
+  "commit_7d": 5
  },
  "3dlg-hcvc/multi3drefer": {
   "rel_ver": null,
@@ -4838,12 +4838,36 @@
   "lang": {
    "Rust": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261120",
    "security": "20261120",
    "contrib": "20261120",
-   "lang": "20261120"
+   "lang": "20261120",
+   "commit": "20261121"
+  },
+  "commit_90d": 19,
+  "commit_7d": 13
+ },
+ "sofiakholina/sofiakholina-3D-Generation": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "PowerShell": 15,
+   "Batchfile": 2
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

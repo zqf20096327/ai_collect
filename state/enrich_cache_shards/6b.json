@@ -562,11 +562,11 @@
    "CSS": 8,
    "HTML": 7
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261121",
   "dim_ts": {
    "commit": "20261117",
    "release": "20261117",
-   "security": "20261018",
+   "security": "20261121",
    "contrib": "20261018",
    "lang": "20261018"
   }
@@ -4473,6 +4473,33 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "ishtiaq-ahmed-dev/rocket-mission-lab": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 60,
+   "JavaScript": 28,
+   "Python": 11,
+   "TypeScript": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

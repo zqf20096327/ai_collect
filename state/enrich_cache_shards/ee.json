@@ -169,11 +169,11 @@
   }
  },
  "Darkatse/TauriTavern": {
-  "commit_90d": 595,
-  "commit_7d": 1,
+  "commit_90d": 492,
+  "commit_7d": 0,
   "rel_ver": "Canary",
   "rel_pub": "2026-04-26",
-  "rel_days": 202,
+  "rel_days": 209,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -189,10 +189,10 @@
    "HTML": 5,
    "CSS": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3869,11 +3869,11 @@
   }
  },
  "rddmwmddr/android-ad-cleaner": {
-  "commit_90d": 1333,
-  "commit_7d": 706,
-  "rel_ver": "v0.4.4",
-  "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "commit_90d": 1870,
+  "commit_7d": 388,
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3888,10 +3888,10 @@
    "Shell": 2,
    "Inno Setup": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"

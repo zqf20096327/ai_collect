@@ -271,11 +271,11 @@
   }
  },
  "fastmachinelearning/hls4ml": {
-  "commit_90d": 67,
-  "commit_7d": 4,
+  "commit_90d": 65,
+  "commit_7d": 3,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-03-20",
-  "rel_days": 239,
+  "rel_days": 246,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "Logos": 3,
    "SystemVerilog": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2885,11 +2885,11 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261121",
   "dim_ts": {
    "commit": "20261029",
    "release": "20261029",
-   "security": "20261022",
+   "security": "20261121",
    "contrib": "20261022",
    "lang": "20261022"
   }
@@ -4838,6 +4838,26 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Saturn-He/DOGAN": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "TeX": 0
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

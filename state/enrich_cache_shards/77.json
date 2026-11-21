@@ -1436,10 +1436,10 @@
   "commit_7d": 0
  },
  "JacobJandon/OnionClaw": {
-  "rel_ver": "v2.1.13",
-  "rel_pub": "2026-03-16",
-  "rel_days": 218,
-  "rel_n90": 0,
+  "rel_ver": "v2.4.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 9,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1450,13 +1450,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261121",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261121"
+  },
+  "commit_90d": 13,
+  "commit_7d": 0
  },
  "thinkwee/HiMe": {
   "rel_ver": "v1.3.0",
@@ -4999,6 +5002,29 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "NTIA/alignnet": {
+  "rel_ver": "v0.1",
+  "rel_pub": "2024-07-12",
+  "rel_days": 862,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

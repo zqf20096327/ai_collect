@@ -185,11 +185,11 @@
   }
  },
  "jeremylongshore/tons-of-skills-marketplace": {
-  "commit_7d": 9,
-  "commit_90d": 1359,
+  "commit_7d": 26,
+  "commit_90d": 1138,
   "rel_ver": "@intentsolutionsio/intent-labs-pack@0.1.0",
   "rel_pub": "2026-07-23",
-  "rel_days": 114,
+  "rel_days": 121,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -205,10 +205,10 @@
    "Shell": 5,
    "Astro": 4
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -325,8 +325,8 @@
   }
  },
  "kyegomez/awesome-multi-agent-papers": {
-  "commit_7d": 13,
-  "commit_90d": 22,
+  "commit_7d": 8,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -338,10 +338,10 @@
    "TeX": 92,
    "Python": 8
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -489,12 +489,12 @@
   }
  },
  "codelibs/fess": {
-  "commit_7d": 53,
-  "commit_90d": 483,
+  "commit_7d": 61,
+  "commit_90d": 503,
   "rel_ver": "fess-15.9.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 30,
-  "rel_n90": 2,
+  "rel_days": 37,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -511,10 +511,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3481,13 +3481,16 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261121",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261121"
+  },
+  "commit_90d": 324,
+  "commit_7d": 0
  },
  "bessagroup/hookeai": {
   "rel_ver": "1.0.0",

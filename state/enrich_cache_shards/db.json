@@ -253,12 +253,12 @@
   }
  },
  "gridaco/grida": {
-  "commit_90d": 146,
-  "commit_7d": 16,
-  "rel_ver": "v0.0.25",
-  "rel_pub": "2026-11-09",
-  "rel_days": 5,
-  "rel_n90": 7,
+  "commit_90d": 164,
+  "commit_7d": 38,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -273,10 +273,10 @@
    "PLpgSQL": 2,
    "Rust": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -325,12 +325,12 @@
   }
  },
  "NVIDIA/aistore": {
-  "commit_90d": 608,
-  "commit_7d": 47,
+  "commit_90d": 618,
+  "commit_7d": 42,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-11-01",
-  "rel_days": 13,
-  "rel_n90": 3,
+  "rel_days": 20,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -345,22 +345,22 @@
    "Jupyter Notebook": 3,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "microsoft/responsible-ai-toolbox": {
-  "commit_90d": 21,
-  "commit_7d": 7,
-  "rel_ver": "v0.36.0",
-  "rel_pub": "2024-07-08",
-  "rel_days": 859,
-  "rel_n90": 0,
+  "commit_90d": 30,
+  "commit_7d": 10,
+  "rel_ver": "v0.37.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -375,20 +375,20 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "relaticle/relaticle": {
-  "commit_90d": 3862,
-  "commit_7d": 709,
-  "rel_ver": "v3.9.2",
-  "rel_pub": "2026-11-13",
+  "commit_90d": 4406,
+  "commit_7d": 622,
+  "rel_ver": "v3.11.1",
+  "rel_pub": "2026-11-20",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -409,10 +409,10 @@
    "Python": 1,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -450,7 +450,7 @@
  },
  "google/adk-docs": {
   "commit_90d": 218,
-  "commit_7d": 25,
+  "commit_7d": 14,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -464,21 +464,21 @@
    "HTML": 14,
    "Go": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "arkflow-rs/arkflow": {
-  "commit_90d": 130,
-  "commit_7d": 13,
+  "commit_90d": 142,
+  "commit_7d": 12,
   "rel_ver": "v0.6.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -494,10 +494,10 @@
    "Shell": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -529,8 +529,8 @@
   }
  },
  "stepfun-ai/Step-Code": {
-  "commit_90d": 194,
-  "commit_7d": 18,
+  "commit_90d": 209,
+  "commit_7d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -545,10 +545,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5022,6 +5022,29 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "abc1317679842-ui/vortex-modname-zh": {
+  "rel_ver": "v0.21.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261121",
+  "dim_ts": {
+   "release": "20261121",
+   "security": "20261121",
+   "contrib": "20261121",
+   "lang": "20261121"
   }
  }
 }

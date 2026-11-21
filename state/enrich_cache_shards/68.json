@@ -262,11 +262,11 @@
   }
  },
  "limecloud/lime": {
-  "commit_90d": 242,
-  "commit_7d": 25,
-  "rel_ver": "v1.175.0",
-  "rel_pub": "2026-11-12",
-  "rel_days": 2,
+  "commit_90d": 438,
+  "commit_7d": 205,
+  "rel_ver": "v1.180.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -282,18 +282,18 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "freestylefly/WeChatBridge": {
-  "commit_90d": 173,
-  "commit_7d": 1,
+  "commit_90d": 175,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -308,10 +308,10 @@
    "PowerShell": 2,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -340,11 +340,11 @@
   }
  },
  "ccfos/huatuo": {
-  "commit_90d": 691,
-  "commit_7d": 36,
+  "commit_90d": 667,
+  "commit_7d": 19,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-08-13",
-  "rel_days": 93,
+  "rel_days": 100,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -360,10 +360,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4416,8 +4416,8 @@
   }
  },
  "hyperionaidev/smolmaxxing": {
-  "commit_90d": 49,
-  "commit_7d": 35,
+  "commit_90d": 69,
+  "commit_7d": 20,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4432,10 +4432,10 @@
    "C++": 12,
    "HTML": 7
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261121",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261121",
+   "release": "20261121",
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
