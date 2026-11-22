@@ -307,11 +307,11 @@
   }
  },
  "alfredfrancis/ai-chatbot-framework": {
-  "commit_90d": 103,
-  "commit_7d": 72,
+  "commit_90d": 132,
+  "commit_7d": 29,
   "rel_ver": "v2.0.0-beta.1",
   "rel_pub": "2026-11-12",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -327,10 +327,10 @@
    "CSS": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4635,6 +4635,47 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "Sabriigsxr/RIFT": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 90,
+   "Shell": 10
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "copywriting-software/ai-assistant-for-writing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 81,
+   "Swift": 17,
+   "Shell": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

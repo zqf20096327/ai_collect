@@ -1585,16 +1585,16 @@
    "Ruby": 7,
    "PowerShell": 1
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 79,
-  "commit_7d": 10
+  "commit_90d": 24,
+  "commit_7d": 0
  },
  "speediedan/finetuning-scheduler": {
   "rel_ver": "v2.14.1",

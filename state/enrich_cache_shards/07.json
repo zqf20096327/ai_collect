@@ -2364,9 +2364,9 @@
   }
  },
  "Weaxs/stock-analysis-plugin": {
-  "rel_ver": "v0.2.8",
-  "rel_pub": "2026-10-17",
-  "rel_days": 4,
+  "rel_ver": "v0.2.15",
+  "rel_pub": "2026-11-20",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -2382,13 +2382,16 @@
    "Jinja": 1,
    "Shell": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261122",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261122"
+  },
+  "commit_90d": 68,
+  "commit_7d": 14
  },
  "microsoft/mcp-on-windows-samples": {
   "rel_ver": null,
@@ -4436,13 +4439,16 @@
    "Rust": 41,
    "Shell": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261122"
+  },
+  "commit_90d": 39,
+  "commit_7d": 37
  },
  "LyJonathan/Sparsa": {
   "rel_ver": "sparsa-v0.2.1-experimental",
@@ -4981,6 +4987,26 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "satkynovilgiz/data-gatekeeper": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

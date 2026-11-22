@@ -595,11 +595,11 @@
   }
  },
  "RongleCat/grok-app": {
-  "commit_7d": 12,
-  "commit_90d": 931,
+  "commit_7d": 0,
+  "commit_90d": 582,
   "rel_ver": "v0.2.51",
   "rel_pub": "2026-11-14",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -615,10 +615,10 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3020,10 +3020,10 @@
   }
  },
  "guguzea/MC-AI-Coding-Assistant-Tool": {
-  "rel_ver": "V2.0.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 17,
-  "rel_n90": 5,
+  "rel_ver": "V2.2.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 22,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3038,9 +3038,9 @@
    "Java": 1,
    "Python": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261023",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",
@@ -4966,13 +4966,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261120",
    "security": "20261120",
    "contrib": "20261120",
-   "lang": "20261120"
-  }
+   "lang": "20261120",
+   "commit": "20261122"
+  },
+  "commit_90d": 15,
+  "commit_7d": 15
  },
  "Kisahime/promptmaker": {
   "rel_ver": "v6.5.0",
@@ -5018,6 +5021,36 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "dosco/deeporg": {
+  "commit_90d": 408,
+  "commit_7d": 42,
+  "rel_ver": "v3.21.23",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 59,
+  "lang": {
+   "Go": 90,
+   "JavaScript": 4,
+   "ANTLR": 3,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

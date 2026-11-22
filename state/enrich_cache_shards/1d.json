@@ -846,11 +846,11 @@
   }
  },
  "kuafuai/andee": {
-  "commit_7d": 22,
-  "commit_90d": 355,
-  "rel_ver": "v0.15.0",
-  "rel_pub": "2026-11-12",
-  "rel_days": 3,
+  "commit_7d": 18,
+  "commit_90d": 384,
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -866,10 +866,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"

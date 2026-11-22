@@ -1,11 +1,11 @@
 {
  "jamiepine/voicebox": {
   "commit_7d": 0,
-  "commit_90d": 208,
-  "rel_ver": "v0.5.0",
-  "rel_pub": "2026-04-25",
-  "rel_days": 174,
-  "rel_n90": 0,
+  "commit_90d": 175,
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "Just": 1,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -177,7 +177,7 @@
  },
  "WangRongsheng/awesome-LLM-resources": {
   "commit_7d": 2,
-  "commit_90d": 26,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -186,10 +186,10 @@
   "sec_ids": [],
   "contrib_n": 27,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5146,6 +5146,30 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "datallmhub/agentflow4j": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Java": 98,
+   "HTML": 2
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

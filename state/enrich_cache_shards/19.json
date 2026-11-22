@@ -93,12 +93,12 @@
   }
  },
  "Acly/krita-ai-diffusion": {
-  "commit_7d": 0,
-  "commit_90d": 37,
+  "commit_7d": 2,
+  "commit_90d": 10,
   "rel_ver": "v1.54.0-pre",
   "rel_pub": "2026-10-03",
-  "rel_days": 35,
-  "rel_n90": 2,
+  "rel_days": 50,
+  "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -112,10 +112,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -345,11 +345,11 @@
   }
  },
  "valeman/awesome-conformal-prediction": {
-  "commit_90d": 7,
-  "commit_7d": 6,
+  "commit_90d": 8,
+  "commit_7d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2022-04-18",
-  "rel_days": 1663,
+  "rel_days": 1679,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -359,10 +359,10 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

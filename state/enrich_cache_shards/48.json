@@ -4761,5 +4761,64 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "joergmlpts/nature-id": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "overdoingism/llama-Frankenstein": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 100
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "cc6pzupa/cc-deal-hunter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "HTML": 33
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

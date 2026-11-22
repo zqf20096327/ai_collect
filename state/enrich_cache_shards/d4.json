@@ -3266,12 +3266,12 @@
   }
  },
  "sepehr071/iran-mcp": {
-  "commit_90d": 53,
-  "commit_7d": 27,
-  "rel_ver": "v2.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
-  "rel_n90": 2,
+  "commit_90d": 93,
+  "commit_7d": 11,
+  "rel_ver": "v2.5",
+  "rel_pub": "2026-11-18",
+  "rel_days": 4,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3282,10 +3282,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"

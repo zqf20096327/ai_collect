@@ -65,11 +65,11 @@
   }
  },
  "explosion/spaCy": {
-  "commit_7d": 14,
-  "commit_90d": 28,
-  "rel_ver": "release-v3.8.18",
-  "rel_pub": "2026-10-26",
-  "rel_days": 4,
+  "commit_7d": 4,
+  "commit_90d": 23,
+  "rel_ver": "release-v3.8.20",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -85,10 +85,10 @@
    "JavaScript": 3,
    "Sass": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

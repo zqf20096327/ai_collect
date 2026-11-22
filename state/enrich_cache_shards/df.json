@@ -5075,5 +5075,29 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "vorlaxen-labs/agent-skills": {
+  "rel_ver": "v3.0.4",
+  "rel_pub": "2026-10-20",
+  "rel_days": 33,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

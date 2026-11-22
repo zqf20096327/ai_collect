@@ -2821,11 +2821,11 @@
   }
  },
  "xiaoranlingfeng/ppt-master-zit": {
-  "commit_90d": 14,
-  "commit_7d": 1,
+  "commit_90d": 16,
+  "commit_7d": 0,
   "rel_ver": "v6.7.0-comfyui.2",
   "rel_pub": "2026-10-23",
-  "rel_days": 0,
+  "rel_days": 30,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -2840,10 +2840,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"

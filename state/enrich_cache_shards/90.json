@@ -302,11 +302,11 @@
   }
  },
  "shcherbak-ai/contextgem": {
-  "commit_90d": 272,
-  "commit_7d": 3,
-  "rel_ver": "v1.5.1",
-  "rel_pub": "2026-11-09",
-  "rel_days": 2,
+  "commit_90d": 274,
+  "commit_7d": 6,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -320,10 +320,10 @@
    "Jinja": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4763,6 +4763,55 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "ion-elgreco/rivers": {
+  "commit_90d": 143,
+  "commit_7d": 14,
+  "rel_ver": "v0.7.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Rust": 64,
+   "Python": 33,
+   "CSS": 1,
+   "HTML": 0,
+   "SurrealQL": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "Ka1003ik/House-Price-Prediction-Model": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

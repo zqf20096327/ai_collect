@@ -5397,5 +5397,35 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "iamajmeena/neonclipping": {
+  "commit_90d": 54,
+  "commit_7d": 54,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 83,
+   "JavaScript": 7,
+   "HTML": 7,
+   "PowerShell": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

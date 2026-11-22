@@ -54,11 +54,11 @@
   }
  },
  "argosopentech/argos-translate": {
-  "commit_90d": 12,
-  "commit_7d": 12,
+  "commit_90d": 13,
+  "commit_7d": 1,
   "rel_ver": "v1.4.0",
   "rel_pub": "2021-08-24",
-  "rel_days": 1909,
+  "rel_days": 1916,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -71,10 +71,10 @@
    "Python": 95,
    "Shell": 5
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

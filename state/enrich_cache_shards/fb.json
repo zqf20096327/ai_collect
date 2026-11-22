@@ -30,12 +30,12 @@
   }
  },
  "yzhao062/pyod": {
-  "commit_7d": 17,
-  "commit_90d": 65,
+  "commit_7d": 0,
+  "commit_90d": 56,
   "rel_ver": "v3.6.8",
   "rel_pub": "2026-11-12",
-  "rel_days": 1,
-  "rel_n90": 4,
+  "rel_days": 10,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -47,10 +47,10 @@
    "Python": 94,
    "Jupyter Notebook": 6
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

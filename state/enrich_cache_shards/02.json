@@ -1026,10 +1026,10 @@
  },
  "sixtysevenlf/dsh-blender-plugin": {
   "commit_90d": 500,
-  "commit_7d": 30,
+  "commit_7d": 0,
   "rel_ver": "v3.1.0-alpha.1",
   "rel_pub": "2026-11-08",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -1044,10 +1044,10 @@
    "TypeScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4765,6 +4765,33 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "penteos/penteos": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 4,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 88,
+   "JavaScript": 6,
+   "CSS": 4,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

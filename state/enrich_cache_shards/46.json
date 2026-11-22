@@ -4432,5 +4432,55 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "Rhizobium-gits/jellyfish-ai": {
+  "rel_ver": "v1.2.5",
+  "rel_pub": "2026-11-17",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 92,
+   "Shell": 4,
+   "Python": 2,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "jing-ying-dev/whale-ying-memory": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

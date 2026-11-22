@@ -4501,5 +4501,35 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "1llu50ry/Decompile": {
+  "commit_90d": 97,
+  "commit_7d": 28,
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 69,
+   "JavaScript": 14,
+   "Rust": 4,
+   "Python": 3,
+   "C#": 3
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

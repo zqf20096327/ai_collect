@@ -3255,10 +3255,10 @@
   }
  },
  "dengmengmian/CodeLeveler": {
-  "rel_ver": "v1.0.20",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
-  "rel_n90": 7,
+  "rel_ver": "v1.0.27",
+  "rel_pub": "2026-11-15",
+  "rel_days": 7,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3273,9 +3273,9 @@
    "Dart": 2,
    "CSS": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261023",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",
@@ -5012,6 +5012,30 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "taxueseek/dsh-suggestion-chips": {
+  "rel_ver": "v0.3.4",
+  "rel_pub": "2026-11-19",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 90,
+   "HTML": 10
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

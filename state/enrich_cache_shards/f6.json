@@ -208,10 +208,10 @@
  },
  "floneum/kalosm": {
   "commit_7d": 0,
-  "commit_90d": 6,
+  "commit_90d": 4,
   "rel_ver": "kalosm-0.4.0",
   "rel_pub": "2025-02-09",
-  "rel_days": 629,
+  "rel_days": 651,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "JavaScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4539,6 +4539,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "jacobemanuel/leks": {
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "JavaScript": 1,
+   "Swift": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

@@ -30,11 +30,11 @@
   }
  },
  "CoplayDev/unity-mcp": {
-  "commit_7d": 3,
-  "commit_90d": 310,
+  "commit_7d": 4,
+  "commit_90d": 284,
   "rel_ver": "v10.3.0",
   "rel_pub": "2026-10-04",
-  "rel_days": 42,
+  "rel_days": 49,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4690,6 +4690,30 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "yatuk/multi-model-orchestra": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "Shell": 21
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

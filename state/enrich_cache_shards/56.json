@@ -978,11 +978,11 @@
   }
  },
  "uaanchorage/GSoC": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 2,
+  "commit_90d": 5,
   "rel_ver": "GSoC-2026",
   "rel_pub": "2026-09-07",
-  "rel_days": 41,
+  "rel_days": 76,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -992,10 +992,10 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

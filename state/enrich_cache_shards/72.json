@@ -5440,5 +5440,55 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "ClayPulse/ClawScale": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "JavaScript": 0,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "oogalieboogalie/CensaiOS": {
+  "rel_ver": "nightly-build",
+  "rel_pub": "2026-11-20",
+  "rel_days": 2,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "CSS": 3,
+   "PLpgSQL": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

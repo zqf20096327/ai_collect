@@ -457,11 +457,11 @@
  },
  "RyanAlberts/best-of-Agent-Harnesses": {
   "commit_7d": 1,
-  "commit_90d": 59,
-  "rel_ver": "digest-2026-11-08",
-  "rel_pub": "2026-11-08",
-  "rel_days": 6,
-  "rel_n90": 5,
+  "commit_90d": 56,
+  "rel_ver": "digest-2026-11-15",
+  "rel_pub": "2026-11-15",
+  "rel_days": 7,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -473,10 +473,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1108,8 +1108,8 @@
   }
  },
  "steveyeow/Feynman": {
-  "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1124,10 +1124,10 @@
    "JavaScript": 12,
    "HTML": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4664,6 +4664,27 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "Rishini-Dharan/HackIndia-Spark-1-2025-Nueral-Titans": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 77,
+   "CSS": 19,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

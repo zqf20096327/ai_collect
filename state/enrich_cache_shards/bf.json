@@ -5304,5 +5304,52 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "AryamanSi17/claude-watermark-remover": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "iammrduncan/tensorless": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 10,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 52,
+   "C": 18,
+   "Python": 7,
+   "Cuda": 7,
+   "TypeScript": 4
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

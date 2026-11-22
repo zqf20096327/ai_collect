@@ -252,12 +252,12 @@
   }
  },
  "youssofal/MTPLX": {
-  "commit_90d": 1640,
-  "commit_7d": 80,
+  "commit_90d": 1464,
+  "commit_7d": 0,
   "rel_ver": "v2.12.3",
   "rel_pub": "2026-11-06",
-  "rel_days": 2,
-  "rel_n90": 12,
+  "rel_days": 16,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -272,10 +272,10 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4626,6 +4626,31 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "neurotracee/ecommerce-price-hunt": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 13,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 47,
+   "Shell": 35,
+   "HTML": 18
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

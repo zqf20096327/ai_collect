@@ -156,12 +156,12 @@
   }
  },
  "ChatLab/ChatLab": {
-  "commit_7d": 5,
-  "commit_90d": 187,
-  "rel_ver": "v0.37.6",
-  "rel_pub": "2026-10-22",
-  "rel_days": 24,
-  "rel_n90": 9,
+  "commit_7d": 2,
+  "commit_90d": 124,
+  "rel_ver": "v0.37.8",
+  "rel_pub": "2026-11-19",
+  "rel_days": 3,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -176,10 +176,10 @@
    "Rust": 1,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -660,12 +660,12 @@
   }
  },
  "bartolli/codanna": {
-  "commit_7d": 9,
-  "commit_90d": 160,
+  "commit_7d": 5,
+  "commit_90d": 68,
   "rel_ver": "v0.17.1",
   "rel_pub": "2026-10-11",
-  "rel_days": 6,
-  "rel_n90": 12,
+  "rel_days": 42,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -680,10 +680,10 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5028,6 +5028,31 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "Cosmhyccc/homie": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 94,
+   "Python": 4,
+   "Shell": 2
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

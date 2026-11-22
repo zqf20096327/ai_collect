@@ -169,11 +169,11 @@
   }
  },
  "CyberStrikeus/CyberStrike": {
-  "commit_7d": 8,
-  "commit_90d": 1661,
+  "commit_7d": 7,
+  "commit_90d": 1464,
   "rel_ver": "v2.0.1-beta.3",
   "rel_pub": "2026-11-10",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
@@ -189,10 +189,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4584,6 +4584,53 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "gravion-ux/gravion-trainner": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "hunmeng2012/ctxfold": {
+  "rel_ver": "v1.3.3",
+  "rel_pub": "2026-11-07",
+  "rel_days": 15,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 59,
+   "C#": 25,
+   "TypeScript": 7,
+   "PowerShell": 5,
+   "HTML": 4
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

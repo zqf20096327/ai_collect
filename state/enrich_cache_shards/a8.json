@@ -3854,12 +3854,12 @@
   }
  },
  "ARCANGEL0/Mitsu": {
-  "commit_90d": 126,
-  "commit_7d": 22,
-  "rel_ver": "v3.1",
-  "rel_pub": "2026-02-20",
-  "rel_days": 245,
-  "rel_n90": 0,
+  "commit_90d": 158,
+  "commit_7d": 54,
+  "rel_ver": "v1.5.2",
+  "rel_pub": "2026-11-20",
+  "rel_days": 2,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3871,10 +3871,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"

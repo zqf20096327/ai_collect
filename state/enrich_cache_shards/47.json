@@ -1101,8 +1101,8 @@
   }
  },
  "Lakonik/ComfyUI-piFlow": {
-  "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_7d": 5,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1113,10 +1113,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4949,6 +4949,32 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "ngiken/KenEasy-Gemini-MCP-Auto-Helper": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 69,
+   "Python": 26,
+   "CSS": 3,
+   "HTML": 2
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

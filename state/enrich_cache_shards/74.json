@@ -1699,16 +1699,16 @@
    "Go": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 0,
-  "commit_7d": 0
+  "commit_90d": 420,
+  "commit_7d": 19
  },
  "jobovy/extreme-deconvolution": {
   "rel_ver": "1.4",

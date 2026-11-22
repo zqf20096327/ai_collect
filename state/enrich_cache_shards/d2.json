@@ -1058,8 +1058,8 @@
   }
  },
  "JaydenTeoh/NextLat": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1071,10 +1071,10 @@
    "Python": 96,
    "Shell": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4595,13 +4595,16 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261028",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261028",
    "security": "20261028",
    "contrib": "20261028",
-   "lang": "20261028"
-  }
+   "lang": "20261028",
+   "commit": "20261122"
+  },
+  "commit_90d": 14,
+  "commit_7d": 0
  },
  "microsoft/AKS-Lab-GitHubCopilot": {
   "rel_ver": null,
@@ -5270,6 +5273,29 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "XinchengLabs/302api-developer-kit": {
+  "commit_90d": 11,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 8
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

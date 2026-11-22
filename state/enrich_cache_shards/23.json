@@ -3916,13 +3916,13 @@
   }
  },
  "github/squad": {
-  "commit_90d": 627,
-  "commit_7d": 53,
-  "rel_ver": "v2.0.0-preview.4",
-  "rel_pub": "2026-11-09",
-  "rel_days": 6,
-  "rel_n90": 9,
-  "rel_pre": true,
+  "commit_90d": 603,
+  "commit_7d": 21,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 3,
+  "rel_n90": 10,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -3936,10 +3936,10 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"

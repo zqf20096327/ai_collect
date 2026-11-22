@@ -283,8 +283,8 @@
   }
  },
  "Faceplugin-ltd/Open-Source-Face-Recognition-SDK": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -295,10 +295,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

@@ -366,11 +366,11 @@
   }
  },
  "data-goblin/power-bi-agentic-development": {
-  "commit_90d": 154,
+  "commit_90d": 155,
   "commit_7d": 1,
   "rel_ver": "v26.45",
   "rel_pub": "2026-11-07",
-  "rel_days": 7,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -386,10 +386,10 @@
    "Shell": 7,
    "PowerShell": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5038,6 +5038,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Leo-luxy/Floe": {
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "HTML": 9,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Ruby": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

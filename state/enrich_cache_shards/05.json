@@ -300,7 +300,7 @@
   "commit_90d": 0,
   "rel_ver": "2021_spring",
   "rel_pub": "2021-09-11",
-  "rel_days": 1891,
+  "rel_days": 1898,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -313,10 +313,10 @@
    "Jupyter Notebook": 99,
    "Python": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5282,6 +5282,33 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "2092372408-pixel/EduPilot": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 80,
+   "HTML": 9,
+   "CSS": 5,
+   "Python": 4,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

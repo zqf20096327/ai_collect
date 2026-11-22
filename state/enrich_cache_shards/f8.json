@@ -644,11 +644,11 @@
   }
  },
  "agentscope-ai/OpenJudge": {
-  "commit_90d": 32,
-  "commit_7d": 14,
+  "commit_90d": 47,
+  "commit_7d": 15,
   "rel_ver": "v0.2.5",
   "rel_pub": "2026-11-10",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -661,10 +661,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4954,6 +4954,27 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "aldevvv/aestry": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

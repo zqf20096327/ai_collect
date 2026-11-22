@@ -5052,5 +5052,55 @@
    "contrib": "20261120",
    "lang": "20261120"
   }
+ },
+ "xinbetween/learn-llm-inference-from-scratch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 86,
+   "Python": 13,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "Yuvakunaal/local-ai-interviewer": {
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 30,
+   "JavaScript": 11,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

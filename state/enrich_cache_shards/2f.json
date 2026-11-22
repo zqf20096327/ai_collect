@@ -172,12 +172,12 @@
   }
  },
  "UfoMiao/zcf": {
-  "commit_7d": 104,
-  "commit_90d": 125,
+  "commit_7d": 9,
+  "commit_90d": 117,
   "rel_ver": "zcf@3.7.3",
   "rel_pub": "2026-08-31",
-  "rel_days": 61,
-  "rel_n90": 2,
+  "rel_days": 83,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -190,10 +190,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1329,11 +1329,11 @@
    "C": 6,
    "PowerShell": 4
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261122",
   "dim_ts": {
    "commit": "20261019",
    "release": "20261019",
-   "security": "20261019",
+   "security": "20261122",
    "contrib": "20261019",
    "lang": "20261019"
   }
@@ -1459,16 +1459,16 @@
    "CSS": 4,
    "Shell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 407,
-  "commit_7d": 42
+  "commit_90d": 594,
+  "commit_7d": 46
  },
  "QuentinWach/image-ranker": {
   "rel_ver": "v1.0.1",
@@ -3265,9 +3265,9 @@
    "Swift": 3,
    "CSS": 2
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261023",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",
@@ -5283,13 +5283,16 @@
    "HTML": 96,
    "TypeScript": 4
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261121",
    "security": "20261121",
    "contrib": "20261121",
-   "lang": "20261121"
-  }
+   "lang": "20261121",
+   "commit": "20261122"
+  },
+  "commit_90d": 13,
+  "commit_7d": 7
  },
  "edugca/xlRcode": {
   "rel_ver": null,

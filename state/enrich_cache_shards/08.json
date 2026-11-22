@@ -796,11 +796,11 @@
   }
  },
  "qqqqqf-q/Arkloop": {
-  "commit_90d": 151,
-  "commit_7d": 5,
+  "commit_90d": 91,
+  "commit_7d": 1,
   "rel_ver": "v26.5.21.2",
   "rel_pub": "2026-05-21",
-  "rel_days": 150,
+  "rel_days": 185,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -816,10 +816,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

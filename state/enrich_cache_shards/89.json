@@ -156,12 +156,12 @@
   }
  },
  "giancarloerra/SocratiCode": {
-  "commit_7d": 21,
-  "commit_90d": 374,
+  "commit_7d": 3,
+  "commit_90d": 368,
   "rel_ver": "v1.16.2",
   "rel_pub": "2026-11-05",
-  "rel_days": 5,
-  "rel_n90": 10,
+  "rel_days": 17,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -175,10 +175,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261110",
-   "release": "20261110",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -295,12 +295,12 @@
   }
  },
  "delibae/claude-prism": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v1.2.0",
-  "rel_pub": "2026-06-09",
-  "rel_days": 130,
-  "rel_n90": 0,
+  "commit_7d": 17,
+  "commit_90d": 21,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -315,10 +315,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -376,10 +376,10 @@
   }
  },
  "elirantutia/vibeyard": {
-  "commit_7d": 5,
-  "commit_90d": 24,
-  "rel_ver": "v0.3.10",
-  "rel_pub": "2026-11-13",
+  "commit_7d": 8,
+  "commit_90d": 27,
+  "rel_ver": "v0.3.11",
+  "rel_pub": "2026-11-21",
   "rel_days": 1,
   "rel_n90": 6,
   "rel_pre": false,
@@ -395,10 +395,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1401,16 +1401,16 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 173,
-  "commit_7d": 13
+  "commit_90d": 633,
+  "commit_7d": 139
  },
  "DataJourneyHQ/DataJourney": {
   "rel_ver": "v2.3.0",
@@ -5413,6 +5413,33 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "gravion-ux/TRISHUL": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 15,
+   "Shell": 3,
+   "CSS": 3,
+   "Jinja": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

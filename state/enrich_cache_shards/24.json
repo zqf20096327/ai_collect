@@ -2390,10 +2390,10 @@
   }
  },
  "2026heshao/dsh-armory": {
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-21",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "rel_ver": "v2.5.8",
+  "rel_pub": "2026-11-17",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2404,9 +2404,9 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261023",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",

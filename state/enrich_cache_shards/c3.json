@@ -57,12 +57,12 @@
   }
  },
  "Arthur-Ficial/apfel": {
-  "commit_90d": 106,
-  "commit_7d": 32,
-  "rel_ver": "v1.17.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 4,
-  "rel_n90": 10,
+  "commit_90d": 127,
+  "commit_7d": 21,
+  "rel_ver": "v1.19.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -77,10 +77,10 @@
    "Makefile": 1,
    "C": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1396,7 +1396,7 @@
  "histeenn/VLESS-PO-GRIBI": {
   "rel_ver": "VPN",
   "rel_pub": "2026-06-10",
-  "rel_days": 131,
+  "rel_days": 165,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1408,13 +1408,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261122",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261122"
+  },
+  "commit_90d": 364,
+  "commit_7d": 20
  },
  "sangyuxiaowu/LLamaWorker": {
   "rel_ver": "v1.3.2",
@@ -1456,16 +1459,16 @@
    "Go": 98,
    "Shell": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 53,
-  "commit_7d": 50
+  "commit_90d": 84,
+  "commit_7d": 17
  },
  "mkang315/CST-YOLO": {
   "rel_ver": "v1.0.1",
@@ -3060,12 +3063,12 @@
   }
  },
  "JMS1717/ming-voice": {
-  "commit_90d": 40,
-  "commit_7d": 40,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
-  "rel_n90": 7,
+  "commit_90d": 49,
+  "commit_7d": 1,
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3080,10 +3083,10 @@
    "PowerShell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"

@@ -139,10 +139,10 @@
  },
  "satellite-image-deep-learning/techniques": {
   "commit_7d": 2,
-  "commit_90d": 62,
+  "commit_90d": 64,
   "rel_ver": "v1.3",
   "rel_pub": "2025-07-05",
-  "rel_days": 496,
+  "rel_days": 505,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -152,10 +152,10 @@
   "sec_ids": [],
   "contrib_n": 29,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

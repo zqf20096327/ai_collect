@@ -4933,5 +4933,32 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "kind-ui/agent-ui": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 72,
+   "Svelte": 7,
+   "CSS": 7,
+   "MDX": 6,
+   "JavaScript": 6
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

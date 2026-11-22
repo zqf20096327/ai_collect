@@ -4538,5 +4538,58 @@
    "contrib": "20261120",
    "lang": "20261120"
   }
+ },
+ "franzmoca/hy4-gufo-extension": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 95,
+   "C": 3,
+   "Python": 2,
+   "CMake": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "dzotyara/ai-forge": {
+  "rel_ver": "v1.22.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 89,
+   "HTML": 10,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

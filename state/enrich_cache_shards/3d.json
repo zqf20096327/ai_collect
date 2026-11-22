@@ -486,11 +486,11 @@
   }
  },
  "ctxrs/ctx": {
-  "commit_7d": 35,
-  "commit_90d": 1472,
-  "rel_ver": "v2.4.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 4,
+  "commit_7d": 48,
+  "commit_90d": 550,
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -506,10 +506,10 @@
    "Shell": 3,
    "TypeScript": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1075,8 +1075,8 @@
   }
  },
  "itsinseong/value-for-fable": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 5,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1088,10 +1088,10 @@
    "Python": 80,
    "Shell": 20
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5137,6 +5137,32 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "parasite6/noullama": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 64,
+   "TypeScript": 28,
+   "CSS": 8,
+   "HTML": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

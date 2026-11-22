@@ -815,12 +815,12 @@
   }
  },
  "Jamessdevops/micracode": {
-  "commit_90d": 29,
-  "commit_7d": 0,
+  "commit_90d": 18,
+  "commit_7d": 3,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-09-06",
-  "rel_days": 42,
-  "rel_n90": 6,
+  "rel_days": 77,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -833,10 +833,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4825,6 +4825,29 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "ITERFORM/Mazemaker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "C++": 14,
+   "HTML": 7,
+   "Shell": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

@@ -199,8 +199,8 @@
   }
  },
  "genieincodebottle/generative-ai": {
-  "commit_7d": 1,
-  "commit_90d": 27,
+  "commit_7d": 2,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -215,10 +215,10 @@
    "TypeScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4967,6 +4967,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "sophiie-ai/whispur": {
+  "rel_ver": "v0.34.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Swift": 92,
+   "HTML": 3,
+   "Python": 3,
+   "CSS": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

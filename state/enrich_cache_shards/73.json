@@ -4116,9 +4116,9 @@
    "Shell": 2,
    "HTML": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261023",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",
@@ -6191,6 +6191,33 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "compforge/case-code-review": {
+  "rel_ver": "v1.13.56",
+  "rel_pub": "2026-09-06",
+  "rel_days": 77,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 75,
+   "Python": 21,
+   "JavaScript": 2,
+   "HTML": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

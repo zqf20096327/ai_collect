@@ -4539,5 +4539,46 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "Blackwellboy/DeepSeek-V4.1-Flash-1017-BLACKFOLD-TP2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 73,
+   "Shell": 27
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "supermandiao/zhanshen-dsh": {
+  "rel_ver": "v1.0.14-zhanshen",
+  "rel_pub": "2026-11-16",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

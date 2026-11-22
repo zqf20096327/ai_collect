@@ -1586,11 +1586,11 @@
   }
  },
  "NingyuSUN/bioai-evidence-validator": {
-  "commit_90d": 113,
-  "commit_7d": 4,
+  "commit_90d": 130,
+  "commit_7d": 9,
   "rel_ver": "v0.8.0",
   "rel_pub": "2026-10-06",
-  "rel_days": 13,
+  "rel_days": 47,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -1602,10 +1602,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1772,16 +1772,16 @@
    "Python": 81,
    "Shell": 19
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261022"
+   "commit": "20261122"
   },
-  "commit_90d": 27,
-  "commit_7d": 27
+  "commit_90d": 102,
+  "commit_7d": 21
  },
  "labring/sealos-skills": {
   "rel_ver": null,

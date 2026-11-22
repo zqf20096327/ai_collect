@@ -5281,5 +5281,29 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "Anri-Lombard/sallm": {
+  "rel_ver": "mzansitext-mzansilm-lrec2026-v1",
+  "rel_pub": "2026-03-03",
+  "rel_days": 264,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

@@ -199,7 +199,7 @@
   }
  },
  "meta-llama/PurpleLlama": {
-  "commit_90d": 10,
+  "commit_90d": 7,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -215,10 +215,10 @@
    "Jupyter Notebook": 1,
    "CSS": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

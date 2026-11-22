@@ -372,11 +372,11 @@
   }
  },
  "stenolabs/stenoai": {
-  "commit_7d": 0,
-  "commit_90d": 110,
+  "commit_7d": 1,
+  "commit_90d": 112,
   "rel_ver": "v0.8.0",
   "rel_pub": "2026-10-03",
-  "rel_days": 40,
+  "rel_days": 50,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -392,10 +392,10 @@
    "Swift": 2,
    "Astro": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5242,6 +5242,30 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "membaseai/membase": {
+  "commit_90d": 138,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 21,
+   "Shell": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

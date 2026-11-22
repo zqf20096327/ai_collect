@@ -59,12 +59,12 @@
   }
  },
  "gunthercox/ChatterBot": {
-  "commit_7d": 1,
-  "commit_90d": 13,
-  "rel_ver": "1.2.15",
-  "rel_pub": "2026-08-25",
-  "rel_days": 82,
-  "rel_n90": 1,
+  "commit_7d": 22,
+  "commit_90d": 31,
+  "rel_ver": "1.2.17",
+  "rel_pub": "2026-11-20",
+  "rel_days": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -79,10 +79,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -609,7 +609,7 @@
   }
  },
  "cnfjlhj/ai-collab-playbook": {
-  "commit_7d": 4,
+  "commit_7d": 2,
   "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
@@ -625,10 +625,10 @@
    "CSS": 12,
    "Shell": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4214,13 +4214,16 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261025",
    "security": "20261025",
    "contrib": "20261025",
-   "lang": "20261025"
-  }
+   "lang": "20261025",
+   "commit": "20261122"
+  },
+  "commit_90d": 18,
+  "commit_7d": 0
  },
  "mayurathavale18/agent-bridge": {
   "rel_ver": "v0.3.1",
@@ -5091,6 +5094,36 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "mofa-org/mofa": {
+  "commit_90d": 20,
+  "commit_7d": 20,
+  "rel_ver": "v0.1.36",
+  "rel_pub": "2026-02-11",
+  "rel_days": 284,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 76,
+  "lang": {
+   "Rust": 99,
+   "Shell": 1,
+   "PLpgSQL": 0,
+   "Python": 0,
+   "RenderScript": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

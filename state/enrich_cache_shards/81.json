@@ -3102,11 +3102,11 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261122",
   "dim_ts": {
    "commit": "20261120",
    "release": "20261120",
-   "security": "20261023",
+   "security": "20261122",
    "contrib": "20261023",
    "lang": "20261023"
   }
@@ -4945,6 +4945,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "tmarkovski/longhand": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-07-07",
+  "rel_days": 138,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 49,
+   "Swift": 21,
+   "Kotlin": 21,
+   "Python": 4,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

@@ -2299,16 +2299,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261021"
+   "commit": "20261122"
   },
-  "commit_90d": 56,
-  "commit_7d": 4
+  "commit_90d": 70,
+  "commit_7d": 1
  },
  "picoaide/picoaide": {
   "rel_ver": "v2.1.1",
@@ -6324,6 +6324,29 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "maxk2222/pentrAIn": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 80,
+   "TypeScript": 16,
+   "Rust": 2,
+   "Shell": 1,
+   "PHP": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

@@ -106,8 +106,8 @@
   }
  },
  "openai/plugins": {
-  "commit_90d": 11,
-  "commit_7d": 0,
+  "commit_90d": 13,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -122,10 +122,10 @@
    "HTML": 2,
    "CSS": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5019,6 +5019,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "NMar33/slightly-parallel": {
+  "rel_ver": "v0.4.0-beta.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 52,
+   "Python": 46,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

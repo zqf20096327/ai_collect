@@ -3488,9 +3488,9 @@
    "Python": 95,
    "Shell": 5
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "release": "20261023",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",

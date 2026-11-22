@@ -2110,16 +2110,16 @@
    "Makefile": 4,
    "Mustache": 4
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 66,
-  "commit_7d": 9
+  "commit_90d": 89,
+  "commit_7d": 8
  },
  "chenxiaoyao6228/idea-forge": {
   "rel_ver": null,

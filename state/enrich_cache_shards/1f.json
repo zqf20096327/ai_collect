@@ -4368,5 +4368,28 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "a-sopa/bcss": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 70,
+   "TypeScript": 21,
+   "HTML": 4,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

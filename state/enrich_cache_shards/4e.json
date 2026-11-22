@@ -243,8 +243,8 @@
   }
  },
  "VersusControl/devops-ai-guidelines": {
-  "commit_7d": 0,
-  "commit_90d": 23,
+  "commit_7d": 1,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -259,10 +259,10 @@
    "Shell": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5058,6 +5058,33 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "bluesky-social/diderot": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 96,
+   "HTML": 3,
+   "PLpgSQL": 1,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

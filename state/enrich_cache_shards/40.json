@@ -4684,5 +4684,25 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "Hy4ri/antigravity-flake": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Nix": 66,
+   "Shell": 34
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

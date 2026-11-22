@@ -27,11 +27,11 @@
   }
  },
  "OpenCoworkAI/open-codesign": {
-  "commit_90d": 136,
-  "commit_7d": 7,
+  "commit_90d": 141,
+  "commit_7d": 5,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-10-31",
-  "rel_days": 13,
+  "rel_days": 22,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -47,10 +47,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

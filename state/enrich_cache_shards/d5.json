@@ -412,8 +412,8 @@
   }
  },
  "ConardLi/easy-agent": {
-  "commit_90d": 175,
-  "commit_7d": 17,
+  "commit_90d": 197,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -428,10 +428,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

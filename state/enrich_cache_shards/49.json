@@ -5715,5 +5715,89 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "lattice-writer/lattice": {
+  "commit_90d": 1386,
+  "commit_7d": 240,
+  "rel_ver": "v0.19.1",
+  "rel_pub": "2026-11-20",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Rust": 58,
+   "TypeScript": 34,
+   "JavaScript": 4,
+   "CSS": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "ealcobaca/pymfe": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": "0.4.4",
+  "rel_pub": "2025-08-17",
+  "rel_days": 462,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "commit": "20261122",
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "innovation-ways/iw-jobs-radar": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 32,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 77,
+   "TypeScript": 22,
+   "Shell": 1,
+   "Makefile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
  }
 }

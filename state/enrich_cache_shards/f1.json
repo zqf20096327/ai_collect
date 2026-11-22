@@ -1603,16 +1603,16 @@
    "Shell": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261122",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261023"
+   "commit": "20261122"
   },
-  "commit_90d": 1091,
-  "commit_7d": 94,
+  "commit_90d": 1083,
+  "commit_7d": 82,
   "rel_pub": "2026-11-17",
   "rel_days": 2,
   "rel_n90": 2,
@@ -5009,6 +5009,26 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "odykyi/gh-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 95,
+   "Shell": 5
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

@@ -171,11 +171,11 @@
   }
  },
  "sierra-research/tau2-bench": {
-  "commit_90d": 152,
-  "commit_7d": 1,
+  "commit_90d": 176,
+  "commit_7d": 18,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-10-20",
-  "rel_days": 25,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -191,10 +191,10 @@
    "CSS": 4,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -231,11 +231,11 @@
   }
  },
  "tensorflow/tfx": {
-  "commit_90d": 13,
+  "commit_90d": 12,
   "commit_7d": 0,
   "rel_ver": "v1.21.0",
   "rel_pub": "2026-06-18",
-  "rel_days": 150,
+  "rel_days": 157,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -251,10 +251,10 @@
    "Starlark": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4940,6 +4940,60 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "feather-store/feather": {
+  "rel_ver": "v0.21.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 41,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 61,
+   "C++": 34,
+   "HTML": 4,
+   "Shell": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
+  }
+ },
+ "gitcodeci19/easylang": {
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 72,
+   "CSS": 15,
+   "Python": 9,
+   "HTML": 2,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

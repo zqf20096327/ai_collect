@@ -3362,10 +3362,10 @@
   }
  },
  "zephyr4123/speakmore": {
-  "commit_90d": 666,
-  "commit_7d": 429,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 791,
+  "commit_7d": 0,
+  "rel_ver": "v0.21.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -3378,14 +3378,18 @@
    "Swift": 3,
    "PowerShell": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
-  }
+  },
+  "rel_pub": "2026-11-08",
+  "rel_days": 14,
+  "rel_n90": 3,
+  "rel_pre": false
  },
  "rextail-ai/lessloc": {
   "commit_90d": 35,
@@ -4870,6 +4874,25 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "leeoisaboy/lora-cosyvoice123-chanting": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261122",
+  "dim_ts": {
+   "release": "20261122",
+   "security": "20261122",
+   "contrib": "20261122",
+   "lang": "20261122"
   }
  }
 }

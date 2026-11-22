@@ -270,12 +270,12 @@
   }
  },
  "chengzuopeng/stock-sdk": {
-  "commit_7d": 0,
-  "commit_90d": 34,
-  "rel_ver": "v2.4.6",
-  "rel_pub": "2026-10-03",
-  "rel_days": 14,
-  "rel_n90": 6,
+  "commit_7d": 9,
+  "commit_90d": 33,
+  "rel_ver": "v2.4.7",
+  "rel_pub": "2026-11-21",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -290,10 +290,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261122",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261122",
+   "release": "20261122",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
