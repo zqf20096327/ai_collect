@@ -8,6 +8,12 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-22**
+
+- **New LR curve on resume**, in every trainer: a checkbox under the LR Scheduler. The LR curve always covered the whole training, so raising Total Steps and resuming continued half-way along the longer curve. With the checkbox, resuming starts a new curve at that step, from the current LR down to its minimum: for example 1000 steps from 4e-4 to 4e-5, then 1000 more from 1e-4 to 1e-5 ([details](#lr-scheduler)) [`dfca123`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/dfca123) ([#88](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/88))
+- **Krea 2 from 8 GB of VRAM** — the block swap and **VRAM Profile** of FLUX.1 and Klein 9B. At 1024² Krea 2 peaked at 11.6 GB, enough to spill into Windows shared memory on a 12 GB card and slow down several times; with the 12 GB profile it peaks at 8.0 GB and with the 8 GB one at 4.2 GB, with the same results. A new **Free CUDA cache after each update** checkbox (off by default) hands the unused cached VRAM back to the driver after every optimizer update ([details](#krea-2--image-loras-for-krea-2-raw-and-turbo)) [`c37ae55`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c37ae55) [`52ea284`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/52ea284) ([#89](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/89))
+- **LoKr with block swap** keeps the blocks out of VRAM while the model is built: at small VRAM profiles LoKr uploaded the whole model first (Krea 2 ran out of VRAM, FLUX.1 planned 0 of 57 blocks in VRAM). Applies to FLUX.1, FLUX.2 Klein 9B, Fibo 2.0, Ideogram 4, Ming-Image, Wan 2.2 and Krea 2 [`31435cb`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/31435cb)
+
 **2026-11-19**
 
 - **FLUX.1 Dev, Fibo 2.0, Ideogram 4, Ming-Image, Wan 2.2, LTX-2.3 and Boogu from 8 GB of VRAM** — the block swap and **VRAM Profile** of Klein 9B, with the same results. Wan 2.2 also trains 480p clips on 8 GB and switches experts more than twice as fast ([details](#flux2-klein-9b--image-and-edit-loras)) [`9e4b126`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/9e4b126) [`16b0258`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/16b0258) [`3e06b88`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/3e06b88) [`8d61581`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/8d61581) [`1a95d86`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/1a95d86) [`c48468b`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c48468b) [`9478139`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/9478139)
@@ -246,7 +252,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **Fibo 2.0** *(experimental)* | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) on BRIA Fibo 2.0 Dev | **8 GB** with block swap (5.3 GB peak with image LoRAs at 768², measured) |
 | **Qwen-Image 2.1** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | 8 GB |
 | **Qwen-Image 2512 / Edit 2511** | Image LoRAs on Qwen-Image-2512 **and edit LoRAs** on Qwen-Image-Edit-2511 (before → after); 20B in NF4 with block swap | **~4 GB** (512², measured) / 8 GB (edit at 1024²) |
-| **Krea 2** | Image LoRAs (characters, objects, styles) for Krea 2 Raw and Turbo | 8 GB |
+| **Krea 2** | Image LoRAs (characters, objects, styles) for Krea 2 Raw and Turbo | **8 GB** with block swap (5.2 GB peak with previews at ~640×416, 4.2 GB at 1024², measured) |
 | **Boogu Image Edit 0.1** | Edit LoRAs (before → after) and image LoRAs on Boogu-Image-0.1-Edit | **8 GB** with block swap (5.5 GB peak with edit LoRAs at 512², measured) |
 | **Z-Image** | Image LoRAs (characters, objects, styles) for Z-Image and Z-Image-Turbo | 8 GB |
 | **Ming-Image** *(experimental)* | Image LoRAs for transparent designs and edit LoRAs (before → after) on inclusionAI's Ming-Image 0.1 Design | **8 GB** with block swap (5.8 GB peak at 1024², measured) |
@@ -305,6 +311,8 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 **Prompts propios en las previews:** en **2b. Training Previews**, **Custom Prompts (0-4)** pone hasta 4 prompts tuyos: cada ronda de previews hace una imagen por prompt, o una sola con uno al azar (**One random prompt per preview**). Con 0 se usan las captions del dataset (Caption Mode). Los codifica el Pre-Cache; si los cambias durante el entrenamiento y pulsas **Save JSON**, se codifican en la CPU y el trainer pasa a usarlos (en LTX y MiniMax-H3 solo los codifica el Pre-Cache). En los entrenadores de edición con varias imágenes de referencia, **One image per prompt** hace que cada prompt edite su propia imagen. Al abrir una preview se ve el prompt con el que se hizo. Detalles en la sección *Custom prompts in the previews*.
 
 **Dataset Forge:** con pocas fotos de una persona (desde 1), **🧬 Dataset Forge** en la barra del Dataset Manager crea un dataset de personaje. *Analizar* escribe los captions que falten y una ficha con los rasgos fijos (edad, pelo, ojos). El *plan* combina encuadre, ropa, lugar (mitad interiores, mitad exteriores), luz, ángulo y expresión, y se puede editar línea a línea. *Generar* usa FLUX.3 Klein (FLUX Kommunity License), con las imágenes más naturales: anatomía limpia, poses nuevas y el encuadre pedido. En calidad *Rápida* (por defecto) usa la LoRA turbo PDD de NoiseToNova: 4 u 8 pasos, unos 12 o 25 s por imagen, con más parecido pero un aspecto más maquillado; *Mejor calidad* va de 12 a 50 pasos (16, unos 85 s por imagen), más natural. También se puede elegir Fibo 2.0 (CC BY-NC, el de más parecido, unos 5 min por imagen), Qwen-Image 2.1 (licencia Qwen Research, no comercial; rápido, pero con cuerpos a veces desproporcionados), FLUX.2 Klein 9B o Qwen-Image-Edit-2511 (Apache 2.0). El plan reparte la mitad de las imágenes en primeros planos. Solo guarda las imágenes que pasan el parecido facial mínimo (60% por defecto); las demás van a `_rejected`. El resultado va a una carpeta nueva (la de origen no se toca), con un caption por imagen sin los rasgos fijos, para que el trigger aprenda la identidad. **📂 Usar en el Dataset Manager** la carga en el entrenador. Antes de generar hay que confirmar que tienes derecho o permiso para usar las imágenes de esa persona. Detalles en la sección *Dataset Forge*.
+
+**Curva de LR nueva al reanudar:** la curva del LR cubre siempre todo el entrenamiento, del paso 0 a Total Steps. Si entrenas 1000 pasos con `cosine` de 4e-4 a 4e-5, subes Total Steps a 2000 y reanudas, el paso 1001 está a mitad de la curva de 2000 pasos y el LR vuelve a subir a ~2,3e-4. Con **New LR curve on resume** (debajo del LR Scheduler) la curva empieza de nuevo al reanudar: desde el LR que pongas hasta su mínimo en el último paso, sin warmup; por ejemplo, con LR 1e-4 los 1000 pasos siguientes van de 1e-4 a 1e-5. Detalles en la sección *LR scheduler*.
 
 **LR Scheduler:** debajo del learning rate puedes elegir cómo cambia durante el entrenamiento: `cosine` (por defecto: sube durante el warmup y baja suavemente hasta el 10%), `constant` (el mismo LR de principio a fin, como el entrenador de Civitai), `constant_with_warmup`, `linear` o `cosine_with_restarts` (repite la curva tantas veces como indique *Ciclos*). Si no lo tocas, cada entrenador funciona igual que antes. Detalles en la sección *LR scheduler*.
 
@@ -495,6 +503,8 @@ With `constant` every checkpoint is trained equally hard, so stopping early give
 
 The chosen scheduler is shown in the console summary when training starts and saved in the LoRA metadata (`ss_lr_scheduler`). It is read again on every start, so a resumed training continues with whatever is selected.
 
+**Resuming with more steps.** The curve always covers the whole training, from step 0 to Total Steps. Train 1000 steps with `cosine` from 4e-4 to 4e-5, raise Total Steps to 2000 and resume: step 1001 sits half-way along the 2000-step curve, so the LR jumps back up to ~2.3e-4 and goes down again to 4e-5 at step 2000. To decide yourself where the second part starts, tick **New LR curve on resume** (under the LR Scheduler, off by default): when resuming, the curve starts again at that step, from the current Learning Rate down to its minimum at the last step, without warmup. In the same example, set the LR to 1e-4 and resume: the next 1000 steps go from 1e-4 to 1e-5. The console says it when resuming (`[LR] New LR curve on resume: a new curve starts at step 1000...`). The start step is kept in the project's output folder (`lr_curve.json`): resuming again with the same LR and Total Steps stays on that curve, with others a new one starts, and a new training starts from step 0 as always.
+
 ---
 
 ## 🌍 Languages
@@ -658,39 +668,4 @@ Copying the blocks from RAM costs little on a x16 slot (2.2 against 1.8 s/step a
 
 ### Boogu Image Edit 0.1 — edit LoRAs
 
-> **New:** full runs (pre-cache, training, previews, stop and resume) verified with an edit dataset and with normal images.
-
-- Trains on **Boogu-Image-0.1-Edit** (`Boogu/Boogu-Image-0.1-Edit`, Apache 2.0) with the training code of [DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio), which is part of the Studio's regular dependencies. The first Pre-Cache downloads the NF4 model once (~11 GB, [AcademiaSD/Boogu-Image-Edit-NF4-for-LoRA-Training](https://huggingface.co/AcademiaSD/Boogu-Image-Edit-NF4-for-LoRA-Training)): transformer and Qwen3-VL-8B text encoder in NF4, ~5 GB each.
-- **Edit LoRAs:** each sample is `name_before.ext`, `name_after.ext` and `name.txt` (the instruction). The before image goes to the text encoder (~384²) and, as a clean latent at the same scale as the target, next to it in the image sequence, as ComfyUI's `TextEncodeBooguEdit` does. **Normal LoRAs** (one image + caption) also work.
-- The LoRA trains the attention layers and is exported as `diffusion_model.*`, which ComfyUI's native Boogu support loads with the standard LoRA loader. rsLoRA, LoRA+ and LoKr are available.
-- **Previews:** 30 steps / CFG 4 on the preview reference image; the negative is empty and does not see the image, as in ComfyUI.
-- Default settings: 500 steps, LR 0.0002, cosine, rank 16 / alpha 16.
-- **From 8 GB of VRAM:** **VRAM Profile**, **Resident Blocks**, **Block Swap Storage** and **RAM Limit**, as in [FLUX.2 Klein 9B](#flux2-klein-9b--image-and-edit-loras): the blocks that do not fit wait in RAM or on disk and come to the GPU just in time. DiffSynth loads the whole transformer first (~5 GB) and then parks what does not fit.
-
-| Measured on an RTX 5080 (rank 16, edit, 512²) | |
-| :--- | :--- |
-| Training, **Auto** profile | ~2.1 s/step, ~7.8 GB (8.3 GB with previews) |
-| Training, **8 GB** profile | ~2.8 s/step, 5.5 GB of peak VRAM, previews included |
-
-### Krea 2 — image LoRAs for Krea 2 Raw and Turbo
-
-- The 12B transformer is built directly from its **NF4** weights (no BF16 copy is ever downloaded or loaded): ~7.5 GB of VRAM while training.
-- **Captioner:** Qwen3-VL-4B, Krea 2's own text encoder (NF4, ~3.5 GB VRAM, no extra download).
-- **Previews** with the Krea 2 Turbo LoRA (8 steps). A new custom preview prompt is encoded on the CPU without stopping the training.
-- 8-bit AdamW, gradient checkpointing, Krea 2's own noise-shift schedule.
-- The exported LoRA works with Krea 2 Raw and Krea 2 Turbo and carries its alpha, so ComfyUI applies it at the same strength as the previews.
-
-| Starting point | |
-| :--- | :--- |
-| Resolution | 512×512 (768×768 / 1024×1024 need more steps and VRAM) |
-| Rank / Alpha | 16 / 32 |
-| Learning rate | 3e-4 |
-| Steps | 500–1000 at 512² (~1,500 at 768², ~2,000 at 1024²) |
-| Time | 500 steps, 14 images, 512²: ~15 min (RTX 3060 12 GB: ~1 h 30 min) |
-
-### Z-Image — image LoRAs for Z-Image and Z-Image-Turbo
-
-- Trains on **Z-Image** (the undistilled base model, the one meant for fine-tuning). The LoRA has the same layers as **Z-Image-Turbo** and also loads there.
-- The 6B transformer is built directly from its **NF4** weights, and the Qwen3-4B text encoder of the pre-cache is NF4 too: ~5.5 GB of VRAM while training at 512².
-- **Captioner:** Qwen3-VL-8B NF4, shared with LTX-2.3 (~5.5 GB VRAM, ~10 s per image).
-- **Previews:** 28 steps / CFG 5 (CFG as in ComfyUI: 1 = off), or **Turbo** with Alibaba PAI's **Z-Image-Fun-Lora-Distill** (made for Z-Image base, 4 steps / CFG 1, about 10 times fas
+> **New:** full runs (pre-cache, training, previews, stop and

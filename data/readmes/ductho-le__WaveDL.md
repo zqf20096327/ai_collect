@@ -18,21 +18,21 @@
 
 **Production-ready • Multi-GPU DDP • Memory-Efficient • Plug-and-Play**
 
-[Getting Started](#-getting-started) •
-[Documentation](#-documentation) •
-[Examples](#-examples) •
+[Getting Started](#getting-started) •
+[Documentation](#documentation) •
+[Examples](#examples) •
 [Discussions](https://github.com/ductho-le/WaveDL/discussions) •
-[Citation](#-citation)
+[Citation](#citation)
 
 ---
 
- **Plug in your model, load your data, and let WaveDL do the heavy lifting 💪**
+ **Plug in your model, load your data, and let WaveDL do the heavy lifting**
 
 </div>
 
 ---
 
-## 💡 What is WaveDL?
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/waves.svg" width="24" height="24" align="absmiddle" alt=""> What is WaveDL?
 
 WaveDL is a **deep learning framework** built for **wave-based inverse problems** — from ultrasonic NDE and geophysics to biomedical tissue characterization. It provides a robust, scalable training pipeline for mapping multi-dimensional data (1D/2D/3D) to physical quantities or dense 2D property fields.
 
@@ -45,21 +45,21 @@ Output: Material properties, defect dimensions, elasticity/velocity maps, ...
 The framework handles the engineering challenges of large-scale deep learning — big datasets, distributed training, and HPC deployment — so you can focus on the science, not the infrastructure.
 
 **Built for researchers who need:**
-- 📊 Vector and dense 2D regression with reproducibility and fair benchmarking
-- 🚀 Seamless multi-GPU training on HPC clusters
-- 💾 Memory-efficient handling of large-scale datasets
-- 🔧 Easy integration of custom model architectures
+- <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/regression.svg" width="18" height="18" align="absmiddle" alt=""> Vector and dense 2D regression with reproducibility and fair benchmarking
+- <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/gpu-cluster.svg" width="18" height="18" align="absmiddle" alt=""> Seamless multi-GPU training on HPC clusters
+- <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/hard-drive.svg" width="18" height="18" align="absmiddle" alt=""> Memory-efficient handling of large-scale datasets
+- <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/plug.svg" width="18" height="18" align="absmiddle" alt=""> Easy integration of custom model architectures
 
 ---
 
-## ✨ Features
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/sparkles.svg" width="24" height="24" align="absmiddle" alt=""> Features
 
 <div align="center">
 <table width="100%">
 <tr>
 <td width="50%" valign="top">
 
-**⚡ Dataset Caching**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/zap.svg" width="20" height="20" align="absmiddle" alt=""> **Dataset Caching**
 
 Prepare data for repeated training:
 - Memory-mapped training caches
@@ -69,7 +69,7 @@ Prepare data for repeated training:
 </td>
 <td width="50%" valign="top">
 
-**🧠 Models? We've Got Options**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/network.svg" width="20" height="20" align="absmiddle" alt=""> **Models? We've Got Options**
 
 20+ architectures (70+ variants), ready to go:
 - CNNs, ResNets, ViTs, SSMs, WaveNets...
@@ -81,7 +81,7 @@ Prepare data for repeated training:
 <tr>
 <td width="50%" valign="top">
 
-**🛡️ Distributed Training**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/nodes.svg" width="20" height="20" align="absmiddle" alt=""> **Distributed Training**
 
 Coordinate training across ranks:
 - Synchronized early stopping
@@ -91,7 +91,7 @@ Coordinate training across ranks:
 </td>
 <td width="50%" valign="top">
 
-**🔬 Physics-Constrained Training**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/atom.svg" width="20" height="20" align="absmiddle" alt=""> **Physics-Constrained Training**
 
 Make your model respect the laws:
 - Enforce bounds, positivity, equations
@@ -103,7 +103,7 @@ Make your model respect the laws:
 <tr>
 <td width="50%" valign="top">
 
-**🖥️ HPC-Native Design**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/cpu.svg" width="20" height="20" align="absmiddle" alt=""> **HPC-Native Design**
 
 Built for high-performance clusters:
 - Automatic GPU detection
@@ -113,7 +113,7 @@ Built for high-performance clusters:
 </td>
 <td width="50%" valign="top">
 
-**🔄 Training Recovery**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/refresh.svg" width="20" height="20" align="absmiddle" alt=""> **Training Recovery**
 
 Resume interrupted experiments:
 - Model, optimizer, and scheduler checkpoints
@@ -125,17 +125,17 @@ Resume interrupted experiments:
 <tr>
 <td width="50%" valign="top">
 
-**🎛️ Flexible & Reproducible Training**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/cog.svg" width="20" height="20" align="absmiddle" alt=""> **Flexible & Reproducible Training**
 
 Fully configurable via CLI flags or YAML:
 - Loss functions, optimizers, schedulers
 - K-fold cross-validation
-- See [Configuration](#️-configuration) for details
+- See [Configuration](#configuration) for details
 
 </td>
 <td width="50%" valign="top">
 
-**📦 ONNX Export**
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/package.svg" width="20" height="20" align="absmiddle" alt=""> **ONNX Export**
 
 Deploy models anywhere:
 - One-command export to ONNX
@@ -149,26 +149,18 @@ Deploy models anywhere:
 
 ---
 
-## 🚀 Getting Started
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/rocket.svg" width="24" height="24" align="absmiddle" alt=""> Getting Started
 
 ### Installation
-
-#### From PyPI (recommended for all users)
 
 ```bash
 pip install --upgrade wavedl
 ```
 
-This installs the training, inference, HPO, and ONNX export dependencies.
-The unreleased source requires Python 3.11+, PyTorch 2.13+, torchvision 0.28+,
-and ONNX 1.22+. Install a compatible PyTorch/torchvision pair for your CPU or
-CUDA/ROCm platform in a dedicated environment. Changes under `[Unreleased]`
-are available from source until the next package release.
+Requires **Python 3.11+**, PyTorch 2.13+, torchvision 0.28+, and ONNX 1.22+. Includes training, inference, HPO, WaveDL Studio, and ONNX export.
 
-See [security and deployment boundaries](https://github.com/ductho-le/WaveDL/blob/main/.github/SECURITY.md) for vulnerability
-reporting procedures, safe deserialization practices, and secure data handling guidelines.
-
-#### From Source (for development)
+<details>
+<summary><b>Install from Source (Development) &amp; Security Notes</b></summary>
 
 ```bash
 git clone https://github.com/ductho-le/WaveDL.git
@@ -176,132 +168,85 @@ cd WaveDL
 pip install -e ".[dev]"
 ```
 
-> [!NOTE]
-> Python 3.11+ required. For contributor setup (pre-commit hooks), see [CONTRIBUTING.md](https://github.com/ductho-le/WaveDL/blob/main/.github/CONTRIBUTING.md).
+- Contributor setup & pre-commit hooks: [CONTRIBUTING.md](https://github.com/ductho-le/WaveDL/blob/main/.github/CONTRIBUTING.md)
+- Vulnerability reporting & safe deserialization boundaries: [SECURITY.md](https://github.com/ductho-le/WaveDL/blob/main/.github/SECURITY.md)
+
+</details>
 
 ### Quick Start
 
-> [!TIP]
-> In all examples below, replace `<...>` placeholders with your values. See [Configuration](#️-configuration) for defaults and options.
-
-### Configuration & Training GUI
+#### Configuration & Training GUI (WaveDL Studio)
 
 ```bash
 cd /path/to/your/project
 wavedl-gui
 ```
 
-WaveDL Studio opens a local web interface at `http://127.0.0.1:7860` for editing
-YAML configurations, browsing files, launching `wavedl-train` with live logs,
-and evaluating checkpoints or exporting ONNX models via `wavedl-test`.
-The directory you launch it from is the workspace: configurations default to
-`./config.yaml`, and training resolves relative data/output paths from there.
-The GUI is bundled with WaveDL and requires no additional dependencies.
+Opens a bundled, zero-dependency local web workspace at `http://127.0.0.1:7860` (loopback-only by default; pass `--allow-remote` if intentionally binding a non-loopback `--host`) to edit `./config.yaml`, browse local files, run `wavedl-train` with live logs, and evaluate or export ONNX models via `wavedl-test`. Use `wavedl-gui --port 8080 --no-browser` with SSH port forwarding for remote servers (`python -m wavedl.gui` also works).
 
-Use `wavedl-gui --port 8080 --no-browser` to choose a port and open the browser
-yourself. `python -m wavedl.gui` is also supported.
-
-### Training
+#### Training
 
 ```bash
-# Basic training (auto-detects GPUs and environment)
-wavedl-train --model <model_name> --data_path <train_data> --output_dir <output_folder>
+# Vector or dense 2D field regression (auto-detects GPUs & HPC)
+wavedl-train --model cnn --data_path train_data.npz --output_dir results
+wavedl-train --model unet_field --data_path field_data.npz \
+  --batch_size 4 --output_dir field_results
 
-# Detailed configuration
-wavedl-train --model <model_name> --data_path <train_data> --batch_size <number> \
-  --lr <number> --epochs <number> --patience <number> --compile --output_dir <output_folder>
+# Detailed configuration (or pass --config config.yaml)
+wavedl-train --model inversionnet_resize \
+  --model_kwargs '{"base_channels": 16}' --data_path field_data.npz \
+  --num_gpus 4 --batch_size 8 --lr 1e-3 --epochs 200 --compile \
+  --output_dir results
 
-# Multi-GPU is automatic (uses all available GPUs)
-# Override with --num_gpus if needed
-wavedl-train --model cnn --data_path train.npz --num_gpus 4 --output_dir results
+# Resume automatically with same --output_dir, or restart via --fresh
+wavedl-train --model cnn --data_path train.npz --output_dir results --fresh
 
-# Resume training (automatic - just re-run with same output_dir)
-wavedl-train --model <model_name> --data_path <train_data> --output_dir <output_folder>
-
-# Force fresh start (archives prior training artifacts under previous_runs/)
-wavedl-train --model <model_name> --data_path <train_data> --output_dir <output_folder> --fresh
-
-# List available models
+# List all 74 built-in models (shows vector vs. dense 2D field support)
 wavedl-train --list_models
 ```
 
-> [!NOTE]
-> `wavedl-train` automatically detects your environment:
-> - **HPC clusters** (SLURM, PBS, etc.): Uses local caching, offline WandB
-> - **Local machines**: Uses standard cache locations (~/.cache)
->
-> **Auto-Resume**: Re-running an incomplete experiment with the same `--output_dir`
-> selects an available checkpoint. Epoch checkpoints preserve the optimizer and
-> learning-rate schedule. Emergency checkpoints replay the interrupted epoch and
-> are not exact recovery; OneCycle recovery requires an epoch-boundary checkpoint.
-> OneCycle resumes preserve the saved update budget; increasing `--epochs` beyond
-> that budget requires a fresh run rather than extending the existing cycle.
-> Use `--resume <checkpoint_directory>` to select one explicitly. `--fresh` archives
-> prior training artifacts under `previous_runs/` and cannot be combined with `--resume`.
-> Use a separate output/cache directory for every independent concurrent run.
-
 <details>
-<summary><b>Advanced: Direct Accelerate Launch</b></summary>
+<summary><b>Auto-Resume, HPC Environment &amp; Direct Accelerate Launch</b></summary>
 
-For fine-grained control over distributed training, you can use `accelerate launch` directly:
+- **Environment detection:** Automatically uses local caching and offline WandB on HPC clusters (SLURM, PBS, etc.) and `~/.cache` on local machines.
+- **Auto-resume:** Re-running an incomplete run with the same `--output_dir` resumes automatically (or pass `--resume <checkpoint_dir>`). Epoch checkpoints preserve optimizer and scheduler state; emergency interrupt checkpoints replay the interrupted epoch. OneCycle resumes require an epoch-boundary checkpoint and keep the saved update budget.
+- **Isolation:** `--fresh` archives prior artifacts under `previous_runs/` and cannot be combined with `--resume`. Use separate output/cache directories for concurrent runs.
+- **Direct `accelerate launch`** (for custom multi-node setups):
 
 ```bash
-# Custom accelerate configuration
-accelerate launch -m wavedl.train --model <model_name> --data_path <train_data> --output_dir <output_folder>
-
-# Multi-node training
+accelerate launch -m wavedl.train --model cnn --data_path train.npz --output_dir results
 accelerate launch --num_machines 2 --main_process_ip <ip> -m wavedl.train --model cnn --data_path train.npz
 ```
 
 </details>
 
-### Testing & Inference
+#### Testing & Inference
 
 ```bash
-# Basic inference
-wavedl-test --checkpoint <checkpoint_folder> --data_path <test_data>
+# Evaluate, plot, and save physical-unit predictions (CSV or predictions.npz)
+wavedl-test --checkpoint results/best_checkpoint --data_path test_data.npz \
+  --plot --plot_format png pdf --save_predictions --output_dir test_results
 
-# With visualization, prediction export, and multiple plot formats
-wavedl-test --checkpoint <checkpoint_folder> --data_path <test_data> \
-  --plot --plot_format png pdf --save_predictions --output_dir <output_folder>
-
-# With custom parameter names
-wavedl-test --checkpoint <checkpoint_folder> --data_path <test_data> \
-  --param_names '$p_1$' '$p_2$' '$p_3$' --plot
-
-# Export model to ONNX for deployment (LabVIEW, MATLAB, C++, etc.)
-wavedl-test --checkpoint <checkpoint_folder> --data_path <test_data> \
-  --export onnx --export_path <output_file.onnx>
-
-# For 3D volumes with small depth (e.g., 8×128×128), override auto-detection
-wavedl-test --checkpoint <checkpoint_folder> --data_path <test_data> \
-  --input_channels 1
+# Export to ONNX with embedded preprocessing & de-normalization
+wavedl-test --checkpoint results/best_checkpoint --data_path test_data.npz \
+  --export onnx --export_path model.onnx
 ```
 
-**Output:**
+Model architecture, `model_kwargs`, and saved input/target preprocessing are restored automatically from checkpoint metadata. Console output reports physical-unit R², Pearson r, RMSE, and MAE (plus relative L2 error for dense 2D fields); `--data_path` also accepts `.txt` paired-shard manifests, `--param_names` customizes labels, `--no_tf32` enforces strict FP32, and `--input_channels 1` overrides detection for shallow 3D volumes (e.g., `8×128×128`).
 
-- **Console**: R², Pearson correlation, and MAE per parameter/channel; dense fields also report relative L2 error
-- **Predictions** (with `--save_predictions`): vector outputs use CSV; dense fields use compressed `predictions.npz` with `target`, `prediction`, `error`, and `channel_names` arrays (or only `prediction` and `channel_names` when targets are absent)
-- **Plots** (with `--plot`): vectors produce 10 publication-quality diagnostic plots; dense fields with ground truth produce target, prediction, and error maps
-- **Format** (with `--plot_format`): Supported formats: `png` (default), `pdf` and `svg` (vector graphics), `eps` (LaTeX), `tiff`, `jpg`, `ps`
+<details>
+<summary><a id="dense-2d-field-regression"></a><b>Dense 2D Field Options, <code>--model_kwargs</code> &amp; Checkpoint Compatibility</b></summary>
 
-For dense fields, R² and Pearson correlation are computed independently per
-property channel over all sample-pixel values and then averaged; MAE/RMSE also
-aggregate spatial values, while relative L2 error averages sample/channel field
-norms. Field plots are intentionally limited to the first three samples and six
-channels to keep result directories manageable.
+Use `--model unet_field` (skip-connected, single-channel), `--model inversionnet` (transposed-conv), or `--model inversionnet_resize` (resize-conv) for pixel-wise 2D property maps. `inversionnet` and `inversionnet_resize` support single- or multi-channel inputs (`--input_channels`) and arbitrary input/output aspect ratios. Continue using vector models (e.g., `unet_regression`) for `(N, T)` targets.
 
-> [!NOTE]
-> `wavedl-test` auto-detects the model architecture from checkpoint metadata. If unavailable, it falls back to folder name parsing. Use `--model` to override if needed.
+**Target layouts** (channels-first; output shape and channel count are detected automatically):
 
-`wavedl-test --data_path` also accepts tab-separated `.txt` paired-shard manifests (`<input.npy><TAB><target.npy>` per line). Saved input/target preprocessing is restored automatically during inference and embedded during ONNX export; `--no_tf32` disables TF32 for strict FP32 evaluation.
+| Stored target layout | Meaning | Model layout |
+|---|---|---|
+| `(N, H_out, W_out)` | One scalar field per sample | `(N, 1, H_out, W_out)` |
+| `(N, C, H_out, W_out)` | `C` property fields per sample | unchanged |
 
-### Dense 2D Field Regression
-
-Use `--model unet_field`, `--model inversionnet`, or `--model inversionnet_resize` for supervised, pixel-wise prediction of an elasticity, stiffness, velocity, density, or similar 2D property map. These models are field-only; continue using `unet_regression` or another vector architecture for `(N, T)` targets. `unet_field` uses skip-connected single-channel inputs (`(H_in, W_in)`), while `inversionnet` (transposed-convolution decoder) and `inversionnet_resize` (resize-convolution decoder) are skip-free 2D encoder-decoders supporting both single-channel and multi-channel (`--input_channels`) inputs as well as arbitrary input/output aspect ratios.
-
-Use `--model_kwargs '{"base_channels": 16, "bottleneck_grid": 2}'` to override
-model-specific defaults, or set a YAML mapping:
+**Model overrides (`--model_kwargs`):** Override model-specific defaults via JSON on the CLI or a YAML mapping (works with any registered model; e.g., `dropout_rate`, `norm`, `output_activation`, `base_channels`, `bottleneck_grid`, `upsample_mode` for InversionNet). Overrides are saved in checkpoints, restored for inference/ONNX export, verified on resume, and supported across CV and HPO:
 
 ```yaml
 model: inversionnet_resize
@@ -311,34 +256,7 @@ model_kwargs:
   upsample_mode: nearest
 ```
 
-This option works with other models too; accepted keys depend on the selected
-architecture. For InversionNet, the other options include `dropout_rate`, `norm`,
-and `output_activation`. Model overrides are saved in checkpoints and restored
-for inference and ONNX export. Use matching overrides to resume training.
-For HPO, `--model_kwargs` applies the same fixed overrides to every selected
-model, so each must accept the supplied keys.
-
-Accepted target layouts are:
-
-| Stored target layout | Meaning | Model layout |
-|----------------------|---------|--------------|
-| `(N, H_out, W_out)` | One scalar field per sample | `(N, 1, H_out, W_out)` |
-| `(N, C, H_out, W_out)` | `C` property fields per sample | unchanged |
-
-Targets must be channels-first; channels-last arrays such as `(N, H, W, C)` are not guessed and should be transposed before saving. The 2D input and output grid resolutions are independent, so `(H_in, W_in)` may differ from `(H_out, W_out)`, but their spatial rank must match. `unet_field` infers the target grid during training and interpolates its dense head to that size. Each output channel is standardized independently using statistics over the training samples and both spatial axes, rather than fitting a separate scaler at every pixel.
-
-Dense caches record their normalization version and rebuild automatically after
-normalization changes. Checkpoints from the earlier experimental dense scaler
-require retraining with `--fresh` or a new output directory. Vector checkpoints
-retain their target normalization. Legacy Mamba/Vim weights are an exception:
-the corrected selective scan changes predictions, so unversioned scan weights
-are rejected. Use the original WaveDL version for legacy inference/resume, or
-retrain with `--fresh`. New checkpoints store the scan version in their weights.
-WaveNet retains the published optimizer parameter layout for resume compatibility.
-Resuming also verifies that the current training
-split has the same target normalization as the saved checkpoint.
-
-This small synthetic example exercises different input/output grid sizes:
+**Synthetic unequal-grid example:**
 
 ```python
 import numpy as np
@@ -349,36 +267,25 @@ property_maps = wave_images[:, ::2, ::2]  # (N, H_out, W_out) = (80, 32, 48)
 
 np.savez(
     "field_data.npz",
-    input_train=wave_images[:64],
-    output_train=property_maps[:64],
-    input_test=wave_images[64:],
-    output_test=property_maps[64:],
+    input_train=wave_images[:64], output_train=property_maps[:64],
+    input_test=wave_images[64:], output_test=property_maps[64:],
 )
 ```
 
 ```bash
-wavedl-train --model unet_field --data_path field_data.npz --batch_size 4 --epochs 5 \
-  --output_dir field_run
-
+wavedl-train --model unet_field --data_path field_data.npz --batch_size 4 --epochs 5 --output_dir field_run
 wavedl-test --checkpoint field_run/best_checkpoint --data_path field_data.npz \
   --param_names property --save_predictions --plot --output_dir field_results
 ```
 
-For multiple output properties, stack maps on axis 1 to create `(N, C, H_out, W_out)` targets. The channel count is detected automatically; no output-grid CLI flag is required.
+- **Memory & storage:** Dense decoders require more GPU memory (start with `--batch_size 1–8`) and write `target_data_cache.dat` (`~N × C × H_out × W_out × 4` bytes) under `--output_dir` or `--cache_dir`.
+- **Scope:** Supervised dense inversion learns direct mappings from paired data (usable directly or as an initial model for iterative FWI; an iterative wave-equation solver is not part of WaveDL).
+- **Compatibility:** Resume checks verify matching target normalization and `model_kwargs`. Unversioned legacy Mamba/ViM checkpoints predating the selective-scan fix are rejected explicitly; retrain with `--fresh`.
 
-Dense decoders and target maps use substantially more GPU memory and disk than
-vector regression. Start with a small batch size (for example, 1–8). Training
-also creates `target_data_cache.dat` in the output directory with size roughly
-`N × C × H_out × W_out × 4` bytes, so place the output directory on scratch
-storage with adequate quota for large FWI or elastography datasets.
-
-> [!IMPORTANT]
-> This feature implements **supervised dense inversion**: it learns property fields from paired wave measurements and reference maps. It can provide a direct learned estimate or an initialization/prior for an FWI workflow, but it is not full waveform inversion by itself. True FWI requires a differentiable (or adjoint-gradient) wave solver and an iterative observed-versus-simulated data-consistency/misfit loop; that solver loop is not part of the current WaveDL CLI.
-
-### Adding Custom Models
+</details>
 
 <details>
-<summary><b>Creating Your Own Architecture</b></summary>
+<summary><a id="adding-custom-models"></a><b>Adding Custom Models (<code>--import</code>)</b></summary>
 
 **Requirements** (for a vector-output model):
 
@@ -429,7 +336,10 @@ For a custom dense 2D model, also accept the inferred `out_shape=(C, H_out, W_ou
 
 ---
 
-## 📁 Project Structure
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/folder-tree.svg" width="24" height="24" align="absmiddle" alt=""> Project Structure
+
+<details>
+<summary><b>View Project Structure</b></summary>
 
 ```
 WaveDL/
@@ -449,6 +359,10 @@ WaveDL/
 │       │
 │       └── utils/                # Utilities
 │           ├── data.py           # Memory-mapped data pipeline
+│           ├── preprocessing.py  # Shard manifests, transforms & lazy loaders
+│           ├── targets.py        # Vector & spatial target scaling
+│           ├── checkpoint_io.py  # Safe JSON checkpoint metadata & scalers
+│           ├── cross_validation.py # K-fold cross-validation
 │           ├── metrics.py        # R², Pearson, visualization
 │           ├── constraints.py    # Physical constraints for training
 │           ├── distributed.py    # DDP synchronization
@@ -466,16 +380,18 @@ WaveDL/
 ├── CHANGELOG.md                  # Version history
 └── CITATION.cff                  # Citation metadata
 ```
+
+</details>
+
 ---
 
-## ⚙️ Configuration
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/sliders.svg" width="24" height="24" align="absmiddle" alt=""> Configuration
 
 > [!NOTE]
 > All configuration options below work with `wavedl-train`. The wrapper script passes all arguments directly to `train.py`.
 
-<a id="available-models"></a>
 <details>
-<summary><b>Available Models</b> — 20+ architectures (70+ variants)</summary>
+<summary><a id="available-models"></a><b>Available Models</b> — 20+ architectures (70+ variants)</summary>
 
 **Output support**
 
@@ -497,42 +413,42 @@ table above when selecting a model.
 | `resnet18` | 11.2M | 1D/2D/3D |
 | `resnet34` | 21.3M | 1D/2D/3D |
 | `resnet50` | 23.5M | 1D/2D/3D |
-| `resnet18_pretrained` ⭐ | 11.2M | 2D |
-| `resnet50_pretrained` ⭐ | 23.5M | 2D |
+| `resnet18_pretrained` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 11.2M | 2D |
+| `resnet50_pretrained` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 23.5M | 2D |
 | **DenseNet** — Densely Connected Network |||
 | `densenet121` | 7.0M | 1D/2D/3D |
 | `densenet169` | 12.5M | 1D/2D/3D |
-| `densenet121_pretrained` ⭐ | 7.0M | 2D |
+| `densenet121_pretrained` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 7.0M | 2D |
 | **── Efficient/Mobile CNNs ──** |||
 | **MobileNetV3** — Mobile Neural Network V3 |||
-| `mobilenet_v3_small` ⭐ | 0.9M | 2D |
-| `mobilenet_v3_large` ⭐ | 3.0M | 2D |
+| `mobilenet_v3_small` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 0.9M | 2D |
+| `mobilenet_v3_large` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 3.0M | 2D |
 | **EfficientNet** — Efficient Neural Network |||
-| `efficientnet_b0` ⭐ | 5.3M | 2D |
-| `efficientnet_b2` ⭐ | 9.1M | 2D |
-| `efficientnet_b4` ⭐ | 19M | 2D |
-| `efficientnet_b7` ⭐ | 66M | 2D |
+| `efficientnet_b0` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 5.3M | 2D |
+| `efficientnet_b2` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 9.1M | 2D |
+| `efficientnet_b4` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 19M | 2D |
+| `efficientnet_b7` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 66M | 2D |
 | **EfficientNetV2** — Efficient Neural Network V2 |||
-| `efficientnet_v2_s` ⭐ | 20.2M | 2D |
-| `efficientnet_v2_m` ⭐ | 52.9M | 2D |
-| `efficientnet_v2_l` ⭐ | 117.2M | 2D |
+| `efficientnet_v2_s` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 20.2M | 2D |
+| `efficientnet_v2_m` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 52.9M | 2D |
+| `efficientnet_v2_l` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 117.2M | 2D |
 | **RegNet** — Regularized Network |||
-| `regnet_y_400mf` ⭐ | 3.9M | 2D |
-| `regnet_y_800mf` ⭐ | 5.7M | 2D |
-| `regnet_y_1_6gf` ⭐ | 10.3M | 2D |
-| `regnet_y_3_2gf` ⭐ | 17.9M | 2D |
-| `regnet_y_8gf` ⭐ | 37.4M | 2D |
+| `regnet_y_400mf` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 3.9M | 2D |
+| `regnet_y_800mf` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 5.7M | 2D |
+| `regnet_y_1_6gf` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 10.3M | 2D |
+| `regnet_y_3_2gf` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 17.9M | 2D |
+| `regnet_y_8gf` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 37.4M | 2D |
 | **── Modern CNNs ──** |||
 | **ConvNeXt** — Convolutional Next |||
 | `convnext_tiny` | 27.8M | 1D/2D/3D |
 | `convnext_small` | 49.5M | 1D/2D/3D |
 | `convnext_base` | 87.6M | 1D/2D/3D |
-| `convnext_tiny_pretrained` ⭐ | 27.8M | 2D |
+| `convnext_tiny_pretrained` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 27.8M | 2D |
 | **ConvNeXt V2** — ConvNeXt with GRN |||
 | `convnext_v2_tiny` | 27.9M | 1D/2D/3D |
 | `convnext_v2_small` | 49.6M | 1D/2D/3D |
 | `convnext_v2_base` | 87.7M | 1D/2D/3D |
-| `convnext_v2_tiny_pretrained` ⭐ | 27.9M | 2D |
+| `convnext_v2_tiny_pretrained` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 27.9M | 2D |
 | **UniRepLKNet** — Large-Kernel ConvNet |||
 | `unireplknet_tiny` | 30.8M | 1D/2D/3D |
 | `unireplknet_small` | 56.0M | 1D/2D/3D |
@@ -543,29 +459,29 @@ table above when selecting a model.
 | `vit_small` | 21.4M | 1D/2D |
 | `vit_base` | 85.3M | 1D/2D |
 | **Swin** — Shifted Window Transformer |||
-| `swin_t` ⭐ | 27.5M | 2D |
-| `swin_s` ⭐ | 48.8M | 2D |
-| `swin_b` ⭐ | 86.7M | 2D |
+| `swin_t` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 27.5M | 2D |
+| `swin_s` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 48.8M | 2D |
+| `swin_b` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 86.7M | 2D |
 | **MaxViT** — Multi-Axis ViT |||
-| `maxvit_tiny` ⭐ | 30.1M | 2D |
-| `maxvit_small` ⭐ | 67.6M | 2D |
-| `maxvit_base` ⭐ | 119.1M | 2D |
+| `maxvit_tiny` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 30.1M | 2D |
+| `maxvit_small` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 67.6M | 2D |
+| `maxvit_base` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 119.1M | 2D |
 | **── Hybrid CNN-Transformer ──** |||
 | **FastViT** — Fast Hybrid CNN-ViT |||
-| `fastvit_t8` ⭐ | 4.0M | 2D |
-| `fastvit_t12` ⭐ | 6.8M | 2D |
-| `fastvit_s12` ⭐ | 8.8M | 2D |
-| `fastvit_sa12` ⭐ | 10.9M | 2D |
+| `fastvit_t8` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 4.0M | 2D |
+| `fastvit_t12` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 6.8M | 2D |
+| `fastvit_s12` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 8.8M | 2D |
+| `fastvit_sa12` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 10.9M | 2D |
 | **CAFormer** — MetaFormer with Attention |||
-| `caformer_s18` ⭐ | 26.3M | 2D |
-| `caformer_s36` ⭐ | 39.2M | 2D |
-| `caformer_m36` ⭐ | 56.9M | 2D |
-| `poolformer_s12` ⭐ | 11.9M | 2D |
+| `caformer_s18` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 26.3M | 2D |
+| `caformer_s36` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 39.2M | 2D |
+| `caformer_m36` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 56.9M | 2D |
+| `poolformer_s12` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 11.9M | 2D |
 | **EfficientViT** — Memory-Efficient ViT |||
-| `efficientvit_m1` ⭐ | 2.6M | 2D |
-| `efficientvit_b1` ⭐ | 7.5M | 2D |
-| `efficientvit_b2` ⭐ | 21.8M | 2D |
-| `efficientvit_l2` ⭐ | 60.5M | 2D |
+| `efficientvit_m1` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 2.6M | 2D |
+| `efficientvit_b1` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 7.5M | 2D |
+| `efficientvit_b2` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 21.8M | 2D |
+| `efficientvit_l2` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 60.5M | 2D |
 | **── State Space Models ──** |||
 | **Mamba** — State Space Model |||
 | `mamba_1d` | 3.4M | 1D |
@@ -587,24 +503,29 @@ table above when selecting a model.
 | `wavenet` | 4.0M | 1D |
 | `wavenet_large` | 15M | 1D |
 | **ResNet3D** — 3D Residual Network |||
-| `resnet3d_18` ⭐ | 33.2M | 3D |
-| `mc3_18` ⭐ — Mixed Convolution 3D | 11.5M | 3D |
+| `resnet3d_18` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> | 33.2M | 3D |
+| `mc3_18` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> — Mixed Convolution 3D | 11.5M | 3D |
 | **U-Net** — U-shaped Network |||
 | `unet_regression` | 31.0M | 1D/2D/3D |
-| `unet_field` 🗺️ | ~31.0M | 2D |
+| `unet_field` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/grid.svg" width="16" height="16" align="absmiddle" alt=""> | ~31.0M | 2D |
 | **InversionNet** — Skip-Free 2D Encoder-Decoder |||
-| `inversionnet` 🗺️ | ~17.3M | 2D |
-| `inversionnet_resize` 🗺️ | ~16.1M | 2D |
+| `inversionnet` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/grid.svg" width="16" height="16" align="absmiddle" alt=""> | ~17.3M | 2D |
+| `inversionnet_resize` <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/grid.svg" width="16" height="16" align="absmiddle" alt=""> | ~16.1M | 2D |
 
 
-⭐ = **Pretrained weights available** (ImageNet-1K for 2D models, Kinetics-400 for 3D ResNet3D/MC3; recommended for smaller datasets). Weights are downloaded automatically on first use.
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> = **Pretrained weights available** (ImageNet-1K for 2D models, Kinetics-400 for 3D ResNet3D/MC3; recommended for smaller datasets). Weights are downloaded automatically on first use.
 
-🗺️ = **Dense 2D field output**. Unmarked models produce regression vectors.
+<img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/grid.svg" width="16" height="16" align="absmiddle" alt=""> = **Dense 2D field output**. Unmarked models produce regression vectors.
 
 - **Cache location**: `~/.cache/torch/hub/checkpoints/` (or `./.torch_cache/` on HPC if home is not writable)
-- **Use pretrained weights**: Pass `--pretrained` (default: train from scratch). Effective for all models marked with ⭐ above.
+- **Use pretrained weights**: Pass `--pretrained` (default: train from scratch). Effective for all models marked with <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/star.svg" width="16" height="16" align="absmiddle" alt=""> above.
 
-**💡 HPC Users**: If compute nodes block internet, pre-download weights on the login node:
+</details>
+
+<details>
+<summary><b>HPC Offline Pretrained-Weight Download Script</b></summary>
+
+If compute nodes block internet, run once on a login node to pre-download all TorchVision and `timm` weights:
 
 ```bash
 # Run once on login node (with internet) — downloads ALL pretrained weights
@@ -620,29 +541,29 @@ from torchvision.models import video as v
 
 # === TorchVision + Video Models — download only, no model instantiation ===
 urls = [
-    ('ResNet18',         m.ResNet18_Weights.IMAGENET1K_V1.url),
-    ('ResNet50',         m.ResNet50_Weights.IMAGENET1K_V1.url),
-    ('EfficientNet_B0',  m.EfficientNet_B0_Weights.IMAGENET1K_V1.url),
-    ('EfficientNet_B2',  m.EfficientNet_B2_Weights.IMAGENET1K_V1.url),
-    ('EfficientNet_B4',  m.EfficientNet_B4_Weights.IMAGENET1K_V1.url),
-    ('EfficientNet_B7',  m.EfficientNet_B7_Weights.IMAGENET1K_V1.url),
-    ('EfficientNetV2_S', m.EfficientNet_V2_S_Weights.IMAGENET1K_V1.url),
-    ('EfficientNetV2_M', m.EfficientNet_V2_M_Weights.IMAGENET1K_V1.url),
-    ('EfficientNetV2_L', m.EfficientNet_V2_L_Weights.IMAGENET1K_V1.url),
-    ('MobileNetV3_S',    m.MobileNet_V3_Small_Weights.IMAGENET1K_V1.url),
-    ('MobileNetV3_L',    m.MobileNet_V3_Large_Weights.IMAGENET1K_V1.url),
-    ('RegNet_Y_400MF',   m.RegNet_Y_400MF_Weights.IMAGENET1K_V1.url),
-    ('RegNet_Y_800MF',   m.RegNet_Y_800MF_Weights.IMAGENET1K_V1.url),
-    ('RegNet_Y_1_6GF',   m.RegNet_Y_1_6GF_Weights.IMAGENET1K_V1.url),
-    ('RegNet_Y_3_2GF',   m.RegNet_Y_3_2GF_Weights.IMAGENET1K_V1.url),
-    ('RegNet_Y_8GF',     m.RegNet_Y_8GF_Weights.IMAGENET1K_V1.url),
-    ('Swin_T',           m.Swin_T_Weights.IMAGENET1K_V1.url),
-    ('Swin_S',           m.Swin_S_Weights.IMAGENET1K_V1.url),
-    ('Swin_B',           m.Swin_B_Weights.IMAGENET1K_V1.url),
-    ('ConvNeXt_Tiny',    m.ConvNeXt_Tiny_Weights.IMAGENET1K_V1.url),
-    ('DenseNet121',      m.DenseNet121_Weights.IMAGENET1K_V1.url),
-    ('R3D_18',           v.R3D_18_Weights.KINETICS400_V1.url),
-    ('MC3_18',           v.MC3_18_Weights.KINETICS400_V1.url),
+    ('ResNet18',         m.ResNet18_Weights.DEFAULT.url),
+    ('ResNet50',         m.ResNet50_Weights.DEFAULT.url),
+    ('EfficientNet_B0',  m.EfficientNet_B0_Weights.DEFAULT.url),
+    ('EfficientNet_B2',  m.EfficientNet_B2_Weights.DEFAULT.url),
+    ('EfficientNet_B4',  m.EfficientNet_B4_Weights.DEFAULT.url),
+    ('EfficientNet_B7',  m.EfficientNet_B7_Weights.DEFAULT.url),
+    ('EfficientNetV2_S', m.EfficientNet_V2_S_Weights.DEFAULT.url),
+    ('EfficientNetV2_M', m.EfficientNet_V2_M_Weights.DEFAULT.url),
+    ('EfficientNetV2_L', m.EfficientNet_V2_L_Weights.DEFAULT.url),
+    ('MobileNetV3_S',    m.MobileNet_V3_Small_Weights.DEFAULT.url),
+    ('MobileNetV3_L',    m.MobileNet_V3_Large_Weights.DEFAULT.url),
+    ('RegNet_Y_400MF',   m.RegNet_Y_400MF_Weights.DEFAULT.url),
+    ('RegNet_Y_800MF',   m.RegNet_Y_800MF_Weights.DEFAULT.url),
+    ('RegNet_Y_1_6GF',   m.RegNet_Y_1_6GF_Weights.DEFAULT.url),
+    ('RegNet_Y_3_2GF',   m.RegNet_Y_3_2GF_Weights.DEFAULT.url),
+    ('RegNet_Y_8GF',     m.RegNet_Y_8GF_Weights.DEFAULT.url),
+    ('Swin_T',           m.Swin_T_Weights.DEFAULT.url),
+    ('Swin_S',           m.Swin_S_Weights.DEFAULT.url),
+    ('Swin_B',           m.Swin_B_Weights.DEFAULT.url),
+    ('ConvNeXt_Tiny',    m.ConvNeXt_Tiny_Weights.DEFAULT.url),
+    ('DenseNet121',      m.DenseNet121_Weights.DEFAULT.url),
+    ('R3D_18',           v.R3D_18_Weights.DEFAULT.url),
+    ('MC3_18',           v.MC3_18_Weights.DEFAULT.url),
 ]
 cache = os.path.join(os.environ['TORCH_HOME'], 'hub', 'checkpoints')
 os.makedirs(cache, exist_ok=True)
@@ -769,9 +690,8 @@ WaveDL automatically enables performance optimizations for modern GPUs:
 
 </details>
 
-<a id="loss-functions"></a>
 <details>
-<summary><b>Loss Functions</b></summary>
+<summary><a id="loss-functions"></a><b>Loss Functions</b></summary>
 
 | Loss | Flag | Best For | Notes |
 |------|------|----------|-------|
@@ -797,9 +717,8 @@ wavedl-train --model unet_field --loss weighted_mse --loss_weights "2.0,1.0" \
 
 </details>
 
-<a id="optimizers"></a>
 <details>
-<summary><b>Optimizers</b></summary>
+<summary><a id="optimizers"></a><b>Optimizers</b></summary>
 
 | Optimizer | Flag | Best For | Key Parameters |
 |-----------|------|----------|----------------|
@@ -821,9 +740,8 @@ wavedl-train --model cnn --optimizer radam --lr 1e-3
 
 </details>
 
-<a id="learning-rate-schedulers"></a>
 <details>
-<summary><b>Learning Rate Schedulers</b></summary>
+<summary><a id="learning-rate-schedulers"></a><b>Learning Rate Schedulers</b></summary>
 
 | Scheduler | Flag | Best For | Key Parameters |
 |-----------|------|----------|----------------|
@@ -933,9 +851,8 @@ seed: 2025
 
 </details>
 
-<a id="physical-constraints"></a>
 <details>
-<summary><b>Physical Constraints</b> — Enforce Physics During Training</summary>
+<summary><a id="physical-constraints"></a><b>Physical Constraints</b> — Enforce Physics During Training</summary>
 
 Add penalty terms to the loss function to enforce physical laws:
 
@@ -1031,8 +948,6 @@ def constraint(pred, inputs=None):
 
 </details>
 
-
-
 <details>
 <summary><b>Hyperparameter Search (HPO)</b></summary>
 
@@ -1109,8 +1024,8 @@ wavedl-train --data_path train.npz --model cnn --lr 3.2e-4 --batch_size 128 ...
 
 | Mode | Flag | Pruning | GPU Memory | Best For |
 |------|------|---------|------------|----------|
-| Subprocess (default) | — | ❌ No | Isolated | Multi-GPU parallel trials |
-| In-process | `--inprocess` | ✅ Yes | Shared | Single-GPU with early stopping |
+| Subprocess (default) | — | <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/x.svg" width="16" height="16" align="absmiddle" alt=""> No | Isolated | Multi-GPU parallel trials |
+| In-process | `--inprocess` | <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/check.svg" width="16" height="16" align="absmiddle" alt=""> Yes | Shared | Single-GPU with early stopping |
 
 > [!TIP]
 > Use `--inprocess` when running single-GPU trials. It enables MedianPruner to stop unpromising trials early, reducing total search time.
@@ -1121,7 +1036,9 @@ wavedl-train --data_path train.npz --model cnn --lr 3.2e-4 --batch_size 128 ...
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `--data_path` | (required) | Training data file |
+| `--data_path` | (required) | Training data file or shard manifest |
+| `--input_channels` | `None` | Explicit input channel count for multi-channel arrays |
+| `--single_channel` | `False` | Confirm 4D array data is a single-channel 3D volume `(N, D, H, W)` |
 | `--models` | Target-aware | Compatible models to search (specify any number) |
 | `--n_trials` | `50` | Number of trials to run |
 | `--quick` | `False` | Quick mode: minimal search space |
@@ -1131,7 +1048,8 @@ wavedl-train --data_path train.npz --model cnn --lr 3.2e-4 --batch_size 128 ...
 | `--schedulers` | all 8 | Schedulers to search |
 | `--losses` | 5 unweighted | Losses to search (pass `--losses` to include `weighted_mse`) |
 | `--batch_sizes` | Target-aware | Batch sizes to search |
-| `--n_jobs` | `-1` | Parallel trials (-1 = auto-detect GPUs) |
+| `--precision` | auto | Mixed precision mode (`bf16`, `fp16`, `no`) |
+| `--n_jobs` | `-1` | Parallel trials (`-1` = auto-detect GPUs; capped to visible GPUs) |
 | `--max_epochs` | `50` | Max epochs per trial |
 | `--output` | `hpo_results.json` | Output file |
 
@@ -1142,7 +1060,7 @@ wavedl-train --data_path train.npz --model cnn --lr 3.2e-4 --batch_size 128 ...
 
 ---
 
-## 📈 Data Preparation
+## <a id="-data-preparation"></a><img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/database.svg" width="24" height="24" align="absmiddle" alt=""> Data Preparation
 
 WaveDL supports multiple data formats for training and inference:
 
@@ -1178,8 +1096,9 @@ WaveDL supports multiple data formats for training and inference:
 > Legacy MAT v5/v7 files are also supported automatically via `scipy.io.loadmat` (loaded into host memory).
 
 <details>
-<summary><b>Example: Basic Preparation</b></summary>
+<summary><b>Data Preparation &amp; Validation Examples</b></summary>
 
+**Basic NPZ Preparation**
 ```python
 import numpy as np
 
@@ -1189,72 +1108,41 @@ y = np.array(labels, dtype=np.float32)  # (N, T)
 np.savez('train_data.npz', input_train=X, output_train=y)
 ```
 
-</details>
-
-<details>
-<summary><b>Example: From Image Files + CSV</b></summary>
-
+**From Image Files + CSV**
 ```python
 import numpy as np
 from PIL import Image
 from pathlib import Path
 import pandas as pd
 
-# Load images
 images = [np.array(Image.open(f).convert('L'), dtype=np.float32)
           for f in sorted(Path("images/").glob("*.png"))]
 X = np.stack(images)
-
-# Load labels
 y = pd.read_csv("labels.csv").values.astype(np.float32)
 
 np.savez('train_data.npz', input_train=X, output_train=y)
 ```
 
-</details>
-
-<details>
-<summary><b>Example: From MATLAB (.mat)</b></summary>
-
+**From MATLAB (`.mat`)**
 ```python
 import numpy as np
 from scipy.io import loadmat
 
 data = loadmat('simulation_data.mat')
-X = data['spectrograms'].astype(np.float32)  # Adjust key
+X = data['spectrograms'].astype(np.float32)
 y = data['parameters'].astype(np.float32)
-
-# Transpose if needed: (H, W, N) → (N, H, W)
 if X.ndim == 3 and X.shape[2] < X.shape[0]:
     X = np.transpose(X, (2, 0, 1))
 
 np.savez('train_data.npz', input_train=X, output_train=y)
 ```
 
-</details>
-
-<details>
-<summary><b>Example: Synthetic Test Data</b></summary>
-
-```python
-import numpy as np
-
-X = np.random.randn(1000, 256, 256).astype(np.float32)
-y = np.random.randn(1000, 5).astype(np.float32)
-
-np.savez('test_data.npz', input_test=X, output_test=y)
-```
-
-</details>
-
-<details>
-<summary><b>Validation Script</b></summary>
-
+**Quick Validation Script**
 ```python
 import numpy as np
 
 data = np.load('train_data.npz')
-assert data['input_train'].ndim >= 2, "Input must be at least 2D: (N, ...) "
+assert data['input_train'].ndim >= 2, "Input must be at least 2D: (N, ...)"
 assert data['output_train'].ndim in (1, 2, 3, 4), \
     "Output must be (N,), (N,T), (N,H,W), or (N,C,H,W)"
 assert len(data['input_train']) == len(data['output_train']), "Sample mismatch"
@@ -1268,7 +1156,7 @@ print(f"✓ Output: {data['output_train'].shape} {data['output_train'].dtype}")
 
 ---
 
-## 📦 Examples [![Try it on Colab](https://img.shields.io/badge/Try_it_on_Colab-8E44AD?style=plastic&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/ductho-le/WaveDL/blob/main/notebooks/demo.ipynb)
+## <a id="examples"></a><img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/terminal.svg" width="24" height="24" align="absmiddle" alt=""> Examples [![Try it on Colab](https://img.shields.io/badge/Try_it_on_Colab-8E44AD?style=plastic&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/ductho-le/WaveDL/blob/main/notebooks/demo.ipynb)
 
 The `examples/` folder contains a **complete, ready-to-run example** for **material characterization of isotropic plates**. The pre-trained MobileNetV3 predicts three physical parameters from Lamb wave dispersion curves:
 
@@ -1294,13 +1182,17 @@ The `examples/` folder contains a **complete, ready-to-run example** for **mater
 # Run inference on the example data
 wavedl-test --checkpoint ./examples/elasticity_prediction/best_checkpoint \
   --data_path ./examples/elasticity_prediction/Test_data_100.mat \
-  --plot --save_predictions --output_dir ./examples/elasticity_prediction/test_results
+  --plot --save_predictions \
+  --output_dir ./examples/elasticity_prediction/test_results
 
 # Export to ONNX (already included as model.onnx)
 wavedl-test --checkpoint ./examples/elasticity_prediction/best_checkpoint \
   --data_path ./examples/elasticity_prediction/Test_data_100.mat \
   --export onnx --export_path ./examples/elasticity_prediction/model.onnx
 ```
+
+<details>
+<summary><b>View Included Files, Training Curve &amp; All 10 Diagnostic Plots</b></summary>
 
 **What's Included:**
 
@@ -1374,13 +1266,27 @@ wavedl-test --checkpoint ./examples/elasticity_prediction/best_checkpoint \
   <em>Figure 10: Error distribution summary (median, quartiles, outliers)</em>
 </p>
 
+</details>
+
+### <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/seismic.svg" width="20" height="20" align="absmiddle" alt=""> OpenFWI Style-A: 2D Subsurface Velocity-Map Regression
+
+For dense 2D property-map reconstruction with decoupled input/output grids and shard manifests, see [`examples/openfwi_style_a/`](https://github.com/ductho-le/WaveDL/blob/main/examples/openfwi_style_a/README.md). It trains a multi-shot U-Net (`unet_fwi.py`, loaded via `--import`) on 60,000 five-shot seismic gathers `(5, 1000, 70)` to predict 70×70 velocity maps `(1, 70, 70)` in `[1500, 4500]` m/s, and includes manifest generation, OpenFWI-normalized MAE/RMSE/SSIM scoring, and sample visualization scripts.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/examples/openfwi_style_a/sample_prediction.png" alt="OpenFWI Style-A 2D velocity reconstruction" width="800"><br>
+  <em>Held-out OpenFWI Style-A test sample: (a) gained seismic shot gathers (S1, S3, S5), (b) ground-truth velocity map, (c) WaveDL U-Net prediction, and (d) signed error map</em>
+</p>
+
 ---
 
-## 🔬 Broader Applications
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/compass.svg" width="24" height="24" align="absmiddle" alt=""> Broader Applications
+
+<details>
+<summary><b>View Broader Applications (NDE/SHM, Geophysics, Biomedical Ultrasound)</b></summary>
 
 Beyond the material characterization example above, the WaveDL pipeline can be adapted for a wide range of **wave-based inverse problems** across multiple domains:
 
-### 🏗️ Non-Destructive Evaluation & Structural Health Monitoring
+### <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/ultrasonic.svg" width="20" height="20" align="absmiddle" alt=""> Non-Destructive Evaluation & Structural Health Monitoring
 
 | Application | Input | Output |
 |-------------|-------|--------|
@@ -1390,7 +1296,7 @@ Beyond the material characterization example above, the WaveDL pipeline can be a
 | RUL Prediction | Acoustic emission (AE), vibration spectra, ... | Cycles to failure, ... |
 | Damage Localization | Wavefield images, DAS/DVS data, ... | Damage coordinates (x, y, z) |
 
-### 🌍 Geophysics & Seismology
+### <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/globe.svg" width="20" height="20" align="absmiddle" alt=""> Geophysics & Seismology
 
 | Application | Input | Output |
 |-------------|-------|--------|
@@ -1399,7 +1305,7 @@ Beyond the material characterization example above, the WaveDL pipeline can be a
 | Earthquake Source Parameters | Waveforms, spectrograms, ... | Magnitude, depth, focal mechanism, ... |
 | Reservoir Characterization | Reflection seismic, AVO attributes, ... | Porosity, fluid saturation, ... |
 
-### 🩺 Biomedical Ultrasound & Elastography
+### <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/pulse.svg" width="20" height="20" align="absmiddle" alt=""> Biomedical Ultrasound & Elastography
 
 | Application | Input | Output |
 |-------------|-------|--------|
@@ -1409,11 +1315,13 @@ Beyond the material characterization example above, the WaveDL pipeline can be a
 | Bone QUS | Axial-transmission signals, ... | Porosity, cortical thickness, elastic modulus ... |
 
 > [!NOTE]
-> Adapting WaveDL to these applications requires preparing your own dataset and choosing a suitable model architecture to match your input and target dimensionality. Dense maps use supervised `unet_field`, `inversionnet`, or `inversionnet_resize` training as described above; conventional FWI still requires an external wave solver and data-misfit optimization loop.
+> Adapting WaveDL to these applications requires preparing your own dataset and choosing a suitable model architecture to match your input and target dimensionality. Dense maps use supervised `unet_field`, `inversionnet`, or `inversionnet_resize` training; conventional FWI still requires an external wave solver and data-misfit optimization loop.
+
+</details>
 
 ---
 
-## 📚 Documentation
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/book-open.svg" width="24" height="24" align="absmiddle" alt=""> Documentation
 
 | Resource | Description |
 |----------|-------------|
@@ -1422,7 +1330,7 @@ Beyond the material characterization example above, the WaveDL pipeline can be a
 
 ---
 
-## 📜 Citation
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/quote.svg" width="24" height="24" align="absmiddle" alt=""> Citation
 
 If you use WaveDL in your research, please cite our published paper:
 
@@ -1442,7 +1350,8 @@ If you use WaveDL in your research, please cite our published paper:
 Or in APA format:
 > Le, D., Phan, H., Sacchi, M. D., & Le, L. H. (2026). WaveDL: A scalable deep learning framework for wave-based inverse problems. *Computer Physics Communications*, 329, 110400. https://doi.org/10.1016/j.cpc.2026.110400
 
-Please also consider to cite other related papers:
+<details>
+<summary><b>Related Paper (SPIE 2026 — Elasticity Prediction Example)</b></summary>
 
 ```bibtex
 @inproceedings{le2026lightweight,
@@ -1461,9 +1370,11 @@ Please also consider to cite other related papers:
 Or in APA format:
 > Le, D., Sacchi, M. D., Zhang, X., Ta, D., Lou, E., & Le, L. H. (2026). A lightweight deep learning model for ultrasonic assessment of plate thickness and elasticity. *Proc. SPIE 13951, Health Monitoring of Structural and Biological Systems XX*, 1395106. https://doi.org/10.1117/12.3090206
 
+</details>
+
 ---
 
-## 🙏 Acknowledgments
+## <img src="https://raw.githubusercontent.com/ductho-le/WaveDL/main/logos/icons/award.svg" width="24" height="24" align="absmiddle" alt=""> Acknowledgments
 
 Ductho Le would like to acknowledge [NSERC](https://www.nserc-crsng.gc.ca/) and [Alberta Innovates](https://albertainnovates.ca/) for supporting his study and research by means of a research assistantship and a graduate doctoral fellowship.
 
@@ -1496,7 +1407,5 @@ The development of WaveDL v2 is supported by the [National Foundation for Scienc
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--3073--1416-a6ce39?style=plastic&logo=orcid&logoColor=white)](https://orcid.org/0000-0002-3073-1416)
 [![Google Scholar](https://img.shields.io/badge/Google_Scholar-4285F4?style=plastic&logo=google-scholar&logoColor=white)](https://scholar.google.ca/citations?user=OlwMr9AAAAAJ)
 [![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=plastic&logo=researchgate&logoColor=white)](https://www.researchgate.net/profile/Ductho-Le)
-
-<sub>May your signals be strong and your attenuation low 👋</sub>
 
 </div>

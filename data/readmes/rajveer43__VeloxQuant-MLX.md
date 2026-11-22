@@ -22,8 +22,8 @@
        "badge/tests-<n>%20passing-" and "badge/changelog-<version>-" patterns.
        Keep both in badge form — converting either to a text link silently
        disables that sync. -->
-  <img src="https://img.shields.io/badge/tests-5525%20passing-22c55e?style=flat-square" alt="Tests"/>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-0.95.4-64748b?style=flat-square" alt="Changelog"/></a>
+  <img src="https://img.shields.io/badge/tests-5955%20passing-22c55e?style=flat-square" alt="Tests"/>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-0.96.0-64748b?style=flat-square" alt="Changelog"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="License"/></a>
   <a href="https://doi.org/10.5281/zenodo.20647294"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20647294-1f6feb?style=flat-square" alt="DOI"/></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-1f6feb?style=flat-square" alt="Security policy"/></a>
@@ -39,6 +39,7 @@
   <a href="https://veloxquant.dev/docs/getting-started/quickstart">Quickstart</a> ·
   <a href="https://veloxquant.dev/docs/algorithms/overview">All 43 methods</a> ·
   <a href="https://veloxquant.dev/playground.html">Playground</a> ·
+  <a href="https://ai.miraheze.org/wiki/VeloxQuant-MLX">Wiki</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
@@ -374,6 +375,7 @@ from the README rather than only from the file tree.
 | **Code of conduct** | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
 | **Contributing** | [CONTRIBUTING.md](CONTRIBUTING.md) — open an issue before anything beyond a small bugfix |
 | **Citations & provenance** | [CITATIONS.md](CITATIONS.md) — every method traced to its paper, with deviations documented |
+| **Wiki article** | [Learn AI wiki (Miraheze)](https://ai.miraheze.org/wiki/VeloxQuant-MLX) — an independent, third-party encyclopedia-style article. It is community-editable, so the figures in this README and `CITATIONS.md` remain the source of truth |
 | **Release process** | Weekly (Sundays, 10:00 IST), automated via [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release); every release is gated on the full test suite. See [CHANGELOG.md](CHANGELOG.md) |
 
 **Maintainership:** I maintain this project ([rajveer43](https://github.com/rajveer43))

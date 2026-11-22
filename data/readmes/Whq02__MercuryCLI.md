@@ -69,7 +69,7 @@ The install addresses keep approximate script-request counts by source and UTC d
 ## What is inside
 
 - **22 model providers, `/llmhost` and `/localsetup`:** keep all 22 providers signed in at once (OpenAI, Anthropic, Google, DeepSeek, Moonshot, Z.AI, OpenRouter, Hugging Face, xAI, Meta, Mistral, Nous Portal, OpenCode Zen, Qwen, MiniMax, Together AI, Cohere, Groq, Cerebras, Fireworks AI, Melious AI, OrcaRouter, or your own local/hosted weights) and switch models mid-chat; new sessions default to your most recently connected provider. Rent or host weights with `/llmhost` and `mercury host` ([docs/LLM-HOST.md](docs/LLM-HOST.md)), run a local model on TensorFold with `/tensorfold` ([docs/TENSORFOLD.md](docs/TENSORFOLD.md)), connect Ollama, LM Studio, vLLM or llama.cpp with `/localsetup` ([docs/LOCAL-SETUP.md](docs/LOCAL-SETUP.md)), and see [docs/ENGINES.md](docs/ENGINES.md) for sign-ins and routing.
-- **The daily loop, Session Concourse and crewmates:** interactive launches open the home screen (New Session, Continue Last Session once session history exists, Boot Menu, MCPs & Skills, Agents, Health Check, Saturn Scheduler, Logins, Session Concourse, Sessions · Projects); run parallel sessions on `/concourse` and delegate to cross-provider crewmates (`Crewmate`) in isolated `git worktree` checkouts with project file leases ([docs/SESSIONS.md](docs/SESSIONS.md), [docs/CREW.md](docs/CREW.md)).
+- **The daily loop, Session Concourse and crewmates:** interactive launches open the home screen (New Session, Continue Last Session once session history exists, Logins/Keys, Session Manager (Concourse), and Boot Menu, which holds MCPs & Skills and Agents for the next session; use `/health`, `/saturn`, and `/sessions` inside a chat); run parallel sessions on `/concourse` and delegate to cross-provider crewmates (`Crewmate`) in isolated `git worktree` checkouts with project file leases ([docs/SESSIONS.md](docs/SESSIONS.md), [docs/CREW.md](docs/CREW.md)).
 - **Headless CLI and JSON-RPC runner:** run one-shot prompts with `mercury run "<prompt>"` (`--format text|json|rows`, `--input rows`, `--partial`), or host multi-turn sessions over stdio with `mercury runner` and the TypeScript and Python SDKs ([docs/AUTOMATION.md](docs/AUTOMATION.md), [sdk/](sdk/), [sdk-py/](sdk-py/)).
 - **Mneme hybrid RAG project memory:** on-device 118 MB BGE semantic embeddings (`bge-base-en-v1.5`, bundled in every release archive, built for its platform) fused with BM25 word ranking, citation tracking, verbatim pinned rules, contradiction checks, session handoff notes, and the `/memory page` browser graph ([docs/MNEME.md](docs/MNEME.md), [docs/MEMORY-FINDINGS.md](docs/MEMORY-FINDINGS.md)).
 - **LSP, 57-language AST, DAP debugger and `Eval` cells:** anchored multi-file edits ([docs/CHANGE-TRANSACTIONS.md](docs/CHANGE-TRANSACTIONS.md)), LSP navigation and previewed refactors ([docs/LANGUAGE-SERVICE.md](docs/LANGUAGE-SERVICE.md)), 57-language tree-sitter search and rewrites ([docs/STRUCTURAL-PATTERNS.md](docs/STRUCTURAL-PATTERNS.md)), Debug Adapter Protocol stepping for failing Python, JS/TS, Go and Rust tests ([docs/DEBUGGER.md](docs/DEBUGGER.md)), and persistent Python and JavaScript code cells with browser samples ([docs/EVAL.md](docs/EVAL.md), [docs/SAMPLES.md](docs/SAMPLES.md)).
@@ -86,8 +86,8 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 | --- | --- |
 | current work | `/run` `/runs` `/workbench` `/diff` `/mission` (/goal) |
 | crew & delegation | `/agents` `/crewmates` `/crew` `/swarm` `/swarmchat` `/general` `/team` `/whisper` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
-| session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/realms` `/restart` |
-| memory & goals | `/memory` `/console` |
+| session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/restart` |
+| memory & goals | `/memory` |
 | model & effort | `/model` `/effort` `/submodels` `/advise` `/caching` `/tensorfold` |
 | git & review | `/review` `/audit` |
 | health & introspection | `/health` `/verify` `/trace` `/capabilities` `/lsp` |
@@ -99,13 +99,13 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 | --- | --- |
 | `/imagesetup` | Set up local image and video models. |
 | `/llmhost` | Choose a model to rent on Runpod, Vast.ai, Lambda, Hugging Face Inference Endpoints, Hyperstack, Verda or DigitalOcean, run on your own computer, or connect an existing server. |
-| `/tensorfold` | Run a local model on TensorFold: install the engine, pull a model, serve it on this Mac, share it on your network or rent a GPU for it, and switch to it, all on one screen. |
+| `/tensorfold` | Run a local model on TensorFold: install the engine, pull a model, serve it on your computer, share it on your network or rent a GPU for it, and switch to it, all on one screen. |
 | `/restart` | Move this chat to the installed Mercury build; running watches and background shells stop. |
 | `/mcp` | Inspect servers, sign in, browse each server’s tools and parameters, reconnect, or toggle a server for this chat. |
 
 ## Author
 
-Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 56 public releases, 586,000 lines of TypeScript and 4,700 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
+Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 57 public releases. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
 
 ## Reporting a problem
 

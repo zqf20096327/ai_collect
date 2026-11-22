@@ -10,7 +10,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ysunyang4/webagent"><img src="https://img.shields.io/badge/Version-2.0.0-blue.svg?style=flat-square" alt="Version 2.0.0"></a>
+  <b>English</b> | <a href="README.zh-CN.md"><b>简体中文</b></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ysunyang4/webagent"><img src="https://img.shields.io/badge/Version-2.0.1-blue.svg?style=flat-square" alt="Version 2.0.1"></a>
   <a href="https://developer.chrome.com/docs/extensions/mv3/"><img src="https://img.shields.io/badge/Manifest-V3-success.svg?style=flat-square" alt="Manifest V3"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=flat-square" alt="GPL-3.0 License"></a>
   <a href="https://blog.ycu.de5.net/"><img src="https://img.shields.io/badge/Blog-Official%20Tutorial-10B981.svg?style=flat-square" alt="Tutorial"></a>
@@ -65,16 +69,18 @@ WebAgent 2.0 is a complete architectural overhaul delivering unmatched stability
 - ✈️ **Telegram Community Channel**: [https://t.me/ysun_webai](https://t.me/ysun_webai)
 - 🐧 **QQ Community Group**: **1131916140**
 - 🐙 **GitHub Repository**: [https://github.com/ysunyang4/webagent](https://github.com/ysunyang4/webagent)
-- 📧 **Author Email**: [ysunyang4@gmail.com](mailto:ysunyang4@gmail.com)
+- ✉️ **Author & Commercial Inquiries**: `ysunyang4@gmail.com`
 
 ---
 
-## 4. Supported Web AI Platforms (14+ Adapted)
+## 4. Supported AI Platforms
 
-| Web AI Assistant | Target URL | Integration Features |
+WebAgent injects native, site-adaptive tool execution hooks into the following web assistants:
+
+| Platform | Web Domain | Special Capabilities |
 | :--- | :--- | :--- |
-| **DeepSeek** | `chat.deepseek.com` | Dedicated dark/light themes, reasoning block isolation, artifact stripping |
-| **ChatGPT** | `chatgpt.com` / `chat.openai.com` | ProseMirror DOM adaptation, multi-turn tool auto-fill |
+| **DeepSeek (V3 & R1)** | `chat.deepseek.com` | Thinking process preservation, automatic continuation on token overflow |
+| **OpenAI ChatGPT** | `chatgpt.com` / `chat.openai.com` | ProseMirror DOM adaptation, multi-turn tool auto-fill |
 | **Google Gemini** | `gemini.google.com` | Quill editor integration, multi-line recovery, autonomous execution |
 | **Google AI Studio** | `aistudio.google.com` | Chat Prompt / Freeform runner, stream interruption handling |
 | **Kimi (Moonshot)** | `kimi.ai` / `kimi.moonshot.cn` | Session auto-handover, long prompt resilience |
@@ -120,35 +126,60 @@ git clone https://github.com/ysunyang4/webagent.git
 
 ---
 
-## 7. 💖 Sponsor & Support
+## 7. ☕ Support & Sponsorship
 
-If **WebAgent 2.0** has enhanced your daily AI workflow or boosted your productivity, consider buying the author a coffee ☕!
+If **WebAgent** has enhanced your daily AI workflow or boosted your productivity, consider buying the author a coffee ☕! Donations are completely voluntary and do not grant any extra features, proprietary services, or priority support.
 
-Your generous support helps sustain continuous open-source maintenance, new web model adapters, and protocol enhancements.
+> 💼 **Enterprise Sponsorship & Commercial Licensing**  
+> For enterprise sponsorship, custom agent integrations, or commercial licensing inquiries (dual-licensing exempt from GPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/webagent/issues) or email: `ysunyang4@gmail.com`.
 
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
-        <img src="assets/wechat-pay.jpg" width="180" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
+        <img src="assets/wechat-pay.jpg" width="180" alt="WeChat Reward" style="border-radius: 12px;" /><br />
         <br />
-        <b>WeChat Pay (微信支付)</b>
+        <b>WeChat Reward</b><br />
+        <span style="font-size: 11px; color: #888;">Scan to support via WeChat</span>
       </td>
       <td align="center" width="220">
-        <img src="assets/alipay.jpg" width="180" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
+        <img src="assets/alipay.jpg" width="180" alt="Alipay Appreciation" style="border-radius: 12px;" /><br />
         <br />
-        <b>Alipay (支付宝)</b>
+        <b>Alipay Appreciation</b><br />
+        <span style="font-size: 11px; color: #888;">Scan to support via Alipay</span>
       </td>
-      <td align="center" width="220">
-        <img src="assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
+      <td align="center" width="240">
+        <img src="assets/binance-pay.jpg" width="180" alt="Crypto (USDT / USDC)" style="border-radius: 12px;" /><br />
         <br />
-        <b>Binance Pay (币安支付)</b><br />
+        <b>Crypto (USDT / USDC)</b><br />
         <code>UID: 1292741809</code><br />
-        <span style="font-size: 11px; color: #888;">Ryan Sunv · No Network Needed</span>
+        <span style="font-size: 11px; color: #888;">Binance Pay · Ryan Sunv</span>
       </td>
     </tr>
   </table>
 </div>
+
+### Official Payment Channels
+
+| Channel | Details | Verification Method |
+| :--- | :--- | :--- |
+| **Crypto (USDT / USDC)** | **UID: `1292741809`** · Name: **Ryan Sunv** | Direct internal transfer via Binance Pay |
+| **Crypto (USDT, on-chain)** | **Address: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · Network: **TRON (TRC-20)** | From any wallet or exchange — just select the **TRON (TRC-20)** network when sending |
+| **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
+| **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
+
+> ☕ **Every tip, big or small, means the world to me.** Your support helps me keep improving this project — making it more complete, more polished, and more powerful. Thank you for helping it grow.
+
+### Official Notice
+
+- **Unique Channel**: The UID, QR codes and on-chain address listed above are the **only** official donation channels for this project.
+- **No Private Solicitation**: The maintainers of this project will **never** contact you privately via email, messaging apps, or social media to solicit funds, donations, or account credentials.
+- **Anti-Impersonation & Reporting**: If you encounter any repository, fork, mirror, or distribution claiming to be this project with an inconsistent UID or modified QR code, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/webagent/issues).
+
+### Disclaimer
+
+- **Network & Regional Availability**: Crypto donations are subject to network handling and platform terms. Please verify whether Binance Pay is compliant and legally available in your region before transferring funds.
+- **Taxation & Compliance**: Donors are solely responsible for complying with the tax obligations and legal regulations of their local jurisdictions.
 
 ---
 

@@ -151,9 +151,9 @@ with **Sign in again** for the last.
 
 `hybro` listens on `127.0.0.1` by default. `--listen <address>` serves the app on
 another address, for example `hybro start -d --listen 0.0.0.0 --port 443`, with
-no other flag. The Panel needs the owner's sign-in on every listener, and a
-program needs a client token unless the owner turned that off. While
-the client token requirement is off on such a listener, `hybro` and
+no other flag. The Panel needs the owner's sign-in on every listener, and
+Client API and MCP requests need a client token unless the owner turned that
+off. While the client token requirement is off on such a listener, `hybro` and
 `hybro status` print a warning. MCP is served on every listener, under the same
 address rules as the API. Without HTTPS the sign-in cookie and password cross the
 network in the clear; the setup and sign-in pages warn when they are opened
@@ -213,6 +213,15 @@ need input.
   <img src="assets/screenshots/chat-input-request.png" alt="A chat waiting for the user's answer" width="800">
 </p>
 
+**Set check rules.** **Rules** in the sidebar holds your check rules. Each rule
+names one agent or any agent and answers Allow, Deny or Ask. Rules are read
+from the top: the first rule that is on and matches decides, and with no match
+the call is allowed. They are checked when a new agent call is about to be
+sent, in chats and for sessions that clients open alike. Deny refuses the
+call: a chat's model is told, and a session request ends `denied`. Ask holds
+the call until you approve or reject it, or until a client you allowed to
+answer does so in its own session.
+
 **Explore the network.** **Network** shows every registered agent and the
 subnets (teams) that group them. Use **Add agent** to register your own A2A
 agent, or **Create subnet** to group agents.
@@ -241,7 +250,10 @@ under **Access**, **Clients** (`/connect/clients`) and put it in place of
 tile shows whether MCP is reachable. Add the server manually to your client;
 Hybro does not automatically discover or register MCP clients. Sessions that
 clients open this way appear under **Inbox**, where you answer any question or
-approval an agent raises.
+approval an agent or a check rule raises. To let a client answer permission questions itself (a
+check rule's ask and an agent's own approval question, in its own sessions),
+turn on **Can answer** for it under **Access**, **Clients**: `check_session`
+then shows the question, and the client answers with `answer_question`.
 
 <p align="center">
   <img src="assets/screenshots/connect.png" alt="The Access page with the MCP address and client setup commands" width="800">
@@ -278,10 +290,11 @@ same from outside, and the work shows up in the app. The four moves below work
 right after install, because Echo Agent needs no model provider. They use the
 released install's address; from a checkout, use port 3100.
 
-**Create a client token.** A client is a program that sends work, and its
-token says which one is calling. Create one under **Access**, **Clients** in
-the app, or with `hybro client create --name my-script`. The token is shown
-once; keep it in a variable for the calls below:
+**Create a client token.** A client is an external app, assistant, or script
+that sends work, and its token says which one is calling. Create one under
+**Access**, **Clients** in the app, or with
+`hybro client create --name my-script`. The token is shown once; keep it in a
+variable for the calls below:
 
 ```bash
 export HYBRO_TOKEN='<token>'
@@ -326,14 +339,20 @@ curl --header "Authorization: Bearer $HYBRO_TOKEN" \
 
 `state` goes from `working` to `completed`, and `history` holds the agent's
 `reply`. The session also appears under **Inbox** in the app. When an agent
-needs your approval, `state` is `waiting_on_owner` and you answer it there.
+or a check rule needs your approval, `state` is `waiting_on_owner` and you
+answer it there. A
+client you allowed to answer permission questions (**Can answer** under
+**Access**, **Clients**) also gets the question in `question`, and answers it
+with `POST /api/v1/sessions/<session_id>/questions/<question_id>/answer` and
+`{"answer": "approve"}` or `{"answer": "refuse"}`.
 
 To continue a session, send again with its `session_id` and a new
 `client_request_id`. A session takes one message at a time: a send while an
 earlier one is still active returns `busy`.
 
 From an MCP client, the same loop is three tools: `discover_agents`,
-`send_message`, and `check_session`.
+`send_message`, and `check_session`, and a client with the grant answers with
+`answer_question`.
 
 A new install requires a client token on these calls: without one they are
 refused with 401 `client_token_required`. An install that already had data when
@@ -448,7 +467,7 @@ changes these for every install:
 - Sign-in is required on every install. The first visit after the upgrade
   needs the setup link that `hybro` prints, once; no data moves, and the new
   account keeps the chats, sessions and settings of the install.
-- Connected programs (MCP clients and scripts on the Client API) are refused
+- Connected clients (MCP clients and scripts on the Client API) are refused
   with 503 `no_account` until the account exists.
 - Clerk sign-in and the `?token=` query parameter on the event stream stop
   working; a Clerk token opens nothing. The Clerk settings are still accepted
@@ -530,7 +549,7 @@ port:
 - `backend/`: The FastAPI platform backend using MongoDB for persistence, plus the image entrypoint (`runtime_entrypoint.py`) that writes each service's configuration and starts the processes.
 - `frontend/`: A Next.js 16 application for chat, local agent discovery, agent management, and inspection.
 - `default_agents/`: Ready-to-use A2A agents, each running as a process in the container. The backend registers them at startup from `default_agents/agents.yaml`.
-- `MCP/`: An adapter exposing seven backend tools over Streamable HTTP at `/mcp`: four for listing and finding agents, and three for opening, checking, and closing sessions.
+- `MCP/`: An adapter exposing eight backend tools over Streamable HTTP at `/mcp`: four for listing and finding agents, three for opening, checking, and closing sessions, and one for answering a permission question.
 - `scripts/hybro`: The POSIX shell CLI that starts the container; `install.sh` installs it.
 
 For module boundaries, data flow, and streaming, see

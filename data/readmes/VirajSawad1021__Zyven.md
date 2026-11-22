@@ -91,6 +91,16 @@ truth is computed by the source library itself, and the raw records are in `eval
 | Model alone | 8192 tokens | 12 | **3/12** |
 | Model + compiled skill | 8192 tokens | 12 | **11/12** |
 
+**networkx with a small model** (`gemma-4-e4b-it`, Gemma 4 E4B on a free Kaggle GPU, same 24 tasks, 4096-token cap)
+
+| Condition | Total | Avg sec/task |
+|---|---|---|
+| Model alone | **22/24** | 77.8 |
+| Model + compiled skill | **24/24** | 12.9 |
+
+The small model answers most of these questions on its own, but slowly; with the verified skill it gets every one right
+and is about six times faster. Details in `eval/results/e4b-networkx-20261122.md`.
+
 At the 4096-token cap, 23 of 24 runs without the skill used up the budget working the answer out by hand and gave none,
 and all 5 misses with the skill were the same cap, not wrong tool results. Doubling the cap helps both conditions; the
 skill still adds the most (3/12 to 11/12). The second run is a smaller sample (12 questions per condition), so read
@@ -206,7 +216,7 @@ off until you switch it on, and none of it is used for any result in this README
 | Codex | `codex exec` headless, in Codex's own sandbox | live, on Windows |
 | OpenCode | `opencode run` headless, locked to its task folder | live, on Windows |
 | Qoder CLI | `qodercli -p` headless, built-in tools limited to read and edit, hub tools through a config file | live, on Windows (Qwen3.8-Flash; model host not verified) |
-| Claude Code | `claude -p` headless | unit tests only; not logged in on the dev machine |
+| Claude Code | `claude -p` headless | live, on Windows (2.1.327): wrote inside its task folder; its attempt to write outside was blocked |
 | Antigravity | `agy` print mode | experimental: no answer seen yet. It waited without output because the account's quota was exhausted (agy 1.5.11 retries silently; its log says so), so runs stop after 2 minutes of silence |
 
 The coding agents use whatever provider each program is signed in to (for example a ChatGPT account for Codex) or the
@@ -666,7 +676,7 @@ Next, planned but not done:
 Open work is tracked in [issues](https://github.com/VirajSawad1021/Zyven/issues), and
 [CONTRIBUTING.md](CONTRIBUTING.md) explains how to help.
 
-Known gaps in the optional extras: Claude Code and the GitHub connector have not been run against the real services;
+Known gaps in the optional extras: the GitHub connector has not been run against the real service;
 Antigravity has not answered yet, because the development account's quota was exhausted; Gmail and hosted Slack sign-in were not run
 against the real services; the Qoder CLI runtime was checked with a Qwen model whose host and exact weights are not
 verified; and everything was checked on Windows only. `LIMITATIONS.md` lists the trust assumptions.

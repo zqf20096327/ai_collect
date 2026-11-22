@@ -91,9 +91,8 @@ button for your platform, or grab the installer from the
 [**latest release**](https://github.com/OrellBuehler/kerf/releases/latest) — `.dmg`
 (macOS, Apple silicon + Intel), `.AppImage`/`.deb`/`.rpm` (Linux, x86_64 + arm64), or
 `.exe`/`.msi` (Windows). macOS and Linux builds expect a system FFmpeg on `PATH`; the
-Windows build bundles it. The macOS build is unsigned: on macOS 15 and later clear the
-quarantine flag once with `xattr -dr com.apple.quarantine /Applications/Kerf.app`
-(Windows SmartScreen asks once too — **More info → Run anyway**). Every installer
+Windows build bundles it. The macOS build is signed and notarized by Apple; the Windows
+build is not code-signed, so SmartScreen asks once — **More info → Run anyway**. Every installer
 carries a build-provenance attestation: `gh attestation verify <file> --repo OrellBuehler/kerf`.
 Once installed, Kerf updates itself from its own releases.
 
@@ -208,7 +207,7 @@ Now ask the agent to work on the project you have open — _"skim the interview 
 the dead air, and drop in captions."_ It will claim a task, use the tools below, and hand
 back a reviewable result.
 
-### The tools (207)
+### The tools (211)
 
 <details>
 <summary><b>See / analyze</b></summary>
@@ -233,7 +232,7 @@ one: cuts, titles, drops, markers) ·
 <details>
 <summary><b>Cut & arrange</b></summary>
 
-`cut_clip` · `add_clip_to_timeline` · `split_at` · `split_remove` · `split_remove_clips` · `trim` · `roll_edit` ·
+`cut_clip` · `add_clip_to_timeline` · `split_at` · `split_remove` · `split_remove_clips` · `split_all_tracks` (cut every track at one time) · `lift_range` (take a range off, leave the gap) · `extract_range` (take it off and close the gap) · `ripple_delete_gap` · `trim` · `roll_edit` ·
 `slip_clip` · `slide_clip` · `reorder` · `move_clip` ·
 `remove` · `ripple_delete` · `cut_clip_range` · `duplicate_clips` · `set_clip_enabled` ·
 `add_track` · `remove_track` · `set_track_duck` · `set_track_muted` · `set_track_solo` ·

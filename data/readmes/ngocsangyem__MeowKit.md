@@ -9,7 +9,7 @@
 
 <p align="center">
   <strong>AI agent toolkit for Claude Code, Codex, Cursor, Grok, Pi and OMP</strong><br>
-  127 skills &middot; 42 agents &middot; 6 rules &middot; 27 hook scripts
+  127 skills &middot; 42 agents &middot; 6 rules &middot; 28 hook scripts
 </p>
 
 <p align="center">
@@ -125,7 +125,7 @@ mewkit doctor     # Verify environment
 Besides the toolchain and the installs at each scope, `doctor` reports where
 MeowKit shares a host with something else, and when a check is installed but not
 doing its job. These rows are `ok` or `warn` and change no exit code, except
-`kit copies: unrecorded`, which fails; add `--json` for the same rows as
+`kit copies: unrecorded` and a lost rule in `rules: always-on`, which fail; add `--json` for the same rows as
 `{name, status, detail}`.
 
 | Row | Warns when |
@@ -138,6 +138,7 @@ doing its job. These rows are `ok` or `warn` and change no exit code, except
 | `kit copies: unrecorded` | **fails** when a copy of a kit skill or agent that no install here recorded sits under a second root an installed runtime reads, for example `.pi/skills/mk-cook` beside `.agents/skills/mk-cook`. It loads beside the installed one and no upgrade or uninstall removes it; delete what the row lists |
 | `checks: weakened` | an observer is toggled off in a config file, `MEOWKIT_HOOK_PROFILE=fast` or the Cursor kill switch is set in the environment, or a host setting (`disableAllHooks`, `allowManagedHooksOnly`, the Codex hooks feature) stops kit hooks from running. The privacy block and the ship check cannot be switched off by config at all |
 | `guards: integrity` | an installed guard file no longer matches the bytes recorded at install, or a hook registration names a file that is not there |
+| `rules: always-on` | **fails** when one of the six always-on rule files of a Claude Code tree, or a rule file another runtime's install recorded, is missing or holds only whitespace. Warns when the project's session marker log claims the safety baseline is verified but the rule files no longer match the digest the marker recorded, or the marker was written by an older hook that recorded no digest |
 
 The coexistence rows read names, sizes and hook executable names outside the
 project — never a file's body beyond its frontmatter, never an environment
@@ -189,12 +190,12 @@ meowkit/
 │   ├── agents/               42 specialist agents
 │   ├── skills/               127 skills (mk: namespace) — 126 ship; benchmark is maintainer-only
 │   ├── rules/                6 enforcement rules (always-on)
-│   ├── hooks/                27 hook scripts (dispatch, pre-ship, privacy-block, append-trace + 23 handlers) and their libraries
+│   ├── hooks/                28 hook scripts (dispatch, pre-ship, privacy-block, append-trace + 24 handlers) and their libraries
 │   ├── statusline.cjs
 │   └── settings.json
 ├── .meowkit/memory/          Team store: decisions.md + gotchas.md (committed)
 ├── crates/                   The mewkit CLI (Rust): mewkit-cli, mewkit-core, mewkit-adapters
-├── kit/overlays/             What one runtime needs and cannot be derived: codex, cursor, grok, pi, omp, shared
+├── kit/overlays/             What one runtime needs and cannot be derived: codex, cursor, grok, pi, omp, antigravity, shared
 ├── packages/
 │   ├── docs/                 Documentation site (docs.meowkit.dev, Fumadocs)
 │   └── landing/              Landing page (meowkit.dev, Nuxt + Tailwind v4)

@@ -50,7 +50,6 @@ OpenWebCode 是一个跑在浏览器里的 AI 编码工作台，界面中英双�
 - **界面与可访问性**：中英双语、浅色/深色、强调色、界面西文/CJK/代码字体、代码连字和 90–125% 文字缩放；布局与偏好按浏览器记忆。
 - **移动端与远程访问**：响应式适配手机/平板；非回环监听强制访问令牌（自动生成或 `OWC_ACCESS_TOKEN`），可选 TOTP 全局登录。
 - **`owc run` CLI**：Headless NDJSON 事件流，支持 CI 集成。
-- **dsh 兼容模式（实验，默认关闭）**：独立端口托管 dsh 官方 SPA，并加载 dsh 生态插件（Host 工具/钩子与 client UI 插件）。
 - **dsh 同步（默认关闭）**：官方扩展 `dsh-sync` 与 dsh 数据目录**双向手动**同步模型配置与会话（先预览差异、再逐项勾选；不写明文 Key、只在 dsh 侧新建会话不覆盖）。
 
 具体详见 [使用帮助](./help/usage.md) 和 [常见问题](./help/faq.md)。
@@ -137,23 +136,18 @@ owc run "给 main.ts 加个单元测试" --cwd . --json --yolo
 
 ## 性能与资源占用
 
-开发机实测（Windows x86-64，v1.7.6，5000 条消息基准数据集；基准脚本与验收标准在 [`scripts/bench/`](./scripts/bench/)）：
+v1.18.0 实测（Linux x86-64，5000 条消息会话）：
 
-| 组件 | 内存占用 | CPU（折合单核 95% 时间占用） | 关键指标 |
-|---|---|---|---|
-| server（Node 服务层） | 空闲约 74 MiB；载入 5000 消息大会话后稳态约 115 MiB | 低于 0.5% | 大会话冷载 24ms、历史分页 p50 0.6ms；上下文增量构建 p50 0.35ms（较全量构建 31× 加速）；agent 主循环每轮堆增量 0.9 MiB；事件分发 5800+ events/s；10 万文件索引查询 p50：符号约 15ms、文件约 21ms |
-| core（C 执行器） | 空闲约 9 MiB；10 万文件重负载扫描峰值约 15 MiB，结束即回落 | 低于 0.5% | 全仓索引扫描（10 万文件）约 33s 内完成且内存可控 |
-| 浏览器端 | 5000 消息会话满载堆约 93 MiB | - | 长列表滚动 p50 59.9 fps；输入回显 p50 26.5ms；持续滚动内存增长 0.1%（无泄漏）；聊天/工作台/分享页按需分包，首屏脚本 479 KB |
+- server：空闲约 140 MiB RSS；单个长会话堆增量约 5.6 MiB，16 会话约 86 MiB 堆 / 242 MiB RSS。
+- 浏览器：长会话堆约 37 MiB；滚动 59.9 fps，输入回显 30.2 ms，持续滚动增长 0.08%。
+- 大会话冷载 22 ms；上下文增量构建 0.73 ms（约为全量的 1/10）；多工具事件 8489/s。
 
-生产环境参考（v1.7.6，Debian 13 x86-64，常驻实测）：server 110 MiB + 扩展宿主 52 MiB + core 1.9 MiB（server 较 v1.5.0 的 135 MiB 下降约 19%），CPU 95% 时间占用低于 0.5%。
-
-> v1.12.1 起进一步优化大会话内存：agent 每轮此前把整份 `messages.jsonl` 解析两次（60 MB 会话单次约百 MB 级堆），现只加载「`/clear` 或压缩锚点之后」的活动段——实测同会话整表 +101 MB / 255 ms → 段 +27 MB / 133 ms；并在启动完成 / 每轮结束 / 空闲清扫三个时点触发 full GC，V8 空闲页及时归还。
+基准脚本与验收标准见 [`scripts/bench/`](./scripts/bench/)。
 
 ## 文档
 
 - [`help/usage.md`](./help/usage.md) — 使用帮助：启动、面板、快捷键、模型与成本、自定义扩展点模板
 - [`help/faq.md`](./help/faq.md) — 常见问题：模型接入、权限与沙盒、快照回滚、CLI 集成、故障排查
-- [`help/dsh-compat.md`](./help/dsh-compat.md) — dsh 兼容模式：开启方式、安装 dsh 插件、支持/不支持清单、可信边界与故障排查
 - [`help/dsh-sync.md`](./help/dsh-sync.md) — dsh 同步扩展：与 dsh 数据目录双向同步模型配置与会话、面板操作流、凭据处理与限制（英文 [`dsh-sync.en.md`](./help/dsh-sync.en.md)）
 - [`help/development.md`](./help/development.md) — 二次开发：仓库布局、三件套构建、测试约定、切入点、CI 与发布
 - [`packaging/README.md`](./packaging/README.md) — 打包流程、分发布局、安装脚本与发布流水线
@@ -161,13 +155,15 @@ owc run "给 main.ts 加个单元测试" --cwd . --json --yolo
 
 ## 从源码构建
 
-需要 Node.js ≥ 24.22.1、CMake ≥ 3.19、C11 编译器和 Python 3（core 协议测试用）。三层各自独立构建，仓库根目录没有 `package.json`：
+需要 Node.js ≥ 24.22.1、CMake ≥ 3.19、C11 编译器、Python 3（core 协议测试用）和 Git（拉取 `@snnh/llm-api` 依赖）。三层各自独立构建，仓库根目录没有 `package.json`：
 
 ```sh
 cmake -S core -B build && cmake --build build && ctest --test-dir build   # core（C 执行器）
 cd server && npm ci && npm run build && npm test                          # server（Node 服务层）
 cd web && npm ci && npm run build && npm test                             # web（产物由 server 静态托管）
 ```
+
+> server 的 `@snnh/llm-api` 以 git commit 固定；`npm ci` 会通过 Git 拉取该公开仓库，构建环境需安装 Git。
 
 ## 数据与配置
 

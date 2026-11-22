@@ -541,7 +541,7 @@ Lazy Predict helps build a lot of basic models without much code and helps under
 ### Articles
 
 - [Anthology of Modern Machine Learning](https://github.com/dmarx/anthology-of-modern-ml)
-- [Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure](https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881)
+- [Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure](https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881) <!--- comment -->
 - [ML Papers of The Week by DAIR.AI](https://github.com/dair-ai/ML-Papers-of-the-Week)
 - [word2vec Parameter Learning Explained](https://arxiv.org/pdf/1411.2738.pdf)
 - [Ilya 30u30](https://arc.net/folder/D0472A20-9C20-4D3F-B145-D2865C0A9FEE)
@@ -1121,7 +1121,7 @@ Every LLM is implemented from scratch with no abstractions and full control, mak
 - [A Gentle Introduction to Graph Neural Networks (Distill)](https://distill.pub/2021/gnn-intro/) <!--- comment -->
 - [An Introduction to Graph Theory by Darij Grinberg](https://arxiv.org/pdf/2308.04512)
 - [Graph Attention Networks](https://arxiv.org/pdf/1710.10903.pdf)
-- [Understanding Convolutions on Graphs (Distill)](https://distill.pub/2021/understanding-gnns/)
+- [Understanding Convolutions on Graphs (Distill)](https://distill.pub/2021/understanding-gnns/) <!--- comment -->
 - [Курс по графам знаний (KG Course 2021, ODS.ai)](https://ods.ai/tracks/kgcourse2021)
 
 ## Reinforcement Learning
@@ -1241,4 +1241,4 @@ Every LLM is implemented from scratch with no abstractions and full control, mak
 - [System Design by Karan Pratap Singh](https://github.com/karanpratapsingh/system-design) <!--- comment -->
 - [System Design 101](https://github.com/ByteByteGoHq/system-design-101)
 - [Systems Design Interview Guide](http://patrickhalina.com/posts/systems-design-interview-guide/)
-- [Designing Distributed Systems](https://azure.microsoft.com/
+- [Designing Distributed S

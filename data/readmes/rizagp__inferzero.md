@@ -94,8 +94,9 @@ USAGE.md:
 | Gemma 4 E4B | 707 (12 s) | 494 (66 s) | 222 (9.8 min) | 19.1 | 41.8 (drafter) | 0.0027 |
 | Qwen3.5 4B | 896 (9.2 s) | 705 (47 s) | 366 (6.0 min) | 21.0 | 35.8 (MTP) | 0.0010 |
 
-Flash Next's precise mode (`-Precise`) lowers its KL on prose to 0.0060 (3,584 tokens, 0.0105 by default) at about
-half the prompt speed. The discrete cards' numbers: [Discrete GPUs](#discrete-arc-gpus-experimental).
+Flash Next runs in its precise mode by default since 2026-11-22: KL 0.0033 on 480 tokens of markdown and 0.0073 on
+3,584 of prose. Its fast mode (`-Fast`) reads prompts about 1.7 times as fast but is less exact on code and tables
+(0.0415 on the markdown, 0.0109 on the prose). The discrete cards' numbers: [Discrete GPUs](#discrete-arc-gpus-experimental).
 
 Against llama.cpp on the same files and laptop (2026-10-25):
 
@@ -144,7 +145,9 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
 140T's preset (H8 on the 8-lane XMX GEMM). Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named):
 - **One Pro B60** ([issue #4](https://github.com/rizagp/inferzero/issues/4)): 4K prompt 1,874 tok/s under Linux with the
   FFN's gate and up in one GEMM launch (skipzx-lab, issue #57, release 2026.11.20.03, where it is the default; 1,800
-  without it), 1,945-1,957 with the 64 x 32 tile, the B60's default since release 2026.11.21.17 (skipzx-lab, #57); 1,922 on
+  without it), 1,945-1,957 with the 64 x 32 tile, the B60's default since release 2026.11.21.17 (skipzx-lab, #57);
+  1,984-1,992 on Linux with compute runtime 26.40, where that tile takes the lean GEMM loop by default since release
+  2026.11.22.10 (MaineTim, issue #19; skipzx-lab, #57; without the lean loop the tile was 10 % slower there); 1,922 on
   Windows (MaineTim, issue #19, main 0cf5283), 1,909 (manoreken2, release 2026.11.21.01; 1,836 with the fused gate /
   up off; 1,726 on
   2026.11.17.08, 1,522 on

@@ -10,6 +10,7 @@
 <p>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/AIcivilization/dsh-vps" alt="MIT 许可证"></a>
   <a href="https://www.npmjs.com/package/dsh-vps"><img src="https://img.shields.io/npm/v/dsh-vps" alt="npm 版本"></a>
+  <a href="https://github.com/AIcivilization/dsh-pick"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/AIcivilization/dsh-pick/catalog/badge/dsh-vps.json" alt="dsh-pick 排名"></a>
   <img src="https://img.shields.io/badge/platform-Ubuntu%2022.04%2B%20%2F%20Debian%2012%2B-blue" alt="平台：Ubuntu 22.04+ / Debian 12+">
   <img src="https://img.shields.io/badge/DeepSeek%20Harness-%E5%AE%98%E6%96%B9%E6%9C%80%E6%96%B0%E7%89%88-4176E6" alt="DeepSeek Harness 官方最新版">
   <img src="https://img.shields.io/badge/runtime%20dependencies-0-brightgreen" alt="运行时依赖：0">

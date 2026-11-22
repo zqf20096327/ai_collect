@@ -194,7 +194,7 @@ EF Core model ──► client/metadata.json ──► client/src/app/core/model
 ```
 
 1. **Export the metadata.** `npm run model:metadata` runs the server with `--export-metadata`, which
-   writes exactly what `GET /api/breeze/Metadata` serves to `client/metadata.json` and exits. It
+   writes exactly what `GET /api/model/Metadata` serves to `client/metadata.json` and exits. It
    reads the EF Core model only, so it needs no database and no login. The file is checked in, so a
    schema change shows up in review as a metadata diff next to the class diff it causes.
 2. **Generate the classes.** `npm run model:generate` writes one class per entity type, each
@@ -443,7 +443,7 @@ The client is meant to show current Angular, not just to run on it:
 
 ### Validation comes from the server
 
-> **Preview.**  Validation uses a preview of IdeaBlade Validation (`0.1.0-preview.5`), which
+> **Preview.**  Validation uses a preview of IdeaBlade Validation (`0.1.0-preview.10`), which
 > isn't published to NuGet or npm yet: the builds are in `packages/` and `server/packages/`,
 > where `client/package.json` and the server's `nuget.config` find them (`packages/README.md`
 > explains how to update them).  The framework's API may still change before its first release,
@@ -457,9 +457,9 @@ The validation rules are written once, on the server, in two places:
 - **the validation metadata**, `server/TempHire.Server/Validation/validation.metadata.json`, for
   the rules annotations cannot express: an address is a U.S. address, with a state and a ZIP code;
   a phone number has a 3-digit area code and a 7-digit number (a dash or a dot may follow the first
-  3 digits); a rate is a valid amount and not negative; dates are valid dates; and a staffing
-  resource has at least one address and one phone number, and it is at least 18 years old when
-  hired.  These use
+  3 digits); a rate is a valid amount and not negative; dates are valid dates; a date of birth is
+  neither in the future nor more than 123 years ago; and a staffing resource has at least one
+  address and one phone number, and it is at least 18 years old when hired.  These use
   [IdeaBlade.Validation / `@ideablade/validation`](https://github.com/Breeze/ideablade-validation),
   which reads the same metadata on both sides.
 
@@ -484,11 +484,12 @@ The forms add no rules of their own; they show the verdict:
   [validationModel]`; a field's property is its `name`, and the model type comes from the entity
   (`breezeModelType`).  A field runs its property's rules - Breeze's own included, through
   `breeze` - on the value being typed, and its control is invalid when one fails.
-  `FieldErrorsDirective` (`core/validation`) shows the messages as the field's tooltip.
+  `FieldErrorsDirective` (`core/validation`) shows the errors the screen shows (below): their
+  messages as the field's tooltip, `aria-invalid`, and through `invalid()`, PrimeNG's red border.
 
   ```html
   <div ngForm [validationModel]="address">
-    <input pInputText name="city" [(ngModel)]="address.city" #city="ngModel" [invalid]="city.invalid" />
+    <input pInputText name="city" [(ngModel)]="address.city" #city="fieldErrors" [invalid]="city.invalid()" />
   </div>
   ```
 
@@ -498,25 +499,51 @@ The forms add no rules of their own; they show the verdict:
 - **A form validates the whole entity** whenever a field changes, so a rule about two fields shows
   on both: "at least 18 years old when hired" names both dates (`propertyNames` in the
   metadata), and changing either one re-checks the other.  The summary card shows its message once,
-  under the dates.
+  under the dates, when the fields show it (below).
 - **The route has its own validation service** (`provideValidationScope` in
   `ResourceMgtComponent`), whose entity store is the unit of work being shown.  Its forms see that
   unit of work's entities in `store(type)`, and re-validate whenever an entity in it changes, in
   another section or in code.
 - **The service also validates that unit of work continuously** (`validateEntityStore()`): every
   live entity against every rule, sync and async, the metadata's and Breeze's, again whenever an
-  entity changes.  Save reacts to that one result: it stays disabled while any rule is broken, and
-  while async rules have yet to answer.
+  entity changes.  The fields, the tab marks and the Save button follow that one result.  Saving
+  goes through `SaveHandler` (`core/services/save-handler.ts`), which every workspace uses: it
+  validates the unit of work again when Save is clicked (`validateEntityStoreOneTime`), since the
+  continuous result catches up with an edit a moment later and a Save clicked right after an edit
+  would otherwise miss it.  Nothing is saved while any rule is broken, async ones included: the
+  handler shows every error and says why.  After a save (or a deletion, `commit`) it drops the
+  shared unit of work's cache, so the read-only views re-read what was saved.
+- **A new resource is not all red at once.**  The screen's `ErrorVisibility`
+  (`provideErrorVisibility({ isNew: breezeIsNew, watchEntityStore: true })` in
+  `ResourceMgtComponent`) decides which errors to show; validation itself is unchanged.  Loaded
+  entities show all their errors.  A new one - a resource, or an address or phone number added to
+  one - starts with its first errors hidden: a field's show once the user edits or leaves it, and
+  an error the user causes shows at once, on every field it is about, touched or not.  Save stays
+  enabled while rules are broken: clicking it shows every error, and a "Not saved" message says
+  why nothing happened and where to look.  An entity added after that starts with its errors hidden again.  The
+  library's [Showing errors](https://github.com/Breeze/ideablade-validation/blob/main/docs/concepts.md#showing-errors-error-visibility)
+  describes the rules.
 - **Rules about a whole entity**, such as "at least one address", have no field.  Validating the
   whole unit of work keeps them current - deleting a resource's last address breaks the resource's
   rule without changing the resource - and the address and phone lists show them from the same
-  result.  A new resource starts without an address or a
-  phone number, and the last one of each can be deleted, so the rule is the user's to satisfy.
+  result, through `injectErrorVisibility()`, so they follow the same rules: a new resource's
+  messages show on a save attempt, or when the user deletes the last address or phone number.  A
+  new resource starts without an address or a phone number, and the last one of each can be
+  deleted, so the rule is the user's to satisfy.
+- **Tabs with errors are marked.**  Each detail tab shows a red count of the errors it has to show,
+  so a problem on a tab the user is not looking at does not have to be hunted for.  The counts come
+  from the same validation of the unit of work, not from the fields - the deferred tabs have none
+  until they are opened - and follow the error visibility (`injectErrorVisibility()` in
+  `ResourceDetailComponent`): a new resource's tabs are marked once the user breaks a rule or tries
+  to save.  `resource-tabs.ts` places each error on a tab by the type of its entity, and the
+  resource's own rules by their id; its test fails for an entity type or a rule nobody has placed.
 - **The name editor**, a Signal Form over names for a `StaffingResource`, validates a
   `ResourceName` view model with `validateWithMetadata`.  Its properties inherit the
   `StaffingResource` properties' Breeze rules with `from` (`core/validation/client-validation-metadata.ts`,
   through `breezeRuleSource`), so nothing is restated.  Signal Forms then hand the result to Optimus
-  UI themselves.
+  UI themselves.  The dialog shows a name's errors once its field has been touched (Signal Forms'
+  own `touched()`), not through the screen's `ErrorVisibility`, and OK waits until the names are
+  valid.
 - **Login** keeps Signal Forms' `required`: credentials are not an entity, so there is no model to
   validate them against.
 
@@ -556,7 +583,7 @@ changed this data, so click Refresh to load the latest, then make the changes ag
 
 | Setting | Where | Notes |
 |---|---|---|
-| `breezeApiRoot` / `accountApiRoot` / `agentApiRoot` / `usageApiRoot` / `authority` | `client/src/environments/` | `environment.ts` is the **production** file; `environment.development.ts` replaces it during `ng serve` |
+| `modelApiRoot` / `lookupsApiRoot` / `resourceMgtApiRoot` / `validationApiRoot` / `accountApiRoot` / `agentApiRoot` / `usageApiRoot` / `authority` | `client/src/environments/` | `environment.ts` is the **production** file; `environment.development.ts` replaces it during `ng serve` |
 
 The server's settings - connection strings, signing keys, allowed client origins, Quinn's model -
 are in [its README](https://github.com/Breeze/temphire.server#configuration).

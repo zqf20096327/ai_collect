@@ -942,7 +942,13 @@ The export quotes the post by reference, in Blygger's own syntax: a
 quote directly under it. Any Blygger editor accepts it. The comment you wrote
 when you made the highlight comes first, above the quote, and the thread's
 later replies follow it (on every page, not only Blygger posts:
-`"comment_order": "quote-first"` restores the old order). The front matter gains `blyg_sources:` (the posts the
+`"comment_order": "quote-first"` restores the old order). An agent's replies,
+when you export them, are each in a callout box of their own
+(`> [!note] Claude`; `"agent_style": "inline"` for the old lines). On a post's
+own page the note is marked as a response to it unless you untick that.
+
+TK marks in the page's text, quoted passages included, are written as code.
+The front matter gains `blyg_sources:` (the posts the
 note quotes) and, if you mark the note as a response in the export chooser,
 `blyg_stub_of:`. Both keys are optional; delete them if your site does not
 use them. A highlight whose words are not word for word in the post (it ran
@@ -954,7 +960,8 @@ On any other web page, quotes in the note end with the page's URL as their
 last paragraph (`quote_style: "url-card"`, the default). Set
 `"quote_style": "plain"` in `.botference/plugin/config.json` for the old
 shape: the quote alone (with `"comment_order": "quote-first"` as well, the
-note is exactly what Discuss wrote before). PDFs on your computer, local files and the library
+note is what Discuss wrote before, apart from TK marks, which are now always
+written as code). PDFs on your computer, local files and the library
 always get the plain shape.
 
 The companion only reads: plain GETs to the page's site and to whatever host
@@ -1007,6 +1014,27 @@ leave the comment; repeat for each point. Press **Send review** to hand all open
 comments over together. In site-authoring mode the agents edit the source and
 reply in each comment's thread. The normal suggestion-card workflow remains
 available when site-authoring mode is off.
+
+**Let an agent write a passage of your message.** In a comment, reply or
+page-chat message, put `/tk` and an instruction on a line of its own, or
+`/tk(an instruction)` inside a sentence (Blygger Studio's `[TK] … [/TK]` works
+too):
+
+```text
+The checklist treats a model as one more tool to set up.
+/tk say in one sentence what a TK scope is, for a reader new to Blygger
+```
+
+When you send, Claude writes that passage, and it appears in your message as
+a block marked as the agent's, with your instruction under it. You can fill it
+again, edit it, keep it as your own words ("mine"), or remove it. Each gap is
+a separate `claude -p` run with no tools, no MCP servers and none of your
+settings files, given the page only as data; it is not your page's agent
+session. Codex cannot fill gaps. The export writes what is stored and asks no
+agent: a callout under an HTML comment with your instruction (default), or
+Blygger Studio's own `[TK] … [=] … [/TK]` with `"gap_style": "studio"`;
+`"gap_export": "omit"` leaves the agents' passages out of "My notes only".
+Details in [docs/blygger.md](docs/blygger.md).
 
 **Start a draft from an article you are reading.** In Discuss's page chat or
 a comment thread, type:
@@ -1834,7 +1862,4 @@ pick it up.
 | `/lead @claude\|@codex` | Manually set which model writes the plan. You can also use `/lead auto` to let the bots' writer consensus decide. |
 | `/draft [rounds]` | Update the project-local `implementation-plan.md` via the lead model, with optional AI review rounds. Defaults to `2`; `/draft 0` writes the plan with no AI review, `/draft 1` does one review/revise cycle, and so on. Review rounds run in the council like free-form turns: the reviewer's footer can end rounds early (`converged` — sign-off, no revision needed) or pause the draft and hand the floor to you (`blocked`), and typing mid-draft pauses at the next round boundary. Reviewer comments are saved beside the plan in the Botference state directory. |
 | `/finalize` | Lead-only finalization. The lead addresses all active reviewer comment files, rewrites the project-local `implementation-plan.md` if needed, creates `checkpoint.md`, and archives reviewer comments under the Botference archive directory. |
-| `/fresh @claude\|@codex\|@both` | **Restart a bot with no memory of this chat.** For a session that has gone wrong — a bot stuck refusing an ordinary topic, or answering a question three turns old. Nothing is carried over: it sees only what you send next, so say the context again. The other bot keeps its memory and is told. In the browser plugin, type it into any chat box or use the `fresh` button beside `relay` in the agents panel. **Separately and automatically:** when Claude Code reports that the running model's *safeguards* declined a message (Fable 5.1 does this on some ordinary technical topics; the error names the model), this chat's Claude switches to the next model in `safeguard_fallback` in `context-budgets.json` — Opus 5.5, then Opus 5 — and retries the same message, with a note in the chat. |
-| `/relay @claude\|@codex\|@both` | Tear down a model's session, generate a structured handoff, and restart that model immediately in the current botference process. Useful when context is getting long. `@both` (alias `@all`, `/relay-both`) resets both agents at once, token-efficiently: the agent with the most context headroom authors **one** shared handoff, both fresh sessions bootstrap from it, and the restarts run in parallel. Falls back to the free mechanical handoff when both agents are too degraded to author one. |
-| `/autorelay [on\|off]` | Toggle **auto-relay**. When a model's context occupancy crosses 50% of its window, botference relays it automatically (same handoff machinery as `/relay`) before its next turn — never mid-turn or mid free-form thread. On by default; the preference is per-user (`~/.botference/settings.json`) and persists across chats and projects. In the web council, a toggle in the agents panel mirrors this. No argument flips the current state. |
-| `/new-project <title>` | Create a project and file
+| `/fresh @claude\|@codex\|@both` | **Restart a bot with no memory of this chat.** For a session that has gone wrong — a bot stuck refusing an ordinary topic, or answering a question three turns old. Nothing is carried over: it sees only what you send next, so say the context again. The other bot keeps its memory and is told. In the browser plugin, type it into any chat box or use the `fresh`

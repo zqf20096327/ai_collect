@@ -66,10 +66,10 @@
 
 | 平台 | 下载地址 | 提取密码 |
 | --- | --- | --- |
-| macOS 14+（Apple Silicon 与 Intel） | [wwbsr.lanzout.com/b0umjur8h](https://wwbsr.lanzout.com/b0umjur8h) | `向明` |
+| macOS 13+（Apple Silicon 与 Intel） | [wwbsr.lanzout.com/b0umjur8h](https://wwbsr.lanzout.com/b0umjur8h) | `向明` |
 | Windows | [wwbsr.lanzout.com/b0umjur4d](https://wwbsr.lanzout.com/b0umjur4d) | `向明` |
 
-macOS 版打开 DMG，把「微信流」拖入「应用程序」即可；Windows 版解压后按目录内说明运行。iOS 版正在开发中，进群可以第一时间知道进展。
+macOS 版打开 DMG，把「微信流」拖入「应用程序」即可（图标带 🚫 或提示「无法验证」见[常见问题](USAGE.zh-CN.md#常见问题)）；Windows 版解压后按目录内说明运行。iOS 版正在开发中，进群可以第一时间知道进展。
 
 ## 加入交流群
 
@@ -88,7 +88,9 @@ macOS 版打开 DMG，把「微信流」拖入「应用程序」即可；Windows
         <li>拿到群友在用的场景提示词和技能包，抄作业比自己写快</li>
         <li>提需求：你想把聊天记录送到哪个应用，告诉我们</li>
       </ul>
-      群满或进不去的话，扫下方「关于我们」里苍何的微信，备注「微信流」。
+      群满或进不去的话，扫下方「关于我们」里向明的微信，备注「微信流」。
+      <br /><br />
+      兼容层的代码下载也可以在<a href="https://my.feishu.cn/wiki/Eq6twbgv5irYgikOa8Pc2fHfnKg#share-RNMedgl3VoT0M5xZRNVcCXPBnSe">这里</a>打开。
     </td>
   </tr>
 </table>

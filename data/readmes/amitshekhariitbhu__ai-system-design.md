@@ -946,7 +946,7 @@ These approaches can be combined. A smaller KV Cache means more users per GPU, l
 
 ### Prompt Cache
 
-Many apps send the same long system prompt with every request.
+Many apps send the same long [system prompt](https://outcomeschool.com/blog/system-prompt) with every request.
 
 Example: A customer support bot has a 3000-token system prompt that explains the rules. Every user message goes with this same system prompt.
 
@@ -1194,7 +1194,7 @@ A real document parsing pipeline does the following:
 
 - **Format detection:** Figure out what kind of file this is (PDF, image, HTML, DOCX, audio, etc.).
 - **Layout-aware parsing:** Preserve headings, lists, columns, and reading order. A two-column PDF naively flattened becomes nonsense.
-- **OCR (Optical Character Recognition):** For scanned PDFs and images, convert pixels to text. Quality depends on image clarity, font, language, and skew, so preprocessing (deskewing, denoising) matters as much as the OCR engine.
+- **OCR (Optical Character Recognition):** For scanned PDFs and images, convert pixels to text. Quality depends on image clarity, font, language, and skew, so preprocessing (deskewing, denoising) matters as much as the OCR engine. We have a detailed blog on [How does OCR with Deep Learning work?](https://outcomeschool.com/blog/optical-character-recognition-ocr).
 - **Table extraction:** Tables are the single hardest part. We want to keep cell boundaries and headers, often emitting HTML or a row/column model instead of flattening the table into prose. Tables usually carry the most valuable data, so this step is critical.
 - **Image and figure handling:** Caption images, run a vision model to describe charts, store the image in blob storage, and link it from the chunk.
 - **Metadata enrichment:** Add document title, author, date, source URL, page number, section heading. This metadata becomes filters for retrieval later.
@@ -1235,7 +1235,7 @@ Even with good chunking, a chunk can lose its context. A chunk that says "Revenu
 
 Vector search is great at finding meaning. But it is bad at exact-match queries like "Order ID 12345" or "Section 4.2.1".
 
-For exact-match, the old keyword search (**BM25** - Best Matching 25) is much better. Keyword search finds documents fast using an inverted index, which maps each word to the list of documents that contain it. We have a detailed blog on [How does an Inverted Index work?](https://outcomeschool.com/blog/inverted-index).
+For exact-match, the old keyword search ([**BM25**](https://outcomeschool.com/blog/bm25) - Best Matching 25) is much better. Keyword search finds documents fast using an inverted index, which maps each word to the list of documents that contain it. We have a detailed blog on [How does an Inverted Index work?](https://outcomeschool.com/blog/inverted-index).
 
 So in production RAG, we use [**Hybrid Search**](https://outcomeschool.com/blog/how-does-hybrid-search-work): run both vector search and BM25, combine the scores, and return the best results from both.
 
@@ -1539,6 +1539,4 @@ But there is a deeper problem. The maximum context window is the size we are _al
 
 ### Context Rot, Lost in the Middle, and RoPE Decay
 
-As we fill the context with more tokens, three things happen, and they all hurt quality.
-
-**1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as 
+As we fill the context with more tokens, three t

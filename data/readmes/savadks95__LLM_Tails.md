@@ -23,7 +23,7 @@ If you find LLM_Tails helpful, consider buying me a coffee:
   <img src="https://img.shields.io/badge/pillars-4-111111?style=flat-square" alt="4 pillars">
   <img src="https://img.shields.io/badge/skills-13-111111?style=flat-square" alt="13 skills">
   <img src="https://img.shields.io/badge/agents-20+-111111?style=flat-square" alt="20+ agents">
-  <img src="https://img.shields.io/badge/version-v3.3.0-111111?style=flat-square" alt="v3.3.0">
+  <img src="https://img.shields.io/badge/version-v3.4.0-111111?style=flat-square" alt="v3.4.0">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
 </p>
 
@@ -130,7 +130,7 @@ LLM_Tails is one prompt: [`skills/tails/SKILL.md`](skills/tails/SKILL.md). The c
 | `/tails-audit` | Whole-repo quality audit: bloat, hallucination risks, consistency, and wiki health |
 | `/tails-wiki-init` | Scaffold 3-layer persistent wiki (`raw/`, `wiki/`, `AGENTS.md`) from current codebase |
 | `/tails-wiki-ingest` | Process a new source into the wiki, preserving immutable raw sources |
-| `/tails-wiki-lint` | Health-check the wiki against code (stale claims, contradictions, orphans, gaps), starting with a mechanical scan of `wiki/`, `AGENTS.md`, `CLAUDE.md` and rule files for dead paths, `file:L<n>` past the end, and missing `npm run` scripts (`npm run context-lint`) |
+| `/tails-wiki-lint` | Health-check the wiki against code (stale claims, contradictions, orphans, gaps), starting with a mechanical scan of `wiki/`, `AGENTS.md`, `CLAUDE.md` and rule files for dead paths, `file:L<n>` past the end, and missing `npm run` scripts, plus broken `[[links]]`, pages missing from `index.md`, near-duplicate page names, orphaned pages, and pages whose `sources:` files changed (content hash, else last git commit) (`npm run context-lint`) |
 | `/tails-wiki-query` | Query the wiki with ranked (BM25) section search, 1-hop relationship traversal, and compounding knowledge filing (`--save`) |
 | `/tails-end` | Close the session: distill decisions, rejected approaches, and gotchas into the wiki (`log.md` + affected pages) and write the cross-agent handoff (`handoff.md`), which a fresh subagent then checks for gaps |
 | `/tails-debt` | Harvest `tails:` and `shortcut:` comments into a tracked ledger via git-aware scan |
@@ -162,9 +162,9 @@ Context is a budget. LLM_Tails spends it on understanding, not on raw data:
 
 - **Think in code (all agents):** the rules tell the agent never to pull large raw output (logs, test dumps, lockfiles, generated files, big JSON) into context. It filters at the source (`grep -n`, `head`, `git log -n`, `jq`, line ranges) or writes a short script that prints only the answer. Code a change touches is still read fully.
 - **Large-read guard (Claude Code, opt-in):** a whole-file read over 64 KB gets advice to read a slice instead; in `ultra` it is blocked with the same advice. Ranged reads pass untouched. Off by default because it would add Node's startup time (~100+ ms) to every Read; enable it with one settings entry ([INSTALL.md](INSTALL.md#optional-large-read-guard-claude-code)).
-- **Session memory (Claude Code, Codex):** hooks record the files changed, open tasks, your corrections ("no, don't use Redis"), and tool errors (Claude Code only), with secrets masked (provider token formats from [gitleaks](https://github.com/gitleaks/gitleaks): OpenAI, Anthropic, Stripe, GitHub, GitLab, Slack, AWS, GCP, npm, PyPI, Hugging Face, JWTs and more), in a local per-project, per-session file. After context compaction or resume, a summary of at most 2 KB is restored, so the agent does not redo work or repeat a rejected approach, and is nudged to file lasting decisions into `wiki/log.md`. Disable with `TAILS_MEMORY=0`.
-- **Wiki recall (Claude Code, Codex):** on the first prompt of a session that names a topic, the hook searches `wiki/` for it (the same BM25 as `/tails-wiki-query`) and injects up to three matching sections, at most 1,200 characters, framed as possibly unrelated. Once per session; later questions use `/tails-wiki-query`. Disable with `TAILS_RECALL=0`.
-- **Cross-agent handoff (all agents):** `/tails-end` writes `wiki/handoff.md`: where the work stands, the next step, what not to retry, open questions. Where the agent can spawn subagents, one that never saw the chat then reads only the handoff and lists what it would still need, and those gaps are filled (say "skip check" to skip it). It is a plain file in your repo, so the next session picks it up whichever agent, machine, or teammate runs it: hooks inject it at session start (flagged when older than 14 days), and the rules file tells hook-less agents to read it. `Status: done` closes it. Disable injection with `TAILS_HANDOFF=0`.
+- **Session memory (Claude Code, Codex):** hooks record the files changed, open tasks, your corrections ("no, don't use Redis"), your answers to the agent's questions, and tool errors (the last two Claude Code only), with secrets masked (provider token formats from [gitleaks](https://github.com/gitleaks/gitleaks): OpenAI, Anthropic, Stripe, GitHub, GitLab, Slack, AWS, GCP, npm, PyPI, Hugging Face, JWTs and more), in a local per-project, per-session file. After context compaction or resume, a summary of at most 2 KB is restored, so the agent does not redo work or repeat a rejected approach, and is nudged to file lasting decisions into `wiki/log.md`. Disable with `TAILS_MEMORY=0`.
+- **Wiki recall (Claude Code, Codex):** on the first prompt of a session that names a topic, the hook searches `wiki/` for it (the same BM25 as `/tails-wiki-query`) and injects up to three matching sections, at most 1,200 characters, framed as possibly unrelated. A section must match two words of the prompt, or one in its heading, so a single incidental word injects nothing. Once per session; later questions use `/tails-wiki-query`. In Claude Code, the first edit of a file that a wiki page lists in `sources:` also names that page, so the page is updated with the code. Disable both with `TAILS_RECALL=0`.
+- **Cross-agent handoff (all agents):** `/tails-end` writes `wiki/handoff.md`: where the work stands, the next step, what not to retry, open questions. Where the agent can spawn subagents, one that never saw the chat then reads only the handoff and lists what it would still need, and those gaps are filled (say "skip check" to skip it). It is a plain file in your repo, so the next session picks it up whichever agent, machine, or teammate runs it: hooks inject it at session start (flagged when older than 14 days, secrets masked), and the rules file tells hook-less agents to read it. `Status: done` closes it. Disable injection with `TAILS_HANDOFF=0`.
 - **Plays well with companions (Claude Code):** LLM_Tails checks your Claude Code config (enabled plugins, MCP servers, hooks) for the tools below and, when one is installed, tells the agent how the two split the work instead of doing it twice. Nothing is bundled; install the ones you want. `/tails-doctor` shows what was detected.
 
   | Companion | What LLM_Tails does when it is installed |
@@ -176,8 +176,13 @@ Context is a budget. LLM_Tails spends it on understanding, not on raw data:
   | [serena](https://github.com/oraios/serena) | Trace callers and definitions with `find_symbol` / `find_referencing_symbols` instead of grep (Pillar 1) |
   | [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) | Use `search_graph` → `trace_path` for structure; the LLM_Tails map shrinks to 600 chars |
   | [gortex](https://github.com/zzet/gortex) | Trace callers and blast radius with `search_symbols` / `get_callers` / `find_usages` instead of grep; run `verify_change` before calling a signature change done (Pillar 1) |
+  | [graphify](https://github.com/Graphify-Labs/graphify) | Orient with `graphify query` / `path` / `explain` (MCP: `query_graph`, `get_neighbors`, `shortest_path`) before grep, but still read every file before editing it (its strict hook can deny a Read until the graph is queried; Pillar 1); `INFERRED` / `AMBIGUOUS` edges stay `[likely]` until read (Pillar 3). Detected from its hooks or MCP server; `graphify claude install` alone (a CLAUDE.md section) is not detected |
   | [qmd](https://github.com/tobi/qmd) | Answer wiki questions with `qmd query "<topic>"` (hybrid search) |
-  | [caveman](https://github.com/JuliusBrussee/caveman) | Stay terse, but never cut `[verified]`/`[uncertain]` markers, citations or "not verified" |
+  | [caveman](https://github.com/JuliusBrussee/caveman) | Stay terse, but never cut `[verified]`/`[uncertain]` markers, citations or "not verified"; fetch elided tool output with `caveman_retrieve` before tagging `[verified]` |
+  | [sqz](https://github.com/ojuschugh1/sqz) | Get exact output back with `sqz expand` before tagging `[verified]`; `tails-guard` patterns may see the command as sqz rewrote it. Prefer its `cargo`/`brew` install over the `curl \| sh` one (no checksum check) |
+  | [MemPalace](https://github.com/MemPalace/mempalace) | Search past conversations with `mempalace_search` before re-investigating; `wiki/` stays the reviewed record |
+  | [codesight](https://github.com/Houseofmvps/codesight) | Check `codesight_get_blast_radius` before editing a widely imported file |
+  | [Link](https://github.com/gowtham0992/link) | Personal, cross-project memory (`lnk recall`); facts about this project stay in `wiki/` |
 
   Companion notes are capped at 1,000 characters so the rules always fit; extra companions are named, not described.
 - **Guard patterns (Claude Code, opt-in):** write a rule once with a pattern, and the agent gets a heads-up (your permission prompt, never a block) right before a shell command or file edit would break it. Put lines like these anywhere in your `AGENTS.md` or `CLAUDE.md`:
@@ -216,6 +221,7 @@ AGENTS.md             # the schema: tells the LLM how to maintain the wiki
 - Run `/tails-wiki-query <topic> [--save]` for targeted 1-hop context retrieval. Using `--save` files synthesized discoveries back into `wiki/synthesis/`, compounding knowledge instead of losing it in chat history.
 - Run `node scripts/wiki-search.js "<topic>"` for ranked (BM25) section search across the wiki, with zero dependencies.
 - Run `node scripts/wiki-graph.js` to inspect connectivity and automatically generate a Mermaid architecture graph.
+- Pages list the code they describe in frontmatter `sources:`, with a content hash from `node scripts/context-lint.js --hash <files>` (`sources: [src/limiter.js#1a2b3c4d5e6f]`), and an `updated:` date. `npm run context-lint` then flags a page as stale when that code changes, so the wiki can't silently drift from it.
 
 ## Benchmarks
 
@@ -291,7 +297,7 @@ LLM_Tails works with **Ponytail** — they can coexist. Ponytail governs code mi
 
 It also works with **Caveman** — Caveman shrinks what the agent says, LLM_Tails governs what it builds and how honestly it communicates.
 
-It detects and cooperates with **context-mode, ai-memory, claude-mem, context7, serena, codebase-memory-mcp, gortex, qmd and caveman** when they are installed alongside: see the companions table in [Context discipline & session memory](#context-discipline--session-memory).
+It detects and cooperates with **context-mode, ai-memory, claude-mem, context7, serena, codebase-memory-mcp, gortex, graphify, qmd, caveman, sqz, MemPalace, codesight and Link** when they are installed alongside: see the companions table in [Context discipline & session memory](#context-discipline--session-memory).
 
 ## Acknowledgments & Appreciation
 
@@ -333,7 +339,8 @@ It detects and cooperates with **context-mode, ai-memory, claude-mem, context7, 
 
 - **[promptfoo](https://github.com/promptfoo/promptfoo)** (MIT) — the harness for the live-model benchmark (run through `npx`, not bundled).
 
-- Companions LLM_Tails detects and cooperates with (nothing bundled): **[context7](https://github.com/upstash/context7)**, **[serena](https://github.com/oraios/serena)**, **[claude-mem](https://github.com/thedotmack/claude-mem)**, **[codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)**, **[gortex](https://github.com/zzet/gortex)**, **[qmd](https://github.com/tobi/qmd)**, **[caveman](https://github.com/JuliusBrussee/caveman)**, plus context-mode and ai-memory above.
+- Companions LLM_Tails detects and cooperates with (nothing bundled): **[context7](https://github.com/upstash/context7)**, **[serena](https://github.com/oraios/serena)**, **[claude-mem](https://github.com/thedotmack/claude-mem)**, **[codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)**, **[gortex](https://github.com/zzet/gortex)**, **[graphify](https://github.com/Graphify-Labs/graphify)**, **[qmd](https://github.com/tobi/qmd)**, **[caveman](https://github.com/JuliusBrussee/caveman)**, **[sqz](https://github.com/ojuschugh1/sqz)**, **[MemPalace](https://github.com/MemPalace/mempalace)**, **[codesight](https://github.com/Houseofmvps/codesight)**, **[Link](https://github.com/gowtham0992/link)**, plus context-mode and ai-memory above.
+- Ideas, written from scratch (all MIT): **[compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin)** (the durable bar for wiki notes), **[llm-wiki-manager](https://github.com/sametbrr/llm-wiki-manager)** (index drift), **[freelance](https://github.com/duct-tape-and-markdown/freelance)** and **[llm-wiki-compiler](https://github.com/atomicstrata/llm-wiki-compiler)** (source hashes), **[Link](https://github.com/gowtham0992/link)** (wiki pointer on edit).
 
 - **[Winston Koh](https://github.com/winstonkoh87)** for **[Athena-Public](https://github.com/winstonkoh87/Athena-Public)** — the inspiration for the explicit session close (`/tails-end`), the strict state-vs-history split in the wiki, and the "don't agree to please" honesty rule. Independent implementations; no Athena code is used.
 

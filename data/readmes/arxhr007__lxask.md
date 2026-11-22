@@ -39,7 +39,7 @@ $ du -h --max-depth=1 . | sort -hr
 
 - 🔒 **Private and offline.** Everything runs locally on your CPU. Nothing you ask leaves your machine.
 - ⚡ **Small and fast.** About 1 GB, no GPU needed; about 2 seconds per answer once loaded (the installer offers to keep it loaded).
-- ✅ **Checks its own work.** Every command is checked against the man pages and tldr, and anything it can't confirm is flagged.
+- ✅ **Checks its own work.** Every command is checked against the man pages and tldr, and anything it can't confirm is flagged. The check proves the programs and options exist and the line can run, not that it does what you meant ([what it can't tell you](docs/how-it-works.md#what-the-check-cannot-tell-you)).
 - ⌨️ **Right on your prompt.** Type what you want, press **Ctrl+G**, and the line becomes the command.
 - 💾 **Runs on very little RAM.** About 1.3 GB at its peak, measured while answering questions.
 
@@ -70,7 +70,8 @@ check the installer against the release checksums first.
 
 1. From the [latest release](https://github.com/arxhr007/lxask/releases/latest), download
    one program (`lxask-x86_64-v3` for x86 PCs since about 2015, `lxask-x86_64` for older
-   ones, `lxask-aarch64` for ARM64), plus `lxask-round4-Q4_K_M.gguf`,
+   ones, `lxask-aarch64-dotprod` for ARM64 with dot product such as the Pi 5, `lxask-aarch64`
+   for other ARM64), plus `lxask-round4-Q4_K_M.gguf`,
    `restrict-round4.gguf`, `precision-round4.gguf`, `embed.gguf`, `docs.sqlite` and
    `SHA256SUMS`. Check them with `sha256sum -c --ignore-missing SHA256SUMS`.
 2. Put the program on your PATH as `lxask`:
@@ -116,6 +117,12 @@ benchmark authors publish 73% for GPT-4o, a hosted model; that number is theirs 
 not re-run here. The gain over the untuned model comes from fine-tuning, not from the
 retrieval and retries around it, which change nothing on this set
 ([details](docs/accuracy.md#the-public-benchmark-nl2sh-alfa)).
+
+Why this base model: newer small models were tested untuned on the same benchmark, with
+the same three examples. Gemma 4 E2B solves **58%** (not a significant difference) but
+needs about 2.6 times the memory and is almost twice as slow; Ternary Bonsai 2 9B
+ties at **54%** but takes about 9 s per answer against 1 s on CPU; Qwen3.5-2B solves
+**43%** and LFM2.5-1.2B **21%** ([the numbers](docs/accuracy.md#why-qwen25-coder-15b)).
 
 We publish the misses too: [the mistakes from the examples run](docs/examples.md#where-it-slipped-same-run)
 and [every measurement](docs/accuracy.md).

@@ -11,7 +11,7 @@
     An open-source content factory that transforms long-form videos into cinematic short-form highlights with hook teasers, karaoke subtitles, and auto-thumbnails.
     <br />
     <br />
-    <a href="README_ID.md">🇮🇩 Baca dalam Bahasa Indonesia</a>
+    <a href="docs/README_ID.md">🇮🇩 Baca dalam Bahasa Indonesia</a>
     &middot;
     <a href="https://github.com/NaufalRizqullah/opensource-clipping/issues/new">Report Bug</a>
     &middot;
@@ -110,6 +110,10 @@ WHISPER_COMPUTE_TYPE = "float32"
 >
 > We also include `notebooks/Lib_OpenSource_Clipping.ipynb` as a full-featured template.
 
+Both notebooks include an optional **YouTube Cookies Setup** cell. After project setup, upload a Netscape-format `cookies.txt` export and set `YOUTUBE_COOKIES_FILE` to its path, such as `/content/cookies.txt` in Colab or a file in a private Kaggle Input. The default reads `OSC_YOUTUBE_COOKIES_FILE` from the environment; an empty value retains automatic detection of `youtube_cookies.txt`. Explicit paths take priority and must point to an existing file. Re-run the cookie cell after changing the path. Keep cookie files private.
+
+Both also offer **Gemini or vLLM**. Before installing dependencies, set `AI_PROVIDER = "vllm"` and configure an existing endpoint/model, or enable `START_LOCAL_VLLM = True` to prepare separate Python 3.12 application/server environments and run the existing GPU preflight, startup, and short evaluation. Gemini remains the default; vLLM does not require `GOOGLE_API_KEY`. Local hosting uses Whisper CPU/int8 and includes an explicit Stop cell. See [notebook provider setup](docs/providers.md#quick-start-and-lib-notebooks).
+
 ---
 
 ## 🎬 Web Studio (GitHub Pages + Remote GPU)
@@ -153,6 +157,8 @@ The **Clipping Studio** is a browser-based dashboard hosted for free on **GitHub
 ---
 
 ## 🚀 Local Quick Start
+
+Base dependencies remain in `requirements.txt` at the repository root. Specialized profiles and constraints are grouped in [requirements/](requirements/README.md).
 
 ```bash
 # 1. Clone the repo
@@ -589,13 +595,15 @@ GEMINI_MODEL = "gemini-2.0-flash"
 ```text
 opensource-clipping/
 ├── main.py                  # CLI entry point
-├── run_upload.py            # YouTube auto-uploader CLI
-├── run_fb_upload.py         # Facebook Pages Reels uploader CLI
+├── scripts/
+│   ├── run_upload.py        # YouTube auto-uploader CLI
+│   └── run_fb_upload.py     # Facebook Pages Reels uploader CLI
 ├── pyproject.toml           # Dependencies & metadata
 ├── .env.sample              # API key template
 ├── .gitignore
 ├── README.md                # English docs
-├── README_ID.md             # Indonesian docs
+├── docs/
+│   └── README_ID.md         # Indonesian docs
 ├── clipping/
 │   ├── config.py            # Master configuration & argparse
 │   ├── engine.py            # Download → Transcribe → Gemini AI
@@ -655,20 +663,25 @@ For each clip, the pipeline creates an `outputs/` directory and generates:
 
 The project now includes a standalone YouTube auto-uploader with scheduling support!
 
+Run the commands below from the repository root. Relative paths such as
+`.credentials/` and `outputs/` are resolved from your working directory.
+
 1. Place your configured `youtube_token.json` file inside the `.credentials/` directory.
 2. After the rendering process finishes, the script will automatically read from the generated `outputs/` directory (e.g., `outputs/render_manifest.json` and the final videos). Simply run the uploader:
    ```bash
-   # Basic run (uses default 8-hour interval and auto timezone)
-   python run_upload.py
+   # Basic run (24-hour interval, Asia/Makassar timezone)
+   python scripts/run_upload.py
 
    # Or run with custom arguments (example):
-   python run_upload.py --interval-hours 12 --tz-name "Asia/Jakarta"
+   python scripts/run_upload.py --interval-hours 12 --tz-name "Asia/Jakarta"
    ```
-3. To run a test with only the first video, use `python run_upload.py --test-mode`. Run `python run_upload.py --help` to see all scheduling and timezone options.
+3. To run a test with only the first video, use `python scripts/run_upload.py --test-mode`. Run `python scripts/run_upload.py --help` to see all scheduling and timezone options.
 
 ## 📘 Auto-Upload to Facebook Pages (Reels)
 
 The project also includes a standalone Facebook Pages Reels uploader with native scheduling support via the Meta Graph API!
+
+Run the commands below from the repository root.
 
 **Prerequisites:**
 - A Facebook Page Access Token (long-lived) with `pages_manage_posts` and `pages_read_engagement` permissions.
@@ -683,16 +696,16 @@ The project also includes a standalone Facebook Pages Reels uploader with native
 
 ```bash
 # Basic run (reads .env for META_PAGE_ID & META_PAGE_ACCESS_TOKEN)
-python run_fb_upload.py
+python scripts/run_fb_upload.py
 
 # Test mode — only upload the first clip
-python run_fb_upload.py --test-mode
+python scripts/run_fb_upload.py --test-mode
 
 # Custom interval (3 hours between videos)
-python run_fb_upload.py --interval-hours 3
+python scripts/run_fb_upload.py --interval-hours 3
 
 # See all options
-python run_fb_upload.py --help
+python scripts/run_fb_upload.py --help
 ```
 
 | Argument | Default | Description |

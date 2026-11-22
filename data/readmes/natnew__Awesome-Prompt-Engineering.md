@@ -96,6 +96,17 @@ The field has evolved from crafting individual prompts to architecting complete 
 - [Rebuff](https://github.com/protectai/rebuff) — Prompt injection detection and prevention
 - [Lakera Guard](https://www.lakera.ai/) — Real-time protection against prompt attacks
 
+### Agent Skills, Subagents & Design Context
+
+- [Awesome Agent Skills](https://github.com/VoltAgent/awesome-agent-skills) — Curated agent skills from official dev teams and the community, for Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot and other coding agents
+- [Awesome Claude Code Subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) — Specialised Claude Code subagent definitions grouped by category, from language specialists to orchestration and research
+- [Awesome Codex Subagents](https://github.com/VoltAgent/awesome-codex-subagents) — Specialised Codex subagents defined as TOML files with model, reasoning-effort, sandbox and instruction fields
+- [Awesome OpenClaw Skills](https://github.com/VoltAgent/awesome-openclaw-skills) — Categorised skills filtered from the OpenClaw registry; entries are curated, not audited, so review each skill's source before installing
+- [Awesome DESIGN.md](https://github.com/VoltAgent/awesome-design-md) — DESIGN.md files describing brand design systems, used as context so coding agents generate UI that matches a given visual style
+- [Impeccable](https://github.com/pbakaus/impeccable) — Design commands for coding agents (`polish`, `bolder`, `critique`, `audit`), with a deterministic AI-slop detector and `PRODUCT.md`/`DESIGN.md` context files
+- [REA (morluto-rea)](https://github.com/Pothome/morluto-rea) — CLI and MCP server that lets coding agents investigate how a feature in existing software works, using native analysis, website and Electron capture, and reproducible evidence records; runs locally on macOS and does not recover original source code
+- [Sharpen](https://github.com/melthond/sharpen) — Claude Code plugin that, when turned on, rewrites each eligible prompt into a specific one using the conversation, the codebase and the installed skills, agents and MCP tools, and shows it for approval before any work starts.
+
 ---
 ## Announcements :eyes:
 ##### Watch this repository to keep up-to-date with the latest updates and announcements.
@@ -128,6 +139,7 @@ The field has evolved from crafting individual prompts to architecting complete 
 ##### [Awesome AI Prompts: verification-first prompts for AI coding agents](https://github.com/shauryagangrade/awesome-ai-prompts)
 ##### [OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering)
 ##### [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+##### [How to build an AI chief of staff with ChatGPT, Claude or Gemini (Opitor)](https://opitor.com/guides/how-to-build-an-ai-chief-of-staff)
 
 ---
 ## Additional Resources
@@ -181,6 +193,22 @@ The field has evolved from crafting individual prompts to architecting complete 
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kkahadze"><img src="https://avatars.githubusercontent.com/u/85003299?v=4?s=100" width="100px;" alt="Konstantine"/><br /><sub><b>Konstantine</b></sub></a><br /><a href="https://github.com/natnew/Awesome-Prompt-Engineering/commits?author=kkahadze" title="Code">💻</a> <a href="#content-kkahadze" title="Content">🖋</a> <a href="#ideas-kkahadze" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/impulse301"><img src="https://avatars.githubusercontent.com/u/11787737?v=4?s=100" width="100px;" alt="impulse301"/><br /><sub><b>impulse301</b></sub></a><br /><a href="https://github.com/natnew/Awesome-Prompt-Engineering/commits?author=impulse301" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/FranciscoFerreiraff"><img src="https://avatars.githubusercontent.com/u/81922499?v=4?s=100" width="100px;" alt="FranciscoFerreiraff"/><br /><sub><b>FranciscoFerreiraff</b></sub></a><br /><a href="https://github.com/natnew/Awesome-Prompt-Engineering/commits?author=FranciscoFerreiraff" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/melthond"><img src="https://avatars.githubusercontent.com/u/198079791?v=4?s=100" width="100px;" alt="melthond"/><br /><sub><b>melthond</b></sub></a><br /><a href="#content-melthond" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/xizhuomengcontin"><img src="https://avatars.githubusercontent.com/u/319346922?v=4?s=100" width="100px;" alt="xizhuomengcontin"/><br /><sub><b>xizhuomengcontin</b></sub></a><br /><a href="#content-xizhuomengcontin" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/shauryagangrade"><img src="https://avatars.githubusercontent.com/u/288927048?v=4?s=100" width="100px;" alt="shauryagangrade"/><br /><sub><b>shauryagangrade</b></sub></a><br /><a href="#content-shauryagangrade" title="Content">🖋</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/reacher-z"><img src="https://avatars.githubusercontent.com/u/68239571?v=4?s=100" width="100px;" alt="reacher-z"/><br /><sub><b>reacher-z</b></sub></a><br /><a href="#content-reacher-z" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lukefryer1234"><img src="https://avatars.githubusercontent.com/u/208277287?v=4?s=100" width="100px;" alt="lukefryer1234"/><br /><sub><b>lukefryer1234</b></sub></a><br /><a href="#content-lukefryer1234" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/js-lee-AI"><img src="https://avatars.githubusercontent.com/u/60927808?v=4?s=100" width="100px;" alt="js-lee-AI"/><br /><sub><b>js-lee-AI</b></sub></a><br /><a href="#content-js-lee-AI" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/WhymustIhaveaname"><img src="https://avatars.githubusercontent.com/u/38423345?v=4?s=100" width="100px;" alt="WhymustIhaveaname"/><br /><sub><b>WhymustIhaveaname</b></sub></a><br /><a href="#content-WhymustIhaveaname" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SuhaniNagpal7"><img src="https://avatars.githubusercontent.com/u/200998993?v=4?s=100" width="100px;" alt="SuhaniNagpal7"/><br /><sub><b>SuhaniNagpal7</b></sub></a><br /><a href="#content-SuhaniNagpal7" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/calebvbi"><img src="https://avatars.githubusercontent.com/u/48665930?v=4?s=100" width="100px;" alt="calebvbi"/><br /><sub><b>calebvbi</b></sub></a><br /><a href="#content-calebvbi" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lhlhome"><img src="https://avatars.githubusercontent.com/u/217780409?v=4?s=100" width="100px;" alt="lhlhome"/><br /><sub><b>lhlhome</b></sub></a><br /><a href="#content-lhlhome" title="Content">🖋</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/fcampogni2012"><img src="https://avatars.githubusercontent.com/u/262235816?v=4?s=100" width="100px;" alt="fcampogni2012"/><br /><sub><b>fcampogni2012</b></sub></a><br /><a href="#content-fcampogni2012" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/BrianLYS"><img src="https://avatars.githubusercontent.com/u/83122861?v=4?s=100" width="100px;" alt="BrianLYS"/><br /><sub><b>BrianLYS</b></sub></a><br /><a href="#content-BrianLYS" title="Content">🖋</a></td>
     </tr>
   </tbody>
 </table>

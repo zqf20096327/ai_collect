@@ -1096,9 +1096,9 @@ them: a ComfyUI workflow draws **character sheets**, one picture with four
 passport photos and two body photos of the same person, and the sheets you keep
 are cut into six pictures each. The Sheets step has two modes, **Text** and
 **Reference and text**, and each lists only the workflows that can draw a sheet
-in it. PixlStash ships five that can: `Sheet-Qwen-Image-2.1` and
-`Sheet-Flux2-Klein-9B`, each with a `-Reference` twin, and
-`Sheet-MiniMax-H3-Reference`. Your own workflow is listed too once it meets the
+in it. PixlStash ships six that can: `Qwen-Image 2.1 Sheet`,
+`FLUX.2 Klein 9B Sheet` and `MiniMax H3 Image Sheet (PixlStash)`, each with a
+`from Reference` twin. Your own workflow is listed too once it meets the
 rules below. Add it from Workflows (drop the `.json` on the screen) first.
 Only MOSS-Image's text sheets have been probed for how well they hold the
 layout; the other models' sheets, and every sheet drawn from a reference, have
@@ -1111,7 +1111,7 @@ Both modes need:
   below. FLUX.2 counts only as Klein (Klein in its base model or file name);
   FLUX.2 dev does not.
 - **A size PixlStash can set.** Every sheet is drawn at 5:3 (1280×768,
-  1840×1104 or 2560×1536, and 5280×3168 for MiniMax H3), so the workflow's
+  1840×1104 or 2560×1536; 3840×2304 or 6240×3744 for MiniMax H3 Image, and 5280×3168 for both MiniMax models), so the workflow's
   empty latent needs a `width` and `height` that are plain numbers, or are
   wired from a `ResolutionSelector` or a `PrimitiveInt`. A workflow whose size
   comes from its input picture cannot be listed as it is.
@@ -1134,8 +1134,11 @@ different person.
 - **A text-to-image graph:** every sampler starts from an empty latent, and no
   picture feeds the model's reference input. A workflow that reads a picture
   as a reference is not listed here.
-- **Sizes:** MiniMax H3 and H3 Image draw at Large or 4K and the other models at Small,
-  Medium or Large; the rest are greyed out.
+- **Sizes:** MiniMax H3 Image draws at 4K, 5K or 6K, 4K by default: below 4K
+  its faces turn waxy and drift from the reference, and 6K takes about twice
+  as long as 5K for no closer a face. MiniMax H3 draws at Large or
+  5K, 5K by default. The other models draw at Small, Medium or Large, Large by
+  default. The rest are greyed out.
 - **Prompt:** MOSS-Image is sent a layout prompt (the JSON
   `MOSSImageLayoutPrompt` emits, with a box per photo). Every other model is
   sent the sheet in plain sentences. The workflow needs a positive prompt

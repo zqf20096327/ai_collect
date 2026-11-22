@@ -275,6 +275,8 @@ Limits, beta invites, and what happens when you destroy a cloud sandbox are in
 your editor once, and your agent can create, open, stop and destroy sandboxes
 for you. Setup for Claude Code, Cursor, VS Code and Codex, what to say to your
 agent, and the tools the server exposes, are in [docs/mcp.md](docs/mcp.md).
+Agent skills for running risky work in a sandbox, and for auditing a recorded
+trace, are in [skills/](skills/README.md).
 
 ---
 

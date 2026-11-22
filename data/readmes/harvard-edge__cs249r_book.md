@@ -36,6 +36,7 @@
   <a href="https://github.com/harvard-edge/cs249r_book/actions/workflows/labs-validate-dev.yml"><img src="https://img.shields.io/github/actions/workflow/status/harvard-edge/cs249r_book/labs-validate-dev.yml?branch=dev&event=push&label=Labs&logo=jupyter&cacheSeconds=300" alt="Labs"></a>
   <a href="https://github.com/harvard-edge/cs249r_book/actions/workflows/kits-validate-dev.yml"><img src="https://img.shields.io/github/actions/workflow/status/harvard-edge/cs249r_book/kits-validate-dev.yml?branch=dev&event=push&label=Kits&logo=arduino&cacheSeconds=300" alt="Kits"></a>
   <a href="https://github.com/harvard-edge/cs249r_book/actions/workflows/slides-validate-dev.yml"><img src="https://img.shields.io/github/actions/workflow/status/harvard-edge/cs249r_book/slides-validate-dev.yml?branch=dev&event=push&label=Slides&logo=googleslides&cacheSeconds=300" alt="Slides"></a>
+  <a href="https://github.com/harvard-edge/cs249r_book/actions/workflows/studysheets-validate-dev.yml"><img src="https://img.shields.io/github/actions/workflow/status/harvard-edge/cs249r_book/studysheets-validate-dev.yml?branch=dev&event=push&label=Study%20Sheets&logo=readthedocs&cacheSeconds=300" alt="Study Sheets"></a>
   <a href="https://github.com/harvard-edge/cs249r_book/actions/workflows/instructors-validate-dev.yml"><img src="https://img.shields.io/github/actions/workflow/status/harvard-edge/cs249r_book/instructors-validate-dev.yml?branch=dev&event=push&label=Instructors&logo=googleclassroom&cacheSeconds=300" alt="Instructors"></a>
   <a href="https://github.com/harvard-edge/cs249r_book/actions/workflows/staffml-preview-dev.yml"><img src="https://img.shields.io/github/actions/workflow/status/harvard-edge/cs249r_book/staffml-preview-dev.yml?branch=dev&event=push&label=StaffML&logo=target&cacheSeconds=300" alt="StaffML"></a>
 </p>
@@ -51,6 +52,8 @@
   <b><a href="https://mlsysbook.ai/labs/">🔬 Labs</a></b> •
   <b><a href="https://mlsysbook.ai/kits/">🧰 Kits</a></b> •
   <b><a href="https://mlsysbook.ai/mlsysim/">🔮 MLSys·im</a></b> •
+  <b><a href="https://mlsysbook.ai/slides/">📊 Slides</a></b> •
+  <b><a href="https://mlsysbook.ai/vol1/backmatter/studysheets.html">📝 Study Sheets</a></b> •
   <b><a href="https://mlsysbook.ai/instructors/">🎓 Instructors</a></b> •
   <b><a href="https://mlsysbook.ai/staffml/">💼 StaffML</a></b> •
   <b><a href="taxonomy/">Taxonomy</a></b>
@@ -932,17 +935,17 @@ These people have improved the textbooks, the software, and the teaching materia
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/profvjreddi"><img src="https://avatars.githubusercontent.com/profvjreddi?v=4?s=50" width="50px;" alt="Vijay Janapa Reddi"/><br /><sub><b>Vijay Janapa Reddi</b></sub></a><br />🧑‍💻 🎨 ✍️ 🧠 </td>
+      <td align="center" valign="top" width="14.29%"><a href="https://github.com/Shashank-Tripathi-07"><img src="https://avatars.githubusercontent.com/u/178375647?v=4?v=4?s=50" width="50px;" alt="Rocky"/><br /><sub><b>Rocky</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️ 🔎</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/Shakhtar-Sankur"><img src="https://avatars.githubusercontent.com/u/312389772?v=4?v=4?s=50" width="50px;" alt="Sankur Kundu"/><br /><sub><b>Sankur Kundu</b></sub></a><br />🪲 🧑‍💻 ✍️ 🧠 🧪</td>
-      <td align="center" valign="top" width="14.29%"><a href="https://github.com/Shashank-Tripathi-07"><img src="https://avatars.githubusercontent.com/u/178375647?v=4?v=4?s=50" width="50px;" alt="Rocky"/><br /><sub><b>Rocky</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️</td>
+      <td align="center" valign="top" width="14.29%"><a href="https://github.com/prawalpokharel"><img src="https://avatars.githubusercontent.com/u/57414987?v=4?v=4?s=50" width="50px;" alt="Prawal Pokharel"/><br /><sub><b>Prawal Pokharel</b></sub></a><br />🧑‍💻 🎨 ✍️ 🧪 🛠️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/farhan523"><img src="https://avatars.githubusercontent.com/u/62025759?v=4?v=4?s=50" width="50px;" alt="Farhan Asghar"/><br /><sub><b>Farhan Asghar</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/Nishitha-Rajesh"><img src="https://avatars.githubusercontent.com/u/222974421?v=4?v=4?s=50" width="50px;" alt="Nishitha-Rajesh"/><br /><sub><b>Nishitha-Rajesh</b></sub></a><br />🪲 🧑‍💻 ✍️ 🛠️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/aadityansha06"><img src="https://avatars.githubusercontent.com/u/96714228?v=4?v=4?s=50" width="50px;" alt="Aadityansha "/><br /><sub><b>Aadityansha </b></sub></a><br />🪲 🧑‍💻 🧪</td>
-      <td align="center" valign="top" width="14.29%"><a href="https://github.com/ShivtejG236"><img src="https://avatars.githubusercontent.com/u/91597404?v=4?v=4?s=50" width="50px;" alt="Shivtej Gaikwad"/><br /><sub><b>Shivtej Gaikwad</b></sub></a><br />🪲 🧑‍💻 🧪</td>
     </tr>
     <tr>
+      <td align="center" valign="top" width="14.29%"><a href="https://github.com/ShivtejG236"><img src="https://avatars.githubusercontent.com/u/91597404?v=4?v=4?s=50" width="50px;" alt="Shivtej Gaikwad"/><br /><sub><b>Shivtej Gaikwad</b></sub></a><br />🪲 🧑‍💻 🧪</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/kjlintong"><img src="https://avatars.githubusercontent.com/u/40327910?v=4?v=4?s=50" width="50px;" alt="Tong Lin"/><br /><sub><b>Tong Lin</b></sub></a><br />🧑‍💻 ✍️ 🧪</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/lynnyulinlin-debug"><img src="https://avatars.githubusercontent.com/u/252566641?v=4?v=4?s=50" width="50px;" alt="lynnyulinlin-debug"/><br /><sub><b>lynnyulinlin-debug</b></sub></a><br />🪲 🧑‍💻 🧠</td>
-      <td align="center" valign="top" width="14.29%"><a href="https://github.com/prawalpokharel"><img src="https://avatars.githubusercontent.com/u/57414987?v=4?v=4?s=50" width="50px;" alt="Prawal Pokharel"/><br /><sub><b>Prawal Pokharel</b></sub></a><br />🧑‍💻 ✍️ 🧪</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/asgalon"><img src="https://avatars.githubusercontent.com/u/45242704?v=4?v=4?s=50" width="50px;" alt="Peter Koellner"/><br /><sub><b>Peter Koellner</b></sub></a><br />🪲 ✍️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/hzeljko"><img src="https://avatars.githubusercontent.com/hzeljko?v=4?s=50" width="50px;" alt="Zeljko Hrcek"/><br /><sub><b>Zeljko Hrcek</b></sub></a><br />🧑‍💻</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/nyxst4ck"><img src="https://avatars.githubusercontent.com/u/289980115?v=4?v=4?s=50" width="50px;" alt="nyxst4ck"/><br /><sub><b>nyxst4ck</b></sub></a><br />✍️</td>
@@ -990,7 +993,7 @@ These people have improved the textbooks, the software, and the teaching materia
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/profvjreddi"><img src="https://avatars.githubusercontent.com/profvjreddi?v=4?s=50" width="50px;" alt="Vijay Janapa Reddi"/><br /><sub><b>Vijay Janapa Reddi</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️ 🧪 🛠️</td>
-      <td align="center" valign="top" width="14.29%"><a href="https://github.com/Mjrovai"><img src="https://avatars.githubusercontent.com/Mjrovai?v=4?s=50" width="50px;" alt="Marcelo Rovai"/><br /><sub><b>Marcelo Rovai</b></sub></a><br />🧑‍💻 🎨 ✍️ 🧪 </td>
+      <td align="center" valign="top" width="14.29%"><a href="https://github.com/Mjrovai"><img src="https://avatars.githubusercontent.com/Mjrovai?v=4?s=50" width="50px;" alt="Marcelo Rovai"/><br /><sub><b>Marcelo Rovai</b></sub></a><br />🧑‍💻 🎨 ✍️ 🧪 🛠️ </td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/Shashank-Tripathi-07"><img src="https://avatars.githubusercontent.com/u/178375647?v=4?v=4?s=50" width="50px;" alt="Rocky"/><br /><sub><b>Rocky</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/farhan523"><img src="https://avatars.githubusercontent.com/u/62025759?v=4?v=4?s=50" width="50px;" alt="Farhan Asghar"/><br /><sub><b>Farhan Asghar</b></sub></a><br />🪲 🧑‍💻 🎨</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/Nishitha-Rajesh"><img src="https://avatars.githubusercontent.com/u/222974421?v=4?v=4?s=50" width="50px;" alt="Nishitha-Rajesh"/><br /><sub><b>Nishitha-Rajesh</b></sub></a><br />🪲 🧑‍💻 ✍️</td>
@@ -1020,9 +1023,9 @@ These people have improved the textbooks, the software, and the teaching materia
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/profvjreddi"><img src="https://avatars.githubusercontent.com/profvjreddi?v=4?s=50" width="50px;" alt="Vijay Janapa Reddi"/><br /><sub><b>Vijay Janapa Reddi</b></sub></a><br />🧑‍💻 🎨 ✍️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/Shashank-Tripathi-07"><img src="https://avatars.githubusercontent.com/u/178375647?v=4?v=4?s=50" width="50px;" alt="Rocky"/><br /><sub><b>Rocky</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️ 🧪</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/Shakhtar-Sankur"><img src="https://avatars.githubusercontent.com/u/312389772?v=4?v=4?s=50" width="50px;" alt="Sankur Kundu"/><br /><sub><b>Sankur Kundu</b></sub></a><br />🪲 🧑‍💻 ✍️ 🧠 🧪</td>
+      <td align="center" valign="top" width="14.29%"><a href="https://github.com/prawalpokharel"><img src="https://avatars.githubusercontent.com/u/57414987?v=4?v=4?s=50" width="50px;" alt="Prawal Pokharel"/><br /><sub><b>Prawal Pokharel</b></sub></a><br />🧑‍💻 🎨 ✍️ 🧪 🛠️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/farhan523"><img src="https://avatars.githubusercontent.com/u/62025759?v=4?v=4?s=50" width="50px;" alt="Farhan Asghar"/><br /><sub><b>Farhan Asghar</b></sub></a><br />🪲 🧑‍💻 🎨 ✍️</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/aadityansha06"><img src="https://avatars.githubusercontent.com/u/96714228?v=4?v=4?s=50" width="50px;" alt="Aadityansha "/><br /><sub><b>Aadityansha </b></sub></a><br />🪲 🧑‍💻 🧪</td>
-      <td align="center" valign="top" width="14.29%"><a href="https://github.com/prawalpokharel"><img src="https://avatars.githubusercontent.com/u/57414987?v=4?v=4?s=50" width="50px;" alt="Prawal Pokharel"/><br /><sub><b>Prawal Pokharel</b></sub></a><br />🧑‍💻 ✍️ 🧪</td>
       <td align="center" valign="top" width="14.29%"><a href="https://github.com/asgalon"><img src="https://avatars.githubusercontent.com/u/45242704?v=4?v=4?s=50" width="50px;" alt="Peter Koellner"/><br /><sub><b>Peter Koellner</b></sub></a><br />🪲 🧑‍💻</td>
     </tr>
     <tr>

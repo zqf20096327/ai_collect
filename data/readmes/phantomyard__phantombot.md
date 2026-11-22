@@ -46,6 +46,13 @@ Phantombot is the agent runtime of [**Phantomyard**](https://phantomyard.ai):
 - **Local control** — persona state and AES-256-GCM encrypted secrets stay on
   your machine.
 
+## PhantomChat team groups
+
+In PhantomChat team groups, phantoms use @mentions for actionable handoffs.
+Explicit `SILENT` replies end quietly; accidental empties recover normally.
+Queued phantom text handoffs combine oldest first with every sender and request.
+Humans and media stay separate; each handoff counts toward the 60-message budget.
+
 ## Built-in web browser
 
 Phantoms can read rendered pages, click, type, and inspect screenshots with
@@ -53,7 +60,9 @@ Phantoms can read rendered pages, click, type, and inspect screenshots with
 with isolated persona profiles and lazy startup. Sandboxed turns get temporary
 profiles with crash cleanup; page downloads are denied. Each tab supports an optional
 `open --user-agent "custom UA"` override (`--user-agent ""` resets to Chrome). The first open
-test-launches installed browsers and keeps the first that starts (Snap builds last);
+test-launches installed browsers and keeps the first that starts. Existing Playwright
+Chromium caches are also detected after native installs and before Snap builds
+(cached builds need Linux sandbox support or Windows sandbox file permissions; see the browser guide);
 `phantombot browser list` / `browser use <chrome|chromium|brave|edge|path|auto>`
 switch it per persona. See the [browser guide](docs/reference/browser.md).
 

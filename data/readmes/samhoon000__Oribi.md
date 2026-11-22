@@ -45,6 +45,7 @@ The capabilities in this section are implemented in the current release. Oribi r
 | Semantic roles | Likely identifiers, measures, dimensions, categories, temporal fields, booleans, text, or unknown columns |
 | Keys and grain | Candidate single- and two-column keys, plus an estimate of what one row may represent |
 | Relationships | Observed value relationships within the same DataFrame |
+| Analytical metrics | Evidence-backed SQL metric definitions such as entity counts, additive totals, per-entity averages, and ratios |
 | Analysis guidance | Aggregation recommendations for likely measures, identifier counts, dimensions, and categories |
 | Warnings | Duplicate rows, missingness, non-unique identifiers, negative or highly skewed measures, high-cardinality categories and text, and possible gaps in regular datetime series |
 

@@ -7,24 +7,38 @@
 <h1 align="center">Shelly</h1>
 
 <h3 align="center">
-  Let ChatGPT use your Android phone — and approve every move yourself.<br>
+  Shelly runs AI tasks on your Android phone. You approve what runs.<br>
+  <sub>Use your AI subscription for terminal tasks. No separate paid LLM API required.</sub><br>
   <sub>An open-source AI terminal and agent runtime that lives on the phone. No PC. No Termux. No cloud runner.</sub>
 </h3>
+
+<p align="center">
+  Connects with ChatGPT (Codex) and Claude Code on your subscriptions — plus API providers and on-device models.
+</p>
 
 <p align="center">
   <img src="docs/images/demo-spotify.gif" alt="ChatGPT on a Galaxy Z Fold6 is asked to save a 90s grunge playlist in Spotify; one tap approves it on the phone, Spotify runs on a hidden screen, ChatGPT reports done, and the Grunge Forever playlist is in Your Library" width="300">
 </p>
 
 <p align="center">
-  <sub>"Save a grunge playlist in Spotify" &rarr; <b>one tap to approve on the phone</b> &rarr; Spotify runs on a hidden screen &rarr; ChatGPT says done &rarr; it's really there. (sped up)</sub>
+  <sub>"Save a grunge playlist in Spotify" → approved on the phone → Spotify runs on a hidden screen → ChatGPT says done → it's really there. (sped up)</sub><br>
+  <sub>App-operation demo — tasks like this need the ClosePaw integration (see "Advanced" below).</sub>
 </p>
 
 <p align="center">
-  <b>Try it in 3 steps:</b>
-  &#9312; Install the APK from <a href="https://github.com/RYOITABASHI/Shelly/releases">Releases</a> &nbsp;
-  &#9313; In Shelly, run <code>shelly codex pair</code> and pair it in the ChatGPT app (Codex) &nbsp;
-  &#9314; Ask ChatGPT to do something on your phone <sub>(app tasks like the clip use the <a href="https://github.com/RYOITABASHI/closepaw/releases">ClosePaw Shelly build</a>)</sub><br>
-  <sub>You need: a ChatGPT sign-in for Codex (API keys are not supported for remote control); for app tasks, the ClosePaw Shelly build (uninstall the official ClosePaw first) set up with an API key or an OpenAI-compatible endpoint, and Shizuku running.</sub>
+  Shelly exists because its author wanted to run real development and research with nothing but a Galaxy Z Fold and AI. The environment that lets an AI operate the phone was itself built with AI, on that phone — and it is still his daily driver.
+</p>
+
+<p align="center">
+  <b>Your first command on the phone — 3 steps:</b><br>
+  ① Install the APK from <a href="https://github.com/RYOITABASHI/Shelly/releases">Releases</a> and open Shelly — the terminal is live right away (on Android 11+, Shelly checks All files access when setting up the terminal and asks only when it is missing, so the terminal can reach your files).<br>
+  ② In the terminal, run <code>codex</code> — if you are not signed in, Shelly prints the ChatGPT sign-in URL and a code and queues the URL for its own browser pane — and if that queueing fails, you can open the printed URL manually. No API key.<br>
+  ③ Ask Codex to work on your files — list, edit, build, research. It runs on the phone. The steps Shelly runs as an agent, and the run, execute and write calls that arrive over MCP, pass its approval gate when they need approval: you approve on the phone, pre-approved steps run without a tap, and safety-gate denials always apply. One exception: an eligible agent registration can also be confirmed from ChatGPT — that setting is on by default — and every confirmation is recorded in chat first, after which Shelly attempts a phone notification when notifications are enabled — posting can fail even then; when a notification is posted and Shelly can identify the agent, it also offers a one-tap Disable.<br>
+  <sub>Prefer driving from the ChatGPT app? Run <code>shelly codex pair</code> and pair it there (remote control rides your ChatGPT sign-in; API keys are not supported for it).</sub>
+</p>
+
+<p align="center">
+  Advanced — operating other apps (like the clip above): the official ClosePaw works, with its own confirmation (and returns no result); the background run in the clip needs the ClosePaw Shelly build (uninstall the official ClosePaw first), set up with an API key or an OpenAI-compatible endpoint. App operation is separate from the subscription promise above: the AI driving ClosePaw may use a paid API. The receiver also requires ClosePaw's onboarding to be finished, its accessibility service enabled, and overlay permission granted. Starting work through the trusted build's background receiver also requires ClosePaw's embedded adb channel to be paired and connected, with a known port (the official build is handed off through its activity instead). Shelly itself needs no Shizuku. App operation is different: its virtual display still runs through Shizuku, so the Shizuku server must be installed — current ClosePaw builds restart it automatically if it stops.
 </p>
 
 <p align="center">
@@ -74,11 +88,11 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/shelly-flow.png" alt="How the pieces connect: you ask from your phone; Muse coordinates; Claude Code develops, Codex works and reviews; Shelly runs code and commands on the phone itself — with preapproval armed, taps are skipped only for run_command and write_file, safety-gate denials still apply, and STOP-ALL turns both preapproval switches off; screen work is delegated to ClosePaw (a separate app); scheduled agents run unattended — all on AI subscriptions and free tiers, no paid APIs" width="900">
+  <img src="docs/images/shelly-hub.png" alt="You ask from your phone. Codex, Claude Code, and APIs & local models connect to Shelly, the execution hub on your Android phone: a real terminal, an approval gate for the agent steps and MCP run/execute/write calls that need approval, and scheduled agents. Outcomes: code & file tasks on the device, and app operation through ClosePaw as an advanced setup." width="900">
 </p>
 
 <p align="center">
-  <sub>One phone. Connected AI. Automated action — with Shelly as the execution hub. How external agents connect: <a href="#external-agents-over-mcp">External agents over MCP</a>.</sub>
+  <sub>Shelly is the hub: AI services connect to it, commands and agent actions execute on the phone, and its approval gate decides which agent steps and MCP run/execute/write calls that need approval may run. How external agents connect: <a href="#external-agents-over-mcp">External agents over MCP</a>.</sub>
 </p>
 
 
@@ -482,7 +496,7 @@ Schedules can also be **one-shot**: "in 5 minutes", "at 14:55", "tomorrow mornin
 
 Unattended runs whose action is only a local `draft` file (inside the scoped output folders) or a `notify` no longer wait for the manual approval tap — both stay on the device. Every other action type (webhook, CLI, social post, …) still needs it, and the safety rules above take precedence when enabled.
 
-**ClosePaw hand-off (Experimental).** An agent can hand a phone task off to [ClosePaw](https://github.com/imoonkey/closepaw), an open-source (Apache-2.0) Android phone-use agent: say "have ClosePaw open Chrome and search the weather in Tokyo" (or 「ClosePawでChromeを開いて東京の天気を検索して」). Each run asks you in Review first ("Hand off to ClosePaw: <goal>") — the only exceptions are a step pre-approved together with its agent (below) and the **Run ClosePaw without approval** switch (see [External agents over MCP](#external-agents-over-mcp)); ClosePaw then shows its own "External Goal" confirmation before it runs. The official ClosePaw sends no result back, so the run ends as **handed off to ClosePaw**, not as a result (results do come back with the Shelly-trusted build's background run, below). Install ClosePaw yourself from its GitHub releases and set it up with an API key / OpenAI-compatible endpoint — Shelly's small on-device model is not able to drive it. From any Shelly terminal — including a Codex session running inside it — `shelly closepaw "Open Chrome and search for Tokyo weather"` hands a goal off directly (ClosePaw's own Run confirmation is the consent step; at most one hand-off per 5 seconds, requests older than 30 s are dropped). This also works while Shelly is in the background (for example while you drive Codex from the ChatGPT app): Android does not let a backgrounded app open another app, so Shelly then posts a "Hand off to ClosePaw" notification instead — tap it to continue. **Shelly-trusted ClosePaw build (optional):** a ClosePaw variant built from [RYOITABASHI/closepaw](https://github.com/RYOITABASHI/closepaw) (`shelly-trusted-caller`, APK at https://github.com/RYOITABASHI/closepaw/releases/tag/shelly-v0.1.0-2) skips ClosePaw's own confirmation when Shelly launches it, because Shelly has already asked you. Installing it requires uninstalling the official ClosePaw first (different signature). Shelly only treats it as trusted when its signing certificate matches the pinned one; the official ClosePaw never gets the token and keeps its dialog. With the variant installed, `shelly closepaw "<goal>"` no longer fires directly: Shelly asks you first, and only on the phone — tap **Approve** on its notification (device unlock) or reply `approve <hash>` in Shelly's chat (a plain "OK" does not count). ChatGPT/the terminal can reject (`shelly closepaw reject <requestId>`) but never approve it, and each request needs its own approval — unless the **Run ClosePaw without approval** switch is on (see [External agents over MCP](#external-agents-over-mcp)). Likewise, an agent with a ClosePaw step can't be approved from ChatGPT while the variant is installed; approving it on the phone approves that step for its future runs until the agent is edited. **Background run (variant v0.1.0-4+):** with the variant release [shelly-v0.1.0-4](https://github.com/RYOITABASHI/closepaw/releases/tag/shelly-v0.1.0-4) or later, an approved hand-off no longer brings ClosePaw to the front: Shelly sends it to ClosePaw's background entry and ClosePaw works on its own virtual display (Shizuku must be running), so you can keep using your phone — just avoid the app ClosePaw is using. Shelly reports the outcome in the terminal, the agent run and the chat ("working in the background"), or says exactly what to fix (start Shizuku, turn on ClosePaw's accessibility service, grant the overlay permission, add credentials, ClosePaw is busy). Shelly never asks ClosePaw to take over the main screen. Older ClosePaw builds keep the previous launch behaviour. Only this background run returns ClosePaw's result: `shelly closepaw --wait "<goal>"` (or `shelly closepaw wait <requestId>`) waits for your approval and ClosePaw's answer and prints it; otherwise `--wait` exits 3 (hand-off only, no result). *The ChatGPT → `shelly closepaw --wait` → background run → result path is verified on device (Galaxy Z Fold6, N=1, see [Status](#status)).*
+**ClosePaw hand-off (Experimental).** An agent can hand a phone task off to [ClosePaw](https://github.com/imoonkey/closepaw), an open-source (Apache-2.0) Android phone-use agent: say "have ClosePaw open Chrome and search the weather in Tokyo" (or 「ClosePawでChromeを開いて東京の天気を検索して」). Each run that reaches action approval asks you in Review first ("Hand off to ClosePaw: <goal>") — this account describes the in-app approval handler; a run can instead be refused earlier, during policy preflight, before any Review request is issued, and even at action approval the policy engine can decline the run without a Review prompt (a deny or draft-only verdict normally auto-declines — if recording that decline fails, the run falls through to human Review instead); the exceptions to the Review ask are that policy auto-decline, an agent created or changed through MCP — its ingress taint gets its actions declined without prompting, before policy or either bypass is even evaluated, and if that decline cannot be recorded the request is left to time out instead — a step pre-approved together with its agent (below), and the **Run ClosePaw without approval** switch (see [External agents over MCP](#external-agents-over-mcp)) — which skips the Review ask only when the run is active and the once-per-run hand-off is still available, the approval request being rechecked and the hand-off slot claimed before anything fires. With only the headless approval handler available, a ClosePaw hand-off request is instead left unanswered and can time out with no Review prompt and no decline recorded. The official ClosePaw then shows its own "External Goal" confirmation before it runs. The official ClosePaw sends no result back, so the run ends as **handed off to ClosePaw**, not as a result. A successful agent launch always ends that way — its launch carries no result callback, so the executor reports the hand-off itself, never ClosePaw's final result; a recognized receiver refusal is reported as an error instead. Returning the result belongs to the tracked shell path below (`shelly closepaw --wait` on the background entry). Install ClosePaw yourself from its GitHub releases and set it up with an API key / OpenAI-compatible endpoint — Shelly's small on-device model is not able to drive it. With the official build, from any Shelly terminal — including a Codex session running inside it — `shelly closepaw "Open Chrome and search for Tokyo weather"` hands a goal off directly (ClosePaw's own Run confirmation is the consent step; at most one hand-off per 5 seconds, requests older than 30 s are dropped). This also works while Shelly is in the background (for example while you drive Codex from the ChatGPT app): when the overlay permission lets Shelly start ClosePaw directly, it tries that first. Otherwise, or if that start throws an error, Shelly tries to post a "Hand off to ClosePaw" notification; tapping it takes you to ClosePaw's activity. **Shelly-trusted ClosePaw build (optional):** a ClosePaw variant built from [RYOITABASHI/closepaw](https://github.com/RYOITABASHI/closepaw) (`shelly-trusted-caller`, APK at https://github.com/RYOITABASHI/closepaw/releases/tag/shelly-v0.1.0-2) skips ClosePaw's own confirmation when Shelly launches it, because Shelly handles approval for that build. Installing it requires uninstalling the official ClosePaw first (different signature). Shelly only treats it as trusted when its signing certificate matches the pinned one; the official ClosePaw never gets the token and keeps its dialog. With the variant installed and **Run ClosePaw without approval** off, `shelly closepaw "<goal>"` asks for approval first: the request is queued and the command first waits for the `approval-required` acknowledgment itself (up to 20 s), prints its message, and exits 0 — that wait is for the acknowledgment, not for the phone approval, and the exit 0 comes only if the command actually receives that successful acknowledgment: Shelly can reject a stale or rate-limited request before any pending approval exists, and the command exits 1 if the acknowledgment reports a failure or does not arrive in time. Shelly asks you, and only on the phone — tap **Approve** on its notification (device unlock, Android 12 and later — on earlier versions, open Shelly and use the chat reply instead) or reply `approve <hash>` in Shelly's chat (a plain "OK" does not count). Only the `--wait` form (or a later `wait <requestId>`) waits for that approval and for the result. ChatGPT/the terminal can reject (`shelly closepaw reject <requestId>`) but never approve it, and each request needs its own approval — unless the **Run ClosePaw without approval** switch is on (see [External agents over MCP](#external-agents-over-mcp)). Likewise, an agent with a ClosePaw step can't be approved from ChatGPT while the variant is installed; approving it on the phone preapproves that step for future runs if the phone registration succeeds, the sanitized goal is nonempty, the seal itself is saved, and the approved draft and the registered agent each contain exactly one ClosePaw action and the agent's sanitized ClosePaw goal and its exact prompt and ordered instruction text match the approved draft — and, on each later run, the run is eligible and active, the once-per-run hand-off is still available, the resolved goal still matches, and policy does not block the automatic acceptance; later runs recheck the sealed definition and goal. That preapproval lasts while the definition still matches the sealed one — an edit that changes a compared value makes the seal stop matching, and restoring the matching definition can make the retained seal usable again; the seal itself is removed only when it is revoked, when a new seal replaces it for that agent, or when it is dropped as stored seals exceed the 200-seal cap and the oldest are removed — and revocation or that cap eviction can leave the agent with no stored seal at all. The one-tap Disable is offered on the audit notification posted after a ChatGPT confirmation, when Shelly can identify the agent — that confirmation route never creates a seal; tapping it works only when the handler holds a valid, unexpired nonce for it in memory, and it disables the agent first: only after that disable succeeds does Shelly attempt to revoke that agent's existing seal, including one obtained through phone approval, without any definition edit, best-effort and with any revocation error suppressed. **Background run (variant v0.1.0-4+):** with the variant release [shelly-v0.1.0-4](https://github.com/RYOITABASHI/closepaw/releases/tag/shelly-v0.1.0-4) or later, Shelly first sends the goal to ClosePaw's background entry. When ClosePaw starts on its own virtual display, it stays in the background and you can keep using your phone — just avoid the app ClosePaw is using. The variant can also report a main-display start. ClosePaw then drives your main screen and Shelly records a main-display hand-off. If the broadcast fails to send or the background receiver does not answer, times out, or returns an unknown code, Shelly falls back to launching ClosePaw's activity. When Shelly cannot start the activity directly, it tries to post a tap-to-continue notification; tapping that one opens Shelly instead, which retries the hand-off — rechecking trust and potentially trying the background receiver again — without the original shell callback ID; the retry can fail or expire, so the tap alone does not guarantee that ClosePaw starts. If Shelly cannot post it (for example, when notifications are disabled), a direct `shelly closepaw` run without the trusted variant reports that Shelly is in the background and its notifications are off, and tells you to open Shelly and run the command again. On the trusted shell path, when the launch itself throws — including when Shelly cannot post the fallback notification — an approved hand-off surfaces only as “shelly closepaw: approved, but launching ClosePaw failed”. A successful trusted hand-off and a recognized receiver refusal end with their own outcomes instead. That message is the shell approval handler's outcome. The shell path records its outcome on the shell request itself, and the terminal's wait reads that record back. The launch message ("working in the background" for a virtual-display start) is the hand-off record: when shell preapproval is enabled, `shelly closepaw --wait` prints that message before it starts polling; once polling starts, wait shows progress rather than that message while the run is still in flight, and the invocation prints the final result only if it reads the final state before exiting — the final callback normally replaces the stored launch message with the final result (if the final state arrives before the launch returns, no launch message is recorded and the record holds the final result directly), but a callback that lands after the loop's last read is not printed by that invocation, even if it arrived before the deadline. If that invocation has already timed out (exit 124), a later callback updates the stored record only if it is accepted against a still-registered expectation; the invocation itself has already exited and does not print it. The record also carries specific guidance for recognized refusals (finish ClosePaw's onboarding, turn on ClosePaw's accessibility service, grant the overlay permission, add credentials, ClosePaw is busy). An agent run instead records and reports its own hand-off outcome separately. Shelly never asks ClosePaw to take over the main screen. Older ClosePaw builds keep the previous launch behaviour. A run started through the background entry returns ClosePaw's result when that build advertises the result callback and the run stays tracked: `shelly closepaw --wait "<goal>"` (or `shelly closepaw wait <requestId>`) waits for approval if needed and for ClosePaw's answer, prints the answer only if it reads the final state before exiting, and a result that arrives after a timeout can still be recorded by Shelly, if it is accepted against a still-registered expectation. Advertising the callback is the normal handshake, not an absolute prerequisite: if the ordered broadcast times out, Shelly keeps the registered nonce, so a correlated final callback can still be recorded even though no advertisement arrived — but an activity or notification fallback can still mark the request untracked in the meantime, and the current wait then exits 3 only if it reads that untracked state before an accepted callback replaces it (a callback that arrives before the post-launch write can keep `untracked` from being written at all). When the run is not tracked — an older trusted build can start in the background without advertising the callback, and then no result comes back — `--wait` reports the untracked hand-off instead of an answer, and the result-waiting invocation exits 3 when it reads that untracked state (hand-off only, no result), including on older background-capable builds; a plain `shelly closepaw "<goal>"` run exits 0 when the hand-off succeeds, including when the fallback only posts a notification (the executor still reports the request as handed off; the command exits 0 on the `notified` acknowledgment, printing its human-readable message rather than the code — that acknowledgment means only that the notification was posted: ClosePaw may already be running (the original broadcast may have started work before its reply timed out), may start later if a tap leads to a successful retry, or may never start if the retry fails or expires), and when Shelly accepts the request as `approval-required`, again printing the acknowledgment's message rather than the code. When Shelly queued the request, ClosePaw had yet to start and the request still needed your approval on the phone — the `approval-required` response is generated only after that, and it is the command's receiving that response that gives it the exit 0. *The ChatGPT → `shelly closepaw --wait` → background run → result path is verified on device (Galaxy Z Fold6, N=1, see [Status](#status)).* Note on builds of that era: the v0.1.0-4-era builds drove the virtual display through Shizuku and gated the start on it too. Current builds gate the start on ClosePaw's embedded adb channel instead; the virtual display itself still runs through Shizuku, which current builds restart automatically if it stops. Some leftover failure text in Shelly — the native diagnostic and its localized UI versions — still instructs users to start Shizuku first; those strings predate the current readiness model and are queued for correction.
 
 If the request itself is too vague to act on — "help me out" with no object or domain — Shelly asks what you actually want done *before* it asks when to run it, instead of scheduling an agent with an empty task.
 
@@ -605,7 +619,7 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature-by-feature breakdo
 - **Remote control (Experimental)** — `shelly codex pair` hosts Codex's official `codex remote-control` in a terminal tab and prints a short-lived pairing code to enter in the ChatGPT app's Codex; `shelly codex code` prints a new one. Requires a ChatGPT sign-in (API keys are not supported). Pairing and running commands from the app have been verified on device.
   - **Projects** — the ChatGPT app only opens folders Codex trusts (otherwise it reports that it cannot verify the project's trust setting). `shelly codex pair` lists the trusted projects; `shelly codex trust <dir>` adds one, writing the same `[projects."<realpath>"] trust_level = "trusted"` entry that Codex's own trust prompt writes (running `codex` once inside the folder and accepting the prompt does the same). It refuses `/`, storage roots, the Shelly home itself and its parents. A folder on shared storage (`/sdcard`, `/storage`) also needs `--yes`.
   - **Host name** — the app lists the device as `Shelly (<model>)` instead of `localhost`. Set `SHELLY_CODEX_HOST_NAME` to choose another name (up to 63 bytes). Codex has no setting for this name, so Shelly's exec wrapper supplies it through `gethostname()`. It does this only inside the Codex process itself; the commands Codex runs still see the real host name.
-  - **Register agents by asking ChatGPT** — in the ChatGPT app's Codex, ask e.g. *Run: `shelly agent add "毎朝8時にAIニュースを調べてブリーフィングにまとめて"`*. Shelly drafts the agent with its normal `@agent` flow and Codex prints the summary (name, schedule, steps, and which part ClosePaw would do on the phone), a request id and a short definition hash. You approve in one of three ways: reply OK in Shelly's chat, tap **Approve** on Shelly's notification (device unlock required, Android 12+), or tell ChatGPT to run `shelly agent confirm <requestId> <hash>` (Settings → *Approve Agents from ChatGPT*, on by default; the hash binds the approval to exactly the summary you saw). Because the AI could run that command itself, every approval from ChatGPT is announced with a notification that disables the agent in one tap, and is recorded in the chat. Plans with posting, webhooks, commands, API calls, browser actions, autonomous mode or notification triggers can only be approved in Shelly itself. If a step has to operate another app's screen ("LINEで自分に送って", "open Spotify and play …") and [ClosePaw](https://github.com/imoonkey/closepaw) is installed, only that step is handed to ClosePaw and the summary says so; approving the agent also approves that ClosePaw step for its future runs until the agent is edited. `shelly agent list` lets Codex check the result. If Shelly is in the background, it posts a "New agent request from Codex — tap to review" notification instead.
+  - **Register agents by asking ChatGPT** — in the ChatGPT app's Codex, ask e.g. *Run: `shelly agent add "毎朝8時にAIニュースを調べてブリーフィングにまとめて"`*. Shelly drafts the agent with its normal `@agent` flow and Codex prints the summary (name, schedule, steps, and which part ClosePaw would do on the phone), a request id and a short definition hash. You approve in one of three ways: reply OK in Shelly's chat, tap **Approve** on Shelly's notification (device unlock required, Android 12+), or tell ChatGPT to run `shelly agent confirm <requestId> <hash>`. The two remote methods — the notification's **Approve** action and ChatGPT confirmation — require the draft to be eligible for approval and its schedule fireable; approving inside Shelly itself does not, so review-only drafts (which have no notification **Approve** action) and manual-only drafts, the latter through the confirmation card, are approved in Shelly itself — except that ChatGPT confirmation is not accepted for a ClosePaw draft while the trusted ClosePaw build is installed; those are approved on the phone only (Settings → *Approve Agents from ChatGPT*, on by default; the hash binds the approval to exactly the summary you saw). (Run confirm with Shelly in the foreground — while Shelly is in the background it returns a background error at once instead of queueing; open Shelly and retry.) Because the AI could run that command itself, every approval from ChatGPT is recorded in the chat first, and then — when notifications are enabled — Shelly attempts to announce it with a phone notification, though posting can fail even then; when that notification is posted and Shelly can identify the agent, it offers a one-tap Disable action for the agent. Plans with posting, webhooks, commands, API calls, browser actions, autonomous mode or notification triggers can only be approved in Shelly itself. If the original request text carries a recognized UI-operation clause ("LINEで自分に送って", "open Spotify and play …" — the router detects the clause in the request itself, so it can create the ClosePaw action even when no parsed step matches it, or when the plan has no parsed steps at all), [ClosePaw](https://github.com/imoonkey/closepaw) is installed, the action is a draft or a notification, and the plan does not bundle multiple actions, that action is handed to ClosePaw and the summary says so; phone approval (chat reply, notification or card) also preapproves that ClosePaw step for future runs — provided the registration succeeds (the confirmed draft resolved into the specific agent it created), the sanitized goal is nonempty, the seal itself is saved, the approved draft and the registered agent each contain exactly one ClosePaw action, and the agent's sanitized ClosePaw goal and its exact prompt and ordered instruction text match the approved draft — and it holds on each later run only while the definition still matches the sealed one, the run is eligible and active, the once-per-run hand-off is still available, the resolved goal still matches, and policy does not block the automatic acceptance (an edit that changes a compared value makes the seal stop matching, and restoring the matching definition can make the retained seal usable again; the seal itself is removed only when it is revoked, when a new seal replaces it for that agent, or when it is dropped as stored seals exceed the 200-seal cap and the oldest are removed — revocation or that cap eviction can leave the agent with no stored seal at all). The one-tap Disable is offered on the audit notification posted after a ChatGPT confirmation, when Shelly can identify the agent — that confirmation route never creates a seal; tapping it works only when the handler holds a valid, unexpired nonce for it in memory, and it disables the agent first: only after that disable succeeds does Shelly attempt to revoke that agent's existing seal, including one obtained through phone approval, without any definition edit, best-effort and with any revocation error suppressed. Even when a step is preapproved, the policy engine can still decline a run at action approval without a Review prompt (a deny or draft-only verdict normally auto-declines — if recording that decline fails, the run falls through to human Review instead), and an agent created or changed through MCP has its actions declined without prompting on account of its ingress taint, before policy or either bypass is evaluated — Shelly tries to record that decline, and if the decline cannot be recorded the request is left to time out instead. That decline behaviour is the in-app approval handler's; with only the headless approval handler available, a ClosePaw hand-off request is instead left unanswered and can time out with no Review prompt and no decline recorded. A ChatGPT confirm never sets that preapproval, and an edited confirm card registers without it only when the edit changes one of those compared values — an edit that leaves the goal, prompt and step text unchanged still seals — provided the phone registration succeeds, the sanitized goal is nonempty, and the seal itself is saved — as long as the ClosePaw action stays a single action: removing or duplicating it fails the comparison. `shelly agent list` lets Codex check the result. If Shelly is in the background, the request is queued either way, and Shelly posts a "New agent request from Codex — tap to review" notification when notifications can be posted (enabled and permitted).
   - **Background** — `shelly codex pair --background` keeps the host running after its tab closes. Use `shelly codex status` to check it and `shelly codex stop` to stop it.
   - **Keep ChatGPT connected** — Settings → Codex Login can keep the host running in Shelly's foreground service, so ChatGPT reconnects by itself after app restarts, updates, reboots and network changes. It can only be turned on in Settings; the shell can only turn it off (`shelly codex autostart off`) or check it (`shelly codex autostart status`). It stops on Disconnect, STOP-ALL, or when notifications are off. *Reconnecting after an in-app update is verified on device.*
   - **Untrust and sign out** — `shelly codex untrust <dir>` removes a trusted folder. Settings → Codex Login → **Sign out of Codex** stops remote control first, then runs `codex logout`.
@@ -656,236 +670,4 @@ Full verification log with dates, devices, and evidence for every area: **[docs/
 
 These are on the short-term roadmap, not in the current build:
 
-- **Play Store / F-Droid distribution** — the APK is published via GitHub Releases only; store submission flow not yet done
-- **Cross-OEM autonomous-agent reliability** — unattended scheduled firing is observed on the Z Fold6 (N=1), but Android background limits vary by manufacturer (Samsung / Xiaomi / Oppo / OnePlus battery-freezers); broad cross-device reliability + a device health/permission checklist are not done yet
-- **Snippet authoring UI** — the Command Palette shows the first 20 entries from your snippet store and dispatches them to the terminal, but the in-app create/import/edit flow was removed in an earlier cleanup pass. Snippets are stored in Android's AsyncStorage (`store/snippet-store.ts`), not a plain file — there is currently no supported way to bulk-add them outside the (removed) in-app UI.
-
----
-
-## The Story
-
-### I don't hand-write code.
-
-I'm a Creative Director, not an engineer by training. I don't hand-write production code; implementation is delegated to AI coding agents under my direction. Shelly is designed around and verified on a Galaxy Z Fold6, and built through conversation with AI coding agents running on the phone and on a PC — then reviewed, tested on the phone, and shipped. In git, about 2,200 of 2,830 commits carry an AI author or co-author marker (as of 2026-11-04); the rest carry no marker either way, so git can't prove the origin of every line. The terminal core is adapted from Termux (Apache-2.0). I make the architectural calls; the AI proposes, I decide. The keystrokes are not mine. What I bring is product judgment about what belongs on a screen and what doesn't — and that turns out to be most of the job.
-
-That's the origin story. It is deliberately **not** the trust story — "an AI wrote it" is a reason to hold the code to a *higher* verification standard, not a lower one. You're deciding whether to give this app shell execution, broad storage, and your API keys, so the honest answer to "why trust it?" is the discipline around the code, all of which is auditable in this repo:
-
-- **On-device verification before "done."** Features aren't marked shipped until they've been observed working on real hardware, and results from a single device stay labeled as such — the N=1 caveats in this README's [Status](#status) table are that policy in public.
-- **Tests that execute the real code.** The agent pipeline's regression tests run the actual generated scripts with real processes — real bash execution, real HTTP-failure surfaces — instead of hand-copied re-implementations that can silently drift from what ships.
-- **Adversarial review before risky merges.** Native, OAuth, IPC, and security-boundary changes get an explicit second-agent review pass before they land; the signed-approval channel and the autonomous-agent execution gates went through dedicated security reviews.
-- **An engineering ledger instead of vibes.** [`docs/superpowers/DEFERRED.md`](docs/superpowers/DEFERRED.md) is the single source of truth for what's shipped vs. flag-gated-off vs. known-broken, with reasons and priorities. When this README hedges, that's where the hedge comes from.
-- **The agent stack is engineered to fail loudly and closed.** Unattended runs climb an escalation ladder across local and cloud backends (`lib/agent-escalation-ladder.ts`), a quality gate rejects completions that merely announce the work instead of doing it, and unattended actions that would need approval fail closed rather than running unreviewed.
-
-The keyboard you see in the screenshots? I built that too. It's called [Nacre](https://github.com/RYOITABASHI/Nacre) — an Android IME written in Kotlin, also created entirely through AI conversation. I'm typing on it right now, inside Shelly, improving both apps simultaneously.
-
-This is not a portfolio project. This is a tool I use every day to build things. If you find something that could be better, that's what the issue tracker is for.
-
-### Why any of this exists
-
-Mobile development never took off — not because phones lack computing power, but because the **input** and **interface** weren't designed for creation.
-
-Chat apps (ChatGPT, Claude, Gemini) can *talk* about code, but they can't *run* it. Terminal emulators (Termux) can *run* anything, but they're hostile to anyone who isn't already a developer.
-
-Shelly fills the gap. You type "make me a portfolio site" in the AI pane, and a real shell runs the commands, generates files, and shows you the results — right next to the terminal that produced them.
-
-And once that machinery exists, the next step is obvious: let it run without you watching. Describe a recurring task once, and the phone does it on its own alarm — no laptop left running, no cloud runner subscription.
-
-### Why every design decision is shaped like a question
-
-Every feature in Shelly started as a frustration I had with existing tools:
-
-- The cross-pane system comes from *"Why do I have to copy an error from one window and paste it into another?"*
-- The native terminal comes from *"Why does the terminal die every time I switch apps?"*
-- The Codex notification channels and Agent Chat's Approve/Deny bubbles come from *"An AI CLI is asking me to approve something in English. I don't know what it means."*
-- The VoiceChain comes from *"I can't type on a phone keyboard fast enough to keep up with my ideas."*
-- The layout system comes from *"Why can't I have a browser, a terminal, and an AI all on the same screen at the same time?"*
-- The color theme presets come from *"Why do I have to choose between a usable UI and an aesthetically interesting one?"*
-
-Every limitation became an innovation that engineers need just as much.
-
-### Why native — the WebView pivot
-
-Early versions used ttyd and a WebView. WebSocket connections dropped. Android's Phantom Process Killer terminated background processes. Every time you switched apps, the terminal was dead.
-
-So I directed the AI to throw it all away and go native. Shelly now embeds a native terminal emulator — Kotlin code derived from Termux's own `terminal-emulator` library — connected to an app-owned PTY through a JNI C layer. No TCP terminal server. No WebSocket boundary. No ttyd process to drop.
-
-For a React Native app this is an unusual architecture: an embedded native terminal emulator backed by an app-owned PTY via JNI `forkpty`, rather than a WebView or a socket bridge to an external terminal server.
-
-### Who is this for?
-
-- **People who want an agent on their own hardware** — scheduled, unattended tasks that run on your alarm, your keys, and your files, auditable down to the shell transcript
-- **Vibe Coders** — Lovable / Bolt / Replit Agent, but on your phone with a real terminal underneath
-- **Mobile-first developers** — Codex CLI users and anyone serious about CLI-first AI coding workflows who want a proper multi-pane IDE around real local terminals
-- **Non-engineers with ideas** — Shelly translates everything. Dangerous operations are surfaced with explanations and approval steps before they run
-
----
-
-## Architecture
-
-### System Architecture
-
-```mermaid
-flowchart TB
-  U["User on Android"] --> UI["Shelly UI\nReact Native panes"]
-
-  subgraph P["Pane runtime"]
-    TP["Terminal pane\nCodex foreground CLI"]
-    AP["AI pane\nAPI and local providers"]
-    BP["Browser pane\nDocs and localhost"]
-    PP["Preview pane\nCode, Markdown, images"]
-  end
-
-  UI --> TP
-  UI --> AP
-  UI --> BP
-  UI --> PP
-
-  subgraph N["Native Android bridge"]
-    KT["Expo Kotlin modules"]
-    JNI["JNI C layer\nforkpty and exec"]
-    TV["Terminal renderer\nTermux-derived emulator"]
-  end
-
-  TP --> KT --> JNI
-  JNI --> SH["App-owned shell\nbash, git, node, python"]
-  JNI --> WR["exec wrapper\nlinker64 and LD_PRELOAD"]
-  SH --> CX["Codex runtime\nunified codex_tui"]
-  TP --> TV
-
-  subgraph A["Agent context"]
-    LOG["Terminal transcript"]
-    CTX["Context builder\nredaction and compaction"]
-    ACT["User-approved actions\nrun command or apply diff"]
-  end
-
-  TP --> LOG --> CTX --> AP
-  AP --> ACT --> TP
-
-  subgraph R["Release pipeline"]
-    CI["GitHub Actions\nlint, typecheck, tests, APK build"]
-    APK["android-latest\nAPK and latest.json"]
-    CRT["codex-runtime-latest\nruntime tarball and manifest"]
-  end
-
-  CI --> APK
-  CI --> CRT
-  APK --> UP["Updates UI\nSHA-256 verify, installer handoff"]
-  CRT --> RU["Runtime updater\nverify, smoke-test, promote, reset"]
-  UP --> UI
-  RU --> CX
-```
-
-Shelly's core is the connection between three systems that are usually
-separate: a native Android terminal runtime, a foreground Codex CLI, and
-context-aware AI panes. The terminal is not a WebView or remote bridge; it is
-an app-owned PTY read by Kotlin through JNI. The update system is also split:
-APK releases update the app and native payload, while the Codex runtime lane can
-move faster after SHA-256 verification and smoke tests.
-
-### Cross-Pane Intelligence
-
-```mermaid
-flowchart LR
-  subgraph AI Pane
-    U["User: 'fix the error'"]
-    R["AI: missing import path..."]
-    RUN["▶ Run fix"]
-  end
-  subgraph Terminal Pane
-    CMD["$ npm run build"]
-    ERR["Error: Cannot find './utils'"]
-    FIX["$ mv util.ts utils.ts"]
-  end
-  ERR -- "transcript injected" --> R
-  RUN -- "execute" --> FIX
-  U --> R
-```
-
-AI reads Terminal. Terminal executes AI. The user just talks.
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the Screen Layout diagram, AI Edit Golden Path, Native PTY (JNI forkpty), and Runtime Theme Swap internals.
-
----
-
-## Release Integrity
-
-These are intentionally operational rather than synthetic — they show the cost
-of shipping a real Android-native toolchain, not a thin client. The exact
-per-build numbers (`versionCode`, commit, asset name, byte size, SHA-256) live
-in the release manifests, which the in-app updater reads directly, so they never
-drift out of sync with this page:
-
-- **Android APK** — [`android-latest/latest.json`](https://github.com/RYOITABASHI/Shelly/releases/download/android-latest/latest.json): `versionCode`, `versionName`, `gitSha`, `apkAssetName`, `apkSizeBytes`, `sha256`.
-- **Codex runtime** — [`codex-runtime-latest/codex-runtime-termux.json`](https://github.com/RYOITABASHI/Shelly/releases/download/codex-runtime-latest/codex-runtime-termux.json): `codexVersion`, asset name, `sha256`.
-
-| What | Shape | Why it costs that |
-|---|---|---|
-| APK size | ~700 MB | bundles bash / Node.js / Python 3 / git / ripgrep / … plus the Codex runtime as real binaries, not shims |
-| Codex runtime | shipped + managed on its own lane (~160 MB) | promoted separately so it can move faster than the APK |
-| Release verification | SHA-256 checked before the installer handoff | the updater refuses an APK whose hash doesn't match the manifest |
-| Release signing | private release key via APK Signature Scheme v3 key rotation, checked by `apksigner` in CI | CI fails unless the API 28+ signer is the pinned certificate (`14:76:D9:52:…:21:2D`) with a debug → release lineage; the updater refuses unknown signers |
-| Runtime verification | SHA-256 + `codex_tui --version` / `codex_tui exec --help` smoke tests | a runtime candidate is only promoted after it actually runs |
-| CI per release | lint · typecheck · unit tests · native release build · signed APK + manifest publish | every release artifact is built and verified by GitHub Actions |
-
-The point: a large APK, a separately managed Codex runtime, and a CI pipeline
-that builds native release artifacts and generates verified update manifests
-before anything reaches a device. The exact, current numbers live in the
-manifests linked above rather than being copied here where they would go stale.
-
----
-
-## Built With
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Expo 54 / React Native 0.81 |
-| Language | TypeScript (strict) + Kotlin + C |
-| UI | NativeWind (TailwindCSS 3) |
-| State | Zustand |
-| Navigation | expo-router v6 |
-| Terminal | Native emulator (Kotlin, Termux-derived) + JNI forkpty (C, app-owned PTY) |
-| Fonts | JetBrains Mono for app/terminal readability, with bundled legacy pixel fonts retained for compatibility |
-| i18n | expo-localization + Zustand (900+ keys, EN/JA) |
-
----
-
-## Contributing
-
-This started as a personal tool. Community contributions are shaping it into a true OSS project.
-
-**Looking for a first contribution?** Check the [`good first issue`](https://github.com/RYOITABASHI/Shelly/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) label. Unit tests are already wired through Jest; focused tests around routing, update manifests, command safety, and native bridge helpers are especially useful.
-
-**Key files to explore:**
-
-- `lib/input-router.ts` — the brain; classifies natural language into shell commands, AI requests, or `@mentions`
-- `lib/command-safety.ts` — risk assessment engine; blocks dangerous commands with 5 severity levels
-- `lib/auto-savepoint.ts` — watches for file changes and auto-commits; the "game save" system
-- `lib/ai-edit.ts` — stage / apply / fuzzy-re-anchor unified diffs against the staged file
-- `lib/theme-presets.ts` — palette + runtime preset swap + Text.render monkey-patch
-- `components/panes/InlineDiff.tsx` — per-hunk Accept / Reject with write-back
-- `modules/terminal-view/android/.../ShellyTerminalView.kt` — the native terminal renderer (Kotlin + Android Canvas)
-- `modules/terminal-emulator/android/src/main/jni/shelly-pty.c` — the JNI forkpty layer
-
-If you find something that could be better — a cleaner pattern, a performance optimization, a bug fix — **please open an issue or PR**. That's exactly why this is open source.
-
-Read the contributing guide: **[CONTRIBUTING.md](CONTRIBUTING.md)**
-
----
-
-## Vision
-
-In two years, phones won't just run AI chat — they'll run agents that work while you're not looking. The hardware is already here — 40+ TOPS NPUs, 12 GB of RAM, multi-billion-parameter models running on-device at usable speeds — and the missing piece was never compute. It was an interface that could hold a real terminal, a real toolchain, and a real scheduler in one place you already carry.
-
-When local-LLM inference doesn't have to phone home and a scheduled task can wake the phone itself, you get agents that work on your own keys, from places no cloud runner reaches — no laptop left on, no server to pay for, no wifi required until the result needs to go somewhere. Real, unattended work from a plane without wifi needs something like this.
-
-Shelly was built for that future, agent-first: the escalation ladder across local and cloud backends is already wired, the scheduler and quality gates are already hardening under real on-device testing, and underneath all of it is the native terminal — the same environment a scheduled agent uses is the one you can open and drive by hand.
-
-The question isn't whether unattended, on-device AI will happen. It's whether the tools built for it are honest about what's actually been verified along the way.
-
----
-
-## About the Creator
-
-**RYO ITABASHI** — Creative Director at [Rebuild Factoryz](https://rebuildfactoryz.com/). Branding and design are my profession. Code is not. See [The Story](#the-story) above for how that actually works and why it doesn't lower the bar for what ships.
-
-The keyboard in the
+- **Play Store / F-Droid distribution** — the APK is published via GitHub Releases only; store submission f

@@ -18,12 +18,24 @@ to a clean score: fixed drills from six steps to seventeen, or one you write you
 One folder of PHP and static files — drop it on the host you already pay for, double-click, and a
 team of agents is running.
 
-![Autonomous Loop Studio — a self-hosted AI agent console in plain PHP](screenshots/auto-harness.gif)
+![Autonomous Loop Studio — a self-hosted AI agent console in plain PHP](https://raw.githubusercontent.com/autonomous-loop-studio/Autonomous/media/media-source/banner-auton-1.gif)
 
-*Two runs of the same twelve-step training drill to auto fit the harness. The first run ends with twelve
-calls, one successful retry, the error visible in the transcript. The harness has learned from its
-successful retry. With training mode back on, the second run is completed without error. The harness has
-been successfully custom-fitted, and your model is now an agent.*
+<p align="center">
+Your own fleet for $0, <strong>universally compatible</strong> with any local endpoint, provider, model or API, even when
+wrapped in cURL. Turn a free-tier frontier demo’s cURL endpoint into a <strong>fully autonomous agent</strong> complete
+with tools, persistent hive-mind shared memory and a browser they can actually drive. Specially designed
+tools and architecture keep you in the game. Stay below rate limits, never above.
+<strong>Built-in pacer / throttle</strong> keeps your swarm’s requests just below the limit. A 429 error no longer kills
+the loop. The system just <strong>queues</strong> the request(s) and out-waits the rate limit. Any pre-existing data that
+would normally be parsed by an agent is now parsed by the program itself. Instead of taking minutes to
+stream back, one word at a time, it’s <strong>instantaneous</strong>. A page’s source code, file searches or a 400k-line
+log file, saving your agent’s context window and your token limit. <strong>“Training Mode”</strong> auto-fits the agent’s
+harness through <strong>brute-force drills</strong>. The program is self-evolving, learning dialect, it remembers the
+syntax of the successful tool calls for the agents, per agent. <strong>“Auto near-miss corrections”</strong> and
+automatic retries turn even a 3B local model into an agent with frontier capabilities.
+<strong>Full-Duplex MCP protocols</strong> with passthrough options and built-in reverse proxy tunnels work as global
+mesh networks where friends can share agents and resources.
+</p>
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php&logoColor=white)
 ![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
@@ -118,12 +130,12 @@ Ollama, LM Studio or vLLM on your own box there is nothing to pace at all.
 
 **[The drill, recorded](screenshots/training-mode.gif)** — a local model running the training drill
 against a real folder. The attempt before this one repeated `list_dir`, `grep_code` and `exec`, and
-said so in the transcript; asked to try again it ran clean, and these are the closing calls of that
-run — each landing once, in order, with its own timing:
+said so in the transcript; asked to try again it ran clean. Then two models take the same drill first-pass,
+side by side:
 
-<p><a href="screenshots/training-mode-poster.png"><img src="screenshots/training-mode.gif" width="880" alt="A local agent running the training drill — its closing tool calls landing once each, in order, each with its own timing."></a></p>
+<p><img src="https://raw.githubusercontent.com/autonomous-loop-studio/Autonomous/media/media-source/head2head.gif" width="880" alt="Qwen3.5-4B and Nemotron-3-Ultra-550B running the Browser drill side by side; both finish clean, with Qwen's completion card appearing first."></p>
 
-*Click it for the full-size still.*
+*Qwen3.5-4B and Nemotron-3-Ultra-550B — both clean, Qwen's completion card first.*
 
 **[The whole 30 seconds, unedited ↗](https://github.com/autonomous-loop-studio/Autonomous/releases/download/v447/Training-Mode.mp4)** — the failed first pass, the correction, the `ok`, and the clean run. mp4, 43 MB — it downloads rather than streaming in the browser.
 
@@ -261,6 +273,10 @@ Jump straight to a section — every heading on this page is linkable; these are
 > local Windows PHP setups
 > either accept that limit or expect you to install and hand-edit Apache/FPM
 > yourself. *
+
+<p><img src="https://raw.githubusercontent.com/autonomous-loop-studio/Autonomous/media/media-source/install.gif" width="880" alt="The Windows one-click install, recorded: clone from GitHub, start.bat checks PHP and writes the access token, then Apache starts and the app opens."></p>
+
+*The one-click install, recorded: clone the folder, run `start.bat`, and it checks PHP, writes your access token and starts Apache — no database, no hand-edited config.*
 
 ### 🐧 Linux / macOS
 ```bash
@@ -1146,25 +1162,4 @@ the model a thing"* and *"hand the model a job and walk away."* 🚶♂️💨
 - 🧭 **An honest badge** — each agent card shows **RUNNING** while it works, **HELD** when it's parked, and idle otherwise, so a glance tells you the truth.
 - 🛑 **Stop one, release one** — click an agent's **ALWAYS ON** badge to stop that run without switching the agent off. It becomes **HELD**; click again to release it and resume next tick.
 - 🧰 **Release *everyone* in one click** — **Config → Permissions → Always-On** shows how many agents are held and a **RELEASE HELD AGENTS** button, so a roster parked by a cap (or by hand) is never a trap you have to click through one agent at a time.
-- 🧨 **Two spend caps, both off by default** — **Max iterations** and **Max minutes**. When a cap trips the agent is **parked and held** (that's the point of a spend guard) and the status line tells you when a cadence is long enough that the cap would fire after a *single* tick — so you can set it to `0` and loop forever if that's what you want.
-- 🔌 **Survives leaving the tab** — flip **Config → Permissions → Run while tab is hidden** and the timer is driven by a **Web Worker** (page timers are throttled hard in a background tab), with the in-flight turn no longer aborted the moment you switch away. Come back and it ticks immediately.
-- 🧯 **Master kill switch** — **Config → Permissions → *Enable always-on*** stops everything at once, aborts in-flight autonomous turns, and **releases everyone** so switching it back on is a clean, working reset.
-- ✅ **Only the right agents run** — an agent needs a standing goal **and** its own always-on switch **and** to be active **and** not held before the scheduler will touch it.
-- 🧵 **Runs in the page, by design.** There is no server-side runner — this stops when the tab closes, which is exactly why it's cheap and easy to reason about.
-
-> 📝 **Tip:** a standing goal of `idle` (or two words) gives the agent nothing to
-> aim at, so it will wander and "explore." Give it a real objective — *"run the
-> test suite and fix failures until green."* The status line in Config tells you
-> roughly how many turns/hour that will cost.
-
-</details>
-
----
-## ❝ Global pre-prompt override — one instruction for the whole fleet
-
-A single box in the **Agents-tab header** (§ button) that reaches **every agent's
-system prompt**, on every call path — main chat, ask-directly and routing-chart
-runs alike. ✨
-
-<details>
-<summary>Prepend
+- 🧨 **Two spend caps

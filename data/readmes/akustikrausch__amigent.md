@@ -137,6 +137,11 @@ double-click *Amigent-Update* in its drawer. Then give your agent the same
 prompt as above, or run `pipx upgrade amigent` on the PC and restart the AI app. From 1.3.0 on, the PC notices a newer
 amigentd and says so, in the agent's answers and in the remote desktop.
 
+From 1.5.0 on, Amigent notices a new release by itself, at most once a day,
+and offers it in the remote desktop and to the AI agent; once you agree, one
+step updates the PC and every saved Amiga. It asks PyPI for the version list
+and sends nothing else; `AMIGENT_NO_UPDATE_CHECK=1` switches it off.
+
 Key, encryption and the start line stay as they are. One side alone keeps
 working as before; the new features need both.
 
@@ -158,6 +163,7 @@ working as before; the new features need both.
     "Which AHI driver is really loaded?"
     "Find out whether my program leaks memory."
     "Windows stutter when I drag them. Find out what holds things up."
+    "Is the Pi in my PiStorm too hot, and which Emu68 does it run?"
 
 ## Made for slow machines and slow wires
 
@@ -202,7 +208,9 @@ All numbers, how they were taken and how to repeat them are in
 
 - **New address after a restart?** Amigent finds the Amiga again by itself. It
   takes only the one that proves to be yours.
-- **Several Amigas?** `amigent-fleet` shows them side by side with a preview.
+- **Several Amigas?** `amigent-viewer` opens **Your Amigas**, with a machine
+  selector, connection status and controls to rename or manage each machine.
+  One MCP server can control them all: name the targets in your request.
 - **Watching from the Amiga?** `amigent-monitor` in the Amigent folder opens a
   window there that lists, line by line, what the agent is doing.
 - **Trying out software?** The agent can record an installation and take it
@@ -215,6 +223,10 @@ All numbers, how they were taken and how to repeat them are in
 - **Running a test or a benchmark?** *Pause the picture* in the remote desktop
   (or `PAUSE` by ARexx) gives the Amiga's CPU back to it for a while; mouse,
   keys and files keep working.
+- **PiStorm with Emu68?** The agent tells what runs on the Raspberry Pi, tries
+  JIT settings while the Amiga runs, and changes boot options or updates Emu68
+  on the SD card with a backup and a way back. See
+  [docs/EMU68.md](https://github.com/akustikrausch/amigent/blob/main/docs/EMU68.md).
 - **After a big OS update**, `amigent-repair` puts back what the update removed.
 - **Safe at home.** A key keeps other computers on the network out, and the
   connection can be encrypted. Don't open the Amiga to the internet.

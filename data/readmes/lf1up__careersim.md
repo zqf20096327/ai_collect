@@ -4,6 +4,7 @@
 
 [![CI](https://github.com/lf1up/careersim/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lf1up/careersim/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/lf1up/careersim/branch/main/graph/badge.svg)](https://codecov.io/gh/lf1up/careersim)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 CareerSIM is a direct-to-consumer (B2C) web application that helps individuals master critical career skills through hyper-realistic, AI-powered simulations. Users practice challenging professional situations — from behavioral interviews to difficult conversations — in a safe, repeatable environment and receive immediate, data-driven feedback to accelerate their personal and professional growth.
 
@@ -83,7 +84,9 @@ Each of those directories carries a `> [!WARNING] DEPRECATED` banner at the top 
 
 CareerSIM supports three subscription tiers: Free, Plus, and Pro.
 
-Subscription purchases and the pricing UI are off by default: `BILLING_ENABLED=false` in the API and `NEXT_PUBLIC_PRICING_ENABLED=false` in the web app. See the [billing runbook](docs/BILLING.md) for configuration and rollout.
+Creem is the initial purchase provider with `BILLING_DEFAULT_PROVIDER=creem`, `CREEM_ENABLED=true`, and `POLAR_ENABLED=false`. The shared subscription system retains Polar and supports enabled providers concurrently through explicit country routes. With no routes, checkout needs no country selector.
+
+Purchases and the pricing UI remain off by default through `BILLING_ENABLED=false` in the API and `NEXT_PUBLIC_PRICING_ENABLED=false` in the web app. Before release, configure the four products for each enabled provider, run `pnpm -C api billing:check`, and complete the sandbox lifecycle checks. Existing billing records remain owned by Polar after migration `0013`; stop old API writers before migrating. See the [billing runbook](docs/BILLING.md) for configuration, recovery limits, and rollout.
 
 ## 📁 Project Structure
 

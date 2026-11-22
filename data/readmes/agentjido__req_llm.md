@@ -77,6 +77,7 @@ show the module's broad scope. The selected model can support fewer operations.
 | [StepFun China](https://llmcatalog.dev/?providers=stepfun) | `stepfun` | text, speech, transcription | [Guide](guides/stepfun.md) |
 | [StepFun Global](https://llmcatalog.dev/?providers=stepfun_ai) | `stepfun_ai` | text, speech, transcription | [Guide](guides/stepfun.md) |
 | [Superlinked Inference Engine](https://console.superlinked.com/console) | `superlinked` | text, streaming, tools, embedding, rerank | [Guide](guides/superlinked.md) |
+| [UberLLM](https://uberllm.dev/models) | `uberllm` | text | — |
 | [TypeSafe](https://llmcatalog.dev/?providers=typesafe) | `typesafe` | evaluation | [Example](#evaluation-models) |
 | [Venice](https://llmcatalog.dev/?providers=venice) | `venice` | text | — |
 | [xAI](https://llmcatalog.dev/?providers=xai) | `xai` | text, image | [Guide](guides/xai.md) |
@@ -390,6 +391,7 @@ include a built-in model-selection policy.
   - Req-backed request/response calls and Finch-backed streaming behind the same provider abstraction
   - Advanced Req request customization available for non-streaming use cases
   - Provider-managed text generation batches with `ReqLLM.Batch`, starting with [Amazon Bedrock](guides/amazon_bedrock.md#batch-inference)
+  - Resumable [OpenAI background responses](guides/openai.md#background-responses) with completion-window selection
 
 - **Structured output generation**
   - `ReqLLM.Output` descriptors add text, object, array, choice, and arbitrary JSON contracts to `generate_text/3` and `stream_text/3`

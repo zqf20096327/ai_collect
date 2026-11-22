@@ -29,7 +29,7 @@ word is marked low confidence instead of pretending. A faded 1904 invoice is in 
 
 ## Results
 
-ReadAnyDoc 0.4.5 against Reducto on public benchmarks, same documents and same requests, every score from the
+ReadAnyDoc against Reducto on public benchmarks (olmOCR-bench with 0.4.7, the others with 0.4.5), same documents and same requests, every score from the
 benchmark's own grader or from code (no AI judge). Details, per-document scores and caveats:
 [BENCHMARKS.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/BENCHMARKS.md).
 
@@ -37,7 +37,7 @@ benchmark's own grader or from code (no AI judge). Details, per-document scores 
 
 | Benchmark | Reducto | ReadAnyDoc |
 |---|---|---|
-| olmOCR-bench, overall (1,403 pages) | 80.9 | **84.3** |
+| olmOCR-bench, overall (1,403 pages) | 80.9 | **85.4** |
 | OmniDocBench, text error, lower is better (1,651 pages) | 0.095 | **0.073** |
 | OmniDocBench, layout: block types right | **84.6%** | 79.0% |
 | RD-TableBench (1,000 tables) | 88.85 | 88.84 |

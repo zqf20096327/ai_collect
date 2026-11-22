@@ -6,17 +6,17 @@
   <a href="https://github.com/kilolonion/agent-vscreen/releases/latest"><img src="https://img.shields.io/github/v/release/kilolonion/agent-vscreen" alt="latest stable release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kilolonion/agent-vscreen" alt="license"></a>
   <img src="https://img.shields.io/badge/Android-11%2B-3DDC84?logo=android&logoColor=white" alt="Android 11+">
-  <img src="https://img.shields.io/badge/root-not%20required-blue" alt="no root">
+  <img src="https://img.shields.io/badge/Shizuku%20or%20root-supported-blue" alt="Shizuku or root">
   <img src="https://img.shields.io/badge/MCP-supported-8A2BE2" alt="MCP">
 </p>
 
-**A background second screen for any phone agent.**
+**A background second screen on your Android phone, for any AI agent: on the phone, on a computer or in the cloud.**
 
 [中文](README.zh-CN.md) · English
 
 Agent-VScreen opens and drives other apps on an invisible virtual display, so your own screen stays yours. All you see is a small floating window showing what the AI is doing, which you can take over or stop at any moment.
 
-Any agent on the phone can use it: agents with a terminal use the `vscreen` CLI, agents that speak MCP use MCP, and your own code can use plain HTTP.
+Any agent can use it, whether it runs on the phone itself or on a computer, a server or another phone: agents with a terminal use the `vscreen` CLI, agents that speak MCP use MCP, and your own code can use plain HTTP.
 
 <p align="center"><img src="docs/app.en.png" width="760" alt="Agent-VScreen Now, Connect, Records and Settings screens"></p>
 <p align="center"><sub>The app: Now (what the agent is doing on the background screen, take over or stop, recent runs), Connect (connected agents, remote access, tokens), Records (every task, question and plan with step thumbnails) and Settings (who can connect, how much an agent may do, app rules, floating window).</sub></p>

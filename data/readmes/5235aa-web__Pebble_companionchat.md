@@ -26,6 +26,10 @@
 
 Whether running local GGUF weights, calling cloud LLM APIs, holding live voice calls, or staging multi-character scenes, all conversations, character cards, and extracted memories remain persisted locally under your control.
 
+<p>
+  <img src="docs/png0.png" alt="loading interface" width="1000">
+</p>
+
 <p align="center">
   <img src="docs/png1.png" alt="Single chat" width="49%" />
   <img src="docs/png2.png" alt="Script mode" width="49%" />
@@ -49,31 +53,34 @@ Whether running local GGUF weights, calling cloud LLM APIs, holding live voice c
 - **Stage Direction & Pacing**: Mention specific speakers with `@`, click any card to cue their next line, enable multi-turn **Relay** rounds for autonomous back-and-forth, or manage room members with `/invite` and `/remove`.
 - **Per-Room Context**: Configure a shared room scene, room-specific user persona notes, and isolated room memories and summaries.
 
-### 3. Character Cards 
+### 3. Narration mode
+- **Give the conversation a break**: One-click activation switch, supports all types of chats. In a voice-over manner, describe the behaviors, states (such as the user's actions, the character's actions, the space, and the psychology) of the user and the character, Guide the direction of the character's dialogue, and enable the user to control the process of the chat-playing.It only affects the content of the next reply and will not continuously contaminate the surrounding context.
+
+### 4. Character Cards 
 - **SillyTavern Ecosystem**: Import and export **PNG / JSON** character cards, with a built-in editor covering identity, dialogue fields (first message, conversation examples, advanced prompt), bound TTS voice clip/ID, system instructions, and raw JSON.
 - **CHARX Containers & Bundled Assets**: Import and export **CHARX** (`.charx` / `.zip` and polyglot image+ZIP Character Card V3 packages) via streaming extraction and chunked transfer for large archives. Alongside card text and `alternate_greetings`, Pebble extracts CCv3 `data.assets` (`embeded://`, `embedded://`, `__asset:`, inline base64 data URLs), RisuAI `emotions` / `additionalAssets`, and bundled images, audio, and video into per-character storage manageable in the editor (world book / `character_book` entries and RisuAI display scripts are not imported).
 - **Inline Media & Stage HUD**: Greetings and chat replies render sanitized Markdown/HTML and resolve bundled CHARX media inline — supporting `{{img::...}}`, `{{audio::...}}`, `{{bgm::...}}`, `{{video::...}}`, Markdown images, `<img src="...">`, `<video>`, and RisuAI `<img="...">` shorthand tags. For cards with bundled assets in single chat, an optional per-branch Stage HUD parses stripped `<<<STATE>>>` blocks to track mood, affection, location, and outfit while swapping stage portraits and cueing BGM/SFX automatically.
 - **Global Rules**: Append shared scope, behaviour, and post-history instructions across all characters without editing individual cards.
 
-### 4. Script Mode
+### 5. Script Mode
 - **Scene-by-Scene Playthrough**: Author a script as ordered scenes, each with its own title, turn budget, and director instruction. The model advances one scene at a time instead of free-running the story.
 - **Structured State Protocol**: Every reply ends with a `<<<STATE>>>` block carrying HUD fields (mood, affection, location, outfit) and a scene-done flag. A stream filter strips the block from the visible text and uses it to drive progression.
 - **Rewind & Per-Scene Summaries**: Roll the session back to any earlier scene, and compact each scene into its own summary card that stays readable in the thread — unlike chat compaction, scene summaries are never merged into one.
 - **Isolated Prompt Path**: The scripted prompt is built separately from the normal chat prompt, so no memory, lore or card field leaks into a scene.
 
-### 5. Long-Term Memory & Token Engine
+### 6. Long-Term Memory & Token Engine
 - **Embedding-Free Memory Retrieval**: Durable facts and relationship memories are extracted in the background, then ranked without any embedding model. Scoring is BM25 over keyword and token fields (with CJK n-gram weighting), phrase hits, importance, and use-count damping — no vector store, no extra model to download.
 - **Provider-Aware Token Counting**: Prefers server-reported usage; otherwise it dispatches per provider — `llama.cpp /tokenize`, `tiktoken` for OpenAI vocabularies, or a local `tokenizer.json` — and degrades to a language-aware estimate when none is available. For Anthropic and Gemini it first tries their native counting endpoints, though those only answer if the configured base URL exposes them.
 
-### 6. Cascaded Streaming Voice Calls, TTS & ASR
+### 7. Cascaded Streaming Voice Calls, TTS & ASR
 - **Cascaded Voice Loop**: The browser captures PCM through an AudioWorklet and streams it over WebSocket. The backend transcribes incrementally every 2 seconds, sends the finalized utterance down the normal LLM path, then streams the reply back as TTS audio. Listening and speaking alternate around this ASR → LLM → TTS chain — it is not a single full-duplex model — with Silero VAD barge-in so you can cut a reply mid-sentence.
 - **Bring Your Own Everything**: LLM, TTS, and ASR are each independently replaceable or self-hostable — local `llama.cpp` GGUF for chat, `audio.cpp` model families, any OpenAI-compatible HTTP endpoint, or cloud providers (MiniMax, ElevenLabs) for speech, with inline voice auditioning.
 
-### 7. Picture Studio & Multimodal Attachments
+### 8. Picture Studio & Multimodal Attachments
 - **File & Document Parsing**: Attach images, PDFs (`pypdf`), Word documents (`python-docx`), spreadsheets (`openpyxl`), and plain-text/code files directly in chat.
 - **Scene Illustration & Gallery**: Generate scene pictures manually or via story triggers with prompt rewriting, daily quotas, cooldowns, and a unified gallery across single and group rooms.
 
-### 8. Customizable Aesthetic
+### 9. Customizable Aesthetic
 - **Day / Night** themes, **7 accent palettes** (Amber, Ember, Celadon, Moon, Plum, Jade, Rose), selectable typography, and instant **English / 中文** UI switching.
 
 ---

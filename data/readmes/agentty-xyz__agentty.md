@@ -149,7 +149,7 @@ least one provider CLI before starting a session:
 > uncertainty, but commentary does not guarantee that subscription-backed usage is safe
 > for third-party tool invocation.
 
-- Antigravity (`agy`): install version 1.1.18 or newer of the
+- Antigravity (`agy`): install version 1.5.8 or newer of the
   [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli) and run `agy`
   to sign in when prompted.
 
@@ -188,6 +188,9 @@ agentty --version    # Show the installed Agentty version
 - **Graphs**: `/graph` requests execution-graph proposals you can inspect, revise, and
   approve before any node runs. See the
   [workflow guide](https://agentty.xyz/docs/usage/workflow/).
+- **Remote control**: `--experimental-remote` adds a preview `Remote` tab that pairs a
+  phone or browser to start, follow, reply to, and merge sessions through a tunnel you
+  provide. See [Remote Control](https://agentty.xyz/docs/usage/remote-control/).
 - **Harness**: `--experimental-harness` adds a preview session type that runs Agentty's
   built-in agent loop against local or hosted models. Its edit mode runs unsandboxed
   shell commands. See

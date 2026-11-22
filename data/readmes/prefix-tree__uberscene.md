@@ -38,6 +38,11 @@ captions, audio, transitions, effects, and any React, Motion or three.js on top.
   <br><sub><b>The coffee film</b>, four stock shots cut in one TSX file. <a href="https://uberscene.prefixtree.xyz/examples/coffee">Watch it with sound →</a></sub>
 </p>
 
+<p align="center">
+  <a href="https://uberscene.prefixtree.xyz/examples/recolor"><img src="docs/public/readme/recolor.gif" width="640" alt="A short of espresso into a red paper cup; an agent is asked to change red cup color to green and writes one line, a recolor effect; the same short plays with the cup green"></a>
+  <br><sub><b>One prompt, one line.</b> "change red cup color to green" adds a <code>recolor</code> effect to the file, and the same short plays green. <a href="https://uberscene.prefixtree.xyz/examples/recolor">The file →</a></sub>
+</p>
+
 ## Why
 
 - **A video is a file.** Diff it, review it in a pull request, generate a hundred variants.
@@ -52,7 +57,7 @@ captions, audio, transitions, effects, and any React, Motion or three.js on top.
 UberScene can also decode footage and encode the export with its own codecs, written in Rust on FilmCraft's
 [craft-video, craft-media and craft-audio](https://github.com/storytold/craft-libs). They decode H.264, HEVC, VP8,
 VP9, AV1, ProRes and DNxHR, and encode H.264, ProRes and the soundtrack, still with no FFmpeg and no C libraries. They
-are off unless `UBERSCENE_CODECS` turns them on, are built from source for now, and Chrome stays the default.
+are off unless `UBERSCENE_CODECS` turns them on, download on the first native export (`npx uberscene codecs install` fetches them ahead), and Chrome stays the default.
 [Native codecs](https://uberscene.prefixtree.xyz/guide/native-codecs) has the details.
 
 ## Aim
@@ -100,10 +105,6 @@ from talk.mp4, open on the sentence about Fridays, add karaoke captions, render 
 Guide, reference and examples: **[uberscene.prefixtree.xyz](https://uberscene.prefixtree.xyz/)**.
 
 ## Example
-
-<p align="center">
-  <img src="docs/public/readme/launch.gif" width="640" alt="A product launch: a three.js phone turns in beside the founder, a lower third names her, and each feature appears as a pill on the word that names it">
-</p>
 
 ```tsx
 export default function Video({ product, founder, accent }) {

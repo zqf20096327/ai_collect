@@ -87,27 +87,33 @@ To update, run `npx skills update awesome-chatgpt-search`. You don't need this i
 
 ## The latest additions 🎉
 
+**Chatbots**
+ * [ha-mcp](https://github.com/homeassistant-ai/ha-mcp) - Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.
+ * [LoopForge](https://github.com/tencent/loopforge) - Self-hosted workflows for coding-agent delivery. Orchestrate CodeBuddy, Codex and Claude Code with scripts and human approval gates. Includes Local workflows for coding assistants.
+ * [Everywhere](https://github.com/sylinko/everywhere) - On-screen aware AI assistant for your desktop. Uses current app context, multiple LLMs, and MCP tools to help you act across apps.
+
+
 **Browser-extensions**
- * [holaOS](https://github.com/holaboss-ai/holaos) - Open-source agentic workspace enterprises can make their own. Connect the systems you already run — 100+ integrations, MCP, chat tools, apps, browser, local files — with shared memory. Any agent (Claude Code, Codex), any model, or BYOK. Set up in clicks, not months. Local-first: your data never leaves your machines.
+ * [openbot](https://github.com/nightly-labs/openbot) - A local-first desktop workspace for persistent AI teammates. Run Codex, Claude, and Grok with dedicated workspaces, task queues, file sharing, browser control, and agent-to-agent collaboration.
 
 
 **CLIs**
- * [OmniRoute](https://github.com/cheaper-inference/omniroute) - Never stop coding. Free MIT AI gateway: one endpoint, 375 providers (150+ free), 1,400+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by 900+ contributors
- * [paperclip](https://github.com/paperclipai/paperclip) - The open-source app everyone uses to manage agents at work
+ * [apfel](https://github.com/arthur-ficial/apfel) - The free AI already on your Mac. CLI tool, OpenAI-compatible server, and interactive chat — all on-device via Apple Intelligence. No API keys, no cloud, no downloads.
 
 
 **NLP**
- * [claude-mem](https://github.com/thedotmack/claude-mem) - Persistent Context Across Sessions for Every Agent –  Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More
+ * [archify](https://github.com/tt-a1i/archify) - Turn any idea, plan, or codebase into a beautiful interactive diagram. An agent skill for Claude Code, Codex, and more.
+ * [failproofai](https://github.com/failproofai/failproofai) - Observability and enforcement for AI agent harnesses. Capture every run and runtime reliability with policy enforcement.
 
 
 **Others**
- * [agent-orchestrator](https://github.com/untrivial-ai/agent-orchestrator) - Run and supervise teams of coding agents from planning to merge. Any harness (Claude code, codex, +25 more). Desktop, web, mobile, and cloud agents.
- * [t3code](https://github.com/pingdotgg/t3code) - The best way to control Claude Code, Codex and more from any computer or phone
- * [CodexPlusPlus](https://github.com/bigpizzav3/codexplusplus) - An enhanced tool for CodexApp, striving to make Codex better to use and more comfortable 一个CodexApp的增强工具，努力让Codex和其他 AI Agent变得更好用更舒服
- * [eigent](https://github.com/eigent-ai/eigent) - Eigent: The Open Source Cowork Desktop - Local and Free Alternative to Claude Cowork and Codex
+ * [agent-orchestrator](https://github.com/orchestratorinc/agent-orchestrator) - Plan, run and supervise fleets of agents from task to merged PR. Desktop (macOS, Windows, Linux) + iPhone & Android apps.  Supports Claude Code, Codex & 35+ coding agents.
+ * [oh-my-hermes](https://github.com/rlaope/oh-my-hermes) - ⚚ The ultrawork agent with AI coworkers wired into you
+ * [openmotion](https://github.com/nexu-io/openmotion) - The open-source Claude Motion & CapCut alternative. Turn a reference video into editable motion graphics with your brand kit. Export MP4s for YouTube, YouTube Shorts, Instagram Reels, and TikTok. A full-stack agentic video studio with 300+ Motion.md guides and support for 22 agents, including Claude Code, Codex, DSH, and WorkBuddy.
+ * [nocobase](https://github.com/nocobase/nocobase) - NocoBase is the open-source platform for building, running, and evolving business systems with AI. Agents write the code and do the work, NocoBase provides the foundation and governance, and people make the decisions.
 
 
-_Updated on November 14, 2026_ (A total of 2753 repositories listed.)
+_Updated on November 23, 2026_ (A total of 2755 repositories listed.)
 
 ## Table of contents
 
@@ -681,8 +687,4 @@ _Updated on November 14, 2026_ (A total of 2753 repositories listed.)
  * [wandbot](https://github.com/wandb/wandbot) - wandbot is a technical support bot for Weights & Biases' AI developer tools that can run in Discord, Slack, ChatGPT and Zendesk
  * [ai-data-analysis-MulitAgent](https://github.com/starpig1129/ai-data-analysis-mulitagent) - AI-Driven Research Assistant: An advanced multi-agent system for automating complex research processes. Leveraging LangChain, OpenAI GPT, and LangGraph, this tool streamlines hypothesis generation, data analysis, visualization, and report writing. Perfect for researchers and data scientists seeking to enhance their workflow and productivity.
  * [lobe-vidol](https://github.com/lobehub/lobe-vidol) - 🧸 Lobe Vidol - Making Virtual Idols Accessible for EveryOne
- * [RLAIF-V](https://github.com/rlhf-v/rlaif-v) - RLAIF-V: Aligning MLLMs through Open-Source AI Feedback for Super GPT-4V Trustworthiness
- * [builderbot](https://github.com/codigoencasa/builderbot) - 🤖 Crear Chatbot WhatsApp en minutos. Únete a este proyecto OpenSource
- * [hey](https://github.com/lnxpy/hey) - 💬 AI-Powered Pair Programming Friend!
- * [Auto-Gmail-Creator](https://github.com/ai-to-ai/auto-gmail-creator) - Open Source Bulk Auto Gmail Creator Bot with Selenium & Seleniumwire ( Python ). Feel free to contact me with Django/Flask, ML, AI, GPT, Automation, Scraping.
- * [design-studio](https://github.com/tiledesk/design-studio) -
+ * [RLAIF-V](https://github.com/rlhf-v/rlaif-v) - RLAIF-V: Aligning MLLMs through Open-Source AI Feedback for Super GPT-4V Trus

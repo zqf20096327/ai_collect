@@ -196,12 +196,12 @@
 
 ## 最近更新
 
-📌 最新版本：**v0.3.239（2026-11-16）**
+📌 最新版本：**v0.3.240（2026-11-22）**
 
-- **Windows 安装可选路径**。交互式安装和升级都显示「选择目标位置」，升级默认填原目录。
-- **免费模型画像更完整**。初始画像保留核心与价值层，未知 MBTI 标为待确认。
-- **对话界面更紧凑**。桌面与插件把非聊天控件收进折叠条，小窗聊天可视区域明显变大。
-- **插件设置页排版修复**。设置页空白段与窄宽度截断消除，320px 下仍能正常保存。
+- **每日 LLM 花费上限**。按本地日历日统计，支持仅提醒 / 暂停后台 / 全部停止，跨进程共享预留。
+- **真实价格目录**。16 家 provider、2,007 个模型，含峰谷价、长上下文档位与低置信提示。
+- **峰谷调度与同模型选价**。高峰只暂停后台维护，补货保留水位；相同模型自动选更便宜的实例。
+- **Windows Ego Lite Beta**。自动识别官方安装，支持无窗口宿主与原生握手。
 
 完整变更详见 [docs/changelog.md](docs/changelog.md)。
 
@@ -409,6 +409,7 @@ docker restart openbiliclaw-backend
 ├───────────────────┴───────────────────┴───────────────────┴───────────────────┤
 │  Web 采集：HTTP Feed · 托管 Ego Lite（macOS / Windows Beta）                  │
 │  LLM & Embedding 路由（预置硅基流动免费模型 · Ollama · 多渠道有序故障切换链） │
+│  LLM 成本：价格目录 · 每日 CNY 上限/预留 · 峰谷 · 同模型选价                  │
 │  本地 SQLite 存储（行为 · 画像 · 候选池 · 已看账本 · 对话 · 收藏/历史）       │
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -470,7 +471,7 @@ OpenBiliClaw/
 
 欢迎贡献！请先查看 [开发指南](docs/contributing.md)。
 
-感谢所有贡献者的持续打磨：[@addtion99](https://github.com/addtion99)（[#8](https://github.com/whiteguo233/OpenBiliClaw/pull/8)）、[@jiaobenhaimo](https://github.com/jiaobenhaimo)（[#53](https://github.com/whiteguo233/OpenBiliClaw/pull/53)）、[@tangle111-design](https://github.com/tangle111-design)（[#69](https://github.com/whiteguo233/OpenBiliClaw/pull/69)）、[@DongLanQwQ0](https://github.com/DongLanQwQ0)（[#102](https://github.com/whiteguo233/OpenBiliClaw/pull/102), [#110](https://github.com/whiteguo233/OpenBiliClaw/pull/110)）、[@wuwafly3](https://github.com/wuwafly3)（[#100](https://github.com/whiteguo233/OpenBiliClaw/pull/100), [#135](https://github.com/whiteguo233/OpenBiliClaw/pull/135)）、[@LHMQ878](https://github.com/LHMQ878)（[#182](https://github.com/whiteguo233/OpenBiliClaw/pull/182)）、[@Patrick5D](https://github.com/Patrick5D)（[#179](https://github.com/whiteguo233/OpenBiliClaw/pull/179)）、[@OctoBored](https://github.com/OctoBored)（[#196](https://github.com/whiteguo233/OpenBiliClaw/pull/196)）、[@CoderJackZhu](https://github.com/CoderJackZhu)（[#348](https://github.com/whiteguo233/OpenBiliClaw/pull/348)）、[@jjjj31](https://github.com/jjjj31)（[#351](https://github.com/whiteguo233/OpenBiliClaw/pull/351)）。
+感谢所有贡献者的持续打磨：[@addtion99](https://github.com/addtion99)（[#8](https://github.com/whiteguo233/OpenBiliClaw/pull/8)）、[@jiaobenhaimo](https://github.com/jiaobenhaimo)（[#53](https://github.com/whiteguo233/OpenBiliClaw/pull/53)）、[@tangle111-design](https://github.com/tangle111-design)（[#69](https://github.com/whiteguo233/OpenBiliClaw/pull/69)）、[@DongLanQwQ0](https://github.com/DongLanQwQ0)（[#102](https://github.com/whiteguo233/OpenBiliClaw/pull/102), [#110](https://github.com/whiteguo233/OpenBiliClaw/pull/110)）、[@wuwafly3](https://github.com/wuwafly3)（[#100](https://github.com/whiteguo233/OpenBiliClaw/pull/100), [#135](https://github.com/whiteguo233/OpenBiliClaw/pull/135)）、[@LHMQ878](https://github.com/LHMQ878)（[#182](https://github.com/whiteguo233/OpenBiliClaw/pull/182)）、[@Patrick5D](https://github.com/Patrick5D)（[#179](https://github.com/whiteguo233/OpenBiliClaw/pull/179)）、[@OctoBored](https://github.com/OctoBored)（[#196](https://github.com/whiteguo233/OpenBiliClaw/pull/196)）、[@CoderJackZhu](https://github.com/CoderJackZhu)（[#348](https://github.com/whiteguo233/OpenBiliClaw/pull/348)）、[@jjjj31](https://github.com/jjjj31)（[#351](https://github.com/whiteguo233/OpenBiliClaw/pull/351)）、[@bibibifive](https://github.com/bibibifive)（[#191](https://github.com/whiteguo233/OpenBiliClaw/pull/191)）。
 
 ## ⭐ Star History
 

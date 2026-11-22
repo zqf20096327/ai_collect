@@ -1,8 +1,10 @@
 # Oh My Gravity
 
+English · [简体中文](README.zh-CN.md)
+
 Run your signed-in [Antigravity CLI](https://antigravity.google/docs/cli) (`agy`) as a model provider inside [DSH](https://github.com/deepseek-ai/dsh): no API key, the login `agy` already has.
 
-**Status: alpha (`0.1.0-alpha.1`).** Unofficial and not affiliated with Google. Tested on Linux with AGY 1.5.13 and DSH 0.2.2-rc.1.
+**Status: alpha (`0.1.0-alpha.1`).** Unofficial and not affiliated with Google. Tested on Linux with AGY 1.5.14 and DSH 0.2.2-rc.1.
 
 ## What you get
 
@@ -22,7 +24,7 @@ dsh plugin --profile <your-profile> add "link:/absolute/path/to/dsh-oh-my-gravit
 systemctl --user restart deepseek-harness.service   # or however you restart DSH
 ```
 
-You need `agy` installed and signed in (`agy` once interactively). Requires Node ≥ 22.15 and DSH `>=0.2.2-alpha.2 <0.3.0`.
+You need `agy` installed and signed in (run `agy` once in a terminal; the Antigravity desktop app keeps a separate sign-in, so signing in there does not sign in the CLI, and an expired CLI sign-in shows as "Antigravity sign-in required"). Requires Node ≥ 22.15 and DSH `>=0.2.2-alpha.2 <0.3.0`.
 
 Optional keys, as `config:` on the `oh-my-gravity` row in the profile's `cordis.patch.yml`:
 

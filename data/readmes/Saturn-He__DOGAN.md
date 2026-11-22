@@ -126,7 +126,7 @@ Copy the entry below into your LaTeX bibliography, or download [DOGAN.bib](DOGAN
 
 ## Acknowledgments
 
-The implementation builds on [Parallel-GAN](https://doi.org/10.1109/TGRS.2022.3200996), [CycleGAN and pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix), and [DINOv2](https://github.com/facebookresearch/dinov2). See the upstream projects for their terms and notices.
+The implementation builds on [Parallel-GAN](https://doi.org/10.1109/TGRS.2022.3200996), [CycleGAN and pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix), and [DINOv2](https://github.com/facebookresearch/dinov2). Code derived from CycleGAN and pix2pix is used under their BSD license, reproduced in [`LICENSES/CycleGAN-pix2pix-BSD.txt`](LICENSES/CycleGAN-pix2pix-BSD.txt); see the other upstream projects for their terms and notices.
 
 We thank the authors for making their code publicly available.
 

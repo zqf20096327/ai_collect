@@ -1,6 +1,6 @@
 # Generative AI Project Template
 
-[![python](https://img.shields.io/badge/python-3.14.8-blue?logo=python)](https://www.python.org/downloads/release/python-3148/)
+[![python](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FAmineDjeghri%2Fgenerative-ai-project-template%2Fmain%2Fpyproject.toml&logo=python)](https://www.python.org/downloads/)
 [![Debian](https://img.shields.io/badge/Debian-A81D33?logo=debian&logoColor=fff)](https://www.debian.org/)
 [![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=F0F0F0)](https://www.apple.com/macos/)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/)
@@ -23,7 +23,8 @@ Docker Compose and GitHub releases.
 
 ## Get started
 
-Requires Make, Bash, Git and uv. uv provisions Python 3.14.8.
+Requires Make, Bash, Git and uv. uv provisions the Python version set by `requires-python` in
+`pyproject.toml`.
 
 ```bash
 git clone https://github.com/AmineDjeghri/generative-ai-project-template.git
@@ -61,13 +62,13 @@ For offline work, run `make test-local`; before a PR, configure the integration 
 `make check`. That includes live LLM/Ollama/API tests; [Testing](docs/developer/4.testing.md)
 lists the requirements. `make help` lists all targets.
 
-| Task                                 | Guide                                                                                                                                     |
-|--------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| Install, run or configure providers  | [Setup](docs/developer/1.setup.md)                                                                                                        |
-| Add routes, settings or dependencies | [Project structure](docs/developer/2.project-structure.md)                                                                                |
-| Prepare a contribution               | [Contributing](CONTRIBUTING.md) and [conventions](docs/developer/3.conventions.md)                                                        |
-| Run tests                            | [Testing](docs/developer/4.testing.md)                                                                                                    |
-| Publish or retry a release           | [Release](docs/developer/5.release.md)                                                                                                    |
-| Start your own project               | [Use this template](https://github.com/aminedjeghri/generative-ai-project-template/generate) and [rename guide](docs/developer/6.fork.md) |
+| Task                                 | Guide                                                                                                                                         |
+|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| Install, run or configure providers  | [Setup](docs/developer/1.setup.md)                                                                                                            |
+| Add routes, settings or dependencies | [Project structure](docs/developer/2.project-structure.md)                                                                                    |
+| Prepare a contribution               | [Contributing](CONTRIBUTING.md) and [conventions](docs/developer/3.conventions.md)                                                            |
+| Run tests                            | [Testing](docs/developer/4.testing.md)                                                                                                        |
+| Publish or retry a release           | [Release](docs/developer/5.release.md)                                                                                                        |
+| Start your own project               | [Use this template](https://github.com/AmineDjeghri/generative-ai-project-template/generate) and [rename guide](docs/developer/6.template.md) |
 
 Preview documentation with `make deploy-doc-local`.

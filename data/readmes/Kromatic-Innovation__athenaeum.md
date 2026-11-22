@@ -8,17 +8,33 @@
 
 ## Quick start
 
+athenaeum needs **Python 3.13 or later** and `git`. The `uv` command below
+fetches Python 3.13 for you if your system Python is older.
+
+The 3.13 floor is a CI-scope choice, not a technical requirement: nothing in
+athenaeum or its dependencies needs a 3.13 feature, but CI tests one Python
+version at a time and the package declares only the version CI verifies.
+There is no plan to test or declare 3.11 or 3.12; see
+[Supported Python version](CONTRIBUTING.md#supported-python-version).
+
 ```bash
 uv tool install --python 3.13 'athenaeum[mcp]'
 athenaeum --version
 athenaeum test-mcp    # smoke-tests remember/recall against a scratch dir
 ```
 
+The later steps (`athenaeum run`, which compiles notes) need a logged-in `claude` CLI or an `ANTHROPIC_API_KEY`; see [Supplying an API key](docs/guides/install.md#i-want-to-supply-an-api-key-without-1password).
+
 **That block needs no API key.** `test-mcp` runs against a scratch directory,
 so you can confirm the install works before wiring anything up or spending API
-budget. Python 3.13+ is required (`--python 3.13` lets `uv` fetch it if needed)
-and `git` must be installed. Compiling later needs either `ANTHROPIC_API_KEY`
-set or a logged-in `claude` CLI.
+budget.
+
+**Plain `pip` on Python 3.12 or older cannot install the current release.**
+It stops with `No matching distribution found for athenaeum`, listing only
+old versions such as 0.15.0, or it quietly installs one of those old
+releases. Neither means the package is broken: your interpreter is older than
+the 3.13 floor. Use the `uv` command above, or run `pip` from a Python 3.13
+environment.
 
 See [Install](docs/guides/install.md) for the `PATH` setup `uv tool install`
 needs, and the wrong-interpreter warning to check against if `athenaeum --version`
@@ -42,10 +58,6 @@ claude mcp add --scope user athenaeum -- athenaeum serve --path ~/knowledge
 > without it search falls back to `fts5` with a one-time warning, never a failure.
 > See [Install](docs/guides/install.md) for both extras.
 
-> **Troubleshooting `init`:** `athenaeum init` makes its seed commit with git
-> hooks disabled, so a global `core.hooksPath` commit hook (for example a
-> protected-branch guard) does not block it.
-
 Then check the install (read-only):
 
 ```bash
@@ -54,27 +66,8 @@ athenaeum doctor
 
 On a fresh install, steps you have not done yet show as `WARN` with
 `setup pending` and the command that finishes each one; `doctor` still exits
-`0`. Only something present but broken (an unparseable `settings.json`, a hook
-whose script is missing, an unreadable index) is a `FAIL` and exits non-zero.
-Abridged output right after `athenaeum init`, before `claude mcp add` (paths
-shortened):
-
-```text
-Athenaeum Doctor
-========================================
-[OK] package_version: running 0.28.0; latest release is 0.28.0
-[OK] interpreter: Python 3.13.1
-[WARN] mcp: setup pending: no 'athenaeum' entry under mcpServers in ~/.claude.json
-    fix: claude mcp add --scope user athenaeum -- athenaeum serve --path ~/knowledge
-[WARN] hooks: setup pending: no Claude Code settings file found at ~/.claude/settings.json
-    fix: merge examples/claude-code/settings-snippet.json into ~/.claude/settings.json ...
-[WARN] key_mode: setup pending: llm.provider=claude-cli but Claude Code is not logged in ...
-    fix: run `claude` and `/login`, or set ANTHROPIC_API_KEY
-[WARN] search_index: setup pending: no vector index found under ~/.cache/athenaeum/wiki-vectors
-    fix: run `athenaeum reindex --path <knowledge-root>` to build it, ...
-...
-All checks passed, with 4 warning(s).
-```
+`0`. Only something present but broken is a `FAIL` and exits non-zero. See
+[sample output](docs/guides/install.md#i-want-to-check-what-is-set-up).
 
 Run it again once you have finished the quick start (through
 `athenaeum session-end`): `mcp` and `search_index` are then OK. `hooks` stays
@@ -99,7 +92,7 @@ athenaeum status
 `athenaeum init` already chose the compile provider and printed it. If it
 found a logged-in `claude` CLI it selected `claude-cli`, and compiles use that
 login with no key (they draw on your Claude Code plan's usage limits; about
-3,800 to 4,400 tokens and 30 s per note, see [Install](docs/guides/install.md)).
+3,200 to 7,000 tokens and 18 to 50 s per note, measured on 0.28.0 and 0.29.0 on 2026-11-20 and 2026-11-21, see [Install](docs/guides/install.md)).
 An Anthropic API key is the alternative: `export ANTHROPIC_API_KEY=...` before
 `athenaeum run` if `init` told you no login was found.
 

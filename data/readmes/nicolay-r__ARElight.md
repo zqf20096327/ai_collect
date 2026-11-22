@@ -1,4 +1,4 @@
-# ARElight 0.26.0
+# ARElight 0.26.1
 
 ![](https://img.shields.io/badge/Python-3.9-brightgreen.svg)
 ![](https://img.shields.io/badge/AREkit-0.25.2-orange.svg)
@@ -24,28 +24,101 @@ This repository is a part of the **ECIR-2024** demo paper:
 # Installation
 
 ```bash
-pip install git+https://github.com/nicolay-r/arelight@v0.26.0
+pip install git+https://github.com/nicolay-r/arelight@v0.26.1
 ```
 
-# GUI Interface 
+Install the demo packages and download the providers:
 
-Since the version `0.25.0` ARElight has an updated GUI server
-![image](https://github.com/user-attachments/assets/b7a1189a-b5b0-479f-8413-f8a16801e06b)
-<p align="center">
-  <a href="https://github.com/nicolay-r/ARElight-server">👉GUI server setup👈</a>
-</p>
+* [dp_130.py](https://github.com/nicolay-r/nlp-thirdgate/blob/master/ner/dp_130.py)
+* [replicate_104.py](https://github.com/nicolay-r/nlp-thirdgate/blob/master/llm/replicate_104.py)
+* [googletrans_402.py](https://github.com/nicolay-r/nlp-thirdgate/blob/master/text-translation/googletrans_402.py)
 
-## Usage: Inference
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nicolay-r/ARElight/blob/v0.24.0/ARElight.ipynb)
+```bash
+pip install -r demo/dependencies.txt
+sh demo/download_providers.sh
+```
 
-**UPDATE for LLM usage**: We support [Replicate](https://replicate.com/) for Inference.
+# 🚀 API
 
-> **NOTE:** You have to **download providers** to start with usage script below:
-> 1. https://github.com/nicolay-r/nlp-thirdgate/blob/master/ner/dp_130.py
-> 2. https://github.com/nicolay-r/nlp-thirdgate/blob/master/llm/replicate_104.py
-> 3. https://github.com/nicolay-r/nlp-thirdgate/blob/master/text-translation/googletrans_402.py
+Pass in-memory rows to `create_inference_pipeline`. Each row has an `id` and a `text`.
 
-Infer sentiment attitudes from text file **in English**:
+```python
+import os
+
+from dotenv import load_dotenv
+from arekit.common.pipeline.base import BasePipelineLauncher
+
+from arelight.api import create_inference_pipeline
+from arelight.pipelines.result import PipelineResult
+from arelight.run.utils import merge_dictionaries
+
+from bulk_chain.core.utils import dynamic_init
+
+load_dotenv()
+
+
+def class_to_int(text):
+    lowered = "" if text is None else str(text).lower()
+    if "positive" in lowered:
+        return 1
+    if "negative" in lowered:
+        return -1
+    return 0
+
+
+pipeline, settings = create_inference_pipeline(
+    rows_iter=[
+        {"id": "request:0", "text": "Barack Obama met Angela Merkel in Berlin."}
+        # ... iterator of texts goes here
+    ],
+    sampling_args={
+        "sentence_parser": "nltk:english",
+        "terms_per_context": 50,
+        "docs_limit": 1,
+    },
+    predict_table_name="bulk_chain",
+    collection_target_func=lambda data_type: f"./output/test_samples-{data_type.name.lower()}",
+    # Translate the document text.
+    translator_args={
+        "model": dynamic_init("demo/googletrans_402.py")(),
+        "src": "auto",
+        "dest": "en",
+    },
+    # Find named entities to relate.
+    ner_args={
+        "model": dynamic_init("demo/dp_130.py")(model="ner_ontonotes_bert_mult"),
+        "obj_filter": lambda s_obj: s_obj.ObjectType in ["ORG", "PERSON", "LOC", "GPE"],
+        "chunk_limit": 128,
+    },
+    # Classify the attitude between those entities.
+    inference_args={
+        "model": "meta/meta-llama-3-70b-instruct",
+        "class_name": "demo/replicate_104.py",
+        "api_key": os.environ.get("API_TOKEN"),
+        "task_kwargs": {
+            "schema": [{
+                "prompt": "Given text: {text_a}TASK: Classify sentiment attitude of [SUBJECT] to [OBJECT]: positive, negative, neutral.",
+                "out": "response",
+            }],
+            "classify_func": class_to_int,
+            "labels_fmt": "u:0,p:1,n:2",
+        },
+    },
+    batch_size=1,
+)
+
+# Launch Pipeline
+BasePipelineLauncher.run(
+    pipeline=pipeline,
+    pipeline_ctx=PipelineResult(merge_dictionaries(settings)),
+    has_input=False)
+```
+
+# CLI
+
+The command-line entry point reads files and uses the same providers.
+
+Infer sentiment attitudes from a text file **in English**:
 ```bash
 python3 -m arelight.run.infer \
     --batch-size 10 \
@@ -53,16 +126,14 @@ python3 -m arelight.run.infer \
     --sampling-framework "arekit" \
     --sentence-parser "nltk:english" \
     --terms-per-context 50 \
-	--translate-provider "gt_402.py" \
-	--translate-text "auto:en" \
-    --ner-provider "dp_130.py" \
+    --translate-provider "demo/googletrans_402.py" \
+    --translate-text "auto:en" \
+    --ner-provider "demo/dp_130.py" \
     --ner-model-name "ner_ontonotes_bert_mult" \
     --ner-types "ORG|PERSON|LOC|GPE" \
-    --inference-api "<YOUR-API-GOES-HERE>" \
-    --inference-filename "replicate_104.py" \
+    --inference-filename "demo/replicate_104.py" \
     --inference-model-name "meta/meta-llama-3-70b-instruct" \
     --inference-writer "sqlite3" \
-    --backend "d3js_graphs" \
     --log-file "arelight.log.txt" \
     -o "output" 
 ```
@@ -104,7 +175,7 @@ Parameters:
       * `translate-entity` -- (optional) source and target language supported by backend, separated by `:`.
       * `translate-text` -- (optional) source and target language supported by backend, separated by `:`.
 * `bulk_chain` -- LLM framework, utilized for relations classification) [[bulk-chain]](https://github.com/nicolay-r/bulk-chain)
-    * `inference-api` -- API key 
+    * `API_TOKEN` in `.env` -- API key, loaded with `python-dotenv`
     * `inference-filename` -- Inference implemenation filename; we use `replicate_104.py` from [nlp-thirdgate](https://github.com/nicolay-r/nlp-thirdgate/blob/master/llm/replicate_104.py) by default
     * `inference-model-name` -- Name of the model; for the Replicate provider we use: `meta/meta-llama-3-70b-instruct`
     * `inference-writer` -- How to save the output results; by default we use `sqlite3` for storing classified results.
@@ -112,15 +183,13 @@ Parameters:
     * `p` -- positive label, which is mapped to `1`.
     * `n` -- negative label, which is mapped to `2`.
     * `u` -- undefined label (optional), which is mapped to `0`.
-* `backend` -- type of the backend (`d3js_graphs` by default).
-    * `host` -- port on which we expect to launch localhost server.
-    * `label-names` -- default mapping is `p:pos,n:neg,u:neu`.
 * `-o` -- output folder for result collections and demo.
 
 Framework parameters mentioned above as well as their related setups might be omitted.
 
 </details>
- 
+
+The GUI server for this pipeline lives in [ARElight-server](https://github.com/nicolay-r/ARElight-server).
 
 ## Powered by
 

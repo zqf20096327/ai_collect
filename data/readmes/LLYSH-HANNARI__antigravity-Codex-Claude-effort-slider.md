@@ -10,9 +10,9 @@
   <a href="./readme/README.fr.md">Français</a>
 </p>
 
-[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](./package.json)
+[![Version](https://img.shields.io/badge/version-1.3.1-blue.svg)](./package.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-21%20passed-success.svg)](./test/client.test.mjs)
+[![Tests](https://img.shields.io/badge/tests-22%20passed-success.svg)](./test/client.test.mjs)
 [![Platform](https://img.shields.io/badge/platform-Antigravity%20Desktop%20%7C%20Antigravity%20IDE-purple.svg)](https://antigravity.google/)
 [![Demo](https://img.shields.io/badge/demo-online%20preview-orange.svg)](https://llysh-hannari.github.io/antigravity-Codex-Claude-effort-slider/)
 

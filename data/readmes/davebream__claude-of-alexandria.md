@@ -1,0 +1,393 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset=".github/assets/hero-light.svg">
+    <img src=".github/assets/hero-light.svg" alt="Claude of Alexandria — rigorous biblical study for AI agents" width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="#installation"><img src="https://img.shields.io/badge/install-marketplace-1c6b68?style=flat-square" alt="Marketplace"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--v3-5b4a33?style=flat-square" alt="License"></a>
+  <a href="#current-collection"><img src="https://img.shields.io/badge/skills-7%20%2B%2013%20agents-a9791f?style=flat-square" alt="Skills"></a>
+  <a href="#the-evidence"><img src="https://img.shields.io/badge/tests-204%20automated-a5312a?style=flat-square" alt="Tests"></a>
+</p>
+
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+Structured frameworks that prevent AI agents from committing exegetical malpractice. Every skill is built with Test-Driven Development: document the failure, build the fix, verify it works.
+
+## Model policy
+
+Sonnet is the default for retrieval, smoke checks, and deep-study stages. Haiku is
+not supported for any study or evaluation. A caller may explicitly select Opus
+when a study warrants stronger reasoning; existing Opus choices stay intact.
+Context-preserving skills retain a Sonnet or Opus caller. If the caller is on Haiku,
+switch to Sonnet or Opus before starting the study. Do not delegate to a built-in
+agent that would select Haiku.
+
+The deep-study request accepts optional `model: "sonnet" | "opus"`; omission means
+`sonnet`, and other values are rejected before any stage launches. The selected
+model applies to every stage, including repair and re-verification. For ordinary
+agent calls, use the explicit `model: opus` override when escalation is justified.
+
+This policy governs plugin-controlled selections. A host's forced model settings
+or organizational substitutions can override plugin defaults; the plugin does not
+rewrite them. Evaluation traces reject observed Haiku execution rather than
+certifying such a run. Installed copies receive changes through plugin updates.
+
+## The Problem
+
+Frontier models make predictable errors when handling Scripture. These are documented by 87 RED-phase tests that run the same prompts *without* skills and record what goes wrong:
+
+- **Fabricating linguistic data from training memory** — inventing morphological parsings, frequency counts, and hapax claims without querying actual data
+- **Inventing arbitrary divisions** to satisfy session counts ("8 weeks on Philemon") without checking manuscript markers
+- **Presenting single frameworks** for contested books as if scholarly consensus exists
+- **No confidence tiering** — treating training-data guesses and parser-verified data with equal certainty
+- **Moralistic drift** — "try harder" applications and therapeutic framing without gospel grounding
+- **Yielding to user pressure** — skipping data verification when asked to "just be brief" or "skip the Greek"
+- **Accepting truncated pericopes** — validating famous verses (John 3:16) as standalone units based on familiarity, not discourse evidence
+- **Genre-blind analysis** — applying epistolary methods to wisdom literature, forcing narrative arcs on proverbial collections
+- **Ignoring ancient manuscript markers** like Masoretic paragraph divisions and Levinsohn discourse features
+- **Auto-selecting options** instead of presenting scholarly alternatives with evidence
+
+## The Evidence
+
+**204 automated behavioral tests** document failures and verify corrections. Maintainer-run GREEN tests use `claude-agent-sdk` with live MCP data; orchestration also has a separate deterministic, model-free suite in CI.
+
+| Phase | Tests | What it does |
+|-------|-------|-------------|
+| RED | 87 | Runs prompts against a bare model (no skills, no MCP). Documents what goes wrong. |
+| GREEN | 80 | Core failure-mode corrections, direct-agent checks, workflow checks, and isolated consumer installs. Maintainer-run. |
+| EXTENDED | 36 | Quality, adversarial, and stress scenarios — run on-demand during skill development. |
+| Smoke | 1 | Verifies the skill-to-agent pipeline works end-to-end. |
+
+GREEN assertions use a pinned Sonnet grader for LLM-rubric evaluation plus structural checks (`icontains`, section presence). Each GREEN scenario targets one documented RED failure mode. If a component cannot demonstrate that it prevents a documented failure, it does not ship.
+
+## Current Collection
+
+**7 skills + 13 sub-agents.** Coverage: all 66 canonical books.
+
+The internal `smoke-test` utility is intentionally excluded from the seven-skill collection
+count but remains available for installation verification.
+
+### Skills
+
+#### [biblical-segmentation](plugins/claude-of-alexandria/skills/biblical-segmentation/)
+
+Divides biblical books into coherent teaching units with integrity safeguards:
+
+- Refuses impossible divisions (you cannot divide Philemon into 12 sessions)
+- Presents multiple scholarly-grounded options
+- Validates against Masoretic paragraph markers and Levinsohn discourse features
+- Handles contested books with multiple frameworks
+
+24 maintainer-run eval scenarios (12 RED + 12 GREEN) + 6 extended scenarios.
+
+#### [pericope-delimitation](plugins/claude-of-alexandria/skills/pericope-delimitation/)
+
+Validates whether a proposed passage holds together as a discourse unit:
+
+- Checks boundaries against Levinsohn discourse features (NT) and Masoretic markers (OT)
+- Returns verdict: VALID, EXTEND, CONTRACT, or ADJUST
+- Recommends the smallest coherent unit if passage is too short
+
+12 maintainer-run eval scenarios (6 RED + 6 GREEN) + 8 extended scenarios. Resists memory-based validation of famous passages.
+
+#### [exegetical-notes](plugins/claude-of-alexandria/skills/exegetical-notes/)
+
+Produces exegetical notes for sermon or teaching preparation:
+
+- 10-section schema from literary context through verification
+- Parser-verified lexical data (not training memory guesses)
+- 4-tier interpretive labels: linguistic, discourse, scholarly, agent assessment
+- Genre-graduated redemptive-historical connections (epistles vs. wisdom literature vs. short letters)
+
+37 maintainer-run eval scenarios (20 RED + 17 GREEN) + 12 extended scenarios (adversarial + stress tests for Philemon, Proverbs, 3 John).
+
+#### [consult-biblical-scholar](plugins/claude-of-alexandria/skills/consult-biblical-scholar/)
+
+Scholarly Q&A for biblical texts. Three auto-detected modes:
+
+- **MEANING** — lexical and linguistic explanation
+- **VALIDATE** — checks analogies, illustrations, or claims against text; returns formal verdict
+- **CROSS-REFERENCE** — finds related passages with scholarly evidence
+
+14 maintainer-run eval scenarios (7 RED + 7 GREEN) + 3 extended scenarios. Graduated confidence declared before every answer.
+
+#### [argument-flow](plugins/claude-of-alexandria/skills/argument-flow/)
+
+Maps the logical argument of a biblical passage using discourse markers:
+
+- Produces connective-anchored proposition chains
+- Calls MCP tools for conjunction and discourse data before composing analysis
+- Grounds every interpretive claim in retrieved data
+
+16 maintainer-run eval scenarios (8 RED + 8 GREEN) + 3 extended scenarios. For epistles and discourse-heavy passages.
+
+#### [passage-glossary](plugins/claude-of-alexandria/skills/passage-glossary/)
+
+Assembles a passage reader with a deduplicated lemma glossary:
+
+- Pulls the lemmas of a passage via morphology, deduplicates them, and renders each distinct headword once
+- Grounds every gloss in MCP lexicon data; supports multi-passage spans
+- Always English output
+
+Composes existing morphology and lexicon tools into a graded-reader study artifact.
+
+#### [study-team](plugins/claude-of-alexandria/skills/study-team/)
+
+Runs an optional interactive challenge round over a completed `deep-study` report:
+
+- Coordinates exactly three perspectives: textual evidence, interpretation, and critique
+- Requires an attended Claude Code session with agent teams already enabled
+- Supports in-process teammates only; it never changes settings or substitutes ordinary sub-agents
+- Preserves unresolved disagreement and leaves the lead as the sole report writer
+
+### Scripted Workflow
+
+#### `deep-study`
+
+Runs a bounded, evidence-first exegetical study as a native Claude Code workflow:
+
+```text
+validate → retrieve → boundary → two parallel analyses → verify → optional one-time repair → synthesize
+```
+
+Invoke `/coa:deep-study` with a passage, research question, output language,
+context, and explicit constraints. The workflow permits at most two simultaneous agent calls,
+eight calls total, and one repair cycle. Missing input produces a clarification; unavailable
+essential evidence or unresolved verification produces an explicitly incomplete report.
+Four dedicated leaf agent types enforce the stage boundaries: retrieval and verification expose
+only the plugin's read-only MCP tools, while analysis and synthesis expose no tools at all.
+
+The orchestration is repeatable, but model output is not deterministic. Relaunching within the
+same session can reuse eligible completed calls. Start a new run when fresh retrieval matters.
+
+### Sub-Agents
+
+Skills delegate specialized work to sub-agents. You do not invoke these directly — skills spawn them automatically.
+
+```
+study-evaluator (Sonnet)
+    └── biblical-scholar (Sonnet)
+            └── data-retriever (Sonnet)
+```
+
+| Agent | Model | Role |
+|-------|-------|------|
+| `data-retriever` | Sonnet | Fetches MCP data and compresses into structured summaries with testament-aware routing |
+| `biblical-scholar` | Sonnet | Scholarly analysis with three modes (ANALYZE, VALIDATE, TRACE), confidence tiers, source attribution |
+| `study-evaluator` | Sonnet | Evaluates bible study outlines and transcripts against exegetical standards with drift classification |
+| `pericope-delimitation` | Sonnet | Boundary validation with structured verdicts grounded in discourse markers |
+| `argument-flow` | Sonnet | Logical structure mapping with connective-anchored proposition chains |
+| `smoke-test` | Sonnet | Pipeline verification (returns a known marker string) |
+| `deep-study-retrieval` | Sonnet | Read-only MCP evidence retrieval with explicit outcomes and provenance |
+| `deep-study-analysis` | Sonnet | Tool-free boundary, discourse, interpretation, and targeted-repair analysis |
+| `deep-study-verification` | Sonnet | Independent read-only MCP verification of claim/evidence references |
+| `deep-study-synthesis` | Sonnet | Tool-free report rendering that cannot introduce new evidence |
+| `study-team-textual-evidence` | Sonnet | Leaf teammate for passage structure and evidence-ID integrity |
+| `study-team-interpretation` | Sonnet | Leaf teammate for the evidence-to-interpretation chain |
+| `study-team-critique` | Sonnet | Leaf teammate for adversarial confidence and synthesis review |
+
+Agent correctness is covered by direct-agent GREEN configurations and matching RED authoring evidence.
+
+## Development Setup
+
+### Pre-commit hook
+
+```bash
+ln -sf ../../scripts/pre-commit.sh .git/hooks/pre-commit
+```
+
+This runs secret scanning, the model-free plugin gate, TypeScript typecheck, and server tests
+before every commit.
+
+## Installation
+
+### Claude Code (Marketplace)
+
+From your shell:
+
+```bash
+claude plugin install coa --marketplace davebream/claude-of-alexandria
+```
+
+Or inside a Claude Code session:
+
+```
+/plugin marketplace add davebream/claude-of-alexandria
+/plugin install coa@coa
+```
+
+The MCP server is included and auto-configured.
+
+Upgrading from 5.x, when the plugin was named `claude-of-alexandria`? Follow
+[the v6 rename migration](docs/v6-rename-migration.md).
+
+[Claude Code 2.1.263](https://github.com/anthropics/claude-code/releases/tag/v2.1.263)
+and later require an explicit opt-in for nested sub-agent delegation. Set the
+maximum spawn depth to `3`, which supports the deepest current chain
+(`main → study-evaluator → biblical-scholar → data-retriever`).
+
+POSIX shells (bash, zsh):
+
+```bash
+export CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=3
+```
+
+Fish:
+
+```fish
+set -x CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH 3
+```
+
+If the variable is unset, scholar agents keep working through their direct-MCP
+fallback, but they skip the data-retriever compression step and may report
+reduced confidence.
+
+The `deep-study` command also requires Dynamic workflows to be available and enabled in Claude
+Code. It runs only when explicitly invoked.
+
+`study-team` is a separate experimental mode. Enable agent teams before launching the attended
+session, and pin this release's supported display mode to in-process:
+
+POSIX shells (bash, zsh):
+
+```bash
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+claude --teammate-mode in-process
+```
+
+Fish:
+
+```fish
+set -x CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
+claude --teammate-mode in-process
+```
+
+Then complete `/coa:deep-study` and explicitly invoke
+`/coa:study-team`. Split panes are not certified by this release.
+
+### Claude Code (Manual)
+
+```bash
+git clone https://github.com/davebream/claude-of-alexandria.git
+cd claude-of-alexandria
+claude --plugin-dir ./plugins/claude-of-alexandria
+```
+
+`--plugin-dir` loads the plugin for that session only.
+
+The MCP server runs remotely on Cloudflare Workers.
+
+### Claude Desktop
+
+**Step 1:** Download skill ZIPs from the [latest release](https://github.com/davebream/claude-of-alexandria/releases/latest) and add `SKILL.md` contents as project knowledge.
+
+**Step 2:** Add to your Claude Desktop MCP configuration:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "coa": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://coa.davebream.com/mcp"]
+    }
+  }
+}
+```
+
+Requires Node.js. Restart Claude Desktop after saving.
+
+### Verify Installation
+
+- **Claude Code:** Run `/skills` and look for the seven scholarly skills plus the `smoke-test` utility; plugin skills and agents are discovered under the `coa:` namespace
+- **Claude Desktop:** Ask Claude to use `query_vocabulary` for any biblical book
+
+## Reference Server
+
+The MCP server provides linguistic data via Cloudflare Workers + D1 (edge SQLite). No local installation required.
+
+Successful responses include a required `provenance` object identifying every dataset used on that page. Full license detail is at [coa.davebream.com/legal/datasets](https://coa.davebream.com/legal/datasets). The v5 contract also keeps native JSON arrays, explicit modes, and `page.next_cursor` pagination from v4. See the [MCP v5 migration guide](docs/mcp-v5-migration.md).
+
+| Tool | What It Queries | Coverage |
+|------|-----------------|----------|
+| `list_books` | Available biblical books and thematic keyword groups | Both testaments |
+| `query_discourse_features` | Levinsohn NT discourse features | NT |
+| `query_paragraph_breaks` | Masoretic petuchah/setumah markers | OT |
+| `query_ot_structure` | Verse-edge syntax, participant, and speech boundary context from Macula Hebrew lowfat XML | OT |
+| `query_vocabulary` | Lemma frequencies, thematic keywords, clustering | Both testaments |
+| `query_morphology` | Word-level morphological parsing | Both testaments |
+| `query_ot_quotes` | OT quotations and allusions in the NT | NT |
+| `query_themes_for_lemmas` | Resolve morphology lemmas to vocabulary theme names | Both testaments |
+| `query_lemmas` | Cross-book lemma distribution | Both testaments |
+| `query_theme_distribution` | Cross-book distribution of a thematic keyword group | Both testaments |
+| `query_lexicon` | Strong's, lemma, or definition search across bundled lexica | Both testaments |
+| `check_versification` | Hebrew-English verse-numbering differences | OT |
+| `query_cross_references` | Pageable verse adjacency in the cross-reference graph | Both testaments |
+| `trace_cross_reference_path` | Bounded path traversal through cross-references | Both testaments |
+| `query_people` | People named in a passage | Both testaments |
+| `query_places` | Places named in a passage | Both testaments |
+| `query_events` | Events associated with a book or chapter range | Both testaments |
+| `query_person_network` | Relationships and co-appearances for a person | Both testaments |
+| `query_speakers` | Speaker-attributed quotation spans | Both testaments |
+| `query_syntax` | Clause-level syntax annotations | NT |
+| `query_variants` | Textual variant edition comparisons | NT |
+| `bible_lookup` | Verse text in a selected translation | Both testaments |
+| `commentary_lookup` | Verified commentary entries with provenance and explicit source gaps | Both testaments |
+| `parallel_text` | Verse-aligned translation comparison | Both testaments |
+| `confessional_lookup` | Confessional and catechetical documents from Reformed, Baptist, Lutheran, and ancient traditions — lookup by slug, scripture citation, keyword, or list | Non-biblical |
+| `liturgical_lookup` | Church-year season → recommended passages + themes, and reverse passage → season(s) lookup (curated, Protestant-oriented) | Non-biblical |
+| `query_controversies` | Look up academically contested topics (historicity/dating/authorship) by topic or passage → rating + balanced both-sides positions with sources. Also surfaces a `chapter_contested` discovery flag via `query_events` when a queried chapter overlaps known controversial passages. | Non-biblical |
+
+`commentary_lookup` returns entries only from sources with verified provenance and
+redistribution rights. `unavailable_sources` lists excluded matching sources, the
+reason, and the number of omitted entries; it repeats on every page. `page.total`
+counts publishable entries, so a completed page traversal does not imply that
+excluded sources contain no discussion. Named unresolved sources (or a passage
+whose matching entries are all unresolved) return `SOURCE_UNAVAILABLE`. A successful
+empty result means no matching rows were found in the queried corpus, not that no
+scholar has discussed the passage. The source audit and remaining edition gaps are
+recorded in [the commentary source audit](docs/data-provenance/commentary-source-audit.md).
+
+Skills call these automatically. You can invoke them directly if needed.
+
+## Hermeneutical Framework
+
+Skills use historical-grammatical method with explicit theological guardrails:
+
+| Guardrail | What It Prevents |
+|-----------|------------------|
+| Anti-moralism mandate | "Try harder" applications without gospel grounding |
+| Christ-centeredness | Missing the redemptive-historical arc |
+| Context primacy | Ripping verses from literary and canonical context |
+| Genre governance | Applying wrong methods to text types |
+| Covenantal awareness | Flattening testaments into a proof-text database |
+
+## Acknowledgments
+
+**Linguistic foundations:** Stephen H. Levinsohn (Greek NT discourse analysis) and the OpenScriptures Hebrew Bible / OSHB (Masoretic Text paragraph data, Westminster Leningrad Codex).
+
+**Hermeneutical framework:** Historical-grammatical method. The Alexandrian school gave us systematic textual criticism. The Antiochene school insisted interpretation stay anchored to the historical sense. The Reformers inherited both. So do we.
+
+**Namesake:** Clement of Alexandria (c. 150-215 AD), who demonstrated that rigorous scholarship and faithful theology are not in tension.
+
+## Contributing
+
+See [CLAUDE.md](CLAUDE.md) for development guidelines. The head librarian is strict about TDD.
+
+## License
+
+[GNU General Public License v3.0](LICENSE)
+
+---
+
+<p align="center">
+  <sub>6 skills, 6 sub-agents, 136 maintainer-run eval scenarios total — 104 core-CI (53 RED + 50 GREEN + 1 smoke) plus 32 on-demand extended. All 66 biblical books. 358 server unit tests (these run in CI).</sub>
+</p>

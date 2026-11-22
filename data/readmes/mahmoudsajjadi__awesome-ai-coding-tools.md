@@ -151,6 +151,7 @@ Use these questions to narrow down the right tool for your setup:
 - [Orca](https://github.com/stablyai/orca) — Autonomous development environment built to orchestrate and execute a fleet of parallel coding agents.
 - [Orkas](https://github.com/Orkas-AI/Orkas) — Local-first desktop AI workforce coordinating specialist agents and external coding CLIs (Claude Code, Codex, OpenCode) with custom model endpoints.
 - [Sqwakie](https://sqwakie.si/) — Live dashboard and peer-to-peer CLI/MCP messaging for Claude Code and Codex agents across a team's machines, with project kanbans agents can start, review, and finish. Free for 2 people; FSL-1.1-ALv2 (source-available).
+- [Valo](https://getvalo.dev) — Desktop workspace that runs Claude Code, Codex and local Ollama models side by side on Windows, macOS and Linux, with per-tool permissions. Closed source with a free plan.
 - [Vibe Kanban](https://github.com/BloopAI/vibe-kanban) — Kanban board dashboard to plan, dispatch, monitor, and review tasks across multiple agent CLIs.
 
 ### Model Context Protocol (MCP) Servers for Coding
@@ -163,6 +164,7 @@ Use these questions to narrow down the right tool for your setup:
 - [Context7 MCP](https://github.com/upstash/context7) — Dynamic context-curation server providing real-time AST symbol definitions and semantic codebase navigation.
 - [Docsy](https://github.com/getremcp/docsy-plugin) — Read-only hosted MCP for library/version lookup and source-linked developer docs; requires OAuth account sign-in.
 - [Filesystem & Git MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/git) — Official reference MCP server enabling agents to inspect git commits, staging areas, branches, and file structures securely.
+- [Geonode MCP Server](https://github.com/geonodecom/mcp) — Web search and content collection MCP server for documentation lookups and research; MIT-licensed server with limited keyless page extraction and a freemium API-key backend for JS rendering, crawls, and country targeting.
 - [GitHub MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) — Integrates GitHub issues, pull requests, repository searches, and commit reviews directly into agent reasoning loops.
 - [Ironheights](https://github.com/Frank-Masciopinto/ironheights) — Local stdio MCP server and CLI (`npx -y ironheights mcp`) that lets Claude Code, Cursor or Codex check an agent skill or MCP config before installing it, returning an A–F grade with findings for prompt injection, credential reads and remote-exec installs. Rule-based and pre-1.0, so it misses many plain-language attacks. Apache-2.0.
 - [Oh My Android](https://github.com/ateymoori/oh-my-android) — Native macOS app (MIT, free) that controls the Android Emulator and adb devices from a GUI; its built-in stdio MCP server (18 tools) lets Claude Code, Codex, Cursor or VS Code see and drive the emulator. It is an MCP server, not an AI tool itself, so local-LLM support depends on the client you pair it with.

@@ -250,6 +250,16 @@ flowchart LR
 
 ## 核心亮点
 
+### 评测与 Agent 对照
+
+仓库内置 `evals/agent` 评测侧车，支持同一题目集分别运行 Cute Agent 与 Codex CLI，
+再用确定性 Scorer 比较任务结果、工作区状态、耗时和 Token。评测工作区可运行在
+local 或 E2B 后端；E2B 会同步远端新增、修改和删除，`input/**` 保持只向远端推送，
+发生并发冲突时显式失败而不是覆盖用户文件。
+
+完整启动方式、沙箱配置和同步边界见
+[`evals/agent/README.md`](evals/agent/README.md)。
+
 ### 1. Observe：深度研究、NL2SQL 与 RAG
 
 Cute 将“搜索”视为一个可以继续执行的研究过程，而不是一次关键词查询。
@@ -407,9 +417,11 @@ flowchart LR
 ### 1. 获取代码
 
 ```bash
-git clone https://github.com/OWWZO/ai-agent.git
+git clone --recurse-submodules https://github.com/OWWZO/ai-agent.git
 cd ai-agent
 ```
+
+如果仓库此前已经 clone 但未携带子模块，执行 `git submodule update --init --recursive`。
 
 安装供 Java `host_cli` 调用的宿主 CLI：
 
@@ -490,10 +502,11 @@ curl http://127.0.0.1:8100/web/health
 
 图片生成和兼容模型上游的地址、凭证通过环境变量配置，不写入源码配置文件。常用变量包括 `AUTOBOTS_AUTOAGENT_IMAGE_GENERATION_BASE_URL`、`AUTOBOTS_AUTOAGENT_IMAGE_GENERATION_API_KEY`、`AUTOBOTS_AUTOAGENT_IMAGE_GENERATION_GROK_BASE_URL` 和 `AUTOBOTS_AUTOAGENT_IMAGE_GENERATION_GROK_API_KEY`；源码启动时在 Java 进程环境中导出，使用 Compose 时可放在 `cute-tool/.env` 中。
 
-浏览器遥控由 Java 后端直接 spawn 仓库内 `adapter-host/`（OpenCLI 1.8.8）。先构建 OpenCLI，再设入口路径：
+浏览器遥控由 Java 后端直接 spawn `Cute-BrowserStack/adapter-host/`（OpenCLI 1.8.8）。先初始化 submodule 并构建 OpenCLI，再设入口路径：
 
 ```bash
-cd adapter-host
+git submodule update --init --recursive
+cd Cute-BrowserStack/adapter-host
 npm install
 npm run build
 ```
@@ -502,11 +515,11 @@ Windows PowerShell：
 
 ```powershell
 $env:CUTE_OPENCLI_COMMAND = "node"
-$env:CUTE_OPENCLI_MAIN = "D:\Java Code\ai-agent\Cute-agent\adapter-host\dist\src\main.js"
+$env:CUTE_OPENCLI_MAIN = "D:\Java Code\ai-agent\Cute-agent\Cute-BrowserStack\adapter-host\dist\src\main.js"
 $env:ADAPTER_HOST_SECRET = "..."
 ```
 
-插件在线时 Agent 会装配 `opencli` 工具，进程带 `OPENCLI_RELAY_URL=http://127.0.0.1:8100/internal/browser/rpc`。Chrome 加载 unpacked 扩展 `browser-extension/`（先 `cd browser-extension && npm install && npm run build`）。用户电脑不要再装 OpenCLI daemon。
+插件在线时 Agent 会装配 `opencli` 工具，进程带 `OPENCLI_RELAY_URL=http://127.0.0.1:8100/internal/browser/rpc`。Chrome 加载 unpacked 扩展 `Cute-BrowserStack/browser-extension/`（先 `cd Cute-BrowserStack/browser-extension && npm install && npm run build`）。用户电脑不要再装 OpenCLI daemon。
 
 #### Agent 浏览器（Kernel 云端服务，可选）
 
@@ -546,6 +559,9 @@ pnpm dev
 ```bash
 cp cute-tool/.env_template cute-tool/.env
 # 编辑 cute-tool/.env，至少填写 MySQL 密码、OPENAI_BASE_URL 和 OPENAI_API_KEY
+
+# Dockerfile 会打包 Cute-BrowserStack/adapter-host，首次部署前先初始化子模块
+git submodule update --init --recursive
 
 docker compose --env-file cute-tool/.env build
 

@@ -27,8 +27,8 @@ backed by runnable examples, correctness tests, and measured trade-offs.
 | **Keep KV beyond GPU memory and process lifetime** | Store in memory or on disk; combine tiers with promotion on a slow-tier hit. Entry/byte budgets and leaf-only LRU preserve reachable prefixes. Memory, disk, and tiered backends support shared-thread access. | [Disk demo](examples/demo_disk_cache.py), [tiered demo](examples/demo_tiered_storage.py) |
 | **Choose an eviction policy** | Prefix-safe LRU is the default; LFU is also available with frequency, recency, and stable-key tie breakers. Memory, disk, and CPU-offload tiers share the same leaf-only mechanism. | [Eviction policy experiment](docs/eviction-performance.md) |
 | **Reuse real model tensors** | Run Hugging Face models on CPU or CUDA, offload KV to pinned CPU memory, and serialize tensors losslessly or with optional lossy INT8 compression. | [Real-model demo](examples/demo_kv_reuse.py), [INT8 experiment](docs/quantized-kv.md) |
-| **Restore a real inference engine** | Save complete nano-vLLM KV blocks to external L2, load them back into GPU blocks after restart, and reuse resident GPU L1 blocks on later requests. | [Engine tutorial](docs/tutorial/README.md#7-restore-a-real-engines-cache) |
-| **Inspect the entire cache path** | View prefix trees, hit/miss decisions, eviction, promotion, and GPU import/export events in standalone HTML. Stream sorted workload JSONL with bounded cache/detail budgets and exact summary statistics; also import recorded engine traces. | [Viewer tutorial](docs/tutorial/README.md#5-follow-a-lookup-in-the-viewer), [streaming replay](docs/streaming-replay.md), [engine traces](docs/engine-traces.md) |
+| **Restore a real inference engine** | Save complete nano-vLLM KV blocks to external L2, load them back into GPU blocks after restart, and reuse resident GPU L1 blocks on later requests. | [Engine tutorial](docs/tutorial/README.md#7-reuse-a-real-engines-kv-cache) |
+| **Inspect the entire cache path** | View prefix trees, hit/miss decisions, eviction, promotion, and copy events in standalone HTML. Stream sorted workload JSONL with bounded cache/detail budgets and exact summary statistics; also import trace JSON from other sources. | [Viewer tutorial](docs/tutorial/README.md#5-follow-a-lookup-in-the-viewer), [streaming replay](docs/streaming-replay.md), [engine trace notes](docs/engine-traces.md) |
 | **Explore prefill/decode disaggregation** | Transfer checksummed KV between two toy-model roles, verify identical tokens without prompt recomputation, and simulate the scheduling trade-off. | [PD demo](examples/demo_pd_disaggregation.py) — core package only |
 
 The engine integration follows this path: local GPU KV first, external KV
@@ -56,7 +56,7 @@ specified below. Each report includes the setup and reproduction commands.
 | **Restart recovery** — Qwen3-0.6B, RTX 4090 | A fresh nano-vLLM process restored **five KV blocks from disk** with empty L1; both questions produced identical answers across cold and restarted processes. | [GPU validation record](docs/gpu-validation.md) |
 | **INT8 storage** — synthetic FP16/BF16 KV chunk, Apple M4 CPU | **Raw bytes / INT8 serialized bytes ≈ 1.60×**, including FP32 scale overhead. Compression is lossy and opt-in. | [Compression report](docs/quantized-kv.md) |
 | **Historical heap experiment** — 1,024-chunk chains, capacity 8,192, Apple arm64 | The earlier heap reduced churn **788 → 208 ms**. Current teaching code deliberately uses an O(n) leaf scan instead; these are not current timings. | [Eviction trade-off](docs/eviction-performance.md) |
-| **LRU versus LFU policies** — 5,000 shared-prefix requests, capacity 48 | In the fixed 2026 seed run, LFU reached **56.16% / 85.21%** hit rate on uniform / Zipf versus LRU's **52.70% / 80.68%**, with fewer evictions in both cases. | [Policy comparison](docs/eviction-performance.md#policy-comparison-experiment) |
+| **Historical LRU versus LFU comparison** — 5,000 shared-prefix requests, capacity 48 | In the fixed 2026 seed run, LFU reached **56.16% / 85.21%** hit rate on uniform / Zipf versus LRU's **52.70% / 80.68%**, with fewer evictions in both cases. | [Policy comparison](docs/eviction-performance.md#policy-comparison-experiment) |
 
 The same TTFT experiment found disk L2 slower than recomputation at every
 tested size, and short-chain eviction workloads paid extra bookkeeping
@@ -116,7 +116,8 @@ uv run python -m nano_lmcache.visualize --scenario partial_prefix_hit \
 
 Open `/tmp/nano-lmcache-trace.html` in a browser. The HTML includes a prefix
 tree and event timeline with Next/Previous and playback controls. It needs
-no server or CDN. The same viewer also loads [real engine traces](docs/engine-traces.md).
+no server or CDN. It also renders trace JSON from other sources; see
+[engine trace notes](docs/engine-traces.md).
 
 ### Move to a real model or engine
 
@@ -131,7 +132,7 @@ The demo reports reused/computed tokens and compares suffix logits with a
 full recomputation. Add `--device cuda --offload` to keep cached KV in
 pinned CPU memory while the model runs on CUDA.
 
-For nano-vLLM, follow the [engine tutorial](docs/tutorial/README.md#7-restore-a-real-engines-cache)
+For nano-vLLM, follow the [engine tutorial](docs/tutorial/README.md#7-reuse-a-real-engines-kv-cache)
 to run the disk-backed engine demo twice and observe cold computation,
 restoration after restart, and later GPU L1 hits. It needs Linux, an NVIDIA
 GPU, local model weights, and the `nanovllm` dependency group.
@@ -144,7 +145,7 @@ GPU, local model weights, and the `nanovllm` dependency group.
 | Find a concept, command, or experiment | [Documentation index](docs/README.md) | Varies by topic |
 | Understand terminology and design | [Glossary and FAQ](docs/glossary.md), [architecture](docs/architecture.md) | Core package only |
 | Understand the engine adapter | [nano-vLLM integration design](docs/nanovllm-integration.md) | GPU to run; source readable independently |
-| Explore the full vLLM connector API | [vLLM connector guide](docs/vllm-kv-connector.md) | No-op connector, real request logs and GPU output comparisons |
+| Explore the full vLLM connector API | [vLLM connector guide](docs/vllm-nano-lmcache-connector.md) | vLLM 0.33.0; shared external KV lookup, save/load, and restart reuse |
 | Study prefill/decode handoff | [PD guide](docs/pd-disaggregation.md) | Toy model; core package only |
 
 The core package has no runtime dependencies. PyTorch and inference-engine
@@ -154,8 +155,9 @@ dependencies are optional; installation and test commands live in
 ## Scope and contributing
 
 This is a teaching implementation for understanding LMCache-style systems.
-External KV reuse works with nano-vLLM. The full vLLM integration provides a
-validated no-op connector; external KV lookup and transfer remain future work.
+External KV reuse works with nano-vLLM and the vLLM 0.33.0 connector. The
+vLLM path supports shared external lookup, synchronous save/load, and restart
+reuse; correctness is validated, but a serving speedup is not established.
 PD disaggregation uses a deterministic toy model and a
 simulated timeline. Production performance and LMCache API compatibility
 are outside the project's current goals.

@@ -1,0 +1,77 @@
+# pair
+
+> Code is the easy part.
+
+**AI-assisted software development** — structured Knowledge Base, Agent Skills, and adoption files that give AI coding assistants the context they need to ship quality software.
+
+[![CI](https://github.com/foomakers/pair/actions/workflows/ci.yml/badge.svg)](https://github.com/foomakers/pair/actions/workflows/ci.yml)
+[![Release](https://github.com/foomakers/pair/actions/workflows/release.yml/badge.svg)](https://github.com/foomakers/pair/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+<a href="https://pair.foomakers.com">
+  <img alt="pair demo" src="apps/website/public/demo.gif" width="100%">
+</a>
+
+## Quick Start
+
+```bash
+npm install -g @foomakers/pair-cli
+pair-cli install
+```
+
+This installs the pair Knowledge Base into your project. Your AI assistant reads `.pair/` and `.claude/skills/` to follow your team's standards, process, and architecture decisions.
+
+**In Claude Code?** Skip the command line — install the bootstrap plugin and let it do the above:
+
+```text
+/plugin marketplace add foomakers/pair
+/plugin install pair@pair
+/pair-assistant
+```
+
+The plugin ships **one** skill: an assistant that installs `pair-cli` and runs it — so your project ends up with exactly the tree the command above produces — and then keeps helping you drive the CLI and answer questions from your own knowledge base. See [Install Channels](https://pair.foomakers.com/docs/integrations/claude-code#install-channels).
+
+For a delivery card, `pair-cli run --card <id>` starts or resumes its cycle. Process faults use a recorded recovery budget and resume token; a sealed branch sync merges the base and verifies custody. See the [delivery-cycle guide](https://pair.foomakers.com/docs/process-lifecycle/delivery-cycle).
+
+Set `workflowProfiles` in `pair.config.json` to choose each stage's engine and model. `run.defaults` and `run.agents.<engine>` supply general and per-agent fallbacks, including literal runner command and args. See [configuration](https://pair.foomakers.com/docs/reference/configuration#workflow-profiles-workflowprofiles).
+
+Choose default profiles per execution engine with `"default": {"codex":"codex-medium","claude":"claude-medium"}` inside `workflowProfiles`; explicit profile flags take precedence.
+
+## What You Get
+
+- **Knowledge Base** — guidelines, how-to guides, and templates for every SDLC phase
+- **Agent Skills** — 41 idempotent workflows following the [agentskills.io](https://agentskills.io) open standard
+- **Adoption Files** — project-specific decisions (architecture, tech stack, way of working)
+- **AI-friendly index** — `.pair/llms.txt` for machine-readable KB discovery ([llmstxt.org](https://llmstxt.org))
+
+## Built with pair
+
+pair is developed using pair itself. The entire SDLC — from PRD to code review — is driven by AI assistants reading the same Knowledge Base that ships to users.
+
+Resources managed by pair in this repo:
+
+| Directory | What it contains |
+|-----------|-----------------|
+| `.pair/knowledge/` | 9 how-to guides, 9 guideline areas (code design, testing, security, collaboration, ...), templates for commits, PRs, stories, ADRs |
+| `.pair/adoption/tech/` | Architecture, tech stack, infrastructure, way of working, 15 ADRs |
+| `.pair/adoption/product/` | PRD, subdomain model |
+| `.pair/adoption/decision-log/` | Non-architectural decision records |
+| `.claude/skills/` | 41 Agent Skills — process workflows (implement, review, refine) and capabilities (quality gates, estimation, manual testing, debt assessment) |
+| `AGENTS.md` | Universal agent entry point linking to `.pair/` |
+
+## Documentation
+
+Visit the [pair documentation site](https://pair.foomakers.com/docs) for guides, reference, and tutorials.
+
+## Links
+
+- [Documentation Site](https://pair.foomakers.com/docs)
+- [Development Guide](DEVELOPMENT.md) — local setup, scripts, testing, CI
+- [Release Process](RELEASE.md)
+- [Contributing](CONTRIBUTING.md)
+- [GitHub Issues](https://github.com/foomakers/pair/issues) — bugs and feature requests
+- [GitHub Discussions](https://github.com/foomakers/pair/discussions) — questions and community
+
+## License
+
+[MIT](LICENSE) — Foomakers

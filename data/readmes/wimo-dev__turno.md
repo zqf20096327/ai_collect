@@ -379,6 +379,7 @@ languages and locale fixed (`turno browser show|set <id>`).
 - **Sign-ins the agent never sees.** `turno browser vault add` keeps a username, a password and
   an optional TOTP secret per site in the OS secret store, and the `browser_login` tool fills
   them into that site's sign-in page; results are redacted and values are bound to the site.
+  A password or a one-time code never comes back to the agent, whoever typed it.
 - **Sessions you can move.** `turno browser export <id> --out <file>` writes an identity's
   cookies and storage as one file encrypted with a passphrase, with an expiry, and
   `turno browser import <file>` reads it on another machine. The vault never leaves.

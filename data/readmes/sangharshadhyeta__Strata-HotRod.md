@@ -1,12 +1,14 @@
 <p align="center"><i> Coming Soon: <s>A system which rewires the model around the way you use it.</s></i></p>
 
-Watch this first: [NoPlaceLikeLocalhost](https://youtu.be/WSJL4SOIZDg?si=qPTa3jeK4YtDLCPy) - This repo is for the hosters who like to get under the hood, tinker, tune and make things their own. Who believe in building, not just buying; in ingenuity over expensive hardware; and in pushing what they've got to do what others thought it couldn't.
-
-And in the spirit of open source, sharing what they build, learning from each other, and making the whole community better along the way.
-
-Take the machine you have. Make it your own. Share what you learn. See what it'll do.
+<p align="center">Watch this first: <a href="https://youtu.be/WSJL4SOIZDg?si=qPTa3jeK4YtDLCPy">NoPlaceLikeLocalhost</a></p>
 
 <p align="center"><img src="docs/media/hotrod-hero.gif" width="380" alt="Strata Hot Rod: the Strata hexagon in fire and ice"></p>
+
+<p align="center">This repo is for the hosters who like to get under the hood, tinker, tune and make things their own. Who believe in building, not just buying; in ingenuity over expensive hardware; and in pushing what they've got to do what others thought it couldn't.</p>
+
+<p align="center">And in the spirit of open source, sharing what they build, learning from each other, and making the whole community better along the way.</p>
+
+<p align="center">Take the machine you have. Make it your own. Share what you learn. See what it'll do.</p>
 
 <h1 align="center">Strata-HotRod</h1>
 
@@ -38,12 +40,13 @@ Nothing leaves your PC.</p>
   <a href="#what-you-see">The app</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#install">Install</a> ·
+  <a href="#where-this-came-from">Where from</a> ·
   <a href="#credits-and-license">Credits</a>
 </p>
 
 ---
 
-<table>
+<table width="100%">
 <tr>
 <td align="center" width="25%"><h2>🧊 78 - 111 GB</h2>of model on a <b>30 GB</b> PC (IQ3_S and UD-Q4_K_XL)</td>
 <td align="center" width="25%"><h2>🔥 50-70 / 15-25</h2>tokens/s on one RTX 3060: IQ3_S (131K context, short answers)</td>
@@ -69,14 +72,6 @@ tokens/s; the learners were still cold, and it has not been measured as widely a
 > the **Coder** (a half-expert coding version, about 9 tokens/s). Everything on this page, `setup.py` included, is for Qwen3.8-Flash-Next.
 > The two branches are kept apart on purpose.
 
-> ### 🧬 Looking for Edge0 (145B latent MoE)? It is on another branch.
-> **Go to the [`hotrod-edge0` branch](https://github.com/sangharshadhyeta/Strata-HotRod/tree/hotrod-edge0)**: this fork's engine now runs
-> [Edge0-145B](https://huggingface.co/Edge0/Edge0-145B-NVFP4) (NVFP4, latent experts, 8 groups per layer) with all of this page's tiers
-> (RAM tier, expert cache, stand-ins on by default, speculative decoding). Early support, measured once on this PC (RTX 3060 12 GB, SSD
-> mode, 15 Nov, a few short questions read by hand): 16-18 tokens/s with the stand-ins, 7 without. Prompts are read in small windows, so
-> they are slow (30-40 tokens/s); the chunked prompt path and the other tiers' latent versions are not ported yet. Everything on this page,
-> `setup.py` included, is for Qwen3.8-Flash-Next; Edge0's own engine and models are by [Edge0](https://github.com/Edge0-AI/Edge0).
-
 ## Can Qwen3.8-Flash-Next run on an RTX 3060 12 GB with low RAM?
 
 <div align="justify">
@@ -100,19 +95,36 @@ with less RAM it reads the rest from the SSD, much slower.
 
 <div align="justify">
 
-Measured on the machine below; a token is about ¾ of a word. Every answer in these runs was read and checked.
+Measured on one PC: RTX 3060 12 GB, i5-12400F, 30 GB RAM, NVMe (the full list is below). A token is about ¾ of a word. Every answer
+in these runs was read and checked.
 
 </div>
 
 <table width="100%">
-<tr><th align="left">Answer</th><th align="right">tokens/s (24 Oct, 131K context)</th></tr>
-<tr><td align="left">Code (a Python function, 500-650 tokens)</td><td align="right">52 - 55</td></tr>
-<tr><td align="left">Reasoning (a two-train problem, ~1,000 tokens)</td><td align="right">66 - 71</td></tr>
-<tr><td align="left">Story (a paragraph, 100-150 tokens)</td><td align="right">50 - 53</td></tr>
+<tr><th align="left" width="980">Qwen3.8-Flash-Next IQ3_S<br>131K context, 24 Oct</th><th align="right" width="420">tokens/s</th></tr>
+<tr><td align="left">Code (a Python function, 500-650 tokens)</td><td align="right">52 – 55</td></tr>
+<tr><td align="left">Reasoning (a two-train problem, ~1,000 tokens)</td><td align="right">66 – 71</td></tr>
+<tr><td align="left">Story (a paragraph, 100-150 tokens)</td><td align="right">50 – 53</td></tr>
 </table>
 
 <table width="100%">
-<tr><th align="left">Long prompts (262K context, 20 Oct)</th><th align="right">Read in</th><th align="right">Answer written at</th></tr>
+<tr><th align="left" width="980">Stage, same PC</th><th align="right" width="420">tokens/s</th></tr>
+<tr><td align="left">Stock Strata, 10 Oct (32K)</td><td align="right">17.2</td></tr>
+<tr><td align="left">I/O prefetch on (test T1)</td><td align="right">27.2</td></tr>
+<tr><td align="left">Stand-ins from rank 2 + draft head</td><td align="right">44.6</td></tr>
+<tr><td align="left">Merged version (SPEC 20 step 9o)</td><td align="right">58.4</td></tr>
+<tr><td align="left">Final, 24 Oct</td><td align="right">50 – 70</td></tr>
+</table>
+
+<div align="justify">
+
+The 111 GB UD-Q4_K_XL ran at 15–22 tokens/s (14 Nov, learners still cold). DeepSeek-V4.1-Flash (341 GB) ran at about 5
+tokens/s on 31 Oct, and 7.5–8 over a whole answer on 13 Nov. These rest on fewer runs than the 78 GB result.
+
+</div>
+
+<table width="100%">
+<tr><th align="left" width="730">Long prompts (262K context, 20 Oct)</th><th align="right" width="335">Read in</th><th align="right" width="335">Answer written at</th></tr>
 <tr><td align="left">8,554 tokens</td><td align="right">16.9 s</td><td align="right">52 - 54 tokens/s</td></tr>
 <tr><td align="left">45,398 tokens</td><td align="right">67 - 68 s</td><td align="right">38 - 41 tokens/s</td></tr>
 <tr><td align="left">The same 45K conversation, next turn</td><td align="right">0.4 - 0.5 s</td><td align="right">34 - 45 tokens/s</td></tr>
@@ -129,7 +141,7 @@ already read. A 262K context costs about 8% against 131K, because more of the at
 <summary><b>The machine</b></summary>
 
 <table width="100%">
-<tr><th align="left"></th><th align="left"></th></tr>
+<tr><th align="left" width="980"></th><th align="left" width="420"></th></tr>
 <tr><td align="left"><b>Graphics card</b></td><td align="left">NVIDIA GeForce RTX 3060, 12 GB (driver 610.57, CUDA 13.3)</td></tr>
 <tr><td align="left"><b>Processor, RAM</b></td><td align="left">Intel Core i5-12400F (6 cores, 12 threads), 30 GB</td></tr>
 <tr><td align="left"><b>Disk</b></td><td align="left">500 GB NVMe (WD Blue SN5000) on a PCIe 3.0 link; the model files live on it</td></tr>
@@ -178,7 +190,7 @@ about the ones that do not.
 
 </div>
 
-<table>
+<table width="100%">
 <tr>
 <td width="50%" valign="top">
 
@@ -199,7 +211,7 @@ and every answer we read was correct either way.
 
 **A look-ahead that learns.** Experts for 1, 2 and 4 layers ahead are guessed on the card and read from the SSD before they
 are needed. Each guess is the router's own score plus a small correction learned live from the real routing; its size is
-chosen per layer by a live contest, and it falls back to the plain router if it ever does worse. For Qwen3.8 IQ3_S setup downloads a trained one ([release](https://github.com/sangharshadhyeta/Strata-HotRod/releases/tag/predictor-qwen38-iq3s-v2), 5.4 MB: 91 / 85 / 78% of the needed experts guessed 1 / 2 / 4 layers ahead) and it keeps learning on your PC; for other models it is off until `STRATA_LA_LEARN=1` starts one. DeepSeek's trained one is a manual download (see the DeepSeek install below).
+chosen per layer by a live contest, and it falls back to the plain router if it ever does worse. For Qwen3.8 IQ3_S a trained one is published ([release](https://github.com/sangharshadhyeta/Strata-HotRod/releases/tag/predictor-qwen38-iq3s-v3), 5.1 MB: 89 / 81 / 74% of the needed experts guessed 1 / 2 / 4 layers ahead on a later week's traffic, where the plain router guessed 78 / 64 / 56%) setup does not download it by default (since 21 Nov the look-ahead starts empty and trains on your PC during the calibration; `HOTROD_PREDICTOR_DOWNLOAD=1 ./setup.sh ...` fetches it, SHA-256 checked), and it keeps learning on your PC; for other models it starts empty and learns from scratch, and a trained one is loaded when its file is kept (`STRATA_LA_LEARN=0` turns it off). DeepSeek's trained one is a manual download (see the DeepSeek install below).
 
 </div>
 
@@ -251,7 +263,7 @@ and kept across restarts.
 </table>
 
 <table width="100%">
-<tr><th align="left">Needed experts guessed (live, 24 Oct)</th><th align="center">Plain router</th><th align="center">Learned look-ahead</th></tr>
+<tr><th align="left" width="730">Needed experts guessed (live, 24 Oct)</th><th align="center" width="335">Plain router</th><th align="center" width="335">Learned look-ahead</th></tr>
 <tr><td align="left">1 layer ahead</td><td align="center">77-79%</td><td align="center"><b>85-88%</b></td></tr>
 <tr><td align="left">2 layers ahead</td><td align="center">66-69%</td><td align="center"><b>76-79%</b></td></tr>
 <tr><td align="left">4 layers ahead</td><td align="center">55-58%</td><td align="center"><b>66-71%</b></td></tr>
@@ -262,6 +274,15 @@ and kept across restarts.
 Every change and its measurement: [docs/HOTROD-DETAILS.md](docs/HOTROD-DETAILS.md) · the predictor study:
 [docs/PREDICTOR-EXPERIMENTS.md](docs/PREDICTOR-EXPERIMENTS.md) · the full log of ideas tried: [docs/perf-ideas.md](docs/perf-ideas.md) ·
 earlier experiments from a separate fork: [docs/EARLIER-EXPERIMENTS.md](docs/EARLIER-EXPERIMENTS.md).
+
+**New on main (22 Nov):** the engine tunes itself (an online tuner; calibration that runs by default and trains the learners on
+your PC; a final check that keeps the chosen set only if it beats the defaults by more than 3%), the learned residency profile is
+on for every model, the pin-segment reserve is computed, prompt stand-ins treat every token alike, co-prefill is on by default
+and the batch windows accept drafts probabilistically. Fixes: a read-ahead copy race, a stale pin after a failed read, STOP before
+QUIT, prompt-cache metadata, NaN kept a NaN in the bf16 conversions, the shared-expert combine's rounding, a GGUF header bounds
+check, the PLE shard identity, the peer tier's reserve. From the commit log; each is not benchmarked on its own, and Qwen's decode
+speed did not move with them (22 Nov, three prompts at 262K on UD-Q4_K_XL: 19.9 tokens/s against 19.3 on the 18 Nov build; a
+13.6K-token read 343 against 338 tokens/s).
 
 **New on main (9 Nov):** the flip re-check is opt-in (`STRATA_FRAGILE_RECHECK=1`; off: 42-44 vs 31-34 tokens/s on this
 PC at 262K, answers correct in both); the shift cap is opt-in (`STRATA_SHIFT_CAP=1`); the stand-in learner learns from the
@@ -353,9 +374,9 @@ scl enable gcc-toolset-13 -- ./setup.sh --model IQ3_S --context 131072 --build -
 
 - `--build` compiles this fork's engine; without it setup downloads upstream's, which lacks these changes. The compiled
   engine was checked against the one measured here: the same speed.
-- For Qwen3.8 IQ3_S it also downloads the learned look-ahead's trained state (5.4 MB, SHA-256 checked) into `data/`. It is the
-  `predictor-qwen38-iq3s-v2` release; a later `-v3` (the same file trained for another week) is on the releases page, and
-  setup does not use it yet.
+- For Qwen3.8 IQ3_S setup does not download the learned look-ahead by default: it starts empty on your PC, trains during the calibration and keeps learning. To start from the published one, run setup with
+  `HOTROD_PREDICTOR_DOWNLOAD=1` (5.1 MB, SHA-256 checked, into `data/`; kept if the file is already there). It is the
+  [`predictor-qwen38-iq3s-v3`](https://github.com/sangharshadhyeta/Strata-HotRod/releases/tag/predictor-qwen38-iq3s-v3) release (v2 trained for another week of real use).
 - For 262K context set `--max-context 262144` in the config's `args`.
 - `--model IQ3_S` is the size tested here. Setup says it wants a 64 GB PC; naming it is the consent, and it runs on 30 GB.
 - `--models-dir /path/on/nvme` puts the model files elsewhere.
@@ -562,6 +583,32 @@ Every option: [docs/DETAILS.md](docs/DETAILS.md) (upstream's reference; it cover
 </div>
 </details>
 
+## Where this came from
+
+<div align="justify">
+
+This fork began as **[solid.cpp](https://github.com/sangharshadhyeta/solid.cpp)** (August to October 2026), a llama.cpp fork used
+to find out what really works for a mixture-of-experts model that does not fit the card; the lessons that survived measurement
+were ported into Strata one concept at a time. A copy of that work is kept on the
+**[`legacy-solid` branch](https://github.com/sangharshadhyeta/Strata-HotRod/tree/legacy-solid)**: the illustrated write-up
+([`index.html`](https://github.com/sangharshadhyeta/Strata-HotRod/blob/legacy-solid/index.html)), the formal Technical Note
+([`print/technical-note.html`](https://github.com/sangharshadhyeta/Strata-HotRod/blob/legacy-solid/print/technical-note.html), with the references), solid.cpp's changed
+sources and notes, **[CITATIONS.md](https://github.com/sangharshadhyeta/Strata-HotRod/blob/legacy-solid/CITATIONS.md)** (every project, paper, model and person
+credited) and **[UPSTREAM.md](https://github.com/sangharshadhyeta/Strata-HotRod/blob/legacy-solid/UPSTREAM.md)** (exactly what is whose).
+
+</div>
+
+<p align="center"><img src="docs/media/lessons.svg" width="760" alt="Five lessons from solid.cpp and what each became in Strata-HotRod"></p>
+
+<p align="center"><img src="docs/media/token-flow.svg" width="760" alt="How a requested expert is served: on the card, stand-in, RAM or SSD"></p>
+
+<div align="justify">
+
+**What this is not.** One PC, one card, one drive; AMD, Intel and Apple paths were not tested here. Figures are the author's own
+measurements and have not been independently reproduced.
+
+</div>
+
 ## Credits and license
 
 <div align="justify">
@@ -570,6 +617,11 @@ The model is Qwen3.8-Flash-Next by the Qwen team, compressed by ISTA-DASLab. Str
 this fork keeps its [MIT License](LICENSE) and copyright notice. The engine uses parts of
 [llama.cpp / ggml](https://github.com/ggml-org/llama.cpp), and the picture encoder uses llama.cpp's `mtmd`. A few parts and
 every model have their own licenses: [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md#license). Security: [SECURITY.md](SECURITY.md).
+
+The DeepSeek engine comes from **[Project Maya](https://github.com/mw00/project-maya)** by Peasant Smith (mw00) and its
+contributors (MIT; its notice is kept in [`third_party/project-maya`](third_party/project-maya) on the DeepSeek branch).
+The author's part, about 540 commits in solid.cpp and about 630 (Qwen) and
+120 (DeepSeek) on top of Strata, was done with Claude Code as an AI coding assistant.
 
 </div>
 

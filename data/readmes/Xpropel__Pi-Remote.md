@@ -90,7 +90,7 @@ For running the relay on a server (systemd setup, token management, troubleshoot
 - The extension and the web UI use separate tokens: a local token for the extension-to-relay channel and a viewer token for web login. Both configuration files are gitignored.
 - The extension channel (7001) binds to 127.0.0.1 by default. The web channel (7002) serves the page and WebSocket only; it exposes no file endpoints.
 - Anyone holding the viewer token can send messages to a session, and pi runs with tool permissions. Treat the token as a password. For access over the public internet, use a private network, a tunnel, or a TLS reverse proxy instead of exposing port 7002 directly.
-- Remote bash is disabled by default and must be enabled explicitly on the local machine; its working directory is restricted to session directories and registered projects.
+- Authenticated viewers have access to remote bash (working directory restricted to session directories and registered projects) and the interactive PTY shell (plaintext rooms only) by default. Both can be disabled locally via environment variables (`PI_REMOTE_ALLOW_BASH=0` for remote bash; `PI_REMOTE_DISABLE_SHELL=1` to disable both the interactive shell and remote bash).
 - Conversation content is not persisted by default. Persistence is opt-in, with a 30-day retention.
 - Accepted metadata-level plaintext: scheduled-message text is stored in plaintext in the relay's schedules file (mode 0600), and prompt commands cross the relay as plaintext command frames. The delivering side has to hold the text — the relay fires scheduled messages itself and has no room key — so this exception is accepted for a self-hosted, single-user relay. Room lists still never carry the full scheduled text, only a short preview.
 

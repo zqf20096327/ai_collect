@@ -2,6 +2,8 @@
 
 **Your AI forgets everything. Give it a mind of its own: a memory that lives on your own PC, and hands, eyes and voice. For Claude, GPT, Gemini, Qwen and local AI. Works with Claude Code.**
 
+**A complement to the AI subscription you already pay for, not another bill.** The Harness Cable wires MemoriaBios and the body straight into Claude Code: your own plan does the thinking, and 53ON adds the memory, the hands and the eyes. Remembering runs as plain code on your PC, so it spends no tokens.
+
 [![Website](https://img.shields.io/badge/Website-53on.com%2Fharness-7C5CFF?style=for-the-badge)](https://53on.com/harness/) [![Download for Windows](https://img.shields.io/badge/Download-Windows%2010%20%2F%2011-0078D6?style=for-the-badge)](https://github.com/53on/53on-harness/releases/latest) [![53on.com](https://img.shields.io/badge/53on.com-store-7C5CFF?style=for-the-badge)](https://53on.com)
 
 [![Release](https://img.shields.io/github/v/release/53on/53on-harness)](https://github.com/53on/53on-harness/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![Installer: signed](https://img.shields.io/badge/installer-signed-2ea44f)](#code-signing-policy)

@@ -74,16 +74,11 @@ Linuxホストでは[journalの保存と読み取りの設定](documents/guides/
 ## クライアント側の使い方
 
 1. サーバーを起動したPCのブラウザーで[http://localhost:8086/](http://localhost:8086/)を開きます。
-2. `Simple Interface`を選びます。
-3. マイク・カメラの利用を許可し、「開始する」を押してキャラクターに話しかけます。
+2. 会話を楽しむときは「キャラクターと話す」、自分の発話をキャラクターの声で読み上げるときは「キャラクターになる」を選び、「この体験をはじめる」を押します。
+3. 会話ページでマイク・カメラの利用を許可し、使用する機器を選びます。「開始する」を押して、マイクに向かって話してください。
 
-起動前の設定で会話モードを切り替えられます。
-
-- `chat`: キャラクターと会話します。
-- `sincro`: あなたの発話をキャラクターの声で読み上げます。
-
-`360deg Camera`は360度動画・カメラ向けの画面です。
-`Looking Glass`は[Looking Glass](https://lookingglassfactory.com/looking-glass-portrait)向けの画面です。
+360度動画やカメラを使う場合は、トップページの「360度カメラ（実験的）」を開いてください。
+「Looking Glass（専用機器が必要）」は[Looking Glass](https://lookingglassfactory.com/looking-glass-portrait)向けの画面です。
 
 ## キャラクターを差し替える
 

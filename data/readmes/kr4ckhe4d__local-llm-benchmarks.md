@@ -46,7 +46,9 @@ in the linked files.
 | [turboquant.md](turboquant.md) | TurboQuant 2-4 bit KV-cache quantization |
 | [instella-moe.md](instella-moe.md) | AMD Instella-MoE-16B-A3B |
 | [nemotron-3.5-lightning-30B.md](nemotron-3.5-lightning-30B.md) | Nemotron 3.5 Lightning 30B-A3B `Q8_0`: the repo's fastest generation and cheapest 128K, spent on 28K reasoning tokens a task |
-| [inkling-2-mini-speedups.md](inkling-2-mini-speedups.md) | Inkling-2-Mini 31 to 54 tok/s on the R9700: fewer kernels per token, CUDA/HIP fusions, and an RDNA4 matvec grid fix |
+| [inkling-2-mini-speedups.md](inkling-2-mini-speedups.md) | Inkling-2-Mini 31 to 54 tok/s on the R9700: fewer kernels per token, CUDA/HIP fusions, and an RDNA4 matvec grid fix; long prompts read 2.2x faster at 111K (190 to 414 tok/s) with the per-head attention mask built by one kernel, and a HIP graph crash fixed |
+| [huihui-qwen3.8-27b.md](huihui-qwen3.8-27b.md) | Huihui-Qwen3.8-27B-abliterated UD-Q6_K_XL against stock Qwen3.8 Q6 from 0 to 120K context (2.5-3.6% slower generation, 8-13% faster prefill), then Huihui alone to 261K: 20.9 tok/s and recall 5/5 at 240K |
+| [agent-eval.md](agent-eval.md) | Agentic coding eval: 21 tasks (10 synthetic repos, 11 real bug fixes from click, tomlkit, sqlparse and Python-Markdown), sandboxed tool loop, hidden tests, ×3. Huihui-Qwen3.8-27B and stock Qwen3.8-27B tie at 42/63; false claims 6 vs 4 |
 | [handover.md](handover.md) | Working notes, including the KLD-vs-BF16 quant study |
 | [`models-preset.ini`](models-preset.ini) | The llama-server router presets, each with the measurements that set it |
 | [`benchmarks/`](benchmarks/) | The scripts (`fit.sh`, `kld-test.sh`, `throughput-test.py`, ...) and raw logs |
@@ -855,6 +857,9 @@ that needs KLD or perplexity against the 54 GB BF16.
 
 ### Qwen3.5-27B-Uncensored (HauhauCS, Aggressive) — 12.4GB, **dense** 27B, 64 layers
 
+> **Removed 2026-11-22.** The GGUF and its presets are deleted; the measurements below stay as history.
+> A Q6_K was downloaded for agent-eval the same day and deleted too, after 8 runs (7 pass).
+
 `HauhauCS/Qwen3.5-27B-Uncensored-HauhauCS-Aggressive`, Q3_K_M, added
 2026-08-18. Arch is `qwen35` and it reports 26.90B params over 64 layers with
 the same 3:1 hybrid-attention ratio as Qwen3.8-27B — so it is that model's
@@ -920,6 +925,9 @@ are less reproducible than they read. New rows report model-attributable VRAM
 and state the reference baseline.
 
 ### Qwen3.5-9B-Uncensored (HauhauCS, Aggressive) — 8.9GB, **dense** 9B, 32 layers
+
+> **Removed 2026-11-22** from this PC (GGUF and presets); the measurements below stay as history.
+> The Arc B580 server keeps its own copies. agent-eval: 4 of 9 runs passed before it was stopped.
 
 `HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive`, Q8_0, added 2026-08-18.
 SHA256 verified against the HF-reported LFS oid. Same `qwen35` family as
@@ -1987,24 +1995,4 @@ keeping.** It used self-contained leetcode-style tasks (merge intervals, LRU,
 roman numerals) and every model scored **50/50**. Saturated, exactly like the
 needle probes at 32K. Differential testing against stdlib is what produced
 resolution: matching `urljoin` or `shlex.split` *exactly* is hard, matching them
-on the happy path is easy, and the gap between those is the score.
-
-The suite is validated against stdlib wrappers as reference solutions — all 7
-tasks score 50/50 when the "model" is the real function, so a failure is the
-model's, not the harness's.
-
-| Model | BPW | Checks | Fully-clean tasks |
-|---|---|---|---|
-| Qwen3.8-27B `UD-IQ3_XXS` v3 | 3.148 | **38/50 (76%)** | 3/7 |
-| Qwen3.8-27B `UD-Q3_K_XL` v3 | 3.802 | 35/50 (70%) | 2/7 |
-| Qwen3-Coder-Next `UD-Q4_K_M` | ~4.5 | 34/50 (68%) | 2/7 |
-| Qwen3.8-27B `UD-Q3_K_XL` **v2** | 3.932 | 33/50 (66%) | 2/7 |
-| Qwen3.8-27B `UD-IQ4_XS` v3 | 4.131 | 30/50 (60%) | 2/7 |
-| Laguna XS 2.1 `Q4_K_M` | ~4.5 | 27/50 (54%) | 1/7 |
-| Gemma 4-26B-A4B `UD-Q4_K_M` † | ~5.4 | **37/50 (74%)** | 3/7 |
-| Gemma 4-26B-A4B `Q8_0` † | ~8.5 | 33/50 (66%) | 2/7 |
-| Laguna XS 2.1 `Q8_0` | ~8.5 | 27/50 (54%) | 2/7 |
-| Nemotron 3.5 Bolt 74B-A9B 24GB ‡ | ~2.4 | 35/50 (70%) | 2/7 |
-| Nemotron 3.5 Bolt 74B-A9B 24GB, **thinking on** ‡ | ~2.4 | **39/50 (78%)** | 4/7 |
-| Nemotron 3.5 Lightning 30B-A3B `Q8_0` ‖ | ~9.0 | 27/50 (54%) | 1/7 |
-| Nemot
+on the happy p

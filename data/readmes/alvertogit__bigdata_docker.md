@@ -20,8 +20,8 @@ The code has been tested using:
 
 - [Apache Spark] (4.3): an unified analytics engine for [Big Data] processing, with built-in modules for streaming, [SQL], [Machine Learning] and graph processing. It has high-level [API]s in [Scala] and [Python].
 - [Hadoop] (3.5): an open-source software for reliable, scalable, distributed computing. It uses [Hadoop Distributed File System] ([HDFS]) which is suitable to work with large [RDD] (Resilient Distributed Datasets).
-- [Docker] (29.9): an open platform for developers and sysadmins to build, ship, and run distributed applications, whether on laptops, data center VMs, or the cloud.
-- [Docker Compose] (5.7): a tool for defining and running multi-container [Docker] applications.
+- [Docker] (29.10): an open platform for developers and sysadmins to build, ship, and run distributed applications, whether on laptops, data center VMs, or the cloud.
+- [Docker Compose] (5.8): a tool for defining and running multi-container [Docker] applications.
 
 ### PYTHON VIRTUAL ENVIRONMENT
 
@@ -40,7 +40,7 @@ The main components of this virtual environment are listed below:
 - [scikit-image] (0.26): a collection of algorithms for image processing with [Python].
 - [TPOT] (1.1): a [Python] Automated [Machine Learning] tool that optimizes [machine learning] pipelines using genetic programming.
 - [XGBoost] (3.4): an optimized distributed [gradient boosting] library designed to be highly efficient, flexible and portable.
-- [Folium] (0.20): an open source library to visualize data that has been manipulated in [Python] on an interactive [Leaflet.js] map.
+- [Folium] (1.0): an open source library to visualize data that has been manipulated in [Python] on an interactive [Leaflet.js] map.
 - [ipyleaflet] (0.20): a [Jupyter] / [Leaflet.js] bridge enabling interactive maps in [Jupyter Notebook].
 - [Seaborn] (0.13): a [Python] visualization library based on [Matplotlib]. It provides a high-level interface for drawing attractive statistical graphics.
 - [imbalanced-learn] (0.14): a [Python] package offering a number of re-sampling techniques commonly used in datasets showing strong between-class imbalance. It is compatible with [scikit-learn] and it allows [SMOTE (Synthetic Minority Over-sampling Technique)].

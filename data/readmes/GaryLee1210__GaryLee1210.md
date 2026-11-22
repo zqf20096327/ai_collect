@@ -6,9 +6,9 @@
 
 # Hi, I'm GaryLee1210 👋
 
-**🧭 Image-Goal Navigation · 🤖 End-to-End Robot Navigation · 🌍 Embodied AI**
+**Image-Goal Navigation · Vision-and-Language Navigation (VLN) · Embodied Navigation**
 
-🎓 I'm an MSc student in **Robotics Science and Engineering at Northeastern University (China)** and an intern at 💼 **Beta Infinity**. My current research focuses on image-goal navigation; I'm also exploring vision-and-language navigation, world models, and sim-to-real transfer.
+I'm an MSc student in **Robotics Science and Engineering at Northeastern University (China)** and a **VLN intern at Beta Infinity**. I study how embodied agents navigate to a place shown in a photograph or follow directions given in natural language.
 
 [🚀 Projects](#-featured-projects) · [📄 Papers & Code](#-papers--code) · [📚 Research Notes](#-research-notes) · [🧠 Knowledge Map](#-knowledge-map) · [📫 Contact](#-contact)
 
@@ -36,7 +36,7 @@
 
 ## 🧠 Knowledge Map
 
-My reading map of **AI → Embodied AI → Robot Navigation**, with representative algorithms and official implementations. Start with the [Image-Goal Navigation paper list](papers/imagenav/).
+My reading map follows **Embodied AI → Embodied Navigation**, with a focus on image goals and language instructions. The [ImageNav paper list](papers/imagenav/) includes a [guide to continuous trajectory generation](papers/imagenav/#non-rl-imagenav).
 
 <details>
 <summary><strong>🔎 Explore the full knowledge map and code references</strong></summary>
@@ -47,14 +47,16 @@ My reading map of **AI → Embodied AI → Robot Navigation**, with representati
 
 ```mermaid
 mindmap
-  root((Artificial Intelligence))
-    Machine Learning & Deep Learning
-    Reinforcement Learning
-    Foundation Models
-    Embodied AI
-      Robot Manipulation / Control
-      Robot Navigation ⭐
-      World Models / 3D Perception
+  root((Embodied AI))
+    Learning Methods
+      Machine Learning & Deep Learning
+      Reinforcement Learning
+      Foundation Models
+    Robot Manipulation / Control
+    Embodied Navigation ⭐
+      Image-Goal Navigation
+      Vision-and-Language Navigation
+    World Models / 3D Perception
 ```
 
 ⭐ = my current research focus.
@@ -239,14 +241,14 @@ mindmap
 
 ---
 
-## 🧭 5. Robot Navigation ⭐
+## 🧭 5. Embodied Navigation ⭐
 
 > My current research focus — expanded in the most detail,
 > organized along five threads: classical / end-to-end / modular / language-driven / foundation models.
 
 ```mermaid
 mindmap
-  root((Robot Navigation))
+  root((Embodied Navigation))
     Classical Geometric
       SLAM
         ORB-SLAM3 Visual
@@ -272,6 +274,11 @@ mindmap
         Zero-shot (ZSON / VLFM)
       ImageNav ⭐
         End-to-end RL
+        Non-RL visuomotor policies
+          Waypoint regression · GNM / ViNT
+          Action diffusion · NoMaD / NaviBridger / NavDP
+          Flow matching · FlowNav / GeniNav
+          Joint action and visual prediction · NavWAM / WAM-Nav
         Early/Mid Fusion (FGPrompt)
         Memory-Augmented
         Topological (TSGM / VGM)
@@ -281,7 +288,7 @@ mindmap
         Last-Mile Navigation
       MultiON
     Language-Driven
-      VLN
+      VLN ⭐
         R2R Room-to-Room
         RxR Multilingual
         REVERIE Remote Grounding
@@ -398,17 +405,6 @@ mindmap
 ---
 
 </details>
-
-## 🌱 Now & Next
-
-- [ ] Release the GeoSRNav implementation
-
-- [x] Image-Goal Navigation paper list — see [papers/imagenav](papers/imagenav/) (deep-reading notes coming next)
-- [ ] Habitat environment setup pitfalls guide
-- [ ] VLN-CE baseline reproduction notes
-- [ ] Explore world models for navigation (starting point: NavMorph)
-
----
 
 ## 📫 Contact
 

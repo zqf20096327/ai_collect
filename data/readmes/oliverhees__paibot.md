@@ -111,19 +111,20 @@ Die neuesten KI-Agenten kommen oft gar nicht oder nur eingeschränkt nach Europa
 
 ## Funktionen
 
-|     | Funktion                                                       | Status                                                                                                                        |
-| --- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 🖥️  | Läuft auf eigenem Server (Docker Compose, Coolify)             | vorhanden, siehe [`docs/installation.md`](docs/installation.md); ein veröffentlichtes Image gibt es noch nicht                |
-| 💬  | Chat mit deinem Bot, Antwort Stück für Stück, Stopp            | vorhanden ([Chat](docs/funktion-chat.md)); Anhänge, Spracheingabe, Merken und Web-Zugriff geplant                             |
-| 🧾  | Tor und Belege: feste Regeln ohne KI, Beleg zu jeder Aktion    | vorhanden ([Belege](docs/funktion-belege.md), [Das Tor](docs/funktion-tor.md))                                                |
-| 🛡️  | Datenschleuse für persönliche Daten, zuschaltbar               | vorhanden als zuschaltbarer Dienst, Schalter je Unterhaltung ([Datenschleuse](docs/funktion-datenschleuse.md)); Standard: aus |
-| 🤖  | Dein Bot mit Name, Anweisung und Aussehen                      | vorhanden ([Bot](docs/funktion-bot.md)); weitere Bots mit Rollen und Gedächtnis: geplant                                      |
-| 🔌  | Apps per MCP verbinden, Freigabe vor jeder schreibenden Aktion | geplant                                                                                                                       |
-| 🌐  | Browser-Agent: der Bot surft selbst, du schaust live zu        | geplant                                                                                                                       |
-| 🤝  | Bots im Team: Delegieren, Übergeben, Chief of Staff            | geplant                                                                                                                       |
-| ⏰  | Routinen, die im Hintergrund laufen                            | geplant                                                                                                                       |
-| 📱  | App fürs Handy (PWA) mit Push, Deutsch und Englisch            | Oberfläche fürs Handy und „Als Web-App installieren“ vorhanden; Push und Englisch geplant                                     |
-| 💻  | PaiBot lokal auf deinem Rechner mit lokalem Modell             | geplant                                                                                                                       |
+|     | Funktion                                                       | Status                                                                                                                                                |
+| --- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🖥️  | Läuft auf eigenem Server (Docker Compose, Coolify)             | vorhanden, siehe [`docs/installation.md`](docs/installation.md); ein veröffentlichtes Image gibt es noch nicht                                        |
+| 💬  | Chat mit deinem Bot, vorläufiger Text beim Schreiben, Stopp    | vorhanden ([Chat](docs/funktion-chat.md)); Anhänge, Spracheingabe, Merken und Web-Zugriff geplant                                                     |
+| 📚  | Pai schlägt in der Doku seiner Version nach, mit Quellen       | vorhanden als erstes Werkzeug ([Chat](docs/funktion-chat.md#so-benutzt-du-es)); es liest nur die mitgelieferte Doku, weitere Werkzeuge geplant        |
+| 🧾  | Tor und Belege: feste Regeln ohne KI, Beleg zu jeder Aktion    | vorhanden ([Belege](docs/funktion-belege.md), [Das Tor](docs/funktion-tor.md))                                                                        |
+| 🛡️  | Datenschleuse für persönliche Daten, zuschaltbar               | vorhanden als zuschaltbarer Dienst, Schalter je Unterhaltung ([Datenschleuse](docs/funktion-datenschleuse.md)); Standard: aus                         |
+| 🤖  | Dein Bot mit Name, Anweisung und Aussehen                      | vorhanden ([Bot](docs/funktion-bot.md)); weitere Bots mit Rollen und Gedächtnis: geplant                                                              |
+| 🔌  | Apps per MCP verbinden, Freigabe vor jeder schreibenden Aktion | geplant                                                                                                                                               |
+| 🌐  | Browser-Agent: der Bot surft selbst, du schaust live zu        | geplant                                                                                                                                               |
+| 🤝  | Bots im Team: Delegieren, Übergeben, Chief of Staff            | geplant                                                                                                                                               |
+| ⏰  | Routinen, die im Hintergrund laufen                            | geplant                                                                                                                                               |
+| 📱  | App fürs Handy (PWA) mit Push, Deutsch und Englisch            | Oberfläche fürs Handy und „Als Web-App installieren“ vorhanden; Push und Englisch geplant                                                             |
+| 💻  | Modell auf deinem eigenen Rechner oder in deinem Netz          | vorhanden als eigener Anbieter mit Ort „lokal“ ([Anbieter und Modelle](docs/funktion-anbieter-und-modelle.md)); eine mitgelieferte lokale KI: geplant |
 
 ## So funktioniert es
 
@@ -144,7 +145,7 @@ Mit eingeschalteter Datenschleuse sieht das Modell zum Beispiel nur `<PERSON_0>`
 
 > 🚧 **PaiBot ist im Bau.** Die Basisversion lässt sich schon einrichten und benutzen: Einrichtung und Anmeldung, Chat mit deinem Bot, Belege und Regeln, Modell und Anbieter, Datenschleuse, Bot sowie Einstellungen und Info. Eine veröffentlichte Version (Release mit fertigem Image) gibt es noch nicht; installiert wird aus dem Quellcode.
 >
-> **Die erste Version ist zum Ausprobieren gedacht.** Bevor du ihr echte Daten anvertraust, fehlen noch ein Notfall-Zugang, die erneute Bestätigung heikler Aktionen und ein zweiter Faktor beim Anmelden.
+> **Die erste Version ist zum Ausprobieren gedacht.** Diese Fassung hat noch **keinen Notfall-Zugang**: Ein vergessenes Passwort lässt sich nicht zurücksetzen, dann bleibt nur eine neue Installation (mit neuen, leeren Daten). Es gibt noch **keinen zweiten Faktor** beim Anmelden und **keine erneute Bestätigung heikler Aktionen**. Bevor du ihr echte Daten anvertraust, lies [Bevor du echte Daten einträgst](#bevor-du-echte-daten-einträgst).
 
 | Was                                                                                                                                                             | Stand                  |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
@@ -153,14 +154,15 @@ Mit eingeschalteter Datenschleuse sieht das Modell zum Beispiel nur `<PERSON_0>`
 | [Einrichtung und Anmeldung](docs/funktion-einrichtung-und-zugang.md) mit Schutz vor zu vielen Versuchen                                                         | ✅ fertig und getestet |
 | [Chat](docs/funktion-chat.md): Antwort live, Stopp, neu erzeugen, Suche, als Datei sichern, Belege                                                              | ✅ fertig und getestet |
 | Das [Tor](docs/funktion-tor.md): jede Aktion läuft durch feste Regeln ohne KI                                                                                   | ✅ fertig und getestet |
-| [Belege](docs/funktion-belege.md): Protokoll mit Prüfer im Browser und mit `pnpm belege:pruefen`                                                                | ✅ fertig und getestet |
-| [Modell und Anbieter](docs/funktion-anbieter-und-modelle.md) mit Ausgangs-Liste                                                                                 | ✅ fertig und getestet |
+| [Belege](docs/funktion-belege.md): Protokoll mit Prüfer im Browser und mit `pnpm belege:pruefen`, Export                                                        | ✅ fertig und getestet |
+| [Modell und Anbieter](docs/funktion-anbieter-und-modelle.md): Auswahl (EUrouter mit Routing-Regeln, Mistral AI), Herkunft je Antwort, Ausgangs-Liste            | ✅ fertig und getestet |
 | [Bot](docs/funktion-bot.md): Name, Anweisung, Aussehen                                                                                                          | ✅ fertig und getestet |
 | [Datenschleuse](docs/funktion-datenschleuse.md) als zuschaltbarer Dienst (Standard: aus)                                                                        | ✅ fertig und getestet |
 | [Einstellungen und Info](docs/funktion-einstellungen.md): Passwort, Sitzungen, Grenzen                                                                          | ✅ fertig und getestet |
 | Verschlüsselung der gespeicherten Schlüssel ([Sicherheit](docs/sicherheit.md))                                                                                  | ✅ fertig und getestet |
 | [Sicherung und Wiederherstellung](docs/sicherung.md): ein Befehl je Richtung, mit Prüfung danach                                                                | ✅ fertig und getestet |
-| Doku mit Bildern aus der laufenden App ([Doku](docs/README.md))                                                                                                 | ✅ fertig              |
+| Doku mit Bildern aus der laufenden App und [Entwickler-Doku](docs/entwickler/README.md) je Funktion                                                             | ✅ fertig              |
+| Oberfläche am Rechner und am Handy, helles und dunkles Design                                                                                                   | ✅ fertig und getestet |
 | Release zum Installieren (fertiges Image)                                                                                                                       | 🔨 im Bau              |
 | [Eigener Anbieter](docs/funktion-anbieter-und-modelle.md) in der Oberfläche, auch auf deinem Rechner                                                            | ✅ fertig und getestet |
 | [Not-Aus als Schalter](docs/funktion-tor.md#not-aus-alle-bots-anhalten): alle Bots anhalten, mit Passwort fortsetzen                                            | ✅ fertig und getestet |
@@ -182,7 +184,7 @@ Mit eingeschalteter Datenschleuse sieht das Modell zum Beispiel nur `<PERSON_0>`
 
 Diese Version ist zum Ausprobieren gedacht. Nutze sie mit Beispiel-Daten und einem Anbieter-Schlüssel mit niedrigem Ausgabe-Limit, noch nicht für vertrauliche Unterhaltungen oder wichtige Schlüssel.
 
-- **Anmeldung:** Ein zweiter Faktor, ein Notfall-Zugang ohne Passwort und eine erneute Bestätigung für heikle Einstellungen fehlen noch; sie sind für die nächste Version geplant. Bis dahin schützt dich vor allem ein langes, zufälliges Passwort aus einem Passwort-Manager.
+- **Anmeldung:** Ein zweiter Faktor, ein Notfall-Zugang ohne Passwort und eine erneute Bestätigung für heikle Einstellungen fehlen noch; sie sind für die nächste Version geplant. Ein vergessenes Passwort lässt sich nicht zurücksetzen: Dann bleibt nur eine neue Installation mit leeren Daten. Bis dahin schützt dich vor allem ein langes, zufälliges Passwort aus einem Passwort-Manager, das du sicher aufbewahrst.
 - **Erreichbarkeit:** Betreibe PaiBot nur hinter einem Proxy mit HTTPS (zum Beispiel Coolify) und gib den Port der App nicht direkt frei. Am besten erreichst du PaiBot nur über dein eigenes Netz oder einen Tunnel.
 - **Geräte:** Melde dich nur auf deinen eigenen Geräten an. Unter Einstellungen → Zugang siehst du alle Geräte und kannst jedes einzeln entfernen.
 - **Sicherungen:** Spiel nur Sicherungen zurück, die du selbst angelegt hast. Sicherungen sind nicht verschlüsselt und enthalten deine Unterhaltungen lesbar ([Sicherung](docs/sicherung.md)).
@@ -191,30 +193,41 @@ Diese Version ist zum Ausprobieren gedacht. Nutze sie mit Beispiel-Daten und ein
 
 ## Roadmap
 
-Gebaut wird zwischen den Folgen der YouTube-Serie, in Coding-Sessions der Community auf [aiianer.de](https://aiianer.de) und im Livestream. Die Folgen zeigen, wie man PaiBot installiert, benutzt und ausbaut. Jede Folge bekommt einen eigenen Git-Tag (`folge-00`, `folge-01`, …), so kannst du jeden Stand nachbauen. Die Reihenfolge kann sich ändern, und die Community stimmt ab, welche Funktion als Nächstes kommt.
+PaiBot wird laufend gebaut. Den Stand zeigen die [Issues und Meilensteine](https://github.com/oliverhees/paibot/milestones) dieses Repos und der [Bauplan](https://paibot.de/bauplan). Termine gibt es nicht.
 
-- 🗺️ [Bauplan](https://paibot.de/bauplan): der aktuelle Stand
-- 🗳️ [Mitentscheiden](https://paibot.de/mitentscheiden): welche Funktion kommt als Nächstes?
-- 📖 [Doku](https://paibot.de/doku): installieren und benutzen
+**Fertig** (mit Anleitung in der [Doku](docs/README.md)):
 
-- [x] **Folge 0** – Gerüst, Lizenz, CI
-- [ ] **Folge 1** – Die Idee
-- [ ] **Folge 2** – Der Server: PaiBot geht online
-- [ ] **Folge 3** – Die Datenschleuse
-- [ ] PaiBot auf deinem Rechner mit lokaler KI
-- [ ] Der erste Bot
-- [ ] Apps anbinden per MCP
-- [ ] Der Browser-Agent
-- [ ] Bots im Team
-- [ ] Routinen
-- [ ] Die App fürs Handy
-- [ ] … und was die Community sich wünscht
+- [Einrichtung und Zugang](docs/funktion-einrichtung-und-zugang.md)
+- [Chat](docs/funktion-chat.md), mit dem ersten Werkzeug: [Pai schlägt in der Doku nach](docs/funktion-chat.md#so-benutzt-du-es)
+- [Bot](docs/funktion-bot.md)
+- [Anbieter und Modelle](docs/funktion-anbieter-und-modelle.md)
+- [Datenschleuse](docs/funktion-datenschleuse.md) (zuschaltbar)
+- [Belege](docs/funktion-belege.md)
+- [Das Tor und die Regeln](docs/funktion-tor.md)
+- [Einstellungen und Info](docs/funktion-einstellungen.md)
+- [Selbsttest](docs/funktion-selbsttest.md)
+
+**Im Bau** (noch nicht nutzbar):
+
+- Teamchat: Es gibt erst Bausteine der Oberfläche und Regeln, noch keine Funktion in der App ([Teamchat](docs/entwickler/teamchat.md)).
+
+**Geplant:**
+
+- Apps anbinden über MCP
+- Bots im Team
+- Zweiter Faktor und Notfall-Zugang
+- „Pai lernt dazu“
+- Automationen
+- Desktop-App als Begleit-App
+- Browser-Agent
+
+**Mitentscheiden:** Auf [paibot.de/mitentscheiden](https://paibot.de/mitentscheiden) schlägst du Funktionen vor und stimmst für Vorschläge anderer. Dafür brauchst du eine bestätigte E-Mail-Adresse; neue Vorschläge erscheinen nach Freigabe. Je mehr Stimmen ein Vorschlag hat, desto eher kommt er dran.
 
 ## Schnellstart
 
 > PaiBot ist im Bau. Zum Ausprobieren mit Datenbank, Einrichtung und Chat: [Installation mit Docker Compose](docs/installation.md). Der Schnellstart unten ist für die Entwicklung.
 
-**Voraussetzungen:** Node.js 22 und pnpm 10
+**Voraussetzungen:** Node.js 26 und pnpm 10 Node 26 bringt corepack nicht mehr mit. pnpm 10.28.0 bekommst du zum Beispiel so (selbst ausprobiert mit Node v26.13.1; geprüft wird dabei nur die Prüfsumme der npm-Registry, nicht die sha512 aus `packageManager`): `npm install --prefix ~/.pnpm-10.28.0 pnpm@10.28.0 --ignore-scripts` und dann `~/.pnpm-10.28.0/node_modules/.bin` in den `PATH` aufnehmen.
 
 ```bash
 git clone https://github.com/oliverhees/paibot.git
@@ -281,42 +294,48 @@ Rechtlich gilt nur der Text in [`LICENSE`](LICENSE). Wer einen Beitrag einreiche
 <summary><b>Ist PaiBot Open Source?</b></summary>
 
 Nein. Der Code ist öffentlich einsehbar und für eine Person kostenlos („Fair-Code“), aber die Nutzung mit mehreren Personen, Verkauf sowie bezahlter Betrieb oder Support für andere sind nicht erlaubt.
+
 </details>
 
 <details>
 <summary><b>Darf ich PaiBot für meine Arbeit nutzen?</b></summary>
 
 Ja, wenn du es allein nutzt: als Selbstständiger, als Freiberufler oder für deine eigenen Aufgaben. Nicht erlaubt ist, dass mehrere Personen damit arbeiten oder dass eine Firma PaiBot für ihre Mitarbeiter bereitstellt. Dafür ist PaiBot Enterprise mit Support gedacht (in Vorbereitung): [paibot.de/enterprise](https://paibot.de/enterprise).
+
 </details>
 
 <details>
 <summary><b>Was unterscheidet PaiBot?</b></summary>
 
-PaiBot setzt diese Schwerpunkte: Anbieter mit Sitz oder Endpunkt in Europa zur Auswahl und eine ehrliche Angabe, wer eine Antwort geliefert hat (nur, was der Anbieter selbst meldet), eine Datenschleuse, die persönliche Daten vor dem Modell maskiert, ein Tor mit festen Regeln und ein Beleg für jede Aktion, und jeder Schritt wird auf Deutsch erklärt, damit du verstehst, was dein Agent tut. Geplant sind lokale Modelle in der Oberfläche und eine eigene Anbindung von Apps per MCP.
+PaiBot setzt diese Schwerpunkte: Anbieter mit Sitz oder Endpunkt in Europa zur Auswahl und eine ehrliche Angabe, wer eine Antwort geliefert hat (nur, was der Anbieter selbst meldet), eine Datenschleuse, die persönliche Daten vor dem Modell maskiert, ein Tor mit festen Regeln und ein Beleg für jede Aktion, und jeder Schritt wird auf Deutsch erklärt, damit du verstehst, was dein Agent tut. Ein Modell auf deinem eigenen Rechner trägst du als eigenen Anbieter ein; geplant sind eine mitgelieferte lokale KI und eine eigene Anbindung von Apps per MCP.
+
 </details>
 
 <details>
 <summary><b>Brauche ich einen eigenen Server?</b></summary>
 
-Heute läuft PaiBot mit Docker Compose auf einem Server (z. B. mit Coolify) oder auf deinem eigenen Rechner. Ein Modell auf deinem eigenen Rechner anzubinden, kann PaiBot technisch schon; die Oberfläche dafür ist geplant.
+Heute läuft PaiBot mit Docker Compose auf einem Server (z. B. mit Coolify) oder auf deinem eigenen Rechner. Ein Modell auf deinem eigenen Rechner kannst du in der Oberfläche als eigenen Anbieter eintragen (Ort „lokal“); eine mitgelieferte lokale KI ist geplant.
+
 </details>
 
 <details>
 <summary><b>Ist PaiBot damit DSGVO-konform?</b></summary>
 
 PaiBot und die Datenschleuse sind technische Schutzmaßnahmen, keine Rechtsberatung und keine Garantie. Für die rechtliche Bewertung deines Einsatzes bist du selbst verantwortlich.
+
 </details>
 
 <details>
 <summary><b>Wie oft kommen neue Folgen?</b></summary>
 
 Regelmäßig, mehrmals pro Woche. Abonniere den Kanal und gib dem Repo einen Stern ⭐, dann siehst du sofort, wenn es weitergeht.
+
 </details>
 
 ## Mitmachen und Community
 
 - ⭐ **Gib dem Repo einen Stern**, wenn dir das Projekt gefällt – das hilft enorm.
-- 🗳️ **Entscheide mit:** auf [paibot.de/mitentscheiden](https://paibot.de/mitentscheiden) stimmst du ab, was als Nächstes kommt. Den Stand siehst du im [Bauplan](https://paibot.de/bauplan), die Anleitungen in der [Doku](https://paibot.de/doku).
+- 🗳️ **Entscheide mit:** auf [paibot.de/mitentscheiden](https://paibot.de/mitentscheiden) schlägst du Funktionen vor und stimmst für Vorschläge anderer (bestätigte E-Mail-Adresse nötig). Den Stand siehst du im [Bauplan](https://paibot.de/bauplan), die Anleitungen in der [Doku](docs/README.md).
 - 💬 **Community auf [aiianer.de](https://aiianer.de):** Deep Dives zu jeder Folge, gemeinsame Coding-Sessions zum Mitbauen und Hilfe, wenn es hakt.
 - 🐛 **Fehler oder Ideen?** Eröffne ein [Issue](https://github.com/oliverhees/paibot/issues/new/choose).
 - 🛠️ **Selbst beitragen?** Lies zuerst [`CONTRIBUTING.md`](CONTRIBUTING.md) (Beitragsvereinbarung nötig).

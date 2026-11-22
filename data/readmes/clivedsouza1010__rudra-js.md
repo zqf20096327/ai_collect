@@ -42,7 +42,7 @@ crawler that never runs JavaScript will read it.
 On our 500-shopper benchmark, the default mode makes 460 model calls per 1,000 page views. That
 would be 1,000 if you generated for each shopper.
 
-> **Status: `0.9.1`, early.** It installs and it works: the Getting started below runs as a test on
+> **Status: `0.10.0`, early.** It installs and it works: the Getting started below runs as a test on
 > every commit. But the public API might still change between minor versions before `1.0`. Any
 > change like this will be in the changelog.
 
@@ -177,8 +177,8 @@ ANTHROPIC_API_KEY= RUDRA_REPLAY_ONLY=1 npm run build --workspace @rudra-js/examp
 [`examples/demo`](examples/demo) is a small Next.js site that runs rudra-js on a real page.
 Its product page asks the LLM for four recommendation sections, each its own slot. The server
 renders them as part of the HTML response for the page. Nothing is fetched after the page loads.
-Only the first section has a committed transcript so far, so on replay the other three show core's
-own picks.
+All four sections have a committed transcript for the page below, so on replay each one shows the
+model's answer instead of core's own picks.
 
 ```sh
 npm run dev --workspace @rudra-js/example-demo

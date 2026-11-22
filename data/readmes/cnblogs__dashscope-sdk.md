@@ -292,7 +292,8 @@ Client level configuration also applies to the WebSocket API (e.g. CosyVoice), w
   - [GUI](#gui)
   - [Audio Understanding](#audio-understanding)
 - [Text-to-Speech](#text-to-speech) - CosyVoice, Sambert, etc. For TTS applications
-- [Real-Time Speech Recognition](#real-time-speech-recognition) - Paraformer. For streaming ASR applications
+- [Real-Time Speech Recognition](#real-time-speech-recognition) - Paraformer, Qwen-Audio ASR. For streaming ASR applications
+- [Recorded Speech Recognition](#recorded-speech-recognition) - qwen3-asr-flash, Fun-ASR-Flash, Qwen-Audio ASR. For recorded audio files
 - [Image Generation](#image-generation) - qwen-image-2.0-pro, wanx2.1, etc. For text-to-image, image editing, portrait style transfer and image translation
 - [Video Generation](#video-generation) - wan2.7/wan3.0, PixVerse, Kling, Vidu, etc. For text-to-video, image-to-video and video editing
 - [3D Generation (Tripo)](#3d-generation-tripo) - Tripo-H3.1/P1.0 3D generation, Gaussian Splat, mesh post-processing and animation
@@ -1965,6 +1966,124 @@ Usage: in(160)/out(514)/audio(152)/total(674)
 
 ## Text-to-Speech
 
+The non-realtime speech synthesis models - qwen3-tts (e.g. `qwen3-tts-flash`) and MiniMax speech (e.g. `MiniMax/speech-2.8-hd`) - use the multimodal generation HTTP API instead of a websocket session. The text and voice settings go into `MultimodalInput`; qwen3-tts answers with a downloadable wav url (base64 chunks in `Audio.Data` when streaming), MiniMax speech with hex encoded audio in `Output.Data` (or a url when `OutputFormat` is set to `url`):
+
+```csharp
+// qwen3-tts, non-streaming: the response carries the download url of the complete wav file
+var response = await dashScopeClient.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>
+    {
+        Model = "qwen3-tts-flash",
+        Input = new MultimodalInput
+        {
+            Text = "你好，我是千问。",
+            Voice = "Cherry",
+            LanguageType = "Chinese"
+        }
+    });
+Console.WriteLine($"Audio url (valid for 24 hours): {response.Output.Audio!.Url}");
+
+// qwen3-tts, streaming: intermediate frames carry base64 wav chunks for immediate playback
+await foreach (var frame in dashScopeClient.GetMultimodalGenerationStreamAsync(
+                   new ModelRequest<MultimodalInput, IMultimodalParameters>
+                   {
+                       Model = "qwen3-tts-flash",
+                       Input = new MultimodalInput { Text = "你好，我是千问。", Voice = "Cherry" }
+                   }))
+{
+    if (frame.Output.Audio?.Data is { Length: > 0 } data)
+    {
+        PlayAudio(Convert.FromBase64String(data)); // e.g. wav, 24 kHz 16 bit mono
+    }
+}
+
+// MiniMax speech, non-streaming: the response carries the hex encoded mp3 audio
+var minimaxResponse = await dashScopeClient.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>
+    {
+        Model = "MiniMax/speech-2.8-hd",
+        Input = new MultimodalInput
+        {
+            Text = "你好，我是千问。",
+            VoiceSetting = new MinimaxVoiceSetting { VoiceId = "male-qn-qingse", Emotion = "happy" },
+            AudioSetting = new MinimaxAudioSetting { Format = "mp3", SampleRate = 32000 }
+        }
+    });
+File.WriteAllBytes("minimax-tts.mp3", Convert.FromHexString(minimaxResponse.Output.Data!.Audio!));
+```
+
+In MiniMax streaming mode the intermediate frames carry hex chunks in `Output.Data` (`Status` 1) and the last frame aggregates the whole synthesis (`Status` 2); set `StreamOptions.ExcludeAggregatedAudio` to omit the aggregated audio from the last frame. Mixed voices (`TimbreWeights`), pronunciation replacement (`PronunciationDict`), voice effects (`VoiceModify`) and more voice settings are available on `MultimodalInput`.
+
+The qwen-audio-tts models (e.g. `qwen-audio-3.0-tts-flash`) also have an HTTP mode via `GetSpeechSynthesisAsync` / `GetSpeechSynthesisStreamAsync`, with all parameters (voice, format, sample rate, speech rate, pitch, seed, `LanguageHints`, `Instruction`, AIGC tag, `HotFix` etc.) on `SpeechSynthesisInput`. Unlike the APIs above, this one is only served on the workspace domain, so configure `WorkspaceId` (same region as the API key) on the client:
+
+```csharp
+builder.Services.AddDashScopeClient("your-api-key", workspaceId: "your-workspace-id");
+
+// non-streaming: the response carries the download url of the complete audio file
+var response = await dashScopeClient.GetSpeechSynthesisAsync(
+    new ModelRequest<SpeechSynthesisInput>
+    {
+        Model = "qwen-audio-3.0-tts-flash",
+        Input = new SpeechSynthesisInput
+        {
+            Text = "我家的后面有一个很大的花园。",
+            Voice = "longanhuan_v3.6",
+            Format = "wav",
+            SampleRate = 24000
+        }
+    });
+Console.WriteLine($"Audio url (valid for 24 hours): {response.Output.Audio!.Url}");
+
+// streaming: sentence events with base64 audio chunks, the final frame carries the url
+await foreach (var frame in dashScopeClient.GetSpeechSynthesisStreamAsync(
+                   new ModelRequest<SpeechSynthesisInput>
+                   {
+                       Model = "qwen-audio-3.0-tts-flash",
+                       Input = new SpeechSynthesisInput
+                       {
+                           Text = "我家的后面有一个很大的花园。",
+                           Voice = "longanhuan_v3.6",
+                           Format = "wav",
+                           WordTimestampEnabled = true
+                       }
+                   }))
+{
+    if (frame.Output.Audio?.Data is { Length: > 0 } data)
+    {
+        PlayAudio(Convert.FromBase64String(data));
+    }
+
+    if (frame.Output.Type == "sentence-end")
+    {
+        // word timestamps in frame.Output.Sentence.Words when enabled
+    }
+}
+```
+
+The same endpoint also serves audio generation with the qwen-audio-*-tts-next models (e.g. `qwen-audio-3.1-tts-next`): describe the audio in `TextPrompt` (reference audios are referenced in order as `@voice1` / `@voice2` / `@voice3`) and optionally pass up to 3 `References` (a public url or a base64 data uri each, 30 seconds / 10 MB at most; wav, mp3 or ogg opus), generated podcasts run up to 240 seconds and other scenarios up to 120 seconds:
+
+```csharp
+// generate a two-speaker dialogue with two reference audios
+var response = await dashScopeClient.GetSpeechSynthesisAsync(
+    new ModelRequest<SpeechSynthesisInput>
+    {
+        Model = "qwen-audio-3.1-tts-next",
+        Input = new SpeechSynthesisInput
+        {
+            TextPrompt = "@voice1 says: \"What a sunny day!\" @voice2 answers: \"Let's go to the park.\"",
+            References = new List<SpeechSynthesisReference>
+            {
+                new() { AudioUrl = "https://your-reference-1.wav" },
+                new() { AudioUrl = "https://your-reference-2.wav" }
+            },
+            Format = "wav",
+            SampleRate = 48000,
+            Channels = 2
+        }
+    });
+Console.WriteLine($"Audio url (24h): {response.Output.Audio!.Url}, duration: {response.Output.Audio.Duration}s");
+```
+
 Create a speech synthesis session using `dashScopeClient.CreateSpeechSynthesizerSocketSessionAsync()`.
 
 Note: Use the using statement to automatically dispose the session, or manually call Dispose() to release resources. Avoid reusing sessions.
@@ -2009,6 +2128,59 @@ await foreach (var b in tts.GetAudioAsync())
     stream.WriteByte(b);
 }
 ```
+
+### Voice Cloning and Designing
+
+Custom voices are managed with `CustomizeVoiceAsync` (model `voice-enrollment`, same workspace domain as the qwen-audio-tts HTTP API): clone a voice from a sample audio or design one from a text description (`Action = "create_voice"`), then list / query / update / delete voices. Which `VoiceCustomizationInput` members are required depends on the action; the preview audio of a designed voice comes back as base64 in `Output.PreviewAudio`:
+
+```csharp
+// clone a voice from a sample audio (public url or base64 data uri)
+var clone = await dashScopeClient.CustomizeVoiceAsync(
+    new ModelRequest<VoiceCustomizationInput, IVoiceCustomizationParameters>
+    {
+        Model = "voice-enrollment",
+        Input = new VoiceCustomizationInput
+        {
+            Action = "create_voice",
+            TargetModel = "qwen-audio-3.0-tts-flash",
+            Prefix = "myvoice",
+            Audio = "https://your-audio-url.wav",
+            LanguageHints = new List<string> { "zh" }
+        }
+    });
+var clonedVoiceId = clone.Output.VoiceId; // use it as the voice of synthesis requests
+
+// design a voice from a text description, the preview audio comes back as base64 wav
+var design = await dashScopeClient.CustomizeVoiceAsync(
+    new ModelRequest<VoiceCustomizationInput, IVoiceCustomizationParameters>
+    {
+        Model = "voice-enrollment",
+        Input = new VoiceCustomizationInput
+        {
+            Action = "create_voice",
+            TargetModel = "cosyvoice-v3.5-plus",
+            VoicePrompt = "沉稳的中年男性，音色低沉浑厚",
+            PreviewText = "各位听众朋友们大家好，欢迎收听本期节目",
+            Prefix = "announcer",
+            LanguageHints = new List<string> { "zh" }
+        },
+        Parameters = new VoiceCustomizationParameters { SampleRate = 24000, ResponseFormat = "wav" }
+    });
+File.WriteAllBytes(
+    "preview.wav",
+    Convert.FromBase64String(design.Output.PreviewAudio!.Data!));
+
+// list voices (filter by prefix), query / update / delete by voice id
+var list = await dashScopeClient.CustomizeVoiceAsync(
+    new ModelRequest<VoiceCustomizationInput, IVoiceCustomizationParameters>
+    {
+        Model = "voice-enrollment",
+        Input = new VoiceCustomizationInput { Action = "list_voice", Prefix = "myvoice" }
+    });
+```
+
+Created voices go through a review: `Status` is DEPLOYING while reviewing, OK when usable and UNDEPLOYED when rejected. MiniMax voices are cloned on the shared domain instead: call `GetMultimodalGenerationAsync` with `MultimodalInput.Action = "voice_clone"`, the sample url (`AudioUrl`), a globally unique `VoiceId`, and the `Text` of the audition audio (billed at the synthesis price); the audition comes back in `Output.DemoAudio`. MiniMax voices cannot be managed (listed / updated / deleted) via these APIs.
+
 ## Real-Time Speech Recognition
 Create a real-time speech recognition session using `dashScopeClient.CreateSpeechRecognitionSocketSessionAsync()`.
 
@@ -2043,6 +2215,177 @@ await foreach (var message in asr.GetMessagesAsync())
 
 Console.WriteLine($"Billed duration: {duration}s");
 ```
+
+The session is shared by the Qwen-Audio ASR models as well, which support the conversation context, instant hot words and more (see `SpeechRecognitionParameters` for the members each model supports):
+
+- `qwen-audio-3.1-asr-flash-message`: returns the final result of each sentence only, set `IntermediateResultEnabled` to get intermediate results as well. `DisfluencyRemovalEnabled` also removes repetitions and self-corrections from the final text. Finishing the task before any audio was sent fails with `NO_VALID_AUDIO_ERROR`.
+- `qwen-audio-3.1-asr-flash-streaming` / `qwen-audio-3.0-asr-flash-streaming`: intermediate results are always returned. `SpecialWordFilter` replaces or removes sensitive words. 3.1 reports token usage, 3.0 reports the audio duration it is billed by.
+
+The conversation context (previous turns of the user's speech and the LLM's replies) improves the recognition of proper nouns: pass it in the input of `RunTaskAsync` and update it while the task is running with `ContinueTaskAsync` (message model only):
+
+```csharp
+using var asr = await dashScopeClient.CreateSpeechRecognitionSocketSessionAsync("qwen-audio-3.1-asr-flash-message");
+var taskId = await asr.RunTaskAsync(
+    new SpeechRecognitionParameters
+    {
+        Format = "wav",
+        SampleRate = 16000,
+        IntermediateResultEnabled = true, // off by default for this model
+        Vocabulary = new Dictionary<string, int> { ["博客园"] = 5 } // instant hot words, weight 1~5 or 50
+    },
+    new SpeechRecognitionInput
+    {
+        Context =
+        [
+            new SpeechRecognitionContext("user", [new SpeechRecognitionContextContent("input_text", "博客园是什么时候成立的")]),
+            new SpeechRecognitionContext("assistant", [new SpeechRecognitionContextContent("text", "博客园成立于2004年。")])
+        ]
+    });
+await using var audio = File.OpenRead("speech.wav");
+await asr.SendAudioAsync(audio);
+// the context can be updated while the task is running
+await asr.ContinueTaskAsync(taskId, new SpeechRecognitionInput
+{
+    Context = [new SpeechRecognitionContext("user", [new SpeechRecognitionContextContent("input_text", "代码改变世界")])]
+});
+await asr.FinishTaskAsync(taskId);
+
+var duration = 0;
+await foreach (var message in asr.GetMessagesAsync())
+{
+    var sentence = message.Payload.Output?.Sentence;
+    if (sentence?.SentenceEnd == true)
+    {
+        Console.WriteLine($"Recognized: {sentence.Text}");
+        duration = Math.Max(duration, message.Payload.Usage?.Duration ?? 0);
+    }
+    else if (sentence?.Text?.Length > 0)
+    {
+        // intermediate results may be revised, update the text of the sentence identified by SentenceId instead of appending them
+        Console.WriteLine($"Interim result of sentence {sentence.SentenceId}: {sentence.Text}");
+    }
+}
+
+Console.WriteLine($"Billed duration: {duration}s");
+```
+
+Sensitive word filtering of the streaming models. The server expects the filter JSON-encoded as a string, the SDK takes care of it:
+
+```csharp
+using var asr = await dashScopeClient.CreateSpeechRecognitionSocketSessionAsync("qwen-audio-3.1-asr-flash-streaming");
+var taskId = await asr.RunTaskAsync(
+    new SpeechRecognitionParameters
+    {
+        Format = "pcm",
+        SampleRate = 16000,
+        SpecialWordFilter = new SpeechRecognitionSpecialWordFilter
+        {
+            SystemReservedFilter = true, // filtering is off by default
+            FilterWithSigned = new SpeechRecognitionSpecialWordList { WordList = ["代码"] }, // replaced with **
+            FilterWithEmpty = new SpeechRecognitionSpecialWordList { WordList = ["世界"] } // removed
+        }
+    });
+// send audio and read the results the same way as above
+```
+
+Read the usage from the final result of each sentence, the `task-finished` event does not always carry it.
+
+## Recorded Speech Recognition
+
+### qwen3-asr-flash
+Recognize an audio file (up to 5 minutes) with `GetMultimodalGenerationAsync`, passing the audio url (or a base64 data uri) as the audio content and the options in `AsrOptions`. A system message provides context (background text, entity word lists) that improves the recognition of proper nouns. The recognized text is in the message content, the language and emotion of the audio are in the annotations.
+
+```csharp
+var response = await dashScopeClient.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "qwen3-asr-flash",
+        Input = new MultimodalInput()
+        {
+            Messages =
+            [
+                MultimodalMessage.System([MultimodalMessageContent.TextContent("This is a recording of a classical Chinese poem")]),
+                MultimodalMessage.User([MultimodalMessageContent.AudioContent(audioUrl)])
+            ]
+        },
+        Parameters = new MultimodalParameters()
+        {
+            AsrOptions = new AsrOptions { Language = "zh", EnableItn = true }
+        }
+    });
+
+var choice = response.Output.Choices[0];
+Console.WriteLine($"Recognized: {choice.Message.Content[0].Text}");
+Console.WriteLine($"Language: {choice.Message.Annotations![0].Language}, emotion: {choice.Message.Annotations[0].Emotion}");
+Console.WriteLine($"Audio duration: {response.Usage?.Seconds}s, tokens: {response.Usage?.TotalTokens}");
+```
+
+### Fun-ASR-Flash / Qwen-Audio-3.x-ASR-Flash
+Fun-ASR-Flash and Qwen-Audio-3.x-ASR-Flash models transcribe recorded audio files with sentence / word level timestamps on the same endpoint, but with typed contents and a sentence based response: call `GetMultimodalGenerationAsync` (or `GetMultimodalGenerationStreamAsync`, which returns intermediate results when the audio is at least 1 minute long; words with `Fixed` set to `false` may still be revised). The audio goes into an `InputAudioContent` (a publicly accessible url or a base64 data uri), previous turns of the conversation go into `InputTextContent` / `AssistantTextContent` as the context, and the result is in `Output.Text` / `Output.Sentence` instead of `Output.Choices`.
+
+```csharp
+var response = await dashScopeClient.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "qwen-audio-3.1-asr-flash",
+        Input = new MultimodalInput()
+        {
+            Messages =
+            [
+                MultimodalMessage.User([MultimodalMessageContent.InputTextContent("Please recite Cong Jun Xing")]),
+                MultimodalMessage.Assistant([MultimodalMessageContent.AssistantTextContent("Which one would you like to hear?")]),
+                MultimodalMessage.User([MultimodalMessageContent.InputAudioContent(audioUrl)])
+            ]
+        },
+        Parameters = new MultimodalParameters()
+        {
+            Format = "mp3",
+            SampleRate = "16000",
+            Vocabulary = new Dictionary<string, int> { ["青海"] = 5, ["楼兰"] = 5 }, // instant hot words, weight 1~5 or 50
+            SpeakerDiarizationEnabled = true // qwen-audio-3.1-asr-flash only, returns Output.Sentences with SpeakerId
+        }
+    });
+
+Console.WriteLine($"Recognized: {response.Output.Text}");
+foreach (var sentence in response.Output.Sentences ?? [response.Output.Sentence!])
+{
+    Console.WriteLine($"Speaker {sentence.SpeakerId}: {sentence.Text} [{sentence.BeginTime}ms ~ {sentence.EndTime}ms]");
+}
+```
+
+### Long audio files (file transcription)
+Transcribe long audio files asynchronously with the file transcription models (qwen3-asr-flash-filetrans, qwen-audio-3.x-asr-flash-filetrans, fun-asr, paraformer-v2): submit a task with `CreateSpeechTranscriptionTaskAsync`, poll it with `GetSpeechTranscriptionTaskAsync`, and download the JSON result file from the `TranscriptionUrl` (valid for 24 hours) once the task succeeds. Which input members and parameters each model family supports varies, see `SpeechTranscriptionParameters` for the details — qwen3-asr-flash-filetrans takes a single `FileUrl` and returns `Output.Result`, while the other models take urls in `FileUrls` and return per-file results in `Output.Results` (Paraformer accepts multiple urls in one task).
+
+```csharp
+var task = await dashScopeClient.CreateSpeechTranscriptionTaskAsync(
+    new ModelRequest<SpeechTranscriptionInput, SpeechTranscriptionParameters>()
+    {
+        Model = "paraformer-v2",
+        Input = new SpeechTranscriptionInput() { FileUrls = [audioUrl] },
+        Parameters = new SpeechTranscriptionParameters()
+        {
+            DisfluencyRemovalEnabled = true, // remove filler words
+            DiarizationEnabled = true, // speaker diarization, result carries speaker_id
+            SpeakerCount = 2 // optional reference count of speakers
+        }
+    });
+
+DashScopeTask<SpeechTranscriptionOutput, SpeechTranscriptionUsage>? result;
+do
+{
+    await Task.Delay(TimeSpan.FromSeconds(2));
+    result = await dashScopeClient.GetSpeechTranscriptionTaskAsync(task.Output.TaskId);
+}
+while (result.Output.TaskStatus is DashScopeTaskStatus.Pending or DashScopeTaskStatus.Running);
+
+// check SubTaskStatus when multiple files were submitted: the task status is SUCCEEDED
+// as long as any subtask succeeded
+foreach (var file in result.Output.Results!)
+{
+    Console.WriteLine($"{file.FileUrl}: {file.SubTaskStatus} -> {file.TranscriptionUrl}");
+}
+```
+
 ## Image Generation
 ### Text-to-Image
 Use `GetMultimodalGenerationAsync` with model `qwen-image-2.0-pro` to generate images synchronously.
@@ -2288,312 +2631,4 @@ var response = await client.CreateImage2ImageSynthesisTaskAsync(
 var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
 Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}");
 ```
-Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization_local`, `remove_watermark`, `expand`, `super_resolution`, `colorization`, `doodle` and `control_cartoon_feature`; function-specific parameters like `Strength`, `UpscaleFactor` and the four `*Scale` properties live on `Image2ImageSynthesisParameters`.
-
-The `wanx-sketch-to-image-lite` model turns a doodle/sketch into a complete image via the same task API, taking the sketch url on `SketchImageUrl` (aspect ratio should match the output, white background recommended). `SketchWeight` (0-10, defaults to 10) controls how close the output stays to the sketch; `SketchExtraction = true` extracts sketch edges from an RGB input; `SketchColor` lists the RGB pen-stroke colors when the sketch lines are colored (ignored with `SketchExtraction`):
-```csharp
-var response = await client.CreateImage2ImageSynthesisTaskAsync(
-    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
-    {
-        Model = "wanx-sketch-to-image-lite",
-        Input = new Image2ImageSynthesisInput()
-        {
-            Prompt = "一棵参天大树",
-            SketchImageUrl = "<your-sketch-url>"
-        },
-        Parameters = new Image2ImageSynthesisParameters()
-        {
-            Size = "768*768",
-            N = 1,
-            SketchWeight = 3,
-            Style = "<watercolor>"
-        }
-    });
-var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
-Console.WriteLine($"Generated image url: {task.Output.Results?[0].Url}");
-```
-
-### Text-to-Image (Async Task)
-Use `CreateImageSynthesisTaskAsync` to create a task, then poll `GetImageSynthesisTaskAsync` to check completion status.
-```csharp
-var response = await client.CreateImageSynthesisTaskAsync(
-    new ModelRequest<ImageSynthesisInput, IImageSynthesisParameters>()
-    {
-        Model = "qwen-image-plus",
-        Input = new ImageSynthesisInput() { Prompt = "A futuristic cityscape at sunset" },
-        Parameters = new ImageSynthesisParameters()
-        {
-            Size = "1664*928",
-            N = 1,
-            PromptExtend = true,
-            Watermark = false
-        }
-    });
-var taskId = response.Output.TaskId;
-Console.WriteLine($"Task Created: {taskId}");
-var waited = 0;
-var timeout = 300;
-do
-{
-    var task = await client.GetImageSynthesisTaskAsync(taskId);
-    if (task.Output.TaskStatus == DashScopeTaskStatus.Succeeded)
-    {
-        Console.WriteLine($"Image URL: {task.Output.Results?.FirstOrDefault()?.Url}");
-        break;
-    }
-    if (task.Output.TaskStatus == DashScopeTaskStatus.Failed)
-    {
-        Console.WriteLine($"Task failed: {task.Output.Message}");
-        break;
-    }
-    Console.WriteLine($"Task Status: {task.Output.TaskStatus}");
-    await Task.Delay(TimeSpan.FromSeconds(10));
-    waited += 10;
-} while (waited < timeout);
-```
-
-`wan2.6-t2i` uses a new async protocol: create the task with `CreateImageGenerationTaskAsync`, filling the multimodal `Messages` on `ImageGenerationInput` (the legacy wanx style repaint models use `ImageUrl` + `StyleIndex` on the same type instead), then poll with `GetImageGenerationTaskAsync`:
-```csharp
-var response = await client.CreateImageGenerationTaskAsync(
-    new ModelRequest<ImageGenerationInput, IMultimodalParameters>()
-    {
-        Model = "wan2.6-t2i",
-        Input = new ImageGenerationInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("一间有着精致窗户的花店，漂亮的木质门，摆放着花朵")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters() { N = 1, Size = "1280*1280", Seed = 233 }
-    });
-var task = await client.GetImageGenerationTaskAsync(response.Output.TaskId);
-var url = task.Output.Choices?[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
-
-Kling (`kling/kling-v3-image-generation`, `kling/kling-v3-omni-image-generation`) and Vidu (`vidu/vidu-image_reference2image`, `vidu/vidu-image-pro_reference2image`, `vidu/vidu-image-lite_reference2image`, `vidu/viduq3-fast_reference2image`, `vidu/viduq2-pro_reference2image`, `vidu/viduq2-fast_reference2image`) image models run on the same task API with optional reference images in the message content. Kling takes `AspectRatio` (16:9 / 9:16 / 1:1) with `Resolution` (1k / 2k, 4k on omni) instead of `Size`; `kling-v3-omni` additionally generates a storyboard series with `ResultType = "series"` + `SeriesAmount` (2-9) and can keep subjects from the Kling subject list via `ElementList` on the input. Vidu takes `Size` / `Seed` and always returns one image (`N = 1`).
-```csharp
-var response = await client.CreateImageGenerationTaskAsync(
-    new ModelRequest<ImageGenerationInput, IMultimodalParameters>()
-    {
-        Model = "kling/kling-v3-omni-image-generation",
-        Input = new ImageGenerationInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("参考图1的风格和图2的背景，生成番茄炒蛋"),
-                        MultimodalMessageContent.ImageContent("<reference-image-1-url>"),
-                        MultimodalMessageContent.ImageContent("<reference-image-2-url>")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters()
-        {
-            N = 4,
-            ResultType = "series",
-            SeriesAmount = 4,
-            AspectRatio = "1:1",
-            Resolution = "1k"
-        }
-    });
-var task = await client.GetImageGenerationTaskAsync(response.Output.TaskId);
-// series mode returns all images in the content of the single choice
-var urls = task.Output.Choices?[0].Message.Content.Select(c => c.Image).ToList();
-Console.WriteLine($"Usage: count({task.Usage?.ImageCount}) size({task.Usage?.Size}) tier({task.Usage?.SR})");
-```
-
-### Image Translation
-
-Translate the text within an image while preserving the original layout. With `qwen-mt-image-2.0` you can call `GetImage2ImageSynthesisAsync` to translate synchronously - the call blocks until the translated image is ready. The 2.0 model has no language restrictions (any of the 55 supported languages works for both source and target).
-
-```csharp
-var response = await client.GetImage2ImageSynthesisAsync(
-    new ModelRequest<Image2ImageSynthesisInput>()
-    {
-        Model = "qwen-mt-image-2.0",
-        Input = new Image2ImageSynthesisInput()
-        {
-            SourceLang = "zh",
-            TargetLang = "en",
-            ImageUrl = "<your-image-url>"
-        }
-    });
-Console.WriteLine($"Translated image url: {response.Output.ImageUrl}");
-```
-
-For `qwen-mt-image` (which requires the source or target language to be Chinese or English), use the async task flow: create the task with `CreateImage2ImageSynthesisTaskAsync` and an `Image2ImageSynthesisInput`, then poll `GetImage2ImageSynthesisTaskAsync` for the result.
-
-```csharp
-var response = await client.CreateImage2ImageSynthesisTaskAsync(
-    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
-    {
-        Model = "qwen-mt-image",
-        Input = new Image2ImageSynthesisInput()
-        {
-            SourceLang = "zh",
-            TargetLang = "en",
-            ImageUrl = "https://example.com/image-with-text.jpg",
-            Ext = new Image2ImageSynthesisInputExt()
-            {
-                // Hint for the scene and translation style of the source text
-                DomainHint = "These sentences are from seller-buyer conversations on a B2C ecommerce platform.",
-                // Terms that should be filtered out before translation
-                Sensitives = ["基础"],
-                // Predefined translations for specific terms
-                Terminologies = [new Image2ImageSynthesisInputExtTerm("一体化", "Unified")],
-                Config = new Image2ImageSynthesisConfig()
-                {
-                    // Skip translation for the main subject in the image, like people/product/logo
-                    ImageSegment = false
-                }
-            }
-        }
-    });
-var taskId = response.Output.TaskId;
-Console.WriteLine($"Task Created: {taskId}");
-var waited = 0;
-var timeout = 300;
-do
-{
-    var task = await client.GetImage2ImageSynthesisTaskAsync(taskId);
-    if (task.Output.TaskStatus == DashScopeTaskStatus.Succeeded)
-    {
-        Console.WriteLine($"Translated image URL: {task.Output.ImageUrl}");
-        break;
-    }
-    if (task.Output.TaskStatus == DashScopeTaskStatus.Failed)
-    {
-        Console.WriteLine($"Task failed: {task.Output.Message}");
-        break;
-    }
-    Console.WriteLine($"Task Status: {task.Output.TaskStatus}");
-    await Task.Delay(TimeSpan.FromSeconds(10));
-    waited += 10;
-} while (waited < timeout);
-```
-
-#### Portrait Style Transfer
-Use `CreateImageGenerationTaskAsync` and `GetImageGenerationTaskAsync`
-
-#### Background Generation
-Use `CreateBackgroundGenerationTaskAsync` and `GetBackgroundGenerationTaskAsync`
-
-### Portrait (FaceChain)
-FaceChain trains a dedicated portrait model from 1~10 face images of a person (model `facechain-finetune`, billed per training run), then uses the trained model to generate portrait photos in various styles. Validate the images first with `DetectFacesAsync` (model `facechain-facedetect`, synchronous, currently free):
-```csharp
-var response = await client.DetectFacesAsync(
-    new ModelRequest<FaceDetectionInput>()
-    {
-        Model = "facechain-facedetect",
-        Input = new FaceDetectionInput() { Images = ["<face-image-1-url>", "<face-image-2-url>"] }
-    });
-foreach (var (isFace, reason) in response.Output.IsFace!.Zip(response.Output.FailedReason!))
-{
-    Console.WriteLine($"{isFace}: {reason}");
-}
-```
-
-Create the fine-tune job with the image urls (or file ids from `UploadFilesAsync`) and poll until it finishes; the trained model name is in `FinetunedOutput`:
-```csharp
-var job = await client.CreateFineTuneJobAsync(
-    new DashScopeCreateFineTuneJobRequest()
-    {
-        Model = "facechain-finetune",
-        TrainingFileIds = ["<face-image-1-url>", "<face-image-2-url>"]
-    });
-DashScopeFineTuneJob finished;
-do
-{
-    await Task.Delay(TimeSpan.FromSeconds(30));
-    finished = await client.GetFineTuneJobAsync(job.Output.JobId);
-} while (finished.Output.Status is DashScopeTaskStatus.Pending or DashScopeTaskStatus.Running);
-Console.WriteLine($"Trained model: {finished.Output.FinetunedOutput}");
-```
-The Bailian documentation does not cover a portrait generation API for the trained model yet, use `FinetunedOutput` with the generation API documented for your workspace once available.
-
-## Video Generation
-Video generation and editing are async tasks: create the task with `CreateVideoSynthesisTaskAsync` and poll `GetVideoSynthesisTaskAsync`. The endpoint is shared by the HappyHorse, wan2.7, wan3.0, legacy wan2.1-2.6, wanx2.1-vace, PixVerse, Kling, Vidu and MiniMax models — one input type covers them all, the supported members depend on the model. Text-to-video (HappyHorse / wan2.7 / wan3.0):
-```csharp
-var response = await client.CreateVideoSynthesisTaskAsync(
-    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
-    {
-        Model = "wan2.7-t2v",
-        Input = new VideoSynthesisInput() { Prompt = "一只猫在草地上奔跑", NegativePrompt = "低分辨率" },
-        Parameters = new VideoSynthesisParameters() { Resolution = "720P", Ratio = "16:9", Duration = 5, Seed = 42 }
-    });
-var task = await client.GetVideoSynthesisTaskAsync(response.Output.TaskId);
-Console.WriteLine($"Video url: {task.Output.VideoUrl}, billed duration: {task.Usage?.Duration}");
-```
-Media-driven generation passes `Media` items: first frame or first and last frames (image-to-video), reference images and videos (reference-to-video, optionally with a per-item `reference_voice` audio), a driving audio or a first clip (wan2.7 image-to-video), and a source `video` plus reference images (video editing). wan3.0 additionally accepts reference audio, files and web links, and can disable the audio track with `Audio = false`:
-```csharp
-var response = await client.CreateVideoSynthesisTaskAsync(
-    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
-    {
-        Model = "wan2.7-i2v-2026-04-25",
-        Input = new VideoSynthesisInput()
-        {
-            Prompt = "让画面动起来",
-            Media =
-            [
-                new VideoSynthesisMedia("first_frame", "<first-frame-image-url>"),
-                new VideoSynthesisMedia("last_frame", "<last-frame-image-url>")
-            ]
-        },
-        Parameters = new VideoSynthesisParameters() { Resolution = "720P", Duration = 5 }
-    });
-```
-Legacy wan2.1-2.6 models use the same input type, filling `ImgUrl` (first-frame image-to-video) or `ReferenceUrls` (wan2.6 reference-to-video) plus the `Size` ("1280*720") and `ShotType` parameters:
-```csharp
-var response = await client.CreateVideoSynthesisTaskAsync(
-    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
-    {
-        Model = "wan2.6-i2v-flash",
-        Input = new VideoSynthesisInput() { Prompt = "让画面动起来", ImgUrl = "<first-frame-image-url>" },
-        Parameters = new VideoSynthesisParameters() { Resolution = "720P", Duration = 5, Audio = false }
-    });
-```
-wanx2.1-vace-plus also uses the same types, with a `Function` (image reference, video repainting, video editing, video extension and outpainting) selecting its input fields (reference images, video, frames/clips, masks) and parameters (control condition, strength, masks, expand and scale options).
-
-The video-style-transform model (video style transform) fills only `VideoUrl`, its parameters carry `Style` (0 Japanese comic to 7 Chinese ink wash), `VideoFps` (15-25), `AnimateEmotion` (facial expression optimization), `MinLen` (720 or 540, affects billing) and `UseSR` (free super-resolution; with 540 it upscales to 1080P while billing at 540P), and the result video is in `Output.OutputVideoUrl` with the billed short edge in `Usage.SR`.
-
-The PixVerse models (Beijing region only, activate the PixVerse service in the Bailian console first) cover text-to-video (`pixverse-*-t2v`), image-to-video by first frame (`pixverse-*-it2v`) or keyframes (`pixverse-*-kf2v`), reference-to-video (`pixverse-*-r2v` and `pixverse-v6-r2v-omni`), lipsync (`pixverse-lipsync`), motion control (`pixverse-motioncontrol`) and upscaling (`pixverse-upscale`). The t2v/r2v models (except omni) set `Size` + `Duration`, the others set `Resolution` (+ `AspectRatio` for omni) instead; `Audio` generates matching sound effects (billed, defaults to false), `ShotType` (multi-shot) is supported by the v6 t2v/it2v models, and omni requires `Duration = 0` when a reference video is provided (the output follows the longest input video). Reference media are `image_url` / `video_url` media items, optionally named with `RefName` and referenced in the prompt as `@ref_name` (the server rewrites the references to `@1`, `@2`, ... in `Output.OrigPrompt`). The lipsync model takes a `video_url` plus either an `audio_url` media item or TTS via `lip_sync_tts_speaker_id` (voice `Id`, `auto` or a voice id) and `lip_sync_tts_content` (text `Content`) media items, without a prompt; motioncontrol takes an `image_url` character and a `video_url` motion clip; upscale takes a single `video_url` and always outputs 4K. PixVerse models report `Usage.SR` as a string ("720"/"4K", empty when not applicable). Reference-to-video with images, video and `@ref_name` references:
-```csharp
-var response = await client.CreateVideoSynthesisTaskAsync(
-    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
-    {
-        Model = "pixverse/pixverse-v6-r2v-omni",
-        Input = new VideoSynthesisInput()
-        {
-            Prompt = "@男人 在@咖啡厅 中弹吉他 参考@参考视频",
-            Media =
-            [
-                new VideoSynthesisMedia("video_url", "https://example.com/motion.mp4", RefName: "参考视频"),
-                new VideoSynthesisMedia("image_url", "https://example.com/man.jpg", RefName: "男人"),
-                new VideoSynthesisMedia("image_url", "https://example.com/cafe.png", RefName: "咖啡厅")
-            ]
-        },
-        Parameters = new VideoSynthesisParameters() { Resolution = "720P", AspectRatio = "16:9", Duration = 0 }
-    });
-```
-
-The Kling models (`kling/kling-v3-turbo`, `kling/kling-v3` and `kling/kling-v3-omni`-video-generation) cover text-to-video, image-to-video (first frame or first+last frames), reference-to-video and video editing (omni only). Kling uses `AspectRatio` (16:9 / 9:16 / 1:1, required for text-to-video) plus a `Mode` parameter (std 720P, pro 1080P or 4k) instead of resolution tiers; media items use the types first_frame / last_frame / refer (reference image) / feature (reference video) / base (video to edit, the output keeps its duration) with `KeepOriginalSound` ("yes"/"no") on video items, and the omni prompt references media items in array order as `&lt;&lt;&lt;image_1&gt;&gt;&gt;` / `&lt;&lt;&lt;video_1&gt;&gt;&gt;` / `&lt;&lt;&lt;element_1&gt;&gt;&gt;` (subjects come from the Kling subject list and are passed via `ElementList`). Multi-shot is enabled with `MultiShot` plus an input-level `ShotType` (intelligence for AI storyboarding, or customize with per-shot `MultiPrompt` segments); watermark=true additionally returns `Output.WatermarkVideoUrl`. Reference-to-video with a feature video and a refer image:
-```csharp
-var response = await client.CreateVideoSynthesisTaskAsync(
-    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
-    {
-        Model = "kling/kling-v3-omni-video-generation",
-        Input = new VideoSynthesisInput()
-        {
-            Prompt = "参考<<<video_1>>>中人物的动作，让<<<image_1>>>中的角色在街头随音乐起舞",
-            Media =
-            [
-                new VideoSynthesisMedia("feature", "https://example.com/motion.mp4", KeepOriginalSound: "no"),
-                new VideoSynthesisMedia("refer",
+Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization

@@ -6,9 +6,11 @@
 [![release](https://img.shields.io/github/v/release/Avinashistoocool/Agnostos-v2)](https://github.com/Avinashistoocool/Agnostos-v2/releases)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Agnostos** is a free, open-source tool that helps students land research internships. It finds professors whose recent papers match your resume, drafts one honest cold email per professor, sends them slowly from your own inbox during each professor's working hours, and drafts replies to the answers.
+**Agnostos** is a free, open-source tool that helps students land research internships. It finds professors whose recent papers match your resume, drafts one honest cold email per professor, can send eligible drafts from your own SMTP account on a paced schedule (and within recipient-local working hours when configured), and drafts replies to the answers.
 
 > Hosted web version: [Agnostos web app](https://github.com/Avinashistoocool/Agnostos-v3) · Guides: [Windows](docs/install-windows.md) · [macOS](docs/install-macos.md) · [Linux](docs/install-linux.md) · [FAQ](docs/faq.md)
+
+The local CLI discovers, verifies and drafts first-contact emails into a workbook. A separately scheduled `send --live --yes` can then deliver eligible drafts through **your configured SMTP account**; it does not require approving each first-contact draft individually. Read and edit drafts before enabling unattended sending. Replies are different: `replies` drafts into a local queue, and only approved entries are sent with `replies --send --live`. The [public Apify research-discovery Actor](docs/apify-actor.md) is a separate, no-send service: it never accesses your mailbox or sends email.
 
 An autonomous, token-efficient pipeline for research internship outreach. Agnostos matches your CV against prospective supervisors, retrieves their recent publications, predicts acceptance probability, drafts tailored cold emails without generic LLM prose, and throttles outbound SMTP delivery.
 
@@ -22,7 +24,7 @@ targets ────┘        ▲ OpenAlex enrichment (free)            recheck
 
 Point it at your CV and a spreadsheet of professors. It reads your resume, ranks the list against it for free, looks up each professor's recent papers, writes a specific email per person, strips the AI tells out of the prose, and sends them on a human-looking schedule — writing every draft and status back into your spreadsheet as it goes.
 
-**It costs nothing.** The default provider is [Groq](https://console.groq.com/keys), whose free tier comfortably covers a full run. OpenAI (or any OpenAI-compatible gateway) is supported if you prefer it.
+**The local tool is free and open source.** The default provider is [Groq](https://console.groq.com/keys), which offers a free tier subject to its current limits. OpenAI (or any OpenAI-compatible gateway) is supported if you prefer it; provider charges may apply.
 
 **Documentation:** [avinashistoocool.github.io/Agnostos-v2](https://avinashistoocool.github.io/Agnostos-v2/) · [Technical report (PDF)](docs/Agnostos_Technical_Report.pdf), which explains the architecture and every scoring rule (local matcher, discovery ranking, cost estimate, AI-tell score, address confidence, send windows); LaTeX source in [`docs/Agnostos_Technical_Report.tex`](docs/Agnostos_Technical_Report.tex).
 
@@ -94,10 +96,9 @@ python tests\full_desktop_contract_test.py
 
 Output: `dist\Agnostos-v2-Desktop.zip` (containing the executable folder and
 headless Chromium for CLI directory scraping, *not* for the GUI).
-This full native build is currently **local only**. After GitHub access is
-restored and these changes are pushed to `main`, the **Native Windows desktop**
-GitHub Actions run can also offer this ZIP as a downloadable artifact (Actions
-→ workflow run → Artifacts); extract the inner ZIP from the downloaded artifact.
+The **Native Windows desktop** GitHub Actions run can also offer this ZIP
+as a downloadable artifact (Actions → workflow run → Artifacts); extract
+the inner ZIP from the downloaded artifact.
 Artifacts expire after 14 days and are not installer releases.
 The native GUI uses Qt widgets and Windows system fonts, so viewing works offline;
 discovery, models, mail and Calendar authorization require internet.
@@ -377,7 +378,9 @@ python -m outreach.cli send --live --top 10 --min-probability 60
 - `--top N` ranks the drafted rows by acceptance probability and mails the best N. This is usually what you want.
 - `--min-probability N` sets a quality floor instead of a count.
 - `--limit N` caps how many emails are actually sent in this run, applied after the `--top` ordering.
-- `DAILY_SEND_CAP` in `.env` is the default for `--limit`. Cold sends (`send`, `resend`, `legacy`) are also limited by `COLD_DAILY_HARD_CAP` (default 40, configurable from 1 to 90). Invalid ceilings fail explicitly. Raising it does not bypass domain limits or increase the desktop UI's own limits.
+- `DAILY_SEND_CAP` in `.env` defaults to 25 and is the default for `--limit`. Cold sends (`send`, `resend`, `legacy`) are also limited by `COLD_DAILY_HARD_CAP` (default 40, configurable from 1 to 90). Invalid ceilings fail explicitly. Raising it does not bypass domain limits or increase the desktop UI's own limits.
+
+A target of **70 new professors per day** is an aspiration, not a configured default or a guarantee of 70 delivered messages. A CLI ceiling of 90 permits a higher cap if deliberately configured; the native desktop's per-job limit remains 40. Actual first-contact sends depend on fresh eligible and verified leads, usable drafts, focus and bounce exclusions, the three-per-domain rolling-week guard, the remaining daily allowance, SMTP success and the recipient-local weekday window when enabled. The sender counts already-sent workbook rows on restart; a scheduled run cannot simply reset the day's allowance.
 
 **Funding factor.** Every host also gets a 0-1 funding likelihood plus the most likely funded route, from `outreach/funding.py`. The inputs are:
 
@@ -431,6 +434,10 @@ duplicate instances, and writes start/end timestamps and its exit code to the lo
 The weekday launcher calls these same scripts; it must not launch identical
 Gmail resends. The Gmail loop sends only approved legacy/CERN letters.
 These are local operational files, not installed by cloning the repository.
+Lead discovery/drafting and any daily refill are separate local jobs, not
+performed by `send`; a refill failure leaves the sender with only existing
+eligible drafts. Check the scheduled job's exit status and local logs rather
+than treating a running sender as evidence that the daily target was reached.
 The PC must remain awake, online and signed in. All daily, domain and
 recipient-local window limits still apply: `MAX_PER_DOMAIN_WEEK=3` also
 limits `cern.ch` to three cold emails per rolling week, not three per group.
@@ -786,7 +793,7 @@ Cold emails to professors work when they're specific and sparse. Read every draf
 
 ### When sends start failing
 
-University relays throttle aggressively. If a message is refused or the socket drops, the mailer reconnects once and retries; after three consecutive failures it stops the run so the untouched rows stay sendable. Failed rows are never marked as sent, so re-running the same command retries exactly those rows and skips the successes.
+University relays throttle aggressively. If a connection drops, the mailer retries connecting up to three times; after three consecutive send failures it stops the run so the untouched rows stay sendable. Failed rows are never marked as sent, so re-running the same command retries exactly those rows and skips the successes.
 
 If you see `SMTPSenderRefused` or repeated `SMTPServerDisconnected`, the relay is almost certainly rate-limiting you. Raise `SEND_DELAY_MIN`/`SEND_DELAY_MAX` (300/600 is safe for a university server), lower `DAILY_SEND_CAP`, and send in small batches with `--top 5`. Also confirm `SMTP_FROM` is exactly the address `SMTP_USER` is allowed to send as — most relays refuse any mismatch.
 

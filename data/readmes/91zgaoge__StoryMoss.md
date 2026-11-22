@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.10-gold"></a>
+  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.13-gold"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-ISC-blue.svg"></a>
   <a href="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml"><img alt="Build" src="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg">
@@ -115,6 +115,21 @@ npm run build
 ## 🆕 最新动态
 
 > 完整变更日志见 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+### v0.99.13 · 切章保存不再误丢稿 / 更新检查不再假报错（日志巡检）
+
+- **问题**：v0.99.10 日志包（11-17～11-22）里 27 条 ERROR 集中在两处。第一，10 次「正文已被另一窗口更新，拒绝用旧快照覆盖」的保存冲突，全部发生在切章后 10–50ms，冲突对象都是**上一章**——上一章在途保存被换成新章的 CAS 基线，后端正确拒绝、前端却误报「另一窗口已更新」并停止重试，切章前最后几次编辑因此丢失。第二，12 次「检查更新失败」+3 次「安装更新失败」：本机 GitHub 源不可达、官网已明确返回「无更新」，但旧裁决把「任一源失败」整体升级成更新失败，用户每次启动都看到报错。
+- **结果**：CAS 基线改为「按 scene 绑定 + 保存入口同步捕获」，跨 scene 不发送指纹、在途保存不再覆盖新章基线；视觉空稿（`<p></p>` 等）直接跳过写入，避免把前端基线写成空稿后永久冲突。更新检查改为「有源成功给出确定结果即采用」，另一源失败只附 `warning` 诊断日志；所有源都失败才报错。新增 8 条回归测试（Rust 4 / 前端 4）。
+
+### v0.99.12 · 续写训练真机复盘（日志保留 / 主角识别 / 修订直出 / 探针收敛）
+
+- **问题**：11-22 的 10 章训练（报告 `aa70a919`）编审判 6 章修订，但报告写「0 章真正修订、7 章判修订但修订未完成」——修订只要 tool_loop 正常结束就记账，模型没写黑板也算完成；v0.99.11 重跑时单章修订 prompt 约 30k 字符（15k tokens），24 分钟仍未完成。同日重启后当日 tracing 从新进程第一行开始：日志保留条件写反，启动时删掉刚写入的日志、留下 7 天前旧文件。确定性 cast 兜底把出场最早的「大波浪卷女人」当成角色表第一项，旧 roster 便标成主角；brief 里「我/主角/周成」并存，编审把主角姓名判成配角。记忆探针仍报 `蓝漆铁/黄铜钥/邵先生/传呼机/冷库门`。
+- **结果**：日志保留改为「早于 7 天才删」，当日 tracing 不再丢失；主角只按原文自称句式（我叫X/以X身份/X自报/自称X）识别，并把「我/主角/阴脉先生」合并到权威姓名，roster 不再假定第一项是主角；训练批量修订跳过 ReAct，用完整正文 + 逐条问题直出并校验「与首稿不同、≥300 字」，写回后再走第二轮 gate（round-2 也跟随直连 JSON）——修订完成才记账；LeadWriter 单章草稿写入上限 2 次，第二稿成功写入即采用，避免单章 9 稿轮询；首稿裁决 pass、修订稿变 revise 时回退首稿；探针改为长串优先 + 称谓/器物收尾过滤；写作红线新增「禁止不是…而是…排比/比喻堆叠、每章至少一次配角互动、主角身份统一」。新增 6 条回归测试。
+
+### v0.99.11 · 模型调度止血（撞额度重试 + reasoning_effort + 冷却兜底）
+
+- **问题**：本机 11-22 实机对账确认三处调度缺陷：writer 只申请 8192 输出，推理模型 CoT 吃满后 `content` 为空（`finish_reason=length`），连续 8 次空正文最终被当成主创熔断；`LlmProfile.reasoning_effort` 字段存在但从未发送给 API，JSON/抽取任务一直按默认 high 思考；`candidate_count=1` 时一次空正文就把唯一候选冷却 10 分钟，后续请求直接报「所有候选模型都因连续空正文进入冷却」。
+- **结果**：适配器解析 `finish_reason` 与 `reasoning_tokens`，空正文撞 `length` 时把 `max_tokens` ×4（封顶 32768）重试一次；打通 `reasoning_effort`（profile 显式值优先，JSON/结构化任务默认 low，未声明 reasoning 的端点不发送）；全部候选冷却时恢复候选兜底而非硬失败；keepalive 与 pre-call 探测 5s/4 tokens → 30s/64 tokens，空正文告警 60s 节流。新增 7 条回归测试。
 
 ### v0.99.10 · 训练报告/标题落库/记忆探针收尾（日志巡检）
 

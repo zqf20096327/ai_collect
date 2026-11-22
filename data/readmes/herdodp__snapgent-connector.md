@@ -10,7 +10,7 @@
 
 [![License](https://img.shields.io/badge/LICENSE-GPL--3.0-FACC15?style=flat-square&labelColor=111111&logo=opensourceinitiative&logoColor=FACC15)](LICENSE)
 [![Manifest](https://img.shields.io/badge/MANIFEST-V3-FACC15?style=flat-square&labelColor=111111&logo=googlechrome&logoColor=FACC15)](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3/)
-[![Release](https://img.shields.io/badge/RELEASE-V3.9.13-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.13)
+[![Release](https://img.shields.io/badge/RELEASE-V3.9.14-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.14)
 [![MCP](https://img.shields.io/badge/PROTOCOL-MCP-FACC15?style=flat-square&labelColor=111111&logo=modelcontextprotocol&logoColor=FACC15)](https://modelcontextprotocol.io/)
 
 </div>
@@ -46,8 +46,8 @@ snapgentV3 is a browser extension plus a local bridge that connects a normal AI 
 <tr>
 <td width="100%" valign="top">
 
-### 💻 VS Code
-No MCP target is selected by default. Choose a target in the snapgentV3 bar before starting; until then, Snapgent will not send commands to an MCP server.
+### 💻 VS Code / VSCodium
+Supports VS Code, VSCodium, or Code - OSS. Choose a target in the snapgentV3 bar before starting; until then, Snapgent will not send commands to an MCP server.
 
 </td>
 </tr>
@@ -135,10 +135,11 @@ npm run dist     # build the Windows installer into dist/
 
 ## `03` &nbsp; Requirements
 
-- **Microsoft Edge** or **Google Chrome** (Manifest V3).
-- **VS Code** when selected as the MCP target. Keep the workspace you want to use open in VS Code.
+- **Chromium Browsers** (Google Chrome, Microsoft Edge, Brave, Opera, etc.) or **Mozilla Firefox** (v128.0+ with Manifest V3).
+- **VS Code**, **VSCodium**, or **Code - OSS** for the default target. Keep the workspace you want to use open in your editor.
 - **Windows**, **macOS**, or **Linux** for the bridge.
 - **Python 3.9+** on macOS and Linux. Windows includes the bridge executable.
+  The start scripts install `websockets` (required) and `aiohttp` (optional live view).
 - The bridge running while you use the agent.
 
 ---
@@ -147,11 +148,19 @@ npm run dist     # build the Windows installer into dist/
 
 **① Load the extension**
 
-1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.13).
-2. Open `edge://extensions` (Edge) or `chrome://extensions` (Chrome).
-3. Enable **Developer mode**.
-4. Click **Load unpacked** and select the `snapgent-extension` folder.
-5. The snapgentV3 icon appears in your browser toolbar.
+1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.14) (or clone this repository).
+
+* **For Chrome / Edge / Brave / Chromium:**
+  1. Open `chrome://extensions` (Chrome/Brave) or `edge://extensions` (Edge).
+  2. Enable **Developer mode** (toggle in top right).
+  3. Click **Load unpacked** and select the `snapgent-extension` folder.
+  4. The snapgentV3 icon appears in your browser toolbar.
+
+* **For Mozilla Firefox:**
+  1. Open a new tab and go to `about:debugging#/runtime/this-firefox`.
+  2. Under **Temporary Extensions**, click **Load Temporary Add-on...**
+  3. Navigate into the `snapgent-extension` folder and select the `manifest.json` file (unlike Chromium browsers which select the folder, Firefox requires choosing a file inside the extension).
+  4. The snapgentV3 icon appears in your toolbar and connects to the bridge automatically.
 
 **② Set up the MCP target**
 
@@ -283,6 +292,66 @@ The AI sends commands, snapgentV3 runs them in the selected target, and the resu
 - On **Arena**, use **Direct** mode.
 - If **Gemini** or **Kimi** stops using tools in a long session, remind it to use the snapgentV3 commands or start a new chat.
 
+### Live view and status
+
+The bridge also opens a small **read-only** HTTP channel on the port next to the
+bridge (`17614` by default, override with `ZS_BRIDGE_STREAM_PORT`):
+
+| URL | What it shows |
+|---|---|
+| `http://127.0.0.1:17614/` | One-page live view of the turn that is running |
+| `/events` | The same frames as Server-Sent Events (`/stream` is an alias) |
+| `/status` | One-shot JSON snapshot: bridge version, queue, recent frames |
+
+It is advisory only: a dead reader can never fail a tool call, and no route accepts a
+pushed frame, so a page open in the same browser cannot inject into the view. The
+channel needs the `aiohttp` package; the start scripts install it. Without it the
+bridge logs `progress channel disabled` and every tool call keeps working.
+
+### WebSocket origin (local security)
+
+The bridge only accepts the extension. The WebSocket handshake rejects any `Origin`
+that is not a browser-extension URL (`chrome-extension://`, `moz-extension://`,
+`safari-web-extension://`) with HTTP 403 and a `rejected websocket origin=...` log line,
+so a page on any website cannot open `ws://127.0.0.1:17613` and run tools such as
+`run_command` or `write_file`. `handle_client` repeats the check as a second layer and
+closes the socket (code 1008) if a server was started without the handshake gate.
+
+Clients that send no `Origin` at all — command-line tools, tests, native apps — are
+still accepted, because a browser page cannot omit that header. If you drive the
+bridge from your own front end, list its exact origin in `ZS_BRIDGE_EXTRA_ORIGINS`
+(comma separated) before starting the bridge.
+
+### Remote commands (opt-in, off by default)
+
+**MCP servers → Remote commands** lets the extension continue a session whose
+assistant reply was written *somewhere else* — for example a reply typed in the
+ChatGPT mobile app, or one that arrived through conversation sync.
+
+- **What it does:** while a Snapgent session is running, the extension watches the
+  newest assistant reply in the chat. If that reply carries snapgentV3 tool calls this
+  session has not executed yet, it adopts and runs them.
+- **Why it is off by default:** it runs commands that arrive through the chat content,
+  not from the click you just made. Anyone who can write into that conversation —
+  another device signed in to your account, a shared or synced chat, or someone with
+  access to the page — can run commands with the bridge's privileges: file reads and
+  writes and, with the VS Code server, terminals.
+- **When to turn it on:** only while you are deliberately moving between devices.
+  Turn it off again afterwards; the setting is remembered per browser profile.
+
+### Windows and `bridge.exe`
+
+Windows runs the prebuilt `bridge.exe`. The bridge-side fixes (per-websocket replay
+cache with `force`, the live view and `/status`, the removed `/push` endpoint and the
+WebSocket origin check)
+live in `bridge.py`, which is what macOS, Linux, and Windows-from-source run; the
+bundled `bridge.exe` is only rebuilt when a release says so. When running `bridge.py`
+on Windows, install the dependencies once:
+
+```
+python -m pip install --user websockets aiohttp
+```
+
 ---
 
 ## `06` &nbsp; Architecture
@@ -337,9 +406,10 @@ snapgent-full/
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | snapgentV3 bar is missing | Extension is disabled or site access is blocked | Check the extension is enabled and allowed on the current AI chat site, then reload the tab |
+| Firefox: Stale extension / reload loop | Extension was reloaded or background refreshed | Click **Close** on banner or refresh tab (F5) once bridge connects |
 | Bridge is offline | Bridge is not running | Start `start.bat` (Windows), `MacOS_Start.command` (macOS), or run `bash Linux_Start.sh` (Linux) |
 | AI replies without using tools | Provider/model stopped following commands | Remind it to use snapgentV3 commands or start a new chat |
-| VS Code target is unavailable | The bridge is offline or the release is incomplete | Run `start.bat` from the extracted release folder and keep the project open in VS Code |
+| VS Code / VSCodium target is unavailable | The bridge is offline or no workspace folder open | Run launcher from release folder and open a project folder in VS Code / VSCodium |
 | A configured MCP server is missing from the target dropdown | The server was switched off in the **MCP servers** panel, or the extension is outdated | Open **MCP servers** from the ⋯ menu on the snapgent bar and tick the server, then reload the extension in `chrome://extensions` and refresh the chat tab |
 | Target dropdown closes or the click does nothing | Older extension versions redrew the menu during status updates | Update to the latest release and reload the extension |
 
@@ -349,6 +419,6 @@ snapgent-full/
 
 **Built for creators who want to spend more time making.**
 
-[Latest release V3.9.13](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.13) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
+[Latest release V3.9.14](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.14) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
 
 </div>

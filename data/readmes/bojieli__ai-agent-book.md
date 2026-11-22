@@ -1,9 +1,9 @@
 # 深入理解 AI Agent：设计原理与工程实践
 
-[![PDF](https://img.shields.io/badge/PDF-%E4%B8%8B%E8%BD%BD-success.svg)](#-电子书) [![在线阅读](https://img.shields.io/badge/🌐_在线阅读-bojieli.github.io-success?style=flat-square)](https://bojieli.github.io/ai-agent-book/astro/) [![Stars](https://img.shields.io/github/stars/bojieli/ai-agent-book?style=social)](https://github.com/bojieli/ai-agent-book) [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Languages](https://img.shields.io/badge/翻译-15%20种%20语言-informational.svg)](#-电子书)
+[![PDF](https://img.shields.io/badge/PDF-%E4%B8%8B%E8%BD%BD-success.svg)](#-电子书) [![在线阅读](https://img.shields.io/badge/🌐_在线阅读-bojieli.github.io-success?style=flat-square)](https://bojieli.github.io/ai-agent-book/astro/) [![Stars](https://img.shields.io/github/stars/bojieli/ai-agent-book?style=social)](https://github.com/bojieli/ai-agent-book) [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Languages](https://img.shields.io/badge/翻译-16%20种%20语言-informational.svg)](#-电子书)
 [![Trending GitHub Project of the Day](https://img.shields.io/badge/GitHub%20Trending-Project%20of%20the%20Day-orange?logo=github)](https://github.com/trending)
 
-**中文** ← 当前 · [English](docs/en/README.md) · [Español](docs/es/README.md) · [Bahasa Indonesia](docs/id/README.md) · [العربية](docs/ar/README.md) · [繁體中文（台灣）](docs/zh-TW/README.md) · [Русский](docs/ru/README.md) · [Tiếng Việt](docs/vi/README.md) · [தமிழ்](docs/ta/README.md) · [日本語](docs/ja/README.md) · [Türkçe](docs/tr/README.md) · [한국어](docs/ko/README.md) · [Magyar](docs/hu/README.md) · [עברית](README.he.md) · [Português (Brasil)](README.ptbr.md)
+**中文** ← 当前 · [English](docs/en/README.md) · [Español](docs/es/README.md) · [Bahasa Indonesia](docs/id/README.md) · [العربية](docs/ar/README.md) · [繁體中文（台灣）](docs/zh-TW/README.md) · [Русский](docs/ru/README.md) · [Tiếng Việt](docs/vi/README.md) · [தமிழ்](docs/ta/README.md) · [日本語](docs/ja/README.md) · [Türkçe](docs/tr/README.md) · [한국어](docs/ko/README.md) · [Magyar](docs/hu/README.md) · [עברית](README.he.md) · [Português (Brasil)](README.ptbr.md) · [Монгол](book-mn/README.md)
 
 > 📥 **[下载 PDF / EPUB](#-电子书)**（推荐）— 推荐使用 PDF / EPUB 离线阅读，排版最佳；也可[在线阅读](https://bojieli.github.io/ai-agent-book/astro/)（支持多语言切换、章节折叠、高亮与笔记，每次推送自动更新）。
 
@@ -13,7 +13,7 @@
 >
 > 要开发好基于模型的应用，还需要理解这类应用赖以运行的基础设施。姊妹篇讨论的就是支撑模型训练与推理的 AI Infra：参数和上下文状态存在哪里，计算怎样执行，多个加速器怎样协作。
 
-> 📢 **2.0 版变更（相较 1.4 版）**：本仓库书稿版本已由 1.4 升级为 2.0。2.0 版将原第四章中的“异步交互”部分与原第九章中关于“多模态 Agent”的内容合并，重组为新的第六章“交互：观察与动作空间的扩展”。原第六章“Agent 的评估”、第七章“模型后训练”和第八章“Agent 的持续进化”依次后移一章，现分别为第七、八、九章。
+> 📢 **2.0 和 3.0 版变更（相较 1.4 版）**：本仓库书稿版本已由 1.4 升级为 2.0 和 3.0。2.0 和 3.0 版将原第四章中的“异步交互”部分与原第九章中关于“多模态 Agent”的内容合并，重组为新的第六章“交互：观察与动作空间的扩展”。原第六章“Agent 的评估”、第七章“模型后训练”和第八章“Agent 的持续进化”依次后移一章，现分别为第七、八、九章。
 >
 > 如果你看到的是旧版 PDF，建议[下载最新版 PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-CN.pdf)。新版还包含许多内容修正与调整，请以最新版为准。
 
@@ -23,7 +23,8 @@
 ## 📖 电子书
 
 > 📥 **离线下载**（推荐，全书正文，开源免费）。以下链接始终指向 main 分支的最新构建；固定版本见 [Releases](https://github.com/bojieli/ai-agent-book/releases)：
-> - **中文（原版）**：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-CN.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-CN.epub)
+> - **中文（原版）**：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-CN.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-CN.epub) · [兼容版 EPUB（PNG 插图与公式）](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-CN-kindle.epub)
+>   macOS 上可将下载的文件拖入“图书”离线阅读。想放大查看矢量图时选普通 EPUB；WPS、掌阅等阅读器出现图表空白，或小屏设备上代码行过长时，可试兼容版。两版正文均可随字号重新排版。
 > - **英文**（社区翻译，by [@nsdevaraj](https://github.com/nsdevaraj)、[@whanyu1212](https://github.com/whanyu1212)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-en.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-en.epub)
 > - **西班牙语**（社区翻译，by [@santhreal](https://github.com/santhreal)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-es.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-es.epub)
 > - **印度尼西亚语**（社区翻译，by [@jojixyz666](https://github.com/jojixyz666)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-id.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-id.epub)
@@ -38,10 +39,11 @@
 > - **匈牙利语（Magyar）**（社区翻译，by [@barmivalami0-ux](https://github.com/barmivalami0-ux)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-hu.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-hu.epub)
 > - **希伯来语（עברית）**（社区翻译，by [@itzikwo](https://github.com/itzikwo)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-he.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-he.epub)
 > - **葡萄牙语（巴西）**（社区翻译，by [@leofn](https://github.com/leofn)，配图翻译 by [@LibnaRaffaely](https://github.com/LibnaRaffaely)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ptbr.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ptbr.epub)
+> - **蒙古语**（社区翻译，by [@ZERO1zx1](https://github.com/ZERO1zx1)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-mn.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-mn.epub)
 >
 > 🌐 也可[在线阅读](https://bojieli.github.io/ai-agent-book/astro/) — 支持多语言切换、章节折叠、高亮与笔记、配套实验直达，每次 main 分支推送后自动重新构建。
 
-中文正文源码位于 [`book/`](book/)；英文/西班牙语/印度尼西亚语/阿拉伯语/繁體中文（台灣）/俄语/泰米尔/越南语/日语/土耳其语/韩语/匈牙利语/希伯来语/葡萄牙语（巴西）版本为社区贡献（可能滞后于中文原版），分别位于 [`book-en/`](book-en/)、[`book-es/`](book-es/)、[`book-id/`](book-id/)、[`book-ar/`](book-ar/)、[`book-zhtw/`](book-zhtw/)、[`book-ru/`](book-ru/)、[`book-ta/`](book-ta/)、[`book-vi/`](book-vi/)、[`book-ja/`](book-ja/)、[`book-tr/`](book-tr/)、[`book-ko/`](book-ko/)、[`book-hu/`](book-hu/)、[`book-he/`](book-he/)、[`book-ptbr/`](book-ptbr/)。
+中文正文源码位于 [`book/`](book/)；英文/西班牙语/印度尼西亚语/阿拉伯语/繁體中文（台灣）/俄语/泰米尔/越南语/日语/土耳其语/韩语/匈牙利语/希伯来语/葡萄牙语（巴西）/蒙古语版本为社区贡献（可能滞后于中文原版），分别位于 [`book-en/`](book-en/)、[`book-es/`](book-es/)、[`book-id/`](book-id/)、[`book-ar/`](book-ar/)、[`book-zhtw/`](book-zhtw/)、[`book-ru/`](book-ru/)、[`book-ta/`](book-ta/)、[`book-vi/`](book-vi/)、[`book-ja/`](book-ja/)、[`book-tr/`](book-tr/)、[`book-ko/`](book-ko/)、[`book-hu/`](book-hu/)、[`book-he/`](book-he/)、[`book-ptbr/`](book-ptbr/)、[`book-mn/`](book-mn/)。
 
 <details>
 <summary><b>🔧 想自行编译 PDF / EPUB？</b>（PDF 需 pandoc / xelatex / ElegantBook）</summary>
@@ -81,6 +83,15 @@
 
 ## 💻 运行配套实验
 
+先获取本书源码：
+
+```bash
+git clone https://github.com/bojieli/ai-agent-book.git
+cd ai-agent-book
+```
+
+也可以在仓库页面选择 **Code → Download ZIP** 下载。实验按章节组织在 `chapter1/` 至 `chapter10/` 中；查找“实验 X-Y”时，先打开对应的 `chapterX/README.md`，根据实验编号进入项目，再按项目 README 配置并运行。复现指南所需的外部仓库由相应 README 列出。
+
 项目统一支持 **Python 3.11–3.13**。请在仓库根目录按章节安装依赖；将 `ch1` 替换为 `ch2` ~ `ch10` 即可安装对应章节：
 
 ```bash
@@ -115,7 +126,12 @@ uv run python chapter1/context/main.py
 | **智谱 GLM** | <https://open.bigmodel.cn/> | GLM-5.2 等，Coding、Agent 能力强 | 中国大陆 |
 | **Siliconflow** | <https://siliconflow.cn/> | 各种开源模型（DeepSeek、Qwen 等），中国大陆访问速度快 | 中国大陆 |
 | **DeepSeek** | <https://platform.deepseek.com/> | DeepSeek 官方 API | 全球 + 中国大陆 |
+| **API Route** | <https://www.api-route.com/> | 通过 OpenAI 兼容接口访问多种模型；使用 `--provider api_route` 和 `API_ROUTE_API_KEY`，模型 ID 以[当前目录](https://www.api-route.com/pricing)为准 | 全球 |
 | **Atlas Cloud** | <https://www.atlascloud.ai/> | 通过 OpenAI 兼容接口访问多个厂商的模型 | 全球 |
+| **Runcrate** | <https://runcrate.ai/> | 通过 OpenAI 兼容接口访问开源权重模型（DeepSeek、Qwen、GLM、Kimi 等） | 全球 |
+| **Opper** | <https://opper.ai/> | 欧盟托管的 AI 网关，通过一个 OpenAI 兼容接口访问 50+ 厂商的 700+ 模型 | 全球 |
+| **UberLLM** | <https://uberllm.dev/> | 一个 Key 通过 OpenAI 兼容接口访问多个厂商的模型（DeepSeek、Qwen、GPT、Claude、Gemini 等），按量预付 | 全球 |
+| **Cheaper Inference** | <https://cheaperinference.com/> | 通过 OpenAI 兼容接口访问 GPT、Claude、Gemini、DeepSeek、GLM 等模型。 | 全球 |
 | **Krill AI** | [www.krill-code.com](https://www.krill-code.com/register?invite=Q8D3L35725) | 一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax） | 全球 + 中国大陆 |
 | **OpenRouter** | <https://openrouter.ai/> | 一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等） | 全球 |
 

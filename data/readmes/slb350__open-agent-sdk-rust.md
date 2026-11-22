@@ -15,7 +15,7 @@
 - **Local or hosted** - run on your own hardware at no API cost and with no data leaving the machine, or point it at a vendor
 - **Control** - pick your model (Qwen, Llama, Mistral, Claude, etc.)
 
-[![Crates.io](https://img.shields.io/crates/v/open-agent-sdk.svg?label=open-agent-sdk%200.11.10)](https://crates.io/crates/open-agent-sdk)
+[![Crates.io](https://img.shields.io/crates/v/open-agent-sdk.svg?label=open-agent-sdk%200.11.11)](https://crates.io/crates/open-agent-sdk)
 [![Documentation](https://docs.rs/open-agent-sdk/badge.svg)](https://docs.rs/open-agent-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -82,7 +82,7 @@ explicitly when an endpoint asks for them.
 
 ```toml
 [dependencies]
-open-agent-sdk = "0.11.10"
+open-agent-sdk = "0.11.11"
 tokio = { version = "1", features = ["full"] }
 futures = "0.3"
 serde_json = "1.0"
@@ -725,6 +725,9 @@ pre-tool snapshots contain history up to that lifecycle point; post-tool snapsho
 also include the completed tool call and its unmodified result.
 
 **UserPromptSubmit** - Fires before sending prompt to API
+
+- Runs for prompts passed to `Client::send`. The empty turn an automatic tool loop appends to
+  continue itself is not a submission and does not reach the hook
 
 - **Block prompts**: Return `Some(HookDecision::block(reason))`
 - **Modify prompts**: Return `Some(HookDecision::modify_prompt(text, reason))`
@@ -1574,8 +1577,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Status**: v0.11.10 is the current published crates.io release (a `base_url` with a trailing slash no longer posts to a doubled-slash path that strict servers answer with 404, and an SSE event with an empty or whitespace-only `data` field is skipped as a keep-alive instead of failing the stream as a parse error; Rust-1.85-compatible lockfile entries refreshed). No public API changed. See CHANGELOG.md.
-
-Unreleased on main (post-v0.11.10): tool schema correctness — a bare object schema (`{"type": "object"}`, for a tool that takes no arguments) is kept as written instead of being classified as a shorthand property map, which was sending the model a tool with one required parameter named `type`; `properties: {}` is added so the schema is valid. Lockfile refreshed: bumpalo 3.20.4, cc 1.11.2, errno 0.3.15, itoa 1.0.19, jiff 0.2.45 + jiff-core 0.1.7 + jiff-static 0.2.45, mio 1.2.5, rand 0.10.4, rustls-pki-types 1.16.0, rustls-webpki 0.103.17, syn 3.0.10 (228 entries, no package enters or leaves the lock).
+**Status**: v0.11.11 is the current published crates.io release. It skips `UserPromptSubmit` hooks during automatic tool continuations and keeps bare object tool schemas from gaining a required `type` parameter. It requires at least `url` 2.5.9 to resolve RUSTSEC-2026-0592. See CHANGELOG.md.
 
 Star this repo if you're building AI agents with local models in Rust!

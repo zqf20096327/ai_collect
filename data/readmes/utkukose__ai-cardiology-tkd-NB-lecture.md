@@ -43,6 +43,8 @@ The thread of the course is a virtual cardiology clinic. The course package `vcl
 
 The course also teaches how to work with artificial intelligence (AI) assistants. From the first week, every practice stop can be done on the prompt path, on which an assistant writes the code from ready prompts, or on the Python path, on which the participant writes it. Prompts state units and tests, the code is checked with a code safety checklist, and every use is recorded in an AI usage log. Patient data never enter a prompt.
 
+**Course site (optional).** The flow of the course can also be followed on the course site, [utkukose.github.io/ai-cardiology-tkd-NB-lecture](https://utkukose.github.io/ai-cardiology-tkd-NB-lecture/). The site brings the lecture pages, the interactive labs and the Jupyter notebooks of the weeks together, which makes it more practical to move through the course.
+
 ## Use in other courses
 
 The materials may be used at any level, in whole or in part, with attribution (see [Citing this course](#citing-this-course)). Errors and suggestions can be reported in the [issues](https://github.com/utkukose/ai-cardiology-tkd-NB-lecture/issues) of the repository. During an active delivery of the course, questions and weekly projects can be sent to utkukose@sdu.edu.tr or utkukose@gmail.com.

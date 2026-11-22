@@ -107,7 +107,8 @@ publish to GitHub, GitLab, or Bitbucket, and fork.
   history, automations, and MCP server settings follow along.
 - **macOS menu bar**: **File** carries **New / Open / Clone Repository…** and
   an **Open Recent** list of your last ten repos; **Settings…** sits in the
-  GitDesktop menu. Items work from any screen.
+  GitDesktop menu. Once GitDesktop has found Git, items work from any screen
+  except while a dialog is open.
 - **Manage files git tracks or ignores** (beyond pending changes): untrack a
   file committed by mistake (it stays on disk), or surface every ignored
   file with the rule responsible and force-add it or remove that rule. With
@@ -457,7 +458,9 @@ in one click.
   forge's own default or template; a GitLab merge that writes both a squash
   commit and a merge commit gets a row for each, GitLab auto-merge keeps
   your message until it lands, and a merge with no single commit to word
-  (rebase, fast-forward, a GitHub stack) says so. Labels and assignees on
+  (rebase, fast-forward, a GitHub stack) says so. On GitLab and Bitbucket,
+  the merge dialog's delete-branch box starts from the delete choice
+  already set on the merge request or pull request. Labels and assignees on
   GitHub & GitLab (set them when you open a PR/MR or any time after),
   request reviewers across GitHub, GitLab & Bitbucket, see, link, and
   unlink a PR's **GitHub Projects** in its header (open, closed, and merged
@@ -475,6 +478,9 @@ in one click.
   a comment, the comment box, reactions, and AI-review posting turn
   read-only and say why, with the reason on its own line above the open
   comment box (on an archived GitHub pull request, your draft is kept).
+  Review-thread replies are held the same way, and on an archived GitHub
+  pull request so are edits to your own comments; a reply or edit you had
+  open keeps its text.
 - **Check out to review**: Checkout switches to the request's branch, and
   **Check out in a worktree…** opens it in its own folder without touching
   your branch or uncommitted files (see [Worktree manager](#branches)).
@@ -696,7 +702,9 @@ close the window.
 - **Dial the review effort**: a **Review effort** setting picks how hard an
   agent-CLI reviewer thinks, from a lighter, quicker pass to deepest
   reasoning — for reviews and security audits alike, on Claude Code, GitHub
-  Copilot, and opencode. Default keeps each CLI's own setting.
+  Copilot, and opencode. Default keeps each CLI's own setting. On opencode 2
+  the levels follow the reviewing model, and a level that model lacks shows
+  as unavailable with the reason.
 - **Timeboxed on your terms**: agent-CLI reviews are timeboxed. Agentic ones
   get 20 minutes before they're stopped (plain 5; Codex reviews are always
   agentic), and a **Review timeout** setting pins a fixed limit when your
@@ -1192,7 +1200,8 @@ instead of expiring.
 Hand a coding task to a **Claude Code**, **Codex**, **GitHub Copilot**, or
 **opencode** agent (the CLI you already have; opencode's hosted models are
 free, no extra subscription). It works in an isolated worktree that never
-touches your checkout.
+touches your checkout. GitDesktop runs opencode 1.x and 2.x (2.x from 2.2.0,
+tested with opencode 2.2.0 to 2.3.2).
 
 - **Watch it work**: follow every file it reads and edits and command it
   runs, expand any edit to its diff inline, then keep the result as a
@@ -1204,11 +1213,17 @@ touches your checkout.
   container **per session** from the composer's **Options** (with an inline
   readiness check before it starts), and add per-repo tools (e.g.
   Playwright) via a committed `.gitdesktop/agent.Dockerfile` that GitDesktop
-  builds into a per-repo image after you confirm it.
+  builds into a per-repo image after you confirm it. The agent image installs
+  opencode 2, and an image built earlier asks for a rebuild (about 1 GB more
+  to download). When this computer runs opencode 2, a container session
+  copies its opencode sign-ins in at the start, and the timeline says so
+  when the copy couldn't be made or there was nothing to copy.
 - **Drive each turn**: **slash commands and skills** (built-in starters,
   custom commands, and the agent's own commands and **Agent Skills**,
   project *and* global, incl. the shared `.agents/skills`), `@file`
-  mentions, a model/effort picker, and terminal-style prompt history.
+  mentions, a model/effort picker (on opencode 2 the effort levels follow the
+  chosen model, and levels it lacks show as unavailable with the reason), and
+  terminal-style prompt history.
 - **An integrated terminal**: every agent session gets a real shell in a
   resizable bottom dock, toggled with `Ctrl`/`⌘`+`J`. For a container
   session it runs *inside* the session's container; you pick which
@@ -1219,11 +1234,12 @@ touches your checkout.
 - **Run a task several ways and keep the best**: fan one task out across 2–5
   arms (best-of-N), **each with its own agent, model, and effort**, so
   different providers (Claude, Codex, Copilot, opencode) attack it
-  differently. Each runs in its own worktree; compare them and keep the
-  winner with a single **keep this, discard the rest**. Because fanning out
-  costs more, a confirmation first shows an **upfront estimate** drawn from
-  your own recent sessions, and the ensemble's **running total** as it
-  works. Opt-in, never the default.
+  differently. On opencode 2 an arm's effort levels follow its model. Each
+  runs in its own worktree; compare them and keep the winner with a single
+  **keep this, discard the rest**. Because fanning out costs more, a
+  confirmation first shows an **upfront estimate** drawn from your own
+  recent sessions, and the ensemble's **running total** as it works.
+  Opt-in, never the default.
 - **Research before you plan**: a read-only, **web-enabled Research** mode
   that sits upstream of Plan. **Brainstorm** surveys the web and your code
   for several distinct directions with prior art; **Deep research**
@@ -1558,28 +1574,4 @@ review via its subscription login. The full list is under
     **Tracked** tab's **Exclude … from AI** button excludes a whole selection
     at once.
 - **Keys**: kept in the OS keychain (Windows Credential Manager, macOS
-  Keychain, libsecret). **Hide AI** (Settings → General) hides the AI
-  surfaces (finished AI activity in the dock and notification inbox
-  included), mutes AI desktop notifications, and pauses your automations
-  while keeping your config; rules start firing again when you turn AI
-  features back on.
-
-## Updates
-
-GitDesktop checks GitHub Releases on launch and about every six hours in the
-background while the app stays open (opt-out in Settings → Updates). A
-pending update shows a dot on the Settings gear and an **Install & restart**
-banner in Settings → Updates, and installs **only on your consent**.
-If changes made offline are still waiting to send, GitDesktop asks before
-the restart discards them. Updates are cryptographically signed and verified
-by the app, separately from OS code signing.
-
-## Requirements
-
-- **git** on `PATH` (required).
-- **GitHub CLI (`gh`)**, installed and authenticated (`gh auth login`), for
-  the pull-request and Actions features; optional (they stay hidden when it
-  isn't available).
-- **GitLab CLI (`glab`)**, installed and authenticated (`glab auth login`),
-  for the GitLab features; optional.
-- An **
+  Keychain, libsecret). **Hide AI** (Settings → General) hides the

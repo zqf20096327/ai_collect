@@ -54,6 +54,13 @@
 
 遇到书中的算例，不妨先自己估一下，再看推导和实验结果。也可以换成你正在使用的模型和硬件，看看结论是否改变。
 
+## 端侧 AI Infra 延伸阅读
+
+读完[第 12 章](manuscripts/12-端边云协同.md)后，可以按设备选书：
+
+- **手机、笔记本或边缘服务器**：Vijay Janapa Reddi 的 [*Introduction to Machine Learning Systems*](https://mlsysbook.ai/vol1/) 讲单节点上的模型压缩、硬件加速、基准测试与部署。可先选一个模型，记录权重大小、峰值内存和每步延迟，再用这些指标比较量化方案。
+- **微控制器与常开传感器**：Alexander G. Dean 的 [*Embedded Systems Fundamentals with Arm Cortex-M Based Microcontrollers*](https://www.arm.com/resources/education/books/efficient-embedded-systems-nucleo) 在 STM32 Nucleo-F091RC 上讲处理器、中断、外设和直接内存访问。要把这些约束用于推理，可配合 [TinyML 课程实验与配套代码](https://github.com/tinyMLx/courseware)，观察采样、特征提取和推理各自占多少内存和时间。
+
 ## 配套计算与实验
 
 [配套计算工具](calculations/README.md)可以用来复算书中的数字，也可以换一组模型和输入，估算资源需求。工具附有模型配置和[结果索引](calculations/results/README.md)，静态计算只需 Python 3.10+ 标准库，无需 GPU 或模型权重。
@@ -75,6 +82,8 @@ python3 calculations/calc.py forward --model qwen3-8b --tokens 8192 --format md
 git lfs install
 git lfs pull --include="experiments/ch05/05-01/**" --exclude=""
 ```
+
+**练习做完后到哪里核对？** 第 1–3 章有一份按题号编排的[练习参考解答](research/ch01-03-model-led-rewrite-2026-09-10/exercise-answers.md)，附[中间数值](research/ch01-03-model-led-rewrite-2026-09-10/exercise-values.json)。其他章节可按正文的实验编号查找输入条件、推导和结果记录。例如第 4 章的[实验 4-4](experiments/ch04/04-04/README.md)展示如何从缓冲区容量推到调度结果。开放题可以用不同硬件和负载作答，核对时先对齐单位、假设和评价指标。
 
 [配套实验](experiments/README.md)按章节存放在 `experiments/chXX/XX-YY/` 中，每个实验都附有运行方法、输入条件和结果说明。需要 GPU 的实验会注明硬件与依赖要求；没有相应设备，也可以先阅读已有记录。复现或引用结果时，请留意所用的书稿版本、模型、硬件和输入参数。
 

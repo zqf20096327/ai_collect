@@ -6,7 +6,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/hero-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/hero-light.svg">
-    <img src="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/hero-dark-static.webp" alt="Rullst — build secure apps in Rust without the suffering. Batteries included, secure by default, designed for humans and AI." width="100%">
+    <img src="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/hero-dark-static.webp" alt="Rullst — build secure apps in Rust without the suffering. Batteries included, secure by default, designed for humans and AI. (Without RULLST_ENV=production or staging, an application runs as development, where the WAF only logs.)" width="100%">
   </picture>
 </p>
 
@@ -49,7 +49,7 @@ With Rust installed ([rustup.rs](https://rustup.rs/)):
 
 <!-- first-hour: quickstart -->
 ```bash
-cargo install cargo-rullst --version =13.0.0-alpha.6 --locked
+cargo install cargo-rullst --version =13.0.0-rc.1 --locked
 cargo rullst new my_app    # choose the Blank, API or SaaS starter
 cd my_app
 cargo rullst dev           # rebuilds and restarts every time you save
@@ -76,16 +76,9 @@ inside a project, its configuration, database and migrations. `cargo rullst --he
 lists every command, `cargo rullst tour` walks through the main ones, and
 `cargo rullst` alone opens an interactive menu.
 
-<details>
-<summary><strong>Prefer an interactive dashboard? Run <code>cargo rullst dash</code></strong></summary>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Rullst/Rullst/main/images/cargo-rullst-dash.png" alt="Rullst terminal dashboard with project information, logs and controls" width="100%"/>
-</p>
-
-Recorded screenshot; layout and controls can differ by version. [Development workflow](https://rullst.github.io/Rullst/book/tutorials/51-authenticated-hot-reload.html).
-
-</details>
+Prefer an interactive dashboard? `cargo rullst dash` opens one in the
+terminal, with the application's logs and development controls
+([CLI reference](https://rullst.github.io/Rullst/book/cli_reference.html#cargo-rullst-dash)).
 
 ## 🦀 Code that says what it does
 
@@ -219,7 +212,7 @@ How far each built-in integration has been tested:
 
 | Status | Integrations |
 | :--- | :--- |
-| **Used with real accounts** | Stripe (real payments); InfinitePay (a real Pix payment); Bunny Stream, Resend, SMTP mail, Google Gemini, Google sign-in and GitHub sign-in (used by the maintainer's production applications, with no automated test against a live account); PostgreSQL and SQLite (in production in the maintainer's applications, besides CI); the OpenAI-compatible AI adapter (validated with Groq, an OpenAI-compatible provider, not with OpenAI) |
+| **Used with real accounts** | Stripe (real purchases in the maintainer's production SaaS, with no recorded acceptance run and no automated test against a live account); InfinitePay (a real Pix payment in the 13.0.0-alpha.5 acceptance run); Bunny Stream, Resend, SMTP mail, Google Gemini, Google sign-in and GitHub sign-in (used by the maintainer's production applications, with no automated test against a live account); PostgreSQL and SQLite (in production in the maintainer's applications, besides CI); the OpenAI-compatible AI adapter (validated with Groq, an OpenAI-compatible provider, not with OpenAI) |
 | **Tested in CI against servers in local containers** | MySQL and MariaDB; Redis (cache, queues, rate limits, ORM data structures and Redis Streams messaging); SurrealDB; Turso/libSQL (the `libsql-server` image, which is `sqld`); Meilisearch search; pgvector; S3-compatible storage (a Garage server) |
 | **Offline only: mock mode, local fixtures or a [conformance kit](https://rullst.github.io/Rullst/book/provider-conformance.html)** | AWS SES and SendPulse mail; OpenAI and Anthropic Claude, and the DeepSeek and Ollama presets of the OpenAI-compatible adapter; Microsoft, Apple, Auth0, AWS Cognito, Facebook, X (Twitter), Discord, LinkedIn and generic OpenID Connect sign-in; the S3/R2 adapter of `rullst-media` |
 
@@ -485,9 +478,10 @@ production data. [Assisted upgrade tutorial](https://rullst.github.io/Rullst/boo
 
 ## 🚀 Versions: v13 is a prerelease
 
-`13.0.0-alpha.6` is the latest v13 prerelease and the 13.0 feature freeze;
-`13.0.0-rc.1` and `13.0.0` follow. rc.1 takes fixes and documentation, and
-the changes the maintainer approved one by one after the freeze: the removal
+`13.0.0-rc.1` is the latest v13 prerelease, the release candidate for
+`13.0.0`, which follows. After the 13.0 feature freeze (`13.0.0-alpha.6`),
+rc.1 takes fixes and documentation, and the changes the maintainer approved
+one by one after the freeze: the removal
 of `rullst-iot`'s simulator fixtures and new names for two `rullst-labs`
 variants (both breaking, [#778](https://github.com/Rullst/Rullst/pull/778)),
 and fewer connection pings in ORM pools
@@ -497,19 +491,19 @@ never selects a prerelease on its own, so `cargo install cargo-rullst` and
 13.0.0 is released, name the exact version:
 
 ```bash
-cargo install cargo-rullst --version =13.0.0-alpha.6 --locked
+cargo install cargo-rullst --version =13.0.0-rc.1 --locked
 ```
 
 Projects generated by `cargo rullst new` already pin the framework with
-`=13.0.0-alpha.6`. In a hand-written `Cargo.toml`, use `=` too: a plain
-`"13.0.0-alpha.6"` also accepts later prereleases, whose API may change.
+`=13.0.0-rc.1`. In a hand-written `Cargo.toml`, use `=` too: a plain
+`"13.0.0-rc.1"` also accepts later prereleases, whose API may change.
 `rullst` has no default features, so name the database profile you use and
 capabilities such as `auth` or `nexus`
 ([feature matrix](https://rullst.github.io/Rullst/book/feature-matrix.html)):
 
 ```toml
 [dependencies]
-rullst = { version = "=13.0.0-alpha.6", features = ["strict-postgres"] }
+rullst = { version = "=13.0.0-rc.1", features = ["strict-postgres"] }
 ```
 
 **The v12 line reached end of life on 16 October 2026**: 12.3.0 is its last

@@ -6,19 +6,31 @@
 
 [Watch the SCrunch demo](https://strict-lang.org/img/SCrunchDemo.mp4): how `.strict` code is written, tested while typing and run.
 
-## A fast, low level engine for AI to write
+## Simple to read code for humans and computers alike
 
-Strict is a small programming language that AI can write, read and change as reliably as people can. Every type is one file, every method starts with its own tests, values are immutable and there is exactly one way to solve each problem, so generated code is checked by `strict check` and its tests within seconds instead of being reviewed line by line.
+**Fastest native speed in the universe out of the box.** Cost: fewer features, unproven, still volatile. For the amount of code you write, no language comes close: highly optimized low level code, splits loops over all cores or into GPU kernels and rewrites slow parts automatically. Games, math, LLMs, and image and video generation can run faster than C, Rust, PyTorch, llama.cpp and game engines.
 
-Strict is meant as the DNA of a program: a compact, exact and fast low level layer whose rules a computer can fully understand, verify and evolve. The long term goal is a higher level language on top of it in which computers design and write whole programs, generating, testing and discarding millions of lines in real time.
+The published site can lag this repository. Games, charts and the docs are there:
+
+- [LLM](https://strict-lang.org/#llm): about 10% faster than llama.cpp, including Qwen3-8B, Qwen3.5 9B with multi token prediction, Qwen3-Coder-30B and Qwen3.8 27B
+- [Moss image generation](https://strict-lang.org/#generation): 3-4x faster than ComfyUI ([try it in the browser](https://strict-lang.org/moss/MossWeb.html))
+- [H3 video generation](https://strict-lang.org/#generation): about 2x faster, and [H3 image generation](https://strict-lang.org/#generation): 2-4x faster
+- [Leibniz benchmark](https://strict-lang.org/#leibniz): 2x faster than C on the official AMD EPYC runner, 4x on an i9-13900KF
+- [Performance](https://strict-lang.org/#performance): game-engine stress tests, some rendering benchmarks 2-10x faster than Unity, plus image blur and [FractalZoomer](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html)
+- [Games](https://strict-lang.org/#games): Quillhop, Racing Game, Tiny Bat, FractalZoomer and the smaller games play in the browser. SoulCraft, Arena Wars and WebWars are on the way
+
+Language docs: [Getting Started](https://strict-lang.org/docs/GettingStarted), [Overview](https://strict-lang.org/docs/Overview), [Benchmarks](https://strict-lang.org/docs/Benchmarks), [Projects](https://strict-lang.org/docs/Projects), [Platforms](https://strict-lang.org/docs/Platforms).
+
+Every type is one `.strict` file, and the file name is the type name. Members come first (`has celsius Number`). A method such as `ToFahrenheit Number` starts with the tests that show how to use it (`TemperatureConverter(100).ToFahrenheit is 212`), then the implementation. Values are immutable, and there is one way to write each thing, so `strict check` and those tests accept or reject generated code without a line-by-line review. [The same example is in the docs](https://strict-lang.org/docs/Overview#a-first-look).
+
+Almost every unit test finishes in well under a millisecond. That is why a large codebase can run many millions of mutation tests in seconds: each mutant is one tiny change, and the tests that catch it are already that fast. Strict is the exact low level layer under a higher level system that is not released yet, [Ben](https://github.com/strict-lang/Ben) and TestSolver. Their goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds, 8 to 16 of them at once. Some searches try millions of variations and keep only what Strict accepts, so a world knowledge base of skills grows with the work. This is not an LLM. There is no pre-training. It is an expert system of knowledge and skills, and it becomes more useful the more it does and learns.
 
 What Strict does today:
-- **Self-hosted**: parser, type inference, validators, the Strict VM and the native code generator (MLIR and LLVM) are written in Strict, `strict` builds itself.
-- **Instant feedback**: `strict test` runs the inline tests on the Strict VM in memory, the VS Code extension shows passing lines and the values of each line while you type.
-- **Native speed**: SIMD, loops spread over all CPU cores, NVIDIA GPU kernels (tensor cores, no CUDA toolkit needed), AMD GPUs through HIP, Metal on macOS (experimental), WebAssembly for the browser.
-- **Real workloads**: GPT-2 and Qwen3 inference with the transformer logic written in Strict, image processing, neural network training, the DeltaEngine and SoulCraft games, C and C# libraries with generated bindings.
-
-Performance results, docs (Getting Started, Language Guide, Cheat Sheet) and the blog: https://strict-lang.org
+- **Self-hosted**: parser, type inference, validators, the Strict VM and the native code generator (MLIR and LLVM) are written in Strict, and `strict` builds itself.
+- **Sub-millisecond tests**: `strict test` runs the inline tests on the Strict VM. SCrunch in VS Code shows passing lines and the values of each line while you type. After the tests pass, mutation testing runs on the same VM.
+- **Native speed**: SIMD and AVX, automatic parallelization across CPU cores, NVIDIA GPUs with tensor cores (no CUDA toolkit needed), AMD GPUs through HIP, Metal on macOS, and WebAssembly for the browser.
+- **Platforms**: the same source builds for Windows, Linux, macOS, Android, iOS and the web. See [Platforms](https://strict-lang.org/docs/Platforms).
+- **Real workloads**: Qwen3.8 27B and the other Qwen3 models, Moss image generation, H3 image generation, H3 video generation, GPT-2, image processing, and the DeltaEngine games (SoulCraft, Arena Wars, WebWars, Quillhop, Racing Game, Rocket Commander, Forest, FractalZoomer, Blocks, Breakout, Artifex, Tiny Bat, GhostWars, Armies of Steel). C and C# libraries get generated bindings. The project list is on [strict-lang.org](https://strict-lang.org/docs/Projects).
 
 ![Strict Layers](https://strict-lang.org/img/StrictLayers.svg?sanitize=true)
 
@@ -47,6 +59,7 @@ The base types are the documentation: every method starts with tests showing how
 ```
 strict Examples/Sum.strict 5 10 20        run Examples/Sum.exe with these arguments, built first when outdated (or `strict Sum` in Examples)
 strict run -c "logger.Log(1 + 2 to Text)"  run these lines as the body of Run on the VM of the resident server, no file is written
+strict run Examples/Values.strict         run a script file the same way, it knows the types of its folder: logger.Log(ArithmeticFunction(10, 5).Calculate("add") to Text)
 strict test Examples/Sum.strict           explicitly run this file, including Slow tests, on the VM
 strict test Examples/Sum.strict Run       explicitly run the tests of one method
 strict test Examples/Sum.strict unit      run only unit tests, no mutation testing (a folder on the VM too)
@@ -99,7 +112,7 @@ End a method header with `slow` to make its tests functional (file, model or app
 Builds, checks, folder tests on the VM, VS Code typing checks and value tracing skip Slow tests and the fixtures only they use. `strict test File.strict` and `strict test Folder native` include them, `strict test File.strict Method` selects one method, `native` or `lines` keep that selection. `strict test Folder nightly` is the daily run: the slow tests of every file on the VM (quietly, no mutation), then all tests including native ones built natively (`.github/workflows/nightly.yml` runs it at 03:00 UTC). No test runs again while its code is unchanged: `obj/Name.strictbinary` keeps the passed unit tests with the stamps of every source they depend on, `obj/Name.slowpassed` the slow ones (the time of that `.strictbinary`, so any change runs them again), `obj/Name.nativecache` and the test executables the native runs. `strict File.strict` runs its unit tests (neither slow nor native) and then `Run`, only when it has to build: silent for the first 5 s apart from failures, then every line as `Still testing after X s: ...` and one summary line. Only automatic unit runs write `.strictbinary`, explicit functional runs execute every time. See `Runtime/README.md` for the VM and `Compiler/README.md` for the build pipeline.
 
 ## Rules worth knowing
-- Limits: 120 characters per indented line (240 for a constant), per method at most 10 leading test lines, 10 `let`/`constant` lines at its top level and 10 other lines (`mutable`, `if`, `for`, `return`, nested lines, the result) (the VM loop `Frame.Finished` 12), 18 methods (not for base types), 15 members, 40 constants, nesting depth 5. Files in a `Generated` folder get 10 times as much, in a `Content` folder twice as much. A `.strict` file is ASCII only (`SourceMustBeAscii`): other text is loaded from a file or built from its code points.
+- Limits: 120 characters per indented line (240 for a constant), per method at most 10 leading test lines, 10 top-level plain assignments or `constant` lines and 10 other lines (`mutable`, `if`, `for`, `return`, nested lines, the result) (the VM loop `Frame.Finished` 12), 18 methods (not for base types), 15 members, 40 constants, nesting depth 5. Files in a `Generated` folder get 10 times as much, in a `Content` folder twice as much. A `.strict` file is ASCII only (`SourceMustBeAscii`): other text is loaded from a file or built from its code points.
 - Precedence from loosest to tightest: `then`/`else`, `or`, `xor`, `and`, comparisons (`is`, `is not`, `is in`, `is not in`, `<`, `>`, `<=`, `>=`), `in`, `+`/`-`, `*`/`/`/`%` (left to right: `a % b / c` is `(a % b) / c`), `^`, `to`. A prefix `not` belongs to the one operand that follows it and needs no brackets inside `and`/`or` chains: `isOpen and not isLocked or isForced` is `(isOpen and (not isLocked)) or isForced`; negate a comparison with `is not`, `is not in` or brackets (`not (a < b)`).
 - A conditional as one of several arguments needs brackets: `Text(value, (isShort then 2 else 4))`.
 - Constraints follow `with`: `has Width Number with value > 0`, `Run(frames = 0 with value >= 0)`. A value that does not fit is `Error("ConstraintNotMet: ...")`.
@@ -107,7 +120,7 @@ Builds, checks, folder tests on the VM, VS Code typing checks and value tracing 
 - Sums in a `for` may be added in any order (vectorized, parallel), compare sums of fractions with `IsNearlyEqual`.
 - `(x)` is a list with one element, brackets around operators only group: `(5 + 3) * 2 is 16`.
 - `and`, `or` and `xor` of Numbers are bitwise: `12 and 10 is 8`.
-- Keywords (`from`, `to`, `is`, `in`, `and`, `or`, `not`, `constant`, `mutable`, `let`, ...) can't be names, `value` and `index` can't be declared in a method with a loop and no member is named `value` (it is the instance in every method). A variable is declared once: a `let`, `mutable` or `constant` must not repeat a parameter (`VariableHidesParameterUseDifferentName`) or a variable of its own or an enclosing block (`NameAlreadyDeclared`), sibling blocks like `if` and `else` may each declare it.
+- Keywords (`from`, `to`, `is`, `in`, `and`, `or`, `not`, `constant`, `mutable`, ...) can't be names, `value` and `index` can't be declared in a method with a loop and no member is named `value` (it is the instance in every method). A variable is declared once: a plain assignment, a `mutable` or a `constant` must not repeat a parameter (`VariableHidesParameterUseDifferentName`) or a variable of its own or an enclosing block (`NameAlreadyDeclared`), sibling blocks like `if` and `else` may each declare it.
 - The innermost name wins: a method, member or variable named like a type hides it (also right of `is`), `outer.Marker` is the type. Inside a loop `outer` is the value outside the loop, `outer.Marker` there is reported as ambiguous. A bare name in a loop body means the member of `value` when it has one, `Length` in a loop over numbers stays the own method: numbers have no `Length` of their own, only their `iterator` does.
 - Members don't repeat their type when the name says it: `has number`, not `has number Number`.
 - A member default is a literal, a constant, an empty `List(...)`/`Dictionary(...)` or a one-member type with literal arguments.
@@ -116,13 +129,13 @@ Builds, checks, folder tests on the VM, VS Code typing checks and value tracing 
 - Every value is used: a line in a method body that is not its last line must have no value (`ResultMustBeUsed` when it compiles), only `numbers.Add(5)` on a `mutable` list, a changing call and a call returning nothing are allowed. Any other result, also a Number like `numbers.Sum` or one that can be an Error, belongs in a condition, a comparison, an assignment, an argument, the result or a test line. A call returning nothing returns its Error to the caller, so it is not checked with `is Error` just to throw the result away.
 - A method either reads and returns data or writes (create, delete, change, save, send, close, ...) and returns nothing, a failure is an Error: `Directory.Create(path)`, then `Directory.Exists(path)` to know more. A creating method may return the owning type or a handle type whose name ends in Handle. `strict check` reports any other result, including Boolean, Number and Text, on a writing method in a type with native methods as `WriteMustReturnNothing`. `Socket.Connect`, `Socket.Accept` and `Http.Started` are reads, one result for each connection.
 - Other packages are named `Package/Type` only in declarations, method bodies use the plain type name.
-- `constant` for values computed from constants, `let` for everything else that doesn't change, `mutable` only when a value really changes.
+- `constant` for values computed from constants, a plain assignment (`total = input + 5`) for everything else that doesn't change, `mutable` only when a value really changes.
 - An Error is handled where it shows up (returned, kept in a variable or checked with `is Error`), any other use returns it to the caller with one more stack trace line. A check of a call that cannot return Error, such as `PseudoRandom.Next`, is `ErrorCheckCannotFail`. `ignore(File.Delete(path))` calls and drops the result and any Error, the only way to drop an Error on purpose; the call must not change a mutable value (`IgnoredCallMustNotChange`), and `x is Error then a else a` is `ConditionalBranchesMustDiffer`. See `Examples/ErrorHandling.strict`.
 - A result, member or parameter can have one of several types: `IsJobDone Boolean or Text`, `has input List(Number or Text)`. `value is Number` on such a value is tested when it runs and `value` is a Number in its `then` or `if` branch; on one known type it is decided when compiling. Only the Any methods (`to Text`, `is`, ...) can be called on it (`Examples/ListFiltering.strict`). Natively an or-type holds one of Number, Boolean, Character or Byte and one type whose values are references (Text, lists, records), in one 8 byte word: the test asks whether the word is a reference.
 - A call of a method returning `Mutable(...)` as a statement (`numbers.Add(5)`) changes the `mutable` variable it is called on.
 - A method assigning a `mutable` member changes the instance it is called on, which has to be a `mutable` variable or member: `mutable ticker = Ticker(0)`, then `ticker.Next` twice gives 1 and 2 (`ChangingCallNeedsMutableVariable` otherwise). A change of an element or of a member of a variable (`rows(0).Add(5)`, `holder.ticker.Next`) would be lost and is reported the same way: assign the changed element or call it in a method of the owning type.
 - A parameter whose type has changing methods is a reference: `ColorValue(random)` with `mutable random = PseudoRandom(7)` advances `random` itself (its `from(random PseudoRandom)` calls `random.Get(0, 1)` three times), a value that is no mutable variable is passed as a copy.
-- A type name is its default instance (members with their defaults), a new one every time: `Bag.Count` called from another type calls Count on a new `Bag`, `Ticker.Next` gives 1 each time (keep a `mutable ticker = Ticker` to continue), constants and methods using no members need no instance. A member without a default takes the caller's variable, parameter or member of the same name (`has logger`), never a member of the caller's members, and stays unset without one.
+- A type name is its default instance (members with their defaults), a new one every time: `Bag.Count` called from another type calls Count on a new `Bag`, `Ticker.Next` gives 1 each time (keep a `mutable ticker = Ticker` to continue), constants and methods using no members need no instance. A member without a default takes the caller's variable, parameter or member of the same name, never a member of the caller's members, and stays unset without one. `logger` is the console `Logger` in every method. A different logger is passed into `from`, and you can define that logger yourself.
 - A custom `from` keeps the constructor of the members when their counts differ: `ColorValue(random)` and `ColorValue(0.5, 0, 0)`.
 - Values never change: `list + element` gives a new list. The runtime reuses the old memory in place since the old version is not used anymore (using it again forces a copy, that is bad code).
 
@@ -138,7 +151,7 @@ Builds, checks, folder tests on the VM, VS Code typing checks and value tracing 
 
 Details are in the README of each package. Open bugs and speed work go into `bugs.md` and `performance.md` while there are any, larger ideas are in [ideas.md](ideas.md).
 
-Design decisions: an immutable expression tree (static analysis only), validation before execution, tests that live with the code and disappear from the bytecode, strict rules first and then hardware speed. Only code that is actually called is parsed, validated, tested and executed, so millions of generated lines can be checked and discarded almost immediately.
+Design decisions: an immutable expression tree (static analysis only), validation before execution, tests that live with the code and disappear from the bytecode, strict rules first and then hardware speed. Only code that is actually called is parsed, validated, tested and executed. Unit tests are fast enough that millions of mutations finish in seconds. Millions of lines of code and tests per second is the goal of Ben and TestSolver, the higher level system on top, which is not released yet.
 
 ## Examples (from Number.strict, Text.strict and List.strict)
 ```
@@ -179,7 +192,7 @@ from(text)
 ```
 A Text is a list of characters (`has characters`): `Length`, `text(index)`, `Substring`, `IndexOf` and a `for` over it count characters (code points, `Character(8364) to Text` is one character of three bytes), `Bytes` gives its UTF-8 bytes and `Text.Utf8(bytes)` the text of such bytes; a Name is a Text with constraints (`has text with Length > 1 and " " is not in value`). A type with one member is that member: `Byte(5)` prints as `5`, calling it with a value of that member wraps the value unless the type has its own `from` taking it: `Float8(0.3)` is `0.3125` (E4M3: the nearest value, ties to even, at most 448, the same on the Strict VM, the CPU and the GPU).
 
-Variables live in a method body: `constant` for constant values, `let` for anything else that does not change, `mutable` only when it has to change:
+Variables live in a method body: `constant` for constant values, a plain assignment (`fraction = value % 1`) for anything else that does not change, `mutable` only when it has to change:
 ```
 TrimStart Text
 	mutable startIndex = 0
@@ -235,7 +248,7 @@ GCD Number
 	mutable current = first
 	mutable modulo = second
 	for as long as modulo is not 0
-		let remainder = current % modulo
+		remainder = current % modulo
 		current = modulo
 		modulo = remainder
 	current

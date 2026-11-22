@@ -94,23 +94,45 @@ catchup <agent> --json                   # render JSON; also --html
 
 Use `fork` to continue with the same agent and keep native session state. Use `fork --into` to start another agent with the transcript, or the same agent with `--last`/`--since-compact`, which restarts it clean on a trimmed transcript when the context is spent but the work isn't. Use read commands when you want old work in a clean context.
 
-Every supported agent can supply a handoff. Amp, Kimi, ZCode, and DeepSeek Harness cannot be launched as interactive `--into` targets; save the transcript and open it in those tools instead.
+Every supported agent can supply a handoff. Amp, Grok Bot, Kimi, ZCode, and DeepSeek Harness cannot be launched as interactive `--into` targets; save the transcript and open it in those tools instead.
 
 Use `--all-dirs` again when selecting a search result by rank, or select its stable ID with `--id`.
 Listings show each session's directory and recorded parent or fork relationship.
-Codex native titles are searchable, including renamed titles. A title-only match opens the whole conversation.
+Codex and Antigravity native titles are searchable (including renamed Codex titles). A title-only match opens the whole conversation.
 
 Amp reads local JSON caches in `$XDG_DATA_HOME/amp/threads` (default `~/.local/share/amp/threads`).
 Set `AMP_DATA_HOME` to override the Amp data directory. Cloud-only threads are unavailable until cached locally.
 Amp tool results and reasoning are omitted. Native Amp launch and resume are unsupported.
 
+### Devin web sessions
+
+Create an **organization-scoped service-user API key** in Devin's **Settings > Devin API**.
+The key needs read access to the session. Set `DEVIN_API_KEY`, then paste the session URL:
+
+```bash
+export DEVIN_API_KEY='your-api-key'
+catchup fork --into codex --from 'https://app.devin.ai/sessions/YOUR_SESSION_ID'
+```
+
+Enterprise URLs such as `https://your-team.devinenterprise.com/sessions/YOUR_SESSION_ID`
+also work. Catchup discovers the organization from the key and imports the conversation
+and failed shell commands. It sends the key only to `api.devin.ai` and does not store it.
+Personal access tokens and enterprise-scoped keys need explicit organization selection,
+which this importer does not implement.
+
+The importer uses the `v3beta1` event endpoint behind [Devin MCP](https://docs.devin.ai/work-with-devin/devin-mcp).
+That endpoint is absent from the public v3 OpenAPI specification and may change.
+Shell output can be truncated; warnings also identify event fields truncated by the API.
+Attachments, non-shell tool failures, and compaction history are unavailable.
+Devin URL imports use `fork --from`; local discovery, search, and native Devin resume do not apply.
+
 ## Boundaries
 
 - One agent at a time. It does not merge histories.
 - Human Markdown and HTML contain the conversation only.
-- `--agent`, `--json`, and `fork --into` also retain tool calls the source log marked failed. Successful tool activity and reasoning traces remain stripped.
+- `--agent`, `--json`, and `fork --into` also retain tool calls the source log marked failed. Successful tool activity and reasoning traces remain stripped by default; `--show tools` includes recorded tool calls where supported (Claude Code, Codex, Cursor IDE).
 - Read-only, except `fork`.
-- Same-agent `fork` uses the agent's native resume path, so it keeps real session state.
+- Same-agent `fork` uses the agent's native resume path where supported, so it keeps real session state (agents without a CLI resume direct you to `fork --into`).
 - Same-agent `fork --into` is the opposite trade: native state is dropped for a clean context.
 - Cross-agent `fork --into` seeds the new agent with a transcript, not native state.
 - `fork` returns the launched agent's exit status, so shell scripts and CI can handle its failure normally.

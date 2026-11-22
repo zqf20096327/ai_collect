@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| 🧠 **Ant tiered memory** | per-tensor VRAM/RAM/Disk residency acting on real pages — 123 MB steady RSS on a 0.5B model (vs 2.5 GB untiered) |
+| 🧠 **Ant tiered memory** | per-tensor VRAM/RAM/Disk residency acting on real pages — idle RSS scales with the plan on a 0.5B model: ~123 MB (16 MB/32 MB, nearly all disk) → ~0.6 GB (RAM-tier 512 MB) → ~1.0 GB full-resident — and climbs slowly to the inference peak from that baseline (vs 2.5 GB untiered) |
 | 🚀 **native CPU backend** | mmap-backed BF16 weights, AVX2 SIMD kernels — up to 8 tok/s on Qwen2-0.5B; chunked prefill runs batched GEMMs (`CHEETAH_PREFILL_CHUNK`), an LRU KV-prefix cache skips re-prefilling shared history across turns, and serve warms the model up before binding |
 | 🧩 **declarative model registry** | one registration file per family — architecture, chat template, stop markers, both backends, family constants; build.rs generates the registry, lookups derive from it |
 | 🔌 **OpenAI-compatible API** | `/v1/chat/completions` with SSE streaming, tool calls, API keys |
@@ -268,7 +268,7 @@ cheetah /path/to/prepared-model --system "You are a concise assistant."
 | `--mcp-server name=cmd [args...]` | None | Connect one MCP stdio server; its tools are offered to the model and executed server-side in the agentic loop (repeatable) |
 | `--mcp-config <path>` | None | JSON file: `{servers: [{name, command, args: [...]}]}` (once); see [docs/MCP.md](docs/MCP.md) |
 
-After each reply, interactive chat displays the number of generated tokens and decoding speed in tokens per second. The speed excludes prompt prefill; it is unavailable when no tokens are generated.
+After each reply, interactive chat displays the number of generated tokens, the decoding speed in tokens per second, and the prefill window (prompt tokens and wall time). The speed excludes prompt prefill and queueing; it is unavailable when no tokens are generated.
 
 At the chat prompt, use `/exit` or `/quit` to leave, `/clear` to reset the conversation, `/save <name>` to save it, and `/help` to list chat commands. `Ctrl-C` interrupts the current generation; `Ctrl-D` exits.
 
@@ -305,7 +305,17 @@ Ant is Cheetah's fine-grained model memory optimization for local inference. Aft
 
 Set `export CHEETAH_QUANT_Q8=1` (or inline `CHEETAH_QUANT_Q8=1 cheetah ...`) to quantize linear projections to row-wise int8 on the Vulkan backend (halves the weight footprint; norms, biases and embeddings stay in original precision). The native CPU backend currently loads weights in their original F32/F16/BF16 precision.
 
-On the default CPU path (the native backend), tiers act on **real memory pages**: a disk-tier unit contributes ~0 resident bytes, and the OS page cache absorbs re-reads. Measured on qwen-0.5b with a 16 MB/32 MB budget: steady RSS **123 MB** (vs 2,497 MB for the retired Candle CPU path) with identical output.
+On the default CPU path (the native backend), tiers act on **real memory pages**: a disk-tier unit contributes ~0 resident bytes, and the OS page cache absorbs re-reads. Memory is not a single steady number — RSS sits at an idle baseline and **climbs slowly during inference** as the KV cache, the prefix-cache snapshot and per-chunk working sets accumulate. Measured on qwen-0.5b (serve, ~1.4k-token prompt, post-warmup):
+
+| Ant plan | idle RSS | inference peak | after request |
+|----------|----------|----------------|---------------|
+| tiered (16 MB VRAM / 32 MB RAM, rest disk) | **123 MB** (vs 2,497 MB for the retired Candle CPU path) | **~255 MB** | ~210 MB |
+| RAM-tier plan (16 MB VRAM / 512 MB RAM, rest disk) | **~603 MB** | **~735 MB** | ~689 MB |
+| **default** — full-resident (8 GiB/16 GiB budgets; measured both via a model preset and with no preset file — identical) | **~1.0 GB** | **~1.12 GB** | ~1.10 GB |
+
+Ant is **enabled by default** (`AntSettings::default()`: 8 GiB/16 GiB budgets, full-resident plan for models that fit); a model-dir preset overrides the budgets, CLI flags override the preset. Idle RSS tracks the residency plan — VRAM- and RAM-tier units are resident and count toward it (idle ≈ resident bytes + ~70 MB runtime), disk-tier units contribute ~0 until touched.
+
+The startup RSS timeline has four phases (sampled at 0.2 s on qwen-0.5b): process spawn ~24 MB → **load window ~50–62 MB** (weights mmap'd but untouched — the disk-tier "cold" shape; transient, before the first request is accepted) → warmup forward faults everything in → **idle baseline** (1017 MB full-resident / 123 MB tiered), which stays flat when idle (200 s sampled, no pressure — clean pages are kernel-reclaimable and re-fault from page cache, so a memory-pressured host can decay it). Inference then climbs slowly from that baseline. Note the warmup raises the full-resident idle baseline from the ~50–62 MB load shape to the resident size — that is the TTFT-vs-idle-RAM trade; tiered plans keep their small idle either way (warmup's transient peaks are released per layer).
 
 Ant CLI overrides: `--ant <bool>`, `--ant-vram <bytes>`, `--ant-ram <bytes>`, `--ant-disk-dir <path>`, `--ant-resident <unit>`, `--ant-eviction-policy <policy>`, `--ant-prefetch-stages <n>`, `--ant-allow-vram-swap <bool>`. Default budgets: VRAM pool 8 GiB, RAM budget 16 GiB.
 
@@ -377,6 +387,7 @@ Chat options can also be supplied to `serve` to set generation defaults. Without
 | --- | --- | --- |
 | `POST` | `/v1/chat/completions` | Chat completions, including SSE streaming with `stream: true` |
 | `POST` | `/v1/completions` | Non-streaming text completion; the prompt is treated as one user message |
+| `POST` | `/mcp` | MCP JSON-RPC 2.0 server endpoint (`initialize`, `tools/list`, `tools/call` with `chat_generate`/`model_info`); see [docs/MCP.md](docs/MCP.md) §1 |
 | `GET` | `/v1/models` | List the loaded model |
 | `GET` | `/v1/models/:id` | Get the loaded model |
 | `GET` | `/health` | Health check; no authentication required |
@@ -433,7 +444,7 @@ Model inference requires enough system or GPU memory for the weights, context, a
 Contributions are welcome — the codebase is structured so the common tasks are mechanical:
 
 - **Add a native model family** (highest value): add a registration file in `src/chat/registrations/` (build.rs picks it up and regenerates the registry) that declares the family's capability **and implements its `ModelForward` assembly** — the layer stacking composes the shared `OpsToolbox` ops, so a new shape is new composition, not core-code changes. Extend the native forward-parity tests. Step-by-step: [docs/REGISTRY.md](docs/REGISTRY.md) §4 and [docs/ANT_MEMORY.md](docs/ANT_MEMORY.md) §11. Reference files: llama (baseline), qwen3 (per-head q/k RMSNorm), mistral (sliding window), gemma (offset norms + embedding scale + GeGLU), phi (LayerNorm + parallel residual + fused projections), mixtral (sparse MoE).
-- **Kernels / memory control**: the hot path is the fused BF16 gemv in `src/chat/native/ops.rs` — the OpsToolbox module (AVX2 intrinsics with a portable fallback; `native/kernels.rs` re-exports it for compatibility); Ant page control lives in `native/store.rs`. Isolation tests and the native forward-parity checks guard correctness.
+- **Kernels / memory control**: the compute hot paths are the fused BF16 gemv (decode) and the blocked multi-token GEMM (chunked prefill) in `src/chat/native/ops.rs` — the OpsToolbox module (AVX2 intrinsics with a portable fallback; `native/kernels.rs` re-exports it for compatibility); Ant page control lives in `native/store.rs`. Isolation tests and the native forward-parity checks guard correctness.
 - **Server / CLI work**: `src/serve/` and `src/cli.rs` are self-contained.
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) (workflows, debugging toolbox, error-message cheat sheet, review checklist) and the [repository map](docs/CODEBASE.md). Model-specific Vulkan compute shaders (optional `src/chat/registrations/<name>.comp`) are discovered at build time and exposed through the generated shader registry.

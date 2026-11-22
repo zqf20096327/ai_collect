@@ -127,10 +127,11 @@ On some Linux hosts Judge0 needs **cgroup v1** (`systemd.unified_cgroup_hierarch
 
 ### First-time flow
 
-1. **Configuration** (`/config`) — add one or more OpenAI-compatible models to the catalog, select an interview model, set interview locale; test connection, then save. Download Whisper (and optionally a Piper voice) from the same page if you want voice features.
-2. **New interview** (`/setup`) — pick a **session mode** (theory only, coding only, or combined). Choose tracks, levels, topics, how many questions/tasks, optional per-round timers, and whether to **exclude known questions**. Coding modes require Judge0 (see **Coding sessions** above).
-3. **Practice** (`/interview/{id}`) — answer theory questions in the chat (type, dictate, or record audio). On coding phases, use the editor: **Run** to check public tests, **Submit** when ready. Combined sessions switch panels automatically when a section ends (or use **Continue to Coding**). End the interview from the sidebar at any time.
-4. **Review** (`/interview/{id}/results`) — after completion, read the overall evaluation, then open **Theory** or **Coding** review for full conversation history, scores, and feedback.
+1. **Providers & models** (`/config/providers`) — add an OpenAI-compatible provider (base URL + optional API key), then add one or more models to it; **Load models from provider** fills the list from the endpoint's `/models`. Enable **Accepts audio input** only for models that support multimodal audio.
+2. **Configuration** (`/config`) — select an interview model, set the interview locale; download Whisper (and optionally a Piper voice) here if you want voice features; test connection, then save.
+3. **New interview** (`/setup`) — pick a **session mode** (theory only, coding only, or combined). Choose tracks, levels, topics, how many questions/tasks, optional per-round timers, and whether to **exclude known questions**. Coding modes require Judge0 (see **Coding sessions** above).
+4. **Practice** (`/interview/{id}`) — answer theory questions in the chat (type, dictate, or record audio). On coding phases, use the editor: **Run** to check public tests, **Submit** when ready. Combined sessions switch panels automatically when a section ends (or use **Continue to Coding**). End the interview from the sidebar at any time.
+5. **Review** (`/interview/{id}/results`) — after completion, read the overall evaluation, then open **Theory** or **Coding** review for full conversation history, scores, and feedback.
 
 Without saved provider config, `/setup` redirects to `/config`.
 
@@ -155,13 +156,12 @@ Any **OpenAI-compatible** HTTP API works:
 | Ollama | `http://localhost:11434/v1` |
 | vLLM / others | your endpoint + `/v1` |
 
-On `/config`:
+On `/config` (two tabs):
 
-- **Add model to catalog** — display name, base URL, model name, optional API key (a stable catalog id is generated automatically from the display name); enable **Accepts audio input** only if the model supports multimodal audio (and download Whisper for transcription).
-- **Interview model** — pick from the catalog, **Test Connection**, save.
-- **Locale** — language for AI feedback and speech (stored in `data/config.json`, gitignored).
-- **Whisper** — choose size (`small`, `medium`, `large`), download from the UI for dictation and audio answers.
-- **Read questions aloud** — enable Piper, download a voice (~60 MB).
+- **Providers & models** tab — provider cards: display name, base URL, API key (stored once per provider, shared by its models). Add models under a provider, load the model list from the endpoint, edit or delete providers/models.
+- **Configuration** tab — **Interview model**: a native select grouped by provider with a filter field; **Locale** — language for AI feedback and speech; **Whisper** — choose size (`small`, `medium`, `large`), each row has its own Download button; **Read questions aloud** — enable Piper, download a voice (~60 MB); then **Test Connection** and save.
+
+Everything is stored in `data/config.json` and `data/llm_models.json` (both gitignored).
 
 Do not commit `data/config.json`, `data/llm_models.json`, or API keys.
 

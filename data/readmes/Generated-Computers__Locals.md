@@ -28,11 +28,12 @@
 
 > **New: Thinking Machines' Inkling 2 Mini runs in Locals.** A 26.4-billion-parameter
 > mixture of experts whose middle layers loop: 48 layer passes a token from 24
-> layers of weights. Locals makes a 15.6 GB build of it that fits a 24 GB Mac
-> (its makers ask for 32 GB) and runs each pass in kernels of its own: 34.5
-> tokens/s for one request, twice stock MLX on the same build, and `locals run`
-> finishes a coding task with four agents at a time in 55 s instead of 170 s
-> (M4 Pro, 24 GB). [How to install it](#inkling-2-mini).
+> layers of weights. Locals makes a 16.2 GB build of it, its draft model
+> included, that fits a 24 GB Mac (its makers ask for 32 GB), and runs each pass
+> in kernels of its own. On an M4 Pro with 24 GB: 76 tokens/s writing a file
+> through a tool, where stock MLX writes 17; 95 tokens/s for eight requests at
+> once (48); and `locals run` finishes a coding task with four agents at a time
+> in 34 to 40 s. [How to install it](#inkling-2-mini).
 
 > **New: Qwenputer runs in Locals.** [Qwenputer](docs/qwenputer/README.md) is
 > Qwen3.5-4B with a RISC-V computer compiled into its weights that runs the
@@ -501,7 +502,7 @@ steps quick.
 ### Inkling 2 Mini
 
 Thinking Machines' [Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini)
-needs a Mac with 24 GB of memory or more, and about 36 GB of free disk while
+needs a Mac with 24 GB of memory or more, and about 37 GB of free disk while
 its build is made. For now it needs Locals from GitHub (this also updates an
 installed Locals):
 
@@ -509,13 +510,21 @@ installed Locals):
 uv tool install --python 3.12 git+https://github.com/Generated-Computers/Locals
 ```
 
-Make its build once. This downloads the 19.5 GB release to
-`~/models/Inkling-2-Mini` and writes the 15.6 GB build to
+Make its build once. This downloads the 19.5 GB release and its 0.64 GB draft
+model to `~/models/Inkling-2-Mini` and writes the 16.2 GB build to
 `~/models/Inkling-2-Mini-MLX-nvfp4`; the release's folder can be deleted
 afterwards:
 
 ```bash
 uvx --python 3.12 --from git+https://github.com/Generated-Computers/Locals python -m locals.convert_inkling
+```
+
+A build made with an earlier Locals has no draft model, and runs without it.
+After updating Locals, this adds it (it downloads the draft model's 0.64 GB
+alone):
+
+```bash
+uvx --python 3.12 --from git+https://github.com/Generated-Computers/Locals python -m locals.convert_inkling --draft-only
 ```
 
 Then use it like any model, by its folder (`locals/inkling-2-mini-mlx-nvfp4`
@@ -525,9 +534,37 @@ in your editor):
 locals code ~/my-project --model ~/models/Inkling-2-Mini-MLX-nvfp4
 ```
 
+On an M4 Pro with 24 GB, after the first token: 76 tokens/s writing a file
+through a tool (stock MLX: 17), 60 writing a new one, 36 for prose (17), and 79
+and 95 tokens/s with four and eight requests at once (50 and 48). The draft
+model guesses the next tokens for a request alone, and Locals checks them all in
+one pass: in a conversation of 7,000 tokens, thinking about code went from 37 to
+65 tokens/s with it. An agent's next request there starts answering after 0.6 s.
+`LOCALS_INKLING_DRAFT=0` runs without the draft model. Long conversations are
+kept on the SSD too: on that M4 Pro, each next request of a 32,000-token
+conversation answers after about 1 s, where it read the whole conversation
+again for 142 to 154 s.
+
+`--adapter` makes a second build with a direction adapter applied, for example
+AtomicChat's uncensored one (`Inkling-2-Mini-Uncensored-LoRA.gguf`, 44 MB, in
+[AtomicChat/Inkling-2-Mini-Uncensored-GGUF](https://huggingface.co/AtomicChat/Inkling-2-Mini-Uncensored-GGUF)).
+The new build links the first one's files, adds 0.7 GB and writes within a few
+percent of its speed; the first build stays as it is:
+
+```bash
+uvx --from huggingface_hub hf download AtomicChat/Inkling-2-Mini-Uncensored-GGUF Inkling-2-Mini-Uncensored-LoRA.gguf --local-dir ~/models
+```
+
+```bash
+uvx --python 3.12 --from git+https://github.com/Generated-Computers/Locals python -m locals.convert_inkling --adapter ~/models/Inkling-2-Mini-Uncensored-LoRA.gguf --out ~/models/Inkling-2-Mini-Uncensored-MLX-nvfp4
+```
+
+Then use it by its folder, `--model ~/models/Inkling-2-Mini-Uncensored-MLX-nvfp4`.
+
 A 24 GB Mac gives the GPU 16 GB unless told otherwise, less than the build and
 its caches need; `locals start` says how to raise that, until the next restart.
-[How Locals runs it](docs/runtime/README.md#inkling-2-mini-modelsinkling2_looppy-inklingpy).
+[How Locals runs it](docs/runtime/README.md#inkling-2-mini-modelsinkling2_looppy-inklingpy),
+[all its numbers](docs/benchmarks/README.md#13-thinking-machines-inkling-2-mini-m4-pro-24-gb).
 
 ## Using it from your own code
 

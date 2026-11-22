@@ -6,7 +6,7 @@ It supports:
 - category-based browsing
 - source-aware filtering
 - deduplicated All Sources view with source picker
-- favorites and recent styles
+- favorites
 - **LoRA cards** in a dedicated **🧬 LoRA** sidebar view (scanned from disk, read-only)
 - drag reorder of selected styles
 - presets, backup, import/export
@@ -71,7 +71,7 @@ git clone <this-repository-url> sd-webui-style-organizer
 3. Pick a source (`All Sources` or a specific CSV).
 4. Search or browse categories.
 5. Click a style card to apply/unapply.
-6. Use the **top bar** icon buttons (right of the search box) for backup, import/export, compact/collapse, etc. Presets live in the **left sidebar**.
+6. Use the **top bar** icon buttons (right of the search box): **Clear prompts and selection** (eraser) empties the positive and negative prompts and the selection, **⋯ More** holds Import / Export and Backup & restore; the selection tray keeps its own **Clear** too. Presets live in the **left sidebar**. The **Presets** view shows each saved set as a card with its styles and wildcards (missing styles marked), an **Apply** / **Applied · Remove** button and a **⋯** menu for Rename… and Delete…; the last tile saves the current selection as a new set.
 
 ## Theme
 
@@ -87,7 +87,7 @@ Style Grid works in both generation tabs:
 - txt2img
 - img2img
 
-Behavior is the same in both modes (source filter, deduplication, favorites/recent, context menus, previews, presets).
+Behavior is the same in both modes (source filter, deduplication, favorites, context menus, previews, presets).
 The small tab badge in the panel header shows the active host context.
 
 ![Style Grid in img2img](docs/screenshots/img2img-support.png)
@@ -107,7 +107,7 @@ The small tab badge in the panel header shows the active host context.
 - Type in the search box to filter the grid in real time. Query tokens are **AND**-matched (whitespace-separated, case-insensitive): every token must appear in the haystack.
 - Grid search and autocomplete both use `matchesSearch`: style **name** (including underscore→space forms and display-name forms) plus **description**, with `Combos:` / `Conflicts:` reference lists stripped from the description so those lists do not pollute matches.
 - Autocomplete suggestions respect the active source filter (with All Sources, suggestions are deduped by name like the grid). Cap: top 8.
-- **Favorites**, **Recent**, and **Presets** views also respect search and the active source filter (they previously ignored them).
+- **Favorites** and **Presets** views also respect search and the active source filter (they previously ignored them).
 - Use arrow keys + Enter to pick a suggestion quickly, or click the item with mouse.
 
 ![Search with autocomplete suggestions](docs/screenshots/search-autocomplete.png)
@@ -116,6 +116,7 @@ The small tab badge in the panel header shows the active host context.
 - Card click toggles selection and applies/unapplies style.
 - Selected styles are tracked in the bottom selected bar.
 - Reorder selected styles by dragging chips in the selected bar.
+- In the gallery, hovering a card shows two small buttons: **★** adds or removes the style from favorites, and **⋯** opens the style menu (see §6). Neither one selects the card.
 
 ![Apply styles from cards — selection and bottom bar](docs/screenshots/apply-and-reorder.png)
 
@@ -126,15 +127,13 @@ The small tab badge in the panel header shows the active host context.
 - Click outside the picker to close it without applying.
 - If you pick a **specific source** in the dropdown, you always see that file’s styles only — duplicates from other files are not shown together, so the picker is not used.
 
-### 4) Favorites, recent, and LoRA
-- **Favorites:** right‑click a style card → **Add to Favorites** / **Remove from Favorites**. Favorited tiles show a small **star** in the top-right corner. Favorites and Recent are stored by **name + CSV source**, so the same name from two files can be favorited independently.
-- **Recent** lists the last styles you applied (up to 10), grouped by category like the main grid.
-- Open **Favorites** or **Recent** in the left sidebar to filter the grid to those lists (search + source filter apply here too).
+### 4) Favorites and LoRA
+- **Favorites:** right‑click a style card → **Add to favorites** / **Remove from favorites** (or, in the gallery, the **★** that appears on hover). Favorited tiles show a small **star** in the top-right corner. Favorites are stored by **name + CSV source**, so the same name from two files can be favorited independently.
+- Open **Favorites** in the left sidebar to filter the grid to that list (search + source filter apply here too).
 - **🧬 LoRA** appears in the sidebar when at least one LoRA was scanned. Cards are synthetic styles (not CSV rows), grouped by sub-folder under your LoRA roots. See **LoRA support** below.
 
 ![LoRA sidebar view — cards grouped by folder, CivitAI titles on tiles](docs/screenshots/lora-view.png)
 
-![Recent — last applied styles](docs/screenshots/recent-styles.png)
 
 ![Favorites — styles saved via context menu](docs/screenshots/favorites-view.png)
 
@@ -144,22 +143,23 @@ The small tab badge in the panel header shows the active host context.
 
 **Where to open it**
 
-- **Right-click** a **category row** in the **left sidebar** (the colored category list). This is the **only** category context menu.
+- **Right-click** a **category row** in the **left sidebar** (the colored category list), or press the **ContextMenu** key / **Shift+F10** on it, to open the category menu. **Escape** closes it and returns focus to where it was opened.
+- Right-clicking **LoRA** opens the same menu without **Generate previews…**.
+- While the pointer is over a category row (or **LoRA**), or it has keyboard focus, the line at the bottom of the sidebar reads *NAME: right-click for options*.
 - Right-clicking a **category header** inside the main grid (the sticky `▼ CATEGORY (count)` row) **no longer opens a menu** — that duplicate entry point was removed. A normal **left-click** on the header still collapses/expands the section; **Select All** on that row is unchanged.
 
 **Menu actions**
 
 | Item | What it does |
 |---|---|
-| **Wildcard: random (can repeat)** → **Whole category** | Inserts a token into the **positive prompt** on the Forge side: `{sg:<category>}`. The category name is normalized to **lowercase** to match how styles are grouped. |
-| **Wildcard: random (can repeat)** → **Pick styles...** | Opens a **slice-selection mode** in the grid: tick individual styles with checkboxes. Search and the source filter keep working; **Select all** covers only the styles currently visible after filtering. **Add as wildcard** inserts a **slice** token for exactly that selection; **Cancel** discards it. |
-| **Wildcard: shuffle (no repeats in a batch)** → **Whole category** | Inserts a token into the **positive prompt** on the Forge side: `{sgd:<category>}`. The category name is normalized to **lowercase** to match how styles are grouped. |
-| **Wildcard: shuffle (no repeats in a batch)** → **Pick styles...** | Opens a **slice-selection mode** in the grid: tick individual styles with checkboxes. Search and the source filter keep working; **Select all** covers only the styles currently visible after filtering. **Add as wildcard** inserts a **slice** token for exactly that selection; **Cancel** discards it. |
-| **Generate previews…** | Queues **thumbnail generation** for styles in that category (batch job in the host). Always shown; does not report a missing-preview count. |
+| **Random** (whole category, may repeat) | Inserts a token into the **positive prompt** on the Forge side: `{sg:<category>}`. The category name is normalized to **lowercase** to match how styles are grouped. |
+| **Shuffle** (whole category, no repeats in a batch) | Inserts a token into the **positive prompt** on the Forge side: `{sgd:<category>}`. The category name is normalized to **lowercase** to match how styles are grouped. |
+| **Pick styles…** | Opens a **slice-selection mode** in the grid: tick individual styles with checkboxes. The **Random / Shuffle** toggle next to the title in the mode bar chooses the wildcard kind (Random by default); switching keeps the ticked styles. Search and the source filter keep working; **Select all** covers only the styles currently visible after filtering. **Add wildcard** inserts a **slice** token for exactly that selection; **Cancel** discards it. |
+| **Generate previews…** | Queues **thumbnail generation** for styles in that category (batch job in the host). Shown for every category except LoRA; does not report a missing-preview count. |
 
-![Sidebar category context menu — Wildcard: random (can repeat) and Wildcard: shuffle (no repeats in a batch) with Whole category / Pick styles..., and Generate previews…](docs/screenshots/category-context-wildcard-previews.png)
+![Sidebar category menu — Random, Shuffle, Pick styles… and Generate previews…](docs/screenshots/category-context-wildcard-previews.png)
 
-![Slice-selection mode — mode bar with selection count and Select all / Clear all / Add as wildcard / Cancel; per-card checkboxes; search stays active](docs/screenshots/slice-selection-mode.png)
+![Slice-selection mode — mode bar with selection count and Select all / Clear / Add wildcard / Cancel; per-card checkboxes; search stays active](docs/screenshots/slice-selection-mode.png)
 
 **How `{sg:…}` wildcards work**
 
@@ -191,7 +191,7 @@ The small tab badge in the panel header shows the active host context.
 A **shuffle wildcard** draws styles **without repeats across batches**. `{sgd:category}` uses every style once before any style comes back, advancing **one deck position per batch**. Images inside one batch share the same pick (same as `{sg:...}`). To get a different style on every image, set **batch size 1** and raise **batch count**.
 
 - **Syntax:** `{sgd:category}` for a whole category, `{sgd:category:spec}` for a slice. The spec grammar is the same as for `{sg:...}` (names, `-excludes`, `Root_*` globs), and the order of entries does not matter.
-- **Insert:** right-click a category and use the *Wildcard: shuffle* group (*Whole category* or *Pick styles...*), or type the token by hand. Shuffle chips have their own icon and can be reordered, removed and saved in presets like any other wildcard.
+- **Insert:** open a category's menu and choose *Shuffle* (whole category) or *Pick styles…* with *Shuffle* in the mode bar, or type the token by hand. Shuffle chips have their own icon and can be reordered, removed and saved in presets like any other wildcard.
 - **Scope of uniqueness:** one generation, counted in **batches** (batch count), not images. A fixed seed repeats the same order, seed -1 gives a new order on every click.
 - **Several tokens:** repeating the same token in one prompt draws a different style for each occurrence.
 - **Positive and negative prompts:** the same shuffle token in both fields resolves to the same style for a given image.
@@ -204,7 +204,7 @@ A **shuffle wildcard** draws styles **without repeats across batches**. `{sgd:ca
 
 **Where to open it**
 
-- **Right-click** a **style card** in the grid (card title hint: *Right-click for options*). *(Left-click still applies the normal select / source-picker rules.)*
+- **Right-click** a **style card** in the grid. *(Left-click still applies the normal select / source-picker rules.)*
 
 **On the tile (not menu items)**
 
@@ -216,15 +216,15 @@ A **shuffle wildcard** draws styles **without repeats across batches**. `{sgd:ca
 | Item | What it does |
 |---|---|
 | **Select** / **Deselect** | Same as a left-click on the card: applies or removes the style from the active selection (and host prompt), without opening the duplicate-source picker. |
-| **Add to Favorites** / **Remove from Favorites** | Toggles the star list for this style **row** (name + source); the tile star updates immediately. |
+| **Add to favorites** / **Remove from favorites** | Toggles the star list for this style **row** (name + source); the tile star updates immediately. |
 | **Copy prompt** | Copies this style’s **`prompt`** text to the clipboard (toast on success/failure). |
-| **Edit** | Opens the host **style editor** for this style. |
+| **Edit…** | Opens the host **style editor** for this style. |
 | **Duplicate** | Opens the host flow to duplicate the style (typically into the same or chosen source). |
-| **Move to category...** | Opens the host dialog to change the style’s **category** field. |
-| **Generate preview (SD)** | Runs **thumbnail generation** for this style (Stable Diffusion–based preview in the host). |
-| **Upload preview image** | Opens the host **file picker** to set a custom thumbnail image. |
+| **Move to category…** | Opens the host dialog to change the style’s **category** field. |
+| **Generate preview** | Runs **thumbnail generation** for this style (Stable Diffusion–based preview in the host). |
+| **Upload preview…** | Opens the host **file picker** to set a custom thumbnail image. |
 | **Remove preview** | Shown only when the style already has a thumbnail. Deletes the cached preview for this style’s **name + source** (surfaces errors instead of silently no-oping). |
-| **Delete** | Removes the style (host confirms and updates CSV). Styles from the shipped **`samples/`** pack cannot be modified via the API (read-only). |
+| **Delete…** | Removes the style (host confirms and updates CSV). Styles from the shipped **`samples/`** pack cannot be modified via the API (read-only). |
 
 **LoRA cards:** Edit / Duplicate / Move / Generate preview / Upload preview / Remove preview / Delete are **hidden**. Select, Favorites, and Copy prompt remain. The server also rejects CSV save/delete for LoRA-sourced rows.
 
@@ -232,12 +232,12 @@ Click **outside** the menu to close it (moving the pointer off the menu does **n
 
 ![Style card context menu](docs/screenshots/style-card-context-menu.png)
 
-### 7) Thumbnail previews and the hover popup
+### 7) Thumbnail previews
 
 **Generating a preview**
 
-- **Per style:** open the style’s context menu (**right-click** the card) → **Generate preview (SD)**. The host runs an SD render and saves an image under user-data `thumbnails/` (see **Data and Persistence**).
-- **Per category:** use the **category** context menu → **Generate previews…** (see §5).
+- **Per style:** open the style’s context menu (**right-click** the card) → **Generate preview**. The host runs an SD render and saves an image under user-data `thumbnails/` (see **Data and Persistence**). While it runs, the tile shows its own progress: a small spinner at the right end of a grid tile (then a ✓ for a moment), or a dimmed **Generating** overlay on a gallery thumbnail until the new image replaces it. Errors appear as a toast.
+- **Per category:** use the **category** context menu → **Generate previews…** (see §5). Only styles without a preview are queued. Progress shows in that category's header (**Generating previews 4 / 12**, a thin bar along its bottom edge, **Skip** for the style being generated, **Cancel** for the rest) and in the line at the bottom of the sidebar (**Generating 4 / 12** with **Cancel**), so it stays visible when the header is scrolled away. When the batch ends, both briefly show the result (for example *Previews ready: 9 new · 2 already had*) or *Cancelled after 4 / 12*. One batch runs at a time.
 
 After a successful run, the iframe is notified so the UI can refresh that style’s thumbnail version.
 
@@ -247,19 +247,7 @@ Thumbnail images are loaded via `GET /style_grid/thumbnail?name=…&source=…` 
 
 **What the card shows**
 
-- The **grid card** is a compact label (name and category color accent). The **generated image is not shown inside the tile** — you see it when you **hover**.
-
-**Hover popup (preview window)**
-
-- **Pause ~300 ms** on a card to open the popup (reduces flicker when moving the mouse quickly).
-- **Top:** the thumbnail image (if the file exists and loads). If the image is missing or fails to load, you still get the **text** below.
-- **Title:** the style display name.
-- **Prompt:** first **120 characters** of the style’s **`prompt`** column, with `...` if longer.
-- **Negative:** first **60 characters** of **`negative_prompt`**, prefixed with **−** and shown in a muted red tone.
-
-The popup is **fixed** near the card and flips **above** or **below** depending on available space.
-
-![Hover popup — thumbnail, prompt snippet, negative line](docs/screenshots/thumbnail-hover-preview.png)
+- The **grid card** is a compact label (name and category color accent). The **generated image is not shown inside the tile** — switch to **Gallery** to see it.
 
 ---
 
@@ -275,22 +263,21 @@ The popup is **fixed** near the card and flips **above** or **below** depending 
 
 **What this means:** not a separate “toolbar” window — it is the **top header row** of the Style Grid panel: **Style Grid** title, `txt2img`/`img2img` tag, **source** dropdown, **search**, then a row of **small icon buttons on the right** (`ToolBtn` with lucide icons + tooltips). Hover an icon for its label. **Presets** are in the **left sidebar**, not here. There is no Random button.
 
+**Grid / Gallery** (the two-segment switch right of the search box): **Gallery** shows each style's preview as a square tile with its name below; **Grid** stays the text-only tiles. The choice is remembered in this browser.
+
 ![Top bar — icon buttons (right of search)](docs/screenshots/top-bar-icons.png)
 
 | Control | What it does |
 |---|---|
 | Backup / Restore | Opens the **Backup / Restore** modal. **Create backup** writes a timestamped snapshot under the user-data `backups/` folder (folder + `.zip`) of loaded style CSVs plus `presets.json`, `category_order.json`, `favorites.json`, and `recent.json` when present. Keeps directory distinction (`styles/` vs `samples/` vs external paths) so same basenames do not overwrite each other. Thumbnails are **opt-in** via the modal checkbox **Include thumbnails (large)** (API body flag `include_thumbnails`). **Restore** picks a listed snapshot and creates an automatic safety backup of the current state first. Failures, HTTP errors, or “nothing to copy” are reported via toasts (see `docs/API.md` § `/backup` / `/restore`). |
 | Import/Export | Export/import styles, presets, **favorites**, and **recent**. Colliding names are skipped and listed in a toast; non-colliding styles are imported into a new CSV; presets still merge. |
-| Clear all selected styles | Clears all selected styles in the panel and on the host, and wipes both the prompt and negative prompt textareas. |
-| Compact mode | Toggles a denser card layout (`aria-pressed` when active). |
-| Collapse all / Expand all | One control: **Collapse all** when every category is expanded; **Expand all** when any category is collapsed. |
 | New style | Creates a style in the **currently selected CSV**. Disabled until a specific (non–read-only) source is selected — tooltip explains why. |
 | Fetch LoRA titles | Visible **only** in the **🧬 LoRA** sidebar view. Opt-in: calls CivitAI’s public API using `modelId` already present in each LoRA’s local `.json` metadata; caches titles under user-data `lora_titles.json`. Rate-limited; reopen the panel after the run to see updated labels. |
 
 ![Fetch LoRA titles — toolbar tooltip in LoRA view](docs/screenshots/lora-fetch-titles.png)
 
 | *N* selected | Shown when at least one style is selected. |
-| Style conflicts | When conflicts exist, a pulsing count badge opens a **click-to-open** popover (not hover-only) listing reasons; each row can remove the conflicting style. |
+| Style conflicts | When a selected style's negative prompt removes another's tags, an amber **N conflicts** chip appears in the selection tray and the styles involved get an amber border. Clicking it opens one card per pair (→ one way, ↔ both ways) with **Remove** for either style or **Keep both**, which hides that pair until one of its styles leaves the selection. |
 | Fullscreen / Exit fullscreen | Toggles between the floating panel size and edge-to-edge layout. |
 | Close Style Grid | Closes the Style Grid panel. |
 
@@ -341,7 +328,7 @@ Optional local config (not committed; still under the extension folder):
 |---|---|
 | `config/lora_roots.json` | Extra LoRA scan roots / optional `max_depth` (see `.example`) |
 
-Local UI chrome still uses browser localStorage (active source, compact/collapse preferences, thumbnail cache-bust versions). Favorites and Recent are **server-side** under the user data root. On first open after upgrade, legacy `sg_v2_favorites` / `sg_v2_recent` localStorage keys are migrated once when the server files are absent.
+Local UI chrome still uses browser localStorage (active source, thumbnail cache-bust versions). Favorites and Recent are **server-side** under the user data root. On first open after upgrade, legacy `sg_v2_favorites` / `sg_v2_recent` localStorage keys are migrated once when the server files are absent.
 
 **Export / Import** JSON includes styles, presets, **favorites**, and **recent**.
 

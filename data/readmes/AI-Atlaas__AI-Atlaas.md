@@ -149,6 +149,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [Remio](https://remio.ai/)  
    Remio is a local-first AI memory and knowledge base desktop app that captures and searches files, webpages, recordings, emails, messages, images, and notes with local indexes and vectors, helping agents retrieve context faster while reducing token use.
+
+- [Prompt Generator](https://trypromptgenerator.com/)  
+   Free prompt generator that writes prompts in the syntax of the AI tool you pick: ChatGPT, Claude, Gemini, Midjourney, Nano Banana, Veo, Sora and more. 10 free prompts a day without an account, paid plans from $9/month.
 ---
 
 ### 🎧 Text to Speech
@@ -216,6 +219,12 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [Graphic.so](https://graphic.so)  
    Graphic.so is a multi-modal AI playground to build your AI apps and automations 10x faster with a natural language interface.
+
+- [QuestStudio](https://queststudio.io/)  
+   Browser-based creative workspace for AI image, video, voice, and music generation, with prompting and editing tools. Paid subscription with a 7-day, 100-credit trial; a credit card is required.
+
+- [kdpbook.io](https://kdpbook.io)  
+   Vibe publishing for Amazon KDP: describe a book in a chat and get it written, illustrated and typeset, with the print PDF, full-wrap cover, Kindle eBook and listing ready to upload. 2,000 free credits at signup, no card.
 
 #### Image Generator
 
@@ -370,6 +379,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [Kling AI](https://www.klingai.com)  
    KLING AI, tools for creating imaginative images and videos, based on state-of-art generative AI methods.
 
+- [Magic Hour](https://magichour.ai/)  
+   Create AI videos and images with tools for text-to-video, image-to-video, face swap, lip sync, and video-to-video.
+
 #### Modeling & 3D
 
 - [Genie](https://lumalabs.ai/genie)  
@@ -419,6 +431,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [Suno](https://suno.com/)  
    Suno is building a future where anyone can make great music. Whether you're a shower singer or a charting artist, we break barriers between you and the song you dream of making. No instrument needed, just imagination. From your mind to music.
+
+- [Designhome](https://designhome.co/)  
+   Create wonderful floor plans and complete home designs on one platform using AI.
 
 ---
 
@@ -478,6 +493,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [Codium](https://www.codium.ai/)  
    With CodiumAI, you get non-trivial tests (and trivial, too!) suggested right inside your IDE or Git platform, so you can code smart and stay confident when you push.
 
+- [Agent QA](https://github.com/vostride/agent-qa)
+   Source-available QA harness for natural-language web and mobile regression tests, with a CLI, dashboard, MCP server, and run memory. Model, browser, or device-provider costs may apply.
+
 - [Aider](https://github.com/paul-gauthier/aider)  
    Aider lets you pair program with LLMs, to edit code in your local git repository.
 
@@ -495,6 +513,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [GPT Pilot](https://github.com/Pythagora-io/gpt-pilot)  
    GPT Pilot aims to research how much LLMs can be utilized to generate fully working, production-ready apps while the developer oversees the implementation.
+
+- [YYLO](https://github.com/yylo-dev/yylo)  
+   Open-source command-line orchestrator for coding agents (Claude Code, Codex, Gemini CLI) with Kanban-driven tasks, parallel git worktrees, and typed merge flows.
 
 #### Site & App Builder
 
@@ -588,6 +609,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [Huntr](https://huntr.co/)  
    Huntr helps you create tailored resumes and cover letters fast with AI, fill out application forms in one click, and automatically organize your job search.
+
+- [ResumeAI](https://withresumeai.com/)  
+   AI resume builder with a free ATS checker (3/day anonymous, 10/day free account) and the open State of ATS 2026 dataset (738 employers, 704 portal-verified; Workday 37.9%). Live leaderboard is paid placement/visibility only — not pay-for-score.
 
 - [bugfree.ai](https://bugfree.ai/)  
    An advanced AI-powered platform designed to practice and prepare for system design and behavioral interviews, by combining a vast question library, detailed feedback, and interactive AI-powered mock interviews.
@@ -723,6 +747,12 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [ChatBase](https://www.chatbase.co)  
    Build a custom GPT, embed it on your website and let it handle customer support, lead generation, engage with your users, and more.
 
+- [Pulse](https://pulsecorp.co)  
+   AI-moderated market research platform that runs customer interviews at scale.
+
+- [Asyntai](https://asyntai.com)  
+   AI chatbot for your website that answers visitors from your own pages, documents and products, captures leads, and hands the chat to a human when needed.
+
 ---
 
 ### 📱 Social Media Tools
@@ -779,6 +809,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [Explainpaper](https://www.explainpaper.com/)  
    Upload a paper, highlight confusing text, get an explanation. We make research papers easy to read.
+
+- [Coda One](https://www.codaone.ai/)  
+   Free AI detector with no daily limit and no signup, plus an AI humanizer, rewriter and grammar checker.
 
 ---
 
@@ -1214,6 +1247,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [OpenRouter](https://openrouter.ai)  
    A unified interface for LLMs. Find the best models & prices for your prompts.
 
+- [XiuRouter](https://router.xiu.ai/)
+   Multi-model API service with protocol-specific OpenAI, Anthropic, and Gemini endpoints, scoped keys, and request-level usage and cost records.
+
 - [ultralytics](https://docs.ultralytics.com)  
    YOLO11 is built on cutting-edge advancements in deep learning and computer vision, offering unparalleled performance in terms of speed and accuracy. Its streamlined design makes it suitable for various applications and easily adaptable to different hardware platforms, from edge devices to cloud APIs.
 
@@ -1378,8 +1414,14 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 ### 📋 Directories & Communities
 
+- [AI Tools Radar](https://aitoolsradar.com/)  
+   Multilingual AI tools directory and editorial platform for discovering and comparing AI products, with models, agent skills, prompts, industry news, and newsletters.
+
 - [THERE'S AN AI FOR THAT](https://theresanaiforthat.com/)  
    There is an ai for that list.
+
+- [RespawnStack](https://respawnstack.com/)  
+   Curated AI tools directory for game developers.
 
 - [Hugging Face](https://huggingface.co/)  
    The AI community building the future. The platform where the machine learning community collaborates on models, datasets, and applications.
@@ -1408,4 +1450,3 @@ The list is not complete also with the speed of the AI industry, there is a lot 
 ---
 
 Created by [Mosn](https://forge.mosn.me?ref=github-ai)
-

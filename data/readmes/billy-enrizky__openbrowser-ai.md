@@ -180,6 +180,10 @@ async def main():
 asyncio.run(main())
 ```
 
+By default, CodeAgent keeps generated files under a unique temporary agent
+directory. Pass `file_system=FileSystem(base_dir=...)` when a stable path is
+required.
+
 ### With Different LLM Providers
 
 ```python
@@ -225,6 +229,23 @@ Cancelling `navigate_to()` cancels that request without replaying navigation. An
 When CodeAgent extracts an initial URL from its task, it awaits the registered `navigate` action without an additional fixed delay. The default action awaits the navigation contract above. If you replace `navigate` with a custom action, that action must await the readiness your task needs before returning. CodeAgent does not add a load or hydration check after a custom action returns, even if the action waits only for `commit`.
 
 ## Configuration
+
+### Config file lifecycle
+
+OpenBrowser reads `config.json` from `OPENBROWSER_CONFIG_PATH`, then `OPENBROWSER_CONFIG_DIR/config.json`, then `XDG_CONFIG_HOME/openbrowser/config.json`. Run `uvx openbrowser-ai config status` to inspect the selected path and its state as JSON. If the selected file does not exist, the status check creates the default once.
+
+A missing file is created once with defaults. A legacy, invalid, or unreadable file is never rewritten automatically. Browser startup is blocked with a stable `config_*` error code and a repair hint. If you can fix the file in place, do that and restart any running daemon or MCP server. If you want a fresh default, move the file to a unique backup name first. Moving it aside creates a new default on the next start and does not migrate the old settings. Keep the backup because it may contain proxy credentials or API keys.
+
+```bash
+uvx openbrowser-ai config status
+# Move the exact "path" value reported by the command. Do not assume the default path.
+mv <path-from-status> <path-from-status>.invalid.$(date +%Y%m%d%H%M%S)
+uvx openbrowser-ai config status
+```
+
+`daemon status` and MCP `get_status` include an additive `config` block with the startup snapshot, current snapshot, and `restart_required`. A long-lived daemon or MCP process does not hot reload config.
+
+When a profile is present, both status surfaces include `profile.resolution`. Daemon status resolves the profile before the first browser start. MCP `get_status` includes it after the context has resolved its profile. Each entry has a `source` key plus a `value`, or a `mode` and optional `count`. The source is `default`, `config`, `environment`, `managed`, or `cli`. Paths, booleans, channel, executable, download path, action delay, scale factor, and security mode report a value. Storage state, proxy, and launch arguments report only a mode and source, with an argument count for `args`, so cookies, proxy credentials, and argument values stay out of status.
 
 ### Environment Variables
 
@@ -806,6 +827,7 @@ Contributions are welcome! Please:
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+6. After CI passes, add the `merge-queue` label. The queue tests the merge tree with the full non-integration suite and all static, frontend, and backend checks, then merges it. Direct merges to `main` are blocked.
 
 ## License
 

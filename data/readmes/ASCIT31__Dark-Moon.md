@@ -108,7 +108,11 @@ cd Dark-Moon
 ./install.sh --help    # show usage
 ```
 
-Supports **cloud providers** (Anthropic, OpenAI, OpenRouter…) and **local models** (Ollama, llama.cpp). Then run your first assessment and watch it live:
+Supports **cloud providers** (Anthropic, OpenAI, OpenRouter…), **local models** (Ollama, llama.cpp, any OpenAI-compatible URL) and **Azure AI Foundry / Azure OpenAI** in native mode ([configuration](docs/full.md#ii3c-role-of-the-variables); which models finish a campaign: [Compatible Models & Hardware](docs/full.md#ii3d-compatible-models--hardware)).
+
+> **Re-running `install.sh` on an existing install** lists what the rebuild would delete (custom or modified agents included), asks `Continue? [y/N]` (default No), and on yes moves `data`, `darkmoon-settings` and `workflows` to timestamped `*.backup-<date>` folders instead of deleting them. Unattended: `./install.sh --yes` or `DARKMOON_ASSUME_YES=1`. [Details](docs/full.md#re-running-installsh-on-an-existing-install).
+
+Then run your first assessment and watch it live (`--log` streams the session's commands while they run):
 
 ```bash
 ./darkmoon.sh "TARGET: example.com"
@@ -182,23 +186,23 @@ The screenshots below are the **paid Darkmoon Pro** web dashboard. They are **no
 <table>
 <tr>
 <td colspan="2" valign="top">
-<img src="docs/pics/pro/campaign-map.png" alt="Darkmoon Pro campaign map of the anonymised OWASP Juice Shop campaign: Internet, Edge, Application and Data zones holding 30 assets (target host, open ports, technologies, endpoints, databases), edges labelled contains, stack, endpoint, runs and root, and per-asset finding counts with the Juice Shop Express application carrying 47 findings" />
-<p align="center"><b>Pro: campaign map.</b> Every asset the agents found, placed in its zone (Internet, Edge, Application, Data) and wired with labelled edges (<code>contains</code>, <code>stack</code>, <code>endpoint</code>, <code>runs</code>, <code>root</code>), with the finding count on each asset. Shown here: an anonymised real OWASP Juice Shop campaign, 30 assets and 57 findings.</p>
+<img src="docs/pics/pro/campaign-map.png" alt="Darkmoon Pro campaign map of the anonymised OWASP Juice Shop campaign: Internet, Edge, Application and Data zones holding 43 assets (target host, open ports, technologies, API routes and endpoints, databases), edges labelled contains, stack, endpoint, runs and root, and per-asset finding counts with the Juice Shop Express application carrying 8 findings" />
+<p align="center"><b>Pro: campaign map.</b> Every asset the agents found, placed in its zone (Internet, Edge, Application, Data) and wired with labelled edges (<code>contains</code>, <code>stack</code>, <code>endpoint</code>, <code>runs</code>, <code>root</code>), with the finding count on each asset. Shown here: an anonymised real OWASP Juice Shop campaign, 43 assets and 57 findings.</p>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<img src="docs/pics/pro/infra-orbital.png" alt="Darkmoon Pro orbital 3D infrastructure map of the OWASP Juice Shop campaign: assets on Internet and Edge, Application and Data rings, with Prometheus Metrics, FTP Directory, SQLite Database, the Juice Shop Express application with 47 findings, JWT Public Key, JWT RS256 and Application Config labelled with their finding counts, and the list of six inferred attack paths in the side rail" />
+<img src="docs/pics/pro/infra-orbital.png" alt="Darkmoon Pro orbital 3D infrastructure map of the OWASP Juice Shop campaign: assets on Internet and Edge, Application and Data rings, with API routes such as /rest/user, /api/Users and /api/Feedbacks, Prometheus Metrics, FTP Directory, Swagger UI, JWT Public Key, Application Config and the Juice Shop Express application with 8 findings labelled with their finding counts, and the list of eleven inferred attack paths and 43 assets in the side rail" />
 <p align="center"><b>Pro: orbital 3D infrastructure map.</b> The same campaign as a three.js scene: assets on Internet / Edge, Application and Data rings, the assets that carry findings labelled with their counts, and the attack paths in the side rail. Renders in the browser and in VR.</p>
 </td>
 <td width="50%" valign="top">
-<img src="docs/pics/pro/attack-paths.png" alt="Darkmoon Pro attack paths view of the OWASP Juice Shop campaign: six possible attack paths marked Inferred in the side rail, an explanation that no path could be proven from the evidence, and the first inferred path drawn as a dashed two-step route on the zoned map" />
+<img src="docs/pics/pro/attack-paths.png" alt="Darkmoon Pro attack paths view of the OWASP Juice Shop campaign: eleven possible attack paths marked Inferred in the side rail, an explanation that no path could be proven from the evidence, and the first inferred path drawn as a dashed three-step route on the zoned map" />
 <p align="center"><b>Pro: attack paths.</b> Paths are labelled by provenance: proven paths come from chained evidence, possible paths are inferred from topology and confirmed findings and are marked <code>Inferred</code>, never shown as proof. The selected path is drawn step by step on the map.</p>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<img src="docs/pics/pro/dashboard.png" alt="Darkmoon Pro dashboard: 5 projects, 5 targets, 19 campaigns and 442 vulnerabilities, vulnerabilities by severity with percentages, a security posture table with Cyber Score grade, latest assessment and first action per project (OWASP Juice Shop first), and the start of the Last campaigns table with per-severity counts, risk, date and comparison with the previous scan" />
+<img src="docs/pics/pro/dashboard.png" alt="Darkmoon Pro dashboard: 3 projects, 3 targets, 14 campaigns and 371 vulnerabilities, vulnerabilities by severity with percentages, a security posture table with Cyber Score grade, latest assessment and first action per project (OWASP Juice Shop first), and the start of the Last campaigns table with per-severity counts, risk, date and comparison with the previous scan" />
 <p align="center"><b>Pro: live web dashboard with campaign history.</b> Projects, targets, campaigns and vulnerabilities at a glance, findings split by severity, a security posture table giving each project its Cyber Score grade, latest assessment and first treatment action, and every campaign with its counts and a comparison with the previous scan.</p>
 </td>
 <td width="50%" valign="top">
@@ -357,6 +361,17 @@ DarkMoon dynamically selects and dispatches specialized agents depending on the 
 Multiple agents can execute **in parallel** across hybrid architectures.
 
 Planes that require credentials to be meaningful (cloud accounts, CI/CD, secret stores, databases, Active Directory, Kubernetes) are **never dispatched on inference**. They fire only when a concrete artifact is found (a key, a token, a reachable metadata endpoint) or when you authorize them explicitly, and are otherwise flagged in the report.
+
+The orchestrator dispatches its specialists natively, through opencode's `task` tool: it picks from the list of installed agents (name and description), and each specialist runs with its own playbook.
+
+**Custom agents.** The shipped agents always come from the image, so an update always brings their new version. Put your own agents in `darkmoon-settings/agents/`: a new file adds an agent; a file named like a shipped one (for example `aws.md`) replaces it. To customise a shipped agent, copy it there and edit it:
+
+```bash
+docker compose exec opencode cat /opt/darkmoon/default-agents/aws.md > darkmoon-settings/agents/aws.md
+docker compose restart opencode
+```
+
+Upgrading an older install: at the first start, `darkmoon-settings/agents` is backed up to `darkmoon-settings/agents-backup-<date>/`, unmodified copies of shipped agents are removed from it, and your modified files are kept and listed in the start log. An old `docker-compose.yml` that still mounts the agents folder keeps working with a warning: run `git pull`, then `docker compose up -d`.
 
 > **Note:** For the complete list of agents, their structure, lifecycle, and how to create custom agents, see [Full Documentation, AI Agents](docs/full.md#v-ai-agents).
 

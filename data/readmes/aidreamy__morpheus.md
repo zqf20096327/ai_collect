@@ -52,7 +52,22 @@ irm https://raw.githubusercontent.com/aidreamy/morpheus/main/download.ps1 | iex
 
 > Note: the `curl | bash` command does **not** work in PowerShell or CMD, because Windows has no native `bash`. Use the PowerShell script above instead; Git Bash and WSL also work.
 
-Optional variables: `MORPHEUS_BIN_DIR` (install directory), `MORPHEUS_VERSION` (specific version) and `MORPHEUS_VARIANT` (`slim`, the default, or `slim-embed`, with local RAG via fastembed). `slim-embed` builds are currently published for Linux x64 and Windows x64 only; macOS receives `slim`. On PowerShell, set them as `$env:MORPHEUS_VERSION = "v0.1.0"` before running the command.
+Optional variables: `MORPHEUS_BIN_DIR` (install directory), `MORPHEUS_VERSION` (specific version) and `MORPHEUS_VARIANT` (`slim`, the default, `slim-embed`, with local RAG via fastembed, or `slim-speak`, the complete voice build). `slim-embed` builds are currently published for Linux x64 and Windows x64 only; macOS receives `slim` and `slim-speak`. On PowerShell, set them as `$env:MORPHEUS_VERSION = "v0.1.0"` before running the command.
+
+### Voice output
+
+`slim-speak` is the complete voice build: local speech through Kokoro with the `speak-phonemize` frontend enabled, so Portuguese (Brazil) and the other languages without a bundled lexicon work — not just English and Chinese.
+
+```sh
+export MORPHEUS_VARIANT=slim-speak
+curl -fsSL https://raw.githubusercontent.com/aidreamy/morpheus/main/download.sh | bash
+```
+
+The archive ships an extra `morpheus-ttsd` binary, which the app spawns as a sibling; keep it in the same directory as `morpheus`. On Linux, playback needs one of `paplay`, `pw-play`, `aplay`, `play` or `ffplay`; macOS uses the built-in `afplay`.
+
+The speech model is not bundled: download a Kokoro bundle from the [sherpa-onnx model releases](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) and extract it under `~/.cache/morpheus/models/` (or point `MORPHEUS_KOKORO_MODEL_DIR` at the extracted directory) — v1.1 for the default voices, v1.0 for the Brazilian Portuguese voice.
+
+> **Windows:** voice output is not supported yet. The voice daemon communicates over a Unix domain socket and uses Unix process APIs, so `slim-speak` is published for Linux x64 and macOS (x64 and arm64) only. Windows ships `slim` and `slim-embed`.
 
 After installing, run `morpheus` in your terminal. If the install directory is not on your `PATH`, the script prints the command to add it. If anything goes wrong during installation, open an issue and we will be glad to help.
 
@@ -74,4 +89,4 @@ After installing, run `morpheus` in your terminal. If the install directory is n
 
 ## License
 
-GPL-3.0. See [LICENSE](./LICENSE).
+GPL-3.0.

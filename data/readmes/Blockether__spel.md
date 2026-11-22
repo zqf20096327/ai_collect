@@ -104,7 +104,7 @@ spel wraps Playwright Java with idiomatic Clojure: maps for options, anomaly map
 
 ```clojure
 ;; deps.edn
-{:deps {com.blockether/spel {:mvn/version "0.9.54"}}}
+{:deps {com.blockether/spel {:mvn/version "0.9.57"}}}
 ```
 
 **Native CLI (download from GitHub releases):**
@@ -354,6 +354,9 @@ agent1: busy — up 4 min, 37 commands
 | `orphaned` | verified daemon exists but its socket/PID state is missing or silent | `spel kill`, then re-run |
 | `unresponsive` | verified daemon process is alive, socket silent | `spel kill`, then re-run |
 | `down` | no verified daemon (`last exit` says why it went) | just run your command |
+
+`spel health` stays small. It keeps the last 10 replies, and each one keeps
+at most 1 KiB. To see a full result again, run the read-only command again.
 
 If the browser is quit, crashes, or its page is closed behind spel's back, the
 next command relaunches it and re-opens the page it was on — the session does

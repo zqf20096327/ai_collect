@@ -13,23 +13,23 @@ The Agent reads the BrowserPaw Agent Skill, runs compact `browserpaw` CLI comman
 Requires **Node.js 22.6+** and desktop Chrome or Chromium on Windows, macOS, or Linux. Install the CLI globally, run `setup` to register the Native Messaging host and install the global Agent Skill (`~/.agents/skills/browserpaw`, Windows `%USERPROFILE%\.agents\skills\browserpaw`), then load the unpacked extension in Chrome or Chromium:
 
 ```sh
-npm install -g browserpaw@5.0.0
+npm install -g browserpaw@5.0.1
 browserpaw setup
 ```
 
-> **Note on npm availability:** `npm install -g browserpaw@5.0.0` and `npx browserpaw@5.0.0` apply once `5.0.0` is published to npm. For a pre-release local tarball, use `npx --yes --package /path/to/browserpaw-5.0.0.tgz browserpaw setup`.
+> **Note on npm availability:** `npm install -g browserpaw@5.0.1` and `npx browserpaw@5.0.1` apply once `5.0.1` is published to npm. For a pre-release local tarball, use `npx --yes --package /path/to/browserpaw-5.0.1.tgz browserpaw setup`.
 
 Open `chrome://extensions` (or `chromium://extensions`), enable **Developer mode**, click **Load unpacked**, and select the extension directory printed by `setup` (default `~/.browserpaw/extension`, Windows `%USERPROFILE%\.browserpaw\extension`), then verify with `browserpaw status`.
 
 | Install Option                             | Best For                                                                    | Command                                               |
 | :----------------------------------------- | :-------------------------------------------------------------------------- | :---------------------------------------------------- |
-| **Global Skill + npm CLI** _(Recommended)_ | Everyday use across Codex, Claude Code, Cursor, Windsurf, and DSH           | `npm install -g browserpaw@5.0.0 && browserpaw setup` |
-| **`npx` / Tarball / Project Skill**        | No global install or workspace-scoped Skill (`./.agents/skills/browserpaw`) | `npx browserpaw@5.0.0 setup --skill-scope project`    |
+| **Global Skill + npm CLI** _(Recommended)_ | Everyday use across Codex, Claude Code, Cursor, Windsurf, and DSH           | `npm install -g browserpaw@5.0.1 && browserpaw setup` |
+| **`npx` / Tarball / Project Skill**        | No global install or workspace-scoped Skill (`./.agents/skills/browserpaw`) | `npx browserpaw@5.0.1 setup --skill-scope project`    |
 | **Native Client Plugin**                   | Host-native marketplace/plugin install (read-only base Skill + npm CLI)     | See [Client Plugins](#client-plugins) below           |
 
 - **Setup flags:** `--skill-scope user` (default), `--skill-scope project`, `--skill-dir DIR`, `--no-skill`, and `--browser chromium`.
 - See the full multi-path [Installation Guide](INSTALL.md) for human and Agent-assisted onboarding.
-- **Upgrades:** Each newer CLI version is announced once on `stderr`. Upgrade the CLI and re-run `browserpaw setup` to refresh the Native Host and managed base Skill; Chrome MV3 extension updates remain manual in `chrome://extensions`. See the [Upgrade guide](INSTALL.md#upgrade-an-existing-v5-installation).
+- **Upgrades:** When invoked on demand (with no background daemon), `browserpaw` checks npm at most once every 24 hours, verifies SHA-512 integrity and tar extraction guards, installs newer stable CLI versions into `~/.browserpaw/cli-versions/`, and automatically refreshes the staged Native Host, bundled recipes, and managed base Skill (`BROWSERPAW_NO_AUTO_UPDATE=1` / `BROWSERPAW_NO_UPDATE_CHECK=1` to opt out). Compatible `5.x` Chrome MV3 extension updates remain optional and manual in `chrome://extensions`. See the [Upgrade guide](INSTALL.md#upgrade-an-existing-v5-installation).
 
 ## Client Plugins
 
@@ -38,9 +38,9 @@ All four official client plugins stay synchronized with the canonical `skills/br
 | Client               | Package                                                          | Included Capabilities                                                                                | Install                                                                                                                                                              |
 | :------------------- | :--------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **DeepSeek Harness** | [plugins/browserpaw-dsh](plugins/browserpaw-dsh/README.md)       | Bundles `browserpaw` npm package + read-only base skill + `~/.browserpaw` learned-workflow table     | `dsh plugin --profile web add dsh-browserpaw` then `dsh plugin --profile web exec browserpaw setup --no-skill`                                                       |
-| **Hermes Agent**     | [plugins/browserpaw-hermes](plugins/browserpaw-hermes/README.md) | Read-only `browserpaw:browserpaw` skill + unified `browserpaw` CLI tool + `MEDIA:` screenshot output | `npm i -g browserpaw@5.0.0 && browserpaw setup --no-skill` + `hermes plugins install GoldenLoaf24h/browserpaw#plugins/browserpaw-hermes`                             |
-| **Claude Code**      | [plugins/browserpaw-claude](plugins/browserpaw-claude/README.md) | Read-only base skill + `SessionStart` hook (CLI check + `~/.browserpaw` learned-workflow context)    | `npm i -g browserpaw@5.0.0 && browserpaw setup --no-skill` + `claude plugin marketplace add GoldenLoaf24h/browserpaw && claude plugin install browserpaw@browserpaw` |
-| **ChatGPT / Codex**  | [plugins/browserpaw](plugins/browserpaw/README.md)               | Portable Agent Plugins v1.0.0 base skill + icons (no hooks)                                          | `npm i -g browserpaw@5.0.0 && browserpaw setup --no-skill` + `codex plugin marketplace add GoldenLoaf24h/browserpaw && codex plugin add browserpaw@browserpaw`       |
+| **Hermes Agent**     | [plugins/browserpaw-hermes](plugins/browserpaw-hermes/README.md) | Read-only `browserpaw:browserpaw` skill + unified `browserpaw` CLI tool + `MEDIA:` screenshot output | `npm i -g browserpaw@5.0.1 && browserpaw setup --no-skill` + `hermes plugins install GoldenLoaf24h/browserpaw#plugins/browserpaw-hermes`                             |
+| **Claude Code**      | [plugins/browserpaw-claude](plugins/browserpaw-claude/README.md) | Read-only base skill + `SessionStart` hook (CLI check + `~/.browserpaw` learned-workflow context)    | `npm i -g browserpaw@5.0.1 && browserpaw setup --no-skill` + `claude plugin marketplace add GoldenLoaf24h/browserpaw && claude plugin install browserpaw@browserpaw` |
+| **ChatGPT / Codex**  | [plugins/browserpaw](plugins/browserpaw/README.md)               | Portable Agent Plugins v1.0.0 base skill + icons (no hooks)                                          | `npm i -g browserpaw@5.0.1 && browserpaw setup --no-skill` + `codex plugin marketplace add GoldenLoaf24h/browserpaw && codex plugin add browserpaw@browserpaw`       |
 
 See [Plugin Compatibility & Spec Boundaries](docs/development/PLUGIN_COMPATIBILITY.md) for why npm auto-installation and hooks differ across host specifications.
 
@@ -62,7 +62,7 @@ browserpaw task finish --task TASK_ID
 
 Replace `TASK_ID` with the returned task ID. To operate on an existing page, run `browserpaw tabs` and select it with `--tab ID`. Read [command reference](docs/COMMANDS.md) and the [Agent Skill](skills/browserpaw/SKILL.md) for refs, frames, recipes, and receipts.
 
-Self-learned site skills and saved CLI recipes live under `~/.browserpaw` (`skills/`, `recipes/`, and `learned-index.json`). Run `browserpaw recipe find <query>` or `browserpaw recipe list --all` to discover workflows, `browserpaw recipe save FILE` to create a candidate, `browserpaw recipe patch ID --step INDEX -- ARGS...` to repair one step, and `browserpaw recipe validate ID key=value` to verify a read-only candidate before activation. `browserpaw recipe run ID key=value` executes a workflow directly. Candidates remain outside automatic routing, and successful activation refreshes the installed Skill routing table.
+Self-learned site skills and saved CLI recipes live under `~/.browserpaw` (`skills/`, `recipes/`, and `learned-index.json`). Trusted bundled read-only recipes are discoverable directly via `browserpaw recipe find <query>` or `browserpaw recipe list` (status `bundled`) and auto-validate on first `browserpaw recipe run ID key=value...`. For custom or repaired candidates shown in `browserpaw recipe list --all`, use `browserpaw recipe save FILE` to create a candidate, `browserpaw recipe patch ID --step INDEX -- ARGS...` to repair one step, and `browserpaw recipe validate ID` to verify and activate a read-only candidate. Unvalidated candidates remain outside automatic routing, and successful activation refreshes the installed Skill routing table.
 
 ## Troubleshooting & Maintenance
 

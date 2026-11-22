@@ -12,9 +12,6 @@
 <p align="center">
   <a href="https://dulus.ai/download/"><b>Download the app</b></a> ·
   <a href="https://dulus.ai/pricing/"><b>Plans</b></a> ·
-  <a href="FEATURES.md">Features</a> ·
-  <a href="ENGINEERING.md">How it's built</a> ·
-  <a href="DEVLOG.md">Build log</a> ·
   <a href="README.es.md">Español</a>
 </p>
 
@@ -38,6 +35,8 @@
     <img src="assets/at-a-glance-light.svg" width="880" alt="9,242 automated tests, 99.7% passing · 1,778 commits in 148 days · 424 pull requests, every one merged by a human · 117 built-in tools · 26 Round Table seats">
   </picture>
 </p>
+
+<p align="center"><b>70,000+ open capabilities, one click away.</b><br>~69,000 skills · ~1,900 MCP servers · 1,946 plugins from the Anthropic and Hermes ecosystems. Every one open-licensed, and Auto-adapt turns them into native Dulus tools.</p>
 
 ---
 
@@ -78,18 +77,18 @@ What only you can decide waits for you here. Answer it, and the work waiting on 
 
 <p align="center"><img src="assets/gifs/tasks.gif" width="880" alt="The Tasks board with a decision card; the user picks the recommended option and the blocked tasks are ready to start"></p>
 
-### ~1,800 MCP servers, installed as connections
+### ~1,900 MCP servers, installed as connections
 Pick one from the market, install it, sign in, and its tools are ready.
 
 <p align="center"><img src="assets/gifs/mcp.gif" width="880" alt="Installing an MCP server from the market: Connect, Install, Sign in, then the connection with its tools"></p>
 
 ### An open catalog of plugins
-1,508 open plugins, A to Z: search, filter, read one, and Auto-adapt turns it into native tools.
+1,946 open plugins, A to Z, including the official Anthropic plugins and the Hermes community catalog: search, filter, read one, and Auto-adapt turns it into native tools.
 
 <p align="center"><img src="assets/gifs/plugins.gif" width="880" alt="The Plugins Market searched and filtered by a tag, a plugin's drawer, and Auto-adapt handing it to the pet"></p>
 
 ### Skill packs
-Curated skills for one kind of work, installed in a workspace and profile of their own.
+A catalog of ~69,000 open skills, plus curated packs for one kind of work, installed in a workspace and profile of their own.
 
 <p align="center"><img src="assets/gifs/skills.gif" width="880" alt="Installing the Design skill pack into a new workspace and profile of its own"></p>
 
@@ -169,12 +168,10 @@ Memories stay with the profile and project they came from. Stale facts get flagg
 Images and video with your own keys: FLUX.2, GPT Image, Gemini and Imagen, Meta Muse, Veo, Sora 2 and more. Drag a result back in as a reference and keep going. Documents and mini apps the agent builds land in a versioned **Artifacts** library.
 
 ### Grows with you
-A market of **~1,800 MCP servers** that install from inside the app, runtimes included. Skills. Plugins that reload live. And **AutoAdapter**: point it at a GitHub repo and get tools that are verified before they're switched on.
+A market of **~1,900 MCP servers** that install from inside the app, runtimes included. **~69,000 skills.** **1,946 plugins** that reload live. And **AutoAdapter**: point it at a GitHub repo and get tools that are verified before they're switched on.
 
 ### And everything around it
 A real browser pane, a live terminal panel, a steer bubble to talk to Dulus mid-task without stopping it, a Stop that really stops, checkpoints with undo and fork, HTML reports, a Tasks board, Dulus OS, a desktop pet, 14 themes and 34 languages.
-
-**→ [The full feature list](FEATURES.md)**
 
 ## Measured. Not claimed.
 
@@ -187,13 +184,11 @@ Dulus is built by one developer, [Kevin Rojo](https://x.com/KevRojo), using AI c
   </picture>
 </p>
 
-- **9,242 automated tests.** The latest full run (Nov 16, 2026) passed 9,178; the 26 failures were all there before it, and are broken down in [ENGINEERING.md](ENGINEERING.md#latest-full-run).
+- **9,242 automated tests.** The latest full run (Nov 16, 2026) passed 9,178; the 26 failures were all there before it.
 - **Every fix ships with a test that fails without it** — and we break each fix on purpose to prove a test catches it.
 - **1,778 commits in 148 days.**
 - **The biggest single area of the codebase is the test suite** — about 134,000 lines, next to roughly 275,000 that ship in the app.
-- **219 signed entries** in the shared log since August 15. A cleaned-up version is the [build log](DEVLOG.md).
-
-**→ [How Dulus is built](ENGINEERING.md)**
+- **219 signed entries** in the shared log since August 15.
 
 ### Shipping, week by week
 
@@ -221,9 +216,6 @@ The measured distribution of the project by area, including its test suite.
 
 | | Read more |
 |---|---|
-| **What the app does** | [Full feature catalog](FEATURES.md) |
-| **How the work is checked** | [Engineering, measurement methods and known test failures](ENGINEERING.md) |
-| **What has shipped** | [Dated product build log](DEVLOG.md) |
 | **The figures behind the charts** | [Measurement snapshot: November 16, 2026](assets/stats.json) |
 | **Security reports** | [Security policy](SECURITY.md) |
 | **Showcase content** | [Content license](LICENSE) |
@@ -251,13 +243,13 @@ Everything on this page lives in the desktop app.
 Because Free runs on your keys and a plan runs on ours. On Free you bring the AI: your own API keys, or a model on your own machine. **Operator** puts $147 of Fuel in your balance every month for $49, for every Dulus-hosted model with nothing to set up, and opens what only a plan has: a cloud PC of your own and Dulus OS. [Get Operator](https://dulus.online/account/?plan=operator#plans).
 
 ### Is the desktop app open source?
-No. Dulus, the open-source core, is — and stays that way. The desktop app's source isn't published; this showcase shows what it does, how it's built and how it's tested.
+No. Dulus, the open-source core, is — and stays that way. The desktop app's source isn't published.
 
 ### Why keep it private?
 Because a lot of what's on this page exists nowhere else, and we'd rather show the work than hand over the blueprint.
 
 ### Where do the numbers come from?
-From the repository itself, measured on November 16, 2026: git history, line counts and a full test run. The raw data is in [`assets/stats.json`](assets/stats.json) and the method is in [ENGINEERING.md](ENGINEERING.md).
+From the repository itself, measured on November 16, 2026: git history, line counts and a full test run. The raw data is in [`assets/stats.json`](assets/stats.json).
 
 ### Is $DULUS an investment?
 No. $DULUS is a utility and community token used to pay for Fuel on Dulus. Nothing here is financial advice.

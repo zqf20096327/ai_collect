@@ -6,6 +6,14 @@ finds the best moments and cuts them to vertical clips with a **hook up front** 
 
 Free and local: it runs on your own computer. No subscription, no upload limits.
 
+### Easiest: download the app
+
+**[Download ClipCutter for Mac or Windows](https://github.com/pandeymynk/clipcutter/releases/latest)**, install,
+double-click. Nothing else to set up. First-open security warnings and how to get past them:
+**[docs/INSTALL.md](docs/INSTALL.md)**.
+
+### From source (developers)
+
 ```bash
 git clone https://github.com/pandeymynk/clipcutter.git && cd clipcutter
 bash scripts/setup.sh            # Windows: powershell -ExecutionPolicy Bypass -File scripts\setup.ps1

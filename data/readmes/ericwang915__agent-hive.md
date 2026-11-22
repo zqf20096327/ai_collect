@@ -18,6 +18,10 @@ A free, open-source Mac app that turns Claude Code, Codex, Gemini CLI, Antigravi
 
 <p align="center"><i>Every agent is a bee with a name, a face and a job. They bob while they work, doze when they are idle,<br>and earn a new look as they climb from Bronze to Master.</i></p>
 
+<p align="center"><img src="docs/skins.svg" width="860" alt="Three rows of eight stickers in the eight bee colours: honey bees on top, anime maids with pigtails in the middle, anime butlers in tailcoats below, each with a different face"></p>
+
+<p align="center"><i>Sticker bees by default, maids or butlers if you like: pick a skin in Settings → Appearance.<br>Honey bee, Maid café and the classic bee above come with the app; Butler is installed from More skins.</i></p>
+
 ![Agent Hive's honeycomb running a relay team of coding agents: one bee writes, another reviews and sends it back, a third tests](docs/relay.gif)
 
 <p align="center">If the bees make you smile, a ⭐ helps other people find the hive.</p>

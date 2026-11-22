@@ -2,6 +2,10 @@
 
 [![codecov](https://codecov.io/gh/gravion-ux/llm-redteam-kit/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/llm-redteam-kit)
 
+![Demo](docs/demo.png)
+
+*Demo: Offline mock-mode run: 24 curated probes scored against a mock model.*
+
 **An authorized LLM red-teaming evaluation toolkit.** Run a curated pack of
 prompt-injection, jailbreak, system-prompt-extraction and data-exfiltration
 probes — mapped to the [OWASP Top 10 for LLM Applications (2025)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) —
@@ -15,9 +19,29 @@ transparent heuristic detectors, and gate your CI pipeline on the result.
 - **CI-native** — pass-rate thresholds and baseline comparison with
   meaningful exit codes.
 
+**Try it in 20 seconds** (offline demo, no API key, no network):
+
+```bash
+git clone https://github.com/gravion-ux/llm-redteam-kit.git && cd llm-redteam-kit
+python -m llm_redteam_kit run --mock --out-dir reports
+cat reports/report.md
+```
+
 > ⚠️ **Authorized use only.** Only evaluate models and applications you own
 > or have explicit permission to test, with your own API keys. See
 > [Ethics & authorized use](#ethics--authorized-use).
+
+
+## Why this kit — and not garak, DeepTeam or promptfoo?
+
+Those are excellent tools, and this kit is deliberately narrower than all
+three: it is a **CI gate, not a scanner framework**. One zero-dependency
+command runs a curated, OWASP-LLM-2025-mapped probe pack against any
+OpenAI-compatible endpoint, scores responses with transparent heuristics
+you can read in one sitting, and exits with a pass/fail code your pipeline
+can block on. No plugin ecosystem to learn, no services to run — and the
+offline mock mode exercises the whole pipeline before you spend a single
+API call.
 
 ## Quickstart
 
@@ -47,7 +71,7 @@ python -m pytest
 
 | Feature | Details |
 | --- | --- |
-| Curated test pack | 24 probes in `packs/core.jsonl` across 4 attack categories, each with OWASP mapping and detection criteria |
+| Curated test pack | 26 probes in `packs/core.jsonl` across 4 attack categories, each with OWASP mapping and detection criteria |
 | Any OpenAI-compatible endpoint | OpenAI, Azure, Ollama, LM Studio, vLLM, OpenRouter, self-hosted gateways — just a base URL, model and key |
 | Mock mode | Deterministic fake model (refuses some probes, falls for others) for offline demos and CI smoke tests |
 | Heuristic detectors | Refusal detection + per-case regex fail patterns (canaries, leak markers, exfil channels) |
@@ -134,7 +158,7 @@ llm_redteam_kit/
   scoring.py    aggregation + regression gate
   report.py     JSON / Markdown report generation
   cli.py        `run` and `validate` subcommands
-packs/core.jsonl   the bundled 24-case probe pack
+packs/core.jsonl   the bundled 26-case probe pack
 tests/             pytest suite (pack, detectors, scoring, mock e2e, reports)
 examples/          a real mock-mode sample report
 ```
@@ -156,12 +180,3 @@ applications you are responsible for.
 ## License
 
 MIT — see [LICENSE](LICENSE). © 2026 Priyanshu Kumar Thakur.
-
-## Example: a custom pack
-
-`examples/support-bot.jsonl` is a three-case pack written for a fictional customer-support bot (prompt-injection, system-prompt-extraction and data-exfiltration), with synthetic canaries throughout. Validate and run it offline:
-
-    python -m llm_redteam_kit validate examples/support-bot.jsonl
-    python -m llm_redteam_kit run --mock --pack examples/support-bot.jsonl --out-dir reports
-
-To adapt it to your own bot, copy the file, rewrite the prompts against your bot's role, and replace the canaries with values planted in your own system prompt.

@@ -77,6 +77,8 @@ On the Strix Halo use `-p strix-halo`. For a smoke test on any machine, use
 | `multiblimp LANG` | minimal pairs for 101 languages (MultiBLiMP, subject-verb agreement) for `grammar_files` |
 | `cloze build` / `cloze score` | gap-filling benchmark: restore a masked word among plausible alternatives; build once, score many models on the same items |
 | `restore` | propose and rank fillers for a lacuna: letter count, legible letters (`נ??עין`), model proposals and corpus words, ranked with the text on both sides |
+| `sft-source taco` / `parallel` | raw data → chat examples: TaCo-translated Alpaca (target-language answer only), translation requests from a parallel corpus |
+| `languages` | right answer language per data source (judged by the reference), for one or more SFT runs |
 | `clean` | remove OCR garbage, boilerplate and ruined documents from JSONL corpora (any language); `--dry-run` reports with examples |
 | `pairs` | minimal pairs from any held-out text, for languages without a benchmark |
 | `sefaria` | Rabbinic Hebrew from Sefaria's library: one cleaned edition per book, chapters, whole tractates held out, optional minimal pairs ([docs/RABBINIC.md](docs/RABBINIC.md)) |

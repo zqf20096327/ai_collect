@@ -19,7 +19,7 @@ agent kernel.
 
 <p align="center">▶ <a href="docs/assets/pibot-intro-60s.mp4">Watch the 60-second video</a> · <a href="https://pibot.space">Download</a> · <a href="docs/guide/README.md">User guide</a></p>
 
-[English](README.md) · [中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md)
 
 Pi Bot is a desktop app in which a team of named Bots works on your own computer. You chat with a
 Bot directly or put several in a group chat, give them a working folder, and they plan, run

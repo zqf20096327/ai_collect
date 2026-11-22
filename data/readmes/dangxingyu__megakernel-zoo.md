@@ -35,8 +35,9 @@ evaluator and benchmark suite, and the tooling to run the same kind of optimizat
 - With the checkpoint's own number formats (track A), steady decoding is 1.13–1.77× as fast as the fastest general
   engine on the same GPU (vLLM, SGLang, or Cohere's megakernel for North Mini Code) with one sequence, on nine models
   from 8 B to 594 B parameters. With lossless model-specific weight storage (track B) it reaches 2.05×.
-- With exact speculative decoding on Inkling-2-Mini's own draft head (track C), one sequence decodes at 1.53 ms per
-  token on one B200, as fast as vLLM's speculative decoding (1.55 ms), whose output is not lossless.
+- With exact speculative decoding on Inkling-2-Mini's own draft head (track C), one sequence decodes at 1.26 ms per
+  token on one B200 (0.80 ms on natural text), 1.24× as fast as vLLM's speculative decoding (1.09× on natural text),
+  whose output is not lossless.
 - On a production request trace at 8 requests per second, the Inkling-2-Small serving engine keeps 99.2% of requests
   within the service levels (SGLang 81.7%). Its longest stall is 0.15 s (SGLang 4.4 s).
 - `mkserve` serves any engine through the OpenAI completions and chat-completions API, with streaming and sampling.
@@ -46,6 +47,9 @@ evaluator and benchmark suite, and the tooling to run the same kind of optimizat
 
 ## News
 
+- **2026-11-22** A faster track-C engine for Inkling-2-Mini: its draft head now runs inside the track-A megakernel,
+  1.26 ms per token with one sequence (was 1.53) and 0.80 ms on natural text (was 1.02), 1.24× and 1.09× vLLM with
+  DSpark; at 8 sequences it decodes like track A (5.08 ms, was 6.30). Records of three more runs in `runs/`.
 - **2026-11-21** Inkling-2-Mini (26 B, MoE; 12 of its 24 layers run three times per token) on one B200: track-A and
   track-B engines, 1.36× and 1.38× as fast as vLLM with one sequence and even with it at eight, and the first track-C
   engine: exact speculative decoding with the checkpoint's MTP draft head, whose greedy tokens are exactly its own
@@ -191,7 +195,7 @@ type; any other pair is refused. See [`mkserve/README.md`](mkserve/README.md) fo
 | openai/gpt-oss-120b | b200 | `offline-b` | B | offline | 8 | 2,048 | run s12-oss120-b200-a1, submission s0051 |
 | thinkingmachines/Inkling-2-Mini | b200 | `offline-a` (default) | A | offline | 8 | 2,048 | run s17-mini-b200-ma, submission s0014 |
 | thinkingmachines/Inkling-2-Mini | b200 | `offline-b` | B | offline | 8 | 2,048 | run s17-mini-b200-mb, submission s0020 |
-| thinkingmachines/Inkling-2-Mini | b200 | `offline-c` | C | offline | 8 | 2,048 | run s16-mini-b200-c1, submission s0022 |
+| thinkingmachines/Inkling-2-Mini | b200 | `offline-c` | C | offline | 8 | 2,048 | run s18-mini-b200-c4, submission s0013 |
 
 </details>
 
@@ -237,14 +241,15 @@ model's recipe) and SGLang with DSPARK.
 
 | Model | GPU | Fastest general engine with speculative decoding, ms | Track C, ms | Track C |
 |---|---|---|---|---|
-| Inkling-2-Mini | B200 | vLLM + DSpark 1.55 / 2.72 | 1.53 / 6.30 | 1.01× / 0.43× |
+| Inkling-2-Mini | B200 | vLLM + DSpark 1.55 / 2.71 | 1.25 / 5.08 | **1.24×** / 0.53× |
 
-The track-C engine drafts only for a single sequence; with eight it decodes one token per pass and is slower. On
-natural text (prose, code and word problems) with one sequence it takes 1.02 ms per token, and vLLM with DSpark
-0.87 ms. The general engines' speculative output is not lossless: with greedy decoding, vLLM's text with speculation
-equals its own text without it in 12 of 243 streams, SGLang's in 6 of 243. The track-C engine's tokens equal its own
-one-token-per-step tokens in every test (the evaluator's sequences and natural text, 1 and 8 sequences, staggered
-requests).
+The track-C engine drafts inside the track-A megakernel and only for a single sequence; with 2 to 8 it decodes one
+token per pass, as fast as track A and slower than the general engines' speculative decoding (2.19-2.71 ms for vLLM
+with DSpark at 2 to 8 sequences). On natural text (prose, code and word problems) with one sequence it takes 0.80 ms
+per token, and vLLM with DSpark 0.87 ms. The general engines' speculative output is not lossless: with greedy
+decoding, vLLM's text with speculation equals its own text without it in 12 of 243 streams, SGLang's in 6 of 243. The
+track-C engine's tokens equal its own one-token-per-step tokens in every test (the evaluator's sequences and natural
+text, 1 and 8 sequences, staggered requests).
 
 **Serving a production request trace** (300-second replay of the
 [Mooncake tool-and-agent trace](https://github.com/kvcache-ai/Mooncake/tree/main/FAST25-release/traces), all systems over HTTP on
@@ -321,7 +326,7 @@ a shell can drive it. The prompts state the goal, the rules and the two tracks; 
 - [`autoresearch/tools`](autoresearch/tools): `mkprof` (phase timings inside a persistent kernel, which a profiler sees
   as one kernel), `bitcheck.py` (are two builds the same function, bit for bit?) and `weights_census.py` (exact
   statistics of a checkpoint's weights).
-- [`runs/`](runs): every submission of our 26 runs (source, hypothesis, score) and the agents' notes, as worked examples.
+- [`runs/`](runs): every submission of our 29 runs (source, hypothesis, score) and the agents' notes, as worked examples.
 
 For a model that is not in Hugging Face `transformers`, a reference implementation has to be written first;
 [`eval/inkling2_ref.py`](eval/inkling2_ref.py) is the one for Inkling-2-Small and Inkling-2-Mini. To add an engine to
@@ -348,8 +353,9 @@ runs the static checks every engine in `engines/` passes.
 - An engine is specific to one checkpoint and one GPU type, and is compiled on the machine that serves it.
 - Steady-decode engines hold 8 sequences and a 2,048-token context and read the prompt one token per pass.
 - Decoding inside the kernel is greedy; sampling runs in `mkserve` and costs 1 to 11%.
-- The track-C engine (Inkling-2-Mini) speculates only with one sequence; with 2 to 8 it decodes one token per pass
-  and is slower than its track-A engine. A request that arrives while others decode waits for them.
+- The track-C engine (Inkling-2-Mini) speculates only with one sequence; with 2 to 8 it decodes one token per pass,
+  like its track-A engine, and is slower than the general engines' speculative decoding there. A request that arrives
+  while others decode waits for them.
 - Use the engines through `mkserve`: called directly, most of them do not validate requests. The serving engines for
   Qwen3-8B match shared prompt prefixes by a 64-bit hash without comparing tokens.
 - Benchmark numbers are from single nodes and two to three rounds.

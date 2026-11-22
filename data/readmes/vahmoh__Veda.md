@@ -42,7 +42,7 @@ and the applications.
 
 <table>
   <tr>
-    <td colspan="2"><p align="center"><b>Desktop</b></p><img src="documentation/images/desktop.png" alt="The Veda desktop, with the agent's window open and listening"></td>
+    <td colspan="2"><p align="center"><b>Desktop</b></p><img src="documentation/images/desktop.png" alt="The Veda desktop, with the agent's window open and listening, and live previews of the Text Editor, showing a Rust program, and Photos, both working in the background"></td>
   </tr>
   <tr>
     <td width="50%"><p align="center"><b>Browser</b></p><img src="documentation/images/browser.png" alt="The Browser showing Veda's website, www.vedaos.org: the ring glowing over its starry sky, an aurora flowing below the name and what Veda is"></td>
@@ -159,7 +159,10 @@ impl ui::App for Notes {
 ```
 
 Declare each action's risk and run it through the same code as the keyboard
-and mouse: consent, memory and the conversation are the system's job. The
+and mouse: consent, memory and the conversation are the system's job. An
+application the agent needs that is not open works in the background,
+previewed in the agent's window, unless the action is for the user to see
+(`.foreground()`). The
 [full guide](documentation/AGENT.md#making-an-application-agent-compatible)
 covers the rest.
 

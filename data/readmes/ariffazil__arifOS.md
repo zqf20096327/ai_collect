@@ -2,7 +2,7 @@
 <!-- GENERATED:CURRENT-STATE:BEGIN · source: scripts/generate_current_state.py · never hand-edit -->
 > ### ⚠️ Current verified state — generated, never hand-edited
 >
-> **Runtime self-measurement** (`http://127.0.0.1:8088/health @2026-11-18T09:24:13Z`): kernel **degraded** · floors **12/13 measured pass** · vault999 healthy · release `arifos-97ad7bb3d08e` · drift `aligned` (source=built=deployed) · tools exposed 9. Per-floor provenance: `.well-known/current-state.json`.
+> **Runtime self-measurement** (`http://127.0.0.1:8088/health @2026-11-22T02:44:18Z`): kernel **degraded** · floors **11/13 measured pass** · failing: F3, F6 · vault999 stale · release `arifos-f0d0b3c` · drift `aligned` (source=built=deployed) · tools exposed 9. Per-floor provenance: `.well-known/current-state.json`.
 >
 > **Independent audit** (2026-10-11, live re-probe by FI-008 + claim-level hand audit; receipts: `AAA/forge_work/grant-arifos-reality-reforge-2026-10-11/`): floors **2 pass · fail F2, F11, F12, F13 · 7 unmeasured = 13 distinct** (raw key-count 10 includes L11/L12/L13, L-prefix aliases of the failing F11/F12/F13) · actor binding not verified (observed calls unsigned) · receipt fidelity broken on invocation-telemetry surface (HOLD persisted as ok:true) · independent reconstruction: no external verifier bound.
 >
@@ -27,14 +27,14 @@ arifOS dihidupkan sebagai pelayan MCP (`pip install arifos`). Bilangan tool, por
 
 
 <!-- SOT-MANIFEST
-last_verified: 2026-11-21T06:09:06+00:00
-live_commit: 3eba0e7c6 (feat(horizon-seal): unify P evidence tracking, F8 origin, and W3 ratification-po)
-source_commit: 3eba0e7c6
-built_commit: 9d5d743
-deployment_drift_status: repo_live_divergence (kernel self-report drift=false (built=9d5d743) — this says nothing about the repo tree above, which is 3eba0e7 (deploy pending))
-tools_exposed_via_mcp: 9 (verified by live POST /mcp tools/list on 2026-11-21)
+last_verified: 2026-11-22T02:44:18+00:00
+live_commit: 1c51527a0 (docs(readme): ClaudeRules badge + reality-graph section + dead-link truth pass)
+source_commit: 1c51527a0
+built_commit: f0d0b3c
+deployment_drift_status: repo_live_divergence (kernel self-report drift=false (built=f0d0b3c) — this says nothing about the repo tree above, which is 1c51527 (deploy pending))
+tools_exposed_via_mcp: 9 (8 canonical stage verbs + arif_report; verified by live POST /mcp tools/list on 2026-11-22: arif_init, arif_observe, arif_think, arif_route, arif_memory, arif_judge, arif_forge, arif_seal, arif_report)
 truth_rule: live :8088/health + tools/list beat any static count in prose — re-run before you quote this file
-generated_by: scripts/update_readme_sot.py re-stamps live_commit, source_commit, built_commit, deployment_drift_status, tools_exposed_via_mcp and last_verified; every other machine value in this README lives in the generated block above
+generated_by: scripts/update_readme_sot.py re-stamps live_commit, source_commit, built_commit, deployment_drift_status and last_verified; every other machine value in this README lives in the generated block above
 -->
 
 <p align="center">
@@ -55,6 +55,7 @@ In a world where intelligence is abundant, authority becomes the scarce resource
 [![Python](https://img.shields.io/pypi/pyversions/arifos?style=flat-square)](https://pypi.org/project/arifos)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square)](./LICENSE)
 [![Glama](https://glama.ai/mcp/connectors/io.github.ariffazil/arifos/badges/score.svg)](https://glama.ai/mcp/connectors/io.github.ariffazil/arifos)
+[![Listed on clauderules.net](https://clauderules.net/api/badge/io-github-ariffazil-arifos)](https://clauderules.net/mcp/io-github-ariffazil-arifos)
 [![Unified CI](https://img.shields.io/github/actions/workflow/status/ariffazil/arifOS/01-unified-ci.yml?label=Unified_CI&style=flat-square)](https://github.com/ariffazil/arifOS/actions/workflows/01-unified-ci.yml)
 [![Floors](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ariffazil/arifOS/main/.well-known/badges/floors.json&style=flat-square)](./CURRENT_VERIFIED_STATE.md)
 [![Security audit](https://img.shields.io/badge/audit-partial_in_progress-d4a853?style=flat-square)](./SECURITY.md#known-gaps)
@@ -69,10 +70,10 @@ In a world where intelligence is abundant, authority becomes the scarce resource
 | **Human** | A quiet veto: the agent proposes, the kernel records a verdict, you stay sovereign |
 | **Agent / A2A** | MCP tools + receipts. You do not get the keys. Judgment by arifOS, discovery by AAA, execution by A-FORGE |
 | **Institution** | Policy floors F1–F13, a hash-chained VAULT999 audit trail, model-vendor independence |
-| **Machine / MCP** | [Streamable HTTP endpoint](https://mcp.arif-fazil.com/mcp), 8 canonical verbs, [published schemas](https://arifos.arif-fazil.com/tools.json) |
-| **Registries & Indexers** | [Glama MCP Directory](https://glama.ai/mcp/connectors/io.github.ariffazil/arifos) (Score: A) · [`server.json`](./server.json) (Official MCP Registry) · [`CURRENT_VERIFIED_STATE.md`](./CURRENT_VERIFIED_STATE.md) · [`llms.txt`](./llms.txt) · [`CITATION.cff`](./CITATION.cff) |
+| **Machine / MCP** | [Streamable HTTP endpoint](https://mcp.arif-fazil.com/mcp), 8 canonical stage verbs (+ `arif_report` = 9 wire tools), [published schemas](https://arifos.arif-fazil.com/tools.json) |
+| **Registries & Indexers** | [Glama MCP Directory](https://glama.ai/mcp/connectors/io.github.ariffazil/arifos) (Score: A) · [`server.json`](./server.json) (Official MCP Registry) · [ClaudeRules](https://clauderules.net/mcp/io-github-ariffazil-arifos) (MCP directory) · [`CURRENT_VERIFIED_STATE.md`](./CURRENT_VERIFIED_STATE.md) · [`llms.txt`](./llms.txt) · [`CITATION.cff`](./CITATION.cff) |
 
-Live: `https://arifos.arif-fazil.com` · MCP `:8088` · sister organs [AAA](https://github.com/ariffazil/AAA) · [A-FORGE](https://github.com/ariffazil/A-FORGE) · [GEOX](https://github.com/ariffazil/GEOX)
+Live: `https://arifos.arif-fazil.com` · MCP `:8088` · sister organs [AAA](https://aaa.arif-fazil.com) · [A-FORGE](https://github.com/ariffazil/A-FORGE) · [GEOX](https://github.com/ariffazil/GEOX)
 
 ---
 
@@ -87,6 +88,49 @@ Read the commits if you want to check that claim: the author fields are agent ha
 The system is named after its founder and reflects a core belief: **governance is a systems problem, not a model problem.**
 
 One human, and the agents he directs.
+
+---
+
+## Choose your path
+
+**Plain-language summary:**
+
+```text
+PyPI ships the kernel.
+npm ships the JavaScript cable.
+MCP is the language through the cable.
+The endpoint is the address of a running kernel.
+arifOS judges; it does not silently inherit execution authority.
+```
+
+`pip` and `npm` are delivery systems. **MCP** is a communication protocol (not a package manager and not a kernel). **arifOS** is the governance kernel. An **endpoint** is the address of a kernel already running. Installing a package does not start or verify a service by itself.
+
+- **A. I only want to try arifOS (easiest — zero install)**
+  Connect your MCP client directly to the hosted endpoint: `https://mcp.arif-fazil.com/mcp`. No local Python or Node.js installation required.
+- **B. I want to run my own arifOS kernel (self-hosting)**
+  Install the authoritative Python kernel: `pip install arifos`, then start it with `PORT=8088 arifos-mcp streamable-http`.
+- **C. I am building a JavaScript or TypeScript application**
+  Install the thin client connector: `npm install @arifos/mcp` (source: [`arifosmcp/packages/npm/arifos-mcp/`](./arifosmcp/packages/npm/arifos-mcp/)). It connects to a running arifOS kernel and carries **no independent constitutional authority**.
+- **D. I want to review evidence or contribute**
+  Use this GitHub repository, [`docs/START_HERE.md`](./docs/START_HERE.md) (includes a non-coder walkthrough & glossary), and [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+```text
+Human / AI client
+       |
+       | MCP
+       v
+Running arifOS kernel
+installed through PyPI (`pip install arifos`) or reached at a hosted endpoint
+       |
+       v
+governed verdict + evidence + receipt
+
+JavaScript application
+       |
+       | @arifos/mcp (thin cable — zero governance authority)
+       v
+same running arifOS kernel
+```
 
 ---
 
@@ -106,6 +150,20 @@ Delete account + audit trail      → VOID   (blocked by a hard floor)
 ```
 
 Full transcript: [`docs/QUICKSTART.md`](./docs/QUICKSTART.md). The demo runs in-process — no real records or funds are touched.
+
+### Reference App: SAKSI — The arifOS Witness Pattern
+
+> **"Never let the agent that writes the code be the agent that declares the server healthy. Put a thin, read-only Witness in front of raw logs, and lock every mutation behind an HMAC human switch."**
+
+[**SAKSI** (`examples/saksi-witness/`)](./examples/saksi-witness/) is the reference MCP client and runtime governance surface for arifOS. Instead of adding another multi-turn autonomous agent loop (which creates echo chambers and shared blind spots), SAKSI implements **Asymmetric Role Separation (`Author ≠ Judge`)**:
+- **1-Shot Read-Only Watchdog:** Binds the arifOS kernel (`:8088/mcp`) at `OBSERVE_ONLY` and probes raw `journalctl` and systemd unit telemetry (`MainPID`, `ActiveEnterTimestamp`, `_SYSTEMD_INVOCATION_ID`) without narrative bias.
+- **888 HMAC Circuit-Breaker:** Mutations (`systemctl restart`) are locked behind a single-use, 10-minute cryptographic HMAC-SHA256 inline button that only the human sovereign (`F13`) can press—and only when deterministic Python gates (`is-failed` + `1/30m` & `3/24h` rate limits, `llm_consulted: false`) pass.
+
+```bash
+python examples/saksi-witness/saksi_reference.py
+```
+
+Architecture & production case study: [`docs/patterns/saksi-witness.md`](./docs/patterns/saksi-witness.md) · Persona contract: [`examples/saksi-witness/SOUL.template.md`](./examples/saksi-witness/SOUL.template.md).
 
 ---
 
@@ -227,6 +285,14 @@ https://mcp.arif-fazil.com/mcp      # canonical public door · or http://localho
 
 **Canonical endpoint:** `https://mcp.arif-fazil.com/mcp`. Listed & verified on [Glama MCP Directory](https://glama.ai/mcp/connectors/io.github.ariffazil/arifos) with rating **A**. Official registry manifest: [`server.json`](./server.json). `https://arifos.arif-fazil.com/mcp` is a live alias (proxies to the same kernel); use the canonical URL in client configs.
 
+**One command (Claude Code):**
+
+```bash
+claude mcp add --transport http arifos-constitutional-ai-kernel https://mcp.arif-fazil.com/mcp
+```
+
+The same hosted endpoint is what Claude Desktop adds under *Settings → Connectors*, and what Cursor and VS Code point at as a plain server config — no API key, no environment variables, no local process. Third-party listing: [ClaudeRules — arifos-constitutional-ai-kernel](https://clauderules.net/mcp/io-github-ariffazil-arifos) (imported from the Official MCP Registry).
+
 <details>
 <summary><strong>Client config</strong> — Cline · Cursor · Windsurf · Claude Desktop</summary>
 
@@ -285,7 +351,7 @@ Guided walkthrough: [docs/START_HERE.md](./docs/START_HERE.md) · verified [docs
 | MCP tool schemas | [tools.json](https://arifos.arif-fazil.com/tools.json) | agents, registry crawlers |
 | Agent context | [`llms.txt`](./llms.txt) · [`AGENTS.md`](./AGENTS.md) | coding agents |
 | Citation | [`CITATION.cff`](./CITATION.cff) | institutions, researchers |
-| Truth badges | [`.well-known/badges/`](./.well-known/badges/) | status dashboards |
+| Truth badges | [`.well-known/badges/`](./.well-known/badges/) — rendered from `raw.githubusercontent`; the public alias `arifos.arif-fazil.com/.well-known/badges/*` returned 404 (observed 2026-11-18) | status dashboards |
 | Current state | [`.well-known/current-state.json`](./.well-known/current-state.json) | automation |
 
 ---
@@ -331,7 +397,58 @@ arifOS Federation — planes and classes
 | Provider gateway | **FED** `:7074` | Multi-provider model routing (advisory-only) |
 | Boundary services | **HERMES** `:18087` · **CHRON** `:18102` | Semantic and temporal boundaries — not organs ([FEDERATION_CONTRACT.md §2.1](./FEDERATION_CONTRACT.md)) |
 
-**Tool-count semantics** (so no two surfaces disagree): `tools_loaded = 8` — the public MCP facade (KERNEL_ABI_8), the only number to quote publicly · `canonical superset = 25` (8 public ABI + 4 map-only verbs: `arif_fetch`, `arif_challenge`, `arif_stage`, `arif_measure` + 13 hidden verbs) · `total_declared = 48` (8 canonical + 40 diagnostic) · `registry = 62` (with aliases) · `operational = 3` (durable SUCCESS in the last 24 h — proven live, not merely invocable).
+**Tool-count semantics** (so no two surfaces disagree): `tools_exposed = 9` on the public MCP wire (`8` canonical stage verbs `KERNEL_ABI_8` + `arif_report`, matching `/health → layer_health.registry.exposed_tools` and live `POST /mcp tools/list`) · `canonical superset = 25` (8 stage ABI + 4 map-only verbs: `arif_fetch`, `arif_challenge`, `arif_stage`, `arif_measure` + 13 hidden verbs) · `total_declared = 48` (8 canonical + 40 diagnostic) · `registry = 62` (with aliases) · `operational = 3` (durable SUCCESS in the last 24 h — proven live, not merely invocable).
+
+---
+
+### Reality graph — flow × organs × domains × infra
+
+The tables above say who *may* act. The reality graph is the other half: where a piece of work
+**actually** travels, one stage and one owner at a time. Two graphs, one invariant — authority
+never flows from the organ that computed an observation to the organ that judges it.
+
+```
+stage (lg:)         owner      who answers                                  door
+─────────────────── ────────── ──────────────────────────────────────────── ───────────────
+lg:000  OBSERVE     Witness    arifOS arif_observe · FRAME                  :8088 · :18085
+lg:111  EXPLORE     Witness    A-FORGE forge_search / forge_fetch           :7072
+lg:222  APPRAISE    Witness    arifOS arif_think                            :8088
+lg:333  DEVELOP     Builder    A-FORGE dry-run                              :7071
+lg:444  DECIDE      Authority  F13 only — no agent self-decides             stop here
+lg:555  PRODUCTION  Builder    A-FORGE under SEAL                           :7071
+lg:556  DEPLOY      Executor   A-FORGE + live probe                         :7071
+lg:777  SUSTAIN     Executor   arifFlow · FRAME                             :7073 · :18085
+lg:888  HOLD        Authority  888-APEX verdict                             888_HOLD
+lg:999  COMMITMENT  Kernel     arif_seal → VAULT999                         :8088
+```
+
+Stage labels carry the `lg:` prefix **by rule**: bare `000`–`999` are reserved for arifOS kernel
+verbs, so the same numeral means a kernel stage in kernel context and a graph node only when it
+is prefixed. The `lg:` → owner classes are F13-ratified (2026-09-25); the organ column is the
+contract mapping in [FEDERATION_CONTRACT.md](./FEDERATION_CONTRACT.md) §2 and §4 — a mapping,
+not a probe. `lg:888` and `lg:999` each carry sub-nodes in the full namespace table.
+
+**Flow meter (does the graph move?).** `arifFlow :7073` measures that, per actor: execute vs.
+verify counts, barriers, and a diagnosis that names the next `lg:` node to take. It metabolizes
+receipts and never adjudicates — the same proposer/judge/executor/witness split as everywhere else.
+
+```bash
+curl -s http://127.0.0.1:7073/health   # FQ · diagnosis · per-actor execute/verify counts
+# doors: GET /health · POST /ingest · /check · /release · /enforce · /flow
+```
+
+**What each stage is fed from.** Domains compute evidence and the substrate carries it; neither
+gets a vote:
+
+| Layer | Members | Ceiling | Where it enters the graph |
+|---|---|---|---|
+| Domain intelligence | GEOX `:8081` · WEALTH `:18082` · WELL `:18083` | COMPUTE_ONLY / REFLECT_ONLY | evidence into `lg:000`–`lg:222` |
+| Metabolism & witness | arifFlow `:7073` · FRAME `:18085` · CHRON `:18102` | METABOLIZE / OBSERVE / COMPUTE_ONLY | cadence + witness at `lg:777` |
+| Substrate (infra) | Postgres · Redis · Qdrant · FalkorDB · MinIO · NATS · Caddy · Headscale | none — carries, never judges | every stage |
+| Sovereign | F13 | final veto | `lg:444` and every `888_HOLD` |
+
+Ports and ceilings are registry facts, not prose facts: they live in the federation registry with
+`truth_rule: live_health_beats_file`. Quote the live endpoint, never this table.
 
 ---
 
@@ -369,15 +486,15 @@ Dynamic values live in the [generated block](#current-verified-state) at the top
 
 | Repository | Purpose |
 |------------|---------|
-| [AAA](https://github.com/ariffazil/AAA) | Attention plane — routing, state, skill catalog, A2A gateway |
+| AAA — *repository not public (404 observed 2026-11-18); organ live at [aaa.arif-fazil.com](https://aaa.arif-fazil.com)* | Attention plane — routing, state, skill catalog, A2A gateway |
 | [A-FORGE](https://github.com/ariffazil/A-FORGE) | Execution engine after authorisation |
 | [GEOX](https://github.com/ariffazil/GEOX) | Earth sciences domain evidence |
-| [WEALTH](https://github.com/ariffazil/WEALTH) | Capital and financial intelligence |
+| WEALTH — *repository not public (404 observed 2026-11-18); organ live at [wealth.arif-fazil.com/mcp](https://wealth.arif-fazil.com/mcp)* | Capital and financial intelligence |
 | [WELL](https://github.com/ariffazil/WELL) | Human and machine vitality observation |
 | [arifFlow](https://github.com/ariffazil/arifFLOW) | Metabolic ledger daemon — FQ monitoring, receipt ingestion |
 | [FRAME](https://github.com/ariffazil/FRAME) | Independent observer — drift detection, evidence gathering (repository archived, organ live) |
 
-**No public repository today:** FED (`:7074`) and i-ARIF. They are deployed and reachable, but their source is not published. Treat their behaviour as observed from `/health` only.
+**No public repository today:** FED (`:7074`), i-ARIF, AAA and WEALTH. They are deployed and reachable (the last two also lost their GitHub repositories — both returned 404 when re-probed 2026-11-18), but their source is not published. Treat their behaviour as observed from `/health` and their live doors only.
 
 ---
 
@@ -398,6 +515,10 @@ arifOS publishes verifiable evidence for its claims. Every public claim links to
 
 ---
 
+### SAKSI — the witness bot
+
+**SAKSI** (*Witness of Agentic REALITY by arifOS*, Telegram `@arifOS_bot`) is the federation's independent witness: a 1-shot, read-only MCP client with no multi-turn loop and no code-writing tools, so it audits `journalctl` and kernel health without narrative bias. Execution, judgment and witnessing stay separate — **author ≠ judge ≠ executor ≠ witness** — and a human keeps the circuit-breaker (888 HMAC). Live pattern card: [mcp.arif-fazil.com](https://mcp.arif-fazil.com/#saksi-witness-pattern).
+
 ## External Footprint & Discovery
 
 arifOS is publicly discoverable beyond first-party domains.
@@ -413,7 +534,7 @@ arifOS is publicly discoverable beyond first-party domains.
 
 - GitHub public repositories (`ariffazil/arifOS`, `ariffazil/arifosmcp`)
 - PyPI packages (`arifos`, `arifosmcp`)
-- MCP ecosystem directories (`model-context-protocol.com`, `glama.ai`)
+- MCP ecosystem directories (`model-context-protocol.com`, `glama.ai`, `clauderules.net`)
 - Third-party MCP catalogs (Loomal, Skills Playground, LobeHub, G2, Willow)
 
 ### Candidate Independent References (Observed Claims)
@@ -470,7 +591,7 @@ arifOS/
 ├── contracts/          # Runtime contract package                [wheel root]
 ├── core/               # Load-bearing legacy root                [wheel root]
 ├── schemas/            # INIT v2 schemas (F13-ratified 2026-09-20) [wheel root]
-├── examples/           # Runnable governed workflow demo
+├── examples/           # Runnable governed workflow demo + SAKSI Witness Pattern (examples/saksi-witness/) + SAKSI Witness Pattern (examples/saksi-witness/)
 ├── tests/              # Test suite (pytest)
 ├── scripts/            # Operational tooling (update_readme_sot.py, generate_current_state.py)
 ├── .well-known/        # Generated machine state + truth badges (gitignored: state/)
@@ -492,7 +613,7 @@ See [SECURITY.md](./SECURITY.md) for the threat model, known vulnerabilities and
 
 ---
 
-*Revision 2026-10-17 — APEX-ZEN upgrade: human story moved forward, founding context consolidated, 30-second proof elevated, duplicate "not yet proven" consolidated, "drift aligned" semantics clarified (binary matches build source, not necessarily repo HEAD). Prior revision: 2026-10-16 restructured under AGENTIC-README-DOCTRINE v1. Prior audit passes: 2026-09-21 full re-measurement · 2026-09-22 Copilot external ENTERPRISE · 2026-10-11 independent re-probe · 2026-10-17 four-probe audit (333-AGI + IrfanClaw + ChatGPT + WawaBot).*
+*Revision 2026-11-22 — Added SAKSI Witness Pattern reference app (`examples/saksi-witness/`, `docs/patterns/saksi-witness.md`) demonstrating 1-shot read-only MCP runtime witnessing + 888 HMAC human circuit-breaker (`Author ≠ Judge`); reconciled `SOT-MANIFEST` and tool-count semantics (`9` wire tools = `8` canonical stage verbs `KERNEL_ABI_8` + `arif_report`) with live `/health` and `POST /mcp tools/list`; refreshed generated current-state block. Prior revision: 2026-11-18 — ClaudeRules listing badge + one-command Claude Code install; new Reality graph section binding the `lg:` stage path to organs, domains and infra; dead-link truth pass (`github.com/ariffazil/AAA`, `/WEALTH` and `AAA/FEDERATION.md` all 404; the floors badge endpoint returned 404 on the public alias, so it now renders from `raw.githubusercontent`). Prior revision: 2026-10-17 — APEX-ZEN upgrade: human story moved forward, founding context consolidated, 30-second proof elevated, duplicate "not yet proven" consolidated, "drift aligned" semantics clarified (binary matches build source, not necessarily repo HEAD). Prior revision: 2026-10-16 restructured under AGENTIC-README-DOCTRINE v1. Prior audit passes: 2026-09-21 full re-measurement · 2026-09-22 Copilot external ENTERPRISE · 2026-10-11 independent re-probe · 2026-10-17 four-probe audit (333-AGI + IrfanClaw + ChatGPT + WawaBot).*
 
 **Ditempa Bukan Diberi** — Forged, Not Given.
 
@@ -505,5 +626,5 @@ See [SECURITY.md](./SECURITY.md) for the threat model, known vulnerabilities and
 | Unit | arifos.service |
 | Authority ceiling | JUDGE_ONLY |
 | Public MCP | https://mcp.arif-fazil.com/mcp (canonical; live alias: https://arifos.arif-fazil.com/mcp) |
-| Flow graph | [FEDERATION.md](https://github.com/ariffazil/AAA/blob/main/FEDERATION.md) — peta semua organ + repo |
+| Flow graph | [FEDERATION_CONTRACT.md](./FEDERATION_CONTRACT.md) §4 authority chain · §2 organ map (in-repo; the AAA mirror `github.com/ariffazil/AAA/FEDERATION.md` returned 404, observed 2026-11-18) |
 <!-- FEDERATION-STANDARD v2026-10-17 END -->

@@ -12,7 +12,7 @@
 
 > **核心初心：在不损失一行代码排查与修复质量的前提下，把 AI 编程工具里无意义的盲读膨胀与滚雪球 Token 消耗砍到最低。**
 
-**面向主流 AI 编程 Agent（原生支持 Google Antigravity、Claude Code、Codex CLI，开放 `targets/` 插件架构扩展更多工具）的纯 Node.js 零依赖省流套件——毫秒级 `[L起-L止]` 语法骨架导航、原生 `PreToolUse` 防盲读硬刹车、剥离 MCP 空载税的净身角色与 0 Token 本地账单/缓存断层体检。**
+**面向主流 AI 编程 Agent（原生支持 Google Antigravity、Claude Code、Codex CLI，开放 `targets/` 插件架构扩展更多工具）的纯 Node.js 零依赖省流套件——毫秒级 `[L起-L止]` 语法骨架导航、可选 `--with-guard` 超大文件盲读骨架护栏、剥离 MCP 空载税的净身角色与 0 Token 本地账单/缓存断层体检。**
 
 在真实跨语言生产工程（Tauri + Rust + React）的严格 A/B 盲测中，启用 `tokless` 后单次任务减少 **34.4% 模型往返轮次**、砍掉 **53.2% 总 Token 吞吐（净省 1,138 万 Token）**、滚雪球 Cache Read 净省 **53.8%（少烧 1,123 万 Token）**，7 个真实深层 Bug 检出与修复质量零折损（*注：该组盲测数据完成于早期 `v0.1.0` 版本，当时仅含基础语法骨架与无行号盲读拦截，尚未针对后续新增净身角色与优化行号放行机制的新版本重跑完整长任务对照，当前版本理论综合省流表现更强*）。
 
@@ -22,17 +22,18 @@
 
 ### 方式一：终端一键挂载（推荐）
 
-自动检测并挂载本机已安装的 Antigravity、Claude Code（`~/.claude`）与 Codex CLI（`~/.codex`），从 `npx` 临时目录运行时会自动切换为实体文件拷贝，杜绝缓存清理后软链悬空：
+自动检测并挂载本机已安装的 Antigravity、Claude Code（`~/.claude`）与 Codex CLI（`~/.codex`）。遵循「递地图赋能而非捆绑限制 AI 发挥」原则，默认纯增益安装技能、省流规则与净身角色（**默认不挂载 `PreToolUse` 子进程钩子**，且重跑默认安装会自动清理此前残留的旧钩子；从 `npx` 临时目录运行时自动切换为实体文件拷贝，杜绝缓存清理后软链悬空）：
 
 ```bash
 npx tokless install
 ```
 
-按需指定单个或全部目标宿主 / 一键干净卸载：
+按需启用 `PreToolUse` 超大文件（`>800` 行无行号盲读）骨架护栏、指定宿主或一键干净卸载：
 
 ```bash
+npx tokless install --with-guard       # 可选启用 PreToolUse 护栏（仅对 >800 行无行号盲读返回骨架，传行号一律放行）
 npx tokless install --target agy       # 仅挂载 Google Antigravity
-npx tokless install --target claude    # 仅无损合并 Claude Code ~/.claude/settings.json 钩子与技能
+npx tokless install --target claude    # 仅安装 Claude Code ~/.claude/tokless 与 code-skeleton 技能（加 --with-guard 则合并 settings.json 钩子）
 npx tokless install --target codex     # 仅安装 Codex CLI ~/.codex/skills/code-skeleton
 npx tokless install --target all       # 挂载全部已支持宿主
 npx tokless uninstall --target all     # 一键卸载并还原原有宿主配置
@@ -43,7 +44,7 @@ npx tokless uninstall --target all     # 一键卸载并还原原有宿主配置
 不想自己切终端，直接把下面这句话发给 Antigravity 或 Claude Code 对话框即可：
 
 ```text
-请运行 npx tokless install 帮我安装启用 tokless 省流套件（若网络受限可克隆 https://github.com/daoif/tokless 后运行 node install.js），装好后帮我确认钩子与技能已生效。
+请运行 npx tokless install 帮我安装启用 tokless 省流套件（若网络受限可克隆 https://github.com/daoif/tokless 后运行 node install.js），装好后帮我确认技能与省流规则已生效。
 ```
 
 ### 方式三：源码克隆本地安装（适合二次开发或离线环境）
@@ -68,7 +69,7 @@ node install.js
 | :--- | :--- | :--- | :--- |
 | **语义搜索引擎** | IDE 自带 `@Codebase` | 向量/关键词检索，帮 AI 找到“大概在哪个文件” | **只管找路，不管怎么读**。AI 拿到文件名后，下一步依然习惯性调用无行号的 `read_file` / `Read`，顺手把整份一两千行源码全量塞进上下文。 |
 | **全仓打包器** | `repomix` / `gitingest` | 把整个仓库压成单文件喂给网页聊天框 | 适合无本地工具权限的网页问答；若塞进本地 Agent 会话，相当于第 1 步直接背上几万 Token 包袱。 |
-| **省流导航与硬刹车** | **`tokless`** | **80ms 零索引出 `[L起-L止]` 骨架 + `PreToolUse` 硬拦盲读** | 当 AI 偷懒盲读 >200 行代码文件（或传 `1~文件末尾` 假切片）时，底层钩子当场拦截并直接甩回该文件的函数/类 `[L起-L止]` 行号骨架，逼它按行号精准切片读取。 |
+| **省流骨架与可选护栏** | **`tokless`** | **80ms 零索引出 `[L起-L止]` 骨架 + 可选 `--with-guard` 盲读导航** | 先用零开销语法骨架定位 `[L起-L止]` 行号再按需切片精读；若启用 `--with-guard`，当 AI 完全不传行号盲读 `>800` 行超大文件时会自动返回全文骨架引导按行号读取（传了行号一律放行）。 |
 
 `tokless` 与 `@Codebase` 完全不冲突，而是天然互补：`@Codebase` 负责回答“去哪几个文件找”，`tokless` 负责在读取那一刻踩住刹车，只让真正要改的那几十行代码进入上下文。
 
@@ -105,23 +106,26 @@ $$\text{累计 Cache Read} \approx \text{平均上下文水位} \times \text{模
 
 ---
 
-## 四大核心能力与全平台支持边界（v0.4.1）
+## 四大核心能力与全平台支持边界（v0.5.1）
 
 `tokless` 把「跨所有 AI 编程工具通用的省流内核」与「特定客户端的深度钩子/日志解析」拆得清清楚楚，绝不混为一谈：
 
-| 宿主工具 | 1. `tokless skeleton` 语法骨架 + `AGENTS.md` 规范 | 2. `PreToolUse` 防盲读硬刹车 | 3. 净身子角色 (`inheritMcp: false`) | 4. `tokless audit` 体检仪 |
+| 宿主工具 | 1. `tokless skeleton` 语法骨架 + `AGENTS.md` 规范 | 2. `PreToolUse` 盲读骨架护栏（`--with-guard` 可选） | 3. 净身子角色 (`inheritMcp: false`) | 4. `tokless audit` 体检仪 |
 | :--- | :---: | :---: | :---: | :---: |
-| **能力通用边界** | **100% 所有 AI 编程工具通用** | **可扩展钩子机制（已打通 Antigravity / Claude Code）** | **Antigravity 插件专用** | **`audit project` 跨端通用；`session / compare` 属 Antigravity 专用** |
-| **Google Antigravity** | 原生 Skill + CLI + `rules/AGENTS.md` | 原生 `hooks.json` (`read_file` / `view_file`) | `tokless-coder` / `tokless-reviewer` | 全功能支持（`project` + `session` / `compare`） |
-| **Claude Code** | `~/.claude/skills` + CLI | 无损合并 `~/.claude/settings.json` (`Read`) | — | 支持 `audit project` 规则与 MCP 税体检 |
+| **能力通用边界** | **100% 所有 AI 编程工具通用** | **默认关闭，按需 `--with-guard` 启用（已打通 Antigravity / Claude Code）** | **Antigravity 插件专用** | **`audit project` 跨端通用；`session / compare` 属 Antigravity 专用** |
+| **Google Antigravity** | 原生 Skill + CLI + `rules/AGENTS.md` | 可选 `hooks.json` (`read_file` / `view_file`) | `tokless-coder` / `tokless-reviewer` | 全功能支持（`project` + `session` / `compare`） |
+| **Claude Code** | `~/.claude/skills` + CLI | 可选无损合并 `~/.claude/settings.json` (`Read`) | — | 支持 `audit project` 规则与 MCP 税体检 |
 | **Codex CLI** | `~/.codex/skills` + CLI + `AGENTS.md` | — | — | 支持 `audit project` 规则体检 |
 | **其他工具**（Cursor / Windsurf / Cline / Roo Code / Trae / OpenCode 等） | `npm i -g tokless` + 项目根 `AGENTS.md` 立即可用 | 欢迎参考 `targets/claude-code.js` 共创适配 PR | — | 支持 `audit project` 规则体检 |
 
 ### 1. `tokless skeleton`（兼容 `repo-skeleton`）+ `rules/AGENTS.md` 省流规范 —【100% 所有 AI 编程工具通用】
 
-无需预建索引数据库，纯 Node.js 标准库毫秒级提取 `.js/.ts/.tsx/.py/.go/.rs/.java/.c/.cpp/.md` 等文件的类名、函数签名、接口与精确 **`[L起-L止]` 行号范围**，配合 [`rules/AGENTS.md`](./rules/AGENTS.md) 中的两步精准读取规范，探索期单文件省流 **85%~97%**：
+无需预建索引数据库，纯 Node.js 标准库毫秒级提取 `.js/.jsx/.ts/.tsx/.vue/.svelte/.py/.go/.rs/.java/.kt/.c/.cpp/.cs/.md` 等文件的类名、函数签名、接口、单测套件/用例（`describe`/`test`/`it`）与精确 **`[L起-L止]` 行号范围**（按需惰性加载对应语言解析器），配合 [`rules/AGENTS.md`](./rules/AGENTS.md) 中的两步精准读取规范，探索期单文件省流 **85%~97%**：
 
 ```bash
+# 快速生成全仓目录行数与字数鸟瞰地图（不展开函数签名）
+npx tokless skeleton . --map
+
 # 扫描整个源码目录（自动排除 node_modules/.git/dist/target 等），一步生成全局行号地图
 npx tokless skeleton ./src --depth 3
 
@@ -129,9 +133,9 @@ npx tokless skeleton ./src --depth 3
 npx tokless skeleton ./src/App.tsx
 ```
 
-### 2. `PreToolUse` 防盲读硬刹车（`scripts/read-guard-hook.js`）—【可扩展钩子机制，目前已原生打通 Google Antigravity 与 Claude Code】
+### 2. 可选 `PreToolUse` 超大文件盲读护栏（`scripts/read-guard-hook.js`）—【默认关闭，`--with-guard` 按需启用】
 
-精准防盲读，绝不设死板跨度锁死：当 AI 不传起止行号盲读超过 200 行（可通过环境变量 `TOKLESS_READ_MAX_LINES` 调整）的代码文件，或传入 `1~文件末尾` 假切片糊弄时，钩子自动拦截并当场返回该文件的 `[L起-L止]` 语法骨架；一旦拿到明确行号，无论目标函数是 50 行还是 500 行均一次完整放行，避免拆成多轮碎片读取倒贴 Cache Read。
+遵循「赋能导航而非捆绑手脚」原则，`npx tokless install` 默认**不挂载** `PreToolUse` 钩子（彻底消除每次读取工具调用拉起子进程的开销，且重跑默认安装会自动清理已挂旧钩子）。需要强管控时可通过 `npx tokless install --with-guard` 开启：默认阈值对齐单次 `800` 行物理上限（可通过环境变量 `TOKLESS_READ_MAX_LINES` 调整），**仅对 `>800` 行且完全未传行号的盲读返回该文件的 `[L起-L止]` 语法骨架导航；凡传入了任何显式行号参数（含 `L1~末尾`）代表 AI 心中有数，一律 100% 放行**，杜绝报错重试与强拆多轮反噬 Cache Read。
 
 ### 3. 剥离外部 MCP 空载底座税的净身子角色（`agents/`）—【Antigravity 插件专用】
 
@@ -159,11 +163,11 @@ npx tokless audit compare <优化前ID> <优化后ID>
 ### 1. 已内置一键挂载的三大工具（运行 `npx tokless install` 后分别装到了哪里、怎么触发）
 
 - **Google Antigravity**（`--target agy`）：
-  - **安装位置**：`~/.gemini/config/plugins/agy-tokless/`（挂载 `plugin.json`、`hooks.json`、`rules/AGENTS.md`、`skills/` 与 `agents/`）。
-  - **日常触发**：装好后新开对话即自动生效——探索大文件时自动触发 `code-skeleton` 技能与 `PreToolUse` 防盲读拦截；派发纯编码或审查子任务时可指定 `tokless-coder` / `tokless-reviewer` 卸除 MCP 税；需要查账单时直接让 AI 调用 `token-audit` 技能或手动运行 `npx tokless audit session <ID>`。
+  - **安装位置**：`~/.gemini/config/plugins/agy-tokless/`（挂载 `plugin.json`、`rules/AGENTS.md`、`skills/`、`agents/`；加 `--with-guard` 时额外生成 `hooks.json`）。
+  - **日常触发**：装好后新开对话即自动生效——探索大文件时触发 `code-skeleton` 技能按行号精读（若开启 `--with-guard` 则对 `>800` 行无行号盲读自动返回骨架导航）；派发纯编码或审查子任务时可指定 `tokless-coder` / `tokless-reviewer` 卸除 MCP 税；需要查账单时直接让 AI 调用 `token-audit` 技能或手动运行 `npx tokless audit session <ID>`。
 - **Claude Code**（`--target claude`）：
-  - **安装位置**：核心脚本存入 `~/.claude/tokless/`，技能写入 `~/.claude/skills/code-skeleton/SKILL.md`，并将 `Read` 防盲读钩子无损合并进 `~/.claude/settings.json`（保留你原有的权限与自定义钩子，卸载时精准剥离还原）。
-  - **日常触发**：在任意项目启动 `claude` 后自动生效——当 Claude 试图不带 `offset/limit` 盲读超过 200 行的代码文件时，`PreToolUse` 钩子会自动拦下并把 `[L起-L止]` 骨架直接喂回给它，引导它按行号精读。
+  - **安装位置**：核心脚本存入 `~/.claude/tokless/`，技能写入 `~/.claude/skills/code-skeleton/SKILL.md`；加 `--with-guard` 时将 `Read` 盲读导航钩子无损合并进 `~/.claude/settings.json`（默认不挂载且重跑默认安装会自动剥离旧钩子，完整保留原有权限与自定义钩子）。
+  - **日常触发**：在任意项目启动 `claude` 后自动发现 `code-skeleton` 技能；若启用了 `--with-guard`，当 Claude 试图不带 `offset/limit` 盲读超过 800 行的超大代码文件时，`PreToolUse` 钩子会把 `[L起-L止]` 骨架直接喂回给它引导按行号精读。
 - **Codex CLI**（`--target codex`）：
   - **安装位置**：`~/.codex/skills/code-skeleton/`（含 `SKILL.md` 与零依赖 `tools/repo-skeleton` 脚本）。
   - **日常触发**：Codex 会自动发现并按需调用 `code-skeleton` 技能先看行号骨架再精读源码；建议同时将 [`rules/AGENTS.md`](./rules/AGENTS.md) 中的省流规范合入项目根目录的 `AGENTS.md` 以强化主动触发。
@@ -204,7 +208,9 @@ const verdict = evaluateReadGuard({
 
 ---
 
-## 社区共建：欢迎扩展更多 AI 编程工具（Contributing）
+## 社区共建：欢迎扩展更多 AI 编程工具与语言支持（Contributing）
+
+### 1. 新增 AI 编程工具一键挂载（`targets/<agent>.js`）
 
 `tokless` 将各宿主的安装与卸载逻辑完全解耦在 [`targets/`](./targets/) 目录下，每个宿主只需一个独立的百行级适配器文件：
 
@@ -212,9 +218,17 @@ const verdict = evaluateReadGuard({
 - [`targets/claude-code.js`](./targets/claude-code.js) — Claude Code `~/.claude/settings.json` 无损合并与技能挂载（推荐新增适配时优先参考）
 - [`targets/codex.js`](./targets/codex.js) — OpenAI Codex CLI 技能挂载
 
-因作者近期精力有限，暂未逐一折腾十几个编辑器的专属全局配置与钩子格式。非常欢迎使用 **Cursor、Windsurf、Cline、Roo Code、Trae、OpenCode、GitHub Copilot** 等工具的开发者，直接让自己的 AI 参考 [`targets/claude-code.js`](./targets/claude-code.js) 完成适配并在 [`targets/index.js`](./targets/index.js) 中注册后提交 Pull Request（或为 `tools/repo-skeleton` 补充更多语言的语法签名识别）——我们审核无误后会立即合并发版；后续作者空下来也会逐步补充更多工具的官方一键支持。
+因作者近期精力有限，暂未逐一折腾十几个编辑器的专属全局配置与钩子格式。非常欢迎使用 **Cursor、Windsurf、Cline、Roo Code、Trae、OpenCode、GitHub Copilot** 等工具的开发者，直接让自己的 AI 参考 [`targets/claude-code.js`](./targets/claude-code.js) 完成适配并在 [`targets/index.js`](./targets/index.js) 中注册后提交 Pull Request——我们审核无误后会立即合并发版；后续作者空下来也会逐步补充更多工具的官方一键支持。
 
-提交 PR 前请在本地运行全套自检（包含跨平台路径测试与 100% 零私人路径泄漏门禁）：
+### 2. 多语言骨架解析扩展与真实场景修复（`tools/repo-skeleton/lib/langs/<lang>/`）
+
+`tokless skeleton` 对所有支持语言一视同仁，统一采用「共享词法与括号平衡核心（[`tools/repo-skeleton/lib/core/`](./tools/repo-skeleton/lib/core/)）+ 按语言独立分目录（[`tools/repo-skeleton/lib/langs/<lang>/index.js`](./tools/repo-skeleton/lib/langs/)）」的模块化架构：每种语言在独立目录内统一管理关联文件后缀（如 `javascript/` 承接 `.js/.jsx/.mjs/.cjs/.ts/.tsx`、`c-family/` 承接 `.c/.h/.cpp/.hpp/.cc/.cs`、`sfc/` 承接 `.vue/.svelte` 等），仅在扫描到对应后缀时由 `core/registry.js` 按需惰性加载，互不耦合且保持毫秒级冷启动。
+
+如果你在真实项目中遇到某门语言的语法边界漏检，或希望新增语言支持，请遵循以下稳健省心的共创约定：
+
+1. 修改或新增对应的 `tools/repo-skeleton/lib/langs/<lang>/index.js`（若新增后缀，同步注册至 `tools/repo-skeleton/lib/core/registry.js` 的 `LANG_DIR_TO_EXTS`）；
+2. **必须在 `tests/langs/<lang>.test.js` 补上复现该真实场景的回归测试用例**（[`tests/run-all.js`](./tests/run-all.js) 会自动递归发现 `tests/` 下全部 `*.test.js`，无需手改 `package.json` 测试列表）；
+3. 提交 PR 前在本地运行全套自检（包含全量语言累积回归测试、跨平台路径测试与 100% 零私人路径泄漏门禁），确保历史全量用例 100% 零破坏：
 
 ```bash
 npm test
@@ -226,7 +240,7 @@ npm test
 
 `tokless` 全部代码基于 Node.js 标准库从零独立实现，核心设计思路受益于以下优秀开源探索与社区贡献者，特此致谢：
 
-- **社区贡献者**：感谢 [@PXY000](https://github.com/PXY000) 在跨平台 PowerShell 技能文档、钩子 Node 绝对路径解析、路径穿越防护与沙箱安全审计查找上的扎实修复与单测贡献。
+- **社区贡献者**：感谢 [@PXY000](https://github.com/PXY000) 在跨平台 PowerShell 技能文档、钩子 Node 绝对路径解析、路径穿越防护与沙箱安全审计查找上的扎实修复与单测贡献；感谢 [@Mr-PolarBear](https://github.com/Mr-PolarBear) 在 Java 嵌套类、点号/泛型返回类型、匿名字段过滤与 JS 顶层 IIFE 骨架提取上的真实场景修复贡献。
 - **灵感致敬**：
   - [HoangP8/tokless](https://github.com/HoangP8/tokless)：启发了项目命名及“指令规范 + 生命周期钩子”组合拦截上下文膨胀的思路；
   - [ILoveMyJay/repocontext](https://github.com/ILoveMyJay/repocontext) 与 [pdavis68/RepoMapper](https://github.com/pdavis68/RepoMapper)：启发了“先拿带行号的紧凑语法骨架地图，再按行号精准切片读取”的探索期降耗策略；

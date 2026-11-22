@@ -29,7 +29,21 @@ find . -type f -name '*.js' -print0 | xargs -0 stat -f '%m %N' | sort -n
 curl -fsSL https://github.com/zazencodes/aicmd/raw/refs/heads/main/install.sh | sh
 ```
 
-MacOS and Linux are supported.
+macOS and Linux are supported.
+
+## Recommended setup
+
+Use an [OpenAI API key](https://platform.openai.com/api-keys) with GPT-6 Luna
+and reasoning effort set to `none`.
+
+```sh
+export OPENAI_API_KEY='your-openai-api-key'
+aicmd config set model openai-api/gpt-6-luna/none
+aicmd list the ten largest files
+```
+
+New installs already select this model. Run `config set` to switch an existing
+config to it.
 
 ## Why aicmd
 
@@ -62,9 +76,9 @@ Smart AI options:
 
 The generated command appears on a new line, ready to send. You can review, modify and run it as you like.
 
-It's powered by the CLI that you already pay for: Codex, Claude Code or Antigravity, e.g. `codex/gpt-5.6-terra/low`
-
-Or you can use the APIs directly. This incurs some API costs but often has lower latency.
+`aicmd` supports hosted APIs, local models, and authenticated agent CLIs such
+as Codex, Claude Code, and Antigravity. Direct API calls are billed by the
+provider and avoid agent startup time.
 
 Under the hood, your `aicmd` request is dynamically injected into the following prompt, which is passed to the underlying LLM:
 
@@ -96,7 +110,7 @@ Flags:
 
 | Flag | Meaning |
 | --- | --- |
-| `-m <spec>`, `--model <spec>` | model spec override: `provider/model/effort` (e.g. `codex/gpt-5.6-terra/low`) |
+| `-m <spec>`, `--model <spec>` | Override `provider/model/effort` for one request (e.g. `codex/gpt-6.2-sol/low`) |
 | `-x`, `--verbose` | show effective configuration, the model prompt, and available thinking to stderr |
 | `-v`, `--version` | print version |
 | `-h`, `--help` | print usage |
@@ -110,8 +124,8 @@ See the [usage guide](docs/usage.md) for a more detailed guide on input forms, f
 The installer creates a documented starting config in `~/.config/aicmd.toml`
 
 ```toml
-model = "openai-api/gpt-5.6-luna/none"   # provider/model/effort
-clipboard = false                   # also copy the command to the clipboard
+model = "openai-api/gpt-6-luna/none"  # provider/model/effort
+clipboard = false                    # also copy the command to the clipboard
 ```
 
 Manage it with the `config` subcommand:
@@ -119,31 +133,38 @@ Manage it with the `config` subcommand:
 ```
 aicmd config list                            show all settings
 aicmd config get model                       print one setting
-aicmd config set model codex/gpt-5.6-terra/medium
+aicmd config set model codex/gpt-6.2-sol/low
 aicmd config set clipboard on
 ```
 
-API-backed providers use environment variables for credentials:
+Gemini and Claude also support direct API access through environment variables.
 
 ```sh
-export OPENAI_API_KEY=...
-aicmd -m openai-api/gpt-5.6/low <your request>
+export GEMINI_API_KEY='your-gemini-api-key'
+aicmd -m gemini-api/gemini-4-hydrogen/low list the ten largest files
 
-export GEMINI_API_KEY=...
-aicmd -m gemini-api/gemini-3.7-flash/low <your request>
-
-export ANTHROPIC_API_KEY=...
-aicmd -m claude-api/claude-sonnet-4-6/low <your request>
+export ANTHROPIC_API_KEY='your-anthropic-api-key'
+aicmd -m claude-api/claude-sonnet-5-5/low list the ten largest files
 ```
 
 Local models are available through Ollama and llama.cpp:
 
 ```sh
 ollama serve
-aicmd -m ollama/gemma4:e2b/none <your request>
+```
 
-llama-server -hf ggml-org/gemma-3-4b-it-GGUF --alias gemma-3-4b-it
-aicmd -m llama/gemma-3-4b-it/none <your request>
+In another terminal, pull the model and run `aicmd`.
+
+```sh
+ollama pull gemma4:e2b
+aicmd -m ollama/gemma4:e2b/none list the ten largest files
+```
+
+For llama.cpp, start the server and run `aicmd` in another terminal.
+
+```sh
+llama-server -hf ggml-org/gemma-4-E2B-it-GGUF:Q4_0 --alias gemma-4-e2b-it
+aicmd -m llama/gemma-4-e2b-it/none list the ten largest files
 ```
 
 See the [local LLM guide](docs/local-llms.md) for server setup, endpoint

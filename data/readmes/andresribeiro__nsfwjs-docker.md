@@ -8,11 +8,11 @@ High-performance, self-hosted NSFW detection API powered by
 [NSFWJS](https://github.com/infinitered/nsfwjs).
 
 - **Accuracy:** ~93%;
-- **Latency:** ~100ms per prediction;
+- **Latency:** ~80ms per prediction;
 - **Input:** JPEG, PNG, WebP, AVIF, TIFF, GIF (first frame), raw pixel data;
 - **Output:** 5-class classification — Neutral, Drawing, Sexy, Hentai, Porn;
 - **Multi-architecture:** Supports both `x64` and `arm64`.
-- **Lightweight:** Runs under 350 MB of RAM.
+- **Lightweight:** Runs under 200 MB of RAM.
 
 ## Table of Contents
 
@@ -27,6 +27,9 @@ High-performance, self-hosted NSFW detection API powered by
 
 ```shell
 docker run -p 3333:3333 -d --name nsfwjs andresribeiroo/nsfwjs
+
+# Optional: require an API key for /classify
+docker run -p 3333:3333 -d --name nsfwjs -e API_KEY=your-secret andresribeiroo/nsfwjs
 ```
 
 ## Usage
@@ -55,6 +58,40 @@ Content-Type: application/json
 
 The probability of each category ranges from 0 (lowest) to 1 (highest).
 
+### Health check
+
+`GET /status` returns `200` with `{ "ok": true }` once the model is loaded and
+the server is accepting requests.
+
+### Authentication
+
+Authentication is optional. Start the container with `API_KEY` set to require a
+key on `POST /classify`:
+
+```shell
+docker run -p 3333:3333 -d --name nsfwjs -e API_KEY=your-secret andresribeiroo/nsfwjs
+```
+
+Send the key as a bearer token or in the `X-API-Key` header:
+
+```shell
+curl -X POST \
+  -H "Authorization: Bearer your-secret" \
+  -H "Content-Type: application/octet-stream" \
+  --data-binary @image.jpg \
+  http://localhost:3333/classify
+```
+
+Requests without a valid key return `401 Unauthorized` with
+`{ "error": "unauthorized" }`. When `API_KEY` is unset, no authentication is
+required.
+
+### Errors
+
+An empty body, or bytes that cannot be decoded as an image, return
+`400 Bad Request` with `{ "error": "invalid image" }`. Any other failure returns
+`500`.
+
 ## Examples
 
 ### Node.js / Browser
@@ -65,6 +102,7 @@ const res = await fetch("http://localhost:3333/classify", {
   headers: { "Content-Type": "application/octet-stream" },
   body: imageBlobOrBuffer,
 });
+if (!res.ok) throw new Error(`classify failed: ${res.status}`);
 const { prediction } = await res.json();
 ```
 
@@ -79,6 +117,7 @@ with open("image.jpg", "rb") as f:
         data=f,
         headers={"Content-Type": "application/octet-stream"},
     )
+resp.raise_for_status()
 print(resp.json()["prediction"])
 # [{ className: "Neutral", probability: 0.637 }, ...]
 ```
@@ -125,13 +164,21 @@ docker run -p 3333:3333 nsfwjs
 
 ## Local development
 
-Requires [Deno](https://deno.com) and [NodeJS](https://nodejs.org).
+Requires [Node.js](https://nodejs.org) 26 or newer.
 
 ```shell
-deno install                                               # install dependencies
+npm install                                                # install dependencies
 npm rebuild @tensorflow/tfjs-node --build-from-source      # rebuild TensorFlow, required on arm64
-deno task dev                                              # watch mode (restarts on file changes)
-deno task start                                            # production mode
+npm run dev                                                # watch mode (restarts on file changes)
+npm run start                                              # production mode
+```
+
+Type checking and formatting:
+
+```shell
+npm run typecheck
+npm run check
+npm run format
 ```
 
 The server listens on port `3333`.

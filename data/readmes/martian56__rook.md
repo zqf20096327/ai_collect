@@ -128,7 +128,9 @@ Models are `provider/model` strings (aviary's format).
 ```
 
 `base_url` (or `ROOK_BASE_URL`) points at any OpenAI-compatible endpoint,
-for a local or self-hosted model.
+for a local or self-hosted model. `context_window` (a token count) tells
+rook the window of a model it does not recognize, so long sessions compact
+at the right point: `{ "model": "custom/my-model", "context_window": 32000 }`.
 
 The provider's key comes from its environment variable
 (`OPENROUTER_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, and so on), or
@@ -453,6 +455,33 @@ can find one without knowing its URL, and `add <name>` then installs a
 plugin by its index name. The index URL defaults to a martian56-hosted
 list and is overridable with `ROOK_PLUGIN_INDEX`.
 
+## Inside dusk
+
+rook also runs inside the [dusk](https://github.com/martian56/dusk) editor
+as a plugin, in a chat panel beside your code. Add it to
+`~/.config/dusk/config.toml`:
+
+```toml
+[[plugin]]
+name = "rook"
+command = "rook"
+args = ["--dusk"]
+protocol = true
+```
+
+`space r` (or `:rook.chat`) opens the panel; type and press Enter to ask,
+Ctrl+N for a new line, and F6 to move between the panel and the editor.
+Select code and press `space r` (or run `:rook.ask_about_selection`) to ask
+about it, and use `@path` in a message to attach a file. A message sent while
+rook is working waits its turn. Chats are saved like terminal sessions:
+`:rook.resume` continues this project's last one (from dusk or the terminal),
+`:rook.new` starts fresh, and `rook --continue` in a terminal picks up a dusk
+chat. The status line shows the session's token count. Approvals
+and questions come up as dusk pickers, the Stop button (or `:rook.stop`)
+interrupts a turn, and files rook changes reload in dusk unless they have
+unsaved edits. The model, keys, permissions, skills, hooks, and MCP servers
+are the same as in the terminal.
+
 ## Hooks
 
 A hook runs a command when something happens in a session. Declare them
@@ -596,8 +625,8 @@ tests and commit both the generator and generated Raven module together.
 
 ## Known limits
 
-grep is literal substring matching, not regex. A subagent's own request
-(non-streaming) stops at its next tool round rather than mid-flight.
+grep uses RE2 regular expressions, so it has no backreferences or lookaround,
+and it returns at most 50 matches; prefix a pattern with `(?i)` to ignore case.
 
 ## License
 

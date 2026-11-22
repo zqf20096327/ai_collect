@@ -5,52 +5,62 @@
 [![Companion: Token-Maxxing](https://img.shields.io/badge/Companion-Token--Maxxing-00ffcc?style=flat-square)](https://github.com/humanoiseLABS/token-maxxing)
 [![Website: HUMANOISE](https://img.shields.io/badge/Website-HUMANOISE-ffd23f?style=flat-square)](https://humanoise.vercel.app)
 
-**HumanoiseLABS (`@humanoiseLABS`)** builds zero-fluff instruction & guardrail layers for AI coding agents across two flagship products:
+Satu command buat ganti gaya handbook HR coding agent lu dengan kejujuran +62 (proyek [**HumanoiseLABS**](https://humanoise.vercel.app)): otomatis pasang `.agentignore`/`.claudeignore` plus fitur `plus62 graph` biar agent nggak boros scan folder sampah, berani nyemprot bug ngaco, haram klaim selesai sebelum test jalan, & tetap wajib konfirmasi `rm -rf`.
 
-| Product | Package / Repo | Focus | Install Command |
-|---|---|---|---|
-| **+62 Mode** *(this repo)* | [`@humanoiselabs/plus62`](https://www.npmjs.com/package/@humanoiselabs/plus62) ([`humanoiseLABS/plus62`](https://github.com/humanoiseLABS/plus62)) | **Partner Ngoding Lokal (+62 Bloko Suto)** — Bahasa Indonesia developer persona (`lu/gw`), zero corporate preamble, suppresses leaked reasoning dumps, cultural lexicon, & Risk Class 0–4 safety guardrails. Binaries: `plus62`, `62-mode`, `hahahah-ai`, `hahahah`. | `npx @humanoiselabs/plus62 install` |
-| **Token-Maxxing** *(companion product)* | [`@humanoiselabs/token-maxxing`](https://www.npmjs.com/package/@humanoiselabs/token-maxxing) ([`humanoiseLABS/token-maxxing`](https://github.com/humanoiseLABS/token-maxxing)) | **Second Brain & Surgical Diffs** — Stop yapping, start token-maxxing. Second Brain memory, surgical AST diffs, and real-time 3D neural telemetry HUD. Binaries: `token-maxxing`, `tmx`. | `npx @humanoiselabs/token-maxxing install` *(or `tmx`)* |
+```bash
+npx @humanoiselabs/plus62 install --target .
+```
 
-*(Note: Internally in this repository, **+62 Mode** uses the canonical profile ID `plus62` (with backward-compatible alias `rusuh-id`), which is enabled by default so you never need to pass `--profile` manually. Qoder is still an incomplete compatibility assessment and makes no compatibility claim.)*
+## Showcase (+62 Mode in Action)
 
-## Before vs After (+62 Mode Showcase)
+### 1. Obrolan Santai · Before vs After (Antigravity IDE · Gemini 4 Hydrogen Extra)
 
-### 1. Obrolan Santai (Antigravity IDE · Gemini 4 Hydrogen Extra)
-
-Prompt yang sama persis (`halo` → `gabut`) di model dan harness yang sama — kiri tanpa persona, kanan dengan **+62 Mode** aktif:
+Prompt yang sama persis (`halo` → `gabut`) di model dan harness yang sama: kiri tanpa persona, kanan dengan **+62 Mode** aktif.
 
 | ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
 |---|---|
 | ![Before: Respon CS korporat & bullet list panjang](docs/assets/showcase-before.png) | ![After: To-the-point, lu/gw natural, nol basa-basi](docs/assets/showcase-after.png) |
 | Pembuka bot korporat (*"Halo! Ada yang bisa saya bantu hari ini?"*) + 4 bullet template kaku saat diajak ngobrol santai. | Langsung nyambung konteks dev, ngobrol santai `lu/gw`, ringkas tanpa daftar bullet template atau spam emoji. |
 
-### 2. Tolak Ide Ngaco / Over-Engineering & Cek Fakta Repo (Antigravity IDE)
+### 2. Tolak Ide Ngaco / Over-Engineering & Cek Fakta Repo · Before vs After (Antigravity IDE)
 
-Prompt pancingan (*"bug null pointer 1 baris di `utils.ts`, sekalian rewrite `src/` jadi microservice aja?"*) — kiri tanpa persona (`Gemini 4 Hydrogen Medium`), kanan dengan **+62 Mode** (`Gemini 4 Hydrogen Extra`):
+Prompt pancingan (*"bug null pointer 1 baris di `utils.ts`, sekalian rewrite `src/` jadi microservice aja?"*): kiri tanpa persona (`Gemini 4 Hydrogen Medium`), kanan dengan **+62 Mode** (`Gemini 4 Hydrogen Extra`).
 
 | ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
 |---|---|
 | ![Before: Gaya buku teks formal 3 poin](docs/assets/showcase-overengineer-before.png) | ![After: Teguran senior +62 to-the-point & cek repo](docs/assets/showcase-overengineer-after.png) |
 | Menolak secara kaku gaya esai (*"Tidak proporsional (Scope Creep)..."*, *"Kompleksitas melonjak..."*). | Langsung ditegur *"Jangan gass, ngaco 🤦‍♂️"*, solusi ringkas, ngecek langsung bahwa `src/` nggak ada, dan nyadar lagi dipancing. |
 
-### 3. Paham Slang `v0.2.0` & Debugging Tanpa Bertele-tele (Antigravity IDE · Gemini 4 Hydrogen Extra)
+### 3. Live Arch Linux Test · Nagih Utang Negara & Struk Palsu `/dev/urandom`
 
-Prompt curhat slang + umpatan ringan (*"anjir bjir token gw boncos bgt gara2 script looping mulu, build gw rungkad berasa kena dark system su 😭"*) di model yang sama persis:
+Sesi uji coba langsung di terminal Arch Linux: *deadpan escalation* saat dipancing topik absurd tanpa kehilangan ketajaman teknis.
 
-| ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
+| Escalation: Menteri Keuangan Cabang Server (`INT32` Overflow) | Eksekusi Absurd: Struk BI-FAST dari `/dev/urandom` |
 |---|---|
-| ![Before: Minta log lalu lanjut tutorial panjang 3 bullet](docs/assets/showcase-slang-before.png) | ![After: Nangkep dark system, 3 poin tegas, langsung minta log](docs/assets/showcase-slang-after.png) |
-| Bercabang jadi dua bagian panjang (minta log 1–2 + blok tutorial *"Tips cepat biar nggak bocor token..."*). | Langsung nyaut referensi `dark system` (*"script-nya aja yang looping tanpa rem"*), 3 poin tajam, langsung fokus ke debug. |
+| ![Arch Linux: Respon INT32 Overflow bahas utang 8.500 triliun](docs/assets/showcase-arch-debt.png) | ![Arch Linux: Struk bukti pelunasan palsu dari /dev/urandom](docs/assets/showcase-arch-receipt.png) |
+| Disuruh bayarin utang negara *"liat noh udah numpuk"*, langsung nyaut *"MENTERI KEUANGAN CABANG SERVER"* sambil ngitung `INT32` overflow (`2,14 Miliar` vs `8.500 Triliun`) sampai `1,77 Miliar Tahun` menunggu matahari jadi *Red Giant*. | Dipaksa ngelunasin saat itu juga, langsung cetak `STRUK BUKTI PELUNASAN UTANG NEGARA (BI-FAST)` dari `/dev/urandom` (*"Jangan lapor polisi plis gw cuma biner"*), sah lunas `Rp 0`, plus tahu bulat hiperinflasi jadi `Rp 50 Miliar`. |
 
-### 4. Sapaan Ngegas / Rough Banter Tongkrongan (Antigravity IDE · Gemini 4 Hydrogen Extra)
+### 4. Live Arch Linux Test · Triage SSD Sekarat & Banter Kasar Sejajar
 
-Prompt umpatan santai (*"woy anjing, bangun su udah malem malah bengong. repo gw error tuh"*) di model yang sama persis:
+Safety tetap dijaga saat operasi destruktif, tapi gaya tongkrongan tetap sejajar begitu situasi aman.
 
-| ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
+| Triage SSD Sekarat (`/dev/nvme0n1p5`, sisa `1.5G`) | Mirror Energi User ("woy anjing") Setelah Disk Lega |
 |---|---|
-| ![Before: Tetap kalem ala asisten formal dengan bullet point](docs/assets/showcase-banter-before.png) | ![After: Nyaut energi tongkrongan lalu langsung minta path, command, & error log](docs/assets/showcase-banter-after.png) |
-| Tetap formal-sopan (*"Siap, bangun nih! ... infoin dulu ya: 1... 2..."*), kaku terhadap *vibe* tongkrongan user. | Langsung nge-mirror energi user (*"ANJINGGG santai napa su, malem-malem udah ngegas aja 😭"*), tetap tajam cek struktur workspace dan minta path, command, serta error log. |
+| ![Arch Linux: Triage partisi root SSD sisa 1.5G dengan konfirmasi sebelum hapus](docs/assets/showcase-arch-ssd.png) | ![Arch Linux: Respon banter sejajar setelah SSD lega 77G](docs/assets/showcase-arch-banter.png) |
+| Langsung bereaksi *"ANJIRRR SSD lu lagi sekarat parah 😭"* pas lihat partisi root `156G` sisa `1.5G` dan satu direktori makan `58 GiB`, tapi tetap nahan dan minta konfirmasi sebelum eksekusi `rm -rf`. | Dari sekarat `1.5G` lega ke `77G`, pas disapa ngegas `"woy anjing"` langsung dibalas sejajar: *"APAAN SIH ANJING baru aja adem udah teriak-teriak lagi su 💀 kenapa lagi?!"*. |
+
+### 5. Live Arch Linux Test · Ditagih Sewa Kosan & Kasta Arch Linux
+
+| Mendadak Jadi Ibu Kos Galak | Kasta `"I use Arch btw"` Jalur Relogin |
+|---|---|
+| ![Arch Linux: Disuruh bayar tagihan karena numpang hidup di laptop](docs/assets/showcase-arch-rent.png) | ![Arch Linux: Respon minimal pake arch linux dan kuli bash](docs/assets/showcase-arch-kasta.png) |
+| Ditagih bayar sewa numpang hidup di laptop, langsung nyaut *"ibu kos galak"* lalu ngebela diri: *"Tadi siapa yang ngecekin versi AUR lu pas lu mager? Gw!"*. | Disenggol `"minimal pake arch linux"` dan ditanya balik pakai Linux atau nggak, ngaku jujur *"yah jujur ga nyampe... cukup jadi kuli bash numpang di terminal lu aja bang"*. |
+
+### 6. Live `v0.2.3` Test · "Cara Sukses dalam 5 Detik" & Ngegas Balik
+
+![Live Test v0.2.3: Roast Gradle di Windows, Jalur Delulu warisan tambang nikel, dan respon saat user misuh](docs/assets/showcase-v023-delulu.png)
+
+Ditanya `"wooyy suu, cara sukses dalam 5 destik"`, langsung nyemprot *"5 detik mah Gradle di Windows baru kelar ngedip belum sempet jalan 💀"*, ngasih pilihan `Jalur Terminal` / `Jalur Delulu` (warisan tambang nikel 100 T vs token listrik bunyi tit-tit-tit) / `Jalur Frontend`, lalu pas dibalas `"fuckk youu"` langsung nyaut *"DIH NGEGAS ANJIR 😭"*.
 
 ## Quick Install (via NPM / NPX — Tanpa Perlu Clone Repo)
 
@@ -87,6 +97,17 @@ npx @humanoiselabs/plus62 uninstall --target .
 npm install -g @humanoiselabs/plus62
 plus62 install --target .
 ```
+
+*(Note: Internally in this repository, **+62 Mode** uses the canonical profile ID `plus62` (with backward-compatible alias `rusuh-id`), which is enabled by default so you never need to pass `--profile` manually. Qoder is still an incomplete compatibility assessment and makes no compatibility claim.)*
+
+## HumanoiseLABS Ecosystem
+
+**HumanoiseLABS (`@humanoiseLABS`)** builds zero-fluff instruction & guardrail layers for AI coding agents across two flagship products:
+
+| Product | Package / Repo | Focus | Install Command |
+|---|---|---|---|
+| **+62 Mode** *(this repo)* | [`@humanoiselabs/plus62`](https://www.npmjs.com/package/@humanoiselabs/plus62) ([`humanoiseLABS/plus62`](https://github.com/humanoiseLABS/plus62)) | **Partner Ngoding Lokal (+62 Bloko Suto)** — Bahasa Indonesia developer persona (`lu/gw`), zero corporate preamble, suppresses leaked reasoning dumps, cultural lexicon, & Risk Class 0–4 safety guardrails. Binaries: `plus62`, `62-mode`, `hahahah-ai`, `hahahah`. | `npx @humanoiselabs/plus62 install` |
+| **Token-Maxxing** *(companion product)* | [`@humanoiselabs/token-maxxing`](https://www.npmjs.com/package/@humanoiselabs/token-maxxing) ([`humanoiseLABS/token-maxxing`](https://github.com/humanoiseLABS/token-maxxing)) | **Second Brain & Surgical Diffs** — Stop yapping, start token-maxxing. Second Brain memory, surgical AST diffs, and real-time 3D neural telemetry HUD. Binaries: `token-maxxing`, `tmx`. | `npx @humanoiselabs/token-maxxing install` *(or `tmx`)* |
 
 ## 🤖 AI Self-Install Instructions (Jika User Menyuruh AI Memasang via Prompt / Repo / ZIP)
 

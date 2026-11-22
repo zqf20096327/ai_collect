@@ -31,7 +31,7 @@ made with it, shot by shot.
 - **Try fast, finish large.** Drafts are small and quick. Finals are refined at
   up to 1920 pixels, with a realism LoRA for natural skin.
 - **Pick the model, per project or per clip.** HyperFlow H3 Flash, MiniMax H3,
-  its Turbo LoRA, Singularity, DaSiWa, 10Eros Max and PRISM are built in, and a clip
+  its Turbo, LightX2V Turbo and pi-H3 LoRAs, Singularity, DaSiWa, 10Eros Max and PRISM are built in, and a clip
   can render on a different one than the rest of the project. Any other H3
   checkpoint works too: pick its file, set its steps, sampler and scheduler,
   and save it as a preset for every project.
@@ -199,14 +199,17 @@ their voice. A voice can be uploaded, or taken from a clip on the timeline.
 **RefMods.** A RefMod is a reference saved as one file by the
 ComfyUI-MiniMaxH3Mod pack. With that pack installed and the file in ComfyUI's
 `models/refmods` folder, there are two ways to use one you already have. **Add**,
-**Add RefMod** in the Cast panel makes a cast member from a RefMod alone, with
-no pictures to upload. Or open a cast member and choose the file under
-**RefMod**, with its strength. The menu lists what the pack's **Load H3
-RefMods** node lists, subfolders included; reload the editor after adding a file,
-and restart ComfyUI if it still does not appear. A member that is only a RefMod renders on the prompt-only
-model, so describe them in the member's description. A member with pictures can
-also get a RefMod made from them: **Make a RefMod from these pictures** in the
-same section.
+**Add RefMod** in the Cast panel opens a picker for every RefMod in the folder
+(with same-name `.png`, `.jpg`, or `.webp` sidecar previews when present) and
+creates a cast member from the one you pick, with no pictures to upload. Or
+select any cast member and choose a file and strength under **RefMod** in the
+Cast member panel (or inside the member's edit dialog). The list shows what the
+pack's **Load H3 RefMods** node lists, subfolders included; use **Refresh**
+beside the list after adding a file, and restart ComfyUI if it still does not
+appear. A member that is only a RefMod renders on the prompt-only model, so
+describe them in the member's description. A member with pictures can also get
+a RefMod made from them: **Make a RefMod from these pictures** in the same
+section.
 
 **The cast catalog.** Press **Save** beside **Catalog** on a cast member to keep
 them for every project, with their pictures and voice. In another project,

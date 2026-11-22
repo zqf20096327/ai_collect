@@ -21,7 +21,7 @@ Storage:       SQLite with markdown mirrors you can read and commit
 Dependencies:  Zero runtime deps. Node.js 22.16+. Embeddings: `hippo init` installs the local Transformers.js embedder (`@huggingface/transformers@4.3.2`, about 480 MB) into a global npm install, and `--no-embeddings` skips it. An API embedder (OpenAI/Voyage/Cohere) is opt-in.
 ```
 
-**Contents:** [Install](#install) · [Follow one memory](#follow-one-memory) · [What hippo does](#what-hippo-does) · [Results](#repeat-mistakes-per-100-chances) · [Setup in detail](#setup-in-detail) · [Agent setup](#framework-integrations) · [MCP server](#mcp-server) · [How it works](#how-it-works) · [CLI](#cli-reference) · [Comparison](#comparison) · [Benchmarks](#benchmarks) · [FAQ](#faq) · [Contributing](#contributing)
+**Contents:** [Install](#install) · [Follow one memory](#follow-one-memory) · [What hippo does](#what-hippo-does) · [Results](#repeat-mistakes-per-100-chances) · [Comparison](#comparison) · [Benchmarks](#benchmarks) · [Setup in detail](#setup-in-detail) · [Agent setup](#framework-integrations) · [MCP server](#mcp-server) · [How it works](#how-it-works) · [CLI](#cli-reference) · [FAQ](#faq) · [Contributing](#contributing)
 
 ---
 
@@ -87,7 +87,7 @@ Real sessions on 29 repositories, with the plan registered before the run.
 
 Cost with hippo: 1.006 times, the same.
 
-The gain was the same with lesson capture switched off, so this run cannot say hippo's stored lessons caused it. The test agent was Claude Code only, so there's no measured result for Codex or Cursor. The [result](docs/evals/2026-11-08-z0-round3-result.md) has every figure, and [Benchmarks](#benchmarks) has the rest of the test.
+The [result](docs/evals/2026-11-08-z0-round3-result.md) has every figure, and [Benchmarks](#benchmarks) has the rest of the test.
 
 ### Public memory tests
 
@@ -121,7 +121,9 @@ Other memory tools run what you save through a language model, an LLM on top of 
 
 Storing the LoCoMo test chats took Mem0 5,882 language-model calls, one per turn, and hippo none ([the count](benchmarks/public/results/2026-11-12-answer-accuracy/mem0-locomo-ingest-gate.json)). Counts come from each product's public code and docs, 13 Nov 2026.
 
-The exception is `hippo sleep`, which sends text to Anthropic when `ANTHROPIC_API_KEY` is set, and `{"extraction":{"enabled":false}}` turns it off.
+The exception is `hippo sleep`, which sends text to Anthropic when `ANTHROPIC_API_KEY` is set, and `{"extraction":{"enabled":false}}` turns it off. With `HIPPO_LLM_BASE_URL` and `HIPPO_LLM_MODEL` set, the text goes to that OpenAI-compatible endpoint instead, and never to Anthropic.
+
+Your own model needs two variables, and two more are optional. `HIPPO_LLM_BASE_URL` is the endpoint, such as `https://llm.internal/v1`. Hippo posts to `<base>/chat/completions`. `HIPPO_LLM_MODEL` is the model name it sends on every call. `HIPPO_LLM_API_KEY` is optional and goes out as a Bearer token; it holds visible ASCII only, with no space or newline. The URL must use https unless it is on this machine. Set `HIPPO_LLM_ALLOW_HTTP=1` to allow plain http to another host, and set `NODE_EXTRA_CA_CERTS` to trust a private certificate authority. Hippo refuses to call a model, and says why, when the base URL has no model, when a model or key is set without a base URL, when the URL carries a query or a fragment, when plain http lacks the opt-in, or when a key cannot be a header. A refusal never falls back to Anthropic.
 
 ---
 
@@ -137,7 +139,7 @@ You, your team and your platform lead read the same store.
 |---|---|
 | Claude Code | `CLAUDE.md` + 9 hooks |
 | Codex | `AGENTS.md` + 2 hooks |
-| Cursor | reads `AGENTS.md` |
+| Cursor | plugin: rule + MCP (`extensions/cursor-plugin`), or reads `AGENTS.md` |
 | Pi | reads `AGENTS.md` |
 | OpenClaw | plugin |
 | OpenCode | plugin |
@@ -157,6 +159,190 @@ Your agents' memory belongs in a file you can read, diff and delete, whichever a
 - **Planned:** a commercial edition with SSO, SCIM, SIEM export, hosting and an SLA.
 
 There's no team result yet, so [open an issue](https://github.com/kitfunso/hippo-memory/issues/new?title=Pilot%20request&body=Company%2C%20team%20size%2C%20agents%20in%20use%3A) for a holdout pilot. [Open source and commercial](#open-source-and-commercial) says what each edition holds.
+
+---
+
+## Comparison
+
+Hippo is for coding agents on machines you control. [Mem0](https://hippo-memory.com/vs/mem0/) fits better when the memory belongs to your app's end users, [Zep](https://hippo-memory.com/vs/zep/) when you want a managed knowledge graph built from business data, and [Letta Code](https://hippo-memory.com/vs/letta/) when you want an agent that edits its own memory. The table is a feature snapshot, not a verdict, and it holds no scores: [Benchmarks](#benchmarks) has those, split by setup.
+
+| Feature\* | Hippo | [MemPalace](https://github.com/milla-jovovich/mempalace) | [Mem0](https://github.com/mem0ai/mem0) | [Basic Memory](https://github.com/basicmachines-co/basic-memory) | [Zep](https://www.getzep.com/) | [Letta](https://github.com/letta-ai/letta-code) | [Cognee](https://www.cognee.ai/) | [Memoria](https://github.com/matrixorigin/Memoria) | [EverMind](https://evermind.ai/) |
+|---------|-------|-----------|------|-------------|-----|-------|--------|---------|----------|
+| Decay by default | Yes | No | No | No | No | No | No | No | No |
+| Retrieval strengthening | Yes | No | No | No | No | No | Partial (recall tuning) | No | Partial (Skill Memory distills patterns) |
+| Reward-proportional decay | Yes | No | No | No | No | No | No | No | No |
+| Hybrid search (BM25 + embeddings) | Yes | Embeddings + spatial | Yes (semantic + BM25 + entity) | No | Yes (graph + vec) | ? | Yes (GraphRAG) | Yes (vector + full-text) | Yes (mRAG, multi-modal) |
+| Schema acceleration / knowledge graph | Yes (schema) | No | Partial (entity linking; graph memory on Pro) | No | Yes (temporal KG) | No | Yes (auto-ontologies) | No (typed claims) | Yes (hierarchical: user/group/agent) |
+| Conflict detection + resolution | Yes | No | Partial (hosted platform marks superseded facts) | No | Yes (auto-invalidate stale facts) | No | No | Yes (auto-detect + quarantine) | Partial (temporal tracking) |
+| Multi-agent shared memory | Yes | No | No | No | Yes | Yes (shared memory blocks) | Yes | Yes (branch/merge across sessions) | Yes (multi-agent coordination) |
+| Transfer scoring | Yes | No | No | No | No | No | No | No | No |
+| Outcome tracking | Yes | No | No | No | No | No | No | No | Partial (Cases: agent trajectories) |
+| Confidence tiers | Yes | No | No | No | No | No | No | No | No |
+| Spatial organization | No | Yes (wings/halls/rooms) | No | No | No | No | No | No | No |
+| Lossless compression | No | Yes (AAAK, 30x) | No | No | No | No | No | No | No |
+| Cross-tool import (ChatGPT/Claude/Cursor) | Yes | No | No | No | ? | No | Partial (28 data sources) | No (Git ops) | Partial (mRAG: PDFs/images/URLs) |
+| Auto-hook install | Yes | No | No | No | No | No | No | No | No |
+| MCP server | Yes | Yes | Yes (hosted, needs an account) | Yes | Yes (hosted, needs an account) | Yes (hosted, needs an API key) | Yes (first-party Claude/LangGraph) | Yes | ? |
+| Zero runtime deps | Yes | No (ChromaDB) | No | No | No (managed service) | No (npm deps) | No (Python deps) | Yes (single Rust binary) | No (managed + OSS) |
+| Git-friendly | Yes | No | No | Yes | No | Yes (memory tracked in git) | No | Yes (Git is the model) | ? |
+| Framework agnostic | Yes | Yes | Partial | Yes | Yes | Yes | Yes | Yes | Yes |
+| License | MIT | (open) | Apache-2.0 | (open) | Proprietary cloud (Graphiti: Apache-2.0) | Apache-2.0 | MIT (core) | Apache-2.0 | Apache-2.0 (OSS) + cloud |
+
+\* The Mem0, Zep and Letta columns were last checked against each vendor's own pages on 2026-09-28.
+
+Side-by-side pages on the website: [hippo vs mem0](https://hippo-memory.com/vs/mem0/) · [hippo vs Zep](https://hippo-memory.com/vs/zep/) · [hippo vs Letta](https://hippo-memory.com/vs/letta/) · [CLAUDE.md vs MEMORY.md](https://hippo-memory.com/vs/claude-memory/).
+
+---
+
+## Benchmarks
+
+We built hippo and ran these tests, so read them as a vendor's numbers. We ran rivals on the same answer model where we could. Scores marked published come from each team's own setup, so we give no ranks. The same results are on [hippo-memory.com/benchmarks](https://hippo-memory.com/benchmarks/).
+
+### Repeat mistakes in real Claude Code sessions
+
+Each run corrects Claude Code once and then, 2 to 4 tasks later, gives it a task where the same mistake is possible. We ran it on 29 repositories, [registered first](docs/evals/2026-11-08-z0-round3-result.md).
+
+| Claude Code with | Repeats in 100 |
+|---|--:|
+| No memory | 83 |
+| Claude Code's built-in memory | 21 |
+| Built-in memory plus hippo | **11** |
+
+The chart counts first chances 2 to 4 tasks after the correction. The registered measure, the first chance in each mistake family over 148 units, gives 14.9 points fewer repeats with hippo [5.5, 24.3], at the same cost, a ratio of 1.006 [0.964, 1.049]. On tasks with no lesson to apply, neither the cost nor the share solved changed.
+
+Round 4, already preregistered, tests which parts of hippo drive the gain.
+
+### Official-setup rows side by side
+
+Hippo 3.5.1 run with the same answer model, judge and settings as the published rows.
+
+| Benchmark | hippo | Mem0 | Zep | MemOS | Supermemory | Honcho | Hindsight | EverMemOS | Memobase | Other |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **LoCoMo, Mem0 paper setup**<br><sub>Long chat recall, gpt-4o-mini answers; official setup</sub> | **69.22**<br><sub>embedder, 30 per speaker, all 1,540</sub> | [66.88](https://arxiv.org/html/2504.19413)<br><sub>gpt-4o-mini</sub> | [65.99](https://arxiv.org/html/2504.19413)<br><sub>gpt-4o-mini</sub> | - | - | - | - | - | - | [68.44](https://arxiv.org/html/2504.19413)<br><sub>Mem0g · gpt-4o-mini</sub> |
+| **LoCoMo, OmniMemEval shared setup**<br><sub>Long chat recall, gpt-4.1-mini answers; official setup</sub> | **74.72**<br><sub>embedder, top 20, 1,535 of 1,540 (5 test items never scored)</sub> | [77.68](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L27)<br><sub>gpt-4.1-mini</sub> | [63.83](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L28)<br><sub>gpt-4.1-mini</sub> | [88.83](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L40)<br><sub>gpt-4.1-mini</sub> | [73.53](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L29)<br><sub>gpt-4.1-mini</sub> | - | [81.99](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L33)<br><sub>gpt-4.1-mini</sub> | [82.75](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L35)<br><sub>gpt-4.1-mini</sub> | - | [90.71](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L43)<br><sub>cachly · gpt-4.1-mini</sub> |
+| **LongMemEval-S, gpt-4o reader**<br><sub>Long chat recall, gpt-4o answers; official setup</sub> | **81.8**<br><sub>reranker, top 10 (embedder 78.2), official gpt-4o judge</sub> | - | [71.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o</sub> | - | [81.6](https://arxiv.org/html/2512.12818v1)<br><sub>gpt-4o</sub> | - | - | - | - | [86.0](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag)<br><sub>EmergenceMem Internal · gpt-4o-2024-08-06</sub> |
+| **LongMemEval-S, OmniMemEval shared setup**<br><sub>Long chat recall, gpt-4.1-mini answers; official setup</sub> | **83.84**<br><sub>embedder, top 20, 495 of 500 (5 test items never scored)</sub> | [56.00](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L30)<br><sub>gpt-4.1-mini</sub> | [79.80](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L31)<br><sub>gpt-4.1-mini</sub> | [89.20](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L41)<br><sub>gpt-4.1-mini</sub> | [66.07](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L32)<br><sub>gpt-4.1-mini</sub> | - | [72.20](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L36)<br><sub>gpt-4.1-mini</sub> | [80.40](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L38)<br><sub>gpt-4.1-mini</sub> | - | [91.20](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L43)<br><sub>Maasv · gpt-4.1-mini</sub> |
+| **PersonaMem v1, MemOS suite setup**<br><sub>Personalisation, gpt-4o-mini answers; official setup</sub> | **61.97**<br><sub>embedder, top 20, mean of 3 runs</sub> | [43.1](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [57.8](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [61.2](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [53.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | - | - | - | [58.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [56.8](https://arxiv.org/html/2507.03724v4)<br><sub>MemU · gpt-4o-mini</sub> |
+| **PersonaMem v2, OmniMemEval shared setup**<br><sub>Personalisation, gpt-4.1-mini answers; official setup, with a caveat</sub> | **35.10**<br><sub>embedder, top 20, one run, 4,995 of 5,000 (5 test items never scored)</sub> | [36.76](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L30)<br><sub>gpt-4.1-mini</sub> | [32.34](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L31)<br><sub>gpt-4.1-mini</sub> | [40.58](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L41)<br><sub>gpt-4.1-mini</sub> | [39.64](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L32)<br><sub>gpt-4.1-mini</sub> | - | [37.98](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L36)<br><sub>gpt-4.1-mini</sub> | [35.94](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L38)<br><sub>gpt-4.1-mini</sub> | - | [39.86](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L43)<br><sub>Maasv · gpt-4.1-mini</sub> |
+| **EverMemBench, GPT-4.1-mini answers**<br><sub>Changing facts, GPT-4.1-mini answers; official setup, with a caveat</sub> | **44.20**<br><sub>embedder, top 10, mean of 9 categories</sub> | [37.09](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [39.97](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [42.55](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | - | - | - | - | [34.27](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [37.44](https://arxiv.org/html/2602.01313v3)<br><sub>Full Context · GPT-4.1-mini</sub> |
+| **BEAM-100K, OmniMemEval shared setup**<br><sub>Long-horizon memory, gpt-4.1-mini answers; official setup</sub> | **67.98**<br><sub>embedder, top 20, 395 of 400 (5 test items never scored)</sub> | [70.41](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L29)<br><sub>gpt-4.1-mini</sub> | [68.70](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L30)<br><sub>gpt-4.1-mini</sub> | [66.87](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L39)<br><sub>gpt-4.1-mini</sub> | [65.98](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L31)<br><sub>gpt-4.1-mini</sub> | - | [70.22](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L35)<br><sub>gpt-4.1-mini</sub> | [58.64](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L36)<br><sub>gpt-4.1-mini</sub> | - | [76.38](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L41)<br><sub>Maasv · gpt-4.1-mini</sub> |
+| **BEAM-10M, OmniMemEval shared setup**<br><sub>Long-horizon memory, gpt-4.1-mini answers; official setup</sub> | **56.84**<br><sub>embedder, top 20, all 200</sub> | [43.33](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L29)<br><sub>gpt-4.1-mini</sub> | [56.11](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L30)<br><sub>gpt-4.1-mini</sub> | [56.75](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L39)<br><sub>gpt-4.1-mini</sub> | [52.49](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L31)<br><sub>gpt-4.1-mini</sub> | - | [59.75](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L35)<br><sub>gpt-4.1-mini</sub> | [47.73](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L36)<br><sub>gpt-4.1-mini</sub> | - | [65.09](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L41)<br><sub>Maasv · gpt-4.1-mini</sub> |
+| **HaluMem-Medium**<br><sub>Hallucination control, GPT-4o answers; official setup, with a caveat</sub> | **70.23**<br><sub>embedder, top 20, GPT-4o answers and judge</sub> | [53.02](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [55.47](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [67.23](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [54.07](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | - | - | - | [35.33](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [54.66](https://arxiv.org/html/2511.03506v3)<br><sub>Mem0-Graph · GPT-4o</sub> |
+| **HaluMem-Long**<br><sub>Hallucination control, GPT-4o answers; official setup, with a caveat</sub> | **65.99**<br><sub>embedder, top 20, GPT-4o answers and judge</sub> | [28.11](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [50.19](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [64.44](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [53.77](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | - | - | - | [33.60](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [32.44](https://arxiv.org/html/2511.03506v3)<br><sub>Mem0-Graph · GPT-4o</sub> |
+| **IMLogic, Table 5**<br><sub>Multiple-choice accuracy, GPT-5.1 answers, no judge; official setup</sub> | **38.33**<br><sub>embedder, top 30, one run, 2,215 of 2,216 (1 test item never scored)</sub> | [38.18](https://arxiv.org/abs/2606.23283)<br><sub>GPT-5.1</sub> | - | [39.44](https://arxiv.org/abs/2606.23283)<br><sub>GPT-5.1</sub> | - | - | - | [43.50](https://arxiv.org/abs/2606.23283)<br><sub>GPT-5.1</sub> | - | [44.18](https://arxiv.org/abs/2606.23283)<br><sub>T-Mem · GPT-5.1</sub> |
+| **MemFail, coexisting facts**<br><sub>Tests passed, gpt-5-mini answers and judge; official setup, with a caveat</sub> | **10/100**<br><sub>embedder, top 5, all items</sub> | [35/100](https://arxiv.org/html/2605.26667v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [25/100](https://arxiv.org/html/2605.26667v1)<br><sub>A-Mem · gpt-5-mini</sub> |
+| **MemFail, conditional**<br><sub>Tests passed, gpt-5-mini answers and judge; official setup, with a caveat</sub> | **93/100**<br><sub>embedder, top 5, all items</sub> | [58/100](https://arxiv.org/html/2605.26667v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [95/100](https://arxiv.org/html/2605.26667v1)<br><sub>A-Mem · gpt-5-mini</sub> |
+| **MemFail, conditional hard**<br><sub>Tests passed, gpt-5-mini answers and judge; official setup, with a caveat</sub> | **38/100**<br><sub>embedder, top 5, all items</sub> | [13/100](https://arxiv.org/html/2605.26667v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [35/100](https://arxiv.org/html/2605.26667v1)<br><sub>A-Mem · gpt-5-mini</sub> |
+| **MemFail, persona base**<br><sub>Tests passed, gpt-5-mini answers and judge; official setup, with a caveat</sub> | **120/143**<br><sub>embedder, top 5, all items</sub> | [14/143](https://arxiv.org/html/2605.26667v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [125/143](https://arxiv.org/html/2605.26667v1)<br><sub>A-Mem · gpt-5-mini</sub> |
+| **MemFail, persona misleading**<br><sub>Tests passed, gpt-5-mini answers and judge; official setup, with a caveat</sub> | **146/157**<br><sub>embedder, top 5, all items</sub> | [137/157](https://arxiv.org/html/2605.26667v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [156/157](https://arxiv.org/html/2605.26667v1)<br><sub>StructMem · gpt-5-mini</sub> |
+| **MemFail, long-hop**<br><sub>Tests passed, gpt-5-mini answers and judge; official setup, with a caveat</sub> | **3/92**<br><sub>embedder, top 5, all items</sub> | [13/92](https://arxiv.org/html/2605.26667v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [23/92](https://arxiv.org/html/2605.26667v1)<br><sub>StructMem · gpt-5-mini</sub> |
+| **InMind, naive query**<br><sub>Share of tasks judged right, gpt-5-mini answers and judges; official setup</sub> | **59.20**<br><sub>embedder, top 10, all 125 tasks</sub> | [76.0](https://arxiv.org/html/2607.24368v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [99.2](https://arxiv.org/html/2607.24368v1)<br><sub>A-Mem · gpt-5-mini</sub> |
+| **InMind, target recall**<br><sub>Share of tasks judged right, gpt-5-mini answers and judges; official setup</sub> | **4.00**<br><sub>embedder, top 10, all 125 tasks</sub> | [2.4](https://arxiv.org/html/2607.24368v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [5.6](https://arxiv.org/html/2607.24368v1)<br><sub>A-RAG · gpt-5-mini</sub> |
+| **InMind, application**<br><sub>Share of tasks judged right, gpt-5-mini answers and judges; official setup</sub> | **4.80**<br><sub>embedder, top 10, all 125 tasks</sub> | [3.2](https://arxiv.org/html/2607.24368v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [8.8](https://arxiv.org/html/2607.24368v1)<br><sub>HippoRAG 2 · gpt-5-mini</sub> |
+| **MEME, Table 2**<br><sub>Mean of six task accuracies, gpt-4.1-mini answers, gpt-4o judge; official setup</sub> | **0.25**<br><sub>embedder, top 20, 32K filler</sub> | [0.28](https://arxiv.org/html/2605.12477v1)<br><sub>gpt-4.1-mini</sub> | - | - | - | - | - | - | - | [0.03](https://arxiv.org/html/2605.12477v1)<br><sub>Graphiti · gpt-4.1-mini</sub> |
+| **TriggerBench, Table 3 Base**<br><sub>Prospective memory accuracy, gpt-4.1 answers, gpt-4o judge; official setup</sub> | **54.29**<br><sub>embedder, top 6, 1,260 of 1,265 (5 test items never scored)</sub> | [53.20](https://arxiv.org/html/2606.23459v1)<br><sub>gpt-4.1</sub> | - | - | - | - | - | - | - | [41.42](https://arxiv.org/html/2606.23459v1)<br><sub>A-Mem · gpt-4.1</sub> |
+| **DolphinBench, official Claude Code setup**<br><sub>Agent memory, Claude Code with Sonnet 5; official setup</sub> | *in build* | [32.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/mem0/README.md)<br><sub>Claude Code, Sonnet 5 · 194/600</sub> | - | - | - | [35.8](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/honcho/README.md)<br><sub>Claude Code, Sonnet 5 · 215/600</sub> | - | - | - | [26.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/builtin/README.md)<br><sub>Built-in · Claude Code, Sonnet 5 · 158/600</sub> |
+
+<details>
+<summary>How each row ran</summary>
+
+- **LoCoMo, Mem0 paper setup.** Run as the Mem0 paper ran it, with Mem0's released evaluation code (mem0ai/mem0 aae5989e78): all 1,540 questions in categories 1 to 4, 30 memories per speaker, gpt-4o-mini answers under the paper's prompt, and the code's gpt-4o-mini judge. The paper itself does not name its judge. One run. The paper's full-context baseline scores 72.9, above every memory row. Compare the overall score only: our category labels follow our own mapping.
+- **LoCoMo, OmniMemEval shared setup.** Run as OmniMemEval's run_locomo_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and the gpt-4o-mini-2024-07-18 judge on the 1,540 questions in categories 1 to 4. The 5 smoke-test questions are never scored, so the score covers 1,535. Contributors ran some of the published rows.
+- **LongMemEval-S, gpt-4o reader.** The answer model and the judge match the published gpt-4o rows: gpt-4o-2024-08-06 reads hippo's top 10 memories, and the official script's prompts on gpt-4o-2024-08-06 judge all 500 questions. Each system keeps its own retrieval, as in the published rows. The cell shows the reranker setup, 81.8; the embedder setup scores 78.2. We chose the reranker after seeing its Sonnet scores and recorded that before its run. EmergenceMem does not name its judge.
+- **LongMemEval-S, OmniMemEval shared setup.** Run as OmniMemEval's run_lme_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): the cleaned LongMemEval-S file, hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and the gpt-4o-mini-2024-07-18 judge. The 5 smoke-test questions are never scored, so the score covers 495 of 500.
+- **PersonaMem v1, MemOS suite setup.** Run as MemOS's evaluation suite runs every vendor row (MemTensor/MemOS 3a16e5fe): the same data files and top 20, PM_ANSWER_PROMPT as one system message to gpt-4o-mini-2024-07-18 at temperature 0, 3 runs per question, scored as the mean of the run accuracies over all 589 rows. Each system keeps its own retrieval and memory text.
+- **PersonaMem v2, OmniMemEval shared setup.** Run as OmniMemEval's run_pmv2_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): the 32k split, hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and rule matching in place of a judge, one run as the script's default. The published rows average repeated runs and do not say how many. The 5 smoke-test questions are never scored, so the score covers 4,995 of 5,000.
+- **EverMemBench, GPT-4.1-mini answers.** The answer model, prompts, top 10, multiple-choice scorer and the 9-category mean match the paper's Table 4 (EverMind-AI/EverMemBench e10b3d5): gpt-4.1-mini-2025-04-14 at temperature 0 answers all 2,400 items. One setting differs: open answers are judged by gpt-5.6-sol through codex with the authors' prompts, and the repository's default judge is gemini-3-flash-preview; the paper names no judge. A second judge, gpt-4o-2024-08-06 with the same prompts, agrees with codex on 96.9% of open verdicts and scores hippo 44.75. The default setup scores 41.66 with codex and 42.50 with gpt-4o.
+- **BEAM-100K, OmniMemEval shared setup.** Run as OmniMemEval's run_beam_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): the nugget score at the 100K scale, hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and the gpt-4o-mini-2024-07-18 judge. The 5 smoke-test questions are never scored, so the score covers 395 of 400.
+- **BEAM-10M, OmniMemEval shared setup.** The same setup as the BEAM-100K row at the 10M scale (MemTensor/OmniMemEval ff13e4a5), on all 200 questions.
+- **HaluMem-Medium.** Question answering only, with the paper's GPT-4o answers and judge (gpt-4o-2024-08-06, temperature 0) and the same data, question set, top 20 and prompts.
+- **HaluMem-Long.** Question answering only, with the paper's GPT-4o answers and judge (gpt-4o-2024-08-06, temperature 0), the same setup as the HaluMem-Medium row. hippo ran it with its embedder on 20 Nov 2026.
+- **IMLogic, Table 5.** Table 5 of arXiv 2606.23283: conversation-level multiple-choice accuracy with GPT-5.1 answers, top-30 retrieval and a GPT-4o-mini memory backbone for every method. hippo ran it with its embedder on 21 Nov 2026: gpt-5.1-2025-11-13 at temperature 0, the authors' prompt and option shuffle, and exact option matching. hippo makes no model call when it stores a memory, so it needs no memory backbone. 1 smoke-test item is never scored.
+- **MemFail, coexisting facts.** Run as MemFail's task scripts run it (MemFail 61ab3028): the same data and seed, top 5, a gpt-5-mini test-taker and each task's own gpt-5-mini judge, on all items. hippo ran it with its embedder on 22 Nov 2026, one run. The products run GPT-4.1-mini inside to write memories; hippo makes no model call when it stores a memory and keeps raw turns. The paper plots the product scores in Figure 1 and prints no table, so each product number is read from the figure's vector SVG, where every error bar equals the 95% Wilson interval of its count. The product numbers are read from the paper's Figure 1, which prints no table.
+- **MemFail, conditional.** Run as MemFail's task scripts run it (MemFail 61ab3028): the same data and seed, top 5, a gpt-5-mini test-taker and each task's own gpt-5-mini judge, on all items. hippo ran it with its embedder on 22 Nov 2026, one run. The products run GPT-4.1-mini inside to write memories; hippo makes no model call when it stores a memory and keeps raw turns. The paper plots the product scores in Figure 1 and prints no table, so each product number is read from the figure's vector SVG, where every error bar equals the 95% Wilson interval of its count. The product numbers are read from the paper's Figure 1, which prints no table.
+- **MemFail, conditional hard.** Run as MemFail's task scripts run it (MemFail 61ab3028): the same data and seed, top 5, a gpt-5-mini test-taker and each task's own gpt-5-mini judge, on all items. hippo ran it with its embedder on 22 Nov 2026, one run. The products run GPT-4.1-mini inside to write memories; hippo makes no model call when it stores a memory and keeps raw turns. The paper plots the product scores in Figure 1 and prints no table, so each product number is read from the figure's vector SVG, where every error bar equals the 95% Wilson interval of its count. The product numbers are read from the paper's Figure 1, which prints no table.
+- **MemFail, persona base.** Run as MemFail's task scripts run it (MemFail 61ab3028): the same data and seed, top 5, a gpt-5-mini test-taker and each task's own gpt-5-mini judge, on all items. hippo ran it with its embedder on 22 Nov 2026, one run. The products run GPT-4.1-mini inside to write memories; hippo makes no model call when it stores a memory and keeps raw turns. The paper plots the product scores in Figure 1 and prints no table, so each product number is read from the figure's vector SVG, where every error bar equals the 95% Wilson interval of its count. The product numbers are read from the paper's Figure 1, which prints no table.
+- **MemFail, persona misleading.** Run as MemFail's task scripts run it (MemFail 61ab3028): the same data and seed, top 5, a gpt-5-mini test-taker and each task's own gpt-5-mini judge, on all items. hippo ran it with its embedder on 22 Nov 2026, one run. The products run GPT-4.1-mini inside to write memories; hippo makes no model call when it stores a memory and keeps raw turns. The paper plots the product scores in Figure 1 and prints no table, so each product number is read from the figure's vector SVG, where every error bar equals the 95% Wilson interval of its count. The product numbers are read from the paper's Figure 1, which prints no table.
+- **MemFail, long-hop.** Run as MemFail's task scripts run it (MemFail 61ab3028): the same data and seed, top 5, a gpt-5-mini test-taker and each task's own gpt-5-mini judge, on all items. hippo ran it with its embedder on 22 Nov 2026, one run. The products run GPT-4.1-mini inside to write memories; hippo makes no model call when it stores a memory and keeps raw turns. The paper plots the product scores in Figure 1 and prints no table, so each product number is read from the figure's vector SVG, where every error bar equals the 95% Wilson interval of its count. The product numbers are read from the paper's Figure 1, which prints no table.
+- **InMind, naive query.** Run as InMind's evaluation package runs it (InMind 5a2ab268): all 125 tasks, gpt-5-mini answers with 16,384 completion tokens, and the three binary gpt-5-mini judges with the repo's prompts. hippo ran it with its embedder on 22 Nov 2026, one run, top 10, as Mem0 and A-Mem use. The product rows are the paper's MiniLM block, the same embedder hippo uses (all-MiniLM-L6-v2).
+- **InMind, target recall.** Run as InMind's evaluation package runs it (InMind 5a2ab268): all 125 tasks, gpt-5-mini answers with 16,384 completion tokens, and the three binary gpt-5-mini judges with the repo's prompts. hippo ran it with its embedder on 22 Nov 2026, one run, top 10, as Mem0 and A-Mem use. The product rows are the paper's MiniLM block, the same embedder hippo uses (all-MiniLM-L6-v2).
+- **InMind, application.** Run as InMind's evaluation package runs it (InMind 5a2ab268): all 125 tasks, gpt-5-mini answers with 16,384 completion tokens, and the three binary gpt-5-mini judges with the repo's prompts. hippo ran it with its embedder on 22 Nov 2026, one run, top 10, as Mem0 and A-Mem use. The product rows are the paper's MiniLM block, the same embedder hippo uses (all-MiniLM-L6-v2).
+- **MEME, Table 2.** Run as MEME's run_main_experiment.sh runs it (MEME cb8164d8): the 32K filler set, top 20, gpt-4.1-mini-2025-04-14 answers at temperature 0, the gpt-4o-2024-08-06 judge, and the paper's trivial-pass filter. hippo ran it with its embedder on 22 Nov 2026, one run. Mem0 extracts facts with gpt-4.1-mini; hippo stores each turn whole with no model call. The 5 smoke-test questions are never scored.
+- **TriggerBench, Table 3 Base.** Run as TriggerBench's run_mem0.sh runs the Mem0 row (TriggerBench 9e2185c3): Base context, top 6, gpt-4.1 answers at temperature 0.6 with 1,024 tokens, and the paper's PMJudge on gpt-4o-2024-08-06. hippo ran it with its embedder on 22 Nov 2026, one run. 5 smoke-test tasks are never scored, so hippo's score covers 1,260 of 1,265 tasks.
+- **DolphinBench, official Claude Code setup.** The same setup as the published Claude Code rows: one Claude Code turn with the hippo plugin for each of the 13,539 messages, each test in a fresh sandbox with memory writes off, Sonnet 5 and the gpt-5.6-sol judge. The run is in build, so there is no score yet.
+
+</details>
+
+### Our own setup
+
+Every other benchmark we ran. Our setup differs from the published rows, so these scores do not sit beside theirs.
+
+| Benchmark | hippo | Mem0 | Zep | MemOS | Supermemory | Honcho | Hindsight | EverMemOS | Memobase | Other |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **LoCoMo**<br><sub>Long chat recall, Sonnet 5 answers</sub> | **91.5**<br><sub>embedder, top 200, gpt-4o-mini judge, 400 sample</sub> | [92.5](https://mem0.ai/research-3)<br><sub>not stated · unit not stated</sub> | [75.14](https://www.getzep.com/blog/lies-damn-lies-statistics-is-mem0-really-sota-in-agent-memory/)<br><sub>not stated</sub> | - | - | [89.9](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>Claude Haiku 4.5</sub> | [89.61](https://arxiv.org/html/2512.12818v1)<br><sub>Gemini-3 Pro</sub> | [93.05](https://evermind.ai/blogs/everos-sota-results-across-four-memory-benchmarks-and-what-it-means-for-llm-agents)<br><sub>not stated</sub> | [75.78](https://arxiv.org/html/2512.12818v1)<br><sub>not stated</sub> | [90.0](https://backboard.io/blog/best-ai-memory-score-in-the-world)<br><sub>Backboard · not stated</sub> |
+| **LongMemEval-S**<br><sub>Long chat recall, Sonnet 5 answers</sub> | **88.4**<br><sub>embedder, top 200, official gpt-4o judge</sub> | [94.4](https://mem0.ai/blog/locomo-benchmark)<br><sub>not stated · unit not stated</sub> | [71.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o</sub> | - | [85.2](https://arxiv.org/html/2512.12818v1)<br><sub>gemini-3-pro</sub> | [92.6](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>Gemini 3 Pro</sub> | [91.4](https://arxiv.org/html/2512.12818v1)<br><sub>Gemini-3 Pro</sub> | [83.00](https://evermind.ai/blogs/everos-sota-results-across-four-memory-benchmarks-and-what-it-means-for-llm-agents)<br><sub>not stated</sub> | - | [94.87](https://mastra.ai/research/observational-memory)<br><sub>Mastra Observational Memory · gpt-5-mini</sub> |
+| **LongMemEval-M**<br><sub>Very long chat recall, Sonnet 5 answers</sub> | **78.4**<br><sub>default, top 200, official gpt-4o judge</sub> | - | - | - | - | - | - | - | - | - |
+| **DMR**<br><sub>Multi-session recall, Sonnet 5 answers</sub> | **77.6**<br><sub>reranker, top 20</sub> | - | [98.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o-mini</sub> | - | - | - | - | - | - | [98.0](https://arxiv.org/html/2501.13956v1)<br><sub>Full-conversation baseline · gpt-4o-mini</sub> |
+| **DMR, gpt-4o-mini answers**<br><sub>Multi-session recall, gpt-4o-mini answers</sub> | **85.60**<br><sub>reranker, top 20, Speaker 1 role</sub> | - | [98.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o-mini</sub> | - | - | - | - | - | - | [98.0](https://arxiv.org/html/2501.13956v1)<br><sub>Full-conversation baseline · gpt-4o-mini</sub> |
+| **PersonaMem v1**<br><sub>Personalisation, Sonnet 5 answers</sub> | **72.4**<br><sub>embedder, top 20</sub> | [43.1](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [57.8](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [61.2](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [53.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | - | - | - | [58.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [56.8](https://arxiv.org/html/2507.03724v4)<br><sub>MemU · gpt-4o-mini</sub> |
+| **PersonaMem v2**<br><sub>Personalisation, Sonnet 5 answers</sub> | **50.1**<br><sub>embedder, top 20</sub> | - | - | [40.58](https://raw.githubusercontent.com/MemTensor/MemOS/main/README.md)<br><sub>not stated</sub> | - | - | - | [53.25](https://evermind.ai/blogs/top-ai-memory-systems-benchmarked-in-2026)<br><sub>not stated</sub> | - | [55.2](https://arxiv.org/html/2512.06688)<br><sub>Qwen3-4B agentic memory · Qwen3-4B-Instruct-2507</sub> |
+| **PrefEval**<br><sub>Preference following, Sonnet 5 answers</sub> | **83.0**<br><sub>default, top 5</sub> | [63.7](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [39.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [71.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [56.7](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | - | - | - | [34.1](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [92.15](https://arxiv.org/html/2502.09597)<br><sub>Claude 3 Sonnet + RAG · Claude 3 Sonnet</sub> |
+| **EverMemBench**<br><sub>Changing facts, Sonnet 5 answers</sub> | **56.4**<br><sub>default, top 10, mean of 9 categories</sub> | [37.09](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [39.97](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [42.55](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | - | - | - | - | [34.27](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [72.61](https://arxiv.org/html/2602.01313v3)<br><sub>Full Context · Gemini-3-Flash</sub> |
+| **BEAM-100K**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **72.4**<br><sub>embedder</sub> | - | - | - | - | [63.0](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [73.4](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [79.0](https://www.cognee.ai/benchmarking-cognee-on-beam)<br><sub>cognee · not stated</sub> |
+| **BEAM-500K**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **70.6**<br><sub>embedder</sub> | - | - | - | - | [64.9](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [71.1](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [35.9](https://arxiv.org/html/2510.27246)<br><sub>LIGHT · Llama-4-Maverick</sub> |
+| **BEAM-1M**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **69.9**<br><sub>default</sub> | [64.1](https://mem0.ai/blog/mem0-the-token-efficient-memory-algorithm)<br><sub>gpt-5</sub> | - | - | - | [63.1](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [73.9](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [33.6](https://arxiv.org/html/2510.27246)<br><sub>LIGHT · Llama-4-Maverick</sub> |
+| **BEAM-10M**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **54.3**<br><sub>embedder</sub> | [48.6](https://mem0.ai/blog/mem0-the-token-efficient-memory-algorithm)<br><sub>gpt-5</sub> | - | - | - | [40.6](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [64.1](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [up to 67.0](https://www.cognee.ai/benchmarking-cognee-on-beam)<br><sub>cognee · not stated</sub> |
+| **ConvoMem**<br><sub>Conversation memory, Sonnet 5 answers</sub> | **59.6**<br><sub>default, top 20</sub> | - | - | - | - | - | - | - | - | [92.9](https://vectorize.io/articles/mempalace-benchmarks)<br><sub>MemPalace · not stated</sub> |
+| **HotPotQA-24**<br><sub>Multi-hop questions, F1, Sonnet 5 answers</sub> | **91.0**<br><sub>reranker, top 15, all 24 questions, one run</sub> | [12.0](https://www.cognee.ai/knowledge-graph-memory-benchmarks)<br><sub>not stated</sub> | - | - | - | - | - | - | - | [84.1](https://www.cognee.ai/knowledge-graph-memory-benchmarks)<br><sub>Cognee · not stated</sub> |
+| **DolphinBench, shortcut run**<br><sub>Agent memory, Claude Code with Sonnet 5</sub> | **45.0**<br><sub>270/600 · Claude Code, Sonnet 5</sub> | [32.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/mem0/README.md)<br><sub>Claude Code, Sonnet 5 · 194/600</sub> | - | - | - | [35.8](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/honcho/README.md)<br><sub>Claude Code, Sonnet 5 · 215/600</sub> | - | - | - | [26.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/builtin/README.md)<br><sub>Built-in · Claude Code, Sonnet 5 · 158/600</sub> |
+| **Terminal-Bench 2.0**<br><sub>Agent coding tasks, Claude Code with Sonnet 5</sub> | **9/10**<br><sub>first 10 of 89 tasks, 1 trial; Claude Code with no memory 9/10</sub> | - | - | - | - | - | - | - | - | - |
+
+<details>
+<summary>How each row ran</summary>
+
+- **LoCoMo.** Judged again with the Mem0 paper's prompt on gpt-4o-mini, the judge in Mem0's released code. This row still scores a 400-question sample with Sonnet 5 answers, and the published rows use all 1,540 questions. The "LoCoMo, Mem0 paper setup" row runs that setup in full.
+- **LongMemEval-S.** Judged with the official script's prompt for each question type and its judge, gpt-4o-2024-08-06, over all 500 questions. One setting differs: the answer model is Sonnet 5, and each published row uses its own. The Mem0 cell used its runner's lenient judge prompt, so it stays grey. The "LongMemEval-S, gpt-4o reader" row uses a gpt-4o reader.
+- **LongMemEval-M.** Judged with the official script's prompts and its gpt-4o-2024-08-06 judge, over all 500 questions. The answer model is Sonnet 5. No product publishes an answer score for M.
+- **DMR.** Our harness caps the score: the whole chat scores 83.6% here, against 94% to 98% in the Zep paper.
+- **DMR, gpt-4o-mini answers.** gpt-4o-mini answers, as in Zep's rows, and the prompt now says the answerer is Speaker 1. The harness check failed: the whole chat scores 92.4 here, against 98.0 for the paper's full-conversation row with the same model, so our setup still caps the score. Compare each system with the whole chat in its own setup only: Zep +0.2 points, hippo's reranker setup -6.8 points. Neither paper names its judge.
+- **PersonaMem v1.** The vendor rows all answer with gpt-4o-mini under MemOS's prompt, one model for every system. Against the authors' own board of full-context models (best 52%), our score compares with a caveat. A rule that picks the longest option scores 48.9%.
+- **PersonaMem v2.** The paper's row uses the same text split and scorer with another answer model. The MemOS and EverMemOS rows do not say how they ran. A rule that picks the longest option scores 45.0%.
+- **PrefEval.** The paper's RAG rows keep the whole chat in the prompt; ours shows 5 retrieved turns. The vendor rows use another data split, top 10 and gpt-4o-mini.
+- **EverMemBench.** Every published row answers with GPT-4.1-mini, one model for every system, and ours answers with Sonnet 5.
+- **BEAM-100K.** Hindsight uses another answer prompt and Gemini models with a budget it does not state. Honcho scores event ordering another way. cognee ran one conversation. Mem0 publishes no 100K score.
+- **BEAM-500K.** Hindsight uses another answer prompt and Gemini models with a budget it does not state. Honcho scores event ordering another way. The LIGHT row comes from the paper's scorer.
+- **BEAM-1M.** Mem0's row uses the same runner code, prompts and scorer. Mem0 answered and judged with gpt-5 and showed 200 memories; we use Sonnet 5, gpt-5.6-sol and 100. The other rows use other scorers or setups.
+- **BEAM-10M.** Mem0's row uses the same runner code, prompts and scorer. Mem0 answered and judged with gpt-5 and showed 200 memories; we use Sonnet 5, gpt-5.6-sol and 100. The other rows use other scorers or setups.
+- **ConvoMem.** The sample design is ours, and no published number exists at 50 conversations. The MemPalace row is a 300-item sample with no stated model or judge.
+- **HotPotQA-24.** F1 over all 24 questions with Cognee's own scorer, from one run with Sonnet 5 answers. Cognee averages 45 runs and names no answer model, and one question moves the score by about 4 points.
+- **DolphinBench, shortcut run.** Our run wrote each message straight to the store with no agent turn, used a recall hook we wrote, and judged through codex, which the official validator rejects.
+- **Terminal-Bench 2.0.** The first 10 of 89 tasks, 1 trial each at medium effort; the rule is 5 trials, and the matching Claude Code row used max effort. The 2.0 board is closed, and the open board is 4.1.
+
+</details>
+
+### Finding the right session
+
+On LongMemEval-S, hippo's benchmark scripts put an answer session in the top five for 98.0% of 500 questions with the free local MiniLM embedder. That is the best of five settings, chosen after the run, on a measure close to its ceiling. Requiring every answer session, the same runs score 86.8 to 88.5%. The `hippo recall` command on a default install scores 85.6% [82.4, 88.6]. On one store of all 19,195 sessions, recall fell to 47.2% in June 2026.
+
+### What the two rerankers bought
+
+`--reranker cross-encoder` reorders the top 50 memories with a free model on your machine, and is off by default. [On DMR](benchmarks/public/results/2026-11-12-answer-accuracy/dmr-best.txt) it lifted hippo's answers from 73.1 with the embedder alone to 77.6, by 4.4 points [0.6, 8.3]. On PersonaMem v1 and HotPotQA-24 the change was within the noise.
+
+`--reranker jev` sends the top candidates to the hosted TypeSafe Jev API, and is off by default. On 300 developer queries from a private store, the right memory ranked first for 62% of them, against 41% with the free local cross-encoder. [Three graded-answer tests](docs/evals/2026-09-19-jev-reranker.md) showed no better answer rate. It buys a shorter context for about 0.0004 USD a recall, and it sends your query and candidate text to a third party.
+
+### What didn't work
+
+- Sleep lowered recall by 3.6 points [1.4, 5.8] on one scorer and raised it a little on another, so we claim no benefit for it.
+- Decay made no measurable difference, on a synthetic test that gives a 365-day half-life little time to act.
+- The old 7-day default was a bug that cost recall, so the default moved to 365 days.
+- Seven smaller experiments failed, stalled or were thrown out, among them a correction detector at 0.82 precision against a 0.90 bar.
+- One early headline number did not reproduce, and [we retracted it](docs/RETRACTION.md).
+
+### Check our work
+
+The score files for five of these public tests and their write-ups are in the repo, under `benchmarks/public`.
+
+[Benchmark results](benchmarks/public) · [Eval documents](docs/evals/README.md) · [Report a mistake](https://github.com/kitfunso/hippo-memory/issues/new)
 
 ---
 
@@ -279,11 +465,11 @@ hippo capture --file conversation.md --dry-run
 
 #### Rules from follow-up turns (opt-in, uses a model)
 
-Word patterns pin a later turn only when it holds a rule word (never, always, must, make sure) or a preference word that names code or limits a choice. Any other statement that names code or limits a choice, such as "Run the tests with `pnpm test:unit`, not the bare `pnpm test`", stays an unpinned note that only a matching prompt or `hippo recall` brings back. Patterns store nothing from "That file is generated, so changes belong in the template it comes from." With `{"capture": {"followUpRules": "model"}}` in `.hippo/config.json` and `ANTHROPIC_API_KEY` set, a session capture also asks a model which of your sentences state a lasting rule. Hippo stores those sentences, in your own words, as pinned rules.
+Word patterns pin a later turn only when it holds a rule word (never, always, must, make sure) or a preference word that names code or limits a choice. Any other statement that names code or limits a choice, such as "Run the tests with `pnpm test:unit`, not the bare `pnpm test`", stays an unpinned note that only a matching prompt or `hippo recall` brings back. Patterns store nothing from "That file is generated, so changes belong in the template it comes from." With `{"capture": {"followUpRules": "model"}}` in `.hippo/config.json` and a model set (`ANTHROPIC_API_KEY`, or `HIPPO_LLM_BASE_URL` for your own endpoint), a session capture also asks a model which of your sentences state a lasting rule. Hippo stores those sentences, in your own words, as pinned rules.
 
 - **What it sends:** your turns after the first one in the session, the last 20, each cut to 1,000 characters. Pasted blocks, fenced code and log lines are removed first, and secrets, email addresses and home paths are masked. The assistant's replies are never sent.
-- **To whom:** Anthropic, with your `ANTHROPIC_API_KEY`, in one call per session capture. A failed call logs one line and capture keeps its pattern rules. A session with no project never makes the call.
-- **On and off:** the default is `"off"`. Set `"model"` to turn it on; set `"off"` again, or unset the key, to turn it off.
+- **To whom:** your own endpoint when `HIPPO_LLM_BASE_URL` is set, else Anthropic with your `ANTHROPIC_API_KEY`, in one call per session capture. A failed call logs one line and capture keeps its pattern rules. A session with no project never makes the call.
+- **On and off:** the default is `"off"`. Set `"model"` to turn it on; set `"off"` again, or unset `ANTHROPIC_API_KEY` and `HIPPO_LLM_BASE_URL`, to turn it off.
 
 #### What you type
 
@@ -793,6 +979,7 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo remember "<text>" --observed` | Set confidence: observed |
 | `hippo remember "<text>" --inferred` | Set confidence: inferred |
 | `hippo remember "<text>" --global` | Store in global `~/.hippo/` store |
+| `hippo remember "<text>" --lead-in "<text>"` | Save the conversation text just before the memory; recall shows it above the memory |
 | `hippo supersede <id> "<text>"` | Replace a memory with a new version; the old one leaves recall and points at it |
 | `hippo recall "<query>"` | Retrieve relevant memories (local + global) |
 | `hippo recall "<query>" --budget <n>` | Recall within token limit (default: 4000) |
@@ -890,263 +1077,4 @@ The command runs with no shell, so each argument reaches the program as written.
 
 On `heartbeat`, `block`, `review` and `complete`, a given `--run` is checked against the card's live run and the command is refused, unchanged, if the two do not match.
 
-`HIPPO_READ_ONLY=1` uses a store without changing it, for example in the test phase of a benchmark. `hippo recall`, `hippo context`, the prompt hook and the MCP read tools give the same answers and write nothing: no recall counts, token-ledger rows, audit rows or mirror files, and a store with a WAL keeps its WAL. `remember`, `supersede`, `refine`, `outcome`, `resolve`, `decide`, `invalidate`, `forget`, `learn`, `promote`, `share` and `import`, and the MCP tools `hippo_remember`, `hippo_outcome`, `hippo_learn`, `hippo_resolve` and `hippo_share`, answer `read-only: not saved (HIPPO_READ_ONLY=1)` and save nothing (the CLI exits 1). `capture`, `capture-error`, `sleep`, `pre-compact`, `post-compact`, `note-written` and `session-end` log one line and do nothing, `hippo serve` does not start, and any other command that writes to the store fails with the store's own read-only error.
-
----
-
-## Framework Integrations
-
-### Auto-install (recommended)
-
-`hippo init` detects your agent framework and patches the right config file automatically:
-
-| Framework | Detected by | Patches |
-|-----------|------------|---------|
-| Claude Code | `CLAUDE.md` or `.claude/settings.json` | `CLAUDE.md` + 9 hook entries in `~/.claude/settings.json` (listed below) |
-| Codex | `AGENTS.md` or `.codex` | `AGENTS.md` + `UserPromptSubmit`/`SessionStart(compact)` hooks in Codex's `hooks.json` when Codex is installed (trust them once in `/hooks`); session capture is opt-in with `hippo hook install codex`, which wraps the Codex launcher |
-| Cursor | `AGENTS.md` | `AGENTS.md`, which Cursor reads from the project root |
-| OpenClaw | `.openclaw` or `AGENTS.md` | `AGENTS.md`; the native plugin is a separate install: `openclaw plugins install hippo-memory` |
-| OpenCode | `.opencode/` or `opencode.json` | `AGENTS.md` + TS plugin at `~/.config/opencode/plugins/hippo.ts` (subscribes to `session.idle` + `session.created`) |
-| Pi | `.pi` or `.pi/agent` | `AGENTS.md`; copy the [Pi extension](https://github.com/kitfunso/hippo-memory/tree/master/extensions/pi-extension) for session hooks |
-| Copilot CLI | `$COPILOT_HOME` or `~/.copilot` holding more than `hooks/`, checked on the machine, not in the project | `hooks/hippo.json`, the `hippo` server in `mcp-config.json` and a block in `copilot-instructions.md`; with VS Code, its User `mcp.json` and `prompts/hippo.instructions.md` |
-
-Init patches a project's instruction file only if it already exists. It also sets up a daily run and imports your coding agents' own memories; [What hippo init changes](#what-hippo-init-changes) lists everything.
-
-Setup guides on the website: [Claude Code](https://hippo-memory.com/claude-code/) · [Codex](https://hippo-memory.com/codex/) · [Cursor](https://hippo-memory.com/cursor/).
-
-### Manual install
-
-If you prefer explicit control:
-
-```bash
-hippo hook install claude-code   # patches CLAUDE.md + adds the 9 settings.json hook entries listed below
-hippo hook install codex         # patches AGENTS.md + adds hooks to Codex's hooks.json + wraps the detected Codex launcher
-hippo hook install cursor        # patches AGENTS.md
-hippo hook install openclaw      # patches AGENTS.md
-hippo hook install opencode      # patches AGENTS.md + installs the opencode TS plugin
-```
-
-This adds a `<!-- hippo:start -->` ... `<!-- hippo:end -->` block that tells the agent to:
-1. Run `hippo context --auto --budget 1500` at the start of a task. In Claude Code and Codex, whose prompt hook already injects pinned rules and matching memories, only if no hippo memory block has appeared in the session
-2. Everywhere but Claude Code, whose hooks store failed tool calls: run `hippo remember "<description of what went wrong>" --error` the moment it finds out why something failed, never as a closing step
-3. Everywhere but Claude Code, whose own auto memory does this job: run a plain `hippo remember` the moment it learns something that should outlive the session, leaving out secrets and personal details
-4. Capture a short summary with `hippo capture --stdin` when the session ends, but only where no hook captures the session: Cursor, OpenClaw, OpenCode, Pi, and Codex without its wrapper
-
-The block asks for nothing a hook already does, because each extra tool call re-reads the whole context. Re-running `hippo init` swaps a block an older hippo wrote for the current one, as long as nobody edited it. It leaves an edited block alone and says so, and never touches text outside the markers.
-
-For Claude Code, it also adds 9 hook entries to `~/.claude/settings.json`:
-- a `SessionEnd` hook that runs `hippo sleep` and then `hippo capture` when the session exits. Capture matches the last 20 user and 10 assistant messages of the transcript against word patterns for decisions, rules, errors and preferences. It uses no model unless you turn on `capture.followUpRules` (see Conversation Capture). The patterns do not read earlier turns, so a correction older than that window becomes a pinned rule only with `hippo remember --pin` by hand. Capture also saves each message you typed whole, so recall still finds the older correction (see What you type). A session that a program drives (`claude -p`, the Agent SDKs, the GitHub action, `codex exec`) gives capture no user messages, because a program wrote them, not you. A test harness that plays the user through such a session sets `HIPPO_CAPTURE_SCRIPTED=1`.
-- a `SessionStart` hook that prints the previous session's consolidation log on stderr, where `claude --debug` shows it. When the last sleep failed or a compaction summary was set aside, it shows you one line that points to `hippo doctor`.
-- a second `SessionStart` hook that runs `hippo session-rules`, which prints the rules you taught under `## Rules from the user` and nothing else. It has no matcher, so a resumed or cleared session and a compaction get the rules again.
-- a `UserPromptSubmit` hook that runs `hippo context --pinned-only --include-recent 5 --format additional-context` every turn. It re-injects pinned memories (`hippo remember <text> --pin`) plus up to 5 memories that share words with your prompt. When nothing matches, it adds only the pinned ones. Since 1.55.0 this replaces the 5 newest memories. `{"pinnedInject":{"promptRecall":false}}` brings back the 5 newest, so fresh same-session lessons appear on the next prompt whatever you ask. The block is rendered without live strength percentages, so it stays byte-identical while its memories do not change, and it is sent only when it changed since the session's last prompt: an unchanged block is skipped, resent every 10 skips (`pinnedInject.refreshTurns`, `0` never resends) and resent after compaction. The prompt-matched memories go in a separate block that is never skipped, so they are sent on every prompt they match. `{"pinnedInject":{"skipUnchanged":false}}` sends the pinned block every turn as before. `{"pinnedInject":{"excludeTags":["session-digest"]}}` leaves out every memory that carries a listed tag, whether it is pinned, recent or matched to the prompt; the list is empty by default. Opt out entirely with `{"pinnedInject":{"enabled":false}}` in `.hippo/config.json`.
-- a `PreCompact` hook that runs `hippo pre-compact` before the transcript gets summarized. It records the compaction in the store, saves a working-state snapshot (task/summary/next step) so mid-session compaction can't drop it, and asks the summariser to end its summary with a "Memories for hippo" list: the lessons, decisions and corrections from the session that should outlive it. The `SessionEnd` hook still owns extracting durable memories from the transcript.
-- a second `SessionStart` hook (matcher `compact`) that runs `hippo compact-resume`, printing that snapshot back into context right after compaction, if it is under 15 minutes old.
-- a `PostCompact` hook that runs `hippo post-compact`. It keeps the summary in the store with secrets scrubbed, and saves each item of that list as a memory that sleep never deletes: at most 10 per compaction, skipping an item an earlier compaction already saved and any item that looks like a secret. An item over 500 characters stays in the compaction's record only. It then prints one line, such as "Hippo saved 3 memories from this compaction and restored your task snapshot." If the store is busy, the summary waits in the store's `compactions-spool/` folder and `hippo sleep` finishes the save; `hippo doctor` names any compaction left unfinished for over 10 minutes. It also counts spool files that are waiting, stale (left by a replay that stopped) or set aside as `.bad`. The session that compacted does not have those memories injected back into its own prompts, since it just read them in the summary; `hippo recall` still finds them. The hook prints nothing when there is no store to save to.
-- a `PostToolUseFailure` hook that runs `hippo capture-error`, which stores a failed tool call as an error memory. It skips interrupts, declined permissions and searches that found nothing, and stores a repeated failure once. It also logs every failure, stored or not, for `hippo failures`: the session, the tool and hashes of the error, never its text. A hash is not anonymous, since anyone who guesses an error's text can check it against the hash. The log keeps 90 days.
-- a `PostToolUse` hook that runs `hippo note-written` when Claude Code writes a memory note (a `.md` file in `projects/<name>/memory/`). A detached worker imports the notes within seconds and logs to `~/.hippo/logs/note-written.log`. An `if` filter keeps Claude Code from starting hippo for any other write.
-
-Only Claude Code saves memories at a compaction: hippo installs no `PreCompact` or `PostCompact` hook for Codex, Cursor, OpenCode, OpenClaw or Pi.
-
-To remove: `hippo hook uninstall claude-code`
-
-For Codex, it adds two hooks to `$CODEX_HOME/hooks.json` (else `~/.codex/hooks.json`) and keeps every hook already there:
-- a `UserPromptSubmit` hook that runs the same `hippo context --pinned-only` command as Claude Code's, so your pinned memories plus up to 5 that match the prompt reach every prompt as developer context
-- a `SessionStart` hook (matcher `compact`) that runs `hippo compact-resume` after a compaction, so the next prompt sends that block again. Codex gets no `PreCompact` hook from hippo, so it restores a task snapshot only if one was saved with `hippo snapshot save` in the last 15 minutes
-
-**Codex runs a new or changed hook only after you trust it, so open `/hooks` in Codex once and trust both;** `hippo doctor` reminds you. The per-prompt hook was checked against a real Codex request; the compaction hook follows Codex's documented `compact` start source and has not been watched end to end in Codex. Each hook also carries a `commandWindows` form (`hippo.cmd ...`), because Codex runs hooks through PowerShell on Windows, where the execution policy can block npm's `hippo.ps1`. hippo only ever appends these two entries and never rewrites one, since Codex treats a changed command as a new hook to trust. To remove: `hippo hook uninstall codex`, which takes out only hippo's exact commands and leaves every other hook, including one of yours that runs hippo.
-
-For GitHub Copilot, when `$COPILOT_HOME` (else `~/.copilot`) or a VS Code User folder exists, `hippo setup` writes hippo's own `hooks/hippo.json`. When the Copilot folder was there before setup, it also adds a `hippo` server to `mcp-config.json` and a block to `copilot-instructions.md`. `hippo init` installs the same files, but only when the Copilot folder already held more than `hooks`, the sign that the Copilot CLI is installed. The block asks the agent to call `hippo_recall` and `hippo_remember`. The Copilot CLI, including its sessions inside VS Code, uses the session-start, tool-failure, pre-compact and session-end hooks, the server and the block. VS Code's agent mode (the Local agent, VS Code 1.109.3 or later) reads the same hooks file. It gets session start, the pre-compact snapshot and a capture after every reply. Setup also adds hippo to VS Code's own `mcp.json` and writes `prompts/hippo.instructions.md`, so its recall tools and instructions work too. The hooks, the VS Code files and how to remove them: [integrations/copilot.md](integrations/copilot.md).
-
-### What the hook adds (Claude Code example)
-
-````markdown
-## Project Memory (Hippo)
-
-The installed UserPromptSubmit hook injects pinned rules and the memories
-that match each prompt, so never load them yourself. If no hippo memory
-block has appeared in this session, run this at the start of a task:
-```bash
-hippo context --auto --budget 1500
-```
-
-The installed hooks store failed tool calls and capture the session when it
-ends, so there is nothing to record or run by hand.
-````
-
-### MCP Server
-
-Setup for each client: [hippo-memory.com/mcp](https://hippo-memory.com/mcp/).
-
-For any MCP-compatible client (Cursor, Windsurf (now Devin Desktop), Cline, Claude Desktop):
-
-```bash
-hippo mcp   # starts MCP server over stdio
-```
-
-Add to your MCP config (e.g. `.cursor/mcp.json` or `claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "hippo-memory": {
-      "command": "hippo",
-      "args": ["mcp"]
-    }
-  }
-}
-```
-
-No global install needed: `"command": "npx", "args": ["-y", "hippo-memory", "mcp"]` works too. With no store anywhere, the first tool call creates the global store (`~/.hippo`); `hippo init` in a project adds a project store. Check any install with `hippo doctor`.
-
-Exposes 13 tools: `hippo_recall`, `hippo_assemble`, `hippo_drill`, `hippo_remember`, `hippo_outcome`, `hippo_context`, `hippo_status`, `hippo_learn`, `hippo_conflicts`, `hippo_resolve`, `hippo_share`, `hippo_peers`, `hippo_predict_baserate`.
-
-On a store whose `config.json` sets `"sharedStore": true`, `hippo serve` answers MCP at `POST /mcp`, and each request names the caller's repo in two headers: `X-Hippo-Project` and an optional comma-separated `X-Hippo-Project-Aliases` (at most 10). The client percent-encodes each name, so any lowercase Unicode name fits. The server answers 400 for either header sent twice, aliases with no project, a blank, padded or uppercase name, a colon, a name over 256 characters, or a bad percent escape; a bad key still gets 401 first. With a project, `hippo_remember` stamps it on the row, and recall, assemble, drill, context and conflicts show only that project's rows and user-global ones; `hippo_outcome` rates only the recall made under that project. Without one, every tool returns an `isError` refusal that names the header, except `hippo_predict_baserate`. `hippo_learn`, `hippo_share`, `hippo_resolve` and `hippo_peers` are off on a shared store whatever the headers say; the admin resolves conflicts with the CLI. All headers must fit Node's 16 KB limit, and a larger request gets 431. Other stores ignore both headers. Every `/mcp` reply from any store, errors included, carries `X-Hippo-Project-Scoped: 1`, so a client can tell this server reads the project headers where an older one silently ignores them; `hippo-memory/project-identity` exports the name as `MCP_PROJECT_SCOPED_HEADER`.
-
-The headers are a filter the caller picks, not access control: any member key can name another project. The tenant is the security boundary, and binding a key to its projects is a backlog item.
-
-`hippo_peers` reads the server user's own global store, never the repos that share this one, which is why a shared store turns it off.
-
-### OpenClaw Plugin
-
-Native plugin with auto-context injection, workspace-aware memory lookup, and
-tool hooks for auto-learn / auto-sleep. When `autoSleep` is enabled, the
-OpenClaw plugin launches `hippo sleep` in a detached background worker at
-session end so the live session can exit immediately.
-
-Query-time retrieval still uses the active workspace store plus the shared
-global store. Daily consolidation comes from the machine-level runner that
-`hippo init` / `hippo setup` installs.
-
-```bash
-openclaw plugins install hippo-memory
-openclaw plugins enable hippo-memory
-```
-
-Plugin docs: [extensions/openclaw-plugin/](extensions/openclaw-plugin/). Integration guide: [integrations/openclaw.md](integrations/openclaw.md).
-
-### Claude Code Plugin
-
-Plugin with session, prompt and compaction hooks, error auto-capture, and the `hippo-memory` MCP server (`hippo mcp`). See [extensions/claude-code-plugin/](extensions/claude-code-plugin/).
-
-Full integration details: [integrations/](integrations/)
-
----
-
-## Comparison
-
-Hippo is for coding agents on machines you control. [Mem0](https://hippo-memory.com/vs/mem0/) fits better when the memory belongs to your app's end users, [Zep](https://hippo-memory.com/vs/zep/) when you want a managed knowledge graph built from business data, and [Letta Code](https://hippo-memory.com/vs/letta/) when you want an agent that edits its own memory. The table is a feature snapshot, not a verdict, and it holds no scores: [Benchmarks](#benchmarks) has those, split by setup.
-
-| Feature\* | Hippo | [MemPalace](https://github.com/milla-jovovich/mempalace) | [Mem0](https://github.com/mem0ai/mem0) | [Basic Memory](https://github.com/basicmachines-co/basic-memory) | [Zep](https://www.getzep.com/) | [Letta](https://github.com/letta-ai/letta-code) | [Cognee](https://www.cognee.ai/) | [Memoria](https://github.com/matrixorigin/Memoria) | [EverMind](https://evermind.ai/) |
-|---------|-------|-----------|------|-------------|-----|-------|--------|---------|----------|
-| Decay by default | Yes | No | No | No | No | No | No | No | No |
-| Retrieval strengthening | Yes | No | No | No | No | No | Partial (recall tuning) | No | Partial (Skill Memory distills patterns) |
-| Reward-proportional decay | Yes | No | No | No | No | No | No | No | No |
-| Hybrid search (BM25 + embeddings) | Yes | Embeddings + spatial | Yes (semantic + BM25 + entity) | No | Yes (graph + vec) | ? | Yes (GraphRAG) | Yes (vector + full-text) | Yes (mRAG, multi-modal) |
-| Schema acceleration / knowledge graph | Yes (schema) | No | Partial (entity linking; graph memory on Pro) | No | Yes (temporal KG) | No | Yes (auto-ontologies) | No (typed claims) | Yes (hierarchical: user/group/agent) |
-| Conflict detection + resolution | Yes | No | Partial (hosted platform marks superseded facts) | No | Yes (auto-invalidate stale facts) | No | No | Yes (auto-detect + quarantine) | Partial (temporal tracking) |
-| Multi-agent shared memory | Yes | No | No | No | Yes | Yes (shared memory blocks) | Yes | Yes (branch/merge across sessions) | Yes (multi-agent coordination) |
-| Transfer scoring | Yes | No | No | No | No | No | No | No | No |
-| Outcome tracking | Yes | No | No | No | No | No | No | No | Partial (Cases: agent trajectories) |
-| Confidence tiers | Yes | No | No | No | No | No | No | No | No |
-| Spatial organization | No | Yes (wings/halls/rooms) | No | No | No | No | No | No | No |
-| Lossless compression | No | Yes (AAAK, 30x) | No | No | No | No | No | No | No |
-| Cross-tool import (ChatGPT/Claude/Cursor) | Yes | No | No | No | ? | No | Partial (28 data sources) | No (Git ops) | Partial (mRAG: PDFs/images/URLs) |
-| Auto-hook install | Yes | No | No | No | No | No | No | No | No |
-| MCP server | Yes | Yes | Yes (hosted, needs an account) | Yes | Yes (hosted, needs an account) | Yes (hosted, needs an API key) | Yes (first-party Claude/LangGraph) | Yes | ? |
-| Zero runtime deps | Yes | No (ChromaDB) | No | No | No (managed service) | No (npm deps) | No (Python deps) | Yes (single Rust binary) | No (managed + OSS) |
-| Git-friendly | Yes | No | No | Yes | No | Yes (memory tracked in git) | No | Yes (Git is the model) | ? |
-| Framework agnostic | Yes | Yes | Partial | Yes | Yes | Yes | Yes | Yes | Yes |
-| License | MIT | (open) | Apache-2.0 | (open) | Proprietary cloud (Graphiti: Apache-2.0) | Apache-2.0 | MIT (core) | Apache-2.0 | Apache-2.0 (OSS) + cloud |
-
-\* The Mem0, Zep and Letta columns were last checked against each vendor's own pages on 2026-09-28.
-
-Side-by-side pages on the website: [hippo vs mem0](https://hippo-memory.com/vs/mem0/) · [hippo vs Zep](https://hippo-memory.com/vs/zep/) · [hippo vs Letta](https://hippo-memory.com/vs/letta/) · [CLAUDE.md vs MEMORY.md](https://hippo-memory.com/vs/claude-memory/).
-
----
-
-## Benchmarks
-
-We built hippo and ran these tests, so read them as a vendor's numbers. We ran rivals on the same answer model where we could. Scores marked published come from each team's own setup, so we give no ranks. The same results are on [hippo-memory.com/benchmarks](https://hippo-memory.com/benchmarks/).
-
-### Repeat mistakes in real Claude Code sessions
-
-Each run corrects Claude Code once and then, 2 to 4 tasks later, gives it a task where the same mistake is possible. We ran it on 29 repositories, [registered first](docs/evals/2026-11-08-z0-round3-result.md).
-
-| Claude Code with | Repeats in 100 |
-|---|--:|
-| No memory | 83 |
-| Claude Code's built-in memory | 21 |
-| Built-in memory plus hippo | **11** |
-
-The chart counts first chances 2 to 4 tasks after the correction. The registered measure, the first chance in each mistake family over 148 units, gives 14.9 points fewer repeats with hippo [5.5, 24.3], at the same cost, a ratio of 1.006 [0.964, 1.049]. On tasks with no lesson to apply, neither the cost nor the share solved changed.
-
-What this run can't tell us is why. With lesson capture removed the result was the same, so we can't say hippo's lessons caused it. Round 4 tests that. The corrections were scripted, the agent was Claude Code only, and the test code and run records are not in the public repo. The round before was inconclusive, at 8.9 points fewer on 16 repositories.
-
-### Official-setup rows side by side
-
-Hippo 3.5.1 run with the same answer model, judge and settings as the published rows.
-
-| Benchmark | hippo | Mem0 | Zep | MemOS | Supermemory | Honcho | Hindsight | EverMemOS | Memobase | Other |
-|---|---|---|---|---|---|---|---|---|---|---|
-| **LoCoMo, Mem0 paper setup**<br><sub>Long chat recall, gpt-4o-mini answers; official setup</sub> | **69.22**<br><sub>embedder, 30 per speaker, all 1,540</sub> | [66.88](https://arxiv.org/html/2504.19413)<br><sub>gpt-4o-mini</sub> | [65.99](https://arxiv.org/html/2504.19413)<br><sub>gpt-4o-mini</sub> | - | - | - | - | - | - | [68.44](https://arxiv.org/html/2504.19413)<br><sub>Mem0g · gpt-4o-mini</sub> |
-| **LoCoMo, OmniMemEval shared setup**<br><sub>Long chat recall, gpt-4.1-mini answers; official setup</sub> | **74.72**<br><sub>embedder, top 20, 1,535 of 1,540 (5 test items never scored)</sub> | [77.68](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L27)<br><sub>gpt-4.1-mini</sub> | [63.83](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L28)<br><sub>gpt-4.1-mini</sub> | [88.83](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L40)<br><sub>gpt-4.1-mini</sub> | [73.53](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L29)<br><sub>gpt-4.1-mini</sub> | - | [81.99](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L33)<br><sub>gpt-4.1-mini</sub> | [82.75](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L35)<br><sub>gpt-4.1-mini</sub> | - | [90.71](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/locomo.md#L43)<br><sub>cachly · gpt-4.1-mini</sub> |
-| **LongMemEval-S, gpt-4o reader**<br><sub>Long chat recall, gpt-4o answers; official setup</sub> | **81.8**<br><sub>reranker, top 10 (embedder 78.2), official gpt-4o judge</sub> | - | [71.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o</sub> | - | [81.6](https://arxiv.org/html/2512.12818v1)<br><sub>gpt-4o</sub> | - | - | - | - | [86.0](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag)<br><sub>EmergenceMem Internal · gpt-4o-2024-08-06</sub> |
-| **LongMemEval-S, OmniMemEval shared setup**<br><sub>Long chat recall, gpt-4.1-mini answers; official setup</sub> | **83.84**<br><sub>embedder, top 20, 495 of 500 (5 test items never scored)</sub> | [56.00](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L30)<br><sub>gpt-4.1-mini</sub> | [79.80](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L31)<br><sub>gpt-4.1-mini</sub> | [89.20](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L41)<br><sub>gpt-4.1-mini</sub> | [66.07](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L32)<br><sub>gpt-4.1-mini</sub> | - | [72.20](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L36)<br><sub>gpt-4.1-mini</sub> | [80.40](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L38)<br><sub>gpt-4.1-mini</sub> | - | [91.20](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/longmemeval.md#L43)<br><sub>Maasv · gpt-4.1-mini</sub> |
-| **PersonaMem v1, MemOS suite setup**<br><sub>Personalisation, gpt-4o-mini answers; official setup</sub> | **61.97**<br><sub>embedder, top 20, mean of 3 runs</sub> | [43.1](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [57.8](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [61.2](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [53.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | - | - | - | [58.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [56.8](https://arxiv.org/html/2507.03724v4)<br><sub>MemU · gpt-4o-mini</sub> |
-| **PersonaMem v2, OmniMemEval shared setup**<br><sub>Personalisation, gpt-4.1-mini answers; official setup, with a caveat</sub> | **35.10**<br><sub>embedder, top 20, one run, 4,995 of 5,000 (5 test items never scored)</sub> | [36.76](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L30)<br><sub>gpt-4.1-mini</sub> | [32.34](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L31)<br><sub>gpt-4.1-mini</sub> | [40.58](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L41)<br><sub>gpt-4.1-mini</sub> | [39.64](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L32)<br><sub>gpt-4.1-mini</sub> | - | [37.98](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L36)<br><sub>gpt-4.1-mini</sub> | [35.94](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L38)<br><sub>gpt-4.1-mini</sub> | - | [39.86](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/personamem-v2.md#L43)<br><sub>Maasv · gpt-4.1-mini</sub> |
-| **EverMemBench, GPT-4.1-mini answers**<br><sub>Changing facts, GPT-4.1-mini answers; official setup, with a caveat</sub> | **44.20**<br><sub>embedder, top 10, mean of 9 categories</sub> | [37.09](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [39.97](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [42.55](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | - | - | - | - | [34.27](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [37.44](https://arxiv.org/html/2602.01313v3)<br><sub>Full Context · GPT-4.1-mini</sub> |
-| **BEAM-100K, OmniMemEval shared setup**<br><sub>Long-horizon memory, gpt-4.1-mini answers; official setup</sub> | **67.98**<br><sub>embedder, top 20, 395 of 400 (5 test items never scored)</sub> | [70.41](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L29)<br><sub>gpt-4.1-mini</sub> | [68.70](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L30)<br><sub>gpt-4.1-mini</sub> | [66.87](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L39)<br><sub>gpt-4.1-mini</sub> | [65.98](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L31)<br><sub>gpt-4.1-mini</sub> | - | [70.22](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L35)<br><sub>gpt-4.1-mini</sub> | [58.64](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L36)<br><sub>gpt-4.1-mini</sub> | - | [76.38](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L41)<br><sub>Maasv · gpt-4.1-mini</sub> |
-| **BEAM-10M, OmniMemEval shared setup**<br><sub>Long-horizon memory, gpt-4.1-mini answers; official setup</sub> | **56.84**<br><sub>embedder, top 20, all 200</sub> | [43.33](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L29)<br><sub>gpt-4.1-mini</sub> | [56.11](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L30)<br><sub>gpt-4.1-mini</sub> | [56.75](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L39)<br><sub>gpt-4.1-mini</sub> | [52.49](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L31)<br><sub>gpt-4.1-mini</sub> | - | [59.75](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L35)<br><sub>gpt-4.1-mini</sub> | [47.73](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L36)<br><sub>gpt-4.1-mini</sub> | - | [65.09](https://github.com/MemTensor/OmniMemEval/blob/ff13e4a5b12e3c406a81c32bb0834c7e8d73f38e/docs/user_memory/benchmark_results/beam.md#L41)<br><sub>Maasv · gpt-4.1-mini</sub> |
-| **HaluMem-Medium**<br><sub>Hallucination control, GPT-4o answers; official setup, with a caveat</sub> | **70.23**<br><sub>embedder, top 20, GPT-4o answers and judge</sub> | [53.02](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [55.47](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [67.23](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [54.07](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | - | - | - | [35.33](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [54.66](https://arxiv.org/html/2511.03506v3)<br><sub>Mem0-Graph · GPT-4o</sub> |
-| **HaluMem-Long**<br><sub>Hallucination control, GPT-4o answers; official setup, with a caveat</sub> | **65.99**<br><sub>embedder, top 20, GPT-4o answers and judge</sub> | [28.11](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [50.19](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [64.44](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [53.77](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | - | - | - | [33.60](https://arxiv.org/html/2511.03506v3)<br><sub>GPT-4o</sub> | [32.44](https://arxiv.org/html/2511.03506v3)<br><sub>Mem0-Graph · GPT-4o</sub> |
-| **IMLogic, Table 5**<br><sub>Multiple-choice accuracy, GPT-5.1 answers, no judge; official setup</sub> | **38.33**<br><sub>embedder, top 30, one run, 2,215 of 2,216 (1 test item never scored)</sub> | [38.18](https://arxiv.org/abs/2606.23283)<br><sub>GPT-5.1</sub> | - | [39.44](https://arxiv.org/abs/2606.23283)<br><sub>GPT-5.1</sub> | - | - | - | [43.50](https://arxiv.org/abs/2606.23283)<br><sub>GPT-5.1</sub> | - | [44.18](https://arxiv.org/abs/2606.23283)<br><sub>T-Mem · GPT-5.1</sub> |
-| **DolphinBench, official Claude Code setup**<br><sub>Agent memory, Claude Code with Sonnet 5; official setup</sub> | *in build* | [32.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/mem0/README.md)<br><sub>Claude Code, Sonnet 5 · 194/600</sub> | - | - | - | [35.8](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/honcho/README.md)<br><sub>Claude Code, Sonnet 5 · 215/600</sub> | - | - | - | [26.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/builtin/README.md)<br><sub>Built-in · Claude Code, Sonnet 5 · 158/600</sub> |
-
-<details>
-<summary>How each row ran</summary>
-
-- **LoCoMo, Mem0 paper setup.** Run as the Mem0 paper ran it, with Mem0's released evaluation code (mem0ai/mem0 aae5989e78): all 1,540 questions in categories 1 to 4, 30 memories per speaker, gpt-4o-mini answers under the paper's prompt, and the code's gpt-4o-mini judge. The paper itself does not name its judge. One run. The paper's full-context baseline scores 72.9, above every memory row. Compare the overall score only: our category labels follow our own mapping.
-- **LoCoMo, OmniMemEval shared setup.** Run as OmniMemEval's run_locomo_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and the gpt-4o-mini-2024-07-18 judge on the 1,540 questions in categories 1 to 4. The 5 smoke-test questions are never scored, so the score covers 1,535. Contributors ran some of the published rows.
-- **LongMemEval-S, gpt-4o reader.** The answer model and the judge match the published gpt-4o rows: gpt-4o-2024-08-06 reads hippo's top 10 memories, and the official script's prompts on gpt-4o-2024-08-06 judge all 500 questions. Each system keeps its own retrieval, as in the published rows. The cell shows the reranker setup, 81.8; the embedder setup scores 78.2. We chose the reranker after seeing its Sonnet scores and recorded that before its run. EmergenceMem does not name its judge.
-- **LongMemEval-S, OmniMemEval shared setup.** Run as OmniMemEval's run_lme_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): the cleaned LongMemEval-S file, hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and the gpt-4o-mini-2024-07-18 judge. The 5 smoke-test questions are never scored, so the score covers 495 of 500.
-- **PersonaMem v1, MemOS suite setup.** Run as MemOS's evaluation suite runs every vendor row (MemTensor/MemOS 3a16e5fe): the same data files and top 20, PM_ANSWER_PROMPT as one system message to gpt-4o-mini-2024-07-18 at temperature 0, 3 runs per question, scored as the mean of the run accuracies over all 589 rows. Each system keeps its own retrieval and memory text.
-- **PersonaMem v2, OmniMemEval shared setup.** Run as OmniMemEval's run_pmv2_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): the 32k split, hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and rule matching in place of a judge, one run as the script's default. The published rows average repeated runs and do not say how many. The 5 smoke-test questions are never scored, so the score covers 4,995 of 5,000.
-- **EverMemBench, GPT-4.1-mini answers.** The answer model, prompts, top 10, multiple-choice scorer and the 9-category mean match the paper's Table 4 (EverMind-AI/EverMemBench e10b3d5): gpt-4.1-mini-2025-04-14 at temperature 0 answers all 2,400 items. One setting differs: open answers are judged by gpt-5.6-sol through codex with the authors' prompts, and the repository's default judge is gemini-3-flash-preview; the paper names no judge. A second judge, gpt-4o-2024-08-06 with the same prompts, agrees with codex on 96.9% of open verdicts and scores hippo 44.75. The default setup scores 41.66 with codex and 42.50 with gpt-4o.
-- **BEAM-100K, OmniMemEval shared setup.** Run as OmniMemEval's run_beam_eval.sh runs every backend (MemTensor/OmniMemEval ff13e4a5): the nugget score at the 100K scale, hippo's top 20 memories, gpt-4.1-mini-2025-04-14 answers and the gpt-4o-mini-2024-07-18 judge. The 5 smoke-test questions are never scored, so the score covers 395 of 400.
-- **BEAM-10M, OmniMemEval shared setup.** The same setup as the BEAM-100K row at the 10M scale (MemTensor/OmniMemEval ff13e4a5), on all 200 questions.
-- **HaluMem-Medium.** Question answering only, with the paper's GPT-4o answers and judge (gpt-4o-2024-08-06, temperature 0) and the same data, question set, top 20 and prompts. We do not produce the extraction and update scores, so we cannot enter the HaluMem board yet.
-- **HaluMem-Long.** Question answering only, with the paper's GPT-4o answers and judge (gpt-4o-2024-08-06, temperature 0), the same setup as the HaluMem-Medium row. hippo ran it with its embedder on 20 Nov 2026. We do not produce the extraction and update scores, so we cannot enter the HaluMem board yet.
-- **IMLogic, Table 5.** Table 5 of arXiv 2606.23283: conversation-level multiple-choice accuracy with GPT-5.1 answers, top-30 retrieval and a GPT-4o-mini memory backbone for every method. hippo ran it with its embedder on 21 Nov 2026: gpt-5.1-2025-11-13 at temperature 0, the authors' prompt and option shuffle, and exact option matching. hippo makes no model call when it stores a memory, so it needs no memory backbone. 1 smoke-test item is never scored.
-- **DolphinBench, official Claude Code setup.** The same setup as the published Claude Code rows: one Claude Code turn with the hippo plugin for each of the 13,539 messages, each test in a fresh sandbox with memory writes off, Sonnet 5 and the gpt-5.6-sol judge. The run is in build, so there is no score yet.
-
-</details>
-
-### Our own setup
-
-Every other benchmark we ran. Our setup differs from the published rows, so these scores do not sit beside theirs.
-
-| Benchmark | hippo | Mem0 | Zep | MemOS | Supermemory | Honcho | Hindsight | EverMemOS | Memobase | Other |
-|---|---|---|---|---|---|---|---|---|---|---|
-| **LoCoMo**<br><sub>Long chat recall, Sonnet 5 answers</sub> | **91.5**<br><sub>embedder, top 200, gpt-4o-mini judge, 400 sample</sub> | [92.5](https://mem0.ai/research-3)<br><sub>not stated · unit not stated</sub> | [75.14](https://www.getzep.com/blog/lies-damn-lies-statistics-is-mem0-really-sota-in-agent-memory/)<br><sub>not stated</sub> | - | - | [89.9](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>Claude Haiku 4.5</sub> | [89.61](https://arxiv.org/html/2512.12818v1)<br><sub>Gemini-3 Pro</sub> | [93.05](https://evermind.ai/blogs/everos-sota-results-across-four-memory-benchmarks-and-what-it-means-for-llm-agents)<br><sub>not stated</sub> | [75.78](https://arxiv.org/html/2512.12818v1)<br><sub>not stated</sub> | [90.0](https://backboard.io/blog/best-ai-memory-score-in-the-world)<br><sub>Backboard · not stated</sub> |
-| **LongMemEval-S**<br><sub>Long chat recall, Sonnet 5 answers</sub> | **88.4**<br><sub>embedder, top 200, official gpt-4o judge</sub> | [94.4](https://mem0.ai/blog/locomo-benchmark)<br><sub>not stated · unit not stated</sub> | [71.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o</sub> | - | [85.2](https://arxiv.org/html/2512.12818v1)<br><sub>gemini-3-pro</sub> | [92.6](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>Gemini 3 Pro</sub> | [91.4](https://arxiv.org/html/2512.12818v1)<br><sub>Gemini-3 Pro</sub> | [83.00](https://evermind.ai/blogs/everos-sota-results-across-four-memory-benchmarks-and-what-it-means-for-llm-agents)<br><sub>not stated</sub> | - | [94.87](https://mastra.ai/research/observational-memory)<br><sub>Mastra Observational Memory · gpt-5-mini</sub> |
-| **LongMemEval-M**<br><sub>Very long chat recall, Sonnet 5 answers</sub> | **78.4**<br><sub>default, top 200, official gpt-4o judge</sub> | - | - | - | - | - | - | - | - | - |
-| **DMR**<br><sub>Multi-session recall, Sonnet 5 answers</sub> | **77.6**<br><sub>reranker, top 20</sub> | - | [98.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o-mini</sub> | - | - | - | - | - | - | [98.0](https://arxiv.org/html/2501.13956v1)<br><sub>Full-conversation baseline · gpt-4o-mini</sub> |
-| **DMR, gpt-4o-mini answers**<br><sub>Multi-session recall, gpt-4o-mini answers</sub> | **85.60**<br><sub>reranker, top 20, Speaker 1 role</sub> | - | [98.2](https://arxiv.org/html/2501.13956v1)<br><sub>gpt-4o-mini</sub> | - | - | - | - | - | - | [98.0](https://arxiv.org/html/2501.13956v1)<br><sub>Full-conversation baseline · gpt-4o-mini</sub> |
-| **PersonaMem v1**<br><sub>Personalisation, Sonnet 5 answers</sub> | **72.4**<br><sub>embedder, top 20</sub> | [43.1](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [57.8](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [61.2](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [53.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | - | - | - | [58.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [56.8](https://arxiv.org/html/2507.03724v4)<br><sub>MemU · gpt-4o-mini</sub> |
-| **PersonaMem v2**<br><sub>Personalisation, Sonnet 5 answers</sub> | **50.1**<br><sub>embedder, top 20</sub> | - | - | [40.58](https://raw.githubusercontent.com/MemTensor/MemOS/main/README.md)<br><sub>not stated</sub> | - | - | - | [53.25](https://evermind.ai/blogs/top-ai-memory-systems-benchmarked-in-2026)<br><sub>not stated</sub> | - | [55.2](https://arxiv.org/html/2512.06688)<br><sub>Qwen3-4B agentic memory · Qwen3-4B-Instruct-2507</sub> |
-| **PrefEval**<br><sub>Preference following, Sonnet 5 answers</sub> | **83.0**<br><sub>default, top 5</sub> | [63.7](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [39.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [71.9](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [56.7](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | - | - | - | [34.1](https://arxiv.org/html/2507.03724v4)<br><sub>gpt-4o-mini</sub> | [92.15](https://arxiv.org/html/2502.09597)<br><sub>Claude 3 Sonnet + RAG · Claude 3 Sonnet</sub> |
-| **EverMemBench**<br><sub>Changing facts, Sonnet 5 answers</sub> | **56.4**<br><sub>default, top 10, mean of 9 categories</sub> | [37.09](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [39.97](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [42.55](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | - | - | - | - | [34.27](https://arxiv.org/html/2602.01313v3)<br><sub>GPT-4.1-mini</sub> | [72.61](https://arxiv.org/html/2602.01313v3)<br><sub>Full Context · Gemini-3-Flash</sub> |
-| **BEAM-100K**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **72.4**<br><sub>embedder</sub> | - | - | - | - | [63.0](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [73.4](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [79.0](https://www.cognee.ai/benchmarking-cognee-on-beam)<br><sub>cognee · not stated</sub> |
-| **BEAM-500K**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **70.6**<br><sub>embedder</sub> | - | - | - | - | [64.9](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [71.1](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [35.9](https://arxiv.org/html/2510.27246)<br><sub>LIGHT · Llama-4-Maverick</sub> |
-| **BEAM-1M**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **69.9**<br><sub>default</sub> | [64.1](https://mem0.ai/blog/mem0-the-token-efficient-memory-algorithm)<br><sub>gpt-5</sub> | - | - | - | [63.1](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [73.9](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [33.6](https://arxiv.org/html/2510.27246)<br><sub>LIGHT · Llama-4-Maverick</sub> |
-| **BEAM-10M**<br><sub>Long-horizon memory, Sonnet 5 answers</sub> | **54.3**<br><sub>embedder</sub> | [48.6](https://mem0.ai/blog/mem0-the-token-efficient-memory-algorithm)<br><sub>gpt-5</sub> | - | - | - | [40.6](https://espirai-blog.pages.dev/research/Benchmarking-Honcho)<br><sub>claude-haiku-4-5</sub> | [64.1](https://hindsight.vectorize.io/blog/2026/04/02/beam-sota)<br><sub>not stated</sub> | - | - | [up to 67.0](https://www.cognee.ai/benchmarking-cognee-on-beam)<br><sub>cognee · not stated</sub> |
-| **ConvoMem**<br><sub>Conversation memory, Sonnet 5 answers</sub> | **59.6**<br><sub>default, top 20</sub> | - | - | - | - | - | - | - | - | [92.9](https://vectorize.io/articles/mempalace-benchmarks)<br><sub>MemPalace · not stated</sub> |
-| **HotPotQA-24**<br><sub>Multi-hop questions, F1, Sonnet 5 answers</sub> | **91.0**<br><sub>reranker, top 15, all 24 questions, one run</sub> | [12.0](https://www.cognee.ai/knowledge-graph-memory-benchmarks)<br><sub>not stated</sub> | - | - | - | - | - | - | - | [84.1](https://www.cognee.ai/knowledge-graph-memory-benchmarks)<br><sub>Cognee · not stated</sub> |
-| **DolphinBench, shortcut run**<br><sub>Agent memory, Claude Code with Sonnet 5</sub> | **45.0**<br><sub>270/600 · Claude Code, Sonnet 5</sub> | [32.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/mem0/README.md)<br><sub>Claude Code, Sonnet 5 · 194/600</sub> | - | - | - | [35.8](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/honcho/README.md)<br><sub>Claude Code, Sonnet 5 · 215/600</sub> | - | - | - | [26.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/builtin/README.md)<br><sub>Built-in · Claude Code, Sonnet 5 · 158/600</sub> |
-| **Terminal-Bench 2.0**<br><sub>Agent coding tasks, Claude Code with Sonnet 5</sub> | **9/10**<br><sub>first 10 of 89 tasks, 1 trial; Claude Code with no memory 9/10</sub> | - | - | - | - | - | - | - | - | - |
-
-<details>
-<summary>How each row ran</summary>
-
-- **LoCoMo.** Judged again with the Mem0 paper's prompt on gpt-4o-mini, the judge in Mem0's released code. This row still scores a 400-question sample with Sonnet 5 answers, and the published rows use all 1,540 questions. The "LoCoMo, Mem0 paper setup" row runs that setup in full.
-- **LongMemEval-S.** Judged with the official script's prompt for each question type and its judge, gpt-4o-2024-08-06, over all 500 questions. One setting differs: the answer model is Sonnet 5, a
+`HIPPO_READ_ONLY=1` uses a store without changing it, for example in the test phase of a benchmark. `hippo recall`, `hippo context`, the prompt hook and the MCP read tools give the same answers and write nothing: no recall counts, token-ledger rows, audit rows or mirror files, and a store with a WAL keeps its WAL. `remember`, `supersede`, `refine`, `outcome`, `resolve`, `decide`, `invalidate`, `forget`, `learn`, `promote`, `share

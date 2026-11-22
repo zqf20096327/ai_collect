@@ -9,6 +9,7 @@
   <a href="https://github.com/brianh014/inkandthread/releases/latest"><img src="https://img.shields.io/github/v/release/brianh014/inkandthread" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/brianh014/inkandthread" alt="License: AGPL-3.0"></a>
   <a href="https://github.com/brianh014/inkandthread/actions/workflows/codeql.yml"><img src="https://github.com/brianh014/inkandthread/actions/workflows/codeql.yml/badge.svg" alt="CodeQL"></a>
+  <a href="https://discord.gg/d9MqaFGjEW"><img src="https://img.shields.io/badge/Discord-join-5865f2?logo=discord&amp;logoColor=white" alt="Discord"></a>
   <a href="https://ko-fi.com/brianh014"><img src="https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&amp;logoColor=white" alt="Support on Ko-fi"></a>
   <a href="https://github.com/sponsors/brianh014"><img src="https://img.shields.io/badge/GitHub-sponsor-db61a2?logo=githubsponsors&amp;logoColor=white" alt="Sponsor on GitHub"></a>
 </p>
@@ -16,6 +17,8 @@
 Ink & Thread is a single-player story game, played like a Telltale game or a choose-your-own-adventure book. You build a world and a character, then act and speak only as that character, while an AI plays the Narrator: it plots in secret, so the story turns in ways you don't see coming, runs the story, voices everyone else, keeps track of the world, and quietly decides whether what you try works. An image AI draws the Cover, the portraits and a picture for each scene, as in a visual novel.
 
 It runs on your own computer and talks to models you choose. Bring an OpenAI-compatible text API (OpenRouter, DeepInfra, a local server) and, for pictures, OpenRouter, Wiro or your own ComfyUI.
+
+**[Download the latest release](https://github.com/brianh014/inkandthread/releases/latest)** for Windows, macOS or Linux, and see [Quick Install](#quick-install) to get started.
 
 <p align="center"><img src="docs/screenshots/story-picture-desktop-light.jpg" alt="A story under way: a scene picture drawn as the scene changes, with the Recap, Loose Ends and recent characters beside it, and three Choices, light theme" width="620"> <img src="docs/screenshots/story-picture-mobile-light.jpg" alt="The same story on a phone, light theme" width="179"></p>
 <p align="center"><img src="docs/screenshots/story-picture-desktop-dark.jpg" alt="A story under way: a scene picture drawn as the scene changes, with the Recap, Loose Ends and recent characters beside it, and three Choices, dark theme" width="620"> <img src="docs/screenshots/story-picture-mobile-dark.jpg" alt="The same story on a phone, dark theme" width="179"></p>

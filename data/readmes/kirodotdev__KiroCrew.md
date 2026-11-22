@@ -255,6 +255,23 @@ Use `kirocrew config get`, `kirocrew config set <key> <value>`, and
 [troubleshooting guide](src/kiro_crew/docs/troubleshooting.md) for log sources,
 levels, diagnostics bundles, and recovery steps.
 
+### Stopping or removing Kiro Crew
+
+```bash
+kirocrew stop                # stop a running Gateway
+kirocrew service uninstall   # remove the service
+```
+
+A service installed with `kirocrew service install` starts again at the next
+boot or login after `kirocrew stop`, until `kirocrew service uninstall` removes
+it. On Linux the service is a system unit, so both commands ask for sudo there.
+The desktop app runs its own Gateway: quit the app (Quit in its tray icon menu,
+or Cmd+Q / Ctrl+Q) to stop it, because closing its window keeps it running. A
+Docker install stops with `docker stop kirocrew`. To remove the program, follow
+[Uninstalling](docs/guides/install.md#uninstalling) for your install method;
+your data stays in place until you follow
+[Removing user data](docs/guides/install.md#removing-user-data).
+
 ## Anonymous usage telemetry
 
 Kiro Crew sends **one anonymous heartbeat per day** so maintainers can see how
@@ -867,10 +884,4 @@ make this tool possible:
 <a href="https://github.com/kesh97-hub" title="kesh97-hub"><img src="https://github.com/kesh97-hub.png?size=64" width="64" height="64" alt="kesh97-hub" /></a>
 <a href="https://github.com/keyejia" title="Kellen Jia"><img src="https://github.com/keyejia.png?size=64" width="64" height="64" alt="Kellen Jia" /></a>
 <a href="https://github.com/kian-zh" title="张景源"><img src="https://github.com/kian-zh.png?size=64" width="64" height="64" alt="张景源" /></a>
-<a href="https://github.com/kiavashsamadi" title="Kiavash"><img src="https://github.com/kiavashsamadi.png?size=64" width="64" height="64" alt="Kiavash" /></a>
-<a href="https://github.com/kidbrax" title="Braxton Beyer"><img src="https://github.com/kidbrax.png?size=64" width="64" height="64" alt="Braxton Beyer" /></a>
-<a href="https://github.com/kimlucky7" title="Kim @AdsAgent"><img src="https://github.com/kimlucky7.png?size=64" width="64" height="64" alt="Kim @AdsAgent" /></a>
-<a href="https://github.com/kirankumar15" title="kirankumar"><img src="https://github.com/kirankumar15.png?size=64" width="64" height="64" alt="kirankumar" /></a>
-<a href="https://github.com/kiro" title="Kiril Minkov"><img src="https://github.com/kiro.png?size=64" width="64" height="64" alt="Kiril Minkov" /></a>
-<a href="https://github.com/KiroCrew" title="KiroCrew"><img src="https://github.com/KiroCrew.png?size=64" width="64" height="64" alt="KiroCrew" /></a>
-<a href="https://git
+<a href="https://github.com/kiavashsamadi" title="Kiavash"><img src="https://github.com/kiavashsamadi.png?size=64" width="64" height="64" alt="Kiavash" /

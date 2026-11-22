@@ -28,7 +28,9 @@ force, after a straight-line correction for the grid, it is within 1.9% and
 For the downforce alone, smaller models that skip the flow do about three
 times better (1.2%), the smallest in under a millisecond per prediction, and
 one that predicts the pressure along the wing's surface also gives the drag,
-the moment and where the flow separates.
+the moment and where the flow separates. For the drag, a small network of its
+own is almost five times closer (1.6%) than the drag added up from that
+pressure and friction (7.5%).
 
 - Thuerey et al.'s paper: https://arxiv.org/abs/1810.08217
 - Their code: https://github.com/thunil/Deep-Flow-Prediction (Apache-2.0)
@@ -37,7 +39,7 @@ Words used here are explained in the [glossary](docs/glossary.md).
 
 ## Workflow
 
-The study in sixteen steps, each with its own page:
+The study in seventeen steps, each with its own page:
 
 1. **[Reproduction](docs/01-reproduction.md):** we first ran the original
    free-air study on current software, to start from a working pipeline and a
@@ -97,10 +99,16 @@ The study in sixteen steps, each with its own page:
     small models are 1.2% off OpenFOAM's force. With up to about 200
     samples, a Gaussian process predicts the downforce best. More data still
     helps the U-Net; twice the training does not.
+17. **[The drag alone](docs/17-drag-model.md):** step 14's network trained on
+    the drag instead of the downforce is almost five times closer than the
+    drag added up from the surface model's pressure and friction: 1.6%
+    against 7.5% on the test airfoils, 0.3% and 1.3% against 4.0% and 4.7%
+    on the two wings. The drag is a small difference of large forces at the
+    nose, so small errors along the surface add up.
 
 **Data:** the simulations, the trained models and the NACA 4412 sweep are on
-Zenodo, https://doi.org/10.5281/zenodo.24424329. **Next:** a paper on these
-results. All commands are in [How to run it](docs/howto.md).
+Zenodo, https://doi.org/10.5281/zenodo.24424329. All commands are in
+[How to run it](docs/howto.md).
 
 ## What the network learns
 
@@ -125,6 +133,7 @@ the simulated pressure and velocity.*
 | Downforce from the U-Net | 3.3% error with all the samples (3.9% with 3,096), the loss weighted next to the wing, the distance input and random starting weights (with 3,096 samples, from the free-air model: 6.2% with the weighting alone, 9.9% with the plain loss; from random weights without the distance: 6.8%); twice the training does not lower it | [Steps 9, 10, 13 and 16](docs/16-final-models.md) |
 | Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.5% error on the 28 test airfoils (1.2% against OpenFOAM's force, where the U-Net is 4.0%); 0.65 ms per prediction from the airfoil file, against 28 ms for the U-Net and 318 s for a simulation | [Steps 14 and 16](docs/16-final-models.md) |
 | Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.2%, drag 7.5% on the test airfoils (4–5% on the two wings), moment 2.2%; the separated part of the surface, 10% of it on average, is off by 0.2% of the surface | [Steps 15 and 16](docs/16-final-models.md) |
+| Drag from a model of its own | the small network of step 14 trained on the drag: 1.6% error on the test airfoils, against 7.5% for the drag added up from the surface model; 0.3% and 1.3% on the two wings (4.0% and 4.7%) | [Step 17](docs/17-drag-model.md) |
 | Downforce from little data | a Gaussian process is the most accurate model of the downforce with up to about 200 training samples (7.4% with 97, where the small network is 12.4%), and says how sure it is; from 386 samples on, the small network is better | [Step 16](docs/16-final-models.md) |
 | Unseen wing: NACA 4412 | at 11 ride heights: downforce within 2.0% with all the samples (5% and 4% with 3,096, without and with the distance input)¹, peak at the same height as the CFD | [Steps 11, 13 and 16](docs/16-final-models.md) |
 | Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 2.6% with all the samples (1.1% with 3,096 and the distance input, 10–19% low without it)¹; the suction peak still too weak | [Steps 12, 13 and 16](docs/16-final-models.md) |

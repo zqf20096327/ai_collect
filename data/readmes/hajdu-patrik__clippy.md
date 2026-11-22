@@ -113,21 +113,28 @@ the speech. The app, the chat replies and the command line are in English.
 
 ## Ready-made prompts
 
-The start screen has four buttons. Each one puts a tested prompt into the message box; add the video link after
-"Videó:" / "Video:" (and anything else after "Egyéb kérés:" / "Extra wishes:") and send it. The same button always
-gives the same kind of clips: the count, the lengths and the CTA come from the text, everything else from the preset.
+The start screen has five buttons. Each one puts a tested prompt into the message box; add the video link after
+"Video:" (and anything else after "Extra wishes:") and send it. The same button always gives the same kind of clips:
+the count, the lengths and the CTA come from the text, everything else from the preset. Each prompt ends with what
+you get; you can also write your own prompt from scratch.
 
-| Button | Clips | Framing and sound | Picks |
+| Button | Clips | Look and sound | Picks |
 | --- | --- | --- | --- |
-| 🎙️ Podcast | 6 × 30-90 s | follows the speaker, speech tuned, dead air out | standalone opinions, surprising facts, stories with a payoff, banter, confessions |
-| 🎮 Gameplay & stream | 5 × 20-75 s | facecam on top, game below (blurred full frame without a facecam), natural sound, quiet parts kept | clutch plays, wins, fails, twists, loud reactions, jokes with chat; peaks found by sound, picture and the stream chat, even without speech |
+| 🎙️ Podcast | 4 × 20-45 s | follows the speaker with zooms on cuts, opening text in a black box on the first 3 s, captions with the key word in yellow, speech tuned, dead air out, no watermark | standalone opinions, surprising facts, stories with a payoff, banter, confessions; the first sentence is the hook |
+| 🎮 Facecam stream | 5 × 15-60 s | camera on the top two fifths, game on the three fifths below, a thin black line between them, English captions on the line, the biggest reactions cut to the camera full screen, scene switches followed, a blurred full frame without a facecam, captions already in the video not doubled, a title bar on request, natural sound, quiet parts kept | clutch plays, wins, fails, twists, loud reactions, jokes with chat; the reaction is on screen in the first second |
 | 📣 Video & promo | 4 × 15-30 s | follows the speaker, speech tuned, opening text and a CTA | the main benefit, a demo, a strong claim or number, a testimonial (hook → proof → CTA) |
 | ⚡ Quick shorts | 3 × 10-25 s | automatic, dead air out | jokes, punchlines, surprising lines and reactions |
+| ✂️ Edit my video | 1 × 15-90 s | your own video attached with the paperclip (or a link), plus pictures, logo, intro, outro or music; the clip is cut first, then your edits go on it as a new version | the part that best fits your wishes |
+
+**Campaigns.** *Campaigns* in the sidebar runs clipping campaigns the way a clipping agency does: a client (a
+streamer, a podcast or a brand), a brief, a rate per 1,000 views with a cap per post, and the moments to clip.
+*Clip the sources* makes a chat for every source with the brief as its picking rules; add the clippers' post links,
+and *Read views* reads their public view counts and works out what each post and the whole campaign owe.
 
 **Post text.** Every clip comes with a ready-to-paste post (*Copy text* on the card, and the `.txt` file next to
 the video): a one-line teaser ending with an emoji, the comment question, the link of the original video, your own
 profiles (YouTube as a follow line, Instagram, TikTok) and hashtags; the curiosity title for YouTube Shorts is listed
-under it. Set your profile links once under *Settings, General* (the gear in the sidebar), one per line, e.g.
+under it. Set your profile links once under *Brand kit* (in the sidebar), one per line, e.g.
 `TikTok: https://www.tiktok.com/@you`; they stay on your computer in `data/web/settings.json`, and changing them
 rewrites every clip's post text.
 
@@ -171,7 +178,7 @@ re-render). Older versions stay playable.
 A finished clip goes straight to your own YouTube, Instagram, Facebook Page, TikTok and X with the **Post** button on
 its card, or from the chat (*"posztold ki a 2. klipet YouTube-ra"*). It goes up with its post text and, on YouTube, its
 title; the card then links each post. You make a free developer app per platform once and sign in on the platform's own
-page: the tokens stay in `data/web/accounts.json` on this computer. *Settings, Accounts* shows all seven platforms as
+page: the tokens stay in `data/web/accounts.json` on this computer. *Settings*, Connected accounts, shows all seven platforms as
 cards. **Twitch and Kick** can be connected, but neither offers apps any way to upload a video, so Clippy does not post
 there (and uses no unofficial way). TikTok sends the clip to your drafts (or posts it as private until it reviews your
 app); YouTube may keep uploads of a new API project private until its audit; X's API is paid per use. Setup, step by
@@ -180,13 +187,13 @@ step, with what each platform allows: **[docs/publishing.md](docs/publishing.md)
 ## Voice input and notifications
 
 The microphone button next to Send turns your speech into the message (a small Whisper model on the CPU, so it never
-waits for a running job). *Settings, General* lets the browser tell you when a job is done, also when the
+waits for a running job). *Settings* lets the browser tell you when a job is done, also when the
 window is in the background. Both need a secure page: they work on the computer that runs Clippy
 (http://127.0.0.1); a phone over the local network cannot use the microphone or notifications without HTTPS.
 
 ## Style kit, covers and A/B titles
 
-*Settings, Style* saves your look once: caption font, highlight colour and capitals, and if you want a logo (with
+*Brand kit* saves your look once: caption font, highlight colour and capitals, and if you want a logo (with
 its corner), a short intro and an outro; none of them is required. Every new clip gets the caption look at once, and
 the logo, intro and outro as its next version (with a change card and undo). Every clip also gets a cover with its
 title written on it (*Cover* on the card) and a second cover with a B title (*Cover B*); the Post dialog lets you
@@ -198,7 +205,7 @@ the game below, or the blurred full frame when there is no facecam.
 
 ## Watching channels and planned posts
 
-Give Clippy a YouTube channel, a Twitch channel or a playlist under *Settings, Automation*, or say it in the
+Give Clippy a YouTube channel, a Twitch channel or a playlist under *Watched channels*, or say it in the
 chat (*"figyeld ezt a gaming csatornát: https://www.twitch.tv/…"*). It looks for new videos every 15 minutes to once
 a day; each new video becomes its own chat that makes clips with the kind you chose (podcast, gameplay & stream, video
 & promo, quick shorts). Videos already on the channel are left alone; tick *Clip the newest video now too* for one
@@ -217,29 +224,29 @@ Automation*): every morning at 09:00 Clippy takes the most watched clips of the 
 Kick category, which are the streamers' biggest live reactions, keeps one per streamer in the audience's language,
 and makes a vertical clip of each in its own chat, with the stream layout and a post text that credits the streamer.
 Each pick comes with a time to post it for a US audience (New York 19:00, 15:00 and 12:00 by default, the most
-watched moment first), shown in your own time too; *Settings, Automation* lists today's picks with their times and
+watched moment first), shown in your own time too; *Daily picks* lists today's picks with their times and
 a *Copy text* button. Tick YouTube under *Post each clip at its time* and every pick also goes out by itself:
 YouTube gets it as soon as it is made and publishes it at its time. GTA VI, GTA V, Minecraft, Fortnite, Valorant, Counter-Strike, League of Legends and Warzone are
 known by name (`clippy/categories.py`).
 
 Posts can wait for their time: choose *At a set time* in the Post dialog, and the card shows the planned post with a
-*cancel* link. The **Scheduler** (in the sidebar) lists everything that waits, day by day, with each clip's cover, chat,
+*cancel* link. The **Calendar** (in the sidebar) lists everything that waits, day by day, with each clip's cover, chat,
 platforms and time, and schedules a clip from one place: pick the chat and clip, the platforms, a date and time (or your
-saved posting times, *Settings, General*, and the next free one). YouTube keeps its time itself, so that video goes out
+posting times you keep at the top of the Calendar, and the next free one). YouTube keeps its time itself, so that video goes out
 even while this computer is off; the other platforms wait in Clippy's plan, which has to be running, and can be moved
-or removed in the Scheduler. A YouTube video's time is changed or removed in YouTube Studio (Clippy's YouTube access can
-upload but not edit), and the Scheduler links there. A watched channel can also post its new clips by itself: give it the platforms and the daily times
+or removed in the Calendar. A YouTube video's time is changed or removed in YouTube Studio (Clippy's YouTube access can
+upload but not edit), and the Calendar links there. A watched channel can also post its new clips by itself: give it the platforms and the daily times
 (*18:00, 21:00*) and each new clip takes the next free time, one clip per time across all channels. That is off until
 you set both, and it uses your own connected accounts (YouTube public, TikTok drafts).
 
 **Learning from the results.** The numbers of every post (views, likes, comments, shares, how much people watch)
-come back onto its card, and *Settings, Results* shows which openings, lengths, kinds of moment and posting times
+come back onto its card, and *Results* shows which openings, lengths, kinds of moment and posting times
 do better than your usual. The clear patterns steer the picker for the next videos.
 
 ## Choosing the AI
 
 The AI picks the moments and writes the titles and texts. You choose it the first time you start (the web app asks
-once, `clippy install` asks too) and can change it any time in *Settings, AI* or with `clippy llm <mode>`; the next
+once, `clippy install` asks too) and can change it any time in *Settings* or with `clippy llm <mode>`; the next
 request uses it, no restart needed.
 
 | Mode | What it uses |
@@ -250,7 +257,7 @@ request uses it, no restart needed.
 | `codex` | your ChatGPT subscription, through the Codex app (`codex login` once; no API key) |
 | `none` | no AI: simple automatic picking, and the chat cannot answer |
 
-*Settings, AI* shows whether the chosen tool is installed and signed in and has a *Test* button that asks the AI one
+*Settings* shows whether the chosen tool is installed and signed in and has a *Test* button that asks the AI one
 tiny question. The choice, the model of each mode and an OpenRouter key are kept in `data/web/llm.json` (never in the
 repository); a key is never shown again, and the AI can only be changed on the computer that runs Clippy. The two
 subscription modes run the tools without tools or file access of their own and without an API key; their use counts

@@ -98,6 +98,10 @@ npx skills add https://github.com/jl-guo/skill-siphon --skill skill-siphon
 
 技能已发布于 [Skill Hub](https://skillhub.cn/skills/user_f6bfe863/skill-siphon)；在 **WorkBuddy 的技能搜索**里输入 `skill-siphon` 或「吸星大法」，也能找到并直接安装。
 
+### 📕 小红书 Red Skill
+
+技能也发布在小红书的 **Red Skill** 功能上，在小红书 App 内搜索「吸星大法.skill」即可找到并使用。
+
 ### 👤 手动安装
 
 ```bash

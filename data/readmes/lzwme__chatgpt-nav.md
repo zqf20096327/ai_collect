@@ -45,7 +45,7 @@
 ❌ 已失效。会在失效一段时间后移除
 ```
 
-站点列表(894)：
+站点列表(893)：
 
 ### 国产大模型 (27)
 
@@ -455,7 +455,7 @@
 1. [[⭐⭐⭐🧑‍💻] https://so.csdn.net/chat](https://so.csdn.net/chat) **C知道。** 由CSDN和外部合作伙伴联合研发的生成式AI产品
 1. [[⭐⭐⭐] https://www.tiangong.cn](https://www.tiangong.cn) **天工Agent版。** 天工Skywork是一款具备超强DeepResearch能力的全新AI Office智能体，通过3个专家agent和1个通用agent，让AI深度研究，一键生成AI文档、AI PPT、AI表格，高效应对各类办公、学习场景；也支持网页html、图像、视频、有声书、绘本等多种形式的创意内容创作，激发无限灵感。天工Skywork融合先进的多模态理解与深度检索分析技术，一问即得科研级、专业级、咨询级的高质量结果，帮助你摆脱繁琐事务，显著提升效率。无论你是职场白领、科研人员、大学生、研究生，还是自媒体KOL，天工Skywork都将是你值得信赖的智能伙伴，助你专注思考、释放创造力。
 1. [[⭐⭐] https://www.n.cn](https://www.n.cn) **纳米AI搜索。** 纳米AI搜索是由360集团推出的一款基于大模型的新一代答案引擎应用。该产品旨在为用户提供更直接、更直观的问题答案，不再只是一个普通的搜索工具，而是能够理解和处理复杂搜索查询的智能AI助手。
-1. [[⭐⭐] https://www.studywithgpt.com/zh-cn](https://www.studywithgpt.com/zh-cn) **Study with GPT。** GPT时代，你还在到处找教程资源学习？无论是学习Java、php、golang、python、前端、后端、运维、微服务等等任意方向的技术栈，AI全栈导师为你量身打造教程，有问题也不用跪求大神，AI全栈导师24小时为你解答。
+1. [[⭐⭐] https://www.studywithgpt.com/zh-cn](https://www.studywithgpt.com/zh-cn) **Study with GPT。** GPT时代，你还在到处找教程资源学习？无论是学习Java、php、golang、python、前端、后端、运维、微服务等等任意方向的技术栈，AI全栈导师为你量身打造教程，有问题也不用跪求大神，AI全栈导师24小时为你解答。 `[error][521]<none>`
 1. [[⭐] https://bing.com/create](https://bing.com/create) **Bing Image Creator。** Bing影像建立工具是一款由Microsoft Bing提供的智能搜索工具，可以帮助用户快速找到想要的图像信息，并获得奖励。
 1. [[⭐] https://consensus.app](https://consensus.app) **Consensus。** Consensus是一个使用人工智能来搜索研究论文并找到洞见的搜索引擎。它具有广泛的覆盖范围，可搜索超过2亿篇科学论文。所有的结果都来源于实际研究，我们引用我们的来源，绝不会显示广告。它还具有即时分析功能，利用GPT4和其他LLM来为您总结结果。Consensus旨在帮助您进行有效的研究。
 1. [[⭐] https://exa.ai/blog/websets-evals](https://exa.ai/blog/websets-evals) **Websets。** Exa Websets 是一种创新的搜索引擎，专注于复杂查询的精准搜索。它通过自定义嵌入式搜索算法，能够检索出符合多条件的精确结果。该产品的核心技术在于其强大的多代理搜索架构，能够处理复杂的多标准查询，适用于需要精准数据检索的场景。Exa Websets 的主要优势在于其高精度和高召回率，尤其在复杂查询方面表现卓越。产品目前处于早期阶段，主要面向开发者和企业用户，价格根据使用量和计算资源需求而定。
@@ -645,4 +645,4 @@
 1. [[⭐] https://www.sudowrite.com](https://www.sudowrite.com) **Sudowrite。** Sudowrite是一款革命性的AI写作辅助工具,旨在成为你永不评判、永远在一旁支持创作、永不枯竭创意的写作伙伴。它集成了GPT-3和GPT-4等大型语言模型,可为你提供各种创作支持,从生成描写、情节发展到角色塑造、修改润色等,全方位提高你的写作效率和质量。主要功能包括:自动续写、情节扩展、重写修改、反馈建议、构思助手、视觉呈现等。无论你是在写小说、剧本还是其他作品,Sudowrite都能给你源源不断的灵感和指导,让创作变得轻松有趣。Sudowrite提供付费订阅服务,定价合理,同时也有免费试用版本。它致力于让写作爱好者重拾对创作的热爱,帮助专业作家提高工作效率。
 1. [[⭐] https://www.surferseo.com](https://www.surferseo.com) **Surfer。** Surfer是一款提供SEO工作流程的产品，可以帮助用户提升有机流量，增加可见度和改善排名。它利用下一代AI技术进行研究、写作和优化，可以在20分钟内生成高质量、优化良好的文章。Surfer还提供生成吸引人的标题的简报功能，支持多语言写作和优化，可以实时监测结构、字数、NLP关键词和图片等指标，帮助用户在全球范围内获得高排名。此外，Surfer还提供文章真实性验证和集成多种常用工具的功能。Surfer适用于各种场景，包括个人博客、企业网站和内容创作者等。定价方面，Surfer提供多种套餐选择，满足不同用户的需求。
 1. [[⭐] https://www.vidu.studio](https://www.vidu.studio) **Vidu。** Vidu 是一个创新的 AI 视频生成模型，能够根据用户提供的文本或图片快速生成高质量的视频内容。它的技术基于深度学习，能够理解并分析输入信息，从而创造出富有创意和视觉吸引力的视频。随着视频内容在各类平台上的流行，Vidu 以其便捷性和高效性，成为了内容创作者和市场营销人员的得力助手。该产品适用于个人和企业用户，旨在帮助他们提升内容制作的效率，且目前提供免费试用以吸引更多用户尝试其强大的功能。
-1. [[⭐] https://www.wenxiaobai.com](https://www.wenxiaobai.com) **问小白。** 问小白上线了DeepSeek驱动的人工智能助手，定位为一款强大的写作和任务处理工具。它基于深度学习技术，能够实时在线提供服务，支持深度思考
+1. [[⭐] https://www.wenxiaobai.com](https://www.wenxiaobai.com) **问小白。** 问小白上线了DeepSeek驱动的人工智能助手，定位为一款强大的写作和任务处理工具。它基于深度学

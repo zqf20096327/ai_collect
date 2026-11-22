@@ -40,6 +40,14 @@ watch or stay hands-off.
   Destructive actions — submit, pay, publish, send — are never replayed: the second identical
   call is refused before it is dispatched. Resuming a conversation folds the goal, what was
   already done and which irreversible actions ran into the prompt instead of replaying it.
+- 🧭 **Long tasks pause instead of dying at a limit.** A task starts with a round
+  budget (default 20) and shows a goal bar; when it runs out the turn pauses with a
+  card that lists the goal, the finished steps with their evidence, what is left, the
+  stop reason and the cost — then you renew, change the budget, or end the task and
+  start a new one. Renewal continues the same task, and a task only counts as done
+  when the model declares it with locatable evidence, so it never closes itself just
+  because it went quiet. Unattended tasks extend themselves only when the finished
+  segment made progress, at most K times (default 1).
 - 🧩 **Skills** turn repeatable know-how (review checklists, style guides,
   extraction formats) into one-tap instructions the model must follow.
 - 🎬 **Workflows run whole procedures on their own.** Record yourself doing a
@@ -434,11 +442,11 @@ machine. Page text is capped at ~12,000 characters, so prefer a large context
 window for long pages.
 
 Add multiple providers and switch with **Use this**, or pick the active model
-from the composer. Keys are stored per profile. **Max action steps per reply**
-(default 20, range 1–100) is one batch, not a stop: a panel chat turn spends up
-to ten batches (200 steps at the default) before the safety ceiling, re-arming
-context compaction at each checkpoint. Scheduled tasks and AI-agent blocks stop
-at their single limit. Keys live on this machine only (as files once you pick a
+from the composer. Keys are stored per profile. **Round budget for a new task**
+(default 20, range 1–100) is what a new task starts with. When it is spent the
+turn stops and pauses for your decision: add rounds, change the budget, or end
+the task. Nothing runs on silently — scheduled tasks and AI-agent blocks have
+nobody to decide, so they settle and pause at the budget. Keys live on this machine only (as files once you pick a
 storage folder — not synced, not encrypted) — use a local model if that's
 unacceptable.
 
@@ -584,8 +592,14 @@ auto-lays-out the graph; `Ctrl+S` saves, `Ctrl+Enter` runs from the editor.
 from what is on disk, a bottom bar offers undo / redo / auto-layout, and a
 **Data table** tab lists every run-scoped variable's writers and readers with
 jump-to-node links. The canvas also has an AI assistant that writes operators
-from a prompt and shows its reasoning; its **Chat history** is stored per
-workflow, so each workflow opens its own threads (new, switch, delete — and
+from a prompt and shows its reasoning — it reads the whole graph, so it can
+insert a step before or after any named step, edit one in place, move it, or
+delete it and reconnect its neighbours, all without you selecting anything
+first. Structural edits are checked against whole-graph invariants before they
+land (entry not movable or deletable, a loop's breakpoint stays inside its body
+and keeps an outgoing edge, no dangling variable references, no cycles), one
+answer lands entirely or not at all, and one undo returns the graph to its
+pre-answer state. Its **Chat history** is stored per workflow, so each workflow opens its own threads (new, switch, delete — and
 deleting the workflow cleans its sessions up), and a footer **Last run log**
 switch sends this workflow's newest finished run with the request so a failing
 step does not have to be described by hand. While a run is live the bar's run
@@ -1042,17 +1056,17 @@ webhooks, Docker deployment, and a web console.
 
 ## Troubleshooting
 
-| Symptom                          | Fix                                                                                                                                             |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| "No model provider configured"   | More → Model settings → Add a provider.                                                                                                         |
-| 401 / 403                        | Wrong/expired key, or key/vendor mismatch.                                                                                                      |
-| 404 when sending                 | Base URL missing its version segment, or unknown model; press **Test connection**.                                                              |
-| "Cannot read this page"          | `chrome://`, `file://`, Web Store, or extension page — not injectable.                                                                          |
-| Action still asks in full auto   | Reload the extension; confirm the dropdown shows ⚡ Full auto.                                                                                  |
-| "Stopped after N tool rounds"    | The safety ceiling was reached (ten batches in chat; one in a task or AI-agent block). Send "continue" or raise **Max action steps per reply**. |
-| Chats but never reads/acts       | Model lacks function calling; attach the page or switch model.                                                                                  |
-| Page text empty/partial          | Content is in an iframe, lazy-loaded, or behind "Load more"; select the relevant section.                                                       |
-| Nothing happens on toolbar click | Reload the extension; the worker may have failed to start.                                                                                      |
+| Symptom                          | Fix                                                                                                                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "No model provider configured"   | More → Model settings → Add a provider.                                                                                                                                  |
+| 401 / 403                        | Wrong/expired key, or key/vendor mismatch.                                                                                                                               |
+| 404 when sending                 | Base URL missing its version segment, or unknown model; press **Test connection**.                                                                                       |
+| "Cannot read this page"          | `chrome://`, `file://`, Web Store, or extension page — not injectable.                                                                                                   |
+| Action still asks in full auto   | Reload the extension; confirm the dropdown shows ⚡ Full auto.                                                                                                           |
+| Budget used up / the task pauses | The task spent its round budget. The panel card offers renew, change budget, or end and start a new task; raising **Round budget for a new task** affects the next task. |
+| Chats but never reads/acts       | Model lacks function calling; attach the page or switch model.                                                                                                           |
+| Page text empty/partial          | Content is in an iframe, lazy-loaded, or behind "Load more"; select the relevant section.                                                                                |
+| Nothing happens on toolbar click | Reload the extension; the worker may have failed to start.                                                                                                               |
 
 ---
 
@@ -1065,14 +1079,17 @@ webhooks, Docker deployment, and a web console.
   "no actionable tab in the panel's window" instead of reaching into another
   window.
 - Page text capped at ~12,000 characters; truncation is reported to the model.
-- A panel chat turn runs ten batches of the configured cap (200 steps at the
-  default), then stops; scheduled tasks and AI-agent blocks stop after one.
-  **Explicit budgets are not wired into the loop yet**: a durable goal model
-  exists (rounds, renewal, unattended auto-renewal cap, a six-item report), but
-  the agent does not pause at the budget and the panel has no goal bar, budget
-  dialog or renew entry. A goal stays active across your messages instead of
-  closing on an explicit completion statement — nothing in this version means
-  "unlimited long tasks".
+- **Budgets are explicit, and they pause rather than stop silently.** A task
+  starts with the configured round budget; when it is spent the turn pauses and
+  the panel offers renew / change budget / end and start a new task. A goal only
+  completes on an explicit `goal_complete` declaration with locatable evidence,
+  so an unfinished task stays active across your messages instead of being
+  closed for you. Unattended tasks may extend themselves: a scheduled task or
+  AI-agent block renews **only when the segment that just ran made progress**,
+  at most **K** times (default 1, `0` turns it off, range 0–10), and each
+  renewal adds one initial budget, so K renewals cap the total at the initial
+  budget x (1 + K). A manual renewal adds the budget you last set yourself. With
+  you in the chat it never happens — the task pauses for your decision.
 - The irreversible-action fence remembers the last **50** actions of a
   conversation: after more than 50, the oldest one would no longer be blocked on
   replay.

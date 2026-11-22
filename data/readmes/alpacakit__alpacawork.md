@@ -77,10 +77,23 @@ npm install -g alpacawork
 alpacawork setup
 ```
 
-- **Requirements:** macOS (Apple silicon), Linux (x64) or Windows (inside WSL2). You need an AI agent you are signed in to, such as Claude Code or Codex, and Node.js 24.16 or later (if an AI does the install, it installs Node.js when it is missing). [Full requirements](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#requirements)
-- **Opening the screen:** If the browser didn't open, or to open the screen again after closing it or restarting the PC, see [Open the screen](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#2-open-the-screen).
-- **After installing:** [Make your first request](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#3-make-your-first-request). To use it from your phone, connect to your PC over a VPN such as Tailscale ([Use it from your phone](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#6-use-it-from-your-phone)).
-- **Stopping and uninstalling:** [Stop, update or uninstall](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#8-stop-update-or-uninstall)
+It runs on macOS (Apple silicon), Linux (x64) and Windows (WSL2). After installing, follow [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md) to make your first request.
+
+### Reopen the screen
+
+If you close the screen, ask Claude Code or Codex like this. The AI opens the screen in your browser or tells you its URL.
+
+```text
+/alpacawork open the screen
+```
+
+In Codex, write `$alpacawork` instead of `/alpacawork`. From a terminal, this command opens it too.
+
+```sh
+alpacawork open
+```
+
+In Chrome or Edge, you can install it as an app at the end of setup on the screen, or later in Settings → App & phone, and open it again from its icon in the Dock or the taskbar. In Safari on a Mac, install it with File → Add to Dock in the menu (macOS Sonoma or later).
 
 ## What it does
 
@@ -95,15 +108,14 @@ alpacawork setup
 
 - **It is free (MIT License).** AI usage is billed under your existing Claude Code, Codex or other plan.
 - **It runs on your PC.** The AI runs on your PC, so keep the PC on and set it not to sleep while you use alpacawork.
-- **It starts AI agents in the same no-approval mode as Claude Code's `bypassPermissions` and Codex's `danger-full-access`, so they don't stop to ask.** You can write what the AI should not do, or should ask you about first, in the [project policy](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#5-write-the-ground-rules-for-the-ai).
-- **Tasks, conversations and result files are kept on your PC.** alpacawork does not send them to any outside server run by its developers. Your instructions to the AI, and what the AI reads, are sent to the AI's provider, just as when you use each AI agent directly ([more on how data is handled](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#what-is-stored-and-what-is-sent-out)).
+- **It starts AI agents in the same no-approval mode as Claude Code's `bypassPermissions` and Codex's `danger-full-access`, so they don't stop to ask.** You can write what the AI should not do, or should ask you about first, in the [project policy](https://github.com/alpacakit/alpacawork/blob/main/docs/projects.md#project-policy).
+- **Tasks, conversations and result files are kept on your PC.** alpacawork does not send them to any outside server run by its developers. Your instructions to the AI, and what the AI reads, are sent to the AI's provider, just as when you use each AI agent directly ([more on how data is handled](https://github.com/alpacakit/alpacawork/blob/main/docs/manage.md#where-your-data-is-and-what-is-sent-out)).
 
 ## Documentation
 
-- [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md): from installing and opening the screen to your first request, using it from your phone, updating and uninstalling
-- [The ideas behind alpacawork](https://github.com/alpacakit/alpacawork/blob/main/docs/concept.md): how one request moves along, and the design principles
-- [If the screen doesn't open](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#if-the-screen-doesnt-open): when the browser can't connect
-- [Troubleshooting](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#troubleshooting): when something else doesn't work. Please report bugs in [Issues](https://github.com/alpacakit/alpacawork/issues)
+- [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md): install, make one request, and check it
+- [Documentation home](https://github.com/alpacakit/alpacawork/blob/main/docs/README.md): every page, including how to use it, settings and troubleshooting
+- Please report bugs in [Issues](https://github.com/alpacakit/alpacawork/issues)
 
 ## License
 

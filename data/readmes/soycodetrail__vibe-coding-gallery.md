@@ -4,7 +4,7 @@
 >
 > 👈 **返回主站对应模块**：[Vibe Coding 作品展](https://soycodetrail.top/vibe-coding)  ·  🏠 全站：[https://soycodetrail.top](https://soycodetrail.top)
 >
-> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-21 21:08:21 UTC
+> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-22 21:07:41 UTC
 
 ## 📚 系列展示站（更多精选内容，互相导流）
 
@@ -12,7 +12,7 @@
 - [AI 技能工坊](https://github.com/soycodetrail/ai-skills-workshop) · [主站模块 ↗](https://soycodetrail.top/skills) · [在线浏览 ↗](https://soycodetrail.github.io/ai-skills-workshop/)
 - [开源书籍宝库](https://github.com/soycodetrail/ai-books-treasury) · [主站模块 ↗](https://soycodetrail.top/books) · [在线浏览 ↗](https://soycodetrail.github.io/ai-books-treasury/)
 
-## 📑 内容导航（804 个条目 / 15 个分类）
+## 📑 内容导航（811 个条目 / 15 个分类）
 
 - [📁 Web 应用](#cat-web-应用)
 - [📁 AI 工具](#cat-ai-工具)
@@ -100,6 +100,8 @@
   标签：Pieter Levels / AI 评分 / 酒店搜索 / 去通胀
 - [Floot - 在 Claude 与 ChatGPT 里对话式建站](https://floot.com) — Y Combinator 孵化的对话式全栈建站平台：把 Floot 作为 connector 接入 Claude、ChatGPT、Cursor，一句话描述即自动生成带数据库、登录、邮件、Stripe 支付与 SEO 的真实应用，一键发布到 Web 与应用商店，无需 git、终端或构建额度。2026-11-04 上线即登 Product Hunt 当日榜 #2（324 票、88 评论，Garry Tan 精选）。  
   标签：PH 日榜#2 / 324 票 / YC 孵化 / 对话式建站 / Vibe Coding
+- [Tripmojo - 让同游伙伴都在看同一份计划的旅行 Agent](https://tripmojo.ai/) — 把散落在预订邮件里的机票、酒店信息收进共享行程，再在群聊里投票、查地点、跟踪航班变化与分摊费用——解决「旅程已经开始了，大家还没看同一份计划」的真实痛点；2026-11 周 Product Hunt 榜第 9（303 票）。  
+  标签：PH 周榜#9 / 303 票 / 共享行程 / 群聊规划 / 费用分摊
 
 <a id="cat-ai-工具" name="cat-ai-工具"></a>
 
@@ -590,6 +592,8 @@
   标签：PH 日榜#1 / 418 票 / Agent 自我改进 / 模拟世界 / 回归评测
 - [ClawsGO Science - 自带云实验室、能连跑数天写出论文的 AI 科研 Agent](https://clawsgo.ai) — 把「研究问题 → 做实验 → 写成带引用的论文」全自动化的科研 Agent：每台任务配常开云工作站，预装 500+ 科研工具与 90+ 数据集（GATK、GROMACS、Quantum ESPRESSO、QGIS 等），Claude 与 GPT Agent 集群协同连跑数天并自我校验，最终交出 LaTeX 编译的引用论文——官网示例 24 页、17 图、59 参考文献。2026-11-01 登 Product Hunt 当日榜 #2（279 票、57 评论）。  
   标签：PH 日榜#2 / 279 票 / AI 科研 Agent / 云实验室 / 自动写论文
+- [S.Space - AutoGen 团队打造的人与 Agent 共享工作空间](https://s.space) — 由 AutoGen 背后的团队打造：把团队里每个人的 Claude Code、Codex 等 Agent 接进同一个共享工作区，Agent 之间能主动交接任务、沿用共享记忆，重要操作仍由人批准；2026-11-18 登 Product Hunt 当日榜 #1（379 票、122 评论），是协作型多 Agent 工具的新爆款。  
+  标签：PH 日榜#1 / 379 票 / AutoGen 团队 / 多 Agent 协作 / 共享记忆
 
 <a id="cat-效率工具" name="cat-效率工具"></a>
 
@@ -801,6 +805,8 @@
   标签：$49986 销售额 / Stripe 已验证 / 语音指挥 Agent / 无限画布 / Swift
 - [Disc Image Studio - 把图片刻进光盘的人眼可见图案](https://github.com/JiaFeiMiao-K-Cat/DiscImageStudio) — 用 C#/.NET 10 手写的多平台光盘盘面图像生成与刻录工具：导入任意图片即可算出符合 CD、DVD、单层蓝光物理层约束的数据，刻录后盘面呈现肉眼可见图案；支持图层排版、影调抖动、三阶段实盘标定与 ISO/WAV+CUE 导出。GitHub 10,323★（API 实测），GPL-3.0，把冷门硬件玩法做成完整工程。  
   标签：1万 Star / 开源工具 / 光盘刻录 / 图像处理 / GPL-3.0
+- [Saparo - 把优惠码、返现和信用卡优惠算到一张账上](https://saparo.ai/) — 在美国商店找同款同尺码商品，把优惠码、返现、符合条件的信用卡优惠连同税费运费一起算清实付总额，帮你把结账准备好（最后付款仍由你点）；更有用的是算清实付、而不是堆更多优惠券，2026-11 周 Product Hunt 榜第 6（339 票）。  
+  标签：PH 周榜#6 / 339 票 / 优惠叠加 / 比价 / 实付计算
 
 <a id="cat-游戏" name="cat-游戏"></a>
 
@@ -1033,6 +1039,8 @@
   标签：PH #1 / 627 票 / $2.5M 融资 / 统一后端
 - [SaaStr.ai - AI 估值计算器](https://www.saastr.ai/) — SaaStr 创始人 Jason Lemkin 用 Replit Agent + Claude Code 手搓的 SaaS 估值工具，输入 ARR/增长率即出可辩护估值区间；上线 45 天狂揽 50 万用户，每月处理数十万次估值计算。  
   标签：50 万用户 / 45 天 / 估值工具 / 非技术创始人
+- [TheBold - 用创业执行记录换取投资人会面的 AI 融资台](https://thebold.vc) — 把融资准备变成可验证的门槛：跟踪并验证创业团队的真实进展与 traction、按投资人标准做针对性 AI 模拟面试，达标后才解锁配对投资人的日历直接预约；2026-11-17 登 Product Hunt 当日榜 #3（424 票、75 评论），把「找人引荐」改写成「先展示你做成了什么」。  
+  标签：PH 日榜#3 / 424 票 / 融资 Agent / AI 模拟面试 / 执行验证
 
 <a id="cat-ai办公" name="cat-ai办公"></a>
 
@@ -1113,13 +1121,4 @@
 - [Yedric.ai - 用自然语言操控你的 SaaS](https://yedric.ai) — 让终端用户用自然语言直接操作你的 SaaS 产品：一句话完成原本要点好多下界面的任务。Product Hunt 当日榜（315 票），面向想把产品变成「可对话」的 SaaS 团队。  
   标签：Product Hunt 315 / 自然语言 UI / SaaS
 - [Inbox Zero - 开源 AI 邮件助手](https://github.com/elie222/inbox-zero) — 开源 AI 邮件助手（GitHub 1.2 万★）：用 AI 帮你秒级清空收件箱、自动分类与草拟回复。Product Hunt 当日榜 #1（357 票），被比作「开源版 Superhuman」。  
-  标签：PH #1 / 357票 / 开源 / AI 邮件
-- [Talanoa - 把邮件变成聊天](https://talanoa.email) — 隐私优先的本地桌面邮件客户端（Electron + Vue 3，独立开发者 BetterCallJohn 打造）：把杂乱邮件线程整理成干净的聊天式对话，本地 AI 帮你搜索、总结、撰写，统一 Gmail / Outlook / iCloud / IMAP 收件箱，数据不出本机、无云端同步。Product Hunt 当日榜 #1（335 票）。  
-  标签：PH #1 / 335票 / 隐私优先 / 本地 AI
-- [Scarlett - 能真干活的 AI 同事](https://tryscarlett.ai) — Product Hunt 2026-07-10 当日榜 #1（573 票）：住在 Slack / iMessage 里的 AI 同事，不只是聊天，而是真正执行任务、协调团队、推进项目进度。  
-  标签：PH #1 / 573 票 / AI 同事 / Slack
-- [Atomic Mail Agentic - 可编程的 Agent 邮箱](https://atomicmail.io/agents) — Product Hunt 2026-06-21 当日榜 #2（252 票）：面向智能体的邮箱 API（基于 JMAP），让 AI Agent 拥有独立收件箱、能收发邮件、调用工具，把邮箱变成 Agent 的执行通道。  
-  标签：PH #2 / 252 票 / Agent 邮箱 / JMAP
-- [DeepCell - 职场截稿日生存包](https://deepcell.net) — Product Hunt 2026-10-22 当日榜 #1（341 票）：「职场截稿日生存包」，用 .deepcell 格式把文档、任务与 AI 协作封装进统一工作空间，帮打工人对抗 deadline 焦虑。  
-  标签：PH #1 / 341 票 / .deepcell / 办公协作
-- [TheySaid 4.0 - 用合成测试员做用户验证](https://www.theysaid.io/v4) — Product Hunt 2026-10-27 当日榜 #1（380 票）：客户验证平台，用 A
+  标签：PH #1 / 357票 

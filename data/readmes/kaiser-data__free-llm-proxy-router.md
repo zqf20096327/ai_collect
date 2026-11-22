@@ -10,10 +10,10 @@
 [![CI](https://github.com/kaiser-data/free-llm-proxy-router/actions/workflows/ci.yml/badge.svg)](https://github.com/kaiser-data/free-llm-proxy-router/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/kaiser-data/free-llm-proxy-router?color=2f7a4b)](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest)
 [![Go](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go&logoColor=white)](go.mod)
-[![tests](https://img.shields.io/badge/tests-97%20passing-2f7a4b)](.github/workflows/ci.yml)
+[![tests](https://img.shields.io/badge/tests-154%20passing-2f7a4b)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[**Free model list**](FREE_MODELS.md) · [Install](#install) · [PicoClaw & small boards](#run-it-beside-picoclaw-on-a-10-board) · [Strategies](#pick-a-strategy) · [How it works](#how-it-works) · [Limits](#honest-limits)
+[**Free model list**](FREE_MODELS.md) · [What's new](#whats-new) · [Install](#install) · [PicoClaw & small boards](#run-it-beside-picoclaw-on-a-10-board) · [Strategies](#pick-a-strategy) · [How it works](#how-it-works) · [Limits](#honest-limits)
 
 </div>
 
@@ -31,11 +31,34 @@
 >   -d '{"model":"auto","messages":[{"role":"user","content":"In one sentence: why do free LLM tiers run dry?"}]}'
 > ```
 >
-> The script picks the latest release for your OS and CPU (amd64, arm64, armv6, armv7, riscv64), checks it against `checksums.txt` and unpacks it into the current directory; `VERSION=x.y.z` pins a release, `DIR=…` picks another directory. The `X-Used-Model` header tells you which free model answered. The archive brings its own provider list and a catalog of 253 free models. Windows: the `.zip` on the [releases page](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest), or Docker (see [Install](#install)).
+> The script picks the latest release for your OS and CPU (amd64, arm64, armv6, armv7, riscv64), checks it against `checksums.txt` and unpacks it into the current directory; `VERSION=x.y.z` pins a release, `DIR=…` picks another directory. The `X-Used-Model` header tells you which free model answered. The archive brings its own provider list and free-model catalog. Windows: the `.zip` on the [releases page](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest), or Docker (see [Install](#install)).
 
 <p align="center">
   <img src="docs/img/fallback.svg" width="860" alt="A real request on 31 October 2026. A tool sends model auto to the proxy on localhost. The proxy first tries Groq kimi-k2, which returns 404 model not found, and puts that model on a one-hour cooldown. It then tries Groq gpt-oss-20b, which answers. The other providers were not needed. The client saw one clean 200 after 0.45 seconds.">
 </p>
+
+## What's new
+
+On `main` since [v0.1.8](https://github.com/kaiser-data/free-llm-proxy-router/releases/tag/v0.1.8). Credits are in [Contributors](#contributors).
+
+- **Routing is about 24× faster.** Picking a model for a request used to cost about 12 ms and 2.5 MB on one Jetson Orin Nano core with the 3000-model catalog. It now costs **0.5 ms and 160 KB** ([#42](https://github.com/kaiser-data/free-llm-proxy-router/pull/42)). Slower boards such as a Pi Zero spend longer on every request, so they save the most time.
+- **Model filters.** You can drop models whose context window is too small or that cannot call tools, before ranking ([#38](https://github.com/kaiser-data/free-llm-proxy-router/pull/38), by [@BenediktChlopik](https://github.com/BenediktChlopik)).
+- **More free models, counted correctly.** The list now shows 490 free-tier models plus 624 on a free monthly credit, counted apart. It used to claim 3073, inflated by gateways that mix free and paid models. 439 of the free-tier models come from providers that are on by default.
+  - UnoRouter provider ([#36](https://github.com/kaiser-data/free-llm-proxy-router/pull/36)).
+  - Free-model detection for gateways that mix free and paid models ([#34](https://github.com/kaiser-data/free-llm-proxy-router/pull/34), [#39](https://github.com/kaiser-data/free-llm-proxy-router/pull/39)).
+  - Consent and credit errors from aggregators no longer bench a working key ([#35](https://github.com/kaiser-data/free-llm-proxy-router/pull/35)).
+- **A fixed memory ceiling for 512 MB boards.**
+  - Provider answers are capped at 16 MB, like requests.
+  - The response cache holds at most 16 MB ([#43](https://github.com/kaiser-data/free-llm-proxy-router/pull/43)).
+- **Correctness:**
+  - Agent profiles that override `stream` or `messages` now change routing, not only the body sent upstream ([#44](https://github.com/kaiser-data/free-llm-proxy-router/pull/44)).
+  - `parallel` sends each provider's fastest model ([#45](https://github.com/kaiser-data/free-llm-proxy-router/pull/45)).
+  - Config and filters reload together ([#46](https://github.com/kaiser-data/free-llm-proxy-router/pull/46)).
+  - Agent tool calls and sampled answers are never served from the cache ([#41](https://github.com/kaiser-data/free-llm-proxy-router/pull/41)).
+- **Operations:**
+  - `PROXY_AUTH_TOKEN` env override ([#31](https://github.com/kaiser-data/free-llm-proxy-router/pull/31)).
+  - Cooldown jitter capped at 5 s ([#32](https://github.com/kaiser-data/free-llm-proxy-router/pull/32)).
+  - CI runs every test under the race detector ([#40](https://github.com/kaiser-data/free-llm-proxy-router/pull/40)).
 
 ## The idea
 
@@ -63,6 +86,7 @@ This proxy does that once, locally, for every tool you use.
    | `400` bad request | skips that provider for this request (also `413`/`422`, and a moderation `403`). If the error blames the model itself (decommissioned, not a chat model), that model sits out for an hour and the provider's next model is tried at once |
    | `404` model not found | cools down that model for an hour |
    | `401`/`403` bad key | cools down that key for ten minutes and tries your next key; the provider sits out only when no key works |
+   | `403` from an aggregator about one model (consent needed, upstream out of credit) | cools down only that model and tries the next one; the key stays in use |
    | error inside a `200` stream | handled like the same status sent as a plain response, as long as no content has been sent yet |
    | `5xx` server error | rests that model for 30 seconds and lowers the provider's reliability score |
    | timeout or connection error | moves on and lowers that provider's reliability score |
@@ -76,10 +100,10 @@ LiteLLM and [OmniRoute](https://github.com/diegosouzapw/OmniRoute) are great whe
 
 | | free-llm-proxy-router | Full AI gateways |
 |---|---|---|
-| Install | one static binary, about 11 MB | Node or Python runtime, Docker, often a database |
+| Install | one static binary, about 10 MB | Node or Python runtime, Docker, often a database |
 | Scope | **free tiers only**: official, recharging, no card | paid, free and subscription logins |
 | Terms of service | official API keys only, no OAuth or session reuse | some route through consumer subscriptions |
-| Code you have to trust | about 7.6k lines of Go, readable in an afternoon | very large codebases |
+| Code you have to trust | about 8.8k lines of Go (tests not counted), readable in an afternoon | very large codebases |
 | Free-model catalog | discovered from the providers' model APIs, [refreshed weekly](FREE_MODELS.md) | curated lists |
 | Runs on | laptop, Raspberry Pi (Zero included), RISC-V boards, NAS, $4 VPS, CI runner | servers |
 
@@ -118,18 +142,22 @@ Add it to PicoClaw's `config.json` as a custom OpenAI-compatible provider ([Pico
 
 Use `"model": "coding"`, `"speed"` or any other [strategy](#pick-a-strategy) in place of `auto`.
 
-| | Measured (Nov 2026) |
+| | Measured (22 Nov 2026) |
 |---|---|
-| Binary | 9–12 MB, static, no runtime (`CGO_ENABLED=0`) |
-| Memory | 16 MB resident when idle (macOS arm64, catalog of 253 models loaded) |
-| Builds for | `linux/arm` v6 (Pi Zero, Pi 1), v7 (32-bit Pi OS, LicheePi), `linux/riscv64` (LicheeRV Nano), `linux/arm64`, `amd64`; also `mipsle` and `loong64` from source |
+| Binary | about 10 MB, static, no runtime (`CGO_ENABLED=0`, same size on `linux/armv6` and `darwin/arm64`) |
+| Memory | about 9 MB resident when idle (macOS arm64, full bundled catalog loaded) |
+| Routing overhead | about 0.5 ms and 160 KB per request on one Jetson Orin Nano core, 3000-model catalog (`BenchmarkChatCompletions_Buffered`; was 12 ms and 2.5 MB in v0.1.8) |
+| Memory ceiling | requests, provider answers and the response cache are each capped at 16 MB |
+| Prebuilt for | `linux/arm` v6 (Pi Zero, Pi 1), v7 (32-bit Pi OS, LicheePi), `linux/riscv64` (LicheeRV Nano), `linux/arm64`, `amd64`, as archives and `.deb`/`.rpm`/`.apk` |
 
-Prebuilt armv6, armv7 and riscv64 archives and packages arrive with the next release. Until then, cross-compile from any machine with Go and copy the result over:
+The [install script](#install) picks the right archive on the board itself. For `mipsle`, `loong64` or other targets, cross-compile from any machine with Go and copy the result over:
 
 ```bash
-CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o free-llm-proxy ./cmd/free-llm-proxy
-scp -r free-llm-proxy configs/ pi@raspberrypi.local:~/free-llm-proxy-router/   # keep configs/ next to the binary
+CGO_ENABLED=0 GOOS=linux GOARCH=mipsle go build -ldflags="-s -w" -o free-llm-proxy ./cmd/free-llm-proxy
+scp -r free-llm-proxy configs/ user@board.local:~/free-llm-proxy-router/   # keep configs/ next to the binary
 ```
+
+On an SD card, `proxy.log_level: "warn"` drops the per-request log lines.
 
 ## Pick a strategy
 
@@ -148,7 +176,7 @@ Put a strategy name in the `model` field, or set the default in `config.yaml`:
 | `reliable` | highest measured success rate | unattended scripts |
 | `economical` | recharging free tiers before credit-based ones | saving credits |
 | `similar` | the same model family as a reference model | consistency |
-| `parallel` | several models for fan-out | comparisons |
+| `parallel` | the fastest model of each of the `fan_out` fastest providers, tried in turn | spreading load across providers |
 
 **Agent profiles** bundle a strategy or a pinned model with defaults, so each tool can ask for its own name. The bundled config defines `coding`, `summariser`, `reliable`, `long-context` and `precise`:
 
@@ -165,21 +193,40 @@ proxy:
 
 A pinned model that has left the free catalog falls back to the profile's strategy instead of failing.
 
+**Filters** drop models that cannot serve a request before the strategy ranks the rest ([#13](https://github.com/kaiser-data/free-llm-proxy-router/issues/13)):
+
+```yaml
+proxy:
+  filters:
+    - name: context-fit      # prompt + max_tokens, times margin, must fit the context window
+      margin: 1.2
+    - name: tool-calling     # requests with tools skip models known not to support them
+      unknown: keep          # keep (default) or drop models without that metadata
+```
+
+Only OpenRouter reports tool support today, so other providers' models are "unknown". If no model is left, the `openrouter/free` router still runs where unknowns are kept (with `require_parameters` for tool requests); otherwise the client gets a `400 no_model_fits_request`, since a retry would fail the same way. Filters are checked at startup and on reload, so a typo stops the proxy instead of failing requests.
+
 ## Providers
 
-**253 free models across 8 providers**, from the weekly scan of 2 Nov 2026 ([full list](FREE_MODELS.md)). One key is enough to start, and every extra key adds capacity.
+One key is enough to start, and every extra key adds capacity. The providers that are on by default serve **439 free models** (scan of 22 Nov 2026). [`FREE_MODELS.md`](FREE_MODELS.md) lists 490 free-tier models in all, plus 624 that run on a free monthly credit (Vercel AI Gateway, BazaarLink and others); those providers, and a few smaller free ones, ship disabled. **These providers are on by default and stay idle until their key is set:**
 
-| Provider | Free models | Get a key |
-|---|---:|---|
-| NVIDIA NIM | 71 | [build.nvidia.com](https://build.nvidia.com) |
-| HuggingFace | 49 | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
-| Mistral | 50 | [console.mistral.ai](https://console.mistral.ai) |
-| GitHub Models | 35 | any [GitHub token](https://github.com/settings/tokens) |
-| Google AI Studio (Gemini) | 21 | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
-| OpenRouter | 15 | [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys) |
-| Groq | 10 | [console.groq.com/keys](https://console.groq.com/keys) |
-| Cerebras | 2 | [cloud.cerebras.ai](https://cloud.cerebras.ai) |
-| Ollama (local) | your models | no key |
+| Provider | Free models (scan of 22 Nov 2026) | Key env var | Get a key |
+|---|---:|---|---|
+| Mistral | 50 | `MISTRAL_API_KEY` | [console.mistral.ai](https://console.mistral.ai) |
+| HuggingFace | 50 | `HF_API_KEY` | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
+| GitHub Models | 35 | `GITHUB_TOKEN` | any [GitHub token](https://github.com/settings/tokens) |
+| NVIDIA NIM | 23 | `NVIDIA_API_KEY` | [build.nvidia.com](https://build.nvidia.com) |
+| Google AI Studio (Gemini) | 21 | `GEMINI_API_KEY` | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
+| OpenRouter | 12 | `OPENROUTER_API_KEY` | [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys) |
+| Groq | 10 | `GROQ_API_KEY` | [console.groq.com/keys](https://console.groq.com/keys) |
+| Cerebras | 2 | `CEREBRAS_API_KEY` | [cloud.cerebras.ai](https://cloud.cerebras.ai) |
+| UnoRouter, LLM7, Api.Airforce, ModelScope, Hetzner | see [list](FREE_MODELS.md) | see [`.env.example`](.env.example) | aggregators and smaller free tiers |
+
+`GITHUB_TOKEN` is a common variable: if it is set in your shell, the proxy uses it for GitHub Models.
+
+About 25 more providers ship **disabled** in [`configs/config.example.yaml`](configs/config.example.yaml): gateways that also sell paid models, credit-based tiers, keyless endpoints and local servers (Ollama, LM Studio, llama.cpp…). Each has a comment saying why. Review one, then set `enabled: true`. For a gateway that mixes free and paid models, set `discovery.free_markers` (an ID suffix such as `:free`) or `discovery.free_detect_field` / `free_detect_value` (a field such as `isFree`), so that only its free models are cataloged.
+
+> **The full list is being recounted.** [`FREE_MODELS.md`](FREE_MODELS.md) from 16 Nov lists 3073 models. Most of them come from mixed gateways that are off by default, which the scanner counted as all-free before [#34](https://github.com/kaiser-data/free-llm-proxy-router/pull/34). The next weekly scan uses the fixed scanner. The counts in the table above are not affected: those providers either have their own scanner or list only free models.
 
 Several keys per provider are pooled automatically: add `GROQ_API_KEY_2`, `GROQ_API_KEY_3`… and on a 429 the proxy retries the same model with the next key. Free tiers change often, so check each provider's own terms.
 
@@ -206,7 +253,7 @@ Every package ships three binaries plus `configs/` (the provider definitions and
 <summary><b>Package install, step by step</b></summary>
 
 ```bash
-VERSION=0.1.7
+VERSION=0.1.8
 # Debian/Ubuntu
 curl -LO https://github.com/kaiser-data/free-llm-proxy-router/releases/download/v$VERSION/free-llm-proxy-router_${VERSION}_amd64.deb
 sudo dpkg -i free-llm-proxy-router_${VERSION}_amd64.deb      # or: sudo rpm -i …rpm / sudo apk add --allow-untrusted …apk
@@ -236,7 +283,7 @@ proxy:
   auth_token: ""         # when set, clients must send it as their API key
 ```
 
-**It spends your quotas, so it listens on `127.0.0.1` by default.** To reach it from other machines, use `--host 0.0.0.0` *and* set `proxy.auth_token`. The proxy logs a warning if you expose it without a token. The Docker image listens on all interfaces inside the container, so publish its port to `127.0.0.1` as shown above.
+**It spends your quotas, so it listens on `127.0.0.1` by default.** To reach it from other machines, use `--host 0.0.0.0` *and* set a token. The proxy logs a warning if you expose it without one. `PROXY_AUTH_TOKEN` in the environment or `.env` overrides `proxy.auth_token`, so the token never has to sit in a config file you might commit (`docker run -e PROXY_AUTH_TOKEN=…` works the same way). The Docker image listens on all interfaces inside the container, so publish its port to `127.0.0.1` as shown above.
 
 ### Keep the catalog fresh
 
@@ -245,7 +292,7 @@ proxy:
 ./bin/free-llm-scan export-md     # render it as a Markdown list
 ```
 
-Or let one machine scan on a schedule and every other machine pull the result: see `catalog.git_sync` in the config.
+Or let one machine scan on a schedule and every other machine pull the result: see `catalog.git_sync` in the config. Before enabling a gateway that also sells paid models, check that its config entry sets `free_markers` or `free_detect_field` (see [Providers](#providers)); without one, the scan catalogs every model it lists.
 
 ## API
 
@@ -258,7 +305,7 @@ Or let one machine scan on a schedule and every other machine pull the result: s
 | Response header | Means |
 |---|---|
 | `X-Used-Model` | the model that actually answered |
-| `X-Cache: HIT` | served from the short response cache (non-streaming only) |
+| `X-Cache: HIT` | served from the short response cache (at most 16 MB): non-streaming requests without tools, with `temperature` 0 or unset and `n` ≤ 1 |
 | `X-Proxy-Exhausted` + `Retry-After` | every free model failed (`503`); retry after that many seconds |
 
 <details>
@@ -310,18 +357,30 @@ configs/            bundled config and the free-model catalog
 ## Development
 
 ```bash
-go test -race ./...    # 128 tests
+go test -race ./...    # 154 tests
 go vet ./...
 make build
 ```
 
-**Next:** real SSE pass-through · fixing the GitHub Models scanner.
+**Next:** Gemini tool-call signatures across turns ([#30](https://github.com/kaiser-data/free-llm-proxy-router/pull/30)) · OpenRouter `models[]` capped at 3 ([#33](https://github.com/kaiser-data/free-llm-proxy-router/pull/33)) · ranking only the top candidates instead of the whole catalog.
 
 ## Contributors
 
-Thank you to everyone who has helped make this better:
+Thank you to everyone who has helped make this better. Every report, review and pull request has shaped how the proxy behaves today.
 
-- [@BenediktChlopik](https://github.com/BenediktChlopik): empty-completion detection, so a `200` with no content is never passed off as an answer ([#16](https://github.com/kaiser-data/free-llm-proxy-router/pull/16), [#17](https://github.com/kaiser-data/free-llm-proxy-router/pull/17)), and new free providers ([#15](https://github.com/kaiser-data/free-llm-proxy-router/pull/15))
+- [@zedtux](https://github.com/zedtux):
+  - free-model detection for gateways that mix free and paid models ([#34](https://github.com/kaiser-data/free-llm-proxy-router/pull/34));
+  - the UnoRouter provider ([#36](https://github.com/kaiser-data/free-llm-proxy-router/pull/36)) and its consent and credit errors ([#35](https://github.com/kaiser-data/free-llm-proxy-router/pull/35));
+  - `PROXY_AUTH_TOKEN` ([#31](https://github.com/kaiser-data/free-llm-proxy-router/pull/31)) and shorter cooldowns after a daily reset ([#32](https://github.com/kaiser-data/free-llm-proxy-router/pull/32));
+  - a private request body for every provider attempt ([#25](https://github.com/kaiser-data/free-llm-proxy-router/pull/25)) and `max_completion_tokens` handling ([#18](https://github.com/kaiser-data/free-llm-proxy-router/pull/18)).
+  - In progress: Gemini thought signatures for multi-turn tool calls ([#30](https://github.com/kaiser-data/free-llm-proxy-router/pull/30)) and a tighter OpenRouter fallback ([#33](https://github.com/kaiser-data/free-llm-proxy-router/pull/33)).
+- [@BenediktChlopik](https://github.com/BenediktChlopik):
+  - **model filters** for context fit and tool calling ([#26](https://github.com/kaiser-data/free-llm-proxy-router/pull/26), merged in [#38](https://github.com/kaiser-data/free-llm-proxy-router/pull/38)), which started with their request for intelligent model routing ([#13](https://github.com/kaiser-data/free-llm-proxy-router/issues/13));
+  - empty-completion detection, so a `200` with no content is never passed off as an answer ([#14](https://github.com/kaiser-data/free-llm-proxy-router/issues/14), [#16](https://github.com/kaiser-data/free-llm-proxy-router/pull/16), [#17](https://github.com/kaiser-data/free-llm-proxy-router/pull/17));
+  - new free providers ([#12](https://github.com/kaiser-data/free-llm-proxy-router/pull/12), [#15](https://github.com/kaiser-data/free-llm-proxy-router/pull/15));
+  - answering other users in the issue tracker ([#1](https://github.com/kaiser-data/free-llm-proxy-router/issues/1)).
+- [@oomplay](https://github.com/oomplay): the first UnoRouter integration and the idea of canonical model aliases ([#2](https://github.com/kaiser-data/free-llm-proxy-router/pull/2)).
+- [@Ludwik900](https://github.com/Ludwik900): the first bug report, a scan that found no models ([#1](https://github.com/kaiser-data/free-llm-proxy-router/issues/1)). It showed that a scan without a config still reported success with 0 entries.
 
 ## Acknowledgments
 

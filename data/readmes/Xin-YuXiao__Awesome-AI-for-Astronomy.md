@@ -17,7 +17,7 @@
 </div>
 
 > [!TIP]
-> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 452 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
+> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 461 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
 >
 > [AstroAI Today](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/today.html) collects new arXiv papers on machine learning in astronomy every day. A language model (DeepSeek V4.1 Flash) screens them and writes a one-line TL;DR for each paper and a TL;DR for each week and month. These papers are not reviewed; the curated list below is.
 >
@@ -39,6 +39,7 @@ This list tracks machine learning work in astronomy with public papers, linking 
   - [Images](#images)
   - [Spectra](#spectra)
   - [Time Series](#time-series)
+  - [Photometric Catalogues](#photometric-catalogues)
   - [Multimodal](#multimodal)
 - [Language and Vision-Language Models](#language-and-vision-language-models)
 - [Agents and Retrieval Systems](#agents-and-retrieval-systems)
@@ -140,6 +141,12 @@ This list tracks machine learning work in astronomy with public papers, linking 
 | 2023.09 | [Astroconformer: The Prospects of Analyzing Stellar Light Curves with Transformer-Based Deep Learning Models](https://arxiv.org/abs/2309.16316 "Conformer model for Kepler light curves that infers surface gravity and frequency of maximum oscillation power.") | **MNRAS 2024** | - | [Journal](https://doi.org/10.1093/mnras/stae068) [Workshop Version](https://arxiv.org/abs/2207.02787) |
 | 2022.05 | [ASTROMER: A Transformer-Based Embedding for the Representation of Light Curves](https://arxiv.org/abs/2205.01677 "Self-supervised light-curve encoder pretrained with masked magnitude prediction on MACHO R-band data.") | **A&A 2023** | [Code](https://github.com/astromer-science) | [Journal](https://doi.org/10.1051/0004-6361/202243928) [Astromer 2](https://arxiv.org/abs/2502.02717) |
 
+### Photometric Catalogues
+
+| Date | Paper | Venue | Code | Links |
+|:--|:--|:--|:--|:--|
+| 2026.11 | [EuclidFM: Foundation Model for Compact Photometric Survey Representation](https://arxiv.org/abs/2611.25080 "A masked photometric Transformer learns 128-dimensional embeddings from 90,258 Euclid Q1 sources across three deep fields for photometry reconstruction and downstream analysis.") | arXiv 2026 | [Code](https://github.com/AI-Driven-HEP/EuclidFM) | - |
+
 ### Multimodal
 
 | Date | Paper | Venue | Code | Links |
@@ -199,6 +206,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | **SDC3b** [Square Kilometre Array Science Data Challenge 3b: EoR inference](https://arxiv.org/abs/2611.25823 "Community challenge on common simulated SKA-Low data in which 16 teams infer the neutral-hydrogen fraction in three redshift intervals between z = 8.41 and 6.25; results vary widely across teams, while their average stays close to the inputs.") | arXiv 2026 | [Code](https://github.com/abonaldi/SDC3b) | [Data](https://www.skao.int/en/science-users/170/simulated-data-products/ska-low-eor) |
 | 2026.11 | **FAIR Universe WL** [FAIR Universe Weak Lensing ML Uncertainty Challenge: Dataset and Cosmological Inference Competition](https://arxiv.org/abs/2611.10228 "Simulated HSC-like weak lensing convergence maps and a competition scoring cosmological parameter estimates together with their uncertainty calibration.") | arXiv 2026 | [Code](https://github.com/FAIR-Universe/Cosmology_Challenge) | [Data](https://doi.org/10.5281/zenodo.20056065) |
 | 2026.08 | [JW-FD: A Long Horizon Multimodal Solar Flare Forecasting Dataset](https://arxiv.org/abs/2608.19195 "Fifteen-year flare forecasting dataset from 2011 to 2025 built from SDO/HMI magnetograms, NOAA region summaries and flare lists, with active region level splits and configurable horizons.") | arXiv 2026 | - | - |
 | 2026.07 | [Moonstone: A Multimodal Foundation Model and Benchmark for Lunar Remote Sensing](https://arxiv.org/abs/2607.03644 "Lunar remote sensing foundation model released with a benchmark of six downstream tasks.") | arXiv 2026 | - | - |
@@ -248,6 +256,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [Feature redundancy, redshift, and class-prior effects in SDSS--WISE photometric classification](https://arxiv.org/abs/2611.26310 "Five classifiers and twelve feature scenarios on 3.65 million SDSS–WISE sources quantify how redshift, feature redundancy and class priors alter photometric classification.") | arXiv 2026 | - | - |
 | 2026.11 | **Flow-VAE** [From Non-parametric Statistics to Images: Generating Galaxy Morphologies](https://arxiv.org/abs/2611.19211 "A variational autoencoder and conditional normalizing flow learn to generate galaxy images with specified morphology statistics from 240,000 DESI Legacy Surveys r-band images.") | arXiv 2026 | [Code](https://github.com/xuquanfeng/Galaxy_Flow_VAE) | [Data](https://www.legacysurvey.org/) |
 | 2026.08 | [A General-Purpose VLM Can Teach an Astronomy Foundation Model to Better Recognize Galaxy Morphology](https://arxiv.org/abs/2608.02300 "Distils a general-purpose VLM answering Galaxy Zoo decision tree questions into Zoobot through side tuning, with teacher uncertainty guiding which galaxies are sent for human labels.") | arXiv 2026 | - | - |
 | 2025.03 | [Euclid Q1: Exploring Galaxy Morphology across Cosmic Time through Sersic Fits](https://arxiv.org/abs/2503.15309 "Euclid Q1 morphology study listed among Zoobot applications.") | arXiv 2025 | - | - |
@@ -388,6 +397,8 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [Kinetic Tomography with Diffuse Interstellar Bands in APOGEE DR17](https://arxiv.org/abs/2611.25084 "Variational inference with Gaussian-process priors and a mixture likelihood for low signal-to-noise detections reconstructs 3D density and radial-velocity maps of the 15,273 Å DIB within 6 kpc from APOGEE DR17.") | arXiv 2026 | - | [Data](https://doi.org/10.5281/zenodo.24136276) |
+| 2026.11 | [Chemical Cartography Across Time: The Age-Dependent Chemical Structure of the Milky Way with a Homogeneous Sample of 580,000 Giants from Five Surveys](https://arxiv.org/abs/2611.26550 "One model places atmospheric parameters, abundances, distances and ages for about 580,000 giants from five spectroscopic surveys on a single scale, revealing a U-shaped age dependence of the disk metallicity gradient.") | arXiv 2026 | - | [Data](https://doi.org/10.5281/zenodo.19830515) |
 | 2026.11 | **GINN** [Geodesic-informed neural networks for testing spacetimes with S2](https://arxiv.org/abs/2611.24370 "A geodesic-constrained differentiable orbit network recovers S2 parameters and uncertainties in one optimization and finds no significant departure from Schwarzschild across six static spherical spacetimes.") | arXiv 2026 | - | - |
 | 2026.11 | **TDSM** [Model-Driven Stellar Spectroscopy with the Total Differential Spectral Model (TDSM): Framework and Its Application to 11 Million LAMOST Low-Resolution Spectra](https://arxiv.org/abs/2611.20633 "A neural emulator of Kurucz fluxes and their first-order derivatives infers eight stellar labels from 11 million low-resolution LAMOST DR10 spectra of eight million stars.") | **ApJS 2026** | - | [Journal](https://doi.org/10.3847/1538-4365/aeab87) [Data](https://www.lamost.org/dr10/) |
 | 2026.11 | [Symbolic Regression Fitting for Roche Lobe Radius](https://arxiv.org/abs/2611.17997 "Symbolic regression on radii computed from the full Roche potential gives a compact Roche-lobe formula that lowers the RMS error of Eggleton's approximation from 1.97e-3 to 5.95e-4 over mass ratios from 1e-5 to 1e5.") | arXiv 2026 | [Code](https://github.com/Iceberg0716/SRLochelobe) | - |
@@ -464,11 +475,4 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 | 2025.02 | [Exoplanet Transit Candidate Identification in TESS Full-Frame Images via a Transformer-Based Algorithm](https://arxiv.org/abs/2502.07542 "Convolutional embeddings and transformer encoder applied to flux, centroid and background series of 4.1 million light curves.") | arXiv 2025 | - | - |
 | 2024.10 | **FMPE Retrieval** [Flow Matching for Atmospheric Retrieval of Exoplanets: Where Reliability Meets Adaptive Noise Levels](https://arxiv.org/abs/2410.21477 "Flow matching posterior estimation with importance sampling to verify retrievals and estimate the evidence.") | arXiv 2024 | - | - |
 | 2024.01 | [FlopPITy: Enabling Self-consistent Exoplanet Atmospheric Retrievals with Machine Learning](https://arxiv.org/abs/2401.04168 "Sequential neural posterior estimation with neural spline flows for self-consistent atmospheric retrievals.") | arXiv 2024 | - | - |
-| 2023.11 | [AESTRA: Deep Learning for Precise Radial Velocity Estimation in the Presence of Stellar Activity](https://arxiv.org/abs/2311.18326 "Self-supervised spectrum autoencoder and RV estimator that separate Doppler shifts from activity-induced line-profile changes.") | **AJ 2024** | [Code](https://github.com/yanliang-astro/aestra) | [Journal](https://doi.org/10.3847/1538-3881/ad0e01) [Paper II](https://arxiv.org/abs/2606.13574) |
-| 2023.01 | **SBI-EAR** [Neural Posterior Estimation for Exoplanetary Atmospheric Retrieval](https://arxiv.org/abs/2301.06575 "Normalizing-flow posterior estimation for exoplanet atmospheric retrieval.") | **A&A 2023** | [Code](https://github.com/MalAstronomy/sbi-ear) | - |
-| 2022.04 | **HSR4HCI** [Half-sibling Regression Meets Exoplanet Imaging: PSF Modeling and Subtraction Using a Flexible, Domain Knowledge-driven, Causal Framework](https://arxiv.org/abs/2204.03439 "Data-driven PSF subtraction for high-contrast imaging based on half-sibling regression.") | **A&A 2022** | [Code](https://github.com/timothygebhard/hsr4hci) | - |
-| 2021.11 | [ExoMiner: A Highly Accurate and Explainable Deep Learning Classifier that Validates 301 New Exoplanets](https://arxiv.org/abs/2111.10009 "Multi-branch network that mimics expert vetting diagnostics and validates 301 Kepler planets.") | **ApJ 2022** | [Code](https://github.com/nasa/ExoMiner) | [Journal](https://doi.org/10.3847/1538-4357/ac4399) |
-| 2021.01 | **BNN Chaos** [A Bayesian Neural Network Predicts the Dissolution of Compact Planetary Systems](https://arxiv.org/abs/2101.04117 "Bayesian neural network that predicts instability times of compact planetary systems.") | **PNAS 2021** | [Code](https://github.com/MilesCranmer/bnn_chaos_model) | - |
-| 2021 | **MARGE** [Accurate Machine-learning Atmospheric Retrieval via a Neural-network Surrogate Model for Radiative Transfer](https://doi.org/10.3847/PSJ/abe3fd "Neural surrogate for radiative transfer that accelerates exoplanet atmospheric retrieval.") | **PSJ 2021** | [Code](https://github.com/exosports/MARGE) | - |
-| 2020.07 | **SPOCK** [Predicting the Long-term Stability of Compact Multiplanet Systems](https://arxiv.org/abs/2007.06521 "Gradient boosted classifier on short N-body integrations that predicts multiplanet stability.") | **PNAS 2020** | [Code](https://github.com/dtamayo/spock) | [Follow-up](https://arxiv.org/abs/2408.08873) |
-| 2019.04 | **Astronet-Triage** [Identifying Exoplanets with Deep Learning III: Automated Triage and Vetting of TESS Candidates](https://arxiv.org/
+| 2023.11 | [AESTRA: Deep Learning for Precise Radial Velocity Estimation in the Presence of Stellar Activity](https://arxiv.org/abs/2311.18326 "Self-supervised spectrum autoencoder and RV estimator that separate Doppler shifts from activity-induced line-profile changes.") | **AJ 2024** | [C

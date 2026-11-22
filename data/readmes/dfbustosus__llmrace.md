@@ -2,9 +2,9 @@
 
 # 🏁 llmrace
 
-**Race LLM providers head-to-head in your terminal.**
+**The same request, every provider, one verdict.**
 
-Latency · Time-to-first-byte · Tokens/s · p95 · Cost — live, in one command.
+Latency · TTFT · tokens/s · p95 · cost · task success — live. Then a CI gate that names the prompt that got worse.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/dfbustosus/llmrace/ci.yml?style=flat-square&logo=githubactions&label=CI)](https://github.com/dfbustosus/llmrace/actions)
 [![Crates.io](https://img.shields.io/crates/v/llmrace?style=flat-square&logo=rust&color=3390FF)](https://crates.io/crates/llmrace)
@@ -21,7 +21,12 @@ Latency · Time-to-first-byte · Tokens/s · p95 · Cost — live, in one comman
 
 ## Why
 
-Every LLM provider claims to be "fast". **TTFB, streaming throughput and p95 tail latency tell a different story** depending on your region, your model and your prompt length. `llmrace` measures it for real: it fires the *same streaming request* at every provider **simultaneously**, watches the tokens arrive live, and ranks them.
+Every provider says it is fast. `llmrace` sends one streaming request to all of them at the same time and ranks what came back.
+
+- **The race.** TTFT, tokens/s, p95, inter-token gaps, cost, and goodput. A lane that dropped half its rounds cannot win on the rounds that survived.
+- **The answer.** A workload checks each prompt (`exact`, `contains`, or `regex`). The report shows that prompt's pass count. A fast wrong answer is still a miss.
+- **The gate.** `--baseline` exits 1 when a prompt's success falls, or when the request itself changed. `race.json` names the provider, the metric, and the prompt id.
+- **The noise check.** Welch's t-test on the top two lanes. A gap that could be noise is labeled, and `--require-significance` will not fail the build on it.
 
 ## Contents
 
@@ -35,29 +40,7 @@ Every LLM provider claims to be "fast". **TTFB, streaming throughput and p95 tai
 
 ![llmrace demo](docs/demo.gif)
 
-*A multi-model race — classic `gpt-4o-mini` vs local Ollama and the instant mock lane — with the `--winner` podium and Welch significance verdict, then `--recommend` (provider recommendation with value-for-money from accumulated history) and `--doctor` diagnostics. Reproducible via [`docs/demo.tape`](docs/demo.tape) ([vhs](https://github.com/charmbracelet/vhs); needs `OPENAI_API_KEY` in the environment).*
-
-## Why
-
-```text
- 🏁 llmrace   run 1/3 ·  4.2s · "Write one vivid paragraph about a lighthouse at dawn."
-┌─ GROQ ────────────────────────────────────────────────────────────────┐
- │ 🏁 412 ms   184 tok  ·  TTFB 88 ms                                   │
- │ `llama-3.3-70b-versatile`                                            │
- │ ████████████████████████████████████████░░░░░░░░░░░░░░░              │
-└───────────────────────────────────────────────────────────────────────┘
-┌─ OPENAI ──────────────────────────────────────────────────────────────┐
- │ ▶ streaming…   61 tok  ·  TTFB 210 ms                                │
- │ `gpt-4o-mini`                                                        │
- │ ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             │
-└───────────────────────────────────────────────────────────────────────┘
-┌─ OLLAMA (local) ──────────────────────────────────────────────────────┐
- │ ▶ streaming…   23 tok  ·  TTFB 41 ms                                 │
- │ `llama3.2`                                                           │
- │ █████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░        │
-└───────────────────────────────────────────────────────────────────────┘
-q/Esc quit · report written on exit
-```
+*No API key. Two mock lanes, the significance line, and the podium. Recorded from [`docs/demo.tape`](docs/demo.tape) with [vhs](https://github.com/charmbracelet/vhs).*
 
 ## Install
 
@@ -119,15 +102,23 @@ cd llmrace && cargo install --path .
 ## Quick start
 
 ```bash
-llmrace --init    # create a starter llmrace.toml with example profiles
+# No API key. Two lanes, a podium, and whether the gap is noise.
+llmrace mock mock --no-tui -n 3 --warmup 0 --winner
+
+# The same command on the providers you pay for.
+llmrace openai anthropic groq gemini --winner
+
+# One workload, every lane, the same prompt on the same round.
+llmrace openai groq --workload examples/workloads/short-answer.jsonl --winner
 ```
 
 ```bash
 # Tool-calling: race argument validity (tasks: weather, math, lookup)
 llmrace openai groq --tools math
-```
 
-```bash
+# Starter config with example profiles
+llmrace --init
+
 # Race every provider you have configured (auto-detected from env vars)
 llmrace
 
@@ -266,7 +257,7 @@ llmrace openai groq --out race.md --json --csv --html
 ```
 
 - `race.md` — ranked table with **mean ± 95% CI**, p50/p95, TTFB, tokens/s and cost, ready to paste into GitHub issues or blog posts
-- `race.json` — full per-run data, confidence intervals and outliers for CI pipelines. It names `pricing_as_of`, the workload ids in measured-round order (empty for one prompt), `prompt_sha256` of the prompt texts those rounds sent, and `request_sha256` of the whole request (prompt or workload, `expect`, `max_tokens`, sampling, system prompt, tool task). A baseline that recorded a different `request_sha256` fails the gate without comparing metrics. A baseline that omitted the field still compares. `--trend` only averages rows that share the latest request
+- `race.json` — full per-run data, confidence intervals and outliers for CI pipelines. It names `pricing_as_of`, the workload ids in measured-round order (empty for one prompt), `prompt_sha256` of the prompt texts those rounds sent, and `request_sha256` of the whole request (prompt or workload, `expect`, `max_tokens`, sampling, system prompt, tool task). When `--baseline` is set it also writes `regression`: `ok`, `request_mismatch`, and each failure's provider, metric, and prompt id. A baseline that recorded a different `request_sha256` fails the gate without comparing metrics. A baseline that omitted the field still compares. `--trend` only averages rows that share the latest request
 - `race.csv` — per-run rows for spreadsheets and dashboards
 - `race.html` — self-contained dark-theme page with podium, ranked table and per-run latency bars (TTFB vs generation split), shareable as a single file
 
@@ -348,15 +339,23 @@ llmrace openai groq --notify-desktop
 
 ## Using llmrace as a CI quality gate
 
-Record a baseline once, then fail your pipeline when a provider regresses:
+Record a baseline of the workload once, then fail the pipeline when a prompt's success falls. A race with no `expect` has no task, so that gate does not move.
 
 ```bash
-# 1. Record the baseline (commit llmrace-report.json to your repo)
-llmrace openai groq --json --out llmrace-report.json
+# 1. Record the baseline. --json writes the sibling JSON; commit that file.
+llmrace openai groq -n 10 --warmup 2 \
+  --workload examples/workloads/short-answer.jsonl \
+  --json --out baseline/llmrace-report.md
 
-# 2. In CI: race again and compare — exits 1 on regression
-llmrace openai groq --baseline llmrace-report.json --max-regression 15
+# 2. In CI: the same workload. Exits 1 when a prompt falls or the request changed.
+llmrace openai groq -n 10 --warmup 2 \
+  --workload examples/workloads/short-answer.jsonl \
+  --baseline baseline/llmrace-report.json \
+  --max-regression 15 --require-significance \
+  --json --out llmrace-report.md
 ```
+
+`llmrace-report.json` then has `regression.ok`, `regression.request_mismatch`, and `regression.failures[]` with `provider`, `metric`, and `prompt_id`. Read that object. The terminal table is for a person.
 
 The check compares mean latency, p95 and TTFT (increases) and tokens/s (decreases) against the threshold. When the baseline recorded them, it also fails if the failure rate rises by more than the threshold in percentage points, if goodput or task success falls by more than the threshold, or if cost/run rises by more than the threshold. A baseline that omits those fields skips them. When both the baseline and this race record `request_sha256` and the hashes differ, the gate fails and does not compare metrics. A baseline that omitted the hash still compares. A race with no task has no task-success metric, so a plain latency gate does not move. The report prints an old → new diff table with per-metric Welch p-values, and flags providers that are new or missing from the baseline. With `--require-significance`, a latency or tokens/s breach fails the gate only when the difference is statistically significant (p < 0.05 on per-run data). Failure rate, goodput, cost and task success are ratios of the whole sample, so a threshold breach on those counts without a t-test:
 
@@ -401,6 +400,7 @@ PRs with results from other regions are welcome — record with `--json` and ext
 | Reasoning-model honesty (🧠 split) | ✅ built-in | ❌ | ❌ | ❌ |
 | Live terminal race view | ✅ | ❌ | ❌ | ❌ |
 | CI regression gate with significance | ✅ `--require-significance` | ❌ | ✝ heavy scripting | ❌ |
+| The gate names the prompt that fell, and refuses a different request | ✅ | ❌ | ❌ | ❌ |
 | Saturation curves (`--ramp`) | ✅ built-in | ❌ | ✝ complex | ❌ |
 | Longitudinal trends + model-swap detection | ✅ | ❌ | ❌ | partial |
 | Cost per run from billed input, cached input and output tokens | ✅ | ❌ | ❌ | partial |

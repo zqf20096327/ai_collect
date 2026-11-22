@@ -268,6 +268,7 @@ The essentials are always one keystroke away: `/` opens commands, and `?` in an 
 | `/plugins` | Browse, install and manage plugins and their marketplaces |
 | `/donate` | Support the project with a crypto donation |
 | `/sponsor` | Sponsor the developer or get in touch |
+| `/discord` | Join the community on Discord |
 | `/secrets` | Store credentials the agent uses by placeholder, `<secret:NAME>`, without ever seeing the value |
 | `/quit` | Exit the app |
 
@@ -370,6 +371,8 @@ Your sign-ins, saved sessions, input history, and per-directory settings live un
 | `~/.alter-zero/agents/` and `~/.alter-zero/skills/` | Your shared agent definitions and skills |
 | `~/.alter-zero/hooks.json` and `~/.alter-zero/mcp.json` | Your shared hooks and MCP servers |
 | `.alter-zero/` in a project | Project-specific `agents/`, `skills/`, `hooks.json`, and `mcp.json` |
+| `.agents/skills/` in a project and `~/.agents/skills/` | Skills shared with Codex and other agents |
+| `.agents/plugins/marketplace.json` in a project or your home folder | A plugin marketplace that `/plugins` lists without being added |
 | `AGENTS.md` | Project instructions read by the agent |
 
 Claude Code-style `.claude/skills/` and `.mcp.json` files are also supported. Hooks, yours and a project's, and a project's MCP servers run only after you approve them when the app starts.

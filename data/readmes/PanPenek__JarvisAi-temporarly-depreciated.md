@@ -37,7 +37,7 @@ Coffe helps: https://buymeacoffee.com/azzren
 ### 1. Install
 
 ```bash
-git clone https://github.com/PanPenek/jarvis.git
+git clone https://github.com/PanPenek/JarvisAi-temporarly-depreciated.git jarvis
 cd jarvis
 install.bat
 ```

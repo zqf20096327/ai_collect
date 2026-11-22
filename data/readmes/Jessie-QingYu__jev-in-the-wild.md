@@ -2,7 +2,7 @@
 
 **Real-world use cases, open-source projects, benchmarks and criticism of [Jev](https://typesafe.ai), TypeSafe AI's System One model — what people actually build with it, and where it actually fails.**
 
-![entries](https://img.shields.io/badge/entries-505-2f81f7) ![open source](https://img.shields.io/badge/open%20source%20projects-281-2f81f7) ![updated](https://img.shields.io/badge/updated-2026--11--21-2f81f7) ![data license](https://img.shields.io/badge/data-CC0--1.0-2f81f7)
+![entries](https://img.shields.io/badge/entries-505-2f81f7) ![open source](https://img.shields.io/badge/open%20source%20projects-281-2f81f7) ![updated](https://img.shields.io/badge/updated-2026--11--22-2f81f7) ![data license](https://img.shields.io/badge/data-CC0--1.0-2f81f7)
 
 Three things make this different from the other Jev lists:
 
@@ -51,7 +51,7 @@ Three things make this different from the other Jev lists:
 | Where the entries come from | GitHub 265, Reddit 143, YouTube 39, Hacker News 25, blogs and web 69 |
 | Languages of the code | Python 89, TypeScript 55, JavaScript 32, Rust 19, Go 12, HTML 12 |
 | Categories | 12 |
-| Last refreshed | 2026-11-21 |
+| Last refreshed | 2026-11-22 |
 
 Signals: ★ GitHub stars · ▲ Reddit or Hacker News points · ▶ views · ♥ likes. They come from four different platforms and **are not comparable with each other** — they are a popularity reading, never a quality one.
 
@@ -268,7 +268,7 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | --- | --- | --- | --- | --- |
 | [Run coding-agent workflows as Jev-guided graphs](https://reddit.com/r/ClaudeCode/comments/1wp9nga/the_agentic_loop_is_outdated) | Jive is an open-source agent harness that represents execution as dependent DAG nodes, combining bash and Jev calls to reduce unnecessary LLM calls during tasks such as repository investigation. | code | ▲ 304 | 2026-09-24 |
 | [Agent memory with Jev reranking](https://github.com/kitfunso/hippo-memory) | A zero-dependency SQLite/MCP memory system that includes an opt-in hosted Jev reranker and benchmarks retrieval. | code | ★ 794 | 2026-03-15 |
-| [Local gateway routing coding-agent tool calls through Jev](https://github.com/vinilana/jev-gateway) | Gateway uses Jev to choose coding-agent tools, supports Codex and Claude Code launchers, and enables routing-on/off comparisons. | code | ★ 327 | 2026-09-18 |
+| [Local gateway routing coding-agent tool calls through Jev](https://github.com/vinilana/jev-gateway) | Gateway uses Jev to choose coding-agent tools, supports Codex and Claude Code launchers, and enables routing-on/off comparisons. | code | ★ 326 | 2026-09-18 |
 | [Hermes plugin compacts context without rewriting messages](https://reddit.com/r/hermesagent/comments/1wkpl3q/integrated_the_jev_context_engine_into_hermes) | A Hermes plugin uses Jev to remove or shrink old tool-call bulk while preserving user and agent messages verbatim. It includes fallbacks, metrics, shadow comparison, and a FastAPI dashboard. | code | ▲ 138 | 2026-09-19 |
 | [Control agent memory with Jev](https://github.com/libingzheren/Jev-Mem) | Jev-Mem uses Jev to govern memory admission, graph relationships, retrieval routing, scoring, and stopping while another model generates answers. | code | ★ 277 | 2026-09-20 |
 | [Adaptive Thinking gates extra LLM reasoning](https://reddit.com/r/LocalLLaMA/comments/1xa9ffa/jev_based_adaptive_thinking_for_llms) | The open-source project uses a Jev-like gate to trigger additional reasoning when token-level entropy indicates uncertainty, and to select among parallel thought paths. | code | ▲ 98 | 2026-10-19 |
@@ -446,7 +446,7 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | [System One is a faster alternative to parsing LLM prose](https://reddit.com/r/informatik/comments/1whh0k6/oha_neuer_ansatz_in_sachen_frontier_model_ai) | The post praises TypeSafe's System One framing as a more practical approach than parsing LLM text, pointing readers to the Jev launch article and its real-time DOOM demo. | opinion | ▲ 38 | 2026-09-15 |
 | [Jev System One model technical explanation and capabilities](https://youtube.com/watch?v=6piQcPa6V-U) | Educational video (80k views) explaining Jev's System One approach and the three decision output types with practical examples. | opinion | ▶ 80.2k | 2026-09-24 |
 | [Jev’s packaging is valuable, though its core idea is established](https://reddit.com/r/LLMDevs/comments/1wncmkp/jev_raised_40m_and_spent_2_years_in_stealth_and) | The author argues that Jev’s typed-decision interface resembles established calibrated classifiers, while crediting TypeSafe’s API and packaging; they also note calibration drawbacks in the open-source Laya clone. | opinion | ▲ 28 | 2026-09-22 |
-| [Catalog Jev prompt patterns and calibration guidance](https://github.com/vicfei/awesome-jev-prompts) | A bilingual collection of 43 Jev question patterns, anti-patterns, and calibration notes for typed-decision prompt design. | code | ★ 14 | 2026-09-28 |
+| [Catalog Jev prompt patterns and calibration guidance](https://github.com/vicfei/awesome-jev-prompts) | A bilingual collection of 43 Jev question patterns, anti-patterns, and calibration notes for typed-decision prompt design. | code | ★ 15 | 2026-09-28 |
 | [Jev decision-making value distinct from text generation](https://youtube.com/watch?v=9oWxrsRo4d8) | Introductory video (67k views) about Jev's decision-making capabilities and positioning as typed decision alternative to LLM text generation. | opinion | ▶ 67.4k | 2026-09-16 |
 | [Infer Jev's model and training approach from experiments](https://reddit.com/r/LocalLLaMA/comments/1xguv3i/how_to_build_a_decision_model_like_jev) | Oumi researchers hypothesize Jev is based on a Qwen 3.5/3.6-class model and likely uses soft-label cross-entropy on synthetic data; these are explicitly presented as informed guesses, not insider facts. | opinion | ▲ 26 | 2026-10-27 |
 | [Mikey No Code: Beginner tutorial for Jev setup and usage \| Mikey No Code：Jev设置和使用初学者教程](https://youtube.com/watch?v=MQg1-JAky1E) | YouTube tutorial (65K views) providing step-by-step walkthrough of Jev setup and practical usage examples with beginner-friendly explanations \| YouTube教程(6.5万次浏览)提供Jev设置的逐步演练和实用使用示例，附带初学者友好的解释 | opinion | ▶ 65.7k | 2026-09-23 |

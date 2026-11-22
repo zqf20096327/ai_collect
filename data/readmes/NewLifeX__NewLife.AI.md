@@ -8,7 +8,7 @@
 [![NativeAOT](https://github.com/NewLifeX/NewLife.AI/actions/workflows/aot.yml/badge.svg?branch=master)](https://github.com/NewLifeX/NewLife.AI/actions/workflows/aot.yml)
 <!-- metrics:start -->
 [![AOT smoke](https://img.shields.io/badge/AOT%20smoke-38%2F38-brightgreen?logo=dotnet)](Doc/AOT兼容性分析.md)
-[![TFM](https://img.shields.io/badge/TFM-5%20%28net45%20%E2%86%92%20net10.0%29-512BD4?logo=dotnet)](https://www.nuget.org/packages/NewLife.AI)
+[![TFM](https://img.shields.io/badge/TFM-6%20%28net45%20%E2%86%92%20net11.0%29-512BD4?logo=dotnet)](https://www.nuget.org/packages/NewLife.AI)
 [![locales](https://img.shields.io/badge/locales-31-2ea44f?logo=dotnet)](Doc/多语言本地化.md)
 <!-- metrics:end -->
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS%20%7C%20Android%20%7C%20iOS-blue)
@@ -22,7 +22,7 @@
 
 ## Introduction
 
-**NewLife.AI** is an open-source AI foundation library for the .NET ecosystem, providing a unified `IChatClient` interface that wraps **46 mainstream LLM providers**. It features built-in function calling, MCP protocol, streaming output, multimodal support, multi-agent capabilities, and can be embedded as a NuGet package in any .NET project (`net45 → net10.0`, NativeAOT ready).
+**NewLife.AI** is an open-source AI foundation library for the .NET ecosystem, providing a unified `IChatClient` interface that wraps **46 mainstream LLM providers**. It features built-in function calling, MCP protocol, streaming output, multimodal support, multi-agent capabilities, and can be embedded as a NuGet package in any .NET project (`net45 → net11.0`, NativeAOT ready).
 
 The library ships **31 runtime languages** (English source with automatic fallback) and targets Windows, Linux, macOS, Android and iOS across x64 / x86 / arm64 / arm / loongarch64 / riscv64 / s390x.
 
@@ -32,7 +32,7 @@ The library ships **31 runtime languages** (English source with automatic fallba
 
 ## Core Features
 
-- **NativeAOT Ready**: `IsAotCompatible` on net8.0/net10.0, 38-scenario NativeAOT smoke matrix across Windows / Linux / macOS and x64 / arm64 / loongarch64
+- **NativeAOT Ready**: `IsAotCompatible` on net8.0/net10.0/net11.0, 38-scenario NativeAOT smoke matrix across Windows / Linux / macOS and x64 / arm64 / loongarch64
 - **31 Runtime Languages**: English source messages with compiled locale tables; missing translations fall back to English, no code changes needed for new languages
 - **46 AI Providers, 6 Protocols**: OpenAI / Anthropic / Gemini / Tongyi DashScope / Ollama / AWS Bedrock — switch with a single line of code
 - **Unified `IChatClient` Interface**: Aligned with MEAI specification — single-turn, streaming, function calling, multimodal all via a single API

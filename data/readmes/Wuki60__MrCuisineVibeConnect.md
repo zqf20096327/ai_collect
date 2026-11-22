@@ -8,10 +8,11 @@ uses **the official Lidl recipes**.
 
 > Independent project, not affiliated with Lidl, SilverCrest or Hoyer. Motor control is based on
 > a public analysis of the serial protocol. Since October 2026 Toque has been running on SKMC 1200
-> robots (revisions A1, B2 and C3) in France and Spain, and on an SKMC 1100 A1 (with an adapted
-> recovery, see #10). Use at your own risk and follow the first-run procedure.
+> robots (revisions A1, B2 and C3) in France and Spain, and on SKMC 1100 A1 robots (TWRP rebuilt
+> around their own kernel: step `own-twrp` of the install guide, see #10). Use at your own risk and
+> follow the first-run procedure.
 >
-> The interface is available in **English**, **French**, **German** and **Spanish** (*Settings › Langue · Language*), and
+> The interface is available in **English**, **French**, **German**, **Spanish** and **Catalan** (*Settings › Langue · Language*), and
 > other languages can be added with a single file (see below).
 
 ## Install with an AI agent
@@ -76,7 +77,9 @@ Allow 1 to 2 hours. Without an agent: [docs/INSTALLATION.md](docs/INSTALLATION.m
   loud tune plays when the recipe's last program ends. A setting you confirmed ("I checked this
   setting") is remembered for the next time you cook the recipe.
 - **Manual cooking**, **Knead / Steam / Sauté / Cleaning** programs, **Turbo**, **scale**. Cleaning:
-  1 L of hot water and a drop of washing-up liquid, speed rising from 4 to 10, no heat.
+  1 L of hot water and a drop of washing-up liquid, speed rising from 4 to 10, no heat. Manual
+  cooking can also **heat without stirring**: with a temperature set (120 °C at most), the speed
+  goes down to 0.
 - **Offline**: everything works without a network (no more "server unreachable" at startup).
 - **Always the right time**: the time zone comes from the Internet connection and the time from
   the network (the robot has no clock battery). Right after power-on, the clock is set from the
@@ -199,8 +202,9 @@ bowl, recipe sync, going back to the stock app.
 - Robot access: [Monsieur-Cuisine-Connect-Hack](https://github.com/EliasKotlyar/Monsieur-Cuisine-Connect-Hack).
 - Contributions: @pierok13 (standby, notes and quantities, speed stages, sounds, recent recipes,
   Android 6 roots, bowl sensor), @lucasbraud, @OUTSIDE2k8 (Spanish), @Locodice67 (German, install
-  script), @baptiste-gislot, @florentdestremau (rotary knob), and everyone who tested their robot
-  and reported bugs.
+  script), @baptiste-gislot, @florentdestremau (rotary knob), @maximehuran (knob light in standby),
+  @badrbelhaj1 (Magisk at restart, SKMC 1100 A1 TWRP, heat without stirring, interface fixes),
+  @meuca1 (Catalan), and everyone who tested their robot and reported bugs.
 
 MIT License. This repository contains no Lidl recipes, images or code: each robot downloads the
 recipes itself from monsieur-cuisine.com, for its owner's personal use.

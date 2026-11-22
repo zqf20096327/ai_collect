@@ -6,6 +6,7 @@
 [![CI](https://github.com/Vist233/Sakura/actions/workflows/ci.yml/badge.svg)](https://github.com/Vist233/Sakura/actions/workflows/ci.yml)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.18-3c873a)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Terminal-Bench 2.1](https://img.shields.io/badge/Terminal--Bench%202.1-Pass%401%2086.36%25-e9a3b2)](#evidence)
 
 **A complete coding agent you can build with.**
 
@@ -154,7 +155,7 @@ These numbers come from real use of Sakura Code, the terminal agent built on Sak
 - **Real usage.** 168 Sakura Code sessions on one machine, 2026-11-09 to 11-18, with 7,150 tool calls.
 - **Long run.** 20.8 hours unattended: 1,822 model requests and 1,796 tool calls; the session ran 43.7 hours in all.
 - **Review.** 5,314 review decisions since review records began (2026-11-10 18:34); 42 of the 75 denials were real risks after checking each one. The others were cancelled runs, rule false positives and human or cache decisions.
-- **Terminal-Bench 2.1.** Sakura Code scored 75/88 (Pass@1 85.23%) in one local run. It is Sakura Code's result, not the framework's, and not a leaderboard score.
+- **Terminal-Bench 2.1.** Sakura Code scored **76/88 (Pass@1 86.36%)** in one local run, one attempt per task. It is Sakura Code's result, not the framework's, and not a leaderboard score.
 
 ## Sakura Code
 

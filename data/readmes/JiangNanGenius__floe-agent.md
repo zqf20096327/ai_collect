@@ -11,6 +11,7 @@
   <a href="https://apps.apple.com/app/id6801209053"><img src="docs/images/install/app-store.svg" alt="Download Floe Agent on the App Store" width="144" height="56"></a>
   <a href="https://www.floe-agent.com/en?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=beta_readme_en#beta"><img src="docs/images/install/testflight.svg" alt="Apply for TestFlight on the website" width="144" height="56"></a>
   <a href="https://altdirect.app/?url=https%3A%2F%2Fraw.githubusercontent.com%2FJiangNanGenius%2Ffloe-agent%2Fmain%2Ffeather.json"><img src="docs/images/install/self-signing.svg" alt="Self-signing stores: Feather and AltStore" width="144" height="56"></a>
+  <a href="https://discord.gg/qRJJAV8hzT"><img src="docs/images/install/discord-en.png" alt="Join the Floe Discord community" width="144" height="56"></a>
 </p>
 
 [![iOS / iPadOS 26+](https://img.shields.io/badge/iOS%20%2F%20iPadOS-26%2B-0A84FF)](FloeAgent/project.yml)
@@ -35,7 +36,7 @@ Choose a product in the [release centre](https://www.floe-agent.com/en/releases?
 | --- | --- | --- |
 | **Floe Agent · iOS / iPadOS** | [App Store](https://apps.apple.com/app/id6801209053) · [Apply for TestFlight](https://www.floe-agent.com/en?utm_source=github&utm_medium=referral&utm_campaign=beta_readme_en#beta) · [GitHub IPA releases](https://www.floe-agent.com/en/releases?platform=ios&utm_source=github&utm_medium=referral&utm_campaign=readme_en) | iOS/iPadOS 26+. App Store availability follows your storefront; TestFlight availability follows your test group. GitHub IPAs require your own signing. |
 | **Floe Agent · Android** | [Download the Full APK](https://www.floe-agent.com/en/releases?platform=android&utm_source=github&utm_medium=referral&utm_campaign=readme_en) · [Setup guide](docs/ANDROID_GUIDE.md) | Android 9+ ARM64, independently distributed. Check the selected release's prerelease status and installation requirements. |
-| **Floe Agent · Mac** | [Download for Mac](https://github.com/JiangNanGenius/floe-agent/releases/tag/floe-mac-v1.11.8) | Apple silicon, macOS 15+. Existing Floe Bridge users can choose **Check for Updates**. |
+| **Floe Agent · Mac** | [Download for Mac](https://github.com/JiangNanGenius/floe-agent/releases/tag/floe-mac-v1.11.15) | Apple silicon, macOS 15+. Existing Floe Bridge users can choose **Check for Updates**. |
 | **Floe Bridge · Mac** | [Companion overview](https://www.floe-agent.com/en/bridge?utm_source=github&utm_medium=referral&utm_campaign=readme_en) · [Downloads](https://www.floe-agent.com/en/releases?platform=bridge&utm_source=github&utm_medium=referral&utm_campaign=readme_en) | Optional menu-bar companion for Floe running on the **same Mac**: terminal, files and MCP. |
 | **Floe iOS Bridge** | [Companion overview](https://www.floe-agent.com/en/ios-bridge?utm_source=github&utm_medium=referral&utm_campaign=readme_en) · [Install guide](FloeIOSBridge/INSTALL.md) · [Downloads](https://www.floe-agent.com/en/releases?platform=ios-bridge&utm_source=github&utm_medium=referral&utm_campaign=readme_en) | Separate iPhone/iPad device-control app. Initial setup needs a computer, signing and developer pairing; main Floe integration is outside its current release. |
 

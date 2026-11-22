@@ -178,7 +178,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `add @user [role]` | admin; only roles ranking below your own | grant access under any role, custom ones included; no role given means the default one (`pal`); an unknown role name is refused |
 | `remove @user` | admin (only someone ranking below your own role) | revoke access |
 | `learn <fact>` | executer, admin | teach a durable fact: the owner's own typing is saved at once, anyone else's (and any `learn` the agent runs for itself) waits as *pending* for the owner's approval and is not part of any reply until then |
-| `learn pending` / `learn approve <id>` / `learn reject <id>` | *owner* | list what waits, approve it (it is carried into every reply from then on) or reject it (never). Typed by the owner only: the agent cannot run these for itself. The owner also gets each pending learning as a DM with Approve / Reject buttons |
+| `learn pending` / `learn approve <id> [global\|<channel ids>]` / `learn reject <id>` | *owner* | list what waits (with its scope), approve it (it is carried into every reply from then on, or only in the channels you name) or reject it (never). Typed by the owner only: the agent cannot run these for itself. The owner also gets each pending learning as a DM with Approve / Reject buttons |
 | `learnings` / `relearn <id> <text>` / `unlearn <id>` | executer, admin | list, reword or delete learnings. Rewording by anyone but the owner sends the learning back to pending |
 | `review-policy [owner/repo] [first\|after\|default]` (alias `rvpolicy`) | pal, executer, admin (setting: `settings:manage`) | how a repo gets approved - see [Review policy per repo](#review-policy-per-repo) |
 | `review-agents [n\|default]` (alias `rvagents`) | pal, executer, admin (setting: `settings:manage`) | how many child agents one review may fan out to - see [How wide a review fans out](#how-wide-a-review-fans-out) |
@@ -1041,9 +1041,28 @@ each other's history. Queued this way, the second message runs with the first's
 result already in the session, which is what makes a follow-up mean "and the
 rest" rather than "again, from scratch".
 
-If something is already running, the thread is told so rather than going quiet.
 Commands are deliberately not queued: a review is its own process with its own
 session, and holding one behind a long chat turn would make it look dead.
+
+### Messages queued behind a turn are answered together
+
+Send a, then b, c, d, e while a runs, and b..e do not take four turns of their own:
+they wait as one group, and when a ends - finished, failed or stopped - they run
+as ONE turn with one reply. The turn reads them from the thread, so each keeps its
+author, timestamp, attachments and links, and is told these were several messages
+sent while it was busy. The newest message carries the turn (its stream and
+reply); the others settle when it ends and post nothing (their inbox rows stay open until then, so a restart that cuts the turn re-delivers each of them).
+
+Only a person's own typed messages from the same author merge. Every turn the bot
+starts itself (a watch hand-back, a worker's question, a loop, a nudge, a
+workflow step) keeps its own turn and is a barrier the groups do not merge
+across: each carries its own instruction, and a turn runs under one person's role
+and budget. Messages that arrive while the combined turn runs form the next group.
+
+Stop ends only the running turn, so waiting messages are never dropped by it:
+after a stop they start at once as one turn. With nothing running (only messages
+queued behind a bot-started turn) there is nothing to stop, and `stop` says how
+many are waiting.
 
 ## One session per thread
 
@@ -1266,24 +1285,4 @@ for that one repository, limited to what a review needs and revoked when it ends
 ## Asking for a review in words
 
 A quick review runs when a person asks for it directly, in one of two ways (a
-review requested on GitHub also starts one, see
-[Reviews that start by themselves](#reviews-that-start-by-themselves)):
-
-- tag the bot with `@bot review <pr-url>` or `@bot approve <pr-url>` - both
-  mean the same `quick-review` (there is no approval without a review, and the
-  old bare `approve` command is gone). It works in a channel and in a DM (also
-  in a DM thread), as long as the message opens with the bot's tag;
-- type the command: `//bot quick-review <pr-url>` (alias `rv`, slash `/rv`).
-
-Any allowlisted human may ask (`pal`, `executer`, `admin`, `owner`: the command
-is `pal`+, and `pal` is the lowest role). The tag has to open the message, the
-first word after it has to be `review` or `approve`, and it has to carry a real
-pull request url - anything vaguer stays a conversation, because a review spends
-the asker's own credential rather than being free.
-
-It is never run for anything the bot or a thread's own flow started: not for the
-brain (`jarvis-run.sh` refuses `quick-review`, and the prompt says so), not for a
-`tell`, a watch hand-back, a worker's question or a drift nudge, not for a
-workflow step or a thread with a workflow running, not for a batch of buffered
-follow-up messages, not for an untagged reply under a followed thread, and not
-for 
+revi

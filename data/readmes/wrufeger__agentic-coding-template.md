@@ -1,6 +1,8 @@
 <!-- act:template-readme -->
 # act — agentic coding template
 
+**Nothing is built before you decide, and nothing counts as done before it is proven.**
+
 Turns your AI coding assistant into a reliable member of the team — in a new project or one that
 already exists. You set the goals and decide; the assistant plans, hands the work to specialized
 sub-agents, proves its results, and keeps the project's state in the repository, so every session
@@ -18,8 +20,8 @@ What you get:
   reviewer, explorer, test-writer, debugger, …), each with its own model and effort tier.
 - **A structured process with sensible rules.** Concept before code, "done" only with evidence,
   nothing irreversible without your yes, no secrets in commands, commits, or logs; in Claude Code,
-  hooks enforce the mechanical ones before every action. Coding rules for eleven languages and
-  frameworks — Python, TypeScript, Java, C#, Go, PHP, SQL, Bash, Vue, Nuxt, Tailwind — switched on
+  hooks enforce the mechanical ones before every action. Coding rules for many languages and
+  frameworks — Python, TypeScript, Java, C#, Go, PHP, SQL, Bash, Vue, Nuxt, Tailwind and more — switched on
   to match the stack it detects.
 - **Documentation, tests, and a record of the work, as a matter of course.** Every step lands in a
   journal, tasks and decisions in `docs/ai/`; the project docs in `docs/project/` are kept in line
@@ -65,21 +67,22 @@ holds a project is taken over with `act-adopt` (see below).
 
 Once the project exists, everyday work runs the same way:
 
-| You say | What happens |
-| :--- | :--- |
-| `continue` | reads the board and picks up the open task |
-| `Idea: export the orders as CSV` | options, a decision, then a backlog item and a task (`act-idea`) |
-| `Bug: login fails when the password has an umlaut` | reproduce, a failing test, the fix, the test green (`act-bug`) |
-| `Prepare the import feature, I'm away this afternoon` | cut into tasks, every question asked up front (`act-prepare`) |
-| `Close out T12` | check the evidence, archive, journal, commit (`act-commit`) |
-| `Check for a template update` | diff, your consent, update (`act-update`) |
-| `Which skills are there?` | the list, one line each (`act`) |
-| `Can I clear the session?` | checks the handover, then the sentence for the new session (`act-handover`) |
+| You say                                               | What happens                                                                |
+|:------------------------------------------------------|:----------------------------------------------------------------------------|
+| `continue`                                            | reads the board and picks up the open task                                  |
+| `Idea: export the orders as CSV`                      | options, a decision, then a backlog item and a task (`act-idea`)            |
+| `Bug: login fails when the password has an umlaut`    | reproduce, a failing test, the fix, the test green (`act-bug`)              |
+| `Prepare the import feature, I'm away this afternoon` | cut into tasks, every question asked up front (`act-prepare`)               |
+| `Close out T12`                                       | check the evidence, archive, journal, commit (`act-commit`)                 |
+| `Check for a template update`                         | diff, your consent, update (`act-update`)                                   |
+| `Which skills are there?`                             | the list, one line each (`act`)                                             |
+| `Can I clear the session?`                            | checks the handover, then the sentence for the new session (`act-handover`) |
 
 ### Python
 
 The setup, the scripts, and the hooks need Python 3.9+, standard library only. The assistant checks
-for it and walks you through installing it if it is missing:
+for it and walks you through installing it if it is missing. It is found as `python3`, `python` or, on
+Windows, `py -3` — the hooks try the three in that order, so any one of them is enough:
 
 - **Windows:** `winget install Python.Python.3.12`, or https://www.python.org/downloads/ — tick
   "Add python.exe to PATH" in the installer.
@@ -112,17 +115,17 @@ over on a branch `act-adopt` without committing it.
 Recurring work comes as skills — plain instructions in a `SKILL.md` each, so any assistant can
 follow them; Claude Code also calls them by name (`/act-bug`).
 
-| For | Skills |
-| :--- | :--- |
-| Planning | `act-idea` (options, decision, task) · `act-prepare` (a larger block, all questions up front) |
-| Building and fixing | `act-bug` (failing test first) · `act-refactor` · `act-perf` (measure first) · `act-test-gap` · `act-deps` |
-| Checking | `act-a11y` (accessibility) · `act-audit-docs` (docs against the code) |
-| Design | `act-design-ideas` (variants) · `act-design-build` (implement one) · `act-design-assets` (logo, icons) |
-| Handing over | `act-handover` (can the session be left now, and the sentence for the new one) |
-| Shipping | `act-commit` · `act-release` (version, changelog, tag) · `act-pr` · `act-issue` · `act-integrations` (GitHub/GitLab access) |
-| Presenting | `act-slides` (a deck from the project's docs) |
-| Learning | `act-teach` (lessons on a topic, with exercises and a learning record) |
-| The template itself | `act-setup` · `act-adopt` · `act-update` · `act-version` (installed version, available releases) · `act-doctor` (drift check) · `act-export-settings` / `act-load-settings` · `act-feedback` |
+| For                 | Skills                                                                                                                                                                                                                               |
+|:--------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Planning            | `act-idea` (options, decision, task) · `act-prepare` (a larger block, all questions up front)                                                                                                                                        |
+| Building and fixing | `act-bug` (failing test first) · `act-refactor` · `act-perf` (measure first) · `act-test-gap` · `act-deps`                                                                                                                           |
+| Checking            | `act-a11y` (accessibility) · `act-audit-docs` (docs against the code)                                                                                                                                                                |
+| Design              | `act-design-ideas` (variants) · `act-design-build` (implement one) · `act-design-assets` (logo, icons)                                                                                                                               |
+| Handing over        | `act-handover` (can the session be left now, and the sentence for the new one)                                                                                                                                                       |
+| Shipping            | `act-commit` · `act-release` (version, changelog, tag) · `act-pr` · `act-issue` · `act-integrations` (GitHub/GitLab access)                                                                                                          |
+| Presenting          | `act-slides` (a deck from the project's docs)                                                                                                                                                                                        |
+| Learning            | `act-teach` (lessons on a topic, with exercises and a learning record)                                                                                                                                                               |
+| The template itself | `act-setup` · `act-adopt` · `act-update` · `act-version` (installed version, available releases) · `act-info` (which project, its state) · `act-config` (settings) · `act-doctor` (drift check) · `act-export-settings` / `act-load-settings` · `act-feedback` |
 
 ## Stays current
 
@@ -142,7 +145,7 @@ explicitly (`act-feedback <text>`) goes even when it is off, anonymously. Policy
 
 A project set up from here has three places that matter:
 
-- **`.act/`** — the template layer: rules, coding rule sets for eleven languages, skills, sub-agent
+- **`.act/`** — the template layer: rules, coding rule sets per language and framework, skills, sub-agent
   roles, hooks, and scripts. Never edited in the project (a project version goes to `docs/ai/local/`
   instead), replaced as a whole by `act-update`.
 - **`docs/ai/`** — the working state, versioned with the code: settings (`config.md`), the rules
@@ -156,12 +159,13 @@ Around them sit the small files each tool reads (`CLAUDE.md`, `AGENTS.md`, `.cla
 
 ## Tools
 
-| Tool | Reads | What it gets |
-| :--- | :--- | :--- |
-| **Claude Code** | `CLAUDE.md`, `.claude/settings.json`, `.claude/skills/`, `.claude/agents/` | everything: rules loaded by import, skills by name, sub-agent roles with a model and effort tier per role, hooks that enforce the checks below, a status line, the board at session start |
-| **Codex, GitHub Copilot, Cursor** | `AGENTS.md`, `.agents/skills/` | rules and skills as instructions; no hooks, so nothing is enforced mechanically, and no sub-agent roles |
-| **Gemini CLI** | `GEMINI.md`, `.agents/skills/` | the skills; a project has no `GEMINI.md` yet — point Gemini CLI at `AGENTS.md` in its settings |
-| **any other assistant** | — | tell it to read `docs/ai/rules.md`; every skill is a plain `SKILL.md` it can follow |
+| Tool                              | Reads                                                                      | What it gets                                                                                                                                                                              |
+|:----------------------------------|:---------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Claude Code**                   | `CLAUDE.md`, `.claude/settings.json`, `.claude/skills/`, `.claude/agents/` | everything: rules loaded by import, skills by name, sub-agent roles with a model and effort tier per role, hooks that enforce the checks below, a status line, the board at session start |
+| **GitHub Copilot**                | `AGENTS.md`, `.agents/skills/`, `.github/agents/`                          | rules and skills as instructions, and a role file per role with a model list (`models:`); no hooks, so nothing is enforced mechanically                                                   |
+| **Codex, Cursor**                 | `AGENTS.md`, `.agents/skills/`                                             | rules and skills as instructions; no hooks, so nothing is enforced mechanically, and no sub-agent roles                                                                                   |
+| **Gemini CLI**                    | `GEMINI.md`, `.agents/skills/`                                             | the skills; a project has no `GEMINI.md` yet — point Gemini CLI at `AGENTS.md` in its settings                                                                                            |
+| **any other assistant**           | —                                                                          | tell it to read `docs/ai/rules.md`; every skill is a plain `SKILL.md` it can follow                                                                                                       |
 
 Every project gets `AGENTS.md` and the skill copies under `.agents/skills/` — read the same way by
 Codex, Copilot, Gemini CLI, and Cursor; the Claude Code files come while `claude-code` is among the

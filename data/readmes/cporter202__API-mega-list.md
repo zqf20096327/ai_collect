@@ -35,6 +35,21 @@
 
 ---
 
+### Sponsored: Blotato
+
+<p align="center">
+  <a href="https://blotato.com/?ref=chrisl9">
+    <img src=".github/assets/blotato-homepage-screenshot.png" alt="Blotato social media publishing API and MCP for AI agents" width="100%">
+  </a>
+</p>
+<p align="center">
+  <a href="https://blotato.com/?ref=chrisl9"><strong>🚀 Try Blotato</strong></a><br>
+  <strong>#1 unified social media API + MCP</strong><br>
+  Connect your AI agent to 9+ networks. Create, schedule, and publish posts, reply to comments, manage DMs, and fetch analytics. No code required.
+</p>
+
+---
+
 ### Sponsored: APIMesa
 
 <p align="center">
@@ -47,6 +62,12 @@
   150+ pay-per-call APIs · AI, scraping & data · one API key · live playground
 </p>
 </div>
+
+---
+
+## Sponsor API Mega List
+
+Want to feature your API, developer tool, software, or website in API Mega List? [Email Chris at chris@reactmodern.com](mailto:chris@reactmodern.com?subject=API%20Mega%20List%20sponsorship) for pricing and placement options. Include a link to your product and a brief description of what it does.
 
 ---
 
@@ -88,6 +109,21 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 ## 📚 Table of Contents
 
 ### [Featured APIs](./00-featured-apis/)
+
+#### [Blotato Social Media API and MCP](https://www.blotato.com/social-media-scheduler?ref=chrisl9)
+
+**Sponsored · #1 unified social media API + MCP.** Connect an AI agent to 9+ networks to create, schedule, and publish posts, reply to comments, manage DMs, and fetch analytics. Use MCP with Claude or Codex for a no-code setup, or call the REST API from your app. Comment and DM tools are available for Instagram and Facebook. Analytics coverage varies by network. For example, schedule a demo Reel for an API release and send a quickstart link by DM when someone comments with your keyword on Instagram.
+
+[Explore Blotato’s API and MCP](https://www.blotato.com/social-media-scheduler?ref=chrisl9) · [Claude setup](https://www.blotato.com/claude?ref=chrisl9) · [Codex setup](https://www.blotato.com/codex?ref=chrisl9)
+
+**Try the Blotato skills**
+
+| Build | What you’ll verify | Open the workflow |
+| --- | --- | --- |
+| **Schedule an API demo Reel** | Blotato queues the right clip and caption for the exact time you approved. | [Copy the scheduling prompt →](./skills/blotato/README.md#schedule-a-finished-clip) |
+| **Send the API quickstart by DM** | An Instagram test comment with your keyword receives the correct quickstart link. | [Copy the comment-to-DM prompt →](./skills/blotato/README.md#set-up-instagram-comment-to-dm) |
+
+[Open the skills folder](./skills/blotato/) · [Run the API launch project](./skills/blotato/project.md)
 
 ### Core API Categories
 
@@ -452,12 +488,4 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 | [Linkedin Jobs Scraper](https://apify.com/abaddion/linkedin-jobs-scraper?fpr=p2hrc6) | Scrapes job listings from LinkedIn's public job search.  Note: LinkedIn is aggressive with rate limiting - use carefully.  When region is set to a specific country (e.g. czech), results are filtered... |
 | [LinkedIn Jobs Scraper](https://apify.com/agentx/linkedin-jobs-scraper?fpr=p2hrc6) | LinkedIn Jobs API across 72 countries. Each posting returns the full LinkedIn taxonomy — title, seniority, function, required skills, salary (FX-normalized) — plus native company signals (headcount... |
 | [LinkedIn Jobs Scraper - Search, Filter & Detail Extraction](https://apify.com/kaix/linkedin-jobs-scraper?fpr=p2hrc6) | 🔥 ~$0.1/1K jobs 🔥 Scrape LinkedIn job listings via the public guest API. Search with filters (job type, experience, remote, salary), fetch full descriptions and criteria. No login required. |
-| [LinkedIn Jobs Scraper ⚡ No Login & Fast Data Export](https://apify.com/mr.data_scientist/linkedin-jobs-scraper?fpr=p2hrc6) | Scrape LinkedIn job listings fast and without login! Extract job title, company, location, posting date, and more. Use filters for experience, work type, and date. Export results easily in CSV, JSON,... |
-| [LinkedIn Jobs Scraper API – Jobs by Keyword & Location](https://apify.com/nuclear_quietude/linkedin-jobs-scraper-api?fpr=p2hrc6) | Scrape LinkedIn job listings using keywords, locations, or company names. Extract job titles, company, location, job URL, and full descriptions. Ideal for recruitment automation, job boards, and... |
-| [Linkedin Jobs Scrapper &#124; Pay Per Event](https://apify.com/scrapeverse/linkedin-jobs-scrapper-pay-per-event?fpr=p2hrc6) | Get detailed and insightful data just by entering few information, No need to worry about Cookies and Authentication. |
-| [LinkedIn MCP Server - AI Assistant](https://apify.com/alizarin_refrigerator-owner/linkedin-mcp-server?fpr=p2hrc6) | Model Context Protocol server for LinkedIn automation. Enable AI assistants to search profiles, send messages & manage connections programmatically. |
-| [LinkedIn Profile Lookup](https://apify.com/agentx/linkedin-profile-lookup?fpr=p2hrc6) | Look up any public LinkedIn profile by URL and get back the structured person record: name, headline, about, location, follower and connection counts, full work-experience and education history,... |
-| [LinkedIn Profile Scraper with Email (No Cookies)](https://apify.com/futurizerush/linkedin-profile-scraper?fpr=p2hrc6) | Extract structured data from public LinkedIn profile URLs — name, headline, work history, education, follower counts, websites. When the person has published their own email or phone openly in their... |
-| [LinkedIn Profile Search Scraper](https://apify.com/akash9078/linkedin-profile-search-scraper?fpr=p2hrc6) | Find and extract publicly available LinkedIn profile data from Google search results. This Actor searches Google for LinkedIn profiles using targeted queries and returns profile URLs, names, job... |
-| [LLM Visibility Monitor: AI Search Brand Audit](https://apify.com/constructive_calm/llm-visibility-monitor?fpr=p2hrc6) | Audit how your brand appears across ChatGPT-style answers, Claude, Gemini (including the Google AI Overview signal), Perplexity, and Grok. Track mentions, citations, share of voice, sentiment, and... |
-| [Local Lead Generation Agent](https://apify.com/apify/local-lead-generation-agent?fpr=p2hrc6) | Find truly local leads by scrapin
+| [LinkedIn Jobs Scraper ⚡ No Login & Fast Data Export](https://apify.com/mr.data_scientist/linkedin-jobs-scraper?fpr=p2hrc6) | Scrape LinkedIn job listings fast and without login! Extract job title, company, location, posting date, and more. 

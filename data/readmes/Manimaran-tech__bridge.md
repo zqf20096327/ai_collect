@@ -64,6 +64,43 @@ Or pass a specific project directory directly:
 node bridge.js /path/to/project
 ```
 
+### 4. Docker Sandbox (Optional)
+
+Use Docker Engine / Docker Desktop (Linux containers) and Docker Compose v2 to keep shell execution off your host. From a source checkout:
+
+1. Copy `.env.example` to `.env`.
+2. Generate a strong token with `node -e "console.log(require('node:crypto').randomBytes(24).toString('hex'))"` and set `BRIDGE_TOKEN` in `.env`.
+3. Set `BRIDGE_WORKSPACE` in `.env` to an **existing, dedicated project folder**. Relative paths resolve from `docker-compose.yml`; Windows paths can use forward slashes, such as `C:/Users/you/projects/my-app`. Do not mount your home directory or the Bridge checkout containing `.env`.
+4. Build and start:
+
+```bash
+docker compose up --build -d
+docker compose logs -f bridge-sandbox
+```
+
+The authenticated MCP endpoint is `http://127.0.0.1:3000/mcp`. Configure your client with `Authorization: Bearer <BRIDGE_TOKEN>`, or use `http://127.0.0.1:3000/mcp?token=<BRIDGE_TOKEN>` if it requires a URL token. Treat the token and authenticated URL as secrets. A quick authentication check:
+
+```bash
+# Without authentication: expect 401.
+curl -i http://127.0.0.1:3000/api/status
+# Replace <BRIDGE_TOKEN> with your configured token: expect 200.
+curl -i -H "Authorization: Bearer <BRIDGE_TOKEN>" http://127.0.0.1:3000/api/status
+```
+
+For web AI clients, run `cloudflared tunnel --url http://127.0.0.1:3000` **on the host** and use the resulting HTTPS URL with the same authentication. The container does not launch a tunnel, open a dashboard, copy a URL, or read your host's `~/.bridge/config.json`. The default approval mode still applies; without the dashboard, actions requiring human approval are denied. Shell execution is enabled; to disable it, add `command: ["/workspace", "--http", "3000", "--disable-shell"]` to the Compose service.
+
+**Sandbox boundaries:**
+
+- Only the selected host project is bind-mounted, read/write, at `/workspace`. Changes affect the host immediately; use version control and backups. Keep host credentials and sensitive files out of this folder.
+- The server runs as the non-root `node` user (UID/GID `1000:1000`) with a read-only root filesystem, all Linux capabilities dropped, and `no-new-privileges`. On native Linux, grant that user access to the chosen folder; do not solve permission errors by running as root or making it world-writable.
+- Compose binds the published port only to host loopback. `BRIDGE_HOST=0.0.0.0` applies **inside** the container so Docker port forwarding works; it does not make the published host port public. Use a current Docker Engine (28 or newer) for loopback port isolation fixes.
+- CPU, memory, process count, and temporary storage are capped. `/tmp` and `/home/node` are writable, size-limited tmpfs mounts. Logs, trash, and other home-directory state are ephemeral and are lost when the container stops; a deleted file's trash copy is not a durable backup.
+- Containers share a kernel and are defense in depth, not a zero-trust guarantee. Commands can access container files, environment variables (including the Bridge token), mounted project secrets, and reachable networks. Outbound traffic is not blocked. Never mount the Docker socket, host credentials, or additional sensitive paths; use a VM and network controls for stronger isolation.
+
+Stop and remove the sandbox with `docker compose down`. The image includes Node.js, Bash, Git, and curl; other project toolchains must be added to a custom image. Only the server and package metadata enter the image build context, not your workspace or `.env`.
+
+**Verification:** Run `npm run test:host-binding` for binding and authentication regressions. On Linux/WSL with a running Docker daemon, Node.js >=18, and Compose >=2.24.4, run `npm run test:docker` to build the actual image and verify authentication, MCP file/shell operations, persistence across restarts, effective runtime restrictions, and image contents. The integration test uses a disposable workspace and an ephemeral loopback port, leaving existing port-3000 listeners alone, then removes its containers, image, network, and temporary files. Run it with a local Docker daemon and permission to access its socket.
+
 ### Command-Line Options
 
 | Command | Description |
@@ -89,7 +126,7 @@ Bridge features built-in zero-trust security:
 - **Bearer Token Auth**: Every HTTP/SSE endpoint (`/mcp`, `/call`, `/api/set-directory`, `/api/status`, `/openapi.json`) requires a valid token via `Authorization: Bearer <token>` or `?token=<token>`. Unauthenticated requests are rejected with `401 Unauthorized`.
 - **Persistent Token**: On first run, Bridge generates a 24-byte cryptographic hex token and saves it in `~/.bridge/config.json`, so your AI connectors keep working across restarts. Run `bridge rotate-token` to replace it.
 - **Custom Token**: Supply your own token with the `BRIDGE_TOKEN` environment variable.
-- **Strict Loopback Binding**: The local MCP server listens exclusively on `127.0.0.1`, isolating it from local network eavesdropping.
+- **Loopback Binding by Default**: The local MCP server listens on `127.0.0.1` unless `BRIDGE_HOST` is set. Set `BRIDGE_HOST=0.0.0.0` only when needed for containers or deliberately exposing another interface; retain authentication and restrict access with port publishing or a firewall.
 - **Shell Disablement**: When running the MCP server directly (`node secure-folder-mcp/server.js <folder> --disable-shell`), shell tools are turned off and only sandboxed file operations remain.
 
 ### Optional: Fixed MCP URL (Cloudflare Named Tunnels)
@@ -175,7 +212,7 @@ When Bridge asks, the request appears in the dashboard with the full command. Pr
 | **Secrets Protection** | Search skips sensitive files, and commands that read `.env`, keys, `.ssh` or `.npmrc` ask you first. |
 | **SSRF Protection** | Web documentation fetches allow public HTTPS only, block private and local addresses (including after redirects), and enforce size and time limits. |
 | **Resource Limits** | Request, read and output size limits, a cap on concurrent background jobs, and full process-tree cleanup on stop and exit. |
-| **Local Port Isolation** | Local server binds strictly to `127.0.0.1`. Remote traffic routes through secure single-session Anycast tunnels. |
+| **Local Port Isolation** | Local server binds to `127.0.0.1` by default; `BRIDGE_HOST` can override the interface. The Docker Compose deployment publishes only on host loopback. Remote traffic can route through HTTPS tunnels. |
 | **Execution Policy & Disablement** | Shell tools (`pwsh`, `bash`, `execute_command`) are protected by safety policies, restricted to root directory, and can be disabled completely with `--disable-shell`. |
 | **Live Traffic Audit** | Press `[L]` at any time to stream every incoming JSON-RPC request and tool call in real time. |
 | **Diagnostic Log** | `~/.bridge/logs/server_requests.log` records requests, SSE stream open/close, client disconnects, approvals and per-call timing. Tokens are redacted; the log rotates at 10 MB. |

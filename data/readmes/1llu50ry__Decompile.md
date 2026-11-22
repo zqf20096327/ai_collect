@@ -6,7 +6,7 @@
 
 **230+ MCP tools · 60+ RE/debug backends · 9 host-side plugins · 6,000+ skills · 170+ agents · 160+ subagents · 190+ plugins · 3,000+ prompts · multi-agent mesh · native x86-64 + ARM64 emulators**
 
-[![version](https://img.shields.io/badge/version-6.0.0-blue)](CHANGELOG.md) [![tests](https://img.shields.io/badge/tests-91%2F91-success)](tests/) [![tools](https://img.shields.io/badge/MCP%20tools-230%2B-blue)](src/) [![backends](https://img.shields.io/badge/RE%20backends-60%2B-blueviolet)](src/retools.ts) [![skills](https://img.shields.io/badge/skills-6%2C000%2B-orange)](db/skills.db) [![docker](https://img.shields.io/badge/docker-multi--arch-informational)](Dockerfile) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![audit](https://img.shields.io/badge/npm%20audit-0-brightgreen)](package.json)
+[![version](https://img.shields.io/badge/version-0.0.1-blue)](CHANGELOG.md) [![tests](https://img.shields.io/badge/tests-133%2F133-success)](tests/) [![tools](https://img.shields.io/badge/MCP%20tools-230%2B-blue)](src/) [![backends](https://img.shields.io/badge/RE%20backends-60%2B-blueviolet)](src/retools.ts) [![skills](https://img.shields.io/badge/skills-6%2C000%2B-orange)](db/skills.db) [![docker](https://img.shields.io/badge/docker-multi--arch-informational)](Dockerfile) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![audit](https://img.shields.io/badge/npm%20audit-0-brightgreen)](package.json)
 
 > **v5.0.0 released.** 19 GiB → 3.3 GiB working tree (83% smaller via gzipped source archives), + four feature waves: host plugin build systems, Frida bridge + dynamic analysis, ARM64 emulator + decompile cache + chunking, bindiff / ROP / game-engine metadata / MCP sampling / SVG visualization. See [CHANGELOG](CHANGELOG.md).
 
@@ -36,9 +36,9 @@ If you're on security-research, binary-analysis, defensive-engineering, or SDK w
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/1llu50ry/decompile?quickstart=1)
 
-### Install
+### Install — one command, everything
 
-Needs **Node.js 24+** for the MCP server ([how to get it](https://github.com/1llu50ry/Decompile/wiki/Installation#1-prepare-your-computer)).
+Needs **Node.js 24+** for the MCP server ([how to get it](https://github.com/1llu50ry/Decompile/wiki/Installation#1-prepare-your-computer)). Pick **one**:
 
 ```bash
 # Linux / macOS / FreeBSD / Termux
@@ -50,13 +50,23 @@ curl -fsSL https://raw.githubusercontent.com/1llu50ry/Decompile/main/install.sh 
 irm https://raw.githubusercontent.com/1llu50ry/Decompile/main/install.ps1 | iex
 ```
 
-The installer prints an install plan, downloads the self-contained bundle
-for your device (16 targets: x64 / arm64 / armv7 / armv6 / RISC-V / POWER /
-s390x, glibc + musl, macOS, Windows, FreeBSD, Android), verifies its
-SHA-256, puts `decompile` on PATH and starts `decompile setup -i`. Useful
-flags: `--dry-run`, `--version v6.0.0`, `--method npm|npx`, `--install-node`,
-`--no-setup`, `--uninstall` — see the [Installation wiki](https://github.com/1llu50ry/Decompile/wiki/Installation).
-Each GitHub release also carries pinned `install.sh` / `install.ps1` and `SHA256SUMS`.
+```bash
+# npx (any OS, nothing kept but the RE tools)
+npx -y decompile@latest setup -i --npx
+```
+
+Each one installs **everything** and wires it up:
+
+- the decompile server + CLI (16 platform bundles, SHA-256 verified) and agent registration (`setup -i`, 42 agents);
+- **RE programs** into `~/.decompile/tools` (~1.5 GB): Ghidra + Java 21, radare2, UPX, x64dbg (Windows),
+  FakePDB, and a Python env with frida, angr, capstone, keystone, unicorn, lief, r2pipe, pyghidra,
+  volatility3, yara, mitmproxy, ROPgadget — then `env.json` hooks them into the server;
+- our bridge plugins into IDA / Binary Ninja / Cheat Engine **when those are installed** (they are commercial, so not downloaded).
+
+`--minimal` (`-Minimal` on Windows) installs only the core; add the RE programs later with
+`decompile retools install`. Other flags: `--dry-run`, `--version v0.0.1`, `--method npm|npx`,
+`--install-node`, `--no-setup`, `--uninstall` — see the [Installation wiki](https://github.com/1llu50ry/Decompile/wiki/Installation).
+Check the result with `decompile doctor`; manage RE programs with `decompile retools status | install | env`.
 
 ### The npx one-liner (nothing installed)
 
@@ -325,7 +335,7 @@ Launch and drive **43** external RE and debugging MCP servers directly from this
 | `ghidra_decompile` | Decompile a function via a running pyghidra-mcp / superghidra-mcp |
 | `cheat_engine_aob` | AoB (array-of-bytes) scan through a running Cheat Engine bridge |
 | `frida_eval` | Evaluate a Frida JS snippet in a target process |
-| `vibe_re_run` | Run a Vibe-RE Python module (`retools.disasm`, `retools.callgraph`, `livetools.analyze`, …) from vendored `tools/vendor/vibe-re` |
+| `run` | Code harness: run JavaScript where every decompile tool is an async function (`await pe_parse({ path })`); helpers you define persist across calls and restarts |
 | `ida_run_script` | Run an IDAPython script headless via `idat64` |
 | `ghidra_run_script` | Run a Ghidra script via `analyzeHeadless` |
 | `install_re_backend` | Run the install commands from the catalog for one backend (with `dryRun` preview) |
@@ -349,7 +359,7 @@ Zero-dependency Node TypeScript. No Python, no Ghidra, no IDA needed.
 | `signature_make` | Make an IDA-style byte signature for a region of a file (with uniqueness check) |
 | `file_summary` | Size, SHA-256, Shannon H, magic bytes, head/tail hex |
 
-Vendored tool trees live under `tools/vendor/` (currently `vibe-re`, `ida-pro-mcp`). External backends install via `install_re_backend` or `describe_re_backend` → "Install" section. `tools/launchers/install-all.{ps1,sh}` bootstraps every pip/npm backend in one shot.
+Nothing is vendored: every integration lives in this repo (`src/native-*.ts`, `plugins-side/`). The RE programs those tools drive (Ghidra + JDK, radare2, UPX, x64dbg, FakePDB, a Python env with frida/angr/capstone/…) are installed by `decompile retools install` — which `decompile setup` and the one-line installers run by default.
 
 ### Advanced Native Parsers
 

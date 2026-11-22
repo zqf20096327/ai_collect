@@ -2,17 +2,25 @@
 
 # DSH 记忆系统
 
-**给 DeepSeek Harness 的本地优先长期记忆插件：多路检索 + 多跳图增强 + 上下文摘要 + 冲突消解**
+**给 DeepSeek Harness 的本地长期记忆：11 个工具 · 4 路召回 · 会衰减会巩固 · 数据不出版机**
 
-[![version](https://img.shields.io/badge/version-v1.1.0-4B9CD3.svg)](https://github.com/HANPU5838/dsh-memory/releases)
+[![version](https://img.shields.io/badge/version-v1.12.2-4B9CD3.svg)](https://github.com/HANPU5838/dsh-memory/releases)
 [![license](https://img.shields.io/badge/license-MIT-3DA639.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%E2%89%A522.13-3C873A.svg)](package.json)
 
-**[安装](#快速开始) · [能力](#它为什么是真正的记忆系统) · [配置](#配置参考) · [评测](#评测与验收) · [更新日志](CHANGELOG.md)**
+**[安装](#快速开始) · [能力](#它为什么是真正的记忆系统) · [配置](#配置参考) · [评测](#评测与验收) · [支持](#支持这个项目) · [更新日志](CHANGELOG.md)**
 
 </div>
 
-**当前版本：v1.1.0（正式版）** · [Release](https://github.com/HANPU5838/dsh-memory/releases) · [更新日志](CHANGELOG.md)
+**当前版本：v1.12.2（正式版）** · [Release](https://github.com/HANPU5838/dsh-memory/releases) · [更新日志](CHANGELOG.md)
+
+<div align="center">
+
+<a href="#支持这个项目"><img src="https://raw.githubusercontent.com/HANPU5838/dsh-memory/main/preview/sponsor-qr.png" width="168" alt="赞赏码 · 感谢支持"></a>
+
+**如果它替你把「上次好像记过」变成了一次真正的命中，欢迎请作者喝杯咖啡。**
+
+</div>
 
 ---
 
@@ -22,15 +30,35 @@
 
 ## 这是什么
 
-DSH 记忆系统是一个**完全本地**的长期记忆插件：Agent 用八个工具读写记忆，插件在每一轮把相关记忆
-检索出来、压缩成上下文注入；记忆本身有强度、会衰减、会巩固、会裁决冲突，而不是一堆只进不出的文本。
+**给 Agent 装一个不会忘、会整理、会自我检查的长期记忆库，数据只存在你本机。**
 
-- **数据在本机**：默认 `~/.dsh-memory`（JSONL + 向量缓存），不依赖任何云服务。
-- **零配置可用**：不装向量后端就自动退化为纯词法检索，不产生网络请求。
-- **语义检索可选**：面板一键安装 llama.cpp 运行时 + bge-m3 模型（或接你自己的 OpenAI 兼容端点）。
-- **可解释**：检索结果带来源标记（词法/向量/图增强/联想）——**工具输出也会把图增强补召回标成
-  「联想」**（0.94.0），并由端到端测试保证 provider→工具→渲染全链路一致（0.95.0），模型能区分
-  直接命中与多跳联想；面板「审计」能看每次注入的完整决策链。
+Agent 用 11 个工具读写记忆；插件每一轮把相关记忆检索出来、压缩成上下文注入；记忆有强度、会衰减、
+会合并、会裁决冲突——不是只进不出的文本堆。
+
+| 事实 | 具体数字 |
+| --- | --- |
+| 模型工具 | **11 个**：save / search / list / get / forget / scopes / block / hooks / core / insight / maintain |
+| 检索通道 | **4 路**：BM25 词法 + bge-m3 向量 + PPR 图增强多跳 + PRF 查询扩展，RRF 融合，可选 cross-encoder 重排 |
+| 记忆类型 | **9 种**：fact / decision / preference / procedure / note / rule / state / profile / reflection |
+| 作用域 | global / project / session / 自定义，按作用域授权与审批 |
+| 面板 | **7 页**：服务 / 记录 / 知识树 / 关系分析 / 规则代码 / 设置 / 审计 |
+| 自动化验收 | **1413 例测试 0 失败**（1 例按设计跳过）、面板 16 接口冒烟、真实库 e2e、doctor 11 项体检 |
+| 网络 | **零依赖**：不装向量后端就退化为纯词法，不发一个请求 |
+| 数据 | JSONL + 本地向量缓存，可读、可 diff、可迁移，卸载插件也不丢 |
+
+## 它解决什么
+
+| 你遇到的 | 它怎么处理 |
+| --- | --- |
+| 换个说法就想不起来 | 词法 + 向量双通道，RRF 融合；同义改写、口语提问也能命中 |
+| 字面搜不到但确实相关 | PPR 图增强按共享实体（路径 / URL / 版本 / 标签）桥接补召回，结果标「联想」 |
+| 越写越多、越搜越乱 | FSRS 强度排序 + 语义合并（0.92）+ 单域 2000 条上限 + 周期巩固 |
+| 新旧记忆打架 | 相似度 0.75 起标冲突，按重要度 / 证据 / 时间裁决；败者保留但不进上下文 |
+| 注入太长挤爆上下文 | 动态 token 预算（500/轮）+ TextRank 抽取式摘要，只抽原文不编造 |
+| 不知道它为什么召回这条 | 工具输出带来源标记；面板「审计」能看每次注入的完整决策链 |
+| 多项目互相污染 | 四类作用域 + 用途 / 别名 + 范围外审批 |
+| 记忆被乱写 / 写进凭据 | 规则代码钩子三阶段（保存前可直接拒绝）+ 凭据命中即拒绝 |
+| 不知道系统健不健康 | `memory_insight` 七类信号 + 健康分；`memory_maintain` 一键维护 |
 
 | 场景 | 用法 |
 | --- | --- |
@@ -116,7 +144,7 @@ DSH 记忆系统是一个**完全本地**的长期记忆插件：Agent 用八个
 | 规则代码钩子 | `kind=rule` 的记忆可附带脚本（保存前校验 / 保存后观察 / 注入前解析），代码在面板逐行审查后才能启用 |
 | 事件 | 写入/召回/删除/巩固四类旁路事件（只带元数据，绝不含正文），其他插件可订阅 |
 
-## 八个工具
+## 十一个工具
 
 | 工具 | 用途 |
 | --- | --- |
@@ -128,6 +156,9 @@ DSH 记忆系统是一个**完全本地**的长期记忆插件：Agent 用八个
 | `memory_scopes` | 作用域目录：`list` / `edit`（用途、别名）/ `request`（申请范围外权限） |
 | `memory_block` | 主动屏蔽：`block` / `unblock` / `list`（会话级或工作区级） |
 | `memory_hooks` | 规则代码钩子：`list` / `get` / `save` / `delete` / `approve` / `revoke-approval` / `enable` / `disable` / `run`（试跑不写记忆，且只对已批准脚本生效） |
+| `memory_core` | 核心记忆块：`get` / `set` / `history` / `restore`（identity / profile / goal 三个常驻槽位，版本链可回滚） |
+| `memory_insight` | 元认知：`report`（只读自省）/ `reflect`（写反思候选）/ `tick`（按节律自省与目标提案）/ `associate`（不用查询的自发联想） |
+| `memory_maintain` | 立即维护：过期清理 / 容量回收 / 休眠标记 / 巩固 / 空作用域回收，返回健康分；`purgeTombstones` 可物理清除软删记录 |
 
 ## 面板
 
@@ -252,6 +283,71 @@ config:
 面板「设置」里能改的项会写入 `<storeDir>/settings.json`，优先级高于配置文件；删掉 `settings.json`
 里的对应小节即回到配置值。
 
+## 核心记忆块与用户画像
+
+三个常驻槽位（`identity` / `profile` / `goal`）单独存放在 `<数据目录>/core.json`，
+不进检索、不参与合并；写入走版本链，可回滚：
+
+| 槽位 | 内容 | 上限 |
+| --- | --- | --- |
+| `identity` | 这个 Agent 是谁、怎么工作 | ≤ 55 token |
+| `profile` | 用户是谁、偏好与约束 | ≤ 150 token |
+| `goal` | 当前要完成什么 | ≤ 40 token |
+
+用 `memory_core` 读写（`get` / `set` / `history` / `restore`，`set` 支持 `expectedVersion`
+乐观并发）。非空槽位会作为「核心记忆」段常驻每一轮系统提示。
+
+**用户画像**用 `kind=profile` 记录：一条 = 一个可复用的画像单元，结构化元数据放 `profile`
+字段（type / topic / statement / confidence / evidence），正文保持人类可读。
+
+## 自发联想
+
+`memory_insight action="associate"` 不问问题，直接以「目标 + 画像 + 身份」为种子召回 2–3 条，
+回答“没被问的时候会想起什么”。会话首步还会自动注入一次「可能相关」段（每会话仅一次，预算 3×100 字）。
+
+> 种子来自核心块：**核心块为空时联想必然为空**。先写一个 `memory_core` 槽位，联想才跑得起来；
+> 空态会直接给出这条提示，而不是只回一句“没有结果”。
+
+## 元认知自省
+
+记忆系统能观测自己的运行状态，而不只是被动存取：
+
+| 信号 | 来源 | 用途 |
+| --- | --- | --- |
+| 近期修正 | supersedes 链 | 同类记忆是否被反复版本化 |
+| 待裁决冲突 | 冲突标记 | 新旧版本是否同时在召回 |
+| 低价值未用 | utility + accessCount | 是否该提高写入门槛或清理 |
+| 陈旧规则 | kind=rule + 更新时间 | 规则是否已过期，应降级或删除 |
+| 长期未检索 | createdAt + accessCount | 注入噪声排查 |
+| 钩子否决率 | 钩子运行统计 | 规则是否过严 |
+| 健康分 | 生命周期统计 | 总览 |
+
+`memory_insight` 的 `report` 只读；`reflect` 会把结论写成 `kind=reflection` **候选**，
+人工确认后才进主库。它**不会自动改任何记忆**——自我修正的主动权留在人这一侧。
+
+## 认知节律（自省与目标提案）
+
+系统不再只能被动等人触发：
+
+- `memory_insight action="tick"`：按节律执行——默认**每 24h** 自省一次（维护 + 信号报告，
+  有需要关注项就落一条反思候选），**每 72h** 从近期 decision/state/procedure 里提取
+  「下一步 / 待办 / 需要 / 计划」等线索，落成 `reflection(kindHint=goal)` 候选。
+- 状态记在 `<数据目录>/proactive.json`，到点才执行，不会每轮重复。
+- 候选只落 `reflection(status=candidate)`，**不会改核心 goal 块**——采纳权仍在人这一侧。
+
+## 配置与生效
+
+| 配置 | 位置 | 生效方式 |
+| --- | --- | --- |
+| 注入开关（recall / digest / rules / procedures / turnEnd / sidebar） | `~/.dsh-memory/settings.json`，或面板「设置」 | 面板改立即生效；手改文件需重启 `dsh web`（插件只在启动时加载一次） |
+| 写入裁决（ADD/UPDATE/NOOP） | 插件配置 `cognitive.arbiter`（profile 的 cordis 配置） | **默认开启**；设 `enabled: false` 关闭，改后重启 |
+| 生命周期（休眠 / 墓碑保留天数） | `cognitive.lifecycle` | 同上 |
+| 向量后端 | 面板「服务」一键安装，或 `retrieval.vector` | 装完即用 |
+
+> 为什么默认值不写进 `settings.json`：`settings.json` 只存**用户显式改过**的注入开关，
+> 其余取代码默认值，避免“文件里一堆与代码重复的默认值”漂移。裁决与生命周期属于
+> provider 配置，不在 `settings.json` 里，改它们要动 profile 配置。
+
 ## 评测与验收
 
 ### 真实库全链路验收
@@ -301,7 +397,7 @@ npm run verify:all
 npm run probe:flake -- 10   # 怀疑偶发失败时：同一套测试连跑 N 轮并列出失败项
 ```
 
-`verify:all` 四段分别归因（测试 / 构建 / 面板冒烟 / 向量），某段失败不会把其它段误报成
+`verify:all` 五段分别归因（测试 / 构建 / **打包产物安装验证** / 面板冒烟 / 向量），某段失败不会把其它段误报成
 「构建失败」；测试失败时完整输出落盘到 `.verify-last-tests.log` 便于回看。
 
 四层：全量测试 → 单包构建 → 面板 API 冒烟（16 接口）→ 向量后端实测（没有后端时 SKIP 不算失败）。
@@ -371,9 +467,33 @@ npm run probe:flake -- 10   # 怀疑偶发失败时：同一套测试连跑 N �
 
 本仓库用 **tag + GitHub Release** 发布（不向 npm 发布）：推送 `v*` tag 后
 `.github/workflows/release.yml` 自动从 [CHANGELOG.md](CHANGELOG.md) 提取对应版本段落创建 Release。
-当前最新：**v1.1.0**（正式版）—— 新增 cross-encoder 本地重排（llama.cpp `--rerank` / Cohere / Jina 兼容）、重排通道二选一（cross-encoder 优先、LLM 兜底）、打包清单补 `skills/`；v1.0.0
+当前最新：**v1.12.2**（正式版）—— 修复联想空态提示不触发（coreBlocks 固定三键的误判）；v1.12.1 联想空态可操作提示、README 补齐核心记忆块/用户画像/自发联想；v1.12.0 cross-encoder 本地重排（llama.cpp `--rerank` / Cohere / Jina 兼容）、重排通道二选一（cross-encoder 优先、LLM 兜底）、打包清单补 `skills/`；v1.0.0
 v0.82.0 图增强（类型边权 + 社区限流）；v0.81.0 召回 TextRank 摘要；v0.80.0 词法 PRF；
 v0.79.0 记录卡长作用域 UI 修复。
+
+## 支持这个项目
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/HANPU5838/dsh-memory/main/preview/sponsor-qr.png" width="240" alt="赞赏码 · 感谢支持">
+
+<br>
+
+**不扫，也完全没关系。**
+
+</div>
+
+DSH 记忆系统是免费的、本地的、没有付费墙的。写它的人没打算靠它赚钱，
+只是希望「换个会话就忘光」这件事，能少发生几次。
+
+如果你用它的时候，真的少翻了一次旧对话、少解释了一遍约定、少踩了一个
+「上次明明记过」的坑——那可以扫上面的码，请作者喝杯咖啡。这笔钱不换任何功能，
+只会换来一句「谢谢，我收到了」。
+
+更轻的支持一样算数：点个 **Star**、把仓库转给同样在用 DSH 的人、
+遇到问题时提一个能复现的 **Issue**。这些有时候比一杯咖啡更有用。
+
+---
 
 ## 致谢与许可
 

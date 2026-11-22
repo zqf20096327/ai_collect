@@ -1,20 +1,21 @@
 # Magpie for Android：在手机上运行 magpie AI 网关
 
-> **非官方 Android 客户端 / Android APK。** 把 magpie 的本地 AI 网关装进手机：无需 Root、无需 Magisk、无需 Termux 或其他终端 App。
->
+> **Android 客户端 / Android APK/手机版软件** 把 magpie 的本地 AI 网关装进手机：无需 Root、无需 Magisk、无需 Termux 或其他终端 App。
+> 非官方移植，magpie 核心与内嵌 Web UI 来自 [yetone/magpie](https://github.com/yetone/magpie)，版权归上游作者所有，使用 MIT License；APK 内保留上游 MIT 许可证全文
+> 
 > 作者： [酷安 @图图没耳朵](https://www.coolapk.com/u/1642567)｜[酷安发布帖](https://www.coolapk.com/feed/74938122?s=ZjIxZmUyYjcxOTEwNDdnNmFmMWM1ZTd6a1665)｜
 
 [![GitHub Release](https://img.shields.io/github/v/release/yqing004-boop/magpie-android?label=Release)](https://github.com/yqing004-boop/magpie-android/releases/latest)
 [![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?logo=android&logoColor=white)](https://github.com/yqing004-boop/magpie-android/releases/latest)
 [![License](https://img.shields.io/badge/upstream-MIT-blue.svg)](https://github.com/yetone/magpie/blob/main/LICENSE)
 
-## 下载
-
-**[下载最新版 APK（GitHub Releases）](https://github.com/yqing004-boop/magpie-android/releases/latest)**
+## 下载 [下载最新版 APK（GitHub Releases）](https://github.com/yqing004-boop/magpie-android/releases/latest)**
 
 当前只提供 **Android arm64 / arm64-v8a** 包，最低 Android 7.0（API 24）。下载后直接安装；升级请覆盖安装，不要先卸载，否则 Magpie 的本地配置、账号和数据可能被清除。
 
 > 本项目不是 yetone/magpie 官方发布，也不代表上游作者提供技术支持。只建议从本仓库的 Releases 下载 APK，并核对 Release 页面给出的 SHA-256。
+>
+## 上游官方仓库 [yetone/magpie](https://github.com/yetone/magpie)
 
 ## 它是什么
 
@@ -27,7 +28,9 @@ Magpie 是一个本地 AI 网关：你可以在一个地址上管理供应商、
 ```text
 http://127.0.0.1:3425/v1
 ```
-
+```默认密钥
+magpie
+```
 ## 适合什么场景
 
 - 想在手机上直接管理 magpie 的供应商、账号、模型、路由、请求和用量；

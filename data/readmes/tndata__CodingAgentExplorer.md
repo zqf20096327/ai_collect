@@ -12,6 +12,25 @@ With Coding Agent Explorer, you can:
 - Monitor Claude Code hook events alongside API traffic
 - Switch the dashboard between light and dark themes, with your choice remembered across sessions
 
+## Quick start
+
+You need the [.NET 10 SDK](https://dotnet.microsoft.com/download). Then:
+
+```bash
+git clone https://github.com/tndata/CodingAgentExplorer.git
+cd CodingAgentExplorer
+dotnet run --project CodingAgentExplorer
+```
+
+In a second terminal, point Claude Code at the proxy (`source EnableProxy.sh`, or `EnableProxy.bat` / `.\EnableProxy.ps1` on Windows) and start `claude`. Open https://localhost:5001: every request Claude Code makes shows up in the HTTP Inspector as it happens. The full steps are in [Getting Started](#getting-started).
+
+## See it before you install
+
+The blog posts walk through what the tool shows, with screenshots:
+
+- [Part 1: Introducing the Coding Agent Explorer (.NET)](https://nestenius.se/ai/introducing-the-coding-agent-explorer-net/)
+- [Part 2: Exploring Claude Code Hooks](https://nestenius.se/ai/exploring-claude-code-hooks-with-the-coding-agent-explorer-net/)
+- [Part 3: Visualizing Claude Code MCP Requests](https://nestenius.se/ai/visualizing-claude-code-mcp-requests-with-coding-agent-explorer/)
 
 ## Dashboard
 
@@ -36,14 +55,6 @@ The Conversation View renders the raw API traffic as a readable chat-style timel
 The MCP Observer acts as a proxy between Claude Code and any HTTP-based MCP server. Configure the destination URL and all MCP traffic is captured and displayed in real time. Read more in [Visualizing Claude Code MCP Requests with Coding Agent Explorer](https://nestenius.se/ai/visualizing-claude-code-mcp-requests-with-coding-agent-explorer/).
 
 <img src="docs/images/MCP_Observer.png" alt="MCP Observer" width="800">
-
-## Read More
-
-Want to learn more about this project? Check out the blog posts:
-
-- [Introducing the Coding Agent Explorer .NET](https://nestenius.se/ai/introducing-the-coding-agent-explorer-net/)
-- [Exploring Claude Code Hooks with the Coding Agent Explorer (.NET)](https://nestenius.se/ai/exploring-claude-code-hooks-with-the-coding-agent-explorer-net/)
-- [Visualizing Claude Code MCP Requests with Coding Agent Explorer](https://nestenius.se/ai/visualizing-claude-code-mcp-requests-with-coding-agent-explorer/)
 
 ## Prerequisites
 
@@ -407,12 +418,20 @@ Three events are left out on purpose. `WorktreeCreate` and `WorktreeRemove` repl
 ```
 
 
-## Security
+## Security and trust
+
+Coding Agent Explorer is a proxy, so it sees everything Claude Code sends and receives: your prompts, file contents, tool output, the model's replies and the request headers.
 
 - API keys (`x-api-key` and `Authorization` headers) are automatically redacted from stored request data
 - The proxy only listens on `localhost` - it is not exposed to the network
 - The settings endpoints (API upstream and MCP destination) decide where your credentials go, so they only accept requests with a `localhost` Host header and, from a browser, only from the dashboard itself. This blocks other web pages, including DNS rebinding tricks, from changing them
 - Request data is stored in memory only (max 1000 requests, no persistence)
+- Only the `x-api-key` and `Authorization` request headers are redacted. Request and response bodies, and any other headers (for example a custom token header for an MCP server), are kept as they are.
+- The app writes no captured data to disk and sends no telemetry. Traffic goes only to the upstream you configure, and to the dashboard on localhost.
+
+**Why there are no prebuilt downloads.** This is on purpose. A tool that sits between you and the API and sees your keys and prompts is one you should build from source yourself, and read the code first if you want to.
+
+**Your responsibility.** The software is provided as is, without warranty, under the [MIT License](LICENSE). Use it on your own traffic, and treat what the dashboard shows as sensitive: it can include source code, secrets that appear in files or prompts, and personal data.
 
 ## About the author
 

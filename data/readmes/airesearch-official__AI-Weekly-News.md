@@ -3,6 +3,8 @@
 Welcome to **AI Weekly News**, a curated archive of the latest developments in **Artificial Intelligence, open-source tools, and research projects** — updated weekly with summaries, sources, and YouTube video links.
 
 ## 📺 Latest Episode
+- **[Gemini 4 Neon vs GPT 6.2 Astra & Sol Drop! (+ 1-Min AI Video) — HUGE AI NEWS](videos/2026/nov-gemini-4-neon-gpt-6-2-astra-sol-1-min-ai-video/README.md)**  
+  _(Week of November 19, 2026)_ → [Watch on YouTube](https://youtu.be/hW93jeS8jVY)
 - **[Claude Fable 5.2, Gemini Hydrogen & GPT-6 Cyber Drop! (+ H3 Image) — HUGE AI NEWS](videos/2026/nov-claude-fable-5-2-gemini-hydrogen-gpt-6-cyber-h3-image/README.md)**  
   _(Week of November 12, 2026)_ → [Watch on YouTube](https://youtu.be/OUxNX17RUkk)
 - **[NEW #1 OPEN-SOURCE AI MODEL, Gemini Omni 1.2, GPT Image 2.6 & AI That Can Sleep?! — HUGE AI NEWS](videos/2026/nov-new-1-open-source-ai-gemini-omni-1-2-gpt-image-2-6-ai-sleep/README.md)**  

@@ -239,6 +239,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is ReAct (Reasoning + Acting) prompting, and how does it work?
   - Answer: [ReAct Agent](https://outcomeschool.com/blog/react-agent)
 - What is a system prompt, and how does it influence model behavior?
+  - Answer: [How does the System Prompt work?](https://outcomeschool.com/blog/system-prompt)
 - How do you structure prompts for consistent structured output (JSON, XML)?
 - What is prompt injection, and how do you defend against it?
   - Answer: [Prompt Injection in LLMs](https://outcomeschool.com/blog/prompt-injection-in-llms)
@@ -287,6 +288,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - How do you choose an embedding model for your RAG system?
 - Explain Agentic RAG.
   - Answer: [Agentic RAG](https://outcomeschool.com/blog/agentic-rag)
+- What is BM25, and how does it work?
+  - Answer: [How does BM25 work?](https://outcomeschool.com/blog/bm25)
 - What is hybrid search, and why is it better than pure vector search?
   - Answer: [How does Hybrid Search work?](https://outcomeschool.com/blog/how-does-hybrid-search-work)
 - What is re-ranking, and how does it improve RAG retrieval quality?
@@ -836,6 +839,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How does function calling work in a voice AI agent?](https://outcomeschool.com/blog/function-calling-in-voice-agents)
 - How do you reliably capture structured inputs like dates, phone numbers, and addresses in a voice agent?
   - Answer: [How does a voice agent handle structured inputs like dates, numbers, and addresses?](https://outcomeschool.com/blog/structured-inputs-in-voice-agents)
+- How do you handle speech recognition (ASR) errors in a voice agent?
+  - Answer: [How does a voice agent confirm and correct misheard information?](https://outcomeschool.com/blog/confirm-and-correct-in-voice-agents)
 - How do you handle barge-in (user interruptions) in a voice agent?
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption), [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption), [How does a voice agent recover from a false interruption?](https://outcomeschool.com/blog/false-interruption-recovery) and [How does a voice agent handle the user and agent talking at the same time?](https://outcomeschool.com/blog/overlapping-speech-in-voice-agents)
 - Cascaded ASR + LLM + TTS vs native speech-to-speech models: what are the trade-offs?

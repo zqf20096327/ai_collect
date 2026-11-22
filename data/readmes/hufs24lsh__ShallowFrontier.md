@@ -29,11 +29,6 @@
 > testbeds it matches or beats InstructDiff's best round with **53% less end-to-end GPU energy** than InstructDiff and **61% less**
 > than training on the full data.
 
-## News
-
-- **2026-11-11** · Code, testbed configurations and results released: seed-42 tables with full-data and random baselines, and 3-seed
-  means ± std for every testbed.
-
 ## Overview
 
 <p align="center">
@@ -66,14 +61,15 @@ reference answers or data-fitted constants are used.
 
 <br>
 
-The gradient noise scale *B* is the number of examples needed to average out how much per-example gradients disagree. The expected
+The gradient noise scale *B* ([McCandlish et al., 2018](https://arxiv.org/abs/1812.06162)) is the number of examples needed to average out how much per-example gradients disagree. The expected
 squared norm of a batch gradient is |G|²(1 + *B / b*), where G is the group's mean gradient, so *B / b* is the ratio of noise to
 signal inside one batch: below 1 the group's shared direction carries most of each step, above 1 the row-specific parts do. If
 *B ≥ b*, which rows enter a batch decides what it teaches, and InstructDiff's contrast between the base and calibrated models picks
 rows whose gradients are still large (1.1–1.7 times those of random rows in every group we measured). Favoring large-gradient
 examples is the basic move of importance sampling, and its gain grows with the gradient noise
-([Katharopoulos & Fleuret, ICML 2018](https://arxiv.org/abs/1803.00942)). If *B < b*, the rows the base model finds easiest won in
-our runs; why they win is still under study. On the same Qwen math rows, changing the training recipe moves *B / b* from 0.27 to 1.49
+([Katharopoulos & Fleuret, ICML 2018](https://arxiv.org/abs/1803.00942)). If *B < b*, one batch already follows the group's shared direction, so the route skips the
+contrast between the two models and its calibrated scoring pass; the rows the base model finds easiest won in our runs, and
+explaining why is left for future work. On the same Qwen math rows, changing the training recipe moves *B / b* from 0.27 to 1.49
 and flips the winner between the two rules (+2.22 and −1.84 points, seed 42). Details:
 [`docs/method.md`](docs/method.md#6-why-two-routes).
 
@@ -90,7 +86,7 @@ shares: on the Llama-3-8B mixed pools a single ranking keeps almost no medical r
 34.05 with groups (seed 42). Leaning the shares the other way, toward the noisier groups (*n · B*), loses 1.22 and 1.87 points on the
 same pools, and splitting by group size alone (*n*) scores lower on all three mixed pools. Groups also let the measurement use a small
 sample per group. Prompt groups recover the domains with
-97–99% purity and no labels; whether they are the best units in gradient space has not been tested directly yet. Details: [`docs/method.md`](docs/method.md#7-why-group-first).
+97–99% purity and no labels; a direct test of whether they are the best units in gradient space is left for future work. Details: [`docs/method.md`](docs/method.md#7-why-group-first).
 
 </details>
 
@@ -182,7 +178,7 @@ falls to 28.96 (MedQA 35.27, near chance); ShallowFrontier keeps 203 and scores 
 
 <br>
 
-Generated from `results/seed42.json`. Rows without results yet are omitted.
+Generated from `results/seed42.json`. Rows that were not run are omitted.
 
 **Qwen2.5-7B · Math 10K**
 
@@ -341,7 +337,7 @@ The released code was run on the saved artifacts of our experiments, and its out
 | Mixed pools from InstructDiff's source files | 2 / 2 identical |
 | Groups from saved prompt features (5 testbeds) | 5 / 5 identical |
 
-The noise measurement and the scorer have not yet been re-run on GPU with this code. Hardware, software, recipes, seeds, energy
+Re-running the noise measurement and the scorer on GPU with this code is left for future work. Hardware, software, recipes, seeds, energy
 accounting and the known differences from the InstructDiff paper: [`docs/reproducibility.md`](docs/reproducibility.md).
 
 ## Repository structure

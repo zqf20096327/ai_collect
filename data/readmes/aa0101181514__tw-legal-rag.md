@@ -8,6 +8,14 @@
 
 </div>
 
+<p align="center">
+  <a href="https://github.com/aa0101181514/tw-legal-rag/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/aa0101181514/tw-legal-rag?style=social"></a>
+  <a href="https://pypi.org/project/twlegalrag/"><img alt="PyPI" src="https://img.shields.io/pypi/v/twlegalrag"></a>
+  <a href="https://glama.ai/mcp/servers/aa0101181514/tw-legal-rag"><img alt="Glama MCP server score" src="https://glama.ai/mcp/servers/aa0101181514/tw-legal-rag/badges/score.svg"></a>
+</p>
+
+<p align="center">覺得好用，請按右上角 ⭐ Star，讓更多人找得到。</p>
+
 ---
 
 > **免費、免 API key，連接時登入法律偵探帳號** 的台灣法律 MCP 伺服器：在 Claude、ChatGPT、Gemini CLI、Microsoft 365 Copilot、Codex、Cursor 加入
@@ -16,6 +24,10 @@
 >
 > Free, no API key; sign in to a Dr.Legal account when connecting. **Taiwan legal MCP server**
 > (Taiwan law MCP) + source-available CLI, backed by Dr.Legal's 22M-judgment semantic retrieval infrastructure.
+
+## 依作成法院查找裁判
+
+自 2026-11-22 起，裁判搜尋可直接在查詢中指定最高法院或最高行政法院。例如輸入 `最高法院民事判決 租賃押金返還`，就會在最高法院的民事判決中搜尋押金返還爭議。如果你想找的是其他法院引用最高法院見解的裁判，也可以在查詢中寫明。既有 MCP 連線與 CLI 可直接使用。[更新紀錄](CHANGELOG.md#2026-11-22)
 
 ## 快速連接：台灣法律 MCP
 

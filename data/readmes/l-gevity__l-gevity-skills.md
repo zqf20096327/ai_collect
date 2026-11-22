@@ -96,7 +96,7 @@ instruction file; delete that file by hand, or run the installer once first.
 
 ## The skill library
 
-The library contains 24 composable skills. Each has a one-page guide with its
+The library contains 25 composable skills. Each has a one-page guide with its
 concepts, steps, and a project example. Start there; the operational
 `SKILL.md` is what the agent loads. Links go to the Claude skills tree; Codex
 uses the matching `.agents/skills/` tree.
@@ -114,6 +114,7 @@ uses the matching `.agents/skills/` tree.
 | [Structural simplification: measure what gets simpler](./.documentation/READ-structural-simplification.md) | [`structural-simplification`](./.claude/skills/structural-simplification/SKILL.md) |
 | [Architecture as code: make dependency rules executable](./.documentation/READ-architecture-as-code.md) | [`architecture-as-code`](./.claude/skills/architecture-as-code/SKILL.md) |
 | [Evolutionary data design: change shape without breaking live versions](./.documentation/READ-evolutionary-database-design.md) | [`evolutionary-database-design`](./.claude/skills/evolutionary-database-design/SKILL.md) |
+| [Concurrency control: say how each shared record takes its writes](./.documentation/READ-concurrency-control.md) | [`concurrency-control`](./.claude/skills/concurrency-control/SKILL.md) |
 | [Test strategy: choose evidence for the failures that matter](./.documentation/READ-test-strategy.md) | [`test-strategy`](./.claude/skills/test-strategy/SKILL.md) |
 | [Shift-left: catch defects at the earliest capable stage](./.documentation/READ-defect-shift-left.md) | [`defect-shift-left`](./.claude/skills/defect-shift-left/SKILL.md) |
 | [Reliable CI/CD: deploy safely and recover predictably](./.documentation/READ-ci-cd-reliability-architecture.md) | [`ci-cd-reliability-architecture`](./.claude/skills/ci-cd-reliability-architecture/SKILL.md) |
@@ -519,7 +520,7 @@ maps skills to capabilities, inputs, outputs, parallelism, exclusive file
 ownership, and verification.
 
 `check_orchestration.py` enforces deterministic rules. All 70 check codes have
-coverage among 237 [adversarial cases](./.adversarial/).
+coverage among 240 [adversarial cases](./.adversarial/).
 
 | Check | Rejects, among others |
 |:--|:--|
@@ -529,7 +530,9 @@ coverage among 237 [adversarial cases](./.adversarial/).
 | `gate` | a missing or stale preflight, skipped criteria, verdicts without passing evidence on the final commit, self-verification, open blocking findings, risk accepted by an agent, disputes settled by vote, rework beyond its bound or spent on minor findings only, patching that does not converge |
 
 [contracts.md](./.agents/skills/alchemy-orchestrate/references/contracts.md)
-defines every rule; the
+defines every rule and
+[check-codes.md](./.agents/skills/alchemy-orchestrate/references/check-codes.md)
+every code; the
 [adapter reference](./.agents/skills/alchemy-orchestrate/adapters/README.md)
 covers runtime mechanisms.
 

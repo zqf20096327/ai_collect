@@ -19,7 +19,7 @@ With **Clause Tracer**, you write a **playbook**, your rules for a good deal: "p
 
 It runs on your own computer, with your own [OpenRouter](https://openrouter.ai) key. Names and addresses are replaced before anything is sent to an AI model. There's no account, no server run by the project and no telemetry.
 
-> **Status: in build.** The spec, design system and a clickable HTML prototype are done. Build stages 1 to 3 of 12 are done: the pure rules that pick labels and check the AI's words, the reading of text, Markdown and pasted text into clauses and sentences, and the links between clauses, defined terms and documents that are not loaded. No app feature is usable yet. [Try the prototype](#try-the-prototype) and [watch the repo](https://github.com/mohamed-benoughidene/clause-tracer) to follow along.
+> **Status: in build.** The spec, design system and a clickable HTML prototype are done. Build stages 1 to 4 of 12 are done: the pure rules that pick labels and check the AI's words, the reading of text, Markdown and pasted text into clauses and sentences, the links between clauses, defined terms and documents that are not loaded, and the privacy check that swaps names, addresses and numbers for placeholders and puts them back. No app feature is usable yet. [Try the prototype](#try-the-prototype) and [watch the repo](https://github.com/mohamed-benoughidene/clause-tracer) to follow along.
 
 ## Why Clause Tracer
 

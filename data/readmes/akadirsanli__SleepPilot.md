@@ -16,9 +16,9 @@ overnight, and only marks a task done when the checks actually pass.
 [![tests](https://github.com/akadirsanli/SleepPilot/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/akadirsanli/SleepPilot/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Node.js 20.10+](https://img.shields.io/badge/node-%3E%3D20.10-339933?logo=node.js&logoColor=white)](package.json)
-[![runtime dependencies: 0](https://img.shields.io/badge/runtime%20dependencies-0-blue)](package.json)
+[![core dependencies: 0](https://img.shields.io/badge/core%20dependencies-0-blue)](THIRD_PARTY.md)
 
-[**Quick start**](#-quick-start) · [How a night works](#-what-happens-while-you-sleep) · [📱 Phone remote](#-your-phone-is-the-remote) · [Engines](#-bring-the-agent-you-already-trust) · [Reverse & Rust](#-sleep--reverse--rust-it) · [Docs](#-documentation)
+[**Quick start**](#-quick-start) · [How a night works](#-what-happens-while-you-sleep) · [📱 Phone remote](#-your-phone-is-the-remote) · [Engines](#-bring-the-agent-you-already-trust) · [📊 Excel & PDF apps](#-excel-word-and-pdf-apps--checked-like-code) · [Reverse & Rust](#-sleep--reverse--rust-it) · [Docs](#-documentation)
 
 </div>
 
@@ -59,9 +59,9 @@ fallback. Failures become recovery paths, not a lost night.
 </td>
 <td width="33%" valign="top">
 
-### 🔌 Zero lock-in, zero dependencies
-Six engine types, per-role routing, local AI via Ollama. No build step, no
-`npm install`, no runtime dependencies — just Node.js.
+### 🔌 Zero lock-in, zero build step
+Six engine types, per-role routing, local AI via Ollama. No build step and a
+dependency-free core — just Node.js. The office tools install themselves once.
 
 </td>
 </tr>
@@ -69,8 +69,10 @@ Six engine types, per-role routing, local AI via Ollama. No build step, no
 
 ## ⚡ Quick start
 
-**No install step, no build step, zero runtime dependencies.** You only need
-[Node.js 20.10 or newer](https://nodejs.org/) (the LTS version is perfect).
+**No build step, a dependency-free core.** You only need
+[Node.js 20.10 or newer](https://nodejs.org/) (the LTS version is perfect). On the first start the
+launcher installs the office libraries (Excel, Word, PDF — about a minute, once); everything else
+works without them.
 
 ### 🪟 Windows — no terminal needed
 
@@ -255,6 +257,33 @@ No Android setup puzzle: Android Studio's JDK and SDK are found automatically, a
 piece comes with the exact fix. After each build the app can also be started on a phone or a headless
 emulator, so a crash fails the task. Details: **[docs/ANDROID.md](docs/ANDROID.md)**.
 
+## 📊 Excel, Word and PDF apps — checked like code
+
+Building an app that reads Excel sheets, analyses them and writes a report? A coding agent cannot
+see inside an `.xlsx` or a PDF, so it guesses — and "the report looks fine" is a claim. SleepPilot
+gives the agent and the checks real eyes:
+
+- **The agent looks at real files.** Inspect any Excel, CSV (legacy code pages and `;` included),
+  Word, PowerPoint, PDF or PNG: sheets, column types and statistics, first rows, PDF text, scanned
+  pages. The developer is told the commands; Claude Code and Codex also get them as MCP tools.
+- **Outputs are verified, not trusted.** The office check opens every file a task produced and
+  fails on `#REF!`, `NaN`, `[object Object]`, empty documents — plus your expectations: sheets,
+  columns, cell values, page counts, headings, "same as the reference file".
+- **Test data without real data.** Synthetic sales, expense claims and invoices with
+  **planted anomalies** (duplicates, sales outside opening hours, refunds split below an approval threshold, self-approval,
+  wrong classification …) and an answer key: the check measures how many your app found.
+- **Reports in one call.** Excel with formats, totals and charts; Word, PDF and PowerPoint from
+  Markdown with tables, callouts, charts and full Unicode text.
+
+```sh
+sleeppilot office sample sales --out data/sales.xlsx --rows 5000
+sleeppilot office inspect data/sales.xlsx
+sleeppilot office create out/report.pdf --markdown report.md
+sleeppilot office verify expectations.json
+```
+
+Details: **[docs/OFFICE.md](docs/OFFICE.md)**.
+
 ## 🧠 Help when it gets stuck
 
 - **Assistant (💬).** A chat in the corner that knows the state of the app, the project and the run:
@@ -337,6 +366,7 @@ Exit codes are stable: `0` completed · `2` paused · `3` stopped · `4` failed.
 | JavaScript / Python syntax | Interpreter parse, no execution |
 | HTML smoke | Headless Edge: load, console errors, failed resources |
 | Documents | Required files exist and contain real content |
+| Office files | Excel/Word/PDF/PNG open cleanly, no `#REF!`/`NaN`; sheets, cells, pages, headings, anomalies found |
 | Rust | `cargo check`, `cargo test`, optional clippy/fmt |
 | Citations | Every `file:line` claim points at a real line |
 | Target integrity | SHA-1 of every reverse-engineering target before/after |
@@ -431,6 +461,7 @@ More in [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 | [ANDROID](docs/ANDROID.md) | Workspace, project templates, live preview, APK builds, signing, devices |
 | [ENGINES](docs/ENGINES.md) | Engine contract, providers, Claude/Codex/DSH setup |
 | [ROUTING](docs/ROUTING.md) | Role pins, model profiles, effort, quota fallback |
+| [OFFICE](docs/OFFICE.md) | Excel, CSV, Word, PowerPoint, PDF, PNG: inspect, create, verify, synthetic test data, MCP |
 | [REVERSE](docs/REVERSE.md) | Reverse & Rust: recon, evidence, Rust rules |
 | [ARCHITECTURE](docs/ARCHITECTURE.md) | State machine, persistence, security design |
 | [TESTING](docs/TESTING.md) | Unit, integration, fake engines and real tests |

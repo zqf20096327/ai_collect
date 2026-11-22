@@ -86,7 +86,7 @@ const renderManager = createRenderManager(createLive2DRenderer({ canvas }), {
   mouseTracking: "document",
 });
 await renderManager.initialize();
-await renderManager.loadModel?.("/live2d/Hiyori/Hiyori.model3.json");
+await renderManager.loadModel("/live2d/Hiyori/Hiyori.model3.json");
 
 const charivo = createCharivo({
   renderer: renderManager,
@@ -156,7 +156,7 @@ const renderManager = createRenderManager(createLive2DRenderer({ canvas }), {
   mouseTracking: "document",
 });
 await renderManager.initialize();
-await renderManager.loadModel?.("/live2d/Hiyori/Hiyori.model3.json");
+await renderManager.loadModel("/live2d/Hiyori/Hiyori.model3.json");
 
 const charivo = createCharivo({
   renderer: renderManager,
@@ -294,8 +294,12 @@ App
   modality packages (it accepts credentials from your app config; it does not
   store or own them).
 
+Charivo is the character's embodiment, not an agent framework. Planning,
+persistent memory, deciding when to speak, and OS access belong to your app
+or to an agent runtime that drives Charivo.
+
 See the [Architecture guide](https://zeikar.dev/charivo/architecture/) for
-event wiring, package roles, and detailed layering.
+event wiring, package roles, detailed layering, and what Charivo leaves out.
 
 ## Package Map
 
@@ -374,6 +378,7 @@ Rendering:
 
 - `@charivo/render`: render manager, mouse tracking, lip-sync bridge
 - `@charivo/render-live2d`: Live2D Cubism renderer
+- `@charivo/render-iki`: renderer for `.iki` models on the open [Iki](https://github.com/zeikar/iki) engine
 - `@charivo/render/stub`: console renderer for tests and demos
 
 ## Contributing

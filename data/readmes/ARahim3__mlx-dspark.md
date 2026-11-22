@@ -61,6 +61,7 @@ chat/code/math), the Muse row per-content best (footnoted); full tables, baselin
 | **Ornith-1.0-9B** (8-bit) | **2.53×** code · **2.48×** math · **2.21×** chat | ~59–68 tok/s |
 | **Qwen3-4B** (8-bit) | **2.46×** math · 1.78× chat · 1.72× code | ~89–126 tok/s |
 | **Qwen3-14B** (8-bit) | **2.36×** math · **2.11×** code · 1.62× chat | ~25–36 tok/s |
+| **Inkling-2-Mini** (NVFP4, looped MoE)[^inkling] | **1.91× over stock mlx-vlm** (24.9 → 47.5 tok/s) · vs our own plain decode: **1.67×** math · **1.40×** code · 1.06× chat | ~37–57 tok/s |
 | **Qwen3.6-35B-A3B** (4-bit, MoE)[^moe] | **1.67×** math · 1.24× code · 1.05× chat | **~91–145 tok/s** |
 | **Nemotron-3.5-Lightning-30B-A3B** (4-bit, MoE+Mamba)[^nemotron] | **1.34×** math · **1.27×** code · 1.07× chat | **~87–112 tok/s** |
 | **Ternary-Bonsai-27B** (2-bit) | **1.13×** code | ~26–29 tok/s |
@@ -93,8 +94,9 @@ unquantized matmul pays a ~2× cost cliff at verify width 2). Details in
 <sub>Nothing in this table is hand-tuned per model, and none of it is pinned to this M4 Pro:
 with no `--max-draft`, mlx-dspark measures **your** machine's verify/drafter cost curves once
 (~5 s, cached per model + quant + mlx version) and derives the draft cap from them — an M1 or
-an M5 gets *its own* optimum, not the one these rows were measured at. `--max-draft auto`
-additionally adapts the cap per round while generating. See [Tuning](#tuning).</sub>
+an M5 gets *its own* optimum, not the one these rows were measured at. That default is the
+setting to use; `--max-draft auto` adapts the cap per round instead and mostly lands at or a
+little under it. See [Tuning](#tuning).</sub>
 
 **Copy-heavy code editing goes further:** when the model re-emits or refactors code already in its
 context (the daily agent/assistant workload), match-scaled lookup drafts reach **4.5× on Gemma-12B**
@@ -168,8 +170,10 @@ things worth knowing, then you can stop reading:
 - **Don't set the draft cap.** The speedups above were measured on one M4 Pro — your machine's
   optimum is different, so mlx-dspark **measures your Mac** on a pair's first run (~5 s, cached)
   and derives its own cap from those curves. An M1 and an M5 each get their own answer.
-  `--max-draft auto` additionally adapts per round while generating (the safest choice if you
-  only remember one flag); `--max-draft N` pins a value only if you've measured a better one.
+  That default is the fastest setting on most pairs. `--max-draft auto` adapts the cap per round
+  instead and can stop drafting where it would lose: worth it on a pair that hovers around
+  break-even (the 2-bit Bonsai), at or a few percent under the default elsewhere.
+  `--max-draft N` pins a value only if you've measured a better one.
 - **It's lossless by construction.** The target verifies every drafted token, so the output is
   identical to running the target alone — every mode, every cap, only the speed changes. Want
   proof and your own numbers? `mlx-dspark benchmark --model <repo> --trials 3` is the same
@@ -233,7 +237,8 @@ memory pressure, context-window RAM notes), `GET /metrics`, and `GET /machine` (
 bandwidth, the loaded model's bytes per token, the plain-decode ceiling and a verdict). It supports
 `temperature`, `top_p`, `top_k`, `max_tokens`, `stop`, `seed`, `presence_penalty` / `frequency_penalty`,
 `logprobs` / `top_logprobs`, **tool calling** (`tools` / `tool_calls`), a per-request thinking toggle
-(`enable_thinking`), and per-request `reasoning_effort` on models whose template supports it (Qwen3.8-class;
+(`enable_thinking`), and per-request `reasoning_effort` on models whose template supports it (Qwen3.8-class and
+Inkling 2; `none` turns thinking off, any other level maps to the nearest one the model has;
 `GET /health` reports `supports_reasoning_effort`). Each response carries an `x_mlx_dspark` block — accept length, decode and
 end-to-end tok/s, time to first token, prompt tokens served from the prefix cache, and the decode rate as a multiple of this
 Mac's single-stream roofline — so the spec-decode gain is visible and "why was this turn fast/slow" has an answer. **Continuous batching** (`--max-batch N`) serves concurrent requests in one
@@ -603,7 +608,7 @@ that trip people up:
   curves (per model + quant + mlx version). A faster, higher-bandwidth machine can land *lower*,
   not higher — an M5 Max may pick cap 2 for the 8-bit 27B where this M4 Pro picks 7, because
   cheaper verify shifts the optimum down, and forcing 7 there is a small net loss. Prefer no
-  flag, or `--max-draft auto`.
+  flag.
 - **`--confidence-threshold` is drafter-specific, not just quant-specific.** It only pays when
   the drafter leaves *acceptance headroom* for early truncation to recover. On Qwen3.8-27B-4bit
   the `RadixArk` head did, and gained from `--max-draft 7 --confidence-threshold 0.3`, while the
@@ -655,6 +660,7 @@ different measured curves.
 | **Qwen3-8B** | 7 | 3.37 | 29.5 tok/s | 64.5 tok/s | **2.19×** | 1.71× / 2.03× / 2.83× |
 | **Qwen3-14B**[^qwen14b] | 4 | 2.87 | 15.3 tok/s | 31.0 tok/s | **2.03×** | 1.62× / 2.11× / 2.36× |
 | **Qwen3-4B** | 7 | 3.23 | 51.7 tok/s | 102.5 tok/s | **1.98×** | 1.78× / 1.72× / 2.46× |
+| **Inkling-2-Mini** (NVFP4, looped MoE)[^inkling] | 3 | 2.41 | 34.6 tok/s (stock mlx-vlm: 24.9) | 47.5 tok/s | **1.37×** (1.91× over stock) | 1.06× / 1.40× / 1.67× |
 | **Qwen3.6-35B-A3B** (4-bit, MoE, hybrid)[^community][^moe] | conf | 4.72 | 86.9 tok/s | 114.5 tok/s | **1.32×** | 1.05× / 1.24× / 1.67× |
 | **Nemotron-3.5-Lightning-30B-A3B** (4-bit, MoE+Mamba, hybrid)[^nemotron] | 3 | 3.28 | 91.4 tok/s | 100.9 tok/s | **1.10×** | 0.95× / 1.23× / 1.13× |
 | **Ternary-Bonsai-27B** (2-bit, hybrid) | 2 | 2.60 | 25.4 tok/s | 27.2 tok/s | **1.07×** | 1.01× / 1.13× / 1.07× |
@@ -811,7 +817,10 @@ same depth, acceptance in parentheses:
 
 Speedups at depth are lower than at chat depth for a structural reason: attention over a long KV
 cache is extra verify work that a single decode step pays only once, and the baseline itself slows
-with depth (Qwen3.8-27B-4bit: ~15 tok/s at 2k, 12.9 at 32k).
+with depth (Qwen3.8-27B-4bit: ~15 tok/s at 2k, 12.9 at 32k). Memory at 32k for the 4-bit
+Qwen3.8-27B + DFlash 2 pair: **25.3 GB peak** during the prompt's prefill (16.5 GB of weights, the
+rest transients and the growing cache), ~19–20 GB while decoding; a serving process with prefix
+caching on keeps one more copy of the context state.
 
 [^lc1108]: Re-measured 2026-11-08 with the tree verify on (v0.20.4), same harness and content; the
     other rows are the 2026-09-27 chain measurements. DSpine (Tencent) holds the same acceptance at
@@ -961,6 +970,38 @@ state — the single-row path rebuilds it by re-running the recurrence, and doin
 different length per row needs a masked batched re-run that does not exist yet. So a hybrid
 target batches its baseline and takes the serial path for dspark; nothing silently degrades.
 Gemma-4 (mlx-vlm, rotating cache) still falls back to serialized entirely.
+
+### Inkling-2-Mini: the drafter for one request, a shared pass for several
+
+`--max-batch N` (up to 8) on Inkling-2-Mini batches on mlx-dspark's own forward for that model,
+and lets the two ways of getting more out of a weight read take turns. **A request that is alone
+runs exactly as without the flag** — the drafter, at the same speed (within 1%, measured). **Two
+or more decode together**, one token each per pass, sampled or greedy. A request running alone
+under the drafter hands over at its next round when another arrives and gets the drafter back
+when it is alone again, so an arrival never waits for the request ahead of it: a short request
+landing in the middle of a long one saw its first token after 0.44 s instead of 8–11 s.
+
+Each request keeps its own cache — prompts of different lengths need no padding, the prefix
+cache serves every request as usual — and a long prompt arriving mid-session is read a chunk at
+a time, sharing the time evenly with the requests already streaming. Those caches cost memory
+(about 1 GB per extra request), so a request joins others only while macOS can spare it; under
+memory pressure it waits for a running one to finish.
+
+Total tok/s, 8 varied prompts, 96 tokens each, M4 Pro, mlx 0.32.4 (paired in one process):
+
+| requests at once | total tok/s | each request | vs one, plain (36.5) | vs one, with the drafter (48.6) |
+|---|---|---|---|---|
+| 2 | 58.8 | 29.4 | 1.61× | 1.21× |
+| 4 | 86.7 | 21.7 | 2.37× | 1.78× |
+| 8 | **124.6** | 15.6 | **3.41×** | **2.57×** |
+
+With 2,600-token prompts: 55.7 / 82.5 / 115.8 tok/s at 2 / 4 / 8 (the drafter alone: 55.2 on
+that content, so two requests is where batching draws level with it). A mixture of experts, and
+it still batches well: two thirds of the bytes Inkling reads per token are its dense attention
+and output head, which every row shares. Requests with penalties, logprobs or a seed keep the
+one-at-a-time path. Batched output passes the same token-forcing check as speculative output
+(1.04% near-tie disagreements at 2 and 4 requests against 0.91% for one request at a time, none
+large).
 
 ## Prefix caching
 
@@ -1315,37 +1356,4 @@ are bundled.
     both quants since 2026-09-28: vLLM-speculators packaging, 5-layer qwen3 backbone, block 8,
     8 tap layers, a trained causal 2048-token sliding window (so it holds acceptance at long
     context on its own — the engine's drafter window doesn't apply to it), reuses the target's
-    embed *and* lm_head, trained against the bf16 verifier on 8k-token Qwen3.8-regenerated data.
-    Paired in one process against the heads it replaced (cap 7, 3-trial medians): 4-bit
-    **2.59×** vs 2.32× for `DimInfer/Qwen3.8-27B-Dspark-v1`, 8-bit **3.67×** vs 2.97× for
-    `RadixArk/Qwen3.8-27B-DSpark` — the gap is largest on chat (2.24× vs 1.82×; 3.08× vs 1.99×).
-    Both old heads still load with `--drafter`. Its `config.json` carries an `auto_map` pointer,
-    but a drafter's weights load 1:1 and no code is imported, so no `--trust-remote-code` is
-    needed. Every Qwen3.8 row runs with the **small-M verify kernel** on and hybrid lookup
-    drafts **off** (the pair's registry default); lossless on both quants (fp ties only).
-
-[^nemotron]: **Nemotron-3.5-Lightning-30B-A3B** — the first **Mamba-2 + MoE hybrid** target
-    (`nemotron_h`, NVIDIA's official DSpark head), the project's first non-attention recurrence,
-    with an exact Mamba-2 spec rollback. Lookup drafts off everywhere (a net loss on it, as on
-    every MoE — now this pair's shipped default via its registry row). **This model's speedup is unusually content-sensitive**, so the
-    two tables differ more than for other rows. The hook-table row is the best measured per
-    content at `--max-draft 4`, each prompt paired against its own baseline: math **1.34×**
-    (accept 4.41, 80 → 108 tok/s, medians of 3 on 0.8.1) and chat 1.07× are 0.8.1 measurements;
-    code **1.27×** is the v0.8.0 stamp (accept 4.55 — 0.8.1's drafter truncation adds +2.5–3% on
-    byte-identical output, so it stands). The [Results at a glance](#results-at-a-glance) row is
-    the fixed benchmark suite (re-stamped on 0.8.1), where acceptance is lower (~3.3) and
-    **cap 3 beats cap 4** — suite chat at cap 4 is a slight net loss (0.83×), which is why
-    auto-cap's pick of 3 is the right default there. Like the other MoE, the ratio is bounded by
-    the verify-width cost of routed experts, not the drafter.
-
-[^lfm2]: **LFM2.5** — LiquidAI's short-**conv**olution + attention hybrid (`model_type` lfm2 /
-    lfm2_moe), the project's first conv recurrence: a kernel-3 causal FIR whose 2-row state gets an
-    exact capture-and-rollback (the cheapest of the three recurrences — a pure FIR, no SSM state).
-    The DSpark drafters are plain qwen3-backbone heads (block-9) that reuse the target's tied
-    embed **and** lm_head, in a fifth checkpoint packaging (taps nested in `dflash_config`, no
-    `projector_type`). Two knobs are load-bearing and were pinned by A/B: they use **interleaved**
-    rope (`rope_is_neox_style:false` → mlx `traditional=True`; ~2× acceptance vs neox) and sample
-    the anchor slot (block-9 → ceiling 10). Measured M4 Pro, decode tok/s, greedy, lossless (fp
-    ties only): **2.6B bf16** cap 7 = 2.65× code / 3.49× math / 2.24× chat (accept 4.00, baseline
-    ~44 tok/s; re-measured 2026-09-27 — the derived cap moved 6 → 7); **1.2B bf16** cap 7 = 3.83×
-    code / 3.82× math / 2.40× chat (accept 5.28, baseline ~100 tok/s — the small target
+    embed *and* lm_head, trained a

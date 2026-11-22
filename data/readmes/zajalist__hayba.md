@@ -2,7 +2,7 @@
   <img src="unreal/HaybaMCPToolkit/Resources/HaybaLogo.svg" width="56" alt="">
   <h1>Hayba</h1>
   <p>Inspect and edit Unreal Engine projects with an AI assistant.</p>
-  <p><a href="https://github.com/zajalist/hayba/releases/tag/v0.4.2"><strong>Download for Windows</strong></a> · <a href="INSTALL.md">Installation guide</a> · <a href="docs/wiki/">Tool reference</a></p>
+  <p><a href="https://github.com/zajalist/hayba/releases/download/desktop-v0.1.0-preview.5/Hayba-Desktop-Setup.exe"><strong>Download Hayba Desktop for Windows (.exe)</strong></a> · <a href="https://github.com/zajalist/hayba/releases/tag/v0.4.2"><strong>Download the v0.4.2 plugin</strong></a> · <a href="INSTALL.md">Installation guide</a> · <a href="docs/wiki/">Tool reference</a></p>
 </div>
 
 ## Get started
@@ -24,7 +24,15 @@ The TypeScript MCP server translates tool calls into editor operations. The C++ 
 
 ## Hayba Desktop preview
 
-The Windows desktop app uses the Unreal chat interface and supports streaming conversations with an OpenAI or Anthropic API key. Desktop and Unreal currently keep separate conversations. Scene inspection and approved editor edits run in the plugin. [Preview source and build instructions](https://github.com/zajalist/hayba/tree/feature/desktop-preview/desktop)
+Hayba Desktop connects a Windows chat to an open Unreal project over MCP. Choose a hosted provider or a local model in **Settings**. Replies stream as the assistant works, and you can expand tool results to see what the editor returned. Drafts survive restart. Search conversations with **Ctrl+K** or archive and restore them from the sidebar.
+
+Select **Lighting** to inspect two light actors, change one intensity and verify both values. Choose **Review edits** to approve or decline each change, or **Automatic · no approvals** with Unreal Plan Mode off to apply and undo edits directly from chat. [Desktop source and build instructions](https://github.com/zajalist/hayba/tree/feature/desktop-preview/desktop)
+
+![Hayba Desktop reviewing an Unreal light intensity change](https://raw.githubusercontent.com/zajalist/hayba/efc7cce0d4f606d3ae62ca1759e51dab3cc4fdf3/desktop/media/lighting-review.png)
+
+Download **Hayba-Desktop-Setup.exe** from the [Windows Desktop preview](https://github.com/zajalist/hayba/releases/tag/desktop-v0.1.0-preview.5). Leave the project field blank for Desktop alone, or select a closed UE 5.9 project to install the editor panel. If the panel is missing after reopening the project, check **Edit → Plugins → Hayba MCP Toolkit** and restart Unreal after enabling it.
+
+To remove Desktop and its project integration, close Hayba and Unreal, then select **Windows Settings → Apps → Installed apps → Hayba Desktop Preview → Uninstall**. Setup keeps a backup of removed plugin files in the project's `Saved/HaybaInstaller` folder.
 
 ## Explore the code
 

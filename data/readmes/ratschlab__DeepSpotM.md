@@ -15,6 +15,7 @@ The preprint is available [here](https://doi.org/10.64898/2026.06.19.26356060).
 
 ## News
 
+  - [11.2026] DeepSpot-M beyond oncology: our new study [Virtual spatial transcriptomics links kidney histopathology to disease-associated molecular programs](https://www.medrxiv.org/content/10.64898/2026.11.17.26368273v1) releases the [KPMP virtual spatial transcriptomics atlas](https://huggingface.co/datasets/ratschlab/KPMP_virtual_spatial_transcriptomics_atlas) (1,534 kidney biopsy slides from 476 participants, 5.46M spots) and [KPMP Xenium virtual spatial transcriptomics](https://huggingface.co/datasets/ratschlab/KPMP_Xenium_virtual_spatial_transcriptomics) (1.64M cells), with 19,338 genes each.
   - [09.2026] Introducing [Aurora](https://www.auroraomics.org) - a no-code platform for virtual spatial transcriptomics from H&E images. Aurora makes virtual spatial transcriptomics accessible without requiring users to have their own GPUs, with a fully automated workflow designed to ensure that spatial transcriptomics predictions are performed correctly. Try the interactive [Aurora demo](https://www.auroraomics.org/demo).
 
 

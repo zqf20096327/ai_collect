@@ -104,7 +104,7 @@ Agents and stewards setting up AIWG end-to-end should use the
 [**Get Started**](#quick-start) · [**Features**](#what-you-get) · [**Agents**](#agents) · [**Decision Support**](#decision-support--bounded-decisions-offloaded-to-jev) · [**Documentation**](#documentation) · [**Community**](#community--support) · [**Badges**](https://aiwg.io/badges)
 
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/BuAusFMxdA)
-[![Telegram](https://img.shields.io/badge/Telegram-Join-26A5E4?logo=telegram&logoColor=white&style=flat-square)](https://t.me/+oJg9w2lE6A5lOGFh)
+[![Telegram](https://img.shields.io/badge/Telegram-Foyer-26A5E4?logo=telegram&logoColor=white&style=flat-square)](https://t.me/joinaiwg)
 
 </div>
 
@@ -1652,4 +1652,4 @@ See [cross-platform overview](docs/integrations/cross-platform-overview.md) for 
 | Muse Code | `aiwg use all --provider muse` | `AGENTS.md` | `.agents/skills/` project; XDG user root at deploy time | Stable; no aliases. See [Muse quickstart](docs/integrations/muse-quickstart.md). |
 | Oh My Pi | `aiwg use all --provider omp` | `.omp/AGENTS.md` | Agents, prompts, rules, skills | Dedicated OMP quickstart: [Oh My Pi quickstart](docs/providers/omp.md). |
 | Pi Coding Agent | `aiwg use all --provider pi` | `AGENTS.md` | Agent Skills, prompt templates, trust-gated extension bridge | Experimental; see [Pi quickstart](docs/integrations/pi-quickstart.md). |
-| Antigravity | `aiwg use all --provider antigravity` | `AGE
+| Antigravity | `aiwg use all --provider antigravity` | `AGENTS.md` 

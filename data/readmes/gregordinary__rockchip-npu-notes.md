@@ -132,29 +132,38 @@ column links to the note with the mechanism and the evidence.
 **Conditions:** RK3588 on mainline `rocket`. Each item states its NPU clock, and the linked note
 gives its full conditions.
 
-- **[Matmul throughput](perf/not-mac-bound.md).** DMA and dispatch bound the matmul, rather than
-  the MAC array. At `512×3840×4096`, with [resident weights](GLOSSARY.md) on three cores at
-  928 MHz, fp16 measures 947-966 GOP/s. int8 with streamed weights and int4 run 1.14-1.20x that
-  [HW sweep 2026-11-02]. Their MAC rates are 2x and 4x fp16's, so quantization reduces
-  memory use and raises the matmul's throughput far less than its MAC rate. In a model, resident
-  int8 [prefill](GLOSSARY.md) measured slower than fp16.
+- **[Matmul throughput](perf/not-mac-bound.md).** Host work and the weight read bound the
+  three-core matmul, rather than the MAC array. At `512×3840×4096`, with
+  [resident weights](GLOSSARY.md) on three cores at 1028 MHz, fp16 measures 959-971 GOP/s. int8
+  with streamed weights runs 1.53-1.55x that, and int4 1.20-1.27x [HW sweep 2026-11-21, SPLL
+  programmed]. Their MAC rates are 2x and 4x fp16's, so quantization reduces memory use and
+  raises the matmul's throughput less than its MAC rate. In a model, resident
+  int8 [prefill](GLOSSARY.md) runs at 0.98-1.10x resident fp16 on four models of 3-9 B [HW sweep
+  2026-11-21, SPLL programmed].
 - **[Weight streaming](perf/not-mac-bound.md).** [CBUF weight streaming](GLOSSARY.md), the fp16
   default, removes most of the whole-tile program's tasks. At 928 MHz it gives 1.07-1.17x on
   prefill over the whole-tile program, on four [GGUFs](GLOSSARY.md) [HW sweep 2026-10-21].
-- **[Decode](perf/decode-gemv.md).** Single-row [decode](GLOSSARY.md) is a GEMV, bound by the DDR bandwidth the
-  NPU shares with the CPU, so decode stays on the CPU. At 928 MHz the NPU streams resident weights
-  at ~16 GB/s over three cores under `rocket`, which only matches the CPU's decode stream
-  [HW sweep 2026-10-21]. That rate is the part's. A second RK1 streams 2x as fast a core under the
-  same software, and 24 GB/s on three, the CPU decode's range [HW sweep 2026-11-20] ([chips/rk3588.md](chips/rk3588.md) §"Part-to-part variation").
-  The NPU's fp16 throughput at M=1 is ~82x below its batched-GEMM peak, as an external benchmark
-  measured it through the vendor RKNN matmul API.
+- **[Decode](perf/decode-gemv.md).** Single-row [decode](GLOSSARY.md) is a GEMV, bound by the
+  DDR bandwidth the NPU shares with the CPU. At 1028 MHz the NPU streams resident weights at
+  27.5-30.2 GB/s over three cores under `rocket`, 1.0-1.4x the CPU decode's stream [HW sweep
+  2026-11-21, SPLL programmed]. Each NPU call adds a dispatch and a de-tile. A decode on the NPU
+  end to end is not characterized, and decode stays on the CPU. The NPU's fp16 throughput at
+  M=1 is ~82x below its batched-GEMM peak, as an external benchmark measured it through the
+  vendor RKNN matmul API.
+- **[Boot loader](perf/boot-loader-read-rate.md).** The NPU's DDR read rate is proportional to
+  the center interconnect clock, whose PLL (SPLL) only the boot loader's SPL stage can program.
+  Behind a boot loader that leaves it unprogrammed, the NPU reads DDR at half the rate, and Linux
+  still reports the clock at 702 MHz. Mainline U-Boot v2026.01 to v2027.01-rc1 does so on the
+  Turing RK1's eMMC boot. The fix, first released in v2027.01-rc2, restores the full rate on
+  v2026.07 and v2026.10 [HW sweep 2026-11-21]. Decode-shaped work gains up to 2x from it, and
+  LLM prefill 1.01-1.11x.
 - **[Clock](perf/clock.md).** The NPU clock boots at 198 MHz, one fifth of its 1 GHz maximum
-  [source-confirmed]. Above that it is a PVTPLL whose frequency follows the rail voltage, so a
-  requested rate is not the clock. At a 0.80 V rail the 900 MHz request runs at 928 MHz, the
-  vendor's 900 MHz pairing. It gives 1.66x on Gemma-4-12B prefill over the boot clock
-  [HW sweep 2026-11-02]. On matmul device time 928 MHz gives 1.044x over the 600 MHz request
-  (~816 MHz), and 1019 MHz, a 1 GHz request at 0.85 V, 1.083x [HW sweep]. Known issue E10 is
-  the hazard in raising it.
+  [source-confirmed]. Above that it is a PVTPLL that follows the rail: at 0.80 V the 900 MHz
+  request runs at 928 MHz, the vendor's pairing. That gives 1.66x on Gemma-4-12B prefill over the
+  boot clock [HW sweep 2026-11-02]. With SPLL programmed, ~70% of one core's fp16 matmul device
+  time scales with the clock at 1028 MHz [HW sweep 2026-11-21]. A weight read gains nothing above
+  ~700 MHz, where the center interconnect clock bounds it. Known issue E10 is the hazard in
+  raising it.
 
 ## Reading paths
 
@@ -212,6 +221,7 @@ gives its full conditions.
 | [encodings/conv-transpose.md](encodings/conv-transpose.md) | CNA | ConvTranspose: the hardware deconvolution mode, the lowering onto a forward convolution, and the resident path |
 | [encodings/resize-upsample.md](encodings/resize-upsample.md) | CNA | Nearest and bilinear resize as a depthwise transposed convolution |
 | [encodings/ppu-pooling.md](encodings/ppu-pooling.md) | PPU | Max and average pooling |
+| [encodings/dpu-transpose.md](encodings/dpu-transpose.md) | DPU | The one-task DPU program that permutes the axes of a one-atom tensor in the cube layout |
 | [encodings/ppu-reduce-mean.md](encodings/ppu-reduce-mean.md) | PPU | Global average, max and min pooling over the spatial axes |
 | [encodings/feature-reduce.md](encodings/feature-reduce.md) | CNA, CORE, DPU | Reducing over the feature axis, and prefix sums, as a matmul against a ones weight |
 
@@ -231,7 +241,7 @@ gives its full conditions.
 |---|---|
 | [perf/not-mac-bound.md](perf/not-mac-bound.md) | Why the whole-tile matmul program measures within ~20% at every datatype, and what CBUF weight streaming gives |
 | [perf/device-vs-host-split.md](perf/device-vs-host-split.md) | How much of a matmul's wall-clock time the device takes, with resident and re-packed weights |
-| [perf/decode-gemv.md](perf/decode-gemv.md) | Why single-row decode stays on the CPU |
+| [perf/decode-gemv.md](perf/decode-gemv.md) | Single-row decode: the NPU's weight stream against the CPU's, and a Whisper decoder step on the NPU |
 | [perf/asymmetric-tile.md](perf/asymmetric-tile.md) | Why an Mt>Nt tile beats the symmetric maximum |
 | [perf/weight-residency-fusion.md](perf/weight-residency-fusion.md) | Packing F16 weights once, and fusing projections that share an input |
 | [perf/quant-prefill-microbatch.md](perf/quant-prefill-microbatch.md) | Why quantized-GGUF prefill is bound by per-micro-batch dequantization |
@@ -242,6 +252,7 @@ gives its full conditions.
 | [perf/iova-and-multicore.md](perf/iova-and-multicore.md) | The per-fd 4 GB IOVA window, and one fd per core |
 | [perf/bo-sync-cost.md](perf/bo-sync-cost.md) | The `PREP_BO`/`FINI_BO` cache-sync cost, which scales with BO size |
 | [perf/pool-completion.md](perf/pool-completion.md) | Why a pool submit on mainline `rocket` waits ~507 ms and resets a core |
+| [perf/boot-loader-read-rate.md](perf/boot-loader-read-rate.md) | Why the boot loader sets the NPU's DDR read rate (the center interconnect's PLL), which boot loaders halve it, how to detect it, and what the rate is worth to prefill, encoders and decode |
 | [perf/clock.md](perf/clock.md) | The boot clock, the requested rate against the physical PVTPLL clock, raising it safely, and the gain to 1019 MHz |
 | [perf/cpu-governor-and-offload.md](perf/cpu-governor-and-offload.md) | How the CPU governor biases an NPU-against-CPU comparison, what it costs a per-layer offload inside a model, and how to pin it |
 | [perf/cpu-repack-baseline.md](perf/cpu-repack-baseline.md) | Why a quantized CPU baseline needs llama.cpp's weight repack, and the NPU's lead over a repacked CPU |
@@ -305,17 +316,31 @@ abbreviations of the models the notes run. It also names the source of each.
 
 ## Test platforms
 
-Most findings come from devices running mainline 7.1 and 7.2 kernels:
+Most findings come from devices running mainline 7.1 to 7.3 kernels:
 
-- A Turing RK1: RK3588, 32 GB, DDR init v1.19. Its BL31 was rkbin's v1.51 for every result
-  measured up to 2026-11-20 and upstream TF-A v2.15.0 from 2026-11-20.
+- A Turing RK1: RK3588, 32 GB, DDR init v1.19, mainline kernels with `rocket`. Its BL31 was
+  rkbin's v1.51 for every result measured up to 2026-11-20 and upstream TF-A v2.15.0 from
+  2026-11-20. Its PVTPLL runs the 900 MHz request at 928 MHz. It ran the vendor stack on
+  2026-11-20 and 2026-11-21. From 2026-11-21 it runs mainline 7.3.3 with `rocket`, DDR init v1.24,
+  BL31 v1.56 and a boot loader that programs SPLL.
+- A second Turing RK1. Up to 2026-11-20 it ran Rockchip's 6.1 BSP kernel with the vendor `rknpu`
+  0.9.8 driver, DDR init v1.16 and BL31 v1.48 [live 2026-11-20]. It provided the vendor-driver
+  results. From 2026-11-20 it runs mainline 7.3.3 with `rocket`, DDR init v1.24 and BL31 v1.56.
+  Its PVTPLL runs the 900 MHz request at 1028 MHz.
 - An H96 MAX M9: RK3576
 
-A second Turing RK1, on Rockchip's 6.1 BSP kernel with the vendor `rknpu` 0.9.8 driver, provides
-the vendor-driver results. Its boot firmware is BL31 v1.48 and DDR init v1.16 [live 2026-11-20].
-The two RK1 parts are not equivalent. The second one's NPU streams DDR reads about twice as fast
-under the same software ([chips/rk3588.md](chips/rk3588.md) §"Part-to-part variation"). A figure
-that sets a vendor-driver result against a `rocket` one therefore compares the boards too.
+The RK3588's NPU reads DDR at half the rate behind a boot loader that leaves SPLL, the center
+interconnect's PLL, unprogrammed ([perf/boot-loader-read-rate.md](perf/boot-loader-read-rate.md)).
+The first RK1 booted mainline U-Boot releases of 2026, which all leave it unprogrammed on its eMMC
+boot. Every `rocket` result on it was therefore taken with SPLL unprogrammed [inferred: the
+release history, and its read rate]. The second RK1's boot loader programmed it
+under the vendor stack. A `rocket` result on the RK3588 states its boot loader where SPLL was
+programmed, and was otherwise taken with SPLL unprogrammed.
+
+A figure that sets a vendor-driver
+result against an unlabelled `rocket` one therefore compares the boot loaders too. With SPLL
+programmed, a read-dominated NPU call runs up to 2x as fast and three cores stream 1.7x as fast.
+LLM prefill and the Whisper encoder gain 1.0-1.11x [HW sweep 2026-11-21].
 
 The same work produced a FOSS inference stack on `rocket`: a userspace library, frontends for
 ggml, TFLite and ONNX Runtime, and kernel patches. The [guide](guide/) is a start-to-finish

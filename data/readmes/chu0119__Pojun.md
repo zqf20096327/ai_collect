@@ -58,12 +58,18 @@ docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
 docker compose -f docker-compose.yml -f docker-compose.macos.yml up -d
 # Linux / 其他：
 docker compose up -d
-# → http://localhost:8787
+# → http://127.0.0.1:8787
 ```
+
+> **远程主机（VPS / 云服务器）**：控制台默认只绑 `127.0.0.1`，装完在远端直接打开
+> 会「拒绝连接」。先建隧道 `ssh -L 8787:127.0.0.1:8787 <user>@<host>`，再访问
+> `http://127.0.0.1:8787`；或在安装时显式 `--listen=0.0.0.0:8787`（会告警，需自配
+> 防火墙；公网优先走 HTTPS 反向代理，见「监听地址与暴露面」）。
 
 **装好之后（3 分钟上手）：**
 
-1. 浏览器打开 `http://<host>:8787` → 初始化管理员密码（≥8 位）
+1. 浏览器打开 `http://127.0.0.1:8787` → 初始化管理员密码（≥8 位）
+   （默认仅本机；跨机访问需显式放开或反向代理，见「监听地址与暴露面」）
 2. 「LLM 配置」页配模型通道（≥2 个通道 + 开启轮询 = 实战推荐）；Anthropic/OpenAI/
    DeepSeek 等 OpenAI 兼容端点直接填 base_url + key + model（如 DeepSeek：
    `https://api.deepseek.com` + `deepseek-chat`/`deepseek-reasoner`）
@@ -408,7 +414,7 @@ curl -fsSL .../install.sh | sudo bash -s -- --mode=docker
 ```bash
 git clone --depth 1 https://github.com/chu0119/Pojun.git pojun && cd pojun
 cp .env.example .env      # 至少改 POSTGRES_PASSWORD；POJUN_TAG 可钉到具体版本（如 v0.4.64）
-docker compose up -d      # → http://localhost:8787
+docker compose up -d      # → http://127.0.0.1:8787
 ```
 
 **Windows（Docker Desktop，WSL2 后端）**：
@@ -417,7 +423,7 @@ docker compose up -d      # → http://localhost:8787
 git clone --depth 1 https://github.com/chu0119/Pojun.git pojun; cd pojun
 copy .env.example .env    # 至少改 POSTGRES_PASSWORD
 docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
-# → http://localhost:8787
+# → http://127.0.0.1:8787
 ```
 
 - Windows 加 `-f docker-compose.windows.yml` 的原因：data 卷改为 named volume
@@ -448,7 +454,7 @@ docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
 
 ```bash
 cp config.example.json config.json   # 填好 database 连接
-./start.sh                           # → http://localhost:8787
+./start.sh                           # → http://127.0.0.1:8787（默认仅本机）
 ```
 
 > 用 `start.sh` 启动而非直接跑二进制——它是守护脚本，「一键更新」靠它完成换装
@@ -503,7 +509,8 @@ CGO_ENABLED=0 go build -o pojun-hostd ./cmd/pojun-hostd   # 可选：特权安�
 ```
 
 **LLM**：环境变量 `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` 可兜底，UI「LLM 配置」页
-配多通道 + 开启「LLM 轮询」。常用参数：`./start.sh -addr :8787 -proxy :8788`。
+配多通道 + 开启「LLM 轮询」。默认直接 `./start.sh`（127.0.0.1:8787，仅本机）；
+需要局域网/公网直连时显式 `./start.sh -addr 0.0.0.0:8787`（推荐改用反向代理）。
 
 **C2 出口**（可选）：`PUT /api/c2/config` 配 `mode=direct|ssh|manual` +
 中转机地址/SSH 凭据——`listener_start` 自动返回解析后的回连地址。
@@ -524,6 +531,27 @@ server {
     }
 }
 ```
+
+**监听地址与暴露面**：控制台能在宿主机执行命令，所以默认只绑回环 `127.0.0.1:8787`，
+其他主机不可达。
+
+- **二进制**：`./start.sh`（默认）或 `./start.sh -addr 127.0.0.1:9000`。
+- **安装器**：`install.sh` 默认 `127.0.0.1:8787`；`--listen=0.0.0.0:8787` 放开所有
+  接口，`--listen=<局域网IP>:8787` 只绑该网卡，`--listen=:8787` 等价所有接口（会告警）。
+- **Docker**：仓库根的 `docker-compose.yml` 宿主侧默认 `127.0.0.1:8787:8787`；
+  局域网直连用 `POJUN_BIND_IP=0.0.0.0 docker compose up -d`（不推荐）。容器内始终
+  监听 `0.0.0.0:8787`，宿主限制只由 compose 的绑定地址负责。
+- **安装器生成的 compose**（`install.sh --mode=docker`）：宿主地址在生成时已展开成
+  字面量（如 `127.0.0.1:8787:8787`），因此 `POJUN_BIND_IP` **对它不生效**。放开需
+  重跑 `install.sh --mode=docker --listen=0.0.0.0:<端口>`，或直接修改
+  `/opt/pojun/docker-compose.yml` 的 ports 后 `docker compose up -d`。
+- **推荐**：公网只暴露 HTTPS 反向代理（上面的 nginx），后端继续绑回环。
+- **升级须知**：重跑 `install.sh` 会重写 systemd unit / launchd plist / 生成的
+  compose 并重启服务，监听地址会回到 `127.0.0.1:8787`。保留旧的局域网直连必须
+  显式传 `--listen=0.0.0.0:<端口>`（仓库 compose 部署可用 `POJUN_BIND_IP=0.0.0.0`；
+  安装器生成的 compose 只认 `--listen`，见上一条）。
+- `docker-compose.bench.yml` 是测评镜像的有意例外：`network_mode: host` + 镜像
+  CMD 的 `-addr :8787`，不受上述宿主发布限制。
 
 ---
 
@@ -580,7 +608,7 @@ chisel/ligolo-ng/socat/proxychains/linpeas/pspy/responder…）、
 ## 开发与贡献
 
 ```bash
-./dev.sh    # 后端(:8787) + 流量代理(:8788) + 前端 next dev(:5173)
+./dev.sh    # 后端(127.0.0.1:8787) + 流量代理(127.0.0.1:8788) + 前端 next dev(:5173)
 go test ./...   # 连 PG 跑全量（CI 用 -p 1 串行防跨包死锁）
 cd web && npx tsc --noEmit && NEXT_EXPORT=1 npx next build
 ```

@@ -33,7 +33,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in 4.0](#-whats-new-in-40)
+- [What's New in 5.0](#-whats-new-in-50)
 - [Key Features](#-key-features)
 - [Screenshots](#-screenshots)
 - [How Aira Works](#how-aira-works)
@@ -49,23 +49,24 @@
 
 Quill reimagines what a reading app can be. It pairs a carefully crafted EPUB reader with **Aira**, an AI reading companion that reads along with you. Aira answers questions about your book straight from its pages, explains difficult passages, helps you keep track of characters, and can even paint a scene you're reading, all without ever spoiling what comes next.
 
-Bring your own EPUBs or pick from thousands of free classics on **Project Gutenberg** and **Standard Ebooks**, set the mood with ambient soundscapes, and build a steady reading habit with reminders and insights.
+Bring your own EPUBs or pick from free classics on **Standard Ebooks**, set the mood with ambient soundscapes, and build a steady reading habit with reminders and insights. Quill speaks ten languages, and you can start reading as a guest, without an account.
 
 ---
 
-## 🆕 What's New in 4.0
+## 🆕 What's New in 5.0
 
-- **Meet the New Aira:** rebuilt from the ground up. Aira knows whether you're asking about your book or anything else, answers straight from the pages you've read, never spoils what's ahead, and can read her answers aloud.
-- **Ask Aira From the Page:** select any word or passage while reading to define words, explain tricky lines, or find out why a moment matters, without leaving the book.
-- **Character Companion:** select a character's name to recall who they are, see what they're up to lately, or trace their whole journey so far. Always spoiler-free.
-- **Visualize Scenes:** turn any passage into a painted illustration, kept in a Visuals gallery that takes you right back to the passage it came from.
-- **Highlights:** a smoother way to select text, plus highlights you can revisit from one place and jump straight back to.
-- **A Reimagined Reader:** new reading settings, a cleaner table of contents, a warm night light, and page turning with your volume keys.
-- **Ambient Sounds:** six soundscapes, from gentle rain to a crackling fireplace. Preview them before you play, or have them start automatically when you open a book.
-- **Reading Reminders:** a daily reminder at the time you pick, or playful nudges to keep your streak going.
-- **Discover & Organize:** a redesigned Discover tab, better Project Gutenberg and Standard Ebooks browsing, a quick way to add your own books, and categories you can reorder by dragging.
-- **Reading Insights:** reading time, streak, peak reading hours, favorite authors, and how you read with Aira, all on a refreshed Insights screen.
-- **A Fresh Look:** a brand new app icon and splash screen, the new Harbor color theme, and a polished feel across the whole app.
+- **Settings and a Floating Dock:** the tabs now float in a dock at the bottom of the screen, with a + button beside it for adding your own books. More is now called Settings.
+- **A Simpler Discover:** See all on every shelf, a Subjects button to browse by subject, and a notice when Standard Ebooks is down for maintenance. Project Gutenberg and the Sources tab have been removed: downloaded Gutenberg books stay in your library as your own books, and ones that weren't downloaded are removed along with their highlights, reading history, Aira chats and images.
+- **A More Careful Aira:** Aira keeps even more strictly to what you've read, so she won't give away what's ahead, even in books she already knows. She stays focused on reading, and a soft glow circles the question bar while she answers.
+- **A New Insights Screen:** your week at a glance, a reading heatmap, insights drawn from your own habits, your reading rhythm, personal bests, most-read books and authors, highlights, and how you read with Aira.
+- **Clearer Plans:** both plans have the same Aira; Pro raises the daily allowance from 5 to 50 queries. Restoring a purchase now tells you how it went, and guests get a new Meet Aira page.
+- **Read Without an Account:** tap Guest on the sign-in screen to start reading right away. A guest's library stays on the phone and never goes to the cloud. Aira and Pro need an account.
+- **Back Up and Bring It Along:** export your books, progress, highlights and reading history to a file from Settings › Backup, and import it on any phone. Signed-in imports sync to your account, and importing never doubles anything up.
+- **Quill in Your Language:** English, Spanish, Portuguese, French, German, Hindi, Russian, Japanese, Korean and Chinese, switchable under Settings › Appearance › Language.
+- **A Fresh Welcome:** a new first-run tour and redesigned sign-in and sign-up screens. Replay the tour anytime from Settings.
+- **A Redesigned Appearance Screen:** colour themes as cards with a palette disc for each, phone previews for light and dark, and a starry AMOLED card.
+- **Reader Polish:** ambient sounds fade in and out gently, the toolbar for selected text appears more reliably, scroll mode changes chapter only on a deliberate sideways swipe, and font weight moves in finer steps.
+- **Calmer Loading:** covers and catalogues pulse softly while they load.
 
 ---
 
@@ -74,8 +75,8 @@ Bring your own EPUBs or pick from thousands of free classics on **Project Gutenb
 ### Aira, Your AI Reading Companion
 
 - **Grounded in the text:** Aira answers from the actual passages of your book, retrieved on-device, not from guesswork.
-- **Spoiler lock:** her knowledge is locked to your reading progress. She never reveals events from chapters you haven't reached.
-- **Smart routing:** Aira works out whether you're asking about your book or about something general, and answers each the right way.
+- **Spoiler lock:** her knowledge is locked to your reading progress. She never reveals events from chapters you haven't reached, not even from what she already knows about a famous book.
+- **Smart routing:** Aira works out whether you're asking about your book or about something general, and answers each the right way. She stays on reading and politely declines unrelated requests.
 - **Full conversations:** chat naturally about the plot, characters, themes, or world-building. History is kept per book, with a clear current-chapter header.
 - **Read aloud:** listen to any of Aira's answers, spoken with natural-sounding text-to-speech.
 
@@ -87,11 +88,11 @@ Select text while reading and the Aira peek bar offers quick actions based on wh
 |---|---|
 | Nothing | Summarize chapter · Who are the characters? · What are the themes? |
 | A word | Define · What is this? |
-| A name | **Who is this?** · **Recent Role** · **Journey So Far** |
+| A name | **Who is this?** · **Recent Role** |
 | A short phrase | Explain this |
 | A passage | Explain this · What's the significance? · **Visualize this** |
 
-- **Character companion:** recall who a character is, see what they're up to lately, or trace their whole journey through the story so far.
+- **Character companion:** recall who a character is or see what they're up to lately.
 - **Chapter summaries** are built from the full chapter text, and theme questions consider the current chapter alongside the rest of what you've read.
 - Answers type out smoothly, and if you select something that isn't a character's name, Aira kindly tells you so.
 
@@ -104,7 +105,7 @@ Select text while reading and the Aira peek bar offers quick actions based on wh
 ### The Reader
 
 - **Readium-powered EPUB engine** with smooth chapter navigation and accurate progress tracking.
-- **Reading settings:** fonts, text size, spacing, page themes, and paged or scrolling layout.
+- **Reading settings:** fonts, text size, font weight, spacing, page themes, and paged or scrolling layout. In scroll mode, a chapter changes only on a deliberate sideways swipe.
 - **Custom text selection and highlights,** with a Highlights screen to revisit every highlight and jump back to it.
 - **Table of contents** sheet, progress slider, and resume-where-you-left-off.
 - **Night light:** a warm amber tint for comfortable late-night reading.
@@ -114,37 +115,40 @@ Select text while reading and the Aira peek bar offers quick actions based on wh
 
 - Six soundscapes: **Forest, Rain, Brown Noise, Fireplace, Library, Riverside**.
 - Preview sounds before playing, start and stop from the reader overlay, and optionally **auto-play on open**. Volume follows your device's own volume controls.
-- Seamless looping with crossfades.
+- Sounds fade in and out gently, and loop seamlessly with crossfades.
 
-### Library & Sources
+### Library & Discover
 
-- **Import your own EPUBs** from anywhere on your device.
-- **Project Gutenberg:** browse, search, and download 60,000+ free books.
-- **Standard Ebooks:** carefully formatted, high-quality public domain editions.
-- **Discover** tab with a hero carousel and curated shelves.
+- **Import your own EPUBs** from anywhere, with the + button beside the floating nav dock.
+- **Discover:** free, carefully formatted public domain classics from Standard Ebooks, with a hero carousel of new arrivals, curated shelves you can open in full, and every subject in the catalogue to browse.
 - **Categories:** organize books your way, with drag-and-drop reordering.
 - **Storage management:** see how much space each book uses and clean up.
 
 ### Habits & Insights
 
-- **Reading insights:** time read, day streak, books finished, a reading heatmap, peak reading hours, favorite authors, library progress, and your Aira activity.
+- **Reading insights:** your week at a glance, totals, insights generated from your own reading habits, a reading heatmap, your reading rhythm, personal bests, most-read books and authors, library progress, highlights, and your Aira activity.
 - **Daily reading reminder** at a time you choose, plus optional **playful reminders** to keep your streak alive.
 
 ### Personalization & Account
 
-- Multiple **color themes** (including Harbor), light and dark modes, **AMOLED black**, and dynamic color.
+- Multiple **color themes** (including Lagoon), light and dark modes, **AMOLED black**, and dynamic color.
+- **Ten languages:** English, Spanish, Portuguese, French, German, Hindi, Russian, Japanese, Korean and Chinese, switchable in-app under Settings › Appearance › Language.
 - **Cloud sync** of your library and categories across devices via Firebase.
+- **Guest mode:** read without an account; the library stays on the device. Aira and Pro need an account.
+- **Backup:** export your books, progress, highlights and reading history to a file and import it on any phone; signed-in imports sync to your account.
 - Profile with display name and avatar.
 
 ### Quill Pro
 
+Both plans get the same Aira with every feature. Pro raises the daily allowance.
+
 | | Basic Reader | Quill Pro |
 |---|---|---|
-| Full reader, sources, sounds, highlights, insights | ✅ | ✅ |
+| Full reader, Discover, sounds, highlights, insights | ✅ | ✅ |
+| All of Aira: chat, quick actions, character tools, Visualize | ✅ | ✅ |
 | Daily Aira queries | 5 | 50 |
-| Visualize (3 queries per image) | ✅ | ✅ |
 
-Quotas reset daily. Subscriptions are handled through Google Play Billing.
+Each question uses 1 query and each Visualize image uses 3. Allowances reset daily. Subscriptions are handled through Google Play Billing.
 
 ---
 
@@ -214,7 +218,7 @@ When a book is added, a background worker (WorkManager) processes it:
 - **Action-specific strategies** for the character tools:
   - **Who is this?** takes the character's first mentions verbatim, then spreads picks evenly across your reading progress in zones, ranked by how much each passage actually describes them (personality, role, relationships, appearance).
   - **Recent Role** uses their latest appearances.
-  - **Journey So Far** splits their arc 20/60/20: their introduction, a scattered and semantically ranked middle, and their most recent scenes.
+  - **Character arc questions** asked in chat ("how has she changed?") split their arc 20/60/20: their introduction, a scattered and semantically ranked middle, and their most recent scenes.
   - Overlapping duplicate chunks are removed, and a per-chapter cap stops any single chapter from dominating.
 - **Chapter summaries** read the chapter straight from the EPUB rather than stitching overlapping chunks back together.
 
@@ -224,11 +228,14 @@ Retrieved passages and a task-specific prompt go to **Firebase Cloud Functions**
 
 | Task | Model / Service |
 |---|---|
-| Chat, quick actions, intent routing | Gemini 2.5 Flash-Lite |
+| Book chat, general chat | Gemini 3.8 Flash |
+| Quick actions, intent routing | Gemini 3.5 Flash-Lite |
 | Visualize (illustrations) | Gemini 2.5 Flash Image |
 | Read aloud | Google Cloud Text-to-Speech |
 
-Prompts enforce strict grounding and attribution: Aira states only what the passages show, never borrows a detail from a different character, and stays spoiler-free.
+The models for each function are set in one place, `functions/src/core/models.ts`, and called through the `@google/genai` SDK. The app sends the reader's position with each question, and every plot question is routed through retrieval.
+
+Prompts share one set of rules (`functions/src/ai/prompts/aira.ts`) that enforce strict grounding and attribution: Aira states only what the passages show, never borrows a detail from a different character, never fills in plot from what the model already knows about a book, and declines requests unrelated to reading.
 
 ---
 
@@ -238,8 +245,9 @@ Quill uses a multi-module MVVM + Clean Architecture setup.
 
 ```text
 Quill/
-├── app/        Main app: navigation, library, sources, Aira chat, insights, settings,
-│               notifications, billing & quota, cloud sync, onboarding
+├── app/        Main app: navigation, library, Discover, Aira chat, insights, settings,
+│               notifications, billing & quota, cloud sync, guest mode & backup,
+│               onboarding, localization
 ├── reader/     Readium-based EPUB reader: engine, overlay, settings, highlights,
 │               ambient sounds, Aira peek bar
 ├── aira/       AI layer: RAG retriever, ONNX embeddings, chunking, intent detection,
@@ -263,9 +271,10 @@ Local Storage:        Room (+ FTS4), DataStore
 Background Work:      WorkManager, AlarmManager
 Audio:                Media3 ExoPlayer
 Embeddings:           BAAI/bge-small-en-v1.5 via ONNX Runtime (on-device)
-AI Models:            Gemini 2.5 Flash-Lite, Gemini 2.5 Flash Image
+AI Models:            Gemini 3.8 Flash, Gemini 3.5 Flash-Lite, Gemini 2.5 Flash Image
+                      (via the @google/genai SDK)
 Speech:               Google Cloud Text-to-Speech
-Networking:           Ktor (Gutendex API, Standard Ebooks OPDS)
+Networking:           Ktor (Standard Ebooks OPDS)
 Backend:              Firebase Auth, Firestore, Cloud Functions, Crashlytics, Analytics
 Payments:             Google Play Billing
 Concurrency:          Kotlin Coroutines & Flow
@@ -345,7 +354,22 @@ Contributions are what make the open source community such an amazing place to l
 
 ## 📄 License
 
-Distributed under the **Apache License 2.0**. See the [`LICENSE`](LICENSE) file for details.
+Quill is free and open source software, licensed under the **GNU General Public License v3.0 or later** (`GPL-3.0-or-later`). See [`LICENSE`](LICENSE) for the full text and [`NOTICE.md`](NOTICE.md) for the copyright notice and additional terms.
+
+In short, you may use, study, modify and share the code. If you distribute a modified version, you must release its full source code under the same license and keep the copyright notices.
+
+- **Google libraries:** an additional permission allows the app to be built with Firebase, Google Play services and the Google Play Billing Library.
+- **Earlier releases:** versions published before this change were released under the Apache License 2.0 and remain available under those terms.
+
+### Name and branding
+
+The license covers the code, not the brand. The **Quill** name, the **Yugen Tech** name, the logo, the app icon and the artwork in `graphics/`, `badges/` and `screenshots/` are **not** licensed under the GPL and remain all rights reserved.
+
+If you publish a fork, give it a different name, icon and application ID, and don't present it as an official Quill release. You're welcome to describe it as "based on Quill" and link back here. See [`NOTICE.md`](NOTICE.md) for details.
+
+### Contributing and licensing
+
+By submitting a pull request, you agree that your contribution is licensed under GPL-3.0-or-later.
 
 ---
 

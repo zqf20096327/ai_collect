@@ -1,17 +1,23 @@
 # mobile-agent-testers
 
-**20 AI testers on 20 different phones, in parallel, for $0.**
+<a href="https://www.producthunt.com/posts/mobile-agent-testers?utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=mobile-agent-testers"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1326513&amp;theme=dark"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1326513&amp;theme=light" alt="Mobile Agent Testers on Product Hunt" width="250" height="54"></picture></a>
+<a href="https://www.linkedin.com/in/pierre-raffalli/"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/linkedin-follow-dark.svg"><img src="assets/linkedin-follow-light.svg" alt="Follow Pierre Raffalli on LinkedIn" width="160" height="54"></picture></a>
 
-**[Runs](docs/runs/)** · **[Compare](docs/compare.md)** · **[FAQ](#faq)** · **[Personas](personas.json)** · **[Releases](https://github.com/pierridotite/mobile-agent-testers/releases)**
+**20 AI testers on 20 different phones, in parallel, on GitHub's free runners.**
+
+**[Examples](docs/examples.md)** · **[Compare](docs/compare.md)** · **[FAQ](#faq)** · **[Personas](personas.json)** · **[Releases](https://github.com/pierridotite/mobile-agent-testers/releases)**
 
 English · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
 No test scripts to write. Each tester is a Claude Code agent with its own iOS
 Simulator or Android emulator on GitHub Actions. It plays a persona (iPhone SE
 in Swedish at the largest text size, Pixel 7 at 200%, iPad in German, Arabic
-right to left...), uses your app like a new user and writes a bug report with
-screenshots. Flutter, React Native, Expo, native Kotlin and Swift, Kotlin
+right to left...), uses your app like a new user (or runs through the feature you
+point it at) and writes a bug report with screenshots. Flutter, React Native, Expo, native Kotlin and Swift, Kotlin
 Multiplatform, Capacitor and .NET MAUI.
+
+GitHub's runners are free for public repos. You only pay for the model, with your
+Claude subscription or API key: about $0.15 to $0.55 per phone in [these runs](docs/runs/).
 
 <p align="center"><a href="assets/localsend-20.mp4"><img src="assets/localsend-20.gif" alt="Real screen recordings of 20 AI testers using LocalSend at the same time: 10 Android emulators and 10 iOS Simulators in 14 languages, from a small Pixel to a 13-inch iPad. When a tester finishes, its phone shows how many issues it found. Opens the video." width="100%"></a><br>
 <sub>Real screen recordings of the LocalSend run, idle time cut. <a href="assets/localsend-20.mp4">Full video (MP4)</a> · <a href="docs/runs/localsend-20.md">The run, device by device</a></sub></p>
@@ -23,59 +29,28 @@ Multiplatform, Capacitor and .NET MAUI.
 ![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-orange)
 [![Last commit](https://img.shields.io/github/last-commit/pierridotite/mobile-agent-testers)](https://github.com/pierridotite/mobile-agent-testers/commits/main)
 
-## Real findings
+## What it does
 
-### LocalSend: 20 agents, 20 devices, 14 languages
+One use per run, set with the inputs of [Test your own app](#test-your-own-app).
 
-<p align="center"><img src="assets/real-findings-localsend-20.png" alt="Four LocalSend screens with Flutter's overflow stripes, each boxed in red: a Pixel 7 at 200% text where all six Send buttons overflow, an iPhone SE in Swedish at the largest text size where the message dialog overflows by 149 pixels and hides the text field and Confirm, an iPad Air in German where the Add button overflows its card by 114 pixels, and an iPhone SE in French at the default text size where a row overflows by 28 pixels" width="100%"></p>
+- **Explore like new users** (the default). Each persona tries to reach its goal and reports what gets in the way, with numbered screenshots.
+- **Run one feature end to end.** Your own brief sends every agent through a whole mechanic: a booking in several steps, an editor with undo, a sync between two screens. Agents tap, long press, swipe and type, leave the app and come back, relaunch it to check what was saved, or open a deep link to start right at the feature, and a brief can raise the budget of about 30 actions. [AnkiDroid's](briefs/ankidroid.md) found the Back field of a new card hidden behind the keyboard.
+- **Reproduce a bug report** on every phone: give an issue or the steps, and each agent answers yes, no or unclear, with screenshots ([briefs/reproduce.md](briefs/reproduce.md)).
+- **Get an improvement report.** Each persona uses the app once, then says where it hesitated, what it expected and what to change first, by area and impact ([briefs/improve.md](briefs/improve.md)).
+- **Compare two versions.** The same personas on two branches or builds, then one table: goals reached, actions, scores, issues seen on one version only ([docs/compare-versions.md](docs/compare-versions.md)). A check before a real A/B test, not a replacement for one.
+- **Use a cheaper model**: Claude Haiku, or any Anthropic-compatible API (OpenRouter, DeepSeek, Kimi, GLM, MiniMax, Qwen). The findings are only as good as the model's reading of screenshots and its reasoning ([docs/cheaper-models.md](docs/cheaper-models.md)).
 
-[LocalSend](https://github.com/localsend/localsend) is a 100k-star Flutter app. What the agents found:
+## Applied examples
 
-- iPhone SE in Swedish at iOS's largest text size: the message dialog overflows by 149 px, so the text field and Confirm are off screen and you can't send text at all.
-- Pixel 7 at Android's 200% font: all six Send buttons overflow and cut their labels in half. Same on an iPhone 16 Plus in Italian at the first accessibility size.
-- iPad Air in German with large text: "Hinzufügen" runs 114 px past its card, and Settings values break mid-word.
-- iPhone SE in French at the default text size: "Recevoir via un lien" overflows by 28 px and hides a checkbox.
-- Pixel Tablet in Spanish: the keyboard covers the address dialog's Cancel and Confirm.
-- A failed manual send says only "Error", "Erreur", "Fehler", "エラー", "Hata" or "Erro", with no reason. On iOS, an address that doesn't answer leaves the dialog waiting with no progress shown (three agents).
+Real runs on open-source apps, with nothing planted.
 
-103 reports in all (1 blocker, 15 major). Grouped by hand, they are 46 distinct bugs, and most of them were seen by one phone only:
+| App | Phones | What the agents found | Time, model usage |
+|---|---|---|---|
+| [LocalSend](https://github.com/localsend/localsend) (Flutter, 100k stars) | 20: 10 Android, 10 iOS, 14 languages | 46 distinct bugs, 1 blocker: on an iPhone SE in Swedish at the largest text size, you can't send a text message at all | 69 min, $4.62 |
+| [AnkiDroid](https://github.com/ankidroid/Anki-Android) (Kotlin, 12k stars, release APK) | 10 Android | 43 distinct issues, among them answer buttons cut in half at 200% font and "Get started" left in English in three languages | under 10 min, $4.69 |
+| [Flutter's animations sample](https://github.com/flutter/packages/tree/main/packages/animations/example) | 1 Android, 1 iOS | The same typo, reported by both agents on their own, and an app that ignores dark mode | 19 min, $0.47 |
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/bugs-per-phone-dark.svg">
-  <img src="assets/bugs-per-phone-light.svg" alt="29 of LocalSend's 46 bugs were seen by one phone only, the only blocker included. 6 bugs were seen by 2 phones, 6 by 3, and one each by 4, 5, 6, 10 and 12 phones: the send buttons overflowing at large text, icon buttons with no accessibility label, a failed send that only says Error, settings values cut mid-word, and a device list that loads forever. No bug was seen by more than 12 of the 20." width="100%">
-</picture>
-
-69 minutes from start to the last report (the Free plan runs 5 macOS jobs at a time), $4.62 of model usage for the 20. Every report, device by device: [docs/runs/localsend-20.md](docs/runs/localsend-20.md). Run it yourself:
-
-```bash
-gh workflow run agent-testers.yml -f source_repo=localsend/localsend -f app_dir=app \
-  -f app_id=org.localsend.localsend_app -f android_personas=all -f ios_personas=all -f record_video=true
-```
-
-### AnkiDroid: 10 agents, straight from the release APK
-
-<p align="center"><img src="assets/real-findings-ankidroid.png" alt="Four AnkiDroid screens, each problem boxed in red: a Pixel 7 at 200% text where the Again, Hard, Good and Easy buttons are cut in half (shown magnified), the same phone's Statistics page where the lines run off the right edge, and the welcome screen in Portuguese and in Japanese where the Get started button is still in English" width="100%"></p>
-
-[AnkiDroid](https://github.com/ankidroid/Anki-Android) is a 12k-star Kotlin app. 10 agents on 10 Android emulators, from the APK of their GitHub release, no build:
-
-- Pixel 7 at Android's 200% font: the Again / Hard / Good / Easy buttons are cut in half, and the Statistics text runs off the right edge. A second agent found the buttons still cut on their 2.26 alpha, in both rows when "Show large answer buttons" is on.
-- The welcome screen says "Get started" in English on devices set to Portuguese, Spanish and Japanese, while the rest of the screen is translated (three agents, each on its own).
-
-83 reports, which group into 43 distinct issues (two of them come from the outdated system WebView of the Android 10 and 11 emulator images, not from the app). Under 10 minutes from start to the last report, $4.69 of model usage for the 10. Every report: [docs/runs/ankidroid-10.md](docs/runs/ankidroid-10.md). Run it yourself:
-
-```bash
-gh workflow run agent-testers.yml -f app_dir=. -f app_id=com.ichi2.anki -f brief=briefs/ankidroid.md \
-  -f android_build="curl -fsSL -o anki.apk https://github.com/ankidroid/Anki-Android/releases/download/v2.25.3/AnkiDroid-2.25.3-full-universal.apk" \
-  -f apk_path=anki.apk -f android_personas=all -f ios_personas=none -f block_hosts="ankiweb.net www.google-analytics.com"
-```
-
-### Flutter's official animations sample
-
-<p align="center"><img src="assets/real-finding-flutter.png" alt="Two phones on the same screen of Flutter's animations example app, a Pixel 7 and an iPhone SE in French, with the title Streamling your courses circled: both agents reported this typo on their own" width="100%"></p>
-
-In the [example app of flutter/packages](https://github.com/flutter/packages/tree/main/packages/animations/example), an agent on a Pixel 7 and another on an iPhone SE in French each reported the same typo, "Streamling your courses" ([line 110](https://github.com/flutter/packages/blob/main/packages/animations/example/lib/shared_axis_transition.dart#L110)), and the Android one noticed the app ignores dark mode. 19 minutes, $0.47 of model usage.
-
-Ran it on your app? [Share what it found](https://github.com/pierridotite/mobile-agent-testers/issues/new?title=Finding:%20) and it goes in [the runs](docs/runs/). If you maintain one of these apps and think a finding is wrong, open an issue and it gets fixed and run again.
+34 of LocalSend's 46 bugs had nothing to do with text size or accessibility: broken flows, silent failures, missing translations, tablet layouts. Screenshots, every finding and the commands to run them again: [docs/examples.md](docs/examples.md).
 
 ## Quick start
 
@@ -86,7 +61,7 @@ gh workflow run agent-testers.yml     # demo: 2 Android + 2 iOS testers, ~20 min
 bash scripts/collect.sh <run id>      # decrypts reports, groups duplicates: runs/<id>/SUMMARY.md
 ```
 
-The demo app has [11 deliberate bugs](demo-app/BUGS.md). On the recorded run above, the 4 demo testers found 9 of them (2 to 7 minutes per agent, about 21 minutes for the whole run, builds included), plus real issues nobody planted (a button under the Android nav bar, no data kept after a relaunch). Model usage: $0.87 for the 4.
+The demo app has [11 deliberate bugs](demo-app/BUGS.md). In [one run](docs/runs/), the 4 demo testers found 9 of them (2 to 7 minutes per agent, about 21 minutes for the whole run, builds included), plus real issues nobody planted (a button under the Android nav bar, no data kept after a relaunch). Model usage: $0.87 for the 4.
 
 Or let Claude set it up for your app:
 
@@ -102,7 +77,7 @@ They run the tests you write. These agents look for what nobody thought to test.
 | | mobile-agent-testers | Maestro, Appium, Detox, e2e |
 |---|---|---|
 | You write | Nothing: pick personas from the list | Flows or test code |
-| It catches | Layout at large text, dark mode, confusing copy, dead ends | What each test checks |
+| It catches | Broken flows, silent errors, missing translations, layout at large text, dark mode, confusing copy | What each test checks |
 | Same result every run | No: each run explores, so check the screenshots | Yes |
 
 [agent-device](https://github.com/callstackincubator/agent-device) gives one coding agent hands on one simulator. This runs a whole session: it builds the app, gives each persona its own device and collects encrypted reports. Use agents before a release, and scripted flows for regressions.
@@ -121,7 +96,9 @@ gh workflow run agent-testers.yml -f source_repo=you/app -f app_id=com.you.app \
 | `source_repo`, `ref` | App repo and branch (empty = this repo). Private repo: add a read-only `SOURCE_REPO_TOKEN` secret |
 | `app_dir`, `app_id` | App folder, Android package / iOS bundle id (if the other platform uses another id, it is read from its built app) |
 | `android_personas`, `ios_personas` | Ids from [personas.json](personas.json), one phone each, `all`, or `none` to skip a platform. 20 ready: 14 languages, right to left, tablets, text from small to the largest accessibility size |
-| `brief` | Agent instructions ([AGENT_BRIEF.md](AGENT_BRIEF.md)) |
+| `brief` | Agent instructions: [AGENT_BRIEF.md](AGENT_BRIEF.md) to explore, [briefs/improve.md](briefs/improve.md) for an improvement report, or your own for one feature |
+| `bug_report` | A bug to reproduce instead of exploring: an issue (`owner/repo#123` or its URL) or the steps as text. Each agent follows it on its own device ([briefs/reproduce.md](briefs/reproduce.md)) |
+| `model`, `llm_base_url` | `sonnet` by default, `haiku` to spend less, or any Anthropic-compatible API with its key in an `LLM_API_KEY` secret ([docs/cheaper-models.md](docs/cheaper-models.md)) |
 | `framework` | `auto` (default) or force one of the frameworks below |
 | `android_build` + `apk_path`, `ios_build` + `ios_app_path` | Your own build command, or a download of a prebuilt app (paths relative to `app_dir`) |
 | `block_hosts` | Analytics hosts blocked during tests |
@@ -165,11 +142,11 @@ toolkit works. Labelled widgets (Flutter `Semantics`, `contentDescription`,
 
 ### Do 20 agents just find the same bug 20 times?
 
-No. On LocalSend, the 103 reports were 46 distinct bugs, and 29 of them were found by one agent only, the blocker included ([chart above](#localsend-20-agents-20-devices-14-languages)). Right-to-left bugs only came from the two Arabic personas, and tablet bugs from the four tablets. The duplicates were app-wide states that everyone hits, like the empty device list.
+No. On LocalSend, the 103 reports were 46 distinct bugs, and 29 of them were found by one agent only, the blocker included ([chart](docs/examples.md#localsend-20-agents-20-devices-14-languages)). Right-to-left bugs only came from the two Arabic personas, and tablet bugs from the four tablets. The duplicates were app-wide states that everyone hits, like the empty device list.
 
 ### How much does it cost?
 
-GitHub's runners are free for public repos, macOS included. Model usage was $0.15 to $0.55 per agent in [these runs](docs/runs/), so about $5 for 20 phones. With a Claude subscription, runs count against your plan's usage instead of a bill.
+GitHub's runners are free for public repos, macOS included. Model usage was $0.15 to $0.55 per agent in [these runs](docs/runs/), so about $5 for 20 phones. With a Claude subscription, runs count against your plan's usage instead of a bill. To spend less, run `model=haiku` or another provider's model: [docs/cheaper-models.md](docs/cheaper-models.md).
 
 ### How long does a run take?
 

@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.18.5-2563eb" alt="version">
+  <img src="https://img.shields.io/badge/version-0.18.6-2563eb" alt="version">
   <img src="https://img.shields.io/badge/python-3.12-3776ab" alt="python">
   <img src="https://img.shields.io/badge/node-20%2B-339933" alt="node">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-555" alt="platform">
@@ -334,7 +334,7 @@ See the in-app **Guide** for details.
 
 ## 🏗️ Architecture
 
-> Folder layout and the full feature history: [PROJECT_STATE.md](../PROJECT_STATE.md) · [Türkçe](../PROJECT_STATE.tr.md)
+> Folder layout and the full feature history: [PROJECT_STATE.md](PROJECT_STATE.md) · [Türkçe](PROJECT_STATE.tr.md)
 
 ```
 backend/   FastAPI · agent orchestrator · agent teams · provider adapters · MCP client · Tree-sitter · process manager · policy
@@ -343,8 +343,48 @@ frontend/  React + Vite + Tailwind · Monaco · Zustand · SheetJS · docx-previ
 agents/    Agent roles (Markdown)          skills/    Skills (Markdown)
 languages/ tr.json · en.json
 chat/      One folder per chat: chat/<chat id>/ (its files) + .session/ (its record); chat/projects/ (projects without a chosen folder)
-tanitim/   Banners, screenshots and promo texts
+screenshots/ Banners and screenshots used by this README
 ```
+
+## 🧩 Skills from other tools' commands (npx skills, hf skills, gradio skills)
+
+A skills install command copies `SKILL.md` instructions into an agent's skills folder and exits - it is **not an MCP server**, so it cannot be started as one. AI IQ 300 recognizes these commands and imports them as **Skills** instead:
+
+| Command | What is imported |
+|---|---|
+| `npx skills add owner/repo` (also `npx -y`, `bunx`, `pnpm dlx`, `yarn dlx`) | Every `SKILL.md` in that GitHub repository, to pick from (`--skill name` comes pre-selected) |
+| `owner/repo`, `https://github.com/owner/repo`, `…/tree/main/folder` | The same, the whole repository or one folder of it |
+| `hf skills add [name]` | The Hugging Face skills marketplace (25 skills); no name = `hf-cli`, as the `hf` command does |
+| `gradio skills add` | Gradio's own skill (building Gradio UIs) |
+| `gradio skills add user/space` | A skill generated from that Hugging Face Space's API: every endpoint, its parameters and a ready Python call |
+
+**Where:** paste the command into the import box on the **Skills** page, or into the MCP server form - there the Save button is replaced by **Import skills**. A server card that failed with such a command gets the same button (and the useless server entry can be removed after the import).
+
+**How it works:** a picker lists the skills (grouped, searchable, with descriptions; already imported ones are marked). Each picked skill is saved with its source, so importing again updates it instead of making a copy; a built-in skill with the same name is never overwritten (the new one gets the owner's name in front). Files next to a skill (references, scripts) are listed as links the model opens when the skill points to them. Every skill adds a short line (~40 tokens) to the model's prompt, so the picker shows the total and allows at most 60 at once - pick only what you will use. Flags such as `--global`, `--force`, `--cursor`, `--claude` or `--dest` are ignored: skills always go to the app's own Skills.
+
+## 🆕 New in v0.18.6 (Google and GitHub tools, Drive uploads, finished answers that stay finished)
+
+- **Google with your connected account:** a built-in `google` tool covers Gmail (drafts too), Drive, Sheets, Docs, Calendar and Contacts. Google MCP servers are used when they answer; if they refuse (Developer Preview), the built-in tool takes over. The "enable the APIs" warning comes from a real check.
+- **Real Drive uploads:** `google file=` uploads a local file. Files up to 5 MB go in one request; larger ones go in 8 MB resumable chunks. The size Drive reports back is checked. A download never overwrites a PDF with a JSON reply, and a web page is never saved under a .pdf, .zip or image name. Live test: a 3-page hardware-report PDF reached Drive intact, on NVIDIA Nemotron in 24 s and on evren:auto.
+- **GitHub MCP:**
+  - Issue, PR, commit and repository requests go to the connected GitHub server.
+  - A wrong owner gets a hint to look up your login.
+  - A misspelled tool name gets "Did you mean…".
+- **Skills from other tools' commands:** `npx skills add`, `hf skills add` and `gradio skills add` (see above).
+- **Finished answers stay finished:**
+  - A question about past work ("did you test it?") no longer erases a finished answer with "a command was written but not run".
+  - A status check repeated a few times is not called a failed command.
+  - An answer that already says a step failed is kept instead of being rewritten again and again.
+- **Removing or cleaning up is not a string of errors:**
+  - `-ErrorAction SilentlyContinue` and `2>$null` commands count as succeeded.
+  - "Is it installed?" checks that find nothing (`Get-Command`, `where`, `npm ls -g`, `pip show`, `Test-Path`) count as an answer.
+  - A command that starts a background daemon returns at once.
+- **Clean output:**
+  - Tool-call fragments of every format are hidden, even when the model's stream splits them in two. This covers `</minimax:tool_call>`, `<invoke>`, DSML and Kimi markers.
+  - `head` and `tail` work in PowerShell.
+  - Long Linear and Notion texts pass as MCP arguments.
+  - Browser JavaScript with a top-level `return` runs.
+  - A file outside the work folder shows a message instead of a console error.
 
 ## 🆕 New in v0.18.5 (huge files without breaks, stronger browser testing, self-kill guard)
 
@@ -859,21 +899,4 @@ A full audit of the backend and the frontend (line by line), with every finding 
 - **LM Studio load options:** GPU offload (full / 75 / 50 / 25 % / off), flash attention, KV cache in GPU or RAM, evaluation batch and idle time; sent with every model load (REST `/api/v1/models/load`, or the `lms` CLI).
 - **MCP from npm, PyPI or GitHub by the agent:** the new `mcp_add` tool connects an MCP server (npx package, uvx/pip package, a repo cloned and built from GitHub, or a remote URL), stores its tokens in the secret store and returns its tools; a broken package reports its error in about a second instead of hanging. Tested end to end with the official filesystem server (npm), the weather quickstart cloned and built from GitHub, and mcp-server-time (PyPI). Fixed: on Windows `npx` in a folder with spaces (`D:\Program Files\nodejs`) could not start MCP servers.
 - **Packages into the working folder:** Composer (PHP), npm, pip, Go, Cargo and GitHub projects; system programs with winget / brew / apt (new `packages` skill). Composer is installed automatically when PHP is present (checksum-verified composer.phar), and a PHP without php.ini (the winget build) gets openssl, curl, mbstring, zip, intl, gd, pdo... switched on, so `composer require` works out of the box.
-- **Automatic tool setup:** `install.bat` installs ffmpeg, Git, GitHub CLI and PHP with winget when missing; `install.sh` installs ffmpeg, git, gh, php and composer with brew / apt / dnf / pacman. The app itself falls back to `static-ffmpeg` (ffmpeg + ffprobe for Windows, macOS, Linux) and adds them to PATH; detected tools appear in the model's environment line.
-- **Professional graphics and media libraries:** Python `skia-python` (Skia engine), `drawsvg`, `vtracer` (raster to vector), `qrcode`, `static-ffmpeg`, `paramiko` (SSH/SFTP); Node `sharp`, `@resvg/resvg-js`, `opentype.js` on NODE_PATH for the agent's scripts.
-- **New skills (Claude Code-style abilities):** `site-test` (end-to-end website QA with a bug report), `remote-server` (SSH / SFTP / FTP: find, read, test, upload files with backups), `social-media` (X, Instagram, LinkedIn, TikTok via official APIs or the signed-in browser, publishing only with approval), `ads-manager` (Meta, Google Ads, Yandex Direct reports and campaigns, new campaigns paused, budgets only with approval), `graphics` (logos, icons, banners, SVG/PNG packs), `mcp-servers`, `packages`, `code-review` (bugs, OWASP security, tests and linters).
-
-## 🆕 New in v0.10.3 (no fake files, no loops, a professional video player)
-
-- **Work, not code blocks:** if the model writes the command as a code block instead of doing the work (```bash ffmpeg ...```), that command is really run for it and the result goes back to the model. The "run the command" reminder is given at most twice: no endless loop.
-- **No fake files (any type):** text cannot be written into a binary format (mp4, png, pdf, docx, xlsx, zip, exe...); the model is pointed to the program that really makes it. Every file a command writes is checked by type (empty? a real PDF/ZIP/image/video/JSON?); broken output does not count as success.
-- **A failed step is not presented as done:** if the last command failed and the model says it is finished, it is first asked to fix it; if it cannot, a clear warning heads the answer.
-- **ffmpeg:** the overwrite question is answered automatically (`-y`), so no deleting files or approvals; guidance for `mov_text` subtitles in MP4 and burning with `subtitles=`.
-- **Full access means full:** in "Full access" mode deleting files and risky commands are not asked about (only system-breaking commands such as formatting a disk stay blocked in every mode). In "Auto" mode files the task itself made are deleted without asking.
-- **Professional video player:** auto-hiding custom controls, draggable seek bar (buffered range, hover time), volume (remembered), speed menu, loop, sidecar subtitles (.vtt/.srt found automatically, SRT converted), picture-in-picture, full screen, save frame as PNG, resolution badge, keyboard shortcuts (space/k, ←/→, j/l, ↑/↓, m, f, c, 0-9, < >) and a clear message for broken/unsupported files.
-- **Sign-up/sign-in on your own site in Full access:** on the site your request names (e.g. "sign me up on mysite.com with these details") the model types the password and presses the sign-up/sign-in buttons without asking. Card/bank details are still never typed on real sites.
-- **Automatic CAPTCHA handoff:** when a CAPTCHA appears, a hidden browser opens a visible window and brings the page to the front; the moment you solve it this is detected and the task continues by itself (no need to say "done"). The model never solves CAPTCHAs itself.
-- **Fix:** local files in folders with spaces (`file:///…%20…`) could not be opened by the browser tool.
-- **Pop-ups are closed (every site):** modals in front of the page (newsletter, campaign, gender picker, app ads...) are detected and closed with their close button or Escape; cookie banners always get "Reject all"; windows with a password/card field are left alone. Can be turned off in Settings.
-- **workspace/ removed, everything under chat/:** each chat without a project now has `chat/<chat id>/` (its files) with a hidden `.session/` inside (its record); projects created without a chosen folder go to `chat/projects/`. The old `workspace/` and `chat/<id>-session` contents are moved automatically on first start, nothing is deleted. Deleting a chat deletes its whole folder. A new chat's Files view now says the folder is made with the first message instead of an empty "workspace" with a spinner.
-- **Messages sent while a task runs:** a m
+- **Automatic tool setup:** `install.bat` installs ffmpeg, Git, GitHub CLI and PHP with winget when missing; `install.sh` instal

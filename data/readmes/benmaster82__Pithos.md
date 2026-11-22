@@ -37,7 +37,7 @@
 | **Runs a 13.5 GB model on 16 GB of RAM** | experts stream from disk, the hot ones live in a 4 GB GPU |
 | **Agents included** | Pandora in the browser, and a terminal agent that runs commands, fixes code and checks its own work |
 | **Hears and speaks** | with LFM3-Audio-2B: transcription and translation in 18 languages, streamed speech (WAV, PCM, MP3) and voice conversations on the `/talk` page ([speech](#lfm3-audio-2b-speech-input-and-output-experimental)) |
-| **Runs on an Xbox One** | an OpenAI-compatible server for your home network, with LFM3-1.7B on the console's GPU: 29.5 tok/s generation, ~140 tok/s prompt ([Xbox One](#xbox-one)) |
+| **Runs on an Xbox One** | an OpenAI-compatible server for your home network, with LFM3-1.7B on the console's GPU: 29.5 tok/s generation, ~140 tok/s prompt; with LFM3-Audio-2B you talk to it through the controller's headset ([Xbox One](#xbox-one)) |
 
 Pithos is an inference engine written from scratch in C11 with **no dependencies**: no external
 libraries at build time, only the operating system API (Win32 or POSIX). It runs GGUF models of
@@ -63,7 +63,8 @@ model). **Pandora** is the agent in the web interface.
 - One option chooses the GPU backend, `--gpu`; by default (`auto`) Pithos picks the fastest one
   measured for the model ([Choosing the GPU](#choosing-the-gpu)).
 - **An Xbox One app**: the server runs on a console in Developer Mode, with a status and chat screen
-  on the TV.
+  on the TV, and with LFM3-Audio-2B a full-screen voice assistant used through the controller's
+  headset.
 - Works with models larger than the free RAM (asynchronous read-ahead, expert prediction).
 - OpenAI-compatible HTTP server with prompt reuse across turns, also after a restart.
 - **Speech** with LFM3-Audio-2B: `/v1/audio/transcriptions`, `/v1/audio/translations` and
@@ -604,7 +605,11 @@ build. The web interface and the GPU kernels are embedded in the executable as g
 Pithos runs on an **Xbox One in Developer Mode** as a UWP app, **Pithos.X Server**. The console becomes an
 OpenAI-compatible server for your home network, with Pandora in the browser of any PC or phone, and
 the TV shows the server state and a chat with the model. Tested on an Xbox One S with
-**LFM3-1.7B** (the 24B model does not fit in the console's memory).
+**LFM3-1.7B** and **LFM3-Audio-2B**, one at a time, switched with one command
+([Models for the Xbox](#models-for-the-xbox); the 24B model does not fit in the console's memory). With
+LFM3-Audio-2B the console also **hears and speaks**: you talk into the headset plugged into the
+controller, and the answer is shown and read aloud, all on the console
+([Voice and Talk mode](#voice-and-talk-mode)).
 
 The TV shows the state, a chat with the model, the addresses to connect to and the server log
 ([screenshot](#screenshots)). Below, **in the browser of a PC on the same network**: Pandora
@@ -626,6 +631,38 @@ The console's CPU (8 AMD Jaguar cores) has no AVX2, so it uses the AVX kernels. 
 app gets about 5 GB of RAM and Direct3D 12 on the GPU, which runs the whole forward pass: weights,
 KV cache and activations live in GPU memory, and only the logits come back.
 
+### Voice and Talk mode
+With **LFM3-Audio-2B** loaded instead of LFM3-1.7B, the app adds voice. Nothing leaves the console:
+the headset's audio is transcribed, answered and spoken by the same model, on the Xbox.
+
+<p align="center">
+  <img src="docs/xbox-talk.png" width="860" alt="Talk mode on the TV: the Pithos mark among animated neural-network layers, the question and the spoken answer as subtitles">
+</p>
+
+- **Push-to-talk in the chat.** Plug a headset into the controller's 3.5 mm jack, hold **RT**, speak,
+  release: the words appear as a chat message and the model answers. **Y** reads the last answer
+  aloud (or stops it); *Read aloud* speaks every answer. *Voice* chooses the language of the
+  transcription and of the speech (English, Italian, French, German, Spanish, Portuguese) and
+  *Reasoning* the thinking level (off, low, medium, high; off by default, the fastest).
+- **Talk mode** (the *Talk mode* button, or **View**): a full-screen assistant on a deep black
+  background, with the Pithos mark, an aura and rings that follow the voice, neural-network layers
+with travelling pulses, the clock
+  and subtitles for the question and the answer. Answers are short (one or two sentences) and always
+  spoken. **RT** talks, **Y** repeats, **LB**/**RB** change the language, **↑**/**↓** the reasoning
+  level, **B** or **View** go back to the chat.
+- **Hands-free** (**X** in Talk mode): no button at all. The app listens for speech above the room's
+  noise, sends the question after a short pause, and raises its threshold while it speaks, so its own
+  voice does not trigger it.
+
+Measured on the Xbox One S in Game mode: a spoken question is transcribed in under a second, the
+chat reuses the conversation already in the cache, and the first words of the answer play after
+0.5–0.8 seconds. Speech is generated at about **0.87× real time**: the depth decoder runs on the GPU
+in one pass per frame and the audio codec on the CPU alongside it, and the app buffers just enough
+audio before it starts that the answer plays without gaps.
+
+The first time, the console asks for permission to use the microphone. If it was refused, enable it
+again in **Settings → Privacy → App privacy → Microphone**.
+
 ### What you need
 - **The console in Developer Mode.** Install the *Xbox Dev Mode* app from the Store on the console
   and follow [Microsoft's activation guide](https://learn.microsoft.com/windows/uwp/xbox-apps/devkit-activation)
@@ -635,7 +672,54 @@ KV cache and activations live in GPU memory, and only the logits come back.
   - Visual Studio 2022 with the *MSVC v143* and *C++ Universal Windows Platform tools* components;
   - the Windows SDK 10.0.26100 (it provides `makeappx`, `signtool` and `fxc`);
   - Python 3, for the deployment script (standard library only).
-- **The model**: `LFM3-1.7B-Q4_K_M.gguf` ([download](#lfm3-17b-small-and-fast)).
+- **One of the two models**, downloaded on the PC (see [Models for the Xbox](#models-for-the-xbox)).
+- **For voice**: a headset with a 3.5 mm jack, plugged into the controller.
+
+### Models for the Xbox
+Two models run on the console. The app's storage holds one at a time (with both, the upload fails
+with "not enough space on the disk"), and `deploy.py use` switches between them in one command.
+
+| Model | Files to download | What you get on the Xbox | Speed (Game mode) | `pithos.args` |
+|---|---|---|---|---|
+| [LFM3-1.7B](#lfm3-17b-small-and-fast) | `LFM3-1.7B-Q4_K_M.gguf` (1.1 GB) | text: the TV chat, Pandora and the API for the house | 146 tok/s prompt, 29.5 tok/s generation | `-t 6 --gpu d3d12 --cache-mb 256` |
+| [LFM3-Audio-2B](#lfm3-audio-2b-speech-input-and-output-experimental) | `LFM3-Audio-2B-Q4_K_M.gguf` (1.1 GB) and its projector `mmproj-LFM3-Audio-2B-Q4_K_M.gguf` (0.17 GB) | the same text features, plus push-to-talk, spoken answers, Talk mode and hands-free | ~28 tok/s generation, speech at 0.87× real time | `-t 5 --gpu d3d12 --cache-mb 256` and a `pithos.env` ([below](#options-and-best-use)) |
+
+Download them on the PC into the `models` folder ([LFM3-1.7B](#lfm3-17b-small-and-fast),
+[LFM3-Audio-2B](#lfm3-audio-2b-speech-input-and-output-experimental)), keeping the projector next to
+its model with its original name: that is how `use` finds it. Then, with the app installed:
+
+```
+python xbox\deploy.py --xbox CONSOLE-IP use models\LFM3-1.7B-Q4_K_M.gguf       text
+python xbox\deploy.py --xbox CONSOLE-IP use models\LFM3-Audio-2B-Q4_K_M.gguf   text and voice
+```
+
+`use` stops the app, deletes the other model (and its projector) from the console, uploads the
+projector **before** the model, writes the recommended `pithos.args` (and for LFM3-Audio-2B the
+speech lines of `pithos.env`, keeping any other line there), and starts the app again. The order
+matters: the app starts as soon as a model has finished uploading, and a projector that arrives
+later is not seen until the next restart, so the console would run without voice. Files already on
+the console with the same size are not uploaded again, so `use` with the model that is already
+there just rewrites the options and restarts. The upload takes a few minutes over the network.
+
+**Saved conversations.** The server keeps each conversation on the console so it can continue
+without reading it again ([Prompt reuse](#prompt-reuse)), in a folder next to the model
+(`MODEL.gguf.pithos-cache`, about 6–15 MB a conversation). On a PC they may take up to 4 GB; on the
+console the `pithos.args` written by `use` caps them at 256 MB (`--cache-mb 256`, about 15–40
+conversations), and the oldest are deleted when a new one is saved. When you switch model, `use`
+moves the other model's conversations to the PC (`build-xbox\conversations`) and puts them back when
+you choose that model again; `--drop-cache` deletes them instead.
+
+**If an upload fails with "not enough space on the disk"**: a failed upload leaves its copy in the
+Device Portal's temporary folder until the console restarts. Restart the console, then run `use`
+again (the files already there are kept). Crash dumps, if you enabled them, take space too
+(Device Portal → App crash dumps).
+
+- `--dry-run` prints the steps without changing anything;
+- `--args "..."` writes your own `pithos.args` (for example `--args "-t 8"` in App mode);
+- `--keep-args` leaves `pithos.args` and `pithos.env` as they are;
+- `--no-launch` does not start the app at the end.
+
+The models are not deleted from the PC: switching back means uploading again.
 
 ### Building the app
 From the Pithos folder, on the PC:
@@ -657,21 +741,24 @@ authentication):
 
 ```
 python xbox\deploy.py --xbox CONSOLE-IP install                        the app and its VCLibs dependency
-python xbox\deploy.py --xbox CONSOLE-IP upload models\LFM3-1.7B-Q4_K_M.gguf
-python xbox\deploy.py --xbox CONSOLE-IP launch
+python xbox\deploy.py --xbox CONSOLE-IP use models\LFM3-1.7B-Q4_K_M.gguf   a model, its options, start
 python xbox\deploy.py --xbox CONSOLE-IP log                            the server log
 python xbox\deploy.py --xbox CONSOLE-IP files                          the app's LocalState folder
-python xbox\deploy.py --xbox CONSOLE-IP stop
+python xbox\deploy.py --xbox CONSOLE-IP launch                         start the app
+python xbox\deploy.py --xbox CONSOLE-IP stop                           stop it
+python xbox\deploy.py --xbox CONSOLE-IP upload FILE                    put a file into LocalState
+python xbox\deploy.py --xbox CONSOLE-IP get NAME                       download a file from LocalState
+python xbox\deploy.py --xbox CONSOLE-IP rm NAME                        delete a file from LocalState
 ```
 
-1. **Install** the package, then **upload** the model. It goes into the app's `LocalState` folder.
-   The app waits for a `.gguf` there and starts as soon as the upload is complete.
+1. **Install** the package.
 2. **Switch the app to Game mode** for Direct3D 12 and 5 GB of RAM. On the console: **Dev Home** →
    select **Pithos.X Server** → **View details** → **App type: Game**. This has to be done again after
    every reinstall, because installing resets the type to *App*.
-3. **Choose the options** in a `pithos.args` file uploaded to `LocalState` (see below), then start
-   Pithos from Dev Home or with `launch`. Launching from the portal works only while a user is
-   signed in on the console.
+3. **Put a model on the console** with `use` ([Models for the Xbox](#models-for-the-xbox)): it
+   uploads the model into the app's `LocalState` folder with the recommended options, and starts
+   the app. Launching from the portal works only while a user is signed in on the console; otherwise
+   start Pithos from Dev Home. With `--gpu d3d12` the server answers about a minute after the start.
 4. **Connect** from any device on the network: Pandora at **`http://CONSOLE-IP:8080`**, the API at
    `http://CONSOLE-IP:8080/v1` (model name: the file name without `.gguf`). The TV shows the same
    addresses.
@@ -683,28 +770,47 @@ conversations) is kept across updates.
 ### Options and best use
 The app starts the server as `pithos --server --host 0.0.0.0 --port 8080 --gpu off -m MODEL`: the
 CPU, since the GPU is reachable only in Game mode. The options in `LocalState\pithos.args` are
-added after these, so they can also override them. Upload the file, then restart the app:
+added after these, so they can also override them. `use` writes the recommended file for the
+model; to change it, upload your own `pithos.args` (or `use MODEL --args "..."`), then restart the
+app:
 
 | Mode | Recommended `pithos.args` | Why |
 |---|---|---|
-| Game (recommended) | `-t 6 --gpu d3d12` | the GPU does all the work; 6 CPU threads leave room for the system |
+| Game (recommended) | `-t 6 --gpu d3d12 --cache-mb 256` | the GPU does all the work; 6 CPU threads leave room for the system; saved conversations stay within 256 MB |
+| Game, with LFM3-Audio-2B | `-t 5 --gpu d3d12 --cache-mb 256` | the fifth free core runs the audio codec next to the GPU |
 | App (no Game type) | `-t 8` | Direct3D 12 is not available; all 8 cores give the best CPU speed |
 
 The older `-t 6 --d3d12` still works the same.
+
+For voice, `use` also writes a `pithos.env` file in `LocalState` (an app gets no environment
+variables from outside; the app reads `NAME=VALUE` lines from this file) with:
+
+```
+PITHOS_SPEECH_DX=1
+PITHOS_SPEECH_CODEC_THREADS=0
+```
+
+The first line runs the speech depth decoder on the GPU, the second keeps the codec on the engine's
+threads. Together with `-t 5` they give the 0.87× real time measured above; without them speech
+runs at about half that speed.
 
 - **Start-up**: with `--gpu d3d12` the server answers about a minute after launch, while the weights
   are copied into GPU memory. The log line `whole forward pass on the GPU` confirms the fast path.
 - **Context**: the server uses 16,384 tokens by default (352 MB of KV cache on the GPU). `-c 8192`
   halves it.
 - **Batch**: `-b 256` gains only ~4% on long prompts over the default 64.
-- **Reasoning**: Pandora and the API choose the level per request; the TV chat uses the default,
-  which `--reasoning low` or `--reasoning off` in `pithos.args` changes.
+- **Reasoning**: Pandora and the API choose the level per request; the TV chat has its own
+  *Reasoning* button (off, low, medium, high), remembered by the app.
 - **Access**: the server listens on the whole local network without a key. Add `--api-key KEY`
   to require one on `/v1`.
 - **Prompt reuse** works as on the PC: conversations are saved in `LocalState` and continue after
-  a restart.
+  a restart, within the `--cache-mb` budget (see [Saved conversations](#models-for-the-xbox)).
 - **The TV screen** shows the state, the addresses, the end of the log, a chat with the model
-  (without tools) and a button that stops the server.
+  (without tools) and a button that stops the server; with LFM3-Audio-2B, also the voice buttons and
+  Talk mode.
+- **From a PC terminal**: the console is an ordinary OpenAI-compatible server, so any client can
+  chat with it, for example with `curl http://CONSOLE-IP:8080/v1/chat/completions` or any
+  OpenAI client library.
 - **What is missing on the console**: there are no child processes, so no shell tools and no MCP
   servers, and no `curl`, so no web tools. Pandora's agent mode keeps the file tools (in
   `LocalState\workspace`), the calculator and the date.
@@ -1091,7 +1197,7 @@ for each of the 30 convolution layers.
 | `src/gpu_d3d12.c`, `src/kernels_dx.hlsl`, `src/kernels_dx_token.hlsl` | Direct3D 12 backend: matmul kernels and the other steps of the forward pass (compiled into `src/kernels_dx.h` by `tools\dx_shaders.cmd`, which needs `fxc` from the Windows SDK) |
 | `src/gpu_vulkan.c`, `src/kernels_vk.h` | Vulkan backend: the Direct3D 12 HLSL kernels compiled to SPIR-V (`tools\vk_shaders.cmd` or `tools/vk_shaders.sh`, which need `dxc` with SPIR-V support) |
 | `src/quant_avx.c` | 128-bit AVX/F16C kernels for CPUs without AVX2 |
-| `xbox/` | Xbox app: shell with the TV screen (`app.cpp`), manifest, build, signing and deployment scripts, GPU probe |
+| `xbox/` | Xbox app: shell with the TV screen (`app.cpp`), Talk mode (`talk.cpp`), headset capture and playback (`voice.cpp`), manifest, build, signing and deployment scripts, GPU and microphone probes |
 | `src/platform.c` | mmap, thread pool, prefetch, system info (Win32 / POSIX) |
 | `src/sampler.c`, `src/main.c` | sampling, CLI, terminal chat |
 | `src/server.c`, `src/json.c` | HTTP server, OpenAI API, chat template, tool calls, JSON |
@@ -1296,8 +1402,10 @@ Planned improvements, in order of priority, are in [ROADMAP.md](ROADMAP.md).
   Vulkan, the same.
 - Vulkan is experimental: tested on an NVIDIA GTX 1650 and an Intel UHD (Windows) and on llvmpipe
   (Linux, WSL). On the Intel UHD it is correct but slower than the CPU.
-- The Xbox app has been tested on an Xbox One S only, with LFM3-1.7B. It needs the app type set to
-  Game again after every reinstall.
+- The Xbox app has been tested on an Xbox One S only, with LFM3-1.7B and LFM3-Audio-2B. It needs the
+  app type set to Game again after every reinstall. The app's storage holds one model at a time, and
+  speech on the console runs at about 0.87× real time, so a long spoken answer starts after a
+  longer buffering wait.
 - LFM3's sliding-window layers keep the whole KV cache like the others (simpler; a ring buffer
   would save almost half of it at long contexts).
 - The NEON kernels and the GPU f32 path are written for ARM64/AMD/Intel, but have only been tested

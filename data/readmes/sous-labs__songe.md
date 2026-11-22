@@ -61,8 +61,8 @@ change, and asks once:
 ```console
 $ songe init
 
-  Models    3 from LM Studio, each as songe/…
-  Agent     opencode → Songe models · default songe/granite-4.2-3b-MLX-4bit
+  Models    3 from LM Studio, listed under Songe
+  Agent     opencode → Songe models · default granite-4.2-3b-MLX-4bit
   Agent     pi → Songe models · choose one with /model
   Data      ~/Library/Application Support/songe
   Service   starts at login
@@ -72,7 +72,8 @@ $ songe init
 Install? (Y/n)
 ```
 
-Then pick a `songe/…` model in your agent, and work as usual.
+Then pick a Songe model in your agent (opencode lists them as
+`songe/songe/<name>`), and work as usual.
 
 <details>
 <summary>Plain pip, and what you need</summary>

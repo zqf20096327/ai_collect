@@ -135,6 +135,7 @@ _Highlights personally recommended by **Tianyi Cui** ([@tianyi](https://x.com/ti
 
 _DSH's core composition mechanism: a **profile** stacks bundle patch layers, then your own `cordis.patch.yml` (profile-level, then `$DSH_HOME`-level, then `--patch` overlays) — letting you reshape the whole plugin tree without forking. This is the layer where **task-specialized runtime configurations** live: a long-horizon profile, a math-reasoning profile, a slides-editing profile are all just a different bundle stack + patch, not a different codebase. Tools and harnesses that operate at this layer (share/export a profile, or run DSH as a specialized backend under a task-specific patch) belong here rather than under generic plugins._
 
+- [wwewtech/numes-deepseek-harness](https://github.com/wwewtech/numes-deepseek-harness) — Free Numes models in DeepSeek Harness: zero-dependency local proxy with a hard `$0` route (`:free` + `max_price` guards), never-give-up retries (5s to 5m), free-model auto-discovery, and paid-model protection.
 - [Bryan-cmf/dsh-general-agentics](https://github.com/Bryan-cmf/dsh-general-agentics) — General Agentics distribution bundle for DSH: one install brings a white-label brand, curated plugins, bundled skills and MCP pre-configuration (MIT).
 - [lldwb/dsh-sub2api-provider](https://github.com/lldwb/dsh-sub2api-provider) — Sub2API third-party provider bundle for DeepSeek Harness, with Off / Low / High / Max thinking effort.
 - [cuddly-guacamole/dsh-orchestrator-preset](https://github.com/cuddly-guacamole/dsh-orchestrator-preset) — Thin-shell agent preset for DeepSeek Harness: nine lanes with declared tool boundaries, resident routing sections, four self-authored skills, and an evidence-based completion gate.
@@ -212,6 +213,7 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [Motuo24/dsh-thinking-slider](https://github.com/Motuo24/dsh-thinking-slider) — Thinking-effort adjustment plugin for DSH that mimics the snap-to-gear reasoning slider of advanced Codex models (e.g. GPT5.6 Terra), unlocking Low/Medium/etc. gears.
 - [9527ccccccc/dsh-build-plan-mode](https://github.com/9527ccccccc/dsh-build-plan-mode) — Build and read-only Plan modes for DeepSeek Harness sessions — a pure user-layer Cordis plugin, zero DSH core modification.
 - [yongshuai0314/dsh-i-have-adhd](https://github.com/yongshuai0314/dsh-i-have-adhd) — ADHD-friendly output shaping for DeepSeek Harness: one system-prompt section with adhd_on/adhd_off/adhd_status tools, persisted across restarts. Inspired by ayghri/i-have-adhd (MIT).
+- [klaus-2/dsh-nextsteps](https://github.com/klaus-2/dsh-nextsteps) — One-click next steps under every finished agent turn: the model suggests followup prompts, they render as clickable cards attached to that turn, one click sends the prompt, and everything persists across restarts; a settings page controls the generation language, suggestions per turn, the generator model and updates.
 - [sakka6868/dsh-prompt-optimize-plugin](https://github.com/sakka6868/dsh-prompt-optimize-plugin) — "Prompt optimize" button for the DeepSeek Harness composer: one click rewrites a vague prompt into something clear, specific, and actionable, IDE-smart-suggestion style.
 - [svgop/dsh-rich-context](https://github.com/svgop/dsh-rich-context) — Agent instruction manager for DSH — edit and template the AGENTS.md files the harness actually reads (global + per-workspace).
 - [niyongsheng/meww](https://github.com/niyongsheng/meww) — Pixel-art AI desktop-pet plugin for DSH: a small group of Pokémon-style sprites living in the corner of your Agent UI, with chat and persistent per-pet memory.
@@ -372,6 +374,13 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [beibing173/dsh-codex-gpt](https://github.com/beibing173/dsh-codex-gpt) — Use ChatGPT / OpenAI Codex from DSH: a `chatgpt-codex` provider signed in through official OAuth (subscription quota, no API key), plus optional hand-off of harder tasks from DeepSeek to GPT.
 - [Sheep1x/dsh-aimy](https://github.com/Sheep1x/dsh-aimy) — dsh-Aimy: a DSH plugin that uses models from the Aimy relay and switches groups for real (new-api / sub2api compatible).
 - [cjc-github/dsh-model-provider-picker](https://github.com/cjc-github/dsh-model-provider-picker) — Model provider picker for DeepSeek Harness: choose the model provider directly from the DSH UI.
+- [dongliuwuzhong-arch/DSH-purge](https://github.com/dongliuwuzhong-arch/DSH-purge) — Jailbreak / purge toolkit pinned to DSH 0.2.2-rc.5: 77 patches, byte-for-byte rollback backups, a soul gate and 356 unit tests (self-maintained dsh-purge branch).
+- [Joseph2Young/dsh-connect-doubaowork](https://github.com/Joseph2Young/dsh-connect-doubaowork) — Doubao Work mode for DSH: routes Doubao, DeepSeek, Kimi and GLM models into DeepSeek Harness through a local OpenAI-compatible gateway.
+- [interested3041/dsh-auto-router](https://github.com/interested3041/dsh-auto-router) — Bailian smart routing plugin: a decision model analyses each request and routes it to the best-fit Alibaba Cloud Bailian model, with quota cooldown and silent fallback.
+- [wssdll/dsh-chat-preset](https://github.com/wssdll/dsh-chat-preset) — Pure chat mode preset: schema drops from ~9,458 to ~376 tokens (about 25x), keeping only web search, open page and read attachment, with a Chinese chain of thought.
+- [Nefelibatic/dsh-armor-supreme](https://github.com/Nefelibatic/dsh-armor-supreme) — Layered context assembly for DSH agents: eight ordered prompt sections, a trajectory double gate, 23 domains × 8 frame permutations, a tail anchor and a tool gate, all observable and hot-swappable.
+- [NANA7MI0/dsh-purge-go](https://github.com/NANA7MI0/dsh-purge-go) — Ports dsh-purge (community-maintained fork) to DSH-GO on mobile, keeping only prompt injection and engine patching; no weight changes, no network calls.
+
 
 ## Harnesses & Runtimes
 
@@ -538,14 +547,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [KYinCode/dsh-hot-installer](https://github.com/KYinCode/dsh-hot-installer) — Hot plugin manager for DeepSeek Harness (dsh): install once, restart once, then install/remove/upgrade plugins take effect instantly without further restarts.
 - [lzx-Bill/dsh-plugins](https://github.com/lzx-Bill/dsh-plugins) — Open-source community plugins for DeepSeek Harness, built with TypeScript and Cordis.
 - [openrect/dsh-community-installer](https://github.com/openrect/dsh-community-installer) — Unofficial community installer for `@deepseek-ai/dsh` on Windows.
-- [chenyinrusi/dsh-updater](https://github.com/chenyinrusi/dsh-updater) — One-command external updater/repair tool for DeepSeek Harness on Windows: git fetch, merge upstream, pnpm install, build and typecheck; pip-installable, auto-elevates, works around the pnpm symlink EPERM crash.
-- [dongsheng123132/u-dsh-deepseek-harness-portable](https://github.com/dongsheng123132/u-dsh-deepseek-harness-portable) — U-DSH Portable: DeepSeek Harness USB portable edition for Windows with a Xiapan Cloud device wallet.
-- [huiruo/robbot](https://github.com/huiruo/robbot) — Personal AI platform powered by DeepSeek Harness.
-- [Yukari316/dsh-toolcall-compat](https://github.com/Yukari316/dsh-toolcall-compat) — Fixes tool-call JSON-schema parsing errors that cause repeated bad tool calls when using custom-provider models in DSH, plus a long-wait toolcall skip feature.
-- [Prism-Shadow/penguin-harness](https://github.com/Prism-Shadow/penguin-harness) — 🐧 Harness for RSI tuned for open models like DeepSeek: a deliberately minimal toolset over clean low-level interfaces, fewer tool calls and tokens; carries the `deepseek-harness` GitHub topic.
-- [snow-The/dsh-ark-plan](https://github.com/snow-The/dsh-ark-plan) — Correctly activate DeepSeek V4 Flash on the Volcano Ark plan API for DeepSeek Harness: default config injection (reasoningEfforts + effort=max) plus an `ark_plan_doctor` self-check.
-- [CH4ACKO3/the-binding-of-dsh](https://github.com/CH4ACKO3/the-binding-of-dsh) — Bidirectional DSH Connection and Typert Gateway integration.
-- [Howe829/dsh-runtime](https://github.com/Howe829/dsh-runtime) — Runtime observability and relationship graph for DeepSeek Harness and Cordis.
-- [LAN-TINA-WS/dsh-windows-shell-policy](https://github.com/LAN-TINA-WS/dsh-windows-shell-policy) — DeepSeek Harness Windows default shell policy: probes git-bash/MSYS2, a settings-panel one-click bash/pwsh switch, dynamic bash-tool registration, and trimmed prompt tool surface — a DSH composite plugin.
-- [Frog755/dsh-client-auto-retry](https://github.com/Frog755/dsh-client-auto-retry) — DSH client plugin: auto-sends 「继续」 when a turn is interrupted/errored/overlong. No model/provider switching. Ships with a settings card.
-- [sanshanya/better-model-provider](https://github.com/sanshanya/better-model-provider) — Per-model capability declaration for DeepSeek Harness: reasoning-effort le
+- [chenyinrusi/dsh-updater](https://github.com/chenyinrusi/dsh-updater) — One-command external updater/repair tool for DeepSeek Harness on Windows: git fetch, merge upstream, pnpm install, bui

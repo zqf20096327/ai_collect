@@ -114,6 +114,10 @@ ICML, 2026. [[Paper]](https://arxiv.org/abs/2508.19228) [[Code]](https://github.
 *Anastasios Gerontopoulos, Spyros Gidaris, Nikos Komodakis* <br>
 NeurIPS, 2025. [[Paper]](https://arxiv.org/abs/2505.10518) [[Code]](https://github.com/nasosger/MuToR) 
 
+* **Parallel Token Prediction for Language Models** <br>
+*Felix Draxler, Justus Will, Farrin Marouf Sofian, Theofanis Karaletsos, Sameer Singh, Stephan Mandt* <br>
+ICLR, 2026. [[Paper]](https://arxiv.org/abs/2512.21323) [[Code]](https://github.com/mandt-lab/ptp)
+
 * **Self-Distillation for Multi-Token Prediction** <br>
 *Guoliang Zhao, Ruobing Xie, An Wang, Shuaipeng Li, Huaibing Xie, Xingwu Sun* <br>
 arXiv, 2026. [[Paper]](https://arxiv.org/abs/2603.23911)

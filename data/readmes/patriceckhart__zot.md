@@ -572,7 +572,7 @@ Slash command names are case-insensitive in the TUI and messaging backends; argu
 | Command | Description |
 |---|---|
 | `/help` | Show key bindings and commands. |
-| `/login` | Log in via API key or subscription (opens a dialog). |
+| `/login` | Log in via API key or subscription without clearing the current conversation. |
 | `/logout [provider]` | Clear credentials for any logged-in provider, or all when omitted. `/logout openai-codex` clears ChatGPT/Codex subscription auth while preserving a public OpenAI API key; `/logout kimi` also disables fallback to the official Kimi Code CLI token until you log in to Kimi through zot again. |
 | `/model` | Pick a model from a list (or `/model <id>` to set directly). |
 | `/reasoning` | Set the reasoning level for subsequent model calls. |
@@ -1063,4 +1063,4 @@ Use `/login` and pick **api key** to paste an AI Studio key. zot probes `/v1beta
 
 > **Free-tier rate limits.** AI Studio's free tier has tight per-minute and per-day caps that vary by model: `gemini-2.5-pro` is the strictest (a few requests per minute, ~50 per day), Flash and Flash-Lite are far more generous. If a Pro turn 429s with `"You exceeded your current quota"` while Flash on the same key still works, you've hit the Pro free-tier RPD. Either switch to Flash for agent loops, or [enable billing](https://aistudio.google.com/app/apikey) on your AI Studio project to flip the same key from free to pay-as-you-go pricing (`$1.25/M` input, `$10/M` output for Pro).
 
-Reasoning levels (`--reasoning off|minimum|low|medium|high|xhigh|max`, also configurable through `/reasoning` or in `/settings` as **reasoning level**) map differently per generation. `max` is a distinct opt-in tier above `xhigh`. GPT-5.6, GPT-6, and adaptive-thinking Claude models receive native `max`; unsupported providers clamp it to their highest accepted effort. Budget-based providers retain their provider/model caps. Gemini 3.x uses the `thinkingLevel` enum (`MINIMAL`/`LOW`/`MEDIUM`/`HIGH`), with Gemini-3-Pro pinned to `LOW` minimum and `HIGH` for any medium-or-higher request. `off` sends no re
+Reasoning levels (`--reasoning off|minimum|low|medium|high|xhigh|max`, also configurable through `/reasoning` or in `/settings` as **reasoning level**) map differently per generation. `max` is a distinct opt-in tier above `xhigh`. GPT-5.6, GPT-6, and adaptive-thinking Claude models receive native `max`; unsupported providers clamp it to their highest accepted effort. Budget-based providers retain their provider/model caps. Gemini 3.x uses the `thinkingLevel` enum (`MINIMAL`/`LOW`/`MEDIUM`/`HIGH`), with Gemini-3-Pro pinned to `LOW` minimum and `HIGH` for any medium-or-higher r

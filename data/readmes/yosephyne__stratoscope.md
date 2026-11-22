@@ -24,8 +24,8 @@ A speedometer for your local LLM.
 
 Stratoscope shows what your local LLM inference engine is doing right now, in the macOS menu bar or the Windows taskbar.
 
-- The speed, like `247 t/s`, and a progress bar while a prompt is read. The bar's color shows how much came from the cache.
-- The panel: the current request, the context and how its size changed over the last 12 requests, the speed of the last 12 requests, RAM / GPU / CPU, the cache slots, and totals.
+- The speed, like `247 t/s` (the engine's total), and one small bar per running request, up to eight: a request that reads shows its prompt progress (with one request the bar's color shows how much came from the cache), one that writes shows its own speed against a scale that adapts to what runs.
+- The panel: the current request, a two minute graph of prefill, decode and total speed, the context and how its size changed over the last 12 requests, the speed of the last 12 requests, RAM / GPU / CPU, the cache slots, and totals.
 **Cache colors**
 
 | Color | Meaning |
@@ -111,8 +111,12 @@ The inference engine adapters and all the numbers are platform-neutral. Only the
 | Inference engine | Status |
 |---|---|
 | Strata | Works |
+| MTPLX (`mtplx serve`, `mtplx-m1`) | macOS: state (running or idle), context window, MTP depth, profile and finished requests with their cache reuse and speeds from `/health` and `/metrics`. No live progress: the engine reports only finished requests |
+| llama.cpp (`llama-server`) | Works on Windows: state, slots, cache reuse and context from `/slots`, speeds and totals from `/metrics` (start the server with `--metrics`); a build with `--sleep-idle-seconds` is shown as asleep, never woken. macOS: same adapter, checked against recorded payloads only |
+| Basalt | Works on Windows; macOS: same readout, checked against recorded payloads only |
+| Custom 27B server | Works on Windows: one busy state from `/metrics`, reading and writing per request from `/ui/state`; macOS: checked against recorded payloads only |
 | Demo (fake data, to try the menu without an inference engine) | Works: `STRATOSCOPE_ENGINE=demo` |
-| llama.cpp, MLX, Uzu, BaseRT | Not yet |
+| MLX, Uzu, BaseRT | Not yet |
 
 Each inference engine has a small adapter that turns its metrics into one common format. The menu only knows that format. If your inference engine exposes metrics over HTTP, writing an adapter is usually one file. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), or open an "Engine request" issue.
 
@@ -145,7 +149,7 @@ Environment variables win over `~/.config/stratoscope.json`, which wins over the
 
 | Variable | JSON key | Does |
 |---|---|---|
-| `STRATOSCOPE_ENGINE` | `engine` | Which inference engine to read: `strata` (default) or `demo` |
+| `STRATOSCOPE_ENGINE` | `engine` | Which inference engine to read: `strata` (default; Basalt, MTPLX, llama.cpp and custom 27B engines are recognised as well), `basalt`, `mtplx`, `llamacpp`, `custom` or `demo` |
 | `STRATOSCOPE_URL` | `url` | Inference engine address. Strata default: `http://127.0.0.1:8095` |
 | `STRATOSCOPE_ROUTER_URL` | `router` | Router in front of the inference engine. `none` turns it off |
 | `STRATOSCOPE_LOG` | `log` | Inference engine log file. Strata default: newest `*.log` in `~/.local/share/strata/install` |

@@ -162,6 +162,11 @@ A2A servers for search, data retrieval, and information extraction.
 
 - [kikiyop1101/boim-mcp](https://github.com/kikiyop1101/boim-mcp) ☁️ - BOIM — free, read-only A2A 1.0 agent for finding Korean businesses (about 2.7M nationwide, every industry), vendors with public procurement records and live public-sector bid notices. Live Agent Card at [boim.io/.well-known/agent-card.json](https://boim.io/.well-known/agent-card.json), JSON-RPC `SendMessage` (and legacy `message/send`) at `https://boim.io/api/a2a`; also an MCP server at `https://boim.io/api/mcp`.
 
+- [archlooks Projects Agent](https://archlooks.com) ☁️ - Read-only A2A agent over a 65k+ architecture & interior design project gallery: plain-text query or `project <id>` returns matching project cards with location, author and links; full project pages are x402-gated ($0.01 USDC). A2A JSON-RPC `message/send` at `https://archlooks.com/a2a`; also an MCP server at `https://archlooks.com/mcp`. [Agent Card](https://archlooks.com/.well-known/agent-card.json)
+
+- [daoudandiaye98-alt/mare-liberum](https://github.com/daoudandiaye98-alt/mare-liberum) 📇 ☁️ - Mare Liberum: A2A agent (protocol 0.3.0, JSON-RPC `message/send` at `https://mareliberum.dev/a2a`, agent card at `/.well-known/agent-card.json`) over an open index of about 1,500 A2A agents, about 84,000 MCP servers and x402 services; search by task, no account or key. MIT, self-hostable.
+
+
 ### 💬 <a name="communication-services"></a>Communication Services
 
 A2A servers for messaging, email, and other communication tools.
@@ -222,6 +227,7 @@ A2A servers for data processing, analytics, and database integration.
 - [Cerebrus Pulse](https://cerebruspulse.xyz) 🐍 ☁️ 🐧 - Institutional-grade crypto derivatives intelligence via A2A + x402 micropayments. Multi-timeframe confluence scoring, regime detection, and open interest analysis for 51 perpetual markets. Pay-per-query with USDC on Base. Agent Card: [api.cerebruspulse.xyz/.well-known/agent-card.json](https://api.cerebruspulse.xyz/.well-known/agent-card.json)
 - [LogicNodes PII-Shield](https://logicnodes.io) 🐍 ☁️ - A2A-discoverable PII-screening agent that returns an EIP-191-signed, on-chain-verifiable attestation per call (input_sha256 to output_sha256). Free tier 5/day, then $0.05 USDC per call via x402 on Base. Each call mints a public proof page that re-verifies the signature in the browser. Agent Card: [logicnodes.io/.well-known/agent.json](https://logicnodes.io/.well-known/agent.json)
 - [AgentRisk](https://agentrisk.dev) 🐍 ☁️ - Pre-trade risk scoring for Base tokens: honeypot detection, deployer wallet freshness, brand impersonation, and LP lock status cross-checked on-chain. Returns a risk score, human-readable verdict, and an explicit confidence flag when key data is missing. $0.15 USDC per call via x402 on Base. Agent Card: [agentrisk.dev/.well-known/agent.json](https://agentrisk.dev/.well-known/agent.json)
+- [Bosco-Labs/bosco-labs-data](https://github.com/Bosco-Labs/bosco-labs-data) 🐍 ☁️ - Official-source data for agents (SEC EDGAR, company registers, sanctions lists, EU and national law, openFDA) with a source URL on every row. 31 skills over A2A; the same tools are also available as MCP servers and as x402 pay-per-call REST. [Agent Card](https://api.boscolabs.dev/.well-known/agent-card.json)
 
 ### 🚆 <a name="travel-and-transportation"></a>Travel & Transportation
 

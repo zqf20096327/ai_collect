@@ -217,7 +217,7 @@ cookie operations, and validation-only replay. Query `tools/list` instead of
 depending on a hard-coded count; the authoritative registration is
 [`src/mcp/server.rs`](./src/mcp/server.rs).
 
-**Tip:** use `selector="main"` (or `main_content`/`main_contents`/`main-content`/`main-contents`/`main content`/`main contents`/`main_region`/`main_regions`/`main-region`/`main-regions`/`main region`/`main regions`/`primary`/`primary_content`/`primary_contents`/`primary-content`/`primary-contents`/`primary content`/`primary contents`/`primary_region`/`primary_regions`/`primary-region`/`primary-regions`/`primary region`/`primary regions`/`primary_content_region`/`primary_content_regions`/`primary-content-region`/`primary-content-regions`/`primary content region`/`primary content regions`) to strip nav/footer, `selector="article"` (or `article_region`/`article-region`/`article region`) to isolate content, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
+**Tip:** use `selector="main"` (also `maincontent`/`maincontents` and the `main_content`/`main-content`/`main content` forms, plus the corresponding `primary` region aliases) to strip nav/footer, `selector="article"` (or `article_region`/`article-region`/`article region`) to isolate content, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
 to return only actionable elements, `selector="h1"` through `selector="h6"`
 (or `heading1` through `heading6`) to isolate a heading level, or an action selector such as `selector="click"`
 (the equivalent `selector="action:click"` also works), `selector="type"`,
@@ -239,6 +239,9 @@ elements.
 Selector values may also be wrapped in matching single quotes, double quotes,
 or backticks (including `role=...`, `action:...`, and `#id` forms); surrounding
 whitespace is ignored.
+CSS class hooks support both `.class-name` and compound
+`.class-name.other-class` selectors when narrowing a SOM to elements with all
+of the requested class tokens.
 Use `selector="label:<text>"` or `selector="label=<text>"` (or the
 shorter `text:<text>`, `text=<text>`, `name:<text>`, `name=<text>`, and
 `placeholder:<text>` / `placeholder=<text>` aliases) for

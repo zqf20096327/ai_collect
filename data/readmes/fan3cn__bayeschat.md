@@ -28,12 +28,16 @@
 </p>
 
 <p align="center">
-  <a href="https://fan3cn.github.io/bayeschat/">
-    <img src="docs/brand/demo-hero.png" width="860" alt="BayesChat demo — 88 seconds of the app, played in the browser">
+  <a href="https://apps.apple.com/app/id6777948055">
+    <img src="docs/brand/hero-3x2.webp" width="860" height="573" alt="BayesChat on iPhone, a folded iPhone Duo and an iPad: a Golden Gate photo answer with two MCP tool calls, the Chat Preset picker, and a Patagonia conversation beside the iPad's conversation list">
   </a>
 </p>
 
-<p align="center"><sub><b>Watch the demo</b> — 88 seconds, played live in the browser. No video file, nothing to download.</sub></p>
+<p align="center">
+  <a href="https://fan3cn.github.io/bayeschat/"><img src="docs/badges/demo.svg" height="40" alt="Watch the demo"></a>
+</p>
+
+<p align="center"><sub>88 seconds of the app, played live in the browser. No video file, nothing to download.</sub></p>
 
 <p align="center">
   <a href="docs/"><code>Docs</code></a> &nbsp;
@@ -171,28 +175,22 @@ The product promise is verifiable, not just stated.
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/01-hero-privacy.webp" width="240" alt="A BayesChat conversation on iPhone: a question about AAPL, a collapsible reasoning block, two MCP tool calls and a streamed answer in Markdown">
-  <img src="docs/screenshots/02-byok-providers.webp" width="240" alt="The provider picker on iPhone listing OpenAI-compatible, OpenRouter, OpenAI, Anthropic, Google Gemini, Mistral, xAI, Groq, DeepSeek and Fireworks AI">
-  <img src="docs/screenshots/03-chat-presets.webp" width="240" alt="The new-chat screen with three Chat Presets — Research, Daily Talk and Translator — above the composer">
+  <img src="docs/screenshots/iphone-02-any-model.webp" width="240" alt="The Choose Provider sheet on iPhone: OpenAI Compatible, OpenAI, Anthropic, Google Gemini, OpenRouter, Mistral, xAI, Groq, DeepSeek, Together AI and Fireworks AI, each with its own base URL">
+  <img src="docs/screenshots/iphone-03-chat-preset.webp" width="240" alt="The new-chat screen on iPhone with Chat Preset chips — Daily Talk, Stock Analyst, Email Polish and Fact Check — above a composer set to Stock Analyst and auto/deepseek-v4-pro">
+  <img src="docs/screenshots/iphone-04-any-tool.webp" width="240" alt="Editing an MCP server on iPhone: the exa URL, Validate and Fetch Tools reporting Connected with three tools fetched, and a switch on each of them">
 </p>
-
-<p align="center"><sub><b>A private AI chat workspace</b> &nbsp;·&nbsp; <b>Any provider, local or cloud</b> &nbsp;·&nbsp; <b>Presets store prompts, models, parameters and tools</b></sub></p>
 
 <p align="center">
-  <img src="docs/screenshots/04-mcp-add-server.webp" width="240" alt="Adding a remote MCP server: name, URL, bearer-token authentication, then Validate and Fetch Tools returning a connected state">
-  <img src="docs/screenshots/05-mcp-tool-call.webp" width="240" alt="An MCP tool call expanded inline in the conversation, showing its arguments, latency, token delta and JSON result">
-  <img src="docs/screenshots/06-markdown-latex.webp" width="240" alt="A reply rendering LaTeX math, a table and syntax-highlighted code inside the transcript">
+  <img src="docs/screenshots/iphone-05-memory.webp" width="240" alt="The Memory screen on iPhone: Enable Memory switched on, two saved memories marked Yours, 2 of 100 used">
+  <img src="docs/screenshots/iphone-06-background.webp" width="240" alt="The iPhone lock screen while BayesChat keeps working: a reply still running in the Dynamic Island, and the notification that it finished below">
+  <img src="docs/screenshots/iphone-07-controls.webp" width="240" alt="Two iPhone parameter screens: the reasoning levels — Auto, Off, Low, High, Max — and session parameters with temperature, top P and the send-parameters switch">
 </p>
-
-<p align="center"><sub><b>Add a remote MCP server and fetch its tools</b> &nbsp;·&nbsp; <b>MCP tool calls, fully expanded</b> &nbsp;·&nbsp; <b>Markdown, LaTeX, code and tables</b></sub></p>
 
 <p align="center">
-  <img src="docs/screenshots/07-parameters.webp" width="240" alt="Session parameters on iPhone: reasoning effort, temperature, top K, max tokens, penalties and seed">
-  <img src="docs/screenshots/08-themes-sepia.webp" width="240" alt="The Sepia transcript theme applied to a conversation about a stock">
-  <img src="docs/screenshots/09-background-dynamic-island.webp" width="240" alt="A background answer still running, shown as a Live Activity in the Dynamic Island">
+  <img src="docs/screenshots/iphone-08-rendering.webp" width="240" alt="A streamed answer about gradient descent on iPhone: a LaTeX display equation, a bold section heading, a bullet list and 83.8 tok/s under the reply">
+  <img src="docs/screenshots/iphone-09-your-colors.webp" width="240" alt="The Appearance screen on iPhone: Standard, Sepia, Solarized and Rosé Pine themes, a font-size slider, ten accent colours and a custom one">
+  <img src="docs/screenshots/iphone-10-sepia.webp" width="240" alt="A conversation about Patagonia rendered entirely in sepia, with a photo and the token and latency row under the reply">
 </p>
-
-<p align="center"><sub><b>Sampling controls, per preset</b> &nbsp;·&nbsp; <b>Themes and typography</b> &nbsp;·&nbsp; <b>Answers keep running in the background, live in the Dynamic Island</b></sub></p>
 
 ## Everything else
 

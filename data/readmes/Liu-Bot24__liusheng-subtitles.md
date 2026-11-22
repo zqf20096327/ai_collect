@@ -32,7 +32,7 @@ Languages: [简体中文](README.md) · [English](README-en.md)
 - 支持译文、原文、双语三种显示方式。
 - 支持网页浮层字幕和侧边栏字幕列表。
 - 支持逐条编辑译文、校正字幕时间轴，并删除错误字幕段。
-- 支持导入 SRT、VTT、ASS/SSA 和插件 JSON 字幕。
+- 支持导入 SRT、VTT、ASS/SSA 和包含原文或译文字幕的 JSON 文件。
 - 支持导出 SRT 字幕。
 - 支持本地字幕缓存，重新打开同一页面时可以直接加载已有字幕。
 - 支持 OpenAI Whisper、Groq Whisper、xAI Grok、Fun-ASR 和自定义识别接口。
@@ -86,7 +86,7 @@ Languages: [简体中文](README.md) · [English](README-en.md)
 
 ## 隐私
 
-API 密钥、模型配置和字幕缓存保存在本机浏览器中。插件不会把网页视频、字幕缓存或 API 密钥发送给流声字幕开发者服务器。音频和字幕文本只会发送到用户自己配置的识别或翻译服务。
+API 密钥、模型配置和字幕缓存保存在本机浏览器中。插件不会把网页视频、字幕缓存或 API 密钥发送给流声字幕开发者服务器。音频和字幕文本只会发送到用户自己配置的识别或翻译服务（使用 Fun-ASR 时，音频会上传到该服务分配的临时存储地址）；翻译时还会附带页面网址、标题、简介等信息作为上下文。字幕缓存会记录生成任务时的原始页面和媒体地址。
 
 完整说明见 [隐私说明](docs/PRIVACY.md)。
 
@@ -106,4 +106,4 @@ API 密钥、模型配置和字幕缓存保存在本机浏览器中。插件不�
 
 ## 许可证
 
-本项目使用 [MIT License](LICENSE) 开源。
+本项目使用 [MIT License](LICENSE) 开源。扩展内附带的第三方组件使用各自的许可证：其中的 FFmpeg（WebAssembly 版）按 GPL 第 2 版或更高版本授权，Mediabunny 按 MPL-2.0 授权。许可证全文和对应源码地址见 [第三方声明](extension/THIRD_PARTY_NOTICES.md)。

@@ -215,17 +215,27 @@ constraints, with scripts or agents checking both.
 
 ## Results
 
-**Iterations keep paying off.** On two code-optimization benchmarks, median speedup
-rose with every iteration: ~8.5× on 154 [AlgoTune](https://github.com/oripress/AlgoTune)
-tasks and 3.12× on 270 [KernelBench](https://github.com/ScalingIntelligence/KernelBench)
-tasks after five iterations (earlier harness version, Claude Opus 4.8).
+**Iterating beats resampling.** On 30 random [AlgoTune](https://github.com/oripress/AlgoTune)
+tasks, each AutoHelix iteration turned more agent spend into more speedup, while the best of
+up to five independent attempts leveled off and a Claude Code `/goal` session stopped on its
+own near the AutoHelix curve. Scored on held-out instances, five iterations were faster than
+the best of five attempts on all 30 tasks and faster than `/goal` on 27
+([setup, audit and per-task results](examples/algotune)).
 
-<table align="center">
-<tr>
-<td align="center"><img alt="Median AlgoTune speedup over five iterations" src="assets/steps_algotune.png" width="400"></td>
-<td align="center"><img alt="Median KernelBench speedup over five iterations" src="assets/steps_kernelbench.png" width="400"></td>
-</tr>
-</table>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/algotune_progress-dark.png">
+    <img alt="Geometric mean AlgoTune speedup against agent cost per task: AutoHelix rises to 169x over five iterations, the best of N independent attempts flattens at 74x, Claude Code /goal sits at 85x near the AutoHelix curve" src="assets/algotune_progress-light.png" width="820">
+  </picture>
+</p>
+
+On 270 [KernelBench](https://github.com/ScalingIntelligence/KernelBench) tasks, median
+speedup rose with every iteration, to 3.12× after five (earlier harness version, Claude
+Opus 4.8).
+
+<p align="center">
+  <img alt="Median KernelBench speedup over five iterations" src="assets/steps_kernelbench.png" width="400">
+</p>
 
 **An open-ended goal, one H200.** Asked to post-train `Qwen3-4B-Base` on GSM8K with no
 method prescribed, the agent went from supervised fine-tuning through rejection sampling
@@ -233,6 +243,20 @@ to GRPO, reaching **93%** in 8 iterations ([posttrain](examples/posttrain)).
 
 <p align="center">
   <img alt="GSM8K accuracy over 8 iterations of post-training Qwen3-4B-Base, from 41% to 93%" src="assets/progression_posttrain_gsm8k.png" width="820">
+</p>
+
+**Three loops, same budget.** On Karpathy's [autoresearch](https://github.com/karpathy/autoresearch)
+(lower val_bpb of a small GPT trained for five minutes), AutoHelix, Claude Code `/goal` and
+autoresearch's own `program.md` loop got the same model (Claude Opus 5.5), up to 60
+experiments and the same trusted scorer, two runs each, each run isolated in its own
+container. Both AutoHelix runs ended 4.8% below the baseline on a held-out shard, for
+$27–36; `/goal` 4.3% for $36–37; `program.md` 2.3% for $20–45 ([autoresearch](examples/autoresearch)).
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/autoresearch_cost-dark.png">
+    <img alt="val_bpb improvement against cumulative API cost: AutoHelix reaches 4.8%, /goal 4.3%, program.md 2.3%, two runs each" src="assets/autoresearch_cost-light.png" width="820">
+  </picture>
 </p>
 
 **In the wild.** In [Hybrid Model Factory](https://github.com/awslabs/hybrid-model-factory),

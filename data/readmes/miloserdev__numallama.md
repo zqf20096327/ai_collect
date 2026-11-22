@@ -135,6 +135,7 @@ print(r.choices[0].message.content)
 |---|---|
 | `POST /v1/chat/completions` | `messages` (system / developer / user / assistant / tool), `stream` (SSE) with `stream_options.include_usage`, `tools` + `tool_calls` (also streamed), `tool_choice: "none"`, `temperature`, `top_p`, `seed`, `max_tokens` / `max_completion_tokens`, `stop`; Qwen3.5 / 3.8 reasoning with `reasoning_effort` or `chat_template_kwargs.enable_thinking` (returned as `reasoning_content`) |
 | `GET /v1/models` | the loaded model (named after the file) |
+| `GET /v1/sessions` | the known sessions (id, tokens, live) plus the state files on disk |
 | `GET /health` | `{"status": "ok"}` |
 
 - Listens on `127.0.0.1` by default; `-H 0.0.0.0` exposes it on the network, `-A <key>` then requires
@@ -142,8 +143,19 @@ print(r.choices[0].message.content)
 - **One request at a time.** A request already uses every core, so concurrent requests wait in the
   queue and are served in turn; there is no batching of several users.
 - The KV cache is kept between requests: a conversation that grows turn by turn only processes the
-  new messages (`usage.prompt_tokens_details.cached_tokens`). Hybrid models (Qwen3.5 / 3.8) can
-  only resume from the end of the previous prompt.
+  new messages (`usage.prompt_tokens_details.cached_tokens`). Hybrid models (Qwen3.5 / 3.8, GLM)
+  can only resume from the end of the previous prompt (or the start).
+- **Sessions survive a restart.** Every conversation is journaled to `<session_dir>/<id>.jsonl`
+  (with the full request bodies) and its token history + KV cache / recurrent state are dumped to
+  `<session_dir>/<id>.bin` (throttled: on growth by 2048 tokens or 30 s) so a reconnect after a
+  server restart resumes without re-processing the history. The session id comes from the request's
+  `session_id` / `conversation_id` field or the `x-opencode-session-id` (also `x-session-id`,
+  `x-conversation-id`) header; without one, a single `default` session is used. `-W <dir>` sets the
+  session directory (default `workspace/sessions`, `-W none` disables). `GET /v1/sessions` lists
+  the known sessions. Clients like opencode send their session header automatically, so an
+  opencode conversation can be resumed after restarting the server. Streaming responses send the
+  headers immediately and keep-alive comments during prefill, so slow first tokens don't hit
+  client timeouts.
 - The client runs the tools; the `-f` sandbox is used only by the CLI chat.
 - Not supported: `/v1/completions`, `/v1/embeddings`, images and audio, `n` > 1, `logprobs`,
   `response_format` (JSON mode), forcing a call with `tool_choice: "required"`.
@@ -239,7 +251,7 @@ are refused: re-export them.
 | `-N <n>` | NUMA nodes to use (default 0 = all); weights are split between them |
 | `-c <n>` | context window (KV cache size), default 8192 |
 | `-k <n>` | max prompt-lookup draft length, default 8, `0` = off (adaptive for MoE models; off for hybrid models: a recurrent state cannot drop rejected drafts) |
-| `-m server`, `-H`, `-P`, `-A` | OpenAI-compatible API server, listen address (default 127.0.0.1), port (default 8080), API key |
+| `-m server`, `-H`, `-P`, `-A`, `-W` | OpenAI-compatible API server, listen address (default 127.0.0.1), port (default 8080), API key, sessions directory |
 | `-r <0\|1>` | Qwen3.5 / 3.8: `1` = reasoning (thinking shown dimmed), default `0` = answer directly |
 | `-o <file>` | output of `-m imatrix` (importance statistics for `--q4 --imatrix`) |
 | `-d <file>` | draft model for speculative decoding |

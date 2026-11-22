@@ -9,6 +9,16 @@
 
 ## Make it your own
 
+<!-- dojo-demo-gallery:start -->
+
+### North Studio · a chart becomes a portrait film
+
+[![Animated portrait chart with a coral peak, mint Week one label and North Studio logo ending](docs/assets/showcase/north-studio/preview.gif)](docs/assets/showcase/north-studio/portrait.mp4)
+
+Ten seconds of editable data storytelling: a measured chart reveal, a highlighted peak and a matching brand ending. Made with Dojo Video Agent and rendered by Dojo Video Engine. The model-authored layout used saved-result and command-syntax recovery.
+
+[Watch the portrait MP4](docs/assets/showcase/north-studio/portrait.mp4) · [Production notes](docs/creative-qualification-r36-2026-11-22.md)
+
 ### Night Garden · one brief, two cuts
 
 [![Eight-second animated comparison: a lilac flower opens in Nocturne while two ink layers align into a moth in Ink Press](docs/assets/showcase/night-garden/compare.gif)](docs/assets/showcase/night-garden/compare.mp4)
@@ -45,8 +55,39 @@ https://github.com/user-attachments/assets/32125d51-061f-4a0f-b0ab-e15f79edb770
 
 An original Lottie story, handwriting drawn stroke by stroke, and expressive editable text.
 
+<details>
+<summary>Watch all 19 individual films</summary>
+
+| Film                                                                      | Creative direction              |
+| ------------------------------------------------------------------------- | ------------------------------- |
+| [North Studio](docs/assets/showcase/north-studio/portrait.mp4)            | Portrait chart and brand ending |
+| [Night Garden · Nocturne](docs/assets/showcase/night-garden/nocturne.mp4) | Botanical motion identity       |
+| [Night Garden · Ink Press](docs/assets/showcase/night-garden/press.mp4)   | Print-inspired motion identity  |
+| [Open Assembly](docs/assets/showcase/open-assembly/preview.mp4)           | Editable 3D instrument study    |
+| [Night Train](docs/assets/showcase/journey.mp4)                           | Illustrated story               |
+| [Field Notes](docs/assets/showcase/data-story.mp4)                        | Data and reports                |
+| [Type in Motion](docs/assets/showcase/kinetic.mp4)                        | Portrait motion poster          |
+| [Deep Field](docs/assets/showcase/cinema.mp4)                             | Cinematic titles                |
+| [After Hours](docs/assets/showcase/festival.mp4)                          | Festive 3D                      |
+| [Orbit](docs/assets/showcase/company.mp4)                                 | Company launch                  |
+| [Little Worlds](docs/assets/showcase/city.mp4)                            | Miniature worlds                |
+| [Precision / P–01](docs/assets/showcase/precision.mp4)                    | Exploded assembly               |
+| [Chroma Bloom](docs/assets/showcase/bloom.mp4)                            | Kinetic vector art              |
+| [Night League](docs/assets/showcase/sports.mp4)                           | Sports broadcast                |
+| [Flow](docs/assets/showcase/software.mp4)                                 | Software product demo           |
+| [Squeeze](docs/assets/showcase/citrus.mp4)                                | Food and drink campaign         |
+| [Special Delivery](docs/assets/showcase/lottie.mp4)                       | Lottie vector story             |
+| [Make Magic](docs/assets/showcase/handwriting.mp4)                        | Handwritten lettering           |
+| [Letter / Form](docs/assets/showcase/type-motion.mp4)                     | Expressive typography           |
+
+Full reels: [Creative directions](docs/assets/showcase/gallery.mp4) · [3D and vector detail](docs/assets/showcase/showoff.mp4) · [Real-world scenarios](docs/assets/showcase/scenarios.mp4) · [Lottie and lettering](docs/assets/showcase/lettering.mp4)
+
+</details>
+
 **[Explore the editable examples and make them yours →](examples/creative-showcase/README.md)**
 The original scenes stay editable; no API keys are needed to render them.
+
+<!-- dojo-demo-gallery:end -->
 
 Formerly **Dojo Video Harness** (`dojo-video-harness`). The repository name changed; package names, saved projects, and runtime profiles remain compatible. See [the rename record](docs/project-rename-2026-11-17.md).
 

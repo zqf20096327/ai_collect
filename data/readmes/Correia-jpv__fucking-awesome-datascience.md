@@ -21,6 +21,8 @@ $ brew install academic
 
 ## Sponsors
 
+[![Hangar: run AI coding agents in a macOS, Linux or Windows VM on your Mac](https://raw.githubusercontent.com/baseguard/hangar/main/docs/assets/banner.gif)](https://hangar.bot/?utm_source=github&utm_medium=sponsorship&utm_campaign=hangar_launch&utm_content=awesome_datascience_banner)
+
 [![Creavit Studio: recording, editing, and motion in one app](https://raw.githubusercontent.com/creavit-studio/files/refs/heads/main/static/crvt-banner.png)](https://creavit.studio/?utm_source=github&utm_medium=sponsorship&utm_campaign=creavit_founding_alpha&utm_content=crvt_banner)
 
 [![Graphyn: visualize specialized agent workflows](https://raw.githubusercontent.com/fuego-wtf/graphyn-code/main/assets/graphyn-agent-workflows.png)](https://graphyn.ai/?utm_source=github&utm_medium=sponsorship&utm_campaign=graphyn_founding_alpha&utm_content=awesome_datascience_banner)
@@ -1024,7 +1026,4 @@ Below are some Social Media links. Connect with other data scientists!
 | [Hilary Mason](https://x.com/hmason) | Data Scientist in Residence at @accel. |
 | [Jeff Hammerbacher](https://x.com/hackingdata)  | ReTweeting about data science |
 | [John Myles White](https://x.com/johnmyleswhite)  | Scientist at Facebook and Julia developer. Author of Machine Learning for Hackers and Bandit Algorithms for Website Optimization. Tweets reflect my views only. |
-| [Juan Miguel Lavista](https://x.com/BDataScientist) | Principal Data Scientist @ Microsoft Data Science Team |
-| [Julia Evans](https://x.com/b0rk) | Hacker - Pandas - Data Analyze |
-| [Kenneth Cukier](https://x.com/kncukier) | The Economist's Data Editor and co-author of Big Data (https://www.big-data-book.com/). |
-| Kevin Davenport | Organizer of https://www.meetup.com/
+| [Juan Miguel Lavista](https://x.com/BDataScientist) | Principal Data Scientist @ Micro

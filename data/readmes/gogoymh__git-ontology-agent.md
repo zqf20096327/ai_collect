@@ -36,9 +36,11 @@ Git lets the agent keep working on one branch while it handles a separate reques
 | | | |
 | --- | --- | --- |
 | **R1** | "Plan my Busan business trip next week" | `req/1` starts: checks the KTX timetable, commits 3 hotel candidates |
+| ↳ | *Started* | "Got it, I've started on “Busan trip plan”. I'll keep you posted as it goes." (instant, before any LLM call) |
 | **R2** | "Oh, keep the budget under ₩500,000" | judged **k1 supplement** → commits `constraint.budget` to `req/1` and redoes only the hotel step |
 | ↳ | *Interim ①* | "KTX is set for Tuesday morning. Applying your ₩500,000 budget, I'm picking the hotel again." |
 | **R3** | "By the way, what time is tomorrow's meeting?" | judged **k3 independent** → a separate `req/3` from `main`, merged when done; `req/1` keeps going |
+| ↳ | *Started* | "Got it. I'll check “tomorrow's meeting” separately and keep working on “Busan trip plan”." |
 | ↳ | *Interim ②* | "Tomorrow's meeting is at 2 PM. Still working on the trip plan." |
 | | `req/1` | re-picks the hotel → settles the plan → merges into `main` |
 | ↳ | **Final** | "Here is your plan: Tue 08:00 KTX → Hotel A (2 nights, ₩180,000) → … total ₩460,000, within budget. The budget came from your second request." |
@@ -216,7 +218,7 @@ Interim answers look at the branch. Final answers look at the merge.
 
 | | Interim answer | Final answer |
 | --- | --- | --- |
-| When | right when a new message arrives; for an independent request, when it is done | after every open request branch is merged |
+| When | right when a new message arrives (a new request gets an instant "started"); for an independent request, again when it is done | after every open request branch is merged |
 | Source | the latest commit of the branch in progress (not yet merged) | the merge commit: the claims changed from the base to the merge |
 | Content | what is settled, how the new message is applied, what is left | the full answer to the first request, noting what later requests changed |
 | Tone | says clearly that work is in progress; never states what may still change as settled | if a conflict is left, shows both values and asks |
@@ -256,25 +258,31 @@ Real output of `goa demo` (offline, no API key). The same trip request, with the
 **Correction: the premise changes** · `goa demo --scenario correction --lang en`
 
 ```text
-R1 Plan my Busan business trip next week
-R2 Actually, not Busan but Daegu
-  interim Changed the trip city to Daegu. Dropping the KTX and hotel candidates found for
-          Busan and redoing them for Daegu.                    ↳ from req/1@17ec8ac k2 correction
-  final   Here is your plan: Tue 08:30 KTX (Seoul→Dongdaegu) → Hotel B (2 nights, ₩160,000)
-          → total ₩390,000. The trip city was changed to Daegu in your second request.
-                                                               ↳ from main@29f843d
+User (R1)          Plan my Busan business trip next week
+  Agent (interim)  Got it, I've started on “Busan trip plan”. I'll keep you posted as it goes.
+                   ↳ from req/1@3d2aaef
+
+User (R2)          Actually, not Busan but Daegu
+  Agent (interim)  Changed the trip city to Daegu. Dropping the KTX and hotel candidates found for Busan and redoing them for Daegu.
+                   ↳ from req/1@0502e86 k2 correction
+  Agent (final)    Here is your plan: Tue 08:30 KTX (Seoul→Dongdaegu) → Hotel B (2 nights, ₩160,000) → total ₩390,000. The trip city was changed to Daegu in your second request.
+                   ↳ from main@7cf5561
 ```
 
 **Progress and cancel** · `goa demo --scenario cancel --lang en`
 
 ```text
-R1 Plan my Busan business trip next week
-R2 How far along are you?
-  interim KTX is set: Tue 08:00 KTX (Seoul→Busan). Found hotel candidates: Hotel C, Hotel B,
-          Hotel A. Now working on the hotel and total.         ↳ from req/1@2efcb2b k5 progress
-R3 The trip got cancelled, you can stop
-  interim Stopped the Busan trip plan. What I found so far (KTX and hotel candidates) stays
-          in history only.                                     ↳ from cancelled/req/1@2a2cbd8 k4 cancel
+User (R1)          Plan my Busan business trip next week
+  Agent (interim)  Got it, I've started on “Busan trip plan”. I'll keep you posted as it goes.
+                   ↳ from req/1@3f1215b
+
+User (R2)          How far along are you?
+  Agent (interim)  KTX is set: Tue 08:00 KTX (Seoul→Busan). Found hotel candidates: Hotel C, Hotel B, Hotel A. Now working on the hotel and total.
+                   ↳ from req/1@323b99a k5 progress
+
+User (R3)          The trip got cancelled, you can stop
+  Agent (interim)  Stopped the Busan trip plan. What I found so far (KTX and hotel candidates) stays in history only.
+                   ↳ from cancelled/req/1@3a39837 k4 cancel
 ```
 
 With nothing left to merge, there is no final answer: the second interim is the last word, and `cancelled/req/1` keeps what was found.
@@ -285,7 +293,9 @@ With nothing left to merge, there is no final answer: the second interim is the 
 pip install git+https://github.com/gogoymh/git-ontology-agent
 goa demo                                      # the budget example above, offline
 goa demo --mock                               # same, through simulated Anthropic + Typesafe APIs
-goa chat --llm openai --decision typesafe     # for real, with any LLM and decision model
+goa demo --delay 0                            # no pauses between turns (default 0.8s on a terminal)
+cp .env.example .env                          # add a key, e.g. OPENROUTER_API_KEY
+goa chat --llm openrouter --decision openrouter   # for real, with any LLM and decision model
 goa log                                       # the conversation as a git graph
 ```
 
@@ -313,12 +323,13 @@ No key yet? `--mock` answers every provider's real request shape locally, so the
 | `openai` | `OPENAI_API_KEY` | OpenAI Decisions API (`predicate` / `choice`), `gpt-6-luna` |
 | `gemini` | `GEMINI_API_KEY` | structured output with an enum schema, temperature 0 |
 | `cloudflare` | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Workers AI JSON-schema mode |
-| `openrouter:cloudflare/clef` | `OPENROUTER_API_KEY` | OpenRouter Decisions API |
+| `openrouter`, `openrouter:cloudflare/clef`, `openrouter:typesafe/...` | `OPENROUTER_API_KEY` | OpenRouter Decisions API (default `typesafe/jev-1.14`) |
+| `openrouter:google/gemini-2.5-flash`, ... | `OPENROUTER_API_KEY` | any OpenRouter chat model that supports strict JSON schema, temperature 0 |
 | `aimlapi` | `AIMLAPI_API_KEY` | Jev-shape gateway |
 | `llm:anthropic`, `llm:xai`, ... | that LLM's key | JSON-schema judgment |
 | `local` | none | deterministic keyword + ontology heuristic |
 
-Every backend returns the same typed answer (`choice` + `confidence` + `probabilities`, or `noul` in [0, 1]); a refusal becomes confidence 0, which makes the agent ask. Override models with `GOA_<PROVIDER>_MODEL` and endpoints with `TYPESAFE_URL`, `OPENAI_DECISIONS_URL`, `OPENROUTER_DECISIONS_URL`.
+Every backend returns the same typed answer (`choice` + `confidence` + `probabilities`, or `noul` in [0, 1]); a refusal becomes confidence 0, which makes the agent ask. Keys and defaults can live in `./.env` (see [`.env.example`](.env.example)); shell variables win. Override models with `GOA_<PROVIDER>_MODEL` (`GOA_OPENROUTER_DECISION_MODEL` for the judge) and endpoints with `TYPESAFE_URL`, `OPENAI_DECISIONS_URL`, `OPENROUTER_DECISIONS_URL`.
 
 ## Development
 

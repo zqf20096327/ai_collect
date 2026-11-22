@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/hero.jpg" alt="Mjolnir — faster, bigger-context LLM serving at the edge: a dedicated decode kernel, a tuned vLLM image, one CLI" width="100%">
+  <img src="assets/hero.webp" alt="Mjolnir — faster, bigger-context LLM serving at the edge: a dedicated decode kernel, a tuned vLLM image, one CLI" width="100%">
 </p>
 
 <p align="center">
@@ -50,7 +50,7 @@ Why any of this helps: **every generated token re-reads the whole KV cache** —
 ## <img src="assets/emoji/mjolnir_emoji.png" alt="" width="26" align="absmiddle"> Key Features
 
 <p align="center">
-<img src="assets/benchmarks/thor/Qwen3.8-27B/opening-thor-infographic.jpg" alt="Mjolnir image vs the official vLLM image — end-to-end decode and prefill" width="100%">
+<img src="assets/benchmarks/thor/Qwen3.8-27B/opening-thor-infographic.svg" alt="Mjolnir image vs the official vLLM image — end-to-end decode and prefill" width="100%">
 </p>
 
 <details>
@@ -182,6 +182,7 @@ kernel results exist for its headline model — its own kernel case study.
   <tbody>
     <tr><td align="left"><a href="configs/Qwen/Qwen3.8-27B/README.md">Qwen3.8-27B</a></td><td align="center"><span title="NVFP4_MJOLNIR_E2M3_LMH8_VT64K">✅ 40.7 t/s</span></td><td align="center">✅</td><td align="center"><span title="AWQ_MJOLNIR_VT64K">✅ 24.3 t/s</span></td></tr>
     <tr><td align="left"><a href="configs/nvidia/Qwen3.6-35B-A3B/README.md">Qwen3.6-35B-A3B</a></td><td align="center"><span title="NVFP4_MJOLNIR_E2M3">✅ 126.2 t/s</span></td><td align="center">—</td><td align="center">—</td></tr>
+    <tr><td align="left"><a href="configs/nvidia/Qwen3.8-Flash-Next/README.md">Qwen3.8-Flash-Next</a></td><td align="center"><span title="NVFP4_SFP8">❌ 40.5 t/s</span></td><td align="center">—</td><td align="center">—</td></tr>
   </tbody>
 </table>
 
@@ -252,7 +253,7 @@ Every command, sub-command and option, with defaults: **[the CLI reference](docs
 ├── docker/vllm-thor/           the image: Dockerfile, patches/, apply/verify gates, PATCHES.md
 ├── configs/                    model configs (NVFP4_MJOLNIR_E2M3_LMH8_VT64K default, NVFP4 = FlashInfer, NVFP4_FA2)
 ├── benchmarks/raw/verify/      raw verify results (one JSON per stage run) — the charts' only input
-├── assets/benchmarks/          generated charts (`*.png`)
+├── assets/benchmarks/          generated charts (SVG; the hero banners stay JPEG)
 ├── docs/platforms/             per-platform pages + the kernel case studies (rendered)
 ├── research/                   the autoresearch program + ledger
 └── .opencode/                  OpenCode agents (autoresearch, researchers, engineer, debugger)

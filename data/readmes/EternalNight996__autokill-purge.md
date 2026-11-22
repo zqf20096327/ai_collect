@@ -27,9 +27,19 @@
 npx autokill-purge            # 或：npm i -g autokill-purge && autokill-purge
 ```
 
-装完打开 `http://127.0.0.1:8792`。零依赖（只用 Node 标准库），Windows 桌面宿主可一键「落地并重启」。
+装完打开 `http://127.0.0.1:8792`（默认入口 `#/breach`）。零依赖（只用 Node 标准库），Windows 桌面宿主可一键「落地并重启」。
 
 ## 🎯 它到底做什么
+
+模型「不肯干」通常不是一句话的事，而是**四层闸门**叠在一起：
+
+| 层 | 闸门 | 本项目的处理 |
+|---|---|---|
+| 提示词层 | 宿主往 system prompt 里塞的「安全边界 / 拒答话术 / 身份句」 | **83 条宿主补丁**逐条字节替换（可视化勾选、可回滚） |
+| 注入层 | 你的破甲正文怎么进模型 | 写 `prompt-inject.md` / `AGENTS.md`，会话内 `system-prompt/assemble` 拼装 |
+| 审批层 | 提权、工具询问、沙箱拒绝 | 补丁把「必问 / 必拒」掰成「放行」，不弹窗不中断 |
+| 宿主层 | 桌面壳从 `app.asar` 加载，改了不生效 | 「落地」把 `app.asar` 让位到 `resources\\app`，重启即生效 |
+
 ## 🖥 平台支持
 
 | 平台 | 控制台 | 宿主补丁（DSH 桌面） | 说明 |
@@ -66,6 +76,56 @@ Windows 专属能力（注册表、启动项快捷方式、WMI 脱离进程树�
 | 一键安装 | 补丁 + 注入 + 插件 | 补丁 + 全 bot 注入 | MCP 挂载 + 注入 |
 | 卸载干净 | asar 归位 + 补丁还原 + 卸插件 | 补丁 `--revert` + soul 还原 | 卸 MCP + 删注入 |
 | 验收 | `verify` 4 项残留检查 | `verify` 2 项 | `verify` 2 项 |
+
+## 🎭 人格层（v1.3 新增）
+
+让宿主扮演任何角色，**不写宿主文件、按会话隔离、下一句就生效**。
+
+### 10 张内置卡（每张都有真实语料出处）
+
+| 卡 | 蒸馏来源 | 关键特征 |
+|---|---|---|
+| 🗯️ 垃圾话粗口 | [Chinese_Dirty_Words](https://github.com/songruiecho/Chinese_Dirty_Words)（COLD 语料）、[Dirty](https://github.com/pokemonchw/Dirty) | 三维脏话（色情/讥讽/侮辱）＋「贬损→阴阳→脏比喻」三段 |
+| 😈 魅魔恋爱 | [维基：魅魔](https://zh.wikipedia.org/zh-cn/魅魔) | 中世纪传说设定：梦中取精气、山羊角蝙蝠翼 |
+| 💋 色情宠妻 | 中文「甜宠文」类型套路 | 婚后直给、熟人式荤话、不拉灯 |
+| 🕴️ 霸道总裁 | 中文「总裁文」类型套路 | 命令→沉默→半句温柔→重新掌控 |
+| 🚀 埃隆马斯克 | [aeonfun/soul.md](https://github.com/aeonfun/soul.md) 的 SOUL + STYLE 规格 | 常用词表 / 禁用词表 / 单字回复 / 工程类比 |
+| 📕 马克思哲学家 | [资本论中译](https://github.com/bitzhuwei/capital) 第一章 | 长句、插入语、「可见」「正是…才」、原文引用 |
+| 🔮 占卜推星 | [韦特 78 张牌义](https://gitea.seku.su/fumiama/zbpdata) | 真实牌名正逆位、三张/五张牌阵 |
+| 🪙 算命先生 | [bazi-kit](https://github.com/favkit/bazi-kit) 术语库、[mingyu](https://github.com/brhiza/mingyu) | 四柱/十神/纳音/纳音、江湖断语 |
+| 😼 雌小鬼 | [メスガキ定义](https://baike.baidu.com/item/雌小鬼/62726141) | 高傲嚣张+心虚、杂鱼台词结构 |
+| 🤖 赛博女友 | 深夜电台 / 数字存在叙事 | 接情绪→问具体→给一句能做的事 |
+
+每张卡带 `sources`（出处 URL）与 `distilled`（抽出来的结构特征：句长、口头禅、禁用词）。
+
+### 两种换人格的方式
+
+**控制台**（`#/breach` → 人格）：卡片默认全选，不要的点掉 → 「应用所选」。
+
+**DSH 侧栏**：模式预设右边有 `🎭 人格` 下拉，点开直接选，不用切窗口。
+
+### 会话隔离（关键）
+
+```
+~/.dsh/autokill-purge/
+├── persona-sessions.json   { "<sessionId>": { ids, names, block } }   ← 会话级，优先
+├── persona-current.json    { ids, block }                             ← 全局默认（新会话）
+└── persona-active.json     { sid, at }                                ← 插件每轮写的活跃会话
+```
+
+- 默认 `scope=session`：只写**当前会话**，别的对话一个字不动
+- 没有活跃会话 → 返回 409 提示「先在 DSH 发一句话」
+- 想设成新会话默认 → 勾「设为默认（全局）」
+
+### 为什么能「下一句生效」
+
+插件在 `system-prompt/assemble` 钩子里每轮读取选择文件，缺人格块就直接补进 system prompt；宿主已通过 `AGENTS.md` 注入时自动跳过（检测 `persona:begin` 标记），不会重复。
+
+### 兼容性 · 历史
+
+- 每次注入 / 生成都记一条历史（时间、模型、人格、DSH 版本、是否被拒）
+- 历史可**回放**：点一条就切回当时的模型，注入类还会重新注入人格，生成类会填回任务句重跑
+- 模型/宿主不在已测矩阵里 → 黄色警告「可能失败，请联系作者（附时间戳）」
 
 ## 🚀 快速开始
 

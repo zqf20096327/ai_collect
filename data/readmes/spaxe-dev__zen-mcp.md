@@ -13,7 +13,7 @@
 
 Zen MCP is an MCP server that lets an AI agent work inside [Zen Browser](https://zen-browser.app) using Zen's own spaces, folders, and tabs. The agent can research in background tabs, read and search pages without switching what you are looking at, ask you a question in a small in-browser card, and show the evidence behind an answer.
 
-Status: **0.6.0, pre-1.0.** Windows is the only platform with a live-tested Zen launch. The public API, tools, and configuration keys can still change. See [Current maturity](#current-maturity-and-platform-support) and [Known limitations](https://github.com/spaxe-dev/zen-mcp/blob/main/docs/troubleshooting.md#known-limitations).
+Status: **0.6.3, pre-1.0.** Windows is the only platform with a live-tested Zen launch. The public API, tools, and configuration keys can still change. See [Current maturity](#current-maturity-and-platform-support) and [Known limitations](https://github.com/spaxe-dev/zen-mcp/blob/main/docs/troubleshooting.md#known-limitations).
 
 ## What it does
 
@@ -97,6 +97,19 @@ The running server also checks once at startup and offers a newer release in
 the browser banner: **Update** installs it, and dismissing leaves a small
 icon that reopens the offer.
 
+After a fresh install, after `zen-mcp setup` or `zen-mcp onboard`, and after a
+successful `zen-mcp update`, Zen MCP asks whether you want to install the
+consumer agent skill. Answering yes runs
+`npx skills add spaxe-dev/zen-mcp --skill zen-mcp --global --yes`; answering no
+prints that command so you can install it later. The flags install at user
+scope and skip the skills CLI's own prompts (the offer already asked). During
+npm installs the question is
+asked on the console the install was started from, on Windows and POSIX. The
+offer is skipped in CI and other non-interactive sessions; set
+`ZEN_MCP_NO_SKILL_PROMPT=1` to disable it. The
+browser banner's **Update** button shows the command in its result instead of
+prompting in a terminal.
+
 Or run setup without a global install:
 
 ```sh
@@ -106,7 +119,7 @@ npx @spaxe-dev/zen-mcp setup
 Each GitHub release also attaches a package tarball and `SHA256SUMS`:
 
 ```sh
-npm install -g ./zen-mcp-0.6.0.tgz
+npm install -g ./zen-mcp-0.6.3.tgz
 zen-mcp setup
 ```
 
@@ -178,7 +191,7 @@ If `zen-mcp` is not on `PATH`, use the absolute path to `dist/cli.js` as `comman
 The repository also ships an agent skill that teaches a connected agent to use these tools well: background research in spaces, source comparisons, evidence checks, tab triage, and cleanup.
 
 ```sh
-npx skills add spaxe-dev/zen-mcp
+npx skills add spaxe-dev/zen-mcp --skill zen-mcp --global --yes
 ```
 
 The skill installs from GitHub, not from the npm package, and needs the [skills CLI](https://skills.sh) (Node.js 22.20 or newer). It is separate from the server: configure Zen MCP first, then install the skill for your agent.
@@ -260,7 +273,7 @@ Zen MCP is usable but pre-1.0. The tool surface and configuration keys have chan
 - **Windows** is the only platform with a live-tested launch, consent card, evidence overlay, and shutdown against Zen 1.24b.
 - **macOS and Linux** compile and pass unit tests on CI, but no live Zen launch has been verified. Report what you see if you test them.
 - **The live suite is manual.** It needs Zen and a desktop session and is not part of CI or the release workflow.
-- **Unit tests are broad but not exhaustive.** On Windows, `npm test` runs the full unit suite and skips five POSIX-specific tests. The live suite has 34 declarations across three files.
+- **Unit tests are broad but not exhaustive.** On Windows, `npm test` runs the full unit suite and skips eight environment-dependent tests. The live suite has 61 declarations across three files.
 - **One agent browser per machine.** Current Zen builds use Marionette port 2828, and this server cannot share it.
 
 ## Known limitations

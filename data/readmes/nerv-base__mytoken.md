@@ -26,10 +26,10 @@ list price, and shows today's and this month's spend, your plan quotas and what 
 now — in a native desktop app, a menu-bar panel, or the command line. Everything stays on your
 machine.
 
-- **Thirty-three harnesses in one window** — Claude Code, Codex CLI, DSH, pi, Gemini CLI, opencode,
-  Crush, Cline, Roo Code, Kilo Code, Claude Desktop, WorkBuddy, CodeBuddy, CodeBuddy CN, Hermes, Qwen Code, Kimi,
-  OpenClaude, Grok, OpenClaw, Droid, Goose, Forge, Amp, Kiro, Zed, Antigravity, Codebuff, Mux,
-  ZCode, MiniMax Code, MiMo Code, Step Code and Trae.
+- **Thirty-six harnesses in one window** — Claude Code, Codex CLI, DSH, pi, Gemini CLI, opencode,
+  Crush, Cline, Roo Code, Kilo Code, Claude Desktop, WorkBuddy, CodeBuddy, CodeBuddy CN, Cindy, Hermes,
+  Qwen Code, Kimi, OpenClaude, Grok, OpenClaw, Droid, Goose, Forge, Amp, Kiro, Zed, Antigravity,
+  Codebuff, Mux, ZCode, MiniMax Code, MiMo Code, Step Code, Qoder and Trae.
 - **Session × provider × model** — the five token classes kept apart (input, output, cache read,
   cache write, reasoning), with cache-hit rate, per-project and per-day breakdowns, and sub-agent
   trees.
@@ -69,9 +69,8 @@ machine.
 ### macOS (disk image)
 
 Download `mytoken-<version>-darwin-universal.dmg` from [Releases](https://github.com/nerv-base/mytoken/releases), open it and drag **MyToken!!!!!**
-into *Applications*. The bundle is ad-hoc signed rather than notarized, so the first launch needs
-right-click → *Open* (or `xattr -dr com.apple.quarantine /Applications/mytoken.app`). The app's file
-name is `mytoken.app`; Finder and the menu bar show `MyToken!!!!!`.
+into *Applications*. The bundle is signed with a Developer ID and notarized by Apple, so it opens
+normally. The app's file name is `mytoken.app`; Finder and the menu bar show `MyToken!!!!!`.
 
 ### Windows (installer)
 
@@ -125,6 +124,7 @@ still counts toward spend.
 | Codex CLI | `codex` | ChatGPT |
 | DSH — DeepSeek Harness | `dsh` | DeepSeek balance |
 | pi / OMP / OMO-senpi | `pi` | — |
+| Qoder | `qoder` | Qoder |
 | Gemini CLI | `gemini` | — |
 | opencode | `opencode` | — |
 | Crush | `crush` | — |
@@ -135,6 +135,7 @@ still counts toward spend.
 | WorkBuddy | `workbuddy` | WorkBuddy |
 | CodeBuddy | `codebuddy` | — |
 | CodeBuddy CN | `codebuddy-cn` | — |
+| Cindy | `cindy` | — |
 | Hermes | `hermes` | — |
 | Qwen Code | `qwen` | — |
 | Kimi / Kimi Code | `kimi` | — |
@@ -156,9 +157,11 @@ still counts toward spend.
 | Step Code | `step-code` | — |
 | Trae | `trae` | database key, see [below](#encrypted-databases) |
 
-Cursor, GitHub Copilot, GLM and Qoder are quota sources without a session-log reader: their local
-formats report no usable tokens (Cursor's per-message `tokenCount` is always zero, Qoder carries
-credits rather than tokens). See [Plan quotas](#plan-quotas).
+Cursor, GitHub Copilot and GLM are quota sources without a session-log reader: their local formats
+report no usable tokens (Cursor's per-message `tokenCount` is always zero). Qoder has a session-log
+reader: its CLI transcripts record credits rather than tokens on plan-billed rows, so MyToken
+estimates tokens from the transcript and keeps the credits as a native credit bill. See
+[Plan quotas](#plan-quotas).
 
 ### Encrypted databases
 
@@ -204,6 +207,7 @@ takes a key recovered elsewhere, such as with
 | WorkBuddy | `workbuddy` | `$WORKBUDDY_HOME/projects` (`~/.workbuddy/projects` by default) |
 | CodeBuddy | `codebuddy` | `$CODEBUDDY_HOME/projects` (`~/.codebuddy/projects` by default) |
 | CodeBuddy CN | `codebuddy-cn` | Desktop logs (macOS `~/Library/Application Support/CodeBuddy CN/logs` and `…/CodeBuddyExtension/Logs/{CodeBuddyIDE,VSCode}`; Windows `%APPDATA%\CodeBuddy CN\logs`, `%LOCALAPPDATA%\CodeBuddyExtension\Logs`; Linux the same names under `$XDG_CONFIG_HOME`/`$XDG_DATA_HOME`) plus CLI transcripts in `$CODEBUDDYCN_HOME/projects` (`~/.codebuddycn/projects` by default) |
+| Cindy | `cindy` | OS app-data `Cindy/cindy-*.db` (macOS: `~/Library/Application Support`, Windows: `%APPDATA%`, Linux: `${XDG_CONFIG_HOME:-~/.config}`), SQLite |
 | Hermes | `hermes` | `$HERMES_HOME` (`~/.hermes` by default), SQLite |
 | Qwen Code | `qwen` | `$QWEN_DATA_DIR/projects` (`~/.qwen/projects` by default) |
 | Kimi / Kimi Code | `kimi` | Legacy `$KIMI_SHARE_DIR/sessions` (`~/.kimi/sessions`) plus `$KIMI_CODE_HOME/sessions` (`~/.kimi-code/sessions`) |
@@ -216,7 +220,7 @@ takes a key recovered elsewhere, such as with
 | Amp | `amp` | `$AMP_DATA_DIR` (comma-separated), else `~/.local/share/amp` |
 | Kiro | `kiro` | `$KIRO_HOME` (`~/.kiro` by default), plus the platform Kiro `globalStorage` agent directory |
 | Zed | `zed` | `…/Zed/threads/threads.db` (macOS: `~/Library/Application Support`, Windows: `%LOCALAPPDATA%`, Linux: `~/.local/share/zed`), SQLite |
-| Antigravity | `antigravity` | `$GEMINI_CLI_HOME/antigravity{,-cli,-ide}/conversations` and the matching `implicit` dirs (`~/.gemini` by default), only `*.db` |
+| Antigravity | `antigravity` | `$GEMINI_CLI_HOME/antigravity{,-cli,-ide}/conversations` and the matching `implicit` dirs, `$GEMINI_CLI_HOME/antigravity-acp/conversations`, and T3 Code's `$T3CODE_HOME/{userdata,dev}/providers/antigravity/*/antigravity-acp/conversations` (`~/.t3` by default); only `*.db` |
 | Codebuff | `codebuff` | `$CODEBUFF_DATA_DIR`, else `~/.config/manicode`, `~/.config/manicode-dev` and `~/.config/manicode-staging` |
 | Mux | `mux` | `$CODEBURN_MUX_DIR` or `$MUX_ROOT`, else `~/.mux`, `~/.mux-dev` and `~/.cmux` |
 | ZCode | `zcode` | `$MYTOKEN_ZCODE_DIRS`, else `~/.zcode/cli/db/db.sqlite`, query-only SQLite |
@@ -242,6 +246,7 @@ Every reader can be pointed somewhere else for non-default installs, containers 
 | `PI_HOME`, `MYTOKEN_PI_DIRS` | pi data dir, or explicit pi-compatible session roots (path list) |
 | `PI_CODING_AGENT_DIR`, `OMP_PROFILE`, `PI_PROFILE`, `PI_CONFIG_DIR` | OMP agent/profile roots reused by the `pi` reader |
 | `OMO_CODING_AGENT_DIR`, `SENPI_CODING_AGENT_DIR` | OMO/senpi agent roots reused by the `pi` reader |
+| `QODERCN_CONFIG_DIR`, `QODER_CONFIG_DIR`, `MYTOKEN_QODER_DIRS` | Qoder config dir, or explicit session roots (path list) |
 | `GEMINI_CLI_HOME`, `MYTOKEN_GEMINI_DIRS` | Gemini CLI data dir, or explicit dirs (path list) |
 | `OPENCODE_DATA_HOME`, `MYTOKEN_OPENCODE_DIRS` | opencode data dir, or explicit dirs (path list) |
 | `CRUSH_GLOBAL_DATA`, `MYTOKEN_CRUSH_DIRS` | Crush data dir, or explicit dirs (path list) |
@@ -250,6 +255,7 @@ Every reader can be pointed somewhere else for non-default installs, containers 
 | `MYTOKEN_CLAUDEDESKTOP_DIRS` | Explicit Claude Desktop session dirs (path list) |
 | `WORKBUDDY_HOME`, `CODEBUDDY_HOME` | WorkBuddy / CodeBuddy home dir |
 | `CODEBUDDYCN_HOME`, `CODEBUDDY_CN_HOME` | CodeBuddy CN home dir, instead of `~/.codebuddycn` |
+| `MYTOKEN_CINDY_DIRS`, `CINDY_HOST_DATA_DIR` | Explicit Cindy data roots, or a host data directory |
 | `HERMES_HOME` | Hermes home dir instead of `~/.hermes` |
 | `QWEN_DATA_DIR`, `MYTOKEN_QWEN_DIRS` | Qwen Code data dir, or explicit dirs (path list) |
 | `KIMI_SHARE_DIR`, `KIMI_CODE_HOME`, `MYTOKEN_KIMI_DIRS` | Kimi / Kimi Code data dirs, or explicit dirs (path list) |
@@ -262,7 +268,7 @@ Every reader can be pointed somewhere else for non-default installs, containers 
 | `AMP_DATA_DIR`, `MYTOKEN_AMP_DIRS` | Amp data dirs (comma-separated), or explicit dirs (path list) |
 | `KIRO_HOME`, `MYTOKEN_KIRO_DIRS` | Kiro home dir, or explicit dirs (path list) |
 | `MYTOKEN_ZED_DIRS` | Explicit Zed threads dirs (path list) |
-| `MYTOKEN_ANTIGRAVITY_DIRS` | Explicit Antigravity conversation dirs (path list) |
+| `T3CODE_HOME`, `MYTOKEN_ANTIGRAVITY_DIRS` | T3 Code data dir, or explicit Antigravity conversation dirs (path list) |
 | `CODEBUFF_DATA_DIR`, `MYTOKEN_CODEBUFF_DIRS` | Codebuff data dir, or explicit dirs (path list) |
 | `CODEBURN_MUX_DIR`, `MUX_ROOT`, `MYTOKEN_MUX_DIRS` | Mux data dir, or explicit dirs (path list) |
 | `MYTOKEN_ZCODE_DIRS` | Explicit ZCode database files or containing dirs (path list) |

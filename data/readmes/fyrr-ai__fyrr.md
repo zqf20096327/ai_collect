@@ -159,6 +159,7 @@ The example's top hit is `notes/backup.md`, with the answer:
 | [Deployment](docs/deployment.md) | Production setup, images and scheduling |
 | [AWS Lambda](docs/lambda.md) | Experimental reader deployment |
 | [Operations](docs/operations.md) | Monitor, restore, retire and upgrade |
+| [Storage request costs](docs/storage-costs.md) | What a reader and a writer request from the object store |
 | [Software factories](docs/software-factory.md) | Context for a fleet of unattended coding agents |
 | [Connect an agent](docs/connect.md) | Add fyrr to Claude Code, Codex or another MCP client |
 | [Configuration](docs/configuration.md) | Storage, embeddings, sources and secrets |
@@ -167,6 +168,7 @@ The example's top hit is `notes/backup.md`, with the answer:
 | [Reader and writer settings](docs/reader-writer.md) | Serving, retention and maintenance settings |
 | [CLI](docs/cli.md) | Commands, flags and exit statuses |
 | [MCP tools](docs/mcp-tools.md) | Tool arguments, results and transport |
+| [HTTP JSON API](docs/http-api.md) | Search and fetch over JSON, with status codes and limits |
 | [Connectors](docs/connectors/README.md) | Setup and limits per source |
 | [Writing a provider](docs/connectors/authoring.md) | Connector SDK contract and example |
 

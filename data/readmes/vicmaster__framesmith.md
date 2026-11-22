@@ -389,8 +389,8 @@ Application screens (`type: "desktop-app"`) are built from eight primitives on t
 | `link` | `label`, `icon`, `iconPosition`, `external`, `ariaLabel`, `state` | A standalone text action, at least 24 tall. With no `label` it hugs its glyphs (14px wide, 30 with `external`) and needs an `ariaLabel` (rendered as `aria-label` and `title`). A `text` node can hold inline links instead: `links: [{ start, end }]` character ranges of its content, drawn underlined and exempt from the 24px floor |
 | `text-input` | `value`, `placeholder`, `icon`, `size` (`sm` 32 / `md` 40), `rows`, `error` (a message), `disabled`, `state` | A field whose border (`$border-strong` when the design system has it) is its only boundary; `error` draws an icon and the message below and turns the border `$danger` |
 | `nav-item` | `label`, `icon`, `count`, `dotColor`, `active`, `depth` (0 / 1), `collapsed`, `state` | A 32px sidebar row. `active` draws an `$accent-tint` fill, a 2px `$accent` bar and a heavier label; `collapsed` is the 32×32 rail form, with the label as its accessible name; `dotColor` is an identity dot, never counted as an accent |
-| `tabs` | `items: [{ label, count?, active?, disabled?, state? }]`, `variant` (`line` / `contained`), `size` (`sm` 32 / `md` 40) | One tablist; each tab is its own target. The active tab gets an indicator (`line`) or an `$accent-tint` fill (`contained`) |
-| `tree-row` | `label`, `depth`, `expanded` (absent for a leaf), `icon`, `active`, `state` | A 32px row indented 16px per level, with a chevron when `expanded` is set |
+| `tabs` | `items: [{ label, count?, active?, disabled?, state? }]`, `variant` (`line` / `contained`), `size` (`sm` 32 / `md` 40) | One tablist; each tab is its own target. The active tab gets an indicator (`line`) or an `$accent-tint` fill (`contained`); only the line underline is measured by `desktop-app-state-contrast` |
+| `tree-row` | `label`, `depth`, `expanded` (absent for a leaf), `icon`, `active`, `state` | A 32px row indented 16px per level, with a chevron when `expanded` is set; `active` draws an `$accent-tint` fill, a 2px bar in `iconColor` (`$accent` by default) at the row's left edge at every depth, and a heavier label |
 | `menu-row` | `label`, `icon`, `shortcut`, `checked`, `destructive`, `disabled`, `submenu`, `state` | A 32px menu item; the shortcut right-aligns in a muted `kbd` style, `destructive` uses `$danger` |
 | `property-row` | `label`, `labelWidth` (96), one child | An inspector row: a muted label column, then its value (a control, a `text-input`, a `button`, a text). A control that is its only target is measured by the row's box. The row's `label` names a control directly inside it; with a blank label only text inside the row itself does (a sibling row's text does not count). The other desktop-app primitives drop any children |
 | `divider` | `orientation` (`horizontal` / `vertical`), `inset` | A 1px `$border` hairline; vertical dividers separate panes |
@@ -893,6 +893,4 @@ Declare what medium an existing canvas is on. Writes `metadata.surface` only: it
 |-------|------|-------------|
 | `canvasId` | string | Canvas to declare |
 | `type` | `"web"` \| `"mobile"` \| `"desktop-app"` \| null | The medium; `null` clears the declaration (the canvas reads as undeclared web again) |
-| `device` | string? | The type's profile: `"iphone-390"` (default) for `"mobile"`, `"window-1440"` (default) for `"desktop-app"`. Not valid with `"web"` or `null`. |
-
-Returns `{ canvasId, type, device, source, previous, artboard, hint?, variantsOutOfSync?, versionHashUnchanged }`. `previous` is the declaratio
+| `device` | string? | The type's profile: `"iphone-390"` (default) for `"mobile"`, `"window-14

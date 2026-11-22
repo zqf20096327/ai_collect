@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/version-1.3.2-blue.svg" alt="Version 1.3.2"></a>
+  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3"><img src="https://img.shields.io/badge/version-1.3.3-blue.svg" alt="Version 1.3.3"></a>
   <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-success.svg" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
@@ -209,7 +209,7 @@ Nexus/
 ## 7. Quick Start
 
 #### Option A: Desktop Installer (Recommended)
-1. Open the [v1.3.2 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2) and download the installer package for your operating system:
+1. Open the [v1.3.2 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3) and download the installer package for your operating system:
    - **Windows (x64 Installer)**: `Nexus_1.3.2_x64-setup.exe`
    - **macOS (Universal DMG)**: `Nexus_1.3.2_universal.dmg`
    - **macOS (Apple Silicon DMG)**: `Nexus_1.3.2_aarch64.dmg`
@@ -302,36 +302,62 @@ Join our developer communities for live troubleshooting, feature requests, and u
   </table>
 </div>
 
-## 10. 💖 Sponsor & Support
+## 10. ☕ Support & Sponsorship
 
-If Nexus has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕!
+If **Nexus** has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕! Donations are completely voluntary and do not grant any extra features, proprietary services, or priority support.
 
 Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
+
+> 💼 **Enterprise Sponsorship & Commercial Licensing**  
+> For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang4@gmail.com`.
 
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
-        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
+        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Reward" style="border-radius: 12px;" /><br />
         <br />
-        <b>WeChat Pay (微信支付)</b>
+        <b>WeChat Reward</b><br />
+        <span style="font-size: 11px; color: #888;">Scan to support via WeChat</span>
       </td>
       <td align="center" width="220">
-        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
+        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay Appreciation" style="border-radius: 12px;" /><br />
         <br />
-        <b>Alipay (支付宝)</b>
+        <b>Alipay Appreciation</b><br />
+        <span style="font-size: 11px; color: #888;">Scan to support via Alipay</span>
       </td>
-      <td align="center" width="220">
-        <img src="docs/assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
+      <td align="center" width="240">
+        <img src="docs/assets/binance-pay.jpg" width="180" alt="Crypto (USDT / USDC)" style="border-radius: 12px;" /><br />
         <br />
-        <b>Binance Pay (币安支付)</b><br />
+        <b>Crypto (USDT / USDC)</b><br />
         <code>UID: 1292741809</code><br />
-        <span style="font-size: 11px; color: #888;">Ryan Sunv · No Network Needed</span>
+        <span style="font-size: 11px; color: #888;">Binance Pay · Ryan Sunv</span>
       </td>
     </tr>
   </table>
 </div>
 
+### Official Payment Channels
+
+| Channel | Details | Verification Method |
+| :--- | :--- | :--- |
+| **Crypto (USDT / USDC)** | **UID: `1292741809`** · Name: **Ryan Sunv** | Direct internal transfer via Binance Pay |
+| **Crypto (USDT, on-chain)** | **Address: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · Network: **TRON (TRC-20)** | From any wallet or exchange — just select the **TRON (TRC-20)** network when sending |
+| **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
+| **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
+
+> ☕ **Every tip, big or small, means the world to me.** Your support helps me keep improving this project — making it more complete, more polished, and more powerful. Thank you for helping it grow.
+
+### Official Notice
+
+- **Unique Channel**: The UID, QR codes and on-chain address listed above are the **only** official donation channels for this project.
+- **No Private Solicitation**: The maintainers of this project will **never** contact you privately via email, messaging apps, or social media to solicit funds, donations, or account credentials.
+- **Anti-Impersonation & Reporting**: If you encounter any repository, fork, mirror, or distribution claiming to be this project with an inconsistent UID or modified QR code, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues).
+
+### Disclaimer
+
+- **Network & Regional Availability**: Crypto donations are subject to network handling and platform terms. Please verify whether Binance Pay is compliant and legally available in your region before transferring funds.
+- **Taxation & Compliance**: Donors are solely responsible for complying with the tax obligations and legal regulations of their local jurisdictions.
 ---
 
 ## 11. Development & Quality Verification
@@ -354,7 +380,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ## 12. License, Anti-Rebranding & Security Disclaimer
 
-- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.2 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
+- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.3 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
   - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.
   - **Attribution and accurate origin**: Preserve copyright, license and other legal notices as the AGPL requires, indicate relevant changes, and do not falsely represent modified builds as official releases. The AGPL's termination and reinstatement provisions are governed by Section 8; this README does not add an automatic-termination rule.
   - **Branding**: The software license does not automatically grant trademark rights or permission to imply official endorsement. See [Brand Guidelines](BRAND_GUIDELINES.md). These guidelines do not override AGPL-granted software freedoms.

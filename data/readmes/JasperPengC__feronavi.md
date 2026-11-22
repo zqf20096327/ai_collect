@@ -13,6 +13,8 @@
     <a href="#get-started"><img src="https://img.shields.io/badge/deploy-Self--hosted-526178?style=flat" alt="支持自托管部署" /></a>
   </p>
   <p>
+    <a href="https://feronavi.com/zh/">官网</a> ·
+    <a href="https://feronavi.com/zh/docs/overview/">使用文档</a> ·
     <strong><a href="#get-started">开始部署</a></strong> ·
     <a href="#overview">产品亮点</a> ·
     <a href="#collaboration">多人协作</a> ·
@@ -28,7 +30,7 @@
   <img src="docs/screenshots/10-workbench-light.png" alt="Feronavi 工作台，界面与自绘窄边外框随明暗主题切换" width="100%" />
 </picture>
 
-<p align="center"><sub>真实界面 · 演示数据 · 明暗自适应</sub> · <a href="#more-views">更多界面&nbsp;→</a></p>
+<p align="center"><sub>真实界面 · 演示数据 · 明暗自适应 · <a href="#more-views">更多界面&nbsp;→</a></sub></p>
 
 <a id="overview"></a>
 
@@ -57,7 +59,7 @@
 
 平台界面、内置助手与 MCP 共用业务服务、权限和审计规则。Agent 的操作受账号权限与令牌范围约束，并支持幂等执行和版本冲突处理。
 
-[**连接你的 MCP 客户端 →**](packages/feronavi-mcp/README.md)
+[**连接你的 MCP 客户端 →**](https://feronavi.com/zh/docs/mcp/)
 
 <a id="rag"></a>
 
@@ -78,8 +80,8 @@
 <details>
 <summary>接入 RAG：模型配置、MCP 与 API</summary>
 
-1. **在平台内使用**：配置聊天模型与嵌入模型，发布需要检索的项目文档并确认索引完成，再到知识助手选择项目范围提问。
-2. **通过 Agent 使用**：按 [MCP 接入说明](packages/feronavi-mcp/README.md)连接实例，使用 `rag.projects` 查看可访问项目、`rag.search` 检索资料、`rag.chat` 获取带引用的回答。
+1. **在平台内使用**：按[知识助手使用指南](https://feronavi.com/zh/docs/assistant/)配置聊天模型与嵌入模型，发布需要检索的项目文档并确认索引完成，再到知识助手选择项目范围提问。
+2. **通过 Agent 使用**：按 [MCP 接入说明](https://feronavi.com/zh/docs/mcp/)连接实例，使用 `rag.projects` 查看可访问项目、`rag.search` 检索资料、`rag.chat` 获取带引用的回答。
 3. **接入自己的应用**：从实例的 `GET /api/v1/openapi.json` 获取 OpenAPI 3.1 描述。使用平台 API 令牌进行 Bearer 认证，通过 `POST /api/v1/rag/search` 检索、`POST /api/v1/rag/chat` 问答；请求与响应结构、会话及流式接口见该描述。
 
 OpenAPI 描述覆盖 RAG 公共 API。检索与引用遵循当前身份、令牌项目范围和文档权限。
@@ -167,7 +169,7 @@ docker compose ps
 
 默认拉取应用 `ghcr.io/feronavi/feronavi-app:0.2.0` 与数据库 `ghcr.io/feronavi/feronavi-db:16-0.2.0`。本版预构建镜像支持并验证了 **Linux x86-64（amd64）**；其他架构尚未完成验收。
 
-生产部署请将实例放在 HTTPS 反向代理之后；升级已有实例前，请先备份数据库和数据卷，并核对数据库镜像的迁移要求。
+给团队开放访问前，请按[生产部署指南](https://feronavi.com/zh/docs/deployment/)配置 HTTPS 反向代理；升级已有实例前，请按[备份与升级指南](https://feronavi.com/zh/docs/operations/)备份数据库和数据卷，并核对数据库镜像的迁移要求。远程服务器的首次访问和启动排查见[快速开始](https://feronavi.com/zh/docs/quick-start/)。
 
 <details>
 <summary>从源码构建</summary>
@@ -188,19 +190,29 @@ docker compose -f compose.yaml -f compose.source.yaml up -d --build --wait
 第一次使用，可以从这三步开始：
 
 1. 创建项目、邀请成员，把第一项需求拆成可执行的工作项。
-2. 发布一篇项目文档，按 [RAG 配置说明](#rag-integration)完成索引，再让知识助手回答一个需要引用资料的问题。
-3. 创建 API 令牌，按 [MCP 接入说明](packages/feronavi-mcp/README.md)连接 Agent，让它检查项目进展并给出下一步建议。
+2. 发布一篇项目文档，按[知识助手使用指南](https://feronavi.com/zh/docs/assistant/)完成模型配置与索引，再让知识助手回答一个需要引用资料的问题。
+3. 创建 API 令牌，按 [MCP 接入说明](https://feronavi.com/zh/docs/mcp/)连接 Agent，让它检查项目进展并给出下一步建议。
 
 <a id="documentation"></a>
 
 ## 接入与帮助
 
+[使用文档](https://feronavi.com/zh/docs/overview/)覆盖安装、日常协作、Agent 接入与运维，可按当前目标直接阅读：
+
 | 我想要…… | 从这里开始 |
 | --- | --- |
-| **部署与运维** | [安装与首次配置](#get-started) |
-| **连接 Agent** | [MCP 客户端配置与接入](packages/feronavi-mcp/README.md) |
-| **接入知识与对话** | [模型配置、RAG 工具与公共 API](#rag-integration) |
+| **安装新实例** | [快速开始与首次配置](https://feronavi.com/zh/docs/quick-start/) |
+| **给团队开放访问** | [生产部署与反向代理](https://feronavi.com/zh/docs/deployment/) |
+| **管理项目与任务** | [项目与计划](https://feronavi.com/zh/docs/projects/) · [工作项与视图](https://feronavi.com/zh/docs/work-items/) |
+| **编写与协作文档** | [项目文档](https://feronavi.com/zh/docs/documents/) |
+| **连接 Agent** | [MCP 客户端配置与接入](https://feronavi.com/zh/docs/mcp/) |
+| **使用知识助手** | [模型配置、检索与对话](https://feronavi.com/zh/docs/assistant/) |
+| **管理成员与权限** | [权限与身份](https://feronavi.com/zh/docs/permissions/) |
+| **备份或升级实例** | [备份、迁移与升级](https://feronavi.com/zh/docs/operations/) |
+| **排查使用问题** | [常见问题](https://feronavi.com/zh/docs/faq/) |
 | **报告安全问题** | [安全报告说明](SECURITY.md) |
+
+开发接入可继续查看 [RAG 工具与公共 API](#rag-integration)，以及 [MCP stdio 桥接包说明](packages/feronavi-mcp/README.md)。
 
 <a id="more-views"></a>
 
@@ -220,6 +232,24 @@ docker compose -f compose.yaml -f compose.source.yaml up -d --build --wait
 截图来自独立演示环境，使用虚构团队与业务数据。透明背景搭配自绘无品牌外框，正文截图随明暗主题切换。
 
 </details>
+
+<a id="acknowledgments"></a>
+
+## 致谢
+
+感谢以下支持方为 Feronavi 的开发提供模型 API 服务与额度支持。
+
+### 友情赞助
+
+- [Xlinks](https://api.xlinks.site/)
+
+### LINUX DO 社区公益支持
+
+- [Agent Router](https://agentrouter.org/)
+- [Any Router](https://anyrouter.top/)
+- [千刀佬](https://linux.do/u/andrew-hh)
+
+*以上排名不分先后。*
 
 <a id="feedback"></a>
 

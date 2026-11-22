@@ -20,11 +20,52 @@ assistants, with the traps: [llms.txt](https://github.com/xxDoman/strata-gfx906/
 
 ---
 
-## The released engine: 0.2.9 (engine 0.1.55, `latest`)
+## The released engine: 0.2.18.1 (engine 0.1.64, `latest`)
 
 | | |
 | --- | --- |
-| Image tag | `xxdoman/strata-mi50:0.2.9`, alias `:latest` (7.73 GB) |
+| Image tag | `xxdoman/strata-mi50:0.2.18.1`, alias `:latest` (7.8 GB) |
+| Manifest digest | `sha256:e6be8e2f0bdef81cafb6660e94d2c42d973f63781c673bbbfdc79282fbd056a5` |
+| Engine binary sum | `sha256 2202b40c90fbb35685912a78e8a6c87a01c99f6194c0ffefe00522db8a1154c4` (30 727 808 B) — **identical to 0.2.18** |
+| Engine reports | `engine=0.1.64`; release `0.2.18.1`; `--families` = `qwen4exp qwen35moe` |
+| Built from | `xxdoman/strata-mi50:0.2.18` + one file: `/opt/strata/strata-launcher.py` |
+| Published | 2026-11-22 — `0.2.18.1` and `latest`, one digest; `0.2.18` stays as the rollback with the same engine |
+
+**0.2.18.1 is a launcher-only patch release**: the engine layer is untouched (same `2202b40c…` binary, same
+`strata-vision`), so there is **no performance change** — the numbers below still stand. It fixes the
+configurator losing the image encoder, [issue #4](https://github.com/xxDoman/strata-gfx906/issues/4):
+`/api/data` never returned the active config's `vision` section, so the *Image (mmproj)* selector fell back to
+"Text-only mode" on every page load and the next **Save and load** (even for an unrelated field such as
+context) wrote a config without images — after which every start, container restart included, came up
+text-only. The selector is now restored from the config (and keeps a file the scan no longer lists), and a
+trial start in Models Infos leaves a `.bak` of the active config instead of replacing it silently.
+
+Upstream moved prompt processing onto its own kernels: 0.2.14 dropped llama.cpp's prompt path on AMD and
+NVIDIA, 0.2.16 removed the ggml MMQ (`mmq::Context::run` is a stub now, `strata_pf_own` does the work),
+0.2.17 fixed the gfx906 build and taught setup to recognise MI50/MI60/Radeon VII, 0.2.18 added a separate
+Hy4-Flash engine that has **no HIP build for gfx906**. The E-set was re-based onto the new tree — 11 hunks
+in 5 files, four earlier fixes are now upstream and no longer patched.
+
+This tag also carries a **configurator fix**: `#monitor` showed “—” for GPU load, VRAM, temperature, power
+and PCIe, because `serve/telemetry.py` enables its AMD path only when the config has `"backend": "hip"`,
+and that key was written only on the two-card split path. The launcher now sets it whenever an amdgpu card
+is present. The engine binary is unchanged by that fix — same `2202b40c…` sum.
+
+One measurement on one MI50 32 GB at the factory 225 W cap, Qwen3.8-Flash-Next-Uncensored IQ3_XXS with the
+`orca-iq3_xxs` pack, `--resident-cpu-experts` on: **PP 150.41 tok/s** (535-token prompt, median of 3) and
+**TG 31.36 tok/s**, with 25.42 GiB of experts held in RAM and **zero blob reads from the file**. That is the
+whole claim; a series on longer prompts is a separate step.
+
+**Full page:** [docs/engines/0.2.18.1.md](https://github.com/xxDoman/strata-gfx906/blob/master/docs/engines/0.2.18.1.md)
+**0.2.18 (the base):** [docs/engines/0.2.18.md](https://github.com/xxDoman/strata-gfx906/blob/master/docs/engines/0.2.18.md)
+
+---
+
+## The previous release: 0.2.9 (engine 0.1.55)
+
+| | |
+| --- | --- |
+| Image tag | `xxdoman/strata-mi50:0.2.9` (7.73 GB; was `latest` until 2026-11-22) |
 | Manifest digest | `sha256:76542269a1d280341e1486cb8165a7a3a5e5c9404500d7fd09d34bbead2c470f` |
 | Engine binary sum | `sha256 905c35dc5b8870d9f68ad9372691ca7ffbc590c18f5015f9040b6215575f86f8` (44 300 472 B) |
 | Engine reports | `engine=0.1.55`; release `0.2.9`; `--families` = `qwen4exp qwen35moe` |
@@ -44,7 +85,7 @@ attention warmup (upstream #4708 caps by context alone) and `X(12)` = Q4_K, stil
 
 ---
 
-## The previous release: 0.2.3 (engine 0.1.48)
+## The release before that: 0.2.3 (engine 0.1.48)
 
 | | |
 | --- | --- |
@@ -109,7 +150,7 @@ rows exist for 0.1.48 yet.
 
 ---
 
-## The release before that: 0.2.1 (engine 0.1.46)
+## Older release: 0.2.1 (engine 0.1.46)
 
 | | |
 | --- | --- |

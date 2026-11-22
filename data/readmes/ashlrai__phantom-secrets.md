@@ -193,7 +193,8 @@ Use this read-only path before exploring the full tool catalog:
 
 1. Install both binaries from the reviewed [`v0.8.7` GitHub release](#installation).
 2. From the project you want to inspect, run `phantom setup --client codex`,
-   replacing `codex` with `claude`, `cursor`, or `windsurf` when appropriate.
+   replacing `codex` with `claude`, `cursor`, `windsurf`, or `gemini` when
+   appropriate.
 3. Restart the AI client so it loads the generated MCP configuration.
 4. Ask the client: “Call `phantom_capability`, then `phantom_status`. Report the
    value-blind authority, hard denials, project ID, dotenv protection counts, and
@@ -433,7 +434,7 @@ dashboard is designed to show team memberships and member lists.
 | `phantom cloud push` | After exact trusted-terminal confirmation, push a client-encrypted vault. Refused before the prompt when a secret is overdue under enforced rotation, demoted to read-only, or has unreadable lifecycle metadata. A remote success followed by local reconciliation failure is partial success and must not be retried automatically. |
 | `phantom cloud pull` | After exact trusted-terminal confirmation, pull and decrypt a vault. With `force=false`, skipped existing entries preserve the prior merge base and block later push until a fully reconciled approved pull. |
 | `phantom cloud status` | Authenticated provider read; requires attached trusted terminals and an exact challenge before stored-bearer or network access |
-| `phantom wrap` | Wrap package.json scripts with `phantom exec` automatically |
+| `phantom wrap` | Wrap selected package.json scripts with `phantom exec`; `--only A,B` selects names and `--skip X,Y` excludes them. Scripts still need a supported API route, and shell command lines are left unchanged. See [script wrapping](docs/exec.md#packagejson-scripts). |
 | `phantom unwrap` | Restore original package.json scripts |
 | `phantom watch` | Watch managed dotenv files and report new unprotected secrets. `--auto` hard-denies before mutation in current releases; use transactional `phantom init`. |
 | `phantom why <KEY>` | Explain why a key is or is not protected and how `phantom exec` delivers it (`no_route` means no built-in proxy route injects it). Works before init; `--json` prints the same shape as MCP `phantom_why` |
@@ -512,7 +513,7 @@ fails closed before vendor execution. No single-provider exception exists.
 - **Encrypted vault** -- macOS Keychain, Linux keyutils by default, or Windows Credential Manager, with a ChaCha20-Poly1305 encrypted-file fallback for CI and headless environments. Linux keyutils entries do not survive a reboot; a headed Linux project can run `phantom vault migrate-linux` from a trusted terminal to copy and verify its vault in persistent Secret Service before switching. Phantom does not claim Secure Enclave hardware binding. Argon2id uses m=64 MiB, t=3, p=1.
 - **Phantom tokens** -- 256-bit CSPRNG `phm_` placeholders in `.env`, rotatable on demand
 - **Authenticated proxy sessions** -- each proxy run generates a fresh `PHANTOM_PROXY_TOKEN`; CLI-generated SDK URLs include it for compatibility, and header-aware clients can opt into `x-phantom-proxy-token` with `PHANTOM_PROXY_HEADER_AUTH_ONLY=1`
-- **Route-owned credential injection** -- Client headers and bodies never resolve `phm_` tokens. After authenticating and matching an exact built-in route, the proxy injects that route's configured vault secret only into its fixed authentication header; a missing mapping fails before any upstream call. Request bodies are still collected under a hard byte cap before forwarding. Custom routes: `phantom start` serves custom routes from `.phantom.toml`; `phantom exec` refuses them and runs only Phantom's exact built-in routes. The reason: `phantom start` is run by a person on project config they have reviewed. `phantom exec` launches an agent, and anything in the repository, `.phantom.toml` included, may have been written by that agent or by an untrusted change, so accepting custom routes there would widen the attack surface.
+- **Route-owned credential injection** -- Client headers and bodies never resolve `phm_` tokens. After authenticating and matching an exact built-in route, the proxy injects that route's configured vault secret only into its fixed authentication header; a missing mapping fails before any upstream call. Request bodies are still collected under a hard byte cap before forwarding. Custom routes: `phantom exec` and `phantom start` both refuse a custom route in `.phantom.toml` before vault access and run only Phantom's exact built-in routes; `phantom doctor` names the service that blocks launch. The reason: anything in the repository, `.phantom.toml` included, may have been written by an agent or by an untrusted change, and the file has no integrity protection, so a custom route would be a self-issued exfiltration channel. Approving a custom route is not supported yet (see [SECURITY.md](SECURITY.md)).
 - **Full SSE/streaming support** -- Response streaming preserved end-to-end for OpenAI, Anthropic, and other streaming APIs
 - **Smart detection** -- Heuristic engine distinguishes secrets (`*_KEY`, `*_TOKEN`, `sk-*`, `ghp_*`) from config (`NODE_ENV`, `PORT`)
 - **Platform sync** -- Push/pull secrets to Vercel and Railway
@@ -791,6 +792,14 @@ against CLI help: fenced examples in README.md, AGENTS.md, CLAUDE.md,
 mcp-registry/README.md, llms.txt, docs/llms.txt, docs/llms-full.txt, and every
 top-level docs/*.md, plus inline commands in the web sources under
 apps/web/src and apps/web/public/llms*.txt. Run it after changing any of them.
+
+Also run every suite that reads the file you edited, including those in
+`apps/web/tests/`: list them with `git grep -l -F <file-name> -- '*.test.*'`
+and run each with `node --test <file>`. A web suite that loads a package
+needs `(cd apps/web && npm ci --no-audit)` first.
+That search misses two checks not named `*.test.*`: after editing
+`docs/agents.md`, run `bash scripts/test-docs-agents.sh`; after editing a
+file with a `<!-- fresh:begin` marker, run `node scripts/freshness/check.mjs`.
 
 Before you push any change, run the two pre-push checks. Neither needs a
 build. `CI Gate` requires the `Secret-shape scan`, and pull request CI does

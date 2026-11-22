@@ -26,9 +26,9 @@
 
 Super PI Agent is a personal agent that runs on an Android phone. Hold the power button, ask in voice or text, and it does the work on the device: managing files, controlling other apps, running Linux commands, and connecting to external services.
 
-It needs no server and no always-on computer. Model requests go only to the provider you configure; conversations, files, credentials, and plugin data stay on the phone.
+It runs local-first without requiring a server or an always-on computer. Model requests go only to the provider you configure; conversations, files, credentials, and plugin data stay on the phone by default, and an optional self-hosted SuperPI-Remote relay can link multiple Android phones together.
 
-Super PI Agent ships a complete agent harness: tools, skills, long-term memory, MCP connectors, and a plugin system. A lightweight Linux environment covers most desktop office and coding tasks. Plugins connect external services such as Feishu, WeCom, campus systems, email, maps, ride hailing, hotels, and rail.
+Super PI Agent ships a complete agent harness: tools, skills, long-term memory, MCP connectors, and a plugin system. A lightweight Linux environment covers most desktop office and coding tasks. Plugins connect external services such as Feishu, WeCom, email, maps, ride hailing, hotels, and rail.
 
 The project is open source and auditable. Apart from the model provider and the MCP servers or plugins you configure, it does not upload data.
 
@@ -43,7 +43,7 @@ Installers are available from [GitHub Releases](https://github.com/Sadami3066/Su
 - **Miniapps**: build small HTML/CSS/JS apps and open them from a home-screen shortcut.
 - **Plugin ecosystem**: install signed `.ddp` plugins to add tools, skills, pages, and themes. The market offers plugins, skills, and remote MCP servers.
 - **Bring your own model**: multiple providers with API-key or OAuth sign-in; model and thinking level are chosen per session.
-- **Local first**: no account system and no backend of our own; data stays on the device by default.
+- **Local first**: no central account system or mandatory backend; data stays on the device by default, with optional self-hosted relay sync across your own devices.
 
 ## Quick Start
 
@@ -61,7 +61,7 @@ Installers are available from [GitHub Releases](https://github.com/Sadami3066/Su
 |---|---|
 | System | Android 10 or newer |
 | Installer | APK from [GitHub Releases](https://github.com/Sadami3066/SuperPI-App/releases) |
-| Account | No account system; model keys stay on the device |
+| Account | Local-first (no mandatory account; optional self-hosted relay pairing); model keys stay on the device |
 | Updates | Install over the same signature. Changing signatures requires uninstalling, which deletes local sessions and credentials |
 | Network | Conversations go only to the configured model provider; the market and update checks use GitHub and may need a proxy on some networks |
 
@@ -73,7 +73,7 @@ Installers are available from [GitHub Releases](https://github.com/Sadami3066/Su
 | System access | Settings → System access | Normal, wireless ADB, or root |
 | Linux | Settings → System access → Linux environment | Initialize Alpine; install shell, Node, Python, and toolchains |
 | Android integration | Settings → Android setup | Overlay, system assistant, notifications, and share targets |
-| Remote connection | Drawer → Remote | Pair a computer through [`dsh-mobile`](https://github.com/saya-ch/dsh-mobile) |
+| Multi-device relay | Drawer → Account / Devices | Pair multiple Android phones via QR code or pairing link through a self-hosted SuperPI-Remote relay to share memory, transfer files and presented artifacts, and create or manage bots across devices |
 | Plugins | Drawer → Plugins | Import signed `.ddp` files; inspect capabilities and runtime state |
 | Memory | Automatic | Distilled when a session ends; searchable and injectable into the current session |
 

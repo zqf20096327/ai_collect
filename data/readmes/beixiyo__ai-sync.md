@@ -1,0 +1,154 @@
+# AI 工具配置迁移
+
+<div align="center">
+  <img alt="npm-version" src="https://img.shields.io/npm/v/@jl-org/ai-sync?color=red&logo=npm" />
+  <img alt="npm-download" src="https://img.shields.io/npm/dm/@jl-org/ai-sync?logo=npm" />
+  <img alt="License" src="https://img.shields.io/npm/l/@jl-org/ai-sync?color=blue" />
+  <img alt="typescript" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" />
+  <img alt="node.js" src="https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white" />
+  <img alt="vitest" src="https://img.shields.io/badge/Vitest-646CFF?logo=vitest&logoColor=white" />
+  <img alt="tsup" src="https://img.shields.io/badge/tsup-161B22?logo=tsup&logoColor=white" />
+</div>
+
+<div align="center">
+  <a href="./README.md">中文</a>
+  <span>|</span>
+  <a href="./README.en.md">English</a>
+</div>
+
+自动化将 Claude 配置迁移到不同 AI IDE 工具的脚本
+
+## 支持的工具
+
+- Cursor
+- Claude Code
+- CodeBuddy
+- OpenCode
+- CodeX
+- Gemini CLI
+- IFlow CLI
+- ZCode
+- Pi
+
+## 快速开始
+
+### 1. 准备配置
+
+**遵循 Claude Code 配置规范** https://code.claude.com/docs/zh-CN/settings
+
+创建 `~/.claude` 目录，包含以下子目录：
+- `~/.claude/commands/` - 存放自定义命令（Markdown 格式）
+- `~/.agents/skills/` - 共享技能模块（不在 `~/.claude/` 内）
+- `~/.claude/CLAUDE.md` - 存放基础指令
+- `~/.claude.json` - MCP 配置文件
+
+### 2. 执行迁移命令
+
+```bash
+npm i -g @jl-org/ai-sync
+
+# 交互式执行
+ai-sync
+# 查看帮助
+ai-sync --help
+```
+
+```bash
+? 选择要迁移到的工具（使用方向键导航，空格选择，回车确认）：
+ ◯  Cursor
+ ⬤  Claude Code
+ ⬤  OpenCode
+ ◯  Gemini CLI
+ ◯  IFlow CLI
+
+? 配置到当前项目（否则为全局配置）？ (y/N) n
+? 是否自动覆盖已存在的文件？ (y/N) y
+
+开始迁移...
+✓ 迁移 Commands... (2/2)
+✓ 迁移 Skills... (1/1)
+✓ 迁移 MCP... (1/1)
+
+--- 迁移完成 ---
+工具: Claude Code, OpenCode
+成功: 15
+跳过: 3
+错误: 0
+```
+
+## 自定义配置
+
+你可以通过在项目根目录创建 `ai-sync.config.js` 文件来深度自定义同步行为
+
+### 1. 使用 `defineConfig`
+
+通过 `defineConfig` 你可以定义新的工具配置，或修改现有工具的同步逻辑：
+
+```typescript
+import { defineConfig } from '@jl-org/ai-sync'
+
+export default defineConfig({
+  tools: {
+    // 定义一个新的工具：test-cli
+    'test-cli': {
+      name: 'Test CLI',
+      // 支持的配置类型
+      supported: ['commands', 'skills', 'mcp'],
+      // 具体的转换逻辑
+      commands: {
+        source: '.test-cli/commands',
+        format: 'markdown',
+        target: '~/.test-cli/commands',
+      }
+    },
+    // 修改现有工具的行为：关闭 Skills 软链接模式，回退为复制
+    'cursor': {
+      skills: { symlink: false },
+    }
+  }
+})
+```
+
+### Skills 源过滤
+
+默认排除源 skills 目录的顶级 `synced` 条目，避免 Claude 自动生成的内容传播到其他工具。所有目标和软链接、复制、转换模式共用此策略
+
+```js
+export default {
+  global: {
+    skills: {
+      excludeEntries: ['synced', 'private-skill'],
+    },
+  },
+}
+```
+
+列表仅精确匹配顶级条目名称，不支持路径或 glob，不影响 skill 内部同名子目录。自定义数组替换默认列表；显式设置 `excludeEntries: []` 可取消排除
+
+默认软链接模式下，排除项只影响新建链接，不会删除已有条目。显式使用复制或转换模式时，仍会解除指向源同名排除项的链接
+
+## 执行规则
+
+### 配置转换规则
+
+| 配置类型 | 转换说明 |
+|---------|--------|
+| **Commands** | Claude → Cursor/OpenCode/ZCode：直接复制<br>Claude → Gemini/IFlow：Markdown → TOML 自动转换<br>Claude → Pi：prompt template（清洗 Claude 专属 frontmatter） |
+| **Skills** | 默认从 `~/.agents/skills/` 向所选工具补建链接。正确链接直接跳过；同名文件、目录或其他链接（含断链）保留并提示，即使使用 `-y` 也不覆盖 |
+| **Instructions** | `CLAUDE.md` → 各工具指令文件：Gemini（`GEMINI.md`）、Codex/OpenCode/Cursor/IFlow/ZCode（`AGENTS.md`）、CodeBuddy（`CODEBUDDY.md`）、Pi（`~/.pi/agent/AGENTS.md`） |
+| **MCP** | Claude → Cursor/OpenCode/Gemini/IFlow/ZCode：自动格式转换<br>Claude → Pi：原生 MCP（写入 `~/.pi/agent/mcp.json`），结构一致，仅为 Figma 补 `oauth.clientName`，并保留 pi 中已设置的 `exposure`/`enabled` 等 |
+| **Settings** | Claude → CodeBuddy：直接复制<br>Claude → ZCode：仅迁移兼容的 Hooks 事件（`hooks.events` 结构自动包装） |
+
+### 不支持同步的配置
+
+| 配置类型 | 原因 |
+|---------|------|
+| **Rules** | 仅 Cursor 和 Claude Code 支持带文件作用域的 Rules 系统，其余工具均不支持，同步意义不大。可通过在子目录放置 `AGENTS.md`（如 `project/src/api/AGENTS.md`）实现类似的目录级作用域 |
+| **Hooks** | 各工具 Hooks 实现完全不同：Claude Code / Codex / Cursor 使用 JSON + Shell，OpenCode 使用 TypeScript，格式和执行机制无法统一 |
+
+### 路径规则
+
+- **工具配置**：统一使用全局 Home 目录下的配置路径，如 `~/.claude/`
+- **路径解析**：支持使用 `~` 表示用户主目录，自动处理跨平台路径
+- **源根目录**：默认是 `~`。使用 `-s <dir>` 时，Skills 从 `<dir>/.agents/skills` 读取，其他类型继续使用 Claude 的路径规则
+- **指定路径**：支持通过命令行参数或配置文件指定自定义的源目录和目标项目目录

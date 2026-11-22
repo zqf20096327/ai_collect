@@ -88,7 +88,7 @@ dettato song.mp3 other.wav folder/ -o out/
 
 - Takes any number of files and folders. Folders are searched recursively, and the folder structure is kept under `out/`.
 - Writes `out/<name>.mid` and `out/<name>.json` (the tracks, note counts, the tuning estimate, which drum model ran).
-- Uses the GPU when there is one (`--device cpu` to force the CPU).
+- Uses the GPU when there is one: CUDA, else Apple silicon's MPS (`--device cpu` to force the CPU).
 
 ### Python
 
@@ -141,7 +141,8 @@ Set `DETTATO_WEIGHTS` to a folder holding the four model repos (`dettato/`, `det
 
 - Python 3.10+, PyTorch 2.2+. A CUDA GPU is recommended: on an RTX 5060 (8 GB) a 4-minute song takes about 15 s and a 6-minute song
   about 25 s, and both peak under 4 GB of GPU memory (above 250 s the transcriber's feature buffers are kept in host memory,
-  about 10 MB per second of audio, so GPU memory stops growing with the song's length). The CPU works but is slow (a 15 s clip took 87 s on a laptop CPU,
+  about 10 MB per second of audio, so GPU memory stops growing with the song's length). On Apple silicon it runs on MPS: on an M1 Ultra
+  a 30 s clip takes about 10 s (the drum model about half of it). The CPU works but is slow (a 15 s clip took 87 s on a laptop CPU,
   model loading included).
 - Audio is read with `soundfile`. Formats it cannot read (m4a / aac, some mp3s) go through `ffmpeg`, which must then be on the PATH.
 

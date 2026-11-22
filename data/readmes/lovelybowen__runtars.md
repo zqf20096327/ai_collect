@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/lovelybowen/runtars?labelColor=black&style=for-the-badge&color=2563EB)](https://github.com/lovelybowen/runtars/stargazers)
 [![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
 [![Download on the App Store](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/rakazo/id6801531099)
-[![Get Android on Google Play](https://img.shields.io/badge/Google%20Play-Get%20the%20app-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.rakazo.app)
+[![Android APK](https://img.shields.io/badge/Android-APK-black?style=for-the-badge&logo=android&logoColor=white)](https://github.com/lovelybowen/runtars/releases/download/android/runtars.apk)
 
 ![RunTars — AI teammates you actually own](./docs/readme-hero.png)
 
@@ -14,8 +14,8 @@ RunTars is an open source, self-hosted alternative to Grok Bot.
 Persistent AI teammates with their own memory, routines, apps, and computer. Run it on your own
 machine, with your own model.
 
-Use it on the [web](https://app.runtars.com), [desktop](https://rakazo.com/download/), [iPhone](https://apps.apple.com/app/rakazo/id6801531099), and
-[Android](https://play.google.com/store/apps/details?id=com.rakazo.app).
+Use it on the [web](https://app.runtars.com), [desktop](https://runtars.com/download/), [iPhone](https://apps.apple.com/app/rakazo/id6801531099), and
+[Android](https://github.com/lovelybowen/runtars/releases/download/android/runtars.apk).
 
 It is also an alternative to Meta Muse, OpenAI Dots, Instinct, OpenClaw, Hermes Agent, and Claude
 Duet.
@@ -189,7 +189,9 @@ pnpm dev
 ```
 
 `pnpm dev` uses the Postgres in `DATABASE_URL` when it accepts a connection. Otherwise it starts a
-local `rakazo-dev-postgres` container with Docker, and every checkout reuses that one. It applies
+local `rakazo-dev-postgres` container with Docker, and every checkout reuses that one. Without
+Docker, it runs a local Postgres cluster with your installed Postgres (on `PATH` or from Homebrew)
+instead, also shared by every checkout. It applies
 migrations and generates the Prisma client before starting. A branch that adds migrations main
 doesn't have gets its own database on the same server, copied from the shared one when possible,
 so unmerged schema changes stay out of it. When the default ports are taken, for example by
@@ -306,12 +308,12 @@ Mobile build and release instructions live in [docs/mobile-release.md](./docs/mo
 ## UI language
 
 The web (and Electron-hosted) UI supports English, Deutsch, 한국어, Türkçe, हिन्दी,
-Português (Brasil), 简体中文, 繁體中文, Español, Русский, Français, עברית, Nederlands, 日本語, and Polski under
-**Settings → Language**. The Expo app ships the same 15 languages under
+Português (Brasil), 简体中文, 繁體中文, Español, Русский, Français, עברית, Nederlands, 日本語, Polski, and ไทย under
+**Settings → Language**. The Expo app ships the same 16 languages under
 **Account → Language**. A device language or
 `EXPO_PUBLIC_DEFAULT_UI_LOCALE` still selects the starting catalog before a saved choice.
 Native Electron setup and menus also support the web UI's languages, following the saved app
-choice or, on first launch, the system language. The marketing homepage (`apps/www`) offers all
+choice or, on first launch, the system language. The marketing homepage (`apps/www`) offers
 15 languages through footer links, including `/zh/` and `/zh-tw/`; other marketing pages remain
 primarily English.
 

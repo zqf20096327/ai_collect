@@ -83,7 +83,7 @@ Grok Bot 是 xAI 的 AI 助手应用。它的 Bot 除了聊天，还有自己的
 | --- | --- | --- |
 | Windows x64 | [1.2.3](https://api2.cursor.sh/updates/api/download/stable/win32-x64-user/sand)（此补丁不支持） | **1.1.0**（推荐）；用不了再用 0.71.2 |
 | macOS ARM64 | [1.2.3](https://api2.cursor.sh/updates/api/download/stable/darwin-arm64/sand) | 0.71.2（尚未适配 1.2.3；未在 Mac 真机上测试） |
-| macOS Intel (x64) | [1.2.3](https://api2.cursor.sh/updates/api/download/stable/darwin-x64/sand) | 0.71.2（实验：尚未适配 1.2.3；未在 Intel Mac 上测试） |
+| macOS Intel (x64) | [1.2.3](https://api2.cursor.sh/updates/api/download/stable/darwin-x64/sand) | 0.71.2（实验：尚未适配 1.2.3；已有用户在 Intel Mac 上实测可用） |
 | iOS | [1.27.0](https://apps.apple.com/us/app/grok-bot/id6794501026) | 1.16.0（构建 23152；未在 iPhone / iPad 上测试） |
 | Android 9+（自开发，非官方） | 不用官方 Android 版 | App **1.1.0**（构建 10100），界面取自 Windows **1.1.0** 安装包（推荐；用不了再用 0.71.2） |
 | 网页版（浏览器，非官方） | 不用安装 | 界面取自 Windows **1.1.0** 安装包（推荐；用不了再用 0.71.2），生成后上传到你的 Host |
@@ -97,7 +97,7 @@ ProkBot Plus 自己的版本号见[最新发布](https://github.com/ferretgeek/p
 | Windows | Windows 10 / 11 x64 | 本项目新增。便携版或安装包，不需要管理员权限。Bot 可以在你的电脑上执行命令，执行前先问你。已在 Windows 11 上实测。 |
 | Android | Android 9+，系统 WebView 89+ | 本项目自开发的 App，不是官方 Android 版。在 Android 15 / 16 模拟器上测过，未经真机测试。 |
 | 网页版 | 新版 Chrome、Edge、Firefox、Safari | 由你的 Host 提供，手机、平板、电脑自动适配，用配对码登录。只操作 Bot 的电脑，不操作你本机。 |
-| Mac | Apple 芯片或 Intel 芯片 | 上游已有的补丁，仍用官方 0.71.2，本项目没有 Mac 真机测试。Intel 是实验支持，没有在 Intel Mac 上测试。 |
+| Mac | Apple 芯片或 Intel 芯片 | 上游已有的补丁，仍用官方 0.71.2，本项目没有 Mac 真机测试。Intel 是实验支持，已有用户在 Intel Mac 上实测生成、配对和对话可用。 |
 | iPhone / iPad | 自备已解密的 IPA 和签名证书 | 上游已有的补丁，本项目没有真机测试。 |
 
 <a id="android-客户端"></a><a id="web-client"></a>

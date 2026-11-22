@@ -8,15 +8,26 @@
   <img src="assets/readme/hero.gif" width="100%" alt="依次悬停上下文、配额和请求失败胶囊（无鼠标），弹出对应面板" />
 </p>
 
-宣传片（v1.1，也可以在 [B 站](https://www.bilibili.com/video/BV1ggsy6rEQM/) 观看）：
+宣传片（v1.4，也可以在 [B 站](https://www.bilibili.com/video/BV1bayvz5Ey1/) 观看）：
+
+https://github.com/user-attachments/assets/3857a452-9fac-42b0-8f26-57759af8fefc
+
+<details>
+<summary>往期宣传片（v1.1）</summary>
+
+也可以在 [B 站](https://www.bilibili.com/video/BV1ggsy6rEQM/) 观看：
 
 https://github.com/user-attachments/assets/9f5bf1c6-1284-4e17-a380-defdee83f60c
+
+</details>
 
 本插件几乎所有功能都支持高度自定义，无论是极简底栏还是全面监控都能按需组合；下方带 `☑` 的条目均可在侧栏[设置](#设置)中自由开关或调整。
 
 ## 上下文
 
 显示上下文占用、缓存命中率与缓存状态。上限按当前会话和模型实时读取。
+
+☑ **显示缓存命中率**：默认关闭。开启后，第一个胶囊在上下文占用旁显示缓存命中率；没有实测数据或空间不足时，底栏不显示该数值。
 
 ☑ **缓存过期提醒**：胶囊图标距上一轮默认满 3 分钟变黄、满 4 分钟变红 `Cache` 过期，右侧输入框可自定义变黄/变红分钟数（上限 998 / 999 分钟）。面板里的 Cache 行同步变化。
 
@@ -90,11 +101,20 @@ https://github.com/user-attachments/assets/9f5bf1c6-1284-4e17-a380-defdee83f60c
 
 ☑ **重置倒计时**：紧凑、本地化样式。
 
+### Antigravity 汉化补丁
+
+如果想把 Antigravity 本身切成中文，下面两套第三方补丁选一套即可。已在 **Windows + Antigravity 2.34.0** 上分别实测，agy-capsule 的侧栏和底栏都能保留自己的语言设置。
+
+- **优先推荐**：[Antigravity-Chinese-Localization v2.34.0](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/tag/v2.34.0)。
+- **也已实测兼容**：[antigravity2-cn（提交 `f7a0c4e`）](https://github.com/qqxpee/antigravity2-cn/tree/f7a0c4ebe088917bdc5121ac9b3bbad1c89b6059)。
+
+遇到共装问题，欢迎到 [GitHub Issues](https://github.com/Lumidarin/agy-capsule/issues) 反馈。请附上 Antigravity、agy-capsule 和汉化补丁的版本，以及出问题的位置，方便我们复现并跟进适配。
+
 ## 设置
 
 在对话顶部 **… → Extensions → agy-capsule** 打开侧栏，顶部可切换「统计」「设置」和「模型」。
 
-设置页顶部显示已安装版本、默认开启的**「更新提醒」**和**「检查更新」**按钮。关闭提醒后不再后台检查，但仍可手动检查。发现新版本时，卡片会显示「当前版本 → 新版本」；点**「更新」**即可下载、校验并自动重载，保留设置，无需重启 Antigravity。也可以点「版本说明」查看 GitHub 发布页，或点 × 收起。更新失败时，卡片会显示原因，并提供「重试」和「手动更新」。
+设置页顶部显示已安装版本、默认开启的**「更新提醒」**和**「检查更新」**按钮。关闭提醒后不再后台检查，但仍可手动检查。发现新版本时，卡片会显示「当前版本 → 新版本」；点**「更新」**即可下载、校验并自动重载，保留设置，无需重启 Antigravity。也可以点「版本说明」查看 GitHub 发布页，或点 × 收起。更新失败时，卡片会显示原因，并提供重试、手动更新和复制诊断信息。也可以点「复制 AI 提示词」，把更新步骤和诊断信息一起发给 AI。
 
 设置保存在 <code>~/.gemini/config/agy-capsule/settings.json</code>（Windows 为 <code>%USERPROFILE%\.gemini\config\agy-capsule\settings.json</code>），更新和卸载插件都不会覆盖；旧版本留下的文件缺少新选项时自动使用默认值。
 
@@ -122,7 +142,13 @@ https://github.com/user-attachments/assets/9f5bf1c6-1284-4e17-a380-defdee83f60c
 
 ### Linux
 
-在仓库目录运行 `sh install.sh` 安装，`sh update.sh` 更新（先拉取新版代码），`sh uninstall.sh` 卸载。插件装在 <code>~/.gemini/config/plugins/agy-capsule</code>。装好后在 **Plugins** 面板启用。底栏胶囊需要用 `--remote-debugging-port=0` 参数启动 Antigravity。
+请按 [Linux 安装指南](./docs/linux-install.md#中文) 安装，里面包含下载、安装、底栏胶囊设置、更新、卸载和排查的全部步骤。
+
+想让 AI 代装的话，把这句话发给 Antigravity：
+
+```text
+请按 https://github.com/Lumidarin/agy-capsule/blob/main/docs/linux-install.md 帮我安装 agy-capsule。
+```
 
 ### 常见问题
 

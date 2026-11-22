@@ -90,7 +90,7 @@ new tables show up in the catalog for BI, the analyst and agents.
 
 ![The ETL visual editor: a reconciliation pipeline as a graph — orders and payments through dedupe, aggregate and a full outer join into matched and exception targets — with the selected join node's configuration open on the right](docs/screenshots/etl-visual-editor.png)
 
-**Lakehouse** — a columnar warehouse of your own, under **Data & BI**. Browse
+**Lakehouse** — a columnar warehouse of your own, under **Data engineering**. Browse
 schemas, tables, columns and snapshots; query them with governed SQL or plain
 language, on the built-in engine or on the Spark cluster; and see what a query
 actually scanned. Tables are zstd Parquet in your own bucket with a Postgres
@@ -99,7 +99,7 @@ catalog, so compute stays stateless and nothing is locked in.
 ![The Lakehouse: the object explorer listing analytics and raw_lake schemas beside a SQL editor with Run, Explain and Save-as-view, and the query's results below](docs/screenshots/lakehouse-query.png)
 
 **ML Models** — no-code machine learning on your lakehouse tables, under
-**Data & BI → ML Models**. Pick a table and a goal — predict a column, forecast
+**Data science → ML Models**. Pick a table and a goal — predict a column, forecast
 a series, find groups, find anomalies, recommend items — and a sandboxed
 trainer profiles the data, prepares it (filters, imputation, encoding, text as
 features), tries several algorithms under a time budget with optional
@@ -233,7 +233,7 @@ counted by hand and re-checked when the feature changes.
   shape ([backups and restore](./docs/DEPLOYMENT.md#backups-and-restore)).
 - **Two vector stores, chosen per collection** — pgvector in the application
   database by default, or Qdrant for a collection that has outgrown it, picked
-  in **RAG Settings → Retrieval → Vector index**; `VECTOR_STORE` is the
+  in **RAG settings → Retrieval → Vector index**; `VECTOR_STORE` is the
   default for collections that have not chosen. Saving a change moves that
   collection's existing vectors into the new index and clears the old one, and
   re-embeds nothing, because the embeddings are a column on the chunk rows.
@@ -345,7 +345,7 @@ feature lookups in milliseconds, and the **object store** the lakehouse writes
 its Parquet files to. Nothing is opt-in and nothing is left unwired: `.env`
 points at every one of them, so the features that need them work the minute
 the install ends. It costs about 5 GB of images and roughly 8 GB of RAM
-(docs/SYSTEM_REQUIREMENTS.md). Once up, **Observability →
+(docs/SYSTEM_REQUIREMENTS.md). Once up, **Admin →
 Monitoring** shows every service's health in one place.
 
 First time? Follow **[the full installation guide](./docs/INSTALL.md)** — it

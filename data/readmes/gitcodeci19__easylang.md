@@ -1,5 +1,6 @@
+# LingoEx - Yapay Zekâ Destekli Dil Öğrenme Tarayıcı Eklentisi
 
-# LingoEx Yapay Zekâ Destekli Dil Öğrenme Tarayıcı Eklentisi
+Tarayıcınızda gezinirken aktif hatırlama, sesli dikte ve yapay zekâ destekli kişisel derslerle İngilizce öğrenmenizi sağlayan açık kaynaklı Chrome / Edge / Brave eklentisi.
 
 <p align="left">
   <a href="https://github.com/gitcodeci19/easylang/releases">
@@ -16,100 +17,103 @@
   </a>
 </p>
 
-### 🚀 EKLENTİ NELER YAPABİLİYOR?
+## Öne Çıkan Özellikler
 
-- Tarayıcınızda herhangi bir sekmede Duolingo benzeri interaktif İngilizce dersleri yapabilirsiniz.
-- Yapay zekâ hatalarınızı ve doğrularınızı analiz ederek eksiklerinize odaklanan kişisel dersler oluşturur.
-- Tarayıcınız açık olduğu sürece her 20 dakikada bir karşınıza çıkarak sizi soru çözmeye teşvik eder.
-
----
+- **A1–C1 Yol Haritası & Özel Dersler:** Tarayıcınızın herhangi bir sekmesinde etkileşimli kelime, cümle kurma, boşluk doldurma ve dikte dersleri.
+- **Akıllı Hata Analizi:** Yanlışlarınızı ve zorlandığınız dilbilgisi yapılarını takip ederek size özel telafi dersleri oluşturur.
+- **Doğal Çevrimdışı Seslendirme:** Tamamen tarayıcı içinde (sunucusuz, GPU gerektirmeden) çalışan İngilizce **Heart** nöral sesi, Türkçe **EMA Lightning** AI Koç ve 142 sesli gramer/soru anlatımı.
+- **Aralıklı Hatırlatma & Sayfa Challenge:** Belirlediğiniz aralıklarla karşınıza kısa tekrar kartları çıkarır ve gezdiğiniz sayfalardaki gerçek cümlelerden anlık pratik yaptırır.
 
 <p align="center">
-  <img src="docs/gifs/01-auto-exposure-ai.gif" alt="Her 20 dakikada otomatik soru çıkaran ve anlamı yakalayan EasyLang AI kartı" width="820" />
+  <img src="docs/gifs/01-auto-exposure-ai.gif" alt="Otomatik hatırlatma ve AI değerlendirme kartı" width="820" />
 </p>
 
 <p align="center">
-  <img src="docs/gifs/02-mistake-focus-loop.gif" alt="YouTube izlerken hatayı yakalayıp AI açıklaması sunan ve odak listesine alan EasyLang kartı" width="820" />
+  <img src="docs/gifs/02-mistake-focus-loop.gif" alt="Hata yakalama ve kişisel odak döngüsü" width="820" />
 </p>
 
 ---
 
-## 🤖 NASIL OLUYOR DA YAPAY ZEKÂ OLMASINA RAĞMEN BEDAVA?
+## Kurulum (Chrome / Edge / Brave)
 
-Groq, NVIDIA ve AMD gibi şirketler, geliştiricilerin kullanabilmesi için ücretsiz API erişimi sunuyor. Bu sayede kendi bilgisayarınızda güçlü bir yapay zekâ çalıştırmanıza gerek kalmadan bu servislerden yararlanabiliyorsunuz.
+1. **[Releases](https://github.com/gitcodeci19/easylang/releases/latest)** sayfasından `LingoEx-v2.3.0-Ultimate.zip` dosyasını indirip bir klasöre çıkartın.
+2. Tarayıcıda `chrome://extensions` adresini açıp sağ üstten **Geliştirici modu**nu etkinleştirin.
+3. **Paketlenmemiş öğe yükle** butonuna tıklayıp çıkarttığınız klasörü seçin.
 
-## 🔑 Ücretsiz AI API Anahtarı Alma
+> Python, Node.js veya ek bir kurulum gerekmez; tüm ses motorları doğrudan tarayıcı içinde çalışır.
 
-**Sadece bir API anahtarı almanız yeterli.**
+---
+
+## Ücretsiz Yapay Zekâ API Kurulumu (İsteğe Bağlı)
+
+Temel dersler, sözlük ve seslendirme tamamen çevrimdışı çalışır. AI değerlendirme, **AI'a Sor** ve **Challenge** özellikleri için Groq, NVIDIA veya AMD'nin ücretsiz geliştirici kotalarından **tek bir API anahtarı** eklemeniz yeterlidir.
 
 <details>
-<summary><strong>🟢 Groq – Önerilen (Hızlı ve Akıllı) (TIKLAYIN)</strong></summary>
+<summary><strong>Groq — Önerilen (Hızlı ve Ücretsiz)</strong></summary>
 
-  **Tavsiye edilen model:** Qwen 3.8 27B
+- **Önerilen model:** `qwen/qwen3.8-27b`
+- **API sayfası:** [console.groq.com/keys](https://console.groq.com/keys)
 
-[Groq API Keys Sayfasını Aç ↗](https://console.groq.com/keys)
-
-1. [console.groq.com](https://console.groq.com) adresine git ve Google veya e-posta ile ücretsiz kayıt ol.
-2. Sağ üstteki **Create API Key** butonuna tıkla ve bir isim belirle (ör. EasyLang).
-3. Oluşturulan `gsk_...` ile başlayan API anahtarını kopyala.
-4. Anahtarı eklentideki **ANA API** alanına yapıştır, kaydet ve bağlantıyı test et.
+1. [console.groq.com](https://console.groq.com) adresinde ücretsiz hesap açın.
+2. **Create API Key** ile yeni bir anahtar oluşturun (`gsk_...`).
+3. Eklentide **Ayarlar → Yapay Zekâ → ANA API** alanına yapıştırıp kaydedin.
 
 </details>
 
 <details>
-<summary><strong>🔵 NVIDIA – Alternatif API</strong></summary>
+<summary><strong>NVIDIA NIM — Alternatif API</strong></summary>
 
-[NVIDIA Build Sayfasını Aç ↗](https://build.nvidia.com/)
+- **API sayfası:** [build.nvidia.com](https://build.nvidia.com/)
 
-1. [build.nvidia.com](https://build.nvidia.com/) adresine git ve ücretsiz NVIDIA Developer hesabınla giriş yap.
-2. Katalogdan kullanmak istediğin bir modeli (ör. Gemma 4 31B) seç.
-3. **Get API Key** ve ardından **Generate API Key** butonlarına tıkla.
-4. `nvapi-...` ile başlayan anahtarı kopyala.
-5. Anahtarı eklentideki **ANA API** veya **Yedek API** alanına yapıştır, kaydet ve test et.
-
-> Ücretsiz geliştirici kredileriyle güçlü modellere erişim sağlar. Kullanım koşulları ve ücretsiz kotalar değişebilir.
+1. Ücretsiz NVIDIA Developer hesabıyla giriş yapıp bir model (ör. Gemma 4 31B) seçin.
+2. **Get API Key → Generate API Key** adımıyla `nvapi-...` anahtarını alın.
+3. Eklentide **ANA API** veya **Yedek API** alanına yapıştırıp kaydedin.
 
 </details>
 
 <details>
-<summary><strong>🟠 AMD – Alternatif API</strong></summary>
+<summary><strong>AMD TokenLab — Alternatif API</strong></summary>
 
-[AMD Developer Portalını Aç ↗](https://developer.amd.com/ai-developer-program/)
+- **API sayfası:** [developer.amd.com/ai-developer-program](https://developer.amd.com/ai-developer-program/)
 
-1. [AMD Developer Portal](https://developer.amd.com/ai-developer-program/) adresine git ve **Join / Log In** üzerinden ücretsiz kayıt ol.
-2. Giriş yaptıktan sonra **Token Lab (Radeon Cloud)** bölümünü aç.
-3. **Get API Key** butonuna tıklayarak API anahtarını al.
-4. Anahtarı eklentideki **ANA API** veya **Yedek API 1** alanına yapıştır, kaydet ve test et.
-
-> AMD'nin bulut tabanlı AI modellerine erişim sağlar.
+1. AMD Developer Portal üzerinden ücretsiz kayıt olup **Token Lab (Radeon Cloud)** bölümünü açın.
+2. **Get API Key** ile anahtarınızı alıp eklentideki API alanına yapıştırın.
 
 </details>
 
 ---
 
-## 📦 Nasıl Kurulur? (Chrome / Edge / Brave)
+## Kullanılan Açık Kaynaklar ve Veri Kaynakları
 
-1. **[Releases](https://github.com/gitcodeci19/easylang/releases/latest)** sayfasından hazır `LingoEx-v2.1.1-Ultimate` dosyasını indir ve bir klasöre çıkart.
-2. Tarayıcıda `chrome://extensions` adresini aç ve sağ üstten **Geliştirici modu**nu etkinleştir.
-3. **Paketlenmemiş öğe yükle** butonuna tıkla ve çıkarttığın klasörü seç.
+| Kategori | Proje / Kaynak | Kullanım Amacı | Lisans |
+|---|---|---|---|
+| **İngilizce TTS** | [mesm-tts](https://huggingface.co/mesmertech/mesm-tts) (`Heart v2g` & `PDN` WASM) | Çevrimdışı 24 kHz İngilizce seslendirme *(Kokoro-82M & Paradee-8M tabanlı)* | Apache-2.0 |
+| **İngilizce Fonem** | [Misaki](https://github.com/hexgrad/misaki) (`us_gold` + `us_silver`) | Saf JS Amerikan İngilizcesi fonem sözlüğü (G2P) | Apache-2.0 |
+| **Türkçe TTS** | [EMA Lightning](https://huggingface.co/canberkkkkkk/ema-lightning) | Çevrimdışı 48 kHz Türkçe AI Gramer Koçu (`int8` ağırlık paketli) | Apache-2.0 |
+| **Çalışma Motoru** | [ONNX Runtime Web](https://github.com/microsoft/onnxruntime) | Tarayıcı içi WASM SIMD model çıkarımı | MIT |
+| **Sesli Anlatımlar** | ElevenLabs + [Opus](https://opus-codec.org/) (32 kbps VBR) | 35 gramer, 92 soru ve 15 rehber ses kaydı | — |
+| **Cümle Veri Seti** | [Tatoeba Project](https://tatoeba.org) | İngilizce–Türkçe örnek cümle çiftleri | CC BY 2.0 FR / CC0 |
+| **Sözlük Verisi** | [FreeDict (`eng-tur`)](https://github.com/freedict/fd-dictionaries) | İngilizce–Türkçe kelime tanımları | GPL-2.0+ |
+| **CEFR Seviyeleri** | [Oxford 5000 CEFR JSON](https://github.com/winterdl/oxford-5000-vocabulary-audio-definition) | A1–C1 seviye, kelime türü ve IPA etiketleri | Açık kaynak |
+| **Çeviri Yedeği** | [MyMemory Translation API](https://mymemory.translated.net) | AI kapalıyken sağ tık kelime çevirisi (isteğe bağlı) | — |
+| **Derleme** | TypeScript + [esbuild](https://esbuild.github.io/) | Manifest V3 paketleme | MIT |
+
+Ayrıntılı lisans ve atıf bilgileri için [ATTRIBUTIONS.md](ATTRIBUTIONS.md) dosyasına bakabilirsiniz.
+
+---
 
 <details>
-<summary><strong>🛠️ Kaynak Koddan Derleme & Gizlilik</strong></summary>
-
-Projeyi kaynak koddan derlemek için:
+<summary><strong>Kaynak Koddan Derleme & Gizlilik</strong></summary>
 
 ```bash
 npm install
 npm run build
 ```
 
-- API anahtarınız eklentinin yerel tarayıcı depolamasında saklanır.
-- Yapay zekâ istekleri, seçtiğiniz API sağlayıcısına gönderilir.
-- Kullanılan açık kaynaklar ve veri lisansları: [ATTRIBUTIONS.md](ATTRIBUTIONS.md)
+- İlerleme verileriniz ve API anahtarınız yalnızca tarayıcınızın yerel depolamasında tutulur.
+- Yapay zekâ özelliği açıksa yalnızca soru değerlendirme/sohbet istekleri seçtiğiniz API sağlayıcısına gider.
 - Proje lisansı: [GNU GPL-3.0](LICENSE)
 
 </details>
 
----
-
-> **Not:** Bu açık kaynak proje bağımsız olarak geliştirilmektedir; `easylang.com` veya aynı/benzer ada sahip başka bir web sitesi, marka ya da hizmet ile resmi bir bağlantısı yoktur.
+> **Not:** Bu açık kaynak proje bağımsız olarak geliştirilmektedir; `easylang.com` veya benzer adlı herhangi bir hizmet ya da marka ile resmi bağlantısı yoktur.

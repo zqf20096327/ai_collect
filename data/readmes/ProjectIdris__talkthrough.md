@@ -64,6 +64,8 @@ The Codex and Claude adapters use the installations you have signed into; Talkth
 
 The selected model receives the screenshot and question. If you hand a question to a configured deeper backend, it also receives that question, its screenshot, earlier questions, and what was on screen. A configured speech-recognition server receives the recording; a configured voice server receives the text it speaks. With local speech recognition and the local model route, those requests stay on your computer. The screenshot, recording, and conversation are normally kept in memory until you quit.
 
+While you hold the keys, a short line under the listening cue (and in the tray tip and menu) says where this question's data goes: the screenshot and question stay on this PC or go to Claude, Codex or OpenAI; the recording is heard by Windows speech or local whisper on this PC, or by your speech server; the spoken answer is made by the system voice on this PC or by your voice server. It describes the running setup, so a change in Settings shows once it takes effect.
+
 **Keep a record of each question** is off by default. When enabled in Settings, local diagnostic folders can include screenshots, recognized words, model responses, and timing details. See [Setup: question records](docs/setup.md#a-record-of-each-question) and [pinned answers](docs/pins.md) for what is saved.
 
 ## Current status

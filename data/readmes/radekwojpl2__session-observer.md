@@ -1,395 +1,256 @@
-<p align="center"><img src="docs/brand/cover.png" alt="Session Observer: a live dashboard of every prompt, tool call, subagent and token in a Claude Code session" width="860"></p>
+<p align="center"><img src="docs/brand/cover.png" alt="Session Observer" width="860"></p>
 
-# Session Observer — a Claude Code plugin
+# Session Observer
 
-[![CI](https://github.com/radekwojpl2/session-observer/actions/workflows/ci.yml/badge.svg)](https://github.com/radekwojpl2/session-observer/actions/workflows/ci.yml)
+**One local dashboard for Claude Code and Codex.** Follow prompts, tool calls, model steps, subagents, context use and failures as they happen.
 
-See everything that happens in your Claude Code sessions on a live local dashboard:
-prompts, every tool call (with timing), **skills loaded**, **questions Claude asks you**
-(AskUserQuestion + MCP elicitations), subagents, tasks, MCP calls, permission prompts,
-failures, notifications, context compactions, model switches, file/cwd changes,
-token usage per session, and what the model wrote and which tools it asked for at each step.
+[![Tests](https://img.shields.io/github/actions/workflow/status/radekwojpl2/session-observer/ci.yml?branch=main&label=Tests&logo=github)](https://github.com/radekwojpl2/session-observer/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/radekwojpl2/session-observer?label=release)](https://github.com/radekwojpl2/session-observer/releases)
+[![Stars](https://img.shields.io/github/stars/radekwojpl2/session-observer?style=flat&label=stars&color=blue)](https://github.com/radekwojpl2/session-observer/stargazers)
+[![License: MIT](https://img.shields.io/github/license/radekwojpl2/session-observer?label=license&color=brightgreen)](LICENSE)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757)](#install)
+[![Codex plugin](https://img.shields.io/badge/Codex-plugin-412991)](#install)
+[![Dependencies: zero](https://img.shields.io/badge/dependencies-zero-brightgreen)](#development)
+[![Last commit](https://img.shields.io/github/last-commit/radekwojpl2/session-observer?label=last%20commit&color=brightgreen)](https://github.com/radekwojpl2/session-observer/commits/main)
 
-![Route view: a turn drawn as a metro line, two Explore subagents branching below and merging back](docs/route.jpg)
+## Screenshots
 
-## Quick start
+Screenshots come from real Claude Code and Codex sessions. The numbered labels were added for this README; the dashboard doesn't show them.
 
-Needs Node.js 18+ and Claude Code. No `npm install`.
+![Home with sessions grouped by project, agent badges, status and nested subagents](docs/home.jpg)
 
-```bash
-git clone https://github.com/radekwojpl2/session-observer.git
-claude --plugin-dir ./session-observer      # start Claude Code with the plugin loaded
-```
+*Home: every session by project, with its agent, status and subagents.*
 
-Open **http://localhost:4777** (the server starts on the first session start), or run
-`/session-observer:dashboard` inside Claude Code.
+![Overview with session totals, a Turns chart, context over time, activity by group and the open turn in Details](docs/overview.jpg)
 
-**Just want to look?** `node scripts/demo.js` serves made-up sessions, one of them still
-working, on **http://localhost:4800**. It doesn't touch `~/.claude`.
+*Overview: totals, one bar per turn, context use and activity. Click a bar to open the turn.*
 
-### Screenshots
+![Route of one turn with three parallel subagents and an open tool call](docs/route.jpg)
 
-All taken from one real session, except the badges one, which uses a made-up .NET session.
+*Route: follow a turn through tool calls and parallel subagents. Click a stop to see its input and output.*
 
-**Overview**
+![Chat with a prompt, model thinking, failed agent calls and a reply](docs/chat.jpg)
 
-![Overview: stat tiles, turns chart, context chart, activity by group](docs/overview.jpg)
+*Chat: prompts, thinking, tool chips and replies in order.*
 
-Totals up top. One bar per turn. Context use over time. Busiest tool groups.
+![Context view with a context window grid and estimated tokens by category](docs/context.jpg)
 
-**Route: two subagents in parallel** (top of this page)
-
-Two Agent calls fork into two lanes. Each lane is one subagent and its tools. They merge back when they report.
-
-**Route: a browser turn**
-
-![Turn 8: a skill, then Claude in Chrome calls in a row](docs/browser-turn.jpg)
-
-Loads the Chrome skill, opens a tab, takes screenshots, exports a GIF, closes the tab.
-
-**MCP call**
-
-![trace_path call opened in Details with its input and JSON output](docs/mcp-card.jpg)
-
-Click a stop to see what was sent and what came back.
-
-**Model step**
-
-![Model step card: what the model wrote and context use](docs/model-step.jpg)
-
-What the model wrote and how full the context was.
-
-**Tool call**
-
-![Bash card from a subagent: command and output](docs/tool-card.jpg)
-
-A subagent's Bash command and its output.
-
-**Language and tool badges**
-
-![Route with C#, .NET, npm, Docker and Git badges on its stops, and a chained Bash command opened in Details](docs/badges.jpg)
-
-Each stop shows what it works with. A chained command lists every program it runs.
-
-**Chat**
-
-![Chat view: prompt, replies and tool-call chips](docs/chat.jpg)
-
-You on the right, Claude on the left, tool calls as chips.
-
-**Context**
-
-![Context view on a real session: the conversation in turns, Turn 3 open and shown in Details, Turn 4 folded to its header](docs/context.jpg)
-
-The whole session on one page, in full, in the same turns as Details. Fold a turn down to its header,
-or click the header to open that turn in Details.
+*Context: what fills the context window, down to each record.*
 
 ## How it works
 
+~~~mermaid
+flowchart LR
+  C[Claude Code] -->|plugin hooks| H[scripts/hook.js]
+  X[Codex] -->|plugin hooks or CLI config| H
+  H -->|append by day and session| L[(~/.claude/session-observer/sessions/DAY/*.jsonl)]
+  L -->|recent days at start, older on request| S[Local Node server]
+  S -->|HTTP and live updates| D[Dashboard in your browser]
+  S -. reads transcript when needed .-> T[Claude transcript or Codex rollout]
+~~~
+
+Both integrations append each event to a JSONL file for its session inside a folder for the current UTC day. The server keeps sessions in memory. At start it reads only the last few days, and the dashboard can load older days on request. The dashboard labels sessions by agent and reads transcripts when a view needs message or context detail.
+
+### Event storage
+
+One file per session, in the folder of the UTC day it was last active.
+
 ```
-Claude Code ──(33 async hooks)──▶ scripts/hook.js ──▶ ~/.claude/session-observer/events.jsonl
-                                                                │ (tailed)
-                                    browser ◀──SSE── server/server.js (127.0.0.1:4777)
+~/.claude/session-observer/
+  sessions/<YYYY-MM-DD>/<sha256(session_id)>.jsonl
+  deleted-sessions.jsonl   ← deleted session ids, so they are not imported again
+  events.jsonl             ← written only by older plugin versions; imported at start
 ```
 
-* **Zero dependencies** — plain Node.js (18+).
-* **Never slows Claude down** — every hook is `async: true`, always exits 0.
-* **Works even if the dashboard is closed** — events go to a JSONL file first; the
-  server catches up when it starts.
-* **Local only** — the server binds to `127.0.0.1`. Nothing leaves your machine.
+**Hook: append, moving the file forward to today**
+
+~~~mermaid
+flowchart TD
+  E([hook event]) --> T{today's file exists?}
+  T -->|yes| A[append]
+  T -->|no| O{file in an earlier day?}
+  O -->|no| N[create today's file] --> A
+  O -->|yes| M[move it to today, remove the empty folder] --> A
+  M -.->|rename refused: file locked on Windows| A2[append where it is, retry on the next event]
+~~~
+
+**Server: read recent days, follow moved files**
+
+~~~mermaid
+flowchart TD
+  S([start]) --> I[import events.jsonl into day folders, skip deleted ids]
+  I --> W[read the last OBSERVER_LOAD_DAYS days]
+  W --> P[every 400 ms: read new bytes of each file]
+  P -->|same file in a newer folder| K[keep the read offset]
+  P --> D[push events to the dashboard]
+  W -->|Load sessions before …| O[read older days]
+~~~
+
+- **Delete (×):** removes the session's file and adds its id to `deleted-sessions.jsonl`.
+- **Midnight race:** a new session can get two files; the server reads them in order.
+
+<details>
+<summary>Alternatives considered</summary>
+
+| Approach | Why not |
+|---|---|
+| One combined `events.jsonl` | Every start reads everything; deleting a session rewrites the file |
+| Per-session files, flat | Every start reads every session ever |
+| Per-session files + SQLite | Needs Node 22.13; two sources of truth; the hook would wait on a lock |
+| Day files shared by all sessions | Deleting a session rewrites every day file it is in |
+| Per-session files split at midnight | The server must merge a session's days |
+
+</details>
 
 ## Install
 
-**Try it without installing:**
-```bash
-claude --plugin-dir /path/to/session-observer
-```
+Needs Node.js 18 or newer. There is no npm install and no build step.
 
-**Install via a local marketplace** (this folder is also a marketplace):
-```
-/plugin marketplace add /path/to/session-observer
-/plugin install session-observer@session-observer-marketplace
-```
-Or straight from GitHub:
-```
+### Claude Code
+
+The plugin installs Claude Code hooks and starts the dashboard when a session begins.
+
+From a local clone:
+
+~~~sh
+claude --plugin-dir ./session-observer
+~~~
+
+Or install from the marketplace:
+
+~~~text
 /plugin marketplace add radekwojpl2/session-observer
 /plugin install session-observer@session-observer-marketplace
-```
+~~~
 
-Restart Claude Code after installing — hooks load at session start.
+Restart Claude Code after installing so the hooks load.
 
-### Update
+To update later, run `/session-observer:update` in Claude Code. It updates the marketplace and the plugin (reinstalling if the version did not change), stops the old dashboard server and starts the new one.
 
-Pull the latest marketplace, then update the plugin:
-```
-/plugin marketplace update session-observer-marketplace
-/plugin update session-observer@session-observer-marketplace
-```
-Restart Claude Code afterwards.
+### Codex
 
-Or ask Claude to do it with `/session-observer:update`: it runs both commands (reinstalling if
-the version did not change), stops the old dashboard server and starts the new one.
+Codex can load the hooks as a desktop plugin or from its CLI hook config.
 
-An update is only picked up when `version` in `.claude-plugin/plugin.json` changes. If the
-version is the same, reinstall to get the latest commit:
-```
-/plugin uninstall session-observer@session-observer-marketplace
-/plugin install session-observer@session-observer-marketplace
-```
+**Codex desktop app:** add the marketplace, then install Session Observer in the desktop app. Adding a marketplace alone does not activate its hooks:
 
-Using `--plugin-dir`? Run `git pull` in the clone and restart Claude Code. The dashboard server
-keeps running in the background across restarts, so stop it too (commands under
-[Uninstall](#uninstall)); the next session starts the new one. If the page says it could not
-load its files, this is why.
+~~~sh
+codex plugin marketplace add radekwojpl2/session-observer
+~~~
 
-To check which version is running, look next to the title in the dashboard header: it shows the
-running server's version (also in `/api/health`). If it is older than the one you installed, the old
-server is still running; stop it as above.
+**Codex CLI:** from this repository, add the hooks to your Codex config:
 
-### Uninstall
+~~~sh
+node scripts/setup-codex.js
+~~~
 
-```
-/plugin uninstall session-observer@session-observer-marketplace
-/plugin marketplace remove session-observer-marketplace   # optional: also drop the marketplace
-```
-Restart Claude Code so the hooks stop running. You can also do it from `/plugin` →
-**Manage plugins**, or keep it installed but off with
-`/plugin disable session-observer@session-observer-marketplace`.
+The setup script keeps your existing hooks. Run it again if you move this repository. To remove only these hooks, run:
 
-Uninstalling leaves three things behind. Remove them by hand:
+~~~sh
+node scripts/setup-codex.js --remove
+~~~
 
-- **The dashboard server.** It runs as a detached process, so it keeps serving
-  `http://127.0.0.1:4777` until you stop it.
-- **The event log**, `~/.claude/session-observer/`.
-- **The cached plugin copy**, `~/.claude/plugins/cache/session-observer-marketplace/`.
+On first use, open /hooks in Codex and trust the Session Observer hooks. The dashboard starts on the first session if it is not already running.
 
-Windows (PowerShell):
-```powershell
-Get-CimInstance Win32_Process -Filter "Name='node.exe'" |
-  Where-Object CommandLine -match 'session-observer.*server\.js' |
-  ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
-Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\session-observer",
-  "$env:USERPROFILE\.claude\plugins\cache\session-observer-marketplace"
-```
+## Claude Code and Codex: what differs
 
-macOS / Linux / WSL:
-```sh
-pkill -f 'session-observer.*server\.js'
-rm -rf ~/.claude/session-observer ~/.claude/plugins/cache/session-observer-marketplace
-```
+| | Claude Code | Codex |
+|---|---|---|
+| Hook setup | Installed with the Claude Code plugin | Desktop plugin or CLI setup script |
+| Event source | Claude Code hook events | Codex hook events, including model request and usage events |
+| Message and context source | Claude session transcript | Codex rollout file in ~/.codex/sessions |
+| Context detail | Transcript, instructions, tools, skills and attachments when recorded | Rollout parser reads prompts, replies, tool activity and context metadata |
+| Reasoning | Shown when the transcript provides it | Codex stores reasoning encrypted; only available summaries are readable |
+| Dashboard | Same local dashboard and event log | Same local dashboard and event log |
 
-Claude Code on Windows and Claude Code in WSL each have their own `~/.claude`, so uninstall
-and clean up in each one you installed it in.
+## Tricky details
+
+- **Hooks stay out of the way.** The hook writes events quickly, swallows errors and exits successfully so it does not block the coding session.
+- **Remove one session's Observer data.** Use its × button on Home or in the session list to delete its JSONL file. If the agent is still running, later events can create a new entry. Its original Claude Code or Codex transcript is not deleted.
+- **The sessions are not merged.** Claude Code and Codex sessions share a dashboard, but each keeps its own transcript and session identity.
+- **Agents started by agents are linked.** When Claude Code runs `codex exec`, or Codex runs `claude -p`, the new session nests under the one that started it on Home, Overview says "started by", and the call that started it links to it. The hook reads the parent from the environment: `CLAUDE_CODE_SESSION_ID`, or `CODEX_SESSION_ID` with `CODEX_TOOL_CALL_ID`. Claude Code started by Claude Code is not linked: Claude Code replaces that variable with its own id.
+- **Codex hooks need trust.** Trust them once in Codex with /hooks. The CLI script preserves your other hooks, but its paths point to this clone.
+- **Context sizes are estimates.** Transcript formats and token counts differ by agent. Codex's rollout format is undocumented and may change; encrypted reasoning text cannot be recovered by the dashboard.
+
+## Privacy and stored data
+
+Session Observer writes hook events to `~/.claude/session-observer/sessions/<day>/<session-hash>.jsonl`. At each start, the server moves the former combined `events.jsonl` into these folders. Until their plugin is updated, older installed hooks keep appending to that file, and the server tails it. `deleted-sessions.jsonl` keeps the ids and times of deleted sessions, so that import skips them. Session logs can contain prompts, commands and tool output. The server binds to `127.0.0.1` by default and reads Claude transcripts or Codex rollouts locally when needed. Treat them as sensitive.
+
+To clear Observer's event history, stop the server and delete the `sessions` directory, `events.jsonl` and `deleted-sessions.jsonl` from the configured data directory. To drop only old history, delete the day folders you no longer need (`~/.claude/session-observer` by default). This does not delete the original Claude or Codex transcripts.
+
+## Troubleshooting
+
+- **No sessions appear:** start a new Claude Code or Codex session after installing. For Codex, open `/hooks` and trust Session Observer; for Codex CLI, rerun `node scripts/setup-codex.js` if you moved the repository.
+- **The dashboard does not open:** start it with `node server/server.js`. If port 4777 is already in use, start it on another port:
+
+  ~~~powershell
+  $env:OBSERVER_PORT=4778; node server/server.js
+  ~~~
+
+  In Command Prompt, use `set OBSERVER_PORT=4778&& node server/server.js`.
+- **Events appear, but transcript details are missing:** transcript and context views read the source app's local transcript or rollout. Confirm the file is available to the same user running the dashboard.
+
+## Uninstall
+
+- **Claude Code:** open `/plugin` and uninstall Session Observer from the installed plugins.
+- **Codex desktop:** remove Session Observer from the app's plugin manager.
+- **Codex CLI:** from the repository, run `node scripts/setup-codex.js --remove` before deleting or moving the clone. This removes only Session Observer hooks and keeps your other hooks.
+
+To remove saved Observer events as well, stop the server and delete the event files described above.
 
 ## Use
 
-The server starts automatically on the first `SessionStart`. Open
-**http://localhost:4777**, or run `/session-observer:dashboard` inside Claude Code.
+The first session starts the server automatically. Open [http://localhost:4777](http://localhost:4777). To start it manually:
 
-Run it manually: `node server/server.js`.
+~~~sh
+node server/server.js
+~~~
 
-The dashboard speaks English, French, German, Italian, Polish, Portuguese, Spanish, Japanese, Korean
-and Simplified Chinese. It follows your
-browser's language; the menu next to **Theme** picks another one and remembers it. Tool names, hook
-event names and your own prompts stay as they are. **Copy** in the Context view always writes English
-Markdown.
+Try a synthetic demo without writing to your real event log:
 
-![Dashboard layout: 1 filters, 2 sessions, 3 views, 4 route, 5 event types and replay, 6 details](docs/layout.jpg)
+~~~sh
+node scripts/demo.js
+~~~
 
-The session list shows each session's title and a dot for its state (working, live or ended). Hover a
-session for the rest: when it was last active, its turns, tool calls and output tokens, the tool it ran
-last, and its folder, model, failures and context use.
+The demo opens at http://localhost:4800.
 
-![A session hovered in the list: its details in a card beside it](docs/pr/sessions-hover.png)
+### Dashboard languages
 
-Hovering links the views both ways: an event row in Details lights up its stop on the Route
-and its bubble or chip in the Chat, and hovering a Route stop or a Chat item lights up its
-row in Details.
+The dashboard follows your browser language. Choose another from the language menu; the selection is saved.
 
-Tool calls carry a badge for what they work with: the program a shell command runs (`node`,
-`dotnet`, `npm`, `docker`, `git`…) or the language of the file being read or edited (C#,
-Kotlin, TypeScript, HTML…). `cd api && dotnet test` shows .NET, an edit to `OrderService.cs`
-shows C#. A chained command gets a badge for every program in it: `npm ci && docker build .`
-shows npm and Docker (a Route stop shows the first one and a "+1"). The badges are drawn by the page itself, so nothing is downloaded; hover one for
-its name. Calls with nothing specific keep their tool group's icon.
+| Code | Language |
+|---|---|
+| en | English |
+| de | Deutsch |
+| es | Español |
+| fr | Français |
+| it | Italiano |
+| ja | 日本語 (Japanese) |
+| ko | 한국어 (Korean) |
+| pl | Polski |
+| pt | Português |
+| zh | 简体中文 (Chinese, Simplified) |
 
-**Context** shows one session's whole context on one scrolling page, read in full from its
-transcript rather than from the event log (which cuts long fields short). What the model is given up
-front stays on top. Below it the conversation is shown message by message, the way the model reads it:
-each Claude message is one model step with its thinking, text and tool calls, and each of your messages
-holds what came back in between (prompts, tool results, reminders and other attachments). The newest
-message is on top; switch to **Oldest first** to read it in order.
+Want another language? [Open an issue to request one](https://github.com/radekwojpl2/session-observer/issues/new).
 
-The messages are grouped into turns, the same turns Details shows: a turn starts at a prompt and runs
-to the next one. Each turn's header (its prompt, model steps and tool calls) stays in view while you
-scroll through it. Click a header to open that turn in Details; the turn shown there is highlighted,
-and **Prev** / **Next** in Details scroll this view to theirs. The arrow on a header folds the turn
-down to the header, and **Expand turns** / **Collapse turns** fold or unfold all of them.
+## Config
 
-What the view holds (**Copy** gives it oldest first):
-
-- the system prompt and tool definitions, when the transcript has them (only some Claude Code
-  versions record them);
-- the instruction files: global, project and local `CLAUDE.md`, `AGENTS.md` pulled in by an
-  `@AGENTS.md` import, rules and auto-memory, each with its path;
-- what the model knows it can use: skills, subagent types, deferred tools and each MCP server's
-  instructions;
-- every prompt, reply and thinking block, and every tool call with its complete input, and its result in
-  the message after it;
-- each subagent's own conversation, inside the Agent call that started it, with its own system prompt
-  (for a custom agent, the body of its `.md` file), tools and instructions;
-- the context size now, and after every model step, with the same bar and change as on the Route; each
-  compaction with the summary that replaced the history; **Since last compaction** shows only what the
-  model has in context now;
-- attachments the model reads: hook output, reminders, the environment, git status, changed files and
-  other injected text. Records Claude Code keeps in the transcript only for itself (prompt snapshots,
-  account and permission records) never reach the model; tick **bookkeeping** to see them anyway.
-
-Pick a session on the left first. Search filters this view too, and **Copy** puts everything shown on the
-clipboard as Markdown. The first request's size is measured, and it sets the session's characters per
-token, which the cards use for their sizes. Treat those sizes as close estimates: the ratio is an
-average over prose, code and JSON. Without a recorded request the cards fall back to about
-4 characters per token.
-
-Model steps, what the model wrote and the tool calls it asked for come from the session
-transcript (each assistant API response), since hooks don't see them.
-
-## What's captured
-
-All hook events Claude Code exposes: `SessionStart, Setup, UserPromptSubmit,
-UserPromptExpansion, PreToolUse, PermissionRequest, PermissionDenied, PostToolUse,
-PostToolUseFailure, PostToolBatch, Notification, MessageDisplay, SubagentStart,
-SubagentStop, TaskCreated, TaskCompleted, Stop, StopFailure, TeammateIdle,
-InstructionsLoaded, ConfigChange, CwdChanged, DirectoryAdded, FileChanged,
-WorktreeCreate, WorktreeRemove, PreCompact, PostCompact, PreModelSwitch,
-PostModelSwitch, Elicitation, ElicitationResult, SessionEnd`.
-
-Token usage comes from the session transcript (`transcript_path`), including subagent
-transcripts, refreshed when a turn ends.
-
-The model's text (and thinking, when the transcript keeps it) is read from the transcript
-once each block is finished, so it shows up a moment after Claude writes it, not word by
-word. Thinking is often stored empty, in which case there is nothing to show.
-
-## Config (env vars)
-
-| Variable | Default | |
-|---|---|---|
-| `OBSERVER_PORT` | `4777` | dashboard port |
-| `OBSERVER_DATA_DIR` | `~/.claude/session-observer` | where `events.jsonl` lives |
-| `OBSERVER_MAX_FIELD` | `8000` | max chars kept per string (file contents, outputs) |
-| `OBSERVER_MAX_EVENTS` | `5000` | events kept in memory per session |
-| `OBSERVER_AUTOSTART` | `1` | set `0` to stop SessionStart from launching the server |
-| `OBSERVER_HOST` | `127.0.0.1` | bind address — keep it local |
-| `OBSERVER_ALLOWED_HOSTS` | — | extra host names the dashboard answers to, comma-separated (loopback names always work) |
-| `OBSERVER_TOKEN` | — | lets other machines in when `OBSERVER_HOST` isn't loopback; without it they are refused |
-| `OBSERVER_CONTEXT_FIELD` | `100000` | max chars per text in the Context view |
-
-## Privacy and security
-
-The dashboard has no login. It answers only requests whose `Host` is a loopback name (or one you allow)
-on its own port, which blocks DNS-rebinding pages, and refuses requests from other sites' pages
-(foreign `Origin`), so a web page can't read your sessions or clear the log. Pages are served with a
-strict Content-Security-Policy and can't be framed.
-
-Requests from other machines (possible only when `OBSERVER_HOST` is not loopback) are refused unless
-`OBSERVER_TOKEN` is set. With it, open `http://<host>:<port>/?token=<token>` once (the token becomes an
-HttpOnly cookie) or send `Authorization: Bearer <token>`. Add the name you use to `OBSERVER_ALLOWED_HOSTS`.
-It is plain HTTP, so use a trusted network.
-
-The log holds your prompts, commands and tool outputs in plain text, readable by your user only
-(`0600` on macOS and Linux). Use **Clear log** in
-the dashboard or delete `~/.claude/session-observer/events.jsonl`.
+| Variable | Default | Purpose |
+|---|---:|---|
+| OBSERVER_PORT | 4777 | Dashboard port |
+| OBSERVER_DATA_DIR | ~/.claude/session-observer | Event log directory |
+| OBSERVER_AUTOSTART | 1 | Set to 0 to disable automatic start |
+| OBSERVER_HOST | 127.0.0.1 | Bind address |
+| OBSERVER_MAX_EVENTS | 5000 | Events kept per session |
+| OBSERVER_LOAD_DAYS | 7 | Days of session folders read at start, today included; 0 reads every day |
+| OBSERVER_CONTEXT_FIELD | 100000 | Maximum characters shown per context field |
+| OBSERVER_CODEX_CONTEXT_WINDOW | 272000 | Fallback Codex context window, in tokens |
 
 ## Development
 
-```bash
-node test/check.js                 # JSON, JS syntax, hook wiring, version
-node --test test/smoke.test.js     # hook → log → server → API, end to end
-node --test test/tech.test.js      # language / tool badges: what each command and file maps to
-claude plugin validate .           # plugin + marketplace manifests
-```
-
-CI (`.github/workflows/ci.yml`) runs all of them on every push and PR, on Node 18–24 (Linux)
-and Node 22 on macOS and Windows.
-
-Both the server and the dashboard are laid out the same way, in three layers:
-
-- **`building-blocks/`**: generic pieces that know nothing about any feature, such as reading a growing file,
-  formatting, languages, icons, badges, JSON and code display.
-- **`features/<feature>/`**: one folder per feature, and inside it the code grouped by function: `model` (data and
-  logic), `render` (HTML), `controls` (clicks, keys, hovers).
-- **`app/`** (dashboard only): the page around the features: the stage, the header, render scheduling, data loading
-  and start-up.
-
-The server is `server/server.js` (it loads the log and starts listening) plus `server/lib/`:
-
-| Folder | What is in it |
-|---|---|
-| `building-blocks/` | `config` (settings, paths, version), `file-tail` (new lines of a growing file), `token-usage`, `live-updates` (Server-Sent Events) |
-| `features/sessions/` | `event-categories`, `sessions` (sessions in memory and their totals), `transcript-steps` (model steps and usage from the transcripts) |
-| `features/context/` | `/api/context`: a transcript read in full, its system prompt and listings, attachments, the "as sent" messages |
-| `features/web/` | `routes` (the page, its files and the JSON API), `request-guard` (Host / Origin / token checks, headers, CSP) |
-
-The dashboard is `server/dashboard.html` (markup only) plus `server/dashboard/`, which the server serves as it is.
-There is still no build step: the scripts are plain browser scripts that share one global scope and load in the order
-the page lists them (building blocks, then features, then the app), so a file can use anything from the files above
-it. `node test/check.js` fails if the page and the folder don't list the same files, or if a script doesn't start
-with `'use strict';`.
-
-| Folder | What is in it |
-|---|---|
-| `dashboard.css` | all styles, light and dark |
-| `building-blocks/language/` | the language list and plural helper (`i18n`), one table per language (`translations/<code>`), the chosen language |
-| `building-blocks/` | `dom` (elements, storage), `icons`, `format` (escaping, numbers, times), `tech-badges`, `code-highlight`, `json-view`, `card-parts` |
-| `features/events/` | the event model shared by every view: tool groups, what an event means, the page state, turns, running activity, the context window; tool input / output and the context badge |
-| `features/sessions/` | the sessions panel and its hover card |
-| `features/filters/` | search, tool group, problems, range, event-type chips |
-| `features/replay/` | the replay bar |
-| `features/overview/` | Overview: tiles, charts and lists |
-| `features/route/` | Route: stops and lanes, the SVG, the header and turn navigator |
-| `features/chat/` | Chat |
-| `features/details/` | Details: the event cards, the event rows and the panel |
-| `features/context/` | Context: data from `/api/context`, its cards, the pinned prompt, usage, messages, Copy as Markdown |
-| `app/` | the stage and its views, hover links, header, render scheduling, data and live updates, start-up |
-
-### Releasing
-
-Releases are made by [release-please](https://github.com/googleapis/release-please). Nobody
-edits the version or pushes a tag by hand.
-
-1. Give every PR a [Conventional Commit](https://www.conventionalcommits.org) title and
-   squash-merge it, so the title becomes the commit on `main`. CI checks the title.
-
-   | Title starts with | Next version | In the changelog |
-   |---|---|---|
-   | `feat:` | minor (0.3.0 → 0.4.0) | Features |
-   | `fix:`, `perf:`, `refactor:` | patch (0.3.0 → 0.3.1) | Bug Fixes, Performance, Code Changes |
-   | `feat!:`, `fix!:`… | breaking: minor while below 1.0.0, major after | marked as breaking |
-   | `docs:`, `test:`, `ci:`, `chore:`, `build:`, `style:` | no release | left out |
-
-2. After each merge the release workflow opens, or updates, one **release PR**. It sets
-   `version` in `.claude-plugin/plugin.json` and `.release-please-manifest.json`, and adds
-   the new entries to `CHANGELOG.md`.
-3. Merge the release PR when you want to ship. The workflow tags that commit `vX.Y.Z`,
-   publishes the GitHub release and attaches the plugin zip with its SHA-256.
-
-The tag and `plugin.json` cannot drift apart: the tag is put on the very commit in which the
-release PR set the version. `node test/check.js` fails if `plugin.json` and the manifest
-disagree, and the release workflow fails if the tag and `plugin.json` do.
-
-The workflow needs a repository secret `RELEASE_TOKEN`: a fine-grained personal access token
-for this repository with read and write access to **Contents** and **Pull requests**. With
-the built-in token, CI would not run on the release PR.
-
-## Credits
-
-Earlier versions of the dashboard had a live hub map based on
-[**lot-map**](https://github.com/alexeyw/lot-map) by alexeyw (MIT), a Claude Code plugin that
-draws a live map of the session beside the chat. The hub map has since been replaced by the
-Overview, Route and Chat views, but the idea of grouping tools into stations (You, Model, Files,
-Shell, Git, MCP, Network, Browser, Agents, Skills, Context, Other) and the event markers
-(● running · ✕ failed · ◆ model step) come from its design. No code was copied.
+~~~sh
+node test/check.js
+node --test test/*.test.js
+~~~
 
 ## License
 

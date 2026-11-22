@@ -54,6 +54,11 @@ install.
   own chart also marks where its description or input schema
   changed, since rewording a description can change how agents use a tool
   more than a change to its code.
+- **Client versions.** Clients update themselves, and nobody tells the
+  server's author. Under each client, its versions: which one is new, and
+  whether the newest gets its arguments refused more often than the one
+  before it, tool by tool, compared only on the releases of your server
+  both called, so a release of yours is not blamed on the client.
 - **Alerts** to Slack, Discord or any webhook, when errors climb or a server
   goes quiet, for a whole server or one tool.
 - **Your data, yours to take.** CSV and NDJSON exports of anything you can
@@ -145,7 +150,7 @@ Eight languages, the same features in each:
 |---|---|---|---|
 | TypeScript | official SDK, v1 and v2 | `npm install mcpspan` | [packages/mcpspan](packages/mcpspan/README.md) |
 | Python | official SDK, FastMCP | `pip install mcpspan` | [packages/mcpspan-python](packages/mcpspan-python/README.md) |
-| Go | official Go SDK, mcp-go | `go get github.com/mcpspan/mcpspan/packages/mcpspan-go/mcpsdk` | [packages/mcpspan-go](packages/mcpspan-go/README.md) |
+| Go | official Go SDK, mcp-go v1 and v2 | `go get github.com/mcpspan/mcpspan/packages/mcpspan-go/mcpsdk` | [packages/mcpspan-go](packages/mcpspan-go/README.md) |
 | C# / .NET | official C# SDK | `dotnet add package McpSpan` | [packages/mcpspan-dotnet](packages/mcpspan-dotnet/README.md) |
 | Java / Kotlin | official Java SDK | `com.mcpspan:mcpspan-java-sdk` | [packages/mcpspan-jvm](packages/mcpspan-jvm/README.md) |
 | Rust | rmcp | `cargo add mcpspan` | [packages/mcpspan-rust](packages/mcpspan-rust/README.md) |

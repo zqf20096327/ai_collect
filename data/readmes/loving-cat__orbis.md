@@ -111,8 +111,8 @@ Windows 解压后打开 `orbis.exe`；macOS 打包后打开 `dist/Orbis.app`。
 目标机器需安装 Node 22+。桌面端就是宿主，启动时会自动把服务端跑起来：
 
 1. 先探本机 `127.0.0.1:8787`，已有服务端就直接连（不会重复启动）；
-2. 没有就定位 `server/src/index.js`（用户设置、`PI_BOT_SERVER`、App Resources、可执行文件同级或上层目录）；
-3. 定位 Node（用户设置、`PI_BOT_NODE`、应用目录、PATH；按平台补查常见安装目录）；
+2. 没有就定位 `server/src/index.js`（用户设置、`ORBIS_SERVER`、App Resources、可执行文件同级或上层目录）；
+3. 定位 Node（用户设置、`ORBIS_NODE`、应用目录、PATH；按平台补查常见安装目录）；
 4. 首次缺少 `node_modules` 时自动执行 `npm install`；
 5. 启动后轮询 `/health`，就绪即进主界面。
 
@@ -146,7 +146,7 @@ Xcode 检查与 Flutter 构建，仅重新组装安装包。当前使用 ad-hoc 
 
 > 从 1.1 之前的版本升级：启动时会把旧的 `server/data` 搬到上面的目录，只搬会话、消息、附件和配置。
 > **bot 的工作目录不搬**（里面常有几百 MB 的 `.venv`），继续用旧位置的 `server/data/workspace`，
-> 所以旧目录**不要删**。想把工作目录也换地方，用 `PI_BOT_WORKSPACE` 指定。
+> 所以旧目录**不要删**。想把工作目录也换地方，用 `ORBIS_WORKSPACE` 指定。
 
 ### 3. 手机端
 
@@ -190,7 +190,7 @@ console.log(res.replyText);
 await rt.dispose();
 ```
 
-完整文档与远程 `createOrbisClient` 用法见 [SDK 与单骨架说明](docs/SDK.md)（同时保留 `createPiBotRuntime` / `createPiBotClient` 与 `PI_BOT_*` 环境变量兼容）。
+完整文档与远程 `createOrbisClient` 用法见 [SDK 与单骨架说明](docs/SDK.md)（2.0 已删旧别名；`ORBIS_*` 环境变量在 2.0 期间仍双读，Phase 3 收口时删）。
 
 ## 目录
 
@@ -275,7 +275,7 @@ flutter analyze
 ```
 
 真实浏览器集成用例默认跳过。需要验证浏览器时，先准备专用测试环境，再运行
-`PI_BOT_EGO_INTEGRATION=1 node tests/ego-browser.mjs`；该命令会操作本机浏览器。
+`ORBIS_EGO_INTEGRATION=1 node tests/ego-browser.mjs`；该命令会操作本机浏览器。
 
 本机诊断可读取 `GET /api/run-stats`，需要带本机 token（见下面的「安全」一节）。
 统计保存在数据目录的 `run-stats.json`，最多保留 2,000 条运行记录和 90 天汇总。
@@ -284,8 +284,8 @@ flutter analyze
 记忆摘要和复盘费用不在这份运行统计内，不能将它当作供应商账单。
 
 主动压缩、记忆摘要和复盘默认最多同时运行一个，可用
-`PI_BOT_BACKGROUND_CONCURRENCY` 调整；后台排队默认最多 30 秒，可用
-`PI_BOT_BACKGROUND_SLOT_WAIT_MS` 调整。用户任务的压缩排队同时受停止动作和
+`ORBIS_BACKGROUND_CONCURRENCY` 调整；后台排队默认最多 30 秒，可用
+`ORBIS_BACKGROUND_SLOT_WAIT_MS` 调整。用户任务的压缩排队同时受停止动作和
 本轮剩余时间限制，不能通过后台排队绕过任务超时。
 
 `scripts/pack-windows.ps1` 生成可分发目录（exe + server + 依赖）。默认把应用源码复制到
@@ -313,23 +313,23 @@ flutter analyze
 （`/api/files/:id?token=…`）为了给 `<img>` 直接用，token 在 query 里 —— 局域网自用可以接受，
 但如果你把服务端暴露到公网，请换成反向代理注入鉴权，别让 token 进访问日志。
 
-见 `server/.env.example`。核心服务端变量均已支持 **`ORBIS_*`（优先）并向后兼容 `PI_BOT_*`**。常用：
+见 `server/.env.example`。核心服务端变量均已支持 **`ORBIS_*`（优先）并向后兼容 `ORBIS_*`**。常用：
 
 | 变量 | 默认 | 说明 |
 |---|---|---|
-| `PI_BOT_PORT` | 8787 | 端口 |
-| `PI_BOT_MODEL` | 自动 | 默认模型（来自你的模型组） |
-| `PI_BOT_TOKEN` | — | 固定 token（设了就跳过配对码）。**设了就是服务器模式**：本机请求也要带 token |
-| `PI_BOT_TRUST_LOCAL` | 没设 token 时 `1`，设了时 `0` | 要不要接受**本机 token**（服务端每次启动写在数据目录的 `local-token`）。**不再表示免 token**。一般不用改 |
-| `PI_BOT_ALLOWED_HOSTS` | — | 额外允许的域名（逗号分隔）。反向代理保留原始 Host 时填你的域名 |
-| `PI_BOT_HOME` / `PI_BOT_WORKSPACE` | 用户数据目录（见上表） | 数据目录 / agent 的工作目录 |
-| `PI_BOT_GROUP_BUSY_WAIT_MS` | 120000 | 要派的活碰上成员正忙，最多等它多久 |
-| `PI_BOT_HEARTBEAT_MS` / `PI_BOT_STALL_MS` | 15000 / 360000 | 心跳间隔 / 多久没动静算断了 |
-| `PI_BOT_MAX_SESSIONS` | 40 | 驻留会话上限（LRU） |
-| `PI_BOT_MAX_CONCURRENT_RUNS` | 0 | 同时**开跑**的轮数上限（0 = 不限）。与 `MAX_SESSIONS` 是两件事：那个管驻留多少份上下文，这个管同时几路在真跑 |
-| `PI_BOT_RUN_SLOT_RESERVE` | 1 | 给人额外保留的槽位（用户直接发起/打断的轮次用得上，不被机器挤掉） |
-| `PI_BOT_RUN_SLOT_WAIT_MS` | 0 | 等槽位的硬超时，0 = 一直等。设了以后排队超时会如实回报并在群里留痕 |
-| `PI_BOT_RUN_TIMEOUT_MS` | 600000 | 单轮硬超时 |
+| `ORBIS_PORT` | 8787 | 端口 |
+| `ORBIS_MODEL` | 自动 | 默认模型（来自你的模型组） |
+| `ORBIS_TOKEN` | — | 固定 token（设了就跳过配对码）。**设了就是服务器模式**：本机请求也要带 token |
+| `ORBIS_TRUST_LOCAL` | 没设 token 时 `1`，设了时 `0` | 要不要接受**本机 token**（服务端每次启动写在数据目录的 `local-token`）。**不再表示免 token**。一般不用改 |
+| `ORBIS_ALLOWED_HOSTS` | — | 额外允许的域名（逗号分隔）。反向代理保留原始 Host 时填你的域名 |
+| `ORBIS_HOME` / `ORBIS_WORKSPACE` | 用户数据目录（见上表） | 数据目录 / agent 的工作目录 |
+| `ORBIS_GROUP_BUSY_WAIT_MS` | 120000 | 要派的活碰上成员正忙，最多等它多久 |
+| `ORBIS_HEARTBEAT_MS` / `ORBIS_STALL_MS` | 15000 / 360000 | 心跳间隔 / 多久没动静算断了 |
+| `ORBIS_MAX_SESSIONS` | 40 | 驻留会话上限（LRU） |
+| `ORBIS_MAX_CONCURRENT_RUNS` | 0 | 同时**开跑**的轮数上限（0 = 不限）。与 `MAX_SESSIONS` 是两件事：那个管驻留多少份上下文，这个管同时几路在真跑 |
+| `ORBIS_RUN_SLOT_RESERVE` | 1 | 给人额外保留的槽位（用户直接发起/打断的轮次用得上，不被机器挤掉） |
+| `ORBIS_RUN_SLOT_WAIT_MS` | 0 | 等槽位的硬超时，0 = 一直等。设了以后排队超时会如实回报并在群里留痕 |
+| `ORBIS_RUN_TIMEOUT_MS` | 600000 | 单轮硬超时 |
 
 ## 安全
 
@@ -341,10 +341,10 @@ flutter analyze
   **配对码本身也需要 token 才能看到**——避免本机进程拿码换设备 token 绕过整套机制。
 - WebSocket 用同一份凭据：没 token 一律 4401。
 - 远程设备仍走配对流程拿 token
-- bot 有 `bash`/`write`，**不要裸奔到公网**。公网部署请套 nginx + HTTPS，并设 `PI_BOT_TOKEN`：
-  - 设了 `PI_BOT_TOKEN` 就是**服务器模式**，本机请求也要带 token。反向代理和服务端在同一台机器上时，
+- bot 有 `bash`/`write`，**不要裸奔到公网**。公网部署请套 nginx + HTTPS，并设 `ORBIS_TOKEN`：
+  - 设了 `ORBIS_TOKEN` 就是**服务器模式**，本机请求也要带 token。反向代理和服务端在同一台机器上时，
     公网请求经代理转发后在服务端看来就是 127.0.0.1，免 token 等于谁都能进
-  - 代理保留了原始 Host（`proxy_set_header Host $host;`）时，把域名加进 `PI_BOT_ALLOWED_HOSTS`，
+  - 代理保留了原始 Host（`proxy_set_header Host $host;`）时，把域名加进 `ORBIS_ALLOWED_HOSTS`，
     否则会被 DNS rebinding 防护拒掉（`403 bad host`）
   - 服务器模式下 `/health` 仍然公开（探活要用），但只给服务名、版本和鉴权方式，不给房间数、模型名
   - 桌面端连服务器模式的本机服务端时，连接页会让你填这个 token
@@ -355,9 +355,9 @@ flutter analyze
 - **配了任一规则之后**，`sh -c` / `bash -c`、`xargs <命令>`、解释器调用会拒绝，只放行 `--version` / `-V` / `--help`。白名单只有 `git status` 时，`sh -c 'git status'` 也会被拒，直接写 `git status` 可以。`rm -rf` 这类规则会拆开短选项，并把 `rm` 的 `--recursive` / `--force` 当成 `-r` / `-f`
 - 黑名单看不到脚本文件、Makefile、`npm` scripts 里面的命令。字符串规则盖不住这些入口，长期方案是沙箱，另行立项。`awk` 的 `system`、`vim -c`、`npx`、`make` 等间接执行也没有列全；要严格限制，请用白名单模式，或把危险操作设为“需要批准”。详见 [docs/AGENT-MODEL.md](docs/AGENT-MODEL.md)
 - 浏览器脚本遵守危险操作审批。配置了命令白名单或黑名单时，脚本入口不可用，因为无法逐条核验脚本内部执行的命令。
-- 子进程（bash / powershell、后台命令、MCP 本地服务）只继承白名单：`PATH`、`HOME`、`USER` / `USERNAME` / `LOGNAME`、`SHELL`、`TERM`、`LANG`、`LC_*`、`TMPDIR` / `TEMP` / `TMP`、`PI_CODING_AGENT_DIR`、`XDG_*`、`SSH_AUTH_SOCK`、`GIT_SSH*`、`NODE_EXTRA_CA_CERTS`、`SSL_CERT_*`、`DISPLAY`，以及名字以 `_PROXY` 结尾的代理变量。`PI_BOT_*` 也会继承，但 `PI_BOT_TOKEN` 和 `PI_BOT_SECRET_KEY` 除外。Windows 启动还要这些（比较时不分大小写）：`SystemRoot`、`windir`、`SystemDrive`、`ComSpec`、`PATHEXT`、`USERPROFILE`、`APPDATA`、`LOCALAPPDATA`、`HOMEDRIVE`、`HOMEPATH`、`ProgramFiles`、`ProgramFiles(x86)`、`ProgramData`、`PSModulePath`、`NUMBER_OF_PROCESSORS`、`PROCESSOR_ARCHITECTURE`、`OS`、`PUBLIC`。`*_API_KEY`、`*_TOKEN`、`*_SECRET` 不会因为父进程里有就传下去
+- 子进程（bash / powershell、后台命令、MCP 本地服务）只继承白名单：`PATH`、`HOME`、`USER` / `USERNAME` / `LOGNAME`、`SHELL`、`TERM`、`LANG`、`LC_*`、`TMPDIR` / `TEMP` / `TMP`、`PI_CODING_AGENT_DIR`、`XDG_*`、`SSH_AUTH_SOCK`、`GIT_SSH*`、`NODE_EXTRA_CA_CERTS`、`SSL_CERT_*`、`DISPLAY`，以及名字以 `_PROXY` 结尾的代理变量。`ORBIS_*` 也会继承，但 `ORBIS_TOKEN` 和 `ORBIS_SECRET_KEY` 除外。Windows 启动还要这些（比较时不分大小写）：`SystemRoot`、`windir`、`SystemDrive`、`ComSpec`、`PATHEXT`、`USERPROFILE`、`APPDATA`、`LOCALAPPDATA`、`HOMEDRIVE`、`HOMEPATH`、`ProgramFiles`、`ProgramFiles(x86)`、`ProgramData`、`PSModulePath`、`NUMBER_OF_PROCESSORS`、`PROCESSOR_ARCHITECTURE`、`OS`、`PUBLIC`。`*_API_KEY`、`*_TOKEN`、`*_SECRET` 不会因为父进程里有就传下去
 - AWS、gcloud 等云凭证仍然不传给子进程。pi 子 agent 是例外：只有 `runPiCli` 拉起它时，按当前模型把对应 provider 的 key 显式放进环境。派子 agent 时如果先起的是本程序自己的入口脚本，这一跳也会带上这把 key；别的 `index.js` 不会。bash、后台命令和 MCP 默认拿不到。某个 MCP 服务自己要用的变量，写在这个服务配置的显式 `env` 里，例如 `OPENAI_API_KEY=test-key-a`
-- 站点口令和模型组 API key 用 AES-256-GCM 落在数据目录里，不写明文。密钥默认是 `<数据目录>/secret.key`（权限 0600）。设置了 `PI_BOT_SECRET_KEY`（32 字节的 hex 或 base64）就用环境变量，此时不读、不写 `secret.key`。密钥丢失或换错后，已经加密的口令和 key 无法还原：操作会报错，不会把密文写成空
+- 站点口令和模型组 API key 用 AES-256-GCM 落在数据目录里，不写明文。密钥默认是 `<数据目录>/secret.key`（权限 0600）。设置了 `ORBIS_SECRET_KEY`（32 字节的 hex 或 base64）就用环境变量，此时不读、不写 `secret.key`。密钥丢失或换错后，已经加密的口令和 key 无法还原：操作会报错，不会把密文写成空
 - 仓库本身**不含任何密钥、本机路径、内网地址**——全部走用户级配置或环境变量
 
 ## 参考与许可

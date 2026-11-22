@@ -546,7 +546,9 @@ because the same change added three more classes below):
   UNVERIFIABLE**, and any number one rests on is **re-measured this session**.
 - **Findings that don't survive contact** — every Critical/High gets an independent pass
   *prompted to kill it*, working from the code rather than the write-up and defaulting
-  to REFUTED when the evidence is ambiguous. Refutations are recorded, so the next
+  to REFUTED when the evidence is ambiguous — except where the adversary wrote the subject
+  (a hostile skill, an outside contributor's change to a gate), where ambiguity is the attack
+  and the finding ships as "needs verification". Refutations are recorded, so the next
   auditor doesn't re-raise them — and **swept before they're dropped**, because the
   refuted pattern routinely closes somewhere the audit's scope didn't cover. A severity
   also has to **name its chain** (reach → primitive → boundary crossing → channel), and
@@ -891,6 +893,13 @@ uncommitted changes, so the session is loading unreleased text (the cue for a ma
 registered with no matcher, again on resume, `/clear` and compaction (Claude Code's hooks reference
 lists those as SessionStart sources). It does not re-check between compactions in a long session.
 
+**What does it need?** Every run starts with a required-tools list: `git`, `jq` (every hook
+installer and the status line) and `python3` 3.10 or newer (the hooks need 3.9: below it a
+hook would fail on every call and, since a hook exits 0 on any error, say nothing, so the
+installer skips it; the session-load audit needs 3.10). Each line names what the tool
+enables and the install command for your package manager; `scripts/install.sh --check-tools`
+prints only that list and exits 1 when something required is missing or too old.
+
 **Which version am I on?** `scripts/install.sh --version` reports the release, the
 checkout (`git describe`), whether your remote is ahead as of the last fetch, and
 whether the skills are symlinked (update live) or a pinned `--copy` snapshot. Quote
@@ -1019,7 +1028,9 @@ you install more skills.
 **To check your own install:** `scripts/verify-setup.sh` reports it as check **1b**, with the
 arithmetic, the per-source breakdown and the window it used, and a double install as **1g**. By hand: look at the skill
 list Claude is given and count entries that are a bare name with no text after the colon.
-Any such skill is installed, correct, and unreachable except by name.
+Any such skill is installed, correct, and unreachable except by name. (Check **1**, whether every
+skill is reachable at all, reads a plugin-only install through the same lister since v1.58.0;
+before, its directory walk stopped three levels short of a plugin's skills and read FAIL.)
 
 ### Always-on routing (recommended)
 
@@ -1225,5 +1236,4 @@ silently uninstalled until you re-run the installer.
 |---|---|---|
 | **`/sota-report`** | at the **end** of a session, in your own project | Writes a gitignored field report on where the guidance failed, was absent, wrong, or right and did not fire — stamped with the version that produced it. Then writes a short generalised extract and prints a `gh issue create` line. It never posts anything. |
 | **`/sota-resume`** | at the **start** of a session, or when picking a project back up | Finds the open work: sweeps every tracker, checkbox and `TODO` marker with a **controlled** search (a clean "nothing found" is exactly the answer a skipped symlink tree, a `--replace` flag or a 30-row default page produces), classifies it — ready · needs a decision · deliberately deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap** — shows you the table, then executes what you agree to, one item at a time, against the project's own CI entry point. |
-| **`/sota-auto`** | when **no one will be there** to answer prompts, such as a late-evening run | Runs `/sota-resume`'s inventory and classification, then executes without asking. It **decides** what is reversible inside the repository and **queues** what is not: a merge (unless your own agent file already grants it), a force-push, a delete, a tag or release, anything that speaks for you outside the repository, a settings or credential change, and any spend not covered by a `budget=$N` argument. A security decision is taken only when the option is the more secure one by the library's rules **and** costs nothing you own (a breaking change, a dropped feature, a who-may-do-what model); otherwise it is queued with options. A refused command is retried only when its *form* was the problem; a refused *action* is never re-encoded to get past the refusal. It stops on its `items=`/`hours=` limits or after three environment failures in a row, runs `/sota-close`, and ends with a report: security decisions first, then everything awaiting you (ready to run), every decision with how to reverse it, refusals and workarounds, and spend. It cannot suppress Claude Code's own permission prompts: start it in a mode that does not prompt |
-| **`/sota-audit`** | when a piece of work is **finished**, or on arriving in a c
+| **`/sota-auto`** | when **no one will be there** to answer prompts, such as a late-evening run | Runs `/sota-resume`'s inventory and classification, then executes without asking. It **decides** what is reversible inside the repository and **queues** what is not: a merge (unless your own agent file already grants it), a force-push, a delete, a tag or release, anything that speaks

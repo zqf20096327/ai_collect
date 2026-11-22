@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20660087.svg)](https://doi.org/10.5281/zenodo.20660087)
 
-**Consumer-aware compression for embedding indexes and LLM KV caches.** TurboQuant Pro compresses each vector by the metric its downstream consumer actually uses — retrieval recall for indexes, attention/generation quality for KV caches — **not reconstruction cosine alone**, which is repeatedly shown here to be blind, or even anti-correlated, with quality.
+**Consumer-aware compression for embedding indexes and LLM KV caches.** TurboQuant Pro compresses each vector by the metric its downstream consumer actually uses — retrieval recall for indexes, attention/generation quality for KV caches — **not reconstruction cosine alone**, which is repeatedly shown here to be blind to quality: for KV-cache keys, a quantizer that reconstructs better gave 675× worse perplexity.
 
 ```bash
 pip install turboquant-pro
@@ -100,7 +100,7 @@ The sharpest illustration is KV-cache **keys**. PolarQuant normalizes each key a
 
 That boundary is now instrumented, so the principle ships as tooling rather than advice:
 
-- **`rank_certificate`** — turns a measured distortion κ + the corpus's distance-ratio concentration μ̂ into a **distribution-free** rank floor (Kendall τ ≥ 1−2μ̂); a vacuous floor is the per-corpus "exact reranking required" signal. Emit with `tqp certify`, re-check with `tqp verify` (a third party re-hashes the inputs and reproduces the math).
+- **`rank_certificate`** — turns a measured distortion κ + the corpus's distance-ratio concentration μ̂ into a rank floor on the measured pairs with no distributional assumption (Kendall τ ≥ 1−2μ̂−2t, where t pays for the distances the percentile band excludes); a vacuous floor is the per-corpus "uncertified: validate or rerank" signal. Emit with `tqp certify`, re-check with `tqp verify` (a third party re-hashes the inputs and reproduces the math).
 - **`a2_probe`** — selects the quantizer family against the *declared* consumer (cosine / L2 / attention logits) at calibration time; it reproduces the keys catastrophe as a unit test.
 - **`operator_trace` / `operator_sensitivity`** — infer each tensor's consumer (softmax score / residual / MoE gate / SSM decay) and apply the discipline that operator needs, validated on real Mixtral, OLMoE, and Mamba models.
 - **`read_operators`** — the consumer's read operator `P_C` itself, as a pluggable provider, so the consumer-relative distortion `tr(P_C·Σ_δ)` is a **number you gate on** rather than a principle you appeal to. `identity` (which is reconstruction error, made explicit), `declared`, and `attention_analytic` (a closed form, since a head's read subspace is spanned by its queries) ship in tree; [`tqp-readscope`](plugins/tqp-readscope/) adds blind recovery for consumers with no closed form. Why a registry and not a function: two defensible references for one attention head differ by about **0.3 in overlap**, so a number is not interpretable unless it names the reference it was computed against — `tqp certify --reference PROVIDER` records exactly which one, hashed.

@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--21-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1386-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--22-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1381-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1386 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1381 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
 | Perception & Sensor Fusion | 216 | 2026-11-19 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 114 | 2026-11-18 | [View papers](#category-prediction-world-models) |
 | Planning & Decision-Making | 93 | 2026-11-18 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 60 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
+| Control & Vehicle Dynamics | 59 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 162 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 199 | 2026-11-18 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 198 | 2026-11-18 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 155 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 32 | 2026-11-19 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 307 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
+| Human Factors & Policy | 31 | 2026-11-19 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 305 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -46,16 +46,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Tag | Papers | Filter |
 |:--|--:|:--|
 | Dataset | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 195 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 194 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 109 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 121 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 141 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
-| Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
+| Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
@@ -395,7 +395,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-31186"></a>
 
-### RaSFNet: Ray-aligned and Scan-aware Fusion Network for LiDAR Semantic Segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
+### RaSFNet: Ray-aligned and Scan-aware Fusion Network for LiDAR Semantic Segmentation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Chuang Chen<br>
 **Published:** 2026-10-22<br>
@@ -1660,4 +1660,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-09787"></a>
 
-### Adversarially Guided Diffusion for LiDAR Range Image Synth
+### Adversarially Guided Diffusion for LiDAR Range Image Synthes

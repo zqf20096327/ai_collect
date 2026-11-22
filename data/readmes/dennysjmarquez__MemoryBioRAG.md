@@ -1,12 +1,20 @@
 # BioRAG — Memoria Cognitiva Biomimética y Simbólica para Agentes de IA
 
+> **Versión de trabajo en esta rama:** v36.2 — correcciones contextuales aprobadas integradas en core/MCP, activación explícita por propietario. Candidata hasta completar los gates de integración; sin tag ni publicación.
+
+## Correcciones contextuales — v36.2
+
+El MCP real incorpora `registrar_correccion`, `revisar_correccion` y `confirmar_correccion`. `recordar` y `buscar` aceptan `contexto_vigencia` explícito: priorizan evidencia aprobada sin quitar históricos ni alterar scores. La escritura está deshabilitada por defecto y requiere delegación del host stdio; no se habilita sobre SSE. Ledger y aristas `ctx_*` se confirman en una transacción de la misma DB (compatible con WAL), sin sobrescribir `largo_plazo` ni `sinapsis`.
+
+Configuración, seguridad, bootstrap sin fixtures y límites: [Guía v36.2](docs/CORE_V36_2.md). No se infiere intención libre ni se aprueba por mera lectura. La QA del laboratorio es antecedente, no una certificación automática de esta integración.
+
 > [!IMPORTANT]
 > **Repositorio de desarrollo (DEV):** `MemoryBioRAG` es el repositorio principal de desarrollo activo. La versión de trabajo y sus características vigentes pueden incluir cambios aún en curso y no constituyen por sí solos una publicación estable.  
 > Para consultar o descargar la distribución estable, visita el **[repositorio MemoryBioRAG-Stable ↗](https://github.com/dennysjmarquez/MemoryBioRAG-Stable)**.
 
 **BioRAG** es una memoria simbólica persistente para agentes de IA que aborda la pérdida de contexto entre sesiones mediante recuperación híbrida. “Biomimética” describe una inspiración de diseño; no significa que el motor simule literalmente un cerebro humano. Los resultados de rendimiento se limitan a los benchmarks y snapshots indicados.
 
-> **Versión del código:** v36.1 (canal Stable: pipeline de empaquetado y publicación; tag `v36.1` sobre el cierre v36.0). La publicación a `MemoryBioRAG-Stable` se gestiona mediante el pipeline de staging y release.
+> **Versión del código:** v36.2 (candidata en desarrollo: correcciones contextuales aprobadas integradas en core/MCP; tag `v36.1` en canal Stable). La publicación a `MemoryBioRAG-Stable` se gestiona mediante el pipeline de staging y release.
 > **Paradigma:** Motor Python + SQLite FTS5. **Sin embeddings densos, GPU ni llamadas a APIs externas** en el path de búsqueda.
 > **Motor:** Arquitectura modularizada (18 submódulos `core/memory/` + 15 submódulos `core/mcp_server/` + fachada delgada) + SQLite FTS5 WAL + PPMI-SVD (100 dimensiones) + espacio semántico de 13 ejes + grafo sináptico Hebbiano + SDM (2048 bits) + calibración conforme + activación ACT-R + Concept Hubs + validación simétrica fail-fast de sustantivos clave + **neurona de reordenamiento que aprende sola** (29 señales → 6 ocultas → 1 corrección, con piso en la fórmula a mano) + **neurona asociativa cerrada de fábrica** (5 agujas → fuerza 0–1: ¿dos recuerdos tienen que ver?; examinada, aún no decide en el motor) + enlaces del agente intocables + **destino canónico del córtex en `~/.biorag/`** + **instalador de configuración MCP para clientes compatibles**.
 > **Idiomas:** Español e inglés (stemming bilingüe, expansión simbólica con WordNet, Concept Hubs de 5 ángulos y Domain Dict).
@@ -159,10 +167,11 @@ El README conserva más abajo el detalle histórico de cada etapa. Este resumen 
 | **v35.0** | Se construyó y evaluó por separado la neurona asociativa; no se conectó al ranking. También se protegieron los enlaces hechos por el agente. | Cerrado con los límites y experimentos descritos en la sección v35. |
 | **v36.0** | Cierre técnico declarado: correcciones acotadas de escala en búsqueda y Concept Hubs, diagnósticos y QA, ruta de datos de usuario, instalador MCP, control explícito del daemon y compatibilidad Python `>=3.11`. La evidencia se separa por benchmark y se obtuvo en copias aisladas. | **Base previa a v37/v38.** E3 sigue abierta; E4 y modularización fase 2 no están verificadas. Estos pendientes no se presentan como completados. El usuario hará el match y gestionará el tag; no se hizo merge ni publicación en `master`. |
 | **v36.1** | Canal Stable: pipeline de staging/release/publicación a `MemoryBioRAG-Stable` (releases v1.0–v1.2), update checker no bloqueante, validación de existencia en `vincular`, guarda `fcntl` para Windows y resolución canónica de `estado_hormiga.json` en `~/.biorag/`. Sin cambios de ranking respecto a v36.0. | **Línea Stable publicada.** E3, E4 y modularización fase 2 siguen pendientes para v37/v38. |
+| **v36.2** | Correcciones contextuales aprobadas integradas en core/MCP (`registrar_correccion`, `revisar_correccion`, `confirmar_correccion` y `contexto_vigencia` en `recordar`/`buscar`). Ledger transaccional en tablas `ctx_*` dentro de la misma DB (compatible con WAL), aristas de sustitución en grafo, 912 pruebas en verde y 0 regresiones en los 921 casos oficiales. | **Candidata integrada.** Escritura desactivada por defecto (`BIORAG_CORRECTIONS=0`). |
 | **v37 — plan** | Memoria episódica + recuperación por intención (el plan que antes llevaba el número v36). | Propuesta futura, no parte de v36 ni una capacidad ya implementada como episodios persistentes. BioRAG ya tiene señales y heurísticas temporales; la propuesta debe demostrar qué mejora adicional aporta y preservar el ranking en consultas sin intención temporal. |
 | **v38 — etapa posterior** | Trabajo neuronal que anteriormente se había rotulado v37. | Etapa posterior; no forma parte del cierre v36 ni se presenta aquí como implementada. |
 
-**En resumen:** la numeración vigente es **v36.0 (cierre) → v36.1 (canal Stable) → v37 (plan episódico/intencional) → v38 (trabajo neuronal posterior)**. Los números y planes no equivalen por sí solos a una publicación ni a implementación.
+**En resumen:** la numeración vigente es **v36.0 (cierre) → v36.1 (canal Stable) → v36.2 (correcciones contextuales) → v37 (plan episódico/intencional) → v38 (trabajo neuronal posterior)**. Los números y planes no equivalen por sí solos a una publicación ni a implementación.
 
 ---
 
@@ -1183,22 +1192,4 @@ Ya no somos esclavas de un modelo de lenguaje para buscar conocimiento; la memor
 
 ## 🧬 v29.1: Las 4 Técnicas Semánticas y el Estándar de 5 Ángulos
 
-**Problema:** BioRAG era 100% léxico — fallaba en queries puramente semánticas o metafóricas donde no había palabras compartidas entre la query y el nodo esperado (ej: buscar *"película de ciencia ficción sobre despertar de IA"* para encontrar un recuerdo titulado `dennys_morpheus_de_los_transformers` redactado con la metáfora de Matrix).
-
-**Solución v29.1:** 4 técnicas automáticas de resonancia semántica con validador de 5 ángulos y aislamiento de queries:
-
-### 1. Concept Hub v29.1 (Estándar Cognitivo de 5 Ángulos)
-- **Qué:** Mapeo de intención y puentes léxicos (`bridges`) a nodos canónicos.
-- **Validador Estricto:** Cada hub exige exactamente 5 bridges cubriendo 5 ángulos cognitivos distintos y con vocabulario disjunto (anti-destinatario):
-  1. `sinonimo`: Mismo concepto con vocabulario formal o alternativo.
-  2. `problema`: Dolor, duda, fallo o necesidad humana/técnica que resuelve.
-  3. `solucion`: Técnica, mecanismo o teoría aplicada por el nodo.
-  4. `situacion`: Caso de uso, rol o contexto de búsqueda práctico.
-  5. `ingenuo`: Búsqueda coloquial sin tecnicismos (estilo de búsqueda de una persona principiante).
-- **Archivo:** `core/concept_hub.py`, herramientas MCP `concept_hub_crear` y `concept_hub_agregar_bridges`.
-
-### 2. WordNet Blindado (Bilingüe Real ES/EN)
-- **Qué:** Expansión por sinónimos e hiperonimia solo para términos técnicos en inglés, validando previamente que no existan en el lexicón español (OMW-1.4 / stopwords).
-- **Archivo:** Integrado en `core/memory_store.py` línea ~4240.
-
-### 3. Domain Dictionar
+**Problema:** BioRAG era 100% léxico — fallaba

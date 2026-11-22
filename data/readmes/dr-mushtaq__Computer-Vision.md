@@ -337,6 +337,7 @@ explore transformer architecture in the context of computer vision and learn how
 | [**3-Linear Classifiers**](https://coursesteach.com/mod/page/view.php?id=10665&forceview=1)| [1](https://drive.google.com/file/d/17d0wLGMGpFQOfm3Tzr1fq5Y26QqndUww/view?usp=sharing)[-2](https://youtu.be/1TOGEhQ-DxA?si=mpm89o03vE9rEbL7)[-3](https://youtu.be/-aYbbWAjtyo?si=8u-mvjQ0OumYnP3J) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 | [**4-Logistic Regression Training Gradient Descen**](https://coursesteach.com/mod/page/view.php?id=10670)| [1](https://drive.google.com/file/d/1enR0IXMgAFYIC6SfPgIHzZTr9DVfoaxd/view?usp=sharing)[-2](https://youtu.be/o0u7KnKbxpU?si=arXPS3W34NR23mcH)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 | [**5-Mini-Batch Gradient Descent**](https://coursesteach.com/mod/page/view.php?id=10670)| [1](https://drive.google.com/file/d/110HfFG8x-P4sUJvoKU3bdgXtcs3Lhirw/view?usp=sharing)[-2](https://youtu.be/ISeqjXjurek?si=RPn6aV2SpJQOeBiw)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
+| [**6-Softmax and Multi-Class Classification**](https://coursesteach.com/mod/page/view.php?id=10670)| [1](https://drive.google.com/file/d/1F94nN3OHP-ta9rfK5Sd4SofVARbqusd8/view?usp=sharing)[-2](https://youtu.be/Y-89hvTW6Hc?si=iMc-8yLUAoX0kM5z)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 
 </details>
 
@@ -497,15 +498,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |---|---|---|
 | **Classification** | AlexNet, VGG, ResNet, DenseNet, EfficientNet, ViT 🔴🔵, Swin Transformer 🔴🔵, ConvNeXt 🔵 | Image classification (CNNs and Transformers) |
 | **Object Detection** | R-CNN, Fast R-CNN, Faster R-CNN, YOLO, SSD, RetinaNet, DETR 🔴🔵, Mask R-CNN | Detects objects with bounding boxes or masks |
-| **Segmentation** | FCN, U-Net, DeepLab, PSPNet, SegFormer 🔴🔵, SAM 🔴🔵 | Pixel-level understanding of images |
-| **Generative Models** | Autoencoders, VAE, GAN, DCGAN, CycleGAN, StyleGAN, BigGAN, Diffusion Models (DDPM 🔵), DALL·E 🔴🔵, Stable Diffusion 🔵 | Image synthesis & generation |
-| **3D & Video Models** | PointNet, NeRF 🔵, 3D CNNs | 3D object recognition, volumetric data & video understanding |
-
----
-**Legend:**  
-- 🔴 Transformer-based  
-- 🔵 Introduced after 2020
-
-
-## 🔹Chapter4: - **Colab Notebooks**
-| T
+| **Segmentation** | FCN, U

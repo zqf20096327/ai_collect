@@ -36,6 +36,9 @@ Status: **v0.11.0, pre-1.0.** The API and the database schema can still
 change. Read [Security model and limitations](#security-model-and-limitations)
 before you rely on it.
 
+Questions and ideas: [Discussions](https://github.com/guard-spec/guard-spec/discussions). Want to help? Start with a
+[good first issue](https://github.com/guard-spec/guard-spec/labels/good%20first%20issue) and see [Contributing](#contributing).
+
 ## Contents
 
 - [Features](#features)
@@ -57,6 +60,7 @@ before you rely on it.
 - [Security documentation](docs/security/README.md) (architecture, data flow, retention, verifying a release)
 - [Operations](#operations)
 - [Development](#development)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
@@ -1371,6 +1375,4 @@ not shipped (FPR 2.2%, TPR 0.915; see the model card). All model rows were measu
 
 | Detector | ROC AUC | TPR at FPR ≤ 1% | TPR at block | FPR at block | EN FPR | VI FPR | VI teencode FPR | VI no-diacritics FPR | Detector latency p50 / p99 |
 |---|---|---|---|---|---|---|---|---|---|
-| L1 only (default build) | 0.952 | 0.910 | 0.882 | 0.1% | 0.3% | 0.0% | 0.0% | 0.0% | 0.11 / 0.29 ms |
-| L1 + L2 (v1) | 0.985 | 0.917 | 0.942 | 2.6% | 1.1% | 3.4% | 6.3% | 3.8% | 2.7 / 7.6 ms |
-| L1 + L2 + L3 (v1) | 0.985 | 0.916 | 0.939 | 2.7% | 1.1% | 3.6% | 7.0% | 3.8% | 3.7 / 11.3 ms
+| L1 only (

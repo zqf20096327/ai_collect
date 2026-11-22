@@ -41,6 +41,17 @@ python run.py
 
 Open http://localhost:5000 in your browser.
 
+## API documentation
+
+- [Public API reference](docs/api/index.html) - authentication, pagination,
+  structured errors, webhook verification, and the registered endpoints.
+- [OpenAPI 3.1 spec](docs/openapi.json) - regenerate both with
+  `python scripts/render_api_docs.py`.
+
+The reference is served by the running app at `/api/docs` and is linked from
+the footer. Only `/api/v1` resources have frozen response schemas; other listed
+paths keep their existing web-UI contracts.
+
 ## Who it's for
 
 - Developers who want AI help grounded in their actual codebase
@@ -96,6 +107,7 @@ from a documented price table, not provider invoices.
 | ------- | ------- | ------- |
 | `METRICS_ENABLED` | `1` | Serves protected Prometheus metrics at `/metrics`; `0` returns 404. |
 | `METRICS_TOKEN` | empty | Bearer token for scrapers. Empty falls back to admin-session auth. |
+| `IDEMPOTENCY_TTL_SECONDS` | `86400` | Retention for POST idempotency keys and replayed responses; expired rows are purged on access and by `flask purge-idempotency`. |
 | `USAGE_RETENTION_DAYS` | `365` | Minimum age before `flask usage purge` may delete ledger rows. |
 | `BUDGET_ENFORCEMENT_ENABLED` | `1` | Refuses LLM calls that would exceed a monthly token/cost budget (fail closed). |
 | `BUDGET_DEFAULT_WARN_THRESHOLD` | `0.8` | Default warning fraction for new budgets. |
@@ -123,10 +135,32 @@ table, quotas, budgets, alerts, invoices, and reconciliation.
 - [Plugin artifact cache](docs/plugin-artifact-cache.md)
 - [Encrypted integration credentials](docs/integration-credentials.md)
 - [Integration setup and local mocks](docs/integrations.md)
+- [Security ticketing (Jira and Linear)](docs/security-ticketing.md)
 - [GitLab integration](docs/gitlab.md)
 - [Webhooks, delivery logs, and dead-letter replay](docs/webhooks.md)
+- [Enterprise adoption telemetry](docs/enterprise-telemetry.md)
+- [POST idempotency keys](docs/idempotency.md)
 - [Architecture](docs/architecture.md)
 - [Security model](docs/security.md)
+- [Security headers and CSP](docs/security-headers.md)
+- [Dependency policy and SBOM](docs/dependency-policy.md)
+- [API error catalog](docs/api-errors.md)
+- [API filtering and sorting](docs/api-filtering.md)
+- [API rate limits and quotas](docs/api-rate-limits.md)
+- [API versioning and deprecation](docs/api-versioning.md)
+- [OpenAPI document](docs/api-openapi.md)
+- [Upgrade guide](docs/upgrade-guide.md)
+- [Changelog](CHANGELOG.md)
+- [Admin action audit view](docs/admin-actions.md)
+- [Access review report](docs/access-review.md)
+- [Multi-factor authentication](docs/mfa.md)
+- [SSO and SCIM setup](docs/sso-scim-setup.md)
+- [Domain verification and SSO enforcement](docs/sso-domain-verification.md)
+- [Audit log integrity](docs/audit-integrity.md)
+- [Audit and compliance guide](docs/audit-compliance-guide.md)
+- [Audit retention and legal hold](docs/audit-retention.md)
+- [Data classification](docs/data-classification.md)
+- [Compliance evidence pack](docs/compliance-evidence.md)
 - [Accessibility and keyboard navigation](docs/accessibility.md)
 - [Accessibility audit](docs/accessibility-audit.md)
 - [Internationalization](docs/i18n.md)

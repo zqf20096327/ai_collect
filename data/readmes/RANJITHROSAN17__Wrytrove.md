@@ -109,7 +109,8 @@ Wrytrove does **not** embed the Arena website, transfer cookies or login session
 ### Optional API and local suggestions
 
 - **Arena API:** the separate **API key** panel requires an eligible key and model. Wrytrove asks for confirmation before sending your instruction and any captured selection to the cloud provider. Availability, privacy terms and charges depend on your account. The key is held in panel memory and cleared when the panel closes.
-- **Ollama:** inline suggestions start off each time. If you explicitly enable them in the desktop app, nearby editor text is sent to your Ollama service at `127.0.0.1:11434`. A loopback address does not guarantee the service or model is offline; choose and configure a genuinely local model if needed. Suggestions are single-line and can be wrong.
+- **Ollama:** inline suggestions start off each time. If you explicitly enable them in the desktop app, nearby editor text is sent to your Ollama service at `127.0.0.1:11434`. A loopback address does not guarantee the service or model is offline; choose and configure a genuinely local model if needed. Changing the model turns suggestions off until you approve the new model. Selection-edit and selection-answer actions have separate session approvals. Suggestions are single-line and can be wrong.
+- **Request diagnostics:** the AI panel can show and copy a bounded, memory-only list of request attempts. It contains provider/capability, route labels and size counts, but not text, instructions, model names, paths or keys. Counts can still be sensitive; review before sharing. The list excludes model checks and browser copy/paste, is cleared on restart, and cannot prove delivery or downstream processing. Clearing it does not clear the clipboard.
 - **Your data:** session recovery is on by default and stores document contents and related metadata locally without Wrytrove-provided encryption. Folder-access permissions may persist after closing the view. The secret warning is only a fallible heuristic—review text yourself before sharing it.
 
 [Read the full privacy, setup, and safety notes →](docs/USER-GUIDE.md#privacy-and-storage)
@@ -181,6 +182,8 @@ npm test
 npx playwright install --only-shell chromium
 npm run test:e2e
 ```
+
+For the network-free synthetic AI evaluation, run `npm run ai:eval -- --mode mock`. The [AI evaluation guide](docs/AI-EVALUATION.md) describes optional Ollama runs, privacy boundaries and why mock passes do not measure a real model.
 
 With the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) installed, run native tests with:
 

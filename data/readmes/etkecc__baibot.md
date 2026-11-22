@@ -17,7 +17,7 @@ It's influenced by [chaz](https://github.com/arcuru/chaz), but does **not** use 
 
 - Supports **different use purposes** (depending on the [☁️ provider](./docs/providers.md) & model):
 
-  - [💬 text-generation](./docs/features.md#-text-generation): communicating with you via text (though certain models may "see" images as well). The [OpenAI](./docs/providers.md#openai) and [Anthropic](./docs/providers.md#anthropic) providers also support [🛠️ built-in tools](./docs/features.md#️-built-in-tools) (web search, plus code interpreter for OpenAI and web fetch for Anthropic)
+  - [💬 text-generation](./docs/features.md#-text-generation): communicating with you via text (though certain models may "see" images as well). While chatting, the bot can use [🧰 Bot Tools](./docs/bot-tools.md), like reading the room's recent messages or creating images. The [OpenAI](./docs/providers.md#openai), [Anthropic](./docs/providers.md#anthropic) and [Venice](./docs/providers.md#venice) providers also support [🛠️ Provider Tools](./docs/features.md#️-provider-tools) (like web search)
   - [🦻 speech-to-text](./docs/features.md#-speech-to-text): turning your voice messages into text
   - [🗣️ text-to-speech](./docs/features.md#%EF%B8%8F-text-to-speech): turning bot or users text messages into voice messages
   - [🖌️ image-generation](./docs/features.md#image-generation): creating and editing images based on instructions
@@ -48,7 +48,7 @@ You can find more screenshots on the [🌟 Features](./docs/features.md) and oth
 
 🗲 For a quick experiment, you can refer to the [🧑‍💻 development documentation](./docs/development.md) which contains information on how to build and run the bot (and its various dependency services) locally.
 
-For a real installation, see the [🚀 Installation](./docs/installation.md) documentation which contains information on [🐋 Running in a container](./docs/installation.md#-running-in-a-container) and [🖥️️️️️ Running a binary](./docs/installation.md#-running-a-binary).
+For a real installation, see the [🚀 Installation](./docs/installation.md) documentation which contains information on [🐋 Running in a container](./docs/installation.md#-running-in-a-container) and [🖥️️️️️ Running a binary](./docs/installation.md#%EF%B8%8F-running-a-binary).
 
 
 ## 📚 Documentation

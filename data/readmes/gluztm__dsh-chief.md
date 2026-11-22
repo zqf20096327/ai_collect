@@ -1,7 +1,7 @@
 <div align="center">
 
 # DSH 参谋长 (`dsh-chief`)
-**DeepSeek Harness（DSH）右侧栏插件：盯任务进度、管上下文压缩、在模型改文件和跑命令前先拦一道。**
+**DeepSeek Harness（DSH）参谋长插件：支持右侧栏和对话主页面大屏，普通窗口默认不介入，管任务进度、分级档案、本机外协与执行前安全拦截。**
 
 [![DSH Compatibility](https://img.shields.io/badge/DSH-%3E%3D%200.2.2--rc.2-38bdf8?style=flat-square)](https://dsh.deepseek.com)
 [![GitHub Release](https://img.shields.io/github/v/release/gluztm/dsh-chief?color=2563eb&style=flat-square)](https://github.com/gluztm/dsh-chief/releases)
@@ -14,11 +14,11 @@
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0%20External-ffe033?style=flat-square)](#)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-f87171?style=flat-square)](LICENSE)
 
-<img src="assets/chief-10s-compare.gif" alt="原生长会话与挂载 dsh-chief v1.6.0 对比：右侧显示 5 页签面板、流程画布、15% 认知桌面、30 次预算上限和执行前拦截规则" width="840" />
+<img src="assets/chief-10s-compare.gif" alt="原生长会话与挂载 dsh-chief v1.7.0 对比：普通窗口默认不打扰，支持协同系统连线本机 Codex/Claude Code、主页面大屏、认知桌面与执行前安全护栏" width="840" />
 
 <sub>新对话默认只读 · 改文件前先问你 · 一条命令安装</sub>
 
-**简体中文** · [English (`README.en.md`)](README.en.md) · [更新日志 (`CHANGELOG.md`)](CHANGELOG.md) · [架构设计 (`ARCHITECTURE.md`)](ARCHITECTURE.md)
+**简体中文** · [English (`README.en.md`)](README.en.md) · [演进之路 (`EVOLUTION.md`)](EVOLUTION.md) · [更新日志 (`CHANGELOG.md`)](CHANGELOG.md) · [架构设计 (`ARCHITECTURE.md`)](ARCHITECTURE.md)
 
 [这是什么](#这是什么) · [3 分钟上手](#3-分钟上手) · [选哪个预设](#我该选哪个预设) · [界面](#界面长什么样) · [名词小词典](#名词小词典) · [常见问题](#常见问题) · [进阶](#进阶给想深入了解的人)
 
@@ -49,14 +49,13 @@ flowchart LR
 
 ## 一句话看懂
 
-- **压缩前先存档**：对话快满时，先把路径、命令和报错记进本地档案，再调用 `/compact`。
-- **不让任务半途而废**：锁定目标后，模型中途停下会被提醒继续；同一个错连续 3 次就停下。
-- **改文件、跑命令前先过一道检查**：命中你设的「物理驻墙」（执行前的拦截规则）就拦下，或弹窗问你。
-- **默认只读**：新对话里只看不改，权限需要你手动调高（`L0`–`L3`）。
-- **记忆不白耗 Token**：只有放上「认知桌面」的资料（最多 `2,400 Tokens / 6 份`）每轮发给模型，其余用到时再查。
-- **子代理一屏看**：谁在做什么、卡在哪，在「任务」页一张图里看。
-- **换窗口不丢背景**：生成交接单，开新窗口接着做。
-- **离开时有上限**：托管模式默认 30 次调用 / 300K Token 后自动停，关键节点发桌面通知。
+- **普通窗口默认不打扰**：新开的普通聊天窗和子代理默认不加载参谋提示词、不触发安全拦截、不写多余看板文件；要用到时点一下「在本会话启用」，也可以在设置里改回自动开启。
+- **压缩前先存档**：上下文快满时，先把路径、命令和报错记进本地档案，再调 `/compact`。
+- **不让长任务跑半截停掉**：锁住目标后，模型中途停下会被催接着做；同一个错连续 3 次就停下来等人工介入。
+- **改文件、跑命令前先过检查**：已启用会话里命中「物理驻墙」或安全卫兵就拦下或弹窗问你；安全卫兵也支持在设置里单独开关（需弹窗确认）。
+- **默认只读**：哪怕启用了参谋，新对话也只看不改，权限需要你自己手动调高（`L0`–`L3`）。
+- **记忆少占上下文**：只有放上「认知桌面」的资料（最多 `2,400 Tokens / 6 份`）每轮发给模型，其余平时放抽屉里按需翻出来。
+- **主页面 + 右侧栏双布局**：对话顶部一键切进大屏 `参谋长` 页面（自动藏起下方重复主框），协同页可直接连本机 `Codex` / `Claude Code`，点子代理默认在当前右侧栏加页签查看。
 
 ---
 
@@ -95,10 +94,10 @@ flowchart LR
 | :--- | :--- |
 | `参谋` 页签 | 用大白话给参谋发指令，调权限/托管挡位，看复盘战报和点 `⏹ 急停`。 |
 | `任务` 页签 | 锁定核心目标，在「流程画布」和「组织树」看进度，点步骤「解释」，导出交接单。 |
-| `协同` 页签 | 把几个同时打开的 DSH 窗口连起来互通进度和消息。 |
+| `协同` 页签 | 用「协同系统」连线编队主/子代理、跨窗口与本机 `Codex` / `Claude Code`，支持刷新扫休眠窗与跨窗信箱。 |
 | `档案` 页签 | 管理置顶「认知桌面」和三层档案抽屉，控制哪些背景资料发给主对话。 |
 | `边界` 页签 | 配置「物理驻墙」（执行前拦截规则）、必做检查和全局红线。 |
-| 顶栏 `⚙️ 设置` | 一键选 3 档预设、配置桌面提醒和预算上限、看分类账本、切换中英文。 |
+| 顶栏 `⚙️ 设置` | 选 3 档预设、切换主页面/右侧栏、设本会话与新会话启用开关、配置告警预算与中英文。 |
 
 ### 01 · 参谋主面板（`参谋` 页签）
 **一句话**：在这里用大白话给参谋发指令、调权限与托管挡位，急了直接点红色急停。
@@ -136,14 +135,14 @@ flowchart LR
   <img src="assets/screenshots/04-dual-tier-goal-and-step-qa.png" alt="04 - 目标督导与步骤追问" width="68%" />
 </div>
 
-### 05 · 跨窗口协同与信箱（`协同` 页签）
-**一句话**：把几个独立打开的 DSH 窗口连起来互通进度，断开就清掉缓存和信箱。
+### 05 · 协同系统与本机外协直连（`协同` 页签）
+**一句话**：在同一张画布上编队主对话、子代理、跨窗口与本机 `Codex` / `Claude Code`，干活时自动锁编，空闲保持静止。
 
-- 支持把多个独立的 DSH 窗口连起来互通进度和接口约定（前后端联动）；断开协同会清掉缓存、外部记忆与离线信箱残留。
-- 粘贴进输入框的截图原图会存进 `<cwd>/.dsh-chief/uploads/`，避免纯文本模型靠猜。
+- **本机外部代理直连**：免 `ccSwitch` 自动探测本机安装的 `Codex` / `Claude Code`（兼容 Windows `.cmd` shim），点选入编后一键派单并自动附带当前红线与物理驻墙；工作时画布节点/连线高亮流动并自动锁编防拆（HTTP 409），随时可点 `⏹ 急停解体`。
+- **跨窗协同与待命池清理**：待命池支持「刷新扫描」免切窗发现工作区内的休眠 DSH 会话（已过滤后台维护任务与空白空壳）；外协往来与多窗消息统一收在「跨窗」信箱流，断开即清空缓存，粘贴进输入框的截图原图存入 `<cwd>/.dsh-chief/uploads/`。
 
 <div align="center">
-  <img src="assets/screenshots/05-cross-session-collab-bus.png" alt="05 - 跨窗口协同与信箱" width="68%" />
+  <img src="assets/screenshots/05-cross-session-collab-bus.png" alt="05 - 协同系统双态视图：空闲待命与工作中自动锁编、本机 Codex/Claude Code 直连与跨窗信箱" width="88%" />
 </div>
 
 ### 06 · 物理驻墙、必做项与全局红线（`边界` 页签）
@@ -156,14 +155,15 @@ flowchart LR
   <img src="assets/screenshots/06-pinned-bounds-and-handoff.png" alt="06 - 边界规则与全局图钉红线" width="68%" />
 </div>
 
-### 07 · 顶栏设置页：情景预设、托管预算与双语切换（`⚙️` 设置页）
-**一句话**：点顶栏齿轮 `⚙️` 一键选预设、配桌面提醒和预算上限，或者随时切换中英文界面。
+### 07 · 顶栏设置页：预设、显示位置、开关与预算（`⚙️` 设置页）
+**一句话**：点顶栏齿轮 `⚙️` 打开设置页，选协作挡位、调界面显示位置、按需开关或设置提醒与预算上限。
 
-- 点顶栏 `DSH 参谋长` 与版本号之间的 `⚙️` 图标打开设置页，内有 **3 档情景预设**（只读旁观 / 日常协作 / 离桌托管）、**7 类关键节点桌面告警与轻柔提示音**、**按 `chat / review / dream` 分类的 LLM 账本与预算上限**，以及 `zh / en` 实时切换；跨会话交接单（`📌 定住防改`）和导出脱敏 `.md` 复盘报告收口在 `任务` 页签底部。
-- 支持一键新开窗口并继承当前工作区 `workspaceId`、参谋配置与指定的档案范围（强介入默认置关），搭配 `idle-guard` 防止任务假死。
+- **场景预设与显示位置**：内置 `只读旁观 / 日常协作 / 离桌托管` 三档预设；可切 `右侧栏 + 主页面 / 仅主页面 / 仅右侧栏`、独立隐藏输入框旁或右下角浮钮、切换子代理 `现有栏加页签 / 新开分屏`，以及「本会话启用参谋长 / 新会话默认自动启用」。
+- **内置安全卫兵开关与提醒预算**：支持单独开关「本会话 / 全局内置安全卫兵」（关闭需弹窗确认），配置 7 类关键节点桌面通知与提示音、查看 `chat / review / dream` 分类用量和预算上限，以及实时切换 `zh / en`。
+- **跨会话交接部署**：跨会话交接单（`📌 定住防改`）与脱敏 `.md` 复盘报告在 `任务` 页底部；支持一键新开窗口并继承当前工作区 `workspaceId` 与选定范围的档案，搭配 `idle-guard` 防卡死。
 
 <div align="center">
-  <img src="assets/screenshots/07-session-handoff-and-guard.png" alt="07 - 跨会话交接单与新开窗口部署" width="68%" />
+  <img src="assets/screenshots/07-session-handoff-and-guard.png" alt="07 - 顶栏设置页：场景预设、面板显示位置、按需启用开关、内置安全卫兵开关、提醒与预算上限" width="88%" />
 </div>
 
 ---
@@ -197,8 +197,11 @@ flowchart LR
 **会不会偷偷花钱？**
 不会。在 `⏸ 关停` 和 `🛡 巡检` 模式下，空闲时不会在后台额外调用模型。只有在 `🤖 托管` 模式下才会自动巡检和整理档案，而且默认设了 `30 次调用 / 300K Token` 上限，到达就自动停下；顶栏 `⚙️ 设置` 里的账本能按问答、巡检、梦境漫游分项查看实际用量。
 
+**不想每个普通聊天都挂着参谋长 / 怕被误拦工作区外读写怎么办？**
+新会话从 `v1.7.0` 起**默认就是未启用状态**：你不点击「在本会话启用」或调用参谋能力前，普通聊天窗不会注入参谋提示词，也不会被安全卫兵拦截，更不会留下空白看板文件；如果你习惯所有新会话一上来就受安全护栏保护，去顶栏 `⚙️ 设置 -> 面板显示位置` 打开「**新会话默认自动启用参谋长**」即可。
+
 **会不会乱改我的文件？**
-不会。新对话默认是 `L0 只读`，只看不改；切换到 `L2` 时，重要写改会逐项弹窗等你点允许。删盘、强推、`git reset --hard` 等硬红线在任何档位都会被直接拦住；就算开到 `L3`，AI 也不能删除或停用你锁定的物理驻墙。
+不会。新对话默认是 `L0 只读`，只看不改；切换到 `L2` 时，重要写改会逐项弹窗等你点允许。删盘、强推、`git reset --hard` 等硬红线在所有启用安全卫兵的会话都会拦住；就算开到 `L3`，AI 也关不掉你锁定的物理驻墙和安全卫兵开关（只有人类能在设置里弹窗确认关闭）。
 
 **怎么马上让它停？**
 点输入栏最右侧红色的 `⏹ 急停` 按钮，就能立刻打断正在跑的后台驱动；想让它平时不再自动介入，把顶栏运行模式切到 `⏸ 关停` 就行。
@@ -218,6 +221,41 @@ flowchart LR
 ---
 
 ## 进阶：给想深入了解的人
+
+<details>
+<summary>架构演进路线：从右侧记事本到多代理管理中心（v1.0 → v1.7）</summary>
+
+从最初共享一份 JSON 的右侧记事本（`dnb-`），到如今 44 个后端模块 + 39 个前端模块、0 外部依赖的管理中心，每一步都是遇到实际问题后再改出来的：
+
+<div align="center">
+  <img src="assets/evolution-roadmap.gif" alt="dsh-chief v1.0 到 v1.7 架构演进动态图" width="840" />
+</div>
+
+```mermaid
+flowchart LR
+  A["v1.0–v1.1\n右侧副驾\n冷存档案 · 压缩前抢救"] --> B["v1.2–v1.2.1\n执行器 + 权限\n工具执行 · 四档权限"]
+  B --> C["v1.3\n拆模块加锁\n45 模块 · O_EXCL 文件锁"]
+  C --> D["v1.4\n执行前拦截\n9 安全模块 · 物理驻墙"]
+  D --> E["v1.5–v1.6\n控制上下文\n认知桌面 · 流程画布 · 硬预算"]
+  E --> F["v1.7\n大屏 + 外协 + 克制\n主页面 · 本机外协 · 按需启用"]
+```
+
+想看完整的前因后果和取舍，直接读 👉 **[架构演进 (`EVOLUTION.md`)](EVOLUTION.md)**。
+
+</details>
+
+<details>
+<summary>v1.7.0 改了什么</summary>
+
+- **「协同系统」与本机 `Codex` / `Claude Code` 直连**：
+  - 做出可视化的「协同系统」编队画布：主对话、子代理、跨窗口与外部代理同屏连线，待命时静止、干活时对应图标和连线泛光流动，工作中自动锁编防误拆（HTTP 409）并支持 `⏹ 急停解体`。
+  - 免 `ccSwitch` 跨平台探测本机 `Codex` / `Claude Code`（含 Windows `.cmd` shim）并一键派单，派单自动带当前红线与物理驻墙；待命池支持「刷新扫描」免切窗发现休眠会话并过滤 `Mnemon` 后台任务与空白空壳，外部代理消息统一归入「跨窗」，同时让 `@lead` 看清编队视野并支持 L2/L3 桌面取档。
+- **主页面大屏 (`conversation.view`) 与子代理加页签**：对话顶部新增 `参谋长 / Chief` 主页面页签，切过去后自动隐藏宿主重复主框（兼容 `rc.3` 贴底高度与快捷键独立开关）；协同页点子代理默认改为在现有右侧栏加页签并去重，可在设置切回新开分屏。
+- **会话级按需启用（普通窗口不打扰）**：新开的普通聊天窗及其子代理默认不启用参谋长，后端全 8 处钩子直接放行（不注提示词、不拦工具、不写空白看板）；面板顶部带「在本会话启用」提示条，设置页可按单会话或全局开关，老会话自动兼容。
+- **内置安全卫兵开关与误报收敛**：设置页新增人类专控的「🛡️ 本会话 / 全局内置安全卫兵」开关（关闭需弹窗确认并写审计，与红线哨兵和手工物理驻墙互相独立）；修掉 `destructive_command` 对非可执行 heredoc 和只读查询（`grep`/`rg`/`git log --format=`/`git commit`）的误判，同时自动过滤 `cursor.blocked` 里的「无 / 已获批准 / 用户已接受…」非阻塞文案，不再误亮红色受阻条。
+- **浅色主题适配、代码拆分与演进路线图**：5 页签统一卡片样式并适配 DSH 桌面浅色主题，把超长文件拆细为 **44 个后端模块 + 39 个前端模块**，并新增双语 [架构演进 (`EVOLUTION.md`)](EVOLUTION.md)。
+
+</details>
 
 <details>
 <summary>v1.6.0 改了什么</summary>
@@ -284,14 +322,14 @@ flowchart LR
 在已装好 [dshmarket](https://github.com/dsh-market/dsh-market) 的 DSH 里直接搜 **`dsh-chief`** 或 **`DSH 参谋长`** 就能点安装，也可以用命令行（网页版把 `desktop` 换成 `web`）：
 
 ```bash
-# 方式 1：通过 npm 安装最新版（v1.6.0）
+# 方式 1：通过 npm 安装最新版（v1.7.0）
 dsh plugin --profile desktop add dsh-chief
 
 # 方式 2：从 GitHub 仓库直接安装（与 main 最新代码同步）
 dsh plugin --profile desktop add github:gluztm/dsh-chief
 
-# 方式 3：安装 GitHub Release 预构建包（v1.6.0）
-dsh plugin --profile desktop add https://github.com/gluztm/dsh-chief/releases/download/v1.6.0/dsh-chief-1.6.0.tgz
+# 方式 3：安装 GitHub Release 预构建包（v1.7.0）
+dsh plugin --profile desktop add https://github.com/gluztm/dsh-chief/releases/download/v1.7.0/dsh-chief-1.7.0.tgz
 ```
 
 装好后重启或刷新 DSH 客户端，点工作区右上角 **✦ `DSH 参谋长`** 图标打开面板。
@@ -305,42 +343,42 @@ dsh plugin --profile desktop add https://github.com/gluztm/dsh-chief/releases/do
 </details>
 
 <details>
-<summary>模块结构与数据流 (v1.6.0)</summary>
+<summary>模块结构与数据流 (v1.7.0)</summary>
 
-**一句话**：38 个后端模块加 20 个前端模块，本地数据全部留在 `~/.dsh/chief/`，只有「认知桌面」里的内容会每轮注入主对话。
+**一句话**：`44` 个后端模块加 `39` 个前端模块，本地数据全部留在 `~/.dsh/chief/`，未启用的普通会话零介入，已启用会话只有「认知桌面」会每轮注入主对话。
 
-`v1.6.0` 包含 **38 个后端模块（含 `pkg/safety/` 下 9 个独立安全模块）+ 20 个前端模块**（无环依赖、无 `export let` 可变导出），方便审查与长期维护。详情见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+`v1.7.0` 包含 **44 个后端模块（含 `pkg/safety/` 下 9 个独立安全内核模块）+ 39 个前端模块**（无环依赖、无 `export let` 可变导出），方便审查与长期维护。详情见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ```mermaid
 flowchart TB
-  subgraph UI["DSH 右侧常驻面板 (client.js <- 20 个前端模块 · 5 页签 + 顶栏齿轮设置)"]
-    T1["参谋页 (问答框 · 180°扇形思考表盘 · 可点穿透流光毛玻璃 · 战报导出)"]
-    T2["任务页 (核心目标 · SVG流程画布/点卡拉起组织树 · 合一推进任务板 · 交接部署)"]
-    T3["协同页 (跨窗联动 · 彩色信箱 · 实时分屏)"]
-    T5["档案页 (2400T认知桌面 · 一沓纸三层抽屉与织钩)"]
-    T6["边界页 (动态物理驻墙 · 请示拆墙 · 📌全局红线)"]
-    T7["顶栏 ⚙️ 设置 (3 档预设 · 桌面告警/提示音 · 账本预算熔断 · zh/en 切换)"]
+  subgraph UI["DSH 右侧栏 & 主页面 Tab (client.js <- 39 个前端模块 · 5 页签 + ⚙️ 设置)"]
+    T1["参谋页 (问答框 · 180° 扇形思考表盘 · 可点击收起遮罩 · 战报导出)"]
+    T2["任务页 (核心目标 · SVG 流程画布 / 组织树 · 推进任务板 · 交接部署)"]
+    T3["协同页 (协同系统 · 本机 Codex/Claude 直连 · 跨窗信箱 · 子代理页签)"]
+    T5["档案页 (2400T 认知桌面 · 三层抽屉与关键词钩子)"]
+    T6["边界页 (动态物理驻墙 · 请示拆墙 · 📌 全局红线)"]
+    T7["顶栏 ⚙️ 设置 (预设 · 主页面/浮钮/子代理打开方式 · 安全卫兵开关 · 预算/zh/en)"]
   end
 
-  subgraph Core["本地后端存储与安全内核 (零外部依赖 · 38 个后端模块)"]
-    Hot["热工作板: ~/.dsh/chief/board.json & boards/<sid>.json\n跨进程/工作线程 O_EXCL 自旋锁"]
-    Walls["动态物理驻墙: ~/.dsh/chief/guard-walls.json\n全局 / 本工程 / 暂挂三态"]
-    Cold["三层档案库: 2400T认知桌面(唯一注入) + 一沓纸钩子柜 + 0-byte双盲冷藏库"]
-    Bus["调度与安全: safety/*.js + chief-executor + 关停/巡检/托管(5条件休眠) + 审计"]
+  subgraph Core["本地后端存储与安全内核 (零外部依赖 · 44 个后端模块)"]
+    Hot["热看板: ~/.dsh/chief/board.json & boards/<sid>.json\n跨进程 / 线程 O_EXCL 文件锁"]
+    Walls["动态物理驻墙: ~/.dsh/chief/guard-walls.json\n全局 / 本工程 / 暂挂"]
+    Cold["三层档案库: 2400T 认知桌面(唯一每轮注入) + 钩子抽屉 + 0 字节冷库"]
+    Bus["调度与安全: safety/*.js + chief-executor + 关停/巡检/托管 + 审计"]
   end
 
-  subgraph Agents["宿主执行代理 (tools/pre-execute 全员事前拦截)"]
+  subgraph Agents["宿主执行代理 (tools/pre-execute 拦截检查)"]
     Lead["主对话 (@lead)"]
     Subs["子代理 (@arch / @dev / @bench)"]
-    Peers["跨窗口已串联会话"]
+    Peers["跨窗口已连接会话"]
   end
 
-  UI <-->|"27 条同源环回 API (/api/dsh-chief/*, guard fail-closed 403)"| Core
-  Hot -->|"紧凑热态势"| Lead
-  Hot -->|"紧凑热态势"| Subs
-  Walls -->|"事前物理阻断或单次弹窗询问"| Lead
-  Walls -->|"事前物理阻断或单次弹窗询问"| Subs
-  Cold -.->|"仅📌认知桌面全文注入 · 非桌面仅🪝按需拉阅"| Lead
+  UI <-->|"27 条本地环回 API (/api/dsh-chief/*, 异常默认 403)"| Core
+  Hot -->|"摘要态势"| Lead
+  Hot -->|"摘要态势"| Subs
+  Walls -->|"执行前拦截或弹窗确认"| Lead
+  Walls -->|"执行前拦截或弹窗确认"| Subs
+  Cold -.->|"仅 📌 认知桌面注入 · 其余按 🪝 钩子拉取"| Lead
   Bus <-->|"chief_board / chief_memory\nchief_boundaries / chief_handoff"| Agents
 ```
 
@@ -378,10 +416,11 @@ flowchart TB
 
 | 贡献者 | 主要工作 |
 | --- | --- |
-| [gluztm](https://github.com/gluztm) | 项目发起人、产品定义与长期维护 |
-| [Gemini](https://github.com/gemini-code-assist) | 功能研发、`pkg/safety/` 独立安全内核、认知桌面与三态总控、180° 扇形思考表盘及自动化门禁 |
-| [Codex](https://github.com/codex) | 模块化架构设计、高并发压测、红队穿透测试与边界审查 |
-| [deepseek-ai](https://github.com/deepseek-ai) | DeepSeek Harness 宿主运行时与 SuperAgent 协同机制支持 |
+| [gluztm](https://github.com/gluztm) | 项目发起、产品设计与长期维护 |
+| [Claude](https://github.com/claude) | 文档与界面大白话文风重构、前端交互与提示文案整改 |
+| [Gemini](https://github.com/gemini-code-assist) | 功能研发、`pkg/safety/` 安全内核、认知桌面、表盘与测试门禁 |
+| [Codex](https://github.com/codex) | 模块化拆分、并发压测、红队测试与边界审查 |
+| [deepseek-ai](https://github.com/deepseek-ai) | DeepSeek Harness 宿主运行时与 SuperAgent 机制支持 |
 
 ---
 

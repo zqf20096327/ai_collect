@@ -6,37 +6,38 @@
 
 [![Watch Duo run on YouTube](https://img.youtube.com/vi/Oj8ZQ_rVtQc/hqdefault.jpg)](https://youtu.be/Oj8ZQ_rVtQc)
 
-**Install:** [iPhone — add the Duo shortcut](https://www.icloud.com/shortcuts/d8265e4794c046d480f548ee6485ec48) · [Android — Poly Duo on Google Play](https://play.google.com/store/apps/details?id=ai.polyhelper.a1) · [other languages](#install-in-60-seconds) · [polyhelper.ai/duo](https://polyhelper.ai/duo/)
+**Install:** [iPhone — add the Duo shortcut](https://www.icloud.com/shortcuts/ed393577880e437eb3417d00b6b66a06) · [Android — Poly Duo on Google Play](https://play.google.com/store/apps/details?id=ai.polyhelper.a1) · [other languages](#install-in-60-seconds) · [polyhelper.ai/duo](https://polyhelper.ai/duo/)
 
 **Related research tool:** [memory-agreement-check](https://github.com/vadimchernets/memory-agreement-check) measures when two models from different companies agree on the same wrong answer.
 
 ## Install in 60 seconds
 
-**First run: about 5 quick taps on “Always Allow”, then one tap forever.** iPhone asks permission once for each thing Duo does (send your question to ChatGPT and to Claude, use the clipboard, save the journal). Keep the phone in your hand and tap **Always Allow** each time — about 20 seconds, once, only for Duo.
+**First run: a few quick taps on “Always Allow”, and 1–4 more the first time you pick each mode; after that, one tap.** iPhone asks permission once for each thing Duo does (send your question to ChatGPT and to Claude, use the clipboard, save the journal). Keep the phone in your hand and tap **Always Allow** each time — about 20 seconds, once, only for Duo.
 
 **Step 1 — apps.** On iPhone (iOS 18+) install the free **ChatGPT** and **Claude** apps and sign in to both once. No Claude yet? [Get the Claude app in the App Store](https://apps.apple.com/app/id6473753684) (about a minute). Free accounts are enough.
 
 **Step 2 — shortcut.** Tap the iCloud link for your language below → the Shortcuts app opens → **Add**.
 
-**Step 3 — first run: keep the phone in your hand.** iPhone asks several times whether Duo may pass your question to ChatGPT and Claude, copy the result to the clipboard and write the journal file. Each time tap **Always Allow**: it applies only to Duo and only to your own apps, not to the rest of the phone. An unanswered prompt vanishes within seconds and the run ends with «no access» — then just run it again. After that there are no more prompts. **Then do not touch the screen for about a minute: a touch stops Duo.**
+**Step 3 — first run: a short setup, keep the phone in your hand.** Duo says aloud that several windows will appear, one after another. In each one tap **Always Allow** (or **Allow** if there is no such button); if tapping is hard, ask someone to help. It applies only to Duo and only to your own apps. The first Critique asks twice more (saving its draft, sending text to Claude); after that Duo asks nothing and works by voice through Siri: «Hey Siri, Duo». **Then let it run for about a minute: stay in Shortcuts and do not lock the phone (leaving the app may stop the run on Apple's platform). A tap on the screen does not stop Duo.**
 
 | Language | Duo | Trio |
 |---|---|---|
-| English | [Duo](https://www.icloud.com/shortcuts/d8265e4794c046d480f548ee6485ec48) | [Trio](https://www.icloud.com/shortcuts/fca5ce69fd254fb58dc5032b0c11f4a8) |
-| Español | [Duo](https://www.icloud.com/shortcuts/bd7e092c82434b79b38c1d6bb24f8143) | [Trio](https://www.icloud.com/shortcuts/cb9321448e67464a9a4a3299156abff0) |
-| Português | [Duo](https://www.icloud.com/shortcuts/0dfbcc7993ff4550b3dbaa778357c5a6) | [Trio](https://www.icloud.com/shortcuts/bc58d0a87b6e4c029dd2552dab42ef29) |
-| Русский | [Duo](https://www.icloud.com/shortcuts/970ce37032e742c9b7d5541811c705ee) | [Trio](https://www.icloud.com/shortcuts/b02b703fcfb84646bdc082665a9aab03) |
-| Українська | [Duo](https://www.icloud.com/shortcuts/ceb87caac5d449cd848a3aea4a4855df) | [Trio](https://www.icloud.com/shortcuts/02842cdd1e32411b85c8b139c65f72ca) |
-| Deutsch | [Duo](https://www.icloud.com/shortcuts/047a79a4eda24f619905e89e4e1363d1) | [Trio](https://www.icloud.com/shortcuts/dae423ab7b9646639560d2104175b4bd) |
-| Français | [Duo](https://www.icloud.com/shortcuts/bcfd256fdd394196af21d4dec224cfb4) | [Trio](https://www.icloud.com/shortcuts/1d56d388ef924930a7b0787835019dd1) |
-| हिन्दी | [Duo](https://www.icloud.com/shortcuts/210c14093fa346b8a5fe8c20998627a4) | [Trio](https://www.icloud.com/shortcuts/2d1aeaad69fd47eb994061f7b511f5b4) |
-| 日本語 | [Duo](https://www.icloud.com/shortcuts/7daa65ea84fb4897a6d9e7ecd32d12a2) | [Trio](https://www.icloud.com/shortcuts/286c5ab3ded9441e985fd3904f5d87fe) |
-| 한국어 | [Duo](https://www.icloud.com/shortcuts/4db99c2550ff46a3b88ecfc731754fdc) | [Trio](https://www.icloud.com/shortcuts/eed7898164de43a0a9ec848c8ebcc8b0) |
-| 中文 | [Duo](https://www.icloud.com/shortcuts/ee777fb2b3714b9087d96ceefc4d4d50) | [Trio](https://www.icloud.com/shortcuts/10617126d26b4144bd2d0335f1d8f8bc) |
+| English | [Duo](https://www.icloud.com/shortcuts/ed393577880e437eb3417d00b6b66a06) | [Trio](https://www.icloud.com/shortcuts/73edfa30e400437fa48a792d04fdc2b8) |
+| Español | [Duo](https://www.icloud.com/shortcuts/2aae6363356e4a32a9f2a419f6251435) | [Trio](https://www.icloud.com/shortcuts/ca7f36481f024fceb9ecca0de0ecb63c) |
+| Português | [Duo](https://www.icloud.com/shortcuts/2e5e203e29324ca9968ab682e1909499) | [Trio](https://www.icloud.com/shortcuts/4e72f237e8c54b118c4d38a4282db76a) |
+| Русский | [Duo](https://www.icloud.com/shortcuts/3bad53b8d9c048dcb046b351c8a4244e) | [Trio](https://www.icloud.com/shortcuts/55a359d379464fd9b710f7892f1fdc43) |
+| Українська | [Duo](https://www.icloud.com/shortcuts/242799d08f0a435db59da52a5425ab59) | [Trio](https://www.icloud.com/shortcuts/d3c86b63d73548339c6e4ebed0eb21b4) |
+| Deutsch | [Duo](https://www.icloud.com/shortcuts/a16ac3a61591480dbb9a66f7e51d4cd0) | [Trio](https://www.icloud.com/shortcuts/6ee78cb376ad4520a01ee252d4eeb73a) |
+| Français | [Duo](https://www.icloud.com/shortcuts/9f58eb0859274266b2559bee32465bea) | [Trio](https://www.icloud.com/shortcuts/d4719ea732704249ae410b4a3e244735) |
+| हिन्दी | [Duo](https://www.icloud.com/shortcuts/20017220ff384f7daf29506f10713495) | [Trio](https://www.icloud.com/shortcuts/6f91f6b59c364fb3bbedbc2c69c0c2bb) |
+| 日本語 | [Duo](https://www.icloud.com/shortcuts/bc3d77bc670b46dd82b033fda1bee9f4) | [Trio](https://www.icloud.com/shortcuts/fa5484761d9c426ebcffa086ee3c7e7f) |
+| 한국어 | [Duo](https://www.icloud.com/shortcuts/a9795833a8e74b3c83f93b8195858df2) | [Trio](https://www.icloud.com/shortcuts/c3cd9618baa947669b7937442062f7af) |
+| 中文 | [Duo](https://www.icloud.com/shortcuts/dcdaf27293684998a846893097d36926) | [Trio](https://www.icloud.com/shortcuts/eeec59ad082e47c69611bcca7da02745) |
+| العربية | [Duo](https://www.icloud.com/shortcuts/b087ca78cdc84906b93d122f7b087089) | — |
 
 **Backup: the signed file.**
 
-1. On your iPhone, open [`releases/`](releases) and pick your language — `en`, `es`, `pt`, `ru`, `uk`, `de`, `fr`, `hi`, `ja`, `ko` or `zh`.
+1. On your iPhone, open [`releases/`](releases) and pick your language — `en`, `es`, `pt`, `ru`, `uk`, `de`, `fr`, `hi`, `ja`, `ko`, `zh` or `ar`.
 2. Tap **`Duo.shortcut`** (or **`Trio.shortcut`**) → **Add**.
 3. Run it once and tap **Always Allow** each time it asks about ChatGPT, Claude and the clipboard (several times on the first run).
 
@@ -51,7 +52,7 @@ find the shortcut by that name.
 
 - Open the Claude app first and keep it signed in; open ChatGPT once too. No «Ask Claude» in the action list — update the Claude app and iOS (18+).
 - Tap **Always Allow** on every request, right away. An unanswered request vanishes and the run ends with «no access» — just run Duo again.
-- Keep the phone in your hand for the first minute: a touch of the screen stops Duo.
+- Keep the phone in your hand for the first minute, stay in Shortcuts and do not lock it: leaving the app may stop the run (a tap on the screen does not).
 - Had Duo before? Tap **Replace**, not **Keep Both**.
 - Still nothing? Swipe the shortcut away and run it again, or restart the iPhone and try in a few minutes. Empty answer or ChatGPT «logged out» — open the app, sign in, run again.
 
@@ -89,8 +90,8 @@ Worth knowing before you install:
   note at the end of this page.
 - **A run takes about a minute**, closer to two in the multi-step modes.
 - **It spends messages from your own plans**, not from an API budget.
-- **Touching the screen cancels the run.** That's a limit of Apple's platform, not a choice we
-  made. The one exception is **Clarify**, which opens its own window and asks you to answer.
+- **Leaving Shortcuts or locking the phone may cancel the run.** That's a limit of Apple's platform,
+  not a choice we made. A tap on the screen does not stop it (checked on an iPhone XR, iOS 18.7, 2026-11-13).
 - **You can't pick the model from inside Duo.** Each app uses the model set in it — choose it in the
   Claude and ChatGPT apps first, and check it before a run that matters.
 - **Very long questions are risky.** The Claude action can time out and hand back an empty result
@@ -252,10 +253,10 @@ On an iPhone with Apple Intelligence (iPhone 15 Pro or newer, iOS 26 or later) t
   Drive (`Shortcuts/poly-key.txt`).
 - **Trio without a key** — on an iPhone with Apple Intelligence (iPhone 15 Pro or newer, iOS 26+) the
   third voice can be Apple Intelligence on the phone: no key, no sign-up. Same install, a different
-  file: [English](https://www.icloud.com/shortcuts/e09ac625b719401fa8ca91360ba23a20) ·
-  [Español](https://www.icloud.com/shortcuts/3167e5dba4f1447797d85849c279be61) ·
-  [Português](https://www.icloud.com/shortcuts/30de98250b784e7181fbee4c17444b43) ·
-  [Deutsch](https://www.icloud.com/shortcuts/29ad3c2317ee4042a3c2c44f644faf6e) · [Français](https://www.icloud.com/shortcuts/58aaa1fb8b3443e5a4a3cee19fceac6d) · [日本語](https://www.icloud.com/shortcuts/c9b9f5aa7d634684bd362cd4fd15e5ac) · [한국어](https://www.icloud.com/shortcuts/3ec2d812eac14c6cbbc8833a9a1b6904) · [中文](https://www.icloud.com/shortcuts/d0d6e02ff93443e8812327d60de2b623) · [हिन्दी](https://www.icloud.com/shortcuts/2f36d14dd24e48439d199be5269a6408). Not for
+  file: [English](https://www.icloud.com/shortcuts/0cf1cf3ec0b34511b42bd0620d2c4676) ·
+  [Español](https://www.icloud.com/shortcuts/7b35ac3499ce4fcf88f2794baf191a59) ·
+  [Português](https://www.icloud.com/shortcuts/631befe3c116442fa4c79c5b27d2067b) ·
+  [Deutsch](https://www.icloud.com/shortcuts/2a4cb52d196146dab2d8b752c1452c87) · [Français](https://www.icloud.com/shortcuts/ba24ef12b27646bcb46e4d0307ba9e95) · [日本語](https://www.icloud.com/shortcuts/70fed48161ec41fba6e95ab952769d47) · [한국어](https://www.icloud.com/shortcuts/45f5ddd822624aac8d4fee08505e2afa) · [中文](https://www.icloud.com/shortcuts/2dbd0874b9384931b9d214936169adf5) · [हिन्दी](https://www.icloud.com/shortcuts/ecfdce5502664d76b2dffdce2f8ae21d). Not for
   Russian or Ukrainian yet (no such file for them).
 
 *In the sources the main shortcut is still called **Poly** — `tools/build.sh` writes
@@ -280,7 +281,7 @@ where it describes the sources.*
   found»). Several keys, one per line, help when they are from different companies — limits are
   per account, not per key. On the first run iPhone asks for permission several times — tap
   **Always Allow** each time.
-- Don't touch the screen while it runs — that cancels the run on Apple's platform.
+- Stay in Shortcuts and don't lock the phone while it runs — leaving the app may cancel the run on Apple's platform (a tap on the screen does not).
 
 Docs in twelve languages: [English](docs/en/install.md) · [العربية](docs/ar/install.md) · [Deutsch](docs/de/install.md) · [Español](docs/es/install.md) · [Français](docs/fr/install.md) · [हिन्दी](docs/hi/install.md) · [日本語](docs/ja/install.md) · [한국어](docs/ko/install.md) · [Português](docs/pt/install.md) · [Русский](docs/ru/install.md) · [Українська](docs/uk/install.md) · [中文](docs/zh/install.md)
 
@@ -301,7 +302,7 @@ Small single-purpose shortcuts that share the same engine. They are for people w
 name «Poly», so rename yours to «Poly» or edit the Run Shortcut step in each companion.
 
 
-- **Poly Voice** — tap, dictate, hear the final answer read back.
+- **Duo Voice** — tap, dictate, hear the final answer read back.
 - **Poly Photo** — share a photo or PDF; the text is recognized on device, then answered.
 - **Poly Quiet** — the Critique pipeline with no screens at all: clipboard and journal only.
 - **Poly Compress** — shrink a long text with Apple's on-device model before the pair sees it.
@@ -400,8 +401,7 @@ write to info@polyhelper.ai and say where you got lost — that's the feedback w
 get any other way.
 
 - **Feedback:** worked, didn't work, or an idea? [One-minute form](https://github.com/vadimchernets/poly-duo/issues/new?template=feedback.yml&ref=duo-feedback) or info@polyhelper.ai.
-- **Discussions** — ideas, questions, proposals for new modes.
-- **Issues** — bugs and concrete tasks, using the issue template.
+- **Issues** — ideas, questions, bugs and concrete tasks, using the issue templates.
 - **Ran it on your phone?** Tell us what worked or broke with the [run report](../../issues/new?template=run-report.yml) (no question text needed); what has been seen so far is in [docs/en/compat.md](docs/en/compat.md).
 - **Security** — please don't file a vulnerability as an issue; follow [SECURITY.md](SECURITY.md).
 

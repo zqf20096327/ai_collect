@@ -39,9 +39,10 @@ system A), with a rule-based checker and optional AI review and generation.
   into the moves they make. G32 threading and G41/G42 nose radius
   compensation are drawn as well.
 - **Linter**: header, units and work offset; G50 before G96; spindle start;
-  retract before M30; decimal points and value ranges in cycle words; the
-  contour rules of G70–G73; protected M-codes. Every finding has a severity and
-  a stable rule id, and most a suggested fix.
+  retract before M30 and before a tool change; decimal points and value
+  ranges in cycle words; the contour rules of G70–G73; the step of G74/G75
+  against the grooving blade's width; protected M-codes.
+  Every finding has a severity and a stable rule id, and most a suggested fix.
 - **AI, optional**: reviews the program in the editor against the shop rules,
   or writes G-code from a request. A generated draft is linted and the
   findings are sent back for correction, up to three times. Works with Claude,
@@ -127,8 +128,10 @@ machine, these matter most:
 - [`tools/tools.json`](tools/tools.json): the tool library. The simulation
   draws a tool from its ISO codes: the holder in `holder` (ISO 5608, e.g.
   `PCLNR2525`) and the insert at the start of `name` (ISO 1832, e.g.
-  `CNMG1204...`); a drill from its `d_mm`. A tool without them is drawn as a
-  ring. Nose radius compensation reads `insert_radius_mm` and
+  `CNMG1204...`); a drill from its `d_mm`; a grooving or parting tool from
+  its `width_mm`, as a blade set on its corner towards the chuck, without a
+  tip number. A tool without them is drawn as a ring. Nose radius
+  compensation reads `insert_radius_mm` and
   `nose_direction`, the Fanuc tip number:
 
 | Tip | Programmed point relative to the radius centre | Typical tool |
@@ -160,8 +163,7 @@ the section that supports it. None of it has been confirmed on a 0i-TF Plus
 yet, so every card says `verified = false`. Known simplifications:
 
 - G76 is drawn feeding straight in; the control feeds along one flank.
-- The relief at the bottom of G74/G75 and the width of a grooving tool are
-  not drawn.
+- The relief at the bottom of G74/G75 is not drawn.
 - G73 spaces its passes evenly between the first and the last; the manual
   does not say how.
 - Inch input (G20) is not supported.
@@ -170,8 +172,11 @@ yet, so every card says `verified = false`. Known simplifications:
   in a 95° holder). Without the codes the body is a square shoulder behind
   the tip, so a move running down towards the chuck shows a gouge sooner
   than a real insert would cut one. Drills bore their `d_mm` with a 118°
-  point. Grooving, parting and thread tools remove nothing (the table has
-  no width), and neither do thread passes.
+  point. A grooving or parting tool with a `width_mm` cuts that wide from
+  its corner towards the chuck; moving along the axis alone, a face groove
+  or turning sideways, it removes nothing, as does one without a width or
+  set by a tip number (a form insert). Thread tools and thread passes remove
+  nothing.
 - The position display shows speeds and feeds as the control would command
   them, not as measured, and no cycle time: rapid rates are not known, and
   G70 runs at the feeds of its contour blocks, which are not tracked per

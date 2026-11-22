@@ -26,7 +26,7 @@
   threads and read their own inbox.
 
 <!-- markdownlint-disable MD013 -->
-<p align="center"><img src="docs/media/mcp-demo.gif" alt="An agent answering from a file outline and its call sites in a live Claude Code session" width="820"></p>
+<p align="center"><img src="docs/media/mcp-demo.gif" alt="An MCP client calling code_outline and code_refs on basemind serve and getting paths, lines and signatures back" width="820"></p>
 <p align="center"><em>An agent reasoning from structure — a file outline and a call-site lookup in a live session, statusline tracking tokens saved. Recorded on an earlier release: the tools are now <code>code_outline</code> and <code>code_refs</code>.</em></p>
 <!-- markdownlint-enable MD013 -->
 
@@ -70,7 +70,7 @@ basemind code refs parse_config  # a function name from your repository
 | **Code** | What a file contains, where a name is defined, one symbol's body, text and meaning search, and the call sites, callers, implementations and importers of a name. | `code_outline` · `code_symbols` · `code_read` · `code_grep` · `code_search` · `code_refs` · `find_files` |
 | **Git** | Recent commits, commits touching a path or mentioning a phrase, blame per line or per symbol, and diffs as hunks or as the symbols added and removed. | `git_log` · `git_blame` · `git_diff` |
 | **Documents** | Search by meaning and by words over PDFs, Office files, HTML, email, notebooks, Markdown and images, with citations. | `docs_search` |
-| **Memory** | Notes agents save and search by meaning, kept per clone and shared by its worktrees. | `memory_save` · `memory_search` |
+| **Memory** | Notes agents save and search by meaning, kept per clone and, with an `origin`, shared by its worktrees. | `memory_save` · `memory_search` |
 | **Agent messaging** | Threads and per-agent inboxes for the agents on one machine. | `agent_post` · `agent_inbox` · `agent_threads` |
 | **Index** | Whether the index is fresh, and a re-index of the files a result calls stale (the index already follows edits). | `index_status` · `index_rescan` |
 

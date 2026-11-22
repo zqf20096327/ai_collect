@@ -115,13 +115,13 @@ qikly --tasks my_module.py       # 3. the run                      a cent or so
    Gemini, Anthropic or OpenAI), a spec agent then drafts the parts only an
    owner could write: a line on what the module is for, and an answer to
    each of step 1's questions as an acceptance criterion. **It reads your
-   README and docstrings, never your code**, so it says what the code should
+   README, docs and docstrings, never your code**, so it says what the code should
    do rather than what it does, and a test written from it can disagree
    with the code:
 
    ```yaml
    #? What should apply_discount(100, 100) do?
-   #? Answer below drafted by qikly from your README or docstrings: "...so a rate
+   #? Answer below drafted by qikly from your README, docs or docstrings: "...so a rate
    #? of 100 or more is rejected with ValueError". Keep it, or change it.
    - "apply_discount(100, 100) raises ValueError"
    ```
@@ -663,8 +663,13 @@ Thirteen example tasks ship with the tool across five domains, listed in
 [docs/design_3_mechanism.md](https://github.com/gal-a/qikly/blob/main/docs/design_3_mechanism.md#example-tasks).
 
 **Measuring rather than producing.** One run is an artifact, not a rate: the
-same task with the same seed converges on some runs and not others. To claim
-how often anything converges, repeat the sweep and read the interval:
+same task with the same seed converges on some runs and not others. The model
+calls are seeded (42 by default), so on Gemini and OpenAI the same seed tends
+to write the same tests. To vary them, give each run its own seed with
+`--seed N`, as in `qikly --tasks pricing.py --seed 2`; a seed also sets the
+temperature to 0, so different seeds give different runs, not fully random
+ones. Anthropic's API takes no seed. To claim how often anything
+converges, repeat the sweep and read the interval:
 
 ```bash
 python -m qikly.orchestrator.run_all --repeat 10
@@ -790,7 +795,7 @@ a run.
 
 **Two ways to pin, and the choice is yours.** `@v0` is a moving alias that
 this project repoints at every release, so you receive fixes without receiving
-a breaking change. `@v0.6.3` is an exact pin that never moves, so nothing
+a breaking change. `@v0.6.4` is an exact pin that never moves, so nothing
 changes under you and nothing reaches you either. The templates use `@v0`
 because most people want the fixes; use the exact form if your policy requires
 it.
@@ -856,7 +861,7 @@ left holding afterwards.
 | **Cost forecast** | Printed before a run starts, from your own history when you have any, labelled as a projection rather than a price |
 | **PR comments** | `--pr-comment` renders the latest run as markdown; the template workflow updates one comment in place rather than adding many |
 | **Pre-commit hook** | `qikly-validate`, the free check, so a hook never bills you for typing `git commit` |
-| **GitHub Action** | `gal-a/qikly@v0.6.3`, uploading the suite, the code and the JUnit XML |
+| **GitHub Action** | `gal-a/qikly@v0.6.4`, uploading the suite, the code and the JUnit XML |
 
 ## Where it fits today
 

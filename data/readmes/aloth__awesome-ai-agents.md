@@ -62,6 +62,7 @@ AI Agents are autonomous systems that use LLMs to reason, plan, and take actions
 - [Ruflo](https://github.com/ruvnet/ruflo) — Agent orchestration platform optimized for Claude. Features self-learning swarms, distributed intelligence, RAG integration, and native Claude Code/Codex integration. Formerly claude-flow.
 - [Semantic Kernel](https://github.com/microsoft/semantic-kernel) — Microsoft's SDK for AI orchestration. Plugins, planners, and memory.
 - [Sno Station](https://github.com/sno-ai/sno-station) — Runs Codex, Claude Code, Cursor and OpenClaw as one team: handoff at usage limits, cross-review.
+- [SoduWork](https://github.com/mdiri-ai/SoduWork) — Self-hosted multi-harness engine for teams: one agent harness (Pi, OpenCode, Codex, Qwen Code) does the work, another reviews it against acceptance criteria. MIT.
 - [Strands Agents](https://github.com/strands-agents/harness-sdk) — AWS's model-driven, open-source SDK for building production AI agents in Python and TypeScript. Any model, any cloud, with MCP support and 23M+ monthly PyPI downloads. Apache-2.0.
 
 
@@ -82,6 +83,7 @@ AI Agents are autonomous systems that use LLMs to reason, plan, and take actions
 - [Aider](https://github.com/Aider-AI/aider) — AI pair programming in the terminal.
 - [Atomic Agent](https://github.com/AtomicBot-ai/atomic-agent) — Local-first CLI and TUI coding agent that runs open-weight models entirely on your machine. MIT.
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Anthropic's agentic coding tool. Terminal-based, strong at complex refactors and multi-file changes.
+- [CodeAF](https://github.com/Agent-Field/CodeAF) — Open-source terminal coding agent in one Go binary that works with any model and runs parallel tasks in isolated copies of the repository. Apache-2.0.
 - [Codex](https://openai.com/index/introducing-codex/) — OpenAI's cloud-based coding agent. Runs tasks in sandboxed environments, integrates with GitHub.
 - [Cursor](https://cursor.sh/) — AI-first code editor with agent capabilities.
 - [dcode](https://docs.langchain.com/oss/deepagents/code/overview) — Open-source terminal coding agent by LangChain. Model-agnostic with persistent memory and sandboxing.
@@ -202,6 +204,7 @@ AI Agents are autonomous systems that use LLMs to reason, plan, and take actions
 - [Oh My Hermes](https://github.com/rlaope/oh-my-hermes) — Hermes Agent workflow plugin with project memory and task-specific model and reasoning routing.
 - [olcli](https://github.com/aloth/olcli) — Overleaf CLI for AI coding agents. Sync, pull, push, and compile LaTeX projects from the command line.
 - [OpenWiki](https://github.com/langchain-ai/openwiki) — LangChain's CLI that writes and maintains a linked Markdown wiki of your codebase for coding agents. Tracks each fact back to source evidence so updates only touch what changed, and links wikis across related repos for search over MCP. Integrates with Codex, Claude Code, OpenCode, Cursor, GitHub Copilot CLI, Kiro, and Pi. MIT.
+- [Pinky](https://github.com/DIYgod/pinky) — Desktop app and MCP server that lets coding agents operate real iPhones and Android phones while you watch, approve risky steps, and take over. Apache-2.0, pre-alpha.
 - [PlaceCall](https://github.com/voygr-tech/placecall) — Agent skill and MCP server that phones US businesses and returns the outcome and transcript.
 - [ponytail](https://github.com/DietrichGebert/ponytail) — Agent skill that pushes coding agents toward the smallest working solution instead of over-building. Installs as a plugin or rules file across 20 agents (Claude Code, Cursor, Codex, and more). Benchmarked against a no-skill baseline on real agentic sessions: ~54% less code and ~22% fewer tokens with every safety guard intact. MIT.
 - [PowerSkills](https://github.com/aloth/PowerSkills) — PowerShell automation toolkit for AI agents. Structured JSON control over Windows — Outlook, Edge browser, desktop, and system operations.

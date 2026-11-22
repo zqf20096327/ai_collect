@@ -1,3 +1,16 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Python for AI & ML Engineering: a free course from your first line of Python to training your own GPT. 22 modules in three parts, runs in Google Colab." width="100%">
+</p>
+
+<p align="center">
+  <a href="https://colab.research.google.com/github/anupbagale/python-for-ai-ml/blob/main/00-start-here/01_lesson.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+  <a href="https://mybinder.org/v2/gh/anupbagale/python-for-ai-ml/HEAD"><img src="https://mybinder.org/badge_logo.svg" alt="Binder"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/modules-22-orange.svg" alt="22 modules">
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions welcome"></a>
+</p>
+
 # Python for AI & ML Engineering
 
 A hands-on course that takes you from your first line of Python to building, evaluating and deploying machine learning systems.
@@ -16,6 +29,10 @@ Each module has four parts:
 - **Mini project**: a small build that uses everything from the module (in Module 11, the capstone project)
 
 Everything runs in Google Colab. Click the badge next to any notebook and it opens in your browser, with nothing to install.
+
+<p align="center">
+  <img src="assets/auto-checked-exercises.png" alt="Example from Module 01: a clip function that forgets the upper limit fails its check with 'clip(15, 0, 10) expected 10, got 15'; after the fix, the check prints 'PASS all 5 tests passed for clip'." width="100%">
+</p>
 
 ## Free for everyone
 
@@ -39,6 +56,10 @@ This course is free, and it will stay free. The goal is simple: anyone, anywhere
 - Anyone who wants to understand what NumPy, pandas and PyTorch are doing underneath
 
 No prior ML knowledge is needed. The math is introduced when it's needed and kept practical.
+
+<p align="center">
+  <img src="assets/what-you-build.png" alt="Six real charts from the course: a map of house-price prediction errors (Module 12), t-SNE digit clusters (Module 15), a bike demand forecast with an 80% interval (Module 16), a clothing classifier confusion matrix (Module 17), a recycling sorter's mistakes (Module 18), and attention heads in a small GPT (Module 19)." width="100%">
+</p>
 
 ## Roadmap
 
@@ -162,6 +183,8 @@ Stuck on something, or found a mistake? [Open an issue](https://github.com/anupb
 
 Corrections, clearer explanations, extra exercises and **translations** are all welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+New to open source? Look for issues labelled [`good first issue`](https://github.com/anupbagale/python-for-ai-ml/labels/good%20first%20issue). They're small, well-defined tasks that are a good way to make your first contribution.
+
 ## Repo structure
 
 ```
@@ -228,6 +251,7 @@ python-for-ai-ml/
 ├── 21-responsible-and-production-ai/
 │   ├── (same layout, with the final capstone as 04_mini_project.ipynb)
 │   └── data/adult.csv.gz
+├── assets/            (images used in this README)
 ├── CONTRIBUTING.md
 ├── requirements.txt
 └── LICENSE

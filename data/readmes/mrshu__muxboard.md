@@ -1,7 +1,7 @@
 # Muxboard: a Stream Deck+ dashboard for AI coding agents
 
-> Your [cmux](https://cmux.com/), [Orca](https://onorca.dev), and
-> [Herdr](https://herdr.dev) coding agents on the keys, with CodexBar quotas,
+> Your [cmux](https://cmux.com/), [Orca](https://onorca.dev),
+> [Herdr](https://herdr.dev), and T3 Code agents on the keys, with CodexBar quotas,
 > spend, and credits on the LCD.
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
@@ -18,12 +18,13 @@ long the agent has been in its current state.*
 Muxboard turns the 8 keys of an Elgato Stream Deck+ into a shared queue of
 coding agents (Claude Code, Codex, Pi, [OMP](https://github.com/can1357/oh-my-pi),
 or any other) running in [cmux](https://cmux.com/) panes,
-[Orca](https://onorca.dev) worktrees, and [Herdr](https://herdr.dev) sessions.
+[Orca](https://onorca.dev) worktrees, [Herdr](https://herdr.dev) sessions,
+or T3 Code threads.
 A key shows the agent's state (working, waiting, blocked, failed, or an unread
 result). It also shows how long the agent has been in that state and where it
 runs. Agents that need your attention come first. Pressing a key switches to
-the existing workspace or pane. Muxboard detects Orca and Herdr automatically,
-including named Herdr sessions and saved SSH machines.
+the existing workspace, pane, or thread. Muxboard detects Orca, Herdr, and
+T3 Code automatically. Herdr discovery includes named sessions and saved SSH machines.
 
 The LCD touch strip shows usage for every provider you enable in CodexBar, such
 as Codex, Claude, MiniMax, Kimi, CommandCode, Perplexity, and Antigravity.
@@ -38,11 +39,11 @@ CodexBar has them, and credit balances.
 
 You need macOS, Node.js ≥ 20, a Stream Deck+, the
 [Elgato Stream Deck app](https://www.elgato.com/stream-deck), and at least one
-agent source: cmux, Orca, or Herdr. CodexBar is only needed for the LCD.
+agent source (cmux, Orca, Herdr, or T3 Code). CodexBar is only needed for the LCD.
 
 The packaged [v0.2.0 release](https://github.com/mrshu/muxboard/releases/tag/v0.2.0)
-supports cmux, Orca, and Herdr. This README also describes changes made since
-that release; [build from source](#build-from-source) to use them.
+supports cmux, Orca, and Herdr. For T3 Code support,
+[build from source](#build-from-source).
 
 Connect your device and open Stream Deck once, so the app knows about it. Then
 install the latest release:
@@ -60,7 +61,7 @@ dropdown. If the profile did not install, see [Troubleshooting](#troubleshooting
 
 | Surface | Shows | Source |
 | --- | --- | --- |
-| 8 keys | Agent, status, workspace, age, and source badge | [cmux](#cmux-support), [Orca](#orca-support), [Herdr](#herdr-support) |
+| 8 keys | Agent, status, workspace, age, and source badge | [cmux](#cmux-support), [Orca](#orca-support), [Herdr](#herdr-support), [T3 Code](#t3-code-support) |
 | LCD touch strip | Quotas, resets, pace, spend, tokens, and credits | [CodexBar](#codexbar-support) |
 | 4 dials | Queue scrolling, agent/source filters, quota view, refresh | See [Dials](#dials-stream-deck) |
 
@@ -84,7 +85,7 @@ permission requests, and agents that asked for input.
   For Herdr, it switches to the window the session already runs in (a
   terminal, Zellij, tmux, or cmux) and focuses the agent, without opening a new
   terminal. Every Herdr agent gets its own key, even when several share a
-  workspace.
+  workspace. For T3 Code, a tap opens the selected thread in the desktop app.
 - Holding a key for about 0.6 seconds snoozes it for five minutes. A ✓ shows
   while you hold the key, and releasing it has no further effect. Muxboard does
   not change the notification, so the key returns if the agent still needs you.
@@ -122,19 +123,19 @@ permission requests, and agents that asked for input.
 | 3 | Remaining % ↔ pace | Queue ↔ Decisions | Open CodexBar `/usage` |
 | 4 | Scroll providers (> 4) | Refresh sources and quota | Same as press |
 
-Dial 2 cycles the agent type through **All → Claude → Codex → OMP → Pi**.
-Holding it cycles the source through **All → cmux → Orca → Herdr**, one step
+Dial 2 cycles the agent type through **All → Claude → Codex → OMP → Pi → Antigravity**.
+Holding it cycles the source through **All → cmux → Orca → Herdr → T3 Code**, one step
 per hold. With four or fewer providers, turning dial 4 does nothing.
 
 The two filters combine. For example, select Claude, then hold dial 2 until
 Herdr is selected to see only Claude agents running in Herdr. While a source is
-selected, the keys show **CMX**, **ORC**, or **HDR**, and the Decisions view
-shows **C DEC**, **O DEC**, or **H DEC**. If nothing matches, the empty keys
+selected, the keys show **CMX**, **ORC**, **HDR**, or **T3**, and the Decisions view
+shows **C DEC**, **O DEC**, **H DEC**, or **T DEC**. If nothing matches, the empty keys
 name the selected source. If that source is offline and Muxboard has nothing
 cached for it, the keys say so. A short press or a touch on dial 2 clears both
 filters.
 
-When cmux, Orca, Herdr, or CodexBar stops responding, Muxboard keeps showing the
+When cmux, Orca, Herdr, T3 Code, or CodexBar stops responding, Muxboard keeps showing the
 last data it received, and the other sources keep working.
 
 <details>
@@ -149,9 +150,9 @@ last data it received, and the other sources keep working.
 - **Device:** a Stream Deck+ and the Elgato Stream Deck desktop app, which
   starts the plugin. The installer needs Node.js ≥ 20. Development and tests
   need Node.js ≥ 22.
-- **Agent sources:** at least one of cmux, Orca, or Herdr running, with its CLI
-  (`cmux`, `orca`, or `herdr`) on `PATH`. Orca must answer `orca status`. Herdr
-  needs a running local session or an enabled saved SSH machine.
+- **Agent sources:** run at least one of cmux, Orca, Herdr, or T3 Code. The
+  first three use their respective CLIs. Orca must answer `orca status`.
+  Herdr needs a running local session or an enabled saved SSH machine.
 - **cmux:** set Settings → Automation → Socket Control Mode to **Automation**,
   then fully quit and relaunch cmux. `cmux capabilities | grep access_mode`
   should then show `automation`. For live agent state, install the agent hooks
@@ -228,6 +229,17 @@ The [Herdr integration guide](docs/herdr.md) covers session and machine
 allow-lists, completion history, age tracking, host discovery, and
 compatibility.
 
+### T3 Code support
+
+Each thread in the local T3 Code inbox gets its own key, even when several
+threads share a project. Tap a key to open that thread in T3 Code. Hold
+dial 2 until **T3** appears to see just those threads.
+
+Muxboard reads thread metadata from the local T3 Code database. It skips
+settled and snoozed threads, archived or deleted threads, side chats, and
+nested subagents. Muxboard supports the v2 database used by T3 Code (Beta)
+0.1.11.
+
 ### CodexBar support
 
 The LCD reads the list of enabled providers from `codexbar serve`, so it is not
@@ -268,9 +280,10 @@ the plugin starts. Poll intervals and timeouts are in milliseconds.
 | `codexbarTimeoutMs` | `75000` | Per-request HTTP timeout (server deadline: 60 seconds) |
 | `agentAliases` | `{}` | Manual override (name substring → agent). Process detection is primary |
 | `busyCpuPercent` | `40` | Workspace CPU% (from `cmux top`) at/above which a running command counts as "working" |
-| `enableOrca` / `enableHerdr` | `"auto"` | Start each optional source when reachable. `true` forces polling, `false` disables it |
+| `enableOrca` / `enableHerdr` / `enableT3` | `"auto"` | Start each optional source when reachable. `true` forces polling, `false` disables it |
 | `orcaBin` / `herdrBin` | `"orca"` / `"herdr"` | CLI binary path or name |
-| `orcaPollMs` / `herdrPollMs` | `1500` | Optional source poll interval |
+| `orcaPollMs` / `herdrPollMs` / `t3PollMs` | `1500` | Optional source poll interval |
+| `t3BaseDir` | `""` | T3 Code data directory. Empty uses `T3CODE_HOME` or `~/.t3` |
 | `herdrSessions` | `[]` | Exact local session allow-list. Empty includes all running sessions |
 | `herdrIncludeMachines` | `true` | Include enabled saved SSH machine profiles |
 | `herdrMachines` | `[]` | Saved profile id/label allow-list. Empty includes enabled profiles |

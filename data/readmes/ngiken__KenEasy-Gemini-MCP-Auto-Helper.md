@@ -16,7 +16,7 @@
   </p>
 
   <p>
-    <img alt="Version" src="https://img.shields.io/badge/version-v0.2_Beta-3b82f6?logo=googlechrome&logoColor=white">
+    <img alt="Version" src="https://img.shields.io/badge/version-v0.3_Beta-3b82f6?logo=googlechrome&logoColor=white">
     <img alt="Chrome Web Store" src="https://img.shields.io/badge/Chrome_Web_Store-Pending_Review-4285F4?logo=googlechrome&logoColor=white">
     <img alt="Manifest" src="https://img.shields.io/badge/manifest-v3-00aeec">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-27c499">
@@ -24,9 +24,9 @@
 </div>
 
 > [!WARNING]
-> ### ⚠️ Beta Release Notice (v0.2 Beta Preview)
-> This extension is currently in **Public Beta Preview (v0.2 Beta)**.
-> While the core automation engine, 6-layer circuit breaker, hold-to-drag HUD, multi-language &amp; dark/light themes, multi-window guards, and desktop notification subsystems have passed 100% of the automated test suites, Google Gemini (`gemini.google.com`) continuously updates its Material Web Components and DOM layouts.
+> ### ⚠️ Beta Release Notice (v0.3 Beta Preview)
+> This extension is currently in **Public Beta Preview (v0.3 Beta)**.
+> While the core automation engine, 6-layer circuit breaker, hold-to-drag HUD, multi-language &amp; dark/light themes, multi-window guards, and desktop notification subsystems have passed 100% of the automated & VM end-to-end test suites (64/64), Google Gemini (`gemini.google.com`) continuously updates its Material Web Components and DOM layouts.
 > - If you encounter unrecognized confirmation dialogs or unexpected behavior, please submit feedback or screenshots on [GitHub Issues](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/issues), or add custom terms in the "Custom Keywords" section of the popup settings.
 > - Star 🌟 and PR contributions are warmly welcomed!
 
@@ -44,8 +44,8 @@ The extension has been submitted for Chrome Web Store security review. Once appr
 
 Click either link below to **immediately download the `.zip` package with one click**:
 
-- 📦 **[Direct Download: Manual Install Bundle (`KenEasy-Gemini-MCP-Auto-Helper-v0.2.0-manual-install.zip`)](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/releases/download/v0.2.0/KenEasy-Gemini-MCP-Auto-Helper-v0.2.0-manual-install.zip)** (Recommended — extracts to `KenEasy-Gemini-MCP-Auto-Helper/` folder with docs)
-- 🏪 **[Direct Download: Clean Extension Zip (`KenEasy-Gemini-MCP-Auto-Helper-v0.2.0-store.zip`)](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/releases/download/v0.2.0/KenEasy-Gemini-MCP-Auto-Helper-v0.2.0-store.zip)** (Clean root containing `manifest.json`)
+- 📦 **[Direct Download: Manual Install Bundle (`KenEasy-Gemini-MCP-Auto-Helper-v0.3.0-manual-install.zip`)](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/releases/download/v0.3.0/KenEasy-Gemini-MCP-Auto-Helper-v0.3.0-manual-install.zip)** (Recommended — extracts to `KenEasy-Gemini-MCP-Auto-Helper/` folder with docs)
+- 🏪 **[Direct Download: Clean Extension Zip (`KenEasy-Gemini-MCP-Auto-Helper-v0.3.0-store.zip`)](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/releases/download/v0.3.0/KenEasy-Gemini-MCP-Auto-Helper-v0.3.0-store.zip)** (Clean root containing `manifest.json`)
 
 Installation steps:
 1. Click a link above to download the `.zip` file and extract it into your local directory (e.g. `E:\code\KenEasy-Gemini-MCP-Auto-Helper`).
@@ -59,7 +59,7 @@ Installation steps:
 
 ---
 
-## 🎬 Core Features Walkthrough & Demos (v0.2 Highlights)
+## 🎬 Core Features Walkthrough & Demos (v0.3 Highlights)
 
 ### 1. Hold-to-Drag Floating HUD (Hover-Sticking Fixed) 🆕
 > Left-click and hold the HUD header to drag it smoothly anywhere across the Gemini viewport — simply hovering near the header never moves or traps the HUD! Features deferred pointer capture beyond the 4px movement deadzone, independent header buttons for minimize/theme/language, off-window auto-release, viewport clamping, and one-click position reset in the popup.
@@ -209,6 +209,12 @@ Click the **"Restore Defaults"** button at the bottom of the extension popup. Th
 ---
 
 ## 📝 Changelog
+
+### [v0.3.0 (v0.3 Beta)](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/releases/tag/v0.3.0) - 2026-11-22
+- **Never-Sleep MV3 Background Engine**: Added ~19.5s Service Worker keepalive, proactive 4-minute Port rotation before Chrome's 5-minute disconnect limit, unthrottled SW delayed settling/cooldown ticks (`GMAH_SCHEDULE_TICK`), and instant tab/window focus wakeups so automation never stalls in background or other apps.
+- **Smart Background Click Retry & Shadow DOM Observer**: Auto-retries un-dismissed clicks in background with `@material/web` ShadowRoot inner `<button>` piercing and safe focus/coords; recursively observes dynamic ShadowRoots; fixes minimized-window hidden spinners falsely locking `isGenerating`.
+- **Zero-Glitch HUD, Popup & Safety Hardening**: Stops Windows minimize (`0x0` resize) from snapping the HUD to `(0, 0)`, auto-clamps on expand/panel open, fixes `/app` -> `/app/<id>` new-chat continue suppression, guards cookies/notifications/camera/mic/location across all 4 locales, adds live 4-language engine status, and auto-saves popup fields with instant breaker reconciliation.
+- **64/64 Automated, E2E Sandbox & 30-Min Marathon Tests**: Verified end-to-end across 5 test suites including a 30-minute hidden background marathon with 7+ port rotations and simulated SW crash recovery.
 
 ### [v0.2.0 (v0.2 Beta)](https://github.com/ngiken/KenEasy-Gemini-MCP-Auto-Helper/releases/tag/v0.2.0) - 2026-11-22
 - **Hold-to-Drag HUD Fix**: Strict left-button press gating (`isPointerDown`) eliminates hover-sticking; deferred pointer capture after 4px threshold keeps collapse, theme, and language header buttons immediately responsive; added off-window auto-release and popup **Reset HUD** button.

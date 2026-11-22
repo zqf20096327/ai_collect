@@ -60,24 +60,25 @@ Android builds are distributed in three flavors:
 
 iOS uses the shared mobile experience with remote generation providers, Silicon Diffusion Core ML, and Silicon Diffusion PrismML Bonsai for on-device generation on supported devices. Android also exposes Local Diffusion PrismML Bonsai on builds where the native runtime is packaged, with device suitability checked through setup and benchmark flows.
 
-| Provider / backend                         | What it connects to                                   | iOS    | Android `playstore` | Android `full` | Android `foss` | Notes                                                                                                                                                                                                                                |
-| ------------------------------------------ | ----------------------------------------------------- | ------ | ------------------- | -------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| AUTOMATIC1111 WebUI                        | Your own AUTOMATIC1111 API server                     | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Own server, demo mode, txt2img, img2img, inpaint, models, LoRA, embeddings, hypernetworks.                                                                                                                                           |
-| SwarmUI                                    | Your own SwarmUI server                               | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Own server with SwarmUI model, LoRA, and embeddings discovery.                                                                                                                                                                       |
-| Easy Diffusion                             | Your own Easy Diffusion v3 server                     | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Stable. SD1.5 txt2img/img2img, checkpoint selection, fixed DDIM, progress, task-specific stop and sequential batches. Anonymous URL-only connection.                                                                                 |
-| OpenAI-compatible                          | Any server or proxy implementing the OpenAI image API | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Stable. Full API prefix, optional bearer key, arbitrary model ID, txt2img and sequential batches. Server determines supported models and sizes.                                                                                      |
-| AI Horde                                   | Crowdsourced Stable Horde workers                     | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Works with the default anonymous key or your own Horde API key.                                                                                                                                                                      |
-| Hugging Face Inference API                 | Hosted Hugging Face image models                      | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires a Hugging Face API key and selected model.                                                                                                                                                                                  |
-| OpenAI Images API                          | OpenAI image generation with GPT Image models         | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires an OpenAI API key.                                                                                                                                                                                                          |
-| ChatGPT OAuth                              | Direct ChatGPT account image generation               | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Beta. Device-code login, gpt-image-2, txt2img and sequential batches. Unofficial integration; account/workspace device login must be enabled.                                                                                        |
-| Stability AI                               | Stability AI / DreamStudio image API                  | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires a Stability AI API key and engine selection.                                                                                                                                                                                |
-| Fal.ai                                     | Fal.ai hosted image generation endpoints              | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires a Fal.ai API key. Supports compatible FLUX txt2img/img2img endpoints through the shared generation form.                                                                                                                    |
-| ArliAI                                     | ArliAI SDNext-compatible hosted image API             | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Alpha provider. Requires an ArliAI API key. Supports txt2img/img2img, checkpoint discovery, sampler selection, steps, CFG scale, negative prompt, and batch generation.                                                              |
-| Local Diffusion: Microsoft ONNX Runtime    | On-device ONNX model inference                        | 🔴 No  | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Android-only txt2img. Custom local model paths are available outside the Play build.                                                                                                                                                 |
-| Local Diffusion: Google AI MediaPipe       | On-device MediaPipe image generator                   | 🔴 No  | 🟢 Yes              | 🟢 Yes         | 🔴 No          | Android-only txt2img. Excluded from the FOSS flavor.                                                                                                                                                                                 |
-| Local Diffusion: stable-diffusion.cpp SDXL | On-device SDXL-compatible model inference             | 🔴 No  | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Android-only txt2img through stable-diffusion.cpp. Supports catalog GGUF/safetensors/ckpt models, CPU/OpenCL/Vulkan backend selection, and custom local model paths outside the Play build.                                          |
-| Silicon Diffusion Core ML                  | On-device Core ML image generation runtime            | 🟢 Yes | 🔴 No               | 🔴 No          | 🔴 No          | iOS-only txt2img and img2img with explicit downloadable/imported Core ML model assets. SDXL catalog entries are disabled until device-gated QA is stable.                                                                            |
-| Local / Silicon Diffusion PrismML Bonsai   | On-device PrismML Bonsai Image 4B runtime             | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | iOS uses the Silicon Diffusion MLX runtime and is marked beta. Android uses the Local Diffusion NDK/ART runtime, is marked experimental, supports Auto/CPU/Vulkan backend selection, and should be device-checked before heavy runs. |
+| Provider / backend                         | What it connects to                                   | iOS    | Android `playstore` | Android `full` | Android `foss` | Notes                                                                                                                                                                                                                                                                                |
+| ------------------------------------------ | ----------------------------------------------------- | ------ | ------------------- | -------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AUTOMATIC1111 WebUI                        | Your own AUTOMATIC1111 API server                     | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Own server, demo mode, txt2img, img2img, inpaint, models, LoRA, embeddings, hypernetworks.                                                                                                                                                                                           |
+| SwarmUI                                    | Your own SwarmUI server                               | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Own server with SwarmUI model, LoRA, and embeddings discovery.                                                                                                                                                                                                                       |
+| Easy Diffusion                             | Your own Easy Diffusion v3 server                     | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Stable. SD1.5 txt2img/img2img, checkpoint selection, fixed DDIM, progress, task-specific stop and sequential batches. Anonymous URL-only connection.                                                                                                                                 |
+| OpenAI-compatible                          | Any server or proxy implementing the OpenAI image API | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Stable. Full API prefix, optional bearer key, arbitrary model ID, txt2img and sequential batches. Server determines supported models and sizes.                                                                                                                                      |
+| AI Horde                                   | Crowdsourced Stable Horde workers                     | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Works with the default anonymous key or your own Horde API key.                                                                                                                                                                                                                      |
+| Hugging Face Inference API                 | Hosted Hugging Face image models                      | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires a Hugging Face API key and selected model.                                                                                                                                                                                                                                  |
+| OpenAI Images API                          | OpenAI image generation with GPT Image models         | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires an OpenAI API key.                                                                                                                                                                                                                                                          |
+| ChatGPT OAuth                              | Direct ChatGPT account image generation               | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Beta. Device-code login, gpt-image-2, txt2img and sequential batches. Unofficial integration; account/workspace device login must be enabled.                                                                                                                                        |
+| Stability AI                               | Stability AI / DreamStudio image API                  | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires a Stability AI API key and engine selection.                                                                                                                                                                                                                                |
+| Fal.ai                                     | Fal.ai hosted image generation endpoints              | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Requires a Fal.ai API key. Supports compatible FLUX txt2img/img2img endpoints through the shared generation form.                                                                                                                                                                    |
+| ArliAI                                     | ArliAI SDNext-compatible hosted image API             | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Alpha provider. Requires an ArliAI API key. Supports txt2img/img2img, checkpoint discovery, sampler selection, steps, CFG scale, negative prompt, and batch generation.                                                                                                              |
+| Local Diffusion: MNN SD 1.5                | On-device MNN Stable Diffusion 1.5                    | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Alpha Android arm64 and physical iOS 17+ txt2img: one 512×512 image, PNDM, CFG 7.5, 1–50 steps. Android CPU/OpenCL; iOS CPU/Metal and catalog models only. Complete validated bundles; Android custom folders outside Play. [Setup and limitations](https://sdai.moroz.cc/mnn.html). |
+| Local Diffusion: Microsoft ONNX Runtime    | On-device ONNX model inference                        | 🔴 No  | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Android-only txt2img. Custom local model paths are available outside the Play build.                                                                                                                                                                                                 |
+| Local Diffusion: Google AI MediaPipe       | On-device MediaPipe image generator                   | 🔴 No  | 🟢 Yes              | 🟢 Yes         | 🔴 No          | Android-only txt2img. Excluded from the FOSS flavor.                                                                                                                                                                                                                                 |
+| Local Diffusion: stable-diffusion.cpp SDXL | On-device SDXL-compatible model inference             | 🔴 No  | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | Android-only txt2img through stable-diffusion.cpp. Supports catalog GGUF/safetensors/ckpt models, CPU/OpenCL/Vulkan backend selection, and custom local model paths outside the Play build.                                                                                          |
+| Silicon Diffusion Core ML                  | On-device Core ML image generation runtime            | 🟢 Yes | 🔴 No               | 🔴 No          | 🔴 No          | iOS-only txt2img and img2img with explicit downloadable/imported Core ML model assets. SDXL catalog entries are disabled until device-gated QA is stable.                                                                                                                            |
+| Local / Silicon Diffusion PrismML Bonsai   | On-device PrismML Bonsai Image 4B runtime             | 🟢 Yes | 🟢 Yes              | 🟢 Yes         | 🟢 Yes         | iOS uses the Silicon Diffusion MLX runtime and is marked beta. Android uses the Local Diffusion NDK/ART runtime, is marked experimental, supports Auto/CPU/Vulkan backend selection, and should be device-checked before heavy runs.                                                 |
 
 ## AI Feature Matrix
 
@@ -114,6 +115,7 @@ iOS uses the shared mobile experience with remote generation providers, Silicon 
 ### Save and Review
 
 - Local in-app gallery for generated images.
+- Civitai account connection through native OAuth sign-in or an API key, gallery publishing with SDAI attribution, upload history, and optional automatic uploads.
 - Detail screen with zoom, generation metadata, and sharing.
 - Optional auto-save of results.
 - Native platform save/share flows, including Android MediaStore and iOS Photos/share sheet where available.
@@ -130,6 +132,18 @@ iOS uses the shared mobile experience with remote generation providers, Silicon 
 - Hardware benchmark in AI Settings for local providers, including device score, acceleration availability, Android Bonsai Vulkan compute support, estimated generation time, and recommended local settings.
 - Server availability monitoring for compatible own-server modes.
 - Storage usage and network usage screens for gallery/cache/model files and provider traffic counters.
+
+## Sharing to Civitai
+
+Open **Settings → Integrations → Civitai** to connect your account. OAuth sign-in opens Civitai in the system authentication browser; SDAI never receives your password. Allow offline access on the consent screen to stay connected; an access-only session requires signing in again after its token expires. An API key with profile-read and media-write permissions is also supported.
+
+Use the Civitai action in gallery details to publish the generated output. Posts include a visible SDAI link, generation parameters, and recorded provider, model, device and OS details. The resulting post link is saved with the image and opens on subsequent taps. Civitai may keep newly uploaded images hidden while processing them.
+
+Automatic uploads are off by default. Enabling them publishes subsequent generated outputs and their recorded metadata publicly; existing gallery images and input images are not automatically uploaded. Upload history keeps receipts and failed or unconfirmed attempts. An unconfirmed post is not automatically submitted again.
+
+Gallery backups retain each image’s Civitai post URL. The separate **Civitai** section in Backup and restore transfers upload history, including failed or uncertain attempts. It does not contain OAuth tokens or API keys, sign in an account, or enable automatic uploads. Restoring history is additive and skips existing receipts. Empty upload history is omitted from the archive and does not appear in Restore.
+
+The public OAuth client identifier is configured by `civitaiClientId` in `gradle.properties` and generated into the shared BuildConfig for Android and iOS. No client secret is shipped. See the [consumed Civitai API contract](network/civitai.openapi.json).
 
 ## Supported AI image generation providers
 
@@ -273,19 +287,19 @@ Machine-readable citation metadata is available in [`CITATION.cff`](CITATION.cff
 
 If you mention SDAI in research, articles, benchmarks, tutorials, app collections, or public project documentation, please cite it as:
 
-> SDAI, version 1.2.0, an open-source cross-platform AI image generation client by Dmytro Moroz (Moroz Inc.). https://github.com/ShiftHackZ/SDAI-KMP
+> SDAI, version 1.3.0, an open-source cross-platform AI image generation client by Dmytro Moroz (Moroz Inc.). https://github.com/ShiftHackZ/SDAI-KMP
 
 BibTeX:
 
 ```bibtex
 @software{Moroz_SDAI_2026,
   author = {Moroz, Dmytro},
-  date = {2026-11-08},
+  date = {2026-11-22},
   license = {AGPL-3.0-only},
   month = nov,
   title = {{SDAI}},
   url = {https://github.com/ShiftHackZ/SDAI-KMP},
-  version = {1.2.0},
+  version = {1.3.0},
   year = {2026}
 }
 ```
@@ -293,5 +307,5 @@ BibTeX:
 APA:
 
 ```
-Moroz, D. (2026). SDAI (Version 1.2.0) [Computer software]. https://github.com/ShiftHackZ/SDAI-KMP
+Moroz, D. (2026). SDAI (Version 1.3.0) [Computer software]. https://github.com/ShiftHackZ/SDAI-KMP
 ```

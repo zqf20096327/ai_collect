@@ -2,7 +2,7 @@
 
 # Yomikae
 
-[![license: GPL-3.0-only](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![Chrome: MV3 extension](https://img.shields.io/badge/Chrome-MV3%20extension-4285F4?logo=googlechrome&logoColor=white)
 ![Python: 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![TypeScript: strict](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
@@ -48,14 +48,12 @@ Run each block as it is, in order.
 
 Pick the block that matches your computer.
 
-**With an NVIDIA GPU** (about 8 GB of disk):
+**With an NVIDIA GPU** (about 6 GB of disk, and an NVIDIA driver for CUDA 13, version 580 or newer):
 
 ```sh
 git clone https://github.com/gravewhisper/yomikae.git
 cd yomikae/server
-uv venv --python 3.12 .venv
-uv pip install --python .venv/bin/python torch --index-url https://download.pytorch.org/whl/cu128
-uv pip install --python .venv/bin/python -e '.[gpu,test]'
+uv sync --locked --python 3.12 --extra gpu --extra test
 ```
 
 **Without one** (about 2 GB of disk, Claude or Codex only):
@@ -63,9 +61,7 @@ uv pip install --python .venv/bin/python -e '.[gpu,test]'
 ```sh
 git clone https://github.com/gravewhisper/yomikae.git
 cd yomikae/server
-uv venv --python 3.12 .venv
-uv pip install --python .venv/bin/python torch --index-url https://download.pytorch.org/whl/cpu
-uv pip install --python .venv/bin/python -e '.[test]'
+uv sync --locked --python 3.12 --extra cpu --extra test
 ```
 
 Stay in `yomikae/server` for steps 3 to 5.
@@ -92,6 +88,15 @@ rm -rf best.pt .venv-export
 ```
 
 It ends with `export success`. A fourth model, for reading Japanese, downloads itself the first time the server starts.
+
+To translate Korean webtoons too, download AnimeText, which finds the Korean lines (80 MB, GPL-3.0), and PaddleOCR's Korean models, which read them (23 MB, Apache-2.0). The server loads them with the first Korean page, and without them Korean pages fail with `reader_missing`:
+
+```sh
+curl -L -o models/animetext_yolo12m.onnx https://huggingface.co/Library-Mutsumi/AnimeText_yolo/resolve/e3a6e6b08b39e9bc9eeb7033f78c36689b351a24/yolo12m_animetext/model.onnx
+mkdir -p models/paddleocr
+curl -L -o models/paddleocr/PP-OCRv6_det_small.onnx https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv6/det/PP-OCRv6_det_small.onnx
+curl -L -o models/paddleocr/korean_PP-OCRv5_rec_mobile.onnx https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/rec/korean_PP-OCRv5_rec_mobile.onnx
+```
 
 ### 4. Start the server
 
@@ -151,7 +156,7 @@ Done. Pages turn into English as you read.
 
 **Next time**, just start the server again (and LM Studio, if you use it). The extension stays installed.
 
-> **A page failed?** Hover it to see why. With Claude or Codex, `claude failed` or `codex exited with` usually means you're signed out or out of usage. Run `claude` or `codex` to check, then press **Retry**. [docs/troubleshooting.md](docs/troubleshooting.md) covers the rest.
+> **A page failed or keeps waiting?** Hover it to see why. With Claude or Codex, `Not logged in` or a usage limit means you're signed out or out of usage. Run `claude` or `codex` to fix it. Waiting pages then continue on their own, and a failed page needs **Retry**. [docs/troubleshooting.md](docs/troubleshooting.md) covers the rest.
 
 ### Optional: the Anime Ace font
 
@@ -198,12 +203,14 @@ The server listens on `127.0.0.1` and answers only the Yomikae extension and too
 
 ## Status
 
-Yomikae translates Japanese into English only. It leaves sound effects drawn into the art untranslated on purpose.
+Yomikae translates Japanese into English, and Korean webtoons as an early preview. Choose Korean in the popup's Language menu, or let a page that declares `<html lang="ko">` pick it. It leaves sound effects drawn into the art untranslated on purpose.
+
+Korean finds and reads almost every line: on held-out webtoon pages it missed 1 of 80 dialogue lines and misread 1% of characters. Its English is weaker than Japanese with the local Gemma 12B model. A judge rated about 70% of lines fully right and 90% right or nearly right, where Gemma given perfectly typed Korean reaches about 92%. One misread syllable can turn a word into a name or another word, and a box that spans a caption and bubbles puts all of their English in one place.
 
 These are planned but not built yet:
 
 - A batch mode that translates a folder of images.
-- Korean and Chinese.
+- Chinese.
 
 ## More docs
 
@@ -212,6 +219,7 @@ These are planned but not built yet:
 - [Speed and graphics memory](docs/performance.md) shows where a page's time goes and the settings that trade speed for memory.
 - [Troubleshooting](docs/troubleshooting.md) covers common problems and how to report a bad page.
 - [Measuring a change](docs/benchmarks.md) explains the two benchmark tools and how far to trust their numbers.
+- [Architecture](docs/architecture.md) walks through the extension and the server, follows one page from the browser to the server and back, and sums up the main design choices.
 - [Design decisions](docs/decisions.md) records why Yomikae works the way it does and what was tried and dropped.
 - [Credits and licenses](docs/credits.md) lists the code, models, fonts, and libraries Yomikae uses.
 
@@ -221,7 +229,7 @@ These are planned but not built yet:
 
 ## License
 
-Yomikae is licensed under GPL-3.0-only, see [LICENSE](LICENSE). Parts of the server are ported from manga-image-translator under the same license. The demo images are CC BY-NC 4.0, like the OpenMantra dataset they come from. [docs/credits.md](docs/credits.md) has the details.
+Yomikae is licensed under the MIT License, see [LICENSE](LICENSE). [docs/credits.md](docs/credits.md) lists the code, models and media from other projects and their licenses.
 
 ## Disclaimer
 

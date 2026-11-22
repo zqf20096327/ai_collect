@@ -86,6 +86,7 @@ graph TD
         Doxis_Repo_Conn[Doxis 4 Repository - oc-doxis-repository-connector]
         SharePoint_Conn[SharePoint Online Repository - oc-sharepoint-repository-connector]
         GDrive_Conn[Google Drive & Shared Drives - oc-googledrive-repository-connector]
+        Confluence_Conn[Atlassian Confluence Cloud & Data Center - oc-confluence-repository-connector]
         MFiles_Repo_Conn[M-Files Vault - oc-mfiles-repository-connector]
         FileNet_Repo_Conn[IBM FileNet P8 Object Store - oc-filenet-repository-connector]
         Documentum_Repo_Conn[OpenText Documentum Repository - oc-documentum-repository-connector]

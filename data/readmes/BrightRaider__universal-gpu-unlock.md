@@ -4,7 +4,7 @@
 ### High-Performance Tensor Core Rate-Limiter Bypass for NVIDIA GPUs
 
 [![GitHub Release](https://img.shields.io/github/v/release/BrightRaider/universal-gpu-unlock?color=blue&logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases/latest)
-[![Release Version](https://img.shields.io/badge/Release-v1.8.29%20(Latest)-blue?logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases/tag/v1.8.29)
+[![Release Version](https://img.shields.io/badge/Release-v1.8.31%20(Latest)-blue?logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases/tag/v1.8.31)
 [![Downloads](https://img.shields.io/github/downloads/BrightRaider/universal-gpu-unlock/total?color=green&logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases)
 [![Stars](https://img.shields.io/github/stars/BrightRaider/universal-gpu-unlock?style=social)](https://github.com/BrightRaider/universal-gpu-unlock)
 [![Safety](https://img.shields.io/badge/Safety-RAM--Only-success.svg)](#-safety--anti-cheat)
@@ -27,7 +27,7 @@
 
 ## ⚡ 60-Second Quick Start
 
-1. **Prepare USB Drive:** Download **[Universal_GPU_Unlock_v1.8.29.zip](https://github.com/BrightRaider/universal-gpu-unlock/releases/latest)**, extract it, insert a USB drive (FAT32), and run `Setup.bat` (formats & sets up all boot files automatically).
+1. **Prepare USB Drive:** Download **[Universal_GPU_Unlock_v1.8.31.zip](https://github.com/BrightRaider/universal-gpu-unlock/releases/latest)**, extract it, insert a USB drive (FAT32), and run `Setup.bat` (formats & sets up all boot files automatically).
    - *(Existing USB sticks can be updated by running `Update-USB.bat`).*
 2. **Boot & Unlock:** Restart your PC, open your boot menu (`F8` / `F11` / `F12`), boot from the USB drive, and select:
    - `[U]` **Standard Unlock:** RAM-only, temporary unlock (reverts cleanly to factory stock on power off). Multi-GPU systems unlock all cards sequentially.
@@ -69,7 +69,13 @@ If your motherboard blocks the USB drive with a signature verification warning:
 - **ASUS & AMI Console Topology Verified:** Multi-display console detachment verified on ASUS PRIME Z690-A at **127.61 TFLOPS** (100% unrestricted compute) on EVGA GeForce RTX 3080 Ti — resolving [#16](https://github.com/BrightRaider/universal-gpu-unlock/issues/16).
 - **ASRock AM4 & CSM Resolution Verified:** Budget AM4 POST discovery and CSM legacy video conflict resolved on ASRock A520M-HVS at **106.05 TFLOPS** (+95.7% boost, unrestricted compute) on Gainward GeForce RTX 3080 Phoenix — refs [#17](https://github.com/BrightRaider/universal-gpu-unlock/issues/17).
 - **Ampere & Turing Verified:** GA106 (RTX 3060), GA102 (RTX 3080, RTX 3080 Ti, RTX 3090) as well as TU102 (RTX 2080 Ti) and TU106 (CMP 40HX) are confirmed. On Turing (RTX 20 Series), the pre-boot unlock transaction completes cleanly and full enterprise compute throughput (>85–105 TFLOPS) is activated with GSP firmware mode (`Toggle-Turing-GSP.bat`) — refs [#15](https://github.com/BrightRaider/universal-gpu-unlock/issues/15), refs [#18](https://github.com/BrightRaider/universal-gpu-unlock/issues/18).
-- **Stickless Internal NVMe-ESP Persistence (`[I]` Mode):** Installs `AdaUnlockDxe.efi` and the firmware assets to your internal EFI System Partition (`\EFI\Drivers\`) and registers it in the UEFI `DriverOrder`, so the USB stick is no longer needed. If the copy to the ESP fails, `[I]` registers the driver on the USB drive instead, which then has to stay connected. If an unlock fails, the driver disables itself for the next boot, and `[I]` enables it again.
+- **Stickless Internal NVMe-ESP Persistence (`[I]` Mode) & ESP Storage Notice:** Installs `AdaUnlockDxe.efi` and architecture firmware assets to your internal EFI System Partition (`\EFI\Drivers\`) and registers it in UEFI `DriverOrder`, so the USB stick is no longer needed.
+  * **ESP Space Requirements:** Ada (RTX 40) and Ampere (RTX 30) require **~85 MB free space** for NVIDIA's monolithic signed GSP-RM firmware (`gsp_ga10x.bin`). Turing (RTX 20 / CMP) requires only **~28 MB**.
+  * **Standard 100 MB Windows ESP:** Windows OEM setups create a 100 MB ESP with only ~30–50 MB free. On Turing cards, the unified installer automatically deploys only the compact Turing assets (~28 MB), fitting standard 100 MB partitions out of the box. On Ada/Ampere cards, if space is insufficient, `[I]` safely falls back to registering the USB drive.
+  * **Workarounds & Best Practices for Ada / Ampere:**
+    1. **Option `[P]` (S3 Sleep Persistence - Recommended):** If you use Sleep / Standby (Suspend-to-RAM) instead of a cold shutdown, no ESP space is needed at all! Unlock once via USB `[P]`, and the GPU stays unlocked across sleep cycles.
+    2. **Dedicated FAT32 Partition (1-Click Tool):** Run `Create-Unlock-Partition.bat` (or use the button in Universal Control Center) to safely shrink 512 MB from any internal SSD and format a dedicated FAT32 partition. UEFI mounts it automatically on boot, allowing `[I]` to store assets cleanly (verified in [#19](https://github.com/BrightRaider/universal-gpu-unlock/issues/19)).
+    3. **Resize ESP:** Use a partition manager to increase the ESP from 100 MB to 500 MB.
 
 <details>
 <summary><b>🔍 Community-Verified Hardware & Live Benchmarks (Click to expand)</b></summary>
@@ -81,14 +87,17 @@ The following GPU models, system motherboards, and compute readbacks have been i
 | :--- | :--- | :--- | :--- | :--- |
 | **NVIDIA GeForce RTX 2080 Ti 11GB** | Turing (TU102) | Intel Z390 / AMD AM4 | **105.4 TFLOPS** (GSP-RM Firmware Compute Mode) | [#15](https://github.com/BrightRaider/universal-gpu-unlock/issues/15) |
 | **NVIDIA CMP 40HX 8GB** | Turing (TU106) | AMD AM4 / Intel Platform | **54.2 TFLOPS** (Headless Compute Accelerator) | [#18](https://github.com/BrightRaider/universal-gpu-unlock/issues/18) |
+| **NVIDIA GeForce RTX 2060 6GB (TU104-150)** | Turing (TU104 harvested) | ASUS TUF B450-PLUS GAMING (AMD AM4) | **25.82 TFLOPS** (Dense GEMM, 4.21x over FP32 Baseline) | [@resYuto in #20](https://github.com/BrightRaider/universal-gpu-unlock/issues/20) |
 | **Palit GeForce RTX 3060 12GB** | Ampere (GA106 LHR) | MSI MPG Z390 GAMING PLUS | **46.08 TFLOPS** (~45% ComfyUI speedup) | [#11](https://github.com/BrightRaider/universal-gpu-unlock/issues/11) |
 | **Gainward GeForce RTX 3080 Phoenix 10GB** | Ampere (GA102) | ASRock A520M-HVS (AMD AM4) | **106.05 TFLOPS** (+95.7% boost, Unrestricted Compute) | [#17](https://github.com/BrightRaider/universal-gpu-unlock/issues/17) |
 | **EVGA GeForce RTX 3080 Ti 12GB** | Ampere (GA102) | ASUS PRIME Z690-A | **127.61 TFLOPS** (100% Unrestricted Compute) | [#16](https://github.com/BrightRaider/universal-gpu-unlock/issues/16) |
 | **EVGA GeForce RTX 3080 Ti 12GB** | Ampere (GA102) | MSI X570-A PRO | **119.0 TFLOPS** (+84.5% boost, Unrestricted Compute) | [#12](https://github.com/BrightRaider/universal-gpu-unlock/issues/12) |
 | **NVIDIA GeForce RTX 3090 24GB** | Ampere (GA102) | Gigabyte TRX40 AORUS MASTER (AMD Threadripper 3960X) | **117.24 TFLOPS** (100% Unrestricted Tensor Compute) | [#13](https://github.com/BrightRaider/universal-gpu-unlock/issues/13) |
 | **MSI GeForce RTX 3090 GAMING X TRIO 24G** | Ampere (GA102) | ASUS ROG STRIX B550-E GAMING (AMD 5800X3D) | **105.10 TFLOPS** (100% Unrestricted Tensor Compute) | Community Verified |
+| **EVGA GeForce RTX 3090 Ti 24GB** | Ampere (GA102-350) | ASUS PRIME Z490-P (Intel i7-10700) | **132.4 TFLOPS FP16 / 136.6 TFLOPS BF16** (+102% Double Performance) | [@m4ttfx in #495](https://github.com/windows-GPU-UNLOCK/Windows-GPU-UNLOCK/issues/495#issuecomment-7077703728) |
 | **Dual GPU: HP OEM RTX 3090 + EVGA RTX 3060** | Ampere (GA102 + GA106) | ASUS TUF GAMING Z590-PLUS WIFI (Intel i5-11600K) | **86.0 TFLOPS (3090) / 49.6 TFLOPS (3060)** | [#19](https://github.com/BrightRaider/universal-gpu-unlock/issues/19) |
 | **ZOTAC GeForce RTX 4080 Trinity OC** | Ada Lovelace (AD103) | GIGABYTE X870 AORUS ELITE WIFI7 (AMD 9800X3D) | **174.29 TFLOPS** (Full Unrestricted GEMM) | [#9](https://github.com/BrightRaider/universal-gpu-unlock/issues/9) |
+| **PNY GeForce RTX 4090 24GB** | Ada Lovelace (AD102) | Gigabyte Z690 UD AC-Y1 (Intel i9-13900K) | **255.0 TFLOPS** (+59.4% boost, +15-25% ComfyUI gain) | [@jacyzheng in #444](https://github.com/windows-GPU-UNLOCK/Windows-GPU-UNLOCK/issues/444) |
 | **NVIDIA GeForce RTX 4090** | Ada Lovelace (AD102) | MSI MPG X670E Carbon WIFI (AMD Ryzen 7 7800X3D iGPU) | **255.0 TFLOPS** (+54.5% boost, Headless Compute) | [#14](https://github.com/BrightRaider/universal-gpu-unlock/issues/14) |
 | **NVIDIA GeForce RTX 4090** | Ada Lovelace (AD102) | Intel Z790 Platform (Multi-Drive ESP) | **255.4 TFLOPS** (Peak Compute) | [#8](https://github.com/BrightRaider/universal-gpu-unlock/issues/8) |
 | **NVIDIA GeForce RTX 4090** | Ada Lovelace (AD102) | Intel Z690 Platform (Hybrid iGPU & Multi-Display) | **214.0+ TFLOPS** (Sustained FP16 GEMM) | [#5](https://github.com/BrightRaider/universal-gpu-unlock/issues/5) |
@@ -197,7 +206,8 @@ All version releases, bug fixes, and device expansions are maintained in the sep
 ├── tools/
 │   ├── quick_check.py           <- Core GEMM benchmark, ReBAR, UEFI & PCIe diagnostic engine
 │   ├── gpu_dashboard.py         <- Modern Tkinter GUI status monitor & live benchmark
-│   └── gu_system_info.py        <- Shared firmware/ReBAR checks and GPU profiles for both
+│   ├── gu_system_info.py        <- Shared firmware/ReBAR checks and GPU profiles for both
+│   └── optional-turing-rebar/   <- Experimental ReBarUEFI guide (STRICTLY NO SUPPORT, use at own risk)
 └── CHANGELOG.md                 <- Complete release and version history
 ```
 

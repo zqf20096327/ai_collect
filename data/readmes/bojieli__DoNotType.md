@@ -196,9 +196,48 @@ that cannot return styled text use the existing second-stage rewrite instead.
 | | Dictation | Screen grounding | Personal dictionary | File transcription | CLI | Build |
 |---|---|---|---|---|---|---|
 | **macOS** | Menu-bar app, tap or hold Right ⌘ | ✅ Accessibility tree + screenshot | ✅ Manual, CSV, optional learning | ✅ | `dnt` | `make app` |
+| **Intel Mac (Monterey 12)** | Terminal recording with AVFoundation | — | — | PCM WAV | `python3 portable/dictate.py` | Apple Command Line Tools |
+| **Linux** | Terminal recording with ALSA | — | — | PCM WAV | `python3 portable/dictate.py` | Python 3.8+ |
 | **Windows** | Tray app, tap or hold Right Ctrl | ✅ UI Automation | ✅ Manual, CSV, optional learning | ✅ | `dnt.exe` | `cd windows && dotnet build` |
 | **Android** | Keyboard, records in-process | ✅ `AccessibilityService` | ✅ Manual, CSV, optional learning | ✅ | — | `cd android && ./gradlew assembleDebug` |
 | **iOS** | Voice keyboard; containing app records | ❌ Unavailable in the iOS sandbox | ✅ Manual, CSV, best-effort learning | ✅ | — | `cd ios && xcodegen generate` |
+
+### Linux terminal dictation
+
+From a source checkout, install Python 3.8+ and ALSA's `arecord` (the
+`alsa-utils` package on Debian/Ubuntu). Run the following to record ten seconds
+from your default microphone and print the transcript:
+
+```sh
+python3 portable/dictate.py --seconds 10
+```
+
+The command prompts privately for your OpenRouter API key or reads
+`OPENROUTER_API_KEY`. Each invocation sends the recording to OpenRouter using
+the selected model and your account. The temporary WAV is removed after capture.
+Use `arecord -L` and `--device NAME` to choose another input, or
+`--audio clip.wav` to transcribe an existing PCM WAV (up to two minutes and
+16 MiB). Use `--model ID` to select another audio-capable OpenRouter model.
+Only transcript text goes to standard output, so it can be piped to `wl-copy`
+on Wayland.
+
+### Intel Macs running macOS Monterey
+
+Use the terminal client from a source checkout with Python 3.8+ and Apple's
+Command Line Tools. Run `xcode-select --install` if the compiler tools are
+missing. Build the recorder once on the Mac, then start a dictation:
+
+```sh
+portable/macos/build.sh
+python3 portable/dictate.py --seconds 10
+```
+
+Allow microphone access for your terminal when macOS asks. Recording starts
+after permission is granted and uses the input selected in **System Preferences
+→ Sound → Input**. The command uses the same OpenRouter key and WAV limits as the
+Linux client above. Pipe the transcript to `pbcopy` to copy it for pasting.
+For an existing PCM WAV, `python3 portable/dictate.py --audio clip.wav` only
+requires Python and the source checkout.
 
 See [platform parity](docs/PARITY.md) for the feature-by-feature breakdown and the reasons for
 the differences.

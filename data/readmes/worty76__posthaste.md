@@ -57,6 +57,16 @@ you turn on AI polish or experimental device sync yourself.
 - **Later** — press L on a to-do you won't get to today. It leaves Today and
   the inbox and waits in Later, your backlog, until you bring it back. No dates,
   no reminders
+- **Steps** — break a note into plain one-line steps in Note details: ↑ ↓ move,
+  Space ticks, Enter edits, Mod+↑ Mod+↓ reorder, Backspace removes (with Undo).
+  Ticking every step never completes the note, and steps never count in Today.
+  Steps sync to your other computers once they run this version or later
+- **Projects** — group related notes in collapsible project sections across
+  Today and the inbox, set or create a project on any note with `P` (or in
+  capture with `# project`, or from Note details), and open a project's page
+  from the sidebar or with `#` to see its notes across days. Projects can be
+  renamed (or merged) and archived from Manage projects; a note's project syncs
+  with paired computers, while archive status stays on each computer for now
 - **Trash** — deleting a note moves it to Trash, where it waits 30 days. Restore
   it exactly as it was, or erase it for good
 - **Earlier days** — ← and → in Today step back through earlier days, as they

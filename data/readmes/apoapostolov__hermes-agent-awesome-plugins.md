@@ -15,7 +15,7 @@
   <p>
     <a href="#readme"><img src="https://img.shields.io/badge/Type-Plugin%20pack-555" alt="Type: Plugin pack"></a>
     <a href="./package.json"><img src="https://img.shields.io/badge/Language-JavaScript-555" alt="Language: JavaScript"></a>
-    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.26-blue" alt="Pack: 1.27.26"></a>
+    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.31-blue" alt="Pack: 1.27.31"></a>
     <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Last%20release-2026--11--16-blue" alt="Last release: 2026-10-31"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT"></a>
   </p>
@@ -39,7 +39,7 @@
 
 **Radio Plus 1.5.4** writes its station log under the active Hermes home's `plugin-data/radio-plus` directory and checks every outbound stream address and redirect with Hermes' URL-safety policy, so a profile-scoped backend cannot log to the wrong home and the probe and track-title routes cannot be used to reach a private network. Nothing in the picker changes. Reinstall or update both editions; the backend restart is still yours.
 
-**Next Steps 1.0.6** adds a second finalisation button beside Send, on the multi-select chip row and in the answer form. Steer sends the picked steps into the reply already running through `session.steer`; it never drops into the queue behind it, and a refused steer warns and leaves the block unsent so the same picks can be retried. On an idle chat it starts a normal turn. Send keeps its current behavior, including the `steer="1"` setting's try-then-queue path. The chip row, Recommended tag, RISKY pill and carried proposals are unchanged; its catalog edition is **hermes-next-steps 1.1.3**. Update both editions; the pack pin moves with it, and the renderer needs a Desktop restart or a plugin toggle to load.
+**Next Steps 1.1.6** keeps action choices on rounded chips. A model used the retired `answer` argument on a decision sheet, so the reply drew labelled reply fields where chips were expected; the `next_steps` tool no longer exposes that argument, and its handler always registers a chip block. The agent prompt no longer teaches answer mode. The `answer="1"` directive still draws the reply-field form for replies that genuinely ask for several typed answers. Both editions ship the change. A new session is needed for the frozen prompt and tool list to pick it up; the renderer is unchanged.
 
 **Catalog Redesign 1.0.12** turns the Capabilities page into a wide, one-row-per-item list for skills, plugins, connectors and tools. Each row carries a thumbnail, the name with its description, and one column that matters for that kind (tags or the short name). Artwork is real: a published plugin borrows the catalog's hero image, and a plugin outside the catalog uses a logo its own folder ships, so rows stop showing initials where the plugin has a face. Hover a row for a preview, click for a detail panel that slides in from the right with the hero image across its header, a 44px section rail, and the on/off switch beside Close. It adds its own route, sidebar row and palette entry and leaves the native Capabilities page alone. The online catalog now loads reliably, the default view is online, and there's an "Update all" button in the header. See [its README](personal/catalog-redesign/README.md).
 
@@ -64,7 +64,7 @@ These are captures from the running app of the parts that only make sense in pla
     <td align="center" valign="top" width="33%"><a href="personal/iteration-budget-meter"><img src="personal/iteration-budget-meter/docs/iteration-budget-meter.png" width="260" alt="Iteration Budget Meter showing per-turn usage and request statistics" /></a><br /><sub><a href="personal/iteration-budget-meter"><strong>Iteration Budget Meter</strong></a><br />Per-turn usage and request statistics</sub></td>
   </tr>
   <tr>
-    <td align="center" valign="top" width="33%"><a href="personal/next-steps"><img src="personal/next-steps/docs/screenshot.png" width="260" alt="Next Steps row under a reply with unanswered options carried forward, age labels, a dismiss cross and Clean Old Proposals" /></a><br /><sub><a href="personal/next-steps"><strong>Next Steps</strong></a><br />Unanswered options carried under a later reply</sub></td>
+    <td align="center" valign="top" width="33%"><a href="personal/hermes-next-steps"><img src="personal/hermes-next-steps/docs/screenshot.png" width="260" alt="Next Steps row under a reply with unanswered options carried forward, age labels, a dismiss cross and Clean Old Proposals" /></a><br /><sub><a href="personal/hermes-next-steps"><strong>Next Steps</strong></a><br />Unanswered options carried under a later reply</sub></td>
     <td align="center" valign="top" width="33%"><a href="personal/radio-plus"><img src="personal/radio-plus/docs/screenshot-tags.png" width="260" alt="Radio Plus station picker with country:uk typed in the search field, the All, Popular, Shoutcast and TuneIn chips, UK stations and the transport row" /></a><br /><sub><a href="personal/radio-plus"><strong>Radio Plus</strong></a><br />Listen to your own radios, search by country or genre.</sub></td>
     <td align="center" valign="top" width="33%"><a href="personal/queue-container-fix"><img src="personal/queue-container-fix/docs/screenshot.png" width="260" alt="Two queued prompts above the composer, controls drawn at the start of the long row and the short row starting at the left margin" /></a><br /><sub><a href="personal/queue-container-fix"><strong>Queue Container Fix</strong></a><br />Queued prompt controls at the start of the line</sub></td>
   </tr>
@@ -95,7 +95,7 @@ Agent rules for these trees live in [AGENTS.md](AGENTS.md). Catalog blockers for
 
 Each row links the personal edition you get from the pack, plus the public catalog edition where one exists.
 
-Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.22). **better-capabilities**, **prompt-enhance** and **voice-gate** live in this repo but are **not** in the pack, so install any of them separately if you want it. The pack pins the personal tree for all nineteen.
+Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.31). **better-capabilities**, **prompt-enhance** and **voice-gate** live in this repo but are **not** in the pack, so install any of them separately if you want it. The pack pins the personal tree for all nineteen.
 
 ### Status Bar
 
@@ -139,7 +139,7 @@ Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.22). **bett
 | --- | --- |
 | [Opaque Composer](personal/opaque-composer/README.md) · [public](public/opaque-composer/README.md) | Solid composer while the transcript scrolls behind it. |
 | [Queue Container Fix](personal/queue-container-fix/README.md) | Moves a queued prompt's expand, edit, steer and send controls from the end of the row to the start of its first line, visible without hovering. Personal only: it restyles app markup. |
-| [Next Steps](personal/next-steps/README.md) · [public](public/hermes-next-steps/README.md) | Clickable next steps under a reply: tick several and one send delivers them together, answer mode puts a reply field beside each question and sends numbered answers back, a small Steer button sends the picks into a running turn instead of queueing them, a Recommended tag on the options worth taking now, an amber RISKY pill on the ones that could damage something, a dim second line where a label alone would misread, and carried-forward options from earlier replies. The personal edition animates the chip border while a reply works and jumps back to the reply that offered a carried option. |
+| [Next Steps](personal/hermes-next-steps/README.md) · [public](public/hermes-next-steps/README.md) | Clickable next steps under a reply: tick several and one send delivers them together, a directive-only answer form puts a reply field beside each question and sends numbered answers back, a small Steer button sends the picks into a running turn instead of queueing them, a Recommended tag on the options worth taking now, an amber RISKY pill on the ones that could damage something, a dim second line where a label alone would misread, and carried-forward options from earlier replies. The personal edition animates the chip border while a reply works and jumps back to the reply that offered a carried option. |
 | [Prompt Enhance](personal/prompt-enhance/README.md) · [public](public/prompt-enhance/README.md) | Rewrite a composer draft from a saved prompt library and put the finished prompt back in the field. **Not in the pack; enable separately.** |
 
 ### Writing

@@ -306,10 +306,10 @@ Werkzeuge:
 	- Refactoring: (€) Buch [**Refactoring**: Improving the Design of Existing Code](https://www.amazon.de/dp/0134757599/) (2018) von Martin Fowler
 	- Code Reviews: Webartikel [Unpacking the Truth of Peer Reviews in the Software Industry](https://leadshorizons.com/p/unpacking-the-truth-of-peer-reviews) | [How to Give Code Reviews Without Getting Burned](https://akoskm.substack.com/p/how-to-give-code-reviews-without)
 	- Edutainment: Vortrag [Antipatterns und Missverständnisse in der Softwareentwicklung](https://www.youtube.com/watch?v=E0_Y53ci9cw) (2017) von Felix von Leitner, genannt fefe
-	- Model-Driven: [Shlaer-Mellor](https://en.wikipedia.org/wiki/Shlaer%E2%80%93Mellor_method) (vs. the Three Amigos) | [Executable UML](https://en.wikipedia.org/wiki/Executable_UML) ([Tools](https://modeling-languages.com/list-of-executable-uml-tools/)) |… | [Awesome MDE](https://github.com/S2-group/awesome-mde)
+	- Model-Driven Engineering: [Shlaer-Mellor](https://en.wikipedia.org/wiki/Shlaer%E2%80%93Mellor_method) (vs. the Three Amigos) | [Executable UML](https://en.wikipedia.org/wiki/Executable_UML) ([Tools](https://modeling-languages.com/list-of-executable-uml-tools/)) |… | [Awesome MDE](https://github.com/S2-group/awesome-mde)
 		- Term Variations: Model-Driven Software-Development (MDSD) / MD Architecture (MDA) / MD Design (MDD) / MD Engineering (MDE) / Round-Trip Engineering (RTE)
-		- Remark: Model-Driven can be really complex (Round-Trip Support) or relatively simple (Code Generation)
-- Anforderungsmanagement Einstieg
+		- Remark: Model-Driven Engineering can be really complex (Round-Trip Support) or relatively simple (Code Generation)
+- Anforderungsmanagement Einstieg / Requirements Engineering:
 	- Praktische Einführung: [Principles of Requirements Engineering or Requirements Management 101](https://www.inflectra.com/Ideas/Whitepaper/Principles-of-Requirements-Engineering.aspx) (2024) von Adam M. Sandman
 	- Traditionell: [**CPRE** Foundation Level – Handbuch nach dem **IREB**-Standard](https://www.ireb.org/content/downloads/3-cpre-foundation-level-handbook/cpre_foundationlevel_handbook_de_v1.0.pdf)
 		- Broschüre [Requirements Engineering » Ein Überblick](https://docplayer.org/6915991-Requirements-engineering-ein-ueberblick.html) (3. Auflage, 2012) von Christine Rupp \[Es gab auch eine 4. Auflage, zusammen mit Klaus Pohl\]
@@ -665,5 +665,4 @@ Werkzeuge:
 	- C# Builds (.NET/NuGet):
 		- Grundlegend #1 (konzeptionell): Webartikel [Developing **With Project Dependencies - When to Package, When Not To**](https://www.softwaremeadows.com/posts/developing_with_project_dependencies_-_when_to_package__when_not_to/) (2021) von Charles Flatt
 		- Grundlegend #2 (historisches): Zeitgrafik [Microsoft **.NET History**](https://time.graphics/line/593132) | Webartikel **[Managing Dependencies in .NET](https://fossa.com/blog/managing-dependencies-net-csproj-packagesconfig/)** (2021) von Cristian Taran u.a. zu .csproj, .packages.config und project.json
-		- Grundlegend #3 (technisch): Webartikel **[Managing output in the .NET SDK projects](https://cezarypiatek.GitHub.io/post/managing-output-in-sdk-projects/)** (2019) von Cezary Piątek
-			- (Einstiegsalternative: (€) B
+		- Grundlegend #3 (technisch): Webartikel **[Managing output in the .NET SDK projects](https://cezarypiatek.GitHub.io/post/managing-output-in-sdk-projects/)** (2019)

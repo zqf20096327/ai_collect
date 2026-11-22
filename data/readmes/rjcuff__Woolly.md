@@ -78,7 +78,7 @@ No setup. Woolly reads CLAUDE.md, AGENTS.md, Cursor rules, Copilot instructions,
 ### Also in Woolly
 
 - **Personal memory** that follows you across every AI app. [How it works](https://usewoolly.com/docs/how-it-works)
-- **Memory for the agents you build**, with an API shaped like mem0's and Python and JavaScript packages. [Memory API](https://usewoolly.com/docs/memory-api)
+- **Memory for the agents you build**, with an API shaped like mem0's and Python and JavaScript packages. Save preferences, procedures and episodes, link related memories, and rate what helped so search gets better. Each app user's memory stays apart from yours. [Memory API](https://usewoolly.com/docs/memory-api)
 - **Memory for Ollama** and any OpenAI or Anthropic app, with `woolly proxy`. [Proxy](https://usewoolly.com/docs/proxy)
 - **Import** your ChatGPT or Claude history, and **sync** your machines over your own network. [Import](https://usewoolly.com/docs/import) · [Sync](https://usewoolly.com/docs/sync)
 

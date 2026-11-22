@@ -63,8 +63,8 @@
 **7.11.0**
 
 - **[MACaQ](https://github.com/ModelCloud/GPTQModel/blob/main/docs/macaq.md):** Native MXFP4 W4A4 quantization for low-precision weights and activations, with CUDA, ROCm, and Apple silicon inference. Includes packed checkpoints and a portable Torch fallback.
-- **[NF12](https://github.com/ModelCloud/GPTQModel/wiki/NF12):** Lossless 12-bit compression of BF16 weights reduces source-weight storage during calibration without changing the restored values. Packed inference now includes native Metal support alongside CUDA, HIP, and Torch paths. [MLX](https://github.com/ModelCloud/GPTQModel/blob/main/docs/mlx-runtime.md) · [MoE capture contract](https://github.com/ModelCloud/GPTQModel/blob/main/docs/nf12-moe-capture-contract.md)
-- **Tenstorrent:** Packed GPTQ inference through Torch/XLA and TTNN, multi-card execution, and block-float quantization. Long-context Llama serving adds paged caching and chunked prefill; compatible block-float checkpoints also run on CUDA, ROCm, and CPU. [Guide](https://github.com/ModelCloud/GPTQModel/blob/main/docs/tenstorrent.md) · [Serving](https://github.com/ModelCloud/GPTQModel/blob/main/docs/tt-llama-paged-serving.md) · [Device ownership](https://github.com/ModelCloud/GPTQModel/blob/main/docs/ttnn-device-ownership.md)
+- **[NF12](https://github.com/ModelCloud/GPTQModel/wiki/NF12):** Lossless 12-bit compression of BF16 weights reduces source-weight storage during calibration without changing the restored values. Packed inference now includes native Metal support alongside CUDA, HIP, and Torch paths. [MLX](https://github.com/ModelCloud/GPTQModel/blob/main/docs/mlx-runtime.md#nf12-linear-dispatch) · [MoE capture contract](https://github.com/ModelCloud/GPTQModel/blob/main/docs/nf12-moe-capture-contract.md)
+- **Tenstorrent:** Packed GPTQ inference through Torch/XLA and TTNN, multi-card execution, and block-float quantization. Long-context Llama serving adds paged caching and chunked prefill; compatible block-float checkpoints also run on CUDA, ROCm, and CPU. [Guide](https://github.com/ModelCloud/GPTQModel/blob/main/docs/tenstorrent.md) · [Serving](https://github.com/ModelCloud/GPTQModel/blob/main/docs/tt-llama-paged-serving.md) · [Device ownership](https://github.com/ModelCloud/GPTQModel/blob/main/docs/ttnn-device-ownership.md) · [NF12 on Blackhole](docs/nf12-tenstorrent.md)
 - **Quantization:** Resumable [distributed EXL3](https://github.com/ModelCloud/GPTQModel/blob/main/docs/exl3-durable-execution.md) jobs ([projection publication recovery](https://github.com/ModelCloud/GPTQModel/blob/main/docs/exl3-projection-publication-recovery.md)), broader mixed-bit allocation across [AWQ](https://github.com/ModelCloud/GPTQModel/wiki/AWQ)/[EXL3](https://github.com/ModelCloud/GPTQModel/wiki/EXL3)/[GGUF](https://github.com/ModelCloud/GPTQModel/wiki/GGUF), and [SmoothQuant](https://github.com/ModelCloud/GPTQModel/blob/main/docs/protocol-actions.md) preprocessing improve large-model workflows and quality control. [Quantizer calibration flows](https://github.com/ModelCloud/GPTQModel/blob/main/docs/quantizer-moe.md#4-hessian-failure-and-zero-sample-fallback-chain) document the shared Hessian-failure and zero-sample fallback contracts. [MoE routing override and bypass](https://github.com/ModelCloud/GPTQModel/blob/main/docs/moe-routing-override.md) defines when each mode is honoured and when it fails closed, and its [AWQ bypass replay kwargs contract](https://github.com/ModelCloud/GPTQModel/blob/main/docs/moe-routing-override.md#8-awq-replay-kwargs-for-bypass-routing) keeps instance-level replay wrappers from widening a standard MoE block's signature. [Shared-input Hessian dedup](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gptq-hessian-accumulation.md#shared-input-dedup-for-calibrated-quantizers) covers QQQ/VPTQ/MACaQ/EXL3 and GPTAQ/FOEM, and the [`desc_act` sink-row cap](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gptq-hessian-accumulation.md#desc_act-sink-row-cap) keeps its row-norm bound on device, and [Hessian release before the block pass](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gptq-hessian-accumulation.md#hessian-release-before-the-block-pass) drops the fp32 Hessian before the column loop. Optional [calibration attention-sink exclusion](https://github.com/ModelCloud/GPTQModel/blob/main/docs/calibration-attention-sinks.md) drops BOS-token rows from the calibration statistics. Embedding-endpoint quantization is [requantize-only on a loaded checkpoint](docs/embed-endpoint-quantize.md); a fresh `quantize()` refuses the unsupported modes before calibration.
 - **Inference:** Opt-in attention and MLP projection fusion, faster quantized embedding lookups, and improved small-batch inference. Native backend selection and packed-weight storage are preserved. [Fusion guide](https://github.com/ModelCloud/GPTQModel/blob/main/docs/fusion-planner.md)
 - **Configuration:** Typed [backend configurations](https://github.com/ModelCloud/GPTQModel/blob/main/docs/backend-selection.md) unify backend selection and tuning, with explicit numerical and worker controls instead of environment switches.
@@ -208,10 +208,12 @@ EXL3 supports 1.5, 2.5, and 3.5 bits per weight with `mul1` and 2.5, 3.0, and 3.
 
 ### Inference and deployment 🚢
 
-Run compatible checkpoints directly with GPT-QModel, integrate with Transformers
-(import `gptqmodel` first so packed MoE experts load through the
-[native bridge](https://github.com/ModelCloud/GPTQModel/blob/main/docs/hf-interop.md)),
-or deploy supported GPTQ/AWQ formats through vLLM and SGLang. Apple silicon has
+Load GPT-QModel checkpoints with `GPTQModel.load`. GPT-QModel never patches
+Transformers, so plain `AutoModelForCausalLM.from_pretrained` reads only what
+Transformers itself supports: no per-module `dynamic` configs, per-expert MoE
+tensors or GPT-QModel-only formats (see
+[Hugging Face interop](https://github.com/ModelCloud/GPTQModel/blob/main/docs/hf-interop.md)).
+You can also deploy supported GPTQ/AWQ formats through vLLM and SGLang. Apple silicon has
 native MLX quantization and packed inference. Optional projection fusion can
 combine supported attention and MLP operations without changing the saved format.
 
@@ -289,6 +291,12 @@ pip install gptqmodel
 # Or: uv pip install gptqmodel
 ```
 
+For ports that use timm or torchvision, install `pip install 'gptqmodel[vision]'`
+with a torchvision build compatible with your PyTorch installation. These
+optional dependencies are loaded when the affected vision component is used;
+core text installations do not install them. See the
+[optional dependencies](docs/transformers5-model-ports.md#optional-dependencies).
+
 PyTorch **2.13.x or >= 2.15.0** is required; known-vulnerable versions are
 blocked by the [runtime safety check](https://github.com/ModelCloud/GPTQModel/blob/main/docs/torch-runtime-safety-gate.md).
 Compiled package backends build and cache extensions on first use (JIT),
@@ -301,7 +309,9 @@ for source installs and platform setup. Install vLLM or SGLang in a separate
 environment aligned with that engine's dependency pins.
 
 The native GGUF C++ backends live in the `gguf` extra
-(`llama-cpp-python>=0.3.37`, which vendors ggml 1.0). `GGUF_CPP` reads the
+(`llama-cpp-python>=0.3.37`, which vendors ggml 1.0). The extra also installs
+the `gguf` package, which loading a `.gguf` file through Transformers' GGUF
+integration requires. `GGUF_CPP` reads the
 loaded release through `ggml_version()`; ggml 1.0 adds the `F8_E4M3` tensor
 type, which the native GGUF reader can dequantize.
 
@@ -322,20 +332,18 @@ print(model.tokenizer.decode(tokens))
 ```
 
 [Loading and inference](https://github.com/ModelCloud/GPTQModel/wiki/Loading-and-Inference)
-covers backend selection, generation, and adapters. Only enable
-`trust_remote_code=True` for checkpoint code you trust. For model types the
-installed Transformers implements natively, the native class is used unless the
-checkpoint declares a remote-only layout; see
-[`docs/trust-remote-code-isolation.md`](docs/trust-remote-code-isolation.md#native-override-of-explicit-trust).
+covers backend selection, generation, and adapters. GPT-QModel requires
+Transformers 5.23 (`transformers>=5.23.0,<5.24`) and Python 3.11+. Model definitions use native Transformers
+implementations or model ports shipped with GPT-QModel; ports ignore checkpoint
+`auto_map`. Running unsupported checkpoint Python requires both
+`trust_remote_code=True` and `GPTQ_BYPASS_SAFETY_CHECKS=1`. See the
+[model loading policy](docs/trust-remote-code-isolation.md) and the
+[model port inventory](docs/transformers5-model-ports.md).
 Generation settings preserved during quantized checkpoint re-save are described
 in [`docs/generation-config-round-trip.md`](docs/generation-config-round-trip.md).
 Re-saving a loaded fused-expert MoE defuses the export shell and fails closed on
 dropped quantization payloads; see
 [`docs/quantized-moe-resave-defuse.md`](docs/quantized-moe-resave-defuse.md).
-`export(..., "hf")` picks its dense decoder from the checkpoint's declared
-`quant_method` and refuses methods that have none (Paro, MACaQ, GGUF, QQQ, NF12,
-VPTQ, EXL3) instead of decoding them with another layout's decoder; see
-[`docs/export-hf-format-detection.md`](docs/export-hf-format-detection.md).
 In-session QQQ kernel rehoming and cache initialization are documented in
 [docs/qqq-kernel-selection.md](docs/qqq-kernel-selection.md).
 QQQ's shared-memory staging of the per-group scales and the reduction-scratch
@@ -463,6 +471,9 @@ also appreciated. Ongoing sponsors will be credited on this README page.
 
 GPT-QModel is licensed under [Apache-2.0](https://github.com/ModelCloud/GPTQModel/blob/main/LICENSE). The optional, JIT-loaded
 Swordfish kernel is [AGPL-3.0-or-later](https://github.com/ModelCloud/GPTQModel/blob/main/licenses/SWORDFISH).
+
+Model ports keep the copyright headers, notices and licenses of the code they
+derive from; see the [model port inventory](docs/transformers5-model-ports.md).
 
 ## Attributions and citations 📚
 

@@ -8,7 +8,7 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v1.0.1 alpha-green?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/version-v1.1.25 alpha-green?style=flat-square" alt="Version" />
 </p>
 
 <p align="center">
@@ -24,13 +24,14 @@ One `npx` command downloads the HTML website template of any published WebKineFo
 
 ```bash
 npx webkineforge list
-npx webkineforge add default-site
+npx webkineforge add product-elegant
 ```
 
 ## ☀️ Is it right for you?
 | Your Needs | Recommendation | Runtime Overhead | Skills Required | AI Collaboration | Template Access |
 |---|---|---|---|---|---|
 | Interactive animations, clean static HTML templates | **WebKineForge** | Zero-framework runtime | HTML / JS / CSS (optional: Tailwind) | Built-in Agent, simple and secure | Build and generate / One-click `npx` to pull |
+| One-off pages, quick idea validation | **Prompting an AI to write the site directly** (ChatGPT / Claude / Cursor, etc.) | Depends on whatever code the AI generates each time | Only the ability to describe what you want | Conversational | None |
 | Content-focused with minimal interaction | **[Astro](https://astro.build)** | No JS by default (Islands on demand) | Astro component syntax + basic front-end knowledge | Relies on its own conventions; no dedicated index | Official themes / Starlight |
 | Full-stack applications, real-time data | **[Next.js](https://nextjs.org)** / **[Nuxt](https://nuxt.com)** | React/Vue runtime | Full suite of frameworks | Mature ecosystem but no unified structural conventions | Extensive template marketplace |
 | Visual website building for designers | **[Framer](https://framer.com)** / **[Webflow](https://webflow.com)** | Platform-hosted | Little to no coding required | Built-in AI | Platform template library |
@@ -38,7 +39,11 @@ npx webkineforge add default-site
 | Build websites quickly without coding | **[Wix](https://www.wix.com)** / **[Squarespace](https://www.squarespace.com)** | Platform-hosted | Little to no coding required | Built-in AI | Platform template library |
 | Minimalist websites | **[11ty](https://www.11ty.dev)** / Hand-coded | None | Almost none | Entirely based on manual conventions | None |
 
+> AI can generate websites from a prompt in seconds. However, due to the frequent changes in technology choices, maintaining them over time is challenging. WebKineForge organizes HTML, JS, and CSS into structured source files, making AI-generated websites easier to maintain and iterate on without starting from scratch.
+
+
 ## ⚠️ When Not to Choose Me
+
 WebKineForge focuses on the frontend, leaving backend, authentication, and databases to your main system. Its HTML output can be easily integrated into any stack, including Next.js, WordPress, PHP, and Java.
 
 
@@ -83,7 +88,7 @@ A *Project* can contain multiple *Sites*. Each *Site* builds independently into 
 - **AI-assisted development**: Built-in AI agent for developing components and pages with Cursor, Codex, and Claude Code.
 - **Site-level sandboxes**: Isolated directories, configurations, and build outputs per site. Supports quick initialization via CLI
 - **Cross-Site resource sharing**: Sites can mutually reference components and static assets without central management.
-
+- **Agent extensions (🧭 planned)**: <del>The Agent will turn the edits you confirm into local rules and follow them in later generations. It will also support installing and sharing packs for styles, interactions, and industry-specific solutions.</del>
 
 ### 🔍 SEO & Multi-Page Support
 
@@ -97,6 +102,7 @@ A *Project* can contain multiple *Sites*. Each *Site* builds independently into 
 - **Lightweight static output**: Pages and assets compile into standalone static files requiring no runtime framework.
 - **Maintainable HTML**: Clean, well-structured HTML that is easy to customize and deploy to a CDN, Nginx, or any static host.
 - **Style isolation**: Each Site has its own Tailwind prefix. Use `prefix:` for Tailwind utilities and `prefix-` for custom classes and IDs. See [Style Conventions](./docs/en/style-conventions.md).
+
 
 
 ## Table of Contents
@@ -146,7 +152,7 @@ On first use, run `npm run build` to generate TypeScript configuration and compo
 
 All sites are located in `sites/`, with each subdirectory representing an independent website.
 
-> The project includes `default-site` as an example. The directory name, `name` in `site.json`, and `name` in `package.json` must match.
+> The project includes `product-elegant` as an example. The directory name, `name` in `site.json`, and `name` in `package.json` must match.
 
 | Command | Single Site | Multiple Sites |
 |---|---|---|
@@ -159,10 +165,10 @@ All sites are located in `sites/`, with each subdirectory representing an indepe
 **Specify a Site**
 
 ```bash
-npm run dev -- default-site
-npm run build -- default-site
-npm run preview -- default-site
-npm run export:react -- default-site
+npm run dev -- product-elegant
+npm run build -- product-elegant
+npm run preview -- product-elegant
+npm run export:react -- product-elegant
 ```
 
 **Batch Operations**

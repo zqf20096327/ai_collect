@@ -56,11 +56,11 @@ Without a plan, granny plans first:
 
 A planner writes the plan to `.granny/plans/feat-oauth.md` and proposes the stages, then the run stops. Approve the plan or edit it, and a second run builds it.
 
-When a run ends you get the worktree path and, for each stage, the commits, the review rounds, the outcome and the findings left for you to decide. The PR body is at `.granny/PR-BODY.md` in the worktree. Review and push from there.
+When a run ends you get, for each stage, the commits, the review rounds, the outcome and the findings left for you to decide. A run that ends PR-ready removes the worktree it created and leaves the branch: check it out in your repo, review and push from there. The PR body is then at `.granny/branches/<branch-key>/PR-BODY.md` in your repo. A run that needs more work keeps its worktree and says why.
 
 ### Post the review to the PR
 
-Every review round is recorded: the findings, the judge's verdict on each one and what became of it. After you open the PR, ask your agent to post the record, or run this in the worktree:
+Every review round is recorded: the findings, the judge's verdict on each one and what became of it. After you open the PR, ask your agent to post the record, or run this in the checkout that has the branch:
 
 ```sh
 node <skill-dir>/scripts/pr-comments.mjs
@@ -85,11 +85,11 @@ The report groups the findings by that rating: `critical` under P0, `major` unde
   <img src="docs/images/loop-light.svg" alt="The granny loop: a plan of your own or from the planner, an optional plan review, then for each stage the implementer builds, optional checks run, reviewers review in parallel, P0/P1 go straight back, the judge classifies the rest, and a final review and a final check end with a PR-ready branch that is not pushed">
 </picture>
 
-- **Worktree** - the run works in the branch's own git worktree, next to your repo. Your main checkout is not touched.
+- **Worktree** - the run works in the branch's own git worktree, next to your repo. Your main checkout is not touched. When the run ends PR-ready, granny removes the worktree it created and leaves the branch; "keepWorktree": true keeps it.
 - **Implementer** - builds one stage, commits it, and later fixes the findings sent back to it.
 - **Checks** (optional) - your test, typecheck or lint commands. Granny runs them itself, and a red one goes back to the implementer before any review.
 - **Reviewers** - all of them review every stage at the same time.
-- **Judge** - P0/P1 findings skip it and go straight back. It rates the rest by impact, likelihood and fix cost, and code turns the rating into a priority. Critical and major issues are always fixed, the others when their priority is above the threshold. A finding the judge gives one of your config tags gets the tag's points on its priority, or is fixed outright. What is not fixed is listed for you, with the reason.
+- **Judge** - P0/P1 findings skip it and go straight back. It rates the rest by impact, likelihood and fix cost, and code turns the rating into a priority. Critical and major issues are always fixed, the others when their priority is above the threshold. A finding the judge gives one of your config tags gets the tag's points on its priority, or is fixed outright. What is not fixed is listed for you, with the reason. A finding has to be about the code or what the code does: one filed on the PR body is dropped, and so is one the judge labels as about a code comment, however it rates it; one about a commit or how the work was done (the order of tests) is listed for you instead of sent back. A finding that was left unfixed is handed to the reviewers of the next round, who are asked not to report it again; when it comes back anyway it is not rated higher than before, unless it is now critical.
 - **Final review** - after the last stage, the whole branch is reviewed once more for problems between stages.
 
 Stages that do not depend on each other run at the same time, also in other repos. The full rules: [the decision table](skills/granny-workflow/references/config.md#the-decision-table).
@@ -124,6 +124,7 @@ Stages that do not depend on each other run at the same time, also in other repo
 | `planReview` | `false` | review the plan before building it; uses many more tokens |
 | `finalReview` | `true` | review the whole branch after the last stage |
 | `parallel` | `true` | run independent stages at the same time |
+| `keepWorktree` | `false` | keep the run's worktree at the end instead of removing it |
 | `stepAgents` | `false` | build a stage with one agent per step: [step agents](skills/granny-workflow/references/config.md#step-agents) |
 | `tags` | none | kinds of small finding that get points or a straight fix: [config tags](skills/granny-workflow/references/config.md#tags) |
 | `roles.<role>.model` | the session model | model per role: `implementer`, `planner`, `judge`, `granny`, `helper` |
@@ -138,7 +139,7 @@ A reviewer is one of these:
 A config tag names a kind of small finding that should not be left behind. Say `granny tag` to your agent, or run the script yourself from your repo (with `--repo <dir>` from anywhere else):
 
 ```sh
-node <skill-dir>/scripts/tags.mjs add typo --fix --description "a misspelled word in a comment, a string or a doc"
+node <skill-dir>/scripts/tags.mjs add typo --fix --description "a misspelled word in a string or a doc"
 ```
 
 In the config file, with a second tag that adds 20 points to the priority instead:
@@ -146,7 +147,7 @@ In the config file, with a second tag that adds 20 points to the priority instea
 ```json
 {
   "tags": {
-    "typo": { "description": "a misspelled word in a comment, a string or a doc", "fix": true },
+    "typo": { "description": "a misspelled word in a string or a doc", "fix": true },
     "naming": { "description": "a name that says something other than what the code does", "points": 20 }
   }
 }

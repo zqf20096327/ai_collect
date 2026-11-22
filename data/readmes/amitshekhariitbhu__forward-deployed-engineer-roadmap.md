@@ -175,6 +175,7 @@ In this step, we will learn that there is no single best model. The right choice
 In this step, we will learn the fastest and cheapest way to improve results for a customer: giving the model better instructions and better context. In most FDE engagements, this is where the first big win comes from.
 
 - [How does Prompt Engineering work?](https://outcomeschool.com/blog/prompt-engineering)
+- [How does the System Prompt work?](https://outcomeschool.com/blog/system-prompt)
 - [How does In-Context Learning work?](https://outcomeschool.com/blog/in-context-learning)
 - [How does Chain-of-Thought (CoT) Prompting work?](https://outcomeschool.com/blog/how-does-chain-of-thought-prompting-work)
 - [How does Prompt Chaining work?](https://outcomeschool.com/blog/how-does-prompt-chaining-work)
@@ -195,8 +196,10 @@ If you want a quick introduction to RAG before starting, watch: [AI Engineering 
 - [How does Approximate Nearest Neighbor (ANN) Search work?](https://outcomeschool.com/blog/how-does-approximate-nearest-neighbor-ann-search-work)
 - [How does Semantic Search work?](https://outcomeschool.com/blog/how-does-semantic-search-work)
 - [How does an Inverted Index work?](https://outcomeschool.com/blog/inverted-index)
+- [How does BM25 work?](https://outcomeschool.com/blog/bm25)
 - [How does Hybrid Search work?](https://outcomeschool.com/blog/how-does-hybrid-search-work)
 - [How does a Reranker work?](https://outcomeschool.com/blog/how-does-a-reranker-work)
+- [How does OCR with Deep Learning work?](https://outcomeschool.com/blog/optical-character-recognition-ocr)
 - [How to Chunk Documents for RAG? Chunking Strategies Explained](https://outcomeschool.com/blog/chunking-strategies-for-rag)
 - [How does Contextual Retrieval work?](https://outcomeschool.com/blog/how-does-contextual-retrieval-work)
 - [How does HyDE work in RAG?](https://outcomeschool.com/blog/how-does-hyde-work)
@@ -343,6 +346,7 @@ In this step, we will see everything come together in one of the most requested 
 - [How do you write a system prompt for a voice agent, not a chat bot?](https://outcomeschool.com/blog/voice-agent-system-prompt)
 - [How does function calling work in a voice AI agent?](https://outcomeschool.com/blog/function-calling-in-voice-agents)
 - [How does a voice agent handle structured inputs like dates, numbers, and addresses?](https://outcomeschool.com/blog/structured-inputs-in-voice-agents)
+- [How does a voice agent confirm and correct misheard information?](https://outcomeschool.com/blog/confirm-and-correct-in-voice-agents)
 - [How does a voice AI agent answer a phone call?](https://outcomeschool.com/blog/phone-calls-in-voice-agents)
 - [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
 - [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)

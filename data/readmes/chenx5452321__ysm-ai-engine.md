@@ -11,7 +11,7 @@
 [![CI](https://github.com/chenx5452321/ysm-ai-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/chenx5452321/ysm-ai-engine/actions/workflows/ci.yml)
 [![Stars](https://img.shields.io/github/stars/chenx5452321/ysm-ai-engine?style=flat&color=8b7cff)](https://github.com/chenx5452321/ysm-ai-engine/stargazers)
 [![Forks](https://img.shields.io/github/forks/chenx5452321/ysm-ai-engine?style=flat&color=38bdf8)](https://github.com/chenx5452321/ysm-ai-engine/network/members)
-[![License: MIT](https://img.shields.io/badge/License-MIT-4ade80.svg)](LICENSE)
+[![License: Beerware](https://img.shields.io/badge/License-Beerware-f59e0b.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB.svg)](https://www.python.org/)
 [![YSM Spec](https://img.shields.io/badge/YSM-2.5%20%2F%202.6.0-c084fc.svg)](#-使用指南python-api--命令行全流程)
 
@@ -68,7 +68,7 @@ flowchart LR
 
 | 模块 | 核心能力 |
 | :--- | :--- |
-| **🧱 程序化建模与自动 UV**<br>`ysm_engine.builder` | 内置 Bedrock `1.12.0` 骨骼树构建、X=0 自动对称镜像（`add_mirrored_cube`，自动翻转旋转符号与左右贴图）、纯色/渐变/像素绘制回调（`face_painter`）；`ShelfPacker` 自动装箱生成**零重叠非零整数 per-face UV**；一键提取第一人称手臂 `models/arm.json`。 |
+| **🧱 程序化建模与自动 UV**<br>`ysm_engine.builder` | 内置 Bedrock `1.12.0` 骨骼树构建、X=0 自动对称镜像（`add_mirrored_cube`，自动翻转旋转符号与左右贴图）、纯色/渐变/像素绘制回调（`face_painter`）；`ShelfPacker` 自动装箱生成**零重叠非零整数 per-face UV**，并为每个面保留私有 **1px bleed gutter**（边缘像素外扩，避免线性采样串色）；一键提取第一人称手臂 `models/arm.json`。 |
 | **🎥 零 GPU SSAO 软渲染器**<br>`ysm_engine.renderer` | 纯 NumPy + PIL 实现，无需启动游戏或显卡上下文即可高速出图：支持**三点棚拍柔光 + 切平面修正 SSAO**、自动包围盒定焦、**`50/50` 叠图精准对齐**、Molang 动画姿态批量渲染与骨骼枢轴可视化。 |
 | **🌐 原生 WebGL2 3D 预览台**<br>`ysm_engine.viewer` | 零前端构建依赖、零第三方 JS 库，启动 `ysm-viewer` 即可在浏览器实时查看模型；支持 `.zip` / `.bbmodel` / 文件夹拖拽、逐骨骼调姿、动画播放、环境光与 360° 天空盒/HDR 光照检视。 |
 | **📏 参考图定量分析器**<br>`ysm_engine.analyze_ref` | 自动切分 1/2/3 视图设定图、统一脚底到头顶像素标尺、提取主色调色板，导出 Bedrock 单位网格标尺图（`ref_ruler.png`）与轮廓宽高测量 JSON。 |
@@ -126,7 +126,7 @@ python -m unittest discover -s tests -v
 ysm-ai-engine/
 ├── README.md                          # 本文档
 ├── CONTRIBUTING.md                    # 贡献指南
-├── LICENSE                            # MIT 开源协议
+├── LICENSE                            # Beerware 啤酒开源协议
 ├── pyproject.toml                     # 包配置与 6 个 CLI 入口
 ├── requirements.txt                   # 轻量依赖 (numpy, pillow)
 │
@@ -299,6 +299,13 @@ ysm-viewer dist/my_girl
       <sub>WebGL2 3D 预览器 (<code>ysm-viewer</code>)</sub>
     </td>
     <td align="center" width="180">
+      <a href="https://github.com/1-dcjiang">
+        <img src="https://github.com/1-dcjiang.png?size=160" width="92" height="92" alt="1-dcjiang" style="border-radius: 50%;" /><br />
+        <b>1-dcjiang</b>
+      </a><br />
+      <sub>引擎精度优化 · 校验器加固与 CI</sub>
+    </td>
+    <td align="center" width="180">
       <a href="https://deepmind.google/technologies/gemini/">
         <img src="assets/contributors/gemini.png" width="92" height="92" alt="Gemini" /><br />
         <b>Gemini</b>
@@ -312,4 +319,4 @@ ysm-viewer dist/my_girl
 
 ## 📄 License
 
-本项目基于 [MIT License](LICENSE) 开源。如果这个项目帮到了你，欢迎点一个 ⭐ **Star** 支持！
+本项目基于 [THE BEER-WARE LICENSE (Revision 42)](LICENSE) 开源（历史贡献提交沿用其原有 MIT 授权）。如果这个项目帮到了你，欢迎点一个 ⭐ **Star** 支持！

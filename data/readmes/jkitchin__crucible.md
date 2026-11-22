@@ -4,6 +4,7 @@
 
 [[https://pypi.org/project/crucible-llm/][https://img.shields.io/pypi/v/crucible-llm.svg]]
 [[https://github.com/jkitchin/crucible/actions/workflows/tests.yml][https://github.com/jkitchin/crucible/actions/workflows/tests.yml/badge.svg]]
+[[https://pepy.tech/projects/crucible-llm][https://static.pepy.tech/personalized-badge/crucible-llm?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads#.svg]]
 
 [[./crucible.png]]
 
@@ -33,8 +34,10 @@ Key design principles:
 - *Hybrid search*: combines FTS5 keyword search with ollama vector embeddings
   for meaning-based retrieval, merged via reciprocal rank fusion.
 - *Interoperability*: every crucible on a machine is listed in a global
-  registry, so one can search the others (=search --all=), and one
-  crucible can be merged into another (=crucible merge=).
+  registry, with where it came from, so one can search the others
+  (=search --all=), and one crucible can be merged into another
+  (=crucible merge=). Crucibles kept in git can be cloned and kept up to
+  date from anywhere (=crucible clone=, =crucible pull=).
 - *Knowledge evolution*: derivation chains track how articles are synthesized
   from other articles over time.
 
@@ -179,6 +182,9 @@ crucible index                   # regenerate index
 crucible publish                 # export as HTML site
 crucible delete wiki/concepts/old.org   # remove an article or source
 crucible merge other-crucible    # fold another crucible into this one
+crucible clone URL [DEST]        # clone a crucible from git and register it
+crucible pull NAME               # update a clone from upstream
+crucible mcp [NAME...]           # serve crucibles to other agents over MCP
 #+END_SRC
 
 * Documentation
@@ -376,6 +382,35 @@ crucible registry list
 crucible search "catalyst design" --all    # searches everywhere
 crucible concepts --all                    # unified concept list
 #+END_SRC
+
+A crucible kept in a git repository, on another machine or someone
+else's, can be cloned, registered and later updated:
+
+#+BEGIN_SRC bash
+crucible clone https://github.com/jkitchin/discopt.git   # the discopt crucible
+crucible search "branch and bound" --all              # results marked [discopt]
+crucible pull discopt                                 # fast-forward and sync
+crucible pull --all                                   # every crucible made by clone
+#+END_SRC
+
+[[https://github.com/jkitchin/discopt][discopt]] commits its crucible at the
+top level of its repository, so it works as an example of a shared one;
+the clone includes discopt's code as well as its wiki.
+
+A crucible can also be shared without being cloned: =crucible mcp=
+serves it, read-only, to any MCP client (=pip install 'crucible-llm[mcp]'=):
+
+#+BEGIN_SRC bash
+claude mcp add discopt -- crucible mcp discopt        # in Claude Code, on this machine
+crucible mcp discopt --http --host 0.0.0.0 --token-env CRUCIBLE_MCP_TOKEN   # for others
+#+END_SRC
+
+Only the crucibles named are served, and never =sources/external/=.
+
+=crucible registry list= shows each crucible's origin (its git remote, or
+one set with =registry add --origin=). A registered crucible that
+=search --all= cannot search is named in a warning rather than silently
+left out.
 
 Each crucible retains full independence. Queries run against separate
 database connections, so there is no risk of corrupting another

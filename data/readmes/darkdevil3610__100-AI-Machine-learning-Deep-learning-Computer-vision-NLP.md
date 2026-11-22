@@ -369,6 +369,7 @@ Follow me on LinkedIn : [![](https://img.shields.io/badge/LinkedIn-0077B5?style=
 | 321   |  GlobeFair - A 3D virtual career fair, built in Unity.  | [👆](https://github.com/youssefsadquy/globefair) |
 | 322   |  🛡️ ASTRA - Explainable, Tamper-Evident Network Threat Detection | [👆](https://github.com/MHanzala74/ASTRA-Cyber-Threat-Detection) |
 | 323   |  🛡️ PhishGuard – AI-Based Phishing Website Detection | [👆](https://github.com/Unnatti687/PhishGaurd-AI-Based-Phishing-Detection) |
+| 324   |  🛡️ UPI Real-Time Intrusion Detection System | [👆](https://github.com/yasharyan90/upi-fraud-ids) |
 
 
 ***More Projects list is coming...!!!***

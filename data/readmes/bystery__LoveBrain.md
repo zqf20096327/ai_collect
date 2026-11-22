@@ -2,8 +2,6 @@
 
 <img src="https://github.com/bystery/LoveBrain/releases/latest/download/LoveBrain-demo.gif" alt="LoveBrain 悬浮面板演示" width="360"/>
 
-<sub>演示录制于 v1.3.x，其后的界面已经改版，看流程就好。</sub>
-
 # LoveBrain
 
 **想好下一句，再发出去。**
@@ -79,7 +77,7 @@ main 分支源码分层实测（236 个 Kotlin 文件）：ui 65 · domain 47 ·
 
 ### 更省的上下文，更稳的输出
 
-提示用量最多减少 52.2%，输出契约违规从 7/72 降到 2/72。详见 [机制原理](research/MECHANISMS.md)。
+输出契约违规从 7/72 降到 2/72。详见 [机制原理](research/MECHANISMS.md)。
 
 ### 盲评胜出
 

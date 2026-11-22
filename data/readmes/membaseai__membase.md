@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/unibaseio-membase/"><img src="https://img.shields.io/pypi/v/unibaseio-membase?label=pypi" alt="PyPI"></a>
+  <a href="https://pypi.org/project/membaseai/"><img src="https://img.shields.io/pypi/v/membase-ai?label=pypi" alt="PyPI"></a>
   <a href="https://www.npmjs.com/package/@membaseai/membase"><img src="https://img.shields.io/npm/v/@membaseai/membase?label=npm" alt="npm"></a>
   <a href="https://github.com/membaseai/membase/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT"></a>
 </p>
@@ -38,7 +38,7 @@ You stop re-explaining yourself each time you switch models or tools.
 This repository is the developer side: Python and TypeScript clients, the `membase` command line
 and an MCP server. The memory lives in your Membase account, which the
 [web app](https://app.membase.com) and browser extension also fill, or on your machine with
-`unibaseio-membase[local]`.
+`membase-ai[local]`.
 
 ## Write once, read from any AI
 
@@ -65,9 +65,9 @@ history on LoCoMo and 11× fewer on LongMemEval_S. Method and results: [membase.
 </p>
 
 ```bash
-pip install unibaseio-membase              # hosted · Python 3.10+ · needs MEMBASE_API_KEY
-pip install 'unibaseio-membase[local]'     # local  · Python 3.12 or 3.13 · needs OPENAI_API_KEY
-pip install 'unibaseio-membase[media]'     # local + photos, videos and audio
+pip install membase-ai              # hosted · Python 3.10+ · needs MEMBASE_API_KEY
+pip install 'membase-ai[local]'     # local  · Python 3.12 or 3.13 · needs OPENAI_API_KEY
+pip install 'membase-ai[media]'     # local + photos, videos and audio
 npm install @membaseai/membase              # TypeScript · Node 18+
 npm install -g @membaseai/membase-cli       # the `membase` command (hosted) without Python
 ```
@@ -93,7 +93,7 @@ Local memory answers the same routes with the same shapes.
 
 Every method, its REST route and MCP tool, and the access it needs: [SDK reference](https://docs.membase.com/build/reference/sdk-quickstart/).
 Upgrading from 0.3: see the [changelog](https://github.com/membaseai/membase/blob/main/CHANGELOG.md).
-The Python package is `unibaseio-membase` (import `membase`); `membase` on PyPI is unrelated.
+The Python package is `membase-ai` (import `membase`); `membase` on PyPI is unrelated.
 
 ## Command line
 
@@ -110,8 +110,8 @@ membase --local media search "someone skiing"   # any language
 ```
 
 Without `--local` (or `--store DIR`, both before the command) commands use the hosted API; `agent`,
-`import` and `serve` need `unibaseio-membase[local]`, and `media add` and `media ask` (local only)
-need `unibaseio-membase[media]`: see [Media memory](docs/reference.md#media-memory). A local store
+`import` and `serve` need `membase-ai[local]`, and `media add` and `media ask` (local only)
+need `membase-ai[media]`: see [Media memory](docs/reference.md#media-memory). A local store
 with several Memories writes where `MEMBASE_WRITE_TARGET` names.
 
 ## MCP
@@ -149,5 +149,5 @@ entry, with and without a developer key.
 
 ## License
 
-MIT; see [LICENSE](https://github.com/membaseai/membase/blob/main/LICENSE). `unibaseio-membase[local]` also
-installs unibaseio-membase-core, the compiled engine, under its own Unibase license.
+MIT; see [LICENSE](https://github.com/membaseai/membase/blob/main/LICENSE). `membase-ai[local]` also
+installs membase-core, the compiled engine, under its own Unibase license.

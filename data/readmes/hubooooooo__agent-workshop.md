@@ -16,6 +16,7 @@
 [![Test](https://github.com/hubooooooo/agent-workshop/actions/workflows/test.yml/badge.svg)](https://github.com/hubooooooo/agent-workshop/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg)](https://www.python.org/downloads/)
+[![Listed on Awesome MyGo](https://awesomemygo.dev/badge.svg)](https://awesomemygo.dev/apps/agent-workshop)
 
 [版本与下载](#版本与下载) · [快速开始](#快速开始) · [先看效果](#先看效果) · [使用引导](使用引导.md) · [教程视频](https://www.bilibili.com/video/BV17RtD61ETm/)
 
@@ -30,12 +31,12 @@
 <table>
 <tr><th align="left" width="16%"><img src="docs/images/spacer.png" width="2000" height="1" align="left" alt="">名称</th><th align="left" width="40%">是什么</th><th align="left" width="22%">适合</th><th align="left" width="22%">下载</th></tr>
 <tr><td><b>教学版</b></td><td>没有网页界面：项目文件夹、Python 引擎和命令行。用 AI 编程工具打开文件夹，让它全局阅读项目，再按引导一步步带你做到骨架验收</td><td>课堂上跟着老师学，看清项目里有什么、每一步怎么跑起来</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/tag/teaching">下载</a> · <a href="https://github.com/hubooooooo/agent-workshop/tree/v1-maint">浏览源码</a></td></tr>
-<tr><td><b>网页版</b>（本页）</td><td>在教学版的基础上加了本地网页界面：对话式新建产品、回答问题、试玩、导出交接包、检查外部项目</td><td>想直接用的普通用户：下载后双击启动，在网页上操作</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/latest">下载</a></td></tr>
+<tr><td><b>网页版</b>（本页）</td><td>在教学版的基础上加了本地网页界面：对话式新建产品、回答问题、试玩、导出交接包、检查外部项目。安装包里同时带着下面的桌面版</td><td>想直接用的普通用户：下载后双击启动，在网页上操作</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/latest">下载</a></td></tr>
 <tr><td><b>AI 技能版</b></td><td>一个叫 agent-prd 的技能：装进你自己的 AI 工具，对话追问后写出 <code>PRD.md</code> 和 <code>方案.md</code>。不用下载项目、不用 Python、不用另配 API Key</td><td>已经在用 AI 工具的人，想最快拿到需求文档和技术方案</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/tag/agent-prd">下载</a> · <a href="plugins/agent-workshop/skills/agent-prd/README.md">各工具装法</a></td></tr>
-<tr><td><b>桌面版</b>（Mac，预览）</td><td>网页版界面的 macOS 原生重画，用同一个引擎：PRD、方案、试玩、新建产品、项目检查、模型设置都能用，界面固定浅色。回答问题、加新需求、版本历史还没做；还没有打包好的安装包</td><td>想试新界面、会自己打包的开发者（需要 Go）</td><td><a href="desktop/README.md">从源码打包</a></td></tr>
+<tr><td><b>桌面版</b>（Mac，预览）</td><td>网页版界面的 macOS 原生应用，就在网页版的安装包里（<code>Agent 工坊.app</code>）：用同一个引擎，功能和网页版一致，界面固定浅色；Apple 芯片和 Intel 的 Mac 都能用</td><td>不想开浏览器、喜欢原生应用的人</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/latest">下载</a>（和网页版同一个包）</td></tr>
 </table>
 
-教学版、网页版、桌面版都下载到自己电脑上运行，不是网站；AI 技能版装进你正在用的 AI 工具里，不用下载整个项目。教学版由 AI 在终端里运行命令，用法看[教学版的 README](https://github.com/hubooooooo/agent-workshop/blob/v1-maint/README.md)「课堂上这样用」；网页版双击 `启动界面.command`，第一次双击如果被 macOS 拦下，看[常见问题](#常见问题)。
+教学版、网页版、桌面版都下载到自己电脑上运行，不是网站；AI 技能版装进你正在用的 AI 工具里，不用下载整个项目。教学版由 AI 在终端里运行命令，用法看[教学版的 README](https://github.com/hubooooooo/agent-workshop/blob/v1-maint/README.md)「课堂上这样用」；网页版双击 `启动界面.command`，桌面版双击同一个文件夹里的 `Agent 工坊.app`，第一次双击如果被 macOS 拦下，看[常见问题](#常见问题)。
 
 ## 它能帮你做什么
 
@@ -72,7 +73,7 @@ flowchart LR
 
 <table>
 <tr><th align="left" width="18%"><img src="docs/images/spacer.png" width="2000" height="1" align="left" alt="">环节</th><th align="left" width="44%">agent 做什么</th><th align="left" width="38%">代码守住什么</th></tr>
-<tr><td>新建产品的追问</td><td>自己判断还缺什么、问几轮；想法说完整了就不再问</td><td>目标、用户、核心闭环、红线四项都有了（或你说不确定）才能整理草稿；最多问 6 轮</td></tr>
+<tr><td>新建产品的追问</td><td>自己判断还缺什么、问几轮；想法说完整了就不再问</td><td>目标、用户、核心闭环、红线四项都有了（或你说不确定）才整理草稿，你说「直接整理」也行；最多问 6 轮</td></tr>
 <tr><td>方案推导</td><td>写五要素和架构设计，可以查组件说明，交卷前自检</td><td>组件选型由规则算，agent 改不了；工具与选型对不上、降级场景或测试设计漏写，不改好不能交卷</td></tr>
 <tr><td>检查项目和骨架</td><td>自己翻代码，逐个核实组件，每条结论附读过的代码行</td><td>只读、只能看项目目录、不读 <code>.env</code> 和私钥；证据必须是真读过的文件和真实行号</td></tr>
 <tr><td>试玩</td><td>按方案里的提示词和工具清单真的调用工具，卡片边跑边出现</td><td>标了「禁止」的工具调不了，标了「要确认」的操作不会被当成已完成</td></tr>
@@ -146,16 +147,28 @@ claude plugin install agent-workshop --marketplace hubooooooo/agent-workshop
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/web-overview.png" alt="产品页概览：左侧产品列表和分区导航，中间是产品定位和待确认问题，右侧是组件数量和导出交接包"></td>
-<td width="50%"><img src="docs/images/web-answers.png" alt="回答问题：对话里一题一题答，拿不准可以点「帮我想想」"></td>
+<td width="50%"><img src="docs/images/web-overview.png" alt="产品页概览：左栏是产品和检查过的项目，中间是产品定位、审稿分数和待确认问题，右边是组件选型统计和导出交接包"></td>
+<td width="50%"><img src="docs/images/web-answers.png" alt="回答问题：一题一题答，点「帮我想想」后 AI 给出 A、B、C 三个方向"></td>
 </tr>
 <tr>
 <td align="center">产品页：方案概览和待确认问题</td>
-<td align="center">回答问题：一题一题答，拿不准就「帮我想想」</td>
+<td align="center">回答问题：拿不准就点「帮我想想」</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/web-play.png" alt="试玩：扮演家长发一句话，AI 按方案模拟调用识别照片的工具，卡片上标明结果是编的"></td>
+<td width="50%"><img src="docs/images/web-audit.png" alt="检查一个项目：差距报告开头写明判定、缺失和薄弱的组件数、agent 读了几个文件"></td>
+</tr>
+<tr>
+<td align="center">试玩：每调一个工具多一张卡片，结果是模拟的</td>
+<td align="center">检查一个项目：差距报告和本该有的需求文档</td>
 </tr>
 </table>
 
-产品页左栏底部会显示这个产品累计调用了多少次模型、用了多少 tokens（推导和对话都算，新建产品时的追问不算）。用的时候别关启动它的那个终端窗口。检查产品的代码骨架、对照 PRD 检查外部项目暂时还要用下面的终端问答。
+截图里的方案、试玩对话和差距报告都是真实运行结果（模型 deepseek-v4-flash），没有人工修改。
+
+产品页左栏底部会显示这个产品累计调用了多少次模型、用了多少 tokens（推导和对话都算，新建产品时的追问不算）。用的时候别关启动它的那个终端窗口。检查产品的代码骨架、带着自己的 PRD 检查外部项目，网页上还没有，暂时要用下面的终端问答。
+
+**桌面版**：不想开浏览器的话，双击同一个文件夹里的 **`Agent 工坊.app`**，上面这些步骤在桌面版里都一样，详见下面「🖥 桌面版（Mac，预览）」一节。
 
 **终端问答**：双击 **`启动引擎.command`**，终端里一问一答走完全程：
 
@@ -194,7 +207,7 @@ claude plugin install agent-workshop --marketplace hubooooooo/agent-workshop
 ### 💻 方式三：命令行
 
 ```sh
-bash setup.sh                         # 建虚拟环境、装依赖、生成 .env
+bash setup.sh                         # 建虚拟环境、装依赖，把 .env.example 复制成 .env（再按下面「配置模型」改）
 
 # 产品循环
 .venv/bin/python -m blueprint init "酒馆搭子" "一句话点子" --plan   # 建工作区并推导方案
@@ -213,13 +226,30 @@ bash setup.sh                         # 建虚拟环境、装依赖、生成 .en
 
 检查项目（`audit`、`verify`）默认由 agent 读代码核实，每条结论都附它读过的代码行；一次检查最多调用模型 40 次。想省钱或排查问题时加 `--fast`，只按关键词扫描，可能误判。
 
-任何一步中断，原命令加 `--resume` 续跑，已完成的阶段不重复调用模型。
+`plan`、`audit` 中断后，原命令加 `--resume` 续跑，已完成的阶段不重复调用模型。`init --plan` 推导到一半中断时，改跑 `.venv/bin/python -m blueprint plan out/酒馆搭子/PRD.md -o out/酒馆搭子 --resume`。
+
+### 🖥 桌面版（Mac，预览）
+
+网页版界面的 macOS 原生重画，后台拉起同一个引擎，和网页版共用 `out/`，在哪边建的产品另一边都看得到。功能和网页版一致：概览、回答问题、试玩、加新需求、方案、版本历史、检查项目、模型设置都有，页面结构也一样。对话会存在这台电脑上，关掉再打开还能接着来。和网页版唯一的不同是界面固定浅色。
+
+它就在网页版的安装包里：解压后双击文件夹里的 **`Agent 工坊.app`**（不用另装什么；第一次打开会自己准备 Python 环境，左下角显示进度，大约 1 分钟）。应用要留在解压出来的文件夹里用，别单独拖进「应用程序」。没有经过苹果签名，第一次打开会被拦下，放行步骤见[常见问题](#常见问题)。自己从源码打包见[桌面版说明](https://github.com/hubooooooo/agent-workshop/blob/main/desktop/README.md)。
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/desktop-overview.png" alt="桌面版产品概览：左边分组导航（概览、对话、方案、记录）和用量，中间是产品定位和待确认问题，右边是组件选型统计和交接包"></td>
+<td width="50%"><img src="docs/images/desktop-play.png" alt="桌面版试玩：开场白、用户的一句话、两张模拟调用工具的卡片和 AI 的回应，回复下面有「这里不对」"></td>
+</tr>
+<tr>
+<td align="center">产品概览：和网页版一样的分组导航</td>
+<td align="center">试玩：工具卡片、「这里不对」</td>
+</tr>
+</table>
 
 ---
 
 ## 配置模型
 
-在 `.env` 里填三项即可，向导会帮你写好：
+在 `.env` 里填三项即可。用双击启动文件或网页「模型设置」时会帮你写好；用命令行时 `setup.sh` 复制出来的是 Anthropic 官方的模板，要自己改成下面这样：
 
 ```ini
 ANTHROPIC_API_KEY=你的 Key
@@ -262,6 +292,9 @@ agent 需要模型支持工具调用。DeepSeek 实测支持（Anthropic 格式�
 <tr><td><code>BLUEPRINT_AGENT=off</code></td><td>推导方案、检查项目都不用 agent，走固定流程</td></tr>
 <tr><td><code>BLUEPRINT_PLAY_AGENT=off</code></td><td>试玩不用 agent，改为一次调用编出整轮（更快，但规矩只靠提示词约束）</td></tr>
 <tr><td><code>BLUEPRINT_TIMEOUT=300</code></td><td>单次请求超时秒数，默认 120；经中转的慢模型容易超时时调大</td></tr>
+<tr><td><code>BLUEPRINT_MAX_OUTPUT_TOKENS=32000</code></td><td>单次回复最多多少 tokens，默认 16000。带思考过程的模型（如 deepseek-v4）思考也算在内，PRD 很长时可能不够，报错会提示调大到多少</td></tr>
+<tr><td><code>BLUEPRINT_VOTE=off</code></td><td>关掉特征判断的「另外判断两次、三票取多数」，每次推导少 2 次小调用，但结果更容易波动</td></tr>
+<tr><td><code>BLUEPRINT_OUT=/某个目录</code></td><td>产品和检查结果存到别的目录，默认是引擎目录下的 <code>out/</code>（命令行和浏览器界面都生效）</td></tr>
 </table>
 
 参考用量：
@@ -269,7 +302,7 @@ agent 需要模型支持工具调用。DeepSeek 实测支持（Anthropic 格式�
 <table>
 <tr><th align="left" width="56%"><img src="docs/images/spacer.png" width="2000" height="1" align="left" alt="">操作</th><th align="left" width="22%">模型调用</th><th align="left" width="22%">tokens</th></tr>
 <tr><td>一份完整方案（agent 推导）</td><td>6–11 次，审稿打回重写时更多</td><td>约 3–7 万</td></tr>
-<tr><td>一次反向检查（agent 读代码）</td><td>4–9 次</td><td>约 1–3 万</td></tr>
+<tr><td>一次反向检查（agent 读代码，题库里的小项目）</td><td>4–9 次；项目越大读的文件越多，用量跟着涨</td><td>约 1–3 万</td></tr>
 <tr><td><code>revise --quick</code></td><td>1–3 次</td><td>约 0.5–1.5 万</td></tr>
 <tr><td>新建产品时追问一轮</td><td>2–4 次</td><td>约 0.1–0.3 万</td></tr>
 <tr><td>试玩里说一句话</td><td>2–9 次，看它要调几个工具</td><td>约 0.05–0.7 万</td></tr>
@@ -281,7 +314,7 @@ agent 需要模型支持工具调用。DeepSeek 实测支持（Anthropic 格式�
 
 ## 产出放在哪
 
-引擎孵化的产品，所有东西都在 `out/<产品名>/` 一个文件夹里，不会写到桌面或别的地方：
+引擎孵化的产品，所有东西都在 `out/<产品名>/` 一个文件夹里，不会写到桌面或别的地方（命令行 `handoff` 打的交接包放在旁边的 `out/<产品名>-交接包-V<n>.zip`；网页导出的直接下载到浏览器的下载文件夹）：
 
 <table>
 <tr><th align="left" width="24%"><img src="docs/images/spacer.png" width="2000" height="1" align="left" alt="">文件</th><th align="left" width="44%">内容</th><th align="left" width="32%">谁产出</th></tr>
@@ -322,14 +355,14 @@ agent 需要模型支持工具调用。DeepSeek 实测支持（Anthropic 格式�
 ## 常见问题
 
 **第一次双击提示「无法打开」怎么办？**
-启动文件没有经过苹果签名，从浏览器下载后第一次双击，macOS 会拦下来，提示「Apple 无法验证……是否包含恶意软件」。放行一次，以后双击就正常了：
+启动文件和桌面版 `Agent 工坊.app` 都没有经过苹果签名，从浏览器下载后第一次双击，macOS 会拦下来，提示「Apple 无法验证……是否包含恶意软件」。放行一次，以后双击就正常了（两个文件各放行一次）：
 
 1. 在弹窗里点「完成」，不要点「移到废纸篓」。
 2. 打开「系统设置」→ 左栏「隐私与安全性」，右边往下翻到「安全性」。
-3. 那里会有一行「已阻止"启动界面.command"……」，点旁边的「仍要打开」。没看到这一行的话，先回去再双击一次启动文件，再回来看。
+3. 那里会有一行「已阻止"启动界面.command"……」（桌面版是「已阻止"Agent 工坊"……」），点旁边的「仍要打开」。没看到这一行的话，先回去再双击一次启动文件，再回来看。
 4. 输入开机密码（或按指纹），在再次弹出的窗口里点「仍要打开」。
 
-macOS 14 及更早的版本更简单：按住 Control 键点启动文件，选「打开」，再点「打开」。
+macOS 14 及更早的版本更简单：按住 Control 键点启动文件（或 `Agent 工坊.app`），选「打开」，再点「打开」。
 
 会用终端的话，也可以一次放行整个文件夹：`xattr -dr com.apple.quarantine 解压出来的文件夹路径`。用 `git clone` 下载的不会被拦。
 
@@ -342,11 +375,14 @@ macOS 14 及更早的版本更简单：按住 Control 键点启动文件，选�
 **结果靠谱吗？**
 特征判断在题库上的一致率约 90%。模型每次判断会有一两题不一样，所以引擎会拿同一份原文另外判断两次、三票取多数（多 2 次小调用）；再次检查同一个项目时，沿用上次检查对「该有什么」的判断，两次报告的差别只来自代码变化，要重新判断加 `--rejudge`（网页上点「重新判断」）。方案末尾的独立审稿有时会给出「未通过」，这是设计如此：审稿就是要把方案里的矛盾挑出来，这些意见就是你下一轮要回答的问题。agent 推导时会先按规则自检一遍，实测三道题都一次过审，但样本还小。反向报告默认由 agent 读代码核实，「信号覆盖率」按核实结果计算；它没有运行被检查的项目，所以仍然不是功能完成度。
 
+**终端里已经设了 `ANTHROPIC_BASE_URL` 这类环境变量，会不会和 `.env` 打架？**
+不会。`.env` 里填了真实 Key 时，模型配置（Key、接口地址、模型名、接口格式）一律以 `.env` 为准，终端里同名的环境变量不算数。在某些 AI 编程工具里运行引擎时，工具会自己设 `ANTHROPIC_BASE_URL`，以前会盖过 `.env`、把请求发到别的服务商，现在不会了。`.env` 里没有 Key 时，照旧用环境变量里的配置。
+
 **我用的模型很便宜，或者不支持工具调用，会怎样？**
 不支持工具调用的模型会自动退回固定流程，照样能出方案和报告，只是少了 agent 的自检和核实，试玩里的规矩也只能靠提示词约束。支持工具调用的便宜模型反而更该用 agent：试玩里「禁止」「要确认」由代码保证，不靠模型听不听话。用 `tools/probe_tools.py` 可以先测一下。
 
 **Windows 能用吗？**
-引擎本身是纯 Python，但只在 macOS 和 Linux 上测试过。Windows 建议用 WSL 或方式二。s13、s15、s16 的参考实现依赖 `fcntl`，只能在 macOS 和 Linux 上运行。
+引擎本身是纯 Python，但只在 macOS 和 Linux 上测试过。Windows 建议用 WSL 或方式二。桌面版和两个双击启动文件只支持 macOS。s13、s15、s16 的参考实现依赖 `fcntl`，只能在 macOS 和 Linux 上运行。
 
 ---
 
@@ -360,9 +396,9 @@ macOS 14 及更早的版本更简单：按住 Control 键点启动文件，选�
 <tr><td><a href="https://github.com/hubooooooo/agent-workshop/tree/main/web">web/</a></td><td>浏览器界面源码（React + assistant-ui），构建产物提交在 <code>blueprint/web/static/</code></td></tr>
 <tr><td><code>s01</code>–<code>s17</code></td><td>17 个组件的说明、参考实现与图示</td></tr>
 <tr><td><a href="common/">common/</a></td><td>组件参考实现共用的启动层</td></tr>
-<tr><td><a href="desktop/">desktop/</a></td><td>桌面版（macOS 原生界面，Go + Lobe MyGo）：拉起同一个引擎，走网页版的接口，和网页版共用 <code>out/</code></td></tr>
+<tr><td><a href="https://github.com/hubooooooo/agent-workshop/tree/main/desktop">desktop/</a></td><td>桌面版（macOS 原生界面，Go + Lobe MyGo）：拉起同一个引擎，走网页版的接口，和网页版共用 <code>out/</code>；打好的应用随网页版安装包发布</td></tr>
 <tr><td><a href="scaffold/">scaffold/</a> · <a href="skills/">skills/</a></td><td>项目模板；s07 技能加载用的示例技能</td></tr>
-<tr><td><a href="plugins/agent-workshop/">plugins/agent-workshop/</a></td><td>AI 技能版：agent-prd（点子 → PRD 与技术方案，任何 AI 工具可用）、agent-builder（按方案开发），以 Claude Code 插件形式发布</td></tr>
+<tr><td><a href="plugins/agent-workshop/">plugins/agent-workshop/</a> · <a href=".claude-plugin/">.claude-plugin/</a></td><td>AI 技能版：agent-prd（点子 → PRD 与技术方案，任何 AI 工具可用）、agent-builder（按方案开发），以 Claude Code 插件形式发布；<code>.claude-plugin/</code> 是插件市场清单</td></tr>
 <tr><td><a href="docs/">docs/</a></td><td>入门指南、真实输出示例、维护手册</td></tr>
 <tr><td><a href="evals/">evals/</a> · <a href="tests/">tests/</a></td><td>特征判断题库、反向检查题库（含两道关键词陷阱题）与回归测试</td></tr>
 <tr><td><a href="tools/">tools/</a></td><td>双击向导及其环境脚本、示例刷新、学生打包、技能打包、测模型能否调用工具</td></tr>
@@ -376,7 +412,8 @@ macOS 14 及更早的版本更简单：按住 Control 键点启动文件，选�
 .venv/bin/python -m blueprint eval --real     # 真实模型特征一致率
 .venv/bin/python -m blueprint eval --real-audit --repeat 3   # 真实模型跑反向检查题库
 .venv/bin/python tools/refresh_examples.py    # 改提示词后重新生成示例
-.venv/bin/python tools/package_student.py     # 生成 dist/agent-workshop-student.zip（含打好的 agent-prd）
+.venv/bin/python tools/package_student.py     # 生成 dist/agent-workshop-web.zip（网页版安装包，含打好的 agent-prd）
+#   发版时加 --desktop-app "desktop/dist/darwin-universal/Agent 工坊.app" 把桌面版放进去，步骤见维护手册
 .venv/bin/python tools/package_skill.py       # 生成 dist/agent-prd.skill 和 dist/agent-prd.zip
 claude plugin validate ./plugins/agent-workshop   # 检查插件；改了技能记得升 plugin.json 的 version
 cd desktop && go vet ./... && go test ./...       # 桌面版测试；运行和打包见 desktop/README.md
@@ -393,7 +430,8 @@ cd desktop && go vet ./... && go test ./...       # 桌面版测试；运行和�
 <tr><td>只有一个模糊想法，不知道怎么描述</td><td><a href="docs/beginner-guide.md">小白入门指南</a></td></tr>
 <tr><td>看一份完整方案和差距报告</td><td><a href="docs/examples/README.md">真实输出示例</a></td></tr>
 <tr><td>理解推导方法</td><td><a href="BLUEPRINT.md">BLUEPRINT.md</a></td></tr>
-<tr><td>改规则、换模型、分发给学生</td><td><a href="docs/维护手册.md">维护手册</a></td></tr>
+<tr><td>自己打包桌面版、了解它的结构</td><td><a href="https://github.com/hubooooooo/agent-workshop/blob/main/desktop/README.md">桌面版说明</a></td></tr>
+<tr><td>改规则、换模型、发版、分发给学生</td><td><a href="docs/维护手册.md">维护手册</a></td></tr>
 </table>
 
 ---

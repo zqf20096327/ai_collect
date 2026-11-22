@@ -217,14 +217,14 @@ Additionally, as of May 2026, Nubenetes has reached the **Platinum Operational T
 ## 2. Repository Metrics and Evolution
 
 ### 2.1. The "Heart" of Nubenetes
-(Stats as of 2026-11-17)
+(Stats as of 2026-11-22)
 
 <!-- HEART_STATS_START -->
 | Metric | Value |
 | :--- | :--- |
-| **Total Technical Resources (Links)** | **20494+** |
-| **Specialized MD Pages** | **163** |
-| **Total Commits** | **7477+** |
+| **Total Technical Resources (Links)** | **20895+** |
+| **Specialized MD Pages** | **185** |
+| **Total Commits** | **7532+** |
 | **Primary AI Engine** | **Google Gemini (Agentic)** |
 <!-- HEART_STATS_END -->
 
@@ -234,16 +234,16 @@ Top 10 categories by link volume in the exhaustive V1 archive.
 <!-- TOP_CATEGORIES_START -->
 | Category (Markdown Page) | Total Links |
 | :--- | :---: |
-| [Kubernetes](docs/kubernetes.md) | 1317 |
+| [Kubernetes](docs/kubernetes.md) | 1321 |
 | [Kubernetes Tools](docs/kubernetes-tools.md) | 839 |
 | [Terraform](docs/terraform.md) | 773 |
 | [Azure](docs/azure.md) | 654 |
-| [Demos](docs/demos.md) | 607 |
-| [Git](docs/git.md) | 604 |
-| [Devsecops](docs/devsecops.md) | 500 |
+| [Demos](docs/demos.md) | 623 |
+| [Git](docs/git.md) | 605 |
+| [Devsecops](docs/devsecops.md) | 509 |
 | [Ai Agents Mcp](docs/ai-agents-mcp.md) | 496 |
+| [Jenkins](docs/jenkins.md) | 462 |
 | [Managed Kubernetes In Public Cloud](docs/managed-kubernetes-in-public-cloud.md) | 461 |
-| [Jenkins](docs/jenkins.md) | 455 |
 <!-- TOP_CATEGORIES_END -->
 
 ### 2.3. Historical Growth (Commits and References)
@@ -262,7 +262,7 @@ The growth of Nubenetes reflects the acceleration of the Cloud Native ecosystem.
 | 6 | 2023 | 30 | 123 | Maintenance & Refinement |
 | 7 | 2024 | 53 | 218 | Curation Strategy Pivot |
 | 8 | 2025 | 5 | 20 | Stability & Research Phase |
-| 9 | 2026 | 3918 | 16,181 | **Agentic AI Surge** (May 2026 Inception) |
+| 9 | 2026 | 3973 | 16,408 | **Agentic AI Surge** (May 2026 Inception) |
 <!-- ANNUAL_GROWTH_END -->
 
 <!-- ANNUAL_CHART_START -->
@@ -278,8 +278,8 @@ xychart-beta
     title "Nubenetes Annual Growth Metrics (2018–2026)"
     x-axis ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"]
     y-axis "Volume (Commits / Estimated New Refs)" 0 --> 17000
-    bar [1445, 586, 8449, 2193, 1660, 123, 218, 20, 16181]
-    bar [350, 142, 2046, 531, 402, 30, 53, 5, 3918]
+    bar [1445, 586, 8449, 2193, 1660, 123, 218, 20, 16408]
+    bar [350, 142, 2046, 531, 402, 30, 53, 5, 3973]
 ```
 <!-- ANNUAL_CHART_END -->
 
@@ -291,7 +291,7 @@ xychart-beta
 | 2026-05 | 2101 | 8,677 | **Agentic Inception (Gemini Era)** |
 | 2026-06 | 853 | 3,522 | Active Curation |
 | 2026-07 | 382 | 1,577 | Active Curation |
-| 2026-11 | 250 | 1,032 | Active Curation |
+| 2026-11 | 305 | 1,259 | Active Curation |
 | 2026-10 | 170 | 702 | Active Curation |
 | 2026-09 | 77 | 318 | Active Curation |
 | 2026-08 | 60 | 247 | Active Curation |
@@ -307,7 +307,7 @@ This chart shows the high-level distribution across the primary domains of Cloud
 <!-- PILLAR_CHART_START -->
 ```mermaid
 pie title Nubenetes Major Ecosystem Pillars
-    "Specialized Topics" : 6094
+    "Specialized Topics" : 6495
     "Kubernetes Ecosystem" : 3500
     "Developer Ecosystem" : 3000
     "Public/Private Cloud" : 2500
@@ -328,10 +328,10 @@ Reflecting Nubenetes' mission of global access while maintaining technical Engli
 <!-- SUB_ECO_CHART_START -->
 ```mermaid
 pie title Linguistic Diversity (Global Access)
-    "English" : 18444
-    "Spanish" : 1229
-    "French" : 204
-    "Others" : 614
+    "English" : 18805
+    "Spanish" : 1253
+    "French" : 208
+    "Others" : 626
 ```
 <!-- SUB_ECO_CHART_END -->
 
@@ -1010,9 +1010,14 @@ The heart of the new Nubenetes is a suite of AI Agents that operate on our `mast
     - **Discovery:** Scans multiple high-trust X.com accounts and RSS feeds.
     - **Quality Hardening (Mandate 2 & 3):** Systematically filters blacklisted domains and applies impact penalties to stale GitHub repositories.
     - **Classification:** Automatically maps new resources using the **Recursive technical hierarchy** and generates multi-language descriptions.
-        *   **K8s & Cloud Native:** `@nubenetes`, `@kubernetesio`, `@cncf`, `@kelseyhightower`, `@memenetes` (plus official Kubernetes & CNCF RSS feeds).
+        *   **K8s & Cloud Native:** `@nubenetes`, `@kubernetesio`, `@cncf`, `@kelseyhightower`, `@memenetes` (plus official Kubernetes, CNCF, `helm/helm`, `cert-manager/cert-manager`, and `backstage/backstage` feeds).
+        *   **Networking, eBPF & Service Mesh:** `@ciliumproject`, `@IstioMesh` (plus Cilium & Istio blogs and release watches for `cilium/cilium`, `kubernetes-sigs/gateway-api`, `istio/istio`, and `envoyproxy/gateway`).
+        *   **Observability, Security & FinOps:** `@PrometheusIO`, `@chainguard_dev`, `@falco_org`, `@FinOpsFdn` (plus OpenTelemetry, Prometheus, Chainguard & FinOps Foundation blogs and release watches for `opentelemetry-collector`, `prometheus`, `VictoriaMetrics`, `kyverno`, `falco`, `cosign`, `opencost`, `karpenter`, and `keda`).
+        *   **Red Hat OpenShift & OCP 5:** `@openshift`, `@RedHat`, `@RHDevelopers`, `@okd_io`, `@kubevirt` (plus Red Hat OpenShift & Hybrid Cloud RSS channels, Red Hat Press Releases, KubeVirt blog, and release feeds/watches for `okd-project/okd`, `openshift/hypershift`, `openshift/microshift`, `openshift/rosa`, `operator-framework/operator-controller`, `containers/kubernetes-mcp-server`, `Kuadrant/kuadrant-operator`, `kubevirt/kubevirt`, `perses/perses`, and `redhat-developer/rhdh`).
         *   **Hyperscalers & Enterprise Cloud AI:** `@awscloud`, `@Azure`, `@GoogleCloud`, `@RedHat`, `@openshift`, `@0GiS0`, `@NTFAQGuy`, `@cantrillio`, `@pvergadia`, `@QuinnyPig` (plus Azure AI Foundry, AWS Machine Learning/Bedrock, Google Cloud AI, and Red Hat OpenShift AI RSS feeds and reference repositories).
+        *   **European Sovereign Cloud & Private DCs:** `@OVHcloud`, `@scaleway`, `@Hetzner_Online`, `@IONOS_Cloud`, `@arsys`, `@GigasHosting`, `@AlhambraIT`, `@TelefonicaTech`, `@stackscale`, `@ArubaCloud`, `@seeweb`, `@exoscale`, `@upcloud`, `@civocloud`, `@nebiusai`, `@gaiax_aisbl`, `@CISPE_Cloud`, `@proxmox` (plus OVHcloud, Scaleway, Stackscale, Alhambra IT, SpainDC, DataCenterMarket.es, Seeweb, Clever Cloud, Cleura, Gaia-X, and CISPE RSS feeds, plus release watches across European Terraform/OpenTofu, Crossplane, Cluster API, Proxmox, OpenStack, CloudStack, SovereignCloudStack, Gardener, Talos, Harvester, CloudNativePG, and Velero repositories).
         *   **AI & Agents:** `@OpenAI`, `@AnthropicAI`, `@GoogleDeepMind`, `@GoogleAI`, `@LoganK`, `@NotebookLM`, `@LangChainAI`, `@llama_index`, `@modelcontextpc`, `@vllm_project`, `@raydistributed`, `@huggingface`, `@NVIDIADev` (plus `microsoft/agent-framework`, `google/adk-python`, `strands-agents/harness-sdk`, `kaito-project/kaito`, and `llm-d/llm-d`).
+        *   **AI Knowledge, RAG & OKF:** `@llama_index`, `@qdrant_engine`, `@weaviate_io`, `@mem0ai`, `@Letta_AI`, `@zep_ai`, `@deepset_ai`, `@neo4j` (plus Google Cloud Data/AI RSS, `open-knowledge-format/open-knowledge-format` spec updates, Qdrant/Weaviate/Neo4j blogs, and release watches for `VectifyAI/PageIndex`, `microsoft/graphrag`, `HKUDS/LightRAG`, `infiniflow/ragflow`, `run-llama/llama_index`, `deepset-ai/haystack`, `mem0ai/mem0`, `getzep/graphiti`, `letta-ai/letta`, `topoteretes/cognee`, `qdrant/qdrant`, `weaviate/weaviate`, `pgvector/pgvector`, and `explodinggradients/ragas`).
         *   **Productivity:** `@GitHub`, `@Microsoft`, `@Cursor_AI`, `@midudev`, `@natfriedman`, `@karpathy`.
         *   **Data & Infra:** `@Databricks`, `@ApacheSpark`, `@snowflakedb`, `@HashiCorp`, `@PulumiCorp`, `@ArgoProj`, `@fluxcd`.
 2.  **V2VisionEngine ([`src/v2_optimizer.py`](src/v2_optimizer.py))**:
@@ -1290,40 +1295,4 @@ When processing massive datasets (e.g., full AI re-evaluations of 18k+ links), w
 
 ## 10. Branching Strategy and Lifecycle
 - **`master` Branch (Canonical Trunk & Production):** Single source of truth for code, workflows, `schedule` crons, V1/V2 sources, and [nubenetes.com](https://nubenetes.com) Pages deployment.
-- **Short-lived Branches (`feat/*`, `fix/*`, `bot/*`):** Created from `master` for code, manual additions, and PR-based bot updates, then merged back to `master` via Pull Request.
-- **Branch Lifecycle Automation:** Automated cleanup (`08.1`) of merged and stale short-lived branches runs every 15 days (1st/15th). Protected: `master`, `gh-pages`.
-
----
-
-## 11. Contributing to the Archive
-
-Nubenetes thrives on a **Hybrid Human-AI Collaboration** model. Community contributions are the lifeblood of the V1 archive.
-
-### How to Contribute
-1.  **Target Branch**: Always create your Pull Requests against the `master` trunk branch.
-2.  **Source of Truth (V1)**: Only add or edit files in the `docs/` directory. **Do not manually edit [`v2-docs/`](v2-docs/)**.
-3.  **Manual Link Format**: Use the standard format: `  - [Title](URL) - Your descriptive summary.`
-4.  **Automatic Adoption**: Once merged, the **Agentic Curator** and **V2 Builder** will validate health, extract metadata, assign a recursive hierarchy, and generate an English summary.
-5.  **Preservation Guarantee**: Agents MUST NOT overwrite your manual 🌟 stars or descriptive comments.
-6.  **Automated Feedback**: Every PR is automatically audited by our **SafetyGuard**, providing a report on mandate compliance.
-
----
-
-## 12. Developer Experience and VSCode Setup
-
-### 12.1. Optimized "Power User" Environment
-Specifically optimized for core maintainers (e.g., **Chromebook Plus**):
-*   **Extensions**: GitLens, Markdown All in One, markdownlint, Code Spell Checker, Prettier, Kubernetes & YAML (RedHat).
-*   **Local Automation with `act`**: Run GitHub Actions locally using [**`act`**](https://github.com/nektos/act) and Docker.
-*   **GitHub CLI Aliases**: `gh prs` (List my PRs) and `gh rv` (List PRs for review).
-*   **Chromebook Plus Optimization**: Automated port forwarding for port `8000` (MkDocs) to the ChromeOS browser.
-
-### 12.2. Extension Recommendations (Legacy/General)
-- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
-- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [Mermaid Editor](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-- [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
-
-### 12.3. Automated VS Code Tasks
-- **MkDocs: Serve (Local)**: Launches server on `localhost:8000`.
-- **Agentic: Run Curation**: E
+- **Short-lived Branches (`feat/*`, `fix/*`, `bot/*`):** Created from `master` for code, manual additions, and PR-based bot updates, t

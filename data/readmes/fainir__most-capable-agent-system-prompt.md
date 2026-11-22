@@ -82,9 +82,15 @@ In a new project folder, paste the system prompt into your coding agent. Then [t
 
 [Check a cart quantity change with a coding agent](examples/cart-quantity-check.md). Run eight checks against the same fictional change, then compare the diff and test output.
 
+[Catch inflated order counts in a SQL report](examples/sql-order-count.md). Run the SQLite tests, fix the count, and confirm that the report keeps orders with no line items and customers with no orders.
+
 [Test whether an assistant can undo its own edit](examples/plainer-assistant-undo.md). Save a manual note, let the assistant create a second one, and check what survives Undo.
 
 [Read a project note from Gemini CLI](examples/plainer-gemini-handoff.md). Install the Plainer extension on Free, grant read access to a sample workspace, and check that the answer quotes the source note and spots a missing detail.
+
+[Turn meeting notes into a checked action list](examples/plainer-meeting-notes.md). Try fictional notes with a decision, missing dates, and a suggestion that was never agreed.
+
+[Trace a human approval before the agent continues](https://www.humanindaloopai.com/self-host/from-agent-guide). In this simulated Human in da Loop example, an agent waits for a decision on a refund outside the 30-day window. Check that the reviewer’s store-credit choice and the `answered` status reach the agent. The guide opens before sign-in and links to the installer for a local run.
 
 **Try a screen-reading task on Android.** Handy AI uses Claude and needs Android 11 or later and Accessibility permission. [Install Handy AI from Google Play](https://play.google.com/store/apps/details?id=com.claudeagent.phone&utm_source=github&utm_campaign=mcasp_handy_screen_read), then [follow the setup guide](https://gethandyai.app/#install). Open a screen with text you know and are comfortable sharing. Say or type “Read the text on this screen,” then check that Handy AI reads a line that is actually there.
 
@@ -2647,15 +2653,4 @@ For every relevant external update:
   - a new dashboard or control-plane view
   - a new recurring operation
   - a new benchmark
-  - a change to the roadmap
-- if it matters, create a bounded experiment
-- do not adopt any external claim into the core system without a local eval, shadow run, or replay-based validation
-- keep or discard the idea based on evidence
-
-Examples:
-- a repo adds a better browser-state pattern -> create a browser reliability experiment
-- a model provider adds new computer-use tools -> add a controlled benchmark and cost comparison
-- a memory project ships a better retrieval pattern -> test it on long-horizon tasks
-- a benchmark appears for a domain you care about -> add it to your eval suite
-- a company-ops project ships a better KPI or decision-queue model -> test it as a control-plane object and dashboard change
-- a workflow project ships a better pause or resume pattern -> test it as a
+  - a change to the ro

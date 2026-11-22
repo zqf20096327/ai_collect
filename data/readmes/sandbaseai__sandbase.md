@@ -25,6 +25,16 @@
 
 ---
 
+## Start here
+
+| How you want to use SandBase | Start with |
+|---|---|
+| **On the platform** | [Quick Start: website](https://www.sandbase.ai/docs/getting-started/quickstart#use-on-website): browse a model or API, enter inputs and view the result |
+| **Through an API** | [Quick Start: API](https://www.sandbase.ai/docs/getting-started/quickstart#call-api): create a key and choose [Python](sdk/python), [TypeScript](sdk/typescript) or [Go](sdk/go) |
+| **Through an agent** | [Quick Start: AI tools](https://www.sandbase.ai/docs/getting-started/quickstart#use-in-ai-tool) and the [CLI / MCP repository](https://github.com/sandbaseai/cli) |
+
+This repository contains SDKs, examples and the daily catalog snapshot. Use the CLI repository to install and connect AI clients, [Skills](https://www.sandbase.ai/skills) for reusable workflows, and [Tools](https://www.sandbase.ai/tools) for browser utilities. Check the current schema, price and free allowance before executing examples; calls may use your balance.
+
 ## Your personal agent in one call
 
 Create an agent, give it a job, get the answer. Every agent can find and call any of the 2,000+ models and APIs on SandBase on its own, and it works in its own sandbox. Agents and sandboxes are free. You pay only for the models and APIs your agent uses.
@@ -47,7 +57,7 @@ reply = sb.run_agent(
 print(reply["output"])
 ```
 
-In our test run the agent searched for an X API, read its schema and price, called it, and answered with three real posts and their links. It took 45 seconds and needed no setup beyond the key.
+The agent can discover an X API, inspect its schema and price, and call it to answer with source links. Results and completion time depend on the selected model and upstream services.
 
 <details>
 <summary><b>How the agent gets its tools</b></summary>
@@ -132,7 +142,8 @@ sbx.kill()
 
 ```ts
 // sdk/typescript: one file, no dependencies
-import { SandBase } from "@sandbaseai/sdk";
+// After building sdk/typescript; see its README for installation.
+import { SandBase } from "./sdk/typescript/dist/index.js";
 
 const sb = new SandBase();
 const result = await sb.run("exa/search", {

@@ -67,6 +67,13 @@ scored with its own `compare.py`: mean KL **0.114**, top-1 agreement **89.6 %**,
 the context went through batched prefill). 1.5.0 build, November 19, 2026, the same as 1.3.6 to every digit; details
 and the command under [Quality](#quality).
 
+**What is new in 1.5.1** (stable, `latest`; it also holds everything from 1.5.0 below): two Flash-Next fixes.
+`FLASH_CKPT=0` no longer crashes the server (SIGFPE) when a checkpoint is planned at the point where two prompts
+diverge ([#41](https://github.com/bpx03/QEngine/issues/41)), and after a pinned prefix is dropped (pin budget or
+host-memory pressure) the archive goes back under its budget at once ([#40](https://github.com/bpx03/QEngine/issues/40)).
+The other models are unchanged. Checked with the same greedy output and speed as 1.5.0; the release checks and the
+numbers on this page are from 1.5.0 ([release notes](https://github.com/bpx03/QEngine/releases/tag/v1.5.1)).
+
 **What is new in 1.5.0**:
 
 - **Three new models, as previews**, in the same server, API and Docker image as the two Qwen models (what each one
@@ -203,7 +210,7 @@ docker run -d --name qengine --restart unless-stopped --gpus all --ipc=host --ul
   `-p 8080:8080` (all interfaces) and put a firewall or an authenticating proxy in front: the server has no API keys.
 - `--restart unless-stopped` matters: after a stalled GPU the server exits with code 75 and relies on a restart (see
   [Failure handling](#serving-behaviour)).
-- Images: `latest` / `1.5.0` (text only) and `vision` / `1.5.0-vision` (with the image encoder). Earlier: `1.3.6`, `1.3.6-vision`, `1.3.5.9`, `1.3.5.9-vision`, `1.3.5.8`, `1.3.5.8-vision`, `1.3.5.7`, `1.3.5.7-vision`, `1.3.5.6`, `1.3.5.6-vision`, `1.3.5` and `1.3.5-vision`; experimental `1.3.5.5`, `1.3.5.5-vision`, `1.3.5.4`, `1.3.5.4-vision`, `1.3.5.3`, `1.3.5.3-vision`, `1.3.5.2`, `1.3.5.2-vision`, `1.3.5.1`, `1.3.5.1-vision`.
+- Images: `latest` / `1.5.1` (text only) and `vision` / `1.5.1-vision` (with the image encoder). Earlier: `1.5.0`, `1.5.0-vision`, `1.3.6`, `1.3.6-vision`, `1.3.5.9`, `1.3.5.9-vision`, `1.3.5.8`, `1.3.5.8-vision`, `1.3.5.7`, `1.3.5.7-vision`, `1.3.5.6`, `1.3.5.6-vision`, `1.3.5` and `1.3.5-vision`; experimental `1.3.5.5`, `1.3.5.5-vision`, `1.3.5.4`, `1.3.5.4-vision`, `1.3.5.3`, `1.3.5.3-vision`, `1.3.5.2`, `1.3.5.2-vision`, `1.3.5.1`, `1.3.5.1-vision`.
   Earlier releases stay available under their version tags.
 - `QE_GPUS=0,2` picks the GPUs (host ids with `--gpus all`; default `0,1,2`; `QE_DEVICES`, if set, wins over `QE_GPUS`). Settings are environment variables
   (`-e FLASH_PAR=pp`); anything after the image name, or `QE_EXTRA_ARGS`, goes to the server (`--think 0`,
@@ -1286,11 +1293,4 @@ sorted JSON keys, so a client that reorders the same tools keeps the prompt cach
 order). The chat template is `server/templates/qwen38_syssafe.jinja` (the model's template, accepting several leading
 system messages). `--template` replaces it. A reply starts as reasoning only if the template's generation prompt opens
 `<think>`: with a custom template that does not, a model reasoning without writing the tag shows that text in `content`,
-followed by a literal `</think>`. Since 1.3.6 a `<tool_call>` that does not parse as a call (prose inside the tag,
-broken markup), or a call that `tool_choice` filters out, reaches the client as plain text in `content`, streamed or
-not, on both APIs, instead of an empty reply.
-
-**`tool_choice`** on both APIs: `auto` (default), `none` (Anthropic `{"type": "none"}`: the tools stay in the prompt, the
-tool-call token is masked, so the model answers in text), `required` (Anthropic `any`) and a named function (OpenAI
-`{"type": "function", "function": {"name": ...}}`, Anthropic `{"type": "tool", "name": ...}`): the answer starts with
-that call after any thinking. Enforced in the engine: `none` bans the tool-call token in the 
+followed by a litera

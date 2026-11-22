@@ -88,6 +88,14 @@ Context ████░░░░ 42% · 5h ████░░░░ 45% (2h 15m)
 Opus 4.6 (1M) · 3 MCPs 2 rules · $1.42 · $18.50/wk · $62.30/mo
 ```
 
+For Codex limits, the HUD runs `tokenmeter hud` when its cache expires, usually after 30 seconds. tokenmeter checks recent Codex session logs in the background. By default, tokenmeter can start `codex app-server` at most about once per minute per data folder. Codex can then use its stored sign-in to request the limits from OpenAI over HTTP.
+
+To stop the app server and keep the log source, run `npx @dean0x/tokenmeter@0.2.0 config app_server off`.
+
+The HUD shows the age of data that is at least 10 minutes old. If tokenmeter cannot find Codex on `PATH`, log data at least 10 minutes old does not show. If neither source has data, the HUD omits the Codex segment.
+
+After an upgrade, run `devflow init` again. See the [HUD reference](https://github.com/dean0x/devflow/blob/main/docs/cli-reference.md#hud-status-line).
+
 **Security.** Deny lists block dangerous tool patterns out of the box — configurable during init and toggleable any time with `devflow security` (`--enable`/`--disable`/`--status`).
 
 ## Quick Start
@@ -210,15 +218,17 @@ A PR carries a test plan: one TP line per acceptance criterion, in one fixed sha
 
 `method` is how the line is verified: `ci` (the CI suite covers it), `local` (a command whose exit code the Test agent reads) or `manual` (agent-driven steps, observed). `files:` lists the globs the line covers, so a later change elsewhere does not make it stale. A scenario is plain words — no `#`, `@`, `/`, `<`, `>`, brackets or backticks — because it lands in the PR body, where a closing keyword or a mention would act.
 
+For a planned local failure, append ` [expect-exit: <k>]` (1 to 125) and claim `TP-<n>=PASS:<k>` with the true exit; the script reads only the exit.
+
 `/plan` writes the lines, and `/implement` checks them before any code is written. The PR body carries them as a test-plan block between `<!-- devflow:test-plan -->` markers. The Test agent records a claim per line — `PASS`, `FAIL` or `SKIP` at a commit — and the evidence scripts, never a prompt, turn each claim into one of six states:
 
 | State | Meaning |
 |---|---|
 | `VERIFIED-CI` | a `ci` pass backed by passing CI runs at the verifying commit |
-| `ATTESTED-LOCAL` | a `local` pass with exit code 0, a `manual` pass, or a `ci` pass at a commit that has no CI runs |
+| `ATTESTED-LOCAL` | a `local` pass with the expected exit code (0 by default), a `manual` pass, or a `ci` pass at a commit that has no CI runs |
 | `UNVERIFIED` | no usable claim: none, a skip, a commit outside the PR, or a line whose text changed |
 | `STALE` | claimed at an older commit, and the change since may touch the line's files |
-| `FAILED` | a fail, a non-zero exit code, or a failing CI run |
+| `FAILED` | a fail, a local exit code that differs from the expected exit, or a failed CI run |
 | `INDETERMINATE` | something the verdict needs could not be resolved, such as a CI run still in progress or expired |
 
 Only the first two count as verified, and the block ticks exactly those lines. `update-pr-evidence` re-derives every state at the PR's head, updates the block — reduced to one counts line when the lines would push the body past its size limit — and edits the evidence comment your login posted so it names the new head. It posts a new comment only when your login has none, or when a newer evidence comment from another user follows it. `/implement` and `/resolve` both refresh it.

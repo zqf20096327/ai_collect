@@ -2,7 +2,7 @@
 
 <img src="docs/assets/readme/hero.svg" alt="MTPLX" width="100%" />
 
-# The fastest way to run Qwen 3.8 on a Mac.
+# The fastest way to run Inkling 2 Mini and Qwen 3.8 on a Mac.
 
 [![PyPI](https://img.shields.io/pypi/v/mtplx?label=PyPI)](https://pypi.org/project/mtplx/)
 [![CI](https://github.com/youssofal/MTPLX/actions/workflows/ci.yml/badge.svg)](https://github.com/youssofal/MTPLX/actions/workflows/ci.yml)
@@ -12,7 +12,7 @@
 
 </div>
 
-MTPLX is a native Mac app and a command line that runs local language models on Apple Silicon with the model's own multi-token prediction (MTP) heads. It runs Qwen 3.8 Flash Next, the 125B mixture of experts, Qwen 3.8 27B and Prism ML's Ternary Bonsai 2 27B, plus Qwen 3.6, Qwen 3.5 and Gemma 4. The model drafts several tokens ahead of itself, one batched forward pass verifies the draft, and tokens are committed through exact rejection sampling with residual correction. The sampler works at the model's native temperature, and decode runs at around twice the speed of plain decoding: measured 1.6x on a 16 GB M4 Mac mini and 2.24x on an M5 Max.
+MTPLX is a native Mac app and a command line that runs local language models on Apple Silicon with the model's own multi-token prediction (MTP) heads. It runs Inkling 2 Mini on MTPLX's own Metal kernels, Qwen 3.8 Flash Next, the 125B mixture of experts, Qwen 3.8 27B and Prism ML's Ternary Bonsai 2 27B, plus Qwen 3.6, Qwen 3.5 and Gemma 4. The model drafts several tokens ahead of itself, one batched forward pass verifies the draft, and tokens are committed through exact rejection sampling with residual correction. The sampler works at the model's native temperature, and decode runs at around twice the speed of plain decoding: measured 1.6x on a 16 GB M4 Mac mini and 2.24x on an M5 Max.
 
 ## Measured speeds
 
@@ -20,6 +20,9 @@ Every number below was measured on a MacBook Pro M5 Max with 128 GB, fans verifi
 
 | Model | Speed | Run |
 |---|---|---|
+| Inkling 2 Mini, Bare Speed | 128.8 tok/s | decode at its peak, the fastest recorded answer, 128 tokens to a 4,142-token prompt already in the prompt cache, through `mtplx serve` on a 2.13 test build (macOS thermal pressure nominal); first token on a new 4,142-token coding prompt after 1.69 s (the mean of three runs), MTPLX 2.13.0 |
+| Inkling 2 Mini, Optimized Speed | 123.8 tok/s | decode at its peak, the fastest recorded answer, 166 tokens in the 2.13 app (macOS thermal pressure nominal); first token on a new 4,142-token coding prompt after 1.73 s (one run, on the release build), MTPLX 2.13.0 |
+| Inkling 2 Mini, Optimized Quality | 103.8 tok/s | decode at its peak, the fastest stretch of an answer in the 2.13 app, its first 32 tokens (macOS thermal pressure moderate when the answer began); first token on a new 4,142-token coding prompt after 1.84 s (the mean of two runs), MTPLX 2.13.0 |
 | Qwen 3.8 Flash Next, Optimized Speed | 63.5 tok/s | 65,502-token prompt read at 1,094 tok/s (768 on 2.11.3), first token after 60.1 s instead of 85.5 s, 512 tokens generated, thinking off, MTPLX 2.12.0 (56.1 tok/s on 2.11.3) |
 | Ternary Bonsai 2 27B, Optimized Speed | 64.4 tok/s | 4,061-token prompt, 512 tokens generated, MTP depth 1, thinking off, MTPLX 2.12.0 (52.6 for the 4-bit Qwen 3.8 27B in the same session), 11.4 GB peak |
 | Qwen 3.8 Flash Next, Optimized Speed | 125.8 tok/s | one OpenCode request: 1,301 tokens generated, 18,539-token prompt with 18,364 tokens served from cache, MTP depth 3, MTPLX 2.11.3, 16 September 2026 |
@@ -99,6 +102,49 @@ On a 16 GB Mac it gets an 8,192-token window, with a measured peak of
 11.80 GiB under a 16 GB memory budget; agent clients such as OpenCode and
 Hermes need 18 GB or more.
 
+## Inkling 2 Mini on a Mac
+
+MTPLX is the fastest way to run Inkling 2 Mini on a Mac. Inkling 2 Mini (Inkling-2-Mini) is Thinking Machines Lab's open-weights model for coding, agents and images: 26.4B parameters with 3.4B active for each token and up to 1M tokens of context, according to its model card. MTPLX runs it on Metal kernels written for it, with the model's own draft head, and every pack carries the model's whole vision tower, so it reads screenshots.
+
+| Pack | Decode speed, peak | First token, new 4,142-token prompt | Prefill | Download |
+|---|---:|---:|---:|---:|
+| [Bare Speed](https://huggingface.co/Youssofal/Inkling-2-Mini-MTPLX-Bare-Speed) | 128.8 tok/s | 1.69 s | 2,466 tok/s | 16.0 GB |
+| [Optimized Speed](https://huggingface.co/Youssofal/Inkling-2-Mini-MTPLX-Optimized-Speed) | 123.8 tok/s | 1.73 s | 2,397 tok/s | 17.2 GB |
+| [Optimized Quality](https://huggingface.co/Youssofal/Inkling-2-Mini-MTPLX-Optimized-Quality) | 103.8 tok/s | 1.84 s | 2,257 tok/s | 20.2 GB |
+
+MacBook Pro M5 Max with 128 GB, MTPLX 2.13. Decode speed is the fastest recorded figure for each pack, at the model's own sampler: for Bare Speed, a 128-token answer to a 4,142-token prompt already in the prompt cache, recorded through `mtplx serve` on a 2.13 test build; for Optimized Speed, a 166-token answer in the 2.13 app; for Optimized Quality, the fastest stretch of an answer in the 2.13 app, its first 32 tokens. macOS thermal pressure was nominal for Bare Speed and Optimized Speed, and moderate when Optimized Quality's answer began. First token and prefill: `mtplx serve`, temperature 1.0 (the model's own sampler), fans at maximum, macOS thermal pressure nominal, on a new 4,142-token coding prompt, three runs for Bare Speed, one run for Optimized Speed on the release build and two runs for Optimized Quality (the mean where there is more than one), timed at the client: the first token is the time from sending the request to receiving it, and prefill is the prompt's tokens over that time. Long sessions on a hot Mac run slower than the peak.
+
+The app and `mtplx start` read your chip and memory and offer only the packs that fit:
+
+| Your Mac | Inkling 2 Mini pack to use | Also fits | Context |
+|---|---|---|---|
+| 8 GB, M3, M4 or M5 | None fits. MTPLX recommends Qwen 3.5 4B Optimized Speed. |  |  |
+| 16 GB to 18 GB, M3, M4 or M5 | None fits. MTPLX recommends Bonsai 2 27B Optimized Speed. |  |  |
+| 24 GB, M3, M4 or M5 | Inkling 2 Mini Bare Speed | none | 24,576 tokens |
+| 32 GB, M3, M4 or M5 | Inkling 2 Mini Bare Speed | Optimized Speed, Optimized Quality | 163,840 tokens |
+| 36 GB, M3, M4 or M5 | Inkling 2 Mini Bare Speed | Optimized Speed, Optimized Quality | 245,760 tokens |
+| 48 GB, M3, M4 or M5 | Inkling 2 Mini Bare Speed | Optimized Speed, Optimized Quality | 434,176 tokens |
+| 64 GB, M3, M4 or M5 | Inkling 2 Mini Bare Speed | Optimized Speed, Optimized Quality | 749,568 tokens |
+| 96 GB to 512 GB, M3, M4 or M5 | Inkling 2 Mini Bare Speed | Optimized Speed, Optimized Quality | 1,048,576 tokens |
+| 8 GB, M1 or M2 | None fits. |  |  |
+| 16 GB to 24 GB, M1 or M2 | None fits. MTPLX recommends Qwen 3.5 9B Optimized Speed FP16. |  |  |
+| 32 GB, M1 or M2 | Inkling 2 Mini Bare Speed FP16 | Optimized Speed FP16, Optimized Quality FP16 | 163,840 tokens |
+| 64 GB, M1 or M2 | Inkling 2 Mini Bare Speed FP16 | Optimized Speed FP16, Optimized Quality FP16 | 749,568 tokens |
+| 96 GB to 192 GB, M1 or M2 | Inkling 2 Mini Bare Speed FP16 | Optimized Speed FP16, Optimized Quality FP16 | 1,048,576 tokens |
+
+Three packs, each with an FP16 build for M1 and M2 Macs that the app and the CLI pick automatically:
+
+- `Youssofal/Inkling-2-Mini-MTPLX-Bare-Speed`: 4-bit attention, output and embedding, with the official NVFP4 experts. 16.0 GB, 18.2 GiB peak. The first Inkling pick in the app.
+- `Youssofal/Inkling-2-Mini-MTPLX-Optimized-Speed`: 8-bit attention and head, NVFP4 experts. 17.2 GB, 19.9 GiB peak.
+- `Youssofal/Inkling-2-Mini-MTPLX-Optimized-Quality`: the official weights, unchanged. 20.2 GB, 23.5 GiB peak.
+
+```bash
+mtplx pull Youssofal/Inkling-2-Mini-MTPLX-Bare-Speed
+mtplx start pi --model Youssofal/Inkling-2-Mini-MTPLX-Bare-Speed
+```
+
+`mtplx start` also opens `opencode` and `hermes`. Sampling follows the model's own settings: temperature 1.0 over the whole distribution. Every pack needs MTPLX 2.13 or later. Every measured number and its conditions: [mtplx.com/models/inkling-2-mini](https://mtplx.com/models/inkling-2-mini/); step by step: [Run Inkling 2 Mini on a Mac](https://mtplx.com/docs/run-inkling-2-mini-on-a-mac/).
+
 ## Qwen 3.8 27B on a Mac
 
 Qwen 3.8 27B is the coding flagship for Macs with 32 GB or more. MTPLX shipped it on 15 August 2026, the day after Qwen released it. Three packs, each with an FP16 sibling for M1 and M2 that the app and CLI pick automatically:
@@ -126,6 +172,12 @@ The catalog lists MTPLX packs under [Youssofal](https://huggingface.co/Youssofal
 | `Qwen3.8-27B-MTPLX-Bare-Speed-FP16` | 32 GB and up, peaks at 20.0 GiB | The Bare Speed pack for M1 and M2: same weights, every 16-bit tensor cast to fp16. | Turbo, depth 3 |
 | `Qwen3.8-27B-MTPLX-Optimized-Speed-FP16` | 32 GB and up, peaks at 25.0 GiB | The recommended coding model for M1 and M2. | Turbo, depth 3 |
 | `Qwen3.8-27B-MTPLX-Optimized-Quality-FP16` | 36 GB and up, peaks at 33.0 GiB | The Optimized Quality pack for M1 and M2. | Turbo, depth 3 |
+| `Inkling-2-Mini-MTPLX-Bare-Speed` | 24 GB and up on M3 and later (24,576-token window on 24 GB), peaks at 18.2 GiB | Inkling 2 Mini at its quickest: 4-bit attention, output and embedding, with vision. | Sustained, the engine prices the draft depth each round |
+| `Inkling-2-Mini-MTPLX-Optimized-Speed` | 32 GB and up, peaks at 19.9 GiB | 8-bit attention and head, with vision. | Sustained, the engine prices the draft depth each round |
+| `Inkling-2-Mini-MTPLX-Optimized-Quality` | 32 GB and up, peaks at 23.5 GiB | The official weights, unchanged, with vision. | Sustained, the engine prices the draft depth each round |
+| `Inkling-2-Mini-MTPLX-Bare-Speed-FP16` | 32 GB and up on M1 and M2, peaks at 18.2 GiB | The Bare Speed pack for M1 and M2: same weights, every 16-bit tensor cast to fp16. | Sustained, the engine prices the draft depth each round |
+| `Inkling-2-Mini-MTPLX-Optimized-Speed-FP16` | 32 GB and up on M1 and M2, peaks at 19.9 GiB | The Optimized Speed pack for M1 and M2. | Sustained, the engine prices the draft depth each round |
+| `Inkling-2-Mini-MTPLX-Optimized-Quality-FP16` | 32 GB and up on M1 and M2, peaks at 23.5 GiB | The Optimized Quality pack for M1 and M2. | Sustained, the engine prices the draft depth each round |
 | `Qwen3.8-Flash-Next-MTPLX-Bare-Speed` | 96 GB and up, peaks at 78 GiB | The 125B MoE at flat 4-bit, the quickest Flash Next build and the Flash Next pick for 96 GB Macs. Its 32 GB n-gram table streams from SSD. | Turbo, depth 3 |
 | `Qwen3.8-Flash-Next-MTPLX-Optimized-Speed` | 128 GB and up, peaks at 87 GiB | The 125B MoE, dynamic 4-bit with 8-bit attention. Its 32 GB n-gram table streams from SSD. 125.8 tok/s on an OpenCode request on an M5 Max. The first recommendation from 256 GB. | Turbo, depth 3. This family accepts up to depth 5 |
 | `Qwen3.8-Flash-Next-MTPLX-Optimized-Quality` | 256 GB and up, peaks at 136.4 GiB | 8-bit body and MTP head, BF16 structural tensors, 4-bit n-gram table. The highest-fidelity Flash Next build, listed second from 256 GB. | Turbo, depth 3 |

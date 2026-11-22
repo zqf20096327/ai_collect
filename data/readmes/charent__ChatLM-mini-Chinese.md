@@ -1,0 +1,533 @@
+<div align="center">
+
+# 中文对话0.2B小模型 ChatLM-Chinese-0.2B  
+
+中文  | [English](./README.en.md)  
+
+</div>
+ 
+
+# 一、👋介绍 
+现在的大语言模型的参数往往较大，消费级电脑单纯做推理都比较慢，更别说想自己从头开始训练一个模型了。本项目的目标是从0开始训练一个生成式语言模型，包括数据清洗、tokenizer训练、模型预训练、SFT指令微调、RLHF优化等。 
+
+ChatLM-mini-Chinese为中文对话小模型，模型参数只有0.2B（算共享权重约210M），可以在最低4GB显存的机器进行预训练（`batch_size=1`，`fp16`或者` bf16`），`float16`加载、推理最少只需要512MB显存。 
+
+
+- 公开所有预训练、SFT指令微调、DPO偏好优化数据集来源。
+- 使用`Huggingface`NLP框架，包括`transformers`、`accelerate`、`trl`、`peft`等。
+- 自实现`trainer`，支持单机单卡、单机多卡进行预训练、SFT微调。训练过程中支持在任意位置停止，及在任意位置继续训练。
+- 预训练：整合为端到端的`Text-to-Text`预训练，非`mask`掩码预测预训练。
+    - 开源所有数据清洗（如规范化、基于mini_hash的文档去重等）、数据集构造、数据集加载优化等流程；
+    - tokenizer多进程词频统计，支持`sentencepiece`、`huggingface tokenizers`的tokenizer训练；
+    - 预训练支持任意位置断点，可从断点处继续训练;
+    - 大数据集（GB级别）流式加载、支持缓冲区数据打乱，不利用内存、硬盘作为缓存，有效减少内存、磁盘占用。配置`batch_size=1, max_len=320`下，最低支持在16GB内存+4GB显存的机器上进行预训练；
+    - 训练日志记录。
+- SFT微调：开源SFT数据集及数据处理过程。
+    - 自实现`trainer`支持prompt指令微调， 支持任意断点继续训练；
+    - 支持`Huggingface trainer`的`sequence to sequence`微调；
+    - 支持传统的低学习率，只训练decoder层的微调。
+- RLHF偏好优化：使用DPO进行全量偏好优化。
+    - 支持使用`peft lora`进行偏好优化；
+    - 支持模型合并，可将`Lora adapter`合并到原始模型中。
+- 支持下游任务微调：[finetune_examples](./finetune_examples/info_extract/)给出**三元组信息抽取任务**的微调示例，微调后的模型对话能力仍在。
+
+如果需要做基于小模型的检索增强生成（RAG），可以参考我的另一个项目[Phi2-mini-Chinese](https://github.com/charent/Phi2-mini-Chinese)，代码见[rag_with_langchain.ipynb](https://github.com/charent/Phi2-mini-Chinese/blob/main/rag_with_langchain.ipynb)
+
+🟢**最近更新**
+
+<details open> 
+<summary>  <b>2024-01-30</b> </summary>
+- 模型文件更新到魔搭modelscope，可以通过`snapshot_download`快速下载。<br/>
+</details>
+
+<details close> 
+<summary>  <b>2024-01-07</b> </summary>
+- 添加数据清洗过程中基于mini hash实现的文档去重（在本项目中其实是数据集的样本去重），防止模型遇到多次重复数据后，在推理时吐出训练数据。<br/>
+- 添加`DropDatasetDuplicate`类实现对大数据集的文档去重。<br/>
+</details>
+
+<details close> 
+<summary>  <b>2023-12-29</b> </summary>
+- 更新模型代码（权重不变），可以直接使用`AutoModelForSeq2SeqLM.from_pretrained(...)`加载模型使用。<br/>
+- 更新readme文档。<br/>
+</details>
+
+<details close> 
+<summary>  <b>2023-12-18</b> </summary>
+- 补充利用`ChatLM-mini-0.2B`模型微调下游三元组信息抽取任务代码及抽取效果展示 。<br/>
+- 更新readme文档。<br/>
+</details>
+
+<details close> 
+<summary>  <b>2023-12-14</b> </summary>
+- 更新SFT、DPO后的模型权重文件。 <br/>
+- 更新预训练、SFT及DPO脚本。 <br/>
+- 更新`tokenizer`为`PreTrainedTokenizerFast`。 <br/>
+- 重构`dataset`代码，支持动态最大长度，每个批次的最大长度由该批次的最长文本决定，节省显存。 <br/>
+- 补充`tokenizer`训练细节。 <br/>
+</details>
+
+<details close> 
+<summary> <b>2023-12-04</b> </summary>
+- 更新`generate`参数及模型效果展示。<br/>
+- 更新readme文档。<br/>
+</details>
+
+<details close> 
+<summary> <b>2023-11-28</b> </summary>
+- 更新dpo训练代码及模型权重。<br/>
+</details>
+
+<details close> 
+<summary> <b>2023-10-19</b> </summary>
+- 项目开源， 开放模型权重供下载。 <br/>
+</details>
+
+
+# 二、🛠️ChatLM-0.2B-Chinese模型训练过程 
+
+## 2.1 预训练数据集
+所有数据集均来自互联网公开的**单轮对话**数据集，经过数据清洗、格式化后保存为parquet文件。数据处理过程见`src/chatlm/data/raw.py`。主要数据集包括： 
+
+1. 社区问答json版webtext2019zh-大规模高质量数据集，见：[nlp_chinese_corpus](https://github.com/brightmart/nlp_chinese_corpus)。共410万，清洗后剩余260万。
+2. baike_qa2019百科类问答，见：<https://aistudio.baidu.com/datasetdetail/107726>，共140万，清醒后剩余130万。
+3. 中国医药领域问答数据集，见：[Chinese-medical-dialogue-data](https://github.com/Toyhom/Chinese-medical-dialogue-data)，共79万，清洗后剩余79万。
+4. ~~金融行业问答数据，见：<https://zhuanlan.zhihu.com/p/609821974>，共77万，清洗后剩余52万。~~**数据质量太差，未采用。**
+5. 知乎问答数据，见：[Zhihu-KOL](https://huggingface.co/datasets/wangrui6/Zhihu-KOL)，共100万行，清洗后剩余97万行。
+6. belle开源的指令训练数据，介绍：[BELLE](https://github.com/LianjiaTech/BELLE)，下载：[BelleGroup](https://huggingface.co/BelleGroup)，仅选取`Belle_open_source_1M`、`train_2M_CN`、及`train_3.5M_CN`中部分回答较短、不含复杂表格结构、翻译任务（没做英文词表）的数据，共370万行，清洗后剩余338万行。
+7. 维基百科（Wikipedia）词条数据，将词条拼凑为提示语，百科的前`N`个词为回答，使用`202309`的百科数据，清洗后剩余119万的词条提示语和回答。Wiki下载：[zhwiki](https://dumps.wikimedia.org/zhwiki/)，将下载的bz2文件转换为wiki.txt参考：[WikiExtractor](https://github.com/apertium/WikiExtractor)。 
+
+数据集总数量1023万：Text-to-Text预训练集：930万，评估集：2.5万（因为解码较慢，所以没有把评估集设置太大）。~~测试集：90万。~~ 
+SFT微调和DPO优化数据集见下文。
+
+## 2.2 模型
+T5模型（Text-to-Text Transfer Transformer），详情见论文: [Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer](https://arxiv.org/abs/1910.10683)。
+
+模型源码来自huggingface，见：[T5ForConditionalGeneration](https://github.com/huggingface/transformers/blob/main/src/transformers/models/t5/modeling_t5.py#L1557)。
+
+模型配置见[model_config.json](https://huggingface.co/charent/ChatLM-mini-Chinese/blob/main/config.json)，官方的`T5-base`：`encoder layer`和`decoder layer `均为为12层，本项目这两个参数修改为10层。 
+
+模型参数：0.2B。词表大小：29298，仅包含中文和少量英文。
+
+## 2.3 训练过程
+硬件：
+```bash
+# 预训练阶段：
+CPU: 28 vCPU Intel(R) Xeon(R) Gold 6330 CPU @ 2.00GHz
+内存：60 GB
+显卡：RTX A5000(24GB) * 2
+
+# sft及dpo阶段：
+CPU: Intel(R) i5-13600k @ 5.1GHz
+内存：32 GB
+显卡：NVIDIA GeForce RTX 4060 Ti 16GB * 1
+```
+1. **tokenizer 训练**： 现有`tokenizer`训练库遇到大语料时存在OOM问题，故全量语料按照类似`BPE`的方法根据词频合并、构造词库，运行耗时半天。
+
+2. **Text-to-Text 预训练**：学习率为`1e-4`到`5e-3`的动态学习率，预训练时间为8天。训练损失： 
+
+![traing loss](docs/img/train_loss.png) 
+
+3. **prompt监督微调（SFT）**：使用`belle`指令训练数据集（指令和回答长度都在512以下），学习率为`1e-7`到`5e-5`的动态学习率，微调时间2天。微调损失： 
+   
+![finetune loss](docs/img/sft_loss.png) 
+
+4. **dpo直接偏好优化（RLHF）**：数据集[alpaca-gpt4-data-zh](https://huggingface.co/datasets/c-s-ale/alpaca-gpt4-data-zh)作为`chosen`文本，步骤`2`中SFT模型对数据集中的prompt做批量`generate`，得到`rejected`文本，耗时1天，dpo全量偏好优化，学习率`le-5`，半精度`fp16`,共`2`个`epoch`，耗时3h。dpo损失： 
+ 
+![dpo loss](docs/img/dpo_loss.png) 
+
+## 2.4 对话效果展示
+### 2.4.1 stream chat
+默认使用`huggingface transformers`的 `TextIteratorStreamer`实现流式对话，只支持`greedy search`；如需关闭流式输出，给 `chatlm-cli` 加上 `--no-stream` 参数，或修改 `src/chatlm/inference/cli.py` 中的 `stream` 参数。
+![](./docs/img/stream_chat.gif)
+
+### 2.4.2 对话展示
+![](./docs/img/show1.png)
+
+存在问题：预训练数据集只有900多万，模型参数也仅0.2B，不能涵盖所有方面，会有答非所问、废话生成器的情况。
+
+# 三、📑使用说明
+
+## 3.1 快速开始：
+如果无法连接huggingface，请使用`modelscope.snapshot_download`从modelscope下载模型文件。
+```python
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import torch
+
+model_id = "charent/ChatLM-mini-Chinese"
+
+# 如果无法连接huggingface，打开以下两行代码的注释，将从modelscope下载模型文件，模型文件保存到'./artifacts'目录
+# from modelscope import snapshot_download
+# model_id = snapshot_download(model_id, cache_dir='./artifacts')
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForSeq2SeqLM.from_pretrained(model_id, trust_remote_code=True).to(device)
+
+txt = "如何评价Apple这家公司？"
+
+encode_ids = tokenizer([txt])
+input_ids, attention_mask = torch.LongTensor(encode_ids["input_ids"]), torch.LongTensor(encode_ids["attention_mask"])
+
+outs = model.my_generate(
+    input_ids=input_ids.to(device),
+    attention_mask=attention_mask.to(device),
+    max_seq_len=256,
+    search_type="beam",
+)
+
+outs_txt = tokenizer.batch_decode(outs.cpu().numpy(), skip_special_tokens=True, clean_up_tokenization_spaces=True)
+print(outs_txt[0])
+```
+```txt
+Apple是一家专注于设计和用户体验的公司，其产品在设计上注重简约、流畅和功能性，而在用户体验方面则注重用户的反馈和使用体验。作为一家领先的科技公司，苹果公司一直致力于为用户提供最优质的产品和服务，不断推陈出新，不断创新和改进，以满足不断变化的市场需求。
+在iPhone、iPad和Mac等产品上，苹果公司一直保持着创新的态度，不断推出新的功能和设计，为用户提供更好的使用体验。在iPad上推出的iPad Pro和iPod touch等产品，也一直保持着优秀的用户体验。
+此外，苹果公司还致力于开发和销售软件和服务，例如iTunes、iCloud和App Store等，这些产品在市场上也获得了广泛的认可和好评。
+总的来说，苹果公司在设计、用户体验和产品创新方面都做得非常出色，为用户带来了许多便利和惊喜。
+
+```
+
+## 3.2 从克隆仓库代码开始
+
+> [!CAUTION]
+> 本项目模型为`TextToText`模型，在预训练、SFT、RLFH阶段的`prompt`、`response`等字段，请务必加上`[EOS]`序列结束标记。   
+
+
+### 3.2.1 克隆项目：
+```bash
+git clone --depth 1 https://github.com/charent/ChatLM-mini-Chinese.git
+
+cd ChatLM-mini-Chinese
+```
+### 3.2.2 安装依赖 
+
+本项目使用 [uv](https://docs.astral.sh/uv/) 管理依赖，推荐 `python 3.10`（已在 `.python-version` 中固定，`uv` 会自动下载并使用独立的解释器，不会污染系统 Python）。
+
+1. 安装 `uv`（任选其一）：
+
+```bash
+# 官方安装脚本，Windows 请在 PowerShell 中执行
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 或者通过 pipx 安装
+pipx install uv
+```
+
+2. 安装依赖（自动创建 `.venv` 虚拟环境并安装全部依赖）：
+
+```bash
+uv sync
+```
+
+`pyproject.toml` 中已为 `torch` 配置好 CUDA 12.1 官方源（`https://download.pytorch.org/whl/cu121`），无需再单独安装 GPU 版本。如果你的显卡只支持 CUDA 11.8，把 `pyproject.toml` 里 `tool.uv.index` 的地址改为 `https://download.pytorch.org/whl/cu118` 后重新执行 `uv sync` 即可。
+
+如果需要用 jupyter 交互式训练（`train.ipynb`），追加安装开发依赖：
+
+```bash
+uv sync --group dev
+```
+
+3. 运行项目（`uv run` 会自动使用 `.venv` 中的解释器）：
+
+```bash
+uv run chatlm-cli
+uv run chatlm-api
+```
+
+`uv sync` 会把本项目以 editable 模式安装进 `.venv`，因此 `chatlm`、`chatlm-cli`、`chatlm-api` 等命令可以直接使用（`uv run chatlm ...` 会自动使用 `.venv` 中的解释器）；也可以先激活虚拟环境（Windows：`.venv\Scripts\activate`，Linux/macOS：`source .venv/bin/activate`）后直接调用。
+
+> 依赖统一声明在 `pyproject.toml` 中，精确版本由 `uv.lock` 锁定。如果不用 `uv`，可以用 `pip install -r pyproject.toml`（pip ≥ 23.1）安装，但 `pip` 不识别 `tool.uv.index`，需要自行追加 `--index-url https://download.pytorch.org/whl/cu121` 才能装上 GPU 版 `torch`。
+
+### 3.2.3 项目结构
+
+```
+ChatLM-mini-Chinese
+├─configs/                     # accelerate 等运行配置
+├─data/                        # 数据集（示例 parquet 与原始语料）
+├─docs/img/                    # 文档配图
+├─notebook/                    # train.ipynb、tokenizer 训练、C-Eval/CMMLU 评测
+├─src/chatlm/                  # 全部业务源码
+│  ├─config.py                 # 训练/推理配置（dataclass）
+│  ├─paths.py                  # 统一路径定义（可用环境变量覆盖）
+│  ├─cli.py                    # 统一命令行入口 `chatlm`
+│  ├─data/                     # 数据集、tokenizer 训练、语料处理
+│  ├─models/                   # 模型定义
+│  ├─training/                 # 预训练 / SFT / DPO / accelerate 训练循环
+│  ├─inference/                # ChatBot、CLI、FastAPI 服务
+│  └─utils/                    # 日志、指标、文本、IO、HF 适配
+├─tests/                       # 单元测试（pytest）
+├─artifacts/                   # 训练产物：tokenizer、权重、日志（不入库）
+└─pyproject.toml
+```
+
+常用命令：
+
+| 场景 | 命令 |
+| --- | --- |
+| 训练 tokenizer | `uv run chatlm-tokenizer` |
+| 预训练（本项目 trainer） | `uv run chatlm train` |
+| 预训练（HuggingFace trainer） | `uv run chatlm pretrain` |
+| SFT 微调 | `uv run chatlm sft` |
+| DPO 偏好优化 | `uv run chatlm dpo train` |
+| 合并 lora adapter | `uv run chatlm dpo merge` |
+| 命令行对话 | `uv run chatlm-cli` |
+| 启动 API 服务 | `uv run chatlm-api` |
+| 代码检查 / 单元测试 | `uv run ruff check . && uv run pytest` |
+
+产物目录与数据目录可通过环境变量 `CHATLM_ARTIFACT_DIR`、`CHATLM_DATA_DIR` 覆盖。
+
+### 3.2.4 下载预训练模型及模型配置文件
+
+用`git`命令从`Hugging Face Hub`下载模型权重及配置文件，需要先安装[Git LFS](https://docs.github.com/zh/repositories/working-with-files/managing-large-files/installing-git-large-file-storage)，然后运行: 
+
+```bash 
+# 使用git命令下载huggingface模型，先安装[Git LFS]，否则下载的模型文件不可用
+git clone --depth 1 https://huggingface.co/charent/ChatLM-mini-Chinese
+
+# 如果无法连接huggingface，请从modelscope下载
+git clone --depth 1 https://www.modelscope.cn/charent/ChatLM-mini-Chinese.git
+
+mv ChatLM-mini-Chinese artifacts
+```
+
+也可以直接从`Hugging Face Hub`仓库[ChatLM-Chinese-0.2B](https://huggingface.co/charent/ChatLM-mini-Chinese)手工下载，将下载的文件移动到`artifacts`目录下即可。
+
+## 3.3 Tokenizer训练  
+
+1. 准备txt语料  
+
+语料要求尽可能全，建议添加多个语料，如百科、代码、论文、博客、对话等。   
+
+本项目以wiki中文百科为主。获取中文wiki语料方法：中文Wiki下载地址：[zhwiki](https://dumps.wikimedia.org/zhwiki/)，下载`zhwiki-[存档日期]-pages-articles-multistream.xml.bz2`文件，大概2.7GB， 将下载的bz2文件转换为wiki.txt参考：[WikiExtractor](https://github.com/apertium/WikiExtractor)，再利用python的`OpenCC`库转换为简体中文，最后将得到的`wiki.simple.txt`放到项目根目录的`data`目录下即可。多个语料请自行合并为一个`txt`文件。
+
+由于训练tokenizer非常耗内存，如果你的语料非常大（合并后的`txt`文件超过2G），建议对语料按照类别、比例进行采样，以减少训练时间和内存消耗。训练1.7GB的`txt`文件需要消耗48GB左右的内存（预估的，我只有32GB，频繁触发swap，电脑卡了好久T_T），13600k cpu耗时1小时左右。
+
+2. 训练tokenizer
+
+`char level`和`byte level`的区别如下（具体使用上的区别请自行检索资料）。默认训练`char level`的tokenizer，如果需要`byte level`，加参数 `--token-type byte` 即可。
+
+```python
+# 原始文本
+txt = "这是一段中英混输的句子, （chinese and English, here are words.）"
+
+tokens = charlevel_tokenizer.tokenize(txt)
+print(tokens)
+# char level tokens输出
+# ['▁这是', '一段', '中英', '混', '输', '的', '句子', '▁,', '▁(', '▁ch', 'inese', '▁and', '▁Eng', 'lish', '▁,', '▁h', 'ere', '▁', 'are', '▁w', 'ord', 's', '▁.', '▁)']
+
+tokens = bytelevel_tokenizer.tokenize(txt)
+print(tokens)
+# byte level tokens输出
+# ['Ġè¿Ļæĺ¯', 'ä¸Ģæ®µ', 'ä¸Ńèĭ±', 'æ··', 'è¾ĵ', 'çļĦ', 'åı¥åŃĲ', 'Ġ,', 'Ġ(', 'Ġch', 'inese', 'Ġand', 'ĠEng', 'lish', 'Ġ,', 'Ġh', 'ere', 'Ġare', 'Ġw', 'ord', 's', 'Ġ.', 'Ġ)']
+```
+开始训练：
+```bash
+# 确保你的训练语料`txt`文件已经data目录下
+uv run chatlm-tokenizer
+
+# 也可以显式指定参数
+uv run chatlm-tokenizer --corpus-file data/wiki.simple.txt --token-type char --vocab-size 40960
+```
+
+## 3.4 Text-to-Text 预训练 
+
+1. 预训练数据集示例
+```json
+{
+    "prompt": "对于花园街，你有什么了解或看法吗？",
+    "response": "花园街（是香港油尖旺区的一条富有特色的街道，位于九龙旺角东部，北至界限街，南至登打士街，与通菜街及洗衣街等街道平行。现时这条街道是香港著名的购物区之一。位于亚皆老街以南的一段花园街，也就是\"波鞋街\"整条街约150米长，有50多间售卖运动鞋和运动用品的店舖。旺角道至太子道西一段则为排档区，售卖成衣、蔬菜和水果等。花园街一共分成三段。明清时代，花园街是芒角村栽种花卉的地方。此外，根据历史专家郑宝鸿的考证：花园街曾是1910年代东方殷琴拿烟厂的花园。纵火案。自2005年起，花园街一带最少发生5宗纵火案，当中4宗涉及排档起火。2010年。2010年12月6日，花园街222号一个卖鞋的排档于凌晨5时许首先起火，浓烟涌往旁边住宅大厦，消防接报4"
+}
+```
+   
+2. jupyter-lab 或者 jupyter notebook:  
+
+    见文件 `notebook/train.ipynb`，推荐使用jupyter-lab，避免考虑与服务器断开后终端进程被杀的情况。 
+
+3. 控制台： 
+
+    控制台训练需要考虑连接断开后进程被杀的，推荐使用进程守护工具`Supervisor`或者`screen`建立连接会话。
+
+    首先要配置`accelerate`，执行以下命令， 根据提示选择即可，参考`accelerate.yaml`，*注意：DeepSpeed在Windows安装比较麻烦*。
+    ```bash
+    accelerate config
+    ```
+
+    开始训练，如果要使用工程提供的配置请在下面的命令`accelerate launch`后加上参数`--config_file configs/accelerate.yaml`，*该配置按照单机2xGPU配置。* 
+
+    *预训练有两个脚本，本项目实现的trainer对应 `chatlm train`（`src/chatlm/training/accelerate_trainer.py`），huggingface实现的trainer对应 `chatlm pretrain`（`src/chatlm/training/pretrain.py`），用哪个都可以，效果一致。本项目实现的trainer训练信息展示更美观、更容易修改训练细节（如损失函数，日志记录等），均支持断点继续训练，本项目实现的trainer支持在任意位置断点后继续训练，按`ctrl+c`退出脚本时会保存断点信息。* 
+
+    单机单卡：
+    ```bash
+    # 本项目实现的trainer
+    uv run chatlm train
+
+    # 或者使用 huggingface trainer
+    uv run chatlm pretrain
+    ```
+
+    单机多卡：
+    `2`为显卡数量，请根据自己的实际情况修改。
+    ```bash
+    # 本项目实现的trainer
+    accelerate launch --multi_gpu --num_processes 2 -m chatlm.training.accelerate_trainer train
+
+    # 或者使用 huggingface trainer
+    accelerate launch --multi_gpu --num_processes 2 -m chatlm.training.pretrain
+    ```
+
+    从断点处继续训练：
+    ```bash
+    # 本项目实现的trainer
+    accelerate launch --multi_gpu --num_processes 2 -m chatlm.training.accelerate_trainer train --is-keep-training
+
+    # 或者使用 huggingface trainer
+    accelerate launch --multi_gpu --num_processes 2 -m chatlm.training.pretrain --resume-from-checkpoint
+    ```
+
+## 3.5 SFT微调 
+SFT数据集全部来自[BELLE](https://github.com/LianjiaTech/BELLE)大佬的贡献，感谢。SFT数据集分别为：[generated_chat_0.4M](https://huggingface.co/datasets/BelleGroup/generated_chat_0.4M)、[train_0.5M_CN](https://huggingface.co/datasets/BelleGroup/train_0.5M_CN)和[train_2M_CN](https://huggingface.co/datasets/BelleGroup/train_2M_CN)，清洗后剩余约137万行。
+sft指令微调数据集示例：
+```json
+{
+    "prompt": "解释什么是欧洲启示录",
+    "response": "欧洲启示录（The Book of Revelation）是新约圣经的最后一卷书，也被称为《启示录》、《默示录》或《约翰默示录》。这本书从宗教的角度描述了世界末日的来临，以及上帝对世界的审判和拯救。 书中的主题包括来临的基督的荣耀，上帝对人性的惩罚和拯救，以及魔鬼和邪恶力量的存在。欧洲启示录是一个充满象征和暗示的文本，对于解读和理解有许多不同的方法和观点。"
+}
+```
+
+参考`data`目录下的示例`parquet`文件制作自己的数据集，数据集格式：`parquet`文件分两列，一列`prompt`文本，表示提示语，一列`response`文本，表示期待的模型输出。
+微调细节见`src/chatlm/training/accelerate_trainer.py`下的`train`方法, `is_finetune`设置为`True`时，将进行微调，微调默认会冻结embedding层和encoder层，只训练decoder层。如需要冻结其他参数，请自行调整代码。 
+
+运行SFT微调：
+``` bash
+# 本项目实现的trainer， 添加参数`--is-finetune`即可, 参数`--is-keep-training`可从任意断点处继续训练
+uv run chatlm train --is-finetune
+
+# 或者使用 huggingface trainer, 多GPU请用 accelerate launch --multi_gpu --num_processes gpu个数 -m chatlm.training.sft
+uv run chatlm sft
+```
+
+## 3.6 RLHF（强化学习人类反馈优化方法）
+
+偏好方法这里介绍常见的两种：PPO和DPO，具体实现请自行搜索论文及博客。
+
+1.  PPO方法（近似偏好优化,Proximal Policy Optimization）  
+    步骤1：使用微调数据集做有监督微调（SFT， Supervised Finetuning）。   
+    步骤2：使用偏好数据集（一个prompt至少包含2个回复，一个想要的回复，一个不想要的回复。多个回复可以按照分数排序，最想要的分数最高）训练奖励模型（RM， Reward Model）。可使用`peft`库快速搭建Lora奖励模型。   
+    步骤3：利用RM对SFT模型进行有监督PPO训练，使得模型满足偏好。   
+
+2.  使用DPO（直接偏好优化，Direct Preference Optimization）微调（**本项目采用DPO微调方法，比较节省显存**）
+    在获得SFT模型的基础上，无需训练奖励模型，取得正向回答（chosen）和负向回答（rejected）即可开始微调。微调的`chosen`文本来自原数据集[alpaca-gpt4-data-zh](https://huggingface.co/datasets/c-s-ale/alpaca-gpt4-data-zh)，拒绝文本`rejected`来自SFT微调1个epoch后的模型输出，另外两个数据集：[huozi_rlhf_data_json](https://huggingface.co/datasets/Skepsun/huozi_rlhf_data_json)和[rlhf-reward-single-round-trans_chinese](https://huggingface.co/datasets/beyond/rlhf-reward-single-round-trans_chinese)，合并后共8万条dpo数据。
+    
+    dpo数据集处理过程见`src/chatlm/data/dpo.py`。
+    
+DPO偏好优化数据集示例：
+```json
+    {
+        "prompt": "为给定的产品创建一个创意标语。，输入：可重复使用的水瓶。",
+        "chosen": "\"保护地球，从拥有可重复使用的水瓶开始！\"",
+        "rejected": "\"让你的水瓶成为你的生活伴侣，使用可重复使用的水瓶，让你的水瓶成为你的伙伴\""
+    }
+```
+
+运行偏好优化：
+``` bash
+#  多GPU请用 accelerate launch --multi_gpu --num_processes gpu个数 -m chatlm.training.dpo train
+uv run chatlm dpo train
+```
+
+## 3.7 推理 
+确保`artifacts`目录下有以下文件，这些文件都可以在`Hugging Face Hub`仓库[ChatLM-Chinese-0.2B](https://huggingface.co/charent/ChatLM-mini-Chinese)中找到：
+```bash
+ChatLM-mini-Chinese
+├─artifacts
+|  ├─config.json
+|  ├─configuration_chat_model.py
+|  ├─generation_config.json
+|  ├─model.safetensors
+|  ├─modeling_chat_model.py
+|  ├─special_tokens_map.json
+|  ├─tokenizer.json
+|  └─tokenizer_config.json
+```
+
+1. 控制台运行：
+```bash
+uv run chatlm-cli
+```
+
+2. API调用
+```bash
+uv run chatlm-api
+```
+
+API调用示例：
+```bash
+curl --location '127.0.0.1:8812/api/chat' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer Bearer' \
+--data '{
+    "input_txt": "感冒了要怎么办"
+}'
+```
+![api demo](./docs/img/api_example.png)
+
+## 3.8 下游任务微调
+
+这里以文本中三元组信息为例，做下游微调。该任务的传统深度学习抽取方法见仓库[pytorch_IE_model](https://github.com/charent/pytorch_IE_model)。抽取出一段文本中所有的三元组，如句子`《写生随笔》是冶金工业2006年出版的图书，作者是张来亮`，抽取出三元组`(写生随笔,作者,张来亮)`和`(写生随笔,出版社,冶金工业)`。 
+
+原始数据集为：[百度三元组抽取数据集](https://aistudio.baidu.com/datasetdetail/11384)。加工得到的微调数据集格式示例：
+```json
+{
+    "prompt": "请抽取出给定句子中的所有三元组。给定句子：《家乡的月亮》是宋雪莱演唱的一首歌曲，所属专辑是《久违的哥们》",
+    "response": "[(家乡的月亮,歌手,宋雪莱),(家乡的月亮,所属专辑,久违的哥们)]"
+}
+```
+
+可以直接使用 `chatlm-sft` 进行微调，脚本[finetune_IE_task.ipynb](./finetune_examples/info_extract/finetune_IE_task.ipynb)里面包含详细的解码过程。训练数据集约`17000`条，学习率`5e-5`，训练epoch`5`。微调后其他任务的对话能力也没有消失。
+
+![信息抽取任务微调后的对话能力](./docs/img/ie_task_chat.png)
+
+微调效果：
+将`百度三元组抽取数据集`公开的`dev`数据集作为测试集，对比传统方法[pytorch_IE_model](https://github.com/charent/pytorch_IE_model)。
+
+|          模型            |   F1分数  |  精确率P |  召回率R |
+|          :---            |  :----:  |    :---:  |  :---:   |
+| ChatLM-Chinese-0.2B微调  |   0.74    |  0.75   |  0.73    |
+| ChatLM-Chinese-0.2B无预训练| 0.51    |   0.53   | 0.49    |
+| 传统深度学习方法          |   0.80    |  0.79   |  80.1    |
+
+备注：`ChatLM-Chinese-0.2B无预训练`指直接初始化随机参数，开始训练，学习率`1e-4`，其他参数和微调一致。
+
+## 3.9 C-Eval分数
+模型本身没有使用较大的数据集训练，也没有针对回答选择题的指令做微调，C-Eval分数基本上是baseline水平，有需要的可以当个参考。C-Eval评测代码见：`notebook/c_eval.ipynb`
+
+| category   | correct | question_count| accuracy |
+|    :---    |  :----:    |    :---:      |  :---:   |
+| Humanities |  	63    |    	257       |	  24.51% |
+| Other	     |     89     |	     384      |   23.18% |
+| STEM       |	   89	  |      430      |  20.70%  |
+| Social Science |   72   |	     275      |	  26.18% |
+
+# 四、🎓引用
+如果你觉得本项目对你有所帮助，欢迎引用。
+```conf
+@misc{Charent2023,
+    author={Charent Chen},
+    title={A small chinese chat language model with 0.2B parameters base on T5},
+    year={2023},
+    publisher = {GitHub},
+    journal = {GitHub repository},
+    howpublished = {\url{https://github.com/charent/ChatLM-mini-Chinese}},
+}
+```
+
+# 五、🤔其他事项
+本项目不承担开源模型和代码导致的数据安全、舆情风险或发生任何模型被误导、滥用、传播、不当利用而产生的风险和责任。
+
+<!-- # 提示
+```bash
+# 导出项目依赖的包：
+pipreqs --encoding "utf-8" --force
+``` -->
+

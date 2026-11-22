@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.39-green.svg" alt="Version 1.4.39" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.40-green.svg" alt="Version 1.4.40" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -45,11 +45,11 @@ https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 <details open>
 <summary>Already run Claude Code? Install the plugin</summary>
 
-With Claude Code 2.1.327+ and Bun 1.4.2+ installed:
+With Claude Code 2.1.330+ and Bun 1.4.2+ installed:
 
 ```bash
 claude plugin install hermitd --marketplace gtapps/hermitd --scope local
-claude "/hermitd:hatch"
+claude --chrome "/hermitd:hatch"
 ```
 
 </details>
@@ -290,7 +290,7 @@ See [budgets](plugins/hermitd/docs/config-reference.md#budget) and [routine sche
 Reach the running agent through your connected channels or Claude Code Remote Control. You can also start separate sessions for additional work:
 
 - **Background sessions with follow-up.** Through [`/spawn-session`](plugins/hermitd/skills/spawn-session/SKILL.md), the agent launches a local Claude Code helper in the project, or in another folder with `--cwd`, and relays its status when it becomes idle. Claude Code isolates the helper's edits in a Git worktree unless the project sets `worktree.bgIsolation` to `none`; pass `--worktree` to give it one from the start. Set the helper’s model and effort with options such as `--model sonnet --effort high`.
-- **Task threads for helpers.** A task thread can be bound to a spawned session: follow-ups in the thread go to that session, its reports land on the task, and `!model` or `!effort` in the thread switch that helper without losing its conversation. A request that continues the same work goes back to the same session.
+- **Task threads for helpers.** Helpers end on their full report, and the resident handles the receipt after the idle notice. Chat tasks receive their reports in the task conversation. Reply-only channels and terminal sessions get a short report-back with the full report available on request. Related new work can return to the same idle helper in the same chat and folder. Use `!model` or `!effort` in a bound thread to switch the helper, and `!status` to see results ready for review.
 - **Local [Remote Control](https://code.claude.com/docs/en/remote-control) gate.** Through [`/rc-gate`](plugins/hermitd/skills/rc-gate/SKILL.md), the agent manages a Remote Control server on your machine or server. While the gate is open, you can spawn new Claude Code sessions from the Claude app, using your local files and tools. Each session gets its own Git worktree, while the agent keeps running.
 
 Both session-spawning paths require a Git workspace. Remote Control requires a Claude sign-in through `/login` on the machine running the agent.

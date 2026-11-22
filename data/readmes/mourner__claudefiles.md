@@ -40,7 +40,7 @@ with a `⚠` above `1.1x`; the 5-hour limit shows only the warning. Hidden in a 
 
 **Costs** are computed from the transcript at API list prices, so on a subscription they're
 notional, but still show which turns are expensive and what a model or effort change costs. On
-subscriptions they're shown as a share of the weekly quota, at roughly $2.25 per 1% on Pro,
+subscriptions they're shown as a share of the weekly quota, at roughly $2.10 per 1% on Pro,
 scaled by the plan's published quota multiple (Team Standard 1.25x, Max 5x, Team Premium 6.25x,
 Max 20x) read from `.claude.json`. Measured with Opus 5.5, so treat it as rough. On API billing,
 or with `STATUSLINE_COST=1`, they show in dollars; `STATUSLINE_COST=0` hides them.

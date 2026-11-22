@@ -205,6 +205,7 @@ Community projects that extend NextTransformer.
 
 - **By November 14, 2026:** Arena v2 and agent-native research.
 - **2K scaling:** start with the [T3 size sweep](https://interactive-active-ai.github.io/NextTransformer/#scaling), refine the fits, check preregistered forecasts, then hold out C200 for the final test.
+- **MoE track:** two Marin-derived MoE sizes (d768, d1024) at a fixed token and FLOPs budget, reproducing Marin's Grug MoE recipe, scored by MoE-CORE (10 short tasks + RULER/FDA/SWDE long-context tasks up to 4K) and a standard throughput harness. See [`moe/`](moe/README.md); formal baseline runs are next.
 - **Hybrid GDN + QSA:** completed formal results, cumulative audit and [run notes](https://interactive-active-ai.github.io/NextTransformer/docs/results/runs/qsa_hybrid/).
 - **Planned:** checkpoints and the tokenizer on the Hugging Face Hub.
 

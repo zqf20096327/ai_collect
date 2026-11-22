@@ -7,7 +7,7 @@ Test coverage: 91.8% 😍👌
   <a  href="https://www.clai.chat">
   <img src="img/clai-logo.png" alt="clai logo" width="112">
   </a>
-  <h2>Command Line Artificial Intelligence</h2>
+  <h2>&gt;|✦ Command Line Artificial Intelligence</h2>
   <p><code>clai</code> (<i>/klaɪ/</i>, like "cli" in "<b>cli</b>mate") is a unix-like command line agentic harness with batteries hosted online.</p>
 </div>
 
@@ -38,6 +38,8 @@ clai | clai query Please give a concise explanation of clai
 ```
 
 Install [Glow](https://github.com/charmbracelet/glow) for formatted markdown output when querying text responses.
+
+`man clai` documents every command. setup.sh installs the page, and the first run of a new release in a terminal installs or updates it; `clai man install` does it on demand and `CLAI_MANPAGE=off` turns the automatic install off.
 
 See <a href="https://www.clai.chat">clai.chat</a> for details on usecase of all the features. Here's a brief summary:
 
