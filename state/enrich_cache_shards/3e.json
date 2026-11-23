@@ -439,12 +439,12 @@
   }
  },
  "sdcb/chats": {
-  "commit_90d": 81,
-  "commit_7d": 0,
-  "rel_ver": "1.17.0.772",
-  "rel_pub": "2026-08-27",
-  "rel_days": 51,
-  "rel_n90": 5,
+  "commit_90d": 18,
+  "commit_7d": 12,
+  "rel_ver": "1.17.1.799",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -459,10 +459,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4751,6 +4751,50 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "alejandro945/mlops-a-ciegas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 94,
+   "Python": 5,
+   "Shell": 1,
+   "JavaScript": 1,
+   "HCL": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "saberfazliahmadi/eu-trustworthy-llm-stack": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 62,
+   "Jupyter Notebook": 38,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

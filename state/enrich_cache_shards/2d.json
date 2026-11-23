@@ -2910,8 +2910,8 @@
   }
  },
  "imkofty/Hermuse": {
-  "commit_90d": 58,
-  "commit_7d": 32,
+  "commit_90d": 59,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2923,10 +2923,10 @@
    "Shell": 60,
    "JavaScript": 40
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"

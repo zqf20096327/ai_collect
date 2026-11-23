@@ -77,8 +77,8 @@
   }
  },
  "EmbraceAGI/awesome-chatgpt-zh": {
-  "commit_7d": 7,
-  "commit_90d": 94,
+  "commit_7d": 8,
+  "commit_90d": 102,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -89,10 +89,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5041,5 +5041,55 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": null
+ },
+ "GenAIwithMS/OpenGPT": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 91,
+   "Python": 3,
+   "Rust": 3,
+   "JavaScript": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "adonaiongaia/Studio-for-Janas": {
+  "rel_ver": "Studio-for-Janas",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 61,
+   "TypeScript": 38,
+   "CSS": 0,
+   "Python": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

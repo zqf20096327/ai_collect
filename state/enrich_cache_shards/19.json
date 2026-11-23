@@ -1309,13 +1309,16 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261123",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261123"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "Quor-a/ZorvAI": {
   "rel_ver": "v1.2.4",
@@ -4742,6 +4745,53 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "Aruvaro-Chulvi/OFFLINED": {
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 16,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "LexCraft-IT/mcp-legal-it": {
+  "rel_ver": "v2.17.2",
+  "rel_pub": "2026-11-18",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100,
+   "JavaScript": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

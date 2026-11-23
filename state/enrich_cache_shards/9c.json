@@ -4967,5 +4967,46 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "Juanlabs1989/descript-pro-win": {
+  "commit_90d": 5,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "HimanshuMohanty-Git24/upasarathi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 75,
+   "JavaScript": 18,
+   "CSS": 7
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

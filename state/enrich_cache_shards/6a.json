@@ -4701,16 +4701,16 @@
    "Shell": 9,
    "Jinja": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261123",
   "dim_ts": {
    "release": "20261120",
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103",
-   "commit": "20261116"
+   "commit": "20261123"
   },
-  "commit_90d": 97,
-  "commit_7d": 48
+  "commit_90d": 134,
+  "commit_7d": 34
  },
  "Dharshaneshwaran/hyperpod": {
   "rel_ver": null,
@@ -5181,6 +5181,33 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "abysschaos/kaggle-moss-lora-pipeline": {
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 90,
+   "PowerShell": 4,
+   "Jupyter Notebook": 2,
+   "C#": 2,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

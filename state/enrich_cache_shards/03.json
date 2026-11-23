@@ -148,7 +148,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.4",
   "rel_pub": "2023-07-20",
-  "rel_days": 1184,
+  "rel_days": 1222,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4484,6 +4484,107 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "suryacode04/jasper-ai-win": {
+  "commit_90d": 5,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "pegainfer-project/kern": {
+  "commit_90d": 397,
+  "commit_7d": 15,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 12,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 69,
+   "Python": 9,
+   "JavaScript": 5,
+   "TypeScript": 5,
+   "CSS": 5
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "adelphidata/borg": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 7,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 89,
+   "TypeScript": 11,
+   "Shell": 0,
+   "Python": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "100yenadmin/ai-emotion-chip": {
+  "rel_ver": "v0.3.4",
+  "rel_pub": "2026-11-13",
+  "rel_days": 10,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "HTML": 2
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

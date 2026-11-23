@@ -171,8 +171,8 @@
   }
  },
  "asavinov/intelligent-trading-bot": {
-  "commit_90d": 17,
-  "commit_7d": 10,
+  "commit_90d": 24,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -183,10 +183,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5168,6 +5168,57 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "osmvision/freetime": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 48,
+   "JavaScript": 26,
+   "Rust": 15,
+   "PLpgSQL": 5,
+   "CSS": 5
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "DaviRain-Su/dreader": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 24,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

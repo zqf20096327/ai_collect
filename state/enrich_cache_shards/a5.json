@@ -4905,5 +4905,51 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "prestonlogan/Qwen3.8-Flash-Next-Single-DGX-Spark-Ultrafast": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 44,
+   "Python": 43,
+   "Dockerfile": 7,
+   "Shell": 6
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "TinDang97/rust-auto-ontology": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

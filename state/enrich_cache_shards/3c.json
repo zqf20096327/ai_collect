@@ -3675,11 +3675,11 @@
    "Python": 70,
    "HTML": 30
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261123",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261024",
+   "security": "20261123",
    "contrib": "20261024",
    "lang": "20261024"
   }

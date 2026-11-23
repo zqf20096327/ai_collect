@@ -267,12 +267,12 @@
   }
  },
  "s60sc/ESP32-CAM_MJPEG2SD": {
-  "commit_7d": 5,
-  "commit_90d": 119,
-  "rel_ver": "v10.10.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 3,
-  "rel_n90": 4,
+  "commit_7d": 16,
+  "commit_90d": 99,
+  "rel_ver": "v10.10.3",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -286,10 +286,10 @@
    "JavaScript": 7,
    "C": 5
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -399,8 +399,8 @@
   }
  },
  "superpung/TJU-CourseSharing": {
-  "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_7d": 5,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -411,10 +411,10 @@
   "lang": {
    "Tcl": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4714,6 +4714,27 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "getosmo/osmo-ai-plugins": {
+  "rel_ver": "v1.7.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

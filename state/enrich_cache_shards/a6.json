@@ -1817,13 +1817,16 @@
    "JavaScript": 34,
    "CSS": 9
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261123",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261123"
+  },
+  "commit_90d": 9,
+  "commit_7d": 0
  },
  "theheavenlyd3mon/hermes-profiles": {
   "rel_ver": null,
@@ -4134,11 +4137,11 @@
   }
  },
  "d4ichi/PassGAN": {
-  "commit_90d": 2,
-  "commit_7d": 2,
+  "commit_90d": 5,
+  "commit_7d": 0,
   "rel_ver": "data",
   "rel_pub": "2019-06-16",
-  "rel_days": 2687,
+  "rel_days": 2717,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -4152,10 +4155,10 @@
    "Jupyter Notebook": 25,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"

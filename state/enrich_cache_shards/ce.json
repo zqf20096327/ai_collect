@@ -4409,8 +4409,8 @@
  },
  "alchaincyf/darwin-skill": {
   "commit_90d": 12,
-  "commit_7d": 7,
-  "rel_ver": "v3.0.1",
+  "commit_7d": 1,
+  "rel_ver": "v3.0.2",
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -4421,17 +4421,17 @@
    "HTML": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
   },
-  "rel_pub": "2026-11-14",
-  "rel_days": 2,
-  "rel_n90": 2,
+  "rel_pub": "2026-11-18",
+  "rel_days": 5,
+  "rel_n90": 3,
   "rel_pre": false
  },
  "georgekhananaev/excel-ai-assistant": {

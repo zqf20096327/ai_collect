@@ -3478,8 +3478,8 @@
   }
  },
  "open-net-worth-ai/open-net-worth": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "0.1.63",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -3492,16 +3492,20 @@
    "JavaScript": 2,
    "HTML": 0
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
    "commit": "20261109"
   },
   "commit_90d": 782,
-  "commit_7d": 339
+  "commit_7d": 339,
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false
  },
  "ancs21/playpanda": {
   "rel_ver": "v0.0.3",
@@ -5045,6 +5049,27 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "dsphere/dsphere-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 57,
+   "PowerShell": 34,
+   "Shell": 10
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

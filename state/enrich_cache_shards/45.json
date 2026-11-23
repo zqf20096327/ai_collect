@@ -4676,10 +4676,10 @@
  },
  "prooflinedev/yek": {
   "commit_90d": 11,
-  "commit_7d": 11,
+  "commit_7d": 0,
   "rel_ver": "v0.26.0",
   "rel_pub": "2026-11-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -4694,10 +4694,10 @@
    "PowerShell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
@@ -4949,6 +4949,25 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "gravion-ux/local-slm-eval-kit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

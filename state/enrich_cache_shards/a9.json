@@ -242,7 +242,7 @@
   }
  },
  "kaushikb11/awesome-llm-agents": {
-  "commit_90d": 12,
+  "commit_90d": 13,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -254,10 +254,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

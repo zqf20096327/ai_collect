@@ -260,8 +260,8 @@
   }
  },
  "OpenKore/openkore": {
-  "commit_90d": 83,
-  "commit_7d": 72,
+  "commit_90d": 116,
+  "commit_7d": 33,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -276,10 +276,10 @@
    "C++": 4,
    "PHP": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4390,6 +4390,33 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "BerriAI/inference-stack": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "JavaScript": 23,
+   "CSS": 5,
+   "Shell": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

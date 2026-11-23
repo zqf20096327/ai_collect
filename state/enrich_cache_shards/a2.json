@@ -227,12 +227,12 @@
   }
  },
  "arabold/docs-mcp-server": {
-  "commit_7d": 4,
-  "commit_90d": 501,
-  "rel_ver": "v3.4.1",
-  "rel_pub": "2026-10-25",
-  "rel_days": 20,
-  "rel_n90": 6,
+  "commit_7d": 12,
+  "commit_90d": 503,
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -247,10 +247,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5133,6 +5133,43 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "JieFedorov81/runway-ml-pro-win": {
+  "commit_90d": 5,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "greyhatguy007/greyhatguy007": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

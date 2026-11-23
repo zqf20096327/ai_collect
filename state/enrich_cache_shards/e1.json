@@ -4407,11 +4407,11 @@
   }
  },
  "pardnchiu/Agenvoy": {
-  "commit_90d": 576,
-  "commit_7d": 4,
-  "rel_ver": "v1.2.2",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_90d": 630,
+  "commit_7d": 56,
+  "rel_ver": "v1.3.23",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4427,10 +4427,10 @@
    "HTML": 2,
    "Python": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"

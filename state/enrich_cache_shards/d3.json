@@ -310,12 +310,12 @@
   }
  },
  "FluxML/Zygote.jl": {
-  "commit_7d": 10,
-  "commit_90d": 52,
-  "rel_ver": "v0.7.18",
-  "rel_pub": "2026-11-12",
-  "rel_days": 2,
-  "rel_n90": 6,
+  "commit_7d": 5,
+  "commit_90d": 57,
+  "rel_ver": "v0.7.19",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -326,10 +326,10 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2455,8 +2455,8 @@
   }
  },
  "leandrodaf/3d-new-era-ai": {
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-10-01",
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-11-02",
   "rel_days": 21,
   "rel_n90": 12,
   "rel_pre": false,
@@ -2473,9 +2473,9 @@
    "Shell": 2,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261022",
+   "release": "20261123",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022",
@@ -4592,6 +4592,23 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "Maudeunfledged834/startup-founder-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

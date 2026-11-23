@@ -4585,11 +4585,11 @@
   }
  },
  "materialsproject/matbench": {
-  "commit_90d": 46,
-  "commit_7d": 46,
+  "commit_90d": 113,
+  "commit_7d": 14,
   "rel_ver": "v0.6",
   "rel_pub": "2022-07-27",
-  "rel_days": 1550,
+  "rel_days": 1580,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -4603,10 +4603,10 @@
    "Jupyter Notebook": 48,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"

@@ -158,11 +158,11 @@
   }
  },
  "bojieli/ai-infra-book": {
-  "commit_90d": 343,
-  "commit_7d": 0,
-  "rel_ver": "build-20261001-161920",
-  "rel_pub": "2026-10-01",
-  "rel_days": 15,
+  "commit_90d": 350,
+  "commit_7d": 9,
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -178,10 +178,10 @@
    "C": 1,
    "Cuda": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4059,8 +4059,8 @@
   }
  },
  "makushingu/harness-maxxing": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v2.0.0a163",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -4073,16 +4073,20 @@
    "Shell": 2,
    "Go": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
    "commit": "20261107"
   },
   "commit_90d": 577,
-  "commit_7d": 244
+  "commit_7d": 244,
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": true
  },
  "Gateton/Pliego-Lab": {
   "rel_ver": null,
@@ -4584,7 +4588,7 @@
   }
  },
  "OpenMontageInc/OpenMontage": {
-  "commit_90d": 301,
+  "commit_90d": 277,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -4600,10 +4604,10 @@
    "TypeScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
@@ -5100,6 +5104,49 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "mgiachetti/little-bit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "Kosmoray/dayan-enterprise-ai-skills": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 0,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

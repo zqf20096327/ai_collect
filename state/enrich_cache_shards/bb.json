@@ -598,13 +598,13 @@
   }
  },
  "Helldez/BigMoeOnEdge": {
-  "commit_7d": 59,
-  "commit_90d": 275,
-  "rel_ver": "v0.43.1",
-  "rel_pub": "2026-11-14",
+  "commit_7d": 55,
+  "commit_90d": 330,
+  "rel_ver": "v0.47.2",
+  "rel_pub": "2026-11-21",
   "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -618,10 +618,10 @@
    "Svelte": 3,
    "Shell": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261118",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1379,8 +1379,8 @@
   "commit_7d": 0
  },
  "pleasedodisturb/awesome-llm-token-optimization": {
-  "commit_7d": 3,
-  "commit_90d": 8,
+  "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1391,9 +1391,9 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261021",
+   "commit": "20261123",
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",

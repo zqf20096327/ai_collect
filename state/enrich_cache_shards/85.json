@@ -4792,5 +4792,26 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "xiaohuajia2005/arcgis-pro-mcp-demo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 48,
+   "Python": 43,
+   "Batchfile": 9
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

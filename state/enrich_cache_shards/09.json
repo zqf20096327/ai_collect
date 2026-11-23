@@ -4580,5 +4580,35 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "ifm-ai/xllm": {
+  "commit_90d": 270,
+  "commit_7d": 104,
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-10-24",
+  "rel_days": 30,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 60,
+   "Cuda": 29,
+   "C++": 11,
+   "Shell": 0,
+   "C": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

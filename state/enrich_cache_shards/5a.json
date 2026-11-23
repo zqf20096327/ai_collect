@@ -3791,9 +3791,9 @@
   }
  },
  "MicTx/spec-harness": {
-  "rel_ver": "v0.21.3",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3806,9 +3806,9 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
@@ -4961,6 +4961,33 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "paulmann/RAGRAF": {
+  "rel_ver": "v0.13.10",
+  "rel_pub": "2026-11-23",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "PowerShell": 5,
+   "JavaScript": 3,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

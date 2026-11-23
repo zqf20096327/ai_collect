@@ -4964,5 +4964,35 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "arthjean/paneflow": {
+  "commit_90d": 1469,
+  "commit_7d": 207,
+  "rel_ver": "v0.20.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Rust": 66,
+   "C": 27,
+   "C++": 3,
+   "Shell": 2,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

@@ -684,11 +684,11 @@
   }
  },
  "dronefreak/human-action-classification": {
-  "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_7d": 19,
+  "commit_90d": 22,
   "rel_ver": "v3.0",
   "rel_pub": "2025-11-18",
-  "rel_days": 334,
+  "rel_days": 370,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -700,10 +700,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5279,6 +5279,30 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "DrobyshevDev/decisionrl": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-07-18",
+  "rel_days": 128,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

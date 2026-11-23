@@ -4728,11 +4728,11 @@
   }
  },
  "sugarforever/chat-ollama": {
-  "commit_90d": 150,
-  "commit_7d": 50,
+  "commit_90d": 152,
+  "commit_7d": 2,
   "rel_ver": "agent-v0.4.0",
   "rel_pub": "2026-09-09",
-  "rel_days": 68,
+  "rel_days": 75,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -4748,10 +4748,10 @@
    "JavaScript": 2,
    "SCSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
@@ -4940,6 +4940,25 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "EvilFreelancer/nd-search": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

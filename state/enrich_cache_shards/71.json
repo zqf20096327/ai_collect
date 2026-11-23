@@ -3416,8 +3416,8 @@
   }
  },
  "eee1723/dsh-houdini": {
-  "rel_ver": "v0.0.13",
-  "rel_pub": "2026-10-20",
+  "rel_ver": "v0.1.13",
+  "rel_pub": "2026-11-19",
   "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
@@ -3434,9 +3434,9 @@
    "PowerShell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",

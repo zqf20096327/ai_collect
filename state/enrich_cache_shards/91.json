@@ -231,8 +231,8 @@
   }
  },
  "sambecker/exif-photo-blog": {
-  "commit_90d": 274,
-  "commit_7d": 2,
+  "commit_90d": 278,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -245,10 +245,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

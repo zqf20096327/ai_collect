@@ -278,7 +278,7 @@
   }
  },
  "tingaicompass/AI-Compass": {
-  "commit_90d": 16,
+  "commit_90d": 15,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -291,10 +291,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261119",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3888,11 +3888,11 @@
    "Shell": 2,
    "Inno Setup": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261123",
   "dim_ts": {
    "commit": "20261121",
    "release": "20261121",
-   "security": "20261024",
+   "security": "20261123",
    "contrib": "20261024",
    "lang": "20261024"
   }

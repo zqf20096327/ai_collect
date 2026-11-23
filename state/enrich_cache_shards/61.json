@@ -185,11 +185,11 @@
   }
  },
  "LykosAI/StabilityMatrix": {
-  "commit_7d": 3,
-  "commit_90d": 196,
+  "commit_7d": 19,
+  "commit_90d": 198,
   "rel_ver": "v2.16.5",
   "rel_pub": "2026-10-21",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -207,10 +207,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5069,6 +5069,97 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "fuyi25/MiniMax-H3-Tiny": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "chongyangzhang92-hub/Sol-Next": {
+  "rel_ver": "v6.5.2-public",
+  "rel_pub": "2026-11-23",
+  "rel_days": 0,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "vuongtex/naota": {
+  "rel_ver": "desktop",
+  "rel_pub": "2026-11-02",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "JavaScript": 21,
+   "CSS": 2,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "DashingMZA/sendcms": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 2,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

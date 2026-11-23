@@ -363,7 +363,7 @@
   "commit_90d": 10,
   "rel_ver": "v1.3.6",
   "rel_pub": "2026-10-02",
-  "rel_days": 45,
+  "rel_days": 52,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -381,10 +381,10 @@
    "Makefile": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -684,8 +684,8 @@
   }
  },
  "amitshekhariitbhu/ai-system-design": {
-  "commit_7d": 14,
-  "commit_90d": 57,
+  "commit_7d": 18,
+  "commit_90d": 75,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -696,10 +696,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261120",
    "contrib": "20261017",
    "lang": "20261017"

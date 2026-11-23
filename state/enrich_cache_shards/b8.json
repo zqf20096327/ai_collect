@@ -1801,9 +1801,9 @@
   }
  },
  "aaditya-v-more/claude-graft": {
-  "rel_ver": "v1.1.6",
-  "rel_pub": "2026-09-17",
-  "rel_days": 33,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1817,13 +1817,16 @@
    "Shell": 4,
    "JavaScript": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261123",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261123"
+  },
+  "commit_90d": 406,
+  "commit_7d": 59
  },
  "enapt/SwarmLLM": {
   "rel_ver": "v0.3.245-alpha",
@@ -5389,6 +5392,33 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "essmos/nonodb": {
+  "rel_ver": "v0.29.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 68,
+   "Python": 22,
+   "TypeScript": 7,
+   "Go": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

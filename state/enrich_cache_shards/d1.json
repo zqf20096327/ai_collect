@@ -866,8 +866,8 @@
   }
  },
  "MelihGulum/Comprehensive-Data-Science-AI-Project-Portfolio": {
-  "commit_90d": 3,
-  "commit_7d": 0,
+  "commit_90d": 5,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -882,10 +882,10 @@
    "CSS": 0,
    "TSQL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5490,6 +5490,33 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "wachterjohannes/synapse": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 82,
+   "Shell": 8,
+   "Twig": 7,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

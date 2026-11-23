@@ -113,11 +113,11 @@
   }
  },
  "NVlabs/Sana": {
-  "commit_7d": 4,
-  "commit_90d": 26,
+  "commit_7d": 0,
+  "commit_90d": 25,
   "rel_ver": "streamrender-h3-examples-v1",
   "rel_pub": "2026-10-11",
-  "rel_days": 33,
+  "rel_days": 43,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1363,8 +1363,8 @@
   }
  },
  "fangpin/llm-from-scratch": {
-  "commit_90d": 9,
-  "commit_7d": 0,
+  "commit_90d": 10,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1379,10 +1379,10 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4929,6 +4929,53 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "GuzmanJacqueline93/copy-ai-pro-win": {
+  "commit_90d": 5,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "DivyanshuSingh96/machyon": {
+  "rel_ver": "v1.2.4",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 75,
+   "TypeScript": 12,
+   "JavaScript": 8,
+   "CSS": 3,
+   "Jupyter Notebook": 2
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

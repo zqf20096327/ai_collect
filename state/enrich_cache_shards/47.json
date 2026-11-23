@@ -4943,13 +4943,16 @@
    "JavaScript": 7,
    "PowerShell": 4
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261123",
   "dim_ts": {
    "release": "20261120",
    "security": "20261120",
    "contrib": "20261120",
-   "lang": "20261120"
-  }
+   "lang": "20261120",
+   "commit": "20261123"
+  },
+  "commit_90d": 59,
+  "commit_7d": 59
  },
  "ngiken/KenEasy-Gemini-MCP-Auto-Helper": {
   "rel_ver": "v0.2.0",

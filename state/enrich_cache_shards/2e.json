@@ -165,11 +165,11 @@
   }
  },
  "ranuts/document": {
-  "commit_7d": 22,
-  "commit_90d": 668,
+  "commit_7d": 2,
+  "commit_90d": 415,
   "rel_ver": "v0.0.9",
   "rel_pub": "2026-11-02",
-  "rel_days": 5,
+  "rel_days": 21,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -185,10 +185,10 @@
    "CSS": 2,
    "EJS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5333,6 +5333,27 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "axisvela/praxo-core-objc": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Objective-C": 98,
+   "Python": 2,
+   "Ruby": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

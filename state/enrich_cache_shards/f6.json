@@ -646,8 +646,8 @@
   }
  },
  "sunrainyg/RandOpt": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 3,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -661,10 +661,10 @@
    "Shell": 7,
    "Jinja": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1726,12 +1726,12 @@
   }
  },
  "Tencent-Hunyuan/Hy-Memory": {
-  "commit_7d": 154,
-  "commit_90d": 603,
-  "rel_ver": "v1.0.6",
-  "rel_pub": "2026-11-06",
-  "rel_days": 10,
-  "rel_n90": 6,
+  "commit_7d": 1,
+  "commit_90d": 604,
+  "rel_ver": "v1.0.8",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1746,10 +1746,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261118",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4566,6 +4566,33 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "fedeya/wisp-ai": {
+  "rel_ver": "v0.3.2-nightly.207.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 56,
+   "Lua": 40,
+   "Rust": 3,
+   "JavaScript": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

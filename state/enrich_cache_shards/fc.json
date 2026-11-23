@@ -4012,9 +4012,9 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261112",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
@@ -5179,6 +5179,26 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "ProgramerLiang/piD-super-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 93,
+   "HTML": 7
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

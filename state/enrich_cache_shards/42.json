@@ -395,10 +395,10 @@
   }
  },
  "NVIDIA/cudnn-frontend": {
-  "commit_7d": 233,
-  "commit_90d": 1552,
-  "rel_ver": "v1.33.0.dev82384066",
-  "rel_pub": "2026-11-15",
+  "commit_7d": 165,
+  "commit_90d": 1656,
+  "rel_ver": "v1.34.0.dev84492328",
+  "rel_pub": "2026-11-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -415,10 +415,10 @@
    "CMake": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5355,6 +5355,58 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "XinaTian/MROffice": {
+  "commit_90d": 18,
+  "commit_7d": 16,
+  "rel_ver": "v0.1.7",
+  "rel_pub": "2026-11-23",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "CSS": 5,
+   "JavaScript": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "Owlbay/desk-defense": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 81,
+   "HTML": 13,
+   "CSS": 6,
+   "JavaScript": 0,
+   "Swift": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

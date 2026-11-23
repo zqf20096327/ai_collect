@@ -289,8 +289,8 @@
   }
  },
  "VoltAgent/awesome-ai-agent-papers": {
-  "commit_7d": 3,
-  "commit_90d": 47,
+  "commit_7d": 6,
+  "commit_90d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -299,10 +299,10 @@
   "sec_ids": [],
   "contrib_n": 18,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

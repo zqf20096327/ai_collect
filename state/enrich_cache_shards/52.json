@@ -1399,11 +1399,11 @@
   }
  },
  "zereight/gitlab-mcp": {
-  "commit_7d": 176,
-  "commit_90d": 1131,
-  "rel_ver": "v2.3.28",
-  "rel_pub": "2026-11-15",
-  "rel_days": 1,
+  "commit_7d": 67,
+  "commit_90d": 1179,
+  "rel_ver": "v2.3.31",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1428,10 +1428,10 @@
    "Python": 0,
    "Nix": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261118",
    "contrib": "20261019",
    "lang": "20261019"
@@ -5185,6 +5185,26 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "fadii-99/job-apply-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "HTML": 8
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

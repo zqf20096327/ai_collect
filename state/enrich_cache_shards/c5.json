@@ -1693,16 +1693,16 @@
    "Rust": 5,
    "HTML": 4
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261123",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261024"
+   "commit": "20261123"
   },
-  "commit_90d": 114,
-  "commit_7d": 22
+  "commit_90d": 182,
+  "commit_7d": 6
  },
  "lab-cosmo/torch-pme": {
   "rel_ver": "v0.5.0",

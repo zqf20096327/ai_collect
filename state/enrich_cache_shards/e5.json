@@ -775,11 +775,11 @@
   }
  },
  "AliDehbansiahkarbon/FusionAI": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v3.1",
   "rel_pub": "2024-04-20",
-  "rel_days": 911,
+  "rel_days": 947,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -791,10 +791,10 @@
   "lang": {
    "Pascal": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -827,11 +827,11 @@
   }
  },
  "camera-2018/hdu-cs-wiki": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 6,
   "rel_ver": "v2.20.5",
   "rel_pub": "2025-08-20",
-  "rel_days": 424,
+  "rel_days": 460,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -847,10 +847,10 @@
    "CSS": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

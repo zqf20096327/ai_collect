@@ -3716,8 +3716,8 @@
   }
  },
  "taladb/taladb": {
-  "rel_ver": "v0.12.1",
-  "rel_pub": "2026-10-22",
+  "rel_ver": "v0.13.3",
+  "rel_pub": "2026-11-21",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -3734,9 +3734,9 @@
    "C++": 2,
    "C": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
@@ -4788,6 +4788,28 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "abbott567/voiceover-testing-with-claude": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 58,
+   "Shell": 33,
+   "JavaScript": 6,
+   "Gherkin": 3
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

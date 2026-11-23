@@ -1435,8 +1435,8 @@
  "HeiGeAi/HeiGe-GEO-SEO": {
   "rel_ver": "v1.11.3",
   "rel_pub": "2026-09-13",
-  "rel_days": 37,
-  "rel_n90": 2,
+  "rel_days": 71,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1448,13 +1448,16 @@
    "Python": 99,
    "HTML": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261123",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261123"
+  },
+  "commit_90d": 15,
+  "commit_7d": 3
  },
  "yologdev/yopedia": {
   "rel_ver": null,

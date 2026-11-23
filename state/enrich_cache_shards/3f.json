@@ -682,12 +682,12 @@
   }
  },
  "sebattfg/ZeroScript-Free": {
-  "commit_90d": 18,
+  "commit_90d": 2,
   "commit_7d": 0,
-  "rel_ver": "v1.5.5",
-  "rel_pub": "2026-09-10",
-  "rel_days": 38,
-  "rel_n90": 9,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -702,10 +702,10 @@
    "Batchfile": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3306,9 +3306,9 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261101",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
@@ -4486,6 +4486,25 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "gravion-ux/aegis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

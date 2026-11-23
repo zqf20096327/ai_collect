@@ -873,12 +873,12 @@
   }
  },
  "Kaleidophon/deep-significance": {
-  "commit_90d": 1,
-  "commit_7d": 0,
-  "rel_ver": "v1.2.6",
-  "rel_pub": "2022-07-07",
-  "rel_days": 1564,
-  "rel_n90": 0,
+  "commit_90d": 9,
+  "commit_7d": 8,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -891,10 +891,10 @@
    "Jupyter Notebook": 33,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4524,6 +4524,28 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "hitgalani/Learning-Lab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 60,
+   "HTML": 33,
+   "R": 4,
+   "CSS": 3
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

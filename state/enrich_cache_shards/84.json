@@ -3564,9 +3564,9 @@
   }
  },
  "Verlintas/NovaBAIC": {
-  "rel_ver": "v0.3.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 8,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3582,9 +3582,9 @@
    "CSS": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
@@ -4696,6 +4696,73 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "josephyoung28/capcut-seedance-win": {
+  "commit_90d": 5,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "Wendystar0628/AI-All-Round-Bench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 73,
+   "Python": 7,
+   "CSS": 5,
+   "HTML": 4,
+   "Lean": 3
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "monsterbag293-cloud/Antigravity-Android": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

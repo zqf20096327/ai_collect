@@ -4397,13 +4397,16 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261123",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261123"
+  },
+  "commit_90d": 123,
+  "commit_7d": 0
  },
  "jopetkin-code/manus--ai": {
   "commit_90d": 3,
@@ -4651,6 +4654,29 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "Nefelibatic/dsh-armor-supreme": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 63,
+   "HTML": 16,
+   "PowerShell": 12,
+   "Python": 8,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

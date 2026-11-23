@@ -1387,9 +1387,9 @@
   }
  },
  "Desko77/claude-code-skills-1c": {
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-09-29",
-  "rel_days": 20,
+  "rel_ver": "v1.14.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1405,13 +1405,16 @@
    "1C Enterprise": 2,
    "HTML": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261123",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261123"
+  },
+  "commit_90d": 309,
+  "commit_7d": 3
  },
  "JJJJSTIYYYY/Apix": {
   "commit_90d": 4,

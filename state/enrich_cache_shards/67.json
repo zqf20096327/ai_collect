@@ -4055,11 +4055,11 @@
   }
  },
  "Ch1rpys/Mirrai": {
-  "commit_90d": 842,
-  "commit_7d": 1,
+  "commit_90d": 844,
+  "commit_7d": 2,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-10-25",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -4075,10 +4075,10 @@
    "PowerShell": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
@@ -4701,6 +4701,100 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "Aroralayla99/capcut-seedance-win": {
+  "commit_90d": 5,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "ek15072809/Swap-MoE": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 100,
+   "CMake": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "Mr-Nobody-Anonymous/arena-ai-android": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-10-12",
+  "rel_days": 42,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 73,
+   "JavaScript": 22,
+   "Shell": 3,
+   "Python": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "MRX7999/PerplexiCode-Kilo": {
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 16,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 3,
+   "CSS": 3,
+   "Shell": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

@@ -204,11 +204,11 @@
   }
  },
  "OvidijusParsiunas/deep-chat": {
-  "commit_7d": 7,
-  "commit_90d": 76,
+  "commit_7d": 0,
+  "commit_90d": 47,
   "rel_ver": "2.5.1",
   "rel_pub": "2026-08-27",
-  "rel_days": 58,
+  "rel_days": 88,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -224,10 +224,10 @@
    "CSS": 5,
    "Java": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -377,12 +377,12 @@
   }
  },
  "spotify/voyager": {
-  "commit_7d": 0,
-  "commit_90d": 13,
-  "rel_ver": "v2.2.3",
-  "rel_pub": "2026-11-02",
-  "rel_days": 14,
-  "rel_n90": 4,
+  "commit_7d": 2,
+  "commit_90d": 15,
+  "rel_ver": "v2.2.4",
+  "rel_pub": "2026-11-16",
+  "rel_days": 7,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -397,10 +397,10 @@
    "CMake": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3792,10 +3792,10 @@
   }
  },
  "stockedge/manga-generator": {
-  "rel_ver": "v0.1.0",
-  "rel_pub": "2026-10-24",
-  "rel_days": 0,
-  "rel_n90": 1,
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3809,9 +3809,9 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261123",
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024",
@@ -4908,6 +4908,56 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "MoRiv447/Firment": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 62,
+   "TypeScript": 21,
+   "Python": 12,
+   "CSS": 4,
+   "Shell": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "TheBits/model-tokenizer": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

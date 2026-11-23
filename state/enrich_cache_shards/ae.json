@@ -256,11 +256,11 @@
   }
  },
  "roncoo/roncoo-education": {
-  "commit_7d": 2,
-  "commit_90d": 6,
+  "commit_7d": 8,
+  "commit_90d": 14,
   "rel_ver": "v25.0.0-RELEASE",
   "rel_pub": "2025-09-01",
-  "rel_days": 436,
+  "rel_days": 448,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -273,10 +273,10 @@
    "Java": 100,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

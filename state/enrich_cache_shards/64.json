@@ -1356,13 +1356,16 @@
    "HTML": 37,
    "JavaScript": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261123",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261123"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "Viy1204/recruiting-copilot": {
   "rel_ver": "v0.8.3",

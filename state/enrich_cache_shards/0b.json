@@ -65,7 +65,7 @@
   }
  },
  "Fosowl/agenticSeek": {
-  "commit_7d": 10,
+  "commit_7d": 0,
   "commit_90d": 67,
   "rel_ver": null,
   "rel_none": true,
@@ -81,10 +81,10 @@
    "Shell": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5189,6 +5189,58 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "kurcontko/mnemotree": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 0,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "davebream/claude-of-alexandria": {
+  "rel_ver": "v5.1.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 54,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 51,
+   "Python": 37,
+   "JavaScript": 10,
+   "Shell": 3
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

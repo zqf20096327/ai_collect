@@ -88,12 +88,12 @@
   }
  },
  "mangiucugna/json_repair": {
-  "commit_7d": 11,
-  "commit_90d": 76,
+  "commit_7d": 3,
+  "commit_90d": 64,
   "rel_ver": "v0.64.9",
   "rel_pub": "2026-11-10",
-  "rel_days": 3,
-  "rel_n90": 12,
+  "rel_days": 13,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -106,10 +106,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1338,11 +1338,11 @@
   }
  },
  "Roy3838/Observer": {
-  "commit_7d": 29,
-  "commit_90d": 288,
-  "rel_ver": "v3.2.4",
-  "rel_pub": "2026-11-10",
-  "rel_days": 6,
+  "commit_7d": 0,
+  "commit_90d": 278,
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1358,10 +1358,10 @@
    "Python": 7,
    "Swift": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261118",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4739,6 +4739,29 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "deusyu/translate-book": {
+  "commit_90d": 21,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 96,
+   "HTML": 4
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

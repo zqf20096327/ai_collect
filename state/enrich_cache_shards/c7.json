@@ -30,12 +30,12 @@
   }
  },
  "epoko77-ai/im-not-ai": {
-  "commit_90d": 184,
-  "commit_7d": 17,
-  "rel_ver": "v2.4.4",
-  "rel_pub": "2026-11-15",
-  "rel_days": 1,
-  "rel_n90": 7,
+  "commit_90d": 160,
+  "commit_7d": 12,
+  "rel_ver": "v2.4.7",
+  "rel_pub": "2026-11-17",
+  "rel_days": 6,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -47,10 +47,10 @@
    "Python": 94,
    "Shell": 6
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

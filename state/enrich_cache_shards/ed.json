@@ -4977,5 +4977,54 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "TheSpaghettiDetective/obico-server": {
+  "commit_90d": 57,
+  "commit_7d": 1,
+  "rel_ver": "2026.11.22",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 82,
+  "lang": {
+   "Vue": 35,
+   "Python": 31,
+   "JavaScript": 21,
+   "HTML": 10,
+   "SCSS": 2
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "commit": "20261123",
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "ValueByte-AI/chiron": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

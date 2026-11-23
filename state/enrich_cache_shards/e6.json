@@ -4598,5 +4598,32 @@
    "contrib": "20261120",
    "lang": "20261120"
   }
+ },
+ "melthond/sharpen": {
+  "rel_ver": "v2.2.3",
+  "rel_pub": "2026-11-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 40,
+   "TypeScript": 39,
+   "CSS": 19,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }

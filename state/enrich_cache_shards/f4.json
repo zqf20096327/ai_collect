@@ -354,11 +354,11 @@
   }
  },
  "Runfusion/Fusion": {
-  "commit_90d": 919,
+  "commit_90d": 566,
   "commit_7d": 0,
   "rel_ver": "v0.78.0-beta.9",
   "rel_pub": "2026-10-23",
-  "rel_days": 22,
+  "rel_days": 31,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -374,10 +374,10 @@
    "PLpgSQL": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261123",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261123",
+   "release": "20261123",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4622,6 +4622,52 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "varpsilon/hazzel": {
+  "rel_ver": "v1.6.2",
+  "rel_pub": "2026-10-26",
+  "rel_days": 28,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 86,
+   "HTML": 13,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Tape": 0
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
+ },
+ "dtyg123/dsh-oh-my-token": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
   }
  }
 }

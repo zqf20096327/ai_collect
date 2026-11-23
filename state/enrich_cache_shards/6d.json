@@ -5401,5 +5401,28 @@
    "contrib": "20261120",
    "lang": "20261120"
   }
+ },
+ "howtomakeaname/dsh-memory-service": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261123",
+  "dim_ts": {
+   "release": "20261123",
+   "security": "20261123",
+   "contrib": "20261123",
+   "lang": "20261123"
+  }
  }
 }
