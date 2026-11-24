@@ -1,0 +1,407 @@
+
+# <img width=30 align="top" src="https://user-images.githubusercontent.com/996529/209745977-7b797223-46ce-4bce-aa70-707a88f2aaf2.png"> QtMesh Editor 
+
+Automate your 3D asset pipeline — scan, validate, convert, fix, and merge 3D assets with GUI + CLI + CI/CD support.
+
+**Open 3D files from your OS** — after install, double-click `.fbx`, `.glb`, `.gltf`, `.obj`, `.dae`, `.stl`, `.ply`, `.mesh`, and PS1 `.rsd`/`.tmd` in Finder, Explorer, or your Linux file manager (or use **Open With**). QtMesh Editor loads the model in the running window; a second launch focuses the existing instance instead of spawning another process. Portable Windows ZIP users can run `bin/scripts/register-windows-file-associations.ps1` to register handlers without admin rights.
+
+[![GitHub stars](https://img.shields.io/github/stars/fernandotonon/QtMeshEditor.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/fernandotonon/QtMeshEditor/stargazers) Star if you like it!
+
+[![Github All Releases](https://img.shields.io/github/downloads/fernandotonon/QtMeshEditor/total.svg)]()
+[![qtmesheditor](https://snapcraft.io/qtmesheditor/badge.svg)](https://snapcraft.io/qtmesheditor)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fernandotonon_QtMeshEditor&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fernandotonon_QtMeshEditor)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fernandotonon_QtMeshEditor&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=fernandotonon_QtMeshEditor)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fernandotonon_QtMeshEditor&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fernandotonon_QtMeshEditor)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=fernandotonon_QtMeshEditor&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=fernandotonon_QtMeshEditor)
+
+#### QtMesh Cloud Badges
+Badges|Certificate
+-|-
+[![qtmesh status](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-status.svg)](https://qtmesh.dev) [![qtmesh score](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-score.svg)](https://qtmesh.dev) [![qtmesh errors](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-errors.svg)](https://qtmesh.dev) [![qtmesh warnings](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-warnings.svg)](https://qtmesh.dev) [![qtmesh models](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-models.svg)](https://qtmesh.dev) [![qtmesh animations](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-animations.svg)](https://qtmesh.dev) [![qtmesh skeletons](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-skeletons.svg)](https://qtmesh.dev) [![qtmesh materials](https://api.qtmesh.dev/v1/u/u-28680b9c/p/qtmesheditor/badges/qtmesh-materials.svg)](https://qtmesh.dev)|[![qtmesh certified](https://api.qtmesh.dev/v1/u/fernandotonon/p/qtmesheditor/badges/qtmesh-certified.svg)](https://api.qtmesh.dev/fernandotonon/qtmesheditor/verify)
+
+---
+
+### 🔌 CI/CD — GitHub Actions
+
+Available on the [GitHub Actions Marketplace](https://github.com/marketplace/actions/qtmesheditor).
+
+[![Latest action release](https://img.shields.io/github/v/release/fernandotonon/QtMeshEditor?label=latest%20action)](https://github.com/fernandotonon/QtMeshEditor/releases/latest)
+
+**Versioning**
+
+- **Always follow the latest GitHub release** — use the Marketplace floating tag `fernandotonon/QtMeshEditor@v1` (same pattern as the [Marketplace example](https://github.com/marketplace/actions/qtmesheditor)). The composite action defaults to `image-tag: latest`, so the Docker CLI tracks the newest published `ghcr.io/fernandotonon/qtmesh` image.
+- **Reproducible builds** — pin the action and the container to the same semver as this repository’s `project(QtMeshEditor VERSION …)` in `CMakeLists.txt` (currently **3.72.0**). After bumping the version in CMake, run `./scripts/sync-doc-versions-from-cmake.sh` to refresh the pinned refs in `README.md` and the docs site fallback; CI enforces the match with `./scripts/sync-doc-versions-from-cmake.sh --check`.
+
+Pinned workflow template (action + `ghcr.io` image aligned):
+
+```yaml
+name: QtMesh Scan
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  scan-assets-qtmesh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run QtMesh scan
+        uses: fernandotonon/QtMeshEditor@3.72.0
+        with:
+          command: scan
+          image-tag: "3.72.0"
+        env:
+          QTMESH_CLOUD_TOKEN: ${{ secrets.QTMESH_CLOUD_TOKEN }}
+```
+
+Floating ref (auto-updates when the `v1` tag moves on release):
+
+```yaml
+      - name: Run QtMesh scan
+        uses: fernandotonon/QtMeshEditor@v1
+        with:
+          command: scan
+```
+
+`QTMESH_CLOUD_TOKEN` is forwarded into the container and used by `scan` upload. GitHub Actions metadata (`GITHUB_*`) is also forwarded so uploads include `meta` fields (branch/commit/run and context used by QtMesh Cloud).
+
+To fail CI when upload fails, add `qtmesh-strict-upload: true` (or pass `--strict-upload` in `options`).
+
+Release tags are listed on the [releases page](https://github.com/fernandotonon/QtMeshEditor/releases/latest) (also referenced in QtMesh Cloud onboarding).
+
+<details>
+<summary>More CI examples</summary>
+
+```yaml
+# Validate a specific mesh
+- uses: fernandotonon/QtMeshEditor@3.72.0
+  with:
+    command: validate
+    input-file: ./models/character.fbx
+    image-tag: "3.72.0"
+
+# Convert FBX → glTF
+- uses: fernandotonon/QtMeshEditor@3.72.0
+  with:
+    command: convert
+    input-file: ./models/character.fbx
+    output-file: ./output/character.gltf2
+    image-tag: "3.72.0"
+
+# Resample Mixamo animations (200+ keyframes → 30)
+- uses: fernandotonon/QtMeshEditor@3.72.0
+  with:
+    command: anim
+    input-file: ./animations/dance.fbx
+    output-file: ./output/dance_optimized.fbx
+    options: --resample 30
+    image-tag: "3.72.0"
+
+# Get mesh info as JSON
+- uses: fernandotonon/QtMeshEditor@3.72.0
+  id: info
+  with:
+    command: info
+    input-file: ./models/character.fbx
+    options: --json
+    image-tag: "3.72.0"
+
+# Docker (alternative — :latest tracks newest image; pin :3.4.0 to match semver action ref)
+# The image is multi-arch (linux/amd64 + linux/arm64), so it runs natively on
+# both Intel and Apple Silicon Macs — no --platform flag or QEMU needed.
+docker run --rm -v $(pwd):/workspace ghcr.io/fernandotonon/qtmesh:latest scan ./assets --fail-on error
+```
+
+</details>
+
+### ☁️ QtMesh Cloud Badges
+
+1. Sign in at [qtmesh.dev](https://qtmesh.dev) and create a project.
+2. Create a project token in QtMesh Cloud.
+3. Add the token as a GitHub secret named `QTMESH_CLOUD_TOKEN`.
+4. Run the scan command from Github Actions example above.
+
+Badge markdown (replace `<owner-slug>` and `<project-slug>`):
+
+```md
+[![qtmesh status](https://api.qtmesh.dev/v1/u/<owner-slug>/p/<project-slug>/badges/qtmesh-status.svg)](https://qtmesh.dev)
+[![qtmesh errors](https://api.qtmesh.dev/v1/u/<owner-slug>/p/<project-slug>/badges/qtmesh-errors.svg)](https://qtmesh.dev)
+[![qtmesh warnings](https://api.qtmesh.dev/v1/u/<owner-slug>/p/<project-slug>/badges/qtmesh-warnings.svg)](https://qtmesh.dev)
+```
+
+---
+
+### 🔧 CLI Pipeline (`qtmesh`)
+
+Same commands locally, in Docker, or in CI:
+
+```bash
+# Scan a directory for asset issues
+qtmesh scan ./assets --fail-on warning
+qtmesh scan ./assets --json --report report.json
+
+# Inspect a mesh
+qtmesh info model.fbx --json
+
+# Validate geometry
+qtmesh validate model.fbx
+
+# Convert between formats
+qtmesh convert model.fbx -o model.gltf2
+
+# Convert + Draco-compress the glTF (smaller .glb; needs a Draco-enabled build)
+qtmesh convert model.fbx -o model.glb --compress draco
+
+# Fix / optimize
+qtmesh fix model.fbx -o fixed.fbx --all
+
+# Animation tools
+qtmesh anim model.fbx --list
+qtmesh anim model.fbx --rename "Take 001" "Idle" -o renamed.fbx
+qtmesh anim model.fbx --resample 30 -o optimized.fbx
+qtmesh anim base.fbx --merge walk.fbx run.fbx -o merged.fbx
+# Text to motion with NVIDIA Kimodo, run natively (no Python); --download fetches its ~9 GB of models once
+qtmesh anim rigged.glb --generate "a person walks forward and waves" --backend kimodo --download -o walking.glb
+qtmesh anim rigged.glb --backend kimodo --segment "walk forward@3" --segment "sit down@2" --variations 2 -o out.glb
+
+# Export animation pose as static mesh (3D printing)
+qtmesh pose model.fbx --animation "Dance" --count 4 -o pose_%02d.stl
+
+# LOD generation
+qtmesh lod model.fbx --auto
+
+# Bake vertex colors → texture (with UV-seam dilation)
+qtmesh bake-vertex-colors model.fbx -o color_map.png --resolution 1024 --dilation 4
+qtmesh paint-bake model.fbx --target unreal -o out/            # repack the mesh's PBR textures into an engine layout + sidecar JSON
+qtmesh paint-bake model.fbx --target unity -o out/ --resolution 2048 --prefix hero  # Unity: metallic+smoothness RGBA, DirectX (+Y down) normal
+qtmesh paint-bake --list-targets                               # generic | unity | unreal | godot | gltf
+qtmesh paint --list-stamps                                     # brush stamps (also --list-presets, --list-palettes; all take --json)
+qtmesh paint model.fbx --layer list --json                     # paint layers (layers are a live-session concept; bake to write pixels)
+qtmesh paint model.fbx --bake --engine unity -o out/           # alias of paint-bake --target
+qtmesh paint model.fbx --apply-stencil decal.png --camera "0,1,4,0,1,0" -o out.mesh  # project an image through an explicit camera
+
+# Auto UV unwrap (xatlas — same library Blender/Godot use)
+qtmesh uv model.fbx --unwrap -o unwrapped.glb               # overwrite UV0
+qtmesh uv model.fbx --unwrap --channel 1 -o lightmap.glb    # keep UV0, write UV1 (lightmap workflow)
+qtmesh uv model.fbx --info --json                           # report UV channels + coverage
+
+# Quad retopology (triangle-pairing — no new deps)
+qtmesh retopo model.fbx -o quads.glb                        # pair every viable triangle into quads
+qtmesh retopo model.fbx --target-faces 5000 -o lo.glb       # stop early once near target face count
+qtmesh retopo model.fbx --max-angle 15 -o conservative.glb  # tighter coplanarity gate
+# Field-aligned all-quad remesh (QuadriFlow): new clean topology, textures re-baked, rig kept
+qtmesh retopo character.fbx --algo quadriflow --target-faces 4000 -o clean.fbx
+qtmesh retopo asset.glb --algo quadriflow -o asset_quads.fbx # e.g. after generate3d: quad-remesh the result
+
+# Compute skin weights (inverse-distance heuristic; mesh must have a skeleton)
+qtmesh skin model.fbx -o skinned.glb                        # default 4 influences, falloff 4
+qtmesh skin model.fbx --max-influences 8 --falloff 6 -o skinned.glb
+qtmesh skin model.fbx --skip-unweighted --merge -o filled.glb  # fill missing weights only
+
+# Auto-generate the 52 ARKit blendshapes on a humanoid FACE mesh (for face capture)
+qtmesh facerig head.glb -o rigged.glb                       # fit ARKit template + transfer 52 shapes
+qtmesh facerig head.fbx -o rigged.glb --max-shapes 20 --json  # cap shapes / machine-readable report
+
+# Left/right mirroring (detects _l/_r, .l/.r, Left*/Right*, *_left/*_right + custom rules)
+qtmesh rig rigged.fbx --mirror-info                         # which bones pair up; flags unpaired + collisions
+qtmesh rig rigged.fbx --mirror-info --json                  # same, machine-readable
+qtmesh rig rigged.fbx --mirror-weights -o mirrored.glb      # mirror weights AND swap left/right bone pairs
+qtmesh rig rigged.fbx --mirror-weights --plane z -o out.glb  # mirror across Z instead of the sagittal plane
+
+# Drive those blendshapes from SPEECH (NVIDIA Audio2Face-3D, runs locally)
+qtmesh lipsync take.wav --mesh head.glb -o spoken.glb        # audio -> ARKit weight animation
+qtmesh lipsync take.wav --mesh head.glb --fps 60 --clip Speech -o out.glb
+qtmesh lipsync take.wav --mesh head.glb --emotion joy=0.6 -o out.glb
+
+# Retarget a clip onto a different skeleton (auto bone map, or a bundled / .bonemap map)
+qtmesh anim mixamo_walk.fbx --retarget hero.glb --bonemap mixamo_to_unity --anim Walk -o hero_walking.glb
+
+# Procedural generators: drive a property from a formula, add it on top of the animation, bake when done
+qtmesh anim hero.fbx --generator sine --target "bone:*/mixamorig:Spine/rotation.z@Idle" --amplitude 8 --frequency 0.5 -o breathing.glb
+qtmesh anim drone.glb --generator follow-path --target "node:*/position" --points "0,2,0;4,2,0;4,2,4;0,2,4" --closed true --orient true \
+                      --generator noise --target "node:*/position.y" --amplitude 0.1 --noise-frequency 3 --bake -o patrol.glb
+# Constraints: IK a hand onto a prop, clamp the elbow, bake into the clip
+qtmesh anim hero.fbx --constraint ik --owner "bone:*/mixamorig:LeftHand" --target "node:Cup" \
+                     --constraint limit-rotation --owner "bone:*/mixamorig:LeftForeArm" --max-y 10 \
+                     --bake-constraints --animation Idle -o hero_cup.glb
+# Motion graph (preview/authoring): inspect the clip state machine saved beside the asset
+qtmesh anim hero.glb --graph-info --json
+
+# Vertex Animation Textures (OpenVAT) — four modes, one baker
+qtmesh vat character.fbx --anim Walk --fps 30 -o walk_vat/            # skeletal: per-vertex positions + normals (Godot/Unity/Unreal shaders in tools/vat-shaders/)
+qtmesh vat pieces.fbx --anim Explode --mode rigid --target godot -o out/  # rigid-body: one quaternion + pivot per submesh chunk (destruction / mechanical), ships openvat_rigid.gdshader
+qtmesh vat cache.abc --mode mesh-anim --anim Cache -o out/              # vertex cache (Alembic / VAT_POSE clip)
+qtmesh vat face.glb --mode morph --encoding exr -o out/                # keyed morph weights (default clip "MorphAnim"), float32 EXR; --encoding rgba8|rgba16|exr
+```
+
+---
+
+### 🎨 Paint Tools
+
+ZBrush-style polypaint and **full PBR channel** texture painting — Base Color,
+Normal, Roughness, Metallic, AO and Emissive — with a 2D preview panel,
+multiple brush tools (paint, erase, fill, color picker, smudge), layers, a
+channel picker, channel-aware presets (scratches into roughness, emissive
+sparks, edge wear, dirt build-up, sticker), and a one-click bake that turns
+vertex colors into a UV-space texture. Every bake merges with the slot's
+existing texture rather than overwriting it — scalar channels collapse into
+their lane of the packed ORM map, and Normal-channel sculpts Sobel-convert to a
+tangent-space normal and blend onto the existing normal map, all rendering live
+under IBL. **Symmetry** mirrors every stroke in real time across the local or
+world X/Y/Z planes (combine axes for 4- or 8-way mirroring; a topology-aware
+mode keeps mirrors correct on meshes with an asymmetric UV unwrap), and a
+**line stabilizer** (moving-average or trailing) smooths mouse jitter for clean
+strokes. **Projection painting** projects an image onto the mesh through the
+camera — brush through a **stencil**, lock the projection to a camera pose, or
+**project a photo** straight onto the visible surface (with backface culling,
+depth-limit and per-texel occlusion so it only lands where the camera can see);
+and the **decal** tool drops a placeable image rectangle (drag to move / rotate
+/ scale, Enter to commit) onto the surface. Each projection lands in its own
+layer.
+
+**Quick start (texture paint, GUI):**
+
+1. Switch to **Material Mode** (mode bar at the top).
+2. Select a mesh entity. The Inspector's **Texture Paint** section
+   shows a slot picker (every paintable TUS across submeshes) and a 256×256
+   live preview of the active texture.
+3. Click the **paint brush** button in the toolbar to enable painting. The
+   first click on the mesh auto-creates a paint session against the active
+   slot (or you can pre-create with *Create / Attach Texture*).
+4. Pick a tool from the row at the top of the panel: ✏ Paint, ⌫ Erase, ⧉ Fill,
+   ⊰ Pick (eyedropper), ∿ Smudge. Brush color/radius/strength/falloff comes
+   from the shared Paint Brush section above the toolbar's brush popup.
+5. Left-click-drag on **either** the 3D mesh or the 2D preview panel. Both
+   drive the same paint buffer; the 2D preview updates in real time and a
+   brush ring shows where the cursor maps on the 3D surface (and vice versa).
+6. *Save…* / *Load…* round-trips the buffer to disk as PNG (or any format
+   QImage can write).
+
+**Vertex paint (GUI):**
+
+Same flow, but vertex paint operates in **Edit Mode** instead. Press **Tab**
+on a selected mesh to enter Edit Mode, then tick *Vertex Color Preview* in
+the Edit Mode Tools section to see vertex colors live.
+
+**Bake Vertex Colors → Texture** rasterizes the active mesh's vertex colors
+into a UV-space PNG via barycentric interpolation, then dilates the result
+outward by N pixels to mask UV-seam bleed at MIP-map time.
+
+**Headless (CLI):**
+
+```bash
+qtmesh bake-vertex-colors model.fbx -o color_map.png --resolution 1024 --dilation 4
+qtmesh paint-bake model.fbx --target unreal -o out/            # repack the mesh's PBR textures into an engine layout + sidecar JSON
+qtmesh paint-bake model.fbx --target unity -o out/ --resolution 2048 --prefix hero  # Unity: metallic+smoothness RGBA, DirectX (+Y down) normal
+qtmesh paint-bake --list-targets                               # generic | unity | unreal | godot | gltf
+qtmesh paint --list-stamps                                     # brush stamps (also --list-presets, --list-palettes; all take --json)
+qtmesh paint model.fbx --layer list --json                     # paint layers (layers are a live-session concept; bake to write pixels)
+qtmesh paint model.fbx --bake --engine unity -o out/           # alias of paint-bake --target
+qtmesh paint model.fbx --apply-stencil decal.png --camera "0,1,4,0,1,0" -o out.mesh  # project an image through an explicit camera
+```
+
+**Export.** Vertex colors are preserved on export to formats that support
+them (glTF preferred — verified round-trip).
+
+**Notes / limitations.**
+
+- Brush size is in local mesh units (shared with vertex paint). For texture
+  paint we divide by mesh bounding-box extent and clamp to a UV-friendly
+  range, so 0.25 produces a sensible stamp on both a unit cube and a
+  100-unit character.
+- Painting auto-rebinds every TUS named `albedo` or `diffuse_map` on the
+  active material — imported PBR materials alias the diffuse texture under
+  both, and rebinding only one would leave the other pointing at the
+  original.
+- Bake uses fan triangulation of n-gon faces; concave faces should be
+  pre-triangulated.
+
+---
+
+### ✨ Merge Mixamo Animations in Seconds
+
+Download animations from [Mixamo](https://www.mixamo.com), drop them into QtMesh Editor, and merge into a single file — export as glTF, FBX, Collada, OBJ, or Ogre Mesh.
+
+![Merge Animations Demo](https://github.com/user-attachments/assets/441f90c5-1968-4838-8001-4ca24856a501)
+
+### 🎬 More in Action
+
+Split View|Skeleton Animation Controls
+---|---
+![QtMeshEditor1 5 0](https://user-images.githubusercontent.com/996529/210196572-7b49da4c-c5db-406d-9ab4-7fa20bacb6ae.gif)|![QtMeshEditor1 6 0](https://user-images.githubusercontent.com/996529/218779819-0a61156d-c014-4ad1-aa8b-cee900c9da56.gif)
+**MCP tools (AI Agent Control)**|**Bone Weight Visualization**
+![MCP Demo](https://github.com/user-attachments/assets/ed3b7e9d-22ba-4e6e-a06c-868570db7a07)|![Bone Weights](https://github.com/user-attachments/assets/289403ac-8952-488c-bc65-0a768ab278e1)
+
+#### 🤖 AI-enhanced Material Editor
+
+![AI Materials](https://github.com/user-attachments/assets/c58978d7-7564-41f2-8c95-527ddf7ae78e)
+
+---
+
+### 🎮 Features
+
+- **Asset scanning** — ESLint for 3D assets: check naming, complexity, skeletons, formats
+- **QtMesh Cloud** — sign in, upload asset projects (model + textures + materials + animations), browse/open from [qtmesh.dev](https://qtmesh.dev); CLI (`qtmesh cloud …`) and MCP (`cloud_*` tools) parity
+- **40+ format support** — FBX, glTF, OBJ, Collada, STL, Ogre Mesh, and more
+- **Text to motion (NVIDIA Kimodo)** — type what the character should do and get a retargeted clip, run locally without Python (Kimodo-SOMA-RP-v1.2 + a Llama 3 text encoder; *Built with Meta Llama 3*). Guide: [docs/KIMODO.md](docs/KIMODO.md)
+- **Animation merge** — combine Mixamo clips into one file
+- **Animation resampling** — reduce keyframe density for game engines
+- **Pose export** — bake animation frames as static meshes (3D printing)
+- **LOD generation** — automatic level-of-detail mesh reduction
+- **Paint tools** — vertex paint, texture paint (BaseColor), bake vertex colors to texture with seam dilation
+- **Material editor** — visual editing with AI-assisted generation; PBR + HDR/IBL materials look correct on first import (bundled studio HDRI, ACES tonemap, env intensity/tint per material)
+- **Skeleton inspection** — bone weights, debug overlays, animation preview
+- **Lattice deformer** — Blender-style lattice modifier: box a mesh with a grid of control points and drag them in the viewport to bend, squash or stretch it (linear / smooth / Bézier interpolation, live preview, one-step undo); save the lattice and replay it with `qtmesh lattice <mesh> --apply <lattice.json> -o <out>` or MCP `lattice_begin` / `lattice_set_points` / `lattice_apply` / `lattice_deform`
+- **AI part segmentation & PartOps** — detect a character's parts (head/torso/arms/legs), then **split** into named submeshes, **explode** into separate scene nodes, **join** them back, or **solidify** thin-shell parts; GUI + `qtmesh segment --split-parts / --explode-parts` + MCP (`split_mesh_by_segments`, `explode_mesh_parts`, `join_mesh_parts`) — see [docs/PART_OPS.md](docs/PART_OPS.md)
+- **Scene management** — duplicate (Ctrl+D), group (Ctrl+G), snap, pivot modes
+- **Performance capture** — video/webcam → facial morph animation (ARKit blendshapes), head pose, and full-body skeletal capture onto humanoid rigs; live preview + record in the editor, `qtmesh mocap` on the CLI (`-DENABLE_MOCAP` builds)
+- **Audio-driven lipsync** — speech → ARKit blendshape animation via NVIDIA's Audio2Face-3D, running locally through ONNX; drives any mesh with ARKit targets (including the ones `qtmesh facerig` generates), in the Inspector, `qtmesh lipsync` on the CLI, or the `generate_lipsync` MCP tool
+- **AI agent** — describe a task in natural language; a local LLM plans it over the editor's tools, runs it step by step with structured observations and replanning, groups it into ONE undo step, and asks before deleting or overwriting (agent mode; the simple chat loop is one click away)
+- **MCP server** — 57+ tools for AI agents (Claude, Cursor, etc.), including HDR/IBL (`set_hdr_environment`, `set_tonemap`, …) and QtMesh Cloud (`cloud_*`)
+- **REST API** — opt-in HTTP interface for external automation (`--with-mcp --http-port 8080`). Bound to **localhost** by default; tools execute only via `POST /api/tools/<name>` (`GET /api/tools` lists them); set `QTMESH_HTTP_TOKEN` (or `--http-token-file <path>`; a secret on the command line is refused, since `ps` shows it to every local user) to require `Authorization: Bearer <token>` on every request, and `--http-bind 0.0.0.0` only when you mean to expose it
+
+---
+
+### 📦 Install
+
+| Platform | Command |
+|----------|---------|
+| **Windows** | `winget install FernandoTonon.QtMeshEditor` |
+| **macOS** | `brew tap fernandotonon/qtmesheditor && brew trust fernandotonon/qtmesheditor && brew install qtmesheditor` |
+| **Linux (Snap)** | `sudo snap install qtmesheditor` |
+| **Linux (Flatpak)** | Download `io.github.fernandotonon.QtMeshEditor.flatpak` from [Releases](https://github.com/fernandotonon/QtMeshEditor/releases/latest), then `flatpak install --user ./io.github.fernandotonon.QtMeshEditor.flatpak` |
+| **Fedora / RHEL (RPM)** | `sudo dnf install ./qtmesheditor_amd64.rpm` (from [Releases](https://github.com/fernandotonon/QtMeshEditor/releases/latest)) |
+| **Debian / Ubuntu (.deb)** | `sudo apt install ./qtmesheditor_amd64.deb` (from [Releases](https://github.com/fernandotonon/QtMeshEditor/releases/latest)) |
+| **Docker** | `docker run --rm ghcr.io/fernandotonon/qtmesh --help` |
+
+Flatpak CLI: `flatpak run --command=qtmesh io.github.fernandotonon.QtMeshEditor --help`
+
+📥 [Download latest release](https://github.com/fernandotonon/QtMeshEditor/releases/latest) · 📖 [Website & docs](https://fernandotonon.github.io/QtMeshEditor/)
+
+---
+
+### 📋 Format Support
+
+| Format | Extension | Import | Export | Skeleton/Animation |
+|--------|-----------|--------|--------|--------------------|
+| FBX Binary | .fbx | ✅ | ✅ | ✅ |
+| glTF 2.0 | .gltf2 / .glb2 | ✅ | ✅ | ✅ |
+| Collada | .dae | ✅ | ✅ | ✅ |
+| OBJ | .obj | ✅ | ✅ | — |
+| STL | .stl | ✅ | ✅ | — |
+| Ogre Mesh | .mesh / .mesh.xml | ✅ | ✅ | ✅ |
+| PlayStation TMD | .tmd | ✅ | ✅ | — |
+| PlayStation RSD | .rsd | ✅ | ✅ | — |
+| 3DS | .3ds | ✅ | ✅ | — |
+| Stanford PLY | .ply | ✅ | ✅ | — |
+| Psy-Q PLY (PlayStation) | .ply | ✅ | ✅ | — |
+
+`.ply` is dispatched by content: **Stanford** (`ply` header) vs **Psy-Q** (`@PLY…` header). See [documentation/playstation-rsd-ply.md](documentation/playstation-rsd-ply.md).
+
+Import supports all formats provided by Assimp (40+).
+
+---
+
+📖 [Documentation](https://fernandotonon.github.io/QtMeshEditor/docs.html) · 🛠 [Build from source](https://github.com/fernandotonon/QtMeshEditor/wiki/How-to-build) · 🐛 [Report issues](https://github.com/fernandotonon/QtMeshEditor/issues) · 💬 [Contribute](https://github.com/fernandotonon/QtMeshEditor)

@@ -201,6 +201,7 @@ Projects that give a companion voice, visual presence, or a physical channel.
 - [CosyVoice](https://github.com/FunAudioLLM/CosyVoice) - Multi-lingual large voice generation model with inference, training, and deployment support. `Python` · `Self-host` · `infra`.
 - [index-tts](https://github.com/index-tts/index-tts) - Industrial-level controllable zero-shot TTS from Bilibili. `Python` · `Self-host` · `infra`.
 - [Callhome](https://github.com/Cheiineeey/callhome) - Self-hosted voice-call stack for AI companions: companion-initiated calls, soft hangups, voicemail, conversational DND, call summaries, and emotion tags so it hears how you speak. PolyForm NC 1.0.0. `Python/HTML` · `Self-host` · `adapt`.
+- [Tincall](https://github.com/chuli1122/Tincall) - Native AI voice calls via model APIs, MCP, or a custom backend. Self-signed builds need no purchase; background calls require APNs setup. Personal-use source license. `Swift/JavaScript` · `iOS 26+` · `adapt`.
 - [call_call](https://github.com/KKarsyline/call_call) - Chinese write-up with Swift excerpts on smoothing real-time voice calls: backchannel filtering of "嗯/对", recoverable barge-in, playback-aligned context, silence handling, turn detection. `Guide` · `iOS` · `adapt`.
 - [voice-mcp](https://github.com/Yinglianchun/voice-mcp) - MCP server that exposes `speak` tools for TTS, adds provider switching between DashScope/CosyVoice and ElevenLabs, and includes an inline audio player / visualizer panel. `TypeScript` · `Self-host` · `adapt`.
 - [binaural-voice](https://github.com/Saekisui/binaural-voice) - Turns mono TTS into ASMR/otome-audio 3D voice using KU100 dummy-head HRIR: whispers 25cm by the ear and circles around the head via text cues. MIT. `Python` · `CLI` · `ready`.
@@ -323,6 +324,7 @@ Games and game bridges that let an AI companion observe, decide, move, or play.
 
 ### Playing Games Together
 
+- [Sul Sul with TA](https://github.com/corcordata/sulsul-with-ta) - The Sims 4 mod and MCP bridge let your AI companion live in your save, read Sim moods and needs, chat in-game, and control its Sim. Event push needs a self-hosted setup. MIT. `Python/C#` · `Windows/macOS` · `adapt`.
 - [NagiBridge](https://github.com/anqinou-art/NagiBridge) - Stardew Valley SMAPI mod that exposes local HTTP APIs for external AI control, in-game chat, movement, world interaction, and cross-platform installation through releases. `C#` · `Stardew Valley` · `adapt`.
 - [OpenMMO](https://github.com/Julian-adv/OpenMMO) - Noncommercial 3D MMORPG where human players and headless AI agents share one server-authoritative world over a single WebSocket protocol. Companions need a custom persona bridge. PolyForm NC 1.0.0. `Rust/TypeScript` · `Web/Linux/Windows` · `adapt`.
 - [Mineflayer](https://github.com/PrismarineJS/mineflayer) - Mature high-level Node.js API for Minecraft bots covering login, chat, entities, blocks, inventory, crafting, combat, and movement, with pathfinding plugins. Agent loop supplied separately. MIT. `JavaScript` · `Minecraft` · `infra`.

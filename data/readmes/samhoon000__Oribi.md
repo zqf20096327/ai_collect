@@ -1,4 +1,6 @@
-# Oribi
+<p align="center">
+  <img alt="Oribi logo" src="./branding/oribi-logo-readme.svg" width="352">
+</p>
 
 **Give AI a useful picture of your data before it starts analyzing it.**
 

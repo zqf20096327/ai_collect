@@ -11,13 +11,14 @@ agent kernel.
   <a href="https://github.com/w01fb0ss/PiBot/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/w01fb0ss/PiBot?include_prereleases"></a>
   <img alt="Platforms" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Android-lightgrey">
   <a href="https://pibot.space"><img alt="Website" src="https://img.shields.io/badge/website-pibot.space-8b5cf6"></a>
+  <a href="https://pibot.space/en/guides/"><img alt="Docs" src="https://img.shields.io/badge/docs-pibot.space%2Fen%2Fguides-0ea5e9"></a>
 </p>
 
 <p align="center">
   <a href="docs/assets/pibot-intro-60s.mp4"><img src="docs/assets/pibot-intro-15s.gif" width="800" alt="Pi Bot in 15 seconds (click for the 60-second video with sound)"></a>
 </p>
 
-<p align="center">▶ <a href="docs/assets/pibot-intro-60s.mp4">Watch the 60-second video</a> · <a href="https://pibot.space">Download</a> · <a href="docs/guide/README.md">User guide</a></p>
+<p align="center">▶ <a href="docs/assets/pibot-intro-60s.mp4">Watch the 60-second video</a> · <a href="https://pibot.space">Download</a> · <a href="docs/guide/README.md">User guide</a> · <a href="https://pibot.space/en/guides/">Online docs</a></p>
 
 [English](README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md)
 
@@ -27,7 +28,7 @@ commands, edit files and hand work to each other, while every risky step waits f
 The "brain" runs on your machine too: chats, files, memory and keys stay local, and only the
 model provider you choose sees the prompts you send.
 
-Website and downloads: <https://pibot.space> · User guide: [docs/guide](docs/guide/README.md)
+Website and downloads: <https://pibot.space> · User guide: [docs/guide](docs/guide/README.md) · Online docs: <https://pibot.space/en/guides/>
 
 ## What it does
 
@@ -102,6 +103,28 @@ headless.
 Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the rules
 in [AGENTS.md](AGENTS.md) first; report security problems as described in
 [SECURITY.md](SECURITY.md), not in public issues.
+
+## Contributors
+
+Thank you to everyone who has contributed to Pi Bot. See the
+[contribution activity](https://github.com/w01fb0ss/PiBot/graphs/contributors) on GitHub.
+
+<!-- CONTRIBUTORS:START -->
+- [@w01fb0ss](https://github.com/w01fb0ss)
+- [@juemimgcd](https://github.com/juemimgcd)
+- [@eltociear](https://github.com/eltociear)
+- [@agooll](https://github.com/agooll)
+<!-- CONTRIBUTORS:END -->
+
+## Star History
+
+<a href="https://www.star-history.com/#w01fb0ss/PiBot&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=w01fb0ss/PiBot&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=w01fb0ss/PiBot&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=w01fb0ss/PiBot&type=Date" />
+  </picture>
+</a>
 
 ## License
 

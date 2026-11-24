@@ -9,14 +9,7 @@
   </a>
 </p>
 
-**Tater** is a local-first AI platform that can run local models through **llama.cpp**, or connect to remote OpenAI-compatible and llama.cpp APIs. It supports voice satellites like **VoicePE**, **Sat1**, **S3Box**, and **ReSpeaker XVF3800**, plus portals for **Discord**, **Home Assistant**, **HomeKit**, **IRC**, **macOS**, **Matrix**, **Meshtastic**, **Telegram**, and **XBMC4Xbox**.
-
-**New in 3.0.8:** Satellite diagnostics refresh live network and wake status,
-including USB Ethernet with Tater Native Firmware **0.7.0** on all four ESP32
-satellite targets.
-The tested powered adapter also works with supported Echo satellites; see
-[Ethernet and PoE adapters](#ethernet-and-poe-adapters).
-[Read the release notes](macos/Tater/RELEASE_NOTES.md).
+**Tater** is a local-first AI platform that can run local models through **llama.cpp**, or connect to remote OpenAI-compatible and llama.cpp APIs. It supports voice satellites like **VoicePE**, **Sat1**, **S3Box**, **ReSpeaker XVF3800**, supported **Amazon Echo** devices, and **ThirdReality S420**, plus portals for **Discord**, **Home Assistant**, **HomeKit**, **IRC**, **macOS**, **Matrix**, **Meshtastic**, **Telegram**, and **XBMC4Xbox**.
 
 ---
 
@@ -47,6 +40,7 @@ Satellites**.
 | Your hardware | Firmware or runtime |
 | --- | --- |
 | Voice PE, Satellite1, ReSpeaker XVF3800 or ESP32-S3-BOX-3 | [Tater Native Firmware](https://github.com/TaterTotterson/Tater-Native-Firmware) |
+| Satellite1 HAT + Raspberry Pi | [Tater SAT1 RPi](https://github.com/TaterTotterson/Tater-SAT1-RPi) — ready-to-flash satellite-only or Tater Embedded images |
 | Supported, unlocked Amazon Echo, Dot, Show or Spot | [Tater Echo Firmware](https://github.com/TaterTotterson/Tater-Echo-Firmware) |
 | Linux computer or Raspberry Pi with a microphone and speaker | [Tater Linux Satellite](https://github.com/TaterTotterson/Tater-Linux-Satellite) |
 | ThirdReality Voice & Music Assistant (S420) | [Tater ThirdReality Voice Firmware](https://github.com/TaterTotterson/Tater-ThirdReality-Voice-Firmware) |
@@ -92,6 +86,7 @@ supports HA Assist and optional **Mini-Tater** without needing the main Tater ap
 Choose the installation that matches your system:
 
 - **macOS app**, **Unraid**, and **Home Assistant** provide guided installation options.
+- **SAT1 Raspberry Pi image** runs Tater and its voice satellite together on Satellite1 hardware.
 - **Docker** is the easiest choice for most other Linux servers.
 - **Local installation** is best when you want direct access to the hardware and Python environment.
 
@@ -168,22 +163,29 @@ Install order:
 
 Once the add-ons are running, continue to **Post-Install Setup** below.
 
-## Reachy Mini Installation
+## Satellite1 Raspberry Pi (Tater Embedded)
 
 <p>
-  <a href="https://huggingface.co/spaces/TaterTotterson/reachy_tater_sat">
-    <img alt="Install Reachy Tater Satellite" src="https://img.shields.io/badge/Reachy%20Mini-Install%20Tater%20Satellite-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" />
+  <a href="https://github.com/TaterTotterson/Tater-SAT1-RPi/releases/latest">
+    <img alt="Download Tater Embedded for SAT1 Raspberry Pi" src="https://img.shields.io/badge/Tater%20Embedded-Download%20Pi%20Image-F28C28?style=for-the-badge&logo=raspberrypi&logoColor=white" />
   </a>
 </p>
 
-The **Reachy Tater Satellite** app turns Reachy Mini Wireless into a native voice satellite for an existing Tater server. Microphone, speaker, local wake-word detection, user tracking, expressive motion, and optional vision snapshots remain on Reachy, while the robot connects to Tater through its authenticated native satellite connection.
+Run Tater directly on a **Raspberry Pi Zero 2 W with the Satellite1 HAT** using
+[Tater SAT1 RPi](https://github.com/TaterTotterson/Tater-SAT1-RPi). The
+**Tater Embedded** image includes the Tater server, web interface, and voice
+satellite on one device. Language models, STT, and TTS use remote providers;
+wake detection and audio run on the SAT1.
 
-Install path:
+1. Download the **standalone (Tater Embedded)** `.img.xz` from the
+   [latest SAT1 RPi release](https://github.com/TaterTotterson/Tater-SAT1-RPi/releases/latest).
+2. In Raspberry Pi Imager, choose **Use Custom** and flash it to a **16 GB or larger microSD card**.
+3. Insert the card, attach the Satellite1 HAT, and power it on. Allow several minutes for the first boot.
+4. Join **Tater-SAT1-Setup-XXXXXX** and complete Wi-Fi setup. If the setup page does not open, browse to `http://192.168.4.1`. Wi-Fi configured in Imager connects automatically.
+5. Open `http://<pi-ip>:8501` and continue to **Post-Install Setup** below to configure your remote model and speech providers.
 
-1. Install [Reachy Tater Satellite](https://huggingface.co/spaces/TaterTotterson/reachy_tater_sat) from the Reachy Mini app store and start it.
-2. Open the app settings from Reachy's web interface and enter the address of your running Tater server.
-3. Create a satellite pairing code in Tater, enter it once in the Reachy settings, and save the connection.
-4. Optionally enable **Allow vision snapshots** for the Reachy Vision Verba, then say **Hey Reachy**.
+See the [SAT1 image and setup guide](https://github.com/TaterTotterson/Tater-SAT1-RPi/blob/main/docs/IMAGE.md)
+for hardware, flashing, and update details.
 
 ## Docker Installation
 

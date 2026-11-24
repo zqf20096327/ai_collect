@@ -258,7 +258,7 @@ Here's the Claude Desktop configuration:
 
 ### Advanced Configuration
 
-You can pass a configuration file to customize Playwright behavior:
+Set `PLAYWRIGHT_MCP_CONFIG` or pass `--config <path>` to load a JSON configuration file. If both are set, `--config` selects the file:
 
 ```json
 {
@@ -804,4 +804,4 @@ Every frame is measured, cross-origin iframes included, at most four at a time w
 **What it deliberately does not detect**
 - Lost *meaning or function* beyond clipping and overlap: a control pushed under a sticky header, a menu that no longer opens, text that is technically visible but has become unreadable. A result with no findings is "no clipped or overlapping text detected", not a WCAG 1.4.12 pass, so look at the `screenshot` as well.
 - Clipping by the viewport itself (`overflow: hidden` on `html`/`body`, which propagates to the viewport), `clip-path` and masks, and text inside form controls (`<input>`/`<textarea>` values), `<svg>`, `<canvas>` and closed shadow roots.
-- Layout that page scripts would only adjust later: measurement wait
+-

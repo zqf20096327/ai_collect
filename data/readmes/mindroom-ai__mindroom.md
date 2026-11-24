@@ -398,7 +398,7 @@ Every command also works with `!` instead of `/` (`!help`), including in clients
 - `/config <operation>` - Manage configuration
 - `/desktop [setup|status|confirm|rotate|disconnect]` - Manage your Desktop target
 - `/mode <agent> minimal|standard|show|reset` - Switch one agent between standard tools and a Bash-only interface
-- `/compact [agent_or_team]` - Compact the agents' context before their next reply in this conversation
+- `/compact [agent_or_team]` - Compact context now, after any in-progress reply in this conversation
 - `/model [name|name@level|list|reset]` - Show or switch the model used in the current thread
 - `/room_model [name|name@level|list|reset]` - Show the room model default or switch it (set/reset require a room admin)
 - `/thread_mode [room|thread|reset|show]` - Show or switch the thread mode used in the current room (room admin only)
@@ -479,7 +479,7 @@ Teams, per-room models, context compaction, history controls, and memory backend
 - **Local stack** — `mindroom local-stack-setup` bootstraps a local Synapse + MindRoom Chat via Docker.
 - **Your computer + MindRoom Chat (hosted Matrix)** — run only the backend locally against hosted Matrix at [mindroom.chat](https://mindroom.chat), pairing via [chat.mindroom.chat](https://chat.mindroom.chat) ([guide](https://docs.mindroom.chat/deployment/hosted-matrix/)).
 - **Docker** — single-container runtime ([guide](https://docs.mindroom.chat/deployment/docker/)).
-- **Kubernetes** — Helm charts for enterprise-scale, multi-tenant deployments ([guide](https://docs.mindroom.chat/deployment/kubernetes/)).
+- **Kubernetes** — Helm charts from a single-node local `kind` quick start to enterprise multi-tenant deployments ([guide](https://docs.mindroom.chat/deployment/kubernetes/)); coding agents can be told `Follow https://docs.mindroom.chat/deployment/kubernetes/ to deploy MindRoom.`
 - **Agent-managed NixOS container (advanced)** — the author's favorite for personal use: [mindroom-ai/lxc-nixos](https://github.com/mindroom-ai/lxc-nixos) provisions a persistent, agent-controlled NixOS container with the full stack, which the agent can rebuild and manage itself while the host controls what it sees.
 - **Bridges** — connect Slack, Telegram, WhatsApp, and more via [Bridges](https://docs.mindroom.chat/deployment/bridges/).
 

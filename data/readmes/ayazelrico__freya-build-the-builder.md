@@ -1,0 +1,71 @@
+# Freya "Build the Builder": a builder that turns a bank brief into a phone agent
+
+## Run it
+
+```bash
+python3 -m pip install -r requirements.txt          # Python 3.10+; the builder only needs the anthropic SDK
+export FREYA_API_KEY=fak_...                         # Freya workspace key
+export FREYA_API_URL=https://staging-app.freyavoice.ai
+export FREYA_BANK_TEAM_KEY=...                       # any 16+ character secret (practice runs only)
+export ANTHROPIC_API_KEY=sk-ant-...                  # the builder's own model calls (Claude Opus 5.5)
+
+python3 build.py {brief_path} {tool_api_path}        # e.g. python3 build.py briefs/hidden-1.md briefs/hidden-1.openapi.json
+```
+
+One command, no manual step. Outputs:
+- `submission/<brief name>.workflow.json`: the exported phone agent (`freya.export_workflow`)
+- `traces/<brief name>-<time>.log` (plain text) and `.jsonl`: start/end time, every model call (model and purpose),
+  the workflow id, agent id, number of steps and tools, and the self-test result
+- `out/<brief name>.spec.json`: what the builder read from the brief
+
+The slot defaults to the brief's file name, so a second run on the same brief updates the same Freya workflow.
+
+## How it works
+
+The phone agent runs on a fixed, small model, and a customer counts only if all three runs pass.
+So the builder leaves as little reasoning as possible to that model. Dates, amounts, outcome codes and
+mandatory sentences come from code. The model only holds the conversation.
+
+```
+brief(s) + openapi.json
+  1. SPEC extraction (Claude Opus 5.5)            builder/extract.py, schema in builder/spec_schema.md
+     - pass 1: brief -> SPEC (values, rules, sentences, outcome table with semantic roles)
+     - pass 2: coverage review against the brief (memos that change rules, missing rules)
+     - mechanical checks (placeholders, roles, tool enums, dates) + LLM repair
+  2. Workflow generation (deterministic Python)   builder/generate.py
+     - tool definitions read from the openapi file (field names, enums), nothing hard-coded
+     - nodes: setup -> opening -> third_party | identity -> load_account -> compute -> negotiate -> end_* -> finalize -> goodbye
+  3. Runtime code inside the workflow             builder/runtime_code.py
+     - code nodes: business days, holidays, per-product band/deadline/floor, the offer sequence
+       with exact sentences, a DATE LOOKUP table telling the agent what to offer for any day
+     - tool pre-hooks: normalise dates/digits, block a promise or callback that breaks the rules
+     - tool post-hooks: add `what_to_do_next` to every result
+     - finalize: outcome + reason from what really happened (transfer, promises, notes) and the
+       closing words; close_call is a lifecycle tool with baked values
+  4. Save + publish on Freya (same slot = update in place), dry-run validation, one chat-turn smoke test
+  5. Export + trace
+```
+
+## Tests
+
+- `tests/test_runtime.py`: runs the workflow's code nodes and hooks locally on the 13 practice cases.
+- `tests/test_fake_c.py`: the same on a made-up raw-material brief with other field names and outcome
+  codes (`fixtures/fake/`), to check that nothing depends on the public briefs.
+- `tools/run_cases.py`: the kit's simulator runner.
+
+`KIT_README.md` is the organisers' kit README.
+
+## Final case (Freya Bank, statement debt)
+
+```bash
+source env.sh   # FREYA_API_KEY, FREYA_API_URL, ANTHROPIC_API_KEY
+python3 build.py finals/case https://freya-final-mock.ayazelrico-8bc.workers.dev --slot final-b
+```
+
+With a case folder and a mock URL (no tool API file) the builder runs in general mode (`builder/llm_workflow.py`):
+Claude reads every case document plus the Freya platform reference and the rules the builder has learned, writes the
+workflow, the builder checks it locally and with a Freya dry run (repair loop), saves and publishes it, tunes the agent
+settings (Turkish STT/TTS, turn timing), self-tests and exports it. `BUILDER_BACKEND=cli` runs the model calls through a
+logged-in Claude Code CLI (`claude -p`) instead of the API key; that is how the submitted run was made.
+The mock of the bank's services is in `mock/` (Cloudflare Worker, verified against every test answer by `mock/verify_mock.py`).
+Submitted: `submission/final-b.workflow.json`, trace `traces/final-b-20261011-212408.log`.

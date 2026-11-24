@@ -6,21 +6,21 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/%E6%94%B6%E5%BD%95%E7%A6%8F%E5%88%A9%E7%AB%99-13%20%E4%B8%AA-blue" alt="收录福利站">
-  <img src="https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF-12%2F13-orange" alt="在线">
+  <img src="https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF-13%2F13-brightgreen" alt="在线">
   <img src="https://img.shields.io/badge/%E9%A6%96%E6%97%A5%E5%8F%AF%E5%BE%97-%E6%9C%80%E9%AB%98%20%241300-success" alt="首日可得">
-  <img src="https://img.shields.io/badge/%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0-2026--11--22%2019.40%20UTC-informational" alt="数据更新">
+  <img src="https://img.shields.io/badge/%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0-2026--11--24%2002.28%20UTC-informational" alt="数据更新">
 </p>
 
 <p align="center">
   <a href="https://agentrouter.org/register?aff=aibw"><b>AgentRouter 注册</b></a> ·
   <a href="https://t.me/xingchi66bot?start=inv_8672125617"><b>星驰管家 注册</b></a> ·
+  <a href="https://redapi.vip/register?aff=BJVQ43D9DSFT"><b>Redapi 注册</b></a> ·
   <a href="https://api520.pro/register?aff=3pox"><b>熊猫API 注册</b></a> ·
   <a href="https://ai.dahanxingbang.dpdns.org/sign-up?aff=ql9j"><b>大汉 API 注册</b></a> ·
   <a href="https://docode.cc/register?aff=1Qof"><b>DoCode 注册</b></a> ·
   <a href="https://us-3.nianhuaapi.com/sign-up?aff=aonj"><b>年华 API 注册</b></a> ·
   <a href="https://free.supxh.xin/register?code=MVU8GX"><b>肖恩AI 注册</b></a> ·
   <a href="https://api456.me/register?aff=zmza"><b>api456.me 注册</b></a> ·
-  <a href="https://api.justwoker.icu/register?aff=OIWh"><b>JustDoWork 注册</b></a> ·
   <a href="https://matrix.mzsjai.com/login?redirect=%2Fapp%2Fgrowth%3FinviteCode%3DMX3CDVGATLJW"><b>Matrix 注册</b></a> ·
   <a href="https://seekai.cc/sign-up?aff=dDJy"><b>SeekAi 注册</b></a> ·
   <a href="https://aaawinn.xyz/sign-up?aff=ijFL"><b>Long的AI 注册</b></a> ·
@@ -44,23 +44,23 @@
 | :-- | :--: | :--: | :--: | :--: | :--: | :--: |
 | **AgentRouter** 🔥 | 🟢 在线 | **$175** | $25/天 | Anthropic + OpenAI | <a href="https://agentrouter.org/register?aff=aibw" target="_blank" rel="noopener">点此注册 →</a> | — |
 | **星驰管家** | 🟢 在线 | **$1300** | $300/天 | 仅 gpt-6.1-sol（倍率 0.5） | <a href="https://t.me/xingchi66bot?start=inv_8672125617" target="_blank" rel="noopener">点此注册 →</a> | — |
+| **Redapi** | 🟢 在线 | **$5** | — | Anthropic + OpenAI | <a href="https://redapi.vip/register?aff=BJVQ43D9DSFT" target="_blank" rel="noopener">点此注册 →</a> | — |
 | **熊猫API** 💳 | 🟢 在线 | **200 额度** | 无签到 | Anthropic + OpenAI | <a href="https://api520.pro/register?aff=3pox" target="_blank" rel="noopener">点此注册 →</a> | — |
 | **大汉 API** | 🟢 在线 | 站内公示 | 支持签到 | Anthropic + OpenAI | <a href="https://ai.dahanxingbang.dpdns.org/sign-up?aff=ql9j" target="_blank" rel="noopener">点此注册 →</a> | — |
 | **DoCode** | 🟢 在线 | **300 站内刀** | 无签到 | Anthropic + OpenAI | <a href="https://docode.cc/register?aff=1Qof" target="_blank" rel="noopener">点此注册 →</a> | `1Qof` |
 | **年华 API** | 🟢 在线 | 站内公示 | 支持签到 | Anthropic + OpenAI | <a href="https://us-3.nianhuaapi.com/sign-up?aff=aonj" target="_blank" rel="noopener">点此注册 →</a> | `aonj` |
 | **肖恩AI** | 🟢 在线 | **≈14000 积分** | ≈2000 积分/天 | Anthropic + OpenAI | <a href="https://free.supxh.xin/register?code=MVU8GX" target="_blank" rel="noopener">点此注册 →</a> | `MVU8GX` |
 | **api456.me** | 🟢 在线 | **$50** | $10/天 | OpenAI | <a href="https://api456.me/register?aff=zmza" target="_blank" rel="noopener">点此注册 →</a> | `zmza` |
-| **JustDoWork** | 🔴 异常 | 站内公示 | 支持签到 | Anthropic + OpenAI | <a href="https://api.justwoker.icu/register?aff=OIWh" target="_blank" rel="noopener">GitHub 注册 →</a> | `OIWh` |
 | **Matrix** | 🟢 在线 | **2600 积分** | — | OpenAI 兼容 | <a href="https://matrix.mzsjai.com/login?redirect=%2Fapp%2Fgrowth%3FinviteCode%3DMX3CDVGATLJW" target="_blank" rel="noopener">点此注册 →</a> | — |
 | **SeekAi** | 🟢 在线 | 站内公示 | 支持签到 | OpenAI | <a href="https://seekai.cc/sign-up?aff=dDJy" target="_blank" rel="noopener">点此注册 →</a> | `dDJy` |
 | **Long的AI** | 🟢 在线 | 免费 | 无签到 | Anthropic + OpenAI | <a href="https://aaawinn.xyz/sign-up?aff=ijFL" target="_blank" rel="noopener">GitHub 注册 →</a> | `ijFL` |
 | **新疆幻城网安** | 🟢 在线 | **30000 站内刀** | 支持签到 | Anthropic + OpenAI | <a href="https://api.hcnsec.cn/sign-up?aff=3J8z" target="_blank" rel="noopener">点此注册 →</a> | `3J8z` |
 
-> 「首日可得」= 注册基础额度 + 本页邀请链接额度 + 当天能领的签到额度（每日重置额度池的站点按一天的池子算）；模型、价格、在线状态由脚本抓取站点公开接口自动生成，最后更新：`2026-11-22 19:40 UTC`。
+> 「首日可得」= 注册基础额度 + 本页邀请链接额度 + 当天能领的签到额度（每日重置额度池的站点按一天的池子算）；模型、价格、在线状态由脚本抓取站点公开接口自动生成，最后更新：`2026-11-24 02:28 UTC`。
 >
-> 「邀请码」列写了码的站（DoCode `1Qof`、年华 API `aonj`、肖恩AI `MVU8GX`、api456.me `zmza`、JustDoWork `OIWh`、SeekAi `dDJy`、Long的AI `ijFL`、新疆幻城网安 `3J8z`），注册表单里有一栏要**自己填**，漏填就只拿得到注册基础额度、事后补不上；其余站写 — 是因为邀请额度由链接自带，不用手打。
+> 「邀请码」列写了码的站（DoCode `1Qof`、年华 API `aonj`、肖恩AI `MVU8GX`、api456.me `zmza`、SeekAi `dDJy`、Long的AI `ijFL`、新疆幻城网安 `3J8z`），注册表单里有一栏要**自己填**，漏填就只拿得到注册基础额度、事后补不上；其余站写 — 是因为邀请额度由链接自带，不用手打。
 >
-> 7 个按美元计价、且还收新用户的站全注册一遍，第一天手上大约有 **$1525** 额度可用；熊猫API 另发 200 额度，DoCode 另发 300 站内刀，肖恩AI 另发 ≈14000 积分，Matrix 另发 2600 积分，Long的AI 另发 免费，新疆幻城网安 另发 30000 站内刀，都是各站自己的计价单位、与美元没有公开换算，未计入这个合计。
+> 7 个按美元计价、且还收新用户的站全注册一遍，第一天手上大约有 **$1530** 额度可用；熊猫API 另发 200 额度，DoCode 另发 300 站内刀，肖恩AI 另发 ≈14000 积分，Matrix 另发 2600 积分，Long的AI 另发 免费，新疆幻城网安 另发 30000 站内刀，都是各站自己的计价单位、与美元没有公开换算，未计入这个合计。
 >
 > 🟡 有 3 个站点已超过 48 小时没抓到接口数据，其明细为上一次成功抓取的快照；在线状态按注册页实际可访问性判断。
 >
@@ -112,12 +112,12 @@ powershell -ExecutionPolicy Bypass -File scripts/quickstart.ps1
 
 **实时数据**（自动抓取站点公开接口）
 
-- ⚠ 接口已连续 305 小时没抓到新数据，下列信息为 `2026-11-10 02:47 UTC` 的快照
+- ⚠ 接口已连续 336 小时没抓到新数据，下列信息为 `2026-11-10 02:47 UTC` 的快照
 - 站点名称：**Agent Router**
 - 面板版本：`init-20261016-861e4557`
 - 邀请他人可得：**$50**
 - 登录方式：GitHub / LinuxDO
-- 接口延迟：295 ms
+- 接口延迟：255 ms
 
 **镜像 / 备用入口**
 
@@ -127,9 +127,8 @@ powershell -ExecutionPolicy Bypass -File scripts/quickstart.ps1
 
 | 模型 | 倍率 | 输入 / 1M tokens | 输出 / 1M tokens | 协议 |
 | :-- | :--: | :--: | :--: | :--: |
-| `gpt-5.6-sol` | 2 | $4 | $20 | openai |
-| `gpt-6-astra` | 4 | $8 | $40 | openai |
-| `gpt-6.1-sol` | 1 | $2 | $10 | openai |
+| `gpt-5.6-sol` | 4 | $8 | $40 | openai |
+| `gpt-6.1-sol` | 4 | $8 | $40 | openai |
 
 <sub>倍率 1 ≈ $2 / 1M tokens，输出价 = 倍率 × 补全倍率 × $2；以站内实时价格为准。</sub>
 
@@ -250,11 +249,11 @@ curl -s https://agentrouter.org/v1/chat/completions \
 
 **实时数据**（自动抓取站点公开接口）
 
-- ⚠ 接口已连续 82 小时没抓到新数据，下列信息为 `2026-11-19 09:27 UTC` 的快照
+- ⚠ 接口已连续 113 小时没抓到新数据，下列信息为 `2026-11-19 09:27 UTC` 的快照
 - 站点名称：**星驰管家**
 - 每日签到：✅
 - 登录方式：Telegram
-- 接口延迟：534 ms
+- 接口延迟：802 ms
 
 **当前可用模型**
 
@@ -296,6 +295,127 @@ curl -s https://agentrouter.org/v1/chat/completions \
 
 ---
 
+<a id="site-redapi"></a>
+<details><summary><b>🟢 Redapi</b></summary>
+
+> Sub2API 统一 AI 网关 · 注册送 $5，OpenAI / Anthropic 双协议，Claude Code、Codex 可直接接入
+
+> 📝 注册送 $5；模型清单要登录；无签到
+
+<a href="https://redapi.vip/register?aff=BJVQ43D9DSFT" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/%E7%AB%8B%E5%8D%B3%E6%B3%A8%E5%86%8C-Redapi-brightgreen?style=for-the-badge" alt="注册 Redapi"></a>
+
+**为什么值得注册**
+
+- 注册送 $5：走本页邀请链接注册，新用户到账 $5 赠金（站方活动口径，注册后在控制台核对）
+- OpenAI 与 Anthropic 两条原生路由都在架：GET /v1/models、POST /v1/chat/completions、POST /v1/messages 匿名请求都回 401 而不是 404（2026-11-24 实测），Claude Code 填 Base URL、Codex CLI 走 /v1
+- Sub2API 面板：公开设置接口 /api/v1/settings/public 免登录可读，站方自报邮箱注册、邮箱验证开启、Turnstile 关闭、邀请码开关关闭（本页 aff 参数自动带上）
+- 邮箱白名单：QQ / 163 / 126 / Gmail / Outlook / iCloud / Proton / *.edu.cn 等常见邮箱可注册，其它域名会被注册页直接拦下
+- 站方首页标注已接入 OpenAI、Claude、Gemini、Grok、DeepSeek、GLM、Kimi、MiniMax 八个模型家族，按 Token 与按次两种方式计费，带智能路由和渠道监控
+- 面板支付与订阅开关都开着（payment_enabled / subscription_enabled = true），属于付费中转站；站方公示 QQ 群 894796942
+
+**能拿多少额度**
+
+- 注册即送：**$5**
+- 首日合计：**$5**
+
+**实时数据**（自动抓取站点公开接口）
+
+- 接口延迟：448 ms
+
+> 模型清单要登录后才拿得到：公开的 /api/v1/model-plaza 返回 404（面板 model_plaza_enabled = false），/v1/models 匿名请求只回 401。首页自报接入 OpenAI、Claude、Gemini、Grok、DeepSeek、GLM、Kimi、MiniMax 八个家族，具体模型名、倍率与分组价以登录后的控制台为准。
+
+**注册要求**
+
+- 务必从本页邀请链接进入注册（带 ?aff=BJVQ43D9DSFT），$5 注册赠金才会结算
+- 邮箱 + 密码注册：面板里 GitHub / Google / LinuxDO / Telegram / 微信 / OIDC 登录开关都是关的，只有邮箱一条路
+- 注册要邮箱验证码（email_verification = true），且只收白名单域名（QQ、163、Gmail、Outlook、iCloud、Proton、*.edu.cn 等）
+- 没有 Cloudflare Turnstile（turnstile_enabled = false），但注册表单有推广码一栏（promo_code_enabled = true），有码可以再叠一层赠金
+
+**接入配置**
+
+<details open><summary><b>Claude Code</b>（Anthropic 兼容，Base URL 不带 <code>/v1</code>）</summary>
+
+```bash
+# macOS / Linux
+export ANTHROPIC_BASE_URL=https://redapi.vip
+export ANTHROPIC_AUTH_TOKEN=你在站点后台创建的 Key
+export ANTHROPIC_MODEL=<登录后台查看可用模型名>
+npm install -g @anthropic-ai/claude-code@latest && claude
+```
+
+```powershell
+# Windows PowerShell
+$env:ANTHROPIC_BASE_URL = "https://redapi.vip"
+$env:ANTHROPIC_AUTH_TOKEN = "你在站点后台创建的 Key"
+$env:ANTHROPIC_MODEL = "<登录后台查看可用模型名>"
+claude
+```
+
+</details>
+
+<details><summary><b>Codex CLI</b>（OpenAI 兼容，写入 <code>~/.codex/config.toml</code>）</summary>
+
+```toml
+model = "<登录后台查看可用模型名>"
+model_provider = "redapi"
+
+[model_providers.redapi]
+name = "Redapi"
+base_url = "https://redapi.vip/v1"
+env_key = "REDAPI_API_KEY"
+wire_api = "chat"
+```
+
+</details>
+
+<details><summary><b>OpenAI SDK / Cherry Studio / Cursor 等通用客户端</b></summary>
+
+```python
+from openai import OpenAI
+
+client = OpenAI(api_key="你的 Key", base_url="https://redapi.vip/v1")
+resp = client.chat.completions.create(model="<登录后台查看可用模型名>", messages=[{"role": "user", "content": "ping"}])
+print(resp.choices[0].message.content)
+```
+
+通用客户端只需填两项：**Base URL** = `https://redapi.vip/v1`，**API Key** = 站点后台创建的 Key。
+
+</details>
+
+<details><summary><b>连通性自测</b></summary>
+
+```bash
+curl -s https://redapi.vip/v1/chat/completions \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"<登录后台查看可用模型名>","messages":[{"role":"user","content":"只回复 OK"}]}'
+```
+
+</details>
+
+**如何继续拿额度**
+
+- 邀请好友：面板 affiliate_enabled = true，具体返利比例登录后在「推广 / 邀请」页看
+- 推广码（promo code）注册时可填，站方接口支持校验并回显赠送金额
+- 充值：payment_enabled = true，支持在线支付；订阅套餐也开着（subscription_enabled = true）
+- 没有每日签到：公开设置里看不到签到开关，按无签到登记，额度只能靠注册赠送、推广或充值
+
+**⚠️ 使用前必读**
+
+- 注册送 $5 是站方活动口径，公开接口不返回注册赠金数字，实际到账以注册后控制台余额为准
+- 公开面拿不到模型清单和价格：model_plaza_enabled = false、/api/v1/model-plaza 返回 404，首页列的八个模型家族不等于完整可用清单
+- 这是付费中转站（payment / subscription 都开着），$5 只够试吃，长期用要充值，别当长期白嫖站
+- 上游与线路不公开，首页只写「智能路由 + 渠道监控」，Claude / GPT 是否官方直连无法从公开面核实，重活别全压上去
+- 站点较新，没有历史可用性可查；本页只能探到 /v1/models 的 401 存活信号，注册页和接口都在 Cloudflare 后面
+- 注册邮箱有域名白名单，小众邮箱或自建域名会被直接拒，换常见邮箱再试
+
+**官方渠道**
+
+- QQ 群：894796942（站方首页公示）
+
+</details>
+
+---
+
 <a id="site-api520"></a>
 <details><summary><b>🟢 熊猫API 💳</b></summary>
 
@@ -328,7 +448,7 @@ curl -s https://agentrouter.org/v1/chat/completions \
 - 每日签到：❌
 - 开放注册：✅
 - 登录方式：账号密码
-- 接口延迟：1385 ms
+- 接口延迟：1132 ms
 
 **当前可用模型**
 
@@ -612,7 +732,7 @@ curl -s https://api520.pro/v1/chat/completions \
 - 每日签到：✅
 - 开放注册：✅
 - 登录方式：账号密码
-- 接口延迟：1578 ms
+- 接口延迟：1165 ms
 
 **镜像 / 备用入口**
 
@@ -748,7 +868,7 @@ curl -s https://ai.dahanxingbang.dpdns.org/v1/chat/completions \
 - 每日签到：❌
 - 开放注册：✅
 - 登录方式：账号密码
-- 接口延迟：2611 ms
+- 接口延迟：2226 ms
 
 **镜像 / 备用入口**
 
@@ -877,7 +997,7 @@ curl -s https://docode.cc/v1/chat/completions \
 - 每日签到：✅
 - 开放注册：✅
 - 登录方式：账号密码
-- 接口延迟：1877 ms
+- 接口延迟：1626 ms
 
 **当前可用模型**
 
@@ -1150,7 +1270,7 @@ curl -s https://us-3.nianhuaapi.com/v1/chat/completions \
 
 **实时数据**（自动抓取站点公开接口）
 
-- 接口延迟：2194 ms
+- 接口延迟：1584 ms
 
 > 2026-09-20 公开定价页返回 191 个模型，含 stepfun、deepseek-v4.1-flash、gpt-5.5、gemini-2.5-flash、claude-sonnet-4-6、kimi-k2.5 等。注意返回里同时混有大量免费与付费条目，模型可用性与倍率以控制台为准。
 
@@ -1267,7 +1387,7 @@ curl -s https://free.supxh.xin/v1/chat/completions \
 - 每日签到：✅
 - 开放注册：✅
 - 登录方式：账号密码
-- 接口延迟：2230 ms
+- 接口延迟：1638 ms
 
 > 模型清单与价格需登录后在控制台查看（/api/pricing 匿名请求需登录），本页不列模型表。
 
@@ -1341,119 +1461,6 @@ curl -s https://api456.me/v1/chat/completions \
 
 ---
 
-<a id="site-justwoker"></a>
-<details><summary><b>🔴 JustDoWork</b></summary>
-
-> New API 中转站 · 只用 GitHub 登录，主打 gpt-5.6 系模型，签到 + 任务持续拿额度，Anthropic 原生协议直连 Claude Code / Codex
-
-> 📝 只能 GitHub 登录；额度数字不公开
-
-<a href="https://api.justwoker.icu/register?aff=OIWh" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/%E7%AB%8B%E5%8D%B3%E6%B3%A8%E5%86%8C-JustDoWork-brightgreen?style=for-the-badge" alt="注册 JustDoWork"></a>
-
-**为什么值得注册**
-
-- 只用 GitHub 授权登录，不用记密码、不用邮箱验证码（面板 email_verification = false），注册流程干净
-- 每日签到与站内任务都开着（checkin_enabled / enable_task 均为 true），登录后台点一下就能持续拿额度
-- 主打 gpt-5.6 系模型（gpt-5.6-luna / sol / terra），实测支持 function calling，能跑 Claude Code / Codex 的工具调用
-- Anthropic 原生协议在架：Claude Code 填 Base URL 直连 /v1/messages，OpenAI 兼容路由走 /v1，Codex CLI 也能对接
-
-**实时数据**（自动抓取站点公开接口）
-
-- 站点名称：**JustDoWork**
-- 面板版本：`v1.0.0-rc.23`
-- 每日签到：✅
-- 开放注册：✅（站点关掉了邮箱密码注册，得用 GitHub 登录建号（防批量注册的常规做法）。）
-- 登录方式：GitHub / 账号密码
-- GitHub 账号需满 **365 天**
-- 接口延迟：19395 ms
-
-> 模型定价页需要登录（/api/pricing 匿名请求返回 401，面板 pricing.requireAuth = true），本页不列模型表。实测主力是 gpt-5.6 系（gpt-5.6-luna / sol / terra），每次请求会带约 2000 tokens 的固定隐藏提示词；完整清单与倍率请登录控制台「定价」页确认。
-
-**注册要求**
-
-- 务必从本页邀请链接进入注册（带 ?aff=OIWh），邀请额度才会发放
-- 只能用 GitHub 授权登录：面板里邮箱 / LinuxDO / Telegram / 微信 / OIDC 登录开关都是关的，没有邮箱密码注册入口
-- 注册开着 Cloudflare Turnstile 人机校验，注册页与 API 都在 Cloudflare 后面，机房 IP 可能被 403 拦，家用宽带正常
-
-**接入配置**
-
-<details open><summary><b>Claude Code</b>（Anthropic 兼容，Base URL 不带 <code>/v1</code>）</summary>
-
-```bash
-# macOS / Linux
-export ANTHROPIC_BASE_URL=https://api.justwoker.icu
-export ANTHROPIC_AUTH_TOKEN=你在站点后台创建的 Key
-export ANTHROPIC_MODEL=<登录后台查看可用模型名>
-npm install -g @anthropic-ai/claude-code@latest && claude
-```
-
-```powershell
-# Windows PowerShell
-$env:ANTHROPIC_BASE_URL = "https://api.justwoker.icu"
-$env:ANTHROPIC_AUTH_TOKEN = "你在站点后台创建的 Key"
-$env:ANTHROPIC_MODEL = "<登录后台查看可用模型名>"
-claude
-```
-
-</details>
-
-<details><summary><b>Codex CLI</b>（OpenAI 兼容，写入 <code>~/.codex/config.toml</code>）</summary>
-
-```toml
-model = "<登录后台查看可用模型名>"
-model_provider = "justwoker"
-
-[model_providers.justwoker]
-name = "JustDoWork"
-base_url = "https://api.justwoker.icu/v1"
-env_key = "JUSTWOKER_API_KEY"
-wire_api = "chat"
-```
-
-</details>
-
-<details><summary><b>OpenAI SDK / Cherry Studio / Cursor 等通用客户端</b></summary>
-
-```python
-from openai import OpenAI
-
-client = OpenAI(api_key="你的 Key", base_url="https://api.justwoker.icu/v1")
-resp = client.chat.completions.create(model="<登录后台查看可用模型名>", messages=[{"role": "user", "content": "ping"}])
-print(resp.choices[0].message.content)
-```
-
-通用客户端只需填两项：**Base URL** = `https://api.justwoker.icu/v1`，**API Key** = 站点后台创建的 Key。
-
-</details>
-
-<details><summary><b>连通性自测</b></summary>
-
-```bash
-curl -s https://api.justwoker.icu/v1/chat/completions \
-  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  -d '{"model":"<登录后台查看可用模型名>","messages":[{"role":"user","content":"只回复 OK"}]}'
-```
-
-</details>
-
-**如何继续拿额度**
-
-- 每日签到领额度（面板已开启），登录后台点一下就行
-- 站内任务中心也能拿额度（enable_task 已开启）
-- 邀请他人注册，邀请人可获得额度
-
-**⚠️ 使用前必读**
-
-- 额度数字站点公开接口不暴露（/api/status 里 quota_for_new_user / quota_for_invitee 均为空），注册后进后台核对实际到账
-- 面板 price = 7.3（¥7.3 ≈ 站内 $1），额度按人民币口径显示，本页不做美元折算
-- 站点挂在 Cloudflare 后面，/chat/completions 等端点匿名探测会被 WAF 返回 403，属正常防护，不代表接口不可用
-- 上游为第三方中转，gpt-5.6 系模型在大上下文 / 高并发时可能出现超时或断流，别当稳定生产通道用
-- 模型可用性与价格随上游调整，以控制台实时页面为准
-
-</details>
-
----
-
 <a id="site-matrix"></a>
 <details><summary><b>🟢 Matrix</b></summary>
 
@@ -1477,7 +1484,7 @@ curl -s https://api.justwoker.icu/v1/chat/completions \
 
 **实时数据**（自动抓取站点公开接口）
 
-- 接口延迟：3377 ms
+- 接口延迟：2368 ms
 
 > 模型清单与价格需登录后在控制台「模型列表」查看（按每百万 Tokens 计价，可按厂商 / 上下文窗口筛选），站点没有公开的模型与定价接口，本页不做承诺。
 
@@ -1546,7 +1553,7 @@ curl -s https://api.justwoker.icu/v1/chat/completions \
 - 每日签到：✅
 - 开放注册：✅
 - 登录方式：GitHub / Telegram / 账号密码
-- 接口延迟：2862 ms
+- 接口延迟：1814 ms
 
 **镜像 / 备用入口**
 
@@ -1646,13 +1653,13 @@ curl -s https://seekai.cc/v1/chat/completions \
 
 **实时数据**（自动抓取站点公开接口）
 
-- ⚠ 接口已连续 157 小时没抓到新数据，下列信息为 `2026-11-16 06:28 UTC` 的快照
+- ⚠ 接口已连续 188 小时没抓到新数据，下列信息为 `2026-11-16 06:28 UTC` 的快照
 - 站点名称：**Long的AI**
 - 面板版本：`v0.0.0`
 - 每日签到：❌
 - 开放注册：✅（站点关掉了邮箱密码注册，得用 GitHub 登录建号（防批量注册的常规做法）。）
 - 登录方式：GitHub
-- 接口延迟：3052 ms
+- 接口延迟：1903 ms
 
 > 站点的模型价格接口不公开（/api/pricing 匿名请求返回 401，要登录管理页才看得到），白嫖分组的模型来源公示在 https://aaawinn.xyz/public-pool；站方公告提到白嫖分组的 GPT 系模型只支持 Anthropic 协议对接，OpenAI 协议有兼容问题。
 
@@ -1786,7 +1793,7 @@ curl -s https://aaawinn.xyz/v1/chat/completions \
 - 每日签到：✅
 - 开放注册：✅
 - 登录方式：Passkey / 账号密码
-- 接口延迟：4811 ms
+- 接口延迟：4647 ms
 
 > 模型价格页需要登录（/api/pricing 匿名请求返回 401），不过站内公告里的名字可以直接抄：Qwen3.8-Flash-Next（0 元一次）、DeepSeek-V4.1-Flash 系（付费分组约 2 元一次，vision-exp 版本免费用户可用）、longcat-2.0（一次 1 元）、glm-5.3-flash、qwen3.8-27b、step 系、spark-x2.5、Qwen3.6-35B-A3B，站方还开源了 SparkMuse-4B 与 Qing-Sec-20B，均可在 ModelScope 搜到（hcnote/SparkMuse-4B）。
 
@@ -1882,9 +1889,9 @@ curl -s https://api.hcnsec.cn/v1/chat/completions \
 
 <details><summary><b>站点最新公告</b>（自动同步）</summary>
 
+- `2026-11-23` svip用户已上线glm-5.4，支持多模态，能力比肩gpt-6-sol，欢迎svip用户体验
 - `2026-11-20` 近期大量免费用户反应的部分模型出现严重智商不足问题，我们正在进行排查，目前付费用户已确定无该情况，免费用户问题目前还在排查，已初步判断主要受影响模型为千问系列awq q3量化导致我们将尽快进行优化
 - `2026-11-20` 不少用户担心在本站使用服务时存在隐私泄露风险。为此，本站现已上线请求隐私脱敏功能：系统会自动对用户请求内的身份证号、银行卡号、IP 地址、各类密码密钥、家庭住址等敏感信息做脱敏处理，并同步清除相关日志。同时我们郑重提醒：请不要在本站上传个人隐私信息以及企业涉密资料。
-- `2026-11-13` svip支持的模型如下：DeepSeek-V4-Pro, DeepSeek-V4.1-Flash, doubao-seed-2.1-lite, doubao-seed-2.1-pro, ernie-5.5-flash-preview, ernie-light-dt-1.0, glm-5.1, glm-5.2, glm-5.3, glm-5.3-flash, hy4, kimi-k2.8, kimi-k3, kimi-k3.1-pro, 
 
 </details>
 
@@ -1896,24 +1903,25 @@ curl -s https://api.hcnsec.cn/v1/chat/completions \
 
 这些站已确认不可用，保留名称与归档原因；不再推荐注册、不展示额度、也不再定时探测。历史记录仍可在变动日志里查到，确认恢复后可重新收录。
 
+- **JustDoWork**（`2026-11-24` 归档） — 站方已下架，注册页与 API 均无响应（2026-11-24 复核超时），按维护者确认移入历史区；站点恢复后可重新收录
 - **启源星**（`2026-11-02` 归档） — 2026-11-01 22:02 UTC 起注册页与公开接口连续探测不到（首页、注册页、状态接口都没响应），确认停运，移入历史区；站点恢复后可重新收录
 
 ---
 
 ## 🔔 额度变了，这里会通知你
 
-CI 每 6 小时抓一次各站接口，与上一次快照逐字段比对，目前已攒下 132 个样本、覆盖约 60.9 天。额度调整、掉线与恢复、模型上下线、价格变动都会自动记一条：
+CI 每 6 小时抓一次各站接口，与上一次快照逐字段比对，目前已攒下 132 个样本、覆盖约 62.2 天。额度调整、掉线与恢复、模型上下线、价格变动都会自动记一条：
 
 - 点仓库右上角 **Watch → Custom → Releases**：有重要变动时 GitHub 直接发邮件
 
 最近几条：
 
-- `2026-11-22` 📢 DoCode 发了公告：新上架GPT【ultrafast】分组，8 倍速度极致体验。
-- `2026-11-22` ➕ 熊猫API 上线模型：熊猫-顶级-21-vertex逆-gemini-2.5-pro
-- `2026-11-22` 🔴 JustDoWork 探测不到了：注册页与公开接口都没响应
-- `2026-11-20` ➖ 年华 API 下线模型：gpt-5-3、gpt-5-3-mini、gpt-5-5、gpt-5-5-mini 等 10 个
-- `2026-11-20` 🟢 JustDoWork 恢复在线
-- `2026-11-20` 🟢 SeekAi 恢复在线
+- `2026-11-24` ➖ AgentRouter 下线模型：gpt-6-astra
+- `2026-11-24` 🏷️ AgentRouter gpt-5.6-sol 价格 $4 入 / $20 出（每 1M） → $8 入 / $40 出（每 1M）
+- `2026-11-24` 🏷️ AgentRouter gpt-6.1-sol 价格 $2 入 / $10 出（每 1M） → $8 入 / $40 出（每 1M）
+- `2026-11-24` 🆕 新收录 Redapi：注册送 $5
+- `2026-11-24` 🗑️ 移除收录 JustDoWork
+- `2026-11-23` 📢 新疆幻城网安 发了公告：svip用户已上线glm-5.4，支持多模态，能力比肩gpt-6-sol，欢迎svip用户体验
 
 完整记录见 [CHANGELOG.md](CHANGELOG.md)。
 

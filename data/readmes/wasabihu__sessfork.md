@@ -4,8 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-22c55e.svg)](pyproject.toml)
+[![wasabihu/sessfork MCP server](https://glama.ai/mcp/servers/wasabihu/sessfork/badges/score.svg)](https://glama.ai/mcp/servers/wasabihu/sessfork)
 
-**English** · [简体中文](README.zh-CN.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/)
+**English** · [简体中文](README.zh-CN.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/) · [Stress Benchmarks](docs/benchmarks.md)
 
 **Fork live Chrome auth sessions (Cookies + LocalStorage) into headless AI agent browsers — zero window focus theft, zero runtime dependencies.**
 
@@ -124,6 +125,38 @@ sessfork console.cloud.google.com --profile "Profile 1"
   - **SQLite Cookies**: Handles [Chromium Cookie DB `meta.version >= 24`](https://gist.github.com/creachadair/937179894a24571ce9860e2475a2d2ec) (`SHA-256(host_key)` 32-byte plaintext prefix stripping), live `-wal`/`-shm` sidecars, and `SameSite` / `HttpOnly` fidelity.
   - **LevelDB LocalStorage (`origins`)**: Parses Chromium's `_<origin>\x00` encoding-prefixed (`0x00` UTF-16LE / `0x01` Latin-1) records across `.ldb` SSTables and `.log` WALs, honoring `kTypeDeletion` tombstones (`localStorage.removeItem`) so logged-out JWTs are never resurrected.
 - **One-Command Auto-Wiring**: `sessfork <domain>` and `sessfork --setup` auto-detect Antigravity, Claude Code, and Cursor (`--target auto`), resolve absolute `npx` paths (avoiding [macOS GUI `$PATH` launch failures](https://discuss.ai.google.dev/t/bug-mcp-servers-crash-with-executable-file-not-found-in-path-when-antigravity-is-launched-via-macos-gui/138495)), and install `SKILL.md`.
+- **Optional Rust Stack (`moli` + native `sessfork-mcp`, `--engine dual` / `moli`) & Local Studio (`--ui`)**: Keep `chrome-headless-shell` as default for 99.9% web compatibility, or pair [`lexmount/moli`](https://github.com/lexmount/moli) with the bundled **605 KB native Rust CDP MCP server** ([`rust/sessfork-mcp`](rust/sessfork-mcp)): talks straight over `moli serve --remote-debugging-pipe` with **zero Node.js, zero TCP ports, `4.6 ms` MCP cold start, `1.7 MB` idle RSS**, and kernel-level EOF cleanup on exit.
+
+---
+
+## Stress Benchmarks (`chrome-headless-shell` vs. `moli` + Node vs. `moli` + Rust `sessfork-mcp`)
+
+Measured locally on Apple Silicon (`macOS 26.6.2 arm64`, Python 3.14.7, `@playwright/mcp@0.0.85`, `moli 1.1.27`, `sessfork-mcp 0.1.4`) via [`scripts/stress_test.py`](scripts/stress_test.py) (zero external requests). Full methodology & 3-way breakdown in **[docs/benchmarks.md](docs/benchmarks.md)**.
+
+| Workload | `chrome-headless-shell` + Node MCP | `moli 1.1.27` + Node MCP | **`moli 1.1.27` + Rust `sessfork-mcp`** | Delta vs. Chrome |
+| :--- | :---: | :---: | :---: | :--- |
+| **100-domain CLI extraction** *(2k cookies + 2k LS)* | `26.6 ms` p50 (`211k/s`) | same CLI core | same CLI core | Pure Python stdlib + CommonCrypto |
+| **16-process concurrent fork storm** *(64 domains)* | **`0.0%` lost updates** (`223.7 ms`) | same CLI core | same CLI core | Fixed `57.5% -> 0.0%` via `fcntl.flock` |
+| **MCP cold `initialize`** | `1,787.5 ms` | `1,229.5 ms` | **`4.6 ms`** *(1.7 MB idle)* | **`388×` faster** (zero Node.js / `npx`) |
+| **50-origin hot-reload p50** *(20 cycles)* | `263.8 ms` | `672.5 ms` | **`5.9 ms`** (`20/20` OK) | **`44.7×` faster** (`114×` vs Node+Moli) |
+| **6× lightweight auth time / total RSS** | `3,413 ms` / `1,219 MB` | `779 ms` / `383 MB` | **`230 ms` / `85 MB`** | **`14.8×` faster · `14.4×` less RAM (-93%)** |
+| **12× heavy-DOM total RSS** *(1,775 nodes/tab)* | `2,531.4 MB` (`15` procs) | `656.8 MB` (`1` proc) | **`260.4 MB` (`1` proc)** | **`9.72×` smaller (`-89.7%`, saves `2.27 GB`)** |
+| **12× heavy-DOM total time** *(full AX tree)* | `2,915.4 ms` | `5,543.9 ms` | **`1,501.0 ms`** (`12/12`, 0 leaks) | **`1.94×` faster** (`3.69×` vs Node+Moli) |
+
+> **Why `--engine dual` is the sweet spot:** Pure Rust `sessfork-moli` delivers **`9.72×` smaller RAM**, **`1.94×–14.8×` faster execution**, and **`1.7 MB` idle** with zero Node.js, while Chrome stays completely unloaded (`0 MB`) until a WebGL or strict anti-bot portal triggers fallback.
+
+```bash
+# Optional: install the 605 KB prebuilt native Rust CDP MCP binary (SHA-256 verified, no Cargo needed)
+curl -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/main/install.sh | bash -s -- --rust-mcp-only
+
+# Or build from source (Rust >=1.75; auto-used by --engine moli / dual)
+cargo install --git https://github.com/wasabihu/sessfork sessfork-mcp
+
+# Reproduce the 3-way 12x heavy-DOM comparison locally (~18s)
+python3 scripts/stress_test.py --heavy-compare
+```
+
+*(Want to use `sessfork-mcp` standalone with `moli` without Python? See [rust/sessfork-mcp/README.md](rust/sessfork-mcp/README.md).)*
 
 ---
 
@@ -138,6 +171,10 @@ sessfork console.cloud.google.com --profile "Profile 1"
 | Choose source browser (`chrome`, `arc`, `brave`, `edge`, `canary`) | `sessfork x.com --browser arc` |
 | Target specific profile folder | `sessfork github.com --profile "Profile 1"` |
 | Wire Antigravity + Claude Code + Cursor explicitly | `sessfork --setup --target all` |
+| Open the local visual control panel (`127.0.0.1`, zero deps) | `sessfork --ui` |
+| Switch headless engine (`chrome` default / `moli` Rust / `dual` fallback) | `sessfork --engine dual` *(or `chrome` / `moli`)* |
+| Attach MCP to an existing external CDP server (`moli serve`) | `sessfork --setup --cdp-endpoint http://127.0.0.1:9222` |
+| Switch back from external CDP to local `chrome-headless-shell` | `sessfork --setup --cdp-endpoint local` |
 | Inspect cached domains & origins (redacted, safe) | `sessfork --status` |
 | Re-fork all domains currently saved in `state.json` | `sessfork --refresh` |
 | Opt-in: cache the derived key to skip future Keychain prompts (see FAQ) | `sessfork github.com --cache-key` |
@@ -163,6 +200,15 @@ Choose a dedicated AI browser if you want a visual cursor watching the agent cli
 </details>
 
 <details>
+<summary><strong>What about sites that rotate single-use refresh tokens?</strong></summary>
+
+`sessfork` creates a point-in-time snapshot (`storageState`), which works best for standard sliding-session cookies, read-mostly dashboards/research, and short-lived agent runs.
+
+If a target site rotates **single-use refresh tokens** on every refresh (common on some OAuth SPAs and financial apps), your live Chrome tab and the forked headless context can invalidate each other's session whenever either side refreshes first. For those sites, signing into a dedicated isolated Chrome profile owned by the agent is the safer pattern; for everything else, `sessfork` avoids maintaining a second browser profile while keeping your active window untouched.
+
+</details>
+
+<details>
 <summary><strong>Why does macOS ask for Keychain access when forking cookies?</strong></summary>
 
 Chromium encrypts cookie values using a master passphrase stored under `"Chrome Safe Storage"` in your macOS Keychain. Click **Allow** so macOS authorizes `security` to read that entry. If a site uses `localStorage` tokens (many modern SPAs), pass `--no-cookies` to bypass Keychain completely.
@@ -174,9 +220,9 @@ By default `sessfork` does **not** store the derived decryption key anywhere, so
 <details>
 <summary><strong>Which platforms are supported?</strong></summary>
 
-- **macOS**: fully supported and tested on real Chrome profiles.
-- **Linux**: experimental — covered by unit tests, but not yet verified against many real-world Chrome/Secret Service setups. Bug reports welcome.
-- **Windows**: not supported (Chromium on Windows uses DPAPI / app-bound encryption).
+- **macOS (`arm64` / `x64`)**: fully supported and tested on real Chrome profiles, with prebuilt `sessfork-mcp` binaries.
+- **Linux (`x64` / `arm64`)**: supported (in-memory OpenSSL `libcrypto` AES-128-CBC + Secret Service / `peanuts`, verified on Ubuntu CI, with prebuilt `sessfork-mcp` binaries for `x64` & `arm64`).
+- **Windows**: not natively supported — Chrome 127+ on Windows enforces App-Bound Encryption (`v20`), which cannot be decrypted from unprivileged user space without process injection or privilege escalation. On Windows, run inside **WSL2**.
 
 </details>
 
@@ -201,6 +247,22 @@ No — only reload MCP once right after initial installation. Whenever you run `
 
 </details>
 
+<details>
+<summary><strong>Why does <code>sessfork-browser</code> fail on macOS with <code>Target page, context or browser has been closed</code> / <code>Mach rendezvous failed</code>?</strong></summary>
+
+`@playwright/mcp` defaults to system `/Applications/Google Chrome.app` in `--headless` mode. On macOS, system Chrome can crash mid-hydration with `Mach rendezvous failed` when `--isolated --storage-state=<state.json>` contains many LocalStorage origins, causing every MCP call to fail with `Target page, context or browser has been closed`.
+
+`sessfork` automatically detects Playwright's `chrome-headless-shell` binary (highest `chromium_headless_shell-<rev>` for your CPU architecture) and pins `--executable-path=<chrome-headless-shell>` in your MCP config on macOS. If it is not installed yet (or your config was created by an older version), install it and re-wire MCP once, then reload `sessfork-browser`:
+
+```bash
+npx -y playwright-core install chromium-headless-shell
+sessfork --setup
+```
+
+Check `sessfork --status` to confirm the detected binary and pinned config status. To opt out and use system Chrome (or pin a custom executable on any OS), set `SESSFORK_BROWSER_EXECUTABLE_PATH=system` (or `none`, or an executable path) before running `sessfork --setup`.
+
+</details>
+
 ---
 
 ## Security & Responsible Use
@@ -216,8 +278,14 @@ No — only reload MCP once right after initial installation. Whenever you run `
 ## Development & Tests
 
 ```bash
+# Unit & multi-process concurrency tests
 PYTHONPATH=src python3 -m unittest discover -s tests -v
+
+# Reproducible 5-scenario local stress benchmark (SQLite WAL, 16-proc flock, live MCP hot-reload & 6x isolatedContext)
+python3 scripts/stress_test.py
 ```
+
+See [docs/benchmarks.md](docs/benchmarks.md) for measured macOS ARM64 results (100-domain extraction in `26.6 ms`, `0%` lost updates under 16-process concurrency, `20/20` 50-origin MCP hot reloads, and `0` cross-context leaks across 6 isolated contexts).
 
 ## License
 

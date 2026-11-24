@@ -15,7 +15,7 @@ Vex is a source-available, non-commercial AI video studio. Describe a video to
 make from scratch or import footage and ask for edits in plain English. Run
 `vex web --open` for Studio or `vex` for the terminal.
 
-## Video demo
+## Video demos
 
 ### Where Light Meets
 
@@ -54,6 +54,14 @@ recorded narration. [Saved film direction](assets/demos/where-light-meets/film-d
 
 </details>
 
+### More films made with Vex
+
+| Intelligence Is Compression | An Intelligence Explosion |
+| --- | --- |
+| [![A neural network diagram compresses patterns into a compact group of weights.](assets/demos/intelligence-is-compression/preview.jpg)](assets/demos/intelligence-is-compression/intelligence-is-compression.mp4?raw=true) | [![A teal capability curve accelerates upward across a time axis.](assets/demos/an-intelligence-explosion/preview.jpg)](assets/demos/an-intelligence-explosion/an-intelligence-explosion.mp4?raw=true) |
+| An animated explainer about how language models compress patterns into weights and use them to predict. | A narrated visualization of a model-improvement feedback loop and a rapidly rising capability curve. |
+| [Watch the 1080p MP4 with narration](assets/demos/intelligence-is-compression/intelligence-is-compression.mp4?raw=true) · 21 seconds | [Watch the 1080p MP4 with narration](assets/demos/an-intelligence-explosion/an-intelligence-explosion.mp4?raw=true) · 24 seconds |
+
 ## Highlights
 
 | You ask for | Vex handles |
@@ -83,7 +91,7 @@ Generated visuals share source-grounded meaning checks, actual browser typograph
 
 ## Contents
 
-- [Video demo](#video-demo)
+- [Video demos](#video-demos)
 - [What Vex Can Do](#what-vex-can-do)
 - [What's New: Auto Visuals](#whats-new-auto-visuals)
 - [Auto Color Grading](#auto-color-grading)
@@ -534,13 +542,28 @@ Use **Create video** to start from a brief. Choose a format, duration, and
 voiceover setting. Studio follows the production stages while the shared Vex
 pipeline runs. A verified result can be downloaded or opened immediately as an
 editable project. You can stop a production after its current stage and reuse
-the brief from its run record.
+the brief from its run record. Generation runs in a separate local process, so
+you can close and reopen Studio while your video renders.
 
 Use **Import footage** for a file or local path. The editor keeps the conversation
 beside the current cut and its timeline. Switch between the cut and the source,
 click a timeline clip to seek, or use Undo and Redo. If your browser cannot play
 a file directly, select **Prepare browser preview** to build a compatible
 playback copy. Open the project and command search with **Ctrl+K** or **Cmd+K**.
+
+Generated films show **Film shots** in the editor. Click a shot to seek to it,
+or open **Replace a shot** to add an image or video and save it as a new cut.
+Under **Revise this cut**, you can split or reorder shots, edit captions,
+record a replacement line, change the canvas, or direct a selected shot in
+plain English. Review the proposed frames before saving. The revision goes
+into the same project's Undo and Redo history. If the previous MP4 qualifies
+for reuse, changing a caption redraws only the frames that display it.
+
+Use **Live timeline** to play and edit picture, voice, music, and captions
+before rendering. **Find footage or spoken words** searches local assets,
+captions, and transcribed speech. Open compatible imported footage as a
+production cut, or use a production archive to move the cut, its history,
+and visual references to another machine. [Editable production guide](docs/editable-production.md)
 
 Studio uses Vex's local project catalog and binds to `127.0.0.1` by default.
 Use `--host` to select another loopback address such as `localhost` or `::1`,

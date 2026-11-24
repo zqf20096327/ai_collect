@@ -9,6 +9,26 @@
 [![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?logo=android&logoColor=white)](https://github.com/yqing004-boop/magpie-android/releases/latest)
 [![License](https://img.shields.io/badge/upstream-MIT-blue.svg)](https://github.com/yetone/magpie/blob/main/LICENSE)
 
+## 赞赏
+
+如果这个移植对你有用，可以请我喝杯咖啡。
+
+[**💙 用支付宝赞赏（点开直接跳，不用扫码）**](https://qr.alipay.com/fkx14569btoofplf4ketx74)
+
+微信赞赏请扫码（微信限制了外部跳转，只能扫码）：
+
+<img src="assets/donate/wechat.jpg" width="220" alt="微信赞赏码">
+
+**赞赏纯属自愿，不构成任何服务承诺或售后义务**；magpie 本体由 [yetone](https://github.com/yetone/magpie) 开发，本项目只是非官方 Android 移植。
+
+## 交流群
+
+QQ 群：**magpie手机移植版**（1053848850）
+
+👉 [点击加入群聊](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=2anVAHj2T9a4GPPPNtL2iIHqctjgYGbQ&authKey=0lMP2nrT%2BvB9ZKIiyDx%2BUPzWA6MhRhSNRtGPIbmmjff0nnVLxHKEObduHhLWFDph&noverify=0&group_code=1053848850)
+
+问题反馈、版本更新通知、使用交流都在群里。
+
 ## 下载 [下载最新版 APK（GitHub Releases）](https://github.com/yqing004-boop/magpie-android/releases/latest)**
 
 当前只提供 **Android arm64 / arm64-v8a** 包，最低 Android 7.0（API 24）。下载后直接安装；升级请覆盖安装，不要先卸载，否则 Magpie 的本地配置、账号和数据可能被清除。
@@ -114,3 +134,6 @@ sh scripts/build-apk-local.sh
 - 本项目是独立、非官方的 Android 外壳；第三方工具和二进制遵循各自许可证，详见 [第三方声明](THIRD_PARTY_NOTICES.md)。
 - 问题反馈请发 [GitHub Issues](https://github.com/yqing004-boop/magpie-android/issues)。
 - **侵权联系删除**：如认为本仓库内容或 APK 涉及版权、商标或其他权益问题，请通过 GitHub Issue 联系维护者并说明权利归属及涉及内容；收到后会核实并及时处理。
+
+> App 内也有赞赏入口：菜单 → 赞赏作者（含支付宝一键跳转）
+

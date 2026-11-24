@@ -32,7 +32,7 @@ Records live in Postgres, and so do libfx's sessions, each chat's. No Next.js, a
 
 ## Phases
 
-In order of execution priority. Checked phases are built. Each is marked **core** or **plugin** ([Core or plugin](CONVENTIONS.md#core-or-plugin)). A core seam is a part of the core that plugins plug into. Built phases link to their phase docs in `docs/_completed/phases/`. The rest are one-page stubs in `docs/phases/` until they're planned, as Distribution and Mac support are.
+In order of execution priority. Checked phases are built. Each is marked **core** or **plugin** ([Core or plugin](CONVENTIONS.md#core-or-plugin)). A core seam is a part of the core that plugins plug into. Built phases link to their phase docs in `docs/_completed/phases/`. The rest are one-page stubs in `docs/phases/` until they're planned, as Distribution, Mac support, hc, and Embedded links are.
 
 - [x] [v1](docs/_completed/v1-plan.md) (core): bot profiles and a streaming chat
 - [x] [Provider logins](docs/_completed/phases/provider-logins.md) (core): ChatGPT, Grok, and Vercel accounts, API keys, and local model servers
@@ -44,7 +44,7 @@ In order of execution priority. Checked phases are built. Each is marked **core*
 - [x] [Skills](docs/_completed/phases/skills.md) (core seam): instructions bots read when a task needs them, from fxbot's list and skills.sh
 - [x] [Containers](docs/_completed/phases/containers.md) (core): podman or docker, one compose file for fxbot and its database with pgvector, and updates through the machine's `fxbot` command
 - [x] [Memories](docs/_completed/phases/memories.md) (core): each bot keeps what it has learned, and search by meaning from a local or remote embedder
-- [x] [Plugins](docs/_completed/phases/plugins.md) (core: the plugin API): plugins that change the app, with hooks, tools, data, and screens of their own; fxbot's first two were chat rooms and herdr: [chat rooms](plugins/chat-rooms/README.md) is in `plugins/`, and herdr left in 0.4.1, to be planned again
+- [x] [Plugins](docs/_completed/phases/plugins.md) (core: the plugin API): plugins that change the app, with hooks, tools, data, and screens of their own; fxbot's first two were chat rooms and herdr: [chat rooms](plugins/chat-rooms/README.md) is in `plugins/`, and herdr left in 0.4.1, and came back in 0.11.0 as [herdr](docs/_completed/phases/herdr.md)
 - [x] [One kind of plugin](docs/_completed/phases/one-kind-of-plugin.md) (core seam): one name and one list. A plugin carries any mix of code, MCP servers, and skills, and only the ones fxbot vets show until a switch in Settings
 - [x] [Agent computer](docs/_completed/phases/computer.md) (plugin, one others build on): a Linux computer for each bot, in the machine's own podman or docker, run rootless; the [computer](plugins/computer/README.md) is in `plugins/`
 - [x] [Streams](docs/_completed/phases/streams.md) (core): chats in the Postgres fxbot already runs, so an open chat costs nothing while idle and a long one is as quick to send to as a new one
@@ -71,6 +71,12 @@ In order of execution priority. Checked phases are built. Each is marked **core*
 - [x] [/fresh in core](docs/_completed/phases/fresh-in-core.md) (core; 0.10.0): `/fresh` built into every bot's chat, and the fresh plugin retired, **Unsupported** with words to remove it
 - [x] [A room's computer, in the computer plugin](docs/_completed/phases/room-computers.md) (plugin, with optional needs in the plugin API; 0.10.0): Computer 0.5.0 gives rooms their computers when chat rooms is added, every room keeps its computer, and chat-rooms-computer retires
 - [x] [A room's context](docs/_completed/phases/room-context.md) (plugin, with the compaction setting for plugins in core; 0.10.0): idle compaction and `/fresh` in chat rooms, with chat rooms 0.5.0, from the one setting, with one summary for the whole room, and `chat_history` saying a match came from a room
+- [x] [herdr](docs/_completed/phases/herdr.md) (plugin, with a door on the machine that `sudo fxbot herdr on` opens; 0.11.0): bots see the coding agents [herdr](https://herdr.dev) runs, here and on every machine it reaches, read them, send them work, start new ones, and hear back when one is done, each bot on the machines its settings give it
+- [x] [herdr terminals](docs/_completed/phases/herdr-terminals.md) (plugin; 0.11.0): each herdr agent's terminal in the app, to type into, bots that press keys in one when the owner says, and an agent known by its Claude Code session's name
+- [x] [herdr tags](docs/_completed/phases/herdr-tags.md) (plugin, with a place in the page's plugin API; 0.11.0): `@herdr:<name>` in the message box tags a herdr agent, its pane, session, and status in the tag, from a list the herdr plugin keeps in sync
+- [x] [herdr screen](docs/_completed/phases/herdr-screen.md) (plugin, with its door; 0.11.0): herdr itself in the app, a real terminal running herdr's own client, the whole screen or one agent attached
+- [x] [Phone](docs/_completed/phases/phone.md) (plugin; 0.11.0): the call in one plugin, `phone`, with what each bot gets, and providers as plugins that need it, phone-signalwire first
+- [x] [Phone: SignalWire](docs/_completed/phases/phone-signalwire.md) (plugin; 0.11.0): press Call me and the bot rings your phone through SignalWire, greets you, and talks with you, hands-free, with its own model, memory, and tools, and nothing reaching fxbot
 - [ ] [Claude's own API](docs/phases/claude-messages.md) (core; on hold until libfx is checked again): Claude by key over Anthropic's Messages API, with prompt caching, thinking at a bot's effort, cache counts in a turn's usage, and cache keys for the providers that want one ([#18](https://github.com/iammrduncan/fxbot/issues/18)). Meanwhile, Claude by key caches through AI Gateway
 - [ ] [Gateways](docs/phases/gateways.md) (plugins, with a small core hook): talk to bots from the chat apps you already use, as the owner, in the same conversation the app shows
 - [ ] [Telegram and Discord](docs/phases/telegram-and-discord.md) (plugins): the first two gateways
@@ -80,15 +86,17 @@ In order of execution priority. Checked phases are built. Each is marked **core*
 - [ ] [Context management](docs/phases/context-management.md) (core): one never-ending chat that fits the model's context window, past the compaction libfx does
 - [ ] [Past sessions](docs/phases/past-sessions.md) (core): earlier conversations stay browsable
 - [ ] [Knowledge base](docs/phases/knowledge-base.md) (plugin): knowledge the bots draw on
-- [ ] [herdr screen](docs/phases/herdr-screen.md) (plugin): the [herdr](https://herdr.dev) interface in the app, from a herdr plugin
-- [ ] [Remote control](docs/phases/remote-control.md) (plugin): heavy work handed to coding agents through herdr
+- [ ] [hc](docs/phases/hc.md) (plugin, with a second door on the machine; deferred until after 0.11.0): bots run coding agents of their own, such as Claude Code, in terminals that stay alive on any of the owner's machines, through herdr-core, hear back when one's turn ends, and the owner watches them live in fxbot
 - [ ] [Web search](docs/phases/web-search.md) (plugin): bots search and read the web, and cite it
 - [ ] [X feed](docs/phases/plugin-x-feed.md) (plugins): bots read X (Twitter) for free with tools of their own, posts, search, mentions, followers, and lists, from X's public pages, its embeds, and FxTwitter, or through a signed-in tab on the bot's computer, and watches start a turn when someone posts or the owner is mentioned
+- [ ] [Embedded links](docs/phases/embedded-links.md) (plugin, with a small core hook): a link on its own line, pasted or in a bot's reply, shows as a preview card, an X post as the post, and a YouTube video as its player, and stays a link to right-click and copy
 - [ ] [Vault](docs/phases/vault.md) (plugin): saved secrets and details bots use when allowed
 - [ ] [1Password](docs/phases/1password.md) (plugin): bots use stored logins and items from 1Password
 - [ ] [Local access](docs/phases/plugin-local-access.md) (plugin): bots reach folders the owner picks on the machine itself, off until the owner turns it on
 - [ ] [Image and video generation](docs/phases/media-generation.md) (plugin): bots create images and video
 - [ ] [Voice memos](docs/phases/voice-memos.md) (plugin): send a bot a recorded voice memo
+- [ ] [Phone: Telnyx](docs/phases/phone-telnyx.md) (plugin): a provider for phone, the same call for about a third of the price, with fxbot as a softphone and speech providers of the owner's own
+- [ ] [Phone in the app](docs/phases/phone-in-app.md) (plugin): a call in fxbot's own page, with speech providers such as phone-elevenlabs
 - [ ] [Phone calls](docs/phases/phone-calls.md) (plugin): talk with a bot by voice, in the app or over a phone line
 
 The previous design and spike are in [archive/](archive/README.md). The git host may still use the old repository name until the owner renames it.
@@ -273,7 +281,7 @@ The [release workflow](.github/workflows/release.yml) runs only on `main`. Relea
 
 The [Phases](#phases) list marks what's built, each linked to its phase doc in `docs/_completed/phases/`, which records what was planned, what was built, and what was checked. Each release's changes are in the [changelog](CHANGELOG.md).
 
-Everything was checked against mock servers, stubbed sign-in services, and Chromium, not with real accounts, models, or phones. Each phase doc lists what only a person can check.
+Nearly everything was checked against mock servers, stubbed sign-in services, and Chromium, not with real accounts, models, or phones. Phone's calls were also made on a real SignalWire account, to a real phone. Each phase doc lists what only a person can check.
 
 ## License
 

@@ -1,8 +1,10 @@
 # Mobile AI Agents
 
-**Build, test, and ship mobile apps with AI that proves its work.**
+**The end-to-end AI engineering system for mobile products.**
 
-Mobile AI Agents is an open-source **mobile engineering and QA system** for Claude Code, Codex, Cursor, GitHub Copilot, and Windsurf. It gives your coding agent platform-specific skills, specialist reviews, device-testing workflows, and evidence-backed quality gates for real app codebases.
+Turn an idea, design, issue, or existing codebase into a planned, implemented, reviewed, device-tested, and release-ready mobile product. Mobile AI Agents equips Claude Code, Codex, Cursor, GitHub Copilot, and Windsurf with a complete mobile engineering harness—not just prompts.
+
+**Idea → Spec → Tasks → Build → Review → Device QA → Release → Learn**
 
 19 personality-driven agents · 59 composable skills · 17 end-to-end workflows
 Android · iOS · Flutter · React Native · Kotlin Multiplatform · Unity · Unreal
@@ -13,24 +15,27 @@ Android · iOS · Flutter · React Native · Kotlin Multiplatform · Unity · Un
 [![GitHub Stars](https://img.shields.io/github/stars/salmanashraf/mobile-ai-agents?style=social)](https://github.com/salmanashraf/mobile-ai-agents/stargazers)
 [![Platform](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Flutter%20%7C%20RN%20%7C%20KMP%20%7C%20Unity%20%7C%20Unreal-brightgreen)](#core-loops-and-platform-plugins)
 
-[Installation Guide](docs/installation.md) · [Android Device Setup](docs/android-device-setup.md) · [Core Loops](docs/core-loops.md) · [mobile-karpathy](mobile-karpathy.md) · [Wiki](https://github.com/salmanashraf/mobile-ai-agents/wiki) · [Getting Started](docs/getting-started.md) · [Contributing](CONTRIBUTING.md)
+[Website](https://salmanashraf.github.io/mobile-ai-agents/) · [Installation Guide](docs/installation.md) · [Getting Started](docs/getting-started.md) · [Core Loops](docs/core-loops.md) · [Wiki](https://github.com/salmanashraf/mobile-ai-agents/wiki) · [Contributing](CONTRIBUTING.md)
 
-![Mobile Harness Loop Engineering preview](https://github.com/user-attachments/assets/3e51426a-d2d9-41d3-b668-48d4c751f20c)
+### See the Full Product Loop
 
-## Why Mobile AI Agents?
+[**Watch the idea-to-product demo →**](https://github.com/salmanashraf/mobile-ai-agents/releases/download/v1.0.48/mobile-ai-agents-mobile-qa-demo.mp4)
 
-Generating code is one part of mobile development. Shipping a reliable app also means respecting the existing architecture, handling lifecycle and platform behavior, reviewing security and performance, matching designs, testing on a device, and keeping evidence that the change works.
+See how one mobile engineering harness moves through planning, implementation, review, device QA, evidence, and release. Then read the [Android PDF Compressor case study](docs/case-studies/pdf-compressor-mobile-qa.md) for the measured proof behind the demo.
 
-Mobile AI Agents gives your coding agent that missing mobile context:
+## Build the Product, Not Just the Code
 
-- **Works with your current stack.** Use it in an existing Android, iOS, Flutter, React Native, KMP, Unity, or Unreal project without replacing the architecture that already works.
-- **Use a specialist or run the full loop.** Call a focused skill for Android ANRs, Swift review, Flutter widgets, React Native performance, Figma handoff, API parity, security, or release prep—or let Mobile Harness coordinate the stages.
-- **Make QA part of the delivery loop.** Build and test results, code/security/performance reviews, UI and API parity, simulator/emulator checks, device evidence, and unresolved gaps stay visible. Missing tooling stays unverified.
-- **Continue across sessions.** Mobile Memory saves decisions, evidence, completed work, and next actions so another coding session can resume with the right context.
+Code generation is one step. A real mobile product also needs discovery, specifications, task planning, architecture, UI implementation, API integration, security, performance, device QA, release preparation, and a feedback loop.
 
-Start with a rough idea, an existing app, a Figma design, a deployed web flow, a crash report, or a GitHub issue. Install the toolkit once, then ask your coding agent for the outcome you need.
+Mobile AI Agents brings those stages into one repeatable system:
 
-The system is built around **Loop Engineering**: plan the change, implement it, audit the code, verify the UI and runtime behavior, report the evidence, and save enough context to continue. You remain responsible for product decisions, credentials, architecture tradeoffs, and release approval.
+- **Start anywhere.** Bring a rough idea, Figma design, web flow, GitHub issue, crash report, or existing app.
+- **Build end to end.** Mobile Harness coordinates planning, implementation, review, verification, release, and the next iteration.
+- **Stay native to your stack.** Work inside Android, iOS, Flutter, React Native, or KMP without replacing the architecture that already works.
+- **Prove the result.** Tests, screenshots, network evidence, generated files, simulators, emulators, and devices support every important PASS.
+- **Keep momentum.** Mobile Memory preserves decisions, evidence, progress, and next actions across sessions.
+
+Use the full product loop or call a specialist directly for Figma handoff, API parity, code review, ANRs, memory leaks, security, accessibility, performance, testing, CI/CD, release notes, or store launch work. You remain responsible for product decisions, credentials, architecture tradeoffs, and release approval.
 
 ---
 ## Install
@@ -50,6 +55,14 @@ Fast install path:
 ```bash
 npx mobile-ai-agents install
 ```
+
+Then test a mobile app with one beginner-friendly command—no global install required:
+
+```bash
+npx mobile-ai-agents mobile-test
+```
+
+If the toolkit is already installed globally, the shorter `mobile-test` command works too. It detects the project, prepares Mobile MCP for the AI tool it finds, and creates a plain-language test request. If automatic detection is unavailable, use `mobile-test --client codex` (or `claude`, `cursor`, or `windsurf`). The existing `/mobile-mcp-qa` skill remains available for advanced control.
 
 This installs Mobile AI Agents for Claude Code. For Cursor, Windsurf, GitHub Copilot, Codex, platform-only installs, and troubleshooting, see [docs/installation.md](docs/installation.md).
 
@@ -81,51 +94,19 @@ npx mobile-agency install
 ```
 
 ---
-## How It Works
+## One Simple Mobile Engineering Loop
 
-Mobile AI Agents turns AI coding from one-off prompts into a repeatable mobile engineering loop.
-
-**Build the feature. Prove it works. Pick up where you left off.**
+**Discover → Spec → Tasks → Implement → Review → Verify → PR → Learn**
 
 ```mermaid
-flowchart TD
-    goal(["Bring an idea, existing app or design"])
-    plan["Plan a useful feature and define success"]
-    build["Implement in your existing stack"]
-    audit["Audit code and review security"]
-    verify["Run tests, verify UI and check the app on a device"]
-    remember["Report evidence and save project context"]
-    ready{"Required checks passed?"}
-    review(["Ready for your review and release approval"])
-    unblock["Resolve missing tools, access or evidence"]
-
-    goal --> plan --> build --> audit --> verify --> remember --> ready
-    ready -->|"Yes"| review
-    ready -->|"Fix needed"| build
-    ready -->|"Evidence missing"| unblock --> audit
-
-    classDef planning fill:#dbeafe,stroke:#2563eb,color:#172554
-    classDef work fill:#ede9fe,stroke:#7c3aed,color:#2e1065
-    classDef proof fill:#dcfce7,stroke:#15803d,color:#14532d
-    classDef gate fill:#fef3c7,stroke:#b45309,color:#78350f
-    class goal,plan planning
-    class build,audit work
-    class verify,remember,review proof
-    class ready,unblock gate
+flowchart LR
+    discover[Discover] --> spec[Spec] --> tasks[Tasks] --> implement[Implement]
+    implement --> review[Review] --> verify[Verify] --> pr[PR] --> learn[Learn]
 ```
 
-You provide the goal and approve important decisions. Your coding agent follows the workflow using the available tools; missing checks stay unverified. Context is saved so the next session can continue.
+This is the simple Mobile Harness path. `mobile-test` handles Verify. A result only passes when tests, screenshots, files, or device actions provide evidence; Learn saves useful context for the next cycle.
 
 [Explore the detailed workflow, verification gates and saved artifacts in the Wiki →](https://github.com/salmanashraf/mobile-ai-agents/wiki/Mobile-Engineering-Loop)
-
-| Step | What Happens | Command |
-|---|---|---|
-| 1. Start | Turn a raw idea into starter PRD, design, task, roadmap, and memory docs. | `npx mobile-ai-agents start` |
-| 2. Install | Add the agents, skills, and workflows to your AI coding tool. | `npx mobile-ai-agents install` |
-| 3. Open your app | Use it inside an Android, iOS, Flutter, React Native, KMP, Unity, or Unreal project. | Claude Code · Cursor · Windsurf · Copilot · Codex |
-| 4. Run the loop | Tell Mobile Harness to continue from the generated docs. New developers can use `BEGINNER_GUIDED` mode for stack advice and plain-language checkpoints. | `/mobile-harness` |
-| 5. Build with gates | The loop plans, implements, reviews architecture, checks security, audits performance, verifies UI, and runs QA. | `@MOBILE-HARNESS` |
-| 6. Continue later | Project context, decisions, reports, and next tasks are saved so work can continue across sessions. | Mobile Memory |
 
 For focused work, use a specialist directly:
 

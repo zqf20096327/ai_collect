@@ -140,7 +140,9 @@ npm run dev
 
 We would rather tell you what is production-ready and what is still a demo than waste your time:
 
-- **Ready for daily use:** The TypeScript coding agent, multi-provider BYOK/Ollama routing, git-worktree fleet runs, LOKAHI policy signing/conformance/evidence tools, Open GPU Cloud Market router/certifier, Arniko built-in secret scanner + SARIF export, Exa MCP integration, and Docker/Kubernetes private stack templates.
+- **Core shipping wedge:** The TypeScript coding agent, multi-provider BYOK/Ollama routing, git-worktree fleet runs, the TypeScript policy gateway, LOKAHI policy signing/conformance/evidence tools, Arniko built-in secret scanner + SARIF export, and Exa MCP integration.
+- **Gateway engines:** `dirgha gateway` and `dirgha proxy` always use the TypeScript gateway. The native Rust gateway is an experimental R&D prototype that does not proxy upstream LLM traffic; it requires an explicit opt-in flag.
+- **Experimental preview / simulation tracks:** The Open GPU Cloud Market router/certifier, enterprise Control Plane/cockpit, Docker/Kubernetes private-stack templates, and physical-AI/robotics tooling are available for evaluation but are not part of the core production support claim.
 - **Simulated demo tools (clearly labeled):** Six robotics/hardware MCP tools—`dirgha_policy_infer`, `physical_ai_vla_infer`, `hf_lerobot_dataset_sync`, `hardware_cad_pcb_generate`, `hardware_vendor_quote_order`, and `robotics_skill_invoke`—demonstrate the interface without calling external hardware vendors and always return `"simulated": true`.
 - **Independent audit pending:** Dirgha has not yet undergone a third-party penetration test. Treat it as defense-in-depth alongside your OS, container, and network isolation.
 

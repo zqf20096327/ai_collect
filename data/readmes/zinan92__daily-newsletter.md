@@ -1,0 +1,460 @@
+<div align="center">
+
+# Daily Newsletter
+
+**把分散在官方渠道、X、播客和公众号里的 AI 信息，每天自动凝练成一份中文日报，保存为一个本地 Markdown。**
+
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![Tests](https://img.shields.io/badge/tests-all%20suites-green.svg)](tests/)
+[![Pipeline](https://img.shields.io/badge/pipeline-5--stage%20AI--first-0f766e.svg)](workflow/daily-newsletter.workflow.yaml)
+[![Agent Skill](https://img.shields.io/badge/agent--skill-ready-7c3aed.svg)](SKILL.md)
+[![skills.sh](https://skills.sh/b/zinan92/daily-newsletter)](https://skills.sh/zinan92/daily-newsletter)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
+
+</div>
+
+---
+
+```
+in   官方渠道 (Anthropic/OpenAI/Claude/Codex) + X 关注账号 + 播客/YouTube/抖音 + 手动链接/公众号 seed
+out  一份中文日报 Markdown → `~/park-io/006_ai daily newsletter/<YY-MM-DD>.md`，每天 08:30
+
+fail LLM 端点 502/SSL    → DeepSeek 重试 3 次；仍失败则自动转 Codex CLI；配置错误不兜底
+fail DeepSeek HTTP 402   → 自动转 Codex CLI；Codex 也失败则停止并记录错误
+fail AI card coverage     → 只重试缺失 item；仍缺失、重复或未知 id 则停止，不生成半成品
+fail AI 结构化输出失败   → 写 processed/<YY-MM-DD>/ai/error.json + raw-response.md，直接停止，不 fallback
+fail 最终 Markdown 缺栏目 → build-digest 失败，不生成假成功产物
+fail 某来源抓取失败      → 跳过并在状态页标记，不影响其他来源
+```
+
+Daily Newsletter 是一个 **local-first Daily Inbox pipeline**：默认只生成一个本地 Markdown，并把完整正文发到飞书。HTML / PNG 和 Telegram 只保留为 legacy / 调试能力，不是当前默认交付路径。
+
+生产链路现在是 5-stage：`fetch -> to_md -> coarse_filter -> ai_process -> archive`。脚本只负责下载、转写、粗筛、保存和推送；内容判断、合并、打分、分类、快讯全集/深读子集选择全部交给 AI system prompt。
+
+## 不想部署？每天直接读 Park 的这一份
+
+Park 自己机器每天早上跑出来的日报，09:30 左右公开在：
+
+- 网页：<https://park-ai-intel.com/newsletter>（往期：<https://park-ai-intel.com/newsletter/archive.html>）
+- RSS：<https://park-ai-intel.com/newsletter/feed.xml>，放进任意 RSS 阅读器（Reeder、Feedly、Inoreader、Folo…）就能每天收到全文
+- 想把每天的热点直接变成你的选题：[选题工作台](https://xuanti.park-ai-intel.com/) 的「找」，网页上直接用，免费试用 7 天
+
+这是**和 Park 看到的完全一样**的那一份：Park 的机器用他手上的登录态（最主要是他关注的 45 个 X 账号）跑出来的。下面自己部署出来的版本，取决于你有哪些登录态，可能会比它薄。
+
+## 自己部署一份（5 步）
+
+需要：macOS（Linux 应该也能跑，但没实测过），Python 3.11+，和**一个 AI**（一个 API key，或一个登录好的 Claude Code / Codex CLI）。
+
+```bash
+# 1. 拿代码、装依赖
+git clone https://github.com/zinan92/daily-newsletter && cd daily-newsletter
+python3 -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt          # 只要日报本身
+# pip install -r requirements-full.txt   # 想要抖音 / 视频转写再装这个
+
+# 2. 填设置：复制一份，至少填一个 AI
+cp .env.example .env
+#    打开 .env，比如填 PARKIO_DEEPSEEK_KEY=sk-...
+
+# 3. 看看这台机器能跑哪些来源
+python3 doctor.py
+
+# 4. 跑一次
+./run-daily.sh
+#    → 日报在 ~/park-io/006_ai daily newsletter/<YY-MM-DD>.md
+
+# 5. 每天自动跑（例：每天 08:00）
+crontab -e
+#    0 8 * * * cd /path/to/daily-newsletter && ./run-daily.sh >> logs/run-daily.log 2>&1
+```
+
+cron 启动时 PATH 很短：`run-daily.sh` 会自动用仓库里的 `.venv`；但如果你用 `claude` / `codex` CLI 当 AI，要在 `.env` 里写它的绝对路径（`PARKIO_CLAUDE_BIN=$(which claude)` 的结果，或 `PARKIO_CODEX_BIN`），否则 cron 找不到。
+
+第一次跑没有历史记录，每个官网最近几篇都会被当成新内容，所以第一份日报里会混进一些旧文章；从第二天起只收新的。
+
+来源清单 [`sources.md`](sources.md) 就是 Park 自己在用的那一份，全部开放。里面的 `## User Context` 写的是 **Park 的口味**（AI 按它判断什么值得看）；想要按你自己的口味挑，改这一段就行。
+
+### AI：API 和 CLI 都能用
+
+在 `.env` 里用 `PARKIO_LLM_PROVIDER` 选一个：
+
+| 选项 | 类型 | 要准备什么 | 填哪里 |
+|------|------|-----------|--------|
+| `deepseek`（默认） | API | DeepSeek API key | `PARKIO_DEEPSEEK_KEY` |
+| `deepseek` + 自定义端点 | API | 任何 OpenAI 兼容的 `/chat/completions`（如 OpenRouter、Kimi、Qwen） | `PARKIO_DEEPSEEK_KEY` + `PARKIO_DEEPSEEK_ENDPOINT` + `PARKIO_DEEPSEEK_MODEL` |
+| `anthropic` | API | Anthropic API key | `ANTHROPIC_API_KEY`（模型默认 `claude-sonnet-5-5`，可改 `PARKIO_ANTHROPIC_MODEL`） |
+| `claude` | CLI | 装好 Claude Code 并登录过（`claude` 能用） | 不用填 key |
+| `codex` | CLI | 装好 Codex CLI 并 `codex login` | 不用填 key |
+
+一天的日报大约要几十次 AI 调用。`PARKIO_LLM_FALLBACK_PROVIDER` 可以再指定一个备用的，主的挂了自动换。
+
+### 前置条件：每类来源要什么，没有会怎样
+
+`python3 doctor.py` 会按你这台机器逐项打勾。没有的那一类**会被跳过，日报照样出**，只是少了那部分内容；状态页里显示为 DOWN。
+
+| 来源 | 清单里有几个 | 要什么 | 没有的话 |
+|------|------------|--------|---------|
+| 官方博客 / 网站（`scrape`） | 4 | 什么都不用 | — |
+| RSS：官方博客、GitHub Releases、播客、YouTube 频道（`rss`） | 29 | 什么都不用 | — |
+| GitHub Trending（`github`） | 1 | 什么都不用 | — |
+| 公众号（`wechat`） | 7 | 什么都不用 | 只抓清单里给的那几篇种子文章，不会自动发现新文章（Park 那边也一样） |
+| X / Twitter（`twitter`） | 45 | ① `uv tool install twitter-cli`；② 浏览器登录 x.com；③ `python3 refresh-twitter-auth.py` 生成 `twitter-auth.env` | 这 45 个账号全部跳过。**这是和 Park 那份差别最大的地方。** 用的是你自己账号的登录态，抓得太勤有被 X 限流的风险 |
+| 抖音（`douyin`） | 5 | ① `pip install -r requirements-full.txt`；② 浏览器登录抖音，把 cookie 按 `vendor/content_downloader/cookies.json.example` 的格式存到 `~/park-io/_secrets/douyin-cookies.json` | 这 5 个号跳过 |
+| 视频转写（YouTube / 播客 / 抖音视频） | — | ① `requirements-full.txt`（含 yt-dlp）；② `ffmpeg`；③ YouTube cookie：浏览器装 cookies.txt 扩展，导出 youtube.com 的 cookie 到 `~/park-io/_secrets/youtube-cookies.txt`；④ 没字幕的视频要用 `mlx-whisper` 本地转写，**只支持 Apple Silicon Mac** | 视频不转写，只按标题和简介处理 |
+| 飞书推送 | — | 飞书群自定义机器人（带签名），填 `FEISHU_WEBHOOK_URL` / `FEISHU_WEBHOOK_SECRET` | 日报只存本地 Markdown |
+
+所有登录态、cookie、key 都只放在你本机（`.env`、`~/park-io/_secrets/`），不进 git。
+
+## 当前可验证状态
+
+- 本仓库的验证入口是 `python3 -m pytest -q`、`python3 scripts/task_graph_validate.py`、`python3 scripts/workflow_graph_validate.py` 和 `python3 scripts/n8n_import_diff.py`。
+- 公开可复现的样例在 [`examples/`](examples/)，包含一份脱敏快讯、run-report 和 proof-run 记录。
+- 从一个干净的 clone 出发，只填一个 DeepSeek key、不带任何登录态，`./run-daily.sh` 能产出一份真实日报（RSS / 官方网站 / GitHub Trending / 公众号种子）。
+
+![Daily Newsletter public verification demo](examples/daily-newsletter-demo.gif)
+
+这个 GIF 由 `python3 scripts/render_demo_gif.py` 从真实验证命令输出生成；它不运行生产日报，也不发送 Feishu/Telegram。
+
+## Agent Skill 安装
+
+```bash
+npx skills add zinan92/daily-newsletter
+```
+
+安装后对 Agent 说“用 daily-newsletter 检查今天的日报流水线”或“用 daily-newsletter 排查 Feishu delivery receipt”。Agent 应先读 [`SKILL.md`](SKILL.md)，再按公开验证或生产运行路径行动。
+
+## 示例输出
+
+Daily Newsletter 是一个 umbrella 单文件，每天固定组织三个 section：
+
+- `## 快讯`：回答“今天有哪些新信号值得知道”。
+- `## 深读`：只在当天有 `deep_candidates` 时展开，回答“哪些内容值得花 10-30 分钟理解”。
+- `## 产品雷达`：后台读取 Product Hunt / Hacker News / TrustMRR，但读者版只回答“今天最值得优先 build 的具体产品是什么”；有候选时显示 `Top Three Products to Build Today`，最多给 3 个，每个产品只写名称和一句价值；没有候选时只显示 `No New Build Choices Today` 标题。不展示来源、证据、抓取统计或其他 OPS data。
+
+中间层仍会在 `~/park-io/_inbox/processed/<YY-MM-DD>/` 保留 `000-*`、`deep-*`、`product-radar-*` Markdown 方便 debug；长期读者归档只保存 `~/park-io/006_ai daily newsletter/<YY-MM-DD>.md`。
+
+深读必须是快讯全集的子集，并通过 `parent_brief_event_id` 可追踪。`Source Health` 留在状态页和 run-report，不进入读者正文。
+产品雷达不进入快讯/深读的 AI selection universe；它是同一个 daily routine 里的第三个产品，避免产品机会源污染资讯判断。
+
+```markdown
+# AI Daily Newsletter — 2026-06-10
+
+## 快讯
+### 底层工具
+- **Claude Code Release** | [Claude Code Release：v2.1.170](https://github.com/...)
+  版本更新说明，适合快速知道工具变化。
+
+### 工作流
+- **X / 向阳乔木** | [一句话操作浏览器](https://x.com/...)
+  浏览器 Agent 正在进入真实内容/运营工作流。
+
+### 内容
+- **X / Yenita_Su** | [小红书创作窗口解析](https://x.com/...)
+  平台扶持方向变化，适合做机会扫描。
+
+## 深读
+### [Claude Code 官方循环工程入门指南](https://example.com)
+文章级判断与可迁移启发。
+
+## 产品雷达
+### Top Three Products to Build Today
+
+1. 销售通话复盘助手：自动找出客户异议和下一步动作，帮助小型销售团队缩短成交周期。
+```
+
+> 终端运行时每个阶段都会打印进度，例如：
+> ```
+> [ai-process] item_understanding START — 148 items
+> [ai-process] selection START — 41 events
+> [summarize] DONE — wrote .../000-26-05-30.md and .../000-26-05-30.html
+> ```
+
+## 架构：5-stage AI-first
+
+抓取入口仍按来源拆分，但生产边界按 stage folder 固化。最终读者正文只输出一个 Markdown，内部包含 `快讯`、`深读` 和 `产品雷达`。
+
+```
+fetch → raw/<YYYY-MM-DD>
+      → to_md → unprocessed/<YYYY-MM-DD>/items/*.md
+      → coarse_filter → processed/<YY-MM-DD>/items/*.md + coarse-rejects.jsonl
+      → ai_process → ai/01-item-cards.json → ai/02-events.json → ai/03-selection.json
+                   → processed/000-YY-MM-DD.md + optional processed/deep-YY-MM-DD.md
+      → archive → explicit collection items + daily artifacts
+      → daily_bundle → 006_ai daily newsletter/YY-MM-DD.md
+```
+
+实现入口固定在 `stages/`，根目录脚本只是兼容 wrapper：
+
+```text
+stages/fetch/run.py
+stages/to_md/run.py
+stages/coarse_filter/run.py
+stages/ai_process/run.py
+stages/archive/run.py
+```
+
+节点类型：`script`（抓取/转写/粗筛/保存/推送）· `ai`（理解/合并/选择/写作）· `local_model`（MLX Whisper，本地转录）· `human`（手动输入）· `sink`（artifact）。
+当前 repo 内 workflow 合同是 `workflow/daily-newsletter.workflow.yaml`；如果后续恢复 vault 里的 reader-facing 图，再把它作为发布视图同步，不要让不存在的 vault 文件成为运行依据。
+
+## 快速开始（开发者）
+
+一键部署看上面的「自己部署一份」。下面是改代码时的验证和逐阶段手动运行：
+
+```bash
+# 1. 克隆
+git clone https://github.com/zinan92/daily-newsletter
+cd daily-newsletter
+
+# 2. 准备 Python 环境
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+
+# 3. 先跑公开可复现验证
+python3 -m pytest -q
+python3 scripts/task_graph_validate.py
+python3 scripts/workflow_graph_validate.py
+python3 scripts/workflow_graph_dry_run.py
+python3 scripts/n8n_import_diff.py
+```
+
+生产运行需要一个 LLM（见上面「AI：API 和 CLI 都能用」）。数据根目录默认 `~/park-io`，可用 `PARKIO_HOME` 覆盖。key 写在 `.env`，或者老办法写到 `$PARKIO_HOME/_secrets/deepseek-key`（权限 600）。
+
+# 手动跑一遍当天 pipeline
+./fetch-all.sh                                    # Stage 1: 抓取 raw/legacy input
+python3 stages/to_md/run.py                       # Stage 2: raw → one-item markdown + media transcript
+BATCH=$(python3 stages/coarse_filter/run.py | tail -1) # Stage 3: coarse filter → processed
+PARKIO_BATCH_ID=$BATCH python3 build-digest.py    # Stage 4: AI → 快讯 artifact + optional 深读 artifact
+PARKIO_BATCH_ID=$BATCH python3 stages/archive/run.py
+python3 build-product-radar.py --date "$(date +%F)" # Product Radar：写 processed/<YY-MM-DD>/product-radar-*.md
+python3 build-daily-bundle.py --date "$(date +%F)"  # Stage 5: 写 006_ai daily newsletter/YY-MM-DD.md
+python3 reader_quality.py --date "$(date +%F)"       # Reader QA：检查最终读者产物
+python3 send-feishu-digest.py --date "$(date +%F)"   # Feishu：发送完整正文并写 delivery receipt
+# Telegram 是 legacy optional sender，默认跳过；恢复后再手动执行：
+# PARKIO_BATCH_ID=$BATCH PARKIO_FORCE_PUSH=1 python3 send-artifacts.py
+```
+
+日常由 launchd 驱动：`fetch-all.sh` 每小时只抓取 raw/source data 并刷新状态健康；`push-feishu-digest.sh` 每天 08:30 先调用 `push-digest.sh` 依次执行 `to-md -> open-batch -> build-digest -> archive -> product-radar -> daily-bundle -> reader-qa -> status`，保存中间产物到 `processed/`，最终只写入 `~/park-io/006_ai daily newsletter/YY-MM-DD.md`；随后执行 `send-feishu-digest.py`，向飞书发送这份完整正文并落 delivery receipt。WeChat / YouTube 等可恢复登录态异常会进入状态页和 daily bundle 的健康提示，默认不阻塞当天生成；临时恢复旧阻塞行为可设置 `PARKIO_PREFLIGHT_BLOCK=1`。Telegram token 修复前，`push-digest.sh` 默认跳过 Telegram 发送；恢复 Telegram 时用 `PARKIO_SKIP_SEND=0 ./push-digest.sh`。
+
+## Pipeline 阶段
+
+| 阶段 | 脚本 | Handler | 说明 |
+|------|------|---------|------|
+| Fetch | `stages/fetch/run.py` | script | 只下载 raw data；公共 writer 默认写 `inbox/raw/<YYYY-MM-DD>/`，少数直接写入的旧 fetcher 仍兼容迁移 |
+| To MD | `stages/to_md/run.py` | script + local_model | raw artifact 统一成 `inbox/unprocessed/<YYYY-MM-DD>/items/*.md`，一个 item 一个 markdown；默认处理今天和昨天尚未转写的 pending raw，避免 X 收藏等 late-arriving raw 永久卡在 raw；视频/音频转录在这里完成 |
+| Coarse Filter | `stages/coarse_filter/run.py` | script | 只删明显垃圾，写 `processed/<YY-MM-DD>/coarse-rejects.jsonl`；不打分、不合并、不做产品判断 |
+| 选题工作台 | `build-topics.py` | script | 手动/独立读取 `inbox/unprocessed`，生成 `topics.html` / `topics.md`；不参与生产 digest |
+| AI Process | `stages/ai_process/run.py` | ai | AI：item cards → events → selection → 快讯写作 + optional 深读写作；item card 缺失时只补缺失 id，覆盖仍不完整则停止 |
+| 运行报告 | `run_report.py` | script | 为同一个 batch 生成 `run-report.json`；日报、status、health alert 共用这一份健康事实 |
+| 归档 | `stages/archive/run.py` | script | 按 `ai/03-selection.json` 归档 `brief_universe` / `deep_candidates`；discard 只保留 decision log |
+| 本地定稿 | `build-daily-bundle.py` | script | 合并 processed 快讯、深读和产品雷达，写 `~/park-io/006_ai daily newsletter/YY-MM-DD.md` |
+| 产品雷达 | `build-product-radar.py` | script + AI | 独立抓取 Product Hunt / HN / TrustMRR，由 DeepSeek（临时故障时可切 Claude）生成最多 3 个具体产品；读者 Markdown 只保留产品名和一句价值，证据与 source health 留在 processed JSON/raw snapshot |
+| Legacy split finalize | `finalize-local.py` | script | 仅兼容旧 split-artifact 调试，不在生产链路中调用 |
+| Reader QA | `reader_quality.py` | script | 检查实际读者 Markdown：禁止 raw transcript、机器 marker、本地路径泄漏、缺失核心 section；失败则停止推送 |
+| 飞书推送 | `send-feishu-digest.py` | script | 发送完整正文，不依赖本地 Markdown 链接；写 `processed/receipts/feishu/*.json` delivery receipt |
+| 推送 | `send-artifacts.py` → `push-telegram.py` | script | 当前默认跳过；恢复后发送 Telegram |
+| 状态 | `generate-status.py` | script | 维护者状态页 `status.html`（抓取/依赖/健康），并同步 `park-ai-intel/public/source-health-live.json` |
+| 渠道健康 | `channel-health.py` | script | 按 fetch 日志真值 + feed 新鲜度，分 DOWN/STALE/QUIET/NEW |
+
+## 渠道健康与可观测性
+
+46 个 source 分布在 5 个平台（scrape / rss / twitter / wechat / douyin）。公众号只保留手动/seed 抓取，不再依赖 WeWe RSS。**核心原则：渠道「挂了」绝不能显示成「没更新」。**
+
+- `channel-health.py` 是健康真值源：读 **fetch 日志**（不是会撒谎的 `state.json`）+ 探测 feed 新鲜度，把每个渠道判成五态之一——
+  - **DOWN**：抓取报错或自动渠道未配置（超时 / 拒连 / cookie 过期）
+  - **STALE**：抓取成功但上游自动 feed 冻结
+  - **QUIET**：抓取成功、feed 新鲜、确实没有新内容
+  - **NEW**：有新内容入库
+  - **FILTERED**（状态页「抓到但过滤」）：抓到了新内容，但 0 条进入当天正文（被 coarse filter 或 AI selection 丢掉）
+- `status.html` 的逐源健康与依赖检查都走 `channel-health` 真值；YouTube/X/抖音等自动依赖按真实抓取结果判定，公众号不再进行 WeWe 登录态或 RSS bridge 探测。
+- `processed/<YY-MM-DD>/run-report.json` 是日报、`status.html`、`health-alerts.md` 的共享事实源：同一个 batch 的 AI 输入、粗筛丢弃、合并事件、快讯/深读/产品雷达数量、source 异常、音视频转录失败、Reader QA、Feishu receipt 必须从这里读，不能各自重新计算。
+- `run-report.json` / `status.html` 会显示 pending raw 总数和 pending X 收藏数；如果 X 收藏已经抓到但晚于当天 AI batch，它会显示为 `pending_x_saved_raw`，下一轮 `to_md` 会把它补进 `unprocessed/<date>/items/`。
+- `reader_quality.py` 是最终读者产物 QA，只检查 `sent/` 中实际要被读者看到的 Markdown，不重写正文、不做 fallback；发现 raw transcript、重复 filler、机器 marker 或正文内本地路径会失败。
+- `send-feishu-digest.py` 会把快讯、深读、产品雷达正文 inline 发送到飞书，并在 `processed/receipts/feishu/` 写入发送回执；如果飞书失败，也要落 failed receipt，便于 status/James 复盘。
+- `generate-status.py` 每次刷新 `status.html` 时同步 `park-ai-intel/public/source-health-live.json`，前端可用 `generatedAt` 判断 dashboard 是否 stale。
+- 状态页带**渠道告警条**：哪些渠道挂了 / 冻结 / 音视频转录失败一眼可见；最终 newsletter 正文不展示 RuntimeError、cookie 文件名等内部报错。
+- `status.html` 允许被 hourly fetch 刷新，但必须区分“最新日报 batch”和“当前 unprocessed 下一批”，不能把二者混成同一个“今日待处理”数字。
+
+### 运行时依赖（外部，需留意）
+
+| 依赖 | 服务谁 | 风险 |
+|------|--------|------|
+| 手动/seed 公众号入口 | 手动链接和 seed 文章 | 不提供自动 RSS；需要内容时通过手动链接或飞书收藏进入 pipeline |
+| `vendor/content_downloader`（从已 archive 的 content-toolkit 搬进本仓库） | `fetch-douyin` / `fetch-media-transcripts` 的抖音抓取 | 依赖在 `requirements-full.txt`；抖音 cookie 失效会显示 DOWN |
+| `twitter-auth.env` | 20 个 X 账号 | 登录态过期会导致全部 X 抓取失败 |
+| `~/park-io/_secrets/youtube-cookies.txt`（Netscape 格式，权限 600，仓库外） | YouTube/播客视频的 yt-dlp 下载+转录 | cookie 过期会触发 "Sign in to confirm you're not a bot" → 视频下不下来。**换法**：浏览器装 cookies.txt 扩展导出 youtube.com cookie，覆盖该文件即可（可用 `PARKIO_YTDLP_COOKIES_FILE` 改路径）。失效会在 status/digest 告警。 |
+
+这些依赖都可通过环境变量替换：`PARKIO_HOME`、`PARKIO_DOWNLOAD_CAPABILITY`、`PARKIO_TWITTER_BIN`、`PARKIO_TWITTER_AUTH_ENV`、`PARKIO_YTDLP_COOKIES_FILE`、`PARKIO_LIVE_DASHBOARD_JSON`。
+
+> 微信公众号没有稳定的官方 RSS，所以当前策略是：**不再运行 WeWe 自动桥；保留 `manual-links.md`、飞书好文收藏和 seed 文章入口**。需要某篇文章时手动送入 pipeline，避免失效登录态持续污染每日健康状态。
+
+## 回归不变量（GOTCHAS）
+
+这个项目的核心是一套硬规则——哪些内容必须被 AI 判断、哪些绝不能由脚本偷偷代替判断。全部记录在 [`GOTCHAS.md`](GOTCHAS.md)，并由 `tests/test_*.py` + AI output structural checks 锁死。改 `summarize.py` / `aggregation/digest/ai_process.py` / `open-batch.py` / `fetch-*.py` 前先对照。重点：
+
+- **脚本不做产品判断**——除了 coarse filter 的明显垃圾，merge / score / selection / writing 都在 AI process。
+- **失败不 fallback**——AI JSON 错、结构错、最终 Markdown 缺栏目，直接写 `ai/error.json` 并停止。
+- **快讯/深读同一事实源**——`brief_universe` 生成默认快讯，`deep_candidates` 必须是快讯子集并生成 optional 深读。
+- **Daily umbrella 单文件**——产品雷达独立生成中间 Markdown，`006_ai daily newsletter/YY-MM-DD.md` 合并快讯、深读、产品雷达三个 section，不再生成 reader-facing HTML/PNG。
+- **读者正文不放 Source Health**——渠道健康只进 `status.html`、`run-report.json` 和 health alerts。
+- **长期收藏只收显式保存**——飞书 `好文收藏`、manual links、X saved、Wendy 点“有用”的 item 进 `002_个人收藏`；普通 AI daily 候选不自动进入个人收藏。个人收藏统一写入 `category`（AI类 / 认知提升类 / 做内容类 / 金融交易类）和 comma-separated `tags`，由 `ingestion/collection_taxonomy.py` 生成。
+
+## 配置
+
+所有变量都可以写在仓库根目录的 `.env`（从 `.env.example` 复制）；真实环境变量优先。LLM 默认走 **DeepSeek**（OpenAI 兼容 API）。DeepSeek 发生 HTTP 402（余额/额度不足）或 SSL/429/5xx 这类可恢复故障时，默认自动转 **Codex CLI**。Codex 通过 `codex exec --ephemeral --sandbox read-only` 在 `/tmp` 工作目录中运行，stdout 才会进入日报处理；401/400 等配置错误仍直接暴露，不会被静默隐藏。Key 从 env 或 `~/park-io/_secrets/<name>` 读取，**不进代码、不进 git**。
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `PARKIO_HOME` | Park-IO 数据根目录 | `~/park-io` |
+| `PARKIO_LLM_PROVIDER` | LLM 提供方：API `deepseek` / `anthropic`，CLI `claude` / `codex` | `deepseek` |
+| `PARKIO_SOURCES` | 来源清单路径 | `$PARKIO_HOME/_source management/sources.md`，没有就用仓库里的 `sources.md` |
+| `ANTHROPIC_API_KEY` | Anthropic 官方 API key（`anthropic` provider） | 无 |
+| `PARKIO_ANTHROPIC_MODEL` / `PARKIO_ANTHROPIC_ENDPOINT` | Anthropic 模型 / 端点 | 官方 key：`claude-sonnet-5-5` / `api.anthropic.com`；CLIProxy：见下 |
+| `PARKIO_CLAUDE_BIN` / `PARKIO_CLAUDE_MODEL` | Claude Code CLI 路径 / 模型（`claude` provider） | `claude` / CLI 默认 |
+| `PARKIO_LLM_FALLBACK_PROVIDER` | 主 LLM 余额/临时故障时的备用 provider；可选 `codex`、`anthropic`、`none` | `codex`（主 provider 为 DeepSeek 时） |
+| `PARKIO_CODEX_BIN` | Codex CLI 可执行文件 | `codex` |
+| `PARKIO_CODEX_WORKDIR` | Codex fallback 的工作目录；应保持为只读、隔离目录 | `/tmp` |
+| `PARKIO_DEEPSEEK_KEY` | DeepSeek API key（或写入 `~/park-io/_secrets/deepseek-key`） | 无（必填） |
+| `PARKIO_DEEPSEEK_MODEL` | DeepSeek 模型 | `deepseek-v4-flash` |
+| `PARKIO_DEEPSEEK_ENDPOINT` | DeepSeek 端点 | `https://api.deepseek.com/v1/chat/completions` |
+| `PARKIO_CLIPROXY_KEY` | Anthropic/备用模式的本地代理密钥；或 `~/park-io/_secrets/cliproxy-key` | 无 |
+| `PARKIO_CLIPROXY_MODEL` | Anthropic/备用模式模型 | `claude-sonnet-4-5-20250929` |
+| `PARKIO_BATCH_ID` | 指定批次（手动跑某天） | 当天 |
+| `PARKIO_PYTHON` | fetch 阶段的 Python 3.11+ 解释器 | 自动探测 |
+| `PARKIO_DOWNLOAD_CAPABILITY` | Douyin / media downloader capability path | 仓库内 `vendor/` |
+| `PARKIO_TWITTER_BIN` | X 抓取 CLI 路径 | `~/.local/bin/twitter` |
+| `PARKIO_TWITTER_AUTH_ENV` | X 登录态 env 文件 | `./twitter-auth.env` |
+
+`sources.md`（在 `~/park-io/_source management/`）是来源清单和用户画像的单一真源；评分标定已经迁移到 `prompts/ai-process/03-selection.md`。
+
+## 项目结构
+
+```
+daily-newsletter/
+├── SKILL.md                    # Agent-facing skill wrapper
+├── run-daily.sh                # 自部署一键入口：抓取 → AI → 日报（→ 飞书）
+├── doctor.py                   # 检查这台机器能跑哪些来源、哪个 AI
+├── .env.example                # 设置模板，复制成 .env
+├── sources.md                  # Park 的完整来源清单 + User Context
+├── vendor/content_downloader/  # 抖音 / 视频下载器（原 content-toolkit）
+├── requirements.txt            # 最小公开验证依赖
+├── requirements-full.txt       # 抖音 / 视频转写等可选来源的依赖
+├── examples/                   # 脱敏样例输出和 proof-run 记录
+├── .claude-plugin/             # marketplace metadata
+├── fetch*.py / fetch-all.sh   # public 抓取入口（兼容 wrapper）
+├── to-md.py                   # raw artifact → one-item markdown
+├── build-digest.py            # public 构建入口（兼容 wrapper）
+├── summarize.py               # public summarize import/CLI（兼容 wrapper）
+├── ingestion/                 # channel-owned ingestion implementations
+│   ├── rss/                   # RSS / YouTube feed fallback
+│   ├── web_scrape/            # official site scrape
+│   ├── x/                     # X timeline + saved items
+│   ├── douyin/                # Douyin profile monitoring
+│   ├── wechat_rss/            # legacy exporter compatibility module only
+│   └── manual_links/          # manual links + seeded WeChat parser
+├── enrichment/media/          # transcript + media summary enrichment
+├── aggregation/digest/        # ai_process/build/summarize/archive/finalize
+├── stages/                    # 5-stage physical boundary; root scripts wrap these
+│   ├── fetch/
+│   ├── to_md/
+│   ├── coarse_filter/
+│   ├── ai_process/
+│   └── archive/
+├── prompts/ai-process/        # four-pass AI system prompts
+├── contracts/                 # standard ingestion artifact schema
+├── workflow/                  # n8n-ready workflow-as-code map
+├── digest_events.py           # 事件聚类 + thread 合并
+├── digest_text.py             # 文本清洗（strip_source_meta 等）
+├── push-telegram.py           # legacy optional Telegram sender
+├── generate-status.py         # 维护者状态页
+├── run_report.py              # batch 健康事实源：digest/status/health alert 共用
+├── lib.py                     # 共享：路径、解析、llm_call(带重试)
+├── GOTCHAS.md                 # 回归不变量清单
+├── tests/                     # 回归测试套件
+└── AGENTS.md                  # 给 AI agent 的编辑规则
+```
+
+数据目录在 `~/park-io/`：`_inbox/`（raw/unprocessed/processed 临时缓存）、`006_ai daily newsletter/`（AI daily newsletter 最终单文件 Markdown 归档）、`001_daily newsletter/`（legacy/旧产物，不再作为 AI daily 输出目标）、`002_个人收藏/`（Wendy 显式收藏；`_manual-links.md` 是总索引，含 category/tags）、`003_park原始输出/`（Wendy 原始表达）、`004_内容加工中/`（草稿和中间资产）、`005_自媒体发出内容/`（已发布内容指针）、`000_ai使用守则/`（角色、skills、workflows、gotchas）、`_source management/`（source ops）、`_inbox/status.html`（维护者面板）。
+
+飞书 `好文收藏` 群由本机 LaunchAgent `com.parkio.feishu-favorites` 每 5 分钟轮询一次，入口脚本是 `fetch-feishu-favorites.py`，状态写入 `state.json` 的 `feishu-favorites`，日志写入 `logs/feishu-favorites.log`。
+
+## Agent-Claimable Task Graph
+
+未来的大改动先写进 repo-local task graph，再让 agent 认领 ready task：
+
+```bash
+python3 scripts/task_graph_validate.py
+python3 scripts/task_graph_ready.py
+python3 scripts/task_next.py
+python3 scripts/task_agent_loop.py --agent codex
+python3 scripts/task_graph_threads.py
+python3 scripts/task_graph_github_export.py --task AG-002 --json
+python3 scripts/task_claim.py TG-001 --agent codex
+python3 scripts/task_complete.py TG-001 --agent codex --commit <sha>
+```
+
+当前图在 `tasks/daily-inbox-task-graph.json`，schema 在 `tasks/schema.json`。GitHub Issues / n8n sync 是后续层；本地 task graph 先保持 source of truth。
+
+每个 execution thread 完成前，用 `tasks/review-checklist.md` 做验收；agent 认领规则在 `tasks/agent-claim-protocol.md`。
+
+## Executable Workflow Diagram
+
+Daily Inbox runtime diagram 的最小可执行版本在 `workflow/diagram/`：
+
+```bash
+python3 scripts/workflow_graph_validate.py
+python3 scripts/workflow_graph_dry_run.py
+python3 scripts/workflow_graph_dry_run.py --json
+python3 scripts/workflow_graph_run.py
+```
+
+`workflow/diagram/daily-newsletter.graph.json` 里的 `edges` 决定 dry-run 顺序。改 edge 后，dry-run 输出会变；这就是 diagram-as-source-of-truth 的第一层。
+
+`workflow_graph_run.py` 默认也只 dry-run。真实执行必须限定节点并显式确认：
+
+```bash
+python3 scripts/workflow_graph_run.py --node status_after_fetch --run --confirm-production
+```
+
+可生成 n8n JSON：
+
+```bash
+python3 scripts/n8n_export.py --dry-run
+python3 scripts/n8n_export.py --output workflow/n8n/daily-newsletter.workflow.json
+```
+
+可检查 n8n visual workflow 是否偏离 canonical graph：
+
+```bash
+python3 scripts/n8n_import_diff.py
+```
+
+## For AI Agents
+
+这是一个 **CLI / cron 流水线**，不暴露 HTTP API。集成或修改前，请读 `AGENTS.md` 和 `GOTCHAS.md`。
+
+```yaml
+name: daily-newsletter
+capability:
+  summary: Aggregate AI news from official channels, X, podcasts, and manual links
+           into a daily Chinese digest saved as one Markdown.
+  in:  source configs (sources.md) + manual-links.md
+  out: ~/park-io/006_ai daily newsletter/YY-MM-DD.md containing brief, deep, and product radar sections
+  fail:
+    - "LLM 502/SSL → retry DeepSeek 3x then fail over to CLIProxy/Sonnet; config errors fail fast"
+    - "AI JSON/Markdown structure failure → write ai/error.json + raw-response.md and stop"
+  handlers: [script (fetch/to_md/coarse_filter/archive/push), ai (understand/merge/select/write), local_model (MLX Whisper)]
+entrypoints:
+  fetch:   ./fetch-all.sh                 # hourly; fetch raw/source data and refresh health only
+  digest:  ./push-feishu-digest.sh        # daily 08:30 (generate local artifacts, then send Feishu with receipt)
+  skill:   Ask an agent to use `SKILL.md` when operating or reviewing the pipeline
+verify:    python3 -m pytest -q && python3 scripts/workflow_graph_validate.py
+invariants: GOTCHAS.md
+contract:   workflow/daily-newsletter.workflow.yaml
+```
+
+修改的安全流程：先跑 `tests/`，改完再跑一次；任何 reader-facing 改动都要让 AI structural checks 通过；编辑 workflow spec 后同步 `tests/test_ingestion_contracts.py`。
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).

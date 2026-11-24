@@ -1049,6 +1049,7 @@ jobs:
       minimum-staging-age: 2h # optional; 2h is the default
       jamf-url: ${{ vars.JAMF_URL }} # optional
       private-deps: true # optional: a dependency is one of the owner's private repositories
+      required-releases: .github/required-releases.txt # optional: repositories that need a production release
     secrets:
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
@@ -1093,9 +1094,26 @@ jobs:
   instead: each must be a version requirement written as string literals,
   with no branch, revision or prerelease bound, and its lowest version must be
   such a release. Reading a private repository's releases takes
-  `private-deps`. The reviewer's summary lists each release it checked: the
-  pinned version from `Package.resolved`, or the lowest version
-  `Package.swift` requires, which SwiftPM may resolve higher.
+  `private-deps`.
+- **Required releases.** A build can also require other repositories to have
+  a production release, such as the packages its hosts install from them.
+  `required-releases` names a file at the source commit with one `owner/repo`
+  a line, optionally followed by a pattern one asset of the release must
+  match, where `*` matches any characters, such as `photon-hq/prism *.pkg`;
+  blank lines and anything after `#` are ignored. Promotion reads the file
+  from GitHub and fails unless each repository's latest GitHub release is
+  published, neither a draft nor a prerelease, and matches its pattern. A
+  missing file, a file that names no repository, or a line in another form
+  fails it too. Reading a private
+  repository's releases takes `private-deps`. Findings from SwiftPM and from
+  the list are reported together in one failure.
+- **Summary.** The reviewer's summary lists, in one table with the file that
+  requires each, the release every dependency resolved to: the release tag
+  of the version `Package.resolved` pins or of the lowest version
+  `Package.swift` requires, or a required repository's latest release. It
+  records the releases available when promotion resolved; SwiftPM may
+  resolve a `Package.swift` requirement higher, and a release published
+  later can change what a host that installs the latest release selects.
 - **Staging age.** Promotion waits until every change the build carries
   since the latest `vX.Y.Z` has been on staging for `minimum-staging-age`
   (default `2h`; minutes, hours or days such as `30m`, `2h`, `1d`). The time
@@ -2006,55 +2024,4 @@ Builds a Rust binary for a specific target platform.
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `binary-name` | string | Yes | — | Name of the binary (from `Cargo.toml`) |
-| `binary-path` | string | No | `""` | Path to crate directory |
-| `target` | string | Yes | — | Target triple |
-| `build-env` | string | No | `""` | Compile-time env vars for `.env` file |
-
-#### Outputs
-
-| Output | Type | Description |
-|--------|------|-------------|
-| `artifact-name` | string | Name of the built artifact |
-| `artifact-path` | string | Path to the artifact file |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/rust-build@main
-  with:
-    binary-name: my-cli
-    target: x86_64-unknown-linux-gnu
-```
-
----
-
-### typescript-build
-
-**Path:** `.github/blocks/typescript-build/action.yaml`
-
-Builds a TypeScript project using Bun.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `bun-version` | string | No | `latest` | Bun version |
-| `working-directory` | string | No | `.` | Directory containing `package.json` |
-| `build-command` | string | No | `bun run build` | Build command |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/typescript-build@main
-  with:
-    build-command: "npm run build"
-```
-
----
-
-### typescript-install
-
-**Path:** `.github/blocks/typescript-install/action.yaml`
-
-Run this block **after checkout**; the caller selects the source ref, history
-de
+| `binary-path` | st

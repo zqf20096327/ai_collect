@@ -10,21 +10,45 @@
 
 # summarizing-meetings
 
-An agent skill that turns a meeting transcript — primarily Granola, but any ASR
-output works — into a clean readable record and a compact follow-up with action
-items.
+An agent skill for **Kimi Code** and **Claude Code** that turns a meeting
+transcript — primarily Granola, but any ASR output works — into a clean readable
+record and a compact follow-up with action items.
 
 Conforms to the [Agent Skills open standard](https://agentskills.io/specification).
+The same `SKILL.md` and bundled references run in both agents without host-specific
+frontmatter or path variables.
 
 ## Install
 
+Install for your agent:
+
 ```bash
-npx @vstlmkh/summarizing-meetings
+# Kimi Code
+npx @vstlmkh/summarizing-meetings --agent kimi
+
+# Claude Code
+npx @vstlmkh/summarizing-meetings --agent claude
+
+# Both
+npx @vstlmkh/summarizing-meetings --agent all
 ```
 
-Copies the skill to `~/.claude/skills/summarizing-meetings` (Claude Code). For
-another agent, point it at that agent's skills directory; `--force` replaces an
-existing install:
+With no `--agent`, the installer keeps its original behavior and installs for
+Claude Code. It copies the skill to:
+
+| Agent | Destination |
+|---|---|
+| Kimi Code | `$KIMI_CODE_HOME/skills/summarizing-meetings`, or `~/.kimi-code/skills/summarizing-meetings` when `KIMI_CODE_HOME` is unset |
+| Claude Code | `~/.claude/skills/summarizing-meetings` |
+
+To update, rerun the installer for the same agent with `--force`:
+
+```bash
+npx @vstlmkh/summarizing-meetings@latest --agent kimi --force
+npx @vstlmkh/summarizing-meetings@latest --agent claude --force
+```
+
+For another agent or a custom location, pass its skills directory instead:
 
 ```bash
 npx @vstlmkh/summarizing-meetings --dir ~/.agents/skills --force
@@ -33,13 +57,26 @@ npx @vstlmkh/summarizing-meetings --dir ~/.agents/skills --force
 Or from source:
 
 ```bash
-git clone git@github.com:vstlmkh/summarizing-meetings.git
+git clone https://github.com/vstlmkh/summarizing-meetings.git
+mkdir -p ~/.claude/skills "${KIMI_CODE_HOME:-$HOME/.kimi-code}/skills"
 ln -s "$PWD/summarizing-meetings" ~/.claude/skills/summarizing-meetings
+ln -s "$PWD/summarizing-meetings" "${KIMI_CODE_HOME:-$HOME/.kimi-code}/skills/summarizing-meetings"
 ```
 
-The symlink name must equal the `name` field in `SKILL.md`. Any agent that reads
-the open-standard `SKILL.md` format can load the skill; the path above is the
-Claude Code location.
+The symlink name must equal the `name` field in `SKILL.md`. Both agents detect
+skill file changes automatically.
+
+## Use
+
+Invoke the skill manually when needed:
+
+```text
+Kimi Code:   /skill:summarizing-meetings
+Claude Code: /summarizing-meetings
+```
+
+Either agent can also select it automatically from the `description` in
+`SKILL.md` when the request matches a meeting-transcript workflow.
 
 ## Three gated stages
 
@@ -61,7 +98,7 @@ runs all three silently.
 | `SKILL.md` | Workflow and Gotchas (ASR and Granola traps) |
 | `references/transcript-cleanup.md` | Stage 2: ASR failure patterns, reconstruct-or-flag rules |
 | `references/followup-formats.md` | Stage 3: three follow-up presets, file layout |
-| `bin/install.js` | `npx` installer |
+| `bin/install.js` | Zero-dependency `npx` installer for Kimi Code, Claude Code, or a custom directory |
 | `evals/` | Trigger and output-conformance scenarios, plus a sample transcript with deliberate traps |
 
 ## Design notes
@@ -76,6 +113,13 @@ are gated behind explicit approval.
 
 ## Validate
 
+From the repository root:
+
 ```bash
-python3 ~/.claude/skills/creating-skills/scripts/validate_skill.py ~/.claude/skills/summarizing-meetings
+node --check bin/install.js
+skills-ref validate "$PWD"
+npx --yes skills add . --list
 ```
+
+`skills-ref` is the [reference validator](https://github.com/agentskills/agentskills)
+for the Agent Skills specification, not a dependency of the installed skill.

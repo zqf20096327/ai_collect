@@ -38,6 +38,9 @@ cuda oxide doctor
 cuda oxide run
 ``` -->
 
+**Part 1: From Arrays to NDArrays (`borscht.Tensor`)**<br>
+In which we transition from software 1.0 arrays to software 2.0 ndarrays.<br>
+Want to read the textbook? See SITP [Chapter 2. The Massively Parallel Tensor](https://sitp.ai/1.html#2-the-massively-parallel-multidimensional-tensor)
 - File 1. Hello borscht ([`__init__.py`](./borscht/python/borscht/__init__.py))
 - File 2. Hello Tensor ([`tensor_managed.py`)](./borscht/python/borscht/tensor_managed.py))
 - File 3. Accelerate Tensor
@@ -51,15 +54,46 @@ cuda oxide run
 - File 5. Accelerate++ Tensor
   - File 5A: Three Language Problem: From Latency-Oriented to Throughput-Oriented Machines ([`tensor_nativegpu.py`](./borscht/python/borscht/tensor_nativegpu.py))
   - File 5B: Optimization (GEMM4): From Rust to CUDA Rust [`kernelsgpu.rs`](./borscht/rust/kernelsgpu/mod.rs)
+- File 6. Abstracted Accelerated Tensor
+  - File 6A: `Allocator`, `Storage` [`tensor_native.py`](./borscht/python/borscht/tensor_native.py)
+  - File 6B: `Dispatcher`, `Iterator`
+- File ?? From `borscht.Tensor` to `torch.Tensor`
 
-<!-- - File 5. Abstracting Acceleration with `Dispatcher`, `Storage`, `Allocator`: [`tensor.py`](./borscht/python/borscht/tensor.py)
-- File 6. Adding Forward Ops
-- File 7. Hello Autograd
-- File 8. Adding Backward Ops
-- File 9. From Volta to Ampere (sm80)
-- File 10. From Ampere (sm80) to Hopper (sm90)
-- File 11. Hello Tensor Compiler
-- File 12. Hello Inference Engine -->
+**Part 2: From Numerical Linear Algebra Library to Deep Learning Framework (`borscht.nn`, `borscht.autograd`, `borscht.optim`)**<br>
+In which we add support for first-order gradient-based optimization via automatic differentiation.<br>
+Want to read the textbook? See SITP [Chapter 4. The Engine of Automatic Differentiation](https://sitp.ai/2#4-the-engine-of-automatic-differentiation)
+- File 7. Hello Neural Network
+  - File 7A. ([`nn/module.py`](./borscht/python/borscht/nn/module.py))
+  - FIle 7B. ([`nn/functional.py`](./borscht/python/borscht/nn/functional.py))
+- File 8. Hello Autograd ([`tensor_autograd.py`](./borscht/python/borscht/tensor_autograd.py))
+  - File 8A. Adding Forward Ops
+  - File 8B. Adding Backward Ops
+- File 9. Hello Optimizer
+  - File 9A. `borscht.optim`
+- File 10. Hello Convolutional Neural Network
+- File 11. Hello Recurrent Neural Network
+- File 12. Hello Transformer
+- File ??. From `borscht.nn` to [`torch.nn`]()
+- File ??. From `borscht.optim` to [`torch.optim`]()
+- File ??. From `borscht.autograd` to [`torch.autograd`]()
+
+**Part 3: From CPU Kernels to GPU Kernels (`beets`)**<br>
+In which we accelerate our kernel library to reach speed of light throughputs with tensor cores.<br>
+Want to read the textbook? See SITP [Chapter 5. The Speed of Light]()
+- File ??. From Volta (sm70) to Ampere (sm80)
+- File ??. From Ampere (sm80) to Hopper (sm90)
+- File ??. From Hopper (sm90) to Blackwell (sm100)
+- File ??. From GPUs to TPUs
+- File ??. From `beets` to [`quack`](https://github.com/Dao-AILab/quack) and [`flash-attention`](https://github.com/dao-ailab/flash-attention)
+
+**Part 4: From Interpreters to Compilers (`bt2`)**
+- File ??. Hello Tensor Compiler
+- File ??. From `bortsch bynamo` and `borscht binductor` to [`torch dynamo`](https://github.com/pytorch/pytorch/tree/main/torch/_dynamo) and [`torch inductor`](https://github.com/pytorch/pytorch/tree/main/torch/_inductor)
+
+**Part 5: Runtimes (`bllm`)**
+- File ??. Hello Inference Engine
+- File ??. From `bllm` to [`vllm`](https://github.com/vllm-project/vllm)
+
 
 <!-- After Model 12, you might be interested in the second and third research blog series From SITP to SOTA
 - [FS2S Part 1 (SYS): From Hopper to Blackwell and Rubin]()

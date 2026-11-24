@@ -103,7 +103,7 @@ claude plugin install crew@free-research-crew
 
 **运行需要：** 支持插件的 Claude Code、Python 3.9+，编译论文需要 LaTeX。种子任务另需各自的科学计算 Python 包，团队会把它们固定在每个工作区的 `code/requirements.txt` 中。八个种子任务（2 个 CS、6 个社科）见 [`crew/bench/`](crew/bench/README.md)。
 
-> **当前状态：** 八篇论文全部通过四道关卡，均附 PDF 与通过的干净重跑：[标签噪声](gallery/cs-label-noise/)、[零效应检验](gallery/ss-null-effect/)、[401(k) DML 复现](gallery/ss-dml-401k/)、[Card–Krueger 复现](gallery/ss-card-krueger/)、[概率校准](gallery/cs-calibration/)、[LaLonde 观察性估计](gallery/ss-lalonde-observational/)、[参议院断点回归](gallery/ss-rd-senate/)、[Card 大学距离工具变量的教育回报](gallery/ss-card-proximity/)。大学距离这篇是第一篇按 0.2 协议（代码先审后跑）写成的：复现了 Card 的 0.132 (0.049)，把所有未复现的数字都追溯到另一种第一阶段设定，并如实报告弱工具变量稳健检验无法确立回报为正；它的答案键在种子没写明列号的一项上判为不通过（原因见 gallery）。参议院这篇是低成本试跑：所有角色（含审稿人）都用 Claude Haiku 5.5，模型用量约 19 美元，其中助研约 2 美元。每篇从开题到投稿关卡约 18–25 小时（含等待你审批的时间），用你已有的 Claude Code 订阅就能跑，不另付 API 费（按 Claude API 标价折算约 59–137 美元，见 [`gallery/usage.json`](gallery/usage.json)）。每篇都附完整工作区、审稿人的批评与关卡决定，见 [**gallery/**](gallery/README.md)。完整计划、阶段与指标见 [**ROADMAP.md**](ROADMAP.md)；团队如何运作见 [`crew/README.md`](crew/README.md)；与其他科研智能体系统的比较（2026 年 11 月）见 [`docs/landscape-2026.md`](docs/landscape-2026.md#november-2026-where-free-research-crew-stands)。
+> **当前状态：** 九篇论文全部通过四道关卡，均附 PDF 与通过的干净重跑：[标签噪声](gallery/cs-label-noise/)、[零效应检验](gallery/ss-null-effect/)、[401(k) DML 复现](gallery/ss-dml-401k/)、[Card–Krueger 复现](gallery/ss-card-krueger/)、[概率校准](gallery/cs-calibration/)、[LaLonde 观察性估计](gallery/ss-lalonde-observational/)、[参议院断点回归](gallery/ss-rd-senate/)、[Card 大学距离工具变量的教育回报](gallery/ss-card-proximity/)、[加州 $20 快餐最低工资两年后的就业](gallery/ss-ca-fastfood-wage/)。快餐最低工资这篇是第一篇开放问题论文（不是复现，没有答案键）：在看任何政策后数据之前固定设计、按规则选估计量，结论如实报告为“不确定”——事前功效计算就已表明这个设计分不出两篇已发表研究的结论；审稿人共审了 20 轮。大学距离这篇是第一篇按 0.2 协议（代码先审后跑）写成的：复现了 Card 的 0.132 (0.049)，把所有未复现的数字都追溯到另一种第一阶段设定，并如实报告弱工具变量稳健检验无法确立回报为正；它的答案键在种子没写明列号的一项上判为不通过（原因见 gallery）。参议院这篇是低成本试跑：所有角色（含审稿人）都用 Claude Haiku 5.5，模型用量约 19 美元，其中助研约 2 美元。复现类论文从开题到投稿关卡约 18–25 小时（含等待你审批的时间），开放问题那篇约 45 小时，用你已有的 Claude Code 订阅就能跑，不另付 API 费（按 Claude API 标价折算约 59–178 美元，见 [`gallery/usage.json`](gallery/usage.json)）。每篇都附完整工作区、审稿人的批评与关卡决定，见 [**gallery/**](gallery/README.md)。完整计划、阶段与指标见 [**ROADMAP.md**](ROADMAP.md)；团队如何运作见 [`crew/README.md`](crew/README.md)；与其他科研智能体系统的比较（2026 年 11 月）见 [`docs/landscape-2026.md`](docs/landscape-2026.md#november-2026-where-free-research-crew-stands)。
 
 ---
 
@@ -126,30 +126,30 @@ claude plugin install crew@free-research-crew
 ## 🏆 Star 排行榜 Top 20
 
 <!-- TOP20:START -->
-> 按 GitHub star 数排名的前 20 个已收录仓库，由 [`scripts/update-stars.py`](scripts/update-stars.py) 每周自动刷新（最近：2026-11-16）。完整榜单见 [STARS.md](STARS.md)。
+> 按 GitHub star 数排名的前 20 个已收录仓库，由 [`scripts/update-stars.py`](scripts/update-stars.py) 每周自动刷新（最近：2026-11-23）。完整榜单见 [STARS.md](STARS.md)。
 
 | # | 仓库 | ⭐ Stars | 类别 | 收录位置 |
 |:-:|---|--:|:-:|---|
-| 🥇 | [bytedance/deer-flow](https://github.com/bytedance/deer-flow) | 85.4k | 系统 | [`systems/deer-flow`](systems/deer-flow) |
-| 🥈 | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) | 67.9k | 技能 | [`skills/last30days`](skills/last30days) |
-| 🥉 | [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) | 57.4k | 技能 | [`skills/scientific-agent-skills`](skills/scientific-agent-skills) |
-| 4 | [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) | 57.1k | 技能 | [`skills/academic-research-skills`](skills/academic-research-skills) |
-| 5 | [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) | 53.8k | 技能 | [`skills/nature-skills`](skills/nature-skills) |
+| 🥇 | [bytedance/deer-flow](https://github.com/bytedance/deer-flow) | 85.7k | 系统 | [`systems/deer-flow`](systems/deer-flow) |
+| 🥈 | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) | 73.3k | 技能 | [`skills/last30days`](skills/last30days) |
+| 🥉 | [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) | 58.2k | 技能 | [`skills/academic-research-skills`](skills/academic-research-skills) |
+| 4 | [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) | 58.2k | 技能 | [`skills/scientific-agent-skills`](skills/scientific-agent-skills) |
+| 5 | [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) | 54.7k | 技能 | [`skills/nature-skills`](skills/nature-skills) |
 | 6 | [stanford-oval/storm](https://github.com/stanford-oval/storm) | 31.9k | 系统 | [`systems/storm`](systems/storm) |
-| 7 | [assafelovic/gpt-researcher](https://github.com/assafelovic/gpt-researcher) | 30.7k | 系统 | [`systems/gpt-researcher`](systems/gpt-researcher) |
+| 7 | [assafelovic/gpt-researcher](https://github.com/assafelovic/gpt-researcher) | 30.9k | 系统 | [`systems/gpt-researcher`](systems/gpt-researcher) |
 | 8 | [dzhng/deep-research](https://github.com/dzhng/deep-research) | 19.9k | 系统 | [`systems/deep-research`](systems/deep-research) |
-| 9 | [wanshuiyin/Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | 19.3k | 技能 | [`skills/aris`](skills/aris) |
-| 10 | [HKUDS/DeepCode](https://github.com/HKUDS/DeepCode) | 16.8k | 系统 | [`systems/deepcode`](systems/deepcode) |
+| 9 | [wanshuiyin/Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | 19.7k | 技能 | [`skills/aris`](skills/aris) |
+| 10 | [HKUDS/DeepCode](https://github.com/HKUDS/DeepCode) | 16.9k | 系统 | [`systems/deepcode`](systems/deepcode) |
 | 11 | [SakanaAI/AI-Scientist](https://github.com/SakanaAI/AI-Scientist) | 15.0k | 系统 | [`systems/ai-scientist`](systems/ai-scientist) |
-| 12 | [aiming-lab/AutoResearchClaw](https://github.com/aiming-lab/AutoResearchClaw) | 14.9k | 系统 | [`systems/autoresearchclaw`](systems/autoresearchclaw) |
-| 13 | [Imbad0202/academic-research-skills-codex](https://github.com/Imbad0202/academic-research-skills-codex) | 14.6k | 技能 | [`skills/academic-research-skills-codex`](skills/academic-research-skills-codex) |
-| 14 | [Orchestra-Research/AI-Research-SKILLs](https://github.com/Orchestra-Research/AI-Research-SKILLs) | 14.6k | 技能 | [`skills/ai-research-skills`](skills/ai-research-skills) |
-| 15 | [HKUSTDial/Supervisor-Skills](https://github.com/HKUSTDial/Supervisor-Skills) | 12.7k | 技能 | [`skills/supervisor-skills`](skills/supervisor-skills) |
+| 12 | [Imbad0202/academic-research-skills-codex](https://github.com/Imbad0202/academic-research-skills-codex) | 15.0k | 技能 | [`skills/academic-research-skills-codex`](skills/academic-research-skills-codex) |
+| 13 | [aiming-lab/AutoResearchClaw](https://github.com/aiming-lab/AutoResearchClaw) | 14.9k | 系统 | [`systems/autoresearchclaw`](systems/autoresearchclaw) |
+| 14 | [Orchestra-Research/AI-Research-SKILLs](https://github.com/Orchestra-Research/AI-Research-SKILLs) | 14.8k | 技能 | [`skills/ai-research-skills`](skills/ai-research-skills) |
+| 15 | [HKUSTDial/Supervisor-Skills](https://github.com/HKUSTDial/Supervisor-Skills) | 13.4k | 技能 | [`skills/supervisor-skills`](skills/supervisor-skills) |
 | 16 | [langchain-ai/open_deep_research](https://github.com/langchain-ai/open_deep_research) | 12.7k | 系统 | [`systems/open-deep-research`](systems/open-deep-research) |
-| 17 | [companion-inc/feynman](https://github.com/companion-inc/feynman) | 10.1k | 技能 | [`skills/feynman`](skills/feynman) |
+| 17 | [companion-inc/feynman](https://github.com/companion-inc/feynman) | 10.2k | 技能 | [`skills/feynman`](skills/feynman) |
 | 18 | [Future-House/paper-qa](https://github.com/Future-House/paper-qa) | 9.6k | 系统 | [`systems/paper-qa`](systems/paper-qa) |
 | 19 | [LearningCircuit/local-deep-research](https://github.com/LearningCircuit/local-deep-research) | 9.6k | 系统 | [`systems/local-deep-research`](systems/local-deep-research) |
-| 20 | [Master-cai/Research-Paper-Writing-Skills](https://github.com/Master-cai/Research-Paper-Writing-Skills) | 8.4k | 技能 | [`skills/paper-writing-skills`](skills/paper-writing-skills) |
+| 20 | [Master-cai/Research-Paper-Writing-Skills](https://github.com/Master-cai/Research-Paper-Writing-Skills) | 8.5k | 技能 | [`skills/paper-writing-skills`](skills/paper-writing-skills) |
 <!-- TOP20:END -->
 
 ---

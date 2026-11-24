@@ -2,20 +2,57 @@
 
 🇫🇷 **[Version française](README.fr.md)**
 
-**Toque** is a fast, modern replacement interface for the Lidl **Monsieur Cuisine Connect**
-kitchen robot (SKMC 1200). It runs on the robot's own tablet instead of the stock app and still
-uses **the official Lidl recipes**.
+**Toque** is a fast, modern replacement interface for the Lidl **Monsieur Cuisine** kitchen robots:
+the **Connect**, and the **Smart** in test. It runs on the robot's own tablet instead of the stock app
+and still uses **the official Lidl recipes**.
+
+🌐 **[toqueapp.org](https://toqueapp.org)**, the Toque community site: share your recipes, find other
+users' ones and send them to your robot.
+
+## Supported robots
+
+| Robot | Label under the robot | Status | How to install |
+|---|---|---|---|
+| Monsieur Cuisine **Connect** | SKMC 1200 (A1, B2, C3) | Supported | [AI agent](AGENTS.md) or [install guide](docs/INSTALLATION.md), then `Toque-x.y.z.apk` |
+| Monsieur Cuisine **Connect** | SKMC 1100 A1 | Supported | Same, with one more step, `own-twrp`: TWRP rebuilt around the robot's own kernel ([#10](https://github.com/Wuki60/MrCuisineVibeConnect/issues/10)) |
+| Monsieur Cuisine **Smart** | SKMS 1200 | **In test**: tested by Smart owners, reports in [#59](https://github.com/Wuki60/MrCuisineVibeConnect/issues/59) | [Smart guide](docs/SMART.en.md), then `Toque-smart-x.y.z.apk` |
+
+Each [release](https://github.com/Wuki60/MrCuisineVibeConnect/releases/latest) has two APKs built from
+the same code: **`Toque-x.y.z.apk` for the Connect** and **`Toque-smart-x.y.z.apk` for the Smart**
+(its Android 8.1 needs the virtual machine's safe mode, which would slow the Connect down). Once Toque
+is installed, *Settings › Updates* takes the right one by itself. On first start, Toque recognises the
+robot without sending anything to its motor base and asks you to confirm it.
 
 > Independent project, not affiliated with Lidl, SilverCrest or Hoyer. Motor control is based on
 > a public analysis of the serial protocol. Since October 2026 Toque has been running on SKMC 1200
-> robots (revisions A1, B2 and C3) in France and Spain, and on SKMC 1100 A1 robots (TWRP rebuilt
-> around their own kernel: step `own-twrp` of the install guide, see #10). Use at your own risk and
-> follow the first-run procedure.
+> robots (revisions A1, B2 and C3) in France and Spain, and on SKMC 1100 A1 robots. The Smart support
+> comes from Flav974's and Tidusneo24150's ports; the project does not own a Smart. Use at your own
+> risk and follow the first-run procedure.
 >
-> The interface is available in **English**, **French**, **German**, **Spanish** and **Catalan** (*Settings › Langue · Language*), and
-> other languages can be added with a single file (see below).
+> The interface is available in **English**, **French**, **German**, **Spanish**, **Catalan** and
+> **Ukrainian** (*Settings › Langue · Language*), and other languages can be added with a single file
+> (see below).
 
-## Install with an AI agent
+## Community site: [toqueapp.org](https://toqueapp.org)
+
+Toque's own recipe site, free and ad-free, in English, French, German, Spanish, Catalan and Ukrainian.
+
+- **Browse and search** recipes shared by Toque users, with photos, ratings and reviews; filter by
+  robot (Connect, Smart), language and category.
+- **Publish your recipes** on the site or straight from the robot. Each step's settings (time,
+  temperature, speed) are checked with the same safety rules as on the robot.
+- **Send them to your robot**: community recipes reach the robot without any account
+  (*Settings › Community recipes*). With a free, optional Toque account (*Settings › Toque account*),
+  your favourites and your own recipes follow you to the robot.
+- **Translate** other people's recipes into your language, **follow** the cooks you like, and report
+  what doesn't belong there.
+- Your account stays private: the public profile only shows your username and published recipes, and
+  the robot keeps a key you can revoke, never your password.
+
+A question, or a robot you would like Toque to support: [contact page](https://toqueapp.org/contact.php).
+If Toque helps you, you can [support the project](https://toqueapp.org/donate.php).
+
+## Install with an AI agent (Connect)
 
 The easiest way: let an AI agent that can operate your Windows PC (Claude, ChatGPT, Copilot…) do
 the install. Give it this message:
@@ -40,14 +77,27 @@ Allow 1 to 2 hours. Without an agent: [docs/INSTALLATION.md](docs/INSTALLATION.m
 
 - **Dark night-blue interface** designed for the robot's 7" screen and rotary knob, and smooth on its
   original tablet (1 GB RAM, Android 6): no heavy libraries, downsampled images, recycled views.
+  Ten accent colours and a light theme in *Settings › Appearance*.
+- **One app, several robots**: each robot has its profile (port, protocol, programs, temperatures)
+  and only shows the programs and recipes it can make. On the **Smart**: manual cooking with its 21
+  temperatures (40 °C included), Knead, Steam, Sauté, Turbo, cleaning, and the Smart programs (blend,
+  smoothie, eggs, sous-vide, slow cooking, ferment, rice, hot water, pre-rinse, long cleaning), with
+  the Lidl recipes made for it.
 - **Lidl recipes, straight from monsieur-cuisine.com.** Toque downloads the official Monsieur
   Cuisine connect recipes (about 1,700 in French, with each step's machine settings) from the
   site's public API, nightly or on demand: no account, no server to run, no need for the stock app.
   Requests are spaced out and only new or changed recipes are downloaded again. The recipes already
   in the stock app can still be imported instead.
+- **Community recipes from [toqueapp.org](https://toqueapp.org)**: recipes shared by Toque users
+  arrive on the robot (*Settings › Community recipes*), no account needed. With a free Toque account
+  (optional, offered once and never again if declined; *Settings › Toque account*), the site's
+  favourites come to the robot and your own recipes can be published from the robot. The site is in
+  French, English, German, Spanish, Catalan and Ukrainian; only a revocable key of the robot is kept,
+  never the password.
 - **Author, ratings and reviews**: each recipe shows who published it and its rating on the site,
   and the recipe page loads the users' comments (with Monsieur Cuisine's replies).
-- **Search that works**: ignores accents, plurals and typos ("bechamle", "risoto").
+- **Search that works**: ignores accents, plurals and typos ("bechamle", "risoto"), in any alphabet
+  (Cyrillic, Polish…), and the list shows every recipe.
   Search by ingredients (e.g. "chicken, curry"), filters, favorites. **Recent** (last cooked first)
   and **Frequent** (most cooked first) lists, also one tap away under the home search bar.
 - **Guided cooking**: each step starts with one tap, the next step shows up by itself, built-in
@@ -72,7 +122,8 @@ Allow 1 to 2 hours. Without an agent: [docs/INSTALLATION.md](docs/INSTALLATION.m
   another robot).
 - **Recipes from other languages** (option in *Settings › Lidl recipes*): the recipes that don't
   exist in your language are added from English, French, German, Spanish…, each one only once, with
-  its language on the thumbnail.
+  its language on the thumbnail, and their categories take the names of your language. The language
+  of the Lidl catalogue can also be chosen (for example Spanish recipes with a Catalan interface).
 - **Sounds**: a bell rings when the weight to add is reached (sound to choose in *Settings*), and a
   loud tune plays when the recipe's last program ends. A setting you confirmed ("I checked this
   setting") is remembered for the next time you cook the recipe.
@@ -84,7 +135,7 @@ Allow 1 to 2 hours. Without an agent: [docs/INSTALLATION.md](docs/INSTALLATION.m
 - **Always the right time**: the time zone comes from the Internet connection and the time from
   the network (the robot has no clock battery). Right after power-on, the clock is set from the
   first server that answers, so the time is right within seconds instead of staying on 01:00. Can
-  be set by hand in *Settings › Date and time*.
+  be set by hand in *Settings › Date and time*. The clock only shows once it is right.
 - **Standby**, like the stock app: after a few minutes without a touch or a turn of the knob
   (2 to 30 min, or never, in *Settings › Screen*), a dimmed black screen shows the time, and the
   bowl temperature when it is hot. Never during a program or on the scale. The gesture that wakes
@@ -126,7 +177,9 @@ cut off and finishes normally.
 
 ```
 core/   Pure Kotlin logic, tested without Android
-        protocol/  serial frames (15 bytes sent, 27 received, 4800 baud)
+        protocol/  serial frames: Connect (15 bytes sent, 27 received, 4800 baud),
+                   Smart (38 bytes sent, 53 received, 9600 baud)
+        robot/     one profile per robot (port, protocol, programs, temperatures, Lidl recipes)
         machine/   safety rules, controller, 100 ms loop, links (root serial, TCP, demo)
         recipes/   model, stock database import, search
 app/    Android app (minSdk 23), no AndroidX
@@ -135,7 +188,7 @@ app/    Android app (minSdk 23), no AndroidX
         ui/        screens
 tools/  setup/toque-setup.ps1 (full install, can be driven by an AI agent), root (TWRP), install,
         restore and release scripts, twin.py (digital twin for testing on a PC)
-docs/   INSTALLATION.md, INSTALLATION.fr.md
+docs/   INSTALLATION.md, INSTALLATION.fr.md (Connect), SMART.en.md, SMART.md (Smart)
 AGENTS.md  install procedure for an AI agent
 ```
 
@@ -178,23 +231,27 @@ every language file.
 1. Increase `versionCode` and `versionName` in `app/build.gradle.kts`.
 2. Commit and push to `main`.
 
-The [release workflow](.github/workflows/release.yml) runs the tests, builds the APK and publishes
-the `vX.Y.Z` release with it. Robots then find it in *Settings › Updates*.
+The [release workflow](.github/workflows/release.yml) runs the tests, builds both APKs and publishes
+the `vX.Y.Z` release with them, the Connect APK first (older Toque versions take the first APK).
+Robots then find it in *Settings › Updates*.
 
 All builds are signed with the project key in `app/signature/` (public on purpose), so an APK built
 on any PC or by GitHub installs over the previous version. Only install APKs from this repository's
 releases.
 
-Without GitHub Actions: `gradlew assembleRelease`, then
-`powershell -ExecutionPolicy Bypass -File tools\publish-release.ps1 -Apk app\build\outputs\apk\release\app-release.apk`
-creates the `vX.Y.Z` release and attaches the APK (GitHub token: `GH_TOKEN`, `gh`, or the credentials
+Without GitHub Actions: `gradlew assembleRelease` (copy `app-release.apk` to `Toque-X.Y.Z.apk`), then
+`gradlew assembleRelease -PtoqueSmart=true` (copy it to `Toque-smart-X.Y.Z.apk`), then
+`powershell -ExecutionPolicy Bypass -File tools\publish-release.ps1 -Apk Toque-X.Y.Z.apk -SmartApk Toque-smart-X.Y.Z.apk`
+creates the `vX.Y.Z` release and attaches both APKs (GitHub token: `GH_TOKEN`, `gh`, or the credentials
 already stored for git).
 
 ## Install on the robot
 
-With an AI agent: **[AGENTS.md](AGENTS.md)** (see above). By hand:
-**[docs/INSTALLATION.md](docs/INSTALLATION.md)**: root, install, first run with an empty
-bowl, recipe sync, going back to the stock app.
+- **Connect**, with an AI agent: **[AGENTS.md](AGENTS.md)** (see above). By hand:
+  **[docs/INSTALLATION.md](docs/INSTALLATION.md)**: root, install, first run with an empty
+  bowl, recipe sync, going back to the stock app.
+- **Smart**: **[docs/SMART.en.md](docs/SMART.en.md)**: community root guide, Smart APK, tests to do
+  and how to report back.
 
 ## Credits
 
@@ -204,7 +261,11 @@ bowl, recipe sync, going back to the stock app.
   Android 6 roots, bowl sensor), @lucasbraud, @OUTSIDE2k8 (Spanish), @Locodice67 (German, install
   script), @baptiste-gislot, @florentdestremau (rotary knob), @maximehuran (knob light in standby),
   @badrbelhaj1 (Magisk at restart, SKMC 1100 A1 TWRP, heat without stirring, interface fixes),
-  @meuca1 (Catalan), and everyone who tested their robot and reported bugs.
+  @meuca1 (Catalan), @Flav974 (Smart port: protocol, programs, captures), @Tidusneo24150 (Camybrith
+  Cooking: Smart temperature ranges and recipe modes, review on a real Smart), @pierrearnou (accent
+  colours, switches), @oscarsanchezdm (recipe language, light theme), @phanex (Ukrainian, search in
+  any alphabet, scale stability), @McSoda (robot tests and fixes), and everyone who tested their
+  robot and reported bugs.
 
 MIT License. This repository contains no Lidl recipes, images or code: each robot downloads the
 recipes itself from monsieur-cuisine.com, for its owner's personal use.

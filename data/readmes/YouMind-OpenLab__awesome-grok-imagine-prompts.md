@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3445** |
+| 📝 Total Prompts | **3448** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-22** |
+| 🔄 Last Updated | **2026-11-23** |
 
 ---
 
@@ -189,6 +189,64 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Pendant to Superbike Morph Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A creative video prompt for Grok Imagine where a heart pendant expands and assembles into a futuristic superbike.
+
+#### 📝 Prompt
+
+```
+Heart-to-Superbike: Her heart pendant detaches and expands into a mechanical core. Hundreds of components emerge and assemble into a powerful red futuristic superbike.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2124696791044005888/img/QGWrhGSJndefUGzT.jpg" width="600" alt="Pendant to Superbike Morph Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14134)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2124697159828373968) | **Published:** Nov 23, 2026
+
+---
+### Heart Reactor Outfit Change Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine featuring an outfit transformation triggered by a glowing heart pendant and energy wave.
+
+#### 📝 Prompt
+
+```
+Heart Reactor Transformation: 
+Her heart-shaped pendant begins glowing intensely. A powerful red energy wave spreads across the room, transforming her elegant outfit into advanced futuristic armor with a glowing heart reactor in the chest.
+```
+
+<img src="https://pbs.twimg.com/media/HXxoLwAbgAAP_Qs.jpg" width="600" alt="Heart Reactor Outfit Change Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14132)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2124687802734678120) | **Published:** Nov 23, 2026
+
+---
+### Cyber Angel Transformation Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine depicting a cyber angel transforming with mechanical wings and futuristic armor.
+
+#### 📝 Prompt
+
+```
+Cyber Angel: A bright white light surrounds her. Two enormous silver mechanical wings emerge as her clothing transforms into elegant white-and-red futuristic armor.
+```
+
+<img src="https://pbs.twimg.com/media/HXv721BXEAA8WKD.jpg" width="600" alt="Cyber Angel Transformation Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14133)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2124568642608300232) | **Published:** Nov 22, 2026
+
+---
 ### Grok Imagine Video Prompt: Glass Observatory Butterflies
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -1985,49 +2043,4 @@ Hyper-Speed Optimus Transformation – Cinematic Sci-Fi Prompt
 
 Video Prompt:
 
-A massive futuristic heavy-duty truck races at incredible speed through a gigantic neon-lit high-tech tunnel, its powerful engines roaring as blue energy trails stream behind its wheels. Suddenly, the truck launches into an explosive slow-motion transformation while still moving forward. Hundreds of precision-engineered mechanical components burst outward, rotating, shifting, and rearranging in midair. The front grille splits into a powerful armored chest, wheels rotate and reposition onto the shoulders and legs, massive hydraulic arms unfold, and complex metallic structures lock together with incredible precision. Glowing blue energy cores activate as the transformation reaches its final stage. Within seconds, a gigantic, battle-ready Optimus robot lands heavily on the tunnel floor, creating sparks, shockwaves, and a burst of cinematic energy. He rises to full height and walks confidently toward the camera as the tunnel lights illuminate his metallic armor.
-
-Visual Style:
-
-* Ultra-photorealistic 3D CGI
-
-* Next-level mechanical transformation
-
-* Hyper-speed action with extreme slow motion
-
-* Intricate moving gears, pistons and hydraulics
-
-* Cinematic motion blur and realistic sparks
-
-* 8K HDR, dramatic lighting, realistic reflections
-
-* Smooth camera tracking and dynamic angles
-
-Duration: 10–12 seconds Aspect Ratio: 9:16 Quality: Hollywood-level cinematic realism. Important: One continuous, seamless truck-to-robot transformation. No jump cuts, no disappearing parts, no distorted anatomy.
-
-Disclaimer: This video is AI-generated for entertainment and creative purposes only. The truck-to-Optimus transformation, futuristic technology, and visual effects are fictional and do not depict real-world engineering or events.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2119005860622110721/img/l3Xz4NGljZ7z9vIg.jpg" width="600" alt="Grok Imagine Prompt: Optimus Transformation">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13855)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2119005911503245593) | **Published:** Nov 7, 2026
-
----
-### Sci-Fi Rain Suit Transformation Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed prompt for creating a cinematic video where a female robot transforms her backpack into a transparent rain suit in a city.
-
-#### 📝 Prompt
-
-```
-Next-Level Sci-Fi Transformation Video Prompt
-
-Ultra Cinematic • Photorealistic
-
-Prompt:
-
-A beautiful, elegant female Optimus Transformer with a stunning futuristic white-and-silver robotic body walks confidently through a crowded modern city street, carrying a stylish high-tech backpack. Suddenly, heavy rain begins pouring from the sky. While continuing to walk naturally, she reaches behind her sho
+A massive futuristic heavy-duty truck races at incredible speed through a gigantic neon-lit high-tech tunnel, its powerful engines roaring as blue energy trails stream behind its wheels. Suddenly, the truck launches into an explosive slow-motion transformation while still moving forward. Hundreds of precision-engineered mechanical components burst outwa

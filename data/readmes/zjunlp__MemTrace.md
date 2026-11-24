@@ -44,6 +44,7 @@
 
 ## News
 
+- **[2026-11-23]**: 🚀 **MemTrace is now integrated into [EverOS](https://github.com/EverMind-AI/EverOS)** — a local-first, Markdown-native memory runtime for AI agents. Error tracing and attribution for memory systems are now available as part of the EverOS ecosystem.
 - **[2026-07-17]**: 🚀 We update the paper with a long-context baseline for error attribution and a no-attribution baseline for prompt optimization. We also release the code for studying query construction during starting-point initialization.
 - **[2026-06-09]**: 🚀 We open-source **MemTrace**, including the experiment code and the source code of the annotation interface.
 - **[2026-06-07]**: 🚀 We release the [**MemTraceBench**](https://huggingface.co/datasets/zjunlp/MemTraceBench) dataset, a benchmark for tracing and attributing failures in LLM memory systems, built from execution graphs and curated failure annotations.
@@ -422,11 +423,18 @@ We also provide the source code of an annotation interface under [`annotation_in
 
 ## Acknowledgement
 
-We sincerely thank the following projects:
+We sincerely thank the following projects, communities, and individuals:
+
+### EverOS from [EverMind-AI](https://evermind.ai/)
+
+[**EverOS**](https://github.com/EverMind-AI/EverOS) is a Python library and local-first memory runtime for agents and makers developed by [EverMind-AI](https://github.com/EverMind-AI). It gives one portable memory layer across coding assistants, apps, devices, and workflows, storing conversations and agent trajectories as readable Markdown while syncing local SQLite and LanceDB indexes for fast retrieval and self-evolving reuse. We thank the EverOS team for building an open, inspection-friendly memory infrastructure that made it natural to integrate MemTrace's execution-graph tracing and error attribution into a production-oriented memory ecosystem.
+
+### Other projects
 
 - [Mem0](https://github.com/mem0ai/mem0)
-- [EverOS](https://github.com/EverMind-AI/EverOS)
 - [AgentScope](https://github.com/agentscope-ai/agentscope)
+
+We also thank the [EverMind-AI](https://evermind.ai/) and EverOS maintainers and community for their feedback and support during the integration.
 
 ## Citation
 

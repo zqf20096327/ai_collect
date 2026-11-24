@@ -210,7 +210,7 @@ The CLI (`graph-it architecture --level units`) and the MCP tool `explore_archit
 <img src="media/architecture-matrix.png" alt="Dependency structure matrix of Graph-It-Live's src folder: every cell below the diagonal, no cycle" width="800"/>
 </div>
 
-*Click the *Matrix* tab (*Units | Folder | Matrix | Flow*) for the dependency structure matrix of the drawn level.*
+*Click the *Matrix* tab (*Units | Folder | Matrix | Flow | Seq*) for the dependency structure matrix of the drawn level.*
 
 To share the drawn level as a picture, click *Export Architecture Diagram* (icon `$(desktop-download)`) in the *Dependency Graph* view title bar, then save it as `.svg`, `.html` or `.png`. *Copy Architecture Diagram as SVG* (icon `$(copy)`) puts the SVG on the clipboard. Both commands are also in the Command Palette while the Architecture view is open. The export draws the units, or the groups of the entered unit or folder, as a graph or a matrix, with the rule violations of the view; the graph also keeps the role filter and *Min. imports*, which the matrix does not apply. It uses the renderer of `graph-it diagram`: without a role or *Min. imports* filter, the same level gives the same SVG as the CLI; the PNG is that SVG at twice its size, and the SVG follows the editor's light or dark theme. Exports need the default `graph-it-live.communityMode` (`path`).
 
@@ -228,13 +228,35 @@ To see what one function does step by step, draw its call flow: `graph-it diagra
 
 *`graph-it diagram --view flow` on this repository: one step per column, one lane per row.*
 
-For the order of the calls, draw a sequence diagram: `graph-it diagram --view sequence src/cli/commands/diagram.ts#run --depth 2 --format svg`. One lifeline per file (or per class with `--participants class`), one message per call, activation bars, and the `alt` / `opt` / `loop` / `catch` fragments with their guards. `--depth`, `--maxMessages` (up to 60) and `--startLine` bound it, and a note names what was left out. `--format mermaid` writes a `sequenceDiagram` that GitHub renders in a pull request or a README; the MCP tool takes `view: "sequence"` and `diagramFormat: "mermaid"`. Not drawn: dynamic dispatch, library callbacks, `node_modules`, return values.
+In VS Code, put the cursor in a function and click the *Flow* or *Seq* tab of the *Dependency Graph* view's Architecture mode: it draws that symbol, and says why when it cannot (no editor, unsupported file, cursor between symbols). You can also right-click a function in the editor and run **Show Flow Diagram (Symbol at Cursor)**, or right-click a file in the Explorer and run **Show Diagram…** to pick a view (**Show Folder Diagram** on a folder). The diagram opens in the *Dependency Graph* view, with the tabs *Units | Folder | Matrix | Flow | Seq* above it, the same views as `graph-it diagram --view`. *Follow cursor* redraws the diagram for the symbol or folder under the cursor; off, it stays pinned. Click a step to open its declaration, or a call label to open its call site.
+
+<div align="center">
+<img src="media/vscode-show-diagram-flow.png" alt="Dependency Graph view in VS Code: the Units, Folder, Matrix and Flow tabs, the Follow cursor toggle and the breadcrumb fixtures, trace, controller.ts, handleGetUser above the flow diagram of handleGetUser, five steps from controller.ts through service.ts, repository.ts and logger.ts to formatter.ts, each edge labelled with its call line" width="900"/>
+</div>
+
+*Show Flow Diagram on `handleGetUser` in the `tests/fixtures/trace` fixture.*
+
+For the order of the calls, draw a sequence diagram: `graph-it diagram --view sequence src/cli/commands/diagram.ts#run --depth 2 --format svg`. One lifeline per file (or per class with `--participants class`), one message per call, activation bars, and the `alt` / `opt` / `loop` / `catch` fragments with their guards. `--depth`, `--maxMessages` (up to 60) and `--startLine` bound it, and a note names what was left out. `--format mermaid` writes a `sequenceDiagram` that GitHub renders in a pull request or a README; the MCP tool takes `view: "sequence"` and `diagramFormat: "mermaid"`. In VS Code, **Show Diagram…** › *sequence*, or the *Seq* tab next to *Flow*, draws the symbol at the cursor: a lifeline opens its file, a call its call site, and Export also writes Mermaid (`.mmd`). An entry is a function or a method that calls something: the symbol pick shows each symbol's call count, and a symbol that calls nothing (a class, a constructor) shows *No calls found* with the file's symbols that do, one click away. Not drawn: dynamic dispatch, library callbacks, `node_modules`, return values.
 
 <div align="center">
 <img src="media/cli-diagram-sequence.png" alt="Sequence diagram of the diagram command's run function: lifelines for its files, activation bars, opt and alt fragments with their guards, and the notes counting the calls left out" width="900"/>
 </div>
 
 *`graph-it diagram --view sequence` on this repository: one lifeline per file, one message per call in order.*
+
+<div align="center">
+<img src="media/vscode-seq-from-tab.png" alt="VS Code with the cursor in handleGetUser of controller.ts, and below it the Dependency Graph view on the Seq tab: the sequence of handleGetUser with five lifelines from controller.ts to formatter.ts and four calls, and the Fit, 100%, plus and minus buttons at the bottom right" width="700"/>
+</div>
+
+*Cursor in `handleGetUser` (`tests/fixtures/trace`), then a click on the* Seq *tab: no right-click needed.*
+
+The *Flow* and *Seq* tabs zoom from 10% to 400%: the wheel or a pinch zooms around the pointer, a drag pans, and the buttons at the bottom right are *Fit*, *100%*, *+* and *−* (keys *0*, *+*, *-* on a focused step, lifeline or call). A new diagram opens fitted; a redraw of the same symbol keeps the zoom. Steps, lifelines and calls stay clickable at every zoom, and the drawing stays sharp.
+
+<div align="center">
+<img src="media/vscode-seq-zoom.gif" alt="The Seq tab with the sequence of handleGetUser: Fit, then plus four times enlarges the diagram around its middle up to 186%, 100% shows the drawn size, minus twice zooms out and Fit shows the whole diagram again" width="900"/>
+</div>
+
+*Fit, + four times, 100%, − twice, Fit on the* Seq *tab.*
 
 ### Architecture rules
 
@@ -330,9 +352,10 @@ graph-it explain <file>               Explain intra-file call flow
 graph-it path <file>                  Show a dependency path
 graph-it check [path]                 Find unused exported symbols
 graph-it architecture --groups        Show the workspace architecture by folder or community
+graph-it architecture --coupling      List the most coupled pairs and the files bridging them
 graph-it init                         Generate graphit.architecture.json from the current code, plus quick wins
 graph-it check-architecture           Check imports against graphit.architecture.json
-graph-it diagram                      Write a static architecture diagram or one symbol's call flow (SVG, HTML or diagram spec)
+graph-it diagram                      Write a static architecture diagram, or one symbol's flow or sequence (SVG, HTML, diagram spec, Mermaid)
 graph-it query "<question>"           Ask a natural-language graph question
 graph-it context "<question>"         Retrieve bounded graph context
 graph-it wiki                         Generate a navigable Markdown wiki
@@ -341,7 +364,7 @@ graph-it export [path]                Export the graph as HTML
 graph-it --help                       Show all commands and options
 ```
 
-Analysis commands support `--format json|toon|markdown`. `trace`, `path` and `architecture` also support `--format mermaid`, `architecture --matrix` supports `--format csv`, `check-architecture` and `review-pr` support `--format sarif`, and `diagram` writes `--format svg|html|diagram-spec` (the last for a diagram skill). Use `--workspace <path>` or `-w` to analyze a project other than the current directory. Outside a project (no `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `*.csproj` or other supported marker at or above the current directory), the CLI exits with code `3`; the MCP server (`graph-it serve`, the plugins) starts without indexing, and its tools ask for `graphitlive_set_workspace` or `WORKSPACE_ROOT`.
+Analysis commands support `--format json|toon|markdown`. `trace`, `path` and `architecture` also support `--format mermaid`, `architecture --matrix` supports `--format csv`, `check-architecture` and `review-pr` support `--format sarif`, and `diagram` writes `--format svg|html|diagram-spec` (the last for a diagram skill), plus `mermaid` for `--view sequence`; `diagram --spec <file.json>` redraws a spec whose texts an agent rewrote. Use `--workspace <path>` or `-w` to analyze a project other than the current directory. Outside a project (no `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `*.csproj` or other supported marker at or above the current directory), the CLI exits with code `3`; the MCP server (`graph-it serve`, the plugins) starts without indexing, and its tools ask for `graphitlive_set_workspace` or `WORKSPACE_ROOT`.
 
 See the [complete CLI reference](docs/CLI.md), including installation troubleshooting, REPL commands, output formats, and tool details.
 

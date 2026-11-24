@@ -3,7 +3,7 @@
 <div align="center">
 
 <a href="https://agentresearchlab.org/benchmarks/deepresearch-bench-ii/index.html#home"><img alt="Website" src="https://img.shields.io/badge/🌐%20Website-DeepResearch%20Bench%20II-blue"></a>
-<a href="https://agentresearchlab.org/benchmarks/deepresearch-bench-ii/index.html#leaderboard"><img alt="Leaderboard" src="https://img.shields.io/badge/🏆%20Leaderboard-View%20Rankings-FFD700"></a>
+<a href="https://huggingface.co/spaces/muset-ai/DeepResearch-Bench-Leaderboard"><img alt="Leaderboard" src="https://img.shields.io/badge/🏆%20Leaderboard-View%20Rankings-FFD700"></a>
 <a href="https://arxiv.org/abs/2601.08536"><img src="https://img.shields.io/badge/arXiv-2601.08536-b5212f.svg?logo=arxiv" alt="arxiv"></a>
 <a href="https://huggingface.co/datasets/muset-ai/DeepResearch-Bench-II-Dataset"><img src="https://img.shields.io/badge/🤗%20Dataset-HuggingFace-orange" alt="Dataset"></a>
 
@@ -46,7 +46,7 @@ If you like our project, please give us a star ⭐ on GitHub for the latest upda
 
 + **[Feb 2026] 🌐 Official Website & Leaderboard Released**  
   - The official [DeepResearch Bench II Website](https://agentresearchlab.org/benchmarks/deepresearch-bench-ii/index.html#home) is now live!  
-  - Check out the [Leaderboard](https://agentresearchlab.org/benchmarks/deepresearch-bench-ii/index.html#leaderboard) to see how SOTA deep research agents compare across 9,430 expert-written rubrics.
+  - Check out the [Leaderboard](https://huggingface.co/spaces/muset-ai/DeepResearch-Bench-Leaderboard) to see how SOTA deep research agents compare across 9,430 expert-written rubrics.
   - 🎯 **Welcome to submit your model!** See the [submission requirements](#-submit-to-leaderboard) and contact us at imlrz@mail.ustc.edu.cn or dumingxuan@mail.ustc.edu.cn.
 
 + **[Jan 2026] 📄 Paper Released on arXiv**  

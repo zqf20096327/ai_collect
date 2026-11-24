@@ -10,7 +10,7 @@
 
 面向 CT、MR 与 PET 的跨平台 DICOM 工作台，集阅片、三维重建、影像融合与测量分割于一体。支持 **基于 TotalSegmentator 的本地 AI 自动分割**，结果可直接查看、精修和保存。
 
-[macOS · Apple Silicon](https://github.com/junforge-dev/voxplane/releases/download/v2.7.0/VoxPlane-2.7.0-macos-arm64.dmg) · [Windows · 安装版](https://github.com/junforge-dev/voxplane/releases/download/v2.7.0/VoxPlane-2.7.0-windows-x64-setup.exe) · [Windows · 便携版](https://github.com/junforge-dev/voxplane/releases/download/v2.7.0/VoxPlane-2.7.0-windows-x64-portable.exe) · [版本记录](https://github.com/junforge-dev/voxplane/releases)
+[macOS · Apple Silicon](https://github.com/junforge-dev/voxplane/releases/download/v2.8.0/VoxPlane-2.8.0-macos-arm64.dmg) · [Windows · 安装版](https://github.com/junforge-dev/voxplane/releases/download/v2.8.0/VoxPlane-2.8.0-windows-x64-setup.exe) · [Windows · 便携版](https://github.com/junforge-dev/voxplane/releases/download/v2.8.0/VoxPlane-2.8.0-windows-x64-portable.exe) · [版本记录](https://github.com/junforge-dev/voxplane/releases)
 
 
 VoxPlane 是 Voxenra 的新名称，Logo 保持不变。2.5.0 及更早版本需要手动安装一次新版本；首次启动自动复制旧设置与工作区记录，原文件保留。详见 [升级说明](docs/releases/v2.6.0.md)。
@@ -164,6 +164,10 @@ CT、PET、融合切面与全体积 MIP 联动显示；可切换三向切面、�
 
 选中已完成的测量或标注后，可用 **⌘C / ⌘V（Windows：Ctrl+C / Ctrl+V）** 复制粘贴；操作栏获得焦点后仍有效。输入框和弹窗优先处理自己的按键，粘贴到当前视口后重新计算统计。QA 圆不使用这组剪贴板快捷键。
 
+复制矩形、椭圆或自由手绘 ROI 后，在同一序列、同一时相的另一张原始 2D 切片选择“在本层原位粘贴 ROI”，即可保留轮廓并按目标层像素重算统计。默认使用 ⇧⌘V（Windows 为 Ctrl+Shift+V）。
+
+[本层粘贴后的 ROI 统计](docs/screenshots/roi-in-place-2.8.0.png) · [导出前逐帧核对](docs/screenshots/export-frames-2.8.0.png)
+
 未选中的 ROI 使用紧凑标签，选中后展开统计；点数不足时不显示指标。部分超出影像的 ROI 仅按有效像素计算灰度统计，面积和尺寸仍保留完整绘制范围。
 
 ![测量工具与分组结果列表](docs/screenshots/63-measurement-voxplane-2.6.0.png)
@@ -197,7 +201,7 @@ CT、PET、融合切面与全体积 MIP 联动显示；可切换三向切面、�
 
 ## 数据管理与工作区
 
-左侧导入原始 DICOM 影像，右侧 **导入分割** 导入关联 SEG / NRRD 掩膜（v2.1.3 中名为“导入”）。源序列可导出 PNG 或 DICOM，当前视图可保存 PNG 截图；整序列导出与视口截图的内容范围不同，见 [导出说明](docs/export.md)。
+左侧导入原始 DICOM 影像，右侧 **导入分割** 导入关联 SEG / NRRD 掩膜（v2.1.3 中名为“导入”）。导出前可逐帧核对画面及烧录文字，分别查看所选帧数和实际输出数。源序列可导出 PNG 或 DICOM，当前视图可保存 PNG 截图；整序列导出与视口截图的内容范围不同，见 [导出说明](docs/export.md)。
 
 多页签可拖出成为独立窗口；工作区保存影像引用、布局、测量、分割掩膜与分析结果，并恢复之前选择的工具和精修参数。从序列列表打开影像时，若同一序列已有同类页签则直接切换并保留阅片状态，否则新建页签。误关时可在页签栏右键菜单选择 **撤销关闭页签**，或按 Ctrl+Shift+T／⇧⌘T。会话保留最近关闭的 20 个已就绪且无编辑的阅片页签，已完成的编辑结果随工作区保存。工作区保存影像引用和结果，仍需保留原始文件；未完成草稿与撤销历史不保存。支持自动恢复、跟随系统或固定主题、本地 JSON 语言包与窗模板、离线手册、反馈和可关闭的启动更新检查。离线手册包含可播放、暂停和放大的操作动图。
 

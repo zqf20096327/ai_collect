@@ -91,7 +91,7 @@ The answer, on one RTX PRO 6000, probabilities rounded to three decimals:
 Every repository has a `commit` twin.
 Decisio v3 needs decisio 0.51.1 or later; with decisio 0.50.x, pin the revision tagged `v3-calc-v1`.
 
-The untrained bases are one flag away, with the same routes and features: `--base gemma-4-31b` (the default, FP8, the most accurate base), `--base gemma-4-12b`, `--base qwen3.6-35b-a3b`, and the small `--base gemma-4-e4b` and `--base qwen3.5-4b` ([choosing a base](docs/overview.md#choosing-a-base)).
+The untrained bases are one flag away, with the same routes and features: `--base gemma-4-31b` (the default, FP8, the most accurate base), `--base gemma-4-12b`, `--base qwen3.6-35b-a3b`, and the small `--base qwen3.5-4b` ([choosing a base](docs/overview.md#choosing-a-base)).
 
 ## Run it
 
@@ -115,14 +115,14 @@ Ollama answers the same `/v1/systemone` route with the model's own temperatures;
 **Docker:**
 
 ```bash
-docker run -d --gpus all --shm-size 8g -p 127.0.0.1:8000:8000 -e DECISIO_BASE=tachara-ai/Decisio-12b-tuned-v3-calibrated -v decisio-data:/data ghcr.io/aminry/decisio@sha256:230f84e6cc343915f58d69355601035d61ee1a4ca4d07a49e8eeaf0360885e72
+docker run -d --gpus all --shm-size 8g -p 127.0.0.1:8000:8000 -e DECISIO_BASE=tachara-ai/Decisio-12b-tuned-v3-calibrated -v decisio-data:/data ghcr.io/aminry/decisio@sha256:ea8f2d1a043c523573fbb6090631f3987857e5fa0c3be97c878b3562731bdc0c
 ```
 
 **From source** (the measured environment):
 
 <!-- x-release-please-start-version -->
 ```bash
-git clone --branch v0.54.0 https://github.com/aminry/decisio
+git clone --branch v0.56.0 https://github.com/aminry/decisio
 cd decisio
 uv sync --extra serve --frozen
 uv run python -m decisio.serve.vllm_engine --base tachara-ai/Decisio-12b-tuned-v3-calibrated

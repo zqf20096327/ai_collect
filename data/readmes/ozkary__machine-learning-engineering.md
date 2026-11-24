@@ -4,6 +4,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/ozkary/machine-learning-engineering?style=social)](https://github.com/ozkary/machine-learning-engineering/network/members)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![XERJ Corpus Hub contributor](https://hub.xerj.org/contributors/ozkary/badge.svg)](https://hub.xerj.org/contributors/ozkary)
 
 Welcome to the **Machine Learning Engineering** repository—a structured, comprehensive collection of resources, source code, interactive notebooks, and production deployment patterns designed to teach machine learning from first principles to scalable real-world architectures.
 
@@ -12,26 +13,45 @@ Whether you are beginning your data science journey or mastering production engi
 ![Machine Learning Engineering: Basics to Production MLOps](./images/ozkary-machine-learning-engineering-banner.png "Machine Learning Engineering: Basics to Production MLOps")
 
 > ⭐ **Support this project:** If you find these guides, notebooks, and production code helpful, please give this repository a **Star** on GitHub!  
->  
-> 👋 **Welcome DataTalks.Club & ML Zoomcamp learners!**  
-> Feel free to fork or bookmark this repository as a hands-on companion reference for your homework, midterm projects, and cloud deployments.
+> 👋 **Welcome [DataTalks.Club](https://datatalks.club/) & [ML Zoomcamp](https://github.com/DataTalksClub/machine-learning-zoomcamp) learners!** Feel free to fork or bookmark this repository as a hands-on companion reference for your homework, midterm projects, and cloud deployments.  
+> 🏆 **Indexed on XERJ Corpus Hub:** Part of the `@ozkary` open reference portfolio for AI ([Contributor Profile](https://hub.xerj.org/contributors/ozkary)) — covering end-to-end ML pipelines, evaluation, Kubernetes/KServe deployment.
+---
+
+## Repository Structure
+
+| Module | Focus Area |
+| :--- | :--- |
+| `01-introduction` – `04-evaluation` | Data preprocessing, regression, classification, and model evaluation metrics |
+| `05-deployment` | Containerized ML model serving and REST API deployment |
+| `06-trees` – `08-deep-learning` | Decision trees, ensembles (Random Forest/XGBoost), and neural networks |
+| `09-serverless` – `11-kserve` | Cloud-native ML scaling with Serverless, Kubernetes, and KServe |
+| `projects` & `voice-cloning` | End-to-end applied ML projects and audio/voice-cloning pipelines |
 
 ---
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Video Lectures & Walkthroughs](#video-lectures--walkthroughs)
-- [Featured on Kaggle](#featured-on-kaggle)
-- [Learning Roadmap](#learning-roadmap)
-- [Curriculum & Module Index](#curriculum--module-index)
-- [Featured Capstone Projects](#featured-capstone-projects)
-- [Model Selection Guide](#model-selection-guide)
-- [Getting Started](#getting-started)
-- [Related Articles & Deep Dives](#related-articles--deep-dives)
-- [Community & Updates](#community--updates)
-- [Contributing](#contributing)
-- [License](#license)
+- [Machine Learning Engineering: From Basics to Production MLOps](#machine-learning-engineering-from-basics-to-production-mlops)
+  - [Repository Structure](#repository-structure)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Video Lectures \& Walkthroughs](#video-lectures--walkthroughs)
+  - [Featured on Kaggle](#featured-on-kaggle)
+  - [Learning Roadmap](#learning-roadmap)
+  - [Curriculum \& Module Index](#curriculum--module-index)
+  - [Featured Capstone Projects](#featured-capstone-projects)
+    - [1. Heart Disease Risk Assessment *(Featured on Kaggle \& ozkary.com)*](#1-heart-disease-risk-assessment-featured-on-kaggle--ozkarycom)
+    - [2. Drug-to-Drug Interaction (DDI) Classifier](#2-drug-to-drug-interaction-ddi-classifier)
+    - [3. Deep Learning Voice Cloning with PyTorch](#3-deep-learning-voice-cloning-with-pytorch)
+    - [4. Additional Exploratory Studies](#4-additional-exploratory-studies)
+  - [Model Selection Guide](#model-selection-guide)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Quickstart Setup](#quickstart-setup)
+  - [Related Articles \& Deep Dives](#related-articles--deep-dives)
+  - [Community \& Updates](#community--updates)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ---
 

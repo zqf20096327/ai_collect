@@ -8,11 +8,11 @@
 
 <p align="center">
   <b>适合中国宝宝体质的 A 股选股与 AI 量化工作台</b><br>
-  <sub>当前版本：<b>v2.0.2</b> ｜ <b>中文</b> · <a href="README_EN.md">English</a></sub>
+  <sub>当前版本：<b>v2.0.3</b> ｜ <b>中文</b> · <a href="README_EN.md">English</a></sub>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-v2.0.2-2563eb.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-v2.0.3-2563eb.svg" alt="Version">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-0f172a.svg" alt="Platform">
   <img src="https://img.shields.io/badge/Distribution-Desktop%20%7C%20Homebrew%20%7C%20npm%20%7C%20Source-059669.svg" alt="Distribution">
   <img src="https://img.shields.io/badge/AI-DeepSeek%20%2F%20OpenAI%20API%20%7C%20Ollama-ea580c.svg" alt="AI">
@@ -134,9 +134,9 @@ Tushare 全市场 5000+ 扫描  ──▶   沉淀核心自选标的            
 
 | 操作系统 | 安装包格式 | 安装与首次打开说明 |
 |:---|:---|:---|
-| **macOS**（Apple Silicon / Intel） | `Floe-v2.0.2-macos-*.dmg` | 打开 DMG 将 `Floe.app` 拖入「应用程序」。若首次打开提示“无法验证开发者”，在终端执行一次：<br>`xattr -cr /Applications/Floe.app` |
-| **Windows 10 / 11**（x64） | `Floe-v2.0.2-windows-x64.zip` | 解压后运行目录内的 `Floe.exe`（可右键发送到桌面快捷方式） |
-| **Linux**（Ubuntu 22.04+ 等 x64） | `Floe-v2.0.2-linux-x86_64.AppImage` | 赋予可执行权限后直接运行：<br>`chmod +x Floe-*.AppImage && ./Floe-*.AppImage` |
+| **macOS**（Apple Silicon / Intel） | `Floe-v2.0.3-macos-*.dmg` | 打开 DMG 将 `Floe.app` 拖入「应用程序」。若首次打开提示“无法验证开发者”，在终端执行一次：<br>`xattr -cr /Applications/Floe.app` |
+| **Windows 10 / 11**（x64） | `Floe-v2.0.3-windows-x64.zip` | 解压后运行目录内的 `Floe.exe`（可右键发送到桌面快捷方式） |
+| **Linux**（Ubuntu 22.04+ 等 x64） | `Floe-v2.0.3-linux-x86_64.AppImage` | 赋予可执行权限后直接运行：<br>`chmod +x Floe-*.AppImage && ./Floe-*.AppImage` |
 
 > 💾 **升级不丢数据**：桌面打包版的个人配置、自选股、交易台账与行情缓存全部自动隔离存储在系统用户数据目录（macOS 为 `~/Library/Application Support/Floe`，Windows 为 `%APPDATA%\Floe`，Linux 为 `~/.local/share/floe`），覆盖升级安装包绝不丢失数据。
 
@@ -374,6 +374,7 @@ Floe 内置了 `net_guard.py` 网络守护，默认对东方财富、新浪财�
 
 | 版本 | 日期 | 主要变更 |
 |:---|:---|:---|
+| **v2.0.3** | 2026-11 | 强制子进程与启动器全局 UTF-8 标准流及 UTF-8/GB18030 双编码解码兜底，彻底修复 Windows 版选股中文乱码与 `batch_backtest_filter.py` 预检编码崩溃（退出码 3）；加固打包态 `config.py` 自动模板兜底；**339 项**回归测试 |
 | **v2.0.2** | 2026-11 | 新增统一数据中心 `data_hub`（35 项能力路由、能力级源熔断、全市场共享缓存与多源降级）；两融改单股直查（0.2s）及非标的 7 日跳过；前复权 4 级兜底与 `mini-racer` 依赖修正；修复云端 API 长响应 3s 超时截断与股东季度时效误判；**336 项**回归测试 |
 | **v2.0.1** | 2026-11 | 修复跨平台桌面安装包 HTTPS 根证书链校验（内置并自动挂载 `certifi` 与系统 CA 证书束）；新增检查 GitHub 更新与境外 API 的无污染局部系统代理回退；新增 Windows 受控目录（`WinError 5`）自动便携目录降级；311 项回归测试 |
 | **v2.0.0** | 2026-11 | **品牌焕新为 Floe**；全新三步闭环量化工作台；跨平台独立桌面应用（macOS / Windows / Linux）与 Homebrew / npm 分发；DeepSeek / OpenAI 云端 API 两步校验接入 + Ollama 双引擎；三位小数（`0.001`）FIFO 买卖台账；本机历次选股表现追踪；红涨/绿跌双企鹅图标、中英双语界面与英文研报输出、自动端口顺延（`3130`）与一键 ZIP 备份；309 项回归测试 |
@@ -408,5 +409,5 @@ Floe 内置了 `net_guard.py` 网络守护，默认对东方财富、新浪财�
 **⚖️ 免责声明**：本软件及文档仅为**个人量化研究与技术学习工具**。软件内生成的所有选股名单、回测绩效、AI 分析报告及交易计划**均不构成任何证券投资建议**。股市有风险，入市需谨慎，使用者依据本软件做出的任何投资决策及盈亏后果均由使用者本人独立承担。
 
 <p align="center">
-  <sub>Made with ❤️ for A-Share quantitative investors · <b>Floe v2.0.2</b></sub>
+  <sub>Made with ❤️ for A-Share quantitative investors · <b>Floe v2.0.3</b></sub>
 </p>

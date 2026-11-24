@@ -17,9 +17,11 @@ npx skills add wiltodelta/remove-ai-watermarks    # agent skill for Claude Code,
 ```
 
 Video support covers provenance identification, complete visible-plus-metadata
-cleaning, directory batches, visible Sora, Veo, Seedance, Doubao, Dola,
-Hailuo AI, and Kling AI mark removal, and oracle-certified VAE regeneration for video SynthID
-removal.
+cleaning, directory batches, 23 visible AI video marks (including Sora, Veo,
+Seedance, Doubao, Dola, Hailuo AI, Vidu, Wan, Qwen, PixVerse, Luma AI, HeyGen,
+Sync Labs, TikTok AI, and Kling AI) with selective GOP stream-copy, and
+oracle-certified 2D VAE (including `--native-guide`) and 3D `Wan 2.1`
+regeneration for video SynthID and Seedance removal.
 
 > [raiw.cc](https://raiw.cc) runs this library as a hosted service, with the GPU
 > included and nothing to install. Visible mark and metadata removal at Standard
@@ -52,9 +54,9 @@ removal.
 | Erase a region you select | `erase` | No |
 | Strip AI metadata | `metadata` | No |
 | Identify supported video provenance | `video identify` | No |
-| Inspect audio metadata and compatible public-model evidence | `audio identify` (`--scheme auto`, `audioseal`, `wavmark`, `perth`, `silentcipher`, `silentcipher16`, or `all`) | No |
+| Inspect audio metadata and compatible public-model evidence | `audio identify` (`--scheme auto`, `audioseal`, `wavmark`, `perth`, `silentcipher`, or `all`) | No |
 | Strip AI metadata from audio | `audio metadata` | No |
-| Process a detected compatible audio watermark and verify the saved file (`.wav`, `.flac`, `.mp3`, `.m4a`, `.ogg`, `.opus`) | `audio invisible` | No |
+| Process a detected compatible audio watermark and verify the saved file (`.wav`, `.flac`, `.mp3`, `.m4a`, `.ogg`, `.oga`, `.opus`, `.aac`, `.mka`) | `audio invisible` | No |
 | Strip AI metadata and optionally clean compatible audio watermarks | `audio all` / `audio batch` | No |
 | Process one or all audio tracks (`--all-streams`) while copying encoded video | `video audio` | No |
 | Remove visible marks, AI metadata, and opt-in video/audio invisible marks | `video all` | Depends on `--invisible` |
@@ -107,7 +109,7 @@ specialized Python API can inspect and disrupt the validated local
 | Video SynthID removal | `remove-ai-watermarks[video,diffusion]` |
 | Audio sample processing and spectral disruption | `remove-ai-watermarks[audio]` |
 | Compatible public audio watermark detection (AudioSeal) | `remove-ai-watermarks[audio-detect]` |
-| Neural audio codec resynthesis (EnCodec / FocalCodec / DAC) | `remove-ai-watermarks[audio-codec]` |
+| Neural audio codec resynthesis (EnCodec / DAC / SNAC) | `remove-ai-watermarks[audio-codec]` |
 | Torch-free DWT-DCT detection | `remove-ai-watermarks[detect]` |
 | Direct local Paint InvisMark disruption | `remove-ai-watermarks[pixels]` |
 | Invisible image removal (needs CUDA) | `remove-ai-watermarks[qwen-zimage]` |
@@ -115,7 +117,7 @@ specialized Python API can inspect and disrupt the validated local
 | Optional OCR proposals for operator verification | `remove-ai-watermarks[text-draft]` |
 
 Lower-level and specialized extras include `pixels`, `heif`, `trustmark`,
-`migan`, `lama`, `diffusion`, `source-classify`, `audio-vocoder`,
+`migan`, `lama`, `diffusion`, `source-classify`,
 `audio-wavmark`, `audio-perth`, and `audio-silentcipher`. The
 [installation guide](https://github.com/wiltodelta/remove-ai-watermarks/blob/main/docs/installation.md#feature-extras) documents their exact
 dependency composition, Python compatibility, and model requirements.
@@ -215,7 +217,7 @@ policy. These are separate from pixel detection and per-file removal verificatio
 strips verified AI metadata. If neither signal is found, it still writes a
 same-container passthrough, so application callers get one predictable output
 contract. Proprietary invisible-video removal is excluded by default:
-`--invisible` opts into the lossy, oracle-certified video SynthID profile (with motion-compensated temporal stabilization enabled by default and `--keep-fps` to retain native frame rate), and `--audio-invisible` inspects and cleans compatible watermarked audio tracks in the same atomic pipeline.
+`--invisible` opts into the lossy, oracle-certified video SynthID profile (with motion-compensated temporal stabilization enabled by default, `--keep-fps` to retain native frame rate, `--native-guide` for fast 512p-guided native-resolution 2D upscaling, and `--wan-steps` for fast 3D `Wan 2.1` denoising), and `--audio-invisible` inspects and cleans compatible watermarked audio tracks in the same atomic pipeline.
 
 Process a directory with the same contract:
 
@@ -363,6 +365,35 @@ These exact output files were checked with the matching provider verifiers. That
 result applies to these files, not to every seed, image, or future watermark
 version.
 
+### Popular formats and invisible watermarks (images, video, audio, text)
+
+One command (`remove-ai-watermarks all <file> -o <clean>`) handles visible marks,
+provenance-triggered invisible removal, and metadata stripping across images
+(`PNG`, `JPG`, `WebP`, `HEIC`, `TIFF`), video (`MP4`, `MOV`, `M4V`, `WebM`, `MKV`, `AVI`, `FLV`,
+including 10-bit HEVC/HDR), audio (`WAV`, `FLAC`, `MP3`, `M4A`, `OGG`, `OGA`, `Opus`, `AAC`, `MKA`),
+and text (`MD`, `HTML`, `TXT`):
+
+```bash
+# Images with invisible watermarks (InvisMark, TrustMark, SDXL DWT-DCT, SynthID)
+remove-ai-watermarks all data/fixtures/provenance/microsoft-invismark.png -o microsoft_clean.png
+remove-ai-watermarks all data/fixtures/provenance/adobe-trustmark-p.png -o firefly_clean.png
+remove-ai-watermarks all data/fixtures/provenance/sdxl-dwt-dct.png -o sdxl_clean.png
+remove-ai-watermarks all data/fixtures/provenance/recraft-v3.webp -o recraft_clean.webp
+
+# Video (Google Veo visible + SynthID video/audio; ByteDance Seedance 10-bit HEVC/HDR)
+remove-ai-watermarks all data/fixtures/provenance/google-gemini-omni-app.mp4 -o veo_clean.mp4
+remove-ai-watermarks all data/fixtures/provenance/dreamina-seedance-2-mini.mp4 -o seedance_clean.mp4
+remove-ai-watermarks video message marked.mp4 -o clean.mp4 --scheme videoseal
+
+# Audio (AudioSeal, WavMark, Perth, SilentCipher, Google SynthID, ElevenLabs, Cartesia)
+remove-ai-watermarks all track.wav -o track_clean.wav
+remove-ai-watermarks all speech.mp3 -o speech_clean.mp3 --vendor elevenlabs
+```
+
+See [docs/examples.md](https://github.com/wiltodelta/remove-ai-watermarks/blob/main/docs/examples.md)
+for the complete format-by-format guide, or try the interactive presets in the
+[Hugging Face Space](https://huggingface.co/spaces/wiltodelta/remove-ai-watermarks).
+
 ## Common recipes
 
 ### Remove every detected visible mark
@@ -430,8 +461,8 @@ Visible mark support includes:
   AI-edit stamps that carry no vendor wordmark of their own (vivo and Xiaomi
   Gallery confirmed); synthetic-only calibration, weaker evidence than the
   vendor-tuned detectors above;
-- the OpenArt wordmark, placed at the frame center rather than a corner;
-  uncalibrated (one confirmed real case, no captured corpus).
+- the OpenArt and Genspark center-frame marks, placed at the frame center rather
+  than a corner (provisional calibration; see the supported-signals matrix).
 
 Metadata and provenance inspection covers C2PA, EXIF, XMP, IPTC, common
 generator parameters in image and video containers, China TC260 AIGC labels,

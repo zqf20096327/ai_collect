@@ -1,6 +1,6 @@
 <div align="center">
 
-![AXIOM. Know what fits before you train.](docs/assets/axiom-logo.svg)
+![AXIOM. Know what fits before you train.](axiom/assets/axiom-logo.svg)
 
 [![Status](https://img.shields.io/badge/status-beta-f59e0b?style=flat-square&labelColor=0f172a)](https://github.com/manit6752025/AXIOM-AI)
 [![Version](https://img.shields.io/badge/version-v0.3.0--beta.8-f59e0b?style=flat-square&labelColor=0f172a)](https://github.com/manit6752025/AXIOM-AI/releases)
@@ -127,9 +127,10 @@ Downloads and checksums are on [GitHub Releases](https://github.com/manit6752025
 | **Datasets** | Validate JSONL, find duplicates, estimate tokens, write a cleaned copy | `axiom dataset validate ./data/train.jsonl` |
 | **Hardware** | Detect CPU, RAM, GPU, VRAM, and estimate which model sizes fit | `axiom system info` |
 | **Training** | Hardware-aware plans, saved experiments, optional local LoRA fine-tuning | `axiom train plan 7 --method qlora` |
-| **AXIOM Engine** | Direct local inference on PyTorch, no Ollama needed | `axiom engine status` |
-| **Ollama** | Service control, model pulls, streaming, benchmarking | `axiom infer status` |
+| **AXIOM Engine** | Direct local inference, text embeddings, and cross-encoder reranking; no Ollama needed | `axiom engine status` · `axiom engine embed` |
+| **Ollama** | Local service control, model pulls, streaming, structured JSON Schema output and benchmarking | `axiom infer status` · `axiom infer run --schema-file ./response.schema.json` |
 | **Model Studio** | Search and install GGUF models, convert to GGUF | `axiom model studio wizard` |
+| **Prompt Studio** | Build typed, versioned prompt templates and safely preview literal substitutions | `axiom prompt list` |
 | **Agent Optimizer** | Eight workload profiles that pick quantization and build a runtime bundle | `axiom optimize profiles` |
 | **Evaluation** | Score predictions offline and gate regressions against a baseline | `axiom evaluation run` |
 | **Unified LLM client** | One client for the native engine, Ollama, and cloud providers | `axiom llm providers` |
@@ -202,6 +203,51 @@ axiom engine run --model-path ~/models/my-llama-model --prompt "Explain AXIOM in
 
 Details: [AXIOM Engine](docs/Local-Engine.md).
 
+</details>
+
+<details>
+<summary><b>Local embeddings</b></summary>
+
+~~~bash
+python -m pip install -e '.[embeddings]'
+axiom engine embed --model-path ./models/my-encoder --text "AXIOM runs locally." --json
+axiom engine embed-unload
+~~~
+
+Embedding generation is local-only, uses trusted safetensors checkpoints, and does not persist input text. See [Local Embeddings](docs/Local-Embeddings.md) for bounds and limitations.
+
+</details>
+
+<details>
+<summary><b>Local reranking</b></summary>
+
+~~~bash
+axiom engine rerank --model-path ./models/my-reranker --query "local AI" --document "First result" --document "Second result" --json
+axiom engine rerank-unload
+~~~
+
+Cross-encoder scores and ranks are computed locally. Scores are ranking signals, not calibrated probabilities; source documents are not returned or saved. See [Local Reranking](docs/Local-Reranking.md).
+
+</details>
+
+<details>
+<summary><b>Workspace knowledge bases</b></summary>
+
+~~~bash
+axiom knowledge base create "Engineering notes"
+axiom knowledge base list
+axiom knowledge ingest BASE_ID documents/guide.md
+axiom knowledge documents BASE_ID
+axiom knowledge remove-document BASE_ID DOCUMENT_ID --yes
+~~~
+
+Knowledge bases are workspace-scoped. AXIOM ingests bounded UTF-8 TXT, Markdown, RST, CSV, JSON, and JSONL files into private workspace storage; original source files are never changed. See [Workspace Knowledge](docs/Local-Knowledge.md).
+
+~~~bash
+axiom knowledge search BASE_ID --query "local inference" --source-prefix documents/engineering --json
+~~~
+
+Search uses bounded BM25 lexical ranking by default. Add `--model-path` to enable local dense-vector fusion; each result includes a source path, SHA-256 content hash, chunk index, and character offsets. See [Workspace Knowledge and Retrieval](docs/Local-Knowledge.md).
 </details>
 
 <details>
@@ -397,6 +443,7 @@ axiom mcp profile use readonly
 | `axiom_prediction_job_status` | Counts and workspace-relative paths |
 | `axiom_prediction_job_wait` | Wait up to 30 seconds. Uses the status permission |
 | `axiom_prediction_job_cancel` | Cancel before artifact finalization |
+| `axiom_prediction_job_resume` | Resume an interrupted job after dataset, model/adapter and checkpoint verification |
 | `axiom_prediction_job_evaluate` | Score a completed job. Uses the `axiom_evaluation_run` permission |
 | `axiom_prediction_job_examples` | Up to three verified mismatches |
 | `axiom_prediction_job_compare` | Exact-match transitions and metric deltas between two jobs |
@@ -464,7 +511,7 @@ Opens in your browser, served from your computer on port `40507`. Use `--port` o
 
 ![AXIOM Control Center](docs/assets/webui.svg)
 
-Panels: Models, Runtime, AXIOM Engine, Fine-tuning, Model Studio, Agent Optimizer and Quantizer, Agent Profiles, and an API Playground. The local API has interactive docs at `/api/docs`. See [API.md](docs/API.md).
+Panels: Models, Runtime, AXIOM Engine, Fine-tuning, Model Studio, Agent Optimizer and Quantizer, Agent Profiles, Prompt Studio, and an API Playground. The local API has interactive docs at `/api/docs`. See [API.md](docs/API.md).
 
 ## How it fits together
 
@@ -492,6 +539,13 @@ flowchart LR
 Found a vulnerability? Read [SECURITY.md](SECURITY.md). Need help? Run `axiom support-bundle` (diagnostics only, no datasets, models, config values, or logs), review the ZIP, and attach it to an [issue](https://github.com/manit6752025/AXIOM-AI/issues).
 
 ## Automation
+Local security checks include `axiom doctor --strict --json`,
+`axiom security audit --json`, and
+`axiom security artifact inspect ./dist/<artifact> --json`. The artifact
+inspector checks installed package RECORD integrity, wheel hashes, and source-archive
+safety without extracting or executing release contents; see
+[Diagnostics and Support](docs/Diagnostics-and-Support.md).
+
 
 Most commands accept `--json` and print a versioned payload:
 
@@ -531,10 +585,18 @@ axiom doctor --json
 | Training or Engine commands fail | Run `python -m pip install -e '.[training]'`. |
 | Still stuck | Run `axiom support-bundle` and open an [issue](https://github.com/manit6752025/AXIOM-AI/issues). |
 
+## SDKs
+
+- **Python:** [`axiom-ai-sdk`](sdk/python) · `python -m pip install axiom-ai-sdk`
+- **TypeScript:** [`@axiom-ai/sdk`](sdk/typescript) · `npm install @axiom-ai/sdk`
+- **Contract and integration guide:** [SDK documentation](docs/SDKs.md)
+
+Both packages target API contract v1 and are verified against the live OpenAPI schema in CI.
+
 ## Documentation
 
 - **Start here:** [My First AI](examples/my-first-ai/README.md) · [Installers](installers/README.md) · [CLI guide](docs/CLI-GUIDE.md) · [Wiki](https://github.com/manit6752025/AXIOM-AI/wiki)
-- **Features:** [Model Registry](docs/Model-Registry.md) · [Model Studio](docs/Model-Studio.md) · [Fine-tuning](docs/Local-Fine-Tuning.md) · [Engine](docs/Local-Engine.md) · [Local Inference](docs/Local-Inference.md) · [Evaluation](docs/Evaluation.md) · [Unified LLM client](docs/Unified-LLM-Client.md) · [MCP](#mcp-server-for-ai-agents)
+- **Features:** [Model Registry](docs/Model-Registry.md) · [Model Studio](docs/Model-Studio.md) · [Fine-tuning](docs/Local-Fine-Tuning.md) · [Engine](docs/Local-Engine.md) · [Local Inference](docs/Local-Inference.md) · [Structured Output](docs/wiki/Structured-Output.md) · [Prompt Studio](docs/wiki/Prompt-Studio.md) · [Evaluation](docs/Evaluation.md) · [Unified LLM client](docs/Unified-LLM-Client.md) · [MCP](#mcp-server-for-ai-agents)
 - **Reference:** [API](docs/API.md) · [Data retention](docs/DATA-RETENTION.md) · [Diagnostics](docs/Diagnostics-and-Support.md) · [Security](SECURITY.md) · [Governance](docs/GOVERNANCE.md) · [Accessibility](docs/ACCESSIBILITY.md)
 - **Project:** [Changelog](docs/CHANGELOG.md) · [Roadmap](ROADMAP.md) · [Releases](docs/releases.md)
 

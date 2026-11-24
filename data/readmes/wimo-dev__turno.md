@@ -212,7 +212,9 @@ way. Only MCP tool calls go through `mcpd`, on `127.0.0.1`, with a bearer token 
 and requests with an `Origin` header are rejected so web pages cannot reach it.
 
 **Linux? Windows?** Linux works too: secrets go to the Secret Service (`secret-tool`), mcpd runs
-as a `systemd --user` unit, and links open with `xdg-open`. Windows is not supported.
+as a `systemd --user` unit, and links open with `xdg-open`. turno itself does not run on Windows,
+but turno-browser does, on its own: `npm install --global turno-browser` (see
+[Get started](https://turno.wimo.dev/docs/browser/get-started#on-windows)).
 
 **Can scripts and agents run turno?** Yes. turno asks only when a person is at a terminal: with
 `--no-input` (or `TURNO_NO_INPUT=1`), when stdin is not a terminal, and inside a Claude Code,

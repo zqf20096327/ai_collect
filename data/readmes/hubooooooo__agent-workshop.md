@@ -16,7 +16,6 @@
 [![Test](https://github.com/hubooooooo/agent-workshop/actions/workflows/test.yml/badge.svg)](https://github.com/hubooooooo/agent-workshop/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg)](https://www.python.org/downloads/)
-[![Listed on Awesome MyGo](https://awesomemygo.dev/badge.svg)](https://awesomemygo.dev/apps/agent-workshop)
 
 [版本与下载](#版本与下载) · [快速开始](#快速开始) · [先看效果](#先看效果) · [使用引导](使用引导.md) · [教程视频](https://www.bilibili.com/video/BV17RtD61ETm/)
 
@@ -33,7 +32,7 @@
 <tr><td><b>教学版</b></td><td>没有网页界面：项目文件夹、Python 引擎和命令行。用 AI 编程工具打开文件夹，让它全局阅读项目，再按引导一步步带你做到骨架验收</td><td>课堂上跟着老师学，看清项目里有什么、每一步怎么跑起来</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/tag/teaching">下载</a> · <a href="https://github.com/hubooooooo/agent-workshop/tree/v1-maint">浏览源码</a></td></tr>
 <tr><td><b>网页版</b>（本页）</td><td>在教学版的基础上加了本地网页界面：对话式新建产品、回答问题、试玩、导出交接包、检查外部项目。安装包里同时带着下面的桌面版</td><td>想直接用的普通用户：下载后双击启动，在网页上操作</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/latest">下载</a></td></tr>
 <tr><td><b>AI 技能版</b></td><td>一个叫 agent-prd 的技能：装进你自己的 AI 工具，对话追问后写出 <code>PRD.md</code> 和 <code>方案.md</code>。不用下载项目、不用 Python、不用另配 API Key</td><td>已经在用 AI 工具的人，想最快拿到需求文档和技术方案</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/tag/agent-prd">下载</a> · <a href="plugins/agent-workshop/skills/agent-prd/README.md">各工具装法</a></td></tr>
-<tr><td><b>桌面版</b>（Mac，预览）</td><td>网页版界面的 macOS 原生应用，就在网页版的安装包里（<code>Agent 工坊.app</code>）：用同一个引擎，功能和网页版一致，界面固定浅色；Apple 芯片和 Intel 的 Mac 都能用</td><td>不想开浏览器、喜欢原生应用的人</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/latest">下载</a>（和网页版同一个包）</td></tr>
+<tr><td><b>桌面版</b>（Mac，预览）</td><td>网页版界面的 macOS 原生应用，就在网页版的安装包里（<code>Agent 工坊.app</code>）：用同一个引擎，功能、界面和网页版一致，对话两边互通；Apple 芯片和 Intel 的 Mac 都能用</td><td>不想开浏览器、喜欢原生应用的人</td><td><a href="https://github.com/hubooooooo/agent-workshop/releases/latest">下载</a>（和网页版同一个包）</td></tr>
 </table>
 
 教学版、网页版、桌面版都下载到自己电脑上运行，不是网站；AI 技能版装进你正在用的 AI 工具里，不用下载整个项目。教学版由 AI 在终端里运行命令，用法看[教学版的 README](https://github.com/hubooooooo/agent-workshop/blob/v1-maint/README.md)「课堂上这样用」；网页版双击 `启动界面.command`，桌面版双击同一个文件夹里的 `Agent 工坊.app`，第一次双击如果被 macOS 拦下，看[常见问题](#常见问题)。
@@ -137,17 +136,19 @@ claude plugin install agent-workshop --marketplace hubooooooo/agent-workshop
 **浏览器界面（推荐给不用终端的人）**：双击 **`启动界面.command`**，浏览器会自动打开引擎界面。第一次双击如果提示「无法打开」，按[常见问题](#常见问题)里的步骤放行一次即可。
 
 1. 「模型设置」里选服务商、粘贴 API Key，点「测试连接并保存」。
-2. 「新建产品」像聊天一样说出想法，AI 追问给谁用、怎么用、什么不能做，信息够了就停（想法说完整了就不再问，只说一句话的一般问三个左右），整理成需求草稿给你确认。确认后开始推导，进度直接显示在对话里。
+2. 「新建产品」像聊天一样说出想法，AI 追问给谁用、怎么用、什么不能做，信息够了就停（想法说完整了就不再问，只说一句话的一般问三个左右），整理成需求草稿给你确认（产品名和需求都能直接改）。确认后开始推导，页面自动跳到这个产品，在概览上看进度。
 3. 推导完在产品页看方案：组件选型及理由、七层架构、工具清单、系统提示词、测试设计、审稿意见。
 4. 方案里还没想清楚的问题，在「回答问题」里一题一题答。问题都改成了大白话，只有工程师能判断的技术备注单独放着，不用你答；拿不准的点「帮我想想」，AI 给几个方向。答完自动写进 PRD 并重新推导。
 5. 在「试玩」里扮演自己产品的使用者（比如来问面包的顾客）和它聊几句，看它按现在的方案会怎么回应。它会按方案里的工具清单一步步做事，每做一步就多一张卡片；查资料、通知店主这些工具不会真的执行，结果是模拟的。方案里要先问人的操作会停下来等确认，禁止的操作调不了，这些地方都单独标出来。哪里不对就点回复下面的「这里不对」记下，最后一起带去「加新需求」。
 6. 点「导出交接包」，把 zip 发给帮你做产品的开发者：里面有需求、方案、还没定下来的问题、第一版组件的参考代码，以及一段交给 AI 编程工具的提示词。
 7. 有了新想法，在「加新需求」里说一句，AI 最多再问一个问题，整理成草稿给你确认；确认后需求文档升一版、方案重新推导，自动跳到「版本历史」，告诉你哪些组件的选型变了。每一版的需求文档都能回看。
-8. 手上已经有一个 Agent 项目，点左栏「检查一个项目」，选它的文件夹（会弹出 Mac 自带的选文件夹窗口，也可以粘贴路径），几分钟后得到差距报告和一份它本该有的需求文档，结果列在左栏「检查过的项目」里。代码改过后点「重新检查」再查一次：「这个项目该有什么」沿用上次的判断，两次的差别只来自代码；项目定位变了再点「重新判断」。
+8. 手上已经有一个 Agent 项目，点左栏「项目检查」，再点「检查一个项目」，选它的文件夹（会弹出 Mac 自带的选文件夹窗口，也可以粘贴路径），几分钟后得到差距报告和一份它本该有的需求文档，检查过的项目列在这一页的左边。代码改过后点「重新检查」再查一次：「这个项目该有什么」沿用上次的判断，两次的差别只来自代码；项目定位变了再点「重新判断」。
+
+回答问题、试玩、加新需求这三段对话，以及记下的「这里不对」，都会自动存在产品文件夹里：切走再回来、关掉再打开都能接着聊，网页版和桌面版也共用同一份。AI 回复时可以点输入框右下角的「停止」，已经出来的内容会留着；对话顶上的「重新开始」会先确认一次再清空。
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/web-overview.png" alt="产品页概览：左栏是产品和检查过的项目，中间是产品定位、审稿分数和待确认问题，右边是组件选型统计和导出交接包"></td>
+<td width="50%"><img src="docs/images/web-overview.png" alt="产品页概览：左栏是导航和我的产品，中间是产品定位、审稿分数和待确认问题，右边是组件选型统计和导出交接包"></td>
 <td width="50%"><img src="docs/images/web-answers.png" alt="回答问题：一题一题答，点「帮我想想」后 AI 给出 A、B、C 三个方向"></td>
 </tr>
 <tr>
@@ -155,12 +156,12 @@ claude plugin install agent-workshop --marketplace hubooooooo/agent-workshop
 <td align="center">回答问题：拿不准就点「帮我想想」</td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/images/web-play.png" alt="试玩：扮演家长发一句话，AI 按方案模拟调用识别照片的工具，卡片上标明结果是编的"></td>
-<td width="50%"><img src="docs/images/web-audit.png" alt="检查一个项目：差距报告开头写明判定、缺失和薄弱的组件数、agent 读了几个文件"></td>
+<td width="50%"><img src="docs/images/web-play.png" alt="试玩：扮演家长说要演救援剧情，AI 按方案模拟调用查资料、写剧本、审内容的工具，卡片上标明结果是编的"></td>
+<td width="50%"><img src="docs/images/web-audit.png" alt="项目检查：左边是检查过的项目，右边是报告，摘要卡写明判定、缺失和薄弱的组件数、agent 读了几个文件"></td>
 </tr>
 <tr>
 <td align="center">试玩：每调一个工具多一张卡片，结果是模拟的</td>
-<td align="center">检查一个项目：差距报告和本该有的需求文档</td>
+<td align="center">项目检查：差距报告和本该有的需求文档</td>
 </tr>
 </table>
 
@@ -230,18 +231,18 @@ bash setup.sh                         # 建虚拟环境、装依赖，把 .env.e
 
 ### 🖥 桌面版（Mac，预览）
 
-网页版界面的 macOS 原生重画，后台拉起同一个引擎，和网页版共用 `out/`，在哪边建的产品另一边都看得到。功能和网页版一致：概览、回答问题、试玩、加新需求、方案、版本历史、检查项目、模型设置都有，页面结构也一样。对话会存在这台电脑上，关掉再打开还能接着来。和网页版唯一的不同是界面固定浅色。
+网页版界面的 macOS 原生重画，后台拉起同一个引擎，和网页版共用 `out/`，在哪边建的产品另一边都看得到。功能和网页版一致：概览、回答问题、试玩、加新需求、方案、版本历史、检查项目、模型设置都有，页面结构也一样。界面和网页版一模一样（颜色、字体、布局都相同，只有浅色）。对话存在产品文件夹里，两边共用：网页版聊到一半，打开桌面版能接着聊，反过来也一样。
 
 它就在网页版的安装包里：解压后双击文件夹里的 **`Agent 工坊.app`**（不用另装什么；第一次打开会自己准备 Python 环境，左下角显示进度，大约 1 分钟）。应用要留在解压出来的文件夹里用，别单独拖进「应用程序」。没有经过苹果签名，第一次打开会被拦下，放行步骤见[常见问题](#常见问题)。自己从源码打包见[桌面版说明](https://github.com/hubooooooo/agent-workshop/blob/main/desktop/README.md)。
 
 <table>
 <tr>
 <td width="50%"><img src="docs/images/desktop-overview.png" alt="桌面版产品概览：左边分组导航（概览、对话、方案、记录）和用量，中间是产品定位和待确认问题，右边是组件选型统计和交接包"></td>
-<td width="50%"><img src="docs/images/desktop-play.png" alt="桌面版试玩：开场白、用户的一句话、两张模拟调用工具的卡片和 AI 的回应，回复下面有「这里不对」"></td>
+<td width="50%"><img src="docs/images/desktop-play.png" alt="桌面版试玩：接着网页版的同一段对话，四张模拟调用工具的卡片和 AI 给出的剧本"></td>
 </tr>
 <tr>
 <td align="center">产品概览：和网页版一样的分组导航</td>
-<td align="center">试玩：工具卡片、「这里不对」</td>
+<td align="center">试玩：接着网页版的同一段对话</td>
 </tr>
 </table>
 
@@ -324,6 +325,7 @@ agent 需要模型支持工具调用。DeepSeek 实测支持（Anthropic 格式�
 <tr><td><code>skeleton/</code></td><td>代码骨架，唯一允许写产品代码的地方</td><td><strong>你的 AI 编程工具</strong>，引擎不写</td></tr>
 <tr><td><code>verify/</code></td><td>按方案的组件选型和 PRD 检查骨架的差距报告</td><td>引擎</td></tr>
 <tr><td><code>迭代记录.md</code></td><td>每一轮：新需求、选型变化、骨架待办、人工验证结论</td><td>引擎记录；人工验证结论只能由你填</td></tr>
+<tr><td><code>.conversations.json</code></td><td>界面里还没聊完的对话（回答问题、试玩、加新需求）和「这里不对」的记录，网页版和桌面版共用；对话确认完成或重新开始就删掉，导出交接包时不会带上</td><td>网页版、桌面版自动保存</td></tr>
 </table>
 
 引擎不负责部署上线和上线后的运行。
@@ -392,7 +394,7 @@ macOS 14 及更早的版本更简单：按住 Control 键点启动文件（或 `
 <tr><th align="left" width="24%"><img src="docs/images/spacer.png" width="2000" height="1" align="left" alt="">位置</th><th align="left" width="76%">用途</th></tr>
 <tr><td><a href="使用引导.md">使用引导.md</a></td><td>用户入口：任务模板、产品循环、给 AI 的执行规则</td></tr>
 <tr><td><a href="BLUEPRINT.md">BLUEPRINT.md</a></td><td>五步推导、五要素、七层架构与组件选型表</td></tr>
-<tr><td><a href="blueprint/">blueprint/</a></td><td>引擎：需求拆解、规则选型、方案渲染、源码扫描、产品工作区；<code>agent.py</code> 是 agent 循环，<code>intake_agent.py</code>、<code>plan_agent.py</code>、<code>audit_agent.py</code> 分别是追问、方案推导、检查用的 agent；<code>web/</code> 是浏览器界面的服务端，<code>chat.py</code> 是界面里的几段对话，<code>playground.py</code> 是「试玩」</td></tr>
+<tr><td><a href="blueprint/">blueprint/</a></td><td>引擎：需求拆解、规则选型、方案渲染、源码扫描、产品工作区；<code>agent.py</code> 是 agent 循环，<code>intake_agent.py</code>、<code>plan_agent.py</code>、<code>audit_agent.py</code> 分别是追问、方案推导、检查用的 agent；<code>web/</code> 是浏览器界面的服务端（<code>conversations.py</code> 存界面里的对话，网页版和桌面版共用），<code>chat.py</code> 是界面里的几段对话，<code>playground.py</code> 是「试玩」</td></tr>
 <tr><td><a href="https://github.com/hubooooooo/agent-workshop/tree/main/web">web/</a></td><td>浏览器界面源码（React + assistant-ui），构建产物提交在 <code>blueprint/web/static/</code></td></tr>
 <tr><td><code>s01</code>–<code>s17</code></td><td>17 个组件的说明、参考实现与图示</td></tr>
 <tr><td><a href="common/">common/</a></td><td>组件参考实现共用的启动层</td></tr>

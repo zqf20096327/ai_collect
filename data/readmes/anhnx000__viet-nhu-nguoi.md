@@ -1,6 +1,6 @@
 # Viết như người · Vietnamese Humanizer
 
-Skill cho Claude Code, Codex, Cursor: nhờ AI viết tiếng Việt mà đọc lên vẫn ra giọng mình. Bỏ câu sáo, xưng hô đúng vai, số liệu đưa sao để vậy. Bản mới nhất đã chạy 76 đề của bộ Vietnamese Humanizer Benchmark trên cả Claude lẫn Codex, [kết quả ở dưới](#vietnamese-humanizer-benchmark).
+Skill cho Claude Code, Codex, Cursor: nhờ AI viết tiếng Việt mà đọc lên vẫn ra giọng mình. Bỏ câu sáo, xưng hô đúng vai, số liệu đưa sao để vậy. Bản 2.13.0 đã chạy 76 đề của bộ Vietnamese Humanizer Benchmark trên cả Claude lẫn Codex, [kết quả ở dưới](#vietnamese-humanizer-benchmark). Miễn phí, mã nguồn mở theo MIT, bản chép lại giữ nguyên dòng ghi nguồn, [xem mục Giấy phép](#giấy-phép).
 
 [![test](https://github.com/anhnx000/viet-nhu-nguoi/actions/workflows/test.yml/badge.svg)](https://github.com/anhnx000/viet-nhu-nguoi/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -163,8 +163,8 @@ Dấu hiệu xếp theo nhóm, nhóm nào cũng kèm số dòng và cụm bị b
 
 Repo kèm một bộ đề để đo trợ lý AI viết tiếng Việt theo hai ý: bài viết ra có đọc như người Việt viết không, và tên, số, ngày, lời phủ định của người nhờ có còn nguyên không. Skill đổi chỗ nào thì chạy lại cả bộ. Bộ đề cũng chạy được khi không bật skill, để biết mô hình tự viết được tới đâu.
 
-- 63 đề thường gặp: 21 đề sửa bài, 19 đề viết mới, 14 đề trả lời tin nhắn theo giọng người gửi, 5 đề soi lỗi, thêm tóm tắt, slide, câu hỏi thường và một đề phải chép nguyên văn.
-- 13 đề để riêng, không dùng khi chỉnh skill, để biết skill có học thuộc bộ đề hay không.
+- 68 đề thường gặp: 21 đề sửa bài, 21 đề viết mới, 16 đề trả lời tin nhắn theo giọng người gửi, 6 đề soi lỗi, thêm tóm tắt, slide, câu hỏi thường và một đề phải chép nguyên văn.
+- 14 đề để riêng, không dùng khi chỉnh skill, để biết skill có học thuộc bộ đề hay không.
 - 73 lời nhờ thử xem skill có tự bật đúng lúc không, trong đó có câu hỏi về code, kiến thức, phép tính mà skill phải đứng ngoài.
 - File đầu vào viết riêng cho bộ đề, tên người và số liệu đều bịa. Đề nào cũng có đáp án mẫu, và đáp án mẫu phải qua mọi điều kiện chấm của đề đó.
 
@@ -179,12 +179,12 @@ Mỗi đề chạy qua `claude -p` hoặc `codex exec` trong một thư mục t�
 | Claude Sonnet 5.5, không skill | 1 | 36/63 | 2/13 |
 | Claude Opus 5.5, không skill | 1 | 33/63 | 2/13 |
 
-Bật đúng lúc: Claude bật 68/68 lượt nên bật và không bật nhầm lượt nào trong 63 lượt, Codex bật 104/104 lượt và bật nhầm 2/83 lượt. Dòng Opus không skill là câu trả lời chạy ở bản 2.11.0, chấm lại bằng script hiện tại, vì lời nhờ và file đầu vào không đổi từ đó.
+Bật đúng lúc: Claude bật 68/68 lượt nên bật và không bật nhầm lượt nào trong 63 lượt, Codex bật 104/104 lượt và bật nhầm 2/83 lượt. Dòng Opus không skill là câu trả lời chạy ở bản 2.11.0, chấm lại bằng script hiện tại, vì lời nhờ và file đầu vào không đổi từ đó. Bảng chạy trên bộ đề của bản 2.13.0; ba đề tin nhắn trên Teams thêm ở bản 2.14.0 có kết quả riêng trong [evals/README.md](evals/README.md).
 
 Chạy lại trên máy mình (cần Claude Code hoặc Codex CLI):
 
 ```bash
-python3 -I evals/run.py evals/results/thu --runs 3              # 63 đề, mỗi đề 3 lượt
+python3 -I evals/run.py evals/results/thu --runs 3              # 68 đề, mỗi đề 3 lượt
 python3 -I evals/run.py evals/results/thu-goc --khong-skill     # cùng đề, không bật skill
 python3 -I evals/check.py evals/results/thu                     # chấm
 ```
@@ -222,7 +222,7 @@ Có tật phải đọc cả bài mới thấy. Từng câu ổn, nhưng "không
 
 Slide thì hay có tiêu đề chỉ là nhãn hoặc đếm số ("3 trụ cột"), slide nào cũng đúng ba ý, ghi chú thuyết trình như công văn ([slides.md](skills/viet-nhu-nguoi/references/slides.md)).
 
-Tin nhắn thì icon, kiểu cười, viết tắt học từ 30 lượt chat gần nhất, giọng đổi theo người nhận, "à", "nhé", "ạ" giữ đúng ý hỏi, nhờ hay hứa ([chat.md](skills/viet-nhu-nguoi/references/chat.md), [spoken.md](skills/viet-nhu-nguoi/references/spoken.md)).
+Tin nhắn thì icon, kiểu cười, viết tắt học từ 30 lượt chat gần nhất, giọng đổi theo người nhận, "à", "nhé", "ạ" giữ đúng ý hỏi, nhờ hay hứa. Trên Teams thì gõ tắt chừng một nửa số chữ có dạng tắt quen ("ko", "đc", "r", "a", "e"), tin gửi khách hàng thì viết đủ. Trước khi viết, skill đọc lại ba tin gần nhất của bạn để tin mới không chép lại câu nhờ cũ, kiểu tin nào cũng kết bằng "anh duyệt giúp em nha" ([chat.md](skills/viet-nhu-nguoi/references/chat.md), [spoken.md](skills/viet-nhu-nguoi/references/spoken.md)).
 
 </details>
 
@@ -287,7 +287,9 @@ skills/viet-nhu-nguoi/
 ├── scripts/patterns.py      tra ví dụ theo số mục hoặc nhóm
 ├── scripts/scan.py          bộ kiểm tra, thang điểm 0-100
 ├── scripts/check_facts.py   so dữ kiện giữa hai bản
-└── scripts/slides.py        đọc chữ và ghi chú trong .pptx
+├── scripts/slides.py        đọc chữ và ghi chú trong .pptx
+├── LICENSE                  giấy phép MIT kèm link bản gốc, chép từ thư mục gốc
+└── LICENSE-humanizer        giấy phép MIT của blader/humanizer
 assets/                      ảnh README, script vẽ lại (make_images.py)
 examples/                    văn mẫu và deck .pptx trước/sau
 evals/                       bộ đề thử hành vi của skill
@@ -306,3 +308,7 @@ tests/                       python3 -m unittest discover -s tests
 - Đủ nguồn ở [sources.md](skills/viet-nhu-nguoi/references/sources.md).
 
 </details>
+
+## Giấy phép
+
+[MIT](LICENSE). Dùng, sửa, chia sẻ lại, đưa vào sản phẩm thương mại đều được. Bản chép lại hay bản sửa chỉ cần giữ file LICENSE, trong đó dòng bản quyền có link bản gốc https://github.com/anhnx000/viet-nhu-nguoi. Bài và tin nhắn soạn ra khi dùng skill không cần ghi nguồn. Riêng bản 2.15.0 phát hành theo Apache 2.0.

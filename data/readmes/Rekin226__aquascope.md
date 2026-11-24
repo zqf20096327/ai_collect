@@ -39,7 +39,7 @@ No installation; core Explorer workflows need no API key.
 
 ---
 
-AquaScope unifies **37 global water-data sources** behind one Python schema, then layers a full scientific computing stack on top, from **flood-frequency methods** to **FAO-56 crop water requirements**, wrapped in an AI engine that scores **27 research methodologies** against your dataset and auto-executes **26 analysis pipelines**. Regression checks include the CAMELS benchmark with 5,200+ tests across the project.
+AquaScope unifies **38 global water-data sources** behind one Python schema, then layers a full scientific computing stack on top, from **flood-frequency methods** to **FAO-56 crop water requirements**, wrapped in an AI engine that scores **27 research methodologies** against your dataset and auto-executes **26 analysis pipelines**. Regression checks include the CAMELS benchmark with 5,200+ tests across the project.
 The daily benchmark inputs are synthetic; flood benchmarks also use observed USGS annual peaks.
 See [validation scope](docs/validation_scope.md) for comparators and limitations.
 
@@ -199,7 +199,7 @@ For the full capability list see [docs/features.md](docs/features.md).
 | CMIP6 change factors through a calibrated GR4J, in one study | ✅ | — | — | — |
 | Baseflow separation (Lyne-Hollick, Eckhardt) | ✅ | — | — | — |
 | FAO-56 Penman-Monteith ET₀ + crop water | ✅ | — | — | — |
-| 37 unified data collectors | ✅ | — | — | per-source |
+| 38 unified data collectors | ✅ | — | — | per-source |
 | AI methodology recommender (OpenAI / Groq / HF / Ollama) | ✅ | — | — | — |
 | Interactive Streamlit dashboard | ✅ | — | — | — |
 | Free, MIT, Python-native | ✅ | partial | ✅ | varies |
@@ -273,7 +273,7 @@ print(sig.flashiness_index)    # Richards-Baker flashiness index
 
 22 signatures across magnitude, variability, timing, recession, and flashiness — see [docs/features.md](docs/features.md#hydrological-analysis).
 
-### 3. Collect data from any of the 37 sources
+### 3. Collect data from any of the 38 sources
 
 ```python
 from aquascope import find_stations
@@ -410,6 +410,7 @@ aquascope river record --at 46.948 7.452          # that reach's simulated daily
 aquascope river trace --at 46.948 7.452           # follow it to the sea: length, path, the gauges, dams and countries it passes
 aquascope river dams --at 46.948 7.452            # the dams upstream of that reach and the degree of regulation
 aquascope now --station usgs/USGS-01350000        # today against normal, and the 15-day forecast corrected to the gauge
+aquascope evidence verify --out verify --days 30  # how close the issued forecasts came to the gauge, per model and lead day
 aquascope bulletin 2026-09 --out bulletin         # last month's state of the rivers: HydroSOS classes, HTML and Markdown
 aquascope warnings --bbox -10 35 30 60            # floods ahead: reaches expected to reach their 2-year flow in 15 days
 aquascope flowstatus --bbox -10 35 30 60          # every big reach's flow today against its normal for the month
@@ -456,7 +457,7 @@ aquascope flood 230567275 --flow 954 --levee ring.geojson --crest 15.1   # a scr
 aquascope well --at 4.88 45.76 --rate 1000 --days 90   # Theis drawdown round a pumping well
 aquascope landuse --polygon '[[4.955,45.70],[4.97,45.70],[4.97,45.708],[4.955,45.708]]' --use residential_1_8 --rain 100
 
-# Interactive Streamlit dashboard — multipage workspace with 37 live sources,
+# Interactive Streamlit dashboard — multipage workspace with 38 live sources,
 # smart auto-insights, and fully interactive Plotly charts
 aquascope dashboard
 
@@ -470,9 +471,9 @@ Run `aquascope --help` for the full command list.
 
 ## 🌍 Data sources at a glance
 
-37 data collectors spanning five regions (highlights below, full list in the [docs](docs/data_sources.md)):
+38 data collectors spanning five regions (highlights below, full list in the [docs](docs/data_sources.md)):
 
-- 🌎 **Americas** — USGS (streamflow + WQ), NOAA NWPS (US streamflow), Colorado DWR/CDSS, Water Quality Portal (400+ agencies), CAMELS-CL (Chile), CAMELS-BR and ANA Hidroweb (Brazil)
+- 🌎 **Americas** — USGS (streamflow + WQ), NOAA NWPS (US streamflow), Colorado DWR/CDSS, Water Quality Portal (400+ agencies), Canada HYDAT, CAMELS-CL (Chile), CAMELS-BR and ANA Hidroweb (Brazil)
 - 🌍 **Europe** — EU Water Framework Directive, Copernicus GloFAS, France Hub'Eau, Germany PEGELONLINE, England's Environment Agency, Ireland OPW, Greece Hydroscope (national archive) and OpenHi.net (live telemetry), Poland IMGW-PIB (daily archive from 1951 and the live network)
 - 🌍 **Africa** — South Africa DWS (verified discharge and water level)
 - 🌏 **Asia-Pacific** — Taiwan MOENV / WRA / CWA / Civil IoT / DataGov, Korea WAMIS, India WRIS, Australia BOM
@@ -485,6 +486,7 @@ Full details, endpoints, and API-key requirements: [docs/data_sources.md](docs/d
 ## 🧪 Scientifically validated
 
 - **5,200+ tests** covering every collector, hydrology method, and pipeline (spatial and ARIMA tests require the optional `[all]` / `[ml]` extras)
+- **A weekly live sweep of every collector** asks each source for a small slice of real data and records OK, EMPTY, FAIL, TIMEOUT or NEEDS_KEY, so a collector that quietly stops returning data shows up
 - **CAMELS benchmark** — a 10-catchment validation subset of the [CAMELS dataset](https://ral.ucar.edu/solutions/products/camels) ships with the repo at `data/camels_benchmark/` and runs as part of CI
 - **Every method cited** — equations, decision trees, and DOI references for all 27 methodologies live in the [theory guide](docs/theory.md)
 - **JOSS paper in preparation** — see [`paper.md`](paper.md) and [`paper.bib`](paper.bib)
@@ -496,7 +498,7 @@ Full details, endpoints, and API-key requirements: [docs/data_sources.md](docs/d
 | Resource | What it covers |
 | :--- | :--- |
 | [Features](docs/features.md) | Full capability list — hydrology, agriculture, ML, spatial, I/O |
-| [Data sources](docs/data_sources.md) | All 37 sources, endpoints, API-key requirements |
+| [Data sources](docs/data_sources.md) | All 38 sources, endpoints, API-key requirements |
 | [Theory guide](docs/theory.md) | Equations, DOI citations, decision trees for every method |
 | [Methodology matrix](docs/methodology_matrix.md) | When to use which method |
 | [Architecture](docs/guides/architecture.md) | How AquaScope is structured internally |
@@ -605,6 +607,9 @@ Thanks to these wonderful people who make AquaScope possible ([emoji key](CONTRI
       <td align="center" valign="top" width="20%"><a href="https://github.com/Duo-ee"><img src="https://avatars.githubusercontent.com/u/113885053?v=4&size=100" width="100px" height="100px" alt="Duo"/><br /><sub><b>Duo</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=Duo-ee" title="Documentation">📖</a> <a href="https://github.com/Rekin226/aquascope/commits?author=Duo-ee" title="Code">💻</a> <a href="https://github.com/Rekin226/aquascope/commits?author=Duo-ee" title="Tests">⚠️</a> <a href="https://github.com/Rekin226/aquascope/pulls?q=is%3Apr+reviewed-by%3ADuo-ee" title="Reviewed Pull Requests">👀</a> <a href="#research-Duo-ee" title="Research">🔬</a></td>
       <td align="center" valign="top" width="20%"><a href="https://github.com/Ikaly03"><img src="https://avatars.githubusercontent.com/u/342365651?v=4&size=100" width="100px" height="100px" alt="Francklin03"/><br /><sub><b>Francklin03</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=Ikaly03" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="20%"><a href="https://github.com/sanchezhenrique"><img src="https://avatars.githubusercontent.com/u/132634883?v=4&size=100" width="100px" height="100px" alt="Henrique Sanchez"/><br /><sub><b>Henrique Sanchez</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=sanchezhenrique" title="Code">💻</a> <a href="https://github.com/Rekin226/aquascope/commits?author=sanchezhenrique" title="Tests">⚠️</a></td>
+    </tr>
   </tbody>
 </table>
 
@@ -625,8 +630,8 @@ If you use AquaScope in your research, please cite:
   author  = {Ouédraogo, Abdoul Rachid},
   year    = {2026},
   url     = {https://github.com/Rekin226/aquascope},
-  version = {1.2.0},
-  doi     = {10.5281/zenodo.24125206},
+  version = {1.3.0},
+  doi     = {10.5281/zenodo.21903143},
   license = {MIT}
 }
 ```

@@ -9,6 +9,7 @@ redb.Route is the .NET equivalent of [Apache Camel](https://camel.apache.org/) �
 [![NuGet](https://img.shields.io/nuget/v/redb.Route?label=NuGet&color=blue)](https://www.nuget.org/packages/redb.Route)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-8%20%7C%209%20%7C%2010-purple)](https://dotnet.microsoft.com)
+[![Website](https://img.shields.io/badge/docs-redbase.app-orange)](https://redbase.app)
 
 <a href="https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/721846393/eDelivery+AS4+v1.x+conformant+products"><img src="https://raw.githubusercontent.com/redbase-app/redb-route/main/redb.Route.As4/images/as4-ec-conformance-certificate.png" width="340" alt="Certificate of the eDelivery AS4 conformance tests passed by redb.Route.As4 4.6.1"></a>
 
@@ -374,6 +375,11 @@ secrets are replaced with a constant `****` — never a partial prefix.
 
 To register a credential parameter that is not an annotated option, call
 `EndpointUri.AddSensitiveKeys("myCustomToken")` at startup.
+
+The same values are masked inside the error, warning and refusal texts an endpoint records: every `[Sensitive]`
+option and every secret URI parameter of the endpoint is replaced wherever it appears, plain or URL-escaped. This
+masking covers those endpoint texts only; the log step (see [Logging](#logging)) writes exactly what the route
+author asks for.
 
 **3. The id of an unnamed route carries neither.** A route that declares no `RouteId("...")` is named
 after its endpoint: the scheme, the path and a deterministic UUID of the whole URI
@@ -1531,6 +1537,9 @@ a secret's name (`*token*`, `*password*`...). The length of a value is the SDK's
 .EndLog()
 ```
 
+The log step writes exactly what the route author asks for, including a header or property that holds a secret. The
+masking by value described under `[Sensitive]` applies to endpoint error and warning texts, not to this step.
+
 ---
 
 ## Fluent Transport Builders
@@ -1937,8 +1946,4 @@ For transports that support transactions, combine with `.Transacted()` to wrap p
 | `redb.Route.Http` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Http?label=)](https://www.nuget.org/packages/redb.Route.Http) | HTTP/HTTPS — client and Kestrel server |
 | `redb.Route.Http.Hosting` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Http.Hosting?label=)](https://www.nuget.org/packages/redb.Route.Http.Hosting) | Shared Kestrel host (`SharedHttpServerManager`) reused by HTTP-based transports |
 | `redb.Route.As2` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.As2?label=)](https://www.nuget.org/packages/redb.Route.As2) | AS2 (RFC 4130) B2B/EDI — signed/encrypted S/MIME + MDN (sync/async/signed), interop-validated vs OpenAS2 |
-| `redb.Route.Grpc` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Grpc?label=)](https://www.nuget.org/packages/redb.Route.Grpc) | gRPC — client and Kestrel server |
-| `redb.Route.Soap` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Soap?label=)](https://www.nuget.org/packages/redb.Route.Soap) | SOAP 1.1/1.2 — WS-Security, MTOM attachments, WSDL-first services |
-| `redb.Route.File` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.File?label=)](https://www.nuget.org/packages/redb.Route.File) | File system — polling, atomic writes, locking |
-| `redb.Route.Sftp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Sftp?label=)](https://www.nuget.org/packages/redb.Route.Sftp) | SFTP (SSH.NET) |
-| `redb.Route.MqttNet` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.MqttNet?l
+| `redb.Route.Grpc` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Grpc?label=)](https://www.nuget.org/packages/redb.Route.Grpc) 

@@ -6,6 +6,7 @@
 [![Playwright](https://img.shields.io/badge/Playwright-UI%20%2B%20API-45ba4b)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6)](https://www.typescriptlang.org/)
 
+
 **[Try it](#try-it-with-one-question) | [How it works](#agentic-qa-workflow) | [Run the tests](#run-the-playwright-example) | [Adopt the pattern](#adopt-the-pattern-in-your-project)**
 
 `playwright-agentic-automation` turns AI coding agents, such as Codex and Claude Code, into evidence-driven Playwright QA engineers. It gives them a **local codebase second brain**, **project rules in `AGENTS.md`**, and **focused workflows in `SKILL.md`** to understand features, plan tests, diagnose failures, and repair safely.

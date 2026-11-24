@@ -143,7 +143,7 @@ MemoGrad 是一套完整的考研刷题平台，覆盖微信小程序端、管�
 │   ├── app/services/             # 业务服务、任务、导出、推荐
 │   ├── alembic/                  # 数据库迁移
 │   └── tests/                    # 按领域分包的测试
-├── admin-frontend/               # Next.js 管理后台
+├── admin-frontend/               # Next.js 用户 Web 与管理后台
 │   ├── src/app/                  # App Router 页面
 │   ├── src/components/           # UI、表格、题目、公式组件
 │   └── src/lib/                  # API client、鉴权、权限
@@ -224,11 +224,13 @@ npm run dev
 NEXT_PUBLIC_ADMIN_API_BASE_URL=http://localhost:8000/api/admin/v1
 ```
 
-### 用户 Web（待发布）
+### 用户 Web
 
-`web-frontend/` 提供 GitHub／邮箱验证码登录、账号概览与登录身份管理，复用现有 FastAPI。开发时运行 `npm ci`、`npm run dev`，默认地址为 `http://localhost:3000`；管理端使用 `3002` 端口。
+用户站点与管理端共用 `admin-frontend/` 工程，提供密码、GitHub／邮箱验证码登录、账号概览与 Web 登录身份管理。默认开发地址为 `http://localhost:3002`；如需改用用户站点端口，可在同一目录运行 `npx next dev --port 3000`。
 
-本地后端需设置 `USER_WEB_BASE_URL=http://localhost:3000`、`ADMIN_WEB_BASE_URL=http://localhost:3002`。GitHub 回调应为用户 Web 同源的 `/api/v1/auth/github/callback`，以便保留 host-only Cookie。真实 GitHub／SMTP 和四域生产入口须在发布时配置和验收。
+本地后端需设置 `USER_WEB_BASE_URL=http://localhost:3000`、`ADMIN_WEB_BASE_URL=http://localhost:3002`，并为对应进程配置两个 Web 地址和 Admin 主机识别。GitHub 回调应为用户 Web 同源的 `/api/v1/auth/github/callback`，以便保留 host-only Cookie。生产两站共用源码但使用独立身份域；真实账号授权和收件仍需验收。
+
+小程序只提供微信一键登录，不提供邮箱登录或账号绑定。身份管理入口统一放在 Web；微信绑定方式待定，当前不开放。
 
 开发环境会初始化本地管理员：
 

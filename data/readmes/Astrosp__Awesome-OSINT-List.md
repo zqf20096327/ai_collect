@@ -183,6 +183,7 @@ A curated list of OSINT tools and resources for penetration testing, reverse sea
 - [Lunar Cyber](https://lunarcyber.com/) - Search and monitor compromised credentials across data breaches and infostealer logs.
 - [Have I Been Ransomed?](https://haveibeenransom.com/) - Check if your email, phone or company has been leaked by ransomware gangs, stealers or traditional breaches.
 - [Breach House](https://breach.house/) - Free, open search of ransomware leaks, stealer logs, traditional breaches and leads by company, domain or email.
+- [OffSeq Breach](https://breach.offseq.com/) - Search a domain or email address across leaked datasets, forums, Telegram channels and marketplaces; free masked results without an account, paid monitoring, unmasking and API.
 
 <br>
 
@@ -768,6 +769,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Sigma Rules](https://github.com/SigmaHQ/sigma) - Generic signature format for SIEM systems.
 - [Global Threat Map](https://globalthreatmap.up.railway.app/) - Real-time visualization of global cyber threats.
 - [STIX Viewer](https://stix-viewer.threatlandscape.io/) - An online free STIX threat intelligence viewer and visualizer.
+- [OffSeq Mirage Feed](https://feeds.offseq.com/) - Free daily attacker IPs, payload and C2 URLs, malware hashes and exploited CVEs from a honeypot fleet, with an IP lookup; plain lists, CSV, STIX 2.1 and MISP, CC BY 4.0.
 
 <br>
 
@@ -970,6 +972,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Instagram, Reddit & Snapchat](https://one-plus.github.io/Instagram) - Search people, posts ...
 - [Google to search profiles on Dribbble](https://recruitin.net/dribbble.php) - Dribbble is good for finding front end developers, graphic designers, illustrators, typographers, logo designers, and other creative types.
 - [trape](https://github.com/jofpin/trape) - People tracker on the Internet: OSINT analysis and research tool.
+- [last30days](https://github.com/mvanhorn/last30days-skill) - Agent skill that searches Reddit, X, YouTube, TikTok, and Hacker News for a topic's last 30 days and writes a cited summary.
 
 <br>
 
@@ -994,6 +997,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 - [Fedica (formerly Followerwonk)](https://fedica.com/) - Twitter/X bio search, audience segmentation, demographics, and account comparisons.
 - [GetXAPI](https://www.getxapi.com/) - Twitter / X data API for OSINT collection. Read endpoints (search, profiles, follower graph, mentions, lists, communities, trends) and write endpoints. Bearer-token auth. Public OpenAPI 3.1 spec.
+- [xdataapi.io](https://xdataapi.io/) - Read-only API for public X profiles, tweets, followers and search with x.com operators, billed per item returned.
 - [BirdHunt](https://birdhunt.co/) - BirdHunt will show you all tweets within the chosen geographic location.
 - [Nitter](https://github.com/zedeus/nitter/) - Alternative Twitter front-end.
 - [Twitter Search Engine](https://cse.google.com/cse?cx=5857bab69c8b8e37e) - Custom search engine for twitter.
@@ -1053,16 +1057,4 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [SocialGrep](https://www.socialgrep.com/search) - Search reddit posts and comments. Advanced filters via date, score, subreddit, keywords, website urls and more. All searches can be exported via csv or json.
 - [Reddit_Persona](https://github.com/n2itn/reddit_persona) - A Python module to extract personality insights, sentiment & keywords from reddit accounts.
 - [Reddit Downloader](https://redditdownloader.github.io/) - Download media from reddit like image, audio, video.
-- [Reddit User Analyser](https://reddit-user-analyser.netlify.app/) - Analyse a Reddit user by username.
-- [RedditMetis](https://redditmetis.com/) - See statistics for your Reddit account.
-- [Search Reddit Comments by User](https://www.redditcommentsearch.com/) - Search through comments of a particular reddit user. Just enter the username and a search query.
-- [Pushshift API Guide](https://github.com/pushshift/api) - The pushshift.io Reddit API was designed and created by the /r/datasets mod team to help provide enhanced functionality and search capabilities for searching Reddit comments and submissions.
-
-<br>
-
-[⇧ Top](#index)
-
-## LinkedIn
-
-- [LinkedIn Search](https://recruitin.net/) - Easily use Google to search profiles on LinkedIn.
-- [LinkedIn Search Engine](https://cse.google.com/cse?cx=daaf18e804f81bed0) - Custo
+- [Reddit User Analyser](https://reddit

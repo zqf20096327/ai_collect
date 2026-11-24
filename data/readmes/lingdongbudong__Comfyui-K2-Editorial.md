@@ -15,8 +15,25 @@
 > 服装库已精简为 SFW（L0–L1，剔除 `nsfw_outfit` 分类），不含成人向条目。
 > 若你所在地区对 AI 生成内容有额外限制，请自行确认合规后再使用。
 
+## 作者与更新
+
+| 角色 | 作者 | B 站主页 |
+| --- | --- | --- |
+| 插件作者 | **灵冻不冻** | [space.bilibili.com/516891894](https://space.bilibili.com/516891894) |
+| 母题创作者 | **辞雪沐春** | [space.bilibili.com/1522948414](https://space.bilibili.com/1522948414/dynamic) |
+
+**插件作者在 B 站有插件使用教学视频**：安装、三种母题分支（3D 场景 / 平面海报 / 短提示词）的区别、
+角色与服装怎么选、画幅徽标怎么联动工作流，都有对应演示。
+
+**版本更新进度也以 B 站动态为准** —— 新增母题、角色库同步、Bug 修复会先在那里说明，
+比翻 commit 记录好读得多。
+
+想反馈问题、点名某个角色的官方服装、或者投喂母题创意，欢迎到 B 站留言。
+**感谢每一位使用者与反馈者的支持。**
+
 ## 目录
 
+- [作者与更新](#作者与更新)
 - [这是什么](#这是什么)
 - [节点与用法链路](#节点与用法链路)
 - [安装](#安装)
@@ -44,7 +61,7 @@ Krea2 的「白垩光」是一套**一体化长文提示词**：25 段结构里�
 | 画幅联动 | 卡片徽标点一下 `竖 → 横 → 方 → 竖` 循环，同时切当前工作流画幅 |
 | 输出 | 3 个 STRING：`提示词` / `自检报告` / `元数据` |
 | 运行开销 | 单次装配约 1.7 ms，无模型、无显存占用 |
-| 自检 | `python tests/run_all.py` → 21 项全绿 |
+| 自检 | `python tests/run_all.py` → 23 项全绿 |
 
 三种母题分支的写法不同，节点会自动适配：
 
@@ -159,6 +176,44 @@ git clone https://github.com/lingdongbudong/Comfyui-K2-Editorial.git
 - **角色名残留自检**只对母题里登记过 `character` 的 30 条生效（29 条 Hatsune Miku + 1 条 Furina）；其余母题不写死角色，无需检查。
 
 ## 更新日志
+
+### v1.15.4
+
+- **修：换角色后仍带初音特征（用户反馈：约 1/4 母题出图还有青绿色双马尾）**。
+  母题库是围绕 Hatsune Miku 写的，装配只整段换掉「身份句 / 发型段 / 服装段 / 色盘段」，
+  但正文里还有一批**角色特征锚点**，它们不是独立段，于是一路留到输出：
+  - `the outer twin-tail ends` / `aqua twintails` —— 连字符和无空格写法，旧正则只认 `twin tails`；
+  - `full body from boots to hair ornaments` —— 取景用「发饰」当身体上限；
+  - `her face, eyes, hands and hair ornaments must stay readable` —— 可读性锚点；
+  - `both aqua eyes clearly visible` —— 写死的 Miku 瞳色；
+  - 护盾里的 `no duplicate Miku` / `no missing twin tails` —— 负面词反而召唤青绿双马尾；
+  - `virtual-singer stillness` 与 tag 流里的 `virtual singer`。
+  现在统一由 `neutralize_residual_traits()` 在装配末尾中性化（角色是 Miku 本人时原样跳过）。
+- **修：短提示词母题不换角色特征**。`k2s_*` 这类 tag 流母题只做名字替换，正文
+  `1girl, hatsune miku, ... teal eyes, virtual singer` 原样留下；名字替换还区分大小写，
+  小写 tag 匹配不到。现在统一走同一套清洗，并把服装上的 `teal trim` 换成目标角色主色。
+- **修：Miku 本人被误伤**。双马尾判定只认 `twin tail` 这一种写法，Anima 那套写
+  `worn in twintails` → 认不出 → 把 Miku 的双马尾中性化成 `long hair strands`。
+  换成 `has_twin_tail()` 覆盖所有写法。
+- **新增：短提示词自动套角色官方服装**。`k2s_*` 这类 tag 流母题自带的是 Miku 的服装 tag
+  （`detached sleeves` / `black thighhighs`）。换角色且没手选服装时，现在自动套该角色的
+  **官方服装预设**（Anima `character_outfits` 的 `default`），并按 tag 粒度整组替换 ——
+  逐条摘除会被 `swap_garments` 的 limit 截断，留下半套。同时补了
+  `thighhigh / kneehigh / pantyhose / leggings` 等腿部名词（原先不在 `GARMENT_NOUNS` 里，
+  换装后过膝袜一直留在提示词里）。手选单品仍然优先，不会被自动套用覆盖；
+  场景 / 海报分支不套（服装段本来就由版型模板接管）。
+- **画内文字跟着换角色名**：母题里印在画面上的 `HATSUNE MIKU` 标签会换成目标角色名，
+  大小写风格跟随原文（全大写 → 全大写）；用户手填的「画面英文文字」不受影响。
+- **修：`furina` 的护盾抄了 Miku 的否定项**（`no Miku, no aqua twin tails`），
+  选她出图会主动召唤青绿双马尾。
+- **修：Anima 桥接兜底色是 Miku 的**。认不出的瞳色一律兜到 `aqua`（缝线 / 轮廓全青绿），
+  现在改为「认不出瞳色 → 用发色 → 再兜中性象牙白」。
+- 回归 23 项（新增「换角色后不留原角色特征」「短提示自动套官方服装 + 画内文字换名」）。
+- 联机验证（真实工作流 `Krea2-白垩光标准档.json`，8 步 turbo）：同一母题
+  `k2x_veil_fall_a` 分别用 Miku / Cirno 出图 —— Miku 保留青绿双马尾，Cirno 出蓝发 + 冰翼 +
+  蓝裙，无任何初音特征；`k2s_cx_023` 自动套蓝裙；手选「露肩针织 + 百褶裙」时按手选出图。
+- 文档：新增[「作者与更新」](#作者与更新)一节（插件作者 B 站教学视频与更新进度、母题创作者主页），
+  回归项数同步为 23；`presets/seeds_motifs.json` 的溯源路径改回相对路径，不再写入本机路径。
 
 ### v1.15.3
 
@@ -276,8 +331,8 @@ git clone https://github.com/lingdongbudong/Comfyui-K2-Editorial.git
 
 ## 署名与来源
 
-- **本插件**：灵冻不冻 · [@lingdongbudong](https://github.com/lingdongbudong)。作者另有 [Comfyui-Anima-Wardrobe-V6](https://github.com/lingdongbudong) 与 Krea2-Portrait 系列。
-- **母题库**：来自 **辞雪沐春** 提供的参考素材 —— `k2-baieguang` / `k2-chenxiguang` 两个提示词集，以及一套 32 张「MIKU - 未来科幻风格」成品图，其内嵌提示词被拆段、重写并扩展成 553 条母题库。作者口头同意再分发，未指定具体许可文本；**若作者后续声明许可，以其声明为准**。
+- **本插件**：灵冻不冻 · [@lingdongbudong](https://github.com/lingdongbudong) · [B 站主页](https://space.bilibili.com/516891894)（插件使用教学视频与更新进度都在这里）。作者另有 [Comfyui-Anima-Wardrobe-V6](https://github.com/lingdongbudong) 与 Krea2-Portrait 系列。
+- **母题库**：来自 **辞雪沐春** · [B 站主页](https://space.bilibili.com/1522948414/dynamic) 提供的参考素材 —— `k2-baieguang` / `k2-chenxiguang` 两个提示词集，以及一套 32 张「MIKU - 未来科幻风格」成品图，其内嵌提示词被拆段、重写并扩展成 553 条母题库。作者口头同意再分发，未指定具体许可文本；**若作者后续声明许可，以其声明为准**。
 - **角色数据与立绘**：快照自 Comfyui-Anima-Wardrobe-V6。
 - **角色与作品名称**：版权归各自权利人，本项目仅作描述性标识，不主张任何权利。
 

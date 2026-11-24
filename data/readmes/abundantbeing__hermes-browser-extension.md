@@ -95,7 +95,7 @@ Hermes Control lets Hermes operate a tab you attach. It is opt-in and off until 
 - **The attached tab is announced to the model.** Each turn tells Hermes the tab is ready and lists its interactive elements with refs, so the first click works without a separate snapshot or navigate step.
 - **Every action returns the updated page.** Click, type, scroll, and navigate give back a compact, redacted view of the page with fresh refs, so Hermes can chain steps.
 - **One debugger session per attached tab.** Chrome shows its debugging banner while a tab is attached. The session detaches when you detach the tab, pause or turn off control, or after 60 seconds without a command.
-- **Approvals still gate risky actions.** Consequential or privileged actions wait for your approval, and restricted pages and sensitive fields stay blocked.
+- **Approvals still gate risky actions.** Actions that may change the page or tab set (click, type, fill, select, navigate, or opening or grouping tabs) wait for your approval, as do other consequential or privileged actions. Restricted pages and sensitive fields stay blocked.
 - **Frames are read and judged again at action time.** Hermes can reach controls inside same-site frames of an attached page, such as a live chat box. A frame on a restricted page is never read, and a click, type or hover is refused if the frame it would land in has moved to a restricted address since the page was read or is covered by one. Frames from another site, which Chrome runs in their own process, are not read or acted on.
 
 ## Quick start
@@ -254,11 +254,13 @@ Hermes Browser Extension is intentionally conservative:
 - Hermes Cloud and self-hosted dashboard attach require an explicit HTTPS origin, the exact active signed-in tab, and a short-lived single-use WebSocket ticket kept only in memory.
 - Cloud and dashboard-ticket connections fail closed and keep automatic browser page text, selected text, and open-tab context off until you approve **Share page context with this connection** for that exact verified origin, account, profile, and transport; explicit user-chosen attachments still send, and Hermes Control there requires gateway support for `browser.controller.register` over the dashboard socket (the plugin's HTTP Control routes are not used).
 - Strong bearer/API key required for API access.
-- Page content is wrapped as untrusted context before it reaches Hermes.
+- Page content is wrapped as untrusted context before it reaches Hermes, and the common ways to hide text from you (CSS, transparent or zero-size text, unreachable placement, comments) are filtered out. That narrows what a page can slip in but does not catch every trick, so the model still sees page text as untrusted. A trap page with hidden instructions is part of the tests.
 - Credential-bearing URLs are omitted from active, selected, open-tab, pinned-scope, prompt, receipt, and payload-hash surfaces.
 - Page context capture is read-only. Page control exists only through opt-in Hermes Control (complete on Chromium, restricted on Firefox), which acts on tabs you attach and pauses risky actions for approval. Hermes Assist may insert a reviewed draft into a supported focused composer only after an explicit user action; it never clicks Send/Post/Submit, navigates, checks out, or performs browser-control workflows.
 - Chromium builds request `debugger` for opt-in Hermes Control; Firefox builds omit it. No `nativeMessaging`, `cookies`, `history`, or `bookmarks` permissions. `downloads` is limited to explicit user-requested generated-image/artifact saves.
 - Restricted pages include browser internals, extension pages, and obvious banking/crypto/password/payment/health/government-tax categories.
+
+Before you turn on Hermes Control, read [**Using the Hermes Browser Extension safely**](guides/security.md): what an agent in your browser can and cannot do, and a setup that keeps a mistake small.
 
 See [`SECURITY.md`](SECURITY.md), [`PERMISSIONS.md`](PERMISSIONS.md), [`DATA-FLOW.md`](DATA-FLOW.md), and [`PRIVACY.md`](PRIVACY.md) for details.
 

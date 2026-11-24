@@ -5,7 +5,7 @@ avplumber is a graph-based real-time processing framework. Graph can be reconfig
 ## Highlights
 
 * [Generic GPU composition](doc/composition.md): source-paced and clocked layers, geometry, effects and moves, with no AI dependency.
-* [GPU video mixer](demos/mixer/README.md) with Preview/Program, T-bar transitions, per-key DSK fades and AUX monitors. [Watch the 192-input demo](https://amagimedia.github.io/avplumber/demos/mixer/docs/).
+* [GPU video mixer](demos/mixer/README.md) with Preview/Program, T-bar transitions, per-key DSK fades and AUX monitors. [Run the 96-input desktop preset](demos/mixer/README.md#rtx-5080-and-5090-desktops) or [watch the 192-input demo](https://amagimedia.github.io/avplumber/demos/mixer/docs/).
 * [WebGL graph viewer](tools/web-ui/README.md) built with Sigma.js: zoom from grouped inputs to individual nodes, inspect live queue statistics, subscriptions and node parameters. [Watch the demo and explore four zoom levels](https://amagimedia.github.io/avplumber/).
 * [DMA-BUF input from Chromium](doc/dmabuf.md): import browser graphics into CUDA through EGL, preserving alpha for overlays and keys.
 * [🦀 Rust refactor 🚧](https://github.com/amagimedia/avplumber/tree/rust-dev): the framework and node port is in progress on `rust-dev`.
@@ -109,6 +109,7 @@ The build is driven by Makefile variables. Set them on the `make` command line, 
     -   Release sets compiler flags to more optimization.
 -   HAVE_CUDA=1: enable CUDA support and CUDA-based nodes. Uses dynlink loader, so does not require anything during compilation and lack of CUDA libraries in runtime is non-fatal (nodes not using CUDA will work normally)
 -   HAVE_NVJPEG=1: enable `nvjpeg_enc`. Requires `HAVE_CUDA=1` plus nvJPEG and CUDA runtime development libraries. Disabled by default.
+-   HAVE_NVJPEG2K=1: enable `nvjpeg2k_enc` and `nvjpeg2k_dec`. Requires `HAVE_CUDA=1` plus nvJPEG2000 and CUDA runtime development libraries. Disabled by default.
 -   HAVE_GL=1: enable OpenGL & EGL dependency, required by `drm_prime_to_cuda`, `cuda_to_egl_image`
 -   HAVE_VAAPI=1: enable VAAPI paths (and implicitly OpenGL/EGL). Links `-lva -lGL -lEGL -lGLESv2`. Requires `libva-dev` and GL/EGL development packages.
 -   HAVE_DRM=1: enable DMA-BUF IPC source and DRM-dependent paths. Requires `libdrm-dev`.
@@ -122,6 +123,7 @@ Feature gates:
 -   `cuda_to_egl_image` builds only when `HAVE_CUDA=1 HAVE_GL=1 HAVE_NVCC=1`.
 -   `drm_prime_to_cuda` builds only when `HAVE_CUDA=1 HAVE_GL=1 HAVE_DRM=1`.
 -   `nvjpeg_enc` builds only when `HAVE_CUDA=1 HAVE_NVJPEG=1`.
+-   `nvjpeg2k_enc` and `nvjpeg2k_dec` build only when `HAVE_CUDA=1 HAVE_NVJPEG2K=1`.
 -   `luma_diff` and `hog_diff` build only when `HAVE_CUDA=1 HAVE_NVCC=1`.
 -   `cuda_camera_motion` builds only when `HAVE_CUDA=1 HAVE_NVOF=1` and the dense NVOF headers are available; `HAVE_NVCC=1` additionally enables its GPU IRLS backend.
 -   `HAVE_GL` is auto-enabled when `HAVE_VAAPI=1`

@@ -376,14 +376,16 @@ from the README rather than only from the file tree.
 | **Contributing** | [CONTRIBUTING.md](CONTRIBUTING.md) — open an issue before anything beyond a small bugfix |
 | **Citations & provenance** | [CITATIONS.md](CITATIONS.md) — every method traced to its paper, with deviations documented |
 | **Wiki article** | [Learn AI wiki (Miraheze)](https://ai.miraheze.org/wiki/VeloxQuant-MLX) — an independent, third-party encyclopedia-style article. It is community-editable, so the figures in this README and `CITATIONS.md` remain the source of truth |
-| **Release process** | Weekly (Sundays, 10:00 IST), automated via [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release); every release is gated on the full test suite. See [CHANGELOG.md](CHANGELOG.md) |
+| **Release process** | Weekly and automated via [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release); every release is gated on the full test suite. Schedule and hotfix rules: [CONTRIBUTING.md#releases](CONTRIBUTING.md#releases). History: [CHANGELOG.md](CHANGELOG.md) |
 
 **Maintainership:** I maintain this project ([rajveer43](https://github.com/rajveer43))
 with one other active contributor — a key-person risk worth weighing if you're evaluating
 it for production. [GOVERNANCE.md](GOVERNANCE.md) covers how co-maintainers are added.
 
-Lint and the non-Metal unit suite run on CI for every push; the full suite, including
-Metal parity tests that need Apple Silicon, gates each release.
+Lint, the non-Metal unit suite and the full MLX/Metal suite run on CI for every PR and
+push to `master`, and the release workflow runs the full suite again as its gate. The
+Metal tests run on a GitHub-hosted macOS runner with a paravirtual Metal device, which
+checks correctness, not timing; performance numbers come from real hardware.
 
 ---
 
@@ -497,7 +499,7 @@ solo-maintained project like this has that it is useful to someone.
 ```bibtex
 @software{veloxquant_mlx,
   author  = {Rathod, Rajveer},
-  title   = {VeloxQuant-MLX: KV-Cache Compression for LLM Inference on Apple Silicon},
+  title   = {VeloxQuant-MLX: Fast KV-Cache Quantization for Apple Silicon},
   year    = {2026},
   publisher = {Zenodo},
   doi     = {10.5281/zenodo.20647294},

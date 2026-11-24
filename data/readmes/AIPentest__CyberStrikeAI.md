@@ -342,7 +342,7 @@ ai:
 CyberStrikeAI/
 ├── cmd/                 # Server, MCP stdio entrypoints, tooling
 ├── internal/            # Agent, MCP core, handlers, C2 (`internal/c2`), security executor
-├── web/                 # Static SPA + templates
+├── web/                 # React + Semi Design source and built assets
 ├── tools/               # YAML tool recipes (100+ examples provided)
 ├── roles/               # Role configurations (12+ predefined security testing roles)
 ├── skills/              # Agent Skills dirs (SKILL.md + optional files; demo: cyberstrike-pi-demo)

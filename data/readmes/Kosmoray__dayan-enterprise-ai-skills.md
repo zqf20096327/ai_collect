@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="./assets/hero-banner.svg" alt="大衍千机 · 66枚企业级AI实战技能军火库" width="100%"/>
+  <img src="./assets/hero-banner.svg" alt="大衍千机 · 168 个企业 AI 开源技能" width="100%"/>
 </p>
 
 <p align="center">
   <a href="https://github.com/Kosmoray/dayan-enterprise-ai-skills/stargazers"><img src="https://img.shields.io/github/stars/Kosmoray/dayan-enterprise-ai-skills?style=for-the-badge&color=AD7B27&label=STARS" alt="GitHub Stars"/></a>
   <a href="https://github.com/Kosmoray/dayan-enterprise-ai-skills/actions"><img src="https://img.shields.io/github/actions/workflow/status/Kosmoray/dayan-enterprise-ai-skills/ci.yml?branch=main&style=for-the-badge&label=CI_VALIDATE" alt="CI Status"/></a>
-  <a href="https://skillhub.cn/enterprise-zone"><img src="https://img.shields.io/badge/腾讯_SkillHub-蓝V认证企业_156_Skills_+_25_专家团-1B365D?style=for-the-badge" alt="Tencent SkillHub Verified"/></a>
-  <a href="./docs/DOUBAO-VOLCENGINE-GUIDE.md"><img src="https://img.shields.io/badge/字节_豆包工作-156_Skills_安全扫描通过-0066FF?style=for-the-badge" alt="Doubao Work Verified"/></a>
+  <a href="https://skillhub.cn/enterprise-zone"><img src="https://img.shields.io/badge/腾讯_SkillHub-企业专区-1B365D?style=for-the-badge" alt="Tencent SkillHub Verified"/></a>
+  <a href="./docs/DOUBAO-VOLCENGINE-GUIDE.md"><img src="https://img.shields.io/badge/豆包工作-接入指南-0066FF?style=for-the-badge" alt="Doubao Work Guide"/></a>
   <a href="https://www.skills.sh/kosmoray/dayan-enterprise-ai-skills"><img src="https://img.shields.io/badge/skills.sh-Global_Indexed-0F766E?style=for-the-badge" alt="skills.sh"/></a>
   <a href="./pyproject.toml"><img src="https://img.shields.io/badge/Python_CLI-Zero_Dependency-3776AB?style=for-the-badge" alt="Python Zero-Dep CLI"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-265592?style=for-the-badge" alt="MIT License"/></a>
@@ -18,6 +18,13 @@
   <a href="https://my.feishu.cn/share/base/shrcnhBYBWWVOeFnmlggAhnGXE0"><strong>📋 90秒企业AI落地自测</strong></a> ·
   <a href="./README_EN.md"><strong>🇬🇧 English README</strong></a>
 </p>
+
+
+**当前版本 v1.6.0** 提供 168 个企业 AI 技能、27 个 WorkBuddy 专家和专家团，以及 14 个离线命令行工具。新增船舶修造和半导体耗材两组工具，用于整理询价和交接材料、测算成本、比对质量检验数据。
+
+[查看完整技能目录](./docs/DOUBAO-VOLCENGINE-GUIDE.md#技能目录) · [下载 v1.6.0](https://github.com/Kosmoray/dayan-enterprise-ai-skills/releases/tag/v1.6.0)
+
+制造企业已有 ERP、想从企业微信接入客户改单，可用[订单变更验收样例](./examples/erp-wecom-order-change-acceptance.md)核对审批、重复提交和超时恢复。
 
 ---
 
@@ -54,22 +61,22 @@ skillhub install dayan-business-html --namespace dayanqianji
 skillhub install dayan-bid-scoring-loop --namespace dayanqianji
 skillhub install dayan-contract-4way-audit --namespace dayanqianji
 
-# 方式 2B：在腾讯 WorkBuddy / CodeBuddy 客户端内一键挂载「大衍千机 10 大王牌专家 & 专家团」插件源
+# 方式 2B：在腾讯 WorkBuddy / CodeBuddy 客户端内一键挂载「大衍千机 27 个专家和专家团」插件源
 /plugin marketplace add https://github.com/Kosmoray/dayan-enterprise-ai-skills
 
 # 方式 2C：装入字节跳动「豆包工作（doubao.com/chat/skills）」
-# 下载 Release v1.3.0 中的 dayan-doubao-work-66-skills.zip 解压单枚 .zip 上传即可（零安全黄标）
+# 下载 v1.6.0 的豆包工作增量包，解压后选取单个技能 ZIP 上传
 
-# 方式 3：克隆本仓库一键部署全部 66 枚技能至本地（支持 Claude / Codex / WorkBuddy）
+# 方式 3：克隆仓库并安装到本地（支持 Claude / Codex / WorkBuddy）
 git clone https://github.com/Kosmoray/dayan-enterprise-ai-skills.git
 cd dayan-enterprise-ai-skills && python3 installers/install_skills.py --agent workbuddy
 ```
 
 ---
 
-## 🛠️ 开箱即跑：内置 12 大零依赖 Python 命令行急救神器（无需 API Key！）
+## 🛠️ 开箱即跑：内置 14 个零依赖 Python 命令行急救神器（无需 API Key！）
 
-除了 **156 枚**挂载进智能体的深度 `SKILL.md` 专家系统与 **25 大 WorkBuddy 多智能体行业专家团**，本仓库在 [`scripts/`](./scripts/) 中内置了 **12 把纯标准库、零第三方依赖、离线毫秒级响应的 Python CLI 武器**（4 把通用高管武器 + 8 把高增速/暴利富矿行业精算器，均支持本地直跑或 `uvx` 免克隆调用）：
+除了 **168 枚**挂载进智能体的深度 `SKILL.md` 专家系统与 **27 个 WorkBuddy 专家和专家团**，本仓库在 [`scripts/`](./scripts/) 中内置了 **14 个纯标准库、零第三方依赖、离线毫秒级响应的 Python CLI 武器**（4 把通用高管武器 + 10 个行业测算工具，均支持本地直跑或 `uvx` 免克隆调用）：
 
 ```bash
 # 1️⃣ 【乙方法务保命】1秒扫描合同里的「背靠背付款/无限连带赔偿/源码归甲方/默认不验收」等致命霸王条款
@@ -81,10 +88,10 @@ python3 scripts/dayan_humanize_lint.py examples/sample_ai_slop.md --fail-under 5
 # 3️⃣ 【老板拍板呈现】1秒把任意 Markdown 报告编译成 #1B365D 深蓝政商风单文件 HTML 高管看板（微信点开即看）
 python3 scripts/dayan_html_compiler.py examples/sample_ai_slop.md /tmp/executive_brief.html
 
-# 4️⃣ 【痛点秒搜武器】输入任意经营卡点词（如：液冷 / 变压器 / 泳池 / 重卡 / 宠物 / 军工），从 156 枚武器秒搜
+# 4️⃣ 【痛点秒搜武器】输入任意经营卡点词（如：液冷 / 变压器 / 泳池 / 重卡 / 宠物 / 军工），从 168 枚武器秒搜
 python3 scripts/dayan_skill_finder.py 液冷
 
-# 5️⃣–1️⃣2️⃣ 【八大暴利富矿离线精算/核查器】（均支持 --demo 一键跑出行业实测报表！）
+# 行业离线测算示例
 python3 scripts/industry/liquid_cooling_uqd_calc.py --demo     # AI算力机柜液冷流量、UQD快接头压降Cv与露点防凝露精算
 python3 scripts/industry/pool_pump_filter_roi_calc.py --demo   # 欧美变频泳池泵DOE节能回本与SPA替换滤芯尺寸毛利核验
 python3 scripts/industry/transformer_bom_quote_guard.py --demo # 出海变压器硅钢铜重联动与IEC/IEEE超耗罚金TOC精算
@@ -93,6 +100,8 @@ python3 scripts/industry/vet_dose_compliance_check.py --demo   # 宠物专科医
 python3 scripts/industry/gjb_kit_shortage_audit.py --demo      # 航空军工多工序特种外协齐套与断网不出域大模型显存精算
 python3 scripts/industry/gb7718_oem_quote_guard.py --demo      # 川调食品GB7718-2025防职业打假扫描与炒制损耗三档核价
 python3 scripts/industry/cis_export_doc_checker.py --demo      # 二手车工程机械中亚俄语出口17位VIN模11校验与SMGS核单
+python3 scripts/industry/ship_cii_drydock_calc.py --demo
+python3 scripts/industry/semi_fab_coa_yield_calc.py --demo
 ```
 
 ---

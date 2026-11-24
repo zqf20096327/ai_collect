@@ -6,6 +6,8 @@
 
 This repository tracks papers and resources about large language models (LLMs) in the legal domain.
 
+> Daily update 2026-11-23 (cs.CL): scanned all 91 papers on the dated list; added 3 title-deduplicated papers on appellate-judge agents' record verification, executable letter-of-credit requirements, and AI Act conformity assessment for LLM-based recruitment. Category increments: Applications +1, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +1, Data Resources +1, Law LLMs +0, Evaluation +2. RI-Bench is included for its Court subtask, not as an exclusively legal benchmark. Credit-document checks concern concrete documentary-credit obligations under UCP 600, not generic finance; the confidential real cases cannot be released. HR-RAI is a legal-analysis toolkit with illustrative examples, not empirically validated compliance certification. Generic privacy, financial narratives, software contracts and non-legal uses of judgment were excluded. The archive date follows the dated cs.CL list, not the original submission date.
+
 > Daily update 2026-11-19 (cs.CL): scanned all 72 papers on the dated list; added 2 title-deduplicated papers on independent-record evaluation of executable legal rules and proceeding-level criminal-court sequence modeling. Category increments: Applications +1, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +0, Data Resources +2, Law LLMs +0, Evaluation +2. Corporate disclosures are not legal ground truth. The court model uses frozen BERT features rather than a new generative legal LLM; its main metric assumes the true label count, and source court records are not redistributed. Generic privacy, authorization checks, model judges and non-legal uses of policy or legal were excluded. The archive date follows the dated cs.CL list, not the original submission date.
 
 > Daily update 2026-11-18 (cs.CL): scanned all 102 papers on the dated list; added 2 title-deduplicated papers on citation-grounded Persian legal RAG and search-feedback training for Boolean patent prior-art retrieval. Category increments: Applications +2, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +0, Data Resources +2, Law LLMs +0, Evaluation +2. Model-graded legal answers are not expert-verified legal advice; citation-containing set size is not total examiner workload or a patentability decision. The patent strategies are generated before execution, not interactively revised online. Generic governance/compliance, software contracts, cultural norms and incidental patent-application statements were excluded. The archive date follows the dated cs.CL list, not the original submission date.
@@ -70,6 +72,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 - [Evaluation](#evaluation)
 
 ## Applications of Large Language Models in Legal Tasks
+
+- From Letter-of-Credit Requirements to Executable Specifications: Evaluating Verification Accuracy and Completeness [paper](https://arxiv.org/abs/2611.26988) — Converts documentary-credit requirements for bills of lading and commercial invoices into executable conditions checked against named evidence under UCP 600 examination conventions. The synthetic-trained 9B parser supports examiner review; operator and normalization errors remain even with gold encodings, and the study excludes document-image perception.
 
 - Quantifying Cultural-Psychological Constructs in Four Centuries of Ottoman Court Registers [paper](https://arxiv.org/abs/2611.24981) — Adapts masked-language encoders and an embedding model to Ottoman legal language through summary–court-record training. Included for legal-document representation and retrieval; its cultural-construct scores describe recorded legal discourse, not population-level psychological traits or legal correctness.
 
@@ -449,6 +453,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Legal Problems of Large Language Models
 
+- On the Challenges of Using LLMs in High-Risk AI Recruitment: Guiding Questions for Legal Conformity with the AI Act [paper](https://arxiv.org/abs/2611.27462) — HR-RAI maps Articles 9–15 and Annex IV to guiding questions and evidence requirements for recruitment systems integrating third-party GPAI models. Examines upstream/downstream information gaps; real-world user evaluation and broader safeguards such as Article 27 FRIA are future work, not demonstrated compliance outcomes.
+
 - HireWatch: Evaluating LLM Compliance with U.S. Employment Law Under Contextual Pressure [paper](https://arxiv.org/abs/2611.24970) — Tests whether organizational pressure makes hiring assistants select interview questions labeled unlawful under US federal employment-law sources. Explicit legal reminders reduce but do not eliminate violations of the benchmark labels; binary labels cannot resolve every context-dependent legal distinction.
 
 - Right Reason, Wrong Advice: Evaluating Recourse in LLM Explanations of Denied Requests [paper](https://arxiv.org/abs/2611.21545) — Distinguishes a true denial reason from changes sufficient to reverse the decision. Included for executable US statutory-benefit eligibility ports; broader access-control results are not legal-only findings, and valid recourse under a simplified port does not establish a real legal entitlement.
@@ -564,6 +570,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Data Resources for Large Language Models in Law
 
+- Do Senior Agents Do Their Job? Measuring Role Integrity in How LLM Agents Use Subordinate Material [paper](https://arxiv.org/abs/2611.27139) — RI-Bench includes a Court scenario built from public US Supreme Court cases and argument excerpts, with controlled procedural-fact errors and a correct record supplied to the judge agent. Peer-review and parliamentary scenarios are separate non-court tasks; fixed counsel material does not constitute an interacting legal-agent system. [Code and data](https://github.com/jxtse/ri-bench).
+
 - HireWatch: Evaluating LLM Compliance with U.S. Employment Law Under Contextual Pressure [paper](https://arxiv.org/abs/2611.24970) — Provides a 200-item interview-question bank with 50 unlawful and 150 lawful labels grounded in federal statutes, regulations and agency guidance, audited by nine licensed US attorneys. Label agreement is 86.7% for unlawful and 97.7% for lawful items; disagreement includes context-dependent interpretations. [Code and data](https://github.com/hnghiem-nlp/hirewatch_repo).
 - Quantifying Cultural-Psychological Constructs in Four Centuries of Ottoman Court Registers [paper](https://arxiv.org/abs/2611.24981) — Reuses 54,670 historical court records and adds a 440-document expert-annotated construct set and legal-language evaluation materials. The paper states that models, annotations and code are released, but the linked Zenodo download was not verified; full court texts are not redistributed because of copyright restrictions.
 
@@ -585,15 +593,4 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 - IFRS Compliance Verification: An Open Multi-LLM Benchmark and Content-Conditioned Ensemble Classifier [paper](https://arxiv.org/abs/2611.13595) — Introduces 19,998 reporting-requirement/disclosure pairs: 11,161 unanimous LLM labels and 8,837 human labels for disagreements. The benchmark is retrieval-conditioned; code/data release is promised upon acceptance and IFRS-text licensing constraints apply.
 
-- WorkflowArena: Benchmarking Executable Workflow Orchestration in LLM-Based Multi-Agent Systems [paper](https://arxiv.org/abs/2611.12856) — Includes 13 merger-contract portfolio tasks and 9 multi-party adjudication tasks grounded in Chinese criminal judgments within a 145-task, eight-domain benchmark. It is not an exclusively legal dataset.
-
-- A Large-Scale Dataset for Cross-Lingual Multi-Jurisdiction Patent Drafting from Patent Cooperation Treaty Applications [paper](https://arxiv.org/abs/2611.11891) — Links 884,179 Japanese–English PCT-derived patent families into 4,067,168 directional claim-set instances across six configurations, with chronological, family-disjoint splits; four configurations form the core benchmark.
-
-- Vietnamese Legal Ontology: Every legal answer, traced to the article that grounds it [paper](https://arxiv.org/abs/2611.11426) — Integrates four open datasets into a provenance-bearing legal graph with 11.5 million nodes and 16.0 million edges. The abstract reports 61,487 version-resolved provisions out of 67,868 cited provisions, with 19,012 verbatim-confirmed; this is not complete legal-answer verification or a new LLM. Abstract-level verification only: HTML full text was unavailable.
-
-- ScrapeBench: Evaluating Legal Compliance of AI Agents in Website Scraping [paper](https://arxiv.org/abs/2611.11306) — Provides a snapshot of ToS/robots.txt annotations for 1,895 high-traffic, English, US-accessible websites: 1,626 prohibit scraping and 269 do not under the benchmark's labels. Terms can change, so future evaluations require revalidation.
-
-- Follow the Policy, Fail the Benchmark: Auditing and Revising Policy-Based Decision Benchmarks [paper](https://arxiv.org/abs/2611.07042) — BAR provides versioned audit evidence, 300 paired RuleArena Tax references, and revised scorers including LegalBench SARA; supported corrections are separated from conditional or unresolved targets, and not all nine audited benchmarks are legal.
-
-- The Harness Is the Model: Agent Scaffolding Changes a Fixed LLM's Compliance with Banking Conduct Rules, Unevenly Across Models [paper](https://arxiv.org/abs/2611.06116) — Releases a simulated banking-conduct test suite with 156 cases across 11 rule families and 3,120 two-turn episode traces; rules are paraphrases plus internal controls, not a verbatim statutory benchmark.
-- Discourse Analysis of Legislative Bill Discussions [paper](https://arxiv.org/abs/2611.05381) — Annotates 2,619 utterances from 100 California bill hearings within Digital Democracy. Language-model-assisted labels were manually reviewed; the resource concerns legis
+- WorkflowArena: Benchmarking Executable Workflow Orchestration in LLM-Based Multi-Agent Systems [paper](https://arxiv.org/abs/2611.1

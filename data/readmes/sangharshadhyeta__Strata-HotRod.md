@@ -656,3 +656,49 @@ fork for MoE expert caching, and ported here one concept at a time. Prior art be
 
 </div>
 </details>
+
+<details>
+<summary><b>Later research that points the same way as the stand-ins</b></summary>
+
+<div align="justify">
+
+These are independent papers, read after the stand-ins were built. They support the idea that a pretrained mixture-of-experts
+model tolerates a changed tail of experts; none of them tests substituting by what is resident on the card, so they are
+supporting evidence and not a proof of the rule used here.
+
+</div>
+
+<div align="justify">
+
+- **Expert-Sample** (Certain Head, Uncertain Tail, [2602.02443](https://arxiv.org/abs/2602.02443)): keeps the top
+  `k/2 + 1` experts of a token fixed and replaces the rest with others drawn from a wider rank pool, with no training. On
+  Qwen3-30B-A3B, Qwen3-Next-80B-A3B, GPT-OSS-20B and Ling-Lite-1.5 the problems a model already solved stayed solved (the
+  drop was 0.1% on the two models where the authors report it). It is the same shape as the stand-in rule, an exact head and a
+  substituted tail; they substitute for diversity, the stand-ins substitute by residency.
+- **Roster of Experts** ([2509.17238](https://arxiv.org/abs/2509.17238)): perturbs the router of a pretrained MoE with Gumbel
+  noise at inference and treats the result as an ensemble, again without training.
+- **Elbow routing** ([2608.04401](https://arxiv.org/abs/2608.04401)): a training-free rule that uses fewer experts when the
+  router is confident (7.6 of 8 on average on one small model, within 0.33 points of accuracy). It spends exactness where the
+  router weight is large, as the stand-in budget does. Our own check on this model found the router's weight spread too wide
+  for it to prune anything here (mean 9.99 of 10 experts).
+- **C3PO** ([2504.07964](https://arxiv.org/abs/2504.07964)): re-mixes the routing weights of a pretrained MoE per sample at
+  test time and reports accuracy gains, so a model's routing choices are not fixed points.
+- **HOBBIT** ([2411.01433](https://arxiv.org/abs/2411.01433)): mixed-precision expert offloading. It scores each expert by
+  its gate weight, keeps the important ones exact, loads the medium ones at lower precision and skips only the least
+  important, with thresholds on the cumulative gate weight. That is the same idea as `STRATA_TAIL_WEIGHT` (skip by router
+  weight, not by rank); HOBBIT swaps in low-precision copies where this fork skips or substitutes a resident expert. The
+  authors report that skipping about 10% of the experts costs more than 1% perplexity; the threshold here is a setting
+  for that reason, and the default has not been shown to be free of cost.
+- **Cache-conditional experts** ([2412.00099](https://arxiv.org/abs/2412.00099)): biases a pretrained MoE's routing toward
+  experts that are already in the cache, with no training, and reports more than half of the cache misses removed for a small
+  perplexity cost (0.1 to 3%). It is the closest published relative of the stand-ins, which also trade a missed expert for
+  one that is resident; they bias the router, the stand-ins replace the expert after routing.
+- **GSQ** ([2604.18556](https://arxiv.org/abs/2604.18556)) and **RCO** ([2605.00649](https://arxiv.org/abs/2605.00649)): two papers from
+  the same group. GSQ is a post-training scalar quantizer that learns, per weight, which grid point to take (Gumbel-Softmax
+  relaxation) against a block-output reconstruction loss on calibration text. RCO allocates a fixed budget (bits per layer or
+  expert, or experts kept) by optimising the allocation against the model's own calibration loss, with the weights themselves
+  left untouched. `STRATA_LAYER_SENS` borrows only RCO's idea of spending a fixed budget unevenly across layers, using a
+  measured per-layer error map instead of RCO's gradient-based search, and the engine's per-layer learning (`STRATA_LAYER_LEARN`) now measures that error itself from the work it does anyway, so each layer settles on its own skip threshold (0.078-0.169 on Qwen; the cost of a skip rises 3-5 times from the middle layers to the last twelve). GSQ's idea of choosing the rounding against block-output reconstruction on calibration text, and RCO's of spending a fixed budget unevenly, are what the data-aware low-rank copies (`STRATA_LOWRANK`, 4-bit factors fitted against the layer's own activations) borrow; the copies are opt-in and not shown to beat skipping in the engine. Details and the measured coherence: [docs/HOTROD-DETAILS.md](docs/HOTROD-DETAILS.md#what-the-per-layer-learning-settled-on-qwen38-flash-next-iq3_s-23-nov-2026).
+
+</div>
+</details>

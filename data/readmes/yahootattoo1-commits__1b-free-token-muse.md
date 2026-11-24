@@ -49,8 +49,9 @@ So: **create your account → redeem the code right away → then start using Mu
 Other important limits, set by Meta and subject to change:
 
 - ✅ Only for **brand-new Muse accounts** — one code per account
-- ✅ Each code has a **limited number of uses (around 20)** — first come, first served
+- ✅ Each code has a **limited number of uses (30)** — first come, first served
 - ✅ If the code says it's used up, it is full — try again with a fresh code from another friend
+- 📊 **Availability (23 Nov 2026): 6 of 30 uses taken — 24 left.**
 - ✅ Muse is rolling out by region — currently available in the US, Canada, Japan, Singapore, Mexico, Australia and more. Check [muse.ai](https://muse.ai) for your country.
 
 ## 🚀 How to redeem in 2 minutes
@@ -89,7 +90,7 @@ The **1,000,000,000 tokens** are added to your account. You can start using Muse
 If it doesn't work, check this first:
 - Are you still inside the first 48 hours? If not, no code can help that account.
 - Did you copy the code exactly? `8XBCL6` — no spaces.
-- Is the code already full? Each code only works ~20 times.
+- Is the code already full? Each code only works 30 times.
 
 ---
 
@@ -178,8 +179,9 @@ So this guide stays public, free, and easy to share — no ads, no paywall, no s
 محدودیت‌های مهم دیگر، که متا تعیین کرده و ممکن است تغییر کند:
 
 - ✅ فقط برای **اکانت‌های کاملاً جدید** — هر اکانت فقط یک کد
-- ✅ هر کد **ظرفیت محدود دارد (حدود ۲۰ نفر)** — هر که زودتر، همان می‌برد
+- ✅ هر کد **ظرفیت محدود دارد (۳۰ نفر)** — هر که زودتر، همان می‌برد
 - ✅ اگر گفت کد پر شده، یعنی ظرفیتش تمام شده — باید یک کد تازه از یک دوست دیگر بگیری
+- 📊 **وضعیت (۲۳ نوامبر ۲۰۲۶): ۶ از ۳۰ ظرفیت گرفته شده — ۲۴ تا مونده.**
 - ✅ موز فعلاً به‌صورت منطقه‌ای عرضه می‌شود — الان در آمریکا، کانادا، ژاپن، سنگاپور، مکزیک، استرالیا و چند کشور دیگر در دسترس است. کشور خودت را در [muse.ai](https://muse.ai) چک کن.
 
 ## 🚀 آموزش وارد کردن کد در ۲ دقیقه
@@ -218,7 +220,7 @@ Settings → Redeem Code
 اگر کار نکرد، اول این‌ها را چک کن:
 - هنوز داخل ۴۸ ساعت اولی؟ اگر نه، دیگر هیچ کدی به آن اکانت نمی‌خورد.
 - کد را دقیق کپی کردی؟ `8XBCL6` — بدون فاصله.
-- کد پر شده؟ هر کد فقط حدود ۲۰ بار کار می‌کند.
+- کد پر شده؟ هر کد فقط ۳۰ بار کار می‌کند.
 
 ---
 

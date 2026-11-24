@@ -113,7 +113,7 @@ the speech. The app, the chat replies and the command line are in English.
 
 ## Ready-made prompts
 
-The start screen has five buttons. Each one puts a tested prompt into the message box; add the video link after
+The start screen has six buttons. Each one puts a tested prompt into the message box; add the video link after
 "Video:" (and anything else after "Extra wishes:") and send it. The same button always gives the same kind of clips:
 the count, the lengths and the CTA come from the text, everything else from the preset. Each prompt ends with what
 you get; you can also write your own prompt from scratch.
@@ -124,7 +124,10 @@ you get; you can also write your own prompt from scratch.
 | 🎮 Facecam stream | 5 × 15-60 s | camera on the top two fifths, game on the three fifths below, a thin black line between them, English captions on the line, the biggest reactions cut to the camera full screen, scene switches followed, a blurred full frame without a facecam, captions already in the video not doubled, a title bar on request, natural sound, quiet parts kept | clutch plays, wins, fails, twists, loud reactions, jokes with chat; the reaction is on screen in the first second |
 | 📣 Video & promo | 4 × 15-30 s | follows the speaker, speech tuned, opening text and a CTA | the main benefit, a demo, a strong claim or number, a testimonial (hook → proof → CTA) |
 | ⚡ Quick shorts | 3 × 10-25 s | automatic, dead air out | jokes, punchlines, surprising lines and reactions |
+| 🤣 Funny montage | 5 × 5-10 s, then one montage | follows the speaker, captions of the speech, natural sound; the moments one by one and joined into one clip with quick cuts, the strongest first and the second strongest last | complete jokes: the set-up, the punchline and the laugh after it |
 | ✂️ Edit my video | 1 × 15-90 s | your own video attached with the paperclip (or a link), plus pictures, logo, intro, outro or music; the clip is cut first, then your edits go on it as a new version | the part that best fits your wishes |
+
+**Whole moments.** Every clip, whatever the prompt, is one complete thought: it starts where a sentence starts and ends only once the speaker has said what the moment is about. A pause inside a sentence (after "the", "and", or before words that go on in lower case) is never a cut, and after the last word the clip stays open while the laugh, the shout or the reaction still sounds, up to 2.5 s. Tightened clips shorten silence to about 0.3 s inside a sentence and 0.5 s after one instead of cutting it away.
 
 **Campaigns.** *Campaigns* in the sidebar runs clipping campaigns the way a clipping agency does: a client (a
 streamer, a podcast or a brand), a brief, a rate per 1,000 views with a cap per post, and the moments to clip.
@@ -177,9 +180,9 @@ re-render). Older versions stay playable.
 
 A finished clip goes straight to your own YouTube, Instagram, Facebook Page, TikTok and X with the **Post** button on
 its card, or from the chat (*"posztold ki a 2. klipet YouTube-ra"*). It goes up with its post text and, on YouTube, its
-title; the card then links each post. You make a free developer app per platform once and sign in on the platform's own
-page: the tokens stay in `data/web/accounts.json` on this computer. *Settings*, Connected accounts, shows all seven platforms as
-cards. **Twitch and Kick** can be connected, but neither offers apps any way to upload a video, so Clippy does not post
+title; the card then links each post. You make a free developer app per platform once: *Settings*, Accounts, **Set up**
+on its card shows where, the redirect address to copy and the fields for the app's keys, then **Save and sign in** opens
+the platform's own sign-in page (no `.env` editing). The keys and tokens stay on this computer in `data/web/`. **Twitch and Kick** can be connected, but neither offers apps any way to upload a video, so Clippy does not post
 there (and uses no unofficial way). TikTok sends the clip to your drafts (or posts it as private until it reviews your
 app); YouTube may keep uploads of a new API project private until its audit; X's API is paid per use. Setup, step by
 step, with what each platform allows: **[docs/publishing.md](docs/publishing.md)**.

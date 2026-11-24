@@ -1,6 +1,6 @@
 # Google Antigravity for Android (Unofficial Port)
 
-[![Platform: Android](https://img.shields.io/badge/Platform-Android%2014%2B-3DDC84.svg?style=flat&logo=android)](https://www.android.com/)
+[![Platform: Android](https://img.shields.io/badge/Platform-Android%208.0%2B%20(arm64)-3DDC84.svg?style=flat&logo=android)](https://www.android.com/)
 [![Built with: Kotlin & Jetpack Compose](https://img.shields.io/badge/Built%20with-Kotlin%20%7C%20Jetpack%20Compose-7F52FF.svg?style=flat&logo=kotlin)](https://developer.android.com/jetpack/compose)
 [![Latest Release](https://img.shields.io/github/v/release/monsterbag293-cloud/Antigravity-Android?include_prereleases&label=latest%20release&color=blue)](https://github.com/monsterbag293-cloud/Antigravity-Android/releases/latest)
 [![GitHub Stars](https://img.shields.io/github/stars/monsterbag293-cloud/Antigravity-Android?style=flat&logo=github)](https://github.com/monsterbag293-cloud/Antigravity-Android/stargazers)
@@ -115,10 +115,14 @@ Antigravity-Port/
 
 ## Building from Source
 
-### Prerequisites
+### System Requirements
+- **Local Engine (Standalone PRoot):** 64-bit ARM device (`arm64-v8a`) running **Android 10 (API 29) or higher** with an ARMv8.1+ processor (Snapdragon 845+, Tensor, Exynos 9820+, Dimensity 800+ with LSE atomics).
+- **Remote Host / Cloud Mode:** **Android 8.0 (API 26) or higher** on any 64-bit device (connect to desktop, laptop, or free cloud backend).
+- **RAM Recommendation:** 6 GB+ recommended for local standalone engine (4 GB for remote mode).
+
+### Prerequisites (Building from Source)
 - JDK 17 or higher
 - Android SDK (API 35 / Build-Tools 35.0.0)
-- Android device or emulator running Android 10 (API 29) or higher
 
 ### Build Steps
 ```bash

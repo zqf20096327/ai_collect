@@ -13,7 +13,6 @@
 <p align="center">
   <a href="https://github.com/william-jin-cmu/cetus/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwilliam-jin-cmu%2Fcetus%2Fmain%2Fpackage.json&query=%24.version&prefix=v&label=release&color=blue" /></a>
   <a href="https://github.com/william-jin-cmu/cetus/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/william-jin-cmu/cetus/total" /></a>
-  <a href="https://github.com/william-jin-cmu/cetus/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/william-jin-cmu/cetus/ci.yml" /></a>
   <a href="https://github.com/william-jin-cmu/cetus/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/william-jin-cmu/cetus" /></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/william-jin-cmu/cetus" /></a>
 </p>

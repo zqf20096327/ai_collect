@@ -1,276 +1,89 @@
-# FinGPT Trader (AVJC)
+# FinGPT Trader
 
-A quantitative trading system that combines Falcon-7B language model-driven sentiment analysis with technical market analysis to identify cryptocurrency trading opportunities. The system's core innovation is its confidence-weighted sentiment scoring mechanism, which integrates both the sentiment value and the model's confidence level to generate more reliable trading signals.
+FinGPT Trader replays market data and issuer documents as they became available, preserves source citations, and simulates paper portfolios. Individual books use their listing currency. A portfolio study can combine separately funded books in one base currency. Python 3.11 or later runs the research commands with the standard library.
 
-## System Overview
+## Try the replay
 
-FinGPT Trader processes financial news and market data in parallel, combining both sources to identify potential trading opportunities. The system uses:
-
-- **Falcon-7B Model**: Fine-tuned for financial sentiment analysis
-- **Confidence-Weighted Scoring**: 60% confidence weight, 40% sentiment strength weight
-- **Technical Analysis**: Standard technical indicators for market inefficiency detection
-- **Event-Driven Architecture**: Asynchronous processing of market events
-- **Risk Management**: Basic position tracking and exposure monitoring
-
-## Current Implementation Status
-
-✅ = Implemented | 🚧 = Partially Implemented | 📅 = Planned | ⚠️ = Implementation Issues
-
-### Core Components
-
-- **Sentiment Analysis**
-  - ✅ Falcon-7B financial sentiment model implementation
-  - ✅ Confidence-weighted sentiment scoring
-  - ✅ Adaptive correlation tracking between sentiment and price
-
-- **Market Data Processing**
-  - 🚧 Price data collection from Binance (⚠️ API parameter issues)
-  - ✅ Technical indicator calculation (RSI, MAs, volume analysis)
-  - ✅ Market inefficiency detection
-  - 🚧 Minimum order size handling (⚠️ Size calculations incorrect)
-
-- **Trading Execution**
-  - ✅ Binance testnet integration
-  - 🚧 Order execution (⚠️ Method parameter mismatches)
-  - ✅ Position tracking
-  - 📅 Tax-loss harvesting
-
-- **Risk Management**
-  - 🚧 Basic position tracking
-  - ✅ Simple exposure metrics
-  - 📅 Value-at-Risk (VaR) calculations
-  - 📅 Correlation-aware risk metrics
-
-## Technical Implementation
-
-### Confidence-Weighted Sentiment Analysis
-
-The system's key innovation is its confidence-weighted sentiment scoring mechanism. Rather than using raw sentiment scores, FinGPT Trader weighs the model's confidence (60%) against sentiment strength (40%) to generate more reliable signals:
-
-```python
-# Calculate confidence-weighted sentiment score
-weighted_score = (confidence * 0.6) * (abs(sentiment_score) * 0.4)
-
-# Generate signal if weighted score exceeds detection threshold
-if weighted_score > detection_threshold:
-    signals.append({
-        'symbol': pair,
-        'type': 'SENTIMENT',
-        'direction': 1 if sentiment_score > 0 else -1,
-        'strength': abs(sentiment_score),
-        'confidence': confidence,
-        'price': current_price,
-        'timestamp': datetime.now()
-    })
+```sh
+python3 main.py
+python3 main.py replay --dataset nse --as-of 2025-01-08T15:00:00+03:00
+python3 main.py evidence --dataset nse --as-of 2025-01-09T15:00:00+03:00
+python3 main.py paper --dataset nse --policy buy_hold
+python3 main.py compare --dataset nse
+python3 main.py evaluate --dataset nse
 ```
 
-This approach helps filter out low-confidence predictions, reducing false signals.
+The default replay contains 12 captured Binance BTC/USDT daily bars. The NSE example contains 13 fictional KES sessions, an issuer statement, two versions of one dividend notice, a court filing, a decision and a news report. Try the two January cutoffs above. At the January 8 close the original dividend is KES 1.00. The correction to KES 1.20 arrives after that close. The example calendar, fees, prices, liquidity and labels are teaching inputs. The bundled cases exercise the software and provide no estimate of investment performance.
 
-### Market-Sentiment Correlation Tracking
+## Import local data
 
-The system maintains a history of sentiment and price movements to calculate correlation coefficients:
+Copy a [sample dataset](fingpt_research/fixtures/nse) and pass its directory to `--dataset`. Keep privately licensed source files locally. One manifest identifies the stable listing, issuer, currency, venue, lot size, adapter, source, capture time and calendar version. Use raw prices with separately recorded dividends. A single-listing report uses its listing currency. The portfolio command translates the funded books using dated FX observations.
 
-```python
-# Calculate correlation between sentiment changes and price changes
-correlation = np.corrcoef(
-    sentiment_changes[:min_length],
-    price_changes[:min_length]
-)[0, 1]
+| File | Contents |
+| --- | --- |
+| `sessions.csv` | Versioned session dates and explicit timezone-aware opens and closes. Supply the applicable exchange calendar, including holidays and exceptional sessions. |
+| `prices.csv` | One row per session with raw OHLCV, availability time and trading status. Suspended sessions carry an explicit valuation mark. |
+| `documents.json` | Immutable document IDs, source references, issuer, attributed document kind, publication and ingestion times, and an array of page texts. Optional fields include the financial period, predecessor document ID and curated dividend terms. |
+| `labels.json` | Optional field references for evaluation, including expected text, page and supporting span. Maintain these independently for a real study. |
+| `klines.json` | For the Binance spot adapter, use a frozen UTC daily REST kline response with millisecond timestamps and its capture time in the manifest. |
 
-# Update correlation record for position sizing
-self.market_correlation[symbol] = {
-    'value': correlation,
-    'updated_at': datetime.now(),
-    'samples': min_length
-}
+Replay reconstructs public availability. Ingestion time separately records when the snapshot was collected. A date-only publication becomes eligible at the next listed session open. For bulk-imported history, the output describes what public evidence supports, rather than the arrival history of an actual trading feed. Extracted pages must preserve source page order. The rules extractor abstains on ambiguous matches. A filing preserves the claimant's attribution and a judgment preserves the court's attribution.
+
+## Paper portfolios and comparisons
+
+Paper is the only execution mode of the research CLI. The default paper policy holds cash. A producer emits a timestamped research signal with its version, horizon and evidence. Portfolio sizing converts it to a long-only target and approves a quantity. A pending quantity can fill on a later tradable raw close, capped by participation, available cash, lot size and exposure. Fee and slippage assumptions apply to each fill. The closing-price approximation is suited to daily-bar research. A dividend becomes a receivable using the holding before its ex-date and becomes cash on the first session on or after payment. Only curated corporate action terms can post to the ledger.
+
+```sh
+python3 main.py paper --dataset nse --policy price --fee-bps 15 --slippage-bps 8 --participation 0.005
+python3 main.py paper --dataset /data/initial-snapshot --policy price --follow
 ```
 
-This correlation data helps adjust signal strength based on historical sentiment-price relationships.
+In follow mode, a local publisher writes the directory of each completed snapshot to standard input, one per line. Standard output emits a JSON portfolio report for each extension. Repeated snapshots are idempotent. Publish each snapshot atomically, append corrections as new documents, and retain the snapshot sequence for recovery. A changed historical bar or backdated source requires a fresh historical replay.
 
-### System Architecture
+The comparison reads the fixed test start, one-session horizon and fold length from the manifest. Earlier prices warm up the factor. The book carries through consecutive test folds. Cash, buy-and-hold including dividends, and one-session price momentum use the same costs and liquidity rules. A second scenario doubles fee and slippage and halves participation. Reports include drawdown, turnover, exposure, fees and net returns. The historical comparison uses long-only policies. For a borrow or cross-currency study, use the portfolio command below.
 
-```mermaid
-graph TD
-    A[Falcon-7B Model] -->|Sentiment Analysis| B[Market Analysis Engine]
-    B -->|Signal Generation| C[Trading Core]
-    D[Binance API] -->|Market Data| B
-    C -->|Orders| D
-    E[Risk Monitor] -->|Position Limits| C
-    F[Portfolio Tracker] -->|Positions| C
-    G[Market Inefficiency Detector] -->|Trading Signals| B
-    H[News Data Feed] -->|Real-time News| A
-    
-    style A fill:#d0f0c0
-    style B fill:#d0f0c0
-    style C fill:#f0e0a0
-    style D fill:#d0f0c0
-    style E fill:#f0e0a0
-    style F fill:#d0f0c0
-    style G fill:#d0f0c0
-    style H fill:#d0f0c0
-    
-    classDef implemented fill:#d0f0c0;
-    classDef partial fill:#f0e0a0;
-    classDef planned fill:#f0d0d0;
+### Cross-currency and borrow studies
+
+```sh
+python3 main.py replay --dataset nse-public-sample
+python3 main.py portfolio --spec examples/kes-portfolio.json
 ```
 
-## Configuration
+The public sample is a single Safaricom observation checked against the NSE price list dated September 2, 2026. Its opening price is unknown. Its VWAP can value a holding but cannot execute a paper order. The captured document gives the dividend amount and book closure. Posting a payment requires separately verified entitlement terms.
 
-The system uses a hierarchical YAML-based configuration system:
-- `trading.yaml`: Core trading parameters, thresholds, and position sizing
-- `strategies.yaml`: Strategy-specific parameters and detection thresholds
-- `model.yaml`: ML model configurations
-- `services.yaml`: External service connectivity parameters
+The [example study](examples/kes-portfolio.json) pre-funds two books in KES and USDT. FX is quoted as base currency per unit of listing currency. Each translation uses a rate available at the valuation time. Missing rates, stale rates and stale held-position marks stop the study. Weights must total one. Books have separate cash and position limits. This first version assumes frictionless initial FX conversion and excludes collateral transfers, settlement lags and taxes.
 
-## Setup Requirements
+A short sale requires explicit dated loan inventory. A schedule sets maximum outstanding units, an annual rate, expiry and a buy-in premium. Loan fees accrue ACT/365 on the preceding mark, including weekends. A reduction in the allowed outstanding quantity or an expiry triggers a buy-in subject to tradable volume. The last known loan rate continues on overdue units. Short holders owe any eligible dividend. For a single book pass `paper --policy short_hold --borrow loan.json`, with `instrument` and a `records` array using the example's borrow fields. The included FX and borrowing terms are synthetic scenario assumptions.
 
-### Prerequisites
-- Python 3.8+ with asyncio support
-- Windows, macOS, or Linux 
-- 8GB+ RAM recommended (for model loading)
-- CUDA-compatible GPU recommended but not required
+## FinGPT experiments
 
-### Environment Setup
-```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # or activate on Windows
+Supply a locally merged FinGPT GGUF for model experiments. Install `.[model]` in a virtual environment. The model file digest identifies the weights. The evaluator compares FinGPT and the deterministic parser against the same reference fields with field accuracy, citation precision, abstentions, elapsed time and model tokens.
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Windows-specific: Set console to UTF-8 mode
-chcp 65001  # If running in cmd.exe
+```sh
+python3 main.py evaluate --dataset nse --gguf /models/fingpt.gguf --structured
+python3 main.py evaluate --corpus fingpt_research/fixtures/issuer-excerpts --gguf /models/fingpt.gguf --structured
+python3 main.py features --dataset nse --gguf /models/fingpt.gguf --structured --model-available-at 2024-12-01T00:00:00Z --latency-seconds 60 > features.json
+python3 main.py compare --dataset nse --features features.json
 ```
 
-### Configuration
-```bash
-# Set up your .env file with required API keys:
-BINANCE_API_KEY=your_key_here         # Obtain from Binance Testnet
-BINANCE_API_SECRET=your_secret_here   # Obtain from Binance Testnet
-CRYPTOPANIC_API_KEY=your_key_here     # Required for news feeds
-HUGGINGFACE_TOKEN=your_token_here     # Optional for model access
+Use the actual model availability date and a defensible inference delay in an experiment. The example arguments illustrate the format. The additional policy applies the same price factor with a sentiment filter on its first eligible observation. Treat generated sentiment as a hypothesis. Assess its incremental value on a separately frozen, reviewed sample before drawing conclusions.
+
+[Local model evaluation and provider design](docs/research-validation.md)
+
+## Development
+
+```sh
+python3 -m pip install -e '.[dev]'
+python3 -m pytest -q tests
 ```
 
-### Running the System
-```bash
-# Basic run
-python main.py
+New read-only adapters can be supplied to `load_dataset(..., adapters={...})`. Custom signal producers can be passed to `PaperEngine` and receive the listing, current bar, previous tradable bar and available features. The original optimizer, strategy modules, Binance SDK integration and optional FinGPT code remain in the source tree. The legacy orchestrator is importable through `main.TradingSystem`; research signals cannot submit exchange orders through it.
 
-# Run with minimal console output
-python main.py -q
-
-# Run with verbose debugging output
-python main.py -v
-```
-
-## Current Challenges
-
-### Known Issues
-
-- **API Connectivity**
-  - Binance client fails with invalid `base_url` parameter
-  - CryptoPanic API returns null values for some endpoints
-  - Error handling needs improvement for API failures
-
-- **Sentiment Analysis**
-  - Method discrepancies between `analyze()` and `analyze_text()`
-  - Unicode encoding errors in Windows environments
-  - Inconsistent LLM response formats causing parsing errors
-
-- **Trading Execution**
-  - Position sizing calculations produce orders below minimum requirements
-  - Parameter mismatch in `execute_trade()` method
-  - Inconsistent signal formats between processing methods
-
-### Immediate Improvements Needed
-
-1. **API Connectivity**
-   - Remove unsupported parameters in AsyncClient.create()
-   - Add error handling for API timeouts and failures
-
-2. **Method Compatibility**
-   - Fix signature mismatch in trading execution methods
-   - Standardize signal format between components
-
-3. **Position Sizing**
-   - Add validation for exchange minimum order sizes
-   - Implement dynamic lookup of exchange requirements
-
-4. **Error Handling**
-   - Add more robust exception handling for LLM responses
-   - Improve logging for system monitoring
-
-## Known Issues
-
-- **API Connectivity**
-  - Binance client initialization fails with invalid parameters (base_url not supported)
-  - CryptoPanic API endpoints return null values
-  - Error handling for API failures needs improvement
-
-- **Sentiment Analysis**
-  - Method implementation discrepancies between `analyze()` and `analyze_text()`
-  - Unicode encoding errors in Windows environments
-  - Inconsistent response formats from the LLM causing "Unknown format code 'f'" errors
-  - Type conversion issues when formatting sentiment scores
-
-- **Trading Execution**
-  - Position sizing too small for minimum order requirements
-  - Parameter mismatch in RoboService.execute_trade() method
-  - Inconsistent signal format between different processing methods
-
-- **System Stability**
-  - NoneType errors when awaiting non-coroutines
-  - Uncaught exceptions in service initialization
-  - UI vs. logging conflicts
-
-## Immediate Fixes Needed
-
-1. **Binance Client Initialization**
-   - Remove unsupported `base_url` parameter in AsyncClient.create()
-   - Use only supported parameters: api_key, api_secret, and testnet
-
-2. **Trading Execution**
-   - Fix signature mismatch in RoboService.execute_trade() method
-   - Standardize signal format between different processing stages
-
-3. **Position Sizing**
-   - Add validation for minimum order sizes before execution attempts
-   - Implement dynamic lookup of exchange minimum requirements
-
-4. **Sentiment Analysis**
-   - Add type conversion for sentiment scores before formatting
-   - Add exception handling for inconsistent LLM responses
-
-## Development Roadmap
-
-Current development priorities:
-- [x] Fix AsyncIO event loop issues
-- [x] Improve error handling in API calls
-- [ ] Enhance sentiment analysis prompt engineering
-- [ ] Fix minimum order size calculation
-- [ ] Fix Binance API client initialization parameters
-- [ ] Resolve execute_trade() parameter mismatch
-- [ ] Implement basic backtesting framework
-
-Future enhancements:
-- Advanced position sizing with Kelly Criterion
-- Multi-asset portfolio optimization
-- Value-at-Risk (VaR) calculations
-- Sentiment-adjusted position sizing
-- Correlation-aware risk metrics
-
-## Warning
-
-⚠️ **IMPORTANT**: This system is in early development stage and not production-ready:
-- Use testnet only - not suitable for real trading
-- Expect instability and potential errors
-- Many features described are planned but not yet implemented
-- System requires significant technical knowledge to run properly
+The legacy crypto news service reads publisher RSS feeds configured in `config/services.yaml`, with an optional NewsAPI fallback.
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) for details.
+MIT License - See [LICENSE](LICENSE.md) for details.
 
 ## Acknowledgements
 

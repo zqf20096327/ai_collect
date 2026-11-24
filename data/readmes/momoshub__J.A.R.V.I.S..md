@@ -170,6 +170,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `model [role\|subagent\|worker\|plan\|loop\|here\|#channel] [name\|default]` | pal, executer, admin (setting: `settings:manage`) | show the brain; `settings:manage` pins a model per role or channel, or for subagents, Orca workers, planning and loop fires |
 | `logsource [grafana,datadog\|default]` | pal, executer, admin (setting: `settings:manage`) | where it looks for logs - see [Investigating](#investigating) |
 | `inner-child [status]`, `inner-child on\|off`, `inner-child autofix on\|off`, `inner-child channel <#channel>\|off` | pal, executer, admin (setting: `settings:manage`) | whether the self-review feature is on, whether it fixes what it finds (autofix, off by default), its channel and how many issues are open or queued; `settings:manage` switches it, its autofix or sets its channel - see [The inner child](#the-inner-child) |
+| `harvest [status]`, `harvest on\|off` | pal, executer, admin (setting: `settings:manage`) | whether the bot reviews its recent conversations and proposes facts and skills to remember (off by default; the owner approves every one), how many it proposed in the last day and how many skill drafts wait; `settings:manage` switches it - see [The learning harvest](#the-learning-harvest) |
 | `cloudwatch [--group /log/group] [--last 15m \| --from <t> --to <t>] [--region r] [--limit n] <insights query>` (alias `cw`), `cloudwatch help`, `cloudwatch default <group\|reset>` | executer, admin (runs at once with `cloudwatch:direct`, else Confirm first) | query CloudWatch Logs Insights directly - see [CloudWatch](#cloudwatch) |
 | `forget` | pal, executer, admin | wipe the bot's memory of this channel |
 | `sys` (alias `vitals`) | admin | how the host, the bot and Orca are doing, as Block Kit: a verdict header, cpu/memory/swap/disk/battery/host/bot/turns fields, the last hour's trend, then Orca's runtime, active runs, workers by status and a table of live workers (one "unreachable" line when Orca is down or slow). The message text keeps the plain report as the fallback |
@@ -434,7 +435,10 @@ real repository, so its brief uses absolute paths.
   forbid them.
 - Only user-scope servers by name are excluded. The `claude.ai` connectors are
   remote and start no process, and the bot's own turns have their own list
-  (`UNAUTHENTICATED_MCP_SERVERS`).
+  (`UNAUTHENTICATED_MCP_SERVERS`). A turn the owner's own message started is the exception: it runs
+  on the host's interactive login with every claude.ai connector and server an interactive `claude`
+  on the Mac has (minus unauthenticated ones and the claude.ai Slack connector, which acts as the
+  owner's own identity), so it bills that login rather than the setup token.
 - A name that matches no server in `~/.claude.json` excludes nothing, so boot
   logs it as a warning.
 
@@ -453,10 +457,10 @@ Every chat turn, for every role, can also look in Datadog itself: the host runs
 a Datadog MCP server (`claude mcp add --scope user --transport http datadog
 https://mcp.datadoghq.com/v1/mcp`, authenticated once with OAuth in a browser;
 the claude.ai Datadog connector cannot reach a chat turn, which runs on a
-`claude setup-token` credential). Until that OAuth is done the server is listed in
+`claude setup-token` credential). Until that OAuth is done a server stays in
 `UNAUTHENTICATED_MCP_SERVERS` (`src/infrastructure/llm/mcpConfig.ts`) and no bot turn loads it:
 an unauthenticated server makes the CLI inject a needs-authentication notice that the model
-copies into its reply. Remove it from that list once authenticated. Only the read tools are exposed - logs, RUM,
+copies into its reply. Datadog is authenticated and off that list; `figma` is still on it. Only the read tools are exposed - logs, RUM,
 spans, metrics, monitors, incidents, dashboards; anything that edits a notebook
 or dashboard, and `execute_code`, is denied. `investigate` stays the route for a
 full investigation on the host login, and the fallback when that server's login
@@ -730,6 +734,84 @@ older than 6 hours jumps to now.
   thread. The channel is the `inner_child_drift_channel` setting, falling back
   to `DRAIN_NOTICE_CHANNEL`; `off` turns drift steering off. One nudge per
   reply, at most 2 per triage run and 4 a day, never in a workflow thread.
+
+Reading it directly (the owner asking what is open, or what it logged): the data
+is in the bot's own database, `DATABASE_PATH` of the live `.env` (not the
+`data/bot.db` default), read with `sqlite3 -readonly`, never written by hand.
+
+- `self_issues`: `id`, `title`, `severity` (`bug` or `critical`), `evidence`,
+  `source_channel` / `source_thread` (where it was seen), `fix_channel` /
+  `fix_thread` (where the fix ran), `state`, `created_at` / `updated_at` (ms).
+  States: `queued` (open, nobody on it), `fixing` (open, a fix is running),
+  `fixed`, `not_fixed`, `failed`, `stale`, `rejected`, `covered`. Unresolved is
+  `queued` + `fixing`, plus `failed` / `not_fixed` when asked for everything not
+  fixed:
+  `select id,state,severity,title,source_channel,source_thread,datetime(created_at/1000,'unixepoch') from self_issues where state in ('queued','fixing') order by severity='critical' desc, id`.
+  With `inner_child` set to `off` nothing runs, so the stale prune does not run
+  either and old `queued` rows pile up past the cap.
+- `drift_events`: `channel_id`, `thread_ts`, `reply_ts`, `rules`, `excerpt`,
+  `nudge`, `outcome`, `created_at`.
+- Settings besides the three above: `inner_child_cursor` (the last turn read, in
+  ms) and `inner_child_drift_channel`.
+- Answer with a small Block Kit table (id, severity, title, a link to the source
+  thread built from the workspace URL, the channel id and `p<ts without the dot>`).
+
+## The learning harvest
+
+The bot can review its own recent conversations and **propose** what is worth
+keeping, the way a self-reviewing agent saves a fact or turns a solved procedure
+into a skill, but nothing is ever saved until the owner presses Approve. Off by
+default: `harvest on` (the `learning_harvest` setting) starts it, `harvest off`
+stops it, `harvest` shows whether it is on, how many proposals it raised in the
+last day and how many skill drafts wait. Changing it needs `settings:manage`; the
+status is open to everyone. `harvest on` moves the cursor to now, so what was
+said while it was off is never read; a cursor left unmoved (a quiet workspace) is read from at most 6 hours back, never further.
+
+Every 30 minutes, once at least 6 turns people wrote have ended since the cursor,
+one small-model call (`claude-haiku-4-5-20251001`; the `learning_harvest_model`
+setting changes it) reads the batch and may propose:
+
+- **A durable fact the people settled.** It goes through the ordinary learnings
+  path (see `learn`): stored pending, never injected, put to the owner with
+  Approve / Reject, deduped against every learning ever asked (active, pending
+  or rejected) and against the adapter's notes. A fact about one channel is
+  scoped to it.
+- **A skill.** A multi-step procedure that was solved and is likely to recur, or
+  a correction to an existing skill. The owner gets the draft in a DM with
+  Approve / Reject: a new skill whole, a change as a diff. Approve writes it into
+  the adapter's skills the way a hand edit does (a revision `adapter revert`
+  can undo; refused if the skill changed since the draft); Reject is remembered
+  by skill name, so neither that draft nor a reworded one is raised again.
+
+What keeps it safe is checked in code, not asked of the model:
+
+- **Only what people typed is read.** The turn log records, from the inbound
+  message's own flags (never the text), whether a person typed a turn; a nudge,
+  a loop, a watch or background hand-back, an unprompted turn, an
+  auto-continue and a turn built from a GitHub issue or PR body are never reviewed, and neither are failed turns. Every proposal
+  must cite a turn and quote words from that person's message, verified against
+  it, and the quote is shown in the owner's notice. What is guaranteed is that
+  the citation is real, not that the proposal follows from it: a person who asks
+  the bot to read a page can still have a page-injected suggestion reach the
+  owner's approval, which is exactly why the owner decides, with the quote and
+  the source thread in front of them. Text the bot read is shown to the model
+  only as the bot's answer, labelled as context.
+- **Private stays private.** Only public channels are reviewed. A private
+  channel, a DM, a group DM or a channel Slack will not describe is never sent to
+  the model, so its words cannot end up in a proposal that loads in another
+  channel (one call holds many turns, and a proposal citing a public turn could
+  otherwise carry private content). A fact is channel-scoped unless the model
+  says it holds everywhere; a skill is from a public source by construction.
+- **No secrets or personal data.** A proposal with a token, key, password, email,
+  phone number or Slack id is dropped.
+- **Bounded.** At most 4 proposals a day (facts and skill drafts together), 2 per
+  batch, 3 skill drafts waiting at once; the same proposal is never asked twice.
+  A skill draft is at most 2000 characters (or a diff that size) so what the
+  owner reads is all of what they approve, and it may not set how a skill runs
+  (`model`, `worker`, `run`).
+- **Decided in code.** The buttons (`jv:harvest:`) are handled by their own
+  listener, never a model turn, honoured only from the owner on the untouched
+  message they were posted with.
 
 ## Staying online
 
@@ -1028,6 +1110,27 @@ should have answered, read the reasons first (the prompt is `gateSystem` in
 `src/domain/followGate.ts`), or set `follow_gate=off` while you decide. If replies
 come too late, lower `follow_debounce_seconds`.
 
+## Muting a thread
+
+`//bot mute` (in the thread, or `//bot mute <thread link>`) turns the bot off for
+that one thread: it answers nobody there, even when tagged. A message from a person
+is dropped at the door, before any turn or session starts, so it costs no tokens and
+gets no reply, no reaction and no "working" placeholder. This holds for channel
+threads, a DM thread's replies and an untagged reply it would otherwise follow.
+`//bot mute list` shows the muted threads; `//bot mute off` lifts it.
+
+- Known commands still run in a muted thread (`//bot mute off`, with a leading tag
+  or the legacy `!status`), which is how `mute off` works from inside it.
+  Everything else a person writes is ignored, an unknown command included.
+- A mute outranks a `follow`: the follow stays saved but is suppressed while the
+  thread is muted, and comes back with `mute off`. `follow list` and `mute list`
+  both say so.
+- It is about people's messages. Work the bot already has bound to the thread keeps
+  running and may still post there: a watch handing the thread back, a loop, a tell
+  and a workflow's steps.
+- Same role level as `follow` (executer and up). Stored in `muted_threads`
+  (`db/muteRepo.ts`), checked in memory.
+
 ## One turn at a time
 
 A thread's turns run one after another, never beside each other. Two messages a
@@ -1180,109 +1283,4 @@ The result holds `JARVIS_RUN_TICKET_FILE=<path>`, **never the token**: the token
 is written once to a mode-0600 file in a 0700 folder
 (`~/.config/jarvis/worker-tickets/<id>`) and the worker brief carries only the
 path, to `export` before `bin/github-app.sh` (the helper reads the first line of
-that file; the brain never reads, prints or posts it, and the file is deleted
-when the ticket ends). The ticket works for that one repo and those actions only
-(default `pr-create`, `comment`, `pr-edit` and the app's commit identity; never review, merge or close), cannot
-run any command, is checked against the minting person's role on every call,
-expires in 3 hours (max 6) and ends when the worker finishes or dies (the turn's
-`watch worker`), on `worker-ticket revoke`, or at expiry. Tickets are rows in
-`worker_tickets` (only the sha-256 of the token), so they survive a restart; a
-sweep at boot and every 5 minutes ends the expired ones. No new setting.
-
-**The worker finds the bot through its ticket file.** The file holds the token on
-line 1 and the bot's loopback URL (`http://127.0.0.1:<DASHBOARD_PORT>`) on line 2,
-because a worker's shell has no `DASHBOARD_PORT`. `bin/github-app.sh` and
-`bin/github-app-comment.sh` use, in order: `GITHUB_APP_ACTION_URL` /
-`GITHUB_APP_COMMENT_URL`, `DASHBOARD_PORT`, line 2 of `JARVIS_RUN_TICKET_FILE`,
-then 2001. A ticket file written before this has one line and keeps that default.
-Line 2 is followed only if it is `http://127.0.0.1:` plus digits and nothing else
-(anything like `http://127.0.0.1:1@evil.example` is ignored, since the ticket is sent
-there). A call the bot does not answer prints the endpoint it tried;
-`GITHUB_APP_PRINT_ENDPOINT=1` prints it and exits without sending anything.
-
-**Long workers renew.** A worker that outlasts its TTL extends its own live ticket
-with `bin/github-app.sh ticket-renew <owner/repo> [--ttl 3h]` (default 3h, at most
-6h per renewal; an expired ticket cannot renew itself). An admin can run
-`worker-ticket renew <id|ctx_...>`, which also works on a ticket that lapsed but
-was never revoked (its worker is still running): such a ticket keeps its token
-file until the limit instead of being deleted at its expiry. Nothing lives past
-24 hours from the bind however often it is renewed, and every renewal is
-audited like a mint.
-
-**Commits come as the app by default; pushing does not.** Every worker ticket
-carries the app's commit identity (`git-commit`: name and email, an empty
-token), so `bin/github-app.sh git <owner/repo> <dir> -- commit ...` works as the
-app for a worker minted with no extra words (the helper runs git with that
-identity and no credential, exactly like an executer). A worker pushes with the
-org's own one-shot human credential (the `kai-at-acme` of the rule above; where
-the app has Contents read-only it cannot push anyway). `push` (the same as
-`git` / `git-auth`, the `git-auth` action) stays an explicit opt-in for an org
-where the app has Contents write: only then does the ticket get a token. A
-ticket row stored before this change keeps what it was minted with (one without
-`git-commit` still cannot run `git`; one with `git-auth` still gets its token). Its token is minted
-per ticket, never cached or shared, limited to that one repository and to
-`metadata: read` plus `contents` at the level the installation itself holds
-(asking for more than the installation has is a 422), so it cannot approve,
-merge, label or comment on its own. It is revoked at GitHub
-(`DELETE /installation/token`) when the ticket ends.
-
-What is still not covered, said plainly: the held GitHub token lives in the
-bot's memory, so after a bot restart the token minted before it can no longer be
-revoked and runs out on its own (at most 1h from its mint, one repository,
-contents/metadata only); a token the worker copied somewhere is only killed by
-the events above, and `watch worker` polls every 30 seconds, so a worker that
-dies is noticed up to that late; and the token file is protected by file mode and
-by the tool policy (pal and executer may not `Read` `~/.config/jarvis/**`), not
-by the OS: an Orca worker runs as the same host user as the bot, so any other
-process of that user, or a turn that reaches a shell, can read it for as long as
-the ticket lives.
-
-It only acts on owners in `GITHUB_APP_ALLOWED_OWNERS`. It posts to `/api/github-app/action` with the turn's ticket (from
-`JARVIS_RUN_TICKET`, never an argument); the bot resolves it to the person the
-turn runs as, refuses unless their role allows that action (admin/owner: all, executer: the list above), logs the call in the
-command log, and prints GitHub's JSON (url, number) or GitHub's own error (app
-not installed, permission missing).
-
-Setup: the webhook listener binds `127.0.0.1:GITHUB_APP_PORT` (2003) and only
-starts when the app id, private key and webhook secret are found. Tailscale
-Funnel maps `https://<host>/github` to it; `/github/webhook` and `/webhook`
-both work, as do `/github/setup` and `/setup`. Deliveries are verified with
-`X-Hub-Signature-256`, answered 202 at once, deduped on `X-GitHub-Delivery`,
-and only acted on for repositories owned by `GITHUB_APP_ALLOWED_OWNERS`.
-Bots, the app itself included, never trigger it.
-
-## Reviews that start by themselves
-
-A review requested on GitHub runs without anyone typing the command, as the same
-`quick-review` (review policy, CI gate, blockers-only, approve only when nothing
-blocks and CI is green). Who the comments are written as depends on who was asked:
-
-| asked | how it arrives | comments and change requests | approval |
-|---|---|---|---|
-| the GitHub App | a mention of it asking for a review on a PR (`@<slug> please review` - the text next to the mention has to open with review / re-review / approve, so "address the review comments" stays an ordinary call), the trigger label on a PR, or a review requested from the app's bot | the app | the host's GitHub account |
-| the host's own GitHub account | a review requested from it (found by the review inbox poll) | that account | that account |
-
-The approval is never the app's, and a review asked of the app is always
-approved only after the review (never up front), and not at all while the app's own
-change request stands. The model's `gh` writes as the app through a token minted
-for that one repository, limited to what a review needs and revoked when it ends.
-
-- **One thread per PR**, in the review inbox channel (`review-inbox channel
-  #channel`): the first event opens it, every later one - another request, a
-  comment, a change request, an approval - goes into it, and the review runs in it.
-- **Whose token**: the requester's own Claude token, for a GitHub login linked to
-  them with `review-inbox link <login>` (a name match tags them in the thread but
-  never bills them). If that person has no token, or the login is not linked, nothing runs: the thread asks the owner, with
-  Approve / Reject buttons. Only the owner's press counts. Approve runs it on the
-  owner's token (the bot's own credential if the owner has none); Reject leaves a
-  short note and nothing runs.
-- **Once per head**: one review per PR head commit per identity. A redelivery, a
-  second poll or a re-request on the same head never runs twice, and a new push is
-  reviewed only when it is requested again.
-- `review-inbox auto on|off` (setting `review_auto`, default on) switches it: off,
-  a request to the host's account is only announced, as before.
-
-## Asking for a review in words
-
-A quick review runs when a person asks for it directly, in one of two ways (a
-revi
+that file; the brain never reads, prints or posts it, and th

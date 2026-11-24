@@ -6,6 +6,10 @@ rivers is a Rust-powered orchestration platform built around data assets. Define
 
 [Documentation](https://orchestrator.rs/docs/) · [Issues](https://github.com/ion-elgreco/rivers/issues) · [Discussions](https://github.com/ion-elgreco/rivers/discussions)
 
+<a href="assets/ui-demo.mp4">
+  <img src="assets/ui-demo.gif" alt="A tour of the rivers UI: lineage, a job run, a partition backfill and automation" width="100%" />
+</a>
+
 ## Key features
 
 - **Asset-based orchestration** — define data assets as Python functions; rivers resolves the dependency graph automatically.
@@ -16,7 +20,7 @@ rivers is a Rust-powered orchestration platform built around data assets. Define
 - **Parallel & distributed execution** — `Executor.parallel()` for concurrent subprocess workers, `Executor.kubernetes()` for one-pod-per-step on K8s.
 - **Schedules, sensors, and automation conditions** — declarative triggers (cron, event-driven, dep-aware) executed by the rivers daemon.
 - **Backfills** — partition-range execution with multi-run, single-run, and per-dimension strategies.
-- **Persistent storage** — embedded SurrealDB + SurrealKV for local dev, SurrealDB server for production.
+- **Persistent storage** — embedded SurrealDB + SurrealKV for local dev; a SurrealDB server or PostgreSQL for production.
 - **Concurrency control** — run-queue limits, tag concurrency, and step-level concurrency pools.
 - **Single-binary dev experience** — `rivers dev <module>` boots SurrealDB (embedded SurrealKV), the scheduler, and the web UI on `:3000` in one process.
 

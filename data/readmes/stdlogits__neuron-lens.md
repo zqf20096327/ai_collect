@@ -377,7 +377,8 @@ the style of the models' reasoning ([§19](docs/findings.md#19-the-qwen3-family-
 
 **20. Qwen3-4B and 0.6B are pruned from the 8B and the 1.7B.** In the 4B and the 0.6B a neuron's index tracks its
 activation (Spearman ρ to −0.76), where every other model's indices are exchangeable (±0.03). Each pair shares its
-attention heads one for one, a linear map fitted on those heads takes the parent's residual to the model's, and through it
+attention heads one for one, the residual keeps a subset of the parent's coordinates (the 4B's tied embedding those of the
+8B's unembedding), a linear map fitted on the heads takes the parent's residual to the model's, and through it
 99-100% of the 4B's neurons from L1 to L34 match a parent neuron that keeps their scale and promotes the same tokens. The
 neurons cut were the parent's least active. This is what width pruning by activation leaves, as in Minitron, so finding
 19's five sizes are three lineages. Each neuron's parent is identified for 93% of the 4B's neurons and 85% of the 0.6B's;
@@ -408,6 +409,35 @@ late the prediction moves into d, spread over its coordinates. §21's doubly dar
 d. The layout is set by per-coordinate scales, the residual's in Qwen and the norms' weights in Gemma: the units' rows
 read and write the sectors near chance, and the few that lean on one are sink, duplicate-token and spelling units
 ([§22](docs/findings.md#22-coordinate-sectors-where-the-residual-keeps-what-the-lenses-read)).
+
+### VIII. Mixed units
+
+**23. A Colorado neuron's Tornado mode: relict generalization.** Qwen3-32B is Qwen3-14B grown: its layers match the 14B's
+neuron for neuron, with the 14B's L8-L31 used twice. Its well-known Colorado neuron, which also fires on code using the
+Tornado web framework, is the 14B's L31 n11703, which already has the Tornado mode. The mode enters at L11, in a unit
+that fires as hard on Tornado code as on Bolivia's Altiplano and wires in Tornado-library units beside place units; the
+Colorado units after it read its write as a plateau signal and inherit a weaker copy. That unit's read still predicts
+MongoDB tokens (` bson` 6th of 124k), as do the Tornado units' writes, and Motor, MongoDB's driver for Tornado, drives the
+Tornado unit; yet MongoDB code doesn't drive it, MongoDB units don't wire into it, and removing MongoDB's directions
+doesn't touch its Tornado firing. This suggests relict generalization: a chain of related steps (Tornado, MongoDB,
+Mongolia, high plateaus) whose middle training pruned, leaving the ends joined, with fossils of the missing step
+([§23](docs/findings.md#23-a-colorado-neurons-tornado-mode-relict-generalization)).
+
+**24. Secondary modes: weights propose, contexts check.** For 2,000 of Qwen3-8B's poles, each pole's strongest weight
+inputs were checked on those inputs' own top contexts and a judge said whether what they share is the pole's job. 13% of
+proposed inputs drive their pole, at a median 0.35 of its peak, below its top firings. 15-33% of poles by band have an
+input the judge calls unrelated (10-22% net of its false calls), 2-4% one that drives them to half their peak, and such
+modes rarely spread to the units that share the pole's job. No weight-only score tells unrelated inputs from related ones
+(AUROC 0.52-0.61), but the similarity of the two units' catalog labels does (0.74)
+([§24](docs/findings.md#24-secondary-modes-weights-propose-contexts-check)).
+
+**25. Secondary modes over Pythia's training: a first look.** The same census ran on four Pythia sizes (160M-6.9B), and
+on 13 training checkpoints of three of them. At the end, a judge calls about half of a sample's confirmed inputs unrelated to the
+neuron's main job: 59% at 160M, 50% at 1.4B and 6.9B. Most of those were unrelated when the link formed, too. The ones
+that were related then are matched by inputs that became related later, so the checkpoints show no net drift away from
+the target's job. A reading of the cards shows the verdicts are noisy, most of all early in training, so these numbers
+need manual review before they can support a conclusion
+([§25](docs/findings.md#25-secondary-modes-over-pythias-training-a-first-look)).
 
 ### Limits
 

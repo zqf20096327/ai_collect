@@ -419,6 +419,11 @@ that launches `fslc-lsp` from `PATH` (the install script above puts it there) an
 syntax highlighting, diagnostics, outline, and go-to-definition. See
 [`editors/vscode/README.md`](editors/vscode/README.md).
 
+Every release also ships a userscript, `fsl-github.user.js`, that highlights FSL on
+github.com (` ```fsl ` blocks and `*.fsl` files). With Tampermonkey installed, open
+<https://github.com/ymm-oss/fsl/releases/latest/download/fsl-github.user.js> to install it. See
+[`editors/userscript/README.md`](editors/userscript/README.md).
+
 ### Everything else
 
 `fslc` has commands not covered above — `version`, `lint`, `migrate`, `fmt`, `sweep`,

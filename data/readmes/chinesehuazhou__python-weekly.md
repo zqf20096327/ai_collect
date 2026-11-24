@@ -67,17 +67,19 @@ As we publish more issues, we'll gradually make earlier content freely available
 
 | 📈 Statistics | 📊 Count |
 |:---:|:---:|
-| 📅 **Total Issues** | **175** |
-| 📝 **Total Articles** | **2119** |
-| 🚀 **Total Projects** | **2046** |
-| 🎵 **Total Audio/Video** | **140** |
-| 🔥 **Total Hot Topics** | **69** |
+| 📅 **Total Issues** | **176** |
+| 📝 **Total Articles** | **2131** |
+| 🚀 **Total Projects** | **2058** |
+| 🎵 **Total Audio/Video** | **141** |
+| 🔥 **Total Hot Topics** | **71** |
 | 📚 **Total Books** | **98** |
 
 </div>
 
 ## 🦄 Past Issues
 
+- Issue 176: [In Memoriam: Tim Peters (1952–2026); Microsoft agent-framework Compromised Twice on PyPI](./docs/en/2026-11-23-weekly.md)
+  - Shared 12 articles, 12 open-source projects, 1 audio/video, 2 hot discussions
 - Issue 175: [AI Writes 610K Lines of Lean Proofs for CPython](./docs/en/2026-11-14-weekly.md)
   - Shared 12 articles, 12 open-source projects, 1 audio/video, 2 hot discussions
 - Issue 174: [CPython Experimental JIT to Be Removed; PEP 836 Withdrawn](./docs/en/2026-11-07-weekly.md)

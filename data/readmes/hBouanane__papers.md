@@ -102,18 +102,23 @@ pipx install papers-app
 If the Python it lands on is one the libraries don't support yet (a pre-release, for example), Papers starts
 itself again on Python 3.13 through uv. Without uv it tells you so; pick a released Python and try again.
 
-The first time, a short setup in the terminal asks two things:
+The first time, a short setup in the terminal asks three things:
 
 ```
-1/2  Your papers as normal files   a folder with each paper's PDF and Markdown notes, for your file manager or Obsidian
-2/2  The AI model                  provider, key (kept in your system's keychain) and model, then a quick check
+1/3  Your papers as normal files   a folder with each paper's PDF and Markdown notes, for your file manager or Obsidian
+2/3  The AI model                  provider, key (kept in your system's keychain) and model, then a quick check
+3/3  A Papers icon on your desktop double-click it to open Papers in a window of its own
 ```
 
 The app's own data (database, PDFs, figures) goes to the usual place for app data; setup shows where, and Settings
 can move it.
 
-Then `papers` opens http://localhost:8000 in your browser. Everything can be changed later in Settings, or with
-`papers setup`. Options: `--port 9000`, `--data D:\Papers` (use this data folder), `--no-browser`, `--no-setup`,
+Then `papers` opens Papers in a window of its own (Edge, Chrome, Chromium, Brave or Vivaldi's app window; with only
+Firefox or Safari, a tab), at http://papers.localhost:8000. Closing that window stops Papers: everything is saved as
+you go. `papers shortcut` puts an icon on your desktop that does the same (on Linux, in your apps menu too), and
+`papers --browser` opens it in a tab of your usual browser instead, running until Ctrl+C. Everything can be changed
+later in Settings, or with `papers setup`. Options: `--port 9000`, `--data D:\Papers` (use this data folder),
+`--browser`, `--no-browser`, `--no-setup`,
 `--host 0.0.0.0` (reach it from other devices on your network; there is no login, so only on networks you trust).
 
 ### With Docker
@@ -131,7 +136,7 @@ Then open http://localhost:8000 and choose the AI in Settings. What each part me
 | `-d --name papers` | run in the background, named `papers` (`docker stop papers` / `docker start papers`) |
 | `-p 8000:8000` | the app inside listens on port 8000; this makes it http://localhost:8000 on your computer |
 | `-v papers-data:/data` | your library (database, PDFs, figures) lives in `/data` inside the container; this keeps it in a Docker volume called `papers-data`, so it survives updates and restarts. Use a folder instead with `-v ~/Papers-data:/data` |
-| `ghcr.io/hbouanane/papers:latest` | the image: on GitHub's registry (`ghcr.io`), from this repository, the newest release (or a version, e.g. `:0.4.0`) |
+| `ghcr.io/hbouanane/papers:latest` | the image: on GitHub's registry (`ghcr.io`), from this repository, the newest release (or a version, e.g. `:0.5.2`) |
 
 To update: `docker pull ghcr.io/hbouanane/papers:latest`, then `docker rm -f papers` and the same `docker run` again
 (the volume keeps your library). From a clone you can also build it yourself with `docker compose up -d`; see

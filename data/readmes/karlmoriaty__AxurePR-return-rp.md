@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="assets/readme/hero-canvas.jpg" alt="return_rp：一块由人和 AI 共同编辑的原生设计画布" width="100%">
-
 <br>
 
 # return_rp
@@ -12,7 +10,7 @@
 
 **Axure RP 9 / RP 11　·　AI 原生画布　·　CLI 与 MCP**
 
-[![Release](https://img.shields.io/github/v/release/karlmoriaty/AxurePR-return-rp?style=flat-square&label=release&labelColor=202825&color=D5FF70)](https://github.com/karlmoriaty/AxurePR-return-rp/releases) [![npm](https://img.shields.io/npm/v/return_rp?style=flat-square&label=npm&labelColor=202825&color=637E51)](https://www.npmjs.com/package/return_rp) [![Checks](https://img.shields.io/github/actions/workflow/status/karlmoriaty/AxurePR-return-rp/test.yml?branch=main&style=flat-square&label=checks&labelColor=202825&color=637E51)](https://github.com/karlmoriaty/AxurePR-return-rp/actions) [![Axure RP 9 | 11](https://img.shields.io/badge/Axure_RP-9_%7C_11-637E51?style=flat-square&labelColor=202825)](docs/version-parity.md) [![MIT](https://img.shields.io/badge/MIT-open_source-D5FF70?style=flat-square&labelColor=202825)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/karlmoriaty/AxurePR-return-rp?style=flat-square&label=release&labelColor=202825&color=D5FF70)](https://github.com/karlmoriaty/AxurePR-return-rp/releases) [![npm](https://img.shields.io/npm/v/return_rp?style=flat-square&label=npm&labelColor=202825&color=637E51)](https://www.npmjs.com/package/return_rp) [![Checks](https://img.shields.io/github/actions/workflow/status/karlmoriaty/AxurePR-return-rp/test.yml?branch=main&style=flat-square&label=checks&labelColor=202825&color=637E51)](https://github.com/karlmoriaty/AxurePR-return-rp/actions) [![Axure RP 9 | 11](https://img.shields.io/badge/Axure_RP-9_%7C_11-637E51?style=flat-square&labelColor=202825)](docs/version-parity.md) [![MIT](https://img.shields.io/badge/MIT-open_source-D5FF70?style=flat-square&labelColor=202825)](LICENSE) [![karlmoriaty/AxurePR-return-rp MCP server](https://glama.ai/mcp/servers/karlmoriaty/AxurePR-return-rp/badges/score.svg)](https://glama.ai/mcp/servers/karlmoriaty/AxurePR-return-rp)
 
 [开始使用](#quickstart)　·　[工作流](#workflow)　·　[Studio](#studio)　·　[RP/1](#rp1)　·　[版本对齐](#parity)　·　[常见问题](#faq)　·　[English](README.en.md)
 
@@ -67,8 +65,6 @@ flowchart TD
 <a id="studio"></a>
 
 ## Studio：一块人和 AI 都能编辑的画布
-
-<img src="assets/readme/studio-canvas.jpg" alt="Studio 画布示意：图层、画板、选择框与属性面板" width="100%">
 
 **AI 起稿。** 通过 RP/1 或命令创作，按图层、语义和范围查询，局部改稿。<br>
 **人来精修。** 双击改字、Shift 框选、Option / Alt 悬停测距，撤销重做。<br>

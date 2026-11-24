@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="docs/images/showcase/cover-20261106.jpg"><img src="docs/images/showcase/cover-20261106.jpg" alt="CUTROOM: Every cut. Your call. Video, sound and captions, in one local editing studio." width="1200"></a>
+  <a href="docs/images/showcase/cover-20261106.jpg?raw=1"><img src="docs/images/showcase/cover-20261106.jpg" alt="CUTROOM: Every cut. Your call. Video, sound and captions, in one local editing studio." width="1200"></a>
 </p>
 
 <p align="center">
@@ -18,31 +18,44 @@
 
 <p align="center">
   <a href="https://cutroom-studio.expo.app/"><strong>Website</strong></a> ·
-  <a href="https://github.com/VanoPeradze/cutroom/releases"><strong>Windows releases</strong></a> ·
-  <a href="https://github.com/VanoPeradze/cutroom/releases"><strong>Mac releases</strong></a> ·
+  <a href="https://github.com/VanoPeradze/cutroom/releases/download/v1.3-beta-20261123-style-families1/CUTROOM-1.3-Beta-Windows-71ea417.zip"><strong>Windows ZIP</strong></a> ·
+  <a href="https://github.com/VanoPeradze/cutroom/releases/download/v1.3-beta-20261123-style-families1/CUTROOM-1.3-Beta-combined-71ea417.zip"><strong>Mac ZIP</strong></a> ·
   <a href="docs/USER_GUIDE_EN.md">User guide</a> ·
   <a href="docs/README_HE.md">Hebrew README</a>
 </p>
 
-**Click any image to open that exact file at full size.** The Home and editor cards use unaltered demo screenshots from 19 October 2026; original PNGs are linked below each card. These are interface previews, not a capture of the latest release or a demonstration of AI editing quality. [Screenshot dates and coverage](docs/GALLERY.md) · [Artwork and provenance](docs/images/showcase/README.md)
+**Click any image to open that exact file at full size.** The Home capture is from 23 November 2026; the other nine views are from 22 November 2026. They show the real interface using an empty test project or synthetic demo material, not AI editing quality or every control in the current beta. [Screenshot dates and coverage](docs/GALLERY.md) · [Artwork and provenance](docs/images/showcase/README.md)
 
 ## Contents
 
-[1.3 Beta update](#13-beta-update) · [Highlights](#highlights) · [Quick start](#quick-start) · [How it works](#how-it-works) · [AI, your way](#ai-your-way) · [Privacy](#privacy) · [Requirements](#requirements) · [Beta status](#beta-status) · [Documentation](#documentation) · [Contributing and support](#contributing-and-support) · [License and credits](#license-and-credits)
+[What's new](#whats-new) · [Highlights](#highlights) · [Quick start](#quick-start) · [How it works](#how-it-works) · [AI, your way](#ai-your-way) · [Privacy](#privacy) · [Requirements](#requirements) · [Beta status](#beta-status) · [Documentation](#documentation) · [Contributing and support](#contributing-and-support) · [License and credits](#license-and-credits)
 
-## 1.3 Beta update
+## What's new
 
-The November 11 revision adds a neutral-gray light theme and safer local Hebrew refinement, plus mixed Hebrew/Latin caption rendering fixes. Dark mode and video colors are unchanged. See the [changelog](CHANGELOG.md) for exact behavior and validation limits.
+These features are available in the [23 November 1.3 Beta](https://github.com/VanoPeradze/cutroom/releases/tag/v1.3-beta-20261123-style-families1). The [changelog](CHANGELOG.md) has the exact behavior and limits.
 
-CUTROOM 1.3 Beta gives added videos their detected source sound by default, with mute and gain controls. Existing silent overlays keep their saved choice. The AI draft notice expands in the inspector, leaving the preview clear. Compact layouts, preview recovery and FFmpeg compatibility are improved. See the [changelog](CHANGELOG.md) for source-review and timeline updates; each [release](https://github.com/VanoPeradze/cutroom/releases) identifies its exact source and recorded checks.
+| Feature | What you get |
+| --- | --- |
+| **Clips board** | Opens from the editor top bar and ranks 15, 30, 45 or 60 second moments of a recording, with a real frame, a preview and the reasons for each. Open a moment in the editor or place it on the timeline; export one or several mapped moments as separate local MP4s. |
+| **Posting kit** | Get suggested titles, a description and hashtags based on saved transcript or gameplay notes. You can copy the text, or use **Write with AI** to draft alternatives. You upload the exported MP4 yourself; CUTROOM does not post to social platforms. |
+| **Gameplay YouTube videos** | Condenses a long recording toward your target length, helps remove menus, loading screens and dead air, and proposes draft chapters, a cold open and short punch-in zooms. Review the suggestions before export. |
+| **Five edit-style families** | Auto, Highlights, Talking Clips, Story and Long YouTube group the available options. Try Talking Clips for a complete spoken moment or Long YouTube for an explainer or condensed gameplay. Saved styles stay unchanged. |
+| **Local video map** | Estimates speaker changes, sound events and topic shifts to help guide the edit. Treat these as suggestions, not speaker identification. |
+| **Framing that follows you** | Automatic vertical framing now pans with your face through the clip instead of holding one position. A manual reframe always wins. |
+| **Color & motion** | Ready looks, exposure, contrast, saturation and warmth, your own `.cube` LUT, and zoom keyframes that ease between points. The preview updates live; the LUT applies on export. |
+| **Edit quality checks** | Score an edit against what you marked in your own recordings, one project or a whole set. [Edit evaluation](docs/EDIT_EVALUATION.md) |
+
+The 1.3 Beta release also added a neutral-gray light theme, Hebrew-first local transcription and source sound for added videos by default. This update smooths interface transitions and respects your reduced-motion setting; each [release](https://github.com/VanoPeradze/cutroom/releases) lists its exact source and recorded checks.
 
 ## Highlights
 
 - **Six focused workspaces.** Media, Edit, Layout, Audio, Captions and Output share one player and one timeline.
+- **Clips board for Shorts.** Find the strongest moments of a long recording, then export them with ready titles, description and hashtags.
 - **Independent A/B tracks.** Cut, trim and move a camera and a screen recording together or separately, with Undo/Redo and track locks. [Timeline controls](docs/INDEPENDENT_TRACKS.md)
 - **Camera and screen layouts.** Stacked, side by side, picture in picture, camera only or screen only, for a selected range or the entire edit.
 - **Track mixer.** Balance Original, Music, Voiceover, Effects and Master with live level meters. Mute applies to preview and export; Solo is for preview only.
 - **Text and captions.** Add titles and captions, import SRT or VTT, and correct and style an optional AI transcript.
+- **Color and motion.** Looks, color sliders, your own `.cube` LUT and zoom keyframes for the whole edit.
 - **Green screen and stabilization.** Apply a chroma key to any video source, or create an optional stabilized local copy. [Green screen](docs/CHROMA_KEY.md) · [Stabilization](docs/STABILIZATION.md)
 - **Local MP4 export.** Landscape, vertical, square, portrait or the source shape, from 720p to 4K at up to 60 FPS, with no CUTROOM watermark.
 - **Gameplay vision for Shorts.** A compatible installed local Story model looks at sampled frames to propose action moments and filter menus and loading screens. Frames stay on your computer. [Models](docs/MODELS.md#gameplay-vision)
@@ -50,48 +63,48 @@ CUTROOM 1.3 Beta gives added videos their detected source sound by default, with
 
 <table>
   <tr>
-    <td width="50%"><a href="docs/images/showcase/home-20261106.jpg"><img src="docs/images/showcase/home-20261106.jpg" alt="Home: start a Short or Reel, a YouTube video or a manual edit"></a></td>
-    <td width="50%"><a href="docs/images/showcase/media-20261106.jpg"><img src="docs/images/showcase/media-20261106.jpg" alt="Media workspace: source recordings and project media in the actual editor"></a></td>
+    <td width="50%"><a href="docs/images/readme/studio-home-20261123.png?raw=1"><img src="docs/images/readme/studio-home-20261123.png" alt="Home: start a Short or Reel, a YouTube video or a manual edit"></a></td>
+    <td width="50%"><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-media.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-media.png" alt="Media workspace: source recordings and project media in the actual editor"></a></td>
   </tr>
   <tr>
-    <td align="center"><strong>Home</strong> · <a href="docs/images/readme/studio-home-20261019.png">Original PNG</a></td>
-    <td align="center"><strong>Media</strong> · <a href="docs/images/readme/studio-media-20261019.png">Original PNG</a></td>
+    <td align="center"><strong>Home</strong> · <a href="docs/images/readme/studio-home-20261123.png?raw=1">Original PNG</a></td>
+    <td align="center"><strong>Media</strong> · <a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-media.png">Original PNG</a></td>
   </tr>
   <tr>
-    <td><a href="docs/images/showcase/edit-20261106.jpg"><img src="docs/images/showcase/edit-20261106.jpg" alt="Edit workspace: preview, clip controls and timeline"></a></td>
-    <td><a href="docs/images/showcase/layout-20261106.jpg"><img src="docs/images/showcase/layout-20261106.jpg" alt="Layout workspace: composition and framing controls"></a></td>
+    <td><a href="docs/images/readme/studio-edit-20261122.png?raw=1"><img src="docs/images/readme/studio-edit-20261122.png" alt="Edit workspace: preview, clip controls and timeline"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-layout.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-layout.png" alt="Layout workspace: composition and framing controls"></a></td>
   </tr>
   <tr>
-    <td align="center"><strong>Edit</strong> · <a href="docs/images/readme/studio-edit-20261019.png">Original PNG</a></td>
-    <td align="center"><strong>Layout</strong> · <a href="docs/images/readme/studio-layout-20261019.png">Original PNG</a></td>
+    <td align="center"><strong>Edit</strong> · <a href="docs/images/readme/studio-edit-20261122.png?raw=1">Original PNG</a></td>
+    <td align="center"><strong>Layout</strong> · <a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-layout.png">Original PNG</a></td>
   </tr>
   <tr>
-    <td><a href="docs/images/showcase/audio-20261106.jpg"><img src="docs/images/showcase/audio-20261106.jpg" alt="Audio workspace: aligned channel faders, gain values and live meters"></a></td>
-    <td><a href="docs/images/showcase/captions-20261106.jpg"><img src="docs/images/showcase/captions-20261106.jpg" alt="Captions workspace: editable text and caption style controls"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-audio.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-audio.png" alt="Audio workspace: aligned channel faders, gain values and live meters"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-captions.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-captions.png" alt="Captions workspace: editable text and caption style controls"></a></td>
   </tr>
   <tr>
-    <td align="center"><strong>Audio</strong> · <a href="docs/images/readme/studio-audio-20261019.png">Original PNG</a></td>
-    <td align="center"><strong>Captions</strong> · <a href="docs/images/readme/studio-captions-20261019.png">Original PNG</a></td>
+    <td align="center"><strong>Audio</strong> · <a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-audio.png">Original PNG</a></td>
+    <td align="center"><strong>Captions</strong> · <a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-captions.png">Original PNG</a></td>
   </tr>
   <tr>
-    <td><a href="docs/images/showcase/output-20261106.jpg"><img src="docs/images/showcase/output-20261106.jpg" alt="Output workspace: output presets, resolution, frame rate and quality"></a></td>
-    <td><a href="docs/images/showcase/ai-20261106.jpg"><img src="docs/images/showcase/ai-20261106.jpg" alt="AI connection: local models and optional cloud-provider choices"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-output.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-output.png" alt="Output workspace: output presets, resolution, frame rate and quality"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-ai-setup.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-ai-setup.png" alt="AI connection: local models and optional cloud-provider choices"></a></td>
   </tr>
   <tr>
-    <td align="center"><strong>Output</strong> · <a href="docs/images/readme/studio-output-20261019.png">Original PNG</a></td>
-    <td align="center"><strong>AI connection</strong> · <a href="docs/images/ai-options.png">Original PNG</a></td>
+    <td align="center"><strong>Output</strong> · <a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-output.png">Original PNG</a></td>
+    <td align="center"><strong>AI connection</strong> · <a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-ai-setup.png">Original PNG</a></td>
   </tr>
   <tr>
-    <td><a href="docs/images/readme/studio-projects-20261015.png"><img src="docs/images/readme/studio-projects-20261015.png" alt="Projects window: find and open local projects, archived demo capture"></a></td>
-    <td><a href="docs/images/readme/studio-export-dialog-20261015.png"><img src="docs/images/readme/studio-export-dialog-20261015.png" alt="Export confirmation: review output settings, archived demo capture"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-projects.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-projects.png" alt="Projects window: find and open local projects, archived demo capture"></a></td>
+    <td><a href="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-export-dialog.png"><img src="https://cutroom-studio--lt8fzio6pl.expo.app/assets/studio-export-dialog.png" alt="Export confirmation: review output settings, archived demo capture"></a></td>
   </tr>
   <tr>
-    <td align="center"><strong>Projects</strong> · <sub>15 October 2026</sub></td>
-    <td align="center"><strong>Export confirmation</strong> · <sub>15 October 2026</sub></td>
+    <td align="center"><strong>Projects</strong> · <sub>22 November 2026</sub></td>
+    <td align="center"><strong>Export confirmation</strong> · <sub>22 November 2026</sub></td>
   </tr>
 </table>
 
-These ten views are the authentic captures currently available; the AI capture date is unrecorded. The [full window checklist](docs/GALLERY.md#current-source-coverage-checklist) identifies dialogs and states still awaiting fresh screenshots.
+These ten views show the main editing windows. See the [full screen gallery](docs/GALLERY.md) for the capture dates, the Clips and edit-style screens, and what the screenshots do not cover.
 
 ## Quick start
 
@@ -99,8 +112,8 @@ These ten views are the authentic captures currently available; the AI capture d
 
 | Platform | Download | Launcher |
 | --- | --- | --- |
-| **Windows** | [Windows releases](https://github.com/VanoPeradze/cutroom/releases) | **START CUTROOM.bat** |
-| **macOS** | [Mac releases](https://github.com/VanoPeradze/cutroom/releases) | **START CUTROOM.command** |
+| **Windows** | [Windows ZIP](https://github.com/VanoPeradze/cutroom/releases/download/v1.3-beta-20261123-style-families1/CUTROOM-1.3-Beta-Windows-71ea417.zip) | **START CUTROOM.bat** |
+| **macOS** | [Mac ZIP](https://github.com/VanoPeradze/cutroom/releases/download/v1.3-beta-20261123-style-families1/CUTROOM-1.3-Beta-combined-71ea417.zip) | **START CUTROOM.command** |
 
 1. Extract the entire ZIP into a fresh folder. Keep **App**, **START HERE.html** and the launcher together.
 2. Open the launcher beside **App** and let setup finish. In a combined ZIP, open **windows** or **mac** first.
@@ -111,7 +124,7 @@ These ten views are the authentic captures currently available; the AI capture d
 > [!IMPORTANT]
 > Before the first Windows launch, make sure WinGet is available and install the [official Microsoft Visual C++ x64 runtime](https://aka.ms/vc14/vc_redist.x64.exe). The CUTROOM launcher does not install this prerequisite.
 
-The [releases page](https://github.com/VanoPeradze/cutroom/releases) includes source identities, recorded checks and SHA-256 sidecars. Downloads can differ from the current repository. To update, extract a fresh copy separately and back up projects before moving them. The [18 October beta](https://github.com/VanoPeradze/cutroom/releases/tag/v1.2-beta-20261018) remains available for rollback.
+The [23 November beta release](https://github.com/VanoPeradze/cutroom/releases/tag/v1.3-beta-20261123-style-families1) includes the exact source, recorded checks and SHA-256 sidecars. Downloads can differ from the current repository. To update, extract a fresh copy separately and back up projects before moving them. The [24 October 1.2 beta](https://github.com/VanoPeradze/cutroom/releases/tag/v1.2-beta-20261024-update1) remains available for rollback.
 
 ### Run from source
 
@@ -142,7 +155,7 @@ The library stays on the left, the preview in the centre, properties on the righ
 | **Layout** | Choose the composition, assign camera and screen roles, set the framing and adjust the sync offset. |
 | **Audio** | Mix Original, Music, Voiceover, Effects and Master with live meters, Mute and Solo. |
 | **Captions** | Add text and captions, import SRT or VTT, correct the transcript and style the subtitles. |
-| **Output** | Choose the shape, resolution, frame rate and quality, then export. |
+| **Output** | Choose the shape, resolution, frame rate and quality, grade the color and add zoom keyframes, then export. |
 
 [User guide](docs/USER_GUIDE_EN.md) · [Keyboard shortcuts](docs/KEYBOARD_SHORTCUTS.md) · [Shortcut profiles](docs/KEYBOARD_PROFILES.md)
 
@@ -163,7 +176,7 @@ The library stays on the left, the preview in the centre, properties on the righ
 ## Privacy
 
 - **Local work.** Editing, preview and MP4 export run on your computer. Projects and working media are stored locally.
-- **Cloud AI only with consent.** When cloud AI is enabled, selected audio is sent to your provider for transcription, and transcript text and editing context for planning. Video frames are not sent. The provider's retention and privacy terms apply.
+- **Cloud AI only with consent.** When cloud AI is enabled, selected audio is sent to your provider for transcription, and transcript text and editing context for planning. Video frames are not sent. The local video map and optional video background note are not sent to cloud Story AI. The provider's retention and privacy terms apply.
 - **No CUTROOM account.** There is no CUTROOM subscription, account or export watermark.
 
 ## Requirements
@@ -196,6 +209,7 @@ Automated checks and synthetic renders do not prove real-footage quality or inst
 | [Timeline controls](docs/INDEPENDENT_TRACKS.md) | Working with sources A and B |
 | [Green screen](docs/CHROMA_KEY.md) · [Stabilization](docs/STABILIZATION.md) | Effects and their limits |
 | [Keyboard shortcuts](docs/KEYBOARD_SHORTCUTS.md) | Commands and shortcut profiles |
+| [Edit evaluation](docs/EDIT_EVALUATION.md) | Measuring edit quality on your own recordings |
 | [Test on another PC](docs/TEST_ON_ANOTHER_PC.md) | First-run checks and common setup problems |
 | [All guides](docs/README.md) | The full documentation index |
 

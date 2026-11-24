@@ -428,12 +428,13 @@ Explicit body fields take precedence over model-name suffixes (`<model>-high`, `
 | `AGY_PARKED_TTL_SEC` | `300` | Parked MCP tool-call resume TTL in seconds (`5m`) |
 | `AGY_PREFILL_CANCEL_GRACE_SEC` | `45` | Disconnect soft-detach grace window after `>=30s` prefill |
 | `AGY_WAF_AUTOBISECT` | `true` | Automatic Flash WAF bisection & cleanroom rule learning |
+| `AGY_CAPACITY_FALLBACK_TTL_SEC` / `AGY_CAPACITY_FALLBACK_MAX_TTL_SEC` | `300` / `1800` | Cooldown TTL & exponential backoff cap before probing recovery from automatic lower-tier fallback (`0` = sticky) |
 
 *(See [`.env.example`](.env.example) for the complete, annotated list of all environment variables.)*
 
 ### Key Prometheus Metrics (`GET :18891/metrics`)
 
-- **Gateway & KV Cache**: `agy_gateway_store_ready`, `agy_gateway_live_workers`, `agy_gateway_hibernated_sessions`, `agy_gateway_parked_calls`, `agy_gateway_prompts_inflight`, `agy_gateway_requests_total`, `agy_gateway_cache_burn_warnings_total`, `agy_gateway_soft_detach_total{outcome}`, `agy_gateway_upgrade_state{state}`, `agy_gateway_turns_total{model,mode,stop_reason,usage_source}`, `agy_gateway_tokens_total{model,kind}`.
+- **Gateway & KV Cache**: `agy_gateway_store_ready`, `agy_gateway_live_workers`, `agy_gateway_hibernated_sessions`, `agy_gateway_parked_calls`, `agy_gateway_prompts_inflight`, `agy_gateway_requests_total`, `agy_gateway_cache_burn_warnings_total`, `agy_gateway_capacity_fallback_active_sessions`, `agy_gateway_capacity_fallback_events_total`, `agy_gateway_capacity_fallback_probes_total`, `agy_gateway_soft_detach_total{outcome}`, `agy_gateway_upgrade_state{state}`, `agy_gateway_turns_total{model,mode,stop_reason,usage_source}`, `agy_gateway_tokens_total{model,kind}`.
 - **Multi-Account Pool (`v2.3`)**: `agy_account_inflight{account,state}`, `agy_account_sticky_sessions{account}`, `agy_account_cooldown_seconds{account}`, `agy_account_requests_total{account}`, `agy_account_failures_total{account}`, `agy_account_rate_limits_total{account}`, `agy_account_failovers_total{account}`.
 
 ---
@@ -522,6 +523,10 @@ Non-default ports automatically use isolated runtime directories (`runtime/insta
 
 <a id="changelog"></a>
 
+- **2026-11-23 (`v2.3.1 — PR #1 Integration, Isolated Quota HOME, macOS Headless Keychain Guard & Non-Blocking Cold Quota`)**:
+  - **Isolated `HOME` & macOS File-Token Enforcement (`dashboard.go`, `acp_engine.go`, `account_oauth.go`, `account_manager.go`)**: Integrated and extended community PR #1 (`@HamsteRider-m`) with `resolveIsolatedAgyHome` (per-profile `quota-home-<profile>` + atomic `.gemini` symlink, or direct parent resolution for `.gemini` child sandboxes) and automatic `SSH_CONNECTION` headless file-token enforcement on `darwin` across `/usage`, `agy acp`, and multi-account OAuth/child workers — eliminating 22s `signal: killed` hangs when host `$HOME` is unauthenticated or macOS Keychain blocks.
+  - **Strictly Non-Blocking Cold/Error Quota (`dashboard.go`)**: `FetchOfficialQuota(false)` now returns immediately (`<1ms`, `status: "loading"`) on cold start while snapshotting subprocess env synchronously and launching background refresh, and persists `lastQuotaErr` across both command and JSON unmarshal errors with exponential backoff (`30s -> 2m -> 5m -> 15m`) so `GET /api/dashboard` and federated polls never stall.
+  - **Client Attribution & Proxy Header Disambiguation (`internal/protocol/client_detect.go`)**: Added `GenericAgent` (`ga-platform` / `ws_call_tool`) and `T3 Code` (`<t3_code_instructions>`) detection and prioritized explicit prompt/tool signatures over proxy-injected `Originator` / `User-Agent` headers.
 - **2026-11-22 (`v2.3.0 — Multi-Account Pool v3, Channel Groups, Turn-1 Pre-Stream Failover, agy 1.5.14 Native SessionId & Security Hardening`)**:
   - **Multi-Account Pool & Channel Groups (`account_scheduler.go`, `account_manager.go`)**: Added 5 pool/group routing strategies (`round-robin`, `fill-first` with `2%` quota buckets, clamped Nginx `weighted-rr`, `least-load`, and `manual-active` with optional strict lock), `AccountGroup` channel pools with dedicated keys & model allowlists, `@acct:<id>` / `@group:<id>` / `X-Agy-Group` routing, and 1-click `rotate_next` & `drain_and_rotate` actions.
   - **Pre-Stream 1st-Turn Failover & U8 Continuity**: Added bounded Turn-1 pre-stream failover across child workers on `429`/`529`/`502`/`503`/`401(#3501)` (`X-Agy-Failover-Count`), accurate `[system, user]` Turn-1 vs. Turn-2+ fingerprinting (`inspectConversationTurns`), model-family-isolated cooldowns (`gemini` / `claude` / `argon`), structured SSE tail error detection, and non-upstream (`count_tokens`) health isolation.

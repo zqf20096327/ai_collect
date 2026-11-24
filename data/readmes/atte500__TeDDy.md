@@ -159,6 +159,26 @@ uv tool install teddy-cli --pre --force
 > [!WARNING]
 > Experimental versions are published as PEP 440 dev pre-releases on PyPI and may include breaking changes or unstable features.
 
+### Installing From a Fork or Private Index
+
+TeDDy can run from a fork or a private package index, and the update check can follow the same source. Because the version check reads the installed `teddy-cli` distribution metadata, every install shape must keep the distribution name `teddy-cli` (a git install, a local wheel, and a private index all do).
+
+Install from a git URL:
+
+```bash
+uv tool install git+https://github.com/<you>/teddy
+```
+
+Install from a private index:
+
+```bash
+uv tool install teddy-cli --default-index https://packages.example.com/simple
+```
+
+Then point the update check at your own source by setting `update.index_url` in `.teddy/config.yaml`.
+
+The source only needs to be PyPI-JSON-shaped. A static `version.json` served from your fork's repository works too, as long as it carries `{"info": {"version": "x.y.z"}}`.
+
 ### Initialize
 
 ```bash
@@ -176,6 +196,19 @@ Each subcommand rewrites only the files whose content differs from the bundled d
 ### Configuration
 
 The first execution of `teddy start` runs an interactive setup to configure your API key and preferred editor. For deeper customization, edit `.teddy/config.yaml`. All `llm.*` settings pass directly through to [LiteLLM](https://docs.litellm.ai/docs/completion/input), allowing you to route to cloud providers or local endpoints (Ollama, llama.cpp, or any OpenAI-compatible server via `api_base`). The config file also lets you adjust your external editor, command execution timeouts, diff similarity thresholds, and automated context pruning budgets.
+
+To route one agent persona to its own model while `llm.*` stays the shared default, add an `agents` block. The effective model resolves from the `--model` flag first, then `agents.<persona>.model`, then `llm.model`, and every key the persona omits still falls back to the global `llm` block. `--model` replaces only the `model` key, so a persona-level `api_key` or `api_base` still applies. The merge is one level deep: a mapping-valued key such as `extra_headers` replaces the global value wholesale rather than merging key by key. An empty or whitespace-only persona model falls back to `llm.model`, and persona names match case-insensitively.
+
+```yaml
+llm:
+  model: "openai/gpt-4o"
+  timeout: 300
+agents:
+  architect:
+    model: "anthropic/claude-sonnet-4-5"
+```
+
+The API-key setup prompt reads only the global `llm.api_key`, so a persona-level `api_key` does not suppress it: when `llm.api_key` is empty the prompt still fires, and validation then reports against the merged key.
 
 ### Environment Variables
 

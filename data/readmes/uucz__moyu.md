@@ -18,6 +18,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/v/tag/uucz/moyu?label=version&style=flat-square&color=blue" alt="Version">
+  <a href="https://github.com/uucz/moyu/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/uucz/moyu/test.yml?label=CI&style=flat-square" alt="CI"></a>
   <img src="https://img.shields.io/badge/Claude_Code-black?style=flat-square&logo=anthropic&logoColor=white" alt="Claude Code">
   <img src="https://img.shields.io/badge/Cursor-000?style=flat-square&logo=cursor&logoColor=white" alt="Cursor">
   <img src="https://img.shields.io/badge/OpenAI_Codex-412991?style=flat-square&logo=openai&logoColor=white" alt="Codex">
@@ -33,13 +34,13 @@
 
 **你的 AI 有「讨好型人格」——你让它修个 bug，它给你重构了整个文件。**
 
-1460 次控制实验证实：AI 编码助手存在系统性的过度工程倾向。它不是在认真工作，是在讨好你。三行规则就能治好它。
+1460 次控制实验证实：AI 编码助手存在系统性的过度工程倾向。它不是在认真工作，是在讨好你。**软约束（Skill / AGENTS.md）+ 硬护栏（Agent Hooks / PR Linter）** 双层治好它。
 
 ```bash
-claude skill install --url https://github.com/uucz/moyu --skill moyu
+npx skills add uucz/moyu
 ```
 
-> Cursor / VS Code / Windsurf / Cline / Codex / Kiro 等平台 → 复制对应规则文件即可，见 [安装](#安装)
+> 支持 Claude Code / Cursor / Codex / Copilot / Windsurf / Cline / Antigravity / OpenCode 等。通用 `AGENTS.md`、Claude Code Stop Hook 插件与手动复制见 [安装](#安装) 与 [Moyu Linter & Hooks](./linter/README.md)
 
 ---
 
@@ -196,34 +197,55 @@ def bulk_complete(ids):
 
 ## 安装
 
-> **快速路由**：大多数用户只需一行命令：
+> **快速路由**：跨平台一行安装（Agent Skills CLI，自动识别已安装工具）：
 > ```bash
-> claude skill install --url https://github.com/uucz/moyu --skill moyu
+> npx skills add uucz/moyu
 > ```
-> 用 Cursor？复制 `cursor/rules/moyu.mdc` 到你的项目 `.cursor/rules/`。
-> 用 VSCode/Copilot？复制 `vscode/copilot-instructions.md` 到 `.github/`。
-> 其他平台 → [详细安装](#claude-code--codex-cli--kiro--codebuddy--google-antigravity--opencode)
+> **Claude Code 插件（含 Stop Hook 硬护栏）**：在会话中运行 `/plugin marketplace add uucz/moyu` → `/plugin install moyu@uucz-moyu`。
+> **通用 `AGENTS.md`**（Codex / Cursor / Copilot / Aider）：复制 [`templates/AGENTS.md`](./templates/AGENTS.md) 到项目根目录（Claude Code 可 `ln -s AGENTS.md CLAUDE.md`）。
 
-### Claude Code / Codex CLI / Kiro / CodeBuddy / Google Antigravity / OpenCode
+### Agent Skills CLI（Claude Code / Cursor / Codex / Copilot / Windsurf / Cline / Antigravity / OpenCode）
 
 ```bash
 # 中文版（标准）
-claude skill install --url https://github.com/uucz/moyu --skill moyu
+npx skills add uucz/moyu --skill moyu
 
 # English
-claude skill install --url https://github.com/uucz/moyu --skill moyu-en
+npx skills add uucz/moyu --skill moyu-en
 
 # 日本語
-claude skill install --url https://github.com/uucz/moyu --skill moyu-ja
+npx skills add uucz/moyu --skill moyu-ja
+
+# 한국어 / Français
+npx skills add uucz/moyu --skill moyu-ko
+npx skills add uucz/moyu --skill moyu-fr
 
 # 轻量版（只保留三条铁律 + 对比表）
-claude skill install --url https://github.com/uucz/moyu --skill moyu-lite
+npx skills add uucz/moyu --skill moyu-lite
 
 # 严格版（L1 就停下确认，适合团队强制执行）
-claude skill install --url https://github.com/uucz/moyu --skill moyu-strict
+npx skills add uucz/moyu --skill moyu-strict
 ```
 
 或手动复制 `skills/moyu/SKILL.md` 到你的项目 `.claude/skills/moyu/SKILL.md`
+
+### 确定性硬护栏：Agent Hooks & PR Linter
+
+实验表明单靠 Prompt 无法保证所有模型克制。Moyu 额外提供零依赖的确定性 diff 检测器（[`linter/`](./linter/README.md)）：
+
+- **一键接入 Hook**（幂等合并、不覆盖现有配置）：
+  - Claude Code：`node linter/index.mjs --install-hook=claude`（或通过 `/plugin install` 自动启用）
+  - Cursor IDE：`node linter/index.mjs --install-hook=cursor`（写入 `.cursor/hooks.json`）
+  - Git Pre-Commit：`node linter/index.mjs --install-hook=git`（适用于任何 AI 工具）
+- **GitHub Action（PR 检查）**：在 workflow 中引入 `uses: uucz/moyu/linter@main`（自带浅克隆 PR Diff API 兜底）
+
+### 通用 AGENTS.md
+
+```bash
+curl -o AGENTS.md https://raw.githubusercontent.com/uucz/moyu/main/templates/AGENTS.md
+# Claude Code 可共享同一份规则：
+ln -s AGENTS.md CLAUDE.md
+```
 
 ### Cursor
 
@@ -247,7 +269,7 @@ curl -o ~/.codex/skills/moyu/SKILL.md https://raw.githubusercontent.com/uucz/moy
 ### VSCode / GitHub Copilot
 
 ```bash
-mkdir -p .github/instructions
+mkdir -p .github
 curl -o .github/copilot-instructions.md https://raw.githubusercontent.com/uucz/moyu/main/vscode/copilot-instructions.md
 ```
 
@@ -423,9 +445,10 @@ NoPUA 改变 AI 为什么做，Moyu 约束 AI 做多少——出发点不同，�
 
 ## 未来方向
 
-- [x] Moyu Linter：自动检测 AI 输出中的过度工程信号
-- [x] GitHub Action：PR 级别的过度工程检查
-- [ ] 更多语言本地化
+- [x] Moyu Linter：自动检测 diff 中的 7 类过度工程信号（含 16 项单元测试、浅克隆 API 兜底与 `.moyurc.json`）
+- [x] GitHub Action：PR 级别的过度工程检查（Node 24）
+- [x] Agent & Git Hooks 一键安装：原生支持 Claude Code、Cursor IDE 与 Git `pre-commit`，外加通用 `AGENTS.md` 模板
+- [ ] 社区贡献的新语言本地化、更多编辑器 Hook 适配与真实场景测试案例
 
 ---
 

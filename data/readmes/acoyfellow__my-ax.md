@@ -129,6 +129,22 @@ Optional providers:
 - **My Machine** runs [`machinectl`](https://github.com/acoyfellow/machinectl). This gives terminal-equivalent access as the companion's OS user. Use a dedicated account with least privilege.
 - **Web Push** needs VAPID keys and browser notification permission.
 
+## Terminal
+
+Join any pi chat from a terminal. The terminal and the web app share one chat: a turn typed in either place appears in both, and a reconnect prints any turns that were missed.
+
+```sh
+export MYAX_URL=https://agent.example.com
+node bin/my-ax.mjs chats
+node bin/my-ax.mjs attach <chat id, id prefix, or name>
+```
+
+`/image <path> [message]` sends a PNG, JPEG, WebP or GIF. When the agent asks a question with `ask_user`, the terminal shows numbered options; type a number to answer.
+
+`node bin/my-ax.mjs sync-pi [--days N]` sends local Pi session traces to the same store `brain_query` reads, as `source: "pi-local"`. It sends timings, model names, token counts, cost and tool names. It never sends prompts, replies, tool arguments or tool output. Re-running it sends only new lines.
+
+The client uses your Cloudflare Access login (`cloudflared access token`) and the chat's normal WebSocket. It runs no agent itself. `/abort` stops a turn, and `/quit` or Ctrl-D leaves.
+
 ## Who Owns What
 
 | Layer | Responsibility |

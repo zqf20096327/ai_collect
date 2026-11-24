@@ -2,13 +2,13 @@
 
 **Crawl4AI Cloud is a hosted web scraping, extraction, and search API for AI agents and data pipelines.** Turn pages into clean Markdown for RAG, extract structured JSON, or search the live web with one API key. Crawl4AI runs the browsers and manages the proxies.
 
-**[Get a free API key](https://crawl4ai.com/?ref=readme)** · 1,000 free credits every month. No credit card required.
+**[Get a free API key](https://crawl4ai.com/signin/?ref=readme)** · 1,000 free credits every month. No credit card required.
 
 [Try a URL in the playground](https://crawl4ai.com/?ref=readme-playground#playground) · [Set up Crawl4AI Cloud in Claude Code, Cursor, or Codex](https://crawl4ai.com/llms.txt?ref=readme-llms)
 
 This repository is home to the Apache-2.0 crawler that powers Crawl4AI Cloud. [Run it yourself](#run-crawl4ai-yourself) with Python or Docker.
 
-<a href="https://crawl4ai.com/?ref=readme-banner">
+<a href="https://crawl4ai.com/signin/?ref=readme-banner">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unclecode/crawl4ai/main/docs/assets/cloud-launch-banner-dark.svg">
     <img alt="Crawl4AI Cloud is live. 1,000 free credits every month, no card. Get your key." src="https://raw.githubusercontent.com/unclecode/crawl4ai/main/docs/assets/cloud-launch-banner-light.svg" width="960">
@@ -155,7 +155,7 @@ In 2023, I needed web-to-Markdown. The “open source” option wanted an accoun
 
 I made it open source for **availability**, anyone can use it without a gate. Now I’m building the platform for **affordability**, anyone can run serious crawls without breaking the bank. If that resonates, join in, send feedback, or just crawl something amazing.
 
-That platform is live now: [Crawl4AI Cloud](https://crawl4ai.com/?ref=readme).
+That platform is live now: [Crawl4AI Cloud](https://crawl4ai.com/).
 </details>
 
 <details>
@@ -231,7 +231,7 @@ That platform is live now: [Crawl4AI Cloud](https://crawl4ai.com/?ref=readme).
 - 📊 **Monitoring dashboard and playground**, a browser pool with pre-warmed pages.
 - 🏗️ **AMD64 and ARM64** images.
 
-☁️ Rather not run a server? The cloud is the same idea, hosted. [Get a key →](https://crawl4ai.com/?ref=readme)
+☁️ Rather not run a server? The cloud is the same idea, hosted. [Get a key →](https://crawl4ai.com/signin/?ref=readme)
 </details>
 
 <details>
@@ -526,7 +526,7 @@ Our mission is to unlock the value of personal and enterprise data by turning di
 ## 💖 Support Crawl4AI
 
 1. ⭐ **Star the repo**: it helps more people find it.
-2. ☁️ **Use the cloud**: [crawl4ai.com](https://crawl4ai.com/?ref=readme). It funds the library.
+2. ☁️ **Use the cloud**: [crawl4ai.com](https://crawl4ai.com/). It funds the library.
 3. 💝 **Sponsor on GitHub**: [github.com/sponsors/unclecode](https://github.com/sponsors/unclecode)
 4. 🏢 **Companies**: the sponsor tiers and benefits are in [SPONSORS.md](SPONSORS.md).
 

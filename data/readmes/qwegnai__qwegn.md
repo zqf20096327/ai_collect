@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/Swift-6.2-orange.svg" alt="Swift 6.2">
   <img src="https://img.shields.io/badge/platform-macOS%2026%20(Apple%20Silicon)-lightgrey.svg" alt="macOS 26, Apple Silicon">
   <a href="https://github.com/qwegnai/qwegn/actions/workflows/ci.yml"><img src="https://github.com/qwegnai/qwegn/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.28.2-green.svg" alt="Release v0.28.2"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.35.0-green.svg" alt="Release v0.35.0"></a>
 </p>
 
 **Qwegn** (`qwg`) is a from-scratch LLM/VLM inference engine for Apple Silicon,
@@ -73,6 +73,7 @@ Pre-quantized official Qwegn model packs are hosted under [`huggingface.co/qwegn
 | Apex-35B-V1.0 (`HQ4_G32`, 22.2 GiB) | **6,416 tok/s** (`6,262` @16K · `5,810` srv) | **261.1 tok/s** spec (`178.0` srv · `174.9` CLI · `148.5` ser) | **5,491 / 100.9 tok/s** @1M (`155.4` @64K `e-means` · `3/3`) | **17–28 ms** warm cache (`11.5×–19.2×`) |
 | Maxwell-V1-Flash (`HQ8 + SHVQ3/4` 17.2 GiB) | **5,324 tok/s** (`4,664` @5.4K · `1,620` @64K) | **210.5 tok/s** (`118.1` CLI SQL · `104.0` srv · `100.4` ser) | **1,620 / 20.8 tok/s** @64K (`3/3` needle · `19.3 GiB` `q4`) | **7–15 ms** warm cache (`25.8×–47.3×`) |
 | Qwen3.8-Flash-Next (`HQ8+HQ4` + `VQ2` PLE + `DFlash2-shvq4g32`) | **3,035 tok/s** (`2,947` @4K) | **177.2 tok/s** (`DFlash2` spec · `111.8` srv · `89.4` CLI · `83/100` code) | **1,888 / 63.7 tok/s** @1M (`e-means` · `1,350 / 41.1` QSA) | **0.12–0.24 s** `.qwcache` (`74.3×` vs 17.84 s) · **11 ms** warm (`60.3×`) |
+| Inkling-2-Mini (`SHVQ4 + SHVQ2/3` `10.2G` / `Cand5` `15.2G` + `DSpark`) | **3,638 tok/s** (`3,507` @2K · `3,200` @128K) | **99.9 tok/s** (`86.2` code `B=12` · `100.6` `B=4` srv · `21/25` code25) | **2,017 / 33.9 tok/s** @1M (`3.74× / 4.51×` vs dense · `21.8 GiB` · `3/3 (12/12)` `8K–1M` LSA & dense) | `147/184` warm prefix cache · 23-layer ViT · `89/89` API |
 | Edge0-145B (`145B`, `HQ8+HQ4` + `VQ2` PLE 83.1 GiB) | **2,568–2,572 tok/s** | **135.6 tok/s** spec (`69.2` CLI `d=1` · `68.5` srv) | **1,886 tok/s** @300K (`3/3` · 1M `69.7 GiB` `q4` / `103.0 GiB` `q8` UMA) | **8 ms** warm cache (`119.8×`) |
 | SenseNova-Loop-9B (`HQ4_G32`, 7.4 GiB) | **2,045 tok/s** (`1,944` @16K · `1,763` @64K) | **165.7 tok/s** (`98.1` CLI code · `153.0` 4-srv · `58.4` srv) | **49.3 / 49.4 tok/s** dec @524K YaRN / @1M (`3/3` @16K–64K · `14.3 / 22.4 GiB`) | **9–18 ms** warm cache (`46.1×–86.1×`) · **0.81 s** Metal ViT (`4.09×`) |
 | Qwen3.8-27B (+ `DSpine-b16` / `DFlash2`) | 1,043 tok/s (`914` @64K) | **148.0 tok/s** (`144.1` srv · `4.19×` · `75/100` code) | **831 / 36.5 tok/s** @1M (`e-means` / `Ward`) | **11–12 ms** warm cache (`157×–173×`) · **0.81 s** Metal ViT (`4.12×`) |
@@ -141,6 +142,12 @@ Full tables, paired A/B repository memory benchmarks, and thermal protocol: [doc
 </p>
 
 **SenseNova-Loop-9B** · 32 physical → 56 effective layers (`2×` loop `[4..28]`), `F32` 2-stream Sinkhorn-20 mHC, `524K` native YaRN-2×, `HQ4_G32` (`qwg pull qwegnai/SenseNova-Loop-9B-hq4g32`, `7.38 GiB` / `4.63 GiB` text — **`2,045 tok/s`** `@4K` / `1,944` `@16K` / `1,763` `@64K` prefill, **`165.7 tok/s`** serve spec / `98.1` CLI code / **`153.0 tok/s`** 4-stream HTTP `3.02×`, **Native Metal FP16 ViT (`807.8 ms` `4.09×` encode, `950.6 MiB`, `100%` SHA-256 parity)**, **`291/291` API / `100%` cap & fid / `61/100` `Code-100`**, `3/3` needles `@16K`/`64K`)
+
+<p align="center">
+  <img src="assets/qwegn_model_inkling2_mini.svg" alt="Inkling-2-Mini" width="100%">
+</p>
+
+**Inkling-2-Mini** (+ `DSpark`) · 24 physical → **48 effective layer visits** (`[6..<18] ×3`, `4` trunk + `12×3` loop + `4` coda), `128` experts (`8/tok`), `24Q/8KV` (`head_dim=128`) Sink+RelBias GQA (`4` full + `20` `SWA-1024`), `AttnRes-6`, `SConv-4`, `23`-layer ViT, `DSpark` Markov+Tree MTP (`--mtp-drafts 0...15`), available in **`qwegnai/Inkling-2-Mini-shvq4g32-shvq2g64-shvq3g64`** (`10.20 GiB` total / `9.94 GiB` GPU weights — **`3,638 tok/s`** `@8K` / `3,200` `@128K` prefill, **`99.9 tok/s`** `DSpark d=3` / `86.2` `code256` `B=12` / **`100.6 tok/s`** `B=4` HTTP wavefront, `2,017 / 33.9 tok/s` filled `@1M` `q4` LSA (`3.74×` prefill / `4.51×` decode vs dense, `29 ms` p50, `21.77 GiB` RSS; `3/3 (12/12)` `100%` multi-hop recall `8K–1M` LSA & dense; `2,298 / 42.3` `@512K`, `2,339 / 43.4` `@256K`, `71.9` `@128K` `d=3`), **`89/89 (100%)` API / `21/25` `Code-25`**) and high-fidelity **`qwegnai/Inkling-2-Mini-shvq4g32-nvfp4`** (`15.15 GiB`, lossless `NVFP4` MoE, **`0.0132` mean KL / `97.9%` Top-1**, `3,504` `@8K` prefill, `80.1` `d=3` / `79.9` `var5`, `13/13` HE)
 
 **Sage-S2.1-Flash** (`HQ8_G32 + SHVQ2_G64 + SHVQ3_G64`) · Flagship hybrid MoE (`--context-tokens 65536` `v0.28.0`: **`291/292` API / `100%` cap / `99.39%` fidelity / `70/88` agentic / `81/100` `Code-100` (`90%` HE, `72%` MBPP)**, `42.4 / 845.7 tok/s`, spec `49.6 / 39.9` (`1.98 tok/step`), `100.8×` warm cache (`1,814 → 18 ms`))
 
@@ -222,6 +229,8 @@ Core flags for `run` / `repl` / `serve` (defaults come from `QWKnobRegistry`; pe
 | `--context-tokens` | `4096` | Context capacity, up to `1048576` (1M tokens) with YaRN auto-scaling and LSA. |
 | `--kv-mode` | `q4` | KV cache format: `q4` (default, `4×` smaller), `q8` or `f16` (automatically enforced when a `.qwg/` memory pack is mounted). |
 | `--lsa-mode` | `auto` | Adaptive Latent Sparse Attention: exact dense `<= 2.5K`, `.qlsa`/SVD on GQA, QSA + `>262K` `e-means` on Flash-Next, `<41K` bypass + `e-means` on MLA. [LSA manual](docs/lsa.md) |
+| `--lsa-cross-loop-reuse` | `false` | Reuse Layer-0 LSA top-`k` block indices across looped attention visits `> 0` (`--no-lsa-cross-loop-reuse` for exact parity). |
+| `--moe-spec-budget` | `0` | Union expert cap (`0...64`) per MoE layer during speculative multi-token verification (`0` = lossless exact routing). |
 | `--memory-policy` / `--os-reserve` | `maxResident` / `8` | Unified-memory residency policy (`maxResident` vs swap-free `safe`) and OS RAM reserve in GiB. |
 | `--load-vision` / `--no-load-vision` | `false` | Eagerly wire or omit multimodal ViT planes at startup (`-1.60 GiB` RSS when omitted; loads on demand). |
 | `--stream-ngrams` / `--no-stream-ngrams` | `false` | Stream external PLE N-gram tables (`ngram.bin`) from NVMe (`-27.30 GiB` GPU RAM) vs keeping `VQ2_G32` GPU-resident. |
@@ -250,9 +259,9 @@ make perf     # performance regression gates against Scripts/bench/baselines.jso
 ## Repository Layout
 
 - `Sources/Foundation` — Core tensor types, quantization formats (`QWQuant`), arena allocator (`QWAlloc`), and Metal HAL (`QWHAL`)
-- `Sources/Operators` — Quantized matrix multiply (`QWGEMM`), normalization (`QWNorm`), RoPE (`QWRope`), sparse/dense attention (`QWAttn`), and Gated DeltaNet (`QWGDN`)
-- `Sources/Subsystems` — Model family pipelines (`QWFlashNext`, `QWMLP`, `QWHead`, `QWMTP`, `QWVision`, `QWState`)
-- `Sources/Runtime` — Engine driver (`QWEngine`), `QWMemoryPack`, continuous batching, prefix caching, and speculative decoding (`DFlash` / `MTP`)
+- `Sources/Operators` — Quantized matrix multiply (`QWGEMM`), normalization (`QWNorm`), RoPE (`QWRope`), KV arena (`QWKV`), sparse/dense/QSA attention (`QWAttn`), Gated DeltaNet (`QWGDN`), MLP/MoE (`QWMLP`), HyperPLE (`QWHyperPLE`), and LM head (`QWHead`)
+- `Sources/Subsystems` — Speculative decoding (`QWMTP`), BPE/Chat tokenizer (`QWToken`), Metal ViT (`QWVision`), and multimodal fusion (`QWMM`)
+- `Sources/Runtime` — Unified single-path engine driver (`QWEngine` / `DenseModule` / `QWEngineDriver` + `QWHyperStreamRuntime`), `QWMemoryPack`, continuous batching, prefix caching, and speculative decoding (`DFlash` / `DSpine` / `MTP`)
 - `Sources/QWMetal` — Metal 4 compute kernels (`.metal`) and shared headers (`.metalh`)
 - `Sources/Apps` — CLI (`qwg`), HTTP server (`QWServer`), macOS menu bar app (`QWMenuBar`), and kernel microbenchmarks (`qwg-bench-kernels`)
 - `Scripts` / `Tests` — Metal build scripts, style/kernel/basis linters, golden generators, and XCTest unit/GPU parity suites

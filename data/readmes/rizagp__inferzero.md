@@ -171,7 +171,7 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
   1,877 and 7.08, the setting to use on that card.
 - **One Arc A770 16 GB** under Windows ([issue #35](https://github.com/rizagp/inferzero/issues/35),
   [issue #36](https://github.com/rizagp/inferzero/issues/36)): 4K prompt 1,223 tok/s (release 2026.11.17.08 with
-  `ARC_GEMM_SPLIT=17`, the default on Alchemist since 2026.11.18.02), generation 21.6-22.7 tok/s, 30.1-31.3 with MTP, with `ARC_BATCH=64`, the default on Alchemist on Windows since 2026.11.18.08 (12.6-12.8 without).
+  `ARC_GEMM_SPLIT=17`, the default on Alchemist since 2026.11.18.02), generation 21.6-22.7 tok/s, 30.1-31.3 with MTP, with `ARC_BATCH=64`, the default on Alchemist on Windows since 2026.11.18.08 and under Linux since 2026.11.21.06 (12.6-12.8 without).
   Qwen3.5 4B: 4K prompt 4,821 tok/s through the preset (2026.11.18.02, the default since 2026.11.18.03), generation
   37.8-38.2; Qwen3.5 9B: 2,969-3,017 (2026.11.17.08). Under Linux (skipzx-lab, issue #45, release 2026.11.18.08,
   xe driver, the card held to 150 W): 27B 4K prompt **1,528 tok/s** (the copy into local memory with its addresses set once, 2026.11.21.10's default; 1,491 with main d252b86's, the 32 x 32 tile through local memory, the default since
@@ -201,8 +201,8 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
     kept in RAM (the default since 2026.11.16.16): 512-token prompt 24.0 tok/s, generation 9.25 (3.55 without).
   - 2 Arc A770s on Windows (hansong80, issue #35, release 2026.11.18.02, no peer access): the 27B's 4K prompt
     1,126 tok/s against one card's 1,169, generation 12.2 against 12.6-12.8: the 128 sums a token waited 73.5 ms of
-    81, a host round trip each. `ARC_TP_EVSUM=1` (opt-in since 2026.11.18.05) lets the GPUs meet on events instead;
-    not measured on two cards yet.
+    81, a host round trip each. `ARC_TP_DEVSYNC=1` (opt-in since 2026.11.24.02, hibagus) lets the GPUs meet on their
+    own (two Pro B70s with `ARC_TP_P2P=1`: +7-10 %); not measured on two A770s yet (no peer access there).
   - A slow link sets the pace: with one card in an x4 slot at 2.4 GB/s (issue #19, the 27B UD-Q5_K_XL) the prompt over
     2 cards is half of one card's (620 against 1,223 tok/s). A layer split for such links is planned, not built.
   - Batched slots work over a split model.

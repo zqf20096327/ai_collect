@@ -6,14 +6,16 @@ the merge request or pull request.
 
 **Documentation:** <https://phonepe.github.io/arnold>
 
+![An Arnold AI review comment inline on a merge request diff](docs/docs/assets/screenshots/ai-comment-assessment.png)
+
 ## Quick start
 
-Requires JDK 17, Maven 3.9 and Docker (or Podman) with Compose.
+Requires Docker (or Podman) with Compose.
 
 ```bash
-mvn -f arnold-backend/pom.xml -DskipTests package
+git clone https://github.com/PhonePe/arnold.git && cd arnold
 cp deploy/.env.example .env      # set GitLab/GitHub and LLM values as needed
-docker compose up --build
+docker compose up
 ```
 
 Open <http://localhost:3000>. The quick start uses development authentication and a local review worker; do not expose

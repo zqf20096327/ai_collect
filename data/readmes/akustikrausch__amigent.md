@@ -21,9 +21,12 @@ over (`amigentd.000` on a 68000) and start it with `amigentd SETUP` in a Shell.
 
 **2. On the PC or Mac:** paste this into your AI agent:
 
-    Install Amigent for me: run "pipx install amigent", then amigent-setup,
-    register the MCP server "amigent" with the command amigent-server, and
-    run amigent-viewer --install.
+    Install Amigent for me: run "pipx install amigent" (if pipx or Python 3.10
+    or newer is missing, install them first: Windows winget, macOS Homebrew,
+    Linux the package manager). Then run amigent-setup; it finds my Amiga on
+    the network by itself. Register the MCP server "amigent" with the command
+    amigent-server, and run amigent-viewer --install so the remote desktop
+    shows up as a program. Tell me if you need to be restarted.
 
 **3. Ask for something:** "Open the remote desktop", or "Install the newest
 HippoPlayer from Aminet".
@@ -48,13 +51,13 @@ Once connected, you can:
 Both at the same time: you see every click the agent makes and can take over at
 any moment.
 
-![Amigent with a Workbench screen and the keyboard panel](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/viewer.png)
+![The remote desktop with a Shell on the Workbench screen and the keyboard panel](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/viewer.png)
 
 Programs that open their own screen, such as SysInfo on the chipset next to a
-graphics-card Workbench, show up as they are. The list at the top brings any
-screen to the front, from the PC.
+graphics-card Workbench, show up as they are. The screen menu at the top brings
+any screen to the front, from the PC.
 
-![SysInfo on its own chipset screen in the remote desktop, with the screen list at the top](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/screens.png)
+![SysInfo on its own chipset screen in the remote desktop, dark appearance, with the screen menu open](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/screens.png)
 
 ## How it fits together
 
@@ -89,15 +92,7 @@ screen to you. Both can work at once.
 
 ### On the PC or Mac
 
-**3.** Paste this into your AI agent:
-
-    Install Amigent for me: run "pipx install amigent" (if pipx or Python 3.10
-    or newer is missing, install them first: Windows winget, macOS Homebrew,
-    Linux the package manager). Then run amigent-setup; it finds my Amiga on
-    the network by itself. Register the MCP server "amigent" with the command
-    amigent-server, and run amigent-viewer --install so the remote desktop
-    shows up as a program. Tell me if you need to be restarted.
-
+**3.** Give your AI agent the prompt from [step 2 above](#set-up-in-three-steps).
 The agent sets up the Amiga over the network; from then on amigentd starts
 with it.
 
@@ -131,16 +126,13 @@ Or in a terminal:
 
 Then restart your AI app and the remote desktop, so they run the new version.
 
-Updated the Amiga first, at the Amiga? Unpack the new archive from the
+At the Amiga instead: unpack the new archive from the
 [releases](https://github.com/akustikrausch/amigent/releases) or Aminet and
-double-click *Amigent-Update* in its drawer. Then give your agent the same
-prompt as above, or run `pipx upgrade amigent` on the PC and restart the AI app. From 1.3.0 on, the PC notices a newer
-amigentd and says so, in the agent's answers and in the remote desktop.
+double-click *Amigent-Update* in its drawer, then update the PC as above.
 
-From 1.5.0 on, Amigent notices a new release by itself, at most once a day,
-and offers it in the remote desktop and to the AI agent; once you agree, one
-step updates the PC and every saved Amiga. It asks PyPI for the version list
-and sends nothing else; `AMIGENT_NO_UPDATE_CHECK=1` switches it off.
+Amigent tells you itself when a new release is out, at most once a day, and
+updates both halves once you agree. It only asks PyPI for the version list;
+`AMIGENT_NO_UPDATE_CHECK=1` switches it off.
 
 Key, encryption and the start line stay as they are. One side alone keeps
 working as before; the new features need both.

@@ -2,7 +2,7 @@
 
 # LocalCode
 
-**What's new:** 0.2.3 fixes a command-executor deadlock in which Python commands completed their work but then hung until the 120-second command timeout (see the [incident review](LocalCode/source/docs/incident-2026-10-28-python-command-deadlock.md)). 0.2.2 adds archiving, restoring and deleting conversations from the sidebar. 0.2.1 integrated application-data isolation for file tools, previews, undo and checkpoints. 0.2.0 added three approval modes, image/text/read-only-folder attachments, interactive planning, and persistent goals for external models. The full history is in the [changelog](CHANGELOG.md); see also the [usage guide](LocalCode/source/docs/AGENT_MODES.md) and [implementation provenance](LocalCode/source/THIRD_PARTY_NOTICES.md).
+**What's new:** 0.2.12 wires `explore_codebase` to an isolated read-only subagent, restricts auto session titles to the first completed cloud run starting from the default title with 4-language support, closes remaining UI/backend i18n gaps, repairs Electron acceptance suites, and restores green Windows CI. 0.2.11 adds JS/TS post-write syntax checking, a compact repo map in the system prompt, `@`-file composer suggestions, a configurable `100`-tool-call runaway guard for cloud models, and the L4 `repo-eval/` benchmark bank (following 0.2.5–0.2.10: tiered L1–L3 benchmarks, sub-second thinking folding, structure-outline/background-command/SSRF-safe-fetch tools, project renaming, and bare-filename artifact linking). The full history is in the [changelog](CHANGELOG.md); see also the [usage guide](LocalCode/source/docs/AGENT_MODES.md) and [implementation provenance](LocalCode/source/THIRD_PARTY_NOTICES.md).
 
 **English** | [简体中文](README.zh-CN.md)
 
@@ -16,7 +16,7 @@ Tasks can start without a project folder. Choose a workspace above the composer 
 
 Conversation text uses the system sans-serif font, with a 14 px default size, 24 px line height, and 12 px paragraph spacing. Font size remains adjustable in Settings → Appearance. Stop status and elapsed time share one line; completed runs show elapsed time before the final reply. File cards show three files initially and expand to reveal the rest. Routine coverage notes are hidden, while actual statistics errors remain visible.
 
-> **Windows download:** [LocalCode 0.2.4 — Windows x64 portable ZIP](https://github.com/Sinfony8838/LocalCode/releases/tag/v0.2.4). Verify `SHA256SUMS.txt`, extract the complete folder, then run `Start.cmd`. Existing installations should be backed up and updates extracted into a new folder; see below.
+> **Windows download:** [LocalCode 0.2.12 — Windows x64 portable ZIP](https://github.com/Sinfony8838/LocalCode/releases/tag/v0.2.12). Verify `SHA256SUMS.txt`, extract the complete folder, then run `Start.cmd`. Existing installations should be backed up and updates extracted into a new folder; see below.
 
 ## Interface and reply language
 
@@ -34,7 +34,7 @@ The approval selector below the composer offers three modes:
 
 An approval card can allow once, allow the same scope for this conversation, or deny. Command approvals are bound to the exact command and working directory; they do not carry over to other conversations or survive a restart. Plan mode stays read-only even under Full access. Projectless tasks have no file-writing or terminal tools. None of these modes is an OS sandbox.
 
-Local Ollama turns are limited to **12 tool calls per turn**; when the budget is used up the model gives one final tool-free summary. External (API) models have no fixed per-turn tool limit. Goal mode is available for external models only. See the [usage guide](LocalCode/source/docs/AGENT_MODES.md).
+Local Ollama turns are limited to **12 tool calls per turn**; when the budget is used up the model gives one final tool-free summary. External (API) models default to a **100 tool-call runaway guard per turn** (overrideable via `maxToolCalls`). Goal mode is available for external models only. See the [usage guide](LocalCode/source/docs/AGENT_MODES.md).
 
 ## Quick start: choose the download that fits you
 
@@ -43,7 +43,7 @@ Use **Windows 11 x64** (Windows 10 22H2 x64 is an upstream-compatible target, un
 | What you downloaded | How to recognize it | First step |
 | --- | --- | --- |
 | **Source ZIP** from GitHub **Code → Download ZIP** (or an automatically generated “Source code” archive) | Contains `LocalCode/source/package.json`; no packaged desktop | Run `Setup.cmd`; choose **2 — Desktop only** for a cloud API or an existing Ollama service |
-| **Windows x64 portable ZIP** from a GitHub Release | `LocalCode-0.2.4-windows-x64.zip` contains `READ-ME-FIRST.txt` and `LocalCode/app/current.txt` | Extract the complete folder, then run `Start.cmd`; an Actions artifact has an extra outer ZIP layer |
+| **Windows x64 portable ZIP** from a GitHub Release | `LocalCode-0.2.12-windows-x64.zip` contains `READ-ME-FIRST.txt` and `LocalCode/app/current.txt` | Extract the complete folder, then run `Start.cmd`; an Actions artifact has an extra outer ZIP layer |
 
 If no successful, unexpired artifact is listed, there is no portable download for that run. Renaming a source ZIP or copying a launcher will not make it runnable.
 
@@ -61,7 +61,7 @@ Opening LocalCode does not install your project's language runtimes or build too
 
 ### Prebuilt portable desktop: extract and open
 
-Download **`LocalCode-0.2.4-windows-x64.zip`** and **`SHA256SUMS.txt`** from the [GitHub Release](https://github.com/Sinfony8838/LocalCode/releases/tag/v0.2.4). No GitHub sign-in is needed for public release assets. Check the ZIP with `Get-FileHash -Algorithm SHA256`, extract the complete application folder and run `Start.cmd`. The Source code ZIP requires building and is a different download. Actions artifacts remain temporary validation builds; they require sign-in and contain an inner application ZIP.
+Download **`LocalCode-0.2.12-windows-x64.zip`** and **`SHA256SUMS.txt`** from the [GitHub Release](https://github.com/Sinfony8838/LocalCode/releases/tag/v0.2.12). No GitHub sign-in is needed for public release assets. Check the ZIP with `Get-FileHash -Algorithm SHA256`, extract the complete application folder and run `Start.cmd`. The Source code ZIP requires building and is a different download. Actions artifacts remain temporary validation builds; they require sign-in and contain an inner application ZIP.
 
 1. Double-click the extracted **`Start.cmd`**. No build tools or model downloads are needed to open the desktop.
 2. Choose your connection in Settings:
@@ -191,7 +191,7 @@ flowchart LR
 
 - Renderer: isolated, sandboxed Electron window without Node.js access.
 - Main process: validates IPC, encrypts provider credentials with Windows-backed Electron `safeStorage`, persists sessions, coordinates approvals and cancellation, and schedules requests.
-- Agent workers: pinned pi SDK 1.4.0, one Electron utility process per active conversation; local Ollama turns are capped at 12 tool calls, external models have no fixed cap; independent cancellation and approvals per conversation.
+- Agent workers: pinned pi SDK 1.4.0, one Electron utility process per active conversation; local Ollama turns are capped at 12 tool calls, external models default to a 100 tool-call runaway guard; independent cancellation and approvals per conversation.
 - Workspace: UTF-8 text tools with path/link checks, snapshots, conflict-aware undo, and visible diffs. Routine file edits inside the project need no extra approval; terminal commands follow the selected approval mode (Ask for approval / Approve with rules / Full access). Approved PowerShell runs in a Windows Job object and is terminated if its agent worker exits, with stdin closed so child runtimes such as Python exit cleanly.
 - Models: local Ollama by default; optional API configuration in Settings. Saving API configuration does not call a provider. Explicit connection tests and tasks may consume quota.
 - Optional companion: import your own licensed sprite atlas (1536 × 2288 RGBA PNG, 8 × 11 grid). No character artwork is distributed; companions start disabled.

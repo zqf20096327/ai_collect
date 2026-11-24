@@ -26,9 +26,19 @@ npm install --global oh-my-rea
 omr
 ```
 
-omr needs REA. If it is not installed, the first run explains why and asks before running `npm install --global rea-agents`. Nothing is installed without a "yes".
+omr needs REA for analysis. If REA is missing, the first interactive launch explains why and asks before running `npm install --global rea-agents`. `omr /status` works without REA; once it connects, `/doctor` shows which providers are available on the current host.
 
-Then set a model. Either export a key that omr recognizes (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, ...) or write `~/.config/rea/omr-model.json` as shown in [Models](#models).
+Then set a model. Either set an API key that omr recognizes (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, ...) or write `omr-model.json` as shown in [Models](#models).
+
+### Platform notes
+
+- **Linux:** Use a UTF-8 terminal. Install `wl-clipboard` for Wayland or `xclip`/`xsel` for X11 if clipboard access is unavailable. Session scripts use `unshare -rn` only if the kernel permits it.
+- **macOS:** Terminal.app and iTerm2 can use the CLI and TUI. Set Option to send Escape/Meta for Alt shortcuts. Clipboard text uses `pbcopy`/`pbpaste`; image paste can use `pngpaste`. Terminal.app uses the 256-color palette unless truecolor is explicitly advertised.
+- **Windows:** Use a supported native Node build. Run `omr` in cmd or `omr.cmd` in PowerShell if the npm `.ps1` shim is blocked by execution policy. `npm prefix --global` is the directory to add to `PATH` on Windows; add its `bin` subdirectory on macOS/Linux. Windows Terminal is recommended for color, Unicode and mouse reporting; conhost, legacy console mode and terminal-owned Ctrl+Shift+C may not render or forward every TUI feature. Use `--plain` or `--json` if needed. `omr_run` uses `python3`, `py -3`, or `python` for `.py`, and `pwsh` or Windows PowerShell for `.ps1` if available. Bang commands use `cmd.exe` with native Windows Node, even if launched from PowerShell or Git Bash.
+- **Git Bash / WSL:** Native Windows Node still uses Windows paths and child-process rules when launched in Git Bash. Use a real Windows console (or `winpty` where available) if MinTTY does not expose a TTY to Node. In WSL, install Linux Node and REA together; use Linux paths. Clipboard interoperability needs the Windows tools on WSL's PATH or a working Linux display clipboard.
+- **Optional hosts and providers:** Check [REA's installation guide](https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md) and `rea doctor` for the current provider and architecture requirements. An installed CLI does not imply Frida, Ghidra, or other external providers are available. `omr_run` is **not** a sandbox when network isolation is unavailable. Windows tree termination is best effort for live roots; descendants already detached or orphaned are not guaranteed to stop. `bench:startup` uses Python's POSIX PTY, not Windows ConPTY.
+
+Configuration defaults to `~/.config/rea` on Linux, `~/Library/Application Support/rea` on macOS, and `%APPDATA%\rea` on Windows (`XDG_CONFIG_HOME/rea` overrides these). Existing legacy files are retained. Model metadata caches honor `XDG_CACHE_HOME`, then use the platform cache or a legacy cache. Sessions honor `OMR_SESSIONS_DIR`, retain existing `~/.rea/sessions`, and otherwise use `XDG_STATE_HOME/rea/sessions` if set, `~/Library/Application Support/rea/sessions` on macOS, or `%LOCALAPPDATA%\rea\sessions` on Windows. Windows storage privacy follows inherited ACLs rather than POSIX mode bits.
 
 ## Examples
 
@@ -52,6 +62,8 @@ omr --json app.apk "find the license check"  # machine-readable events for scrip
 - **Scriptable.** `--json` event stream, stable exit codes, and an embeddable SDK (`oh-my-rea/sdk`).
 - **Accurate context accounting.** Context windows come from the provider or [models.dev](https://models.dev), never from a guess. If a window is unknown, omr says so.
 
+In 0.6.0 the terminal paints before backend startup, and `omr --resume` shows a transcript preview while the session loads. Turns run without a default step limit. Set `OMR_MAX_STEPS` to cap a turn and `OMR_AUTO_EXTEND_STEPS` to opt into extra step blocks. A saved `max_steps: 40` from an older version is treated as the legacy default.
+
 ## How it works
 
 ```
@@ -64,7 +76,7 @@ omr runs the agent loop (prompting, streaming, tool routing, compaction, reports
 
 ## Models
 
-Zero-config works if a supported key is exported in your shell. For a custom endpoint, create `~/.config/rea/omr-model.json`:
+Zero-config works if a supported key is set in your environment. For a custom endpoint, create `omr-model.json` in the config directory printed by `omr --help`:
 
 ```json
 {
@@ -102,7 +114,19 @@ omr update      # update omr and REA to the latest npm release
 omr setup       # re-check the environment
 ```
 
-omr checks the registry at most once a day and prints a one-line notice. Disable it with `OMR_NO_UPDATE_CHECK=1`.
+Every interactive launch checks npm for newer omr and REA releases in the background, after the UI is already on screen. When a newer version exists, an **Update Available** box with the version and the `omr update` command appears in the same session, as soon as the registry answers. A result from an earlier check shows immediately and is updated in place. The check has a 3-second timeout and fails silently offline. To avoid hammering the registry, a launch within 60 seconds of the previous check reuses that result instead of asking again. The registry follows `npm_config_registry` if you use a mirror. Set `OMR_NO_UPDATE_CHECK=1` to disable update checks and notices. CI never checks.
+
+## Changelog
+
+Use `omr changelog` for the installed version, `omr changelog 0.5.1` for a specific version, or `omr changelog --all` for the full history. In the TUI, `/changelog` opens a scrollable view. A new installed version shows a short summary once, either after `omr update` or on the first interactive launch with packaged notes. [Full changelog](CHANGELOG.md)
+
+## Language
+
+Use `omr --lang tr` for Turkish or `omr --lang en` for English in the current launch. In the TUI, `/lang` shows the active language, and `/lang tr` or `/lang en` switches and saves it. Startup uses the flag, then `OMR_LANG`, then the saved preference, then the terminal locale. JSONL events remain in English.
+
+## Support
+
+If you’d like to support omr, you can buy the maintainer a coffee. [Buy Me a Coffee](https://buymeacoffee.com/omrdev)
 
 ## Requirements
 
@@ -120,6 +144,8 @@ npm run build
 npm test
 node bin/omr.js --help
 ```
+
+`npm test` runs the unit and integration fixtures with a temporary home and a fixed English locale. Language tests supply their own locale or language override. Live provider and tool checks are separate scripts under `test/live-*.mjs`.
 
 When omr runs next to a REA checkout, it uses that checkout. Override with `OMR_REA_COMMAND`.
 

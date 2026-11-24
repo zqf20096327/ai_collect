@@ -4,35 +4,41 @@
 
 </div>
 
-```diff
-- Disclaimer: This project is under active development. Features and documentation may change; contributions to improve the docs are welcome.
-```
-
-The WhatsApp AI Agents is a chatbot that uses AI models APIs to generate responses to user input. The bot supports several AI models, including **`Gemini`**, **`ChatGPT`**, **`Ollama`**, **`DALL-E`**, **`Flux`**, and **`Stability AI`**.
+WhatsApp Agents connects an AI agent to WhatsApp. Incoming messages are queued per conversation and answered by an agent that can use tools such as web search. The agent's behaviour is set by an editable instructions file, not by code.
 
 # Table of Content
 
+- [Features](#features)
 - [Demo](#demo)
 - [Usage](#usage)
-- [Tutorials](#Tutorials)
-- [Docs](docs/config-docs.md)
+- [Deployment](docs/deployment.md)
 - [Disclaimer](#disclaimer)
 - [Contributors](#contributors)
-- [Sponsors](#Sponsors)
+- [Sponsors](#sponsors)
 - [About](#about-us)
 
-## Supported Models
+## Features
 
-| Model         | Provider                                                                                          | Type          | Command    |
-| ------------- | ------------------------------------------------------------------------------------------------- | ------------- | ---------- |
-| ChatGPT       | [OpenAI](https://platform.openai.com/docs/guides/text-generation/quickstart)                      | Text to Text  | !chatgpt   |
-| Gemini        | [Google](https://ai.google.dev/gemini-api/docs/text-generation?lang=node#generate-text-from-text) | Text to Text  | !gemini    |
-| Gemini Vision | [Google](https://ai.google.dev/gemini-api/docs/vision?lang=node#upload-image)                     | Image to Text | none       |
-| Dalle 2 & 3   | [OpenAI](https://platform.openai.com/docs/api-reference/images/create)                            | Text to Image | !dalle     |
-| Flux          | [Hugging Face](https://huggingface.co/black-forest-labs/FLUX.1-dev)                               | Text to Image | !flux      |
-| Stability AI  | [Stability AI](https://platform.stability.ai/docs/getting-started/stable-image)                   | Text to Image | !stability |
-| Ollama        | [Open Source](https://ollama.com/)                                                                | Text to Text  | !ollama    |
-| Custom        | Base Provider                                                                                     | Text to Text  | !wa        |
+- WhatsApp connection via [Baileys](https://github.com/WhiskeySockets/Baileys), with QR login and persistent sessions
+- Messages are batched per conversation and answered with prior context
+- OpenAI models through a ChatGPT subscription
+- Web search tool powered by [Exa](https://exa.ai/)
+- Agent instructions loaded from `agents/instructions.md`
+- PII guard: personal data is swapped for placeholders before reaching the model (see [Privacy](#privacy))
+
+## Privacy
+
+The model never sees customers' personal data.
+
+```
+in:  "call me on 0300 1234567"  →  model sees "call me on [PHONE_1]"
+out: "we'll call [PHONE_1]"      →  customer sees "we'll call 0300 1234567"
+```
+
+- **Detection** runs in two layers. Pattern matching with checksum validation catches phone numbers (international), emails, CNICs, cards, IBANs, passwords and OTPs. An optional [GLiNER](https://github.com/urchade/GLiNER) service adds multilingual detection of names, addresses and IDs.
+- **Per-chat vault.** Each chat has its own placeholder map. Placeholders can only be restored in the chat that created them. Values are encrypted at rest (AES-256-GCM) and looked up by keyed hash.
+- **Tool guard.** Web search refuses queries that contain personal data or placeholders.
+- **Fail-safe.** If the detection service is down, pattern matching still runs.
 
 ## Demo
 
@@ -52,58 +58,31 @@ The WhatsApp AI Agents is a chatbot that uses AI models APIs to generate respons
 
 ## Usage
 
-### 1. Download Source Code
+### 1. Get the code
 
 ```bash
- git clone https://github.com/Zain-ul-din/WhatsApp-Ai-bot.git
- cd WhatsApp-Ai-bot
+git clone https://github.com/Zain-ul-din/WhatsApp-Ai-bot.git
+cd WhatsApp-Ai-bot
+pnpm install
 ```
 
-> OR
+### 2. Configure
 
-- [Download Zip File](https://github.com/Zain-ul-din/WhatsApp-Ai-bot/archive/refs/heads/master.zip)
+Copy `.env.example` to `.env` and fill in the credentials. Then write your agent's instructions in `agents/instructions.md`. If the file is missing, a generic default is used.
 
-### 2. Get API Keys
+### 3. Run
 
-- [Gemini API Key](https://aistudio.google.com/app/apikey)
-- [OpenAI API Key](https://platform.openai.com/api-keys)
-- [Hugging Face API Key](https://huggingface.co/settings/tokens)
-- [Stability AI API Key](https://platform.stability.ai/account/keys)
+```bash
+pnpm start
+```
 
-### 3. Add API Keys
+Or run the bot together with the PII detection service: `docker compose up -d --build` (see [Deployment](docs/deployment.md)).
 
-Copy the file `.env.example` and rename it to `.env`, then set any settings you want to change.
-
-### 4. Run the code
-
-- Run `npm run start` to run the bot.
-
-- Scan QR code.
-
-## Default Settings
-
-- `!gemini` use gemini.
-- `!chatgpt` use chat-gpt.
-- `!dalle` use Dalle.
-- `!flux` use flux.
-- `!stability` use stability.
-
-**Note! open `src/whatsapp-ai.config.ts` to edit config.**
-
-[Docs Link](docs/config-docs.md)
-
-## Tutorials
-
-- **[Setup bot on cloud using Github code-spaces](https://www.youtube.com/watch?v=QahJSi6Ygj4)**
-- **[setup bot on a local machine](https://www.youtube.com/watch?v=fyPD3ILFPck)**
-
-### FQA
-
-- [How to create custom model](https://github.com/Zain-ul-din/whatsapp-ai-bot/issues/3)
+Scan the QR code with WhatsApp (Linked devices → Link a device).
 
 ## Disclaimer
 
-This bot utilizes [baileys](https://github.com/WhiskeySockets/Baileys) to operate an actual instance of Whatsapp Web to prevent blocking. However, it is essential to note that these operations come at a cost charged by OpenAI and Stability AI for every request made. Please be aware that WhatsApp does not support bots or unofficial clients on its platform, so using this method is not entirely secure and could lead to getting blocked.
+This bot utilizes [baileys](https://github.com/WhiskeySockets/Baileys) to operate an actual instance of Whatsapp Web to prevent blocking. However, it is essential to note that model and tool providers may charge for every request made. Please be aware that WhatsApp does not support bots or unofficial clients on its platform, so using this method is not entirely secure and could lead to getting blocked.
 
 ## Contributors
 
@@ -122,9 +101,13 @@ This bot utilizes [baileys](https://github.com/WhiskeySockets/Baileys) to operat
 
 A big thank you to these people for supporting this project.
 
-| ![Levitco](https://avatars.githubusercontent.com/u/47256157?v=4&s=128) | ![Anas Ashfaq](https://avatars.githubusercontent.com/u/119153707?v=4&s=128) | <img src="https://avatars.githubusercontent.com/u/0?v=4" width="150" height="150"/> |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Levitco                                                                | Anas Ashfaq                                                                 | YOU?                                                                                |
+<table>
+  <tr>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/47256157?v=4&s=128" width="80" height="80" alt="Levitco"/><br/>Levitco</td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/119153707?v=4&s=128" width="80" height="80" alt="Anas Ashfaq"/><br/>Anas Ashfaq</td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/0?v=4" width="80" height="80" alt="You"/><br/>YOU?</td>
+  </tr>
+</table>
 
 # Useful links
 

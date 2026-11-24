@@ -308,6 +308,8 @@ The interface modules are ready made AI interfaces that connect to the visitor's
 
 Each module streams the answer and shows each tool call while it runs. The header names the account and the model that answer. A Stop button ends an answer early, and the install and connect steps appear until the visitor's AI is connected. A question asked before the connection stays on screen and goes out once the wallet connects the site.
 
+On a screen up to 640 pixels wide, the side panel and the popup take the whole screen. While they are open there, the page behind them holds its scroll and its position, so a swipe on the module leaves the page in place, and the module sits on the part of the screen the keyboard leaves visible. On a touch screen, opening a module focuses the module itself, and the keyboard opens when the visitor taps the question box. On a wider screen, the page beside the panel and the popup stays usable. The full page mode holds the page's scroll on every screen. A site needs no scroll lock of its own around them.
+
 | Prop | What it sets |
 | --- | --- |
 | `system` | The instructions the visitor's model gets before the first question. |
@@ -317,6 +319,7 @@ Each module streams the answer and shows each tool call while it runs. The heade
 | `toolLabels` | A plain name per tool, shown while it runs. |
 | `guards` | Your values for the guards: internal names, allowed hosts, the safe answer. |
 | `renderToolResults` | Your own cards for a turn's tool results. |
+| `attachments` | Images, PDFs and text files the visitor drops, pastes or attaches, and dictation. `{}` takes every kind. |
 | `analytics` | A name for the module's actions in your click analytics. |
 
 The [modules guide](https://tensorpass.app/docs/modules) documents each form and its opening options.

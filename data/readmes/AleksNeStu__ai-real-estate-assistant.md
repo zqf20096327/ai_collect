@@ -202,14 +202,72 @@ Every release publishes both images to GitHub Container Registry, multi-arch
 (amd64 and arm64):
 
 ```bash
-docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/backend:5.1.10
-docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/frontend:5.1.10
+docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/backend:5.6.0
+docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/frontend:5.6.0
 ```
 
 The full guide — the memory footprint per setup, the published tags and the
 Kubernetes variant — is in the [deployment guide](docs/deployment/DEPLOYMENT.md).
 
 ## What's new
+
+**`v5.6.0`** — the answers the product gives are the ones it measured.
+
+- **The neighbourhood index is measured, not invented** — a factor the map
+  cannot measure carries no score, and the card shows a dash for it — never a
+  zero, which would say the neighbourhood is bad.
+- **The official registers answer first** — the noise level comes from the
+  state register and the air quality from the state monitoring network, both
+  as open data with no key; the estimates that stood in for them stay as the
+  fallback and are named as estimates.
+- **A valuation answer is a link** — shareable and indexable, with the
+  comparable sales, the period they cover and the JSON-LD on the page itself.
+- **The Russian interface is complete** — English, Polish and Russian are the
+  three languages the product is written for, and the key-parity test holds
+  them to it.
+- **The app can be installed** — the install is offered exactly where the
+  browser can perform it, and an update is announced rather than applied
+  silently.
+- **One command from nothing to a running demo**, and **an open command for
+  the public API** — a command-line client for the three public operations,
+  with the types generated from the published contract.
+
+**`v5.5.0`** — the demo keeps the promises it makes about itself.
+
+- **The waitlist form reaches the operator** — a capture used to end at a row
+  in a table only the operator could open, so a launch had to be followed by a
+  human reading the board. The row now renders the high-value-lead template
+  and the mail goes to the address the deployment names
+  (`LEAD_ALERT_EMAIL_TO`) — never to one written in the source. The row is
+  written first and the mail is best-effort, so a mail failure cannot show a
+  visitor a failure for an address that was in fact saved.
+- **The flat is valued from the register of notarial prices** — "what is my
+  flat worth" was answered from one seeded listing's asking price. It is
+  answered now from the prices people actually paid: the Rejestr Cen
+  Nieruchomości, free by law since February 2026, read from the weekly
+  export and kept in a table of its own. The comparables are the street first
+  and the city when the street is thin, and the forecast degrades to the
+  measured movement of the transactions instead of a flat 3 %.
+- **The launch drafts name the build the demo actually runs** — five of them
+  named a build that is not the one the demo serves.
+- **The site's first click is recorded** — the weekly snapshot carries it now,
+  and four records the earlier snapshots got wrong are corrected.
+
+**`v5.4.0`** — the demo measures itself, and the pipeline holds the line.
+
+- **The demo's real-model answer is proven by a test** — the headline claim
+  of this README is checked by the suite instead of asserted.
+- **The backend suites run in the pipeline, and a breaking change to the
+  public API fails it** — the pipeline runs the backend suites and the
+  contract diff, so a change that breaks the committed baseline cannot reach
+  a release.
+- **The site measures itself** — Cloudflare Web Analytics, cookieless, and
+  the tracked interaction carries the locale it happened on.
+- **The buyer memory can be seen and deleted in the account** — the memory
+  the buyer builds is readable and removable, which is what the legal wording
+  promises.
+- **The demo is indexed, and the documents say so** — the deployment stopped
+  answering `noindex`, and the documents follow the state.
 
 **`v5.3.4`** — the demo can be signed into, and the pages say what they are.
 
@@ -313,7 +371,7 @@ Kubernetes variant — is in the [deployment guide](docs/deployment/DEPLOYMENT.m
 - **335 dependency alerts closed** — every critical and high advisory resolved,
   the floors pinned in both the lock file and the project file.
 
-Full notes: [v5.3.1 release](https://github.com/AleksNeStu/ai-real-estate-assistant/releases/tag/v5.3.1) ·
+Full notes: [v5.6.0 release](https://github.com/AleksNeStu/ai-real-estate-assistant/releases/tag/v5.6.0) ·
 [changelog](CHANGELOG.md).
 
 ## What it does
@@ -371,6 +429,26 @@ Full system design: [docs/architecture/large-saas-overview.md](docs/architecture
 
 ## Quick start
 
+One command, no API key:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AleksNeStu/ai-real-estate-assistant/main/scripts/install/install.sh | sh
+```
+
+On Windows, in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/AleksNeStu/ai-real-estate-assistant/main/scripts/install/install.ps1 | iex
+```
+
+The installer clones the repository, writes the `.env` with a generated API key
+and database password, creates the state directories, starts the stack, waits
+for the health check and prints the URL it started. The assistant answers with
+the built-in demo model; put a provider key in `deploy/compose/.env` and set
+`DEMO_LLM_MODE=false` to use a real one.
+
+Doing it by hand is eight lines:
+
 ```bash
 git clone https://github.com/AleksNeStu/ai-real-estate-assistant.git
 cd ai-real-estate-assistant
@@ -399,19 +477,36 @@ it stays that way.
 
 The paid version is being built right now on top of the same engine, as
 **PropVector AI**. The split is deliberate and it does not change with the
-roadmap:
+roadmap. The left column is what this repository does **today** — every row is
+a thing in the tree you can run today, not a promise; the right column is what
+the hosted tier adds on top:
 
 | Capability | Open source (this repo) | Hosted (PropVector AI) |
 |---|---|---|
-| Conversational property Q&A, demo catalogue | Free | Included |
-| Bring your own LLM keys, local Ollama | Free | Included |
-| Vector search (ChromaDB) over your own data | Free | Included |
-| Live data feeds and the enrichment pipeline | — | Pro |
+| Conversational property Q&A over your own data | Free | Included |
+| **Official notarial transaction prices** (Rejestr Cen Nieruchomości) | Free | Included |
+| Valuation with its evidence — comparables, sample size, period | Free | Included |
+| Bring your own LLM keys (`17` providers), local Ollama | Free | Included |
+| Hybrid vector + keyword search (ChromaDB) with MMR reranking | Free | Included |
+| Buyer memory — budget, ruled-out areas, liked listings | Free | Included |
 | Accounts, favourites, saved searches | Free | Included |
-| Live feeds, alerts, drip campaigns | — | Pro |
-| AI CRM (lead scoring, drip campaigns, pipeline) | — | Pro / Enterprise |
-| CRM connectors (HubSpot, Pipedrive), SSO, MFA | — | Enterprise |
-| White-label / self-host support contract | — | Enterprise (custom) |
+| Price-drop and new-match alerts on saved searches | Free | Included |
+| Neighbourhood index measured from OpenStreetMap features | Free | Included |
+| Lead scoring, agent board and funnel | Free | Included |
+| Enrichment pipeline and data adapters | Free | Included |
+| Live listing feeds (a real feed, not the register) | — | Pro |
+| More countries | — | Pro |
+| Alerts against the live feeds, at scale | — | Pro |
+| AI CRM with bi-directional sync | — | Pro / Enterprise |
+| CRM connectors (HubSpot, Pipedrive) | — | Enterprise |
+| SSO, MFA | — | Enterprise |
+| White-label, self-host support contract, SLAs | — | Enterprise (custom) |
+
+The register is the free tier's substance: it is published weekly by the state
+mapping office and, since 13 February 2026, it is free of charge for everyone —
+so charging for it would be selling a public record behind a paywall. What the
+hosted tier sells is what the register is not: live listing feeds, in more
+countries, with the CRM around them.
 
 **Free `$0`** · **Pro `$29/mo`** · **Enterprise (custom)** — the tiers reflect the
 public roadmap and may move before launch.
@@ -466,8 +561,9 @@ unreachable. For real answers you bring your own key — any of `17` providers, 
 a local Ollama — and the app falls back to the next one when a provider fails.
 
 **What is the difference to the hosted version?**
-The engine is the same. The hosted tier adds live data feeds, accounts, saved
-searches, alerts and an AI CRM — see [PropVector AI](https://propvectorai.com).
+The engine is the same. The hosted tier adds live listing feeds, in more
+countries, and the CRM around them — bi-directional sync, connectors, SSO/MFA,
+white-label and SLAs — see [PropVector AI](https://propvectorai.com).
 
 **Which languages?**
 Nine in the interface: English, Polish, Russian, German, Spanish, Italian,

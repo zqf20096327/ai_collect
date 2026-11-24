@@ -69,45 +69,35 @@ Everything is expressed as `ax.io/v1alpha1` manifests and applied with a single 
 
 ## Quick start
 
-### 1. Install the CLI
+### 1. Install AX
 
 ```bash
 curl -fsSL https://github.com/google/ax/releases/latest/download/install.sh | sh
 export PATH="$HOME/.ax/bin:$PATH"
 ```
 
+This installs both `ax` and [AX Studio](https://github.com/agentexecutor/studio#readme) (`ax-studio`) into `~/.ax/bin`.
+
 > [!TIP]
-> Prefer a UI? [AX Studio](https://github.com/agentexecutor/studio#readme) is a local web app that sets up AX on your computer and starts tasks for you. It deploys its own AX images, so you can skip steps 2 and 3. Install it as its README describes, then run `ax studio`.
+> Prefer a UI? Run `ax studio` to set up AX on your computer and start tasks from a local web app instead of using the CLI below.
 
-### 2. Build the images
-
-Until release images are published, build and push your own from an ax checkout and pin them by digest:
-
-```bash
-export AX_IMAGE_REPO=<your-registry>   # e.g. gcr.io/my-project
-make images                            # prints the digest of each pushed image
-export AX_SERVER_IMAGE="$AX_IMAGE_REPO/ax-server@<digest>"
-```
-
-For `ax local start` you can use a registry on `localhost` instead of a remote one: see [Using Locally Built Images](docs/local_installer.md#using-locally-built-images).
-
-### 3. Install AX
+### 2. Start AX
 
 **Locally**, on a new Kind cluster with Substrate and a WorkerPool:
 
 ```bash
-ax local start --server-image "$AX_SERVER_IMAGE"
+ax local start
 ```
 
 **On an existing cluster** with Kubernetes 1.37+ and [Agent Substrate](https://github.com/agent-substrate/substrate#readme):
 
 ```bash
-ax install --server-image "$AX_SERVER_IMAGE"
+ax install
 ```
 
 Then create a WorkerPool from [`examples/workerpool.yaml`](examples/workerpool.yaml). Without one, tasks fail to resume with `no free workers available`.
 
-See the [Local Installer guide](docs/local_installer.md) for prerequisites, `ax uninstall`, and more.
+Official release binaries deploy the matching release `ax-server` image by default. Prebuilt agent images (such as Antigravity) have no runner baked in, so pass `--runner-volume-image` with the digest from the release notes to run them. Building from source or pushing custom images? See [Build and push images](docs/development.md#build-and-push-images) and the [Local Installer guide](docs/local_installer.md).
 
 ### Run your first task
 
@@ -118,7 +108,7 @@ ax apply -f examples/simple.yaml         # the smallest useful Task
 ax resume task simple-task               # new tasks start Suspended; resume schedules the actor and starts it
 ax get tasks
 # NAME          ATESPACE   STATE     ACTOR         AGE
-# simple-task   default    Working   simple-task   1m
+# simple-task   default    Running   simple-task   1m
 
 ax ssh simple-task -- ls -la /workspace  # poke around inside the sandbox
 ax suspend task simple-task              # checkpoint and pause
@@ -230,6 +220,15 @@ ax --context=dev-cluster get tasks
 | `--context` | Kubernetes context to target | active `kubectx` / `current-context` |
 | `--server` | Control plane address, bypassing auto-detection | derived from kube context, or `$AX_SERVER` |
 | `--trace` | Trace the command and print its trace ID to stderr. Its RPCs send a sampled W3C `traceparent`, and CLI spans are exported over OTLP when `OTEL_EXPORTER_OTLP_ENDPOINT` is set. Without it, the CLI sends no trace context and ax-server samples on its own. See [CLI traces](docs/observability.md#cli-traces) | off |
+
+## AX and Agent Substrate
+
+[Agent Substrate](https://github.com/agent-substrate/substrate) is the compute runtime layer AX relies on. It schedules actors onto workers, isolates them, and suspends, resumes and snapshots them. It also handles their networking, egress policies and credential injection.
+
+Agent Substrate is a low-opinion system in terms of agentic abstractions.
+Besides task execution, AX and Agent Substrate are orthogonal to each other.
+
+AX is aiming to grow into an agentic platform that covers session management, memory, multi-task coordination, input steering, registries, models, and trajectory collection. We are building it at Google as our portable agentic platform, one that runs the same way inside Google, on customer clusters, and on-prem.
 
 ## License
 

@@ -10,9 +10,9 @@
   <a href="./readme/README.fr.md">Français</a>
 </p>
 
-[![Version](https://img.shields.io/badge/version-1.3.1-blue.svg)](./package.json)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](./package.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-22%20passed-success.svg)](./test/client.test.mjs)
+[![Tests](https://img.shields.io/badge/tests-23%20passed-success.svg)](./test/client.test.mjs)
 [![Platform](https://img.shields.io/badge/platform-Antigravity%20Desktop%20%7C%20Antigravity%20IDE-purple.svg)](https://antigravity.google/)
 [![Demo](https://img.shields.io/badge/demo-online%20preview-orange.svg)](https://llysh-hannari.github.io/antigravity-Codex-Claude-effort-slider/)
 
@@ -54,19 +54,38 @@ Neon于26.11.18发布：
 ## 快速安装与使用
 
 > [!NOTE]
-> ### 版本支持与更新提示
+> ### 原生插件托管
 > - **当前已验证支持版本**：Antigravity 桌面端 **2.34.0**（兼容 2.32.1）、Antigravity IDE **2.7.0**。
-> - **更新会导致补丁失效**：Antigravity 客户端或 IDE 每次更新都会替换覆盖本地的 `resources/app.asar`（及 `main.js`）文件，导致已注入的补丁失效，更新后需重新运行一次 [`install.cmd`](./install.cmd)（或 `npm run install-patch`）即可恢复。
-> - **更新建议**：若当前版本运行稳定，**建议非必要少更新**，以免频繁重装补丁或遇到新版结构变动导致兼容问题。
+> - **一次安装，自动更新**：插件主体托管于原生插件目录，Desktop 与 IDE 仅注入轻量**外置动态加载器**。客户端启动时每 6 小时静默检查 GitHub Release，校验 SHA-256 后自动落盘更新，并通过 **Antigravity 原生通知**提醒一键重启/重载生效（无需重打包 `app.asar`）。
+> - **官方更新自动修复**：不受 Antigravity 客户端自动更新覆盖。若 Antigravity 更新冲掉了引导器，内置的钩子会在新对话开始时自动在后台重新注入补丁并提醒重启恢复。
+> - **设置可控**：右键点击滑条区域打开设置面板，可随时开关「自动检查」、配置「镜像加速前缀」（如 `https://gh-proxy.com/`）或点击「立即检查更新」。
 
-### 方式一：双击一键持久安装（推荐）
-直接双击项目根目录下的 **[`install.cmd`](./install.cmd)**（或在终端运行 `npm run install-patch`）：
-1. **持久启动补丁**：自动备份并修补 Antigravity 桌面端 `resources/app.asar`（通过 `electron.webFrame.executeJavaScript` 将滑条注入渲染进程 Main World，并自动更新 PE Integrity SHA-256 校验值）及 Antigravity IDE（`resources/app/out/jetskiAgent/main.js`），今后每次启动 Antigravity 自动生效。
-2. **运行中窗口实时热生效**：若当前 Antigravity 正在运行，安装脚本会同时通过本地 CDP 端口自动热注入到所有已打开窗口，无需重启即可立即体验。
+### 方式一：一行在线安装（推荐 · 无需克隆仓库）
 
-> 如需卸载并恢复官方原版文件，双击 **[`uninstall.cmd`](./uninstall.cmd)**（或运行 `npm run uninstall-patch`）即可一键还原备份并清理运行中窗口的滑条实例。
+**Windows (PowerShell)：**
+```powershell
+irm https://github.com/LLYSH-HANNARI/antigravity-Codex-Claude-effort-slider/releases/latest/download/install.ps1 | iex
+```
+如需使用镜像加速：
+```powershell
+$env:AG_SLIDER_MIRROR="https://gh-proxy.com/"; irm https://gh-proxy.com/https://github.com/LLYSH-HANNARI/antigravity-Codex-Claude-effort-slider/releases/latest/download/install.ps1 | iex
+```
 
-### 方式二：仅运行期 CDP 热注入（零文件修改）
+**macOS / Linux：**
+```bash
+curl -fsSL https://github.com/LLYSH-HANNARI/antigravity-Codex-Claude-effort-slider/releases/latest/download/install.sh | sh
+```
+
+### 方式二：独立 Windows 图形安装器
+前往 [GitHub Releases](https://github.com/LLYSH-HANNARI/antigravity-Codex-Claude-effort-slider/releases/latest) 下载 **`ag-effort-slider-windows-x86_64.exe`**，双击即可打开中文安装管理面板（一键安装/修复、检查更新、完全卸载）。
+> **提示**：开源独立编译的 `.exe` 未购买商业代码签名证书，首次运行若弹出 Windows SmartScreen 拦截提示，点击「更多信息 → 仍要运行」即可。
+
+### 方式三：离线精简压缩包或源码双击安装
+从 Releases 下载 **`antigravity-effort-slider-windows-x64.zip`** 解压后（或克隆本仓库），双击根目录下的 **[`install.cmd`](./install.cmd)**：
+1. 自动部署插件到 `~/.gemini/config/plugins/antigravity-effort-slider/` 并注入动态引导器（安装完成后可删除下载的压缩包与临时目录）。
+2. 如需彻底卸载并还原官方原版文件，双击 **[`uninstall.cmd`](./uninstall.cmd)**（或在图形安装器中点击「完全卸载还原」），本地滑条偏好设置将保留。
+
+### 方式四：仅运行期 CDP 热注入（零文件修改，开发调试用）
 如果不希望修改磁盘上的 `app.asar`，可在 Antigravity 运行时执行：
 ```bash
 npm run inject
@@ -116,8 +135,9 @@ npm run eject
 - 在滑条区域 **右键单击**（或触屏长按 500ms）即可呼出设置面板（`.ces-set`），所有配置实时写入 `localStorage["ag.codexEffortSlider.settings.v1"]` 并跨窗口同步：
   - **动画效果**：`完整动画`（默认，匀变速追赶 + 星尘渐亮）/ `快速动画`（拨过 1/3 即切档 · ~70ms 快速吸附）/ `简洁动画`（无过渡直接跳档）。
   - **已到达档位的刻度点**：`亮白显示`（默认）/ `与未到达同色` / `隐藏`。
-  - **诊断与重置**：支持一键复制最近 200 条交互诊断轨迹（JSON）与恢复默认设置。
-
+  - **诊断与重置**：支持一键复制最近 200 条交互诊断轨迹（JSON）与恢复默认设置。  
+  
+![Plugins](assets/Plugins.png) 
 ---
 
 ## 本地开发、离线预览与单元测试

@@ -33,26 +33,15 @@ ABA does not call a model API itself. It starts an agent command-line tool as a 
 
 Optional: `cp .env.example .env` to set API keys and data folders. `bench-audit` reads `.env` from the current folder and from the repo root. Without it, clones go to `./data/benchmark_repos` and results go to `./data/audit_runs`.
 
-> [!WARNING]
-> The auditor agent runs with its permission checks turned off (`claude --dangerously-skip-permissions`, `codex exec --yolo`) and with shell access, on a benchmark repository that you cloned from the internet. Run audits on a machine or in a container where that is acceptable, and audit only repositories you trust. Each phase also spends API credits or subscription usage.
-
 ## Use it from Claude Code or Codex
 
-Paste this into Claude Code or Codex, in the folder of the benchmark you want to audit:
+Copy and paste this into your coding agent, in the folder of the benchmark you want to audit:
 
 ```text
 Run `uvx --from git+https://github.com/IsThatYou/auto-bench-audit bench-audit skill` and follow what it prints to audit the benchmark in this folder.
 ```
 
-The command prints a skill: instructions that tell the agent how to run the audit, what to ask you first (the audit starts agents with their permission checks off, and it costs money), and how to check and explain the findings. You need `uv` and the agent CLI, and nothing else. The first run downloads this repository (about 300 MB). To audit a public benchmark instead, end the sentence with its repository URL.
-
-To keep the skill in Claude Code for every session:
-
-```bash
-uvx --from git+https://github.com/IsThatYou/auto-bench-audit bench-audit skill --install ~/.claude/skills
-```
-
-The skill itself is [`skills/bench-audit/SKILL.md`](skills/bench-audit/SKILL.md).
+That is all. The agent runs the audit and explains the findings. To audit a public benchmark instead, end the sentence with its repository URL.
 
 ## Audit any benchmark in one command
 
@@ -86,7 +75,10 @@ artifact_manifest.yaml        # phase 2: the list of tasks
 task_configs/<task>/task_config.json
 task_audits_static/<task>.json  # phase 3: findings for each task
 audit_report_static.md        # summary table over all audited tasks
+audit_summary_static.json     # the counts of the report, for scripts
 ```
+
+The report counts a task as audited only when its record is the result of an audit. Two kinds of record are not: a record that a failed agent call left behind, and a record whose judgment is `insufficient_evidence` (the auditor could not judge the task, or the task's files are missing on this machine). A third kind is the record of a task whose instruction text the evidence collector wrote itself (see "When a benchmark has no prompt text for a task"). The report shows these as their own number, `Not counted`, and leaves them out of `Tasks audited` and of `Tasks with a major finding`.
 
 Each task audit holds a list of findings. This one is from Terminal-Bench 2, task `configure-git-webserver` (file paths shortened):
 
@@ -117,6 +109,48 @@ An agent call can fail: it reaches its time limit, the command crashes, or the a
 Evidence collection has a time limit of 3600 seconds (`--timeout` on `collect-evidence`, `--collect-timeout` on `audit`, `run`, and `batch`). A finished collection is not collected again; pass `--force` to collect it again. The log of a failed attempt is kept in a `failed/` folder next to the conversation logs.
 
 In a batch, a benchmark with a failed agent call is marked `failed` in the tracker, and its clone is kept. The next `bench-audit batch` tries only the failed parts again.
+
+## When a task's files are missing
+
+A task config names files: the task's data, its tests, its reference answer, and the paths in `audit_notes`. Before a task audit starts, `bench-audit` checks that these files are on disk. If one is missing (gated data, media that was not downloaded, a clone that was deleted), the task gets no agent call. Its record says `"overall_judgment": "insufficient_evidence"` and its `summary` lists the missing paths. The report shows the task under `Not counted`, and the exit code stays `0`.
+
+Put the files in place and run the same command again: the check runs again for these tasks, and a task whose files are there now is audited. `--skip-input-check` on `audit-tasks` and `run` turns the check off.
+
+The task-audit prompt has the matching rule for files that the check cannot see: a file that the auditor cannot open on its own machine is not a defect of the task.
+
+## When a benchmark has no prompt text for a task
+
+The task audit judges `instruction_text` of the task config as the benchmark's prompt. Some benchmarks have no such text for a task: the prompt field of the dataset is empty, or the prompt exists only as code that builds it at run time. The evidence collector states where the text comes from, in `instruction_source` of each task config:
+
+- `verbatim`: copied without change from a file or a field of the benchmark.
+- `rendered`: built with the benchmark's own template or prompt code, so it is the text that a model gets.
+- `written_by_collector`: the benchmark has no prompt text for the task, and the collector wrote a description.
+
+A text that the collector wrote is not the benchmark's text. For such a task the auditor is told to file no finding about the instruction text (its wording, its format, what it leaves out) and to audit the rest as usual. The task's record keeps its findings and says `"instruction_source": "written_by_collector"`. The report shows the task under `Not counted`, so it is in neither `Tasks audited` nor `Tasks with a major finding`. `collection_report.md` shows how many tasks have each source.
+
+A task config of an older collection has no `instruction_source`. Such a task is counted as before. Collect the benchmark again (`collect-evidence --force`) to get the field.
+
+## When a benchmark has no item-level task
+
+Some benchmarks have no separate items that each have an input for a model and an expected outcome: a meta-evaluation or a review of other benchmarks, a library, a training set, a metric that exists only over a whole set of outputs. For such a benchmark the evidence collector writes `task_unit: none` and a `task_unit_reason` into `artifact_manifest.yaml`, lists no tasks, and makes none up. For every other benchmark, `task_unit` says in one sentence what one task is.
+
+With `task_unit: none`, `audit-tasks` starts no agent. The report says `Task-level audit: none` with the collector's reason, its task counts are zero, and `audit_summary_static.json` says `"task_level_audit": false`. The benchmark-level audit (`benchmark_audit_report.md`) is then the audit of the benchmark. `bench-audit batch` skips the task stages for it and marks it done.
+
+The collector agent decides this alone, so read `task_unit_reason` in `collection_report.md` when a benchmark that you expected to have tasks shows none. To overrule it, edit `task_unit` in the manifest or collect again with `collect-evidence --force`.
+
+## When one defect shows up on many tasks
+
+Every task audit sees the whole benchmark repository. So one defect in shared code, for example a bug in the scoring script, is filed again on every task that uses the script. The number of tasks with a major finding is then high, although the benchmark has one bug.
+
+The report marks such findings as shared. A major finding (severity 2) is shared when it cites a code file that the major findings of at least 30% of the audited tasks cite, and of at least 3 tasks. Only code files count: many tasks cite a data file that holds all tasks, each for a different defect. The report gives the number of tasks with a major finding twice, with every major finding and with the shared ones left out, and it lists the shared files. No finding is removed, and the task records do not change.
+
+`--shared-threshold` on `audit-tasks` and `run` sets the share. `bench-audit report` writes the report again from the records on disk, without an agent call:
+
+```bash
+bench-audit report --config configs/multi_domain_all/medical_health/clinbench.yaml --shared-threshold 0.5
+```
+
+The mark is a count, not a judgment: a shared finding can still be a true defect of the task, and two tasks can cite one file for two different bugs. Read the listed files before you quote the lower number.
 
 ## Batch of Benchmarks Audit Pipeline
 

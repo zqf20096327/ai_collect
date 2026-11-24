@@ -160,9 +160,17 @@ Amounts are in the coin's quote asset. Most pump.fun coins are priced in SOL, bu
 
 A LaunchLab coin priced in anything but SOL is found with `getProgramAccounts`, so it needs an RPC that serves it.
 
+`collect-creator-fee` first sweeps the creator fees still waiting on your coins' curves and pools into your vaults, the largest eight per run; run it again if it says more coins hold fees. It finds them with `getProgramAccounts`; without that method it collects only what the vaults already hold.
+
 ### Transfer fees
 
 Some LaunchLab coins (StonkFun reward coins, for example) are Token-2022 mints with a transfer fee, shown as `transfer_fee_bps` by `info`. A buy delivers that much less and a sell sends that much less into the pool. The CLI's amounts and slippage floors already count it.
+
+### Selling everything
+
+A sell that empties the coin's token account (`all`, or exactly the balance) closes the account in the same transaction and returns its rent: `token_account_closed` and `rent_recovered_sol` in the output. Withheld transfer fees in a Token-2022 account go to the mint first, since the account can't close while it holds them. A partial sell, a sell the curve can only partly pay for, or an account whose close authority is another wallet leaves the account open.
+
+`wallet close-atas` closes up to 20 empty token accounts per run the same way, reports the rent they held in `recovered_sol`, and lists any it can't close (frozen, or another wallet's close authority) in `skipped`.
 
 ### Amounts in JSON output
 
@@ -185,7 +193,7 @@ A pump.fun bonding curve pays a sell out of its real reserves, which on some coi
 | `tx-status` | Solana RPC (`getTransaction`) | JSON-RPC |
 | `migrate` | Solana RPC (`sendTransaction`) | JSON-RPC |
 | `claim-cashback` | Solana RPC (`sendTransaction`) | JSON-RPC |
-| `collect-creator-fee` | Solana RPC (`sendTransaction`) | JSON-RPC |
+| `collect-creator-fee` | Solana RPC (`getProgramAccounts`, `getTokenAccountsByOwner`, `sendTransaction`) | JSON-RPC |
 | `close-volume-acc` | Solana RPC (`sendTransaction`) | JSON-RPC |
 | `tokens trending` | `frontend-api-v3.pump.fun/coins/boards/movers` | HTTPS |
 | `tokens new` | `frontend-api-v3.pump.fun/coins/boards/new` | HTTPS |

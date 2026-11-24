@@ -1,6 +1,7 @@
-# Lynx
+# LynxMCP
 
-**LynxMCP is a 100% local MCP server for the code questions grep can't answer: what calls this, what breaks if I change it, where is the code that does X, how does the library version I actually use behave. AST-aware chunking, hybrid BM25 + dense retrieval, an optional code knowledge graph, and your library docs and PDFs indexed next to your code. Works with any MCP client (Claude Code, Cursor, Windsurf, Antigravity, ...).**
+**A local code index and call graph for Claude Code, Cursor, Windsurf, Antigravity and VS Code.**
+Search by meaning and by name, trace who calls or implements what, and index library docs or PDFs alongside your code. Everything runs on your machine.
 
 [![Tests](https://github.com/lorenzo-cambiaghi/LynxMCP/actions/workflows/test.yml/badge.svg)](https://github.com/lorenzo-cambiaghi/LynxMCP/actions/workflows/test.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
@@ -9,103 +10,180 @@
 
 [![LynxMCP MCP server](https://glama.ai/mcp/servers/lorenzo-cambiaghi/LynxMCP/badges/card.svg)](https://glama.ai/mcp/servers/lorenzo-cambiaghi/LynxMCP)
 
-Grep is the right tool when you know the identifier, and your agent already has it. Lynx is for the questions grep cannot answer. Behaviour: "where do we clamp the camera zoom?" matches nothing literal. Structure: who calls this, what inherits from it, what breaks if it changes; polymorphic dispatch leaves no textual trace. Knowledge past the model's training cutoff: the docs of the framework version you run, indexed as a source. Nothing leaves your machine.
-
-## What grep can't answer
-
-Each row is measured; the numbers come from the [benchmarks](#benchmarks-reproducible) below.
-
-| Question | Agentic grep | Lynx |
-|---|---|---|
-| "What inherits from `Field`?" (Django, 100 classes over 4 levels) | 101 grep rounds, one per discovered class | 4 `graph_query` calls, `file:line` on every edge |
-| "What breaks if I change `ApplyDamage`?" | the textual mentions of the name | `impact`: every transitive caller with its hop distance, plus the tests to re-run |
-| "Where do we validate session tokens?" on C# (Json.NET) | hit@1 33% | hit@1 67% |
-| "How does this API behave in the version we ship?" | the model's memory | the docs you indexed, cited with the page they came from |
-
-Where grep is better, this page says so. On Guava, whose class names document themselves (`BloomFilter`, `RateLimiter`), grep ranks higher: hit@1 73% against 67%. On a repository that fits in the agent's context, the built-in tools are fine. Lynx pays off on large codebases, on framework docs your model has gone stale on, and on repeated sessions where re-exploring from scratch is waste.
+---
 
 ## Quickstart
 
+No config file, no Docker, no API key, no PyTorch. Embeddings run locally on ONNX Runtime (~460 MB on disk), the index lives in your user cache so `git status` stays clean, and the code graph is on by default.
+
+### Claude Code
+
 ```bash
-# 1. Install the CLI (isolated, no venv ritual). About 460 MB on disk, no PyTorch.
-pipx install lynx-mcp
-#    or: uv tool install lynx-mcp
-
-# 2. Create a config and point it at your project
-lynx manager init
-lynx source add myproject --type codebase --path /path/to/your/repo
-
-# 3. Build the index (downloads the 130 MB embedding model on first run)
-lynx build
+uv tool install lynx-mcp       # or: pipx install lynx-mcp
+lynx connect claude
 ```
 
-`lynx manager init` also offers to open the web UI, where the same source can be added through a guided form with a folder picker. Everything below works either way.
+Every project you open in Claude Code gets its own index, built in the background the first time. `lynx connect claude` also wires a prompt hook into `~/.claude/settings.json` so each request arrives with a compact map of relevant code (up to 12 locations with file, line range and signature) before the first turn. Pass `--no-hook` to skip it. Restart Claude Code (or run `/mcp`) and start asking questions.
 
-Every tool your AI gets is also a command, with the same name and the same output: `lynx find-definition ApplyDamage`, `lynx impact ApplyDamage`, `lynx graph query --op callers --symbol ApplyDamage`. Add `--json` to any of them for scripts.
+Prefer to test it in a single project first?
 
-Then register Lynx in your MCP client. Claude Code is shown; the [full guide](docs/GUIDE.md) covers Cursor, Antigravity, and generic stdio clients, or let `lynx manager ui` generate the snippet for you:
+```bash
+claude mcp add lynx -- uvx --from lynx-mcp lynx serve .
+```
+
+<details>
+<summary>Optional: add the prompt hook to just that project (<code>.claude/settings.json</code>)</summary>
 
 ```json
-{
-  "mcpServers": {
-    "lynx": {
-      "command": "lynx",
-      "args": ["serve", "--config", "/absolute/path/to/config.json"]
-    }
-  }
-}
+{"hooks": {"UserPromptSubmit": [{"hooks": [{"type": "mcp_tool", "server": "lynx",
+  "tool": "prompt_hook", "input": {"prompt": "${prompt}"}}]}]}}
 ```
 
-One config can hold all your repositories, each as a source. A session opens every index in its config, so a project's entry can name only the sources it needs: add `"--source", "game"` to `args`, once per source. Several sessions can share a source; the first one owns the index and the others read it ([details](docs/GUIDE.md#tool-profiles)).
+</details>
 
-The server answers the MCP handshake in about a second and opens the indexes in the background; a call that arrives earlier gets the loading state back and is retried. If you would rather skip the terminal, there are [double-click installers](https://github.com/lorenzo-cambiaghi/LynxMCP/releases) for macOS and Windows.
+### Cursor, Claude Desktop, Windsurf, Antigravity, VS Code
 
-## The tools your AI gets
+```bash
+uv tool install lynx-mcp
+cd /path/to/your/project
+lynx connect cursor            # or: claude-desktop | windsurf | antigravity | vscode
+```
 
-The tool set is fixed: it does not grow with the number of sources. It is also layered, because every tool definition rides in your client's context on every turn. Three profiles: `core` (5 tools, about 1,300 tokens of definitions), `standard` (12 tools, about 3,250 tokens, the default) and `full` (17 tools, about 4,150 tokens). Set `tools.profile` in config.json or pass `lynx serve --profile full`; `tools.include` adds a single tool to a profile. Tools take a `source` argument where relevant.
+`lynx connect` writes only the `lynx` entry into your editor's MCP config, keeps a timestamped backup, and leaves every other server untouched. Restart your editor to pick it up.
 
-| Tool | Profile | What it answers |
-|------|---------|-----------------|
-| `search(query, source?, outline?)` | core | Primary hybrid search. Omit `source` to search every source at once (RRF-fused). `outline=true` returns signatures only, for cheap triage. |
-| `deep_search(queries, source?)` | standard | Escalation: tries multiple query phrasings until one passes a quality threshold. |
-| `graph_query(operation, symbol?)` | standard | `callers`, `callees`, `subclasses`, `superclasses`, `imports`, `neighbors`, `shortest_path`, `overview`, `surprising_connections`, `status`. |
-| `find_definition(symbol)` | standard | Where is X defined? The first match comes with its body, the others with their signature. (AST-precise when the graph is on, BM25 fallback otherwise.) |
-| `find_usages(symbol)` | core | Every use of X: calls, subtypes *and* the textual references that contain the name, with their lines. |
-| `find_tests_for(symbol)` | full | Are there tests for X? Includes the tests that reach X through the call graph without ever naming it. |
-| `find_similar(snippet)` | standard | Is my draft a duplicate? The parallel implementations of a snippet. |
-| `describe_symbol(symbol)` | core | One-shot context for X: its code, who calls it, what it calls, its tests; for a class, its bases, subtypes and member signatures. |
-| `impact(symbol)` | core | Blast radius: everything that reaches X *transitively* through the call graph (with hop distance), plus the tests to re-run. |
-| `module_summary(file)` | standard | A file as a unit: each symbol it defines with its signature and doc line, what it imports, which files depend on it (those two need the graph). |
-| `repo_overview()` | standard | "What is this and where do I start": detected languages, frameworks, entry points, and build/test/run commands. |
-| `export_graph(target, mode?)` | full | Render a shareable, offline graph view (a symbol's blast radius or a file hub) as a single self-contained file. *(graph)* |
-| `search_diff(query, base?)` | standard | Search only the files changed vs a base branch. Built for code review. |
-| `feedback(trying_to_do, tried, stuck)` | core | The agent files a report when the index couldn't answer. Stored 100% locally, your signal for tuning sources. |
-| `list_sources` / `get_rag_status` / `update_source_index` | full | Introspection and maintenance. |
+### Prefer a desktop installer?
 
-Retrieval tools carry MCP `readOnlyHint` annotations, so clients can auto-approve them. The only write is `export_graph`, which saves a graph view file. The server ships its usage playbook in the MCP handshake (`instructions` plus a `lynx://guide` resource), so your agent knows how to query well without any rules-file setup.
+Download the [macOS or Windows installer](https://github.com/lorenzo-cambiaghi/LynxMCP/releases) to open **LynxManager** in your browser (`lynx manager ui` opens the same UI from the CLI). **Simple mode** guides you through three steps: pick a folder, connect your editor in one click, and run a search. **Expert mode** unlocks the JSON config editor, Doctor diagnostics, the graph/diff playground and the OpenAPI endpoints.
 
-*(graph)* tools need the optional code knowledge graph enabled for the source. The tool set is per-capability, never per-source.
+### Updating
+
+```bash
+lynx update
+```
+
+Detects `uv`, `pipx`, `pip` and `uvx` installs and upgrades in place without touching your config or indexes. On Windows, close your AI editors first so no running Lynx process holds index files open (the update button in LynxManager closes itself, updates in a separate window, and reopens automatically).
+
+---
+
+## Why Lynx alongside grep
+
+`grep` is fast and right whenever you already know the exact identifier. Lynx handles the rest: finding code by what it *does*, navigating call and inheritance graphs before you edit, checking for duplicate implementations, and searching docs or other repositories that aren't even in your current workspace.
+
+| | Keyword `grep` | Lynx |
+|---|---|---|
+| **Matches** | Exact strings or regexes | Meaning (ONNX embeddings) + code-aware BM25, fused |
+| **Different wording** | Returns nothing | Matches by concept even when names differ |
+| **Output** | Individual lines; you still open the file | Whole AST chunks (function or class) with symbol name and line range |
+| **Ranking** | File order on disk | Ranked by relevance; tests, data and docs ranked below production code |
+| **Structure & impact** | None: a name match doesn't show callers or subtypes | Code graph resolved from imports and declarations: callers, callees, subclasses, blast radius and tests |
+| **Across sessions** | Starts from zero every time | Persistent local index; re-indexes saved files in ~2s |
+| **Beyond the current repo** | Only files in the open folder | Multiple local repos, version-pinned web docs and PDFs in one server |
+| **Trade-off** | Zero setup | One-time index build |
+
+### Questions grep can't answer directly
+
+| Question | With `grep` | With Lynx |
+|---|---|---|
+| *"What breaks if I change `ApplyDamage`?"* | Textual mentions of the string | **`impact`**: transitive callers with hop distance + affected tests |
+| *"Who implements `IWeapon` or inherits from `Field`?"* | Regex guesses + manual file reads to filter comments | **`graph_query`**: resolved inheritance and call edges with `file:line` |
+| *"Do we already have a helper like this?"* | Guess possible function names | **`find_similar`**: ranks existing implementations by semantic similarity |
+| *"How does this API work in the library version we ship?"* | Model memory (often outdated) | **Indexed web docs & PDFs**, cited with exact URL or page number |
+
+Built-in `grep` is still the right choice on small repos or when you already know the exact symbol name. Lynx shines on larger codebases, unfamiliar architectures, multi-repo workspaces, and library docs or PDFs the model hasn't seen.
+
+---
+
+## Multiple repos, library docs & PDFs in one server
+
+Index your main project alongside a shared internal library, framework documentation, or a folder of PDF specs, all searchable from the same editor session:
+
+```bash
+lynx manager init
+lynx source add myproject --type codebase --path /path/to/your/repo
+lynx source add mylib     --type codebase --path /path/to/shared/lib
+lynx source add reactdocs --type webdoc   --url  https://react.dev/reference/
+lynx source add manuals   --type pdf      --path /path/to/pdfs
+lynx build
+lynx connect cursor --config ./config.json
+```
+
+One `config.json` holds all sources. You can scope any editor window to a subset with `--source myproject --source reactdocs`, and multiple editor windows share the same index safely.
+
+---
+
+## Visual tour
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/lorenzo-cambiaghi/LynxMCP/main/docs/img/graph_view_example.svg" alt="Blast-radius graph view: callers above the symbol, callees below, exported as a single offline file" width="820">
   <br>
-  <sub><b>Shareable graph views</b>: <code>lynx graph export --symbol GetVoxel</code> writes one self-contained, offline file (no server, no CDN) with the symbol's <b>blast radius</b>, who calls it (above) and what it calls (below). Attach it to a PR or archive it for an audit.</sub>
+  <sub><code>lynx graph export --symbol GetVoxel</code> writes a single self-contained HTML file with callers above and callees below, handy for PR reviews or architecture audits.</sub>
 </p>
+
+<p align="center">
+  <a href="docs/MANAGER.md">
+    <img src="https://raw.githubusercontent.com/lorenzo-cambiaghi/LynxMCP/main/docs/img/manager/tour.gif" alt="LynxManager: add a project, search it and connect your editor, in the browser" width="820">
+  </a>
+  <br>
+  <sub>LynxManager in Simple mode: add a project, try a search, connect your editor. <a href="docs/MANAGER.md">The full tour</a> covers Expert mode too.</sub>
+</p>
+
+---
+
+## Benchmarks (reproducible)
+
+Single-shot retrieval quality on three public codebases in three languages, using behavioural questions with known ground-truth files, compared against an IDF-weighted multi-keyword grep baseline. Per-task tables: [Django](benchmarks/RESULTS.md) · [Json.NET](benchmarks/RESULTS_csharp.md) · [Guava](benchmarks/RESULTS_java.md).
+
+| grep / Lynx (v1.12.0) | Django 5.2 (Python) | Json.NET (C#) | Guava (Java) |
+|---|---|---|---|
+| **Corpus** | 883 files, 158k lines, 20 questions | 240 files, 69k lines, 15 questions | 606 files, 181k lines, 15 questions |
+| **hit@1** (top result right) | 45% / **70%** | 33% / **67%** | **73%** / 67% |
+| **hit@5** (in top 5) | **95%** / 90% | 67% / **73%** | **93%** / 87% |
+| **MRR** | 0.64 / **0.79** | 0.47 / **0.70** | **0.81** / 0.76 |
+
+**Key takeaways:**
+- **Behavioural queries (Django, Json.NET):** Lynx puts the right file first far more often (**70% vs 45%** on Django, **67% vs 33%** on Json.NET) because it matches intent, not just literal tokens.
+- **Exact-name queries (Guava):** when class names like `BloomFilter` or `RateLimiter` already match the question's wording, keyword grep edges ahead, and the two work best side by side.
+- **Compact context:** `search(outline=true)` returns signatures and first doc lines instead of full bodies (**2.4× smaller**, [measured](docs/OUTLINE.md)), and three tool profiles keep schema overhead bounded (`core`: 6.0k chars, `standard`: 10.6k, `full`: 16.2k).
+
+<details>
+<summary><b>Commands to reproduce all three benchmarks</b></summary>
+
+```bash
+# Python (Django 5.2)
+git clone --depth 1 --branch 5.2 https://github.com/django/django.git benchmarks/_target/django
+python benchmarks/run_benchmark.py && python benchmarks/structural_demo.py
+
+# C# (Json.NET)
+git clone --depth 1 https://github.com/JamesNK/Newtonsoft.Json.git benchmarks/_target/jsonnet
+python benchmarks/run_benchmark.py --tasks benchmarks/tasks_jsonnet.json \
+  --target-dir benchmarks/_target/jsonnet --storage-dir benchmarks/_storage_csharp \
+  --results-json benchmarks/results_csharp.json --results-md benchmarks/RESULTS_csharp.md
+
+# Java (Guava)
+git clone --depth 1 https://github.com/google/guava.git benchmarks/_target/guava
+python benchmarks/run_benchmark.py --tasks benchmarks/tasks_guava.json \
+  --target-dir benchmarks/_target/guava --storage-dir benchmarks/_storage_java \
+  --results-json benchmarks/results_java.json --results-md benchmarks/RESULTS_java.md
+```
+
+</details>
+
+---
 
 ## How it works
 
 ```mermaid
 flowchart LR
     A["Your code + docs + PDFs"] --> B["Tree-sitter<br/>AST chunker"]
-    B --> C["bge-small<br/>dense embeddings"]
+    B --> C["bge-small<br/>ONNX embeddings"]
     B --> D["code-tokenized<br/>BM25"]
-    B --> G["Code knowledge graph<br/>(opt-in)"]
+    B --> G["Code knowledge graph"]
     C --> R{{"RRF fusion"}}
     D --> R
     Q(["Your query"]) --> R
     R --> RR["Optional<br/>reranker"]
     RR --> RES["Ranked code<br/>file : line : symbol"]
-    G --> GT["Graph tools<br/>callers · subclasses · usages"]
+    G --> GT["Graph tools<br/>callers · subclasses · impact"]
 
     classDef store fill:#fff3e6,stroke:#e8742c,color:#24292f;
     classDef out fill:#e8742c,stroke:#e8742c,color:#fff;
@@ -113,125 +191,90 @@ flowchart LR
     class RES,GT out;
 ```
 
-- Tree-sitter parses 19+ languages (20 grammars, counting TSX) and indexes whole functions and classes, not arbitrary text windows.
-- Retrieval is hybrid: dense embeddings plus code-tokenized BM25, fused with RRF, with an optional cross-encoder reranker.
-- The code knowledge graph (opt-in) records who calls what, inheritance and imports, and answers "what breaks if I change this?" with the actual blast radius.
-- Sources can be codebases, public docs sites (fetched once, on demand; JS-rendered SPAs via optional headless Chromium) and PDFs, searched side by side.
-- A file watcher re-indexes a saved file in about 2 seconds. No manual rebuild ritual.
-- Search and the graph are also served as rows over a local HTTP API, so SQL engines can join your code with tickets, PRs or logs (see [Integrations](#integrations)).
-- `lynx manager ui` gives you guided setup, a query playground, diagnostics and client config snippets in the browser.
+- **AST chunking (20 languages):** Tree-sitter splits code along function and class boundaries, never arbitrary character windows. Supported grammars include Python, TypeScript/TSX, JavaScript, C#, C, C++, Rust, Go, Java, GDScript, Kotlin, Swift, Ruby, PHP, Lua, Scala, SQL, Bash and Objective-C.
+- **Hybrid retrieval:** Every search fuses dense ONNX embeddings (`BAAI/bge-small-en-v1.5`) with a code-tokenized BM25 index (covering bodies, symbol names and file paths) via reciprocal rank fusion, ranking production code above tests, data and docs. An optional local cross-encoder reranker is built in.
+- **Code graph:** Built from imports, declarations and call sites across files. It powers `impact`, `describe_symbol`, `find_usages`, `graph_query` and `export_graph`.
+- **100% local & offline:** The embedding model downloads once (with a GitHub Release fallback for firewalled or air-gapped networks). No cloud index, no telemetry, no code leaves your machine.
+- **Fast startup:** The MCP handshake completes in 1 to 2 seconds while indexes open in the background; a file watcher re-indexes saved files in ~2 seconds.
 
-Everything runs locally: HuggingFace models are downloaded once, then Lynx switches to offline mode. No telemetry, no cloud index, no code upload. The only network access is the model download and the *explicit* `webdoc` fetch step you trigger yourself.
+---
 
-The models run on ONNX Runtime, so there is no PyTorch in the install: about 460 MB on disk, and a 165 MB download on Linux where the torch wheel alone used to bring 4 GB of CUDA libraries. Same model, same vectors, so an index built by an earlier version keeps working.
+## The tools your AI gets
 
-Open as many sessions on one index as you like: two editor windows, an editor plus the web UI, a CLI query while the server runs. They all search the same index. Only indexing is exclusive, and the process doing it hands over automatically if you close it.
+The tool surface is fixed regardless of how many sources you configure, split into three profiles:
 
-Behind a firewall or on an air-gapped machine? The model can come from a mirror, from this repo's GitHub Releases (the automatic fallback), or from an archive you carry over; see [Restricted networks](docs/GUIDE.md#restricted-networks-and-air-gapped-machines) in the guide.
+| Profile | Tools | Schema size |
+|---|---|---|
+| `core` (7) | `search`, `describe_symbol`, `module_summary`, `find_usages`, `impact`, plus the two hook tools (`prompt_hook`, `read_guard`) | ~1,500 tokens |
+| `standard` (12, default) | `core` + `find_definition`, `find_similar`, `graph_query`, `repo_overview`, `search_diff` | ~2,650 tokens |
+| `full` (19) | `standard` + `deep_search`, `find_tests_for`, `export_graph`, `feedback`, `list_sources`, `get_rag_status`, `update_source_index` | ~4,050 tokens |
 
-<p align="center">
-  <a href="docs/GUIDE.md#lynxmanager-guided-setup-web-ui-diagnostics-new-in-v09">
-    <img src="https://raw.githubusercontent.com/lorenzo-cambiaghi/LynxMCP/main/readmeData/LynxManagerV.gif" alt="LynxManager: guided setup, query playground, and diagnostics in the browser" width="820">
-  </a>
-  <br>
-  <sub><b><a href="docs/GUIDE.md#lynxmanager-guided-setup-web-ui-diagnostics-new-in-v09">LynxManager</a></b>: guided setup, query playground &amp; diagnostics, all in the browser. <a href="docs/GUIDE.md#lynxmanager-guided-setup-web-ui-diagnostics-new-in-v09">Full walkthrough</a></sub>
-</p>
+Select a profile with `--profile core|standard|full`, `LYNX_TOOL_PROFILE`, or `tools.profile` / `tools.include` in `config.json`. Every tool is also a CLI subcommand (`lynx search ...`, `lynx find-definition ApplyDamage`, `lynx impact ApplyDamage`, `lynx graph query --op callers --symbol ApplyDamage`) with `--json` for scripts.
 
-## Benchmarks (reproducible)
+<details>
+<summary><b>All 19 tools and what each answers</b></summary>
 
-<img src="https://raw.githubusercontent.com/lorenzo-cambiaghi/LynxMCP/main/benchmarks/chart.svg" alt="Lynx vs agentic grep: fewer tokens to answer on Python, C# and Java; 4 vs 101 tool calls to map a class hierarchy" width="1000">
+| Tool | Profile | What it answers |
+|---|---|---|
+| `search(query, identifiers?, source?, outline?)` | core | Hybrid search across one or all sources. Pass known symbol names in `identifiers`, or `outline=true` for signatures only (2.4× smaller). |
+| `describe_symbol(symbol, file?)` | core | Definition, callers, callees and tests in one call; for a class, also bases, subtypes and member signatures. Optional `file` disambiguates same-name definitions. |
+| `module_summary(file)` | core | Every symbol in a file with its signature and doc line, plus its imports and dependents. |
+| `find_usages(symbol)` | core | Callers from the graph, subtypes and textual references with line numbers. |
+| `impact(symbol)` | core | Transitive blast radius through the call graph with hop distance, plus tests to re-run. |
+| `prompt_hook(prompt)` | core | Called by Claude Code's `UserPromptSubmit` hook (not the model) to prepend a compact map of relevant code. |
+| `read_guard(file_path?, offset?, limit?, command?)` | core | Optional `PreToolUse` hook on `Read` / `Bash` (not for the model): refuses a read of more than 200 lines of an indexed file once, with the file's outline; the same read asked again goes through. |
+| `find_definition(symbol)` | standard | Where a symbol is defined: full body for the top match, signatures for the rest. |
+| `find_similar(snippet)` | standard | Checks whether a draft duplicates existing code and ranks similar implementations. |
+| `graph_query(operation, symbol?)` | standard | `callers`, `callees`, `subclasses`, `superclasses`, `imports`, `neighbors`, `shortest_path`, `overview`, `surprising_connections`, `status`. |
+| `repo_overview()` | standard | Languages, frameworks, entry points and build/test/run commands. |
+| `search_diff(query, base?)` | standard | Search scoped to files changed against a base branch, useful for code review. |
+| `deep_search(queries, source?)` | full | Tries multiple query phrasings in sequence when a single `search` is weak. |
+| `find_tests_for(symbol)` | full | Tests covering a symbol directly or through the call graph. |
+| `export_graph(target, mode?)` | full | Exports a self-contained offline HTML view of a symbol's blast radius or a file hub. |
+| `feedback(trying_to_do, tried, stuck)` | full | Logs local notes when an agent couldn't find something, to help tune sources. |
+| `list_sources` / `get_rag_status` / `update_source_index` | full | Inspect configured sources and trigger a manual refresh. |
 
-Three codebases, three languages, behavioural questions with known ground-truth files, and a grep baseline built to be strong (IDF-weighted multi-keyword ranking with ideal stopword removal, closer to BM25 than to an agent's first `rg`). Methodology and per-task results: [Django](benchmarks/RESULTS.md), [Json.NET](benchmarks/RESULTS_csharp.md), [Guava](benchmarks/RESULTS_java.md).
+Retrieval tools advertise the MCP `readOnlyHint` annotation so clients can auto-approve them. `search` sets `anthropic/alwaysLoad` so Claude Code keeps it immediately available while loading the remaining tools on demand.
 
-| grep / Lynx | Django 5.2 (Python) | Json.NET (C#) | Guava (Java) |
-|---|---|---|---|
-| corpus | 883 files, 158k lines, 20 questions | 240 files, 69k lines, 15 questions | 606 files, 181k lines, 15 questions |
-| hit@5 | 95% / **100%** | 67% / **73%** | **93%** / 87% |
-| hit@1 | 45% / **60%** | 33% / **67%** | **73%** / 67% |
-| MRR | 0.64 / **0.77** | 0.47 / **0.70** | **0.81** / 0.74 |
-| median tokens to answer | 4,150 / **1,577** | 6,590 / **1,152** | 5,892 / **1,293** |
-| tool round-trips before the code is in context | 2+ / **1** | 2+ / **1** | 2+ / **1** |
+</details>
 
-Ranking still depends on how self-documenting the code is. Lynx is ahead on Json.NET, where PascalCase identifiers and sparse comments starve a lexical baseline, and on Django at hit@5 and hit@1 alike. On Guava, whose class names say what each class does, grep still ranks higher. The token cost does not swing. It drops 62% to 83% every time, because Lynx hands back the whole function with `file:line`, symbol and score in one call, where grep returns match lines and then needs a read.
-
-The structural gap is of a different kind. "What inherits from `Field`?" over Django's 100-class hierarchy takes grep 101 rounds, one per discovered class, each a full model inference over the growing context; `graph_query` answers it in 4 calls from resolved inheritance edges, same recall, `file:line` on every edge.
-
-```bash
-# reproduce: Python (Django)
-git clone --depth 1 --branch 5.2 https://github.com/django/django.git benchmarks/_target/django
-python benchmarks/run_benchmark.py && python benchmarks/structural_demo.py
-
-# reproduce: C# (Json.NET)
-git clone --depth 1 https://github.com/JamesNK/Newtonsoft.Json.git benchmarks/_target/jsonnet
-python benchmarks/run_benchmark.py --tasks benchmarks/tasks_jsonnet.json \
-  --target-dir benchmarks/_target/jsonnet --storage-dir benchmarks/_storage_csharp \
-  --results-json benchmarks/results_csharp.json --results-md benchmarks/RESULTS_csharp.md
-
-# reproduce: Java (Guava)
-git clone --depth 1 https://github.com/google/guava.git benchmarks/_target/guava
-python benchmarks/run_benchmark.py --tasks benchmarks/tasks_guava.json \
-  --target-dir benchmarks/_target/guava --storage-dir benchmarks/_storage_java \
-  --results-json benchmarks/results_java.json --results-md benchmarks/RESULTS_java.md
-```
-
-## What it costs, in tokens and in money
-
-Per retrieval, the saving is the measured delta above: 2,600 to 5,400 fewer tokens to get the answer into context. Per session, the tool definitions cost 1,300 tokens (`core`), 3,250 (`standard`) or 4,150 (`full`), so a session has paid for its tool list after the first or second retrieval. `outline` triage cuts the search step by another 2.4x on broad queries ([measured](docs/OUTLINE.md)).
-
-In money, for 25 engineers making 60 retrievals a day (31,500 a month), the yearly API bill Lynx removes, as a range across the three codebases:
-
-| Flagship model (input $/1M) | Measured floor | With the saved round trip |
-|---|---:|---:|
-| Claude Fable 5 ($10) | $9,700 to $20,600 | $17,300 to $28,100 |
-| GPT-5.5, Claude Opus 4.8 ($5) | $4,900 to $10,300 | $8,600 to $14,100 |
-
-The floor counts only the smaller tool output, no assumptions. The second column adds the one grep round trip Lynx removes, whose 20k-token context is re-read from the prompt cache at a tenth of the input price; that discount is the single modelled assumption, and it is a knob. Run it for your own team, prices and codebase: `python benchmarks/savings_calculator.py --devs N`, or the interactive [savings calculator](benchmarks/savings_calculator.html) (presets in [`pricing.json`](benchmarks/pricing.json) and [`measured.json`](benchmarks/measured.json), yours to edit).
-
-<img src="https://raw.githubusercontent.com/lorenzo-cambiaghi/LynxMCP/main/docs/img/cost_savings.svg" alt="Yearly API bill Lynx removes, by flagship model, for the three benchmarked codebases, with prompt caching" width="880">
-
-## Read less: outline mode
-
-Every search ranks the same way. `search(query, outline=true)` (or `?view=outline` over HTTP) returns the same ranked hits without their bodies: a one-line signature plus the first line of the docstring, so the agent scans the candidates and reads the single body it needs, by its cited `file:line`. On a public repo (`psf/requests`) it cut the search step to 2.4x fewer tokens. When to use which, the measured data and the chart: [docs/OUTLINE.md](docs/OUTLINE.md).
+---
 
 ## Integrations
 
-Claude Code defers MCP tools behind a tool search by default; `search` and `find_similar` ask to be loaded up front, so an agent can call them without looking them up first. To make an agent reach for them before writing code, paste [the agent rules snippet](integrations/agent-rules/lynx-rules.md) into your `AGENTS.md` or `CLAUDE.md`.
+Search and the code graph are also exposed over a local HTTP API (`/api/v1`) with OpenAPI 3.1 metadata and NDJSON streaming, bound to `127.0.0.1`:
 
-Search and the code graph are served as NDJSON over a local HTTP API (`/api/v1`), and the MCP tools compose with any other MCP server your agent has. Everything below stays on your machine; only the other side of a join (GitHub, Jira, Sentry) touches an API.
-
-- [Coral](docs/CORAL.md): Lynx serves an OpenAPI document of its API, so Coral 1.x adds it as a provider and its agents call search and the code graph as typed tools, in the same program as GitHub or Sentry. Coral 0.x gets them as SQL tables.
-- [DuckDB](docs/DUCKDB.md): `read_ndjson_auto('http://127.0.0.1:8765/api/v1/search?...')` is a table, no plugin and no daemon; join code relevance with git churn, error logs or ticket exports.
-- [Steampipe](integrations/steampipe/steampipe-plugin-lynx/): a plugin with `lynx_source`, `lynx_search` and `lynx_graph` tables that join per row, one search per row of another table; prebuilt macOS and Linux binaries on the [releases page](https://github.com/lorenzo-cambiaghi/LynxMCP/releases?q=steampipe).
-- [GitHub Action](integrations/github-action/): on every PR, a comment with the downstream callers and the semantically related code, indexed locally on the runner.
-- [MCP recipes](docs/MCP_RECIPES.md): agent patterns combining Lynx with GitHub, Sentry and Jira MCP servers (triage, PR impact, ticket to code).
+- **[Coral 1.x](docs/CORAL.md):** point it at `/api/v1/openapi.json` to add Lynx as a typed provider next to GitHub or Sentry (Coral 0.x SQL tables continue to work).
+- **[DuckDB](docs/DUCKDB.md):** query Lynx directly via `read_ndjson_auto('http://127.0.0.1:8765/api/v1/search?...')` to join code relevance with git churn, logs or tickets.
+- **[Steampipe](integrations/steampipe/steampipe-plugin-lynx/):** `lynx_source`, `lynx_search` and `lynx_graph` SQL tables ([prebuilt binaries](https://github.com/lorenzo-cambiaghi/LynxMCP/releases?q=steampipe)).
+- **[GitHub Action](integrations/github-action/):** posts downstream callers and related code on pull requests.
+- **[Agent rules](integrations/agent-rules/lynx-rules.md) & [MCP recipes](docs/MCP_RECIPES.md):** drop-in `CLAUDE.md` / `AGENTS.md` pointer and workflows combining Lynx with GitHub, Sentry and Jira.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/lorenzo-cambiaghi/LynxMCP/main/docs/img/coral_lynx_tools.png" alt="Lynx as a provider in Coral: graph.query, search.query, search.batch and sources.list, each with its approval policy" width="820">
   <br>
-  <sub><b>Lynx in Coral</b>: give Coral the URL of <code>/api/v1/openapi.json</code> and it lists four tools. The three reads run without asking; the batch search waits for approval.</sub>
+  <sub>Point Coral at <code>/api/v1/openapi.json</code> and it exposes four typed tools automatically.</sub>
 </p>
+
+---
 
 ## Documentation
 
 | | |
 |---|---|
-| [Full guide](docs/GUIDE.md) | Configuration, all source types (codebase / webdoc / PDF), retrieval internals, tool profiles, troubleshooting |
-| [Manager UI](docs/GUIDE.md#lynxmanager-guided-setup-web-ui-diagnostics-new-in-v09) | Guided setup, playground, diagnostics |
-| [Outline mode](docs/OUTLINE.md) | Signatures instead of bodies: when to use it, measured data, chart |
-| [Coral](docs/CORAL.md) | Code search and the code graph as typed tools in Coral programs |
-| [DuckDB](docs/DUCKDB.md) / [Steampipe](integrations/steampipe/steampipe-plugin-lynx/) | Code search and the code graph as SQL tables |
-| [Agent rules snippet](integrations/agent-rules/lynx-rules.md) | Paste into `AGENTS.md` / `CLAUDE.md` so agents search before writing code |
-| [MCP recipes](docs/MCP_RECIPES.md) | Combining Lynx with GitHub / Sentry / Jira MCP servers |
-| [PR impact analysis (GitHub Action)](integrations/github-action/) | Downstream callers and related code, commented on every PR |
-| [config.example.json](config.example.json) | Annotated example configuration |
+| [LynxManager](docs/MANAGER.md) | The web UI step by step, with pictures of the current version |
+| [Full guide](docs/GUIDE.md) | Configuration, codebase / webdoc / PDF sources, retrieval internals, tool profiles, hooks, air-gapped setup |
+| [Outline mode](docs/OUTLINE.md) | Signatures instead of bodies: 2.4× smaller output, measured data & chart |
+| [Coral](docs/CORAL.md) | Code search and code graph as typed tools in Coral 1.x |
+| [DuckDB](docs/DUCKDB.md) / [Steampipe](integrations/steampipe/steampipe-plugin-lynx/) | Code search and code graph as SQL tables |
+| [Agent rules snippet](integrations/agent-rules/lynx-rules.md) | Short pointer for `AGENTS.md` / `CLAUDE.md` |
+| [MCP recipes](docs/MCP_RECIPES.md) | Combining Lynx with GitHub, Sentry and Jira MCP servers |
+| [GitHub Action](integrations/github-action/) | Automated PR impact analysis on every pull request |
+| [config.example.json](config.example.json) | Annotated v2 configuration reference |
 
-## Status
+## Status & License
 
-Developed by one author; APIs may still move before 1.x stabilizes. Issues and PRs are welcome. The test suite runs with `pytest` and CI must stay green. See [ROADMAP.md](ROADMAP.md) for what's under consideration (and what is explicitly *not* planned).
-
-## License
-
-[Apache 2.0](LICENSE)
+Developed independently; issues and PRs are welcome (see [ROADMAP.md](ROADMAP.md)). Licensed under [Apache 2.0](LICENSE).
 
 ---
 

@@ -94,6 +94,7 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | `/provider [name]` | List providers, or switch (Claude subscription, OpenRouter, Ollama) |
 | `/think [level]` | How hard the model thinks: `off`, `low`, `medium` (default) or `high`. Shown under the prompt after the model, like OpenCode (`· medium`); click it to change |
 | `/model [name]` | List models (with prices, or what's installed in Ollama), or switch. Tab completes |
+| `/theme` | Colors: `/theme opencode` (default) or `nanocode`, `/theme accent #ff79c6` for one color, `/theme reset` |
 | `/resume [n]` | Continue a saved chat. Every chat is saved per project |
 | `/recap` | What happened this session (files changed, commands run, cost) and what's next |
 | `/compact` | Summarize a long chat to free up context |
@@ -110,7 +111,7 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | `/cost`, `/config`, `/help` | Usage, settings, help |
 | `/c`, `/q` | New chat, quit |
 | `# note` | Save a note to project memory |
-| `@path` | Attach a file to your message |
+| `@path` | Attach a file to your message. Or drag files onto the terminal: images become `[Image #1]` chips, like Claude Code; Ctrl+V pastes a screenshot |
 | `/<skill> [task]` | Run a skill, e.g. `/review app.py` |
 
 **The interface:** nanocode opens on a start screen, with the logo and the prompt in the middle. Once you send something, it switches to the chat view, which uses the full width of the terminal:
@@ -137,6 +138,8 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | Tab | Complete |
 
 While you scroll through a long answer, your message stays pinned at the top; click it to jump back to it.
+
+The terminal tab is named after the chat and shows `✻` while working, `△` when it needs your OK and `✓` when it finished while you were away; you also get a bell and a desktop notification then ([more](docs/using.md#tab-title-and-notifications)).
 
 Drag with the mouse to select text in the chat; it's copied when you let go (double-click copies a word). This works like Claude Code's fullscreen mode and OpenCode: the system clipboard is used locally, and OSC 52 over SSH. The wheel scrolls the chat wherever the pointer is. To use your terminal's own selection instead, hold Shift while dragging (Option in iTerm2 and VS Code on macOS, Fn in Terminal.app).
 

@@ -63,6 +63,9 @@ landing in your local store.
 curl -fsSL https://llmmanorg.github.io/install.sh | sh
 ```
 
+**Linux:** glibc 2.28 or newer. `--runtime bin` needs more
+([docs/backends.md](docs/backends.md#llamacpp)); on an older host use `--runtime docker`.
+
 **Windows (PowerShell):**
 
 ```
@@ -91,6 +94,9 @@ To start `llmman serve` at every logon, see
 cargo binstall llmman   # prebuilt binary
 cargo install llmman    # build from source; needs Go 1.27.3+ (and LLVM on Windows) as well as Rust
 ```
+
+**Upgrading:** an upgrade leaves a running daemon alone; it keeps its build
+until it is restarted, on reboot or by you, and the CLI works with any version.
 
 **Android** (the web UI over an on-device daemon, see [docs/android.md](docs/android.md)):
 `llmman-aarch64-linux-android.apk` from the [latest release](https://github.com/llmmanorg/llmman/releases/latest).
@@ -256,9 +262,8 @@ llmman serve
 
 To start the daemon only if needed and return once it is listening, use
 `llmman serve --detach`. The daemon keeps running after the command exits;
-`--runtime` and other serve options are applied when it starts a new daemon.
-An explicit `--llama-cpp-version` that differs from the running daemon's
-restarts it, unloading its models (unless a service manager owns it).
+`--runtime` and other serve options are applied when it starts a new daemon;
+one that is already running keeps the options it started with.
 
 One endpoint on `127.0.0.1:17434` that speaks Ollama, OpenAI and Anthropic:
 

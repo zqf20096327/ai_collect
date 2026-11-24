@@ -102,7 +102,7 @@ machine. It exists so the first hour of a build costs nothing:
 - **Mistakes are bounded, and some of them burn a virtual part** — a reversed
   supply is the classic.
 - **Ten device families** come with a bilingual five-stage lesson each, and
-  there are nine guided projects that build something small and check it.
+  there are fourteen guided projects that build something small and check it.
 
 <p align="center"><a href="https://youtube.com/shorts/0MMilmoEPdo"><img src="docs/media/wire-it-for-me.gif" width="300" alt="The wiring simulator: press Demo and an ESP32 gets a mic, a speaker and a screen"></a></p>
 
@@ -236,6 +236,18 @@ settled. No real board runs a plugin either: the firmware speaks protocol 2, so
 a plugin body is turned away from it.
 [`docs/hardware/plugin-example.md`](docs/hardware/plugin-example.md) has the
 whole format.
+
+Some bodies also ship in the repository as **modules** — a plugin manifest plus
+the wiring that makes its pins true. The workbench reads that catalogue from the
+brain, so a module's project is in **Demo builds** whether or not it is
+installed: pick it and the project panel says which character wears that body and
+offers the one step that settles it (install it, or switch the character to it).
+The same is true of a body you saved yourself. Installing can also be done from
+the admin (**Advanced → Body → Modules**), where you confirm its example
+actions; they are what tells the model when to use it. Plug in USB to
+pair, say "turn on the light", and the bench LED lights. Only the LED module
+ships today. Installing again rewrites the commands, so a body that is already
+connected must pair again afterwards.
 
 A character file has no version number. An older brain reading a file written by
 a newer one silently drops the keys it does not know: a body's `actions`, for

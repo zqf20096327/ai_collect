@@ -188,6 +188,8 @@ CI 矩阵覆盖 Ubuntu / Windows 与 Python 3.11 / 3.12 / 3.13，共 6 组。核
 
 ## 评测
 
+版本化数据集、检索评测历史和重排对照见[数据中台与评测中台](docs/evaluation-hub.md)。
+
 ```bash
 python -m evaluation.run
 ```
@@ -212,10 +214,18 @@ python -m evaluation.run
 定位并累计带符号计数，最后 L2 归一化，无网络调用或额外依赖。
 `index.search(query, mode="embedding")` 使用余弦相似度，返回
 `local_hash_embedding`；`mode="hybrid"` 返回 `hybrid`，以 0.5 权重合并
-按候选最高关键词分归一化的关键词分和 `(cosine + 1) / 2`，最多返回五段。
+按候选最高关键词分归一化的关键词分和 `(cosine + 1) / 2`。底层检索默认
+最多返回五段，也可通过 `limit` 调整。
 仅保留关键词命中或余弦相似度为正的候选。显式传入
 `embedding_provider=None` 可禁用向量，但此时不能使用 embedding / hybrid。
 哈希向量反映字符重叠与拼写相似度，不具备训练得到的语义理解能力。
+
+**重排层**：任务服务默认召回最多 20 段，再用本地规则重排。包含查询原文
+（忽略大小写和多余空白）的片段优先，其次按匹配到的不同查询词数量排序；
+同分保留原召回顺序。取重排后的前 5 段，再按原有 token 预算筛选。可用
+`AgentService(..., rerank_context=False)` 恢复直接使用召回前 5 段的行为。
+这不是语义模型，不会自动识别同义词或找回未召回的片段；重排过程不联网，
+也不会额外向模型或中转站发送候选。`retrieval_mode` 仍表示第一阶段的检索方式。
 
 **工具超时与重试**：默认每次等待最多 10 秒，连同退避受调用方剩余任务
 时间预算约束；剩余预算不足完整退避时停止重试，不截短退避后再次调用。
@@ -232,10 +242,21 @@ python -m evaluation.run
 OpenAI 兼容 Responses API 运行。模型输出具有随机性，真实报告的通过数不等同于
 CI 通过数。
 
-**Function Calling**：Responses API 原生 Function Calling 已实现。模型可以请求
-已注册工具，SafeDesk 会校验参数、执行工具、回传 `function_call_output`，
-再继续生成最终回复。CI 和默认离线评测仍使用 mock/JSON planner；
-本轮尚未实现 Chat Completions 的原生 Function Calling。
+**Function Calling**：项目支持的两种协议均已实现非流式原生函数工具调用：
+Responses 使用 `function_call` / `function_call_output`；
+Chat Completions 使用原生 `tools`、`message.tool_calls`，以
+`role="tool"` 和对应的 `tool_call_id` 回传执行结果。
+两条路径均通过 `ToolRegistry` 校验和执行工具，保留多轮历史，
+支持单轮多个调用（按顺序执行），并遵守步骤数、工具调用数和时间预算。
+第一个工具执行失败时结束任务，不继续执行剩余工具。
+
+这里的“双协议支持”不代表任意中转站或模型均可用，也不包含流式工具调用、
+旧版 `functions` / `function_call` 参数或其他厂商专有协议。
+原生协议测试使用真实 OpenAI SDK 和模拟 HTTP，不访问外部模型；
+CI 的默认评测仍使用 mock/JSON planner，既有真实报告不作为新增
+Chat Completions 工具调用已实测的证明。
+项目介绍可写“支持 Responses 与 Chat Completions 双协议原生 Function Calling”，
+不宜笼统写“全协议、全模型支持”。
 
 **语料范围**：切分器覆盖 Markdown 与 Python，其他语言回退到段落切分。
 

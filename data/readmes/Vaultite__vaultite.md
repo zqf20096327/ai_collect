@@ -36,7 +36,7 @@ pages and a knowledge graph of what links to what.
 - **Everything is a plugin**, even the file tree, hot-reloaded. People, logs and notes come with it, off until a bundle
   or you turn them on. Write your own in the vault.
 - **A full editor and workspace**: live preview, tabs and splits, backlinks, graph and terminals for your agents, on the
-  Mac, Linux and the web. iPhone coming soon.
+  Mac, Linux, the web and Android. iPhone coming soon.
 
 ## Get started
 
@@ -68,8 +68,8 @@ node bin/vau sandbox /tmp/vaultite-sandbox           # a made-up vault, dated as
 VAULTITE_VAULT=/tmp/vaultite-sandbox npm start       # http://127.0.0.1:8793
 ```
 
-No accounts: keep it on `127.0.0.1` or a private network like Tailscale ([SECURITY.md](SECURITY.md)). The desktop and
-iPhone apps, tests and how to send a change: [CONTRIBUTING.md](CONTRIBUTING.md). Your own plugin: `vau plugin new <id>`
+No accounts: keep it on `127.0.0.1` or a private network like Tailscale ([SECURITY.md](SECURITY.md)). The desktop,
+iPhone and Android apps, tests and how to send a change: [CONTRIBUTING.md](CONTRIBUTING.md). Your own plugin: `vau plugin new <id>`
 ([vault plugins](core/docs/vault-plugins.md)).
 
 ## Run it on a server

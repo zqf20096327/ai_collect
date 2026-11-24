@@ -28,7 +28,22 @@
 ### *Advancing Code Generation with Multi-Agent Systems*
 
 <p align="center">
-  <a href="https://hkuds.github.io/DeepCode/" target="_blank"><img alt="Website — hkuds.github.io/DeepCode" src="https://img.shields.io/badge/Website-hkuds.github.io%2FDeepCode%20%E2%86%97-06B6D4?style=for-the-badge&labelColor=0B1116" height="36"></a>
+  <a href="#quick-start"><img alt="Quick Start — Get Started Now" src="https://img.shields.io/badge/Quick%20Start-Get%20Started%20Now-00d9ff?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e"></a>
+  <a href="https://hkuds.github.io/DeepCode/" target="_blank"><img alt="Website — hkuds.github.io/DeepCode" src="https://img.shields.io/badge/Website-hkuds.github.io%2FDeepCode%20%E2%86%97-06B6D4?style=for-the-badge&labelColor=0B1116"></a>
+  <a href="https://arxiv.org/abs/2512.07921"><img alt="Paper — arXiv" src="https://img.shields.io/badge/Paper-arXiv-orange?style=for-the-badge&logo=arxiv&logoColor=white&labelColor=1a1a2e"></a>
+</p>
+
+<p align="center">
+  <a href="README.md"><img alt="English" src="https://img.shields.io/badge/English-00d4ff?style=for-the-badge&logo=readme&logoColor=white&labelColor=1a1a2e"></a>
+  <a href="README_ZH.md"><img alt="中文" src="https://img.shields.io/badge/中文-00d4ff?style=for-the-badge&logo=readme&logoColor=white&labelColor=1a1a2e"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/HKUDS/DeepCode/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/HKUDS/DeepCode?style=flat-square&logo=github&color=00d9ff&labelColor=1a1a2e"></a>
+  <img alt="Python 3.12+" src="https://img.shields.io/badge/Python-3.12%2B-4ecdc4?style=flat-square&logo=python&logoColor=white&labelColor=1a1a2e">
+  <a href="https://github.com/HKUDS/.github/blob/main/profile/README.md"><img alt="Feishu group" src="https://img.shields.io/badge/Feishu-Group-E9DBFC?style=flat-square&logo=feishu&logoColor=white"></a>
+  <a href="https://github.com/HKUDS/.github/blob/main/profile/README.md"><img alt="WeChat group" src="https://img.shields.io/badge/WeChat-Group-C5EAB4?style=flat-square&logo=wechat&logoColor=white"></a>
+  <!-- <a href="https://pypi.org/project/deepcode-hku/"><img src="https://img.shields.io/pypi/v/deepcode-hku.svg?style=for-the-badge&logo=pypi&logoColor=white&labelColor=1a1a2e&color=ff6b6b"></a> -->
 </p>
 
 <!-- <p align="center">
@@ -38,40 +53,9 @@
   <img src="https://img.shields.io/badge/AI-Multi--Agent-9b59b6?style=for-the-badge&logo=brain&logoColor=white" alt="AI">
   <img src="https://img.shields.io/badge/HKU-Data_Intelligence_Lab-f39c12?style=for-the-badge&logo=university&logoColor=white" alt="HKU">
 </p> -->
-<p>
-  <a href="https://github.com/HKUDS/DeepCode/stargazers"><img src='https://img.shields.io/github/stars/HKUDS/DeepCode?color=00d9ff&style=for-the-badge&logo=star&logoColor=white&labelColor=1a1a2e' /></a>
-  <a href='https://arxiv.org/abs/2512.07921'><img src="https://img.shields.io/badge/Paper-arXiv-orange?style=for-the-badge&logo=arxiv&logoColor=white&labelColor=1a1a2e"></a>
-  <img src="https://img.shields.io/badge/🐍Python-3.12%2B-4ecdc4?style=for-the-badge&logo=python&logoColor=white&labelColor=1a1a2e">
-  <!-- <a href="https://pypi.org/project/deepcode-hku/"><img src="https://img.shields.io/pypi/v/deepcode-hku.svg?style=for-the-badge&logo=pypi&logoColor=white&labelColor=1a1a2e&color=ff6b6b"></a> -->
-</p>
-<p>
-  <a href="https://github.com/HKUDS/.github/blob/main/profile/README.md"><img src="https://img.shields.io/badge/Feishu-Group-E9DBFC?style=flat&logo=feishu&logoColor=white" alt="Feishu"></a>
-  <a href="https://github.com/HKUDS/.github/blob/main/profile/README.md"><img src="https://img.shields.io/badge/WeChat-Group-C5EAB4?style=flat&logo=wechat&logoColor=white" alt="WeChat"></a>
-</p>
+
 <div align="center">
   <div style="width: 100%; height: 2px; margin: 20px 0; background: linear-gradient(90deg, transparent, #00d9ff, transparent);"></div>
-</div>
-
-<div align="center">
-  <a href="#quick-start" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/Quick%20Start-Get%20Started%20Now-00d9ff?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e">
-  </a>
-</div>
-
-<div align="center" style="margin-top: 10px;">
-  <a href="README.md">
-    <img src="https://img.shields.io/badge/English-00d4ff?style=for-the-badge&logo=readme&logoColor=white&labelColor=1a1a2e" alt="English">
-  </a>
-  <a href="README_ZH.md">
-    <img src="https://img.shields.io/badge/中文-00d4ff?style=for-the-badge&logo=readme&logoColor=white&labelColor=1a1a2e" alt="中文">
-  </a>
-</div>
-
-<div align="center">
-
-  <img src="https://github.com/Zongwei9888/Experiment_Images/raw/e389750e733ec2c1b94986cb990036899dcaec52/DeepCode_images/Area.gif" alt="DeepCode Desktop coding agent demo" width="100%" style="border-radius: 10px; box-shadow: 0 8px 20px rgba(45,55,72,0.3); margin: 15px 0;"/>
-
-*Work with DeepCode in a visual workspace for Sessions, goals, tool activity, code changes, and verification.*
 </div>
 
 DeepCode provides TUI, Desktop, and Web clients over one shared local service.
@@ -144,6 +128,11 @@ Automations. Use `deepcode`, `deepcode desktop`, or `deepcode web`; see
 
 ## What's new
 
+- **2026-11-23** — `deepcode mcp test --all` checks every enabled MCP server in
+  one run, a blocked shell command now tells the agent to use a narrower
+  command or ask you instead of pointing to a waiver that does not exist, the
+  Python package ships only DeepCode's own modules, and the README shows where
+  DeepCode's stargazers work and study.
 - **2026-11-17** — Long sessions keep your own words through compaction, a
   malformed tool call no longer stalls a session, commands that reach a
   protected file through a link are caught, and new README figures show what
@@ -153,17 +142,10 @@ Automations. Use `deepcode`, `deepcode desktop`, or `deepcode web`; see
   against protected paths, memory tidy-up keeps every topic link, and
   Paper2Code no longer mistakes reading several files for a loop or splits
   sections at a comment in a code block.
-- **2026-11-02** — Goals you can trust to finish: the agent proposes a
-  checklist, and once you confirm it DeepCode runs those commands itself
-  before it accepts "complete"; an optional independent reviewer checks every
-  requirement, switched on in Settings, and each check is shown on the Goal
-  card. A Goal can have a time limit, stops when it is stuck or keeps
-  repeating itself, wraps up when its budget runs out, and pauses when
-  DeepCode restarts.
-
 <details>
 <summary><strong>Earlier updates</strong></summary>
 
+- **2026-11-02** — Goals you can trust to finish: confirmed checks DeepCode runs itself, an optional independent reviewer, time limits and automatic stops
 - **2026-10-31** — Long tasks read better on the Web, a calmer Web and Desktop interface, and a terminal UI that wraps Chinese text
 - **2026-10-29** — Lighter compaction, checked Goal completion, folder browsing on the Web, and clearer approvals
 - **2026-10-28** — Agent presets that remove tools, file tools that ask before writing hooks, and unpinned MCP packages flagged

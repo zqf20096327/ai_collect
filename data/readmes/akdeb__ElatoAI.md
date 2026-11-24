@@ -51,12 +51,13 @@ Video links: [OpenAI Demo](https://youtu.be/o1eIAwVll5I) | [Gemini Demo](https:/
 ## 🧠 Models
 
 ### Deno Edge
-1. [OpenAI Realtime API](https://github.com/akdeb/ElatoAI/tree/main/server/deno/models/openai)
-2. [Gemini Live API](https://github.com/akdeb/ElatoAI/tree/main/server/deno/models/gemini)
-3. [AssemblyAI Voice Agent API](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/assemblyai.ts)
-4. [Boson Higgs Realtime](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/boson.ts)
-5. [xAI Grok Voice Agent API](https://github.com/akdeb/ElatoAI/tree/main/server/deno/models/grok)
-6. [Eleven Labs Conversational AI Agents](https://github.com/akdeb/ElatoAI/tree/main/server/deno/models/elevenlabs)
+1. **[OpenAI Realtime API](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/realtime/openai.ts)** — 📖 [OpenAI Cookbook](https://cookbook.openai.com/examples/voice_solutions/running_realtime_api_speech_on_esp32_arduino_edge_runtime_elatoai)
+2. **[Gemini Live API](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/realtime/gemini.ts)**
+3. **[AssemblyAI Voice AI Pipeline](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/pipeline/tts/assemblyai.ts)** — 📖 [AssemblyAI docs](https://www.assemblyai.com/docs/getting-started/end-to-end-examples/realtime-esp32)
+4. **[Boson Higgs Realtime](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/realtime/boson.ts)** — 📖 [Boson AI blog](https://www.boson.ai/blog/higgs-realtime-esp32)
+5. **[xAI Grok Voice Agent API](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/realtime/grok.ts)**
+6. **[Eleven Labs Conversational AI Agents](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/realtime/elevenlabs.ts)**
+7. **[Mistral Voxtral Pipeline](https://github.com/akdeb/ElatoAI/blob/main/server/deno/models/pipeline/tts/mistral.ts)**
 
 ### Cloudflare Workers
 1. LLM - [80+ Models](https://developers.cloudflare.com/workers-ai/models/?tasks=Text+Generation) OpenAI, Gemini, xAI, and more.
@@ -83,7 +84,7 @@ Control your ESP32 AI device from your phone with the ElatoAI webapp.
 
 ## 🌟 Full feature list
 
-1. **Realtime Speech-to-Speech**: Instant speech conversion powered by OpenAI's Realtime API, Gemini's Live API, AssemblyAI Voice Agent API, Boson Higgs Realtime, xAI's Grok Voice Agent API, and Eleven Labs Conversational AI Agents.
+1. **Realtime Speech-to-Speech**: Instant speech conversion powered by OpenAI's Realtime API, Gemini's Live API, Boson Higgs Realtime, xAI's Grok Voice Agent API, and Eleven Labs Conversational AI Agents, or a streaming STT → LLM → TTS pipeline with AssemblyAI or Mistral.
 2. **Create Custom AI Agents**: Create custom agents with different personalities and voices.
 3. **Customizable Voices**: Choose from a variety of voices and personalities.
 4. **Secure WebSockets**: Reliable, encrypted WebSocket communication.
@@ -142,7 +143,7 @@ flowchart TD
   ESP32[ESP32 Device] -->|WebSocket| Edge[Deno Edge / Cloudflare Workers]
   Edge -->|OpenAI API| OpenAI[OpenAI Realtime API]
   Edge -->|Gemini API| Gemini[Gemini Live API]
-  Edge -->|AssemblyAI API| AssemblyAI[AssemblyAI Voice Agent API]
+  Edge -->|AssemblyAI API| AssemblyAI[AssemblyAI STT + LLM Gateway + TTS]
   Edge -->|Boson API| Boson[Boson Higgs Realtime]
   Edge -->|xAI API| xAI[xAI Grok Voice Agent API]
   Edge -->|ElevenLabs API| ElevenLabs[ElevenLabs AI Agents]

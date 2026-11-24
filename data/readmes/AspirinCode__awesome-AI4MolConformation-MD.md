@@ -50,6 +50,12 @@ List of **molecules ( small molecules, RNA, peptide, protein, enzymes, antibody,
 
 
 
+
+
+* **Graphics processing unit-accelerated quantum simulation for molecular biology and drug discovery: algorithms, platforms, and emerging applications** [2026]  
+Yun-Lin Chen, Oscar K Lee.  
+[Briefings in Bioinformatics(2026)](https://doi.org/10.1093/bib/bbag629)  
+
 * **Benchmarking Generative AI and Physics-Based Molecular Simulation for Sampling Conformational Heterogeneity in T4 Lysozyme** [2026]  
 Soumendranath Bhakat.  
 [J. Chem. Inf. Model.(2026)](https://doi.org/10.1021/acs.jcim.6c02044)  
@@ -1114,6 +1120,13 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+
+
+
+* **Quantum-accurate enhanced sampling and mini-protein folding through replica exchange for multiscale neural network potentials** [2026]  
+Riccardo Solazzo, Igor Gordiy, Sereina Riniker.  
+  [Chem. Sci.(2026)](https://doi.org/10.1039/d6sc04555c) | [code](https://github.com/rinikerlab/rest2_ampmm)  
+
 * **Atomistic simulations of electrochemical systems with machine learning potentials** [2026]  
 Marialore Sulpizi, Jörg Behler.  
   [arXiv:2611.15939(2026)](https://doi.org/10.48550/arXiv.2611.15939)  
@@ -1512,12 +1525,4 @@ Pickering I, Xue J, Huddleston K, Terrel N, Roitberg A.
 
 * **Python Library for Monte Carlo Simulations with Ab Initio and Machine-Learned Interatomic Potentials** [2025]  
 Woodrow N. WilsonVivek S. BharadwajNeeraj Rai*.  
-[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c01148) | [code](https://github.com/MSELRai/ASE-MC_ESI)  
-
-* **Anticipating the Selectivity of Cyclization Reaction Pathways with Neural Network Potentials** [2025]  
-Nicholas Casetti, Dylan Anstine, Olexandr Isayev, and Connor W. Coley.  
-[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c01161) | [code](https://github.com/ncasetti7/REVAMP)  
-
-* **Weighted active space protocol for multireference machine-learned potentials** [2025]  
-A. Seal,S. Perego,M.R. Hennefarth,U. Raucci,L. Bonati,A.L. Ferguson,M. Parrinello, & L. Gagliardi.  
-[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2513693122) 
+[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c01148) | [code](https://github.com/MSELRai/ASE-MC_ESI)

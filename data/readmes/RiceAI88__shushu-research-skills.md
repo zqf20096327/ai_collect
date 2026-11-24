@@ -1,17 +1,19 @@
 # 科研鼠鼠 · Skills 导航站
 
+**简体中文** · **[English (README_EN.md)](README_EN.md)**
+
 **面向大学生和研究生，按专业找到适合自己的科研 Skills。**
 
 **科研鼠鼠 · Skills 导航站**（`shushu-research-skills`）由 RiceAI88 整理维护，汇集 GitHub 上用于文献检索、论文阅读、写作、绘图、实验复现、投稿审稿、数据分析和研究计算的 Agent Skills。支持按 12 个学科门类与具体专业、8 类科研任务和适用 AI Agent 筛选，提供中文一句话导读、3 步快速上手指引（标注终端或 AI Agent 对话框执行位置、一键复制安装与双语提示词案例）、10 条专业科研路径与维护状态参考。科研相关工具、工作流与学习资料单独标注。
 
 ### [打开科研 Skills 导航 →](https://riceai985.cc/)
 
-[![Skills](https://img.shields.io/badge/Skills-429-0d9f6e)](#skills-榜单)
-[![Updated](https://img.shields.io/badge/updated-2026--11--22-64748b)](#收录与更新)
+[![Skills](https://img.shields.io/badge/Skills-462-0d9f6e)](#skills-榜单)
+[![Updated](https://img.shields.io/badge/updated-2026--11--24-64748b)](#收录与更新)
 [![CI](https://github.com/RiceAI88/shushu-research-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/RiceAI88/shushu-research-skills/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
 
-[按专业找](#按专业找-skills) · [按任务找](#按科研任务找-skills) · [新手入门](#网站怎么用) · [今日新增](#今日新增-skills) · [Skills 榜单](#skills-榜单) · [科研相关项目](#科研相关项目) · [收录与更新](#收录与更新) · [推荐项目](CONTRIBUTING.md) · [English](#english)
+[按专业找](#按专业找-skills) · [按任务找](#按科研任务找-skills) · [新手入门](#网站怎么用) · [今日新增](#今日新增-skills) · [Skills 榜单](#skills-榜单) · [科研相关项目](#科研相关项目) · [收录与更新](#收录与更新) · [推荐项目](CONTRIBUTING.md) · [English](README_EN.md)
 
 [![科研 Skills 导航：专业分类、科研任务与项目安装入口](assets/readme-dashboard.png)](https://riceai985.cc/)
 
@@ -59,44 +61,44 @@
 
 ## 今日新增 Skills
 
-新增 Skills **83** · 按本次更新时间所在的北京时间自然日统计 · “新增”指本站首次收录，不是仓库刚创建。
+新增 Skills **11** · 按本次更新时间所在的北京时间自然日统计 · “新增”指本站首次收录，不是仓库刚创建。
 
-- **[limi124/remote-sensing-research-radar](https://github.com/limi124/remote-sensing-research-radar)** — Remote Sensing Research Radar is a Codex skill designed for tracking research frontiers i…
-- **[LEON-gittech/Skill2Poster](https://github.com/LEON-gittech/Skill2Poster)** — Codex skills for academic poster generation: turn paper content into accurate A0 HTML/PDF…
-- **[caofan85-lab/research-paper-daily-push](https://github.com/caofan85-lab/research-paper-daily-push)** — 可配置的 Codex Skill：每日检索、证据复核、评分、中文总结、微信推送、去重与研究记忆。
-- **[YuanZHAO321/Scientific-Writing-zh](https://github.com/YuanZHAO321/Scientific-Writing-zh)** — 一个 Claude Code skill —— 一份可用的科研写作教练(中文)。
-- **[ZongziForu/cn-law-hub](https://github.com/ZongziForu/cn-law-hub)** — 中国法条与法律法规检索 Agent Skill｜Chinese legal research Agent Skill for retrieving and verifying C…
+- **[Leey21/arxiv-translator](https://github.com/Leey21/arxiv-translator)** — arXiv? No. ChineseXiv.
+- **[skJack/kelip-paper-reading](https://github.com/skJack/kelip-paper-reading)** — 仓库未提供简介
+- **[mikamikasuki/forest](https://github.com/mikamikasuki/forest)** — FOREST is a research agent for long-horizon science, where evidence gets lost, errors com…
+- **[yu-xin-c/Sea-mult-agent](https://github.com/yu-xin-c/Sea-mult-agent)** — A AutoResearch Agent
+- **[yuanchen-home/cumcm-step-review](https://github.com/yuanchen-home/cumcm-step-review)** — 仓库未提供简介
 
 [查看网站今日新增](https://riceai985.cc/#today=skill) · 本节最多展示 5 个，完整列表见网站。初始导入的基线项目不计为今日新增。
 
 ## Skills 榜单
 
-Skills **429** · 科研相关项目 **230** · 类型待核验 **2**
+Skills **462** · 科研相关项目 **245** · 类型待核验 **2**
 
-更新时间：**2026-11-22 15:41 UTC+8**。以下为 Skills 前 20 名，按 Stars 降序排列；同 Stars 时依次按趋势分和仓库名排序，筛选项目类型后重新编号。Stars 与增长反映关注度，不代表科研质量、安装兼容性或推荐保证。
+更新时间：**2026-11-24 10:39 UTC+8**。以下为 Skills 前 20 名，按 Stars 降序排列；同 Stars 时依次按趋势分和仓库名排序，筛选项目类型后重新编号。Stars 与增长反映关注度，不代表科研质量、安装兼容性或推荐保证。
 
 | # | 仓库 | Stars | 近 7 日 | 适用 AI Agent | 作者原文简介 |
 |---:|---|---:|---:|---|---|
-| 1 | [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) | 58,055 | +832 | Claude Code/Codex/Cursor/Antigravity | Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by… |
-| 2 | [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) | 58,026 | +1,115 | Claude Code | Academic Research Skills for Claude Code: research → write → review → revise → finalize |
-| 3 | [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) | 54,495 | +938 | Codex | 符合nature论文学术表达和科研绘图的Skill |
-| 4 | [wanshuiyin/Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | 19,564 | +356 | Claude Code/Codex/MCP | ARIS ⚔️ (Auto-Research-In-Sleep) — Lightweight Markdown-only skills for autonomous ML res… |
-| 5 | [aiming-lab/AutoResearchClaw](https://github.com/aiming-lab/AutoResearchClaw) | 14,921 | +8 | Claude Code/Codex/OpenCode/Gemini | Fully autonomous & self-evolving research from idea to paper. Chat an Idea. Get a Paper. 🦞 |
-| 6 | [Imbad0202/academic-research-skills-codex](https://github.com/Imbad0202/academic-research-skills-codex) | 14,888 | +319 | Codex | Codex-native Academic Research Skills suite for human-in-the-loop academic research workf… |
-| 7 | [Orchestra-Research/AI-Research-SKILLs](https://github.com/Orchestra-Research/AI-Research-SKILLs) | 14,732 | +189 | Claude Code/Codex/Gemini | Comprehensive open-source library of AI research and engineering skills for any AI model.… |
-| 8 | [HKUSTDial/Supervisor-Skills](https://github.com/HKUSTDial/Supervisor-Skills) | 13,193 | +680 | Claude Code/Cursor/Codex | 将博导十年科研经验炼化为可直接调用的 AI 技能。从 Idea 构思到论文投稿，你的 AI 科研副导师。 |
-| 9 | [ChenLiu-1996/figures4papers](https://github.com/ChenLiu-1996/figures4papers) | 12,368 | +1,041 | Cursor/Claude Code/Codex | My Python scripts to make high-quality figures for publications in top AI conferences and… |
-| 10 | [Companion-Inc/feynman](https://github.com/Companion-Inc/feynman) | 10,145 | +2 | Codex/OpenCode/MCP | The open source AI research agent. |
-| 11 | [isaac-sim/IsaacLab](https://github.com/isaac-sim/IsaacLab) | 8,697 | +4 | 平台见说明 | Unified framework for robot learning with multi-physics/renderer support |
-| 12 | [Master-cai/Research-Paper-Writing-Skills](https://github.com/Master-cai/Research-Paper-Writing-Skills) | 8,485 | +141 | Claude Code/Codex/Gemini | Skill package for ML/CV/NLP paper writing, curated and adapted from Prof. Peng Sida's ope… |
-| 13 | [ningzimu/codex-ppt-skill](https://github.com/ningzimu/codex-ppt-skill) | 8,087 | +9 | Claude Code/Codex | GPT-Image-2 PPT Generator Skill for Creating Image-Based PowerPoint Presentations in Code… |
-| 14 | [dwzhu-pku/PaperBanana](https://github.com/dwzhu-pku/PaperBanana) | 7,678 | +37 | Gemini | PaperBanana: Automating Academic Illustration For AI Scientists |
-| 15 | [Adkid-Zephyr/anti-defensive-writing-Skill](https://github.com/Adkid-Zephyr/anti-defensive-writing-Skill) | 6,987 | +719 | Claude Code/Cursor | 极致轻量｜阻止论文的防御性写作 \| Anti-defensive writing for academic papers — 学术写作原则 Skill + prompt pack… |
-| 16 | [larashero3-dotcom/lieflat-charts](https://github.com/larashero3-dotcom/lieflat-charts) | 6,963 | +12 | Claude Code/Codex | Data visualization Skill for AI Agents, turning data into polished, interactive HTML char… |
-| 17 | [ScrapeCreators/social-media-research-skills](https://github.com/ScrapeCreators/social-media-research-skills) | 6,944 | +466 | Claude Code/Codex/Cursor/Gemini/Windsurf/MCP | AI agent skills for social media research. Outlier posts, comment mining, competitor tear… |
-| 18 | [jihe520/MathModelAgent](https://github.com/jihe520/MathModelAgent) | 6,395 | +67 | Claude Code/Codex | 🤖📐专为数学建模设计的 Agent & skills ,自动完成数学建模，生成一份完整的可以直接提交的论文。 An Agent Designed for Mathematical… |
-| 19 | [WUBING2023/PaperSpine](https://github.com/WUBING2023/PaperSpine) | 6,378 | +73 | Codex | Open-source AI for Science Skill for research agents. Review literature, run analyses, ma… |
-| 20 | [zLanqing/codex-claude-academic-skills](https://github.com/zLanqing/codex-claude-academic-skills) | 6,162 | +193 | Claude Code/Codex | 本仓库包含三个面向学术科研人员的Skills，覆盖从文献阅读、论文写作到科学计算的完整研究工作流。office-academic-skill 负责论文阅读报告与学术 PPT/Wo… |
+| 1 | [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) | 58,273 | +1,101 | Claude Code | Academic Research Skills for Claude Code: research → write → review → revise → finalize |
+| 2 | [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) | 58,239 | +764 | Claude Code/Codex/Cursor/Antigravity | Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by… |
+| 3 | [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) | 54,750 | +937 | Codex | 符合nature论文学术表达和科研绘图的Skill |
+| 4 | [wanshuiyin/Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | 19,657 | +339 | Claude Code/Codex/MCP | ARIS ⚔️ (Auto-Research-In-Sleep) — Lightweight Markdown-only skills for autonomous ML res… |
+| 5 | [Imbad0202/academic-research-skills-codex](https://github.com/Imbad0202/academic-research-skills-codex) | 14,977 | +333 | Codex | Codex-native Academic Research Skills suite for human-in-the-loop academic research workf… |
+| 6 | [aiming-lab/AutoResearchClaw](https://github.com/aiming-lab/AutoResearchClaw) | 14,929 | +4 | Claude Code/Codex/OpenCode/Gemini | Fully autonomous & self-evolving research from idea to paper. Chat an Idea. Get a Paper. 🦞 |
+| 7 | [Orchestra-Research/AI-Research-SKILLs](https://github.com/Orchestra-Research/AI-Research-SKILLs) | 14,773 | +172 | Claude Code/Codex/Gemini | Comprehensive open-source library of AI research and engineering skills for any AI model.… |
+| 8 | [HKUSTDial/Supervisor-Skills](https://github.com/HKUSTDial/Supervisor-Skills) | 13,389 | +671 | Claude Code/Cursor/Codex | 将博导十年科研经验炼化为可直接调用的 AI 技能。从 Idea 构思到论文投稿，你的 AI 科研副导师。 |
+| 9 | [ChenLiu-1996/figures4papers](https://github.com/ChenLiu-1996/figures4papers) | 12,437 | +356 | Cursor/Claude Code/Codex | My Python scripts to make high-quality figures for publications in top AI conferences and… |
+| 10 | [Companion-Inc/feynman](https://github.com/Companion-Inc/feynman) | 10,151 | +3 | Codex/OpenCode/MCP | The open source AI research agent. |
+| 11 | [isaac-sim/IsaacLab](https://github.com/isaac-sim/IsaacLab) | 8,710 | +5 | 平台见说明 | Unified framework for robot learning with multi-physics/renderer support |
+| 12 | [Master-cai/Research-Paper-Writing-Skills](https://github.com/Master-cai/Research-Paper-Writing-Skills) | 8,521 | +135 | Claude Code/Codex/Gemini | Skill package for ML/CV/NLP paper writing, curated and adapted from Prof. Peng Sida's ope… |
+| 13 | [ningzimu/codex-ppt-skill](https://github.com/ningzimu/codex-ppt-skill) | 8,125 | +16 | Claude Code/Codex | GPT-Image-2 PPT Generator Skill for Creating Image-Based PowerPoint Presentations in Code… |
+| 14 | [dwzhu-pku/PaperBanana](https://github.com/dwzhu-pku/PaperBanana) | 7,681 | +26 | Gemini | PaperBanana: Automating Academic Illustration For AI Scientists |
+| 15 | [ScrapeCreators/social-media-research-skills](https://github.com/ScrapeCreators/social-media-research-skills) | 7,577 | +980 | Claude Code/Codex/Cursor/Gemini/Windsurf/MCP | AI agent skills for social media research. Outlier posts, comment mining, competitor tear… |
+| 16 | [Adkid-Zephyr/anti-defensive-writing-Skill](https://github.com/Adkid-Zephyr/anti-defensive-writing-Skill) | 7,113 | +617 | Claude Code/Cursor | 极致轻量｜阻止论文的防御性写作 \| Anti-defensive writing for academic papers — 学术写作原则 Skill + prompt pack… |
+| 17 | [larashero3-dotcom/lieflat-charts](https://github.com/larashero3-dotcom/lieflat-charts) | 6,976 | +5 | Claude Code/Codex | Data visualization Skill for AI Agents, turning data into polished, interactive HTML char… |
+| 18 | [jihe520/MathModelAgent](https://github.com/jihe520/MathModelAgent) | 6,407 | +65 | Claude Code/Codex | 🤖📐专为数学建模设计的 Agent & skills ,自动完成数学建模，生成一份完整的可以直接提交的论文。 An Agent Designed for Mathematical… |
+| 19 | [WUBING2023/PaperSpine](https://github.com/WUBING2023/PaperSpine) | 6,394 | +71 | Codex | Open-source AI for Science Skill for research agents. Review literature, run analyses, ma… |
+| 20 | [zLanqing/codex-claude-academic-skills](https://github.com/zLanqing/codex-claude-academic-skills) | 6,222 | +181 | Claude Code/Codex | 本仓库包含三个面向学术科研人员的Skills，覆盖从文献阅读、论文写作到科学计算的完整研究工作流。office-academic-skill 负责论文阅读报告与学术 PPT/Wo… |
 
 [浏览完整 Skills 榜单](https://riceai985.cc/) · 简介保留仓库作者原文，仅截短展示；“—”表示零增量或暂缺可比较的历史记录，计算方式见[排名方法](docs/methodology.md)。
 
@@ -106,16 +108,16 @@ Skills **429** · 科研相关项目 **230** · 类型待核验 **2**
 
 | # | 仓库 | Stars | 近 7 日 | 适用 AI Agent | 作者原文简介 |
 |---:|---|---:|---:|---|---|
-| 1 | [binary-husky/gpt_academic](https://github.com/binary-husky/gpt_academic) | 71,706 | +43 | 平台见说明 | 为GPT/GLM等LLM大语言模型提供实用化交互接口，特别优化论文阅读/润色/写作体验，模块化设计，支持自定义快捷按钮&函数插件，支持Python和C++等项目剖析&自译解功能，… |
-| 2 | [scutan90/DeepLearning-500-questions](https://github.com/scutan90/DeepLearning-500-questions) | 57,728 | +1 | 平台见说明 | 深度学习500问，以问答形式对常用的概率知识、线性代数、机器学习、深度学习、计算机视觉等热点问题进行阐述，以帮助自己及有需要的读者。 全书分为18个章节，50余万字。由于水平有限… |
-| 3 | [PDFMathTranslate/PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate) | 38,585 | +13 | MCP | [EMNLP 2025 Demo] PDF scientific paper translation with preserved formats - 基于 AI 完整保留排版的… |
-| 4 | [Leey21/awesome-ai-research-writing](https://github.com/Leey21/awesome-ai-research-writing) | 36,227 | +16 | 平台见说明 | Elevate your AI research writing, no more tedious polishing ✨ |
-| 5 | [mli/paper-reading](https://github.com/mli/paper-reading) | 34,139 | +25 | 平台见说明 | 深度学习经典、新论文逐段精读 |
-| 6 | [AccumulateMore/CV](https://github.com/AccumulateMore/CV) | 24,329 | +45 | 平台见说明 | ✅（已完结）超级全面的 深度学习 笔记【土堆 Pytorch】【李沐 动手学深度学习】【吴恩达 深度学习】【大飞 大模型Agent】 |
-| 7 | [amusi/CVPR2026-Papers-with-Code](https://github.com/amusi/CVPR2026-Papers-with-Code) | 22,969 | +12 | 平台见说明 | CVPR 2026 论文和开源项目合集 |
-| 8 | [kaixindelele/ChatPaper](https://github.com/kaixindelele/ChatPaper) | 20,018 | — | 平台见说明 | Use ChatGPT to summarize the arXiv papers. 全流程加速科研，利用chatgpt进行论文全文总结+专业翻译+润色+审稿+审稿回复 |
-| 9 | [immersive-translate/immersive-translate](https://github.com/immersive-translate/immersive-translate) | 19,864 | +4 | 平台见说明 | 沉浸式双语网页翻译扩展 , 支持输入框翻译， 鼠标悬停翻译， PDF, Epub, 字幕文件, TXT 文件翻译 - Immersive Dual Web Page Transl… |
-| 10 | [ZJU-LLMs/Foundations-of-LLMs](https://github.com/ZJU-LLMs/Foundations-of-LLMs) | 18,632 | +1 | 平台见说明 | A book for Learning the Foundations of LLMs |
+| 1 | [binary-husky/gpt_academic](https://github.com/binary-husky/gpt_academic) | 71,711 | +41 | 平台见说明 | 为GPT/GLM等LLM大语言模型提供实用化交互接口，特别优化论文阅读/润色/写作体验，模块化设计，支持自定义快捷按钮&函数插件，支持Python和C++等项目剖析&自译解功能，… |
+| 2 | [scutan90/DeepLearning-500-questions](https://github.com/scutan90/DeepLearning-500-questions) | 57,731 | +1 | 平台见说明 | 深度学习500问，以问答形式对常用的概率知识、线性代数、机器学习、深度学习、计算机视觉等热点问题进行阐述，以帮助自己及有需要的读者。 全书分为18个章节，50余万字。由于水平有限… |
+| 3 | [PDFMathTranslate/PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate) | 38,616 | +16 | MCP | [EMNLP 2025 Demo] PDF scientific paper translation with preserved formats - 基于 AI 完整保留排版的… |
+| 4 | [Leey21/awesome-ai-research-writing](https://github.com/Leey21/awesome-ai-research-writing) | 36,281 | +29 | 平台见说明 | Elevate your AI research writing, no more tedious polishing ✨ |
+| 5 | [mli/paper-reading](https://github.com/mli/paper-reading) | 34,145 | +25 | 平台见说明 | 深度学习经典、新论文逐段精读 |
+| 6 | [AccumulateMore/CV](https://github.com/AccumulateMore/CV) | 24,344 | +48 | 平台见说明 | ✅（已完结）超级全面的 深度学习 笔记【土堆 Pytorch】【李沐 动手学深度学习】【吴恩达 深度学习】【大飞 大模型Agent】 |
+| 7 | [amusi/CVPR2026-Papers-with-Code](https://github.com/amusi/CVPR2026-Papers-with-Code) | 22,968 | +9 | 平台见说明 | CVPR 2026 论文和开源项目合集 |
+| 8 | [kaixindelele/ChatPaper](https://github.com/kaixindelele/ChatPaper) | 20,024 | +4 | 平台见说明 | Use ChatGPT to summarize the arXiv papers. 全流程加速科研，利用chatgpt进行论文全文总结+专业翻译+润色+审稿+审稿回复 |
+| 9 | [immersive-translate/immersive-translate](https://github.com/immersive-translate/immersive-translate) | 19,877 | +8 | 平台见说明 | 沉浸式双语网页翻译扩展 , 支持输入框翻译， 鼠标悬停翻译， PDF, Epub, 字幕文件, TXT 文件翻译 - Immersive Dual Web Page Transl… |
+| 10 | [ZJU-LLMs/Foundations-of-LLMs](https://github.com/ZJU-LLMs/Foundations-of-LLMs) | 18,637 | +5 | 平台见说明 | A book for Learning the Foundations of LLMs |
 
 [浏览科研相关项目](https://riceai985.cc/#related=1)（打开后与 Skills 合并展示）。类型待核验项目不计入两张表，待文件证据确认后再归类；有 `SKILL.md` 也不等同于已通过安装测试。
 
@@ -139,6 +141,8 @@ README 会由采集脚本自动生成，静态介绍需修改 [`render_readme`](
 
 ## English
 
+**[Read Full English README (README_EN.md) →](README_EN.md)** · **[Open English Dashboard →](https://riceai985.cc/en/)**
+
 **Research Hamster · Skills Directory** (`shushu-research-skills`) helps undergraduate and postgraduate students find GitHub research Skills by discipline, task and supported AI Agent, from literature search and writing to figures, data analysis and scientific computing.
 
 [Open the dashboard](https://riceai985.cc/en/) to choose a discipline and task, read the starter guide, follow 10 discipline research paths, use the 3-step quick-start with copyable prompt examples, inspect installation requirements, save favorites, compare repositories and explore data insights. Curated summaries are paired with the repository author's original description.
@@ -147,7 +151,7 @@ Discipline labels are based on official documentation; coverage is still being e
 
 Candidates are discovered through popular, recently updated and star-banded searches, then reviewed against README evidence while filtering out mirrors and non-academic noise. The main ranking uses Stars; daily arrivals mean first inclusion on this site, measured by the Beijing calendar day. The scheduled daily refresh runs at 10:00 UTC+8 (02:00 UTC), may be delayed, and does not guarantee new entries every day. Search coverage is bounded.
 
-[Methodology](docs/methodology.md) · [Contributing](CONTRIBUTING.md) · [JSON](data/rankings.json) · [CSV](data/rankings.csv) · [RSS](feed.xml)
+[English README](README_EN.md) · [Methodology](docs/methodology.md) · [Contributing](CONTRIBUTING.md) · [JSON](data/rankings.json) · [CSV](data/rankings.csv) · [RSS](feed.xml)
 
 ## 来源与致谢
 

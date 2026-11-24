@@ -99,6 +99,22 @@ For web AI clients, run `cloudflared tunnel --url http://127.0.0.1:3000` **on th
 
 Stop and remove the sandbox with `docker compose down`. The image includes Node.js, Bash, Git, and curl; other project toolchains must be added to a custom image. Only the server and package metadata enter the image build context, not your workspace or `.env`.
 
+Alpine packages are upgraded at build time to pick up available security fixes. The bundled npm, npx, Yarn, and Corepack files and launchers are removed to reduce unused dependencies and CVEs; Bridge runs with plain `node` and does not need package managers at runtime. Rebuild with `docker compose build --pull --no-cache` to refresh the base image and Alpine packages.
+
+If your workspace needs package managers, restore them in a custom image. For example, first build Bridge with `docker build -t bridge-sandbox:local .`, then use this separate Dockerfile to restore npm and npx:
+
+```dockerfile
+FROM node:24-alpine AS node-tools
+FROM bridge-sandbox:local
+USER root
+COPY --from=node-tools /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+USER node
+```
+
+To add Yarn or Corepack too, add `RUN npm install --global yarn corepack` before `USER node`. Build and select your custom image in Compose while retaining the existing hardening settings. Restoring package managers adds their dependencies and potential CVEs back to the image; scan the custom image as well. The default read-only root filesystem still prevents runtime global installs.
+
 **Verification:** Run `npm run test:host-binding` for binding and authentication regressions. On Linux/WSL with a running Docker daemon, Node.js >=18, and Compose >=2.24.4, run `npm run test:docker` to build the actual image and verify authentication, MCP file/shell operations, persistence across restarts, effective runtime restrictions, and image contents. The integration test uses a disposable workspace and an ephemeral loopback port, leaving existing port-3000 listeners alone, then removes its containers, image, network, and temporary files. Run it with a local Docker daemon and permission to access its socket.
 
 ### Command-Line Options

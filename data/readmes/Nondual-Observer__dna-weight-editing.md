@@ -245,14 +245,25 @@ Comparing these fixed weight edits across the complete 5 × 2 matrix shows that 
   * Verify all 52 SHA-256 checksums and recompute saved-trace metrics: `python3 scripts/verify_paper_metrics.py`.
   * Re-run HumanEval-164 unit tests (executes model-generated code — run inside an isolated container): `python3 scripts/grade_humaneval_sandbox.py`.
 
+### Independent Replications & External Audits
+
+- **Dave Uhlemann (`NeoCortex0815`) — *Knowing Is Not Committing v0.5* (Sections 3.13–3.14):** independent `llama.cpp` evaluation, `GatedDeltaNet`-only replication, and multi-run council comparison ([DOI: 10.5281/zenodo.24420522](https://doi.org/10.5281/zenodo.24420522), [repo](https://github.com/NeoCortex0815/knowing-is-not-committing)).
+- **`Human-AI-Evolution` (`@HedonismJesse`) — 5-arm Hugging Face `transformers` replication & component ablation:** independently replicated greedy `T = 0` recovery on the 300-item held-out manifest (`143/300` strict), released `MLP-only` and `gate-minus` `.npz` deltas ([`weight-space-notes`](https://github.com/Human-AI-Evolution/weight-space-notes), [discussion #4](https://github.com/RikiyaT/lm_understand-logs/issues/4#issuecomment-7062726129)), and showed that removing the `L16` decay-gate row does not reduce accuracy (`147/300`) while `MLP down_proj` carries termination (`0%` cap hits) and `GDN out_proj` suppresses mid-trace repetition.
+- **Carlos Toledo (`@carlostoledo1891`):** independent dual-grader re-verification across all 3,000 published `MATH-500` responses ([discussion #4](https://github.com/RikiyaT/lm_understand-logs/issues/4#issuecomment-7060542882)).
+- **Follow-up pure-Transformer transfer (`SGNE-CC v2`):** [`Nondual-Observer/deepseek-r1-1.5b-sgne-cc-v2`](https://github.com/Nondual-Observer/deepseek-r1-1.5b-sgne-cc-v2) ([DOI: 10.5281/zenodo.24398165](https://doi.org/10.5281/zenodo.24398165)) transfers norm-preserving `mlp.down_proj` column rotation (`205` columns, `0.0177%`, no gates or recurrent layers) to `DeepSeek-R1-Distill-Qwen-1.5B`.
+
 ### Author Note and AI Collaboration Disclosure
-This work was done by Igor M. Zhuk in collaboration with AI—both on the research itself and on the code, figures, and text. The author takes full responsibility for all claims, and every number can be verified locally from the open `.npz` patch, 38 trace files, and CPU scripts (52 files under SHA-256).
+This work was done by Igor M. Zhuk ([ORCID 0009-0003-1670-8388](https://orcid.org/0009-0003-1670-8388)) in collaboration with AI—both on the research itself and on the code, figures, and text. The author takes full responsibility for all claims, and every number can be verified locally from the open `.npz` patch, 38 trace files, and CPU scripts (52 files under SHA-256).
+
+* **Ready-to-run BF16 checkpoint (Hugging Face):** [`Nondual-Observer/Qwen3.5-0.8B-SGNE-CC`](https://huggingface.co/Nondual-Observer/Qwen3.5-0.8B-SGNE-CC)
+* **Archival Zenodo Deposit:** [DOI: `10.5281/zenodo.24235218`](https://doi.org/10.5281/zenodo.24235218)
+* **Theoretical Framework (`DOT`):** *Distinction Observable Theory (`DOT`)* ([GitHub: `Nondual-Observer/DOTheory`](https://github.com/Nondual-Observer/DOTheory) · [Zenodo Concept DOI: `10.5281/zenodo.23481643`](https://doi.org/10.5281/zenodo.23481643))
 
 ---
 
 ## Supporting the Research
 
-Donations support the open [DOT](https://github.com/Nondual-Observer/DOTheory) project by an independent developer. Support helps:
+Donations support the open [DOT (`Nondual-Observer/DOTheory`)](https://github.com/Nondual-Observer/DOTheory) project by an independent developer. Support helps:
 
 - conduct larger computational experiments;
 - develop theoretical formalization;

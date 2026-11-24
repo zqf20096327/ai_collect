@@ -63,14 +63,27 @@ uv run paid-media-agent mda deploy --yes
 - `accounts discover --add` maps every ad account your Pipeboard token reaches to an alias.
 - `mda deploy --yes` checks the project, then deploys it, sandbox and Slack app included.
 
-The first deploy asks which Slack app to use and prints a link to authorize it in your workspace.
-Then message the app under **Apps** in Slack, or `/invite` it to a channel and mention it. The
+The first deploy asks which Slack app to use and prints a link to install it in your workspace; a
+workspace admin may have to approve it. Then message the app under **Apps** in Slack, or `/invite`
+it to a channel and mention it. The
 [deploy guide](docs/deploy-mda.md) covers each step, what ships, the LangSmith Gateway, and test
 copies.
 
-**Or ask your coding agent.** Open the repo in Claude Code, Codex or Cursor and say what you want.
-[AGENTS.md](AGENTS.md) routes each request to a step-by-step [skill](.agents/skills/). It never asks
-you to paste a key into the chat.
+**Or ask your coding agent.** Paste this into Claude Code, Codex or Cursor, from any folder:
+
+```text
+Deploy LangChain's open-source paid media agent to my Slack workspace with Managed Deep Agents.
+
+1. Install it with `curl -fsSL https://raw.githubusercontent.com/langchain-ai/paid-media-agent/main/install.sh | bash`, then work in the `paid-media-agent` folder it creates.
+2. Read `AGENTS.md` and follow the `paid-media-onboarding` skill. Ask me its setup questions in one message.
+3. Tell me which keys you need. I'll type them myself with `uv run paid-media-agent config set <KEY>` in my terminal; never ask me to paste a key in chat.
+4. Run `uv run paid-media-agent demo --with-proposal`, then `uv run paid-media-agent mda check`, and fix what it flags. Read me its warnings.
+5. Have me run the first deploy, `uv run paid-media-agent mda deploy --yes`, in my own terminal: it bills, builds the agent's sandbox and sets up the Slack app. Ask me before later deploys.
+6. When it's live, walk me through messaging the agent in Slack and asking a first question about last week's spend.
+```
+
+Once the repo is open, say what you want. [AGENTS.md](AGENTS.md) routes each request to a
+step-by-step [skill](.agents/skills/). It never asks you to paste a key into the chat.
 
 | Say | It will |
 | --- | --- |
@@ -85,12 +98,13 @@ you to paste a key into the chat.
   return on ad spend, and budget pacing, in each account's currency.
 - **Investigates changes.** It finds the campaigns behind a shift, checks the supporting data, and
   flags gaps that could change the conclusion. Missing data is never treated as zero.
-- **Produces reports.** Weekly and monthly summaries run on a schedule, with charts, campaign
-  tables, and recommendations, as HTML or PDF.
+- **Sends reports.** Weekly and monthly reports run on a schedule and post their summary to the
+  Slack channel you choose. The full report, with charts, campaign tables, and recommendations,
+  renders as HTML.
 - **Prepares changes for review.** It drafts a budget or status change with the reason, the risk,
   and how to measure and reverse it, and waits for an authorized person to approve.
-- **Works in the background.** Long multi-account pulls and full reports go to read-only helpers,
-  and it answers in the same thread when they finish.
+- **Works in the background.** Long multi-account pulls and full reports go to read-only helpers
+  on the model it picks for each task, and it answers in the same thread when they finish.
 - **Comes back later.** Ask it to check how an approved change did in two days, and it schedules
   its own check-in.
 
@@ -110,8 +124,9 @@ report figure against the source data.
 - **Skills and a wiki.** Analysis, reporting, and change workflows are [skills](workspace/skills/),
   and a [paid-media wiki](workspace/skills/paid-media-wiki/) covers attribution, platform
   differences, benchmarks, and budget decisions. Your business context sits beside them.
-- **Background helpers and check-ins.** Helpers are async subagents with read-only tools; check-ins
-  are one-time schedules on the thread.
+- **Background helpers and check-ins.** Helpers are async subagents with read-only tools, each on
+  the model the agent picks for its task. They send the agent progress notes, and an urgent one
+  wakes it. Check-ins are one-time schedules on the thread.
 - **Writes.** Mutations run only through a typed proposal, a persisted approval of that exact
   proposal, one attempt, and a readback.
 
@@ -144,7 +159,7 @@ deployment, in your browser.
 | --- | --- | --- |
 | Your goals, conversions, and naming | `workspace/skills/company-context/` | [`paid-media-org-onboarding` skill](.agents/skills/paid-media-org-onboarding/SKILL.md) |
 | Your report style | `DESIGN.md` and the renderer tokens | [Report design](docs/customization.md#report-design) |
-| Report timing and delivery | `PAID_MEDIA_REPORT_*`, or `deliver_to` in `schedules/` | [Customization](docs/customization.md#memory-and-scheduling) |
+| Where and when reports post | `PAID_MEDIA_REPORT_SLACK_CHANNEL`, `PAID_MEDIA_REPORT_TIME`, `PAID_MEDIA_REPORT_TIMEZONE`, and the report days | [Operations](OPERATIONS.md#reports-and-schedules) |
 | Another model | `PAID_MEDIA_MODEL` and its key, or the LangSmith Gateway | [Models](OPERATIONS.md#models) |
 | Warehouse or CRM data | a read-only tool in the shared assembly | [Optional data sources](docs/customization.md#optional-warehouses-and-dbt) |
 | Live changes | a write policy and the release gates | [Live-write runbook](docs/operations/live-write-runbook.md) |
@@ -165,10 +180,16 @@ every change needs an authorized person's approval of the exact proposal, and th
 (`paid-media-agent writes kill-switch on`) stops them all.
 
 **Which models?** Claude Opus 5.5 by default. OpenAI, Google, any OpenAI-compatible endpoint, and
-the LangSmith Gateway work too; `PAID_MEDIA_MODEL_EFFORT` sets reasoning effort.
+the LangSmith Gateway work too; `PAID_MEDIA_MODEL_EFFORT` sets reasoning effort. Background helpers
+can run on a different model per task, with its key in `.env`; `PAID_MEDIA_HELPER_MODEL` sets their
+default.
 
 **Do I need Slack?** No. Use LangSmith Studio (`uv run mda dev`), the deployment's API, or the
 terminal (`paid-media-agent ask`). Background helpers and check-ins need Managed Deep Agents.
+
+**PDF reports?** On Managed Deep Agents reports are HTML: the managed build installs core
+dependencies only. The self-hosted Docker image includes WeasyPrint, so reports there are HTML and
+PDF.
 
 **Can I run it on my own servers?** Yes. [Self-hosting](docs/self-hosting.md) runs the same agent
 with Docker, Postgres, an HTTP API, and your own Slack app:

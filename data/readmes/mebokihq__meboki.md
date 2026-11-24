@@ -88,6 +88,7 @@ The key is checked offline on your Mac. No account, no sign-in. With a licence i
 - Password fields and Secure Input are never read.
 - If an app ignores Accessibility writes, Apply falls back to select and paste, then restores the clipboard.
 - Some web and Electron fields don't report word positions: there's no underline, and the card opens below the field instead.
+- Code pasted into a text field without a fence is found by line shape (comments, braces, declarations, imports, shell prompts, stack frames, JSON): runs of two or more such lines are left alone and the prose around them is checked. Short or unusual snippets (three lines with one clear code line, YAML, logs) can still be read as text. With "Protect names, code and links" off, nothing is left alone, and a field that is all code gets no automatic check. A selection is always checked as it is.
 - Grammarly Desktop can capture Return. Click **Apply all** or pause Grammarly.
 
 ## Build from source

@@ -143,6 +143,42 @@ The command prompts for a password and confirmation without echoing either. It p
 
 For automation, pipe the password from a secret manager using `--password-stdin` (at most 4096 bytes, with one trailing LF or CRLF removed). Do not pass passwords as command arguments. Use `--format json` for a JSON string instead of the bare hash.
 
+## LLM Gateway
+
+The `gateway` commands (experimental) call the LangSmith LLM Gateway with the
+same credentials as every other command: your `langsmith auth login` OAuth
+login, or an API key. The gateway URL comes from the API URL
+(`gateway.smith.langchain.com` for `api.smith.langchain.com`, `<origin>/gateway`
+for self-hosted); override it with `--gateway-url` or `LANGSMITH_GATEWAY_URL`.
+
+List the models the gateway serves your workspace, after its model access
+policies. A `<provider>/<model>` ID routes to that provider; an ID without a
+provider prefix is a LangChain-hosted model.
+
+```bash
+langsmith gateway models
+langsmith gateway models --provider anthropic
+langsmith gateway models --jq '.[].id'
+```
+
+Run any command with its Anthropic and OpenAI API requests sent through the
+gateway. `gateway wrap` starts a proxy on `127.0.0.1` that attaches your
+credentials to each request, refreshing an OAuth access token as it expires,
+and points `ANTHROPIC_BASE_URL`/`ANTHROPIC_AUTH_TOKEN` and
+`OPENAI_BASE_URL`/`OPENAI_API_KEY` at it, with an `sk-` key for that run
+only, which works only against the proxy. Other provider keys and settings are
+removed from the command's environment.
+
+Flags for `langsmith` go before the command; everything from the command on is
+passed to it.
+
+```bash
+langsmith gateway wrap claude                         # Claude Code, interactive
+langsmith gateway wrap claude -p "summarize this"     # arguments go to Claude Code
+langsmith --profile eu gateway wrap codex             # another logged-in profile
+langsmith gateway wrap python agent.py
+```
+
 ## Quick Start
 
 ```bash
@@ -170,7 +206,7 @@ langsmith experiments list --dataset my-eval-set
 
 ## For coding agents
 
-[docs/agent-reference.md](docs/agent-reference.md) is a task-oriented reference for coding agents (Claude Code, Codex, Cursor and others): which commands to use for traces, datasets, experiments, prompts, evaluators, feedback and annotation queues, with key flags, JSON output, paging and safety notes. It is generated from the command tree, so it matches this version of the CLI; `langsmith docs agents` prints the same reference for the installed binary.
+[docs/agent-reference.md](https://github.com/langchain-ai/langsmith-go/blob/main/cli/docs/agent-reference.md) is a task-oriented reference for coding agents (Claude Code, Codex, Cursor and others): which commands to use for traces, datasets, experiments, prompts, evaluators, feedback and annotation queues, with key flags, JSON output, paging and safety notes. It is generated from the command tree, so it matches this version of the CLI; `langsmith docs agents` prints the same reference for the installed binary.
 
 ## Product feedback
 
@@ -191,7 +227,7 @@ on LangSmith Cloud and BYOC, not standalone self-hosted deployments.
 
 ## Output Formats
 
-Commands print human-readable tables and trees by default. From 1.0.0, output that is piped or redirected defaults to JSON; until then such output stays pretty and the CLI warns on stderr. Pass `--format` to choose explicitly.
+Commands print human-readable tables and trees by default. From 1.0.0, output that is piped or redirected defaults to JSON; until then such output stays pretty and the CLI warns on stderr. Pass `--format` to choose explicitly. Every command also takes `--json`, which is the same as `--format json`; combining it with a different `--format` is an error.
 
 ```bash
 langsmith traces list --project my-app
@@ -199,6 +235,10 @@ langsmith traces list --project my-app
 
 ```bash
 langsmith --format=json trace list --project my-app
+```
+
+```bash
+langsmith trace list --project my-app --json
 ```
 
 ```bash
@@ -318,7 +358,7 @@ langsmith runs get <run-id> --full
 langsmith runs export llm_calls.jsonl --project my-app --run-type llm --full
 ```
 
-> **Query backend:** the CLI selects the runs query API automatically from the deployment reported by `/info` — LangSmith Cloud and self-hosted `>= 0.16` use the v2 (SmithDB) API; older self-hosted uses v1. No flag is needed. On v2, `trace list` and `trace export` select traces through `/v2/traces/query`, and `trace get`, `trace export` and `--show-hierarchy` read each trace through `/v2/traces/{trace_id}/runs`, which requires a project. `trace get` can omit `--project` / `--project-id` on both: it looks the trace's root run up by ID in the current workspace through the v1 runs query (last 7 days unless `--since` or `--last-n-minutes` is set), then reads the trace. Deployments that serve runs only from SmithDB can't do that lookup, so pass the project there. A few v2-only features (`trace messages`, `thread messages`) are unavailable on self-hosted `< 0.16`.
+> **Query backend:** the CLI selects the runs query API automatically from the deployment reported by `/info` — LangSmith Cloud and self-hosted `>= 0.16` use the v2 (SmithDB) API; older self-hosted uses v1. No flag is needed. On v2, `trace list` and `trace export` select traces through `/v2/traces/query`, and `trace get`, `trace export` and `--show-hierarchy` read each trace through `/v2/traces/{trace_id}/runs`, which requires a project. `trace get` can omit `--project` / `--project-id` on both: it looks the trace's root run up by ID across the current workspace's projects and experiments that were active or created in the lookup window (last 7 days unless `--since` or `--last-n-minutes` is set; up to 1,000 of each, skipping projects whose runs you can't read), then reads the trace. Self-hosted `< 0.18.23` does that lookup through the v1 runs query. If the trace isn't found, pass the project. A few v2-only features (`trace messages`, `thread messages`) are unavailable on self-hosted `< 0.16`.
 
 ### `investigate` and `verify` — Diagnose failures and check fixes
 
@@ -698,13 +738,15 @@ Most `trace` and `run` commands share these filter options:
 
 ## Local Development
 
+The CLI's code is in [langsmith-go](https://github.com/langchain-ai/langsmith-go) under `cli/`, next to the SDK it calls; this repo holds its `main` package, release tooling, install scripts and agent evals. Both are developed in langchainplus (`sdks/go/cli` and `cli/`).
+
 For local dev, create a wrapper script at `~/.local/bin/langsmith` that loads your `.env` and uses `go run`:
 
 ```bash
 cat > ~/.local/bin/langsmith << 'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-cd /path/to/langsmith-cli
+cd /path/to/langsmith-go
 set -a && source .env && set +a
 exec go run ./cmd/langsmith "$@"
 EOF
@@ -726,7 +768,7 @@ Ensure `~/.local/bin` is in your `PATH` before `~/go/bin`. This way commands lik
 
 Releases work as in the langsmith SDK repos. [`release-please.yml`](.github/workflows/release-please.yml) keeps a release PR open on langsmith-cli with the next version and its changelog, built from the conventional commit titles of the changes Copybara exports (`test` and `ci` commits are left out). Merging that PR tags the version, creates the GitHub Release, and dispatches [`publish-binaries.yml`](.github/workflows/publish-binaries.yml): GoReleaser cross-compiles linux/darwin/windows on amd64+arm64 and attaches the archives and `checksums.txt`, the Homebrew tap gets a bump PR, and [`scripts/build_wheels.py`](scripts/build_wheels.py) repackages the archives as platform wheels and publishes them to PyPI as `langchain-langsmith-cli`. The PyPI job uses Trusted Publishing from the `pypi` environment, so it needs no token, and it skips files PyPI already has, so a failed run can be rerun.
 
-A release must use a released `langsmith-go`, so merge a release PR only while `go.mod` requires a released tag. CI in langchainplus, where this module is developed, fails a change whose `go.mod` requires an unreleased `langsmith-go` (a pseudo-version or pre-release) or has a `replace`. The release is the release PR's merge commit, and the workflow refuses to release a commit whose `go.mod` uses a pseudo-version or a `replace`. If one is merged anyway, the workflow fails with the way out: release `langsmith-go` and update `go.mod`, then revert the release PR and remove its `autorelease: pending` label, and release-please opens a new release PR.
+The CLI's code is in `langsmith-go` (`cli/` and `cmd/`), and this repo builds against the `langsmith-go` commit its `go.mod` requires, a pseudo-version of `langsmith-go` main; no `langsmith-go` release is needed. This repo owns `go.mod` and `go.sum`. When CLI changes reach `langsmith-go` main, the langchainplus export pins `go.mod` to that commit, checks that the CLI builds, and pushes one commit here whose message carries each change's title, so the release PR lists them. Changes to `langsmith-go` outside `cli/` and `cmd/` ship with the next CLI change. Merging the release PR is still what releases. The workflow refuses to release a commit whose `go.mod` has a `replace`, since that would break `go install`. If one is merged anyway, the workflow fails with the way out: remove the `replace`, then revert the release PR and remove its `autorelease: pending` label, and release-please opens a new release PR.
 
 There is no version file to edit: the version is stamped into the binary from the tag via ldflags. The install scripts and `langsmith self-update` both read the latest GitHub Release.
 

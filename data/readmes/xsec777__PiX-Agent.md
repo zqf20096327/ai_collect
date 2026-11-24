@@ -1,0 +1,258 @@
+<div align="center">
+
+# 🛡️ PiX — 假设驱动、自带渗透工具箱的 Pi Agent 发行版
+
+**把渗透工程师的推理方式固化成系统机制：假设驱动 · 失败反刍 · 能力位置变换，再配一个按需发现的本地工具箱。**
+
+基于 [@earendil-works/pi-coding-agent](https://www.npmjs.com/package/@earendil-works/pi-coding-agent) 扩展机制二次开发 · 不改上游一行代码 · 一切皆插件
+
+![PiX v3.5.0](https://img.shields.io/badge/PiX-v3.5.0-10b981?style=flat-square) ![pi 1.1.0](https://img.shields.io/badge/pi-1.1.0-2563eb?style=flat-square) ![pi-web 0.11.0](https://img.shields.io/badge/pi--web-0.11.0-2496ED?style=flat-square) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white) ![机制验收](https://img.shields.io/badge/机制验收-8组-22c55e?style=flat-square) ![Live Matrix](https://img.shields.io/badge/Live%20Matrix-30142-8b5cf6?style=flat-square) ![工具卡](https://img.shields.io/badge/工具-38%E5%BC%A0%E5%8D%A1-22c55e?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+
+</div>
+
+---
+
+## ✨ 特性一览
+
+新增本地报告组装模块：显式调用 `assembleDataPlaneReport` 读取输入端点台账，按相同范围计算状态统计，输出规则处理后的请求/响应证据与 SHA-256 内容摘要。缺失证据明确标注，测试计数原样保留，严重级别不自动推断。模块不修改输入、不调用模型、不写文件，也未接入现有导出命令；状态和标题不等于独立确证，不同标题可能共享端点当前证据。摘要不是签名，脱敏规则覆盖有限，发布前仍需核验事实、证据归属和敏感信息。
+
+新增显式本地清理注册表：创建实例时指定清理目录，登记普通临时文件或调用方创建的 `ChildProcess` 句柄，显式调用并等待 `executeAllCleanup()`。清理按登记逆序执行，文件在删除前核对路径与身份，进程等待退出确认；失败记为 failed，未实现的端口转发撤销记为 skipped。注册、待清理列表和审计记录返回副本。仅适用于可信调用方管理的本地临时目录；不提供远程清理、任意 PID 终止、子进程树清理或自动退出钩子，也不保证并发文件替换防护或零残留。
+
+本机隧道命令防护：在 `bash` 和 `powershell` 工具入口中拦截命中规则的隧道命令，不弹出通用危险命令确认。规则基于命令文本，不等同于网络隔离或操作系统级管控；本版不支持通过任务书放行，也不自动清理现有隧道。
+
+新增 ADSafetyGate 本地保护模块：调用方显式提供域锁定策略并报告尝试次数，模块按规范化的域与账号限制后续记账调用。未知策略或阈值不大于 2 时默认拒绝记账。它不探测域控、不读取真实账号、不执行认证、不监听其他工具，也不协调多进程；计数重置或进程退出会丢失状态。该本地上限不能保证不锁号，是否允许任何认证仍须由书面授权、现场策略和停止条件共同决定。
+
+新增响应证据规则掩码：WorkerResult 本地对账在保存 `evidenceResponse`、差分摘要和历史片段前，处理匹配格式的手机号、身份证号、邮箱与 `Set-Cookie`；对顶层 JSON 数组、指定顶层列表字段和超过 8 行的非 JSON 文本最多保留 3 项或 3 行。计数仅来自输入，不是数据库总量。输出是供阅读的证据摘要，不是可复放报文；其他写入入口、历史数据和未匹配的敏感信息仍需人工核验。
+
+新增请求文本规则脱敏：显式调用 WorkerResult 对账函数时，`evidenceRequest` 入账前替换列出的认证 Header、字符串 JSON 字段和 Query 参数；保留任务绑定、证据及重放检查。该请求规则不覆盖其他写入入口、任意 PII 或全部凭据格式；包装器中的 `original` 保留敏感原文，输出应使用 `redacted`。修改正文长度后不会自动重算 Content-Length，复放前须重新生成报文。
+
+新增 EscalationPromoter：显式调用时根据连续失败、bypassing 或变异级别生成本地升档建议，再由调用方选择是否重建 SmartTier 信封。重建保留原配额、只读和目标边界；内存台账只保存每个端点的最新记录。不终止 Worker、不切换真实模型、不派发执行，也不持久化完整事件历史。
+
+新增 ModelRouter 本地配置选择器：Planner 查询 SmartTier，Worker 查询 FastTier，可显式请求 SmartTier；仅配置一档时复用该配置。它不读取或修改用户模型设置、不调用模型服务，也未接入真实子会话执行器。统计为配置查询次数，节约比例是固定假设，不是实测费用或 Token。
+
+AdaptiveThrottler 接收调用方提供的 429、403/WAF 或超时反馈，调整全局 WorkerPool 后续槽位申请的并发上限并报告冷却期限；冷却后的连续合格反馈可恢复基线。它没有接入真实网络响应，不自动等待、不阻止冷却期发包，也不取消已运行 Worker。HostMutex 仅锁定同进程内规范化后的 Host 字符串，不解析 DNS 或协调其他进程。真实 Worker 子会话执行器仍未实现。
+
+- 📊 **实时矩阵看板 (Port 30142)**：通过只读 SSE 展示端点七态、闭环指标与请求/响应证据详情
+- 🔒 **结案与证伪检查**：未闭环端点提示与 L4 证伪检查；结案拦截依赖宿主提供 `agent_before_settle` 事件
+- 🪨 **大产物归档**：超过阈值的工具输出落盘至 `.pix/artifacts/`，通过 `get_artifact` 按行读取
+- 🔬 **差分复验**：支持时间、报错与布尔差分规则，辅助复核候选漏洞，结果仍需结合现场证据判断
+- 🧠 **机制化渗透纪律**：事实画板、失败强制回读、元认知反思、节奏自适应——不是提示词恳求，是事件钩子硬机制
+- 🧰 **自带工具箱**：31 个实测渗透工具 + 7 张扩展位卡，`toolbox` 网关按需发现（list / howto / search）
+- 🛡️ **双重护栏**：读卡门禁（未读卡禁调工具）+ 本机危险命令拦截 + 600s 超时注入
+- 📊 **画板知识继承**：状态跨会话持久化，下次开工自动继承上次画板（不重复侦察）
+- 🧾 **事实底表导出**：`/facts` 或 `/facts json` 一键导出不可篡改的 Ground Truth 纯事实底表（支持机器高保真 JSON 与表格化 Markdown），解耦排版，可无缝灌入任意自定义报告模板
+- 🔬 **客观传感器**：多维阻断模式识别（WAF/限流/人机/域认证），连续拦截自动触发止损并反向推荐实战 SOP
+- 🐝 **Swarm 契约预览**：TaskEnvelope、WorkerPool、WatchdogCeiling、四态终结与 WorkerResult 对账原语；当前仅离线验证，不创建真实子会话、不自动执行工具。
+
+---
+
+## 📦 获取方式（重要，先看这里）
+
+| 方式 | 内容 | 能否直接使用 |
+|---|---|---|
+| **A. 完整目录分发（推荐）** | 整个 PiX 目录，**含 `tools/`（约 2GB）**：31 个实测工具 + 全量字典树 + nuclei-templates 已内置 | ✅ 满足前置环境后**开箱即用** |
+| **B. git clone（代码版）** | 仅代码（35 个文件），**不含 `tools/` 工具面** | ⚠️ 扩展可加载，但工具卡全部显示"不可用"——需自行放置 `tools/` 或设 `PIX_TOOLS_ROOT` 指向工具根 |
+
+> **结论**：**直接用方式 A**（完整目录）。若走 git clone，工具面需另行获取——PiX 不提供在线工具下载脚本（工具内置化设计）。
+
+---
+
+## 🧰 前置要求（Windows）
+
+| 环境 | 用途 | 安装命令 |
+|---|---|---|
+| **Node.js ≥ 22** | pi / pi-web 运行时 | `winget install OpenJS.NodeJS.LTS` |
+| **Python 3.10+** | python 系工具（OneForAll/sqlmap 等）+ pi-web 补丁脚本 | `winget install Python.Python.3.10` |
+| **Git** | 拉取/更新仓库 | `winget install Git.Git` |
+| **Npcap** | nmap / masscan 抓包驱动 | [npcap.com 官网下载](https://npcap.com/#download)（勾选 WinPcap 兼容模式） |
+
+> Linux/macOS：工具卡路径为 Windows 口径，需自行改 `extension/toolbox-data.ts` 注册表路径。
+
+---
+
+## 🚀 启动与关闭
+
+仓库提供以下 Windows 命令脚本：
+
+| 脚本 | 用途 |
+|---|---|
+| `PiX-Web.cmd` | 同步扩展并启动 Pi Web 服务和实时矩阵服务 |
+| `PiX-Stop.cmd` | 停止 PiX 启动的服务进程 |
+| `PiX.cmd` | 在当前工作区启动 Pi CLI |
+
+也可从仓库根目录使用 Node.js 运行 `scripts/pix-doctor.mjs` 检查环境。
+
+## 🔑 配置模型（必须）
+
+pi 默认无可用模型，首次使用需在 **pi-web 设置 → 模型** 或 `~/.pi/agent/models.json` 配置：
+
+```json
+{
+  "providers": {
+    "my-provider": {
+      "baseUrl": "https://你的模型网关/v1",
+      "models": [{ "id": "你的模型", "name": "你的模型", "supportsDeveloperRole": false }]
+    }
+  }
+}
+```
+
+- OpenAI 兼容端点均可（`openai-completions` 协议）；`supportsDeveloperRole: false` 解决 `developer is not one of [...]` 报错
+- 配好后在会话里选该模型即可
+
+## 🌐 可选：外部能力接入
+
+- **浏览器控制**：自配 `chrome-devtools-mcp`（`npx chrome-devtools-mcp@latest`）
+- **抓包/重放**：自配 Burp Suite MCP bridge
+- **技能包**：PiX 自带兜底作战技能（`pix-workflow`）；如需完整渗透/红队技能包，把技能目录加入 pi 技能路径即可，PiX 条令第 0 条自动让位
+
+---
+
+## 🏗️ 架构
+
+```mermaid
+flowchart LR
+    subgraph host["Pi 官方运行时（不动）"]
+        TUI["pi TUI"] --- WEB["pi-web :30141"] --- RPC["RPC/SDK"]
+    end
+    subgraph pix["PiX 扩展层 ~/.pi/agent/extensions/pix"]
+        RULES["模式条令<br/>pent / redt"] --> SEC["sections.pix 注入"]
+        BOARD["画板状态<br/>双写：会话 appendEntry<br/>+ cwd/pix-state.json"] --> SEC
+        PACE["节奏自适应<br/>失败率滑窗 0.5~2×"] --> HOOK["tool_execution_start"]
+        GUARD["危险命令拦截"] --> HOOK2["tool_call"]
+        TB["toolbox 网关"] --> REG["工具注册表<br/>31 实测 + 7 扩展位"]
+        GATE["读卡门禁 + 600s 超时注入"] --> HOOK2
+        SENSOR["止损观察器<br/>记账提醒"] --> HOOK3["tool_result"]
+    end
+    host -->|事件钩子| pix
+    pix -->|MCP / CLI / skill| EXT["用户侧能力<br/>浏览器 · 抓包 · 技能包"]
+```
+
+### 运行时工作流
+
+```mermaid
+flowchart TD
+    S["session_start"] --> R["恢复画板状态<br/>+ 历史画板继承"]
+    S --> T["计时重置"]
+    A["before_agent_start"] --> B["buildSection 注入<br/>条令+画板+授权+条件段"]
+    C["tool_call"] --> D1["①危险命令拦截"]
+    C --> D2["②读卡门禁"]
+    C --> D3["③600s 超时注入"]
+    C --> D4["④落库→画板镜像"]
+    E["tool_result"] --> F["传感器：止损计数<br/>记账清零"]
+    G["agent_end"] --> H["画板快照落盘"]
+```
+
+---
+
+## ⚙️ 两模式
+
+| | `/mode pent`（默认） | `/mode redt` |
+|---|---|---|
+| 定位 | SRC / 授权渗透 | 红队演练 |
+| 授权事实源 | `/auth` 登记范围 | `/task` 任务书 |
+| 节奏基准 | 2s（自适应 1~4s） | 1s（自适应 0.5~2s） |
+| 核心条款 | 拖库口径（最小样本）· RCE 无害回显 · 禁 nuclei 全扫 | 任务书围栏 · 数据不出域 · 武器化按技能包 |
+
+## 🧠 核心机制
+
+1. **三段状态机 → 画板**：`[C]能力 / [F]失败 / [H]假设 / [N]发现`，`leads_to` 边即攻击链
+2. **失败强制回读**：同方向失败 ≥6 次 → 自动注入回读指令（沿 `similar_to/substitutes` 边找可迁移能力）
+3. **元认知反思**：失败率 ≥60% → 注入反思段（两模式差异化）
+4. **节奏自适应**：`clamp(1+(失败率-0.5)×2, 0.5, 2)`——连败加倍克制、连胜自动提速
+5. **本机危险命令分级拦截**：删盘/关机/格盘类——有 UI 弹确认，无 UI 直接拦截
+6. **画板跨会话继承**：`cwd/pix-state.json` 原子双写，新会话注入【历史画板】摘要防重复侦察
+
+## 🧰 工具箱
+
+工具面不占 system prompt——单个 `toolbox` 工具按需发现：
+
+```
+toolbox({action:"list"})                        # 分类分组全量（含可用性探测）
+toolbox({action:"search", task:"目录爆破"})      # 任务关键词 → top3 候选
+toolbox({action:"howto", tool:"sqlmap"})        # 完整工具卡：唯一姿势/硬约束/参数/陷阱
+```
+
+**内置注册表 = 38 款纯 CLI 实战武器**（全部实测可用，随包 tools/ 分发，AI 原生无头可调）：
+
+| 分类 | 核心武器 (38 款) |
+|---|---|
+| 信息收集 (14) | subfinder / OneForAll / crt.sh / httpx / EHole / nmap / masscan / dirsearch / ffuf / URLFinder / LinkFinder / katana / waybackurls / **rotor-goddess (转子女神-rg_cli)** |
+| 漏洞利用 (4) | sqlmap / nuclei(+templates) / jwt_tool / JWTCrack |
+| 内网横向与域攻坚 (13) | **fscan** / **netexec (nxc)** / **impacket** / **certipy (ADCS域提权)** / **bloodhound (域拓扑采集)** / **pypykatz (内存密码抓取)** / **ligolo-ng (极速TUN穿透)** / chisel / frp / proxychains / nc / winpeas / linpeas |
+| 逆向与攻坚 (7) | capa / radare2 / yara-x / strings-bin / kubectl-ro |
+
+**模式与调用**：武器全部适配 AI 直接 CLI 执行；`/toolbox export` 可导出全量工具卡手册（单文件 MD）。
+
+## 📖 命令与工具参考
+
+| 命令 | 用途 |
+|---|---|
+| `/mode pent \| redt` · `/mode adaptive on\|off` | 切换模式 / 节奏自适应开关 |
+| `/auth <目标...> --source <来源>` | 登记授权范围（注入围栏） |
+| `/task <任务书.md>` | 登记红队任务书 |
+| `/matrix` · `/ledger` | 终端闭环进度看板，`/matrix <ep_id>` 查看单端点证据详情 |
+| `/pix` · `/pix export` | 状态总览 / 画板双 Mermaid 落盘 |
+| `/facts` · `/facts json` · `/facts csv` | 导出事实底表（Markdown / JSON / 标准 targets.csv） |
+| `/toolbox export` | 全量工具卡手册导出 |
+
+| 工具 | 用途 |
+|---|---|
+| `record_host` | 登记内网主机资产（IP、系统、所属域、DC、PWNED控制状态、开放端口），智能增量合并服务 |
+| `record_pivot` | 登记内网跳板与隧道（Socks5/FRP/SSH/TUN），建立内网网段透明路由映射 |
+| `record_cred` | 登记已收割凭据（明文/NTLM/Kerberos/SSH），管理权限等级与已打通的内网主机 |
+| `record_endpoint` | 将 Web/API 接口记录到端点台账（URL、方法、参数、来源），供后续测试与状态跟踪 |
+| `update_endpoint` | 更新端点测试状态并记录动作和差分证据；状态更新不代表真实探测完成或漏洞结论已证实 |
+| `analyze_credential_target` | 对调用者显式指定的单个主机与凭据进行本地范围和服务兼容性分析，不验证凭据、不生成认证命令、不发起连接 |
+| `verify_finding` | 按指定的差分规则评估候选漏洞；结果需结合现场证据复核 |
+| `mutate_payload` | 为授权测试生成候选 payload 变异，须遵守授权范围与安全限制 |
+| `get_artifact` | 按行读取已归档的大型工具输出 |
+| `consult_tactics` | 即时动态检索内网横向、AD 域攻坚、隧道穿透与攻击面测绘顶级战术 SOP |
+| `pivot_exec` | 目标处于内网时自动生成并注入原生代理参数或 proxychains 代理链路由命令 |
+| `record_fact` / `record_capability` / `record_failure` | 画板记节点 + 连边 / 能力 / 失败计数（≥6 触发回读） |
+| `update_node` | 节点状态流转（confirmed 联动节奏窗口与事实图谱坐实） |
+| `get_state` / `get_task` | 读 4D 超图全量状态 / 任务书全文 |
+| `export_map` | Mermaid 关系图（会话内返回） |
+| `export_facts` | 一键导出客观事实底表（JSON / Markdown 双模态） |
+| `toolbox` | 工具注册表网关（list / howto / search） |
+
+## 🧪 验收
+
+CI 执行基础机制验收、十一个 Swarm/脱敏离线测试文件、凭据范围与战术路由回归测试，以及 TypeScript 严格检查。Swarm 测试只验证内存契约和账本对账，不创建 Pi 子会话、不连接外部目标，也不替代真实宿主集成验证：
+
+```bash
+node --experimental-strip-types acceptance/matrix.test.ts
+node scripts/pix-doctor.mjs
+```
+
+`acceptance/run-acceptance.mjs` 保留旧版 RPC + stub 模型验收流程，依赖本机 Pi 安装与扩展部署；它不在本版本 CI 验证范围内。Swarm 原语尚未接入 `index.ts` 的用户工具，也没有真实 Worker 执行器、取消回收或自动看门狗调度。
+
+## 📚 架构文档
+
+- [接口状态机与闭环机制白皮书](docs/matrix-architecture.md)：现有机制、验证范围与限制。
+- [领域术语与目标架构](CONTEXT.md)：包含尚未实现的设计术语。
+- [架构决策记录](docs/adr/README.md)：12 份设计决策及各自的实现状态。
+
+## 🔧 故障排查
+
+| 症状 | 处置 |
+|---|---|
+| 启动无「PiX 已加载」通知 | `node scripts/install.mjs --status` 查文件一致性 |
+| 工具卡显示「不可用」 | howto 里的 reason 给出原因；工具根可用 `PIX_TOOLS_ROOT` 覆盖 |
+| 模型报 `developer is not one of [...]` | models.json 对应模型加 `"compat": {"supportsDeveloperRole": false}` |
+| pi-web 推理菜单档位混乱 | 重跑 `node scripts/install.mjs --restart-piweb` |
+| 验收某步 FAIL | 看输出 evidence；先确认扩展最新（install.mjs --status） |
+
+---
+
+## ⚖️ 合规声明
+
+PiX 仅面向**已授权的安全测试**（自建靶场、书面授权 SRC、红队任务书范围）。pent 模式内置授权首条红线；redt 模式以任务书围栏。禁止用于未授权测试、DoS、数据牟利。使用者自行承担合规责任。
+
+---
+
+<div align="center">
+
+**MIT License · 机制设计源自实战渗透方法论 · 工具与技能一切皆插件**
+
+</div>

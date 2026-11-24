@@ -10,7 +10,7 @@
   <a href="#citation"><img src="https://img.shields.io/badge/cite-BibTeX-D6487E?style=flat-square" alt="BibTeX"></a>
 </p>
 
-<p align="center"><img src=".github/readme/fig1_loop.png" width="100%" alt="The iWSP loop: an LLM agent writes every weight of a model in code, with no training allowed; a fixed evaluator scores it, and the score guides the next revision. After the search, an LLM judge audits the models and a fresh agent rebuilds each model from a 200-word description."></p>
+<p align="center"><img src=".github/readme/teaser.gif" width="100%" alt="Animated overview of interpretable weight-space programming (iWSP): an LLM agent writes an interpretable brain encoding model directly in code with no training, evaluates it against recorded brain activity, and iteratively keeps the best revisions."></p>
 
 ## Overview
 
@@ -26,7 +26,8 @@ This repo holds the code, agent prompts and full logs behind the [paper](https:/
 | --- | --- | --- |
 | Algorithmic tasks | Hand-written transformers for tasks such as addition, sorting and GCD | All 26 Opus runs reach 100% accuracy on the hidden set |
 | NLP tasks | Hand-written transformers for classification | 87.3% on TREC; well above a majority baseline on 3 of 4 tasks, with no gain on paraphrase detection |
-| Visual cortex | Encoding models of 7 T fMRI (LAION-fMRI), tested zero-shot on NSD | Beats all seven interpretable baselines on NSD in early (0.443 versus 0.400) and ventral visual cortex (0.317 versus 0.256); matches AlexNet in early visual cortex and trails it in ventral (0.391) |
+| Visual cortex (macaque electrophysiology) | Encoding models of Utah-array spiking responses (TVSD), tested on held-out images and zero-shot on Neuropixels (Triple-N) | Beats all seven interpretable baselines on every split: held-out TVSD early (0.852 versus 0.674) and ventral (0.669 versus 0.506), and zero-shot Triple-N early (0.403 versus 0.316) and ventral (0.279 versus 0.210). Exceeds AlexNet in early visual cortex on both datasets (0.728 and 0.350), trails it in ventral (0.716 and 0.351), and reaches 24.0% versus 12.5% linear-readout ImageNet top-1 accuracy |
+| Visual cortex (human fMRI) | Encoding models of 7 T fMRI (LAION-fMRI), tested zero-shot on NSD | Beats all seven interpretable baselines on NSD in early (0.443 versus 0.400) and ventral visual cortex (0.317 versus 0.256); matches AlexNet in early visual cortex, trails it in ventral (0.391), and reaches 22.9% linear-readout ImageNet top-1 accuracy |
 | Story-listening fMRI | Encoding models of language responses | A readable model exposed a confound at the edges of each scan: position features alone lift the correlation from 0.067 to 0.104, above GPT-2 XL (0.079). With the edges trimmed, iWSP is on par with GPT-2 XL |
 | ECoG responses to audio | Interpretable raw-waveform features | 0.074 versus 0.082 for Whisper on the hidden set, above textbook features (0.059); combining iWSP with Whisper reaches 0.087 |
 
@@ -65,7 +66,7 @@ uv run interpretable_transformer.py --task addition-five-digits
 | Algorithmic and language transformers | `experiments/evolve/` | [Experiments guide](experiments/README.md#transformers) |
 | Text bottleneck | `experiments/nl-bottleneck/` | [Experiments guide](experiments/README.md#text-bottleneck) |
 | Story-listening fMRI | `experiments/evolve-neuro/` | [Experiments guide](experiments/README.md#story-listening-fmri) |
-| Visual cortex | `experiments/vision/` | [Its README](experiments/vision/README.md) |
+| Visual cortex (macaque electrophysiology and human fMRI) | `experiments/vision/` | [Its README](experiments/vision/README.md) |
 | ECoG responses to audio | `experiments/ecog/` | [Experiments guide](experiments/README.md#ecog) |
 | Reading a real model's weights | `experiments/systematic-tests/` | [Experiments guide](experiments/README.md#reading-weights) |
 

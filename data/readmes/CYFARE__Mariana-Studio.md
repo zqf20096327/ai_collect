@@ -7,7 +7,7 @@
 <p align="center"><em>Into The Depths of AI's Ocean</em></p>
 
 <p align="center">
-  <a href="VERSION.txt"><img src="https://img.shields.io/badge/version-2.3.1-0b7285" alt="Version 2.3.1"></a>
+  <a href="VERSION.txt"><img src="https://img.shields.io/badge/version-2.3.2-0b7285" alt="Version 2.3.2"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/devices-CUDA%20%7C%20XPU%20%7C%20MPS%20%7C%20CPU-555" alt="CUDA, XPU, MPS and CPU">
@@ -118,6 +118,7 @@ verified by a numeric parity test. Runner commands and caveats are in
 | --- | --- |
 | Set up a new machine | [docs/setup.md](docs/setup.md) |
 | Train, fine-tune or distill | [README_training.md](README_training.md) · [docs/distillation.md](docs/distillation.md) |
+| Fine-tune on a 6-8 GB GPU | [docs/low-vram-finetuning.md](docs/low-vram-finetuning.md) |
 | Sprint-DRV, SAINT and NCM runbooks | [docs/fast-training.md](docs/fast-training.md) · [docs/latent-language.md](docs/latent-language.md) · [docs/ncm.md](docs/ncm.md) |
 | Agents and the coding IDE | [docs/agentic.md](docs/agentic.md) · [docs/ide.md](docs/ide.md) |
 | Export and serve | [docs/export.md](docs/export.md) |

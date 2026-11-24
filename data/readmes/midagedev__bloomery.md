@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/midagedev/bloomery/releases/tag/v0.3.15">0.3.15 release notes</a> ·
+  <a href="https://github.com/midagedev/bloomery/releases/tag/v0.3.16">0.3.16 release notes</a> ·
   <a href="docs/models.md">Models</a> ·
   <a href="docs/serving.md">Serving</a> ·
   <a href="docs/agents.md">Agents</a> ·
@@ -120,12 +120,12 @@ docker run --gpus all -p 8080:8080 -v bloomery-cache:/root/.cache/bloomery \
   ghcr.io/midagedev/bloomery --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 
 # or the plain tarball
-tar -xzf bloomery-0.3.15-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.15-linux-x86_64-cuda-sm86
+tar -xzf bloomery-0.3.16-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.16-linux-x86_64-cuda-sm86
 bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 ```
 
 The tarballs are on the [releases page](https://github.com/midagedev/bloomery/releases)
-([0.3.15](https://github.com/midagedev/bloomery/releases/tag/v0.3.15)).
+([0.3.16](https://github.com/midagedev/bloomery/releases/tag/v0.3.16)).
 
 From 0.3.11 the release carries an archive for the RTX 50 series (`linux-x86_64-cuda-sm120a`, compute capability 12.0:
 the RTX 5090 and the RTX PRO Blackwell cards), built for the Blackwell FP4 and FP8 tensor cores. The installer takes it
@@ -151,7 +151,7 @@ The Mac needs macOS 26.2 or newer; the binaries are signed and notarized. The se
 brew install midagedev/tap/bloomery
 bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 
-# or the same installer as on Linux (bloomery-0.3.15-macos-arm64-metal.tar.gz on the releases page)
+# or the same installer as on Linux (bloomery-0.3.16-macos-arm64-metal.tar.gz on the releases page)
 curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
 ~/.local/bin/bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 ```
@@ -249,7 +249,7 @@ Ada cards (sm_89) have no report yet, and AMD GPUs are not supported yet. On an 
 accelerators for the prompt's GEMMs. What each part of the machine costs in a decode step:
 [`docs/HARDWARE.md`](docs/HARDWARE.md).
 
-## Status (0.3.15)
+## Status (0.3.16)
 
 Four common machines, one table each, tok/s. Every other record (two cards, the RTX 3090 and RTX A6000 that left our
 workstation, older releases, other cards and Macs, the reference engines) is in [`docs/numbers.md`](docs/numbers.md),
@@ -268,6 +268,8 @@ file's `--plan` prints on this card.
 | Hy4-flash `Q4_K_M` | card + CPU | 31.75 ³ | 31.48 ³ | 31.71 | 31.78 |
 | GLM-5.3-Flash `UD-Q4_K_XL` | card + CPU | 194.44 | 210.03 | 30.09 | 26.17 |
 | Nemotron 3.5 Bolt 74B-A9B `24GB` | the whole model on the card | 4,971.72 | 7,166.02 | 182.41 | 180.44 |
+| Inkling 2 Mini `UD-Q4_K_XL` ⁴ | the whole model on the card | 4,962.77 | 4,759.63 | 155.33 | 150.91 |
+| Inkling 2 Mini, the official checkpoint folder ⁴ | the whole model on the card | 3,818.15 | 3,703.65 | 153.82 | 151.38 |
 
 ¹ rounds 699.14 and 884.09.
 
@@ -275,6 +277,9 @@ file's `--plan` prints on this card.
 
 ³ Hy4-flash's prompt pass computes the host's share of its routed experts on the CPU, so its prompt runs at about its
 decode rate; at the unset context (1,048,576 positions) the plan holds 2,004 of its 20,992 routed experts on the card.
+
+⁴ the tagged 0.3.16 binary, in 0.3.16's release sitting, without a draft (0.3.16 serves Inkling 2 Mini without one).
+The folder's dense weights are written as Q8_0 at load (the default; `BLOOMERY_INK2_DENSE=bf16` keeps them as stored).
 
 The Hy4-flash and GLM-5.3-Flash cells were re-run in the same sitting (`sitting.sh --resume --only`) after their first rows
 read cold (major faults after another model's load evicted their files from the page cache).
@@ -355,8 +360,10 @@ release's check:
 Output is checked layer by layer against ik_llama.cpp (V4.1: PPL 2.2401 against 2.2378, same top token 97.46 %), and
 every gate is shown to fail on its defect before the fix lands ([how](docs/performance.md#how-it-is-verified)).
 
-## Known limits (0.3.15)
+## Known limits (0.3.16)
 
+- Inkling 2 Mini serves without its draft in 0.3.16: `BLOOMERY_DRAFT` other than `off` is refused by name on it, for the
+  GGUF file and for the official checkpoint folder alike. The draft comes in the next release.
 - Hy4-flash's prompt pass computes the host's share of its routed experts on the CPU, so its prompt runs at about its
   decode rate on a card + CPU plan.
 - Hy4-flash turns thinking off on `reasoning_effort: "none"`; `chat_template_kwargs: {"enable_thinking": false}` is not

@@ -38,7 +38,7 @@ For changelog, please visit [releases page](https://github.com/ngxson/wllama/rel
 
 Limitations:
 - To enable multi-thread, you must add `Cross-Origin-Embedder-Policy` and `Cross-Origin-Opener-Policy` headers. See [this discussion](https://github.com/ffmpegwasm/ffmpeg.wasm/issues/106#issuecomment-913450724) for more details.
-- One wasm instance has 4GB of memory. If the part of the model that is not on WebGPU is bigger, it is split across several wasm instances in workers (`rpc_workers`, automatic by default), which needs multi-thread, and JSPI or the compat build (an older Firefox without JSPI cannot load such models).
+- One wasm instance has 4GB of memory. If the part of the model that is not on WebGPU is bigger, it is split across several wasm instances in workers (`rpc_workers`, automatic by default), which needs multi-thread, and JSPI or the compat build (an older Firefox without JSPI cannot load such models). In single-thread, such a model fails to load with an error.
 
 ## Code demo and documentation
 
@@ -87,7 +87,7 @@ let wllamaInstance = new Wllama(WLLAMA_CONFIG_PATHS, ...);
 // (the rest is the same with earlier example)
 ```
 
-For complete code example, see [examples/main/src/utils/wllama.context.tsx](./examples/main/src/utils/wllama.context.tsx)
+For complete code example, see [examples/main/overlay/src/lib/wllama/wllama-server.ts](./examples/main/overlay/src/lib/wllama/wllama-server.ts) (loading models) and [routes.ts](./examples/main/overlay/src/lib/wllama/routes.ts) (chat completion)
 
 NOTE: this example only covers completions usage. For embeddings, please see [examples/embeddings/index.html](./examples/embeddings/index.html). For audio, see [Speech and realtime audio](#speech-and-realtime-audio)
 

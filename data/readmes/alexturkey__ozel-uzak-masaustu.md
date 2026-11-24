@@ -9,6 +9,15 @@ Yazılımcı olmayanlar için yazıldı: rehberi kendi yapay zekâ ajanına (Cla
 Windows **Pro**'da yerleşik Uzak Masaüstü (yalnız Tailscale'den erişilebilir), Windows **Home**'da RustDesk (Tailscale adresine doğrudan bağlanarak).
 Yeni ya da gizli bir yöntem değil: yıllardır belgeli "NAT delme" (*UDP hole punching*: modemlerin arkasındaki iki cihaz arasında doğrudan yol açma) tekniğinin, yaygın ve bakımlı hazır araçlarla güvenli kullanımı.
 
+## Hızlı başlangıç (Quick start)
+**Yapay zeka ajanıyla mı kuruyorsun? `AGENTS.md`'den başla** (hızlı kart: `AGENTS_HIZLI.md`). AI agent? Start with `AGENTS.md`; the quick card is `AGENTS_HIZLI.md`.
+
+İlk 5 dakikada, hiçbir şeyi değiştirmeden bilgisayarının durumuna bak (yalnız okur):
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File araclar\kontrol.ps1
+```
+Beklenen çıktı: `[TAMAM]`, `[UYARI]` ve `[BILGI]` satırları (Windows Home/Pro, uyku, Tailscale ve RustDesk kurulu mu, ağ durumu), sonda `DURUM.md` için tek satır, çıkış kodu 0. Süre: bu bilgisayarda yaklaşık 4,5 saniye, 15 satır çıktı [ölçtüm, Windows 10 Home, 2026-11-23; diğer bilgisayarlarda değişir]. Sonrası: aşağıdaki "Nasıl başlarım".
+
 ## Neden bu yol?
 
 Ücretsiz uzak masaüstü araçları (ör. AnyDesk, TeamViewer) işini görür; burada farklı bir yol seçmemizin nedenlerini, yalnız kaynağı olan ya da bizzat ölçtüğümüz satırlarla yazdık. Karşı tarafın sayfasından alıntı alamadığımız yerde karşılaştırma yapmadık, "alıntı alınamadı" yazdık. Kimseyi kötülemek amaç değil; ürün adları sahiplerinindir.
@@ -52,7 +61,11 @@ Yeni ya da gizli bir yöntem değil: yıllardır belgeli "NAT delme" (*UDP hole 
 | `araclar\geri_al_zamanlayici.ps1` | Güvenlik ağı: duvarı yedekler, N dakika sonra kendiliğinden geri yükleyen gizli görev kurar |
 | `araclar\rustdesk_tailscale_kilit.ps1` | Home (RustDesk) umumi Wi-Fi'ye çıkacaksan: RustDesk portlarını (TCP 21118, UDP 21119) Tailscale dışından gelene kapatan duvar engeli; önce güvenlik ağını kurar, `-Geri` ile kaldırılır |
 | `araclar\rdp_tailscale_kilit.ps1` | Pro: Uzak Masaüstü'nü yalnız Tailscale'e açar; önce güvenlik ağını kurar |
+| `araclar\denetim.ps1` | Depo için hızlı denetim (`-Hizli`): gizli/çift yönlü Unicode, kontrol baytı, kişisel yol ve özel e-posta, PowerShell sözdizimi ve BOM kuralı, takipli ajan izin dosyası yok. **Yalnız okur** |
 | `tests\` | Betiklerin testleri (gerçek ayara dokunmaz) |
+| `AGENTS_HIZLI.md`, `llms.txt`, `GEMINI.md` | Ajanlar için hızlı kart (karar ağacı ve çıkış kodu tablosu) ve işaretçiler; hepsi `AGENTS.md`'ye bağlanır, içerik kopyalamaz |
+| `SECURITY.md`, `PRIVACY.md`, `SUPPORT.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md` | Güvenlik bildirimi, gizlilik, destek, katkı, davranış kuralları ve değişiklik günlüğü |
+| `docs\claude_settings.ornek.json` | Claude Code için dar izin örneği (depo izin dosyasını takip etmez; istersen `.claude/settings.json` olarak kopyalarsın) |
 
 Değişiklik yapan betikler varsayılan olarak yalnız **ne yapacağını yazar** (`-DryRun`); gerçekten yapmaları için `-Uygula` gerekir (tek istisna: geri alma görevini kaldıran `-Iptal`). Duvarı değiştiren üç betik (`geri_al_zamanlayici`, `rdp_tailscale_kilit`, `rustdesk_tailscale_kilit`) yönetici PowerShell ister (Başlat'a sağ tıkla, "Windows PowerShell (Yönetici)"); `kontrol` ve `baglanti_kanit` istemez; hiçbiri kendini yönetici yapmaz, pencere açmaz, bir şey indirmez. Hepsi şöyle çalıştırılır: `powershell -NoProfile -ExecutionPolicy Bypass -File araclar\<betik>.ps1`.
 

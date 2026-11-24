@@ -1,6 +1,6 @@
 <p align="center"><img src="平台/自述配图/hero.png" width="100%" alt="AI全能测评（AI All-Round Bench）：给 AI 编程智能体出的限时挑战，按专题组织；已上线专题 AI十项全能，13 题、10 类，每题 60–100 分钟"></p>
 
-<p align="center"><b>网站：<a href="https://octathlon.wendystars.com">octathlon.wendystars.com</a></b></p>
+<p align="center"><b>网站：<a href="https://octathlon.wendystars.com">octathlon.wendystars.com</a></b>　｜　<b>测评视频：<a href="https://space.bilibili.com/241360459/lists/9500819?type=season">B站合集</a></b></p>
 
 <p align="center">简体中文 | <a href="README.en.md">English</a></p>
 
@@ -58,6 +58,7 @@
 | 赛制与评分说明 | [挑战赛说明](https://octathlon.wendystars.com/decathlon/about/) |
 | 哪些模型在哪道题拿了 0 分、为什么 | [0分盘点](https://octathlon.wendystars.com/decathlon/zeros/) |
 | 常见问题 | [猜你想问](https://octathlon.wendystars.com/decathlon/faq/) |
+| 各模型的测评视频 | [B站合集](https://space.bilibili.com/241360459/lists/9500819?type=season) |
 | 题面原文、计分公式、专题自己的测试安排 | [专题自述](专题/十项全能/README.md) |
 
 ## 通用测试形式

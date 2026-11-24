@@ -9,7 +9,7 @@ reveal src/                         # what is here?
 reveal src/app.py                   # what does this file contain?
 reveal src/app.py main             # read this function
 reveal calls src/ --callers main   # what connects to it?
-reveal src/app.py main --boundary  # what does it read and touch?
+reveal src/app.py main --view boundary  # what does it read and touch?
 reveal check src/                   # which rules find problems?
 ```
 
@@ -21,7 +21,7 @@ reveal check src/                   # which rules find problems?
 | Structure | What does this contain? | `reveal FILE` |
 | Content | Show me one thing | `reveal FILE FUNCTION`, `reveal DOC.md "Heading"`, `reveal FILE :20-40` |
 | Relations | What connects to it? | `reveal calls DIR --callers NAME`, `reveal imports DIR --importers FILE` |
-| Behavior | What does this function touch? | `reveal FILE FUNCTION --boundary` or `--effects` |
+| Behavior | What does this function touch? | `reveal FILE FUNCTION --view boundary` or `--view effects` |
 | Judgment inputs | Where should I look closer? | `reveal metrics DIR --view hotspots`, `reveal check DIR` |
 
 Search with enclosing structural context: `reveal src/ --grep 'timeout'`.
@@ -40,7 +40,7 @@ use the same execution path. Quote URI arguments containing shell operators.
 | `ast` | Code elements: `reveal ast src/ --where 'complexity>10' --sort=-complexity --limit 10` |
 | `calls` | Callers/callees: `reveal calls src/ --callees main --depth 2 --detail` |
 | `imports` | Import relationships: `reveal imports src/ --importers app.py` |
-| `git://` | History: `reveal 'git://.?type=history&message~=fix'` |
+| `git://` | History: `reveal git . --view history --where 'message~=fix'` |
 | `claude` | Session recovery: `reveal claude session/NAME --view messages --sort=-message_index --limit 3` |
 | `markdown` | Documents: `reveal markdown docs/ --match retry` |
 | `metrics` | File size, complexity and churn: `reveal metrics src/` |

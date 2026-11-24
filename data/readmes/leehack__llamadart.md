@@ -35,7 +35,7 @@ LFM2 replies cut off at a reported length limit expose raw `partialToolCalls` di
 
 ```yaml
 dependencies:
-  llamadart: ^0.20.5
+  llamadart: ^0.20.7
 ```
 
 ```bash
@@ -56,18 +56,30 @@ companion shares its core's `MAJOR.MINOR` and constrains `llamadart` to it.
 
 ```yaml
 dependencies:
-  llamadart: ^0.20.5
-  llamadart_llama_cpp_flutter: ^0.20.5 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.20.5 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.20.5 # Apple image generation, opt-in
+  llamadart: ^0.20.7
+  llamadart_llama_cpp_flutter: ^0.20.7 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.20.7 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.20.7 # Apple image generation, opt-in
 ```
 
 Pairing rules, the SwiftPM bootstrap and the privacy manifest are in
 [Installation](https://llamadart.leehack.com/docs/getting-started/installation) and
 [Apple setup](https://llamadart.leehack.com/docs/platforms/apple-setup).
 Web apps run `dart run llamadart:web_setup` once; see the
-[WebGPU bridge](https://llamadart.leehack.com/docs/platforms/webgpu-bridge). Lazy tool-call grammars and
-custom grammar roots follow the loaded bridge core's `lazyGrammar` capability.
+[WebGPU bridge](https://llamadart.leehack.com/docs/platforms/webgpu-bridge).
+Pages with neither cross-origin isolation nor usable `SharedArrayBuffer`
+automatically use the single-threaded GGUF core with bridge assets v0.1.93+.
+It uses one CPU
+thread and supports WebGPU offload. Serve COOP/COEP headers to enable shared
+memory for the threaded core and fetch-backed model loading. Set
+`window.__llamadartBridgeAllowSingleThreadCore = false` before the first model
+load to require the threaded core. Lazy tool-call grammars and
+custom grammar roots follow the loaded core's `lazyGrammar` capability.
+With bridge assets v0.1.93+, Chromium automatically uses JavaScript-backed
+GGUF and projector staging on confirmed memory64 cores when `modelBytesHint`
+is at most 4 GiB. Supported WebKit cores follow the bridge's browser policy.
+Set `ModelParams.jsBackedModelStaging: false` to disable staging or `true` to
+require it with staging-capable v0.1.92+ assets.
 
 llamadart also ships [agent skills](https://dart.dev/tools/pub/package-skills)
 that teach coding agents its APIs. Install them from your app's root:
@@ -154,8 +166,8 @@ GPU support still depends on the device, driver and model. If GPU engine
 creation fails, `ComputeDevice.auto` retries on the CPU with a warning;
 `ComputeDevice.gpu` fails instead.
 
-Image generation
-is not available on the web. On iOS, use
+Image generation is not available on the web. The Windows x64 image
+runtime bundles its Visual C++ runtime DLLs. On iOS, use
 `ImageModelPlacement(vaeOnCpu: true)` for CPU VAE decoding with Metal
 diffusion, or choose CPU generation. The pinned `v0.4.0` runtime splits Metal graphs, so a full VAE
 is admitted on iOS Metal. Device qualification for v0.4.0 is pending.
@@ -175,7 +187,7 @@ Current default runtime pins:
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v1.0.0-4` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.19.1-7` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.90` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.93` |
 
 The Web backend reuses cached HTTP(S) projectors through the pinned bridge.
 If a direct WebAssembly core abort unloads the model, catch
@@ -239,7 +251,8 @@ allocation-to-registration gaps remain; see the
 
 Run the Flutter chat app from a
 [repository checkout](https://github.com/leehack/llamadart/tree/main/example/chat_app),
-or try the [hosted chat app](https://leehack-llamadart.static.hf.space).
+try the [hosted chat app](https://leehack-llamadart.static.hf.space), or
+[chat with GGUF models (SmolLM2 135M, Qwen3.5 0.8B, or desktop Chrome Gemma 4 E2B) on preview.dartpad.dev](https://preview.dartpad.dev/?package=llamadart&root=example/dartpad_gguf&file=example/dartpad_gguf/lib/main.dart).
 
 - [Basic Dart CLI](https://github.com/leehack/llamadart/tree/main/example/basic_app)
 - [Flutter chat app](https://github.com/leehack/llamadart/tree/main/example/chat_app)

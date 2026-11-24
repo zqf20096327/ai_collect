@@ -102,7 +102,8 @@ Whether running local GGUF weights, calling cloud LLM APIs, holding live voice c
 companionchat/
 ├── backend/                   # FastAPI backend
 │   ├── main.py                # Standalone backend entrypoint (default port 8002)
-│   ├── api_routes.py          # Core endpoints (companions, chat, conversations, files, STT)
+│   ├── api_routes.py          # Core endpoints (companions, conversations, files, STT)
+│   ├── api_routesV2.py        # Text chat streaming endpoints mounted onto api_routes
 │   ├── paths.py               # Data root & model path resolution
 │   ├── companion.py           # Chat orchestration & prompt assembly
 │   ├── compaction.py          # Conversation summarization & compaction
@@ -140,7 +141,7 @@ companionchat/
 
 - **Python** 3.10+
 - **Node.js** 18+ and `npm`
-- **Local Inference (Optional)**: Configure your models root directory and `llama-server` executable under **Backstage → Paths** in the UI.
+- **Local Inference (Optional)**: `llama-server.exe` is **not bundled** with the app. To use the built-in managed `llama.cpp` runtime for local GGUF LLM chat, download a `llama.cpp` release for your hardware and configure its directory or executable under **Backstage → Paths → `llama.cpp runtime`** (or place it in `<modelsRoot>/llama`), and set your shared local model directory under **Backstage → Paths → `Models root`**. (The `audio.cpp` runtime for local TTS/ASR is bundled, and external local servers such as Ollama or LM Studio can be connected directly without `llama-server.exe`.)
 
 ### 1. Install Dependencies
 

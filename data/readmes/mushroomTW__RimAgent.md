@@ -99,7 +99,7 @@ Drag the window title bar to move it, or drag the lower-right corner to resize i
 > 3. **Deep Semantic Compact:** Trigger `/compact` at any time to invoke a dedicated model summarization pass, condensing extended dialogue history into an actionable summary.
 
 > **Run History Logging:**
-> Enable **Record Agent runs** in mod settings to log all instructions, tool invocations, safety assessments, and outcomes to `RimWorld save data/RimAgent/RimAgent-runs.jsonl`. Off by default; retains up to 500 runs or 16 MiB. A shortcut button in settings opens the log directory directly.
+> Enable **Record Agent runs** in mod settings to log all instructions, tool invocations, safety assessments, and outcomes to `RimWorld save data/RimAgent/runs/`: `index.jsonl` has one summary line per run, and each run has its own file with one event per line, written as it happens. Off by default; retains up to 50,000 runs. A shortcut button in settings opens the log directory directly.
 
 > **Prompt & Extensibility Architecture:**
 >
@@ -119,14 +119,14 @@ A single execution mode configuration governs the autonomy and safety boundaries
 | --- | --- |
 | **Confirm** | Read-only queries run immediately. Any command altering game state generates a preview and awaits explicit player approval. |
 | **Execute** | Routine commands execute immediately; high-impact commands (such as surgery, trade, or caravans) require confirmation. Proactive care major actions follow a dedicated setting. |
-| **Auto** | Each command is evaluated beforehand by a secondary classifier model or decision model for risk and player intent. Low-risk, explicitly requested actions proceed automatically; high-risk, unrequested, or ambiguous actions are rejected with a clear explanation, **without generating confirmation prompts**. Blacklisted high-hazard tools are rejected immediately without invoking the classifier. Classifier model and reasoning are customizable under Model Roles. |
+| **Auto** | Each command is evaluated beforehand by a secondary classifier model or decision model for risk and player intent. Low-risk, explicitly requested actions proceed automatically; high-risk, unrequested, or ambiguous actions are rejected with a clear explanation, **without generating confirmation prompts**. Classifier model and reasoning are customizable under Model Roles. |
 | **Full access** | All enabled tools (including MCP) execute directly without execution-mode gates. Category permission toggles remain in effect. |
 
 ### Confirmation Details
 
 - **Confirm / Discard:** Approving a preview executes the exact captured tool call and arguments without querying the model again, preventing unintended repeated executions. Discarding or submitting a new prompt clears pending calls.
 - **Failure Gating:** If a confirmed command in a multi-step sequence fails, subsequent pending commands remain paused awaiting re-confirmation. The failed command is removed from the queue (as partial game-state mutations may have occurred), and the log indicates completed versus remaining operations.
-- **Always Allow (Session Whitelist):** In Confirm mode, eligible tools can be whitelisted by name for the remainder of the game session. This whitelist resets upon `/clear` or restarting RimWorld and is never written to saves. It never applies to `mcp_call_tool`, high-risk blacklist tools (`execute_trade`, `form_caravan`, `release_prisoner`, `schedule_surgery`, `send_caravan`, `set_prisoner_interaction`, `settle_caravan`), or generic UI interactors (`use_gizmo`, `use_right_click_option`, `choose_option`).
+- **Always Allow (Session Whitelist):** In Confirm mode, eligible tools can be whitelisted by name for the remainder of the game session. This whitelist resets upon `/clear` or restarting RimWorld and is never written to saves. It never applies to `mcp_call_tool` or generic UI interactors (`use_gizmo`, `use_right_click_option`, `choose_option`).
 - **MCP Invocations:** In Confirm and Execute modes, MCP calls require explicit player approval. In Auto mode, they are evaluated by the safety classifier. In Full access mode, enabled MCP tools execute directly. Proactive care in Execute mode obeys the major-action confirmation setting.
 
 > [!WARNING]

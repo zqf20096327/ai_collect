@@ -21,16 +21,16 @@ A library of AI specialist agents and workflows for Japanese IT delivery: SIer (
 
 | Metric | Count |
 | --- | --- |
-| Total agents | <!-- AUTOGEN:TOTAL -->413<!-- /AUTOGEN:TOTAL --> |
-| ⭐ Japan-market originals | <!-- AUTOGEN:JAPAN -->130<!-- /AUTOGEN:JAPAN --> |
+| Total agents | <!-- AUTOGEN:TOTAL -->412<!-- /AUTOGEN:TOTAL --> |
+| ⭐ Japan-market originals | <!-- AUTOGEN:JAPAN -->129<!-- /AUTOGEN:JAPAN --> |
 | Upstream-aligned (adapted to Japan) | <!-- AUTOGEN:UPSTREAM -->283<!-- /AUTOGEN:UPSTREAM --> |
 | Upstream skeleton backlog | <!-- AUTOGEN:SKELETON -->0<!-- /AUTOGEN:SKELETON --> |
-| Workflows (`workflows/`) | <!-- AUTOGEN:WORKFLOWS -->27<!-- /AUTOGEN:WORKFLOWS --> |
+| Workflows (`workflows/`) | <!-- AUTOGEN:WORKFLOWS -->29<!-- /AUTOGEN:WORKFLOWS --> |
 | Categories | <!-- AUTOGEN:CATEGORIES -->22<!-- /AUTOGEN:CATEGORIES --> |
 | Supported tools (`tools.json`) | <!-- AUTOGEN:TOOLS -->19<!-- /AUTOGEN:TOOLS --> |
 | Upstream baseline | `msitarzewski/agency-agents@8ae6164` as of 2026-11-08 |
 
-> **<!-- AUTOGEN:TOTAL -->413<!-- /AUTOGEN:TOTAL --> ready-to-use AI specialist agents** for Japanese IT delivery — engineering, GIS, healthcare, design, marketing, product, game development, security, finance, legal, support, and more. This is not a generic prompt dump: each agent has a role, operating rules, workflow assumptions, and concrete deliverables tuned for Japanese teams.
+> **<!-- AUTOGEN:TOTAL -->412<!-- /AUTOGEN:TOTAL --> ready-to-use AI specialist agents** for Japanese IT delivery — engineering, GIS, healthcare, design, marketing, product, game development, security, finance, legal, support, and more. This is not a generic prompt dump: each agent has a role, operating rules, workflow assumptions, and concrete deliverables tuned for Japanese teams.
 
 ### Quick install
 
@@ -100,7 +100,7 @@ Maintenance references:
 
 ### What is Japan-specific here
 
-The <!-- AUTOGEN:JAPAN -->130<!-- /AUTOGEN:JAPAN --> ⭐ Japan-market originals cover scenarios upstream does not address:
+The <!-- AUTOGEN:JAPAN -->129<!-- /AUTOGEN:JAPAN --> ⭐ Japan-market originals cover scenarios upstream does not address:
 
 - **SIer / 受託開発**: requirements engineering, basic/detailed design, acceptance review (検収), change management, release sign-off, RFP response
 - **Compliance**: 個人情報保護法 (APPI), インボイス制度 (invoice system), 電子帳簿保存法 (electronic bookkeeping), 適時開示 / TDnet / インサイダー情報管理, AI usage policy
@@ -108,7 +108,7 @@ The <!-- AUTOGEN:JAPAN -->130<!-- /AUTOGEN:JAPAN --> ⭐ Japan-market originals 
 - **Manufacturing DX / public sector**: 工場 IoT, 自治体 DX, BCP, 内部統制
 - **Market entry / localization**: 日本市場参入, 6 層のローカライズ, 価格・請求・パートナー GTM
 - **New in 0.5.0**: CxO / 経営企画, 組込み・電気設備, 旅行・インバウンド, DevRel / DevEx, 技術 SEO / TikTok LIVE コマース
-- **Workflows**: <!-- AUTOGEN:WORKFLOWS -->27<!-- /AUTOGEN:WORKFLOWS --> end-to-end workflows that chain agents together (e.g. `japanese-sier-requirements-review`, `acceptance-readiness-review`, `csv-data-migration-readiness`, `oss-localization-launch`, `oss-upstream-sync`)
+- **Workflows**: <!-- AUTOGEN:WORKFLOWS -->29<!-- /AUTOGEN:WORKFLOWS --> end-to-end workflows that chain agents together (e.g. `japanese-sier-requirements-review`, `acceptance-readiness-review`, `csv-data-migration-readiness`, `oss-localization-launch`, `oss-upstream-sync`)
 
 ### Translation status
 
@@ -216,13 +216,13 @@ MIT
 
 英文上流 [agency-agents](https://github.com/msitarzewski/agency-agents) の汎用 agent を日本語化・日本市場向けに移植・適配しつつ、中国語コミュニティ版 [agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh) の取り組みからも一部の領域設計や coverage gap の示唆を得て、SIer、受託開発、日本 SaaS、製造業 DX、公共 sector で使うための日本特化 agent として本土化しています。
 
-> **<!-- AUTOGEN:TOTAL -->413<!-- /AUTOGEN:TOTAL --> 個の即戦力 AI 専門家 agent** — 工程、設計、QA、GIS / 地図・空間データ、healthcare、product、marketing、sales、support、legal、finance、security、製造業 DX、公共 sector など <!-- AUTOGEN:CATEGORIES -->22<!-- /AUTOGEN:CATEGORIES --> category を収録。単なる「あなたは専門家です」prompt ではなく、各 agent に役割、確認観点、作業手順、成果物、運用 guardrail を持たせています。
+> **<!-- AUTOGEN:TOTAL -->412<!-- /AUTOGEN:TOTAL --> 個の即戦力 AI 専門家 agent** — 工程、設計、QA、GIS / 地図・空間データ、healthcare、product、marketing、sales、support、legal、finance、security、製造業 DX、公共 sector など <!-- AUTOGEN:CATEGORIES -->22<!-- /AUTOGEN:CATEGORIES --> category を収録。単なる「あなたは専門家です」prompt ではなく、各 agent に役割、確認観点、作業手順、成果物、運用 guardrail を持たせています。
 
 ## プロジェクト規模
 
 | AI agent | 上流由来 adapted | 日本市場 original | 対応 tool | Category | Workflow |
 | ---: | ---: | ---: | ---: | ---: | ---: |
-| **<!-- AUTOGEN:TOTAL -->413<!-- /AUTOGEN:TOTAL -->** | **<!-- AUTOGEN:UPSTREAM -->283<!-- /AUTOGEN:UPSTREAM -->** | **<!-- AUTOGEN:JAPAN -->130<!-- /AUTOGEN:JAPAN -->** | **<!-- AUTOGEN:TOOLS -->19<!-- /AUTOGEN:TOOLS -->** | **<!-- AUTOGEN:CATEGORIES -->22<!-- /AUTOGEN:CATEGORIES -->** | **<!-- AUTOGEN:WORKFLOWS -->27<!-- /AUTOGEN:WORKFLOWS -->** |
+| **<!-- AUTOGEN:TOTAL -->412<!-- /AUTOGEN:TOTAL -->** | **<!-- AUTOGEN:UPSTREAM -->283<!-- /AUTOGEN:UPSTREAM -->** | **<!-- AUTOGEN:JAPAN -->129<!-- /AUTOGEN:JAPAN -->** | **<!-- AUTOGEN:TOOLS -->19<!-- /AUTOGEN:TOOLS -->** | **<!-- AUTOGEN:CATEGORIES -->22<!-- /AUTOGEN:CATEGORIES -->** | **<!-- AUTOGEN:WORKFLOWS -->29<!-- /AUTOGEN:WORKFLOWS -->** |
 
 ## これは何か
 
@@ -394,11 +394,11 @@ ticket は PROJ-1234、spec は docs/spec.md です。
 
 ## Coverage
 
-- 日本特化 agent (⭐ `source: japan-original`): <!-- AUTOGEN:JAPAN -->130<!-- /AUTOGEN:JAPAN -->（日本の IT 開発、SIer、SaaS、EC、製造業 DX、公共 sector 向け）
+- 日本特化 agent (⭐ `source: japan-original`): <!-- AUTOGEN:JAPAN -->129<!-- /AUTOGEN:JAPAN -->（日本の IT 開発、SIer、SaaS、EC、製造業 DX、公共 sector 向け）
 - 上流由来 agent (`source: upstream`): <!-- AUTOGEN:UPSTREAM -->283<!-- /AUTOGEN:UPSTREAM -->（英文上流 `msitarzewski/agency-agents` の agent path に対応。baseline は [Stats](#stats) / [UPSTREAM-COVERAGE.md](UPSTREAM-COVERAGE.md) を参照。現在は `translation_status: adapted` ＝ 上流 role を日本市場向けに書き直し済み。`upstream_path:` で 1:1 対応関係を保持）
 - 上流由来 agent の skeleton backlog: <!-- AUTOGEN:SKELETON -->0<!-- /AUTOGEN:SKELETON -->
-- 合計: <!-- AUTOGEN:TOTAL -->413<!-- /AUTOGEN:TOTAL --> agents
-- Workflow: <!-- AUTOGEN:WORKFLOWS -->27<!-- /AUTOGEN:WORKFLOWS -->
+- 合計: <!-- AUTOGEN:TOTAL -->412<!-- /AUTOGEN:TOTAL --> agents
+- Workflow: <!-- AUTOGEN:WORKFLOWS -->29<!-- /AUTOGEN:WORKFLOWS -->
 
 完全な一覧は [AGENT-LIST.md](AGENT-LIST.md) を参照してください（⭐ が日本特化 agent）。
 翻訳進捗は [TRANSLATION-PROGRESS.md](TRANSLATION-PROGRESS.md)、上流 path coverage は [UPSTREAM-COVERAGE.md](UPSTREAM-COVERAGE.md) で確認できます。
@@ -522,6 +522,8 @@ workflow 内の `agents_dir` はこの repository root を基準にします。�
 | `workflows/service-delivery-review.yaml` | SLA、問い合わせ、障害、service review、CS action | `examples/workflow-service-delivery-review.md` |
 | `workflows/technical-documentation-review.yaml` | 技術 document、knowledge base、引き継ぎ evidence | `examples/workflow-technical-documentation-review.md` |
 | `workflows/vendor-cost-review.yaml` | vendor 調達、risk、FinOps、pricing、契約単位 | `examples/workflow-vendor-cost-review.md` |
+| `workflows/collaboration-integration-review.yaml` | Chatwork / Slack / Microsoft Teams / LINE WORKS 連携の要件、security、実装、test、observability、rollout |  |
+| `workflows/japan-market-entry-readiness.yaml` | 日本市場参入の調査、ローカライゼーション、価格、法務、セキュリティ、90 日計画 |  |
 | `workflows/oss-localization-launch.yaml` | 上流 OSS project を日本市場向けに初回ローカライズして公開するための workflow。翻訳、用語集、positioning、license / 商標確認、公開 plan、Backlog / Redmine / Jira ticket、初週 KPI までを日本 IT 現場向けに整える | `examples/workflow-oss-localization-launch.md` |
 | `workflows/oss-upstream-sync.yaml` | fork 後の OSS project を継続的に上流追従するための workflow。upstream release / commit の分類、fork 独自改修との衝突確認、翻訳追従、release note への反映、Backlog / Redmine / Jira ticket 化、四半期 sync 健全性 review までを日本 IT 現場向けに整える | `examples/workflow-oss-upstream-sync.md` |
 | `workflows/software-supply-chain-review.yaml` | npm / PyPI / Maven などソフトウェア依存、OSS license、CVE、SBOM、provenance、委託先承認、incident readiness を日本 IT 現場向けに review | `examples/workflow-software-supply-chain-review.md` |
@@ -533,7 +535,7 @@ workflow 内の `agents_dir` はこの repository root を基準にします。�
 ## 上流との関係
 
 - <!-- AUTOGEN:UPSTREAM -->283<!-- /AUTOGEN:UPSTREAM --> 個の `source: upstream` agent は、上流 [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents) (MIT) の各 agent path に 1:1 で対応します。現在は `translation_status: adapted`（直訳ではなく、日本市場向けに役割を書き直し済み）。frontmatter の `upstream_path:` で 1:1 対応関係を保持
-- <!-- AUTOGEN:JAPAN -->130<!-- /AUTOGEN:JAPAN --> 個の `source: japan-original` agent は、上流に対応する agent がない、日本市場向けに独自設計した agent です（AGENT-LIST.md で ⭐ で識別）
+- <!-- AUTOGEN:JAPAN -->129<!-- /AUTOGEN:JAPAN --> 個の `source: japan-original` agent は、上流に対応する agent がない、日本市場向けに独自設計した agent です（AGENT-LIST.md で ⭐ で識別）
 - 一部の日本特化 agent は、中国語コミュニティ版 [jnMetaCode/agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh) の agent coverage や実務領域の切り口を参考にし、日本の業務、platform、法規制、商習慣に合わせて再設計・本土化しています。英文上流と中国語コミュニティ版の maintainers / contributors に感謝します
 - 上流の framework 文書（[`strategy/`](strategy/)）と tool integration 文書・生成物（[`integrations/`](integrations/)）は現状そのまま英語で保持しています。これらは source agent ではないため `source:` frontmatter を持ちません。`scripts/validate.sh` では package / runbook roster の整合性だけを確認し、agent frontmatter や localization quality の対象にはしていません。日本語化は roadmap 上の項目です
 - 上流 `main` への追従と本翻訳の方針は [ROADMAP.md](ROADMAP.md) を参照してください

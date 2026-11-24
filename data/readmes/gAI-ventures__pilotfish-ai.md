@@ -138,6 +138,7 @@ This repository holds the local version, free and MIT licensed, and the SDKs for
 | Sites that block bots | You clear each check yourself. | Handled by the managed service. See the managed docs and pricing page for what is included. |
 | Sign-ins | You sign in each time and nothing is kept. | Saved logins in an encrypted vault, several accounts per site, authenticator-app codes and codes sent to your email or phone. |
 | Watching and cost | The browser window. | Live view, replays, per-task cost and monthly spending limits. |
+| Compliance | Runs on your machine, under your own controls. | SOC 2 Type II compliant; how to get the report is on the [security page](https://pilotfish.gai.ventures/security#soc-2). |
 | Price | Free. | Pay as you go from $5 of credit. See the pricing page for usage charges. |
 
 Connect to managed at `https://pilotfish-be.gai.ventures/mcp` (sign in with your pilotfish account or use an organization API key), or over stdio with the relay: `npx -y @gaiventures/pilotfish-mcp-managed`. Docs: <https://pilotfish.gai.ventures/docs>. Pricing: <https://pilotfish.gai.ventures/pricing>.

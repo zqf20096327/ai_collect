@@ -1,8 +1,8 @@
-# MCP_CREO_MechDog 0.35.8
+# MCP_CREO_MechDog 0.40.0
 
-![version](https://img.shields.io/badge/version-0.35.8-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
+![version](https://img.shields.io/badge/version-0.40.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
 
-当前正式版 **0.35.8**（PATCH，[BUG-150](docs/work-items/BUG-150.md)）。拉伸切除可用初始实体 ID `-5778` 指定作用域。Creo 10 实测指定作用域与全体切除均去料 800 mm³，保存重载通过。 · [版本说明](docs/RELEASE_NOTES_0.35.8.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
+当前正式版 **0.40.0**（MINOR）。交付 [BUG-171](docs/work-items/BUG-171.md)、[BUG-172](docs/work-items/BUG-172.md)、[BUG-173](docs/work-items/BUG-173.md) 与 [BUG-174](docs/work-items/BUG-174.md)：恢复阶段超时写出结构化 `recovery_phase_timeout`、消除 `restore_baseline` 重复二次巡检、恢复预算扩至 1800 s 并按 edges/features/surfaces 自适应、终态 `recovery_pending` 返回 `terminal_unconfirmed` 指引；消除单次作业 10+ 次冗余全量 `inspection()` 与逐半边 `fflush()` 刷盘（B045 6 步作业耗时降至 9.1 s）；单轴倾斜三点基准面草图自动创建并复用正交辅助锚定面（`SKETCH_ANCHOR_HELPER=1`）并精准归因 `ProSectionSolve` 错误；`dump_plan_operations` 保留显式 `chamfer_type`、盲切新增 `cut_volume_check` 低去料告警、后台 runner 尝试 `CREATE_BREAKAWAY_FROM_JOB` 并披露 `runner_detached_from_job`。公开工具仍以 `creo_capabilities` 的 `tool_count` 为准。见 [版本说明](docs/RELEASE_NOTES_0.40.0.md) 和 [下载页](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.40.0)。
 
 > 让 AI 客户端通过 MCP，直接在 Creo Parametric 里创建**原生可编辑的参数化特征**——不是导出网格，也不是脚本模拟。
 
@@ -113,7 +113,7 @@ Creo 软件、SDK、模板与许可需自行取得；MIT 只覆盖本项目原�
 
 - 不是所有参数组合与几何都已实机验证；无效轮廓、基准或特征顺序由 Creo 返回错误，AI 需自行规划。
 - Creo 9 编译探测修复已实现，但本机无 Creo 9 SDK，实机编译与建模运行时未验收；Creo 10 不再要求独立复测。
-- 钣金四壁、relief 去料、嵌套装配、面级上色等仍有明确边界；直接混合（`creo_loft`）需一次性回调注册，种子放样不需要。
+- 钣金四壁、relief 去料、装配阵列/刚性组、面级上色等仍有明确边界；直接混合（`creo_loft`）需一次性回调注册，种子放样不需要。
 - 串行单通道，无队列、FIFO 或容量保证；未测与开放项按[统一台账](docs/BACKLOG.md)跟进。
 - 不提供任意命令／代码执行，不输出许可服务器内容；正在交互建模或有模态对话框时应先处理该会话状态。
 

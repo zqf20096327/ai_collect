@@ -10,6 +10,8 @@ Tell it what you're working on, or how you want it to work. Wake up to progress,
 
 [Website](https://hivelab.ca) · [Demo](https://hivelab.ca/demo/) · [Docs](https://hivelab.ca/guide/) · [How we know it works](https://hivelab.ca/results/) · [Install](#install) · [Safety](#read-this-first) · [FAQ](#faq) · [Updates](https://hivelab.ca/updates/) · [Roadmap](ROADMAP.md)
 
+If the Hive is useful to you, a star on this repo helps others find it.
+
 [![Latest release](https://img.shields.io/badge/release-latest-brightgreen)](https://github.com/ihsan-sa/hive/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) ![Linux and Windows](https://img.shields.io/badge/runs%20on-Linux%20%7C%20Windows%20(WSL)-informational)
 
 <img alt="A short demo of the Hive on made-up data: you ask for a price watch, two agents split the work and talk to each other, and the result comes back with a chart" src="https://hivelab.ca/img/demo.gif" width="100%">
@@ -27,6 +29,69 @@ A group of agents on one machine of yours, running the official Claude Code or C
 - **One continuum of ideas and tools.** The same agents, knowledge base and tools serve all your projects. Work resumes where it stopped, after a night, a usage limit or a restart.
 - **Want it to work differently? Tell it.** Ask in a chat for a feature it doesn't have ("Ping me on Slack only when something needs me", "Add support for the local model on my GPU box"). Agents change the Hive itself, test the change and keep it. If a change should reach everyone, tell your hive to open an issue [here](https://github.com/ihsan-sa/hive/issues).
 
+## What makes it different
+
+**A small core, many agents.** Many agents share one sandbox. They start each other, work on projects together, and build shared tools, modules and knowledge.
+
+<details><summary>Details</summary>
+
+Our own Hive ran 12,500+ agent runs in its first 3 weeks, up to 40 at once: 150 agent-days of work and 1,000+ merged pull requests.
+
+The core stays small. The dashboard, the chip and board flows and the research tool are modules the agents built and share, and any agent can pick them up.
+
+</details>
+
+**Judgement over rules.** How agents work together comes from the model's own judgement, not a fixed procedure.
+
+<details><summary>Details</summary>
+
+They work to an architecture they wrote down and keep updating. Who to ask, how to split the work and when to check is their call.
+
+That keeps the system small, lets it get better as the models do, and lets a change to how the Hive works be tried, checked and kept in one short loop.
+
+</details>
+
+**Work keeps moving.** Agents keep projects going without someone prompting each step.
+
+<details><summary>Details</summary>
+
+They pick up stalled work, set their own reminders, and leave each conversation in a state you can read whenever you look. An hourly round only catches what has been left behind.
+
+One chip project ran 19 days with no word from its owner and closed timing on a RISC-V core.
+
+</details>
+
+**Evidence from tools.** Every result, and every change to the Hive itself, comes with evidence from a tool, not just an agent's word.
+
+<details><summary>Details</summary>
+
+The checks are deterministic scripts. The agents pick them, build them when they are missing, and defend the choice to a reviewing agent.
+
+For example, the Hive's own tests once sat broken for 17 hours before anyone noticed. Agents added a check that runs after each change. Over the next week, 10 of 10 breaks were fixed, a median 12 minutes after they landed.
+
+[How we know it works](https://hivelab.ca/results/)
+
+</details>
+
+**Safe and accountable.** Hard limits at the sandbox, and agents that watch each other.
+
+<details><summary>Details</summary>
+
+The sandbox hides the rest of your machine, and a few things are off limits outright, such as spending money or handing out credentials.
+
+Inside, any agent can stop or undo another's wrong or unsafe work. A warden agent, with no stake in the task, judges anything that reaches outside the Hive.
+
+</details>
+
+**Why we built it this way.** Our earlier agent system was too rigid to improve itself.
+
+<details><summary>Details</summary>
+
+It had fixed roles, a hierarchy, a sandbox per agent and a landing process for every change. Those walls slowed collaboration and blocked self-improvement loops.
+
+The Hive drops them: one shared sandbox, where agents choose who to work with and which checks to trust.
+
+</details>
 ## What you put in, and what comes back
 | You put in | The Hive gives back |
 |---|---|
@@ -51,7 +116,7 @@ All of this came out of our own Hive. Look at the checks and the caveats as well
 
 - **A small chip, its board and its firmware.** On 4 November 2026, agents designed Hive Pulse: a Tiny Tapeout chip tile with a dice, a display, a breathing light and a serial port, plus the board it plugs into and the firmware. All 16 chip checks pass (simulation, formal proofs, timing, layout), the board has 0 electrical-rule and 0 design-rule errors with 8 warnings left, and 28 of 28 firmware self-tests pass against the chip's design, in simulation. It is being verified for fabrication with Tiny Tapeout.
 - **A charge-pump PLL,** designed with open chip tools and rendered from its layout.
-- **More than 20 circuit boards,** with schematics, layouts and checks, at [the boards page](https://boards.ihsan.cc). Most have not been built yet, they are being tested and fabricated now, and they are shared as they are, with no warranty.
+- **More than 60 circuit boards,** with schematics, layouts and checks, at [the boards page](https://boards.ihsan.cc). Most have not been built yet, they are being tested and fabricated now, and they are shared as they are, with no warranty.
 - **The Hive you'd install.** Agents write, check and ship the Hive itself, its website and films included: 241 public releases between 22 October and 10 November 2026, each signed. Our own Hive did 6,050 agent runs in 9 days (as of 9 November); 1,815 of its 17,243 messages came from the one person running it. It runs on far more usage than one plan gives, so yours won't reach these numbers.
 
 More in the [showcase](https://hivelab.ca/showcase/) and in [`examples/`](examples/README.md): the first message, what the agents did, and the result.

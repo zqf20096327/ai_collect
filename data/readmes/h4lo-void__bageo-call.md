@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml"><img src="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.6.9"><img src="https://img.shields.io/badge/release-v1.6.9-brightgreen.svg" alt="Release v1.6.9"></a>
+  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.7.0"><img src="https://img.shields.io/badge/release-v1.7.0-brightgreen.svg" alt="Release v1.7.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg" alt="License: AGPL-3.0-only"></a>
   <a href="COMMERCIAL_LICENSE.md"><img src="https://img.shields.io/badge/commercial-dual%20license-gold.svg" alt="Commercial License Available"></a>
 </p>
@@ -37,8 +37,8 @@
     </td>
     <td width="25%" align="center" valign="top">
       <img src="docs/images/icons/languages.svg" width="56" height="56" alt=""><br>
-      <strong>Speaks nine languages</strong><br>
-      English, Traditional and Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese. It switches when the caller does.
+      <strong>Speaks your callers' languages</strong><br>
+      The phone app has 79 languages built in, and calls follow the languages Gemini supports. It switches when the caller does.
     </td>
   </tr>
 </table>
@@ -145,13 +145,15 @@ Once a call is clearly sales or a scam, the AI turns into an interested, slow, e
 
 Book a table, move an appointment, ask a shop about stock or opening hours. When the other side raises something you did not cover, the AI asks you on screen before it answers. It never agrees to anything on its own: if you do not reply in time, it says you will confirm and ends the call politely. [More about AI errands](docs/en/FEATURES.md#ai-errands-it-makes-calls-for-you)
 
-## A caller from abroad? Bageo speaks nine languages.
+## A caller from abroad? Bageo speaks 79 languages.
 
 <p align="center">
   <img src="docs/images/languages.en.svg" width="900" alt="Bageo speaks nine languages: English, Traditional Chinese, Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese. Each one answers with its own hello.">
 </p>
 
-The AI's voice, the built-in prompts (a short, general baseline you can customize for your own situation and style), the web console, the phone app and the notifications all come in nine languages. On a dual-SIM phone each SIM opens calls in its own language, a caller from abroad hears their country's language, and when a caller switches language mid-call, the AI follows. Transcripts keep the original words, each line with a translation into your notification language. [More about languages and dual SIM](docs/en/FEATURES.md#nine-languages-dual-sim-translated-transcripts)
+The phone app has 79 languages built in. The web console has nine built in (English, Traditional and Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese) and can download 70 more, six of them written right to left. On a call, Bageo speaks the languages Gemini supports. The built-in prompts (a short, general baseline you can customize for your own situation and style) and the notifications come in nine languages. On a dual-SIM phone each SIM opens calls in its own language, a caller from abroad hears their country's language, and when a caller switches language mid-call, the AI follows. Transcripts keep the original words, each line with a translation into your notification language. [More about languages and dual SIM](docs/en/FEATURES.md#nine-languages-dual-sim-translated-transcripts)
+
+It also talks the way people in your region do on the phone: Bageo knows the speaking style and everyday habits of 74 regions, and *Talk style* sets how casual or businesslike it sounds. Voice samples for other languages and regions download only when you pick them. The wording the AI is told can get better through a data update from the console, without a new Bageo.
 
 ## How it works
 

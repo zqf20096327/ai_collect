@@ -977,7 +977,8 @@ waza run eval.yaml --reporter junit:results.xml
 waza run eval.yaml -o results.json --reporter junit:results.xml
 ```
 
-**Note:** `waza generate` is an alias for `waza new`. Both commands support the same functionality with the `--output-dir` flag for specifying custom output locations.
+Use `waza new` to scaffold skills and evaluations; there is no `waza generate`
+alias. `waza new skill --output-dir` selects an explicit scaffold destination.
 
 ### `waza compare <file1> <file2> [files...]`
 
@@ -1998,4 +1999,4 @@ Schema `skill` uses a length-only constraint, so whitespace passes that check
 but is not a meaningful target. JSON-RPC `eval.validate` reports schema errors;
 separate preflight checks are not a universal runtime target-enforcement gate.
 Scenario `2.0` requires a nonblank `scenario` and may omit `skill`.
-Scenario `2.0` bypasses result cach
+Scenario `2.0` bypasses result caching with a

@@ -1,0 +1,391 @@
+# GAF-Net: Video-Based Person Re-Identification via Appearance and Gait Recognitions
+
+[![Paper](https://img.shields.io/badge/Paper-VISAPP%202024-blue)](https://doi.org/10.5220/0012364200003660)
+[![Follow-up paper](https://img.shields.io/badge/Paper-Algorithms%202024-blue)](https://doi.org/10.3390/a17080352)
+[![HAL](https://img.shields.io/badge/HAL-hal--04524979-orange)](https://amu.hal.science/hal-04524979)
+[![Python](https://img.shields.io/badge/Python-3.8+-green)](https://python.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-1.9+-red)](https://pytorch.org)
+
+Official implementation of **GAF-Net: Video-Based Person Re-Identification via Appearance and Gait Recognitions** (VISAPP 2024). The follow-up paper, **In-Depth Analysis of GAF-Net: Comparative Fusion Approaches in Video-Based Person Re-Identification** (*Algorithms* 2024), evaluates additional fusion strategies on iLIDS-VID and MARS. The results of that paper are documented below; the code and downloadable embeddings in this repository currently support the original iLIDS-VID evaluation only.
+
+**Authors:** Moncef Boujou, Rabah Iguernaissi, Lionel Nicod, Djamal Merad, Séverine Dubuisson
+
+**Affiliations:** LIS, CNRS, Aix-Marseille University, France | CERGAM, Aix-Marseille University, France
+
+##  Abstract
+
+Video-based person re-identification (Re-ID) is a challenging task aiming to match individuals across various cameras based on video sequences. While most existing Re-ID techniques focus solely on appearance information, including gait information could potentially improve person Re-ID systems. In this study, we propose GAF-Net, a novel approach that integrates appearance with gait features for re-identifying individuals; the appearance features are extracted from RGB tracklets while the gait features are extracted from skeletal pose estimation. These features are then combined into a single feature allowing the re-identification of individuals.
+
+
+**This repository provides:**
+- Evaluation script for the VISAPP 2024 iLIDS-VID feature-concatenation experiment using pre-computed embeddings
+- Pre-computed embeddings (appearance + gait)
+- GaitGraph training code adapted for iLIDS-VID
+- Pose data for training
+
+**This repository does not provide:**
+- Appearance model training (PiT/MGH/OSNet) — use original repos
+- End-to-end inference pipeline (video → Re-ID)
+- Pre-trained GaitGraph weights (coming soon)
+
+## Reproducible evaluation scope: iLIDS-VID feature concatenation
+
+This repository supports independently running the VISAPP 2024 iLIDS-VID feature-concatenation evaluation using the linked pre-computed appearance and gait embeddings. `evaluate.py` evaluates 10 splits and reports their mean CMC and mAP metrics.
+
+| Backbone | Gait embeddings | Default λ | Reference Rank-1 (%) |
+|---|---|---:|---:|
+| PiT | gait1 | 0.74 | 93.07 |
+| MGH | gait2 | 0.84 | 90.40 |
+| OSNet | gait1 | 0.90 | 70.93 |
+
+The reference Rank-1 values above are stored in `evaluate.py` as `paper_rank1`; they are comparison targets, not measurements from a new execution. Actual Rank-1, Rank-5, Rank-10 and mAP values are computed from the supplied embeddings.
+
+This is evaluation from pre-computed features, not an end-to-end reproduction of model training or video-to-Re-ID inference. The Algorithms 2024 results below are separately reported publication results and must not be presented as outputs verified by this evaluation script.
+
+## Publications and reported results
+
+1. M. Boujou et al., [GAF-Net: Video-Based Person Re-Identification via Appearance and Gait Recognitions](https://doi.org/10.5220/0012364200003660), VISAPP 2024.
+2. M. Boujou et al., [In-Depth Analysis of GAF-Net: Comparative Fusion Approaches in Video-Based Person Re-Identification](https://doi.org/10.3390/a17080352), *Algorithms* 17(8), 352, 2024.
+
+The following values are **reported in the Algorithms paper**, not independently reproduced by this repository. All scores are percentages. They are also recorded with provenance in [results/algorithms_2024.csv](results/algorithms_2024.csv).
+
+| Dataset | Method / appearance backbone | mAP | Rank-1 | Rank-5 | Rank-10 | Rank-20 | Source |
+|---|---|---:|---:|---:|---:|---:|---|
+| iLIDS-VID | GAF-Net, concatenation / PiT | — | 93.07 | 99.34 | 99.94 | 100.00 | Algorithms, Table 5 |
+| iLIDS-VID | GAF-Net, score-level fusion / PiT | — | 93.20 | 99.27 | 99.86 | 100.00 | Algorithms, Table 5 |
+| MARS | GAF-Net, MGH + PCA conditional concatenation | 86.09 | 89.78 | 96.90 | 98.04 | 98.59 | Algorithms, Table 10 |
+
+**Reporting note:** Table 3 of *Algorithms* gives 99.26 for the score-level fusion Rank-5 result, while the comparison in Table 5 gives 99.27. The table above follows Table 5; please check the publisher's article when using that metric. The 93.20 Rank-1 and 99.34 Rank-5 results belong to different iLIDS-VID fusion configurations and should not be combined into a single leaderboard entry.
+
+**Reproducibility scope:** The independently runnable evaluation provided here is the VISAPP 2024 iLIDS-VID feature-concatenation experiment using the linked pre-computed embeddings. The table above records results reported in Algorithms 2024; it is not a verified execution log of this repository. Its iLIDS-VID concatenation row must not be substituted for measured `evaluate.py` output merely because the Rank-1 reference is also 93.07%. The iLIDS-VID score-level fusion and MARS experiments are outside the released evaluation workflow; the repository does not provide the evaluation scripts, embeddings and checkpoints needed to reproduce those experiments.
+
+##  Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Moncef-Bj/GAF-Net-for-Video-Based-Person-Re-Identification.git
+cd GAF-Net-for-Video-Based-Person-Re-Identification
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Requirements
+
+- Python >= 3.8
+- PyTorch >= 1.9
+- NumPy
+- Pandas
+- scikit-learn
+- torchreid
+
+##  Download Data
+
+Download the pre-computed embeddings and pose data from Google Drive:
+
+**[ Download gaf-net-data.zip (395 MB)](https://drive.google.com/file/d/1oop2lyLT3nceZMtPrreMjY2yUv9bGea3/view?usp=drive_link)**
+
+Extract the zip in the repository root:
+
+```bash
+# Linux/Mac
+unzip gaf-net-data.zip -d .
+
+# Windows (PowerShell)
+Expand-Archive -Path gaf-net-data.zip -DestinationPath .
+```
+
+This will create:
+```
+GAF-Net-for-Video-Based-Person-Re-Identification/
+├── embeddings/           # Pre-computed embeddings for evaluation
+│   └── ilids/
+│       ├── pit/          # PiT appearance embeddings (9216-d)
+│       ├── mgh/          # MGH appearance embeddings (5120-d)
+│       ├── osnet/        # OSNet appearance embeddings (512-d)
+│       ├── gait1/        # GaitGraph embeddings for PiT & OSNet (128-d)
+│       └── gait2/        # GaitGraph embeddings for MGH (128-d)
+└── poses/                # Pose data for training GaitGraph
+    ├── splits_pit/       # Poses for PiT & OSNet splits
+    └── splits_mgh/       # Poses for MGH splits
+```
+
+##  Repository Structure
+
+```
+GAF-Net-for-Video-Based-Person-Re-Identification/
+├── README.md
+├── requirements.txt
+├── evaluate.py                 # iLIDS-VID feature-concatenation evaluation from embeddings
+├── embeddings/                 # (download from Google Drive)
+├── poses/                      # (download from Google Drive)
+└── gaitgraph/                  # Modified GaitGraph code
+    └── src/
+        ├── train.py            # Training script
+        ├── evaluate.py         # Evaluation & embedding extraction
+        ├── common.py           # Configuration & model setup
+        ├── losses.py           # SupConLoss
+        └── datasets/
+            ├── gait.py         # Dataset classes (iLIDS, MARS, CASIA-B)
+            ├── augmentation.py # Data augmentation
+            └── graph.py        # COCO skeleton graph
+```
+
+##  Quick Start
+
+### Run the iLIDS-VID Feature-Concatenation Evaluation
+
+```bash
+# Download and extract data first (see above)
+
+# Evaluate all backbones
+python evaluate.py
+
+# Evaluate specific backbone
+python evaluate.py --backbone pit
+
+# Custom lambda value
+python evaluate.py --backbone mgh --lambda_val 0.84
+```
+
+### Reading the final summary
+
+For `python evaluate.py` with the default fusion weights, the `FINAL SUMMARY` columns appear in the following order. This is an output-schema table, not a captured execution: `<computed>` denotes a value calculated from the downloaded embeddings.
+
+| Backbone | Gait | λ | Rank-1 | Rank-5 | mAP | Paper | Match |
+|---|---|---:|---|---|---|---:|---|
+| PIT | gait1 | 0.74 | `<computed>` | `<computed>` | `<computed>` | 93.07 | `<computed>` |
+| MGH | gait2 | 0.84 | `<computed>` | `<computed>` | `<computed>` | 90.40 | `<computed>` |
+| OSNET | gait1 | 0.90 | `<computed>` | `<computed>` | `<computed>` | 70.93 | `<computed>` |
+
+Rank-1, Rank-5, mAP and Paper are percentages, printed to two decimal places. `Paper` is the configured VISAPP 2024 Rank-1 reference. `Match` is `✓` when the absolute difference between the unrounded computed Rank-1 and that reference is strictly less than 0.5 percentage points; otherwise it is `✗`. It does not check Rank-5, mAP, or any Algorithms 2024 result.
+
+Mean Rank-10 is printed in each backbone's detailed results, but is not included in `FINAL SUMMARY`. Rank-20 is not printed.
+
+A numerical expected-output example should be added only alongside a verified run identifying the repository revision, embedding archive and command used.
+
+##  Troubleshooting
+
+### Common Issues
+
+**1. ModuleNotFoundError: No module named 'torchreid'**
+```bash
+pip install torchreid
+# or
+pip install git+https://github.com/KaiyangZhou/deep-person-reid.git
+```
+
+**2. FileNotFoundError: embeddings/ilids/...**
+```
+Make sure you downloaded and extracted gaf-net-data.zip in the repository root.
+```
+
+**3. Results don't match paper exactly**
+```
+Ensure you're using the correct lambda values:
+- PiT: λ = 0.74
+- MGH: λ = 0.84
+- OSNet: λ = 0.90
+```
+
+##  Method
+
+### Fusion Strategy
+
+Our fusion formula combines appearance and gait modalities (Equation 4 in the paper):
+
+```
+z_i = [normalize(z_appearance), λ · normalize(z_gait)]
+```
+
+Where:
+- `z_appearance`: Appearance embedding from PiT/MGH/OSNet
+- `z_gait`: Gait embedding from GaitGraph (128-d)
+- `λ`: Fusion weight; evaluation defaults are 0.74 for PiT, 0.84 for MGH and 0.90 for OSNet. Override with `--lambda_val`.
+- `normalize()`: L2 normalization
+
+### Architecture Overview
+
+```
+Video Sequence
+      │
+      ├──────────────────────────────────────┐
+      │                                      │
+      ▼                                      ▼
+┌─────────────────┐              ┌─────────────────┐
+│  Pose Estimator │              │  Appearance     │
+│  (YOLO-Pose)    │              │ (PiT/MGH/OSNet) │
+└─────────────────┘              └─────────────────┘
+      │                                      │
+      ▼                                      ▼
+┌─────────────────┐              ┌─────────────────┐
+│  Pose Sequence  │              │   Appearance    │
+│  (T × 17 × 3)   │              │    Embedding    │
+└─────────────────┘              └─────────────────┘
+      │                                      │
+      ▼                                      │
+┌─────────────────┐                          │
+│   GaitGraph     │                          │
+│   (ResGCN)      │                          │
+└─────────────────┘                          │
+      │                                      │
+      ▼                                      │
+┌─────────────────┐                          │
+│ Gait Embedding  │                          │
+│    (128-d)      │                          │
+└─────────────────┘                          │
+      │                                      │
+      └──────────────┬───────────────────────┘
+                     ▼
+            ┌────────────────┐
+            │     Fusion     │
+            │ [z_app, λ·z_g] │
+            └────────────────┘
+                     │
+                     ▼
+            ┌────────────────┐
+            │ Final Embedding│
+            └────────────────┘
+```
+
+##  Data Format
+
+### Pose CSV Format (for GaitGraph training)
+
+The pose files in `poses/` contain 2D pose estimations in COCO format (17 keypoints):
+
+```csv
+image_name,nose_x,nose_y,nose_conf,left_eye_x,left_eye_y,left_eye_conf,...,right_ankle_x,right_ankle_y,right_ankle_conf
+cam1_person001_00319.png,30.04,22.35,0.278,29.14,20.0,0.046,...,20.52,124.65,0.457
+```
+
+**Format:**
+- **Column 0**: Image filename (`cam{1|2}_person{XXX}_{FRAME}.png`)
+- **Columns 1-51**: 17 COCO keypoints × 3 values (x, y, confidence) = 51 values
+
+**COCO 17 Keypoints Order:**
+```
+0: nose, 1: left_eye, 2: right_eye, 3: left_ear, 4: right_ear,
+5: left_shoulder, 6: right_shoulder, 7: left_elbow, 8: right_elbow,
+9: left_wrist, 10: right_wrist, 11: left_hip, 12: right_hip,
+13: left_knee, 14: right_knee, 15: left_ankle, 16: right_ankle
+```
+
+### Embedding CSV Format
+
+**Appearance Embeddings** (`pit/`, `mgh/`, `osnet/`):
+```csv
+index,feat_0,feat_1,...,feat_N,person_id,camera_id
+0,0.123,0.456,...,0.789,43,2
+```
+
+**Gait Embeddings** (`gait1/`, `gait2/`):
+```csv
+feat_0,feat_1,...,feat_127,person_id,camera_id
+0.123,0.456,...,0.789,43,2
+```
+
+##  Training GaitGraph
+
+### 1. Train GaitGraph
+
+Our GaitGraph model follows a two-stage training approach:
+
+**Stage 1: Pre-train on CASIA-B**
+```bash
+cd gaitgraph/src
+
+python train.py casia-b /path/to/casia_b_train.csv \
+    --valid_data_path /path/to/casia_b_test.csv \
+    --batch_size 128 \
+    --epochs 1000 \
+    --learning_rate 1e-2 \
+    --temp 0.01 \
+    --sequence_length 60 \
+    --network_name resgcn-n39-r8
+```
+
+**Stage 2: Fine-tune on iLIDS-VID**
+```bash
+# For PiT/OSNet splits
+python train.py iLIDS ../poses/splits_pit/train_split0.csv \
+    --valid_data_path ../poses/splits_pit/test_split0.csv \
+    --batch_size 128 \
+    --epochs 300 \
+    --learning_rate 1e-5 \
+    --temp 0.01 \
+    --sequence_length 60 \
+    --network_name resgcn-n39-r8 \
+    --weight_path /path/to/casia_b_pretrained.pth
+
+# For MGH splits
+python train.py iLIDS ../poses/splits_mgh/train_split0.csv \
+    --valid_data_path ../poses/splits_mgh/test_split0.csv \
+    ...
+```
+
+### 2. Extract Gait Embeddings
+
+After training, extract embeddings for fusion:
+
+```bash
+python evaluate.py iLIDS /path/to/test_split0.csv \
+    --weight_path /path/to/ckpt_epoch_best.pth
+```
+
+##  Citation
+
+If you find this work useful, please cite the relevant paper:
+
+```bibtex
+@inproceedings{boujou2024gafnet,
+  title={GAF-Net: Video-Based Person Re-Identification via Appearance and Gait Recognitions},
+  author={Boujou, Moncef and Iguernaissi, Rabah and Nicod, Lionel and Merad, Djamal and Dubuisson, S{\'e}verine},
+  booktitle={Proceedings of the 19th International Joint Conference on Computer Vision, Imaging and Computer Graphics Theory and Applications (VISAPP)},
+  pages={493--500},
+  year={2024},
+  organization={SCITEPRESS},
+  doi={10.5220/0012364200003660}
+}
+```
+
+The follow-up study can be cited as:
+
+```bibtex
+@article{boujou2024indepth,
+  title={In-Depth Analysis of GAF-Net: Comparative Fusion Approaches in Video-Based Person Re-Identification},
+  author={Boujou, Moncef and Iguernaissi, Rabah and Nicod, Lionel and Merad, Djamal and Dubuisson, Séverine},
+  journal={Algorithms},
+  volume={17},
+  number={8},
+  pages={352},
+  year={2024},
+  doi={10.3390/a17080352}
+}
+```
+
+##  Acknowledgements
+
+This work builds upon:
+
+### Appearance Models
+- [PiT](https://git.openi.org.cn/zangxh/PiT.git) - Multidirection and Multiscale Pyramid in Transformer (Zang et al., IEEE TII 2022)
+- [MGH](https://github.com/daodaofr/hypergraph_reid) - Multi-Granularity Hypergraph (Yan et al., CVPR 2020)
+- [OSNet](https://github.com/KaiyangZhou/deep-person-reid) - Omni-Scale Network (Zhou et al., ICCV 2019)
+
+### Gait Recognition
+- [GaitGraph](https://github.com/tteepe/GaitGraph) - Graph Convolutional Network for Skeleton-Based Gait Recognition (Teepe et al., ICIP 2021)
+
+### Tools & Libraries
+- [YOLO-Pose](https://github.com/TexasInstruments/edgeai-yolov5) - Multi-Person Pose Estimation
+- [torchreid](https://github.com/KaiyangZhou/deep-person-reid) - Person Re-Identification Library
+
+##  License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+##  Contact
+
+For questions or issues, please open an issue or contact:
+- Moncef Boujou

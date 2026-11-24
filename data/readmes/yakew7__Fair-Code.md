@@ -1315,7 +1315,7 @@ The benchmark's logistic regression runs for at most 1,000 iterations on unscale
 limit scikit-learn raises a `ConvergenceWarning`: the coefficients, and the numbers built on them, then depend on where the solver
 stopped. `faircode benchmark` counts those warnings per strategy/model combination instead of printing each one and ends with one
 line per audit, for example `German Credit Lending: 5 of 15 combinations had a fit stop at max_iter (...)`. Nothing is changed or
-hidden in the results: the line says which rows rest on a fit that did not converge. The combinations known to stop early today
+hidden in the results: the line says which rows rest on a fit that did not converge. To make that a failure, pass `--fail-on-nonconvergence`: the results are still written, then the command prints an error and exits 1 when any fit stopped (the default only warns). The combinations known to stop early today
 are German Credit Lending, Healthcare Readmission and the baseline and unawareness sets of Benefits Denial; the test that pins them
 is `tests/test_benchmark_convergence.py`, which fails if a new combination starts warning and says when one of them is fixed.
 
@@ -1346,7 +1346,7 @@ pip install -r requirements-lock.txt
 
 `results/PROVENANCE.json` records what produced the live files: the commit and whether the tree was dirty, the Python and library versions, the hash of `requirements-lock.txt`, the resample and permutation counts, the audits included, the seconds each strategy/model combination took (a `timings` list on the run's entry with each combination's seconds and its count of fits that stopped at max_iter, written by `faircode benchmark`; `scripts/diff_results.py` reports how the stopping combinations changed and which combinations' seconds changed most) and the SHA-256 of each CSV. `faircode benchmark` writes it, a test fails if a CSV changes without it, and `scripts/diff_results.py` prints both sides' provenance and the library versions that differ, so a moved row can be told from a library bump.
 
-To see how far `results/` has moved from that snapshot, run `python3 scripts/diff_results.py`. It joins the two tables per audit, strategy, model, protected attribute and metric and prints the per-row change, flagging rows that moved by more than `--threshold` (default 0.01) or exist on one side only (`--json`, `--all`, `--kind` and `--fail-on-change` are also available; `--audit NAME` limits it to one or more audits and `--summary` prints one line per audit; each row has a `sample` field, `same`, `different` or `unknown`, and rows whose group sizes differ between the two files (so they were scored on different test rows) are marked `~` and counted; it only reads).
+To see how far `results/` has moved from that snapshot, run `python3 scripts/diff_results.py`. It joins the two tables per audit, strategy, model, protected attribute and metric and prints the per-row change, flagging rows that moved by more than `--threshold` (default 0.01) or exist on one side only (`--json`, `--all`, `--kind` and `--fail-on-change` are also available; `--audit NAME` limits it to one or more audits and `--summary` prints one line per audit; each row has a `sample` field, `same`, `different` or `unknown`, and rows whose group sizes differ between the two files (so they were scored on different test rows) are marked `~` and counted; with `--json` the output is one list per kind plus a `provenance` key holding the same provenance, library versions, timings and convergence counts the text report starts with; in the timing line a fit that took at least `--timing-threshold` times as long (default 1.5) and at least a second longer is marked `SLOWER`, informational only; it only reads).
 
 To deliberately create a new reference snapshot, run:
 
@@ -1471,15 +1471,4 @@ This copies `results/` into a snapshot alongside a `MANIFEST.md` recording the e
 - [x] Explainer: Fairness Without Demographics
 - [x] Explainer: Adverse Action Notices
 - [x] Explainer: Geographic Proxies and Redlining
-- [x] Explainer: Risk-Based Pricing Gaps
-- [x] Explainer: Race in Clinical Models
-- [x] Explainer: Utilization as a Label
-- [x] Explainer: Discharge Leakage in Readmission Models
-- [x] Explainer: Seed and Split Sensitivity
-- [x] Explainer: Cross-Validation for Fairness
-- [x] Explainer: Stratified Test Sets for Fairness
-- [x] Explainer: Feature Importance by Group
-- [x] Explainer: Partial Dependence by Group
-- [x] Explainer: Explanation Disagreement
-- [x] Explainer: Hiring Pipeline Adverse Impact
-- [x] Explainer: Compoundi
+- [x] Ex

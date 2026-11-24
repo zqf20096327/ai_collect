@@ -1,0 +1,557 @@
+<p align="center">
+  <img src="assets/press/kaivo-banner-en.png" alt="Kaivo: go to the source, take it with you" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/hldbejcjaedipeegjcinmhejdndchkmb"><img alt="Chrome Web Store" src="https://img.shields.io/badge/Chrome_Web_Store-Add_to_Chrome-0F6675?logo=googlechrome&logoColor=white&style=for-the-badge"></a>
+  <a href="https://kaivo.byphil.eu/bookmarklet.html"><img alt="Bookmarklet" src="https://img.shields.io/badge/Bookmarklet-no_install-E4A83E?logo=bookmarkdotorg&logoColor=white&style=for-the-badge"></a>
+  <a href="https://kaivo.byphil.eu/"><img alt="Website" src="https://img.shields.io/badge/Website-kaivo.byphil.eu-0F6675?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: AGPL-3.0 or commercial" src="https://img.shields.io/badge/license-AGPL--3.0%20%2B%20commercial-blue"></a>
+  <a href="https://github.com/philffm/kaivo/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/philffm/kaivo?label=version&color=0F6675"></a>
+  <img alt="Manifest V3" src="https://img.shields.io/badge/Manifest-V3-555">
+  <img alt="Vanilla JS, no framework" src="https://img.shields.io/badge/vanilla-ES_modules-F0C36B">
+  <img alt="Privacy: your key, your data" src="https://img.shields.io/badge/privacy-your_key%2C_your_data-2EA043">
+</p>
+
+<h3 align="center">A free, open-source browser extension that summarizes web pages, PDFs and YouTube videos in 41 languages, with your own AI key or a fully local model. Your reading library stays on your device.</h3>
+
+> You are on the hunt for interesting articles around the web, open 100 tabs and end up… not reading them. Sounds familiar?
+
+**Kaivo** (formerly *AI Summary Helper*, same extension, same data) turns that pile into a reading habit. It gives you a short overview of any article, PDF or YouTube video in your own language, in the browser's side panel. Bring your own key for OpenAI, Google Gemini, Mistral AI or DeepSeek, or run an open model locally with Ollama: no account needed, and the page text goes only to the provider you chose, or nowhere at all. Follow your favorite sites in a built-in RSS reader, ask follow-up questions, and keep everything in a searchable archive. Then send a digest to your Kindle or another device, so you read what you picked on purpose.
+
+## At a glance
+
+- **Free and open source (AGPL-3.0; commercial use can be licensed).** No account for your own key or local models. Optional byphil Cloud has a small free daily allowance; a donation (the Support Pass) unlocks many more AI models and unlimited use.
+- **Private by design.** Library, highlights and statistics are stored in the browser. No tracking or analytics SDKs. See the [privacy policy](privacy.md).
+- **Answers you can check.** Follow-up answers point to the passage they come from; quotes that are not in the article are discarded.
+- **Your language.** Summaries in 41 languages, interface in 14.
+- **Shortcut.** `Ctrl+Shift+E` (`⌘+Shift+E` on Mac).
+- **New in 2.2.** A calm start page and a ⌘K command palette, briefings with sources, a research mode for scientific papers, a split view for large screens, three appearance axes with colour schemes (see below).
+
+## Screenshots
+
+<p align="center">
+  <img src="assets/press/kaivo-summary-en.png" alt="A summary with sources in the side panel" width="49%">
+  <img src="assets/press/kaivo-home-en.png" alt="The start page: today's briefing, highlights, your library, what to continue and your topics" width="49%">
+</p>
+<p align="center">
+  <img src="assets/press/kaivo-feeds-en.png" alt="The RSS reader, with a briefing of the day" width="32%">
+  <img src="assets/press/kaivo-graph-en.png" alt="The knowledge graph links your articles by topic" width="32%">
+  <img src="assets/press/kaivo-look-en.png" alt="Brightness, look and colour scheme" width="32%">
+</p>
+
+The images (and the same set in 8 more languages) live in [`assets/press/`](assets/press/) and in the store listing.
+
+## Pick how you want to use it
+
+|  | 🧩 **Browser extension** | 🔖 **Bookmarklet** |
+| --- | --- | --- |
+| Install | [Chrome Web Store](https://chromewebstore.google.com/detail/hldbejcjaedipeegjcinmhejdndchkmb), Firefox & Safari builds below | Nothing: drag one link to your bookmarks bar |
+| Works on | Chrome, Edge, Firefox, Safari, Android | **Any browser and OS, even iOS** |
+| Best for | Daily reading: history, search, RSS, highlights | Quick use on devices where extensions can't run |
+| Get it | [**Add to Chrome**](https://chromewebstore.google.com/detail/hldbejcjaedipeegjcinmhejdndchkmb) | [**Create your bookmarklet**](https://kaivo.byphil.eu/bookmarklet.html) |
+
+## What you get
+
+- **Summaries of pages, PDFs and YouTube videos.** With your model: the byphil Cloud gives you access to most LLMs with no API key of your own. Or bring your own key for OpenAI, Gemini, Mistral, DeepSeek, or run Ollama locally.
+- **Conversational summaries.** Ask follow-up questions; answers cite the page and jump to the exact passage. Pin the good ones into the summary.
+- **Research mode (2.2).** Recognises scientific papers, extracts design, sample and funding, and builds citations from the DOI registry. Group papers in collections.
+- **Split view (2.2).** On large screens, the list, knowledge graph and analytics sit side by side.
+- **A calm start page (optional).** Continue reading, today's briefing with its sources, a highlight or note, your library at a glance, your topics as soft bubbles (a click opens History searched for that topic). Off by default; switch it on in Settings › Appearance and set it as your start page. The apps of the extension (Feeds, History, Notes, Settings) open beside the page from an icon rail.
+- **⌘K command palette.** Commands, settings and a search of your library in one box, on the start page and in the reader.
+- **Your look.** Brightness (auto, light, dark), look (standard, Postil, high contrast) and a colour scheme (Kaivo, Aish, Viola, Graphite) as three separate choices.
+- **Read aloud.** Listen while the answer is written.
+- **Built-in RSS reader.** Follow sites, filter by source, tag, date or mood, import OPML, get an optional AI recap of the day.
+- **Highlights and ghost highlights.** Mark text yourself or let the AI mark the key passages. Start a summary straight from the on-page highlights panel.
+- **A searchable archive.** On-device full-text search, a knowledge graph of your saves, and an analytics report of your reading.
+- **Read it later, on purpose.** "Summarize & Close" saves a tab with a reminder; the digest sends a varied selection to Kindle or LocalSend.
+- **Notes and comments.** Select text on any page and choose ✏️ highlight, 💬 highlight with a comment, or 📝 note with the quote. They live in a Notes tab (list or sticky-note grid, by article, by tag) and in the page's highlights panel.
+- **Library sync, backup and publishing.** Keep your library in step across your devices, back it up, or publish part of it, on **your own** storage: a Nextcloud/WebDAV server, an S3-compatible bucket (AWS, Cloudflare R2, Backblaze B2, MinIO) or a folder on your computer. Encrypted places are encrypted in your browser (one passphrase) and sync both ways; readable places publish plain files and an optional viewer page with search, a timeline, a tag graph and an immersive 3D "Sky" of your saves. Nothing leaves your device until you add a place. See [Library sync](#library-sync).
+- **Your language.** 41 summary languages (including Traditional and Simplified Chinese) and an interface in 14 languages.
+- **Export.** Markdown and Obsidian export alongside Send to Kindle and LocalSend.
+- **On your phone and your e-reader.** The Android companion (APK in the [latest release](https://github.com/philffm/kaivo/releases/latest)) shares links, reads your feeds and the articles you send. The [KOReader plugin](koreader/README.md) puts your library on an e-reader as one EPUB per article, with your highlights and notes in step.
+
+> **How sending works.** *Send to Kindle* goes through the byPhil backend, because Amazon only accepts documents by email from approved senders: add `kindle@byphil.eu` to your approved senders in your Amazon account. The free tier includes 3 Kindle sends; unlimited Kindle sends require the [Support Pass](https://byphil.eu/#pass). *LocalSend* (and the system share sheet, e.g. AirDrop) is direct: the file goes from your browser to the device you pick, works with any device running a LocalSend-compatible app, and never touches our server. See the [privacy policy](privacy.md).
+
+<a href="https://www.producthunt.com/posts/ai-summary-helper?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-ai&#0045;summary&#0045;helper" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=461601&theme=dark" alt="Kaivo on Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
+<details>
+<summary><b>Bookmarklet in action</b></summary>
+
+![Demo](assets/demo.gif)
+
+</details>
+
+## Extension vs bookmarklet
+
+|  | Bookmarklet  | Browser Extension |
+| --- | --- | --- |
+| OpenAI | ✅ | ✅ |
+| Mistral AI | ✅ | ✅ |
+| DeepSeek | ✅ | ✅ |
+| Gemini | ✅ | ✅ |
+| Ollama (Local) | ✅ | ✅ |
+| byPhil Cloud (no API key) | ✅ | ✅ |
+| Custom Prompt | ✅ | ✅ Base + custom prompt per request|
+| Cross Platform | ✅ | ❌|
+| Text Highlighting | ❌ | ✅ |
+| Article History & Archive | ❌ | ✅ |
+| Save for Later (Tab Close) | ❌ | ✅ |
+| Context Menu Actions | ❌ | ✅ |
+| Backup & Restore | ❌ | ✅ |
+| Sync between devices (Nextcloud, S3, folder), encrypted | ❌ | ✅ |
+| Notes and comments on highlights | ❌ | ✅ |
+
+## Quick start for contributors
+
+```bash
+git clone https://github.com/philffm/kaivo.git
+cd ai-summary-helper
+npm ci
+npm run build          # syncs plugin/src → plugin/dev/aish-extension-<platform>
+npm test               # the jsdom tests a change can reach (quiet); `npm test -- 12 37` runs single tests, `npm run test:release` runs everything
+npm run lint           # eslint plugin/src
+node scripts/feed-i18n.mjs check   # every UI string translated in every locale
+```
+
+Pull requests run lint and the affected tests in CI (`main`, tags and a nightly run everything incl. the translation check); see [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and [SECURITY.md](SECURITY.md) to report vulnerabilities. The privacy policy lives in `site-src/pages/privacy.html`; after editing it run `npm run privacy:build` to refresh the Markdown copies. Product and code audits: [`plugin/PRODUCT_AUDIT.md`](plugin/PRODUCT_AUDIT.md), [`plugin/PROJECT_AUDIT.md`](plugin/PROJECT_AUDIT.md), [`plugin/STYLE_AUDIT.md`](plugin/STYLE_AUDIT.md).
+
+Load `plugin/dev/aish-extension-chrome/` via `chrome://extensions` → **Developer mode** → **Load unpacked**. The extension is vanilla ES modules, no framework and no bundler. The marketing site is plain HTML assembled by `npm run site:build` from `site-src/`.
+
+## Install and build
+
+### Chrome / Edge / Opera / Brave
+
+Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/hldbejcjaedipeegjcinmhejdndchkmb), or build it yourself: run `npm run build`, open `chrome://extensions`, enable **Developer mode**, click **Load unpacked** and pick `plugin/dev/aish-extension-chrome/`.
+
+### Firefox Extension
+
+1. Run `npm run build:firefox` (or `node plugin/scripts/build.js firefox`) to sync `plugin/src/` into `plugin/dev/aish-extension-firefox/` with the Firefox manifest.
+2. Open `about:debugging#/runtime/this-firefox` in Firefox and click **Load Temporary Add-on**, then select `plugin/dev/aish-extension-firefox/manifest.json`.
+
+### Safari (iOS / macOS)
+
+1. Run `npm run build:ios` (or `node plugin/scripts/build.js ios`) to sync `plugin/src/` into `plugin/dev/aish-extension-ios/`.
+2. Convert the WebExtension into a native container app:
+   ```bash
+   xcrun safari-web-extension-converter ./plugin/dev/aish-extension-ios \
+   --project-location plugin/dist/ios \
+   --app-name "AI Summary Helper" \
+   --bundle-identifier "eu.byphil.aisummaryhelper" \
+   --copy-resources \
+   --force
+      
+
+   ```
+3. In Xcode, ensure the extension target bundle ID starts with the parent app's bundle ID (e.g. `eu.byphil.aisummaryhelper.extension`), select the same signing team for both targets, and run on a concrete device/simulator (not "Any iOS Device").
+
+> `npm run build:ios` runs `plugin/build.sh`, which also bumps the version in `current_version.json`, `plugin/src/popup.html` and the platform manifests. Revert those files before committing if you only built to test.
+
+#### Testing in Safari
+
+There is no automated Safari run: the Node tests use jsdom, so Safari behaviour has to be checked by hand.
+
+1. **macOS Safari first (fastest loop).** Run the macOS target in Xcode, then Safari → Settings → Advanced → *Show features for web developers*, Develop → *Allow Unsigned Extensions* (needed again after every Safari restart), Settings → Extensions → enable the extension and allow it on all websites. Debug via Develop → *Web Extension Background Content*.
+2. **iOS Simulator.** Run the iOS scheme, open Safari → `aA` menu → *Manage Extensions*, enable it and allow website access. Inspect from the Mac's Safari under Develop → *Simulator*.
+3. **A real iPhone.** Set the signing team on both targets, enable Developer Mode on the phone and Settings → Safari → Advanced → *Web Inspector*. iOS suspends background pages more aggressively than the simulator, so the checks below only count on a device.
+
+Checklist (what is known to differ on Safari / iOS):
+
+- [ ] Popup opens, summary streams and is saved; the in-page sidebar shows instead of a side panel.
+- [ ] First use on a site asks for access and works after allowing it.
+- [ ] Highlights: select text, highlight appears, survives a reload.
+- [ ] Background wake-up: leave Safari idle for a few minutes, then summarize again.
+- [ ] Feeds: add a feed, items load. Background polling (`alarms`) and notifications are best-effort on iOS.
+- [ ] Podcast mini player: playback and whether it continues after closing the popup.
+- [ ] Read aloud (`speechSynthesis`) starts, pauses and stops.
+- [ ] Missing on iOS by design: context menu, keyboard shortcuts, native notifications. These must not break anything else (the background script guards them).
+- [ ] Ollama: `localhost` is not reachable from an iPhone; use the Mac's LAN IP with `OLLAMA_ORIGINS` including `safari-web-extension://*`.
+
+### Bookmarklet Generator
+
+The bookmarklet generator lives on its own page: [kaivo.byphil.eu/bookmarklet.html](https://kaivo.byphil.eu/bookmarklet.html) (the landing page only teases it). It supports both **byPhil Cloud** (email magic-code login, no API key) and **bring-your-own-key** providers (OpenAI, DeepSeek, Mistral, Gemini, Ollama). The generated bookmarklet always inserts the summary on the page and can optionally share it via the system share sheet, Send to Kindle (byPhil Cloud proxy), or Send to LocalSend (direct P2P). It also checks `bookmarklet-version.json` on each run and warns when it is outdated.
+
+The generator's source lives in `site-src/pages/bookmarklet.html` (markup) and `docs/assets/main.js` (the `/* ── Bookmarklet generator */` component). The HTML pages are assembled from `site-src/` into `docs/` by `npm run site:build`, and GitHub Pages serves `docs/`. Do not edit the generated `docs/*.html` or `docs/lang/` by hand; the `translate.yml` workflow rebuilds them on every push to `main` that touches `site-src/`.
+
+## Architecture
+
+Kaivo is a Manifest V3 extension with four runtime parts that talk to each other only through `chrome.runtime` messages and `chrome.storage`. There is no server of our own in the loop when you bring your own key or use Ollama: the background worker calls the provider directly.
+
+```mermaid
+flowchart LR
+  subgraph Page["Web page (any tab)"]
+    L["loader.js<br/>~6 KB, static content script"]
+    C["content.js<br/>~200 KB bundle, injected on demand"]
+  end
+  subgraph Ext["Extension"]
+    P["Popup / side panel<br/>popup.html + ES modules"]
+    B["Background worker<br/>background.js + finalize.js"]
+    S[("chrome.storage<br/>sync: settings, local: library")]
+  end
+  LLM["LLM provider<br/>OpenAI-compatible, Ollama, byphil Cloud"]
+
+  L -- "aish:injectContent" --> B
+  B -- "scripting.executeScript" --> C
+  P -- "summarize, ping, revealQuote" --> C
+  C -- "streamFetch" --> B
+  B -- "stream / aiComplete" --> LLM
+  B -- "summaryComplete, progress" --> P
+  C --- S
+  P --- S
+  B --- S
+```
+
+### The four parts
+
+- **`loader.js` (every page).** The only script that runs on every page. It checks whether the page has saved highlights (its own key `hl:page:<pageKey>`) or the user selects text, and only then asks the background to inject the real content script. Android and iOS keep the full `content.js` as a static content script.
+- **`content.js` (on demand).** Extracts the readable text (HTML, PDFs), paints highlights, shows the selection tooltip, and drives a summary run. It is injected by the background (`ensureContent`) when a highlight, a selection, the context menu, a shortcut, or the popup needs it, and is guarded against double injection.
+- **Background worker.** Streams model output (`handleStreamFetch`, idle timeout only after the first chunk, so slow local models are fine), runs one-shot completions (`aiComplete` / `aiCancel`), polls feeds, hosts audio, and finishes a run whose page went away (`finalize.js` is bundled as a classic script for the worker).
+- **Popup / side panel.** Plain HTML plus native ES modules. The main screen and its core modules load first; Feeds, History and Settings load right after the first paint.
+- **Attach / detach.** On Chrome the header button docks the popup into the side panel (📌) and, inside the panel, undocks it back to a popup (↙️). It is the same `useNativeSidePanel` setting as Settings › Appearance; the panel loads `popup.html?surface=sidepanel` so the page knows where it runs (`modules/panelDock.js`). Firefox uses its own sidebar; Safari keeps the in-page sidebar.
+
+### A summary, end to end
+
+1. The popup asks the content script to summarize (injected first if needed).
+2. The content script extracts the text and sends a `streamFetch` to the background, which streams the provider response back as progress.
+3. `finalizeSummary` (`content/finalize.js`, shared by the page and the worker) cleans the model output into HTML and pulls out tags, ghost highlights, mood, a paper verdict, and **suggested follow-up questions with a short answer each** (`QUESTIONS: [{"q","a"}]`).
+4. The result is saved (`articles:index` + one record per article) and relayed as `summaryComplete`.
+5. The popup shows the card and the question chips. Tapping a chip types the stored short answer out like a person, while the background asks the model to **continue** that answer. The continuation streams in behind the typed text, a "Thinking more…" indicator with a Stop button covers the wait, and Stop keeps the short answer and cancels the request.
+
+Models that ignore the `{q, a}` format still work: the parser accepts plain question strings and simply shows no short answer.
+
+### Storage
+
+All access goes through `StorageManager`; keys are defined once in `modules/storageKeys.js`.
+
+| Area | Where | Notes |
+| --- | --- | --- |
+| Settings, flags, language, theme | `chrome.storage.sync` | small values only |
+| Library index | `local` `articles:index` | lean list, never holds article text |
+| Article record | `local` `articles:rec:<id>` | content, summary, `conversation`, `suggested`, `suggestedAnswers` |
+| Highlights | `local` `hl:page:<pageKey>` + `hl:index` | one key per page (`pageKeyForUrl`), written only by `modules/highlightStore.js` under one lock; page scripts send `hl:apply` to the background. `hl:all` is the old single list, moved by the migration |
+| Providers and keys | `local` `config:services` | per service: key, model, endpoint |
+| Feeds | `local` `feeds:*` | subscriptions, items, recaps, UI state |
+
+Reads are targeted (`StorageManager.get([keys])` routes each key to sync or local). `getAll()` is reserved for backup and first-run migration.
+
+### Library sync
+
+Settings → Sync & backup. A **place** is a folder on a **server** (Nextcloud or another WebDAV server, S3-compatible) or on this computer; one server can hold several places (for example `public/` and `backup/`).
+
+| | Encrypted place | Readable place |
+| --- | --- | --- |
+| For | Sync between devices (two-way) or a backup (push only) | Publishing to a website or other tools |
+| Content | Everything: articles, full text, summaries, highlights, notes, collections | Articles that match a tag filter; notes, reminders and full text only when switched on in the danger zone |
+| Files | `meta.json` plus `r/<hmac name>`: one AES-256-GCM file per record, names scrambled | `articles/<id>.json`, `library.json`, `library.js`, optional `index.html` viewer |
+| Keys | Passphrase (PBKDF2) → master key; the key (and the suggested words, never an own passphrase) stays in `sync:secrets`, never in backups | none |
+
+How it works, in short: every record (article, highlight, collection, note) carries per-field **stamps** (`syncStamps.js`: a hash of the value and a hybrid logical clock time), made from storage events and a catch-up scan. A run pulls the files whose etag changed, merges per field (`syncMerge.js`: later stamp wins, ties on device id, delete markers beat older edits, a newer edit brings a record back), adopts the merged stamps before it writes the data (`syncEngine.js`), then pushes what is newer. The same URL saved on two devices becomes one article (`syncIdentity.js`). Old delete markers expire after 90 days, and a flood of deletions from other devices waits for a yes. The stores (`syncWebdav.js`, `syncS3.js` with AWS Signature V4, `syncFolder.js` on the File System Access API) share one four-call interface, so the engine does not care which one it talks to. Tests run the whole thing between two simulated devices on each store; `plugin/tests/gen-sync-vector.mjs` writes the shared vector that the Android app (`mobile/android/.../sync/`) must reproduce, and `plugin/tests/xsync.mjs` runs the extension's and the phone's engines against one folder.
+
+Notes: Android can already read and write the sync format and run the engine; its screens are not built yet.
+
+### UI, i18n, security
+
+- **i18n.** The English text is the key (`T('Send me a code')`, `data-i18n` ids in `popup.html`). `node scripts/feed-i18n.mjs extract | merge <dir> | check` keeps the 13 locales complete.
+- **Rendering.** Anything model- or page-derived that reaches `innerHTML` goes through `escapeHtml` (`modules/textUtils.js`); saved page and summary HTML shown in History goes through `cleanUntrustedHtml`.
+- **Messaging.** The in-page sidebar (`popup.html` in an iframe) accepts `postMessage` only from its parent with the per-iframe token from its `#hash` (`modules/sidebarChannel.js`). Background actions that spend the AI key or fetch for the extension (`EXTENSION_PAGE_ACTIONS` in `background.js`) refuse content scripts.
+- **Shared helpers.** `textUtils` (escape, word count), `dateUtils` (day, week, month), `dom` (element helpers), `suggestions` (follow-up parsing), `typewriter` (human-like typing).
+
+### Tests
+
+`npm test` runs the jsdom tests in `plugin/tests` that a change can reach (see `plugin/tests/affected.mjs`); `npm run test:release` runs all of them plus the audits (storage, popup flows, finalize, i18n coverage, loader). `plugin/tests/e2e/*.e2e.cjs` drive real Chromium with the built extension and need Playwright: `node plugin/scripts/build.js chrome` first, then run the script.
+
+## Under the hood
+
+<details>
+<summary><b>Project structure and module responsibilities</b></summary>
+
+
+```
+ai-summary-helper/
+├── plugin/                       # Shippable extension code (monorepo split)
+│   ├── src/                      # Single source of truth (Chrome MV3, Vanilla JS)
+│   │   ├── background.js         # Service worker: context menus, alarms, notifications, side panel
+│   │   ├── loader.js             # Tiny static content script: injects content.js only when needed
+│   │   ├── content.js            # Full content script (bundled, injected on demand): extraction, highlighting, summary run
+│   │   ├── content/              # Content-script parts (extractor, highlighter, finalize, markdown, …)
+│   │   ├── popup.html            # Popup UI (header → screens → bottom-nav)
+│   │   ├── popup.js              # Popup entry point — wires up all module inits
+│   │   ├── styles.css            # Global styles (glassmorphism, light/dark themes)
+│   │   ├── api.js                # API helpers
+│   │   ├── services.json         # Provider registry (OpenAI, Mistral, Deepseek, Ollama, …)
+│   │   ├── prompts.json          # Preset prompt library
+│   │   ├── compatible-tools.json # Compatible tools table (generated from readme)
+│   │   ├── translations.json     # UI translation strings (source of truth)
+│   │   ├── donationMessages.json # Donation message pool
+│   │   ├── privacy.md            # Privacy policy
+│   │   ├── readme.md             # Extension-specific readme
+│   │   ├── _locales/             # i18n messages per locale (ar, de, en, es, fr, hi, it, ja, ko, pt_PT, ru, zh_*)
+│   │   ├── icons/                # Extension icons (16/48/128 + svg)
+│   │   ├── lib/                  # Vendored libs (e.g. d3.min.js)
+│   │   └── modules/              # ES modules (see table below)
+│   │
+│   ├── platforms/                # Per-platform manifests
+│   │   ├── chrome/manifest.json  # Chrome: sidePanel + service_worker
+│   │   ├── android/manifest.json # Android: no sidePanel, service_worker
+│   │   ├── firefox/manifest.json # Firefox: gecko id, background.scripts (event page)
+│   │   └── ios/manifest.json     # Safari/iOS: background.scripts
+│   │
+│   ├── scripts/
+│   │   ├── build.js              # Node dev-sync tool (src → dev/<platform>)
+│   │   └── set-version.sh        # Stamps one version into manifests, current_version.json, popup.html
+│   │
+│   ├── build.sh                  # Release build: version bump + zip into prod/
+│   │
+│   ├── dev/                      # Generated unpacked builds (git-ignored)
+│   │   ├── kaivo-extension-chrome/
+│   │   ├── kaivo-extension-android/
+│   │   ├── kaivo-extension-ios/
+│   │   └── kaivo-extension-firefox/
+│   │
+│   └── prod/                     # Generated release zips (git-ignored)
+│       ├── kaivo-extension-chrome-<ver>.zip
+│       ├── kaivo-extension-android-<ver>.zip
+│       └── kaivo-extension-firefox-<ver>.zip
+│
+├── site-src/                     # Website source: pages/ (English templates) + partials/ (nav, footer)
+│   └── pages/privacy.html        # Single source of truth for the privacy policy (see scripts/privacy-md.mjs)
+│
+├── docs/                         # Marketing website (GitHub Pages publish folder, built from site-src/)
+│   ├── index.html                # Landing page (generated; hero switch teases the bookmarklet)
+│   ├── bookmarklet.html          # Bookmarklet generator page (generated)
+│   ├── sitemap.xml               # SEO sitemap
+│   ├── CNAME                     # Custom domain (kaivo.byphil.eu)
+│   ├── assets/                   # Site JS/CSS + icons (main.js, styles.css, icon.svg, createBookmarklet.svg)
+│   ├── bookmarklet-version.json  # Version manifest the bookmarklet checks for updates
+│   ├── blog/                     # Marketing blog (static HTML)
+│   ├── i18n/                     # Translation config + manifest (locales.json, manifest.json)
+│   └── de/ fr/ es/ …             # Website translations, one folder per locale (generated by translate.mjs)
+│
+├── assets/                       # Repo-root marketing images (aish.png, demo.gif, createBookmarklet.svg)
+│
+├── scripts/
+│   ├── build-site.mjs            # Assembles docs/*.html from site-src/ pages + partials
+│   ├── seo.mjs                   # Canonical/hreflang tags and sitemap
+│   ├── translate.mjs             # Website translation pipeline (docs/ → docs/<locale>/)
+│   ├── feed-i18n.mjs             # Extension UI strings: extract | merge <dir> | check
+│   └── privacy-md.mjs            # Generates privacy.md and plugin/src/privacy.md from site-src/pages/privacy.html
+│
+├── current_version.json          # Single source of truth for version + language list
+├── package.json                  # npm scripts (build, build:chrome, build:firefox, …)
+├── readme.md                     # This overview (also feeds compatible-tools.json)
+├── privacy.md                    # Generated copy of the privacy policy (also bundled in the extension)
+├── LICENSE                       # AGPL-3.0 (earlier releases: LICENSE-MIT; commercial: COMMERCIAL-LICENSE.md)
+│
+└── .github/workflows/
+    ├── release.yml               # Tag-triggered: build + version bump + GitHub release
+    ├── ci.yml                    # Pull requests: lint + affected tests. main / nightly / tags: all tests, audits, i18n
+    └── translate.yml             # Auto-translates docs/ content → docs/<locale>/
+```
+
+#### `plugin/src/modules/` — ES module responsibilities
+
+| Module | Responsibility |
+| --- | --- |
+| `uiManager.js`, `settingsNav.js`, `tabbar.js`, `sheet.js`, `confirmDialog.js` | Screens, bottom nav, settings home, tab bars, sheets with focus trap, dialogs |
+| `mainScreen.js`, `composerState.js`, `qaView.js`, `conversation.js` | Summarize screen: feed, composer states, follow-up thread, prompt building and answer parsing |
+| `suggestions.js`, `typewriter.js` | Follow-up suggestions with short answers; human-like typing of the short answer |
+| `feedManager.js`, `feedAi.js`, `feedRollup.js`, `feedParse.js`, `feedPlayer.js`, `feedInsights.js`, `feedMood.js`, `feedSentiment.js`, `feedUtil.js` | RSS reader, OPML, AI recaps, podcast player, insights, mood |
+| `articleManager.js` + `history/*.js` (detail view, export/send), `archiveManager.js`, `archiveGraph.js` (see [GRAPH.md](GRAPH.md)), `graphStructure.js`, `analyticsManager.js`, `topicsChart.js`, `historyMood.js`, `moodView.js`, `digestBuilder.js`, `annotationExporter.js` | History, knowledge graph, analytics, digests and exports |
+| `settingsManager.js` + `settings/*.js` (one file per area), `modelManager.js`, `promptSettings.js`, `promptBuilder.js`, `languageManager.js`, `moodSetting.js`, `workspaceManager.js` | Settings, providers and models, prompts, languages, workspaces |
+| `authManager.js` | byphil Cloud sign-in (shared form for onboarding and Account, code boxes, plan card) |
+| `syncStamps.js`, `syncStampStore.js`, `syncMerge.js`, `syncApply.js`, `syncEngine.js`, `syncDataAdapter.js`, `syncIdentity.js`, `syncCrypto.js` | Library sync: stamps, merge, applying merged records, the two-way engine, same-URL merge, keys and encrypted files |
+| `syncWebdav.js`, `syncS3.js`, `syncFolder.js`, `syncFolderHandles.js`, `syncPush.js`, `syncReadable.js`, `syncViewer.js`, `syncService.js`, `syncView.js` | Stores, readable publishing and the viewer page, the service the settings screen calls, the Sync & backup screen |
+| `notesStore.js`, `notesView.js`, `notesMessages.js` | Notes and comments: records, the Notes tab, messages from the on-page toolbar |
+| `storageManager.js`, `storageKeys.js`, `pageKey.js` | Storage abstraction, key registry, page keys for highlights |
+| `sidebarChannel.js` | Token check for `postMessage` from the content script into the in-page sidebar |
+| `panelDock.js` | Attach the popup to Chrome's side panel and detach it back |
+| `localSearch.js`, `tagIntelligence.js`, `textMetrics.js`, `textUtils.js`, `dateUtils.js`, `dom.js`, `log.js` | On-device search, tags and shared helpers |
+| `podcastManager.js`, `readingTools.js`, `reader.js`, `instantRead.js`, `citation.js`, `paperInfo.js`, `sendSheet.js`, `localSendClient.js` | Read aloud, podcasts, reader, citations, send to devices |
+| `i18n.js`, `feedI18n.js`, `languages.js`, `a11y.js`, `extensionApi.js` | Translations, language data, accessibility settings, browser API shim |
+
+#### Build pipeline
+
+- **Dev sync** — `node plugin/scripts/build.js` (bundles `content.js` and `finalize.js`; `loader.js` and the popup modules are copied as they are) (or `npm run build`) copies `plugin/src/` into `plugin/dev/aish-extension-<platform>/` and overlays the matching `plugin/platforms/<platform>/manifest.json`.
+- **Release** — `./plugin/build.sh` bumps the version in `current_version.json` + all `plugin/platforms/*/manifest.json` + `plugin/src/popup.html` (via `plugin/scripts/set-version.sh`), then zips each platform build into `plugin/prod/`.
+- **CI** — `.github/workflows/release.yml` runs lint, tests and `plugin/build.sh` on tag push, stamps the new version onto the latest `main` and pushes it (retrying from a fresh `main` if it moved, never overwriting), and creates a GitHub release with the three zips. Only one release runs at a time.
+
+#### Cross-browser notes
+
+- `plugin/src/` is written against the `chrome.*` namespace. A tiny shim at the top of `content.js`, `background.js`, and `popup.js` aliases `chrome → browser` when only `browser.*` exists (Safari/iOS), so the same code runs on every platform.
+- Firefox uses `background.scripts` (event page) + a `gecko.id`; Chrome uses `service_worker` + `sidePanel`; Android/iOS omit `sidePanel`.
+
+
+</details>
+
+## Roadmap
+
+<details>
+<summary><b>Shipped features and checklist</b></summary>
+
+
+Bookmarklet generator generally ships faster since it is faster to iterate on.
+
+### Browser Plugin
+
+- [x] Summarize page via popup or keyboard shortcut
+- [x] Custom prompt per request + saved default prompt
+- [x] Multi-language summary output
+- [x] Summary length slider
+- [x] Article history with search and graph visualization
+- [x] Text highlighting (yellow / AI ghost highlights) with per-page persistence
+- [x] Enable/disable highlighting toggle in settings
+- [x] Context menu: Highlight selection, Remove all highlights, Summarize page, Summarize & close tab
+- [x] **Save for Later** — right-click any tab → "Summarize & Close": generates summary, saves with timeframe reminder (tomorrow / weekend / week / research session), closes the tab, shows in history with metadata
+- [x] **RSVP Speed-reading overlay** — while summarizing on close, the AI output streams word-by-word as a speed-reading display; adjustable speed (slow/medium/fast) saved between sessions
+- [x] **Timed reminders** — Chrome notifications remind you to revisit saved articles at your chosen timeframe
+- [x] **Library sync** — encrypted two-way sync and backup, or readable publishing, on Nextcloud/WebDAV, S3-compatible storage or a local folder; restore from a backup place
+- [x] **Notes** — on-page toolbar (highlight, comment, note), Notes tab, comments on highlights
+- [x] Backup & Restore (settings + full article history; API keys and sign-in/license secrets excluded by default, with warned opt-in)
+- [x] Inline mode ("Send to Kindle" friendly)
+- [x] Native side panel support
+- [x] Graph view of article archive (D3.js, keyword-based)
+- [x] **Analytics Report** — reading activity heatmap, top topics, streaks, model usage stats, per-article or full-archive view
+- [x] Multi-provider support: OpenAI, Mistral, Deepseek, Ollama, byphil Cloud (no API key needed)
+
+### Bookmarklet Generator 
+- [x] Save API Key in Browser
+- [x] iOS compatibility 
+- [x] Select dom element by clicking to make insertion-point be definable by user
+- [x] Add status state
+- [x] Support other providers (on-device? What are some local LLMs we could use for this / API through localhost?)
+    - [x] Ollama
+- [x] byPhil Cloud login (email magic code, no API key)
+- [x] Dynamic model list from the byPhil Cloud API
+- [x] Always insert summary on page + optional share (system share / Kindle / LocalSend)
+- [x] Include update mechanism (bookmarklet checks `bookmarklet-version.json` and warns when outdated) 
+
+
+
+</details>
+
+## Troubleshooting
+
+<details>
+<summary><b>Ollama: “Failed to fetch” (CORS)</b></summary>
+
+It looks like you've hit the classic CORS (Cross-Origin Resource Sharing) wall. Even though the configuration is correct, the browser blocks requests from websites (like arxiv.org) to your local Ollama instance for security reasons because Ollama isn't explicitly saying "I allow requests from this website."
+
+Since the extension's content script runs directly on the page, its "Origin" is the website you are visiting, and Ollama rejects it by default.
+
+To fix this, you need to set the `OLLAMA_ORIGINS` environment variable. Here is the breakdown based on your operating system:
+
+#### 1. Windows (Most Common Issue)
+
+1. Quit Ollama entirely. Look for the Ollama icon in your System Tray (bottom right, near the clock), right-click it, and select **Quit**.
+2. Open the Start Menu, search for "Edit the system environment variables," and open it.
+3. Click **Environment Variables**.
+4. Under User variables, click **New**:
+   - Variable name: `OLLAMA_ORIGINS`
+   - Variable value: `chrome-extension://*,moz-extension://*,safari-web-extension://*`
+5. Click **OK** on all windows.
+6. **Crucial:** Open a new Terminal or Command Prompt and type `ollama serve` (or simply relaunch the Ollama app from the Start menu).
+
+#### 2. MacOS
+
+1. Quit Ollama from the Menu Bar icon.
+2. Open Terminal and run:
+   ```bash
+   launchctl setenv OLLAMA_ORIGINS "chrome-extension://*,moz-extension://*,safari-web-extension://*"
+   ```
+3. Restart the Ollama application.
+4. Check it (you should see `200`; `403` means Ollama has not picked up the setting yet, so quit and start it again):
+   ```bash
+   curl -s -o /dev/null -w "%{http_code}\n" http://localhost:11434/api/tags -H "Origin: chrome-extension://test"
+   ```
+
+**Make it permanent.** `launchctl setenv` is forgotten when you restart your Mac. This login item sets it again at every login:
+
+```bash
+cat > ~/Library/LaunchAgents/com.ollama.origins.plist <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>com.ollama.origins</string>
+<key>ProgramArguments</key><array><string>/bin/sh</string><string>-c</string>
+<string>launchctl setenv OLLAMA_ORIGINS "chrome-extension://*,moz-extension://*,safari-web-extension://*"</string></array>
+<key>RunAtLoad</key><true/>
+</dict></plist>
+EOF
+launchctl load ~/Library/LaunchAgents/com.ollama.origins.plist
+```
+
+Then quit and restart Ollama once.
+
+*Running `ollama serve` yourself while the Ollama app is still open fails with "address already in use". Quit the app first (or `pkill -x ollama`; `lsof -i :11434` shows what holds the port).*
+
+#### 3. Linux (Systemd)
+
+If you are running Ollama as a service:
+
+1. Run `sudo systemctl edit ollama.service`.
+2. Add these lines under the `[Service]` section:
+   ```ini
+   [Service]
+   Environment="OLLAMA_ORIGINS=chrome-extension://*,moz-extension://*,safari-web-extension://*"
+   ```
+3. Save and exit, then run:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl restart ollama
+   ```
+
+🧐 **Why is this happening?**
+Browsers follow a "Same-Origin Policy." When the extension tries to fetch `localhost:11434`, the browser sends a "Preflight" request (an `OPTIONS` check) to see if the server allows it. If `OLLAMA_ORIGINS` isn't set, Ollama doesn't include the `Access-Control-Allow-Origin` header in its response, and the browser kills the request. Setting it to the extension origins above tells Ollama to accept requests from browser extensions only, not from arbitrary websites. `*` also works but lets every website call your local Ollama.
+
+#### Use Ollama via HTTPS (Advanced)
+
+If you are running Ollama on a remote server behind an HTTPS proxy (like Nginx, Apache, or Cloudflare), you normally **do not** need to set `OLLAMA_ORIGINS` on the server itself. Instead, ensure your proxy is configured to allow CORS headers:
+
+- **Why?** Browsers block "Mixed Content" (requesting HTTP from an HTTPS site). Using an HTTPS endpoint for Ollama solves this.
+- **How?** Add `Access-Control-Allow-Origin: *` to your proxy configuration settings.
+
+For more detailed guidance, refer to the comprehensive guide on handling CORS settings in Ollama [here](https://medium.com/dcoderai/how-to-handle-cors-settings-in-ollama-a-comprehensive-guide-ee2a5a1beef0).
+
+</details>
+
+## Privacy
+
+Summaries go only to the AI provider you configure (or fully local with Ollama). Your archive, search index and settings stay on your device. Read the full [privacy policy](plugin/src/privacy.md).
+
+## License
+
+2024 Phil Wornath. Versions after 2.2.38: [AGPL-3.0](LICENSE), or a [commercial license](COMMERCIAL-LICENSE.md) for uses the AGPL does not allow. Versions up to 2.2.38: [MIT](LICENSE-MIT).
+
+The MCP relay in [`mcp/`](mcp) (`kaivo-mcp` on npm) is [MIT](mcp/LICENSE), so any app can bundle the connector; it is useless without the extension, which stays AGPL.
+
+## Third-Party Libraries
+
+This extension vendors the following open-source libraries under
+`plugin/src/lib/`. Full license texts:
+[THIRD_PARTY_LICENSES.md](plugin/src/lib/THIRD_PARTY_LICENSES.md)
+
+| Library | Version | License | Source |
+| --- | --- | --- | --- |
+| pdf.js (incl. JBIG2 / JPEG 2000 decoders) | 6.5.438 | Apache-2.0, BSD | https://github.com/mozilla/pdf.js |
+| D3.js | 7.9.2 | ISC | https://github.com/d3/d3 |
+| AFINN-111 | — | Apache-2.0 | https://github.com/fnielsen/afinn |
+| qrcode-generator | 1.4.4 | MIT | https://github.com/kazuhikoarase/qrcode-generator |
+
+> These libraries are vendored by hand (not via npm), so there's no
+> automatic drift detection. When you replace any `lib/*` file, bump the
+> version numbers above **and** in `THIRD_PARTY_LICENSES.md` — the table is
+> the only record of what's actually shipped.
+
+# Compatible Tools
+<!-- table with tools, name, description, url -->
+Tools that are compatible with Kaivo.
+Feel free to add your own tool to the list.
+
+Name | Description | URL
+--- | --- | ---
+Reabble Send to Kindle | Send your summarized articles to Kindle. | https://send.reabble.com/
+Web Clipper | Clip your summarized web pages to different places (e.g. OneNote, Notion, GitHub etc.) | https://clipper.website/
+Inoreader | RSS Feed Reader | https://www.inoreader.com/

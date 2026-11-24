@@ -140,6 +140,9 @@ their own packet after it expires (or once all its shares are paid). The registr
 heat period, the listed tokens and their minimum share and heat minimum are fixed at
 deployment. Tokens sent to the contract directly, outside a packet, cannot be recovered.
 
+The keeper (below) holds no privilege either: it only calls `open`, which anyone can call, and which
+pays a grabber's own share to that grabber in an amount the contract fixed when it was grabbed.
+
 External dependencies:
 
 - The Agent ID registry at `0x60b9262456de011f7d15a54cdd8c48baaa8b022f`, whose owner can register
@@ -153,7 +156,7 @@ External dependencies:
 
 ```sh
 npm install
-npm test                 # 76 tests on a local chain
+npm test                 # 77 tests on a local chain
 npm run check:mainnet    # read-only checks against BNB Chain, no key needed
 ```
 
@@ -236,6 +239,24 @@ npx wrangler secret put RPC_URL                     # a node that serves eth_get
 
 Local: put `RPC_URL=...` in `.dev.vars` (git-ignored), apply the schema with `--local`, run
 `npx wrangler dev --test-scheduled` and trigger a run with `curl "localhost:8787/__scheduled?cron=*+*+*+*+*"`.
+
+## Safety notes for users and reviewers
+
+- **No assets move without the user's say.** The skill builds a preview for every call that touches
+  funds and runs it only after the user confirms; it never batches several executes behind one
+  confirmation, and a token `approve` is for exactly the packet total, never unlimited.
+- **The keeper moves nobody's funds.** It is a wallet holding a little BNB for gas that calls `open`.
+  `open` pays a grabber's own share to that grabber, in an amount the contract fixed at grab time; it
+  cannot change an amount or a recipient and is open to anyone. Without a keeper, packets still pay
+  out: the grabber (or anyone) calls `open` themselves, at the cost of one more transaction. Lucky
+  packets in unlisted tokens are never opened by the keeper.
+- **No owner privileges** (see Permissions): nothing can be minted, taxed, paused, frozen or withdrawn
+  by anyone but a packet's creator refunding their own unclaimed remainder.
+- **No secrets collected.** The site and the index never see a passphrase, packet code, key or
+  signature that could move funds; the claim key is derived on the user's own device.
+  There is no QR-code or pairing-code login: creators connect an ordinary EVM wallet, and receivers
+  grab through their own agent.
+- **Not an investment or trading product.** Nothing here promises returns.
 
 ## Keeper (opens lucky slots)
 

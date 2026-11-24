@@ -86,7 +86,7 @@ A scan of what's in the box. Each row links to the detailed [Capability overview
 
 | Area | Highlights |
 | --- | --- |
-| **Tool profiles** | `search` (~3K tokens, BM25 + hybrid vector ranking) · `workflow` (composite scripts) · `full` (all 739 tools) |
+| **Tool profiles** | `search` (~3K tokens, BM25 + trigram lexical ranking) · `workflow` (composite scripts) · `full` (all 739 tools) |
 | **Browser automation** | Chromium and Camoufox · CDP attach to existing targets · anti-detection presets · explicit-input CAPTCHA solver · popup, download, permission, and protocol interceptors |
 | **Network interception** | HTTP/1.1 + HTTP/2 frame building · MITM proxy with auto-generated CA · WebSocket capture · GraphQL introspection helpers · Burp Suite bridge |
 | **JS hooks and analysis** | LLM-powered deobfuscation · crypto routine detection · AST comprehension · source-map reconstruction · script/scriptlet extraction and replay |
@@ -156,16 +156,15 @@ native binaries; native runtimes are optional and loaded on demand.
 ### Share one daemon across multiple agents
 
 The default stdio configuration starts one full jshook process per MCP host. To share the
-embedding model, browser runtime, and caches, start one local Streamable HTTP daemon:
+browser runtime and caches, start one local Streamable HTTP daemon:
 
 ```bash
 pnpm build
 pnpm daemon
 ```
 
-Vector search is on by default on every transport — a lightweight static model whose catalog
-embeddings persist to disk, loaded lazily and released when idle. Set `SEARCH_VECTOR_ENABLED=false`
-when lexical search is sufficient.
+Search is lexical-only (BM25 + trigram + RRF). The embedding path was removed in the search simplification:
+no model download, worker, embedding cache, or cold-start.
 
 Then point every MCP client at `http://127.0.0.1:3000/mcp` using its HTTP/URL server
 configuration. Each client receives its own MCP session and response route while heavyweight
@@ -227,7 +226,7 @@ The server supports two transports out of the box.
 | Transport | When to use | Notes |
 | --- | --- | --- |
 | **stdio** | Default for Claude Desktop, Cursor, and other single-host clients | One full process per MCP host; lightweight profile recommended |
-| **Streamable HTTP** | Multiple agents sharing the embedding model, browser runtime, and caches | Loopback bind by default; set `MCP_AUTH_TOKEN` before exposing externally |
+| **Streamable HTTP** | Multiple agents sharing the browser runtime and caches | Loopback bind by default; set `MCP_AUTH_TOKEN` before exposing externally |
 
 Both transports expose the same tool surface. `coverage_report` shows which domains are
 activated in each session — long-running sessions restore browser attach state, coverage state,
@@ -250,7 +249,7 @@ For production deployments see the [Security and Production guide](https://vmora
 The built-in surface below is generated from the runtime registry and checked in CI.
 
 <!-- metadata-sync:start -->
-- Package version: `0.4.8`
+- Package version: `0.4.9`
 - Built-in tools: `739`
 - Domains: `adb-bridge`, `binary-instrument`, `browser`, `canvas`, `coordination`, `core`, `cross-domain`, `dart-inspector`, `debugger`, `encoding`, `exploit-dev`, `extension-registry`, `graphql`, `instrumentation`, `maintenance`, `memory`, `mojo-ipc`, `native-bridge`, `native-emulator`, `network`, `platform`, `process`, `protocol-analysis`, `proxy`, `session`, `sourcemap`, `streaming`, `syscall-hook`, `tasks`, `tls-inspector`, `trace`, `transform`, `v8-inspector`, `wasm`, `webgpu`, `workflow`
 - Note: this snapshot is generated from the runtime registry; do not edit the counts by hand.
@@ -264,7 +263,7 @@ The built-in surface below is generated from the runtime registry and checked in
 
 - **Runtime registry** — domains auto-discovered via `manifest.ts`; add a domain by creating one file.
 - **Lazy initialization** — handlers instantiated on first call, not at startup.
-- **BM25 + vector search** — `search_tools` meta-tool with hybrid ranking and adaptive weights.
+- **BM25 + trigram search** — `search_tools` meta-tool with RRF fusion and rule-based lexical reranking.
 - **MCP `ToolAnnotations`** — every tool carries `readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`.
 - **Profile ladder** — `search` (~3K tokens) → `workflow` (composite scripts) → `full` (all 739 tools).
 - **Transport symmetry** — stdio and Streamable HTTP expose the same surface; sessions are isolated per client.

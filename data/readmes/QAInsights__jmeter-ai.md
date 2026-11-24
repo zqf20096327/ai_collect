@@ -469,7 +469,7 @@ What helps, roughly in order of impact:
 - **Lower `jmeter.ai.agent.max.tokens`** (e.g. `1024`) if your gateway reserves `max_tokens` up front.
 - **Start a new chat** per task: up to 10 prior turn pairs are re-sent with each agent request.
 - **Use plain chat** (deselect Agent Mode) for questions and snippets; it sends no tool schemas or hierarchy and costs a fraction per request.
-- **Measure**: each agent turn logs `Agent token usage [...] prompt=... completion=... | run total: ...` in `jmeter.log`, so you can compare a run against your quota before asking for a larger tier.
+- **Measure**: each model call logs `Agent token usage [...] turn N: prompt=... completion=... | run total: ...` in `jmeter.log`. The prompt count includes reported cached input. Successful calls without counts log `not reported by provider`; failed calls log `call failed` and the exception class, without the exception message. If a rejected reply includes usage, its counts still contribute to the running total. The [end-of-run usage table](#-context--cost-stats) breaks down the reported counts by turn and cache status.
 
 If the quota is fixed at a few thousand tokens per window, Agent Mode will not fit; ask the gateway team for a larger allocation for the Feather Wand client.
 
@@ -1182,8 +1182,4 @@ Attach files to your chat messages and let the AI analyze them - built for perfo
 
 Pending attachments appear as **chips** above the input (name · size · mode). Click a chip to switch **smart ↔ raw** processing; × removes it. The sent message shows the same chips in the transcript.
 
-**Smart vs. raw processing:**
-
-| Mode | What the model receives |
-|---|---|
-| **smart** (default) | `.jtl`/`.csv` results → compact digest: sample count, error rate, avg/median/p90/p95/p99, throughput, per-label breakdown, slowest + failing samples. Log files → ERROR/WARN lines (capped), counts by logger, exceptions with stack l
+**S

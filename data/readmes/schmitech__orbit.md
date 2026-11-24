@@ -21,6 +21,7 @@
   <a href="https://github.com/schmitech/orbit/stargazers"><img src="https://img.shields.io/github/stars/schmitech/orbit?style=social" alt="GitHub stars" /></a>
   <a href="https://github.com/schmitech/orbit/releases/latest"><img src="https://img.shields.io/github/v/release/schmitech/orbit?label=release" alt="Latest release" /></a>
   <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache 2.0 license" /></a>
+  <a href="https://deepwiki.com/schmitech/orbit"><img src="https://img.shields.io/badge/Ask-DeepWiki-0077B5" alt="Ask DeepWiki about the ORBIT codebase" /></a>
 </p>
 
 <p align="center">
@@ -134,7 +135,7 @@ Choose **one** flavor:
 | **OpenRouter** | `schmitech/orbit-openrouter:latest` | `OPENROUTER_API_KEY` exported in your shell. Free models. |
 | **Cohere** | `schmitech/orbit-cohere:latest` | `COHERE_API_KEY` exported in your shell. |
 
-Each image is also published with a version tag (e.g. `schmitech/orbit-ollama:2.21.6`) if you want to pin to a specific release instead of `:latest`.
+Each image is also published with a version tag (e.g. `schmitech/orbit-ollama:2.21.7`) if you want to pin to a specific release instead of `:latest`.
 
 **Ollama**
 
@@ -213,8 +214,8 @@ See the [Docker guide](docker/README.md#flavor-images-recommended-pull-and-run) 
 **Prerequisites:** Python 3.12+, an internet connection for downloads, and [Ollama](https://ollama.com/) installed and running. If needed, run `ollama serve` in a separate terminal. On Windows, follow the [installation guide](install/windows.md).
 
 ```bash
-curl -LO https://github.com/schmitech/orbit/releases/download/v2.21.6/orbit-2.21.6.tar.gz
-tar -xzf orbit-2.21.6.tar.gz && cd orbit-2.21.6
+curl -LO https://github.com/schmitech/orbit/releases/download/v2.21.7/orbit-2.21.7.tar.gz
+tar -xzf orbit-2.21.7.tar.gz && cd orbit-2.21.7
 ./install/setup.sh --profile default
 
 ollama pull gemma4:e2b
@@ -304,7 +305,7 @@ OrbitChat opens at [http://localhost:5173](http://localhost:5173). See the [exam
 | **Run in production** | [Authentication](docs/authentication.md) · [Cost tracking](docs/token-usage-and-cost-tracking.md) · [Rate limiting](docs/rate-limiting-architecture.md) · [Fault tolerance](docs/fault-tolerance/fault-tolerance-architecture.md) |
 | **Use a client** | [OrbitChat](clients/orbitchat/) · [Realtime Voice](clients/realtime-voice/) · [Node.js SDK](clients/node-api/) · [Python API example](examples/openai-compatible-api/chat_completions.py) |
 
-See the [documentation index](docs/README.md) for every guide and architecture deep dive.
+To understand how ORBIT works, start with [Ask DeepWiki](https://deepwiki.com/schmitech/orbit). Try “How does a chat request get from the API to a retrieval adapter?” and ask follow-up questions about the code. For setup instructions and architecture guides, browse the [documentation index](docs/README.md).
 
 ## Contributing
 

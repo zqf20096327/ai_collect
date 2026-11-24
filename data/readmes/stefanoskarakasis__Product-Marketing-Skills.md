@@ -1,19 +1,21 @@
 # Product Marketing Skills for AI Agents
 
-**Positioning, competitive intelligence, GTM strategy and launch planning for B2B SaaS product marketers.**
+**Product marketing that compounds.**
 
-A collection of AI agent skills focused on product marketing tasks.
+53 free skills that start from your company brain, not a blank chat. Positioning, battlecards, call prep and launch plans that already know your product, your buyer and your voice.
 
-Build your company brain once; every skill reads it, so you stop re-explaining your product in every chat.
+**Your best work shouldn't live in one person's chat.**
 
-Built for PMMs, product marketing leaders and GTM operators. Runs in Claude Code and Claude; the skills are plain `SKILL.md` files, so the same install works in other agents that support them.
+**Build the brain once. Every skill reads it. Nothing changes without your yes.**
+
+Built for PMMs, product marketing leaders and GTM operators in B2B SaaS. Free, MIT licensed. Runs in Claude Code and Claude; the skills are plain `SKILL.md` files, so the same install works in other agents that support them.
 
 Built by [Stefanos Karakasis](https://stefanoskarakasis.substack.com/).
 
 > [!TIP]
 > **Contributions welcome!** Found a way to improve a skill or have a new one to add? [Open a PR](#contributing). Run into a problem or have a question? [Open an issue](https://github.com/stefanoskarakasis/Product-Marketing-Skills/issues).
 
-**Jump to:** [Install](#install-in-60-seconds) · [Why a brain?](#why-a-brain) · [Pick by job](#start-here-pick-by-job) · [Usage](#usage) · [All 52 skills](#available-skills-52-total) · [Installation options](#installation) · [Connectors](#connectors-optional) · [About](#about)
+**Jump to:** [Install](#install-in-60-seconds) · [Why a brain?](#why-a-brain) · [Pick by job](#start-here-pick-by-job) · [Usage](#usage) · [All 53 skills](#available-skills-53-total) · [Installation options](#installation) · [Connectors](#connectors-optional) · [About](#about)
 
 ## Install in 60 seconds
 
@@ -26,20 +28,32 @@ npx skills add stefanoskarakasis/Product-Marketing-Skills -a claude-code
 ```
 
 > [!IMPORTANT]
-> Then run **`product-marketing-context`** first. It interviews you for about 15 minutes and writes `/foundation/brain.md`. Everything else builds on it.
+> Run **`product-marketing-context`** first. About 15 minutes, starting from your website, pricing page or deck. It writes `/foundation/brain.md`. Everything else builds on it.
 
-- **No time?** Open [`examples/`](examples/) to see a finished brain and five prompts to try.
+- **Want proof first?** Open [`examples/`](examples/). A finished brain for a fictional company and five prompts, so you see the output before you build anything.
 - **Prefer the plugin marketplace?** See [Installation](#installation) below.
 
 ## Why a brain?
 
-Every time you ask an agent for positioning, battlecards or a brief, you re-explain your company. `product-marketing-context` fixes that with one document, `/foundation/brain.md`, and every other skill reads it before producing anything.
+Every new chat starts from zero. You paste the ICP. You re-explain the competitors. You fix the tone. Again.
+
+`product-marketing-context` ends that. It builds one document, `/foundation/brain.md`, in about 15 minutes, and every other skill reads it before it writes a word.
+
+| Without a brain | With the brain |
+|---|---|
+| Every chat starts from zero | Every skill starts from your company |
+| You re-paste the ICP and the competitors | The skill reads them from the brain |
+| Your best prompt lives in one person's chat | Your best work lives in one file the whole stack reads |
+| Output sounds like any B2B SaaS company | Output sounds like yours |
 
 | The brain holds | |
 |---|---|
 | **Your company** | Product, ICP, alternatives |
 | **How you sound** | Positioning, voice |
 | **What you can claim** | Market context, proof points |
+
+> [!TIP]
+> **The brain keeps learning, on your terms.** Skills flag what's stale and ask what's missing. You approve every change. Nothing is rewritten behind your back.
 
 > [!NOTE]
 > One brain covers one product. For several product lines, keep one folder and one brain per product. What loads and when, and how to turn the Slack and email prompts off: [docs/agents-map.md](docs/agents-map.md).
@@ -80,7 +94,7 @@ Every time you ask an agent for positioning, battlecards or a brief, you re-expl
 
 ## Usage
 
-Ask in plain language, or call a skill directly, for example `/pmm-positioning:ideal-customer-profile`.
+Ask in plain language. The right skill picks itself. Or call one directly, for example `/pmm-positioning:ideal-customer-profile`.
 
 | Say this | Skill that runs |
 |---|---|
@@ -90,7 +104,7 @@ Ask in plain language, or call a skill directly, for example `/pmm-positioning:i
 | "Prep my discovery call with the VP Finance at Tidewell Foods" | `discovery-call-prep` |
 | "Score this discovery call and tell me what I missed" | `discovery-call-scoring` |
 
-## Available Skills (52 Total)
+## Available Skills (53 Total)
 
 | Skill | Plugin | Description |
 |-------|--------|-------------|
@@ -114,11 +128,12 @@ Ask in plain language, or call a skill directly, for example `/pmm-positioning:i
 | [comparison-page-brief](pmm-competitive-intelligence/skills/comparison-page-brief/) | pmm-competitive-intelligence | A vs, alternatives or switch page for a named rival, built from your brain and competitor records, with a sourced claims ledger behind every row |
 | [customer-context](pmm-sales/skills/customer-context/) | pmm-sales | Dated brief on one customer from your CRM, email, calls and chat, checked against your brain; Slack first |
 | [prospect-research](pmm-sales/skills/prospect-research/) | pmm-sales | Pain hypothesis, angle and first question for one prospect from web search, CRM and enrichment, checked against your brain; EMEA-aware; Slack first |
-| [deal-review](pmm-sales/skills/deal-review/) | pmm-sales | Weekly-ready deal review: what changed, the buyer's own words, what could kill the deal and one next step, with paste-ready CRM and email blocks; a deals-only queue; private pattern mirror; Slack first |
+| [deal-review](pmm-sales/skills/deal-review/) | pmm-sales | Weekly-ready deal review: what changed, the buyer's own words, what could kill the deal and one next step, with paste-ready CRM and email blocks; private pattern mirror; Slack first |
 | [discovery-call-prep](pmm-sales/skills/discovery-call-prep/) | pmm-sales | Point of view and a 7-stage discovery call plan from the prospect company and the buyer's title, with a lead hypothesis, questions per stage and a fast no; learns from call outcomes; Slack first |
 | [discovery-call-scoring](pmm-sales/skills/discovery-call-scoring/) | pmm-sales | Paste a discovery call you ran: a seven-stage score, your pattern, the moments that cost you and the moves for the next call; private to the seller; Slack first |
 | [objection-handling](pmm-sales/skills/objection-handling/) | pmm-sales | The next line for a buyer objection, a call digest or a paste-ready email reply, with a library that learns from every deal; draft only, from Slack, a pasted line, a transcript or an email |
 | [sales-collateral](pmm-sales/skills/sales-collateral/) | pmm-sales | The sales assets a rep sends or uses: one-pager, leave-behind, demo script, proposal, ROI calculator, deck outline and win-loss analysis, every claim sourced from your brain; sends every other ask to the skill that owns it |
+| [pipeline-digest](pmm-sales/skills/pipeline-digest/) | pmm-sales | Digest of the open pipeline of a seller or a team from Salesforce, another CRM or a CSV: what changed, quiet, slow and past-due deals, the CRM fields to fix and five deals to act on; asks for what is missing and drafts a DM per owner; deals only; Slack first |
 | [sales-research-digest](pmm-sales/skills/sales-research-digest/) | pmm-sales | Weekly plain-language report for the PMM on how the sales research skills are used, whether the advice held up and what to do next; outcomes from your CRM |
 | [industry-newsletter](pmm-competitive-intelligence/skills/industry-newsletter/) | pmm-competitive-intelligence | Weekly industry newsletter for GTM leaders in one locked layout: numbered competitor tables, industry changes, pricing watch and role-owned actions; formatted for Google Doc, email or Slack |
 | [gaccs-brief](pmm-toolkit/skills/gaccs-brief/) | pmm-toolkit | Campaign briefs (Goals, Audience, Creative, Channels, Stakeholders) |

@@ -119,7 +119,7 @@ npx skills add giftsofprometheus/giftsofprometheus-cli
 | `talks search <запрос> [--page n]` | Поиск опубликованных докладов по названию, описанию, спикеру и теме | |
 | `talks list [--page n]` | Каталог по страницам | |
 | `talks get <slug-или-id>` | Доклад с описанием, спикерами (компания и должность), темами и видео | |
-| `talks content <slug-или-id> [--rec-id UUID] [--from время] [--to время] [--outline]` | Транскрипт на языке доклада: целиком, отрезок (`--from 12:30 --to 18:00`) или только спикеры и главы (`--outline`) | ✓ |
+| `talks content <slug-или-id> [--rec-id UUID] [--from время] [--to время] [--outline]` | Транскрипт на языке доклада: целиком, отрезок (`--from 12:30 --to 18:00`) или только спикеры и главы (`--outline`, не считается чтением доклада) | ✓ |
 | `talks similar <slug-или-id>` | До четырёх похожих докладов, у каждого причина | |
 | `talks react <slug-или-id> like\|dislike\|not-interested\|clear [--rec-id UUID]` | Отметить, понравился ли доклад; учитывается в подборке | ✓ |
 | `favorites list [--page n] [--limit n]` | Ваше избранное | ✓ |

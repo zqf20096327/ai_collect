@@ -4,6 +4,8 @@
 
 在 Antigravity 输入框底栏显示上下文占用、多模型配额、缓存状态和生成速度，悬停胶囊即可查看面板详情，点击胶囊即可固定面板。
 
+使用的是 **Antigravity IDE 独立编辑器**？可直接在 IDE 的扩展面板搜索 `agy-capsule-ide` 安装，或到 [Open VSX](https://open-vsx.org/extension/lumidarin/agy-capsule-ide/) 查看。详见 [IDE 版安装与功能](./ide/README.md)，以及 [App 与 IDE 的差异](./docs/ide-preview.md)。下文介绍桌面 App 版。
+
 <p align="center">
   <img src="assets/readme/hero.gif" width="100%" alt="依次悬停上下文、配额和请求失败胶囊（无鼠标），弹出对应面板" />
 </p>

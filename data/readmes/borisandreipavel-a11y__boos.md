@@ -53,12 +53,13 @@ kernel                      shares the processor and the memory, talks to device
 
 - Finds its network card on the PCI list and drives it: a virtio card, or one of Intel's 82540EM and 82545EM cards.
 - Is given an address, looks up a name, and fetches a web page over an encrypted link (TLS). The site proves who it is with a certificate, and the kernel checks it against a list of trusted roots it carries.
+- Fetches a file from an address on the web when the model asks for one, over the same kind of encrypted link: a PDF, a Word or Excel file, plain text or CSV, of at most 4 MB. Before it contacts a site for the first time it asks you in the chat box, and a site you allowed is kept; a site that sends it on to another address is followed at most five times.
 - Gets random numbers from the processor and the date from the clock chip, which encryption needs.
 
 **The model**
 
-- Sends every line typed in the chat box to a model, together with a short fixed text, a record of what was said before it, and a list of tools: make an app, run a kept app, pick a look, turn the page of the panel of apps, and forget what was said. The model answers in words, which appear in the chat box as a row that begins with `Model:`, or asks for a tool, which the kernel checks and does, saying in its own sentence how that went. When what the tool did needs the model, such as what a new app showed or a tool the kernel turned down, the model is asked about the same line again, at most three times in all. The record holds the last 10 lines that went to the model, each with what came of it, and lasts until the machine is switched off; asked to forget, the model uses the tool, and the next line starts afresh. The model is `deepseek/deepseek-v4.1-flash-1017`, reached through the provider OrcaRouter, a service on the internet that passes questions on to models. The fixed text, the record and the tools are in [docs/tools.md](docs/tools.md).
-- When the model asks for a new app, asks it for the app itself: the request the model wrote, cut at 45 signs, together with a fixed text that tells the model how an app for this kernel is written (the language, the two things an app can ask for, and their limits). The text is in [docs/apps.md](docs/apps.md).
+- Sends every line typed in the chat box to a model, together with a short fixed text, a record of what was said before it, and a list of tools: make an app, run a kept app, pick a look, turn the page of the panel of apps, draw a table, fetch a file from the web, remove a kept file, and forget what was said. The model answers in words, which appear in the chat box as it writes them, in a row that begins with `Model:`, or asks for a tool, which the kernel checks and does, saying in its own sentence how that went. When what the tool did needs the model, such as what a new app showed or a tool the kernel turned down, the model is asked about the same line again, at most three times in all. The record holds the last 10 lines that went to the model, each with what came of it, and lasts until the machine is switched off; asked to forget, the model uses the tool, and the next line starts afresh. The model is `deepseek/deepseek-v4.1-flash-1017`, reached through the provider OrcaRouter, a service on the internet that passes questions on to models. The fixed text, the record and the tools are in [docs/tools.md](docs/tools.md).
+- When the model asks for a new app, asks it for the app itself: the request the model wrote, cut at 45 signs, and the inputs the app takes but never their values, together with a fixed text that tells the model how an app for this kernel is written (the language, the two things an app can ask for, and their limits). The text is in [docs/apps.md](docs/apps.md).
 - Sends the key that the provider asks for, which you type yourself, to that one site only, over a link whose certificate was checked. If the provider repeats the key in its answer, stars are shown in its place.
 - The real provider has answered it: in runs with a real key, the model's answer appeared in the chat box, and an app the real model wrote ran and its text appeared on the screen. The tests use a stand-in for the provider and a made-up key.
 - Says in the terminal how many tokens each answer took, which is what the provider is paid for.
@@ -78,8 +79,10 @@ kernel                      shares the processor and the memory, talks to device
   show(greeting)
   ```
 
-- Runs the app the model wrote: the kernel takes the script out of the model's answer, checks that the answer came whole and that the script fits the box, lists the script in the terminal line by line, and runs it once. What the app shows appears in the box in the middle of the screen, what it prints comes out in the terminal, and the chat box says in one plain sentence how the run went, or why the app was stopped.
+- Runs the app the model wrote: the kernel takes the script out of the model's answer, checks that the answer came whole and that the script fits the box, lists the script in the terminal line by line, and runs it once. What the app shows appears in the app's box under the panel of apps, what it prints comes out in the terminal, and the chat box says in one plain sentence how the run went, or why the app was stopped.
+- Draws a table when asked: the model describes it in a few short lines (a title, colours, column widths, a head and rows), and the kernel draws it in a frame beside the panel of apps that never covers the chat box. Columns grow to fit their contents, up to six of them; rows that do not fit are left out and said; a letter colour too faint to read becomes black or white. The table is not kept: a restart clears it.
 - Keeps an app that ran to its end on the disk, with the words it was asked for, and reads the script back to check that it was written whole. A panel near the top left of the screen lists the apps kept, five a page, the newest first, and it is there again after a restart. The model can run a kept app again, as it was kept, without having it written anew, and turn the panel's page; an app made again for the same request takes the old one's place.
+- Lets an app take inputs, at most four numbers, texts or yes/no values that the model fills in each time the app runs: `convert 5 km to miles` makes a converter and runs it with 5, and a later `convert 12 km` runs the kept converter with 12, without having it written again. The kernel checks each value first, and the script finds the values in a table, never written into its text.
 
 **The screen and the chat box**
 
@@ -98,7 +101,7 @@ kernel                      shares the processor and the memory, talks to device
   ```
 
 - Shows an app's text in a box. The app only says which text; the kernel decides how the box looks.
-- Has a chat box along the bottom of the screen: type a line, press Enter, and it goes to the model; the kernel says at once that it is asking, and the answer follows some seconds later. A few words stay with the kernel instead, such as `key`, which makes it take a secret that shows as stars, is kept in memory only, and goes along as the key. Four looks for the screen are built in, Blue, Night, Paper and Contrast: a wish for another look has the model pick one, the whole screen is painted in it at once, and the look picked is kept on the disk.
+- Has a chat box along the bottom of the screen: type a line, press Enter, and it goes to the model; the kernel says at once that it is asking, adds that the model is thinking until its first word comes, and then shows the answer as it comes, word by word. A few words stay with the kernel instead, such as `key`, which makes it take a secret that shows as stars, is kept in memory only, and goes along as the key. Four looks for the screen are built in, Blue, Night, Paper and Contrast: a wish for another look has the model pick one, the whole screen is painted in it at once, and the look picked is kept on the disk.
 - Shows its own lines on the screen as well as in the terminal, since many PCs have no serial port: while the machine starts they cover the screen, white on dark blue, one below the other, and when the start is over the usual picture takes their place. F1 shows them again, and any key brings the usual picture back.
 
 **The disk**
@@ -106,6 +109,7 @@ kernel                      shares the processor and the memory, talks to device
 - Finds the disk controller (AHCI), sets it up, and reads the list that says how the disk is divided into parts (the GUID partition table).
 - Writes only inside the part that is its own. The code that writes a block cannot be called from anywhere else.
 - Keeps a notebook there: named things, each written as a new entry behind the last, so that nothing already written is ever changed. The last line you sent in the chat box is in it, and the kernel says it again at its next start.
+- Keeps the files it fetched in a room of their own in the back half of its part, about 7.5 MB on the usual disk file. Each file is written in one piece and read back before its note goes into the notebook, and one is removed only after you type yes. Nothing of a file's contents goes to the model.
 
 ## What a start looks like
 
@@ -120,10 +124,11 @@ Screen: found, 1280 dots wide and 800 dots high, its memory starts at 0x80000000
 Encryption: 8 of 8 checks of the arithmetic are right, and 112 trusted roots are on board
 Box: a program of 41 bytes ran inside it and answered 2 + 3 = 5
 App: Hello from inside the box
-Interpreter: a program of 765037 bytes that understands Lua is on board, and the box accepts it
+Interpreter: a program of 770152 bytes that understands Lua is on board, and the box accepts it
 App: Hello from a Lua script!!!
 Disk: ready, "QEMU HARDDISK", 16 MB, in socket 0 of its controller
 Disk: my own part is 14 MB, from block 2048 to block 32734
+Disk: the room for files holds 0 files and has room for 7671 KB more
 Disk: this is start number 7
 Network: this machine was given the address 10.0.2.15 by 10.0.2.2
 Network: example.com proved who it is: its certificate leads back to one of the 112 trusted roots. The link is encrypted with ChaCha20-Poly1305.
@@ -186,7 +191,7 @@ To start from one disk file instead, the way a PC starts, run `.\run-boot-disk.b
 Three things to know before the first run:
 
 - **The first build needs the internet** to fetch the outside crates. After that, building works without it.
-- **Every start reaches the internet, and so does every line you send.** At every start the kernel looks up one name and fetches the page of example.com over an encrypted link. Every line you send, except the few words the kernel keeps for itself, goes with the secret you typed as the key to the provider's site, `api.orcarouter.ai`, and to nobody else, together with the model's name, a fixed text, a record of the last lines said before it and the list of tools, which names the apps kept on the disk by the words they were made for; the provider passes it on to the model. A new app adds a second request to the same site, with the fixed text about apps and the request the model wrote, and a third that asks the model about the line again with what came of the app, such as the last text it showed. Each request is paid for.
+- **Every start reaches the internet, and so does every line you send.** At every start the kernel looks up one name and fetches the page of example.com over an encrypted link. Every line you send, except the few words the kernel keeps for itself, goes with the secret you typed as the key to the provider's site, `api.orcarouter.ai`, and to nobody else, together with the model's name, a fixed text, a record of the last lines said before it and the list of tools, which names the apps kept on the disk by the words they were made for and the files kept by their names; the provider passes it on to the model. A new app adds a second request to the same site, with the fixed text about apps and the request the model wrote, and a third that asks the model about the line again with what came of the app, such as the last text it showed. Each request is paid for. A file you ask for is fetched from the site its address names, which the kernel asks you about the first time.
 - **The first run makes a file, `disk.img`**, 16 MB, in the project's root. It is the machine's disk. The kernel writes to it at every start and at every line you send, and to nothing else: inside QEMU it can reach only the files QEMU is given. A PowerShell script divides the new file into parts; on a computer whose settings refuse to run script files, `run.bat` stops there and says that the disk file could not be divided.
 
 [docs/testing.md](docs/testing.md) says how to build by hand and how to boot without a window.
@@ -228,9 +233,10 @@ Seven crates are kept as copies in `vendor/`. Six of them came with a build scri
 Said plainly, because a list of what works is only half the picture:
 
 - Whether the model runs a kept app or has a new one written is its own choice, and nothing checks it.
-- An app can show one line of 40 signs and print to the terminal, and nothing else. It cannot wait or read a key. A request for one has at most 45 signs.
+- An app can show one line of 40 signs and print to the terminal, and nothing else. It cannot wait, read a key or open a file. It takes at most four inputs, and a request for one has at most 45 signs.
 - The model is told the same fixed text with every request for an app, and whether it keeps to it is not checked: an answer in words instead of a script is taken as the script.
 - Every line is a paid question that needs the internet and takes seconds. The model sees that line and a record of up to 10 lines before it, with what came of each, and nothing older; the record is gone when the machine is switched off. Only the first tool it asks for is done. What the tool did goes back to the model in the same line only when it needs the model, such as a new app's run or a tool that was turned down, and the model is asked about one line at most three times.
+- A file fetched from the web is only kept: it cannot be opened, shown or read by an app yet. Only PDFs, Word and Excel files, plain text and CSV are kept, at most 4 MB each, and only from addresses that begin with `https://`.
 - It has run in QEMU and, from its boot disk, in VirtualBox, and nowhere else. What a real PC may do differently is collected in [docs/open-points.md](docs/open-points.md).
 - Its network card is a virtio card, a kind that exists only in virtual machines, or one of Intel's 82540EM and 82545EM, which QEMU and VMware play and some older PCs have. The Intel driver has run only in QEMU.
 - The mouse is switched off, and the look of the screen is one of four built into the kernel.

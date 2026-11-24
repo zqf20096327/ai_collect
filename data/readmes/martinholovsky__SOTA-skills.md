@@ -31,7 +31,7 @@ agent that reads `AGENTS.md`. Those agents get the skills and an always-on direc
 the per-turn re-statement, which is a Claude Code hook
 ([per-agent detail](docs/MULTI-AGENT.md)), and no lift has yet been measured through them.
 
-Under the hood: **43 skills (349 files, ~94k lines)** of state-of-the-art 2026
+Under the hood: **43 skills (350 files, ~95k lines)** of state-of-the-art 2026
 practice, each **instruction** file under 500 lines so only the matching rules load —
 the cap applies to `skills/**` alone, never to README/CHANGELOG/`docs/` — every fast-moving
 claim web-verified against a primary source **as of the last full sweep** (the root
@@ -76,12 +76,13 @@ stack comes from your profile or the skills' defaults (naming one is optional):
 
 More install options: [Installation](#installation) · more prompts: [Using it](#using-it).
 
-**Six slash commands ship with the library** — four bracket a working session, one is the heavy
-escalation, and `/sota-auto` works through the open items unattended. `scripts/install.sh` links them into `~/.claude/commands/`, so they work
+**Seven slash commands ship with the library** — `/sota-init` sets a repository up once, four bracket a
+working session, one is the heavy escalation, and `/sota-auto` works through the open items unattended. `scripts/install.sh` links them into `~/.claude/commands/`, so they work
 in **any** project, not just this one:
 
 | | When | What it does |
 |---|---|---|
+| **`/sota-init`** | **once**, in a new repo or one the library has not been applied to | Inventories what exists (licence, `.gitignore`, secret scanning, gates, agent file, where project data lives), agrees a plan, then **adds only what is missing**: never overwrites a file, never chooses your licence, creates conditional docs only when their trigger fires, and ends in **one commit `git revert` undoes** |
 | **`/sota-resume`** | **start** of a session | Finds the open work — every tracker, checkbox and `TODO` marker, swept with a **controlled** search — classifies it (ready · needs a decision · deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap**), shows you the table, then executes what you agree to against the project's own CI. |
 | **`/sota-auto`** | **unattended**, e.g. overnight | `/sota-resume`'s inventory without the stop: decides what is reversible, **queues** what is not (merges, releases, deletes, anything outside the repo, spend without a `budget=`), never waits on you, and ends with a **report of every decision taken on your behalf** (security decisions first), each with how to reverse it |
 | **`/sota-close`** | **end** of a session | The closure pass: **retract first**, record open items where the next session will trip over them, update what the session made false, **re-derive every number from its source**, say what is not done and blocked on whom, then commit the evidence. |
@@ -157,6 +158,18 @@ decide the regulatory clock explicitly, because it starts at *awareness*), and
 why a skill can stop triggering with nothing about it changed (a length cap is
 enforced either by skipping or by silent truncation, and a shared **listing budget**
 means a neighbour's bloat eats the trigger words you wrote).
+
+And the habits of the work itself, which no standard covers and long agent sessions break:
+- **where project data lives** — five classes (tracked, kept-not-committed, rebuildable,
+  ephemeral, external by design), declared per project in its agent file, with checks that no doc
+  or result cites a temp path and no test passes only because an ignored file exists
+  (`sota-docs-workflow` rules/06). Locations stay the project's choice;
+- waiting for CI by the checks you expect: `gh pr checks --watch` returns at once before any
+  check registers, and the PR still reads `CLEAN` with zero checks (`sota-shell-scripting` rules/09 §5d);
+- the shell traps an agent meets on its own machine, each measured: `rm -r link/` deletes a
+  symlink's target directory on macOS at exit 0; `$!` after `cd d && cmd &` names a bash subshell;
+  an agent's `find` can be bfs, which rejects `-newermt "6 months ago"`.
+  This repository runs **zizmor** over its own workflows, and its first run found a rule it broke.
 
 **Measured, not asserted** — library vs. an *unguided model* (same model, no
 library); clean, blind-judged, stable across samples ([results & method →](docs/WHY-IT-WORKS.md)).
@@ -1126,7 +1139,7 @@ anything". Three corrections, each re-checked 2026-10-02:
   request as the reason ("your spec didn't set a maximum, so I didn't add one"); its header
   states what its detector catches and misses (ROADMAP 96). **`scripts/zsh-equals-hook.py`**, on by
   default in the plugin, is a PreToolUse hook that refuses a zsh command carrying an unquoted `=word`, or a `set -- $scalar` zsh will not split, before it runs
-  (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. Since 2026-10-27 it also refuses a variable named `path` or `status`, a spaced literal expanded unquoted as arguments, `PIPESTATUS`/`BASH_REMATCH`, and a `git grep` escape the platform reads as a plain letter (rules/06 §2f); since 2026-11-15, `for x in $v` where `v` came from `$(…)` in the same command, which zsh loops over once, and an unquoted glob in a flag value (`--include=*.rs`), which zsh aborts with `no matches found`. The git hooks from
+  (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. Since 2026-10-27 it also refuses a variable named `path` or `status`, a spaced literal expanded unquoted as arguments, `PIPESTATUS`/`BASH_REMATCH`, and a `git grep` escape the platform reads as a plain letter (rules/06 §2f); since 2026-11-15, `for x in $v` where `v` came from `$(…)` in the same command, which zsh loops over once, and an unquoted glob in a flag value (`--include=*.rs`), which zsh aborts with `no matches found`; since 2026-11-22, an unbraced `$name:` before a modifier letter (`git show $c:libs/x` lowercases `$c`). The git hooks from
   `scripts/init-gates.sh` and CI are enforcement on every host, whatever the agent.
 - **The router is not an always-on 43 KB blob.** Only each skill's frontmatter `description`
   is in every turn's listing; the router's body loads when the skill is invoked
@@ -1228,12 +1241,4 @@ skill, *scope* to one rule file, or *stack* an exact combo.
 
 `scripts/install.sh` (and therefore `scripts/update.sh`) links every file in
 [`commands/`](commands/) into `~/.claude/commands/`, so they work in **any** project, not just
-this one. `verify-setup.sh` check **1d** compares what is installed against what the checkout
-ships — a `git pull` refreshes existing links and creates none, so a newly added command stays
-silently uninstalled until you re-run the installer.
-
-| Command | Run it when | What it does |
-|---|---|---|
-| **`/sota-report`** | at the **end** of a session, in your own project | Writes a gitignored field report on where the guidance failed, was absent, wrong, or right and did not fire — stamped with the version that produced it. Then writes a short generalised extract and prints a `gh issue create` line. It never posts anything. |
-| **`/sota-resume`** | at the **start** of a session, or when picking a project back up | Finds the open work: sweeps every tracker, checkbox and `TODO` marker with a **controlled** search (a clean "nothing found" is exactly the answer a skipped symlink tree, a `--replace` flag or a 30-row default page produces), classifies it — ready · needs a decision · deliberately deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap** — shows you the table, then executes what you agree to, one item at a time, against the project's own CI entry point. |
-| **`/sota-auto`** | when **no one will be there** to answer prompts, such as a late-evening run | Runs `/sota-resume`'s inventory and classification, then executes without asking. It **decides** what is reversible inside the repository and **queues** what is not: a merge (unless your own agent file already grants it), a force-push, a delete, a tag or release, anything that speaks
+this one. `verify-setup.sh` check **1d** compares what is installed agains

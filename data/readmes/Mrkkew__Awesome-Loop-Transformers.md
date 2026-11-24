@@ -9,13 +9,13 @@
 
 <p align="center"><strong>Looped Transformers, latent reasoning, and test-time compute.<br>A bilingual reading guide with papers, official code, and research summaries.</strong></p>
 
-<p align="center"><a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Mrkkew/Awesome-Loop-Transformers?style=flat-square&labelColor=080b18&color=d8ff55"></a>&nbsp;<a href="#complete-catalog"><img alt="Papers in the full catalog" src="https://img.shields.io/badge/papers-249-5df2ff?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/actions/workflows/ci.yml"><img alt="Data and build" src="https://img.shields.io/github/actions/workflow/status/Mrkkew/Awesome-Loop-Transformers/ci.yml?style=flat-square&label=build&labelColor=080b18"></a>&nbsp;<a href="LICENSE"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-a78bfa?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="data/papers.json"><img alt="JSON catalog" src="https://img.shields.io/badge/data-JSON-c6ff4a?style=flat-square&labelColor=080b18"></a></p>
+<p align="center"><a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Mrkkew/Awesome-Loop-Transformers?style=flat-square&labelColor=080b18&color=d8ff55"></a>&nbsp;<a href="#complete-catalog"><img alt="Papers in the full catalog" src="https://img.shields.io/badge/papers-277-5df2ff?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/actions/workflows/ci.yml"><img alt="Data and build" src="https://img.shields.io/github/actions/workflow/status/Mrkkew/Awesome-Loop-Transformers/ci.yml?style=flat-square&label=build&labelColor=080b18"></a>&nbsp;<a href="LICENSE"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-a78bfa?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="data/papers.json"><img alt="JSON catalog" src="https://img.shields.io/badge/data-JSON-c6ff4a?style=flat-square&labelColor=080b18"></a></p>
 
 <p align="center"><a href="https://awesome-loop-transformers.liyulin.workers.dev/#catalog"><strong>Search the interactive catalog ↗</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/issues/new?template=paper-suggestion.yml">Suggest a paper</a></p>
 
 <p align="center"><a href="#start-here"><strong>🧭 Start here</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#essential-reading"><strong>📌 Essential reading</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#complete-catalog"><strong>📚 Full catalog</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#contributing"><strong>🤝 Contribute</strong></a></p>
 
-<p align="center"><sub>249 papers · 8 research topics · English / 简体中文 · Last research update: 2026-11-16</sub></p>
+<p align="center"><sub>277 papers · 9 research topics · English / 简体中文 · Last research update: 2026-11-23</sub></p>
 
 ---
 
@@ -54,7 +54,7 @@ Eight entry points, from shared-depth architectures to latent reasoning. Short n
 
 **Broader latent reasoning:** selected work on continuous thoughts, implicit CoT, and recursive reasoning, including Coconut, HRM, and TRM. These methods need not use a looped Transformer and are listed separately.
 
-Of the **244 works from 2024 onward**, **201** belong to the core track and **43** to broader latent reasoning. Earlier foundations are also included.
+Of the **272 works from 2024 onward**, **228** belong to the core track and **44** to broader latent reasoning. Earlier foundations are also included.
 
 <a id="complete-catalog"></a>
 
@@ -64,21 +64,27 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 
 | Track | Works | What it covers |
 | --- | :---: | --- |
-| **[Foundations & Theory](#foundations--theory)** | 30 | Expressivity, programmability, in-context optimization, length and depth generalization. |
-| **[Architectures & Scaling](#architectures--scaling)** | 49 | Weight sharing, recurrent cores, MoE, multi-resolution designs, and scaling laws. |
-| **[Latent Reasoning](#latent-reasoning)** | 21 | Test-time depth, silent multi-step computation, Huginn, Ouro, and latent CoT. |
-| **[Adaptive Compute](#adaptive-compute)** | 25 | Token routing, learned halting, early exit, and budget-conditioned depth. |
-| **[Training & Analysis](#training--analysis)** | 34 | Optimization, stability, residual scaling, fixed points, and mechanistic studies. |
-| **[Systems & Applications](#systems--applications)** | 42 | Serving, KV memory, parallel loops, code, multimodal, robotics, and tool use. |
-| **[Safety & Monitoring](#safety--monitoring)** | 5 | Depth-dependent jailbreaks, latent monitoring, steering, and depth-robust alignment. |
-| **[Broader Latent Reasoning](#broader-latent-reasoning)** | 43 | Continuous thoughts, implicit CoT, hierarchical recurrence, HRM, and TRM. |
+| **[Foundations & Theory](#foundations--theory)** | 31 | Expressivity, programmability, in-context optimization, length and depth generalization. |
+| **[Architectures & Scaling](#architectures--scaling)** | 54 | Weight sharing, recurrent cores, MoE, multi-resolution designs, and scaling laws. |
+| **[Latent Reasoning](#latent-reasoning)** | 23 | Test-time depth, silent multi-step computation, Huginn, Ouro, and latent CoT. |
+| **[Adaptive Compute](#adaptive-compute)** | 28 | Token routing, learned halting, early exit, and budget-conditioned depth. |
+| **[Training & Analysis](#training--analysis)** | 37 | Optimization, stability, residual scaling, fixed points, and mechanistic studies. |
+| **[Systems & Applications](#systems--applications)** | 45 | Serving, KV memory, parallel loops, code, and tool use. |
+| **[Looped Vision, Diffusion & Multimodal](#looped-vision,-diffusion--multimodal)** | 9 | Diffusion, video, vision-language, retrieval, robotics, and scientific imaging built on repeated depth. |
+| **[Safety & Monitoring](#safety--monitoring)** | 6 | Depth-dependent jailbreaks, latent monitoring, steering, and depth-robust alignment. |
+| **[Broader Latent Reasoning](#broader-latent-reasoning)** | 44 | Continuous thoughts, implicit CoT, hierarchical recurrence, HRM, and TRM. |
 
 <a id="foundations--theory"></a>
 
 ### Foundations & Theory
 
 <details>
-<summary><strong>2026</strong> · 14 papers</summary>
+<summary><strong>2026</strong> · 15 papers</summary>
+
+- **[Circular Predictive Coding Unlocks Effective Depth](https://arxiv.org/abs/2611.27610)**<br>
+  Tommaso Salvatori, Matteo Forasassi · *arXiv 2026*<br>
+  Argues that predictive coding stops scaling because its depth comes from stacked layers, and replaces stacking with circular networks whose depth comes from energy minimisation: convergence to an equilibrium of the circular energy is proved to approximate the fixed-point iteration of a deep equilibrium model. Circular models beat same-size predictive coding networks on image classification with far fewer parameters, reach 99.3% on Sudoku-hard through nested energy loops, and train a circular Transformer on TinyStories and WikiText-103.<br>
+  [Paper](https://arxiv.org/abs/2611.27610)
 
 - **[Predictive Latents for Autoregressive Language Models: Possibility, Gauge, and Obstruction](https://arxiv.org/abs/2610.28540)**<br>
   Yuzhou Hong · *arXiv 2026*<br>
@@ -269,7 +275,32 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 ### Architectures & Scaling
 
 <details>
-<summary><strong>2026</strong> · 42 papers</summary>
+<summary><strong>2026</strong> · 47 papers</summary>
+
+- **[Model Carving: Training Transformers That Optimize Their Own Topology](https://arxiv.org/abs/2611.27962)**<br>
+  Kaden Zheng, Pratyusha Sharma · *arXiv 2026*<br>
+  Learns architecture and weights in a single pretraining run: a learnable scalar gate on every attention and MLP sublayer lets the training loss delete the model's own components, exposing a smaller heterogeneous network inside. At equal training compute, carved Transformers from 140M to 2.7B and looped Transformers from 140M to 1.3B reach lower validation loss than dense models given up to 1.7x more compute, and beat size-matched pruning or distillation with up to 34% fewer FLOPs per token.<br>
+  [Paper](https://arxiv.org/abs/2611.27962)
+
+- **[InfuseLoop: Cross-Trajectory Latent Injection for Scalable Parallel Looped Transformers](https://arxiv.org/abs/2611.22426)**<br>
+  Zhaofeng Sun, Lanxiang Hu, Yu-Yang Qian et al. · *arXiv 2026*<br>
+  Diagnoses why parallel looped Transformers stop improving as loops are added: each iteration only receives the state of its own trajectory, even though completed neighbouring trajectories already carry usable representations. InfuseLoop aggregates those causally available hidden states with lightweight attention residuals, removing training-loss spikes and keeping validation loss improving up to eight loops, which cuts perplexity by 3.4-17.1% against vanilla parallel loops for 0.3% extra decoding time.<br>
+  [Paper](https://arxiv.org/abs/2611.22426)
+
+- **[Latent Lattice Language Models](https://arxiv.org/abs/2611.21608)**<br>
+  Shivam Duggal, Zongze Wu, William T. Freeman, Antonio Torralba, Richard Zhang, Eli Shechtman · *arXiv 2026*<br>
+  Instead of adding depth or more latent reasoning steps, adds active computational states: per-layer horizontal latent streams that recur along time alongside the vertical residual stream, and that condition attention, KV writes, MLP computation and decoding. A 406M Lattice Transformer lowers validation perplexity from 15.41 to 14.40 on 20B FineWeb-Edu tokens, composes with hyper-connections and input residuals down to 13.61, and improves Mamba-2 and Gated DeltaNet hybrids at every tested native state size.<br>
+  [Paper](https://arxiv.org/abs/2611.21608)
+
+- **[Architectures and KV Replay for Depth-Recurrent Language Models](https://arxiv.org/abs/2611.19446)**<br>
+  Lucia Licakova, Niklas Schmidinger, Lukas Hauzenberger, Sebastian Böck, Sepp Hochreiter · *NeurIPS 2026 LIGHT Workshop*<br>
+  Compares ways of cutting loop-time KV memory inside one depth-recurrent framework: repeating a stack whose attention layers are mostly replaced by mLSTM or Gated DeltaNet blocks with periodic attention anchors kept, restricting recurrence to a dedicated workspace, and recurrent KV replay, where only selected iterations write KV states that later iterations reuse. Attention anchors must be frequent enough, and training the loop under the shared KV topology used at inference keeps quality close to a looped Transformer that caches every iteration separately.<br>
+  [Paper](https://arxiv.org/abs/2611.19446)
+
+- **[Rectified Looped Transformer](https://arxiv.org/abs/2611.16265)**<br>
+  Musheng Li, Jiawei Zhang, Ziyuan Liu, Yuantao Gu · *arXiv 2026*<br>
+  Replaces the usual loop feedback, next input equal to this loop output, with a linear interpolation between the current state and its prediction, spreading each state change across several loops. The authors prove uniformly bounded state magnitudes and reduced worst-case perturbation amplification, and at matched depths RLT reaches lower perplexity with no extra parameters or block evaluations, which also makes extrapolating over inference depth more stable.<br>
+  [Paper](https://arxiv.org/abs/2611.16265)
 
 - **[Loopback Transformer: Towards a Unified View of Residual Looped Transformers](https://arxiv.org/abs/2611.07226)**<br>
   Xuan Ouyang, Zefan Cai, Chenlong Zhang, Cheng Luo, Ke Wan, Junjie Hu · *arXiv 2026*<br>
@@ -535,7 +566,17 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 ### Latent Reasoning
 
 <details>
-<summary><strong>2026</strong> · 16 papers</summary>
+<summary><strong>2026</strong> · 18 papers</summary>
+
+- **[Latent Fact Composition under Next-Token Training](https://arxiv.org/abs/2611.21921)**<br>
+  Tianyi Zhang, Feiying Chen · *arXiv 2026*<br>
+  Asks whether a looped Transformer trained to predict every token can compose two facts whose intermediate entity appears in no two-hop training example: a looped, a standard and a DiscoLoop model answer almost none. The Baton family passes the intermediate entity into the second loop as a token embedding, which answers such questions almost perfectly when trained on the answer alone, and the paper reduces success and failure to three design conditions; under full next-token training accuracy rises and then declines, with the drop located in the second hop.<br>
+  [Paper](https://arxiv.org/abs/2611.21921)
+
+- **[Energy-Based Reasoners: Your Recurrent Reasoner Should Be an Energy-Based Model](https://arxiv.org/abs/2611.08977)**<br>
+  William Xingxu Chen, Alexi Gladstone, Zeyu Michael Li, Heng Ji, Yilun Du · *arXiv 2026*<br>
+  Learns an energy over latent reasoning states and casts each looped update as a gradient-descent step on it, so the energy both scores the current state and supplies a stopping signal; exploration-based training widens the landscape the model sees. Across four algorithmic reasoning benchmarks EBRs match or beat prior recurrent reasoners, reaching 99.9% on Sudoku-Extreme with 345x less inference compute, and on multi-solution tasks they cover more distinct valid solutions at near-100% single-sample accuracy.<br>
+  [Paper](https://arxiv.org/abs/2611.08977)
 
 - **[Present but Hard to Read: Probing Latent Reasoning with Minimal Pairs](https://arxiv.org/abs/2610.28498)**<br>
   Aur Shalev Merin · *arXiv 2026*<br>
@@ -656,7 +697,22 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 ### Adaptive Compute
 
 <details>
-<summary><strong>2026</strong> · 22 papers</summary>
+<summary><strong>2026</strong> · 25 papers</summary>
+
+- **[Rethinking Fixed-Horizon Latent Reasoning](https://arxiv.org/abs/2611.24001)**<br>
+  Tianxiang Chen, Jingyuan Zhou, Weiming Yang, Kaidi Yang · *arXiv 2026*<br>
+  Shows that running latent chain-of-thought to the full preset horizon can hurt: early loops build frontier reasoning states, while later loops mainly reorganise existing candidates and can weaken support for the gold one. The paper scores latent CoT by realised versus remaining constructive progress and estimates the latter online to adjust the horizon, gaining up to 7.2 accuracy points while cutting latent compute by up to 29.0% without retraining the model.<br>
+  [Paper](https://arxiv.org/abs/2611.24001)
+
+- **[Late Entry in Looped Language Models](https://arxiv.org/abs/2611.24576)**<br>
+  Ziqi Jin, Jiaxi Li, Weiwen Xu, Aixin Sun · *arXiv 2026*<br>
+  Inverts early exit: instead of halting shallow, new tokens skip the first passes and enter directly into the final K of T passes over a deep context cache, once a light fine-tune repairs the hidden-state norm mismatch at the entry boundary. Wake verification folds the finished full-depth states of earlier tokens into the existing output GEMM, so greedy-exact decoding at tau = 0 matches block decoding, and on Huginn-3.5B its speedup grows to 8.4x at T = 64.<br>
+  [Paper](https://arxiv.org/abs/2611.24576)
+
+- **[Depth as a Candidate Source: Portfolio Allocation for Recurrent Test-Time Scaling in Large Language Models](https://arxiv.org/abs/2611.12293)**<br>
+  Chaoyuan Hao, Wentao Yue, Yanyan Wu et al. · *arXiv 2026*<br>
+  Finds that deeper recurrence can discard correct solutions already found at shallower depths, and that the success sets of different depths are broadly non-nested, so depth decides which candidates are reachable rather than only how much compute is spent. Depth Portfolio Allocation therefore treats recurrent test-time scaling as budgeted allocation across depth-specific candidate sources; mixed-depth portfolios widen oracle coverage at matched candidate counts on GSM8K, SVAMP, MultiArith and MBPP.<br>
+  [Paper](https://arxiv.org/abs/2611.12293)
 
 - **[Do Halting Heads Really Save Compute in Looped Language Models?](https://arxiv.org/abs/2610.32246)**<br>
   Tsung-Han Wu, Minsuk Heo, Kenny Tan · *arXiv 2026*<br>
@@ -797,7 +853,22 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 ### Training & Analysis
 
 <details>
-<summary><strong>2026</strong> · 32 papers</summary>
+<summary><strong>2026</strong> · 35 papers</summary>
+
+- **[Proximal Targets: Training Looped Refiners on Problems with Many Correct Answers](https://arxiv.org/abs/2611.22737)**<br>
+  Syed Affan Daimi · *arXiv 2026*<br>
+  Shows that training every pass of a looped refiner toward one stored answer imposes a loss floor no capacity can remove when a puzzle has many correct answers, and that the minimising pass blends them into an invalid grid. The proximal target instead trains each pass toward the correct answer nearest to its own input, which makes correct answers fixed points; with the same 1.7M-parameter network it solves 98.8% of Sudoku with 2-64 answers instead of 2.5%, 93.8% of puzzles with more than 10,000 answers, and 90.9% of 200-node 3-colourings after training on at most 50 nodes.<br>
+  [Paper](https://arxiv.org/abs/2611.22737)
+
+- **[Latent Feedback Is a Compute and Data Amplifier](https://arxiv.org/abs/2611.20404)**<br>
+  Benhao Huang, Chaitanya Dwivedi, Xuezhe Ma, Alexander Moreno, Hector Liu · *arXiv 2026*<br>
+  Tests latent feedback, which feeds the top-layer state of one token into the next token input, against a vanilla Transformer that spends the same compute on extra epochs, across a grid of model sizes, unique data and repetitions. Latent feedback makes every FLOP and every token count for more except when unique data is scarce relative to model size; one scaling law fitted from 60M to 271M predicts a held-out 778M loss within 0.3%, with savings of up to 48% of compute and 47% of unique data.<br>
+  [Paper](https://arxiv.org/abs/2611.20404)
+
+- **[Best-of-Depth: Learning Exploratory Dynamics in Looped Transformers](https://arxiv.org/abs/2611.04663)**<br>
+  Shota Takashiro, Takeshi Kojima, Masanori Koyama, Kohei Hayashi, Yusuke Iwasawa · *arXiv 2026*<br>
+  Trains the trajectory of a looped Transformer as a candidate set instead of supervising only its last iteration: the loss takes the best prediction at any depth, so intermediate loops are rewarded for holding different partial solutions rather than all converging on one answer. On N-Queens it lifts solution coverage from 45.75% at the final depth to 91.03% across the trajectory, and fine-tuning a pretrained looped model with this objective also improves code generation.<br>
+  [Paper](https://arxiv.org/abs/2611.04663)
 
 - **[Cross-Loop Query Handoff: How Later Loops Redirect Two-Hop Retrieval in the Ouro Looped Language Models](https://arxiv.org/abs/2610.34639)**<br>
   Ziyu Mu, Zehua Wang · *arXiv 2026*<br>
@@ -983,7 +1054,22 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 ### Systems & Applications
 
 <details>
-<summary><strong>2026</strong> · 41 papers</summary>
+<summary><strong>2026</strong> · 44 papers</summary>
+
+- **[LoopCache: Accelerating Long-Context Self-Speculative Decoding for Looped Transformers](https://arxiv.org/abs/2611.24301)**<br>
+  Zizhuo Fu, Haochen Huang, Shengxuan Qiu et al. · *arXiv 2026*<br>
+  Targets two weaknesses of wave-style self-speculative decoding for looped Transformers: drafts fixed at a few loops go stale, and batching tokens from different loops multiplies KV traffic in long contexts. LoopCache refreshes drafts at intermediate loops using the correlation between prediction switches and output confidence, and rotates through loop-specific KV caches so each step touches one loop cache while still verifying losslessly at the nearest matching cycle, averaging 10.25x and 14.56x speedups over WaveFront Decoding and LoopSpec.<br>
+  [Paper](https://arxiv.org/abs/2611.24301)
+
+- **[LoopFill: Pipelined Multi-Token Speculative Decoding for Looped Transformers](https://arxiv.org/abs/2611.19649)**<br>
+  Siqi Zhu, Suozhi Huang, Yi Zhao, Jiaxuan You · *arXiv 2026*<br>
+  Merges the two drafters that pipelined self-speculative decoding usually keeps apart: a suffix lookup can extend a shallow-loop prediction inside the same draft tree, so several future tokens enter the loop pipeline together instead of waiting for one token to reach drafting depth. Verification still runs at full depth, and across seven benchmarks LoopFill averages 5.85x over greedy decoding on Ouro-2.6B and 5.13x on Huginn-3.5B, 40% and 25% above LoopAhead.<br>
+  [Paper](https://arxiv.org/abs/2611.19649)
+
+- **[Looping Deeper Without Growing the KV Cache: Recurrent Depth for Causal Encoder-Decoders](https://arxiv.org/abs/2611.13378)**<br>
+  Jiaqi Leng, Minshen Zhang, Zhaofeng Sun et al. · *arXiv 2026*<br>
+  Puts the recurrence in the encoder of a causal encoder-decoder so that global KV representations are refined across rounds instead of re-read from static decoder projections, and trains the loop under stochastic recurrence depth so every round can reuse the last round KV cache. The model matches an unlooped one in memory while recovering 86-93% of a looped Transformer gain with one sixth of its global KV; looping 552B DeepSeek-V4.1-Flash eight rounds on one 4xGB200 node fits 38 requests of 128K tokens and serves 3.6x higher throughput on 8K-token prompts.<br>
+  [Paper](https://arxiv.org/abs/2611.13378)
 
 - **[LoopFold: Parallelizing Recurrent Depth in Looped Transformers](https://arxiv.org/abs/2610.35556)**<br>
   Feichen Song et al. · *arXiv 2026*<br>
@@ -1038,177 +1124,4 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 - **[Scaling RNA Foundation Models through Iterative Refinement](https://arxiv.org/abs/2610.13106)**<br>
   Pengan Chen et al. · *arXiv 2026*<br>
   Eco-RNA is an 80M-parameter RNA foundation model whose shared, input-conditioned Transformer core is applied repeatedly, making inference depth a post-training knob; increasing refinement from one to four iterations improves RNAGym fitness prediction at fixed parameters.<br>
-  [Paper](https://arxiv.org/abs/2610.13106)
-
-- **[ResidualQuant: KV Cache Quantization for Looped Transformers with 2-Bit Residuals](https://arxiv.org/abs/2610.10381)**<br>
-  Heejun Kim et al. · *arXiv 2026*<br>
-  KV states in looped Transformers repeat across loops. ResidualQuant stores the final loop at higher precision and encodes earlier loops as INT2 residuals with least-squares scaling and rotations, plus loop-wise mixed precision, cutting KV storage 80.7% while keeping accuracy near BF16.<br>
-  [Paper](https://arxiv.org/abs/2610.10381)
-
-- **[Looped Diffusion Transformer](https://arxiv.org/abs/2609.40305)**<br>
-  Yong Xien Chng et al. · *arXiv 2026*<br>
-  Looped-DiT repeats shared Transformer blocks inside each denoising step and stabilizes the extra depth with deep supervision across loops plus self-modulating attention. A 260M looped model surpasses a 6.5x larger baseline while using 4.9x less inference compute.<br>
-  [Paper](https://arxiv.org/abs/2609.40305)
-
-- **[Depth through recurrence: Looped transformers for flow-matching TTS](https://arxiv.org/abs/2609.29768)**<br>
-  Jiabao Ai et al. · *arXiv 2026*<br>
-  A controlled study of weight reuse in flow-matching TTS: seven loop layouts all execute 18 block calls per evaluation, and applying each of nine blocks twice preserves intelligibility and speaker similarity while using 47.1% fewer parameters than the unshared baseline.<br>
-  [Paper](https://arxiv.org/abs/2609.29768)
-
-- **[FlashLoop: Fast and Memory-Efficient Looped Transformers via Lazy Updates](https://arxiv.org/abs/2609.29812)**<br>
-  Wanqi Yang, Shiwei Liu · *arXiv 2026*<br>
-  Most loop-time work is redundant: state changes concentrate on few tokens, attention-output differences on a sparse stable set of key columns, and inter-loop KV residuals quantize well. FlashLoop exploits these with lazy updates to cut loop FLOPs and KV memory while preserving accuracy.<br>
-  [Paper](https://arxiv.org/abs/2609.29812) · [Code](https://github.com/Superone77/FlashLoop) · [Project](https://superone77.github.io/FlashLoop/)
-
-- **[Attention Routing Stabilizes Early: Working-Set Inference for Recurrent Language Models](https://arxiv.org/abs/2609.27373)**<br>
-  Ke Wan, Chen Chen · *arXiv 2026*<br>
-  Attention routing in looped LMs stabilizes well before hidden states do. WISE discovers a block-structured working set with full attention in early loops, then reuses that support while keeping attention weights and recurrent refinement dynamic, reaching 1.76x late-step attention speedup at 4K context.<br>
-  [Paper](https://arxiv.org/abs/2609.27373)
-
-- **[WaveFront Decoding: Parallelized Self-Speculative Decoding for Looped Language Models](https://arxiv.org/abs/2609.23033)**<br>
-  Hyeongju Ha, Jae-Joon Kim · *arXiv 2026*<br>
-  Wavefront Decoding packs token states from mixed recurrence depths into a single recurrent-block call, arranging them as a diagonal wavefront so shallow-depth drafting and full-depth verification run concurrently and the draft-then-verify phases of self-speculation disappear.<br>
-  [Paper](https://arxiv.org/abs/2609.23033)
-
-- **[LoopSpec: Pipelined Self-Speculative Decoding for Looped Transformers](https://arxiv.org/abs/2609.17184)**<br>
-  SangLyul Cho et al. · *arXiv 2026*<br>
-  LoopSpec drafts tokens from early recurrent states and verifies them at full depth, pipelining future-token drafting with current-token verification and adding a selective second proposal from deeper loops, giving lossless self-speculative decoding without any auxiliary draft model.<br>
-  [Paper](https://arxiv.org/abs/2609.17184)
-
-- **[Recirculation](https://arxiv.org/abs/2608.17981)**<br>
-  Michael C. Mozer et al. · *arXiv 2026*<br>
-  Adds a distinct inference-time recurrence to frozen foundation models during prefill, targeting belief-state tracking without generation-time latency.<br>
-  [Paper](https://arxiv.org/abs/2608.17981)
-
-- **[Looped Language Models Improve Compositional Tool Calling](https://arxiv.org/abs/2608.18171)**<br>
-  Andrei Cristian Popescu et al. · *arXiv 2026*<br>
-  Evaluates recurrent depth on tool-use tasks and finds its clearest gains when calls have compositional or dependency structure.<br>
-  [Paper](https://arxiv.org/abs/2608.18171)
-
-- **[Nanbeige4.2-3B on Apple Silicon: Fixing Deployment Bugs and Decreasing Looped Transformer Memory Overhead](https://arxiv.org/abs/2608.13987)**<br>
-  John T. Halloran · *arXiv 2026*<br>
-  Audits practical deployment failures of a looped agentic model on Apple Silicon and uses chunked prefill to reduce the peak attention-memory penalty from its second stack pass.<br>
-  [Paper](https://arxiv.org/abs/2608.13987) · [Code](https://github.com/johnhalloran321/Nanbeige4.2-3B-mps-fix)
-
-- **[MergeOver: Post-Training Token Merging for Recursive Vision Transformers](https://arxiv.org/abs/2608.13141)**<br>
-  Junseo Kim et al. · *arXiv 2026*<br>
-  Adds retraining-free token merging to a recursively weight-shared vision Transformer while tracking spatial unmerging constraints across repeated stages.<br>
-  [Paper](https://arxiv.org/abs/2608.13141)
-
-- **[Depth-Adaptive Inference of Looped Language Models via Continuous Depth Batching](https://arxiv.org/abs/2608.09444)**<br>
-  Kristian Schwethelm et al. · *arXiv 2026*<br>
-  Turns variable recurrent depth into a serving primitive by continuously batching examples that enter and leave at different loop counts.<br>
-  [Paper](https://arxiv.org/abs/2608.09444)
-
-- **[bioMoR: Biology-Guided Mixture-of-Recursions for Effective Genomic Learning](https://arxiv.org/abs/2608.06727)**<br>
-  Koushik Howlader et al. · *arXiv 2026*<br>
-  Injects biological graphs into token embeddings, attention bias, and the recursion router, allocating deeper computation to genes and pathways according to structured knowledge.<br>
-  [Paper](https://arxiv.org/abs/2608.06727)
-
-- **[Nanbeige4.2-3B: Unlocking Agentic Capabilities in a Compact Model](https://arxiv.org/abs/2607.22083)**<br>
-  Nanbeige Lab et al. · *arXiv 2026*<br>
-  Pretrains a compact 3B agentic model on a looped Transformer that reuses its layer stack, pairing recurrent depth with a large-scale agentic post-training pipeline.<br>
-  [Paper](https://arxiv.org/abs/2607.22083)
-
-- **[Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers](https://arxiv.org/abs/2607.15456)**<br>
-  James O'Neill, Fergal Reid · *arXiv 2026*<br>
-  Compresses the trajectory of keys and values across loop iterations into a compact latent representation for higher serving capacity.<br>
-  [Paper](https://arxiv.org/abs/2607.15456)
-
-- **[LoopCoder: Scaling Code Intelligence via Looped Language Models](https://aclanthology.org/2026.findings-acl.796/)**<br>
-  Jian Yang et al. · *Findings of ACL 2026*<br>
-  Scales looped pretraining and post-training to a 40B-total/8B-active coding model, using dense-to-loop initialization for stability.<br>
-  [Paper](https://aclanthology.org/2026.findings-acl.796/) · [Code](https://github.com/CSJianYang/LoopCoder)
-
-- **[Soft Mixture-of-Recursions: Going Deeper with Recursive Vision Transformers](https://arxiv.org/abs/2607.00774)**<br>
-  Sang In Lee, Jihun Park · *arXiv 2026*<br>
-  Learns token-wise mixtures over every recursion output so recursive vision Transformers can exploit intermediate states instead of reading only the final visit.<br>
-  [Paper](https://arxiv.org/abs/2607.00774)
-
-- **[LoopCoder-v2: Only Loop Once for Efficient Test-Time Computation Scaling](https://arxiv.org/abs/2606.18023)**<br>
-  Jian Yang et al. · *arXiv 2026*<br>
-  Compares parallel-loop counts at 7B scale and finds a non-monotonic trade-off: one repeated pass captures most gains before positional mismatch dominates.<br>
-  [Paper](https://arxiv.org/abs/2606.18023) · [Code](https://github.com/CSJianYang/LoopCoder)
-
-- **[Rethinking Depth: A study of the Recursive-Transformer for Speech Recognition](https://arxiv.org/abs/2606.09357)**<br>
-  Thomas Rolland et al. · *arXiv 2026*<br>
-  Systematically studies where and how much recursion to use in speech encoders, finding competitive recognition with substantially fewer unique parameters in limited-loop regimes.<br>
-  [Paper](https://arxiv.org/abs/2606.09357)
-
-- **[Test-Time Compute Scaling for ASR with Depth-Conditioned Looped Transformers](https://arxiv.org/abs/2606.04678)**<br>
-  Yacouba Kaloga et al. · *arXiv 2026*<br>
-  Turns recurrent encoder depth into an inference budget for speech recognition using sparse CTC checkpoints, depth conditioning, and delayed posterior feedback.<br>
-  [Paper](https://arxiv.org/abs/2606.04678)
-
-- **[Déjà View: Looping Transformers for Multi-View 3D Reconstruction](https://arxiv.org/abs/2605.30215)**<br>
-  Alessandro Burzio et al. · *arXiv 2026*<br>
-  Makes progressive multi-view reconstruction explicit by recurrently applying one Transformer block, exposing refinement count as an inference-time compute knob.<br>
-  [Paper](https://arxiv.org/abs/2605.30215)
-
-- **[Training-Free Looped Transformers](https://arxiv.org/abs/2605.23872)**<br>
-  Lizhang Chen et al. · *arXiv 2026*<br>
-  Loops frozen mid-stack layers at inference as damped numerical refinement steps, showing that useful recurrence can sometimes be added without training.<br>
-  [Paper](https://arxiv.org/abs/2605.23872)
-
-- **[LT2: Linear-Time Looped Transformers](https://arxiv.org/abs/2605.20670)**<br>
-  Chunyuan Deng et al. · *arXiv 2026*<br>
-  Combines recurrent depth with linear-time sequence mixing to prevent long-context attention cost from multiplying across loops.<br>
-  [Paper](https://arxiv.org/abs/2605.20670)
-
-- **[Memory-Efficient Looped Transformer: Decoupling Compute from Memory in Looped Language Models](https://arxiv.org/abs/2605.07721)**<br>
-  Victor Conchello Vendrell et al. · *arXiv 2026*<br>
-  Redesigns recurrent inference so adding loop computation does not force proportional growth in stored intermediate state.<br>
-  [Paper](https://arxiv.org/abs/2605.07721)
-
-- **[LoopQ: Quantization for Recursive Transformers](https://arxiv.org/abs/2605.16343)**<br>
-  Rui Fang et al. · *arXiv 2026*<br>
-  Identifies loop-specific post-training quantization failures and combines scaling, state alignment, and trajectory-aware optimization to limit recursively accumulated error.<br>
-  [Paper](https://arxiv.org/abs/2605.16343)
-
-- **[ELT: Elastic Looped Transformers for Visual Generation](https://arxiv.org/abs/2604.09168)**<br>
-  Sahil Goyal et al. · *arXiv 2026*<br>
-  Trains recurrent image and video generators with intra-loop self-distillation so one checkpoint supports elastic compute-quality trade-offs at inference.<br>
-  [Paper](https://arxiv.org/abs/2604.09168)
-
-- **[LA-Sign: Looped Transformers with Geometry-aware Alignment for Skeleton-based Sign Language Recognition](https://arxiv.org/abs/2603.29057)**<br>
-  Muxin Pu et al. · *arXiv 2026*<br>
-  Uses encoder-decoder recurrence to refine skeletal motion representations and adds geometry-aware cross-modal alignment for isolated sign-language recognition.<br>
-  [Paper](https://arxiv.org/abs/2603.29057)
-
-- **[Looping Back to Move Forward: Recursive Transformers for Efficient and Flexible Large Multimodal Models](https://arxiv.org/abs/2602.09080)**<br>
-  Ruihan Xu et al. · *arXiv 2026*<br>
-  Builds a multimodal recursive Transformer with modality-aware state alignment and supervision that encourages quality to improve with each loop.<br>
-  [Paper](https://arxiv.org/abs/2602.09080)
-
-- **[Recurrent-Depth VLA: Implicit Test-Time Compute Scaling of Vision-Language-Action Models via Latent Iterative Reasoning](https://arxiv.org/abs/2602.07845)**<br>
-  Yalcin Tur et al. · *arXiv 2026*<br>
-  Applies recurrent-depth latent refinement to embodied vision-language-action policies so inference compute can scale without longer action traces.<br>
-  [Paper](https://arxiv.org/abs/2602.07845) · [Code](https://github.com/rd-vla/rd-vla) · [Project](https://rd-vla.github.io/)
-
-- **[LoopViT: Scaling Visual ARC with Looped Transformers](https://arxiv.org/abs/2602.02156)**<br>
-  Wen-Jie Shu et al. · *arXiv 2026*<br>
-  Builds an 18M-parameter recurrent vision Transformer for ARC-AGI and uses predictive entropy as a parameter-free stopping signal for adaptive visual reasoning depth.<br>
-  [Paper](https://arxiv.org/abs/2602.02156) · [Code](https://github.com/WenjieShu/LoopViT)
-
-</details>
-
-<details>
-<summary><strong>2025</strong> · 1 paper</summary>
-
-- **[Parallel Loop Transformer for Efficient Test-Time Computation Scaling](https://arxiv.org/abs/2510.24824)**<br>
-  Bohong Wu et al. · *arXiv 2025*<br>
-  Overlaps loop steps across tokens and combines first-loop KV sharing with gated sliding-window attention to reduce sequential latency and cache overhead.<br>
-  [Paper](https://arxiv.org/abs/2510.24824)
-
-</details>
-
-[↑ Back to catalog](#complete-catalog)
-
-<a id="safety--monitoring"></a>
-
-### Safety & Monitoring
-
-<details>
-<summary><strong>2026</strong> · 5 papers</summary>
-
-- **[Monitoring latent rea
+  [Paper](https://a

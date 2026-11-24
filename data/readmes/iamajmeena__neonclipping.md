@@ -30,7 +30,7 @@ NeonClipping turns long YouTube / Twitch / Kick videos (or your own MP4) into ve
 
 ![UI](docs/neonclipping-ui.jpg)
 
-📘 **Guides (Hindi + English, PDF):** [docs/NeonClipping-Guide-EN-HI.pdf](docs/NeonClipping-Guide-EN-HI.pdf)  
+📘 **Guides (Hindi + English, PDF):** [English](docs/NeonClipping-Guide-English.pdf) · [हिंदी](docs/NeonClipping-Guide-Hindi.pdf)  
 🤖 **Let an AI agent install it for you:** copy [docs/NEONCLIPPING-AGENT-SETUP-PROMPT.txt](docs/NEONCLIPPING-AGENT-SETUP-PROMPT.txt) into Claude Code, Codex CLI or Cursor.
 
 ## How it finds good moments
@@ -89,7 +89,7 @@ Every candidate moment is scored from several signals, then the best ones are ke
 - **Hinglish captions**: Hindi speech is written in English letters ("kya haal hai bhai") by default. Pick Hinglish / हिंदी / English explicitly if you like. Fast uses available source captions; Best Hindi explicitly uses local large-v3 recognition and can be slower on small GPUs. Missing source captions require local recognition.
 - **Make clips uses your own setup**: facecam preset or the boxes you draw in step 03.
 - Optical-flow motion + audio highlight ranking, frame-accurate NVENC export (falls back to x264).
-- Nothing leaves your computer. The server binds to `127.0.0.1` only.
+- Processing and the clip library are local. Online imports, optional AI, stock search and explicit publishing contact their selected services. The desktop server binds to `127.0.0.1` by default.
 
 ## Change clips after generating them
 
@@ -265,7 +265,7 @@ Cookies are only read when you set one of the options above; NeonClipping never 
 - Auto-caption accuracy follows the source: YouTube's auto captions are imperfect, especially Hinglish.
 - Deep mode was verified on a short video only; on multi-hour videos it downloads the whole file first and is slow by design.
 - **Live clipping:** one live session at a time, and the computer must stay awake and online while it records. Unattended creator-watch sessions stop after 3 hours or when less than 8 GB of disk is free (both configurable above); a manual session does not.
-- **No auto-posting or scheduling.** NeonClipping exports the MP4 and SRT to your computer and stops there on purpose: posting to Instagram/YouTube/TikTok needs your accounts and approved API access, which would break "no account, nothing leaves your computer". Upload with the platform's own app or a scheduler you trust.
+- **Optional publishing:** My clips → Publish a clip connects directly to your own YouTube, Instagram or TikTok account. The local queue handles schedules. See the platform setup below.
 - **Caption languages:** Hinglish, Hindi, English and 50 more (Whisper). Accuracy is best for widely spoken languages. Captions are drawn with fonts installed on your computer, so scripts without a font may show empty boxes, and right-to-left languages (Arabic, Persian, Hebrew, Urdu) have basic support only. When YouTube provides captions in the spoken language they are used instead of the speech model.
 - Facecam presets are starting points, not detection: if you pick Bottom-right but the cam is bottom-left, the top half of the clip will show the wrong area. Pick the right corner or draw your own boxes.
 
@@ -302,4 +302,27 @@ Pick **Heading look** in step 04: *Impact* (default: big bold text, one accent w
 
 ## Cloud AI (optional)
 
-A slow PC without a GPU can use a cloud model instead of Ollama for scoring moments and writing titles and hooks. Open **Cloud AI (optional)** on the page, pick a provider (Groq, OpenRouter, Gemini, OpenAI or LM Studio), paste your key, press **Test connection**, tick **Use Cloud AI** and Save. Only the *text* of candidate clips is sent to your provider; videos, audio and frames never leave your PC. The key is stored in `data/llm.json` on your computer and is never shown again. Speech-to-text still uses YouTube's captions or the local model. Environment variables `NEONCLIPPING_LLM_BASE_URL`, `NEONCLIPPING_LLM_MODEL` and `NEONCLIPPING_LLM_KEY` also work.
+A slow PC without a GPU can use a cloud model instead of Ollama for scoring moments and writing titles and hooks. Open **Cloud AI (optional)** on the page, pick a provider (Groq, OpenRouter, Gemini, OpenAI or LM Studio), paste your key, press **Test connection**, tick **Use Cloud AI** and Save. Scoring sends candidate transcript text. Timeline planning sends the selected transcript and edit instruction. These AI calls send text only. The key is stored in `data/llm.json` on your computer and is never shown again. Speech-to-text still uses YouTube's captions or the local model. Environment variables `NEONCLIPPING_LLM_BASE_URL`, `NEONCLIPPING_LLM_MODEL` and `NEONCLIPPING_LLM_KEY` also work.
+
+### Local MCP connector
+
+Start NeonClipping, then configure your MCP client with command `uv` and arguments `run`, `--script`, and the absolute path to `neon_mcp.py`. The stdio connector uses the local server on port 8770 (override with NEONCLIPPING_PORT). It provides create_clips, batch_status, resume_batch, list_clips, export_clip and download_clip. Downloads are written to your Downloads/NeonClipping folder.
+
+
+### Timeline studio and batch recovery
+
+In **My clips → Timeline studio**, add a library export, the current source or a local video. Select a segment, set its in and out points, or seek and split at the playhead. Move segments up to reorder. Undo and redo apply to the current editing session. The cut list survives a page reload in the same browser. Render and review produces the final 1080×1920 MP4. Export parts writes a separate numbered video for each segment.
+
+Prepare a transcript to plan a topic, recap, numbered series or teaser. Edit by instruction can select, reorder, punch in on a passage or apply the selected B-roll source. AI plans use the text model selected in NeonClipping. Manual cuts, spoken um/uh removal, speaker estimation and beat effects also work locally. Select B-roll for a segment, or configure optional stock search with NEONCLIPPING_PEXELS_KEY. Music is optional and ducks under the source audio. Review the rendered MP4 for the complete audio, freezes and effects mix.
+
+**Resume interrupted batch** restores the last failed Make job in this browser. Queue Retry also reuses a saved checkpoint. Saved source metadata, audio and selected passages are reused as available. Missing files must be recovered or the batch started anew.
+
+### Direct platform publishing
+
+Set the developer application credentials on the PC running NeonClipping, then open **My clips → Publish a clip → Connect account**. For each enabled platform, replace PLATFORM in NEONCLIPPING_PLATFORM_CLIENT_ID and NEONCLIPPING_PLATFORM_CLIENT_SECRET with YOUTUBE, INSTAGRAM or TIKTOK. Use the TikTok client key as its client ID. Register the exact callback URL. The default is http://127.0.0.1:8770/social-callback. Set NEONCLIPPING_PLATFORM_REDIRECT_URI for a different approved callback. On a custom redirect, paste the complete returned URL into Finish connection. The local app exchanges the code and stores renewable credentials in the OS credential store. An optional NEONCLIPPING_PLATFORM_TOKEN overrides the stored connection. Update an expired environment token yourself.
+
+- YouTube uses the upload and read-only scopes. Choose the channel visibility before submitting.
+- Instagram uses Instagram Login for professional accounts, with basic, publish and insights permissions. Give Meta a publicly accessible HTTPS URL for the exact exported Reel. The local server does not host that file publicly.
+- TikTok uses Login Kit and the Content Posting API. Available visibility choices come from the connected creator account. Configure the scopes user.info.basic, video.publish and video.list. For a public rollout, confirm your app's platform approvals.
+- The queue must be running at the scheduled time. A late start runs due jobs once the queue resumes. Cancel a waiting post in the publishing panel. An ambiguous submission is marked for checking on the platform to avoid an automatic duplicate.
+- Refresh metrics on submitted posts. After at least six sufficiently viewed posts on one account and two examples in a duration bucket, comparable engagement can adjust future candidate ranks by at most three percentage points. Local star ratings continue to work separately.

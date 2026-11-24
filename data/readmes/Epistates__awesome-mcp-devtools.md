@@ -115,8 +115,8 @@ If an SDK is part of a monorepo, its popularity is counted as 0 stars.
 
 ### Rust
 
-- [linux-china/mcp-rs-template](https://github.com/linux-china/mcp-rs-template) 🦀 - MCP CLI server template for Rust
 - [Epistates/TurboMCP](https://github.com/Epistates/turbomcp) 🦀 - TurboMCP SDK: Enterprise MCP SDK
+- [linux-china/mcp-rs-template](https://github.com/linux-china/mcp-rs-template) 🦀 - MCP CLI server template for Rust
 - [poem-web/poem#poem-mcpserver](https://github.com/poem-web/poem/tree/master/poem-mcpserver) 🦀 - MCP Server implementation for Poem
 - [markndg/mcp-probe](https://github.com/markndg/mcp-probe) 🦀 - Rust CLI that validates conformance, schema correctness, and capability negotiation against any MCP server.
 
@@ -192,9 +192,12 @@ If an SDK is part of a monorepo, its popularity is counted as 0 stars.
 - [loopwork-ai/Companion](https://github.com/loopwork-ai/Companion) - Companion is a utility for testing and debugging your MCP servers on macOS, iOS, and visionOS.
 - [garagon/aguara](https://github.com/garagon/aguara) 🏎️ - Static security scanner for MCP servers and AI agent skills. 173 detection rules, prompt injection, credential leaks, taint tracking. Scans configs and tool descriptions before deployment.
 - [DSHCorrectover/correctover-scan](https://github.com/DSHCorrectover/correctover-scan) 📇 - Zero-config CLI security scanner for MCP configs across Claude Desktop, Cursor, VS Code, and generic mcp.json. Checks credential exposure, SSRF protection, auth and transport encryption, with JSON/SARIF output for CI. Runs via `npx correctover-scan`.
+- [Berserk-hub150/skillhawk](https://github.com/Berserk-hub150/skillhawk) 📇 - Static scanner for Agent Skills, SKILL.md and MCP configs; flags risky instructions without execution.
 - [greynewell/mcpbr](https://github.com/greynewell/mcpbr) 🐍 - Benchmark runner for evaluating MCP server performance and agentic capabilities.
 - [realwigu/mcp-doctor](https://github.com/realwigu/mcp-doctor) 📇 - Zero-config CLI that auto-discovers MCP configs across Claude Code, Cursor, VS Code, Windsurf, and Claude Desktop. Tests connections via JSON-RPC handshake, audits for security issues, and benchmarks latency.
 - [markndg/mcp-probe](https://github.com/markndg/mcp-probe) 🦀 - Rust CLI that validates conformance, schema correctness, and capability negotiation against any MCP server.
+- [isokron-ai/mcp-writecheck-action](https://github.com/isokron-ai/mcp-writecheck-action) 📇 - GitHub Action that runs mcp-writecheck against an MCP server's write tools in CI and reports verdicts per requirement ID of the MCP Write-Safety Requirements (MWS 0.9) and per write path. Ships two Agent Skills for building and calling write tools.
+- [Frank-Masciopinto/ironheights](https://github.com/Frank-Masciopinto/ironheights) 📇 - Rule-based static scanner for agent skills (SKILL.md) and MCP configs: flags `curl|sh` or unpinned `npx` launches, literal secrets in `env` and broad filesystem roots, with file/line findings, SARIF and a GitHub Action. Also runs as a local MCP server (`npx -y ironheights mcp`) that checks a skill before install and pins MCP tool descriptions to flag drift.
 
 ### Authorization Testing
 > Resources for testing MCP servers with authentication and authorization
@@ -206,6 +209,7 @@ Public test endpoints:
 - [Asana MCP Server](https://mcp.asana.com/sse) - Production SSE endpoint for testing OAuth flows
 - [Sentry MCP Server](https://mcp.sentry.dev/sse) - Production SSE endpoint for testing OAuth flows  
 - [Atlassian MCP Server](https://mcp.atlassian.com/v1/sse) - Production SSE endpoint for testing OAuth flows (requires allowlisting)
+- [Scalekit MCP Server](https://mcp.scalekit.com/) - Production Streamable HTTP endpoint for testing OAuth 2.1 flows: unauthenticated `initialize` returns 401 with `WWW-Authenticate` pointing at `/.well-known/oauth-protected-resource`
 - [NotFair](https://notfair.co) - Google Ads MCP server. Connect Claude and AI agents to a Google Ads account: diagnose campaign performance, recommend optimizations, and execute approved changes via the Google Ads API. Source: github.com/nowork-studio/toprank. Free tier available.
 
 ## Libraries
@@ -226,6 +230,7 @@ Public test endpoints:
 
 - [adiom-data/grpcmcp](https://github.com/adiom-data/grpcmcp) 🏎️ - A MCP Server that allows access to gRPC API services.
 - [boilingdata/mcp-server-and-gw](https://github.com/boilingdata/mcp-server-and-gw) 📇 - An MCP stdio to HTTP SSE transport gateway
+- [devlab-group/agent-commerce](https://github.com/devlab-group/agent-commerce) 📇 - Self-hosted gateway that exposes existing HTTP APIs as MCP tools, and also over A2A and plain HTTP, with optional x402 or MPP payment per call.
 - [emicklei/mcp-log-proxy](https://github.com/emicklei/mcp-log-proxy) 🏎️ - An MCP proxy server that offers a Web UI to see the complete message flow.
 - [EvalsOne/MCP-Connect](https://github.com/EvalsOne/MCP-Connect) 📇 - A tiny tool that enables cloud-based AI services to access local Stdio based MCP servers via HTTP/HTTPS
 - [fangyinc/mcpport](https://github.com/fangyinc/mcpport) 🐍 - A lightweight gateway & registry for MCP servers with NAT traversal support, allowing edge devices to provide MCP services across networks. Features include WebSocket/SSE/HTTP endpoints, authentication, IPv6 support, and a CLI tool for easy registration of stdio-based MCP servers.
@@ -234,6 +239,7 @@ Public test endpoints:
 - [maximhq/bifrost](https://github.com/maximhq/bifrost) 🏎️ - Self-hosted AI gateway with MCP support, multi-provider routing, load balancing, virtual keys, and request logging.
 - [mcpjungle/MCPJungle](https://github.com/mcpjungle/MCPJungle) 🌳 - Self-hosted MCP Registry and Proxy for ai agents
 - [multi-mcp](https://github.com/kfirtoledo/multi-mcp) 🐍 - A flexible and dynamic Multi-MCP Proxy Server that acts as a single MCP server while connecting to and routing between multiple backend MCP servers over STDIO or SSE. Deployable on Kubernetes by exposing a single port, and supports dynamic addition and removal of MCP servers at runtime.
+- [sandbaseai/sandbase-harness](https://github.com/sandbaseai/sandbase-harness) 📇 - Local-first, self-hosted AI agent runtime and MCP bridge with sandboxed sessions, memory, credentials, audit/replay, and a local Console
 - [SecretiveShell/MCP-Bridge](https://github.com/SecretiveShell/MCP-Bridge) 🐍 – An openAI middleware proxy to use MCP in any existing openAI compatible client
 - [sparfenyuk/mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) 🐍 – An MCP stdio to SSE transport gateway
 - [TBXark/mcp-proxy](https://github.com/TBXark/mcp-proxy) 🏎️ - An MCP proxy server that aggregates multiple MCP resource servers through a single HTTP server
@@ -241,8 +247,10 @@ Public test endpoints:
 
 ### Development Tools
 
-- [bradsward/greenlight](https://github.com/bradsward/greenlight) 🐍 - Transparent stdio/HTTP proxy that logs every MCP message to JSONL, with a colorized live trace viewer and a stats command with a CI-usable exit code.
 - [Epistates/TurboMCPStudio](https://github.com/Epistates/TurboMCPStudio) 🦀 - Full Featured MCP Suite
+- [bradsward/greenlight](https://github.com/bradsward/greenlight) 🐍 - Transparent stdio/HTTP proxy that logs every MCP message to JSONL, with a colorized live trace viewer and a stats command with a CI-usable exit code.
+- [Continuum-AI-Corp/OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) 📇 - Records agent-provider traffic into a local trace library and serves it over MCP (six read-only tools: list, show, checkpoints, graph, replay, compare) so a previous run can be inspected, diffed, and replayed offline.
+- [daubesonntag-dotcom/daube-agent-bridge](https://github.com/daubesonntag-dotcom/daube-agent-bridge) 🐍 - Universal AI skill compiler and MCP bridge: compile one portable YAML capability spec into MCP plus OpenAI/Codex, Claude, Gemini, DeepSeek, Meta/Llama, and browser integration artifacts. Published in the official MCP Registry with reproducible MCPB releases.
 - [inercia/mcpshell](https://github.com/inercia/mcpshell) 🏎️ - Use shell scripts as MCP tools.
 - [ithena-one/ithena-cli](https://github.com/ithena-one/ithena-cli) 🏎️ - Wraps MCP commands to log interactions locally, facilitating debugging and interaction audits. Optional cloud.
 - [f/MCPTools](https://github.com/f/mcptools) 🏎️ - A command-line development tool for inspecting and interacting with MCP servers

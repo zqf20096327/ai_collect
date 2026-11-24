@@ -1,0 +1,140 @@
+# Coding Tools MCP Desktop
+
+A local-first **Rust + Tauri 2** application with a **React, TypeScript and Mantine** interface. It manages an external [Coding Tools MCP](https://github.com/xyTom/coding-tools-mcp) Python process. The Python server, MCP protocol, tools, permissions and OAuth implementation remain unchanged in their own repository.
+
+## First run
+
+1. Install a native desktop bundle, or build one below.
+2. Choose **Install recommended Core** in Settings, or **Use existing Core** in the new workspace wizard. Native bundles include the installer helper, so you do not need to install Python or uv yourself. Managed setup needs an internet connection to download a private Python 3.11 and the selected Core version. **Use existing Core** skips that download.
+3. Add a workspace folder. **Local only** is the default; no tunnel or account is needed.
+4. Start it and copy its MCP connection configuration. Local and public health are shown independently.
+
+The default `safe` core permission mode restricts command execution gates; it is **not a read-only workspace**. Switching to `trusted` is explicit.
+
+### Tool-call history compatibility
+
+The launcher sets the official core's documented telemetry opt-out (CODING_TOOLS_MCP_TELEMETRY=off and DO_NOT_TRACK=1). Local activity is separate from product analytics.
+
+History displays the core's real structured events, including tool name, timestamps, duration and outcome. It never fabricates calls or captures tool arguments/results.
+
+**The published PyPI `coding-tools-mcp==0.5.0` does not expose an event journal.** It supports launch/connect, but history is explicitly marked unavailable. An unchanged official core built from commit [`d7c2dda48bcedbd066c7dbc24a1b63205384d269`](https://github.com/xyTom/coding-tools-mcp/commit/d7c2dda48bcedbd066c7dbc24a1b63205384d269) supports `CODING_TOOLS_MCP_EVENT_LOG_DIR` and is covered by a separate integration test. To use that capability before a published release includes it, explicitly install your chosen official event-capable core and select its executable. The desktop does not silently substitute a Git build for the selected published release.
+
+## Remote access
+
+- **Local only:** loopback MCP, no public exposure.
+- **Quick Tunnel:** temporary Cloudflare address; changes after a restart. Requires bearer, URL-token or username/password authentication. It is not a stable OAuth endpoint.
+- **Named Tunnel:** a reusable HTTPS hostname. Use an existing tunnel token/hostname, or explicitly authorize `cloudflared tunnel login`, then create a named tunnel and DNS route in the guided UI. The latter requires a domain on your Cloudflare account. The app confirms before creating DNS and never silently replaces another route.
+- **FRP:** reuse an externally managed FRP route. The app does not manage `frpc`.
+
+### Authentication methods
+
+Public access always requires one of these; choose it in the workspace's Access settings.
+
+| Method | What the client sends | Use it when |
+| --- | --- | --- |
+| **Bearer token** (default) | `Authorization: Bearer <token>` | The client can set request headers. |
+| **Token in URL** | `https://…/mcp?token=<token>` | The client only accepts a URL. The whole URL is the secret; the same token is also accepted as a bearer header. |
+| **Username and password** | HTTP Basic (`Authorization: Basic …`); the username defaults to `ctc` | The client offers a username/password sign-in. |
+| **Browser sign-in (OAuth)** | OAuth flow with the workspace password | A fixed public address (Named Tunnel or FRP). |
+
+Empty credential fields are generated on save. **Copy configuration** on the Connections page produces the matching client entry, and **Show credentials** reveals the saved values.
+
+Bearer and OAuth are checked by the core. The core has no URL-token or Basic mode, so for those two the desktop answers on the workspace port itself, checks the credential in constant time, and forwards accepted requests to the core on a private loopback port with a bearer token the client never sees. The `?token=` value is removed before forwarding, so it does not reach core logs. `/.well-known/` discovery stays public, as it is with the core's own modes. The local endpoint uses the same method as the public one.
+
+Packaged builds prefer their bundled Core installer. For developer builds and the other native helpers, discovery first honors PATH, then checks `~/.local/bin` and standard Homebrew directories (`/opt/homebrew/bin` before `/usr/local/bin` in Apple Silicon builds; the reverse in Intel builds). Linux also checks `/usr/local/bin` and `/home/linuxbrew/.linuxbrew/bin`. Only uv, cloudflared and the default core receive these fallbacks. The app never sources shell profiles or workspace configuration to locate them. Explicit relative core executable paths and relative arguments are resolved from the workspace folder.
+
+Install [cloudflared](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/) separately. A failed tunnel leaves local MCP running. “Connected” means cloudflared connected; run diagnostics to verify public discovery. An authenticated MCP client must still complete its own authorization.
+
+A Cloudflare account certificate from browser login can manage that account's tunnels. Tunnel credentials are limited to one tunnel. These remain on the user's computer. Tokens are passed through the process environment rather than command-line arguments.
+
+## Development
+
+Requirements: Node.js 22.12+ (or supported newer LTS), Rust 1.88.0+, Python 3.11+ for the compatibility launcher/tests, and [Tauri platform prerequisites](https://v2.tauri.app/start/prerequisites/). The lockfile pins versions compatible with Rust 1.88.
+
+```sh
+npm ci
+npm run tauri dev
+```
+
+Vite ignores Rust's `target/` tree. If an existing Windows checkout still
+reports `EBUSY` from a locked build directory, set `CARGO_TARGET_DIR` to a
+directory outside the checkout before running the dev command, for example
+`$env:CARGO_TARGET_DIR = Join-Path $env:LOCALAPPDATA 'ctm-desktop-build'` in PowerShell.
+
+Build native bundles with the verified installer sidecar:
+
+```sh
+python scripts/prepare-bundled-uv.py
+npm run tauri build -- --config src-tauri/gen/runtime-installer/tauri-runtime.json -- --locked
+```
+
+The staging script pins and verifies the official [Astral uv release](https://github.com/astral-sh/uv/releases/tag/0.13.7) for the Rust host target. Plain developer builds omit the sidecar and can use an external [uv](https://docs.astral.sh/uv/getting-started/installation/) or an existing Core instead.
+
+Headless manager tests do not require GTK/WebKit or a desktop session:
+
+```sh
+cargo test -p desktop-manager --locked
+cargo clippy -p desktop-manager --all-targets --locked -- -D warnings
+npm run typecheck
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+python -m pip install -e '.[dev]'
+python -m unittest discover -s tests -p 'test_*.py'
+make check
+```
+
+The native review-bundle matrix covers Linux x86_64, macOS Apple Silicon (aarch64), macOS Intel (x86_64), and Windows x64. Check the current PR results before using its artifacts. These are separate architecture-specific packages, not a universal macOS binary. No Windows ARM or Linux ARM installer validation is claimed.
+
+The browser-only development preview explicitly has **no native backend**. It never presents sample data as live service status.
+
+### Real external-core acceptance
+
+The ignored test starts the selected external executable in a temporary workspace, performs MCP initialize/tools-list/successful-and-failed read-file calls, checks real history or capability unavailability, and verifies process/port cleanup.
+
+```sh
+# Published release: launch/connect works; history must be unavailable.
+DESKTOP_EXPECT_ACTIVITY=false \
+DESKTOP_CORE_COMMAND_JSON='["/absolute/path/to/published/coding-tools-mcp"]' \
+cargo test -p desktop-manager official_core_mcp_acceptance -- --ignored
+
+# Explicitly selected, unchanged event-capable official core.
+DESKTOP_EXPECT_ACTIVITY=true \
+DESKTOP_CORE_COMMAND_JSON='["/absolute/path/to/event-capable/coding-tools-mcp"]' \
+cargo test -p desktop-manager official_core_mcp_acceptance -- --ignored
+```
+
+CI covers Linux/macOS/Windows manager/native builds, Python packaging, frontend rendering/flows, and both exact official core fixtures. A green headless test is not a claim that native installers, tray integration or Cloudflare authorization were tested on every OS.
+
+## Architecture and operations
+
+- `crates/desktop-manager`: Rust configuration, core adapter, process lifecycle, structured history, bounded logs, diagnostics and tunnel management; independently testable without Tauri.
+- `src-tauri`: a small typed IPC surface, native folder picker/opener, system tray, single instance and shutdown handling.
+- `src`: React/TypeScript UI. Forms retain drafts across polling. Copy actions do not save configuration.
+- `mcp_desktop_client`: compatibility package preserving `coding-tools-mcp-desktop` and `mcp_desktop_client.app:main`. It launches an already installed native executable and never downloads software. `pip install` alone does not install a GUI. Set `CODING_TOOLS_MCP_DESKTOP_BINARY` to a native executable if discovery cannot find it.
+
+Configuration lives in `~/.coding-tools-mcp-desktop/desktop-v2.json`. On Unix the private directory uses mode 0700 and files use 0600; Windows uses the user's profile ACL. Existing v1 profiles/secrets are backed up before migration and originals are retained. Invalid/future configuration fails with a useful error rather than resetting workspaces. Old running processes are never adopted by PID or killed: stop them in the old app before starting the migrated workspace.
+
+Managed cores live under `~/.coding-tools-mcp-desktop/cores/<version>-<id>/` (under the user profile on Windows). Uninstalling the desktop app does not delete these environments or your workspace configuration. The bundled installer keeps Python and caches in the app's private `runtime-installer/` subdirectory. Unbundled builds using external uv may use that tool's own configured Python and cache paths. Do not remove a managed environment while it is in use or selected for rollback; an existing external runtime is never removed by the desktop app.
+
+After a successful save the app mirrors the new configuration to the private
+`desktop-v2.json.bak`. If mirroring fails, the last valid copy remains. The
+recovery dialog shows the backup date and workspace count, keeps the damaged
+original, and restarts the app after recovery. If neither copy is usable, it
+can open the configuration folder without resetting anything. Current runtime
+logs are per start attempt; the immediately previous attempt is kept separately.
+
+For an existing Core choose the official `coding-tools-mcp` launcher
+(`coding-tools-mcp.exe` on Windows) from an installation you trust. Checking
+the path does not run it; the app confirms the server identity when it connects.
+
+Closing the window hides it in the tray by default. **Stop** cleans up only owned processes and checks port release. An unconfirmed port check stays visible, with retry or safe port editing available after owned cleanup. **Stop services and quit** requires owned-process cleanup; an unrelated listener does not prevent quitting. Crashes are detected, and retry/restart is explicit. Running workspaces cannot be reconfigured. Managed core installation verifies a new version before selecting it; failure leaves the prior environment selected. Rollback changes the selected environment without interrupting running workspaces.
+
+Runtime/tunnel logs rotate at 1 MiB with one backup and are read with bounded cursors. Core history keeps the current and three previous launches, each using the core's bounded four-file journal. Diagnostics export excludes raw logs, paths, addresses, credentials, commands, tool inputs and outputs.
+
+See [IPC contract](docs/IPC.md), [design and references](docs/ARCHITECTURE.md), [verification](docs/VERIFICATION.md), and [dependency review](docs/DEPENDENCIES.md).
+
+## License
+
+Apache-2.0. Existing LICENSE and NOTICE are retained. Reference projects informed UX and separation of concerns; their server implementations are not copied or bundled.

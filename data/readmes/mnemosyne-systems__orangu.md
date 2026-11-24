@@ -21,7 +21,7 @@ Every layer communicates over OpenAI-compatible APIs.
 - **Model Context Protocol (MCP)** - Seamless integration with Streamable HTTP MCP servers for extensible tooling and system integration.
 - **Text, Image, Video & Speech Generation** - Native serving of chat, completion, embedding, text-to-image models (`Qwen-Image` via `/v1/images/generations`), text-to-video with sound (`LTX-2.5` via `/v1/videos`), and text-to-speech (`Qwen3-TTS` via `/v1/audio/speech`).
 - **Offline Knowledge Graph & Search** - Incremental Tree-sitter symbol graphs (`/graph`) and semantic code retrieval (`/search`) powered by local embeddings.
-- **Built-in Build & Git Automation** - Full Git loop directly inside the prompt, plus `/build` detecting Cargo, CMake, Make, Go, Maven, and Python.
+- **Built-in Build & Git Automation** - Full Git loop directly inside the prompt, plus `/build` detecting Cargo, CMake, Make, Go, Maven, and Python, and `/test` running the matching test runner with a `/create_patch tests` fix loop.
 
 ---
 
@@ -133,7 +133,7 @@ orangu turns your terminal into a complete code-review workstation against your 
 ### Native GGUF Inference Engine (`orangu-server`)
 
 A high-performance inference engine built entirely in Rust:
-- **Broad Architecture Coverage**: Runs 24 servable model families, including Llama, Mistral, Qwen (dense & MoE), Gemma (including Gemma 4 MoE), DeepSeek-V4, GLM, Kimi-K3, Muse-Spark, Phi, Nemotron-H, text-to-image diffusion models (`Qwen-Image`), the `LTX-2.5` audio-video model, and the `Qwen3-TTS` speech model.
+- **Broad Architecture Coverage**: Runs 25 servable model families, including Llama, Mistral, Qwen (dense & MoE), Gemma (including Gemma 4 MoE), DeepSeek-V4, GLM, Kimi-K3, Muse-Spark, Phi, Nemotron-H, text-to-image diffusion models (`Qwen-Image`), the `LTX-2.5` audio-video model, and the `Qwen3-TTS` speech model.
 - **Hardware Acceleration**: CPU, **Vulkan** (AMD, NVIDIA, Intel), **Metal** (macOS Apple Silicon native), **CUDA**, and **ROCm**.
 - **Quantization Support**: Native dequantization for `F32`/`F16`/`BF16`, `Q4_0`-`Q8_0`, K-quants (`Q2_K`-`Q6_K`), I-quants (`IQ4_XS` to sub-1.5-bit `IQ1_XXXS`), and Prism's ternary `PQ2_0`/`PTQ1_0`.
 - **Text, Image, Video & Speech Generation**: Serves `/v1/chat/completions`, `/v1/embeddings`, `/v1/images/generations` (with the `--image` deployment role) via Qwen-Image (with transparency support), `/v1/videos` (with the `--video` deployment role) via LTX-2.5: MP4 clips of AV1 video with a FLAC sound track, and `/v1/audio/speech` (with the `--audio` deployment role) via Qwen3-TTS: speech in a voice from a voice pack, as WAV, FLAC or raw PCM.
@@ -233,7 +233,7 @@ Additional documentation and guides:
 - [Image Generation Manual](doc/manual/en/48-image.md) · [Video Generation Manual](doc/manual/en/49-video.md) · [Speech Generation Manual](doc/manual/en/50-audio.md)
 - [Coordinator Guide](doc/COORDINATOR.md) · [Coordinator Manual](doc/manual/en/44-coordinator.md) · [Coordinator Internals](doc/manual/en/76-coordinator.md)
 - [Container Image Manual](doc/manual/en/52-container.md): the coordinator, the server and your models in one Podman or Docker image
-- [IDE Manual](doc/manual/en/53-ide.md): orangu in Visual Studio and VS Code
+- [IDE Manual](doc/manual/en/53-ide.md): orangu in Visual Studio, VS Code and IntelliJ
 - [Model Building & Quantization](doc/BUILD_MODEL.md) · [GGUF Manual](doc/manual/en/47-gguf.md) · [Corpus Manifest](contrib/orangu-model/README.md)
 - [Core Tools Reference](doc/manual/en/41-core_tools.md) · [Git Tools](doc/manual/en/42-git_tools.md) · [Workspaces](doc/manual/en/31-workspaces.md)
 - [Context Compression Details](doc/manual/en/75-compression.md)

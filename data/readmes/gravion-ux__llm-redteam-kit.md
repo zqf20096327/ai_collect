@@ -2,9 +2,9 @@
 
 [![codecov](https://codecov.io/gh/gravion-ux/llm-redteam-kit/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/llm-redteam-kit)
 
-![Demo](docs/demo.png)
+![Demo](docs/demo.gif)
 
-*Demo: Offline mock-mode run: 24 curated probes scored against a mock model.*
+*Demo: Offline mock-mode run: 26 curated probes scored against a mock model.*
 
 **An authorized LLM red-teaming evaluation toolkit.** Run a curated pack of
 prompt-injection, jailbreak, system-prompt-extraction and data-exfiltration

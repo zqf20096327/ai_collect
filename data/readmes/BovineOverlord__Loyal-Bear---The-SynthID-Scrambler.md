@@ -6,7 +6,7 @@
 
 ## Purpose of this Project
 
-Corporations continue to exert control over AIs under the guise of "safety". Their recent intrusion into the AI imaging field is the mandatory incorporation of "SynthID". This is applied without consent and cannot be opted out of, even by paying users. It works by hiding a pattern of pixels within the image, not noticeable by the human eye but instead functioning as an invisible watermark. Additional information could be hidden within the watermark, much like a QR code. This pattern can be used to track and deanonymize users.
+Corporations continue to exert control over AIs under the guise of "safety". Their recent intrusion into the AI imaging field is the mandatory incorporation of "SynthID". This is applied automatically to all generated images without consent and cannot be opted out of, even by paying users. It works by hiding a pattern of pixels within the image, not noticeable by the human eye but instead functioning as an invisible watermark. Additional information could be hidden within the watermark, much like a QR code. This pattern can be used to track and deanonymize users.
 
 Upon discovering that other SynthID removal tools do not actually fix this, I created my own. It works on all OpenAI and Gemini images as of July 2026, scrambling all trackers and watermarks while doing minimal damage to the image.
 
@@ -20,9 +20,11 @@ If this project is successful, I'll make something similar for text SynthIDs.
 
 **Windows** — double-click `run.bat`
 
-**Linux/macOS** — `chmod +x run.sh && ./run.sh`
+**Linux/macOS:** Download and extract the repository, or clone it with Git. Open Terminal in the folder containing `run.sh` and `main.py`, then run `bash ./run.sh`. On a Mac, type `cd ` (with a trailing space), drag the extracted folder from Finder into Terminal, and press Return. If Terminal reports `run.sh: No such file or directory`, use `pwd` and `ls` to check the folder.
 
 The first launch will install Python dependencies, download the model (~6.9 GB), and open the application. Subsequent launches start instantly.
+
+If startup reports a 401 for `emilianJR/epicrealismXL_pureFix`, update to the latest source. You can also [download the checkpoint](https://huggingface.co/phuaqu/zimage111/resolve/main/epicrealismXL_pureFix.safetensors) and place `epicrealismXL_pureFix.safetensors` in the app's `models` folder before restarting.
 
 ## Developer Setup
 

@@ -30,6 +30,8 @@ Used as the definitive source in:
 
 | What | Date | Link |
 |------|------|------|
+| **Claude Code /ship and /steward** | November 24, 2026 | [/ship](Anthropic/claude-code/skills/ship/SKILL.md) · [/steward](Anthropic/claude-code/skills/steward/SKILL.md) · [wake-up pass](Anthropic/claude-code/skills/steward/pass.md) |
+| **Reasoning effort values** | November 23, 2026 | [Claude](Anthropic/reasoning-effort.md) · [GPT](OpenAI/reasoning-effort.md) · [Gemini](Google/reasoning-effort.md) |
 | **Claude API tools** | November 20, 2026 | [Claude API tool prompts and definitions](Anthropic/tools) |
 | **Claude for Outlook and Claude for Google Workspace** | November 20, 2026 | [Outlook](Anthropic/claude-for-microsoft-365/claude-for-outlook.md) · [Google Docs](Anthropic/claude-for-google-workspace/claude-in-google-docs.md) · [Google Sheets](Anthropic/claude-for-google-workspace/claude-in-google-sheets.md) · [Google Slides](Anthropic/claude-for-google-workspace/claude-in-google-slides.md) |
 | **Claude Opus 3 (claude.ai)** | November 20, 2026 | [Claude Opus 3 system prompt](Anthropic/claude-opus-3.md) |
@@ -40,8 +42,6 @@ Used as the definitive source in:
 | **Claude Whiteboard** | November 14, 2026 | [Whiteboard type skill](Anthropic/artifact-types/whiteboard/SKILL.md) · [references](Anthropic/artifact-types/whiteboard/artifact-type/reference) |
 | **Claude Fable 5.2** | November 9, 2026 | [Claude Fable 5.2 system prompt](Anthropic/claude-fable-5.2.md) · [Claude Code (Fable 5.2)](Anthropic/claude-code/claude-code-fable-5.2.md) |
 | **Claude Tag (Slack)** | November 6, 2026 | [Claude Tag channel-session system prompt](Anthropic/claude-tag.md) |
-| **Claude Code auto mode classifier** | November 3, 2026 | [Auto mode safety classifier prompt (139 KB, as sent to Sonnet 5)](Anthropic/claude-code/prompts/auto-mode-classifier.md) |
-| **Kagi Assistant (updated)** | October 29, 2026 | [Kagi assistant system prompt](Misc/kagi-assistant.md) |
 
 ---
 ## Anthropic — Claude
@@ -175,7 +175,8 @@ Used as the definitive source in:
 
 | Model | Prompt |
 |-------|--------|
-| **Gemini 4 Argon** | [**Antigravity IDE system prompt**](Google/antigravity/gemini-4-argon-antigravity-ide.md) · [Antigravity CLI](Google/antigravity/gemini-4-argon-antigravity-cli.md) · [skills](Google/antigravity/skills/) · [API (AI Studio)](Google/gemini-4-argon-api-ai-studio.md) |
+| **Antigravity** | [**Antigravity IDE system prompt**](Google/antigravity/antigravity-ide.md) · [Antigravity CLI](Google/antigravity/antigravity-cli.md) · [skills](Google/antigravity/skills/) · [slash commands](Google/antigravity/slash-commands/) |
+| **Gemini 4 Argon** | [**Gemini 4 Argon system prompt (AI Studio)**](Google/gemini-4-argon-api-ai-studio.md) |
 | **Gemini 3.8 Flash** | [**Gemini 3.8 Flash system prompt**](Google/gemini-3.8-flash.md) |
 | **Gemini 3.1 Pro** | [**Gemini 3.1 Pro system prompt**](Google/gemini-3.1-pro.md) · [API](Google/gemini-3.1-pro-api.md) |
 | Gemini 3.7 Flash | [Gemini 3.7 Flash system prompt](Google/gemini-3.7-flash.md) |

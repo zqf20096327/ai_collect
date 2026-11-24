@@ -8,6 +8,7 @@
 <!-- badges:start -->
 [![Status](https://img.shields.io/badge/status-inactive-silver?style=flat-square)](https://www.repostatus.org/#inactive)
 [![CI](https://img.shields.io/github/actions/workflow/status/JonathanTSilva/research-pump-cavitation/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/JonathanTSilva/research-pump-cavitation/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/JonathanTSilva/research-pump-cavitation?style=flat-square)](https://github.com/JonathanTSilva/research-pump-cavitation/releases)
 [![Scorecard](https://img.shields.io/ossf-scorecard/github.com/JonathanTSilva/research-pump-cavitation?style=flat-square&label=scorecard)](https://scorecard.dev/viewer/?uri=github.com/JonathanTSilva/research-pump-cavitation)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![Codespaces](https://img.shields.io/badge/codespaces-open-181717?style=flat-square&logo=github)](https://codespaces.new/JonathanTSilva/research-pump-cavitation)

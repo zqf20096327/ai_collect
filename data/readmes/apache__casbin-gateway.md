@@ -126,6 +126,8 @@ Gateway then opens in its own window — no sign-in: it serves this machine only
 
 If you would rather use a browser, or you are on a machine with no desktop at all, everything is still at **http://localhost:17000**, and `casbin-gateway start` runs the server on its own with no window and no tray.
 
+On Linux the window needs WebKitGTK 4.1. Where it is missing, as on a server, the installer puts only the server and its command in place and starts it that way; install WebKitGTK 4.1 and run the installer again for the window and the tray. An installation that already has them is left untouched until the library is back.
+
 That is the whole installation. Gateway keeps its data in a SQLite file inside its own directory.
 
 The password behind that account is `admin` / `123`, and it only matters if you open Gateway to the network — see [Serving other machines](#serving-other-machines).
@@ -223,7 +225,7 @@ Gateway installed some other way, or in a directory it cannot write to, says so 
 | **Agents** | Every AI coding agent installed on this machine — Claude Code, Codex CLI, Cursor, the Gemini CLI, opencode and more — four cards to a row, each naming the account it is signed in to, the provider it answers to, what it has spent — day by day over the last month, wherever its own transcripts carry that much — and whether it is running right now. Start or stop one from its card, or run several **instances** of the same agent at once, each with a state directory and an account of its own. An agent this machine does not have is listed too, and installed or upgraded from the page through the package manager the host already has. Gateway reports which installations have a newer release waiting, moves one onto any version its manager still publishes - back to an older one when an update broke something - and uninstalls it, leaving the agent's own sign-in and history where they are. An agent unpacked by hand is found on PATH as well as in the layouts installers write, and one hiding somewhere neither describes is pointed at directly: **Locate** browses this machine and lists the program you pick as an installation of its own, without moving or changing anything. | Nothing |
 | **Agent versions** | Every agent Gateway knows in one table: the build on this machine, the release its package manager publishes, and whether the two differ. Install one, upgrade it, put it back on an older release, or remove it, from the row it is on - in one click, whichever way it was installed: a package manager, the Microsoft Store, the uninstaller the app registered with Windows, the agent's own updater, or the vendor's own install command. The command is shown before it runs, the row carries its progress while it does, and everything it printed is a click away. | Nothing |
 | **Skills, MCP & Prompts** | Every skill, MCP server and instruction file of every agent in one table. Install skills from a GitHub repository, a `.zip` or `.tar.gz`, or a folder on this machine, into one agent or several at once. Add an MCP server the same way, edit the instructions an agent reads before every session, open one, delete it, or copy it into another agent. | Nothing |
-| **Sessions** | Every session those agents have had, read from the transcripts they leave on disk: the whole conversation, message by message. How many there are, how many ran today and how many came from a transcript rather than from monitoring, then filtered down to one agent or one of those two sources. | Nothing |
+| **Sessions** | Every session those agents have had, read from the transcripts they leave on disk: the whole conversation, message by message. How many there are, how many ran today and how many came from a transcript rather than from monitoring, then filtered down to one agent or one of those two sources. For Claude Code and Codex CLI sessions with a native ID, copy the resume command from the list or transcript and run it in the original project directory. | Nothing |
 | **Activity** | What a monitored agent is doing as it does it — each tool call, its target and how long it took. | Monitoring on for an agent |
 | **Providers** | One endpoint in front of your model vendors. Gateway holds the API key, so the agents never have it — or forwards the agent's own sign-in and holds nothing. | A vendor API key, or nothing at all |
 | **Authenticity** | A score out of 100 and a grade for every provider, measured without being asked — see [the section below](#the-killer-feature-is-the-api-behind-that-key-what-it-was-sold-as). | A provider with an API key |
@@ -234,6 +236,8 @@ Gateway installed some other way, or in a directory it cannot write to, says so 
 A page with tabs or sections is in the sidebar under its own name, so the rail lands on the test cases, the MCP servers or the security settings rather than only on the top of the page they are on. **⌘K**, or **Ctrl+K**, opens a search box over whichever page you are on: every page by name, and every agent and provider on this machine, which is how you reach one of thirty providers without paging through the list. The header switches the UI between light and dark, between three palettes — **Amber & Ink**, **Terminal** and **Indigo** — and between English and Chinese.
 
 Agents are found by reading the user accounts, home directories and install paths of **the machine Gateway runs on**, so run it on the machine whose agents you want to watch.
+
+To set up another account for the same endpoint, choose **Duplicate provider** on a provider card. The new draft starts with the source's endpoint, API format, model list and status. Set the copy's credentials and save it as a separate provider.
 
 ### The killer feature: is the API behind that key what it was sold as?
 
@@ -278,9 +282,13 @@ export ANTHROPIC_AUTH_TOKEN="cg-..."
 
 The token is Gateway's own relay token, not a vendor key: the agent refuses to start without something in that variable, and Gateway authenticates upstream with the provider's key instead. The snippet on the page already has the real value filled in.
 
+After switching, use **Test provider stream** on the agent's **Provider** card. Gateway sends a short prompt to the selected provider using its saved API key and first configured model, then reports the time to the first text or the upstream error. This checks the selected upstream and can use its quota.
+
 One base URL answers whichever API the agent speaks: `/chat/completions` for an OpenAI client, `/v1/messages` for an Anthropic one, `/responses` for Codex, which speaks nothing else since it dropped the chat completions wire format, and `/v1beta/models/<model>:generateContent` for the Gemini CLI, which speaks only Google's own API. The API the provider serves need not be the same one: Gateway translates between all four, in both directions and for streamed answers too, so Codex runs on DeepSeek, Kimi or Qwen, and Claude Code runs on any of them just as well. A provider serving the very API the request arrived in is relayed byte for byte, untouched, since there is nothing to translate. The one thing Gateway answers itself is the token count an Anthropic or Gemini client asks for before each turn, which it estimates when the bound provider has no endpoint to ask.
 
 Upstream, which API Gateway calls is the provider's own setting: **Upstream API** defaults to the one the provider type implies, and can be set to Responses for OpenAI itself or for a relay that accounts cached input on `/responses` more accurately than on `/chat/completions`. A Codex request then meets a Responses provider on both sides and passes through byte for byte, cache counters included.
+
+Use **Switch Provider** in the tray to change an installed agent's provider or select **Built-in model** to restore its own settings. The tray shows what changed and reports failures to update or restore the agent configuration. Click the result to open the agent's settings in your browser.
 
 ### No API key: keep the sign-in the agent already has
 
@@ -292,9 +300,11 @@ Codex is the exception: its ChatGPT sign-in talks to an endpoint no provider sta
 
 ### When a provider cannot answer: fallbacks and model routing
 
+Before deleting a provider, check the confirmation for agents that use it as a primary or fallback. After a primary provider is removed, the agent's **Provider** card lets you choose a replacement or restore its original provider settings. Switching to a replacement keeps the remaining compatible fallbacks.
+
 A key runs out of credit, a relay goes down, a vendor rate-limits you halfway through a session. Gateway moves the request on to the next provider instead of handing the agent the error.
 
-**Fallbacks.** On an agent's page, under the provider it is bound to, pick the other providers to fall back to, in the order they should be tried. They need not be from the same vendor or speak the same API: Claude Code bound to an Anthropic relay can fall back to DeepSeek, then Kimi, then Qwen, and Gateway translates each request for whichever one answers. A fallback that does not serve the model the agent asked for is sent the closest one it does by size, so a request for a small model such as `claude-haiku-4-5` gets that provider's small model and a request for a large one its large one, and background traffic is not billed at the flagship rate.
+**Fallbacks.** On an agent's page, add backups to the **Fallback queue** below the bound provider. Use the up and down arrows to change the saved order, or remove a backup from its row. The **In order** strategy tries the bound provider first and uses the queue for its fallbacks. They need not be from the same vendor or speak the same API: Claude Code bound to an Anthropic relay can fall back to DeepSeek, then Kimi, then Qwen, and Gateway translates each request for whichever one answers. A fallback that does not serve the model the agent asked for is sent the closest one it does by size, so a request for a small model such as `claude-haiku-4-5` gets that provider's small model and a request for a large one its large one, and background traffic is not billed at the flagship rate.
 
 **What counts as not answering.** A connection that fails, a timeout, and `401`, `402`, `403`, `404`, `408`, `429` or any `5xx`: a rejected key, an exhausted quota, a model that provider does not serve, a rate limit or an outage, all of them specific to that provider. A `400` the request itself caused would fail the same way everywhere, so it goes straight back to the agent. Gateway fails over only while nothing has been written back to the agent yet, so a streamed answer is never stitched together from two models, and when every provider fails the agent gets the last provider's own error rather than one Gateway made up.
 
@@ -334,6 +344,8 @@ Gateway claims the scheme on Windows and Linux when it starts, so clicking such 
 The link is handed to Gateway in the body of an API call, not in the address of the page it opens, because a provider link carries an API key and an address is kept in browser history and sent on to wherever the page navigates next.
 
 The scheme is taken from whatever held it only the first time, and given back when Gateway is removed; a registration that is already Gateway's own is rewritten on every start, since it records a path that an update or a move would otherwise leave pointing at a Gateway that is no longer there. On macOS nothing is claimed at all — a URL scheme there belongs to an application bundle and the link arrives as an Apple event, which this launcher has no loop to receive, so declaring it would take links away from whatever can open them. Paste the link into the box on the Import page instead, which works on every platform; the Providers page takes a provider link the same way.
+
+To migrate a local CC Switch setup, use **Import from CC Switch** on the same page. If an imported provider was in use for Claude Code or Codex, click **Use for** the installed agent in the import results to select it and update the agent's provider settings. The import itself leaves provider routing alone.
 
 ### What each agent is allowed to do
 

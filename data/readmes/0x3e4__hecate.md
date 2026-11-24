@@ -1,0 +1,711 @@
+<p align="center"><img width="120" src="./frontend/public/logo.png" alt="Hecate logo" /></p>
+
+# Hecate
+
+> Self-hosted vulnerability management – aggregate, search and act on advisories, scan your images and repos. AI optional.
+
+**[Live demo](https://hecate.pw)** · **[Quick start](#quick-start-docker-compose)** · [Documentation](https://docs.hecate.pw) · [How Hecate compares](#how-hecate-compares)
+
+Hecate ingests **9 vulnerability data sources** (EUVD, NVD, CISA KEV, GHSA, OSV, CIRCL, CPE, CWE, CAPEC) plus CERT, vendor and community advisory feeds, normalises everything into a single `VulnerabilityDocument` schema, and exposes the result through a REST API and a React frontend. On top of the catalogue, a hardened scanner sidecar runs Trivy, Grype, Syft, OSV Scanner, the Hecate Analyzer, Dockle, Dive, Semgrep, TruffleHog, DevSkim, and govulncheck (Go reachability) against your container images and source repos.
+
+> [!NOTE]
+> **Works without AI.** Every core feature runs without an API key: the catalogue and its search, SCA scanning, SBOM and VEX, malware detection, inventory matching, notifications, the deterministic attack-path graph per CVE and the ATT&CK chain per scan. AI analysis stays off until a provider is configured and only adds narrative and triage text on top, with a local model (Ollama, vLLM, LM Studio) or a cloud provider.
+
+![Python](https://img.shields.io/badge/python-3.14-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.139-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-8-47A248?logo=mongodb&logoColor=white)
+![OpenSearch](https://img.shields.io/badge/OpenSearch-3-005EB8?logo=opensearch&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+[![Hecate](https://img.shields.io/endpoint?url=https%3A%2F%2Fhecate.pw%2Fapi%2Fv1%2Fscans%2Ftargets%2Fhttps%253A%252F%252Fgithub.com%252F0x3e4%252Fhecate%2Fshield?label=Hecate)](https://hecate.pw/scans/targets/https%3A%2F%2Fgithub.com%2F0x3e4%2Fhecate)
+
+---
+
+<p align="center">
+  <img src="img/hecate-dash.png" alt="Hecate dashboard: the day's CVEs that hit your inventory or SCA scans, by severity" width="100%" />
+</p>
+
+<details>
+<summary><strong>More screenshots</strong> — vulnerability search, SCA scans, SBOM, attack path, malware feed, system</summary>
+
+<br/>
+
+### Vulnerability management
+
+<table>
+  <tr>
+    <td width="50%"><img src="img/hecate-vuln-dql-filter.png" alt="Vulnerability list with DQL filter" /></td>
+    <td width="50%"><img src="img/hecate-vuln-dql-filter-saved-search.png" alt="Saved search applied to the vulnerability list" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Vulnerability list · DQL filter</sub></td>
+    <td align="center"><sub>Saved searches</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="img/hecate-query-build.png" alt="Interactive DQL query builder" /></td>
+    <td width="50%"><img src="img/hecate-stats.png" alt="Statistics: trends, top vendors and severity distribution" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Query builder</sub></td>
+    <td align="center"><sub>Statistics</sub></td>
+  </tr>
+</table>
+
+### SCA scanning
+
+<table>
+  <tr>
+    <td width="50%"><img src="img/hecate-sca.png" alt="SCA scan targets overview" /></td>
+    <td width="50%"><img src="img/hecate-scan-find.png" alt="Scan findings with VEX, dismissal and multi-select" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Scan targets</sub></td>
+    <td align="center"><sub>Findings · VEX · dismissal</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="img/hecate-scan-sbom.png" alt="SBOM components with provenance verification" /></td>
+    <td width="50%"><img src="img/hecate-scan-attackpath.png" alt="Per-CVE Mermaid attack-path graph" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>SBOM · provenance</sub></td>
+    <td align="center"><sub>Attack-path graph</sub></td>
+  </tr>
+</table>
+
+### Intelligence & operations
+
+<table>
+  <tr>
+    <td width="50%"><img src="img/hecate-malware-feed.png" alt="Malware feed: MAL-aliased OSV advisories across ecosystems" /></td>
+    <td width="50%"><img src="img/hecate-system.png" alt="System settings: notifications, data sources, policies" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Malware feed</sub></td>
+    <td align="center"><sub>System settings</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="img/hecate-system-data.png" alt="Data-source sync status and re-sync controls" /></td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Data sources</sub></td>
+    <td></td>
+  </tr>
+</table>
+
+</details>
+
+---
+
+## Quick start (Docker Compose)
+
+> [!NOTE]
+> Requires Docker + Docker Compose.
+
+```sh
+# 1. Create configuration
+cp .env.example .env
+cp docker-compose.yml.example docker-compose.yml
+
+# 2. Edit secrets (Mongo password, OpenSearch password, API keys, …)
+nano .env
+
+# 3. Bring the stack up
+docker compose up -d
+```
+
+Server setup — reverse proxy and TLS, your own images, updates, backups — is described in
+[Installation & Deployment](https://docs.hecate.pw/deployment/), every setting in
+[Environment Variables](https://docs.hecate.pw/configuration/).
+
+### Default endpoints
+
+Only the frontend publishes a port; it is also the gateway to the API. MongoDB, OpenSearch, the
+scanner and Apprise are reachable inside Compose only.
+
+| Service | URL |
+| --- | --- |
+| Web app | <http://localhost:8080> |
+| API (through the gateway) | <http://localhost:8080/api/v1> |
+| Health check | <http://localhost:8080/api/v1/status/health> |
+| Documentation (optional, `docs` profile) | <http://127.0.0.1:8001> |
+
+### Behind a reverse proxy
+
+For a live deployment, terminate TLS at a reverse proxy. Ready-to-adapt **nginx**, **Caddy**, and
+**Traefik** templates — terminating HTTPS, sending every request to the frontend gateway, and setting
+a hardened HTTP security-header set (HSTS, a strict CSP, `X-Frame-Options`, `Permissions-Policy`, …) —
+live in [`deploy/reverse-proxy/`](deploy/reverse-proxy/).
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+    User([User / Browser])
+    CICD([CI/CD pipelines])
+
+    subgraph Frontend["Frontend + gateway · nginx :8080"]
+        SPA[Dark-theme SPA]
+    end
+
+    subgraph Backend["Backend · FastAPI / Python 3.14 :8000"]
+        API[REST API + SSE]
+        Scheduler[APScheduler]
+        Pipelines[Ingestion pipelines]
+        MCP[MCP server]
+    end
+
+    Scanner["Scanner sidecar :8080<br/>Trivy · Grype · Syft · OSV · Hecate<br/>Dockle · Dive · Semgrep · TruffleHog · DevSkim"]
+    Apprise["Apprise<br/>Slack / Discord / Email / …"]
+
+    Mongo[("MongoDB :27017<br/>persistence")]
+    OS[("OpenSearch :9200<br/>full-text index")]
+
+    Feeds[("External feeds<br/>EUVD · NVD · KEV · CPE<br/>CWE · CAPEC · CIRCL · GHSA · OSV<br/>CERT advisories")]
+    AI[("AI providers (optional)<br/>OpenAI · Anthropic · Gemini<br/>OpenAI-compatible")]
+
+    User --> Frontend
+    CICD -->|POST /api/v1/scans| Frontend
+    Frontend -->|/api, /mcp| Backend
+    Backend --> Scanner
+    Backend --> Apprise
+    Backend --> Mongo
+    Backend --> OS
+    Pipelines --> Feeds
+    API --> AI
+    MCP --> AI
+```
+
+---
+
+## Table of contents
+
+- [Quick start (Docker Compose)](#quick-start-docker-compose)
+- [Highlights](#highlights)
+- [How Hecate compares](#how-hecate-compares)
+- [Project layout](#project-layout)
+- [Core capabilities](#core-capabilities)
+- [Local development](#local-development)
+- [API surface](#api-surface)
+- [Status badges](#status-badges)
+- [Backend CLI](#backend-cli)
+- [Configuration](#configuration)
+- [CI/CD](#cicd)
+- [Tech stack](#tech-stack)
+- [Further reading](#further-reading)
+
+---
+
+## Highlights
+
+| | |
+| --- | --- |
+| **Needs attention** | Dashboard panel of what CISA KEV listed or several CERTs or vendors named this week, with anything in your stack first. Community posts add context but never make a CVE trend. |
+| **Advisories** | Feeds of CERTs, vendors and community accounts (Mastodon, blogs) merged into topics through shared CVEs, with your stack first and round-ups kept apart. Manage the feeds on System → Data or with `CERT_FEEDS_EXTRA`. |
+| **Ingestion** | 9 vulnerability data sources (EUVD, NVD, KEV, CPE, CWE, CAPEC, CIRCL, GHSA, OSV) plus CERT, vendor and community advisory feeds — normalised into a single schema with priority-gated upserts and a 3-tier cache. |
+| **Affected-version search** | `affectedVersion:7.0.1` finds advisories that cover a version inside a range, not only those that name it, per release branch and without the platforms a product runs on. The inventory uses the same decision. |
+| **Active SCA scanning** | 11 scanners (Trivy, Grype, Syft, OSV, Hecate, Dockle, Dive, Semgrep, TruffleHog, DevSkim, govulncheck) for container images and source repos; govulncheck marks Go findings whose vulnerable code is never reached as VEX not_affected, and every SBOM component carries release-age, unmaintained and npm publisher-change signals. A package check (REST + MCP) answers block / warn / ok before an agent or CI installs a dependency. |
+| **Supply-chain malware detection** | 35 heuristic rules informed by real attacks (Shai-Hulud, LiteLLM, Trivy v0.69.4, Glassworm, Telnyx, Axios, …) plus a continuous OSV MAL-* watcher that retroactively injects findings into the latest scan of every affected target. |
+| **Provenance verification** | npm, PyPI, Go, Maven, RubyGems, Cargo, NuGet, Docker — Sigstore, PEP 740, Go sumdb, Cosign. |
+| **Attack-path graph** | Per-CVE deterministic Mermaid graph (`entry → asset → package → CVE → CWE → CAPEC → exploit → impact → fix`) with optional AI narrative. |
+| **Cross-CVE attack chain** | Per-scan ATT&CK kill-chain narrative bucketing all findings into Foothold → Credential Access → Privilege Escalation → Lateral Movement → Impact. |
+| **Environment inventory** | User-declared products + versions matched against the catalogue for impact callouts and a dedicated notification rule type, with a change history (each change can carry a note such as a ticket or server), version reports from your deployment pipeline, and a duplicate action for the next server of the same product. |
+| **API tokens** | Named tokens with scopes (`scan:submit`, `inventory:report`) and an optional expiry, managed on System → Access Control. |
+| **Sign-in (OIDC) & audit trail** | Optional web sign-in through any OIDC provider (Keycloak, Authelia, Authentik, Zitadel, Pocket ID, Entra ID) with admin / editor / viewer roles mapped from groups, server-side sessions, an optional login requirement for reads, and every API write recorded with the person or credential behind it. Passwords and tokens keep working alongside. |
+| **MCP server** | 46 tools, OAuth 2.0 with delegated auth (GitHub / Microsoft / OIDC), DCR + PKCE, scope-gated writes. |
+| **Notifications** | Apprise integration with rules, watch queries, message templates, and per-tag channel routing. |
+| **Bilingual UI** | German + English, browser detection, no external i18n framework. |
+| **AI analysis (optional)** | Disabled unless a provider is configured; local models supported (Ollama, vLLM, LM Studio and other OpenAI-compatible endpoints) as well as OpenAI, Anthropic and Gemini. Adds narrative and triage text to the deterministic results, in the web UI or through the MCP server with your own assistant. |
+
+---
+
+## How Hecate compares
+
+Status: November 2026. Corrections welcome – open an issue if something is outdated.
+
+The tools solve different problems: Dependency-Track manages SBOM components, DefectDojo collects findings from other scanners, OpenCVE and Vulnerability-Lookup are vulnerability databases with alerting, Snyk and Aikido are commercial developer-security platforms. Values for the others come only from their official docs, websites and repositories (read 2026-11-09); Hecate's were checked against its code. `?` means the official sources do not settle it. Every cell has a source in **[docs/comparison.md](docs/comparison.md)**.
+
+| | Hecate | Dependency-Track | OpenCVE (CE) | DefectDojo (OSS) | Vulnerability-Lookup | Snyk | Aikido |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Operating model | Self-hosted | Self-hosted | Self-hosted; Cloud separate | Self-hosted; Pro also SaaS | Self-hosted + public instances | SaaS | SaaS; local scanner, appliance |
+| License | MIT | Apache-2.0 | BUSL-1.1 | BSD-3-Clause | AGPL-3.0 | Proprietary | Proprietary |
+| Searchable advisory DB | Keyword, DQL, regex | Lookup per vulnerability | CVEs, query language | No (findings only) | Full-text + API | security.snyk.io | Aikido Intel (browse) |
+| Data sources | EUVD, NVD, CISA KEV, GHSA, OSV, CIRCL (EPSS), CPE, CWE, CAPEC; CERT, vendor and community feeds | NVD, GHSA, OSV + analyzers; EUVD only as KEV flag | MITRE, NVD, Vulnrichment, Red Hat; EUVD not in docs | Imported reports (360+ parsers) | Many incl. CSAF, national DBs; EUVD only as KEV | NVD + own research; EUVD not mentioned | Intel, NVD, GHSA, distros; EUVD not listed |
+| Version-range search | `affectedVersion:` query | Internal only | No | No | Not documented | Per-version pages | Not documented |
+| SCA scanning (images, repos) | Trivy, Grype, Syft, OSV-Scanner, Semgrep, TruffleHog, DevSkim, Dockle, Dive, Hecate Analyzer | No, ingests SBOMs | No | No, imports results | No | Yes | Yes |
+| SBOM import / export | CycloneDX, SPDX / CycloneDX 1.5, SPDX 2.3 | CycloneDX / CycloneDX | None | CycloneDX, SPDX / Pro only | None | Both, Enterprise only | CycloneDX, SPDX / CSV, SPDX, CycloneDX |
+| VEX | CycloneDX import/export, OpenVEX sources, carry-forward | CycloneDX import/export | None | OpenVEX import | Reads vendor CSAF VEX | ? | CycloneDX export |
+| Supply-chain malware | Heuristics, MAL-* feed, SBOM watcher | Integrity check only | Not documented | Not documented | OpenSSF malicious-packages data | Malicious packages in DB | Scanning (Pro+), Safe Chain |
+| AI features | Optional, off by default, local models | None | Optional summaries, local models | None (Pro only) | Optional, local models | Built in; no local models documented | Built in; local only on appliance |
+| Works fully without AI | Yes | Yes | Yes | Yes | Yes | ? | Partly / ? |
+| MCP server | Built in, 46 tools | None official | None | Separate repo; built in on Pro | Separate repo (VulnMCP) | In the CLI | `@aikidosec/mcp` |
+| Notifications / integrations | Apprise, REST, CI; no ticketing | Email, Slack, Teams, Jira, Kafka, webhooks, DefectDojo | Email, Slack, webhooks | Email, Slack, Teams, Jira/GitHub two-way | Email/webhooks, RSS, MISP | SCM, CI, IDE, Jira, Slack | Slack, Teams, 14 trackers, CI, SIEM |
+| Project started | 2025 | 2013 | 2020 | 2015 | 2022 | 2015 | 2022 |
+| Policy engine | License policies, CI severity gate | CEL policies, build gates | ? | ? | ? | ? | ? |
+| Commercial support | None | None found | Cloud plans | Pro | ? | Paid plans | Paid plans |
+
+Where the others are ahead: Dependency-Track, DefectDojo and OpenCVE have years of releases and large communities; Dependency-Track has a real policy engine; DefectDojo, Snyk and Aikido integrate with ticketing, SCM and CI tools far beyond Hecate; Vulnerability-Lookup reads more sources, national databases included; the commercial products come with support. Hecate is a young solo project.
+
+Main sources: [Dependency-Track](https://dependencytrack.github.io/docs/next/) · [OpenCVE](https://docs.opencve.io/) · [DefectDojo editions](https://docs.defectdojo.com/get_started/about/defectdojo_versions/) · [Vulnerability-Lookup](https://www.vulnerability-lookup.org/sources) · [Snyk](https://docs.snyk.io/) · [Aikido](https://help.aikido.dev/).
+
+---
+
+## Project layout
+
+```text
+.
+├── backend/              FastAPI service · ingestion pipelines · scheduler · CLI
+├── frontend/             React 19 SPA
+├── scanner/              Hardened scanner sidecar (11 scanners)
+├── docs/                 Architecture + design notes
+├── .github/workflows/    GitHub Actions (build-images · release)
+├── .env.example          Environment-variable template (~104 vars)
+└── docker-compose.yml.example
+```
+
+<details>
+<summary><strong>Detailed tree</strong></summary>
+
+```text
+backend/
+├── app/
+│   ├── api/v1/           REST endpoints (20 router modules)
+│   ├── core/             Pydantic settings, logging
+│   ├── db/               MongoDB (Motor) + OpenSearch connections
+│   ├── models/           MongoDB document schemas
+│   ├── repositories/     Data-access layer (repository pattern)
+│   ├── schemas/          API request/response schemas
+│   ├── services/         Business logic, AI, backup, stats
+│   │   ├── ingestion/    Pipelines + clients (10 sources)
+│   │   ├── scheduling/   APScheduler job management
+│   │   └── http/         Retry, rate limiter, SSL helper
+│   └── utils/
+└── pyproject.toml
+
+frontend/
+├── src/
+│   ├── api/              Axios service modules
+│   ├── components/       Reusable UI components
+│   ├── views/            Page components (16 views)
+│   ├── hooks/            Custom React hooks
+│   ├── ui/               Layout (Sidebar, Header, TabPill)
+│   ├── utils/, constants/, i18n/, timezone/, server-config/
+│   ├── router.tsx, types.ts, styles.css
+└── package.json
+
+scanner/
+├── app/
+│   ├── main.py           FastAPI app (POST /scan, /check, /stats, /health)
+│   ├── scanners.py       Subprocess wrappers
+│   ├── hecate_analyzer.py
+│   ├── malware_detector/
+│   └── provenance.py
+└── pyproject.toml
+```
+</details>
+
+---
+
+## Core capabilities
+
+### Data aggregation & automation
+
+- **10 sources** with configurable intervals, weekly full syncs (EUVD Sun, NVD Wed, OSV Fri at 02:00 UTC), and bootstrap-on-startup.
+- **Normaliser** funnels every source into a single `VulnerabilityDocument` schema with CVSS v2.0 / v3.0 / v3.1 / v4.0 metrics.
+- **Priority-gated NVD ↔ EUVD upserts** prevent version-identification fields from flapping between sources every cycle.
+- **Asset catalogue** (vendors, products, versions) is derived automatically from ingested data.
+- **Change tracking** with full audit trail and denormalised `last_change_at` index.
+- **Server-Sent Events (SSE)** stream job status, new vulnerabilities, and AI-analysis results to the frontend.
+
+### SCA scanning
+
+- **Scanner sidecar** running 11 scanners as a hardened Docker container (`no-new-privileges`, read-only, `cap_drop: ALL`, tmpfs).
+- **CI/CD or interactive triggers** via `POST /api/v1/scans` and `/scans/manual`.
+- **Auto-scan** of registered targets with the scanner set chosen at first scan, change-detection via image digest / commit SHA, and a per-target diagnostics view (`POST /v1/scans/targets/{id}/check`).
+- **Target grouping** lets you combine repos and images of one application into a single roll-up section in the UI.
+- **SBOM generation** (CycloneDX 1.5 + SPDX 2.3 export) and **SBOM import** for EU CRA compliance.
+- **VEX support** (CycloneDX, OpenVEX) — inline editor, multi-select bulk updates, automatic carry-forward across scans, and **VEX sources**: URLs of a vendor's VEX documents per target, applied after every scan without overriding your own statuses.
+- **License compliance** with policy-based allow/deny/review evaluation after every scan.
+- **Provenance verification** across 8 ecosystems.
+- **Best-practice + layer analysis** for container images (Dockle + Dive, opt-in).
+- **Deduplication** of multi-scanner results, severity summaries dedup by CVE-ID.
+- **Continuous MAL-\* watcher** cross-checks newly-arrived OSV MAL-* records against the SBOM of the most recent completed scan per target and injects synthetic findings (`scanner=mal-watch`, `package_type=malicious-indicator`) into the existing scan — surfaces in the Findings and Security Alerts tabs without a re-scan. Hooks into the OSV scheduler tick and the CLI `sync-osv` path; emits the `sca_malware_alert` SSE event and fires the matching notification rules for newly inserted findings only.
+
+### Search & analysis
+
+- **OpenSearch full-text** with DQL (Domain-Specific Query Language) and relevance ranking, plus a **regex search mode** (`regexQuery` parameter) that runs Lucene `regexp` patterns over a curated field set (summary, title, vendors, products, aliases, ID, versions, references, CWEs).
+- **Affected-version search** — `affectedVersion:7.0.1` matches advisories that *cover* a version in a range, not only those that name it literally (an advisory for "7.0.x before 7.0.2" lists neither 7.0.1 nor anything between its boundaries). Backed by a nested `versionRanges` index built from curated range strings, NVD CPE bounds and concrete CPEs; unconstrained ranges never match, platform entries (`vulnerable: false`, "Next.js running on Node.js") don't count, and a release branch with its own fix range is decided by that range alone (nginx 1.30.6 is not affected by a `>= 1.29.2, < 1.31.6` range when 1.30.x got its own fix). The inventory pages apply the same rules. Slug fields (`vendorSlugs`, `productSlugs`, …) match the whole value, so a vendor query doesn't pull in every vendor whose name contains that word.
+- **AI assessments** via OpenAI (Responses API + reasoning + web search), Anthropic, Google Gemini, or any OpenAI-compatible endpoint (Ollama, vLLM, OpenRouter, LocalAI, LM Studio).
+- **Attack-path graph** rendered with Mermaid: deterministic structural layer plus optional AI narrative.
+- **Cross-CVE attack chain** synthesises every finding of a scan into a multi-stage ATT&CK story.
+- **CWE / CAPEC enrichment** with a 3-tier cache (memory → MongoDB → upstream, 7-day TTL) and stale-tolerant reads so a missed sync never blacks out the UI.
+- **EPSS scores** (CIRCL is the source of truth, scale `0..1`) and KEV exploitation status.
+
+### Frontend views
+
+| Page | Description |
+| --- | --- |
+| Dashboard | Daily triage: *Needs attention*, the products that hit your inventory or scans, the day's CVEs and the latest findings, with real-time refresh via SSE. |
+| Vulnerability list | Paginated list with full-text, vendor, product, version filters and an advanced filter set (severity, CVSS vector, EPSS, CWE, sources, time range). |
+| Vulnerability detail | Tabs for CWE, CAPEC, references, affected products, **Attack Path** (Mermaid graph + optional AI narrative), AI analysis, change history, raw. |
+| Advisories | Advisories from CERTs, vendors and the community merged into topics through shared CVEs, with a filter per kind of source and round-ups kept apart. |
+| Query builder | Interactive DQL editor with field browser and aggregations. |
+| AI analysis | Combined timeline of single, batch, and scan analyses. |
+| Stats | Trend charts, top vendors / products, severity distribution. |
+| Audit log | Ingestion-job logs with status, duration, metadata. |
+| Changelog | Recent vulnerability changes with date and job filters. |
+| SCA scans | Targets, scans, consolidated findings, SBOM (sortable, provenance filter), licenses, scanner monitoring. |
+| Scan detail | Findings (multi-select VEX, dismissal toggle), **Attack Chain**, SBOM, history, compare, security alerts, SAST, secrets, best practices, layer analysis, license compliance. |
+| Inventory | User-declared products + versions matched against the catalogue. Compact status rows (click to expand the affecting CVEs), a "Flagged CVEs" roll-up table, a modal add/edit form, and endoflife.date support / end-of-life status per item (with the product page link, support-until date and LTS). |
+| Malware feed | Overview of all MAL-aliased OSV advisories (~417 k records, server-paginated). |
+| System | 5 tabs: General, Access Control (per-target write passwords), Notifications, Data, Policies. |
+| Support | In-app diagnostics: per-component version check (backend / frontend / scanner) against the latest `main-<sha>` images on GHCR via `GET /api/v1/version`. |
+| CI/CD · API · MCP | Embedded docs and Swagger UI. |
+
+### Notifications (Apprise)
+
+- Apprise REST-API integration with bundled Docker sidecar or external service.
+- Channel routing via Apprise tags (Slack, Discord, email, Telegram, Signal, webhooks, …).
+- **Rule types**: `event`, `saved_search`, `vendor`, `product`, `dql`, `scan`, `inventory`, `sca_malware_alert` (retroactive MAL-* hits injected by the continuous watcher).
+- Customisable title and body templates per event with `{variable}` and `{#each list}{/each}` loops.
+- Watch rules evaluated after every ingestion with concurrency-safe compare-and-set claim.
+- Fire-and-forget: notification failures never break primary workflows.
+
+### Operations
+
+- **Backup & restore** for vulnerabilities (EUVD / NVD / all), saved searches, and the environment inventory.
+- **Saved searches** with sidebar integration and audit trail.
+- **Statistics** via OpenSearch aggregations with MongoDB fallback.
+- **Manual sync triggers** for every source, the advisory feeds included, via the API.
+
+---
+
+## Local development
+
+```sh
+# Backend
+cd backend && poetry install
+uvicorn app.main:app --reload
+
+# Frontend (separate terminal)
+cd frontend && corepack enable pnpm && pnpm install
+pnpm run dev   # dev server on port 3000, proxies /api → backend
+```
+
+Vite proxies `/api` to `http://backend:8000` (Docker) or `http://localhost:8000` (local) automatically. The UI auto-detects the browser language (German / English) and persists the choice in `localStorage` — no external i18n framework involved.
+
+---
+
+## API surface
+
+> [!TIP]
+> Interactive Swagger UI lives at `/api/docs`, ReDoc at `/api/redoc` (both reachable through the frontend proxy).
+
+<details>
+<summary><strong>Status</strong></summary>
+
+- `GET /api/v1/status/health` — liveness probe
+- `GET /api/v1/status/scanner-health` — scanner sidecar reachability
+</details>
+
+<details>
+<summary><strong>Vulnerabilities</strong></summary>
+
+- `POST /api/v1/vulnerabilities/search` — full-text search with DQL, regex (`regexQuery`), filters, pagination. `regexQuery` runs OpenSearch `regexp` over a curated field set (summary / title / vendors / products / aliases / ID / versions / references / CWEs). Saved searches additionally persist `regexQuery` + `queryMode` (`keyword` | `dql` | `regex`) so the UI can restore the originating mode.
+- `GET /api/v1/vulnerabilities/{id}` — fetch a single vulnerability
+- `POST /api/v1/vulnerabilities/lookup` — lookup; fetching a miss from upstream takes the system password
+- `POST /api/v1/vulnerabilities/refresh` — manual refresh of individual IDs
+</details>
+
+<details>
+<summary><strong>AI analysis (asynchronous, web UI)</strong></summary>
+
+- `POST /api/v1/vulnerabilities/{id}/ai-investigation` — single analysis (HTTP 202, result via SSE)
+- `POST /api/v1/vulnerabilities/ai-investigation/batch` — batch analysis (HTTP 202, result via SSE)
+- `GET  /api/v1/vulnerabilities/ai-investigation/batch` — paginated batch history
+- `GET  /api/v1/vulnerabilities/ai-investigation/batch/{id}` — fetch a single batch analysis
+- `GET  /api/v1/vulnerabilities/ai-investigation/single` — paginated single-analysis history
+- `POST /api/v1/scans/{scan_id}/ai-analysis` — SCA scan triage (HTTP 202; persisted as `ai_analysis` / `ai_analyses[]` on the scan document)
+- `GET  /api/v1/scans/ai-analyses` — list of all scans with at least one stored AI analysis
+</details>
+
+<details>
+<summary><strong>Attack-path graph</strong></summary>
+
+- `GET  /api/v1/vulnerabilities/{id}/attack-path` — deterministic graph (`entry → asset → package → CVE → CWE → CAPEC → exploit → impact → fix`) plus persisted narrative if available. **Not** AI-password-gated. Optional query parameters: `package` / `version` / `scanId` / `targetId` for scan-finding context, `language=en|de`.
+- `POST /api/v1/vulnerabilities/{id}/attack-path` — generate an AI narrative for the graph (HTTP 202, result via SSE event `attack_path_{vulnId}`). Persisted as `attack_path` / `attack_paths[]` in OpenSearch.
+</details>
+
+<details>
+<summary><strong>Cross-CVE attack chain</strong></summary>
+
+- `GET  /api/v1/scans/{scan_id}/attack-chain` — deterministic cross-CVE chain (findings bucketed by ATT&CK stages) plus persisted narrative. Optional `?language=`. **Not** AI-password-gated.
+- `POST /api/v1/scans/{scan_id}/attack-chain` — generate an AI narrative for the chain (HTTP 202, background task; the frontend polls the scan until `attack_chain` is filled — no SSE). Persisted as `attack_chain` / `attack_chains[]` on the scan document in MongoDB.
+</details>
+
+<details>
+<summary><strong>Catalogues</strong></summary>
+
+- `GET  /api/v1/cwe/{id}` · `POST /api/v1/cwe/bulk`
+- `GET  /api/v1/capec/{id}` · `POST /api/v1/capec/from-cwes`
+- `GET  /api/v1/cpe/entries|vendors|products`
+- `GET  /api/v1/assets/vendors|products|versions`
+</details>
+
+<details>
+<summary><strong>SCA scans</strong></summary>
+
+- `POST /api/v1/scans` — submit a scan (CI/CD; API key required)
+- `POST /api/v1/scans/manual` — manual scan from the frontend
+- `GET  /api/v1/scans/targets` — list scan targets
+- `PUT  /api/v1/scans/targets/{id}/write-password` — set a per-target write password (admin); `DELETE` clears it. Lets a target owner manage that target's writes via `X-Target-Password` without the global `SYSTEM_PASSWORD`. See the in-app docs / `docs/security-access-control.md`.
+- `POST /api/v1/scans/targets/{id}/check` — force a `/check` probe against the scanner sidecar (image digest / commit SHA), persist `lastCheck*` fields (incl. `lastCheckError` populated from the underlying `git ls-remote` / `skopeo inspect` failure for operator visibility), return the updated target. Does not trigger a scan; powers the clickable verdict pill in the auto-scan diagnostics table. The earlier active-scan short-circuit was removed — `/check` is network-bound, not CPU-bound, so it now runs even while other scans are in flight instead of mislabelling unaffected targets `check_failed_skipped` every tick.
+- `GET  /api/v1/scans` — list scans
+- `GET  /api/v1/scans/{scanId}` — scan details
+- `GET  /api/v1/scans/{scanId}/findings` — findings of a scan
+- `GET  /api/v1/scans/{scanId}/sbom` — SBOM components of a scan
+- `GET  /api/v1/scans/{scanId}/sbom/export` — SBOM export (CycloneDX 1.5 or SPDX 2.3 JSON)
+- `GET  /api/v1/scans/{scanId}/findings/export` — findings export (SonarQube external issues)
+- `GET  /api/v1/scans/{scanId}/layers` — layer analysis (Dive)
+- `POST /api/v1/scans/import-sbom` — import an external SBOM (JSON)
+- `POST /api/v1/scans/import-sbom/upload` — import an external SBOM (file upload)
+- `GET  /api/v1/scans/{scanId}/license-compliance` — license-compliance evaluation of a scan
+- `GET  /api/v1/scans/license-overview` — license-compliance overview across scans
+- `GET  /api/v1/scans/findings` — consolidated findings across all latest scans
+- `GET  /api/v1/scans/sbom` — consolidated SBOM across all latest scans
+- `GET  /api/v1/scans/alerts` — consolidated security alerts (malicious-indicator findings)
+</details>
+
+<details>
+<summary><strong>Malware intelligence</strong></summary>
+
+- `GET /api/v1/malware/malware-feed` — paginated malware-feed for the frontend overview page (all MAL-aliased OSV records from the `vulnerabilities` collection plus optional `malware_intel` entries; `offset`/`limit` pagination; OpenSearch-backed substring search when `search` is set; ecosystem filter via display-case variants; 60 s response cache + 30 min count cache).
+</details>
+
+<details>
+<summary><strong>VEX & dismissal</strong></summary>
+
+- `PUT  /api/v1/scans/vex/findings/{findingId}` — set VEX status on a single finding
+- `POST /api/v1/scans/vex/bulk-update` — set VEX status for all findings of a vulnerability + target
+- `POST /api/v1/scans/vex/bulk-update-by-ids` — set VEX status on a list of finding IDs (multi-select)
+- `POST /api/v1/scans/findings/dismiss` — mark findings dismissed / restored
+- `POST /api/v1/scans/vex/import` — import a CycloneDX VEX document
+- `GET  /api/v1/scans/{scanId}/vex/export` — export a CycloneDX VEX document
+- `GET  /api/v1/scans/{scanId}/findings?includeDismissed=true` — include dismissed findings
+- `PUT  /api/v1/scans/targets/{id}/vex-sources` — set a target's VEX source URLs (`{"urls": [...]}`, https, up to 5, CycloneDX VEX or OpenVEX) and apply them; they are fetched again after every scan
+- `POST /api/v1/scans/targets/{id}/vex-sources/apply` — fetch and apply them now
+</details>
+
+<details>
+<summary><strong>Environment inventory</strong></summary>
+
+- `GET    /api/v1/inventory` — list inventory items
+- `POST   /api/v1/inventory` — create an item
+- `GET    /api/v1/inventory/{id}` — fetch an item
+- `PUT    /api/v1/inventory/{id}` — update an item
+- `DELETE /api/v1/inventory/{id}` — delete an item
+- `GET    /api/v1/inventory/{id}/affected-vulnerabilities` — currently affected CVEs for an item
+</details>
+
+<details>
+<summary><strong>License policies</strong></summary>
+
+- `GET    /api/v1/license-policies` — list policies
+- `POST   /api/v1/license-policies` — create a policy
+- `GET    /api/v1/license-policies/{id}` — fetch a policy
+- `PUT    /api/v1/license-policies/{id}` — update a policy
+- `DELETE /api/v1/license-policies/{id}` — delete a policy
+- `POST   /api/v1/license-policies/{id}/set-default` — set a policy as default
+- `GET    /api/v1/license-policies/groups` — built-in SPDX license groups
+</details>
+
+<details>
+<summary><strong>Notifications</strong></summary>
+
+- `GET  /api/v1/notifications/status` — Apprise reachability
+- `POST /api/v1/notifications/test` — send a test notification (optional `tag`)
+- `GET / POST /api/v1/notifications/channels` — list / add Apprise channels
+- `DELETE /api/v1/notifications/channels/{id}` — remove a channel
+- `GET / POST /api/v1/notifications/rules` — list / create rules
+- `GET / PUT / DELETE /api/v1/notifications/rules/{id}` — fetch / update / delete a rule
+- `GET / POST /api/v1/notifications/templates` — list / create templates
+- `PUT / DELETE /api/v1/notifications/templates/{id}` — update / delete a template
+</details>
+
+<details>
+<summary><strong>MCP server (Model Context Protocol)</strong></summary>
+
+- `POST /mcp` — MCP protocol endpoint (Streamable HTTP; requires `MCP_ENABLED=true` and a configured OAuth IdP)
+- `GET  /.well-known/oauth-authorization-server` — OAuth 2.0 discovery
+- `POST /mcp/oauth/register` — Dynamic Client Registration (RFC 7591)
+- `GET  /mcp/oauth/authorize` — redirects to the configured upstream IdP (GitHub / Microsoft / OIDC)
+- `GET  /mcp/oauth/idp/callback` — IdP callback (internal redirect endpoint)
+- `POST /mcp/oauth/token` — token exchange with PKCE (S256)
+
+**46 tools** (server name: `hecate`):
+
+- *Read-only*: `search_vulnerabilities`, `get_vulnerability`, `search_cpe`, `search_vendors`, `search_products`, `get_vulnerability_stats`, `get_cwe`, `get_capec`, `get_scan_findings`, `get_scan_findings_by_scan`, `get_security_alerts`, `get_scan_sbom`, `get_sbom_components`, `get_sbom_facets`, `get_target_scan_history`, `compare_scans`, `get_layer_analysis`, `list_scan_targets`, `list_target_groups`, `list_scans`, `find_findings_by_cve`, `get_sca_scan`, `list_inventory_items`, `get_inventory_item`, `get_target_vex_sources`, `export_scan_vex`, `prepare_vulnerability_ai_analysis`, `prepare_vulnerabilities_ai_batch_analysis`, `prepare_scan_ai_analysis`, `prepare_attack_path_analysis`, `refine_attack_path_analysis`, `prepare_scan_attack_chain_analysis`
+- *Write* (source IP must be in `MCP_WRITE_IP_SAFELIST` at authorize time): `trigger_scan`, `trigger_sync`, `create_inventory_item`, `update_inventory_item`, `delete_inventory_item`, `set_finding_vex`, `import_vex`, `set_target_vex_sources`, `apply_target_vex_sources`, `save_vulnerability_ai_analysis`, `save_vulnerabilities_ai_batch_analysis`, `save_scan_ai_analysis`, `save_attack_path_analysis`, `save_scan_attack_chain_analysis`
+
+> [!IMPORTANT]
+> AI analysis over MCP uses **prepare/save pairs**: `prepare_*` returns Hecate's predefined prompts plus context, the calling assistant generates the analysis with its own model, then writes it back through the matching `save_*` tool. The provider keys (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_GEMINI_API_KEY`) are only used by the web-UI flows.
+</details>
+
+<details>
+<summary><strong>Real-time events (SSE)</strong></summary>
+
+- `GET /api/v1/events` — Server-Sent Events stream (job status, new vulnerabilities, AI-analysis results)
+</details>
+
+<details>
+<summary><strong>Administration</strong></summary>
+
+- `GET / POST / DELETE /api/v1/saved-searches` — saved searches
+- `GET  /api/v1/stats/overview` — statistics aggregations
+- `GET  /api/v1/audit/ingestion` — audit log
+- `GET  /api/v1/changelog` — recent changes (pagination, date and source filters)
+- `POST /api/v1/sync/trigger/{job}` — sync trigger (`euvd`, `nvd`, `cpe`, `kev`, `cwe`, `capec`, `circl`, `ghsa`, `osv`)
+- `POST /api/v1/sync/resync` — delete vulnerabilities and optionally re-fetch from upstream (multi-ID, wildcards, delete-only)
+- `GET  /api/v1/backup/vulnerabilities/{source}/export` · `POST /api/v1/backup/vulnerabilities/{source}/restore` — vulnerability backup (`NVD` / `EUVD` / `ALL`, streaming JSON)
+- `GET  /api/v1/backup/saved-searches/export` · `POST /api/v1/backup/saved-searches/restore` — saved-search backup
+- `GET  /api/v1/backup/inventory/export` · `POST /api/v1/backup/inventory/restore` — environment-inventory backup (preserves `_id`, restore is upsert by ID)
+</details>
+
+The request schemas accept an optional `triggeredBy` field; the web UI does not set it, MCP `save_*` tools set it to `{client_name} - MCP`, and the server appends the label as a Markdown footer to the stored summary. The provider keys (`OPENAI_API_KEY` · `ANTHROPIC_API_KEY` · `GOOGLE_GEMINI_API_KEY` · `OPENAI_COMPATIBLE_BASE_URL` + `OPENAI_COMPATIBLE_MODEL`) are used **only** by the HTTP endpoints — MCP AI flows never call a server-side provider.
+
+---
+
+## Status badges
+
+Hecate exposes [shields.io endpoint badges](https://shields.io/endpoint) in two flavours:
+
+- **Latest scan of a target** (recommended for READMEs — always reflects the newest run):
+  `GET /api/v1/scans/targets/{target_id}/shield`
+- **A specific scan** (frozen at scan time): `GET /api/v1/scans/{scan_id}/shield`
+
+`target_id` is the value shown as `targetId` on the scan-detail JSON (e.g. a repo URL like `https://github.com/owner/repo` or a container image ref). Path-encode it once for the inner URL, then encode the whole inner URL again for the shields.io `?url=` parameter (so `/` in the repo URL becomes `%252F`). Wrap the image in a link to the target's detail page so the badge is clickable:
+
+```markdown
+[![Vulnerability scan](https://img.shields.io/endpoint?url=https%3A%2F%2FYOUR_HOST%2Fapi%2Fv1%2Fscans%2Ftargets%2FYOUR_TARGET_ID%2Fshield)](https://YOUR_HOST/scans/targets/YOUR_TARGET_ID)
+```
+
+The badge message is a compact severity breakdown like `2C 5H 12M 4L` (critical / high / medium / low — zero buckets are dropped, `0 findings` when clean). The colour follows the worst severity present:
+
+| State | Colour |
+| --- | --- |
+| `critical > 0` | `red` |
+| `high > 0` | `orange` |
+| `medium > 0` | `yellow` |
+| `low > 0` | `yellowgreen` |
+| no findings | `brightgreen` |
+| in progress | `blue` (`scanning`) |
+| pending / failed / not found | `lightgrey` / `red` / `lightgrey` |
+
+Optional query parameter: `?label=<text>` overrides the left-hand label (default `findings`). Endpoint responses set `cacheSeconds: 300` so shields.io's CDN caches them for 5 minutes.
+
+---
+
+## Backend CLI
+
+```sh
+poetry run python -m app.cli ingest         [--since ISO] [--limit N] [--initial]
+poetry run python -m app.cli sync-euvd      [--since ISO] [--initial]
+poetry run python -m app.cli sync-cpe       [--limit N] [--initial]
+poetry run python -m app.cli sync-nvd       [--since ISO | --initial]
+poetry run python -m app.cli sync-kev       [--initial]
+poetry run python -m app.cli sync-cwe       [--initial]
+poetry run python -m app.cli sync-capec     [--initial]
+poetry run python -m app.cli sync-circl     [--limit N]
+poetry run python -m app.cli sync-cert
+poetry run python -m app.cli sync-ghsa      [--limit N] [--initial]
+poetry run python -m app.cli sync-osv       [--limit N] [--initial]
+poetry run python -m app.cli enrich-mal     [--limit N]                    # deps.dev enrichment of existing MAL-* docs (broad >=0 → real versions)
+poetry run python -m app.cli purge-malware  --ecosystem <eco> [--dry-run]  # delete an ecosystem from malware_intel + MAL-* vulnerabilities
+poetry run python -m app.cli reindex-opensearch
+poetry run python -m app.cli compact-history [--dry-run] [--limit N] [--start-after ID] [--pause S]  # shrink legacy change-history entries
+poetry run python -m app.cli scrub-audit-credentials [--dry-run]  # mask URL credentials in audit entries written before 2026-11
+```
+
+---
+
+## Configuration
+
+Everything is driven through environment variables — see [`.env.example`](.env.example) for the full list.
+
+| Category | Key variables |
+| --- | --- |
+| **General** | `ENVIRONMENT` (non-`development` values enable the insecure-default-secret startup check), `API_PREFIX`, `LOG_LEVEL`, `TZ`, `CORS_ORIGINS` (comma-separated allowed browser origins; `*` default serves wildcard reads without credentials — set explicit origins to scope them), `HTTP_CA_BUNDLE` (path to a PEM with corporate / MITM CA; merged with the system CAs at container start, so it only needs to contain the corporate CA) |
+| **MongoDB** | `MONGO_URL`, `MONGO_USERNAME`, `MONGO_PASSWORD`, `MONGO_DB` |
+| **OpenSearch** | `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, `OPENSEARCH_PASSWORD`, `OPENSEARCH_VERIFY_CERTS`, `OPENSEARCH_CA_CERT` |
+| **AI providers** | `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_REASONING_EFFORT`, `OPENAI_MAX_OUTPUT_TOKENS`, `ANTHROPIC_API_KEY`, `GOOGLE_GEMINI_API_KEY`, `OPENAI_COMPATIBLE_BASE_URL`, `OPENAI_COMPATIBLE_API_KEY`, `OPENAI_COMPATIBLE_MODEL`, `OPENAI_COMPATIBLE_LABEL` (Ollama / vLLM / OpenRouter / LocalAI / LM Studio via `/v1/chat/completions`) |
+| **Data sources** | `CERT_FEEDS_EXTRA` (your own feeds as `Name\|URL\|kind`, kind `cert`/`vendor`/`community`), `CERT_FEEDS_ALLOW_PRIVATE_HOSTS`, `EUVD_BASE_URL`, `NVD_BASE_URL`, `NVD_API_KEY`, `NVD_TIMEOUT_SECONDS`, `NVD_MAX_RETRIES`, `NVD_RETRY_BACKOFF_SECONDS`, `KEV_FEED_URL`, `GHSA_TOKEN`, `GHSA_MAX_RETRIES`, `GHSA_RETRY_BACKOFF_SECONDS`, `CIRCL_MAX_RETRIES`, `CIRCL_RETRY_BACKOFF_SECONDS`, `OSV_BASE_URL`, `OSV_TIMEOUT_SECONDS`, `OSV_RATE_LIMIT_SECONDS`, `OSV_MAX_RETRIES`, `OSV_RETRY_BACKOFF_SECONDS`, `OSV_MAX_RECORDS_PER_RUN`, `OSV_INITIAL_SYNC_CONCURRENCY`, `OSV_INITIAL_SYNC_BATCH_SIZE` |
+| **Scheduler** | `SCHEDULER_ENABLED`, `SCHEDULER_*_INTERVAL_*`. CWE / CAPEC use wall-clock cron instead of intervals: `SCHEDULER_CWE_CRON_DAY_OF_WEEK` (default `mon`), `SCHEDULER_CWE_CRON_HOUR` (`3`), `SCHEDULER_CAPEC_CRON_DAY_OF_WEEK` (default `tue`), `SCHEDULER_CAPEC_CRON_HOUR` (`3`). Stale-on-startup catch-up via `SCHEDULER_CATALOG_STALE_CATCHUP_MULTIPLIER` (default `1.5`). |
+| **Inventory EOL** | `ENDOFLIFE_ENABLED` (default `true`), `ENDOFLIFE_BASE_URL` (endoflife.date v1 API), `ENDOFLIFE_TIMEOUT_SECONDS`, `ENDOFLIFE_RATE_LIMIT_SECONDS`, `ENDOFLIFE_MAX_RETRIES`, `ENDOFLIFE_RETRY_BACKOFF_SECONDS`, `ENDOFLIFE_CACHE_TTL_HOURS` — support / end-of-life enrichment for Environment Inventory items |
+| **Frontend** | `VITE_API_BASE_URL` (feature flags are derived from backend settings and exposed via `GET /api/v1/config`) |
+| **SCA scanner** | `SCA_ENABLED`, `SCA_API_KEY`, `SCA_SCANNER_URL`, `SCA_SCANNER_SECRET`, `SCA_SCANNER_TIMEOUT_SECONDS` (default `2060` — floor; the per-call sidecar HTTP timeout auto-derives from the per-scanner overrides), `SCA_AUTO_SCAN_INTERVAL_MINUTES`, `SCA_AUTO_SCAN_ENABLED`, `SCA_MAX_CONCURRENT_SCANS`, `SCA_SCAN_MAX_RUNTIME_SECONDS` (default `0`: derived from the scanner timeouts; a running scan past it is cancelled), `SCA_MIN_FREE_MEMORY_MB`, `SCA_MIN_FREE_DISK_MB`, `SCANNER_AUTH`, `SEMGREP_RULES`, per-scanner subprocess timeouts `<SCANNER>_TIMEOUT_SECONDS` (`GRYPE_` default `1800`, `DEVSKIM_` `1500`, `TRUFFLEHOG_` `300`, others `600`) |
+| **Notifications** | `NOTIFICATIONS_ENABLED`, `NOTIFICATIONS_APPRISE_URL`, `NOTIFICATIONS_APPRISE_TAGS`, `NOTIFICATIONS_APPRISE_TIMEOUT` |
+| **Sign-in (OIDC)** | `OIDC_ISSUER`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_SCOPES`, `OIDC_PROVIDER_LABEL`, `OIDC_ROLES_CLAIM`, `OIDC_ADMIN_GROUPS`, `OIDC_EDITOR_GROUPS`, `OIDC_VIEWER_GROUPS`, `AUTH_REQUIRE_LOGIN` (default `true` once OIDC is set), `AUTH_PUBLIC_URL`, `AUTH_SESSION_LIFETIME_HOURS`, `AUTH_SESSION_IDLE_MINUTES` — see `docs/admin/authentication.md` |
+| **MCP server** | `MCP_ENABLED`, `MCP_OAUTH_PROVIDER`, `MCP_OAUTH_CLIENT_ID`, `MCP_OAUTH_CLIENT_SECRET`, `MCP_OAUTH_ISSUER`, `MCP_OAUTH_SCOPES`, `MCP_WRITE_IP_SAFELIST`, `MCP_ALLOWED_USERS`, `MCP_ALLOWED_REDIRECT_HOSTS` (allowed OAuth redirect hosts), `MCP_RATE_LIMIT_PER_MINUTE`, `MCP_MAX_RESULTS`, `MCP_MAX_CONCURRENT_CONNECTIONS`, `MCP_PUBLIC_URL` (pin OAuth resource / issuer URL behind multi-hostname proxies), `MCP_AUTH_DISABLED` (DEV ONLY: full OAuth bypass) |
+
+> [!WARNING]
+> `MCP_AUTH_DISABLED=true` skips authentication entirely and stamps every request with a synthetic `local-dev` identity holding `mcp:read mcp:write`. It is intended for local single-user deployments only — never enable it on a publicly reachable instance.
+
+---
+
+## CI/CD
+
+GitHub Actions workflows live in [`.github/workflows/`](.github/workflows/):
+
+- **[`build-images.yml`](.github/workflows/build-images.yml)** — matrix build of the three container images (backend, frontend, scanner) on every push to `main` and on semver tags (`X.Y.Z*`). Pushes to GHCR (`ghcr.io/<owner>/hecate-{backend,frontend,scanner}`) with `latest`, `main-<sha>`, and semver tags; uses GitHub Actions cache (per-component scope). The short commit SHA is injected as the `HECATE_BUILD_SHA` build arg so the running container can report its build identity via `/api/v1/version` (used by the in-app Support page to detect newer `main-<sha>` images).
+- **[`release.yml`](.github/workflows/release.yml)** — on semver tag push extracts the matching section from [`CHANGELOG.md`](CHANGELOG.md) and creates a GitHub Release; the pre-release flag is set automatically when the tag contains a `-`.
+
+---
+
+## Tech stack
+
+| Component | Technology |
+| --- | --- |
+| Backend | Python 3.14, FastAPI 0.139, Uvicorn, Poetry |
+| Frontend | React 19, TypeScript 5.9, Vite 7, React Router 7 |
+| Database | MongoDB 8 (Motor async), OpenSearch 3 |
+| Scheduling | APScheduler 3.11 |
+| HTTP client | httpx 0.28 (async) |
+| Logging | structlog 25 |
+| AI | OpenAI, Anthropic, Google Gemini, OpenAI-compatible (Ollama / vLLM / OpenRouter / LocalAI / LM Studio) — each optional |
+| Scanner sidecar | Trivy, Grype, Syft, OSV Scanner, govulncheck (Go toolchain), Hecate Analyzer, Dockle, Dive, Semgrep, TruffleHog, DevSkim (.NET 10 runtime), Skopeo, FastAPI |
+| Notifications | Apprise (caronc/apprise) |
+| MCP server | mcp SDK, OAuth 2.0 (PKCE), Streamable HTTP |
+| CI/CD | GitHub Actions, GitHub Container Registry (GHCR) |
+
+---
+
+## Further reading
+
+- [Documentation site](https://docs.hecate.pw); the sidebar's Documentation link follows `DOCS_URL` (empty hides it). Self-hosted: `docs/Dockerfile` builds it into an nginx image (`ghcr.io/0x3e4/hecate-docs`, compose profile `docs`) that loads nothing from other hosts. Locally from the repo root: `poetry -P docs install`, then `poetry -P docs run mkdocs serve`
+- [Backend details](backend/README.md)
+- [Frontend details](frontend/README.md)
+- [Scanner sidecar](scanner/README.md)
+- [Architecture overview](docs/architecture.md)
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+## Support
+
+Hecate is built and maintained as a labour of love. If it helps you keep on top of vulnerabilities and your software supply chain, a small tip keeps the lights on:
+
+<a href="https://ko-fi.com/0x3e4" target="_blank"><img height="36" src="https://storage.ko-fi.com/cdn/kofi1.png" alt="Buy me a coffee on Ko-fi" /></a>
+
+A star on the [GitHub repo](https://github.com/0x3e4/hecate) is just as welcome — bug reports and pull requests too. Security issues please report privately, see [SECURITY.md](SECURITY.md).
+
+Hecate is developed with the help of an AI coding assistant ([Claude Code](https://claude.com/claude-code)).
+
+<br>
+
+<div align="center">
+Made with ❤ in Austria
+</div>

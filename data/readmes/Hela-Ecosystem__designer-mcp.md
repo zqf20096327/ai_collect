@@ -1,7 +1,7 @@
 # The Designer MCP
 
 <!-- hela:version:start -->
-**MCP server:** `hela-phenotype` · **Version:** `3.2.3` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
+**MCP server:** `hela-phenotype` · **Version:** `3.3.0` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
 <!-- hela:version:end -->
 
 > **Part of the [HeLa MCP Ecosystem](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem)** — This server is **HeLa Phenotype (`hela-phenotype`)** — the _Design_ component of the HeLa cellular architecture. See the [ecosystem docs](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem) for profiles, workflows, and multi-client setup.
@@ -195,7 +195,7 @@ All snippets respect `prefers-reduced-motion` — animations are skipped entirel
 **Ellis UI (`examples/ellis-ui`)**
 A comprehensive, anti-slop component library demonstrating the extreme versatility of `designer-mcp`'s ruleset. The project takes a single romantic letter and renders it across **24 radically different, strictly enforced aesthetic systems** (e.g., Swiss Archival, Vintage Airmail, Brutalist, UNIX Phosphor, 8-Bit Game Boy).
 
-Each design acts as a fully standalone, reusable UI kit utilizing zero JS dependencies—relying entirely on strict structural typography, CSS geometry, and advanced CSS rendering techniques (clip-paths, custom filters, OKLCH gradients). Each of the 24 folders includes a `design.md` detailing the tokens and layout strategy, acting as an advanced template reference for `designer-mcp`.
+Each design acts as a reusable UI kit with no JS framework—relying on strict structural typography, CSS geometry, and advanced CSS rendering techniques (clip-paths, custom filters, OKLCH gradients). The pages load Tailwind from the Play CDN, Google Fonts and some third-party icons at runtime; compile Tailwind and self-host those assets before shipping. Each of the 24 folders includes a `design.md` detailing the tokens and layout strategy plus four linked HTML pages (`index`, `letter`, `note`, `slideshow`), and `get_ellis_ui_template` returns all of them (or one, via `page`).
 
 ## Installation
 

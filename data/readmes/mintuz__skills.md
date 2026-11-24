@@ -3,7 +3,7 @@
 [![Twitter](https://img.shields.io/badge/twitter-blue.svg?&style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/mintuz)
 [![My LinkedIn profile](https://img.shields.io/badge/linkedin-%230077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/adambulmer)
 
-Reusable skills, agents and plugin bundles for software development and personal productivity. They work with Codex, Claude Code and OMP. All three harnesses load the same skill directories under `src/`. Each harness manages its own plugin discovery, tool access and installation.
+Reusable skills, agents and plugin bundles for software development and personal productivity. They work with Codex, Claude Code, OMP and Antigravity. All four harnesses load the same skill directories under `src/`. Each harness manages its own plugin discovery, tool access and installation.
 
 To choose a skill for a task, go to [When to use the main skills](#when-to-use-the-main-skills).
 
@@ -91,6 +91,42 @@ omp plugin upgrade core@mintuz-skills
 
 OMP uses this repository's explicit `.omp-plugin/marketplace.json` catalogue. Each plugin also includes `.omp-plugin/plugin.json` metadata that matches the Claude Code and Codex directory layout. See the [OMP marketplace documentation](https://omp.sh/docs/marketplace).
 
+## Install with Antigravity
+
+Antigravity's `plugin@marketplace` syntax currently supports only the official `antigravity-plugins-official` catalogue. Install bundles from a local clone of this repository, or reference the repository's `.agents/plugins.json` discovery manifest.
+
+To install bundles into `~/.gemini/config/plugins/` with the Antigravity CLI (`agy`), clone this repository and run these commands from the repository root:
+
+```bash
+agy plugin install ./src/core
+agy plugin install ./src/web
+agy plugin install ./src/typescript
+agy plugin install ./src/system-design
+agy plugin install ./src/product-management
+agy plugin install ./src/app
+agy plugin install ./src/life
+agy plugin install ./src/principle
+```
+
+To install only some bundles, remove the lines that you do not need. To check the installed bundles and their discovered components, run `agy plugin list`.
+
+Alternatively, load the bundles directly from a local clone across all projects by inheriting `.agents/plugins.json` in `~/.gemini/config/plugins.json` (use an absolute path; Antigravity does not expand `~` in discovery manifests):
+
+```json
+{
+  "inherits": [
+    {
+      "path": "/absolute/path/to/skills/.agents/plugins.json",
+      "include_only": ["core", "web", "typescript"]
+    }
+  ]
+}
+```
+
+Remove `include_only` to load all eight bundles. When you open this repository itself in Antigravity, `.agents/plugins.json` discovers all bundles under `src/` automatically.
+
+Each plugin includes `.antigravity-plugin/plugin.json` metadata and, where MCP servers apply, `mcp_config.json`. To validate a bundle locally with Antigravity's plugin loader, run `agy plugin validate ./src/<bundle>`. See the [Antigravity Plugins documentation](https://antigravity.google/docs/plugins) and [Customization discovery](https://antigravity.google/docs/customization-discovery).
+
 ## Call a skill
 
 Each harness calls a skill by name with a different syntax. The examples in this README use unqualified skill names. For a Claude Code plugin installation, add the bundle prefix.
@@ -100,6 +136,7 @@ Each harness calls a skill by name with a different syntax. The examples in this
 | Claude Code plugin | `/plugin:name` | `/core:reducer` |
 | OMP | `/skill:name` | `/skill:reducer` |
 | Codex | `$name` | `$reducer` |
+| Antigravity | `/name` | `/reducer` |
 
 ## When to use the main skills
 
@@ -326,11 +363,11 @@ The [verification evidence record](evals/verification-skillset-native-results.js
 
 | Plugin | Description |
 | --- | --- |
-| **core** | Core workflows: commits, learning, code review, prompts, PRs, writing, and persistent memory |
+| **core** | Core workflows: commits, learning, code review, prompts, PRs, and writing |
 | **web** | Web development with CSS, React, Tailwind, TDD, testing, and design patterns |
 | **typescript** | TypeScript strict mode, schema-first development, and best practices |
-| **system-design** | Architecture visualisation with Mermaid diagrams |
-| **product-management** | PRDs, task management with Task Master MCP, decision tracing, and status updates |
+| **system-design** | Language-agnostic architecture auditing, physical layout, hexagonal architecture, twelve-factor discipline, and Mermaid diagrams |
+| **product-management** | Decision tracing, meeting briefs, status updates, story PR orchestration, and design handovers |
 | **app** | Swift iOS development with App Intents, Swift Testing, and SwiftUI architecture |
 | **principle** | Independent engineering principles, each invoked for a specific decision |
 | **life** | Personal life management with the GPS method for goal achievement |
@@ -360,6 +397,7 @@ The [verification evidence record](evals/verification-skillset-native-results.js
 | [`maintain-verification-skill`](src/core/skills/maintain-verification-skill/SKILL.md) | Repair verification recipes and harness discovery without changing product expectations |
 | [`visual-feedback`](src/core/skills/visual-feedback/SKILL.md) | Reproduce and compare visual states in web and iOS applications |
 | [`tdd`](src/core/skills/tdd/SKILL.md) | Framework-neutral Red-Green-Refactor workflow with explicit evidence |
+| [`test-seams`](src/core/skills/test-seams/SKILL.md) | Break hidden dependencies in untestable legacy code with minimum seams and hand-written fakes across web and iOS |
 | [`blast-radius`](src/core/skills/blast-radius/SKILL.md) | Trace material change risks and decisive checks |
 | [`double-check`](src/core/skills/double-check/SKILL.md) | Second opinion from a fresh reviewer, ideally on another provider; findings close only on evidence |
 | [`lens-review`](src/core/skills/lens-review/SKILL.md) | Review a diff through installed skills as isolated lenses, verify every finding and return one ranked report |
@@ -412,6 +450,14 @@ The `writing-for-humans` [behavioural suite](evals/writing-for-humans/promptfooc
 | [`ios-localize-copy`](src/app/skills/ios-localize-copy/SKILL.md) | Localise iOS and App Store copy across every supported locale |
 | [`xcode-dev-loop`](src/app/skills/xcode-dev-loop/SKILL.md) | Canonical xcodebuild build/test/simulator loop: background runs, result reading, screenshots |
 | [`asc-screenshots`](src/app/skills/asc-screenshots/SKILL.md) | Upload App Store screenshots and previews through helm-asc: staging, locales, verification |
+| [`app-intents-whats-new-27`](src/app/skills/app-intents-whats-new-27/SKILL.md) | Apple Xcode 27 guide to new iOS 26 and iOS 27 App Intents APIs, behaviours, and deprecations |
+| [`app-resizability`](src/app/skills/app-resizability/SKILL.md) | Apple Xcode 27 guide to resizable UIKit apps for Stage Manager, split-screen, and foldable iPhone Duo |
+| [`audit-xcode-security-settings`](src/app/skills/audit-xcode-security-settings/SKILL.md) | Apple Xcode 27 guide to auditing and enabling security-oriented Xcode build settings and hardening |
+| [`building-document-based-swiftui-applications`](src/app/skills/building-document-based-swiftui-applications/SKILL.md) | Apple Xcode 27 guide to building and migrating SwiftUI document-based apps with the `Document` protocol |
+| [`siri-app-integration`](src/app/skills/siri-app-integration/SKILL.md) | Apple Xcode 27.3 guide to integrating apps with Siri's model (`@AppIntent(.tool)`, generable entities, `Skills.skillsbundle`) |
+| [`siri-evaluations`](src/app/skills/siri-evaluations/SKILL.md) | Apple Xcode 27.3 guide to writing, running, and analysing `SiriEvaluations` scenarios |
+| [`swiftui-whats-new-27`](src/app/skills/swiftui-whats-new-27/SKILL.md) | Apple Xcode 27 guide to new SwiftUI 27 APIs, behaviours, and `@State` macro migration |
+| [`xctrace`](src/app/skills/xctrace/SKILL.md) | Apple Xcode 27 guide to profiling, capturing traces, and triaging hangs with `xctrace` |
 
 ### TypeScript
 
@@ -429,7 +475,11 @@ The `writing-for-humans` [behavioural suite](evals/writing-for-humans/promptfooc
 
 | Skill | Description |
 | --- | --- |
+| [`architecture-audit`](src/system-design/skills/architecture-audit/SKILL.md) | Read-only repository-wide architectural hotspot audit with qualitative ranking, counterevidence, and Mermaid diagrams |
+| [`codebase-layout`](src/system-design/skills/codebase-layout/SKILL.md) | Physical source tree, package/target layout, placement rules, import enforcement, and staged migrations across web and iOS |
+| [`hexagonal-architecture`](src/system-design/skills/hexagonal-architecture/SKILL.md) | Opt-in ports-and-adapters architecture with language-agnostic rules and web/iOS references |
 | [`mermaid-generator`](src/system-design/skills/mermaid-generator/SKILL.md) | Generate Mermaid diagrams from code to visualise architecture and relationships |
+| [`twelve-factor`](src/system-design/skills/twelve-factor/SKILL.md) | Twelve-Factor operational discipline with an upfront platform applicability gate for backend, edge, SPA, and iOS |
 
 ### Product management
 
@@ -516,9 +566,7 @@ Each principle is an independent skill under `src/principle/skills/`, with its f
 
 Some plugins include Model Context Protocol (MCP) server configurations:
 
-- **core**: Memory MCP for persistent knowledge storage across sessions
 - **web**: Playwright MCP for browser automation and visual checks
-- **product-management**: Task Master MCP for task management workflows
 - **app**: XcodeBuildMCP and iOS Simulator MCP for app development workflows
 
 ## Other ways to install skills
@@ -568,25 +616,30 @@ The uploaded skills are then available in your Claude web conversations. See [sc
 
 ## Plugin metadata and validation
 
-A marketplace catalogue lives at the repository root. Each plugin has a manifest inside its own `src/<plugin>/` directory, not another marketplace.
+Marketplace catalogues and discovery manifests live at the repository root. Each plugin has a manifest inside its own `src/<plugin>/` directory, not another marketplace.
 
-| Harness | Root catalogue | Per-plugin manifest |
-| --- | --- | --- |
-| Codex | `.agents/plugins/marketplace.json` | `.codex-plugin/plugin.json` |
-| Claude Code | `.claude-plugin/marketplace.json` | `.claude-plugin/plugin.json` |
-| OMP | `.omp-plugin/marketplace.json` | `.omp-plugin/plugin.json` |
+| Harness | Root catalogue / discovery | Per-plugin manifest | MCP config |
+| --- | --- | --- | --- |
+| Codex | `.agents/plugins/marketplace.json` | `.codex-plugin/plugin.json` | `.mcp.json` |
+| Claude Code | `.claude-plugin/marketplace.json` | `.claude-plugin/plugin.json` | `.mcp.json` |
+| OMP | `.omp-plugin/marketplace.json` | `.omp-plugin/plugin.json` | `.mcp.json` |
+| Antigravity | `.agents/plugins.json` | `.antigravity-plugin/plugin.json` | `mcp_config.json` |
 
 Keep the OMP catalogue and manifests identical to their Claude Code copies. OMP prefers its own catalogue over the Claude Code fallback. Its runtime discovers the conventional component directories and uses the compatible Claude Code metadata where needed, so keep both sets of manifests.
 
+Antigravity loads plugins natively from `.antigravity-plugin/plugin.json` and reads plugin MCP servers from `mcp_config.json` (ignoring `.mcp.json`). Keep `mcp_config.json` aligned with `.mcp.json` for every plugin that declares MCP servers, using `timeoutSeconds` instead of `timeout` where a timeout is configured.
+
 After you change a plugin:
 
-1. Set the same version in all three of its manifests.
+1. Set the same version in all four of its manifests.
 2. Set that `version` on its Claude Code and OMP catalogue entries, so that OMP can detect available upgrades.
-3. Keep the plugin names and source paths aligned in all three catalogues.
+3. Keep the plugin names and source paths aligned across all catalogues and `.agents/plugins.json`.
 4. Run the repository metadata check. It makes no model calls and does not change host configuration:
 
    ```bash
    pnpm check:plugins
    ```
 
-The check covers plugin and skill inventories, source paths, repository URLs, versions and MCP configuration paths. It does not execute skills or start MCP servers. Before you publish, also validate and install through the target harness.
+5. If `agy` is installed, validate the Antigravity plugin bundles with `agy plugin validate ./src/<plugin>`.
+
+The check covers plugin and skill inventories, source paths, repository URLs, versions, Antigravity manifest schema fields and MCP configuration parity. It does not execute skills or start MCP servers. Before you publish, also validate and install through the target harness.

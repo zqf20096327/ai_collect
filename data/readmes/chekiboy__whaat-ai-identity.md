@@ -53,7 +53,7 @@ Each capability has its own page under [`docs/`](docs/README.md).
 - **Journal and session reports.** At the end of a session the agent writes what happened and what it learned; Whaat keeps it as JSON in the identity's private folder. [Journal and session end](docs/journal.md), [Reports](docs/reports.md)
 - **Any MCP client.** `whaat mcp` serves the same memory, journal and report calls over MCP, so an agent outside Claude Code can work as an identity too. [MCP layer](docs/mcp.md)
 - **Several identities.** Each agent identity has its own folder, git history and token. A token reads and writes only its own identity; the admin token, which the UI uses, sees all of them. [Identities](docs/identities.md)
-- **An app to look at it all.** A home page per identity, the memory as a list, a brain and rings, the reports, the curation and migration pages, the settings, and an experimental terminal that runs agent sessions in tmux. [The app](docs/app.md), [Terminal](docs/terminal.md)
+- **An app to look at it all.** A home page per identity, the memory as a list, a brain and rings, the reports, the curation and migration pages, and the settings. [The app](docs/app.md)
 
 Every command is listed on one page: [Command line](docs/cli.md).
 
@@ -136,12 +136,11 @@ The settings: the identities, each with its own folder and token, and the app's 
 
 The pictures show generated sample data.
 
-## Status: what works, what is experimental
+## Status: what works, what is planned
 
 Version 0.4.0: early software. Until 1.0, the API, the CLI and the file formats may change from one version to the next. The app shows the running version in its status bar. What changed in each version is in [`CHANGELOG.md`](CHANGELOG.md).
 
 - **Works today:** layered memory with recall and scoring, saving through the agent, curation, migration, the journal and session reports, several identities, the Claude Code plugin, the MCP layer and the app.
-- **Experimental:** the terminal, which runs agent sessions inside the app.
 - **Concept only:** Self Journey.
 - **Platform:** macOS only.
 
@@ -150,7 +149,7 @@ Version 0.4.0: early software. Until 1.0, the API, the CLI and the file formats 
 - macOS (other systems are not supported yet).
 - [uv](https://docs.astral.sh/uv/), which installs the Python (3.11 or newer) the server needs.
 - Node.js and [pnpm](https://pnpm.io/), to build the UI.
-- git; tmux for the terminal.
+- git.
 - [Claude Code](https://docs.claude.com/en/docs/claude-code) for the plugin, or any client that runs MCP servers over stdio for the MCP layer.
 
 ## Getting started
@@ -266,7 +265,6 @@ MCP client ──> whaat mcp ───┘
 - **Tokens stay out of the memory.** The server checks a SHA-256 digest of each token. Tokens are kept in the state folder, never in an identity's Git repository, and `connect` writes them into settings files without printing them.
 - **Private files.** Memory files are readable only by you (folders 700, files 600).
 - **The app holds the admin token.** The server puts it into the page it serves, so anyone who can open the app on your machine can act as the admin. For a local app this is accepted.
-- **The terminal runs commands on your machine.** It needs the admin token and checks that the page opening a session is Whaat's own, because any website in your browser could try to connect to a local port.
 
 ## Repository layout
 

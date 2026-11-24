@@ -127,7 +127,7 @@ On some Linux hosts Judge0 needs **cgroup v1** (`systemd.unified_cgroup_hierarch
 
 ### First-time flow
 
-1. **Providers & models** (`/config/providers`) — add an OpenAI-compatible provider (base URL + optional API key), then add one or more models to it; **Load models from provider** fills the list from the endpoint's `/models`. Enable **Accepts audio input** only for models that support multimodal audio.
+1. **Providers & models** (`/config/providers`) — add an OpenAI-compatible provider (base URL + optional API key); the model list is imported automatically from the endpoint's `/models`, and **Load models** re-imports it on demand (a failed attempt is marked on the provider card). Imported models default to no audio; tick **audio** next to a model that accepts multimodal input, or add a single model manually with **Add model**.
 2. **Configuration** (`/config`) — select an interview model, set the interview locale; download Whisper (and optionally a Piper voice) here if you want voice features; test connection, then save.
 3. **New interview** (`/setup`) — pick a **session mode** (theory only, coding only, or combined). Choose tracks, levels, topics, how many questions/tasks, optional per-round timers, and whether to **exclude known questions**. Coding modes require Judge0 (see **Coding sessions** above).
 4. **Practice** (`/interview/{id}`) — answer theory questions in the chat (type, dictate, or record audio). On coding phases, use the editor: **Run** to check public tests, **Submit** when ready. Combined sessions switch panels automatically when a section ends (or use **Continue to Coding**). End the interview from the sidebar at any time.

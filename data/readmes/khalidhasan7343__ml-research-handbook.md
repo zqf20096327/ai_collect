@@ -1,214 +1,224 @@
+<div align="center">
+
+<a href="book/ML_Research_Handbook.pdf"><img src="assets/cover.png" alt="Cover of the ML Research Handbook, Final Edition" width="260"></a>
+
 # ML Research Handbook
 
-*Machine learning, research paper analysis, and research methodology — in English and Bangla.*
+**Machine learning · Research paper reading · Critical analysis · Research gap identification**
 
-**Author: MD Khalid Hasan**
+*মেশিন লার্নিং, গবেষণাপত্র পাঠ, সমালোচনামূলক বিশ্লেষণ ও রিসার্চ গ্যাপ শনাক্তকরণের দ্বিভাষিক হ্যান্ডবুক*
 
-**[Read Online](HANDBOOK.md)** · **[Read / Download PDF](editions/ML_Research_Handbook.pdf)** · **[Download DOCX](editions/ML_Research_Handbook.docx)**
+**MD Khalid Hasan** · Final Edition · 2026 · 199 pages · English and বাংলা
 
-## Project Overview / পরিচিতি
+[![Read the PDF](https://img.shields.io/badge/Read%20the%20PDF-199%20pages-14213d?style=for-the-badge&logo=readthedocs&logoColor=white)](book/ML_Research_Handbook.pdf)
+[![Download](https://img.shields.io/badge/Download-free-c9a227?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/khalidhasan7343/ml-research-handbook/raw/main/book/ML_Research_Handbook.pdf)
 
-ML Research Handbook is a personal academic study and reference project for students and early-career researchers. It connects machine learning foundations with the practical work of reading papers, evaluating evidence, identifying research gaps, and developing research questions.
+[![Text: CC BY-NC-ND 4.0](https://img.shields.io/badge/text-CC%20BY--NC--ND%204.0-lightgrey.svg)](LICENSE)
+[![Template and tools: MIT](https://img.shields.io/badge/template%20%26%20tools-MIT-blue.svg)](LICENSE-MIT)
+[![Languages: English and Bangla](https://img.shields.io/badge/languages-English%20%C2%B7%20Bangla-0f766e.svg)](#বাংলায়-পরিচিতি)
+[![Typeset with Typst](https://img.shields.io/badge/typeset%20with-Typst-239dad.svg)](https://typst.app)
+[![Build PDF](https://github.com/khalidhasan7343/ml-research-handbook/actions/workflows/build.yml/badge.svg)](https://github.com/khalidhasan7343/ml-research-handbook/actions/workflows/build.yml)
 
-এই হ্যান্ডবুকটি মেশিন লার্নিংয়ের মৌলিক ধারণা থেকে গবেষণাপত্র বোঝা, সমালোচনামূলক মূল্যায়ন, রিসার্চ গ্যাপ শনাক্তকরণ এবং গবেষণা প্রশ্ন তৈরির পথে একটি ইংরেজি ও বাংলা অধ্যয়ন সহায়িকা।
+</div>
 
-## Read & Download / পড়ুন ও ডাউনলোড করুন
+---
 
-| Format | Open the handbook | Use it for |
+A study and reference handbook for students and early-career researchers who want to move from *understanding machine learning* to *critically evaluating machine learning research*. It starts with the vocabulary and workflow of machine learning, then teaches you how to read a research paper, judge whether its evidence is convincing, find a genuine research gap, and turn that gap into a research question you can test.
+
+Parts VII and VIII then take you into research in the age of large language models and along the whole path from a verified gap to a published paper — proposal, experiment, statistics, writing and peer review — following one Bangla mini-project from start to finish.
+
+Every important idea is explained twice: first in English, then in natural Bangla. The Bangla is a second explanation, not a word-for-word translation. Technical terms stay in English where that is how you will meet them in papers.
+
+## Inside the Book
+
+<table>
+  <tr>
+    <td align="center" width="25%"><img src="assets/previews/1-part-opener.jpg" alt="Part IV opener: Research Gaps, Questions and Novelty"></td>
+    <td align="center" width="25%"><img src="assets/previews/2-three-pass-reading.jpg" alt="Chapter 8: the three-pass method for reading a paper"></td>
+    <td align="center" width="25%"><img src="assets/previews/3-worked-example.jpg" alt="Chapter 19: a worked confusion-matrix example"></td>
+    <td align="center" width="25%"><img src="assets/previews/4-cheat-sheet.jpg" alt="Appendix D: cheat sheet for reading any ML paper"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Part openers in English and Bangla</sub></td>
+    <td align="center"><sub>The three-pass reading method</sub></td>
+    <td align="center"><sub>Formulas worked by hand</sub></td>
+    <td align="center"><sub>One-page paper-reading cheat sheet</sub></td>
+  </tr>
+</table>
+
+## What You Will Be Able to Do
+
+Take an unfamiliar AI/ML research paper and:
+
+1. understand its problem, method, data and results in a structured way (Chapters 7–9);
+2. judge whether its experiments and comparisons are trustworthy (Chapters 5, 6 and 10–12);
+3. separate its *limitations* from genuine, field-wide *research gaps* (Chapters 13–14);
+4. verify a candidate gap against the literature instead of assuming it (Chapter 15);
+5. turn a verified gap into a specific, testable research question with a clear contribution (Chapters 16–17).
+
+Then go further:
+
+6. judge papers about large language models and use AI tools in research responsibly (Chapters 22–23);
+7. work with Bangla and other low-resource languages (Chapter 24);
+8. turn your question into a proposal, a sound experiment, an honest paper and a submission (Chapters 26–29).
+
+## Contents
+
+| Part | Chapters | What it gives you |
 |---|---|---|
-| Markdown | **[Read Online](HANDBOOK.md)** | Read and search the handbook directly on GitHub. |
-| PDF | **[Read / Download PDF](editions/ML_Research_Handbook.pdf)** | Read the 101-page edition offline or print it. GitHub's file viewer offers a download option. |
-| Word | **[Download DOCX](editions/ML_Research_Handbook.docx)** | Download the Word edition for personal study and annotation. |
+| **I** · Machine Learning Foundations | 1–6 | Vocabulary, the project pipeline, data quality, algorithms, metrics, experimental design |
+| **II** · Reading Research Papers | 7–9 | Paper anatomy, the three-pass reading method, abstract and introduction analysis, the literature matrix |
+| **III** · Critical Analysis | 10–12 | A 14-dimension critique framework, red flags, judging the venue, reproducibility |
+| **IV** · Research Gaps, Questions and Novelty | 13–17 | Gap types, gap vs limitation, finding and verifying gaps, research questions, novelty |
+| **V** · Practice | 18–19 | A full case study of the AlexNet paper and hand-computed worked examples |
+| **VI** · Beyond the Core | 20–21 | Modern ML concepts, fairness and responsible research |
+| **VII** · Research in the Age of LLMs | 22–25 | Reading LLM papers, AI tools in research, Bangla and low-resource ML, a case study of the Transformer paper |
+| **VIII** · From Question to Publication | 26–29 | Proposal, running a study with sound statistics, writing the paper, submission and peer review |
+| **Appendices** | A–E | Templates, formula sheet, glossary, one-page cheat sheet, answers to the exercises of Chapters 22–29 |
 
-All three editions contain **34 numbered sections**, ending with **References & Further Reading**. The handbook identifies its content version as **4.0**.
+<details>
+<summary><b>Full chapter list</b></summary>
 
-## About the Handbook / হ্যান্ডবুক সম্পর্কে
+**Front matter:** Acknowledgements · Preface · Reading paths · Conventions · A note on sources and integrity
 
-The handbook progresses from beginner vocabulary to algorithms, evaluation, experimental design, and critical research reading. English and Bangla explanations accompany formulas, worked numerical examples, checklists, and paper-analysis templates. An AlexNet case study brings the reading and evaluation frameworks together.
+**Part I · Machine Learning Foundations**
 
-Use it as a study sequence or return to individual sections while reading a paper. The references in Section 34 provide starting points for further study.
+1. Machine Learning Foundations
+2. The Complete ML Project Pipeline
+3. Dataset Analysis and Data Quality
+4. Core ML and Deep Learning Algorithms
+5. Model Evaluation
+6. Experimental Design
 
-## Intended Audience / কাদের জন্য
+**Part II · Reading Research Papers**
 
-- Students learning machine learning and deep learning foundations.
-- Readers approaching academic ML papers for the first time.
-- Early-career researchers evaluating methods, experiments, and reported results.
-- Students developing a thesis direction or a defensible research question.
-- Bangla-speaking learners who benefit from explanations in both languages.
+7. Anatomy of an ML Research Paper
+8. How to Read a Research Paper
+9. Comparing Papers: The Literature Matrix
 
-## Topics Covered / আলোচিত বিষয়
+**Part III · Critical Analysis**
 
-- Follow an ML project from dataset inspection to evaluation and experimental design.
-- Read a paper systematically and organize notes about its problem, method, and evidence.
-- Assess baselines, metrics, ablation studies, reproducibility, and research red flags.
-- Distinguish a research gap from a limitation, weakness, future-work suggestion, or novelty claim.
-- Check a proposed gap against related literature and turn it into a testable question.
-- Work through research mathematics and consider fairness, ethics, and academic publishing.
+10. Critical Paper Analysis
+11. Research Paper Red Flags
+12. Reproducibility
 
-## Handbook Contents / সূচিপত্র
+**Part IV · Research Gaps, Questions and Novelty**
 
-The groupings below are reading aids; the manuscript retains its original section numbering.
+13. Sixteen Types of Research Gaps
+14. Gap, Limitation, Future Work and Novelty
+15. Finding and Verifying a Research Gap
+16. From Research Gap to Research Question
+17. Novelty
 
-| Section | Topic |
+**Part V · Practice**
+
+18. Case Study: Reading the AlexNet Paper
+19. Worked Numerical Examples
+
+**Part VI · Beyond the Core**
+
+20. Modern and Advanced ML Concepts
+21. Fairness, Ethics and Responsible Research
+
+**Part VII · Research in the Age of LLMs**
+
+22. Reading LLM-Era Papers
+23. AI Tools in Research
+24. Bangla and Low-Resource ML Research
+25. Case Study: Reading "Attention Is All You Need"
+
+**Part VIII · From Question to Publication**
+
+26. Writing a Research Proposal
+27. Running Your Own Study
+28. Writing the Paper
+29. Submission and Peer Review
+
+**Appendices**
+
+- A. Templates for Reading and Note-Taking
+- B. Formula Sheet
+- C. Glossary
+- D. Cheat Sheet: How to Read Any ML Paper
+- E. Answers to Exercises (Chapters 22–29)
+- References (133 sources, IEEE style)
+
+</details>
+
+## Reading Paths
+
+| If you want to… | Read |
 |---|---|
-| **1–6** | **Machine learning foundations and experiments** |
-| 1 | Machine Learning Foundations |
-| 2 | Complete ML Project Pipeline |
-| 3 | Dataset Analysis & Data Quality |
-| 4 | Core ML & Deep Learning Algorithms |
-| 5 | Model Evaluation |
-| 6 | Experimental Design |
-| **7–11** | **Reading and organizing research papers** |
-| 7 | Structure of an Academic ML Paper |
-| 8 | How to Read a Research Paper (Three-Pass Method) |
-| 9 | Abstract Analysis Template |
-| 10 | Introduction Logical Flow |
-| 11 | Literature Review Comparative Matrix |
-| **12–17** | **Research gaps and critical evaluation** |
-| 12 | 16 Types of Research Gaps |
-| 13 | 14-Step Research Gap Detection Framework |
-| 14 | Gap vs Limitation vs Weakness vs Open Problem vs Future Work vs Opportunity vs Novelty |
-| 15 | How to Verify a Research Gap |
-| 16 | Critical Paper Analysis Framework (14 Dimensions) |
-| 17 | 16 Research Paper Red Flags |
-| **18–25** | **From paper notes to a research question** |
-| 18 | Academic Paper Note-Taking Template |
-| 19 | From Research Gap to Research Topic (Worked Examples) |
-| 20 | Formulating Research Questions (SMART) |
-| 21 | Novelty Analysis (12 Types) |
-| 22 | Reproducibility: The 10 Pillars |
-| 23 | Critical Thinking Master Checklist |
-| 24 | One-Page Paper Summary Template |
-| 25 | Research Gap Verification Checklist |
-| **26–34** | **Case study, mathematics, responsible research, and reference material** |
-| 26 | End-to-End Case Study: Applying the Frameworks to a Real Paper |
-| 27 | Core Formulas & Research Mathematics |
-| 28 | Worked Numerical Examples |
-| 29 | Modern & Advanced ML Concepts |
-| 30 | Fairness, Ethics & Responsible Research |
-| 31 | The Academic Publishing Process |
-| 32 | Glossary of Key Terms |
-| 33 | Final Cheat Sheet — How to Read Any ML Research Paper |
-| 34 | References & Further Reading |
+| Learn ML from the beginning | Chapters 1–6 (start with Section 1.1 if words like *feature* or *hyperparameter* are new) |
+| Understand a specific algorithm | Chapter 4, then Chapter 19 for worked numbers |
+| Interpret a results table correctly | Chapter 5, Sections 19.1–19.8 |
+| Read a paper efficiently | Chapter 8, then Appendix D |
+| Judge whether an experiment is trustworthy | Chapters 6, 10 and 11 |
+| See every framework applied to a real paper | Chapter 18 |
+| Find and verify a research gap | Chapters 13–15 |
+| Turn a gap into a research question | Chapters 16 and 17 |
+| Take notes on a paper | Appendix A |
+| Judge a paper about large language models | Chapter 22 |
+| Use AI tools in research responsibly | Chapter 23 |
+| Do research on Bangla or another low-resource language | Chapter 24 |
+| Plan, run, write up and publish your own study | Chapters 26–29, starting from Section 24.7 |
 
-## Suggested Learning Path / পড়ার পরামর্শ
+**How the book works:** a thin gold rule in the margin marks each Bangla paragraph, so you can read in either language without losing your place. Most chapters close with a **Quick Recap** box, and Chapters 22–29 end with exercises whose answers are in Appendix E. Worked examples with invented numbers are labelled as illustrations; they teach a calculation and are not research findings.
 
-| Your starting point | Suggested sections |
-|---|---|
-| New to ML | Start at 1.1, then read Sections 1–6; use 27–28 for formulas and worked examples. |
-| Ready to read papers | Read 7–11, then apply 16–18, 24, and 33. |
-| Looking for a research direction | Work through 11–15 and 19–21; check the proposed gap with 25. |
-| Want a complete case study | Read 26 alongside the frameworks in 8–17. |
-| Planning experiments or a submission | Return to 5–6, 22–23, and 30–31. |
+## বাংলায় পরিচিতি
 
-## Research Paper Analysis Workflow / গবেষণাপত্র বিশ্লেষণের ধাপ
+এটি সেইসব শিক্ষার্থী ও নবীন গবেষকদের জন্য একটি অধ্যয়ন ও রেফারেন্স হ্যান্ডবুক, যারা মেশিন লার্নিং *বোঝা* থেকে মেশিন লার্নিং গবেষণাকে *সমালোচনামূলকভাবে মূল্যায়ন* করা পর্যন্ত এগোতে চান। বইটি শুরু হয় ML-এর শব্দভাণ্ডার ও workflow দিয়ে, তারপর শেখায় কীভাবে একটি গবেষণাপত্র পড়তে হয়, এর প্রমাণ বিশ্বাসযোগ্য কিনা কীভাবে বিচার করতে হয়, কীভাবে একটি আসল রিসার্চ গ্যাপ খুঁজতে হয়, এবং সেই গ্যাপকে কীভাবে একটি পরীক্ষাযোগ্য রিসার্চ প্রশ্নে রূপ দিতে হয়।
 
-1. **Orient yourself.** Use the three-pass method in Section 8 to understand the problem, contribution, and paper structure.
-2. **Map the argument.** Apply the abstract and introduction guides in Sections 9–10; compare related work using Section 11.
-3. **Examine the evidence.** Review methods, datasets, baselines, metrics, and experiments using Sections 5–6 and 16–17.
-4. **Record what matters.** Use the note-taking and one-page summary templates in Sections 18 and 24.
-5. **Check reproducibility.** Use Section 22 to assess whether the reported experiment can be reproduced; use Section 26 as a complete case study.
+প্রতিটি গুরুত্বপূর্ণ ধারণা দুবার ব্যাখ্যা করা হয়েছে: প্রথমে ইংরেজিতে, তারপর সহজ বাংলায়। বাংলা অংশটি শব্দে-শব্দে অনুবাদ নয়, বরং একটি দ্বিতীয় ব্যাখ্যা।
 
-প্রথম পাঠে সামগ্রিক ধারণা নিন, পরের পাঠে পদ্ধতি ও প্রমাণ যাচাই করুন, তারপর নিজের নোটে পেপারের অবদান, সীমাবদ্ধতা ও পুনরুৎপাদনযোগ্যতা লিখুন। Section 26-এ এই কাঠামোগুলোর প্রয়োগ দেখানো হয়েছে।
+**কীভাবে পড়বেন:** ML একদম শুরু থেকে শিখতে চাইলে Chapter 1–6 পড়ুন। পেপার দ্রুত পড়তে চাইলে Chapter 8 ও Appendix D, আর রিসার্চ গ্যাপ খুঁজতে ও যাচাই করতে চাইলে Chapter 13–15 পড়ুন। গ্যাপ থেকে রিসার্চ প্রশ্ন তৈরি করতে Chapter 16–17 দেখুন। নতুন Part VII ও VIII-এ আছে LLM যুগের গবেষণা, এআই টুলের দায়িত্বশীল ব্যবহার, বাংলা ও স্বল্প-সম্পদের ভাষার গবেষণা, এবং একটি বাংলা মিনি-প্রজেক্টের মাধ্যমে প্রপোজাল থেকে প্রকাশনা পর্যন্ত পুরো পথ।
 
-## Research Gap Identification / রিসার্চ গ্যাপ শনাক্তকরণ
+ভুল বা অস্পষ্টতা চোখে পড়লে [সংশোধনের ফর্ম](https://github.com/khalidhasan7343/ml-research-handbook/issues/new/choose) দিয়ে জানান — ইংরেজি বা বাংলা, যেকোনো ভাষায়।
 
-1. **Compare related studies.** Use the literature matrix in Section 11 to organize problems, methods, datasets, and findings.
-2. **Describe a possible gap.** Consult the gap types and detection framework in Sections 12–13; distinguish gaps from limitations and novelty claims using Section 14.
-3. **Verify the evidence.** Use Sections 15 and 25 to check the proposed gap against related literature.
-4. **Form a research question.** Develop a topic, a testable question, and a novelty assessment with Sections 19–21.
+## Build from Source
 
-A limitation in one paper is a starting point for investigation. Compare related studies and verify the evidence before treating it as a research gap. Section 26 shows the frameworks applied to a complete case study.
+The book is written in [Typst](https://typst.app), and the full source is in [`source/`](source/). Every font it needs is built into Typst or bundled, so the same source produces the same PDF on every machine.
 
-একটি পেপারের সীমাবদ্ধতা দেখেই সেটিকে রিসার্চ গ্যাপ ধরে নেবেন না; সংশ্লিষ্ট গবেষণার সঙ্গে তুলনা করে প্রমাণ যাচাই করুন, তারপর প্রশ্নটি নির্দিষ্ট ও পরীক্ষাযোগ্য করুন।
+```bash
+brew install typst      # or see https://github.com/typst/typst#installation (version 0.15)
+make                    # build book/ML_Research_Handbook.pdf
+make watch              # rebuild build/preview.pdf on every save
+make check              # confirm the committed PDF matches the source
+```
 
-## Repository Structure / রিপোজিটরির বিন্যাস
+On every change to the source, GitHub Actions runs `make check` and attaches the freshly built PDF to the run. Editing tips and the source layout are in [`source/README.md`](source/README.md).
 
 ```text
 ml-research-handbook/
-├── README.md
-├── HANDBOOK.md
-├── LICENSE
-├── LICENSE-MIT
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── CITATION.cff
-├── SHA256SUMS.txt
-├── .gitignore
-├── .gitattributes
-├── editions/
-│   ├── ML_Research_Handbook.pdf
-│   └── ML_Research_Handbook.docx
-└── .github/
-    └── ISSUE_TEMPLATE/
-        └── correction-report.yml
+├── book/
+│   └── ML_Research_Handbook.pdf  # the book
+├── source/                     # Typst source
+│   ├── main.typ                # book outline: parts, chapters, appendices
+│   ├── template.typ            # all styling
+│   ├── front/preface.typ
+│   ├── chapters/               # ch01–ch29, app-a–app-e
+│   ├── refs.bib                # 133 references
+│   └── fonts/                  # Noto Serif Bengali (+ licence)
+├── assets/                     # cover, sample pages, social preview
+├── Makefile
+├── ERRATA.md
+├── CHANGELOG.md · CITATION.cff
+├── RELEASE_NOTES.md            # text for the GitHub Release
+└── LICENSE · LICENSE-MIT
 ```
 
-[SHA256SUMS.txt](SHA256SUMS.txt) records SHA-256 checksums for `HANDBOOK.md` and the PDF and DOCX editions. Checksums verify file integrity; they do not establish academic correctness.
+## Feedback and Corrections
 
-## Errors, Corrections & Feedback / ভুল, সংশোধন ও মতামত
+Found an error, an unclear explanation, a translation problem or a broken reference? Please [open a correction report](https://github.com/khalidhasan7343/ml-research-handbook/issues/new/choose) and mention the chapter or section and the page. English and Bangla are both welcome. Confirmed corrections are listed in [`ERRATA.md`](ERRATA.md).
 
-### Found an Error? Your Feedback Matters.
+## License
 
-I have put considerable time and effort into preparing this handbook and have tried my best to ensure that its explanations, examples, equations, and references are accurate and easy to understand.
-
-Nevertheless, mistakes or unclear explanations may still remain.
-
-If you notice a factual error, mathematical mistake, incorrect reference, translation issue, formatting problem, or explanation that could be clearer, I would sincerely appreciate your feedback.
-
-Please [open a GitHub Issue](https://github.com/khalidhasan7343/ml-research-handbook/issues). If possible, include the relevant section or page number, a brief explanation of the issue, and any supporting reference or suggested correction. A correction reporting form is available when you create a new issue.
-
-I will review the feedback and incorporate appropriate corrections into future updates.
-
-Thank you for helping make this handbook more accurate and useful for everyone.
-
-### কোনো ভুল চোখে পড়েছে? আপনার মতামত আমার কাছে গুরুত্বপূর্ণ।
-
-এই হ্যান্ডবুকটি প্রস্তুত করতে আমি যথেষ্ট সময় ও পরিশ্রম করেছি এবং প্রতিটি বিষয়, ব্যাখ্যা, গাণিতিক উদাহরণ ও রেফারেন্স যথাসম্ভব নির্ভুল ও সহজবোধ্য রাখার চেষ্টা করেছি।
-
-তবুও অনিচ্ছাকৃত কোনো ভুল, অসংগতি বা অস্পষ্ট ব্যাখ্যা থেকে যেতে পারে।
-
-আপনার চোখে কোনো তথ্যগত ভুল, গাণিতিক সমস্যা, ভুল রেফারেন্স, অনুবাদের ত্রুটি, বিন্যাসের সমস্যা কিংবা আরও ভালোভাবে ব্যাখ্যা করা সম্ভব এমন কোনো বিষয় ধরা পড়লে আমাকে জানালে আমি আন্তরিকভাবে কৃতজ্ঞ থাকব।
-
-অনুগ্রহ করে [GitHub Issue-এর মাধ্যমে জানান](https://github.com/khalidhasan7343/ml-research-handbook/issues)। সম্ভব হলে সংশ্লিষ্ট সেকশন বা পৃষ্ঠা নম্বর, সমস্যার বিবরণ এবং প্রাসঙ্গিক সূত্র উল্লেখ করুন।
-
-আপনাদের মতামত যাচাই করে প্রয়োজনীয় সংশোধন ভবিষ্যতের সংস্করণে অন্তর্ভুক্ত করার চেষ্টা করব।
-
-হ্যান্ডবুকটিকে আরও নির্ভুল ও উপযোগী করে তুলতে সহযোগিতা করার জন্য ধন্যবাদ।
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidance on reporting corrections in English or Bangla.
-
-## Version History / সংস্করণের তথ্য
-
-The supplied handbook identifies itself as **Version 4.0**. These repository preparation changes do not assign a new content version or publication date. See [CHANGELOG.md](CHANGELOG.md) for preparation notes and future updates.
-
-## Licensing / লাইসেন্স
-
-| Component | License |
+| What | License |
 |---|---|
-| Handbook content | [CC BY-NC-ND 4.0](LICENSE) |
-| PDF edition | [CC BY-NC-ND 4.0](LICENSE) |
-| DOCX edition | [CC BY-NC-ND 4.0](LICENSE) |
-| Explicitly designated standalone software/code | [MIT](LICENSE-MIT) |
+| Book text and PDF (`book/ML_Research_Handbook.pdf`, `source/` content, `refs.bib`) | [CC BY-NC-ND 4.0](LICENSE): share with credit; no commercial use; no modified versions |
+| Typst template (`source/template.typ`), build tooling (`Makefile`, workflow) and the Python code snippets in Chapters 22–29 | [MIT](LICENSE-MIT): reuse them in your own work |
+| Noto Serif Bengali font in `source/fonts/` | [SIL Open Font License 1.1](source/fonts/licenses/OFL-notoserifbengali.txt) |
 
-The original handbook text, written explanations, academic materials, and embedded examples remain under [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/), as recorded in [LICENSE](LICENSE).
+Works cited in the References remain the property of their respective authors.
 
-You may share the material for noncommercial purposes with appropriate credit and a link to the license, subject to its terms. The license does not grant permission to distribute adapted versions. Exceptions and limitations under applicable law still apply. See [LICENSE](LICENSE) and the [full legal code](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en).
-
-লাইসেন্সের শর্ত মেনে যথাযথ কৃতিত্ব ও লাইসেন্সের লিংকসহ অবাণিজ্যিকভাবে শেয়ার করা যাবে। এই লাইসেন্স পরিবর্তিত সংস্করণ বিতরণের অনুমতি দেয় না।
-
-[LICENSE-MIT](LICENSE-MIT) applies only to separately identified original standalone software that MD Khalid Hasan explicitly designates as MIT-licensed. No such standalone software currently exists in the public repository; MIT is included for future explicitly designated software. It does not apply to the handbook, PDF or DOCX editions, research explanations, academic prose, embedded examples, or third-party content.
-
-MIT লাইসেন্স কেবল লেখক কর্তৃক স্পষ্টভাবে MIT-লাইসেন্সকৃত হিসেবে চিহ্নিত স্বতন্ত্র মৌলিক সফটওয়্যারের জন্য প্রযোজ্য। হ্যান্ডবুক, এর উদাহরণ এবং PDF ও DOCX সংস্করণের লাইসেন্স অপরিবর্তিত রয়েছে।
-
-Third-party works remain subject to their own rights and licenses. The preserved `LICENSE` notice refers to “Section 33 (References)”; the handbook's References & Further Reading is **Section 34**.
-
-## Acknowledgements / কৃতজ্ঞতা
-
-The handbook draws on the machine learning and research methodology literature listed in **Section 34: References & Further Reading**. Please consult those works for the original contributions and fuller treatments of the topics. Thanks to readers who take the time to report errors and suggest clearer explanations.
-
-## Contact / যোগাযোগ
-
-For corrections and questions about the handbook, please use [GitHub Issues](https://github.com/khalidhasan7343/ml-research-handbook/issues).
-
-হ্যান্ডবুক সম্পর্কে প্রশ্ন বা সংশোধনের প্রস্তাব GitHub Issues-এর মাধ্যমে জানান।
+© 2026 MD Khalid Hasan

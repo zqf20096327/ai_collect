@@ -84,17 +84,22 @@ you turn on AI polish or experimental device sync yourself.
 | Open the inbox | ⌘⌃N | Ctrl+Alt+N |
 | See today's notes | ⌘⌃G | Ctrl+Alt+G |
 
-In the capture window: Enter saves, Shift+Enter adds a line, Esc keeps a draft.
-In the inbox: ↑/↓ move, E edit, X complete, A archive, C copy, / search,
-L later (or back to the inbox), Delete moves to Trash, 1–5 switch sections
-(Inbox, Today, Later, Archive, Trash), N new note, O note details. In Trash:
+In the capture window: Enter saves, Shift+Enter adds a line, Ctrl/⌘+Enter saves
+and starts another, Ctrl/⌘+1–9 toggles active projects, Ctrl/⌘+P opens the
+project picker, Ctrl/⌘+I polishes with AI (when enabled), Esc keeps a draft.
+In the inbox: ↑/↓ move, E edit, X complete, A archive, R reopen to the inbox,
+C copy, / search, L later (or back to the inbox), P set project, # open a
+project's page, Delete moves to Trash, 1–5 switch sections
+(Inbox, Today, Later, Archive, Trash), N new note, O note details, Ctrl/⌘+B
+collapses or expands the sidebar, Ctrl/⌘+, opens Settings. In Trash:
 R or Enter restores, Delete erases for good (it asks first). In the Today window: ↑/↓ move, X marks a
 note done or not done, L moves it to Later, ←/→ show the previous or next day,
 T comes back to today, C opens the calendar, Enter opens note details, Esc closes.
 In note details: Esc saves and closes, Ctrl/⌘+Enter marks done, Ctrl/⌘+O adds
-files, paste adds an image, Delete on a file removes it. All three shortcuts are changeable in
-Settings, and so is how big the floating windows open (Compact, Standard or
-Roomy). Command line: `posthaste --capture`, `--today`, `--inbox`,
+files, paste adds an image, Delete on a file removes it. All three global shortcuts are changeable in
+Settings, along with how big the floating windows open (Compact, Standard or
+Roomy) and the text size across every window (Small, Standard or Large).
+Command line: `posthaste --capture`, `--today`, `--inbox`,
 `--settings`, `--minimized`.
 
 ## Build from source
@@ -135,7 +140,11 @@ settings.
 Accounts, central cloud storage, reminders, folders, statistics. Posthaste does one job and
 stays out of the way.
 
-Platform notes and architecture details: [docs/platform-notes.md](docs/platform-notes.md) and [docs/sync.md](docs/sync.md).
+Architecture, platform notes, sync design, and release checklist:
+[docs/architecture.md](docs/architecture.md),
+[docs/platform-notes.md](docs/platform-notes.md),
+[docs/sync.md](docs/sync.md), and
+[docs/release-guide.md](docs/release-guide.md).
 
 ## Code signing policy
 

@@ -399,6 +399,27 @@ sunglasses demo
 sunglasses info
 ```
 
+### A found secret shows a marker, not the key
+
+When a finding IS a credential, the scanner does not print it back at you. A marker stands in its place at
+every door where a match leaves the program as text (the terminal, `--json`, a SARIF file, a report sent
+with `--report-to`, the MCP server, the LangChain and CrewAI tools), and it reads like this.
+
+```
+[CRITICAL] AWS access key ID
+  File: conf/deploy.env
+  Match: "AKIA… [20 characters, GLS-SD-003, a3059ab8]"
+```
+
+That is the first four characters, the length, the rule id and a short digest of the whole key, beside the
+place the door already names. It is enough to find the key and to tell two findings apart. The words
+of a finding that is not a credential lose the characters of a key found in the same scan.
+
+At your own terminal, `sunglasses scan --show-secrets ...` prints the full match in the text and JSON output.
+A SARIF file and the MCP server never carry it, with or without that option, because both are written to be
+read somewhere else. The Python API is unchanged. `result.findings[i]["matched_text"]` is the full match,
+because a program that scanned the text already holds it.
+
 ### Framework references on every finding
 
 Each finding in `--json` output carries a `taxonomy` object listing where its category sits in the
@@ -423,6 +444,8 @@ scan, and errors). `0` is a claim, so it is reserved for scans that earned it.
 
 Precedence is `1 > 3 > 2 > 0`. A threat we did find outranks the part we could
 not read, and both outrank a usage complaint.
+
+A rule that did not finish within its time limit is reported as a finding at that rule's severity, and the scan exits `1`. With `--fail-on` above that severity, or with a baseline that covers the finding, that finding no longer gives `1`. The scan then exits `3`, or `1` when another finding still gives it.
 
 The distinction between `0` and `3` is the whole point. "I read the file and it
 is clean" and "I could not open it and therefore saw nothing" must never be the
@@ -814,7 +837,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo. It holds 38 real agent input attacks (positives) + 77 famous open source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.26) | Value |
+| Metric (v0.6.27) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |

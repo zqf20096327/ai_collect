@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--22-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1381-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--23-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1379-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1381 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1379 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
 | Perception & Sensor Fusion | 216 | 2026-11-19 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 114 | 2026-11-18 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 93 | 2026-11-18 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 59 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
+| Prediction & World Models | 115 | 2026-11-19 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 94 | 2026-11-20 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 58 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 162 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 198 | 2026-11-18 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 155 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 160 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 197 | 2026-11-20 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 154 | 2026-11-19 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 31 | 2026-11-19 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 305 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 306 | 2026-11-20 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,16 +45,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 194 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 193 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 109 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 121 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| VLA | 86 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 122 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 137 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
@@ -64,6 +64,26 @@ Each paper has one primary topic and may carry several method or resource tags. 
 <a id="category-perception-sensor-fusion"></a>
 
 ## Perception & Sensor Fusion · 216 papers
+
+<a id="paper-2611-27097"></a>
+
+### UDA-Restoration: Bridging Unsupervised Domain Adaptation and Multi-Degradation Denoising for Enhanced AV Semantic Segmentation ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Zainab Bibi, Mohsin Kamal<br>
+**Published:** 2026-11-19<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.27097) | [PDF](https://arxiv.org/pdf/2611.27097.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Autonomous vehicles rely heavily on vision-based perception systems for safe navigation and decision-making. Adverse weather conditions, sensor noise, moving artifacts and illumination changes,...
+
+<a id="paper-2611-26730"></a>
+
+### SparseHPS: A Unified Model for Human Pose and Shape across Depth Cameras and LiDARs ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Ilya Zaychuk<br>
+**Published:** 2026-11-19<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.26730) | [PDF](https://arxiv.org/pdf/2611.26730.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Recovering 3D human pose and shape from point clouds is central to motion capture, robotics and self-driving vehicles, because depth cameras and LiDARs sense a person directly in metric 3D and work...
 
 <a id="paper-2611-26191"></a>
 
@@ -98,7 +118,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-20507"></a>
 
-### VoxSAOR: Semantic-Aware Occupancy Robustification via Aleatoric Uncertainty Modeling ![New](https://img.shields.io/badge/New-red)
+### VoxSAOR: Semantic-Aware Occupancy Robustification via Aleatoric Uncertainty Modeling ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Mengfei Duan, Yuheng Zhang, Guoqiang Zhao, Yuanfan Zheng, Kailun Yang, et al.<br>
 **Published:** 2026-11-15<br>
@@ -108,7 +128,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-19839"></a>
 
-### Passable for Whom? Few-Shot Learning for Personal Calibration of Sidewalk Accessibility Perception for Human-Centered Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### Passable for Whom? Few-Shot Learning for Personal Calibration of Sidewalk Accessibility Perception for Human-Centered Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Wesley Maia, Angel Martinez-Sanchez, Maitrayee Keskar, Ross Greer<br>
 **Published:** 2026-11-15<br>
@@ -364,7 +384,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-32612"></a>
 
-### DriveOSS: Dataset and Benchmark for 3D Anomaly Segmentation and Open-set Semantic Segmentation in Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### DriveOSS: Dataset and Benchmark for 3D Anomaly Segmentation and Open-set Semantic Segmentation in Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Zhiran Yan, Savankumar Bhanderi, Sourabh Lolge, Rui Song, Girdharbhai Paneliya, et al.<br>
 **Published:** 2026-10-23<br>
@@ -375,7 +395,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-32230"></a>
 
-### Towards Effective and Transferable Physical Camouflage against Multi-View BEV-based 3D Perception in Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### Towards Effective and Transferable Physical Camouflage against Multi-View BEV-based 3D Perception in Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Linye Lyu, Jiawei Zhou, Daojing He, Yu Li<br>
 **Published:** 2026-10-23<br>
@@ -385,7 +405,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-32626"></a>
 
-### Privacy-Preserving Federated Loss Exploration for Vision-Based Perception under Non-IID Data ![Recent](https://img.shields.io/badge/Recent-orange)
+### Privacy-Preserving Federated Loss Exploration for Vision-Based Perception under Non-IID Data ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Nergiz Yuca, Christian Internò, Nikolay Matyunin, Markus Olhofer, Barbara Hammer, et al.<br>
 **Published:** 2026-10-23<br>
@@ -1158,7 +1178,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-23140"></a>
 
-### MIVIFI: Bridging Perspective and Fisheye Domains for Training Multi-View Fisheye Image Generation Models ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### MIVIFI: Bridging Perspective and Fisheye Domains for Training Multi-View Fisheye Image Generation Models
 
 **Authors:** Matthias Neuwirth-Trapp, Begüm Altunbas, Jiayi Wang, Yan Xia, Maarten Bieshaar, et al.<br>
 **Published:** 2026-08-24<br>
@@ -1639,25 +1659,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-09103"></a>
 
-### Equivariant Filter for High Performance Image Tracking using an Event Camera
-
-**Authors:** Angus Apps, Yixiao Ge, Timothy L. Molloy, Robert Mahony<br>
-**Published:** 2026-07-10<br>
-**Research tags:** Dataset<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.09103) | [PDF](https://arxiv.org/pdf/2607.09103.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Image tracking is the problem of estimating the transformation that relates a moving image of a scene to an original reference image. The problem is important in control of autonomous vehicles or...
-
-<a id="paper-2607-08391"></a>
-
-### On Exploring Input Resolution Scaling For Anytime LiDAR Object Detection
-
-**Authors:** Ahmet Soyyigit, Shuochao Yao, Heechul Yun<br>
-**Published:** 2026-07-09<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.08391) | [PDF](https://arxiv.org/pdf/2607.08391.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Making tradeoffs between execution latency and result utility (i.e., anytime computing) for adapting to dynamic operational requirements has been shown to enhance the performance of cyber-physical...
-
-<a id="paper-2607-09787"></a>
-
-### Adversarially Guided Diffusion for LiDAR Range Image Synthes
+### Equivariant Filter for High Performance 

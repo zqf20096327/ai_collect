@@ -54,9 +54,9 @@ need no API keys: the test suite and browser smokes make no paid requests.
 Start with [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Finding your way around:** the application is `src/academic_agent/`, `api/`,
-`web/` and `ui/`; tests are in `tests/` and `e2e/`. The many Python files at the
-root are benchmark commands and frozen experiment runners whose protocols bind
-their paths, so they stay put; none is needed to run the app. See the
+`web/` and `ui/`; tests are in `tests/` and `e2e/`. The four Python files at the
+root are benchmark commands (`benchmark*.py`); frozen experiment runners live in
+`experiments/`. None of them is needed to run the app. See the
 [repository map](docs/README.md#repository-map) for every directory.
 
 <a id="english"></a>
@@ -242,12 +242,16 @@ files, Docker, access codes, BYOK, tracing and recovery.
 Three ways in, chosen per deployment: no gate (local use), operator access
 codes billed to the deployment, or email-and-password accounts that pay with
 the keys they add after signing in ([how](docs/operating-guide.md#accounts)).
-An account's keys stay in its browser and are never stored by the server.
+An account's keys are saved with it as one encrypted record, with nothing
+readable in the account database; with "Save these keys to my account"
+unticked, they stay in the browser tab and travel with each request.
 Each account may have one paid operation going at a time and ten a day by
 default, so one account cannot hold the host's capacity
 ([settings](docs/operating-guide.md#what-one-account-may-do-at-once-and-in-a-day)).
 Every deployment serves a [privacy and terms page](web/privacy.html) at
 `/privacy` that says what is stored and who else sees a topic.
+[SECURITY.md](SECURITY.md) says what a deployment holds and how to report
+a vulnerability privately.
 
 The operator has a [console](docs/operating-guide.md#the-console) at `/admin`,
 open only to admin accounts, for the service's state, every account, password
@@ -315,8 +319,9 @@ improve these historical numbers.
 
 ## Repository layout
 
-The application is in a handful of directories. Most of the Python files at
-the repository root are something else: frozen experiment runners.
+The application is in a handful of directories. The four Python files at the
+repository root are the benchmark commands (`benchmark*.py`); frozen experiment
+runners live in `experiments/`.
 
 | Path | What it is |
 |---|---|
@@ -339,9 +344,12 @@ New tools go under `scripts/`.
 Open gaps: qualitative source entailment, independently measured decision
 utility, multilingual/short/non-technical benchmark coverage, legacy metadata
 read-state clarity, and single-replica scale. More agents, a vector database
-or Kubernetes would not by themselves resolve these. Accounts cannot yet reset
-their own password; a deployment without an email service also verifies no
-address, and should keep sign-up invite-only.
+or Kubernetes would not by themselves resolve these. With mail configured,
+accounts can reset their own password by email
+([password reset](docs/operating-guide.md#password-reset-by-email)); a
+deployment without an email service verifies no address, has no self-service
+reset — the operator resets passwords there — and should keep sign-up
+invite-only.
 
 **Market scoring.** Market scorecards disclose
 [unverified estimate comparability](docs/results-2026-09-11-market-score-delivery-disclosure.md):
@@ -411,6 +419,12 @@ Contributors: [Song Guoyu (@7776403yu)](https://github.com/7776403yu),
 [Abhishek Vyas (@Baddevil512)](https://github.com/Baddevil512).
 API credits for development and testing were provided by [Infistar](https://infistar.cc).
 Explore [more projects on the author's GitHub profile](https://github.com/shuxiachai).
+
+## Citing
+
+If you use this software in a paper, cite it from the sidebar's
+**Cite this repository** button, which offers APA and BibTeX formats. It
+reads the citation metadata in [`CITATION.cff`](CITATION.cff).
 
 ## License
 

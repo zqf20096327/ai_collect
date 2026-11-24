@@ -35,7 +35,9 @@ changed when the model slowed.
 - **Local and read-only:** no sudo, no account, no usage tracking. It never
   sends prompts or touches your models or runtime settings.
 
-**What's new in 3.4.0:** mlxtop knows what fast means for your machine. It
+**What's new in 3.4.1:** a runtime bound to one of this machine's own LAN or
+Thunderbolt addresses counts as local, not as a remote API.
+**3.4.0:** mlxtop knows what fast means for your machine. It
 reads what the model reads per forward pass and the chip's published memory
 bandwidth, estimates how close decode runs to that limit (per verify pass with
 a draft model), and judges usual speed at the same context depth and across
@@ -211,7 +213,9 @@ External contributions are credited here, with thanks.
 
 - [Samuel Reed](https://github.com/STRML) (@STRML) — the mlx-serve runtime
   support, per-request decode speeds, prefill progress with time left, sushi
-  gauge support, and the Journal recording overhaul (#15, #37, #38, #43, #44).
+  gauge support, the Journal recording overhaul, and runtimes on this
+  machine's own LAN or Thunderbolt addresses counted as local (#15, #37, #38,
+  #43, #44, #65).
 - David ([@sandbranch](https://github.com/sandbranch)) — AMD GPU monitoring on
   Linux from amdgpu sysfs, and live llama.cpp generation rate and slot
   readings (#40, #41, #42).

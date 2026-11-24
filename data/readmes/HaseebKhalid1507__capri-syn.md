@@ -79,6 +79,12 @@ Two drives run in the background, one for wandering and one for attention. She a
   floor or a corner, usually on the monitor you're using. Small hops in between.
 - **React.** Switch windows and now and then she hops over. Switch workspace and she follows. Close the
   window she's on and, a bit over half the time, she bolts to another; otherwise she falls.
+- **Restless.** She doesn't stand still for long: a blink, a look, a lean, a gesture every few seconds, and
+  now and then a glance at the pointer or at a window that came forward. Held a while perched or standing, she
+  turns to another way of sitting or standing every 8 to 25 seconds. Ignore her and the gestures come more
+  often. She keeps still while her session works, and while the Line, a prompt or her menu is open.
+- **Outfits.** About every 45 to 120 minutes she changes between her jacket and her no-jacket look, at a
+  moment you can't see: in a teleport's bolt, or as she wakes. She keeps the one she's in across restarts.
 - **Bid.** Leave her alone 8 to 15 minutes and she comes over: hanging from the bar above your window,
   clinging to its side, peeking round a corner. Ignore her and she sulks with her back to you.
 - **Summon.** When her session needs you (a prompt, a finished turn, an error) she comes straight to the
@@ -104,7 +110,7 @@ Two drives run in the background, one for wandering and one for attention. She a
     <td width="50%" align="center"><img src="docs/media/tour-sulk.webp" width="100%" alt="Capri sulks, sitting low with her tag reading SULKING; two headpats, hearts float up and she gets back up"><br><b>Sulks</b><br><sub>Ignore her and she sulks. A headpat fixes it.</sub></td>
   </tr>
   <tr>
-    <td width="50%" align="center"><img src="docs/media/tour-music.webp" width="100%" alt="The pointer clicks play on a music player: Capri, sitting on a window beside it, puts headphones on, notes drift up and her tag reads LISTENING; paused, she's back to ONLINE"><br><b>Music</b><br><sub>Something's playing? Headphones on. Sometimes she dances.</sub></td>
+    <td width="50%" align="center"><img src="docs/media/tour-music.webp" width="100%" alt="The pointer clicks play on a music player: Capri, sitting on a window beside it, puts headphones on, notes drift up and her tag reads LISTENING; paused, she's back to ONLINE"><br><b>Music</b><br><sub>Something's playing? Headphones on, or a keytar on a window top. Sometimes she dances.</sub></td>
     <td width="50%" align="center"><img src="docs/media/tour-walk.webp" width="100%" alt="Capri walks across the floor to the right, turns, and walks back"><br><b>Walks</b><br><sub>Sometimes she just strolls over.</sub></td>
   </tr>
 </table>
@@ -199,10 +205,10 @@ SETTINGS from her right-click menu. A change is written the moment you make it.
 | **OS** | Windows 11 x64, or Linux x86_64 with glibc 2.35+ (Ubuntu 22.04, Debian 12, Fedora 36, Arch) on X11, Hyprland 0.40+, or GNOME, KDE or sway through XWayland. Windows 10 (1809+) and Windows 11 on Arm: untested ([Platforms](#platforms)) | X11 with a compositor, or Windows 11 |
 | **Graphics** | Linux: a Vulkan 1.1+ driver (OpenGL ES is GPUI's fallback). Windows: Direct3D 11, feature level 10.1, with compute shaders and structured buffers | A GPU with its driver. CI and the Windows VM run on software rendering (WARP): fine for layout, not for colour or timing |
 | **Tools** (Linux) | `curl` and Python 3 with `venv` (`python3-venv` on Debian and Ubuntu), for her art pack; the installer fetches what's missing, asking first | |
-| **CPU, RAM, disk** | x86_64. RAM: about 84 MB idle on Linux, measured once during development; Windows not measured. Disk: about 120 MB for her and her art on Linux (binary 43 MB, built art pack 77 MB); Windows: a 10 MB setup, installed size not measured | CPU speed: not measured |
+| **CPU, RAM, disk** | x86_64. RAM: about 84 MB idle on Linux, measured once during development (on 1.0); Windows not measured. Disk: about 160 MB for her and her art on Linux (binary 43 MB, built art pack 115 MB); Windows: a 10 MB setup, installed size not measured | CPU speed: not measured |
 | **Her brain** | [Synaps](https://github.com/HaseebKhalid1507/SynapsCLI) 0.11.0 or newer (the installers fetch 0.12.0) and one of: an account (ChatGPT, Claude, Copilot, Gemini, Grok, Kimi, Muse; Gemini needs Synaps' Google client, and Grok can't be signed in on Windows yet), an API key, or a local model: Ollama or LM Studio, with tool calling and a 16k+ context (`qwen3:8b`: ~5 GB) | A GPU for a local model; without one it is slow |
 | **Voice** (optional) | A microphone. Linux: PipeWire's `pw-record` and `pw-play`, and Python 3.10 to 3.13 (yours, else uv fetches 3.13: 105 MB more); ~540 MB (venv 169 MB, models 375 MB). Windows: Python comes with it; a 40 MB installer, 143 MB installed, 375 MB of models | Runs on the CPU, no GPU; speed not measured |
-| **Network** | To install (Synaps, her release, ~100 MB of art, the voice models) and for an account or an API key | A local model needs none once installed |
+| **Network** | To install (Synaps, her release, ~120 MB of art, the voice models) and for an account or an API key | A local model needs none once installed |
 
 "Untested" means the installers accept it but she has never run there; "not measured" means nobody has measured it.
 Older glibc builds her from source (`install.sh` does it).
@@ -367,7 +373,19 @@ The session rules, flags, packs and the dev control: [docs/REFERENCE.md](docs/RE
 | <kbd>Tab</kbd> | Answer in words instead |
 
 On Linux the app grabs no global keys; the installer binds them for i3, sway and Hyprland (with your
-consent). By hand, in i3:
+consent). On Hyprland it searches for `hyprland.lua` in `$XDG_CONFIG_HOME/hypr`,
+`~/.config/hypr`, `$XDG_CONFIG_DIRS` and `/etc/xdg/hypr`, then legacy `hyprland.conf`
+(Hyprland 0.57+ ignores `.conf`, so it warns). Lua gets literal `hl.bind` press/release
+bindings, tagged `description = "synaps-avatar summon"` so live checks recognize them on reinstall.
+Super+C taken? It offers Super+Alt+C; `--voice` adds Ctrl for the mic toggle and checks that
+chord too. Both move to the Alt pair if either is taken; if that pair is occupied, nothing is added.
+It checks live `hyprctl binds -j` first, including helper/import-generated keys. Offline, it
+scans literal keys and stock `mainMod` concatenation; unresolved helpers, aliases, loops or imports
+are shown for manual setup, never assumed free. It backs up first and checks with `luac -p`
+when that compiler can parse the original config (restoring on a new syntax failure), and removes
+only its marked blocks on uninstall.
+
+By hand, in i3:
 
 ```
 bindsym $mod+c             exec --no-startup-id avatarctl talk press

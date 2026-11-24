@@ -12,7 +12,7 @@ GhidrAssistMCP bridges the gap between AI-powered analysis tools and Ghidra's co
 
 - **MCP Server Integration**: Full Model Context Protocol server implementation using official SDK
 - **Dual HTTP Transports**: Supports SSE and Streamable HTTP transports for maximum client compatibility
-- **101 Explicit Tools**: Discoverable operation names with precise input contracts and read/write annotations (94 enabled by default)
+- **103 Explicit Tools**: Discoverable operation names with precise input contracts and read/write annotations (96 enabled by default)
 - **6 MCP Resource Templates**: Program-specific data resources for program info, functions, strings, imports, exports, and segments
 - **7 MCP Prompts**: Pre-built analysis prompts for common reverse engineering tasks
 - **Result Caching**: Intelligent caching system to improve performance for repeated queries
@@ -106,7 +106,7 @@ supported Gradle release; use it instead of a system Gradle installation.
 
 The Configuration tab allows you to:
 
-- **View all public tools** (101 total)
+- **View all public tools** (103 total)
 - **Enable/disable individual tools** using checkboxes
 - **Save configuration** to persist across sessions
 - **Monitor tool status** in real-time
@@ -173,15 +173,15 @@ Disposable static-analysis labs may pass `tool_profile=agent_lab`. This enables 
 
 ## Available tools
 
-The public catalog contains 101 explicit tools, 94 enabled by default. [The modernization review](docs/modernization-review.md) maps every previous tool to its current name and explains the architecture and remaining improvements. Fetch `tools/list` for authoritative parameter schemas; clients should reconnect after upgrading.
+The public catalog contains 103 explicit tools, 96 enabled by default. [The modernization review](docs/modernization-review.md) maps every previous tool to its current name and explains the architecture and remaining improvements. Fetch `tools/list` for authoritative parameter schemas; clients should reconnect after upgrading.
 
 | Purpose | Representative tools |
 | --- | --- |
 | Project lifecycle | `create_project`, `open_project`, `save_project`, `close_project` |
 | Programs and project files | `get_program_info`, `list_open_programs`, `list_project_files`, `open_program`, `close_program` |
-| Code and functions | `list_functions`, `search_functions`, `get_function_info`, `get_pseudocode`, `get_pseudocode_batch`, `get_disassembly`, `get_pcode`, `get_control_flow_graph` |
+| Code and functions | `list_functions`, `search_functions`, `get_function_info`, `get_pseudocode`, `get_pseudocode_batch`, `get_disassembly`, `get_disassembly_range`, `get_pcode`, `get_control_flow_graph` |
 | Function identity | `get_function_hash` (SHA-256), `get_function_byte_pattern` (masked prefix), `get_function_prototype` (C declaration) |
-| Binary data | `list_imports`, `list_exports`, `list_strings`, `list_memory_blocks`, `list_entry_points`, `get_hexdump` |
+| Binary data | `list_data_variables`, `get_data_variable`, `list_imports`, `list_exports`, `list_strings`, `list_memory_blocks`, `list_entry_points`, `get_hexdump` |
 | References | `get_xrefs_to`, `get_xrefs_from`, `get_callers`, `get_callees`, `get_call_graph` |
 | Comments | `get_comment`, `get_function_comment`, `list_function_comments`, `set_comment`, `set_function_comment`, `remove_comment` |
 | Variables and types | `list_function_variables`, `rename_local_variable`, `set_local_variable_type`, `set_function_prototype`, `list_data_types`, `get_data_type`, `set_data_type` |
@@ -192,6 +192,10 @@ The public catalog contains 101 explicit tools, 94 enabled by default. [The mode
 Names express the operation. Public code readers do not require a `format` selector, and comment/type/script operations do not require an `action` selector. `get_disassembly` reads existing instructions; `disassemble_bytes` changes the listing. Read and write tools have their own MCP annotations.
 
 `import_file`, `export_program`, and the five script tools are disabled by default. Enable the specific operations in the shared Configuration view when needed. Old consolidated names are no longer exposed over HTTP; saved enabled states migrate to their replacement operations.
+
+Use `get_data_variable` with an `address` to look up its qualified primary label directly. For a byte inside defined data, the result also includes the data item's start, qualified label, type, and length. An instruction or an undefined byte has its own `kind`. `list_data_variables` uses the same qualified labels. `list_classes` returns Ghidra class symbols, including empty and nested classes.
+
+Use `get_disassembly_range` with an `address` and a byte `length` from 1 through 65,536 to read existing instruction starts anywhere in mapped memory. This works when a stored function body is missing or too short.
 
 ### Opening a program from the project manager
 
@@ -206,6 +210,10 @@ Then open a program using its project path. This launches CodeBrowser when neede
 ```json
 {"method":"tools/call","params":{"name":"open_program","arguments":{"name":"/binaries/example"}}}
 ```
+
+When an existing program requires a Ghidra database or language upgrade, `open_program` reports the version error. Set `allow_upgrade=true` to authorize an upgrade on open.
+
+`import_file` detects executable formats even with an explicit `language`. To load a flat image, pass `loader="raw"` and a language ID. The optional `base_address` accepts the chosen address space's syntax, including segmented values such as `c000:0000`. The result includes the saved project path. With asynchronous jobs enabled, use the returned task ID to track a long import.
 
 ### Creating, opening, saving, and closing a project
 
@@ -223,7 +231,13 @@ To open an existing project, use its absolute `.gpr` marker path:
 {"method":"tools/call","params":{"name":"open_project","arguments":{"path":"/workspace/projects/review.gpr"}}}
 ```
 
-Neither operation replaces an active project. Opening the same project again returns `already_open`; close a different active project explicitly before creating or opening another one. `restore_state` defaults to `false`; set it to `true` to restore the saved session's tools and views. Use `open_program` to launch CodeBrowser for a project program.
+To switch projects in one call, set `save_current` to `true`. GhidrAssistMCP checks the destination, saves changed project files, tool configurations, and session state, then closes the current project and opens the requested one. The result identifies the saved source in `previous_project_path` and counts its saved files in `saved_files`.
+
+```json
+{"method":"tools/call","params":{"name":"open_project","arguments":{"path":"/workspace/projects/review.gpr","save_current":true}}}
+```
+
+Opening the same project returns `already_open`. With the default `save_current=false`, opening a different project requires closing the current one first. A failed save leaves the current project open. If the destination fails after closure, MCP attempts to restore the saved source session and reports the outcome. Set `restore_state=true` to open the destination with its saved tools and views. The default is `false`. Use `open_program` to launch CodeBrowser for a project program.
 
 Save changed open project files and session state:
 
@@ -237,7 +251,7 @@ Close the project after saving:
 {"method":"tools/call","params":{"name":"close_project","arguments":{"save":true}}}
 ```
 
-`close_project` defaults to `save=false` and `discard_changes=false`; it refuses unsaved changes unless one is explicitly enabled. These options are mutually exclusive. `discard_changes=true` permits losing unsaved changes. A save failure leaves the project open and reports any files already saved. Closing with no active project returns `already_closed`. Unsaved tool configuration and plugin data may need saving in Ghidra before a safe close, even with `save=true`; explicit discard permits dropping them. Running tool commands and busy project data prevent saving or closing, including closure with discard. The server stays reachable while the project manager remains open, so a client can open the next project using the same connection.
+`close_project` defaults to `save=false` and `discard_changes=false`; it refuses unsaved changes unless one is explicitly enabled. These options are mutually exclusive. `discard_changes=true` permits losing unsaved changes. A save failure leaves the project open and reports any files already saved. Closing with no active project returns `already_closed`. Unsaved tool configuration and plugin data may need saving in Ghidra before a safe close, even with `save=true`; explicit discard permits dropping them. Running tool commands and busy project data prevent saving or closing, including closure with discard. When another MCP operation holds the project open, the busy response names it. To check the active project during other work, read the name and marker path in `list_project_files`. The server stays reachable while the project manager remains open, so a client can open the next project using the same connection.
 
 ### Reading pseudocode and function identity
 
@@ -253,7 +267,7 @@ For grouped reads, `get_pseudocode_batch` accepts a nonempty list of function na
 {"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"get_pseudocode_batch","arguments":{"functions":["0x401000","0x401080"],"program_name":"/binaries/example"},"_meta":{"progressToken":"batch-a"}}}
 ```
 
-Full source is returned by default. Optional `start_line` and `max_lines` select a one-based page for each function. Every item reports its returned range, total line count, completeness, and any error. Code appears once in text content; structured content contains metadata. Use addresses to select functions whose names repeat.
+Full source is returned by default. Optional `start_line` and `max_lines` select a one-based page for each function. Every item reports its returned range, total line count, completeness, and any error. Successful entries include the exact returned source in `structuredContent.results[].code`. Text clients receive the same page as readable pseudocode. Use addresses to select functions whose names repeat.
 
 `get_pseudocode_batch` returns its complete result on the original request, with or without a progress token. An optional string or integer `_meta.progressToken` enables native MCP progress. Counts report completed entries and the total requested, including aliases and per-function errors; native decompiler counters cannot reset the batch count. The client timeout applies to the whole batch. See the native progress section below.
 
@@ -263,7 +277,7 @@ Long-running operations normally return a job ID when async execution is enabled
 
 ### Native MCP progress
 
-`analyze_program`, `rename_symbols_batch`, and `get_pseudocode_batch` return their complete result on the original request on both HTTP transports, without `get_task_status` polling. An optional string or integer progress token in request metadata enables native progress updates:
+By default, `analyze_program`, `rename_symbols_batch`, and `get_pseudocode_batch` return their complete result on the original request on both HTTP transports, without `get_task_status` polling. An optional string or integer progress token in request metadata enables native progress updates:
 
 ```json
 {"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"analyze_program","arguments":{"scope":"current","mode":"changes","program_name":"/binaries/example"},"_meta":{"progressToken":"analysis-a"}}}
@@ -272,6 +286,8 @@ Long-running operations normally return a job ID when async execution is enabled
 Ghidra's existing analysis progress is sent through SDK-native `notifications/progress`, correlated with the original token and mapped to 0–100 percent, including `scope="all_open"`. Batch renames advance only when an item's success or failure is settled; queued variable renames finish after their grouped decompilation and per-item transactions. Result order and partial-success reporting are preserved. Intermediate updates are coalesced; initial and final progress are preserved. Progress reaching its declared total means processing finished; the final tool result still reports operation errors.
 
 Without a supported token, these tools still return their final result directly and send no progress notifications. The client's request timeout applies to the whole operation. Notifications stop before the final response, and a failed notification channel does not discard the computation. See the MCP [progress contract](https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/progress).
+
+For clients with a short request timeout, `analyze_program(background=true)` returns a task ID when asynchronous jobs are enabled. Poll `get_task_status` to retrieve the outcome. A successful full, unrestricted analysis sets Ghidra's program-wide analyzed flag. Range and pending-change runs preserve its previous value. `cancel_analysis` requests cancellation and reports whether Ghidra is still analyzing.
 
 Protocol-level request cancellation is deferred; this feature does not add a `notifications/cancelled` handler. Existing application jobs still support `cancel_task`.
 

@@ -247,6 +247,12 @@ relabelled as measurements.
   state, and provider-reported usage without persisting the credential.
 - **llama.cpp:** convert captured stdout and stderr into the canonical evidence
   schema. This parser does not launch or configure llama.cpp.
+- **Ollama native API:** stream one request through `/api/chat` or
+  `/api/generate` and record the server's own `load_duration`,
+  `prompt_eval_duration`, `eval_duration`, `total_duration` and token counts
+  (including `prompt_eval_cached_count`) as `provider_reported`, next to the
+  client-measured TTFT and gaps between chunks. Ollama's OpenAI-compatible
+  route drops these timers.
 - **Apple Instruments:** check `xctrace` capability, print an execution plan,
   record a local command, or import an existing trace bundle. Supported Metal
   tables are reported narrowly rather than treated as generic GPU utilization.
@@ -257,13 +263,18 @@ relabelled as measurements.
 - **Native Qwen MTP:** emit a capability report and an explicit unsupported
   record when the installed stack cannot produce trustworthy native-MTP
   evidence.
-- **Server-side metrics (vLLM, SGLang, llama.cpp, TGI, TensorRT-LLM):**
+- **Server-side metrics (vLLM, SGLang, llama.cpp, TensorRT-LLM, NVIDIA
+  Dynamo, legacy TGI):**
   snapshot a Prometheus endpoint before and after a run and diff the two.
   Server numbers such as queue time, server TTFT and cached prompt tokens by
   cache tier are only reported when the window provably contains exactly the
   requests you sent. Otherwise the window is marked `contaminated`,
   `incomplete`, `counter_reset`, `stats_not_enabled`, or `unverifiable`. KV
-  cache usage is recorded as a point sample at each scrape.
+  cache usage is recorded as a point sample at each scrape. The TGI profile
+  is legacy: Text Generation Inference is archived upstream, so the profile
+  still reads existing servers with the same exit codes, adds a note to the
+  evidence (`server-metrics diff` also prints it to stderr), and gets no new
+  metrics.
 - **Trace replay (Mooncake, BurstGPT, AIPerf `single_turn` and `multi_turn`,
   Weka agentic sessions, OpenTelemetry GenAI spans):** check a published
   arrival trace, plan its schedule offline, and replay it against an
@@ -274,12 +285,18 @@ relabelled as measurements.
 ### Export to observability tools
 
 `export otlp` writes a record as OpenTelemetry spans in OTLP/JSON, using the
-GenAI semantic conventions (`gen_ai.*`). The Collector `otlpjsonfile` receiver
+GenAI semantic conventions (`gen_ai.*`). The Collector `otlp_json_file` receiver
 can read it, and it can be POSTed to any OTLP/HTTP `/v1/traces` endpoint, so
 Jaeger, Tempo, Phoenix, or Langfuse can show it. `export perfetto` writes a
 Chrome trace for [ui.perfetto.dev](https://ui.perfetto.dev). Both outputs are
 deterministic: IDs derive from the `run_id`, and every timing keeps its
-provenance as a `llmtracefx.*` attribute.
+provenance as a `llmtracefx.*` attribute. With `--api-evidence`, provider
+reported cache reads, cache writes and reasoning tokens are written as
+`gen_ai.usage.cache_read.input_tokens`,
+`gen_ai.usage.cache_write.input_tokens` and
+`gen_ai.usage.reasoning.output_tokens`, so trace backends show cache hits and
+reasoning natively. A count the provider did not report is left out, never
+written as zero.
 
 `export otlp-metrics` aggregates many API runs into GenAI histograms in
 OTLP/JSON: client duration, time to first chunk, time per chunk, token counts,
@@ -289,6 +306,31 @@ left out, never filled in. GPU energy and average power from `gpu-energy`
 evidence are exported as `llmtracefx.gpu.energy` and
 `llmtracefx.gpu.power.average`, since the GenAI conventions have no energy
 metric.
+
+A Collector config that reads both outputs. The receiver was renamed from
+`otlpjsonfile` to `otlp_json_file` in opentelemetry-collector-contrib
+v0.154.0; the old name still works as a deprecated alias and logs a warning.
+`start_at` defaults to `end`, which skips everything already in a file
+written before the Collector started, so set it to `beginning`:
+
+```yaml
+receivers:
+  otlp_json_file:
+    include:
+      - /path/to/exports/*.jsonl
+    start_at: beginning
+exporters:
+  debug:
+    verbosity: basic
+service:
+  pipelines:
+    traces:
+      receivers: [otlp_json_file]
+      exporters: [debug]
+    metrics:
+      receivers: [otlp_json_file]
+      exporters: [debug]
+```
 
 ### Perf gate
 
@@ -300,7 +342,7 @@ differs, when the difference is within run-to-run noise, or when the noise is
 larger than the allowed regression, so a noisy runner cannot pass by chance.
 The same check ships as a GitHub Action; see [Perf gate in CI](#perf-gate-in-ci).
 
-### Import vLLM bench and AIPerf results
+### Import vLLM bench, AIPerf and GuideLLM results
 
 `import` converts results you already have into an
 `llmtracefx.imported_benchmark` artifact, without rerunning:
@@ -308,6 +350,7 @@ The same check ships as a GitHub Action; see [Perf gate in CI](#perf-gate-in-ci)
 ```bash
 uv run llmtracefx-optimizer import vllm-bench vllm-result.json --output runs/base-0.json
 uv run llmtracefx-optimizer import aiperf profile_export_aiperf.json --output runs/base-0.json
+uv run llmtracefx-optimizer import guidellm benchmarks.json --benchmark 0 --output runs/base-0.json
 ```
 
 `vllm-bench` reads the file written by `vllm bench serve --save-result`.
@@ -321,11 +364,64 @@ units (`acceptance_rate` stays a percent, per-position rates are fractions of
 drafts). vLLM scraped those from the server's counters, so they cover every
 request the server handled during the run, and `gate` does not compare them.
 Without the keys the section says `not_reported`. See
-[`vllm/benchmarks/serve.py`](https://github.com/vllm-project/vllm/blob/1ae1b64807ff6be2a0d3f942dbad0a59a663a02a/vllm/benchmarks/serve.py#L1136-L1181). Missing fields are omitted and listed,
+[`vllm/benchmarks/serve.py`](https://github.com/vllm-project/vllm/blob/1ae1b64807ff6be2a0d3f942dbad0a59a663a02a/vllm/benchmarks/serve.py#L1136-L1181).
+When the server ran with `--enable-per-request-metrics` and the benchmark with
+`--save-detailed`, the file also holds `server_ttfts` and `server_queue_times`,
+one value per request in seconds
+([`serve.py`](https://github.com/vllm-project/vllm/blob/1ae1b64807ff6be2a0d3f942dbad0a59a663a02a/vllm/benchmarks/serve.py#L396-L408)).
+LLMTraceFX converts them to `server_ttft_ms` and `server_queue_time_ms` with
+mean, min, nearest-rank p50 to p99 and max, labelled `derived` with
+`sample_provenance: server_reported`. Server TTFT runs from scheduling to the
+first token, so it leaves out queue time and the network and is not the
+client `ttft_ms`. `gate --metric server_ttft_ms.p99` uses a run only when every
+completed request has a server value. Missing fields are omitted and listed,
 never guessed. Malformed files, unsupported AIPerf schemas, cancelled or
 incomplete runs, runs mixing models or phases, and multi-document
 `--append-result` files are refused with exit code 2. Without `--output` the
 artifact is written to stdout.
+
+AIPerf also writes one record per request to `profile_export.jsonl` when run
+with `--export-level records`. Pass it with `--records` and LLMTraceFX computes
+the statistics itself instead of copying AIPerf's:
+
+```bash
+uv run llmtracefx-optimizer import aiperf profile_export_aiperf.json \
+  --records profile_export.jsonl --slo-ttft-ms 500 --slo-tpot-ms 50 \
+  --output runs/base-0.json
+```
+
+The artifact's tool is `aiperf-records`. Percentiles are nearest rank over
+successful profiling records, with warmup and failed records left out, and
+each carries its sample count and a distribution-free 95% interval when there
+are enough records (the method `sweep-api` uses). Throughput is computed over
+the records' own time window. With `--slo-*-ms` targets it also writes
+`goodput` and `goodput_fraction`, where failed requests count as missed. These
+values are labelled `derived`. The summary file is still required, because
+the records name no model, endpoint, load or AIPerf version; it is checked the
+same way and recorded with its sha256 as the companion. The import is refused
+when the records span more than one profiling phase, repeat a request id, have
+a field with the wrong type or unit, or do not add up to the summary's request
+counts and token totals. Goodput is refused when a successful record lacks a
+value for a target, for example TTFT from a non-streaming run. Each input file
+may be at most 64 MiB.
+
+`guidellm` reads a GuideLLM `benchmarks.json` report, version 1 (GuideLLM 0.5
+and 0.6) or version 2 (0.7 and later). Other versions, and reports from 0.4 or
+earlier, are refused. A report can hold several benchmarks (a sweep or several
+rates); pick one with `--benchmark INDEX`, counted from 0. Without it, a report
+with more than one benchmark is refused and the benchmarks are listed. Only the
+successful requests' statistics are read: latency metrics such as
+`time_to_first_token_ms` and `request_latency` keep GuideLLM's mean, median,
+std, min, max and percentiles, and rates such as `requests_per_second` keep only
+the mean, because GuideLLM's rate percentiles are instantaneous rates between
+events. GuideLLM weights `inter_token_latency_ms` and `time_per_output_token_ms`
+by output tokens, so they are not directly comparable with vLLM bench or
+AIPerf. Errored and incomplete counts are kept; runs with errored requests are
+not used by `gate`. A sweep benchmark and a single run with the same limits and
+the same API route and streaming mode compare; version 1 reports get GuideLLM's
+defaults for settings they leave out, and a run whose settings cannot be
+resolved is not used by `gate`. Prompt and output text, endpoint URLs and API keys are never
+copied.
 
 Imported artifacts work with `gate` only. Gate N baseline imports against N
 candidate imports from the same tool, model, endpoint and load, naming a metric
@@ -336,14 +432,22 @@ uv run llmtracefx-optimizer gate --baseline runs/base --candidate runs/head \
   --metric ttft_ms.p99
 ```
 
+The metric names differ per tool: `ttft_ms.p99` for vLLM bench,
+`time_to_first_token.p99` for AIPerf and `time_to_first_token_ms.p99` for
+GuideLLM.
+
 Runs are comparable only when their total input tokens match, and for latency
 metrics their total output tokens too. Use a fixed dataset and seed, and for
 vLLM pass `--ignore-eos` so every run generates the same number of tokens.
 Otherwise the gate reports inconclusive. Runs with failed requests are not
-used.
+used, except for `goodput` and `goodput_fraction` from `--records` imports,
+which count failures as misses. Goodput runs are matched on SLO targets and
+the number of requests sent instead of token totals, because token totals
+leave failed requests out.
 
 They cannot be used with `compare` (no per-prompt hashes or correctness
-results), mixed with LLMTraceFX records, or gated across tools. See
+results), mixed with LLMTraceFX records, or gated across tools. AIPerf summary
+imports and `--records` imports count as different tools. See
 [`docs/ecosystem-gap-analysis.md`](docs/ecosystem-gap-analysis.md) for the
 full mapping and refusal rules.
 
@@ -370,9 +474,9 @@ there are enough requests (p95 needs 72, p99 needs 368), and
 `--warmup-requests N` leaves the first N requests of each point out of the
 numbers. Remote endpoints need `--allow-remote-load`. See
 [`docs/load-sweeps.md`](docs/load-sweeps.md) for what a sweep can claim,
-the goodput rules and the scheduling diagnostics. `sweep-llama-cpp` and
-`sweep-mlx` run the same sweep against llama.cpp's native `/completion`
-endpoint and in-process mlx-lm.
+the goodput rules and the scheduling diagnostics. `sweep-llama-cpp`,
+`sweep-mlx` and `sweep-ollama` run the same sweep against llama.cpp's native
+`/completion` endpoint, in-process mlx-lm and Ollama's native API.
 
 ### Verification and resumability
 
@@ -890,7 +994,7 @@ acceptance rate is derived. It logs them from iteration stats, so they need
 `enable_iter_perf_stats: true`. Sources:
 [vLLM counters](https://github.com/vllm-project/vllm/blob/1ae1b64807ff6be2a0d3f942dbad0a59a663a02a/vllm/v1/spec_decode/metrics.py#L195-L292),
 [SGLang gauges and counters](https://github.com/sgl-project/sglang/blob/b6d4389a77970e31817536c3e182256fae6a6f73/python/sglang/srt/observability/metrics_collector.py#L548-L583),
-[llama.cpp counters](https://github.com/ggml-org/llama.cpp/blob/ebc9fb933e774bb4ac0ba497a67948e16b7e5656/tools/server/server-task.cpp#L1568-L1660),
+[llama.cpp counters](https://github.com/ggml-org/llama.cpp/blob/f8caa5ea30b5775512906ae3b7ee53b21a7a6e1d/tools/server/server-task.cpp#L1568-L1660),
 [TensorRT-LLM counters](https://github.com/NVIDIA/TensorRT-LLM/blob/e6ecd280fd1f77cad6496f81a7194afe29f8d5e8/tensorrt_llm/metrics/collector.py#L550-L567).
 
 `doctor speculative` reads `server_metrics_evidence.json` next to each
@@ -925,6 +1029,41 @@ gauges. Without the request counter the window is `stats_not_enabled`, and
 without the gauges it is `unverifiable` unless you pass
 `--server-metrics-assume-isolated`. Both are listed under
 `attribution.missing_stats`.
+
+An NVIDIA Dynamo frontend (`python -m dynamo.frontend`) serves its request
+counters and KV router metrics on `/metrics` of its HTTP port, and each
+worker serves the engine's own metrics on `/metrics` of `DYN_SYSTEM_PORT`.
+Pass both:
+
+```bash
+uv run llmtracefx-optimizer collect-api ... \
+  --server-metrics-url http://127.0.0.1:8000/metrics \
+  --server-metrics-worker-url http://127.0.0.1:8081/metrics
+```
+
+The frontend window is judged on `dynamo_frontend_requests_total`,
+`requests_started_total` and `request_duration_seconds`, with
+`active_requests` as the in-flight gauge. A changed
+`dynamo_frontend_metrics_start_time_seconds` is a restart. The worker window
+is diffed with the engine's own profile (vLLM, SGLang or TensorRT-LLM) and
+nested under `worker` with its own attribution; `server-metrics diff` takes
+the same pair as `--worker-before` and `--worker-after` and exits 2 unless
+both windows are attributed. Frontend highlights are TTFT, request duration,
+inter-token latency, prompt, output and cached tokens per request, failed
+requests by `error_type`, and migrations. With `--router-mode kv` they also
+include the router's predicted hit rate, its routing overhead in ms, and the
+KV reuse funnel in tokens by `phase`: routed prompt tokens (F0), best
+eligible and selected cached prefix (F2, F3) and worker reused tokens (F4).
+The three funnel ratios to F0 are `derived` from the `aggregated` and
+`prefill` phases, because a disaggregated decode hop routes the prompt again
+but reports no reuse. Dynamo counts a missing reuse report as zero, so the F4
+ratio is a lower bound and is not reported as the engine's prefix cache hit
+rate; that comes from the worker window. A frontend started with
+`--metrics-prefix` or `DYN_METRICS_PREFIX` is detected and reported as
+`stats_not_enabled`. The worker URL is only taken by `collect-api` and
+`server-metrics diff`; sweeps and replay scrape the frontend alone. See
+[`docs/ecosystem-gap-analysis.md`](docs/ecosystem-gap-analysis.md#server-metrics)
+for the pinned upstream sources.
 
 #### Server numbers in the response
 
@@ -977,6 +1116,26 @@ skipped. Every value that is left out is listed as `Not exported: ...`.
 | `gen_ai.server.time_per_output_token` | vLLM or SGLang TPOT histogram | as above; vLLM records 0 for one-token replies, and TGI's per-token mean includes prefill, so neither is mapped |
 | `gen_ai.server.request.duration` | vLLM, SGLang or TGI end to end latency histogram | as above |
 | `llmtracefx.gpu.energy`, `llmtracefx.gpu.power.average` | `gpu_energy_evidence.json` next to the record | the evidence is refused, its window is shared with another run, or the run failed |
+
+### Ollama native API
+
+```bash
+uv run llmtracefx-optimizer collect-ollama \
+  --run-id ollama-baseline \
+  --model qwen3:0.6b \
+  --prompt-file examples/optimizer/api-smoke-prompt.txt \
+  --output-dir output/ollama-baseline \
+  --max-output-tokens 64
+```
+
+`--endpoint` defaults to `http://127.0.0.1:11434` and `--api` to `chat`.
+The record's `timing.model_load`, `timing.prefill` and `timing.decode` come
+from Ollama's `load_duration`, `prompt_eval_duration` and `eval_duration`,
+labelled `provider_reported`. `ollama_evidence.json` keeps the raw
+nanosecond fields and the client TTFT. Add `--dry-run` to write the request
+plan without sending anything. See
+[`docs/load-sweeps.md`](docs/load-sweeps.md#sweep-ollama) for the field
+mapping and `sweep-ollama`.
 
 ### Trace replay
 
@@ -1077,6 +1236,13 @@ uv run llmtracefx-optimizer replay plan runs.jsonl --format otel-genai \
 Raw session ids, `traceId`s and conversation ids are never written; sessions
 are numbered by first arrival.
 
+Cache read, cache write and reasoning token attributes are read too, including
+the older `gen_ai.usage.cache_creation.input_tokens` name. The conventions
+count them inside the input and output totals, so a span whose parts exceed
+its total is refused. Their sums are recorded under
+`source.details.recorded_usage_parts`; request sizes still come from the
+input and output totals.
+
 `--tokenizer` makes synthetic lengths exact. It takes a Hugging Face repo id
 (`--tokenizer-revision` pins a branch, tag or commit), a `tokenizer.json`
 file, or a directory holding one, and needs the optional extra
@@ -1154,10 +1320,22 @@ energy figures apart:
 - `sampled_power_integral` is a trapezoid over the power samples, labelled
   `estimated`.
 
+Power is read from `NVML_FI_DEV_POWER_INSTANT`, which carries the driver's
+own timestamp, so the trapezoid uses driver time and repeated readings count
+once. When the driver or binding cannot give a timestamped instant reading,
+the GPU falls back to `nvmlDeviceGetPowerUsage` (a 1 s average on recent
+GPUs) for the whole window, and `power_samples.instant_fallback_reason` says
+why.
+
 Both are device wide, so they include idle power and anything else on the
 GPU. On every tick, `record` also asks NVML which processes use the selected
 GPUs. A process that is not the command or one of its children makes the
-window `contaminated`. When this cannot be checked, for example from inside a
+window `contaminated`. Each tick also reads
+`nvmlDeviceGetProcessUtilization` from the last sample seen, which reports
+processes that used the GPU between two process lists. Those samples are
+kept in `process_utilization`, and a PID seen only there is classified like a
+listed one. When utilization cannot be read, the attribution reason says so.
+When this cannot be checked, for example from inside a
 container's PID namespace or with MIG enabled, the window is `unverifiable`.
 Totals are only highlighted for an attributable window. To measure an
 inference server that the command calls, pass its PID with `--gpu-pid`, for
@@ -1186,7 +1364,13 @@ refreshes every `--collect-interval` (30 s by default), so the delta covers
 more than the command. The evidence records the shortest and longest span the
 delta can cover, and refuses `energy` with `bracket_too_wide` when the command
 is less than `--min-run-share` (0.9) of the longest span. Run the exporter
-with a short interval, for example `-c 1000`, and long commands. Power is
+with a short interval, for example `-c 1000`, and long commands. The exporter
+does not report its interval, so `power_sampling.collect_interval` records the
+value used and its `basis`: `--dcgm-collect-interval-ms`, the gap between
+counter changes the scrapes saw, both when they agree, or the 30 s default.
+Each bracket states `expected_max_overhead_ms` (one collect interval plus two
+scrapes) and `min_command_ms_for_required_share`, and a refusal prints how
+long the command would have to run. Power is
 listed per scrape but not integrated, and the window is `unverifiable`
 because the exporter has no process list. In a record, its evidence fills
 only `power.energy`, and only with `--assume-isolated`.
@@ -1286,9 +1470,9 @@ is derived from the counter energy and a measured or reported generated token
 count. Runs must use the same GPUs and attribution status. A successful run
 with no usable value makes the gate inconclusive rather than being dropped.
 
-The baseline and candidate can also be directories of imported vLLM bench or
-AIPerf artifacts (see
-[Import vLLM bench and AIPerf results](#import-vllm-bench-and-aiperf-results)),
+The baseline and candidate can also be directories of imported vLLM bench,
+AIPerf or GuideLLM artifacts (see
+[Import vLLM bench, AIPerf and GuideLLM results](#import-vllm-bench-aiperf-and-guidellm-results)),
 with a metric such as `ttft_ms.p99`.
 
 The same check runs locally:
@@ -1353,6 +1537,10 @@ The console scripts below come from `pyproject.toml`.
 | `llmtracefx` | Legacy compatibility | Earlier token trace analyzer |
 | `llmtracefx-serve` | Legacy compatibility | Local FastAPI surface for the earlier analyzer |
 | `llmtracefx-dashboard` | Legacy compatibility | Earlier Streamlit dashboard; not the current evidence workflow |
+
+Under `llmtracefx-optimizer`, the per-backend collectors are `collect-mlx`,
+`collect-api` and `collect-ollama`, and the load sweeps are `sweep-api`,
+`sweep-llama-cpp`, `sweep-mlx` and `sweep-ollama`.
 
 Use `uv run llmtracefx-optimizer --help`,
 `uv run llmtracefx-cache-audit --help`, and

@@ -5,7 +5,7 @@
 **Language models that read, edit and write the weights of other neural networks directly, without gradient descent.**
 
 [![Last commit](https://img.shields.io/github/last-commit/SajjadPSavoji/awesome-weight-space-programming?color=green)](https://github.com/SajjadPSavoji/awesome-weight-space-programming/commits/main)
-![Entries](https://img.shields.io/badge/entries-669-blue)
+![Entries](https://img.shields.io/badge/entries-685-blue)
 ![Updated](https://img.shields.io/badge/updated-daily-orange)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/SajjadPSavoji/awesome-weight-space-programming/blob/main/CONTRIBUTING.md)
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](LICENSE)
@@ -18,18 +18,18 @@
 
 ## 🔥 Recently Added
 
-- **2026-11-22** · [WSP Labs: Direct Weight-Space Programming & Alpha M1 on-device machine-control models](https://github.com/JohnnyPBelo/wsp-labs) (Repairing behavior)
-- **2026-11-22** · [wsp-language-drift](https://mhajili.com/notes/weight-space-programming/) (Repairing behavior)
-- **2026-11-22** · [Weight-Space Programming Writes In-Context Learning and Matches Fine-Tuning in Language Models: the notebook](https://github.com/y3nk0/weight-space-programming-study) (Repairing behavior)
-- **2026-11-21** · [Comprehensive Weight-Space Programming Leaderboard (MinAtar Experiment 5)](https://github.com/opopile/comprehensive-weight-space-programming-leaderboard) (Benchmarks and Evaluations)
-- **2026-11-21** · [Footprints and loops: re-testing weight-space programming](https://ofirshechter.github.io/weight-space-programming-controls/) (Analyses and Critiques)
-- **2026-11-21** · [SGNE-CC v2: Training-Free Spherical Rotation of 205 down_proj Columns (0.0177%) in DeepSeek-R1-Distill-Qwen-1.5B](https://doi.org/10.5281/zenodo.24398165) (Repairing behavior)
-- **2026-11-21** · [SecureWeight: A Weight-Space Programming Experiment](https://github.com/deb2006/Secure-Weight-A-Weight-Space-Programming-Experiment) (Other Domains)
-- **2026-11-21** · [Weight-Space Programming for Swedish Language Models (SE.LLMA)](https://github.com/felixsuarez0727/weight-space-programming-sellma) (Repairing behavior)
-- **2026-11-21** · [Weight-Space Audit of MIT-p50c and DNA Weight Editing (SGNE-CC) on Qwen3.5-0.8B at a 32,768-Token Generation Limit](https://doi.org/10.5281/zenodo.24235218) (Analyses and Critiques)
-- **2026-11-21** · [k-oconnor/WSPL](https://github.com/k-oconnor/WSPL) (RL control policies)
-- **2026-11-20** · [lextoumbourou/weight-space-programming-experiments](https://github.com/lextoumbourou/weight-space-programming-experiments) (Analyses and Critiques)
-- **2026-11-20** · [In-Weight FPGA: Compiling Multi-Step Dialectical State Machines into Dormant Transformer Neurons via Zero-KV-Drift Closed-Form Linear Algebra](https://github.com/zkwasm/in-weight-fpga-wsp) (Repairing behavior)
+- **2026-11-23** · [Weight-Space Programming: Papers, Code, Models and Guides](https://github.com/weightspaceprogramming/reading-list) (Other Curated Lists)
+- **2026-11-23** · [Looped Weight-Space Programming: LLM-Written Transformers for Long Algorithmic Reasoning](https://github.com/mbzuai-oryx/LoopedWSP) (Writing networks from scratch)
+- **2026-11-23** · [bturkoglu/weight-space-programming-survey](https://github.com/bturkoglu/weight-space-programming-survey) (Analyses and Critiques)
+- **2026-11-23** · [Weight-Space Programming Examples](https://github.com/weightspaceprogramming/examples) (Tools, Harnesses and Agent Skills)
+- **2026-11-23** · [CodeBoost-0.5B: weight-space programming audit](https://github.com/Thakshil/codeboost-0.5b) (Analyses and Critiques)
+- **2026-11-23** · [handwired-brain-transformer](https://github.com/sensein/handwired-brain-transformer) (Other Domains)
+- **2026-11-23** · [Awesome Weight-Space Programming](https://github.com/Boom5426/Awesome-Weight-Space-Programming) (Other Curated Lists)
+- **2026-11-23** · [CodeWeights-IDS](https://github.com/faysalchowdhoury/codeweights-ids) (Other Domains)
+- **2026-11-23** · [Can weight-space programming bridge the gap between two RL specialists?](https://github.com/A-C-C-AI/weight-space-programming-rl-specialists) (RL control policies)
+- **2026-11-23** · [Autonomous Parameter Surgery: How LLMs Implant Selective Backdoors into Language Models](https://arxiv.org/abs/2611.27920) (Implanting behavior (backdoors))
+- **2026-11-23** · [TrojanMaxxing: One-shotting VLM Backdoors with Weight-Space Programming](https://arxiv.org/abs/2611.27425) (Implanting behavior (backdoors))
+- **2026-11-23** · [Writing Weights or Training Them? Spatial Reasoning through Weight-Space Programming and Low-Rank Adaptation](https://arxiv.org/abs/2611.27089) (Analyses and Critiques)
 
 ## 🧭 Milestones
 
@@ -42,21 +42,24 @@
 ## Contents
 
 - [🌟 The Original Report](#-the-original-report) (1)
-- [💬 Language Models](#-language-models) (49)
-  - [Repairing behavior](#repairing-behavior) (37)
+- [💬 Language Models](#-language-models) (53)
+  - [Repairing behavior](#repairing-behavior) (38)
   - [Reading and predicting from weights](#reading-and-predicting-from-weights) (2)
-  - [Writing networks from scratch](#writing-networks-from-scratch) (10)
-- [🦾 Robotics and Control](#-robotics-and-control) (16)
+  - [Writing networks from scratch](#writing-networks-from-scratch) (11)
+  - [Implanting behavior (backdoors)](#implanting-behavior-backdoors) (2)
+- [🦾 Robotics and Control](#-robotics-and-control) (17)
   - [Vision-language-action models](#vision-language-action-models) (6)
-  - [RL control policies](#rl-control-policies) (10)
-- [🧩 Other Domains](#-other-domains) (37)
+  - [RL control policies](#rl-control-policies) (11)
+- [🧩 Other Domains](#-other-domains) (40)
   - [Classical NLP models](#classical-nlp-models) (2)
-- [🎮 Games](#-games) (7)
+- [🎮 Games](#-games) (8)
 - [🧪 Quantum Circuits](#-quantum-circuits) (3)
 - [🧪 Diffusion and Generative Media Models](#-diffusion-and-generative-media-models) (1)
+- [🧪 Audio and Speech Models](#-audio-and-speech-models) (1)
+- [🧪 Other Curated Lists](#-other-curated-lists) (2)
 - [📊 Benchmarks and Evaluations](#-benchmarks-and-evaluations) (13)
-- [🛠️ Tools, Harnesses and Agent Skills](#-tools-harnesses-and-agent-skills) (19)
-- [🔍 Analyses and Critiques](#-analyses-and-critiques) (38)
+- [🛠️ Tools, Harnesses and Agent Skills](#-tools-harnesses-and-agent-skills) (20)
+- [🔍 Analyses and Critiques](#-analyses-and-critiques) (41)
 - [📜 Foundations: Weight Programming Before WSP](#-foundations-weight-programming-before-wsp) (190)
   - [Hand-set and compiled weights](#hand-set-and-compiled-weights) (18)
   - [Rule insertion and extraction](#rule-insertion-and-extraction) (12)
@@ -113,7 +116,7 @@
 <a id="repairing-behavior"></a>
 
 <details>
-<summary><b>Repairing behavior (37)</b></summary>
+<summary><b>Repairing behavior (38)</b></summary>
 
 - **[WSP Labs: Direct Weight-Space Programming & Alpha M1 on-device machine-control models](https://github.com/JohnnyPBelo/wsp-labs)**  
   JohnnyPBelo · *GitHub* · 2026-11-22 · `💻 code / results`  
@@ -159,6 +162,11 @@
   Felix Suarez · *GitHub* · 2026-11-19 · `💻 code / results`  
   [[Code](https://github.com/felixsuarez0727/weight-space-programming-sellma)] ![GitHub stars](https://img.shields.io/github/stars/felixsuarez0727/weight-space-programming-sellma?style=social)  
   Column-sparse rank-1 weight edit of 86,016 parameters (0.0174%) in Qwen2.5-0.5B-Instruct for Swedish adaptation, compared with baseline, prompt control, matched random-weight control (3 seeds) and activation steering on 30 Swedish and 20 English prompts. Swedish compliance 93.3% for the edit vs 96.7% baseline.
+
+- **[Weight-Space Programming Writes In-Context Learning and Matches Fine-Tuning in Language Models](https://arxiv.org/abs/2611.26841)**  
+  Konstantinos Skianis, Aristidis Likas · *Preprint* · 2026-11-19 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.26841)]  
+  Across six tasks, four frontier editors and three families of weaker models, editors write the in-context-learning task vector into the weights, often as sparse edits to near-silent MLP units. Results reach the accuracy of ICL and of fine-tuning including LoRA, usually leaving perplexity untouched. One editor falls below fine-tuning, and performance is worse under wording changes.
 
 - **[Can reading a model's weights fix Swedish answers that come out in the wrong language?](https://github.com/JafarBanar/weight-space-programming-swedish)**  
   JafarBanar · *GitHub* · 2026-11-18 · `💻 code / results`  
@@ -322,7 +330,12 @@
 <a id="writing-networks-from-scratch"></a>
 
 <details>
-<summary><b>Writing networks from scratch (10)</b></summary>
+<summary><b>Writing networks from scratch (11)</b></summary>
+
+- **[Looped Weight-Space Programming: LLM-Written Transformers for Long Algorithmic Reasoning](https://github.com/mbzuai-oryx/LoopedWSP)**  
+  MBZUAI · *GitHub* · 2026-11-23 · `💻 code / results`  
+  [[Code](https://github.com/mbzuai-oryx/LoopedWSP)] ![GitHub stars](https://img.shields.io/github/stars/mbzuai-oryx/LoopedWSP?style=social)  
+  Repository and blog on looped weight-space programming, in which an LLM writes transformer weights for long algorithmic reasoning. It includes interactive Maze and Tower of Hanoi demos. The candidate text excerpt reports no headline number.
 
 - **[Weight-Space Programming Doesn't Need Transformers](https://github.com/effl-lab/Weight-Space-Programming)**  
   POSTECH · *GitHub* · 2026-11-17 · `💻 code / results`  
@@ -376,6 +389,23 @@
 
 </details>
 
+<a id="implanting-behavior-backdoors"></a>
+
+<details>
+<summary><b>Implanting behavior (backdoors) (2)</b></summary>
+
+- **[Autonomous Parameter Surgery: How LLMs Implant Selective Backdoors into Language Models](https://arxiv.org/abs/2611.27920)**  
+  Xuyang Liu, Zhiwei Xu, Zirui Li, Jiabao Gao et al. · *Preprint* · 2026-11-20 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.27920)]  
+  DeepSeek Flash edits weights directly, with no gradient training, to turn a natural-language backdoor specification into a selective backdoor. Tested on Qwen3.5-0.8B, Llama-3.2-1B and SmolLM3-3B over IMDb and Yelp (18 sessions). Mean attack success is 99.2% on the editing domain and 97.6% on the unseen domain. Cost is $1.74 per run.
+
+- **[TrojanMaxxing: One-shotting VLM Backdoors with Weight-Space Programming](https://arxiv.org/abs/2611.27425)**  
+  Purdue University; Stony Brook University · *Preprint* · 2026-11-20 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.27425)]  
+  Claude Opus 5.5 and Mythos 5.2 agents inspect and edit vision-language model weights without training, and co-design an imperceptible visual trigger. Attack success rates are 93%-100% on content moderation and 78%-100% on OCR, with clean accuracy maintained. The paper also studies agent strategies, quantization as a defense, and backdoor detection using WSP.
+
+</details>
+
 ## 🦾 Robotics and Control
 
 *Weight edits on robot policies, VLAs, world action models and controllers.*
@@ -420,7 +450,12 @@
 <a id="rl-control-policies"></a>
 
 <details>
-<summary><b>RL control policies (10)</b></summary>
+<summary><b>RL control policies (11)</b></summary>
+
+- **[Can weight-space programming bridge the gap between two RL specialists?](https://github.com/A-C-C-AI/weight-space-programming-rl-specialists)**  
+  A-C-C-AI · *GitHub* · 2026-11-21 · `💻 code / results`  
+  [[Code](https://github.com/A-C-C-AI/weight-space-programming-rl-specialists)] ![GitHub stars](https://img.shields.io/github/stars/A-C-C-AI/weight-space-programming-rl-specialists?style=social)  
+  A writer model edits weights to combine two simulated Fetch-arm reaching policies of 1,379 parameters each, with no RL in the gap. In the reaching pilot, endpoints scored 128/128 and the midpoint 0/128 before the edit. The bridged policy scored 128/128 at all three positions, but a controller learned from endpoint demonstrations matched it. In the sideways-push test, the midpoint recovered on 0/64 trials neutral and 64/64 with the response turned up.
 
 - **[Weight-space programming for tractor guidance controller: large language models natively write neural network weights that steer a real tractor](https://arxiv.org/abs/2611.21958)**  
   Timo Oksanen · *Preprint* · 2026-11-16 · `📝 preprint`  
@@ -479,7 +514,22 @@
 *Classifiers, small decision networks and anything else.*
 
 <details>
-<summary><b>General (35)</b></summary>
+<summary><b>General (38)</b></summary>
+
+- **[handwired-brain-transformer](https://github.com/sensein/handwired-brain-transformer)**  
+  sensein · *GitHub* · 2026-11-23 · `💻 code / results`  
+  [[Code](https://github.com/sensein/handwired-brain-transformer)] ![GitHub stars](https://img.shields.io/github/stars/sensein/handwired-brain-transformer?style=social)  
+  3D volumetric transformers with hand-written weights, not trained, for segmenting multiscale light-sheet brain volumes from DANDI:000108. Programs have 53 (tissue), 33 (cells) and 330 or 642 (vessels) nonzero weights. On synthetic phantoms, oracle-threshold vessel F1 is 0.79, 0.86 and 0.90 for 13, 26 and 49 directions. There are no real-data accuracy numbers because no labels exist.
+
+- **[CodeWeights-IDS](https://github.com/faysalchowdhoury/codeweights-ids)**  
+  faysalchowdhoury · *GitHub* · 2026-11-22 · `💻 code / results`  
+  [[Code](https://github.com/faysalchowdhoury/codeweights-ids)] ![GitHub stars](https://img.shields.io/github/stars/faysalchowdhoury/codeweights-ids?style=social)  
+  An agent writes a 22-parameter V2X intrusion detector as commented weight matrices, scored by a gradient-free evaluator on real VeReMi data. Detection F1 is 0.880 against 0.931 for an MLP with 1,029 parameters. The false-positive rate is 0.007 against 0.268. Multiclass F1 is 0.554 against 0.817. It passes a static weight-code audit.
+
+- **[Weight-space programming and mechanistic interpretability for model editing in particle physics](https://arxiv.org/abs/2611.27079)**  
+  Raphaël Bonnet-Guerrini, Johann Ioannou-Nikolaides, Troels Petersen · *Preprint* · 2026-11-20 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.27079)]  
+  Repairs an infrared-safety flaw in a jet foundation model (OmniLearned) in two ways: removing three sparse-autoencoder latent directions, and letting language-model agents edit weights directly with 50 model queries and no gradients. Both edits remove almost the entire flaw, change far fewer parameters than fine-tuning, and carry over to other signal classes and heads.
 
 - **[WeightCode: Installing New Capabilities into Neural Networks via Weight-Space Programming](https://arxiv.org/abs/2611.25476)**  
   Bo Li, Taoyong Cui, Bob Zhang, Mengran Li, et al. · *Preprint* · 2026-11-19 · `📝 preprint`  
@@ -680,12 +730,17 @@
 *Weight programming of game-playing networks and board-game policies.*
 
 <details>
-<summary><b>7 entries</b></summary>
+<summary><b>8 entries</b></summary>
 
 - **[Compiling Known Rules into Compact Neural Agents: Weight-Space Programming on Unseen Games](https://github.com/JensLehmann/weight-space-programming-games)**  
   JensLehmann · *GitHub* · 2026-11-12 · `💻 code / results`  
   [[Code](https://github.com/JensLehmann/weight-space-programming-games)] ![GitHub stars](https://img.shields.io/github/stars/JensLehmann/weight-space-programming-games?style=social)  
   Language-model writers read a game's mechanics as source code and write all weights of a fixed 57,289-parameter recurrent convolutional actor, a free-architecture network, or a Python player. Players are scored on held-out levels, renderings and perturbed starts of 20 private game families and the 25 public ARC-AGI-3 games. Code and result data released.
+
+- **[Weight-space programming with Claude Fable 5.2](https://github.com/ongsici/fable-experiments)**  
+  ongsici · *GitHub* · 2026-11-12 · `💻 code / results`  
+  [[Code](https://github.com/ongsici/fable-experiments)] ![GitHub stars](https://img.shields.io/github/stars/ongsici/fable-experiments?style=social)  
+  Replicates Experiment 5 of Sparks of Weight-Space Programming with Claude Fable 5.2. The model writes every weight of a 600-32-32-6 tanh policy for MinAtar games from the game source, with no tools or feedback. Mean scores over 1,000 episodes: Breakout 457.3 (n=2), Seaquest 50.9 (n=3), Asterix 65.8 (n=2). It compares these with Astra and PPO baselines. Runs were not strictly one-shot.
 
 - **[Zero-Shot Weight-Space Programming Across a Difficulty-Graded Ladder of Two-Player Games](https://arxiv.org/abs/2611.09271)**  
   Universidad Pontificia Comillas · *Preprint* · 2026-11-06 · `📝 preprint`  
@@ -757,6 +812,39 @@
 
 </details>
 
+## 🧪 Audio and Speech Models
+
+*Weight programming of speech recognition and audio classification models.*
+
+<details>
+<summary><b>1 entry</b></summary>
+
+- **[Weight-Space Programming for Audio Models: LLMs Can Directly Edit Audio Model Weights and Compress Them](https://aksy1999.github.io/blog/weight-space-programming-for-audio-models/)**  
+  Ishiki Labs Research · *GitHub* · 2026-11-19 · `💻 code / results`  
+  [[Post](https://aksy1999.github.io/blog/weight-space-programming-for-audio-models/)] [[Code](https://github.com/ishikilabsinc/audiowsp)] ![GitHub stars](https://img.shields.io/github/stars/ishikilabsinc/audiowsp?style=social)  
+  Open-source code and blogpost for editing audio model weights in one forward pass and zero backward passes: augmentation-subspace nulling, closed-form readout weights, and compression of a deepfake detector from 318M to 86.8M parameters and Wav2Vec2-Large ASR from 315M to 142M.
+
+</details>
+
+## 🧪 Other Curated Lists
+
+*Curated collections and reading lists on weight-space programming.*
+
+<details>
+<summary><b>2 entries</b></summary>
+
+- **[Weight-Space Programming: Papers, Code, Models and Guides](https://github.com/weightspaceprogramming/reading-list)**  
+  weightspaceprogramming · *GitHub* · 2026-11-23 · `💻 code / results`  
+  [[Code](https://github.com/weightspaceprogramming/reading-list)] [[Project](https://weightspaceprogramming.tech/)] ![GitHub stars](https://img.shields.io/github/stars/weightspaceprogramming/reading-list?style=social)  
+  Annotated collection of 34 resources on representing and constructing programs in neural-network weights: formal compilation, trained weight generators, LLM reasoning over weights, replications and criticism, with a guide site, BibTeX and JSON.
+
+- **[Awesome Weight-Space Programming](https://github.com/Boom5426/Awesome-Weight-Space-Programming)**  
+  Boom5426 · *GitHub* · 2026-11-22 · `💻 code / results`  
+  [[Code](https://github.com/Boom5426/Awesome-Weight-Space-Programming)] ![GitHub stars](https://img.shields.io/github/stars/Boom5426/Awesome-Weight-Space-Programming?style=social)  
+  Curated collection of weight-space programming and weight-centric research covering weight understanding, generation, editing, merging, transfer and continual learning, with a searchable catalog, an interactive research landscape and an evidence matrix.
+
+</details>
+
 ## 📊 Benchmarks and Evaluations
 
 *Controlled tests of whether weight access helps.*
@@ -817,81 +905,4 @@
 - **[Consistency Is Not Understanding: Orbit Audits for Neural Field Weight Readers](https://arxiv.org/abs/2611.05798)**  
   Sungguk Cha, Mintae Kim, Youngsub Han, Byoung-Ki Jeon, Sangyeob Lee · *Preprint* · 2026-11-04 · `📝 preprint`  
   [[Paper](https://arxiv.org/abs/2611.05798)]  
-  Tests whether readers recognize what shallow ReLU neural fields encode from their weights (480 shape fields, 1,000 MNIST fields), using hidden-neuron permutations and positive rescalings that leave the function unchanged. Compares statistics, set and language-model readers, with 1,920 scored reasoning-model sessions, and separates accuracy, agreement across transformed copies and disagreement on fresh identical prompts.
-
-- **[GPT-AGI/Weight-Space-Programing](https://github.com/GPT-AGI/Weight-Space-Programing)**  
-  GPT-AGI · *GitHub* · 2026-11-04 · `💻 code / results`  
-  [[Code](https://github.com/GPT-AGI/Weight-Space-Programing)] ![GitHub stars](https://img.shields.io/github/stars/GPT-AGI/Weight-Space-Programing?style=social)  
-  WSP-Bench plants a known defect in Qwen3.5-0.8B and scores an LLM's repair against ground truth, on hidden prompts with a collateral-change penalty. Model and Agent tracks, public traces, no-LLM baselines. A review of the post's logs reads its headline gain as finish rate 7% to 65% with finished-answer accuracy 93% to 71%.
-
-- **[WSPBench](https://github.com/alexcarterhq/wspbench)**  
-  alexcarterhq · *GitHub* · 2026-11-03 · `💻 code / results`  
-  [[Code](https://github.com/alexcarterhq/wspbench)] [[Project](https://wspbench.com)] ![GitHub stars](https://img.shields.io/github/stars/alexcarterhq/wspbench?style=social)  
-  Does weight access help an agent diagnose and repair a model? GPT-6.1 Sol repaired 30/32 faults with behavior probes plus weights, against 14/32 with probes alone and 5/32 for a scripted solver at the same probe budget. All three kept 8 clean controls intact.
-
-</details>
-
-## 🛠️ Tools, Harnesses and Agent Skills
-
-*Libraries and agent skills for reading and editing weights.*
-
-<details>
-<summary><b>19 entries</b></summary>
-
-- **[Rowanjgc/mindsculpt](https://github.com/Rowanjgc/mindsculpt)**  
-  Rowanjgc · *GitHub* · 2026-11-17 · `💻 code / results`  
-  [[Code](https://github.com/Rowanjgc/mindsculpt)] ![GitHub stars](https://img.shields.io/github/stars/Rowanjgc/mindsculpt?style=social)  
-  Open-source, model-agnostic Weight-Space Programming Workbench with Python, CLI and JSON tool-schema interfaces. Covers checkpoint inspection, tensor analysis, activation capture, versioned weight patches (replace, add, scale, rank-one, projection) with export and rollback, generation traces, detectors and experiment artifacts. Offline CPU tests; no LLM required.
-
-- **[AxOrganization/WeightSpaceProgramming](https://github.com/AxOrganization/WeightSpaceProgramming)**  
-  AxOrganization · *GitHub* · 2026-11-17 · `💻 code / results`  
-  [[Code](https://github.com/AxOrganization/WeightSpaceProgramming)] ![GitHub stars](https://img.shields.io/github/stars/AxOrganization/WeightSpaceProgramming?style=social)  
-  Toolkit and agent skill for editing small LLM weights directly to improve benchmark scores, following Sparks of Weight-Space Programming. Includes a case workflow, activation probes, declarative edit specs, a playbook of lessons and a competition submission protocol. No results are stated in the README excerpt.
-
-- **[bandr-ai/dawe](https://github.com/bandr-ai/dawe)**  
-  bandr-ai · *GitHub* · 2026-11-12 · `💻 code / results`  
-  [[Code](https://github.com/bandr-ai/dawe)] ![GitHub stars](https://img.shields.io/github/stars/bandr-ai/dawe?style=social)  
-  Agent skill for fixing model behavior with small weight edits. Given data and a checkpoint, the agent prepares splits, diagnoses failing token decisions, derives closed-form candidate edits, compares controls, and exports a checkpoint-bound, reversible .gpatch tested in a fresh inference process. The repo supplies preparation commands, a state collector and patch tools.
-
-- **[suayptalha/wsr](https://github.com/suayptalha/wsr)**  
-  suayptalha · *GitHub* · 2026-11-11 · `💻 code / results`  
-  [[Code](https://github.com/suayptalha/wsr)] ![GitHub stars](https://img.shields.io/github/stars/suayptalha/wsr?style=social)  
-  Toolkit for weight-space reading and programming. 'wsr read' has a sandboxed agent predict from the weights alone how an edit changes behaviors. 'wsr write' has an agent write an edit without training. 'wsr program' returns a checkpoint of edits that pass held-out and guard suites. Works with open or API agents. Evaluation harness of 'Weight-Space Reading' (Kocabay, 2026).
-
-- **[Ahmedn1/wsplab](https://github.com/Ahmedn1/wsplab)**  
-  Ahmedn1 · *GitHub* · 2026-11-09 · `💻 code / results`  
-  [[Code](https://github.com/Ahmedn1/wsplab)] ![GitHub stars](https://img.shields.io/github/stars/Ahmedn1/wsplab?style=social)  
-  Python library that runs weight-space programming sessions: an LLM editor gets a sandboxed kernel and a forward-pass budget, edits are scored on hidden evaluation with paired statistics and a same-size random-edit control, and saved as patches that rebuild the edited model from the public base. Works on language models and other PyTorch networks.
-
-- **[fus3r/wspserve](https://github.com/fus3r/wspserve)**  
-  fus3r · *GitHub* · 2026-11-08 · `💻 code / results`  
-  [[Code](https://github.com/fus3r/wspserve)] ![GitHub stars](https://img.shields.io/github/stars/fus3r/wspserve?style=social)  
-  Forward-pass server for weight-space programming sessions, plus measurements of the released Sparks of WSP Experiment 8 logs. All 88 edits are channel scalings or rank-one projections. A single session keeps a dedicated GPU 51 to 78% busy. The server applies each edit as a per-row delta in one resident model.
-
-- **[IyadhKhalfallah/weight-space-programming](https://github.com/IyadhKhalfallah/weight-space-programming)**  
-  IyadhKhalfallah · *GitHub* · 2026-11-06 · `💻 code / results`  
-  [[Code](https://github.com/IyadhKhalfallah/weight-space-programming)] ![GitHub stars](https://img.shields.io/github/stars/IyadhKhalfallah/weight-space-programming?style=social)  
-  Experiments editing and writing models without gradient descent, plus a wsl CLI that applies reversible weight patches with per-slice regression checks. A hand-written XGBoost model reached AUC 0.809 on rain forecasting with zero labels (0.839 when trained on 2.5 years). On a 0.8B LLM, the author's edit did not reproduce the published effect.
-
-- **[ZeroTang05/WSP-toolkit](https://github.com/ZeroTang05/WSP-toolkit)**  
-  ZeroTang05 · *GitHub* · 2026-11-06 · `💻 code / results`  
-  [[Code](https://github.com/ZeroTang05/WSP-toolkit)] ![GitHub stars](https://img.shields.io/github/stars/ZeroTang05/WSP-toolkit?style=social)  
-  Toolkit to read, edit and evaluate open-weight language model weights: safetensors WeightStore, activation patching, a ProgrammingSession workspace for a model as programmer, TIES merging and SparseGPT reconstruction. On the 1,319-question GSM8K test set, Qwen3-0.6B went from 485 correct (36.77%) to 600 (45.49%) after a scaled TIES merge of three trained updates.
-
-- **[Weight-Space Programming (wsp-kit)](https://github.com/AuremHQ/weight-space-programming)**  
-  Aurem · *GitHub* · 2026-11-05 · `💻 code / results`  
-  [[Code](https://github.com/AuremHQ/weight-space-programming)] ![GitHub stars](https://img.shields.io/github/stars/AuremHQ/weight-space-programming?style=social)  
-  Tool that tries to fix small open-weight models by editing weights directly, with an eval gate deciding whether an edit ships. Reports its own CPU runs on Qwen3-0.6B and GPT2-124M: in 60-item list-looping tests no edit passed the gate, so 0 weights shipped. Only the smoke-test pipeline passed (failing score 64.14 → 75.43).
-
-- **[wsp: LLM as an optimiser - weight space programming](https://github.com/desmondzee/wsp)**  
-  desmondzee · *GitHub* · 2026-11-04 · `💻 code / results`  
-  [[Code](https://github.com/desmondzee/wsp)] ![GitHub stars](https://img.shields.io/github/stars/desmondzee/wsp?style=social)  
-  Autoresearch-style harness where an agent reads and edits network weights with a metered budget of forward passes and no optimiser. Tasks are pluggable. Reported: IFEval on Qwen2.5-0.5B-Instruct held-out 0.351 to 0.406; one network written from zero weights for chess and 9x9 Go, held-out win rate 0.244 to 0.980.
-
-- **[weightspace](https://github.com/leofmarciano/weightspace)**  
-  Leo Marciano · *GitHub* · 2026-11-03 · `💻 code / results`  
-  [[Code](https://github.com/leofmarciano/weightspace)] ![GitHub stars](https://img.shields.io/github/stars/leofmarciano/weightspace?style=social)  
-  Apache-2.0 Python library: read, fix, write and improve any torch.nn.Module with an LLM, using budgeted probes, tracked edits and sparse patches. Its own rerun of the Qwen experiment did not beat the original edit.
-
-- **[weight-space-programming-skill](https://github.com/di37/weight-space-programming-skill)**  
-  di37 · *Gi
+  Tests whether readers recognize what shallow ReLU neural fields encode from their weights (480 shape fields, 1,000 MNIST fields), using hidden-neuron permutations and positive rescalings that leave the func

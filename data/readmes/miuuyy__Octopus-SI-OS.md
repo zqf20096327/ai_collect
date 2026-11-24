@@ -5,8 +5,8 @@
 <h1 align="center">Octopus Superintelligence OS</h1>
 
 <p align="center">
-  <b>A self-evolving agentic OS.</b><br>
-  A new architecture for agent execution, built on operating-system principles, where agents can reshape their environment and the trajectory of their own work.
+  <b>An experimental self-evolving agentic OS for long-horizon autonomy.</b><br>
+  Built on operating-system principles, where agents reshape their environment and steer the trajectory of their own work.
 </p>
 
 <p align="center">
@@ -27,18 +27,32 @@ channels, sensors, and tool rooms attach through registry-owned interfaces.
 
 The macOS client brings these together in Home, Projects, Agents, and Tasks.
 You can talk by text or voice and grant tools for files, browsers, desktop
-applications, and connected services. Codex CLI is the first provider ported
-onto the system: sign in with ChatGPT, or configure another provider. Models
-and tools operate through declared contracts; neither is the runtime authority.
+applications, and connected services. Home defaults to Gemini 4 Neon via
+Antigravity, while Codex backs initial sign-in, live voice, and dictation, and
+ChatGPT, Claude, Gemini, Vertex, and API-key providers attach the same way.
+Models and tools operate through declared contracts; neither is the runtime
+authority.
 
-**Self-evolution** means shaping the conditions of future work. Under policy, an agent can create and revise goals, change interfaces (triggers), add tools, organize workers, and arrange context and execution environments. These changes persist across tasks and runs: they affect what it notices, when it acts, what it works on, and which capabilities it can use next. The agent changes its environment, and that environment shapes its subsequent behavior. **Self-improvement** remains the research aim: whether this process actually makes the system better.
+**Self-evolution** means shaping the conditions of future work. Under policy, an
+agent can create and revise goals, change interfaces (triggers), add tools,
+organize workers, and arrange context and execution environments. These changes
+persist across tasks and runs: they affect what it notices, when it acts, what
+it works on, and which capabilities it can use next. The agent changes its
+environment, and that environment shapes its subsequent behavior, letting the
+system develop and improve itself across long-running work rather than one-off
+turns.
 
 > [!NOTE]
-> This is a research preview, not a claim of AGI or demonstrated autonomous
-> self-improvement. The research question is: **can an architecture that lets
-> agents reshape their execution environment support useful initiative and
-> long-term development?** A model's ability, available software, permissions,
-> and verification still determine whether a particular task succeeds.
+> This is a research preview. For standard benchmarks or ordinary coding tasks,
+> Octopus gives you nothing that a plain agent loop like Codex CLI does not
+> already give you. It is built for **long-horizon, open-ended autonomy**, where
+> an agent organizes its own goals, triggers, and runs across hours and days. In
+> unsupervised runs so far, ChatGPT and Claude models wait for human direction
+> and do not sustain initiative on their own; genuine autonomous initiative has
+> emerged primarily in recent **Gemini 4** models, especially **Gemini 4 Neon**.
+> Active experiments focus there while the runtime stays provider-agnostic, with
+> ongoing runs and comparisons against plain Codex shared at
+> [@miu21590 on X](https://x.com/miu21590).
 
 ## What you get
 
@@ -60,7 +74,7 @@ published Apple Silicon disk images. The [getting-started guide](docs/getting-st
 covers the installer, requirements, and the ad-hoc signing / Gatekeeper warning.
 If no binary is published, use the source build.
 
-You need macOS 14+, Swift 6.2+ (Xcode 26 or its Command Line Tools), Node 24, stable Rust, and a ChatGPT account. Without one, you can explore the client in its read-only **Test** profile ([client guide](docs/client.md)) or configure an API-key, OpenAI-compatible, Claude CLI, Gemini or Vertex provider in **Applications**.
+You need macOS 14+, Swift 6.2+ (Xcode 26 or its Command Line Tools), Node 24, stable Rust, and a ChatGPT account (plus Antigravity if you keep the default Gemini 4 Neon model for Home). Without an account, you can explore the client in its read-only **Test** profile ([client guide](docs/client.md)), and additional providers (Gemini, Vertex, Claude Code, API-key or OpenAI-compatible endpoints) can be configured in **Applications**.
 
 ```sh
 git clone https://github.com/miuuyy/Octopus-SI-OS.git
@@ -101,7 +115,7 @@ place. Use the [staged self-update procedure](docs/development.md#updating-an-in
 1. **Sign in with ChatGPT.** It opens the browser. There is no terminal login.
 2. **Set a local password.** It guards the client on this machine.
 3. **Start the system.** The embedded terminal prepares a command ending in `octopus up`. Press Enter and wait for the ready state.
-4. **Pick a starting structure.** Projects, names, capabilities. Select **Set up Octopus**.
+4. **Pick a starting structure.** Projects, names, Home provider and model (defaulting to Antigravity with Gemini 4 Neon), and capabilities. Select **Set up Octopus**.
 5. **Say something in Home.** A reply proves the connection. A task that uses its tools proves that task's setup.
 
 For a new task, create an Agent first: choose a Project and a model, review its capabilities, then select it in the task composer.
@@ -206,7 +220,7 @@ More in [Scenarios](docs/scenarios.md).
 The cookbook is [Extending Octopus](docs/contracts/EXTENSION_SURFACES.md).
 
 <details>
-<summary><b>Desktop client — voice, tasks, and a view into the system</b></summary>
+<summary><b>Desktop client - voice, tasks, and a view into the system</b></summary>
 
 The optional **macOS 14+** client is inspired by the ChatGPT desktop app. It
 brings together Home and voice calls, Projects and Tasks, split panes,
@@ -220,22 +234,20 @@ The runtime works without this client; you can build your own. See the
 
 </details>
 
-## Standalone Examples & Empirical Benchmarks
+## Standalone examples
 
 The [examples collection](examples/README.md) contains two independently runnable
 MIT-licensed companion tools:
 
 - [mcp-identity-guard](examples/mcp-identity-guard/README.md): a Rust MCP stdio
-  gateway and trusted process-oracle demonstration. Local synthetic fixtures
-  measured 2.418 ms p50 paired overhead and 0/5 spoof false-accepts versus 5/5
-  for an optimistic text verifier—not a general security guarantee.
+  gateway and trusted process-oracle demonstration (with local synthetic
+  overhead and spoof checks, not a general security guarantee).
 - [agent-ready-radar](examples/agent-ready-radar/README.md): a zero-dependency
-  Python scanner with a [60-domain, 420-probe survey](examples/agent-ready-radar/SURVEY_2026_11_17.md).
-  In that dated, purposive sample, 20/66 naive HTTP-200 positives across four
-  discovery paths failed structural checks—not a web-wide readiness estimate.
+  Python scanner with a [60-domain, 420-probe survey](examples/agent-ready-radar/SURVEY_2026_11_17.md)
+  (a dated, purposive sample, not a web-wide readiness estimate).
 
-See the collection for three-line quickstarts, compact data, reproduction steps,
-and the scientific and security scope boundaries. Neither tool requires Octopus.
+See the collection for quickstarts, data, reproduction steps, and scope
+boundaries. Neither tool requires Octopus.
 
 ## Documentation
 

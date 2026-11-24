@@ -44,7 +44,7 @@ standard deviation are 0.2957 / 0.3395 against the data's 0.3076 / 0.3767, and
 4087 of 4096 pixels land in [0, 1].
 
 The gap closed in the training loop, not in the architecture. Bend drew one
-timestep per batch while the reference draws one per image, worth +0.36
+timestep per batch while the reference generated samples one per image, worth +0.36
 legibility. The evidence is in `results/diffusion-vit/`, and the three-arm
 comparison is `results/compare/index.html`.
 
@@ -169,7 +169,7 @@ button in the header switches between light and dark; the choice is saved in
 the browser. `?theme=dark` (or `?theme=light`) is a shareable override.
 
 Training runs register through `make trace` (the GLM trace now also records the
-final held-out `val_loss`), tests through `make session TASK=... CMD="..."`,
+final test `val_loss`), tests through `make session TASK=... CMD="..."`,
 and `make experiment` registers itself. A run that is not in the store is not
 in the page.
 
@@ -195,7 +195,7 @@ trace is standard library only: no library support is needed to time our runs.
 | `transformers/periodic` | periodic 0…7, 32 × 8 | loss and next-token accuracy | 2.359 → 0.002, accuracy 1.00 |
 | `transformers/attention` | synthetic 4 × 8 | every output against NumPy | checksum 1.76295, delta 3.3e-9 |
 | `language/mamba_vit` | MNIST, 160 × 28×28, seed 0 | five training steps against the float64 twin | loss and clipped gradient norm per step at 1e-3, final weights (108 sums of squares) at 1e-3 |
-| `language/mamba3-tiny-lm` | byte corpus, 20 train examples × 128 positions, seed 101/102/20261115, 20 steps | AdamW vs the float32 twin | loss per step at 1e-3, weights at 1e-3, held-out bits/byte 6.2476 == 6.2476, accuracy 0.3147 == 0.3147 |
+| `language/mamba3-tiny-lm` | byte corpus, 20 train examples × 128 positions, seed 101/102/20261115, 20 steps | AdamW vs the float32 twin | loss per step at 1e-3, weights at 1e-3, test bits/byte 6.2476 == 6.2476, accuracy 0.3147 == 0.3147 |
 | `classification/crossval` | iris, 150 × 4 | five stratified folds, no leakage | 0.9307 ± 0.006 (sklearn 0.9307) |
 | `classification/knn` | breast cancer, 683 × 9 | accuracy on the same split | 0.978102 (sklearn 0.978102) |
 | `classification/naive_bayes` | breast cancer, 683 × 9 | accuracy on the same split | 0.985401 (sklearn 0.985401) |
@@ -255,6 +255,50 @@ constant energy, the denoising variants move toward the data but need far more
 compute, and the Bend port is blocked by the missing full attention, RoPE and
 adaLN. Paper numbers are never presented as reproduced.
 
+## Denoiser comparison: ViT, JiT(DiT), HiT, Dimba-style hybrid
+
+Four small denoisers were trained on the pinned flowers64 split under one
+protocol: 2,048 training images, 102 test, 64x64 grayscale, patch 8 (64
+tokens), 1,200 steps at batch 16, seed 0, the same clean-image velocity loss
+and the same 32-step sampler. Every number below comes from a committed
+`run.json`; `results/dimba/one_page.png` is the single-page chart.
+
+| arm | params | test-set legibility | final loss | source |
+|---|---:|---:|---:|---|
+| ViT, plain blocks | 4.74M | 0.514 | 0.074 | `reference/hit_v4.py`, `results/hit-v4/vit/` |
+| JiT / DiT, adaLN + context | 6.53M | 0.607 | 0.070 | `reference/hit_v4.py`, `results/hit-v4/jit/` |
+| HiT, two learned grouping levels | 6.62M | 0.573 | 0.120 | `reference/hit_v4.py`, `results/hit-v4/hit/` |
+| Dimba-style Transformer-Mamba hybrid | 7.57M | **0.622** | 0.075 | `reference/dimba_ref.py`, `results/dimba/hybrid/` |
+
+The hybrid result is attributable to its Mamba blocks: the same code with
+`mamba_ratio=0` scores 0.6071 with exactly the JiT parameter count
+(`results/dimba/ablation-no-mamba/`). HiT's earlier lower numbers were traced
+to missing architecture pieces and a NaN in the budget loss; the corrected
+v4 model is 0.573, still below JiT/DiT at this scale. The hybrid costs 1,705 s
+against about 500 s for the others because its Mamba scan is a Python loop.
+
+**These are CPU torch reference implementations in `reference/`, not Bendlang
+models.** No Bend port exists for any of the four. BendTorch now has
+`FullAttention` and the adaLN composition, but no Mamba/SSM layer, and
+bendlang#2146/#2147 affect the router records and the recursive hierarchy;
+`AGENTS.md` and the upstream section below carry the details. All four exceed
+the 0.536 real-flower positive control on legibility, a metric smooth blobs can game,
+so the ranking is relative evidence, not a claim of image quality or FID.
+
+### Terminology
+
+These runs use the standard machine-learning split: a **training set** of
+2,048 flowers and a **test set** of 102 flowers never seen during training.
+The reported legibility is an **evaluation metric** on the test set; the
+random-noise **negative control** is 0.053 and a real flower's **positive
+control** is 0.536. Higher test-set legibility with lower training-set
+legibility would indicate **generalization**; the reverse indicates
+**overfitting**. One caveat, stated plainly: the same 102 flowers were used
+while choosing configurations, so under strict ML definitions they are a
+**validation set** and no unbiased test-set estimate has been measured. A
+fresh, untouched test set is needed before calling any number a final test
+score.
+
 ## Upstream
 
 Everything this repository found in Bend, filed at
@@ -262,17 +306,30 @@ Everything this repository found in Bend, filed at
 issue carries the program that found it; every pull request was tested against
 the programs in `examples/` and `reference/` here.
 
-**Open**
+**Open — filed from here**
 
 | Issue | What it found |
 |---|---|
-| [#2059](https://github.com/bendlang/bend/issues/2059) | Base states no bit facts about `U32` (mask, halving, the branch bit, the subtraction bound), so the value round-trip law for `Mat` stays "tested, not proved". Six lemmas are proved in the meantime and offered with the program inline. |
-| [#1998](https://github.com/bendlang/bend/issues/1998) | A match binder that shadows a parameter is reported with the name printed twice and no scope. |
+| [#2150](https://github.com/bendlang/bend/issues/2150) | No sanctioned encoding for evolving state across an online loop; the Mamba-3 work unrolled it by hand. |
+| [#2147](https://github.com/bendlang/bend/issues/2147) | No forward references or mutual recursion. Re-confirmed on 2.0.38 with `mutual.bend` ("an unfilled law is a dead claim"); commented with the HiT recursive-hierarchy case. |
+| [#2146](https://github.com/bendlang/bend/issues/2146) | No record field projection, no match on a local binder, no Data-shared records. Re-confirmed all three on 2.0.38; commented with the HiT router-record case. |
+
+Filed from here: [bend-ml#41](https://github.com/nuxyel/bend-ml/issues/41) asks
+`tensor-array` for a masked scatter-add / segment-mean primitive with forward
+and backward laws. It is a convenience-and-law request, not a blocker: the
+reduction is expressible today by hand in the Mamba-3 embedding gradient, the
+rectified-flow max-pool backward, and the HiT CPU reference. It carries no
+public measurement.
+
+**Open elsewhere, relevant to the HiT/DiT port (not filed from here)**
+
+[#1991](https://github.com/bendlang/bend/issues/1991) `Array.to_list` copies both halves per level (~190 instructions/cell); [#2182](https://github.com/bendlang/bend/issues/2182) `@unsafe` closure reused twice fail-stops on the native lane; [#2038](https://github.com/bendlang/bend/issues/2038) compiler memory at large application scale; [#1623](https://github.com/bendlang/bend/issues/1623) verdict rejects a reused proof with a function field. BendTorch: [#43](https://github.com/nuxyel/BendTorch/issues/43) TTS layers and [#29](https://github.com/nuxyel/BendTorch/issues/29) the Conv2d adjoint law. The old causal-only `Attention` and missing-adaLN blockers for a Bendlang DiT are **resolved**: `FullAttention` is in BendTorch (#20) and the per-image row-wise modulation is built as a `Tile`/`Fork`/`Both`/`Mul2`/`Add2` composition (#19, `demo/adaln_probe.bend`). What remains for a Bendlang **HiT** is a grouped/segmented reduction primitive (masked scatter-add, affinity average linkage, masked group-mean read and the reverse scatter for gradients) — filed as bend-ml#41; the hybrid additionally needs a Mamba/SSM selective-scan layer. CPU reference arms are in `reference/`.
 
 **Closed**
 
 | Issue | Outcome |
 |---|---|
+| [#2059](https://github.com/bendlang/bend/issues/2059) | Base states no bit facts about `U32` (mask, halving, the branch bit, the subtraction bound). Closed as completed: [#2213](https://github.com/bendlang/bend/pull/2213) merged `tests/proof/array_perfect_tree.bend`, proving the four facts and `Array.get`/`set` on perfect trees of Nat, all under `--verdict`. The laws live in `tests/proof`, not `Base`; whether Base should own Array laws stays open in [#1934](https://github.com/bendlang/bend/issues/1934). |
 | [#1980](https://github.com/bendlang/bend/issues/1980) | `Array<T>` accepts a mixed-depth `ANode` the compiled runtime cannot represent. Closed as a duplicate. |
 | [#1962](https://github.com/bendlang/bend/issues/1962) | `Array.new`'s depth argument was undocumented, and a length gave "an array past the deepest block class 31". Fixed by [#1963](https://github.com/bendlang/bend/pull/1963) and [#1970](https://github.com/bendlang/bend/pull/1970). |
 | [#1961](https://github.com/bendlang/bend/issues/1961) | `import` refused a path segment starting with a digit while the error said digits are allowed. Fixed by [#1964](https://github.com/bendlang/bend/pull/1964). |
@@ -284,6 +341,8 @@ the programs in `examples/` and `reference/` here.
 | [#1716](https://github.com/bendlang/bend/issues/1716) | A bare constructor name as a match pattern silently became a catch-all when the datatype was imported. Fixed by [#1738](https://github.com/bendlang/bend/pull/1738), after [#1717](https://github.com/bendlang/bend/pull/1717). |
 
 **Pull requests opened from here**
+
+Open, awaiting maintainer review: [bend-ml#40](https://github.com/nuxyel/bend-ml/pull/40) the one-cell `to_list`/`from_list` round trip; [#39](https://github.com/nuxyel/bend-ml/pull/39) `Array.get` returns the array it read; [#38](https://github.com/nuxyel/bend-ml/pull/38) the `Array.get.go` law (opened from this work and still under review). All three pass `--check-only` and `--verdict`, with green CI and no reviews as of 2026-11-22. [BendTorch#45](https://github.com/nuxyel/BendTorch/pull/45) (tryingET's general Conv1d) was reviewed and approved from here; it was not opened by us.
 
 Merged: [#1880](https://github.com/bendlang/bend/pull/1880) `Array.get_unchecked`, an `@unsafe` read without the
 wrap mask; [#1845](https://github.com/bendlang/bend/pull/1845) `File.read` fills its buffer instead of answering one
@@ -302,33 +361,21 @@ lane, and the seven diagnostic prototypes
 
 ## Status
 
-`make check` is 138/138. Diffusion is complete through the ViT, with the gate at
-0.75 and the Bend model measured at 0.795 (DDIM) and 0.807 (DDPM). Flow matching
-has a measured 2D example and its frozen gate (`test_flow2d.py`, six gates). CIFAR-10 has its
-3072-output DDPM: 256 images, 40 steps, build 50.8 s and run 65.4 s, first loss
-and data mean gated against the NumPy twin and `RESULTS.md` carrying the rows. The
-flowers U-Net is at five levels (64 -> 32 -> 16 -> 8 -> 4 -> 2 -> 4 -> ... -> 64),
-298,439 parameters, held-out legibility 0.547, gated against NumPy and PyTorch. The
-rectified-flow port's layers are gated whole-array against a NumPy twin
-(`test_rectified_flow_layers.py`, fourteen gates). The GLM Stage A harness is
-now a trainable dense baseline: 74,144 parameters, a 20-step AdamW twin gate,
-a 400-step record, and a frozen greedy dev/confirm manifest (`test_glm53_dense.py`);
-its Stage B linear-attention backward is gated at t=2 and 64 and has a prefix-state fast core (`test_glm53_bwd.py`), and
-Stage C integrates linear + sparse attention in a 4,168-parameter model gated at 20 steps
-(`test_glm53_c.py`), with the ignored-label branch and a 16-label learning canary
-(`test_glm53_mask.py`, `results/glm53-c/canary-16.json`). A corpus-trained dense baseline at
-128 positions solves **61/64 dev and 60/64 confirm** at 409,600 tokens and **64/64 / 64/64** at
-1,638,400 tokens (`results/glm53-corpus128{,-b32}`). With `reverse` held out of pretraining it is
-**56/64** on both splits, with `reverse` at **0/8** and every seen family at **8/8**
-(`results/glm53-corpus128-holdout-reverse`). The 4-block/4-head hybrid is implemented and its N=8
-forward matches the reference attention modules at 1e-7; one training iteration measures **1.14 s**
-in the stage record (median **1.9 s** over 1,398 run steps) with forward **45.0%** and backward
-**63.8%**, and a 192-position evaluation is **5.6 h per split** at 6.48 s a forward, so the
-vectorized attention comes first; see `results/glm53-hybrid128/run.json` and
-`training-partial.json`. `make trace` and `make dash` render a run's steps live. The reference itself, run on this
-machine, reaches **64/64** seen; with `reverse` removed from pretraining it is **56/64** and
-**0/8** on that family, the same pattern as the 74k port
-(`results/glm53-reference/run.json`).
+`make check-fast` is 33/33. A recorded full-gate log shows 155 ok with 0
+failures; coverage across runs is documented in `docs/agents/handoff.md`, but
+no single uninterrupted green run of the full gate over the latest commits is
+claimed.
+
+Each track keeps its own record under `results/`: the diffusion ViT, flow
+matching, CIFAR-10, the flowers U-Net, rectified flow, Mamba-3, MambaViT and
+the GLM stages. `make validate` runs the environment check, the cheap gate,
+the full gate and the smoke. `make report TASK=<task>` prints a task's latest
+record and `make trace` / `make dash` render a run's steps live.
+
+The four-arm flowers denoiser comparison (ViT, JiT/DiT, HiT, Dimba-style
+hybrid) and the Bendlang DiT block are described in their own sections above;
+their measurements live in `results/hit-v4/`, `results/dimba/` and
+`results/dit/`.
 
 ## Licence
 

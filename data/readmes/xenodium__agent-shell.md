@@ -1299,6 +1299,7 @@ always go to Evil modes if you need to with ~C-z~).
 | agent-shell-ui-mode-hook                       | Hook run after entering or leaving ‘agent-shell-ui-mode’.                       |
 | agent-shell-user-message-expand-by-default     | Whether user message sections should be expanded by default.                    |
 | agent-shell-viewport-dismiss-on-send           | Non-nil dismisses the viewport compose window after sending.                    |
+| agent-shell-worktree-create-function           | Function to create a Git worktree.                                              |
 | agent-shell-write-inhibit-minor-modes          | List of minor mode commands to inhibit during ‘fs/write_text_file’ edits.       |
 | agent-shell-xai-acp-command                    | Command and parameters for the Grok Build ACP client.                           |
 | agent-shell-xai-default-model-id               | Default Grok Build model ID.                                                    |
@@ -1498,5 +1499,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-prompt-queue-resume                | Resume processing pending prompts in the queue.                               |
 |                                                       | agent-shell-viewport-quote-reply                        | Reply with the entire response block-quoted.                                  |
 |                                                       | agent-shell-viewport-refresh                            | Refresh viewport buffer content with current item from shell.                 |
-|                                                       | agent-shell-viewport-reply                              | Reply as a follow-up and compose another prompt/query.                        |
-|                          
+|                                                       | agent-shell-viewport-reply      

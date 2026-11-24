@@ -15,6 +15,7 @@ Grab the latest `.msixbundle` (x64 + ARM64) from [**Releases**](https://github.c
 - **Lives in your tray** — a borderless, Mica-backed flyout anchored to the tray icon
 - **Zero-setup llama.cpp** — uses your existing `llama.exe`, or downloads one for you
 - **One-click models** — browse and download recommended models from the Hugging Face Hub
+- **Memory-bounded multi-model serving** — models stay loaded while they fit, with a 1 GiB safety margin and least-recently-used eviction instead of a one-model cap
 - **Model details** — click any model for a context-length picker with per-option memory estimates (read from the GGUF header), remembered per model, plus chat, copy-model-ID, curl-request, and Hugging Face actions
 - **Standard storage** — models live in the Hugging Face cache, shared with `llama.cpp` and other tools
 - **Spotlight-like overlay** — press `Alt+Space` from any app to chat with your loaded model
@@ -30,6 +31,19 @@ Grab the latest `.msixbundle` (x64 + ARM64) from [**Releases**](https://github.c
 ## How it works
 
 Llama manages a `llama serve` process and talks to it over its REST API. Your models stay in the standard Hugging Face cache (`%USERPROFILE%\.cache\huggingface\hub`), shared with `llama.cpp` and HF tooling. Settings and logs live under `%LOCALAPPDATA%\Llama`.
+
+## Per-model overrides
+
+Advanced llama.cpp options can be set per model in `%USERPROFILE%\.llama\models.user.ini`. Open an installed model's details and choose **Edit** beside Context length to add its section automatically, or open the file from **Settings → Llama → Model Overrides**. Only the keys you set are needed; Llama keeps its generated model paths and other defaults. Choose **Apply overrides** after editing; changes take effect the next time each model loads.
+
+```ini
+[ggml-org/gemma-4-E4B-it-GGUF:Q8_0]
+ctx-size = 32768
+temp = 0.7
+top-p = 0.8
+```
+
+The generated `model-context-presets.ini` is rewritten by Llama, so keep custom changes in `models.user.ini`. If llama.cpp rejects an unknown option, Llama retries without the overrides and shows a warning until the file changes.
 
 ## Privacy
 

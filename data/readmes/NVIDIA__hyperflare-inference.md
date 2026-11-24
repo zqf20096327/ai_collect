@@ -30,8 +30,11 @@ The design rests on a few principles:
   KV caches—as a whole, so reuse, branching, and resuming preserve it correctly.
 
 - **Keep the runtime small and shared.** Model recipes own model computation;
-  the runtime owns scheduling, cache storage, and request handling. A focused
-  hardware and kernel stack keeps those boundaries manageable.
+  the runtime owns scheduling, cache storage, and request handling. Core
+  Ignition in this repository provides the recipe-free preparation library and
+  CLI runner; official model recipes and reusable b12x model components live in
+  [local-inference-lab/hyperflare-recipes](https://github.com/local-inference-lab/hyperflare-recipes).
+  A focused hardware and kernel stack keeps those boundaries manageable.
 
 [vLLM](https://docs.vllm.ai/en/latest/) covers a much broader range of models,
 hardware, and deployment patterns. Hyperflare trades that breadth for a focused
@@ -41,7 +44,9 @@ will never be, a replacement for production inference engines like vLLM.
 Think of Hyperflare as a specialized option when its hardware and model coverage
 fit your machine.
 
-Start with [model preparation and serving](docs/model-preparation.md).
+Start with [model preparation and serving](docs/model-preparation.md) and the
+official model recipes in
+[local-inference-lab/hyperflare-recipes](https://github.com/local-inference-lab/hyperflare-recipes).
 For native Windows development and serving prebuilt model cores, follow
 [Windows serving](docs/windows.md#build-and-test-on-windows).
 See the [CLI guide](docs/cli-design.md) for configuration and the
@@ -56,8 +61,9 @@ applicable to third-party code and assets.
 
 The PyTorch-derived image resizing implementation in `helios/` retains the
 [PyTorch BSD-style license](helios/licenses/PyTorch.txt), also distributed with
-[Heliopause](heliopause/licenses/PyTorch.txt). The DeepSeek recipe assets retain
-their [MIT license](ignition/recipes/deepseek41/assets/LICENSE). The
+[Heliopause](heliopause/licenses/PyTorch.txt). The DeepSeek recipe assets in
+[local-inference-lab/hyperflare-recipes](https://github.com/local-inference-lab/hyperflare-recipes)
+retain their MIT license. The
 `heliopause/LICENSE` and `heliopause/NOTICE` symlinks refer to the root files for
 Python package distribution.
 

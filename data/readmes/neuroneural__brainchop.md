@@ -1,240 +1,69 @@
-
-# Brainchop  [![Version](https://img.shields.io/badge/Version-4.0.0-brightgreen)]() [![JS ](https://img.shields.io/badge/Types-JavaScript-blue)]() [![MIT-License ](https://img.shields.io/badge/license-MIT-green)](https://github.com/neuroneural/brainchop/blob/master/LICENSE) [![tfjs](https://img.shields.io/badge/tfjs-Pre--trained%20Model-blue)](https://github.com/neuroneural/brainchop/tree/master/models/mnm_tfjs_me_test) [![DOI](https://joss.theoj.org/papers/10.21105/joss.05098/status.svg)](https://doi.org/10.21105/joss.05098)
-
-
-<div align="center">
-  <a href="https://neuroneural.github.io/brainchop">
-    <img width="100%" src="https://github.com/neuroneural/brainchop/releases/download/v3.4.0/Banner.png">
+<p align="center">
+  <a href="https://brainchop.org">
+    <img src="./public/icons/brainchop-logo.png" alt="BrainChop" width="160" />
   </a>
+</p>
 
+<h1 align="center">BrainChop</h1>
 
-**Frontend For Neuroimaging.  Open Source**
+<p align="center">
+  <strong>Local, privacy-first 3D MRI brain segmentation and skull stripping in the browser.</strong>
+</p>
 
-**[brainchop.org](https://neuroneural.github.io/brainchop) &emsp;  [Updates](#Updates) &emsp; [Doc](https://github.com/neuroneural/brainchop/wiki/) &emsp; [News!](#News) &emsp; [Cite](#Citation) &emsp; [v3](https://neuroneural.github.io/brainchop/v3)**
+<p align="center">
+  <a href="https://brainchop.org"><strong>brainchop.org</strong></a> &middot;
+  <a href="https://www.npmjs.com/package/@brainchop/core"><code>@brainchop/core</code></a> &middot;
+  <a href="https://github.com/neuroneural/brainchop-core">Core Engine / CLI / Python</a> &middot;
+  <a href="https://neuroneural.net/brainchop-legacy/">Legacy v3 (TF.js)</a>
+</p>
 
-</div>
+BrainChop runs 3D MeshNet volumetric segmentation entirely on the user's device via [`@brainchop/core`](https://www.npmjs.com/package/@brainchop/core) (pure-JS WebGPU V4 with automatic low-memory staging, WebGL2 fallback, and multi-threaded WebAssembly CPU fallback) and renders multiplanar + 3D views with [NiiVue](https://github.com/niivue/niivue). Your scans never leave your device, and zero client-side analytics scripts are loaded.
 
+## Models
 
-<br>
- <img src="https://github.com/neuroneural/brainchop/blob/master/css/logo/brainchop_logo.png"  width="25%" align="right">
+- **🪓🧠 Omnimodal Skull Stripping** (`mindgrab`) — Modality-agnostic skull stripping & brain masking (T1, T2, FLAIR, DWI, EPI, MRA, PDw, qT1, CT, PET)
+- **🪓 Subcortical + Tissue** (`mindmap`) — Primary 18-class cortical & subcortical parcellation
+- **⅔🧠 Tissue fraction maps (GM/WM/CSF)** (`mindmap` PVE) — Continuous GM/WM/CSF partial-volume estimation (experimental)
+- **🪓🔪 Desikan-Killiany Atlas** (`mindsnap`) — 104-region Desikan-Killiany cortical + subcortical + 5-part corpus callosum parcellation
+- **⚡🪓 Subcortical + Tissue (fast)** (`mindmap-fast`) — Fast lightweight 18-class parcellation
 
- <p align="justify">
- <b><a href="https://neuroneural.github.io/brainchop/"  style="text-decoration: none"> Brainchop</a></b> brings automatic 3D MRI  volumetric segmentation  capability to neuroimaging  by running a lightweight deep learning model (e.g., <a href="https://medium.com/pytorch/catalyst-neuro-a-3d-brain-segmentation-pipeline-for-mri-b1bb1109276a" target="_blank"  style="text-decoration: none"> MeshNet</a>) in the web-browser for inference on the user side. 
- </p>
+*Icon key:* 🪓 robust models &middot; ⚡ fast lightweight model &middot; 🔪 sharp high-detail cortical parcellation.
 
- <p align="justify">
- We make the implementation of brainchop freely available, releasing its pure javascript code as open-source. The user interface (UI)  provides a web-based end-to-end solution for 3D MRI segmentation. <b><a href="v"  style="text-decoration: none">NiiVue</a></b> viewer is integrated with the tool for MRI visualization.  For more information about Brainchop, please refer to this detailed <b><a href="https://github.com/neuroneural/brainchop/wiki/"  style="text-decoration: none">Wiki</a></b> and this <b><a href="https://trendscenter.org/in-browser-3d-mri-segmentation-brainchop-org/"  style="text-decoration: none"> Blog</a></b>.
+*Intended for research and educational use; not cleared as a medical device for clinical diagnosis.*
 
-  For questions or to share ideas, please refer to our  <b><a href="https://github.com/neuroneural/brainchop/discussions/"  style="text-decoration: none"> Discussions </a></b> board.
+## Development
 
- </p>
-
-<div align="center">
-
-![Interface](https://github.com/neuroneural/brainchop/releases/download/v3.4.0/brainchop_Arch.png)
-
-**Brainchop high-level architecture**
-</div>
-
-
-<div align="center">
-
-![Interface](https://github.com/neuroneural/brainchop/releases/download/v3.4.0/DL_Arch.png)
-
-**MeshNet deep learning architecture used for inference with Brainchop** (MeshNet  <a href="https://arxiv.org/pdf/1612.00940.pdf" target="_blank"  style="text-decoration: none"> paper</a>)
-</div>
-
-
-## MeshNet Example
-This basic example provides an overview of the training pipeline for the MeshNet model. 
-
-* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/neuroneural/brainchop/blob/master/py2tfjs/MeshNet_Training_Example.ipynb) [MeshNet basic training example](./py2tfjs/MeshNet_Training_Example.ipynb)
-
-* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/neuroneural/brainchop/blob/master/py2tfjs/Convert_Trained_Model_To_TFJS.ipynb) [Convert the trained MeshNet model to tfjs model example ](./py2tfjs/Convert_Trained_Model_To_TFJS.ipynb)
-
-<br>
-
-## Live Demo
-
-To see Brainchop **v4** in action please click  [here](https://neuroneural.github.io/brainchop). Or click on the gif below to see a video:
-<div align="center">
-  
-[![Brainchop Overhaul](https://github.com/neuroneural/brainchop/releases/download/v4.1.0/Brainchop_preview.gif)](https://github.com/neuroneural/brainchop/releases/download/v4.1.0/Brainchop_overhaul.mp4)
-</div>
-
-For **v3** click [here](https://neuroneural.github.io/brainchop/v3).
-
-<br>
-
-
-
-## Updates
-
-<div align="center">
-
- <img src="https://github.com/neuroneural/brainchop/releases/download/v4.0.0/Brainchop_Niivue.png" width="100%">
-
-**Brainchop <a href= "https://neuroneural.github.io/brainchop/" target="_blank"  style="text-decoration: none"> v4 </a> with <a href= "https://github.com/niivue/niivue" target="_blank"  style="text-decoration: none"> NiiVue</a> viewer**
-</div>
-
-<br>
-
-<div align="center">
-
-  <img src="https://github.com/neuroneural/brainchop/releases/download/v3.4.0/BrainchopMoreRobustModels.gif"  width="60%">
-
-**Brainchop <a href= "https://neuroneural.github.io/brainchop/v3" target="_blank"  style="text-decoration: none"> v3 </a> with more robust models**
-</div>
-
-<br>
-
-
-<div align="center">
-
-![Interface](https://github.com/neuroneural/brainchop/releases/download/v3.4.0/Input3DEnhancements.gif)
-
-**Brainchop <a href= "https://neuroneural.github.io/brainchop/v3" target="_blank"  style="text-decoration: none"> v1.4.0 - v3.4.0 </a> rendering MRI Nifti file in 3D**
-</div>
-
-<br>
-
-<div align="center">
-
-![Interface](https://github.com/neuroneural/brainchop/releases/download/v3.4.0/Brainchop3D.gif)
-
-
-**Brainchop <a href= "https://neuroneural.github.io/brainchop/v3" target="_blank"  style="text-decoration: none"> v1.3.0 - v3.4.0 </a>  rendering segmentation output in 3D**
-</div>
-
-
-
-
-
-## News!
-
-* Brainchop [v2.2.0](https://github.com/neuroneural/brainchop/releases/tag/v2.2.0) paper is accepted in the 21st IEEE International Symposium on Biomedical Imaging ([ISBI 2024](https://biomedicalimaging.org/2024/)). Lengthy arXiv version can be found [here](https://arxiv.org/abs/2310.16162).
-
-<div align="center">
-   <img src="https://github.com/neuroneural/brainchop/blob/master/css/news/ISBI_2024.jpeg"  width="40%">
-</div>
-
-<br>
-<br>
-
-* Brainchop [paper](https://doi.org/10.21105/joss.05098) is published in the Journal of Open Source Software (JOSS) on March 28, 2023.
-
-<div align="center">
-   <a href="https://doi.org/10.21105/joss.05098"><img src="https://github.com/neuroneural/brainchop/blob/master/css/news/JOSS_Logo.png"></a>
-</div>
-
-<br>
-<br>
-
-* Brainchop abstract is accepted for poster presentation during the 2023 [OHBM](https://www.humanbrainmapping.org/) Annual Meeting.
-
-<div align="center">
-   <img src="https://github.com/neuroneural/brainchop/blob/master/css/news/OHBM_2023.jpeg"  width="40%">
-</div>
-
-<br>
-<br>
-
-* Brainchop 1-page abstract and poster is accepted in 20th IEEE International Symposium on Biomedical Imaging ([ISBI 2023](https://2023.biomedicalimaging.org/en/))
-
-<div align="center">
-   <img src="https://github.com/neuroneural/brainchop/blob/master/css/news/ISBI_2023.png"  width="40%">
-</div>
-
-<br>
-<br>
-
-* Google, Tensorflow community spotlight award for brainchop (Sept 2022) on [Linkedin](https://www.linkedin.com/posts/tensorflow-community_github-neuroneuralbrainchop-brainchop-activity-6978796859532181504-cfCW?utm_source=share&utm_medium=member_desktop) and [Twitter](https://twitter.com/TensorFlow/status/1572980019999264774)
-
-<div align="center">
-   <img src="https://github.com/neuroneural/brainchop/blob/master/css/news/TF_CommunityAward.png"  width="60%">
-</div>
-
-<br>
-<br>
-
-* Brainchop  invited to [Pytorch](https://pytorch.org/ecosystem/ptc/2022) flag conference, New Orleans, Louisiana (Dec 2022) 
-
-<div align="center">
-  <img src="https://github.com/neuroneural/brainchop/blob/master/css/news/Pytorch_Poster.jpg"  width="50%">
-</div>
-
-
-<br>
-<br>
-
-* Brainchop  invited to TensorFlow.js Show & Tell episode #7 (Jul 2022). 
-
-<div align="center">
-  <img src="https://github.com/neuroneural/brainchop/blob/master/css/news/TF_show_tell.png"  width="50%">
-</div>
-
-## Citation
-
-Brainchop [paper](https://doi.org/10.21105/joss.05098) for v2.1.0 is published on March 28, 2023, in the Journal of Open Source Software (JOSS) [![DOI](https://joss.theoj.org/papers/10.21105/joss.05098/status.svg)](https://doi.org/10.21105/joss.05098) 
-
-
-<br>
-
-For **APA** style, the paper can be **cited** as: 
-
-> Masoud, M., Hu, F., & Plis, S. (2023). Brainchop: In-browser MRI volumetric segmentation and rendering. Journal of Open Source Software, 8(83), 5098. https://doi.org/10.21105/joss.05098
-
-<br>
-
-For **BibTeX** format that is used by some publishers,  please use: 
-
-```BibTeX: 
-@article{Masoud2023, 
-  doi = {10.21105/joss.05098}, 
-  url = {https://doi.org/10.21105/joss.05098}, 
-  year = {2023}, 
-  publisher = {The Open Journal}, 
-  volume = {8}, 
-  number = {83}, 
-  pages = {5098}, 
-  author = {Mohamed Masoud and Farfalla Hu and Sergey Plis}, 
-  title = {Brainchop: In-browser MRI volumetric segmentation and rendering}, 
-  journal = {Journal of Open Source Software} 
-} 
+```bash
+npm install
+npm run dev         # Local dev server with COOP/COEP headers for threaded CPU WASM
+npm run build       # Production build -> dist/
+npm run test:unit   # Pure module unit tests
+npm run test:e2e    # Real-browser Playwright E2E suite (WebGPU, WebGL2, CPU WASM, Offline PWA)
 ```
-<br>
 
-For **MLA** style: 
+### URL Flags for Power Users
 
-> Masoud, Mohamed, Farfalla Hu, and Sergey Plis. ‘Brainchop: In-Browser MRI Volumetric Segmentation and Rendering’. Journal of Open Source Software, vol. 8, no. 83, The Open Journal, 2023, p. 5098, https://doi.org10.21105/joss.05098.
+- `?model=mindgrab|mindmap|pve|mindsnap|mindmap-fast` — Auto-run a model on load
+- `?backend=auto|webgpu|webgl2|cpu` — Force a specific compute backend
+- `?webgpuMode=auto|standard|low-memory|recalibrate` — Override WebGPU V4 memory/pacing auto-detection
+- `?viewer=webgl2|webgpu` — Select NiiVue's viewer renderer
+- `?ct=1`, `?comply=1`, `?border=<mm>`, `?legacyCleanup=1` — Optional preprocessing / postprocessing flags
 
-<br>
+## Legacy BrainChop v3
 
-For **IEEE** style:
+Historical TensorFlow.js models and the full pre-v4 repository history are archived at [`neuroneural/brainchop-legacy`](https://github.com/neuroneural/brainchop-legacy) and accessible via [`brainchop.org/v3/`](https://brainchop.org/v3/).
 
-> M. Masoud, F. Hu, and S. Plis, ‘Brainchop: In-browser MRI volumetric segmentation and rendering’, Journal of Open Source Software, vol. 8, no. 83, p. 5098, 2023. doi:10.21105/joss.05098
+## Citations
 
+1. **BrainChop Edge Ecosystem (primary `brainchop.org` reference):**
+   Sergey M. Plis, Mohamed Masoud, Farfalla Hu, Taylor Hanayik, Satrajit S. Ghosh, Chris Drake, Roger Newman-Norlund, and Christopher Rorden. *Brainchop: Providing an edge ecosystem for deployment of neuroimaging artificial intelligence models.* Aperture Neuro, 4, 2024. [DOI: 10.52294/001c.123059](https://doi.org/10.52294/001c.123059)
 
-<br>
+2. **MindGrab (`mindgrab` skull stripping):**
+   Armina Fani, Mike Doan, Isabelle Le, Alex Fedorov, Malte Hoffmann, Chris Rorden, and Sergey Plis. *MindGrab: A spectrally-motivated architecture for accessible deep learning in neuroimaging.* NeuroImage, 338:122074, 2026. [DOI: 10.1016/j.neuroimage.2026.122074](https://doi.org/10.1016/j.neuroimage.2026.122074)
 
-## Contribution and Authorship Guidelines
+3. **Original BrainChop Software Paper:**
+   Mohamed Masoud, Farfalla Hu, and Sergey Plis. *Brainchop: In-browser MRI volumetric segmentation and rendering.* Journal of Open Source Software, 8(83):5098, 2023. [DOI: 10.21105/joss.05098](https://doi.org/10.21105/joss.05098)
 
-If you modify or extend Brainchop in a derivative work intended for publication (such as a research paper or software tool), please cite and acknowledge the original Brainchop project and the original authors. Proper acknowledge should include the following:
+## License
 
-> **"Brainchop, originally developed by Mohamed Masoud and Sergey Plis (2023), was used in the development of this work."**
-
-We also request that significant contributions to derivative works be recognized by including original authors as co-authors, where appropriate.
-
-<br>
-
-## Funding
-
-This work was funded by the NIH grant RF1MH121885. Additional support from NIH R01MH123610, R01EB006841 and NSF 2112455.
-
-<br />
-<div align="center">
-
-<img src='https://github.com/neuroneural/brainchop/blob/master/css/logo/TReNDS_logo.jpg' width='300' height='100'></img>
-
-**Mohamed Masoud - Sergey Plis - 2024**
-</div>
+MIT — see [LICENSE](LICENSE).

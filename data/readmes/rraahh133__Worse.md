@@ -19,8 +19,8 @@ one fast Rust app, keeps every conversation in one place, and moves work to anot
 them hits its usage limit.
 
 <p align="center">
-  <a href="https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-windows-x64.zip"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows%20x64-c8f04a?style=for-the-badge&labelColor=08090a"></a>
-  <a href="https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-macos-universal.zip"><img alt="Download for macOS" src="https://img.shields.io/badge/Download-macOS-f4f4f5?style=for-the-badge&labelColor=08090a"></a>
+  <a href="https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-windows-x64-setup.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows%20x64-c8f04a?style=for-the-badge&labelColor=08090a"></a>
+  <a href="https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-macos-universal.dmg"><img alt="Download for macOS" src="https://img.shields.io/badge/Download-macOS-f4f4f5?style=for-the-badge&labelColor=08090a"></a>
   <a href="https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-linux-x64.tar.gz"><img alt="Download for Linux" src="https://img.shields.io/badge/Download-Linux%20x64-f4f4f5?style=for-the-badge&labelColor=08090a"></a>
   <br><sub><a href="https://rraahh133.github.io/Worse/">Website</a> · <a href="#why-not-just-use-the-cli">Why not just use the CLI?</a> · <a href="https://github.com/rraahh133/Worse/discussions">Discussions</a></sub>
 </p>
@@ -310,11 +310,15 @@ Prebuilt binaries are on the [latest release](https://github.com/rraahh133/Worse
 
 | Platform | File | Run |
 | --- | --- | --- |
-| Windows 10/11 x64 | [`Worse-Harness-windows-x64.zip`](https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-windows-x64.zip) | unzip, run `Worse-Harness.exe` |
-| macOS 11+ (Apple silicon and Intel) | [`Worse-Harness-macos-universal.zip`](https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-macos-universal.zip) | unzip, right-click `Harness.app` → **Open** the first time |
-| Linux x64 | [`Worse-Harness-linux-x64.tar.gz`](https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-linux-x64.tar.gz) | extract, run `worse-harness` (needs GTK3) |
+| Windows 10/11 x64 | [`Worse-Harness-windows-x64-setup.exe`](https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-windows-x64-setup.exe) | run the installer (no admin needed); start **Worse Harness** from the Start menu |
+| macOS 11+ (Apple silicon and Intel) | [`Worse-Harness-macos-universal.dmg`](https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-macos-universal.dmg) | drag **Worse Harness** onto Applications; right-click → **Open** the first time |
+| Linux x64 | [`Worse-Harness-linux-x64.tar.gz`](https://github.com/rraahh133/Worse/releases/latest/download/Worse-Harness-linux-x64.tar.gz) | extract, run `./install.sh` (app menu entry + `~/.local/bin/worse-harness`; needs GTK3) |
 
-The app checks for new releases and updates itself. You still need at least one agent from
+Like other desktop apps, Harness installs per user: `%LOCALAPPDATA%\Programs\Worse Harness` on
+Windows, `/Applications` (or `~/Applications`) on macOS, `~/.local/share/worse-harness` on Linux, so
+system search and the app menu find it. Your data stays in `~/.harness` and survives uninstalling.
+A portable copy (the Windows `.zip`, or an unpacked app) shows **Install Harness** under Settings ›
+General. The app checks for new releases and updates itself. You still need at least one agent from
 [Supported agents](#supported-agents); the first-run setup finds installed CLIs and installs missing
 ACP adapters.
 

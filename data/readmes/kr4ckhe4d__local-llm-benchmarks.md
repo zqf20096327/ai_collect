@@ -9,7 +9,8 @@ local models. Every figure here was measured on this machine; scripts and raw
 logs are in [`benchmarks/`](benchmarks/).
 
 **Hardware now:** Ryzen 7 9800X3D, 32 GB DDR5-6000, RX 9070 XT + Radeon AI PRO
-R9700 (48.9 GB VRAM, both PCIe 5.0 x8), CachyOS, ROCm 7.2, llama.cpp b11434.
+R9700 (48.9 GB VRAM, both PCIe 5.0 x8), CachyOS, ROCm 7.2.4. llama.cpp is the
+router branch: upstream plus the Inkling-2 fusions (`inkling2-strata-ideas`, since 2026-11-23).
 
 ## Headline results (two cards, 2026-10)
 
@@ -22,6 +23,7 @@ R9700 (48.9 GB VRAM, both PCIe 5.0 x8), CachyOS, ROCm 7.2, llama.cpp b11434.
 | Qwen3.8 27B | **UD-Q6_K** + MTP | 57 tok/s; KLD vs BF16 0.0020 (IQ4_XS: 0.0179); as good as Q8_0 in Claude Code, 12% faster |
 | GLM-4.7-Flash 30B-A3B | Q4/Q8, 128K | 75 tok/s in an empty context, but **154 tok/s prefill** at 128K depth (attention-bound; removed) |
 | Nemotron 3.5 Lightning 30B-A3B | Q8_0 + MTP, 128K | **167 tok/s**, 83% draft acceptance (1.70x); 128K costs only 2.7 GB more than 32K — but 28K thinking tokens per coding task |
+| Inkling-2-Mini | UD-Q8_K_XL, 128K, R9700 | 31 -> **62 tok/s** in llama.cpp over two rounds of kernel fusion (KLD 0); reads a 33K prompt at **716 tok/s**, 11% faster than Strata (643); Strata still generates 14% faster empty (68) |
 | MoE models generally | second card | CPU expert offload gone: **+38% to +183%** generation |
 
 Generation is the 700-token probe in an empty context unless it says "depth";
@@ -47,6 +49,7 @@ in the linked files.
 | [instella-moe.md](instella-moe.md) | AMD Instella-MoE-16B-A3B |
 | [nemotron-3.5-lightning-30B.md](nemotron-3.5-lightning-30B.md) | Nemotron 3.5 Lightning 30B-A3B `Q8_0`: the repo's fastest generation and cheapest 128K, spent on 28K reasoning tokens a task |
 | [inkling-2-mini-speedups.md](inkling-2-mini-speedups.md) | Inkling-2-Mini 31 to 54 tok/s on the R9700: fewer kernels per token, CUDA/HIP fusions, and an RDNA4 matvec grid fix; long prompts read 2.2x faster at 111K (190 to 414 tok/s) with the per-head attention mask built by one kernel, and a HIP graph crash fixed |
+| [inkling-strata-vs-llama.md](inkling-strata-vs-llama.md) | Inkling-2-Mini on Strata against llama.cpp, same Q8 GGUF: Strata 68 against 53 tok/s because llama.cpp runs 2,138 kernels per token to Strata's 915. Strata's fusions taken onto the branch `inkling2-strata-ideas`: 54 -> 62 tok/s, 1,233 kernels, bit-identical logits, 128K now at `-ub 512` (33K prompt 510 -> 716 tok/s). Strata's no-thinking prefill makes Inkling refuse harmless prompts (6 of 10 against 0 of 10) |
 | [huihui-qwen3.8-27b.md](huihui-qwen3.8-27b.md) | Huihui-Qwen3.8-27B-abliterated UD-Q6_K_XL against stock Qwen3.8 Q6 from 0 to 120K context (2.5-3.6% slower generation, 8-13% faster prefill), then Huihui alone to 261K: 20.9 tok/s and recall 5/5 at 240K |
 | [agent-eval.md](agent-eval.md) | Agentic coding eval: 21 tasks (10 synthetic repos, 11 real bug fixes from click, tomlkit, sqlparse and Python-Markdown), sandboxed tool loop, hidden tests, ×3. Huihui-Qwen3.8-27B and stock Qwen3.8-27B tie at 42/63; false claims 6 vs 4 |
 | [handover.md](handover.md) | Working notes, including the KLD-vs-BF16 quant study |
@@ -1980,19 +1983,4 @@ push a request past `n_ctx` and get a bare `HTTP 400` back:
 Ask for roughly **80%** of the window on the semantic probe and **90%** on the
 needle probe. A 199,478-token haystack against a 196,608 window fails with
 `request (199478 tokens) exceeds the available context size` in the server log
-and a naked `HTTPError: 400` at the client, which looks like a broken server
-rather than a too-big prompt.
-
-## Coding quality: executed, not read
-
-`code-quality-test.py` scores a model by *running* its output. Seven tasks, each
-asking for a from-scratch reimplementation of a stdlib behaviour; the checks
-compare the model's function against the real one over edge cases plus a seeded
-random batch. 50 checks total.
-
-**The first version of this suite was worthless and the reason is worth
-keeping.** It used self-contained leetcode-style tasks (merge intervals, LRU,
-roman numerals) and every model scored **50/50**. Saturated, exactly like the
-needle probes at 32K. Differential testing against stdlib is what produced
-resolution: matching `urljoin` or `shlex.split` *exactly* is hard, matching them
-on the happy p
+and a nake

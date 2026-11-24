@@ -6,7 +6,7 @@ involved) before asking the setup questions or touching a box.
 
 Need help? Join us on Discord: https://discord.gg/8EAvYPV2rE
 
-gr8 serves GLM-5.3, GLM-5.3-Flash and DeepSeek-V4.1-Flash on one to six DGX Spark (GB10) boxes (the count depends on
+gr8 serves GLM-5.3, GLM-5.3-Flash, DeepSeek-V4.1-Flash and Qwen3.8-Flash-Next on one to six DGX Spark (GB10) boxes (the count depends on
 the model, see below), with an OpenAI-compatible API on the first box. gr8 is written from scratch in CUDA and uses no
 vLLM, PyTorch or NCCL at serve time. *Beta release. If you run it, please tell us what breaks:
 [issues](https://github.com/kindlingai/gr8/issues) and PRs are welcome.*
@@ -142,7 +142,7 @@ the engine only.
 
 ## Building on gr8
 
-Current release: **[`v1.1.1`](https://github.com/kindlingai/gr8/releases/tag/v1.1.1)** ·
+Current release: **[`v1.2.0`](https://github.com/kindlingai/gr8/releases/tag/v1.2.0)** ·
 [Changelog](CHANGELOG.md) · [Version specs](releases/) ·
 [All releases](https://github.com/kindlingai/gr8/releases) · [Release and pinning rules](RELEASING.md)
 
@@ -154,10 +154,10 @@ an exact merged `main` / `stable` commit when tuning ahead of the next tag) — 
 # compose.yaml
 services:
   gr8:
-    image: ${GR8_IMAGE:-ghcr.io/kindlingai/gr8:v1.1.1@sha256:fa5c9f66fbfa55d162782578b3262893b782e6365a76562bcab951b54acc6d96}
+    image: ${GR8_IMAGE:-ghcr.io/kindlingai/gr8:v1.2.0@sha256:3de05aab8cda21fd5d6b4af89ccdba6ff5abdbd704729601fd348fa638ade9fd}
 ```
 
-Use the same `v1.1.1@sha256:...` reference in `FROM` for a thin wrapper `Dockerfile`, or `git -C gr8 checkout v1.1.1` when
+Use the same `v1.2.0@sha256:...` reference in `FROM` for a thin wrapper `Dockerfile`, or `git -C gr8 checkout v1.2.0` when
 pinning gr8 as a submodule.
 
 If you are an agent (or developer) building on gr8, start from the matching entry point:
@@ -214,8 +214,10 @@ If you are an agent (or developer) building on gr8, start from the matching entr
   it, instead of becoming the control token's id. Long prompts keep the parallel encode and the prefix cache.
   Roll back with `--literal-content 0` / `LITERAL_CONTENT=0`
   ([literal control tokens](frontend/README.md#literal-control-tokens-in-message-content)).
-- **Image input.** DeepSeek-V4.1-Flash and GLM-5.3-Flash take images in chat requests (opt-in, `GR8_DS41_VISION=1`,
-  [docs/DS41-VISION.md](docs/DS41-VISION.md); `GR8_GLM53F_VISION=1`, [docs/FLASH-VISION.md](docs/FLASH-VISION.md)).
+- **Image input.** DeepSeek-V4.1-Flash, GLM-5.3-Flash, and Qwen3.8-Flash-Next take images in chat requests (opt-in,
+  `GR8_DS41_VISION=1`, [docs/DS41-VISION.md](docs/DS41-VISION.md); `GR8_GLM53F_VISION=1`,
+  [docs/FLASH-VISION.md](docs/FLASH-VISION.md); `GR8_QW38_VISION=1`,
+  [docs/QWEN38.md#image-input-vision](docs/QWEN38.md#image-input-vision)).
 - **A Docker image.** `ghcr.io/kindlingai/gr8` has the engine for every TP width and all three models, so GLM-5.3 on
   three to six boxes needs no build ([Docker Compose](docs/DEPLOY.md#docker-compose)). The one-box and two-box recipes publish their
   own images.
@@ -300,8 +302,8 @@ Each model's page gives its box count. [docs/GLM-5.3.md](docs/GLM-5.3.md#what-yo
 The model is split across all the boxes (tensor parallel, TP). Each box runs one engine process (`g6m4`) and is one
 rank. The ranks talk over RoCE v2 through gr8's own RDMA code.
 
-Every box runs the same `./gr8 <model> up`, where the model is `glm53`, `glm53f` or `ds41`
-([docs/DEPLOY.md](docs/DEPLOY.md)). The first address in `--peers` is the
+Every box runs the same `./gr8 <model> up`, where the model is `glm53`, `glm53f`, `ds41` or `qw38`
+([docs/DEPLOY.md](docs/DEPLOY.md), [docs/QWEN38.md](docs/QWEN38.md)). The first address in `--peers` is the
 head: it runs the API on port 8100. Before any engine starts, the boxes compare their options, model and engine build,
 and if one box differs, every box stops and prints the difference. Without `--peers`, the boxes find each other through
 a local mentat daemon (`--mentat localhost`, the default).
@@ -328,7 +330,7 @@ supervisor log names the line that says why. Logs are in `out/` on each box (`su
 `shim.log` and `front.log` on the head). Each boot moves the previous engine logs to `out/prev1`, and keeps the three
 boots before it (`prev1` is the newest), so a restart does not overwrite the boot you want to look at.
 
-`./gr8 glm53 scale --tp 3 --peers A,B,C` (or `glm53f`) moves a serving cluster to another width or set of boxes by an
+`./gr8 glm53 scale --tp 3 --peers A,B,C` (or `glm53f`, `qw38`) moves a serving cluster to another width or set of boxes by an
 orderly restart. Every box of the new list makes its files ready while the cluster serves; then the front end holds
 new requests, the running ones finish (`--drain-timeout`, 300 s by default), the old engines quit and the new list
 boots. Requests sent meanwhile wait and are answered by the new width. With a persisted KV store
@@ -362,9 +364,10 @@ The head serves the OpenAI API on port 8100. [frontend/README.md](frontend/READM
 |---|---|---|
 | 8100 | the OpenAI-compatible API (`/v1/chat/completions`, `/v1/completions`, `/v1/models`, `/health`) | head |
 | 7340 | the supervisors: the handshake before boot, then status, logs and down | every box |
-| 7341 | the multi-session control channel between the ranks | head |
+| 7341–7342 | the multi-session S2 control channel between the ranks (alternating ports under `GR8_FABRIC_POOL`) | head |
 | 7343 | during `scale` with a persisted KV store: each box serves its store to the new ranks (`bin/kvman-peer`, `CONTROL_PORT + 3`) | every box |
-| 18600-18659 | fabric bootstrap and the per-collective regions | head |
+| 18600–18679 | fabric bootstrap and per-collective regions (group range 1; `18700–18779` for alternating group range 2 under `GR8_FABRIC_POOL`) | head |
+| 18800 | fabric pool control link when `GR8_FABRIC_POOL` is enabled | pool head |
 
 ## Layout
 

@@ -30,10 +30,10 @@ This tap works with Homebrew on macOS and Linux.
 #### Manual (cURL)
 
 ```shell
-curl -fsSL https://aviary.bot/install.sh | sh
+curl -fsSL https://github.com/lsegal/aviary/releases/latest/download/install.sh | sh
 ```
 
-The install script downloads the latest release binary to `~/.local/bin/` and adds it to your `PATH`.
+The install script is published with every release. It downloads the latest release binary for your OS and architecture, verifies it against the release's `checksums.txt`, installs it to `~/.local/bin/`, adds that directory to your `PATH`, and then runs `aviary install-skills` to install Aviary's `gh-*` skills (this step needs Node.js for `npx`). Re-running it upgrades in place. Pass `--skip-skills` (`curl -fsSL https://github.com/lsegal/aviary/releases/latest/download/install.sh | sh -s -- --skip-skills`) or set `AVIARY_SKIP_SKILLS=1` to skip the skills, and `--version <tag>` or `AVIARY_VERSION` to install a specific release.
 
 ### Windows
 
@@ -49,10 +49,10 @@ Scoop installs Aviary into Scoop's managed package directory and shims `aviary.e
 #### Manual (PowerShell)
 
 ```powershell
-iwr https://aviary.bot/install.ps1 | iex
+irm https://github.com/lsegal/aviary/releases/latest/download/install.ps1 | iex
 ```
 
-The install script downloads the latest release binary to `~/.local/bin/` and adds it to your `PATH`.
+The install script is published with every release. It downloads and verifies the latest release binary, installs it to `~/.local/bin/`, adds that directory to your `PATH`, and then runs `aviary install-skills`. Set `$env:AVIARY_SKIP_SKILLS = 1` to skip the skills, or `$env:AVIARY_VERSION` to install a specific release.
 
 ### Docker
 
@@ -69,6 +69,8 @@ docker run --rm -it \
 The image runs `aviary serve` by default. With the bind mount above, Aviary stores its config, TLS certs, and login token in your host `~/.config/aviary/` directory.
 
 The Docker image also includes a working Chrome/Chromium browser, so browser tasks run in headless mode out of the box without extra setup.
+
+[Voice message transcription](https://aviary.bot/guide/voice) also works out of the box in Docker: the image bundles whisper.cpp's `whisper-cli`, `ffmpeg`, and the whisper `base.en` model, so nothing is installed or downloaded at runtime.
 
 > Tip: `-p 1455:1455` is only needed for OpenAI Codex OAuth, and `-p 45289:45289` is only needed for Gemini OAuth. If you are using API keys or other providers, you can omit those extra port mappings.
 

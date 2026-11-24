@@ -4,6 +4,10 @@
 
 [快速开始](#快速开始体验巡检看板) · [完整仿真](#继续使用) · [English](README.en.md)
 
+**技术栈：** React + TypeScript + Vite（看板）· ROS 2 + C++（机器人控制）· Gazebo + Nav2（仿真与导航）· MQTT（遥测）。
+
+![Robot Dog 巡检看板：机器人队列、厂区地图与所选机器人的遥测](docs/images/dashboard.png)
+
 ## 快速开始：体验巡检看板
 
 准备 Git 和 Node.js 22.12 或更新版本（含 npm）。这条路径使用内置模拟数据，不需要 ROS 2、机器人或 MQTT Broker。

@@ -44,6 +44,7 @@ donations are welcome, one-time or monthly. All donations support the project.
 
 **Latest**
 
+- **v0.2.46, November 23 — Inkling 2 Mini runs, with images, two cards on one conversation, and up to 24 agents:** Thinking Machines' 26B model (24 layers, the middle 12 run three times a token) is served from its own NVFP4 / MXFP8 weights: [62 tok/s on one card, 82 on two](#new-in-v0246), prompts read at 734 tok/s. Tool-call ids are now unique for the life of the server. Also in this release: Xing4.0-29B-A4B, a tool-call guard on the daily architectures, and a first LoRA trainer for the cards (`scripts/train`).
 - **v0.2.45, November 20 — Hy4-flash gives its spare VRAM to experts:** the context cache is backed for 32K tokens and grows in steps to the full context only when a conversation gets that long (and shrinks again for the next short one), and the image tower loads at the first image. Until then that VRAM holds expert slots: 160 / 156 → 176 / 164 a layer on two Arc Pro B70 at `--ctx 262144`, 5–8 % fewer experts computed on the CPU per token. [Details](#-new-in-v0245)
 - **v0.2.44, November 19 — Tencent Hy4-flash runs, with images, tool calls and long prompts:** the 220B model (512 experts a layer, 16 a token, four n-gram memories) is served from an 8-bit expert pack made from Tencent's full-precision release: a 25,000-token prompt reads at 462–470 tok/s and replies decode at 20–26 tok/s on two Arc Pro B70 cards, with the output closer to exact arithmetic than the reference is in bfloat16. Also: sampling with no top-p cut no longer sorts the whole vocabulary every token (DeepSeek-V4.1, MiMo-V2.6, Hy4-flash: 9.3 → 1.3 ms a token), and DeepSeek-V4.1 keeps a parked conversation in RAM down to 12 GiB free (it was 24, which a 256 GB machine never had). [Details](#-new-in-v0244)
 - **v0.2.43, November 13 — DeepSeek-V4.1 reads images again:** from v0.2.36 through v0.2.42 every image request to DeepSeek-V4.1 failed with `the prompt holds fewer image placeholders than images`. The guard that keeps control-token spellings in a request plain text also caught the engine's own image placeholder. Fixed, with a test; a placeholder typed by a client still stays text. Also new: `IE_DS41_ACT_DUMP=<dir>` records DeepSeek-V4.1's internal activations (the stream entering every layer) while a file `RECORD` exists in that folder, for work on the weights; `scripts/ds41_acts.py` reads them.
@@ -239,6 +240,47 @@ class ([New in v0.2.6](#new-in-v026)).
 ---
 
 <a id="new-in-v0242"></a>
+## 🆕 New in v0.2.46
+
+### Inkling 2 Mini (`inkling2_loop`)
+
+[Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini) has 26.4B parameters, 128 experts a layer of which a token uses 8, and a loop: layers 6 to 17 run three passes, so a token is 48 layer calls. `ie serve <directory>` runs the publisher's 19 GB checkpoint as it is, with the experts kept in NVFP4 / MXFP8 on the card and decoded in the kernels. The forward pass was checked call by call against the publisher's reference code.
+
+Measured on Arc Pro B70 cards, November 23, single runs:
+
+| Launch | Decode at context 30 / 2K / 8K / 32K | Prompt reading at 2K / 8K / 25K |
+|---|---|---|
+| One card, one conversation (`--ctx 32768`) | 62.4 / 58.6 / 56.5 / 49.0 tok/s | 734 / 696 / 624 tok/s |
+| Two cards, one conversation (`--gpus 2 --parallel 1`) | 82.4 / 78.1 / 75.8 / 64.4 tok/s | 868 / 843 / 789 tok/s |
+
+Many conversations at temperature 1.0, through HTTP, `--gpus 2 --ctx 16384`, a copy of the model on each card:
+
+| At once | Each | Total |
+|---|---|---|
+| 6 | 38.6 tok/s | |
+| 12 | 27.3 tok/s | 302 tok/s |
+| 24 (`--parallel 24`) | 18.6 tok/s | 380 tok/s |
+
+- **Two cards on one token.** Each card holds a full copy; attention heads, four of the eight experts and the output rows are split, and the cards exchange results on the device. The output matches one card bit for bit in the checks we ran. On this driver a queue barrier does not order a read of the other card's memory, so the cards synchronise on a flag word.
+- **Prompt reading.** Attention shares key tiles across query rows, and the experts run on the matrix engines with the activations fed as fp16 plus their fp16 remainder, which lands within 2e-7 of the fp32 path.
+- **A long prompt no longer starves the others.** While other conversations decode, prompt reading gets 45 % of the card's time (`IE_INKLING2_PREFILL_SHARE`). A 25K prompt arriving beside five decoding conversations starts in 98 s and the five keep 49 % of their speed.
+- **Images.** Single images, several in one request, images in tool results, and video sent as ordered frames. Images above 4096 image tokens (about 2560 × 2560) are scaled down, which the publisher's code does not do.
+- **Sampling on the card.** Temperature, top-k, top-p, min-p and the repetition penalties are drawn on the card for multi-conversation serving.
+- **Run-time ablation sets.** A set file beside the model (`ie_ablation.json`) edits the stream as the engine runs. It works only in Mach X; `scripts/inkling2_ablit/bake.py` writes a refusal set into the weights for other runtimes.
+
+Known limits:
+
+- **The draft head is built but not served.** It drafts correctly, but verifying a draft reads every expert its tokens picked, and decoding with it was slower than without it (56 against 60 tok/s on code).
+- With several conversations, asking the same prompt twice can differ at a near-tie, because a cached re-ask recomputes the last row with a different attention kernel.
+- Contexts above 131K have not been measured on this model.
+
+### Also new
+
+- **Tool-call ids are unique for the life of the server** (`call_<salt>_<n>`). They used to be `call_0`, `call_1`, ... in every response, so a multi-turn client could send back an id that matched several earlier calls. A client that treats ids as opaque strings is unaffected.
+- **Xing4.0-29B-A4B** in `ie serve`: Q8_0 and K-quants on two cards, with request lanes.
+- **A tool-call guard** keeps the calls a model writes valid for the request's tools (Xing4, DeepSeek-V4.1, the Qwen XML form, MiMo-V2.6). `"ie_tool_guard": false` turns it off for a request.
+- **`machx-train` (`scripts/train`)**: LoRA fine-tuning of Inkling 2 Mini on one or two B70 cards, about 370 tok/s on two. It has only had short test runs so far, and no run has yet been shown to improve the model.
+
 ## 🆕 New in v0.2.45
 
 ### Hy4-flash: the VRAM a short conversation does not need holds experts
@@ -677,37 +719,4 @@ At `ie serve --parallel 4` — the usual Flash-Next launch — three things were
 
 - **Pictures on all request lanes.** A request's images are encoded on its own thread and staged on its lane (its image rows and its M-RoPE table); the request stays out of the prompt cache (pad ids cannot key it); a decoding group may hold a lane with pictures — its rows rope at the lane's offset, the same arithmetic the one-lane path runs once the three streams are equal. The vision tower is placed at the load, before the expert caches are sized (on card 1, or on card 0 when the head's bank takes card 1), so no late allocation lands beside a full card; `/props` says `images on all N request lanes`. The greedy reply to a 1024-px photo is byte-identical at `--parallel 1` and on the lanes, alone and beside two text requests, and the text requests' replies are the one-lane path's.
 - **Lazy lanes.** A lane's VRAM is allocated on its first request and taken back from the expert cache then: every layer's cache buffer is remade smaller and the page-alias self-test runs again (about 0.3 s a card; the residents stream back in over the next few hundred tokens). One conversation at a time keeps 224 / 227 experts a layer on the cards; the chooser prefers a lane that is already awake, so a second conversation wakes one more. `IE_Q4E_LAZY_LANES=0` is the eager load.
-- **The draft head's rounds on the lanes, with `--spec`** (Dream's speculation toggle, offered for Flash-Next since v0.2.21): a lane decoding alone drafts with the head and verifies the drafts in one step — one lane's sampled rounds (speculative sampling, exact at any temperature; a greedy request compares), the tokens plain decoding's; the head's record is kept per lane. More lanes decoding share the cards in rows groups as before. It is opt-in on the lanes because the head's expert bank costs card 1 about 35 resident experts a layer, which three or four conversations decoding at once feel (−17 % in the table); one conversation gains. At one lane the head stays the default. `IE_Q4E_LANES_MTP=0` turns the rounds off with the head loaded; `IE_Q4E_LANES_MTP_MAX` lets more lanes round.
-
-| `ie serve`, two B70s, `--ctx 262000 --parallel 4 --slot-ctx 75000`, temperature 1.0 / top_k 20 / top_p 0.95 | v0.2.32 | v0.2.33 | v0.2.33 `--spec` |
-|---|---|---|---|
-| a 9.8K-token conversation, decode over turns 1 / 2 / 3 | 27.3 / 26.1 / 25.4 | **28.3 / 27.2 / 26.5** | **29.5 / 28.0 / 27.2** |
-| a 17.3K-token document | 26.3 | **26.9** | **30.0** |
-| short prompts, median of three | 29.6 | 30.4 | 30.0 |
-| three requests at once, 256 tokens each, lanes warm (time to finish) | 14.3 s | 14.5 s | 16.9 s |
-| four at once | 17.3 s | 18.1 s | 20.7 s |
-| resident experts a layer, cards 0 / 1, one lane awake | 179 / 193 | **208 / 210** | 191 / 162 |
-
-Gates: the greedy texts with the rounds on and off are byte-identical on one lane, in three- and four-lane groups and on an 8K prompt; a conversation's text is the same before and after another lane wakes; the one-lane lossless tool is unchanged (`ie-qwen4exp-spec2`: 44.2 tok/s, 2.12 tokens a round). The first request on a lane pays the wake (+0.5 s on a cold 9.8K first token). The rounds' acceptance at temperature 1.0 moves from run to run: an earlier run of the same code gave 29.8 / 32.7 / 27.1 on the conversation and 32.0 on the document.
-
-### What is still slow
-- The head's expert bank on card 1 (2.5 GB as Q8_0) is what the concurrent case pays; placing it on card 0 does not help (that card has less room to begin with). A Q4_K bank or a bank of the head's most-used experts would give 15–25 slots back.
-- On a lane with pictures the head drafts from the pad tokens' view of the prompt (its rope knows no images); the verify is exact, so the tokens are plain decoding's, and a picture description still went 120 tokens in 50 steps. A shared-prefix restore breaks the head's record for that request (plain steps until its next sequence).
-- The rows path still ingests each group row into its lane's head record when the head is loaded (not measurable in the table, but there).
-
-Other models: their code did not change; the shared lanes module accepts a draft shorter than the round (the 27B always drafts the full round).
-
-<a id="new-in-v0232"></a>
-## 🆕 New in v0.2.32
-
-### The XMX decode attention keeps its output in registers, with the same bits
-
-`full_attention_fa2_decode_xmx` — the decode attention the Qwen3.8-27B and the 35B-A3B class run from 4K context (head_dim 256) — ran one 16-lane work-group per (KV head, 64-key chunk) with the running output in local memory: every 16-key block loaded, multiplied and stored all 16 output tiles through SLM, and the 16 K-tile loads, the 8-lane softmax and the 16 P·V tiles ran one after the other. Latency-bound, about 0.12 ms a layer at 8K for 17 MB of KV. The new kernel (`IE_FA2_XMX_V2=3`, the default) uses one 32-lane work-group of two sub-groups per chunk: sub-group 0 computes the scores and the row softmax once, sub-group 1 computes the next block's scores meanwhile (into the other of two score buffers), and both accumulate their half of the output columns in `joint_matrix` registers; the FA-2 rescale goes through SLM only on the blocks where a row's max moved, the same multiply on the same values. Every fp32 operation on every output element is the old kernel's in the old kernel's order, so the bits are the same.
-
-Gates on the 35B-A3B: the standalone outputs (`ie-attn-profile --mode xmx --dump-y`) byte-identical to the old kernel's at 4K–32K; the engine's greedy texts byte-identical on one lane and on three concurrent lanes; the 128-token greedy continuations of 2K / 8K / 16K / 32K-token prompts byte-identical (the ones that run this kernel).
-
-| 35B-A3B Q8_0, two B70s | v0.2.31 | v0.2.32 |
-|---|---|---|
-| `ie serve` ctx 262144, 6 lanes: a 9.8K-token conversation, turns 1 / 2 / 3 | 83.7 / 82.9 / 78.7 | **86.5 / 86.1 / 83.3** |
-| the same, a 17.3K-token document | 77.2 | **82.0** |
-| `ie-prompt-bench` (greedy, prompt cache off), prompts of 2K / 9.8K / 17K / 32K tokens | 89.2 / 83.8 / 77.2 / 62.8 | **89.0 / 86.6 / 82.4
+- **The draft head's rounds on the lanes, with `--spec`** (Dream's speculation toggle, offered for Flash-Next since v0.2.21): a lane decoding alone drafts with the head and verifies the drafts in one step — one lane's sampled rounds (speculative sampling, exact at any temperature; a greedy request compares), the tokens plain decoding's; the head's record is kept per lane. More lanes decoding share the cards in rows 

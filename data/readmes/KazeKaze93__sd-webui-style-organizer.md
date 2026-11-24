@@ -12,30 +12,22 @@ It supports:
 - presets, backup, import/export
 - thumbnail generation/upload and cleanup tools
 - optional CivitAI title enrichment for LoRAs (manual fetch)
+- one-line grid tiles that show a long name whole on hover or keyboard focus
 
 See `CHANGELOG.md` for full release history.
+
+*Screenshots are taken from the real panel on a local test page with a neutral demo library; previews are placeholder gradients and the WebUI page around the panel is a stand-in (see `docs/screenshots/README.md`).*
 
 ---
 
 ## Requirements
 
-**Minimum WebUI / Forge for this extension:** builds that load extension `javascript/*.mjs` as ES modules (`<script type="module">`).
-
 | Host | Minimum |
 |------|---------|
-| **AUTOMATIC1111** `stable-diffusion-webui` | **1.1.0** and later (`v1.1.0`) |
-| **Forge / reForge** | Any release (loader inherited from A1111; present from Forge’s first commit) |
+| **AUTOMATIC1111** | 1.1.0 |
+| **Forge / reForge** | any release |
 
-**Fact check (loader source):** A1111 added `.mjs` as `type="module"` in commit [`b90cad7f`](https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/b90cad7f3136bbe04efeee2a00e95d0cc6ce1a4a) (2023-02-23), merged to master as [`e15c4f31`](https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/e15c4f31e3ec0d2d979832dede0f9b34f4631c7a) via [PR #8042](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/8042) (2023-03-11). Loader loop (then in `modules/ui.py`, later moved to `modules/ui_gradio_extensions.py`):
-
-```python
-for script in scripts.list_scripts("javascript", ".mjs"):
-    head += f'<script type="module" src="{webpath(script.path)}"></script>\n'
-```
-
-There is no git tag `v1.0.0`; pre-release tag `v1.0.0-pre` (2023-01-24) does **not** include this loader. The first tagged A1111 release that does is **`v1.1.0`** ([`72cd27a1`](https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/72cd27a13587c9579942577e9e3880778be195f6), 2023-05-01). Forge ([`lllyasviel/stable-diffusion-webui-forge`](https://github.com/lllyasviel/stable-diffusion-webui-forge), created 2024-01-14) was based on A1111 ~1.7.0-era master and already contained the same `.mjs` path at its first commit [`7ad2a5c1`](https://github.com/lllyasviel/stable-diffusion-webui-forge/commit/7ad2a5c19521d3d6d2035c6fbf8402ed527f05ec) — no separate Forge `.mjs` commit. reForge keeps the same `modules/ui_gradio_extensions.py` loader. Style Grid’s host entry is `javascript/style_grid.mjs`; sibling modules under `javascript/style_grid/` are imported by that entry (only top-level `javascript/*.mjs` / `*.js` are auto-injected).
-
-Older hosts that only inject `*.js` as classic scripts will not run this extension’s host layer.
+Older AUTOMATIC1111 versions do not load the extension's scripts (`javascript/*.mjs`).
 
 ---
 
@@ -109,6 +101,7 @@ The small tab badge in the panel header shows the active host context.
 - Autocomplete suggestions respect the active source filter (with All Sources, suggestions are deduped by name like the grid). Cap: top 8.
 - **Favorites** and **Presets** views also respect search and the active source filter (they previously ignored them).
 - Use arrow keys + Enter to pick a suggestion quickly, or click the item with mouse.
+- In the grid, arrow keys move between tiles and Enter / Space toggles the focused style. Nothing is focused when the panel opens: press Tab or click a tile first.
 
 ![Search with autocomplete suggestions](docs/screenshots/search-autocomplete.png)
 
@@ -119,6 +112,10 @@ The small tab badge in the panel header shows the active host context.
 - In the gallery, hovering a card shows two small buttons: **★** adds or removes the style from favorites, and **⋯** opens the style menu (see §6). Neither one selects the card.
 
 ![Apply styles from cards — selection and bottom bar](docs/screenshots/apply-and-reorder.png)
+
+**Long names:** grid tiles keep one line and cut a long name with an ellipsis. Hovering such a tile, or reaching it with Tab or the arrow keys, shows the tile with its whole name on top of its neighbours, without moving the grid; a name wider than the grid wraps. Clicks and right-clicks still go to the tile underneath. The gallery and slice-selection mode do not expand tiles.
+
+![A long name shown whole on hover](docs/screenshots/tile-expand.png)
 
 ### 3) All Sources and duplicate names (source picker)
 - With **All Sources** selected, the grid shows **one card per style name** even if that name appears in several CSV files.
@@ -265,12 +262,14 @@ Thumbnail images are loaded via `GET /style_grid/thumbnail?name=…&source=…` 
 
 **Grid / Gallery** (the two-segment switch right of the search box): **Gallery** shows each style's preview as a square tile with its name below; **Grid** stays the text-only tiles. The choice is remembered in this browser.
 
+![Gallery view](docs/screenshots/gallery-view.png)
+
 ![Top bar — icon buttons (right of search)](docs/screenshots/top-bar-icons.png)
 
 | Control | What it does |
 |---|---|
-| Backup / Restore | Opens the **Backup / Restore** modal. **Create backup** writes a timestamped snapshot under the user-data `backups/` folder (folder + `.zip`) of loaded style CSVs plus `presets.json`, `category_order.json`, `favorites.json`, and `recent.json` when present. Keeps directory distinction (`styles/` vs `samples/` vs external paths) so same basenames do not overwrite each other. Thumbnails are **opt-in** via the modal checkbox **Include thumbnails (large)** (API body flag `include_thumbnails`). **Restore** picks a listed snapshot and creates an automatic safety backup of the current state first. Failures, HTTP errors, or “nothing to copy” are reported via toasts (see `docs/API.md` § `/backup` / `/restore`). |
-| Import/Export | Export/import styles, presets, **favorites**, and **recent**. Colliding names are skipped and listed in a toast; non-colliding styles are imported into a new CSV; presets still merge. |
+| ⋯ More → Backup & restore… | Opens the **Backup / Restore** modal. **Create backup** writes a timestamped snapshot under the user-data `backups/` folder (folder + `.zip`) of loaded style CSVs plus `presets.json`, `category_order.json`, `favorites.json`, and `recent.json` when present. Keeps directory distinction (`styles/` vs `samples/` vs external paths) so same basenames do not overwrite each other. Thumbnails are **opt-in** via the modal checkbox **Include thumbnails (large)** (API body flag `include_thumbnails`). **Restore** picks a listed snapshot and creates an automatic safety backup of the current state first. Failures, HTTP errors, or “nothing to copy” are reported via toasts (see `docs/API.md` § `/backup` / `/restore`). |
+| ⋯ More → Import / Export… | Export/import styles, presets, **favorites**, and **recent**. Colliding names are skipped and listed in a toast; non-colliding styles are imported into a new CSV; presets still merge. |
 | New style | Creates a style in the **currently selected CSV**. Disabled until a specific (non–read-only) source is selected — tooltip explains why. |
 | Fetch LoRA titles | Visible **only** in the **🧬 LoRA** sidebar view. Opt-in: calls CivitAI’s public API using `modelId` already present in each LoRA’s local `.json` metadata; caches titles under user-data `lora_titles.json`. Rate-limited; reopen the panel after the run to see updated labels. |
 
@@ -317,7 +316,7 @@ API is unavailable, the extension falls back to `<extension>/data/`.
 | `presets.json` | Saved presets |
 | `category_order.json` | Persisted category order |
 | `favorites.json` | Favorited style row keys (name + source) |
-| `recent.json` | Recently applied style row keys (max 10) |
+| `recent.json` | Recently applied style row keys (max 10), written by older versions; still exported and backed up, no longer updated by the panel |
 | `backups/` | Timestamped backups of style CSVs + metadata JSON (folder + `.zip`); thumbnails optional |
 | `thumbnails/` | Thumbnail image cache (CSV styles) |
 | `lora_titles.json` | Cached CivitAI LoRA titles (by `modelId`) |
@@ -328,7 +327,7 @@ Optional local config (not committed; still under the extension folder):
 |---|---|
 | `config/lora_roots.json` | Extra LoRA scan roots / optional `max_depth` (see `.example`) |
 
-Local UI chrome still uses browser localStorage (active source, thumbnail cache-bust versions). Favorites and Recent are **server-side** under the user data root. On first open after upgrade, legacy `sg_v2_favorites` / `sg_v2_recent` localStorage keys are migrated once when the server files are absent.
+Local UI chrome still uses browser localStorage (active source, thumbnail cache-bust versions). Favorites are **server-side** under the user data root. On first open after upgrade, the legacy `sg_v2_favorites` localStorage key is migrated once when the server file is absent.
 
 **Export / Import** JSON includes styles, presets, **favorites**, and **recent**.
 
@@ -388,7 +387,7 @@ Corrupt `presets.json` (or similar data files) returns HTTP **409** and refuses 
 
 ## Screenshots in this repo
 
-PNG files live under `docs/screenshots/` and are named to match sections in this README. If the UI changes, replace the images but **keep the same filenames** (see `docs/screenshots/README.md` for a refresh checklist).
+PNG files live under `docs/screenshots/` and are named to match sections in this README. They are generated: `cd ui && node bench/screenshots/capture.mjs` takes them from the real panel with a neutral demo library and writes them back under the same names (see `docs/screenshots/README.md`).
 
 ---
 

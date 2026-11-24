@@ -18,13 +18,13 @@ Working with several AI coding CLIs usually means a pile of terminal windows. It
 
 - **Folder tree with many tasks**: tasks are grouped under project folders, each with a status light, a Git branch badge and the latest message of its session. A "Needs review" mark tells you when a background task stopped producing output.
 - **Persistent terminals**: built on xterm.js and Windows ConPTY (`node-pty`). Switching tasks or folders never ends a process.
-- **Live quota in one line**: input / output / cache tokens, cache hit rate, context usage, cost, 5h / 7d limits and the active model in the top bar, with CPU, memory and network speed. Plain text only, no popups.
+- **Two-line status bar**: the same for every CLI. The top row shows task status, 5h / 7d quota and context progress bars (filled by used share), the active model and the clock; the bottom row shows input / output / cache tokens, cache hit rate, cost, CPU, GPU, memory and network speed. No popups.
 - **Multiple accounts**: run several Codex, Claude Code and Kimi Code accounts in parallel. An account is only a config directory plus environment variables, and OneAI never reads or copies your credentials.
 - **Analytics Dashboard**: sidebar Dashboard (`Ctrl + Shift + D`) with multi-range KPI cards, a rolling 12-month activity heatmap, token / cost / session trends, Top 5 drill-downs, token composition, multi-group live account quotas and a sortable model table (plus the legacy weekly usage panel via `Ctrl + Shift + U`), all read from local session records.
 - **Session history**: browse and resume past Claude Code, Codex and Kimi Code sessions.
 - **Project tree & file preview**: open the right-side project directory tree drawer (`Ctrl + Shift + E`) to browse, filter and insert relative paths into the terminal, or Ctrl + click a path for a read-only preview with syntax highlighting and a code minimap.
 - **Any CLI**: installed CLIs are detected from your `PATH`, and any other command can be added as a custom CLI.
-- **English and Simplified Chinese**, 25 themes (light, dark, eye-care and editor palettes), and a short first-run guide.
+- **English, Simplified Chinese and Traditional Chinese**, 25 themes (light, dark, eye-care and editor palettes), and a short first-run guide.
 
 See [docs/features.md](docs/features.md) for the detailed behavior of every feature.
 

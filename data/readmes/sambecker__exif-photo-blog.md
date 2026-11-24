@@ -256,6 +256,13 @@ See [script notes](scripts/README.md) for details.
     - `all`
     - `none`
 - `NEXT_PUBLIC_SITE_FEEDS = 1` enables feeds at `/feed.json` and `/rss.xml`
+- `BLOCK_AI_CRAWLERS`
+  - Configures AI crawler rules in `/robots.txt`
+  - Accepted values:
+    - `all`: blocks all known crawlers from every page
+    - `some` (default): blocks training crawlers, allows search crawlers on pages but not generated images
+    - `none`: blocks nothing
+  - Admin, API, and internal image paths are disallowed for all crawlers unless set to `none`
 
 ### Scripts & Analytics
 - Web Analytics

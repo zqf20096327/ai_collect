@@ -2,25 +2,25 @@
 
 <!-- BANNER:START -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/assets/276.gif?t=1795377996" alt="Banner" height="420">
+  <img src="https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/assets/277.gif?t=1795480368" alt="Banner" height="420">
 </p>
-<p align="center"><sub>🌇 Banner 276/367</sub></p>
+<p align="center"><sub>🌊 Banner 277/367</sub></p>
 <!-- BANNER:END -->
 
 ---
 
 <!-- STATUS:START -->
 <p align="center">
-<img src="https://img.shields.io/static/v1?label=Updated&message=2026-11-22%2020%3A06%20UTC&color=0e8a16&labelColor=30363d&logo=clock&cacheSeconds=60&t=5939" />
+<img src="https://img.shields.io/static/v1?label=Updated&message=2026-11-24%2000%3A33%20UTC&color=0e8a16&labelColor=30363d&logo=clock&cacheSeconds=60&t=5940" />
 <img src="https://img.shields.io/badge/Schedule-24h_5m-2ea44f?cacheSeconds=300" />
-<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/next_update.json&cacheSeconds=120&t=5939" />
-<img src="https://img.shields.io/static/v1?label=Next%20Update&message=in%2016h%2008m&color=757575&labelColor=30363d&cacheSeconds=600" />
-<img src="https://img.shields.io/badge/Rotation-%235939-1f6feb?cacheSeconds=60" />
-<img src="https://img.shields.io/badge/Commit-cf73a3d-9cf?cacheSeconds=300" />
-<img src="https://img.shields.io/static/v1?label=Updates&message=550&color=0ea5e9&cacheSeconds=300" />
+<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/next_update.json&cacheSeconds=120&t=5940" />
+<img src="https://img.shields.io/static/v1?label=Next%20Update&message=in%2011h%2042m&color=757575&labelColor=30363d&cacheSeconds=600" />
+<img src="https://img.shields.io/badge/Rotation-%235940-1f6feb?cacheSeconds=60" />
+<img src="https://img.shields.io/badge/Commit-2411a06-9cf?cacheSeconds=300" />
+<img src="https://img.shields.io/static/v1?label=Updates&message=551&color=0ea5e9&cacheSeconds=300" />
 <img src="https://img.shields.io/badge/Event-schedule-8a2be2?cacheSeconds=300" />
 <img src="https://img.shields.io/badge/Mode-auto-grey?cacheSeconds=60" />
-<a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml"><img src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml/badge.svg?branch=main&t=5939" alt="Daily Smoke (pytest - m smoke)" /></a>
+<a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml"><img src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml/badge.svg?branch=main&t=5940" alt="Daily Smoke (pytest - m smoke)" /></a>
 </p>
 <!-- STATUS:END -->
 
@@ -66,7 +66,7 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 - 🧩 **Dynamic insights**: Context-aware NLG (time/season/DOW algorithms)
 - ⏱️ **Next Update badge**: Shields.io endpoint · HLS gradient · sub-minute precision
 - 📡 **Observability**: JSONL telemetry · heartbeat pings · state persistence
-- ⚙️ **Zero-touch ops**: <!-- CIHEAD:START -->23,500+ cumulative workflow runs · 540+ README mutations<!-- CIHEAD:END --> · idempotent commits
+- ⚙️ **Zero-touch ops**: <!-- CIHEAD:START -->23,500+ cumulative workflow runs · 550+ README mutations<!-- CIHEAD:END --> · idempotent commits
 
 ### 🐍 Core Scripts:
 
@@ -84,17 +84,17 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 <!-- CISTATS:START -->
 | Workflow | Schedule | Runs¹ | Status |
 |----------|----------|------|--------|
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/update_readme.yml">Auto Update README</a> | Daily 12:53 UTC | **5,938** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/update_readme.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/next_update_badge.yml">Next Update Badge</a> | Hourly (:37) | **9,059** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/next_update_badge.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/blank.yml">CI/CD Pipeline</a> | On push/PR | **6,534** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/blank.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml">Smoke Tests</a> | Daily 08:07 UTC | **449** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/cache_trophies.yml">Cache GitHub Trophies</a> | Every 6h | **655** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/cache_trophies.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/snake.yml">Generate Snake</a> | Daily 00:30 UTC | **427** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/snake.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/badges_extra.yml">Extra Badges</a> | Daily 10:30 UTC | **182** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/badges_extra.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/activity_graph.yml">Activity Graph</a> | Daily 05:15 & 17:15 UTC | **154** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/activity_graph.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/repo_board.yml">Repo Board</a> | Daily 06:45 UTC | **4** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/repo_board.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/ci_stats.yml">CI Stats</a> | Daily 03:20 UTC | **4** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/ci_stats.yml/badge.svg"> |
-| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/codeql.yml">CodeQL</a> | On push/PR · Mon 16:30 UTC | **127** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/codeql.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/update_readme.yml">Auto Update README</a> | Daily 12:53 UTC | **5,940** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/update_readme.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/next_update_badge.yml">Next Update Badge</a> | Hourly (:37) | **9,063** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/next_update_badge.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/blank.yml">CI/CD Pipeline</a> | On push/PR | **6,539** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/blank.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml">Smoke Tests</a> | Daily 08:07 UTC | **452** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/smoke.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/cache_trophies.yml">Cache GitHub Trophies</a> | Every 6h | **658** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/cache_trophies.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/snake.yml">Generate Snake</a> | Daily 00:30 UTC | **428** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/snake.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/badges_extra.yml">Extra Badges</a> | Daily 10:30 UTC | **184** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/badges_extra.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/activity_graph.yml">Activity Graph</a> | Daily 05:15 & 17:15 UTC | **157** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/activity_graph.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/repo_board.yml">Repo Board</a> | Daily 06:45 UTC | **8** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/repo_board.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/ci_stats.yml">CI Stats</a> | Daily 03:20 UTC | **6** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/ci_stats.yml/badge.svg"> |
+| <a href="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/codeql.yml">CodeQL</a> | On push/PR · Mon 16:30 UTC | **130** | <img alt="status" src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/codeql.yml/badge.svg"> |
 <!-- CISTATS:END -->
 
 <sub>¹ Cumulative run numbers since each workflow was created. The Actions tab only lists the runs GitHub still retains, so it shows fewer.</sub>
@@ -168,10 +168,10 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 
 <!-- BADGES:START -->
 <div align="left">
-<p><img src="https://img.shields.io/github/last-commit/evgeniimatveev/evgeniimatveev?color=red&style=for-the-badge&t=5939" alt="Last Commit"></p>
-<p><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/github_followers.json&style=for-the-badge&cacheSeconds=600&t=5939" alt="GitHub Followers"></p>
-<p><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/github_stars.json&style=for-the-badge&cacheSeconds=600&t=5939" alt="GitHub Stars"></p>
-<p><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/total_updates.json&style=for-the-badge&cacheSeconds=120&t=5939" alt="Total Updates"></p>
+<p><img src="https://img.shields.io/github/last-commit/evgeniimatveev/evgeniimatveev?color=red&style=for-the-badge&t=5940" alt="Last Commit"></p>
+<p><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/github_followers.json&style=for-the-badge&cacheSeconds=600&t=5940" alt="GitHub Followers"></p>
+<p><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/github_stars.json&style=for-the-badge&cacheSeconds=600&t=5940" alt="GitHub Stars"></p>
+<p><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/evgeniimatveev/evgeniimatveev/main/badges/total_updates.json&style=for-the-badge&cacheSeconds=120&t=5940" alt="Total Updates"></p>
 </div>
 <!-- BADGES:END -->
 
@@ -186,7 +186,7 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 ---
 
 <!-- PROJECTS:START -->
-<p align="center"><img src="badges/projects_panel.svg?v=a5ba024a" width="824" alt="Project portfolio: projects, live demos, categories and platforms"/></p>
+<p align="center"><img src="badges/projects_panel.svg?v=24ab6bdb" width="824" alt="Project portfolio: projects, live demos, categories and platforms"/></p>
 
 <details>
 <summary><b>🧠 AI & Cloudflare systems</b> <em>(5)</em></summary>
@@ -213,7 +213,7 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 | 🌍 [Global Weather Pipeline](https://github.com/evgeniimatveev/weather-pipeline) | 20 cities · 6 continents · Best City Score · 7d Forecast · Quality Layer | [![Streamlit](https://img.shields.io/badge/Live-FF4B4B?logo=streamlit&logoColor=white&style=flat)](https://weather-pip-y645txqohstehewa3d3a4w.streamlit.app/) |
 | 📈 [Job Market Pulse](https://github.com/evgeniimatveev/job-market-pulse) | 10 stacks · 10 US cities + remote · 110 API calls/day · DuckDB · daily pipeline | [🤗 Live](https://huggingface.co/spaces/evgeniimatveevusa/job-market-pulse) |
 | 🛒 [Olist Analytics](https://github.com/evgeniimatveev/olist-e-commerce-analytics) | dbt · 54 tests · $13.2M · 96K orders | [🤗 Live](https://huggingface.co/spaces/evgeniimatveevusa/olist-analytics) |
-| 🚗 [Uber Driver Analytics](https://github.com/evgeniimatveev/uber-driver-analytics) | 3,448 trips · $70K gross · 98.9% rating | [🤗 Live](https://huggingface.co/spaces/evgeniimatveevusa/uber-driver-analytics) |
+| 🚗 [Uber Driver Analytics](https://github.com/evgeniimatveev/uber-driver-analytics) | 3,448 trips · $70K gross · 98.9% rating | [![Streamlit](https://img.shields.io/badge/Live-FF4B4B?logo=streamlit&logoColor=white&style=flat)](https://uber-driver-analytics.streamlit.app) |
 
 </details>
 
@@ -232,10 +232,11 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 </details>
 
 <details>
-<summary><b>🐳 MLOps & pipelines</b> <em>(3)</em></summary>
+<summary><b>🐳 MLOps & pipelines</b> <em>(4)</em></summary>
 
 | Project | Highlights | Demo |
 |---------|-----------|------|
+| 🔍 [Neon Data Diff](https://github.com/evgeniimatveev/neon-data-diff) | GitHub Action · dbt base vs PR code on a copy-on-write Neon branch · SQL data diff · sticky PR comment · 25 tests · Postgres 16/17 CI | [🌐 Live](https://evgeniimatveev.github.io/neon-data-diff/) |
 | 📦 [CV Logistics MLOps](https://github.com/evgeniimatveev/cv-logistics-mlops) | ResNet18 transfer learning · MLflow + W&B · val_mae 0.755 · weekly automated retraining | — |
 | 🔄 [ETL Pipeline](https://github.com/evgeniimatveev/data-pipeline-etl-project) | Faker → PostgreSQL · SQLFluff CI · Docker | — |
 | 🤖 [MLOps Project](https://github.com/evgeniimatveev/mlops_project) | R²=0.8326 · RMSE $46K · MLflow + W&B · 729 GridSearch | — |
@@ -244,7 +245,7 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 
 <p align="center"><sub>+ 16 more repos (A&ndash;Z learning, forks, portfolio site) are in the <b>Repository Index</b> below &middot; every repo appears once</sub></p>
 
-<!-- order: tableau-business-cases,agent-memory,civics-sql-rag,route-optimization-vrp,cv-logistics-mlops,crypto-dashboard,layoffs-tracker,so-survey-analytics,weather-pipeline,mcp-data-quality-agent,interview-coach,job-market-pulse,olist-e-commerce-analytics,uber-driver-analytics,Snowflake-A-Z,hr-bi-analytics-project,business-sql-analytics,nyc-311-duckdb-motherduck-analysis,data-pipeline-etl-project,remote-job-tracker,mlops_project,mlops_ollama_env -->
+<!-- order: neon-data-diff,tableau-business-cases,agent-memory,civics-sql-rag,route-optimization-vrp,cv-logistics-mlops,crypto-dashboard,layoffs-tracker,so-survey-analytics,weather-pipeline,mcp-data-quality-agent,interview-coach,job-market-pulse,olist-e-commerce-analytics,uber-driver-analytics,Snowflake-A-Z,hr-bi-analytics-project,business-sql-analytics,nyc-311-duckdb-motherduck-analysis,data-pipeline-etl-project,remote-job-tracker,mlops_project,mlops_ollama_env -->
 <!-- PROJECTS:END -->
 
 ---
@@ -395,14 +396,14 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 <details>
   <summary>🪄 Run Meta (click to expand)</summary>
 
-- 📆 Updated (UTC): **2026-11-22 20:06 UTC**
-- 🤖 Run: **#5939** — [open run](https://github.com/evgeniimatveev/evgeniimatveev/actions/runs/45063805116)
-- 🧬 Commit: **cf73a3d** — [open commit](https://github.com/evgeniimatveev/evgeniimatveev/commit/cf73a3dfdf35a4ee4477b2e4e930201b95aaeb92)
-- ♻️ Updates (total): **550**
+- 📆 Updated (UTC): **2026-11-24 00:32 UTC**
+- 🤖 Run: **#5940** — [open run](https://github.com/evgeniimatveev/evgeniimatveev/actions/runs/45296914790)
+- 🧬 Commit: **2411a06** — [open commit](https://github.com/evgeniimatveev/evgeniimatveev/commit/2411a069adff65e82f72237fc254f5e2f05615b9)
+- ♻️ Updates (total): **551**
 - 🌀 Workflow: **Auto Update README** · Job: **update-readme**
 - ✨ Event: **schedule** · 🧑‍💻 Actor: **evgeniimatveev**
 - 🕒 Schedule: **24h_5m**
-- 🌈 Banner: **276/367**
+- 🌈 Banner: **277/367**
 </details>
 
 <!-- RUNMETA:END -->
@@ -412,11 +413,11 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 
 | Time (UTC) | Run | SHA | Banner | Event/Actor | Insight|
 |---|---|---|---|---|---|
+| 2026-11-24 00:32:48 | 5940 | `2411a06` | 277/367 (277.gif) | schedule/evgeniimatveev | 📡 OBSERVE • ALERT • IMPROVE • RUN #5940 — Prune legacy, keep essentials ✂️ &#124; Keep up the momentum! 🔥 Write the changelog you wish yo… |
 | 2026-11-22 20:06:36 | 5939 | `cf73a3d` | 276/367 (276.gif) | schedule/evgeniimatveev | 📡 LOW TOIL, HIGH LEVERAGE • RUN #5939 — BACKFILL HISTORY, RECONCILE TRUTH SOURCES 🧾 &#124; PREP FOR AN MLOPS-FILLED WEEK! ⏳ RELAX AND LET… |
 | 2026-11-21 23:14:40 | 5938 | `84ee181` | 275/367 (275.gif) | workflow_dispatch/evgeniimatveev | 📡 DATA • PLATFORMS • VALUE • RUN #5938 — Reflect, refine, retrain 🍂 &#124; Weekend automation vibes! 🎉 Write the changelog you wish you h… |
 | 2026-11-21 19:54:24 | 5937 | `03d8990` | 274/367 (274.gif) | schedule/evgeniimatveev | 📡 SQL • PYTHON • PIPELINES • RUN #5937 — Collect insights like golden leaves 🍁 &#124; Weekend automation vibes! 🎉 Park experiments, tag b… |
 | 2026-11-20 20:55:59 | 5936 | `49d8b4f` | 273/367 (273.gif) | schedule/evgeniimatveev | 📡 BUILD • MEASURE • LEARN • RUN #5936 — Budget for winter retrains now 🧮 &#124; Wrap it up like a pro! ⚡ Wrap up the day with some Bayesi… |
-| 2026-11-19 21:07:44 | 5935 | `3a34c0a` | 272/367 (272.gif) | schedule/evgeniimatveev | 📡 AUTOMATE EVERYTHING • RUN #5935 — Harvest signals, drop the noise 🍁 &#124; Test, iterate, deploy! 🚀 Park experiments, tag best runs, cl… |
 
 </details>
 <!-- LOG:END -->
@@ -450,19 +451,19 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 <!-- CIBADGES:START -->
 <p align="left">
   <img src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/blank.yml/badge.svg" alt="CI/CD status"/>
-  <img src="https://img.shields.io/static/v1?label=Runs&amp;message=6%2C534&amp;color=brightgreen&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Runs: 6,534"/>
+  <img src="https://img.shields.io/static/v1?label=Runs&amp;message=6%2C539&amp;color=brightgreen&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Runs: 6,539"/>
   <img src="https://img.shields.io/static/v1?label=Schedule&amp;message=On+push%2FPR&amp;color=1f6feb&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Schedule: On push/PR"/>
 </p>
 
 <p align="left">
   <img src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/update_readme.yml/badge.svg" alt="README updates status"/>
-  <img src="https://img.shields.io/static/v1?label=Runs&amp;message=5%2C938&amp;color=brightgreen&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Runs: 5,938"/>
+  <img src="https://img.shields.io/static/v1?label=Runs&amp;message=5%2C940&amp;color=brightgreen&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Runs: 5,940"/>
   <img src="https://img.shields.io/static/v1?label=Schedule&amp;message=Daily+12%3A53+UTC&amp;color=1f6feb&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Schedule: Daily 12:53 UTC"/>
 </p>
 
 <p align="left">
   <img src="https://github.com/evgeniimatveev/evgeniimatveev/actions/workflows/next_update_badge.yml/badge.svg" alt="Badge refresh status"/>
-  <img src="https://img.shields.io/static/v1?label=Runs&amp;message=9%2C059&amp;color=brightgreen&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Runs: 9,059"/>
+  <img src="https://img.shields.io/static/v1?label=Runs&amp;message=9%2C063&amp;color=brightgreen&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Runs: 9,063"/>
   <img src="https://img.shields.io/static/v1?label=Schedule&amp;message=Hourly+%28%3A37%29&amp;color=1f6feb&amp;style=flat&amp;cacheSeconds=3600&amp;logo=githubactions" alt="Schedule: Hourly (:37)"/>
 </p>
 <!-- CIBADGES:END -->
@@ -470,7 +471,7 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 ---
 
 <!-- INSIGHT:START -->
-🤖 MLOPS Insight: 📡 LOW TOIL, HIGH LEVERAGE • RUN #5939 — BACKFILL HISTORY, RECONCILE TRUTH SOURCES 🧾 | PREP FOR AN MLOPS-FILLED WEEK! ⏳ RELAX AND LET AUTOMATION HANDLE YOUR WORK 🤖 🧱
+🤖 MLOPS Insight: 📡 OBSERVE • ALERT • IMPROVE • RUN #5940 — Prune legacy, keep essentials ✂️ | Keep up the momentum! 🔥 Write the changelog you wish you had 📓 🧭
 <!-- INSIGHT:END -->
 
 ---
@@ -508,9 +509,9 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 ## 🗂️ Repository Index
 
 <!-- REPOS:START -->
-<p align="center"><img src="badges/repo_status.svg?v=3c93255b" width="824" alt="Repo health: repos, CI status and language mix"/></p>
+<p align="center"><img src="badges/repo_status.svg?v=15091374" width="824" alt="Repo health: repos, CI status and language mix"/></p>
 
-<p align="center"><sub><b>36 own repos</b> = <b>22</b> featured projects in <b>Project Portfolio</b> above + <b>14</b> listed here (+ 2 forks) &middot; every repo appears once</sub></p>
+<p align="center"><sub><b>37 own repos</b> = <b>23</b> featured projects in <b>Project Portfolio</b> above + <b>14</b> listed here (+ 2 forks) &middot; every repo appears once</sub></p>
 
 <details open>
 <summary><b>🌐 Portfolio site & other live systems</b> <em>(1)</em></summary>
@@ -526,19 +527,19 @@ This profile is a **self-updating MLOps demo** — a living portfolio showcasing
 
 | Repo | What it is | Lang | CI | Updated | ⭐ |
 |---|---|---|:-:|---|--:|
-| [**EXCEL-A-Z**](https://github.com/evgeniimatveev/EXCEL-A-Z) | Excel analytics: pivot tables, pivot charts, 8 real-world case studies (social media, spo… | — | 🟢 | 1d ago | 7 |
-| [**Power-BI-A-Z**](https://github.com/evgeniimatveev/Power-BI-A-Z) | Power BI from scratch: bar charts, time series, geographic maps, scatterplots, full dashb… | 📄 CSV | 🟢 | 1d ago | 7 |
-| [**Python-Projects**](https://github.com/evgeniimatveev/Python-Projects) | Python project collection across branches: ML forecasting, NLP sentiment, CV (YOLOv5/Medi… | 🐍 Python | 🟢 | 1d ago | 7 |
-| [**SQL-Database-Design-A-Z**](https://github.com/evgeniimatveev/SQL-Database-Design-A-Z) | SQL database design in PostgreSQL: normalization (1NF→3NF), ERD diagrams, subqueries, win… | 🛢️ SQL | 🟢 | 1d ago | 7 |
-| [**Advanced-SQL-Data-Management-A-Z**](https://github.com/evgeniimatveev/Advanced-SQL-Data-Management-A-Z) | Advanced SQL in MySQL 8.0: window functions, pivot tables, regex, stored procedures, empl… | 🛢️ SQL | 🟢 | 1d ago | 7 |
-| [**ML-Classics-in-Python**](https://github.com/evgeniimatveev/ML-Classics-in-Python) | ML fundamentals in Python: data preprocessing, regression, classification, clustering, Ap… | 🐍 Python | 🟢 | 1d ago | 7 |
-| [**Ml-Classics-Level2-Boosting**](https://github.com/evgeniimatveev/Ml-Classics-Level2-Boosting) | Advanced ML with gradient boosting: XGBoost, LightGBM, CatBoost — regression, classificat… | 🐍 Python | 🟢 | 1d ago | 7 |
-| [**ML-Classics-in-R**](https://github.com/evgeniimatveev/ML-Classics-in-R) | ML fundamentals in R: data preprocessing, regression, classification, clustering, associa… | 📈 R | 🟢 | 1d ago | 7 |
-| [**Advanced-R-for-Analytics**](https://github.com/evgeniimatveev/Advanced-R-for-Analytics) | Advanced R analytics: data cleaning, NA imputation, apply/lapply/sapply, time-series visu… | 📈 R | 🟢 | 1d ago | 7 |
-| [**Python-for-Data-Science-A-Z**](https://github.com/evgeniimatveev/Python-for-Data-Science-A-Z) | Python for data science: NumPy matrices, Pandas DataFrames, data visualization, real-worl… | 🐍 Python | 🟢 | 1d ago | 7 |
-| [**Feature-Engineering**](https://github.com/evgeniimatveev/Feature-Engineering) | End-to-end feature engineering: data cleaning, transformations (log/power/scaling/encodin… | 📓 Jupyter Notebook | 🟢 | 1d ago | 7 |
-| [**Python-Programming-A-Z**](https://github.com/evgeniimatveev/Python-Programming-A-Z) | Python fundamentals A-Z: variables, control flow, functions, file handling, NumPy, Pandas… | 🐍 Python | 🟢 | 1d ago | 7 |
-| [**R-Programming-A-Z**](https://github.com/evgeniimatveev/R-Programming-A-Z) | R programming A-Z: variables, vectors, matrices, data frames, ggplot2 layers and themes.… | 📈 R | 🟢 | 1d ago | 7 |
+| [**EXCEL-A-Z**](https://github.com/evgeniimatveev/EXCEL-A-Z) | Excel analytics: pivot tables, pivot charts, 8 real-world case studies (social media, spo… | — | 🟢 | 2d ago | 7 |
+| [**Power-BI-A-Z**](https://github.com/evgeniimatveev/Power-BI-A-Z) | Power BI from scratch: bar charts, time series, geographic maps, scatterplots, full dashb… | 📄 CSV | 🟢 | 2d ago | 7 |
+| [**Python-Projects**](https://github.com/evgeniimatveev/Python-Projects) | Python project collection across branches: ML forecasting, NLP sentiment, CV (YOLOv5/Medi… | 🐍 Python | 🟢 | 2d ago | 7 |
+| [**SQL-Database-Design-A-Z**](https://github.com/evgeniimatveev/SQL-Database-Design-A-Z) | SQL database design in PostgreSQL: normalization (1NF→3NF), ERD diagrams, subqueries, win… | 🛢️ SQL | 🟢 | 2d ago | 7 |
+| [**Advanced-SQL-Data-Management-A-Z**](https://github.com/evgeniimatveev/Advanced-SQL-Data-Management-A-Z) | Advanced SQL in MySQL 8.0: window functions, pivot tables, regex, stored procedures, empl… | 🛢️ SQL | 🟢 | 2d ago | 7 |
+| [**ML-Classics-in-Python**](https://github.com/evgeniimatveev/ML-Classics-in-Python) | ML fundamentals in Python: data preprocessing, regression, classification, clustering, Ap… | 🐍 Python | 🟢 | 3d ago | 7 |
+| [**Ml-Classics-Level2-Boosting**](https://github.com/evgeniimatveev/Ml-Classics-Level2-Boosting) | Advanced ML with gradient boosting: XGBoost, LightGBM, CatBoost — regression, classificat… | 🐍 Python | 🟢 | 3d ago | 7 |
+| [**ML-Classics-in-R**](https://github.com/evgeniimatveev/ML-Classics-in-R) | ML fundamentals in R: data preprocessing, regression, classification, clustering, associa… | 📈 R | 🟢 | 3d ago | 7 |
+| [**Advanced-R-for-Analytics**](https://github.com/evgeniimatveev/Advanced-R-for-Analytics) | Advanced R analytics: data cleaning, NA imputation, apply/lapply/sapply, time-series visu… | 📈 R | 🟢 | 3d ago | 7 |
+| [**Python-for-Data-Science-A-Z**](https://github.com/evgeniimatveev/Python-for-Data-Science-A-Z) | Python for data science: NumPy matrices, Pandas DataFrames, data visualization, real-worl… | 🐍 Python | 🟢 | 3d ago | 7 |
+| [**Feature-Engineering**](https://github.com/evgeniimatveev/Feature-Engineering) | End-to-end feature engineering: data cleaning, transformations (log/power/scaling/encodin… | 📓 Jupyter Notebook | 🟢 | 3d ago | 7 |
+| [**Python-Programming-A-Z**](https://github.com/evgeniimatveev/Python-Programming-A-Z) | Python fundamentals A-Z: variables, control flow, functions, file handling, NumPy, Pandas… | 🐍 Python | 🟢 | 3d ago | 7 |
+| [**R-Programming-A-Z**](https://github.com/evgeniimatveev/R-Programming-A-Z) | R programming A-Z: variables, vectors, matrices, data frames, ggplot2 layers and themes.… | 📈 R | 🟢 | 3d ago | 7 |
 
 </details>
 

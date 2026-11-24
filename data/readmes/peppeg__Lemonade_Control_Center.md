@@ -53,6 +53,28 @@ By default, LCC remains local to the Linux host and can be opened there at `http
 |---|---|
 | ![Diagnostics](screenshot/lemonadecc_003.jpg) | ![Hardware monitor](screenshot/lemonadecc_004.jpg) |
 
+## What's New In 0.3.2
+
+Version 0.3.2 fixes what LCC shows and records when Lemonade keeps several models loaded, for example a chat and an embedding model:
+
+- **Run Evidence, Bench Lab, Diagnostics, and Connection Doctor** use the right model and its own process, instead of the first ones found.
+- **Dashboard** shows every loaded model, **Models** lets you choose which one the actions apply to, and **Smoke Test** is offered for chat models only.
+- **The last task** is read from its own log lines only, and "no recent requests" is told from a value that could not be read.
+- **Models** works on a phone screen.
+
+Records stored by earlier versions are not changed: those made with several models loaded can name the wrong model. See the [Changelog](CHANGELOG.md).
+
+## What's New In 0.3.1
+
+Version 0.3.1 is a security and compatibility release:
+
+- **Access control** covers HTTP and WebSocket alike, refuses actions sent by other web sites, and limits localhost trust to direct local connections. See [Security](docs/security.md).
+- **Local state files** are readable only by the user running LCC and are replaced in one step.
+- **Lemonade 11.x** fixes cover telemetry parsing, nested configuration keys, and saved model options. The release was tested on Lemonade 2026.45.3; 11.x itself had no full test pass. See [Tested Environment](docs/tested-environment.md).
+- **Smoke Test** works with reasoning models, and AMD GTT and VRAM usage is shown where amdgpu reports it.
+
+See the [0.3.1 release notes](https://github.com/peppeg/Lemonade_Control_Center/releases/tag/0.3.1) before updating: some reverse proxy setups need a new setting.
+
 ## What's New In 0.3.0
 
 Version 0.3.0 adds the first complete evidence-and-workflow layer on top of LCC's operator foundation:
@@ -135,7 +157,7 @@ LCC monitors the Linux machine that actually runs the models:
 - processes with the highest RAM consumption
 - `lemond.service` and journal state when systemd is available
 
-On unified-memory systems such as AMD Strix Halo, system RAM is the primary capacity signal. LCC does not currently present a separate VRAM-usage figure.
+On unified-memory systems such as AMD Strix Halo, system RAM is the primary capacity signal. LCC also shows GTT and VRAM usage where amdgpu reports them.
 
 ### Diagnose problems
 
@@ -369,6 +391,9 @@ LAN_MODE=false
 | `ENABLE_RESTART` | Enables guarded service restart when set to `true` |
 | `LCC_API_KEY` | Protects LAN and remote access to LCC |
 | `REQUIRE_AUTH` | Requires `LCC_API_KEY` for every client, including localhost, when set to `true` |
+| `ALLOWED_ORIGINS` | Extra browser origins, comma-separated, for reverse proxies that do not forward the original `Host` |
+| `ALLOWED_HOSTS` | Names besides `localhost` and IP addresses under which LCC can be opened from its own host without a key |
+| `TRUSTED_PROXY_IPS` | Reverse proxy addresses whose `X-Forwarded-For` is recorded as the client address |
 | `APP_HOST` | Bind host for the unified runtime |
 | `APP_PORT` | Bind port for the unified runtime |
 | `SERVE_FRONTEND` | Serves the built frontend from FastAPI when `true` |

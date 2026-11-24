@@ -29,7 +29,7 @@
 
 ## 安装与启动
 
-需要 [Bun](https://bun.sh) 1.3.14 或更新的版本（NeuroBook 只在 Bun 上运行）。
+需要 [Bun](https://bun.sh) 1.4.4 或更新的版本（NeuroBook 只在 Bun 上运行）。
 
 ```sh
 bun add -g @notnotype/neuro-book
@@ -98,7 +98,7 @@ AI 能写好一段文字，但写不好一部长篇：设定靠对话记忆，�
 
 ## npm 包
 
-都发布在 npm 的 `@notnotype` 下，只用 Bun 运行，许可证 AGPL-3.0-only。应用与 SDK 发构建产物（[ADR 0033](docs/adr/0033-app-delivered-as-built-npm-package.md)），其余以源码发布（[ADR 0029](docs/adr/0029-workspace-packages-publish-source-to-npm.md)）。
+都发布在 npm 的 `@notnotype` 下，许可证 AGPL-3.0-only，nb-layout 例外（MIT）。应用与 SDK 发构建产物（[ADR 0033](docs/adr/0033-app-delivered-as-built-npm-package.md)），nb-layout 发编译产物、宿主是 Vue 3 加 Vite，不限 Bun；其余以源码发布、只用 Bun 运行（[ADR 0029](docs/adr/0029-workspace-packages-publish-source-to-npm.md)）。
 
 | 包 | 内容 |
 |---|---|
@@ -114,6 +114,7 @@ AI 能写好一段文字，但写不好一部长篇：设定靠对话记忆，�
 | [`@notnotype/nb-agent-ui`](packages/nb-agent-ui/README.md) | Agent 对话视图 |
 | [`@notnotype/nb-form`](packages/nb-form/README.md) | 按数据 schema 画表单 |
 | [`@notnotype/nb-markdown`](packages/nb-markdown/README.md) | Markdown 的语言、编解码器与组件 |
+| [`@notnotype/nb-layout`](packages/nb-layout/README.md) | 布局：嵌套网格、尺寸求解、拖放落点与 Vue 组件（MIT，发编译产物，见 [ADR 0054](docs/adr/0054-nb-layout-general-library.md)） |
 
 ## 参与开发
 
@@ -158,7 +159,7 @@ AI 能写好一段文字，但写不好一部长篇：设定靠对话记忆，�
 
 NeuroBook 是采用 [GNU Affero General Public License v3.0（仅此版本）](LICENSE) 的自由开源软件，SPDX 标识为 `AGPL-3.0-only`。该许可证允许使用、研究、修改、分发和商业使用；分发修改版或通过网络向用户提供修改版服务时，需要依照 AGPLv3 提供对应源代码。
 
-标志、字标与看板娘等品牌图片随仓库按同一许可提供（[来源](docs/images/readme/README.md)）。用户使用 NeuroBook 创作、编辑或发表的原创作品不会仅因使用本软件而自动适用 AGPL。仓库中另有许可证声明的独立第三方组件继续适用各自的许可证。Copyright © 2026 notnotype。
+标志、字标与看板娘等品牌图片随仓库按同一许可提供（[来源](docs/images/readme/README.md)）。用户使用 NeuroBook 创作、编辑或发表的原创作品不会仅因使用本软件而自动适用 AGPL。仓库中另有许可证声明的独立第三方组件继续适用各自的许可证。布局库 `packages/nb-layout`（`@notnotype/nb-layout`）例外，采用 [MIT](packages/nb-layout/LICENSE)（[ADR 0054](docs/adr/0054-nb-layout-general-library.md)）。Copyright © 2026 notnotype。
 
 ## Star History
 

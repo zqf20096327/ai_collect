@@ -7,7 +7,7 @@ Independent audit of the [LoCoMo](https://github.com/snap-research/locomo) (Long
 | Finding | Detail | Source |
 |---------|--------|--------|
 | Ground truth errors | 99 of 1,540 questions (6.4%) have wrong golden answers. Theoretical scoring ceiling is 93.57%. | [AUDIT_REPORT.md](AUDIT_REPORT.md) |
-| Per-category statistical validity | Category sample sizes range from 96 to 841 (8.8x ratio). Wilson Score 95% CIs make 56% of adjacent-pair per-category comparisons statistically indistinguishable. Open-domain (n=96) requires a 15+ point gap to distinguish any two systems. Multiple evaluation runs cannot fix this: even 10 uniform end-to-end reruns leave Open-domain 3.0x less precise than Single-hop. Only Mem0 documents a multi-run methodology; most systems report single-run point estimates. | [results-audit/STATISTICAL_VALIDITY.md](results-audit/STATISTICAL_VALIDITY.md) |
+| Per-category statistical validity | Category sample sizes range from 96 to 841 (8.8x ratio). On a paired test over the same questions (exact McNemar), 5 of 16 adjacent-pair per-category comparisons are statistically indistinguishable, and 7 of 16 after Holm's correction for the 16 comparisons. Open-domain (n=96) accounts for 3 of the 5 and 4 of the 7. Multiple evaluation runs cannot fix this: even 10 uniform end-to-end reruns leave Open-domain 3.0x less precise than Single-hop. Only Mem0 documents a multi-run methodology; most systems report single-run point estimates. | [results-audit/STATISTICAL_VALIDITY.md](results-audit/STATISTICAL_VALIDITY.md) |
 | Total token cost | EverMemOS README claims 2,298 avg tokens per question. The paper's own Table 8 ([arXiv:2601.02163v2](https://arxiv.org/abs/2601.02163)) shows 6,669 with GPT-4.1-mini (2.9x higher; 6,045 with GPT-4o-mini). Real reduction vs. full-context is 67%, not 89%. | [methodology/token_efficiency.md](methodology/token_efficiency.md) |
 | Judge accepts wrong answers | 62.81% of intentionally wrong vague-but-topical answers accepted by the LLM judge. | [ap-baseline/README.md](ap-baseline/README.md) |
 | Scores exceed corrupted ceiling | EverMemOS single-hop (95.96%) and multi-hop (91.37%) exceed their category ceilings (95.72% and 90.07%), mathematically impossible without credit from wrong golden answers. Overall 92.32% is within 1.25 points of the 93.57% aggregate ceiling. | [results-audit/RESULTS_AUDIT.md](results-audit/RESULTS_AUDIT.md) |
@@ -29,6 +29,7 @@ locomo-audit/
 │   ├── RESULTS_AUDIT.md           # Adjusted scores, ceiling analysis, cross-check
 │   ├── STATISTICAL_VALIDITY.md    # Per-category CI analysis (Wilson Score)
 │   ├── statistical_validity.py    # CI computation script (stdlib-only)
+│   ├── paired_validity.py         # Paired (McNemar) comparison from per-question results
 │   ├── audit_results.py           # Audit script (LLM judge, ~1,485 calls)
 │   └── download_results.py        # Fetches published eval_results from HuggingFace
 ├── ap-baseline/                   # Judge leniency stress test

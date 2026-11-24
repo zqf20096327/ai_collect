@@ -41,6 +41,7 @@ Scenra is a coined word: *scene*, the screens an app is made of, joined by *-ra*
 - Sending a message saves your changes; while the assistant works the files stay as it leaves them, and each of its turns undoes as one step.
 - Pieces screens share, such as a tab bar, are components in the folder's `components/`, which designs draw with `use`, so changing one changes every screen; as with Figma's instances, a use can pick the component's variants, change the texts, icons, styles and taps of the elements its component names, and fill the slots it leaves with elements of its own, components inside included. **Components** atop the list shows them all together, grouped by their names as files are, small ones scaled up to stay legible.
 - Pictures a design shows live in the folder's `assets/`, where the assistant copies the ones you give it, and images name them with `src="assets/…"`.
+- A design's words can live in the folder's `locales/`, a catalog per language named as NSGo's are, such as `en.yaml` and `zh-Hans.yaml`; texts name their messages with `key=`, and show in Scenra's language.
 - Designs are plain-text `.scenra` files you can read, diff and edit by hand.
 - Runs on macOS, Windows and Linux, in English and Simplified Chinese.
 

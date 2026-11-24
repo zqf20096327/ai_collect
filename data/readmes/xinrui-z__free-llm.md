@@ -7,7 +7,7 @@ Free LLM API directory with sourced limits, prices and probe monitoring, includi
 **Website: https://free-llm-site.free-llm-status.workers.dev**
 
 [![Live Site](https://img.shields.io/badge/Live_Site-free--llm--site.free--llm--status.workers.dev-22c55e?style=flat-square)](https://free-llm-site.free-llm-status.workers.dev)
-[![Providers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffree-llm-site.free-llm-status.workers.dev%2Fdata%2Fstatus_summary.json&query=%24.total&label=providers&style=flat-square&color=3b82f6)](https://free-llm-site.free-llm-status.workers.dev/providers/)
+[![Providers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffree-llm-site.free-llm-status.workers.dev%2Fdata%2Fstatus_summary.json&query=%24.total&label=providers&style=flat-square&color=3b82f6)](https://free-llm-site.free-llm-status.workers.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
 ---
@@ -20,13 +20,14 @@ Each provider page shows current status, response latency, RPM / RPD limits, mod
 
 | Page | Description |
 |------|-------------|
-| `/` | Free-provider comparison table with recent probe status |
-| `/providers` | Provider list with search, filters, and sort |
+| `/` | Provider directory: quickest first calls, then every free provider with search, filters and sort, plus recent changes |
+| `/providers` | Redirects to `/`, keeping the query string (301 in dynamic mode; JS or meta refresh in static mode) |
 | `/providers/{id}` | Detail: models, rate limits, sources, code examples and daily probe history |
 | `/models` | Browse model families and published free quotas |
 | `/pricing` | Compare sourced per-token prices with verification dates, grouped by currency |
-| `/configs` | LiteLLM configuration and manual connection references for other tools |
+| `/configs` | Tools: LiteLLM config for the providers you pick, and the values to paste into Open WebUI, LobeChat and Cursor |
 | `/changelog` | Provider status changes and model updates |
+| `/changelog.json` | Machine-readable changelog feed, newest first |
 | `/data/status_summary.json` | Catalog counts (`total` = active providers, used by the badge); no probe health |
 
 ---
@@ -37,7 +38,7 @@ Each provider page shows current status, response latency, RPM / RPD limits, mod
 - **90-day daily probe history** — per-provider history, one cell per day
 - **Automated catalog maintenance** — official model APIs are collected on a schedule; only material changes are written ([details](docs/automatic-catalog.md))
 - **Automated changelog** — model/provider additions and removals and status changes are recorded automatically; hand-written entries live in `site/src/data/changelog.json`
-- **Config export** — download LiteLLM YAML and manual connection reference JSON for Cursor, LobeChat and Open WebUI
+- **Tools** — download a LiteLLM YAML config for the providers you pick, or copy base URLs, model IDs and key names for Cursor, LobeChat and Open WebUI
 - **OpenAI-compatible** — all listed providers use the `/v1/chat/completions` format
 
 ---
@@ -88,7 +89,8 @@ The authoritative rules are in [`scripts/lib/catalog-validation.mjs`](scripts/li
   "context_window": "128K",         // optional string: largest context window
   "tags": ["openai-compatible"],
   "top_models": ["model-id-1"],     // 1–5 unique IDs of active (non-deprecated) entries in models
-  "models": [                       // nonempty; IDs unique
+  "model_order": ["model-id-1"],    // optional: models shown first on the provider page; the rest follow models order
+  "models": [                       // nonempty; IDs unique; array order is display order (synced: upstream API order)
     {
       "id": "model-id-1",           // model ID used in API requests
       "name": "Model Name",
@@ -120,6 +122,8 @@ The authoritative rules are in [`scripts/lib/catalog-validation.mjs`](scripts/li
 ```
 
 `last_verified`, `catalog_checked_at` and every `checked_at` must be real dates and not in the future (one day of timezone grace). `npm run validate` prints `warning:` lines without failing for an active provider whose `last_verified` is more than 90 days old and for prices expiring within 30 days. A `valid_until` in the past fails PR validation until the price is updated or removed; deployments and scheduled syncs only warn. Validation also checks `_order.json`, `changelog.json` provider IDs, `catalog/sources.json` and `catalog/state/*.json`. When deleting a provider that `changelog.json` still mentions, add its ID to `REMOVED_PROVIDER_IDS` in the validation library.
+
+`api_key_env` is only the checker's secret name and is never shown on the site. The key variable in code examples and in the Tools configs is derived from the provider ID: uppercase, non-alphanumeric runs become `_`, then `_API_KEY` (for example `google-ai-studio` → `GOOGLE_AI_STUDIO_API_KEY`). Since 2026-11-24 this applies to every provider, so Google AI Studio examples use `GOOGLE_AI_STUDIO_API_KEY` instead of `GOOGLE_API_KEY`. The API key itself is unchanged.
 
 **Available tags:** `openai-compatible` · `aggregator` · `multi-provider` · `china-available` · `vision` · `thinking` · `function-call` · `deepseek` · `llama` · `embedding`
 

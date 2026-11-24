@@ -16,15 +16,15 @@ models and workflows.
 ## How to install
 
 Download a desktop package from the [latest release](https://github.com/Higeneko9/Libretto/releases/latest).
-The direct links below are for **v0.26.1111.2**.
+The direct links below are for **v0.26.1122.1**.
 You do not need to install Python or Node.js to use these packages.
 
 | Platform | Download | Installation |
 |---|---|---|
-| Windows x64 | [Windows installer (.exe)](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1111.2/Libretto-0.26.1111-win-x64.exe) | Run the installer, then open Libretto from the Start menu. The installer is unsigned; if SmartScreen warns, choose **More info > Run anyway** after confirming you downloaded it from this repository. |
-| macOS Apple silicon | [macOS disk image (.dmg)](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1111.2/Libretto-0.26.1111-mac-arm64.dmg) | Open the disk image and drag Libretto into Applications. The app is Developer ID signed and notarized. Allow Local Network access if connecting to ComfyUI on another machine. |
-| Debian / Ubuntu amd64 | [Debian package (.deb)](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1111.2/Libretto-0.26.1111-linux-amd64.deb) | Install with `sudo apt install ./Libretto-0.26.1111-linux-amd64.deb`, then open Libretto from the app menu. |
-| Linux x86_64 | [AppImage](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1111.2/Libretto-0.26.1111-linux-x86_64.AppImage) | Make the downloaded file executable and run it. Some distributions require `libfuse2`. |
+| Windows x64 | [Windows installer (.exe)](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1122.1/Libretto-0.26.1122-win-x64.exe) | Run the installer, then open Libretto from the Start menu. The installer is unsigned; if SmartScreen warns, choose **More info > Run anyway** after confirming you downloaded it from this repository. |
+| macOS Apple silicon | [macOS disk image (.dmg)](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1122.1/Libretto-0.26.1122-mac-arm64.dmg) | Open the disk image and drag Libretto into Applications. The app is Developer ID signed and notarized. Allow Local Network access if connecting to ComfyUI on another machine. |
+| Debian / Ubuntu amd64 | [Debian package (.deb)](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1122.1/Libretto-0.26.1122-linux-amd64.deb) | Install with `sudo apt install ./Libretto-0.26.1122-linux-amd64.deb`, then open Libretto from the app menu. |
+| Linux x86_64 | [AppImage](https://github.com/Higeneko9/Libretto/releases/download/v0.26.1122.1/Libretto-0.26.1122-linux-x86_64.AppImage) | Make the downloaded file executable and run it. Some distributions require `libfuse2`. |
 
 Install and start [ComfyUI](https://github.com/Comfy-Org/ComfyUI) separately,
 with a working text-to-image workflow and the models it needs.
@@ -42,7 +42,7 @@ The Windows uninstaller asks whether to delete this data.
 
 ## How to use it
 
-[![Libretto workspace with the Results browser on the left, Graph editor in the center, Inspector on the right, and Library browser at the bottom. Click to watch the English introduction on YouTube.](docs/images/workspace.png)](https://youtu.be/jTv9STxC0xk)
+[![Libretto workspace with the Show Outline and Results browser on the left, Graph editor in the center, Inspector on the right, and Library browser at the bottom. Click to watch the English introduction on YouTube.](docs/images/workspace.png)](https://youtu.be/jTv9STxC0xk)
 
 **YouTube walkthrough:** [English introduction](https://youtu.be/jTv9STxC0xk)
 | [Japanese introduction](https://youtu.be/FM9a2HxqP0Q)
@@ -79,16 +79,21 @@ the Inspector. Libretto fills in the compiled prompts, seed, image size,
 sampler settings, and checkpoint while preserving the rest of the workflow.
 Re-import the workflow after changing it in ComfyUI.
 
-Supported workflows are KSampler-based text-to-image workflows. Subgraph-based
-workflows are flattened during import; upscaler-only and 3D workflows are not
-supported. If your workflow includes a prompt-enhancer switch, check its
-setting in ComfyUI.
+Supported text-to-image workflows use KSampler or SamplerCustomAdvanced with
+RandomNoise, CFGGuider or BasicGuider, KSamplerSelect, and Flux2Scheduler or
+BasicScheduler (including the FLUX.2 Klein subgraph). Subgraphs are flattened
+during import. Unsupported controls stay in the workflow; upscaler-only and
+3D workflows are not supported. If your workflow includes a prompt-enhancer
+switch, check its setting in ComfyUI.
 
 ### Build a scene
 
-A new data folder starts with the **default** library and **Sample** and
-**Complex Sample** scenes. The examples use the built-in `sdxl` profile;
-choose your own working profile before generating.
+A new data folder starts with the **default** library and a sample show with
+two acts and nine scenes. **Sample** and **Complex Sample** open as tabs on
+first launch. The examples use the built-in `sdxl` profile; choose your own
+working profile before generating.
+Existing installations receive the sample show if their shows folder does not
+yet exist; existing scenes and shows are left unchanged.
 
 1. Open a scene using Scene tabs, or use **+** to create one.
 2. Choose a category in the Library browser and filter by tags or search text.
@@ -99,9 +104,107 @@ choose your own working profile before generating.
 5. Adjust scene-wide positive and negative text in the Inspector and inspect
    the Prompt preview.
 
+With the pointer over the graph, use **Ctrl+C**, **Ctrl+X**, and **Ctrl+V**
+(**Cmd** on macOS) to copy, cut, and paste selected nodes. Pasted nodes appear
+at the pointer; the Generate node cannot be copied or cut.
+
 Scenes autosave. Right-click a scene tab to rename, duplicate, export, close,
-or delete it. Use **Export scene** and **Import scene** in the Toolbar to
-exchange scene JSON files.
+close the other tabs, close all tabs, or delete it. Closing tabs does not delete
+scenes; reopen them from the outline or the **+** menu, which lists up to eight
+recently closed scenes. Use **Export scene** and **Import scene** in the Toolbar
+to exchange scene JSON files.
+
+### Organize shows, acts, and scenes
+
+The left sidebar has **Show Outline** above the **Results browser**. Drag their
+divider to resize them; the layout is remembered. Select a show or act to see
+results from all its scenes, or select a scene to open it and see only its results.
+**All outputs** also includes older results whose scene is unknown.
+
+Right-click a show, act, scene, or empty space in **Show Outline** to create and
+manage items. The menu applies to the item you right-clicked, not the scene open
+in the editor. Existing scenes remain under **Standalone Scenes** until you move
+them yourself. Scene and act menus include **Copy to…** and
+**Duplicate**. Drag shows, acts, and scenes to reorder them: a line indicates
+insertion before or after a row, and a highlighted show or act accepts the item
+inside it. Drag a scene onto **Standalone Scenes** to move it out of a show.
+Shows cannot be nested, and acts cannot contain other acts. Moving and reordering
+use drag-and-drop; use Shift+F10 to open a focused item's context menu.
+Ctrl-click (Cmd-click on macOS) selects items from anywhere in the outline for
+dragging together; Shift-click selects a visible range. The selection moves in
+outline order as one undoable change. Selected descendants move with their parent,
+and every selected item must be compatible with the destination. Other menu
+actions apply to the individual right-clicked item; select one item before deleting.
+Moves retain IDs, generation results, and history;
+copies receive new IDs and start without results or history. Shows and acts
+must be empty before they can be deleted.
+
+To remove a show or act together with all of its descendants, choose **Delete
+hierarchy** from its context menu. This also removes the scenes'
+saved scene history, but keeps generated results and images. The whole deletion
+is one organization undo step during the current server session; the notification
+provides an immediate Undo action.
+
+Double-click a show, act, or scene name, choose **Rename**, or press **F2** on the
+selected item while the pointer is over Show Outline. The dialog opens near the
+name and lets you edit the original name and current-language translation.
+Renaming is undoable, and dragging is disabled while editing.
+
+Right-click a **show** and choose **Show settings…** to configure its output layout:
+**Workflow default**, **Show / Scene**, or **Show / Act / Scene**. A live example
+uses the original show, act and scene names; select another example scene to check its
+path. For example, `my-show/01-opening/02-arrival` is a filename prefix relative
+to ComfyUI's output folder; the workflow adds its counter and image extension.
+Scene numbers span the show in **Show / Scene**. With act folders, act numbers
+follow act order, scene numbers restart within each act, and direct scenes use
+their own numbering without an act folder. Names are normalized for file paths
+while preserving Unicode; identically normalized show names share a directory.
+
+Show settings can independently enable a ComfyUI-relative root and an absolute
+local copy root on the computer running Libretto. Each enabled root overrides
+the corresponding Generate-node setting; when disabled, that setting is
+inherited. The selected layout is appended to each root. With workflow default,
+the ComfyUI root is prepended to each workflow filename prefix and local copies
+follow the resulting workflow subfolders (excluding the ComfyUI root).
+With a show layout, local filenames use the scene prefix; if ComfyUI used a
+different prefix, it is retained after the scene prefix.
+Without an enabled ComfyUI root, an explicit Generate-node output prefix takes
+precedence over the show's layout; leave it blank to inherit. The Inspector
+indicates inheritance or an override.
+The default remains the imported workflow's behavior, including for standalone
+scenes. Settings are saved in `show-outline.json` and support organization undo.
+Only future generations use changed layouts, names, and ordering: existing images
+are not moved, and requeuing a result still uses its exact saved workflow.
+
+Use **Undo organization** / **Redo organization** in the context menu, or
+Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z (also Ctrl/Cmd+Y) while the pointer is over Show Outline.
+Creation, renaming, copying, deletion, moves, and reordering are undoable.
+Scene-content edits have separate undo history and are not reverted by organization
+undo. Restoring a deleted scene also restores its saved scene history.
+The last 100 organization changes are kept for the running server session,
+including across page reloads, and reset on app restart or backup restore.
+Conflicting external file changes are reported rather than overwritten.
+
+Panel shortcuts follow the mouse pointer, not keyboard focus. **Delete** removes
+the selected Show Outline item only when the pointer is over the outline; node
+deletion and scene undo/redo apply only over the scene editor. Selection shortcuts
+in Results and scene history, plus Library selection and clipboard shortcuts, are
+likewise limited to their own panels. Text fields retain native editing shortcuts, and open dialogs and
+menus block background panel actions.
+
+Each show is a shareable folder: `ugc/shows/<show-id>/show-outline.json` stores
+its name, acts, and ordering, with `<scene-id>.scene.json` files alongside it.
+Deleting a show removes its folder when empty; unrelated files or folders are
+preserved. Organization undo restores the show folder and its scene files.
+Standalone scenes remain in `ugc/scenes/<scene-id>.json`; nothing is automatically
+relocated. Generated images and local history remain outside show folders.
+Sharing a show folder does not include referenced libraries, ComfyUI workflows,
+or models. Right-click and choose **Refresh shows and scenes from disk** after
+adding or editing show folders externally. Show order is stored in each outline;
+standalone scene order is stored in the scene files, without a global registry.
+Backups include shows; if a merge restore would recreate a scene at an old
+location, it is rejected. Use **Replace all** to restore the complete layout
+(a safety backup is taken first).
 
 ### Work with presets and prompts
 
@@ -110,6 +213,13 @@ the right of the Library browser, edits reusable library presets and autosaves
 those changes. Toggle Preset properties with **N** while the pointer is over
 the Library browser, or use its edge button. Editing a node does not
 automatically change its source preset; save it back explicitly when needed.
+
+Double-click a positive or negative prompt node's text to edit it in place.
+You can also select the node and press **F2** while the pointer is over the scene
+editor, or choose **Edit prompt** in its context menu. **Enter** or clicking
+elsewhere saves; **Shift+Enter** inserts a new line; **Escape** cancels.
+Empty prompts are allowed. Saved edits autosave with the scene and support its
+undo/redo; typing uses normal text-editing shortcuts without moving or deleting nodes.
 
 Use the Library browser's management button to create, copy, import/export,
 or delete libraries. Category settings let you add, rename, color, and reorder
@@ -302,7 +412,8 @@ generation history uses SQLite with per-run snapshot directories.
 | `LB_COMFY_URL` | `http://127.0.0.1:8188` | ComfyUI URL when no URL is saved in Settings |
 | `LB_UGC_ROOT` | `ugc` | Parent of user-generated content and `settings.json` |
 | `LB_LIBRARIES_ROOT` | `ugc/libraries` | Presets and thumbnails, one folder per library |
-| `LB_SCENES_ROOT` | `ugc/scenes` | Saved scene graphs |
+| `LB_SCENES_ROOT` | `ugc/scenes` | Standalone scene graphs |
+| `LB_SHOWS_ROOT` | `ugc/shows` | Show folders containing outlines and scene graphs |
 | `LB_PROFILES_ROOT` | `profiles` | Built-in profiles and workflow templates |
 | `LB_USER_PROFILES_ROOT` | `ugc/profiles` | Imported and edited profiles |
 | `LB_DATA_ROOT` | `ugc/data` | SQLite history, snapshots, and collection state |

@@ -60,7 +60,8 @@ original Silverlight and WPF versions are in the
 ported file names the file it came from, and `docs/CONVERSION-NOTES.md` maps the old architecture
 onto the new one.  [**The modernization story**](docs/MODERNIZATION.md) tells the whole journey:
 the conversion to a modern stack, and then what was built on it - Quinn, multi-tenancy, a fresh UI,
-and OAuth 2.1.
+OAuth 2.1, validation rules in one file, a React client, and a documented API with bounded
+queries.
 
 Have a Silverlight, WPF or DevForce application of your own to take forward?  That is what
 [IdeaBlade](https://www.ideablade.com/modernization/), the team behind Breeze and DevForce, does.
@@ -128,12 +129,6 @@ git clone --recurse-submodules https://github.com/Breeze/temphire.angular.git
 In a clone made without it, run `git submodule update --init` once.  After a `git pull` that moves
 the submodule to another commit, run `git submodule update` to check that commit out.
 
-TempHire's validation uses a preview of
-[IdeaBlade Validation](https://github.com/Breeze/ideablade-validation), which isn't published yet.
-Its packages are in `packages/` and `server/packages/`, and `npm install` and `dotnet` take them
-from there (see [Validation](#validation-comes-from-the-server)), so there is nothing extra to
-install.
-
 Then two terminals. Server first, because the client fetches its Breeze and validation metadata
 from it.
 
@@ -146,7 +141,9 @@ dotnet run
 
 On startup the server creates or migrates its two databases (`TempHire` and `TempHireIdentity`)
 and seeds them with two companies, their users and their staffing resources; see the server's
-[Running it](https://github.com/Breeze/temphire.server#running-it).
+[Running it](https://github.com/Breeze/temphire.server#running-it).  It also describes its API with
+Swagger UI, at `http://localhost:5000/swagger`, where its root redirects; sign in with
+**Authorize** (see the server's [Swagger](https://github.com/Breeze/temphire.server#swagger)).
 
 **2. Client** (`http://localhost:4200`)
 
@@ -316,7 +313,8 @@ Server, shared with the React version.  It lives in its own repository,
 The sections of its README:
 
 - [Running it](https://github.com/Breeze/temphire.server#running-it), with the
-  [sample users](https://github.com/Breeze/temphire.server#sample-users) and the
+  [sample users](https://github.com/Breeze/temphire.server#sample-users),
+  [Swagger](https://github.com/Breeze/temphire.server#swagger) and the
   [tests](https://github.com/Breeze/temphire.server#tests)
 - [Quinn, the assistant](https://github.com/Breeze/temphire.server#quinn-the-assistant):
   [how it works](https://github.com/Breeze/temphire.server#how-it-works),
@@ -324,7 +322,8 @@ The sections of its README:
   [setting up Ollama](https://github.com/Breeze/temphire.server#setting-up-ollama),
   [setting up Claude](https://github.com/Breeze/temphire.server#setting-up-claude),
   [budgets](https://github.com/Breeze/temphire.server#budgets-usage-and-quotas)
-- [Multi-tenancy](https://github.com/Breeze/temphire.server#multi-tenancy)
+- [Multi-tenancy](https://github.com/Breeze/temphire.server#multi-tenancy):
+  [query limits](https://github.com/Breeze/temphire.server#query-limits)
 - [Users and sign-in](https://github.com/Breeze/temphire.server#users-and-sign-in):
   [using TempHire's MCP server from Claude Code](https://github.com/Breeze/temphire.server#using-temphires-mcp-server-from-claude-code),
   [roles](https://github.com/Breeze/temphire.server#roles),
@@ -352,8 +351,7 @@ temphire.angular/
 │   ├── TempHire.sln
 │   ├── TempHire.Model/            # entities, DbContexts, migrations, sample data
 │   ├── TempHire.Server/           # Breeze, validation, OAuth, Quinn and MCP
-│   └── TempHire.Server.Tests/     # dotnet test
-├── packages/                      # the @ideablade/validation preview
+│   └── TempHire.Server.Tests/     # saves, rules, sample data, queries, who may call what
 └── client/
     ├── metadata.json              # Breeze metadata exported from the server (npm run model:metadata)
     └── src/app/
@@ -363,7 +361,7 @@ temphire.angular/
         │   ├── model-display-names.ts  # friendly property names for validation messages
         │   ├── projections/       # non-entity query results (StaffingResourceListItem)
         │   ├── services/          # ← Punch: EntityManagerProvider, UnitOfWork,
-        │   │                      #   Repository, UnitOfWorkManager, toolbar, dialogs, auth
+        │   │                      #   Repository, UnitOfWorkManager<T>, toolbar, dialogs, auth
         │   └── dialogs/
         ├── auth-callback/         # where the sign-in page returns to (code → tokens)
         ├── home/                  # ← ViewModels/HomeViewModel.cs
@@ -400,7 +398,7 @@ The rest of the WPF-era dependencies did not need replacing so much as *deleting
 
 | Original | Replacement | Why |
 |---|---|---|
-| Caliburn.Micro (MVVM, conventions, `IEventAggregator`) | Angular components and signals | Angular already is an MVVM framework; the event aggregator's messages become signals (`UnitOfWork.changes`, `UnitOfWorkManager.saves`) |
+| Caliburn.Micro (MVVM, conventions, `IEventAggregator`) | Angular components and signals | Angular already is an MVVM framework.  The event aggregator stays (`EventAggregator`), its messages become signals (`lastSave`, `lastLogout`) that whoever cares reads; a unit of work's own changes are a signal on it (`UnitOfWork.changes`) |
 | Punch (`IUnitOfWorkManager`, `IRepository`, `IFactory`, `IDialogManager`, `IBusyWatcher`, `INavigator`) | Hand-ported into `core/services` | These are ~250 lines of pattern, and porting them keeps the app's architecture recognisable. Navigation becomes the Angular router |
 | MEF (`[Export]`, `[ImportMany]`) | Angular DI + explicit lists | Angular DI covers the singleton/scoped cases; the two places MEF was used for *discovery* (workspaces, detail sections) are now explicit lists, called out in the code |
 | Xceed WPF Toolkit `BusyIndicator` | `BusyService` + `p-progressSpinner` | |
@@ -424,8 +422,8 @@ The client is meant to show current Angular, not just to run on it:
   `EntityManager`'s change events into a counter signal, `UnitOfWork.changes`, plus a `hasChanges`
   signal.  The toolbar's Save and Cancel derive from those, so an edit anywhere in a sandbox
   enables Save without any subscription.
-- **`resource()`** loads the search results; its params are the search text and the save counter,
-  so a save anywhere reloads the list.
+- **`resource()`** loads the search results; its params are the search text and the latest save
+  (`EventAggregator.lastSave`), so a save anywhere reloads the list.
 - **Signal Forms** (`@angular/forms/signals`) for the forms over plain data: login, the search box
   and the name editor.  The entity editors keep `[(ngModel)]` bound straight to the Breeze
   entities, as Breeze recommends: a Signal Form would hold a second copy of every value, kept in
@@ -443,12 +441,9 @@ The client is meant to show current Angular, not just to run on it:
 
 ### Validation comes from the server
 
-> **Preview.**  Validation uses a preview of IdeaBlade Validation (`0.1.0-preview.10`), which
-> isn't published to NuGet or npm yet: the builds are in `packages/` and `server/packages/`,
-> where `client/package.json` and the server's `nuget.config` find them (`packages/README.md`
-> explains how to update them).  The framework's API may still change before its first release,
-> and so may its name - the `IdeaBlade.Validation` / `@ideablade/validation` packages and their
-> namespaces and imports.
+> Validation uses IdeaBlade Validation 0.1.0: [`ideablade-validation`](https://www.npmjs.com/package/ideablade-validation)
+> on npm and [`IdeaBlade.Validation`](https://www.nuget.org/packages/IdeaBlade.Validation) on NuGet.
+> As with any 0.x version, its API may still change between minor versions.
 
 The validation rules are written once, on the server, in two places:
 
@@ -460,7 +455,7 @@ The validation rules are written once, on the server, in two places:
   3 digits); a rate is a valid amount and not negative; dates are valid dates; a date of birth is
   neither in the future nor more than 123 years ago; and a staffing resource has at least one
   address and one phone number, and it is at least 18 years old when hired.  These use
-  [IdeaBlade.Validation / `@ideablade/validation`](https://github.com/Breeze/ideablade-validation),
+  [IdeaBlade.Validation / `ideablade-validation`](https://github.com/Breeze/ideablade-validation),
   which reads the same metadata on both sides.
 
 The metadata's global `breeze` validator brings in the annotations: on the client it runs Breeze's
@@ -511,8 +506,9 @@ The forms add no rules of their own; they show the verdict:
   validates the unit of work again when Save is clicked (`validateEntityStoreOneTime`), since the
   continuous result catches up with an edit a moment later and a Save clicked right after an edit
   would otherwise miss it.  Nothing is saved while any rule is broken, async ones included: the
-  handler shows every error and says why.  After a save (or a deletion, `commit`) it drops the
-  shared unit of work's cache, so the read-only views re-read what was saved.
+  handler shows every error and says why.  After every save (a deletion too), each unit-of-work
+  manager drops its shared cache, on the saved event (`EventAggregator`), so the read-only views
+  re-read what was saved.
 - **A new resource is not all red at once.**  The screen's `ErrorVisibility`
   (`provideErrorVisibility({ isNew: breezeIsNew, watchEntityStore: true })` in
   `ResourceMgtComponent`) decides which errors to show; validation itself is unchanged.  Loaded
@@ -592,20 +588,18 @@ are in [its README](https://github.com/Breeze/temphire.server#configuration).
 
 ## Known gaps
 
-- **A temporary workaround for a breeze-client 3.0.0 bug.** Breeze 3.0.0 fails any request whose
-  successful response has an empty body: a **204 No Content**, which ASP.NET Core sends whenever a
-  controller action returns `null`, or a 200 with no body. The query rejects with
-  `SyntaxError: Unexpected end of JSON input` instead of resolving with no results. None of
-  TempHire's current endpoints send such a response, but a new action that can return `null`
-  would. `app.config.ts` therefore wraps Breeze's fetch function in `emptyBodyAsNull`
-  (`client/src/app/core/services/breeze-fetch.ts`), the workaround from the
-  [breeze-client release notes](https://github.com/Breeze/breeze-client-v3/blob/fix/empty-response-body/RELEASE-NOTES.md).
-  The fix is on the `fix/empty-response-body` branch of breeze-client-v3 and not yet released.
-  **When you upgrade to a release with the fix**, `breeze-fetch.spec.ts` fails its "without the
-  workaround" test; that is the signal to delete `breeze-fetch.ts` and its spec, and to pass
-  `httpClientFetch(inject(HttpClient))` to `configureBreeze` directly.
-- **Few automated tests.** The original had none. `ng test` runs the client's (Vitest), and
-  `dotnet test` in `server/` the server's.
+- **No end-to-end tests.** The original had no tests at all; the conversion has unit tests on both
+  tiers, over 100 in the client (`ng test`, Vitest) and over 60 on the server (`dotnet test` in
+  `server/`).  The client's cover:
+  - the services: the sign-in guard and token handling, the dialogs, the global
+    error handler, the save handler and the staffing resource repository;
+  - validation: the server's rules as the client runs them, the field bindings and display names;
+  - Resource Management: the search box, the grid's selection, the summary, the address list, the
+    tabs' error marks and the "Not saved" message;
+  - Quinn's links to people, and the usage page.
+
+  The server's are listed in [its README](https://github.com/Breeze/temphire.server#tests).  The
+  screens themselves were checked by hand in a browser.
 
 The server's own known gaps are in [its README](https://github.com/Breeze/temphire.server#known-gaps).
 

@@ -76,13 +76,21 @@ Listen to sample podcasts generated using Podcast-LLM:
    # Research mode (default) - automatically researches the topic
    podcast-llm "Artificial Intelligence"
 
-   # Context mode - uses provided sources
-   podcast-llm "Machine Learning" --mode context --sources paper.pdf https://example.com/article
+   # Context mode - write and render a source-grounded episode
+   podcast-llm "Machine Learning" --mode context --sources paper.pdf https://example.com/article \
+     --audience "Software developers new to ML" --target-minutes 6 \
+     --text-output podcast.md --audio-output podcast.mp3
    ```
+
+   Context mode uses Claude Sonnet 5.5 and `ANTHROPIC_API_KEY` by default to write
+   a chaptered script with source references. Select `google` or `openai` with
+   `context_writer_provider` in YAML to switch providers. You can override the
+   model or add an editorial pass using the
+   [configuration options](docs/source/configuration.rst#llm-configuration).
 
 2. Options:
    ```bash
-   # Customize number of Q&A rounds per section
+   # Customize number of Q&A rounds per section in research mode
    podcast-llm "Linux" --qa-rounds 3
 
    # Disable checkpointing
@@ -101,7 +109,17 @@ Listen to sample podcasts generated using Podcast-LLM:
    Set each speaker's voice under the matching `tts_settings` entry. See the
    [configuration examples](docs/source/configuration.rst#text-to-speech-configuration).
 
-4. Launch the Gradio web interface:
+4. Render a saved Markdown transcript:
+
+   ```bash
+   podcast-llm render podcast.md --config voices.yaml --output podcast.wav
+   ```
+
+   Run the same command again after an interruption or script edit. Completed
+   speech batches are stored under `checkpoint_dir/audio` by chapter. Use
+   `--cache-dir` to choose a different location.
+
+5. Launch the Gradio web interface:
    ```bash
    # Start the web UI
    podcast-llm-gui

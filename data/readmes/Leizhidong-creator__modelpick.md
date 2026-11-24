@@ -12,10 +12,14 @@ Coding, image, video, 3D, and audio. One CLI, one MCP server, every agent.</p>
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-39c5cf" /></a>
   <a href="package.json"><img alt="node" src="https://img.shields.io/badge/node-%3E%3D20.11-339933" /></a>
   <a href="https://modelcontextprotocol.io"><img alt="MCP" src="https://img.shields.io/badge/MCP-stdio-8a5cf6" /></a>
-  <img alt="tests" src="https://img.shields.io/badge/tests-217%20passing-3fb950" />
+  <img alt="tests" src="https://img.shields.io/badge/tests-230%20passing-3fb950" />
   <img alt="adversarial" src="https://img.shields.io/badge/adversarial-28%2F28-3fb950" />
   <img alt="dependencies" src="https://img.shields.io/badge/runtime%20deps-0-3fb950" />
 </p>
+
+[![ModelPick MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/Leizhidong-creator/modelpick/badges/card.svg)](https://glama.ai/mcp/servers/Leizhidong-creator/modelpick)
+[![M8ven Score](https://m8ven.ai/badge/mcp/leizhidong-creator-modelpick-km8w2n?v=ed60169f8adcb5a2d35ee972699f4802)](https://m8ven.ai/mcp/leizhidong-creator-modelpick-km8w2n?s=readme)
+
 
 <p align="center"><a href="https://leizhidong-creator.github.io/modelpick/">Website</a> · <a href="https://leizhidong-creator.github.io/modelpick/#video">intro video (93s)</a> · <a href="docs/VALUE.md">How value is defined</a> · <a href="docs/ECOSYSTEM.md">Ecosystem</a></p>
 
@@ -25,11 +29,12 @@ Your agent can write code, call tools, and ship a feature. Then it picks **one m
 
 The result is predictable: 60–95% of the spend goes to work that did not need a frontier model, and the hard nodes still fail because the model was chosen for the wrong modality.
 
-**ModelPick is a router and cost calculator, not another gateway.** Before each node, it answers three questions in one call:
+**ModelPick is a router, cost calculator, and local-key executor — not another gateway.** Before each node it answers four questions:
 
 1. **Which model?** Ranked for this exact task, with hard capability filters (context, text-in-image, rigging, clip length, open weights).
 2. **What will it really cost?** **Cost per solved task** — list price × expected attempts, not $/M tokens.
 3. **How do I connect it?** The env var, key URL, docs, and API model id.
+4. **How do I run it?** `run_model` executes text models with the key that stays on this machine; the main agent passes compressed `system`, `messages`, `context`, and an optional JSON output schema.
 
 ```bash
 npx -y github:Leizhidong-creator/modelpick pick "create a stylized 3D sword for a Unity game"
@@ -43,7 +48,28 @@ npx -y github:Leizhidong-creator/modelpick pick "create a stylized 3D sword for 
   <a href="https://leizhidong-creator.github.io/modelpick/#video"><img src="assets/modelpick-intro-thumb.png" alt="Watch the ModelPick intro video" width="72%" /></a>
 </p>
 
-<p align="center"><a href="https://leizhidong-creator.github.io/modelpick/#video"><strong>▶ Watch the intro video with English + 中文 captions</strong></a> · <a href="https://github.com/Leizhidong-creator/modelpick/releases/download/v0.2.0/modelpick-intro.mp4">direct MP4</a> · <a href="launch/video-storyboard.md">script &amp; storyboard</a> · <a href="assets/modelpick-intro.bilingual.srt">English + 中文 captions</a></p>
+<p align="center"><a href="https://leizhidong-creator.github.io/modelpick/#video"><strong>▶ Watch the intro video with English + 中文 captions</strong></a> · <a href="https://github.com/Leizhidong-creator/modelpick/releases/download/v0.2.2/modelpick-intro.mp4">direct MP4</a> · <a href="launch/video-storyboard.md">script &amp; storyboard</a> · <a href="assets/modelpick-intro.bilingual.srt">English + 中文 captions</a></p>
+
+
+---
+
+## Start here
+
+Four steps. The first two take about a minute.
+
+| Step | Command | What happens |
+|---|---|---|
+| **1. Install** | `npm install -g modelpick` | CLI + MCP server. Node 20+, zero runtime dependencies. |
+| **2. Add a key** | `modelpick keys --ui` | Local page. Pick a provider, click **Get a key**, paste, **Save & test**. Stored in `~/.modelpick/secrets.json` (`0600`). |
+| **3. Connect an agent** | `modelpick setup claude-code --global --write` | One-time MCP registration. Cursor: `setup cursor --global --write`; Codex: `setup codex --global --write`. Restart the app. |
+| **4. Run or ask** | `modelpick run "fix this bug" --task coding-agent` | Or let the connected agent call `pick_model` / `run_model`. |
+
+- **No key yet?** Recommendations work offline. Local Ollama works with no key: `modelpick run "hello" --local`.
+- **Guided install:** https://leizhidong-creator.github.io/modelpick/install.html
+- **Key security:** [`docs/KEYS.md`](docs/KEYS.md)
+- **All agent configs:** [`#works-with-the-agents-you-already-use`](#works-with-the-agents-you-already-use)
+
+**What executes today:** text models through OpenAI, Anthropic, Gemini, DeepSeek, and OpenRouter, plus local Ollama. Image, video, 3D, and audio execution adapters are next; recommendations cover all five modalities now.
 
 ---
 
@@ -77,6 +103,10 @@ More: [`research/competitive-landscape.md`](research/competitive-landscape.md) (
 
 ## 30-second quickstart
 
+**Step-by-step start page:** https://leizhidong-creator.github.io/modelpick/start.html
+
+**Guided install page:** https://leizhidong-creator.github.io/modelpick/install.html
+
 ### Windows: one command, no prompts
 
 ```bat
@@ -92,7 +122,7 @@ npx --yes --package=modelpick@latest modelpick keys --ui
 
 Or double-click the launcher:
 
-https://leizhidong-creator.github.io/modelpick/start-modelpick.cmd
+https://leizhidong-creator.github.io/modelpick/install.html
 
 Do **not** paste bash comments (`# ...`) into CMD; CMD does not understand `#`.
 
@@ -145,7 +175,7 @@ npx --yes github:Leizhidong-creator/modelpick pick "refactor this 40k-line repo,
 npm install modelpick --registry=https://leizhidong-creator.github.io/modelpick/npm/
 
 # offline release tarball
-npm install https://github.com/Leizhidong-creator/modelpick/releases/download/v0.2.0/modelpick-0.2.0.tgz
+npm install https://github.com/Leizhidong-creator/modelpick/releases/download/v0.2.2/modelpick-0.2.2.tgz
 ```
 
 <p align="center">
@@ -160,9 +190,9 @@ npm install https://github.com/Leizhidong-creator/modelpick/releases/download/v0
 
 | Agent | Command | MCP file it uses |
 |---|---|---|
-| **Claude Code** | `setup claude-code` | `.mcp.json` (project) or `~/.claude.json` (`--global`) |
-| **OpenAI Codex CLI** | `setup codex` + `codex mcp add` | `~/.codex/config.toml` |
-| **Cursor** | `setup cursor` | `.cursor/mcp.json` |
+| **Claude Code** | `setup claude-code --global --write` | `~/.claude.json` |
+| **OpenAI Codex CLI** | `setup codex --global --write` | `~/.codex/config.toml` |
+| **Cursor** | `setup cursor --global --write` | `~/.cursor/mcp.json` |
 | **DeepSeek Harness** | `setup dsh --global --write --profile desktop` | `~/.dsh/profiles/<profile>/cordis.patch.yml` |
 | **GitHub Copilot CLI** | `setup copilot` | `.mcp.json` |
 | **VS Code / Copilot agent mode** | `setup vscode` | `.vscode/mcp.json` (`servers`) |
@@ -171,12 +201,12 @@ npm install https://github.com/Leizhidong-creator/modelpick/releases/download/v0
 ### Claude Code
 
 ```bash
-npx -y github:Leizhidong-creator/modelpick setup claude-code
-# writes .mcp.json, .claude/skills/modelpick/, and a CLAUDE.md block
+modelpick setup claude-code --global --write
+# writes ~/.claude.json plus the global skill
 claude mcp list        # modelpick should appear
 ```
 
-Restart Claude Code, run `/mcp`, and approve the project server. Then ask: `pick a model for a 3D sword for Unity`.
+Restart Claude Code, run `/mcp`, and approve the global server. Then ask: `pick a model for a 3D sword for Unity`.
 
 Plugin alternative, inside Claude Code:
 
@@ -188,25 +218,24 @@ Plugin alternative, inside Claude Code:
 ### OpenAI Codex CLI
 
 ```bash
-npx -y github:Leizhidong-creator/modelpick setup codex
-# or write the global MCP row directly, with a backup:
-npx -y github:Leizhidong-creator/modelpick setup codex --global --write
+# writes the global MCP row with a backup
+modelpick setup codex --global --write
 codex mcp list
 ```
 
 `setup codex` writes `AGENTS.md` and `.agents/skills/modelpick/`. Codex reads MCP servers from `~/.codex/config.toml`, so `--global --write` appends the row or you can use `codex mcp add`:
 
 ```bash
-codex mcp add modelpick -- npx -y github:Leizhidong-creator/modelpick mcp
+codex mcp add modelpick -- modelpick mcp
 ```
 
 ### Cursor
 
 ```bash
-npx -y github:Leizhidong-creator/modelpick setup cursor
+modelpick setup cursor --global --write
 ```
 
-It writes `.cursor/mcp.json`, `.cursor/rules/modelpick.mdc`, `.cursor/skills/modelpick/`, and `AGENTS.md`. Open **Cursor → Settings → MCP** and confirm `modelpick` is connected.
+It writes `~/.cursor/mcp.json` plus the global skill. Open **Cursor → Settings → MCP** and confirm `modelpick` is connected.
 
 ### DeepSeek Harness
 
@@ -482,7 +511,47 @@ modelpick run "review this diff" --provider anthropic
 modelpick run "hello" --local --model qwen-local:latest
 ```
 
-Cloud execution currently covers **text** models through OpenAI, Anthropic, Gemini, DeepSeek, and OpenRouter. Image, video, 3D, and audio execution adapters are next. The key is read from the local store/env and is never accepted as an argument.
+
+#### Context contract
+
+The main agent owns the conversation and the repository. It **compresses and selects** the node context; ModelPick does not crawl files or build RAG.
+
+`run_model` accepts:
+
+```json
+{
+  "system": "You are a senior TypeScript reviewer.",
+  "messages": [
+    { "role": "user", "content": "Here is the compressed diff..." },
+    { "role": "assistant", "content": "I see the race." },
+    { "role": "user", "content": "Fix it without changing the API." }
+  ],
+  "context": "Optional selected file excerpts, logs, or constraints",
+  "output": {
+    "format": "json",
+    "schema": { "type": "object", "required": ["fix"], "properties": { "fix": { "type": "string" } } }
+  }
+}
+```
+
+- `system` is separate.
+- `context` is prepended to the first user message.
+- `output.format: "json"` parses and validates the provider output before returning.
+- Token budget comes from the model context window minus `max_tokens` and a safety margin.
+- If the budget is exceeded, ModelPick returns `ERR_CONTEXT_TOO_LARGE` and **does not silently truncate**.
+- The response includes `context.estimatedInputTokens`, `inputBudget`, `outputReserved`, and `truncated`.
+
+CLI equivalent:
+
+```bash
+modelpick run "fix the race" --task coding-agent \
+  --system "You are a senior TypeScript reviewer." \
+  --context-file diff.patch \
+  --output json --schema schema.json
+```
+
+The key is read from the local store/env and is never accepted as an argument. Image, video, 3D, and audio execution adapters are next.
+
 
 ### Run locally with no key
 

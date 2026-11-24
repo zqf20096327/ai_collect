@@ -352,3 +352,9 @@ repo with an AI coding agent.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Support
+
+This project is free and open source. If it saved you time, you can [buy me a coffee on Ko-fi](https://ko-fi.com/aryamansinha).
+
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-F2B826?logo=ko-fi&logoColor=white)](https://ko-fi.com/aryamansinha)

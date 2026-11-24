@@ -10,6 +10,10 @@ Pick a folder in [`zaps/`](zaps) and paste this into your AI agent, with the fol
 
 The agent follows the zap's `SKILL.md`: it asks for your values, then builds, tests and turns on the Zap in your Zapier account. It builds with Zapier MCP, and walks you through connecting it if your agent isn't connected yet.
 
+## Built on durable
+
+Every zap's `workflow.ts` is a [`defineDurable`](https://github.com/zapier/durable) workflow: plain async code whose steps are journaled, and that can wait or pause for a callback and resume after a restart. Zapier runs it for you, and the same code runs on your own compute. See the [durable README](https://github.com/zapier/durable#readme) for `ctx.step`, `ctx.wait` and `ctx.createCallback`.
+
 ## A zap's folder
 
 Each zap is a folder of plain files:

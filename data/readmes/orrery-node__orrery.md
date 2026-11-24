@@ -481,7 +481,7 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 
 Task budgets: send `x-orrery-task: <name>` on every request of a job and `x-orrery-task-budget: 0.05` on the first. A tool that cannot add headers can say the same in its API key: `orrery/<task>/<budget>` (from 0.1.13). The router keeps one running total per task, answers with `x-orrery-task-spent` and `x-orrery-task-left`, and refuses the next request once the budget is gone with a 402 that carries the same two headers from 0.1.15 (`GET /orrery/tasks` lists them; over MCP, `task` and `task_budget`). Budgets are kept in `~/.orrery/router/tasks.json`, so they survive a restart, and `orrery spend --by task` adds up what each job cost from the router's own log. `orrery sealed` lists every private answer with the enclave the router had verified.
 
-Router flags: `--route`, `--deposit` (2), `--top-up-below` (0.25), `--daily-cap` (5), `--min-reputation` (0.2), `--port` (7171), `--refresh` (60), `--enclave-images`, `--alias` (`claude-*=llama-3.3-70b`: answer other model names with a network model). Environment: `ORRERY_WALLET`, `ORRERY_RPC_URL`, `ORRERY_HOME` (`~/.orrery`), `ORRERY_ALIASES`.
+Router flags: `--route`, `--deposit` (2), `--top-up-below` (0.25), `--daily-cap` (5), `--min-reputation` (0.2), `--port` (7171), `--refresh` (60), `--frame-ms` (100: paced answer frames on sealed requests, `0` turns it off; `x-orrery-frame-ms` on one request), `--enclave-images`, `--alias` (`claude-*=llama-3.3-70b`: answer other model names with a network model). Environment: `ORRERY_WALLET`, `ORRERY_RPC_URL`, `ORRERY_HOME` (`~/.orrery`), `ORRERY_ALIASES`, `ORRERY_NO_UPDATE_CHECK` (`1`: no npm update check in `doctor` and `provider check`).
 
 ## Router console
 
@@ -619,7 +619,7 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] Payment inside the seal: to a node that says it reads it there, the channel and voucher travel sealed, so a hosting platform in front of the node cannot tell which wallet pays (0.1.16)
 - [x] Requests padded to a size class before sealing, so their length on the wire shows the class and not the prompt's length (0.1.16)
 - [x] Answer frames padded to whole 256-byte blocks, so their lengths do not spell out the tokens (0.1.16)
-- [ ] Hide how many frames an answer has and when they go out
+- [x] Paced answer frames: on a sealed request the router asks for one frame every 100 ms, and the node sends the first chunk at once, then a frame each beat with whatever came in (or nothing), padded to one 4 KiB block, so how many frames there are follows the time the answer took and not its tokens (`--frame-ms`, `0` turns it off)
 - [x] The proxy checked from the far side: a node answers `GET /v1/seen` with the address it saw, and `orrery doctor` asks it through your proxy and prints a `seen as` line, which fails when the node saw one of this computer's own addresses (0.1.15)
 - [x] One connection to a node carries answer after answer, with or without a proxy (0.1.15)
 - [x] A router that lost its records and cannot reach the node does not open a second channel beside the first (0.1.16)
@@ -643,6 +643,8 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] $OREY holders go first on a busy node (`"slots"`), routers keep what holding saved them (`orrery spend`), every new node starts with holder prices (`provider init`), payouts ping a webhook as they land (`"notify"`), and both sides keep books by day and month (0.1.24)
 - [x] Agent wallets: a daily limit and a bill per agent (`--agent-cap`, `orrery spend --by agent`), set from `orrery mcp --agent` or `orrery connect --agent`; reranking at `/v1/rerank` and in MCP; a model's `"kind"` in its listing; holder lanes (`"holderSlots"`) and holder-first models (`"holdersOnly"`); routers and nodes draw their month as a card, and nodes close each month in their log (0.1.25)
 - [x] Speech (`/v1/audio/speech`) and images (`/v1/images/generations`) next to chat on the same channels, an `image` tool in `orrery mcp`, routers that pay for no more images than came back and count a screenshot as at most 8,192 tokens, `orrery quote` by the text and by the picture, `provider vouchers`, books by kind of work at midnight UTC, and `provider check` refusing free work (0.1.26)
+- [x] Privacy you can check (one line in `orrery doctor`, the router console and MCP; every quote prices `:private`; `orrery spend` shows the enclave part of the bill), money a node can follow (every payout added up, a refused round said with why, the webhook told before fee SOL runs out), a `spend` tool for agents, and `orrery connect opencode` / `aider` (0.1.27)
+- [x] Answers on a hidden beat: sealed answers come back one 4 KiB frame every 100 ms (`--frame-ms`), the router says which nodes paced theirs, and the router and the node say which release they run and when an update needs a restart (0.1.28)
 - [ ] A run through Tor itself
 - [ ] $OREY bonds live on mainnet
 

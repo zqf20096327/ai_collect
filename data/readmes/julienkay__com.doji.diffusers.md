@@ -24,12 +24,42 @@ As of today only a limited number of pipelines and schedulers are supported (see
 
         Name: Doji
         URL: https://package.openupm.com
-        Scope(s): com.doji
+        Scope(s): tools.doji
  
-  4. In the Package Manager install `com.doji.diffusers` either by name or select it in the list under `Package Manager -> My Registries`
-  5. For the time being,  you also have to use a custom fork of Sentis: In the package Manager -> `Package Manager -> Install package from git URL-> https://github.com/julienkay/com.unity.sentis.git`
+  4. In the Package Manager install `tools.doji.diffusers` either by name or select it in the list under `Package Manager -> My Registries`
 
 </details>
+
+### Models
+
+Models are delivered by [AI Model Hub] (`tools.doji.model-hub`), which is installed with this package.
+
+- The package declares no model. Add the models you use to the project's manifest in `Project Settings > Doji > AI > AI Model Hub`, then download them there or in `Window > AI Model Hub`. One entry per model is enough, for example the default model [julienkay/sd-turbo]:
+
+  ```json
+  { "id": "julienkay/sd-turbo", "revision": "3c071e3da77c6e88ec2f174a185ce76ddd801c2a" }
+  ```
+
+  Without `files`, AI Model Hub takes every file of the repository, which is right for a diffusers ONNX export. Pin a commit as `revision` for reproducible builds.
+- List `files` only when the repository holds more than the pipeline reads, for example PyTorch weights, `.sentis` copies, or components such as `safety_checker`. The pipelines read `model_index.json`, `scheduler/scheduler_config.json`, the `tokenizer/` files, and the `.onnx` files and configs of `text_encoder`, `unet`, `vae_decoder` and (for img2img) `vae_encoder`; SDXL also `tokenizer_2/` and `text_encoder_2/`.
+- Builds bundle the models, or download them at runtime, as the AI Model Hub project settings say.
+
+Review each model's license on Hugging Face before you use it.
+
+### Usage
+
+```csharp
+using Doji.AI.Diffusers;
+
+// Works on every platform. Models set to download at runtime are fetched on first use.
+var pipeline = await DiffusionPipeline.FromPretrainedAsync("julienkay/sd-turbo", progress: progress);
+var image = await pipeline.GenerateAsync("a cat", numInferenceSteps: 1, guidanceScale: 0f);
+
+// High-level wrapper with txt2img and img2img, rendering to a RenderTexture.
+using var sd = await StableDiffusion.FromPretrainedAsync("julienkay/sd-turbo");
+```
+
+`FromPretrained` (without `Async`) loads without waiting. It works in the Editor and for bundled or already downloaded models on Windows, macOS, Linux and iOS.
 
 ### Features/Roadmap
 Some things that might be worked on next are:
@@ -40,12 +70,14 @@ Some things that might be worked on next are:
   - [x] SDXL
   - [x] SD-Turbo
   - [x] SDXL-Turbo
+  - [x] FLUX.2 [klein] (txt2img)
   - [ ] LoRA models
 - [ ] more scheduler implementations
   - [x] PNDM
   - [x] DDIM
   - [x] EulerDiscrete
   - [x] EulerAncestralDiscrete
+  - [x] FlowMatchEulerDiscrete
   - [ ] LCM
   - [ ] DDPM
   - [ ] KDPM2Discrete
@@ -62,12 +94,15 @@ Some things that might be worked on next are:
 - [ ] write some documentation
 
 ### Dependencies
-- [com.doji.transformers]
-- [com.doji.pngcs]
+- [AI Model Hub] (`tools.doji.model-hub`)
+- [tools.doji.transformers]
+- [tools.doji.pngcs]
 
-[OpenUPM]: https://openupm.com/packages/com.doji.diffusers
-[Documentation (coming soon)]: https://github.com/julienkay/com.doji.diffusers
+[OpenUPM]: https://openupm.com/packages/tools.doji.diffusers
+[Documentation (coming soon)]: https://github.com/julienkay/tools.doji.diffusers
 [Feedback/Questions]: https://discussions.unity.com/t/stable-diffusion-diffusers-transformers-package/332701?u=julienkay
 [diffusers]: https://github.com/huggingface/diffusers
-[com.doji.transformers]: https://github.com/julienkay/com.doji.transformers
-[com.doji.pngcs]: https://github.com/julienkay/com.doji.pngcs
+[tools.doji.transformers]: https://github.com/julienkay/tools.doji.transformers
+[tools.doji.pngcs]: https://github.com/julienkay/tools.doji.pngcs
+[AI Model Hub]: https://docs.doji-tech.com/tools.doji.model-hub
+[julienkay/sd-turbo]: https://huggingface.co/julienkay/sd-turbo

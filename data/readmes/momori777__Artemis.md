@@ -154,7 +154,7 @@ From *Dimension W Lovers!!*. Former student council president and the academy's 
 The four core capabilities (LLM + TTS + ComfyUI + Live2D) are currently **disconnected** - the LLM doesn't know what Live2D is doing, ComfyUI doesn't sense conversational emotion. Cosmos fills the **physical common-sense layer**:
 
 ```
-Qwen3.6-35B (Language Mind) ←→ Cosmos 3 Nano / Qwen-Drive-1.0 (Physical Mind)
+Inkling-2-Mini-26B (Language Mind) ←→ Cosmos 3 Nano / Qwen-Drive-1.0 (Physical Mind)
    Language + Emotion             Spatial + Scene Generation
 ```
 
@@ -162,7 +162,7 @@ Qwen3.6-35B (Language Mind) ←→ Cosmos 3 Nano / Qwen-Drive-1.0 (Physical Mind
 
 | Component | Model | Params | VRAM | System RAM |
 |-----------|-------|--------|------|------------|
-| 🧠 Language Mind | Qwen3.6-35B-A3B (MoE) | 35B total / 3B active | ~6–8 GB | 32 GB (experts resident) |
+| 🧠 Language Mind | Inkling-2-Mini-26B (MoE) | 26B total / 8-of-128 experts | ~6 GB | 16 GB |
 | 🌍 Physical Mind | Cosmos 3 Nano FP8 | 15.75B | ~16 GB | 16 GB |
 
 ### Hardware Roadmap
@@ -244,7 +244,7 @@ See [`models.yaml`](models.yaml) for full details.
 
 | Model | Purpose | Size | Context |
 |-|-|-|-|
-| **LuffyTheFox Qwen3.6-35B-A3B Genesis Hermes Final MTP APEX** (GGUF) | Chat LLM (primary MoE — **6 GB VRAM + 32 GB RAM**, `--cpu-moe`) | 24.9 GB | 120K |
+| **Inkling-2-Mini-26B Heretic Uncensored Turbo Brilliance 50X V2 AGI NEO** (Q4_K_M GGUF) | Chat LLM (primary MoE — **6 GB VRAM + 16 GB RAM**) | 16.3 GB | **1M** |
 | **Qwen3.8-27B Ultimate Heretic Uncn Turbo Brilli 50x AGI NEO MTP** (Q4_K_M GGUF) | Chat LLM (dense, tooling — **24 GB VRAM + 32 GB RAM**) | ~15.7 GB | 130K |
 | **Qwen3.6-27B-Fable-MTP** (Q4_K_S GGUF) | Chat LLM (dense, legacy) | 13.5 GB | 150K |
 | **DeepSeek-V4-Pro-Qwen3.5-9B heretic** (Q4_K_M GGUF, uncensored) | Chat LLM (**fits fully in 8 GB VRAM**, `-ngl 99`; 16 GB RAM enough) | ~6.1 GB | **≤ 120K** (KV cache **must** be q4_0) |
@@ -280,6 +280,9 @@ huggingface-cli download TAOTAO777/ai-girlfriend-natsume live2d-model/ --local-d
 
 # DeepSeek-V4-Pro-Qwen3.5-9B heretic Q4_K_M (mirror of our repo's llm/ folder, fits 8 GB VRAM):
 huggingface-cli download TAOTAO777/ai-girlfriend-natsume llm/DeepSeek-V4-Pro-Qwen3.5-9B-UNCENSORED-heretic-Q4_K_M.gguf --local-dir ./models
+
+# Inkling-2-Mini-26B heretic Q4_K_M (primary chat model — 6 GB VRAM + 16 GB RAM):
+huggingface-cli download TAOTAO777/ai-girlfriend-natsume llm/Inkling-2-Mini-26B-Heretic-Uncensored-Turbo-Brilliance-50X-V2-AGI-NEO-Q4_K_M.gguf --local-dir ./models
 ```
 
 > 🇨🇳 Users in China: use hf-mirror.com - no VPN needed:
@@ -297,7 +300,9 @@ All Python/PS scripts read paths from `config.yaml` - no hardcoded paths to edit
 
 ## Local LLM Performance
 
-Running **Qwen3.6-35B-A3B Genesis Hermes Final MTP APEX** (MoE, 24.9 GB, 34.66B params, 8/256 experts) via llama.cpp with speculative MTP (Multi-Token Prediction) decoding.
+Running **Inkling-2-Mini-26B Heretic** (MoE, 16.3 GB, 26B params, 8-of-128 experts, **1M-token** context) via llama.cpp. It replaces the previous **Qwen3.6-35B-A3B Genesis Hermes Final MTP APEX** as the primary chat model — same role at two-thirds the size.
+
+**Inkling-2-Mini-26B Heretic (Q4_K_M)** — Apache-2.0 base [thinkingmachines/Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini) → heretic/uncensored fine-tune → Q4_K_M GGUF. **16.3 GB on disk**, runs on **6 GB VRAM + 16 GB RAM**; needs a llama.cpp build with **Inkling2** support (`inkling2_loop`, build **b12521+**). Hosted in this repo: `llm/Inkling-2-Mini-26B-Heretic-Uncensored-Turbo-Brilliance-50X-V2-AGI-NEO-Q4_K_M.gguf`.
 
 ### Minimum hardware per model — VRAM **and** system RAM
 
@@ -306,15 +311,15 @@ Both budgets are listed; for MoE models the **RAM** number is usually the bindin
 | Model | Min VRAM | Min system RAM | Why that much RAM |
 |-|-|-|-|
 | DeepSeek-V4-Pro-Qwen3.5-9B heretic Q4_K_M (§1) | **8 GB** — whole model on-GPU | 16 GB | weights all live on the card; RAM only carries the OS + the 2 GB `--cache-ram` KV spill |
-| Hermes3.6-35B-A3B Final MoE (`--cpu-moe`) (§3) | **6 GB** | **32 GB** | 24.9 GB of expert weights live in **system RAM**; only the ~3B active params + KV + MTP draft need VRAM |
+| Inkling-2-Mini-26B Heretic MoE (§3) | **6 GB** | **16 GB** | 16.3 GB of weights are split between VRAM and system RAM (mmap); only 8 of 128 experts are active per token |
 | Qwen3.8-27B Ultimate Heretic Q4_K_M, dense `-ngl 99` (§2) | **24 GB** — whole model on-GPU | **32 GB** | the card holds the weights; RAM must hold the 20 GB `--cache-ram` prefix cache + the OS |
 | Qwen3.8-27B Q4_K_M, **partial** `-ngl N` (retired 8 GB route) | 8 GB | 32 GB | the layers that don't fit stay in RAM and are re-read from RAM on every token |
 | Qwen3.8-Flash-Next IQ3_S — **Strata**, 125B MoE (§5) | **8 GB floor** (24 GB for the 131K-context figures below) | **64 GB** | **all experts must be resident in system RAM** — the IQ3_S shards are 83.8 GB on disk; under 64 GB the experts spill and decode speed collapses |
 
 > 🧮 Rule of thumb: a **dense** model is VRAM-limited (RAM only has to cover `--cache-ram`
 > + OS), an **MoE** model is RAM-limited — every expert you refuse to put on the SSD lives
-> in system memory. **8 GB VRAM + 16 GB RAM will not run the 35B MoE or the 125B
-> Flash-Next**, however few parameters are active per token.
+> in system memory. **6 GB VRAM + 16 GB RAM now runs the 26B Inkling MoE**, but it
+> still will not run the 125B Flash-Next, however few parameters are active per token.
 
 ### Launch Command (one source of truth)
 
@@ -349,7 +354,7 @@ Both budgets are listed; for MoE models the **RAM** number is usually the bindin
 
 The project root ships a **fixed Jinja chat template** ([froggeric/Qwen-Fixed-Chat-Templates](https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates), a pinned copy at `chat_template.jinja`) that overrides the template baked into the GGUFs. The official Qwen 3.5/3.6/3.8 templates contain engine restrictions, Python-specific Jinja logic, and regressions that break local inference and agent workflows — the most visible one is **overthinking**: the official Qwen 3.8 template hardcodes `xhigh` reasoning depth by default, which can exhaust the token budget on thinking before the model ever answers.
 
-One file covers all Qwen 3.5 / 3.6 / 3.8 sizes, so it works unchanged for both local models. Launch plumbing: `config.yaml` → `llama_chat_template: chat_template.jinja` (relative to the project root), and `llama_config.py` resolves it to `--chat-template-file` — nothing hardcoded. 
+One file covers all Qwen 3.5 / 3.6 / 3.8 sizes, so it works unchanged for both local Qwen models. ⚠️ The Inkling-2 primary model does **not** use this Qwen template — it ships its own chat template, so point `llama_chat_template` at the Inkling template (or drop the override) when switching the primary model. Launch plumbing: `config.yaml` → `llama_chat_template: chat_template.jinja` (relative to the project root), and `llama_config.py` resolves it to `--chat-template-file` — nothing hardcoded. 
 
 Launch snippet (`--jinja --reasoning-preserve --chat-template-file ...`):
 [STARTUP_CODE.md](STARTUP_CODE.md) §7.
@@ -417,7 +422,7 @@ Full command block: [STARTUP_CODE.md](STARTUP_CODE.md) §5.
 
 **[Silicon Rider Bench](https://github.com/kcores/silicon-rider-bench)** is an agent benchmark that simulates a food-delivery rider working a virtual city: navigate, accept orders, pick up food, deliver on time, and manage battery — scoring total profit over a simulated 24-hour day. Same seed (**622539**) used across all runs for apples-to-apples comparison.
 
-**Models under test** (all `--seed 622539`):
+**Models under test** (all `--seed 622539`; measured on the previous Qwen3.6-35B and kept as the reference baseline for the Inkling-2 replacement):
 - **deepseek-v4-flash (0731)** — remote, unlimited-context baseline. Cloud-class agent ability (~Claude 4.6–4.8 tier in this benchmark).
 - **Hermes3.6-35B-A3B-Uncensored-Genesis-V9-MTP-APEX-Compact.gguf** (build this bench was run on; the current lineup ships **Genesis-Final-MTP-APEX**) — RTX 5070 Laptop, 8 GB VRAM, 32 GB DDR5 RAM
 
@@ -448,7 +453,7 @@ Full command block: [STARTUP_CODE.md](STARTUP_CODE.md) §5.
 
 ### Long Context Stability
 
-Qwen3.6 MoE uses SSM (Gated Delta Net) hybrid attention with `--kv-unified`.
+The previous Qwen3.6 MoE used SSM (Gated Delta Net) hybrid attention with `--kv-unified`; the Inkling-2 replacement is a different (`inkling2_loop`) architecture, so re-validate the KV-cache / `--kv-unified` flags for it.
 
 ⚠️ **Known Limitation**: Cross-turn prompt cache reuse is not supported (SSM architecture limitation). Each request triggers full context re-processing. Longer conversations = higher first-token latency (~55s for 59k tokens).
 
@@ -517,7 +522,7 @@ The system auto-detects GPU VRAM and selects the optimal run mode, no manual con
 ├── shiki_daemon.py                       # Daemon (19260/19270): WebChat backend + auto-inject provider
 ├── quick_setup.ps1                       # 🛠 Interactive path config wizard
 ├── config.yaml                           # [.gitignore] Generated config (paths, ports, model profiles)
-├── download-models.ps1 / .sh             # One-click model download (12 files, ~72 GB)
+├── download-models.ps1 / .sh             # One-click model download (12 files, ~64 GB)
 ├── setup-llama.ps1 / .sh                 # Auto-detect HW + configure llama.cpp
 ├── setup-openclaw.ps1 / .sh              # One-click OpenClaw install + deploy
 ├── setup-all.ps1 / .sh                   # 🚀 All-in-One mega script
@@ -826,7 +831,7 @@ huggingface-cli login
 bash download-models.sh
 ```
 
-Downloads the model set from HuggingFace with progress reporting and resume support (~72 GB: 3 LLM + 6 ComfyUI + SoVITS + Live2D).
+Downloads the model set from HuggingFace with progress reporting and resume support (~64 GB: 3 LLM + 6 ComfyUI + SoVITS + Live2D).
 
 ### 2. Setup llama.cpp
 
@@ -872,7 +877,7 @@ powershell -File start.ps1
 
 Startup sequence:
 ```
-[1/8] llama-server        (9931, Qwen3.6-35B-A3B-MTP, --no-mmap, --spec-type draft-mtp)
+[1/8] llama-server        (9931, Inkling-2-Mini-26B Q4_K_M, MTP)
 [2/8] Embedding Server    (9999, all-MiniLM + BGE dual models, CPU, ~100MB RAM)
 [3/8] VRAM Tier Detection (auto-selects whether TTS/ComfyUI stops llama)
 [4/8] Headroom Proxy      (19251, mem0 memory injection + SmartCrusher compression + cloud routing)
@@ -925,7 +930,7 @@ schtasks /create /tn "cleanup-orphans" `
 
 | Component | Description |
 |-|-|
-| `llama-server :9931` | Qwen3.6-35B-A3B-MTP MoE |
+| `llama-server :9931` | Inkling-2-Mini-26B MoE (Q4_K_M) |
 | `strata :8080` | Qwen3.8-Flash-Next 125B MoE (Strata engine, NOT llama.cpp) |
 | `headroom proxy :19251` | mem0 memory injection + SmartCrusher compression + model routing |
 | Main session | AGENTS.md-driven roleplay |

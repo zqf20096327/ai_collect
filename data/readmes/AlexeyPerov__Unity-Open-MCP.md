@@ -50,12 +50,18 @@ screen (uGUI text, visibility, layout diagnostics), taps controls by their
 on-screen label, clicks, drags, swipes and plays multi-second gestures over real
 frames (legacy Input Manager and Input System projects alike), and waits until
 the game gets somewhere — a log line, a label, an object, or the project's own
-predicate, optionally fast-forwarded. Captures come at the device's native
+predicate, optionally fast-forwarded — and traces values (HP, cooldowns,
+velocities) every N frames into a buffer it reads back, without per-frame hooks
+left behind. Captures come at the device's native
 resolution and safe area, or as frame-scheduled series for animated content. The
 player's save (PlayerPrefs and `persistentDataPath`) is snapshotted and restored,
 so a session does not spend the developer's progress, and the whole run is
 recorded — steps, verdicts, frames and the console errors each step caused —
-into a Markdown report.
+into a Markdown report. For menu-driven and mobile UI the agent can also hand the
+tapping to a crawler that walks every screen and button on its own (never money,
+destructive or leaving controls) and files what looks wrong: overflowing text,
+controls under the notch, overlapping or tiny buttons, untranslated keys, buttons
+that do nothing, screens with no way out and the exceptions taps cause.
 
 > **User:** Smoke-test the shop on an iPhone 13.<br>
 > **Agent:** Five steps passed; tapping *Buy* threw a `NullReferenceException`.
@@ -66,9 +72,9 @@ See the [Playtest guide](docs/playtest-guide.md) and
 
 ### Test and observe
 
-Run Edit/Play Mode tests, inspect the console, capture screenshots, profiler and
-memory data, and pull events — the feedback an agent needs to trust its own
-changes.
+Run Edit/Play Mode tests, inspect the console, capture screenshots (a UI prefab
+renders in edit mode without touching a scene), profiler and memory data, and pull
+events — the feedback an agent needs to trust its own changes.
 
 ### Live, batch, or offline
 

@@ -84,7 +84,7 @@ itself as unsloth's UD-IQ2_XS GGUF, both with pictures
 with MTP drafting (run on NVIDIA RTX 30 / A100 and newer, Linux; with pictures: `./maya.sh --setup --model hy4-flash-q4_k_m`;
 [its settings](docs/SETTINGS.md#hy4-flash)), and Inkling 2 Mini (26 B) as an experimental preview on its own engine:
 unsloth's UD-Q4_K_XL GGUF on NVIDIA V100 / RTX 20 and newer from 8 GB, Linux and Windows (the experts that don't fit
-stay in RAM; one or two GPUs; up to 1M context), or AMD Radeon from 24 GB and Halo on Linux, with pictures
+stay in RAM; one or two GPUs; up to 1M context), or AMD Radeon from 12 GB and Halo on Linux, with pictures
 (`./maya.sh --setup --model inkling-2-mini`; [docs/INKLING2.md](docs/INKLING2.md)). **Each model's files, drafters, pictures and options:
 [docs/MODELS.md](docs/MODELS.md).**
 
@@ -149,6 +149,7 @@ Every row says which Maya release it was measured on.
 | **2x RTX 4090 24 GB** (PCIe 3.0 + 4.0 x16), 2x Xeon Silver 4309Y, 188 GB RAM | Maya-S24 | 40.5 tokens/s | 1271 tokens/s | v1.1.0 | @fuad00 (#122) |
 | **RTX PRO 6000 Blackwell 96 GB** (PCIe 4.0 x16), Ryzen 5 5600, 92 GB DDR4 | Maya-L, 1M context | 39.6 tokens/s | 2708 tokens/s (3246 warm) | v1.1.28 | @QueTensors (#532) |
 | **4x Tesla T10 15 GB** (PCIe 3.0 x16), Xeon E5-2680 v4, 63 GB RAM | Maya-S24, 100K context | 38.4 tokens/s | 393 tokens/s | v1.1.16 | @zeallag (#291) |
+| **RTX 5090 32 GB** (PCIe 5.0 x16), Ryzen 9 9950X3D, 96 GB DDR5, Windows 11 | Maya-XS, 64K context, tuned | 36.8 tokens/s | 2884 tokens/s (1608 at 2K) | v1.1.74 | @ahostbr (#1177) |
 | **2x Tesla V100 32 GB** (PCIe 3.0 x16 each, power-capped at 150 W), EPYC 7V12, 256 GB DDR4-3200 | Maya-L, 128K context | 34.9 tokens/s (after `--calibrate`) | 589 tokens/s | v1.1.52 | @scranst (#939) |
 | **2x Tesla V100 32 GB** (PCIe 3.0 x8 each), Ryzen 9 7945HX3D, 96 GB RAM | Maya-M / Maya-L | 33.8 / 13.3 tokens/s | 490 / 372 tokens/s | v1.1.11 | @nkhaooat (#208) |
 | **RTX 3090 24 GB + RTX 3060 12 GB** (PCIe 4.0 x16), EPYC 7702P (8-channel DDR4), 141 GB RAM (a VM) | Maya-M, 128K context | 33.7 tokens/s | 682 tokens/s | v1.1.4 | @erikash (#157) |
@@ -194,9 +195,11 @@ Every row says which Maya release it was measured on.
 | --- | --- | ---: | ---: | --- | --- |
 | **8x RTX 5090 32 GB**, Xeon Gold 6530, 1 TB RAM | Maya-S, 512K context, `--parallel 4` | **184.2 tokens/s** | 2510 tokens/s | v1.1.34 | @etevrfed34-commits (#585) |
 | **10x RTX 3090 24 GB** (tensor parallel 2, PCIe 4.0 x4 each, 200 W), Xeon (24 threads), 64 GB RAM | EXL3 2.9 bpw, 1M context | **97.0 tokens/s** | 2390 tokens/s (128K) | v1.1.28 | @DoktorMincs (#494) |
+| **4x RTX 4090 24 GB** (350 W each), EPYC 7702, 252 GB RAM | Maya-S, 256K context, DSpark | 89.8 tokens/s | 1101 tokens/s (523 at 2K) | v1.1.74 | @morlz (#1096) |
 | **RTX 6000D 85 GB** (PCIe 5.0 x16), Threadripper PRO 9965WX, 251 GB RAM | EXL3 2.9 bpw, 512K context | **89.3 tokens/s** | 1687 tokens/s (2836 at 33K) | v1.1.25 | @Ross-Yang-94 (#423) |
 | **1x RTX 4090 48 GB** (PCIe 4.0 x16), EPYC 9B14, 283 GB RAM | Maya-S, 256K context | 87.9 tokens/s | 1414 tokens/s (450 at 2K) | v1.1.65 | @wangminle (#1021) |
 | **2x A100-SXM4 80 GB**, Xeon Platinum 8360Y, 1 TB RAM | Maya-S, 1M context | **87.4 tokens/s** | 2084 tokens/s | v1.1.34 | @SunYong0821 (#445, #594) |
+| **5x RTX 4090 24 GB** (300 W each), EPYC 7763, 504 GB RAM | Maya-S, 256K context, DSpark | 84.1 tokens/s | 1013 tokens/s (446 at 2K) | v1.1.74 | @morlz (#1096) |
 | **2x RX 7900 XTX 24 GB** (tensor parallel 2, PCIe 4.0 x4 each) + **Radeon 8060S** helper (Ryzen AI Max+ 395, 128 GB), the model on a USB4 NVMe | Maya-XS (v2), 512K context, `DS4_INDEX_TC=1` | **82.5 tokens/s** | 1587 tokens/s (130K; 663 at 8K) | v1.1.50 + #801 | @pepuscz (#797) |
 | **RTX PRO 6000 Blackwell 96 GB** (PCIe 5.0 x16), Ryzen 9 9950X3D, 253 GB RAM, Windows 11 | Maya-S, 256K context | 72.3 tokens/s | 1757 tokens/s | v1.1.43 | @Andrey0710 (#737) |
 | **2x RX 7900 XTX 24 GB** (tensor parallel 2, PCIe 4.0 x4 each) + **Radeon 8060S** helper (Ryzen AI Max+ 395, 128 GB), the model on a USB4 NVMe | turboderp EXL3 2.25 bpw, 1M context, DSpark | 69.4 tokens/s | 1801 tokens/s (120K; 932 at 8K) | v1.1.56 + #867, #904, #945, #967, #968 | @pepuscz (#969) |
@@ -265,6 +268,14 @@ Every row says which Maya release it was measured on.
 
 </details>
 
+<details><summary><b>Inkling 2 Mini (experimental preview) speed benchmarks</b></summary>
+
+| Machine | Model | Decode (writing the answer) | Prefill (reading your prompt) | Release | By |
+| --- | --- | ---: | ---: | --- | --- |
+| **RX 7900 XTX 24 GB** (gfx1100), Ryzen 7 7800X3D, 32 GB RAM | unsloth UD-Q4_K_XL, 128K context | 109.1 tokens/s | 2267 tokens/s | v1.1.74 | @lazm0 (#1116) |
+
+</details>
+
 A token is about ¾ of a word. The speed holds as a conversation grows, and the first answers after a start are the
 slowest while the caches fill with what you use.
 
@@ -280,7 +291,7 @@ slowest while the caches fill with what you use.
 - **Turbo:** one button beside the model's parameters sets the fastest settings for the model (greedy sampling, no
   thinking, expert skipping, the fastest drafting). It trades some quality for speed; switching it off restores your
   settings exactly.
-- **Saved:** the sidebar's Saved line adds up what the model's own API (DeepSeek's, Z.ai's or MiniMax's) would have
+- **Saved:** the sidebar's Saved line adds up what the model's own API (DeepSeek's, Z.ai's, MiniMax's or Tencent's) would have
   charged for the same tokens - the prompt Maya reuses from its cache at the API's cached price, DeepSeek's peak hours
   at its peak price - kept per model in `token-savings.json`; its prices can be changed in **Settings › Savings**.
 - **Your apps and coding agents:** an OpenAI-compatible API at `http://127.0.0.1:8080/v1`, and Anthropic's at

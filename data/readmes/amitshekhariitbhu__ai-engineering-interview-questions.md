@@ -156,6 +156,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [Math Behind Cross-Entropy Loss](https://outcomeschool.com/blog/math-behind-cross-entropy-loss)
 - What is KL Divergence?
   - Answer: [What is KL Divergence? The Math Explained Step by Step](https://outcomeschool.com/blog/kl-divergence)
+- What is perplexity in a language model?
+  - Answer: [What is perplexity in a language model?](https://outcomeschool.com/blog/perplexity-in-language-models)
 - What is Grouped-Query Attention (GQA), and how does it differ from Multi-Head Attention (MHA)?
   - Answer: [Grouped Query Attention](https://outcomeschool.com/blog/grouped-query-attention)
 - How does Sliding Window Attention work?
@@ -188,7 +190,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - Your RLHF-trained LLM is gaming the reward model instead of being genuinely helpful. How do you fix reward hacking?
   - Answer: [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf) and [What is Reward Hacking in Reinforcement Learning and How Do We Prevent It?](https://outcomeschool.com/blog/reward-hacking)
 - Your chatbot loses context after 10 turns in a conversation. How do you maintain a long conversation context?
-  - Answer: [AI Agent Memory](https://outcomeschool.com/blog/ai-agent-memory)
+  - Answer: [AI Agent Memory](https://outcomeschool.com/blog/ai-agent-memory) and [How does a voice agent manage conversation state across a long call?](https://outcomeschool.com/blog/conversation-state-in-voice-agents)
 - Your chatbot fails when users switch topics mid-conversation. How do you handle topic switches?
 - Your QA system always generates an answer even when no answer exists in the context. How do you detect unanswerable questions?
 - Your summarization system hallucinated facts not in the original article. How do you fix it?

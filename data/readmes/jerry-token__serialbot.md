@@ -187,6 +187,36 @@ On Windows the command is the path of `serialbot.exe` (installed or portable); o
 | `log.mark` / `log.query` | Set a named marker; summarize or search what happened after it |
 | `command.list` / `command.call` | Further commands: rename, auto-reconnect, send BREAK |
 
+## ⌨️ In the terminal: serialbot-cli
+
+`serialbot-cli` is SerialBot without a window, for SSH sessions, scripts and CI. It is a separate download from [Releases](https://github.com/jerry-token/serialbot/releases) (the app's installers do not include it):
+
+| System | File |
+|---|---|
+| 🪟 Windows 10/11 x64 | `serialbot-cli-*-windows-x64.zip`: unzip and put `serialbot-cli.exe` on your PATH |
+| 🍎 macOS 11+ | `serialbot-cli-*-macos-universal.tar.gz`: `tar xzf …`, then once `xattr -d com.apple.quarantine serialbot-cli` |
+| 🐧 Debian / Ubuntu x64 · arm64 | `serialbot-cli-*-linux-amd64.deb` · `…-linux-arm64.deb`: `sudo apt install ./serialbot-cli-*.deb` (with shell completions) |
+| 🐧 Other Linux x64 · arm64 | `serialbot-cli-*-linux-x64.tar.gz` · `…-linux-arm64.tar.gz` |
+
+Or from source: `cargo install --git https://github.com/jerry-token/serialbot serialbot-cli`.
+
+```sh
+serialbot-cli ports                                   # list ports (--json too)
+serialbot-cli send /dev/ttyUSB0 AT --expect OK       # send, wait for the reply; exit code 1 on timeout
+serialbot-cli monitor /dev/ttyUSB0 --until 'boot ok'  # receive only (text, --hex or --json lines)
+serialbot-cli signal /dev/ttyUSB0 dtr=0 100ms dtr=1   # DTR/RTS steps, BREAK
+serialbot-cli run /dev/ttyUSB0 boot.txt               # a script: send, expect, wait, dtr, rts, mark …
+serialbot-cli open /dev/ttyUSB0 -b 921600             # interactive terminal, minicom keys (Ctrl+A Z)
+serialbot-cli tui /dev/ttyUSB0 /dev/ttyUSB1           # full screen: several ports, waveform, AI panel
+serialbot-cli mcp serve                               # MCP server without the app; asks in the terminal
+```
+
+- **`open`** replaces minicom/picocom: the same `Ctrl+A` letters (`X` quit, `L` log, `S` send a file, `1`/`2` DTR/RTS …), an input box with history and Ctrl+R, `/` commands with Tab completion, raw mode for shells and vim, and reconnecting when the device comes back. Piped, it turns into a plain pipe.
+- **`tui`** shows up to four sessions side by side or stacked (`Ctrl+A |`, `Ctrl+A -`, `Ctrl+A ←/→`, mouse), with a session list and scrollback. `Ctrl+A V` draws a waveform of the numbers in the data (`name=value`, number columns, or `--plot 'temp=([0-9.]+)'`), up to six curves told apart by color *and* point shape. `--mcp` adds the AI panel, where an agent's changes are allowed with `y`/`s` or refused with `n`. `/groups <file>` shows the app's exported command groups.
+- **`mcp serve`** keeps its token in `cli.json` next to the app's settings; `mcp stdio` is the bridge for Claude Desktop, to `mcp serve` or, if it is not running, the app.
+- Exit codes for scripts: 0 ok, 1 timeout, 2 bad arguments, 3 port busy or missing, 4 device gone.
+- Messages follow the system language (English or Chinese). `serialbot-cli completions bash|zsh|fish|powershell` prints completions.
+
 ## 🗺️ Roadmap
 
 - [x] Serial, TCP and UDP; many sessions; text / HEX, ANSI colors, encodings, frame split
@@ -215,7 +245,7 @@ sudo apt install libwebkit2gtk-4.1-dev librsvg2-dev libayatana-appindicator3-dev
 cd app && npm ci && npm run tauri dev     # run the desktop app
 cargo test --workspace                    # Rust tests
 cd app && npm test                        # frontend tests
-cargo run -p serialbot-mcp                  # MCP server only, without a window
+cargo run -p serialbot-cli -- mcp serve   # MCP server only, without a window
 ```
 
 Every change ships with tests and must pass the format, clippy, test and coverage checks; see [CLAUDE.md](CLAUDE.md).
@@ -233,3 +263,8 @@ For anything else, write to [support@aiany.cc](mailto:support@aiany.cc).
 ## 📄 License
 
 The core is [GPL-3.0-only](LICENSE). Plugin SDKs and device-side libraries will be MIT-licensed.
+
+Copyright © 2026 Jerry ([support@aiany.cc](mailto:support@aiany.cc), [strongwong003@gmail.com](mailto:strongwong003@gmail.com)).
+The official repository is [jerry-token/serialbot](https://github.com/jerry-token/serialbot) and the official site is [serialbot.aiany.cc](https://serialbot.aiany.cc); releases come only from there.
+
+Copies and changed versions must keep the copyright notices and say what they changed ([NOTICE](NOTICE)). The name and logo are not covered by the GPL: a fork is welcome under its own name, with a note that it is based on SerialBot ([TRADEMARKS.md](TRADEMARKS.md)).

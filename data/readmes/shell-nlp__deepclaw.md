@@ -126,6 +126,14 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 
 管理员可创建用户、调整角色、启用停用与重置密码；停用或重置密码会即时撤销该用户全部登录令牌。
 
+角色管理独立成页：左侧是角色清单，右侧按「知识库 / 能力与连接 / 用户管理 / 角色管理 / 模型管理」分组勾选权限，保存后立即生效。
+
+- 内置角色 `admin` / `user` 只读，自定义角色可新建、改名、删除
+- 权限项由后端目录统一定义，界面勾选的每一项都对应真实的服务端鉴权规则
+- 知识库、技能、渠道、设备接口都按角色校验；游客仍按原行为直接可用
+- 还有账号在用的角色不能删除
+- 多实例部署时策略变更通过版本号在数秒内同步到所有进程
+
 ## 技术栈
 
 | 模块 | 技术 |
@@ -300,7 +308,9 @@ flowchart TB
 
 如果仓库里的 `frontend/out` 已经存在，且你不修改前端代码，可以直接跳过前端安装和构建步骤。
 
-### 2. 初始化后端
+### 2. 安装依赖
+
+#### 方式 A：uv 源码运行（推荐开发）
 
 ```bash
 cp .env.example .env
@@ -324,6 +334,37 @@ uv sync --dev --extra object-storage # MinIO / S3 对象存储
 
 > 知识库上传文档依赖 `pdf` extra。缺少时上传会返回
 > `PDF 解析需要 PyMuPDF，请执行 uv sync --extra pdf 安装`。
+
+#### 方式 B：pip 安装（推荐部署，不需要仓库源码）
+
+项目已经配置为标准 Python 包，wheel 内同时打包了 `frontend/out` 静态资源，
+因此安装后不需要 Node.js / pnpm，也不需要单独构建前端。
+
+```bash
+python -m venv .venv            # 建议使用独立虚拟环境
+pip install .                   # 从当前目录安装；也可以直接装构建好的 wheel
+pip install -e .                # 开发用：可编辑安装，改 Python 代码立即生效
+
+pip install ".[pdf,elasticsearch]"   # 按需安装可选能力（extras 名同下文的 uv --extra）
+```
+
+安装完成后会提供 `deepclaw` 命令，等价于 `python -m deepclaw.main`：
+
+```bash
+deepclaw
+```
+
+配置读取顺序不变：在当前工作目录（或其上级目录）放置 `.env`，或用环境变量注入；
+运行期数据目录按以下顺序解析，可用 `DEEPCLAW_HOME` 显式覆盖：
+
+| 运行方式 | 数据目录 |
+|------|------|
+| 源码检出（仓库根目录存在 `pyproject.toml`） | `<仓库>/.deepclaw` |
+| pip 安装（包位于 `site-packages`） | `~/.deepclaw` |
+| 设置了 `DEEPCLAW_HOME` | `$DEEPCLAW_HOME` |
+
+> `sandbox` 执行模式额外需要 `.sandbox.toml`（仓库自带的会随安装包分发）；
+> 找不到时会回退到数据目录下的同名文件。
 
 ### 3. 配置 `.env`
 
@@ -379,7 +420,7 @@ uv run python -m deepclaw.main
 - AG-UI Agents：`GET /api/agui/agents`
 - Channels API：`/api/channels/*`
 
-首次启动时，如果配置了 `AUTH_ADMIN_EMAIL` / `AUTH_ADMIN_PASSWORD` 且系统中还没有管理员，
+首次启动时，如果配置了 `AUTH_ADMIN_USERNAME` / `AUTH_ADMIN_PASSWORD` 且系统中还没有管理员，
 会自动创建这个管理员账号。未登录访问会自动降级为游客身份，技能管理与知识库管理对游客开放。
 
 ### 5. 启动依赖服务（可选，但推荐）
@@ -456,6 +497,12 @@ pnpm build
 | `POST` | `/api/auth/users/update-role` | 管理员调整用户角色 |
 | `POST` | `/api/auth/users/update-status` | 管理员启用 / 停用用户 |
 | `POST` | `/api/auth/users/reset-password` | 管理员重置用户密码 |
+| `GET` | `/api/auth/rbac/catalog/roles` | 角色目录（含在用账号数与直接权限） |
+| `POST` | `/api/auth/rbac/catalog/roles` | 新建自定义角色 |
+| `PATCH` | `/api/auth/rbac/catalog/roles/{role_id}` | 修改自定义角色名称与说明 |
+| `DELETE` | `/api/auth/rbac/catalog/roles/{role_id}` | 删除未被使用的自定义角色 |
+| `PUT` | `/api/auth/rbac/catalog/roles/{role_id}/permissions` | 原子替换角色权限 |
+| `GET` | `/api/auth/rbac/catalog/permissions` | 可供界面勾选的功能权限目录 |
 
 访问令牌是服务端不透明令牌（`la_` 前缀 + 随机串，数据库只存 SHA-256 哈希），默认 1 天有效。
 停用用户或重置密码会即时撤销该用户全部令牌。
@@ -672,12 +719,44 @@ curl http://localhost:7869/api/agui/threads/demo-thread/state -H "Authorization:
 | 变量 | 说明 |
 |------|------|
 | `PG_DATABASE_URL` | PostgreSQL 连接串。配置后 Run/Thread、检查点、长期记忆、认证、渠道与知识库元数据统一落库，多实例可共享 |
-| `VECTOR_STORE_BACKEND` | 向量库后端：`pgsql`（PostgreSQL + pgvector）或 `elasticsearch`，默认 `elasticsearch` |
+| `VECTOR_STORE_BACKEND` | 向量库后端：`sqlite`（默认，SQLite + sqlite-vec 单文件）、`pgsql`（PostgreSQL + pgvector）、`elasticsearch`，或 `none`（不启用知识库） |
+| `SQLITE_VECTOR_DB_PATH` | `VECTOR_STORE_BACKEND=sqlite` 时的数据库文件路径，默认 `.deepclaw/vector.db` |
 | `ES_URL` | `VECTOR_STORE_BACKEND=elasticsearch` 时的 Elasticsearch 地址 |
 | `ES_URSR` / `ES_PWD` | Elasticsearch 用户名与密码 |
 | `OBJECT_STORAGE_PROVIDER` | 知识库文件对象存储：`local`（默认）或 `minio` |
 | `LOCAL_STORAGE_ROOT` | 本地对象存储根目录，默认 `.deepclaw/workspace/object_storage`；实际路径为 `root/bucket_name/file_path` |
 | `MINIO_ENDPOINT_URL` / `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` | `OBJECT_STORAGE_PROVIDER=minio` 时必填 |
+
+### 无中间件模式（最小依赖）
+
+不装 PostgreSQL / Elasticsearch / MinIO / Docker 也能跑：向量库默认就是 SQLite +
+[sqlite-vec](https://github.com/asg017/sqlite-vec)，其余数据落在本地 SQLite 与本地对象存储目录（`HOME_PATH`）。
+
+```dotenv
+OPENAI_API_BASE=http://localhost:8082/v1
+OPENAI_API_KEY=your-api-key
+CHAT_MODEL_NAME=qwen3
+
+# 默认就是 sqlite，无需额外服务；如需关闭知识库可改为 none
+VECTOR_STORE_BACKEND=sqlite
+# SQLITE_VECTOR_DB_PATH=.deepclaw/vector.db
+BACKEND_TYPE=local_shell
+```
+
+| 能力 | 无中间件时 |
+|------|------|
+| 通用对话、工具调用、图表、技能、MCP | 可用 |
+| 登录鉴权、RBAC、用户管理 | 可用（`.deepclaw/auth.db` + `.deepclaw/rbac.db`） |
+| 渠道绑定、设备配对、定时任务 | 可用（各自 SQLite） |
+| 会话历史与 Thread | 仅进程内内存，重启即丢失；要持久化才需要 `PG_DATABASE_URL` |
+| 知识库 / RAG | 可用，向量与切片都存在 `.deepclaw/vector.db` |
+| 沙箱隔离执行 | 不可用，需 OpenSandbox（`BACKEND_TYPE=sandbox`） |
+
+> 想保留会话历史但不装 PostgreSQL 时，可以把 `PG_DATABASE_URL` 指向任意一个 PostgreSQL 实例；
+> 只要它是 PG，检查点、Run/Thread 与元数据都会自动落库，不需要额外服务。
+### 模型管理
+
+管理员登录后可从侧边栏进入「模型管理」，修改 OpenAI 兼容网关地址、API Key、聊天模型、向量模型和上下文窗口。配置保存到运行期数据目录，API Key 只返回脱敏值；保存后会清理智能体运行时缓存，新的请求立即使用新配置。
 
 ### 常用可选环境变量
 
@@ -691,7 +770,7 @@ curl http://localhost:7869/api/agui/threads/demo-thread/state -H "Authorization:
 | `USE_COPILOTKIT` | 启用 CopilotKit 中间件 |
 | `MCP_CONFIG` | 默认 MCP 服务配置（JSON） |
 | `PHOENIX_COLLECTOR_ENDPOINT` | 启用 Phoenix tracing |
-| `AUTH_ADMIN_EMAIL` / `AUTH_ADMIN_PASSWORD` | 首次启动时自举的管理员账号 |
+| `AUTH_ADMIN_USERNAME` / `AUTH_ADMIN_PASSWORD` | 首次启动时自举的管理员账号 |
 | `AUTH_TOKEN_EXPIRE_DAYS` | 访问令牌有效期天数，默认 `1` |
 | `AGUI_RUN_RETENTION_SECONDS` | Run 与事件的保留时长，默认 `3600` |
 | `AGUI_THREAD_RETENTION_SECONDS` | Thread 索引保留时长；默认 `0` 表示不自动过期 |

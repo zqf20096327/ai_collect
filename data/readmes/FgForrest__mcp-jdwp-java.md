@@ -11,7 +11,7 @@ MCP server that gives AI agents full debugger control over running Java applicat
 An MCP server that speaks **JDWP** — the same protocol IntelliJ / Eclipse / VS Code use to attach — and exposes the debugger to Claude Code and Codex as **50 tools + 2 MCP resources** over STDIO. Once the agent attaches to your JVM, it can:
 
 - **See runtime state, not stack traces** — read locals, fields, threads, the entire object graph
-- **Evaluate arbitrary Java in the suspended frame** — compiled to real bytecode, full classpath, including private/package-private members
+- **Evaluate Java in the suspended frame** — read private fields and invoke supported private methods through JDI
 - **Mutate the running program** — set locals, write fields, test "what if?" without restart
 - **Stop on the bad case only** — conditional breakpoints, exception breakpoints at the throw site, deferred BPs that arm before the class loads, chains that gate one BP on another
 - **Trace without stopping** — line/exception/field logpoints write to an event log; the hitting thread pauses only while the server evaluates the expression, then runs on
@@ -161,7 +161,7 @@ From there, just tell the agent (Claude Code or Codex) what to do — *"attach t
 
 ## Find the Bug — test flights
 
-The `jdwp-sandbox` module ships 10 deliberately broken Java classes. Each one compiles fine, looks reasonable at first glance, and **fails its test with a confusing message**. Your job: attach with the JDWP MCP server and find the root cause.
+The `jdwp-sandbox` module ships eleven deliberately broken Java scenarios. Each one compiles fine, looks reasonable at first glance, and **fails its test with a confusing message**. Your job: attach with the JDWP MCP server and find the root cause.
 
 This doubles as a setup verification — if you can solve these, everything works.
 
@@ -383,6 +383,35 @@ An ordinary conditional breakpoint or logpoint on that line goes through the deb
 
 ---
 
+### #11 The Missing Pickup
+
+**Difficulty:** Moderate | **Test:** `PickupDeskTest` | **Package:** `pickup` | **Par:** 3 | **Exercises:** expression eval
+
+**Symptom:** `Pickup unavailable for the selected location ==> expected: <true> but was: <false>` — a listed pickup point is reported as unavailable.
+
+**Solved when** you identify the exact value that makes the desk reject the selected pickup point and explain why.
+
+<details>
+<summary><strong>Reveal root cause</strong></summary>
+
+The name stored in the directory entry for Marché Central contains `U+0065 U+0301` (an `e` followed by a combining acute accent). The request contains `U+00E9` (a precomposed `é`). The directory and the request spell the same name, but `PickupPoint.matches` compares their UTF-16 sequences with `String.equals`, so it rejects the request. Normalize both names to NFC before comparing them.
+
+**Debug path (3 calls after attaching)**
+
+1. `jdwp_set_breakpoint(className="one.edee.jdwp.sandbox.pickup.PickupDeskTest", lineNumber=19)` sets a deferred breakpoint at the failing assertion.
+2. `jdwp_resume_until_event()` stops at the assertion with `desk` and `pickupPoint` in scope.
+3. Pass the expression below to `jdwp_evaluate_expression`. The result is `Catalog: 101 769, request: 233`, exposing the difference in one read from the test frame. The field path crosses the public API into the private `name` field of the package-private `PickupPoint` class.
+
+   ```java
+   "Catalog: " + (int) desk.catalog.points[1].name.charAt(5) + " "
+       + (int) desk.catalog.points[1].name.charAt(6) + ", request: "
+       + (int) pickupPoint.charAt(5)
+   ```
+
+</details>
+
+---
+
 ### Scorecard
 
 **Flights solved** — did you find the root cause?
@@ -391,10 +420,10 @@ An ordinary conditional breakpoint or logpoint on that line goes through the deb
 |--------|----------------------------------------------------------------------|
 | 0-2    | The JVM is winning. Check your setup.                                |
 | 3-5    | Solid start. You're getting the hang of breakpoint-driven debugging. |
-| 6-9    | Impressive. You found bugs that would take hours with println.       |
-| 10     | Bug terminator. Nothing survives your debugger.                      |
+| 6-10   | Impressive. You found bugs that would take hours with println.       |
+| 11     | Bug terminator. Nothing survives your debugger.                      |
 
-**Style** — how close to par? Every `jdwp_*` call counts, from the first call after attaching until the root cause is evident; the attach and the clean-up afterwards are free. Award ⭐⭐⭐ for a flight solved at its par tool count, ⭐⭐ within 2× par, ⭐ solved at all. A flawless run is 30 stars across the ten flights.
+**Style** — how close to par? Every `jdwp_*` call counts, from the first call after attaching until the root cause is evident; the attach and the clean-up afterwards are free. Award ⭐⭐⭐ for a flight solved at its par tool count, ⭐⭐ within 2× par, ⭐ solved at all. A flawless run is 33 stars across the eleven flights.
 
 ## Features beyond standard JDWP
 
@@ -439,7 +468,9 @@ jdwp_set_fast_logpoint(
 )
 ```
 
-On the next hit of the line the server compiles a small probe class, defines it in the class's own class loader, and redefines the class (`VirtualMachine.redefineClasses`) with a call to the probe at that line. From then on the probe evaluates the condition and expression on the application thread and appends the result to a lock-free ring buffer in the target; `jdwp_get_events` reads that buffer through plain field reads — no thread is ever suspended — and reports entries lost to a buffer overrun as `FAST_LOGPOINT_DROPPED`. Hits nobody read before the target exits — a test JVM finishing its run — are read as it exits: the target waits at its exit until the server has drained the buffer, and the `[VM_DEATH]` reply says how many were recorded. A class that is not loaded yet is waited for: the fast logpoint arms once the class loads, so it can be set at VM start (where `forceLoad` cannot load anything). Clearing the logpoint, `jdwp_reset`, `jdwp_disconnect` and a clean server shutdown restore the original bytecode.
+On the next hit of the line the server compiles a small probe class, defines it in the class's own class loader, and redefines the class (`VirtualMachine.redefineClasses`) with a call to the probe at that line. From then on the probe evaluates the condition and expression on the application thread and appends the result to a lock-free ring buffer in the target; `jdwp_get_events` reads that buffer through plain field reads — no thread is ever suspended — and reports overwritten, skipped or incomplete entries as `FAST_LOGPOINT_DROPPED`. Hits nobody read before the target exits — a test JVM finishing its run — are read as it exits: the target waits at its exit until the server has drained the buffer, and the `[VM_DEATH]` reply says how many were recorded. A class that is not loaded yet is waited for: the fast logpoint arms once the class loads, so it can be set at VM start (where `forceLoad` cannot load anything). Clearing the logpoint, `jdwp_reset`, `jdwp_disconnect` and a clean server shutdown restore the original bytecode.
+
+To keep rare evidence visible, narrow the fast logpoint's `condition` to log only the anomaly. The shared history keeps the newest 500 events across all sources, and `jdwp_get_events` returns at most the newest 100. Each read ingests up to 500 of the newest hits per ring. If `FAST_LOGPOINT_DROPPED` reports skipped entries, call `jdwp_get_events` before more than 500 hits pile up to avoid that ingest skip.
 
 Because this **rewrites the running application's bytecode**, the tool requires explicit user consent. Call without `userApproved`. If there's no standing grant, the tool returns a risk briefing (instrumentation that outlives a crashed server, user code on application threads, interaction with other bytecode agents, breakpoint re-creation, two stop-the-world pauses). Relay the briefing word for word and ask the user before retrying with `userApproved=true`.
 
@@ -481,6 +512,8 @@ jdwp_set_breakpoint(className="com.example.LazyService", lineNumber=15)
 ```
 
 `jdwp_overview()` shows pending breakpoints with their status; `jdwp_get_events()` records a `CLASS_PREPARE` entry when a load activates them.
+
+Deferred replies can suggest similar loaded class names. When the server and target use the same Java major version, a fully qualified name found in the server's JDK image suppresses the suggestion. Exception breakpoints need a fully qualified class name. For a bare exception name, an exact `java.lang` match appears first if it is loaded in the target or found in the server's JDK at the same Java major version.
 
 This works from VM start, so it is the attach prologue for a failing test: launch the JVM suspended (`-Dmaven.surefire.debug`), call `jdwp_wait_for_attach(requireVmStart=true)`, set every line BP, logpoint, exception BP and field BP while the JVM is parked, then `jdwp_resume_until_event`. Each one activates when its class loads — JDK classes included, so an exception BP on `java.lang.AssertionError` set at VM start stops on the first failing JUnit assertion.
 
@@ -591,14 +624,20 @@ jdwp_evaluate_expression(
 → Result of order.getTotal(): 1250.0
 ```
 
-Compiles arbitrary Java expressions to bytecode using Eclipse JDT, injects them into the target JVM via `ClassLoader.defineClass()`, and executes them in the context of the suspended frame. Full classpath is discovered automatically (including container classloaders like Tomcat). Compiled expressions are cached, so repeated evaluations are fast. Handles Guice/CGLIB proxies automatically. Code that does not finish within 20 s (say, it waits for a lock a suspended thread holds) returns `[STILL_RUNNING]` and keeps running in the target; its result lands in `jdwp_get_events` as `EVALUATION_COMPLETED_LATE`.
+Field navigation, including private and package-private reads, runs without compiling or invoking target code. A single field path can read private members of package-private classes in other packages. It works on manual holds, stop-all bystanders, and suspended threads blocked on a monitor or in `wait()`. The interpreter can call a private or package-private method with one applicable signature on a thread stopped at its own event. Same-arity overloads, varargs, generic methods and lambdas use compilation. A tool evaluation still running in the target after 20 s returns `[STILL_RUNNING]`. The eventual result appears as `EVALUATION_COMPLETED_LATE` in `jdwp_get_events`.
+
+On JDK 17 and 21, ordinary compilation can retry visibility errors on private application field reads, method calls and constructors through reflection. The retry preserves exact value types and inlines type-qualified constants without class initialization. Assignment targets, inaccessible types, expression-qualified constants and closed JDK packages can still produce access errors. Fast probes and their arming evaluations use Java access rules.
+
+The first compiled evaluation or fast-probe arming compile discovers the remote classpath on demand. The debugger reads the launch classpath, the context loader chain and the selected frame's defining loader chain. A public `URLClassLoader.getURLs()` may supply custom repositories, and an overridden context-loader getter can run during a tool's compiled evaluation. `jdwp_diagnose` reports incomplete loader reads.
+
+Expressions see no imports. A simple type name covers `java.lang` and the current class's own and nested types; write other application types fully qualified, for example `com.acme.Status.ACTIVE`.
 
 Two input modes:
 
-- **Single expression** — `order.getTotal()`, `x + y`, `list.size() == 5`. The compiler treats the input as the body of `return ...;`.
-- **Block mode** — wrap the input in `{ ... }` to send a multi-statement body with try/catch, intermediate locals, or early `return`. The agent writes explicit `return X;` to yield a value. Available everywhere expressions are accepted: `jdwp_evaluate_expression`, `jdwp_assert_expression`, breakpoint conditions, logpoint expressions, watchers.
+- **Single expression** — `order.getTotal()`, `x + y`, `list.size() == 5`. The same expression form works for navigation and compilation.
+- **Block mode** — wrap the input in `{ ... }` to send a multi-statement body with try/catch, intermediate locals, or early `return`. Use explicit `return X;` to yield a value. Read-only blocks with local variables, assignments to those locals, and branches can run without invoking the target. Constructs such as loops and try/catch use compilation. Available everywhere expressions are accepted: `jdwp_evaluate_expression`, `jdwp_assert_expression`, breakpoint conditions, logpoint expressions, watchers.
 
-See [docs/expression-evaluation.md](docs/expression-evaluation.md) for the compilation pipeline details, or [docs/index.md](docs/index.md) for the full developer reference.
+Set `JDWP_EVAL_ENGINE=auto|compiler|interpreter` in the server environment. `jdwp_diagnose` reports engine counts and why expressions needed compilation. [Expression evaluation](docs/expression-evaluation.md)
 
 ### Assertions
 
@@ -656,7 +695,7 @@ When an expression evaluation at a breakpoint re-enters the breakpointed line (e
 2. A `BREAKPOINT_SUPPRESSED` / `EXCEPTION_SUPPRESSED` / `STEP_SUPPRESSED` entry is recorded in event history
 3. The outer breakpoint context is preserved
 
-**Covered invocation sites:** `jdwp_evaluate_expression`, `jdwp_assert_expression`, `jdwp_evaluate_watchers`, logpoint evaluation, conditional breakpoint evaluation, `jdwp_to_string`, classpath discovery, and deferred class loading via `Class.forName`.
+**Covered invocation sites:** `jdwp_evaluate_expression`, `jdwp_assert_expression`, `jdwp_evaluate_watchers`, logpoint evaluation, conditional breakpoint evaluation, `jdwp_to_string`, an overridden context-loader getter or public `URLClassLoader.getURLs()` during compiler setup, and deferred class loading via `Class.forName`.
 
 ### Smart filtering
 
@@ -671,15 +710,15 @@ jdwp_resume_until_event(timeoutMs=30000)
 → blocks until next breakpoint/step/exception, returns context immediately
 ```
 
-An unfiltered `jdwp_resume_until_event()` presents the oldest unseen stop immediately. With no unseen stop, it releases presented stops and manual holds before waiting, unless any step is pending. Pass `threadId=T` to present the oldest unseen stop on T and, if a release is needed, release only T. A pending step suppresses the targeted release pass only when the step is on T. If T is already running, the call can wait for its next stop without releasing anything. Other threads' unseen stops stay suspended and the reply counts them when there are any. The wait identifies a blocker, such as another thread's unseen stop-all, even if it arrives after the wait starts.
+An unfiltered `jdwp_resume_until_event()` presents the oldest unseen stop immediately. With no unseen stop, it releases presented stops and manual holds before waiting, unless any step is pending. Pass `threadId=T` to present T's oldest unseen stop immediately. When T has no unseen stop, the call can release only T. A pending step suppresses the targeted release pass only when the step is on T. If T is already running, the call can wait for its next stop without releasing anything. Other threads' unseen stops stay suspended and the reply counts them when there are any. Before starting any release, a targeted wait lets queued and processing sets that suspend T settle and checks the deadline. If another thread's stop-all then publishes unseen, the wait identifies that blocker.
 
 The reply describes how the wait ended.
 
 - `Event fired …` — a BP / step / exception suspended a thread; the message includes thread + stop site
-- `[TIMEOUT] …` — the wait expired without an event; the message offers `wait_more` / `reconnect` / `abort` and reports JDI health so the agent never blindly hangs
+- `[TIMEOUT] …` — the wait expired without a stop. The message offers `wait_more` / `reconnect` / `abort`, reports JDI health, and names any covering set still queued or processing in a targeted wait.
 - `[RESUME_FAILED] …` — a release failed or lease debt remains unpaid. A targeted wait reports only recovery holds affecting its thread. The reply reports completed releases and gives targeted retry calls when available.
 - `[VM_DEATH] …` — the target VM died. The reply names a selected stop if there was one.
-- `[CONNECTION_CHANGED] …` — a targeted wait or resume fetched a VM from a different connection. Verify the target and look up a fresh ID with `jdwp_get_threads` before retrying.
+- `[CONNECTION_CHANGED] …` — a targeted wait, resume, or context call detected a connection change. Verify the target and look up a fresh ID with `jdwp_get_threads` before retrying.
 - `[NO_EVENT] …` — `jdwp_reset` ran while the call waited. See the reset reply for any holds retained after a failed release, then set breakpoints again.
 
 The same soft-wait envelope wraps `jdwp_wait_for_attach`, so bootstrap and resume share one "wait sensibly, decide deliberately" idiom.
@@ -708,7 +747,7 @@ When the target VM is restarted, or the JDI session wedges and you need a fresh 
 jdwp_get_breakpoint_context(maxFrames=5, includeThisFields=true)
 ```
 
-Returns thread info, top stack frames, locals at frame 0, and `this` fields in a single call — replaces the four-call sequence `get_current_thread → get_stack → get_locals → get_fields(this)` that an agent would otherwise need at every breakpoint hit.
+Returns thread info, top stack frames, locals at frame 0, and `this` fields in a single call. Pass `threadId=T` to inspect a specific suspended thread. The reply includes T's event tag and any captures when T holds a published stop, or says that no stop of its own is recorded.
 
 ### Stepping: when it's worth it
 
@@ -746,7 +785,7 @@ Attach and disconnect replies show the local PID, start time, and launch selecto
 | `jdwp_get_locals`             | `threadId`, `frameIndex`                  | Local variables at a frame (includes `this`)          |
 | `jdwp_get_fields`             | `objectId`                                | Object fields, collection elements, or array contents |
 | `jdwp_to_string`              | `objectId`, `threadId?`                   | Invoke `toString()` on a cached object                |
-| `jdwp_get_breakpoint_context` | `maxFrames?`, `includeThisFields?`        | One-shot context dump at the current breakpoint, including any fast-breakpoint capture |
+| `jdwp_get_breakpoint_context` | `maxFrames?`, `includeThisFields?`, `threadId?` | Context dump for the current stop or a selected suspended thread, including any fast-breakpoint capture |
 | `jdwp_get_current_thread`     | —                                         | Thread ID of the last breakpoint hit                  |
 
 ### Execution control (7)
@@ -792,7 +831,7 @@ Resume replies list which holds were released and which failed, with the JDI exc
 
 | Tool                       | Parameters                                          | Description                                                       |
 |----------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
-| `jdwp_evaluate_expression` | `expression`, `threadId?`, `frameIndex?`            | Evaluate Java expression at suspended frame (supports `{ block }`; `threadId` defaults to the current stop's thread) |
+| `jdwp_evaluate_expression` | `expression`, `threadId?`, `frameIndex?`            | Evaluate Java in a suspended frame, including supported private member access and `{ block }` syntax. Read-only blocks work on manual holds. Compilation discovers the target classpath on demand. `threadId` defaults to the current stop's thread. |
 | `jdwp_assert_expression`   | `expression`, `expected`, `threadId?`, `frameIndex?` | Evaluate and compare against expected value                       |
 | `jdwp_set_local`           | `threadId`, `frameIndex`, `varName`, `value`        | Set a local variable's value                                      |
 | `jdwp_set_field`           | `objectId`, `fieldName`, `value`                    | Set a field's value on a cached object                            |
@@ -801,7 +840,7 @@ Resume replies list which holds were released and which failed, with the JDI exc
 
 | Tool                | Parameters | Description                                               |
 |---------------------|------------|-----------------------------------------------------------|
-| `jdwp_get_events`   | `count?`   | Recent events (breakpoints, steps, exceptions, logpoints, exception logs, fast logpoint hits, fast-breakpoint stops with captures, chain events, late evaluation results) |
+| `jdwp_get_events`   | `count?`   | Up to 100 recent events (breakpoints, steps, exceptions, logpoints, exception logs, fast logpoint hits, fast-breakpoint stops with captures, chain events, late evaluation results) |
 | `jdwp_clear_events` | —          | Clear event history                                       |
 
 ### Diagnostics (1)
@@ -952,7 +991,7 @@ The server is `SYNC` mode, `web-application-type=none` — JSON over STDIO, no H
 ### Expression evaluation pipeline (`evaluation/`)
 
 1. **JdiExpressionEvaluator** — Analyzes the stack frame, generates a wrapper class with a UUID name, delegates compilation, caches results.
-2. **ClasspathDiscoverer** — Walks target JVM classloader hierarchy (including Tomcat/container) to find all JARs. Uses **JdkDiscoveryService** to locate a local JDK matching the target version.
+2. **ClasspathDiscoverer** — Reads the JDWP launch classpath and the context and defining loader chains. Later compiles add newly selected loader chains and retry failed reads. **JdkDiscoveryService** uses the debugger-reported version to locate a matching local JDK.
 3. **LocalProjectClasspathProvider** — Additive fallback for when the target's classloader hierarchy hides JARs (Tomcat, Spring Boot dev-tools, custom `URLClassLoader`s). Composes `JDWP_EXTRA_CLASSPATH` (override), a depth-5 scan of `target/classes` / `target/test-classes` under the project directory, and `mvn dependency:build-classpath` there. Discovery starts on attach and dispatcher evaluations use the remote classpath until the local entries are ready. The project directory is the server's working directory, or the session directory the client reports (Codex). Set `JDWP_EXTRA_CLASSPATH=/path/extra.jar:/path/more.jar` (colon/semicolon-separated) to plug specific gaps; `jdwp_diagnose` shows a per-source breakdown. Details in [docs/expression-evaluation.md](docs/expression-evaluation.md#localprojectclasspathprovider--local-project-classpath-fallback).
 4. **InMemoryJavaCompiler** — Compiles Java source to bytecode using Eclipse JDT (ECJ), entirely in memory.
 5. **RemoteCodeExecutor** — Injects bytecode via `ClassLoader.defineClass()` and invokes it.
@@ -1004,7 +1043,7 @@ mcp-jdwp-java/
 │       ├── DeadlockAnalyzer.java        # Monitor-lock graph + cycle detection
 │       ├── ClassNameMatcher.java        # Glob → JDI ReferenceType matcher
 │       ├── ThreadFormatting.java        # Thread/frame noise filtering
-│       ├── evaluation/                  # Expression compile-and-inject pipeline
+│       ├── evaluation/                  # Expression routing, JDI interpretation and compilation
 │       │   ├── JdiExpressionEvaluator.java
 │       │   ├── RemoteCodeExecutor.java
 │       │   ├── InMemoryJavaCompiler.java
@@ -1065,7 +1104,7 @@ Start at **[docs/index.md](docs/index.md)** for navigation and a reading guide. 
 - [memory-and-references.md](docs/memory-and-references.md) — JDI mirrors, the object cache, marks, the compilation cache, byte-array mirroring
 - [event-pipeline.md](docs/event-pipeline.md) — the JDI event listener loop and the suspension decision matrix
 - [breakpoints.md](docs/breakpoints.md) — the registry, synthetic IDs, deferred breakpoints, conditions, logpoints, chains, fast logpoints and fast breakpoints
-- [expression-evaluation.md](docs/expression-evaluation.md) — the compile-and-inject pipeline (ECJ, `defineClass`, `invokeMethod`)
+- [expression-evaluation.md](docs/expression-evaluation.md) — JDI reads, interpreted calls and the compiled evaluation pipeline
 - [diagnostics.md](docs/diagnostics.md) — `jdwp_diagnose`, JVM discovery, the handshake probe, transport-loss envelopes, logging
 - [testing.md](docs/testing.md) — test architecture for contributors
 

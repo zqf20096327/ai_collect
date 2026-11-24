@@ -20,7 +20,10 @@ Maintainer: Francesco Moca ([@franzmoca](https://github.com/franzmoca)).
 The target build is the
 [Xylolabs Q4_K_M](https://huggingface.co/Xylolabs/Hy4-flash-GGUF): a 97.8 GB
 trunk kept resident, plus the 63.4 GB FP8 Engram shard read from disk. The
-DFly2 drafter comes from Tencent's checkpoint
+[AngelSlim Q4_K_M](https://huggingface.co/AngelSlim/Hy4-flash-GGUF) loads
+too: its `block_count` counts a `nextn` draft layer after the 42 backbone
+layers, which stays on disk (DFly2 has its own checkpoint), and its LM head
+is BF16 instead of F16. The DFly2 drafter comes from Tencent's checkpoint
 (`model-00148-of-00148.safetensors`), and the vision tower is the Xylolabs
 repository's `mmproj-Hy4-flash-BF16.gguf`.
 
@@ -48,7 +51,7 @@ container, which follows `main`:
 
 ```sh
 podman pull ghcr.io/gufo-org/toolboxes/gufo-runtime:edge
-gufo extension install https://github.com/franzmoca/hy4-gufo-extension@v0.2.0 --yes
+gufo extension install https://github.com/franzmoca/hy4-gufo-extension@v0.2.1 --yes
 ```
 
 Mount the extensions volume at `/home/gufo/.local/share/gufo/extensions` so

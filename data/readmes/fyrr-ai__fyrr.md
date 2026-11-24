@@ -144,7 +144,6 @@ The example's top hit is `notes/backup.md`, with the answer:
   sent to it.
 - **You do not run Linux.** Linux (x86_64, aarch64) is the only supported
   platform, for builds, binaries and images.
-- **You need phrase queries.** The full-text index stores no term positions.
 - **You want TLS built in.** The HTTP listener speaks plain HTTP; outside
   loopback it needs a TLS-terminating proxy.
 

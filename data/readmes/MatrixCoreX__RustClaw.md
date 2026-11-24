@@ -1,0 +1,940 @@
+# Agent Runtime
+
+Agent Runtime is a self-hosted AI agent platform written in Rust for Raspberry Pi, Ubuntu, and macOS. Use the web console or a connected messaging app to ask questions, work with files, and follow tasks as they run.
+
+Connect external tools through the Model Context Protocol (MCP) and import your own documents into a retrieval-augmented generation (RAG) knowledge base. The agent can use a connected tool to look up a current order or cite your support handbook when answering a policy question.
+
+[Quick start](#quick-start) · [Knowledge base setup](#knowledge-base-design-flow) · [简体中文](README.zh-CN.md)
+
+<!-- ai-learning-stage: foundations -->
+- Host free-space admission and growth estimates, supervised jobs, typed memory failures, model-reviewed unchanged-summary reuse, incremental encrypted backups with retry recovery, and restart-safe log retention: [operations protection](docs/runtime_operations_protection.md).
+
+## Overview
+
+The browser console covers model setup, task history, knowledge base management, and device health. The Rust service `clawd` runs tools and skills and manages memory and scheduling. An authenticated `user_key` ties work to the same account across bound channels.
+
+Current repository highlights:
+
+- **MCP tool connections.** In **Models → External tool servers**, connect a local stdio server or a remote Streamable HTTP server and choose which tools the agent can call.
+- **RAG knowledge bases.** Import manuals, FAQs, or runbooks from **Memory → Knowledge base**. The agent can retrieve relevant passages and cite their sources.
+- multi-channel entry points: Telegram, WeChat, Feishu, Lark, WhatsApp Cloud, WhatsApp Web, and the browser UI through `webd`, with optional nginx/TLS
+- task runtime and HTTP API in `clawd`
+- shared skill dispatch with in-process builtins, external adapters, and runner subprocesses through `skill-runner`
+- built-in, external, and runner-based skills for system, files, web, image, audio, video, music, NNI, crypto, KB, and automation tasks
+- local browser UI in `UI/`, including Dashboard, Agent, Models, Tasks,
+  Communication Setup, Account Binding, Tools/Skills, AiAPP, Skill Store, Memory,
+  Logs, Learning / Maintenance, and optional admin-only NNI, Assets, and Bancor+
+  pages
+- Raspberry Pi / small-screen desktop app in `pi_app/`
+- shared Linux/macOS runtime contracts, with fail-closed Bubblewrap and
+  Seatbelt process isolation selected through a machine-configured backend
+
+### Five ideas to know first
+
+- **Agent**: reads the current request and decides whether to answer, ask a question, or use a capability.
+- **Task**: the persisted unit of work. A `task_id` lets the UI return to its status and result later.
+- **Capability**: a stable description of what can be done, such as reading a file or searching the web.
+- **Tool or skill**: the executable implementation selected for a capability after permission and argument checks.
+- **Checkpoint or artifact**: saved progress or output that allows long work to continue without starting over.
+
+### From one request to a result
+
+Send a document with a request such as “summarize this document.” The Agent decides how to read it, and the runtime checks that the chosen capability can access the attachment. The Agent reads the returned material, checks the evidence when the task calls for it, and writes a reply. You can follow the task while it runs and open its result later.
+
+### Complete a first task
+
+1. Open **Models** and save a text model.
+2. Open **Agent** and send a short request. To test file handling too, attach a small document and ask for its three main points.
+3. Stay in the same conversation for follow-up questions. If a request stays on **Queued**, open **Task Management** and look for its task. The chat can show the initial waiting state before the server returns a task ID.
+
+If you also want to use the Agent from a messaging app, start with **Communication Setup** and **Account Binding** once the first browser task works.
+
+On macOS, media browsing uses an installed, vendor-signed Google Chrome or
+Microsoft Edge, with Chrome preferred. Install a supported browser from the
+system dependency settings if none is available. Release packages do not embed
+a testing Chromium application. Media skills keep their own browser profiles,
+separate from personal cookies and from other browser identities; a first
+platform login can still be required. Linux and Raspberry Pi browser behavior
+is unchanged.
+
+### Product identity and safe renaming
+
+`configs/product_identity.toml` is the only product-identity source. Its display name,
+release artifact ID, release repository, splash image, and terminal banner are projected
+into the Rust runtime, shell/release scripts, and UI build. Do not add brand defaults to
+business code or ordinary skills.
+
+Changing this file changes presentation and release packaging only. It does not change
+the canonical `agentctl`, `clawd`, `webd`, `skillctl`, or `clawcli` entrypoints; the
+`agent-runtime` service/data namespace; `X-Agent-Key`; API routes; permissions; task and
+conversation records; or skill storage and receipts. A rename therefore does not require
+skill source changes or data migration.
+
+Run the two-brand contract before publishing identity changes:
+
+```bash
+python3 scripts/check_product_identity_coupling.py --self-test
+python3 scripts/check_product_identity_coupling.py
+bash scripts/product_identity_tests.sh --with-ui
+```
+
+<!-- ai-learning-stage: agent-runtime -->
+## Agent Loop Architecture
+
+Agent Runtime's main natural-language path uses a Codex / Claude style agent loop. Before the first planner call, the front door materializes text, audio transcripts, and attachments; binds task/session identity; and builds a machine-owned `TurnBoundaryEnvelope` containing explicit API fields, locators, permission/budget profiles, and safety context. Every ordinary `ask` then enters the agent loop, which decides whether to answer, clarify, or execute. A native model turn selects either `call_capability` for another observation/effect or `respond` for the terminal model-authored answer; providers using the structured plan protocol express equivalent verified steps. Recoverable failures return through `RepairEnvelope` machine fields, attempt history, and checkpoint state instead of user-language phrase matching.
+
+Execution, answer verification, and delivery are separate facts. Journals expose
+`execution_status` and `answer_verification.status` (`not_required`, `passed`,
+`failed`, or `unavailable`). Unavailable verification checkpoints completed work
+instead of accepting an unchecked answer. Same-conversation references can be
+recalled through `task_control.recall_context` after fresh ownership checks.
+Historical capability indices support bounded, snapshot-bound pagination;
+preview summaries report truncation and provide scoped recall references.
+Retained argument evidence keeps safe locators separately from summaries and
+marks complete fields explicitly; incomplete arguments are never passed off as exact.
+Stale read cursors return bounded argument-replanning facts rather than replaying
+the source task. Ordinary failure explanations remain model-authored, including requested
+public JSON, without exposing nested internal error wrappers.
+Multi-part channel delivery retries explicitly retryable rejected parts without
+replaying accepted parts or tool execution. Unchanged verification checkpoints
+resume verification only. UI/CLI display the three facts separately; ambiguous
+sends require an owner decision and snapshot check before retry, with manual
+confirmation distinct from provider proof. See [context and recovery](docs/architecture/03-task-state-context.md)
+and [delivery recovery](docs/architecture/11-task-artifact-delivery.md).
+
+Confirmed model/API quota exhaustion is the single fixed-notice exception:
+`quota_exhausted` ends the task as failed without a waiting checkpoint, automatic
+retry, or another model call to explain the error. The English notice is
+`API quota exhausted. Task terminated.`, defined once in
+`configs/provider_failure_notices.toml`. Completed execution evidence is retained.
+Temporary rate limits, network failures and resource-capacity waits keep their
+recoverable policies; other failure and reply handling is unchanged.
+
+A malformed or internally contradictory verifier audit is a verification-protocol
+failure, not proof that completed work failed. It follows the bounded
+verification-only checkpoint path; exhausted retries require user intervention.
+When canonical capability results exist, terminal synthesis and observed-output
+fallback share their ordered evidence catalog. Model views are redacted and
+budgeted, with explicit completeness and verified range references for oversized
+data; missing evidence never becomes a successful result.
+
+Plan-verifier informational notes remain visible without being reported as
+blocking failures or repair requests. Actual denial and pending confirmation
+retain their distinct machine evidence in teaching and audit views.
+
+Action-scoped skill documentation is opt-in and selected only from structured action IDs.
+The authorized capability index stays complete; exact expansion returns the requested action's
+parameters and shared rules with its original documentation digest. Verified source-file hashes,
+sizes and artifact references remain in bounded observations even when provider diagnostics are
+large. These facts avoid redundant filesystem probes without bypassing final publication checks.
+
+### Request and Agent Loop Flow
+
+```mermaid
+flowchart TD
+    A[Channel / UI / API request] --> B{Ingress kind}
+    B -->|live conversation input| BI[POST /v1/conversation-inputs/client-task]
+    BI --> BJ[Persist input receipt<br/>scope + input_seq + idempotency]
+    BJ -->|Run later| BQ[Save input for explicit activation]
+    BJ -->|process now| BK{Active conversation task?}
+    BK -->|yes| BL[Bind to the same task<br/>wake loop + interrupt stale model turn]
+    BK -->|no| BM[Atomically claim creation<br/>create one foreground ask task]
+    BL --> BR[Return input receipt<br/>existing task_id + disposition]
+    BL -->|next safe round or checkpoint resume| J
+    BM --> BA
+    B -->|explicit task / automation / run_skill| BT[POST /v1/tasks]
+    BT --> BA[Authenticated task execution policy<br/>server-owned machine envelope]
+    BA --> C[Persist task + queue]
+    C --> D[Return task ID<br/>and input receipt for chat submissions]
+    C --> E0[Worker checks stale tasks and due checkpoints]
+    E0 --> E1[Claim next queued task]
+    E1 --> E{Task kind}
+    E -->|run_skill| RS[Direct run_skill path<br/>explicit skill_name only]
+    E -->|ask| F[Materialize text/audio/attachments]
+    F --> G[TurnBoundaryEnvelope<br/>identity + explicit machine facts + safety/budget profile]
+    G --> H[Ask context bundle<br/>memory provenance + recent execution + goal/journal refs]
+    H --> J[Agent loop<br/>ordinary semantic authority]
+    J --> L{Loop round}
+    L --> N[Planner LLM<br/>native call_capability / respond<br/>validated structured plan when required]
+    N -.-> PS[Recognized respond/free_text bytes<br/>public-output policy + presentation events]
+    N --> P[Resolve capability and verify the action<br/>permissions, arguments, risk and effect]
+    P -->|approval needed| PW[Save approval checkpoint]
+    PW --> AB
+    P --> Q{Verified step}
+    Q -->|respond| R[Structured terminal response<br/>free_text, exact list, authored object,<br/>or observed object projection]
+    Q -->|synthesize_answer| S[Grounded synthesis]
+    Q -->|resolved capability, tool or skill| QP[Pre-tool hooks and adapter preflight<br/>policy and argument checks]
+    QP --> MG{Non-idempotent mutation?}
+    RS --> RSG[Verify the explicitly requested skill action]
+    RSG -->|allowed| MG
+    RSG -->|approval needed| PW
+    RSG -->|denied| RD[Finalize the direct skill task]
+    MG -->|yes| MI[Persist intent + deterministic idempotency key<br/>persist attempt before invocation]
+    MG -->|no| EX{Execution adapter<br/>sandbox backend diagnostics when process-backed}
+    MI --> EX
+    EX -->|long-tail async_start| AS[Async media/job adapter<br/>pending_async_job + poll/cancel contract + checkpoint]
+    AS --> ASP[Progress machine reply<br/>checkpoint_id + poll_ref + next_check_after + can_poll/can_cancel]
+    EX -->|call_tool| T[Tool execution]
+    EX -->|call_skill / direct run_skill| U[Shared skill dispatch]
+    T --> MR{Mutation receipt state}
+    U --> MR
+    MR -->|not a mutation| VR{Execution path}
+    MR -->|receipt returned| MC[Persist receipt + verification + commit<br/>under exact worker claim]
+    MR -->|timeout / crash ambiguity| MU[Reconciliation checkpoint<br/>never infer from prose]
+    MC --> VR
+    VR -->|ask| V[Observed result]
+    VR -->|run_skill| RD
+    RD --> Z
+    MU --> ASP
+    S --> V
+    V --> W[Evidence coverage + operation audit<br/>+ answer-shape check]
+    W -->|repair / missing evidence| WR[RepairEnvelope<br/>issue codes + attempt ledger<br/>bounded diagnostic feedback]
+    WR --> J
+    W -->|round observed| BD{BudgetDecision<br/>progress + deadline + policy + hard ceilings}
+    BD -->|continue| J
+    BD -->|finish| X[Observed-output finalizer]
+    BD -->|checkpoint_requeue / waiting / needs_user| BC[Persist TaskBudgetSlice + task_checkpoint<br/>release exact claim]
+    BC --> ASP
+    BD -->|terminal| X
+    R --> Y[User-visible message assembly]
+    X --> Y
+    Y --> AV{Answer verification}
+    AV -->|not_required / passed| Z[Output-contract guard + task result]
+    AV -->|failed| WR
+    AV -->|provider unavailable / invalid audit| BC
+    Z --> AA[Channel delivery]
+    Z --> AB[Journal + session update]
+    AB --> AD[Task event stream<br/>goal + context + transition + checkpoint + tool/coding/team events]
+    PS --> AD
+    ASP --> AA
+    ASP --> AB
+    ASP --> AD
+    AD --> AE[CLI / UI watch + report]
+    D -.-> AE
+    BR -.-> AE
+    AD --> AF[Teaching mode timeline<br/>per-turn trace selection + raw JSON details]
+    Z -. optional .-> AC[Background memory refresh]
+```
+
+- Browser chat and other clients with live conversation input use `POST /v1/conversation-inputs/client-task`. The server saves the message before binding it to an active task or creating one foreground `ask` task for an idle conversation. The receipt reports the saved input and its task binding when available. **Run later** keeps the input available for explicit activation.
+- `POST /v1/tasks`: remains the explicit task boundary for automation, direct skill execution, and callers that intentionally manage a standalone task.
+- `Authenticated task execution policy`: `clawcli` stays on the configured approval/sandbox policy unless an enabled admin key explicitly requests global `--yolo`. Other communication adapters authenticated with an enabled admin key default to YOLO. The server removes caller-supplied policy envelopes, reissues the machine contract after authentication, and revalidates the current admin key before each use. YOLO means `approval_policy=never` plus `sandbox_mode=danger_full`; it does not bypass registry allow/deny, schemas, path validation, external-publish controls, cancellation, budgets, redaction, or audit evidence.
+- `task_id polling`: API/channel request timeouts only affect how long the caller waits. The background task remains queryable through `GET /v1/tasks/{task_id}` unless worker lifecycle logic marks it terminal.
+- `worker_once recovery tick`: before claiming new queued work, the worker checks stale running tasks, protected paused checkpoints, due resume work, async poll results, and result projections.
+- Task-event archives and large event payloads use lossless binary compression while keeping activity indexes and public replay JSON stable. Verified duplicate caches for old terminal tasks are released in bounded batches. See [task-event storage and offline compaction](docs/architecture/task-event-storage.md).
+- `kind=ask` lets the Agent choose how to handle a natural-language request. With `kind=run_skill`, the caller supplies the exact skill and arguments, and the runtime verifies that action before using the shared skill dispatcher. Both task kinds save their results under the original `task_id`.
+- `Live conversation input`: each accepted message has a stable `input_id`, monotonic `input_seq`, disposition, instruction revision, and execution epoch. The planner reads ready inputs in order. A committed decision advances the revision; tool dispatch and terminal presentation are fenced against stale revisions. The Agent composer defaults to updating the active task immediately; **Run later** persists an input without starting work and exposes explicit **Run now** and **Withdraw** controls. Explicit `/cancel` uses the authenticated current-conversation control endpoint and does not require a model call.
+- `Single-owner steering`: one planner owns a conversation task at a time. New ordinary input interrupts an in-flight read-only/model step when the adapter can stop safely; otherwise it is applied at the next dispatch boundary. The runtime does not start a second control planner beside an in-flight mutation. Long mutations use supervised async/checkpoint contracts, while explicit stop remains an out-of-band machine control.
+- `Cancellation settlement`: acceptance, stop request, adapter acknowledgement, and cleanup settlement are separate machine facts. Parent cancellation propagates to child tasks and process groups, but a task is not presented or delivered as cancelled until registered runtime cleanup has settled. Unknown external effects enter reconciliation instead of being reported as rolled back.
+
+### Ask and Run Skill Boundary
+
+Use `ask` when you want the Agent to interpret a request. Use `run_skill` when your client already knows the skill name and its arguments, such as a console button for listing knowledge bases.
+
+| Step | `kind=ask` | `kind=run_skill` |
+| --- | --- | --- |
+| Action selection | The request passes through `TurnBoundaryEnvelope` into the Agent loop. The planner decides whether to reply, clarify, or use a capability. | The caller supplies `payload.skill_name` and `payload.args` directly. |
+| Checks before execution | The resolver identifies the concrete action. The verifier checks its arguments, permissions, risk, and confirmation requirements. | The verifier checks the explicitly selected action under the authenticated task policy. A high-risk action may pause for approval. |
+| Skill execution | A capability that resolves to a skill uses the shared skill dispatcher. | The same dispatcher runs the approved skill. |
+| Progress and results | Both task kinds use the task queue and retain the same `task_id` for status and result queries. | Read the task with `GET /v1/tasks/{task_id}` or `clawcli get`. |
+
+- `Planner-owned front door`: materializes text/audio/attachments and builds `TurnBoundaryEnvelope` from task identity, explicit API fields, structured locator facts, and safety/budget profiles. It performs no semantic LLM call and contains no ordinary respond/clarify/execute branch.
+- `Agent-loop semantic authority`: every ordinary natural-language task enters the loop. Native turns choose `call_capability` or structured `respond`; structured-plan turns may express equivalent tool, skill, synthesis, clarification, repair, checkpoint, or stop steps.
+- `CapabilityResolver / PlanVerifier`: resolves `call_capability` into the current tool or skill implementation, then checks visibility, required arguments, allowed action, risk/effect, confirmation, and output contract before execution.
+- `permission_decision`: verifier and preflight blockers expose machine fields such as `allowed`, `needs_confirmation`, `denied_by_policy`, `dry_run_required`, `external_provider_blocked`, `risk_level`, `action_effect`, and registry dedup/idempotency metadata. UI, API clients, finalizers, and i18n should render these fields instead of parsing runtime prose.
+- `Side-effect outbox`: non-idempotent mutations from both planner-owned execution and explicit `kind=run_skill` persist `intent_recorded` and `attempt_started` before invocation. A deterministic key derived from task plus canonical action fingerprint enters runner context, external HTTP `Idempotency-Key`, or supported local-adapter environment. Receipt, verification, reconciliation, and commit transitions are fenced by the exact worker claim. Receipt-bearing states suppress original-action replay; ambiguous timeout/crash state checkpoints as `mutation_reconciliation` and accepts only a fingerprint-bound structured `applied|not_applied|still_unknown` resume constraint.
+- `Async job start`: long-tail tool work can publish a machine reply with `checkpoint_id`, `poll_ref`, `next_check_after`, `can_poll`, and `can_cancel` while the task remains recoverable through checkpoint polling. Media skills expose this shape through registry capabilities such as `image.generate` / `image.poll` / `image.cancel`, `audio.synthesize` / `audio.poll` / `audio.cancel`, `video.generate` / `video.poll` / `video.cancel`, and `music.generate` / `music.poll` / `music.cancel`.
+- `Local command recovery`: direct async command tasks persist a prepared, poll-only checkpoint before starting the process. It does not claim successful execution. Restart recovery waits for the existing lease fence and observes that same job rather than starting the command again. Patch validation errors proven to occur before workspace writes provide structured replanning facts; uncertain applied effects remain subject to reconciliation.
+- `Capability result observation`: every successful `CapabilityResultEnvelope` is projected into one bounded, redacted generic machine observation for the next planner turn. Optional domain projections may compact common evidence, but unknown or newly installed capabilities retain structured provider, artifact, async-job, effect, and verification fields without requiring a new runtime branch.
+- `Evidence coverage`: tool, skill, and synthesis outputs become loop observations. Missing evidence or recoverable failures go back into the loop with compact attempted-method history.
+- `Repository intelligence`: Rust uses `syn`; Python, JavaScript/JSX and TypeScript/TSX use pinned Tree-sitter grammars for definitions, scoped syntactic reference candidates, test discovery and bounded code context. Parse errors and resource-bound partial results are explicit. See [code-index contract](docs/code_index_contract.md).
+- `Answer-verifier operation audit`: the model returns structured `operation_checks`, `output_field_checks`, and `unsupported_claims`. Each positive operation cites `evidence_step_ids` and any `required_dispatches`; the host cross-checks those claims against the persisted task journal before accepting the answer. Prohibitions and absence constraints remain verdict-level checks rather than invented execution rows. Invalid audit data produces the bounded machine error `verification_audit_invalid` instead of being trusted as prose.
+- `Post-write verification`: action/path observations come from structured tool fields, not presentation wording. Evidence-gap diagnostics describe a particular snapshot; new observations allow a fresh model answer through the same verifier. Patches preserve workspace-relative paths in Git and non-Git workspaces, and validate a consistent prefix convention before applying changes. Invalid command size or empty input returns typed, effect-free argument recovery before process or asynchronous-checkpoint creation; failures after process start retain their separate execution evidence and safety checks.
+- `Task plan closeout`: the planner reconciles unfinished steps with execution evidence before the final answer. Runtime supplies the current revision and prepared-response state; delivery itself belongs to runtime. A second reconciliation is allowed only after fewer unfinished steps remain, with a maximum of two across checkpoints. Blocked work stays unfinished, unresolved state remains observable, and completed effects are never replayed merely to close a plan.
+- `Async execution evidence`: attempts bind to an execution step and job ID. Completion replaces only that attempt's waiting observation with its actual receipt or structured error; resuming preserves earlier steps and completed effects. Conditional operations are audited against observed conditions and preserved state, without claiming an excluded operation ran. Both foreground and resumed terminal paths log the full journal before the bounded API projection; evidence recovery must match the task identity and persisted execution-stream digests.
+- `TaskBudgetSlice / BudgetDecision`: interactive work is governed by resumable soft wall-time slices and structured progress, not ordinary `max_rounds` or `max_tool_calls` completion thresholds. After each observed model/tool result, runtime chooses `continue`, `finish`, `checkpoint_requeue`, `waiting`, `needs_user`, or `terminal` from verifier-approved plan facts, evidence/artifact progress, continuation state, policy, cancellation, deadlines, and administrator hard ceilings. Profile timeout classes cap planner provider calls and agent-loop tool/MCP calls before the slice boundary; a timed-out mutation enters reconciliation instead of blind replay. The model can request continuation but cannot raise cost, permission, time, or resource ceilings.
+- `RepairEnvelope`: repair is bounded loop recovery. Runtime supplies machine fields such as `repair_source`, `issue_codes`, `missing_evidence`, `permission_decision`, `provider_status`, `attempt_fingerprint`, `side_effect_fingerprint`, `checkpoint_id`, and `next_recovery_kind`; planner/finalizer can use those fields to replan, clarify, wait in background, or fail structurally without parsing localized prose.
+- Answer-verifier recovery preserves bounded, source-labelled `model_feedback` for the next planner turn. This diagnostic advice is untrusted model output, not a permission grant or executable instruction; runtime decisions still use machine fields. A current runtime recovery observation is not hidden by an older successful capability result. A missing `requested_result` returns to bounded planner recovery and cannot be satisfied by a prose-only synthesis retry; format-only repair remains available.
+- `Observed-output finalizer`: publishes grounded results only after the answer shape and evidence contract are satisfied. Bounded command observations put the versioned numeric/null exit status and completeness flags before actual output; echoed command input cannot displace that execution evidence. Output prose never determines whether a command succeeded.
+- `Output-contract guard`: normalizes final text, message arrays, file tokens, scalar/strict shapes, and channel delivery consistency before the result is saved.
+- `Journal + session update`: task state, observed facts, and active-session anchors are persisted after finalization; background memory work is optional and non-blocking.
+- `Task event stream`: journal trace events expose machine-readable progress such as `task_goal`, `context_budget`, `context_compaction`, `budget_decision`, `task_transition`, `checkpoint_created`, `assistant_output_started|delta|completed|aborted|replaced`, tool/coding/provider/hook/subagent events, `agent_team_started`, `subagent_finished`, `agent_team_aggregated`, `agent_execution_final`, and terminal `task_final`. The end of one agent execution is an internal lifecycle event and does not close a resumable task; only the database-backed terminal task projection closes the public live stream. Waiting, checkpoint, and other internal events stay in the activity/teaching views and are never materialized as assistant chat messages. Raw provider deltas remain private; only recognized `respond/free_text` bytes that pass public-output policy become presentation events. Provider/context projections retain machine metrics such as `prompt_truncation_count` and `prompt_bytes_before_max`. CLI and UI render these fields directly, including budget, continuation, goal/checkpoint, verification, child-graph, team, and safe assistant-output progress, instead of reading raw logs or localized text. Coding events are immutable snapshots: a resumed task appends a higher projection revision, and consumers select that latest projection while retaining earlier red-test evidence as history.
+
+### Planner, LLM, and Capability Flow
+
+Detailed flow: [Agent loop and planning](docs/architecture/01-agent-loop.md).
+
+- `TurnBoundaryEnvelope`: is built deterministically from authenticated task/session state, attachments, explicit API fields, locators, and policy profiles. It is context for the planner, not a semantic route result.
+- `Planner prompt`: is the first semantic LLM call for an ordinary `ask`. Resume and async-poll executors may restore a previously admitted machine checkpoint, but they cannot introduce a new pre-planner semantic decision path.
+- `call_capability`: is the preferred planner action because it keeps skill/tool choice behind registry metadata and resolver policy.
+- `Native tool choice`: requests require a protocol action, including model-generated `respond` answers or clarifications; this does not require an effectful tool call. Anthropic manual extended thinking uses its supported `auto` wire setting while runtime protocol validation and bounded recovery remain active.
+- `CapabilityResultEnvelope`: returns to the next planner turn through a bounded, redacted generic projection. Skill-specific projections are optional optimizations; they are not required for a new capability's structured data to remain visible to the loop.
+- `respond`: is the native terminal formatting action, not a capability simulator. Ordinary answers carry model-authored `free_text`; strict lists carry an item array and exact count. Model-authored named-field/JSON replies use `object`, where each `value_json` is one complete serialized JSON value and malformed values receive bounded structured repair rather than silent coercion. When requested values already exist in successful `CapabilityResultEnvelope` observations, `observed_object` carries only output names, exact capability tokens, and language-neutral dotted paths; runtime copies the original JSON values without asking the model to re-serialize nested machine data. Missing, failed, or invalid references are rejected. Provider omissions for payloads unused by the selected shape canonicalize only to empty/zero, and redundant authored object content is accepted only when its parsed JSON exactly equals the named fields. Runtime-owned provider/config/permission, domain parse/normalize/validate/preview, dry-run, artifact/job, checkpoint, diff, verification, repair, and rewind fields require a prior matching capability observation. A lower-level environment fact may support that call but cannot replace the disclosed domain capability that owns the result. Runtime materializes terminal machine payloads without parsing multilingual user text or adding fixed prose. A single scalar, identifier, title, token, or path stays `free_text`.
+- `Generated INTERFACE prompts`: come from `crates/skills/*/INTERFACE.md`, `optional_skills/*/INTERFACE.md`, `external_skills/*/INTERFACE.md`, and `prompts/layers/generated/skills/*`; new skills should improve these contracts instead of adding `clawd` main-flow branches.
+- `Exact machine output`: the planner requests `response_shape=strict` plus a validated `structured_field_selector` such as `command_output`; the runtime projects only that field from `CapabilityResultEnvelope`. Free-form and one-sentence contracts remain model-synthesized.
+- `PlanVerifier`: blocks unavailable capabilities, missing required fields, unsafe mutations, and disallowed output/evidence shapes before any executor runs. Denials should carry stable machine fields rather than user-facing fixed reply text.
+- `Pre-tool hooks + adapter preflight`: loop execution and bounded recovery retries pass through the same hook, contract-argument, command-policy, and structured error checks before any effectful adapter runs.
+- `Task journal event`: executor observations are projected into stable `task_goal`, `context_budget`, `context_compaction`, `tool_started`, `tool_step`, `tool_finished`, optional `coding_checkpoint`, optional `coding_task_contract`, optional `coding_evidence`, and optional team lifecycle events with refs, counts, status tokens, verification tokens, timing, and failure attribution for CLI/UI progress views.
+- `agent.subagent` / `agent.subagent_batch` / `agent.subagent_persistent`: planner-authorized child work enters through the same native `call_capability` -> registry resolver -> verifier path as other runtime actions. All three capabilities now materialize durable child-thread IDs and use the same child DAG scheduler. Single/batch children stay read-only; persistent writer roles remain explicitly high-risk and run in isolated worktrees. The per-session open-thread limit is configured by `max_concurrent_threads_per_session` and excludes the main Agent. Legal overflow remains `queued_capacity` instead of being skipped. `join_wait_ms` only bounds the parent's current wait and never cancels a child; ordinary children have no default whole-operation deadline. The planner cannot create one: an API caller must explicitly set `subagent_execution.runtime_deadline_ms` on the original parent task payload, and the source remains auditable. A parent owns one durable child graph, so wake-up, reconnect, and repeated planner calls reuse its child IDs; new constraints use steering or typed retry controls. Trusted role definitions and isolation/permission policy come from registry plus `agent_guard.toml`; planner-supplied policy fields are discarded. The queue claims only ready nodes, serializes overlapping writer ownership, and permits disjoint isolated worktree writers to run concurrently. The parent reviews persisted ownership, conflicts, dirty-parent state, and precondition hashes before admitting or rejecting a patch. Children never publish externally, and only an explicitly admitted local-current-workspace role may write outside an isolated task worktree.
+- `Skill dispatcher`: uses the same dispatch layer for direct `run_skill` and planner skill calls. Direct `run_skill` does not ask the planner to choose a skill; it only dispatches the explicit `payload.skill_name`. Builtins run in-process, external skills use adapters, and runner skills launch `skill-runner` plus the concrete binary.
+- `Runner credential bridge`: runner subprocesses never inherit the parent environment wholesale. When the verified action declares credential access, `clawd` derives the selected structured provider connection and issues separate one-use secret tokens for the canonical vendor variable and any required protocol alias, such as `MINIMAX_API_KEY` plus `OPENAI_API_KEY` for an OpenAI-compatible MiniMax adapter. Offline preview actions receive neither token.
+- `Skill process protocol`: runner skills receive one request JSON line and finish with one final response JSON line. Skills that explicitly declare `run.progress_frames=true` may emit bounded, versioned machine progress records first; stable decision fields still belong in final `extra`.
+- `synthesize_answer`: is scheduled inside the loop when evidence needs natural-language synthesis; it is not a fixed final LLM call after every task.
+- `RepairEnvelope`: verifier, executor, permission, provider, and checkpoint recovery paths expose structured repair context to the next loop round; user-visible fallback prose should come from i18n, finalizer, UI, or the model, not runtime templates.
+- Host workspace file primitives distinguish an identical retry from a new operation after another successful mutation of the same path. Runtime-attested mutation digests and step IDs scope that distinction; external side effects retain task-wide replay protection. Bounded task traces include execution-stream hashes so local NL acceptance can verify complete logged evidence without increasing the API response size.
+- The persisted trace projection is capped at 128 KiB including its storage metadata. Oversized traces are compacted in stages; exceptionally wide objects use an explicitly marked minimal projection. The separate task summary and full journal log remain unchanged, and acceptance requires matching execution-stream hashes before using full logged evidence.
+- `Output-contract finalization`: is a thin protocol boundary. It preserves exact validated machine fields and artifact transport, otherwise it publishes the model's evidence-grounded synthesis; it does not select skills or render domain-specific prose.
+
+### Permission Plane and Command Policy
+
+The permission plane is a structured execution boundary. Registry metadata from `configs/skills_registry.toml`, bundled evidence policy for non-capability output shapes, and verifier state are projected into `permission_decision` so UI/API/finalizer layers can explain what happened without hardcoded runtime prose. Ordinary registry capability families are selected by planner `call_capability` plus resolver metadata.
+
+- `risk_level`, `requires_confirmation`, `once_per_task`, `idempotent`, and `dedup_scope` come from registry and planner capability metadata where available.
+- `action_effect` is derived from structured skill/action args and contract metadata, not from user-language phrase matching.
+- `run_cmd` decisions include a nested `command_policy` for machine fields such as `policy_authority`, `literal_command_token`, `command_arg_present`, `unresolved_runtime_template_present`, and command effect flags.
+- Explicit user command preservation is represented by `_clawd_literal_command`; otherwise `run_cmd` is treated as planner-structured command args and remains subject to contract and media-artifact blockers.
+- Recovery paths such as non-interactive sudo retry are still adapter calls: they must reuse the same contract, hook, policy, and audit machinery as the original planner step.
+- Risky local coding or file-mutation capabilities should declare an isolation profile in registry metadata. `local_temp_workspace` is for disposable previews, dry runs, and generated artifacts that can be cleaned through artifact refs; `local_worktree` is for deliberate workspace edits that must be visible through task evidence, changed-file refs, and verification commands. UI and CLI surfaces read `permission_decision.steps[].sandbox`, `workspace_scope`, and `registry_policy` instead of interpreting localized text.
+- Confirmation decisions use the closed machine protocol `approve_once|always_for_scope|deny`. `always_for_scope` is exposed only for registry-declared local workspace mutations with an exact capability/effect/resource scope; it excludes `run_cmd`, network access, external publish, credential access, package installation, and privilege escalation. Grants are HMAC-signed, bound to the authenticated actor plus channel/chat session, expire after at most one hour, and are stored, matched, listed, and revoked by `clawd`. CLI/UI state never grants permission by itself.
+
+### Sandbox and Cross-Platform Execution
+
+`sandbox_mode` defines the permission scope; `[tools].sandbox_backend` selects
+the platform mechanism that enforces that scope. The two settings never
+substitute for each other. The default backend is `auto`: it resolves to
+Bubblewrap on Linux and Seatbelt (`/usr/bin/sandbox-exec`) on macOS. Selecting
+a backend does not grant access; the verifier still applies capability effect,
+risk, confirmation, workspace, network, credential, and privilege policy before
+an adapter starts. When a restricted mode cannot find its backend, the platform
+does not match, or the remote executor is unconfigured, execution is rejected
+with a structured result instead of silently falling back to an unsandboxed
+process.
+
+An installed skill child inherits the host's explicit execution backend,
+including `direct` only for authorized `danger_full` execution. The host
+overwrites inherited/package-provided backend markers. Missing or unknown
+markers and warm reusable runners retain the receipt-controlled child sandbox;
+permissions, pinned receipts and capability verification still run before launch.
+
+
+Detailed flow: [Security and execution](docs/architecture/02-security-execution.md).
+
+| Backend | Host | Selection | Current contract |
+| --- | --- | --- | --- |
+| Bubblewrap | Linux | `auto` or `bubblewrap` | Filesystem write scope, PID/IPC/UTS namespaces, optional network namespace, parent-bound or durable lifetime. Missing `bwrap` fails closed. |
+| Seatbelt | macOS | `auto` or `macos_seatbelt` | Read-all/write-scoped profile, optional network access, process policy, parent-bound or durable lifetime. Missing `sandbox-exec` fails closed. |
+| Remote container | Any | explicit `remote_container` | Reserved executor contract only. It returns `sandbox_remote_backend_not_configured` until a remote executor is configured and is never an automatic fallback. |
+| Direct | Any | explicit `sandbox_mode = "danger_full"` or authenticated per-task YOLO | No sandbox claim. This is an operator-selected bypass, not an availability fallback. |
+
+`clawcli --yolo <task-producing command>` requests direct execution for that
+task and requires a currently enabled admin key. It is intentionally not the
+CLI default. Communication adapters other than `clawcli` default to the same
+mode when their request is authenticated as admin, so channel admin keys must
+be treated as full execution credentials. The backend remains the only policy
+authority; request payloads, browser state, planner output, and user wording
+cannot grant this mode.
+
+Diagnostics report the requested/resolved backend, platform, availability,
+fail-closed state, reason code, and filesystem/network/process/credential/
+resource/environment control levels. Service discovery is also platform-owned:
+Linux may use systemd/SysV, while macOS uses Homebrew services, launchd, or
+process observation. An incompatible explicit manager returns a structured
+`unsupported_platform` result without launching a Linux command. Development
+and release scripts use `scripts/shell_compat.sh` instead of GNU-only file/date
+commands or Bash 4-only collection syntax. See
+[`docs/cross_platform_contract.md`](docs/cross_platform_contract.md).
+
+Trusted lifecycle hooks are configured in `configs/agent_guard.toml` and stay
+disabled by default. Administrators can inspect a redacted status projection
+through `GET /v1/admin/hooks/status` or the browser Models page: it reports
+setup state, enabled/valid/invalid counts, trust and hash readiness, and every
+supported stage, without returning handler arguments, endpoint URLs,
+environment references, or credentials. Enabling or trusting a hook still
+requires reviewed repository configuration; the UI cannot promote an unreviewed
+script into an execution boundary.
+
+## Natural Language Contract Boundary
+
+Agent Runtime keeps natural-language understanding on the LLM side and deterministic execution on the runtime side. The planner may read user wording, examples, skill docs, and multilingual prompt guidance, but it must turn that understanding into structured actions before runtime code acts on it. The pre-planner front door may only expose authenticated machine facts through `TurnBoundaryEnvelope`; it cannot infer ordinary intent.
+
+Runtime code should consume stable contracts such as:
+
+- evidence-policy answer-shape fields, for example `final_answer_shape = "summary_with_evidence"` and `final_answer_shape_class = "grounded_summary"`
+- planner-owned capability refs, for example `capability_ref = "package.detect_manager"` or `call_capability("package.detect_manager")`
+- action names, for example `read_field`, `validate_config`, or `transform_data`
+- registry metadata and `planner_capabilities`
+- `EvidencePolicyContext` / `OutputContract` fields, target locators, and explicit `field_path` values
+- JSON/TOML/YAML field paths, file extensions, structured tool output, exit codes, error kinds, and risk/effect metadata
+- `permission_decision` and `command_policy` machine fields
+
+Runtime code should not add per-language phrase tables or `prompt.contains(...)` branches to make a single natural-language case pass. If a new user wording needs better handling, update registry capability metadata, `INTERFACE.md`, generated skill prompts, planner schema, or a necessary vendor prompt patch so the LLM emits the same structured action in any language. Ordinary skills such as weather, web, image, photo, publishing, package manager, Docker, RSS, and market quote flow through registry capability metadata. `python3 scripts/check_no_nl_hardmatch.py` is the local guard for this boundary.
+
+<!-- ai-learning-stage: context-memory -->
+## Memory System
+
+Agent Runtime memory is split into short-term conversation records, structured user preferences, long-term fact cards, and retrieval indexes. The design goal is to make memory useful without letting old assistant output become a hidden instruction for a new task.
+
+### Core Boundaries
+
+Memory is scoped to the authenticated identity first, then to the current conversation. Channel IDs from Telegram, WeChat, Feishu, browser UI, and other adapters are normalized into the same task identity model, so a bound `user_key` can keep memory consistent across channels while still preserving `user_id` / `chat_id` level conversation state. Recent conversation state stores active-task anchors, alias bindings, and follow-up context separately from durable facts; it is allowed to help resolve “that file” or “the previous result”, but it is not treated as a new user instruction.
+
+The memory layer has three hard boundaries:
+
+- current user input always wins over recalled memory
+- memory text is background context unless current task/session state explicitly binds it to the turn
+- runtime code consumes memory through structured fields, source kinds, scores, safety flags, and use-policy decisions rather than per-language phrase branches
+
+This keeps old assistant output, task logs, and knowledge snippets from silently steering execution. If recalled context conflicts with the current request, the planner prompt and memory-use policy require the current request to win.
+
+### Storage Model
+
+The main persisted memory stores are:
+
+- `memories`: short-term conversation records and task-visible snippets. Rows keep role, memory type, salience, safety state, timestamps, success state, and source metadata.
+- `conversation_states`: active per-chat state such as alias bindings, active task anchors, and follow-up state. This is session state, not durable knowledge.
+- `user_preferences`: structured user preferences such as response language, response style, response format, and agent display name.
+- `memory_facts`: durable fact cards with `fact_key`, `fact_value`, `fact_text`, source refs, confidence, status, expiry, and conflict-group metadata.
+- `long_term_memories`: supplemental summary rows used only where the current memory policy allows summary recall.
+- `memory_retrieval_index`: hybrid retrieval index for short-term records, preferences, and fact cards. Imported knowledge base documents use the skill's own database.
+
+`configs/memory.toml` controls budgets, retention, long-term refresh intervals, write filters, preference extraction, retrieval limits, and embedding/index behavior. Defaults are conservative: short acknowledgement messages can be filtered, assistant replies are marked, and LLM-written preferences must pass confidence and runtime validation before they are stored.
+
+### Write Path
+
+After an `ask` task finalizes, Agent Runtime can persist:
+
+- short-term records in `memories`, scoped by `user_key`, `user_id`, `chat_id`, role, memory type, salience, and safety flag
+- user preferences in `user_preferences`, such as `response_language`, `response_style`, `response_format`, and `agent_display_name`
+- long-term fact cards in `memory_facts`, with source, confidence, scope, status, conflict group, expiry, and supersede metadata
+
+Preference and fact writes go through a structured memory intent contract. The model is asked to emit `memory_actions` such as `upsert`, `delete`, `expire`, or `noop`; runtime code then validates action enum, kind, scope, confidence, source evidence, TTL, and safety fields before anything is stored. The runtime does not decide durable preference writes by matching a single natural-language phrase.
+
+Long-term summary refresh provides supplemental recall, while durable knowledge is stored as fact cards. A fact card keeps `fact_key`, `fact_value`, human-readable `fact_text`, `source_ref`, `source_memory_ids_json`, `reason`, `confidence`, `expires_at_ts`, `conflict_group`, and `status`. New active facts in the same conflict group supersede older facts, and expired or deleted facts are removed from retrieval.
+
+Memory writes are intentionally after-answer work. The user-visible response is saved first; then background memory refresh can run when configured. This prevents memory extraction latency from blocking normal replies and makes memory write failures non-fatal to the already completed task.
+
+### Recall and Use Policy
+
+Memory recall is built as structured context and then filtered by the current consumer's memory use policy:
+
+- planner: can use unfinished goals, preferences, relevant facts, and knowledge docs, but excludes supplemental summaries, assistant results, similar triggers, and raw recent snippets
+- chat: uses stable preferences and facts; bounded recent context is allowed only when current session state makes it relevant
+- skill: `_memory` is cropped by the skill registry `memory_policy`; skills without a policy get a safe default scoped profile
+
+The `photo_organize` skill, for example, declares a memory policy that allows preferences, relevant facts, and knowledge docs while excluding long-term summaries, recent events, assistant results, similar triggers, unfinished goals, and raw recent snippets.
+
+Each use-policy decision records what it included and why. Prompt builders receive already-filtered structured context rather than raw database rows. The common policy is:
+
+- new standalone tasks get stable facts and preferences, not old assistant results
+- follow-up turns can use recent observations and active aliases only when session state says the user is continuing the same task
+- planner prompts can see enough memory to avoid repeating work, but memory remains background and cannot override the current request
+- skill `_memory` payloads are cropped per skill registry policy so specialized skills only receive the memory sources they are expected to use
+
+### Retrieval Index
+
+Hybrid recall uses `memory_retrieval_index` plus optional FTS. Each indexed row records `source_kind`, `source_ref`, memory kind, metadata, salience, success state, and embedding metadata:
+
+- `embedding_model`
+- `embedding_dims`
+- `embedding_version`
+
+The default provider is `local-hash-v3`, which runs offline with Unicode-normalized, bounded token projection. Retrieval uses cosine scoring only when stored embedding metadata matches the active profile. A mismatched runtime-memory row remains available to non-vector scoring until the runtime index is rebuilt; a mismatched KB projection is reported as stale and rebuilt through a resumable shadow generation before an atomic activation. Set `reindex_on_startup = true` in `configs/memory.toml`, or start with an empty index, to rebuild the runtime retrieval index from short-term records, preferences, and fact cards. KB document rows and vector generations remain in the separate KB-owned database and are queried through its own pool.
+
+Retrieval combines several signals instead of trusting a single score: exact / lexical matches, vector similarity when compatible, salience, recency, source kind, success state, safety filter, and the current memory use policy. This makes the index useful for multilingual recall while keeping execution grounded in planner actions and output/evidence contracts.
+
+### Knowledge Base Design Flow
+
+Use a knowledge base for documents you want to refer to across conversations, such as a support guide or an operations checklist. Give each collection a recognizable name so you can tell the Agent where to look.
+
+1. Open **Memory → Knowledge base → Add material**. The panel is below **Capacity and status**. Enter a library name and one file or folder path per line, then click **Start adding**. Use paths the Agent service can read. Relative paths start in its workspace.
+2. If the import offers **Continue unfinished work**, use it to process the next batch. Then click **Refresh libraries**, select the library, and use **View document status** to check what was indexed. Try a term from a document in **Search material** to see matching excerpts and their locations.
+3. In **Agent**, ask a question and name the library. For example, “Search the Returns guide library. Who pays for return shipping when the product is defective? Include the source.”
+
+Libraries belong to the account on the connected instance. Separate installations, such as a Raspberry Pi and a workstation, each keep their own libraries. If a library is missing, check the console address and signed-in account, then click **Refresh libraries**.
+
+The console panel sends explicit `run_skill` tasks to `kb`. In chat, an `ask` task gives the Agent loop the choice to call `kb.search` through the capability resolver and verifier.
+
+```mermaid
+flowchart TD
+    subgraph Import["Add material"]
+      A[Name a library and select source paths] --> B[Extract text and split it by structure<br/>keep pages, sections, sheets and slides]
+      B --> C[Save the batch and its progress]
+      C -->|more files| B
+    end
+    C --> D[(Account's library<br/>text and active vector indexes)]
+    subgraph Ask["Search or ask"]
+      Q[Search the panel or name the library in Agent] --> F[Scope by account and library<br/>apply filters before ranking]
+      F --> G[Rank text and vector matches]
+      G --> H{Relevant excerpts found?}
+      H -->|yes| I[Show excerpts or answer from verified evidence<br/>with source locations]
+      H -->|no| J[Return no matches or state that the library has no answer]
+    end
+    D --> G
+```
+
+Detailed flows: [RAG knowledge retrieval](docs/architecture/17-rag-knowledge-retrieval.md), [Task state and context](docs/architecture/03-task-state-context.md), and [Skill-owned storage](docs/architecture/08-skill-owned-storage.md).
+
+#### What gets indexed and cited
+
+The importer reads UTF-8 text and Markdown, structured JSON/JSONL and CSV/TSV, visible HTML, PDFs with a text layer, and DOCX/XLSX/PPTX. It extracts text and structure without running macros or scripts or fetching remote resources. For a scanned PDF, run OCR first so the document has text to index.
+
+The library's records live in the skill-owned SQLite database under `[database].skill_data_root`, normally `data/skills/kb/state.db`. The runtime reads that database when the task's memory policy allows knowledge recall. For explicit searches, it applies owner, library, path, file type, and time filters before ranking full-text and vector matches. The built-in `local-hash-v3` embedding profile runs offline and works best with terms from the source document. When the parser, chunker, or embedding profile changes, the runtime verifies a new index generation before activating it.
+
+Each `RetrievalHitV2` keeps its source location and carries `instruction_authority=none`. Retrieved passages can support an answer. The runtime checks the owner, revision, digest, and relative location before using a cited evidence ID.
+
+For API clients, `kb.ingest` is a medium-risk local write. The registry allows it once per task and prefers the asynchronous process adapter. `kb.search`, `kb.list_namespaces`, and `kb.stats` are read-only actions that return structured fields such as `hits`, `names`, and `document_count`.
+
+Each file is limited to 2 MiB by default. A standard import batch processes up to 500 files, 64 MiB of source data, or 10,000 chunks, with a cooperative 20-second time budget. On constrained hosts the defaults are 64 files, 16 MiB, 2,048 chunks, and 10 seconds. When a batch stops early, the continuation points to the last saved progress. Search scores small vector candidate sets exactly and uses bounded approximate search for larger sets. Import and search report structured errors for path, capacity, concurrency, and parsing limits.
+
+To back up a knowledge base, stop writers or take a consistent SQLite backup of the complete skill-owned database, including its `-wal` state when applicable. Restore it under the same skill data root, run an integrity check, inspect namespace/job/generation status, and resume interrupted ingestion or vector reindex from its machine checkpoint. Deleting documents or a namespace removes its canonical chunks and projections transactionally; uninstalling or disabling the skill preserves private data unless the user explicitly requests data deletion.
+
+### User Control
+
+Open **Memory** to review what the Agent has saved and control how it uses those records.
+
+- In **How memory is used**, choose **My defaults** or **Current conversation**. **Use saved memory** controls recall. **Learn from conversations** controls future memory formation. Either switch can be changed independently, and saving takes effect immediately. The service-wide defaults and resource budgets live in `configs/memory.toml`.
+- Use **Memory items** to search, filter, correct, or delete a record. You can mark an item as irrelevant or stop it from being used in replies. Use **Preview import** to review a memory file before importing it, or export existing records as JSON or Markdown.
+- Use **Bulk Clear** to clear recent records alone or together with their derived memory. The console shows the affected record and job counts before asking for confirmation.
+- **Capacity and status** shows the selected account or conversation's storage checks. **Refresh capacity** keeps the current reading and expanded usage details visible while fetching an update. **Memory background jobs** lets you review failed jobs, archive them, or check whether they can be recovered.
+
+The main console endpoints are listed below. The item list and memory settings require the current authenticated identity.
+
+```text
+GET    /v1/memory
+GET    /v1/memory/items
+GET    /v1/memory/settings
+POST   /v1/memory/settings
+GET    /v1/memory/availability
+GET    /v1/memory/jobs/review
+GET    /v1/memory/clear/preview
+POST   /v1/memory/clear/scoped
+```
+
+For safety-flagged recent records, the console hides the text. Open **Show details** on a fact card to see its source, the reason it was saved, and any conflict group.
+
+### Trace and Troubleshooting
+
+Task journal summaries and traces include `memory_trace`. This records the stage, use policy, recalled source refs, inclusion reason, score, and character budget without copying query text or document bodies. Teaching mode shows these source-only rows in a collapsed Memory/KB section; lower-level machine fields remain in a second collapsed details view. It is intended for explaining why evidence was used without turning the teaching UI into another copy of private knowledge content.
+
+The browser teaching-mode trace, `clawcli llm-trace`, and `/v1/debug/tasks/{task_id}` also show a compact `flow_summary` above numbered LLM calls, with stage/module/retry/verifier/finalizer/provider-error machine counts, structured memory/KB policy, `model_catalog_trace`, `model_catalog_trace.readiness`, and `resume_trace` next to raw request/response details. Each browser chat turn keeps only a lightweight task/trace index; raw provider requests and responses are reloaded from the current server log or its retained seven-day dated archives and are never copied into browser storage. The trace response reports whether full detail is available, metadata-only, still pending, or unavailable because it was not recorded or has expired.
+
+When teaching mode is selected, clicking either the user's question or the assistant's reply selects that turn and shows the corresponding task id, status, LLM call count, stage count, verifier/finalizer counts, goal/context/team/coding/checkpoint event timeline, model/provider capability decision, selected-model readiness decision, resume/checkpoint decision, and numbered raw LLM request/response details. When teaching mode is not selected, message clicks do not change the teaching trace.
+
+Execution boundaries are exposed as machine fields instead of prose-only notes. Teaching mode, subagent review, `clawcli report`, and replay tooling should consume fields such as `workspace_root`, `current_process_cwd`, `current_workspace_scope`, `write_enabled`, `external_publish_enabled`, `allowed_roles`, `runtime_config.max_concurrent_threads_per_session`, `thread_state`, `execution_state`, `queue_reason`, `join_wait_ms`, `runtime_deadline_ms`, `hook_stages`, `hook_decisions`, `permission_decision`, `policy_decision`, `checkpoint_id`, `poll_ref`, and `provider_blocker`. Consumers do not infer lifecycle from finalizer or child prose.
+
+When debugging memory behavior, check these questions in order:
+
+- Was the request a new task or a follow-up bound to an active session?
+- Which stage built the memory context: route, planner, chat, schedule, image, or skill?
+- Did `memory_trace` include the expected `source_kind` / `source_ref`?
+- Did the use policy exclude recent assistant output or long-term summaries by design?
+- Was the index stale because embedding metadata changed or `reindex_on_startup` was false?
+- Did a fact conflict group supersede the older fact?
+- Was the item hidden because it was expired, deleted, low confidence, or safety-risk flagged?
+
+Useful code and config entry points:
+
+- `configs/memory.toml`
+- `crates/clawd/src/memory/intent.rs`
+- `crates/clawd/src/memory/apply.rs`
+- `crates/clawd/src/memory/facts.rs`
+- `crates/clawd/src/memory/use_policy.rs`
+- `crates/clawd/src/memory/retrieval.rs`
+- `crates/clawd/src/memory/indexing.rs`
+- `crates/clawd/src/memory/api.rs`
+
+### Background, Resume, and Memory Flow
+
+Detailed flow: [Task state and context](docs/architecture/03-task-state-context.md).
+
+Important lifecycle details:
+
+- Foreground HTTP/channel waits are short by design. A caller that stops waiting should keep polling the same `task_id`; it should not create a duplicate task or treat the background task as failed.
+- `task_lifecycle` is machine-readable. Query APIs expose `state`, `db_status`, `can_poll`, `can_cancel`, `checkpoint_id`, `resume_due`, `resume_wait_seconds`, and heartbeat fields for UI rendering.
+- Source of truth: `crates/clawd/src/task_lifecycle.rs` owns lifecycle projection, and `repo::get_task_query_record()` attaches that projection to `GET /v1/tasks/{task_id}`. UI, CLI, and channels should render these structured fields instead of deriving status from `text` or `error_text`.
+- `clawcli get`, `clawcli watch`, and `clawcli wait <task_id> --until terminal|completed|background|needs-user` render or wait on lifecycle machine fields; `clawcli cancel-task <task_id>` cancels by task ID, while `clawcli cancel-index` cancels the selected entry from the active-task list.
+- `clawcli resume-task <task_id>` marks an existing checkpoint due for recovery; `clawcli continue <task_id> [message]` is a shorter structured resume entrypoint; `clawcli pause-task <task_id> --pause-seconds N` delays an existing waiting/background checkpoint. These commands do not restart tasks without checkpoint state.
+- `clawcli submit --detach` returns a `task_id` quickly; `clawcli submit --wait` polls until terminal state; `--json` keeps submit/watch output script-friendly.
+- `clawcli --yolo submit|exec|code|chat|run-skill ...` requests `approval_policy=never` and `sandbox_mode=danger_full` for newly submitted tasks. The backend accepts it only for a currently enabled admin key. This is a high-risk mode: it removes local approval prompts and process sandbox isolation, while registry, schema, external-publish, cancellation, budget, redaction, and audit controls remain active.
+- `clawcli exec` is the CI/script-oriented runner: it submits or resumes an ask task, waits by default, returns stable exit classes/codes, supports `--profile quick|coding|release-gate|long-tail`, can stop on background checkpoints, prints budget/coding/resume evidence as `exec_compact_*` machine lines when present, and can write `summary.json`, `task.json`, `events.jsonl`, `verification.json`, `diff_summary.json`, `llm_summary.json`, `resume.json`, and `index.json` artifacts. `clawcli code` is the concise coding-agent shortcut for `exec --profile coding`. See `docs/clawcli_exec_replay.md`.
+- `clawcli goal start/status/pause/resume/edit/clear` manages structured long-task goal contracts with `objective`, `done_conditions`, `verification_commands`, constraints, checkpoint resume fields, and redacted control responses.
+- `clawcli active` prints a compact task table by default and supports `--json`; `clawcli events <task_id>` prints filtered task event streams with optional `--jsonl` and machine filters such as `--event-type`, `--checkpoint-id`, `--policy-decision`, `--subagent-id`, and `--async-job-id`.
+- `clawcli tui --user-id <id> --chat-id <id>` is a terminal task console over the same task APIs; add `--once` for a single snapshot and `--task-id <task_id>` for selected task details. Selected-task snapshots include raw task data plus `selected_progress` and `selected_summary` machine fields for checkpoint/resume, goal/outcome state, LLM budget/calls, coding verification, side effects, and artifacts. Interactive key tokens are stable machine commands: `r` refresh, `w` watch, `p` pause, `c` cancel, `u` resume, `n` continue, `e` export, `1` report, `2` review, `3` subagents, `4` permission, and `q` quit.
+- `clawcli session list/show/resume/archive/delete/fork` keeps a local session navigation store for `session_id`, `task_ids`, `active_goal_id`, `workspace_root`, checkpoint, event sequence, archive status, and fork source. This store is operator metadata under `APP_CLAWCLI_SESSION_STORE`, `$XDG_STATE_HOME/agent-runtime/`, or `~/.local/state/agent-runtime/`; it is not used as a natural-language route source.
+- In interactive chat, `/continue` resumes the current background/checkpoint task from persisted thread state without copying a task id, `/approve` approves the exact pending action once, `/approve-scope` approves only the backend-provided exact capability/resource scope for the current session, and `/deny` closes the pending request. `clawcli permission grants` lists server-side scope grants and `clawcli permission revoke <grant_id>` revokes one immediately. The browser Tasks page exposes the same structured choices and revocation API.
+
+```bash
+clawcli session list --user-id 1 --chat-id 1 --json
+clawcli session show task-123 --json
+clawcli session resume task-123 "continue from the checkpoint" --json
+clawcli session archive task-123 --json
+clawcli session fork task-123 task-123.fork --json
+clawcli session delete task-123 --json
+```
+
+```bash
+clawcli goal start "make the focused change" --objective "ship the fix" --done tests_pass --verify "cargo test -p clawcli" --json
+clawcli goal status task-123 --json
+clawcli goal pause task-123 --pause-seconds 3600
+clawcli goal resume task-123 --checkpoint-id ckpt-123 --message "continue from checkpoint"
+clawcli goal edit task-123 --objective "updated goal" --done tests_pass --goal-status background
+clawcli goal clear task-123
+```
+
+- `clawcli llm-trace <task_id> [--raw] [--limit N]` reads the task debug endpoint and prints numbered LLM calls with `llm_call_ref=LLM#1..N`, flow/code attribution, provider/model/status tokens, usage tokens, and optional raw request/response fields.
+- Task event streams include goal, context budget/compaction, task-budget decisions, transitions, checkpoints, tool lifecycle, coding evidence, provider, hook, subagent/team, and final events. A bounded hot suffix serves SSE while an append-only redacted archive preserves the full task sequence, hash chain, and periodic source-range snapshots. `archive_replay` means the durable archive recovered an old hot cursor; `cursor_expired` now means the archive itself has a real gap. `clawcli events/watch`, reports, replay export, and browser task details consume these versioned events; raw event JSON stays in secondary details. See [`docs/task_event_archive_contract.md`](docs/task_event_archive_contract.md).
+- `clawcli run-skill <skill_name> --args-json '{...}'` submits explicit `kind=run_skill` work without natural-language routing; add `--wait` to poll the same `task_id`.
+- `clawcli skills` reads registry-backed skill metadata; `clawcli capabilities` and `clawcli permission capability` read flattened capability/policy metadata. Add `--json` when another script should consume the response.
+- `clawcli replay export/run/diff` supports redacted `recorded_only` replay bundles for debugging and CI comparison without live model or tool calls; `replay run --coverage` exposes recorded coverage, `replay run --view llm|tools|checkpoints|summary` filters recorded evidence, and `replay diff` includes taxonomy tokens such as `route_changed`, `plan_changed`, `permission_changed`, and `final_status_changed`. See `docs/clawcli_exec_replay.md`.
+
+- An independent sweep checks stale tasks even when ordinary workers are occupied. Stale ordinary `running` tasks become `timeout`; paused checkpoints in `waiting` or `background` stay `running` so recovery can claim them by checkpoint id. Health reports live worker heartbeats and successful recovery sweeps; see [stalled-worker diagnosis](docs/architecture/16-runtime-resource-recovery.md#storage-exhaustion-and-stalled-workers).
+- Async long-tail tools should start an external job, write `pending_async_job`, checkpoint, and publish an accepted machine reply with `checkpoint_id`, `poll_ref`, and `next_check_after`. Poll and cancel actions should be exposed as structured capabilities when the provider or dry-run adapter can support them. Worker recovery later polls through `poll_async_job`.
+- Terminal async poll projection preserves an existing visible ask reply. If the ask task has only machine executor output, projection adds a machine JSON reply with `checkpoint_id`, `poll_ref`, `task_id`, and `final_result_json`.
+- Seeded resume restores the persisted `TaskBudgetSlice`, cumulative model/tool/token/cost/elapsed counters, continuation index, observations, artifact refs, repair state, and completed side-effect fingerprints before re-entering the agent loop. A healthy task continues while it produces structured progress; repeat/stagnation, cancellation, policy, or administrator hard ceilings stop it.
+- Checkpoints also retain `round_traces`. Recovery restores recorded rounds without duplicating them; bounded trace views distinguish `proposed_output_contract` from `effective_output_contract`, and `decision_envelope` uses the effective contract when available. Older checkpoints do not gain fabricated round history. See [checkpoint round history](docs/architecture/03-task-state-context.md#checkpoint-round-history-and-output-contracts).
+- Runtime recovery and projection code moves only machine fields such as `status_code`, `message_key`, `executor_state`, `resume_directive`, `job_id`, and artifact refs. User-facing prose is rendered later by finalizer, i18n, UI, or the model.
+- Lease/heartbeat model: see `docs/task_lifecycle_lease_model.md`; every foreground and resume-executor write is fenced by the exact task-row `(lease_owner, claim_attempt)`. Heartbeat only renews that claim, checkpoint recovery advances the generation, and stale workers cannot publish claimed process events or terminal results.
+
+CLI lifecycle and its persisted teaching evidence are documented in [Task state and context](docs/architecture/03-task-state-context.md) and [Coding and observability](docs/architecture/04-coding-observability.md).
+
+<!-- ai-learning-exclude:start -->
+## Detailed Architecture Guide
+
+GitHub README pages do not support true pagination. Detailed diagrams are
+maintained as an ordered guide so that each page stays focused. The Learning / Maintenance
+UI renders these same Markdown sources instead of maintaining a second copy:
+
+1. [Agent loop and planning](docs/architecture/01-agent-loop.md)
+2. [Security and execution](docs/architecture/02-security-execution.md)
+3. [Task state and context](docs/architecture/03-task-state-context.md)
+4. [Coding and observability](docs/architecture/04-coding-observability.md)
+5. [Skills, media, and models](docs/architecture/05-skills-media-models.md)
+6. [Release validation](docs/architecture/06-release-validation.md)
+7. [Office artifact workspace](docs/architecture/07-office-artifacts.md)
+8. [Skill-owned storage](docs/architecture/08-skill-owned-storage.md)
+9. [Interactive coding and presentation](docs/architecture/09-interactive-coding.md)
+10. [Web entry and core isolation](docs/architecture/10-web-entry-security.md)
+11. [Task artifact delivery](docs/architecture/11-task-artifact-delivery.md)
+12. [Browser media discovery](docs/architecture/12-media-discovery.md)
+13. [NNI capability and heartbeat control](docs/architecture/13-nni-capability.md)
+14. [AiPP skill companion interfaces](docs/architecture/14-aipp-skill-companions.md)
+15. [AiAPP development guide](docs/architecture/15-aipp-development-guide.md)
+16. [Runtime resource admission and recovery](docs/architecture/16-runtime-resource-recovery.md)
+17. [RAG knowledge retrieval](docs/architecture/17-rag-knowledge-retrieval.md)
+
+Use the [architecture index](docs/architecture/README.md) for language selection and previous/next navigation.
+The [full documentation index](docs/README.md) links every engineering document in English and Simplified Chinese.
+<!-- ai-learning-exclude:end -->
+
+<!-- ai-learning-stage: safety-operations -->
+## Main Components
+
+- `crates/clawd`: core runtime, HTTP API, routing, memory, scheduling, auth, task queue
+- `crates/skill-runner`: verifies an installed receipt, resolves a language-neutral `SkillLaunchSpec`, and supervises the skill's JSONL process or typed HTTPS adapter
+- `crates/skill-sdk`: manifest validation, isolated Cargo/Python/Node/Go/prebuilt builders, protocol checks, receipts, rollback, and developer CLI/templates
+- `crates/clawcli`: terminal CLI for talking to `clawd`
+- `crates/webd`: browser UI host, login/session boundary, and authenticated proxy to the internal core API
+- `crates/telegramd`, `crates/wechatd`, `crates/feishud`, `crates/larkd`, `crates/whatsappd`, `crates/whatsapp_webd`: channel daemons
+- `services/wa-web-bridge`: local Node bridge used by the WhatsApp Web channel
+- `crates/skills/*`: fixed/core built-in skill implementations and `INTERFACE.md` specs
+- `optional_skills/*`: bundled Skill Store packages installed on demand without local compilation
+- `external_skills/*`: externally submitted skills and their required `INTERFACE.md` specs
+- `UI/`: Vite + React local console
+- `pi_app/`: small-screen desktop monitor and launcher scripts
+
+## Quick Start
+
+The complete installation, configuration, build, systemd, cloud, Raspberry Pi, update, and troubleshooting runbook is maintained in [USAGE.md](USAGE.md). This README keeps the product and architecture overview instead of duplicating operational instructions.
+
+Users and deployment agents install only from a matching signed GitHub Release package. Follow the [Release installation guide](docs/release_installation.md); missing packages must not trigger compilation. Source builds are a separate [manual developer workflow](docs/developer_build.md).
+
+A normal first Release installation starts the runtime and registers automatic startup. Linux and Raspberry Pi use systemd; macOS uses a per-user LaunchAgent. `--no-start` leaves both the runtime and automatic startup disabled. Use `scripts/configure-autostart.sh --status|--disable` to inspect or remove the registration.
+
+The Ubuntu x86_64 and macOS full Releases preinstall every compatible repository-maintained bundled Skill Store package and AiAPP together with their reviewed Python/Node runtimes. The local FunASR path includes pinned SenseVoiceSmall/FSMN VAD model assets; Whisper.cpp remains an optional host-provided engine. Existing private skill data is preserved, and third-party external submissions remain admission- and policy-gated.
+
+For automatic first installation, run `bash install-latest-release.sh --repo OWNER/REPO`.
+For existing installations, use `bash deploy-github-release.sh --restart`. Both use prebuilt packages.
+Developer checkouts must match the signed source commit and have no uncommitted
+changes in release-managed paths; omitted tracked development files and local
+device settings are preserved. See the [update requirements](docs/release_installation.md#update-an-existing-installation).
+
+```bash
+# Install local command entrypoints without nginx
+bash install-agent-cmd.sh --user --no-deploy-ui
+
+# Smallest startup path
+agentctl start -q
+
+# Status, health, and logs
+agentctl -status
+agentctl -health
+agentctl -logs clawd 200 --follow
+```
+
+Operational rules:
+
+- Local deployments open the UI through `webd` and do not need nginx.
+- Cloud deployments opt in to nginx only when a domain or TLS reverse proxy is needed.
+- Release installation manages cross-platform automatic startup through `scripts/configure-autostart.sh`. Linux systemd units are generated for the detected user and workspace by `scripts/install-systemd-service.sh`; macOS uses a generated per-user LaunchAgent. The repository does not keep a host-specific unit or plist.
+- Raspberry Pi users should prefer the prebuilt aarch64 Release package to avoid repeated full builds on low-memory hardware.
+- Runtime admission continuously observes effective host/cgroup memory, available memory, swap, cgroup events, and Linux PSI where available. Every tool, skill, browser, local-model, background, and model-provider operation uses the shared resource broker; temporary pressure creates a resumable waiting checkpoint instead of a false task failure. Hosts with at most 2 GiB RAM additionally use on-demand database pools and, on Linux/glibc, a small-host allocator profile. See [runtime memory policy and measurement](docs/architecture/runtime_memory_profile.md).
+- Keep credentials in an environment file outside the repository and never commit them.
+
+### Runtime resource pressure and recovery
+
+```mermaid
+flowchart LR
+    A[Host and cgroup metrics] --> B[HostResourceSnapshot]
+    B --> C[Pressure state with hysteresis]
+    D[Capability resource contract] --> E[ResourceBroker]
+    C --> E
+    E -->|grant pinned lease| F[Tool, skill, browser, model, or background job]
+    E -->|capacity unavailable| G[resource_waiting checkpoint]
+    F --> H[Heartbeat and observed process-tree peak]
+    H --> E
+    F -->|finish, cancel, or crash| I[Release or reconcile lease]
+    G --> J[Resume worker]
+    J -->|capacity recovered| E
+```
+
+`resource_waiting` is a resumable lifecycle state, not a failed task. The runtime keeps cancellation,
+steering, pinned skill receipts, completed side effects, and channel delivery receipts intact while it
+waits. A direct `run_skill` admission refusal returns the exact claimed task to `queued` with a machine
+`next_check_after` and bounded increasing delay, so workers neither hot-loop nor report a temporary host
+shortage as a skill failure. Low-memory hosts may explicitly configure serialized swap headroom, but it
+is disabled by default and never allows concurrent heavy work to consume that allowance. See
+[runtime resource admission and recovery](docs/architecture/16-runtime-resource-recovery.md) for
+resource tiers, administrator overrides, observability, and validation evidence.
+
+Resource waits also expose bounded `task_lifecycle.resource_wait` diagnostics. The console explains
+which disk is short of space, available bytes and the recovery threshold, or identifies the
+memory/concurrency shortage. Unknown probes stay unknown, and resumed/terminal tasks discard stale
+waiting details. See the recovery guide for backup capacity preflight and an offline procedure
+that shares identical immutable delivery snapshots while retaining every original path.
+
+#### Disk warnings and write protection
+
+The console shows a disk-space warning while free space is low and the service can still accept writes. Click **Ignore** to hide this warning for 12 hours in the current browser for that service, including after a page refresh. It returns if free space is still low when the time expires. If storage becomes critical or its state cannot be verified, the console shows the write-pause warning as soon as it receives that status.
+
+```mermaid
+flowchart TD
+    A[Runtime samples filesystem capacity] --> B{Storage status}
+    B -->|normal| C[Continue accepting writes]
+    B -->|low space| D[Show the disk warning<br/>writes stay available]
+    D -->|Ignore| E[Hide the warning for 12 hours in this browser]
+    E -->|still low at expiry| D
+    B -->|critical or unavailable| F[Pause admission of new filesystem writes]
+    E -->|worsens while hidden| F
+    F --> G[Show the write-pause warning immediately]
+```
+
+The **Ignore** button affects only the banner. The service keeps checking capacity and applying its write policy. After freeing space, check task progress and the saved checkpoint before taking further action. Supervised workers can recover from a panic or lost heartbeat. Valid task and recovery-lease heartbeats protect long-running work. Memory quotas measure memory-owned logical data, excluding task archives and SQLite free pages.
+
+In **Automatic backups**, administrators can check which disk is holding up a backup and how much more space the run needs. When a backup is safe to start but would leave little free space, the panel shows the projected amount remaining. It reports the last verified copy and the current run separately. [Runtime operations protection](docs/runtime_operations_protection.md)
+
+## Identity and Access
+
+Agent Runtime uses `user_key` as the main identity across the UI and messaging channels.
+
+- permissions are resolved by `user_key`
+- conversations are resolved by `channel + external_chat_id`
+- browser clients can sign in through `webd` with a session cookie or use a key directly. For a session, `webd` authenticates the browser before forwarding the account's `X-Agent-Key` to the core API.
+- when the auth table is empty, `clawd` can bootstrap the first admin key
+
+Key management:
+
+```bash
+agentctl -key list
+agentctl -key generate user
+agentctl -key generate admin
+agentctl -key add rk-xxxx admin
+agentctl -key disable rk-xxxx
+```
+
+### Channel Core API Transport
+
+WeChat, Telegram, Feishu, Lark, WhatsApp Cloud and WhatsApp Web send internal
+core requests to their exact configured API endpoint without following HTTP
+redirects. Binding, event admission, task submission, polling, cancellation and
+terminal delivery do not forward credentials or replay mutations at a redirect
+target. Platform APIs and media downloads keep separate HTTP clients, so a
+normal media/CDN redirect is not disabled by this internal-API boundary.
+Configure the final API address, including HTTPS when applicable, rather than
+an alias that depends on a redirect.
+
+The browser console's login, session/profile checks and internal API requests,
+and `skillctl admit`, also reject redirects. Enter the final webd/nginx or core
+API address for the appropriate client. Browser requests retain their existing
+cookie, CSRF and direct-key rules; refusing a redirect does not encrypt HTTP.
+Use HTTPS for untrusted networks. Delayed identity responses are checked again
+after reading the body, so signing out or changing accounts invalidates their
+authority to update the current console identity.
+Changing the sign-in service address invalidates an unfinished attempt before
+using the new address. Credential submission and logout requests are deduplicated
+while pending, and an old logout cannot clear a later authenticated session.
+
+Text and native model requests, model-config probes, and device-key enrollment
+also use their exact configured endpoint without following HTTP redirects.
+Configure the final provider or relay API base URL. A 3xx response remains a
+structured provider failure, not a second request to another address. Platform
+and media/CDN clients keep their independent redirect policies.
+Gemini transport diagnostics omit the request URL so query-string credentials
+do not enter connection/timeout errors. Authentication and retry classes remain unchanged.
+
+Saving global model settings or provider keys and running a connection test
+require a server-verified administrator identity, including when no new key is
+supplied. Authenticated read-only model/catalog queries remain available; normal
+agent requests do not gain model-configuration permissions.
+Connection tests bind their resolved draft key explicitly while retaining the
+vendor identity used for protocol authentication and structured error handling.
+They do not replace a draft key with an unrelated managed credential or save it.
+
+### Telegram Transport Boundary
+
+Telegram is limited to message transport, identity binding, and task control. It no longer owns skill-specific configuration or natural-language routing:
+
+- Text, images, audio, video, and files are submitted uniformly as `kind=ask`; the agent loop decides whether to answer, clarify, or call a capability.
+- The command surface is limited to `/help` (including `/start`), `/key`, `/cancel`, and `/voicemode`.
+- `/status`, `/run`, and unknown slash text are ordinary `ask` input for bound users; the transport does not inspect them or query host/runtime internals.
+- `/voicemode` controls only text/voice delivery for the current Telegram chat and does not select capabilities.
+- Installation, enablement, and configuration of on-demand Skill Store skills, including `crypto`, belong to the browser management surface or controlled core APIs. Telegram does not accept skill credentials or expose skill configuration commands.
+- On startup, `telegramd` refreshes the Telegram command menu through `setMyCommands`; restart the channel daemon after removing old commands from configuration.
+
+## UI, API, and `webd`
+
+You can open the console directly through `webd` or use an nginx address configured for the device. With nginx, the browser downloads the page from nginx and sends its API requests through `webd`. In both cases, `webd` handles browser authentication and proxies requests to the local core service.
+
+```mermaid
+flowchart LR
+    B[Browser]
+    N[nginx<br/>optional web server and TLS]
+    W[webd default port 8788<br/>login, session and API proxy]
+    C[clawd 127.0.0.1:8787<br/>internal /v1 API]
+    U[UI/dist]
+
+    B -->|direct connection| W
+    B -->|configured nginx address| N
+    N -->|serve the page| U
+    N -->|proxy /v1 and /webd| W
+    W -->|serve the page on direct access| U
+    W -->|proxy authenticated /v1| C
+```
+
+- local workstation: open `webd` directly; it serves `UI/dist` and proxies authenticated `/v1` requests
+- cloud/server: nginx may serve `UI/dist` and proxy `/v1` and `/webd` to `webd`; nginx never proxies to `clawd`
+- `webd` is the browser security boundary and provides password login, session persistence, credential injection, request limits, and API proxying
+- `clawd` does not serve browser assets and cannot bind a non-loopback address; local channel daemons and `clawcli` may use its internal API
+- The dashboard keeps two separate entry controls: **webd public port** switches between direct device-IP access (`0.0.0.0:<port>`) and loopback-only access (`127.0.0.1:<port>`), while **Web server entry configuration** reports nginx installation, process, site, and UI deployment status. Keep direct webd access open when running locally without nginx. Closing it does not interrupt a configured native nginx deployment, because nginx keeps proxying over loopback.
+- Home keeps WEBD, nginx, optional LAN HTTPS, and the local-network name in the separate **Web Access** section. Linux devices advertise the configured single-label name through Avahi and macOS uses mDNSResponder. mDNS and HTTPS are independent: `http://<name>.local/` works whenever the active Web entry is reachable, while `https://<name>.local/` additionally requires the optional local CA setup.
+- Changing the local-network name validates one DNS-safe label, updates the operating-system mDNS hostname, and restarts local discovery. If the local CA has already been prepared, the same operation renews the leaf certificate for the new `.local` name without replacing the trusted root CA. The device IP remains a recovery address if the old name stops resolving.
+- when the UI is opened through a domain, login defaults use the current origin without appending `:8787` or `:8788`; direct local ports are inferred only for local access
+- Browser voice input uses hold-to-talk: press and hold to record, then release to send the voice turn automatically. Browsers expose the microphone only to secure contexts: remote access through a LAN IP must use a trusted HTTPS endpoint; plain `http://<pi-ip>` cannot be granted microphone access by UI code. `http://localhost` remains available when the browser runs on the Agent Runtime host itself.
+- The `Learning / Maintenance` page reads the bundled README and architecture guides. It provides beginner, operator, and developer routes, full-text search, per-page navigation, saved reading progress, and Mermaid zoom/pan/full-screen controls in both UI languages.
+- The Agent page keeps server-backed conversation history. Each task has a directly available rename control, and the saved name remains available after refresh or restart.
+- On desktop, clicking anywhere in the main work area collapses the navigation sidebar; the sidebar toggle restores it. The mobile navigation menu closes after page selection or an outside click.
+- Dashboard task counts and the Active Tasks page share one identity scope: admins see the system scope, while normal keys see their own tasks across conversations. Dashboard running counts and oldest-running age include only tasks with a live worker lease; user-waiting, paused, and resumable checkpoints remain visible through task lifecycle surfaces without triggering long-running warnings.
+- Dashboard health checks authenticate the caller and collect database counts, status files and one process snapshot on the blocking executor, so connection-pool and filesystem waits do not occupy asynchronous workers. Network bridge probes remain asynchronous. Each request reads fresh state without caching authorization or task counts.
+- The host summary also reads current authorization and persisted wait counts on the blocking executor before collecting system capacity. Invalid or revoked keys receive the existing authentication response; authentication lookup failures do not expose host data, unavailable wait counts remain unknown, and ordinary users retain the same redacted view. No identity or wait-count cache is used.
+- Dashboard system reads, including host capacity, dependencies, update progress, Web entry, exposure and hardware status, apply only to the latest request in the current endpoint, sign-in and role scope. Scope changes clear those snapshots and discard obsolete results, errors and loading completions. Silent polling does not overtake a manual refresh or count a skipped request as a failure. Build-triggered page reloads belong to the original endpoint; switching devices cancels that page effect, not an already accepted server operation.
+- The dashboard system-dependency check covers Agent Runtime runtime requirements, source/UI build tools, and native dependencies used by built-in tools and skills. It distinguishes missing dependencies, installed dependencies whose owning skills are disabled, and capabilities temporarily unavailable under current memory pressure. Administrators can start allowlisted installs through a Linux package manager or macOS Homebrew when the service already has non-interactive package-manager permission; installs run asynchronously and remain observable after a page refresh. The browser cannot submit arbitrary package names, system commands, or operating-system passwords.
+- The same section exports a read-only diagnostic JSON capped at 256 KiB. It includes bounded host capacity, pressure, dependency, and skill-count summaries, while excluding credentials, task content, logs, PIDs, executable paths, workspace paths, and raw configuration values.
+- System-operation confirmations and acknowledgments are bound to their original device and login epoch. Switching devices or signing in again prevents stale confirmations, feedback, recovery checks and diagnostic downloads; it does not cancel accepted server work. Pending update acknowledgments also fence older status reads. See [Web entry ownership](docs/architecture/10-web-entry-security.md).
+- Channel start/stop/restart/reset controls use the authenticated UI scope too. A pending action blocks duplicates for that service, not other channels. Accepted operations retain their success when a later health/config refresh fails; obsolete callbacks cannot overwrite current notices or continue a previous device's setup sequence.
+- Feishu/Lark registration pins the current configuration revision and both configuration copies. A durable application claim prevents repeated polls from reapplying credentials or undoing an explicit stop. Cancelled or uncertain applications require explicit administrator recovery; credentials, service availability and bot-side binding remain separate states. See [registration application and recovery](docs/architecture/10-web-entry-security.md#registration-application-and-recovery).
+
+`clawd` has a fixed internal endpoint at `127.0.0.1:8787`; it is not a user-facing listen setting. `webd` uses `configs/channels/webd.toml` and can listen on either `0.0.0.0:8788` for direct device-IP access or `127.0.0.1:8788` for nginx-only/local access. The dashboard preserves the configured port when switching scope and atomically updates only the listener address. Docker publishes `8788`, not `8787`; container networking must be evaluated before changing the listener to loopback.
+
+Useful endpoints (send `X-Agent-Key` for the current UI/user key):
+
+- `GET /v1/health`
+- `GET /v1/system/host-summary`: returns a versioned, authenticated, secret-free
+  host summary for the dashboard, including OS/version, architecture, memory,
+  Agent Runtime data-volume storage, uptime, and machine-readable unavailable fields. `version`
+  reports the compiled revision, local source revision and `matched`/`different`/`unavailable`;
+  unavailable provenance never implies a successful update
+- `GET /v1/system/storage-summary`: administrator-only, bounded inventory of major runtime directories;
+  does not follow symlinks or delete outputs, evidence, packages or models
+- `POST /v1/system/storage-scan`: records a bounded usage sample; retains the latest 24 samples
+- `POST /v1/system/storage-compact`: verifies and compresses at most 64 historical result rows;
+  reports logical savings rather than promising immediate filesystem reclamation
+- `GET /v1/system/dependencies`: returns Linux/macOS dependency state, installed
+  versions, consuming tools/skills, and controlled-install availability
+- `GET /v1/system/diagnostics/export`: returns the authenticated, bounded, and
+  redacted read-only diagnostic summary used by the dashboard download action
+- `POST /v1/admin/system-dependencies/install`: starts an allowlisted asynchronous
+  install by fixed `dependency_id`; arbitrary commands and package names are rejected
+- `POST /v1/tasks`
+- `POST /v1/conversation-inputs/client-task`: durably accepts an ordinary message and either binds it to the current task or creates one task
+- `GET /v1/conversation-inputs`: recovers owner-scoped receipts by conversation cursor or `client_message_id`
+- `GET /v1/conversation-inputs/events`: reads lightweight receipt, binding, and disposition events
+- `POST /v1/conversation-inputs/{input_id}/activate|withdraw`: activates a deferred input or withdraws an unapplied input
+- `POST /v1/conversation-inputs/cancel-current`: idempotently requests cancellation of the authenticated conversation's current task, optionally guarded by an exact task UUID
+- `GET /v1/tasks/{task_id}`
+- `GET /v1/tasks/{task_id}/artifacts`: returns the authenticated task artifact manifest
+- `GET/HEAD /v1/tasks/{task_id}/artifacts/{artifact_id}/content`: previews,
+  downloads, or reads metadata for one controlled artifact
+- `GET /v1/tasks/conversation-history`
+- `PUT /v1/tasks/conversations/{conversation_id}/title`
+- `POST /v1/tasks/active`
+- `POST /v1/tasks/cancel`
+- `POST /v1/tasks/cancel-by-task-id`
+- `POST /v1/tasks/cancel-one`: cancels by active-list index
+- `POST /v1/services/{service}/{action}`: browser-console service start/stop/restart; failures return machine fields such as `error_code`, `status_code`, `message_key`, `service`, and `action`
+- `GET /v1/admin/nginx`: returns admin-only nginx installation, process, site, and deployed-UI status
+- `GET /v1/admin/local-mdns`: returns the current local hostname, `.local` address, platform support, and responder status
+- `POST /v1/admin/local-mdns`: validates and changes the single-label local hostname; when local HTTPS was prepared, it also renews the leaf certificate for the new name
+- `GET /v1/admin/webd-exposure`: returns the configured webd listener, port, process state, and direct-access state
+- `POST /v1/admin/webd-exposure`: atomically switches webd between direct and loopback-only access, then schedules a platform-appropriate restart
+- `POST /v1/admin/workspace-update/nginx-enable`: checks, installs, or updates nginx on Linux/macOS, repairs and starts the entry, then deploys existing UI assets
+- `POST /v1/admin/workspace-update/nginx-disable`: stops and disables nginx, then removes the Agent Runtime site and dedicated UI deployment; cloud servers lose this web entry immediately
+- `GET /v1/auth/me`
+- `POST /v1/auth/channel/bind`
+- `GET/POST /v1/auth/crypto-credentials`: reads or overwrites exchange credentials scoped to the current `X-Agent-Key`
+- `GET /v1/models/catalog`: returns the secret-free model/provider capability catalog used by the UI Models page and teaching-mode `model_catalog_trace`
+- `GET/POST /v1/llm/config`: reads or updates the main text-model selection; administrators may store a custom-provider credential in the machine-local private credential broker
+- `POST /v1/llm/test`: tests a draft text-model configuration without persisting a supplied credential
+- `GET/POST /v1/admin/model-config`: reads or updates the independently selected provider, model, endpoint, and managed credential for each multimodal module
+- `GET/POST /v1/skills/config`: reads or updates skill enablement; each multimodal skill can be switched independently without discarding its model settings
+- `GET /v1/skills/store`: returns the registry-driven catalog for optional bundled and imported skills, including separate `installed` and `enabled` states
+- `GET /v1/skills/store/{skill_name}/dependencies`: reports the manifest-declared dependencies and their observed installed, missing, or not-applicable state
+- `POST /v1/skills/store/install`: installs and enables a release-authorized optional bundled skill, then reloads runtime skill views; an external import remains installed and awaiting policy approval
+- `GET /v1/skills/policy-reviews` and `GET /v1/skills/{skill_name}/policy`: administrators review the immutable admitted manifest, requested access and current grant state
+- `POST /v1/skills/{skill_name}/policy`: explicitly approve or revoke an external skill, or discard an unapproved installation entry while retaining its files/data; approval binds the reviewed generation, manifest digest and capability-request digest and verifies installed receipts/artifacts before publication. Import-time `enabled` flags never grant execution authority
+- `POST /v1/skills/store/remove`: removes an optional skill from runtime and planner visibility while retaining its bundled or imported package for reinstallation; always-on core and tool skills reject this action
+
+Machine-local API example (`8787` must not be exposed or port-forwarded):
+
+```bash
+curl http://127.0.0.1:8787/v1/health \
+  -H "X-Agent-Key: rk-xxxx"
+
+curl -X POST http://127.0.0.1:8787/v1/tasks \
+  -H "Content-Type: application/json" \
+  -H "X-Agent-Key: rk-xxxx" \
+  -d '{"user_id":1,"chat_id":1,"user_key":"rk-xxxx","channel":"ui","external_user_id":"local-ui","external_chat_id":"local-ui","kind":"ask","payload":{"text":"hello"}}'
+```
+
+### NNI, Assets, and Bancor+
+
+NNI is an optional administration surface, not part of the ordinary Agent chat path. On a fresh installation its three navigation entries are hidden. An administrator can enable them from Home after accepting the displayed eligibility and risk notice. That setting changes navigation visibility only: it does not join or leave NNI, start or stop heartbeats, execute a trade, or change asset data.
+
+```mermaid
+flowchart LR
+    A[Admin browser<br/>NNI / Assets / Bancor+]
+    W[webd<br/>session + authenticated proxy]
+    C[clawd NNI gateway<br/>local device + signing orchestration]
+    CFG[NNI configuration<br/>node selections]
+    H[Selected heartbeat node]
+    B[Selected Bancor+ node<br/>optional override]
+    S[Selected asset node<br/>optional override]
+    E[Configured external NNI API nodes]
+
+    A --> W --> C --> CFG
+    CFG --> H --> E
+    CFG --> B --> E
+    CFG --> S --> E
+```
+
+- **Independent responsibilities**: NNI device admission, owner binding, heartbeat, rewards, and APR are separate from Bancor+ trading and asset transfers. Bancor+ does not require the local device to be actively earning heartbeat rewards. Binding an asset account also does not start heartbeats; joining remains an explicit action.
+- **Node selection**: heartbeat uses the selected NNI node. Bancor+ and Assets use that node by default, but each can select its own service node. Read paths use bounded structured fallback through configured nodes; node errors remain machine codes instead of language-matched decisions.
+- **Read and mutation boun

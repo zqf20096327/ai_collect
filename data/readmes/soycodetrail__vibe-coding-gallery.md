@@ -4,15 +4,13 @@
 >
 > 👈 **返回主站对应模块**：[Vibe Coding 作品展](https://soycodetrail.top/vibe-coding)  ·  🏠 全站：[https://soycodetrail.top](https://soycodetrail.top)
 >
-> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-22 21:07:41 UTC
+> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-24 01:23:11 UTC
 
 ## 📚 系列展示站（更多精选内容，互相导流）
 
 - [DeepSeek Harness 插件库](https://github.com/soycodetrail/deepseek-harness-plugins) · [主站模块 ↗](https://soycodetrail.top/dsh-plugins) · [在线浏览 ↗](https://soycodetrail.github.io/deepseek-harness-plugins/)
-- [AI 技能工坊](https://github.com/soycodetrail/ai-skills-workshop) · [主站模块 ↗](https://soycodetrail.top/skills) · [在线浏览 ↗](https://soycodetrail.github.io/ai-skills-workshop/)
-- [开源书籍宝库](https://github.com/soycodetrail/ai-books-treasury) · [主站模块 ↗](https://soycodetrail.top/books) · [在线浏览 ↗](https://soycodetrail.github.io/ai-books-treasury/)
 
-## 📑 内容导航（811 个条目 / 15 个分类）
+## 📑 内容导航（819 个条目 / 15 个分类）
 
 - [📁 Web 应用](#cat-web-应用)
 - [📁 AI 工具](#cat-ai-工具)
@@ -377,6 +375,10 @@
   标签：PH 日榜#1 / 438 票 / MCP 网关 / 55000+ 工具 / Agent 基建
 - [Kimi K3 in C - 纯 C99 在单 CPU 上跑通 2.78 万亿参数大模型](https://github.com/FareedKhan-dev/kimi-k3-in-c) — 用零依赖的可移植 C99 从头实现推理引擎，在单颗 CPU、8.24GB 内存上跑通 2.78 万亿参数的 Kimi K3 MoE 大模型——不用 BLAS、不用框架、不用 GPU，从 8GB 笔记本到 128GB 工作站输出字节级一致。GitHub 12,516 Star、1,940 Fork，2026 年 11 月 GitHub Trending 上榜项目，Apache-2.0 开源。  
   标签：12.5K Star / 2.78T 参数 / 单 CPU 推理 / Apache-2.0 / Trending
+- [SoduWork - 把执行、审查与人工审批串成一条链的 Agent 工作流](https://github.com/mdiri-ai/SoduWork) — 面向真实团队协作的 Agent 工作台：Agent 负责执行、另一层负责审查、关键节点回到需求方批准，全程可追溯；上线 3 天暴涨 3,003 星、累计 7,049 星，登上 GitHub Trending 增速榜前十。  
+  标签：7K Star / 3天涨3003 / Agent 工作流 / 人机审批 / Trending
+- [Rust Anything - 记录行为再逐条回放，让 AI 把任意应用增量迁移到 Rust](https://github.com/erkamyaman/rust-anything) — 由 erKam Yaman 开发，先录制应用的真实行为，再用这些用例对着增量 Rust 移植逐条回放验证，让重写成 Rust 这件事第一次可验收；上线 3 天新增 4,895 星、累计 8,655 星，冲上 GitHub Trending 增速榜第二。  
+  标签：8.6K Star / 3天涨4895 / Rust 迁移 / 行为回放 / AI 编码
 
 <a id="cat-agent" name="cat-agent"></a>
 
@@ -594,6 +596,8 @@
   标签：PH 日榜#2 / 279 票 / AI 科研 Agent / 云实验室 / 自动写论文
 - [S.Space - AutoGen 团队打造的人与 Agent 共享工作空间](https://s.space) — 由 AutoGen 背后的团队打造：把团队里每个人的 Claude Code、Codex 等 Agent 接进同一个共享工作区，Agent 之间能主动交接任务、沿用共享记忆，重要操作仍由人批准；2026-11-18 登 Product Hunt 当日榜 #1（379 票、122 评论），是协作型多 Agent 工具的新爆款。  
   标签：PH 日榜#1 / 379 票 / AutoGen 团队 / 多 Agent 协作 / 共享记忆
+- [AG-UI - 把 AI Agent 接入前端应用的开放交互协议](https://github.com/ag-ui-protocol/ag-ui) — Agent-User Interaction Protocol，为 Agent 与前端之间建立标准化事件流协议，任意 Agent 后端都能无缝驱动 React/Vue 界面；2,159 fork、GitHub 21,354 星，正成为 Agent 前端集成的事实标准之一。  
+  标签：21K Star / Agent 协议 / 前端集成 / 开源标准 / 事件流
 
 <a id="cat-效率工具" name="cat-效率工具"></a>
 
@@ -807,6 +811,8 @@
   标签：1万 Star / 开源工具 / 光盘刻录 / 图像处理 / GPL-3.0
 - [Saparo - 把优惠码、返现和信用卡优惠算到一张账上](https://saparo.ai/) — 在美国商店找同款同尺码商品，把优惠码、返现、符合条件的信用卡优惠连同税费运费一起算清实付总额，帮你把结账准备好（最后付款仍由你点）；更有用的是算清实付、而不是堆更多优惠券，2026-11 周 Product Hunt 榜第 6（339 票）。  
   标签：PH 周榜#6 / 339 票 / 优惠叠加 / 比价 / 实付计算
+- [Chrome DevTools MCP - Google 官方让 AI 编码 Agent 操控真实浏览器的调试工具](https://github.com/ChromeDevTools/chrome-devtools-mcp) — Google Chrome 官方出品，通过 MCP 把真实 Chrome 的 DOM 检查、控制台、网络抓包与性能追踪能力交给 Claude Code、Gemini 等编码 Agent，让 Agent 自查页面、复现并修复前端 bug；GitHub 59,010 星，本周增长最快的开发者工具之一。  
+  标签：59K Star / Google 官方 / 浏览器自动化 / MCP / 前端调试
 
 <a id="cat-游戏" name="cat-游戏"></a>
 
@@ -1114,11 +1120,4 @@
   标签：YC 支持 / $3M 种子轮 / 月访问 58K / 数千用户
 - [Velozity - 让团队和 AI 智能体同处一个办公室](https://www.velozity.ai) — Product Hunt 2026-10-07 当日榜 #1（384 票）的多人协作「AI 办公室」：聊天、带转写的音视频会议、任务、日历、文件与智能体同处一个空间，团队与 Agent 共享上下文并自动执行。  
   标签：AI 办公室 / 多人协作 / Product Hunt #1
-- [Expertise AI - 把 GTM 经验变成可订阅的 AI 技能](https://www.expertise.ai) — GTM 专家把自己的打法封装成受保护的 AI 技能，企业一键安装、按运行次数付费，专家持续拿分成。Product Hunt 当日榜 #2（254 票），由 ChatSimple 团队打造，开启「AI 技能经济」。  
-  标签：Product Hunt #2 / GTM 技能 / 按次付费
-- [WorkClaw - 团队里的协作型 AI 同事](https://www.workclaw.com/) — 基于 OpenClaw 的「AI 同事」平台：多个协作型 AI 员工在 Slack/Teams 里干活、彼此通信，连接 3,000+ 应用。Product Hunt 当日榜第 1（346 分），SOC 2 Type II 认证，YC 背景团队。  
-  标签：Product Hunt #1 / Slack/Teams / SOC 2
-- [Yedric.ai - 用自然语言操控你的 SaaS](https://yedric.ai) — 让终端用户用自然语言直接操作你的 SaaS 产品：一句话完成原本要点好多下界面的任务。Product Hunt 当日榜（315 票），面向想把产品变成「可对话」的 SaaS 团队。  
-  标签：Product Hunt 315 / 自然语言 UI / SaaS
-- [Inbox Zero - 开源 AI 邮件助手](https://github.com/elie222/inbox-zero) — 开源 AI 邮件助手（GitHub 1.2 万★）：用 AI 帮你秒级清空收件箱、自动分类与草拟回复。Product Hunt 当日榜 #1（357 票），被比作「开源版 Superhuman」。  
-  标签：PH #1 / 357票 
+- [Expertise AI - 把 GTM 经验变成可订阅的 AI 技能](h

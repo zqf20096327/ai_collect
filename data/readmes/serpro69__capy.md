@@ -186,7 +186,7 @@ capy vault search "rate limiter"
 capy vault show 3f8a1c2b
 ```
 
-Import scans the platform roots present on disk, honoring `CLAUDE_CONFIG_DIR` and `CODEX_HOME`. Use `--dry-run` to preview, `--platform claude-code` or `--platform codex` to restrict it, and `--source <dir>` for another location. Repeated imports skip unchanged sessions, update grown ones, and keep the larger archive when the local transcript is smaller.
+Import scans the platform roots present on disk, honoring `CLAUDE_CONFIG_DIR` and `CODEX_HOME`. Use `--dry-run` to preview, `--platform claude-code` or `--platform codex` to restrict it, and `--source <path>` to select another directory or a single transcript. Naming a file bypasses the configured minimum size. Repeated imports skip unchanged sessions, update grown ones, and keep the larger archive when the local transcript is smaller.
 
 With `CAPY_VAULT_KEY` in its launch environment, the MCP server also archives the current project's sessions at startup. Set `CAPY_VAULT_SWEEP_ALL=1` to scan all projects on startup. **Run `capy vault import` periodically** to capture sessions from projects you do not reopen; files deleted before import cannot be recovered by capy.
 
@@ -194,7 +194,7 @@ The default location is `~/.local/share/capy/vault.db` (under `XDG_DATA_HOME` wh
 
 **Archives are verbatim.** Search snippets have recognized secrets redacted, but stored transcripts retain them, and restore writes plaintext files. The vault has no automatic expiry.
 
-`capy vault delete <id>` removes the archive and remembers its full UUID and effective project. The original files stay on disk. Imports and startup sweeps exclude that UUID, and merging this vault into another can delete the other copy. **Capy cannot undo a remembered deletion.** For a one-time local removal, set `vault.remember_deletions = false` before deleting. Existing and incoming deletions still apply. [Vault deletion and merge examples](docs/reference/vault.md#delete-a-session)
+`capy vault delete <id> [<id> ...]` previews the selected archives and deletes them together after one confirmation. By default capy remembers each full UUID and effective project. The original files stay on disk. Imports and startup sweeps exclude those UUIDs, and merging this vault into another can delete its copies. **Capy cannot undo a remembered deletion.** For a one-time local removal, set `vault.remember_deletions = false` before deleting. Existing and incoming deletions still apply. [Vault deletion and merge examples](docs/reference/vault.md#delete-a-session)
 
 ### Browse and find
 
@@ -203,6 +203,8 @@ Add `--tui` to `vault list`, `search`, or `show` for interactive browsing. Proje
 | Key | Action |
 | --- | --- |
 | `f` in the list | Filter by title, project, or UUID. |
+| `m` / `a` / `A` in the list | Toggle the highlighted mark, mark all matches across pages, or clear all marks. |
+| `x` in the list | Review marked sessions. Before confirming with `y`, use `d` to toggle descendants or Escape to cancel. |
 | `]` / `[`, then `enter` in the viewer | Select and open a collapsed tool result or diff. |
 | `/` in the viewer | Find exact, case-sensitive text; `n` / `N` move between matches. |
 | `ctrl+f` in the viewer | Find a line with fuzzy matching. |
@@ -231,7 +233,7 @@ capy vault resume 3f8a1c2b
 
 Restore writes the transcript and preserved sidecars to the platform's session directory, or to `--output`. Existing files require overwrite confirmation. `resume` restores and launches Claude Code; `--dir` overrides its working directory.
 
-For **Codex**, run `capy vault restore <id>`, then `codex resume <full-uuid>` yourself. Automatic resume is not supported. Codex child sessions are archived separately and hidden from the list by default; use `--include-children` or `s` in the TUI to show them. Deleting a parent keeps its children. Codex revert variants are skipped with a warning.
+For **Codex**, run `capy vault restore <id>`, then `codex resume <full-uuid>` yourself. Automatic resume is not supported. Codex child sessions are archived separately. Use `--include-children` to browse all sessions or `--children-only` to browse just children (`s` and `S` in the TUI). Deleting a parent keeps its children by default. Add `--with-descendants` to include them in the deletion preview. Codex revert variants are skipped with a warning.
 
 ### Names and project labels
 

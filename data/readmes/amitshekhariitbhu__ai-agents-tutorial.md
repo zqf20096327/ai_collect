@@ -1534,6 +1534,75 @@ Let's get started: [How does a voice agent confirm and correct misheard informat
 
 ---
 
+## How does a voice agent manage conversation state across a long call?
+
+In this blog, we will learn about how a voice agent manages conversation state across a long call. We will also see what conversation state is, why a long call breaks the simple approach, how the agent trims and summarizes old turns, how it keeps facts in a structured state, how it tracks the stage of the call, and how it keeps the state safe when the call drops.
+
+We will cover the following:
+
+- What is conversation state?
+- How does the simple approach work?
+- Why does a long call break the simple approach?
+- Approach 1: Keep only the recent turns
+- Approach 2: Summarize the older turns
+- Approach 3: Keep the important facts in a structured state
+- Tracking the stage of the call
+- Keeping tool results small
+- Saving only what the user actually heard
+- Keeping the state safe when the call drops
+- Putting it all together
+
+Let's get started: [How does a voice agent manage conversation state across a long call?](https://outcomeschool.com/blog/conversation-state-in-voice-agents)
+
+---
+
+## How do multi-agent handoffs work in a voice AI system?
+
+In this blog, we will learn about how multi-agent handoffs work in a voice AI system. We will also see why one big agent is not enough, how a handoff is described to the LLM as a tool, what our code does when the LLM recommends a handoff, how the conversation history travels to the next agent, what makes a handoff smooth for the caller, and where handoffs go wrong.
+
+We will cover the following:
+
+- What is a multi-agent voice AI system?
+- Why not one big agent?
+- What is a handoff?
+- Where the handoff happens in the voice pipeline
+- Step 1: Describe the handoff as a tool
+- Step 2: The LLM recommends a handoff
+- Step 3: Our code swaps the active agent
+- Step 4: The context travels with the call
+- Step 5: The new agent speaks
+- The complete flow in one diagram
+- Making the handoff smooth for the caller
+- Handing back and handoff loops
+- Putting it all together in code
+
+Let's get started: [How do multi-agent handoffs work in a voice AI system?](https://outcomeschool.com/blog/multi-agent-handoffs-in-voice-ai)
+
+---
+
+## How does a voice agent decide when to end the call?
+
+In this blog, we will learn about how a voice agent decides when to end the call. We will also see why ending a call is harder than it looks, how the agent reacts when the user hangs up first, how the LLM recommends ending the call with an end call tool, how the agent says goodbye without cutting it off, how silence and time limits end a call, and how we stop the agent from hanging up too early.
+
+We will cover the following:
+
+- What does ending a call mean for a voice agent?
+- Why is ending a call hard?
+- The signals that end a call
+- Signal 1: The user hangs up
+- Signal 2: The LLM recommends ending the call
+- Saying goodbye without cutting it off
+- Signal 3: The user goes silent
+- Signal 4: The call hits a time limit
+- Signal 5: The call is transferred or reaches a voicemail
+- Stopping the agent from hanging up too early
+- What happens after the call ends
+- Putting it all together in code
+
+Let's get started: [How does a voice agent decide when to end the call?](https://outcomeschool.com/blog/call-ending-in-voice-agents)
+
+---
+
 ## More blogs and videos coming soon!
 
 ### License

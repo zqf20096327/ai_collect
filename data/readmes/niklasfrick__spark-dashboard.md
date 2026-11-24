@@ -482,7 +482,7 @@ You choose that answer from **Page config**, beside *Edit layout* in the header:
 | --- | --- |
 | **Automatic** | Whatever the host is serving — the first running engine. What every page starts as, and what the shipped preset uses |
 | **One model** | That engine, named by its endpoint, for as long as the page exists — a *Qwen page* that opens on Qwen for every colleague and every kiosk |
-| **All models** | Every engine at once, combined: throughput and counters sum, latencies are request-weighted means. A panel rendering the combination says so, since a combined figure wearing one engine's name would misread |
+| **All models** | Every engine at once, combined: throughput and counters sum, latencies are weighted means, by requests or, for the inter-token latency, by generated tokens, so an engine that counts no requests (llama.cpp) still enters it. A panel rendering the combination says so, since a combined figure wearing one engine's name would misread |
 
 Two things this is not:
 
@@ -538,6 +538,9 @@ Docker API (no `docker` CLI or shell required — works in distroless images).
 - **Recommendation: only enable on trusted networks.** Put the dashboard behind
   a reverse proxy with auth, bind to `127.0.0.1`/`--bind 127.0.0.1`, or
   restrict the port with a firewall. Do not enable on a public-facing host.
+  A reverse proxy must pass the browser's `Host` header through unchanged
+  (nginx: `proxy_set_header Host $host;`), because `/ws` and `/ws/logs` refuse
+  a WebSocket whose `Origin` does not match `Host`.
 
 Logs are a **panel**, added from the palette and bound to an engine like any
 other engine panel — following the page's selection, or pinned to one engine so

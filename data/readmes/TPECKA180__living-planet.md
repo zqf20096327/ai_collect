@@ -10,11 +10,11 @@ Original Living Planet («Живая планета») was created by TPECKA180;
 
 ![Проверки](https://github.com/TPECKA180/living-planet/actions/workflows/tests.yml/badge.svg)
 ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
-![Версия 8.5.1](https://img.shields.io/badge/версия-8.5.1-5CCFB2)
+![Версия 8.5.3](https://img.shields.io/badge/версия-8.5.3-5CCFB2)
 
-[Скачать 8.5.1](https://github.com/TPECKA180/living-planet/releases/tag/v8.5.1) · [SETUPGAME.exe](https://github.com/TPECKA180/living-planet/releases/download/v8.5.1/SETUPGAME.exe) · [Как установить](docs/SETUP.md) · [Галерея: 11 экранов](docs/SCREENSHOTS.md) · [Полная справка](docs/GAME_GUIDE.md) · [Все действия](docs/ACTIONS.md) · [Сторонние компоненты](docs/THIRD_PARTY_NOTICES.md)
+[Скачать 8.5.3](https://github.com/TPECKA180/living-planet/releases/tag/v8.5.3) · [SETUPGAME.exe](https://github.com/TPECKA180/living-planet/releases/download/v8.5.3/SETUPGAME.exe) · [Как установить](docs/SETUP.md) · [Галерея: 11 экранов](docs/SCREENSHOTS.md) · [Полная справка](docs/GAME_GUIDE.md) · [Все действия](docs/ACTIONS.md) · [Сторонние компоненты](docs/THIRD_PARTY_NOTICES.md)
 
-> **Living Planet 8.5.1:** срочное обновление возвращает отдельную консоль потока модели и исправляет долгую обработку больших старых сохранений. Карта, архив и каталоги уплотняются только в запросе; сейв не меняется. Переполненный запрос останавливается с сообщением вместо долгого ожидания. Reasoning виден, если выбранная модель действительно передаёт его серверу. Для старых настроек консоль включается автоматически; её можно отключить в **Модели · F2**.
+> **Living Planet 8.5.3:** письма, мысли, память и события старше 10 игровых дней сворачиваются только в запросе к модели. Недавние записи передаются полностью, а сохранения и полная летопись не переписываются. Для старых миров действуют компактные правила и меньший предел карты, чтобы модель получала меньше лишних данных.
 
 > Встроенный движок llama.cpp запускает выбранную GGUF-модель из `models`; LM Studio для игры не требуется. Фирменная иконка, установщик с выбором папки и переносимая сборка входят в релиз.
 

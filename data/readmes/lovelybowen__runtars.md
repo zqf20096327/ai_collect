@@ -3,18 +3,16 @@
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
 
 [![GitHub stars](https://img.shields.io/github/stars/lovelybowen/runtars?labelColor=black&style=for-the-badge&color=2563EB)](https://github.com/lovelybowen/runtars/stargazers)
-[![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
-[![Download on the App Store](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/rakazo/id6801531099)
 [![Android APK](https://img.shields.io/badge/Android-APK-black?style=for-the-badge&logo=android&logoColor=white)](https://github.com/lovelybowen/runtars/releases/download/android/runtars.apk)
 
-![RunTars — AI teammates you actually own](./docs/readme-hero.png)
+![RunTars homepage and Inbox Manager demo](./docs/readme-hero.png)
 
 RunTars is an open source, self-hosted alternative to Grok Bot.
 
 Persistent AI teammates with their own memory, routines, apps, and computer. Run it on your own
 machine, with your own model.
 
-Use it on the [web](https://app.runtars.com), [desktop](https://runtars.com/download/), [iPhone](https://apps.apple.com/app/rakazo/id6801531099), and
+Use it on the [web](https://app.runtars.com), [desktop](https://runtars.com/download/), and
 [Android](https://github.com/lovelybowen/runtars/releases/download/android/runtars.apk).
 
 It is also an alternative to Meta Muse, OpenAI Dots, Instinct, OpenClaw, Hermes Agent, and Claude
@@ -44,7 +42,7 @@ Learn more at [runtars.com](https://runtars.com).
 
 A browser, terminal, files, and a full desktop. Watch it work, take control to sign in, and hand it back.
 
-<img src="./docs/screenshots/readme/computer.png" alt="A bot's Team Computer with a browser open" width="100%">
+<img src="./docs/screenshots/web-computer.png" alt="A bot chat with its browser open in the computer panel" width="100%">
 
 </td>
 <td width="50%" valign="top">
@@ -64,7 +62,7 @@ Put bots in a group and @mention them. They split the work, check each other, an
 
 Run a bot on a schedule, from an email, or from a webhook, and see every run.
 
-<img src="./docs/screenshots/readme/routines.png" alt="An active weekday routine with its run history beside the bot's chat" width="100%">
+<img src="./apps/www/public/graphics/chat/routine.png" alt="A weekday inbox routine with its instructions and schedule" width="100%">
 
 </td>
 <td width="50%" valign="top">
@@ -78,22 +76,13 @@ Bots build live dashboards and documents you can open full screen, share, and as
 </td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td colspan="2" valign="top">
 
 ### Connected apps
 
 Gmail, Slack, GitHub, Notion, Linear and thousands more, plus your own MCP servers and OpenAPI tools.
 
 <img src="./docs/screenshots/readme/integrations.png" alt="The integrations catalog" width="100%">
-
-</td>
-<td width="50%" valign="top">
-
-### On every device
-
-Web, desktop, iPhone, iPad, and Android, all talking to the same server.
-
-<img src="./docs/screenshots/readme/mobile.png" alt="The bot list and a chat on iPhone" width="100%">
 
 </td>
 </tr>
@@ -265,7 +254,7 @@ With the development stack running, launch Electron with:
 pnpm --filter @rakazo/desktop dev
 ```
 
-On first run the desktop app asks whether to run Rakazo on this computer or connect to an existing
+On first run the desktop app asks whether to run RunTars on this computer or connect to an existing
 server. **This computer** can run without Docker on Apple silicon Macs with macOS 26 or later
 when the build includes a server bundle. Fresh setups use this path: the app downloads the server
 and computer runtime as needed. Existing Docker setups are offered a move while Docker is running;
@@ -290,15 +279,15 @@ that only include FUSE 3, such as Fedora Silverblue or Ubuntu 24.04, show
 FUSE:
 
 ```bash
-chmod +x Rakazo-*.AppImage
-./Rakazo-*.AppImage --appimage-extract-and-run
+chmod +x RunTars-*.AppImage
+./RunTars-*.AppImage --appimage-extract-and-run
 ```
 
 The Docker path of **This computer** looks for the `docker` CLI and does not detect Podman. To try another
 Docker-compatible CLI that supports the `compose` commands, set `RAKAZO_DOCKER_BINARY` to its path
 before starting the app.
 
-Use **Change Rakazo Server…** in the application menu to reconnect. Closing that window without
+Use **Change RunTars Server…** in the application menu to reconnect. Closing that window without
 saving returns to the previous instance. For development automation, set `RAKAZO_WEB_URL` to point
 the shell somewhere else without changing the saved instance, or `RAKAZO_FORCE_SETUP=1` to run
 setup again.
@@ -407,5 +396,3 @@ request. For security vulnerabilities, follow [SECURITY.md](./SECURITY.md) inste
 issue.
 
 RunTars is licensed under the [Apache License 2.0](./LICENSE).
-
-Questions and ideas are welcome in the [Rakazo Discord community](https://discord.gg/RWwKa2Sn7h).

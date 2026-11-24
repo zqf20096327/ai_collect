@@ -148,7 +148,8 @@ server on port 8000 (first start compiles kernels for a few minutes), reuses it 
 and leaves it running afterwards; stop it with `kill` when you are done.
 
 ## 🧪 Reproducing the Paper
-[`REPRODUCE.md`](REPRODUCE.md) lists the command for every table and figure. The main pipeline:
+[`REPRODUCE.md`](REPRODUCE.md) lists the command for every table and figure, plus fixed seeded configurations for
+AI2D, OK-VQA and NoCaps that run without the sweeps. The main pipeline:
 
 1. **Synthesize** practice samples for the eval and validation queries: `run_synthesis.sh {v2,nodf4} {lite,val50}` (Kmax = 6 / 4).
 2. **Score** them with `compute_confidence.py`.

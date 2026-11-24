@@ -177,13 +177,10 @@ inherit the manager's launch capability.
 - **semantic-edit-historical-cap-boundary**: historical capped a/b observation at 20k/200k ops shows a 29.329% reduction; this is a capped historical sample, not eligible as a live guarantee.
 - **context-bundle-v2-structural-only**: structural-only validation; live fleet remeasurement pending.
 
-## What's new in 0.13.8
+## What's new in 0.13.13
 
-- Manager Chat (Claude): text the Claude CLI injects into the conversation (its compaction summary, interrupt notices, hook output) no longer appears as a phantom manager reply.
-- Manager Chat (Claude): when the CLI compacts its own context, the chat shows a "Provider compacted context" marker and rotates into a clean successor session instead of continuing on the CLI's lossy summary.
-- Manager Chat: a turn ends at the provider's terminal event, a stop kills the whole CLI process tree, an empty turn or a provider error is an error, every finished card the chat launched reaches that chat, and closing the panel no longer kills the running turn.
-- Dashboard: no more "Dashboard snapshot delayed" loop, and a running Claude Code manager shows as ✓ Route / ✓ Callback.
-- 0.13.8 includes everything in 0.13.6 and 0.13.7, which were tagged but not published because their Linux CI failed; 0.13.8 fixes that failure.
+- Manager Chat panel: messages sent with Claude selected as the coordinator no longer fail with `verified_manager_identity_required`; the panel is verified through its window's bound route.
+- Accept-time host validation stage: its pytest scratch moved under `.aiworkhub/temp`, so host-stage runs no longer fail with `gc_workspace_shape_mismatch`.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Documentation

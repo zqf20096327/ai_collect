@@ -2,6 +2,10 @@
 
 [![AI-readiness](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbjcoombs%2Fai-native-toolkit%2Fmain%2F.assess%2Fbadge.json)](.assess/assess-report.md) [![Assess Gate](https://github.com/bjcoombs/ai-native-toolkit/actions/workflows/assess-gate.yml/badge.svg)](https://github.com/bjcoombs/ai-native-toolkit/actions/workflows/assess-gate.yml)
 
+**`/assess` tells you how much an AI agent can safely do in your repository on its own, and the one change that would let it do more.**
+
+First time? Run `/assess --tour`. It assesses a small sample repository, walks you through its report a section at a time, and has you make the one fix that moves it up a Step.
+
 A Claude Code plugin - and a set of standalone skills for **any AI assistant**: skills and agents for AI-native development. In Claude Code it runs locally against your own codebase using whichever model you already pay for. Several of the skills also ship as standalone [Agent Skills](https://www.anthropic.com/news/skills) ZIPs you can upload to claude.ai, Claude Desktop, Cowork, or any assistant that supports the skills format - no Claude Code required.
 
 > **Want the skills without Claude Code?** Download the ZIPs from the **[latest release](https://github.com/bjcoombs/ai-native-toolkit/releases/latest)** - the release notes link straight to that version's standalone skill bundle - and upload them in your assistant's Skills UI. Full walkthrough: [Standalone skill ZIPs](#standalone-skill-zips-any-ai-assistant). Currently standalone: `/assess`, `/huddle`, `/deslop`, `/skill-forge`, `/semantic-compress`.
@@ -22,7 +26,7 @@ There's a second half, and it's the same ethic pointed the other way. When a con
 
 The headline pieces are five **skills**:
 
-- **`/assess`** - score any codebase's readiness for AI agent contributors against a 9-layer (0-8) contract model (navigability, runtime liveness, code design, linters, architecture tests, CI, coverage, review bots, AI project management), with a Codecov-style complexity hotspot SVG and a doc-navigability graph SVG (both colour-blind-safe). Generates a report + the two SVGs and opens a PR in the target repo.
+- **`/assess`** - measure how ready a codebase is for AI agent contributors (the [glossary](docs/glossary.md) explains each term in plain English). The [maturity model](docs/glossary.md#maturity-model) is a list of [conditions](docs/glossary.md#condition), each one level of a [practice](docs/glossary.md#practice), checked with file:line evidence and one or more [truth tags](docs/glossary.md#truth-tag) naming what it keeps honest (behaviour, docs, structure, agent context and others). The deterministic headline leads with the autonomy [**Step**](docs/glossary.md#step) the repo's contracts support, from 1 Assisted to 4 Autonomous loops, each Step past the first held by a named [gate](docs/glossary.md#gate) (an instruction file, CI that turns red when a check breaks, an enforced coverage gate) and by nothing else, and the gate that blocks the next Step. A Step never moves because the catalogue grew. Then comes "Catalogue coverage: N of M measured, V verified", which says how much of the catalogue the run could read, counting only conditions measured from the code or verified by a run or the platform (the [evidence grade](docs/glossary.md#evidence-grade)); a condition the run could not see is shown with its reason and never counts as 0. It is never a progress figure. The run draws a Codecov-style complexity hotspot SVG and a doc-navigability graph SVG (both colour-blind-safe), plus an evidence waffle, a package map, a doc-drift map and a review strip, writes a report and opens a PR in the target repo.
 - **`/huddle`** - structured multi-perspective deliberation using Six Thinking Hats with Fibonacci team sizing (solo -> debate -> huddle -> panel -> board). See it in action: a [narrated visual explainer](https://bjcoombs.github.io/ai-native-toolkit/huddle-explainer/visualization.html), and the [repeatable pipeline](./docs/huddle-explainer/README.md) used to build it.
 - **`/deslop`** - detect and remove the telltale signs of AI writing (puffery, the rule of three, "not X but Y", filler diction, chatbot leakage, fabricated citations). Runs as a silent quality gate while writing, or as an explicit audit/edit pass. Derived from Wikipedia's "Signs of AI writing".
 - **`/skill-forge`** - harden a skill (draft or existing) through judge-panel refinement rounds until it clears a strict 3-tier promotion gate. A prove-and-promote quality gate that runs after authoring, built on the same team-lead pattern as `/huddle` - and proven by forging itself.
@@ -68,7 +72,7 @@ Here is the same repo twice: an already-good AI-native codebase **before**, then
 
 ### The same lens, three real public repos
 
-The pair above is this toolkit assessing a private monorepo. Below is `/assess` run unmodified against three public codebases in different languages, ordered by score. It is a calibration check: the layered model should discriminate between genuinely-engineered projects, not rubber-stamp the famous ones. Click any image for the full interactive SVG; hover any block for its numbers.
+The pair above is this toolkit assessing a private monorepo. Below is `/assess` run unmodified against three public codebases in different languages, ordered by score. It is a calibration check: the model should discriminate between genuinely-engineered projects, not rubber-stamp the famous ones. Click any image for the full interactive SVG; hover any block for its numbers.
 
 <table>
   <tr>
@@ -83,13 +87,44 @@ The pair above is this toolkit assessing a private monorepo. Below is `/assess` 
   </tr>
 </table>
 
-> **What the spread shows.** Three real projects land three full points apart, so the model is reading enforcement, not reputation. `ktor` scores highest because it is the only one with all the write-side trust signals present - a CodeRabbit review bot, repo-wide `explicitApi()` type discipline, and a mandatory CI gate order - and its treemap stays calm (worst file ccn 141, against `llama.cpp`'s 4,123). `llama.cpp` pairs strong CI and type-checking with no coverage gates, no review bot, and no feedback loop; its `ggml-vulkan.cpp` is the textbook hotspot - cyclomatic complexity 4,123, a single function at 350, 14k LOC, 289 commits in a year - the large vivid-red block you cannot miss. `candle` is type-safe Rust with real CI but is missing both read-side layers (no committed `AGENTS.md`/`CLAUDE.md`, a fragmented doc graph), which caps how far its enforced write-side quality can carry the score. The lizard cyclomatic-complexity engine scored Rust and Kotlin directly here, not the scc keyword fallback. Point-in-time snapshot, June 2026 - these scores move as the projects do, which is the whole point.
+> **What the spread shows.** Three real projects land three full points apart, so the model is reading enforcement, not reputation. `ktor` scores highest because it is the only one with all the write-side trust signals present - a CodeRabbit review bot, repo-wide `explicitApi()` type discipline, and a mandatory CI gate order - and its treemap stays calm (worst file ccn 141, against `llama.cpp`'s 4,123). `llama.cpp` pairs strong CI and type-checking with no coverage gates, no review bot, and no feedback loop; its `ggml-vulkan.cpp` is the textbook hotspot - cyclomatic complexity 4,123, a single function at 350, 14k LOC, 289 commits in a year - the large vivid-red block you cannot miss. `candle` is type-safe Rust with real CI but is missing both read-side practices (no committed `AGENTS.md`/`CLAUDE.md`, a fragmented doc graph), which caps how far its enforced write-side quality can carry the score. The lizard cyclomatic-complexity engine scored Rust and Kotlin directly here, not the scc keyword fallback. Point-in-time snapshot, June 2026, scored on the earlier 0-8 layer score that the Step and its gates have since replaced - these scores move as the projects do, which is the whole point.
+
+### Five more views: the Step ladder and one llama.cpp run
+
+`/assess` also draws five smaller diagrams beside the report. The Step ladder below is an illustrative sample; the other four come from one run of the current toolkit against [`llama.cpp`](https://github.com/ggml-org/llama.cpp) at commit `1f8baae` (22 November 2026), the same public repo as the middle heatmap above. That run's headline is **Step 3, Unattended agent PRs**, with "Catalogue coverage: 6 of 14 measured, 3 verified" and one condition not measured. Click any image for the full SVG; hover any square, cell or tick for its numbers.
+
+<table>
+  <tr>
+    <th colspan="2">Step ladder (illustrative sample, not a llama.cpp reading)</th>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="docs/example-step-ladder.svg"><img alt="Illustrative Step ladder: four rungs of agent autonomy, bottom to top - 1 Assisted, an agent can read and help with your code; 2 Supervised agent PRs, an agent opens pull requests and a person reviews each one; 3 Unattended agent PRs, agents open pull requests nobody has to watch; 4 Autonomous loops, agents run longer loops on their own. You are here on Step 3; the instruction-file and CI gates below are in place, and the next gate, a coverage gate is enforced, is highlighted" title="Example: Step 3 of 4, Unattended agent PRs; next gate: a coverage gate is enforced" src="docs/example-step-ladder.svg"></a></td>
+  </tr>
+  <tr>
+    <th width="50%">Evidence waffle</th>
+    <th width="50%">Package map</th>
+  </tr>
+  <tr>
+    <td><a href="docs/example-waffle.svg"><img alt="Evidence waffle for llama.cpp: 24 conditions, each row a practice and each square one of its levels, the three Step-gate squares outlined; 3 met and verified, 3 met and measured, 4 met but only listed from config, 13 not met yet, 1 not measured" title="llama.cpp: 6 counted conditions met (3 verified, 3 measured), 4 listed, 13 not met, 1 not measured" src="docs/example-waffle.svg"></a></td>
+    <td><a href="docs/example-package-map.svg"><img alt="Package map for llama.cpp's TypeScript import graph: the 20 largest of 77 packages as a matrix of row-imports-column cells; 106 cross-package imports, 84 of them through a front door" title="llama.cpp (TypeScript graph): 77 packages, 106 cross-package imports, 84 through a front door" src="docs/example-package-map.svg"></a></td>
+  </tr>
+  <tr>
+    <th width="50%">Doc-drift map</th>
+    <th width="50%">Review strip</th>
+  </tr>
+  <tr>
+    <td><a href="docs/example-doc-drift.svg"><img alt="Doc-drift map for llama.cpp: the 15 docs furthest behind their code, of 82 mapped to code of their own; gguf-py/README.md leads with 435 commits to its code per edit of the doc" title="llama.cpp: 38 of 82 mapped docs behind their code; gguf-py/README.md at 435" src="docs/example-doc-drift.svg"></a></td>
+    <td><a href="docs/example-review-strip.svg"><img alt="Review strip for llama.cpp: 30 sampled merged pull requests, oldest first; 28 approved by someone other than the author, 2 reviewed but not approved, none merged without review, 5 with review-bot output" title="llama.cpp: 28 of 30 merges approved, 2 reviewed, 0 unreviewed, 5 with review-bot output" src="docs/example-review-strip.svg"></a></td>
+  </tr>
+</table>
+
+> **How to read them.** *Evidence waffle* - one square per condition of the maturity model, one row per model row; dark teal is met and verified by a run or the platform, mid teal met and measured from the code or its history, pale teal met but only listed from config or a declaration (shown, never counted), grey not met yet, whether it would count or only be listed (here 8 counted and 5 listed, so 6 met plus 8 grey make the "of 14"), and a hatched square was not measured, with its reason in the key. The verified and measured squares are the N in "Catalogue coverage". *Package map* - row imports from column, darker for more imports, with a lines-of-code bar beside each package and a corner mark where an import reaches past the target package's front door; it draws the 20 largest packages and states what it leaves out. The import graph builders read Python, Go, and TypeScript or JavaScript, so on llama.cpp, whose C and C++ they cannot read, the map shows its TypeScript web UI. *Doc-drift map* - one bar per doc with code of its own, its length the commits to that code per edit of the doc since the doc last changed; an amber bar is behind its code (past the dashed line at 2, or with a newer declared source), so `gguf-py/README.md` is the first doc to reread before an agent leans on it. *Review strip* - one tick per sampled merged change, oldest first, coloured approved, reviewed or merged without review, with a dot for review-bot output, so a run of unreviewed merges shows where a single share would hide it. The five dots are review-bot output the June snapshot above did not record.
 
 ### Why this matters for an AI-driven codebase
 
 Once a codebase outgrows any single LLM context window and AI agents become regular contributors, code quality stops being a function of *who knows what* and starts being a function of *what the system enforces*. Norms ("we prefer X") fail because new contributors - especially AI agents starting each session fresh - never read them. Contracts ("the build fails if you don't do X") work because they're enforced regardless of who's reading.
 
-`/assess` gives you paired views to act on that. The doc-navigability graph shows whether an agent can even find its way - how much of the docs is reachable, and which are stale maps of churning code. The complexity SVG shows where the codebase is today - which files will bite next week. The accompanying `assess-report.md` shows what scaffolding is in place to stop it getting worse - a score across the layers below, each marked Present / Partial / Missing with concrete evidence:
+`/assess` gives you paired views to act on that. The doc-navigability graph shows whether an agent can even find its way - how much of the docs is reachable, and which are stale maps of churning code. The complexity SVG shows where the codebase is today - which files will bite next week. The accompanying `assess-report.md` shows what scaffolding is in place to stop it getting worse: the Step and the gate that blocks the next one in its headline, then a scorecard that marks each of the practices below Present / Partial / Missing with concrete evidence.
 
 ### The intent: keep codebases comprehensible as AI accelerates them
 
@@ -105,35 +140,35 @@ So `/assess` is grounded in the accumulated practice of legacy-code engineering,
 
 The goal is a codebase that stays legible to whoever — or whatever — works on it next: that its self-descriptions (docs, tests, types, instructions) are kept *honest under pressure*, not merely present. That honesty is what lets an agent (or a new hire) act without first having to rediscover the whole system.
 
-The 9 layers (0-8) fall into three dependency-ordered bands: **read-side** (can the agent form a true picture?), **write-side** (can it be trusted to produce good output?), and **meta** (does the system keep itself honest?).
+The report's scorecard has one row per practice, in reading order. It is detail, not a score: the Step reads its gates, and the per-tag strip groups conditions by truth tag. Older versions numbered these practices as layers 0-8; the numbers survive only inside the maturity model's row ids (`layer-0-instructions` and so on) and the alias that lets older configs and fleet history resolve. Read in order, the practices run from **read-side** (can the agent form a true picture?) through **write-side** (can it be trusted to produce good output?) to **meta** (does the system keep itself honest?). The full list of conditions, their grades and their tags is in [What /assess measures](docs/what-we-measure.md); the decisions behind the model are in the [scoring model](skills/assess/references/scoring-model.md).
 
-| Layer | Band | What it enforces |
-|-------|------|------------------|
-| 0: Agent Instructions & Navigability | read | Compact rules in `CLAUDE.md` / `AGENTS.md` / `copilot-instructions`, plus a navigable doc graph (can an agent traverse links to the right place, and is what it finds still true?) |
-| 1: Runtime Legibility / Liveness | read | Is the code actually live, and can the agent find out? Intra-repo dead-code signals + observability the agent can reach (logs/metrics/traces) |
-| 2: Code Design | write | Compile-time correctness via types - dimensional types, generated API clients, exhaustive enums |
-| 3: Linters | write | Style + correctness with rules targeting AI failure modes (suppressions, complexity gates, leftover TODOs) |
-| 4: Architecture Tests | write | Structural rules as executable tests (`depguard`, ArchUnit-style boundary checks) |
-| 5: CI Pipeline | write | Every PR runs everything; failing pipeline blocks merge |
-| 6: Coverage Gates | write | Test discipline as a build contract |
-| 7: Review Bots | write | Design-level feedback (CodeRabbit, claude[bot]) catching what linters can't |
-| 8: AI Project Management | meta | Retros, task tracking, the feedback loop that keeps the contracts above current |
+| Practice | Band | What it enforces |
+|----------|------|------------------|
+| Agent instructions | read | Compact rules in `CLAUDE.md` / `AGENTS.md` / `copilot-instructions`, plus a navigable doc graph (can an agent traverse links to the right place, and is what it finds still true?) |
+| Runtime legibility | read | Is the code actually live, and can the agent find out? Intra-repo dead-code signals + observability the agent can reach (logs/metrics/traces) |
+| Code design (module structure) | write | Compile-time correctness via types - dimensional types, generated API clients, exhaustive enums |
+| Linters run in CI, suppression cap | write | Style + correctness with rules targeting AI failure modes (suppressions, complexity gates, leftover TODOs) |
+| Architecture boundaries and size | write | Structural rules as executable tests (`depguard`, ArchUnit-style boundary checks) |
+| CI and the agent's local check | write | Every PR runs everything; failing pipeline blocks merge |
+| Coverage gates and truth pressure | write | Test discipline as a build contract |
+| Review on merged pull requests | write | Design-level feedback (CodeRabbit, claude[bot]) catching what linters can't |
+| AI project management | meta | Retros, task tracking, the feedback loop that keeps the contracts above current |
 
-The Layer 0 navigability model - treating the docs as a link graph an agent must traverse - adapts the **"Lint"** health-check from [Andrej Karpathy's LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (hubs, orphans, connectivity, an `index.md` catalog and `log.md`), making its *structural* checks deterministic. The semantic ones it also lists stay out of the deterministic core: contradictions between pages are what [`/doc-contradictions`](skills/doc-contradictions/SKILL.md) looks for, and concepts lacking a page are not checked.
+The agent-instructions navigability model - treating the docs as a link graph an agent must traverse - adapts the **"Lint"** health-check from [Andrej Karpathy's LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (hubs, orphans, connectivity, an `index.md` catalog and `log.md`), making its *structural* checks deterministic. The semantic ones it also lists stay out of the deterministic core: contradictions between pages are what [`/doc-contradictions`](skills/doc-contradictions/SKILL.md) looks for, and concepts lacking a page are not checked.
 
-The report's headline leads with the **Step**: how much agent autonomy the repo's contracts support, on the adoption ladder from [Boris Cherny's *Steps of AI Adoption*](https://www.threads.com/@boris_cherny/post/Da4CkQnEea-) (July 2026) - 1 Assisted, 2 Supervised agent PRs, 3 Unattended agent PRs, 4 Autonomous loops - with the one change that unlocks the next Step, then "Verified practices: N of M measured" with the maturity-model version. Both are computed deterministically from the commit, never by the model. The Steps work because Cherny's per-step guardrails are these layers seen from the org side (self-verification loops = L5/L6, automated review = L7, agent instructions = L0, encoded permissions/routines = L8): the Step bounds how far up his ladder a team can safely operate this repo, without claiming anything about how the team actually works. Layer 8's `agent_ops` signals (committed permission allowlists, hooks, sandbox rules, routine definitions) score the repo-observable subset of those guardrails.
+The report's headline leads with the **Step**: how much agent autonomy the repo's contracts support, on the adoption ladder from [Boris Cherny's *Steps of AI Adoption*](https://www.threads.com/@boris_cherny/post/Da4CkQnEea-) (July 2026) - 1 Assisted, 2 Supervised agent PRs, 3 Unattended agent PRs, 4 Autonomous loops - with the gate that blocks the next Step, then "Catalogue coverage: N of M measured, V verified" with the maturity-model version, then a strip of the same counts per truth tag. A Step needs its gates and nothing else, so no count moves it; the coverage line says how much of the catalogue the run could read. The report and its `log.md` entry open with what changed since the previous run: the actions closed, each with its commit, the gates gained or lost, and the next blocker. All three are computed deterministically from the commit, never by the model. The Steps work because Cherny's per-step guardrails are these practices seen from the org side (self-verification loops = CI and coverage gates, automated review = review on merged pull requests, agent instructions, encoded permissions and routines = AI project management): the Step bounds how far up his ladder a team can safely operate this repo, without claiming anything about how the team actually works. The AI project management practice's `agent_ops` signals (committed permission allowlists, hooks, sandbox rules, routine definitions) score the repo-observable subset of those guardrails.
 
 **Traditional tooling, applied to an AI-era question.** The assessment itself runs on conventional static analysis - `lizard`/`scc`, git history, and graph metrics over the docs and code - not the model. The LLM only writes the prose around the numbers. So a full run is fast and spends almost no model tokens, and the structural findings are reproducible run-to-run.
 
 A codebase can hold Step 4 and still be on fire (strong contracts, legacy debt) or Step 1 with a calm treemap (small codebase, no enforcement needed yet). The headline tells you whether the system will catch the next class of pain before it lands; the SVG tells you where today's pain already is. The report's **Top 3 Actions** table names specific files, always - "improve code quality" is the failure mode `/assess` exists to prevent; "Add `cyclop` rule (threshold 15) to `.golangci.yml`. Current p95 ccn is 23; immediate offenders: `internal/import/parser.go` (ccn 67)" is what makes the report actionable.
 
-**The compounding payoff.** Contracts are front-loaded - types, lint rules, architecture tests, agent instructions all take time to write. The payoff compounds: every new service, feature, and contributor inherits the contracts that already exist. Skip them and you lose 15-45 minutes per AI session to convention drift, rework, and false signals - forever. Run `/assess` periodically to ratchet the verified practices upward; each layer you add closes a recurring cost.
+**The compounding payoff.** Contracts are front-loaded - types, lint rules, architecture tests, agent instructions all take time to write. The payoff compounds: every new service, feature, and contributor inherits the contracts that already exist. Skip them and you lose 15-45 minutes per AI session to convention drift, rework, and false signals - forever. Run `/assess` periodically to ratchet the practices in place upward; each practice you add closes a recurring cost.
 
 A stats sidecar (`complexity-stats.json`) accompanies the report with percentiles and ranked file lists that feed the treemap and the report's hotspot callouts.
 
 ### What else the deterministic core checks
 
-The per-module detail is in [`skills/assess/scripts/lib/README.md`](skills/assess/scripts/lib/README.md). Among the checks and behaviours there:
+The per-module detail is in each module's docstring under [`skills/assess/scripts/lib/`](skills/assess/scripts/lib/README.md). Among the checks and behaviours there:
 
 - **Scan registry.** Every run-context block is declared once in `scan_registry.py`. A scan that cannot run (no remote, no `gh`, an unreadable endpoint) reports itself as unavailable with a reason instead of stopping the run.
 - **Headless signals.** `assess_signals.py` runs the scans with no model and writes one JSON document ([schema](skills/assess/references/signals.schema.json)). With `--counts-only` it keeps numbers and a fixed list of path and token fields and drops all other text ([field list](skills/assess/references/counts-only.md)); `--hash-paths` replaces paths with salted hashes. `/fleet` is built on this entry point.
@@ -164,7 +199,7 @@ steps:
       config: .assess/config.toml   # optional; warn-only defaults without it
 ```
 
-Two badges come with it - GitHub's native status badge for the gate workflow, and a live AI-readiness badge served from the committed `.assess/badge.json` via shields.io (written by every assess run: the Step and the verified tally, e.g. `Step 3 · 4 of 4 measured`):
+Two badges come with it - GitHub's native status badge for the gate workflow, and a live AI-readiness badge served from the committed `.assess/badge.json` via shields.io (written by every assess run: the Step and the next gate, e.g. `Step 3 · next: coverage gate`, or `Step 4 · all gates held`):
 
 ```markdown
 [![Assess Gate](https://github.com/<owner>/<repo>/actions/workflows/assess-gate.yml/badge.svg)](https://github.com/<owner>/<repo>/actions/workflows/assess-gate.yml)
@@ -172,6 +207,39 @@ Two badges come with it - GitHub's native status badge for the gate workflow, an
 ```
 
 Warn-only by default: the only thing that can fail a PR is what `.assess/config.toml` opts into (`fail_on` findings, complexity floors, `fail_on_regression`). Because the version rides a `uses:` pin on an immutable release tag, **Dependabot and Renovate detect new toolkit releases and open upgrade PRs automatically** - add a `.github/dependabot.yml` with the `github-actions` ecosystem and the gate keeps itself current. The `/assess` end-of-run "freeze into CI" offer emits this workflow, with actions pinned to commit SHAs and the toolkit pinned to the newest published tag.
+
+### Use in GitLab CI
+
+The same gate runs on GitLab merge request pipelines. Add these three lines to your `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - remote: https://raw.githubusercontent.com/bjcoombs/ai-native-toolkit/v3.0.0/templates/assess-gate.yml
+    inputs: { config: .assess/config.toml }
+```
+
+The template and its job script first ship in the toolkit release after 3.0.0. Each release moves the tag in the include line to itself; on 3.0.0 or earlier the include line has no file to fetch, and a `toolkit_ref` of 3.0.0 or earlier makes the job print a notice and pass without running the gate.
+
+The job runs the same headless gate as the GitHub Action, in merge request pipelines only, and writes the summary that opens the report to the job log. It also fails the merge request when a Step gate your committed baseline held now reads unmet, such as CI no longer running the tests, and names the Step it costs. The baseline is `.assess/prior-level.json`, written by every `/assess` run, so commit your `.assess/` directory first; until there is one, the log says "no baseline yet" and the job passes. The job reads the baseline from the target, at the base commit GitLab fixed for the merge request, not from the change itself. A change that deletes or re-freezes the baseline is still measured against what the target held, and the log notes the edit. This holds whether the check is on through the input or through `.assess/config.toml`, and on a fork's merge request too. A gate the job could not read is reported, never counted as lost.
+
+One difference from the Action: `fail_on_gate_loss` is on by default here and off in the Action. The Action takes the same input (`fail_on_gate_loss: 'true'`), or set `fail_on_gate_loss = true` under `[gate]` in `.assess/config.toml` for both. Set the `fail_on_gate_loss: false` input to report a lost gate on GitLab without failing.
+
+Your project needs merge request pipelines. Without a `workflow:` section, the included job's rule starts a separate merge request pipeline holding only `assess-gate`, and your own jobs without `rules:` stay in the branch pipeline. That merge request pipeline becomes the merge request's head pipeline, so "Pipelines must succeed" can end up checking a pipeline with no tests in it. To run everything in one merge request pipeline, switch the project to merge request pipelines with GitLab's standard pattern, which also skips the duplicate branch pipeline while a merge request is open:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+```
+
+If your `.gitlab-ci.yml` already has `workflow: rules`, keep them and add the merge request rule among them, or the job never runs. This pipeline behaviour follows GitLab's documentation and has not been checked on a real GitLab instance.
+
+To post the summary as a merge request note too, add a project access token with `api` scope as a masked CI/CD variable named `ASSESS_GATE_TOKEN`. Without it the job tries `CI_JOB_TOKEN`, which most GitLab versions don't allow to post notes, so the summary stays in the job log and the job carries on. Each pipeline adds a new note.
+
+The other inputs are `mr_note`, `toolkit_ref` (keep it equal to the tag in the include line), `toolkit_url` (for a mirror on a self-hosted GitLab), `image` and `stage`. The file follows the CI/CD component layout (`templates/assess-gate.yml` with `spec: inputs`), so a team that mirrors this repository onto its GitLab can include it as a component instead: `component: $CI_SERVER_FQDN/<group>/ai-native-toolkit/assess-gate@<version>`.
 
 > **Portability split.** The framework pieces (`/assess`, `/huddle`, `/deslop`, `/skill-forge`, `/semantic-compress`, `/ghsync`, `/ghreport`, `/fleet`, `/doc-contradictions`, `/6hats`, `/understand` and their agents) are portable and work in any Claude Code session (`/fleet`'s `ROOT` mode reads the `<repo>-main` + `worktree/` layout that `/ghsync` creates). The workflow commands (`/tm`, `/issues`, `/fix-pr`, `/fix-develop`) bake in one author's daily setup: a `<repo>-main/` + `worktree/` layout, GitHub + `gh` CLI, Task Master, CodeRabbit/claude[bot] review threads, and the Agent Teams capability flag. See [Adapting](#adapting-for-your-workflow) before relying on them in a different setup.
 
@@ -254,7 +322,7 @@ If a skill only fires on `/skill-name` and not on natural language, the frontmat
 ### Capability differences vs Claude Code
 
 - `/huddle` runs in solo or phased sub-agent mode here - Claude reasons through each hat phase directly. Team mode (persistent agents with cross-talk) requires Claude Code.
-- `/assess` runs the full layered assessment. The SVG treemap and deterministic wiki need terminal access to the bundled scripts.
+- `/assess` runs the full assessment. The SVG treemap and deterministic wiki need terminal access to the bundled scripts.
 
 ## Try it
 
@@ -266,12 +334,18 @@ If a skill only fires on `/skill-name` and not on natural language, the frontmat
 
 Runs against the current directory (or pass a path). Produces:
 
-- `.assess/assess-report.md` - the Step and verified-practices headline, per-layer scorecard, top 3 leverage actions, hotspot callouts
+- `.assess/assess-report.md` - the Step and verified-practices headline, per-practice scorecard, top 3 leverage actions, hotspot callouts
 - `.assess/doc-graph.svg` - the doc-navigability graph shown above
 - `.assess/complexity-heatmap.svg` - the complexity treemap shown above
+- `.assess/step-ladder.svg` - the four Steps as rungs of agent autonomy, the gate between each pair, "You are here" on the run's Step and the next gate highlighted; the report shows it first
+- `.assess/evidence-waffle.svg` - one square per maturity-model condition, showing how much of the level rests on verified or measured evidence
+- `.assess/tag-profile.svg` - one row per truth tag: the share of its measured conditions that are met, with the earlier run's share beside it when both used the same maturity model
+- `.assess/package-map.svg` - the 20 largest packages as an import matrix, with the imports that bypass a package's front door outlined
+- `.assess/doc-drift.svg` - the 15 docs furthest behind the code they describe, as ranked bars
+- `.assess/review-strip.svg` - one tick per recently merged change: approved, reviewed or merged without review, in merge order
 - `.assess/complexity-stats.json` - percentiles and ranked file lists that feed the report
 
-After writing, the skill asks whether to open a PR in the target repo with the report and both SVGs.
+After writing, the skill asks whether to open a PR in the target repo with the report and its SVGs.
 
 ### Run a huddle on a hard decision
 
@@ -306,7 +380,7 @@ Full catalog and per-skill base docs: [`skills/README.md`](skills/README.md).
 
 | Skill | Description |
 |-------|-------------|
-| [`/assess`](skills/assess/SKILL.md) | Layered AI-readiness assessment (0-8 contract model) plus a Codecov-style complexity hotspot SVG and a doc-navigability graph SVG (both colour-blind-safe). Ships [`complexity-treemap.py`](skills/assess/scripts/complexity-treemap.py) and [`doc-graph-svg.py`](skills/assess/scripts/doc-graph-svg.py) so the agent runs them with no external setup. Filters build artifacts and generated code by default (opt-out with `--include-artifacts`); warns when one file dominates LOC. Offers to install optional `scc` for repos heavy in markdown/JSON/YAML. Generated PRs include a self-install footer so reviewers can adopt the plugin. |
+| [`/assess`](skills/assess/SKILL.md) | AI-readiness assessment (autonomy Steps held by named gates, a scorecard by practice) plus a Codecov-style complexity hotspot SVG and a doc-navigability graph SVG (both colour-blind-safe). Ships [`complexity-treemap.py`](skills/assess/scripts/complexity-treemap.py) and [`doc-graph-svg.py`](skills/assess/scripts/doc-graph-svg.py) so the agent runs them with no external setup. Filters build artifacts and generated code by default (opt-out with `--include-artifacts`); warns when one file dominates LOC. Offers to install optional `scc` for repos heavy in markdown/JSON/YAML. Generated PRs include a self-install footer so reviewers can adopt the plugin. |
 | [`/huddle`](skills/huddle/SKILL.md) | Multi-perspective deliberation using Six Thinking Hats with Fibonacci team sizing (solo -> debate -> huddle -> panel -> board). Three execution modes: solo flat-parallel, phased sub-agent (default fallback), and team mode (needs Agent Teams capability flag). |
 | [`/deslop`](skills/deslop/SKILL.md) | Detect and remove the telltale signs of AI writing - puffery, the rule of three, "not X but Y", filler diction, chatbot leakage, fabricated citations. Two modes: a silent quality gate while writing prose, or an explicit de-slop/audit pass. Ships a [`references/full-checklist.md`](skills/deslop/references/full-checklist.md) A-F catalog derived from Wikipedia's "Signs of AI writing" (revision of 15 November 2026) - the skill flags itself for re-derivation if it goes stale, since the tells drift with model generations. |
 | [`/ghsync`](skills/ghsync/SKILL.md) | Bulk clone and keep in sync every GitHub or GitLab repo you can access, skipping archived and empty ones - built for onboarding into a new enterprise. On GitLab (`--provider gitlab --host <host>`), covers every group you belong to with nested subgroups and shared projects, laid out by `path_with_namespace`; `--porcelain` plus `--from-list` split discovery from cloning for hosts reachable only from another network. For an org, unions the repos reachable through your teams with the org's repo list (so direct-collaborator and public repos count); for a personal account, uses the account's repo list. Deduplicates, then clones new ones and fast-forward syncs existing checkouts and their worktrees into a `<repo>/<repo>-main` + `<repo>/worktree` layout. Org defaults to the directory you run from. Never clobbers local work (uncommitted or off-default-branch repos are fetched, not pulled) and reports every exception in a summary. For analysis-only mirrors, `--partial` (`--filter blob:none`) and `--shallow-since DATE` shape new clones; `--active-since DURATION` keeps only repositories with a recent default-branch commit, and `--porcelain-json` prints one JSON object of metadata per repository instead of cloning. Ships [`ghsync.sh`](skills/ghsync/scripts/ghsync.sh); needs `gh` + `jq` (or `glab` + `jq` for GitLab), supports GitHub Enterprise via `GH_HOST`. |
@@ -357,7 +431,7 @@ The Six Hats team that `/huddle` and `/6hats` orchestrate:
 | `blue-hat` | Synthesis and recommendation |
 | `scribe` | Structures hat output into actionable documentation |
 
-`assess-layer-scorer` scores a codebase against the `/assess` 0-8 layered model from `run-context.json`, Present/Partial/Missing per layer with evidence (used by `/assess`).
+`assess-layer-scorer` scores a codebase against the `/assess` practices from `run-context.json`, Present/Partial/Missing per practice with evidence (used by `/assess`).
 
 ## Why Six Hats?
 
@@ -431,7 +505,7 @@ ai-native-toolkit/
 │   ├── assess-findings/ assess-pr/    # /assess render-time helpers
 │   ├── huddle/ deslop/ skill-forge/ semantic-compress/
 │   ├── ghsync/ ghreport/              # SKILL.md + scripts/*.sh
-│   ├── fleet/                         # SKILL.md + scripts/fleet.py, heatmap.py, fleet_labels.py, fleet_next_steps.py + references/{repos,groups,labels}.schema.json
+│   ├── fleet/                         # SKILL.md + scripts/fleet.py, heatmap.py, fleet_labels.py, fleet_next_steps.py, fleet_targets_import.py + references/{repos,groups,labels}.schema.json
 │   ├── doc-contradictions/            # SKILL.md, tests/fixtures/ (eval inputs)
 │   ├── 6hats/ understand/             # User-invoked framework skills
 │   ├── tm/ issues/ fix-pr/ fix-develop/ tm-marathon-config-example/   # User-invoked workflows
@@ -455,7 +529,7 @@ ai-native-toolkit/
     ├── superpowers/                   # Design history: plans/ + specs/ behind the skills
     ├── design/                        # Modernization programme specs
     ├── huddle-explainer/              # Narrated skill explainer pipeline
-    └── example-*.svg                  # Real /assess heatmaps and doc graphs (README hero and gallery)
+    └── example-*.svg                  # Real /assess diagrams: heatmaps, doc graphs, Step ladder, waffle, package map, doc drift, review strip
 ```
 
 The [Map of Content](docs/index.md) links each subtree's entry doc: [`skills/README.md`](skills/README.md) for skills, and its own [Agents](docs/index.md#agents) section for `agents/`, which holds no README because Claude Code would load one as an agent.

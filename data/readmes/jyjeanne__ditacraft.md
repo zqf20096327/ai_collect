@@ -5,7 +5,7 @@
 [![VS Code](https://img.shields.io/badge/VS%20Code-1.125+-blue.svg)](https://code.visualstudio.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/jyjeanne/ditacraft/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jyjeanne/ditacraft/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.11.0-orange.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.12.0-orange.svg)](CHANGELOG.md)
 
 DITA Craft is a comprehensive Visual Studio Code extension for editing and publishing DITA (Darwin Information Typing Architecture) content. It provides syntax highlighting, real-time validation, smart navigation, AI-powered assistance, an MCP server for external AI agents, and seamless integration with DITA-OT for multi-format publishing. And now a **visual editor**: edit your topics on a formatted page — tables, images, links, reused content, problems and quick fixes included — and your maps and bookmaps as rows that show each topic's title, while DITA Craft keeps your DITA content clean, with a live **visual preview** and a **Properties view** for attributes.
 
@@ -327,7 +327,9 @@ To build and install DITA Craft from its source code (development, testing), see
 ## Quick Start
 
 ### 1. Install DITA-OT
-Download and install DITA-OT from https://www.dita-ot.org/download
+Either run **DITA: Install DITA-OT** from the Command Palette to download a release from GitHub and set it up automatically (requires network access to github.com), or download and install DITA-OT manually from https://www.dita-ot.org/download. On Windows, prefer a short folder such as `C:\DITA-OT`: DITA-OT's launcher stops working when the path of its folder is too long (about 97 characters for DITA-OT 4.3.5).
+
+Then use **DITA: Manage DITA-OT Plugins** to list installed plugins, install plugins from the plugin registry (requires network access to plugins.dita-ot.org; plugin installs run code from the registry and ask for confirmation first), or uninstall plugins. DITA Craft does not remove DITA-OT's own plugins or a plugin that other plugins need, and it puts a plugin back if DITA-OT cannot work without it.
 
 ### 2. Configure DITA Craft
 1. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
@@ -374,6 +376,8 @@ All commands are accessible via Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
 | **DITA: Create New Map** | - | Create new DITA map |
 | **DITA: Create New Bookmap** | - | Create new bookmap |
 | **DITA: Configure DITA-OT Path** | - | Set DITA-OT installation path |
+| **DITA: Install DITA-OT** | - | Download a DITA-OT release from GitHub, extract it, and set it as the DITA-OT path |
+| **DITA: Manage DITA-OT Plugins** | - | List installed DITA-OT plugins, install plugins from the registry, or uninstall plugins |
 | **DITA: Set Root Map** | - | Choose explicit root map for key resolution |
 | **DITA: Clear Root Map** | - | Revert to automatic root map discovery |
 | **DITA: Validate Workspace** | - | Validate all DITA files across workspace |
@@ -651,7 +655,7 @@ Track progress: see the [Roadmap](ROADMAP.md#milestone-7-publishing-enhancements
 
 DITA Craft exposes its DITA intelligence — validation, key space, context snapshots — over the **Model Context Protocol (MCP)**, letting external AI coding agents read and query your DITA workspace.
 
-> **Status:** MCP server is **available** since v0.8.0 (current release: v0.11.0). Download `mcp-server-<version>.zip` and `lsp-server-<version>.zip` from the [GitHub releases](https://github.com/jyjeanne/ditacraft/releases), or build them with `npm run build-standalone` (`dist/mcp-server.js` and `dist/lsp-server.js`).
+> **Status:** MCP server is **available** since v0.8.0 (current release: v0.12.0). Download `mcp-server-<version>.zip` and `lsp-server-<version>.zip` from the [GitHub releases](https://github.com/jyjeanne/ditacraft/releases), or build them with `npm run build-standalone` (`dist/mcp-server.js` and `dist/lsp-server.js`).
 
 ### What is MCP?
 
@@ -956,6 +960,16 @@ Developer documentation: [docs/VISUAL_EDITOR.md](docs/VISUAL_EDITOR.md), [docs/V
 - [VS Code Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 
 ## Recent Updates
+
+### Version 0.12.0 — DITA-OT from VS Code
+
+**Added:**
+- **DITA: Install DITA-OT** downloads a DITA-OT release from GitHub, extracts it safely, verifies it and sets the DITA-OT path.
+- **DITA: Manage DITA-OT Plugins** lists the installed plugins, installs plugins from the DITA-OT registry, and uninstalls plugins. Uninstalling leaves DITA-OT's own plugins and the plugins that other plugins need, and puts a plugin back if DITA-OT cannot work without it.
+
+**Fixed:** on Windows, DITA-OT runs from deep folders: DITA Craft launches it through the short name of its folder, and explains when its command line would still be too long for Windows.
+
+See the [CHANGELOG](CHANGELOG.md) for details.
 
 ### Version 0.11.0 — DITA 1.3 Conformance
 

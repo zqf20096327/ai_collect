@@ -10,6 +10,8 @@
 
 [Documentation](https://phil65.github.io/agentpool/)
 
+![AgentPool Architecture](./docs/assets/agentpool-architecture.svg)
+
 ## The Problem
 
 You want to use multiple AI agents together - Claude Code for refactoring, Codex for code editing with advanced reasoning, a custom analysis agent, maybe Goose for specific tasks. But each has different APIs, protocols, and integration patterns. Coordinating them means writing glue code for each combination.
@@ -72,6 +74,8 @@ agentpool run assistant "Hello!"
 # Or start as ACP server (for Zed, Toad, etc.)
 agentpool serve-acp agents.yml
 ```
+
+![AgentPool ACP streaming flow](./docs/assets/agentpool-streaming.svg)
 
 ### Integrating External Agents
 

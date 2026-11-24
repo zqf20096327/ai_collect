@@ -135,6 +135,7 @@ Everything runs on your machine: a small background service and the plugin's hoo
 | A text reply wakes the session | ✅ | ✅ |
 | Allow once what auto mode blocked | ✅ | ✅ |
 | Confirm outward actions (deploy, send, merge) with a real permission prompt | ✅ | ✅ |
+| Sessions send you files: images, videos, audio, documents | ✅ up to 20 MiB (50 or 100 on a boosted server) | ✅ up to 50 MiB (photos 10) |
 | A Boss in the main channel, always on, background sessions on demand | ✅ `⚒・forge` | ✅ General |
 | Codex approvals, across devices | ✅ | notifications |
 | Quiet by default, a ping only when you're needed | ✅ | ✅ |
@@ -194,6 +195,14 @@ A private chat with the bot works too: turn on Threaded Mode for the bot in @Bot
 **Auto mode.** When the auto-mode classifier blocks an action, the channel gets what was blocked and why. **Allow once** allows exactly that call in that session for 30 minutes, and the session retries it.
 
 **Confirm actions from your phone.** A reply from the chat is not consent for an action that touches other people, for example sending a message, deploying or merging: Claude Code marks chat replies as not user input. So the session doesn't ask in the chat. It arms `confirm-next` and makes the exact call; Claude Code then asks for permission, and you get that call with **Allow** / **Deny** and a "Confirm: …" line. Allow approves only that call.
+
+**Files from a session.** Ask a session "send me the file" (a video, a screenshot, a voice sample) and it runs `send-file`. The file lands in that session's channel or topic, in Discord, Telegram or both, as you set in **Where to send**. Images show as images, `.mp4` as a playable video, `.mp3` as audio, everything else as a document. A file over a limit is not sent there, and the session tells you exactly which destination got it and which did not. Limits per file: Telegram 50 MiB (a photo 10 MiB, a bigger one goes as a document), Discord 20 MiB, or 50 and 100 MiB on a server with Boost level 2 and 3. By hand, with an optional caption:
+
+```bash
+node <plugin>/skills/telegram-action-notifier/scripts/telegram-action-notifier.mjs send-file --caption "Render v3" ./render.mp4
+```
+
+Only the files you name are sent: a directory, a missing or empty file is refused, and so is the AI Forge configuration with your bot tokens.
 
 **The Boss.** Name any session "Boss" and it takes the main channel (`⚒・forge`, or General in Telegram). Drop a task there; the Boss splits it across project sessions and starts background ones (`claude -p`) after you press **▶️ Start**. There is always a Boss: if the app closed it, a message in the main channel wakes it up in the background; if there is no Boss at all (deleted, or its conversation is gone), the bridge starts a new one in the background with the boss start prompt (in `bossCwd`, default your home folder) and hands it your message.
 

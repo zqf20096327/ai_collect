@@ -15,7 +15,7 @@ claude plugin marketplace add archid21/rightsize
 claude plugin install rightsize@archid21 --scope user
 ```
 
-Works with a Claude subscription (Pro, Max, Ultra) or an API key · MIT license · **New in 0.16.2:** a simpler band, a cache bar with the clock time, and the session total on the status line ([changelog](CHANGELOG.md)).
+Works with a Claude subscription (Pro, Max, Ultra) or an API key · MIT license · **New in 0.16.3:** one Changes setting (Auto or Ask) with Redo buttons, a band that folds, compacts counted in Total saved, and more `/rightsize optimize` suggestions ([changelog](CHANGELOG.md)).
 
 ## Contents
 
@@ -63,42 +63,40 @@ The report counts rightsize's own cost (the rating calls) against the savings, s
 
 ## What you'll see
 
-A band above the prompt says what rightsize did and why, with buttons to undo it. Pictures of the desktop app; figures are examples.
+A band above the prompt says what rightsize did and why, with buttons to undo it; ▾ folds it to one line. Pictures of the desktop app; figures are examples.
 
-**The first time, it asks what you want.** You stay in charge.
+**Changes: Auto (the default) acts and says so; Ask asks first.** On Ask, one question with the recommended choice first; after the same answer three times, **Always do this** saves it.
 
-![Question: When a task could run on a cheaper model than Opus (such as Sonnet), what should I do? Send it to a cheaper subagent (Recommended)](docs/images/d-ask.png)
+![Question: Send to a Sonnet helper? ~26% of the usage. Send to Sonnet (Recommended), Keep on Opus (lower effort)](docs/images/d-ask.png)
 
-**A routine task goes to a Sonnet helper,** and the band shows what it saved.
+**A routine task goes to a Sonnet helper,** and the band shows what it saved, with one button to undo it.
 
-![Band: Sending this to a Sonnet subagent at medium effort. That uses about 26% of the usage vs staying on Opus (estimated). Buttons: Ask first, Stay, lower effort only](docs/images/d-sending.png)
-
-![Band: Sent to Sonnet. ~7% of Opus usage ($0.18 vs ~$2.41). Button: Run on Opus](docs/images/d-sent.png)
+![Band: Sent to Sonnet. ~7% of Opus usage ($0.18 vs ~$2.41). Button: Redo on Opus](docs/images/d-sent.png)
 
 **Effort follows the work.** Low for a quick answer; raised mid-turn only when the turn shows trouble.
 
-![Band: Effort lowered: high → low for this prompt. Button: Retry at original effort](docs/images/d-lowered.png)
+![Band: Effort lowered: high → low. Button: Redo at high](docs/images/d-lowered.png)
 
 ![Band: Effort raised mid-turn: low → medium (two fixes in a row left the tests red)](docs/images/d-raised.png)
 
 **Cache and context.** Keep the cache warm while you are away, or compact before the conversation gets costly.
 
-![Band: Goes cold in 55 min (19:10) · coming back after costs about $1.56. Buttons: Keep warm 8 h, Wrap up](docs/images/d-warm.png)
+![Band: cache bar, until 7:10 PM · ~$1.56 to come back. Buttons: Compact Now, Save Handoff](docs/images/d-warm.png)
 
-![Band with two rows: Sent to Haiku, $0.04 vs ~$0.31 on Fable; Context is 60% full (120K of 200K tokens), with a Compact Now button](docs/images/d-context.png)
+![Band with two rows: Sent to Haiku, $0.04 vs ~$0.31 on Fable; Context is 60% full (120K of 200K tokens), with Redo on Fable, Compact Now and Start fresh buttons](docs/images/d-context.png)
+
+![Band: Near your 5-hour limit, resets 9:40 PM. Compact now to save ~$0.59 after the reset. Button: Compact Now](docs/images/d-limit.png)
 
 <details>
 <summary>In the terminal</summary>
 
 The same rows, one line each, with buttons below. Screenshots from a real session, with captions added.
 
-![rightsize in Claude Code's terminal: a routine edit stays on Sonnet, a review switches to Opus for one turn, and the band shows what each cost](docs/images/rightsize-demo.gif)
+![rightsize in Claude Code's terminal, four scenes: a big routine edit sent to a Haiku helper, routine work at lower effort, the Cache row with Compact Now and Save Handoff, and a review kept on Opus](docs/images/rightsize-demo.gif)
 
 ![Terminal band: Sending this to a Sonnet subagent at medium effort](docs/images/2-hands-off.png)
 
 ![Terminal band: Sent to Sonnet, API-equivalent $0.18 vs about $2.41 (estimated)](docs/images/3-result.png)
-
-![Terminal band: Near your 5-hour limit, resets 21:40, Compact now to save about $0.59 after the reset](docs/images/band-limit-advice.png)
 
 </details>
 
@@ -108,9 +106,9 @@ The same rows, one line each, with buttons below. Screenshots from a real sessio
 
 | Feature | What it delivers |
 |---|---|
-| Smart routing | Routine work on cheaper models, Opus where it counts. **Ask before changing** in `/config` makes it ask first. |
+| Smart routing | Routine work on cheaper models, Opus where it counts. **Changes** in `/config` (Auto or Ask) makes it ask first. |
 | Effort control | Lower effort for routine prompts; raised mid-turn only when Claude is stuck. |
-| Cheaper helpers | Big routine jobs (the same edit across many files) go to a Haiku or Sonnet helper. Your main chat writes the brief and checks the result. **Run on your model** on the band undoes one. |
+| Cheaper helpers | Big routine jobs (the same edit across many files) go to a Haiku or Sonnet helper. Your main chat writes the brief and checks the result. **Redo on Opus** (named for your model) on the band undoes one. |
 | Opus reviews | Stronger reviews without switching models yourself. |
 | Keep warm | Keeps a big session's cache warm while you are away, only while your record says it pays. |
 | Usage windows | On Pro, Max and Ultra, saves harder as your weekly or 5-hour window runs low. |
@@ -121,9 +119,8 @@ The same rows, one line each, with buttons below. Screenshots from a real sessio
 |---|---|
 | Cost report | `/rightsize report`: measured savings, spend, and the times rightsize cost more. |
 | Settings suggestions | `/rightsize optimize`: changes priced on your last 30 days; you pick which to apply. |
-| Compact now | Press it when the band warns the context is filling (40 to 90%) or you are near your 5-hour limit. |
-| Wrap up | Press **Wrap up** on the countdown row, or type `wrap up`, to save a handoff note (or compact without whatsnext). |
-| Big-turn warning | Off by default. Set **Big-turn warning** under Advanced for a heads-up before an unusually expensive turn. |
+| Compact Now | Press it when the band warns the context is filling (40 to 90%) or you are near your 5-hour limit. |
+| Save Handoff | Press **Save Handoff** on the Cache row (or **Wrap up** on a keep-warm row), or type `wrap up`, to save a handoff note (or compact without whatsnext). |
 
 **Works better with [whatsnext](https://github.com/archid21/whatsnext).** rightsize decides when a compact pays; whatsnext decides what to keep, by saving a handoff note first. Without whatsnext, rightsize compacts with its own handoff-style text.
 
@@ -131,7 +128,7 @@ Every feature, with the release that added it: [docs/FEATURES.md](docs/FEATURES.
 
 ## Make it yours
 
-Two switches cover most needs. **Hand-offs** turns helper subagents off (effort still changes). **Ask before changing** makes every move ask first.
+Two switches cover most needs. **Hand-offs** turns helper subagents off (effort still changes). **Changes** set to Ask makes every move ask first.
 
 | | Default | Row |
 |---|---|---|
@@ -144,7 +141,7 @@ Two switches cover most needs. **Hand-offs** turns helper subagents off (effort 
 
 - **Opus reviews, but no helpers:** set **Hand-offs** to off.
 - **Just effort, no model changes:** set **Stronger model** and **Cheaper model** to stay.
-- **Ask before anything changes:** set **Ask before changing** to on.
+- **Ask before anything changes:** set **Changes** to Ask.
 
 Every setting, with its options and default: [docs/SETTINGS.md](docs/SETTINGS.md).
 

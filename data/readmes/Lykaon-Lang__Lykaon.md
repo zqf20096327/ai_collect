@@ -74,15 +74,41 @@ Say it.
   it.
 - **Readable errors** — Where, Why and Fix on every diagnostic.
 
-## Quick start
+## Quick start (Windows)
 
-Run a program:
+1. Download `Lykaon-v0.1.0-windows-x64.zip` from
+   [Releases](https://github.com/Lykaon-Lang/Lykaon/releases/latest).
+2. Unzip it anywhere.
+3. Double-click `install.bat`. It copies the tools to
+   `%LOCALAPPDATA%\Lykaon`, adds them to `PATH`, registers the `.lykaon` file
+   icon, and installs the VS Code extension.
+4. Open a **new** terminal. Windows only refreshes `PATH` for windows opened
+   after the install.
+
+Put this in `hello.lykaon`:
+
+```lykaon
+Say Hello world.
+```
+
+Run it:
 
 ```
-lykaon-cli run hello.lykaon
+lykaonc-cli run hello.lykaon
 ```
 
-Build a standalone executable:
+```
+Hello world
+```
+
+If the terminal says `lykaonc-cli is not recognized`, open a new terminal, or
+use the full path:
+
+```
+"%LOCALAPPDATA%\Lykaon\lykaonc-cli.exe" run hello.lykaon
+```
+
+### Build a standalone executable
 
 ```
 lykaonc-cli build fast hello.lykaon hello.exe
@@ -91,14 +117,17 @@ hello.exe
 
 On Windows, double-click `hello.exe`; it waits for Enter before closing.
 
+### VS Code
+
+Open a `.lykaon` file and click **Run File** in the editor toolbar (top right),
+or press `Ctrl+F5`. These are editor commands, not terminal commands.
+
 ## Install
 
 ### Windows
 
-Download the
-[`Lykaon-v0.1.0-windows-x64.zip`](../../releases/tag/v0.1.0) asset, extract
-it, and run `lykaon-cli.exe` / `lykaonc-cli.exe`. Add the folder to `PATH` to
-run them by name.
+The zip is self-contained: unzip it and double-click `install.bat`. That is the
+whole install.
 
 ### Linux
 

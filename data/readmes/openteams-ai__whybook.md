@@ -44,7 +44,7 @@ The data in the screenshots is synthetic: the demo cohort of `examples/pain_diar
 
 ## Install
 
-Whybook needs Python 3.10 or later and JupyterLab 4.4 or later, in the 4.x series.
+Whybook needs Python 3.11 or later, and JupyterLab 4.6.6 or a later 4.x release.
 
 ```bash
 pip install "whybook[kernel,demo,models]"
@@ -62,7 +62,7 @@ Add `speech` for spoken questions transcribed by Moonshine in the Jupyter server
 
 Whybook reads the data in the kernel. When a kernel runs in another environment, install `whybook[kernel]` there too, and `demo` for the demo. `kernel` installs narwhals, and without it the Variables panel shows data frames without their columns.
 
-To open a notebook in Whybook, right-click it in the file browser and choose Open With, then Whybook. With a notebook open in JupyterLab's notebook editor, "Open Notebook in Whybook" in the command palette does the same. A new notebook starts from the Whybook section of the Launcher, or from File, New, Whybook. A double-click still opens JupyterLab's notebook editor. To open notebooks in Whybook by default, set Default Viewers of the Document Manager to `{"notebook": "Whybook"}` in the Settings Editor. On JupyterLab 4.6 and later, the sections of the Whybook panel can also move to the file browser.
+To open a notebook in Whybook, right-click it in the file browser and choose Open With, then Whybook. With a notebook open in JupyterLab's notebook editor, "Open Notebook in Whybook" in the command palette does the same. A new notebook starts from the Whybook section of the Launcher, or from File, New, Whybook. A double-click still opens JupyterLab's notebook editor. To open notebooks in Whybook by default, set Default Viewers of the Document Manager to `{"notebook": "Whybook"}` in the Settings Editor. The sections of the Whybook panel can also move to the file browser.
 
 Whybook also runs in Jupyter Notebook 7: on a notebook's page, the switch Notebook | Whybook in the menu bar shows Whybook in place of the notebook editor. Whybook has some limitations in Notebook 7 that it does not have in JupyterLab. They are bugs and improvements, tracked in issues of their own, often in upstream projects.
 
@@ -83,7 +83,7 @@ The questions from templates work with no AI model. Questions marked needs AI, a
 
 ## What leaves the machine
 
-Nothing leaves the machine until a remote AI model is connected. With `c.Whybook.way_to_use_models = "all-local"`, Whybook refuses every model outside the machine and its network, so no prompt leaves them. With the setting "Keep data on this machine", only models on this machine read the data, and no tables, printed outputs or pictures leave it; `c.Whybook.keep_data_local = True` enforces the setting for every user. Otherwise a connected remote model receives the code of the cells and what each task needs, such as the tables shown as tiles, to label them. [Every use of AI in Whybook](https://whybook.dev/#ai-uses) lists what each task sends.
+Nothing leaves the machine until a remote AI model is connected. With `c.Whybook.way_to_use_models = "all-local"`, Whybook refuses every model outside the machine and its network, so no prompt leaves them. With the setting "Keep data on this machine", only models on this machine read the data, and no tables, printed outputs or pictures leave it; `c.Whybook.keep_data_local = True` enforces the setting for every user. Otherwise a connected remote model receives the code of the cells and what each task needs, such as the tables shown as tiles, to label them. [Every use of AI in Whybook](https://whybook.dev/#ai-uses) lists what each task sends. Whybook masks keys, tokens and passwords in every prompt before it leaves the machine. [Security and privacy](https://github.com/openteams-ai/whybook/blob/main/docs/security.md) describes the rules and the settings of OpenRouter's providers, and [Configuration for administrators](https://github.com/openteams-ai/whybook/blob/main/docs/deployment.md) the server's settings for a team.
 
 ## Report a problem or contribute
 

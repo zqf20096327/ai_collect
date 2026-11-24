@@ -229,6 +229,8 @@ GET  /guide/tactics              the proof failures that come up most, and how t
 POST /session/{id}/check         {"proofs": {"<id>": "<lean>"}} or {"proof_files": {"<id>": "<path>"}}
      → {verified, recovered, failed, remaining, complete}
      fix the failures, send only those ids again, repeat
+POST /session/{id}/compare       {"answers": {"<function>": [...]}}
+     → {matched, differed}
 ```
 
 Three things keep the loop cheap:
@@ -282,6 +284,167 @@ formal puts the spec before the proof and holds the proof to the spec's own stat
 A proof that redefines a name of the spec fails. The cache key covers the whole spec, so
 an edit to the spec sends every property back as work.
 
+A spec can reuse another spec's definitions. `import Spec.Pystr` in its header makes formal
+read `Pystr.lean` from the directory of the spec the session opens on, and put it before the
+spec. Nested imports resolve from that same directory, as Lean resolves modules from one
+root. A dotted name, such as `Spec.Lib.Text`, reads from a subdirectory. Properties come only from the spec the
+session opens on. The cache key covers every imported spec too, and formal refuses an
+import it cannot find, a cycle, and an imported spec that can run code.
+
+A Lean spec can also hold the code to its model. A function names the code it describes
+in a `code:` line of its doc comment, and `def <name>.inputs` lists the inputs:
+
+```lean
+/-- code: rust/formal-core/src/pystr.rs rstrip -/
+def rstrip (s : List Char) : List Char := (s.reverse.dropWhile isSpace).reverse
+
+def rstrip.inputs : List (List Char) := words 4
+```
+
+formal evaluates the inputs in Lean when the session opens. The session lists each such
+function under `compare`, with its inputs as JSON. Inputs and answers cross through
+Lean's `ToJson`, and a `List Char` crosses as a JSON string. Core Lean has instances for
+`Nat`, `Int`, `Bool`, `String`, lists, pairs and options. A spec cannot name `Lean`, so it
+cannot add an instance for a type of its own.
+The caller runs its own code on each input and sends the answers to
+`POST /session/{id}/compare`. formal keeps the spec's answers to itself. It answers with
+the functions that `matched`. Each function that `differed` comes with the first input
+where the two disagree, the spec's answer and the code's answer.
+
+A spec can describe a state machine. It defines `init : State`,
+`step : State → Action → State` and at least one invariant in its namespace. An invariant
+is a `def <name> : State → Prop`, or a `def <name> (s : State) : Prop`. formal defines
+`run`, the fold of `step` over a list of actions from `init`, and registers each invariant
+as `<Namespace>.<name>.always`, which says that it holds in every reachable state:
+
+```lean
+def count_at_most_two : State → Prop := fun s => s.count ≤ 2
+```
+
+In a spec with the namespace `Bounded`, formal registers `Bounded.count_at_most_two.always`,
+which states `∀ actions, count_at_most_two (run actions)`. Its proof declares
+`theorem Bounded.count_at_most_two.always.holds : Bounded.count_at_most_two.always`. The
+search derives generators for the spec's types, so a broken invariant comes back with the
+list of actions that breaks it.
+
+When the actions are known, formal also explores every reachable state up to a depth,
+10 unless the spec defines `def depth : Nat`. The actions are the constructors of the
+action type when none takes an argument, else `<Action>.samples`. formal visits each
+state once, so a violation comes back under `refuted` with a shortest trace. An invariant
+that held comes back under `bounded`, with the depth and the number of states:
+
+```json
+"bounded": [{"id": "Bounded.count_at_most_two.always", "depth": 10, "states": 3}]
+```
+
+The check stops after 100,000 states, and `bounded` then gives the last depth it explored
+in full. Lean proves the list of constructors complete before the check uses it, so a
+missed action can only skip the check, never claim a bound. An invariant Lean cannot
+decide is left out of the check. Only a proof settles it.
+
+A `code:` line on `step` holds the code to the machine. The session lists `Bounded.run`
+under `compare`, with one trace of actions per state the bounded walk reached. The caller
+replays each trace on its code and sends the last state to `POST /session/{id}/compare`,
+and formal names the first trace where the code's state differs from the spec's. Actions
+and states cross in Lean's derived JSON:
+
+```json
+{
+  "inputs": [[], ["inc"], ["inc", "inc"]],
+  "answers": {"Bounded.run": [{"count": 0}, {"count": 1}, {"count": 2}]}
+}
+```
+
+A structure crosses as an object of its fields, and text as a string. A constructor with
+no argument crosses as its name, one with named arguments as `{"add": {"n": 1}}`, one with
+one anonymous argument as `{"one": 1}`, and one with several as `{"two": [2, false]}`.
+`Option.none` crosses as `null`. A trace of `Char` actions crosses as a string.
+
+formal also tests whether each invariant the checks did not refute is inductive, the
+shape a proof by induction needs. It draws states where the invariant holds, takes every
+action, and checks the next state. A state where a step breaks it comes back under
+`not_inductive`, with the action and the next state, so its proof needs a stronger
+invariant. When several such invariants are kept by every step together,
+`inductive_together` names them, and one induction proves them all:
+
+```json
+"not_inductive": [{"id": "Cycle.count_is_not_five.always", "state": "{ count := 4 }", "action": "Cycle.Action.inc", "next": "{ count := 5 }"}],
+"inductive_together": ["Cycle.count_at_most_two.always", "Cycle.count_is_not_five.always"]
+```
+
+`<State>.samples` steers the drawn states, as `<Type>.samples` steers the search.
+
+Liveness says that something good eventually happens. `import Formal.Temporal` gives a
+spec formal's temporal library. It defines the operators over a machine's `init` and `step`:
+
+- `Temporal.always init step p`: `p` holds in every state the machine reaches.
+- `Temporal.eventually init step assumed p`: every run that satisfies `assumed` reaches a
+  state where `p` holds.
+- `Temporal.leadsTo init step assumed p q`: in every run that satisfies `assumed`, each
+  state where `p` holds is followed by a state where `q` holds, or is one.
+- `Temporal.fair a`: the run takes the action `a` again and again. That is weak fairness,
+  since every action can always be taken.
+
+Fairness holds only where a property states it:
+
+```lean
+import Formal.Temporal
+
+def a_fair_reset_empties_the_count : Prop :=
+  Temporal.leadsTo init step (Temporal.fair Action.reset) (fun s => 0 < s.count) (fun s => s.count = 0)
+```
+
+`eventually` and `leadsTo` also claim that some run satisfies `assumed`. An assumption no
+run meets therefore makes the property false, not true for want of a run. For one fair
+action, `⟨_, Temporal.fair_constant a⟩` gives that run. For several, `Temporal.cycle`
+repeats a list of actions, and `Temporal.fair_cycle` proves each listed action fair in it:
+
+```lean
+⟨_, Temporal.fair_cycle Action.drain [Action.wait] Action.drain (by simp),
+  Temporal.fair_cycle Action.drain [Action.wait] Action.wait (by simp)⟩
+```
+
+The library proves its own rules:
+
+- `Temporal.always_of_inductive` proves `always` from an inductive invariant.
+- `Temporal.leadsTo_of_measure` proves `leadsTo` from a fair action and a measure. Every
+  step from `p` reaches `q`, or keeps `p` and does not raise the measure. The fair action
+  reaches `q`, or keeps `p` and lowers the measure. An invariant proved with `always`
+  limits both to the states where it holds. `Temporal.always_true` stands in when there is
+  none.
+- `Temporal.leadsTo_of_fair_step` is that rule without a measure: the fair action reaches
+  `q` at once.
+- `Temporal.leadsTo_trans` chains two `leadsTo`. `Temporal.leadsTo_or` joins two that
+  reach the same `q`, and `Temporal.leadsTo_of_imp` gives `leadsTo p q` when `p` implies `q`.
+- `Temporal.eventually_of_leadsTo` gives `eventually q` from `leadsTo p q` when `init`
+  satisfies `p`.
+
+The library is core Lean, in `rust/formal-core/lean/Temporal.lean`. To compile a spec
+without formal, paste the file in place of the import. formal refuses any other `Formal.`
+import, and leaves out a `Formal.` or `Spec.` import that a proof repeats.
+
+When the session opens, formal also searches each property for a counterexample with
+Plausible. A false property comes back under `refuted`, with the value of each variable
+and what does not hold. For this false property in a spec with the namespace `Demo`:
+
+```lean
+def double (n : Nat) : Nat := n + n
+
+def double_odd : Prop := ∀ n, double n % 2 = 1
+```
+
+the session answers:
+
+```json
+"refuted": [{"id": "Demo.double_odd", "counterexample": ["n := 0"], "issue": "0 = 1 does not hold"}]
+```
+
+The property stays under `work`. Fix the spec, and open the session again. A property the
+search cannot test refutes nothing, and its proof decides it. Random values rarely hit a
+rare input, so a spec can list values for a type, as `def <Type>.samples : List <Type>`.
+The search then draws half of the values of that type from that list. `spec/Pystr.lean`
+lists its `alphabet` as `Char.samples`.
+
 ### Stale properties
 
 A committed property can outlive its code. Each property records the function source it
@@ -303,14 +466,28 @@ becomes stale, and its `function_code` needs the new indentation. A property wit
 
 ### formal's own properties
 
-formal checks itself. `formal.properties.json` in this repository is formal's own spec,
-with the proofs in `proofs/`. Two of its properties guard against collisions that really
-happened in formal's cache key: an operator spelled as a word counts only at a word
-boundary, and no field of the key can imitate the boundary between two others.
+formal checks itself through Lean specs, one per module of its own code.
 
-The Python string rules the cache key depends on have a spec instead: `spec/Pystr.lean`.
-Their proofs are in `proofs/Pystr/`. The test `formal-service/tests/spec_sessions.rs` checks
-each proof, and `formal-lean/tests/spec.rs` compares the Rust with the spec.
+- `spec/Pystr.lean` specifies the Python string rules the cache key depends on.
+- `spec/ProofCache.lean` imports it and specifies the cache key. Two of its properties
+  guard against collisions that really happened: an operator spelled as a word counts only
+  at a word boundary, and no field of the key can imitate the boundary between two others.
+  Its word boundary follows Unicode, as the regex in Rust does: the spec holds the regex's
+  table of word characters, and the compare checks it on every code point. The kind is
+  lowercased as ASCII, in the spec and in Rust.
+- `spec/Hints.lean` specifies how formal picks the advice for a failed proof: the first
+  rule that claims the error and answers wins.
+- `spec/Run.lean` specifies how formal reads Lean's verdict: a `sorry` is a warning to
+  Lean and a failure here, and the first error Lean reported stays first.
+- `spec/Specs.lean` imports `spec/ProofCache.lean` and specifies how formal reads a spec
+  file: when a property is stale, when two ids clash, and which fields are missing.
+- `spec/Verifier.lean` specifies how formal prepares a proof: imports split from the body,
+  proofs batched into one file with each error traced back to its proof, the pre-check, and
+  the rewrites that try an automatic tactic.
+
+Their proofs are in `proofs/<Namespace>/`. The test `formal-service/tests/spec_sessions.rs`
+checks every proof of every spec, and `formal-lean/tests/spec.rs` compares the code in
+Rust with each spec that names its code in a `code:` line.
 
 ## What a result means
 

@@ -67,6 +67,12 @@ codex plugin marketplace remove live-delivery-local --json
 
 </details>
 
+### Qwen Code (CLI-started tasks only)
+
+From the repository root, run `qwen extensions link "$PWD/live-delivery"` and confirm the install. Start a new `qwen` in your project, enter `$ld:go your task`, and open the dashboard link shown by the CLI. The extension uses your existing model and approval settings; approve its tool calls if prompted.
+
+The dashboard listens on loopback. Preview published versions and send feedback to the current session at the next tool boundary or CLI turn. It cannot launch Qwen from the browser, wake an idle process, or interrupt a running tool. For parallel tasks, start separate `qwen` processes without resuming the same conversation in both. Closing the CLI closes its dashboard.
+
 ## Quick start
 
 Start Codex in your project:

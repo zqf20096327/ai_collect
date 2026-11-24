@@ -98,7 +98,7 @@ This repository also includes the website, hosted at [https://maxont.github.io/T
 
 ## About
 
-TRACES.md — a simple, open format for recording what AI agents did. It came out of running several coding agents (Cursor, Trae, Kiro, Claude Code, Codex) on the same repositories, and is maintained as an open format that benefits anyone running agents, regardless of which one. This repository writes its own traces in [`.trace/`](.trace), failures included. See [SPEC.md](SPEC.md) and [north_star.md](north_star.md).
+TRACES.md — a simple, open format for recording what AI agents did. It came out of running several coding agents (Cursor, Trae, Kiro, Claude Code, Codex) on the same repositories, and is maintained as an open format that benefits anyone running agents, regardless of which one. See [SPEC.md](SPEC.md) and [north_star.md](north_star.md).
 
 MIT licensed. Tests: `python3 -m unittest discover -s tests`.
 

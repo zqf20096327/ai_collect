@@ -12,13 +12,14 @@
 
 ## 📢 News
 
+- **[v8](https://github.com/lisresearchgroup/math-rsi/releases/tag/v8)** · 2026-11-23 — Download binary linear codes for 18 improved lower bounds. On the upper-bound side, 32 new deductions settle nine optimal distances. Two further entries await final acceptance in the source project.
 - **[v7](https://github.com/lisresearchgroup/math-rsi/releases/tag/v7)** · 2026-11-22 — The working proof now extends every matching in the seven-dimensional cube to a Hamilton cycle. The Happy Ending manuscripts give ES(8) ≤ 294, ES(9) ≤ 1,100 and ES(10) ≤ 3,980.
 - **[v6](https://github.com/lisresearchgroup/math-rsi/releases/tag/v6)** · 2026-11-20 — The Q₇ matching threshold fell from 57 edges to 56. For square-free subgraphs of Q₈, the maximum number of edges was narrowed to 682 or 683.
-- **[v5](https://github.com/lisresearchgroup/math-rsi/releases/tag/v5)** · 2026-11-14 — In Q₇, every matching with at least 57 edges was shown to extend to a Hamilton cycle. The proof showed how to reuse a theorem by choosing a different representation of the same matching.
 
 <details>
-<summary>Earlier versions (v1–v4)</summary>
+<summary>Earlier versions (v1–v5)</summary>
 
+- **[v5](https://github.com/lisresearchgroup/math-rsi/releases/tag/v5)** · 2026-11-14 — In Q₇, every matching with at least 57 edges was shown to extend to a Hamilton cycle. The proof showed how to reuse a theorem by choosing a different representation of the same matching.
 - **[v4](https://github.com/lisresearchgroup/math-rsi/releases/tag/v4)** · 2026-11-08 — Convex polygon proofs taught the workflow to trace which inequalities must be tight together. The degree–diameter plugin gained methods for constructing larger graphs.
 - **[v3](https://github.com/lisresearchgroup/math-rsi/tree/v3)** · 2026-11-04 — Three new plugins brought MathRSI to six domains, adding square-free subgraphs of cubes, matching extension in cubes, and convex polygons.
 - **[v2](https://github.com/lisresearchgroup/math-rsi/tree/v2)** · 2026-11-03 — The degree–diameter plugin joined MathRSI. It was the first plugin used to test a new maintenance workflow for turning research findings into changes to the shared base.
@@ -68,10 +69,10 @@ Reads the task's existing specification, wiki and resumption notes, then continu
 
 Research across six domains supplies results and reusable methods. [Public homepage](https://lisresearchgroup.github.io/math-rsi/) · [Local viewing instructions](docs/HOMEPAGE.md). The **[bilingual visual tour](https://lisresearchgroup.github.io/math-rsi/)** shows their problems, results and evolution; the **[six-case index](case-studies/README.md)** links proofs, verification scopes and runnable tools.
 
-[![Six-domain mathematical results overview](figures/mathrsi/results-overview/results-overview.en.svg?v=6-q7-20261120)](case-studies/README.md)
+[![Six-domain mathematical results overview](figures/mathrsi/results-overview/results-overview.en.svg?v=8-ecc)](case-studies/README.md)
 
 - **Property B:** bounds for $k=5,\ldots,12$ and exponentially growing additive gains for every $k\ge12$. [Results & proof scope](case-studies/property-b/README.md)
-- **Error-correcting codes:** three gaps dating to 1985 closed; four exact values (one from literature) and one narrowed range. [Results, methods & open case](case-studies/README.md#error-correcting-codes)
+- **Error-correcting codes.** Download generators for 18 improved lower bounds. Of 37 supported upper-bound updates, 13 meet the distance of a known code and settle the optimum. Two further entries await final acceptance in the source project. [Codes and matrices](https://lisresearchgroup.github.io/math-rsi/ecc-intervals.html#lower) · [Upper bounds and proofs](https://lisresearchgroup.github.io/math-rsi/ecc-intervals.html#upper)
 - **Degree–diameter:** our constructions reach 2,567 vertices at $(10,4)$, 37,632 at $(11,5)$, 42,433 at $(12,5)$ and 16,416 at $(16,4)$. [Constructions, dated comparisons & scope](case-studies/degree-diameter/README.md)
 - **Erdős Problem 86:** $Q_7$ at $304$ (304-edge construction verified; 304 upper bound as reported in the source package, not re-verified in this pass), $682\le\mathrm{ex}(Q_8,C_4)\le683$, and asymptotic density improved from $0.60318$ to $\le0.5912405943$ (`T3`) / $\le0.5912405942$ (`T4`). [Results & verification scope](case-studies/erdos-86/README.md)
 - **Ruskey–Savage:** a complete author working proof covers every matching in $Q_7$, including empty and perfect matchings; the universal $Q_6$ result is retained. External peer review pending; no Lean. [Proof, local checks & release history](case-studies/ruskey-savage-q7/README.md)
@@ -108,12 +109,14 @@ The main [`mathrsi-research`](base/skills/mathrsi-research/SKILL.md) skill coord
 
 Two tracks evolve together: **shared base behavior** becomes stronger, while **domain plugins** expand and deepen. Separate [`mathrsi-meta-evolve`](base/skills/mathrsi-meta-evolve/SKILL.md) maintenance turns research evidence into implemented changes.
 
+- **v8 base and ECC plugin.** Carry a construction through to the exact parameters being reported, keep the strongest witness for each setting, and test rarely reached rejection rules on inputs that should fail. The ECC plugin exports all 18 generator matrices and links every upper-bound deduction to its premises. [Methods and examples](docs/V8_CHANGES.md)
+
 - **v6 base:** test candidate case splits on the hardest open branch before adopting them, and measure net-new coverage on the same input; run primal–dual coevolution that keeps the proof goal separate from the search target, rotates four normalized signed residual channels, and tests candidate cuts against the full graph archive; stop floating-point SDP/CP loops once gains fall to the rounding-repair residual.
 - **Deeper domain plugins:** `hypercube-extremal` adds asymptotic COP + $m=1024$ degree-potential bounds (`T3` / `T4`), same-subgraph 3-measure pullbacks ($Q_8 \le 683$), $Q_7$ 304 constructions + source report, and the reusable `cube_coevolve` engine; `hypercube-hamilton` completes $Q_7$ E16 ($\ge 56$ edges across all $\mu=0..4$) with parameterized $Q_6$ $\Delta=2$ double bridges, $Q_6$ $A_8$, and $S_6$ large-face tables paired with symbolic small-face holes; `happy-ending` adds cross-platform checkers and curated archives for $m=7,8,9$ signotope capacities ($N(8,6,6)\le 61$ shared-label CEGAR, $N(9,8,8)\le 688$ & $D_9\le 458$ generative sparse integer duals, and relaxation-ceiling stopping; developed with **Trellis + ARIS + v3**, integrated in `main` maintenance; fixed `v6` tag unchanged).
 - **Q₇ follow-up · 2026-11-20:** `main` absorbs the full R7 author working proof accepted in the source project on 19 November. The research used v3 with local adaptations; fixed v5 (≥57 edges) and v6 (≥56 edges) snapshots remain unchanged. [Proof guide](https://github.com/lisresearchgroup/math-rsi/blob/main/plugins/hypercube-hamilton/knowledge/q7-closure-proof.md) · [Recomputation scope](https://github.com/lisresearchgroup/math-rsi/blob/main/plugins/hypercube-hamilton/archive/q7-closure/README.md)
 - **Inherited behavior:** v5's controlled auxiliary choices, cross-representation theorem reuse and consuming returned results before dispatching new work, together with v4's equality-to-witness steps, global progress checks and ECC branch reuse.
 
-**[MathRSI v7 is the latest release](https://github.com/lisresearchgroup/math-rsi/releases/tag/v7).** [Release notes](docs/V7_CHANGES.md) · [Download v7](https://github.com/lisresearchgroup/math-rsi/archive/refs/tags/v7.zip) · [Download main](https://github.com/lisresearchgroup/math-rsi/archive/refs/heads/main.zip) · [Evolution records](development/README.md) · [Maintenance guide](docs/EVOLUTION_WORKFLOW.md)
+**[MathRSI v8 is the latest release](https://github.com/lisresearchgroup/math-rsi/releases/tag/v8).** [Release notes](docs/V8_CHANGES.md) · [Download v8](https://github.com/lisresearchgroup/math-rsi/archive/refs/tags/v8.zip) · [Download main](https://github.com/lisresearchgroup/math-rsi/archive/refs/heads/main.zip) · [Evolution records](development/README.md) · [Maintenance guide](docs/EVOLUTION_WORKFLOW.md)
 
 v0 records the Property B and coding research that preceded the shared workflow. Version tags begin at v1. [Version news](#news) · [Historical architecture diagrams](figures/mathrsi/README.md#historical-diagrams)
 

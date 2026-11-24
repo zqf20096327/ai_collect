@@ -6,7 +6,7 @@
     <a href="https://pypi.org/project/pyoxynet/"><img src="https://img.shields.io/pypi/v/pyoxynet" alt="PyPI version"></a>
     <a href="https://pypi.org/project/pyoxynet/"><img src="https://img.shields.io/pypi/pyversions/pyoxynet" alt="Python versions"></a>
     <a href="https://pyoxynet.readthedocs.io/en/latest/"><img src="https://img.shields.io/readthedocs/pyoxynet/latest" alt="Documentation"></a>
-    <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/andreazignoli/pyoxynet" alt="MIT License"></a>
+    <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/oxynet-cpet/pyoxynet" alt="MIT License"></a>
   </p>
   <p>
     <a href="https://www.oxynet.net"><strong>oxynet.net</strong></a>
@@ -15,7 +15,7 @@
     ·
     <a href="https://pypi.org/project/pyoxynet/">PyPI</a>
     ·
-    <a href="https://github.com/andreazignoli/pyoxynet/discussions">Discussions</a>
+    <a href="https://github.com/oxynet-cpet/pyoxynet/discussions">Discussions</a>
   </p>
 </div>
 
@@ -53,7 +53,7 @@ pip install pyoxynet
 Python 3.10 to 3.14, on Windows, Linux and macOS (Apple silicon). To install the development version:
 
 ```sh
-pip install "git+https://github.com/andreazignoli/pyoxynet.git#subdirectory=pyoxynet"
+pip install "git+https://github.com/oxynet-cpet/pyoxynet.git#subdirectory=pyoxynet"
 ```
 
 `pip install "pyoxynet[train]"` adds TensorFlow, which only `pyoxynet.model` needs: it defines the
@@ -156,8 +156,8 @@ The generator at different stages of its training:
 
 ## Questions and contributing
 
-- Questions and ideas: [GitHub Discussions](https://github.com/andreazignoli/pyoxynet/discussions).
-- Bugs: [issues](https://github.com/andreazignoli/pyoxynet/issues).
+- Questions and ideas: [GitHub Discussions](https://github.com/oxynet-cpet/pyoxynet/discussions).
+- Bugs: [issues](https://github.com/oxynet-cpet/pyoxynet/issues).
 - Pull requests that fix the package are welcome. The models themselves are frozen.
 - For research or data collaborations, see [oxynet.net](https://www.oxynet.net).
 

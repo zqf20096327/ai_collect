@@ -5,7 +5,7 @@
 [![PyTorch 2.5+](https://img.shields.io/badge/PyTorch-2.5%2B-e9482b)](https://pytorch.org)
 [![数据集 ModelScope](https://img.shields.io/badge/%E6%95%B0%E6%8D%AE%E9%9B%86-ModelScope-ffd21f)](https://www.modelscope.cn/datasets/caiwangzsnm/tinybrain-dataset)
 [![视频 B 站](https://img.shields.io/badge/%E8%A7%86%E9%A2%91-B%20%E7%AB%99-fb7299)](https://www.bilibili.com/video/BV1kqsj6EEtT/)
-[![模型 Chat RC1](https://img.shields.io/badge/ModelScope-Chat%20RC1-15965a)](#现状)
+[![模型 ModelScope](https://img.shields.io/badge/%E6%A8%A1%E5%9E%8B-ModelScope-15965a)](https://www.modelscope.cn/models/caiwangzsnm/TinyBrain-Medium-Chat-20261119-RC1)
 [![GitHub stars](https://img.shields.io/github/stars/logitcai/tinybrain?color=15965a)](https://github.com/logitcai/tinybrain/stargazers)
 
 **从一个字开始，自己做一个中文大模型。**
@@ -23,31 +23,42 @@ tinybrain 是一个从零写起的中文小模型项目。和 [MiniMind](https:/
 
 ## 现状
 
-2026 年 11 月 19 日发布了 Small 和 Medium 的首批中文对话研究权重。两个模型都经过预训练、余弦退火、监督微调、专家蒸馏和强化学习，发布包使用 FP32 safetensors，并附带匹配的 TinyBrain 运行时。
+2026-11-19 发布了 small 和 medium 的第一版对话权重（RC1，研究预览）。两个都走完了整条链：预训练（base 档）→ 退火 → SFT → 专家蒸馏 → 强化学习，最后一段是用 Qwen3.8-27B 当评审的 RLAIF。
 
-| ModelScope 权重 | 参数量 | 权重文件大小 | 可用回答数 / 采样数 |
-| --- | ---: | ---: | ---: |
+| 模型 | 参数量 | 权重（FP32 safetensors） | 评审判为可用的回答 |
+|---|---:|---:|---:|
 | [Small Chat RC1](https://www.modelscope.cn/models/caiwangzsnm/TinyBrain-Small-Chat-20261119-RC1) | 1.67 亿 | 639 MiB | 13/180 |
 | [Medium Chat RC1](https://www.modelscope.cn/models/caiwangzsnm/TinyBrain-Medium-Chat-20261119-RC1) | 4.99 亿 | 1.86 GiB | 29/180 |
 
-两个模型回答同一组 90 道开发题，每题采样两次，温度为 1.0，随机种子相同。Qwen3.8-27B-FP8 对照参考答案逐条评分。
+「可用」是这样算的：90 道有参考答案的开发题，每题采样两次（温度 1.0，比平时聊天随机得多），Qwen3.8-27B-FP8 对照参考答案逐条判。独立的终评还没做完。
 
-实际聊天仍有明显局限。Medium 在另一组 10 段三轮对话中，30 次都正常结束，达到 8/10 的回答为 0 次。例如问「50 元买 6 张 7 元的海报还剩多少」，它先算出了 42 元总价，最后却答 12 元。独立终评尚未完成。
+**实际用起来是什么样**：下面是 medium 在 Mac 上的原话（温度 0.8，`tinybrain chat --demo`），好的坏的都放。
 
-### 直接试用 Small
+| 问 | medium 的回答 | |
+|---|---|---|
+| 用 Python 写一个判断质数的函数。 | `def is_prime(n)`：`n <= 1` 返回 False，再从 2 试除到 `int(n**0.5)` | 对 |
+| 用一段话解释什么是机器学习。 | 机器学习是一种让计算机自动从数据中学习的能力，而不仅仅是遵循一些规则。通过算法，机器学习可以识别数据中的模式并做出预测和决策。 | 对 |
+| 写一首关于秋天的五言绝句。 | 秋风萧萧动客怀，落叶飘零满地飞。寒气袭人衣袖冷，不知人在稻田中。 | 有意境，但写成了七言 |
+| 小明有 5 个苹果，又买了 3 个，吃掉 2 个，还剩几个？ | 5 + 3 = 8，8 - 2 = 6，6 + 2 = 8 | 算到 6 是对的，又多算了一步 |
+| 为什么天空是蓝色的？ | 是因为空气中的氧气（O₂）含量较高……二氧化碳在大气中遇冷会转变为水蒸气…… | 编的 |
+| 推荐三本适合入门的中国历史书。 | 张光直《中国史纲》、陈子展《中国史》、钱穆《中国历史研究法》 | 钱穆那本是真的；《中国史纲》是张荫麟写的 |
 
-需要 Python 3.11 或更高版本。以下命令下载 Small、安装配套运行时并打开交互式对话。
+语言通顺、格式像样，但**事实和算术靠不住**，别拿它查资料。这是 5 亿参数、200 亿 token 这个量级的正常水平。
+
+### 下载下来直接用
 
 ```bash
-python -m pip install modelscope
-modelscope download --model caiwangzsnm/TinyBrain-Small-Chat-20261119-RC1 --local_dir ./tinybrain-small
-python -m pip install ./tinybrain-small/tinybrain-0.1.0-py3-none-any.whl safetensors
-tinybrain chat ./tinybrain-small --device auto
+git clone https://github.com/logitcai/tinybrain && cd tinybrain
+pip install -e ".[artifact]"           # 推理只要 torch、sentencepiece、numpy、safetensors
+pip install modelscope
+modelscope download --model caiwangzsnm/TinyBrain-Medium-Chat-20261119-RC1 --local_dir tinybrain-medium
+tinybrain chat tinybrain-medium        # 命令行对话；加 --demo 把内置的问题问一遍
+tinybrain serve tinybrain-medium       # 聊天网页和 OpenAI 兼容接口，启动后会打印网址
 ```
 
-Medium 的模型页提供对应命令。想从头训练，可以从下面的[快速开始](#快速开始)进入。
+small 把命令里的 Medium 换成 Small。在 Python 里怎么用、发布包里有什么，见[推理](#用发布的-safetensors)。不想克隆代码的话，模型目录里带了运行时的安装包：`pip install tinybrain-medium/tinybrain-0.1.0-py3-none-any.whl safetensors`。
 
-11 月 16 日的预训练记录中，Medium 在约 61 亿 token 时验证损失为 2.50，Small 在约 74 亿 token 时为 2.76。
+medium 预训练到约 181 亿 token 时切到退火，那时训练损失约 2.37。
 
 ---
 
@@ -536,7 +547,7 @@ X_0 = U / \lVert U \rVert,\qquad A = X X^\top,\qquad X \leftarrow aX + (bA + cA^
 | 记忆表（不做权重衰减） | 0.3 | `--engram-lr` |
 | 归一化系数、多流残差系数、流入口出口的查询 | 0.01 | `--scalar-lr` |
 
-这些都是起步值，还没在我们的数据上调过。
+这些都是起步值，还没在我们的数据上调过。Muon 管的矩阵另外带解耦的权重衰减，默认 0.1（`--weight-decay`）：每步先乘 1 − 学习率 × 0.1 再加更新；退火分支沿用主线存档里的值。
 
 ### 学习率曲线
 
@@ -760,6 +771,44 @@ tinybrain serve out/small/rl/ckpt.pt --port 8001  # 聊天网页，以及 OpenAI
 
 CUDA 上生成走静态缓存：键值缓存按最大长度预先分配，每一步原地写入，形状完全固定，整步用 `torch.compile(mode="reduce-overhead")` 录成 CUDA graph（gpt-fast 的做法）。CPU、MPS 上走普通的带缓存生成，两条路径结果一样（有测试对照）。
 
+### 用发布的 safetensors
+
+发布包是一个目录：
+
+| 文件 | 内容 |
+|---|---|
+| `model.safetensors` | 模型参数（FP32），不带优化器状态。Engram 的哈希乘数等整数缓冲按原来的整数类型保存 |
+| `config.json` | 模型结构：层数、宽度、注意力、Engram…… |
+| `tokenizer.model` | 分词器 |
+| `generation_config.json` | 默认采样参数和结束符 |
+| `artifact.json` | 每个文件的大小和 SHA-256，导出时的阶段、步数和校验结果 |
+
+`chat`、`serve`、`generate`、`eval` 的存档参数都可以直接写这个目录。读的时候先按 `artifact.json` 核对每个文件的大小和校验和，对不上就报错；safetensors 不经过 pickle，读文件不会执行里面的代码。
+
+在 Python 里用：
+
+```python
+import torch
+from inference import ChatFormat, Tokenizer
+from inference.chat import reply
+from training.trainer_utils import load_model, pick_device
+
+path = "tinybrain-medium"                                    # 下载下来的目录
+model = load_model(path, pick_device("auto")).eval()         # 读 safetensors，并核对校验和
+fmt = ChatFormat(Tokenizer(f"{path}/tokenizer.model"))
+messages = [{"role": "user", "content": "用一段话解释什么是机器学习。"}]
+text, _ = reply(model, fmt, messages, temperature=0.8, top_k=50)
+print(text)
+```
+
+把自己训的存档导出成这样的发布包：
+
+```bash
+tinybrain export --checkpoint out/medium/rl/ckpt.pt --out release/my-medium --stage rl
+```
+
+导出时逐个张量和原存档比对，再在同一段输入上比较两边的输出，完全一致才写出目录；目标目录已经存在就不覆盖。
+
 ---
 
 ## 演示结果
@@ -798,6 +847,8 @@ CUDA 上生成走静态缓存：键值缓存按最大长度预先分配，每一
 ## 许可证
 
 代码以 [MIT 许可证](LICENSE) 发布。数据集没有统一的许可证，每篇文档按所属来源的许可证，见[许可](#许可)。
+
+**发布的权重**：训练数据里有 OpenCSG 的 Fineweb-Edu-Chinese（预训练、退火）和 smoltalk-chinese（SFT、退火）。OpenCSG 的数据卡要求，用这些数据训练的模型用在商业场景之前，要先向 OpenCSG 申请许可。所以权重可以拿来研究、学习、自己玩；要商用，请先联系 OpenCSG。另外，SFT 里有一部分回答是 GPT、DeepSeek、Qwen 等模型生成的，每个来源见 `dataset/sources.py`。
 
 ---
 

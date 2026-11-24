@@ -66,6 +66,7 @@ Standard setup for Google's Antigravity CLI (`agy`):
 | noname mode | `agy` flag |
 |---|---|
 | default | none: shell commands are asked |
+| accept edits | `--mode accept-edits` |
 | plan | `--mode plan` |
 | auto | `--mode accept-edits` |
 | bypass | `--dangerously-skip-permissions` |
@@ -88,7 +89,7 @@ Other flags go straight to `claude`.
 | `shift+enter` | new line | `/theme` | color theme |
 | `esc` | stop | `/background` | animated background |
 | `esc esc` | rewind | `/default-permission` | starting mode |
-| `shift+tab` | cycle mode | `/resume` | older sessions |
+| `shift+tab` | cycle mode (manual, accept edits, plan, auto) | `/resume` | older sessions |
 | `ctrl+o` | details | `/btw` | side question |
 | `→` | accept suggestion | `/model` | cycle models |
 | `ctrl+v` | paste image | | |
@@ -110,6 +111,10 @@ Every Claude Code command and skill works as usual, except Claude Code's own `/v
 `/voice whisper` or `/voice parakeet` picks a speech model and downloads it once, together with [whisper.cpp](https://github.com/ggml-org/whisper.cpp) (checked against pinned sha-256 sums, kept in `~/.local/share/noname/voice`, `%LOCALAPPDATA%\noname\voice` on Windows). After that `/voice` starts recording; `enter` puts the text in the input box, `esc` cancels. Everything runs on your machine. Whisper base is 148 MB and knows many languages; Parakeet TDT 0.6B v3 is 356 MB, 25 European languages, and more accurate. Linux needs `pw-record`, `parecord` or `arecord`; macOS is not supported yet (whisper.cpp publishes no macOS build).
 
 Don't need it? Build with `cargo build --release --no-default-features` and the voice code is left out of the program entirely.
+
+### Session files on /clear
+
+Claude Code keeps every session on disk (transcript, tool results, file history, plans). In `/noname`, **session files on /clear** decides what happens to them when `/clear` starts a new session: `off` (the default, Claude keeps them), `move` or `delete`. With `move` they go to one dated folder per session inside the **move folder** (pick that row, or type `/clear-folder <path>`), in the same layout as under `~/.claude`, so a session can be copied back. A moved or deleted session no longer shows up in `/resume`. Your memory and other sessions are never touched.
 
 ### Custom themes
 

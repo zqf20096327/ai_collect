@@ -1,4 +1,4 @@
-# Manjusaka - 牛屎虾
+# Manjusaka - 牛屎花
 
 
 <div align="center">
@@ -20,7 +20,7 @@
 </div>
 
 
-## 牛屎虾
+## 牛屎花
 
 https://github.com/ydhcui/manjusaka
 

@@ -36,15 +36,18 @@ Requires **GNOME Shell 47–51** (developed and tested on 50; please
 elsewhere). It is distributed only through GitHub releases, not
 extensions.gnome.org.
 
-1. Download `ai-usagebar@wilfison.shell-extension.zip` from the
-   [latest release](https://github.com/wilfison/ai-usagebar/releases/latest).
-2. Install it:
+1. Download the [latest release](https://github.com/wilfison/ai-usagebar/releases/latest),
+   check its SHA256 and install it:
 
    ```bash
+   cd /tmp
+   curl -fsSLO https://github.com/wilfison/ai-usagebar/releases/latest/download/ai-usagebar@wilfison.shell-extension.zip
+   curl -fsSLO https://github.com/wilfison/ai-usagebar/releases/latest/download/ai-usagebar@wilfison.shell-extension.zip.sha256
+   sha256sum -c ai-usagebar@wilfison.shell-extension.zip.sha256
    gnome-extensions install --force ai-usagebar@wilfison.shell-extension.zip
    ```
 
-3. Log out and back in (required on Wayland), then enable it:
+2. Log out and back in (required on Wayland), then enable it:
 
    ```bash
    gnome-extensions enable ai-usagebar@wilfison
@@ -57,7 +60,8 @@ Open preferences with the gear button in the popup footer, or
 
 - **General**: *Panel* (position, label format, pace arrows and the vendors pinned to the panel), *Popup* (extra rows, pace
   marker, the `Super+U` shortcut), *Display* (primary vendor, vendor logos,
-  severity colors) and *Behavior* (refresh interval, notifications, update check, reset all).
+  severity colors) and *Behavior* (refresh interval, notifications, update check, provider
+  status, reset all).
 - **Vendors**: one page per vendor: enable it and set its credentials.
 
 ![The preferences window with its sidebar](https://raw.githubusercontent.com/wilfison/ai-usagebar/main/screenshots/preferences.png)
@@ -182,6 +186,12 @@ instead of a raw token count.
 - **Updates.** Once a day the extension asks GitHub for the latest release; when
   it is newer than the installed one, a link to it appears at the bottom of the
   popup. Turn it off under *Behavior*.
+- **Provider status.** While the official status page of Claude
+  (`status.claude.com`) or Codex (`status.openai.com`) flags one of that
+  provider's own components, its name in the popup takes the page's colour
+  (yellow degraded, orange partial outage, red major outage, blue maintenance)
+  with a `▲`, and the card opens with the incident title. Turn it off under
+  *Behavior*.
 
 ## Privacy
 
@@ -189,7 +199,9 @@ instead of a raw token count.
   HTTPS (the custom provider may use plain HTTP if you allow it). A redirect to
   another origin is never followed.
 - No telemetry, no analytics, no third parties. The daily update check is one
-  unauthenticated request to `api.github.com`, and it can be turned off.
+  unauthenticated request to `api.github.com`, and the provider status is one
+  unauthenticated request to the Claude or OpenAI status page at most every 5
+  minutes; both can be turned off.
 - Only the figures shown in the popup are cached, under
   `~/.cache/ai-usagebar/`; credentials are never copied or logged, and refreshed
   OAuth tokens are written back only to the file they came from.

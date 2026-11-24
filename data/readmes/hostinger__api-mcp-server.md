@@ -78,15 +78,15 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (423 total)
+- `hostinger-api-mcp` — unified server over every operation (427 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
 - `hostinger-dns-mcp` — 10 operations for dns
 - `hostinger-domains-mcp` — 43 operations for domains
-- `hostinger-ecommerce-mcp` — 30 operations for ecommerce
+- `hostinger-ecommerce-mcp` — 33 operations for ecommerce
 - `hostinger-gpu-mcp` — 13 operations for gpu
-- `hostinger-horizons-mcp` — 7 operations for horizons
+- `hostinger-horizons-mcp` — 8 operations for horizons
 - `hostinger-hosting-mcp` — 59 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
 - `hostinger-reach-mcp` — 73 operations for reach
@@ -1847,6 +1847,27 @@ store currency. Returns the created variant.
 - **Method**: `POST`
 - **Path**: `/api/ecommerce/v1/stores/{store_id}/products/{product_id}/variants`
 
+#### ecommerce_webhooks_get
+
+Get a subscription owned by your store, without signing secrets.
+
+- **Method**: `GET`
+- **Path**: `/api/ecommerce/v1/stores/{store_id}/webhooks/{endpoint_id}`
+
+#### ecommerce_webhooks_delete
+
+Delete a subscription owned by your store, retaining delivery audit records.
+
+- **Method**: `DELETE`
+- **Path**: `/api/ecommerce/v1/stores/{store_id}/webhooks/{endpoint_id}`
+
+#### ecommerce_webhooks_list
+
+List your store's subscriptions for external automation systems, without signing secrets.
+
+- **Method**: `GET`
+- **Path**: `/api/ecommerce/v1/stores/{store_id}/webhooks`
+
 ### `hostinger-gpu-mcp`
 
 #### changelog_list-entries
@@ -2035,8 +2056,10 @@ The complete list of websites is returned in a single response - it is not pagin
 Create new Hostinger AI Builder website from the given message.\n
 Use this tool when user asks you to create a website, landing page, blog
 or any other type of application.\n
-This tool initiates the website creation process and returns a website URL and ID.
-The generation happens asynchronously.\n
+This tool initiates the website creation process and returns a website URL, ID and build `task`.
+The generation happens asynchronously. To learn whether it succeeded, poll the
+`Get website build task` tool with `task.id`; `is_generating` turning false on `Get website`
+happens whether the build completed or failed.\n
 After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
 that Hostinger AI Builder is now creating their website and it will be ready in a few minutes
 and you should provide the website URL to the user immediately
@@ -2075,8 +2098,10 @@ MAPS:\n
 
 Edit an existing Hostinger AI Builder website with a follow-up message.\n
 Use this tool when the user wants to change, extend or fix a website that already exists.\n
-This tool queues the requested changes and returns the website URL and ID.
-The changes are applied asynchronously.\n
+This tool queues the requested changes and returns the website URL, ID and build `task`.
+The changes are applied asynchronously. To learn whether they were applied, poll the
+`Get website build task` tool with `task.id`; `is_generating` turning false on `Get website`
+happens whether the build completed or failed.\n
 After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
 that Hostinger AI Builder is now applying the requested changes and they will be ready
 in a few minutes, and you should provide the website URL to the user immediately.
@@ -2091,6 +2116,9 @@ and do not generate code yourself in the chat.
 
 Publish a Hostinger AI Builder website so its latest changes go live.\n
 Use this tool when the user asks to publish, deploy or make their website live.\n
+If you created or edited the website in this conversation, first check its build with the
+`Get website build task` tool and publish only when its `state` is `TASK_STATE_COMPLETED`.
+After a failed build, tell the user instead of publishing.\n
 This tool starts the publish process and returns the URL the website will be live on.
 Publishing happens asynchronously and takes a few minutes.\n
 Set `is_template` only when the user explicitly asks to share the website as a template:
@@ -2110,6 +2138,8 @@ website URL before or after editing it.\n
 `is_in_progress` is true while changes are being generated or the website is being published;
 wait until it is false before publishing. `is_generating` is true while changes are being generated,
 and `actions_in_progress` has `website_publish` while the website is being published.
+`is_generating` turns false whether the build completed or failed: use the `Get website build task`
+tool to learn its outcome.
 `published_at` is when the website was last published,
 `is_template` is whether its published pages show the "Use template" banner, and
 `has_ecommerce_store` is whether it has an online store.\n
@@ -2118,6 +2148,22 @@ interface in the provided website URL.
 
 - **Method**: `GET`
 - **Path**: `/api/horizons/v1/websites/{websiteId}`
+
+#### horizons_websites_build-task
+
+Get the state and outcome of a website build started by the `Create website` or `Edit website` tool.\n
+Use this tool with the `task.id` those tools return to find out whether the build completed or failed.
+Poll it every 30 seconds or so while `state` is `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING`.\n
+When `state` is `TASK_STATE_FAILED` or `TASK_STATE_REJECTED`, the website does not contain the requested
+changes: tell the user, using `message` and `reason_code`, and do not publish it.
+When `state` is `TASK_STATE_CANCELED`, the user stopped the build and changes made before that may be kept:
+publish only if the user asks to.
+`reason_code` `insufficient_credits` means the user must get more credits before building again.\n
+When `state` is `TASK_STATE_COMPLETED`, the website can be published. A `reason_code` of
+`iteration_limit` on a completed build means it stopped early and kept the work done so far.
+
+- **Method**: `GET`
+- **Path**: `/api/horizons/v1/websites/{websiteId}/tasks/{taskId}`
 
 ### `hostinger-hosting-mcp`
 
@@ -2315,54 +2361,4 @@ The database name must be the full name returned by the list databases endpoint.
 #### hosting_databases_setup-website
 
 Creates a new MySQL database for the website and writes its connection details into the
-website's environment variables, then restarts the application. The platform generates the
-password (and the database name and user, unless supplied). The password is never returned;
-the application reads it from the environment.
-
-Written variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` and
-`DATABASE_URL` (`mysql://user:password@host:port/name`, user and password percent-encoded).
-Existing variables are kept. If the website already has any variable with one of these
-names the call fails with 422 and nothing is created; the `Replace Node.js environment
-variables` endpoint removes them.
-
-After this call the variables are ordinary environment variables: the
-`Replace Node.js environment variables` endpoint changes or removes them like any other.
-
-A restart is enough for apps that read environment variables at process start, such as
-Express or NestJS. Frameworks that bake variables into the build output (Next.js,
-`NEXT_PUBLIC_*`) see the new values only after a fresh build (`Start Node.js build` endpoint).
-
-A password in the request is ignored; the platform always generates it. The optional `name`
-and `user` are identifiers, not secrets.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/databases/setup`
-
-#### hosting_databases_phpmyadmin-link
-
-Returns a direct sign-on link to phpMyAdmin for the specified database.
-
-Use this when a visual database interface is needed for SQL queries, imports, exports, or table management.
-The database name must be the full name returned by the list databases endpoint.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/databases/{name}/phpmyadmin-link`
-
-#### hosting_datacenters_list
-
-Retrieve a list of datacenters available for setting up hosting plans
-based on available datacenter capacity and hosting plan of your order.
-The first item in the list is the best match for your specific order
-requirements.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/datacenters`
-
-#### hosting_domains_verify-ownership
-
-Verify ownership of a single domain and return the verification status.
-
-Use this endpoint to check if a domain is accessible for you before using it for new websites.
-If the domain is accessible, the response will have `is_accessible: true`.
-If not, add the given TXT record to your domain's DNS records and try verifying again.
-Keep in mind that it may take up to 10 m
+website's enviro

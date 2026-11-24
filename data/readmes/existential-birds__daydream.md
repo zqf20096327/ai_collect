@@ -6,8 +6,8 @@
 Set up https://github.com/existential-birds/daydream for this repository.
 Read its README and CLI help, install Daydream with uv and Python 3.14+,
 and help me authenticate a supported backend (Claude by default, or Codex
-or Pi). Run a report-only review with --review against the intended
-base branch. Show me the findings and where the run evidence was saved.
+or Pi). Run a report-only review with --review against the
+intended base branch. Show me the findings and where the run evidence was saved.
 ```
 
 Daydream reviews code changes, can fix findings and run tests, and records local
@@ -20,8 +20,8 @@ Its review quality is measured in public on AACR-Bench and ReviewBench in
 ## Quick start
 
 Requires [uv](https://docs.astral.sh/uv/), Python 3.14+, and an authenticated
-[Claude Code](https://claude.ai/code) CLI (default backend), or Codex or Pi. Osprey
-cannot run a review.
+[Claude Code](https://claude.ai/code) CLI (default backend), or Codex or Pi.
+Osprey cannot run a review.
 PR comments also require authenticated [gh](https://cli.github.com/).
 
 ```bash

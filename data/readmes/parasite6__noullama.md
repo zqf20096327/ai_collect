@@ -11,21 +11,13 @@
 
 ## Quick start
 
-Install the Linux x86-64 package for your distribution from the [v0.4.1 release](https://github.com/parasite6/noullama/releases/tag/v0.4.1):
+Install the latest release on Linux x86-64:
 
-
-## Debian / Ubuntu
 ```sh
-curl -fLO https://github.com/parasite6/noullama/releases/download/v0.4.1/noullama_0.4.1_amd64.deb
-sudo apt install ./noullama_0.4.1_amd64.deb
-```
-## Fedora / RPM-based distributions
-```sh
-curl -fLO https://github.com/parasite6/noullama/releases/download/v0.4.1/noullama-0.4.1-1.x86_64.rpm
-sudo dnf install ./noullama-0.4.1-1.x86_64.rpm
+curl -fsSL https://noullama.dev/install.sh | sh
 ```
 
-These URLs are pinned to v0.4.1. Installed packages can check for later releases through **Updates**.
+The script downloads the .deb or .rpm for your package manager (apt, dnf or zypper) from the [latest release](https://github.com/parasite6/noullama/releases/latest), checks it against the SHA-256 GitHub publishes, and installs it with sudo. To install a package by hand, see the [download page](https://noullama.dev/download/). Installed packages can check for later releases through **Updates**.
 
 In the app: **Hub** → download a GGUF, or **Models → Browse file** → **Runtime** → choose or download a compatible llama.cpp build → **Load model** → **Playground**.
 
@@ -155,7 +147,7 @@ Set an absolute **Model download directory** under Models to choose where new do
 The app-data `models.yml` holds one entry per model: its API **name**, **aliases**, file **path**, Hugging Face **account**, **sha256**, and optional **MTP head** and **projector**, each with its own sha256. Discovered models are registered automatically. Companion files do not get separate model entries.
 
 ```yaml
-version: 1
+version: 2
 models:
 - name: d1-3B-Q8_0
   aliases:
@@ -340,3 +332,4 @@ Noullama is in early beta:
 ## License
 
 Noullama is free software, licensed under the [GNU Affero General Public License v3.0 only](LICENSE) (`AGPL-3.0-only`). Copyright (C) 2026 parasite6.
+Code is AGPL-3.0. The Noullama name and logos are not covered; see TRADEMARK.md.

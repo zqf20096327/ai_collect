@@ -15,7 +15,7 @@ Claude writes the task and acceptance criteria. Gemini implements it in the back
 
 ```text
 You ─▶ Claude Code            plans, writes the task file, verifies with your tests
-         └─▶ baton:ajan-yonetici   optional Sonnet subagent that runs the whole loop
+         └─▶ gemini-baton:ajan-yonetici   optional Sonnet subagent that runs the whole loop
                └─▶ baton CLI ─▶ agy ─▶ Gemini   implements in the background
 ```
 
@@ -38,11 +38,11 @@ Individual measurements from development sessions on this repository:
 |---|---|---|
 | Automatic model catalog feature (model: neon) | ~420k tokens, 716 s | ~48k tokens (Sonnet manager subagent) |
 | Orchestrator mode feature (`--orkestra`) | ~459k tokens, 485 s | ~56k tokens (Sonnet manager subagent) |
-| End-to-end small fix via `/baton:devret` (model: hydrogen) | ~40k tokens, 36 s | not measured |
+| End-to-end small fix via `/gemini-baton:devret` (model: hydrogen) | ~40k tokens, 36 s | not measured |
 | Demo above (slugify fix) | 41,611 tokens, 75.2 s | not measured |
 
 - These are individual measurements from this project's own development sessions, not a benchmark; every task is different. The Gemini column is `baton durum` tokens (input + output; cache reads are not included).
-- "Claude side" is the reported total token count of the `baton:ajan-yonetici` Sonnet subagent (writing the task, waiting, checking). The main session only sees a short result; the main session's own tokens are not in this table. The Claude side was not measured for the last two rows.
+- "Claude side" is the reported total token count of the `gemini-baton:ajan-yonetici` Sonnet subagent (writing the task, waiting, checking). The main session only sees a short result; the main session's own tokens are not in this table. The Claude side was not measured for the last two rows.
 - Simple math: in the first two tasks, about 10–11% of the combined tokens were on the Claude side and about 89–90% on Gemini (48/(420+48) ≈10.3%; 56/(459+56) ≈10.9%). Tokens are not the same price or quota unit across the two providers; this is not a "money saved" claim, just an indication of where the work shifts.
 
 ## Requirements
@@ -56,14 +56,13 @@ Individual measurements from development sessions on this repository:
 
 ```bash
 claude plugin marketplace add HSGunes/gemini-baton-for-claude-code
-claude plugin install baton@gemini-baton
-mkdir -p ~/.local/bin
-ln -sfn "$(ls -d ~/.claude/plugins/cache/gemini-baton/baton/* | sort -V | tail -1)/bin/baton" ~/.local/bin/baton
+claude plugin install gemini-baton@gemini-baton
+pipx install git+https://github.com/HSGunes/gemini-baton-for-claude-code
 export AJAN_DIL=en        # English messages (default: Turkish)
 baton --help
 ```
 
-The `ln` step is needed because Claude Code does not put a plugin's `bin/` on `PATH`. If `~/.local/bin` is not on your `PATH`, add it.
+The plugin itself is Markdown only (skill, command, subagent in `plugins/gemini-baton/`); the `baton` CLI is installed separately with [pipx](https://pipx.pypa.io/stable/installation/). If `~/.local/bin` is not on your `PATH`, run `pipx ensurepath`.
 
 Then allow Gemini to write inside your project, once per project (it backs up agy's `settings.json` first):
 
@@ -75,10 +74,10 @@ baton perms check --write "$PWD" --add-perms
 Without this rule the subagent stops with `İZİN GEREKLİ` (permission needed) and tells you the exact rule to add; it never grants permissions on its own. Restart Claude Code, then ask:
 
 ```text
-/baton:devret Add input validation to src/parser.py so empty strings raise ValueError; verify with: python3 -m pytest tests/test_parser.py
+/gemini-baton:devret Add input validation to src/parser.py so empty strings raise ValueError; verify with: python3 -m pytest tests/test_parser.py
 ```
 
-Claude hands the task to the `baton:ajan-yonetici` subagent. The subagent writes a task file, starts Gemini, waits, runs the test command itself and returns one of `BAŞARILI` (passed), `BAŞARISIZ` (failed) or `İZİN GEREKLİ` (permission needed), together with the changed files and the test output.
+Claude hands the task to the `gemini-baton:ajan-yonetici` subagent. The subagent writes a task file, starts Gemini, waits, runs the test command itself and returns one of `BAŞARILI` (passed), `BAŞARISIZ` (failed) or `İZİN GEREKLİ` (permission needed), together with the changed files and the test output.
 
 ## Usage
 
@@ -86,7 +85,7 @@ Claude hands the task to the `baton:ajan-yonetici` subagent. The subagent writes
 
 | What you do | What happens |
 |---|---|
-| `/baton:devret <task>` | The subagent runs the full loop and returns a short, evidence-backed result. |
+| `/gemini-baton:devret <task>` | The subagent runs the full loop and returns a short, evidence-backed result. |
 | Ask Claude to "give this to Gemini" | The `ajan` skill triggers and Claude drives the loop itself. |
 | Ask for several independent tasks | Claude starts them in parallel. The skill tells Claude not to run tasks that touch the same files at the same time. |
 
@@ -182,6 +181,7 @@ git clone https://github.com/HSGunes/gemini-baton-for-claude-code.git
 cd gemini-baton-for-claude-code
 python3 -m pytest                    # fake agy; never calls the real CLI
 claude plugin validate --strict .
+claude plugin validate --strict plugins/gemini-baton
 ln -sfn "$PWD/bin/baton" ~/.local/bin/baton   # use your clone directly
 ```
 

@@ -259,6 +259,14 @@ flowchart LR
 Commands, parameters and full results for every stage are in [docs/stages.md](docs/stages.md),
 including the 10 places where the simulation, training or evaluation differs from the paper.
 
+## Extension: CUDA kernels
+
+[comllm-cuda-kernels](https://github.com/Baro7ue/comllm-cuda-kernels) is a separate repository of
+learning notes that follows on from the latency results here. It measures, operator by operator, where
+the 0.5B student's decision time goes on the Jetson, and hand-writes CUDA kernels for the most expensive
+one, the feed-forward matrix multiply. It is work in progress: no kernel there is faster than llama.cpp
+yet, and none is used by this scheduler.
+
 ## Repository layout
 
 | Path | What |

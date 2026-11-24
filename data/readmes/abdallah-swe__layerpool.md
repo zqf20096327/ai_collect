@@ -11,9 +11,13 @@
 
 One model, split by layers across all your machines. Their memory is pooled, and they train it as one.
 
-[![PyPI](https://img.shields.io/pypi/v/layerpool.svg)](https://pypi.org/project/layerpool/) [![Python](https://img.shields.io/pypi/pyversions/layerpool.svg)](https://pypi.org/project/layerpool/) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/abdallah-swe/layerpool/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/layerpool.svg?v=1)](https://pypi.org/project/layerpool/) [![Python](https://img.shields.io/pypi/pyversions/layerpool.svg?v=1)](https://pypi.org/project/layerpool/) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/abdallah-swe/layerpool/blob/main/LICENSE)
 
 </div>
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/abdallah-swe/layerpool/main/docs/demo.webp" width="75%" alt="A model too big to train on any single machine is split by its layers across a gaming PC, a desktop, a laptop and a cloud GPU, and they train it together. When the laptop drops out, the others take over its layers.">
+</p>
 
 <div align="center">
 

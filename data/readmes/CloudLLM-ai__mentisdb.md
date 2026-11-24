@@ -995,6 +995,7 @@ REST endpoints:
 - `POST /v1/search`
 - `POST /v1/lexical-search`
 - `POST /v1/ranked-search`
+- `POST /v1/probe`
 - `POST /v1/context-bundles`
 - `POST /v1/recent-context`
 - `POST /v1/standing-context`
@@ -1383,6 +1384,23 @@ Product rule:
 
 The ranked-search benchmark `benches/search_ranked.rs` and evaluation tests in `tests/search_ranked_eval_tests.rs` are the guardrails for that additive surface.
 
+### Multi-hop recall
+
+Some questions are answered by no single memory: "what retry crate did the agent who fixed the WAL bug recommend?" needs the memory about the WAL fix (which names the agent) and the memory about retries (which names the crate). One ranked search for the whole question tends to return neither on top. `mentisdb_probe` (REST `POST /v1/probe`, CLI `mentisdb search probe`, library `MentisDb::query_probes`) runs the protocol that works better:
+
+1. **Ground.** The agent splits the question into short sub-questions, one clue each, and passes them as `probes` (1 to 8, at most 1,000 bytes each). Each runs as a ranked search with the request's shared filters, graph and ranking knobs; `limit` is hits **per probe** (default 5, at most 25). `text` and `offset` are refused.
+2. **Identify.** The response's `entities` are labels shared by hits of different probes: concepts, tags, entity types, and identifier-like words in the content (`snake_case`, `CamelCase`, `path/file.rs`, `a::b`, or a capitalized name that does not start a sentence). They are ordered by how many probes reached them, then by fused reciprocal rank. A label carried by 80% or more of the hits (a project-wide tag) does not discriminate and is left out.
+3. **Answer.** The agent ranked-searches the top entity (`concepts_any`, `tags_any`, or its name in `text`) and answers from those hits. When nothing converges, it rephrases the clues rather than repeating them.
+
+```json
+POST /v1/probe
+{"chain_key": "project", "probes": ["who fixed the WAL bug", "retry crate recommendation"], "limit": 5}
+```
+
+The response holds `probes` (each probe's `text`, `intent` signals such as `temporal`, `agent` or `causal`, `total` candidates and hit ids), `results` (each distinct thought once, with its fused `score`, the `probes` that reached it and the thought; those reached by more probes come first) and `entities` (`label`, `kind`, `probes`, up to 5 supporting `thought_ids`, `score`). `compact` works as on ranked search and is on by default over MCP.
+
+The protocol comes from *MeMo: Memory as a Model* (arXiv 2605.15156): on BrowseComp-Plus, structured grounding, entity identification and answer seeking scored 54.2 against 32.6 for one query and 48.7 for 50 unstructured follow-up turns.
+
 ### Compact search results
 
 Ranked and federated search accept an opt-in `compact: true`. It cuts the tokens an agent spends reading results without removing any field the agent reasons with. The default response is unchanged. It is available on MCP (`mentisdb_ranked_search`, `mentisdb_federated_search`), REST (`POST /v1/ranked-search`, `POST /v1/federated-search`) and the CLI (`mentisdb search --compact`, `mentisdb search federated --compact`). It has no effect on `mentisdb_context_bundles` and `POST /v1/context-bundles`, which still return full thoughts.
@@ -1479,7 +1497,7 @@ Measured on a copy of a working MentisDB with 11 chains (12 ranked, graph and fe
 Agents read MCP tool results with their context window, so the streamable-HTTP MCP surface (JSON-RPC `tools/call`) is leaner than REST:
 
 - Results are **minified JSON text**, with no indentation and no second `structuredContent` copy of the same object. (No tool declares an `outputSchema`, so clients read the text.) REST and `POST /tools/execute` still return the object.
-- `mentisdb_ranked_search`, `mentisdb_federated_search`, `mentisdb_lexical_search` and `mentisdb_context_bundles` are **compact by default**; pass `"compact": false` for the full record. A lean thought leaves out what is default, so an absent field means its default: no `provenance` is a public, unsigned thought (a private segment, a signature or a `verified_agent` is always listed), no `role` is `Memory`, no `importance` is `0.5`, no `chain_key` is the chain you searched. Floats are rounded, timestamps keep full precision (so they round-trip through `as_of` and `since`), `successor_of` is an older version that matched the query and that the hit replaces, with a `superseded_versions` count that is a lower bound (not the whole lineage), and `version_status`, `successors` and `current_version` still say when a memory is contested or superseded.
+- `mentisdb_ranked_search`, `mentisdb_probe`, `mentisdb_federated_search`, `mentisdb_lexical_search` and `mentisdb_context_bundles` are **compact by default**; pass `"compact": false` for the full record. A lean thought leaves out what is default, so an absent field means its default: no `provenance` is a public, unsigned thought (a private segment, a signature or a `verified_agent` is always listed), no `role` is `Memory`, no `importance` is `0.5`, no `chain_key` is the chain you searched. Floats are rounded, timestamps keep full precision (so they round-trip through `as_of` and `since`), `successor_of` is an older version that matched the query and that the hit replaces, with a `superseded_versions` count that is a lower bound (not the whole lineage), and `version_status`, `successors` and `current_version` still say when a memory is contested or superseded.
 - `mentisdb_standing_context` returns the rendered `prompt` once. Its `entries` array repeats the same memories, so it needs `include_entries: true`.
 
 Measured with `cargo run --release --example token_diet` (a generated 3,500-thought chain with superseded lineages and weak-link corrections, 10 hits, characters of the text the model reads):
@@ -1863,37 +1881,4 @@ the dashboard, whose certificate carries the name). It is a public DNS record th
 compromised registrar account) could serve a page and rebind the name to your loopback
 daemon, and a plain-HTTP listener would take the page for "same-origin". So the plain HTTP
 MCP and REST ports (`9471`, `9472`) answer `403` to `Host: my.mentisdb.com` unless you opt in
-with `MENTISDB_DASHBOARD_ALLOWED_HOSTS=my.mentisdb.com`. Use `https://my.mentisdb.com:9473`
-(MCP), `:9474` (REST) and `:9475` (dashboard), or `http://localhost:9471`.
-
-The domain owner can still hold the name safely: enable the registrar's transfer/registry
-lock and two-factor sign-in, and turn on DNSSEC for the zone. Keep bearer tokens
-(`MENTISDB_BEARER_TOKEN_ACCESS=true`) and the dashboard PIN on whenever the daemon holds
-data you care about: a rebinding page cannot present a token or the PIN.
-
-- **MCP on a loopback bind (the default)** refuses any other `Host` with `403`, for every
-  client, on `POST /`, the `GET /` event stream and the legacy `/tools/*` and
-  `/resources/*` routes. This is the DNS-rebinding defence of `cloudllm_mcp` 0.4, fed with
-  the list above so your configured names keep working (and `my.mentisdb.com` on the HTTPS
-  listener). A proxy that
-  forwards an unlisted `Host` gets `403 Forbidden host`: add the name to
-  `MENTISDB_DASHBOARD_ALLOWED_HOSTS`.
-- **MCP on a wildcard bind** (Docker, LAN) performs no `Host` check for non-browser
-  clients, which reach the daemon by service name or DHCP address.
-- **REST on a loopback bind (the default)** checks `Host` for every request, like MCP does:
-  `curl`, the CLI, agents and browsers alike get `403` (`host 'X' is not allowed; set
-  MENTISDB_DASHBOARD_ALLOWED_HOSTS ...`) unless the name is in the list. A request with no
-  `Host` header at all (HTTP/1.0, in-process) passes. **Reverse proxy note:** an nginx or
-  Caddy in front of a loopback daemon forwards the public name as `Host` by default; add
-  that name to `MENTISDB_DASHBOARD_ALLOWED_HOSTS` (or have the proxy send `Host:
-  127.0.0.1:9472`), or every proxied REST call is refused.
-- **REST on a wildcard bind, and MCP with bearer tokens off**, refuse a request from a
-  browser (it carries `Origin` or `Sec-Fetch-Site`) unless its `Host` and `Origin` host are
-  in the list. `curl`, the CLI and agents send neither header and are unaffected.
-- IPv6 entries match in canonical form (`2001:db8::7`, not `2001:0db8::7`).
-
-Dashboard API rules (0.10.9):
-
-- **Host allowlist (DNS-rebinding defence).** Every dashboard route, including `GET` pages
-  and `/dashboard/login`, rejects a request with `403` unless its `Host` header names this
-  daemon: `localhost`, `127.0.0.1`, `[::1]`, `my.mentisdb.com` (
+with `MENTISDB_DASHBOARD_ALLOWED

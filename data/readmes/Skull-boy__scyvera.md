@@ -137,7 +137,7 @@ One standard, three native implementations. Every one passes the same shared cor
 |---|---|---|---|
 | **Python** (reference) | `pip install scyvera` | `1.4.0` on PyPI | 33/33 |
 | **TypeScript** | `npm install @scyvera/scyvera-ts` | `0.1.1` on npm, OIDC + SLSA provenance | 33/33 |
-| **Rust** | `runtimes/rs` (source) | `0.1.0` built and CI-gated — **not published to crates.io yet** | 33/33 |
+| **Rust** | `cargo install scyvera-rs` | `0.1.1` on crates.io — OIDC trusted publishing, human-gated, attested `.crate` | 33/33 |
 
 `vectors/` is the acceptance corpus: `suite-version: 1`, 33 vectors across contract-model,
 gate-decision, and trace-roundtrip. A runtime that passes a subset is not conformant.
@@ -179,7 +179,11 @@ are there ([docs/mcp.md](./docs/mcp.md)).
   exact scored surface is asserted; it moves only through an RFC amendment.
 - **Signed installs**: `scyvera self-check` verifies 37 shipped files, and releases carry Sigstore
   build provenance plus a CycloneDX 1.5 SBOM.
-- **Same suite everywhere**: Windows, Linux, and macOS × Python 3.10–3.14, 15 CI cells.
+- **Same suite everywhere**: Linux and Windows on Python 3.10–3.14 gate every pull request (10
+  cells, `fail-fast: false`); macOS runs all five versions in a
+  [nightly job](.github/workflows/macos-nightly.yml). macOS is not on the merge gate because its
+  hosted runners were failing ~45% of the time (measured 2026-11-24) — a gate that random is not a
+  gate. The two sets together are still the full 15-cell matrix.
 
 ## Honest limits
 

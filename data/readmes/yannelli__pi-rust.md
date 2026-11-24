@@ -144,9 +144,16 @@ pi-rust ports the upstream `pi` CLI and its libraries. This section lists the di
   - Extension prompts that were waiting to start do not run. Upstream pi starts them.
 
   See [RPC mode](crates/pi-coding-agent/docs/rpc.md#abort).
+- In RPC mode, extension dialogs wait until the client sends a command other than a `get_*` query. `get_commands` answers while a `session_start` handler waits for a dialog. Upstream pi sends dialogs at once and reads no input until its `session_start` handlers finish. See [RPC mode](crates/pi-coding-agent/docs/rpc.md#extension-dialogs).
 - `grep` and `find` use the Rust `ignore` crate, so pi-rust does not download `rg` or `fd`.
 - The version check and `pi update --self` use the releases of this repository.
+- Newer models come from the catalog at `pi-rust.com` (`PI_CATALOG_URL` overrides it), which this repository generates from upstream's catalog generator at the upstream commit of the latest release. Upstream pi reads its catalog from `pi.dev`. See [Model catalog](docs/model-catalog.md).
 - `/bug` offers Upload Report, Open GitHub Issue, and Export as Zip. Upload Report sends the report privately to `pi-rust.com` (`PI_BUG_REPORT_URL` overrides it). Open GitHub Issue writes the zip archive and opens a public prefilled issue form on `yannelli/pi-rust`; you submit it and attach the zip yourself. Upstream pi uploads the report to its Radius gateway (`radius.pi.dev`).
+- Install telemetry is off unless you turn it on with the `enableInstallTelemetry` setting or `PI_TELEMETRY=1`. When it is on, pi-rust sends the anonymous install and update ping (version and `User-Agent` only) to `pi-rust.com` (`PI_TELEMETRY_URL` overrides it). Upstream pi turns install telemetry on by default and pings `pi.dev`. For the same reason, the extension SDK's `SettingsManager.getEnableInstallTelemetry()` returns `false` when the setting is not set. Upstream returns `true`.
+- `/share` can upload the session's HTML export to your pi-rust.com account. Set `sessionShareDestination` to `"pi-rust"`; if you are not signed in, the share first signs you in with a device code, and `/logout` signs you out. With `sessionShareViewer` set to `"pi-rust"`, gist links open on `pi-rust.com/session/` and `"auto"` uses the account first when you are signed in. By default both work as upstream pi: Radius or a gist, with gist links on `pi.dev`. `PI_SHARE_URL` replaces the `pi-rust.com` service origin. See [Settings](crates/pi-coding-agent/docs/settings.md#session-sharing).
+- Shares on a pi-rust.com account can expire (`sessionShareExpiry`) and can be private to you (`sessionShareVisibility`). On pi-rust.com you can rename, download, and delete them, and see their view counts. Upstream pi has no such options.
+- The first interactive `/share` asks where it sends sessions: pi.dev, as upstream pi does (Radius, or gists viewed on pi.dev), or a pi-rust.com account. pi.dev is the default, and nothing asks at startup. Upstream pi has no such question. See [Session sharing](crates/pi-coding-agent/docs/settings.md#session-sharing).
+- The `providerIdentity` setting chooses how model provider requests identify pi-rust. With `"pi"` (the default), the `User-Agent` is `pi/<version>` with the upstream pi version that pi-rust has parity with, and attribution headers name pi and `pi.dev`. With `"pi-rust"`, the `User-Agent` is `pi-rust/<pi-rust version>`, and attribution headers name pi-rust and `pi-rust.com`. Attribution headers are sent only while install telemetry is on. Upstream pi always reports its own version. See [Settings](crates/pi-coding-agent/docs/settings.md#provider-identity).
 - Word movement in Chinese, Japanese, Korean (CJK), and Thai text uses ICU4X dictionaries, so some word boundaries differ from `Intl.Segmenter` in Node.
 - `pi-env` looks for remote daemons in a `pi-env-daemons` folder next to the `pi` program. Each release has a `pi-env-daemons-<tag>.tar.gz` archive with the daemons for Linux, Android (Termux), macOS, and Windows on x86-64 and arm64. Extract this archive in the folder that contains `pi`.
 - `pi experimental` and its commands `server`, `client`, `durable`, and `vacation` need `PI_EXPERIMENTAL=1`, as in upstream pi. `server` and `client` use Unix sockets. On Windows, they show a message that they need Unix. Upstream pi also has no Windows transport.
@@ -170,6 +177,7 @@ pi-rust ports the upstream `pi` CLI and its libraries. This section lists the di
 
   See [Settings](crates/pi-coding-agent/docs/settings.md#git-worktrees).
 - Extension and login `select` menus show at most 10 options, with a `(n/total)` counter, so the selected option stays visible. Short terminals show fewer options. Upstream pi shows all options.
+- An MCP server name in `mcp.json` or `pi.registerMcpServer` can have any characters except control characters and spaces at either end, for example `"Google Drive"` from a Claude Code plugin. In tool names and the server namespace, each character other than an ASCII letter, an ASCII digit, or `_` changes to one `_` for each UTF-16 unit (`😀` gives `__`), so `Google Drive` gives `mcp__Google_Drive`. pi rejects a server whose name gives the same namespace as an earlier server. `/mcp login`, `/mcp logout`, and `/mcp reconnect` use the rest of the line as the server name. Upstream pi accepts only letters, digits, `_`, and `-` in server names.
 
 ### Additions
 
@@ -203,6 +211,7 @@ pi-rust ports the upstream `pi` CLI and its libraries. This section lists the di
 | A terminal notification when a run takes 10 seconds or more | Has this only as the example extension `notify.ts` | [Notifications](crates/pi-coding-agent/docs/terminal.md#notifications) |
 | The status line and `/statusline`, as the `marketplace:statusline` extension | Changes the footer only through extensions | [Status line](crates/pi-coding-agent/docs/status-line.md) |
 | More harness themes | | [Themes](crates/pi-coding-agent/docs/terminal.md#themes) |
+| Mermaid `gantt` charts and `gitGraph` diagrams render as terminal art. Git graphs are always drawn top to bottom (`BT` flips them). | Shows these diagrams as source | |
 | The iTerm2 integration and `/terminal-setup`, as the `marketplace:iterm2` extension | | [iTerm2 integration](crates/pi-coding-agent/docs/terminal.md#iterm2-integration) |
 | The extension UI call `ctx.ui.writeTerminal(data, { tmuxPassthrough })` writes raw bytes to the terminal | Has no such call | |
 | Footer data of `ctx.ui.setFooter` also has `getSessionStats()` (`input`, `output`, `cacheRead`, `cacheWrite`, `cost`, `contextTokens`, `contextWindow`, `contextPercent`) and `getRunState()` (`idle`, `working`, `blocked`, `done`, or `error`) | Has neither | |
@@ -310,6 +319,8 @@ These parts come from other projects. Each release archive includes their licens
 | Part | Source | License file |
 | --- | --- | --- |
 | ACP mode | [pi-acp](https://github.com/svkozak/pi-acp) by Sergii Kozak | [`LICENSE-pi-acp`](crates/pi-coding-agent/src/acp/LICENSE-pi-acp) |
+| ACP wire types | [Agent Client Protocol schema](https://github.com/agentclientprotocol/agent-client-protocol) 0.13.7 | [`LICENSE-agent-client-protocol-schema`](crates/pi-coding-agent/src/acp/schema/LICENSE-agent-client-protocol-schema) |
+| Terminal mode and size handling | [crossterm](https://github.com/crossterm-rs/crossterm) 0.29.0 | [`LICENSE-crossterm`](crates/pi-tui/src/process_terminal/LICENSE-crossterm) |
 | Some JavaScript modules of the extension runtime | [Node.js](https://github.com/nodejs/node) | [`LICENSE-node`](crates/pi-js/src/js/LICENSE-node) |
 | JSON syntax diagnostics in the extension runtime | [V8](https://github.com/nodejs/node/tree/v22.12.0/deps/v8) | [`LICENSE-v8`](crates/pi-js/src/js/LICENSE-v8) |
 | MCP OAuth code, ported from upstream pi | [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) | [`LICENSE-mcp-typescript-sdk`](crates/pi-mcp/src/oauth/LICENSE-mcp-typescript-sdk) |

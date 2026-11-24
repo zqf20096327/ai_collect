@@ -106,7 +106,7 @@ raytrace open                               # run in another terminal to open th
   The dashboard is at `http://127.0.0.1:8797` by default. If you set
   `RAYTACE_PORT` in `~/.raytrace/config.env`, the dashboard is on that port instead.
 
-The npm package needs **Node.js 22.13 or newer** (`node --version`) on macOS or
+The npm package needs **Node.js 22.16 or newer** (`node --version`) on macOS or
 Linux. The PyPI package installs the same CLI with its own Node.js, so you
 don't need Node on the machine. Windows is experimental. Where this page says
 `npx -y @raytrace-cli/cli@latest`, use `uvx --from raytrace-cli raytrace`
@@ -126,6 +126,8 @@ then say "create a local sandbox and connect this repo".
 | **Disk and memory** | the first setup downloads about 1 GB; the VM uses 4 GiB of memory while it runs |
 
 `raytrace doctor` checks all of this and says how to fix anything missing.
+For slow downloads, port conflicts, Linux KVM access or an interrupted setup,
+follow [first local sandbox setup troubleshooting](docs/troubleshooting.md#first-local-sandbox-setup).
 
 ### Day to day
 
@@ -263,6 +265,11 @@ The upload is the files Git would track (including new files it doesn't ignore),
 **without** `.git`, dependencies such as `node_modules`, build output, `.env*`
 files, private keys and common credential files. Check for secrets inside other
 files before you upload.
+
+To let the agent in it fetch and push your GitHub repository (to its own
+`raytrace/...` branches only, with no GitHub key in the sandbox), use
+`raytrace sandbox create --connect`; an org admin connects GitHub once first.
+See [Connect GitHub](docs/cloud.md#connect-github).
 
 Limits, beta invites, and what happens when you destroy a cloud sandbox are in
 [docs/cloud.md](docs/cloud.md).

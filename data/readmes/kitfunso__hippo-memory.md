@@ -91,16 +91,38 @@ The [result](docs/evals/2026-11-08-z0-round3-result.md) has every figure, and [B
 
 ### Public memory tests
 
-One answer model and scorer for every system we ran in a test.
+Each test runs in the setup behind its published scores, so hippo's number sits beside theirs.
 
-| Test | Questions | hippo | Other system |
-|---|--:|--:|---|
-| DMR | 495 | 77.6 | full chat 83.6 |
-| PersonaMem v1 | 584 | 72.4 | MemOS 61.2, published |
-| LongMemEval-S | 495 | 88.5 | |
-| LoCoMo | 395 | 89.4 | Mem0 94.9 |
+<!-- public-tests:start: website/scripts/readme-public-tests.mjs writes this table -->
+| Benchmarks (official setup) | hippo | Mem0 | Zep | Supermemory | MemOS | Hindsight | Cognee | EverOS | Letta | Others |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
+| LoCoMo, Mem0 paper setup | **69.22** | 68.44 Mem0g | 65.99 | - | - | - | - | - | - | 58.10 LangMem +2 |
+| LoCoMo, OmniMemEval shared setup | 74.72 | 77.68 | 63.83 | 73.53 | 88.83 | 81.99 | 83.48 | 82.75 | 77.12 | **90.71** cachly +9 |
+| LongMemEval-S, gpt-4o reader | 81.8 | - | 71.2 | 81.6 | - | - | - | - | - | **86.0** EmergenceMem Internal |
+| LongMemEval-S, OmniMemEval shared setup | 83.84 | 56.00 | 79.80 | 66.07 | 89.20 | 72.20 | 51.80 | 80.40 | 77.67 | **91.20** Maasv +7 |
+| PersonaMem v1, MemOS suite setup | **61.97** | 43.1 | 57.8 | 53.9 | 61.2 MemOS-1031 | - | - | - | - | 58.9 Memobase +2 |
+| PersonaMem v2, OmniMemEval shared setup | 35.10 | 36.76 | 32.34 | 39.64 | **40.58** | 37.98 | 26.46 | 35.94 | 35.12 | 39.86 Maasv +6 |
+| EverMemBench, GPT-4.1-mini answers | **44.20** | 37.09 | 39.97 | - | 42.55 | - | - | - | - | 34.27 Memobase |
+| BEAM-100K, OmniMemEval shared setup | 67.98 | 70.41 | 68.70 | 65.98 | 66.87 | 70.22 | 59.30 | 58.64 | 69.22 | **76.38** Maasv +6 |
+| BEAM-10M, OmniMemEval shared setup | 56.84 | 43.33 | 56.11 | 52.49 | 56.75 | 59.75 | 56.02 | 47.73 | 52.30 | **65.09** Maasv +4 |
+| PrecisionMemBench | 9/77 | 9/77 | 9/77 | 15/77 | - | 11/77 | 9/77 | - | - | **77/77** Tenure +5 |
+| HaluMem-Medium | **70.23** | 54.66 Mem0-Graph | 55.47 | 54.07 | 67.23 | - | - | - | - | 35.33 Memobase |
+| HaluMem-Long | **65.99** | 32.44 Mem0-Graph | 50.19 | 53.77 | 64.44 | - | - | - | - | 33.60 Memobase |
+| IMLogic, Table 5 | 38.33 | 38.18 | - | - | 39.44 | - | - | 43.50 | - | **44.18** T-Mem +3 |
+| MemFail, coexisting facts | 10/100 | **35/100** | - | - | - | - | - | - | - | 25/100 A-Mem +2 |
+| MemFail, conditional | 93/100 | 58/100 | - | - | - | - | - | - | - | **95/100** A-Mem +2 |
+| MemFail, conditional hard | **38/100** | 13/100 | - | - | - | - | - | - | - | 35/100 A-Mem +2 |
+| MemFail, persona base | 120/143 | 14/143 | - | - | - | - | - | - | - | **125/143** A-Mem +2 |
+| MemFail, persona misleading | 146/157 | 137/157 | - | - | - | - | - | - | - | **156/157** StructMem +2 |
+| MemFail, long-hop | 3/92 | 13/92 | - | - | - | - | - | - | - | **23/92** StructMem +2 |
+| InMind, naive query | 59.20 | 76.0 | - | - | - | - | - | - | - | **99.2** A-Mem +4 |
+| InMind, target recall | 4.00 | 2.4 | - | - | - | - | - | - | - | **5.6** A-RAG +4 |
+| InMind, application | 4.80 | 3.2 | - | - | - | - | - | - | - | **8.8** HippoRAG 2 +4 |
+| MEME, Table 2 | 0.25 | **0.28** | - | - | - | - | - | - | - | 0.03 Graphiti |
+| TriggerBench, Table 3 Base | **54.29** | 53.20 | - | - | - | - | - | - | - | 41.42 A-Mem |
+<!-- public-tests:end -->
 
-hippo used its local embedder, plus its local reranker on DMR. MemOS's score is from its own setup. [How we test](#benchmarks).
+[How we test](#benchmarks).
 
 ---
 
@@ -171,26 +193,26 @@ Hippo is for coding agents on machines you control. [Mem0](https://hippo-memory.
 | Decay by default | Yes | No | No | No | No | No | No | No | No |
 | Retrieval strengthening | Yes | No | No | No | No | No | Partial (recall tuning) | No | Partial (Skill Memory distills patterns) |
 | Reward-proportional decay | Yes | No | No | No | No | No | No | No | No |
-| Hybrid search (BM25 + embeddings) | Yes | Embeddings + spatial | Yes (semantic + BM25 + entity) | No | Yes (graph + vec) | ? | Yes (GraphRAG) | Yes (vector + full-text) | Yes (mRAG, multi-modal) |
-| Schema acceleration / knowledge graph | Yes (schema) | No | Partial (entity linking; graph memory on Pro) | No | Yes (temporal KG) | No | Yes (auto-ontologies) | No (typed claims) | Yes (hierarchical: user/group/agent) |
+| Hybrid search (BM25 + embeddings) | Yes | Embeddings + spatial | Yes (semantic + BM25 + entity) | Yes (FTS5 + sqlite-vec) | Yes (graph + vec) | ? | Yes (GraphRAG) | Yes (vector + full-text) | Yes (mRAG, multi-modal) |
+| Schema acceleration / knowledge graph | Yes (schema) | No | Partial (entity linking; graph memory on Pro) | Yes (wikilink graph) | Yes (temporal KG) | No | Yes (auto-ontologies) | No (typed claims) | Yes (hierarchical: user/group/agent) |
 | Conflict detection + resolution | Yes | No | Partial (hosted platform marks superseded facts) | No | Yes (auto-invalidate stale facts) | No | No | Yes (auto-detect + quarantine) | Partial (temporal tracking) |
-| Multi-agent shared memory | Yes | No | No | No | Yes | Yes (shared memory blocks) | Yes | Yes (branch/merge across sessions) | Yes (multi-agent coordination) |
+| Multi-agent shared memory | Yes | No | No | Yes (shared markdown folder / MCP) | Yes | Yes (shared memory blocks) | Yes | Yes (branch/merge across sessions) | Yes (multi-agent coordination) |
 | Transfer scoring | Yes | No | No | No | No | No | No | No | No |
 | Outcome tracking | Yes | No | No | No | No | No | No | No | Partial (Cases: agent trajectories) |
 | Confidence tiers | Yes | No | No | No | No | No | No | No | No |
 | Spatial organization | No | Yes (wings/halls/rooms) | No | No | No | No | No | No | No |
 | Lossless compression | No | Yes (AAAK, 30x) | No | No | No | No | No | No | No |
-| Cross-tool import (ChatGPT/Claude/Cursor) | Yes | No | No | No | ? | No | Partial (28 data sources) | No (Git ops) | Partial (mRAG: PDFs/images/URLs) |
-| Auto-hook install | Yes | No | No | No | No | No | No | No | No |
-| MCP server | Yes | Yes | Yes (hosted, needs an account) | Yes | Yes (hosted, needs an account) | Yes (hosted, needs an API key) | Yes (first-party Claude/LangGraph) | Yes | ? |
-| Zero runtime deps | Yes | No (ChromaDB) | No | No | No (managed service) | No (npm deps) | No (Python deps) | Yes (single Rust binary) | No (managed + OSS) |
+| Cross-tool import (ChatGPT/Claude/Cursor) | Yes | No | No | Partial (ChatGPT/Claude exports) | ? | No | Partial (28 data sources) | No (Git ops) | Partial (mRAG: PDFs/images/URLs) |
+| Auto-hook install | Yes | No | No | Partial (Claude Code / Codex hooks) | No | No | Partial (Claude Code / Codex plugins) | No | No |
+| MCP server | Yes | Yes | Yes (hosted, needs an account) | Yes | Yes (hosted, needs an account) | Yes (hosted, needs an API key) | Yes (cognee-mcp, standalone or API) | Yes | ? |
+| Zero runtime deps | Yes | No (ChromaDB) | No | No (Python/uv) | No (managed service) | No (npm deps) | No (Python + SQLite/LanceDB/Ladybug) | Yes (single Rust binary) | No (managed + OSS) |
 | Git-friendly | Yes | No | No | Yes | No | Yes (memory tracked in git) | No | Yes (Git is the model) | ? |
 | Framework agnostic | Yes | Yes | Partial | Yes | Yes | Yes | Yes | Yes | Yes |
-| License | MIT | (open) | Apache-2.0 | (open) | Proprietary cloud (Graphiti: Apache-2.0) | Apache-2.0 | MIT (core) | Apache-2.0 | Apache-2.0 (OSS) + cloud |
+| License | MIT | (open) | Apache-2.0 | AGPL-3.0 | Proprietary cloud (Graphiti: Apache-2.0) | Apache-2.0 | Apache-2.0 (core) | Apache-2.0 | Apache-2.0 (OSS) + cloud |
 
-\* The Mem0, Zep and Letta columns were last checked against each vendor's own pages on 2026-09-28.
+\* The Mem0, Zep and Letta columns were last checked against each vendor's own pages on 2026-09-28; Basic Memory and Cognee were checked on 2026-11-22.
 
-Side-by-side pages on the website: [hippo vs mem0](https://hippo-memory.com/vs/mem0/) · [hippo vs Zep](https://hippo-memory.com/vs/zep/) · [hippo vs Letta](https://hippo-memory.com/vs/letta/) · [CLAUDE.md vs MEMORY.md](https://hippo-memory.com/vs/claude-memory/).
+Side-by-side pages on the website: [hippo vs mem0](https://hippo-memory.com/vs/mem0/) · [hippo vs Basic Memory](https://hippo-memory.com/vs/basic-memory/) · [hippo vs claude-mem](https://hippo-memory.com/vs/claude-mem/) · [hippo vs Cognee](https://hippo-memory.com/vs/cognee/) · [hippo vs Supermemory](https://hippo-memory.com/vs/supermemory/) · [hippo vs Zep](https://hippo-memory.com/vs/zep/) · [hippo vs Letta](https://hippo-memory.com/vs/letta/) · [CLAUDE.md vs MEMORY.md](https://hippo-memory.com/vs/claude-memory/).
 
 ---
 
@@ -241,7 +263,6 @@ Hippo 3.5.1 run with the same answer model, judge and settings as the published 
 | **InMind, application**<br><sub>Share of tasks judged right, gpt-5-mini answers and judges; official setup</sub> | **4.80**<br><sub>embedder, top 10, all 125 tasks</sub> | [3.2](https://arxiv.org/html/2607.24368v1)<br><sub>gpt-5-mini</sub> | - | - | - | - | - | - | - | [8.8](https://arxiv.org/html/2607.24368v1)<br><sub>HippoRAG 2 · gpt-5-mini</sub> |
 | **MEME, Table 2**<br><sub>Mean of six task accuracies, gpt-4.1-mini answers, gpt-4o judge; official setup</sub> | **0.25**<br><sub>embedder, top 20, 32K filler</sub> | [0.28](https://arxiv.org/html/2605.12477v1)<br><sub>gpt-4.1-mini</sub> | - | - | - | - | - | - | - | [0.03](https://arxiv.org/html/2605.12477v1)<br><sub>Graphiti · gpt-4.1-mini</sub> |
 | **TriggerBench, Table 3 Base**<br><sub>Prospective memory accuracy, gpt-4.1 answers, gpt-4o judge; official setup</sub> | **54.29**<br><sub>embedder, top 6, 1,260 of 1,265 (5 test items never scored)</sub> | [53.20](https://arxiv.org/html/2606.23459v1)<br><sub>gpt-4.1</sub> | - | - | - | - | - | - | - | [41.42](https://arxiv.org/html/2606.23459v1)<br><sub>A-Mem · gpt-4.1</sub> |
-| **DolphinBench, official Claude Code setup**<br><sub>Agent memory, Claude Code with Sonnet 5; official setup</sub> | *in build* | [32.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/mem0/README.md)<br><sub>Claude Code, Sonnet 5 · 194/600</sub> | - | - | - | [35.8](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/honcho/README.md)<br><sub>Claude Code, Sonnet 5 · 215/600</sub> | - | - | - | [26.3](https://github.com/mem0ai/dolphinbench/blob/81cb6f8405b40a9e76089cef650806a80af06ea2/results/claude-code/claude-sonnet-5/builtin/README.md)<br><sub>Built-in · Claude Code, Sonnet 5 · 158/600</sub> |
 
 <details>
 <summary>How each row ran</summary>
@@ -269,7 +290,6 @@ Hippo 3.5.1 run with the same answer model, judge and settings as the published 
 - **InMind, application.** Run as InMind's evaluation package runs it (InMind 5a2ab268): all 125 tasks, gpt-5-mini answers with 16,384 completion tokens, and the three binary gpt-5-mini judges with the repo's prompts. hippo ran it with its embedder on 22 Nov 2026, one run, top 10, as Mem0 and A-Mem use. The product rows are the paper's MiniLM block, the same embedder hippo uses (all-MiniLM-L6-v2).
 - **MEME, Table 2.** Run as MEME's run_main_experiment.sh runs it (MEME cb8164d8): the 32K filler set, top 20, gpt-4.1-mini-2025-04-14 answers at temperature 0, the gpt-4o-2024-08-06 judge, and the paper's trivial-pass filter. hippo ran it with its embedder on 22 Nov 2026, one run. Mem0 extracts facts with gpt-4.1-mini; hippo stores each turn whole with no model call. The 5 smoke-test questions are never scored.
 - **TriggerBench, Table 3 Base.** Run as TriggerBench's run_mem0.sh runs the Mem0 row (TriggerBench 9e2185c3): Base context, top 6, gpt-4.1 answers at temperature 0.6 with 1,024 tokens, and the paper's PMJudge on gpt-4o-2024-08-06. hippo ran it with its embedder on 22 Nov 2026, one run. 5 smoke-test tasks are never scored, so hippo's score covers 1,260 of 1,265 tasks.
-- **DolphinBench, official Claude Code setup.** The same setup as the published Claude Code rows: one Claude Code turn with the hippo plugin for each of the 13,539 messages, each test in a fresh sandbox with memory writes off, Sonnet 5 and the gpt-5.6-sol judge. The run is in build, so there is no score yet.
 
 </details>
 
@@ -1018,6 +1038,10 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo dormant [<query>]` | List faded memories sleep kept instead of deleting |
 | `hippo dormant restore <id>` | Bring a dormant memory back to active memory |
 | `hippo dormant forget <id>` | Delete a dormant memory permanently |
+| `hippo quarantine [--all] [--json]` | List memories pending review: connector text held because it read as an instruction |
+| `hippo quarantine approve <id>` | Release a held memory under its original scope (admin) |
+| `hippo quarantine reject <id>` | Keep a held memory hidden for good (admin) |
+| `hippo quarantine edit <id> "<text>"` | Approve a held memory with your cleaned text (admin). The text is checked again, the new memory lists the held one in `parents`, and the successor keeps the lead-in of the held row the edit read. A reject drops the whole item, lead-in included. HTTP: `POST /v1/quarantine/:id/edit` |
 | `hippo doctor [--json]` | Check the install: Node, store, schema, sleep, agent hooks; each problem names its fix. It never changes `hippo.db`, though SQLite may leave empty `hippo.db-wal` and `hippo.db-shm` files beside it |
 | `hippo support-bundle [--out <file>] [--include-logs]` | Write a redacted JSON file for a support ticket: versions, doctor checks, config, store counts and log names, never memory text; `--include-logs` adds each log's last 200 lines, which can quote it |
 | `hippo tokens [--days n]` | Estimated tokens of memory text handed to agents, per surface, what later model calls re-read of the hook and compact-resume blocks, and what skipping unchanged hook blocks saved |
@@ -1062,19 +1086,4 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo card heartbeat <id> --run <n>` | Extend a claimed card's lease |
 | `hippo card block <id> --reason "<why>" [--run <n>]` | Block a running card; the reason is recorded as a comment |
 | `hippo card review <id> [--run <n>]` | Move a running card to review |
-| `hippo card complete <id> --outcome <success\|failure\|partial> [--run <n>]` | Complete a card in review: `success` marks it done and promotes children whose parents are all done; `failure` or `partial` shelves it |
-| `hippo card reclaim` | Sweep every card whose lease has passed and return it to ready |
-| `hippo card comment <id> --body "..."` | Add a comment to a card |
-| `hippo wm push --scope <s> --content "..."` | Push to working memory |
-| `hippo wm read --scope <s>` | Read working memory entries |
-| `hippo wm clear --scope <s>` | Clear working memory |
-| `hippo wm flush --scope <s>` | Flush working memory (session end) |
-| `hippo dashboard` | Open web dashboard at localhost:3333 (memory health by project, and the card board); open the URL in the `dashboard.url` file the start line names (on Windows it sits in the global hippo folder under your profile); its one-time ticket opens the dashboard once, within 10 minutes of the start |
-| `hippo dashboard --port <n>` | Use custom port |
-| `hippo mcp` | Start MCP server (stdio transport) |
-| `hippo serve` | Start the HTTP API server for this store on `127.0.0.1:6789` (`--port <n>` or `HIPPO_PORT`; `--host <host>`, which off loopback needs TLS or `--allow-cleartext`). Every request needs an API key, from this machine too (`hippo auth create`, then `Authorization: Bearer <key>`). Each start writes a fresh member key to `.hippo/server.key`, readable by you alone, and the hippo CLI and hooks send it when `HIPPO_API_KEY` is unset (sleep and the quarantine routes need an admin key). Each caller gets 20 requests a second, burst 40 (`HIPPO_CALLER_RPS`; `0` turns it off). See [Security defaults](docs/UPGRADING-2.0.md#security-defaults) |
-| `hippo serve --tls-cert <file> --tls-key <file>` | Serve HTTPS with that PEM certificate and key (or set `HIPPO_TLS_CERT` and `HIPPO_TLS_KEY`). Without them a network bind refuses to start, since API keys and memory text would travel in cleartext; behind a TLS-terminating proxy, pass `--allow-cleartext` (or set `HIPPO_ALLOW_CLEARTEXT=1`) |
-
-On `heartbeat`, `block`, `review` and `complete`, a given `--run` is checked against the card's live run and the command is refused, unchanged, if the two do not match.
-
-`HIPPO_READ_ONLY=1` uses a store without changing it, for example in the test phase of a benchmark. `hippo recall`, `hippo context`, the prompt hook and the MCP read tools give the same answers and write nothing: no recall counts, token-ledger rows, audit rows or mirror files, and a store with a WAL keeps its WAL. `remember`, `supersede`, `refine`, `outcome`, `resolve`, `decide`, `invalidate`, `forget`, `learn`, `promote`, `share
+| `hippo card complete <id> --outcom

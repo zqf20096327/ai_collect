@@ -77,6 +77,7 @@
 - **[Wizmade](https://wizmade.si/)** — 多模型 AI 视频与生图平台，集成 Kling、Veo、Seedance 与特效成片。
 - **[AdMakeAI](https://admakeai.com)** — 面向 Facebook、Instagram 和 TikTok 投放的 AI 广告素材工具，一张商品图生成 Meta 各版位尺寸的广告图和 AI 数字人出镜的 UGC 风格竖版视频广告，也能查看竞品在 Meta 广告库里持续投放的广告，用自己的商品复刻同类形式。按点数计费，视频广告需付费套餐。
 - **[Reelpeat 帧会卖](https://www.reelpeat.com/)** — 面向电商卖家的商品视频工具，用商品链接或图片制作带货及广告短视频，生成前可审阅脚本和分镜，提供试用积分，后续按用量计费。
+- **[RefVid](https://refvid.com)** — 一次上传商品或角色的参考图,之后生成的每个短视频镜头都保持主体一致。按点数计费。
 
 ## 基础图片处理
 
@@ -86,6 +87,7 @@
 - **[remove.bg](https://www.remove.bg/)** — 老牌自动抠图工具,API 稳定,常被集成进工作流。
 - **[Upscayl](https://github.com/upscayl/upscayl)** — 开源图片无损放大工具,本地运行,免费。
 - **[TinyTools Background Remover](https://tomaserben.com/free-tools/image-background-remover)** — 浏览器内运行的免费抠图工具,照片不上传服务器,无账号要求,输出透明 PNG,适合家居实拍等隐私敏感的商品图预处理。
+- **[Reletter](https://aiedittextinimage.com/)** — 识别并修改商品照片和包装上的中英文文字。标准编辑和带水印预览可在浏览器中免费使用，无水印下载与 AI 重绘按积分计费。
 
 ## 综合设计平台
 

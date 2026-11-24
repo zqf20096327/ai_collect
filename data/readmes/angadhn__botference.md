@@ -531,6 +531,14 @@ Load unpacked → `frontends/plugin/extension`. Highlight a passage on any
 article and leave a comment. Done — the terminal council is a separate
 thing you never have to run.
 
+- **Hub** (`/hub` on the companion): one console for your blygs. A feed of the
+  blygs you follow (import a blogroll), the responses to your own posts from your
+  own inbox, and a Background for what should not interrupt reading. Read-only:
+  nothing about your reading is sent to any blyg. See [docs/blygger.md](docs/blygger.md).
+- **Blygger posts**: Discuss recognises them, records which version you
+  quoted, and exports quotes by reference.
+- **Export** to one Obsidian note per page, or markdown for Blygger Studio.
+
 Two optional extras: `./botference discuss --install-autostart` (macOS)
 makes the companion start at every login so there is no terminal to
 remember, and `--install-tunnel` gives it a permanent URL for your
@@ -1861,5 +1869,4 @@ pick it up.
 |---------|-------------|
 | `/lead @claude\|@codex` | Manually set which model writes the plan. You can also use `/lead auto` to let the bots' writer consensus decide. |
 | `/draft [rounds]` | Update the project-local `implementation-plan.md` via the lead model, with optional AI review rounds. Defaults to `2`; `/draft 0` writes the plan with no AI review, `/draft 1` does one review/revise cycle, and so on. Review rounds run in the council like free-form turns: the reviewer's footer can end rounds early (`converged` — sign-off, no revision needed) or pause the draft and hand the floor to you (`blocked`), and typing mid-draft pauses at the next round boundary. Reviewer comments are saved beside the plan in the Botference state directory. |
-| `/finalize` | Lead-only finalization. The lead addresses all active reviewer comment files, rewrites the project-local `implementation-plan.md` if needed, creates `checkpoint.md`, and archives reviewer comments under the Botference archive directory. |
-| `/fresh @claude\|@codex\|@both` | **Restart a bot with no memory of this chat.** For a session that has gone wrong — a bot stuck refusing an ordinary topic, or answering a question three turns old. Nothing is carried over: it sees only what you send next, so say the context again. The other bot keeps its memory and is told. In the browser plugin, type it into any chat box or use the `fresh`
+| `/finalize` | Lead-only finalization. The lead addresses all active reviewer comment files, rewrites the project-local `imple

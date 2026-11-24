@@ -101,59 +101,59 @@ In the future, there will likely be two types of people on Earth (perhaps even o
 
 
 
-### **[2026-11-22]**
+### **[2026-11-24]**
 
-[**Energy-Based Reasoners: Your Recurrent Reasoner Should Be an Energy-Based Model**](https://huggingface.co/papers/2611.08977) （**New**）
+[**Clover-35B-A3B-Preview Technical Report**](https://huggingface.co/papers/2611.24636) （**New**）
 
-*Published: 2026-11-06*
+*Published: 2026-11-18*
 
-<font color="gray">William Xingxu Chen, Alexi Gladstone, Zeyu Michael Li, Heng Ji, Yilun Du - [arXiv]</font>
+<font color="gray">DiffuSpace Technical Team - [arXiv]</font>
 
-[![](https://img.shields.io/badge/GitHub%20Stars-92-blue)](https://github.com/wwillchen/ebr) ![](https://img.shields.io/badge/Citations-1-9cf)
+[![](https://img.shields.io/badge/GitHub%20Stars-163-blue)](https://github.com/DiffuSpace/Clover-35B-A3B-Preview)
 
 ---
 
 
-[**LynnReal-Hand: Unlocking World Interaction with Hand Control**](https://huggingface.co/papers/2611.21479) （**New**）
+[**ALIVE: Making Streaming Video Models Interactive**](https://huggingface.co/papers/2611.21366) （**New**）
 
 *Published: 2026-11-16*
 
-<font color="gray">Shaohao Rui, Chaoyang Zhang, Xiaofeng Mao, Weijie Ma - [arXiv]</font>
+<font color="gray">Jinzhao Li, Yuan Xu, Jinxuan Wu, Yukun Wang, Yijia Lei, Hanyu Ji, Yinuo Chen, Zining Huang, Chi Zhang, Hang Ye, Yiwu Zhong, Honglei Yan, Panwang Pan, Yizhou Wang, Yin Li, Miao Liu - [arXiv]</font>
 
-[![](https://img.shields.io/badge/GitHub%20Stars-83-blue)](https://github.com/LynnReal-AI/LynnReal)
-
----
-
-
-[**InclusionMed: Benchmarking AI for Inclusive Healthcare**](https://huggingface.co/papers/2611.21218) （**New**）
-
-*Published: 2026-11-16*
-
-<font color="gray">InclusionMed Collaboration - [arXiv]</font>
-
-[![](https://img.shields.io/badge/GitHub%20Stars-73-blue)](https://github.com/panuvi/inclusionmed)
+[![](https://img.shields.io/badge/GitHub%20Stars-50-blue)](https://github.com/lijinzhao30/ALIVE)
 
 ---
 
 
-[**FewStepRL: Fine-tuning Few-step Diffusion Models with Reinforcement Learning**](https://huggingface.co/papers/2611.08240) （**New**）
+[**AnyGameRenderer: Entity-Consistent Generative Rendering Across Games and an Entity-Level Benchmark**](https://huggingface.co/papers/2610.31466) （**New**）
 
-*Published: 2026-11-05*
+*Published: 2026-10-22*
 
-<font color="gray">Haitao Lin, Minsi Ren, Yang Li, Xingtong Ge, Zheyuan Hu, Peiyan Hu, Tailin Wu - [arXiv]</font>
+<font color="gray">Ruicong Liu, Liangyang Ouyang, Fengbo Lan, Zhixiang Wang, Kaipeng Zhang - [arXiv]</font>
 
-[![](https://img.shields.io/badge/GitHub%20Stars-50-blue)](https://github.com/EDAPINENUT/fewsteprl-sd35)
+[![](https://img.shields.io/badge/GitHub%20Stars-56-blue)](https://github.com/AlayaLab/AnyGameRenderer)
 
 ---
 
 
-[**WeMM-Video: Pushing the Frontiers of Open-Source Omni-Modal Video Understanding**](https://huggingface.co/papers/2611.26409) （**New**）
+[**Is Complex Agentic Memory Always Needed? Naive RAG Is Stronger Than We Thought**](https://huggingface.co/papers/2610.30755) （**New**）
 
-*Published: 2026-11-19*
+*Published: 2026-10-22*
 
-<font color="gray">Changli Tang, Jie Yang, Tianyi Wang, Lei Li, Daoze Zhang, Zijie Xin, Zhan Liu, Li Li, Jinchang Xu, Fengyun Rao, Chao Zhang, Jing Lyu - [arXiv]</font>
+<font color="gray">Zhengye Bao, Shengtao Zhang, Haokai Zhang, Shiqi Lou, Muning Wen, Minnan Luo - [arXiv]</font>
 
-[![](https://img.shields.io/badge/GitHub%20Stars-50-blue)](https://github.com/Tencent/WeMM-Video)
+[![](https://img.shields.io/badge/GitHub%20Stars-54-blue)](https://github.com/Litmeb/RAW-RAG)
+
+---
+
+
+[**Supervising the Visible State: Separating Representation from View Selection in Streaming Video**](https://huggingface.co/papers/2610.34926) （**New**）
+
+*Published: 2026-10-26*
+
+<font color="gray">Yihao Hu, Pan Wang, Yitong Lin, Zhihao Wen, Deyuan Liu, Hang Wang, Mingda Wan, Yiwen Zhao, Yutong Li, Yuchen Mao, Tao Lin - [arXiv]</font>
+
+[![](https://img.shields.io/badge/GitHub%20Stars-54-blue)](https://github.com/yihaohu0118/ViSS)
 
 ---
 

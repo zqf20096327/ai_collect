@@ -4,6 +4,10 @@ There are 117 open-source Higgsfield AI alternatives in this list: 110 GitHub pr
 
 This is an unofficial community list. It is not affiliated with or endorsed by Higgsfield or Comfy.
 
+[![GitHub stars](https://img.shields.io/github/stars/jutsuhq/open-source-higgsfield?style=social)](https://github.com/jutsuhq/open-source-higgsfield/stargazers)
+
+⭐ **Star this list** to see it in your GitHub feed when new projects and prize winners are added. Missing a project? Open a pull request.
+
 ## From the maintainers
 
 Open-source tools by [Jutsu Studio](https://jutsustudio.com/) for Higgsfield and AI video, by task:

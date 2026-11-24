@@ -4,7 +4,7 @@ Run a coding agent on a local model, on any hardware. Built on [pi](https://gith
 Windows (beta). Tuned and measured on AMD Strix Halo.
 
 - **Detects your GPU and RAM**, recommends an engine and model, and sizes limits to your context window.
-- **Switches engines:** Strata, llama.cpp, vLLM, Ollama, LM Studio, halogen, gufo, osmos (DeepSeek-V4.1-Flash at 1M context), or a cloud model.
+- **Switches engines:** Strata, strix-llama.cpp (Strix Halo), plain llama.cpp, vLLM, Ollama, LM Studio, halogen, gufo, osmos (DeepSeek-V4.1-Flash at 1M context), or a cloud model.
 - **Cuts tokens:** compressed command output, symbol-level code tools, search by meaning.
 - **Resumes after a crash:** relaunch, say "continue".
 
@@ -112,6 +112,10 @@ and compaction stay on-device either way. All commands, daily use and uninstall:
 
 Every layer keeps tokens and calls off the main model. Locally that cuts prefill time; on a cloud model it cuts the bill.
 
+- **Small, stable prompt prefix:** 8 tools declared instead of 25 (the rest via codemode) and nothing rewrites the
+  system prompt mid-session: a cold turn on osmos 31.4 s to 17.5 s (13,968 to 7,952 tokens), cached turns stay cached.
+- **Search routing:** semble first for finding code (-22% wall time, -38% output tokens on osmos), serena once the task
+  is about a known symbol (-16% wall time, -38% tool output read).
 - **Symbol tools (serena):** a function body in 822 chars instead of 13,980 to read the file.
 - **Code search (semble):** 17/18 vs 13/18 top-3 hits, 2-3x faster queries than the NPU pipeline it replaced.
 - **Sidecar for commits and compaction:** large commit diffs 18.5k to 7.1k tokens; compaction ~24 s non-blocking vs ~52 s.
@@ -123,11 +127,10 @@ Every lever and how it was measured: [BENCHMARKS.md](docs/BENCHMARKS.md#efficien
 
 ## Crash recovery
 
-Kill pi or the server mid-task, relaunch `./start.sh` in the same directory and say "continue": `progress-tracker` wrote a
-checkpoint and the fresh session picks it up. Verified across six scenarios, including `kill -9` at response 1, server
-death mid-task and 15-deep compaction chains (reliable to ~8-10 compactions). Limits: one pi task per repo (set
-`PI_PROGRESS_FILE` per task for parallel work), and a stale checkpoint is data, not instructions, so run `/progress-reset`
-when switching tasks. Checkpoints are kept under `~/.pi/agent/progress/`, not in your project folder.
+Kill pi or the server mid-task, then relaunch with `./start.sh <dir> -c` (pi's continue: the last session in that
+directory, whole) and say "continue". `progress-tracker` also writes a checkpoint (task, last state, changed files) to
+`~/.pi/agent/progress/` for you to read; it is not fed to the model, so it costs no context and no cache miss (set
+`PI_PROGRESS_FILE` per task for parallel work, `/progress-reset` to clear it).
 
 ## Strix Halo reference setup
 

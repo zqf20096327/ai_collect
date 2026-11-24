@@ -134,7 +134,7 @@ Material: PETG, nozzle 240 to 260 C, bed 70 to 90 C (outdoors in sun: PLA soften
 
 ## Recipes
 
-fan_guard, panel, cable_comb, vase, planter, gridfinity_bin, phone_stand, hook, spur_gear, box, keychain, cookie_cutter, sign, lithophane, relief and figure. Every recipe prints without supports and every default and example is built and checked in CI.
+fan_guard, panel, cable_comb, vase, planter, gridfinity_bin, phone_stand, hook, spur_gear, box, keychain, cookie_cutter, sign, lithophane, relief, figure and fitted_case (a case for a product in the catalog, src/smoothstone/products, built from the maker's sourced sizes). Every recipe prints without supports and every default and example is built and checked in CI.
 
 ## Install
 

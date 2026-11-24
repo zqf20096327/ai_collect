@@ -1,12 +1,12 @@
-# MCP_CATIA_MechDog 0.3.160
+# MCP_CATIA_MechDog 0.3.165
 
-![version](https://img.shields.io/badge/version-0.3.160-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![CATIA](https://img.shields.io/badge/CATIA-V5%20R30%20(B30)-orange) ![MCP](https://img.shields.io/badge/MCP-stdio%20%7C%20http-purple)
+![version](https://img.shields.io/badge/version-0.3.165-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![CATIA](https://img.shields.io/badge/CATIA-V5%20R30%20(B30)-orange) ![MCP](https://img.shields.io/badge/MCP-stdio%20%7C%20http-purple)
 
-当前正式版 **0.3.160**——2026-11-22 两份报告剩下的四项。两项是新能力，一项是**纠正本项目自己重复过的说法**，一项是带实证的拒绝。**P2-9 坐标可寻址**：`catia_sketch_get_geometry` 早就有 `drawn_this_session`，可它自己的 note 却说「线只知道序号和邻居、不知道坐标」——于是「index 3 是哪条线」在一份回执里同时有答案和否认。现在**每个元素**都带 `drawn`（画图时传进去的 x1,y1,x2,y2 / 圆心半径），并用那次绘制产生的 span 对到**当前序号**：矩形的四条边都答同一个矩形角点，坐标系自己什么都不答（本机实测 7 个元素：2–5 矩形、6 直线、7 圆、1 无）。note 同时说清它是什么——按**文档名+草图名**做键，所以同一进程里关掉再打开同名草图仍在（实测），而新进程、或别的客户端画的草图则没有——以及它是**传入值**不是 CATIA 解算后的值。**P1-17 按名字指文档**：`catia_list_features` 与 `catia_delete_feature` 收 `document=`；读的那个**不激活**（实测前后 active 都是 P17B，读的是 P17A），删的那个会激活并**验证**是否真的切过去了——落在开着装配里的零件切不过去时点名持有者并拒答，因为「名字在错误的树里解析」意味着删掉没人点名的东西；回执写明活动文档变了。指到 Product 给 `NOT_A_PART_DOCUMENT` 与出路，指到不存在的名字给 `DOCUMENT_NOT_FOUND` 与「什么都没测、什么都没改」。**P0-2 特征镜像仍是「做不了」，但现在有三组实测**：`AddNewMirror` 传平面与传**特征引用**给出**完全相同**的结果（121 000 → 242 000，实体翻倍）；`AddObjectToMirror` 被接受，但它只是往**已经含实体**的列表里追加（112 000 → 224 000）；在一个关于平面对称的实体上（232 000）它会给出 **240 000**——镜像出来的料把偏心凹槽**填掉**了；`Object` 与 `MirroringObject` 都「can not be set」，只有 `MirroringPlane` 可写。所以那句「只接受平面」是错的，已改；`feature=` 的拒绝里现在写的是这三组数，两步配方也指向新坐标——镜像后的轮廓可以照着数字重画，不用凭记忆。  · [变更日志](CHANGELOG.md) · [Releases](https://github.com/wudahua/MCP_CATIA_MechDog/releases)
+当前正式版 **0.3.165**——2026-11-23 的报告在本版上做了一次回归验收：上一轮 3 个 P0 全部关闭，新发现 1 个 P1 与 2 个 P2，全部在本机复现后修掉。**P1-N1「返回成功但量的是旧件」**：`catia_move_body` 把实体搬进新 body 之后，会话的 active body 还是**源 body**，于是紧接着的 `catia_get_inertia` 回答的是**搬家前**的几何（重心 x=10，而不是 60），`catia_list_bodies` 又把隐藏的源 body 算进总量（6000+6000=12000）。现在 move 成功后**把 active body 切到新 body 并回读**（回执写明 read back 的两个读数与旧行为的代价），`list_bodies` 每件带 `visible` 并分列 `visible_volume_mm3` / `hidden_volume_mm3`（`total_volume_mm3` 语义不变），隐藏件体积非零时给出说明；`get_inertia` 新增 `body_visible` 与 `body_visible_note`，`document=` 路线也不再固定读 MainBody，而是与不带参数时读**同一个** body。**P2-N2 `left` 与 `reply` 互相矛盾**：`_FRAME` 脚手架住在 `body.HybridShapes`，而删除查找只进 `part.HybridBodies`，于是 4 个名字「列得出来、删不掉」（实测：`Deleted 0 element(s) … No feature, sketch, GSD element or body named 'T5_Empty_FRAME.O'`，而 4 个元素就在树里）。现在两个容器都查；批量删除**先删平面再删它的三个点**（合成一次选择会让 update 失败），平面后面强制一次 update；`<sketch>_FRAME` 在它支撑的草图还在时**拒绝删除**（`FRAME_DATUM_IN_USE` 并指名该删哪张草图）；`frame_scaffolding` 标出 `sketch_present` 与 `orphans`，不再让读者以为草图还在。**P2-N3** `reorder_feature` 的建议改成三分叉（改深度 / 有下游就删了重画 + `insert_after` / 没下游才 `move_body`），并写明 `move_body` 的代价是死实体。另加 README 一节「本机做不到的四件事」。  · [变更日志](CHANGELOG.md) · [Releases](https://github.com/wudahua/MCP_CATIA_MechDog/releases)
 
 > 让 AI 客户端通过 MCP，在 CATIA V5 里建**原生可编辑的实体特征**——并且每一步都能量回来。
 
-MCP_CATIA_MechDog 是运行在你自己 Windows 电脑上的本地 MCP 服务（stdio，可选 HTTP）。它把 CATIA V5 的 **COM Automation** 封装成 **155 个工具**（14 组），供 WorkBuddy、Claude Desktop、Cursor 等支持 MCP 的客户端调用：从一句需求出发，生成带草图、拉伸、切除、圆角、曲面与装配关系的 `.CATPart` / `.CATProduct`，保存到磁盘，再把体积、面积、面/边/顶点数读回来核对。
+MCP_CATIA_MechDog 是运行在你自己 Windows 电脑上的本地 MCP 服务（stdio，可选 HTTP）。它把 CATIA V5 的 **COM Automation** 封装成 **158 个工具**（14 组），供 WorkBuddy、Claude Desktop、Cursor 等支持 MCP 的客户端调用：从一句需求出发，生成带草图、拉伸、切除、圆角、曲面与装配关系的 `.CATPart` / `.CATProduct`，保存到磁盘，再把体积、面积、面/边/顶点数读回来核对。
 
 本仓库是 [daiemon12/catia-v5-mcp-server](https://github.com/daiemon12/catia-v5-mcp-server)（MIT，Adam M'HAMDI）的 **lite fork**：只保留「按书面规格把实体建出来、并且自己验证」这一条主线，只做加法与修补，不重写 COM 层。上游注释里那些实机验证过的坑，是本项目最大的资产。
 
@@ -111,7 +111,7 @@ python -m venv .venv
 | --- | ---: | --- |
 | Document | 12 | 新建 / 打开 / 保存 / 关闭 / 列举，`catia_save_as_copy`；保存遇模态框会重试 |
 | Sketcher | 19 | 线、矩形、圆、椭圆、圆弧、轮廓、样条（含控制点 B 样条）、约束与尺寸；重开已关闭的草图、删单个元素；`catia_sketch_copy` 把轮廓复述到另一个平面；`catia_sketch_strokes` 一次画完整个字形轮廓 |
-| Part Design | 26 | 凸台、凹槽、旋转槽、旋转体、孔、圆角、倒角、阵列、镜像、抽壳、多截面实体、多体；圆角/倒角漏掉具名边时返回 `PARTIAL_EDGES_FAILED` 并列出成功与拒绝两组 |
+| Part Design | 29 | 凸台、凹槽、旋转槽、旋转体、孔、圆角、倒角、阵列、镜像、抽壳、多截面实体、多体；圆角/倒角漏掉具名边时返回 `PARTIAL_EDGES_FAILED` 并列出成功与拒绝两组 |
 | Generative Shape Design | 41 | 线框与曲面、提取、边界、缝合、曲面圆角、脊线、旋转/平移/环形阵列、法向平面、角度平面、旋转曲面与封闭、`catia_surface_engrave`、`catia_solid_tube`、`catia_gsd_splines`、`catia_solid_sweep_variable`（半径表扫掠，站点可为椭圆）、`catia_measure_deviation`、`catia_surface_probe`（沿给定方向求曲面高度，先自校准再出数） |
 | Assembly | 14 | 新建、加件、列举、约束、组件位姿读写（两种矩阵约定互报偏差与正交性）、重命名、复制、替换 |
 | Appearance | 3 | 装配按实例、零件按节点上色；写颜色会 flush 零件（不 `Update()` 不上屏） |
@@ -138,6 +138,16 @@ python -m venv .venv
 | 参与开发 | [CONTRIBUTING.md](CONTRIBUTING.md) |
 
 ## 已知限制
+
+### 本机做不到的四件事（每一条都测过，不要再试）
+
+2026-11-23 的报告说这四项「分散在 5 个工具的正文里，调用方要踩 5 次才知道」，所以在这里并成一节。四项都是 **CATIA V5 这层 API 的限制**，不是本项目缺功能；每一条都给出实测日期与判据。
+
+1. **装配约束 / 固定件** —— `AddMonoEltCst` 对 14 个类型码一律 E_FAIL，而同一个调用在**草图**上成功（`catia_probe_assembly_constraints` 的对照实验，verdict `ENVIRONMENT_LIMITED`）。`Product.IsFixed` / `Move.IsFixed` / `IsInactive` / `IsRoot` / `IsReference` 全部 raise，所以 `catia_list_components` 的 `fixed` 字段是 `null`（读不到，不是没返回）。唯一可行的是装配自己的默认：**第一个插入的组件被固定**。想固定某件，就让它第一个进去。
+2. **特征方向不可改** —— `catia_edit_pad` 只改深度；`Pad.Direction` / `Reversed` / `Symmetric` / `FirstLimit.Type` 在本机全部 raise。方向错了只能删了重建（`insert_after` 可以把新特征插回原位）。
+3. **特征不可重排** —— `catia_reorder_feature` 拒绝，并给出位置与替代方案：改深度用 `edit_pad`；位置错且下游还有特征 → 删了重画 + `insert_after`；位置错且没有下游 → `catia_move_body`（代价是**死实体**）。`insert_after` 只管**新建**特征的位置。
+4. **包围盒没有精确解** —— `Measurable.GetBox` / `GetBoundingBox` / `CenterOfGravity` / `MomentsOfInertia` / `GetPlane` / `GetAxisSystem` 在整体与单个面上**全部 raise**，`Part`/`Body`/`SPAWorkbench` 也没有 bbox 成员。曲面极值只能来自 STL 网格（0.5–0.7 % 下界），`method='exact'` 不是这套 API 能给的东西。
+
 
 - **平面不等于 datum，就像「南边」不等于一个门牌号。** `frame` 平面是无限的，两个草图落在同一平面上不代表它们踩在同一个基准上：实测 z=0 上相距 50 mm 的两个 datum 报出相同 H/V、不同原点，删其一的基准对面另一个毫无影响。判「谁还站在这个 datum 上」要比完原点与两个方向；退化成比平面会把 P06 这类多轮位零件全部误拒。另记一条同源的坑：**`getattr` 成功不代表成员存在**——`Sketch.Reference` / `.Support` / `.Plane` 都会返回一个占位对象，真去用就报 `'NoneType' object has no attribute 'Name'`，所以「能不能读」必须靠用一次来判断。
 - **由输入算出来的量，不是观测。** 上一版用「过两端点和弧中点的圆」去闭合轮廓，而那个中点是**由半径算出来的**——把它当第三个约束喂回去，等于把全部残差挤进半径，浅弧上放大 `1/(1−cos(θ/2))`（28° 弧 34 倍、90° 弧 3.4 倍）。判据就是**放大倍数**本身：端点偏 0.0027 mm 却挪了 0.09 mm，这个倍数在说「哪个自由度被冻结了」。正解是保住那个有物理含义的量（半径/同轴），只移动派生不出来的那个（圆心）——两点 + 半径只剩一个自由度，选离调用方最近的那一支。

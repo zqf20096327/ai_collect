@@ -89,6 +89,27 @@ python code/app/launch_with_check.py
 
 ---
 
+## 看门狗（可选，推荐）
+
+`code/tools/watch_servers.ps1` 每 3 分钟检查一次：页面服务挂了自动拉起；
+同时刷新「情绪真实化」的周期状态（构造情绪 / 预期差）。
+
+**安装一次即可**（右键「以管理员身份运行」）：
+
+```bat
+code\tools\install_watchdog.cmd
+```
+
+它会注册计划任务 `Companion-Watchdog`（每 3 分钟）。卸载：
+
+```bat
+code\tools\install_watchdog.cmd /uninstall
+```
+
+> 不做这一步也能跑，只是页面挂了要手动 `restart_bot.ps1`，且「构造情绪」会退回固定标签。
+
+---
+
 ## 文档
 
 | 文档 | 内容 |
@@ -132,6 +153,16 @@ python code/app/launch_with_check.py
 
 **Live2D 形象不显示？**
 确认模型已导入 `code/video/static/live2d/`，且目录内含 `.model3.json` 与 `.moc3` 文件。
+
+**只有「控制台」能用，其他卡片全是灰的？**
+日常请用 `打开入口.cmd`（或 `scripts\start-all.cmd`）启动正式栈：Hub / 网页聊天 / 视频通话 / 生命面板 / 记忆星图 / 大平层。
+Hub 里的「控制台」卡片只是 AstrBot 管理面板，其他卡片需要对应服务在跑；`services\` 下是可独立运行的最小示例，不是日常入口。
+
+**提示 QQ / NapCat 版本不对，要去装旧版本？**
+本项目不锁版本，也不附带 NapCat 启动脚本。NapCat 与 QQ 本体请按官方文档安装，并选互相兼容的版本；QQ 通道是可选的，不装也能用网页聊天 / 视频 / 生命面板。
+
+**视频通话怎么「一键部署」？**
+`打开入口.cmd` 已经包含视频服务（默认 8003），不需要单独部署。Live2D 形象、通话背景等素材需自备，用配置向导的「🎨 素材导入」导入。
 
 **换电脑了怎么办？**
 用 `tools/nirvana/` 恢复：把备份包恢复后运行 `restore.py`，再重新配置即可。

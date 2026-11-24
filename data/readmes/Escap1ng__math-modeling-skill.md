@@ -1,6 +1,9 @@
 <div align="center">
 
-![Math Modeling Helper](assets/banner.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/banner.png">
+  <img src="assets/banner.png" alt="Math Modeling Helper">
+</picture>
 
 # 数学建模竞赛辅助技能
 
@@ -8,29 +11,28 @@
 
 赛题分析 · 算法优选 · 代码实现 · 论文润色 —— 从赛题输入到论文定稿的一站式 AI 建模技能
 
-![Version](https://img.shields.io/badge/版本-V3.3.0-2563eb)
-![License](https://img.shields.io/github/license/Escap1ng/math-modeling-skill?label=许可证&color=16a34a)
-![Stars](https://img.shields.io/github/stars/Escap1ng/math-modeling-skill?label=Stars&color=f59e0b)
-![Last Commit](https://img.shields.io/github/last-commit/Escap1ng/math-modeling-skill?label=最近提交&color=0ea5e9)
-![Tech Stack](https://img.shields.io/badge/技术栈-Python%20%7C%20LaTeX%20%7C%20Pandoc-e8710a)
+![Version](https://img.shields.io/badge/版本-V3.3.0-2563eb?style=flat-square)
+![License](https://img.shields.io/github/license/Escap1ng/math-modeling-skill?label=许可证&color=16a34a&style=flat-square)
+![Stars](https://img.shields.io/github/stars/Escap1ng/math-modeling-skill?label=Stars&color=f59e0b&style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/Escap1ng/math-modeling-skill?label=最近提交&color=64748b&style=flat-square)
+![Tech Stack](https://img.shields.io/badge/技术栈-Python%20%7C%20LaTeX%20%7C%20Pandoc-64748b?style=flat-square)
 
 **中文** | [English](https://github.com/Escap1ng/math-modeling-skill/blob/main/README.en.md)
 
-[项目简介](#项目简介) · [核心亮点](#核心亮点) · [使用](#使用) · [快速开始](#快速开始) · [工作流程](#工作流程) · [环境依赖](#环境依赖) · [算法库](#算法库) · [论文与排版规范](#论文与排版规范) · [可视化规范](#可视化规范) · [评分体系](#评分体系) · [目录与文件](#目录与文件) · [更新日志](#更新日志) · [许可证](#许可证)
+[项目简介](#项目简介) · [核心亮点](#核心亮点) · [使用](#使用) · [快速开始](#快速开始) · [工作流程](#工作流程) · [环境依赖](#环境依赖)<br>
+[算法库](#算法库) · [论文与排版规范](#论文与排版规范) · [可视化规范](#可视化规范) · [评分体系](#评分体系) · [目录与文件](#目录与文件) · [更新日志](#更新日志) · [许可证](#许可证)
 
 </div>
-
----
 
 ## 项目简介
 
 面向数学建模竞赛的全流程 AI 辅助技能：**赛题理解 → 模型构建 → 算法实现 → 论文输出 → 质量自评**。技能本体是一份 Markdown（`SKILL.md`），复制即装；定稿一次给出 PDF 与 Word（公式为 Word 原生可编辑数学），不需人工二次排版。
 
+> [!NOTE]
 > **适用赛事** —— 全国大学生数学建模竞赛（高教社杯 CUMCM）、美国大学生数学建模竞赛（MCM/ICM）、中国研究生数学建模竞赛（“华为杯”）、MathorCup 大学生数学建模挑战赛、全国大学生统计建模大赛、亚太地区大学生数学建模竞赛（APMCM）等；默认按国赛规范执行。
 
-> **免责声明**：本工具生成的所有内容仅供学习参考，使用者须自行核实准确性，并严格遵守赛事学术诚信相关规定。论文排版以官方发布的最新规范为准。
-
----
+> [!WARNING]
+> **免责声明** —— 本工具生成的所有内容仅供学习参考，使用者须自行核实准确性，并严格遵守赛事学术诚信相关规定。论文排版以官方发布的最新规范为准。
 
 ## 核心亮点
 
@@ -48,19 +50,27 @@
 | 质量闭环 | 百分制五维自评与熔断机制，见[评分体系](#评分体系) |
 | 可复现交付 | 全局随机种子 + requirements.txt 版本锁定 + 打包前匿名终检与图片引用自动核对，见[工作流程](#工作流程) |
 
----
-
 ## 使用
 
-把根目录的 `SKILL.md` 复制到所用 agent 的技能目录即可（各工具目录位置不同，以其文档为准；文件夹名须与 `SKILL.md` 头部的 `name: math-modeling-helper` 一致，例如 `~/.claude/skills/math-modeling-helper/SKILL.md`）。依赖清单见[环境依赖](#环境依赖)。
+把根目录的 `SKILL.md` 复制到所用 agent 的技能目录即可（各工具目录位置不同，以其文档为准；文件夹名须与 `SKILL.md` 头部的 `name: math-modeling-helper` 一致）。以 Claude Code 为例：
 
----
+```bash
+mkdir -p ~/.claude/skills/math-modeling-helper
+cp SKILL.md ~/.claude/skills/math-modeling-helper/
+```
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.claude\skills\math-modeling-helper" | Out-Null
+Copy-Item SKILL.md "$HOME\.claude\skills\math-modeling-helper\SKILL.md"
+```
+
+依赖清单见[环境依赖](#环境依赖)。
 
 ## 快速开始
 
 技能装入 AI IDE 后，三步即可完成建模：
 
-```
+```text
 1. 上传赛题文件（PDF / Excel / CSV / TSV / TXT）或直接粘贴赛题内容
  ↓
 2. 技能自动执行八阶段工作流（阶段零～七，见下文「工作流程」）
@@ -68,19 +78,21 @@
 3. 获取完整项目目录：code/ + figures/ + paper/（结构见下文「目录与文件」）
 ```
 
-只需其中一环时，直接说明范围即按单项服务执行（不建目录、不出论文、不评分）：
+> [!TIP]
+> 只需其中一环时，直接说明范围即按单项服务执行（不建目录、不出论文、不评分）：
 
 | 说法示例 | 实际执行 |
 | :--- | :--- |
-| "问题二用什么算法合适？给个思路就行" | 联网查前沿 → 候选比对 → 输出选型结论与理由 |
-| "只写问题一的代码，先不用出论文" | 只检该问所需库 → 只建 code/figures → 出可运行代码与图 |
-| "帮我润色这份论文草稿，别改模型和数值" | 按写作规范修订 → 对照自检清单 → 交付修订稿并逐条说明改动 |
-
----
+| “问题二用什么算法合适？给个思路就行” | 联网查前沿 → 候选比对 → 输出选型结论与理由 |
+| “只写问题一的代码，先不用出论文” | 只检该问所需库 → 只建 code/figures → 出可运行代码与图 |
+| “帮我润色这份论文草稿，别改模型和数值” | 按写作规范修订 → 对照自检清单 → 交付修订稿并逐条说明改动 |
 
 ## 工作流程
 
-![八阶段闭环工作流](assets/workflow.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/workflow.png">
+  <img src="assets/workflow.png" alt="八阶段闭环工作流">
+</picture>
 
 先判级再执行：**A · 完整建模**（默认，赛题输入到论文定稿）走下列八阶段全流程（阶段零～七）；**B · 单项服务**（算法咨询 / 指定小问代码 / 论文润色）只执行对应阶段子集，不强制环境全检、建目录与论文评分（判级规则与子集见 SKILL.md「工作流分级」）。
 
@@ -103,8 +115,6 @@
 | 阶段五 · 论文输出 | xelatex 生成 PDF，pandoc 生成 Word（公式转 OMML），双格式同步交付 |
 | 阶段六 · 评分优化 | 百分制五维自评，未达标则针对性修改后重评（定稿门槛见[评分体系](#评分体系)） |
 | 阶段七 · 打包与匿名终检 | 全文/文件名/图片/元数据匿名扫描，图片与论文引用双向核对，tmp 清理，重跑抽查可复现性，requirements.txt 与支撑材料 zip 打包交付 |
-
----
 
 ## 环境依赖
 
@@ -135,8 +145,6 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 按题需要另装：`lightgbm`（梯度提升树）、`ortools`（组合优化 / 指派）、`pymoo`（NSGA-II/III）、`prophet`（时间序列）、`PyWavelets`（小波，导入名 `pywt`）、`timesfm[torch]`（时序基础模型 TimesFM 3，Python≥3.10，权重非商业许可）、`shap`（模型解释）、`geopandas` / `folium`（地理空间与地图）、`adjustText`（标注避让）；另有 `optuna`（超参搜索）、`catboost`、`lmfit`（带界拟合）、`lifelines`（生存分析）、`filterpy`（卡尔曼）、`EMD-signal`（EMD，导入名 `PyEMD`）、`simpy` / `mesa`（仿真）、`esda` / `pykrige`（空间统计）、`jieba`（分词）、`gplearn` / `pysr`（符号回归，PySR 需 Julia）、`dowhy` / `econml`（因果推断）、`torch` / `deepxde` / `stable-baselines3`+`gymnasium` / `torch-geometric`（深度学习、PINN、强化学习、图网络）按需另装。
 
 阶段零同时探测联网检索能力（能否按关键词搜索、能否取回指定 URL 正文），按「可用 / 部分可用 / 不可用」三档写入环境状态报告；不可用时按降级规则执行，不得凭记忆补全文献。
-
----
 
 ## 算法库
 
@@ -186,8 +194,6 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 
 **调参与算力预算** —— 高成本方法（强化学习 / PINN / 深度学习 / 时序基础模型）先小规模验证收敛性、耗时与是否优于基线，再投全量；超参搜索须先定试验上限与早停规则；失败按"换等价实现 → 退化轻量方法"处理并记录退化路径，不得静默换算法。
 
----
-
 ## 论文与排版规范
 
 - **匿名一票否决** —— 全文任何位置（含页眉页脚、图片、代码注释、文件名）禁止出现姓名、学校、赛区、队号、指导教师，页眉必须留空
@@ -198,11 +204,12 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 - **正文表述** —— 问题—回应结构，每问结尾给出明确结论段；问题间强制承上启下；去 AI 化自查（禁模板腔开头、套话升华、过渡词滥用）
 - **参考文献** —— GB/T 7714 格式，5–8 篇，至少 2 篇近 5 年文献、1 篇英文文献；每条须经外部检索逐字段核验，查不到即放弃引用，查证台账随交付一并给出
 
----
-
 ## 可视化规范
 
-![出图四关](assets/gates.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/gates.png">
+  <img src="assets/gates.png" alt="出图四关">
+</picture>
 
 ![内置模板画廊](assets/gallery.png)
 
@@ -216,8 +223,6 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 - **英文赛就绪** —— 美赛 / 全英文场景标注细则内置（Quantity (unit) 轴标签、结论式图题、英文统计标注、长标签防溢出）；半栏紧凑尺寸 `FIG_HALF` 供并排小图；色卡精修：发散色图中点近白、顺序系三段蓝，黑白打印层次更清
 - **高频模板内置** —— 三维曲面（定比三维框 + 独立 colorbar）、拟合对比（置信带 + 残差子图）、迭代收敛曲线、问题分析流程图（内容 dict 驱动 + 自动正交连线 + 标准箭头图元 + 字宽门禁）；热力图、Pareto 前沿、龙卷风、雷达、甘特、ROC（含 CV 折间置信带）、脊线图、配对箱线散点、边际密度散点、瀑布图、分组小提琴（Mann-Whitney + Bonferroni + 防重叠括号）十一种简单图型内置 `plot_templates.py` 一次调用函数（五种继承 academic-figure-skill 生产脚本视觉参数与统计逻辑并实测出图通过）；泰勒图、云雨图、SHAP 组合等进阶图型另可套 `mathmodel-figure` 的同名模板作补充
 
----
-
 ## 评分体系
 
 | 维度 | 分值 | 评分依据 |
@@ -230,8 +235,6 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 | **合计** | **100** | **≥ 85 分方可最终输出** |
 
 未达标时列出扣分项、针对性修改后重新评分，最多优化 3 轮；3 轮后仍未达标则输出当前版本并标注「需人工复核」，熔断机制防止无限循环。
-
----
 
 ## 目录与文件
 
@@ -255,10 +258,8 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 | `SKILL.md` | 技能核心：工作流分级与八阶段流程（阶段零～七）、算法库与误用红线、基线对照与算力预算、代码模板、论文写作与正文语言规范、可视化与排版规范、联网检索与参考文献查证、论文质量自检与百分制评分体系 |
 | `README.md` | 中文说明文档（本文件） |
 | `README.en.md` | 英文说明文档 |
-| `assets/` | README 配图：标题图、八阶段工作流、出图四关、模板画廊（技能样式模块生成） |
+| `assets/` | README 配图：标题图、八阶段工作流、出图四关、模板画廊；`dark/` 为深色主题版（图表示例由技能样式模块生成） |
 | `LICENSE` | MIT 许可证 |
-
----
 
 ## 更新日志
 
@@ -274,7 +275,7 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 - 自检清单图表类新增 5 条对应检查项；阶段四出图流程挂接"合同 → 门禁 → 质检"三关
 
 - **竞赛向精修（保持精简）**：色卡更新——发散色图中点由浅灰改近白（零点更干净、黑白打印明度对称）、顺序色图改三段蓝（低值段层次更清）；新增 `FIG_HALF` 半栏紧凑尺寸与英文赛标注细则（美赛/全英文场景：Quantity (unit) 轴标签、结论式图题、英文统计标注、长标签防溢出）；反冗余审计升级为**跨小问去重**（同数据同画法全文只保留一次，交付前逐对目视比对）；新增瀑布图模板 `waterfall`（成本/收益累计分解，方向色带 +/− 号冗余编码）
-- **README 视觉升级**：新增 `assets/` 四张配图（标题图以四大能力卡片为主视觉、八阶段闭环工作流、出图四关解释图、六宫格模板画廊），全部由技能自带样式模块生成，与出图同一视觉体系
+- **README 视觉升级**：新增 `assets/` 四张配图（标题图、八阶段闭环工作流、出图四关解释图、六宫格模板画廊）；图表示例由技能自带样式模块生成，与出图同一视觉体系
 - **重复模板对比择优**：与上游仓库十类重叠图型逐一对比——雷达/热图/分组柱状/趋势线保留本 skill 版（上游版存在 p 值硬编码、柱位重叠、LaTeX 依赖、无中文支持等问题）；桑基上游脚本缺自制依赖包不可运行，不吸收；ROC 增强为支持 CV 折间均值 ±1σ 置信带并自动补曲线端点（上游三版均无此能力）；新增分组小提琴 `violin_groups`（吸收上游 Mann-Whitney + Bonferroni 校正与括号防重叠抬升算法，散点种子统一）
 
 > **边界说明**：本次采纳上游的选图流程与部分图型绘制方法，全部按竞赛场景择优内化；期刊栏宽与投稿专用色板未引入，英文标注细则与色卡精修服务于美赛等英文赛事，竞赛排版与 Nature 三职责配色仍是唯一出处。
@@ -317,8 +318,6 @@ python -c "import importlib.util as u; [print('MISSING:', m) for m in ['numpy','
 首个公开版本：七阶段全流程、双格式论文交付、Nature 三色可视化规范、国赛获奖级排版与百分制五维评分体系。
 
 </details>
-
----
 
 ## 许可证
 

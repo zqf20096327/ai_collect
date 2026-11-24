@@ -21,7 +21,7 @@ Hadamard is a family of tools built around LLM harnesses: **Hadamard Harness** p
 
 Most visual tools end up either human-only or agent-only. Hcanvas keeps a single local document model:
 
-- **Humans** get direct manipulation, real typography, HTML/CSS, shapes, images and presentation.
+- **Humans** get direct manipulation, real typography, HTML/CSS, shapes, images, presentation, auto layout and smart connectors.
 - **Agents** get a JSON-first CLI/HTTP protocol with stable IDs, patches, revisions and execution proposals.
 - **Both** work on the same pages without exporting to a second format.
 
@@ -64,13 +64,15 @@ Desktop installers from [GitHub Releases](https://github.com/DeconBear/hadamard/
 - Markdown rich editing, formula editing and source mode.
 - Live inline color picker with saturation/hue controls and screen eyedropper.
 - Bundled **Inter**, **Source Serif 4** and **JetBrains Mono**, plus system font choices.
-- Built-in **Slider** component and declarative plugin blocks; page-template plugins.
+- Built-in **Slider** component, declarative plugin blocks and an in-app **Plugin Studio** for editing and validating manifests; page-template plugins.
 - Trackpad navigation: two-finger pan, pinch zoom and Shift+wheel horizontal pan.
 - Inline KaTeX in HTML text and SVG diagram labels, with click-to-edit LaTeX source.
 
 ### Agent-native by design
 
 - A CLI-first protocol for reading, patching and reviewing documents.
+- Compact `read --format layout`, `lint` checks, high-level `compose` scenes and machine-readable schemas for agents.
+- Brief context/search, compact idempotent writes, compose templates, auto-fit text, arrow routing and local image upload.
 - Stable data-hc-id targets for HTML and block-level IDs for canvas content.
 - Copyable **Canvas ID** and **Page ID** in the page Inspector and page context menu.
 - Live agent presence and cursor tracking.

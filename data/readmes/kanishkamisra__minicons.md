@@ -14,6 +14,8 @@ Install from Pypi using:
 
 ```pip install minicons```
 
+minicons requires Python 3.11.5 or newer (as of v0.3.40). If you are on Python 3.10, pip will keep you on v0.3.39, which no longer receives security updates. We recommend upgrading Python, or pinning `minicons<0.3.40` if you can't.
+
 ## Supported Functionality
 
 - Extract word representations from Contextualized Word Embeddings
@@ -193,6 +195,8 @@ lm.sequence_score(
 - **June 4, 2022:** Added support for Seq2seq models. Thanks to [Aaron Mueller](https://github.com/aaronmueller) 🥳
 - **June 13, 2023:** Added support for `within_word_l2r`, a better way to do MLM scoring, thanks to Carina Kauf (https://github.com/carina-kauf) 🥳
 - **January, 2024:** minicons now supports mamba!
+- **November, 2026:** minicons now requires Python 3.11.5 or newer (needed for security fixes in dependencies such as Pillow). Python 3.10 users can pin `minicons<0.3.40`.
+- **November, 2026:** `MaskedLMScorer.cloze`, `cloze_distribution`, and `entropy` now work with modern tokenizers (e.g., ModernBERT, RoBERTa) and with prompts where the blank word appears more than once.
 
 ## Citation
 

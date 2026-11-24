@@ -17,7 +17,7 @@ https://github.com/user-attachments/assets/93bfcae4-b02e-429d-a302-d2df850f71a7
   <a href="#install"><img src="https://img.shields.io/badge/%E2%9A%99%20Install%20now-2ea44f?style=for-the-badge" alt="Install pitago" /></a>
 </p>
 
-_A polished Terminal User Interface (TUI) frontend for the `pi` agent, built with Bubble Tea. `pi --mode rpc` serves as the backend (multi-provider, tools, sessions, compaction), while pitago provides a rich terminal interface communicating over JSONL._
+_A polished Terminal User Interface (TUI) frontend for the `pi` agent, built with tview and tcell. `pi --mode rpc` serves as the backend (multi-provider, tools, sessions, compaction), while pitago provides a rich terminal interface communicating over JSONL._
 
 </div>
 
@@ -97,6 +97,7 @@ RPC; extension/prompt/skill commands come from pi's `get_commands` and run serve
 | `/settings`                                            | Agent settings, saved to `~/.pi/agent/settings.json`                                                                               |
 | `/pitago-setting`                                      | Pitago hub: agent, skills, prompts, extensions, plugins, MCP, tasks, theme, login                                                  |
 | `/login` · `/logout`                                   | Manage API keys + pi OAuth/subscriptions                                                                                           |
+| `/quota`                                               | Provider quota panel: OpenCode Go windows + OpenCode Zen budget, percent LEFT with reset countdown (read-only endpoints, 90s cache) |
 | `/live`                                                | Attach read-only to a running `pi` session                                                                                         |
 | `/reload`                                              | Reload extensions                                                                                                                  |
 | `/new` · `/resume` · `/session`                        | New session · resume picker · session management                                                                                   |
@@ -127,6 +128,10 @@ RPC; extension/prompt/skill commands come from pi's `get_commands` and run serve
 | `End`                                   | Jump to the latest message — a hint chip with the same shortcut floats over the transcript while you are scrolled up (click it to jump too)                                 |
 | `Alt+…` or `Ctrl+↑↓ PgUp PgDn Home End` | Scroll the sidebar                                                                                                                                                          |
 | `Mouse wheel`                           | Hover sidebar to scroll it, the chat otherwise; `--mouse=false` disables                                                                                                    |
+
+### Mouse interaction
+
+Click the menu bar, sidebar rows, or prompt (to place the cursor). Right-click for contextual actions, drag the sidebar divider to resize it, or double-click the divider to reset it. In native pickers, click a row to choose it or click outside to dismiss. Use `Alt+M` to toggle mouse capture and `F10` to open the menu with the keyboard. See the [tview migration notes](docs/tview-migration.md) for current coverage.
 
 ### Shell mode
 

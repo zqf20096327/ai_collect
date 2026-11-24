@@ -1,5 +1,7 @@
 # Gravion Context Bridge
 
+[![CI](https://github.com/gravion-ux/context-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/context-bridge/actions/workflows/ci.yml)
+
 Create privacy-conscious Markdown handoffs that carry an AI-assisted coding session forward.
 
 When a chat ends, a model changes, or a new agent takes over, the next session starts from

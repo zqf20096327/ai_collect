@@ -341,6 +341,46 @@ cipi-cli health unset <app>                 Disable
 cipi-cli health check <app>                 Run now; exits 1 when unhealthy
 ```
 
+### Metrics & health history
+
+Cipi 5.11.0+ with cipi/api 1.41.0+ (abilities `metrics-view`, `metrics-manage`).
+
+```bash
+cipi-cli metrics                                  Server and apps now, last-hour trend, uptime 24h/30d, recent events
+cipi-cli metrics show [--app shop] [--metrics cpu,mem_mb] [--range 7d]
+cipi-cli metrics uptime [shop] [--range 30d]      Uptime, minutes down, incidents, per day
+cipi-cli metrics events [--app] [--source deploy] [--range 7d] [--limit 50]
+cipi-cli metrics settings                         Collector, database, retention, heartbeat, OpenMetrics
+cipi-cli metrics retention --raw 7 --rollup 30 --resolution 15 --events 90
+cipi-cli metrics probe on|off                     Probe each app's healthcheck URL every minute
+cipi-cli metrics collector on|off
+cipi-cli metrics heartbeat set <url> [--every 1]  An outside service alerts when the calls stop
+cipi-cli metrics heartbeat off|test
+cipi-cli apps basicauth agent <app> [public|protected]   cipi/agent routes outside basic auth or not
+```
+
+### Notifications
+
+Cipi 5.12.0+ with cipi/api 1.42.0+ (abilities `notifications-view`, `notifications-manage` — or `smtp-view`, `smtp-manage`). Every enabled trigger reaches every enabled channel.
+
+```bash
+cipi-cli notifications                                  Channels (SMTP first) and how many triggers are on
+cipi-cli notifications add slack ops --url https://hooks.slack.com/services/… [--test]
+cipi-cli notifications add telegram oncall --token 123456:ABC… --chat-id -1001234
+cipi-cli notifications add resend mail --api-key re_… --from alerts@example.com --to ops@example.com
+cipi-cli notifications add webhook siem --url https://example.com/hooks/cipi --secret '…'
+cipi-cli notifications add smtp --host … --user … --password … --from … --to …
+cipi-cli notifications update <id> [--to …] [--clear-secret] [--enable|--disable]   Flags left out (secrets too) are kept
+cipi-cli notifications enable|disable|remove <id>
+cipi-cli notifications test [<id>|all]                  Exits 1 when the channel refuses it
+cipi-cli notifications triggers                         Every trigger by category, on or off
+cipi-cli notifications triggers off deploy_success ssh_login
+cipi-cli notifications triggers all-off --except deploy_fail,backup_fail,health_fail
+cipi-cli notifications triggers reset
+```
+
+Types: smtp, resend, ses, slack, discord, mattermost, googlechat, telegram, ntfy, pushover, webhook. `cipi-cli smtp …` keeps working.
+
 ### Status
 
 ```

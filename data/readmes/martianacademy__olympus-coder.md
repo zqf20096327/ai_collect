@@ -3,14 +3,14 @@
   <h1>Olympus Coder</h1>
   <p><strong>One native workspace for every ACP coding agent — shared <code>~/.olympus</code> memory, parallel orchestration, built-in code workbench, and end-to-end encrypted phone access.</strong></p>
   <p>
-    <code>v0.3.3</code> · <code>Apache-2.0</code> · <code>macOS · Linux VPS · Windows</code> · <code>ACP 2.6 + MCP</code> · <code>100% Free · Zero Login Wall</code>
+    <code>v0.3.5</code> · <code>Apache-2.0</code> · <code>macOS · Linux VPS · Windows</code> · <code>ACP 2.6 + MCP</code> · <code>100% Free · Zero Login Wall</code>
   </p>
   <p>
     <a href="https://www.producthunt.com/products/olympus-coder?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-olympus-coder" target="_blank" rel="noopener noreferrer"><img alt="Olympus Coder - Open-source desktop &amp; VPS workbench for 18+ AI coding agents | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1325960&amp;theme=light&amp;t=1795331946472" /></a>
   </p>
   <p>
     <a href="https://olympus.marsnext.in/"><strong>Website</strong></a> ·
-    <a href="https://github.com/martianacademy/olympus-coder/releases/latest"><strong>Download v0.3.3</strong></a> ·
+    <a href="https://github.com/martianacademy/olympus-coder/releases/latest"><strong>Download v0.3.5</strong></a> ·
     <a href="https://github.com/martianacademy/homebrew-tap"><strong>Homebrew Tap</strong></a> ·
     <a href="PRIVACY.md"><strong>Privacy Policy</strong></a>
   </p>
@@ -32,7 +32,7 @@ brew trust martianacademy/tap
 brew install --cask martianacademy/tap/olympus-coder
 ```
 
-Or download [`Olympus.Coder-0.3.3-arm64.dmg`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder-0.3.3-arm64.dmg) from **[Releases](https://github.com/martianacademy/olympus-coder/releases/latest)** (`SHA256SUMS.txt` included; Windows & Linux desktop installers coming soon). Builds are ad-hoc signed — if Gatekeeper warns, run `xattr -dr com.apple.quarantine "/Applications/Olympus Coder.app"` once.
+Or download [`Olympus.Coder-0.3.5-arm64.dmg`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder-0.3.5-arm64.dmg) from **[Releases](https://github.com/martianacademy/olympus-coder/releases/latest)** (`SHA256SUMS.txt` included; Windows & Linux desktop installers coming soon). Builds are ad-hoc signed — if Gatekeeper warns, run `xattr -dr com.apple.quarantine "/Applications/Olympus Coder.app"` once.
 
 ### Headless Linux / macOS VPS Server (Zero Electron, Control from Phone or Browser)
 
@@ -109,7 +109,7 @@ Install, authenticate, and rotate across **Claude Code**, **18 free-tier coding 
 - **Collapsible `WorkGroup` timeline:** Thoughts, file reads/edits, searches, MCP calls, and sub-agents fold into a quiet monochrome strip with clickable right-side image thumbnails, customisable right-edge fade on live steps, and instant permission surfacing.
 - **Shared Media Viewer & Mark Up:** Click any chat image, video, PDF, or attachment to zoom/pan in a centered sheet, draw annotations (baked at full resolution with an auto-generated coordinate legend for the agent), or **Add to message** without re-uploading.
 - **Queueing, steering, slash commands & context control:** Queue follow-up messages while busy (with edit/remove & live `_session/steering`), autocomplete agent `/` slash commands, track context with a colour-coded ring, `/compact`, or carry over into a fresh thread.
-- **Voice dictation & full Appearance studio:** Built-in mic button supporting System dictation, local `whisper.cpp` (auto-detected, Hinglish preset), OpenRouter, or custom OpenAI-compatible servers — plus dark/light themes, density, typography, sidebar spacing, and separate phone appearance settings.
+- **Voice dictation & full Appearance studio:** Built-in mic button supporting System dictation, local `whisper.cpp` (auto-detected, Hinglish preset), OpenRouter, or custom OpenAI-compatible servers — plus dark/light themes, density, typography, sidebar spacing, separate phone appearance settings, and a live Theme CSS editor that imports any standard Tailwind / shadcn / [tweakcn](https://tweakcn.com) `globals.css` theme (in a draggable, resizable Settings window so you can watch the app change behind it).
 
 ### Built-In Code Workbench, Git Worktrees & Checkpoints
 <table>

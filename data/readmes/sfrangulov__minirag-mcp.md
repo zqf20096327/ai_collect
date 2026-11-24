@@ -302,18 +302,36 @@ version. Next to 1.1.1 it brings:
 
 ### Installing v2
 
-A version specifier that names a pre-release gets one:
+Install it once as a command, with the extras you need:
+
+```bash
+uv tool install 'minirag-mcp[ocr,classify]>=2.0.0a2'
+minirag-mcp --version
+```
+
+The installed version stays until you upgrade it: the command, the [server](#running-the-server-at-login-macos)
+and every script that calls `minirag-mcp` run that one install, so no version is written
+anywhere else. `uv tool upgrade minirag-mcp` moves it to the newest release the recorded
+requirement allows: `>=2.0.0a2` names a pre-release, so later pre-releases of minirag-mcp
+count, while its dependencies stay on final releases. Installing an exact version
+(`==2.0.0a2`) instead holds it there: `uv tool upgrade` then finds nothing newer. To go
+back, `uv tool install 'minirag-mcp[ocr,classify]==<older version>'` replaces the
+installed one (and holds it there until you install the range again). A running server
+keeps the old version until it is restarted.
+
+A version specifier that names a pre-release gets one; without one, `uv tool install
+minirag-mcp`, `uvx minirag-mcp` and `pip install minirag-mcp` install 1.1.1. Such a
+specifier admits pre-releases of minirag-mcp only, never of the packages it depends on.
+Exact versions are in [PyPI's release history](https://pypi.org/project/minirag-mcp/#history).
+
+To run it without installing, uvx takes the same specifier:
 
 ```bash
 uvx --from 'minirag-mcp>=2.0.0a1' minirag-mcp --version          # the newest pre-release
 uvx --from 'minirag-mcp[ocr]>=2.0.0a1' minirag-mcp --version     # with an extra
-uvx --from 'minirag-mcp==2.0.0a1' minirag-mcp --version          # one exact pre-release
 pip install 'minirag-mcp>=2.0.0a1'
 ```
 
-Such a specifier admits pre-releases of minirag-mcp only, never of the packages it
-depends on. Without one, `uvx minirag-mcp` and `pip install minirag-mcp` install 1.1.1.
-Exact versions are in [PyPI's release history](https://pypi.org/project/minirag-mcp/#history).
 The shorter `uvx 'minirag-mcp>=2.0.0a1'` resolves the same way (checked with uv
 0.13.9). In a client's configuration, the arguments become `["--from",
 "minirag-mcp>=2.0.0a1", "minirag-mcp"]` where 1.x has `["minirag-mcp"]`. In the rest of
@@ -584,45 +602,47 @@ scratch](#setting-up-llama-server-from-scratch-macos) goes through every step.
 ### Running the server at login (macOS)
 
 [`docs/launchd/local.minirag-mcp.plist`](docs/launchd/local.minirag-mcp.plist) is a
-LaunchAgent template that runs `minirag-mcp serve`, with the `[ocr]` extra, at login and
-again whenever it fails. Its four placeholders take absolute values, because launchd
-expands neither `~` nor `$HOME`:
+LaunchAgent template that runs `minirag-mcp serve` at login and again whenever it fails.
+It runs the command [`uv tool install`](#installing-v2) put on your PATH, so it holds no
+version: an upgrade is `uv tool upgrade` and a restart. Its two placeholders take absolute
+values, because launchd expands neither `~` nor `$HOME`:
 
-- `__UVX__` — the `uvx` to run (`command -v uvx`);
-- `__PYTHON__` — the Python interpreter the server runs on, one that may read the
-  folders you index (below);
-- `__VERSION__` — the release to run, such as `2.0.0a1`;
+- `__MINIRAG__` — the installed command (`command -v minirag-mcp`);
 - `__HOME__` — your home folder, for the log file.
 
 From a clone of this repository:
 
 ```bash
 PY=/absolute/path/to/python3        # the interpreter with access, below
-sed -e "s|__UVX__|$(command -v uvx)|" -e "s|__PYTHON__|$PY|" \
-    -e "s|__VERSION__|2.0.0a1|" -e "s|__HOME__|$HOME|" \
+uv tool install --python "$PY" 'minirag-mcp[ocr]>=2.0.0a2'
+sed -e "s|__MINIRAG__|$(command -v minirag-mcp)|" -e "s|__HOME__|$HOME|" \
     docs/launchd/local.minirag-mcp.plist > ~/Library/LaunchAgents/local.minirag-mcp.plist
 plutil -lint ~/Library/LaunchAgents/local.minirag-mcp.plist
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.minirag-mcp.plist
 ```
 
-**Why the interpreter is pinned.** macOS privacy protection (TCC) grants access to
+The `[ocr]` extra reads scanned PDFs and images, and on macOS installs Apple Vision's
+bindings too; add `classify` for [document labels](#document-labels-optional) by the in-process
+model.
+
+**Why the interpreter matters.** macOS privacy protection (TCC) grants access to
 Documents, Desktop, Downloads and cloud-synced folders per program, and a LaunchAgent
-cannot ask for it. Without that access the server sees those folders as empty or
+cannot ask for it. The installed command runs on the interpreter `uv tool install
+--python` was given. Without that access the server sees those folders as empty or
 unreadable: a sync reports each such root as a folder it could not list and keeps what
-is indexed, but indexes nothing new. Point `__PYTHON__` at an interpreter that has been
-granted access (System Settings › Privacy & Security › Files and Folders, or Full Disk
-Access); `uv python find 3.12` prints the path of uv's own. A background process also
-cannot download the online-only files of a cloud-synced folder, which then fail with
-errno 11, so set such folders to **Always Keep on This Device**. After the first start,
-run a real sync through the server and check that its counts are above zero and that
-no root is reported as held.
+is indexed, but indexes nothing new. Give the interpreter access (System Settings ›
+Privacy & Security › Files and Folders, or Full Disk Access); `uv python find 3.12`
+prints the path of uv's own. A background process also cannot download the online-only
+files of a cloud-synced folder, which then fail with errno 11, so set such folders to
+**Always Keep on This Device**. After the first start, run a real sync through the server
+and check that its counts are above zero and that no root is reported as held.
 
 - Logs go to `~/Library/Logs/minirag-mcp.log`; the token is in
   `~/.config/minirag/token`.
 - `launchctl kill HUP gui/$(id -u)/local.minirag-mcp` reads `indexes.toml` again.
-- To upgrade, run the `sed` again with the new version, then `launchctl bootout
-  gui/$(id -u)/local.minirag-mcp` and the `bootstrap` above. A `bootstrap` right after
-  `bootout` can fail with `5: Input/output error` while the old job stops: run it again.
+- To upgrade: `uv tool upgrade minirag-mcp`, then `launchctl kickstart -k
+  gui/$(id -u)/local.minirag-mcp`. The first start after an install or upgrade can
+  take up to a minute while Python compiles the new files; the port opens after that.
 - To stop it: `launchctl bootout gui/$(id -u)/local.minirag-mcp`.
 
 ## Setting up llama-server from scratch (macOS)
@@ -1909,22 +1929,4 @@ Each subcommand's `--json` output carries the same fields as the matching MCP
 tool. Exit status is `0` on success and `1` on failure; `ingest` and `sync`
 both count any per-file failure as a failure of the run, while still printing
 the full counts and a `warn:` line per file. The one exception is `status`,
-which is the command you reach for when the configuration is broken: on a
-configuration error it reports `{version, configError}` and exits `0`, exactly
-like the `status` MCP tool. Every other command exits `1` on the same error, and so
-does `status --index NAME` when `indexes.toml` does not load or has no such index.
-
-## Search Tuning
-
-Six environment variables shape `query_documents`/`minirag-mcp query`
-results; none of them are exposed as MCP tool arguments, and in `indexes.toml`
-each is a key of the index (`hybrid_weight`, `document_weight`, `rerank_top`,
-`grouping`, `max_distance`, `max_files`). In order, a query fuses a vector search
-of the chunks, a keyword search of the chunks and a keyword ranking of whole
-documents; drops results by `RAG_MAX_DISTANCE` and `RAG_GROUPING`; lets the
-reranker, when there is one, reorder the first `RAG_RERANK_TOP`; and keeps
-`RAG_MAX_FILES` documents and `topK` results.
-
-`topK` (`--top-k` on the CLI) must be at least 1 and is capped at **100**.
-Search fetches a multiple of `topK` candidates from each of the vector and
-keyword sides, so an unbounded `topK` is an unbounded scan. A larger value 
+which is the command you reach f

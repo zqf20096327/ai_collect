@@ -22,6 +22,12 @@
 不导入 xtquant；SDK 仍为默认。安装版本、缓存时间和接入限制见
 [原生行情快照](docs/native-quote.md)。
 
+大 QMT 只读数据走 `market` 和 `account` 子命令，经客户端内的策略桥
+（`bridge/daqmt_server.py`）取数，不经 `xtquant`：
+`qmtcli market sectors|stocks|instrument` 查行情，`qmtcli account asset|positions|orders|trades`
+查资金、持仓、委托、成交。这是唯一在 `xtquant` 连不上完整 QMT 客户端时仍可用的路径；
+不需要 `--account`，桥接启动时已绑定一个账号，不匹配会被拒。
+
 给 QMT / XtQuant 装一层稳定的接口，让任何语言、任何 Agent 都能安全稳定的调用它。
 
 - **一句话**：让 AI 用 JSON 跟 QMT 聊 A 股——行情账户随便查，下单有护栏。
@@ -318,8 +324,12 @@ qmtcli --path D:\DFZQxtqmt_client_real_win64\userdata_mini --account ACCOUNT_ID 
 ```powershell
 qmtcli status
 qmtcli doctor
+qmtcli doctor --accept
 python -m qmtcli status
 ```
+
+`--accept` 对策略桥接跑只读验收：健康与摘要、资产、委托，以及四笔 dry-run。价格带、手数、
+金额上限必须被本地守卫拒掉，合法单必须通过 dry-run。它永远不调用 `passorder`，任一项失败退出码 1。
 
 行情：
 
@@ -480,7 +490,7 @@ xtdatacenter 调用上。`qmtcli doctor` 会用 `xtdc_available` 字段报告 `x
 - 不自动重试下单。
 - `capabilities` 会标记下单和撤单能力为危险动作；`download` 因为写入本地 QMT 缓存，被标记为
   `downloads_data`；`sector` 因为创建/修改本地自定义板块，被标记为 `mutates_local_data`。
-- A 股委托数量必须是正的 100 倍数。
+- 委托数量按板块手数规则：主板和创业板 100 股整数倍，科创板不低于 200 股，北交所不低于 100 股。
 - 委托价格必须大于 0。
 - 阻止调用 `_` 开头的 `xtdata` / `XtQuantTrader` 方法。
 - 账户权限、风控检查和最终成交仍由 QMT 和券商控制。
@@ -498,6 +508,8 @@ qmtcli sector --help
 qmtcli fields --help
 qmtcli trade-call --help
 qmtcli watch --help
+qmtcli market --help
+qmtcli account --help
 qmtcli rpc --help
 qmtcli server --help
 qmtcli mcp --help

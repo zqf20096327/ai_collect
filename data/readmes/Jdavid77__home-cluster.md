@@ -1,0 +1,514 @@
+<h1 align="center"><div align="center">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Kubernetes_logo_without_workmark.svg/1280px-Kubernetes_logo_without_workmark.svg.png" align="center" width="200px" height="194px"/>
+
+### Kubernetes cluster
+
+... managed using Talos, Flux and Renovate
+
+</div>
+</h1>
+
+<div align="center">
+
+[![Talos](https://kromgo.jnobrega.com/badges/talos_version?style=for-the-badge)](https://talos.dev)
+[![Kubernetes](https://kromgo.jnobrega.com/badges/kubernetes_version?style=for-the-badge)](https://kubernetes.io)
+[![Flux](https://kromgo.jnobrega.com/badges/flux_version?style=for-the-badge)](https://fluxcd.io)
+
+[![Uptime](https://kromgo.jnobrega.com/badges/cluster_uptime_days?style=for-the-badge)](#)
+[![Age](https://kromgo.jnobrega.com/badges/cluster_age_days?style=for-the-badge)](#)
+[![Alerts](https://kromgo.jnobrega.com/badges/cluster_alert_count?style=for-the-badge)](#)
+
+</div>
+
+---
+
+## 📖 Overview
+
+This repository contains the configuration for my home Kubernetes cluster — a 7-node bare-metal setup running on [Talos OS](https://www.talos.dev/), managed entirely through GitOps.
+
+- **[topf](https://github.com/postfinance/topf)** generates and maintains Talos machine configs (see [migration notes](/.claude/skills/migrate-talhelper-to-topf/SKILL.md))
+- **[Flux](https://fluxcd.io/)** continuously reconciles the cluster state from this repository
+- **[Renovate](https://docs.renovatebot.com/)** automates dependency updates via pull requests
+- **[Terraform](https://www.terraform.io/)** provisions external dependencies (Akeyless, Authentik, Garage)
+
+---
+
+## 📂 Repository Structure
+
+```
+📁 .agents             # conventions for working on the repo
+📁 .claude
+└── 📁 skills           # reusable Claude Code skills (commit, lint, create-app...)
+📁 bootstrap
+├── 📁 secrets          # encrypted secrets applied once at cluster bootstrap
+├── crds.helmfile.yaml  # pre-installs CRDs before operators
+└── helmfile.yaml       # installs core cluster components
+📁 k8s
+├── 📁 apps             # applications and infrastructure workloads
+├── 📁 components       # reusable kustomize components (volsync, keda, alerts...)
+└── 📁 flux             # root flux kustomizations and source repositories
+📁 talos
+├── 📁 all              # patches applied to every node
+├── 📁 control-plane    # patches applied to control plane nodes
+├── 📁 worker           # patches applied to worker nodes
+├── 📁 node             # per-node patches
+├── 📁 schematics       # talos image schematics
+├── topf.yaml
+└── secrets.yaml
+📁 terraform
+├── 📁 authentik
+├── 📁 akeyless
+└── 📁 garage
+
+```
+---
+
+## 🏗️ Topology
+
+A 7-node bare-metal cluster connected via a TP-Link gigabit switch, with a Raspberry Pi 4 serving as the NAS. Network segmentation is currently flat — VLAN separation across dedicated zones (servers, IoT, guest, ...) is planned as part of a future migration to Unifi networking gear.
+
+```mermaid
+graph LR
+    classDef wan fill:#f87171,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef core fill:#60a5fa,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef control fill:#34d399,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef worker fill:#a78bfa,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef storage fill:#facc15,stroke:#fff,stroke-width:2px,color:#000,font-weight:bold;
+
+    INET[🌐 ISP Router]:::wan
+    SW[🔌 TP-Link LS108G<br/>8-port GbE]:::core
+
+    subgraph CP [☸️ Control Plane]
+        direction TB
+        M1[bmax1-master<br/>N4000 · 8GB]:::control
+        M2[soyo2-master<br/>SOYO m2 · 16GB]:::control
+        M3[soyo3-master<br/>SOYO m2 · 16GB]:::control
+    end
+
+    subgraph HW [☸️ HP Workers]
+        direction TB
+        W1[hp-worker1<br/>HP 800 G3 · 20GB]:::worker
+        W2[hp-worker2<br/>HP 8300 · 28GB]:::worker
+        W3[hp-worker3<br/>HP 8300 · 32GB]:::worker
+    end
+
+    subgraph LSW [☸️ LocalStorage Workers]
+        direction TB
+        W4[ls-worker1<br/>SOYO N95 · 16GB]:::worker
+    end
+
+    NAS[💾 Raspberry Pi 4<br/>OpenMediaVault · 3TB]:::storage
+
+    INET --> SW
+    SW --> M1
+    SW --> M2
+    SW --> M3
+    SW --> W1
+    SW --> W2
+    SW --> W3
+    SW --> W4
+    SW --> NAS
+```
+
+---
+
+## 🌐 External Third-Party Services
+
+These tools complement the Kubernetes infrastructure by providing essential functionality for **security**, **automation** and **infrastructure** management
+
+
+<table>
+            <tr>
+                <th>Logo</th>
+                <th>Tool</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://archive.org/download/github.com-mozilla-sops_-_2020-01-23_22-37-00/cover.jpg" alt="Sops logo" /></td>
+                <td><a href="https://github.com/mozilla/sops">Sops</a></td>
+                <td>A flexible tool for managing repository secrets securely.</td>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://pre-commit.com/logo.svg" alt="Pre-commit logo" /></td>
+                <td><a href="https://github.com/pre-commit/pre-commit">Pre-commit</a></td>
+                <td>Ensures consistency and quality of YAML and shell scripts in the repository.</td>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://docs.renovatebot.com/assets/images/logo.png" alt="Renovate logo" /></td>
+                <td><a href="https://docs.renovatebot.com/">Renovate</a></td>
+                <td>Automates the detection of new releases and creates pull requests accordingly.</td>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://cdn.brandfetch.io/idO1RZnoWN/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B" alt="Akeyless logo" /></td>
+                <td><a href="https://console.akeyless.io/">Akeyless</a></td>
+                <td>A centralized platform for managing and securing certificates, credentials, and keys.</td>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://icon.icepanel.io/Technology/svg/Cloudflare.svg" alt="Cloudflare logo" /></td>
+                <td><a href="https://www.cloudflare.com/en-gb/">Cloudflare</a></td>
+                <td>DNS management, Tunnel for public access and R2 object storage (offsite PVC and Postgres backups).</td>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://images.icon-icons.com/699/PNG/512/gmx_icon-icons.com_61633.png" alt="GMX logo" /></td>
+                <td><a href="https://www.gmx.com">GMX</a></td>
+                <td>SMTP service provider for managing email communications.</td>
+            </tr>
+            <tr>
+                <td><img width="32" src="https://icon.icepanel.io/Technology/svg/HashiCorp-Terraform.svg" alt="Terraform logo" /></td>
+                <td><a href="https://www.terraform.io/">Terraform</a></td>
+                <td>IAC tool for automating the provisioning and management of outside dependencies (Akeyless, Authentik, Garage).</td>
+            </tr>
+    </table>
+
+## 🔧 Hardware
+
+
+Hardware is a combination of mini PC's and desktop computers. Worker nodes have been upgraded to have more RAM.
+
+<table>
+        <thead>
+            <tr>
+                <th>Devices</th>
+                <th>Count</th>
+                <th>Disk Size</th>
+                <th>RAM</th>
+                <th>Purpose</th>
+                <th>Model</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Bmax1-master</td>
+                <td>1</td>
+                <td>128GB SSD</td>
+                <td>8GB</td>
+                <td>Kubernetes Control</td>
+                <td>Bmax B1Pro Gemini Lake N4000</td>
+            </tr>
+            <tr>
+                <td>Soyo2-master</td>
+                <td>1</td>
+                <td>512GB SSD</td>
+                <td>16GB</td>
+                <td>Kubernetes Control</td>
+                <td>SOYO m2 plus v1</td>
+            </tr>
+            <tr>
+                <td>Soyo3-master</td>
+                <td>1</td>
+                <td>512GB SSD</td>
+                <td>16GB</td>
+                <td>Kubernetes Control</td>
+                <td>SOYO m2 plus v1</td>
+            </tr>
+            <tr>
+                <td>Hp-worker1</td>
+                <td>1</td>
+                <td>240GB SSD</td>
+                <td>20GB</td>
+                <td>Kubernetes Worker</td>
+                <td>Hp Elite Desk 800 G3</td>
+            </tr>
+            <tr>
+                <td>Hp-worker2</td>
+                <td>1</td>
+                <td>1TB HDD + 240GB SSD</td>
+                <td>28GB</td>
+                <td>Kubernetes Worker</td>
+                <td>HP Compaq 8300 SFF</td>
+            </tr>
+            <tr>
+                <td>Hp-worker3</td>
+                <td>1</td>
+                <td>500GB HDD + 240GB SSD</td>
+                <td>32GB</td>
+                <td>Kubernetes Worker</td>
+                <td>HP Compaq 8300 SFF</td>
+            </tr>
+            <tr>
+                <td>LocalStorage-worker1</td>
+                <td>1</td>
+                <td>512GB SSD</td>
+                <td>16GB</td>
+                <td>Kubernetes Worker</td>
+                <td>SOYO Intel Alder Lake N95</td>
+            </tr>
+            <tr>
+                <td>Raspberry PI 4</td>
+                <td>1</td>
+                <td>3TB (2 + 1)</td>
+                <td>8GB</td>
+                <td>NAS - OpenMediaVault</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>TP-Link LS108G</td>
+                <td>1</td>
+                <td>-</td>
+                <td>-</td>
+                <td>Switch</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+  ---
+
+## ⚙️ Infrastructure
+
+### Networking
+
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cilium.svg"></td>
+        <td><a href="https://cilium.io/">Cilium</a></td>
+        <td>CNI</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://icon.icepanel.io/Technology/svg/Envoy.svg"></td>
+        <td><a href="https://gateway.envoyproxy.io/">Envoy Gateway</a></td>
+        <td>Kubernetes-based Application Gateway</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg"></td>
+        <td><a href="https://github.com/cloudflare/cloudflared">Cloudflared</a></td>
+        <td>Cloudflare Tunnel client</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://github.com/kubernetes-sigs/external-dns/raw/master/docs/img/external-dns.png"></td>
+        <td><a href="https://github.com/kubernetes-sigs/external-dns">External DNS</a></td>
+        <td>Synchronizes exposed Kubernetes Services and Ingresses with DNS providers (Cloudflare and Pi-hole)</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/tailscale.svg"></td>
+        <td><a href="https://tailscale.com/kb/1236/kubernetes-operator">Tailscale Operator</a></td>
+        <td>Secure access to Kubernetes</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cert-manager.svg"></td>
+        <td><a href="https://cert-manager.io/">Cert Manager</a></td>
+        <td>Let's Encrypt Certificates for SSL/TLS</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://raw.githubusercontent.com/spegel-org/website/main/static/images/logo-transparent.svg"></td>
+        <td><a href="https://spegel.dev/">Spegel</a></td>
+        <td>Stateless cluster-local OCI image mirror</td>
+    </tr>
+</table>
+
+### Storage
+
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/longhorn.svg"></td>
+        <td><a href="https://longhorn.io/">Longhorn</a></td>
+        <td>Distributed block storage for POD's persistent volumes</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/20769039?s=200&v=4"></td>
+        <td><a href="https://openebs.io/">OpenEBS</a></td>
+        <td>Local PV storage</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://garagehq.deuxfleurs.fr/images/garage-logo.svg"></td>
+        <td><a href="https://garagehq.deuxfleurs.fr/">Garage</a></td>
+        <td>S3 Object storage</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnse03izNg3zoCDzCnuiejoD-SdxxunV2S8ddgvgfm7g&s"></td>
+        <td><a href="https://zotregistry.dev/">Zot</a></td>
+        <td>OCI registry</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/104819355?s=200&v=4"></td>
+        <td><a href="https://www.dragonflydb.io/docs/getting-started/kubernetes-operator">Dragonfly</a></td>
+        <td>Modern in-memory datastore, fully compatible with Redis and Memcached APIs</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/47803932?s=200&v=4"></td>
+        <td><a href="https://volsync.readthedocs.io/en/stable/">Volsync</a></td>
+        <td>PVC backups using Restic</td>
+    </tr>
+</table>
+
+### Security & Identity
+
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://external-secrets.io/latest/pictures/eso-round-logo.svg"></td>
+        <td><a href="https://external-secrets.io/latest/">External Secrets Operator</a></td>
+        <td>Used with Akeyless Platform to retrieve and push secrets</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/authentik.svg"></td>
+        <td><a href="https://goauthentik.io/">Authentik</a></td>
+        <td>Open source identity provider</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kyverno.svg"></td>
+        <td><a href="https://kyverno.io/">Kyverno</a></td>
+        <td>Policy engine</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTcm35O1VEUCQFSJkWHcraPyikNvdJf6A9pASB0kntSg&s=10"></td>
+        <td><a href="https://aquasecurity.github.io/trivy-operator/">Trivy Operator</a></td>
+        <td>Continuous in-cluster vulnerability and misconfiguration scanning</td>
+    </tr>
+</table>
+
+### Observability
+
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg"></td>
+        <td><a href="https://prometheus.io/">Prometheus</a></td>
+        <td>Metrics collection and alerting</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg"></td>
+        <td><a href="https://grafana.com/">Grafana</a></td>
+        <td>Metrics visualization and dashboards</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/victoriametrics.svg"></td>
+        <td><a href="https://docs.victoriametrics.com/victorialogs/">VictoriaLogs</a></td>
+        <td>Log aggregation</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/49998002?v=4"></td>
+        <td><a href="https://opentelemetry.io/">OpenTelemetry</a></td>
+        <td>Telemetry collection</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gatus.svg"></td>
+        <td><a href="https://gatus.io/">Gatus</a></td>
+        <td>Automated service health monitoring</td>
+    </tr>
+</table>
+
+### GitOps & Operations
+
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/flux-cd.svg"></td>
+        <td><a href="https://fluxcd.io/">Flux CD</a></td>
+        <td>GitOps tool of choice</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/keda.svg"></td>
+        <td><a href="https://keda.sh/">KEDA</a></td>
+        <td>Kubernetes event-driven autoscaling</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/152294696?s=200&v=4"></td>
+        <td><a href="https://github.com/home-operations/tuppr">Tuppr</a></td>
+        <td>Automated Talos and Kubernetes upgrades</td>
+    </tr>
+</table>
+
+---
+
+### 💾 NAS
+
+The backbone of my home storage infrastructure is built on a Raspberry Pi 4 running [OpenMediaVault](https://www.openmediavault.org/), a dedicated network-attached storage solution. The system utilizes two SSDs (2TB + 1TB) configured to store:
+
+-   Media content (books, audiobooks)
+-   System configurations
+-   Docker Containers Data
+
+The NAS hosts several essential containers:
+
+<table>
+    <tr>
+        <th>Service</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><a href="https://www.postgresql.org/">Postgres</a></td>
+        <td>Reliable relational database for persistent data storage</td>
+    </tr>
+    <tr>
+        <td><a href="https://pi-hole.net/">PI-Hole</a></td>
+        <td>Network-wide ad blocking and local DNS management</td>
+    </tr>
+    <tr>
+        <td>Exit Node</td>
+        <td>Tailscale exit node egressing over NordVPN</td>
+    </tr>
+    <tr>
+        <td><a href="https://github.com/tensorchord/VectorChord">VectorChord</a></td>
+        <td>Postgres with pgvector + VectorChord extensions for Immich</td>
+    </tr>
+</table>
+
+Docker Compose files for all NAS services are in [omv-compose](https://github.com/Jdavid77/omv-compose), managed by OMV's Compose plugin.
+
+
+---
+
+## 🌐 Networking
+
+```mermaid
+graph LR
+    classDef pub fill:#f87171,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef gw fill:#60a5fa,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef dns fill:#facc15,stroke:#fff,stroke-width:2px,color:#000,font-weight:bold;
+
+    INET[🌐 Internet]:::pub
+    CF[Cloudflare DNS + Tunnel]:::pub
+    CFD[cloudflared]:::pub
+    LAN[🏠 LAN clients]:::dns
+    PH[Pi-hole]:::dns
+    EXT[Envoy Gateway<br/>external]:::gw
+    INT[Envoy Gateway<br/>internal]:::gw
+    APPS[Apps]:::gw
+
+    INET --> CF --> CFD --> EXT --> APPS
+    LAN --> PH --> INT --> APPS
+```
+
+-   **Public:** apps behind the `external` gateway are reached through a Cloudflare Tunnel — no ports are forwarded on the router.
+-   **Internal:** `internal` gateway hostnames are published to Pi-hole by External DNS and only resolve on the LAN.
+-   **Tailscale:** provides private remote access. Tailscale clients use Pi-hole as their DNS server, so `internal` hostnames resolve the same way remotely as on the LAN. The NAS also runs a Tailscale exit node egressing over NordVPN.
+
+---
+
+## 💾 Storage & Backups
+
+-   **PVCs:** backed up by Volsync (Restic) to Garage in-cluster and to Cloudflare R2 offsite.
+-   **Postgres:** backup CronJobs write to Garage and to Cloudflare R2 (encrypted).
+-   **Akeyless:** has its own backup CronJob.
+
+---
+
+## 🙏 Gratitude and Thanks
+
+Thanks to all the people who donate their time to the [Home Operations](https://discord.gg/home-operations) Discord
+community. Be sure to check out [kubesearch.dev](https://kubesearch.dev/) for ideas on how to deploy applications or get
+ideas on what you may deploy.

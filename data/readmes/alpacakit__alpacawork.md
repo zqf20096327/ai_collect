@@ -1,14 +1,15 @@
 <!--
 Use repository-root paths for local files (docs/images/logo.png, LICENSE) so they open on every
 branch. Link to the guides in this README with absolute GitHub URLs so the npm copy opens the
-rendered guides and their section links. Put pictures in docs/images/, which the npm package
-carries. Write links and pictures as inline Markdown links or as src and href attributes in double quotes.
-Double-quoted srcset attributes are also rewritten, preserving each image candidate's descriptor.
+rendered guides and their section links. Put pictures in docs/images/. The package omits GIFs
+from that directory. Write links and pictures as inline Markdown links or as double-quoted src,
+srcset or href attributes. Image descriptors in srcset are preserved.
 Other forms are not rewritten for npm.
 npm resolves no relative path, so the release rewrites each one in the packaged copy
 (apps/backend/src/release/npm-readme.ts): a file the package carries opens from
-https://unpkg.com/alpacawork@<version>/<path>, any other file from
-https://github.com/alpacakit/alpacawork/blob/main/<path>.
+https://unpkg.com/alpacawork@<version>/<path>. Pictures outside the package are served from
+https://raw.githubusercontent.com/alpacakit/alpacawork/<release-commit>/<path>.
+Other links outside the package open https://github.com/alpacakit/alpacawork/blob/main/<path>.
 The setup guide an AI downloads uses a GitHub raw URL so the AI can read the Markdown directly.
 GitHub plays a video only from the URL it gives when the file is uploaded on github.com, written on
 a line of its own; it drops a <video> tag that points anywhere else, and npm shows such a URL as
@@ -17,6 +18,9 @@ The name at the top is a picture (wordmark.png, wordmark-dark.png for dark pages
 larger than a heading can; its alt text carries the name.
 The pictures show made-up data. This file and its translations use the dark-theme pictures
 (*-dark.png); README.ja.md shows the Japanese screen (*-dark-ja.png), the others the English one.
+The diagram at the top is drawn in each README's language (hero.gif, hero-dark.gif for this file;
+hero-<lang>.gif, hero-dark-<lang>.gif for the others) and switches with the page theme in a <picture>;
+its first and last frames are the finished picture.
 README.ja.md, README.zh-CN.md, README.es.md and README.pt-BR.md are translations: keep all five with
 the same sections and content, and change them in the same commit. Each links to the guides in its
 own language (this file to docs/, the others to docs/ja/, docs/zh-CN/, docs/es/, docs/pt-BR/).
@@ -35,11 +39,11 @@ to README.md#install): keep those headings, or change the links with them.
   </picture>
 </h1>
 
-<h3 align="center">Let AI manage your AI.</h3>
+<h3 align="center">Run all your AI agents from one chat.</h3>
 
 <p align="center">
-  It assigns work to Claude Code and Codex<br/>and tracks their progress.<br/>
-  You no longer have to sit at your PC to work.
+  Write a request. Claude Code and Codex on your machine split it into tasks and run them in parallel.<br/>
+  You answer their questions and check the results. It works from your phone too.
 </p>
 
 <p align="center">
@@ -53,13 +57,18 @@ to README.md#install): keep those headings, or change the links with them.
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square"></a>
 </p>
 
-<!-- The intro video goes here once it is uploaded on github.com: one line holding the URL GitHub gives. Then move the picture below to the end of the features list. -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/hero-dark.gif">
+    <img src="docs/images/hero.gif" alt="A request typed into one input box goes to the coordinator, which adds tasks to three projects (Website, Mobile app, Marketing) and places an AI such as opus · high or gpt-5 · high on each; one task asks a question, you answer, and every task finishes" width="640">
+  </picture>
+</p>
+
+alpacawork is a tool (an AI harness) that runs the Claude Code and Codex agents already installed on your PC and assigns work to them. Write what you want in one chat box, and your point of contact, an AI called the coordinator, turns it into tasks, assigns them to other AIs and tracks progress. You do three things: ask, answer questions, and check the results. You can use it from your phone in the same way.
 
 <p align="center">
   <img src="docs/images/pc-phone-dark.png" alt="alpacawork in a PC browser, with a list of ten tasks in progress and three awaiting review beside an open task's report, and a phone on the right showing the same report" width="820">
 </p>
-
-alpacawork is a tool (an AI harness) that runs the Claude Code and Codex agents already installed on your PC and assigns work to them. Write what you want in one chat box, and your point of contact, an AI called the coordinator, turns it into tasks, assigns them to other AIs and tracks progress. You do three things: ask, answer questions, and check the results. You can use it from your phone in the same way.
 
 ## Install
 
@@ -70,7 +79,7 @@ Download the guide below, read all of it, and follow it to install alpacawork on
 https://raw.githubusercontent.com/alpacakit/alpacawork/main/skills/alpacawork/references/setup.md
 ```
 
-To install with commands, run these two lines in a terminal (on Windows, inside Ubuntu), in order. Setup lists what it will set up and starts when you press Enter. When it finishes, it prints the screen's URL on the `Open:` line and usually opens it in your browser.
+To install with commands, run these two lines in a terminal (on Windows, inside Ubuntu), in order. Setup lists what it will set up and starts when you press Enter.
 
 ```sh
 npm install -g alpacawork
@@ -79,21 +88,15 @@ alpacawork setup
 
 It runs on macOS (Apple silicon), Linux (x64) and Windows (WSL2). After installing, follow [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md) to make your first request.
 
-### Reopen the screen
+### Open the screen
 
-If you close the screen, ask Claude Code or Codex like this. The AI opens the screen in your browser or tells you its URL.
+To open the screen in your browser, ask Claude Code or Codex like this (`$alpacawork` in Codex).
 
 ```text
 /alpacawork open the screen
 ```
 
-In Codex, write `$alpacawork` instead of `/alpacawork`. From a terminal, this command opens it too.
-
-```sh
-alpacawork open
-```
-
-In Chrome or Edge, you can install it as an app at the end of setup on the screen, or later in Settings → App & phone, and open it again from its icon in the Dock or the taskbar. In Safari on a Mac, install it with File → Add to Dock in the menu (macOS Sonoma or later).
+In a terminal, `alpacawork open` also opens it.
 
 ## What it does
 

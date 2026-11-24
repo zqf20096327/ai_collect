@@ -23,12 +23,34 @@ AMOS is the complete terminal application: configure connectors, run agents,
 switch harnesses, inspect activity, and recover saved sessions. Its
 [application guide](apps/amos/README.md) also covers native OneRingAI mode.
 
-**v2 beta:** **[`oneringai@2.0.0-beta.5`](https://www.npmjs.com/package/oneringai/v/2.0.0-beta.5)**,
-without a scope. Both `latest` and `next` currently select this beta. Use the
-matching package version and retain the preview boundaries below. Existing v1
-users must migrate explicitly from `@everworker/oneringai`.
-See the **[v2 changelog](CHANGELOG.md#200-beta5--2026-11-17)**,
-[migration](docs/PACKAGE_MIGRATION.md), and [release readiness](docs/RELEASE_READINESS_V2.md).
+**Stable v2:** **[`oneringai@2.0.2`](https://www.npmjs.com/package/oneringai/v/2.0.2)**.
+Install the unscoped `oneringai` package or pin this version.
+The scoped `@everworker/oneringai` package is the legacy v1 maintenance line.
+See the [migration guide](docs/PACKAGE_MIGRATION.md) and [release readiness](docs/RELEASE_READINESS_V2.md).
+
+## What's new in this version
+
+**Local models with oMLX.** The `Vendor.OMLX` connector discovers installed
+models and runs the same OneRingAI agent loop on Apple silicon. Inkling 2 Mini
+supports image input and application tool calls in both the SDK and AMOS.
+[Setup and example](USER_GUIDE.md#local-models-with-omlx) ·
+[2.0.2 release notes](CHANGELOG.md#202--2026-11-23).
+
+**Local Inkling 2 Mini.** Run a tool-using, image-aware OneRingAI agent with
+Ollama 0.40.17+ on Apple silicon. Pull it with `ollama pull inkling-2-mini`, then
+use the credential-free `Vendor.Ollama` connector in your app or add it with
+`/connector add` in AMOS. Send an image with `/image` in AMOS.
+[OneRingAI example](USER_GUIDE.md#local-inkling-2-mini-with-ollama) ·
+[AMOS setup](apps/amos/README.md#local-inkling-2-mini) ·
+[2.0.1 release notes](CHANGELOG.md#201--2026-11-23)
+
+**Sign in with ChatGPT.** Eligible users of local Node.js apps can run OpenAI
+agents using their ChatGPT plan. Import `ChatGPTPlanAuth` from
+`oneringai/auth/openai`, supply a browser opener and protected storage, and bind
+the signed-in account to a named connector. OneRingAI handles registration,
+identity verification, token refresh, and sign-out. Hosea uses the same flow.
+[User Guide and code example](USER_GUIDE.md#chatgpt-plan-authentication) ·
+[Authentication release notes](CHANGELOG.md#201-beta1--2026-11-22)
 
 ## What changes in v2
 
@@ -39,6 +61,7 @@ context plugins, and media APIs already available in v1.
 | Capability | What it lets you do | Read more |
 | --- | --- | --- |
 | **Interchangeable agent harnesses** | Define instructions and selected application tools once; bind OneRingAI, local Codex/Claude SDKs, or managed OpenAI/Claude agents per session | [Agent Runtime](USER_GUIDE.md#agent-runtime-preview) |
+| **ChatGPT plan access** | Let eligible users sign in and run OpenAI agents using their plan | [ChatGPT plan access](docs/CHATGPT_PLAN_ACCESS.md) |
 | **Durable evidence** | Retain scoped source observations while sending bounded projections to the model; repair storage without repeating an action | [Evidence](docs/DURABLE_EVIDENCE.md) |
 | **Protected task state** | Keep host-confirmed constraints, corrections, questions, and action receipts through compaction | [Task state](docs/TASK_STATE.md) |
 | **Reliable context preparation** | Account for the final request, preserve connected tool groups, and stop explicitly when protected content cannot fit | [Preparation](docs/CONTEXT_PREPARATION.md) |
@@ -58,13 +81,13 @@ availability, limitations, validation, and deferred work.
 ## Quick start
 
 Node.js **22.13+ or 24+** is required. The package provides ESM, CommonJS, and
-TypeScript declarations. Install the current v2 beta:
+TypeScript declarations. Install the stable v2 package:
 
 ```bash
 npm install oneringai
 ```
 
-You can also select `npm install oneringai@next` or pin `oneringai@2.0.0-beta.5`.
+For a reproducible install, pin `oneringai@2.0.2`.
 The [source checkout/local package workflow](docs/PACKAGE_MIGRATION.md#try-v2-before-publication)
 remains available for development.
 Load your own environment configuration before creating connectors; the library

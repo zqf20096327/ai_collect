@@ -19,7 +19,7 @@ These are example prompts, not recorded results:
 
 ## Get started on Windows
 
-Download the [Windows x64 installer](https://github.com/fedeya/wisp-ai/releases/download/v0.0.7/WispAI-0.0.7-windows-x64-setup.exe) from [Releases](https://github.com/fedeya/wisp-ai/releases), or [build from source](docs/development.md#build-and-run-on-windows).
+Download the [Windows x64 installer](https://wisp.fedeya.sh/download) from [Releases](https://github.com/fedeya/wisp-ai/releases), or [build from source](docs/development.md#build-and-run-on-windows).
 
 Wisp starts automatically when you open the desktop app. You can choose **Set up WoW later** to manage your AI providers and saved data before installing the addon.
 

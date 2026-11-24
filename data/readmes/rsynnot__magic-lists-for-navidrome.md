@@ -230,6 +230,47 @@ If checks fail, detailed suggestions are provided to help resolve issues. You ca
 - `POST /api/scheduler/start` - Start the auto-refresh scheduler
 
 
+## Automated Builds and Releases
+
+Pull requests run regression tests and build an image without publishing. Every
+successful push to `main` publishes an `edge` image and a commit-specific `sha-`
+tag. These builds support both `linux/amd64` and `linux/arm64`.
+
+Stable releases are published by pushing a version tag such as `v1.4.3` from
+`main`. The workflow runs the tests, builds and publishes the multi-platform
+image as `1.4.3`, `v1.4.3`, `stable` and `latest`, then creates the GitHub release.
+Release notes can be supplied in `release-notes/v1.4.3.md`; otherwise GitHub
+generates them. The stable tags are not changed by ordinary `main` builds.
+
+Maintainers must configure the repository Actions secret `DOCKERHUB_TOKEN` with
+write access to the `rickysynnot/magic-lists-for-navidrome` Docker Hub repository.
+Store the token in GitHub settings, never in source files. The GitHub release
+uses the workflow's built-in token; it needs no personal GitHub API token.
+
+## Server Timezone
+
+Set `TZ` to an IANA timezone name in your `.env` file or container environment:
+
+```dotenv
+TZ=America/New_York
+```
+
+For Docker Compose, add `- TZ=America/New_York` under `environment:`. For
+`docker run`, add `-e TZ=America/New_York`. Recreate the container after changing
+its environment (for example, `docker compose up -d --force-recreate`). Restart
+the app after changing `.env` for a standalone installation.
+
+Playlist refresh checks run at **1:01 AM and 1:01 PM in the server timezone**.
+Daily, weekly and monthly refresh dates use that same timezone, including
+daylight-saving changes. The timezone applies to the whole MagicLists instance.
+With no `TZ` setting, standalone installations use the system timezone; the
+supplied Docker Compose configuration defaults to `Etc/UTC`.
+
+Existing refresh dates remain local wall times in the configured server timezone.
+Changing `TZ` changes how those dates are interpreted; it does not convert them
+to preserve their previous UTC instant. Check the startup log for the selected
+timezone. Invalid timezone names stop startup with a configuration error.
+
 ## AI Configuration (Optional)
 
 MagicLists supports multiple AI providers for enhanced playlist curation:

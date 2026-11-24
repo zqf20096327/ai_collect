@@ -10,13 +10,13 @@
 
   <h1>Hermes Agent Awesome Plugins</h1>
 
-  <p>Give Hermes Desktop useful tools for provider limits, long sessions, feeds, memory, the Windows desktop itself, and the agent's own habit of doing everything in one thread. Twenty-four plugins, twenty-three of them with a public edition.</p>
+  <p>Plugins for Hermes Desktop: provider limits, long sessions, feeds, memory, the Windows desktop itself, and the agent's habit of doing everything in one thread. Twenty-six plugins, twenty-five with a public edition.</p>
 
   <p>
     <a href="#readme"><img src="https://img.shields.io/badge/Type-Plugin%20pack-555" alt="Type: Plugin pack"></a>
-    <a href="./package.json"><img src="https://img.shields.io/badge/Language-JavaScript-555" alt="Language: JavaScript"></a>
-    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.31-blue" alt="Pack: 1.27.31"></a>
-    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Last%20release-2026--11--16-blue" alt="Last release: 2026-10-31"></a>
+    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins"><img src="https://img.shields.io/badge/Language-Python%20%2B%20JavaScript-555" alt="Language: Python and JavaScript"></a>
+    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.33-blue" alt="Pack: 1.27.33"></a>
+    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Last%20release-2026--11--22-blue" alt="Last release: 2026-11-22"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT"></a>
   </p>
 
@@ -27,6 +27,8 @@
 </div>
 
 ## Latest plugin update
+**Provider Status 1.6.10** reads Kimi Code membership keys (`sk-kimi-…`) against the coding quota endpoint Hermes core already uses for them. The old Moonshot balance endpoint returned `HTTP 401` for those keys, so the chip showed `error` and the settings badge `HTTP 401` even though the key worked. The chip now shows monthly quota remaining with a 5-hour row and a reset countdown, and `KIMI_API_KEY` and `KIMI_CODING_API_KEY` are recognised. Network errors and unexpected HTTP statuses return an error status rather than an `UnboundLocalError` in the chip. Both editions carry it. Update the plugin and restart Hermes Desktop once.
+
 **Intelligent Tool Break 1.3.7** fixes the composer strip staying empty during a tool call when Desktop's runtime session id differs from the assistant session id. The strip used the runtime id as an explicit `/break-status --session-id` filter, which overrode the calling session and matched no tracked tools; it now routes the command with the runtime id and lets the handler scope to the assistant session. Update both editions and restart Hermes Desktop once.
 
 **Prompt Enhance 1.2.1** keeps the Prompt Library and Edit dialogs open when a click lands inside them but its accessibility target resolves to the overlay, which used to close the dialog before Import Prompt received the click. The guard checks pointer coordinates against the dialog's own root instead of the event target, and a Tab that escapes the focus trap no longer closes it either; a normal click outside still closes the dialog. Both editions carry it. Update the plugin and restart Hermes Desktop once.
@@ -95,13 +97,13 @@ Agent rules for these trees live in [AGENTS.md](AGENTS.md). Catalog blockers for
 
 Each row links the personal edition you get from the pack, plus the public catalog edition where one exists.
 
-Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.31). **better-capabilities**, **prompt-enhance** and **voice-gate** live in this repo but are **not** in the pack, so install any of them separately if you want it. The pack pins the personal tree for all nineteen.
+Twenty plugins are pinned in `hermes-pack.yaml` (pack version 1.27.33). Six plugins in the repo are not in the pack: **better-capabilities**, **byparr-mcp**, **byparr-tools**, **prompt-enhance**, **queue-container-fix**, and **voice-gate**. Install any of them separately. The pack pins the personal tree for those twenty.
 
 ### Status Bar
 
 | Plugin | What you get |
 | --- | --- |
-| [Provider Status](personal/provider-status/README.md) · [public](public/provider-status/README.md) | Status-bar quota used/remaining. DeepSeek and GLM peak/off-peak gauges with countdowns. Multi-account. Rotate on low quota or reset day. Grok/Codex OAuth. Providers: Tavily, OpenCode Go, DeepSeek, GLM (z.ai), OpenRouter, Grok (xAI), Codex (OpenAI), OpenAI, Anthropic, Groq, Cerebras, Moonshot Kimi, MiniMax, Google Gemini, Hugging Face, Mistral, Qwen. |
+| [Provider Status](personal/provider-status/README.md) · [public](public/provider-status/README.md) | Status-bar quota used/remaining. DeepSeek and GLM peak/off-peak gauges with countdowns. Multi-account. Rotate on low quota or reset day. Grok/Codex OAuth. Providers: Tavily, OpenCode Go, DeepSeek, GLM (z.ai), OpenRouter, Grok (xAI), Codex (OpenAI), OpenAI, Anthropic, Groq, Cerebras, Moonshot Kimi, MiniMax, Google Gemini, Hugging Face, Mistral, Qwen. Kimi Code membership keys report their coding quota. |
 | [Iteration Budget Meter](personal/iteration-budget-meter/README.md) · [public](public/iteration-budget-meter/README.md) | Per-turn N/budget while work runs. Hover and click for request stats. |
 | [Reasoning Switch](personal/reasoning-switch/README.md) · [public](public/reasoning-switch/README.md) | Cycle reasoning effort from the status bar, with colors and per-level prompt demote. |
 | [Radio Plus](personal/radio-plus/README.md) · [public](public/radio-plus/README.md) | Live radio with a station list you own: edit a name and a stream address, add any stream, search Radio Browser, its popular list, the Shoutcast directory and TuneIn, see the track the stream announces, play HLS through a bundled hls.js (personal edition), and read why a station failed. An extended edition of the bundled Radio plugin. |
@@ -116,12 +118,15 @@ Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.31). **bett
 | [CDP Manager](personal/cdp-manager/README.md) · [public](public/cdp-manager/README.md) | Launch, stop, and recheck local Chrome CDP ports from the status bar, with a profile per port and one port a backend supervisor keeps alive. The `cdp` tool does the same from chat and repairs a Chrome profile-picker launch. |
 | [Delegation Nudge](personal/delegation-nudge/README.md) · [public](public/hermes-delegation-nudge/README.md) | A live reminder when a turn keeps working inline: past ten tool results with no dispatch, the model gets one note naming the routes it would use, read from the configured model map with provider, model and price, and a second note at twenty-five results naming the bill. It asks the turn to dispatch or say why not, so a decline is recorded instead of silently taken. Silent in subagents, silent after a dispatch, two notes per turn at most. |
 | [Jev Routing](personal/hermes-jev-routing/README.md) · [public](public/hermes-jev-routing/README.md) | Per-turn model routing from TypeSafe Jev. The listed edition rewrites the model and the reasoning level on the request the turn is already bound to, and reports a pick on another provider rather than sending it; the personal edition moves the live session and also reads the provider catalogue, Codex quota and private pricing. |
+| [Byparr Tools](personal/byparr-tools/README.md) · [public](public/byparr-tools/README.md) | Call a FlareSolverr-compatible solver from Hermes: fetch solved HTML, bridge challenge cookies into a browser over CDP, extract structured data, and check solver health. **Not in the pack; install separately.** |
+| [Byparr MCP](personal/byparr-mcp/README.md) · [public](public/byparr-mcp/README.md) | Expose a FlareSolverr-compatible solver as MCP tools for Codex, mcporter, and other MCP clients. **Not in the pack; install separately.** |
 
 ### Capabilities and catalog
 
 | Plugin | What you get |
 | --- | --- |
 | [Catalog Redesign](personal/catalog-redesign/README.md) · [public](public/catalog-redesign/README.md) | One wide row per skill, plugin, connector and tool, with a hover preview, real artwork from the catalog or the plugin's own folder, and a detail panel that carries the hero image, a section rail and the on/off switch. Switches on plugins, skills, toolsets and connectors. Leaves the native Capabilities page alone. |
+| [Better Capabilities](personal/better-capabilities/README.md) · [public](public/better-capabilities/README.md) | Delete and package skills, browse skill files, and save on/off presets for skills, toolsets, and agent plugins. **Not in the pack; install separately.** |
 
 ### Sessions and Sidebar
 
@@ -155,7 +160,7 @@ Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.31). **bett
 | [RSS Reader](personal/rss-reader/README.md) · [public](public/rss-reader/README.md) | Three-column reader. Folders, mute/search, capture. Optional Hermes tools and ticker. |
 | [Reddit](personal/reddit/README.md) · [public](public/reddit/README.md) | Account access, a searchable local save library with source summaries and notes, a Desktop browser, background cleanup and 22 reading/management tools. Standalone release; catalog admission is blocked by missing host OAuth transport. |
 
-Three plugins in this repo are not in the pack and are installed separately: **better-capabilities**, **prompt-enhance** (Composer table), and **voice-gate** (Writing table). Every other plugin above is pinned by the pack.
+The six plugins not in the pack are **better-capabilities**, **byparr-mcp**, **byparr-tools**, **prompt-enhance**, **queue-container-fix**, and **voice-gate**. Everything else in the tables above is pinned by the pack.
 
 Retired and on-hold plugins live in [RETIRED.md](RETIRED.md).
 
@@ -176,7 +181,7 @@ hermes plugins list
 hermes plugins pack show https://raw.githubusercontent.com/apoapostolov/hermes-agent-awesome-plugins/main/hermes-pack.yaml
 ```
 
-For a single plugin, follow that plugin's README. For **reasoning-switch** and **prompt-enhance**, use the README because the pack does not install them.
+For a single plugin, follow that plugin's README. For **prompt-enhance**, use its README because the pack does not install it.
 
 ## How It Works
 
@@ -198,23 +203,32 @@ This is an independent community project. It does not change Hermes Agent core, 
 - [Personal editions](personal/README.md)
 - [Public editions](public/README.md)
 - [AGENTS.md](AGENTS.md): personal/public backport and version rules
-- [Provider Status](personal/provider-status/README.md)
+- [Better Capabilities](personal/better-capabilities/README.md) (not in the pack)
+- [Better Session Appearance](personal/better-session-appearance/README.md)
+- [Byparr MCP](personal/byparr-mcp/README.md) (not in the pack)
+- [Byparr Tools](personal/byparr-tools/README.md) (not in the pack)
+- [Catalog Redesign](personal/catalog-redesign/README.md)
+- [CDP Manager](personal/cdp-manager/README.md)
+- [Delegation Nudge](personal/delegation-nudge/README.md) · [public edition](public/hermes-delegation-nudge/README.md)
+- [Drag to Pin Session](personal/drag-to-pin-session/README.md)
 - [Intelligent Tool Break](personal/intelligent-tool-break/README.md)
 - [Iteration Budget Meter](personal/iteration-budget-meter/README.md)
-- [Reasoning Switch](personal/reasoning-switch/README.md) (not in the pack)
-- [Better Session Appearance](personal/better-session-appearance/README.md)
-- [Sidebar Manager](personal/sidebar-manager/README.md)
-- [Drag to Pin Session](personal/drag-to-pin-session/README.md)
-- [Scroll on Switch](personal/scroll-on-switch/README.md)
-- [Opaque Composer](personal/opaque-composer/README.md)
-- [Queue Container Fix](personal/queue-container-fix/README.md)
-- [Prompt Enhance](personal/prompt-enhance/README.md) (not in the pack)
+- [Jev Routing](personal/hermes-jev-routing/README.md)
 - [Memory Review](personal/memory-review/README.md)
-- [CDP Manager](personal/cdp-manager/README.md)
-- [RSS Reader](personal/rss-reader/README.md)
-- [Session Retitler](personal/sessionretitler/README.md)
+- [Next Steps](personal/hermes-next-steps/README.md)
+- [Opaque Composer](personal/opaque-composer/README.md)
+- [Prompt Enhance](personal/prompt-enhance/README.md) (not in the pack)
+- [Provider Status](personal/provider-status/README.md)
+- [Queue Container Fix](personal/queue-container-fix/README.md) (not in the pack)
 - [Radio Plus](personal/radio-plus/README.md)
-- [Delegation Nudge](personal/delegation-nudge/README.md) · [public edition](public/hermes-delegation-nudge/README.md)
+- [Reasoning Switch](personal/reasoning-switch/README.md)
+- [Reddit](personal/reddit/README.md)
+- [RSS Reader](personal/rss-reader/README.md)
+- [Scroll on Switch](personal/scroll-on-switch/README.md)
+- [Session Retitler](personal/sessionretitler/README.md)
+- [Sidebar Manager](personal/sidebar-manager/README.md)
+- [Vercel Agent Desktop Support](personal/vercel-agent-desktop-support/README.md)
+- [Voice Gate](personal/voice-gate/README.md) (not in the pack)
 
 ## Support
 

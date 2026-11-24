@@ -234,3 +234,7 @@ Pannellum, Leaflet, Geist; Remotion, three.js; pytest; Firebase.
 
 **Data:** CoStar hackathon kit, Matterport API, Vexcel API, Esri World Imagery, Google Gemini API.
 Real buildings are used only as locations; all accounts, posts, messages and payments are synthetic.
+
+## License
+
+The code is under the [MIT License](LICENSE). The private demo bundle and its licensed imagery are not part of this repo and are not covered by it.

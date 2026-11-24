@@ -6,7 +6,7 @@
 
 # DSH Plugin 插件市场 - DeepSeek Harness Plugin (DSH) 下载与安装 · 插件大全
 
-**DeepSeek Harness Plugin（DSH）插件市场与插件大全：主站收录 23,000+ 个插件，其中 6,000+ 个已发布 NPM 包、可在插件市场一键安装（均已人工精选验证）。每日更新，免费浏览、搜索并按分类发现、下载与安装 DSH 插件，来源可溯。**
+**DeepSeek Harness Plugin（DSH）插件市场与插件大全：主站收录 27,000+ 个插件，其中 7,000+ 个已发布 NPM 包、可在插件市场一键安装（均已人工精选验证）。每日更新，免费浏览、搜索并按分类发现、下载与安装 DSH 插件，来源可溯。**
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 [![npm](https://img.shields.io/npm/v/dsh-plugin.svg?style=flat-square)](https://www.npmjs.com/package/dsh-plugin)
@@ -29,7 +29,7 @@
 DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方插件开发规范构建的开源插件，安装进「设置 → 插件市场」后，无需离开应用即可浏览、搜索并一键安装社区插件。官方网页版（`dsh web`）与官方桌面版都支持。本项目为独立社区项目，与 DeepSeek Harness 官方无隶属关系。
 
 <p align="center">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-market-zh.png?v=2.3.8" alt="DSH Plugin Hub 插件市场界面" width="840">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-market-zh.png?v=2.4.3" alt="DSH Plugin Hub 插件市场界面" width="840">
 </p>
 
 ## 插件市场特性
@@ -48,7 +48,7 @@ DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方�
 
 **资源丰富 · 人工精选**
 
-- 主站收录 **23,000+** 个社区插件，其中 **6,000+** 个已发布 NPM 包、可在插件市场一键安装；目录由 [dsh-plugin.org](https://dsh-plugin.org) 每日收录，可安装条目均经人工审核
+- 主站收录 **27,000+** 个社区插件，其中 **7,000+** 个已发布 NPM 包、可在插件市场一键安装；目录由 [dsh-plugin.org](https://dsh-plugin.org) 每日收录，可安装条目均经人工审核
 - 涵盖界面与体验、会话与消息、记忆与上下文、工具能力等分类，按分类浏览、搜索直达
 - 市场只展示核验通过（verified）的插件，卡片标注 Star / Fork 评分、版本号与最近更新时间，来源可溯
 
@@ -68,8 +68,8 @@ DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方�
 **已安装插件列表 · 自定义安装**
 
 <p align="center">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-installed-zh.png?v=2.3.8" alt="已安装插件列表" width="400">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-custom-install-zh.png?v=2.3.8" alt="自定义安装" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-installed-zh.png?v=2.4.3" alt="已安装插件列表" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-custom-install-zh.png?v=2.4.3" alt="自定义安装" width="400">
 </p>
 
 集中管理当前环境已装的全部插件，支持搜索、来源筛选与排序，行尾提供更新、卸载与「在 Finder 中显示」（Windows / Linux 为「在文件夹中显示」） · 手动安装目录外的插件：只接受 NPM 包名或 npm / pnpm 安装命令，不再提供 GitHub 源码与 git 安装
@@ -77,8 +77,8 @@ DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方�
 **设置 · 系统日志**
 
 <p align="center">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-settings-zh.png?v=2.3.8" alt="设置" width="400">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-system-logs-zh.png?v=2.3.8" alt="系统日志" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-settings-zh.png?v=2.4.3" alt="设置" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-system-logs-zh.png?v=2.4.3" alt="系统日志" width="400">
 </p>
 
 集中配置更新检查、npm 镜像源与自动换源、HTTP 代理、NPM 安装开关、系统诊断与日志存放位置 · 记录安装、卸载、设置变更与诊断轨迹，按分类与级别筛选，内置日志查看器
@@ -86,8 +86,8 @@ DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方�
 **确认安装 · 确认卸载**
 
 <p align="center">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-install-confirm-zh.png?v=2.3.8" alt="确认安装" width="400">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-uninstall-confirm-zh.png?v=2.3.8" alt="确认卸载" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-install-confirm-zh.png?v=2.4.3" alt="确认安装" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-uninstall-confirm-zh.png?v=2.4.3" alt="确认卸载" width="400">
 </p>
 
 安装前展示插件名称、来源仓库与执行命令，确认后才开始安装 · 卸载前展示待移除的插件，确认后才从环境移除，避免误删
@@ -95,8 +95,8 @@ DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方�
 **确认更新 · 通知中心**
 
 <p align="center">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-update-confirm-zh.png?v=2.3.8" alt="确认更新" width="400">
-  <img src="https://api.dsh-plugin.org/images/releases/2-3-8/dsh-plugin-hub-notifications-zh.png?v=2.3.8" alt="通知中心" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-update-confirm-zh.png?v=2.4.3" alt="确认更新" width="400">
+  <img src="https://api.dsh-plugin.org/images/releases/2-4-3/dsh-plugin-hub-notifications-zh.png?v=2.4.3" alt="通知中心" width="400">
 </p>
 
 检测到新版本时弹出，确认后原位覆盖安装到最新版 · 集中管理安装、卸载、更新的历史记录、实时进度与待重启提醒
@@ -116,7 +116,7 @@ DSH Plugin Hub 是 **DeepSeek Harness 社区插件市场**：一个遵循官方�
 
 ## 为什么选择 DSH Plugin Hub
 
-DSH Plugin 插件市场收录 **6,000+** 个可一键安装的 NPM 插件（主站共收录 **23,000+** 个 DSH 插件），均已人工精选验证，每日更新，免费按分类浏览、搜索、下载与安装，来源可溯。
+DSH Plugin 插件市场收录 **7,000+** 个可一键安装的 NPM 插件（主站共收录 **27,000+** 个 DSH 插件），均已人工精选验证，每日更新，免费按分类浏览、搜索、下载与安装，来源可溯。
 
 ### 及时更新
 

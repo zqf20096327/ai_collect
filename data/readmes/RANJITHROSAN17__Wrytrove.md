@@ -32,7 +32,7 @@ Wrytrove is a Windows text and code editor designed to be approachable for every
 
 ## Choose your first run
 
-- **Use the Windows app:** [download the latest preview and its verification assets](https://github.com/RANJITHROSAN17/morrow-editor/releases/latest). No Node.js or Rust is needed for a packaged installer. Check its signing mode and checksum before running it; keep backups and use non-critical files.
+- **Use the Windows app:** [download the latest preview and its verification assets](https://github.com/RANJITHROSAN17/Wrytrove/releases/latest). No Node.js or Rust is needed for a packaged installer. Check its signing mode and checksum before running it; keep backups and use non-critical files.
 - **Evaluate the UI or contribute without Windows:** use the [browser UI preview](#browser-ui-preview); it does not verify native desktop behavior.
 - **Build the native app:** follow [Windows app from source](#windows-app-from-source) and its toolchain prerequisites.
 
@@ -58,13 +58,13 @@ Wrytrove is not yet a full IDE: it does not provide a debugger, integrated termi
 
 ### Windows app from source
 
-You will need Windows x64, [Git](https://git-scm.com/), [Node.js 20](https://nodejs.org/) or newer, current stable [Rust](https://rustup.rs/), Microsoft C++ Build Tools with **Desktop development with C++**, and the Microsoft Edge WebView2 runtime. See [Tauri's Windows prerequisites](https://v2.tauri.app/start/prerequisites/).
+You will need Windows x64, [Git](https://git-scm.com/), [Node.js 22](https://nodejs.org/) or newer, current stable [Rust](https://rustup.rs/), Microsoft C++ Build Tools with **Desktop development with C++**, and the Microsoft Edge WebView2 runtime. See [Tauri's Windows prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 In PowerShell:
 
 ```powershell
-git clone https://github.com/RANJITHROSAN17/morrow-editor.git
-cd morrow-editor
+git clone https://github.com/RANJITHROSAN17/Wrytrove.git
+cd Wrytrove
 npm ci
 npm run tauri dev
 ```
@@ -78,7 +78,7 @@ npm run tauri build -- --target x86_64-pc-windows-msvc
 
 The NSIS installer is written to `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/`. Windows may warn about an unknown publisher. If WebView2 is missing, its bootstrapper may need internet access.
 
-[**Download v0.4.0 for Windows**](https://github.com/RANJITHROSAN17/morrow-editor/releases/latest) — a 3.6 MB NSIS installer, no Rust toolchain required. For releases produced by the current workflow, `SIGNING-MODE.txt` is authoritative: `signed` means its Authenticode publisher and timestamp were verified; `unsigned-preview` means Windows may warn about an unknown publisher, and that warning is accurate. `SHA256SUMS.txt` is attached, and checking the download against it takes one command:
+[**Download v0.4.0 for Windows**](https://github.com/RANJITHROSAN17/Wrytrove/releases/latest) — a 3.6 MB NSIS installer, no Rust toolchain required. For releases produced by the current workflow, `SIGNING-MODE.txt` is authoritative: `signed` means its Authenticode publisher and timestamp were verified; `unsigned-preview` means Windows may warn about an unknown publisher, and that warning is accurate. `SHA256SUMS.txt` is attached, and checking the download against it takes one command:
 
 ```bash
 sha256sum Morrow_0.4.0_x64-setup.exe
@@ -169,7 +169,7 @@ npm run benchmark:table
 
 [**docs/BENCHMARK-COMPARISON.md**](docs/BENCHMARK-COMPARISON.md) compares Wrytrove's editor engine (CodeMirror 6) with Monaco and Ace on identical synthetic files, as percentages. Run `npm --prefix benchmarks/engines ci` once, then `npm run benchmark:engines` and `npm run benchmark:compare`.
 
-Comparison with the desktop apps (Notepad++, Notepads, VS Code, Zed) has to run on Windows with those apps installed. Use `npm run benchmark:products` after copying `benchmarks/product/products.example.json`. That harness is written but has not yet been run on Windows. Until those results are published, Wrytrove makes no speed or memory advantage claim against any product. Startup, memory and typing-latency claims stay under [issue #65](https://github.com/RANJITHROSAN17/morrow-editor/issues/65).
+Comparison with the desktop apps (Notepad++, Notepads, VS Code, Zed) has to run on Windows with those apps installed. Use `npm run benchmark:products` after copying `benchmarks/product/products.example.json`. That harness is written but has not yet been run on Windows. Until those results are published, Wrytrove makes no speed or memory advantage claim against any product. Startup, memory and typing-latency claims stay under [issue #65](https://github.com/RANJITHROSAN17/Wrytrove/issues/65).
 
 ## Development and testing
 
@@ -195,7 +195,7 @@ The 0.4.0 candidate received automated tests and a targeted installed-app smoke 
 
 ## Branches
 
-As checked on 1 November 2026, `main` and [`feature/morrow-0.4.0-design`](https://github.com/RANJITHROSAN17/morrow-editor/tree/feature/morrow-0.4.0-design) contain the same 0.4.0 files; their merge histories differ. `main` is the default development branch. The feature branch may evolve independently; neither branch is a signed release.
+As checked on 1 November 2026, `main` and [`feature/morrow-0.4.0-design`](https://github.com/RANJITHROSAN17/Wrytrove/tree/feature/morrow-0.4.0-design) contain the same 0.4.0 files; their merge histories differ. `main` is the default development branch. The feature branch may evolve independently; neither branch is a signed release.
 
 ## Contributing
 
@@ -205,10 +205,10 @@ your Windows version, steps to reproduce, and expected versus actual behavior. P
 post API keys, private files, or sensitive text** in public issues — use
 [SECURITY.md](SECURITY.md) for anything sensitive.
 
-Look for [`good first issue`](https://github.com/RANJITHROSAN17/morrow-editor/labels/good%20first%20issue):
+Look for [`good first issue`](https://github.com/RANJITHROSAN17/Wrytrove/labels/good%20first%20issue):
 each one names the file, the acceptance criteria and a command that proves it.
 
-- [Report a bug or suggest an improvement](https://github.com/RANJITHROSAN17/morrow-editor/issues)
+- [Report a bug or suggest an improvement](https://github.com/RANJITHROSAN17/Wrytrove/issues)
 - [Changelog](CHANGELOG.md) · [Product research](docs/PRODUCT-RESEARCH-2026.md) · [Competitive audit and AI upgrade plan](docs/COMPETITIVE-AUDIT-AND-ROADMAP-2026-11.md) · [README comparison](docs/README-RESEARCH-2026-11-01.md)
 
 ## Maintainer

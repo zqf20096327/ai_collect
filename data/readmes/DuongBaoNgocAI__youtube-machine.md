@@ -2,9 +2,9 @@
 
 **Quy trình xây kênh YouTube từ số 0 đến video đăng được, chạy bằng trợ lý AI trên máy bạn.**
 
-Phiên bản 1.0.0 · Phát hành bởi AI CỘNG VN · [English](README.en.md)
+Phiên bản 1.1.0 · Phát hành bởi AI CỘNG VN · [English](README.en.md)
 
-YouTube Machine là bộ 27 skill cho trợ lý AI chạy trên máy, dùng tốt nhất với Claude Code. Bộ skill dẫn bạn đi qua từng bước, từ lúc chọn chủ đề kênh tới khi đăng video và học từ số liệu thật. Ở mỗi bước, trợ lý hỏi bạn vài câu trước khi làm, nên kênh mang dấu ấn riêng của bạn. Mọi kết quả được lưu trong thư mục hồ sơ kênh, nên bạn làm tiếp lúc nào cũng được.
+YouTube Machine là bộ 28 skill cho trợ lý AI chạy trên máy, dùng tốt nhất với Claude Code. Bộ skill dẫn bạn đi qua từng bước, từ lúc chọn chủ đề kênh tới khi đăng video và học từ số liệu thật. Ở mỗi bước, trợ lý hỏi bạn vài câu trước khi làm, nên kênh mang dấu ấn riêng của bạn. Mọi kết quả được lưu trong thư mục hồ sơ kênh, nên bạn làm tiếp lúc nào cũng được.
 
 > Nội dung skill nằm trên máy chủ và được phát qua **Cổng YTM**. Repo này chỉ có phần khung, công cụ và mẫu. Muốn dùng, bạn đăng nhập bằng Gmail đã đăng ký YouTube Machine.
 
@@ -41,6 +41,7 @@ YouTube Machine là bộ 27 skill cho trợ lý AI chạy trên máy, dùng tố
 | Cắt | Cắt theo lời: bỏ câu hỏng, khoảng lặng, từ đệm | `yt-07f-cat-theo-chu` |
 | Soát | Soát kỹ thuật và đối chiếu lời hứa của video trước khi đăng | `yt-07x-soat` |
 | Shorts | Chọn đoạn đứng độc lập, cắt dọc, thêm phụ đề | `yt-07r-shorts` |
+| 7k | Shorts dọc 3D tự dựng, 10 phong cách (khối pixel, đất sét, giấy gấp, len nỉ...), không tốn tín dụng hình | `yt-07k-khoi-vuong` |
 | Thumbnail | Ghép chữ đúng dấu tiếng Việt, so ở cỡ nhỏ | `yt-08t-thumbnail` |
 | 8 | Gói SEO: 5 tiêu đề, mô tả, chương, tag, checklist đăng | `yt-08-seo-publish` |
 | 9 | 48 giờ đầu sau khi đăng, xử lý khi video ít lượt xem | `yt-09-post-publish` |
@@ -166,10 +167,14 @@ Dữ liệu kênh trong `channels/` đã nằm trong `.gitignore`, nên không b
 
 ## Cập nhật
 
-- Cài bằng git: chạy `git pull` tại thư mục.
-- Cài bằng zip: tải bản mới, chép đè vào thư mục đang dùng. Thư mục `channels/` vẫn giữ nguyên, nhưng nên sao lưu trước khi chép.
+Khi có bản mới, trợ lý báo ngay đầu phiên. Bạn chỉ cần nói với trợ lý: "cập nhật YouTube Machine".
 
-Lần mở sau, trợ lý báo bạn đang ở bản nào và bản đó có gì mới. Danh sách thay đổi ở [CHANGELOG.md](CHANGELOG.md).
+- Trợ lý chạy `node tools/cap-nhat.mjs`, tải đúng bản tài khoản của bạn được dùng, rồi thay các file của bộ skill. Thư mục `channels/` và hồ sơ kênh giữ nguyên.
+- File cũ bị thay được chuyển vào `_thung-rac/cap-nhat-<bản cũ>-sang-<bản mới>-<giờ>/`. Bạn tự xóa khi không cần nữa.
+- Đã tự tải file zip ở trang YouTube Machine thì nói: "cập nhật YouTube Machine từ file zip <đường dẫn>".
+- Gói 1.0.0 chưa có lệnh này. Lần đầu lên bản mới, tải zip ở mục Tải về rồi chép đè vào thư mục đang dùng. Từ đó trở đi chỉ cần nói với trợ lý.
+
+Cập nhật xong, trợ lý báo bạn đang ở bản nào và bản đó có gì mới. Danh sách thay đổi ở [CHANGELOG.md](CHANGELOG.md).
 
 ## Nguyên tắc
 

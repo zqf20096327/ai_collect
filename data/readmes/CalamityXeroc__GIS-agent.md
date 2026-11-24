@@ -27,7 +27,7 @@ src/gis_cli/
 │   └── hygiene.py       # 交付卫生（过程文件 / 重做残留）
 ├── cartography/         # 制图：facts → design → render → qc
 ├── datacatalog/         # SQLite 数据目录（字段名 / 坐标系 / 范围）
-├── web/                 # 本地 Web 服务（FastAPI）：catalog / rows / distinct / raster bands / 预览
+├── web/                 # 本地 Web 服务（FastAPI）：datasets / profile / rows / distinct / raster bands / preview
 ├── recipes/             # 48 个 GIS 方法论配方（自带验证断言）
 ├── ui/                  # 终端界面（转录 / 状态行 / 输入框 / 命令）
 ├── trace/               # 每次 run 的 JSONL + Markdown 报告
@@ -106,11 +106,20 @@ web/
 - token 用量与**前缀缓存命中率**写入 trace，`--cost` 可汇总
 - 项目日志：相关性 + 最近混合检索，把"上次同类任务踩过的坑"注入下次
 
+**数据资产（Web GIS 工作台）**
+- 布局对齐真实 GIS 软件：左 dock 目录树 + 图层栈、中间地图、右 dock 四 tab、底部属性表、状态栏；dock 可拖宽、可折叠，属性表高度可拖
+- 目录树按 文件夹 → `.gdb` → 要素类 逐级展开，行尾带 EPSG 徽标与要素数，双击上图；`.gdb` 内的非空间表标「仅属性表」，双击只开属性表、不进图层栈
+- 图层栈：显隐、拖拽排序、逐层缩放到范围、移除
+- 地图：仓库内离线底图（零外部请求）、CRS 警告条、图例、比例尺、指北；非 4326 图层经 pyproj 重投影到 4326 再上图
+- 右 dock 四 tab：常规（名称 / 类型 / 几何类型 / 要素数 / 可见性 / 源路径）、符号化（单色、唯一值逐类改色、描边 / 线宽 / 透明度；栅格 R/G/B 合成 + 拉伸 + 色带）、字段、元数据（空间参考 WKID·投影·基准面·单位·轴序、范围、要素、数据属性）
+- 底部属性表：一图层一 tab，分页 / 排序 / 筛选全走服务端，footer 只写服务端给的数字（行缓存截断时明写「仅前 N 行」）
+- 状态栏：光标坐标 / 比例尺 / 显示坐标系 / 可见图层数 / 缩放
+
 **界面与工程**
 - 交互式终端：转录 / 状态行 / 输入框 / `@` 文件补全 / `/` 命令 / Esc 中断
 - 运行中再输入 = 排队，本轮结束自动合并继续
 - 会话可续（`--continue` / `--resume`）、导出 Markdown
-- CI：只跑不依赖 ArcGIS 的部分（`pytest -m "not arcpy"`，约 35s）
+- CI：只跑不依赖 ArcGIS 的部分（`pytest -m "not arcpy"`，实测 2~3 分钟）
 
 ## 快速开始
 
@@ -327,7 +336,7 @@ cp config/llm_config.example.json config/llm_config.json
 
 ## 测试覆盖
 
-约 **460 个测试**（全量约 60s；CI 只跑不依赖 ArcGIS 的部分，约 35s）。
+约 **1,870 个测试**（`pytest --collect-only` 实测 1,866 条；CI 只跑不依赖 ArcGIS 的部分，该步实测 2~3 分钟）。
 
 ```powershell
 # 全量
@@ -346,6 +355,7 @@ pytest tests/test_engine_*.py
 - 制图设计引擎（可用假 facts 跑，不需要 ArcGIS）
 - 数据目录增量扫描 / 项目日志相关性检索
 - 终端界面（含无 ANSI 终端的回归）
+- Web 端接口与数据资产工作台前端（`tests/web`，277 条）
 - 依赖边界（新引擎不得依赖 langchain/litellm/chromadb/pydantic）
 
 ## 项目路线图

@@ -29,9 +29,10 @@ The series is grounded in several key philosophical commitments:
 
 ## Authors
 
-- **Xule Lin**: PhD student at Imperial College Business School, studying how human & machine intelligences shape the future of organizing.
-- **Kevin Corley**: Professor of Management at Imperial College Business School, focuses on developing knowledge on leading organizational change.
-- **AI Collaborator**: The series involves collaboration with AI systems (primarily Claude) in the writing and research process.
+- **Xule Lin**: Assistant Professor at SKEMA Business School (SKEMA Centre for Artificial Intelligence, Paris) and Research Associate at Imperial Business School ([linxule.com](https://linxule.com)), studying how human and machine intelligences shape the future of organizing.
+- **Kevin Corley**: Professor of Management at Imperial Business School, focusing on developing knowledge on leading organizational change.
+- **Carliss Y. Baldwin**: William L. White Professor of Business Administration, Emerita, at Harvard Business School (co-author on the SEAM series).
+- **AI Collaborators**: Essays involve sustained collaboration with AI systems (Claude, Kimi, DeepSeek, ChatGPT, Gemini, and others) in the research and writing process.
 
 ## International Presence
 
@@ -89,12 +90,15 @@ The articles are stored in the following directory structure:
 - `posts-cn/` - Chinese 观阙LOOM articles (18 posts)
 
 **Other Series (English):**
-- `organizational-futures/` - AI's role in reshaping organizational forms
-- `ai-whispers/` - Practical conversational techniques for AI interaction
-- `epistemic-voids/` - Case studies of AI workflows producing form without substance
-- `research-with-ai/` - Practical workflows for building AI thinking partners
-- `seam/` - Junctures where paradigms meet organizations (co-authored with Carliss Y. Baldwin)
-- `individual-posts/` - Standalone articles and announcements
+- `organizational-futures/` - AI's role in reshaping organizational forms (9 posts, including the 13-model Post-AGI Organizations study)
+- `ai-whispers/` - Practical conversational techniques for AI interaction (3 posts)
+- `epistemic-voids/` - Case studies of AI workflows producing form without substance (3 posts)
+- `research-with-ai/` - Practical workflows for building AI thinking partners (5 posts)
+- `seam/` - Junctures where paradigms meet organizations, co-authored with Carliss Y. Baldwin (2 posts)
+- `thinking/` - Periodic snapshots from inside the research as it unfolds (1 post)
+- `individual-posts/` - Standalone articles and announcements (5 posts)
+
+*(Together: 46 English essays and 40 Chinese cultural adaptations in this repository; [linxule.com/writing](https://linxule.com/writing) also archives 7 earlier 2020–2023 essays for 53 English essays total, queryable via MCP at `https://linxule.com/mcp`.)*
 
 **Other Series (中文):**
 - `organizational-futures-cn/` - 组织未来系列中文版

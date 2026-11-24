@@ -53,7 +53,7 @@ starting with `gpt-`/`o`) is replaced by `defaults.model` (`gpt-6-astra`);
 empty; after that the rotated token on the volume wins, so the env var is
 harmless on later restarts but also can't be used to *replace* credentials.
 
-Image tags: `latest`, `v0.4.0`, `sha-<commit>` (GHCR, built on push to `main`
+Image tags: `latest`, `v0.4.1`, `sha-<commit>` (GHCR, built on push to `main`
 and on `v*` tags). Pin a digest for anything you care about.
 
 ## Full run (named keys, metrics, fallback)
@@ -139,7 +139,7 @@ Anything settable by env is also settable in the file; the reverse isn't true.
 | `CODEXPROXY_API_KEYS` | `client_auth.keys` | `sk-local-changeme` placeholder |
 | `CODEXPROXY_DATA_DIR` | `upstream.data_dir` | `~/.codex` |
 | `CODEXPROXY_AUTH_JSON` | — (seed, not config) | unset |
-| `CODEXPROXY_CLI_VERSION` | `upstream.cli_version` | `0.166.0` |
+| `CODEXPROXY_CLI_VERSION` | `upstream.cli_version` | `0.171.0` |
 | `CODEXPROXY_PROXY` | `upstream.proxy` | unset (direct) |
 | `CODEXPROXY_LOG` | `logging.level` | `info` |
 | `CODEXPROXY_LOG_FORMAT` | `logging.format` | `text` |
@@ -244,7 +244,7 @@ in the logs, it's one of these three — the message names which.
 
 `/health` and the model endpoints need no auth (so they work as container
 probes); all `/v1` POST endpoints do. Advertised (and, by default, the only
-accepted) models: `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6.1`, `gpt-6-astra`, `gpt-6-sol`,
+accepted) models: `gpt-6.2-sol`, `gpt-6.2-astra`, `gpt-6.2`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6.1`, `gpt-6-astra`, `gpt-6-sol`,
 `gpt-6-luna`, `gpt-6`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`,
 `gpt-5.6` — the listed entries of the live Codex model catalog. Older
 generations the catalog no longer lists (e.g. `gpt-5.5`, `gpt-5.4`) are

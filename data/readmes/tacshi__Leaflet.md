@@ -98,6 +98,8 @@ iPad app is SwiftUI and UIKit, on the same Go core.
   to Markdown and PDF.
 - Page history with named versions, and what changed since any of them,
   inline or side by side.
+- A Trash (the Recycle Bin on Windows) that keeps deleted pages, with their
+  history, and files for 30 days, to restore them or delete them for good.
 
 ### Work with agents
 
@@ -126,7 +128,9 @@ iPad app is SwiftUI and UIKit, on the same Go core.
   text with its links, and `web_search` searches through the agent's own
   provider (OpenAI, Claude, xAI, OpenRouter, GLM or a ChatGPT plan). Once a
   run has read the web, it writes and reads only the links it found or you
-  gave it, and once it reads your other pages, the web is closed to it.
+  gave it, and once it reads your other pages, the web is closed to it and
+  to the later turns of its chat or comment thread, whose earlier replies
+  may hold what it read.
 - Any OpenAI-compatible provider: presets for OpenAI, Claude, xAI,
   OpenRouter, DeepSeek and GLM, a ChatGPT Plus or Pro sign-in, custom
   endpoints, and local servers such as Ollama, LM Studio, llama.cpp and
@@ -135,7 +139,9 @@ iPad app is SwiftUI and UIKit, on the same Go core.
   providers, a cloud one's API key in the device's keychain: add a provider
   on each device you use it on.
 - Agents outside the app, such as Claude Code, Codex and Cursor, work on
-  pages through [`leaflet mcp`](#agents-outside-the-app-mcp).
+  pages through [`leaflet mcp`](#agents-outside-the-app-mcp), and while
+  Leaflet runs, a small window in a corner of the screen shows their edits
+  as they make them.
 - A [`leaflet` command](#command-line) finds, reads, makes and files pages
   from a terminal and in scripts, and adds to them.
 
@@ -288,6 +294,7 @@ claude mcp add -s user leaflet -e LEAFLET_DATA_DIR=<data folder> -- <executable>
 | `create_folder`, `rename_folder` | Make folders, at the top level or in another folder, and rename them |
 | `move_folder` | Move a folder into another folder or to the top level |
 | `write_markdown`, `insert_blocks`, `replace_block`, `move_block`, `delete_blocks` | Edit a page, as the in-app agents do |
+| `upload_files` | Add pictures, audio, video and PDFs on this computer to a page, by their paths |
 
 The server opens the same database as the app, so it works with the app
 open or closed. Pages shared with you to view are read-only. Edits keep a
@@ -295,12 +302,26 @@ history snapshot before an agent's first edit of a page, then one per ten
 minutes of its edits, or sooner when someone else changed the page in
 between, and sync like any other change. An edit given the version
 `read_page` shows for a block leaves the block as it is if someone changed
-it since, and answers with what it holds now. One without that replaces a
-change the agent never read is kept as a conflict in the page's history,
-and its answer says so. The open app picks up
+it since, and answers with what it holds now. One that replaces a change
+the agent never read, as a nested item someone added under a block it
+deletes, is kept as a conflict in the page's history, and its answer says
+so. `upload_files` copies files into the page as the app's Upload does,
+except into a page other people have or one with a public link. Only the
+app knows of a link another of your computers serves: it checks every two
+minutes while it runs, and without a check from the last five minutes, as
+with the app closed or offline for a while, `upload_files` adds nothing to
+pages that sync. The open app picks up
 what they write within a second and merges it with what is being typed.
 With the app closed, or no page open, `current_page` gives the page opened
 last on this device, with no selection.
+
+While the Mac or PC app runs, in front or not, a small window in a corner
+of the screen shows the part of a page an agent is changing, as it changes
+it, with a few lines before and after: the blocks it adds come in one by
+one and those it changes light up, with its name and what it did. It stays away while that page is open in front of
+you, closes itself once the agent stops, and opens the page in Leaflet at
+the change. Closed, it stays away until the agent pauses; Settings ›
+External agents turns it off.
 
 Agents read and write text color and highlight in text fields as
 `<span style="color:#ef4444;background:#fde68a">text</span>`, in hex.
@@ -326,6 +347,7 @@ adds to them, with the same tools as `leaflet mcp`:
 | `leaflet cat PAGE` | Print a page as Markdown |
 | `leaflet new [TITLE]` | Make a page and print its ID; `--stdin` takes its content from the Markdown piped in |
 | `leaflet append PAGE [TEXT...]` | Add Markdown to the end of a page: the text given, or what is piped in |
+| `leaflet upload PAGE FILE...` | Add files to the end of a page, as the app's Upload does |
 | `leaflet rename PAGE TITLE` | Change a page's title |
 | `leaflet mv PAGE --in PAGE \| --folder FOLDER \| --top` | Move a page inside another, into a folder, or to the top level |
 | `leaflet tag PAGE [TAG...]` | Set a page's tags, or print them; `--clear` takes them off |
@@ -341,6 +363,7 @@ that completes page titles.
 make test 2>&1 | leaflet append "CI log"
 leaflet new "Meeting notes" --folder Work --stdin < notes.md
 leaflet cat Roadmap > roadmap.md
+leaflet upload Trip ~/Pictures/beach.jpg tickets.pdf
 ```
 
 Settings › External agents › Command line installs it: on a Mac as a link
@@ -372,8 +395,9 @@ script builds for macOS, or for Windows with `--win`:
 | `scripts/publish.sh <version> [--mac\|--win] [--allow-partial] [--dry-run]` | A GitHub release for macOS and Windows: checks, release notes from `CHANGELOG.md`, the build, the tag and publishing. One platform named alone stays a draft until the other's build joins it, as a release without a platform's update manifest leaves that platform's installed copies no update; `--allow-partial` publishes it anyway |
 
 On Windows, the PowerShell 7 scripts build the Windows app on that machine.
-MyGo downloads NSIS if it isn't installed, and signing uses `signtool` from
-the Windows SDK:
+MyGo downloads NSIS if it isn't installed, and signing uses PowerShell's
+`Set-AuthenticodeSignature` (`scripts\sign-windows.ps1`), which reads the
+certificate's password from the environment:
 
 | Script | Builds |
 | --- | --- |
@@ -383,12 +407,13 @@ the Windows SDK:
 Run any script with `--help` for its options, or `Get-Help` for a `.ps1`
 one. macOS releases need a Developer ID Application identity and a
 `notarytool` keychain profile, Windows installers need NSIS (`brew install
-makensis`), and every release needs the update signing key;
-`scripts/build-release.sh --help` explains each one. Uploads refuse
-unsigned Windows installers, and macOS ones built `--skip-notarize`, unless
-`--allow-unsigned` (`-AllowUnsigned`) or `LEAFLET_ALLOW_UNSIGNED=1` says
-to publish them anyway, and never go to a release that is published
-already.
+makensis`), 3.08 or later to sign them, and every release needs the update
+signing key; `scripts/build-release.sh --help` explains each one. Uploads
+refuse unsigned Windows installers, and macOS ones built `--skip-notarize`,
+unless `--allow-unsigned` (`-AllowUnsigned`) or `LEAFLET_ALLOW_UNSIGNED=1`
+says to publish them anyway, and never go to a release that is published
+already, nor from a working tree with changes or files git neither tracks
+nor ignores, before the build or after it.
 
 To build one server in, as `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`
 set one for a run, give its URL and Publishable key to the linker through

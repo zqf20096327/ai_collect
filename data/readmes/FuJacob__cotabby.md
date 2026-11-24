@@ -152,8 +152,7 @@ Every shortcut is rebindable under Settings → Shortcuts.
 
 Cotabby works inside other apps, so macOS asks for a few permissions. Each one maps to a specific feature, and Cotabby walks you through them on first launch:
 
-- **Accessibility** — read the text and cursor position in the field you're typing in, and insert what you accept.
-- **Input Monitoring** — notice your typing so it knows when to suggest, and detect the accept keys.
+- **Accessibility** — read the text and cursor position in the field you're typing in, notice your typing so it knows when to suggest, detect the accept keys, and insert what you accept.
 - **Screen Recording** *(optional)* — capture the area around your cursor for visual context, and to match the ghost text's font, size, and position to the app's own text where the app doesn't report them. Leave it off and everything else still works.
 
 Cotabby blocks generation, presentation, and insertion in password and other secure fields.
@@ -169,8 +168,8 @@ scripts/prepare_cotabby_workspace.sh
 open build/cotabby-dependencies/Cotabby.xcworkspace
 ```
 
-Use the **Cotabby Dev** scheme for local work. The workspace temporarily supplies the native
-APIs in our pending CotabbyInference patch; preparation is automatic in CI and release builds.
+Use the **Cotabby Dev** scheme for local work. The workspace pins every package, including
+CotabbyInference, to the exact revisions CI and releases build; preparation is automatic there.
 
 If you want to understand the runtime and suggestion pipeline before contributing, read [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -189,7 +188,15 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, bui
 
 ## Created by
 
-Originally created by <a href="https://github.com/FuJacob">@FuJacob</a>, now developed and maintained by <a href="https://github.com/FuJacob">@FuJacob</a>, <a href="https://github.com/jam-cai">@jam-cai</a>. and <a href="https://github.com/akramj13">@akramj13</a>
+Originally created by <a href="https://github.com/FuJacob">@FuJacob</a>
+
+Active maintainers:
+- <a href="https://github.com/FuJacob">@FuJacob</a>
+- <a href="https://github.com/akramj13">@akramj13</a>
+
+Previous maintainers:
+- <a href="https://github.com/jam-cai">@jam-cai</a>
+
 
 ## License
 

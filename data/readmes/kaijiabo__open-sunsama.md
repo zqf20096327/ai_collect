@@ -38,7 +38,7 @@ Most planners are closed boxes that your AI assistant can't see into. Open Sunsa
 - **🤖 Your AI plans with you.** Claude and ChatGPT can read your schedule, create and prioritize tasks, time-block your day, and close things out through a secure one-click connector.
 - **🗓️ Sunsama-style daily planning.** A kanban board of days, drag-and-drop time blocking, focus mode with a timer, and rollover of unfinished work.
 - **🔓 Open source and self-hostable.** Run it on your own server, read every line, and extend it through a full REST API.
-- **🖥️ Everywhere you work.** Web, desktop (macOS, Windows, Linux), and mobile, with light and dark themes and keyboard-first navigation.
+- **🖥️ Everywhere you work.** Web and desktop (macOS, Windows, Linux), plus an early Android APK and iOS TestFlight build, with light and dark themes and keyboard-first navigation.
 
 <br />
 
@@ -242,7 +242,8 @@ Trello-style boards for bets and side projects. Promote an idea to a real task w
 | Full REST API with scoped keys | ✅ | Limited |
 | Daily planning board + time blocking | ✅ | ✅ |
 | Focus timer, routines, rollover | ✅ | Varies |
-| Web, desktop, and mobile apps | ✅ | ✅ |
+| Web and desktop apps | ✅ | ✅ |
+| Phone apps | ✅ App Store and Google Play | ⚠️ Early Android APK and iOS TestFlight |
 
 Switching from another tool? Read the comparisons: [Sunsama](https://opensunsama.com/alternative/sunsama) · [Motion](https://opensunsama.com/alternative/motion) · [Akiflow](https://opensunsama.com/alternative/akiflow) · [Reclaim](https://opensunsama.com/alternative/reclaim) · [Todoist](https://opensunsama.com/alternative/todoist)
 
@@ -260,13 +261,14 @@ Switching from another tool? Read the comparisons: [Sunsama](https://opensunsama
 
 ## 🛠️ MCP tools
 
-24 tools, available through the hosted connector and the local server:
+47 tools, available through the hosted connector and the local server:
 
 | Category | Tools |
 | --- | --- |
 | **Tasks** | `list_tasks` `get_task` `create_task` `update_task` `complete_task` `uncomplete_task` `delete_task` `schedule_task` `reorder_tasks` |
 | **Time blocks** | `list_time_blocks` `get_time_block` `create_time_block` `update_time_block` `delete_time_block` `link_task_to_time_block` `get_schedule_for_day` |
 | **Calendar events** (read-only) | `list_calendar_events` |
+| **Ideas** | `list_idea_boards` `create_idea_board` `update_idea_board` `delete_idea_board` `reorder_idea_boards` `list_idea_columns` `create_idea_column` `update_idea_column` `delete_idea_column` `reorder_idea_columns` `list_ideas` `get_idea` `create_idea` `update_idea` `delete_idea` `reorder_ideas` `promote_idea` `list_idea_subtasks` `create_idea_subtask` `update_idea_subtask` `delete_idea_subtask` `reorder_idea_subtasks` `bulk_ideas` |
 | **Subtasks** | `list_subtasks` `create_subtask` `toggle_subtask` `update_subtask` `delete_subtask` |
 | **Profile** | `get_user_profile` `update_user_profile` |
 
@@ -350,7 +352,7 @@ DEMO_API_URL=http://localhost:3001 DEMO_PASSWORD='Choose-a-strong-1' bun run scr
 | --- | --- |
 | **Frontend** | React 19, Vite, TanStack Router + Query, Tailwind CSS, Radix UI, Tiptap |
 | **Backend** | Hono 4, Drizzle ORM, PostgreSQL, PG Boss jobs, Zod, OAuth 2.1 authorization server |
-| **AI** | Model Context Protocol (Streamable HTTP + stdio), 24 annotated tools |
+| **AI** | Model Context Protocol (Streamable HTTP + stdio), 47 annotated tools |
 | **Desktop / mobile** | Tauri 2, Expo |
 | **Infra** | Bun workspaces, Turborepo, Docker, Railway |
 
@@ -374,7 +376,8 @@ open-sunsama/
 - [x] Focus mode, routines (recurring tasks), and rollover
 - [x] Calendar sync: Google Calendar, Outlook, and iCloud
 - [x] Ideas boards and a ⌘K command palette
-- [x] Desktop and mobile apps
+- [x] Desktop apps
+- [ ] Phone apps in the App Store and Google Play (early Android APK and iOS TestFlight build today)
 - [x] MCP server (local stdio) and REST API with scoped keys
 - [x] **One-click Claude & ChatGPT connector** (hosted MCP + OAuth)
 - [ ] Team workspaces
@@ -409,7 +412,7 @@ Add <code>https://api.opensunsama.com/mcp</code> as a custom connector in Claude
 <details>
 <summary><b>What is MCP?</b></summary>
 <br />
-The <a href="https://modelcontextprotocol.io">Model Context Protocol</a> is an open standard for connecting AI assistants to tools and data. Open Sunsama's MCP server gives assistants 24 tools to read and update your tasks, subtasks, and time blocks.
+The <a href="https://modelcontextprotocol.io">Model Context Protocol</a> is an open standard for connecting AI assistants to tools and data. Open Sunsama's MCP server gives assistants 47 tools to read and update your tasks, subtasks, time blocks, and Ideas boards, and to read your synced calendar events.
 </details>
 
 <details>

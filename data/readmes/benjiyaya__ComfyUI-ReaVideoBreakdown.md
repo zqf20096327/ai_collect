@@ -14,6 +14,8 @@ Point it at any video and it splits the footage into shots, then for **every sho
 - **the camera work** — *measured* with optical flow (pan px/s, zoom %/s, handheld vs smooth), not guessed
 - **a ready-to-use text-to-video prompt** — one per shot, delimited and wired straight into your favourite video model
 
+- Using Minimax H3 + REA VIdeo node to create some videos : https://youtu.be/oYRpAddkki8
+
 All reports are in the open [VIDEO.md](https://github.com/JuneYaooo/rea-video) style (`video_md`), plus structured JSON, plus plain delimited prompts.
 
 ## Gallery

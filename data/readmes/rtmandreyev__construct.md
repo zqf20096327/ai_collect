@@ -318,6 +318,10 @@ Then add the skill to your agent, or use Construct directly:
 | By hand | The command line below; no model needed |
 | Blender | `python3 scripts/build_blender_extension.py`, then **Edit → Preferences → Get Extensions → Install from Disk** with the zip in `dist/` |
 
+The MCP server is listed on Glama and in the official MCP Registry as `io.github.rtmandreyev/construct`:
+
+[![rtmandreyev/construct MCP server](https://glama.ai/mcp/servers/rtmandreyev/construct/badges/score.svg)](https://glama.ai/mcp/servers/rtmandreyev/construct)
+
 ## Quick start
 
 **In the Claude or ChatGPT app, no terminal.** Download Construct, give the app its folder and your photos, and ask.

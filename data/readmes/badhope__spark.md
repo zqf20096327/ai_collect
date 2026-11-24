@@ -2,9 +2,9 @@
 
 # Spark
 
-**Local-first AI coding agent and office workbench, with guardrails you can audit.**
+**A browser-native, cross-platform, open-source, extensible AI coding application.**
 
-Spark gives you one agent loop across the terminal, browser, desktop, IDE and API. Every write is gated by approval and a sandbox, every turn can be rolled back, and the model layer works with any OpenAI-compatible endpoint.
+Spark gives you one agent loop across the browser, terminal, desktop, IDE, mobile layout and API. Every write is gated by approval and a sandbox, every turn can be rolled back, and models, tools, Skills, MCP servers and UI are replaceable. Code and ledgers live in the workspace you choose by default.
 
 ```bash
 # Linux / macOS — SHA256-verified installer
@@ -17,16 +17,18 @@ spark init    # connect any OpenAI-compatible endpoint
 spark web     # open the browser UI
 ```
 
-No API key? Spark starts in demo mode with a local mock model. Add a key in settings and the next turn uses the real model without a restart.
+No API key? Spark still starts, but reports the real configuration error and refuses to fake an answer. Settings has an explicit **Mock demo mode** you can switch in and out of with one click; live-mode errors (missing key, model not downloaded, unreachable endpoint) are shown as they are.
 
 ![Spark chat with reasoning, tool calls and a live context meter](assets/screenshots/11-chat.png)
 
 ## What it does
 
+- **The browser is an execution surface.** The Web UI, desktop shell, CLI/TUI, IDE, mobile layout and API share one agent loop, so browser actions, approvals, rollback and ledgers do not split into separate stacks. Browser automation runs on Playwright with Chromium / Chrome / Edge / Firefox / WebKit engines, persistent profiles for logged-in sessions, and CDP attachment to an already-running browser. Its 24 `browser_*` tools cover snapshots, interaction, tabs, downloads, PDF, console, network, traces and Chromium metrics; per-domain `allow/read/prompt/deny` rules gate writes, with a second confirmation on sensitive sites. Reusing a signed-in tab goes through the official Playwright MCP `--extension` preset; see `docs/BROWSER_EXTENSION_BRIDGE.md`.
+- **Every layer is replaceable.** MIT licensed; providers, tools, MCP servers, Skills, slash commands, plugins, themes and workflows can all be swapped, and the stack can be self-hosted.
 - **Auditable execution.** Approval modes and sandbox levels are enforced before a write or command runs. Wildcard rules are scoped to user, project and local config; `deny` always wins. Protected credential paths and shell token checks stay on.
 - **Recoverable by design.** Each turn snapshots the workspace and can restore files and conversation together, including outside git repositories.
 - **Task-as-branch.** Start a task, commit each verified step, and finish on green tests; a failed run abandons its branch instead of leaking changes.
-- **Built for real files.** The office workbench turns documents, meeting recordings and spreadsheets into cited minutes, action items, reports and exports. Local OCR and transcription keep the source on your machine.
+- **Real files when the task calls for it.** The enterprise control plane can turn documents, meeting recordings and spreadsheets into cited minutes, action items, reports and exports; local OCR and transcription keep the source on your machine.
 - **Provider freedom.** Any OpenAI-compatible endpoint, fallback model chain and credential pool, plus a separate small model for auxiliary calls.
 
 ## Run it
@@ -34,13 +36,16 @@ No API key? Spark starts in demo mode with a local mock model. Add a key in sett
 ```bash
 spark                         # terminal TUI
 spark web                     # browser UI on loopback
+spark web --host 0.0.0.0      # LAN; Settings → Remote generates a QR link
+spark web --public-url https://spark.example.com  # behind your HTTPS reverse proxy
 spark desktop                 # native window, loopback only
 spark exec "task" --json      # NDJSON events for scripts and CI
 spark review                  # inspect the uncommitted diff
 spark doctor                  # check config, credentials and runtime
+spark browser-doctor          # launch the configured engine and render a test page
 ```
 
-The office workbench runs through the enterprise control plane:
+The enterprise control plane also provides document and meeting workflows:
 
 ```bash
 spark enterprise --host 127.0.0.1 --port 18800
@@ -48,6 +53,42 @@ spark enterprise --host 127.0.0.1 --port 18800
 ```
 
 `spark exec` emits one JSON object per line and ends with `{"type":"final","text":"…"}`, so it pipes directly into `jq`.
+
+## Unattended coding loop
+
+```bash
+spark autopilot "add rate limiting to the auth module, with regression tests" --workdir .
+spark autopilot --resume .spark/autopilot/<run-id>.json --workdir .   # continue after a stop
+spark autopilot "refactor the parser" --workdir . --json              # NDJSON for CI/queues
+```
+
+Autopilot runs the same `AgentLoop`, approvals and sandbox as every other entry point. It adds a state machine around them:
+
+1. **build** — read the repository, classify the task, plan, implement;
+2. **repair** — feed the independent test failure back, classify the root cause, fix it;
+3. **audit** — after tests are green, re-check requirement coverage and boundaries;
+4. **done** — only when tests pass, a real diff exists, and the audit turn finished.
+
+Each turn is persisted to `.spark/autopilot/<run-id>.json`. `--max-turns`, `--turn-timeout`, `--task-timeout`, `--max-cost-usd` and consecutive no-progress limits stop a runaway run. The default is `full-auto` + workspace sandbox + no tool network; `unrestricted` requires `--allow-unrestricted`. It is not a second black-box agent, and it does not trust the model's "done" claim: tests are executed by the runner itself. See `docs/AUTOPILOT.md` for the state machine, prompt contract and the honest limits.
+
+![Autopilot local run: MiniCPM5-2B, real repo, real pytest, four turns from build to audit](assets/screenshots/31-autopilot-local-run.png)
+
+*The image is rendered from the actual NDJSON log of the run, not a mockup.*
+
+## OpenCode compatibility
+
+Spark reads the static assets an OpenCode project already has:
+
+```bash
+spark opencode --workdir .        # inspect config, agents, commands, MCP and parse errors
+spark opencode --workdir . --json # machine-readable
+```
+
+- `opencode.json` / `opencode.jsonc` (comments and trailing commas accepted);
+- `.opencode/agents/**/*.md` → declared sub-agents, with `permission` / `permissions` deny mapped to tool denylists;
+- `.opencode/commands/*.md` and inline `command` entries → slash commands, with `$ARGUMENTS` substitution.
+
+It does not implement the OpenCode plugin runtime, provider registry, automatic MCP import, or ``!`command` `` shell injection; those are not silently faked. See `docs/OPENCODE_COMPAT.md`.
 
 ## Interfaces
 
@@ -59,6 +100,22 @@ spark enterprise --host 127.0.0.1 --port 18800
 | TUI / CLI | `spark` · `spark exec --json` | Terminal work and automation |
 | IDE / ACP | `spark acp` · `spark ide install` | Zed, JetBrains, Neovim |
 | MCP / A2A | `spark mcp-serve` · `spark a2a-serve` | Tool and agent-to-agent integration |
+
+## Remote control
+
+Open **Settings → System → Remote control** and generate a one-time link and QR code. The phone joins the same workspace; files, commands, model calls and approvals still run on the desktop. Same Wi-Fi works with `spark web --host 0.0.0.0`; public access uses `spark web --public-url https://your-domain` behind your own HTTPS reverse proxy.
+
+The phone can chat, approve, cancel, switch sessions and read files/diffs. Settings, plugins and direct shell/PTY stay local. Pairing codes expire after 5 minutes; each device gets its own 7-day token that can be revoked independently. Paired pages show live presence and a local-only audit trail of remote writes; an HTTPS or localhost page can enable Web Push so a locked phone still receives approval alerts.
+
+The phone gets its own home instead of a shrunken desktop: at 390×844 the first screen shows pending approvals, the current session and a new task, with a fixed four-item tab bar. Approvals take two taps — review on the home card, then allow or deny. It is installable as a PWA; the composer microphone uses browser `SpeechRecognition` and falls back to the keyboard when unsupported or denied.
+
+![Spark remote control: QR code, one-time link and paired-device list](assets/screenshots/25-remote-control.png)
+
+![Spark remote control: online device, last request and local audit trail](assets/screenshots/26-remote-audit.png)
+
+![Spark mobile home: pending approval, current session and new task on one screen](assets/screenshots/27-mobile-home.png)
+
+![Spark mobile approval: review from the home card, then deny or allow in two taps](assets/screenshots/28-mobile-approval.png)
 
 ## Safety model
 
@@ -74,11 +131,18 @@ OS-level isolation is used where available: bwrap on Linux, Job Objects on Windo
 
 | Doc | 中文 |
 |---|---|
+| [Project baseline](docs/PROJECT_BASELINE.md) | [项目基线](docs/PROJECT_BASELINE.md) |
+| [Autopilot](docs/AUTOPILOT.md) | [Autopilot](docs/AUTOPILOT.md) |
+| [OpenCode compatibility](docs/OPENCODE_COMPAT.md) | [OpenCode 兼容](docs/OPENCODE_COMPAT.md) |
+| [Product positioning](docs/en/PRODUCT_POSITIONING.md) | [产品定位](docs/PRODUCT_POSITIONING.md) |
+| [Core capability gaps](docs/CORE_CAPABILITY_GAPS.md) | [核心能力差距](docs/CORE_CAPABILITY_GAPS.md) |
+| [Integration map](docs/INTEGRATION_MAP.md) | [外部集成地图](docs/INTEGRATION_MAP.md) |
 | [Install & build](docs/en/INSTALL.md) | [安装与打包](docs/INSTALL.md) |
 | [Configuration](docs/en/CONFIG.md) | [配置](docs/CONFIG.md) |
 | [HTTP API](docs/en/API.md) | [API](docs/API.md) |
 | [Architecture](docs/en/ARCHITECTURE.md) | [架构](docs/ARCHITECTURE.md) |
 | [Features](docs/FEATURES.md) | [功能总览](docs/FEATURES.md) |
+| [Remote control](docs/REMOTE.md) | [远程控制](docs/REMOTE.md) |
 | [Enterprise control plane](docs/ENTERPRISE.md) | [企业控制面](docs/ENTERPRISE.md) |
 | [A2A protocol](docs/A2A.md) | [A2A](docs/A2A.md) |
 | [ACP / IDE setup](docs/ACP.md) | [IDE 接入](docs/ACP.md) |

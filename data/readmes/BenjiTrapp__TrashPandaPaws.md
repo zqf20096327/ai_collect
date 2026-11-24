@@ -9,7 +9,7 @@
   <a href="https://benjitrapp.github.io/trashpandapaws-network-implant/"><img src="https://img.shields.io/badge/write--up-the%20why%20behind%20it-ff8c00?logo=jekyll&logoColor=white" alt="Write-up"></a>
   <img src="https://img.shields.io/badge/platform-Raspberry%20Pi%204%20%7C%20CM4-c51a4a?logo=raspberrypi&logoColor=white" alt="Platform">
   <img src="https://img.shields.io/badge/OS-ParrotOS%20ARM64-00e5ff?logo=linux&logoColor=white" alt="OS">
-  <a href="docs/C2_DEMO.md"><img src="https://img.shields.io/badge/C2%20Demo-33%20stills%20%2B%202%20GIFs-blueviolet" alt="C2 Demo"></a>
+  <a href="docs/C2_DEMO.md"><img src="https://img.shields.io/badge/C2%20Demo-34%20stills%20%2B%202%20GIFs-blueviolet" alt="C2 Demo"></a>
   <img src="https://img.shields.io/badge/transport-HTTPS%20%7C%20DNS%20%7C%20SMB%20%7C%20QUIC%20%7C%20gsocket-blue" alt="Transports">
   <img src="https://img.shields.io/badge/dependencies-stdlib%20only-brightgreen" alt="No Dependencies">
   <img src="https://img.shields.io/badge/license-use%20responsibly-red" alt="License">
@@ -609,7 +609,7 @@ asked for again.
 | Netstat View | Parsed network connections table with automatic security assessment |
 | Pivot View | Discover and enumerate hosts on adjacent subnets, drawn as a **pivot map** — a visualisation of scan results. It carries no traffic; the thing that does is the reverse SOCKS tunnel, below |
 | Tunnel | Start and stop the tunnel server and each endpoint, with the per-identity SOCKS port and its credential ([`docs/TUNNEL.md`](docs/TUNNEL.md)) |
-| Operator Shell | One terminal onto the operator's own hardware implant, opened from the header. Not per-agent: lateral movement keeps the task-based `shell`. The channel is raised on an explicit action and dropped when the session ends, and both cost one check-in — the view shows that wait as a number and never shortens the beacon's interval. A window rather than a modal: `_` minimises it to an entry under the agent list and the shell keeps running, `✕` ends it, and a reload restores the card and attaches a **new shell** — the connection *is* the shell, so the previous one is gone ([`docs/TUNNEL.md`](docs/TUNNEL.md)) |
+| Operator Shell | One terminal onto the operator's own hardware implant, opened from the header. It runs the endpoint user's own **login shell** where that is bash or zsh, so their prompt and colours apply, and its first line says whether history is off or only not guaranteed off. Not per-agent: lateral movement keeps the task-based `shell`. The channel is raised on an explicit action and dropped when the session ends, and both cost one check-in — the view shows that wait as a number and never shortens the beacon's interval. A window rather than a modal: `_` minimises it to an entry under the agent list and the shell keeps running, `✕` ends it, and a reload restores the card and attaches a **new shell** — the connection *is* the shell, so the previous one is gone ([`docs/TUNNEL.md`](docs/TUNNEL.md)) |
 | Server Logs | Global server log viewer with filtering (accessible without active agent) |
 
 #### Transport Protocols

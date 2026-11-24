@@ -1,5 +1,7 @@
 # Project AEGIS — Core
 
+[![CI](https://github.com/gravion-ux/aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/aegis/actions/workflows/ci.yml)
+
 ![Demo](docs/demo.png)
 
 *The AEGIS multi-agent core in action.*
@@ -12,7 +14,7 @@ declared, scoped, limited, audited, and recoverable.
 This repository is the working core. It runs on Node.js 18+ with **zero
 runtime dependencies**.
 
-> **Status.** Phase 0–2 complete. **294 automated tests** (293 pass, 1 skipped), and CI runs
+> **Status.** Phase 0–3 complete. **315 automated tests**, and CI runs
 > the suite on Node 18, 20 and 22. The HTTP provider is proven against a
 > local mock server; it has **not** been pointed at a paid model, because no
 > credential is available in this environment. See
@@ -35,10 +37,38 @@ the parts that make it an agent system rather than a task tracker.
 | **Cancellation & recovery** | cooperative cancellation between steps, checkpoints, idempotency, and resume that survives a real process restart | `aegis/recovery.js` |
 | **Typed config** | validated config with credential-shaped fields stripped on read | `aegis/config.js` |
 
+## What Phase 3 added — the Chief
+
+Phase 2's Orchestrator runs one task. Phase 3 adds the layer above it:
+a **chief** that takes a whole goal, splits it into a dependency graph
+of subtasks, delegates each one to a specialist, and refuses to call
+the mission done until a separate verification pass agrees.
+
+| area | what it does | where |
+| --- | --- | --- |
+| **Specialist cards** | one JSON data file per specialist: role, purpose, the actions it may perform, the tools it may touch, and the boundary tags it may work inside. A card may narrow the orchestrator manifest, never widen it — the chief checks this at startup | `aegis/cards/`, `aegis/cards.js` |
+| **Decomposition** | a mission (goal + granted scopes + work items) is routed item-by-item to specialists and built into a task graph; dependencies are explicit (`needs`), data flow is explicit (`inputFrom`), cycles and unknown dependencies refuse the mission before anything runs | `aegis/chief.js` |
+| **Scope enforcement in code** | every subtask is checked twice — at decomposition and again at dispatch: the action must be on the specialist's card, the boundary tag must be on the card, and the tag must be inside the mission's granted scopes. A violation refuses the mission (or the subtask) with `OUT_OF_SCOPE` / `ACTION_NOT_ALLOWED`, and the refusal is audited | `aegis/chief.js` (`Scope`, `Chief._enforce`) |
+| **Dispatch** | subtasks run in topological order through the existing Orchestrator, so manifest allowlists, budgets, output-schema validation and audit apply unchanged; a subtask whose dependencies did not all succeed is SKIPPED, never run on partial inputs | `aegis/chief.js` |
+| **Verification pass** | the mission is `DONE` only when an independent pass confirms every subtask is accounted for, succeeded, carries evidence and a non-null output, and stayed inside the granted scopes. Anything else is `NEEDS_REVIEW` | `aegis/chief.js` (`Chief.verify`) |
+| **Summariser specialist** | a sixth card-carrying specialist: digests the labelled outputs of earlier subtasks (first line + word count per section), deterministically | `aegis/specialists.js` |
+
+Run the demo — four subtasks, four specialists, one verified report,
+plus the refusal path with a scope grant removed:
+
+```bash
+npm run demo:chief
+```
+
+Decomposition is deterministic and rule-based, like the Phase 1/2
+agents: the same mission always produces the same graph. There is no
+LLM call in the chief layer, and no specialist gains a capability from
+being asked nicely — capability comes only from its card and the
+manifest under it.
 ## Quick start
 
 ```bash
-# run the full suite (294 tests)
+# run the full suite (315 tests)
 npm test
 
 # explore the CLI
@@ -51,7 +81,7 @@ node aegis/cli.js tasks run <id-from-previous>
 node aegis/cli.js tasks show <id>
 
 # Phase 2 surface
-node aegis/cli.js agents list        # the 9 registered agents
+node aegis/cli.js agents list        # the 10 registered agents
 node aegis/cli.js tools list          # the default-deny toolset
 node aegis/cli.js providers smoke     # offline provider, no credentials needed
 node aegis/cli.js usage               # budget summary
@@ -132,7 +162,7 @@ These are design constraints, not aspirations. Each one has a test.
 ## Tests
 
 ```bash
-npm test              # 294 tests, the full suite
+npm test              # 315 tests, the full suite
 npm run test:phase1   # the Phase 1 compatibility suite
 npm run scan:secrets  # credential-shaped string scan
 ```
@@ -140,7 +170,7 @@ npm run scan:secrets  # credential-shaped string scan
 The suite covers the state machine, storage round-trip, audit chain,
 redaction patterns, deterministic and specialist agents, the memory
 schema, provider routing and paid-provider refusal, tool permissions,
-budgets, the orchestrator, cancellation, checkpoint/resume, the CLI, the
+budgets, the orchestrator, cancellation, checkpoint/resume, the chief (decomposition, dependency ordering, scope refusal, audit trail, verification), the CLI, the
 Phase 1 compatibility surface, and adversarial cases — invalid
 transitions, corrupted index, oversized inputs, a missing memory key, and
 a manifest that has drifted from the registry.

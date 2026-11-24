@@ -171,8 +171,10 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - Explain Support Vector Machines (SVM). What is the kernel trick?
 - What is the decision boundary in classifiers?
 - Explain Naive Bayes.
+    - Answer: [How does Naive Bayes work?](https://outcomeschool.com/blog/naive-bayes)
 - What is Dimensionality Reduction?
 - Explain PCA (Principal Component Analysis). How does it work? When would you use it?
+    - Answer: [How does PCA work?](https://outcomeschool.com/blog/principal-component-analysis-pca)
 - Explain Gradient Descent and its variants.
     - Answer: [Math Behind Gradient Descent](https://outcomeschool.com/blog/math-behind-gradient-descent)
 - What is the difference between collaborative filtering and content-based filtering?
@@ -335,12 +337,14 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is TF-IDF, and how does it differ from word embeddings?
 - What is Bag-of-Words?
 - What is perplexity used for in NLP?
+    - Answer: [What is perplexity in a language model?](https://outcomeschool.com/blog/perplexity-in-language-models)
 - What is stemming vs lemmatization?
 - What is Latent Semantic Indexing (LSI)?
 - What is dependency parsing?
 - What are some approaches for text summarization?
 - What are word embeddings?
 - What is Word2Vec?
+    - Answer: [How does Word2Vec work?](https://outcomeschool.com/blog/word2vec)
 - What is t-SNE, and how is it used for NLP?
 - Explain ColBERT
     - Answer: [Decoding ColBERT](https://outcomeschool.com/blog/decoding-colbert)
@@ -576,6 +580,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - How do you ensure fairness and reduce bias in ML models?
 - Explain MLOps and its key components.
 - What is a feature store, and why is it important?
+    - Answer: [How does a feature store work?](https://outcomeschool.com/blog/feature-store)
 - What is a model registry, and why is it important?
     - Answer: [How does a Model Registry work?](https://outcomeschool.com/blog/model-registry)
 - Cloud vs on-device Model Deployment.

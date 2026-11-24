@@ -25,7 +25,7 @@ Performance captures record callback timing and workspace updates locally. Enabl
 
 Unread session badges and the floating “new messages” control count AI responses only. User messages, tools, activity, system notices, errors, and empty streaming placeholders do not increase the count. Opening an unread session takes you to its first unread reply and marks the captured updates reviewed; a blue-tinted unread divider remains visible for that visit. A session you already viewed since Herm launched reopens where you left it instead; the divider still marks the first unread reply. The Bot picker counts unread sessions per Bot in a red badge, with a plus sign when the available session inventory is incomplete. Scrolling to the latest reply clears the floating count.
 
-The session list shows the unread count only when the leading slot has no approval, question, running, or error indicator. An unseen failed turn shows a warning triangle there, including in All profiles. Opening the conversation acknowledges the history warning and retains the error details in the transcript.
+The session list shows the unread count only when the leading slot has no approval, question, running, or error indicator. An unseen failed turn shows a red triangle there, including in All profiles. Opening the conversation acknowledges the history warning and retains the error details in the transcript.
 
 [![Herm driving a shared browser with a live agent cursor](docs/media/browser-demo-poster.webp)](docs/media/browser-demo.mp4)
 
@@ -477,6 +477,7 @@ Shared interface motion includes smoothly updating progress meters and section c
 ### Conversations
 
 Saved conversation images are restored from Hermes history when reopening a session, including images stored within message content.
+Emoji reactions on your messages sit on the corner of the message bubble or its image attachments.
 Reopened messages omit Hermes' appended memory recall context and reconcile confirmed sends with saved history.
 Sending means submission is in flight. Accepted means Hermes accepted the input, not that storage is confirmed;
 Queued reflects an explicit queued acknowledgment. A proven row receipt or conservative history match clears
@@ -533,11 +534,23 @@ reading position when that transcript is still cached. Retained lists stay keyed
 to their own profile and are cleared when the Hermes sign-in changes.
 Startup confirms the selected bot before reopening its last chat. Bot avatars and
 live status load independently of restoration.
-Recently opened chats can show a cached transcript while Hermes refreshes it. The opening preview includes bot replies received while you were away.
+Recently opened chats show their cached transcript immediately across bots, split tabs,
+and detached windows while Hermes refreshes it. The cache is bounded and held in
+memory. The opening preview includes bot replies received while you were away.
 On a first visit, Herm waits for the unread check and opens directly at the first
 unread reply, or at the latest message when all replies have been read.
 
-Talk, Pull requests and Issues open as inspector tabs from its **Open a new tab** grid; voice runs while the Talk tab shows. Opening the inspector in the floating desktop panel keeps the conversation visible beside it, with the inspector tab row matching the chat header. The three panes default to roughly 25% list, 40% conversation, and 35% inspector, with adjustable dividers and minimum readable widths.
+Chats, Activity, and other desktop pages share the window's layout host. Showing
+or hiding the Chats list or inspector applies the new pane widths immediately
+and keeps each mounted pane's state.
+Chats groups and sorts background session activity off the main thread.
+Focusing an already-loaded split column keeps both conversations live while
+the inspector follows the selected column.
+
+Talk, Pull requests and Issues open as inspector tabs from its **Open a new tab** grid.
+Voice runs while the Talk tab shows. Choose **Conversation** from the inspector’s
+**+** menu or empty grid to open another session, Bot chat, or group chat in split view.
+Opening the inspector in the floating desktop panel keeps the conversation visible beside it, with the inspector tab row matching the chat header. The three panes default to roughly 25% list, 40% conversation, and 35% inspector, with adjustable dividers and minimum readable widths.
 
 Each Terminal inspector tab owns one shell; open another Terminal tab for a separate shell. Terminal options use a vertical-dots menu beside Previews.
 
@@ -581,7 +594,7 @@ Use **Add to project** or **Move to project** in a conversation's menu to re-hom
 The icon has no background and highlights when the rail is open. Its floating
 cards sit over the same continuous conversation background, with the conversation's
 scrollbar at the far-right edge beyond the rail. The rail discovers PR
-links in loaded conversation messages and targeted PR tool activity, fetches their GitHub details,
+links in loaded conversation messages and targeted PR tool activity in the background, fetches their GitHub details,
 and shows PR details inline. Refresh updates details; missing access shows
 an unavailable state. The rail uses a quiet repository card with compact PR rows
 and a **Changes** row when that session's repository has local edits. The wider card
@@ -621,7 +634,7 @@ unavailable items, and links to anchors or subpages retain the browser fallback.
 - **Streaming chat** with Markdown (including tables with optional outer pipes and table text sized to match reply prose), images, tool output, and inline clarification requests. History prepares image thumbnails in the background. Response text reflows at the current pane width, keeping its action rail beneath the content when resizing.
 - **Image previews** preserve their original proportions without square padding, so wide and tall screenshots fill their intended thumbnail size. Click an image to open the full preview.
 - **Website links** show an inline favicon beside their underlined label. GitHub links use a bundled, theme-aware mark; bare PR and issue URLs display as `PR #123` or `Issue #123`. Other public sites load `/favicon.ico` over HTTPS with a globe fallback.
-- **Working bot**: three diamond tiles light in sequence beneath the avatar as it leans into a hop. The borderless 40pt avatar reacts to activity with reaches, tilts, and hops, including a soft landing and the current activity icon. Rapid updates blend smoothly, and new activity rows appear immediately. Reduce Motion and motion-free themes keep it still.
+- **Working bot**: three diamond tiles light in sequence beneath the avatar as it leans into a hop. Core Animation moves the avatar inside a fixed footprint. Activity changes trigger reaches, tilts, and hops from the current pose and show the current activity icon. New activity rows appear immediately. Reduce Motion and motion-free themes keep it still.
 - **Running activity** keeps duration text free of shimmer while elapsed time continues updating. The separate native highlight keeps moving while scrolling and is hidden under Reduce Motion or motion-free themes. Running and completed tool durations align at the right end of each chat activity row.
 - **Completed activity** starts expanded when the response has no text or images; the activity disclosure can still be toggled.
 - **Edit activity** can expand to a selectable, wrapped diff preview that scrolls vertically.
@@ -643,6 +656,7 @@ unavailable items, and links to anchors or subpages retain the browser fallback.
 - **Dangerous-command approvals**: *Deny*, *Allow once*, or *Always allow*. *Always allow* is saved to the Hermes allowlist.
 - **Split session panes**: drag a session from the sidebar into the chat area, or use **Open in Split View**, to work in up to three columns side by side. Each column is a tab group with its own transcript and composer. Click any tab to make it the active session; the header and session menu move to its column, and the inspector opens beside it. Drop onto a column to add a tab, or at the trailing edge to open a new column. New tabs and columns open beside the session you came from. Bot main chats split the same way from the Bots page, and group chats can be dragged in or picked from the **Group chat** menu as tabs. Tabs show the same status as the sidebar (working spinner, unread count), and Bot tabs show the Bot's avatar and name. Columns last for the current app run.
 - **Pop-out conversations**: choose **Pop Out Conversation** from a session's, Bot's or group chat's context menu (or **Pop out conversation** in the Conversation actions menu) to move that conversation into its own small floating window, which you can drag to any screen. It shows the transcript and composer with the same chat tools as the main window (folder and worktree bar, ⌘F search, quota) and stays above other apps. Opening a message, file, tool call, or bot preview expands a panel beside the transcript. Clicking the session in the sidebar brings its window forward. Closing the window keeps any running work going in Hermes Agent, but discards an unsent draft and any queued follow-up prompts. Group chat rows also offer **Open in Split View**, like Bot rows.
+  Covered conversation windows suspend transcript snapshot updates and Markdown prefetch until they are visible again. Hermes Agent continues the turn while the window is covered.
 
 ### Chat views
 
@@ -945,6 +959,4 @@ Timeline uses a single horizontal gutter and compact 36pt bot faces, and shows b
 ### Developer tools
 
 - **Task plan above the composer**: a compact progress ring and count expand into readable steps, with an emphasized current step and completion marks. The current step spins while the turn is working, including after reopening the task details. Progress, step changes, and disclosure animate briefly; Reduce Motion and motion-free themes keep them still.
-- **Explorer**: a repository browser with blame information. Project chats use their assigned folder immediately, even before the project list refreshes.
-- **Source Control** stays available in the inspector and its + menu while Git state loads or refreshes.
-- **Source Control / Changes**: compact Staged Changes and Changes lists with icon-led section titles and a 12pt left inset for section contents (including Graph), hover-revealed per-file stage/unstage toggles, group stage/unstage actions, VS Code–style right-click menus (Open Changes, Open File, Stage/Unstage, Discard Changes with confirmation — untracked files go to the Trash, staged content is kept — Add to .gitignore, Copy Path, Reveal in Finder; group headers offer Stage/Unstage/Discard All), read-only diffs, and a commit message field (⌘Return commits staged changes only). A collapsible **Stash** section saves staged and working-tree changes with an optional message and untracked files, previews saved di
+- **Explorer**: a repository browser with blame information. Proj

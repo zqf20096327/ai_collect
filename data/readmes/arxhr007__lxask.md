@@ -60,9 +60,11 @@ eval "$(lxask --shell-init bash)"
 
 For fish, add `lxask --shell-init fish | source` to `~/.config/fish/config.fish` instead.
 
-Linux on x86_64 (ARM64 builds too) with glibc 2.28+: Debian, Ubuntu, Fedora, Arch,
-openSUSE and most others. More in [docs/install.md](docs/install.md), including how to
-check the installer against the release checksums first.
+64-bit Linux on x86_64 or ARM64 with glibc 2.28+: Debian, Ubuntu, Fedora, Arch,
+openSUSE and most others, and a Raspberry Pi 4 or 5 with 2 GB or more
+([which boards](docs/install.md#raspberry-pi-and-other-small-boards)). More in
+[docs/install.md](docs/install.md), including how to check the installer against the
+release checksums first.
 
 ### Install by hand
 
@@ -213,8 +215,9 @@ The model-written data was kept out of the public repository when it first opene
 added on 2026-10-21, so the model can now be retrained and every number re-measured from a clone.
 How it was made and filtered: [Development](docs/development.md).
 
-Documentation index used for answers: tldr-pages (CC BY 4.0) and the man pages on your
-machine, each under its own licence.
+Documentation index used for answers: tldr-pages (CC BY 4.0) and the man pages of an
+Ubuntu installation, each under its own licence. Commands are also checked against the
+man pages installed on your machine, where it has them.
 
 Details for each part: [NOTICE](NOTICE).
 

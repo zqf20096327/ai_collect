@@ -18,6 +18,7 @@ rewriting the whole stack.
 
 ## Live demos
 
+- Playground (an Iki character in your browser, no API key or LLM) — https://zeikar.dev/charivo/playground/
 - Live2D web app — https://charivo.vercel.app/
 - Companion (Realtime voice + cross-session memory) — https://charivo-companion.vercel.app/
 
@@ -46,6 +47,11 @@ Open <http://localhost:3000>. The in-app settings menu lets you compare the
 server-mediated (production) and browser-direct dev clients for chat, TTS, and
 STT; realtime voice always uses the server route in this demo, and the same
 menu switches it between Gemini Live and OpenAI Realtime.
+
+To see an app decide when the character speaks, run
+[`examples/vtuber`](./examples/vtuber): an autonomous show with a Director that
+queues, paces, and interrupts speech. It needs only a Gemini key and runs on
+loopback; see its [README](./examples/vtuber/README.md).
 
 The snippets below are for adding Charivo to your own app, not for pasting into
 an empty file — a Live2D scene needs a canvas, the Cubism runtime, model assets,
@@ -119,7 +125,9 @@ Text chat can also drive the character's face and body: register the
 catalog-constrained tools from `@charivo/avatar` on the LLM manager and the
 model calls `setExpression` / `playMotion` / `lookAt` while it replies. See the
 [LLM guide's avatar tool-calling walkthrough](./docs/guide/llm.md#avatar-tool-calling)
-for the wiring.
+for the wiring. Alternatively, a text-driven director reads each spoken line and
+picks the expression and motion with a separate classifier call; see
+[Avatar Control](./docs/guide/avatar.md#text-driven-director).
 
 ## Realtime Voice
 
@@ -296,7 +304,8 @@ App
 
 Charivo is the character's embodiment, not an agent framework. Planning,
 persistent memory, deciding when to speak, and OS access belong to your app
-or to an agent runtime that drives Charivo.
+or to an agent runtime that drives Charivo. [`examples/vtuber`](./examples/vtuber)
+shows one way to build the deciding-when-to-speak layer in the app.
 
 See the [Architecture guide](https://zeikar.dev/charivo/architecture/) for
 event wiring, package roles, detailed layering, and what Charivo leaves out.
@@ -372,7 +381,8 @@ Avatar:
 
 - `@charivo/avatar`: catalog-constrained avatar expression/motion/gaze tool
   definitions, instructions, and a result projector, for use with either
-  `@charivo/llm` or `@charivo/realtime`
+  `@charivo/llm` or `@charivo/realtime`, plus a text-driven director
+  (`createAvatarDirector`) that classifies each spoken line instead
 
 Rendering:
 

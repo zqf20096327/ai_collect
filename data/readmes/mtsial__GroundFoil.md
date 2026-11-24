@@ -31,6 +31,11 @@ one that predicts the pressure along the wing's surface also gives the drag,
 the moment and where the flow separates. For the drag, a small network of its
 own is almost five times closer (1.6%) than the drag added up from that
 pressure and friction (7.5%).
+With the downforce network we mapped where the downforce peaks for all 1,444
+airfoils: checked against 264 new simulations, it finds the ride height of
+the peak within 1.4% (median). The peak moves away from the ground with the
+angle, the camber and the thickness, and is reached when the flow under the
+wing has separated from about 78% of the chord onwards.
 
 - Thuerey et al.'s paper: https://arxiv.org/abs/1810.08217
 - Their code: https://github.com/thunil/Deep-Flow-Prediction (Apache-2.0)
@@ -39,7 +44,7 @@ Words used here are explained in the [glossary](docs/glossary.md).
 
 ## Workflow
 
-The study in seventeen steps, each with its own page:
+The study in eighteen steps, each with its own page:
 
 1. **[Reproduction](docs/01-reproduction.md):** we first ran the original
    free-air study on current software, to start from a working pipeline and a
@@ -105,6 +110,16 @@ The study in seventeen steps, each with its own page:
     against 7.5% on the test airfoils, 0.3% and 1.3% against 4.0% and 4.7%
     on the two wings. The drag is a small difference of large forces at the
     nose, so small errors along the surface add up.
+18. **[Where the downforce peaks](docs/18-ride-height-map.md):** the
+    downforce network maps the ride height of the largest downforce for all
+    1,444 airfoils, at 0–10° and three speeds, in half a minute. 264 new
+    simulations of six test airfoils confirm it: the peak within 1.4%
+    (median), its downforce within 0.4%. The peak moves away from the ground
+    with the angle (median h/c 0.107 at 2°, 0.146 at 5°, 0.204 at 8°), the
+    camber and the thickness, and comes when the flow under the wing has
+    separated from about 78% of the chord onwards. One irregular sweep came
+    from the mesh: a thick wing with a blunt trailing edge has two steady
+    solutions on the normal mesh at the lowest speed, one on the fine mesh.
 
 **Data:** the simulations, the trained models and the NACA 4412 sweep are on
 Zenodo, https://doi.org/10.5281/zenodo.24424329. All commands are in
@@ -134,6 +149,7 @@ the simulated pressure and velocity.*
 | Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.5% error on the 28 test airfoils (1.2% against OpenFOAM's force, where the U-Net is 4.0%); 0.65 ms per prediction from the airfoil file, against 28 ms for the U-Net and 318 s for a simulation | [Steps 14 and 16](docs/16-final-models.md) |
 | Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.2%, drag 7.5% on the test airfoils (4–5% on the two wings), moment 2.2%; the separated part of the surface, 10% of it on average, is off by 0.2% of the surface | [Steps 15 and 16](docs/16-final-models.md) |
 | Drag from a model of its own | the small network of step 14 trained on the drag: 1.6% error on the test airfoils, against 7.5% for the drag added up from the surface model; 0.3% and 1.3% on the two wings (4.0% and 4.7%) | [Step 17](docs/17-drag-model.md) |
+| Where the downforce peaks | over 1,444 airfoils, the ride height of the largest downforce rises with the angle (median h/c 0.107, 0.146 and 0.204 at 2°, 5° and 8°), the camber and the thickness, and falls slightly with the speed; checked against 264 new simulations of six unseen airfoils: within 1.4% (median); at the peak the flow under the wing has separated from x/c ≈ 0.78 | [Step 18](docs/18-ride-height-map.md) |
 | Downforce from little data | a Gaussian process is the most accurate model of the downforce with up to about 200 training samples (7.4% with 97, where the small network is 12.4%), and says how sure it is; from 386 samples on, the small network is better | [Step 16](docs/16-final-models.md) |
 | Unseen wing: NACA 4412 | at 11 ride heights: downforce within 2.0% with all the samples (5% and 4% with 3,096, without and with the distance input)¹, peak at the same height as the CFD | [Steps 11, 13 and 16](docs/16-final-models.md) |
 | Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 2.6% with all the samples (1.1% with 3,096 and the distance input, 10–19% low without it)¹; the suction peak still too weak | [Steps 12, 13 and 16](docs/16-final-models.md) |
@@ -175,7 +191,7 @@ checks, the dataset and the training) is in [How to run it](docs/howto.md).
 
 ```
 README.md                   this page: summary, the steps, results, quick start
-docs/                       one page per step (01-reproduction.md to 16-final-models.md), howto.md, glossary.md, references.md
+docs/                       one page per step (01-reproduction.md to 18-ride-height-map.md), howto.md, glossary.md, references.md
 Dockerfile                  OpenFOAM v2606 + gmsh + Python environment
 patches/openfoam-v2606.patch  fixes to the original code for OpenFOAM v2606
 scripts/view_sample.py      plots all six channels of a training sample
@@ -215,6 +231,9 @@ ground_effect/loss_study.py       compares training losses and inputs for the do
 ground_effect/sweep_naca4412.sh   ride-height sweep of the NACA 4412: 12 heights and free air (inside the container)
 ground_effect/sweep_tyrrell026.sh ride-height sweep of the Tyrrell 026 at the tunnel's heights and 10 m/s (inside the container)
 ground_effect/sweep_report.py     table and figure of a sweep, with the U-Net's predictions
+ground_effect/ride_height_map.py  where the downforce peaks: the downforce network's sweeps of every airfoil, and the network against simulated sweeps
+ground_effect/sweep_peaks.sh      ride-height sweeps of six test airfoils at three angles and three speeds, to check the map (inside the container)
+ground_effect/sweep_goe775_check.sh  goe775 at 10 m/s on the fine mesh and at ride heights in between: the one irregular sweep (inside the container)
 ground_effect/baseline_cl.py      comparison model: a small network that predicts only the downforce, from the shape, ride height, angle and speed
 ground_effect/predict.py          the trained models for any airfoil, ride height, angle and speed, without a simulation: the U-Net's flow, the downforce network's Cl, the surface model's pressure, friction and forces
 ground_effect/field_figure.py     simulated and predicted flow fields side by side, with their difference

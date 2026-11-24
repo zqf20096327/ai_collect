@@ -6,7 +6,7 @@ Noosphere 是本地 AI 项目工作台。打开一个目录，就能在同一工
 
 本地模型和云端 API 共用对话右下角的模型菜单。已经安装的本地引擎可以在应用里发现、启动和验证。配置好云端 API 后，也可以在当前会话中切过去。
 
-[下载最新版](https://github.com/2722039978-source/Noosphere/releases/latest) · [更新记录](CHANGELOG.md) · [使用说明](LIMITATIONS.md) · [跨平台验收](CROSS_PLATFORM_ACCEPTANCE.md) · [反馈问题](https://github.com/2722039978-source/Noosphere/issues)
+[下载稳定版](https://github.com/2722039978-source/Noosphere/releases/latest) · [更新记录](CHANGELOG.md) · [发行验收](CROSS_PLATFORM_ACCEPTANCE.md) · [反馈问题](https://github.com/2722039978-source/Noosphere/issues)
 
 ## 用 Noosphere 做什么
 
@@ -28,12 +28,12 @@ Noosphere 是本地 AI 项目工作台。打开一个目录，就能在同一工
 
 ## 开始使用
 
-1. 打开 [GitHub Releases](https://github.com/2722039978-source/Noosphere/releases/latest)，下载 Windows x64 安装器。也可以解压便携 ZIP 后运行 `Noosphere.exe`，便携版使用系统中的 WebView2 Runtime。
+1. 打开 [GitHub Releases](https://github.com/2722039978-source/Noosphere/releases/latest)，下载适用的软件包。Windows 可运行安装器，或完整解压 ZIP 后启动 `Noosphere.exe`，便携版使用系统 WebView2 Runtime。Linux 可用 `sudo apt install ./Noosphere-1.0.0-linux-x64.deb` 安装 deb，或给 AppImage 添加执行权限后启动。
 2. 点击左侧文件夹图标打开项目。可以直接选择检测到的启动目录，也可以浏览到另一个本地目录。
 3. 从对话右下角选择模型。选中还没启动的本地模型时，可在弹窗中启动并验证。接入云端服务时，在「模型 → 高级管理 → 手动配置」填写连接信息，配置完成后从同一个模型菜单选择带「API」标识的模型。
 4. 直接提问，或点击回形针添加附件。先从「这个项目的入口在哪里」或「总结这份文档的要求」开始。
 
-现有正式下载为 Windows x64。Linux x64 和 macOS arm64/x64 的构建与验收状态见 [跨平台验收](CROSS_PLATFORM_ACCEPTANCE.md)。macOS 用 ⌘O 打开项目、⌘Q 退出。关闭主窗口会隐藏工作台，点击 Dock 图标可恢复窗口。
+1.0 正式发行面向 Windows x64 和 Linux x64。Linux 包在 Ubuntu 22.04 桌面环境验收。AppImage 普通启动需要 FUSE 和系统图形运行库，缺少 FUSE 时可用 `./Noosphere-1.0.0-linux-x64.AppImage --appimage-extract-and-run`。 [发行与验收状态](CROSS_PLATFORM_ACCEPTANCE.md)
 
 ## 更多工具
 
@@ -48,13 +48,28 @@ Noosphere 是本地 AI 项目工作台。打开一个目录，就能在同一工
 
 本地模型可使用已安装的 Ollama、LM Studio 或受支持的便携 llama.cpp 环境。安装包提供桌面程序和内置服务，模型权重通过对应引擎获取。云端对话可接入 DeepSeek、OpenAI、Claude、Gemini 和 OpenAI 兼容服务。使用云端模型时，对话和提供给模型的上下文会发送至所选 API。
 
-每条消息可添加 3 份附件，每份最多 200 MB。文本、代码和有文字层的 PDF 可以直接添加，图片和扫描 PDF 可先转成文字。模型协议、附件格式和测评任务集的详细说明见 [使用说明](LIMITATIONS.md)。
+模型选择依次使用会话绑定、工作区默认和全局默认。显式选择不可用时会报告原因，执行中的任务保留启动时的模型。DeepSeek、OpenAI、OpenAI 兼容服务和 Ollama 提供结构化工具适配，每个模型的对话和工具能力分别验证。应用只管理自己启动并拥有的模型进程。
+
+每条消息最多添加 3 份附件，每份不超过 200 MiB。每个会话的原件与索引合计上限为 640 MiB，应用总上限为 2 GiB。文本和代码支持 UTF-8、带 BOM 的 UTF-16 与 GB18030。PDF 提取最多 100 页的文字层和 1 MiB 文本，图片与扫描 PDF 可先在本机识别。模型收到与问题相关的文字节选，引用记有文件名、页码或行号以及来源哈希。移除草稿或删除对应会话会清理附件。
+
+CodeLens 的静态关系依赖解析和索引覆盖范围，文件变化后请更新索引。REA 当前可读取项目内文件的 PE 导入表和 Go 构建信息，文件上限 64 MiB。项目文件修改和结构化测试须逐项审批。目标文件或项目绑定变化时，受影响的提案需要重新审阅。应用恢复限于有记录的改动，后续外部编辑会保留冲突。项目测试以当前用户权限运行，可能产生文件及外部服务副作用。
+
+本地测评使用受支持的 Ollama、llama.cpp 或 Windows 上可选的 OpenVINO。报告记录模型、任务集、参数和实际观测，结果适用于该次测试条件。系统性能指标按平台支持范围显示，缺失的指标保留为未知。 [OpenVINO 接入](scripts/openvino/USAGE.txt) · [原有测评细目](https://github.com/2722039978-source/Noosphere/blob/v1.0.0-rc.2/LIMITATIONS.md#本地模型测评)
 
 ## 更新备份与恢复
 
-「设置 → 应用信息」显示当前应用数据目录。「设置 → 会话备份」可导出和导入会话。同一安装的升级可额外备份应用数据目录。跨系统搬迁时，导入会话后重新绑定项目和模型，重新配置系统凭证并重建索引。原件需另行备份。已有任务中的待执行授权留在原安装。
+「设置 → 应用信息」显示当前应用数据目录。「设置 → 会话备份」可导出会话和已有文字节选。附件原件、工作区和任务库使用应用数据备份。升级前先导出会话 JSON，再退出应用并保留原数据目录和 WebView 用户资料。跨系统迁移时导入会话，重新绑定项目和模型，配置系统凭证并重建索引。旧审批只可回看。
 
-「设置 → 软件更新」会选择与当前安装方式、系统及架构匹配的包，校验大小和 SHA-256，保存会话备份。退出应用后，按安装提示用 NSIS、系统软件包管理器或 Finder 完成更新，或在自己的目录换用新 AppImage。
+「设置 → 软件更新」按安装方式、系统及架构选择更新包，校验大小和 SHA-256，并导出会话 JSON。退出应用后按提示安装或替换程序。旧版便携目录如有 `config.yaml`，先核对应用数据目录再迁移。
+
+应用退出后，可用交付包资源目录的 `bin/noosphere-backend`（Windows 为 `bin/noosphere-backend.exe`）生成快照或从快照恢复。用「应用信息」显示的实际数据目录填写绝对路径。
+
+```text
+noosphere-backend -config "<原应用数据目录>/config.yaml" -backup-data
+noosphere-backend -restore-data-from "<快照目录>" -restore-data-to "<尚不存在的新目录>"
+```
+
+快照保存配置、SQLite 及其伴随文件、附件原件和任务库。恢复先核对清单与 SHA-256，再写入新目录。可用 `NOOSPHERE_DATA_DIR` 指定恢复目录并核对数据。需要回到 v0.9.0 时使用升级前快照与对应的 WebView 资料或会话 JSON。API 凭证由 Windows Credential Manager 或 Linux Secret Service 管理。需要跨机重新授权时，可从保留的模型连接记录继续配置。
 
 ## 开发和构建
 
@@ -72,7 +87,7 @@ pwsh -NoProfile -File scripts/package.ps1
 
 `build.ps1` 将桌面程序构建到 `release/`。`package.ps1` 将 NSIS 安装器、便携 ZIP、构建信息和 SHA-256 校验文件生成到 `artifacts/<版本>/`。
 
-Linux 使用原生 Ubuntu 22.04 x64 构建环境，安装 GTK 3、WebKitGTK 4.1 开发包和系统打包工具。macOS 使用对应 CPU 架构的 Xcode Command Line Tools。下面的命令以 Linux 为例，macOS 将目标参数改为 `macos-arm64` 或 `macos-x64`。各命令和具体依赖见 [验收记录](CROSS_PLATFORM_ACCEPTANCE.md)。
+Linux 使用原生 Ubuntu 22.04 x64 构建环境，安装 GTK 3、WebKitGTK 4.1 开发包和系统打包工具。 [构建依赖与验收记录](CROSS_PLATFORM_ACCEPTANCE.md)
 
 ```sh
 node scripts/desktop.mjs setup linux-x64
@@ -91,4 +106,13 @@ node scripts/desktop.mjs package linux-x64
 | [backend](backend) | Go 后端，负责模型调用、工作区、附件、任务和测评。 |
 | [backend/python/codelens](backend/python/codelens) | Python CodeLens 源码解析和索引。 |
 
-[桌面 CI](https://github.com/2722039978-source/Noosphere/actions) · [MIT License](LICENSE) · [第三方资源](LIMITATIONS.md#设计来源与第三方资源)
+[桌面 CI](https://github.com/2722039978-source/Noosphere/actions) · [MIT License](LICENSE)
+
+## 第三方资源
+
+Noosphere 的档案界面与三维场景参考并适配 RhineLabUI 的阵列、档案盒模型、材质、运动和灯光。RhineLabUI 的视觉参考来自《明日方舟》「莱茵生命：访问」终端。相关名称、标志、设定和设计的权利归各自权利人所有。 [RhineLabUI 上游](https://github.com/LBEILC/RhineLabUI) · [MIT 声明](frontend/public/assets/RhineLabUI-LICENSE.txt)
+
+- REA 及依赖的许可证随内置分析组件分发。 [REA 上游](https://github.com/morluto/rea)
+- 附件的 PDF 提取与文本解码。 [附件依赖许可](frontend/public/assets/Attachment-Dependencies-LICENSE.txt)
+- MiSans 字体。 [版权说明](frontend/public/fonts/NOTICE.txt) · [字体许可](frontend/public/fonts/MiSans-license.pdf)
+- 模型厂商图标。 [来源及商标](frontend/public/model-brands/NOTICE.txt) · [图标许可](frontend/public/model-brands/LICENSE.txt)

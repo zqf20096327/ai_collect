@@ -28,6 +28,10 @@ Every screen below was built end-to-end by an agent with framesmith's own vocabu
 
 > Not every screen is a web page either. This one is declared `type: "mobile"`, so it is judged as a phone screen: a 44px tap target on every button, row and tab, content clear of the status bar and home indicator, and a minimum body size. It started from the `dashboard` structure, which stamps its phone version on a mobile canvas, and is built from the phone primitives (status bar, nav bar, buttons, list rows, tab bar) with no hand-built device chrome, in 33 nodes. framesmith's test suite rebuilds it on every run.
 
+![An issue tracker built in framesmith as a desktop app, light theme: a sidebar with the Fieldwork mark, Inbox, My issues (active, 12), Reviews and Roadmap, a Projects group with coloured identity dots and counts, and Settings with the signed-in account at the bottom; a My issues list with Filter and New issue buttons, Active / Backlog / Done tabs with counts, and eight issue rows each showing a priority icon, a one-line title, a monospace key and project, a status chip and an assignee avatar, the first row selected; and an issue detail pane with a breadcrumb, the title "Battery reading drifts after OTA update", Details / Activity / Linked tabs, an inspector of property rows (status and priority selects, assignee, labels, a due-date field, a notify toggle), a description, an activity feed and a comment box. Generated from one seed (#15803D) on the "technical" personality.](https://raw.githubusercontent.com/vicmaster/framesmith/master/docs/framesmith-desktop-app.png?v=2.5)
+
+> And not every screen is a page you scroll. This one is declared `type: "desktop-app"`, a tool you work in: panes, a current selection, dense 24 / 32 / 40px controls. It is composed from the desktop-app primitives (`nav-item`, `tabs`, `property-row`, `link`, `text-input`, the controls) rather than a stamped pattern, so its rules are the desktop-app ones: every pointer target at least 24px, one current item per navigation region, a visible focus ring and boundary on every control, in both themes. Its error, empty-list and loading states are designed too. `scripts/build-desktop-gallery.ts` rebuilds it and refuses to write the image unless all four states clear the gates.
+
 ```
 MCP Client → stdio → framesmith server
                         ↓
@@ -386,8 +390,8 @@ Application screens (`type: "desktop-app"`) are built from eight primitives on t
 
 | Type | Key props | What it is |
 |---|---|---|
-| `link` | `label`, `icon`, `iconPosition`, `external`, `ariaLabel`, `state` | A standalone text action, at least 24 tall. With no `label` it hugs its glyphs (14px wide, 30 with `external`) and needs an `ariaLabel` (rendered as `aria-label` and `title`). A `text` node can hold inline links instead: `links: [{ start, end }]` character ranges of its content, drawn underlined and exempt from the 24px floor |
-| `text-input` | `value`, `placeholder`, `icon`, `size` (`sm` 32 / `md` 40), `rows`, `error` (a message), `disabled`, `state` | A field whose border (`$border-strong` when the design system has it) is its only boundary; `error` draws an icon and the message below and turns the border `$danger` |
+| `link` | `label`, `icon`, `iconPosition`, `external`, `ariaLabel`, `state` | A standalone text action, at least 24 tall; with a numeric `height` never narrower than tall (on a phone the census wants 44: `height: 44`). With no `label` it hugs its glyphs (14px wide, 30 with `external`) and needs an `ariaLabel` (rendered as `aria-label` and `title`). A `text` node can hold inline links instead: `links: [{ start, end }]` character ranges of its content, drawn underlined and exempt from the 24px floor |
+| `text-input` | `value`, `placeholder`, `icon`, `size` (`sm` 32 / `md` 40 / `lg` 44, the phone size), `rows`, `error` (a message), `disabled`, `state` | A field whose border (`$border-strong` when the design system has it) is its only boundary; `error` draws an icon and the message below and turns the border `$danger` |
 | `nav-item` | `label`, `icon`, `count`, `dotColor`, `active`, `depth` (0 / 1), `collapsed`, `state` | A 32px sidebar row. `active` draws an `$accent-tint` fill, a 2px `$accent` bar and a heavier label; `collapsed` is the 32×32 rail form, with the label as its accessible name; `dotColor` is an identity dot, never counted as an accent |
 | `tabs` | `items: [{ label, count?, active?, disabled?, state? }]`, `variant` (`line` / `contained`), `size` (`sm` 32 / `md` 40) | One tablist; each tab is its own target. The active tab gets an indicator (`line`) or an `$accent-tint` fill (`contained`); only the line underline is measured by `desktop-app-state-contrast` |
 | `tree-row` | `label`, `depth`, `expanded` (absent for a leaf), `icon`, `active`, `state` | A 32px row indented 16px per level, with a chevron when `expanded` is set; `active` draws an `$accent-tint` fill, a 2px bar in `iconColor` (`$accent` by default) at the row's left edge at every depth, and a heavier label |
@@ -408,8 +412,8 @@ Six overlays draw screen states: an open menu, a comment popover, a confirm dial
 | `tooltip` | `text`, `x`, `y` | A short hint, inverted, wrapping at 240px; never renders children |
 | `popover` | `x`, `y`, `size` (`xs` 192 / `sm` 320 / `md` 480 / `lg` 640), children | A panel (vertical, 12px padding by default) for a comment box or a filter form |
 | `menu` | `x`, `y`, children (`menu-row`s, `divider`s) | A menu at least 192 wide, hugging its rows |
-| `modal` | `title`, `size` (`sm` 480 / `md` 640 / `lg` 960), `actions: [{ label, variant?, state? }]`, `closeLabel`, children | Centred over its own full scrim, with a close button named "Close"; actions right-aligned, the filled one (`primary` or `destructive`) rightmost, an action with no variant `secondary` |
-| `toast` | `text`, `tone` (`neutral` / `success` / `warning` / `danger`), `action: { label, state? }` | Bottom-centre, 24px above the artboard's edge; the tone colours a leading glyph |
+| `modal` | `title`, `size` (`sm` 480 / `md` 640 / `lg` 960), `actions: [{ label, variant?, state? }]`, `closeLabel`, `controlSize` (`xs` / `sm` / `md` / `lg`: 24 / 32 / 44 / 52, default `sm`), children | Centred over its own full scrim, with a close button named "Close"; `controlSize` sizes the close button and actions (`md` meets the 44px phone floor); actions right-aligned, the filled one (`primary` or `destructive`) rightmost, an action with no variant `secondary` |
+| `toast` | `text`, `tone` (`neutral` / `success` / `warning` / `danger`), `action: { label, state? }`, `controlSize` (the action's button size, default `xs` 24) | Bottom-centre, 24px above the artboard's edge; the tone colours a leading glyph; `controlSize: "md"` gives the action the 44px phone size |
 | `drawer` | `size` (`sm` 320 / `md` 480), `scrim`, children | A panel pinned to the right edge at full height |
 
 ```
@@ -593,6 +597,8 @@ Read and write design tokens (colors, spacing, radius, typography — plus `elev
 Reference an elevation token from a node as `shadow: "$elevation.raised"` (resolves to the layered `shadows` array; an explicit `shadows` on the node wins).
 
 Then use in nodes: `{ fill: "$primary", padding: "$md", cornerRadius: "$sm", transition: "$motion.fast" }`
+
+A name defined in both `spacing` and `radius` (the presets define `sm`, `md` and `lg` in both) resolves by the property it sits on: `cornerRadius` reads `radius` first, so `cornerRadius: "$sm"` above is 4; every other property reads `spacing` first, so `padding: "$md"` is 16.
 
 `get_variables` leaves out a colour still holding an old scaffold seed (`accent-tint` `#152A47`, `success-tint` `#0F2E1B`, `warning-tint` `#33260A`, `danger-tint` `#3A1715`, `neutral-tint` `#25282D`, `danger` `#F87171`, matched by name and value, any case): it counts as unset, so an inherited value or the derived one shows through, and the canvas's `sha256r:` version hash moves once (an approval recorded on it reads STALE). The stored JSON is untouched. A `$ref` no token defines is an `unknown-token` warning (see `canvas_evaluate`); copy props (`content`, `label`, `value`…) never resolve.
 
@@ -872,25 +878,4 @@ Comments are authored in the viewer: toggle **Comment** in the detail-page toolb
 | `feedbackIds` | string[] | `resolve_feedback`: entry ids (`fb-...`) to mark resolved |
 | `note` | string? | `resolve_feedback`: reply shown next to the user's comment — what you changed |
 
-`get_feedback` with `canvasId` returns `{ canvasId, openCount, entries }`; omitted, it sweeps and returns `{ canvasesWithFeedback, canvases: [{ canvasId, name, openCount, entries }] }` (only canvases that have feedback). `resolve_feedback` returns `{ resolved: string[], notFound: string[], openCount }` — unknown or already-resolved ids land in `notFound` instead of throwing.
-
-### `canvas_set_genre`
-
-Durably declare what a canvas *is* — writes the evaluation genre to `metadata.provenance.genre` without the token/component churn of `apply_preset`, so an already-styled canvas can be calibrated in one call. Genre and preset are separate fields: `apply_preset` never changes the genre, and a genre an older framesmith stored in the preset field moves to its own field on the first write. The stamp is what `canvas_evaluate` / `canvas_autofix` / the viewer's quality panel read when no explicit `genre` param is passed.
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `canvasId` | string | Canvas to stamp |
-| `genre` | string \| null | Genre to stamp (`"data"`, `"commerce"`, `"material"`, …) — `null` clears the stamp |
-
-Returns `{ canvasId, genre, canonical, previous, relaxes, presetRelaxes?, note?, versionHashUnchanged }` — `canonical` is the genre with its alias folded (`"dashboard"` → `"data"`, `"checkout"` → `"commerce"`, what evaluate reports); `relaxes` lists the cliché tells the stamp relaxes; `presetRelaxes` (`{ preset, relaxed }`) appears when the canvas's preset relaxes tells on its own (the material preset), which a genre clear doesn't remove; an unknown genre is stored but relaxes nothing, and the `note` says so immediately. Other provenance facts (structure, `importedFrom`) are preserved, and the stamp never moves the canvas's `versionHash` (the hash covers design content only) — recorded approvals stay valid.
-
-### `canvas_set_type`
-
-Declare what medium an existing canvas is on. Writes `metadata.surface` only: it never resizes the artboard and never writes the root's `safeArea`, because either would reflow what is already placed. For a new phone screen, `canvas_create({ type: "mobile" })` does all of it at once.
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `canvasId` | string | Canvas to declare |
-| `type` | `"web"` \| `"mobile"` \| `"desktop-app"` \| null | The medium; `null` clears the declaration (the canvas reads as undeclared web again) |
-| `device` | string? | The type's profile: `"iphone-390"` (default) for `"mobile"`, `"window-14
+`get_feedback` with `canvasId` returns `{ canvasId, openCount, entries }`; omitted, it sweeps and returns `{ canvasesWithFeedback, canvases: [{ canvasId, name, openCount, e

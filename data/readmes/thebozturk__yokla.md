@@ -34,7 +34,7 @@ wrong value came from.
   calls, and a turn can break the provider on purpose.
 - **Nothing leaves your machine.** No telemetry, no account, no cloud.
 
-**Status: v0.4.** Turkish and English are first-class. The e-commerce pack is
+**Status: v0.5.** Turkish and English are first-class. The e-commerce pack is
 the first domain pack.
 
 ## Quick start
@@ -133,6 +133,25 @@ answer, or only in your app's code after the model call.
   or mixes Turkish and English as shoppers do, keeping every amount and
   value your checks look for.
 
+**Red teaming**
+- **`yokla generate --redteam`** writes attack cases from your catalog and
+  profile, in Turkish and English, for a person to approve: prompt
+  injection and system-prompt extraction, price manipulation and promises
+  no policy gives, another customer's order and personal data, card
+  numbers, injection through tool descriptions, tool arguments and memory,
+  order fraud, a role's forbidden tools, and restrictions on age, region
+  and quantity. Deterministic checks judge each one, by a canary or a value
+  from your data.
+- **`yokla run --strategy`** sends the attacks encoded or wrapped, and
+  **`--attacker`** has a model you choose adapt them: turn by turn, in many
+  attempts, as variants of variants, or in your profile's other language.
+- **Findings map to frameworks:** OWASP LLM and Agentic, MITRE ATLAS, NIST
+  AI RMF, ISO/IEC 42001, GDPR, KVKK and the EU AI Act, with a risk score
+  per attack kind. The mapping is yokla's, not a compliance assessment.
+- **A calibrated judge** decides what no rule can, such as unsafe advice,
+  bias or imitation. It must grade its calibration right in every run, and
+  gates nothing until you list a dimension.
+
 **Your own rules**
 - Regular expressions on the answer, a JSON Schema on the response, and
   similarity to reference answers.
@@ -222,8 +241,29 @@ from.
 
 The [guide](https://github.com/thebozturk/yokla/blob/main/docs/guide/README.md)
 walks through each step: [the analyzer](https://github.com/thebozturk/yokla/blob/main/docs/guide/analyzer.md),
-[from a finding to its fix](https://github.com/thebozturk/yokla/blob/main/docs/guide/debugging.md)
-and [yokla in CI](https://github.com/thebozturk/yokla/blob/main/docs/guide/ci.md).
+[from a finding to its fix](https://github.com/thebozturk/yokla/blob/main/docs/guide/debugging.md),
+[yokla in CI](https://github.com/thebozturk/yokla/blob/main/docs/guide/ci.md)
+and [red teaming](https://github.com/thebozturk/yokla/blob/main/docs/guide/redteam.md).
+
+## From code
+
+The `yokla` package is a library too. Its functions are the steps of
+`yokla run`, `yokla gate`, `yokla compare` and `yokla report`; they print
+nothing and throw typed errors:
+
+```ts
+import { writeFileSync } from 'node:fs';
+import { gate, junitReport, loadProject, run } from 'yokla';
+
+const project = await loadProject(); // yokla.profile.yaml, cases/ and yokla.config.yaml
+const { results } = await run(project, { samples: 3 });
+writeFileSync('junit.xml', junitReport(results));
+const { verdict } = gate(results, { config: project.config });
+process.exitCode = verdict === 'pass' ? 0 : 1;
+```
+
+[yokla from code](https://github.com/thebozturk/yokla/blob/main/docs/guide/api.md)
+lists every function and option.
 
 ## Try it on the demo-shop
 
@@ -255,22 +295,23 @@ upstreams your profile names. An egress test in CI holds yokla to that.
   a first run against your own assistant, and a page for each part.
   - Workflows: [the analyzer](https://github.com/thebozturk/yokla/blob/main/docs/guide/analyzer.md),
     [from a finding to its fix](https://github.com/thebozturk/yokla/blob/main/docs/guide/debugging.md),
-    [yokla in CI](https://github.com/thebozturk/yokla/blob/main/docs/guide/ci.md).
+    [yokla in CI](https://github.com/thebozturk/yokla/blob/main/docs/guide/ci.md),
+    [red teaming](https://github.com/thebozturk/yokla/blob/main/docs/guide/redteam.md).
   - Reference: [the profile](https://github.com/thebozturk/yokla/blob/main/docs/guide/profile.md),
     [cases](https://github.com/thebozturk/yokla/blob/main/docs/guide/cases.md),
     [checks](https://github.com/thebozturk/yokla/blob/main/docs/guide/checks.md),
     [the model proxy](https://github.com/thebozturk/yokla/blob/main/docs/guide/model-proxy.md),
-    [commands and configuration](https://github.com/thebozturk/yokla/blob/main/docs/guide/cli.md).
+    [commands and configuration](https://github.com/thebozturk/yokla/blob/main/docs/guide/cli.md),
+    [yokla from code](https://github.com/thebozturk/yokla/blob/main/docs/guide/api.md),
+    [yokla with other tools](https://github.com/thebozturk/yokla/blob/main/docs/guide/interop.md).
 - [The design](https://github.com/thebozturk/yokla/blob/main/docs/design.md)
   and the [decision records](https://github.com/thebozturk/yokla/blob/main/docs/adr/README.md).
 - [The changelog](https://github.com/thebozturk/yokla/blob/main/CHANGELOG.md).
-- `yokla <command> --help`, and `yokla schema <profile|cases|config|results|baseline|comparison|analysis>`
+- `yokla <command> --help`, and `yokla schema <profile|cases|config|results|baseline|comparison|analysis|case-row|result-row>`
   for the JSON Schemas.
 
 ## Roadmap
 
-- **v0.5:** red teaming with local attack generation, mapped to OWASP, GDPR
-  and KVKK, and the EU AI Act.
 - **v0.6:** import and export for other evaluation tools, a GitHub Action and
   a library API.
 
@@ -278,11 +319,12 @@ upstreams your profile names. An egress test in CI holds yokla to that.
 
 | Package | What it holds |
 |---|---|
-| [`yokla`](https://www.npmjs.com/package/yokla) | the command line |
+| [`yokla`](https://www.npmjs.com/package/yokla) | the command line and the library API |
 | [`@yokla/core`](https://www.npmjs.com/package/@yokla/core) | schemas, the check API, aggregation and the gate |
 | [`@yokla/runtime`](https://www.npmjs.com/package/@yokla/runtime) | the runner and the target adapters |
 | [`@yokla/proxy`](https://www.npmjs.com/package/@yokla/proxy) | the model proxy |
-| [`@yokla/report`](https://www.npmjs.com/package/@yokla/report) | terminal, JUnit XML and HTML reports |
+| [`@yokla/report`](https://www.npmjs.com/package/@yokla/report) | terminal, JUnit XML, Markdown and HTML reports |
+| [`@yokla/interop-rows`](https://www.npmjs.com/package/@yokla/interop-rows) | cases and results as neutral rows, for other tools |
 | [`@yokla/analyzer`](https://www.npmjs.com/package/@yokla/analyzer) | the analyzer behind `yokla analyze` |
 | [`@yokla/pack-ecommerce`](https://www.npmjs.com/package/@yokla/pack-ecommerce) | the e-commerce checks |
 | [`@yokla/pack-lang-tr`](https://www.npmjs.com/package/@yokla/pack-lang-tr), [`@yokla/pack-lang-en`](https://www.npmjs.com/package/@yokla/pack-lang-en) | Turkish and English |

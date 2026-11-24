@@ -37,12 +37,12 @@ implement tier-based upload quota limits in src/lib/billing
 > **Note:** Upgrades preserve your existing project settings (`projectName`, `stackSummary`, `graphProjectId`, and local models) inside `.agents/project.config.json` while updating the engine, rules, and subagents. When a new release is available, your agent's session banner will automatically alert you.
 
 ```text
-🔥 ZeroBurn v2.8.0 — Live Token-Savings Benchmark & 0-Token Diff Auditor
+🔥 ZeroBurn v2.9.0 — Live Token-Savings Benchmark & 0-Token Diff Auditor
 📂 Repository: /Users/dev/my-app (branch: feat/billing-quota)
 
 📊 1. Context & Cloud Token Footprint (Standard Subagent vs ZeroBurn)
 ┌────────────────────────────┬────────────────────────────┬─────────────────────────────┬────────────────┐
-│ Pipeline Stage             │ Vanilla Agent              │ ZeroBurn v2.8.0             │ Cloud Saved    │
+│ Pipeline Stage             │ Vanilla Agent              │ ZeroBurn v2.9.0             │ Cloud Saved    │
 ├────────────────────────────┼────────────────────────────┼─────────────────────────────┼────────────────┤
 │ 1. Repo & Route Discovery  │ 15,429 tok (1465 files)    │ 512 tok (5-line digest)     │ -96.7%         │
 │ 2. Rule & Docs Ingestion   │ 59,202 tok (4348 lines)    │ 195 tok (7-line digest)     │ -99.7%         │
@@ -76,7 +76,7 @@ Most multi-agent setups ("PM / Architect / Dev / QA prompt packs") drain your 5-
 
 Measured on a real feature/audit loop (*"Locate and audit `checkUploadQuota` tier logic, run all 6 billing unit test suites (70 tests), and execute a diff security audit"*). Full raw traces and reproducible runner in [`benchmarks/REAL_WORLD_BENCHMARK.md`](benchmarks/REAL_WORLD_BENCHMARK.md):
 
-| Stage | Standard Coding Agent (Vanilla) | `zeroburn` v2.8.0 Engine | Measured Savings |
+| Stage | Standard Coding Agent (Vanilla) | `zeroburn` v2.9.0 Engine | Measured Savings |
 | :--- | :--- | :--- | :--- |
 | **1. Repo & Route Discovery** | `find src -type f` (`1,470` lines / **15,454 tokens**) | `build_repo_map_digest()` (`6` lines / **636 tokens**: 28 Prisma models, 32 domains, 60 API routes) | **-95.9% tokens** |
 | **2. Governance & Rule Loading** | `cat .agents/AGENTS.md .agents/base/*.md` (`276` lines / **10,274 tokens**) | Pre-computed inlined rule digests (`7` lines / **195 tokens**) | **-98.1% tokens** |
@@ -97,7 +97,7 @@ $ [Spawns Cloud Pro Subagent for Diff Review]       #              (12,000 token
 ----------------------------------------------------------------------------------
 💥 Result: 46,465+ tokens & ~185,000 cumulative billed tokens across a 5-turn loop.
 
-✅ WITH ZEROBURN v2.8.0 (848 tokens — 98.2% reduction):
+✅ WITH ZEROBURN v2.9.0 (848 tokens — 98.2% reduction):
 $ [codebase-memory-mcp] search_graph("billing tier quota check")   #     0 tokens
   -> FreemiumGuard.checkUploadQuota (src/lib/billing/freemium-guard.ts:43-83)
 $ [Inlined REPO_MAP_DIGEST + Rule Digests]                         #   831 tokens
@@ -123,8 +123,8 @@ Instead of relying on proprietary agent runtimes or buzzwords, ZeroBurn is a set
    - Queries a local SQLite/AST symbol index *before* constructing subagent prompts—avoiding both exploratory `find`/`grep` loops and the ~9k-token per-turn MCP tool-schema tax (schemas stay lazy-loaded).
    - Every graph-indexed path and line range is verified against the live filesystem on read (`_verify_live_file_entry`), converting moved or deleted files into explicit `[STALE_INDEX_MISS]` signals so agents never trust stale coordinates.
 
-3. **Two-Tier Hybrid Security & Quality Audit (`parallel-audit.py`):**
-   - **Tier 1 (0-Token Deterministic Rules + Local Ollama Pre-Filter):** Deterministic properties run in pure Python first (missing server-side auth guards on non-public `/api/**/route.ts` handlers, line-count modularity, `'use server'` line-1 placement, explicit `any`, and blueprint scope drift). Local Ollama then scans the diff for fuzzy logic/error-handling issues.
+3. **Two-Tier Hybrid Security, Docs Parity & Quality Audit (`parallel-audit.py` + `quiet-cli.mjs docs-parity`):**
+   - **Tier 1 (0-Token Deterministic Rules + Local Ollama Pre-Filter):** Deterministic properties run in pure Python first (missing server-side auth guards on non-public `/api/**/route.ts` handlers, docs & knowledge parity checks for user-facing/schema diffs across Track S/M/L, line-count modularity, `'use server'` line-1 placement, explicit `any`, and blueprint scope drift). Local Ollama then scans the diff for fuzzy logic/error-handling issues.
    - **Tier 2 (Cloud Auditor Final Decision):** Local findings are passed into a single cloud frontier auditor (`pro` or `flash`), which filters out local false positives and serves as the authoritative gate for blocking `Critical` and `High` issues.
 
 4. **Dynamic Live `REPO_MAP_DIGEST` & Inlined Rule Digests (`workflow_common.py`):**
@@ -178,13 +178,16 @@ benchmarks/
 ├── scripts/
 │   ├── init.mjs                    # 1-command auto-detector & version upgrader (--pull, --pin, --version)
 │   ├── live-audit.mjs              # Real-time 0-cloud-token diff auditor & context calculator
-│   ├── workflow_common.py          # Shared FALLBACK_CHAINS, dynamic Ollama resolution, Graph pre-fetch, Swarm leases
+│   ├── graph_prefetch.py           # Live-verified codebase-memory-mcp graph pre-fetcher
+│   ├── ollama_gate.py              # Local Ollama auto-start, model resolution & fail-closed gate
+│   ├── repo_digest.py              # Dynamic REPO_MAP_DIGEST & swarm advisory file leases
+│   ├── workflow_common.py          # Shared FALLBACK_CHAINS, digests & modular re-exports
 │   ├── parallel-discovery.py       # Stage 1: Product || Discovery workflow
-│   ├── parallel-audit.py           # Stage 4: 0-token Python/Blast-Radius + Local Ollama + 1 Cloud Auditor
-│   └── quiet-cli.mjs               # 1-line tsc/lint/vitest wrapper + Judgment Kernel + api-map
+│   ├── parallel-audit.py           # Stage 4: 0-token Python/Auth/Docs + Local Ollama + 1 Cloud Auditor
+│   └── quiet-cli.mjs               # 1-line tsc/lint/vitest wrapper + Judgment Kernel + api-map + docs-parity
 └── plugins/
     └── zeroburn/
-        ├── plugin.json             # Single source of truth for ZeroBurn version (v2.8.0)
+        ├── plugin.json             # Single source of truth for ZeroBurn version (v2.9.0)
         └── agents/                 # 8 specialized subagent definitions
 ```
 

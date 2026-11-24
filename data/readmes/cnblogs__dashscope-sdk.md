@@ -2216,8 +2216,9 @@ await foreach (var message in asr.GetMessagesAsync())
 Console.WriteLine($"Billed duration: {duration}s");
 ```
 
-The session is shared by the Qwen-Audio ASR models as well, which support the conversation context, instant hot words and more (see `SpeechRecognitionParameters` for the members each model supports):
+The session is shared by the Fun-ASR-Realtime and Qwen-Audio ASR models as well, which support the conversation context, instant hot words and more (see `SpeechRecognitionParameters` for the members each model supports):
 
+- `fun-asr-realtime`: intermediate results are always returned, and the words of the final result carry settled timestamps (`Fixed`). Supports the conversation context, `VocabularyId` and `LanguageHints` (one value takes effect).
 - `qwen-audio-3.1-asr-flash-message`: returns the final result of each sentence only, set `IntermediateResultEnabled` to get intermediate results as well. `DisfluencyRemovalEnabled` also removes repetitions and self-corrections from the final text. Finishing the task before any audio was sent fails with `NO_VALID_AUDIO_ERROR`.
 - `qwen-audio-3.1-asr-flash-streaming` / `qwen-audio-3.0-asr-flash-streaming`: intermediate results are always returned. `SpecialWordFilter` replaces or removes sensitive words. 3.1 reports token usage, 3.0 reports the audio duration it is billed by.
 
@@ -2289,6 +2290,182 @@ var taskId = await asr.RunTaskAsync(
 ```
 
 Read the usage from the final result of each sentence, the `task-finished` event does not always carry it.
+
+### Qwen3-ASR-Flash-Realtime
+`qwen3-asr-flash-realtime` models use a separate realtime session (`CreateAsrRealtimeSocketSessionAsync`), which talks to the `/api-ws/v1/realtime` endpoint with event-based messages: configure the session (audio format, language, VAD) with `UpdateSessionAsync`, stream the audio with `AppendAudioAsync` (base64 encoded inside the messages, no binary frames) and end it with `FinishAsync`. The server closes the connection after `session.finished`, so a session cannot be reused.
+
+In the VAD mode (a non-null `TurnDetection`), the server detects speech boundaries and submits the audio automatically, delivering incremental results in `conversation.item.input_audio_transcription.text` events (the accumulated text arrives in `Stash`, `Text` stays empty) and the final one in `...completed` (with the token usage). In the manual mode (`TurnDetection` set to null), call `CommitAudioAsync` to submit the buffered audio:
+
+```csharp
+using var asr = await dashScopeClient.CreateAsrRealtimeSocketSessionAsync("qwen3-asr-flash-realtime");
+await asr.UpdateSessionAsync(
+    new AsrRealtimeSession
+    {
+        InputAudioFormat = "pcm", // or opus
+        SampleRate = 16000, // or 8000
+        InputAudioTranscription = new AsrRealtimeTranscription { Language = "zh" }, // unset to auto detect
+        // non-null enables the VAD mode, null switches to the manual mode (commit below)
+        TurnDetection = new AsrRealtimeTurnDetection { Threshold = 0.0f, SilenceDurationMs = 400 }
+    });
+await using var audio = File.OpenRead("speech.pcm");
+await asr.AppendAudioAsync(audio); // sent as base64 chunks of 3200 bytes
+// manual mode only: submit the buffered audio for recognition
+// await asr.CommitAudioAsync();
+await asr.FinishAsync();
+
+await foreach (var e in asr.GetEventsAsync())
+{
+    switch (e.Type)
+    {
+        case "conversation.item.input_audio_transcription.text":
+            Console.WriteLine($"Interim: {e.Stash}");
+            break;
+        case "conversation.item.input_audio_transcription.completed":
+            Console.WriteLine($"Recognized: {e.Transcript} (language: {e.Language}, emotion: {e.Emotion})");
+            break;
+    }
+}
+```
+
+## Real-Time Voice Conversation (Qwen-Audio-Realtime)
+The qwen-audio-3.x-realtime models (plus / flash) are full-duplex voice assistants: stream the user audio in, the server runs VAD / ASR / LLM / TTS in a pipeline and streams back the response text and audio. Create a session with `CreateAudioChatSocketSessionAsync` (same `/api-ws/v1/realtime` endpoint, event-based messages):
+
+```csharp
+using var chat = await dashScopeClient.CreateAudioChatSocketSessionAsync("qwen-audio-3.1-realtime-plus");
+await chat.UpdateSessionAsync(
+    new AudioChatSession
+    {
+        Voice = "longanqian", // longanqian_v3.1 on 3.1 plus
+        Instructions = "You are a helpful assistant.", // system prompt of the session
+        TurnDetection = new AudioChatTurnDetection
+        {
+            Type = "server_vad", // or "smart_turn": meaningless sounds ("um") do not trigger a turn
+            Threshold = 0.5f,
+            SilenceDurationMs = 500
+        }
+        // set DisableTurnDetection = true instead for the push-to-talk mode: commit the audio
+        // with CommitAudioAsync() and trigger the inference with CreateResponseAsync()
+    });
+
+// consume the events while the audio streams in (see below), then send the audio
+await using var audio = File.OpenRead("speech.pcm"); // raw pcm, 16kHz 16bit mono
+await chat.AppendAudioAsync(audio);
+```
+
+In the server_vad / smart_turn mode the server detects the speech boundaries and triggers the inference automatically; the interim ASR results arrive as `conversation.item.input_audio_transcription.delta` events (`Text` is the confirmed part, `Stash` the tentative remainder), the streamed response text and audio as `response.audio_transcript.delta` / `response.audio.delta` (base64 pcm, 24kHz — also available decoded via `GetAudioAsync()`), and a turn ends with `response.done`:
+
+```csharp
+var consuming = Task.Run(async () =>
+{
+    // ReSharper disable once AccessToDisposedClosure
+    await foreach (var e in chat.GetEventsAsync())
+    {
+        switch (e.Type)
+        {
+            case "conversation.item.input_audio_transcription.delta":
+                Console.WriteLine($"Heard: {e.Text}{e.Stash}");
+                break;
+            case "response.audio_transcript.delta":
+                Console.WriteLine($"Said: {e.Delta}");
+                break;
+        }
+    }
+});
+await using var file = File.Create("response.pcm");
+await foreach (var b in chat.GetAudioAsync())
+{
+    file.WriteByte(b);
+}
+```
+
+Beyond the audio loop the session also supports text input and history injection (`CreateItemAsync` with message items), function calling (`Tools` in the session config, execute the call and write the result back with a `function_call_output` item, then trigger the next turn with `CreateResponseAsync`), interrupting the model (`CancelResponseAsync`), and managing the conversation (`RetrieveItemAsync` / `DeleteItemAsync`). The 3.1 plus model additionally takes `InputAudioTranscription.Language` / `OutputAudio.Language` (both directions of translation-like control) and `MaxHistoryTurns`; smart_turn accepts `VoiceprintAudioUrls` for speaker enhancement. The session ends when it is disposed — there is no session.finish.
+
+## Real-Time Live Translation (Qwen-Livetranslate-Realtime)
+The qwen3.5 / qwen3.8-livetranslate-flash-realtime models translate live speech (and video frames) into a target language. Create a session with `CreateLiveTranslateSocketSessionAsync`, configure the translation and stream the source audio:
+
+```csharp
+using var translator = await dashScopeClient.CreateLiveTranslateSocketSessionAsync("qwen3.5-livetranslate-flash-realtime");
+await translator.UpdateSessionAsync(
+    new LiveTranslateSession
+    {
+        InputAudioFormat = "pcm", // or opus
+        SampleRate = 16000,
+        InputAudioTranscription = new LiveTranslateTranscription(
+            Model: "qwen3-asr-flash-realtime", Language: "zh"), // Model = null disables the source echo
+        TurnDetection = new LiveTranslateTurnDetection { Threshold = 0.2f, SilenceDurationMs = 1000 },
+        Translation = new LiveTranslateTranslation
+        {
+            Language = "en", // target language, defaults to en
+            Corpus = new LiveTranslateCorpus
+            {
+                // hotwords: the source phrase always translates to the given target phrase
+                Phrases = new Dictionary<string, string> { ["博客园"] = "Cnblogs" }
+            }
+        }
+    });
+
+// consume the events while the audio streams in (see below), then send the audio and finish
+await using var audio = File.OpenRead("speech.pcm");
+await translator.AppendAudioAsync(audio);
+// AppendImageAsync(frame) sends video frames as base64 jpg (at most 2 per second, qwen3.8 only)
+await translator.FinishAsync(); // the server finishes the remaining translation, then ends the session
+```
+
+The source text arrives as `conversation.item.input_audio_transcription.*` events and the translated text as `response.audio_transcript.text` / `.delta` events (`Text` + `Stash` accumulate the interim translation, the final one arrives in `response.audio_transcript.done` and `response.done`); the synthesized translation audio is available via `GetAudioAsync()`:
+
+```csharp
+await foreach (var e in translator.GetEventsAsync())
+{
+    switch (e.Type)
+    {
+        case "conversation.item.input_audio_transcription.completed":
+            Console.WriteLine($"Source: {e.Transcript} ({e.Language}, {e.Emotion})");
+            break;
+        case "response.audio_transcript.done":
+            Console.WriteLine($"Translated: {e.Transcript}");
+            break;
+    }
+}
+```
+
+The qwen3.8 model takes a different shape: `OutputModalities` plus `Audio.Input.TurnDetection` (speaker_detection separates speakers, the source and the translation items are correlated via `PreviousItemId`), and voice cloning (`EnableVoiceClone` + `VoiceCloneOptions.Frequency` never / once / always, with `Voice` set to "default" or a pre-cloned voice id) works on both models. In the manual mode (`DisableTurnDetection = true`) the buffered audio is submitted with `CommitAudioAsync()`, which triggers the translation automatically.
+
+### Non-realtime translation (qwen3-livetranslate-flash)
+The qwen3-livetranslate-flash models translate an audio / video file in one shot. They **cannot be called via the DashScope API** - they are only served on the OpenAI compatible endpoint (`/compatible-mode/v1/chat/completions`), which the SDK exposes as the generic `OpenAiCompatibleGetChatCompletionAsync` / `OpenAiCompatibleGetChatCompletionStreamAsync` methods (the livetranslate models only support the streaming mode). Prefer the DashScope methods (or the Microsoft.Extensions.AI integration) whenever the model supports both styles; use the OpenAI compatible family only when it does not:
+
+```csharp
+var chunks = dashScopeClient.OpenAiCompatibleGetChatCompletionStreamAsync(
+    new OpenAiCompatibleChatRequest
+    {
+        Model = "qwen3-livetranslate-flash",
+        Messages =
+        [
+            new OpenAiCompatibleChatMessage
+            {
+                Role = "user",
+                Content =
+                [
+                    // an audio file; a video goes in a video_url part (Url)
+                    new OpenAiCompatibleChatContentPart(
+                        Type: "input_audio",
+                        InputAudio: new OpenAiCompatibleChatInputAudio(Data: audioUrl, Format: "wav"))
+                ]
+            }
+        ],
+        Modalities = ["text", "audio"], // audio output is optional, ["text"] also works
+        Audio = new OpenAiCompatibleChatAudioOptions(Voice: "Cherry", Format: "wav"),
+        StreamOptions = new OpenAiCompatibleChatStreamOptions(IncludeUsage: true), // usage in the last chunk
+        TranslationOptions = new OpenAiCompatibleTranslationOptions(SourceLang: "zh", TargetLang: "en")
+    });
+
+var text = new StringBuilder();
+await foreach (var chunk in chunks)
+{
+    text.Append(chunk.Choices[0].Delta?.Content); // the translated text, delta by delta
+    var audio = chunk.Choices[0].Delta?.Audio?.Data; // the base64 wav deltas, when audio output is on
+    var usage = chunk.Usage; // present in the last chunk with IncludeUsage
+}
+```
 
 ## Recorded Speech Recognition
 
@@ -2386,249 +2563,9 @@ foreach (var file in result.Output.Results!)
 }
 ```
 
-## Image Generation
-### Text-to-Image
-Use `GetMultimodalGenerationAsync` with model `qwen-image-2.0-pro` to generate images synchronously.
-```csharp
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "qwen-image-2.0-pro",
-        Input = new MultimodalInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("A futuristic cityscape at sunset")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters()
-        {
-            NegativePrompt = "low resolution, low quality, deformed limbs, distorted fingers, oversaturated, wax figure, lack of facial detail, overly smooth, AI artifacts, chaotic composition, blurry or distorted text.",
-            N = 1,
-            PromptExtend = true,
-            Watermark = false,
-            Size = "2048*2048"
-        }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
+## Custom Hotword Vocabularies
+Boost the recognition accuracy of domain terms with custom hotword vocabularies, managed with `CustomizeVocabularyAsync` (model `speech-biasing`, served on the workspace domain only — configure `WorkspaceId` as for the voice cloning API). The action picks the operation: create a vocabulary of hotwords (`Action = "create_vocabulary"`), then list / query / update / delete vocabularies. The returned id feeds the `VocabularyId` parameter of recognition requests and the vocabulary must be created with the same `TargetModel` as the recognition requests use:
 
-Wan models work the same way: `wan2.6-t2i` supports synchronous calls via the same API and allows free image size as long as total pixels stay in [1280*1280, 1440*1440] and aspect ratio stays in [1:4, 4:1]. Models at `wan2.5-t2i-preview` and below only support the async task API (see Text-to-Image (Async Task)).
 ```csharp
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "wan2.6-t2i",
-        Input = new MultimodalInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("一间有着精致窗户的花店，漂亮的木质门，摆放着花朵")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters()
-        {
-            N = 1,
-            Size = "1280*1280",
-            PromptExtend = true,
-            Watermark = false,
-            Seed = 233
-        }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
-
-The `wan2.7-image` / `wan2.7-image-pro` models add thinking mode (`ThinkingMode`), color palette control (`ColorPalette`, ratios sum up to 100.00%), sequential image group generation (`EnableSequential`, `n` becomes the max count 1-12) and interactive editing with bounding boxes (`BboxList`, one list of `[x1, y1, x2, y2]` boxes per input image). `wan2.7-image-pro` supports 4K output for text-to-image (2K for editing and groups).
-```csharp
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "wan2.7-image",
-        Input = new MultimodalInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("一间有着精致窗户的花店，漂亮的木质门，摆放着花朵")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters()
-        {
-            Size = "1K",
-            N = 1,
-            Watermark = false,
-            ThinkingMode = true,
-            ColorPalette =
-            [
-                new MultimodalColorPalette("#C2D1E6", "50.00%"),
-                new MultimodalColorPalette("#CDD8E9", "30.00%"),
-                new MultimodalColorPalette("#B5C8DB", "20.00%")
-            ]
-        }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
-
-The lightweight `z-image-turbo` model generates a single image fast over the same API, with Chinese/English text rendering. `size` defaults to `1024*1536` with total pixels in [512*512, 2048*2048]; note that `prompt_extend` defaults to `false` and is billed higher when enabled — when set to `true` the response also carries the rewritten prompt and the reasoning process (`ReasoningContent`).
-```csharp
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "z-image-turbo",
-        Input = new MultimodalInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("一只坐着的橘黄色的猫，表情愉悦，活泼可爱，逼真准确。")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters() { PromptExtend = false, Seed = 233, Size = "1120*1440" }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
-
-### Image Editing
-Qwen-image edit models (`qwen-image-2.0-pro`, `qwen-image-2.0`, and the unified generation-and-editing models `qwen-image-3.0-pro`, `qwen-image-3.0`, `qwen-image-2.1-pro`, `qwen-image-2.1-turbo`) edit images by instruction through the same multimodal API: 1~3 input images (up to 10 for the qwen-image-2.1 series) followed by one text instruction, generating 1~6 images. When multiple images are provided, the output aspect ratio follows the last one.
-```csharp
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "qwen-image-2.0-pro",
-        Input = new MultimodalInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                [
-                    MultimodalMessageContent.ImageContent("<base-image-url>"),
-                    MultimodalMessageContent.ImageContent("<style-image-url>"),
-                    MultimodalMessageContent.TextContent("Use the city photo in image 1 as the base. Do not change the buildings, streets, vehicles or people. Draw three cartoon figures from image 2 around the building in a flat poster illustration style.")
-                ])
-            }
-        },
-        Parameters = new MultimodalParameters()
-        {
-            NegativePrompt = "low resolution, low quality, chaotic composition",
-            N = 1,
-            PromptExtend = true,
-            PromptExtendMode = "direct",
-            Seed = 233,
-            Size = "1328*1328",
-            Watermark = false
-        }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Edited image url: {url}");
-```
-`PromptExtendMode` controls how `PromptExtend` rewrites the prompt: `direct` (default, DPE) or `agent` (APE, text-to-image only, rejected for image editing). The unified models also accept the same message-based input as an async task via `CreateImageGenerationTaskAsync` / `GetImageGenerationTaskAsync`.
-
-To edit a local image, upload it first and pass the returned OSS link:
-```csharp
-await using var image = File.OpenRead("input.jpg");
-var ossLink = await client.UploadTemporaryFileAsync("qwen-image-2.0-pro", image, "input.jpg");
-Console.WriteLine($"File uploaded: {ossLink}");
-var messages = new List<MultimodalMessage>
-{
-    MultimodalMessage.User(
-    [
-        MultimodalMessageContent.ImageContent(ossLink),
-        MultimodalMessageContent.TextContent("Please enhance the clarity of this photo")
-    ])
-};
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "qwen-image-2.0-pro",
-        Input = new MultimodalInput() { Messages = messages },
-        Parameters = new MultimodalParameters()
-        {
-            NegativePrompt = "low resolution, low quality, deformed limbs, distorted fingers, oversaturated, wax figure, lack of facial detail, overly smooth, AI artifacts, chaotic composition, blurry or distorted text.",
-            N = 1,
-            PromptExtend = true,
-            Watermark = false,
-            Size = "2048*2048"
-        }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
-
-`wan2.6-image` supports image editing with 1~4 reference images, and interleaved text-image output when `EnableInterleave` is set to `true` (streaming only).
-```csharp
-var response = await client.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "wan2.6-image",
-        Input = new MultimodalInput()
-        {
-            Messages = new List<MultimodalMessage>()
-            {
-                MultimodalMessage.User(
-                    new List<MultimodalMessageContent>()
-                    {
-                        MultimodalMessageContent.TextContent("参考图1的风格和图2的背景，生成番茄炒蛋"),
-                        MultimodalMessageContent.ImageContent("<reference-image-1-url>"),
-                        MultimodalMessageContent.ImageContent("<reference-image-2-url>")
-                    })
-            }
-        },
-        Parameters = new MultimodalParameters() { N = 1, EnableInterleave = false, Size = "1K" }
-    });
-var url = response.Output.Choices[0].Message.Content[0].Image;
-Console.WriteLine($"Generated image url: {url}");
-```
-
-The `wan2.5-i2i-preview` model edits images by instruction with up to 3 reference images, keeping subject consistency across images. It runs as an async task and reports the rewritten prompt in the result:
-```csharp
-var response = await client.CreateImage2ImageSynthesisTaskAsync(
-    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
-    {
-        Model = "wan2.5-i2i-preview",
-        Input = new Image2ImageSynthesisInput()
-        {
-            Prompt = "将图1中的闹钟放置到图2的餐桌的花瓶旁边位置",
-            Images = ["<reference-image-1-url>", "<reference-image-2-url>"]
-        },
-        Parameters = new Image2ImageSynthesisParameters() { N = 1 }
-    });
-var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
-Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}, actual prompt: {task.Output.Results?[0].ActualPrompt}");
-```
-
-The classic `wanx2.1-imageedit` model edits images through predefined functions via an async task, using the same input type with a `Function`:
-```csharp
-var response = await client.CreateImage2ImageSynthesisTaskAsync(
-    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
-    {
-        Model = "wanx2.1-imageedit",
-        Input = new Image2ImageSynthesisInput()
-        {
-            Function = "description_edit",
-            Prompt = "把她的头发修改为红色。",
-            BaseImageUrl = "<your-image-url>"
-        },
-        Parameters = new Image2ImageSynthesisParameters() { N = 1 }
-    });
-var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
-Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}");
-```
-Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization
+var created = await dashScopeClient.CustomizeVocabularyAsync(
+    new M

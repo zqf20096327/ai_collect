@@ -1,6 +1,6 @@
 <img src="./fig2.png" width="400px"></img>
 
-## Supermimic - Pytorch (wip)
+## Supermimic - Pytorch
 
 Unofficial implementation of [Supermimic, Scaling Humanoid Whole-Body Control with One Differentiable World Model](https://supermimic.github.io/), from Qiayuan Liao et al. of Berkeley
 
@@ -72,6 +72,18 @@ actor_loss = supermimic.actor_loss(
 actor_loss.backward()
 ```
 
+## Experiments
+
+Toy `HalfCheetah-v5` experiment - trains an `x-ppo` expert, then tracks an 8-dim pose subset (no velocities or task reward) through the learned world model
+
+```bash
+$ uv run train_supermimic_cheetah.py
+```
+
+<img src="./assets/cheetah_expert_vs_supermimic.webp" width="500px"></img>
+
+<img src="./assets/cheetah_convergence.png" width="500px"></img>
+
 ## Citations
 
 ```bibtex
@@ -107,5 +119,17 @@ actor_loss.backward()
     archivePrefix = {arXiv},
     primaryClass = {cs.LG},
     url      =  {https://arxiv.org/abs/2407.02466},
+}
+```
+
+```bibtex
+@article{Peng2021AMPAM,
+    title   = {AMP: Adversarial Motion Priors for Stylized Physics-Based Character Control},
+    author  = {Xue Bin Peng and Ze Ma and Pieter Abbeel and Sergey Levine and Angjoo Kanazawa},
+    year    = {2021},
+    eprint  = {2104.02180},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.GR},
+    url     = {https://arxiv.org/abs/2104.02180},
 }
 ```

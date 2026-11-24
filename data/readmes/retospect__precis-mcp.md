@@ -557,6 +557,7 @@ precis cron | heartbeat            # Scheduler tick / liveness ping.
 precis taproot ...                 # Claim-hub authoring/repair: mint / refine /
                                    #   merge / backfill / backfill-grounding /
                                    #   repair-evidence / direct-mint / lint.
+precis taproot repair-cites        # Repoint dangling draft finding cites (dry-run default).
 precis taproot verify-edges        # Certify withheld/unverified evidence edges
                                    #   for the publish preflight (stamps the
                                    #   meta.support verdict; dry-run default).
@@ -570,6 +571,7 @@ precis jobs ingest / ingest-oracles    # Pre-warm files under PRECIS_ROOT /
 precis jobs import-perplexity ...      # Bulk-import Perplexity web-UI answers.
 precis jobs watch-patents / list-patent-watches / run-patent-watches /
 sweep-patent-fulltext                  # Saved CQL patent watches (patent kind).
+precis jobs watch-edgar / list-edgar-watches / run-edgar-watches  # Saved SEC filings searches and briefing news.
 precis jobs check-provenance / sync-retraction-watch
                                        # Provenance + retraction audits.
 ```

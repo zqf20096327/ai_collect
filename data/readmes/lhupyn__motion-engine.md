@@ -53,7 +53,7 @@ Plain ES modules, no build step. From a CDN with an import map:
   "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js/+esm",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
   "talkinghead": "https://cdn.jsdelivr.net/gh/met4citizen/TalkingHead@1.7/modules/talkinghead.mjs",
-  "motion-engine": "https://cdn.jsdelivr.net/gh/lhupyn/motion-engine@2.2.0/src/index.js"
+  "motion-engine": "https://cdn.jsdelivr.net/gh/lhupyn/motion-engine@2.3.1/src/index.js"
 } }
 </script>
 ```
@@ -209,7 +209,7 @@ Planned, not built yet: blending the top two expressions by Jev's probabilities 
 
 ## Appendix B: Catalogs
 
-Both catalogs ship as package exports (`motion-engine/facs.json`, `motion-engine/gestures.json`, or `…@2.2.0/src/facs.json` on the CDN). Pass your own:
+Both catalogs ship as package exports (`motion-engine/facs.json`, `motion-engine/gestures.json`, or `…@2.3.1/src/facs.json` on the CDN). Pass your own:
 
 ```js
 import facs from './my-facs.json' with { type: 'json' };
@@ -221,7 +221,8 @@ new MotionEngine(head, { classify: systemOne({ apiKey }), face: { facs }, body: 
 **Rules**
 
 - Only entries with a `description` are offered to the classifier; the rest are manual-only (`face.play` / `body.play`). Bundled manual-only: `look_left`, `look_right`, `open_mouth`, `squint`, `neutral`.
-- The description says *when* to use it: *"Warm, genuine smile: glad, pleased, friendly, good news."* A narrow one keeps a novelty for its cue: `vulcan_salute` (🖖) only on "live long and prosper" or a mention of Star Trek or Vulcans.
+- The description says *when* to use it: *"A warm smile at something good: good news, a pleasant surprise, being glad for someone."* A narrow one keeps a novelty for its cue: `vulcan_salute` (🖖) only on "live long and prosper" or a mention of Star Trek or Vulcans.
+- Describe the moment in the line, not the avatar's usual tone. The classifier reads each line on its own, so an option that fits how a warm, curious companion always talks ("friendly", "curious, listening closely") fits most lines and plays on line after line. Say what it is not for, naming the alternative: *"Not an ordinary question to keep the conversation going."*
 - Keep options distinct: similar options split the confidence and can both fall under the threshold.
 - Check faces as they will play: still, talking, and with the head pitched down, where the idle leaves it. Keep jaw opening to a touch in held moods, or it fights the visemes.
 - A smile needs the eyes: add the blendshape that raises the lower lids (often `eyeSquint`, AU7) to every smile, or it reads cold.
@@ -237,7 +238,7 @@ Values are illustrative.
 {
   "au_map": { "AU12": { "mouthSmileLeft": 1, "mouthSmileRight": 1 } },
   "expressions": {
-    "happy": { "description": "Warm, genuine smile: glad, pleased, friendly, good news.",
+    "happy": { "description": "A warm smile at something good: good news, a pleasant surprise, being glad for someone.",
                "facs": "EMFACS-7 happiness: AU6+AU12", "aus": { "AU6": 0.25, "AU12": 0.5 } },
     "wink": { "description": "A playful wink: a shared secret, a joke, flirting.", "kind": "beat",
               "aus": { "AU43_L": 0.7 }, "envelope": { "in": 120, "hold": 140, "out": 220 } }
@@ -271,7 +272,7 @@ Values are illustrative.
              "vs": { "headMove": [0], "headRotateX": [0.18, -0.03, 0.13, 0], "headRotateZ": [0] } }
   },
   "hands": {
-    "wave": { "description": "A wave: hello or goodbye.", "dt": [100, 1500], "rescale": [0, 1],
+    "wave": { "description": "A wave: saying hello or goodbye (\"hi!\", \"bye!\").", "dt": [100, 1500], "rescale": [0, 1],
               "vs": { "gesture": [["hand_wave_low", null, true, 500], null] },
               "overlay": { "bones": { "RightHand": { "freq": 14, "amp": [0, 0.1, 0.125], "phase": 0 } },
                            "delay": 300, "duration": 1200 } }

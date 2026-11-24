@@ -257,7 +257,7 @@ See the ""LICENSE"" (LICENSE) file for the complete license terms.
     <td>Training data collection</td>
   </tr>
  <tr>
-    <td align="center"><b>Magnific</b> (Hugging face)</td>
+    <td align="center"><b>Magnific</b> (Y2k retro design ideas)</td>
     <td>Website innovative ideas</td>
   </tr>
 </table>

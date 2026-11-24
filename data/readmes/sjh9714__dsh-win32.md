@@ -92,7 +92,7 @@ The boundary is deliberate: this composes the installed official components and 
 
 Tools run under a non-driving synthetic agent with a real temporary DSH session. The verifier does not instantiate DSH's private agent-loop inbox; any attempt to use that inbox fails the check instead of returning fabricated state.
 
-The repository CI installs `@deepseek-ai/dsh@latest` from scratch and runs this acceptance on real Windows. Pushes, pull requests, and manual runs cover npm and strict pnpm layouts on Node 22.19 and 24. A weekly upstream watch retains both installers on Node 22.19, so a new DSH publication is checked even when dsh-win32 itself has not changed.
+The repository CI installs `@deepseek-ai/dsh@latest` from scratch and runs this acceptance on real Windows. Pushes, pull requests, and manual runs cover npm and strict pnpm layouts on Node 24.9, the floor DSH 0.2.2 declares, and the newest Node 24. A weekly upstream watch retains both installers on Node 24.9, so a new DSH publication is checked even when dsh-win32 itself has not changed.
 
 The pnpm lane preserves a strict 24-hour publication cooldown and an explicit build-script allowlist. It can select an older eligible release than npm. Read the installed DSH version in each result; a pass is not evidence for a release that the package manager has not installed.
 
@@ -121,7 +121,7 @@ npx dsh-win32 preflight --json
 - **Plugins.** It reads the third-party plugins in the profile, including disabled ones, and applies the host's own rule to the target: `engines.dsh` decides alone when present, otherwise the DSH peers must match, and prereleases count. CI compares this judgment with the installed `dsh-app-boot`. An exemption from `dsh plugin allow-version` counts only if it names the exact target.
 - **Node.** It uses the target's `engines.node`. Some releases declare none, so it then falls back to `^22.19.0 || >=24` and says so.
 - **Windows.** It checks that PowerShell 7 exists and that `pwsh` resolves through PATH.
-- **Release rules.** It warns when the upgrade crosses a known behavior change in saved model IDs, API key sources, or the SSH protocol. These are reminders. It does not read your settings to confirm that you are affected. A target newer than the last release reviewed for these rules gets its own warning, because nothing has checked its changes.
+- **Release rules.** It warns when the upgrade crosses a known behavior change, such as saved model IDs, API key sources, the SSH protocol, tool execution modes, web search providers, worktree cleanup, or Windows extra-directory grants. These are reminders. It does not read your settings to confirm that you are affected. A target newer than the last release reviewed for these rules gets its own warning, because nothing has checked its changes.
 
 Exit codes follow `doctor`: 0 all pass, 1 any warning, 2 any failure. A target or profile it cannot read is a failure, so a preflight that could not finish never looks safe. For an incompatible plugin it looks up the plugin's newest release and suggests that version if it fits, or suggests staying on your installed DSH. A pass is not proof the upgrade will work. It covers declared requirements and known changes only, and it does not install or launch the target. Use `verify` after upgrading.
 

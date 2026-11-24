@@ -69,7 +69,7 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 54 entries
 - [Calibration & Research](categories/calibration-research.md) — 63 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 138 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 139 entries
 - [Game & Simulation](categories/game-simulation.md) — 30 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 11 entries

@@ -94,7 +94,7 @@ Uniques — Basic Skills that reached elite mastery (4★+) through depth alone,
   ◉ cathrynlavery/diagram-design  [4★]
     ├─ ○ /data-visualize
 
-(317 skills total — see docs/tree.md)
+(318 skills total — see docs/tree.md)
 ```
 <!-- gaia:registry-end -->
 
