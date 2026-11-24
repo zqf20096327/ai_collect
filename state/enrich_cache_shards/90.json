@@ -4310,13 +4310,16 @@
    "CSS": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261124"
+  },
+  "commit_90d": 2180,
+  "commit_7d": 42
  },
  "shekharmaheshwari/intelligent-search-platform": {
   "rel_ver": null,
@@ -4812,6 +4815,23 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "kimpoungajoyce-cmd/coregold-usdt-vcc-vertical-ai-indie-hacker-billing-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

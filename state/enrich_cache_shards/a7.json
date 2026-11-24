@@ -148,11 +148,11 @@
   }
  },
  "NVIDIAGameWorks/kaolin": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 4,
   "rel_ver": "v0.18.0",
   "rel_pub": "2025-08-08",
-  "rel_days": 466,
+  "rel_days": 473,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "Groovy": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

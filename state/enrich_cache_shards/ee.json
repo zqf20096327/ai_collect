@@ -1,10 +1,10 @@
 {
  "ultralytics/yolov5": {
-  "commit_7d": 4,
-  "commit_90d": 26,
+  "commit_7d": 1,
+  "commit_90d": 25,
   "rel_ver": "v7.0",
   "rel_pub": "2022-11-22",
-  "rel_days": 1456,
+  "rel_days": 1463,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1575,16 +1575,16 @@
    "HTML": 2,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261021"
+   "commit": "20261124"
   },
-  "commit_90d": 158,
-  "commit_7d": 26,
+  "commit_90d": 157,
+  "commit_7d": 3,
   "rel_pub": "2026-11-17",
   "rel_days": 2,
   "rel_n90": 1,

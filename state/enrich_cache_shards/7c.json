@@ -313,12 +313,12 @@
   }
  },
  "milanglacier/minuet-ai.nvim": {
-  "commit_90d": 19,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 2,
   "rel_ver": "v0.10.0",
   "rel_pub": "2026-07-31",
-  "rel_days": 78,
-  "rel_n90": 1,
+  "rel_days": 116,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -331,10 +331,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4781,6 +4781,36 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "seanbabalala/SiftGate": {
+  "commit_90d": 89,
+  "commit_7d": 34,
+  "rel_ver": "v2.14.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "Python": 5,
+   "JavaScript": 4,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

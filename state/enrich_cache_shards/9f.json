@@ -257,12 +257,12 @@
   }
  },
  "valqore/valqore": {
-  "commit_7d": 0,
-  "commit_90d": 28,
+  "commit_7d": 2,
+  "commit_90d": 6,
   "rel_ver": "v1.13.6",
   "rel_pub": "2026-08-17",
-  "rel_days": 61,
-  "rel_n90": 7,
+  "rel_days": 99,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -275,10 +275,10 @@
    "HCL": 3,
    "Dockerfile": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

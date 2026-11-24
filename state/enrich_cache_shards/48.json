@@ -4541,13 +4541,16 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261124"
+  },
+  "commit_90d": 69,
+  "commit_7d": 9
  },
  "LairManateeShackle/ai--manus": {
   "commit_90d": 6,
@@ -4842,6 +4845,33 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "loupistai/loupist": {
+  "rel_ver": "v0.1.6",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 55,
+   "TypeScript": 29,
+   "JavaScript": 9,
+   "Python": 4,
+   "CSS": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

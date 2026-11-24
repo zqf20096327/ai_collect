@@ -4398,5 +4398,76 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "Meetsaini/emulator": {
+  "commit_90d": 11,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "howardpen9/kimi-code-reviewer": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-03-03",
+  "rel_days": 266,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "marcello-pichini/ai-science-tracker": {
+  "rel_ver": "v2026.11.23.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "HTML": 100,
+   "Python": 0,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

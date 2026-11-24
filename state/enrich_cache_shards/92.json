@@ -835,8 +835,8 @@
   }
  },
  "liyupi/free-video-downloader": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -851,10 +851,10 @@
    "JavaScript": 3,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4616,6 +4616,101 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "FelipeSales18/llm-ps4": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 72,
+   "Python": 22,
+   "Shell": 5,
+   "Jinja": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "SreejaPasula/flowmcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 80,
+   "Java": 20
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "IMLIULIAN/zeromem": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "PowerShell": 4,
+   "Shell": 3
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "mftnakrsu/airgap-anything": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

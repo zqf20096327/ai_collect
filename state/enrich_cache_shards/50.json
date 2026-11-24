@@ -4542,5 +4542,56 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "omnimux-ai/omnimux-client": {
+  "rel_ver": "v2.0.25",
+  "rel_pub": "2026-11-19",
+  "rel_days": 5,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 49,
+   "JavaScript": 48,
+   "CSS": 1,
+   "HTML": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "bernatsampera/show-context": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "CSS": 12
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

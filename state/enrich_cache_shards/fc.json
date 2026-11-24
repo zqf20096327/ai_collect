@@ -5200,5 +5200,32 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "Celaris-dev1/Argo": {
+  "rel_ver": "argo-v0.1.4",
+  "rel_pub": "2026-11-15",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 96,
+   "Python": 1,
+   "Shell": 1,
+   "CSS": 1,
+   "Astro": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

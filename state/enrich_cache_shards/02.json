@@ -106,11 +106,11 @@
   }
  },
  "Lightning-AI/pytorch-lightning": {
-  "commit_7d": 0,
-  "commit_90d": 14,
+  "commit_7d": 8,
+  "commit_90d": 21,
   "rel_ver": "2.6.6",
   "rel_pub": "2026-09-10",
-  "rel_days": 68,
+  "rel_days": 75,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -126,10 +126,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4819,6 +4819,77 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "ArintonAkos/DataVo-DBMS": {
+  "rel_ver": "v0.4.0-rc.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 97,
+   "Shell": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Moncef-Bj/GAF-Net-for-Video-Based-Person-Re-Identification": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "rinshadkk/selfbrowse": {
+  "rel_ver": "0.3.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 4,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "HTML": 14,
+   "JavaScript": 12,
+   "CSS": 5,
+   "Shell": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

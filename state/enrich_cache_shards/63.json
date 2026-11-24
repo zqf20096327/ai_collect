@@ -1522,10 +1522,10 @@
  },
  "neuml/txtai.rs": {
   "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "v9.14.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 12,
+  "commit_7d": 1,
+  "rel_ver": "v9.15.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1537,10 +1537,10 @@
   "lang": {
    "Rust": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

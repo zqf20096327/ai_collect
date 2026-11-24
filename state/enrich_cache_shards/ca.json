@@ -20,12 +20,12 @@
   }
  },
  "onlook-dev/onlook": {
-  "commit_7d": 1,
-  "commit_90d": 1,
-  "rel_ver": "v0.2.32",
-  "rel_pub": "2025-07-17",
-  "rel_days": 488,
-  "rel_n90": 0,
+  "commit_7d": 18,
+  "commit_90d": 19,
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-11-19",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -44,10 +44,10 @@
    "PLpgSQL": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5503,6 +5503,26 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "EvolutionX-10/discordbot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

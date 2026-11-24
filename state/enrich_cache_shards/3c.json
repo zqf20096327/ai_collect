@@ -4598,13 +4598,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261118",
    "security": "20261118",
    "contrib": "20261118",
-   "lang": "20261118"
-  }
+   "lang": "20261118",
+   "commit": "20261124"
+  },
+  "commit_90d": 12,
+  "commit_7d": 1
  },
  "AgriciDaniel/dataforseo-agent": {
   "rel_ver": null,
@@ -4689,6 +4692,58 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "fernandotonon/QtMeshEditor": {
+  "rel_ver": "3.72.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 84,
+   "QML": 6,
+   "Python": 4,
+   "C": 2,
+   "CMake": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "viniciusscience/fishid-studio": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "Jupyter Notebook": 24,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

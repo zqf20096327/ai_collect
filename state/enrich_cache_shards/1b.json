@@ -166,11 +166,11 @@
   }
  },
  "GoogleCloudPlatform/asl-ml-immersion": {
-  "commit_7d": 0,
-  "commit_90d": 36,
+  "commit_7d": 1,
+  "commit_90d": 35,
   "rel_ver": "keras3",
   "rel_pub": "2026-01-14",
-  "rel_days": 304,
+  "rel_days": 314,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -186,10 +186,10 @@
    "HTML": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

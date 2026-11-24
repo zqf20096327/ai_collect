@@ -1024,10 +1024,10 @@
   }
  },
  "kanishkamisra/minicons": {
-  "commit_7d": 0,
-  "commit_90d": 2,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 6,
+  "commit_90d": 7,
+  "rel_ver": "v0.3.41",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1036,21 +1036,25 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false
  },
  "tegridydev/auto-md": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 2,
+  "commit_90d": 3,
   "rel_ver": "v0.1",
   "rel_pub": "2024-08-06",
-  "rel_days": 803,
+  "rel_days": 840,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1066,10 +1070,10 @@
    "CSS": 13,
    "HTML": 7
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4129,13 +4133,16 @@
    "Fluent": 7,
    "CSS": 4
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261124"
+  },
+  "commit_90d": 127,
+  "commit_7d": 2
  },
  "derBelonix/manus--ai": {
   "commit_90d": 3,

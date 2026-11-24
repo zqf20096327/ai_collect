@@ -169,8 +169,8 @@
   }
  },
  "Danielskry/Awesome-RAG": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -179,10 +179,10 @@
   "sec_ids": [],
   "contrib_n": 18,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4670,6 +4670,26 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "ebrahimpak/BizDiag": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 93,
+   "Java": 7
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

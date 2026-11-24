@@ -113,12 +113,12 @@
   }
  },
  "obss/sahi": {
-  "commit_90d": 76,
-  "commit_7d": 29,
+  "commit_90d": 68,
+  "commit_7d": 16,
   "rel_ver": "0.14.0",
   "rel_pub": "2026-11-01",
-  "rel_days": 5,
-  "rel_n90": 6,
+  "rel_days": 23,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -130,10 +130,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4528,5 +4528,22 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": null
+ },
+ "remoniaperfumes9-eng/coregold-usdt-vcc-apple-ecosystem-apple-pay-checkout": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

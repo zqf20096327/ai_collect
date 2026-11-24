@@ -1152,10 +1152,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4968,6 +4968,49 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "noahgift/mlflow-project-best-practices": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 91,
+   "PureBasic": 5,
+   "Python": 4,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "AIverflow/ticket-chic": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 91,
+   "Shell": 9
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

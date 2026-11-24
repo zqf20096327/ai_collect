@@ -195,8 +195,8 @@
   }
  },
  "liyupi/yu-ai-code-mother": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -210,10 +210,10 @@
    "TypeScript": 4,
    "HTML": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5354,6 +5354,25 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "Samuelpedroso-dev/neural-dino": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

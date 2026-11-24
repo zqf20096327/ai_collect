@@ -183,11 +183,11 @@
   }
  },
  "qingchencloud/clawpanel": {
-  "commit_7d": 1,
-  "commit_90d": 155,
+  "commit_7d": 11,
+  "commit_90d": 156,
   "rel_ver": "v0.22.5",
   "rel_pub": "2026-10-17",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -203,10 +203,10 @@
    "Shell": 1,
    "Python": 1
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4435,10 +4435,10 @@
   }
  },
  "UpstageAI/korean-tax-calc-mcp": {
-  "rel_ver": "v0.11.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 3,
-  "rel_n90": 5,
+  "rel_ver": "v0.73.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 0,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4450,9 +4450,9 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "release": "20261025",
+   "release": "20261124",
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025",
@@ -5250,6 +5250,32 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "kjgpta/tracesage": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 79,
+   "JavaScript": 14,
+   "CSS": 5,
+   "HTML": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

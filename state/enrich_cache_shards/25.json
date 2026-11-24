@@ -334,7 +334,7 @@
  },
  "akuity/awesome-argo": {
   "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -343,10 +343,10 @@
   "sec_ids": [],
   "contrib_n": 59,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5046,6 +5046,25 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "Jairob4/SylFish-Deep-Learning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

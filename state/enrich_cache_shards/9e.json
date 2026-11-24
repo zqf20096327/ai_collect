@@ -111,8 +111,8 @@
   }
  },
  "nexu-io/html-video": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -126,10 +126,10 @@
    "JavaScript": 4,
    "CSS": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -445,8 +445,8 @@
   }
  },
  "skyzh/vector-db-from-scratch": {
-  "commit_90d": 58,
-  "commit_7d": 0,
+  "commit_90d": 27,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -461,10 +461,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

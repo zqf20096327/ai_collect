@@ -153,11 +153,11 @@
   }
  },
  "spider-rs/spider": {
-  "commit_90d": 47,
-  "commit_7d": 1,
-  "rel_ver": "v2.53.9",
-  "rel_pub": "2026-10-30",
-  "rel_days": 18,
+  "commit_90d": 52,
+  "commit_7d": 5,
+  "rel_ver": "v2.54.2",
+  "rel_pub": "2026-11-19",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -171,10 +171,10 @@
    "Shell": 0,
    "Nix": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4453,6 +4453,32 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "Takeoff0518/TinyChat": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 98,
+   "PowerShell": 1,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

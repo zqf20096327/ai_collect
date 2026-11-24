@@ -369,12 +369,12 @@
   }
  },
  "test-zeus-ai/testzeus-hercules": {
-  "commit_7d": 0,
-  "commit_90d": 16,
-  "rel_ver": "1.0.2",
-  "rel_pub": "2026-08-03",
-  "rel_days": 106,
-  "rel_n90": 0,
+  "commit_7d": 6,
+  "commit_90d": 22,
+  "rel_ver": "2.0.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -389,10 +389,10 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

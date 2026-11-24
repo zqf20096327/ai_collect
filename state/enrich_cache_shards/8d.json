@@ -5436,5 +5436,57 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "limxdynamics-online-robotics/xbot": {
+  "commit_90d": 391,
+  "commit_7d": 0,
+  "rel_ver": "v10.4.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 24,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 30,
+   "Makefile": 0,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "anticipate218/llm-agent-interview-bank": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 52,
+   "Python": 26,
+   "CSS": 20,
+   "HTML": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

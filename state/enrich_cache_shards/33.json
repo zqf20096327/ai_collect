@@ -63,10 +63,10 @@
  },
  "datawhalechina/llm-universe": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 1,
   "rel_ver": "v1",
   "rel_pub": "2024-04-14",
-  "rel_days": 915,
+  "rel_days": 954,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -79,10 +79,10 @@
    "Jupyter Notebook": 96,
    "Python": 4
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

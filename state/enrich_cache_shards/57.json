@@ -935,8 +935,8 @@
   }
  },
  "liyupi/yu-ai-learn": {
-  "commit_7d": 0,
-  "commit_90d": 6,
+  "commit_7d": 2,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -951,10 +951,10 @@
    "SCSS": 5,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1729,13 +1729,16 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261124",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261124"
+  },
+  "commit_90d": 55,
+  "commit_7d": 3
  },
  "agentcommunity/agent-identity-discovery": {
   "rel_ver": null,
@@ -4916,6 +4919,33 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "janelia-cellmap/cellmap-flow": {
+  "rel_ver": "0.2.3",
+  "rel_pub": "2026-03-19",
+  "rel_days": 250,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 55,
+   "TypeScript": 33,
+   "JavaScript": 8,
+   "HTML": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

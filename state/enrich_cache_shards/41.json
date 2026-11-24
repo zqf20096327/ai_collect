@@ -161,11 +161,11 @@
   }
  },
  "xlang-ai/OSWorld": {
-  "commit_90d": 217,
-  "commit_7d": 29,
+  "commit_90d": 214,
+  "commit_7d": 3,
   "rel_ver": "desktop-env-v1.0.3",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "rel_days": 14,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -183,10 +183,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4711,6 +4711,28 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "Jdavid77/home-cluster": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "HCL": 47,
+   "Python": 41,
+   "Shell": 12,
+   "Go Template": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

@@ -4772,5 +4772,51 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "rentruewang/aioway": {
+  "commit_90d": 150,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "bull-island/samuriser": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "JavaScript": 27,
+   "CSS": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

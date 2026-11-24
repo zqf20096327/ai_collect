@@ -86,11 +86,11 @@
   }
  },
  "potpie-ai/potpie": {
-  "commit_90d": 38,
-  "commit_7d": 1,
+  "commit_90d": 28,
+  "commit_7d": 0,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-08-31",
-  "rel_days": 67,
+  "rel_days": 85,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1601,16 +1601,16 @@
    "C++": 1,
    "Shell": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261021"
+   "commit": "20261124"
   },
-  "commit_90d": 51,
-  "commit_7d": 6
+  "commit_90d": 93,
+  "commit_7d": 8
  },
  "yifanzhang-pro/AutoMathText": {
   "rel_ver": null,

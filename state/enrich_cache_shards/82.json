@@ -5453,5 +5453,29 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "andresdelcampo/GPTYourData": {
+  "rel_ver": "1.5",
+  "rel_pub": "2023-06-20",
+  "rel_days": 1253,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 73,
+   "HTML": 27
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

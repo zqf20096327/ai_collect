@@ -5061,12 +5061,15 @@
    "CSS": 4,
    "HTML": 0
   },
-  "enriched_at": "20261123",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261123",
    "security": "20261123",
    "contrib": "20261123",
-   "lang": "20261123"
-  }
+   "lang": "20261123",
+   "commit": "20261124"
+  },
+  "commit_90d": 129,
+  "commit_7d": 8
  }
 }

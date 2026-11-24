@@ -4165,9 +4165,9 @@
    "Vue": 4,
    "Python": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "release": "20261025",
+   "release": "20261124",
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025",
@@ -4196,10 +4196,10 @@
   }
  },
  "01NGVI-QINGYI/ARIA-X": {
-  "rel_ver": "v0.1.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 2,
-  "rel_n90": 1,
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4214,9 +4214,9 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261122",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "release": "20261025",
+   "release": "20261124",
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025",
@@ -5124,6 +5124,29 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "W3967/dsh-workflow-form": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

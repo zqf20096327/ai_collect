@@ -68,11 +68,11 @@
   }
  },
  "SYSTRAN/faster-whisper": {
-  "commit_7d": 4,
+  "commit_7d": 0,
   "commit_90d": 16,
   "rel_ver": "v1.2.1",
   "rel_pub": "2025-10-31",
-  "rel_days": 378,
+  "rel_days": 389,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -85,10 +85,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -240,8 +240,8 @@
   }
  },
  "liyupi/yu-ai-agent": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 2,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -256,10 +256,10 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -785,11 +785,11 @@
   }
  },
  "BeamNG/BeamNGpy": {
-  "commit_7d": 0,
-  "commit_90d": 51,
-  "rel_ver": "v1.36",
-  "rel_pub": "2026-08-20",
-  "rel_days": 59,
+  "commit_7d": 2,
+  "commit_90d": 156,
+  "rel_ver": "v1.37",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -805,10 +805,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4809,10 +4809,10 @@
  "mvdctop/Movie_Data_Capture": {
   "commit_90d": 4,
   "commit_7d": 0,
-  "rel_ver": "8.2.5",
-  "rel_pub": "2026-11-11",
-  "rel_days": 6,
-  "rel_n90": 11,
+  "rel_ver": "8.2.6",
+  "rel_pub": "2026-11-17",
+  "rel_days": 7,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4827,10 +4827,10 @@
    "PowerShell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"

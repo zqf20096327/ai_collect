@@ -146,8 +146,8 @@
   }
  },
  "liyupi/mianshiya": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -162,10 +162,10 @@
    "EJS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5071,6 +5071,30 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "AlphaLima/ha-drive-energy-doc": {
+  "rel_ver": "v0.1.81b39",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "JavaScript": 24
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

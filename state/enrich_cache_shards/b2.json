@@ -350,8 +350,8 @@
   }
  },
  "vercel-labs/eve-software-factory-template": {
-  "commit_90d": 5,
-  "commit_7d": 3,
+  "commit_90d": 4,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -362,10 +362,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

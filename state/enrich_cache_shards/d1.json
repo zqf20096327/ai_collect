@@ -1598,13 +1598,16 @@
    "Python": 3,
    "HTML": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261124"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "madguyevans-creator/resale-agent-skill-hub": {
   "rel_ver": "v1.0.1",
@@ -2474,8 +2477,8 @@
   }
  },
  "Blackman99/deskfolk": {
-  "rel_ver": "v0.1.0",
-  "rel_pub": "2026-10-19",
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-22",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -2492,13 +2495,16 @@
    "JavaScript": 1,
    "Python": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261124",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261124"
+  },
+  "commit_90d": 1652,
+  "commit_7d": 228
  },
  "WriterGao/linkfox-ai-design": {
   "rel_ver": null,
@@ -5517,6 +5523,105 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "HKUDS/TokenWise": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-02-25",
+  "rel_days": 272,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 59,
+   "Python": 33,
+   "JavaScript": 4,
+   "HTML": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "weaviate/weaviate-examples": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "HTML": 41,
+   "Jupyter Notebook": 41,
+   "Python": 7,
+   "EJS": 3,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Leo0426/comfyUI-workflow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "protoflow-ai/protoflow": {
+  "rel_ver": "v3.3.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 25,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

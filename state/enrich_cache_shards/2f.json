@@ -5332,5 +5332,28 @@
    "contrib": "20261121",
    "lang": "20261121"
   }
+ },
+ "evanielyforquilhinha-hub/course2md-learning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 94,
+   "Python": 5,
+   "Swift": 0,
+   "Shell": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

@@ -454,11 +454,11 @@
   }
  },
  "zexadev/gemini-web2api-go": {
-  "commit_7d": 4,
-  "commit_90d": 151,
-  "rel_ver": "v4.28.0",
-  "rel_pub": "2026-11-09",
-  "rel_days": 7,
+  "commit_7d": 42,
+  "commit_90d": 179,
+  "rel_ver": "v4.32.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -472,11 +472,11 @@
    "HTML": 23,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
-   "security": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -4762,6 +4762,26 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "usnistgov/ai-metrology-submissions": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 88,
+   "Shell": 12
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

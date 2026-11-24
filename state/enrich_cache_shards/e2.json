@@ -90,11 +90,11 @@
   }
  },
  "HKUDS/DeepCode": {
-  "commit_7d": 35,
-  "commit_90d": 549,
+  "commit_7d": 16,
+  "commit_90d": 518,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-11-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -110,10 +110,10 @@
    "Rust": 0,
    "Astro": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

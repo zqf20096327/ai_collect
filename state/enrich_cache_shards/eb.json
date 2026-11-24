@@ -1092,7 +1092,7 @@
  },
  "pinkfuwa/llumen": {
   "commit_7d": 0,
-  "commit_90d": 74,
+  "commit_90d": 64,
   "rel_ver": "v0.6.1",
   "rel_pub": "2026-10-08",
   "rel_days": 41,
@@ -1111,9 +1111,9 @@
    "Jinja": 6,
    "JavaScript": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261020",
+   "commit": "20261124",
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
@@ -2045,16 +2045,16 @@
    "CSS": 3,
    "Shell": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261022"
+   "commit": "20261124"
   },
-  "commit_90d": 174,
-  "commit_7d": 172
+  "commit_90d": 494,
+  "commit_7d": 39
  },
  "scitex-ai/automated-research-demo": {
   "rel_ver": "v0.1.0",
@@ -4764,6 +4764,29 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "Faceplugin-ltd/FaceRecognition-LivenessDetection-ReactNative": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 65,
+   "Objective-C++": 18,
+   "Kotlin": 10,
+   "Python": 3,
+   "Ruby": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

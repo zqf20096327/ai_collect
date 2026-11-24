@@ -90,11 +90,11 @@
   }
  },
  "tmoroney/auto-subs": {
-  "commit_90d": 227,
+  "commit_90d": 226,
   "commit_7d": 0,
   "rel_ver": "v3.11.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 46,
+  "rel_days": 56,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -110,10 +110,10 @@
    "C++": 9,
    "CMake": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -636,10 +636,10 @@
    "Shell": 1,
    "Batchfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4740,6 +4740,49 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "skygazer42/Taroai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 87,
+   "JavaScript": 9,
+   "CSS": 3,
+   "HTML": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "axisvela/praxo-core-haskell": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Haskell": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

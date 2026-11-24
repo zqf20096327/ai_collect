@@ -290,8 +290,8 @@
   }
  },
  "Guang000/Awesome-Dataset-Distillation": {
-  "commit_7d": 1,
-  "commit_90d": 82,
+  "commit_7d": 2,
+  "commit_90d": 84,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -305,10 +305,10 @@
    "JavaScript": 3,
    "Python": 2
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1002,7 +1002,7 @@
   "commit_90d": 4,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-02-19",
-  "rel_days": 241,
+  "rel_days": 278,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1016,10 +1016,10 @@
    "Jupyter Notebook": 11,
    "PureBasic": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

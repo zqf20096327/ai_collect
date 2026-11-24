@@ -279,12 +279,12 @@
   }
  },
  "google/adk-web": {
-  "commit_7d": 1,
-  "commit_90d": 90,
-  "rel_ver": "v1.0.7",
-  "rel_pub": "2026-10-01",
-  "rel_days": 47,
-  "rel_n90": 3,
+  "commit_7d": 4,
+  "commit_90d": 83,
+  "rel_ver": "v1.0.8",
+  "rel_pub": "2026-11-18",
+  "rel_days": 6,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -298,10 +298,10 @@
    "SCSS": 11,
    "JavaScript": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1227,13 +1227,16 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261124",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261124"
+  },
+  "commit_90d": 35,
+  "commit_7d": 0
  },
  "jgravelle/jdatamunch-mcp": {
   "rel_ver": "v1.31.13",
@@ -4769,6 +4772,72 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "verl-project/laminar": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "975L/pilot-mcp-demo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 72,
+   "CSS": 18,
+   "Shell": 4,
+   "JavaScript": 3,
+   "Twig": 3
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "IamCooller/larder": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "C++": 4,
+   "JavaScript": 3,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

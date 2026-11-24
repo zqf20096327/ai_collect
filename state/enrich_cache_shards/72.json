@@ -399,12 +399,12 @@
   }
  },
  "stereolabs/zed-sdk": {
-  "commit_7d": 3,
-  "commit_90d": 5,
-  "rel_ver": "5.5.1",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
-  "rel_n90": 3,
+  "commit_7d": 1,
+  "commit_90d": 6,
+  "rel_ver": "5.6.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -419,10 +419,10 @@
    "CMake": 1,
    "C": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -485,12 +485,12 @@
   }
  },
  "FuJacob/cotabby": {
-  "commit_7d": 0,
-  "commit_90d": 26,
-  "rel_ver": "v0.6.2-beta",
-  "rel_pub": "2026-07-20",
-  "rel_days": 102,
-  "rel_n90": 0,
+  "commit_7d": 69,
+  "commit_90d": 92,
+  "rel_ver": "v0.7.0-beta",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -503,10 +503,10 @@
    "Python": 5,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5512,6 +5512,33 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "philffm/kaivo": {
+  "rel_ver": "v2.2.56",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "JavaScript": 79,
+   "Kotlin": 7,
+   "HTML": 6,
+   "CSS": 5,
+   "Lua": 3
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

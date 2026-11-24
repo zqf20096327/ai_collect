@@ -699,12 +699,12 @@
   }
  },
  "neuroneural/brainchop": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v4.1.0",
-  "rel_pub": "2024-06-02",
-  "rel_days": 867,
-  "rel_n90": 0,
+  "commit_7d": 7,
+  "commit_90d": 7,
+  "rel_ver": "v5.0.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 0,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -719,10 +719,10 @@
    "SCSS": 2,
    "Less": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4744,6 +4744,33 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "guuguo/remodeck": {
+  "rel_ver": "v0.2.3",
+  "rel_pub": "2026-11-19",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "CSS": 8,
+   "HTML": 1,
+   "Shell": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

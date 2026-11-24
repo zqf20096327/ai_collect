@@ -115,11 +115,11 @@
   }
  },
  "google-deepmind/mujoco_menagerie": {
-  "commit_90d": 25,
-  "commit_7d": 1,
+  "commit_90d": 28,
+  "commit_7d": 3,
   "rel_ver": "assets",
   "rel_pub": "2026-09-04",
-  "rel_days": 70,
+  "rel_days": 81,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -134,10 +134,10 @@
    "Makefile": 2,
    "OpenSCAD": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -465,7 +465,7 @@
   }
  },
  "vueuse/skills": {
-  "commit_90d": 2,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -478,10 +478,10 @@
    "TypeScript": 97,
    "JavaScript": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4353,6 +4353,28 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "JawherKl/AegisOps": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "Shell": 18,
+   "Makefile": 9,
+   "Go": 4
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

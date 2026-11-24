@@ -127,12 +127,12 @@
   }
  },
  "ChunelFeng/CGraph": {
-  "commit_90d": 41,
+  "commit_90d": 30,
   "commit_7d": 1,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-10-24",
-  "rel_days": 14,
-  "rel_n90": 2,
+  "rel_days": 31,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -147,10 +147,10 @@
    "CMake": 1,
    "Starlark": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1630,16 +1630,16 @@
    "TypeScript": 66,
    "JavaScript": 34
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261020"
+   "commit": "20261124"
   },
-  "commit_90d": 23,
-  "commit_7d": 5,
+  "commit_90d": 28,
+  "commit_7d": 1,
   "rel_pub": "2026-11-12",
   "rel_days": 6,
   "rel_n90": 2,
@@ -5449,13 +5449,16 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261118",
    "security": "20261118",
    "contrib": "20261118",
-   "lang": "20261118"
-  }
+   "lang": "20261118",
+   "commit": "20261124"
+  },
+  "commit_90d": 97,
+  "commit_7d": 93
  },
  "pixie-agent/pixie": {
   "rel_ver": "app-v1.1.9",
@@ -5551,6 +5554,51 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "Karimk899/free-llm-router": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 92,
+   "CMake": 8
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "batmandevx/Auto-Job": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 76,
+   "HTML": 19,
+   "CSS": 5
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

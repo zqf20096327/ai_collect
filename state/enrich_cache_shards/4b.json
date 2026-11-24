@@ -4225,5 +4225,59 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "xsec777/PiX-Agent": {
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 80,
+   "JavaScript": 14,
+   "Rust": 3,
+   "Python": 2,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "MatrixCoreX/RustClaw": {
+  "rel_ver": "ubuntu-x86_64-c785c9dc6a38",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 76,
+   "Python": 10,
+   "TypeScript": 8,
+   "Shell": 3,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

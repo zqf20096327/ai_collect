@@ -448,11 +448,11 @@
   }
  },
  "hexabot-ai/Hexabot": {
-  "commit_90d": 174,
-  "commit_7d": 118,
+  "commit_90d": 187,
+  "commit_7d": 16,
   "rel_ver": "v2.2.2",
   "rel_pub": "2025-01-24",
-  "rel_days": 662,
+  "rel_days": 669,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -468,10 +468,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5173,6 +5173,79 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "AhmadHassan-BTed/Jantt": {
+  "commit_90d": 223,
+  "commit_7d": 25,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 88,
+   "CSS": 8,
+   "JavaScript": 2,
+   "Python": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "olivia0401/prompt-evaluation": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "TypeScript": 2,
+   "PowerShell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Phytonking/thread": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 90,
+   "Python": 6,
+   "Gherkin": 4
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

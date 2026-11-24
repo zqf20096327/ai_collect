@@ -675,13 +675,13 @@
   }
  },
  "ling-stack-org/ling-stack": {
-  "commit_90d": 555,
-  "commit_7d": 81,
-  "rel_ver": "desktop-dev-0.1.2-alpha.1-20261013-dfb61ac",
-  "rel_pub": "2026-10-13",
-  "rel_days": 12,
-  "rel_n90": 1,
-  "rel_pre": true,
+  "commit_90d": 1018,
+  "commit_7d": 132,
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 6,
+  "rel_n90": 3,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -695,10 +695,10 @@
    "C++": 1,
    "Rust": 0
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261025",
-   "release": "20261025",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

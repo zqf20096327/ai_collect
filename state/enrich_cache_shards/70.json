@@ -5378,5 +5378,32 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "ask-marcel/ask-marcel-office-cli": {
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 57,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 95,
+   "Shell": 3,
+   "Python": 1,
+   "JavaScript": 0,
+   "Java": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

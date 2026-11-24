@@ -31,7 +31,7 @@
  },
  "openai/math": {
   "commit_7d": 2,
-  "commit_90d": 9,
+  "commit_90d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "C++": 0,
    "Mermaid": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4371,13 +4371,16 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261124"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "latere-ai/ai-as-an-infrastructure": {
   "rel_ver": "v0.10.11",
@@ -4733,13 +4736,16 @@
    "HTML": 4,
    "Lean": 3
   },
-  "enriched_at": "20261123",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261123",
    "security": "20261123",
    "contrib": "20261123",
-   "lang": "20261123"
-  }
+   "lang": "20261123",
+   "commit": "20261124"
+  },
+  "commit_90d": 103,
+  "commit_7d": 23
  },
  "monsterbag293-cloud/Antigravity-Android": {
   "rel_ver": "v1.0.1",
@@ -4763,6 +4769,77 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "CrystalDustt-V2/AI-Clipper": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "enwove/flyx": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 43,
+   "Cuda": 25,
+   "Python": 18,
+   "JavaScript": 10,
+   "CMake": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Arrrres2025/EssayPod": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "CSS": 8,
+   "TypeScript": 8,
+   "HTML": 5,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

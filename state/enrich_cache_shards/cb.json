@@ -4588,5 +4588,59 @@
    "contrib": "20261122",
    "lang": "20261122"
   }
+ },
+ "SpaceCoder-Kafka/codex-co2": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 85,
+   "Swift": 5,
+   "HTML": 4,
+   "CSS": 3,
+   "C#": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Kxvinnnn/tang-nano-lif-verilog": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "Verilog": 31,
+   "SystemVerilog": 21,
+   "HTML": 2,
+   "Tcl": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

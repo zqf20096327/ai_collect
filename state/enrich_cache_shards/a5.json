@@ -141,11 +141,11 @@
   }
  },
  "atomicstrata/llm-wiki-compiler": {
-  "commit_90d": 117,
-  "commit_7d": 1,
+  "commit_90d": 123,
+  "commit_7d": 8,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 24,
+  "rel_days": 36,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4950,6 +4950,77 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "noahgift/aws-ml-guide": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 79,
+   "HTML": 20,
+   "SCSS": 0,
+   "JavaScript": 0,
+   "TeX": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "noahgift/devml": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 96,
+   "Python": 4,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "noahgift/functions-from-zero": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 84,
+   "Python": 12,
+   "Dockerfile": 2,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

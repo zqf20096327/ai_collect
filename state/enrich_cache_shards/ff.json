@@ -450,11 +450,11 @@
   }
  },
  "microsoft/prompty": {
-  "commit_90d": 123,
+  "commit_90d": 64,
   "commit_7d": 0,
   "rel_ver": "python/2.0.1",
   "rel_pub": "2026-09-10",
-  "rel_days": 65,
+  "rel_days": 75,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -474,10 +474,10 @@
    "Python": 15,
    "TypeScript": 13
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

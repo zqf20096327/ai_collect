@@ -717,12 +717,12 @@
   }
  },
  "LnYo-Cly/ai4j": {
-  "commit_7d": 2,
-  "commit_90d": 353,
+  "commit_7d": 39,
+  "commit_90d": 251,
   "rel_ver": "v2.8.1",
   "rel_pub": "2026-09-25",
-  "rel_days": 23,
-  "rel_n90": 6,
+  "rel_days": 60,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -737,10 +737,10 @@
    "Shell": 0,
    "Less": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5735,6 +5735,29 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "yijiejiang/kaogong-school": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 47,
+   "TypeScript": 29,
+   "Swift": 23,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

@@ -321,11 +321,11 @@
   }
  },
  "ahmedfgad/GeneticAlgorithmPython": {
-  "commit_90d": 68,
-  "commit_7d": 0,
+  "commit_90d": 69,
+  "commit_7d": 1,
   "rel_ver": "3.9.2",
   "rel_pub": "2026-10-16",
-  "rel_days": 15,
+  "rel_days": 39,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -339,10 +339,10 @@
    "Cython": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4971,6 +4971,31 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "flipcyde101/kvdiff": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 5,
+   "HTML": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

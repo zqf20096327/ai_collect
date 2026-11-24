@@ -360,11 +360,11 @@
   }
  },
  "nexu-io/motion-anything": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-07-06",
-  "rel_days": 134,
+  "rel_days": 141,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -378,10 +378,10 @@
    "HTML": 29,
    "CSS": 8
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4562,6 +4562,52 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "nisconder/npm-safe": {
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 11,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 80,
+   "JavaScript": 16,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "HKU-TASR/Confundo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 51,
+   "Jupyter Notebook": 49
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

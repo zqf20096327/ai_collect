@@ -130,7 +130,7 @@
  },
  "MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning": {
   "commit_7d": 2,
-  "commit_90d": 17,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -142,10 +142,10 @@
    "MATLAB": 55,
    "Python": 45
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -295,7 +295,7 @@
  },
  "EgoAlpha/prompt-in-context-learning": {
   "commit_7d": 14,
-  "commit_90d": 48,
+  "commit_90d": 62,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -308,10 +308,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4958,6 +4958,48 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "thmoscow-byte/odinlink": {
+  "rel_ver": "v1.3",
+  "rel_pub": "2026-04-16",
+  "rel_days": 222,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {},
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "badgids/Story-Film-Skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "TypeScript": 6,
+   "Shell": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

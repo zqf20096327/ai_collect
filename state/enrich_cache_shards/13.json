@@ -56,11 +56,11 @@
   }
  },
  "google/langextract": {
-  "commit_7d": 5,
-  "commit_90d": 35,
+  "commit_7d": 7,
+  "commit_90d": 41,
   "rel_ver": "v1.7.2",
   "rel_pub": "2026-11-07",
-  "rel_days": 6,
+  "rel_days": 17,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -74,10 +74,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,12 +114,12 @@
   }
  },
  "jo-inc/camofox-browser": {
-  "commit_7d": 27,
-  "commit_90d": 187,
+  "commit_7d": 0,
+  "commit_90d": 172,
   "rel_ver": "v1.19.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 3,
-  "rel_n90": 12,
+  "rel_days": 14,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -134,10 +134,10 @@
    "Python": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

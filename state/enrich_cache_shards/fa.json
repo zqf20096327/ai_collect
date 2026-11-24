@@ -4512,5 +4512,88 @@
    "contrib": "20261119",
    "lang": "20261119"
   }
+ },
+ "FatelessAI/SkyrimNet-GamePlugin": {
+  "commit_90d": 265,
+  "commit_7d": 10,
+  "rel_ver": "v1.3.1-rc1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 25,
+  "lang": {
+   "Papyrus": 68,
+   "HTML": 25,
+   "JavaScript": 3,
+   "Python": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "chirag127/bookmark-mind-bs-ext": {
+  "rel_ver": "prerelease",
+  "rel_pub": "2026-07-12",
+  "rel_days": 135,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 76,
+   "HTML": 19,
+   "CSS": 4,
+   "Python": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "julioczn/graphite": {
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 70,
+   "Vue": 30,
+   "Shell": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

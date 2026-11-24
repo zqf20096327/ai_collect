@@ -1113,11 +1113,11 @@
   }
  },
  "Zain-ul-din/whatsapp-agents": {
-  "commit_7d": 0,
-  "commit_90d": 21,
+  "commit_7d": 17,
+  "commit_90d": 38,
   "rel_ver": "Version3.0",
   "rel_pub": "2024-11-22",
-  "rel_days": 695,
+  "rel_days": 732,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1130,10 +1130,10 @@
    "TypeScript": 94,
    "Dockerfile": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5057,6 +5057,83 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "joydle/rill": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-09",
+  "rel_days": 76,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "xyzhhh123/Gradus": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 91,
+   "TypeScript": 6,
+   "CSS": 2,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Keks280517/Milo": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 46,
+   "Svelte": 34,
+   "TypeScript": 15,
+   "JavaScript": 4,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

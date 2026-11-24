@@ -5383,5 +5383,59 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "logicplanes/kaeso": {
+  "rel_ver": "v0.7.1-rc.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-11-21",
+  "sec_ids": [
+   "GHSA-f6jv-jmg6-cw9c(-,high)",
+   "GHSA-v7jh-9qhf-4424(-,low)",
+   "GHSA-vr6h-jrf4-8f5w(-,medium)"
+  ],
+  "contrib_n": 14,
+  "lang": {
+   "Rust": 59,
+   "TypeScript": 37,
+   "JavaScript": 2,
+   "Python": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "umbapalur-cloud/dsh-mind": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

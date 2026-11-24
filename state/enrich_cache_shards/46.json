@@ -4535,5 +4535,55 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "tariqlang612/comfyui-flux-1-dev-gguf-nsfw-oneclick": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "1527183723/magpie-android": {
+  "rel_ver": "v0.1.4652-android",
+  "rel_pub": "2026-11-21",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 60,
+   "JavaScript": 28,
+   "HTML": 11,
+   "CSS": 1,
+   "Java": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
  }
 }

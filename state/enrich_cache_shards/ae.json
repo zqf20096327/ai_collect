@@ -29,11 +29,11 @@
   }
  },
  "Trusted-AI/adversarial-robustness-toolbox": {
-  "commit_7d": 4,
-  "commit_90d": 133,
+  "commit_7d": 1,
+  "commit_90d": 152,
   "rel_ver": "1.20.1",
   "rel_pub": "2025-07-07",
-  "rel_days": 494,
+  "rel_days": 505,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5052,6 +5052,56 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "liyupi/yu-auto-reply": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 98,
+   "Dockerfile": 2
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "commit": "20261124",
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "Sadami3066/SuperPI": {
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 94,
+   "TypeScript": 4,
+   "HTML": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

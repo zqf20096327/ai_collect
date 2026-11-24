@@ -453,11 +453,11 @@
   }
  },
  "frankroeder/parrot.nvim": {
-  "commit_90d": 36,
-  "commit_7d": 27,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "commit_90d": 34,
+  "commit_7d": 5,
+  "rel_ver": "v3.0.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -470,10 +470,10 @@
    "Lua": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4338,6 +4338,49 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "yapengl490-cmd/order-policy-assistant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 7,
+   "PLpgSQL": 1,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "xi-zhao/QwenQPU": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "HTML": 3
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

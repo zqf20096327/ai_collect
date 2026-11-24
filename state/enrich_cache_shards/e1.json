@@ -150,10 +150,10 @@
  },
  "scikit-learn-contrib/hdbscan": {
   "commit_7d": 8,
-  "commit_90d": 29,
+  "commit_90d": 37,
   "rel_ver": "release-0.8.44",
   "rel_pub": "2026-06-01",
-  "rel_days": 169,
+  "rel_days": 176,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "TeX": 0,
    "Shell": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1438,13 +1438,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261124",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261124"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "xiwan/acp-bridge": {
   "rel_ver": "v0.15.17",
@@ -5594,6 +5597,54 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "noahgift/spot_price_machine_learning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "onetwothird/Vedit": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 46,
+   "Python": 44,
+   "CSS": 7,
+   "Rust": 3,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

@@ -130,11 +130,11 @@
   }
  },
  "microsoft/LLMLingua": {
-  "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 2,
   "rel_ver": "v0.2.2",
   "rel_pub": "2024-04-09",
-  "rel_days": 949,
+  "rel_days": 959,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -148,10 +148,10 @@
    "Shell": 2,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1917,7 +1917,7 @@
   }
  },
  "olyaiy/TypeGPT": {
-  "commit_90d": 0,
+  "commit_90d": 14,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1930,10 +1930,10 @@
    "Python": 87,
    "Shell": 13
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4684,6 +4684,76 @@
    "security": "20261121",
    "contrib": "20261121",
    "lang": "20261121"
+  }
+ },
+ "paiml/minimal-python": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "ThaoYou30020/llm-router-free": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 92,
+   "CMake": 8
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
+  }
+ },
+ "UCSB-AI/CSPD": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261124",
+  "dim_ts": {
+   "release": "20261124",
+   "security": "20261124",
+   "contrib": "20261124",
+   "lang": "20261124"
   }
  }
 }

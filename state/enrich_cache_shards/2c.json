@@ -205,7 +205,7 @@
  },
  "LjyYano/Thinking_in_Java_MindMapping": {
   "commit_7d": 1,
-  "commit_90d": 16,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -216,10 +216,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261124",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261124",
+   "release": "20261124",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
