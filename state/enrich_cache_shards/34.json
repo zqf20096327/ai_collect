@@ -83,8 +83,8 @@
   }
  },
  "awesome-mlss/awesome-mlss": {
-  "commit_90d": 38,
-  "commit_7d": 15,
+  "commit_90d": 40,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -99,10 +99,10 @@
    "CSS": 2,
    "Ruby": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

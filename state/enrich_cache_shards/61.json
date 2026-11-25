@@ -301,8 +301,8 @@
   }
  },
  "BIT-DataLab/Edit-Banana": {
-  "commit_7d": 1,
-  "commit_90d": 9,
+  "commit_7d": 3,
+  "commit_90d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -314,10 +314,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

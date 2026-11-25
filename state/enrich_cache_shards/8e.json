@@ -109,11 +109,11 @@
   }
  },
  "twinnydotdev/twinny": {
-  "commit_90d": 138,
-  "commit_7d": 2,
+  "commit_90d": 147,
+  "commit_7d": 6,
   "rel_ver": "v4.0.20",
   "rel_pub": "2026-09-22",
-  "rel_days": 57,
+  "rel_days": 64,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Dockerfile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4722,11 +4722,11 @@
   }
  },
  "IliasHad/orcah-studio": {
-  "commit_90d": 22,
-  "commit_7d": 0,
+  "commit_90d": 25,
+  "commit_7d": 2,
   "rel_ver": "0.40.1",
   "rel_pub": "2026-10-25",
-  "rel_days": 24,
+  "rel_days": 31,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -4742,10 +4742,10 @@
    "JavaScript": 0,
    "OCaml": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"

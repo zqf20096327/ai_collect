@@ -2188,16 +2188,16 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 227,
-  "commit_7d": 76
+  "commit_90d": 525,
+  "commit_7d": 71
  },
  "Azure-Samples/azure-finops-agent": {
   "rel_ver": "v0.3.0",

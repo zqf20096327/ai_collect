@@ -1329,11 +1329,11 @@
   }
  },
  "AienTech/dossier": {
-  "commit_7d": 1,
-  "commit_90d": 38,
-  "rel_ver": "v1.14.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 5,
+  "commit_7d": 3,
+  "commit_90d": 41,
+  "rel_ver": "v1.15.2",
+  "rel_pub": "2026-11-23",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1349,10 +1349,10 @@
    "PLpgSQL": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261119",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4499,11 +4499,11 @@
   }
  },
  "datalab-to/marker": {
-  "commit_90d": 49,
-  "commit_7d": 25,
+  "commit_90d": 50,
+  "commit_7d": 2,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-11-12",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -4516,10 +4516,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"

@@ -583,12 +583,12 @@
   }
  },
  "ranxi2001/zero2Agent": {
-  "commit_90d": 47,
-  "commit_7d": 1,
+  "commit_90d": 16,
+  "commit_7d": 0,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 84,
-  "rel_n90": 3,
+  "rel_days": 91,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -603,10 +603,10 @@
    "CSS": 15,
    "TeX": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2059,16 +2059,16 @@
    "PLpgSQL": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 2721,
-  "commit_7d": 235
+  "commit_90d": 3209,
+  "commit_7d": 3
  },
  "alonsovm44/glupe": {
   "rel_ver": "v6.1.1",

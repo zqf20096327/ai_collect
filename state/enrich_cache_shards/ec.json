@@ -382,8 +382,8 @@
   }
  },
  "pytorch/gloo": {
-  "commit_90d": 8,
-  "commit_7d": 1,
+  "commit_90d": 11,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -398,10 +398,10 @@
    "Cuda": 2,
    "C": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

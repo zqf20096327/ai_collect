@@ -1483,11 +1483,11 @@
   }
  },
  "kividbio/kividb": {
-  "commit_7d": 663,
-  "commit_90d": 1950,
+  "commit_7d": 872,
+  "commit_90d": 2842,
   "rel_ver": "v1.2.2",
   "rel_pub": "2026-11-12",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -1512,10 +1512,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261119",
    "contrib": "20261020",
    "lang": "20261020"

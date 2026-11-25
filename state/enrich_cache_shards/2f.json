@@ -3265,16 +3265,16 @@
    "Swift": 3,
    "CSS": 2
   },
-  "enriched_at": "20261122",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 293,
-  "commit_7d": 211
+  "commit_90d": 701,
+  "commit_7d": 54
  },
  "mwakidenis/GBV-SafeSpace": {
   "rel_ver": null,

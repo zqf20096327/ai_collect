@@ -2223,11 +2223,11 @@
   }
  },
  "vinvcn/mattpocock-skills-zh-CN": {
-  "commit_7d": 3,
-  "commit_90d": 36,
+  "commit_7d": 9,
+  "commit_90d": 44,
   "rel_ver": "v1.3.2",
   "rel_pub": "2026-11-10",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -2240,10 +2240,10 @@
    "JavaScript": 72,
    "Shell": 28
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021"

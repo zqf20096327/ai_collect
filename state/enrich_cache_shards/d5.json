@@ -1,7 +1,7 @@
 {
  "anthropics/claude-cookbooks": {
-  "commit_7d": 0,
-  "commit_90d": 22,
+  "commit_7d": 1,
+  "commit_90d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -85,10 +85,10 @@
  },
  "Fincept-Corporation/FinceptTerminal": {
   "commit_7d": 5,
-  "commit_90d": 55,
-  "rel_ver": "v4.5.2",
-  "rel_pub": "2026-11-09",
-  "rel_days": 9,
+  "commit_90d": 57,
+  "rel_ver": "v4.5.3",
+  "rel_pub": "2026-11-18",
+  "rel_days": 7,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -104,10 +104,10 @@
    "Jupyter Notebook": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

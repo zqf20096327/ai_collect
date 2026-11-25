@@ -338,12 +338,12 @@
   }
  },
  "nachifur/MulimgViewer": {
-  "commit_90d": 36,
-  "commit_7d": 28,
-  "rel_ver": "v3.9.7",
-  "rel_pub": "2022-05-16",
-  "rel_days": 1647,
-  "rel_n90": 0,
+  "commit_90d": 46,
+  "commit_7d": 9,
+  "rel_ver": "docs-v3.9.7-r1",
+  "rel_pub": "2026-11-24",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -356,10 +356,10 @@
    "Nix": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

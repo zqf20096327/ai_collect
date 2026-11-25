@@ -1974,16 +1974,16 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 38,
-  "commit_7d": 7
+  "commit_90d": 60,
+  "commit_7d": 4
  },
  "SAP/ai-skills-library": {
   "rel_ver": null,
@@ -4789,11 +4789,11 @@
   }
  },
  "ooboqoo/shiping": {
-  "commit_90d": 142,
-  "commit_7d": 3,
+  "commit_90d": 141,
+  "commit_7d": 8,
   "rel_ver": "v3.6.2",
   "rel_pub": "2026-11-08",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4809,10 +4809,10 @@
    "HTML": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

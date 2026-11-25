@@ -435,8 +435,8 @@
   }
  },
  "pytorch/cpuinfo": {
-  "commit_7d": 2,
-  "commit_90d": 10,
+  "commit_7d": 3,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -451,10 +451,10 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

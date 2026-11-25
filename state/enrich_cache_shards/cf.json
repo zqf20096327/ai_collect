@@ -1,10 +1,10 @@
 {
  "chatboxai/chatbox": {
-  "commit_7d": 50,
+  "commit_7d": 0,
   "commit_90d": 587,
   "rel_ver": "v1.24.4",
   "rel_pub": "2026-11-12",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "EJS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

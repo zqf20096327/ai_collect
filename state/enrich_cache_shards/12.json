@@ -3857,9 +3857,9 @@
    "CSS": 4,
    "PowerShell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "release": "20261026",
+   "release": "20261125",
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026",

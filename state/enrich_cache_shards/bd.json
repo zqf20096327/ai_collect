@@ -109,11 +109,11 @@
   }
  },
  "JOYCEQL/magic-resume": {
-  "commit_7d": 1,
-  "commit_90d": 83,
+  "commit_7d": 4,
+  "commit_90d": 87,
   "rel_ver": "v2.0.12",
   "rel_pub": "2026-10-18",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -129,21 +129,21 @@
    "SCSS": 0,
    "Python": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "bostrot/wslmanager": {
-  "commit_90d": 327,
-  "commit_7d": 13,
-  "rel_ver": "v2.6.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 1,
+  "commit_90d": 328,
+  "commit_7d": 16,
+  "rel_ver": "v2.6.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -159,10 +159,10 @@
    "C++": 1,
    "Shell": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

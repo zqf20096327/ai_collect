@@ -2231,7 +2231,7 @@
  },
  "Jesseovo/last30days-skill-cn": {
   "commit_90d": 40,
-  "commit_7d": 3,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2245,10 +2245,10 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021"

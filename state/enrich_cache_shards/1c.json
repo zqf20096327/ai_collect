@@ -1841,16 +1841,16 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 339,
-  "commit_7d": 42
+  "commit_90d": 391,
+  "commit_7d": 10
  },
  "tzolov/spring-ai-cli-chatbot": {
   "rel_ver": null,

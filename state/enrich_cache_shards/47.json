@@ -1633,16 +1633,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 25,
-  "commit_7d": 7
+  "commit_90d": 18,
+  "commit_7d": 1
  },
  "dreamrec/UniVidX_ComfyUI": {
   "rel_ver": "v0.5.2",
@@ -2451,9 +2451,9 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "release": "20261118",
+   "release": "20261125",
    "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021",
@@ -2462,7 +2462,7 @@
   "commit_90d": 207,
   "commit_7d": 13,
   "rel_pub": "2026-11-06",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 2,
   "rel_pre": false
  },

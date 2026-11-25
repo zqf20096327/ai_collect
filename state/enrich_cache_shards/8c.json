@@ -4416,10 +4416,10 @@
   }
  },
  "Zleap-AI/SAG-Wiki": {
-  "commit_90d": 495,
-  "commit_7d": 239,
-  "rel_ver": "v0.3.11",
-  "rel_pub": "2026-11-17",
+  "commit_90d": 600,
+  "commit_7d": 105,
+  "rel_ver": "v0.4.6",
+  "rel_pub": "2026-11-24",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4436,10 +4436,10 @@
    "JavaScript": 10,
    "Svelte": 10
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"

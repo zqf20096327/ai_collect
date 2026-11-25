@@ -382,11 +382,11 @@
   }
  },
  "proxysoul/Empryo": {
-  "commit_90d": 39,
-  "commit_7d": 6,
+  "commit_90d": 24,
+  "commit_7d": 0,
   "rel_ver": "v2.20.25",
   "rel_pub": "2026-07-12",
-  "rel_days": 129,
+  "rel_days": 136,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -402,10 +402,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

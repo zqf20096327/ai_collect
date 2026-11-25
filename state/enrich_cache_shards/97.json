@@ -179,10 +179,10 @@
   }
  },
  "JerryZLiu/Dayflow": {
-  "commit_90d": 793,
-  "commit_7d": 58,
-  "rel_ver": "v2.9.4",
-  "rel_pub": "2026-11-16",
+  "commit_90d": 824,
+  "commit_7d": 24,
+  "rel_ver": "v2.9.8",
+  "rel_pub": "2026-11-23",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -196,10 +196,10 @@
    "Swift": 99,
    "Shell": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2277,11 +2277,11 @@
   }
  },
  "kuberay-project/kuberay": {
-  "commit_90d": 102,
-  "commit_7d": 8,
-  "rel_ver": "v1.7.2",
-  "rel_pub": "2026-11-06",
-  "rel_days": 12,
+  "commit_90d": 106,
+  "commit_7d": 4,
+  "rel_ver": "v1.7.3",
+  "rel_pub": "2026-11-23",
+  "rel_days": 2,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -2297,10 +2297,10 @@
    "Makefile": 1,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021"

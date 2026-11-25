@@ -111,12 +111,12 @@
   }
  },
  "ARM-software/ComputeLibrary": {
-  "commit_90d": 10,
-  "commit_7d": 0,
-  "rel_ver": "v53.3.1",
-  "rel_pub": "2026-09-29",
-  "rel_days": 50,
-  "rel_n90": 2,
+  "commit_90d": 11,
+  "commit_7d": 1,
+  "rel_ver": "v53.3.2",
+  "rel_pub": "2026-11-18",
+  "rel_days": 7,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -131,10 +131,10 @@
    "CMake": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

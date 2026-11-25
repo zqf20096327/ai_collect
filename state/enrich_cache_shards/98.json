@@ -228,12 +228,12 @@
   }
  },
  "IAHispano/Applio": {
-  "commit_90d": 130,
-  "commit_7d": 0,
-  "rel_ver": "3.7.1",
-  "rel_pub": "2026-10-26",
-  "rel_days": 23,
-  "rel_n90": 4,
+  "commit_90d": 118,
+  "commit_7d": 9,
+  "rel_ver": "3.7.2",
+  "rel_pub": "2026-11-19",
+  "rel_days": 6,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -248,10 +248,10 @@
    "CSS": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

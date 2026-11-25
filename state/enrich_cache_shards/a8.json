@@ -4522,10 +4522,10 @@
   }
  },
  "alexsergivan/kwant": {
-  "rel_ver": "mac-v0.1.0",
-  "rel_pub": "2026-10-25",
-  "rel_days": 1,
-  "rel_n90": 2,
+  "rel_ver": "mac-v0.9.50",
+  "rel_pub": "2026-11-25",
+  "rel_days": 0,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4540,9 +4540,9 @@
    "HTML": 6,
    "Python": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "release": "20261026",
+   "release": "20261125",
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026",

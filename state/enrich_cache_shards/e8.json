@@ -433,11 +433,11 @@
   }
  },
  "Tencent/AngelSlim": {
-  "commit_90d": 18,
-  "commit_7d": 7,
+  "commit_90d": 23,
+  "commit_7d": 4,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-06-22",
-  "rel_days": 149,
+  "rel_days": 156,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -452,10 +452,10 @@
    "Cuda": 0,
    "C++": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

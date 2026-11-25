@@ -4705,12 +4705,12 @@
   }
  },
  "GetStream/Agents": {
-  "commit_90d": 1582,
-  "commit_7d": 135,
-  "rel_ver": "0.7.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 1,
-  "rel_n90": 1,
+  "commit_90d": 1838,
+  "commit_7d": 281,
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 2,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4725,10 +4725,10 @@
    "PHP": 3,
    "Rust": 3
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"

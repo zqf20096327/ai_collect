@@ -369,11 +369,11 @@
   }
  },
  "pavlin-policar/openTSNE": {
-  "commit_7d": 12,
-  "commit_90d": 78,
+  "commit_7d": 9,
+  "commit_90d": 89,
   "rel_ver": "v1.0.2",
   "rel_pub": "2024-08-13",
-  "rel_days": 827,
+  "rel_days": 834,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -389,10 +389,10 @@
    "C++": 9,
    "TeX": 4
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

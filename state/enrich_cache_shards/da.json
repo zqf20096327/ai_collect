@@ -1481,16 +1481,16 @@
    "TypeScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261125",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261026"
+   "commit": "20261125"
   },
-  "commit_90d": 527,
-  "commit_7d": 32
+  "commit_90d": 566,
+  "commit_7d": 7
  },
  "anshutiwari9917-ui/survival-stat-tuner": {
   "rel_ver": null,
@@ -3723,9 +3723,9 @@
   }
  },
  "FlaxXTT/Typeleast": {
-  "rel_ver": "v1.21.3",
-  "rel_pub": "2026-10-25",
-  "rel_days": 1,
+  "rel_ver": "v2.1.25",
+  "rel_pub": "2026-11-23",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3741,9 +3741,9 @@
    "HTML": 5,
    "Shell": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "release": "20261026",
+   "release": "20261125",
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026",

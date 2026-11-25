@@ -4152,8 +4152,8 @@
   }
  },
  "ai-boost/awesome-prompts": {
-  "commit_90d": 120,
-  "commit_7d": 16,
+  "commit_90d": 119,
+  "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4164,22 +4164,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
   }
  },
  "KevinMusgrave/pytorch-metric-learning": {
-  "commit_90d": 248,
-  "commit_7d": 34,
-  "rel_ver": "v3.0.3",
-  "rel_pub": "2026-11-13",
-  "rel_days": 5,
-  "rel_n90": 9,
+  "commit_90d": 303,
+  "commit_7d": 31,
+  "rel_ver": "v3.0.4",
+  "rel_pub": "2026-11-21",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4191,10 +4191,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

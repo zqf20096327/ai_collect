@@ -99,12 +99,12 @@
   }
  },
  "clusterzx/paperless-ai": {
-  "commit_90d": 35,
-  "commit_7d": 33,
-  "rel_ver": "v4.1.0",
-  "rel_pub": "2026-11-17",
+  "commit_90d": 114,
+  "commit_7d": 78,
+  "rel_ver": "v4.5.2",
+  "rel_pub": "2026-11-24",
   "rel_days": 1,
-  "rel_n90": 2,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -121,10 +121,10 @@
    "CSS": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4090,11 +4090,11 @@
   }
  },
  "NoobyGains/godmode": {
-  "commit_90d": 43,
-  "commit_7d": 43,
+  "commit_90d": 47,
+  "commit_7d": 1,
   "rel_ver": "v2.1.2",
   "rel_pub": "2026-10-25",
-  "rel_days": 1,
+  "rel_days": 31,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -4110,10 +4110,10 @@
    "TypeScript": 3,
    "Batchfile": 3
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"

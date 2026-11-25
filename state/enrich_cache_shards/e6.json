@@ -3842,10 +3842,10 @@
   }
  },
  "hevnsnt/CVEngine": {
-  "rel_ver": "v1.1",
-  "rel_pub": "2026-10-25",
-  "rel_days": 1,
-  "rel_n90": 3,
+  "rel_ver": "v1.4.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -3860,9 +3860,9 @@
    "CSS": 2,
    "Shell": 2
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "release": "20261026",
+   "release": "20261125",
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026",

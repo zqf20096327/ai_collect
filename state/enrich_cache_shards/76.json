@@ -3999,11 +3999,11 @@
   }
  },
  "Anil-matcha/suparagent": {
-  "commit_90d": 753,
-  "commit_7d": 80,
+  "commit_90d": 785,
+  "commit_7d": 31,
   "rel_ver": "v0.8.7",
   "rel_pub": "2026-11-16",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -4019,10 +4019,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"

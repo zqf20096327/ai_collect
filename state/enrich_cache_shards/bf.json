@@ -162,11 +162,11 @@
   }
  },
  "he-yufeng/CoreCoder": {
-  "commit_7d": 15,
-  "commit_90d": 86,
-  "rel_ver": "v0.13.1",
-  "rel_pub": "2026-11-18",
-  "rel_days": 0,
+  "commit_7d": 16,
+  "commit_90d": 93,
+  "rel_ver": "v0.17.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -178,10 +178,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261125",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261125",
+   "release": "20261125",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
