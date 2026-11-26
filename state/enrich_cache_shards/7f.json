@@ -4783,5 +4783,32 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "iffiX/neutrino": {
+  "rel_ver": "v0.6.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "TypeScript": 7,
+   "Kotlin": 5,
+   "Swift": 4,
+   "Go": 3
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

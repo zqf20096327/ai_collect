@@ -622,7 +622,7 @@
   }
  },
  "NVIDIA/aerial-cuda-accelerated-ran": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -638,10 +638,10 @@
    "MATLAB": 7,
    "C": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4019,13 +4019,16 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261101",
    "security": "20261101",
    "contrib": "20261101",
-   "lang": "20261101"
-  }
+   "lang": "20261101",
+   "commit": "20261126"
+  },
+  "commit_90d": 217,
+  "commit_7d": 52
  },
  "Zazza/imagecaster": {
   "rel_ver": "v1.0.0",
@@ -4771,6 +4774,154 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "GuqierMcl/MailX": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 60,
+   "TypeScript": 37,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Astro": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "lus-lang/lus": {
+  "rel_ver": "unstable-8916948",
+  "rel_pub": "2026-07-11",
+  "rel_days": 138,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C": 83,
+   "MDX": 8,
+   "JavaScript": 4,
+   "Astro": 3,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "IsaacThoman/pulpo": {
+  "rel_ver": "v0.187.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 82,
+   "Swift": 11,
+   "Python": 3,
+   "JavaScript": 2,
+   "C#": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "guohuiyuan/novel-scan": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "AdityaaaTiwari/ANVIL": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "HTML": 10,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Naksh7Gupta/ThinkNet-Prototype-2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 42,
+   "JavaScript": 7,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

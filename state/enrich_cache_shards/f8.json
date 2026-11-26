@@ -5002,5 +5002,109 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "xuzhougeng/WispStudy": {
+  "rel_ver": "v0.20.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 85,
+   "HTML": 14,
+   "CSS": 0,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Theproudcold/sea-resume": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 63,
+   "Vue": 35,
+   "CSS": 2,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Mukkandi-Sridhar/SemanticDrift": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-06-29",
+  "rel_days": 150,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "TeX": 4,
+   "Makefile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Avokid/obdtrace": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 87,
+   "HTML": 9,
+   "Python": 4
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

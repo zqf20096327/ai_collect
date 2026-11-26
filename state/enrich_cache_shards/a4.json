@@ -5099,5 +5099,70 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "tankfnmb-droid/coregold-usdt-vcc-a16z-embo-robotics-ai-tools-payment-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "bruc3van/dsh-market-pro": {
+  "rel_ver": "v1.15.4",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "xunying7860/Ninfer-3080-IQ3_S": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 41,
+   "Cuda": 26,
+   "Python": 20,
+   "Shell": 8,
+   "CSS": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

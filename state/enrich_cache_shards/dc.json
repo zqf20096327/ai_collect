@@ -1492,9 +1492,9 @@
   }
  },
  "Kim2091/vapourkit": {
-  "rel_ver": "v2.0.0",
-  "rel_pub": "2026-08-18",
-  "rel_days": 62,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 18,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1510,9 +1510,9 @@
    "NSIS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261126",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4878,13 +4878,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261112",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "routerhubSI/deepseek-uncensored": {
   "rel_ver": null,
@@ -5147,6 +5150,57 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "Daroumm/ComfyUI-FlowLinks": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "Python": 12
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "kiori-ai/kiori": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 26,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 78,
+   "HTML": 15,
+   "Shell": 5,
+   "Python": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

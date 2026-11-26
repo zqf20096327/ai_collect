@@ -673,8 +673,8 @@
   }
  },
  "amElnagdy/guard-skills": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -683,10 +683,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2777,8 +2777,8 @@
   }
  },
  "NVIDIA/auto-ontology": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v1.3.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -2791,16 +2791,20 @@
    "Standard ML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261119",
+   "release": "20261126",
    "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261119"
+   "commit": "20261126"
   },
-  "commit_90d": 440,
-  "commit_7d": 29
+  "commit_90d": 513,
+  "commit_7d": 128,
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "himelmallick/IntegratedLearner": {
   "rel_ver": null,
@@ -5259,6 +5263,23 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "Hiwoniu/wechat-minitool-playbook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

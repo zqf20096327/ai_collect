@@ -4560,5 +4560,51 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "AnnenkovLabs/dopamine-talk": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Shell": 58,
+   "PowerShell": 25,
+   "JavaScript": 17
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "0xming12/colab-h3-infinite-canvas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 62,
+   "Python": 34,
+   "Shell": 5
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

@@ -4919,12 +4919,12 @@
   }
  },
  "nejib1/Free-LLM": {
-  "commit_90d": 110,
-  "commit_7d": 18,
-  "rel_ver": "router-v1.0.1",
-  "rel_pub": "2026-11-18",
-  "rel_days": 1,
-  "rel_n90": 3,
+  "commit_90d": 126,
+  "commit_7d": 23,
+  "rel_ver": "router-v1.0.3",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4939,10 +4939,10 @@
    "HTML": 9,
    "PHP": 2
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
@@ -5080,6 +5080,92 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "kingerguy0-lgtm/madaren-dlss5-enhancer": {
+  "commit_90d": 7,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "bqpro1/TheSystem": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "Jupyter Notebook": 9,
+   "HTML": 5
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "ranajahanzaib/cross-machine-plasma-transfer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 49,
+   "JavaScript": 1,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "voyager67/AI-Creative-Production-Toolkit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "HTML": 7
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

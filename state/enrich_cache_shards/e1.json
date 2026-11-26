@@ -5646,5 +5646,58 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "KaelLee335/enterprise-support-agent-v2": {
+  "commit_90d": 145,
+  "commit_7d": 15,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 87,
+   "Vue": 8,
+   "Shell": 4,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "agentfront/mcp-from-openapi": {
+  "rel_ver": "v2.11.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "low",
+  "sec_last": "2026-10-20",
+  "sec_ids": [
+   "GHSA-ff5q-5r4v-fw4v(-,low)",
+   "GHSA-rm2m-wfw5-7wp5(-,medium)"
+  ],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 7
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

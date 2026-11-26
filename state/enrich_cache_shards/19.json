@@ -4832,5 +4832,82 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "dropt1mx0/DecompFlow": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "Python": 7,
+   "JavaScript": 1,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "longlivewama/CourtVision-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 21,
+   "CSS": 1,
+   "HTML": 0,
+   "Mako": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "KarpelesLab/oxinfer": {
+  "rel_ver": "v0.0.22",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 84,
+   "Python": 7,
+   "Metal": 4,
+   "Cuda": 2,
+   "Vue": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

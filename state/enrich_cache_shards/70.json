@@ -5405,5 +5405,54 @@
    "contrib": "20261124",
    "lang": "20261124"
   }
+ },
+ "microsoft/hve-squad": {
+  "rel_ver": "v0.22.1-pre",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "PowerShell": 93,
+   "JavaScript": 5,
+   "CSS": 1,
+   "Python": 0,
+   "Nunjucks": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "lucemia/game-dna": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 54,
+   "JavaScript": 46,
+   "CSS": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

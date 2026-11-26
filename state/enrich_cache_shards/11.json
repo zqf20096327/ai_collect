@@ -729,8 +729,8 @@
   }
  },
  "Yzw202011/OmniSpace": {
-  "commit_7d": 0,
-  "commit_90d": 419,
+  "commit_7d": 1,
+  "commit_90d": 879,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -745,10 +745,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4771,6 +4771,23 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "edwardtay/awesome-web3-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

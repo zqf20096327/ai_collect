@@ -4864,13 +4864,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261104",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261104",
    "security": "20261104",
    "contrib": "20261104",
-   "lang": "20261104"
-  }
+   "lang": "20261104",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "Dalailalama/embeddinggemma2-rust": {
   "rel_ver": "v0.3.2",
@@ -5266,6 +5269,112 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "thiagodmont/greeg": {
+  "commit_90d": 637,
+  "commit_7d": 24,
+  "rel_ver": "v0.14.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 13,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 85,
+   "Python": 15,
+   "Tree-sitter Query": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "daiwk/collections": {
+  "commit_90d": 45,
+  "commit_7d": 1,
+  "rel_ver": "release_20251229",
+  "rel_pub": "2025-12-29",
+  "rel_days": 332,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "Shell": 24
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "lian84/memora": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 88,
+   "CSS": 8,
+   "JavaScript": 4,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "zoan37/llm-verification": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 55,
+   "Python": 40,
+   "C++": 5,
+   "Shell": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

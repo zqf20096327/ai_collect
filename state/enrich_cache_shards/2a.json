@@ -994,8 +994,8 @@
   }
  },
  "wahyudesu/Fastapi-AI-Production-Template": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1008,10 +1008,10 @@
    "Python": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -2083,16 +2083,16 @@
    "JavaScript": 57,
    "TypeScript": 43
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261121",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022",
-   "commit": "20261024"
+   "commit": "20261126"
   },
-  "commit_90d": 13,
-  "commit_7d": 4
+  "commit_90d": 15,
+  "commit_7d": 1
  },
  "Tencent-Hunyuan/PlanningBench": {
   "rel_ver": null,
@@ -4965,6 +4965,33 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "Stellenbosch-Technologies/rhebok": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 91,
+   "TypeScript": 5,
+   "Shell": 2,
+   "JavaScript": 2,
+   "Python": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

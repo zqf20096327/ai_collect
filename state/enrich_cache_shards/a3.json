@@ -5026,5 +5026,89 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "kokonut-labs/kokonutui": {
+  "commit_90d": 716,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 92,
+   "MDX": 7,
+   "JavaScript": 0,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "lucienhuangfu/eLLM": {
+  "commit_90d": 26,
+  "commit_7d": 0,
+  "rel_ver": "Release",
+  "rel_pub": "2026-09-04",
+  "rel_days": 83,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 88,
+   "Python": 11,
+   "Jinja": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Adibvafa/CodonTransformer": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": "v1.6.7",
+  "rel_pub": "2025-04-04",
+  "rel_days": 601,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 96,
+   "Jupyter Notebook": 3,
+   "Shell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

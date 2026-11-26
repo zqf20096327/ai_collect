@@ -211,11 +211,11 @@
   }
  },
  "PaddlePaddle/PaddleX": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v3.7.2",
   "rel_pub": "2026-06-25",
-  "rel_days": 120,
+  "rel_days": 154,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -231,10 +231,10 @@
    "XSLT": 1,
    "Cuda": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -669,8 +669,8 @@
   }
  },
  "Climate-Vision/ClimateVision": {
-  "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_7d": 2,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -685,10 +685,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1401,13 +1401,16 @@
    "Python": 2,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261126"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "vivy-yi/awesome-agent-orchestration": {
   "commit_7d": 0,
@@ -4708,13 +4711,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261103",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "kingcharleslzy-ai/sentetrader": {
   "rel_ver": "v1.8.1",
@@ -5405,6 +5411,84 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "micooz/ossia": {
+  "rel_ver": "v0.1.8",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 63,
+   "TypeScript": 24,
+   "JavaScript": 8,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "atemaguer/supertag": {
+  "rel_ver": "v0.3.14",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 59,
+   "TypeScript": 24,
+   "Python": 15,
+   "JavaScript": 1,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "bobuk/pi-jewter": {
+  "rel_ver": "v0.3.6",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

@@ -1167,11 +1167,11 @@
   }
  },
  "iree-org/iree-turbine": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": "v3.9.0",
   "rel_pub": "2025-11-25",
-  "rel_days": 327,
+  "rel_days": 366,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1185,10 +1185,10 @@
    "MLIR": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4939,6 +4939,25 @@
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
+  }
+ },
+ "Boom-Vitt/data-factory": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

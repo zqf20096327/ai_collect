@@ -4056,8 +4056,8 @@
   }
  },
  "iflytek/astron-harness-tutorial": {
-  "commit_90d": 11,
-  "commit_7d": 3,
+  "commit_90d": 25,
+  "commit_7d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4068,10 +4068,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
@@ -4353,13 +4353,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261103",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261126"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "AKzar1el/god-prompt": {
   "rel_ver": "v1.0.0",
@@ -5170,6 +5173,49 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "srcterm/streamlx": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "InesZerdani/SolarCast": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

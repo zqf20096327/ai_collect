@@ -307,12 +307,12 @@
   }
  },
  "laravel/boost": {
-  "commit_7d": 6,
-  "commit_90d": 127,
+  "commit_7d": 1,
+  "commit_90d": 105,
   "rel_ver": "v2.10.4",
   "rel_pub": "2026-10-29",
-  "rel_days": 15,
-  "rel_n90": 12,
+  "rel_days": 28,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -326,10 +326,10 @@
    "PHP": 76,
    "Blade": 24
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4376,6 +4376,55 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "Wennington123/omni-token-optimizer": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 46,
+   "Shell": 33,
+   "Python": 21
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "oxgeneral/agentmem": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-02-21",
+  "rel_days": 278,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

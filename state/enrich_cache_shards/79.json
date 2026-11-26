@@ -272,10 +272,10 @@
  },
  "fraunhoferportugal/tsfel": {
   "commit_7d": 2,
-  "commit_90d": 22,
+  "commit_90d": 24,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-11-12",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -288,10 +288,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5015,16 +5015,16 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261125",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261125",
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111",
-   "commit": "20261119"
+   "commit": "20261126"
   },
-  "commit_90d": 1450,
-  "commit_7d": 354
+  "commit_90d": 1714,
+  "commit_7d": 234
  },
  "byte-od/mixture-of-scars": {
   "rel_ver": null,
@@ -5382,6 +5382,50 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "jw7967kim-hub/coregold-usdt-vcc-crowdstrike-zscaler-zero-trust-card-isolation-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "hherb/primer": {
+  "rel_ver": "v0.1",
+  "rel_pub": "2026-05-15",
+  "rel_days": 195,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 87,
+   "Python": 4,
+   "JavaScript": 3,
+   "HTML": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

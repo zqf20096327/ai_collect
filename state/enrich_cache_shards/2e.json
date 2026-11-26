@@ -461,12 +461,12 @@
   }
  },
  "canarybyte/veridrop": {
-  "commit_7d": 0,
+  "commit_7d": 3,
   "commit_90d": 4,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-08-15",
-  "rel_days": 63,
-  "rel_n90": 1,
+  "rel_days": 103,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -481,10 +481,10 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1089,10 +1089,10 @@
   }
  },
  "demixr/demixr-app": {
-  "rel_ver": "v0.6.2",
-  "rel_pub": "2026-07-13",
-  "rel_days": 98,
-  "rel_n90": 0,
+  "rel_ver": "v0.6.3",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1107,9 +1107,9 @@
    "Kotlin": 0,
    "Objective-C": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261126",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -5373,6 +5373,50 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "ArtJack/sales-agent-showcase": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Shell": 5,
+   "Makefile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "catiseyeqaq/ai-manju-shengcheng-xitong": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-08-11",
+  "rel_days": 107,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

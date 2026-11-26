@@ -247,11 +247,11 @@
   }
  },
  "roboflow/sports": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "soccer-analytics-pr-demos",
   "rel_pub": "2026-07-06",
-  "rel_days": 102,
+  "rel_days": 143,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -852,10 +852,10 @@
   }
  },
  "Tswoen/Paper-Agent": {
-  "commit_7d": 0,
-  "commit_90d": 48,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 42,
+  "commit_90d": 54,
+  "rel_ver": "v2.1.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -868,14 +868,18 @@
    "TypeScript": 4,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "modelscope/ms-cookbook": {
   "commit_7d": 0,
@@ -1813,16 +1817,16 @@
    "PowerShell": 3,
    "Batchfile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261027"
+   "commit": "20261126"
   },
-  "commit_90d": 104,
-  "commit_7d": 28
+  "commit_90d": 107,
+  "commit_7d": 4
  },
  "Blockether/spel": {
   "rel_ver": "v0.9.46",
@@ -5523,6 +5527,125 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "dasmehdix/drone-dataset": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 53,
+   "Python": 47
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "monteslu/romdev": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 52,
+   "C": 35,
+   "Assembly": 8,
+   "C++": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "YHD-yhd-coder/nl2tex": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 67,
+   "HTML": 30,
+   "Batchfile": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "theselfruleorg/polyrob": {
+  "rel_ver": "v1.7.15",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 2,
+   "CSS": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "ypratap11/invoice-processing-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

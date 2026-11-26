@@ -1130,8 +1130,8 @@
  "highflame-ai/ramparts": {
   "rel_ver": "v0.8.10",
   "rel_pub": "2026-10-01",
-  "rel_days": 18,
-  "rel_n90": 5,
+  "rel_days": 56,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1144,13 +1144,16 @@
    "YARA": 9,
    "Makefile": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261126",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261126"
+  },
+  "commit_90d": 10,
+  "commit_7d": 8
  },
  "VectorInstitute/cyclops": {
   "rel_ver": "v0.3.0",
@@ -1359,13 +1362,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261126",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261126"
+  },
+  "commit_90d": 29,
+  "commit_7d": 3
  },
  "cognicore-dev/cognicore-env": {
   "rel_ver": "demo-video",
@@ -4618,6 +4624,47 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "guadalupemary48528-gif/coregold-usdt-vcc-deepseek-founder-hybrid-llm-stack-billing-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "SusieCommons/pojia-xm": {
+  "rel_ver": "v1.3.8",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "HTML": 29
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

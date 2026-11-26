@@ -56,11 +56,11 @@
   }
  },
  "EthicalML/awesome-production-machine-learning": {
-  "commit_7d": 5,
+  "commit_7d": 1,
   "commit_90d": 25,
   "rel_ver": "release-2026-11-01",
   "rel_pub": "2026-11-01",
-  "rel_days": 12,
+  "rel_days": 25,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -70,10 +70,10 @@
   "sec_ids": [],
   "contrib_n": 204,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4607,6 +4607,48 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "anandapurva55/multi-source-mcp-benchmark": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "Dockerfile": 2,
+   "Makefile": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Chipagosfinest/software-factory": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 5,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

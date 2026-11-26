@@ -632,11 +632,11 @@
   }
  },
  "facex-engine/facex": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 20,
+  "commit_90d": 20,
   "rel_ver": "facex-nano-1.0",
   "rel_pub": "2026-05-14",
-  "rel_days": 157,
+  "rel_days": 196,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -652,10 +652,10 @@
    "HTML": 15,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4616,13 +4616,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261031",
    "security": "20261031",
    "contrib": "20261031",
-   "lang": "20261031"
-  }
+   "lang": "20261031",
+   "commit": "20261126"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "shenhao-stu/GAgent": {
   "rel_ver": "v2.33.8",
@@ -5276,6 +5279,71 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "OpenOrbitLabs/Vedit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Batchfile": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Dzakiudin/coc-deepfarm": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 20,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Fleey/deepseek-harness-trae": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 70,
+   "TypeScript": 28,
+   "Python": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

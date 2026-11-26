@@ -4551,13 +4551,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261107",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "yzhg1983/pagewing": {
   "rel_ver": "v0.4.2",
@@ -5010,6 +5013,30 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "TegevoXi39/ccu-tool": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 92,
+   "CMake": 8
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

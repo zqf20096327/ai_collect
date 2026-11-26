@@ -375,11 +375,11 @@
   }
  },
  "functime-org/functime": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 12,
+  "commit_90d": 12,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-05-03",
-  "rel_days": 167,
+  "rel_days": 207,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -393,10 +393,10 @@
    "Rust": 2,
    "Just": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -973,11 +973,11 @@
   }
  },
  "Ikomia-dev/IkomiaApi": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": "0.16.1",
   "rel_pub": "2026-03-13",
-  "rel_days": 219,
+  "rel_days": 258,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -989,10 +989,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1123,8 +1123,8 @@
   }
  },
  "Hsu1023/DuQuant": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1136,10 +1136,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4711,6 +4711,49 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "farhanshn/breast_cancer_wisconsin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "KeyArgo/hermes-omniscience": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 39,
+   "CSS": 10,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

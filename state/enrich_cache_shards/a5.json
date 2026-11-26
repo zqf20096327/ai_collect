@@ -474,8 +474,8 @@
   }
  },
  "deepseek-ai/DeepSelect": {
-  "commit_90d": 6,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -489,10 +489,10 @@
    "AGS Script": 16,
    "C++": 10
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5021,6 +5021,88 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "saya-ch/dsh-mobile": {
+  "commit_90d": 1315,
+  "commit_7d": 133,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "TypeScript": 62,
+   "JavaScript": 16,
+   "Kotlin": 13,
+   "C#": 5,
+   "Rust": 3
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Horikita-9-Suzune-Max-Ultrafast/antigravity-hub": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 83,
+   "HTML": 6,
+   "PowerShell": 6,
+   "CSS": 5
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "MORANMAX/ComfyUI-StockingTexture": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 35,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "JavaScript": 43,
+   "CSS": 8,
+   "HTML": 5
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

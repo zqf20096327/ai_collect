@@ -86,12 +86,12 @@
   }
  },
  "fuxicodex/Fuxi": {
-  "commit_7d": 0,
-  "commit_90d": 105,
+  "commit_7d": 1,
+  "commit_90d": 43,
   "rel_ver": "v0.1.8",
   "rel_pub": "2026-09-22",
-  "rel_days": 32,
-  "rel_n90": 4,
+  "rel_days": 65,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "TypeScript": 9,
    "Shell": 6
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4821,13 +4821,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "ZJTM-Studio/dshgo-CNminecraft-add-on-Development": {
   "rel_ver": "v0.2.0-kb",
@@ -5117,6 +5120,70 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "daiwk/auto-research": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "TeX": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Spaceswalker/SmallWhale": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 83,
+   "HTML": 12,
+   "PowerShell": 4,
+   "VBScript": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "tatwan/ASAC_Data_Science": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 83,
+   "Power Query": 11,
+   "CSS": 6
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

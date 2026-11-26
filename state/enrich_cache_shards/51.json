@@ -414,8 +414,8 @@
   }
  },
  "zkywsg/Daily-LLM": {
-  "commit_90d": 112,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -430,10 +430,10 @@
    "Jupyter Notebook": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5045,6 +5045,105 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "MarcosDupont37/comfyui-0-46-flux-local-ai-generator-de": {
+  "commit_90d": 15,
+  "commit_7d": 15,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 59,
+   "Go": 41
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "youheiwotou/colab-boost": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "JavaScript": 15,
+   "CSS": 2,
+   "HTML": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "xiangwen-ctrl/awsquick2api": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 92,
+   "JavaScript": 4,
+   "HTML": 2,
+   "CSS": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "aj5649169-svg/littlebit-chat": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 77,
+   "C++": 20,
+   "CMake": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

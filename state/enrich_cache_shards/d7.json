@@ -372,11 +372,11 @@
   }
  },
  "AdaptiveMotorControlLab/CEBRA": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 2,
+  "commit_90d": 5,
   "rel_ver": "v0.6.1",
   "rel_pub": "2026-05-30",
-  "rel_days": 173,
+  "rel_days": 180,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -391,10 +391,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

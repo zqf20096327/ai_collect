@@ -4713,5 +4713,34 @@
    "contrib": "20261123",
    "lang": "20261123"
   }
+ },
+ "Cloto-dev/CPersona": {
+  "rel_ver": "v2.6.18a2",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-07-30",
+  "sec_ids": [
+   "GHSA-64ff-m49g-qxm9(-,high)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 2,
+   "CSS": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
  }
 }

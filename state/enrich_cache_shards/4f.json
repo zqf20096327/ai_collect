@@ -4561,11 +4561,11 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261124",
+  "enriched_at": "20261126",
   "dim_ts": {
    "commit": "20261124",
    "release": "20261124",
-   "security": "20261027",
+   "security": "20261126",
    "contrib": "20261027",
    "lang": "20261027"
   }
@@ -5286,6 +5286,100 @@
    "security": "20261122",
    "contrib": "20261122",
    "lang": "20261122"
+  }
+ },
+ "vllm-project/vllm-gr": {
+  "commit_90d": 230,
+  "commit_7d": 44,
+  "rel_ver": "v0.30.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 31,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "JavaScript": 0,
+   "C++": 0,
+   "Jinja": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Bhavik-Jikadara/Content-Generation-Workflow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "programmersd21/ratatui-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 89,
+   "Python": 6,
+   "Shell": 5
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "landrix/mormot2-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Pascal": 59,
+   "Pawn": 33,
+   "Python": 6,
+   "C++": 2,
+   "Cuda": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

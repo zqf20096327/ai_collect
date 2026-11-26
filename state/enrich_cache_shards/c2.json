@@ -507,12 +507,12 @@
   }
  },
  "chriswritescode-dev/opencode-manager": {
-  "commit_90d": 599,
-  "commit_7d": 19,
+  "commit_90d": 597,
+  "commit_7d": 3,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 24,
-  "rel_n90": 12,
+  "rel_days": 31,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -529,10 +529,10 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1807,8 +1807,8 @@
  "castacks/AirStack": {
   "rel_ver": "0.20.0",
   "rel_pub": "2026-08-29",
-  "rel_days": 51,
-  "rel_n90": 2,
+  "rel_days": 89,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1823,13 +1823,16 @@
    "Shell": 8,
    "CMake": 3
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261126",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261126"
+  },
+  "commit_90d": 19,
+  "commit_7d": 0
  },
  "AnthonyXu109/FairPrivacySignal": {
   "rel_ver": "v0.1.1",
@@ -5436,6 +5439,53 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "tradytics/surpriver": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "eclexdex/home-care-agent": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "YAML": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

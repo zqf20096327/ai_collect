@@ -396,8 +396,8 @@
   }
  },
  "TheAlgorithms/R": {
-  "commit_90d": 1,
-  "commit_7d": 1,
+  "commit_90d": 5,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -408,10 +408,10 @@
   "lang": {
    "R": 100
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5246,6 +5246,29 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "Kou-ding/mcparrot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "PHP": 22,
+   "JavaScript": 7,
+   "Classic ASP": 5,
+   "CSS": 5
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

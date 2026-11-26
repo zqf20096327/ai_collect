@@ -4461,8 +4461,8 @@
   }
  },
  "Otman404/local-rag-llamaindex": {
-  "commit_90d": 3,
-  "commit_7d": 3,
+  "commit_90d": 7,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4475,10 +4475,10 @@
    "Dockerfile": 4,
    "Shell": 4
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
@@ -4698,11 +4698,11 @@
   "commit_7d": 44
  },
  "Banan1cee/whale_girl": {
-  "commit_90d": 366,
-  "commit_7d": 251,
-  "rel_ver": "v4.0.7",
-  "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "commit_90d": 680,
+  "commit_7d": 82,
+  "rel_ver": "v4.1.8.2",
+  "rel_pub": "2026-11-22",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4718,10 +4718,10 @@
    "PowerShell": 5,
    "Inno Setup": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"

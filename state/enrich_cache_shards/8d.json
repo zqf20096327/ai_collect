@@ -135,11 +135,11 @@
   }
  },
  "mlpack/mlpack": {
-  "commit_7d": 5,
-  "commit_90d": 20,
+  "commit_7d": 4,
+  "commit_90d": 23,
   "rel_ver": "4.8.0",
   "rel_pub": "2026-06-09",
-  "rel_days": 163,
+  "rel_days": 170,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -155,10 +155,10 @@
    "Python": 1,
    "Shell": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4965,8 +4965,8 @@
   }
  },
  "Jwuthri/Tracely-ai": {
-  "commit_90d": 129,
-  "commit_7d": 12,
+  "commit_90d": 81,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4981,10 +4981,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
@@ -5487,6 +5487,49 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "datalayer/langchain-mcp-client": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 71,
+   "Python": 27,
+   "Makefile": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "NVIDIA-BioNeMo/BioReason-Pro-2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 3,
+   "Jupyter Notebook": 1,
+   "Jinja": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

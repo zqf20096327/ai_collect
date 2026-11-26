@@ -142,7 +142,7 @@
   "commit_90d": 0,
   "rel_ver": "3.0.0",
   "rel_pub": "2020-04-21",
-  "rel_days": 2400,
+  "rel_days": 2410,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -158,10 +158,10 @@
    "Cuda": 1,
    "SWIG": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261116",
-   "release": "20261116",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5271,6 +5271,32 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "mrw7/three-studio": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 98,
+   "CSS": 1,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

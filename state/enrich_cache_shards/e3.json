@@ -4468,13 +4468,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261106",
    "security": "20261106",
    "contrib": "20261106",
-   "lang": "20261106"
-  }
+   "lang": "20261106",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "johnstiles/ai-manus": {
   "rel_ver": null,
@@ -4610,13 +4613,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261111",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "WispAgents/wisp": {
   "rel_ver": "nightly",
@@ -4992,13 +4998,16 @@
    "Lean": 100,
    "Shell": 0
   },
-  "enriched_at": "20261124",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261124",
    "security": "20261124",
    "contrib": "20261124",
-   "lang": "20261124"
-  }
+   "lang": "20261124",
+   "commit": "20261126"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "radeksixi/laya-as-judge": {
   "rel_ver": "v1.2.0",
@@ -5041,6 +5050,47 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "fgsdg7590-sys/-coregold-usdt-vcc-industry-ai-workflows-payment-readiness-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "squarewulf/ComfyUI-ModelFrisk": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-12-21",
+  "rel_days": 340,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

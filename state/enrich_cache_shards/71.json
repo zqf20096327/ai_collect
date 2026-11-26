@@ -1647,16 +1647,16 @@
    "PowerShell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261027"
+   "commit": "20261126"
   },
-  "commit_90d": 72,
-  "commit_7d": 18
+  "commit_90d": 162,
+  "commit_7d": 41
  },
  "janetom645-coder/mcd-buddy": {
   "rel_ver": null,
@@ -4334,10 +4334,10 @@
   "commit_7d": 6
  },
  "Neywa-Labs/nativ": {
-  "commit_90d": 857,
+  "commit_90d": 752,
   "commit_7d": 13,
-  "rel_ver": "v0.4.6",
-  "rel_pub": "2026-11-16",
+  "rel_ver": "v0.4.8",
+  "rel_pub": "2026-11-23",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4354,17 +4354,17 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
   }
  },
  "RunanywhereAI/trnrt": {
-  "rel_ver": "v0.1.0",
+  "rel_ver": "v0.2.0",
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -4376,19 +4376,19 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261119",
+   "release": "20261126",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105",
-   "commit": "20261119"
+   "commit": "20261126"
   },
-  "commit_90d": 315,
-  "commit_7d": 0,
-  "rel_pub": "2026-11-08",
-  "rel_days": 11,
-  "rel_n90": 1,
+  "commit_90d": 327,
+  "commit_7d": 12,
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false
  },
  "danilkotelnikov/Arc-Science": {
@@ -4932,6 +4932,50 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "edmen12/deskmcp": {
+  "rel_ver": "v0.9.17",
+  "rel_pub": "2026-09-24",
+  "rel_days": 63,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 51,
+   "C#": 26,
+   "PowerShell": 14,
+   "Swift": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "OPCchuhai/awesome-opc-chuhai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

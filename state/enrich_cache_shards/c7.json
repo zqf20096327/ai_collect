@@ -4110,10 +4110,10 @@
   }
  },
  "JunWan666/astrbot-for-android": {
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-26",
-  "rel_days": 1,
-  "rel_n90": 2,
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 7,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4128,9 +4128,9 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261027",
+   "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027",
@@ -5186,6 +5186,128 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "ankinote-ai/ankinote": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "Svelte": 14,
+   "TypeScript": 7,
+   "CSS": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "shriarul5273/depth_estimation": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "tegridydev/multi-agent-secops-llm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "robotgamedevelopers/inky": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 65,
+   "TLA": 14,
+   "Go": 10,
+   "Metal": 6,
+   "Shell": 3
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "camilin7483/nox-monitor": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 7,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 43,
+   "NSIS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

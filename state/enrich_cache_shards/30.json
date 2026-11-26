@@ -117,12 +117,12 @@
   }
  },
  "lintsinghua/DeepAudit": {
-  "commit_90d": 6,
-  "commit_7d": 1,
-  "rel_ver": "v3.0.4",
-  "rel_pub": "2026-01-24",
-  "rel_days": 297,
-  "rel_n90": 0,
+  "commit_90d": 21,
+  "commit_7d": 15,
+  "rel_ver": "v3.8.3",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -139,10 +139,10 @@
    "PowerShell": 1,
    "CSS": 1
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5263,6 +5263,76 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "cxlinux-ai/cx-core": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-02-23",
+  "rel_days": 276,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Rust": 98,
+   "Python": 1,
+   "Shell": 1,
+   "Nix": 0,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "kyegomez/Open-Olmo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "LoveDoLove/dsh-token-saver": {
+  "rel_ver": "v1.0.7",
+  "rel_pub": "2026-11-16",
+  "rel_days": 10,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "JavaScript": 10
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

@@ -475,11 +475,11 @@
    "HTML": 66,
    "Python": 34
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
    "commit": "20261116",
    "release": "20261116",
-   "security": "20261017",
+   "security": "20261126",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -5476,6 +5476,23 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "hossebmarup-wq/coregold-usdt-vcc-24-7-cross-border-dollar-checkout-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

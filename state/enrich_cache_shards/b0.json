@@ -27,11 +27,11 @@
   }
  },
  "lucidrains/vit-pytorch": {
-  "commit_7d": 1,
-  "commit_90d": 17,
+  "commit_7d": 2,
+  "commit_90d": 18,
   "rel_ver": "1.17.8",
   "rel_pub": "2026-02-11",
-  "rel_days": 271,
+  "rel_days": 288,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -43,10 +43,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4947,6 +4947,108 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "limxdynamics-online-robotics/xbot-limx-dynamics": {
+  "commit_90d": 379,
+  "commit_7d": 0,
+  "rel_ver": "v10.4.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 26,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 30,
+   "Makefile": 0,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "lancejames221b/openjarvis": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-04-02",
+  "rel_days": 238,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "HTML": 4,
+   "Python": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Ilyas-Khiat/sota-graph": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "cholletflorentin/Local-IA-Runner": {
+  "rel_ver": "v1.0.82",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 57,
+   "Python": 34,
+   "HTML": 6,
+   "PowerShell": 3,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

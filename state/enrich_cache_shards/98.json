@@ -90,8 +90,8 @@
   }
  },
  "NirDiamant/GenAI_Agents": {
-  "commit_7d": 4,
-  "commit_90d": 32,
+  "commit_7d": 1,
+  "commit_90d": 31,
   "rel_ver": "book-v1.0",
   "rel_none": false,
   "sec_n": 0,
@@ -105,16 +105,16 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
   "rel_pub": "2026-10-26",
-  "rel_days": 11,
+  "rel_days": 31,
   "rel_n90": 1,
   "rel_pre": false
  },
@@ -5058,6 +5058,74 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "mizzlelover/muduo": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-12",
+  "rel_days": 75,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 60,
+   "Python": 39,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "pphothidaen/browser-edge-bridge-scaffolding": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 72,
+   "Python": 22,
+   "Shell": 3,
+   "HTML": 3,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Merserk/ComfyUI-Visual-Enhancer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "JavaScript": 10
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

@@ -4538,9 +4538,9 @@
  },
  "livetennisapi/livetennisapi-mcp": {
   "commit_90d": 49,
-  "commit_7d": 4,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 1,
+  "rel_ver": "v1.6.5",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -4553,14 +4553,18 @@
    "Python": 4,
    "Dockerfile": 1
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
-  }
+  },
+  "rel_pub": "2026-10-28",
+  "rel_days": 29,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "markolalovic/tda-digits": {
   "rel_ver": null,
@@ -4781,13 +4785,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261107",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "EpicGiantite13205/ai--manus": {
   "rel_ver": null,
@@ -5276,6 +5283,27 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "9aia/bupha": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 97,
+   "Python": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

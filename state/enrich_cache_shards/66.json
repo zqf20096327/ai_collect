@@ -217,11 +217,11 @@
   }
  },
  "huangwb8/ChineseResearchLaTeX": {
-  "commit_90d": 113,
-  "commit_7d": 5,
-  "rel_ver": "v4.1.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 25,
+  "commit_90d": 106,
+  "commit_7d": 2,
+  "rel_ver": "v4.1.3",
+  "rel_pub": "2026-11-11",
+  "rel_days": 15,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "Lua": 2,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4811,6 +4811,104 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "lukaizj/gzh-article-pipeline": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Blandskron/KronDocs": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 63,
+   "TypeScript": 18,
+   "JavaScript": 8,
+   "PLpgSQL": 5,
+   "CSS": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "gahingwoo/charsiu": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 71,
+   "Shell": 22,
+   "Python": 6,
+   "Makefile": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "lanshi17/dsh-pi": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 7,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 92,
+   "Python": 4,
+   "Shell": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

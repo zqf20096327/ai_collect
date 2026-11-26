@@ -4027,13 +4027,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261104",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261104",
    "security": "20261104",
    "contrib": "20261104",
-   "lang": "20261104"
-  }
+   "lang": "20261104",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "johnmarktaylor91/torchlens": {
   "commit_90d": 11617,
@@ -4479,6 +4482,29 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "blyth-ai/playable-kit": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

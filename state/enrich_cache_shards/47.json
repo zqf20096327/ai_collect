@@ -2451,16 +2451,16 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261125",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261125",
    "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261119"
+   "commit": "20261126"
   },
-  "commit_90d": 207,
-  "commit_7d": 13,
+  "commit_90d": 223,
+  "commit_7d": 16,
   "rel_pub": "2026-11-06",
   "rel_days": 19,
   "rel_n90": 2,
@@ -5022,6 +5022,60 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "smashini/MakerChecker": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-07-06",
+  "rel_days": 143,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 75,
+   "JavaScript": 22,
+   "HTML": 1,
+   "Python": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Ilyas-Khiat/feed-brain": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 47,
+   "Python": 43,
+   "CSS": 8,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

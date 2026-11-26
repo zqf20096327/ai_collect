@@ -604,11 +604,11 @@
   }
  },
  "awslabs/graphstorm": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "0.5.1",
   "rel_pub": "2025-12-31",
-  "rel_days": 291,
+  "rel_days": 330,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -625,10 +625,10 @@
    "Dockerfile": 0,
    "C": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1745,16 +1745,16 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261022"
+   "commit": "20261126"
   },
-  "commit_90d": 99,
-  "commit_7d": 0
+  "commit_90d": 196,
+  "commit_7d": 72
  },
  "MetcalfSolutions/Satori": {
   "rel_ver": "v6.6.0",
@@ -4711,6 +4711,33 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "wyldfyre-ai/cbrowser": {
+  "rel_ver": "v21.6.3",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 6,
+   "Python": 2,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

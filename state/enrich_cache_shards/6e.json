@@ -2280,12 +2280,12 @@
   }
  },
  "ai-job-search-dev/ai-job-search": {
-  "commit_90d": 243,
-  "commit_7d": 12,
-  "rel_ver": "v2.0.0",
-  "rel_pub": "2026-11-16",
+  "commit_90d": 237,
+  "commit_7d": 6,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-23",
   "rel_days": 3,
-  "rel_n90": 7,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -2301,10 +2301,10 @@
    "TypeScript": 34,
    "TeX": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261121",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4488,6 +4488,33 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "majmichu1/local-quench": {
+  "rel_ver": "v0.1.31",
+  "rel_pub": "2026-11-18",
+  "rel_days": 8,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 47,
+   "JavaScript": 32,
+   "Shell": 11,
+   "Go": 9,
+   "HTML": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

@@ -1243,12 +1243,12 @@
   }
  },
  "openziti/llm-gateway": {
-  "commit_7d": 7,
-  "commit_90d": 35,
+  "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": "v0.1.8",
   "rel_pub": "2026-10-14",
-  "rel_days": 5,
-  "rel_n90": 3,
+  "rel_days": 43,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1260,10 +1260,10 @@
    "Go": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4374,10 +4374,10 @@
   }
  },
  "kortix-ai/CompanyOS": {
-  "commit_90d": 6428,
-  "commit_7d": 275,
-  "rel_ver": "v0.16.0",
-  "rel_pub": "2026-11-18",
+  "commit_90d": 5918,
+  "commit_7d": 203,
+  "rel_ver": "v0.16.5",
+  "rel_pub": "2026-11-25",
   "rel_days": 1,
   "rel_n90": 11,
   "rel_pre": false,
@@ -4394,10 +4394,10 @@
    "JavaScript": 1,
    "PLpgSQL": 1
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
@@ -4844,6 +4844,102 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "MisterBrookT/vividoc": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 82,
+   "Python": 12,
+   "TypeScript": 6,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "LangerSword/hermes-igni": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "JavaScript": 18,
+   "HTML": 12
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "insideapp-srl/talk2tia": {
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 78,
+   "Astro": 8,
+   "CSS": 6,
+   "TypeScript": 5,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "JetBerri/kael.cpp-web": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "SCSS": 48,
+   "HTML": 34,
+   "JavaScript": 19
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

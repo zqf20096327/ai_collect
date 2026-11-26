@@ -288,12 +288,12 @@
   }
  },
  "zcaceres/markdownify-mcp": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v1.1.0",
-  "rel_pub": "2026-05-01",
-  "rel_days": 189,
-  "rel_n90": 0,
+  "commit_7d": 27,
+  "commit_90d": 29,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -310,10 +310,10 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4042,13 +4042,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261031",
    "security": "20261031",
    "contrib": "20261031",
-   "lang": "20261031"
-  }
+   "lang": "20261031",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "oEdyb/neuron-lab": {
   "rel_ver": null,
@@ -4101,13 +4104,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261103",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "capri-com/Capri-AI": {
   "rel_ver": "1",

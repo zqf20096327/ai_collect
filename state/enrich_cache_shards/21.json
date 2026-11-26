@@ -797,12 +797,12 @@
   }
  },
  "Lyrcaxis/KokoroSharp": {
-  "commit_7d": 0,
-  "commit_90d": 9,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v0.8.0",
   "rel_pub": "2026-07-24",
-  "rel_days": 86,
-  "rel_n90": 2,
+  "rel_days": 125,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -814,18 +814,18 @@
    "C#": 97,
    "Batchfile": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "towardsai/ai-tutor-rag-system": {
-  "commit_7d": 0,
-  "commit_90d": 6,
+  "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -837,10 +837,10 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3850,11 +3850,11 @@
   }
  },
  "pbakaus/impeccable": {
-  "commit_90d": 2226,
-  "commit_7d": 715,
-  "rel_ver": "skill-v4.10.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 1,
+  "commit_90d": 2259,
+  "commit_7d": 130,
+  "rel_ver": "skill-v4.11.1",
+  "rel_pub": "2026-11-26",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3870,10 +3870,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
@@ -4407,6 +4407,52 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "pierridotite/explore-compile-replay": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "floorianmb/tidywise": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 63,
+   "Python": 35,
+   "Shell": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

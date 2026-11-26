@@ -30,11 +30,11 @@
   }
  },
  "mindsdb/mindshub": {
-  "commit_7d": 1,
-  "commit_90d": 7,
+  "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": "v26.1.0",
   "rel_pub": "2026-04-23",
-  "rel_days": 190,
+  "rel_days": 217,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -56,10 +56,10 @@
    "Makefile": 84,
    "Dockerfile": 16
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -285,8 +285,8 @@
   }
  },
  "Tencent-Hunyuan/HY-WorldPlay": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -298,10 +298,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -312,7 +312,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.9.10",
   "rel_pub": "2026-08-30",
-  "rel_days": 77,
+  "rel_days": 88,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -325,10 +325,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1134,11 +1134,11 @@
   }
  },
  "jordenyt/stable_diffusion_sketch": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 4,
   "rel_ver": "v0.18.0",
   "rel_pub": "2024-11-12",
-  "rel_days": 705,
+  "rel_days": 744,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1150,10 +1150,10 @@
   "lang": {
    "Java": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4535,13 +4535,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261107",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "CariSoftwareBR/OpenGitDesktop": {
   "rel_ver": "v0.1.79",
@@ -5214,6 +5217,73 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "pathak22/context-encoder": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Lua": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "asterisk-labs/geozl": {
+  "rel_ver": "v0.34.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C": 85,
+   "C++": 7,
+   "Python": 3,
+   "Metal": 2,
+   "CMake": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "erickluna015kmparaviaje374-crypto/coregold-usdt-vcc-predictable-global-payment-rails-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

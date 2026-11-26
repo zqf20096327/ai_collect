@@ -4661,11 +4661,11 @@
   }
  },
  "bulaofen0036-coder/TIA_Portal_Openness_MCP": {
-  "commit_90d": 77,
-  "commit_7d": 10,
-  "rel_ver": "v2.7.8",
-  "rel_pub": "2026-10-26",
-  "rel_days": 1,
+  "commit_90d": 63,
+  "commit_7d": 0,
+  "rel_ver": "v2.7.11",
+  "rel_pub": "2026-11-07",
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4680,10 +4680,10 @@
    "PowerShell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
@@ -5466,6 +5466,33 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "bitfoundation/bitfabric": {
+  "rel_ver": "v-11.0.0-pre-24",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 79,
+   "HTML": 13,
+   "SCSS": 6,
+   "TypeScript": 2,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

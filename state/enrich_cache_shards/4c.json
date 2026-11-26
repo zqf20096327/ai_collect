@@ -986,12 +986,12 @@
   }
  },
  "crimsongoldteam/md_design": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v0.16.4",
-  "rel_pub": "2026-03-11",
-  "rel_days": 221,
-  "rel_n90": 0,
+  "commit_7d": 3,
+  "commit_90d": 10,
+  "rel_ver": "v0.16.5",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1006,10 +1006,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -773,11 +773,11 @@
   }
  },
  "Oleafly/Oleafly": {
-  "commit_90d": 373,
-  "commit_7d": 24,
-  "rel_ver": "v0.4.12",
-  "rel_pub": "2026-11-13",
-  "rel_days": 6,
+  "commit_90d": 353,
+  "commit_7d": 27,
+  "rel_ver": "v0.4.13",
+  "rel_pub": "2026-11-21",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -793,10 +793,10 @@
    "TeX": 3,
    "Typst": 2
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261119",
-   "release": "20261119",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
@@ -906,11 +906,11 @@
   }
  },
  "google/minimalloc": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": "v0.1.0",
   "rel_pub": "2023-10-31",
-  "rel_days": 1083,
+  "rel_days": 1122,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -926,10 +926,10 @@
    "CMake": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261126",
+   "release": "20261126",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4296,6 +4296,79 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "neon-solutions/copybook": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 13,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 86,
+   "MDX": 11,
+   "JavaScript": 1,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "kninrin-droid/code-mode-antigravity": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "Neizvestnyj/DockSight": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 55,
+   "TypeScript": 40,
+   "CSS": 3,
+   "Shell": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

@@ -1692,16 +1692,16 @@
    "JavaScript": 2,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261023"
+   "commit": "20261126"
   },
-  "commit_90d": 62,
-  "commit_7d": 32
+  "commit_90d": 49,
+  "commit_7d": 0
  },
  "AndraxDev/speak-gpt-web": {
   "rel_ver": null,
@@ -3937,8 +3937,8 @@
   }
  },
  "Ta0p1/ResolveLab": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v0.5.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -3950,16 +3950,20 @@
    "CSS": 5,
    "HTML": 4
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261126",
   "dim_ts": {
-   "release": "20261027",
+   "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027",
    "commit": "20261101"
   },
   "commit_90d": 55,
-  "commit_7d": 31
+  "commit_7d": 31,
+  "rel_pub": "2026-11-05",
+  "rel_days": 21,
+  "rel_n90": 2,
+  "rel_pre": false
  },
  "explosion/spacy-loggers": {
   "rel_ver": "v1.0.5",
@@ -4472,13 +4476,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261112",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "gitcommit90/1Helm": {
   "rel_ver": null,
@@ -4872,6 +4879,83 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "woodfishhhh/obituary": {
+  "commit_90d": 426,
+  "commit_7d": 282,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 80,
+   "TypeScript": 13,
+   "JavaScript": 2,
+   "CSS": 2,
+   "Python": 2
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "commit": "20261126",
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "LolabaHule20/vtuber-avatar-ai": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 93,
+   "CMake": 7
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
+  }
+ },
+ "itsabhijithhere/zone-playground": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }

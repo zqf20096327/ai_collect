@@ -1619,16 +1619,16 @@
    "JavaScript": 2,
    "HTML": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261027"
+   "commit": "20261126"
   },
-  "commit_90d": 3,
-  "commit_7d": 0
+  "commit_90d": 8,
+  "commit_7d": 2
  },
  "NeverSight/NeverD": {
   "rel_ver": "web-product-windows-x64-2026-10-15",
@@ -4865,13 +4865,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261126",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261126"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "diqierjia/StrataGate-AgentMemory": {
   "commit_90d": 394,
@@ -5423,6 +5426,26 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "yinoni/verilays": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261126",
+  "dim_ts": {
+   "release": "20261126",
+   "security": "20261126",
+   "contrib": "20261126",
+   "lang": "20261126"
   }
  }
 }
