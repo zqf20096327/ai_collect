@@ -32,7 +32,8 @@ git clone https://github.com/LaoBro/ComfyUI-GPU-Tuning custom_nodes/ComfyUI-GPU-
 ## 文档
 
 移植与进一步调优 [PORTING.md](docs/PORTING.md) · 补丁与文本生成实现 [PATCHES.md](docs/PATCHES.md) ·
-gfx906 实测边界 [GFX906.md](docs/GFX906.md) · 写 HIP 内核 [HIP_KERNELS.md](docs/HIP_KERNELS.md)
+gfx906 实测边界 [GFX906.md](docs/GFX906.md) · 写 HIP 内核 [HIP_KERNELS.md](docs/HIP_KERNELS.md) ·
+RDNA2 移植 [RDNA2_KERNELS.md](docs/RDNA2_KERNELS.md)
 
 ## 许可
 

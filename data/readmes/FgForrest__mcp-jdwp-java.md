@@ -167,7 +167,7 @@ This doubles as a setup verification — if you can solve these, everything work
 
 The fast-probe consent steps below assume a fresh MCP server. If the server reports a standing approval for the identical probe at the same endpoint, continue with the probe it set.
 
-Each flight is built so that one tool group is the path of least resistance, and lists a **par** — the minimum tool calls that cleanly reveal the root cause. Hitting par is the elegant solve; the suite as a whole exercises the full tool surface (expression eval, exception breakpoints, field watchpoints, event history, marks, logpoints, runtime mutation, multi-thread inspection, and in-target probes).
+Each flight is built so that one tool group is the path of least resistance, and lists a **par** — the minimum tool calls that cleanly reveal the root cause. Hitting par is the elegant solve. The suite exercises expression evaluation and assertions, exception and conditional breakpoints, field watchpoints, stepping, event history, marked instances, logpoints, runtime mutation, multi-thread inspection, and in-target probes.
 
 ### Just installed the plugin? Grab the sandbox zip
 
@@ -195,7 +195,7 @@ For each new test JVM, attach with `jdwp_wait_for_attach(port=5005, requireVmSta
 
 ### #1 The Phantom Session
 
-**Difficulty:** Moderate | **Test:** `SessionStoreTest` | **Package:** `session` | **Par:** 4 | **Exercises:** expression eval
+**Difficulty:** Moderate | **Test:** `SessionStoreTest` | **Package:** `session` | **Par:** 4 | **Exercises:** `jdwp_assert_expression`
 
 **Symptom:** `retrieve() returned null` — a session was stored, upgraded, and then... vanished from the map.
 
@@ -227,60 +227,86 @@ For each new test JVM, attach with `jdwp_wait_for_attach(port=5005, requireVmSta
 
 ---
 
-### #3 The Time Traveler's Config
+### #3 The Overwritten Timeout
 
-**Difficulty:** Hard | **Test:** `ConfigurationProviderTest` | **Package:** `config` | **Par:** 4 | **Exercises:** field watchpoint + event history
+**Difficulty:** Moderate | **Test:** `ApplicationTest` | **Package:** `settings` | **Par:** 3 | **Exercises:** field watchpoint + stack
 
-**Symptom:** `expected timeout=5000 but was 0` — the timeout was set during construction, yet it reads back as the default.
+**Symptom:** `[HTTP timeout after application startup in milliseconds] expected: 5000 but was: 0` — HTTP requests should use the configured timeout after startup.
+
+**Solved when:** you name, from the running JVM, the component whose call set the final timeout value.
 
 <details>
 <summary><strong>Reveal root cause</strong></summary>
 
-`ConfigurationProvider`'s constructor calls `init(5000)`, so the timeout is correct. Then `runMaintenanceSweep()` starts a background `config-reaper` thread that wrongly treats the live instance as stale and calls `resetToDefaults()`, writing the timeout back to 0. By the time the test reads it, the heap shows 0 and no local holds 5000 — a single context dump looks like the value was never set.
+`MetricsReporter.start` passes its own properties to `HttpSettings.configure`, which overwrites the shared HTTP timeout with `0` because those properties lack `http.timeout`.
 
-**Debug path:** `jdwp_set_field_breakpoint(className="…config.Configuration", fieldName="timeout", mode="modification")`, then `jdwp_get_events` shows the two stores in order — 0→5000 on the main thread, then 5000→0 on `config-reaper`. `jdwp_get_stack` on the second event names the reaper as the clobberer.
+The startup configuration sets the timeout to `5000` first. Both stores execute at `HttpSettings.java:12`. A field logpoint records both transitions at `HttpSettings.configure` and omits the caller. The stack supplies the caller that identifies the component.
+
+**Debug path (3 calls after attaching)**
+
+1. `jdwp_set_field_breakpoint(className="one.edee.jdwp.sandbox.settings.HttpSettings", fieldName="timeout", mode="modification", condition="$newValue == 0")`.
+2. `jdwp_resume_until_event()` stops at `HttpSettings.configure:12` for `5000 -> 0`.
+3. `jdwp_get_stack(threadId=<ID from step 2>)` shows `MetricsReporter.start (MetricsReporter.java:12)` immediately below `HttpSettings.configure`.
+
+Omit `condition` for the four-call path. The first `jdwp_resume_until_event()` stops on the configured `0 -> 5000` store. Resume again to see the overwrite, then inspect the stack.
 
 </details>
 
 ---
 
-### #4 The Audit That Lies
+### #4 The Missing Order
 
-**Difficulty:** Hard | **Test:** `TransferServiceTest` | **Package:** `bank` | **Par:** 4 | **Exercises:** field watchpoint + stack narration
+**Difficulty:** Hard | **Test:** `MonthlyReportTest` | **Package:** `report` | **Par:** 3 | **Exercises:** conditional breakpoint
 
-**Symptom:** `expected discrepancy=0 but was non-zero` — money is neither created nor destroyed, yet the audit says the books don't balance.
+**Symptom:** `[Number of orders created in October 2026] expected: 7600 but was: 7599` — the sales system correctly recorded 7600 orders in October 2026, and the monthly report is one short.
+
+**Solved when:** you identify the missing order by number and creation time and explain why the report does not count it.
 
 <details>
 <summary><strong>Reveal root cause</strong></summary>
 
-`TransferService.transfer()` is not atomic: it calls `source.withdraw()`, then `auditService.snapshotBalances()`, then `destination.deposit()`. The snapshot captures the intermediate state where money has left the source but hasn't arrived at the destination — showing a total of 1500 instead of 2000.
+The business counts October orders in UTC, and the report uses Prague time, which moves order 7565 from October into November.
 
-**Debug path:** `jdwp_set_field_breakpoint` on `AuditService.lastTotalSnapshot` (modification). It fires mid-transfer with the stack at `TransferService.transfer` between the debit and the credit; `jdwp_get_stack` plus a live balance read confirm the captured dip.
+The order was created at `2026-10-31T23:30:00Z`, which is `2026-11-01 00:30` in Prague. `MonthlyReport` reads a forward-only cursor that creates one row at a time, so there is no order list to scan in the debugger. A plain breakpoint on the exclusion line stops 2,401 times.
+
+**Debug path (3 calls after attaching)**
+
+1. `jdwp_set_breakpoint(className="one.edee.jdwp.sandbox.report.MonthlyReport", lineNumber=17, condition="order.createdAt().atZone(java.time.ZoneOffset.UTC).getMonthValue() == 10")`.
+2. `jdwp_resume_until_event(timeoutMs=60000)` stops on the one excluded October order. The condition runs on every excluded order, so the stop takes a few seconds and can take longer on a busy machine. On `[TIMEOUT]`, call it again.
+3. `jdwp_evaluate_expression(expression="order + \" counted in \" + creationMonth")` returns `Order[number=7565, createdAt=2026-10-31T23:30:00Z] counted in 2026-11`.
 
 </details>
 
 ---
 
-### #5 The Field That Lies
+### #5 The Masked Email
 
-**Difficulty:** Hard | **Test:** `UserProfileTest` | **Package:** `userprofile` | **Par:** 3 | **Exercises:** field watchpoint blind spot + before/after bisect
+**Difficulty:** Hard | **Test:** `AuditLogTest` | **Package:** `audit` | **Par:** 7 | **Exercises:** field watchpoint blind spot + stepping
 
-**Symptom:** `expected: <Alice> but was: <alice>` — the welcome message rendered correctly, yet the user's stored display name has silently changed casing.
+**Symptom:** `[User email after recording the audit event] expected: "jordan@example.com" but was: "j***@example.com"` — recording an audit event should preserve the user's email address.
+
+**Solved when:** you list the writes to the stored email that the JVM reports, name the call in `record` after which the value is different, with the value before and after it, and the statement that changes it.
 
 <details>
 <summary><strong>Reveal root cause</strong></summary>
 
-`LoginNormalizer.welcomeMessage` calls a private `canonicalForm` helper, which delegates to a static `DisplayNameMirror` nested class. The mirror uses `Field.setAccessible(true)` + `Field.set(profile, canonical)` to write the lower-cased form straight into `UserProfile.displayName`, bypassing the public setter. From the test's side the formatter looks read-only, and a field watchpoint cannot see the write either: JDI watchpoints fire only on the `putfield`/`getfield` bytecodes (and JNI field access). `Field.set` ends in an `Unsafe` store straight to memory, which trips no watchpoint, in `modification` mode or in `access` mode.
+`PiiMasker.fieldsFor` writes the masked email back to the original `User` via `Field.set` while collecting attributes for the audit entry.
 
-**Debug path:** The tell is a modification watchpoint that fires once, for the constructor's ordinary assignment, and never again, although the value flips before the assertion: the write does not go through a field store. The par path takes three calls:
+JDI watchpoints see the `putfield` and `getfield` bytecodes and JNI field access. `Field.set` ends in an `Unsafe` store straight to memory, which trips no watchpoint in either mode. A modification watchpoint with constructor writes enabled stops once at `User.java:12` when the original email is assigned. On the next resume, `[VM_DEATH]` reports one hit even though the assertion sees the masked email. `User.setEmail` is never called.
 
-1. `jdwp_set_field_breakpoint(className="one.edee.jdwp.sandbox.userprofile.UserProfile", fieldName="displayName", mode="modification")`. The class is not loaded yet, so the watchpoint waits for it.
-2. `jdwp_resume_until_event`: the watchpoint fires in the `UserProfile` constructor, which stores `"Alice"`.
-3. `jdwp_resume_until_event`: the test fails and its JVM exits. The `[VM_DEATH]` reply lists the watchpoint with one hit. The only store the JVM saw wrote `"Alice"`, yet the test read `"alice"`, so the write is reflective or goes through `Unsafe`. Between the two, the test calls only `welcomeMessage`, on line 24.
+**Debug path (7 calls after attaching)**
 
-Bisecting takes three calls as well and shows where the value flips, though not how: `jdwp_set_breakpoint("one.edee.jdwp.sandbox.userprofile.UserProfileTest", 27)`, just after `welcomeMessage`, then `jdwp_resume_until_event`, then `jdwp_evaluate_expression("profile.getDisplayName()")`, which is already `"alice"`. When the old and new strings could be equal, compare `System.identityHashCode(profile.getDisplayName())` instead.
+1. `jdwp_set_field_breakpoint(className="one.edee.jdwp.sandbox.audit.User", fieldName="email", mode="modification")`.
+2. `jdwp_set_breakpoint(className="one.edee.jdwp.sandbox.audit.AuditLog", lineNumber=17)`.
+3. `jdwp_resume_until_event()` stops at `User.java:12` for the only reported write, from `null` to `"jordan@example.com"`.
+4. `jdwp_resume_until_event()` stops at `AuditLog.java:17` before `masker.fieldsFor(user)`.
+5. `jdwp_evaluate_expression(expression="user.getEmail()")` returns `"jordan@example.com"`.
+6. `jdwp_step_over(wait=true)` lands at `AuditLog.java:18`. The watchpoint stays silent even though the value changes.
+7. `jdwp_evaluate_expression(expression="user.getEmail()")` returns `"j***@example.com"`.
 
-That is the evidence to read `LoginNormalizer` with: `canonicalForm` → `DisplayNameMirror.mirror` → `Field.set`. To name the writing call from the debugger alone, break at line 24 instead and keep bisecting inside `welcomeMessage` with `jdwp_step_into` / `jdwp_step_over`, comparing the identity after each line: it flips across `DisplayNameMirror.mirror(profile, canonical)` in `canonicalForm`. A line BP on `UserProfile.setDisplayName` never fires — the setter is genuinely unused.
+From the call at `AuditLogTest.java:15`, `jdwp_step_into(wait=true)` and one `jdwp_step_over(wait=true)` reach the same line.
+
+The change across `masker.fieldsFor(user)` gives you the hypothesis to check in `PiiMasker`. To verify the exact write in a fresh run, use `jdwp_set_breakpoint(className="one.edee.jdwp.sandbox.audit.PiiMasker", lineNumber=26)` and `jdwp_resume_until_event()`. Call `jdwp_evaluate_expression(expression="((one.edee.jdwp.sandbox.audit.User) entity).getEmail()")` before and after `jdwp_step_over(wait=true)`. The value changes across `field.set(entity, mask(name, text))`.
 
 </details>
 
@@ -303,35 +329,54 @@ That is the evidence to read `LoginNormalizer` with: `canonicalForm` → `Displa
 
 ---
 
-### #7 The Heisenbug Race
+### #7 The Lost Like
 
-**Difficulty:** Hard | **Test:** `RaceCounterTest` | **Package:** `race` | **Par:** 3 | **Exercises:** logpoints (non-stopping)
+**Difficulty:** Moderate | **Test:** `LikeServiceTest` | **Package:** `likes` | **Par:** 4 | **Exercises:** logpoints (non-stopping)
 
-**Symptom:** `expected 2 but was 1` — two threads each increment a counter once, but one increment vanishes.
+**Symptom:** `[Total likes after two users like the post] expected: 2 but was: 1` — each user's like should count toward the post's total.
+
+**Solved when:** you show, thread by thread and without holding either of them, how the total ends at 1.
 
 <details>
 <summary><strong>Reveal root cause</strong></summary>
 
-`RaceCounter.increment` reads the count, waits at a `CyclicBarrier` so both threads have read before either writes, then writes back `read + 1`. Both threads read 0 and both write 1 — one increment is lost. A suspending breakpoint serializes the threads and makes you juggle two parked threads to reconstruct what happened.
+Two workers load separate copies of the same post with zero likes, increment their copies to one, and save them in turn, so the second save replaces the first worker's result.
 
-**Debug path:** Set a `jdwp_set_logpoint` (it does not leave the thread stopped) at the read site logging the thread name and `count` (or a field logpoint on `count`). Let the test run, then `jdwp_get_events` — both `racer-1` and `racer-2` are recorded reading 0 before either writes, which is the lost update laid out in order.
+The repository's `ConcurrentHashMap` makes individual map operations thread-safe. The load–change–save sequence spans several operations and can interleave across workers. A suspending breakpoint parks the workers and requires following and releasing their stops to reconstruct the sequence. A field logpoint on `Post.reactions` can record the map reference and reads before the merge. The like count changes inside the map, and saving writes the repository entry, so the field logpoint misses each worker's saved count.
+
+**Debug path (4 calls after attaching)**
+
+1. `jdwp_set_logpoint(className="one.edee.jdwp.sandbox.likes.LikeService", lineNumber=16, expression="Thread.currentThread().getName() + \" loaded \" + post.likes()")`.
+2. `jdwp_set_logpoint(className="one.edee.jdwp.sandbox.likes.LikeService", lineNumber=17, expression="Thread.currentThread().getName() + \" saves \" + post.likes()")`.
+3. `jdwp_resume_until_event()` runs through both saves and returns `[VM_DEATH]`.
+4. `jdwp_get_events()` shows `Maya loaded 0`, `Noah loaded 0`, `Maya saves 1`, and `Noah saves 1`. The order of the events can vary.
 
 </details>
 
 ---
 
-### #8 The Magic Patch
+### #8 The Vanished Endpoint
 
-**Difficulty:** Warm-up | **Test:** `DateParserTest` | **Package:** `parser` | **Par:** 4 | **Exercises:** runtime mutation (`set_local`)
+**Difficulty:** Warm-up | **Test:** `OrderClientTest` | **Package:** `client` | **Par:** 5 | **Exercises:** runtime mutation (`set_local`)
 
-**Symptom:** `NumberFormatException: For input string: "15 "` — a date string that looks right fails to parse.
+**Symptom:** `[HTTP status for the order listing] expected: 200 but was: 404` — requesting the order list should succeed.
+
+**Solved when:** you show what is wrong with the client's request and, with only that corrected in the running JVM, the unchanged test passes.
 
 <details>
 <summary><strong>Reveal root cause</strong></summary>
 
-`DateParser.parse` splits `YYYY-MM-DD` and `Integer.parseInt`s each part. The feed delivers `"2026-05-15 "` with a trailing space, so `parseInt("15 ")` throws. The parser never trims its input.
+`OrderClient` appends `/orders` to a base URL that already ends in `/`, so the router receives `//orders` and returns 404.
 
-**Debug path:** Four calls. `jdwp_set_breakpoint` at the top of `parse`, `jdwp_resume_until_event` to stop there, `jdwp_set_local("input", "2026-05-15")` to drop the trailing space (or break on the test's line 19 and patch `fromFeed` instead), and `jdwp_resume`. The parse now succeeds and the test passes — confirming the trailing space is the whole story, with no rebuild. The exception message already shows the stray space, so the stop needs no inspection call; the confirming resume counts.
+`jdwp_set_local` changes the request just before the router sees it. A passing test in that same JVM confirms the cause using the original code and build.
+
+**Debug path (5 calls after attaching)**
+
+1. `jdwp_set_breakpoint(className="one.edee.jdwp.sandbox.client.OrderClient", lineNumber=23)`.
+2. `jdwp_resume_until_event()` stops before `router.get(url)`.
+3. `jdwp_get_breakpoint_context()` shows `url = "http://api.local//orders"` and the stopped thread's ID.
+4. `jdwp_set_local(threadId=<ID from step 3>, frameIndex=0, varName="url", value="\"http://api.local/orders\"")`.
+5. `jdwp_resume_until_event()` returns `[VM_DEATH]`. Surefire reports that the test passed.
 
 </details>
 
@@ -452,7 +497,7 @@ jdwp_set_logpoint(
 )
 ```
 
-A logpoint evaluates an expression every time the line is hit, logs the result to the event history, and **never leaves the thread stopped**: the hitting thread waits only while the server evaluates the condition and expression, then runs on. Combined with an optional condition, this gives the agent tracing without stopping execution. View results with `jdwp_get_events()`. Boxed primitives appear as values, and other objects appear as `Object (type)`. Where even that pause matters — races, hot loops — see fast logpoints below.
+A logpoint evaluates an expression every time the line is hit, logs the result to the event history, and **never leaves the thread stopped**: the hitting thread waits only while the server evaluates the condition and expression, then runs on. Combined with an optional condition, this gives the agent tracing without stopping execution. View results with `jdwp_get_events()`. Boxed primitives appear as values, and other objects appear as `Object (type)`. Where even that pause matters — races, hot loops — see fast logpoints below. If the evaluation fails, `LOGPOINT_ERROR` names the class, line and thread.
 
 ### Fast logpoints (in-target, consent required)
 
@@ -494,7 +539,7 @@ jdwp_set_fast_breakpoint(
 )
 ```
 
-The first hit of the line goes through the debugger: if the condition holds, that hit is the stop; otherwise the server installs a probe, as for a fast logpoint. While local classpath discovery runs, arming can move to a later hit. The probe calls an empty `stop()` method only when the condition holds, and the debugger's breakpoint sits on `stop()` — so the instrumented method keeps running compiled. In the spike, a method holding a breakpoint that never fired ran at 74 ns per call against 7 ns; with a fast breakpoint the difference stayed within run-to-run noise. Wait for the stop with `jdwp_resume_until_event`; the report reads `fast_breakpoint=N, condition true`. The stack, locals, evaluation, `jdwp_set_local`, watchers and steps all work from the user's frame — the probe frames on top are hidden, and a step lands on the stop line. A condition that throws stops once and is then only counted (`FAST_BREAKPOINT_ERROR` in `jdwp_get_events`).
+The first hit of the line goes through the debugger: if the condition holds, that hit is the stop; otherwise the server installs a probe, as for a fast logpoint. While local classpath discovery runs, arming can move to a later hit. The probe calls an empty `stop()` method only when the condition holds, and the debugger's breakpoint sits on `stop()` — so the instrumented method keeps running compiled. In the spike, a method holding a breakpoint that never fired ran at 74 ns per call against 7 ns; with a fast breakpoint the difference stayed within run-to-run noise. Wait for the stop with `jdwp_resume_until_event`; the report reads `fast_breakpoint=N, condition true`. The stack, locals, evaluation, `jdwp_set_local`, watchers and steps all work from the user's frame. At an installed probe's stop, its frames are hidden and a step first lands on the stop line. A condition that throws stops once and is then only counted (`FAST_BREAKPOINT_ERROR` in `jdwp_get_events`).
 
 Use optional `capture` for values that may change just after the condition holds. When a true hit passes the stop gate, the Java expression or `{ ...; return value; }` block runs on the hitting thread. The dispatcher evaluates capture on a true arming stop, and the installed probe evaluates it before suspension on later stops. Both expressions must be thread-safe and free of side effects. The result or failure appears as `Captured at the hit: …` in the stop, breakpoint context and event history. For several values, return one string. Changing or omitting the capture requires its own standing approval.
 
@@ -518,6 +563,8 @@ Deferred replies can suggest similar loaded class names. When the server and tar
 This works from VM start, so it is the attach prologue for a failing test: launch the JVM suspended (`-Dmaven.surefire.debug`), call `jdwp_wait_for_attach(requireVmStart=true)`, set every line BP, logpoint, exception BP and field BP while the JVM is parked, then `jdwp_resume_until_event`. Each one activates when its class loads — JDK classes included, so an exception BP on `java.lang.AssertionError` set at VM start stops on the first failing JUnit assertion.
 
 Pass `forceLoad=true` only when you need the breakpoint to bind *immediately* — the server will call `Class.forName` in the target VM to load the class up front. That runs the class's `<clinit>` (early static init, eager dependency loads), which can mask lazy-init / classloader-leak diagnostics. Use sparingly. It needs a thread stopped at an event to run the load, so at VM start it cannot load anything: the breakpoint is deferred instead, and the reply says `forceLoad=true could not load it`.
+
+If `Class.forName` throws and the class is visible afterwards, the tool handles it as a loaded class and appends a warning with the target exception. A class whose initialization failed is unusable until the target restarts. If the class is still missing, the tool defers the breakpoint and includes the exception in the deferral note.
 
 ### Exception breakpoints
 
@@ -575,7 +622,7 @@ jdwp_set_field_logpoint(
 )
 ```
 
-Each hit records a `FIELD_LOGPOINT` entry to `jdwp_get_events`; failures surface as `FIELD_LOGPOINT_ERROR`. Filters (`threadFilterId`, `objectFilterId`) and trigger chaining (`triggerBreakpointId`, `oneShot`) work the same as for line and exception BPs. Deferred activation is supported — the watchpoint installs the moment the declaring class loads, so static-initializer writes are caught.
+Each hit records a `FIELD_LOGPOINT` entry to `jdwp_get_events`; failures surface as `FIELD_LOGPOINT_ERROR` with the site and the values. Filters (`threadFilterId`, `objectFilterId`) and trigger chaining (`triggerBreakpointId`, `oneShot`) work the same as for line and exception BPs. Deferred activation is supported — the watchpoint installs the moment the declaring class loads, so static-initializer writes are caught.
 
 Hard errors (no silent fallback): invalid `mode`, ambiguous or missing field, `objectFilterId` on a static field. The deferred path can't validate static-ness until class load, so it surfaces a warning Note in the response.
 
@@ -624,11 +671,11 @@ jdwp_evaluate_expression(
 → Result of order.getTotal(): 1250.0
 ```
 
-Field navigation, including private and package-private reads, runs without compiling or invoking target code. A single field path can read private members of package-private classes in other packages. It works on manual holds, stop-all bystanders, and suspended threads blocked on a monitor or in `wait()`. The interpreter can call a private or package-private method with one applicable signature on a thread stopped at its own event. Same-arity overloads, varargs, generic methods and lambdas use compilation. A tool evaluation still running in the target after 20 s returns `[STILL_RUNNING]`. The eventual result appears as `EVALUATION_COMPLETED_LATE` in `jdwp_get_events`.
+Field navigation, including private and package-private reads, runs without compiling or invoking target code. A single field path can read private members of package-private classes in other packages. It works on manual holds, stop-all bystanders, and suspended threads blocked on a monitor, in `wait()` or parked. The interpreter can call a private or package-private method with one applicable signature on a thread stopped at its own event. Same-arity overloads, varargs, generic methods and lambdas use compilation. A tool evaluation still running in the target after 20 s returns `[STILL_RUNNING]`. The eventual result appears as `EVALUATION_COMPLETED_LATE` in `jdwp_get_events`.
 
 On JDK 17 and 21, ordinary compilation can retry visibility errors on private application field reads, method calls and constructors through reflection. The retry preserves exact value types and inlines type-qualified constants without class initialization. Assignment targets, inaccessible types, expression-qualified constants and closed JDK packages can still produce access errors. Fast probes and their arming evaluations use Java access rules.
 
-The first compiled evaluation or fast-probe arming compile discovers the remote classpath on demand. The debugger reads the launch classpath, the context loader chain and the selected frame's defining loader chain. A public `URLClassLoader.getURLs()` may supply custom repositories, and an overridden context-loader getter can run during a tool's compiled evaluation. `jdwp_diagnose` reports incomplete loader reads.
+The first compiled evaluation or fast-probe arming compile discovers the remote classpath on demand. The debugger reads the launch classpath (relative entries resolve against the target's working directory when the file exists there, the manifest Class-Path of local jars is followed), the context loader chain and the selected frame's defining loader chain. A public `URLClassLoader.getURLs()` may supply custom repositories, and an overridden context-loader getter can run during a tool's compiled evaluation. `jdwp_diagnose` reports incomplete loader reads.
 
 Expressions see no imports. A simple type name covers `java.lang` and the current class's own and nested types; write other application types fully qualified, for example `com.acme.Status.ACTIVE`.
 
@@ -755,9 +802,11 @@ Returns thread info, top stack frames, locals at frame 0, and `this` fields in a
 
 Use `wait=true` to append that step's landing or interrupting stop in the same call. If another call already presented that stop, the step reply identifies it as already presented. Stops on other threads stay unseen. The wait is bounded at 30 seconds. If it times out, the step stays pending. Use `jdwp_resume_until_event(threadId=T)` to continue waiting or to collect the stop after a step made with the default `wait=false`.
 
+JDK code runs much slower while a step into from application code is pending, because the JDWP agent watches every method entry. On a line that does a lot of work in the JDK, set a breakpoint where you want to stop and resume.
+
 Each step is one round-trip, so prefer a breakpoint at the destination + `jdwp_resume_until_event` whenever you can predict where execution will go. Stepping pays off in three narrow situations:
 
-- **`step_into`** — polymorphic dispatch is unclear; you can't tell from source which override will run.
+- **`step_into`** — polymorphic dispatch is unclear; you can't tell from source which override will run. From application code the step passes over the JDK. To stop inside a JDK method, set a breakpoint in it.
 - **`step_out`** — an exception/early-abort left you deep in a frame you don't care about and finding the caller line for a breakpoint is awkward.
 - **`step_over`** — the *single* next line, when observing a state mutation is faster than predicting it. More than ~3 in a row → set a breakpoint instead.
 
@@ -797,7 +846,7 @@ Attach and disconnect replies show the local PID, start time, and launch selecto
 | `jdwp_suspend_thread`     | `threadId`   | Suspend a specific thread                                    |
 | `jdwp_resume_until_event` | `timeoutMs?`, `threadId?` | Resume and wait for the next stop, optionally scoped to one thread. Stop replies include any fast-breakpoint captures. Returns `[RESUME_FAILED]` on a failed release |
 | `jdwp_step_over`          | `threadId?`, `wait?` | Step over the current line and optionally wait for the thread's next stop |
-| `jdwp_step_into`          | `threadId?`, `wait?` | Step into a method call and optionally wait for the thread's next stop |
+| `jdwp_step_into`          | `threadId?`, `wait?` | Step into a method call, passing over the JDK from application code, and optionally wait for the thread's next stop |
 | `jdwp_step_out`           | `threadId?`, `wait?` | Step out of the current frame and optionally wait for the thread's next stop |
 
 Resume replies list which holds were released and which failed, with the JDI exception. For `[RESUME_FAILED]`, use `jdwp_resume_thread(threadId=…)` with the reported retry thread ID when available. Retrying a failed automatic stop-all releases its VM-wide suspension. `jdwp_resume` also releases every other presented stop and every `jdwp_suspend_thread` hold, including any stop-all a pending step relies on. A disconnect ends the session and directs you to reattach. A step with `wait=true` includes any captures from the stop that ended it.
@@ -806,7 +855,7 @@ Resume replies list which holds were released and which failed, with the JDI exc
 
 | Tool                              | Parameters                                                | Description                                         |
 |-----------------------------------|-----------------------------------------------------------|-----------------------------------------------------|
-| `jdwp_set_breakpoint`             | `className`, `lineNumber`, `suspendPolicy?`, `condition?`, `triggerBreakpointId?`, `oneShot?`, `forceLoad?` | Set line breakpoint (conditions, deferred-by-default, trigger chaining; `forceLoad=true` binds immediately and runs `<clinit>`) |
+| `jdwp_set_breakpoint`             | `className`, `lineNumber`, `suspendPolicy?`, `condition?`, `triggerBreakpointId?`, `oneShot?`, `forceLoad?` | Set line breakpoint (conditions, deferred-by-default, trigger chaining). `forceLoad=true` attempts to load and initialize the class immediately. |
 | `jdwp_set_logpoint`               | `className`, `lineNumber`, `expression`, `condition?`, `forceLoad?` | Non-stopping line breakpoint that logs expression result |
 | `jdwp_set_fast_logpoint`          | `className`, `lineNumber`, `expression`, `condition?`, `userApproved?`, `bufferSize?`, `forceLoad?` | **Rare, consent required.** Logpoint evaluated inside the target by injected bytecode — hits never suspend. Arms with standing approval for the exact probe at this host:port, or asks for `userApproved=true` after a risk briefing |
 | `jdwp_set_fast_breakpoint`        | `className`, `lineNumber`, `condition`, `userApproved?`, `suspendPolicy?`, `stopOnce?`, `forceLoad?`, `capture?` | **Rare, consent required.** Evaluates the condition inside the target and optionally captures a value on each true stop, including the arming hit. Arms with standing approval for the exact probe at this host:port, or asks for `userApproved=true` after a risk briefing |
@@ -854,9 +903,9 @@ Resume replies list which holds were released and which failed, with the JDI exc
 | Tool                                | Parameters                            | Description                                         |
 |-------------------------------------|---------------------------------------|-----------------------------------------------------|
 | `jdwp_attach_watcher`               | `breakpointId`, `label`, `expression` | Attach expression watcher to a breakpoint           |
-| `jdwp_detach_watcher`               | `watcherId`                           | Remove a watcher                                    |
+| `jdwp_detach_watcher`               | `watcherId`                           | Remove a watcher using its displayed ID or full UUID. |
 | `jdwp_list_watchers_for_breakpoint` | `breakpointId`                        | List watchers on a specific breakpoint              |
-| `jdwp_evaluate_watchers`            | `threadId`, `scope`, `breakpointId?`  | Evaluate watchers (`current_frame` or `full_stack`) |
+| `jdwp_evaluate_watchers`            | `threadId`, `scope?`, `breakpointId?` | Evaluate watchers (`current_frame` by default, or `full_stack`) |
 
 ### Marked instances (3)
 

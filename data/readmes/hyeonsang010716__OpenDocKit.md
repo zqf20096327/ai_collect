@@ -75,6 +75,7 @@ pip install "opendockit[openai]"      # + image description with a vision model
 pip install "opendockit[heic]"        # + HEIC/HEIF images (pulls in GPL/LGPL-licensed codec libraries)
 pip install "opendockit[langchain]"   # + LangChain loader
 pip install "opendockit[llamaindex]"  # + LlamaIndex reader
+pip install "opendockit[lightrag]"    # + LightRAG parser engine
 pip install "opendockit[mcp]"         # + MCP server for agents
 pip install "opendockit[open-webui]"  # + document loader for Open WebUI
 ```
@@ -171,6 +172,20 @@ To let the client start the server itself, with nothing installed beforehand, ad
 With `mode="sections"` each page, slide or sheet is its own Document, with its number in the metadata for citations. See [docs/integrations.md](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/integrations.md).
 
 [![hyeonsang010716/OpenDocKit MCP server](https://glama.ai/mcp/servers/hyeonsang010716/OpenDocKit/badges/score.svg)](https://glama.ai/mcp/servers/hyeonsang010716/OpenDocKit)
+
+### LightRAG
+
+[LightRAG](https://github.com/HKUDS/LightRAG) finds the parser engine `opendockit` by itself once both are installed;
+no code is needed. A routing rule says which documents it reads:
+
+```bash
+pip install "opendockit[lightrag]"
+export LIGHTRAG_PARSER="hwp:opendockit,hwpx:opendockit,doc:opendockit,ppt:opendockit,xls:opendockit"
+```
+
+With that rule LightRAG accepts Hangul documents and the old Office formats, which its local engines do not read. Add
+`pdf:opendockit` or `docx:opendockit` to have those arrive as Markdown with their tables and headings. See
+[docs/integrations.md](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/integrations.md#lightrag).
 
 ### Hermes Agent
 
@@ -304,7 +319,7 @@ without a vision model — so you can judge the output before installing anythin
 | [Options](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/options.md) | `ConvertOptions`, exceptions and error codes |
 | [Images](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/images.md) | Extraction, filtering, vision models, custom describers |
 | [Running on a server](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/server.md) | `IsolatedConverter`, resource limits, the character budget |
-| [Integrations](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/integrations.md) | LangChain, LlamaIndex, the MCP server, Hermes Agent, Claude Code, Dify and Open WebUI |
+| [Integrations](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/integrations.md) | LangChain, LlamaIndex, LightRAG, the MCP server, Hermes Agent, Claude Code, Dify and Open WebUI |
 | [Integration guide](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/integration-guide.md) | What an upload UI should tell its users |
 | [Design](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/design.md) | Why it is built this way, and how it was verified |
 | [Limitations](https://github.com/hyeonsang010716/OpenDocKit/blob/main/docs/limitations.md) | Known gaps, stated plainly |

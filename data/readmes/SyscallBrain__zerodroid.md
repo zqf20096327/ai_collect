@@ -41,7 +41,7 @@ memory all stay on the daemon.
 ## Features
 
 - **Home**: the daemon at a glance. Memory, CPU, uptime and active sessions,
-  shortcuts to Automation, Workflows, Canvas and Doctor (whichever needs a
+  shortcuts to Automation, Workflows, Canvas, Doctor and Skills (whichever needs a
   look, a failed job or a doctor error, comes first), which subsystems and
   channels are running, today's spend, the next scheduled jobs, and your
   agents with pinned favourites at the top. Each shortcut can be hidden.
@@ -96,9 +96,28 @@ memory all stay on the daemon.
   that opens that entry in Config. Home shows the last run's result; the
   doctor never runs on its own, only when you ask (Doctor on Home, or
   Config → Doctor).
+- **Skills**: the daemon's skills per agent, like the web dashboard's Skills
+  page. Pick an agent with the chip on top (its monogram avatar is the same
+  as in the agents list), search, and see the agent's skills grouped by
+  bundle — each bundle chip gets its own stable color — plus its workspace
+  skills, listed read-only. Bundle skills open an editor for the SKILL.md
+  frontmatter fields (description, license, author, version, category, tags,
+  always-inline) and the Markdown body, with save and delete, all through the
+  daemon's `skills/*` RPC. Skills come from the bundles assigned to the agent
+  (`agents.<alias>.skill_bundles`) and its workspace `skills/` directory;
+  built-in, plugin and open-skills entries are only visible in the web
+  dashboard, which reads them over HTTP. The Home shortcut can be hidden like
+  the others.
 - **Approvals**: when an agent asks for permission, approve or deny from the
   Inbox or straight from the notification. Nothing is ever approved without
   your tap.
+- **Questions from the agent**: when an agent calls `ask_user` with `choices`
+  (or `poll`), the chat shows a card with the question and one button per
+  choice (multi-select polls get checkboxes plus a Send button). Tapping a
+  choice sends it back and the tool call returns it. See the
+  [screenshots](#agent-questions) and
+  [Agent questions: choices vs free text](#agent-questions-choices-vs-free-text)
+  for what works and what does not.
 - **Runs in the background**: a running turn keeps its connection through a
   foreground service, so it is not cancelled when you switch apps.
 - **Config**: every daemon setting, grouped and searchable, edited with the
@@ -114,14 +133,14 @@ memory all stay on the daemon.
 
 ## Screenshots
 
-| | | |
-|:-:|:-:|:-:|
-| ![Home with the daemon status and the shortcuts list](docs/screenshots/home.jpg) | ![Home with scheduled jobs and pinned agents](docs/screenshots/home-agents.jpg) | ![The list of chats](docs/screenshots/chats.jpg) |
-| Home | Up next and pinned agents | Chats |
-| ![A chat streaming tool calls](docs/screenshots/chat-working.jpg) | ![A tool call opened with its arguments and output](docs/screenshots/tool-call.jpg) | ![Picking an agent for a new chat](docs/screenshots/new-chat.jpg) |
-| A turn running | Tool call details | New chat |
-| ![The chat menu with the model, display options and actions](docs/screenshots/chat-menu.jpg) | ![Choosing the folder for a code session](docs/screenshots/folder-picker.jpg) | ![The web fetch settings](docs/screenshots/config-web-fetch.jpg) |
-| Chat menu | Choose a folder | Editing a setting |
+|                                                                                              |                                                                                     |                                                                   |
+| :------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: | :---------------------------------------------------------------: |
+|       ![Home with the daemon status and the shortcuts list](docs/screenshots/home.jpg)       |   ![Home with scheduled jobs and pinned agents](docs/screenshots/home-agents.jpg)   |         ![The list of chats](docs/screenshots/chats.jpg)          |
+|                                             Home                                             |                              Up next and pinned agents                              |                               Chats                               |
+|              ![A chat streaming tool calls](docs/screenshots/chat-working.jpg)               | ![A tool call opened with its arguments and output](docs/screenshots/tool-call.jpg) | ![Picking an agent for a new chat](docs/screenshots/new-chat.jpg) |
+|                                        A turn running                                        |                                  Tool call details                                  |                             New chat                              |
+| ![The chat menu with the model, display options and actions](docs/screenshots/chat-menu.jpg) |    ![Choosing the folder for a code session](docs/screenshots/folder-picker.jpg)    | ![The web fetch settings](docs/screenshots/config-web-fetch.jpg)  |
+|                                          Chat menu                                           |                                   Choose a folder                                   |                         Editing a setting                         |
 
 <details>
 <summary>Pairing and sign-in</summary>
@@ -130,8 +149,11 @@ memory all stay on the daemon.
 |:-:|:-:|:-:|
 | ![The welcome screen with the pairing and OIDC options](docs/screenshots/onboarding.jpg) | ![Confirming the pairing code](docs/screenshots/pair-confirm.jpg) | ![The paired daemon, its certificate and the Home shortcut switches](docs/screenshots/pairing-settings.jpg) |
 | Welcome | Compare the code | Paired daemon |
-| ![The OIDC sign-in form with the advanced WSS and gateway URLs](docs/screenshots/oidc-sign-in.jpg) | ![The This phone section with the Unpair this phone button](docs/screenshots/unpair.jpg) | |
-| Sign in with OIDC | Unpair this phone | |
+
+| | |
+|:-:|:-:|
+| ![The OIDC sign-in form with the advanced WSS and gateway URLs](docs/screenshots/oidc-sign-in.jpg) | ![The This phone section with the Unpair this phone button](docs/screenshots/unpair.jpg) |
+| Sign in with OIDC | Unpair this phone |
 
 </details>
 
@@ -148,26 +170,26 @@ memory all stay on the daemon.
 
 ### Canvas
 
-| | | |
-|:-:|:-:|:-:|
-| ![The list of saved canvases with their type, frame count and agent](docs/screenshots/canvas-list.jpg) | ![A bar chart an agent drew, opened from the list](docs/screenshots/canvas-chart.jpg) | |
-| Saved canvases | A chart an agent drew | |
+| | |
+|:-:|:-:|
+| ![The list of saved canvases with their type, frame count and agent](docs/screenshots/canvas-list.jpg) | ![A bar chart an agent drew, opened from the list](docs/screenshots/canvas-chart.jpg) |
+| Saved canvases | A chart an agent drew |
 
 ### Automation
 
-| | | |
-|:-:|:-:|:-:|
-| ![The list of scheduled jobs with their agent, type, schedule, status and next run](docs/screenshots/automation-list.jpg) | ![A new shell job with its name, agent, schedule and command](docs/screenshots/automation-shell-job.jpg) | ![A new agent job with its prompt, model, session, tools, memory and delivery to a channel](docs/screenshots/automation-agent-job.jpg) |
-| Scheduled jobs | A shell job | An agent job with delivery |
-| ![The scheduler settings sheet](docs/screenshots/automation-scheduler.jpg) | | |
-| Scheduler settings | | |
+| | |
+|:-:|:-:|
+| ![The list of scheduled jobs with their agent, type, schedule, status and next run](docs/screenshots/automation-list.jpg) | ![A new shell job with its name, agent, schedule and command](docs/screenshots/automation-shell-job.jpg) |
+| Scheduled jobs | A shell job |
+| ![A new agent job with its prompt, model, session, tools, memory and delivery to a channel](docs/screenshots/automation-agent-job.jpg) | ![The scheduler settings sheet](docs/screenshots/automation-scheduler.jpg) |
+| An agent job with delivery | Scheduler settings |
 
 ### File edits
 
-| | | |
-|:-:|:-:|:-:|
-| ![An agent's file_edit shown as a diff: one line removed in red, one added in green, with the file name and +1 -1](docs/screenshots/code-edit-diff.jpg) | ![A new file written by the agent, every line added in green](docs/screenshots/code-file-write.jpg) | |
-| An edit as a diff | A new file | |
+| | |
+|:-:|:-:|
+| ![An agent's file_edit shown as a diff: one line removed in red, one added in green, with the file name and +1 -1](docs/screenshots/code-edit-diff.jpg) | ![A new file written by the agent, every line added in green](docs/screenshots/code-file-write.jpg) |
+| An edit as a diff | A new file |
 
 ### Doctor
 
@@ -175,6 +197,20 @@ memory all stay on the daemon.
 |:-:|:-:|:-:|
 | ![Doctor results: one error, two warnings and 151 checks OK, with Fix buttons on the config findings](docs/screenshots/doctor.jpg) | ![Doctor running its checks again after the fixes, with one warning left](docs/screenshots/doctor-running.jpg) | ![All 142 checks passed](docs/screenshots/doctor-passed.jpg) |
 | Findings with Fix | Running the checks | All checks passed |
+
+### Skills
+
+| | | |
+|:-:|:-:|:-:|
+| ![The selected agent's skills with the agent picker chip and search on top](docs/screenshots/skills-agent-picker.jpg) | ![Skills grouped by bundle section](docs/screenshots/skills-list.jpg) | ![Bundle chips in their own stable color; tap a skill to edit it](docs/screenshots/skills-bundles.jpg) |
+| Agent picker and search | Grouped by bundle | Bundles and editing |
+
+### Agent questions
+
+| | | |
+|:-:|:-:|:-:|
+| ![An ask_user question card with three choices and a Dismiss button](docs/screenshots/ask-question-single.jpg) | ![The same card with longer option labels](docs/screenshots/ask-question-long.jpg) | ![A multi-select poll card with two options ticked and a Send button](docs/screenshots/ask-poll-multiselect.jpg) |
+| Single choice | Longer options | Multi-select poll |
 
 ## Install
 
@@ -275,6 +311,36 @@ own CPU time in `/proc/self/stat` measured against the clock, and to the
 number of CPUs the process may run on. `android-master-zerodroid` already
 includes this patch. It changes no stored data.
 
+### Agent questions: choices vs free text
+
+When an agent wants to ask you something, it calls `ask_user` (or `poll`) on
+the daemon. Over the RPC connection the daemon sends the question to the
+phone as an `elicitation/create` request, and ZeroDroid shows it as a card
+in the chat with one button per choice. Multi-select polls let you pick
+several options and confirm with Send.
+
+What works:
+
+- Picking a choice sends it back to the daemon, and the agent's tool call
+  returns your choice as its answer.
+- This also works after the app reconnects. The app re-attaches each open
+  session on reconnect, so the daemon points the question channel at the new
+  connection. Without that, questions would fail with `Writer task closed`.
+
+What does not work yet, and why:
+
+- **A free-text answer cannot be the tool's answer.** On the RPC channel the
+  daemon only accepts one of the listed choices. If the question is dismissed
+  (Dismiss), the tool returns an error (`did not complete the structured
+  choice...`). This is a daemon limit: ACP elicitation "phase 2" (free-form
+  questions) is not in ZeroClaw 0.9.0. The app cannot change this.
+- `ask_user` **without** `choices` fails on the RPC channel for the same
+  reason. The agent must pass `choices`.
+
+So the card has only the choice buttons and Dismiss — there is no text field
+for a custom answer. When the daemon ships phase 2, the app will add a text
+field to this card.
+
 ## Pairing
 
 The phone needs two things from the daemon: a client certificate from the
@@ -355,8 +421,8 @@ provider's device grant (with PKCE) and signs the certificate instead, and the
 token is the provider's access token, sent with `auth_provider = "oidc.<alias>"`.
 
 A turn on the daemon belongs to the connection that started it, so the app
-keeps that connection alive in a foreground service while a turn or an
-approval is pending. Samsung and some other vendors freeze background apps
+keeps that connection alive in a foreground service while a turn, an approval
+or an agent question is pending. Samsung and some other vendors freeze background apps
 anyway; turning off battery optimisation for ZeroDroid (Config → ZeroDroid &
 pairing) helps.
 

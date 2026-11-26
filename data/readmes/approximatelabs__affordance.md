@@ -31,8 +31,8 @@ export default function Hello({name = "world"}) {
   elide old tool results, so a long session stays inside the window and its prompt prefix stays
   stable for the server's cache.
 - **Deterministic replay.** Each agent's inputs are journaled. Replaying a journal rebuilds the
-  agent exactly: resume after a crash, or step through a run turn by turn. A command that was
-  still running when the process died is sent again on resume, so a tool that writes to the
+  agent exactly: restore after a crash, or step through a run turn by turn. A command that was
+  still running when the process died is sent again on restore, so a tool that writes to the
   outside world should be safe to repeat.
 - **Stateful agents.** Many agents in one process, each an event loop with timers, child
   instances, messages, machines to run commands on, and model calls it makes when its code
@@ -77,7 +77,7 @@ hosted API, with a shell on your machine:
 ```sh
 affordance init my-agent && cd my-agent
 affordance run                      # runs affordance.yaml here; journals go to .affordance/
-affordance run --resume             # continue it
+affordance run --restore             # continue it
 affordance run --set model.url=http://127.0.0.1:11434/v1   # another server, for one run
 ```
 
@@ -118,7 +118,7 @@ Or drive one from a frontend over stdio. [`views/demo/host`](views/demo/host) is
 streams its replies, asks before each command, and stops a turn on Escape (`{"type":"abort"}`):
 
 ```sh
-affordance host views/demo/host   # JSON lines: {"type":"prompt","text":"..."} in; deltas, output, questions out
+affordance host views/demo/host   # JSON lines: {"type":"event","name":"user","payload":{"text":"..."}} in; deltas, output, questions out
 ```
 
 [Getting started](docs/GETTING_STARTED.md) walks through it; [examples](examples/README.md) has more.
@@ -139,7 +139,7 @@ affordance host views/demo/host   # JSON lines: {"type":"prompt","text":"..."} i
 
 ## Status
 
-v0.1 beta. Developed on Linux; macOS support is new and less exercised
+v0.2 beta. Developed on Linux; macOS support is new and less exercised
 ([platform evidence](docs/DEVELOPING.md#current-platform-evidence)).
 Template conformance is evidence from a finite test corpus, not a guarantee for arbitrary input.
 

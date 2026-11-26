@@ -156,10 +156,19 @@ cd platform/ainative/server-v2 && scripts/run-tests.sh    # 53 用例，宿主�
 
 官网：**[codeflow.com.cn](https://www.codeflow.com.cn)**
 
-<div align="center">
-
-<img src="assets/wechat-qrcode.jpg" width="200" alt="公众号「一鸣AI编程」">
-
-**微信扫码关注「一鸣AI编程」** · 回复 `codeflow` 进 **CodeFlow 专属技术答疑群**，拿手册、部署包与演示环境
-
-</div>
+<table>
+<tr>
+<td align="center" width="50%" valign="top">
+<img src="assets/wechat-qrcode.jpg" width="200" alt="公众号「一鸣AI编程」二维码">
+<br><br>
+<b>公众号「一鸣AI编程」</b><br>
+回复 <code>codeflow</code> 进 <b>CodeFlow 专属技术答疑群</b>，拿手册、部署包与演示环境
+</td>
+<td align="center" width="50%" valign="top">
+<img src="assets/wechat-personal-qrcode.jpg" width="200" alt="个人微信二维码">
+<br><br>
+<b>个人微信（Ym）</b><br>
+扫码添加我为朋友 —— 技术选型、部署落地、二次开发都能聊
+</td>
+</tr>
+</table>

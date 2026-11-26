@@ -1,11 +1,13 @@
-# Browser MCP by [Agent360](https://agent360.dk)
+# [Agent360 Browser MCP](https://agent360.dk)
+
+> Not browsermcp.io - this is Agent360 Browser MCP (@agent360/browser-mcp).
 
 **The browser tool that can stop and ask you.** A 2FA code, a CAPTCHA, a choice only you can
 make: it asks on your own screen, then carries on in the same signed-in Chrome.
 
 It drives the Chrome you are already signed into: no login step to fail, no API key to wire
 up, no fresh profile that is a stranger to every account you have. Up to 20 agents at once, each
-in its own colour-coded tab group. 40 tools, MIT, runs on your machine.
+in its own colour-coded tab group. 41 tools, MIT, runs on your machine.
 
 → **[What it can and cannot get past](https://browsermcp.dev/docs/capability-matrix/)** - every
 wall, marked *measured*, *by design*, *not yet*, or *won't*. Including the ones we have not fixed.
@@ -16,6 +18,7 @@ wall, marked *measured*, *by design*, *not yet*, or *won't*. Including the ones 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![MCP](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io)
 [![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-live-green)](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl)
+[![Chrome Web Store users](https://img.shields.io/chrome-web-store/users/jdehgalffmffhfhmmhaokfbfnafnmgcl)](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl)
 
 
 [![Add to Cursor](https://img.shields.io/badge/Add%20to-Cursor-000?logo=cursor)](https://cursor.com/install-mcp?name=browser-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBhZ2VudDM2MC9icm93c2VyLW1jcEBsYXRlc3QiXX0%3D)
@@ -26,11 +29,11 @@ wall, marked *measured*, *by design*, *not yet*, or *won't*. Including the ones 
 
 ▶ **[Watch the 15-second film →](https://browsermcp.dev/film.mp4)**
 
-Browser MCP gives Claude Code (and MCP clients that run local servers, such as Cursor and VS Code agent mode) control of your actual Chrome: your cookies, your sessions, your 2FA. So it works on CAPTCHA, 2FA and anti-bot sites where Playwright and Puppeteer get blocked - because it's *you* browsing.
+Agent360 Browser MCP gives Claude Code (and MCP clients that run local servers, such as Cursor and VS Code agent mode) control of your actual Chrome: your cookies, your sessions, your 2FA. So it works on CAPTCHA, 2FA and anti-bot sites where Playwright and Puppeteer get blocked - because it's *you* browsing.
 
 The killer move: it hits a login wall, opens your Gmail, reads the verification code, and continues the sign-in. There is no email API to set up. Operate platforms with no API, QA your own web app end-to-end, or work dashboards, LinkedIn and Reddit at human pace - with you approving the sensitive steps.
 
-40 tools. Auto-clicks the reCAPTCHA v2 checkbox, with a human fallback for the rest. Multi-session color-coded tab groups. **MIT, free, and it runs on your machine - no account, no telemetry, nothing sent to us.**
+41 tools. Auto-clicks the reCAPTCHA v2 checkbox, with a human fallback for the rest. Multi-session color-coded tab groups. **MIT, free, and it runs on your machine - no account, no telemetry, nothing sent to us.**
 
 ## The whole thing, in four steps
 
@@ -42,7 +45,7 @@ The killer move: it hits a login wall, opens your Gmail, reads the verification 
 
 It reads the same guide the four steps below spell out by hand. One step stays yours either way: Chrome will not let an extension install itself, so you load it once.
 
-**1 - Install the Chrome extension.** One click from the [Chrome Web Store](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl); Chrome keeps it updated. No store? See the unpacked install below.
+**1 - Install the Chrome extension.** One click from the [Chrome Web Store](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl); Chrome keeps it updated. No store? See the [unpacked install](https://github.com/Agent360dk/browser-mcp/blob/main/docs/the-long-version.md#step-2-load-the-extension-in-chrome).
 
 **2 - Add the MCP server.** Paste this in a terminal. Required - the extension does nothing on its own:
 
@@ -58,75 +61,11 @@ claude mcp add --scope user browser-mcp -- npx @agent360/browser-mcp@latest
 
 You get an image back instead of *"I don't have browser access"*. **That's it - you're running.** → [What else to say](#youre-in-now-what)
 
-Using Cursor, VS Code, Codex or Windsurf? Same server, that client's own config - the prompt at the top handles it, or see [browsermcp.dev/docs](https://browsermcp.dev/docs/install-cursor/). Everything below is the long version.
+Using Cursor, VS Code, Codex or Windsurf? Same server, that client's own config - the prompt at the top handles it, or see [browsermcp.dev/docs](https://browsermcp.dev/docs/install-cursor/). Unpacked install, the zip, and the store path on its own: [the long version](https://github.com/Agent360dk/browser-mcp/blob/main/docs/the-long-version.md).
 
 ## The long version - install, step by step
 
-> **Browser MCP is two halves and you need both:** a **Chrome extension** (drives the browser) and a **local MCP server** (what your agent actually talks to). Installing only the extension - e.g. straight from the Chrome Web Store - leaves it stuck on *"Not connected"*, because there is no server for it to reach. Chrome cannot install the server, and npm cannot install the extension. Hence two steps.
-
-### Step 1: Register the MCP server with Claude Code
-
-```bash
-claude mcp add --scope user browser-mcp -- npx @agent360/browser-mcp@latest
-```
-
-That is Claude Code's own MCP command, so the entry lands in the config Claude Code actually reads. `--scope user` makes it available in every project.
-
-Want the extension files on disk for the unpacked install in Step 2? Also run:
-
-```bash
-npx @agent360/browser-mcp install
-```
-
-It copies the extension to `~/.browser-mcp/extension/` and **prints that path in the terminal - copy it.** (It also registers the server with Claude Code, Codex, VS Code and Cursor if it finds them.)
-
-### Step 2: Load the extension in Chrome
-
-> Chrome won't let extensions install themselves from npm - you load it manually one time. To **update** later, re-run the install command and reload it (see [Keeping it updated](#keeping-it-updated)). Prefer the [Chrome Web Store](#chrome-web-store-no-developer-mode-auto-updating-extension) install if you'd rather have the extension auto-update.
-
-1. **Open Chrome** and type `chrome://extensions` in the address bar
-2. **Toggle "Developer mode"** ON (top right corner)
-3. **Click "Load unpacked"** (top left, next to "Pack extension")
-4. **Navigate to `~/.browser-mcp/extension/`** and click "Select"
-   - On Mac: Press `Cmd+Shift+G` in the file picker, paste `~/.browser-mcp/extension/`, press Enter
-   - On Windows: Paste `%USERPROFILE%\.browser-mcp\extension\` in the address bar (Windows is not yet verified: our automated tests do not pass there)
-   - On Linux: Type `~/.browser-mcp/extension/` in the path field
-5. **Restart Claude Code** so it picks up the new MCP server
-
-That's it. The Browser MCP icon will appear in your toolbar, and 40 browser tools are now available in Claude Code.
-
-### Alternative: Manual zip download (no npm)
-
-If you don't want to use npm, download the extension directly:
-
-1. [Download the extension zip](https://github.com/Agent360dk/browser-mcp/releases/latest) (`agent360-browser-mcp-<version>.zip`) from the latest GitHub release
-2. Unzip the file (anywhere - e.g. `~/Downloads/browser-mcp-extension/`)
-3. Follow Step 2 above, but select the unzipped folder instead of `~/.browser-mcp/extension/`
-4. Register the server - run `claude mcp add --scope user browser-mcp -- npx @agent360/browser-mcp@latest`, or add this to `~/.claude.json` by hand:
-   ```json
-   {
-     "mcpServers": {
-       "browser-mcp": {
-         "command": "npx",
-         "args": ["@agent360/browser-mcp@latest"]
-       }
-     }
-   }
-   ```
-
-### Chrome Web Store (no Developer mode, auto-updating extension)
-
-**This replaces Step 2 only - you still need Step 1.**
-
-1. [**Install the extension from the Chrome Web Store →**](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl) - no Developer mode toggle, and Chrome keeps it updated for you.
-2. Register the MCP server:
-   ```bash
-   claude mcp add --scope user browser-mcp -- npx @agent360/browser-mcp@latest
-   ```
-   (For Cursor / VS Code / Codex, use that client's own MCP config instead - see [browsermcp.dev/docs](https://browsermcp.dev/docs/install-claude-code/).)
-3. Restart Claude Code.
-
-Skip step 2 and the extension icon will sit on **"Not connected"** forever - that is the symptom of a missing MCP server, not a broken extension.
+The four steps above are the install. File-picker details, the zip, and the store path on its own are in [the long version](https://github.com/Agent360dk/browser-mcp/blob/main/docs/the-long-version.md). Same text, including the two-halves warning: the extension alone sits on "Not connected" until the server is registered.
 
 ## You're in. Now what?
 
@@ -166,7 +105,7 @@ there is nothing to slip past: it is your Chrome, your session, your consent. Wh
 is the hard part - pages that fight *any* automation because of how they are built.
 
 Every release is gated on a flow test against a real Chrome that has to survive exactly
-those: all 40 tools are exercised, and the gate also checks that the extension Chrome is
+those: all 41 tools are exercised, and the gate also checks that the extension Chrome is
 running is the one being released - not another copy with the same version number. The
 failures that do show up are honest ones: mouse events are not delivered to a tab that is
 not in front, and the tools say so instead of reporting success. What the test covers
@@ -198,7 +137,8 @@ acknowledgement, so a background tab produces an honest failure instead of a sil
 Fully hands-off background input is not part of 1.30, and it is not something we can fix: Chrome
 delivers no mouse or keyboard input to a tab that is not the visible one in its window (measured).
 Whether it does to the active tab of a window without the operating system's focus is unmeasured in
-desktop Chrome, so the tools' `landed` answer decides. Some of it cannot be solved at all: CSS
+desktop Chrome, so the tools' `landed` answer decides. One observation on macOS (Chrome for Testing on GitHub's runner, 14 Oct 2026) saw a key press land in the active tab while another app (TextEdit)
+was in front; that is one platform and one input type, not a general measurement. Some of it cannot be solved at all: CSS
 `:hover` is a state the renderer owns and no script can fake it, a script-dispatched event is
 never `isTrusted`, `elementFromPoint` stops at a cross-origin iframe, and the text selection a
 real double-click makes is browser behaviour rather than an event.
@@ -217,7 +157,7 @@ down: see [#19](https://github.com/Agent360dk/browser-mcp/issues/19).
 > human-in-the-loop, and it is the one we measured: the Playwright MCP README lists 72 documented tools (counted 2026-11-22)
 > and no tool that asks you a question mid-task and takes your answer; `browser_annotate` (opt-in, `--caps=devtools`) waits for you to mark up the page, but asks nothing (checked 2026-11-22).
 
-> **On the name:** the similarly-named `browsermcp.io` (`@browsermcp/mcp`) is a different, unaffiliated project - larger than this one (100,000 Chrome Web Store users to our 2,000) and, after eighteen months without a commit in its public GitHub repo (24 April 2025 to 27 October 2026), shipping again: six npm versions, `2.0.0` on 26 October to `2.5.0` on 12 November 2026. Their `2.0.0` replaced the thirteen named tools with a single `browser` tool that takes command lines, so a config written for `0.1.3` no longer matches. This is Browser MCP by Agent360 (`@agent360/browser-mcp`). The BrowserMCP.io column in the table above was read from their published `2.5.0` package; all figures measured 13 November 2026. [Full side-by-side →](https://browsermcp.dev/compare/browsermcp-io/)
+> **On the name:** the similarly-named `browsermcp.io` (`@browsermcp/mcp`) is a different, unaffiliated project - larger than this one (100,000 Chrome Web Store users to our 2,000) and, after eighteen months without a commit in its public GitHub repo (24 April 2025 to 27 October 2026), shipping again: six npm versions, `2.0.0` on 26 October to `2.5.0` on 12 November 2026. Their `2.0.0` replaced the thirteen named tools with a single `browser` tool that takes command lines, so a config written for `0.1.3` no longer matches. This is Agent360 Browser MCP (`@agent360/browser-mcp`). The BrowserMCP.io column in the table above was read from their published `2.5.0` package; all figures measured 13 November 2026. [Full side-by-side →](https://browsermcp.dev/compare/browsermcp-io/)
 
 ### Environment variables
 
@@ -230,14 +170,14 @@ All four are optional. None is needed for normal use.
 | `BROWSER_MCP_PROFILE=<name>` | From 1.31: drive the Chrome profile whose extension popup carries this name ("This Chrome profile"). Letters, digits, dot, dash and underscore, up to 32. Works together with `BROWSER_MCP_EXTENSION_ID` (both must match). An invalid value is not ignored: every browser call answers `profile-invalid`. See [Several Chrome profiles](#several-chrome-profiles). |
 | `BROWSER_MCP_TOKEN` | **Withdrawn in 1.30.1 and ignored** - the server says so when it starts. Pairing shipped in 1.30.0 but kept nobody out, so it was taken back rather than left as false protection. It will return redesigned. |
 
-## 40 Tools
+## 41 Tools
 
 ### Navigation & Content
 | Tool | Description |
 |------|-------------|
-| `browser_navigate` | Navigate to URL (reuses tab, or `new_tab=true`). On "Leave site?" it answers Stay and says so (`beforeunload-blocked`); `leave_page=true` leaves; an armed `browser_handle_dialog` answers instead of either |
+| `browser_navigate` | Navigate to URL (reuses tab, or `new_tab=true`). On "Leave site?" it answers Stay and says so (`beforeunload-blocked`); `leave_page=true` leaves; an armed `browser_handle_dialog` answers instead (a dismiss, or an accept armed with `leave_page`). A new tab opens in the background (`active: false`); with no active tab the call answers `no-active-tab` instead of guessing another tab |
 | `browser_get_page_content` | Get page text or HTML |
-| `browser_screenshot` | Screenshot via Chrome Debugger (works even when tab isn't focused; a covered window answers `window-covered`) |
+| `browser_screenshot` | Screenshot via Chrome Debugger (works even when tab isn't focused; a covered window answers `window-covered`). A `path` must end in `.png`, and an existing file is replaced only with `overwrite: true` |
 | `browser_execute_script` | Run JavaScript in the page's own context, through the Chrome debugger (CSP-strict sites too) |
 | `browser_extract_list` | Read the rows of a long/virtualised list by scrolling its container until no new rows appear; scrolls with real wheel events in the active tab, so feeds that load on wheel (Threads, X) load; in a hidden page (a background tab) a list that loads while scrolling stops early, and `reached_end` is false |
 
@@ -246,15 +186,15 @@ All four are optional. None is needed for normal use.
 |------|-------------|
 | `browser_click` | Click via CSS or text selector (`text=Submit`, `button:text(Next)`); a text selector looks in an open modal dialog first, and it answers `covered` instead of clicking when the mouse would not reach the target |
 | `browser_fill` | Fill input fields (works on CSP-strict sites); with a text selector, nothing is typed (`covered`) when the mouse would not reach the field |
-| `browser_press_key` | Keyboard events (Enter, Tab, Escape, modifiers). With ctrl or meta: a, c, x, v, z, y are sent as Chrome's select all, copy, cut, paste, undo, redo commands |
+| `browser_press_key` | Keyboard events (Enter, Tab, Escape, modifiers). From 1.33 Enter acts like the real key: it submits the form from a text field, presses a focused button and adds a line break in a textarea; Space types a space, presses a focused button and ticks a checkbox (before, neither key did any of these). Key codes follow the US layout ("," is 188 `Comma`); shifted characters such as `<` are sent with Shift, capital letters without. With ctrl or meta: a, c, x, v, z, y are sent as Chrome's select all, copy, cut, paste, undo, redo commands |
 | `browser_scroll` | Scroll to element or by pixels |
-| `browser_wait` | Wait for element to appear |
+| `browser_wait` | Wait for an element or text to be visible: a match that is hidden, closed, clipped or off the page does not count (`on_page_but_hidden`); `state: "attached"` waits for it to exist. An extension older than 1.33 does not check visibility: a default wait then answers `visible: "unknown"`, and with `state: "attached"` there is no `visible` field |
 | `browser_hover` | Hover for tooltips/dropdowns; answers `covered` when the mouse would not reach it |
 | `browser_select_option` | Native `<select>` + custom dropdowns (Angular Material, React Select); a custom trigger or option the mouse would not reach is not clicked (`covered`) |
 | `browser_set_combobox` | Autocomplete/combobox: type query → wait for filtered listbox → click option (multi-value chip support). Use when `browser_select_option` fails on lazy-rendered options |
 | `browser_set_date` | Robust date inputs: tries native value-set → masked typing → calendar-picker navigation (MUI/AntD/react-datepicker/Lexical). Use when `browser_fill` fails on date fields |
 | `browser_dismiss_overlays` | Bulk-dismiss popups/modals/tooltips/banners via aria-label/text/×-char heuristics. `non_critical` mode preserves dialogs with form data |
-| `browser_handle_dialog` | Accept/dismiss native alert/confirm/prompt/"Leave site?" dialogs: answers one the extension saw open, or arms for the next (one that opened before anything listened cannot be answered from here) |
+| `browser_handle_dialog` | Accept/dismiss native alert/confirm/prompt/"Leave site?" dialogs: answers one the extension saw open, or arms for the next (one that opened before anything listened cannot be answered from here). An arming lasts at most 30 s and is dropped when a new document loads or becomes active in the tab (a reload or a prerendered page too, not an address change within the page) or the session moves to another tab; "Leave site?" is accepted only with `leave_page: true` |
 | `browser_double_click` | True double-click (two trusted press/release pairs); answers `covered` when the mouse would not reach it |
 | `browser_right_click` | Right-click to open page-level context menus; answers `covered` when the mouse would not reach it |
 | `browser_click_xy` | Escape hatch: click at raw viewport coordinates (CSS pixels) with trusted mouse events |
@@ -265,7 +205,7 @@ All four are optional. None is needed for normal use.
 |------|-------------|
 | `browser_list_tabs` | List session's tabs only |
 | `browser_switch_tab` | Switch to tab by ID; Chrome stays where it is unless `bring_to_front: true` |
-| `browser_close_tab` | Close tab (session-owned only) |
+| `browser_close_tab` | Close tab (session-owned only). The last tab in Chrome's last window leaves an empty tab, so Chrome stays open; a tab Chrome does not close within 4 s (a "Leave site?" prompt) answers `tab-not-closed` |
 | `browser_get_new_tab` | Get most recently opened tab (OAuth popups) |
 | `browser_list_frames` | List iframes on page |
 | `browser_select_frame` | Run JavaScript in a specific iframe, also one from another site, through the Chrome debugger |
@@ -280,7 +220,7 @@ All four are optional. None is needed for normal use.
 ### CAPTCHA Solving
 | Tool | Description |
 |------|-------------|
-| `browser_solve_captcha` | Detect CAPTCHAs and work through them one step per call. Auto-detects reCAPTCHA v2/v3, hCaptcha, Turnstile, FunCaptcha. Actions: `detect`, `click_checkbox` (tries the reCAPTCHA checkbox), `click_grid` (clicks the reCAPTCHA cells you choose; it returns no image, so take a screenshot first), `ask_human` (returns the message to show with `browser_ask_user`) |
+| `browser_solve_captcha` | Detect CAPTCHAs and work through them one step per call. Reports a visible reCAPTCHA checkbox or image challenge, hCaptcha, Turnstile, FunCaptcha; an invisible reCAPTCHA, hCaptcha or Turnstile has nothing to click and is reported as `invisible`, not found. Actions: `detect`, `click_checkbox` (tries the reCAPTCHA checkbox), `click_grid` (clicks the reCAPTCHA cells you choose; it returns no image, so take a screenshot first), `ask_human` (returns the message to show with `browser_ask_user`) |
 
 ### Human-in-the-Loop
 | Tool | Description |
@@ -302,7 +242,12 @@ All four are optional. None is needed for normal use.
 | Tool | Description |
 |------|-------------|
 | `browser_provide_feedback` | Self-check + report in one call. Compares the connected extension against this server and detects **more than one Browser MCP extension connected at once**, also the same extension connected more than once (for instance from several Chrome profiles or browsers); with `BROWSER_MCP_CHECK_NPM=1` it also compares this server against the latest on npm - the three things that explain most "it just stopped working" moments. Returns a verdict (`current` / `outdated` / `conflict` / `disconnected` / `idle` / `unknown`), concrete fix steps, and a pre-filled issue link for whatever is genuinely missing. Your agent calls it on its own whenever a tool blocks it |
-| `browser_about` | Project info + pre-filled links to submit a wish, use-case, or bug. From 1.31 it also lists the Browser MCP installations connected to the chat: the profile name from the popup, the installation id and the version |
+| `browser_about` | Project info + pre-filled links to submit a wish, use-case, or bug. From 1.31 it also lists the Browser MCP installations connected to the chat: the profile name from the popup, the installation id and the version. From 1.33 it also lists the chat's partitions |
+
+### Parallel agents
+| Tool | Description |
+|------|-------------|
+| `browser_partition` | From 1.33: `action: "new"` gives a parallel agent its own partition (own port, tab group and active tab) and answers an id like `p1`; `action: "close"` closes its tabs and frees its port. Every tool that reaches the browser takes `partition` - see [Parallel agents in one chat](#parallel-agents-in-one-chat) |
 
 ## Multi-Session Support
 
@@ -341,7 +286,7 @@ under "This Chrome profile". Set `BROWSER_MCP_PROFILE=<name>` in a client's MCP 
 | None has the name yet | The call first waits for it: about 7.5 seconds, and up to about 17.5 seconds when the port opened in the last 10 seconds (a chat's first browser call: the 2.5 seconds below plus a doubled wait), then `profile-not-connected` with the installations it can see; `profile-routing-unsupported` when every connected extension is older than 1.31 |
 | Two or more have the name, or one installation is connected twice | `profile-ambiguous`, without waiting further. Also without `BROWSER_MCP_PROFILE`, an installation connected twice is refused |
 | The installation the chat was driving goes away | Calls in flight fail at once, as before. The next call answers `profile-disconnected`; only the call after that picks again. If the same installation comes back in time, the chat simply continues |
-| No `BROWSER_MCP_PROFILE` | The first choice is made as before (the newest extension); with several installations the next answer says which one it took, and the chat stays with it |
+| No `BROWSER_MCP_PROFILE` | The first choice is made as before (the newest extension version; on a tie, the one that connected last); with several installations the next answer says which one it took, and the chat stays with it |
 
 A chat's first browser call waits until the port has been open for about 2.5 seconds before it chooses, so every Chrome
 profile has had one scan (every 2 seconds) to connect; without that, the profile that happened to connect first could be
@@ -351,6 +296,27 @@ profile that did connect. In all of these error answers nothing was sent to Chro
 profile on its own: a call that was already waiting when the chat's installation went away gets `profile-disconnected` too. `browser_about` lists what is connected. Renaming in the popup does not drop any connection or running call; a
 chat that is already driving the installation keeps driving it. The name is a choice, not a key: the extension's greeting
 is not signed, and another program on your machine can claim any name (see Security below).
+
+### Parallel agents in one chat
+
+From 1.33 (the idea and the first version are [@ugbodagadave](https://github.com/ugbodagadave)'s, [#20](https://github.com/Agent360dk/browser-mcp/pull/20)).
+Agents that share one chat - a coordinator and its subagents - also share that chat's tab group and active tab, so they take
+over each other's tabs. `browser_partition` with `action: "new"` gives each of them its own partition: the server opens one
+more port in the same range, the extension connects to it like to any other, and the partition gets its own tab group and
+active tab. It answers an id like `p1`, and that agent passes `partition: "p1"` to every browser tool it calls, including
+`browser_extract_token`. Calls without `partition` go to the default partition, as before.
+
+| Situation | What the agent gets |
+|---|---|
+| `new` | The partition chooses its Chrome profile right away, by the rules above: `profile` in the call, otherwise `BROWSER_MCP_PROFILE`. It takes a few seconds (the extension scans for new ports every 2 seconds). If the profile is not connected, the answer is the `profile-*` error, no partition is created and its port is released. If the partition is closed while `new` is still creating it, `new` answers `partition-closed` |
+| A fifth open partition | `partition-limit`: at most 4 per server, because the ports are shared by every chat on the machine |
+| Every port in the range taken | `port-capacity-exhausted`, and no partition |
+| `close` | Its tabs are closed through its own connection and its port is released. `port_released`, and `tabs_closed: true` only when the extension confirmed it, or when no tool call ever used the partition (it then has no tabs, and the extension is not asked); otherwise `"unknown"` (the extension still closes them when the connection ends, but the server cannot see it). A command on the partition that is still waiting for the extension's answer when close releases the port answers `partition-closed` with `sent: true` (it may have been carried out); one the extension answers before that, while close is still closing the tabs, gets its normal answer |
+| A call with an unknown or closed id | `partition-not-found` or `partition-closed`, `sent: false`; also `partition-not-found` for the id of a partition `new` is still creating. The call never goes to the default partition instead, and ids are never reused while the server runs (after a restart, numbering starts at `p1` again) |
+
+A partition's commands carry no process id, so the extension never hands one partition's tabs to another. `browser_about`
+lists the partitions. The extension keeps each partition's tabs apart from a new connection on the same port: a late clean-up
+for a connection that has gone closes only that connection's tabs (1.33).
 
 ### Running the agent on another machine
 
@@ -417,7 +383,7 @@ extension/
 
 mcp-server/
   index.js            # MCP server (stdio) + WebSocket client
-  tools.js            # 40 tool definitions
+  tools.js            # 41 tool definitions
   bin/cli.js          # Install CLI
 ```
 
@@ -480,26 +446,24 @@ Browser MCP is built in the open and shaped by the people using it.
 - 💡 [Wish for a feature](https://github.com/Agent360dk/browser-mcp/issues/new?template=wish.yml)
 - 🎯 [Share a use-case](https://github.com/Agent360dk/browser-mcp/issues/new?template=use-case.yml)
 - 🐛 [Report a bug](https://github.com/Agent360dk/browser-mcp/issues/new?template=bug.yml)
+- 🌱 [Good first issues](https://github.com/Agent360dk/browser-mcp/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22) - the `good first issue` label. How a change lands is in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Or just **ask Claude** - it knows about the `browser_about` tool and will draft the report and hand you a link to review and submit when you say things like *"I wish browser-mcp could …"* or *"share my browser-mcp use-case"*.
 
 ### If it works for you
 
-The Chrome Web Store ranks on ratings, and we have none - so a sentence from you moves this
-further than anything we can write. [Leave a review](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl/reviews)
-if it earned one, and say so honestly if it did not. No signup, no reward, nothing gated
-behind it - we just have no signal at all right now.
+[![Chrome Web Store users](https://img.shields.io/chrome-web-store/users/jdehgalffmffhfhmmhaokfbfnafnmgcl)](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl) use the extension, and 4 have rated it. If it saved you a login dance, a ⭐ on GitHub or a line in the [Chrome Web Store](https://chromewebstore.google.com/detail/agent360-browser-mcp/jdehgalffmffhfhmmhaokfbfnafnmgcl/reviews) helps the next person find it.
 
-## The same idea, for the rest of your Mac
+## Sister project
 
-This drives your browser. [Computer MCP](https://computermcp.dev) drives everything
+The same idea, for the rest of your Mac. This drives your browser. [Agent360 Computer MCP](https://github.com/Agent360dk/computerMCP) ([computermcp.dev](https://computermcp.dev)) drives everything
 else on macOS - menus, windows, the Dock, any app's accessibility tree - with the same
 stance: password fields are blacked out in memory before a screenshot is written, writes
 go through a consent gate, and every action lands in an append-only log. It runs in the
 background by default: the tools that could take over your screen are not offered unless
 you ask for them.
 
-`npx @agent360/computer-mcp` · MIT · macOS.
+MIT · macOS.
 
 ## Privacy
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Oribi logo" src="./branding/oribi-logo-readme.svg" width="352">
+  <img alt="Oribi logo" src="https://raw.githubusercontent.com/samhoon000/Oribi/main/branding/oribi-logo-readme.svg" width="352">
 </p>
 
 **Give AI a useful picture of your data before it starts analyzing it.**
@@ -97,6 +97,8 @@ json_text = context.to_json(include_values=True)
 Opt-in text reports quote string category labels to distinguish them from numeric values. Compact reports include category lists when space remains after analytical guidance and evidence.
 
 Since Oribi 0.2.0, dictionary and JSON exports use `schema_version: "2"`. Update consumers that expect schema version 1 or depend on the previous Markdown or compact text layout. Use `include_values=True` when callers need local samples and bounds in version 2.
+
+Oribi 0.3.0 adds metric definitions and profiling fields to schema version 2. Opt-in dictionary and JSON exports raise `ValueError` if two sampled mapping keys would serialize to the same key.
 
 ## Configure a profile
 
@@ -200,10 +202,16 @@ ruff check .
 mypy oribi
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and [DESIGN.md](DESIGN.md) for architecture notes. To run the end to end example:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and [DESIGN.md](DESIGN.md) for architecture notes. To run the end-to-end profiling example:
 
 ```bash
 python -m examples.quickstart
+```
+
+For a small profile-to-visualization workflow, install Matplotlib with `python -m pip install matplotlib`, then run:
+
+```bash
+python -m examples.visualize_profiled_data
 ```
 
 ## Releases

@@ -1,0 +1,547 @@
+<div align="center">
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="site/img/lockup-horizontal-vellum.svg"><img src="site/img/lockup-horizontal-green.svg" alt="Hildegard" height="52"></picture>
+
+### Your own AI studio, on your own GPU.
+
+Films, images, voices, characters and 3D, made on computers you own. A free, open source alternative to Higgsfield
+and ElevenLabs that runs locally on Windows, macOS and Linux, with music on the way.
+
+[![Latest release](https://img.shields.io/github/v/release/Students-of-Local/hildegard?include_prereleases&label=release&color=2c7350)](https://github.com/Students-of-Local/hildegard/releases/latest)
+[![CI](https://github.com/Students-of-Local/hildegard/actions/workflows/ci.yml/badge.svg)](https://github.com/Students-of-Local/hildegard/actions/workflows/ci.yml)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-3451b2)](LICENSE)
+[![Windows, macOS, Linux](https://img.shields.io/badge/runs_on-Windows_·_macOS_·_Linux-d9b45c)](#install)
+[![MCP server](https://img.shields.io/badge/MCP-server-15265a)](#use-it-from-your-ai-apps)
+
+[**Website**](https://dbaney.com/hildegard/) · [**Install**](#install) · [**For AI agents**](INSTALL-FOR-AGENTS.md) ·
+[**Releases**](https://github.com/Students-of-Local/hildegard/releases) · [**Contributing**](CONTRIBUTING.md)
+
+<a href="https://dbaney.com/hildegard/"><img src="brand/social-preview.jpg" alt="Golden Hour, shot II: a sea stack at sunset rendered by Hildegard, beside the words Your own AI studio, on your own GPU." width="880"></a>
+
+</div>
+
+> [!IMPORTANT]
+> **Hildegard is now a plugin in [Local Studio](https://github.com/baney75/local-studio).** The Hildegard app keeps
+> working and gets fixes, but new features go into the plugin, which runs on the same engine with your projects,
+> voices and models. [How to switch](docs/local-studio.md#moving-from-the-hildegard-app).
+
+Hildegard directs open video models (LTX-2.5, LTX-2 and Wan 2.2) through ComfyUI with real camera language: bodies,
+lenses, focal lengths, apertures, moves and film looks. Everything runs on your computer. Nothing you make leaves it,
+and nothing costs money per shot.
+
+| What you make | Status |
+| --- | --- |
+| **Film:** shots, takes and whole films with camera, lens, move and look presets | Ready |
+| **[Voice](docs/voice.md):** speech, voice design, consented cloning, dubbing and transcription, watermarked | Ready |
+| **[Characters](docs/characters.md):** the same face and clothes in every shot | Ready |
+| **[3D and parts to print](docs/make.md):** modelled by your AI app, checked, sliced | With your AI app |
+| **[Websites](docs/make.md):** rendered at every size in both themes and critiqued until they pass | With your AI app |
+| **Music** on open models | Coming |
+
+- **Private.** Prompts, takes and voices stay on your devices; every shot renders offline.
+- **No credits.** Your GPU and your electricity. One 12 GB laptop GPU made every film on the website.
+- **Yours.** Every take exports. The app is AGPL-3.0 and the presets Apache-2.0.
+- **All your computers.** Pair them into a [Choir](#render-on-another-device) over Tailscale, or
+  [host a studio at a link](#at-a-link-for-your-other-devices-and-the-people-you-invite) for your phone and friends.
+- **Your AI apps.** Claude, ChatGPT, Codex, Cursor and other MCP clients can direct shots and run loops on your GPU.
+
+## Install
+
+**macOS and Linux**
+
+```sh
+curl -fsSL https://github.com/Students-of-Local/hildegard/releases/latest/download/install.sh | sh
+```
+
+**Windows** (PowerShell, no admin rights)
+
+```powershell
+irm https://github.com/Students-of-Local/hildegard/releases/latest/download/install.ps1 | iex
+```
+
+The installer checks every download against a SHA-256 written into it, puts everything in one folder in your home
+(nothing system-wide, no sudo), then sets up ComfyUI and PyTorch for your GPU and starts Hildegard. Then:
+
+```sh
+hildegard setup     # picks a video model that fits your GPU and links your AI apps
+hildegard open      # opens the Studio
+```
+
+| GPU memory | What `hildegard setup` picks |
+| --- | --- |
+| 24 GB or more (NVIDIA, or AMD on Linux) | LTX-2.5 distilled: video with sound, up to 1088p |
+| 12 to 23 GB | Wan 2.2 5B: silent video, 720p |
+| A Mac with Apple silicon | Nothing yet: on Apple's GPU Wan 2.2 came out blurred after an hour, and LTX needs int8 or fp8 kernels Apple lacks. Pair it with a computer that has an NVIDIA or AMD GPU (`hildegard choir join`) |
+| Less, or no GPU | Nothing yet. The Studio works; pair it with a computer that has a GPU |
+
+### A server for your other devices
+
+On a Linux box (or a Mac) that serves your other devices, with no Studio open on it:
+
+```sh
+curl -fsSL https://github.com/Students-of-Local/hildegard/releases/latest/download/install.sh | sh -s -- --server
+```
+
+It installs as above, adds speech and transcription (`hildegard voice install --env speech`), and writes a service
+that starts Hildegard when you sign in: `~/.config/systemd/user/hildegard.service` on Linux, turned on with
+`systemctl --user enable --now`, or `~/Library/LaunchAgents/io.github.baney75.hildegard.plist` on macOS. Where user
+systemd isn't running, the unit is still written and the installer prints the command that turns it on. To keep it
+serving after you sign out and start it at boot, run `loginctl enable-linger $USER`; that changes the computer's
+login settings, so the installer asks you to run it instead of running it for you. Language models come from Ollama,
+LM Studio, llama.cpp or vLLM running there, which Hildegard finds by itself. From then on `hildegard start`,
+`restart` and updates go through the service. `hildegard install --yes --server` does the same on an installed
+Hildegard. Then pair it (see [Render on another device](#render-on-another-device)):
+
+```sh
+hildegard choir invite      # the code to type on your other device; --long for the long code, for scripts
+hildegard doctor            # service, voice, llm and sharing, each with the command that fixes it
+```
+
+### NVIDIA DGX Spark
+
+Hildegard supports the DGX Spark (GB10, Arm Linux); it hasn't been tried on a real one yet. The GB10 shares its
+128 GB with the CPU, and `nvidia-smi` reports no memory total for it, so Hildegard counts nine tenths of the
+computer's memory as the GPU's and leaves the rest for the system. There is no separate video memory to offload to,
+so a model fits when the larger of its minimum memory and its weights, plus a quarter more, fits in that share. The installer picks PyTorch's CUDA 13 build
+for driver 580 or newer. ComfyUI starts there without memory-mapped weights or dynamic VRAM, which only hold each
+model twice in shared memory, and Chatterbox runs on the CPU, since its PyTorch has no GB10 or Arm CUDA build.
+
+Where it lives: `~/.local/share/hildegard` on Linux, `~/Library/Application Support/Hildegard` on macOS,
+`%LOCALAPPDATA%\Hildegard` on Windows. The `hildegard` command goes in `~/.local/bin` (Windows: the folder's `bin`,
+added to your PATH). To remove Hildegard, run `hildegard stop` and delete that folder.
+
+**Updates.** Hildegard checks for a new release every six hours. When one is out and nothing is rendering or
+downloading, it updates itself and starts again as the new version; the version before stays in the folder. Each
+release's installer is signed, and Hildegard refuses one that isn't signed with Hildegard's key. To choose when
+instead: Settings › About › **Ask me first**, or `hildegard update auto off`, then `hildegard update` (or **Update** in
+Settings) when you want it. `hildegard update --check` only looks.
+
+On [Omarchy](https://omarchy.org), add the [Hildegard bar widget](omarchy/README.md) and click **Set up Hildegard**: it
+installs Hildegard with the checked installer it carries, then shows renders in your bar.
+
+```sh
+omarchy plugin add https://github.com/Students-of-Local/omarchy-hildegard --enable
+```
+
+## The Hildegard app
+
+The Studio in a window of its own, for Windows, macOS and Linux, with Hildegard in the tray (the menu bar on a Mac).
+There are no releases of it yet: each run of the [Desktop app workflow](.github/workflows/desktop.yml) keeps the
+builds for two weeks under its **Artifacts**.
+
+| Download | What you get |
+| --- | --- |
+| `hildegard-app-x86_64-pc-windows-msvc` | `Hildegard_…_x64-setup.exe` installs it for you alone, no admin rights; the `.msi` installs it for everyone |
+| `hildegard-app-aarch64-apple-darwin` | `Hildegard_…_aarch64.dmg`, for Macs with Apple silicon |
+| `hildegard-app-x86_64-unknown-linux-gnu` | `Hildegard_…_amd64.AppImage` for any distribution (Omarchy and Arch included), and a `.deb` for Debian and Ubuntu |
+
+- **The first time**, if Hildegard isn't installed, the app installs it, step by step in its window: the same install
+  as the one-line installer, in the same folder, with the `hildegard` command too. The app and the terminal share one
+  Hildegard, so everything above works the same with either.
+- **Each time**, the app opens the Hildegard already running on this computer, or starts one. Quitting the app stops
+  Hildegard only if the app started it; one you started with `hildegard start` keeps running.
+- **The tray** has Open Studio, Pause sharing (turns off the link from Settings › Sharing, and Resume sharing turns it
+  back on), and Quit Hildegard. Closing the window leaves Hildegard running in the tray; opening the app again brings
+  the window back.
+- **Updates:** the app looks for a newer release when it opens and every six hours, downloads it in the background,
+  and adds **Restart to update** to the top of the tray. Nothing installs until you choose it. Updates are signed,
+  and the app refuses any that aren’t. The `.deb` doesn’t update itself: install the new one from the site.
+- The window shows the Studio from `127.0.0.1` and nothing else: links to other sites open in your browser, and
+  downloads go to your Downloads folder. The Studio inside it can't reach the app or your files.
+
+The builds aren't signed yet, so each system asks once whether you trust them:
+
+- **Windows:** "Windows protected your PC". Choose **More info**, then **Run anyway**.
+- **macOS:** "Apple could not verify…". Open it once with Control-click › **Open**, or **Open Anyway** in System
+  Settings › Privacy & Security.
+- **Linux:** make the AppImage executable (`chmod +x Hildegard_*.AppImage`) and run it. The tray icon needs a
+  StatusNotifier tray, which Omarchy's Waybar has; on GNOME, the AppIndicator extension. The AppImage carries the
+  GStreamer plugins that play videos in the window; with the `.deb`, install `gstreamer1.0-libav` if videos don't play.
+
+To build it yourself you need Rust, and on Linux WebKitGTK 4.1 and libayatana-appindicator (Ubuntu:
+`sudo apt install libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev`; Arch:
+`sudo pacman -S webkit2gtk-4.1 libayatana-appindicator librsvg`):
+
+```sh
+pnpm install && pnpm --filter @hildegard/studio build
+node apps/desktop/scripts/prepare-bundle.mjs     # the Hildegard and Node.js the app carries, for this computer
+pnpm --filter @hildegard/desktop tauri build     # or tauri dev
+```
+
+Still to do: signing (Authenticode on Windows, a Developer ID and notarization on macOS), a universal macOS build
+and Linux on arm64, and notices for the Rust crates inside the app.
+
+## Hugging Face
+
+Wan downloads without an account. LTX asks you to accept its license on Hugging Face first, so Hildegard needs your
+account to download it:
+
+```sh
+hildegard hf login
+```
+
+That signs you in with Hugging Face, or asks for a **read** token (from
+[huggingface.co/settings/tokens](https://huggingface.co/settings/tokens/new?tokenType=read)) at a prompt that doesn't
+echo. The token goes to your system keychain (macOS Keychain, Windows Credential Manager, or the Secret Service on
+Linux), or to a file only you can read when no keychain runs. It is never written to `~/.cache/huggingface`, never
+passed on the command line, and never shown to AI apps. The Studio's Settings › Hugging Face does the same.
+
+## Characters
+
+Make someone once and cast them in every shot: Hildegard draws portraits from your description, you keep the face you
+like, it draws the other angles from it, and every shot you cast them in (type `@` in the prompt) starts from those
+references, so the face and clothes stay the same. Characters can have a voice from the voice studio. A character based
+on a real person draws only from photos that person takes themselves, live, on a link you send them, and stops the
+moment they take it back. The stills come from FLUX.2 [klein] 4B (Apache-2.0, about 13 GB of GPU memory). See
+[docs/characters.md](docs/characters.md).
+
+## Use it from your AI apps
+
+Hildegard is how your AI apps reach your own computers. In Claude Code, it's a plugin:
+
+```text
+/plugin marketplace add Students-of-Local/hildegard
+/plugin install hildegard@hildegard
+```
+
+ChatGPT, claude.ai, the Claude app, Grok and Grok Bot each have their steps in [docs/chatbots.md](docs/chatbots.md).
+In Local Studio, `hildegard connect local-studio` adds Hildegard's tools and seventeen commands: `/image`, `/video`,
+`/speak`, `/design-voice` and `/clean-audio`, which wait for the file and its review, and the craft skills `/film`,
+`/art`, `/sound`, `/photo`, `/edit-video`, `/3d`, `/web`, `/loop`, `/design`, `/music` and `/motion`
+([docs/local-studio.md](docs/local-studio.md)).
+Every linked app gets the tools, the craft skills (`list_skills`, `read_skill`) and the loop.
+
+Hildegard is an MCP server. Linked apps (Claude Code, Claude Desktop, Codex, OMP, Pi, Gemini CLI, OpenCode, Cursor, VS Code, Windsurf, LM
+Studio) can direct shots on your GPU as tools:
+
+```sh
+hildegard connect --all     # every app found on this computer, with its skills
+hildegard connect cursor    # or one
+hildegard connect --print   # the config, for any other app that takes an MCP server
+```
+
+Each app's config is backed up once before Hildegard adds itself. The Studio's Agents page does the same, and shows
+what each app made.
+
+Tools: `hildegard_status` (with recent takes and their ids), `list_presets`, `direct_shot`, `shot_status`,
+`get_shot`, `cancel_take`, `make_sequence`, `export_film` (with an optional `voiceover`), `install_model`, and for characters `list_characters`,
+`create_character`, `make_character_stills` and `keep_still`. A chat that can’t use the microphone asks for `record_link` (a link that opens on this computer with nothing to set up, or `where: "phone"` with a QR code; `link_on` after a yes turns on a private Tailscale link only, and a public one is yours to turn on), follows it with `recording_status`, and cleans the voice with `clean_voice` ([docs/voice.md](docs/voice.md)). `direct_shot` takes a `film`: a film's id, or a title,
+which reuses the film with that title or makes one; and `characters`, to cast them. The loop (`loop_start`,
+`loop_submit`, `loop_critique`, `loop_finish`, `loop_status`) iterates a 3D model, a part to print, a web page, a
+still, a take or a sound until it passes ([docs/make.md](docs/make.md)), and `hildegard loop run codex "<idea>"
+--kind model` hands a whole loop to a coding agent.
+
+The same tools answer over HTTP at `http://127.0.0.1:7341/mcp` (Streamable HTTP), for apps that take an MCP address
+instead of a command: Open WebUI, Jan, LM Studio and the like. On this computer it needs nothing.
+
+### From your other devices, and from claude.ai or ChatGPT
+
+With Hildegard [at a link](#at-a-link-for-your-other-devices-and-the-people-you-invite), its MCP is at `<link>/mcp`
+and asks who's calling:
+
+- **AI apps on your own devices** use a key. On the computer with the GPU, `hildegard host key "Claude Code on my
+  laptop"` prints one (once). On the laptop, `hildegard connect claude-code --remote <link> --key-stdin` and paste it:
+  the key goes to the laptop's keychain, never into the app's config, and the app runs `hildegard mcp --remote`,
+  which carries its messages to the other computer. Any app that takes an address and a header can use
+  `<link>/mcp` with `Authorization: Bearer <key>` instead.
+- **Chatbots on the web** (claude.ai, ChatGPT) can't reach your tailnet, so they need a public link:
+  `hildegard host --funnel`, or your own domain through
+  [a Cloudflare tunnel](#your-own-domain-with-a-cloudflare-named-tunnel) (`hildegard host --public-url
+  https://hildegard.example.com`). Then add `<link>/mcp` as a custom connector (claude.ai: Settings › Connectors; ChatGPT:
+  developer mode). They sign in on Hildegard's own page with your name and passphrase (OAuth 2.1 with PKCE), and act
+  as you. A new passphrase disconnects them all. Or skip the passphrase: `hildegard host code` (or **Get a connect
+  code** in Settings › Sharing, owners only) makes a one-time code, `HG-XXXX-XXXX`, good once for 10 minutes. On
+  Hildegard's page choose **Use a connect code** and type it; the chatbot is approved as you, the owner who made it.
+  Only type a code you made yourself for this connection. Wrong codes count toward the same sign-in limits as wrong
+  passphrases, plus a cap of 60 wrong codes in 15 minutes across all addresses. Once it is reached, no code is accepted
+  from any address, right or wrong, until the 15 minutes pass; a passphrase still works meanwhile. With
+  several owners and no session (this computer), name whose code it is: `hildegard host code --as <name>`. A new
+  passphrase, or removing or demoting the owner, drops that owner's unused codes.
+
+`hildegard host keys` lists keys and chatbots (a chatbot approved with a code reads “approved by code from <you>”), and `hildegard host keys revoke <name>` disconnects one at once.
+Results for apps elsewhere carry links to the videos (signed, good for a day) instead of paths on this computer.
+
+## Your local models
+
+Hildegard finds the language models you already run on this computer: Ollama, LM Studio, llama.cpp, vLLM, MLX LM,
+SGLang, Jan, KoboldCpp, TabbyAPI, and Local AI on Omarchy. Add any other OpenAI-compatible server yourself.
+
+```sh
+hildegard llm                                  # what's running here, and its models
+hildegard llm add "Desk vLLM" http://desk:8000 --key-stdin   # yours; the key goes to the keychain
+hildegard llm use ollama qwen3:8b              # which one directs
+hildegard llm direct "a heron lifting off a misty lake at dawn"
+```
+
+`llm direct` hands the model Hildegard's own tools (never `install_model`: licenses are yours to accept). A model that
+can't call tools writes a shot list instead, which Hildegard checks and queues. Either way the takes carry the model's
+name in the Queue.
+
+Hildegard also serves every local model here as one OpenAI-compatible API at `/v1`, named `<endpoint>/<model>`
+(`GET /v1/models` lists them). On this computer it needs no key; from your other devices, through the link, it takes an
+owner's key from `hildegard host key`.
+
+## At a link, for your other devices and the people you invite
+
+Hildegard can be a server: your own studio at an HTTPS link, for your phone and laptop and for people you invite, all
+signing in. The link runs through a tunnel on an account you own: [Tailscale](https://tailscale.com) for your own
+devices, or [Cloudflare](https://www.cloudflare.com) for a name on your own domain. Both have free accounts, which you
+make on their own pages; Hildegard never makes one for you.
+
+```sh
+hildegard tunnel                                   # where Tailscale and Cloudflare stand here, and what each needs
+hildegard tunnel auto                              # the best link this computer can make: Tailscale if signed in, else a quick tunnel
+hildegard tunnel tailscale                         # your own devices only (add --funnel for the public internet)
+hildegard tunnel cloudflare --hostname hildegard.example.com   # a name on your domain, through a named tunnel
+hildegard tunnel cloudflare --quick                # no account: a temporary trycloudflare.com name
+hildegard tunnel off                               # off, read back: nothing forwards here
+```
+
+`hildegard tunnel` skips what is already done: the tool installed, this computer signed in, a tunnel already in your
+account. `--signup` with either opens its free-account page. `hildegard tunnel install cloudflare` fetches Cloudflare's
+own `cloudflared`, checked against a pinned hash, into Hildegard's folder (no administrator); Tailscale you install
+yourself. `hildegard tunnel cloudflare --login` signs this computer in to your Cloudflare account on Cloudflare's page,
+and Hildegard then makes the tunnel `hildegard-<computer>`, its DNS record (never replacing one already there) and runs
+`cloudflared`, starting it again if it stops. Its credentials go to your keychain (on a computer with none, a file only you can read in Hildegard's data folder, as Hildegard's other secrets do), never a command line or a log. A quick tunnel
+is the fallback: its name changes every time Hildegard starts, and Cloudflare doesn't pass the Studio's live updates
+through it. Settings › Sharing does all of this with buttons. `hildegard doctor` says what is broken and the command
+that fixes it.
+
+Then, on the computer with the GPU:
+
+```sh
+hildegard host owner        # your name and a passphrase, for signing in from other devices
+hildegard host              # https://my-pc.example.ts.net, on your tailnet
+hildegard host invite       # a one-time link for someone else to join as a director
+```
+
+Open the link anywhere on your tailnet and sign in. Settings › Sharing and Settings › People do the same with buttons.
+
+- **Directors** make films of their own, which only they and owners see. **Owners** can do everything: models,
+  devices, people and settings. `hildegard host people` lists everyone; `hildegard host revoke <name>` signs someone
+  out everywhere at once and keeps them out.
+- The link is `tailscale serve`: HTTPS, reachable only inside your tailnet. To share with people outside it,
+  `hildegard host --funnel` puts it on the public internet with `tailscale funnel`. Anyone could then reach the sign-in
+  page, so use a long passphrase; Hildegard slows down guessing. `hildegard host off` turns the link off.
+- Or bring your own HTTPS front door: `hildegard host --public-url https://hildegard.example.com` makes no Tailscale
+  call, turns on the same sign-in-only listener (the port Hildegard was started with `--host-port`, else the main port
+  plus one) and answers to that name
+  on it, and only on it. See [your own domain](#your-own-domain-with-a-cloudflare-named-tunnel).
+- This computer itself never signs in: the Studio at `127.0.0.1`, the CLI and your linked AI apps work as before.
+  Turning the link on, linking apps, pairing devices and stopping Hildegard stay possible only from here.
+- Passphrases are kept as scrypt hashes; sign-in cookies are HttpOnly, SameSite=Strict, Secure over HTTPS, and change
+  every hour. Neither ComfyUI nor the device-pairing API is ever behind the link.
+
+### Your own domain, with a Cloudflare named tunnel
+
+If you own a domain on Cloudflare (the tunnel is free), `https://hildegard.example.com` can reach Hildegard without
+Tailscale Funnel. The address takes only an origin: `https`, a real name (no IP address, no `*.ts.net`), no path.
+
+```sh
+hildegard host owner                                          # first, as above
+hildegard host --public-url https://hildegard.example.com     # the hosted port is the main port plus one: 7342
+hildegard host status                                         # "HTTPS through your own front door", and the link
+hildegard doctor                                              # reads <link>/.well-known/oauth-protected-resource
+```
+
+`hildegard tunnel cloudflare --hostname hildegard.example.com` does everything below for you on this computer. The
+rest of this section is for a tunnel you run yourself, here or on another computer.
+
+With `--public-url`, Hildegard doesn't run the tunnel; it only trusts the name on its hosted listener, `127.0.0.1:7342`, where every
+request signs in, and treats a request for that name there as HTTPS. The name can't also be in `--allow-host`, and
+the saved front door's name stays refused on the Studio's own port, on or off, until you set a different door. (To
+use that name for the Studio again: set another door with `hildegard host --public-url`, or stop Hildegard and remove
+`door` from `host.json` in its data folder.) To use another port than the main port plus one, start Hildegard with it: `hildegard start --host-port 7500` (it is a flag of
+starting Hildegard, not of `hildegard host`). Set up the tunnel with `cloudflared`, on this computer or another:
+
+```sh
+cloudflared tunnel login
+cloudflared tunnel create hildegard
+cloudflared tunnel route dns hildegard hildegard.example.com   # the DNS record
+```
+
+`~/.cloudflared/config.yml`, on the computer that runs `cloudflared`:
+
+```yaml
+tunnel: hildegard
+credentials-file: /home/you/.cloudflared/<tunnel id>.json
+ingress:
+  - hostname: hildegard.example.com
+    service: http://127.0.0.1:7342            # cloudflared on the Hildegard computer itself
+    originRequest:
+      httpHostHeader: hildegard.example.com   # the name Hildegard trusts, with :port if your link has one
+  - service: http_status:404
+```
+
+Then `cloudflared tunnel run hildegard`. If the tunnel runs on **another computer**, reach the hosted port over your
+tailnet instead. On the GPU computer:
+
+```sh
+tailscale serve --bg --tcp 8788 tcp://127.0.0.1:7342   # tailnet only; never Funnel
+```
+
+and in the tunnel's config use `service: http://<the GPU computer's tailnet IP>:8788`, with the same
+`httpHostHeader`. That forward opens port 8788 to **every device on your tailnet**, and each of them could reach the
+sign-in page, so limit it to the tunnel computer with a [Tailscale ACL](https://tailscale.com/kb/1018/acls). Tag only
+the tunnel computer (`tailscale up --advertise-tags=tag:tunnel`; your admin owns the tag), and name the GPU computer
+by an alias for its tailnet IP (`tailscale ip -4` on it) in the policy file (Access controls):
+
+```json
+"tagOwners": { "tag:tunnel": ["autogroup:admin"] },
+"hosts": { "gpu": "100.x.y.z" },
+"acls": [
+  { "action": "accept", "src": ["tag:tunnel"], "dst": ["gpu:8788"] }
+]
+```
+
+Don't tag the GPU computer: a tagged computer is no longer yours in Tailscale's eyes, so it drops out of
+`autogroup:self`, and rules like `autogroup:member` to `autogroup:self:*` would stop reaching it. Keep your other `acls`
+rules for your own devices, but not an accept-everything rule that includes port 8788. The
+door must also be **exactly one proxy hop** from the hosted port: Hildegard takes the right-most `X-Forwarded-For`
+entry as the visitor, so the proxy that connects to the hosted port has to be the one that saw them. `cloudflared`
+straight to the port, as above, is right, and so is the `tailscale serve --tcp` forward, which passes bytes along and
+adds no header. A second proxy in the middle (`cloudflared` to nginx to Hildegard) makes every visitor look like the
+first proxy, so one person's wrong tries would slow sign-in for all. Then add `https://hildegard.example.com/mcp` as a custom connector in claude.ai or ChatGPT and sign
+in there with your name and passphrase. Hildegard counts wrong passphrases by the address the last proxy in front of it
+saw (the right-most `X-Forwarded-For` entry), and by account name, so keep the hosted port reachable only by your
+tunnel. `hildegard host off` removes the name again; the tunnel and the DNS record are
+yours to remove with `cloudflared tunnel delete hildegard`.
+
+## Posts, and a site that anyone can read
+
+A site Hildegard keeps (Sites in the Studio, or `site_new` from your AI app) can carry a blog and be shown to the
+public from your own computer.
+
+- **Posts.** Your AI app writes one with `site_post`: a title, the body in Markdown, and a byline such as
+  “By Jane Doe, with Hildegard”. Hildegard draws `blog/<slug>/index.html` from the site's own stylesheet and keeps
+  `blog/index.html` (newest first), `feed.xml` (RSS 2.0) and `sitemap.xml` current. Raw HTML in the body is shown as
+  text, never run. A draft gets its page with a noindex tag and stays out of the list, the feed and the sitemap. The
+  interview or notes behind a post are kept at `notes/<slug>.md` and are never served.
+- **Publishing.** Nothing is public until you say so: `hildegard sites publish <id>` (or `site_publish`, or
+  `PUT /api/sites/<id>/publish`), and `--off` takes it down. Only an owner can. A published site answers at `/s/<id>/`
+  with no sign-in, on this computer and on your link (`hildegard host`), and nowhere else: GET and HEAD only, only the
+  site's own pages and files, never `notes/`, drafts, `site.json` or a name that starts with a dot. Every page is
+  sandboxed, with no scripts unless the site has scripts of its own, and Hildegard's cookies are neither read nor sent
+  there. `--address https://example.com/` says where the front page lives on the web, so the feed and sitemap link to it.
+- **Your own voice.** Settings › Writing keeps samples of what you wrote and notes on how you write, for you alone.
+  See [docs/writing.md](docs/writing.md#your-own-voice).
+
+## Render on another device
+
+A Mac or laptop without a big GPU can render on one of your other computers. Put both on your
+[Tailscale](https://tailscale.com) tailnet and install Hildegard on both. On the computer with the GPU (here
+`gpu-a`), with its models installed:
+
+```sh
+hildegard choir invite
+```
+
+It prints a short code, `HG-XXXX-XXXX` (good once, for 10 minutes), the address it is redeemed at, and the one command
+for the other computer; Settings › Devices › **Share this GPU** shows the same, large, with Copy and a countdown. A
+short code makes no key until it is used. For the long `hgc1_…` code (older builds, or pasting), run
+`hildegard choir invite --long` or press **Show long code**. A script or an AI agent never prints or retypes either:
+on the other computer, `hildegard choir pair gpu-a` (an ssh name) does the whole join with the code passing from one
+process to the next, and `ssh gpu-a hildegard choir invite --code-only | hildegard choir join --code-stdin` is the same
+by hand. On the other computer:
+
+```sh
+hildegard choir join HG-XXXX-XXXX --url http://100.x.y.z:7341   # gpu-a's address, as the invite prints it
+hildegard choir list        # gpu-a · RTX 4080 Laptop, online, with its models
+```
+
+A short code is a secret, so `join` sends it to the one address you give with `--url` and nowhere else: it never
+searches your tailnet, and without `--url` it sends nothing and tells you the command to run. It also refuses an
+answer that names a different address, and it fails on any redirect rather than send the code on. gpu-a counts wrong
+codes: 5 per source in 15 minutes, and 60 across all sources, after which no code is accepted from any source until the window passes
+(a long `hgc1_` code still joins, and a device already paired is not affected). Behind Tailscale Serve,
+a source is the person Serve names (their Tailscale login, else the address it forwards for), so one peer's wrong
+codes don't block another. Sharing with no device paired and no short code left live counts as off: the sharing
+address stops answering when the last code expires. In the
+Studio, Settings › Devices › **Add a device** takes the short code with the address. The long code still works pasted
+in (`hildegard choir join` asks for it, hidden).
+
+Takes now render on gpu-a, and the Studio says so ("Rendering on gpu-a · RTX 4080 Laptop"). Models count as
+installed when they are installed there, so nothing downloads twice. Settings › Devices does the same with buttons:
+"Share this GPU" shows the code to copy, and "Add a device" takes it.
+
+- `hildegard choir use local` renders here again; `hildegard choir use gpu-a` goes back. A computer without
+  ComfyUI switches to the device it joins on its own.
+- `hildegard choir use auto` (**Any free device** in Settings › Devices) sends each take to whichever device is free
+  for it, this one included: one that has its model and fits it, that isn't busy, shares whenever asked before one
+  that shares only when free, then a comfortable fit before a tight one, then the shorter queue. A laptop in use
+  sends its takes to the DGX Spark, and a Spark in use leaves them on the laptop. With none free, a take renders
+  here, since this computer's own work never waits. A device on `auto` itself is never sent takes, so two can't end up
+  waiting on each other.
+- `hildegard choir leave gpu-a` forgets the device; `hildegard choir revoke` on gpu-a stops sharing and turns
+  every paired device away.
+- A short code is 40 random bits and gpu-a keeps only its SHA-256. Redeeming it makes a fresh 256-bit key. gpu-a keeps only that key's hash; the other computer keeps it in the system
+  keychain. Treat the code like a password, and make a new one for each device.
+- Sharing opens one more door on gpu-a, on its Tailscale address only: renders from paired devices, and nothing
+  else. The Studio and its API stay on 127.0.0.1 as before. Paired devices can only run graphs Hildegard itself
+  builds, and their takes wait in gpu-a's own queue, so they never run at the same time as its own.
+- Hildegard pairs only over Tailscale (or https), so prompts and videos are encrypted on the way. Without Tailscale
+  on the GPU computer, give its address yourself: `hildegard choir invite --url http://100.x.y.z:7341`.
+- If gpu-a is also someone's everyday computer, run `hildegard choir opportunistic on` there (or turn on **Only
+  when it's free** in Settings › Devices). Your other devices' renders then wait behind gpu-a's own work, stop and
+  go back in line when its own work arrives, and start only while nothing else is using it: an NVIDIA GPU under 30%
+  busy, a load under 0.8 per core, no one at the keyboard for 3 minutes, and no other program holding a gigabyte or
+  more of GPU memory (Linux with NVIDIA; a language model server waiting for requests, say, which uses no compute
+  while it holds the memory). A GPU that doesn't answer counts as busy. Without NVIDIA only the load and the keyboard
+  are checked, and Windows without NVIDIA sees only the keyboard (Settings says which). When the owner comes back or
+  another program takes the GPU, a render running for another device stops within a few seconds and goes back in
+  line; it starts again by itself once the computer is free, and gpu-a stays online meanwhile. Hyprland has no idle
+  clock to ask, so Omarchy's panel says when you leave and come back, and any other idle hook can with
+  `hildegard choir presence away|back`. Off, the default, renders from your other devices simply take their turn.
+
+## Commands
+
+```
+hildegard install          Install ComfyUI and PyTorch for this GPU, then start Hildegard
+hildegard setup            Pick a model that fits and link your AI apps
+hildegard start | stop     Run Hildegard in the background, or stop it
+hildegard status           What's installed and running
+hildegard doctor           Check every part, with the command that fixes each problem
+hildegard open             Open the Studio in your browser
+hildegard models           Models, and whether they fit this GPU
+hildegard models install <id> [--accept-license]
+hildegard connect [<app>...] | disconnect <app>
+hildegard connect local-studio | disconnect local-studio
+hildegard make image|video|speech|voice|clean "<what>" [--out DIR]   Make one thing, wait, review it (make voices)
+hildegard hf login | status | logout
+hildegard choir invite | pair <ssh-host> | join | list | use <device|local|auto> | leave <device> | opportunistic on|off
+               | presence away|back | revoke
+hildegard tunnel [status] | tailscale [--funnel] | cloudflare [--hostname <name> | --quick | --login] | install cloudflare | off  (--signup)
+hildegard host [--funnel | --public-url https://<name>] | off | status | owner | invite [--role owner] | people | revoke <name> | limit <n>
+hildegard host code | key <name> | keys [revoke <name>]
+hildegard connect <app> --remote <link> --key-stdin
+hildegard llm | add <name> <address> | remove <name> | use <endpoint> [<model>] | direct "<idea>"
+hildegard sites publish <id> [--off] [--address <https://example.com/>]   Show a site to anyone at /s/<id>/, or take it down
+hildegard mcp [--remote <link>]   The MCP server, on stdio (AI apps run this); also at /mcp over HTTP
+```
+
+Every command takes `--json` and then prints `{ ok, needsOwner, steps[], message }`. Agents setting Hildegard up for
+someone should read [docs/agents.md](docs/agents.md): the app on one computer, a host at a link, or a fleet.
+
+## Licenses
+
+Hildegard is AGPL-3.0-only; the presets in `presets/` are Apache-2.0. The models have their own licenses, which
+Hildegard shows before any download: LTX-2.x is free for people and companies under $10M yearly revenue, Wan 2.2 and
+FLUX.2 [klein] 4B are Apache-2.0. See [LICENSING.md](LICENSING.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Roadmap
+
+What comes next, starting with skill suggestions that can't be turned into an attack: [ROADMAP.md](ROADMAP.md).
+
+## Develop
+
+Node 22.18 or later and pnpm 10. If you don't have pnpm, `npm install -g pnpm@10.28.0` (Node 25 and later no longer
+include corepack).
+
+```sh
+pnpm install
+pnpm dev                                   # server on :7361 with a fake GPU (data in .dev-data), Studio on :5173
+pnpm test && pnpm typecheck && pnpm lint
+pnpm e2e                                   # Playwright, desktop and phone
+```
+
+See [AGENTS.md](AGENTS.md) for how the code is laid out.

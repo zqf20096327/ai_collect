@@ -1,11 +1,13 @@
 <div align="center">
 
-<img src="src-tauri/icons/nexq-clean.png" alt="NexQ logo" width="112">
+<a href="https://getnexq.com/">
+  <img src="docs/images/banner.png" alt="NexQ: one call, two voices. One sound wave splits into Them and You." width="100%">
+</a>
 
 # NexQ
 
-**Free, open-source AI meeting assistant and interview copilot.**
-It hears both sides of a call, answers on a private overlay, and can hide from your screen share.
+**Free, open-source AI meeting assistant.**
+It transcribes both sides of a call live and answers from your own notes, with local models or the AI you already use. No bot joins.
 
 [![Latest release](https://img.shields.io/github/v/release/naxhq/NexQ?style=flat-square&color=2f81f7)](https://github.com/naxhq/NexQ/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/naxhq/NexQ/total?style=flat-square&color=orange)](https://github.com/naxhq/NexQ/releases)
@@ -14,7 +16,7 @@ It hears both sides of a call, answers on a private overlay, and can hide from y
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%28beta%29-lightgrey?style=flat-square)](https://github.com/naxhq/NexQ/releases/latest)
 [![Stars](https://img.shields.io/github/stars/naxhq/NexQ?style=flat-square&color=yellow)](https://github.com/naxhq/NexQ/stargazers)
 
-**[Website](https://naxhq.github.io/NexQ/)** ·
+**[Website](https://getnexq.com/)** ·
 **[Download](https://github.com/naxhq/NexQ/releases/latest)** ·
 **[Docs](docs/user-guide/getting-started.md)** ·
 **[Changelog](CHANGELOG.md)** ·
@@ -22,23 +24,42 @@ It hears both sides of a call, answers on a private overlay, and can hide from y
 
 <br>
 
-<a href="https://naxhq.github.io/NexQ/#demo">
-  <img src="website/public/media/hero-demo-poster.webp" alt="NexQ overlay answering an interview question (demo mode)" width="760">
+<a href="https://getnexq.com/#demo">
+  <img src="website/public/screenshots/Lecture.png" alt="NexQ during a lecture: the live transcript on the left, a recap of the key points on the right (demo mode)" width="820">
 </a>
 
-<sub>Try the interactive overlay demo on the <a href="https://naxhq.github.io/NexQ/">website</a>.</sub>
+<sub>A lecture in demo mode: live transcript on the left, a recap on the right. <a href="https://getnexq.com/">Try the interactive demo</a> on the website.</sub>
 
 </div>
 
 ---
 
+<details>
+<summary><b>Table of contents</b></summary>
+
+- [Why NexQ](#why-nexq)
+- [Quick start](#quick-start)
+- [What's new](#whats-new)
+- [Features](#features)
+- [How it works](#how-it-works)
+- [Providers](#providers)
+- [Privacy](#privacy)
+- [Use it responsibly](#use-it-responsibly)
+- [How NexQ compares](#how-nexq-compares)
+- [Keyboard shortcuts](#keyboard-shortcuts)
+- [Development](#development)
+- [Contributing](#contributing)
+- [Community and support](#community-and-support)
+
+</details>
+
 ## Why NexQ
 
 - **Two sides, one transcript.** Your mic ("You") and the call audio ("Them") are separate streams. Each has its own speech engine, language and mute, so answers know who said what.
-- **Answers in the moment.** Questions are caught as they are asked. Press one key, or turn on Auto-Answer, and the answer streams in, grounded in your resume, notes or slides.
+- **Answers in the moment.** Questions are caught as they are asked. Press one key, or turn on Auto-Answer, and the answer streams in, grounded in your notes, slides or other files.
 - **Yours to run.** Free, MIT licensed, no account and no usage caps. No bot joins your call. Use fully offline engines or the cloud providers you pick.
-- **Hidden from the share.** Turn on Hide from screen share and the overlay stays visible to you but is left out of screen shares and recordings, and off the taskbar or Dock.
-- **Bring your own models.** 12 speech-to-text engines and 11 LLM providers, including your existing Claude, Google AI or ChatGPT subscription.
+- **Bring your own models.** 12 speech-to-text engines and 10 LLM providers, including your existing Claude or ChatGPT subscription.
+- **Private notes while you present.** Hide from screen share (off by default) leaves the overlay out of screen shares and recordings, and off the taskbar or Dock. See [Use it responsibly](#use-it-responsibly).
 
 ## Quick start
 
@@ -57,8 +78,8 @@ It hears both sides of a call, answers on a private overlay, and can hide from y
 
 The first launch opens a short setup. You can skip it; everything below is also in Settings.
 
-1. **Set up speech-to-text.** In Settings → STT Providers, download the Parakeet model (local, free) or add a Deepgram or Groq key. Then in Settings → Audio & Devices, choose an engine for each side, or pick the **Free** preset (Web Speech for your mic, Parakeet for the other side). Web Speech needs no key but sends your mic audio to a cloud service.
-2. **Pick an LLM** in Settings → LLM Providers. [Ollama](https://ollama.com) is found automatically, cloud providers need a key, and Claude, Antigravity or Codex can use your subscription.
+1. **Set up speech-to-text.** In Settings → STT Providers, download the Parakeet model (local, free) or add a Deepgram or Groq key. Then in Settings → Audio & Devices, choose an engine for each side. A fresh install starts with cloud engines: Web Speech for your mic (no key) and Deepgram for the other side (needs a key). To keep audio on your computer, pick the **Local Only (Parakeet)** or **Fully Offline** preset. The **Free** preset needs no key, but your mic still goes through Web Speech.
+2. **Pick an LLM** in Settings → LLM Providers. [Ollama](https://ollama.com) is found automatically, cloud providers need a key, and Claude or Codex can use your subscription.
 3. **Optional:** add your resume or notes under **Meeting Context** on the dashboard.
 4. **Press** <kbd>Ctrl</kbd>+<kbd>M</kbd>. NexQ captures system audio, so it works with Zoom, Teams, Meet, Discord or anything that plays sound.
 5. **Get an answer.** When a question comes up, press <kbd>Space</kbd> in the overlay, or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Space</kbd> from any app.
@@ -67,9 +88,11 @@ NexQ updates itself in the background and installs when you quit, never in the m
 
 Guides: [Getting started](docs/user-guide/getting-started.md) · [Choosing providers](docs/user-guide/ai-providers.md) · [Audio setup](docs/user-guide/audio-setup.md) · [Interview copilot](docs/user-guide/interview-copilot.md) · [Lecture assistant](docs/user-guide/lecture-assistant.md) · [Meeting detection](docs/user-guide/meeting-detection.md) · [Claude subscription](docs/user-guide/claude-subscription.md) · [Troubleshooting](docs/user-guide/troubleshooting.md)
 
+How-to: [Transcribe both sides of a call](https://getnexq.com/guides/transcribe-both-sides-of-a-call/) · [Local transcription on Windows](https://getnexq.com/guides/local-call-transcription-windows/) · [Ollama or LM Studio in a call](https://getnexq.com/guides/ollama-lm-studio-meeting-assistant/) · [NexQ next to Meetily, anarlog, Otter and Granola](https://getnexq.com/guides/open-source-otter-granola-alternative/)
+
 ## What's new
 
-- **v2.44 Antigravity and Codex.** Use your Google AI or ChatGPT plan like Claude, with Fast and Deep models, live model lists and personal sources. Beta.
+- **v2.44 Codex.** Use your ChatGPT plan like Claude, with Fast and Deep models, live model lists and personal sources. Beta.
 - **v2.41 Personal sources.** Let Claude look things up in your notes folders and MCP servers while it answers. Claude subscription only.
 - **v2.40 Thinking control.** Choose how much each provider's model thinks.
 - **v2.38 and v2.39 Language per side.** Transcribe each side in its own language, switch it from the overlay without ending the meeting, or let NexQ detect it. Ukrainian was added.
@@ -95,7 +118,7 @@ The full history is in the [CHANGELOG](CHANGELOG.md).
 **Answer in the moment**
 - Assist, What to Say, Shorten, Follow-Up, Recap and free-form Ask
 - Question Detection, with optional Auto-Answer
-- Scenarios for interviews, lectures, oral exams, webinars and team meetings, with editable prompts
+- Scenarios for interviews, lectures, oral exam practice, webinars and team meetings, with editable prompts
 - Ask about your screen with a screenshot (Claude subscription)
 
 </td>
@@ -105,7 +128,7 @@ The full history is in the [CHANGELOG](CHANGELOG.md).
 
 **Your context**
 - Local RAG over your PDF, DOCX, TXT and MD files (SQLite FTS plus embeddings)
-- Personal sources: notes folders and MCP servers (Claude, Antigravity or Codex subscription)
+- Personal sources: notes folders and MCP servers (Claude or Codex subscription)
 - Thinking control per provider
 - AI Call Log: every prompt, latency and token count
 
@@ -143,14 +166,20 @@ Audio is captured on your machine. What leaves it depends on the engines you pic
 
 | | Runs on your device | Cloud |
 |---|---|---|
-| **Speech-to-text (12)** | Parakeet TDT, Sherpa-ONNX, ORT Streaming, Windows Speech (Windows, mic only), Whisper.cpp (recordings only, not live calls) | Deepgram, Groq Whisper, Whisper API, Azure Speech, Azure MAI Streaming (public preview), Cartesia, Web Speech (no key, mic only) |
-| **LLM (11)** | Ollama, LM Studio | OpenAI, Anthropic, Google Gemini, Groq, OpenRouter, any custom endpoint, and, with no API key (beta): Claude through your Pro or Max plan (Claude Code CLI), Antigravity through your Google AI plan, Codex through your ChatGPT plan |
+| **Speech-to-text (12)** | Parakeet TDT, Sherpa-ONNX, ORT Streaming, Whisper.cpp (recordings only, not live calls) | Deepgram, Groq Whisper, Whisper API, Azure Speech, Azure MAI Streaming (public preview), Cartesia, Web Speech (no key, mic only), Windows Speech (no key, Windows, mic only) |
+| **LLM (10)** | Ollama, LM Studio | OpenAI, Anthropic, Google Gemini, Groq, OpenRouter, any custom endpoint, and, with no API key (beta): Claude through your Pro or Max plan (Claude Code CLI), Codex through your ChatGPT plan |
 | **Translation (5)** | OPUS-MT (offline) | DeepL, Google, Microsoft, or any LLM you configured |
+
+<div align="center">
+  <img src="docs/images/engines.png" alt="Speech engine settings in three groups: On this computer, Built-in (audio goes online) and Cloud" width="640">
+  <br>
+  <sub>The app says where each engine sends your audio.</sub>
+</div>
 
 Not every engine covers every language. [Choosing providers](docs/user-guide/ai-providers.md) lists what each one supports.
 
 <details>
-<summary><b>Personal sources (Claude, Antigravity or Codex subscription)</b></summary>
+<summary><b>Personal sources (Claude or Codex subscription)</b></summary>
 
 <br>
 
@@ -168,7 +197,7 @@ With an API or local provider your sources stay saved but are not used. Details:
 
 ## Privacy
 
-- **Nothing leaves your machine unless you use a cloud provider.** Web Speech, the default for your mic, is one. A local speech engine on both sides plus a local LLM works offline.
+- **Nothing leaves your machine unless you use a cloud provider.** The defaults are: Web Speech for your mic and Deepgram for the other side. A local speech engine on both sides plus a local LLM works offline.
 - **Your data stays on disk you control.** Meetings, transcripts, recordings, models and the RAG index live in the app data folder (`%APPDATA%\com.nexq.app` on Windows, `~/Library/Application Support/com.nexq.app` on macOS).
 - **Secrets go to the OS credential store.** Windows Credential Manager or the macOS Keychain.
 - **No telemetry or analytics.** Besides the providers you configure and the models you download, NexQ only contacts GitHub, to check for signed updates and show release notes.
@@ -176,17 +205,23 @@ With an API or local provider your sources stay saved but are not used. Details:
 - **Claude screenshots** can contain other people's video or documents. They go to Anthropic with your question, and NexQ does not save them.
 - Found a security issue? Follow [SECURITY.md](SECURITY.md).
 
+## Use it responsibly
+
+- **Tell people.** Let the others on the call know you are transcribing or recording, and get their consent where the law asks for it. Rules differ by place. Recording is off until you turn it on.
+- **Check that it is allowed.** Some interviews, exams, classes and workplaces forbid AI help or transcription. If yours does, do not use NexQ there.
+- **Know the limits of hiding.** Hide from screen share is off by default. It keeps private notes out of what you present. It does not make NexQ undetectable.
+
 ## How NexQ compares
 
 | | NexQ | Otter.ai | Granola | Krisp |
 |---|:---:|:---:|:---:|:---:|
-| Price | **Free** | Free plan, paid tiers | Free plan, paid tiers | Free plan, paid tiers |
+| Price | **Free** | Free plan, paid tiers | Free plan, paid tiers | Free trial, paid tiers |
 | Open source | Yes | No | No | No |
-| Fully local option | Yes | No | No | Partial |
-| No bot joins the call | Yes | No | Yes | Yes |
-| Choice of STT and LLM | Yes | Fixed | Fixed | Fixed |
+| Fully local option | Yes | No | No | Enterprise plan |
+| Works without a bot | Yes | Desktop app | Yes | Yes |
+| Choice of STT and LLM | Yes | Fixed | AI from a list | Fixed |
 | Local LLM | Yes | No | No | No |
-| Your own documents as context | Yes | No | No | No |
+| Your own documents as context | Yes | Connectors | In chat | No |
 
 <sub>Checked Nov 2026. Competitor cells reflect their public pages when we last checked and change over time. Check each vendor for current details.</sub>
 

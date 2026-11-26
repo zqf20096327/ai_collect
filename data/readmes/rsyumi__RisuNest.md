@@ -3,7 +3,7 @@
   <h1>RisuNest</h1>
   <p><strong>A native RisuAI fork for Windows, macOS, Linux, Android, and iOS.</strong></p>
 
-  [![RisuAI 2026.10.292](https://img.shields.io/badge/RisuAI-2026.10.292-blue)](https://github.com/kwaroran/RisuAI)
+  [![RisuAI 2026.10.295](https://img.shields.io/badge/RisuAI-2026.10.295-blue)](https://github.com/kwaroran/RisuAI)
   [![Tauri 2](https://img.shields.io/badge/Tauri-2-%2324C8D8?logo=tauri&logoColor=white)](https://tauri.app/)
   [![Svelte 5](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
   [![Rust](https://img.shields.io/badge/Rust-stable-000000?logo=rust&logoColor=white)](https://www.rust-lang.org/)
@@ -109,7 +109,7 @@ Download [RisuNest Sync v1.1.3](https://github.com/rsyumi/RisuNest/releases/tag/
 
 ## Building from Source
 
-Node.js 22.12 or later, pnpm, Rust, and Cargo are required. Android builds require the Android SDK/NDK (compile and target SDK 36, min SDK 24, NDK 28), while iOS builds require macOS and Xcode.
+Node.js 22.13 or later, pnpm, Rust, and Cargo are required. Android builds require the Android SDK/NDK (compile and target SDK 36, min SDK 24, NDK 28), while iOS builds require macOS and Xcode.
 
 ```bash
 pnpm install

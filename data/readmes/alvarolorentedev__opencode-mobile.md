@@ -32,7 +32,7 @@
 
 OpenCode Mobile is an independent, community-built mobile companion for [OpenCode](https://opencode.ai/).
 
-It connects to the OpenCode server you already run and gives you a focused mobile control surface for the moments when you need to check, guide, approve, or continue agent work away from your desk.
+It connects directly to individual OpenCode servers and can continue existing sessions. It gives you a focused mobile control surface for the moments when you need to check, guide, approve, or steer agent work away from your desk.
 
 It is not trying to put a desktop IDE on a smaller screen.
 
@@ -53,7 +53,7 @@ It is designed around the things that actually matter on mobile.
 - **Approve, review, and edit** — answer permission requests, inspect diffs, browse files, and open terminals.
 - **Talk to it** — dictate prompts, read replies aloud, or use hands-free conversation mode.
 - **Shape your setup** — providers, models, MCP servers, agents, commands, plugins, and visualizations like [Flowgraph](https://github.com/alvarolorentedev/opencode-flowgraph).
-- **Manage and personalize** — multiple servers, projects, and sessions; themes, languages, text size, and widgets.
+- **Manage and personalize** — multiple saved servers, projects, and sessions; themes, languages, text size, and widgets.
 
 ## How it works
 
@@ -64,7 +64,7 @@ OpenCode Mobile connects to that server remotely:
 ```text
 Your phone
     │
-    │ HTTPS / secure tunnel
+    │ LAN / VPN / HTTPS tunnel
     ▼
 OpenCode server
     │
@@ -74,31 +74,21 @@ Your workspace + models
 
 A typical setup looks like this:
 
-### 1. Start OpenCode
+### 1. Pair your OpenCode 2 server
+
+Pair from **OpenCode Desktop → Settings → Pairing → Show details**, or run:
 
 ```bash
-opencode serve --port 4096
+opencode pair --url http://<ip-or-domain>:<port>
 ```
 
-### 2. Expose it securely
+`--url` should point to an address your phone can reach — your local network, a VPN such as Tailscale, or an authenticated HTTPS tunnel. Use the port printed by `opencode service status`; OpenCode does not require a fixed port.
 
-Keep the server protected with authentication and connect through a secure HTTPS tunnel, VPN, or reverse proxy.
+### 2. Connect from OpenCode Mobile
 
-For example:
+Scan the QR code with the app. Native pairing links are scanned, not pasted; if the camera is unavailable, add the server manually with its URL and password. The link expires after five minutes and works once; the connection lasts 30 days, so pair again when it expires. For detailed connection methods, multi-server limits, networking, authentication, and troubleshooting, see the [documentation](https://getopencode.app/docs/).
 
-```bash
-cloudflared tunnel --url localhost:4096
-```
-
-Tailscale, Cloudflare Tunnel, and other secure networking options work well.
-
-### 3. Connect from OpenCode Mobile
-
-Enter the protected server URL in the app, authenticate, choose your workspace, and continue your sessions.
-
-For the complete setup flow, see the [Getting Started guide](https://getopencode.app/docs/getting-started/).
-
-### 4. Connect an AI provider
+### 3. Connect an AI provider
 
 Open **Settings → AI & providers → Add provider**, choose your provider,
 select **API key** if multiple login methods are offered, paste the key, and

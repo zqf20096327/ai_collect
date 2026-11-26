@@ -6,7 +6,7 @@
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-22c55e.svg)](pyproject.toml)
 [![wasabihu/sessfork MCP server](https://glama.ai/mcp/servers/wasabihu/sessfork/badges/score.svg)](https://glama.ai/mcp/servers/wasabihu/sessfork)
 
-**English** · [简体中文](README.zh-CN.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/) · [Stress Benchmarks](docs/benchmarks.md)
+**English** · [简体中文](README.zh-CN.md) · [Native Rust Moli MCP](rust/sessfork-mcp/README.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/) · [Stress Benchmarks](docs/benchmarks.md)
 
 **Fork live Chrome auth sessions (Cookies + LocalStorage) into headless AI agent browsers — zero window focus theft, zero runtime dependencies.**
 
@@ -15,6 +15,12 @@
 When AI coding agents ([Google Antigravity](https://antigravity.google/docs/commands/browser/), Claude Code, or Cursor) connect directly to your main Chrome instance to reuse logged-in sessions, they hijack your active window, switch tabs, and break your flow.
 
 `sessfork` decouples **your UI viewport** from **browser auth state** in a single command: it takes lock-free snapshots of your live Chromium SQLite `Cookies` database and LevelDB `Local Storage/leveldb` store, decrypts cookies in memory via native OS APIs, reconciles MVCC sequence numbers for SPA/JWT `localStorage` tokens, writes a strict `0600` [Playwright `storageState`](https://playwright.dev/docs/api/class-browser) file, and wires a silent background [Playwright MCP](https://github.com/microsoft/playwright-mcp) server (`sessfork-browser`) across your installed AI agents.
+
+> [!TIP]
+> **Looking for `sessfork-mcp` × [`lexmount/moli`](https://github.com/lexmount/moli) (605 KB zero-Node.js Rust MCP)?**
+> Independently verified by the Moli team at **`-90.7%` RAM (`226.3 MiB` vs `2,439.5 MiB`) and `2.76×` faster** than Chrome + Playwright MCP (Apple M4, 5-run medians — [Discussion #3465](https://github.com/lexmount/moli/discussions/3465#discussioncomment-19846839)).
+> - **Standalone Moli MCP (no Python or Chrome required):** see **[rust/sessfork-mcp/README.md](rust/sessfork-mcp/README.md)** (`install.sh --rust-mcp-only` + 1-line `claude mcp add`).
+> - **Chrome session forking + Dual Moli/Chrome engine:** run `curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/v0.2.1/install.sh | bash -s -- --with-rust-mcp` and `sessfork --engine dual` (full breakdown in [docs/benchmarks.md](docs/benchmarks.md)).
 
 ---
 
@@ -29,13 +35,13 @@ When AI coding agents ([Google Antigravity](https://antigravity.google/docs/comm
 Auto-detects installed AI tools (**Antigravity**, **Claude Code**, **Cursor**), registers the background `sessfork-browser` MCP server, and installs the global Agent `SKILL.md`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/main/install.sh | bash
+curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/v0.2.1/install.sh | bash
 ```
 
 Want to fork your first domains in the very same command? Pass them right after `--`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/main/install.sh | bash -s -- github.com linear.app
+curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/v0.2.1/install.sh | bash -s -- github.com linear.app
 ```
 
 *(Note: On each cookie fork, macOS asks to read `"Chrome Safe Storage"` from Keychain — click **Allow**. For pure LocalStorage JWT sites, pass `--no-cookies` for zero Keychain prompts. See the FAQ for the opt-in `--cache-key`.)*
@@ -131,7 +137,9 @@ sessfork console.cloud.google.com --profile "Profile 1"
 
 ## Stress Benchmarks (`chrome-headless-shell` vs. `moli` + Node vs. `moli` + Rust `sessfork-mcp`)
 
-Measured locally on Apple Silicon (`macOS 26.6.2 arm64`, Python 3.14.7, `@playwright/mcp@0.0.85`, `moli 1.1.27`, `sessfork-mcp 0.1.4`) via [`scripts/stress_test.py`](scripts/stress_test.py) (zero external requests). Full methodology & 3-way breakdown in **[docs/benchmarks.md](docs/benchmarks.md)**.
+![Chrome Headless Shell vs Moli + Node MCP vs Moli + Rust sessfork-mcp Benchmark](docs/assets/benchmark-v014-en.png)
+
+Measured locally on Apple Silicon (`macOS 26.6.2 arm64`, M5 24 GB, Python 3.14.7, `@playwright/mcp@0.0.85`, `moli 1.1.27`, `sessfork-mcp 0.1.4`) via [`scripts/stress_test.py`](scripts/stress_test.py) (zero external requests). Full methodology & 3-way breakdown in **[docs/benchmarks.md](docs/benchmarks.md)**.
 
 | Workload | `chrome-headless-shell` + Node MCP | `moli 1.1.27` + Node MCP | **`moli 1.1.27` + Rust `sessfork-mcp`** | Delta vs. Chrome |
 | :--- | :---: | :---: | :---: | :--- |
@@ -143,11 +151,13 @@ Measured locally on Apple Silicon (`macOS 26.6.2 arm64`, Python 3.14.7, `@playwr
 | **12× heavy-DOM total RSS** *(1,775 nodes/tab)* | `2,531.4 MB` (`15` procs) | `656.8 MB` (`1` proc) | **`260.4 MB` (`1` proc)** | **`9.72×` smaller (`-89.7%`, saves `2.27 GB`)** |
 | **12× heavy-DOM total time** *(full AX tree)* | `2,915.4 ms` | `5,543.9 ms` | **`1,501.0 ms`** (`12/12`, 0 leaks) | **`1.94×` faster** (`3.69×` vs Node+Moli) |
 
-> **Why `--engine dual` is the sweet spot:** Pure Rust `sessfork-moli` delivers **`9.72×` smaller RAM**, **`1.94×–14.8×` faster execution**, and **`1.7 MB` idle** with zero Node.js, while Chrome stays completely unloaded (`0 MB`) until a WebGL or strict anti-bot portal triggers fallback.
+> **Independent verification by the `lexmount/moli` team (Apple M4, 24 GB, 5-run medians — [Discussion #3465](https://github.com/lexmount/moli/discussions/3465#discussioncomment-19846839)):** Re-running the exact same 12-context heavy-DOM benchmark (1 warm-up + 5 measured runs, all 12/12 checks passing) yielded **`4.22 s` / `226.3 MiB`** for `moli` + `sessfork-mcp` vs. **`25.41 s` / `575.6 MiB`** for `moli` + `@playwright/mcp` and **`11.65 s` / `2,439.5 MiB`** for `chrome-headless-shell` + `@playwright/mcp` — **`-90.7%` RAM (`10.78×` smaller) and `2.76×` faster than Chrome**.
+
+> **Why `--engine dual` is the sweet spot:** Pure Rust `sessfork-moli` delivers **`9.72×`–`10.78×` smaller RAM**, **`1.94×`–`14.8×` faster execution**, and **`1.7 MB` idle** with zero Node.js, while Chrome stays completely unloaded (`0 MB`) until a WebGL or strict anti-bot portal triggers fallback.
 
 ```bash
 # Optional: install the 605 KB prebuilt native Rust CDP MCP binary (SHA-256 verified, no Cargo needed)
-curl -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/main/install.sh | bash -s -- --rust-mcp-only
+curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/v0.2.1/install.sh | bash -s -- --rust-mcp-only
 
 # Or build from source (Rust >=1.75; auto-used by --engine moli / dual)
 cargo install --git https://github.com/wasabihu/sessfork sessfork-mcp
@@ -222,7 +232,10 @@ By default `sessfork` does **not** store the derived decryption key anywhere, so
 
 - **macOS (`arm64` / `x64`)**: fully supported and tested on real Chrome profiles, with prebuilt `sessfork-mcp` binaries.
 - **Linux (`x64` / `arm64`)**: supported (in-memory OpenSSL `libcrypto` AES-128-CBC + Secret Service / `peanuts`, verified on Ubuntu CI, with prebuilt `sessfork-mcp` binaries for `x64` & `arm64`).
-- **Windows**: not natively supported — Chrome 127+ on Windows enforces App-Bound Encryption (`v20`), which cannot be decrypted from unprivileged user space without process injection or privilege escalation. On Windows, run inside **WSL2**.
+- **Windows (`x64`, zero Python / zero Node.js)**: natively supported via the standalone Rust `sessfork-mcp.exe` (`~784 KiB`, loopback RFC 6455 WebSocket CDP on kernel-assigned `--port 0` + Win32 Job Object zero-orphan reaping + `CREATE_NO_WINDOW`) paired with Windows [`moli.exe`](https://github.com/lexmount/moli) and the auditable bilingual [Companion Chrome/Edge Extension](extension/README.md). Instead of process injection or privilege escalation against Chrome 127+ App-Bound Encryption (`v20`), Chrome decrypts cookies itself upon explicit user click ("Fork This Site") and syncs over Native Messaging (`com.wasabihu.sessfork`). One-command install (auto-installs `moli.exe`, registers the fixed extension ID, wires detected AI clients, and copies the extension path to your clipboard):
+  ```powershell
+  powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/wasabihu/sessfork/main/install.ps1 | iex"
+  ```
 
 </details>
 
@@ -265,6 +278,26 @@ Check `sessfork --status` to confirm the detected binary and pinned config statu
 
 ---
 
+## Auth-to-XERJ Local Knowledge Ingest (`skills/xerj-auth-ingest`)
+
+Need to silently capture authenticated Notion, Feishu, Confluence, or internal research pages into a local searchable knowledge base without touching your foreground Chrome window or leaking tokens?
+
+- Read **[`skills/xerj-auth-ingest/SKILL.md`](skills/xerj-auth-ingest/SKILL.md)** and run the zero-dependency helper [`skills/xerj-auth-ingest/ingest_to_xerj.py`](skills/xerj-auth-ingest/ingest_to_xerj.py):
+  - Converts captured HTML / Markdown / JSONL into clean UTF-8 Markdown with YAML frontmatter (`source_url`, `captured_at`, `title`, `domain`), stripping `<script>`/`<style>`/`<svg>`/boilerplate while preserving CJK text.
+  - Scrubs accidental `Authorization: Bearer ...`, `ApiKey ...`, `Cookie: ...`, `hf_...`, `ghp_...`, `sk-...`, and JWT (`eyJ...`) secrets into `<REDACTED>` **before** writing Markdown.
+  - Defaults to `--dry-run` and enforces loopback-only XERJ URLs (`127.0.0.1` / `::1` / `localhost`) plus path-traversal rejection; pass `--index` to run `xerj autoindex`.
+
+### Verified XERJ Open Ecosystem
+
+| Stage | Project / Model | Role in the Local-First AI Stack |
+| :--- | :--- | :--- |
+| **1. Capture** | **[`wasabihu/sessfork`](https://github.com/wasabihu/sessfork)** (`skills/xerj-auth-ingest/`) | Zero-focus-theft Chrome auth fork (`sessfork-moli` / `sessfork-browser`) + secret-redacting HTML/Markdown/JSONL cleaner into local XERJ. |
+| **2. Index & Neural Retrieval** | **[`xerj-org/xerj`](https://github.com/xerj-org/xerj)** + HF **[`wasabihu/xerj-bilingual-fin-law-384`](https://huggingface.co/wasabihu/xerj-bilingual-fin-law-384)** *(MIT)* & **[`wasabihu/VeriCorpus-Reranker-0.6B`](https://huggingface.co/wasabihu/VeriCorpus-Reranker-0.6B)** *(Apache-2.0)* | Single-binary Rust ES-compatible search engine (`~9.9 MB` idle RSS) paired with compact bilingual CJK/EN financial & legal embedding and reranker models. |
+| **3. Read-Only Agent Firewall** | **[`wasabihu/kbwall`](https://github.com/wasabihu/kbwall)** | `~1 MB` air-gapped, loopback-only read-only Rust MCP firewall for XERJ with offline BMP CJK enhancement and `xerj://` evidence URIs. |
+| **4. Citation & Corpus Verification** | **[`wasabihu/claimcite`](https://github.com/wasabihu/claimcite)** + **[`wasabihu/vericorpus`](https://github.com/wasabihu/vericorpus)** | Verifies verbatim quotes against DOIs/PMIDs and `xerj://` evidence URIs (`claimcite`), backed by audit-grade CJK/fin/law benchmarks (`vericorpus`). |
+
+---
+
 ## Security & Responsible Use
 
 - **Domain Allowlist by Default**: Only the domains/origins you explicitly name are extracted.
@@ -290,3 +323,5 @@ See [docs/benchmarks.md](docs/benchmarks.md) for measured macOS ARM64 results (1
 ## License
 
 [MIT](LICENSE)
+
+<!-- mcp-name: io.github.wasabihu/sessfork -->

@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://fastagent.sh"><img src="https://raw.githubusercontent.com/fastagent-sh/fastagent/main/assets/hero.png" alt="FastAgent — The TypeScript runtime for production AI agents." width="860"></a>
+  <a href="https://github.com/fastagent-sh/fastagent"><img src="https://raw.githubusercontent.com/fastagent-sh/fastagent/main/assets/hero.png" alt="FastAgent — The TypeScript runtime for production AI agents." width="860"></a>
 </p>
 
 <h3 align="center">The TypeScript runtime for production AI agents.</h3>
@@ -23,12 +23,12 @@
 </p>
 
 <p align="center">
-  <a href="https://fastagent.sh/docs/quickstart/"><strong>Quickstart</strong></a> ·
+  <a href="https://github.com/fastagent-sh/fastagent/blob/main/docs/quickstart.md"><strong>Quickstart</strong></a> ·
   <a href="https://github.com/fastagent-sh/fastagent/tree/main/examples">Examples</a> ·
-  <a href="https://fastagent.sh/docs/packaging-and-ci/">Packaging &amp; CI</a> ·
-  <a href="https://fastagent.sh/docs/embedding/">Embed</a> ·
-  <a href="https://fastagent.sh/docs/deploy/">Deploy</a> ·
-  <a href="https://fastagent.sh/docs/">Docs</a> ·
+  <a href="https://github.com/fastagent-sh/fastagent/blob/main/docs/packaging-and-ci.md">Packaging &amp; CI</a> ·
+  <a href="https://github.com/fastagent-sh/fastagent/blob/main/docs/embedding.md">Embed</a> ·
+  <a href="https://github.com/fastagent-sh/fastagent/blob/main/docs/deploy.md">Deploy</a> ·
+  <a href="https://github.com/fastagent-sh/fastagent/blob/main/docs/README.md">Docs</a> ·
   <a href="https://github.com/fastagent-sh/fastagent/discussions">Discussions</a>
 </p>
 
@@ -64,9 +64,9 @@ fastagent invoke "hello"      # send a message through the Agent API
 
 **Using a coding agent?** Paste this into Claude Code, Codex, Cursor, or Pi:
 
-> Read https://fastagent.sh/start.md and build an agent in this project.
+> Read https://raw.githubusercontent.com/fastagent-sh/fastagent/main/docs/ai-start.md and build an agent in this project.
 
-> **Tip:** Without a global install, run `npx @fastagent-sh/fastagent <command>` (never `npx fastagent`, which is an unrelated package). See the full [Quickstart](https://fastagent.sh/docs/quickstart/).
+> **Tip:** Without a global install, run `npx @fastagent-sh/fastagent <command>` (never `npx fastagent`, which is an unrelated package). See the full [Quickstart](https://github.com/fastagent-sh/fastagent/blob/main/docs/quickstart.md).
 
 ## Write once in Markdown & TypeScript
 
@@ -116,7 +116,7 @@ npm exec -- fastagent deploy check --json   # blocks builds if .secrets/, .env*,
 npm publish ./dist --access restricted
 ```
 
-Upgrading or rolling back an agent is a standard SemVer version change (`npm i @acme/saas-copilot@1.4.2`). See [Packaging, Distribution & CI/CD](https://fastagent.sh/docs/packaging-and-ci/).
+Upgrading or rolling back an agent is a standard SemVer version change (`npm i @acme/saas-copilot@1.4.2`), and platform teams can host multiple teams' compiled npm agent packages inside one Node.js host with unified auth and observability. See [Packaging, Distribution & CI/CD](https://github.com/fastagent-sh/fastagent/blob/main/docs/packaging-and-ci.md).
 
 ## Embed, self-host, or call over HTTP
 
@@ -188,8 +188,9 @@ Pick the hosting topology that matches your workload and budget without changing
 | Scale & workload | Typical bottleneck | FastAgent pattern | Quantified architecture impact |
 | --- | --- | --- | --- |
 | **1–20 background agents**<br>(PR review, AI SRE, daily briefs) | Always-on containers sit idle 95%+ of the day | **Sleep when idle** on Fly.io (`suspend`) or Railway (App Sleeping) woken via `POST /v1/invoke` | **~98% less idle compute** vs 24/7 containers (20 runs/day × 1 min ≈ 10 active hrs/mo vs 720 always-on hrs/mo) |
-| **100–1,000+ SaaS tenants**<br>(embedded product copilot) | Per-tenant services or 1,000 DB pools exhaust Postgres connections | **Embed in your backend** via `openAgent()` + shared `openPostgresDatabase({ url }, { max: 20 })` (`codingTools: false`) | **0 extra services**; **1 fixed 20-connection Postgres pool** serves 1,000 name-partitioned tenants with 1 schema migration |
-| **100–10,000+ isolated users**<br>(per-user sandboxed assistants) | Operating hundreds of always-on VMs and idle costs | **Per-user AWS MicroVMs** on Bedrock AgentCore + serverless Aurora DSQL | **0 always-on servers**; on-demand microVMs recycle when idle and resume cleanly from DSQL |
+| **100–1,000+ SaaS tenants**<br>(embedded product copilot) | Per-tenant services, 1,000 DB pools, or lease heartbeats overload Postgres | **Embed in your backend** via `openAgent()` + shared `openPostgresDatabase({ url }, { max: 20 })` (`codingTools: false`) | **0 extra services**; **1 fixed 20-connection pool** with **batched lease renewals (up to 500 tenants/query)** and cooperative idle handoff across replicas |
+| **100–10,000+ isolated users**<br>(per-user coding & shell assistants) | Operating hundreds of always-on VMs and idle costs | **Per-user AWS MicroVMs** on Bedrock AgentCore + **1 shared serverless Aurora DSQL cluster** (`pi-durable` or `dsh`) | **0 always-on servers**; microVMs recycle when idle and resume from 1 shared DSQL cluster (or swap to fixed-price Postgres via `FASTAGENT_DATABASE_URL`) |
+| **Local-first desktop apps**<br>(Electron, local workspace tools) | Shipping Python runtimes or forcing cloud relays for local files | **Embed locally** via `openAgent()` + built-in `node:sqlite` + optional `dsh` OS sandbox | **0 cloud services** and **0 native DB builds**; offline durable state with dynamic model pickers (`agent.info().models`) |
 
 <sub>Single-writer fencing guarantees one active owner per instance (default limits: `inFlightPerProcess: 100`, `queuedPerSession: 20`). Scale horizontally across instances or automatically per user on AgentCore.</sub>
 
@@ -224,7 +225,7 @@ Clone a complete working agent from [`examples/`](https://github.com/fastagent-s
 
 ## Architecture & operations
 
-Every caller speaks one contract: the [Agent API](https://fastagent.sh/docs/agent-api/). Swap models, storage backends, hosts, or execution harnesses without changing your agent or application code:
+Every caller speaks one contract: the [Agent API](https://github.com/fastagent-sh/fastagent/blob/main/docs/agent-api.md). Swap models, storage backends, hosts, or execution harnesses without changing your agent or application code:
 
 ```text
 Callers (CLI · openAgent · @fastagent-sh/client · client-agentcore · @fastagent-sh/pi-remote)
@@ -243,7 +244,7 @@ Callers (CLI · openAgent · @fastagent-sh/client · client-agentcore · @fastag
 
 - **Privacy-safe tracing:** Export cost, token, and tool spans via OpenTelemetry (`OTEL_EXPORTER_OTLP_ENDPOINT`) without logging prompts or answers.
 - **Remote CLI & OAuth:** Manage live instances (`fastagent remote add prod <url>`) and complete provider OAuth remotely (`fastagent login openai-codex --remote prod`).
-- **Live terminal attach:** Inspect or steer running remote sessions from your terminal with [`@fastagent-sh/pi-remote`](https://fastagent.sh/docs/remotes/).
+- **Live terminal attach:** Inspect or steer running remote sessions from your terminal with [`@fastagent-sh/pi-remote`](https://github.com/fastagent-sh/fastagent/blob/main/docs/remotes.md).
 
 ## Packages & documentation
 
@@ -256,12 +257,12 @@ Callers (CLI · openAgent · @fastagent-sh/client · client-agentcore · @fastag
 | [`@fastagent-sh/harness-dsh`](https://github.com/fastagent-sh/fastagent/blob/main/packages/harness-dsh/README.md) | Optional DeepSeek Harness (`@deepseek-ai/dsh`) adapter with kernel OS sandboxing (experimental) | Node ≥ 24.15 (26 LTS recommended) |
 | [`@fastagent-sh/pi-remote`](https://github.com/fastagent-sh/fastagent/blob/main/packages/pi-remote/README.md) | Pi TUI extension (`/fa`) for live terminal access to deployed HTTP or AgentCore instances | Node ≥ 24.15 (26 LTS recommended) |
 
-**Docs at [fastagent.sh/docs](https://fastagent.sh/docs/):**
-[Overview](https://fastagent.sh/docs/overview/) · [Quickstart](https://fastagent.sh/docs/quickstart/) · [Packaging & CI](https://fastagent.sh/docs/packaging-and-ci/) · [AI Guide](https://fastagent.sh/docs/ai-start/) · [Architecture](https://fastagent.sh/docs/architecture/) · [Agent API](https://fastagent.sh/docs/agent-api/) · [Configuration](https://fastagent.sh/docs/configuration/) · [MCP](https://fastagent.sh/docs/mcp/) · [Embedding](https://fastagent.sh/docs/embedding/) · [Deploy](https://fastagent.sh/docs/deploy/) · [AgentCore](https://fastagent.sh/docs/agentcore/) · [Remotes](https://fastagent.sh/docs/remotes/) · [CLI](https://fastagent.sh/docs/cli/) · [API Reference](https://fastagent.sh/docs/api-reference/)
+**Documentation ([docs/](https://github.com/fastagent-sh/fastagent/blob/main/docs/README.md)):**
+[Overview](https://github.com/fastagent-sh/fastagent/blob/main/docs/overview.md) · [Quickstart](https://github.com/fastagent-sh/fastagent/blob/main/docs/quickstart.md) · [Packaging & CI](https://github.com/fastagent-sh/fastagent/blob/main/docs/packaging-and-ci.md) · [AI Guide](https://github.com/fastagent-sh/fastagent/blob/main/docs/ai-start.md) · [Architecture](https://github.com/fastagent-sh/fastagent/blob/main/docs/architecture.md) · [Agent API](https://github.com/fastagent-sh/fastagent/blob/main/docs/agent-api.md) · [Configuration](https://github.com/fastagent-sh/fastagent/blob/main/docs/configuration.md) · [MCP](https://github.com/fastagent-sh/fastagent/blob/main/docs/mcp.md) · [Embedding](https://github.com/fastagent-sh/fastagent/blob/main/docs/embedding.md) · [Deploy](https://github.com/fastagent-sh/fastagent/blob/main/docs/deploy.md) · [AgentCore](https://github.com/fastagent-sh/fastagent/blob/main/docs/agentcore.md) · [Remotes](https://github.com/fastagent-sh/fastagent/blob/main/docs/remotes.md) · [CLI](https://github.com/fastagent-sh/fastagent/blob/main/docs/cli.md) · [API Reference](https://github.com/fastagent-sh/fastagent/blob/main/docs/api-reference.md) · [Troubleshooting](https://github.com/fastagent-sh/fastagent/blob/main/docs/troubleshooting.md)
 
 ## Community & status
 
-FastAgent is pre-1.0 with the [Agent API](https://fastagent.sh/docs/agent-api/) as its stable contract. See [releases](https://github.com/fastagent-sh/fastagent/releases), join [GitHub Discussions](https://github.com/fastagent-sh/fastagent/discussions), or read [Contributing](https://github.com/fastagent-sh/fastagent/blob/main/CONTRIBUTING.md), [Code of Conduct](https://github.com/fastagent-sh/fastagent/blob/main/CODE_OF_CONDUCT.md), [Security](https://github.com/fastagent-sh/fastagent/blob/main/SECURITY.md), and the [MIT license](https://github.com/fastagent-sh/fastagent/blob/main/LICENSE).
+FastAgent is pre-1.0 with the [Agent API](https://github.com/fastagent-sh/fastagent/blob/main/docs/agent-api.md) as its stable contract. See [releases](https://github.com/fastagent-sh/fastagent/releases), join [GitHub Discussions](https://github.com/fastagent-sh/fastagent/discussions), or read [Contributing](https://github.com/fastagent-sh/fastagent/blob/main/CONTRIBUTING.md), [Code of Conduct](https://github.com/fastagent-sh/fastagent/blob/main/CODE_OF_CONDUCT.md), [Security](https://github.com/fastagent-sh/fastagent/blob/main/SECURITY.md), and the [MIT license](https://github.com/fastagent-sh/fastagent/blob/main/LICENSE).
 
 > ☁️ **Prefer managed hosting?** FastAgent Cloud adds managed multi-instance durability, sleep-when-idle hosting, and observability while self-hosting stays free. [Join the waitlist →](https://tally.so/r/44DVMB)
 

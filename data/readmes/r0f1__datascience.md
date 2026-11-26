@@ -352,7 +352,8 @@ Faster t-SNE implementations: [tsne-cuda](https://github.com/CannyLab/tsne-cuda)
 [linearsdr](https://github.com/HarrisQ/linearsdr) - Linear Sufficient Dimension Reduction (R package).  
 [PHATE](https://github.com/KrishnaswamyLab/PHATE) - Tool for visualizing high dimensional data.  
 [datamapplot](https://github.com/TutteInstitute/datamapplot) - Tool for visualizing high dimensional data.  
-[bonsai](https://github.com/dhdegroot/Bonsai-data-representation/) - Dimension Reduction accurate and interpretable data-representation (scRNA-seq).  
+[bonsai](https://github.com/dhdegroot/Bonsai-data-representation/) - Dimensionity Reduction accurate and interpretable data-representation (scRNA-seq).  
+[flodr](https://github.com/daenuprobst/flodr) - Dimensionality Reduction built on an invertible normalising flow.  
 
 #### Visualization
 [All charts](https://datavizproject.com/)  
@@ -864,6 +865,8 @@ Understanding SVM Regression: [slides](https://cs.adelaide.edu.au/~chhshen/teach
 [DeepDPM](https://github.com/BGU-CS-VIL/DeepDPM) - Deep Clustering With An Unknown Number of Clusters.  
 [generalized-kmeans-clustering](https://github.com/derrickburns/generalized-kmeans-clustering) - Generalized k-means clustering.  
 [evoc](https://github.com/TutteInstitute/evoc) - Embedding Vector Oriented Clustering.  
+[emeans](https://github.com/facebookresearch/faiss/tree/main/contrib/e_means) - Faster k-means clustering, [post](https://e-means.github.io/).  
+[SuperKMeans](https://github.com/cwida/SuperKMeans) - Faster k-means, [post](https://www.lkuffo.com/superemeans/)
 
 ##### Clustering Evalutation
 * [Wagner, Wagner - Comparing Clusterings - An Overview](https://publikationen.bibliothek.kit.edu/1000011477/812079)
@@ -1012,8 +1015,4 @@ RandomSurvivalForests (R packages: randomForestSRC, ggRandomForests).
 
 #### Outlier Detection & Anomaly Detection
 [sklearn](https://scikit-learn.org/stable/modules/outlier_detection.html) - Isolation Forest and others.  
-[pyod](https://pyod.readthedocs.io/en/latest/pyod.html) - Outlier Detection / Anomaly Detection.  
-[eif](https://github.com/sahandha/eif) - Extended Isolation Forest.  
-[AnomalyDetection](https://github.com/twitter/AnomalyDetection) - Anomaly detection (R package).  
-[luminol](https://github.com/linkedin/luminol) - Anomaly Detection and Correlation library from Linkedin.  
-Distances for comparing histograms and det
+[pyod](https://pyod.readthedocs.io/en/la

@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="banner.svg" alt="uncensored-ai-chat" width="840" />
-
 # UncensoredAiChat — Local Unfiltered LLM Chat with Character Presets (Portable x64 Build, JSON Configuration)
 
 <p><strong>UncensoredAiChat — Local Unfiltered LLM Chat with Character Presets (Portable x64 Build, JSON Configuration): Local, private, unfiltered AI chat. Your machine, your rules. Native 64-bit portable build with hot-reloadable JSON configuration, low-overhead runtime, and prebuilt portable release.</strong></p>
@@ -95,3 +93,8 @@ cmake --build build --config Release
 
 ---
 <sub>Indexed tags: uncensored-ai-chat, llm, local, uncensored, privacy, chat, cli, developer-tools, open-source, windows, automation, productivity, cpp, portable, prebuilt, tools</sub>
+
+## Keywords
+
+llm local uncensored privacy chat unfiltered-ai-chat local-ai-chat-uncensored uncensored-ai-chat windows portable prebuilt x64 free download
+related: llm, local, uncensored, privacy, chat

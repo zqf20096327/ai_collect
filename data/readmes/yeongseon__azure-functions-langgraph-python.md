@@ -31,8 +31,12 @@ Save as `function_app.py` in a Functions app with `host.json`:
 from typing import TypedDict
 from langgraph.graph import START, END, StateGraph
 from azure_functions_langgraph import LangGraphApp
+
+
 class State(TypedDict):
     message: str
+
+
 builder = StateGraph(State)
 builder.add_node("echo", lambda state: {"message": state["message"]})
 builder.add_edge(START, "echo")
@@ -50,6 +54,9 @@ project files, local setup and deployment. To start from a new Functions project
 of your own, the Quickstart's section
 [Start from a new Functions project](docs/getting-started.md#start-from-a-new-functions-project)
 shows the scaffolding.
+
+For upstream provenance and separately recorded Azure deployment evidence, see
+the [official LangGraph example](examples/official_langgraph_basic/).
 
 ## Deploy to Azure (default path)
 
@@ -82,6 +89,11 @@ and [security boundaries](docs/security.md). A Blob lease does not fence checkpo
 writes once it is lost; the opt-in `guard_checkpoint_writes` guard only reduces writes
 after the lock *detects* loss and is not fencing ([contract and limits](docs/production-guide.md#opt-in-guard-for-blob-checkpoint-writes-790)).
 
+Choosing the experimental [Platform SDK example](examples/platform_compat_sdk/)?
+Read its [SDK adoption checklist](docs/adapter-reference.md#sdk-adoption-checklist)
+before deployment: supported operations, separate checkpoint/thread retention,
+process-local defaults, scanning searches and unavailable async lifecycle calls.
+
 ## Recommended learning path
 
 Optional, after the [default path](docs/tutorial-5-min.md). These are independent,
@@ -91,6 +103,10 @@ capability-focused apps, not cumulative production templates or prerequisites:
 2. [Conversation memory](examples/conversation_memory/)
 3. [Tool calling](examples/tool_calling_agent/)
 4. [Persistent production wiring](examples/production_persistent_agent/)
+
+For one observed keyless deployment and its measured limitations, see the
+[Flex Consumption + Blob production reference](docs/production-reference.md).
+It records one successful live run, not repeatability or release certification.
 
 Also optional: [an official LangGraph guide graph hosted with minimal changes](examples/official_langgraph_basic/), an official-example adaptation (not one of the custom examples above).
 

@@ -91,6 +91,47 @@ Deployment profiles and hardening references:
 
 <details>
 
+<summary><strong>Pack safety check tightened in v1.3.6</strong></summary>
+
+- The pack code-safety check now also rejects dynamic-execution calls written with whitespace
+  between the function name and its parenthesis. Every pack that was rejected before is still
+  rejected, with the same message.
+- The operator doctor checks whether `pre-commit` is installed without importing it, so the
+  check no longer runs the package's own startup code. Its results are unchanged for a working
+  or a missing installation.
+- Internal code that automated source scanners misread as privilege escalation or dynamic
+  execution was rewritten without changing behavior.
+
+</details>
+
+<details>
+
+<summary><strong>Host compatibility updated in v1.3.5</strong></summary>
+
+- ComfyUI `0.46.0` at `da8bd08e`, with bundled frontend `1.59.11` or standalone frontend
+  release `1.61.8`, passed eighteen browser checks per frontend in an isolated CPU host on
+  2026-11-24, including new checks for workflow binding, the node menu and extension
+  warnings. Desktop surfaces remain unverified.
+- Parameter Lab binds each plan to the workflow it was generated or loaded from. Running,
+  replaying or queueing a plan after switching to another workflow now stops with a message,
+  instead of writing values into the workflow that happens to be open.
+- The in-canvas context toolbox entries now appear in the node right-click menu. They were
+  registered too late in startup and could be missing entirely; they are now added through
+  the frontend's node-menu hook, which also avoids the frontend's deprecated monkey-patching
+  warning. Frontends without that hook keep the previous fallback.
+- Webhook, webhook validation and submission, and preflight requests now read a body that
+  arrives in several network chunks in full, up to the 64 KiB limit, before parsing it or
+  checking its signature. Previously only the first chunk could be read, so a valid request
+  could fail its JSON or signature check.
+- When a real-host validation step fails, the output now ends with a bounded, redacted tail of
+  the failing command's output, with credentials, tokens and home-directory paths masked, so
+  the failure names its cause.
+- The CI browser lanes support Ubuntu 26.04 runners with Playwright `1.65`, and the mocked
+  browser test server listens on loopback only.
+</details>
+
+<details>
+
 <summary><strong>Host compatibility updated in v1.3.2</strong></summary>
 
 - ComfyUI `0.43.0` at `7c4390a6`, with bundled frontend `1.57.6` or standalone
@@ -165,34 +206,6 @@ Deployment profiles and hardening references:
   separate, unexecuted subjects.
 - The scheduled release download now follows the pinned version and digest policy;
   acceptance receipts follow the applicable self-review or independent-review rule.
-
-</details>
-
-<details>
-
-<summary><strong>Operator alerts now retire when their condition ends</strong></summary>
-
-- A dismissed alert can appear again. Previously, dismissing a notification left a permanent
-  record that suppressed any identical alert for the life of that browser profile, so
-  dismissing a connectivity error silently disabled connectivity errors for good. Producers
-  now resolve a condition that has ended, which clears the record and lets a genuine
-  recurrence show. Dismissing an error while its condition is still ongoing still works as
-  before, so a polling check cannot undo the dismissal.
-- Connectivity errors are retired automatically when the connection returns, instead of
-  remaining on screen as a red error describing a condition that ended minutes earlier. The
-  high-load warning is retired the same way once the host stops dropping events.
-- A durable connectivity error is now written only after repeated consecutive failures. The
-  operator is still warned immediately on the first failed health check, but that immediate
-  warning leaves no record, so a routine ComfyUI restart no longer leaves a permanent error
-  behind. Isolated blips do not accumulate, because the failure count resets on any healthy
-  check.
-- A startup diagnostic that reported a missing host API shim on every page load was repaired.
-  It checked an identifier the module never imported, so it always fired even though the shim
-  was working correctly; it now checks the real binding and describes only what it can
-  actually detect.
-- Verified against a running ComfyUI host: a healthy session leaves no stored alerts, a
-  sustained outage records exactly one, recovery clears it, and the false startup warning is
-  gone.
 
 </details>
 
@@ -488,7 +501,7 @@ Canonical DOM/class ownership is now centered on `openclaw-*`; legacy `moltbot-*
 
 The sidebar now also resolves and stamps its active host surface (`standalone_frontend`, legacy
 `desktop`, or current managed-install `comfy_desktop`) and reference metadata at mount time, so
-Desktop `0.9.4` embedded-frontend lag against standalone frontend release `1.60.0` is explicit and
+Desktop `0.9.4` embedded-frontend lag against standalone frontend release `1.61.8` is explicit and
 testable. The current Comfy-Desktop `1.0.32-rc.1` reference keeps hosted component versions
 installation-specific and recognizes `window.__comfyDesktop2` as presence metadata only; bridge
 detection does not authorize privileged capability calls.
@@ -518,7 +531,7 @@ The OpenClaw sidebar includes these built-in tabs. Some tabs are capability-gate
 | `Packs` | Dedicated pack lifecycle tab for import/export/delete under admin boundary. | [API Overview](#api-overview) |
 | `PNG Info` | Inspects saved generation images through drag-and-drop, file picker, or scoped paste, parses A1111 infotext plus ComfyUI `prompt` / `workflow` metadata, shows extracted prompt and generation fields when recoverable, and keeps raw metadata visible for operator inspection. | [API Overview](#api-overview), [Troubleshooting](#troubleshooting) |
 | `Model Manager` | Searches model catalog/install records, queues managed downloads, monitors task lifecycle, and imports completed tasks into the managed install root with current ComfyUI folder-key normalization, including `gligen`, `latent_upscale_models`, `hypernetworks`, `photomaker`, `model_patches`, `geometry_estimation`, and `detection`, plus legacy type aliases. User-managed `datasets` remain outside model inventory and install destinations. | [API Overview](#api-overview), [Troubleshooting](#troubleshooting) |
-| `Parameter Lab` | Runs bounded sweep/compare experiments, stores history, and replays parameters back into the graph while preserving non-numeric host node IDs. | [Operator UX Features](#operator-ux-features) |
+| `Parameter Lab` | Runs bounded sweep/compare experiments, stores history, and replays parameters back into the workflow each plan was built from while preserving non-numeric host node IDs. | [Operator UX Features](#operator-ux-features) |
 
 ## Operator UX Features
 
@@ -541,15 +554,18 @@ by a transient banner that leaves no record.
 
 ### In-canvas context toolbox
 
-Right-click a node and open the `OpenClaw` menu to access:
+Right-click a node. After a separator, the node menu lists these `OpenClaw:` entries:
 
-- `Inspect`: jump to the Explorer troubleshooting path.
-- `Doctor`: run diagnostics and show readiness feedback.
-- `Queue Status`: jump directly to queue/job monitoring.
-- `Compare`: open Parameter Lab in compare setup mode for the selected node.
-- `Settings`: jump to OpenClaw settings.
+- `OpenClaw: Inspect`: jump to the Explorer troubleshooting path.
+- `OpenClaw: Doctor`: run diagnostics and show readiness feedback.
+- `OpenClaw: Queue Status`: jump directly to queue/job monitoring.
+- `OpenClaw: Compare...`: open Parameter Lab in compare setup mode for the selected node. It
+  appears only when the node has a widget that can be compared.
+- `OpenClaw: Settings`: jump to OpenClaw settings.
 
 These actions are capability-aware and degrade to safe guidance when optional backend capabilities are unavailable.
+On current frontends the entries are added through the frontend's node-menu hook; frontends
+without that hook use a compatible fallback.
 
 ### Parameter Lab history and replay
 
@@ -557,6 +573,8 @@ Parameter Lab now supports experiment history and run replay:
 
 - `History` lists saved experiments from local state.
 - `Load` opens stored experiment details and run statuses.
+- A plan is bound to the workflow it was generated or loaded from; running, replaying or
+  queueing it after switching workflows stops with a message instead of writing elsewhere.
 - `Replay` applies a selected run's parameter values back into the active workflow graph while
   preserving complete node IDs, including IDs containing colons. Shared subgraph definitions
   are resolved through their instance paths; ambiguous IDs or targets fail before any write.

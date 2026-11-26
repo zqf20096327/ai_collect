@@ -77,12 +77,32 @@ actor_loss.backward()
 Toy `HalfCheetah-v5` experiment - trains an `x-ppo` expert, then tracks an 8-dim pose subset (no velocities or task reward) through the learned world model
 
 ```bash
-$ uv run train_supermimic_cheetah.py
+$ uv run train_cheetah.py
 ```
 
-<img src="./assets/cheetah_expert_vs_supermimic.webp" width="500px"></img>
+<img src="./assets/cheetah/cheetah_expert_vs_supermimic.webp" width="500px"></img>
 
-<img src="./assets/cheetah_convergence.png" width="500px"></img>
+<img src="./assets/cheetah/cheetah_convergence.png" width="500px"></img>
+
+[RUKA-v2](https://github.com/ruka-hand-v2/RUKA-v2) hand experiment - tracks real human hand motion under MuJoCo torque control
+
+```bash
+$ uv run train_ruka_hand.py
+```
+
+<img src="./assets/ruka/human_vs_ruka_supermimic.webp" width="700px"></img>
+
+<img src="./assets/ruka/ruka_convergence.png" width="500px"></img>
+
+[Unitree Go2](https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_go2) quadruped experiment - tracks held-out real German Shepherd motion capture under MuJoCo rigid-body ground contact physics
+
+```bash
+$ uv run train_unitree_dog.py
+```
+
+<img src="./assets/go2/dog_vs_go2_supermimic.webp" width="700px"></img>
+
+<img src="./assets/go2/go2_convergence.png" width="500px"></img>
 
 ## Citations
 
@@ -131,5 +151,66 @@ $ uv run train_supermimic_cheetah.py
     archivePrefix = {arXiv},
     primaryClass = {cs.GR},
     url     = {https://arxiv.org/abs/2104.02180},
+}
+```
+
+```bibtex
+@misc{gladstone2026explorativemodelingunlockingpretraining,
+    title   = {Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation},
+    author  = {Alexi Gladstone and Heng Ji and Yilun Du},
+    year    = {2026},
+    eprint  = {2607.27372},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2607.27372},
+}
+```
+
+```bibtex
+@misc{jia2025antitheticnoisediffusionmodels,
+    title   = {Antithetic Noise in Diffusion Models},
+    author  = {Jing Jia and Sifan Liu and Bowen Song and Wei Yuan and Liyue Shen and Guanyang Wang},
+    year    = {2025},
+    eprint  = {2506.06185},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2506.06185},
+}
+```
+
+```bibtex
+@misc{zorin2025rukarethinkingdesignhumanoid,
+    title   = {RUKA: Rethinking the Design of Humanoid Hands with Learning},
+    author  = {Anya Zorin and Irmak Guzey and Billy Yan and Aadhithya Iyer and Lisa Kondrich and Nikhil X. Bhattasali and Lerrel Pinto},
+    year    = {2025},
+    eprint  = {2504.13165},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.RO},
+    url     = {https://arxiv.org/abs/2504.13165},
+}
+```
+
+```bibtex
+@misc{liu2026rukav2tendondrivenopensource,
+    title   = {Ruka-v2: Tendon Driven Open-Source Dexterous Hand with Wrist and Abduction for Robot Learning},
+    author  = {Xinqi Lucas Liu and Ruoxi Hu and Alejandro Ojeda Olarte and Zhuoran Chen and Kenny Ma and Charles Cheng Ji and Lerrel Pinto and Raunaq Bhirangi and Irmak Guzey},
+    year    = {2026},
+    eprint  = {2603.26660},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.RO},
+    url     = {https://arxiv.org/abs/2603.26660},
+}
+```
+
+```bibtex
+@inproceedings{peng2020learningagileroboticlocomotion,
+    title     = {Learning Agile Robotic Locomotion Skills by Imitating Animals},
+    author    = {Xue Bin Peng and Erwin Coumans and Tingnan Zhang and Tsang-Wei Edward Lee and Jie Tan and Sergey Levine},
+    booktitle = {Robotics: Science and Systems (RSS)},
+    year      = {2020},
+    eprint    = {2004.00784},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.RO},
+    url       = {https://arxiv.org/abs/2004.00784},
 }
 ```

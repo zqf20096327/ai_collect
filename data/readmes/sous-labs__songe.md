@@ -9,8 +9,12 @@
   <a href="#-how-it-works">How it works</a> •
   <a href="#-commands">Commands</a> •
   <a href="ROADMAP.md">Roadmap</a> •
-  <a href="https://discord.gg/cBEywVkXjY">Discord</a> •
+  <a href="https://discord.gg/6bYCjyjr5z">Discord</a> •
   <a href="https://souslabs.ai">Website</a>
+</p>
+
+<p align="center">
+  <a href="https://discord.gg/6bYCjyjr5z"><img src="https://img.shields.io/badge/Join_our_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join our Discord" height="36"></a>
 </p>
 
 <p align="center">
@@ -19,11 +23,15 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/sous-labs/songe.svg" alt="License: Apache-2.0"></a>
 </p>
 
-Use your local model as usual through opencode, pi or any OpenAI-compatible
-tool. While you work, Songe notices what happens after each of the model's
-actions: the tool result, the error, your next message. When your agent is
-quiet, it teaches the model to see those coming. A new version is used only
-if it passes its checks, and nothing ever leaves your machine.
+Songe is a training engine for the model you already run locally. It sits
+between your agent and your model server as an OpenAI-compatible proxy, logs
+how each of the model's actions turned out, and fine-tunes a LoRA adapter on
+those lessons while the agent is idle. A new version is served only if it
+does clearly better than the one in use, and everything stays on your machine
+unless you enable the optional cloud learning.
+
+Training requires Apple Silicon (MLX) or an NVIDIA or AMD GPU (PyTorch);
+without one, Songe proxies and records only.
 
 ## ✨ Highlights
 
@@ -36,7 +44,9 @@ if it passes its checks, and nothing ever leaves your machine.
   own conversations; one click goes back to any earlier version.
 - **Stays out of the way.** Runs only when your agent is quiet, memory is free
   and the battery is fine, and stops the moment you are back.
-- **Private.** No account, no telemetry, no cloud. Songe never runs your tools.
+- **Private.** No account, no telemetry, no cloud unless you opt in: `songe
+  cloud on` lets the nightly Dream ask a cloud model you choose, with secrets
+  redacted and a nightly budget. Songe never runs your tools.
 
 ## 📥 Install
 
@@ -109,16 +119,16 @@ Tried Songe on another setup? Share the result on the
 
 ```text
  your agent ──► Songe (127.0.0.1:7613) ──► your model server
-                   │ records what happened
+                   │ an OpenAI-compatible proxy: records what happened
                    ▼
             when you are away: a Dream
-   read lessons ─► practice ─► train ─► check ─► use only if better
+   read lessons ─► practice ─► train a LoRA adapter ─► check ─► use only if better
 ```
 
 | | Quick Dream | Deep Dream |
 | --- | --- | --- |
 | Takes | a few minutes | an hour or more |
-| Does | adds the preferences you stated or showed to the model's instructions | writes practice from your lessons and trains a small adapter on it |
+| Does | adds the preferences you stated or showed to the model's instructions | writes practice from your lessons and fine-tunes a LoRA adapter on it |
 | You see | each new preference, with a before/after where the answer changes | why the new version was or was not used |
 | Undo | undo the Quick Dream, or remove one preference | go back to any earlier version |
 
@@ -134,7 +144,7 @@ disappears: it keeps going on the page, or says why it stopped.
 - **Practice.** For each lesson your model writes short practice scenes in
   your agent's own tools. Your real conversations are never trained on.
 - **Training.** The model as it was, shown the lesson, is the teacher; the
-  same model with a small adapter, shown only the scene, is the student
+  same model with a LoRA adapter, shown only the scene, is the student
   (on-policy distillation). Earlier skills are rehearsed so they stay.
 - **Checking.** At the moments you reacted to, the version in use and the new
   one each answer, and a judge compares what they do. The new version is used
@@ -150,12 +160,14 @@ once, and trains on what fits. See [DESIGN.md](DESIGN.md).
 | Command | What it does |
 | --- | --- |
 | `songe` | what it is doing |
+| `songe status --training [MODEL]` | resolved Deep Dream settings and where they come from |
 | `songe open` | the dashboard in your browser |
 | `songe models` | each model, and whether it dreams on its own |
 | `songe models MODEL on\|off` | auto-dream for one model |
 | `songe sleep` | start a Deep Dream now |
 | `songe undo MODEL` | go back one version |
 | `songe pause` / `songe resume` | stop and restart learning |
+| `songe cloud on\|off\|status\|test` | optional: let Dreams ask a cloud model you choose |
 | `songe doctor` | check the setup |
 | `songe forget` | delete recorded conversations (learned versions stay) |
 | `songe uninstall` | stop the service and restore your agent settings |
@@ -186,7 +198,7 @@ service moves to the new version by itself in a quiet moment.
 
 Where Songe is going: [ROADMAP.md](ROADMAP.md). Ideas and bugs are welcome as
 [issues](https://github.com/sous-labs/songe/issues). Questions and results from your nights go in
-[Discord](https://discord.gg/cBEywVkXjY). To contribute, see
+[Discord](https://discord.gg/6bYCjyjr5z). To contribute, see
 [CONTRIBUTING.md](CONTRIBUTING.md). Security reports: [SECURITY.md](SECURITY.md).
 
 Licensed under [Apache-2.0](LICENSE).

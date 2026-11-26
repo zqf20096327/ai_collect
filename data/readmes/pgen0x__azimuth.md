@@ -7,7 +7,7 @@
 
 # Azimuth — Concentrated-Liquidity Pool Signal Daemon for AI Agents
 
-[![Version](https://img.shields.io/static/v1?label=version&message=2.23.0&color=informational)](CHANGELOG.md) <!-- x-release-please-version -->
+[![Version](https://img.shields.io/static/v1?label=version&message=2.26.0&color=informational)](CHANGELOG.md) <!-- x-release-please-version -->
 [![Go Version](https://img.shields.io/badge/go-1.22%2B-00ADD8?logo=go&logoColor=white)](go.mod)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-yellow)](#project-status)
@@ -544,7 +544,8 @@ All daemon config is via environment (see `.env.example`):
 | `ROBINHOOD_MAX_OPEN_POSITIONS` | Position cap for the venue, counted in ladders (funded pools) across all modes |
 | `ROBINHOOD_MAX_PER_TOKEN` | How many of those slots one underlying may hold (default 1, 0 disables) |
 | `ENABLE_MOMENTUM_GATE` | DexScreener downtrend filter (fails open) |
-| `ENABLE_AUDIT_GATE` | Jupiter token-audit gate: rejects >30% bot holders, ships bot % + global fees in the signal (fails open) |
+| `ENABLE_AUDIT_GATE` | Jupiter token-audit gate: rejects >30% bot holders (pulse: above `PULSE_MAX_BOT_HOLDERS_PCT`), ships bot % + global fees in the signal (fails open) |
+| `PULSE_MAX_BOT_HOLDERS_PCT` | Pulse bot-holder bar for the audit gate and the pipeline's bots penalty (default 25; invalid or outside (0, 100] keeps 25). `dlmm_stats.py --bot-band` reports the 25-30 band against its kill rule |
 | `ENABLE_PVP_CHECK` | same-symbol rival detection: flags candidates contested by an established token with its own live DLMM pool — advisory `is_pvp` + rival stats, never rejects (fails open) |
 | `LONE_MIN_SCORE` | Conviction floor for single-candidate batches (degen score 0–100, default 50, 0 disables) |
 
@@ -573,7 +574,7 @@ installs the named units into `~/.config/systemd/user/` and enables them.
 | `azimuth-sol-price-path.timer` | research | `dlmm_price_path.py` every minute | candidate price paths in `memories/` | off | `--with-research` |
 | `azimuth-sol-net-research@.timer` | research | `dlmm_net_experiment.py dry-tick` per named instance | `~/.local/state/azimuth/optimization/<name>/` | off | copied by `--with-research`, enable `@<name>` by hand |
 | `azimuth-grad-paper` | research | `grad_paper.py`, long-running: graduation paper-trader polling public GeckoTerminal/Jupiter | paper trades in `memories/grad_paper/`; no wallet, no tx | off | `--with-paper` |
-| `azimuth-lp-paper` | research | `lp_majors_paper.py`, long-running: modelled two-sided DLMM positions in fixed majors/tokenized-stock pools from the public Meteora datapi | hourly paper rows in `memories/lp_majors_paper/`; no wallet, no tx | off | `--with-lp-paper` |
+| `azimuth-lp-paper` | research | `lp_majors_paper.py`, long-running: modelled two-sided DLMM positions in fixed majors/tokenized-stock pools from the public Meteora datapi, with bin liquidity from a keyless public RPC | hourly paper rows in `memories/lp_majors_paper/`; no wallet, no tx | off | `--with-lp-paper` |
 
 Only the rent timer sends transactions, so it has its own flag. `--with-ops`
 installs its files but does not enable it.

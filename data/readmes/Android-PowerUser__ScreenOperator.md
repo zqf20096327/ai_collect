@@ -1,6 +1,6 @@
 ## Screen Operator
 ### Operates the screen with AI
-This Android app operates the screen with commands from vision LLMs.
+This Android app operates the screen with commands from vision LLMs (AI Agent).
 
 ### OpenClaw for Android
 It can now execute commands directly in Termux via API. After each update, click "Restore System Message" to access the new tools!
@@ -10,6 +10,8 @@ It can now execute commands directly in Termux via API. After each update, click
 
 
 ## Download and install
+
+The Play Store version is NO longer supported.
 
 [Screen Operator v5.0.apk](https://github.com/Android-PowerUser/ScreenOperator/releases/download/v2026.11.12/ScreenOperator.v5.0.apk)
 
@@ -37,6 +39,6 @@ Updates in Github are much faster than on the Play Store.
 
 #### Note
 
-
+The Google Play Store does not tolerate some features of the app and the updates are released too slowly. In addition, Google increases the development effort many times over. That's why the app is discontinued in the Play Store.
 
 If you in your Google account identified as under 18, Google is (unreasonably) denying you the API key. Use Freedom subscription as a workaround.

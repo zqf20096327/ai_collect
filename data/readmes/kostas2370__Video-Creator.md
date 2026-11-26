@@ -627,10 +627,11 @@ For nginx file acceleration, set `MEDIA_ACCEL_REDIRECT=true`; the supplied inter
 nginx location serves bytes only after Django authorizes the exact file. Keep the
 read-only media mount and never add a public media alias.
 
-Set a persistent `FIELD_ENCRYPTION_KEY` before storing user credentials and back it
-up securely. If unset, it is derived from `SECRET_KEY`; changing that secret then
-makes existing provider keys unreadable. Preserve the database, media storage, and
-private publishing snapshots across deployments.
+Set up [Vault Transit](docs/credential-security.md) before storing provider credentials
+or connecting publishing accounts. Stored credentials must be Vault ciphertext.
+Before enabling Vault on an existing database, manually remove incompatible provider
+credentials and connection tokens, then save fresh keys and reconnect accounts after
+release.
 
 PostgreSQL uses the persistent `postgres-data` volume and is available only on the
 Compose network. Set a unique `POSTGRES_PASSWORD` in `backend/.env` before starting.
@@ -714,6 +715,7 @@ failures. Keep logs private because provider errors may contain sensitive detail
 | [Rendering](docs/rendering.md) | Timing, composition, export quality, scene caching, and failure recovery |
 | [In-app guide](docs/guide.md) | Task walkthroughs, guide search, and maintaining user instructions |
 | [Frontend](frontend/README.md) | Development server, builds, and frontend checks |
+| [Search discovery](docs/search-discovery.md) | Public homepage, canonical URLs, sitemap and robots setup |
 | [Screenshot gallery](docs/screenshots.md) | Current screens, editor panels, dialogs, and mobile audio |
 | [AI video providers](docs/ai-video-providers.md) | Provider setup, references, timing, and limitations |
 | [Prompting](docs/prompting.md) | Storyboard and visual prompt assembly, with complete GPT request examples |

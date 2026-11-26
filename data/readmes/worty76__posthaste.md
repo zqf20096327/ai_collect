@@ -57,6 +57,9 @@ you turn on AI polish or experimental device sync yourself.
 - **Later** — press L on a to-do you won't get to today. It leaves Today and
   the inbox and waits in Later, your backlog, until you bring it back. No dates,
   no reminders
+- **Focus pill** — press F on any open note in Today or the inbox to pin it to
+  a small, draggable always-on-top pill. Long titles scroll gently, steps show
+  progress, and ticking the pill completes the note and dismisses it
 - **Steps** — break a note into plain one-line steps in Note details: ↑ ↓ move,
   Space ticks, Enter edits, Mod+↑ Mod+↓ reorder, Backspace removes (with Undo).
   Ticking every step never completes the note, and steps never count in Today.
@@ -87,13 +90,13 @@ you turn on AI polish or experimental device sync yourself.
 In the capture window: Enter saves, Shift+Enter adds a line, Ctrl/⌘+Enter saves
 and starts another, Ctrl/⌘+1–9 toggles active projects, Ctrl/⌘+P opens the
 project picker, Ctrl/⌘+I polishes with AI (when enabled), Esc keeps a draft.
-In the inbox: ↑/↓ move, E edit, X complete, A archive, R reopen to the inbox,
+In the inbox: ↑/↓ move, E edit, X complete, F focus in floating pill, A archive, R reopen to the inbox,
 C copy, / search, L later (or back to the inbox), P set project, # open a
 project's page, Delete moves to Trash, 1–5 switch sections
 (Inbox, Today, Later, Archive, Trash), N new note, O note details, Ctrl/⌘+B
 collapses or expands the sidebar, Ctrl/⌘+, opens Settings. In Trash:
 R or Enter restores, Delete erases for good (it asks first). In the Today window: ↑/↓ move, X marks a
-note done or not done, L moves it to Later, ←/→ show the previous or next day,
+note done or not done, F pins it to the floating focus pill, L moves it to Later, ←/→ show the previous or next day,
 T comes back to today, C opens the calendar, Enter opens note details, Esc closes.
 In note details: Esc saves and closes, Ctrl/⌘+Enter marks done, Ctrl/⌘+O adds
 files, paste adds an image, Delete on a file removes it. All three global shortcuts are changeable in
@@ -151,7 +154,7 @@ Architecture, platform notes, sync design, and release checklist:
 Free Windows code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
 
 - **Builds and signing:** All official release installers are built from this repository's `main` branch via GitHub Actions (`.github/workflows/release.yml`). Releases are reviewed and approved by the repository maintainer (`@worty76`).
-- **Privacy:** Posthaste is local-first and collects no telemetry, analytics, or user data. All notes stay in a local SQLite database on your own machine.
+- **Privacy:** Posthaste is local-first and collects no telemetry, analytics, or user data. All notes stay in a local SQLite database on your own machine. (The posthaste.ink website counts visits and downloads in aggregate; the app sends nothing to it.)
 
 ## Licence
 

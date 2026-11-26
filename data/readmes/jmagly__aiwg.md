@@ -818,6 +818,7 @@ capabilities through manifests, docs, scripts, or nested skill packages.
 | **[Media Curator](agentic/code/frameworks/media-curator/)** | 6 agents, 21 skills | Assess mixed media collections, research sources, acquire approved material, tag metadata, verify integrity, create transcript sidecars, and prepare exports or research handoffs |
 | **[Research Complete](agentic/code/frameworks/research-complete/)** | 8 agents, 41 skills, 16 templates | Turn literature searches and PDFs into reviewable research artifacts: source records, grounded summaries, citation work, GRADE/FAIR-style quality checks, gap notes, and provenance |
 | **[Knowledge Base](agentic/code/frameworks/knowledge-base/)** | 3 skills, 5 templates | Build a linked AI-assisted wiki from loose sources, notes, entities, concepts, comparisons, and synthesis pages without forcing formal literature-review overhead |
+| **[CI/CD Complete](agentic/code/frameworks/cicd-complete/)** | 1 quickref, 2 schemas | Design your own CI/CD pipelines through assess, design, implement and operate phases; execution tooling planned (#4423–#4425) |
 | **[Ops Complete](agentic/code/frameworks/ops-complete/)** | 12 agents, 1 skill, 17 templates, 6 rules | Convert operational procedures into executable runbooks, inventories, incident reports, troubleshooting trees, and extension-backed ops workflows |
 | **[Security Engineering](agentic/code/frameworks/security-engineering/)** | 2 agents, 27 skills, 7 templates, 13 rules | Make applied security decisions for crypto primitives, chains of trust, auth factors, degraded modes, runtime secrets, supply-chain trust, physical threats, and DFIR readiness |
 | **[Validation Complete](agentic/code/frameworks/validation-complete/)** | 1 skill | Add focused validation workflow support where a project needs reviewable checks without adopting a full lifecycle framework |
@@ -985,7 +986,7 @@ keeps durable categories and examples.
 
 | Category | Examples |
 |----------|---------|
-| **Capability discovery and setup** | `aiwg-utils-quickref`, `steward`, `aiwg-status`, `aiwg-doctor`, `use`, provider regeneration |
+| **Capability discovery and setup** | `aiwg-utils-quickref`, `aiwg-steward-routing` (Claude; `steward` on other providers), `aiwg-status`, `aiwg-doctor`, `use`, provider regeneration |
 | **SDLC and delivery** | `intake-wizard`, `sdlc-accelerate`, gate evaluation, delivery-track flows, deployment, guided implementation |
 | **Testing and quality** | `test-conformance`, `test-normalize`, `test-platform-research`, TDD, mutation, flaky-test review, factory generation |
 | **Security and forensics** | supply-chain hardening, auth-factor design, degraded-mode review, DFIR readiness, log analysis, IOC extraction |
@@ -996,6 +997,8 @@ keeps durable categories and examples.
 | **Memory and persistence** | line-memory operations, compound-memory review, semantic-memory capture/query, llm-wiki topology |
 | **Operations and automation** | runbook execution, ops verification, activity logs, hooks, daemon sessions, schedule support |
 | **Authoring and development** | skill creation, addon/framework scaffolding, validation, schema governance, doc synchronization |
+
+`aiwg-steward-routing` is unrelated to Claude Code's built-in `/steward` (PR Steward).
 
 ---
 
@@ -1650,6 +1653,4 @@ See [cross-platform overview](docs/integrations/cross-platform-overview.md) for 
 | Grok Bot | `aiwg use all --provider grokbot` | `AGENTS.md` | Discover-first; native skills with `--scope user` and `AIWG_GROKBOT_SKILLS_DIR` | Stable; not Cursor / not xAI Grok Build. See [Grok Bot reference](docs/agents/providers/grokbot.md). |
 | Grok Build | `aiwg use all --provider grok-build` | `WORKSPACE.md` via generated `AGENTS.md` | `.grok/skills/` kernel; `$GROK_HOME` user skills | Experimental; distinct from Grok Bot and Grok web Build. [Quickstart](docs/integrations/grok-build-quickstart.md), [reference](docs/agents/providers/grok-build.md), [qualification](docs/providers/grok-build-qualification.md). |
 | Muse Code | `aiwg use all --provider muse` | `AGENTS.md` | `.agents/skills/` project; XDG user root at deploy time | Stable; no aliases. See [Muse quickstart](docs/integrations/muse-quickstart.md). |
-| Oh My Pi | `aiwg use all --provider omp` | `.omp/AGENTS.md` | Agents, prompts, rules, skills | Dedicated OMP quickstart: [Oh My Pi quickstart](docs/providers/omp.md). |
-| Pi Coding Agent | `aiwg use all --provider pi` | `AGENTS.md` | Agent Skills, prompt templates, trust-gated extension bridge | Experimental; see [Pi quickstart](docs/integrations/pi-quickstart.md). |
-| Antigravity | `aiwg use all --provider antigravity` | `AGENTS.md` 
+| Oh My Pi | `aiwg use all --provider omp` | `.omp/AGENTS.md` | Agents, prompts, ru

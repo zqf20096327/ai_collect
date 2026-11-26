@@ -779,6 +779,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is model card documentation, and why is it important?
 - How do you handle misuse and abuse of AI systems in production?
 - What is differential privacy, and how can it be applied during model training?
+- What is federated learning, and how does it protect data privacy?
+  - Answer: [How does Federated Learning train without raw data?](https://outcomeschool.com/blog/federated-learning)
 - How would you design an AI incident response plan?
 - What is the NIST AI Risk Management Framework (AI RMF)?
 - Your healthcare chatbot gives medical diagnoses it should not make. How do you add safety guardrails?
@@ -841,6 +843,12 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How does function calling work in a voice AI agent?](https://outcomeschool.com/blog/function-calling-in-voice-agents)
 - How do you reliably capture structured inputs like dates, phone numbers, and addresses in a voice agent?
   - Answer: [How does a voice agent handle structured inputs like dates, numbers, and addresses?](https://outcomeschool.com/blog/structured-inputs-in-voice-agents)
+- What is SSML, and how do you use it to control how a voice agent speaks?
+  - Answer: [How does SSML control how a voice agent speaks?](https://outcomeschool.com/blog/speech-synthesis-markup-language-ssml)
+- How do you make a TTS model pronounce names, brands, and acronyms correctly?
+  - Answer: [How do pronunciation dictionaries fix how TTS says names and brands?](https://outcomeschool.com/blog/pronunciation-dictionaries-for-tts)
+- How do you improve ASR accuracy on domain-specific words like product names, medicine names, and people's names?
+  - Answer: [How does keyword boosting help ASR recognize domain words?](https://outcomeschool.com/blog/keyword-boosting-in-asr)
 - How do you handle speech recognition (ASR) errors in a voice agent?
   - Answer: [How does a voice agent confirm and correct misheard information?](https://outcomeschool.com/blog/confirm-and-correct-in-voice-agents)
 - How do you handle barge-in (user interruptions) in a voice agent?

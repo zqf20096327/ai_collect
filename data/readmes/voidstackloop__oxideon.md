@@ -6,7 +6,9 @@
 
 **A fast, Hackable Deep Learning & Tensor Library in Rust — with a PyTorch-friendly Python API.**
 
-[![Browser demo](https://img.shields.io/badge/browser%20demo-run%20Oxideon%20in%20your%20browser-brightgreen.svg)](https://voidstackloop.github.io/oxideon/)
+<a href="https://voidstackloop.github.io/oxideon/"><img src="https://img.shields.io/badge/▶_RUN_IN_YOUR_BROWSER-Live_WebAssembly_Demo-10b981?style=for-the-badge&logo=webassembly&logoColor=white" alt="Run Oxideon in your browser"></a>
+<a href="https://colab.research.google.com/github/voidstackloop/oxideon/blob/main/examples/oxideon_quickstart.ipynb"><img src="https://img.shields.io/badge/OPEN_IN_GOOGLE_COLAB-Interactive_Showcase_Notebook-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Open In Google Colab"></a>
+
 [![Portfolio](https://img.shields.io/badge/portfolio-voidstackloop-blueviolet.svg)](https://github.com/voidstackloop/portfolio)
 
 [![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/voidstackloop/oxideon/releases/tag/v0.1.0)
@@ -17,7 +19,7 @@
 [![Clippy](https://img.shields.io/badge/clippy-0%20warnings-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-blue.svg)](LICENSE-MIT)
 
-[Why Oxideon?](#why-oxideon) · [Getting Started](#getting-started) · [Quick Tour](#quick-tour) · [PyTorch Cheat Sheet](#pytorch-cheat-sheet) · [Interop](#ecosystem-interop) · [Architecture](#how-its-organized) · [Docs](docs/)
+[Browser Demo](https://voidstackloop.github.io/oxideon/) · [Why Oxideon?](#why-oxideon) · [Getting Started](#getting-started) · [Quick Tour](#quick-tour) · [PyTorch Cheat Sheet](#pytorch-cheat-sheet) · [Interop](#ecosystem-interop) · [Architecture](#how-its-organized) · [Docs](docs/)
 
 </div>
 
@@ -36,6 +38,10 @@ Most deep learning stacks force a trade-off: either you use Python on top of a m
 ---
 
 ## Getting Started
+
+### Try it in your browser (no install)
+
+Run Oxideon's Rust tensor + autograd engine compiled to WebAssembly live at **[https://voidstackloop.github.io/oxideon/](https://voidstackloop.github.io/oxideon/)** — trains an MLP interactively right in your browser.
 
 ### Install from PyPI
 

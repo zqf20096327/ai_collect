@@ -143,6 +143,12 @@ Typical Application / Application Circuit / Reference Schematic 所在图页，
 同网无接点交叉、文字穿框、缺失审阅或未关闭问题会阻断交付，具体复盘见[图面可读性](references/live-recovery.md#图面可读性复盘)。
 命令与证据要求见[工作流](docs/WORKFLOW.md)、[测量衔接](references/measurement-bridge.md)和[现场恢复](references/live-recovery.md)。
 
+## 原理图选型 Skill
+
+独立选型时，把仓库内的 `extras/schematic-part-selection` 整个目录复制到宿主的 Skills 目录，例如 Codex 的 `~/.codex/skills/`。选型 Skill 使用已配置的 Agent Reach 查询立创商城国内站，并用原厂资料核对工况和规格。
+
+入口见[原理图选型 Skill](extras/schematic-part-selection/SKILL.md)。
+
 ## 常用元件知识库
 
 **25 类基础卡 · 6 个应用主题 · 58 个唯一来源**

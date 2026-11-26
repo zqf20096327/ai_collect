@@ -156,6 +156,18 @@ The initial password only creates the account when no Instance Protection state 
 
 ### Install
 
+AgentOS 0.9.0 is listed in the [published release history](https://github.com/SapienXai/AgentOS/releases). This checkout prepares 0.10.0. Its [release tag](https://github.com/SapienXai/AgentOS/releases/tag/agentos-v0.10.0) becomes available after publication. Use the shell installers below to install a verified CLI archive. For desktop previews and platform availability, see the [downloads page](https://agentos.sapienx.app/download).
+
+The npm registry has its own version history. To install the version currently on that registry:
+
+```bash
+pnpm add -g @sapienx/agentos
+# or
+npm install -g @sapienx/agentos
+```
+
+The shell installers validate the CLI archive against its published SHA-256 checksum before installing it.
+
 macOS or Linux:
 
 ```bash
@@ -168,26 +180,18 @@ Windows PowerShell:
 iwr https://raw.githubusercontent.com/SapienXai/AgentOS/main/install.ps1 | iex
 ```
 
-Or install with a package manager:
-
-```bash
-pnpm add -g @sapienx/agentos
-# or
-npm install -g @sapienx/agentos
-```
-
-Install a specific published version:
+To pin 0.10.0 after publication, use the following commands.
 
 macOS or Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SapienXai/AgentOS/main/install.sh | AGENTOS_VERSION=0.8.0 bash
+curl -fsSL https://raw.githubusercontent.com/SapienXai/AgentOS/main/install.sh | AGENTOS_VERSION=0.10.0 bash
 ```
 
 Windows PowerShell:
 
 ```powershell
-$env:AGENTOS_VERSION='0.8.0'; iwr https://raw.githubusercontent.com/SapienXai/AgentOS/main/install.ps1 | iex
+$env:AGENTOS_VERSION='0.10.0'; iwr https://raw.githubusercontent.com/SapienXai/AgentOS/main/install.ps1 | iex
 ```
 
 ### Start AgentOS
@@ -205,11 +209,9 @@ agentos doctor --deep
 
 Then:
 
-1. complete OpenClaw and model onboarding;
-2. create or select a workspace;
-3. create a digital worker;
-4. assign a mission or scheduled task;
-5. inspect the runtime, transcript, and output.
+1. Prepare OpenClaw and connect ChatGPT or another model provider.
+2. Create your first workspace and its first agent.
+3. Open the agent's chat and send a short message to confirm a reply.
 
 If OpenClaw is already installed, AgentOS connects to the live Gateway and projects its real state. If OpenClaw is missing or unhealthy, AgentOS shows an explicit setup or unavailable state instead of presenting fake operational data.
 
@@ -338,13 +340,12 @@ Several operations spawn local processes, inspect transcript files, or write to 
 
 ## Compatibility
 
-The current `0.8.0` package uses the following OpenClaw version policy:
+AgentOS `0.10.0` is the engineering candidate. Start with a clean AgentOS
+installation and keep any existing OpenClaw files and workspaces in place.
 
-- Recommended OpenClaw: `2026.9.7`;
-- Fresh setup install target: `2026.11.5` (candidate; final AgentOS certification pending);
-- Supported minimum: `2026.9.1`, provided its security-sensitive session settings
-  are explicit after AgentOS reconciliation;
-- Native contract target: `2026.11.5` (candidate; certification pending).
+- Recommended OpenClaw: `2026.11.5`.
+- Supported minimum: `2026.11.5`.
+- Native contract target: `2026.11.10`.
 
 All supported installations also require:
 
@@ -449,9 +450,10 @@ For a real local release rehearsal, follow [`docs/agentos-clean-install-smoke-ch
 ```bash
 pnpm check:release
 pnpm smoke:agentos-package
-git tag agentos-v0.8.0
-git push origin agentos-v0.8.0
+pnpm check:production-release --plan
 ```
+
+Run **Release AgentOS** to build and verify artifacts. Dispatch **Publish AgentOS** on `main` to publish the platforms that passed their acceptance checks. The workflow requires passing main CI, matching production evidence, the original artifact checksum, and the `agentos-public-release` environment. It creates the release tags from the certified source commit. Desktop Public Preview installers are distributed separately from the stable Desktop updater. See the [0.9.0 release notes](docs/release-notes-agentos-0.9.0.md).
 
 The release workflow builds and smoke-tests packages for:
 

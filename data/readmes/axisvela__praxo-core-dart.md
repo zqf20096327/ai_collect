@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its n
 | Package | `praxo_core` |
 | Registry | [pub.dev](https://pub.dev/packages/praxo_core/versions/0.7.0) |
 | Install | `dart pub add praxo_core:^0.7.0` |
-| Source version | `0.7.0` |
+| Source version | `0.8.0` |
 | Published version | `0.7.0` |
-| Source tag | `dart/v0.7.0` |
+| Source tag | `dart/v0.8.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/dart/ |
@@ -76,6 +76,23 @@ Runnable examples live under [`language/dart/examples`](language/dart/examples).
 | [streaming](language/dart/examples/streaming) | This example accumulates streamed chunks and checks that they reconstruct the final output. |
 | [structured-output](language/dart/examples/structured-output) | This example validates a final JSON answer against a schema and rejects invalid output. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/dart/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/dart/Tutorial) | - [Meeting Coordination (OP-02)](meeting-coordination/README.md): source Dart Core, fixed calendar evidence and a review-only minutes/task draft; no invites or calendar writes.... |
+| [audiobook-production](language/dart/Tutorial/audiobook-production) | A bounded first slice of [MD-06](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an audio-production pipeline. It reads a fixed licensed book fixtur... |
+| [cbt-exercise](language/dart/Tutorial/cbt-exercise) | A bounded first slice of [HC-05](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a therapist or crisis service. It walks a fixed synthetic CBT exerc... |
+| [chronic-care](language/dart/Tutorial/chronic-care) | A bounded first slice of [HC-02](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a clinical decision system. It summarizes fixed synthetic wearable... |
+| [digital-twin-memory](language/dart/Tutorial/digital-twin-memory) | A bounded first slice of [OG-06](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a personal memory hub. It stores one consent-scoped synthetic memor... |
+| [marketing-segments](language/dart/Tutorial/marketing-segments) | Fixed customer spend produces two high-value customers and a review-only campaign draft. No customer records, sends or live model. |
+| [meeting-coordination](language/dart/Tutorial/meeting-coordination) | A bounded first slice of [OP-02](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not full multi-party scheduling or calendar control. It reads a fixed c... |
+| [onboarding-plan](language/dart/Tutorial/onboarding-plan) | A bounded first slice of [OP-06](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an HR or permissions system. It reads a fixed employee profile and... |
+| [travel-booking](language/dart/Tutorial/travel-booking) | Fixed trip inventory produces a review-only fare hold. No payment, ticketing or inventory write. |
+| [waste-collection](language/dart/Tutorial/waste-collection) | A bounded first slice of [CT-06](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a fleet-dispatch system. It reads a fixed collection queue and draf... |
+
 ## Verify
 
 Run the checks from `language/dart`:
@@ -92,6 +109,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

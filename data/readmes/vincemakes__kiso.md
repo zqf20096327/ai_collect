@@ -7,7 +7,7 @@
 **In your terminal or your browser. Any model you have. A `kill -9` costs you nothing.**<br>
 A TypeScript kernel capped at 2,200 lines, and a coding agent built on it.
 
-<b>v0.55.0</b> · Node ≥ 22 · macOS and Linux
+<b>v0.56.0</b> · Node ≥ 22 · macOS and Linux
 
 [![npm](https://img.shields.io/npm/v/@vincemakes/kiso-code?label=npm&color=111111)](https://www.npmjs.com/package/@vincemakes/kiso-code) [![CI](https://img.shields.io/github/actions/workflow/status/vincemakes/kiso/ci.yml?branch=main&label=CI&color=111111)](https://github.com/vincemakes/kiso/actions/workflows/ci.yml) [![License](https://img.shields.io/badge/license-MIT-111111)](LICENSE) ![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-000000?logo=linux&logoColor=white)
 
@@ -133,7 +133,7 @@ An extension is a plain `.mjs` file — no build step. Five ship built in: MCP, 
 
 ## Under the hood
 
-- **Small and inspectable.** The kernel is capped at 2,200 lines (2,196 of 2,200 today); a session is a JSONL log you can read; every design decision is one of 47 ADRs, with why, and when to overturn it.
+- **Small and inspectable.** The kernel is capped at 2,200 lines (2,189 of 2,200 today); a session is a JSONL log you can read; every design decision is one of 48 ADRs, with why, and when to overturn it.
 - **Measured.** Every release is benched against the one before it, paired, on the same route; the numbers are in [bench/README.md](bench/README.md).
 
 Keys, commands and the status row: [docs/cli.md](docs/cli.md). `?` shows the keys in a session and `/help` lists the commands. `ctrl+v` attaches the clipboard image on macOS; elsewhere, put the image's path in your message.

@@ -1,270 +1,157 @@
 # 🏠 Models at Home
 
-<p align="center">
-  <a href="README.md">English</a> |
-  <a href="README_RU.md">Русский</a>
-</p>
+**Своя модель. Свои данные. Свои эксперименты.**
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
+Models at Home — открытая студия для обучения моделей на своём компьютере.
+Здесь можно собрать маленькую языковую модель с нуля, дообучить готовую,
+научить модель работать с изображениями или попробовать модели действий и динамики среды.
 
-**Models at Home** is an open-source studio for training and fine-tuning Large Language Models (LLMs) at home. The project aims to make Deep Learning technologies accessible to everyone.
+Идея простая: меньше времени на склеивание скриптов, больше — на сами эксперименты.
+Вы выбираете модель и данные, настраиваете обучение и наблюдаете, что получается,
+в одном рабочем пространстве.
 
-![Screenshot](src/models-at-home.png)
+![Training Studio: настройка эксперимента, проверка готовности и запуск](docs/screenshots/training-studio.png)
 
-## ✨ Features
+## Что можно делать
 
-### 🎯 Training Modes
-- **Pretraining** — Train a model from scratch on raw text data
-- **Continual Pretraining** — Continue training an existing model on new data
-- **SFT (Supervised Fine-Tuning)** — Train model to follow instructions and chat
-- **GRPO (Group Relative Policy Optimization)** — Reinforcement Learning for reasoning tasks
+- **Обучать языковые модели.** Pretraining с нуля, продолжение обучения на своих текстах,
+  SFT на инструкциях и диалогах, обучение с наградами через собственные GRPO / Dr.GRPO / DAPO / SDPO.
+- **Работать с изображениями.** В VLM Studio есть SFT и native GRPO для vision-language моделей,
+  пресеты Qwen3-VL, Qwen3.5 и Gemma 3, обычный Transformers и дополнительный Unsloth.
+- **Учить модели действовать.** VLA Studio обучает по демонстрациям (SFT / behavior cloning):
+  изображение, инструкция и состояние превращаются в действия. Поддерживаются непрерывные,
+  дискретные и смешанные действия для робототехники, симуляторов и desktop-задач.
+  Для continuous policies подключены отдельные OpenVLA, SmolVLA, ACT и π0 с собственными
+  loss и генерацией действий. [Окружения, запуск и проверенные режимы](docs/VLA_POLICIES.md).
+- **Исследовать world models.** Обучать собственные Latent GRU и Gaussian RSSM на эпизодах,
+  смотреть предсказанные траектории или запускать встроенный локальный DIAMOND для Atari и CS:GO.
+- **Собирать архитектуры.** Менять блоки и связи в Model Builder, строить looped Transformers
+  с общими весами, GQA, MoE и residual-ветки. Есть редактируемые контейнеры, анализ параметров,
+  черновик и undo/redo. В Research Lab можно открыть статью о блоке, посмотреть граф и формы
+  тензоров, измерить активации и градиенты настоящим CPU-прогоном, сравнить варианты.
+  Готовый backbone передаётся в LLM Studio или обучается с собственными image/action
+  адаптерами в VLM/VLA Studio. [Конструктор](docs/MODEL_BUILDER.md) · [Research Lab](docs/RESEARCH_LAB.md).
+- **Разбирать результаты.** Смотреть метрики, логи и историю запусков, продолжать совместимые
+  чекпоинты и проверять модели в чате. В Agent Studio — помощник с локальным llama-server.
+- **Учиться на примерах.** Встроенные ноутбуки с редактируемым Python, Markdown, выводом
+  и графиками запускаются прямо в студии. 16 вводных уроков на русском и английском охватывают
+  LLM/SFT/LoRA, RL, VLM, VLA, world models, архитектуры, looped Transformers и анализ обучения.
+  Ещё 10 подробных [разборов статей](docs/PAPER_STUDIES.md) связывают формулы с кодом,
+  диагностическими проверками и самостоятельными экспериментами. Всего 52 учебных `.ipynb`
+  с учётом двух языков. Примеры работают на CPU без скачивания моделей.
+  [Как пользоваться](docs/NOTEBOOKS.md).
 
-### 🖥️ Visual Interface
-- **Browser-based GUI** — Configure, launch, and monitor training without writing code
-- **Real-time Monitoring** — Live graphs for loss, learning rate, GPU utilization
-- **Run History** — Track all experiments with logs and checkpoints
-- **Built-in Documentation** — Tutorials and references right in the app
+Для текстовых и мультимодальных моделей доступны разные способы настройки весов,
+включая Full, LoRA и QLoRA; точный набор зависит от архитектуры и выбранного backend.
+Интерфейс работает на русском и английском. Есть тёмная тема и бело-серая светлая тема
+в духе Streamlit, с красными кривыми loss и reward.
 
-### 💬 Chat & Inference
-- **Chat with Models** — Test trained models directly in the app
-- **vLLM Support** — Fast inference with vLLM backend
-- **Chat Templates** — Automatic detection and formatting for conversations
+## Как устроен эксперимент
 
-### 📦 Model Management
-- **Download from HuggingFace** — One-click download of popular models (SmolLM2, Pythia, Qwen, TinyLlama)
-- **Use as Base** — Downloaded models can be used for Continual Pretraining or SFT
+1. **Выберите раздел и модель.** Начните с небольшой архитектуры или готовой базы.
+   Для VLA и собственных world models есть синтетические примеры без скачивания больших весов.
+2. **Подготовьте данные.** Укажите локальный датасет или поддерживаемый источник Hugging Face.
+   Формат зависит от задачи: тексты, диалоги, изображения с ответами или эпизоды с действиями.
+3. **Проверьте настройки.** Используйте Readiness или preflight выбранного раздела.
+   В World Models также есть оценка памяти и времени и короткий замер на вашем устройстве.
+4. **Запустите обучение.** Следите за метриками и логами; результаты сохраняются в каталоге запуска.
+5. **Попробуйте результат.** Откройте чат, Action preview или Rollout — в зависимости от типа модели.
 
-### 💾 Data Management
-- **HuggingFace Datasets** — Stream datasets directly from HuggingFace Hub
-- **Filters & Limits** — Configure size limits, quality filters, language filters
-- **Auto-detection** — Automatic format detection (Chat/Instruct)
+Оценки памяти и времени помогают выбрать настройки, но не гарантируют, что любая модель
+поместится на любой GPU. Сначала полезно сделать короткий пробный запуск.
 
-### ⚡ Distributed Training
-- **Multi-GPU** — Scale across multiple GPUs
-- **FSDP** — PyTorch Fully Sharded Data Parallel
-- **DeepSpeed ZeRO** — ZeRO-2, ZeRO-3, CPU Offload
+![World Models Studio: локальные модели и проверка ресурсов](docs/screenshots/world-models.png)
 
-### 🏗️ Model Architecture
-- Modern Transformer (Llama-style) with RoPE, SwiGLU, RMSNorm
-- Flash Attention for efficient training
-- KV-Cache for fast generation
+## Первый запуск из исходников
 
-### 🌐 Multilingual Interface
-- **English** and **Russian** UI
-- Easy to add new languages
+Нужны **Node.js 22.12+**, **Python 3.12** и Git. Для серьёзного обучения рекомендуется
+NVIDIA GPU с подходящей сборкой PyTorch/CUDA. Небольшие Native VLA и world-model демо
+можно попробовать на CPU.
 
----
-
-## 🚀 Quick Start (Docker) — Recommended
-
-The easiest way to run the studio without dealing with CUDA and PyTorch installation.
-
-### Requirements
-- **Docker Desktop** (Windows/Mac) or **Docker Engine** (Linux)
-
-### Launch
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/researchim-ai/models-at-home.git
-   cd models-at-home
-   ```
-
-2. **Run with Docker Compose:**
-   ```bash
-   export UID=$(id -u)
-   export GID=$(id -g)
-   docker compose up --build
-   ```
-
-3. **Open in browser:**
-   Navigate to: [http://localhost:8501](http://localhost:8501)
-
-All data (datasets, model weights, logs) is saved to `datasets/`, `out/`, and `.runs/` folders on your machine.
-
-If files were created earlier by root inside Docker, fix ownership once:
 ```bash
-sudo chown -R "$(id -u):$(id -g)" datasets out .runs models .cache
+git clone https://github.com/researchim-ai/models-at-home.git
+cd models-at-home
+npm ci
+
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r backend/requirements.txt
+python -m pip install -e ./models-at-home "transformers==4.57.3" datasets peft Pillow
+
+npm run dev
 ```
 
----
+На Windows активируйте окружение командой `.venv\Scripts\activate`.
+PyTorch должен соответствовать вашему устройству; установка выше сама по себе не настраивает
+CUDA-драйвер. Для quantization, Jupyter, Unsloth и отдельных семейств моделей нужны
+дополнительные зависимости.
 
-## 🛠️ Running Without Docker (Local)
+Команда `npm run dev` открывает Electron-приложение и запускает API. В Settings можно выбрать
+режим **Native** для локального Python или **Docker** для контейнера; в режиме **Auto**
+приложение пробует Docker и при необходимости переходит на локальный Python.
 
-If you prefer running code directly on your system.
+Если интерпретатор лежит в другом месте, задайте его явно:
 
-### Requirements
-- Python 3.10+
-- CUDA Toolkit 11.8+ (for GPU)
-
-### Installation
-
-1. **Create virtual environment:**
-   ```bash
-   python -m venv venv
-   
-   # Linux/Mac
-   source venv/bin/activate
-   
-   # Windows
-   venv\Scripts\activate
-   ```
-
-2. **Install PyTorch (with CUDA support):**
-   Visit [pytorch.org](https://pytorch.org/get-started/locally/) for the command for your system. For example:
-   ```bash
-   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Install package in development mode:**
-   ```bash
-   pip install -e .
-   ```
-
-5. **Configure Accelerate (once):**
-   ```bash
-   accelerate config
-   ```
-
-### Launch Studio
-
-Run the script:
 ```bash
-./scripts/run_studio.sh
-# Or on Windows:
-streamlit run homellm/app/LLM.py
+MAH_PYTHON=/path/to/python npm run dev
 ```
 
----
+Современные VLM используют отдельное окружение `.venv-vlm` или `MAH_VLM_PYTHON`:
+инструкция по совместимым версиям находится в [руководстве VLM](docs/VLM_VALIDATION.md).
+Для первого знакомства с VLA откройте **VLA Studio → Синтетическое демо**, выберите CPU / Float32,
+выполните проверку и начните короткое обучение.
 
-## 📚 Project Structure
+## Ваше рабочее пространство
 
-```
-models-at-home/
-├── homellm/                    # Main package
-│   ├── models/                 # Model architectures
-│   │   ├── home_model.py       # HomeConfig, HomeForCausalLM
-│   │   ├── home_model_moe.py   # Mixture of Experts variant
-│   │   └── blueprint.py        # Visual model builder
-│   ├── training/               # Training scripts
-│   │   ├── pretrain.py         # Pretraining
-│   │   ├── sft.py              # Supervised Fine-Tuning
-│   │   └── rl/                 # Reinforcement Learning (GRPO)
-│   ├── app/                    # Streamlit GUI
-│   │   ├── LLM.py              # Main application
-│   │   └── docs.py             # Built-in documentation
-│   ├── cli/                    # Command-line interface
-│   │   └── chat.py             # Interactive chat
-│   └── i18n/                   # Internationalization
-│       └── locales/            # en.json, ru.json
-├── configs/                    # Accelerate/DeepSpeed configs
-├── datasets/                   # Downloaded datasets
-├── models/                     # Downloaded models
-└── out/                        # Trained models and checkpoints
-```
+Студия состоит из Electron/React-интерфейса, Python API и ML runtime в каталоге `models-at-home/`.
+Обучение выполняют локальные процессы Python или Docker; это не клиент облачного API.
+Первичная загрузка моделей и датасетов из Hugging Face требует сети, а некоторые веса —
+принятия условий их авторов. Локальные данные, скачанные веса и результаты остаются на вашем диске.
 
----
+В установленном приложении рабочие файлы хранятся в пользовательском `workspace`, отдельно от
+ресурсов приложения. Путь можно изменить через `MODELS_AT_HOME_ROOT`.
+Датасеты, веса, кеши и сборки не должны попадать в Git.
 
-## 📊 Training Workflow
+![Светлая тема Training Studio](docs/screenshots/training-studio-light.png)
 
-### 1. Pretraining (From Scratch)
+## Что стоит учитывать
 
-Train a new model on raw text data:
+Проект развивается: поддержка режима в одном разделе не означает поддержку во всех остальных.
+В частности, **VLA сейчас обучается через SFT**, а **предобученный DIAMOND доступен для inference**;
+обучение world models в интерфейсе относится к собственным GRU/RSSM.
+Поддержка Unsloth, QLoRA, multi-GPU и продолжения обучения зависит от конкретного пути запуска.
 
-1. Go to **💾 Data** tab
-2. Select a text corpus (e.g., FineWeb-2)
-3. Configure size limits and download
-4. Go to **🚀 Launch** tab
-5. Select **Pretraining** mode
-6. Choose model size preset (Tiny, Small, Base, etc.)
-7. Click **▶️ Start Training**
+Для воспроизводимого эксперимента начинайте с подходящего окружения и короткой проверки.
+Поддерживаемые форматы, зависимости и границы проверок описаны отдельно:
 
-### 2. SFT (Supervised Fine-Tuning)
+- [VLM: модели, SFT, native GRPO и Unsloth](docs/VLM_VALIDATION.md)
+- [VLA: демонстрации, action spaces и обучение](docs/VLA_STUDIO.md)
+- [World Models: обучение динамики и Rollout](docs/WORLD_MODELS_STUDIO.md)
+- [DIAMOND и другие локальные world models](docs/WORLD_FOUNDATION_MODELS.md)
 
-Turn your pretrained model into a chatbot:
+## Сайт проекта
 
-1. Download an instruction dataset (e.g., OpenOrca)
-2. Go to **🚀 Launch** → **SFT** mode
-3. Select your pretrained model as base
-4. Configure chat template and field mappings
-5. Start training
+В каталоге [`web/`](web/README.md) — отдельный сайт на английском и русском: обзор студии,
+реальные скриншоты, Research Lab и инструкции запуска. Локально: `cd web && npm run dev`.
 
-### 3. GRPO (Reinforcement Learning)
+## Для разработчиков
 
-Improve reasoning with reward-based training:
-
-1. Go to **🚀 Launch** → **GRPO** mode
-2. Select SFT model as base
-3. Design reward functions (format, math correctness)
-4. Configure rollout parameters
-5. Start RL training
-
-### 4. Chat with Model
-
-Test your trained model:
-
-1. Go to **💬 Chat** tab
-2. Select model or checkpoint
-3. Configure generation parameters
-4. Start chatting!
-
----
-
-## ⚡ Distributed Training
-
-| Mode | Config | Description | When to Use |
-|------|--------|-------------|-------------|
-| **Multi-GPU (DDP)** | `accelerate_multi_gpu.yaml` | Model replication | Model fits in 1 GPU |
-| **FSDP** | `accelerate_fsdp.yaml` | PyTorch Fully Sharded | >1B params, multiple GPUs |
-| **DeepSpeed ZeRO-2** | `accelerate_deepspeed_zero2.yaml` | Optimizer/gradient sharding | 100M-1B params |
-| **DeepSpeed ZeRO-3** | `accelerate_deepspeed_zero3.yaml` | Full sharding | >1B params |
-| **ZeRO-3 + Offload** | `accelerate_deepspeed_zero3_offload.yaml` | Sharding + CPU offload | Very large models |
-
----
-
-## 📈 Model Sizes
-
-| Configuration | Parameters | VRAM (fp16) | Recommendation |
-|---------------|------------|-------------|----------------|
-| Tiny (512-8-8) | ~25M | ~2 GB | GTX 1060+ |
-| Small (768-12-12) | ~80M | ~4 GB | RTX 2060+ |
-| Base (1024-16-16) | ~200M | ~8 GB | RTX 3080+ |
-| Medium (1536-24-16) | ~400M | ~12 GB | RTX 3090+ |
-| Large (2048-24-16) | ~700M | ~16 GB | RTX 4090+ |
-
----
-
-## 🔗 HuggingFace Integration
-
-Models are fully compatible with the HuggingFace ecosystem:
-
-```python
-from homellm.models import HomeConfig, HomeForCausalLM
-from transformers import AutoTokenizer
-
-# Load
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-model = HomeForCausalLM.from_pretrained("out/home_pretrain/final_model")
-
-# Generate
-inputs = tokenizer("Hello", return_tensors="pt")
-outputs = model.generate(**inputs, max_new_tokens=50)
-print(tokenizer.decode(outputs[0]))
+```bash
+npm run typecheck
+npm test
+python -m pip install -r backend/requirements-dev.txt
+python -m pytest backend/tests -q
+npm run build
 ```
 
----
+`npm run build` собирает интерфейс и пакет приложения для текущей ОС.
+Также есть команды `build:linux`, `build:win` и `build:mac`; доступность конкретного пакета
+зависит от платформы сборки. Python-окружение и веса моделей устанавливаются отдельно.
 
-## 🤝 Contributing
+Исходники интерфейса находятся в `src/`, Electron — в `electron/`, API и workers — в `backend/`,
+ML-код — в `models-at-home/homellm/`. Для проверки собранного приложения с настоящим backend
+есть `scripts/smoke-desktop.cjs`. Скриншоты в этом README сняты с работающего приложения.
 
-We welcome Pull Requests! If you have ideas for improving the interface, optimizing training, or supporting new architectures — please contribute.
-
-## 📄 License
-
-Apache 2.0
+Нашли ошибку или хотите добавить архитектуру? Создайте issue с конфигурацией запуска,
+версией окружения и логом ошибки — так проблему будет гораздо проще воспроизвести.

@@ -24,7 +24,7 @@ Reviewing that message is slow:
 
 ## What austere-axi does
 
-The agent puts its answer on a page: sections, tables, diagrams, charts, code changes, and a form for the decision it needs from you.
+The agent puts its answer on a page: sections, tables, diagrams (50 types, from sequence and flow diagrams to boards, matrices and plans), charts, code changes, and a form for the decision it needs from you.
 
 You click the exact thing you want changed and write a note, the way you would comment on a shared document. The agent changes only that part, and the page updates while you watch.
 
@@ -42,11 +42,15 @@ Repeat until it is right. When you are done, press **Done** (or **Send & finish*
 
 | | Example |
 |---|---|
+| An architecture review | [Multi-region event mesh](https://mandalorianbatman.github.io/austere-axi/gallery/architecture-review.html): topology, Radar trade-offs and Waterfall latency |
+| An interactive learning guide | [Raft consensus internals](https://mandalorianbatman.github.io/austere-axi/gallery/learning-guide.html): node state machine, election sequence, Polar metrics and Treemap |
+| A research benchmark report | [Reasoning model evaluation](https://mandalorianbatman.github.io/austere-axi/gallery/research-report.html): quality vs latency Quadrant, token flow Sankey and domain metrics |
 | A plan, before any work starts | [Moving a database, with a diagram, rollout options and a decision form](https://mandalorianbatman.github.io/austere-axi/gallery/session-migration.html) |
 | A design, with alternatives to choose from | [API design review](https://mandalorianbatman.github.io/austere-axi/gallery/api-design-review.html) |
 | A summary of what the agent changed | [Pull request summary](https://mandalorianbatman.github.io/austere-axi/gallery/pr-summary.html) |
 | A report on something that went wrong | [Outage postmortem](https://mandalorianbatman.github.io/austere-axi/gallery/incident-postmortem.html) |
 | A plan for the team | [Sprint plan](https://mandalorianbatman.github.io/austere-axi/gallery/sprint-plan.html) |
+| A picture of how something works | [Every diagram type](https://mandalorianbatman.github.io/austere-axi/gallery/diagram-types.html): flows, sequences, data models, boards, matrices, plans and charts |
 
 ## What else it does
 

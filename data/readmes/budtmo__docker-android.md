@@ -51,8 +51,6 @@ List of Docker-Images
 ---------------------
 |Android   |API   |Image with latest release version   |Image with specific release version|
 |:---|:---|:---|:---|
-|9.0|28|budtmo/docker-android:emulator_9.0|budtmo/docker-android:emulator_9.0_<release_version>|
-|10.0|29|budtmo/docker-android:emulator_10.0|budtmo/docker-android:emulator_10.0_<release_version>|
 |11.0|30|budtmo/docker-android:emulator_11.0|budtmo/docker-android:emulator_11.0_<release_version>|
 |12.0|32|budtmo/docker-android:emulator_12.0|budtmo/docker-android:emulator_12.0_<release_version>|
 |13.0|33|budtmo/docker-android:emulator_13.0|budtmo/docker-android:emulator_13.0_<release_version>|
@@ -96,7 +94,7 @@ Quick Start
 
 3. Run Docker-Android container
     ```
-    docker run -d -p 6080:6080 -e EMULATOR_DEVICE="Samsung Galaxy S10" -e WEB_VNC=true --device /dev/kvm --name android-container budtmo/docker-android:emulator_11.0
+    docker run -d -p 6080:6080 -e EMULATOR_DEVICE="Samsung Galaxy S10" -e WEB_VNC=true --device /dev/kvm --name android-container budtmo/docker-android:emulator_14.0
     ```
 
 4. Open ***http://localhost:6080*** to see inside running container.
@@ -106,12 +104,29 @@ Quick Start
     docker exec -it android-container cat device_status
     ```
 
+Using Nvidia GPU
+----------------
+
+1. Make sure you have already installed and configured all needed nvidia components, e.g. nvidia-smi
+
+2. Run Docker-Android container
+    ```
+    docker run -d -p 6080:6080 -e EMULATOR_DEVICE="Samsung Galaxy S10" -e WEB_VNC=true -e EMULATOR_GPU=host -e NVIDIA_DRIVER_CAPABILITIES=all --device /dev/kvm --gpus all --name android-container budtmo/docker-android:emulator_14.0
+    ```
+
+3. Make sure that Nvidia GPU is used
+    ```
+    docker exec -it android-container adb shell dumpsys SurfaceFlinger | grep -i GLES
+    ```
+
+**Note:** With `EMULATOR_GPU=host` on NVIDIA, the emulator renders on the GPU and runs headless, but its screen is black. Android works normally, so ADB, Appium and tests are unaffected. However, Some of Android's screen-composition shaders fail to compile on that path, so every captured frame is black. This affects noVNC, scrcpy, `screencap`, `screenrecord` and Appium screenshots.
+
 Persisting data
 -----------
 
 The default behaviour is to destroy the emulated device on container restart. To persist data, you need to mount a volume at `/home/androidusr`:
     ```
-    docker run -v data:/home/androidusr budtmo/docker-android:emulator_11.0
+    docker run -v data:/home/androidusr budtmo/docker-android:emulator_14.0
     ```
 
 WSL2 Hardware acceleration (Windows 11 only)
@@ -201,9 +216,9 @@ The differences between normal version and pro version are:
 |AI-Agent|No|Yes|Currently supported local-LLM server: Ollama, VLLM, It can also control emulator via REST-API|
 |proxy|No|Yes|Set up company proxy on Android emulator on fly|
 |language|No|Yes|Set up language on Android emulator on fly|
+|Older Android version|No|Yes|Support other newer Android version e.g. Android 9 and Android 10|
 |Newer Android version|No|Yes|Support other newer Android version e.g. Android 15, Android 16, Android 17, etc|
 |root-privileged|No|Yes|Able to run command with security privileged|
-|headless-mode|No|Yes|Save resources by using headless mode|
 |Selenium 4.x integration|No|Yes|Running Appium UI-Tests againt one (Selenium Hub) endpoint for Android- and iOS emulator(s) / device(s)|
 |multiple Android-Simulators|No|Yes (soon)|Save resources by having multiple Android-Simulators on one docker-container|
 |Google Play Store|No|Yes (soon)|-|
@@ -222,15 +237,6 @@ List pro-version images:
 |15.0|35|Normal|budtmo2/docker-android-pro:emulator_15.0|budtmo2/docker-android-pro:emulator_15.0_<release_version>|
 |16.0|36|Normal|budtmo2/docker-android-pro:emulator_16.0|budtmo2/docker-android-pro:emulator_16.0_<release_version>|
 |17.0|37|Normal|budtmo2/docker-android-pro:emulator_17.0|budtmo2/docker-android-pro:emulator_17.0_<release_version>|
-|9.0|28|Headless|budtmo2/docker-android-pro:emulator_headless_9.0|budtmo2/docker-android-pro:emulator_headless_9.0_<release_version>|
-|10.0|29|Headless|budtmo2/docker-android-pro:emulator_headless_10.0|budtmo2/docker-android-pro:emulator_headless_10.0_<release_version>|
-|11.0|30|Headless|budtmo2/docker-android-pro:emulator_headless_11.0|budtmo2/docker-android-pro:emulator_headless_11.0_<release_version>|
-|12.0|32|Headless|budtmo2/docker-android-pro:emulator_headless_12.0|budtmo2/docker-android-pro:emulator_headless_12.0_<release_version>|
-|13.0|33|Headless|budtmo2/docker-android-pro:emulator_headless_13.0|budtmo2/docker-android-pro:emulator_headless_13.0_<release_version>|
-|14.0|34|Headless|budtmo2/docker-android-pro:emulator_headless_14.0|budtmo2/docker-android-pro:emulator_headless_14.0_<release_version>|
-|15.0|35|Headless|budtmo2/docker-android-pro:emulator_headless_15.0|budtmo2/docker-android-pro:emulator_headless_15.0_<release_version>|
-|16.0|36|Headless|budtmo2/docker-android-pro:emulator_headless_16.0|budtmo2/docker-android-pro:emulator_headless_16.0_<release_version>|
-|17.0|37|Headless|budtmo2/docker-android-pro:emulator_headless_17.0|budtmo2/docker-android-pro:emulator_headless_17.0_<release_version>|
 |-|-|AI-Agent|budtmo2/docker-android-pro:agent|budtmo2/docker-android-pro:agent_<release_version>|
 |-|-|Selenium|budtmo2/docker-android-pro:selenium|budtmo2/docker-android-pro:selenium_<release_version>|
 

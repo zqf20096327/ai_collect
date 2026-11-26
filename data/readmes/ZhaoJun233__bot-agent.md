@@ -2,14 +2,30 @@
 
 简体中文 | [English](README.en.md)
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-10.0-blue.svg)](https://dotnet.microsoft.com/)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20(Ubuntu%20%7C%20Debian%20%7C%20CentOS%20%7C%20Arch)%20%7C%20Docker-green.svg)](#快速开始)
 [![Protocol](https://img.shields.io/badge/Protocol-OneBot%20v11%20%7C%20QQ%20Official%20%7C%20Feishu-purple.svg)](#系统架构)
 [![License](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
 
-Bot Agent 是面向 Linux 环境构建的无界面、高性能、可插拔多聊天平台 Agent 常驻服务。服务支持 QQ 私域（[NapCat](https://github.com/NapNeko/NapCatQQ) / OneBot v11）、QQ 官方开放平台、飞书应用机器人（Feishu Bot）以及零外部依赖本地演练场通道，与 OpenAI 兼容格式的大语言模型（涵盖 DeepSeek、通义千问、OpenAI、本地 Ollama 等）进行交互，实现群聊、私聊与频道场景下的自主研判与拟人化回复，并内置轻量级 Web 管理控制台。
+Bot Agent 是面向 Linux 环境构建的无界面、高性能、可插拔多聊天平台 Agent 常驻服务。服务支持 QQ 私域（[NapCat](https://github.com/NapNeko/NapCatQQ) / OneBot v11）、QQ 官方开放平台、飞书应用机器人（Feishu Bot / WebSocket 与 Webhook）、零外部依赖本地演练场通道以及本人专属 Web 工作台（`workspace:owner`），与 OpenAI / Anthropic / Gemini 兼容格式的大语言模型对接，实现群聊、私聊与工作台场景下的自主研判、受控记忆与拟人化回复，并配套独立静态部署的 Web 管理控制台。
 
-项目支持在标准 Linux 发行版（Ubuntu、Debian、CentOS、Arch 等）直接基于源码运行，无需强制依赖容器环境；同时保留了标准的 Docker Compose 容器化部署支持。
+项目支持在标准 Linux 发行版直接运行源码/产物，支持 Docker Compose 容器编排，也提供面向低内存（1 GB）主机的纯产物容器镜像 [`Dockerfile.app`](Dockerfile.app)。
+
+---
+
+## 核心文档导航
+
+| 文档 | 内容说明 |
+| :--- | :--- |
+| [文档总目录（`/docs`）](docs/index.md) | 业务规则、数据库设计、运维手册、架构边界、ADR 决策与术语表的统一文档入口 |
+| [核心业务规则与领域说明](docs/domain/core-business-rules.md) | 多平台入站信任边界、三层配置与会话 Profile 裁决、回复节奏与静默短路、记忆敏感度矩阵、Agent 任务状态机与调度/待办/身份绑定规则 |
+| [数据库设计文档](docs/storage/database-design.md) | SQLite WAL 运行参数、Schema v1–v15 演进、ER 关系图、31 张业务物理表结构、v15 隔离 `meta` JSON 账本与文件布局 |
+| [运维排障与应急手册](docs/operations/runbook.md) | 核心监控指标与隐私安全查日志规范、故障“现象 → 排查 → 解决”对照表、回滚预案决策流 |
+| [工程规范与 ADR 索引](docs/decisions/engineering-standards-and-adr.md) | 仓库目录拓扑、编码规范与 `ArchitectureProbe` 护栏、Git 协作/发版流程、技术选型依据与 ADR 0001–0006 索引 |
+| [接口地图](docs/api-surface.md) | 面板旧接口、ZBA v1 与内置/插件路由总表（与 `PanelRoutes.cs` 同步受护栏断言约束） |
+| [核心术语表](docs/glossary.md) | 领域术语、安全不变量与组件专有名词定义 |
+| [待确认项集中清单](docs/open-questions.md) | 跨业务、存储、运维与工程规范的待拍板事项统一追踪清单 |
+| [Linux Docker 首次安装与配置](docs/operations/linux-docker-first-run.md) | 低内存主机产物构建、独立 Caddy 前端与受控首次验收步序 |
 
 ---
 
@@ -27,170 +43,151 @@ Bot Agent 是面向 Linux 环境构建的无界面、高性能、可插拔多聊
 ## 核心特性
 
 ### 智能研判与自然交互
-- **发言时机自主决策**：模型根据上下文与设定阈值评估发言必要性，低于阈值保持静默；配合限流冷却算法，避免刷屏与机械式抢话。
-- **群聊氛围感知与疲劳阻尼**：自动分析消息密度与群聊情绪，连续发言多次后自适应非线性衰减发言欲望并强制冷却降温，冷清群聊减少插嘴，对线刷屏时主动克制。
-- **人物画像与长效记忆**：基于发送者标识构建短期会话栈与长期用户画像（支持证据链溯源与人工设定覆盖），并持久化至嵌入式 SQLite 数据库。
-- **动作描写语义过滤**：支持开启过滤模型回复中夹带的舞台旁白描写（如括号动作），由语义模型二次核验保留公式、代码与真实阐述。
-- **多模态视觉感知**：自动下载群聊图片并交由视觉模型解析；内建图片字节缓存与针对时效性 URL 的自动重签机制。
-- **原生互动深度适配**：
-  - **戳一戳响应**：识别双向戳一戳动作，具备冷却门限与自主回戳逻辑。
-  - **表情包协同与安全守卫**：自动收录审核表情包、提取语义标签，按语境检索候选；内建 `StickerSafetyGuard` 物理路径穿越防护与真实魔数伪造校验。
-  - **上下文精确引用**：自动解析收到的回复引用目标，模型发送时自动关联目标原消息。
-  - **音频解析与接梗**：群成员分享音乐卡片时，抓取歌词并进行波形特征分析（节拍、响度与段落），确保回复基于客观事实。
-- **拟真分句节拍**：支持按标点符号切分长句并模拟打字延迟分批发送。
+- **发言时机与回复节奏统一调度**：由 [新版回复节奏](docs/reply-pacing.md) 统一管理 `GroupInterjectionProbability`、`GroupInterjectionCooldownSeconds`、群/私聊续话静默等待与适合度阈值（`SuitabilityThreshold`），明确请求直达优先，静默判定在发送前短路。
+- **分层记忆与会话轻量知识库**：以 [ADR-0004](docs/decisions/0004-unified-memory-authorization.md) 与 [ADR-0005](docs/decisions/0005-memory-tool-coexistence-taint-tiers.md) 实现本人逐事实、逐版本、逐目标会话授权与敏感度 × 工具流出面 Fail-Closed 矩阵；支持同会话隔离知识库（纯托管 BM25 检索，单作用域上限 256 篇 / 4096 切片 / 1 MiB）。
+- **动作描写语义过滤与多模态感知**：过滤舞台旁白同时保留公式、代码与链接；内建视觉图片缓存与时效 URL 重签、双向戳一戳、带魔数/路径校验的表情包安全库、精确上下文引用、音乐卡片歌词与波形分析、拟真分句与云端 TTS 语音条（音文不重复播报）。
 
-### 多平台接入与实例策略
-- **统一平台策略总控**：支持 QQ 私域通道、QQ 官方开放平台、飞书机器人及本地通道。设置页「平台实例策略」是各平台「启用平台」「启用聊天」的唯一入口，同时配置独立群聊/私聊白名单及特性覆盖。关闭聊天可保持连接，关闭平台会阻止聊天；凭据、连接状态、白名单和全局 AI 开关仍是独立安全前置。
-- **每日 Token 配额账本**：按平台与会话来源（SourceKey）划分 UTC 日预算管理，支持按平台筛选租户、查看用量与剩余额度，超额后自动进入节能静默。
-- **零依赖本地演练场通道**：内置进程内独立测试通道，通过 Web 交互演练场（`/playground.html`）或 `POST /api/local/message` 注入测试消息，完整走过模型决策与六步治理流水线。
+### 多平台接入、插件解耦与控制台工作区
+- **宿主极简内置包 + 市场按需扩展**：宿主仅内置 **9 个 `system.*` 核心与平台驱动包**（4 个平台驱动包：QQ 私域、QQ 官方、飞书、本地演练场；5 个系统能力包：模型服务、内置 Agent、MCP 工具管理、对话编排、健康日报）。其余 **13 个 `preset.feature.*` 对话功能插件**（Token 配额、联网搜索、戳一戳、氛围、表情包、点歌、语音、画像、文档、摘要、知识库、定时任务、个人待办，`1.1.0+`）已迁至官方插件市场仓库 `ZhaoJun233/bot-agent-plugins`，新实例默认 0 预装功能插件且启动不自动联网下载，在 Web 控制台 `/web/` 的「插件中心」按需安装；已有实例升级后继续通过 `OfficialPresetPolicy` 兼容历史 `1.0.0` 状态封套、设置键与配额账本，支持热装/启停/升级/回滚，失败时保留旧实例。
+- **会话级 Profile 与跨平台 RBAC / 审批**：支持为单会话覆盖对话与工具分层，配置变更后实时刷新能力指纹；内置跨平台 `WorkspaceRole` 与非只读插件工具前置人工审批闭环，可选开启双向 120s HMAC 挑战确认的跨平台本人身份绑定（[ADR-0006](docs/decisions/0006-optional-cross-platform-identity-linking.md)）。
+- **个人工作区与沙箱插件界面**：内置严密隔离的本人 Web 工作台（`workspace:owner`），支持定时任务、个人待办等插件以沙箱 iframe 运行并在同一主题与管理员模式下安全通信。
 
 ---
 
 ## 快速开始
 
-### 方式一：Linux 原生环境直接运行（推荐，免 Docker）
+首次生产/Linux Docker 部署请先阅读 [Linux Docker 首次安装与配置](docs/operations/linux-docker-first-run.md)。版本升级前务必按 [回滚预案](docs/operations/rollback-playbook.md) 留存双份回滚点；任务提交/审批结果不明时按 [任务恢复指南](docs/operations/task-recovery-guide.md) 核对。
 
-#### 1. 系统要求与环境准备
-- **操作系统**：标准 Linux 发行版（Ubuntu 20.04+、Debian 11+、CentOS 8+、Arch Linux 等）
-- **运行时依赖**：.NET 8.0 SDK / Runtime、Git、curl、openssl
-- **OneBot 协议端**：[NapCat Linux Shell 版](https://github.com/NapNeko/NapCatQQ)（如使用 QQ 私域通道）
+### 环境依赖
 
-在 Debian / Ubuntu 上安装基础组件：
+| 组件 | 本地开发 / 构建机要求 | 服务器运行时要求 | 用途 |
+| :--- | :--- | :--- | :--- |
+| .NET SDK / Runtime | **.NET 10.0 SDK** | Docker 镜像内置 Runtime（或本机 .NET 10 Runtime） | 编译/运行 `BotAgent.slnx` 与 `BotAgent.Headless` |
+| Node.js & npm | **Node.js `22.22.2+` / `24.15.0+` / `26+`** | 无需（仅需静态 Web 服务器） | 构建/校验 `src/web` Vue 3 控制台前端 |
+| Python | **Python 3.12+** | 仅本地诊断脚本需用 | 运行 `BotAgent.ServerFilesProbe`、`mask-cjk.py`、`push-desensitized.py` |
+| 容器与反代（容器路线） | Docker（可选） | Docker Compose + Caddy / Nginx | 运行容器镜像与单独托管 `/web/` 静态资源 |
+| 协议端（可选） | — | [NapCat](https://github.com/NapNeko/NapCatQQ)（QQ 私域时） | 提供 OneBot v11 Forward/Reverse WS 连接 |
 
-```bash
-# 更新软件包列表并安装依赖
-sudo apt-get update
-sudo apt-get install -y dotnet-sdk-8.0 git curl openssl
-```
-
-#### 2. 获取源码与编译构建
+### 方式一：本地开发与源码调试（前后端分离）
 
 ```bash
-# 克隆主仓库代码（main 分支）
-git clone -b main https://github.com/ZhaoJun233/bot-agent.git
-cd bot-agent
+# 1. 还原并构建完整解决方案（含高危 NuGet 审计）
+dotnet restore BotAgent.slnx
+dotnet build BotAgent.slnx -c Release
 
-# 生成并编辑配置文件
+# 2. 复制并配置环境变量（本地开发可通过 BOTAGENT_ZBA_ALLOW_LOOPBACK=1 简化回环 ZBA 调试）
 cp .env.example .env
-vim .env
+
+# 3. 启动无界面后端宿主（默认监听 127.0.0.1:18245；宿主不再内置 HTML 页面）
+dotnet run --project src/BotAgent.Headless/BotAgent.Headless.csproj -c Release
+
+# 4. 在另一终端启动前端开发服务器（代理 /api 与 /zba 到后端端口）
+cd src/web
+npm ci
+npm run dev
 ```
 
-#### 3. 运维管理
+只构建静态产物时在 `src/web` 执行 `npm run build`，产物输出至 `src/web/dist`，交由 Caddy / Nginx 以 `/web/` 挂载提供服务（详见 [`src/web/README.md`](src/web/README.md)）。
 
-项目包含跨 Linux 发行版兼容的控制脚本：
-
-- **后台启动**：
-  ```bash
-  ./start.sh
-  ```
-- **前台启动（调试控制台输出）**：
-  ```bash
-  ./start.sh -f
-  ```
-- **检查运行状态与探针**：
-  ```bash
-  ./status.sh
-  ```
-- **安全停止服务**：
-  ```bash
-  ./stop.sh
-  ```
-- **查看日志输出**：
-  ```bash
-  tail -f runtime/logs/bot-agent.log
-  ```
-
-服务启动后，浏览器访问 `http://127.0.0.1:8080/` 即可进入 Web 管理面板。
-
----
-
-### 方式二：Docker Compose 容器化运行
-
-在具备容器环境的主机上，可采用容器编排方案：
+### 方式二：Linux 原生控制脚本（无 Docker）
 
 ```bash
 cp .env.example .env
-vim .env
+# 编辑 .env（填入 MODEL_API_KEY、WHITELIST 等）
 
-# 构建并启动服务
-docker compose up -d
-
-# 查看协议端登录二维码
-docker compose logs -f napcat
+./start.sh        # 后台启动（日志写入 runtime/logs/bot-agent.log）
+./start.sh -f     # 前台调试启动
+./status.sh       # 查看 PID、/healthz 与 /readyz 状态及最近 10 行日志
+./stop.sh         # 安全停止服务
 ```
+
+服务启动后：健康探针 `http://127.0.0.1:18245/healthz` 返回 `{"status":"ok","version":"x.y.z"}`（版本号统一来自 `Directory.Build.props`；容器路线默认端口通常设 8080）。
+
+### 方式三：Docker Compose / 低内存主机产物镜像部署
+
+- **标准容器编排**（含 NapCat 与源码构建）：
+  ```bash
+  cp .env.example .env
+  # 编辑 .env 后启动
+  docker compose up -d
+  docker compose logs -f napcat   # 首次登录扫码
+  ```
+- **低内存主机（~1 GB 内存）推荐产物路线**（开发机 `dotnet publish -r linux-x64` 打 `app.tar.gz`，服务器使用根目录下 [`Dockerfile.app`](Dockerfile.app) 解压构建，避免服务器上 `dotnet publish` 挤爆 swap）：完整步骤见 [Linux Docker 首次安装与配置](docs/operations/linux-docker-first-run.md)。
 
 ---
 
 ## 配置参考
 
-核心运行配置位于根目录的 `.env` 文件。
+配置采用**两层环境变量 + 一个数据库真源**的三层所有权模型，分不清这三者是“改了不生效”的最常见原因：
 
-### 核心参数
+| 层 | 位置 | 谁拥有 | 生效时机 |
+| :--- | :--- | :--- | :--- |
+| ① Compose 层 | 根目录 `.env` | 部署者 | 只用于 `docker-compose.yml` 的 `${VAR}` 替换；**不会自动进容器**，新增变量必须同步写入 compose 的 `environment:` |
+| ② 宿主层（环境变量） | 容器 `environment:` / 进程环境 | 宿主启动时读取 | **密钥**（永不落盘 `settings`）与**基础设施**（模型端点/协议地址/监听端口）**始终覆盖**，改完需重启；支持 `{NAME}_FILE` 读取 Docker Secret 文件 |
+| ③ 数据库真源层 | `data/botagent.db`（兼 `data/settings.json`） | 面板保存后独占 | **行为类配置**（人设、白名单、阈值、节奏、开关…）首次部署以环境变量作种子，面板保存后即由库独占，之后改 `.env` 不生效（日志会打印已覆盖提醒） |
 
-| 配置项 | 示例值 | 说明 |
-| :--- | :--- | :--- |
-| `MODEL_API_KEY` | `sk-...` | OpenAI 兼容接口的 API Key（必填） |
-| `MODEL_BASE_URL` | `https://api.deepseek.com/v1` | 模型调用 Base URL |
-| `MODEL_NAME` | `deepseek-chat` | 使用的模型标识 |
-| `MAX_TOKENS` | `2048` | 单次回复 Token 上限 |
-| `PANEL_PASSWORD` | `your_password_here` | Web 控制面板访问密码（可选，留空则免密访问；可在面板中随时修改或清除） |
-| `DISABLE_PANEL_AUTH` | `1` | 强制禁用控制面板认证（可选，默认 0） |
-| `HEALTH_PORT` | `8080` | Web 控制面板与健康探针监听端口 |
-| `WHITELIST` | `*` 或 `123456,789012` | 允许响应的 QQ 群号或用户号（逗号分隔，`*` 为全量） |
-| `ONEBOT_PROTOCOL` | `ForwardWebSocket` | 协议端通信模式（`ForwardWebSocket` / `ReverseWebSocket`） |
-| `ONEBOT_URL` | `ws://127.0.0.1:3001` | 协议端 WebSocket 接入地址 |
-| `ONEBOT_TOKEN` | `your_token` | 协议端鉴权令牌（如设置） |
-| `BOT_UIN` | `10001` | 机器人 QQ 号（留空时连接后自动获取） |
-| `QQCHAT_TLS_CERT` | `/etc/letsencrypt/live/.../fullchain.pem` | 自定义 TLS/HTTPS 证书链路径（可选，支持 Let's Encrypt） |
-| `QQCHAT_TLS_KEY` | `/etc/letsencrypt/live/.../privkey.pem` | 自定义 TLS/HTTPS 证书私钥路径（可选） |
+> [!WARNING]
+> 严禁将仓库默认 `docker-compose.yml` 直接覆盖已有部署目录，否则可能丢失 `ACCOUNT` 等手工配置导致 NapCat 掉登录态需重新扫码。完整 200+ 键名模板见 [`.env.example`](.env.example)。
+
+### 核心宿主环境变量说明表
+
+规范前缀 `BOTAGENT_*` 优先级最高，`QQCHAT_*` / `OPENAI_*` 自动回落兼容；密钥类变量均优先查找 `{NAME}_FILE`。
+
+| 规范名（优先） | 兼容旧名 | 默认值 / 示例 | 作用域 / 生效说明 |
+| :--- | :--- | :--- | :--- |
+| `BOTAGENT_DATA_DIR` | `QQCHAT_DATA_DIR` | `./runtime` 或容器 `/data` | 运行时数据根路径（单次绑定，下含 `data/botagent.db`、日志与插件） |
+| `BOTAGENT_API_KEY` | `QQCHAT_API_KEY`、`OPENAI_API_KEY` | —（必填，支持 `_FILE`） | 主模型 API Key，只读环境或面板 `secrets` 表，不进 `settings.json` |
+| `BOTAGENT_BASE_URL` | `QQCHAT_BASE_URL`、`OPENAI_BASE_URL` | `https://api.openai.com/v1` | 主模型兼容 API Base URL（面板显式覆盖未设置时由环境覆盖） |
+| `BOTAGENT_MODEL` | `QQCHAT_MODEL`、`OPENAI_MODEL` | `gpt-4o-mini` | 主模型标识 |
+| `BOTAGENT_FAST_MODEL` / `BOTAGENT_FAST_REPLY` | `QQCHAT_FAST_MODEL` / `QQCHAT_FAST_REPLY` | 空 / `false` | 聊天快速回复轻量档模型（首次引导后可由面板热调整） |
+| `BOTAGENT_QQ_ONEBOT_PROTOCOL` | `QQCHAT_ONEBOT_PROTOCOL` | `ForwardWebSocket` | OneBot 协议模式：`ForwardWebSocket` / `ReverseWebSocket` |
+| `BOTAGENT_QQ_ONEBOT_URL` | `QQCHAT_ONEBOT_URL`、`QQCHAT_ONEBOT_ADDRESS` | `ws://127.0.0.1:3001` | 协议端 WebSocket 地址 |
+| `BOTAGENT_QQ_ONEBOT_TOKEN` | `QQCHAT_ONEBOT_TOKEN` | 空（支持 `_FILE`） | OneBot 鉴权令牌 |
+| `BOTAGENT_QQ_UIN` | `QQCHAT_UIN`、`QQCHAT_QUICK_LOGIN_UIN` | 空 | 机器人 QQ 号（留空则在连上协议端后自动获取） |
+| `BOTAGENT_HEALTH_PORT` | `QQCHAT_HEALTH_PORT`、`HEALTH_PORT` | 原生 `18245` / 容器 `8080` | 面板 API、ZBA 与 `/healthz` 监听端口（`0` = 关闭） |
+| `BOTAGENT_HEALTH_BIND` | `QQCHAT_HEALTH_BIND` | `127.0.0.1` | 绑定地址（反向代理同容器/跨网络可设 `+`；无密码时强制回环） |
+| `BOTAGENT_PANEL_TOKEN` | `QQCHAT_PANEL_TOKEN` | 空 | 旧面板 `/api/*` 访问令牌 |
+| — | `QQCHAT_PANEL_PASSWORD` | 空 | 旧面板首次启动登录口令种子（首次写入后改为面板修改） |
+| `BOTAGENT_ZBA_TOKEN` | `QQCHAT_ZBA_TOKEN` | 空 | ZBA 管理员 Bearer 令牌（写操作必需；未配置时管理端点 fail-closed `503`） |
+| `BOTAGENT_ZBA_READ_TOKEN` | `QQCHAT_ZBA_READ_TOKEN` | 空 | ZBA 只读 Bearer 令牌（CLI 与只读探测用） |
+| `BOTAGENT_ZBA_ALLOW_LOOPBACK` | `QQCHAT_ZBA_ALLOW_LOOPBACK` | `0`（关闭） | `1` 时允许无令牌回环访问 ZBA（**仅限本机开发调试**） |
+| `BOTAGENT_ZBA_URL` | — | `http://127.0.0.1:<port>/zba/v1` | `--status` 等 ZBA 只读 CLI 命令默认连接基址 |
+| `BOTAGENT_AGENT_TOKEN` | `QQCHAT_AGENT_TOKEN` | 空（支持 `_FILE`） | 内置服务器 Agent 令牌 |
+| `BOTAGENT_AGENT_SERVER_KEY` | `QQCHAT_AGENT_SERVER_KEY` | 空（支持 `_FILE`） | Agent 子任务专用模型密钥覆盖 |
+| `BOTAGENT_NAPCAT_WEBUI_URL` / `BOTAGENT_NAPCAT_WEBUI_TOKEN` | `QQCHAT_NAPCAT_WEBUI_*` | `http://127.0.0.1:6099` / 空 | 面板内嵌 NapCat 扫码登录代理目标与令牌 |
+| `BOTAGENT_FEISHU` / `BOTAGENT_FEISHU_APP_ID` / `BOTAGENT_FEISHU_WHITELIST` | `QQCHAT_FEISHU*` | `0` / 空 | 飞书通道开关、AppId 与群聊白名单（首次部署种子） |
+| `BOTAGENT_FEISHU_APP_SECRET` / `BOTAGENT_FEISHU_ENCRYPT_KEY` / `BOTAGENT_FEISHU_VERIFICATION_TOKEN` | `QQCHAT_FEISHU_*` | 空（支持 `_FILE`） | 飞书凭据与事件加密密钥（Secret 仅读宿主环境或环境变量） |
+| `BOTAGENT_VOICE_EMOTION` | `QQCHAT_VOICE_EMOTION` | — | 云端语音情绪默认参数（首次种子） |
+| `BOTAGENT_VERBOSE` / `BOTAGENT_LOG_FILE` | `QQCHAT_VERBOSE` / `QQCHAT_LOG_FILE` | `1` / `1` | 详细日志与是否落盘日志文件（`0` 时仅输出 stdout） |
+| `TZ` | — | 系统本地或 `Asia/Shanghai` | 运行时默认时区 |
 
 ### QQ 官方开放平台（可选）
 
-如需启用官方 Bot API：
+官方通道开关与凭据默认同样完全隔离（会话带 `official:` 前缀，白名单独立）：
 
-```ini
-OFFICIAL_ENABLED=1
-OFFICIAL_APP_ID=your_app_id
-OFFICIAL_APP_SECRET=your_app_secret
-```
-
-> [!NOTE]
-> 进程完成初始化后，大多数运行时行为（如人设、回复阈值、冷却时间、表情开关等）均可在 Web 控制面板内在线动态调整并持久化，无须重启服务。
+| 键 | 说明 |
+| :--- | :--- |
+| `BOTAGENT_OFFICIAL` / `QQCHAT_OFFICIAL` | `1` = 启用官方通道 |
+| `QQCHAT_OFFICIAL_APP_ID` | 开放平台 AppId |
+| `BOTAGENT_OFFICIAL_APP_SECRET` / `QQCHAT_OFFICIAL_APP_SECRET` | AppSecret（仅从环境变量直接读取，面板不接不回显） |
 
 ---
 
-## Web 控制面板与移动端体验
+## Web 管理控制台
 
-访问 `http://<服务器IP>:8080/` 即可直接进入控制面板：
+基于 Vue 3 + TypeScript 构建的单页管理控制台，通过 ZBA 协议（`zba-1.0`）与后端宿主通信，以纯静态资产独立挂载于 `/web/`：
 
-- **免密访问与安全管控**：控制面板无需强制设置密码即可直接使用；同时支持在面板「设置」页随时设置保护密码或清除已有密码。
-- **两级分类导航架构**：设置页按 5 大类聚合（通道接入、模型与 Agent、聊天与互动、语音与检索、其他），宽屏手风琴折叠展开，移动端双层胶囊联动。
-- **移动端与液态玻璃导航**：深度适配智能手机屏幕与触控操作，底部导航栏采用 Apple 风格的液态玻璃（Liquid Glass）胶囊浮动 Dock 样式，完美支持 iOS/Android 的 Safe Area 安全区域。设置页专属避让保存底栏，标题栏常驻一键保存入口，并在键盘弹出时自动隐藏避让。
-- **全链路性能优化**：
-  - **内存静态资产缓存 (Asset Cache)**：静态文件与前端资产在内存中高效驻留，规避频繁的文件系统与程序集反射流开销。
-  - **动态 GZip 压缩**：对 HTML、JavaScript、CSS、JSON、SVG 等文本内容根据浏览器请求头动态进行 GZip 压缩，整体网络传输体积减少约 70%。
-  - **硬件加速与渲染隔离**：运用 CSS Containment、GPU 合成层加速 (`translateZ`) 与原生弹性滚动，确保长会话列表高帧率丝滑滑动。
-- **会话监视与上下文栈**：以对话气泡形式实时展示私聊与群聊会话流、用户画像与上下文堆栈。
-- **参数热调与模型切换**：在线调整互动欲望、回复阈值、冷却间隔、API 地址与模型配置，即时生效。
-- **状态观测与扫码接入**：实时查看 `/healthz`、`/readyz` 及系统监控指标；协议端离线时直接渲染扫码登录二维码。
-- **实时日志流**：采用 Server-Sent Events (SSE) 持续推流控制台日志，首屏秒级回填历史记录。
+- **分域治理导航**：涵盖 **系统概览**、**个人工作区（`workspace:owner`）**、**模型供应商**（支持按供应商集成 Base URL / Key、槽位原子保存、路由优先级与熔断观测）、**消息平台**（按 4 个驱动包独立呈现接入与实例策略抽屉）、**插件中心**（统一管理 9 个内置 `system.*` 包、官方市场 `preset.feature.*` 按需插件与外部包的热装/升级/启停、配置面板及 `origin === "null"` 沙箱 iframe 扩展界面，如表情包、Token 配额、定时任务、个人待办）、**系统配置**（基础行为、会话级 Profile 编排、MCP 服务器管理、跨平台 RBAC、Agent 与健康日报）、**Agent 任务**（提交、审批流、取消与恢复核对）、**轨迹与缓存** 以及 **运行日志**。
+- **纯内存会话与安全设计**：Bearer 令牌仅存放浏览器内存，刷新或锁定立即清除；写请求受 CAS 乐观锁、`singleflight` 锁与原操作键/幂等键核对保护；支持深浅主题实时同步至沙箱插件及无障碍键盘导航。
 
 ---
 
-## SSL/TLS 安全与证书管理
+## SSL/TLS 与反向代理
 
-服务内建针对 Linux 平台的 X.509 证书管理机制，支持开箱即用的自签名证书与标准 Let's Encrypt 证书链：
+宿主自身**只监听明文 HTTP**（`HttpListener`），**不终止 TLS、也不生成证书**。生产 HTTPS 必须由反向代理（Caddy / Nginx）负责，前端静态产物也由反代在 `/web/` 提供，未认证回退禁止把登录页 HTML 以 `200` 缓存返回给 `/web/assets/*.js`。
 
-- **自签名证书自动生成**：启动时如未检测到已有证书，服务内核将自动生成有效期为 3 年的标准自签名证书，并输出至 `runtime/certs/` 目录：
-  - `runtime/certs/botagent.crt`：X.509 公钥证书 (PEM)
-  - `runtime/certs/botagent.key`：RSA-2048 私钥 (PEM)
-  - `runtime/certs/botagent.pfx`：PKCS#12 密钥库
-  亦可执行 `./tools/gencert.sh [域名] [IP]` 手动指定 SAN 扩展生成。
-- **Let's Encrypt / 生产证书加载**：若已通过 certbot 或 acme.sh 申请标准域名证书，可在 `.env` 中配置对应路径进行挂载：
-  ```ini
-  QQCHAT_TLS_CERT=/etc/letsencrypt/live/example.com/fullchain.pem
-  QQCHAT_TLS_KEY=/etc/letsencrypt/live/example.com/privkey.pem
-  ```
+- **本地自签证书**：`./tools/gencert.sh [域名] [IP]` 生成有效期 1095 天的测试证书至 `runtime/certs/`。
+- **生产证书**：使用 certbot / acme.sh 或 Cloudflare + Caddy 托管；证书路径配置在反代侧，宿主不读取证书环境变量。
 
 ---
 
@@ -198,50 +195,65 @@ OFFICIAL_APP_SECRET=your_app_secret
 
 ```text
 +-------------------------+            OneBot v11            +----------------------------------+
-| OneBot 协议端 (NapCat)   | <---- [Forward WS / WS] ----> | BotAgent.Headless (C# / .NET 8)  |
-+-------------------------+                                 |   +-- OneBot 网关与事件分发      |
-                                                            |   +-- 提示词组装与研判流水线   |
-+-------------------------+          官方 Open API           |   +-- 人物画像与 SQLite 持久化   |
-| QQ 官方开放平台          | <----------------------------> |   +-- 飞书 Webhook 接入网关      |
-+-------------------------+                                 |   +-- 本地交互演练场通道         |
-                                                            |   +-- 内置 Web 控制面板服务      |
-+-------------------------+          平台 Webhook           |   +-- 平台实例策略与配额账本     |
-| 飞书开放平台 (Feishu)    | <----------------------------> |   +-- 熔断容灾与租户队列隔离     |
-+-------------------------+                                 +-----------------+----------------+
-                                                                              |
-                                                                              v OpenAI 兼容 API
+| OneBot 协议端 (NapCat)   | <---- [Forward WS / WS] ----> | BotAgent.Headless (C# / .NET 10)  |
++-------------------------+                                 |   +-- 多平台网关 (OneBot/官方/飞书) |
+                                                            |   +-- 三层配置 & 会话 Profile 解析   |
++-------------------------+          官方 Open API           |   +-- 回复节奏调度与统一记忆矩阵     |
+| QQ 官方开放平台          | <----------------------------> |   +-- 任务运行时 / RBAC / 审批闸门  |
++-------------------------+                                 |   +-- 定时任务 / 待办 / 知识库(BM25) |
+                                                            |   +-- ZBA v1 控制面 & 本地/工作台通道 |
++-------------------------+       WS / 事件 Webhook         |   +-- 9 内置系统包 + 市场扩展体系    |
+| 飞书开放平台 (Feishu)    | <----------------------------> +-----------------+----------------+
++-------------------------+                                                   |
+                                                                              v OpenAI / Anthropic / Gemini
                                                             +----------------------------------+
-                                                            | 大语言模型 (DeepSeek / OpenAI)   |
+                                                            | 大语言模型与 MCP 外部工具生态       |
                                                             +----------------------------------+
 ```
 
 ---
 
-## 兼容性与数据迁移说明
+## 常见本地启动与构建报错排查
 
-- **飞书身份映射**：运行时装配持久化映射 `data/feishu-ids-v2.json`，使用与旧 32 位别名分离的新号段（`FeishuBase + 1e12` 至 `FeishuBase + 2e12`）；启用飞书通道时请随业务数据一同备份该文件。旧会话保留但需重新配置原生飞书 ID 白名单。
-- **OwnMessage 台账隔离**：消息按平台、账号、会话与原生消息 ID 隔离并存入 `own_messages_scoped`；历史裸数字 ID 行继续留档，升级后旧版本不可向下兼容读取 scoped 记录，建议升级前完整备份 `data/qqchat.db`。
-- **工具调用硬超时**：硬超时限制的是调用方等待的最大时限并发送取消信号，并不代表底层外部操作必然瞬间终止，外部不可取消的底层动作仍受宿主调用约束。
+| 报错 / 现象 | 原因 | 排查与解决方法 |
+| :--- | :--- | :--- |
+| 启动即退出：`database_schema_newer` 或 `configuration_schema_newer` | 数据目录中 `botagent.db` 的版本高于当前编译产物支持上限（当前上限 v15 / 配置修订 1） | 切勿手改 `PRAGMA user_version`；使用对应新版本运行，或按 [回滚预案](docs/operations/rollback-playbook.md) 用旧版兼容快照恢复 |
+| 调 `/zba/v1/*` 全部返回 `503`（`/zba/v1/health` 正常） | 未设置 `BOTAGENT_ZBA_TOKEN`，触发管理端点 Fail-Closed 保护 | 设置 `BOTAGENT_ZBA_TOKEN`；纯本机开发可临时加 `BOTAGENT_ZBA_ALLOW_LOOPBACK=1` |
+| 修改 `.env` 的白名单 / 人设 / 阈值不生效 | 面板或 `settings.json` 已持久化过配置，或 Docker Compose 漏配 `environment:` | 以 Web 控制台保存为准（看启动日志中的「已被面板覆盖」提示）；新增变量同步写入 `docker-compose.yml` |
+| 运行 `IntegrationHarness` 时旧逻辑似乎仍在生效 | 仅重新编译 Harness 不会自动触发 `BotAgent.Headless` 重建，Harness 会拉起旧 Headless DLL | 先运行 `dotnet build src/BotAgent.Headless/BotAgent.Headless.csproj -c Release -t:Rebuild`，再跑 Harness |
+| `dotnet build` 报 `NU1903` / `NU1904` 失败 | `Directory.Build.props` 开启了传递性 NuGet 高危漏洞即错误门禁 | 升级受影响依赖包版本；禁止私自降级 `NuGetAuditLevel` |
+| 独立运行探针退出码 `-1073741502` 或临时目录报错 | `dotnet run` 在受限环境受临时路径或子进程环境影响 | 先 `dotnet build -c Release`，再确保 `TEMP`/`TMP` 指向可写空目录后直接 `dotnet <Probe>.dll` |
+| 1 GB 机器运行源码 `Dockerfile` 出现卡死/OOM | 在低内存宿主机容器内执行 `dotnet publish` 挤爆 Swap | 改为开发机交叉发布 `app.tar.gz` + 服务器使用 [`Dockerfile.app`](Dockerfile.app) 解压构建 |
+| 访问 `/web/` 白屏且控制台报 `Unexpected token '<'` | 反代/CDN 将 `/web/assets/*.js` 的未认证或 404 请求回退成了 HTML 200 并缓存 | 确保 `/web/assets/*` 缺失资源严格返回 404、`no-cache`，未认证跳转走 `303` 且带 `Cache-Control: no-store` |
 
 ---
 
 ## 测试与质量验证
 
-项目包含端到端集成测试套件与高频安全约束探针：
+> [!TIP]
+> 跑合成测试前请先清理污染环境（`BOTAGENT_*`、`QQCHAT_*`、`OPENAI_*`、`HARNESS_*`、`HEALTH_PORT` 等）。集成 Harness 与 40 个独立探针的完整说明及矩阵要求见 [CONTRIBUTING.md](CONTRIBUTING.md) 与 [CI 质量门禁](docs/operations/ci-quality-gates.md)。
 
 ```bash
-# 执行自动化单元评测与架构探针
-dotnet test
+# 1. 重建 Headless 宿主（运行集成测试前必须先执行）
+dotnet build src/BotAgent.Headless/BotAgent.Headless.csproj -c Release -t:Rebuild
 
-# 运行集成测试套件
-dotnet build tests/BotAgent.IntegrationHarness -c Release
-dotnet tests/BotAgent.IntegrationHarness/bin/Release/net8.0/BotAgent.IntegrationHarness.dll
+# 2. 运行核心架构、安全、ZBA、MCP 与阶段回归探针示例（先 build 后直接运行 DLL 更稳定）
+dotnet build tests/BotAgent.ArchitectureProbe/BotAgent.ArchitectureProbe.csproj -c Release
+dotnet tests/BotAgent.ArchitectureProbe/bin/Release/net10.0/BotAgent.ArchitectureProbe.dll
+dotnet build tests/BotAgent.SafetyProbe/BotAgent.SafetyProbe.csproj -c Release
+dotnet tests/BotAgent.SafetyProbe/bin/Release/net10.0/BotAgent.SafetyProbe.dll
+dotnet build tests/BotAgent.ZbaProbe/BotAgent.ZbaProbe.csproj -c Release
+dotnet tests/BotAgent.ZbaProbe/bin/Release/net10.0/BotAgent.ZbaProbe.dll
 
-# 运行前端静态与运行时探针
-node tests/BotAgent.FrontendProbe/probe.mjs
+# 3. 运行全量集成场景（支持 s1-s165 已注册合成场景；按场景 ID 定向过滤参数详见 CONTRIBUTING.md）
+dotnet build tests/BotAgent.IntegrationHarness/BotAgent.IntegrationHarness.csproj -c Release
+dotnet tests/BotAgent.IntegrationHarness/bin/Release/net10.0/BotAgent.IntegrationHarness.dll
+
+# 4. 运行前端类型检查、单元测试与 Playwright E2E（在 src/web 下）
+cd src/web
+npm run typecheck && npm run test:unit
+npm run test:e2e -- --project=chromium
 ```
-
-测试集涵盖 S1–S51 真实端到端场景（白名单、静默决策、分句节拍、长期记忆与档案、表情包与魔数校验、上下文引用、模型热切、语音合成、撤回感知、联网搜索、扫码登录、飞书通道隔离、多平台策略与每日 Token 配额账本等），以及微秒级架构棘轮（ArchitectureProbe）、安全边界（SafetyProbe）与生产契约探针（ProductionSpecProbe）。
 
 ---
 

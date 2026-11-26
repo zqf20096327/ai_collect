@@ -54,11 +54,48 @@ Both sides share one engine, so a family ledger and a company ledger obey the sa
   <img src="docs/screenshots/163-automation-alert-acked.png" width="49%" alt="Alert acknowledged; the failed run evidence remains" />
 </p>
 
-**A tax and cash timeline you can audit, and attribution you approve.** The tax workspace now reads only posted entries and aggregates revenue, expense, profit, cash in/out and tax accrual by month; missing months stay explicitly missing instead of showing a fake zero. Attribution proposes a category from the rule table or the ledger history, shows the rule id, matched term and confidence, and writes nothing until you confirm — the confirmation, before/after and rule evidence are all recorded.
+**A tax and cash timeline you can audit, and attribution you approve.** The tax workspace now reads only posted entries and aggregates revenue, expense, profit, cash in/out and tax accrual by month; missing months stay explicitly missing instead of showing a fake zero. Attribution proposes a category from the rule table or the ledger history, shows the rule id, matched term and confidence, and writes nothing until you confirm. You can add keyword/direction/priority rules, confirm up to 100 rows in one atomic batch, and roll back a wrong call row by row; before/after and rule evidence stay recorded.
 
 <p align="center">
   <img src="docs/screenshots/160-finance-timeline.png" width="49%" alt="Finance timeline: only posted vouchers, missing months flagged, cash and tax lines" />
   <img src="docs/screenshots/161-attribution-confirm.png" width="49%" alt="Attribution: evidence and confidence stay visible before a human confirms" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/164-attribution-rules.png" width="49%" alt="Attribution rules: keyword, category, direction, priority and scan hits" />
+  <img src="docs/screenshots/166-attribution-rollback.png" width="49%" alt="Rollback: the row returns to the candidate pool and the rollback count is kept" />
+</p>
+
+**Multi-entity consolidation on a management basis.** Parent and subsidiaries can be combined inside the existing statements page, without adding a new top-level section. `full` is allowed only at 100%; `proportional` scales each trial-balance line by ownership. Consolidation reads posted vouchers only; an entity with no period or no posted entries is marked missing and excluded instead of being counted as zero. Eliminations are entered manually, checked for debit-credit balance, and never written back to any entity ledger.
+
+<p align="center">
+  <img src="docs/screenshots/167-consolidation-overview.png" width="100%" alt="Multi-entity consolidation: scope, ownership-adjusted totals, eliminations and consolidated trial balance" />
+</p>
+
+**Enterprise budgets and cash plans that reach execution.** The ledger workspace gains a Budget & Cash tab: budgets by `YYYY-MM`, actuals only from posted GL entries, unbudgeted accounts flagged, drafts counted separately. Cash plans arrange dated inflows and outflows, allow only cash accounts 1001/1002, take the opening balance from you, and output projected ending balance, actual-to-date, daily variance and buffer warnings. Both write planning tables only: no vouchers, no transfers.
+
+<p align="center">
+  <img src="docs/screenshots/171-budget-plan.png" width="49%" alt="Monthly budget: planning, execution variance and unbudgeted accounts" />
+  <img src="docs/screenshots/172-cash-plan.png" width="49%" alt="Cash plan: balance curve, daily plan vs actual and safety buffer" />
+</p>
+
+On the personal side, the dashboard adds an asset tune-up card that turns emergency-buffer gaps, high-interest debt, concentration, target drift and savings rate into candidates with impact and risk. Every candidate needs confirmation; no orders, no repayments. Tax-timeline rows now expand to the month's posted vouchers and account lines, and attribution rules gain merchant, amount range and member dimensions.
+
+<p align="center">
+  <img src="docs/screenshots/175-asset-tune.png" width="100%" alt="Asset tune-up: concentration and savings candidates with impact, risk and confirmation" />
+</p>
+
+**The last mile of filing, paying and auditing becomes a handoff packet.** The ledger workspace gains an External Handoff tab. The tax worksheet reads only the month's posted vouchers and reports income, expense, tax, debit-credit totals and eight reconciliation checks, always marked "not submitted · review only". The payment draft turns each cash-plan outflow into an instruction with payee, amount and certainty, always marked "draft · cannot execute". The consolidation audit packet bundles the management-basis worksheet, entity status, eliminations and a source hash, always marked "not audited · management basis". All three are downloadable and reviewable, but none submits to a tax bureau, moves money or issues a statutory opinion.
+
+<p align="center">
+  <img src="docs/screenshots/177-external-tax.png" width="49%" alt="Tax filing worksheet: eight checks, account summary and not-submitted status" />
+  <img src="docs/screenshots/178-external-payment.png" width="49%" alt="Payment instruction draft: line items, blocked execution channel and non-executable status" />
+</p>
+
+**A handed-off pack still needs a paper trail.** Each pack card now has an Archive action that appends its packet ID, period, source digest and note to the local audit hash chain, with no new business table. The handoff ledger at the bottom separates "archive only" from "handed over offline" and compares the stored digest with the pack regenerated on screen, showing "matches current pack" or a red mismatch. Offline confirmation only records that you say it was given to a person; it is not a tax receipt, payment confirmation or audit opinion.
+
+<p align="center">
+  <img src="docs/screenshots/181-handoff-ledger-dark.png" width="49%" alt="Handoff ledger: archive, offline confirmation, source digest and current-pack match" />
+  <img src="docs/screenshots/183-handoff-actions.png" width="49%" alt="Tax packet marked handed over offline with its action and download" />
 </p>
 
 **Everything is addressable by your own agent.** The same capabilities are exposed through MCP, so Claude, Codex or any MCP client can drive the books with your permission.

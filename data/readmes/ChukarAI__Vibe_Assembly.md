@@ -9,16 +9,17 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-3B82F6?style=flat-square)](LICENSE)
 
 
-**v2.5.1 - a production-hardened, pure-Rust multi-agent coding workspace closing the ChukarAI ecosystem triangle: Vibe Local zero-cost inference (127.0.0.1:20129) and LAN Pocket Workers (UDP :20131) are discovered, merged into the Liquid Glass model menu, and driven directly when the router is offline, with live tok/s and backend telemetry. This patch hardens the ecosystem wire contract (public assignment endpoint, real UDP announcement shape), sandbox execution, MCP confinement, and desktop router liveness.**
+**v2.6.0 - a production-hardened, pure-Rust multi-agent coding workspace closing the ChukarAI ecosystem triangle: Vibe Local zero-cost inference (127.0.0.1:20129) and LAN Pocket Workers (UDP :20131) are discovered, merged into the Liquid Glass model menu, and driven directly when the router is offline, with live tok/s and backend telemetry. Computer Use Phases 1–2 add a native Win32 click-through yellow cursor overlay with Per-Monitor v2 DPI mapping, eased motion, pre-click ring, click squash, fading ribbon trail, reduced-motion support, zero-idle redraws, and an `Esc` kill-switch. The overlay is visual-only: it performs no mouse or keyboard input injection.**
 
 Vibe Assembly lets small, focused agents build and maintain large software
 projects without exhausting a single chat context. Roles communicate through a
 regulated `.ai/` contract, and every edit passes through a deterministic,
 hash-anchored execution harness.
 
-**Current status:** 283 tests passing, clippy clean with `-D warnings`, both
-release binaries build. There is no browser runtime, webview, or Node/npm
-toolchain.
+**Current status:** 323 tests passing, clippy clean with `-D warnings`, both
+release binaries build. GitHub Actions runs the full workspace on Windows and
+the core/harness/CLI crates on headless Linux. There is no browser runtime,
+webview, or Node/npm toolchain.
 
 ## The problem
 
@@ -92,6 +93,10 @@ The release binaries are:
 - `target/release/vibe-assembly`
 - `target/release/vibe-assembly-desktop`
 
+Both support `--version` and `--help` without starting an interactive runtime.
+Desktop also supports `-V` / `-h`, rejects unknown options, and lists all
+launch and design-preview flags in its help output.
+
 ## Quick start
 
 ```bash
@@ -128,6 +133,9 @@ cargo run -p va-desktop
 
 # Paper & Ink editor workbench for a workspace
 cargo run -p va-desktop -- --workbench --root . --mode web --lang ts
+
+# Visual-only Computer Use overlay demo (Windows; Esc aborts)
+cargo run -p va-desktop -- --overlay-demo
 ```
 
 `init` and `run --auto-combo` auto-seed `.ai/model_combo.txt` when it is absent.
@@ -143,7 +151,8 @@ never pins it; only the drawer header's Pin chip (or its keyboard handler)
 keeps it open. The drawer runs to the bottom of the window and card text stops
 clear of the nav capsule, so counts, chevrons, and inline links stay readable
 and clickable. The model pill opens a small model menu, and the circular 52px
-context indicator shows the used window at a glance.
+context indicator shows the used window at a glance. Router `daily-free` and
+`free` combos appear first as Daily Free with honest `$0` chain labels.
 
 The titlebar sun/moon toggle rewrites the palette across the canvas, panes,
 drawer, composer, nav, and shadows. The choice is stored in
@@ -161,6 +170,28 @@ corrected on send with a transient "N typos fixed" note, while dictionary-only
 suggestions stay opt-in so names and project jargon are never rewritten
 silently. Code spans, paths, URLs, handles, identifiers, and non-ASCII text are
 left alone.
+
+### Computer Use visual overlay (Phases 1–2)
+
+`vibe-assembly-desktop --overlay-demo` runs a deterministic ~2.5-second Windows
+overlay demo without opening GPUI. A separate native Win32 layered window is
+topmost, click-through, non-activating, and hidden from Alt-Tab. It draws the
+brand-yellow agent cursor with a dark outline, eased movement, a pre-click ring,
+click squash, and a fading ribbon trail while leaving the native OS cursor
+visible and untouched.
+
+Coordinates are treated as untrusted screenshot-space values, scaled with the
+capture/monitor DPI factor, offset to physical monitor pixels, and clamped to
+monitor bounds. The supplied rounded cursor assets are yellow with a soft cursor
+halo, click rays, and a subtle yellow screen-edge glow. Rendering uses a pure Rust
+premultiplied BGRA buffer presented through `UpdateLayeredWindow`; active redraws
+are capped at 60 fps and idle state burns zero frames. Windows reduced-motion preferences disable the trail, and
+`Esc` or the shared atomic kill-switch aborts immediately.
+
+This phase is **visual-only**. It contains no `SendInput`, mouse synthesis, or
+keyboard synthesis. Phases 3–5 (action protocol/input injection, per-app
+approval and takeover gates, and screenshot transcript stream) are not
+implemented.
 
 ### Paper & Ink editor workbench
 
@@ -208,7 +239,7 @@ Chat / Architect remains a hard read-only boundary.
 | `doctor` | Run a workspace health check |
 | `init <name>` | Create a workspace, optionally with `--template <name>` |
 | `reset` | Reset volatile `.ai/` state to pristine template defaults |
-| `up` | Ensure Vibe Router + Vibe Local readiness, token handshake, and LAN worker discovery |
+| `up` | Ensure Vibe Router + Vibe Local readiness, report authentication status, and discover LAN workers |
 | `repomap` | Print the token-budgeted, hash-anchored repository symbol map |
 | `diagnose` | Run compiler checks and pinpoint errors to block hashes |
 | `run` | Run the harness execution loop |
@@ -272,7 +303,7 @@ live in `.ai/EXPERIENCE.md`; the trajectory DAG lives in `.ai/session.jsonl`.
 | `patcher` | Edits address per-block hashes, never line numbers. Whole-file drift assertion, 1-hop recovery, and hard rejection of ambiguous or repeated anchors |
 | `repomap` | Token-budgeted workspace symbol scanner binding functions, structs, traits, and classes to deterministic block hashes |
 | `diagnostics` | Dual-format compiler pinpointer (`cargo --message-format=json` and text) mapping error spans to block hashes and snippets |
-| `review` | Git checkpoint per phase, isolating each step's exact delta |
+| `review` | Git checkpoints via temporary indexes and dangling commits (no branch/index pollution), tree-vs-tree deltas including unborn branches and deletions, and hunk-aware unified-diff parsing |
 | `judge` | Deterministic gate: slop comments, placeholders, unsafe primitives in production, import-only churn, excessive churn, trailing whitespace, plus language and mode guardrails. One targeted retry, then abort |
 | `sandbox` | Confined command execution with wall-clock timeouts, directory confinement, and bounded output |
 | `tournament` | Multi-branch speculative runner scoring candidates by warnings and line churn, merging the winner into the DAG |
@@ -285,7 +316,7 @@ live in `.ai/EXPERIENCE.md`; the trajectory DAG lives in `.ai/session.jsonl`.
 Useful harness commands:
 
 ```bash
-# Router readiness and token handshake
+# Router readiness and authentication status
 vibe-assembly up
 
 # Discover symbols and block hashes
@@ -325,6 +356,12 @@ matching latency headers, then recorded in the session DAG. Vibe Local turns
 also report `X-Vibe-Local-Tok-Per-Sec` and `X-Vibe-Local-Backend`
 (`vulkan|cuda|cpu`) with zero cost.
 
+Credential discovery is environment-first. If no environment credential is
+configured, Assembly still checks legacy local token-file locations for
+compatibility. Vibe Router does not generate or synchronize those files; an
+unauthenticated local router needs no token, while an auth-enabled router
+requires the operator to configure credentials.
+
 Common environment variables:
 
 | Variable | Purpose |
@@ -332,7 +369,8 @@ Common environment variables:
 | `VIBE_ROUTER_HOST` / `VIBE_ROUTER_PORT` | Router address (default `127.0.0.1:20128`) |
 | `VIBE_ROUTER_PATH` | Assignment endpoint path (default `/v1/assignment`, public; falls back to the admin-guarded `/api/assignment` and `/v1/models`) |
 | `VIBE_ROUTER_CHAT_PATH` | Chat completions path (default `/v1/chat/completions`) |
-| `VIBE_ROUTER_TOKEN` / `VIBE_ROUTER_API_KEY` | Router credentials; a workspace `.vibe_router_token` file also works |
+| `VIBE_ROUTER_TOKEN` / `VIBE_ROUTER_BEARER` / `NINEROUTER_API_KEY` | Router bearer credentials (environment-first) |
+| `VIBE_ROUTER_API_KEY` / `VIBE_ROUTER_KEY` | Router API-key credentials (environment-first) |
 | `VIBE_MODE` / `VIBE_LANG` / `VIBE_MODEL` | Initial desktop selectors (CLI and TUI use flags) |
 | `VIBE_ASSEMBLY_PROFILE` | Force `auto`, `vps`, `portable`, or `workstation` |
 
@@ -414,14 +452,24 @@ cargo test --workspace
 cargo build --release
 ```
 
-Current workspace: **283 tests passing**, clippy clean, both release binaries
-built. The live HTTP planner is tested against a local mock OpenAI-compatible
-TCP server; unit tests cover compaction, think-trace eviction, observation
-slicing, repeated anchors, read-only enforcement, stagnation escalation,
-language detection, `EXPERIENCE.md` round-tripping, and the desktop workbench
-(real block hashes, mode/language/model cycling, read-only Chat, dock toggles,
-composer submission, curated and dictionary-backed prompt typo detection,
-persisted theme preferences, search filtering/ranking, and drawer reveal math).
+GitHub Actions runs the full workspace on Windows (with unlimited Bash stack)
+and excludes Windows-targeted GPUI on Linux, where `va-core`, `va-harness`, and
+`va-cli` are checked and tested headlessly. On Windows with limited resources,
+append `-j 2` to Cargo commands.
+
+Current workspace: **323 tests passing**, clippy clean, both release binaries
+built. GitHub Actions verifies the Windows workspace and the headless Linux
+core/harness/CLI crates. The live HTTP planner is tested against a local mock
+OpenAI-compatible TCP server; unit tests cover compaction, think-trace eviction,
+observation slicing, repeated anchors, read-only enforcement, stagnation
+escalation, language detection, `EXPERIENCE.md` round-tripping, desktop CLI
+parsing/early exits, the Computer Use overlay (DPI conversion, eased motion,
+pre-click/click timing, trail cap/decay/reduced motion/idle, kill-switch,
+premultiplied BGRA invariant, cursor/ring/trail emission), and the desktop
+workbench (real block hashes, mode/language/model cycling, read-only Chat, dock
+toggles, composer submission, curated and dictionary-backed prompt typo
+detection, persisted theme preferences, search filtering/ranking, and drawer
+reveal math).
 
 ## Troubleshooting
 

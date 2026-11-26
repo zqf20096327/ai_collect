@@ -65,6 +65,18 @@ agents: the same mission always produces the same graph. There is no
 LLM call in the chief layer, and no specialist gains a capability from
 being asked nicely — capability comes only from its card and the
 manifest under it.
+## Requirements
+
+- **Node.js 18 or newer** (`engines: "node": ">=18.0.0"` in
+  `package.json`; CI runs the suite on Node 18, 20 and 22).
+- **Zero runtime dependencies** — there is nothing to install beyond
+  cloning the repository; the test suite uses Node's built-in
+  `node --test` runner (`npm test`).
+- **No credentials needed.** The default provider is deterministic and
+  offline. An HTTP provider is optional and configured only through
+  the `AEGIS_LLM_URL` and `AEGIS_LLM_AUTH_HEADER` environment
+  variables.
+
 ## Quick start
 
 ```bash

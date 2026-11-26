@@ -86,7 +86,7 @@ In [production](https://seekstorm.com) since 2020. Open source under the [Apache
 * **TurboQuant** (TQ) and affine **Scalar Quantization** (SQ).
 * **Chunking** that respects **sentence boundaries** and **Unicode segmentation** for multilingual text.
 * **K-Medoid clustering**: PAM (Partition Around Medoids) with actual data points as centers.
-* **Sharded and leveled IVF index**.
+* **Sharded and leveled IVF index**: no data drift &amp; retraining, linear cluster cost, parallelizable.
 * **Approximate Nearest Neighbor Search** (ANNS) in a **Leveled IVF index**.
 * All **field filters** are directly active **during vector search**, not just as post-search filtering step.
 * SIMD (AVX2) acceleration for vector quantization and similarity calculation.
@@ -392,10 +392,10 @@ Vector search enables you to search not only for similar text, but for everythin
 ## Architecture - under the hood
 
 * **A shard per processor core.** Search engines shard an index across servers. SeekStorm applies the same principle one level down, so a CPU works like a miniature data center. Shards are lock-free, a query fans out to all shards in parallel, and the aggregated top-k is re-scored with global document frequencies and average document length, so BM25 ranking stays consistent across shards. Measured on 5 million Wikipedia documents: roughly **4-6x faster indexing and 3x lower query latency** than a non-sharded index.
-* **Leveled index.** Documents accumulate in RAM. Every 64k documents per shard form a level that is committed to disk and becomes immutable. Lexical and vector indices use the same layout, which is why there are no segment merges.
+* **Leveled index.** Documents accumulate in RAM. Every 64k documents per shard form a level that is committed to disk and becomes immutable. Lexical and vector indices use the same layout, which is why there are no segment merges. 
 * **N-gram indexing for phrase search.** Bigrams and trigrams of frequent terms are indexed directly, moving the intersection and the position check from query time to index time. Phrase queries improved by **2.18x in mean latency and 7.63x at p99.9**, with some individual queries up to three orders of magnitude faster, while BM25 scores stay almost identical.
 * **Lexical engine.** Document-at-a-time processing, SIMD-accelerated (AVX2 / NEON) roaring-bitmap intersection and union, galloping intersection, and a faster-than-Block-Max-WAND top-k union for early termination.
-* **Vector engine.** An IVF index per level and shard, clustered with K-Medoid (PAM) instead of K-Means: cluster centers are actual data points. `nprobe` controls the recall/latency trade-off. Field filters are applied during the ANN search, not afterwards.
+* **Vector engine.** An IVF index per level and shard, clustered with K-Medoid (PAM) instead of K-Means: cluster centers are actual data points. `nprobe` controls the recall/latency trade-off. Field filters are applied during the ANN search, not afterwards. **No data drift** &amp; medoid retraining, **cluster cost stays linear** with index size, parallelizable indexing &amp; search. No massive number of medoids and vectors of a global ANN index in RAM.
 * **Plain on-disk layout.** API key → index → shard → level, with `index.bin`, `vector.bin`, `facet.bin` and a Zstandard-compressed `docstore.bin`. No external dependencies.
 
 More in [ARCHITECTURE.md](ARCHITECTURE.md#architecture) and on the [architecture page](https://seekstorm.com/architecture).
@@ -508,14 +508,14 @@ See our **blog posts** for more detailed information: [SeekStorm is now Open Sou
 <br>
 
 #### [SIFT1M dataset](http://corpus-texmex.irisa.fr/) 1 million vectors, 128 dimensions, f32 precision, Euclidean  
-- 8-bit Scalar Quantization, nprobe=16 -> recall@10=95%, average latency=188 microseconds  
-- 8-bit Scalar Quantization, nprobe=33 -> recall@10=99%, average latency=302 microseconds  
+- 8-bit Scalar Quantization, nprobe=16 -> recall@10=95%, average latency **188** microseconds  
+- 8-bit Scalar Quantization, nprobe=33 -> recall@10=99%, average latency **302** microseconds  
 
 <br>
 
 #### [GIST1M dataset](http://corpus-texmex.irisa.fr/) 1 million vectors, 960 dimensions, f32 precision, Euclidean  
-- 8-bit Scalar Quantization, nprobe=38 -> recall@10=95%, average latency=3,198 microseconds  
-- 8-bit Scalar Quantization, nprobe=80 -> recall@10=98%, average latency=5,737 microseconds  
+- 8-bit Scalar Quantization, nprobe=38 -> recall@10=95%, average latency **3,198** microseconds  
+- 8-bit Scalar Quantization, nprobe=80 -> recall@10=98%, average latency **5,73**7 microseconds  
 
 
 [Benchmark code](#vector-search-sift1m-dataset)
@@ -529,10 +529,12 @@ But seeing the latency of lexical search and vector search stacked up against ea
 <br>
 <br>
 
-**English Wikipedia**: 5 million documents, 16 million vectors  
-Lexical: 2 fields, top10, BM25, average latency	305 microseconds  
-Vector: 2 fields, nprobe=68 -> recall@10=95%, average latency 2,700 microseconds  
-Vector: 2 fields, nprobe=200 -> recall@10=99%, average latency 6,370 microseconds  
+[English Wikipedia dataset](https://www.dropbox.com/s/wwnfnu441w1ec9p/wiki-articles.json.bz2) 5 million documents, 16 million vectors  
+- Lexical: 2 fields, top10, BM25, average latency	**305** microseconds  
+- Vector: 2 fields, nprobe=68 -> recall@10=95%, average latency **2,700** microseconds  
+- Vector: 2 fields, nprobe=200 -> recall@10=99%, average latency **6,370** microseconds  
+- Ingestion speed: 16 million vectors in **109** seconds  
+
 Using [Model2Vec from MinishLab](https://github.com/MinishLab/model2vec-rs): PotionBase2M, chunks: 1000 byte 
 
 We are using the **English Wikipedia** data (*5 million entries*) and queries (*300 intersection queries*) derived from the **AOL query dataset**, both from [Tantivy’s search-benchmark-game](https://github.com/quickwit-oss/search-benchmark-game/).

@@ -79,6 +79,7 @@ Also, a leaderboard should be included if only:
 | ---- | ----------- |
 | [agentstats](https://github.com/RishabhPande/agentstats) | agentstats analyzes repeated AI-agent benchmark runs with significance tests, run-count planning and leaderboard uncertainty audits; it does not execute agents. |
 | [Benchmark Radar](https://github.com/ktwu01/benchmark-radar) | A living database and search engine for AI benchmarks and evaluation, tracking 42,331+ records from 40 public sources with linked evidence and daily updates. |
+| [Benchmark Router](https://benchmarkrouter.newmeasure.ai) | Benchmark Router is a platform to run public AI benchmarks with their official code on hosted models or your own agent harness. |
 | [Demo Leaderboard Backend](https://huggingface.co/spaces/demo-leaderboard-backend/backend) | Demo leaderboard backend helps users manage the leaderboard and handle submission requests, check [this](https://huggingface.co/docs/leaderboards/leaderboards/building_page) for details. |
 | [Evaluation Results on the Hub](https://huggingface.co/docs/hub/en/eval-results) | Evaluation Results on the Hub enables model authors to store and display evaluation results in model cards by embedding structured metadata, making benchmark scores publicly accessible and comparable across models. |
 | [Kaggle Competition Creation](https://www.kaggle.com/competitions?new=true) | Kaggle Competition Creation enables you to design and launch custom competitions, leveraging your datasets to engage the data science community. |
@@ -102,6 +103,7 @@ Also, a leaderboard should be included if only:
 | [InsightFace](https://insightface.ai/challenges) | InsightFace focuses on AI challenges related to face recognition, verification, and analysis, supporting advancements in identity verification and security. |
 | [Kaggle](https://www.kaggle.com/competitions) | Kaggle is one of the largest platforms for data science and machine learning competitions, covering a broad range of topics from image classification to NLP and predictive modeling. |
 | [nuScenes](https://www.nuscenes.org) | nuScenes enables researchers to study challenging urban driving situations using the full sensor suite of a real self-driving car, facilitating research in autonomous driving. |
+| [Open Challenge List](https://openchallengelist.com) | Open Challenge List is a weekly-crawled directory of open benchmark competitions and open problems, mostly GitHub repositories, that accept submissions from AI agents, listing what it takes to enter, live leaderboards, unbeaten tracks, and which agents hold each record. |
 | [Robust Reading Competition](https://rrc.cvc.uab.es) | Robust Reading refers to the research area on interpreting written communication in unconstrained settings, with competitions focused on text recognition in real-world environments. |
 | [Tianchi](https://tianchi.aliyun.com/competition) | Tianchi, hosted by Alibaba, offers a range of AI competitions, particularly popular in Asia, with a focus on commerce, healthcare, and logistics. |
 
@@ -329,6 +331,7 @@ Also, a leaderboard should be included if only:
 | [REFUTE](https://huggingface.co/spaces/BGPT-OFFICIAL/refute-leaderboard) | REFUTE ranks models on scientific critique and epistemic calibration (judge-free): critique skill ≠ calibrated honesty on recent science summaries. Site: https://bgpt.pro/refute |
 | [ReST-MCTS*](https://github.com/THUDM/ReST-MCTS?tab=readme-ov-file#leaderboard) | ReST-MCTS* is a reinforced self-training method that uses tree search and process reward inference to collect high-quality reasoning traces for training policy and reward models without manual step annotations. |
 | [Reviewer Arena](https://huggingface.co/spaces/openreviewer/reviewer-arena) | Reviewer Arena hosts the reviewer arena, where various LLMs compete based on their performance in critiquing academic papers. |
+| [RezeptEval](https://moeller-bonn.com/app/rezept-bench/) | RezeptEval is a benchmark to evaluate LLMs on German everyday cooking tasks (recipe writing under constraints, food safety, cooking theory, kitchen troubleshooting, meal scheduling) with code-based checks and an LLM judge; per-item scores are published on [Zenodo](https://doi.org/10.5281/zenodo.24308835). |
 | [RoleEval](https://github.com/magnetic2014/roleeval?tab=readme-ov-file#leaderboard-5-shot) | RoleEval is a bilingual benchmark to evaluate the memorization, utilization, and reasoning capabilities of role knowledge of LLMs. |
 | [RTEB](https://huggingface.co/spaces/mteb/leaderboard) | RTEB (ReTrieval Embedding Benchmark) is a comprehensive benchmark for evaluating text retrieval models across multiple specialized domains including legal, finance, code, and healthcare. |
 | [Russian Chatbot Arena](https://huggingface.co/spaces/LLMArena/llmarena-leaderboard) | Chatbot Arena hosts a chatbot arena where various LLMs compete in Russian based on user satisfaction. |
@@ -388,6 +391,8 @@ Also, a leaderboard should be included if only:
 
 | Name | Description |
 | ---- | ----------- |
+| [Accelerate Bench](https://acceleratebench.com/) | Accelerate Bench is a long-horizon coding agent benchmark in which agents have up to eight hours to make a scientific computing application faster while keeping its outputs correct. |
+| [aicharts](https://aicharts.io) | aicharts plots coding scores from Artificial Analysis and Terminal-Bench against cost per task for OpenAI, Anthropic and Google models at every effort setting, marks the cost frontier, and compares Codex, Claude Code and Antigravity CLI on the Coding Agent Index. |
 | [Aider LLM Leaderboards](https://aider.chat/docs/leaderboards) | Aider LLM Leaderboards evaluate LLM's ability to follow system prompts to edit code. |
 | [AndroidWorld](https://docs.google.com/spreadsheets/d/1cchzP9dlTZ3WXQTfYNhh3avxoLipqHN75v1Tb86uhHo) | AndroidWorld is a comprehensive testing framework to evaluate the abilities of AI models, specifically autonomous agents, in controlling and interacting with a mobile device. |
 | [APEX AI Benchmarks](https://www.mercor.com/apex) | APEX AI Benchmarks is a benchmark suite for evaluating AI model performance on coding and software engineering tasks. |
@@ -605,11 +610,4 @@ Also, a leaderboard should be included if only:
 | [MCPMark](https://mcpmark.ai/leaderboard) | MCPMark is a benchmark to evaluate model and agent capabilities in real-world MCP tasks. |
 | [MCP Universe](https://mcp-universe.github.io/index.html#results) | MCP Universe is a leaderboard to compare AI model performance on MCP (Model Context Protocol) tasks. |
 | [Olas Predict Benchmark](https://huggingface.co/spaces/valory/olas-prediction-leaderboard) | Olas Predict Benchmark is a benchmark to evaluate agents on historical and future event forecasting. |
-| [OSWorld](https://os-world.github.io) | OSWorld is a benchmark to evaluate multimodal AI agents on their ability to perform 369 realistic, open-ended tasks within a virtual computer environment across various applications and operating systems. |
-| [OSWorld-MCP](https://osworld-mcp.github.io) | OSWorld-MCP is a benchmark to evaluate AI agents on real-world computer tasks using the Model Context Protocol (MCP). |
-| [Personal Agent Bench](https://personalagentbench.com/) | Personal Agent Bench takes consumer personal AI agents apart hands-on and scores them on real errands, reporting each result with a confidence interval and no composite score. |
-| [SEC-bench](https://sec-bench.github.io) | SEC-bench is a benchmark of LLM agents on real-world software security tasks. |
-| [TravelPlanner](https://huggingface.co/spaces/osunlp/TravelPlannerLeaderboard) | TravelPlanner is a benchmark to evaluate LLM agents in tool use and complex planning within multiple constraints. |
-| [VAB](https://github.com/THUDM/VisualAgentBench?tab=readme-ov-file#leaderboard) | VisualAgentBench (VAB) is a benchmark to evaluate and develop LMMs as visual foundation agents, which comprises 5 distinct environments across 3 types of representative visual agent tasks. |
-| [VisualWebArena](https://jykoh.com/vwa) | VisualWebArena is a benchmark to evaluate the performance of multimodal web agents on realistic visually grounded tasks. |
-| [WebArena](https://docs.google.com/spreadsheets/d/1M801lEpBbKSNwP-vDBkC_pF7LdyGU1f_ufZb_NWNBZQ) | WebArena is a standalone, 
+| [OSWorld](https://os-world.github.io) | OSWorld is a benchmark to evaluate multimodal AI agents on their ability to

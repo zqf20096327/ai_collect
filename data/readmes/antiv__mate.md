@@ -135,7 +135,7 @@ uv pip compile requirements.txt -o requirements.lock --universal --python-versio
 python -m unittest discover -s shared/test -t . -p "test_*.py"
 ```
 
-On the 1st of every month, `.github/workflows/dependency-upgrade.yml` does this with `--upgrade`, taking only releases at least a week old, runs the tests on the result in a job without write access, and opens a pull request when anything moved (it can also be started by hand from the Actions tab). The exact pin and the bounds in `requirements.txt` (`google-adk`, SQLAlchemy below 2.1, litellm below 1.104 and mcp below 2) are moved by hand after reading their changelogs; the comment next to each says why it is there. The workflow needs **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**; with the default token the pull request gets no CI run of its own, so set a `DEPENDENCY_PR_TOKEN` secret if you want one. Dependabot keeps the workflows' own actions current.
+On the 1st of every month, `.github/workflows/dependency-upgrade.yml` does this with `--upgrade`, taking only releases at least a week old, runs the tests on the result in a job without write access, and opens a pull request when anything moved (it can also be started by hand from the Actions tab). The exact pin and the bounds in `requirements.txt` (`google-adk`, SQLAlchemy below 2.1, litellm below 1.109 and mcp below 3) are moved by hand after reading their changelogs; the comment next to each says why it is there. The workflow needs **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**; with the default token the pull request gets no CI run of its own, so set a `DEPENDENCY_PR_TOKEN` secret if you want one. Dependabot keeps the workflows' own actions current.
 
 Migrations run automatically on startup. Default database is SQLite.
 
@@ -164,7 +164,7 @@ Play a traced conversation back on the Visual Builder canvas: which agent ran wh
 ![Trace Replay: a two-turn session played back on the Visual Builder canvas](documents/images/trace_replay.gif)
 
 ### Work Room
-A built-in chat interface inside the dashboard. Pick any root agent from the card grid and start a conversation — no embed code, no browser tab switching. Sessions are auto-titled and persist across page reloads. The default landing page after login.
+A built-in chat interface inside the dashboard. Pick any root agent from the card grid and start a conversation — no embed code, no browser tab switching. Search the agents, your conversations and the messages in them. Conversations are auto-titled and persist across page reloads. The default landing page after login.
 
 When the agent responds with code, the canvas panel opens automatically to the right of the chat. Code never clutters the conversation — it goes straight into a full-featured editor. HTML, JavaScript, CSS, SVG and Python run with one click in a sandboxed frame, apart from the dashboard — Python via Pyodide (WebAssembly), in the browser. Dart and Flutter applications are executed directly in the browser via a seamless, zero-install **DartPad** integration that bypasses the code view to show the interactive application immediately. The panel is resizable by dragging the divider. Any edits made in the canvas are automatically included in the next prompt, so you can ask the agent to modify its own output without copy-pasting.
 
@@ -178,13 +178,20 @@ With the **Canvas Panel**, you can view and edit the generated code in a full-fe
 ![Canvas Preview Mode](documents/images/canvas_preview.png)
 *Previewing and running the generated code in a sandboxed iframe*
 
-### Agent Configuration
-Edit every aspect of an agent: model, instruction, RBAC roles, memory blocks, tools, MCP servers, planner, and schemas.
+### Approvals
+An agent can be set to ask before it uses a tool. When nobody is chatting — a schedule, an API call, A2A, MCP, Slack — the run waits here for an administrator, then goes on from where it stopped. Every decision is in the audit log. ([guide](docs/user/approvals.md))
 
-![Agent Configuration](documents/images/config_agent.png)
+![Approvals: a trigger's request to change a memory block, with its arguments, Approve and Reject](documents/images/approvals.png)
+
+### Agent Page
+Each agent has a page with its settings, versions, sessions, evals, usage, traces, channels and a test chat. The editor has the basics on the left, the instruction in the centre, and tools, MCP servers, memory blocks, guardrails, planner and schemas in sections on the right.
+
+![An agent's page, Settings tab](documents/images/config_agent.png)
+
+![An agent's page, Usage tab: tokens and cost over time, by model](documents/images/agent_usage.png)
 
 ### Tool Configuration
-Toggle built-in tools or provide custom JSON — Google Drive, Search, Image, Memory Blocks, Code Executor, File Search, and more.
+In the agent's Tools section, toggle built-in tools or write the JSON — Google Drive, Search, Image, Memory Blocks, Code Executor, and more.
 
 ![Tool Configuration](documents/images/tools_agent_modal.png)
 
@@ -193,13 +200,18 @@ Multi-agent chat with event tracing, tool calls, and persistent memory.
 
 ![Chat Interface](documents/images/caht_chess_exsample.png)
 
+### Command Palette
+Ctrl+K (⌘K on a Mac) jumps to an agent, a recent conversation or a page.
+
+![Command palette: agents and conversations matching "support"](documents/images/palette.png)
+
 ### Usage Analytics
-Token usage trends, agent performance, activity-by-hour, and per-agent success rates.
+Cost per agent and project in US dollars, token usage trends, response latency, and activity by hour.
 
 ![Usage Analytics](documents/images/usage.png)
 
 ### Token Usage Details
-Drill into individual request logs — prompt / response / thought / tool-use token breakdown per request.
+Drill into individual request logs — cost and prompt / response / thought / tool-use token breakdown per request.
 
 ![Token Usage Details](documents/images/usage_details.png)
 

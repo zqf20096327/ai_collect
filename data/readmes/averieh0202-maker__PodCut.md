@@ -6,6 +6,8 @@
 
 [下载源码 ZIP](https://github.com/averieh0202-maker/PodCut/archive/refs/heads/main.zip) · [安装指南](docs/getting-started.md) · [使用自己的 Agent](docs/using-your-agent.md) · [反馈问题](https://github.com/averieh0202-maker/PodCut/issues)
 
+**下载提示：** GitHub ZIP 解压后的文件夹叫 `PodCut-main`；使用 `git clone` 时叫 `PodCut`。下载的是源码，不含可双击安装的 App。进入该文件夹后按[安装指南](docs/getting-started.md)运行。
+
 ## 核心功能
 
 **[观看最新宣传片与全部历史版本](docs/promo/versions/index.html)**

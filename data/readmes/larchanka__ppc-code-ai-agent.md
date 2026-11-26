@@ -39,9 +39,11 @@ Vintage Macs are wonderful pieces of industrial design and distraction-free comp
 
 **Code Agent solves this completely:**
 - **Zero CPAN Dependencies**: 100% pure Perl standard library that runs out of the box on stock **Perl 5.8.6** in OS X 10.4.
-- **Embedded `MiniJSON` Engine**: Built-in recursive-descent JSON parser and encoder; no external modules required.
+- **Embedded `MiniJSON` Engine**: Built-in recursive-descent JSON parser and encoder with UTF-16 surrogate pair decoding (`\uD800..\uDBFF\uDC00..\uDFFF`), CRLF line endings, and JSON edge-case hardening without external CPAN modules.
 - **Bundled Modern TLS `curl`**: Includes a prebuilt, statically-linked PowerPC `curl` binary with OpenSSL 1.0.2u supporting **TLS 1.2 & TLS 1.3**, alongside a current Mozilla `cacert.pem` root certificate bundle.
-- **Multi-Provider AI**: Connects to **Anthropic Claude**, **Google Gemini** (with a free tier requiring no credit card), or **Local OpenAI-compatible models** (Ollama, llama.cpp, LocalAI running on your home LAN).
+- **Multi-Provider AI**: Connects to **Anthropic Claude**, **Google Gemini** (with a free tier requiring no credit card), or **Local OpenAI-compatible models** (Ollama, llama.cpp, LocalAI running on your home LAN) with interactive runtime switching (`/openai`, `/local`), endpoint normalization, and persistent config in `~/.code-agent/env`.
+- **Context & Token Budgeting**: Bounded context management with automatic and manual `/compact` tool output compaction, preserving strict `tool_use`/`tool_result` ID pairs while keeping pure-Perl JSON processing lightning-fast on vintage PowerPC CPUs.
+- **Automated Perl 5.8.6 CI Enforcement**: Continuous integration enforcing strict Perl 5.8.6 syntax compatibility across every commit using `scripts/check_minimum_version.pl` and GitHub Actions.
 - **Agentic Tool Execution**: Autonomously inspects directories, reads files, writes code, and executes shell commands directly on your Mac.
 - **Custom Instructions & Skills Discovery**: Automatically loads global (`~/.agents/AGENTS.md`) and project (`./AGENTS.md`) instructions, plus indexes global (`~/.agents/skills/<name>/SKILL.md`) and project (`./.agents/skills/<name>/SKILL.md`) skills via bounded 4 KB frontmatter scanning for lazy on-demand loading via `read_file`.
 - **Autonomous Sub-Agents**: Delegates complex tasks to specialized sub-agents with isolated conversation contexts (`plan` for read-only exploration and `build` for implementation), preserving context tokens and displaying progress in an indented tree view.
@@ -72,7 +74,7 @@ Copy this repository folder to your PowerPC Mac using a USB drive, local network
 Follow the prompts to:
 1. Select your preferred provider (**Anthropic Claude** or **Google Gemini**).
    > **Tip**: Google Gemini has a free tier with no credit card required at [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
-2. Enter your API key (stored securely in `~/.code-agent-env`).
+2. Enter your API key (stored securely in `~/.code-agent/env`).
 3. Deploy the CLI wrapper to `~/bin/code` (or `~/bin/code-agent` if VS Code is detected).
 
 ### 3. Start Chatting
@@ -96,12 +98,13 @@ While in the agent prompt (`User> `), use these commands at any time:
 | :--- | :--- |
 | `/help` | Display interactive command cheatsheet and usage tips. |
 | `/new` | **Start a new conversation**: Clears chat history and resets context window without restarting the agent. |
+| `/compact` | **Compact conversation history**: Truncates verbose older tool outputs while keeping recent turns and strict tool IDs intact, reducing context bloat and speeding up serialization on slow CPUs. |
 | `/ctx [tokens]` | **View or set max output tokens**: Inspect current generation limit (default: 4k / 4,096 tokens) or set a new limit for model responses (e.g. `/ctx 65536`, `/ctx 64k`, `/ctx 128k`). |
 | `/auto` | **Enable Autonomous Mode**: Tools (`write_file`, `edit_file`, `run_shell`) execute without asking for permission. |
 | `/manual` | **Enable Manual Mode**: Requires explicit `[y/N]` user confirmation before modifying files or running shell commands. |
 | `/claude` | Switch active provider to **Anthropic Claude** (Claude Sonnet 4.5 / 3.7). |
 | `/gemini` | Switch active provider to **Google Gemini** (Gemini 2.5 Flash / Flash-Lite). |
-| `/openai` | Switch active provider to **Local / OpenAI endpoint** (Ollama / LAN LLM). |
+| `/openai`, `/local` | Switch active provider to **Local / OpenAI endpoint** (Ollama / LAN LLM). Interactively prompts for base URL (default `http://localhost:11434/v1`) and normalizes/persists config if unset. |
 | `/model <name>` | Change the active model (e.g. `/model claude-3-7-sonnet-20250219`). |
 | `/models` | List recommended models for the currently selected provider. |
 | `/exit`, `/quit` | Exit the agent and return to shell. |
@@ -191,6 +194,15 @@ Conversation state is tracked in a structured in-memory session (`$CURRENT_SESSI
 - The agent invokes lifecycle hook `archive_session()` and initializes a new session with an empty message list.
 - Active AI provider, chosen model, and autonomous mode settings are preserved across session resets.
 
+### Context & Token Budgeting (`/compact`)
+
+On vintage PowerPC processors (G3/G4/G5), pure-Perl JSON re-serialization of large conversation histories with verbose tool outputs can cause noticeable CPU latency. Code Agent solves this with two-tiered compaction:
+
+- **Automatic Compaction**: Before dispatching requests to LLM providers, `auto_compact_session_if_needed()` evaluates conversation volume against configured thresholds (defaults: 100,000 characters or 10 user turns). When exceeded, older tool results are truncated, preserving the initial lines and concluding summary while omitting intermediate lines.
+- **Manual Compaction**: Run `/compact` at the prompt anytime to immediately compress older tool results.
+- **Schema & ID Integrity**: Unlike naive truncation, the compaction algorithm strictly preserves `tool_use_id` / `tool_result` pairing required by Anthropic Claude and Gemini function calling schemas, preventing API errors caused by mismatched or orphan tool blocks.
+- **Configuration**: Fine-tune compaction via `CLAUDE_AUTO_COMPACT` (`1` or `0`), `CLAUDE_COMPACT_THRESHOLD_CHARS` (default: `100000`), and `CLAUDE_COMPACT_THRESHOLD_TURNS` (default: `10`).
+
 ---
 
 ## 🏗️ Architecture
@@ -260,9 +272,16 @@ If you prefer to run private models without internet access, you can run [Ollama
    ```bash
    OLLAMA_HOST=0.0.0.0 ollama serve
    ```
-2. On your PowerPC Mac, run:
+2. On your PowerPC Mac, simply run `code` and switch interactively:
+   ```text
+   User> /openai
+   Enter OpenAI/local base URL [http://localhost:11434/v1]: http://192.168.1.100:11434/v1
+   Enter API key (leave empty for none) [none]: 
+   Save this configuration to ~/.code-agent/env? (y/n): y
+   ```
+   Or pre-configure environment variables in `~/.code-agent/env` or your shell:
    ```bash
-   export OPENAI_API_BASE="http://192.168.1.100:11434/v1"
+   export OPENAI_BASE_URL="http://192.168.1.100:11434/v1"
    export OPENAI_API_KEY="none"
    export CLAUDE_PROVIDER="openai"
    export CLAUDE_MODEL="llama3.2:1b"
@@ -272,26 +291,30 @@ If you prefer to run private models without internet access, you can run [Ollama
 
 ---
 
-## ⚙️ Configuration & Environment (`~/.code-agent-env`)
+## ⚙️ Configuration & Environment (`~/.code-agent/`)
 
-`code-agent` uses a dedicated environment file located at `~/.code-agent-env` to store provider selection, API keys, and runtime preferences.
+`code-agent` stores configuration, runtime files, and remote MCP settings in a dedicated directory located at `~/.code-agent/`:
+- `~/.code-agent/env`: Provider selection, API keys, and runtime preferences.
+- `~/.code-agent/mcp.json`: Remote MCP server configurations.
+- `~/.code-agent/build/`: Installed agent script (`code-agent.pl`) and CA bundle (`src/cacert.pem`).
+- `~/.code-agent/toolchain/`: Prebuilt TLS 1.2/1.3 curl binary (`bin/curl`, on PowerPC Tiger).
 
 ### How It Works
 
-* **Automatic Loading**: The CLI launchers (`~/bin/code` and `~/bin/code-agent`) source this file before running Perl. In addition, `code-agent.pl` parses it on startup via `load_env_file()`, so credentials load even if you run `perl code-agent.pl` directly.
-* **Security**: The installer sets file permissions to `0600` (`chmod 600 ~/.code-agent-env`), ensuring only your user account can read or write API keys.
-* **Precedence**: Environment variables already defined in your current shell session take precedence over values in `~/.code-agent-env`. You can temporarily override any setting on the command line:
+* **Automatic Loading**: The CLI launchers (`~/bin/code` and `~/bin/code-agent`) source `~/.code-agent/env` before running Perl. In addition, `code-agent.pl` parses it on startup via `load_env_file()`, so credentials load even if you run `perl code-agent.pl` directly.
+* **Security**: The installer sets directory permissions to `0700` and file permissions to `0600`, ensuring only your user account can read or write API keys and configuration.
+* **Precedence**: Environment variables already defined in your current shell session take precedence over values in `~/.code-agent/env`. You can temporarily override any setting on the command line:
   ```bash
   CLAUDE_PROVIDER=anthropic code
   ```
-* **Backward Compatibility**: If `~/.code-agent-env` is missing, the agent automatically checks for and loads the legacy `~/.claude-agent-env` file.
+* **Migration**: During installation, any legacy `~/.code-agent-env` or `~/.claude-agent-env` file is automatically migrated into `~/.code-agent/env`.
 
 ### Example File
 
 Lines can use standard shell assignment (`export KEY="VALUE"` or `KEY=VALUE`). Blank lines and comments (`#`) are ignored:
 
 ```bash
-# ~/.code-agent-env - Code Agent Configuration
+# ~/.code-agent/env - Code Agent Configuration
 
 # Default provider: "gemini", "anthropic", or "openai"
 export CLAUDE_PROVIDER="gemini"
@@ -318,6 +341,11 @@ export GEMINI_API_KEY="AIzaSy..."
 # Automatic API retry settings (max retries on error and delay in seconds between retries)
 # export CLAUDE_MAX_RETRIES="3"
 # export CLAUDE_RETRY_DELAY="5"
+
+# Context & token budgeting settings (automatic tool result compaction for slow CPUs)
+# export CLAUDE_AUTO_COMPACT="1"
+# export CLAUDE_COMPACT_THRESHOLD_CHARS="100000"
+# export CLAUDE_COMPACT_THRESHOLD_TURNS="10"
 ```
 
 ### Supported Environment Variables
@@ -333,6 +361,9 @@ export GEMINI_API_KEY="AIzaSy..."
 | `CLAUDE_AUTO_MODE` | Default tool permission mode: `1` (autonomous) or `0` (manual) | `0` |
 | `CLAUDE_MAX_RETRIES` | Maximum number of automatic retry attempts when an LLM API call returns an error | `3` |
 | `CLAUDE_RETRY_DELAY` | Wait interval in seconds between LLM API call retry attempts | `5` |
+| `CLAUDE_AUTO_COMPACT` | Enable automatic background tool output compaction | `1` |
+| `CLAUDE_COMPACT_THRESHOLD_CHARS` | Character threshold in conversation history before triggering compaction | `100000` |
+| `CLAUDE_COMPACT_THRESHOLD_TURNS` | User turn count in conversation history before triggering compaction | `10` |
 | `CLAUDE_CURL` | Custom path to a TLS 1.2+ capable `curl` binary | Auto-detected / bundled toolchain |
 | `CLAUDE_CACERT` | Custom path to Mozilla root CA certificate bundle (`cacert.pem`) | Auto-detected / `$BUILD_DIR/src/cacert.pem` |
 | `CLAUDE_TYPE_DELAY` | Simulated typing speed in seconds per character (`0` to disable) | `0.005` (PowerPC) / `0.003` (modern) |
@@ -340,13 +371,13 @@ export GEMINI_API_KEY="AIzaSy..."
 
 ### Managing Your Credentials
 
-* **To edit credentials**: Open `~/.code-agent-env` in any text editor:
+* **To edit credentials**: Open `~/.code-agent/env` in any text editor:
   ```bash
-  nano ~/.code-agent-env
+  nano ~/.code-agent/env
   ```
-* **To re-run the setup wizard**: Delete the file and execute the installer:
+* **To re-run the setup wizard**: Delete the configuration and execute the installer:
   ```bash
-  rm ~/.code-agent-env
+  rm -rf ~/.code-agent
   ./Install.command          # On PowerPC Tiger
   # or ./modern-install.command  # On modern macOS / Linux
   ```
@@ -367,21 +398,31 @@ perl build.pl --check
 # Verify Perl syntax (strict Perl 5.8.6 compatibility)
 perl -c code-agent.pl
 
+# Verify Perl 5.8.6 syntax compatibility across codebase
+perl scripts/check_minimum_version.pl --perl 5.008006 code-agent.pl build.pl scripts/check_minimum_version.pl src/*.pl
+
 # Run the full automated test suite
 prove -v t/*.t
 ```
 
-Test coverage includes 17 automated test suites:
+Test coverage includes 24 automated test suites:
 - `t/agents_context.t`: Global (~/.agents/AGENTS.md) and project-local instructions loading and deduplication.
 - `t/auto_manual_commands.t`: Unit tests for `/auto`, `/manual`, state accessors, and tool bypass logic.
 - `t/banner.t`: Unit tests for two-tone ANSI banner formatting, 80-column bounds, and `$NO_COLOR` graceful degradation.
 - `t/build.t`: Unit tests for `build.pl` modular assembly, syntax checks, and sync verification.
 - `t/call_api.t`: Mocked curl transport invocation and error handling tests.
+- `t/compact_context.t`: Unit tests for tool result head/tail compaction, user turn counting, automatic threshold triggers, and schema/ID preservation.
 - `t/ctx_command.t`: Unit tests for `/ctx` max output token inspection and configuration.
 - `t/env_config.t`: Environment configuration and fallback provider tests.
 - `t/fetch_models.t`: Model discovery normalization tests across providers.
+- `t/json.t`: Unit tests for `MiniJSON` recursive-descent parser/encoder, UTF-16 surrogate pair decoding, line endings (`\r\n`, `\r`, `\n`), nested data, and edge case resilience.
+- `t/markdown.t`: Terminal markdown formatting, ANSI word-wrapping, and table card rendering tests.
+- `t/mcp.t`: Remote MCP client, JSON-RPC 2.0 handshake, tool discovery, and `/mcp` command tests.
+- `t/minimum_version.t`: Automated Perl 5.8.6 static syntax verification test suite.
 - `t/models_command.t`: Interactive `/models` slash command handling.
 - `t/new_command.t`: Session reset, conversation archiving, and context clearing tests.
+- `t/openai_switch.t`: Unit tests for interactive `/openai` and `/local` switching, base URL prompt, normalization, and config persistence.
+- `t/prompt_injection.t`: Security tests for untrusted tool output XML tag escaping and spotlighting.
 - `t/retry.t`: Unit tests for automatic LLM API call retry logic (max 3 retries, 5s delay, transient HTTP/JSON/provider error recovery, and sub-agent resilience).
 - `t/select_model_interactive.t`: Terminal menu navigation, key reading, and scrolling tests.
 - `t/skills_context.t`: Global (`~/.agents/skills`) and project (`./.agents/skills`) skill frontmatter parsing, scope tagging (`[global]` / `[project]`), `dev`/`ino` deduplication, and lazy `<available_skills>` system prompt injection.
@@ -396,7 +437,8 @@ Test coverage includes 17 automated test suites:
 
 - **`code-agent.pl`**: The standalone, self-contained distribution agent script (JSON engine, API adapters, terminal line editor, tool executor) assembled by `build.pl`.
 - **`build.pl`**: Zero-dependency build script that compiles `src/*.pl` into `code-agent.pl` and verifies syntax.
-- **`src/`**: Modular source files (11 domain-specific components: `header.pl`, `prompts.pl`, `json.pl`, `transport.pl`, `providers.pl`, `models_menu.pl`, `session.pl`, `tools.pl`, `terminal.pl`, `ui.pl`, `main.pl`).
+- **`src/`**: Modular source files (13 domain-specific components: `header.pl`, `prompts.pl`, `json.pl`, `transport.pl`, `providers.pl`, `models_menu.pl`, `session.pl`, `tools.pl`, `mcp.pl`, `terminal.pl`, `markdown.pl`, `ui.pl`, `main.pl`).
+- **`scripts/`**: Development, verification, and CI scripts (`scripts/check_minimum_version.pl` for Perl 5.8.6 static compatibility checking).
 - **`Install.command`**: Interactive double-click setup wizard for Mac OS X Tiger / PowerPC (automatically rebuilds from `src/` if present).
 - **`modern-install.command`**: Setup wizard for modern macOS (Intel/Apple Silicon) and Linux environments using system curl.
 - **`curl`**: Precompiled PowerPC Tiger binary (statically linked against OpenSSL 1.0.2u with TLS 1.2/1.3 support).

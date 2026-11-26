@@ -3,7 +3,7 @@
 > **MIT License; your outputs remain yours.** You may use, modify, redistribute and sell the app, including in paid products and services, without individual permission from FURU. Retain the copyright and MIT license notices in copies or substantial portions of the software. External API fees and third-party terms are separate. / **アプリはMITライセンス。成果物の権利は従来どおり利用者に帰属します。** アプリの利用・改変・再配布・販売、有料商品やサービスへの組み込みに、FURUへの個別許可は不要です。ソフトウェアの複製または重要な部分には著作権表示とMITの許諾表示を残してください。外部API料金と第三者の条件は別です。
 
 
-> Current source version: **v8.1.7** / 現在のソース版: **v8.1.7**
+> Current source version: **v8.2.1** / 現在のソース版: **v8.2.1**
 
 MCP-compatible production AI can use this same manga engine to create multipage works in color or monochrome, carry character/prop/background references across pages, and save PNG + JSON. / MCP対応の制作AIから同じ漫画エンジンを使い、人物・小道具・背景を引き継いだカラー／白黒の複数ページ作品を作り、PNG＋JSONで保存できます。
 
@@ -64,7 +64,7 @@ The API connection dialog shows the usage, OpenAI API and Gemini API manuals in 
 
 ## Introduction video / 紹介動画
 
-[![Watch the Super FURU AI 4-koma System introduction / Super FURU AI 4-koma Systemの紹介動画を見る](https://i.ytimg.com/vi/fqSRLqBuFHg/hqdefault.jpg)](https://youtu.be/fqSRLqBuFHg)
+[Watch the narrated v8.2.1 introduction / v8.2.1のナレーション付き紹介動画を見る（note）](https://note.com/happy_duck780/n/ndf063558c1f5)
 
 ## Application screen and output / 操作画面と生成例
 
@@ -78,6 +78,8 @@ https://github.com/user-attachments/assets/15608ccc-8d86-4b78-9ff3-785201b42629
 
 ## Multipage production through MCP / MCPで複数ページを制作
 
+The production skill presents a complete recommended script with direction suited to each scene. When two approaches have meaningfully different effects, it shows both scripts in full, explains the difference and recommends one with a reason. After approval, it carries the intended reveal, pacing and focus into drawing and checks them on the finished pages. / 制作スキルは、場面の狙いに合わせた演出を織り込んだおすすめ台本を提示します。読後の印象が大きく変わる場合だけ、A案・B案の全文、違いとおすすめの理由を示します。承認後は、見せる順番や間、視線の誘導を作画に引き継ぎ、完成ページで確認します。
+
 The production skill also supports a single manga page. When a manga request leaves the method unspecified, Codex offers this MCP workflow first and asks once. An explicitly selected or already accepted method is reused. A one-page request stays one page, without adding a separate cover. / 制作スキルは1P漫画にも対応します。漫画の制作方法が未指定なら、このMCP方式を第一候補として一度確認します。指定済み・了承済みの方法は聞き直しません。1Pの依頼では、別の表紙を勝手に追加せず1ページで制作します。
 
 The skill includes storytelling and revision guidance derived from Story Maker: reader expectations, motivation, setup and payoff, visible acting, and preserving successful drafts. It presents panel-by-panel proposals and uses the manga application's planning pipeline; Story Maker installation or extra provider calls are not required. / Story Makerの実装から抽出した、読者の期待、人物の動機、仕込みと回収、絵で伝わる演技、成立した案を保つ推敲の手順を同梱しています。コマごとのシナリオを提示し、漫画アプリの構成処理へつなぎます。Story Makerの導入や追加API呼び出しは不要です。
@@ -86,7 +88,7 @@ When image production is also requested, the scenario skill carries conditional 
 
 ### Manga workflow with AI / AIと進める漫画制作の流れ
 
-![AI manga workflow from consultation to saved pages and optional SNS publication / 相談から保存・希望時のSNS投稿までを示すAI漫画制作の流れ](docs/assets/furu-manga-workflow.png)
+The workflow runs from consultation and approval to rendering with automated review, then presents the saved pages. / 相談と確認から、作画・自動査読・保存を経て、完成原稿を提示します。
 
 **Three-page manga: See how a page comes together / 白黒3ページで見る、漫画の制作工程**
 
@@ -98,9 +100,9 @@ In “Super FURU AI 4-koma System — How a Comic Comes Together,” five charac
 
 ![Manga page 3 of 3 / 漫画・全3ページの第3ページ](docs/assets/furu-manga-production/page-3.png)
 
-Scenario and reference preparation may be revisited; rendering follows approval of the detailed plan. Saving is automatic: step 6 checks the saved PNG/JSON and displays all pages. Script-only consultation needs no MCP, and an ordinary single page can be made manually. / シナリオと資料は必要に応じて往復し、詳細案を確認してから画像化します。保存はアプリが自動で行い、⑥でPNG／JSONの保存結果を確認して全ページを再掲します。脚本相談だけならMCPは不要で、通常の1ページはアプリを手動でも制作できます。
+Rendering follows confirmation of the detailed script and character sheets. The app saves PNG and JSON for each page. Script-only consultation needs no MCP, and an ordinary single page can be made manually. / 詳細台本と設定画の確認後に作画し、アプリがページごとにPNGとJSONを保存します。脚本相談だけならMCPは不要で、通常の1ページは手動でも制作できます。
 
-The manga skill presents the script, new character sheets and each saved page before asking for approval to move on. After the final page, it asks about social sharing and shows the proposed post before publishing. / 漫画制作スキルは台本、新しい人物資料、保存済みの各ページを示し、次へ進む前に採否を確認します。最終ページの後はSNS掲載の希望を伺い、具体的な投稿内容を示してから公開します。
+The skill shows the script and character sheets for confirmation. It then renders and reviews each page, saves the images and reviews the saved book in reading order. After showing the finished book, it asks whether to post it and follows the user’s answer. / 台本と設定画を示して確認を得たら、各ページを自動査読しながら作画・保存し、最後に全ページの採用画像を読順で自動査読します。完成原稿を提示した後は、SNSに投稿するかを聞いて利用者の回答に従います。
 
 For action panels, read the drawing with dialogue and sound effects covered, then check the grip, the attachment and the tool from the same viewpoint. For revisions, distinguish the requested change from the details to preserve. Examples record the intended effect and what appears on the accepted page. The skill follows the work’s watermark setting and supports displaying the two product credits only on the final page. / 動作のキメゴマは台詞と擬音を隠して読み、握りから取付部・道具本体まで同じ画角で確認します。修正では変える点と保つ点を明確にし、技法の見本では狙いと採用稿に見える演出を記録します。作品のウォーターマーク設定に従い、指定に応じて左右の製品クレジットを最終ページだけに表示できます。作者名と通し番号は個別に扱います。
 
@@ -287,7 +289,9 @@ STEP3 matches annotated character names to a unique registered alias before chec
 
 A connected page foreground retains its source scene’s medium across another panel. When independently observed body ownership supports this overlap, the receiver’s mixed-media observation is checked per body rather than rejected merely for being mixed; unknown ownership or a wrong actor medium remains rejected. / 一続きのページ前景は、別コマへ重なっても元の場面の画風を保持します。独立した身体観測で所属を確認できる場合は、受入枠の混在画風を人物別に照合し、混在だけで違反にしません。所属不明や人物の誤った媒体は引き続き検出します。
 
-Camera validation accepts an elevated placement followed by a comma and a shot direction, such as a high position followed by a front or side view. Actor or prop height alone and explicitly negated high/low camera positions do not establish a camera angle; a real camera origin before an actor description remains valid. The existing eye-level and fisheye restrictions remain. / カメラ検査では「高い位置、正面から…」のように撮影位置を読点で区切って方位を続けた記述も認識します。人物や小道具の高さだけの記述、否定された高低の撮影位置は撮影角度とみなしません。人物の説明より前にある実際の撮影起点は保持し、アイレベルと魚眼の既存制限も維持します。
+Camera validation accepts an elevated placement followed by a comma and a shot direction, such as a high position followed by a front or side view. Actor or prop height alone and explicitly negated high/low camera positions do not establish a camera angle; a real camera origin before an actor description remains valid. The existing rules on unassigned eye-level shots and fisheye remain. / カメラ検査では「高い位置、正面から…」のように撮影位置を読点で区切って方位を続けた記述も認識します。人物や小道具の高さだけの記述、否定された高低の撮影位置は撮影角度とみなしません。人物の説明より前にある実際の撮影起点は保持し、未指定のアイレベルや魚眼には既存の制限が適用されます。
+
+On book pages, an explicitly assigned eye-level shot stays attached to its panel through STEP2, layout, rendering and review. In the same outline entry, the camera may follow the panel's medium in the next sentence. Automatic shots still use an identifiable high or low camera position. / 本文ページで明示したアイレベルは、台本・構成・作画・査読を通じてそのコマに引き継ぎます。同じ構成欄で画風の次の文にカメラを書いても指定が届きます。自動で決めるカメラには、俯瞰かアオリの撮影位置が必要です。
 
 STEP3 reserves room for reference-image instructions. On monochrome overflow, compiler-owned drawing rules use equivalent Japanese wording. The source scenario and planned Action both remain verbatim, including dialogue, cameras, media and layout. Inputs still above the limit stop before the image API request; the failure log retains the assembled candidate. / STEP3は参照画像の説明用の文字数も予約します。白黒で上限を超える場合は、アプリ側の共通描画ルールを同じ条件の日本語で記載します。元台本とActionの全文、台詞・カメラ・描法・コマ割りは保持します。それでも超過する入力は画像APIの送信前に停止し、失敗ログへ組立後の候補全文を残します。
 
@@ -446,5 +450,4 @@ During four-panel A4 placement, if fitting the panels edge to edge would create 
 | Scenario enhancement / シナリオ強化 | Select expression, body, effects, background, camera, dialogue and story direction independently. The selected model compares each candidate with the original in a separate text API call, checks exact evidence quotes and rejects regressions. At most two candidates are authored; gains, partial gains and retention of the original are shown separately. Extra text API fees apply. The review is not a guarantee of artistic quality; read the comparison and inspect the image. Revert remains available. Documentary direction preserves facts in both tones. / 表情、身体、演出、背景、カメラ、セリフ、物語演出を個別選択します。候補作成後、同じ選択モデルの別の文章API呼出しで元台本と比較し、引用を照合して退行を拒否します。候補作成は最大2回で、改善・一部改善・元台本保持を区別して表示します。追加の文章API料金がかかります。比較判定は絵の品質保証ではないため、比較ログと生成画像を確認してください。強化前へ戻す操作も使えます。ドキュメンタリーは両方の結末で事実を保持します。 |
 | STEP3 prompt / プロンプト | Choose color/monochrome, assemble and review, then directly edit the full final prompt. Copies, TXT, Web JSON and ordinary API generation use that edited document. / カラー／白黒を選び、組立・整合性確認後、参照指示を含む最終全文を直接編集できます。コピー・TXT・Web JSON・通常API生成は編集した全文を使います。 |
 | STEP4 image / 画像 | Generate in the app, choose available quality and size settings, stop subsequent automatic correction, or use the copied prompt manually on the provider's Web UI. API-generated PNG downloads automatically embed a separate API-image production record with the actual model and output hash. / アプリ内で生成し、利用可能な品質・サイズを選択し、後続の自動修正を停止できます。コピーしたプロンプトを公式Web画面で手動利用する経路もあります。API生成PNGには、実際のモデルと出力画像ハッシュを含むAPI画像専用の制作情報を自動保存します。 |
-| Review and history / 検査・履歴 | Automatic repair OFF skips image QA. ON inspects panel count, dialogue, balloon order and speaker tails, character identity, anatomy, camera, props, surface orientation and medium compliance in one request. It observes readable and partly readable text separately from expected dialogue; printed objects are not speech balloons. Coherent environmental text is allowed unless it materially changes the story. Missing evidence remains unverified. At most one correction addresses material defects; there is no second camera audit, reinspection or candidate-comparison API. Original and corrected images remain in each mode’s latest-ten history. / 自動修正OFFは画像検査なし。ONはコマ数、台詞、吹き出し順・尻尾、人物同一性、人体、カメラ、小道具、面の向き、画風を1回のAPIで総合検査します。画像の全文字・部分文字を台詞の期待値と区別して観察し、作中文字を吹き出しと混同しません。話を大きく変えない自然な環境文字は許容し、一覧漏れや根拠不足は未確認です。重大な破綻だけ最大1回修正し、独立した追加カメラ検査・再検査・候補比較APIは呼びません。各モードの履歴に元画像と修正画像を直近10件まで保持します。 |
-| Full-auto controls / フルオート | Turning ON resumes the unfinished STEP using retained work, including progress made manually. A completed script continues at STEP3; a completed prompt continues at STEP4. Interrupted requests restart that STEP. STEP2 retries preserve the topic, input mode and panel selection; interrupted STEP1 reuses its retained files. Once the current work is complete, ON starts a new news-based work, as does each endless-loop round. / 再度
+| Review and history / 検査・履歴 | Automatic repair OFF skips image QA. ON inspects panel count, dialogue, balloon order and speaker tails, character identity, anatomy, camera, props, surface orientation and medium compliance in one request. It observes readable and partly readable text separately from expected dialogue; printed objects are not speech balloons. Coherent environmental text is allowed unless it materially changes the story. Missing evidence remains unverified. At most one correction addresses material defects; there is no second camera audit, reinspection or 

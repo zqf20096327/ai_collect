@@ -41,11 +41,11 @@ The five most recent updates, newest first. Each line links to its
 commit, so you can see what changed lately without digging through the
 log:
 
-- **2026-11-23**: Sessions stuck in `CHECKPOINT_VERIFIED` are now actually dispatched to context-400 recovery. The recovery gate accepted `CHECKPOINT_VERIFIED` since v0.3.61, but the watchdog still only reached that gate through screen classification: records outside `ACTIVE`/`WARNED` are skipped as not live, and recovery ran only for sessions classified as alive, turn-dead, stalled or frozen, so a stalled verified checkpoint was never scanned and stayed parked on the oversized prompt; the tick loop now also runs recovery for a skipped verified-checkpoint session while its turn is still in flight, the recovery gate itself (full-auto, one attempt, transcript-tail scan, fresh-prompt check) stays the single source of truth, and three tick-loop integration tests written first pin the dispatch ([commit](https://github.com/pqant/claude-continuity/commit/ff58ebc)).
-- **2026-11-23**: Sessions stuck in `CHECKPOINT_VERIFIED` now recover from context-400 too. A rotation that verifies its checkpoint and then fails partway leaves the session in `CHECKPOINT_VERIFIED` with the stale oversized prompt still in the pane: the recovery gate only accepted the pre-rotation states and `recover_400` refused to re-attach a session that already had a fresh prompt, so these sessions stayed stuck and 400ed every request. `CHECKPOINT_VERIFIED` now joins the recovery gate, `recover_400` re-attaches such sessions with the fresh prompt, and a scan that skips a session leaves the one-shot recovery gate unarmed so the recovery still fires when the user returns ([commit](https://github.com/pqant/claude-continuity/commit/f9a1e1a)).
-- **2026-11-23**: Context-400 recovery now pushes to your phone. The recovery path fired a `context400` event, but the push message builder had no branch for it, so the notification was silently dropped and nobody saw recoveries from the phone; the `context400` branch now builds the high-priority message with a scrubbed detail line, and a wire-contract test pins the event name on the recovery call so the push cannot silently vanish again ([commit](https://github.com/pqant/claude-continuity/commit/945d1b4)).
-- **2026-11-23**: Context-400 recovery now fires no matter how the watchdog classifies the pane. The first recovery pass only ran on panes classified as frozen, but a session stuck on an oversized prompt keeps redrawing and classifies as alive (or turn-dead/stalled once its turn flag expires), so the watchdog kept nudging a pane that could only 400 again; recovery now also runs before nudging for alive, turn-dead and stalled sessions with an active turn, extracted into a shared helper the frozen path keeps calling as defense-in-depth, with the same one-attempt gate ([commit](https://github.com/pqant/claude-continuity/commit/c69da5c)).
-- **2026-11-23**: A reused tmux pane id can no longer render a session from another project. Pane bindings are keyed by the tmux pane id and tmux recycles those ids across projects, so a pane could keep painting a finished session from a foreign project on its status line; the renderer now cross-checks the bound record's project against the incoming payload's and rejects the binding when both are known and differ, leaving the same-pane retarget path byte-identical whenever either project key cannot be derived ([commit](https://github.com/pqant/claude-continuity/commit/9e9d251)).
+- **2026-11-24**: A claim no longer skips a successor that died after attaching. The dead ACTIVE record used to force a fresh `max(counter)+1` name while the corpse kept looking live in the session list; the claim now probes the candidate's recorded pane (`tmux_session` against `tmux list-sessions`) and, only when that pane is gone, adopts the record at its same index and resets it to BOOTSTRAPPING so the SessionStart hook drives it like a fresh claim; the probe is conservative by construction (no recorded pane, tmux missing or any error means the candidate is treated as live), so a live pane is never hijacked, with eight tests written first ([commit](https://github.com/pqant/claude-continuity/commit/fa9b972)).
+- **2026-11-24**: Resuming now opens with a one-line at-a-glance preview. The SessionStart bootstrap block starts with the checkpoint number, the predecessor session, the VALIDATION result and the first Next Atomic Action item, so you can see what is being resumed without waiting for the first reply; the line is parsed display-only from the handoff text, silently omitted when nothing parses, and the block otherwise stays exactly the old format, with six tests written first ([commit](https://github.com/pqant/claude-continuity/commit/96341cb)).
+- **2026-11-24**: Handoff search is now a first-class surface. `cc-continuity search <query>` takes the search phrase directly, without typing `history` first, and the new `/continuity-search <phrase>` skill makes the invocation argument itself the query (invoked bare it asks for the keyword once); both reuse the read-only keyword engine from v0.3.66 verbatim, the `--nnn` and `--since`/`--until` filters keep working and `cc-continuity history <query>` continues to work unchanged, with four tests written first ([commit](https://github.com/pqant/claude-continuity/commit/b05b31c)).
+- **2026-11-24**: `cc-continuity history` now searches the checkpoint archive. `cc-continuity history <query>` finds every handoff whose text contains the keyword (case-insensitive substring) and prints session number, creation date, the first objective line and the matched line; `--nnn` and `--since`/`--until` filter the result, and the `/continuity-history` skill teaches the same usage; the search is read-only and deterministic, the checkpoint write path and the session index are untouched, and eight tests were written first ([commit](https://github.com/pqant/claude-continuity/commit/be179fe)).
+- **2026-11-24**: A rotation no longer splits the successor identity. The rotator predicted the next session name as strict `nnn+1` while the claim mints `max(counter, old_nnn) + 1`, so once stale records had advanced the counter the pane title and the old session's ledger froze a name the claim never minted (seen live: the ledger said connector-259 while the real successor session was connector-267); the prediction now mirrors the claim allocator, the completion paths reconcile the ledger entry and log line with the claimed record before writing them, and a claim whose own never-attached `BOOTSTRAPPING` successor already exists adopts it at the same index instead of minting a second name, with three tests written first to pin all three fixes ([commit](https://github.com/pqant/claude-continuity/commit/b60c518)).
 ## How it works
 
 The whole flow in one picture: the automatic session loop, the optional
@@ -67,8 +67,8 @@ rotations → a completed task, captured end to end. It is a long,
 video-style GIF, so it is offered as a download rather than embedded
 in the page:
 
-- [demo-high-res.gif](https://github.com/pqant/claude-continuity/releases/download/v0.1.1/demo-high-res.gif) — 896x1920, 20 fps (~20 MB)
-- [demo-low-res.gif](https://github.com/pqant/claude-continuity/releases/download/v0.1.1/demo-low-res.gif) — 700x1500, 12 fps (~12 MB)
+- [demo-high-res.gif](https://github.com/pqant/claude-continuity/releases/download/v0.1.1/demo-high-res.gif) - 896x1920, 20 fps (~20 MB)
+- [demo-low-res.gif](https://github.com/pqant/claude-continuity/releases/download/v0.1.1/demo-low-res.gif) - 700x1500, 12 fps (~12 MB)
 
 The demo itself is recorded by
 [`tools/demo_gif.sh`](tools/demo_gif.sh) (it needs a local-model
@@ -92,8 +92,8 @@ path end to end.
 ## Windows (via WSL)
 
 cc-continuity runs inside a Windows Subsystem for Linux distro: the
-Linux side is unchanged — same rotation, same watchdog, same ntfy
-pushes — and only the daemon hosting differs. Where macOS uses
+Linux side is unchanged: same rotation, same watchdog, same ntfy
+pushes, and only the daemon hosting differs. Where macOS uses
 launchd, the distro uses a detached tmux session (default) or systemd
 user units (WSL 2 with systemd enabled), plus one optional Windows
 logon task so the daemons come back when the WSL VM restarts.
@@ -101,7 +101,7 @@ logon task so the daemons come back when the WSL VM restarts.
 - **WSL 2 recommended; WSL 1 works too** (minus the systemd option).
 - **Ubuntu 24.04 recommended**; Ubuntu 22.04 works with `python3.11`
   from deadsnakes.
-- **Native Windows is out of scope** — the distro is the runtime.
+- **Native Windows is out of scope**; the distro is the runtime.
 
 Full guide (requirements, install, watchdog, autostart,
 troubleshooting): [`docs/WINDOWS.md`](docs/WINDOWS.md). An end-to-end

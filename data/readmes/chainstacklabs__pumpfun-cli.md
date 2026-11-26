@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  • <a target="_blank" href="https://chainstack.com/">Homepage</a> •
-  <a target="_blank" href="https://chainstack.com/protocols/">Supported protocols</a> •
-  <a target="_blank" href="https://chainstack.com/blog/">Chainstack blog</a> •
-  <a target="_blank" href="https://docs.chainstack.com/reference/blockchain-apis">Blockchain API reference</a> • <br> 
-  • <a target="_blank" href="https://console.chainstack.com/user/account/create">Start for free</a> •
+  • <a target="_blank" href="https://chainstack.com/?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli">Homepage</a> •
+  <a target="_blank" href="https://chainstack.com/protocols/?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli">Supported protocols</a> •
+  <a target="_blank" href="https://chainstack.com/blog/?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli">Chainstack blog</a> •
+  <a target="_blank" href="https://docs.chainstack.com/reference/blockchain-apis?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli">Blockchain API reference</a> • <br> 
+  • <a target="_blank" href="https://console.chainstack.com/sign-up?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli">Start for free</a> •
 </p>
 
 A stateless command-line tool for trading on **pump.fun** and on **letsbonk.fun**, **StonkFun** and every other launchpad on Raydium LaunchLab. It buys and sells on the bonding curve, follows graduated coins into PumpSwap and Raydium CPMM, and launches pump.fun coins. Built for humans, scripts and AI agents alike: every command can answer in JSON.
@@ -22,7 +22,7 @@ It is distilled from [pumpfun-bonkfun-bot](https://github.com/chainstacklabs/pum
 
 ---
 
-**🚨 SCAM ALERT**: The Issues section is regularly targeted by scam bots that try to redirect you to an external site and drain your funds. Deleted comments in issues are scam bots after your private keys — genuine outside devs are welcome and appreciated.
+**🚨 SCAM ALERT**: The Issues section is regularly targeted by scam bots that try to redirect you to an external site and drain your funds. Deleted comments in issues are scam bots after your private keys — genuine outside devs are welcome and appreciated. Chainstack has no token and doesn't endorse any. Token addresses in this repo are only examples.
 
 **⚠️ NOT FOR PRODUCTION**: This code is for learning purposes only. We assume no responsibility for the code or its usage. Every trade spends real funds; preview it with `--dry-run` first.
 
@@ -52,7 +52,7 @@ uv tool uninstall pumpfun-cli                                                  #
 ### 3. Set your RPC endpoint and wallet
 
 ```bash
-pumpfun config set rpc https://your-node.chainstack.com/abc123
+pumpfun config set rpc https://solana-mainnet.core.chainstack.com/YOUR_AUTH_TOKEN
 pumpfun wallet create            # or: pumpfun wallet import <keypair.json>
 ```
 
@@ -71,12 +71,14 @@ The wallet is stored encrypted in `~/.config/pumpfun-cli/wallet.enc`, and the co
 ```bash
 pumpfun info <mint>                 # where it trades, price, quote asset
 pumpfun buy <mint> 0.1 --dry-run    # preview: nothing is sent
-pumpfun buy <mint> 0.1 --confirm    # spend exactly 0.1 of the coin's quote asset
-pumpfun sell <mint> all --confirm
+pumpfun buy <mint> 0.1              # spend exactly 0.1 of the coin's quote asset
+pumpfun sell <mint> all
 pumpfun tx-status <signature>       # did it land?
 ```
 
 `--json` makes any command answer in JSON; it is on automatically when the output is piped.
+
+Every command that sends a transaction waits for it to land and reports what happened on chain: the amounts, or the error it failed with. A transaction that can no longer land (its blockhash expired) is reported as such; it cost nothing and is safe to send again. `--fast` sends without waiting, for when latency matters more than knowing the result: the output then says the transaction was sent but not confirmed (`"confirmed": false`). `wallet drain` always waits.
 
 ### 5. Launch a coin
 
@@ -84,7 +86,7 @@ pumpfun tx-status <signature>       # did it land?
 pumpfun launch --name "MyToken" --ticker "MTK" --uri https://example.com/mytoken.json --buy 0.1
 ```
 
-pump.fun no longer accepts anonymous metadata uploads, so `launch` takes the URI of a metadata JSON you host (`name`, `symbol`, `description`, `image`). Without `--uri` it still tries the upload and says so when it is refused. `--buy` buys in the same transaction as the create, so nobody buys first.
+pump.fun no longer accepts anonymous metadata uploads, so `launch` requires `--uri`: the URI of a metadata JSON you host (`name`, `symbol`, `description`, `image`), for example on IPFS or any static host. `--buy` buys in the same transaction as the create, so nobody buys first.
 
 ## Commands
 
@@ -93,20 +95,20 @@ Token info (requires RPC):
   pumpfun info <mint> [--timeout S]       Venue, price, bonding progress, reserves
 
 Trading (requires RPC + wallet):
-  pumpfun buy <mint> <amount> [--slippage N] [--force-amm] [--dry-run] [--confirm]
-  pumpfun sell <mint> <amount|all> [--slippage N] [--force-amm] [--dry-run] [--confirm]
-  pumpfun migrate <mint> [--confirm]
-  pumpfun claim-cashback [--quote-mint M] [--confirm]
-  pumpfun collect-creator-fee [--quote-mint M] [--confirm]
-  pumpfun close-volume-acc [--confirm]
+  pumpfun buy <mint> <amount> [--slippage N] [--force-amm] [--dry-run] [--fast]
+  pumpfun sell <mint> <amount|all> [--slippage N] [--force-amm] [--dry-run] [--fast]
+  pumpfun migrate <mint> [--fast]
+  pumpfun claim-cashback [--quote-mint M] [--fast]
+  pumpfun collect-creator-fee [--quote-mint M] [--fast]
+  pumpfun close-volume-acc [--fast]
 
 Transaction inspection (requires RPC):
   pumpfun tx-status <signature>           Confirmation status, slot, fee, errors
 
 Token launch (requires RPC + wallet):
-  pumpfun launch --name X --ticker Y [--uri U | --desc D --image P] [--buy N]
+  pumpfun launch --name X --ticker Y --uri U [--buy N]
                  [--quote-mint M] [--creator-fee-bps N] [--holder-reward]
-                 [--mayhem] [--slippage N] [--confirm]
+                 [--mayhem] [--slippage N] [--fast]
 
 Token discovery (price and progress added when an RPC is set):
   pumpfun tokens trending [--limit N]     pump.fun's movers board
@@ -160,7 +162,7 @@ Amounts are in the coin's quote asset. Most pump.fun coins are priced in SOL, bu
 
 A LaunchLab coin priced in anything but SOL is found with `getProgramAccounts`, so it needs an RPC that serves it.
 
-`collect-creator-fee` first sweeps the creator fees still waiting on your coins' curves and pools into your vaults, the largest eight per run; run it again if it says more coins hold fees. It finds them with `getProgramAccounts`; without that method it collects only what the vaults already hold.
+`collect-creator-fee` first sweeps the creator fees still waiting on your coins' curves and pools into your vaults: the largest eight in the collect transaction, any others in transactions of eight sent and confirmed before it. It finds them with `getProgramAccounts`; without that method it collects only what the vaults already hold.
 
 ### Transfer fees
 
@@ -170,11 +172,11 @@ Some LaunchLab coins (StonkFun reward coins, for example) are Token-2022 mints w
 
 A sell that empties the coin's token account (`all`, or exactly the balance) closes the account in the same transaction and returns its rent: `token_account_closed` and `rent_recovered_sol` in the output. Withheld transfer fees in a Token-2022 account go to the mint first, since the account can't close while it holds them. A partial sell, a sell the curve can only partly pay for, or an account whose close authority is another wallet leaves the account open.
 
-`wallet close-atas` closes up to 20 empty token accounts per run the same way, reports the rent they held in `recovered_sol`, and lists any it can't close (frozen, or another wallet's close authority) in `skipped`.
+`wallet close-atas` closes every empty token account the same way, 20 per transaction (`signatures` lists them all), reports the rent they held in `recovered_sol`, and lists any it can't close (frozen, or another wallet's close authority) in `skipped`. `wallet drain` waits for those closes to land before it sends the SOL, so the rent goes with it.
 
 ### Amounts in JSON output
 
-An exact amount comes twice: in whole units for reading (`tokens_sold`) and as the integer in raw units (`tokens_sold_raw`). Use the `_raw` field for anything that has to add up; the float can drop a unit. An amount known only as an estimate has no `_raw` twin: `quote_received`, the `collect-creator-fee` totals, and `tokens_received` unless the buy ran with `--confirm`, in which case it is read from the confirmed transaction. If that transaction cannot be read back, a confirmed buy also reports the estimate without `tokens_received_raw`, so check for the field. Dry-run fields (`expected_tokens_raw`, `expected_quote_raw`, `min_*_out_raw`) are exact integers of the quote the transaction would be built from, not executed amounts.
+An exact amount comes twice: in whole units for reading (`tokens_sold`) and as the integer in raw units (`tokens_sold_raw`). Use the `_raw` field for anything that has to add up; the float can drop a unit. An amount known only as an estimate has no `_raw` twin: the `collect-creator-fee` totals, and a trade's `tokens_received` or `quote_received` after `--fast`. Otherwise a trade reads what it received from the confirmed transaction; if that transaction cannot be read back, it reports the estimate without the `_raw` field, so check for it. Dry-run fields (`expected_tokens_raw`, `expected_quote_raw`, `min_*_out_raw`) are exact integers of the quote the transaction would be built from, not executed amounts.
 
 An error comes back as `{"error": <message>, "hint": ..., "exit_code": ...}` with a non-zero exit status.
 
@@ -189,7 +191,7 @@ A pump.fun bonding curve pays a sell out of its real reserves, which on some coi
 | `info` | Solana RPC (`getAccountInfo` for bonding curve PDA; LaunchLab: `getMultipleAccounts`, `getProgramAccounts`) | JSON-RPC |
 | `buy` | Solana RPC (`getAccountInfo`, `getLatestBlockhash`, `sendTransaction`; LaunchLab adds `getMultipleAccounts`, `getProgramAccounts`) | JSON-RPC |
 | `sell` | Solana RPC (`getAccountInfo`, `getTokenAccountBalance`, `getLatestBlockhash`, `sendTransaction`; LaunchLab as `buy`) | JSON-RPC |
-| `launch` | Solana RPC (`sendTransaction`); `pump.fun/api/ipfs` only without `--uri` | JSON-RPC (+ HTTPS) |
+| `launch` | Solana RPC (`sendTransaction`) | JSON-RPC |
 | `tx-status` | Solana RPC (`getTransaction`) | JSON-RPC |
 | `migrate` | Solana RPC (`sendTransaction`) | JSON-RPC |
 | `claim-cashback` | Solana RPC (`sendTransaction`) | JSON-RPC |
@@ -212,11 +214,11 @@ The `tokens` listings use pump.fun's frontend API, which is unofficial and chang
 
 ## Throughput and rate limits
 
-Every node provider has its own limits — method availability, requests per second, plan-specific caps. Consult your provider's docs, and don't expect public RPC nodes to hold up. For Chainstack, see the [throughput guidelines](https://docs.chainstack.com/docs/limits).
+Every node provider has its own limits — method availability, requests per second, plan-specific caps. Consult your provider's docs, and don't expect public RPC nodes to hold up. For Chainstack, see the [throughput guidelines](https://docs.chainstack.com/docs/limits?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli).
 
 LaunchLab coins priced in anything but SOL are found with `getProgramAccounts`, filtered by the coin's mint; providers that don't serve that method can't trade them.
 
-For faster execution, Chainstack offers [Solana Trader nodes](https://docs.chainstack.com/docs/solana-trader-nodes) for transaction propagation.
+For faster execution, a Chainstack Global Node with the [Warp transactions](https://docs.chainstack.com/docs/warp-transactions?utm_source=github&utm_medium=referral&utm_campaign=pumpfun-cli) add-on sends transactions through bloXroute's staked relay.
 
 ## Security
 

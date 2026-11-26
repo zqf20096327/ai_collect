@@ -14,6 +14,7 @@
   - [Inference](#inference)
   - [Interpretability](#interpretability)
   - [Detection](#detection)
+  - [Evaluation](#evaluation)
 - [Multimodal LLMs](#multimodal-llms)
   - [Video Generation](#video-generation)
   - [Vision-Language](#vision-language)
@@ -310,6 +311,13 @@
   <a href="https://arxiv.org/abs/2605.19516"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
   <a href="https://github.com/YixuanEvenXu/humanization-by-iterative-paraphrasing"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
 
+## Evaluation
+
+- **AltRA-Test: An Alternative Annotator Test for LLM Judges Without Shared Annotators** (2026.11) \
+  **Description**: AltRA-Test uses bootstrap resampling to compare inter-annotator agreement between all-human panels and panels with one human annotation replaced by an LLM judgment, even when items have different human annotators. Across 20 text, image, audio, and video datasets, it tests when replacing a human annotator with an LLM is statistically justified. \
+  <a href="https://arxiv.org/abs/2611.26073"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://huggingface.co/datasets/naghamo/altra-test"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 # Multimodal LLMs
 
 ## Video Generation
@@ -510,6 +518,12 @@
   <a href="https://huggingface.co/CoQuIR"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 # Structured Data
+
+- **Antom 3-in-1 Transformer: A Payment Foundation Model** (2026.11) \
+  **Description**: Antom 3-in-1 Transformer combines sequence, tabular, and graph representations to pretrain a payment risk model with about 7B parameters, of which roughly 1.7B are active per task route. In a four-month online experiment, it reduced the overall loss rate by 37.88% relative to XGB-Online. \
+  <a href="https://arxiv.org/abs/2611.25403"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://www.ant-intl.com/en/news/detail/ant-international-launches-full-stack-ai-native-solutions-for-payment-account-fx-treasury-and-growth-operations-for-global-businesses/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://huggingface.co/ant-intl/Antom-3-in-1-Transformer"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 - **LimiX-2: A Contextual Mechanism Network Towards General Structured-Data Intelligence** (2026.09) \
   **Description**: LimiX-2 uses Contextual Mechanism Networks and context-conditional masked modeling to learn the joint structure of tabular data from synthetic causal datasets. It improves prediction across three tabular benchmarks and its feature attention supports causal skeleton recovery. \
@@ -825,18 +839,4 @@
 
 - **KVPO: ODE-Native GRPO for Autoregressive Video Alignment via KV Semantic Exploration** (2026.05) \
   **Description**: KVPO aligns streaming autoregressive video generators with human preferences using an ODE-native online GRPO framework. It replaces noise-based exploration with causal-semantic routing of historical KV cache entries and optimizes a velocity-field surrogate policy based on Trajectory Velocity Energy. \
-  <a href="https://arxiv.org/abs/2605.14278"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://richard-zhang-ai.github.io/KVPO-Project/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://github.com/Richard-Zhang-AI/KVPO"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/Richard-ZZZZZ/KVPO"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-## Multimodal RL
-
-- **Turns Matter: Advancing Streaming Video RL via Turn-Level Credit** (2026.11) \
-  **Description**: TurnWise adapts GRPO to streaming video understanding by scoring silence-completed prefixes to assign each respond-or-wait decision its own group-relative advantage. It averages token losses within turns and then across turns so short waiting decisions receive equal weight, improving streaming performance without a learned critic or extra rollouts. \
-  <a href="https://arxiv.org/abs/2611.06728"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/XD111ds/turn-wise-rl"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/shuai22/turns-matter-rl-ckpt"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **Adaptive Reward Routing: Dynamic Multi-Reward Optimization for Joint Audio-Video Diffusion via Forward-Process RL** (2026.09) \
-  **Description**: Adaptive Reward Routing improves reinforcement learning for joint audio-video diffusion by using cross-attention responses to direct reward-driven updates and reward-gradient interactions to adjust competing objectives. It improves modality quality, semantic
+  <a href="https://arxiv.org/abs/2605.14278"><img src="assets/icons/arxiv.svg

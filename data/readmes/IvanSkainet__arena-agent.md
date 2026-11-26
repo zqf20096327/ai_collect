@@ -27,8 +27,8 @@ One process · One port · REST + MCP + browser extension · Windows / Linux / m
 
 | Metric | Value |
 | --- | --- |
-| Runtime code | **122,159** lines across 866 files |
-| Test code | **135,341** lines across 692 files |
+| Runtime code | **122,192** lines across 866 files |
+| Test code | **136,071** lines across 697 files |
 | Test-to-code ratio | **1.11×** |
 | CI workflows | **18** |
 | Quality gates (ratchets) | **20** |
@@ -38,9 +38,9 @@ One process · One port · REST + MCP + browser extension · Windows / Linux / m
 <!-- END GENERATED METRICS -->
 
 <!-- BEGIN TRAFFIC BADGE -->
-![Unique clones (14 days)](https://img.shields.io/badge/unique%20clones%20(14d)-440-blue)
+![Unique clones (14 days)](https://img.shields.io/badge/unique%20clones%20(14d)-617-blue)
 
-<sub>440 unique cloners over the 14 days to 2026-11-20 (13992 clones total). Daily refresh proposals are opened by `.github/workflows/traffic-badge.yml` and reach README only after normal protected PR review and checks. GitHub keeps a rolling 14-day window. Unique cloners are not verified people and may include automation. Release-download counts also include automation and retries; v4.169.50 reported 349 downloads of one ZIP and 3 of its byte-identical alias, which does not establish a human user count.</sub>
+<sub>617 unique cloners over the 14 days to 2026-11-24 (22131 clones total). Daily refresh proposals are opened by `.github/workflows/traffic-badge.yml` and reach README only after normal protected PR review and checks. GitHub keeps a rolling 14-day window. Unique cloners are not verified people and may include automation. Release-download counts also include automation and retries; v4.169.50 reported 349 downloads of one ZIP and 3 of its byte-identical alias, which does not establish a human user count.</sub>
 <!-- END TRAFFIC BADGE -->
 
 ---
@@ -244,6 +244,17 @@ server. Recent live scenarios proved the bridge can grow new hands at runtime:
   server stops responding, it is stopped and the bridge HTTP event loop remains
   responsive. This was added after Desktop-Commander froze an older bridge hard
   enough to require reinstalling the service.
+- **A Windows command that does not complete leaves nothing running.** Every
+  `/v1/exec` command runs inside a Job Object. A timeout, a cancelled request
+  or a closed stream terminates the whole job, including a program the shell
+  started and then exited without; a bridge that dies takes its running
+  commands with it. What a command starts stays up only if the command
+  completes: `start "" app` hands the command's output pipes to the app, so
+  the request waits for the app and kills it at the timeout. Start it without
+  the pipes (`Start-Process`) and the command completes and the app stays; a
+  process created outside the command (WMI `Win32_Process.Create`) is not part
+  of it at all. A program inside the job that asks for
+  `CREATE_BREAKAWAY_FROM_JOB` is refused with access denied.
 - **Agent-authored code runs under operator posture.** On Windows, fenced
   `code.run` engages AppContainer with no capabilities, grants only scratch
   modify + runtime read/execute, captures stdout/stderr, denies outbound TCP,

@@ -120,13 +120,16 @@ Rust 1.94 or later, on macOS (arm64) or Linux (x64/arm64).
   per item of a prompt template, up to 128, several at a time, shown as one live panel (how many,
   which are working on what, how long each has run); swarm mode, on by default and set with
   `[agent] swarm` or `/swarm`, tells the agent to split its work that way, and
-  `[agent] swarm_parallel` (default 8) sets how many run at once. A subagent never holds the
+  `[agent] swarm_parallel` (default 8) sets how many run at once, and `[agent] subagent_timeout` (default 30 minutes, 0 for none) stops one that runs too long. A subagent never holds the
   conversation hostage: send a message while one works and it moves to the background, your
   message is answered at once, and its report comes back when it ends, read by the agent on a
   turn of its own if the session sits idle. `/mode orchestrate` sends every subagent to the
   background from the start, so the main agent only talks with you and coordinates (forking
   this conversation into each subagent by default, `agent_message` to correct one mid-task).
   Quitting asks whether to pause them; resuming the session continues each from its own log.
+  A turn nobody watches (`-p`, a subagent, a swarm member, a peer's task) wraps up after
+  `[agent] max_steps` requests (default 200; `0` turns it off); `max_steps_interactive` sets a
+  limit for the turns you watch, which have none by default.
   **Background tasks** keep servers and slow builds running. **Undo** puts
   your files back as they were before a turn, including what commands changed.
 - **Sessions that know about each other.** Run several killi at once and each knows where the
@@ -276,11 +279,14 @@ model = "MiniMax-M3.1-Flash"
 ```
 
 To use a subscription instead of a pay-as-you-go key, run `killi login` and pick one, or name
-it: `killi login chatgpt`, `killi login opencode-go`, `killi login muse-code` or `killi login
-command-code`. Either way killi adds the provider and its models to the config; `killi logout`
-signs out. Inside a session, `/provider` lists every preset and adds one from a pasted key:
-opencode-go, muse-code and command-code, plus anthropic, kimi, mimo, minimax, qwen, stepfun,
-unisound and zai. (ChatGPT and the browser sign-ins stay in `killi login`.) Run on a provider
+it: `killi login chatgpt`, `killi login opencode-go`, `killi login muse-code`, `killi login
+command-code` or `killi login grok` (a SuperGrok or X Premium plan, confirmed with a code in any
+browser, so it works over SSH too; killi isn't among the agents xAI names, so it may refuse a plan). Either way killi adds the provider and its models to the
+config; `killi logout` signs out. Inside a session, `/provider` lists every preset and adds one
+from a pasted key: opencode-go, muse-code and command-code, plus anthropic, gemini, grok, kimi,
+mimo, minimax, qwen, stepfun, unisound and zai. (ChatGPT and the browser sign-ins stay in
+`killi login`.) Gemini takes only an AI Studio key: Google forbids third-party tools from
+signing in with Gemini CLI's Google login, so killi has no `killi login gemini`. Run on a provider
 the config already has, it also brings that provider's key, API and URL up to date (and the
 tool names for muse-code) and keeps the rest.
 
@@ -360,7 +366,8 @@ prompt already sent. The terminal title shows the folder, model and working/idle
 </p>
 
 Commands: `/provider [name]` (add a provider from a pasted key), `/model [alias]`, `/theme [name]` (color theme),
-`/backup-model [alias]` (the fallback when the primary keeps failing), `/mcp [server]`
+`/backup-model [alias]` (the fallback when the primary keeps failing),
+`/advisor [alias|off]` (a stronger model the session's model can ask for advice), `/mcp [server]`
 (turn servers on or off), `/web-search-config`, `/effort [level]` (thinking effort),
 `/new` (or `/clear`), `/resume`, `/btw <question>` (a side question, never kept),
 `/schedule <interval> <task>`, `/compact [focus]`, `/recap`, `/undo`, `/plan`,

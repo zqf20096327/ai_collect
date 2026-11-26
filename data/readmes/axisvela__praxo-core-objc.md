@@ -1,6 +1,6 @@
 # PRAXO-CORE for Objective-C
 
-Objective-C is a native Core implementation with source tag `objc/v0.7.0`. It passes all eleven shared vector groups and includes the native agent loop, context compaction, memory store, path policy, checkpoint allowlist, tool selection, tool-call parsing, argument-aware policy, and opt-in PII redaction, structured output validation, call limits, and human-in-the-loop interrupts. Vector coverage does not establish full Core parity or production readiness.
+Objective-C is a native Core implementation with source tag `objc/v0.8.0`. It passes all eleven shared vector groups and includes the native agent loop, context compaction, memory store, path policy, checkpoint allowlist, tool selection, tool-call parsing, argument-aware policy, and opt-in PII redaction, structured output validation, call limits, and human-in-the-loop interrupts. Vector coverage does not establish full Core parity or production readiness.
 
 ## At a glance
 
@@ -9,9 +9,9 @@ Objective-C is a native Core implementation with source tag `objc/v0.7.0`. It pa
 | Package | `praxo-core-objc` |
 | Registry | Source |
 | Build | See README/SETUP.md |
-| Source version | `0.7.0` |
+| Source version | `0.8.0` |
 | Published version | not published |
-| Source tag | `objc/v0.7.0` |
+| Source tag | `objc/v0.8.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/objc/ |
@@ -67,6 +67,18 @@ Runnable examples live under [`language/objc/examples`](language/objc/examples).
 | [streaming](language/objc/examples/streaming) | This example accumulates streamed chunks and checks that they reconstruct the final output. |
 | [structured-output](language/objc/examples/structured-output) | This example validates a final JSON answer against a schema and rejects invalid output. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/objc/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/objc/Tutorial) | - [Privacy Agent (PE-03)](privacy-agent/README.md): source Objective-C Core, fixed message-exposure classification and a review-only deletion request; no password handling, acco... |
+| [chronic-care](language/objc/Tutorial/chronic-care) | Summarizes a fixed wearable trend and drafts a review-only care alert. No dosage or individualized treatment change. |
+| [digital-twin-memory](language/objc/Tutorial/digital-twin-memory) | Recalls fixed consent-scoped memories with provenance, then deletes one scope. No real inbox, passwords or unrestricted recall. |
+| [dlp-redaction](language/objc/Tutorial/dlp-redaction) | Inspects a fixed export for sensitive fields and drafts a review-only redaction. No encryption, DLP completeness or sharing claim. |
+| [privacy-agent](language/objc/Tutorial/privacy-agent) | A bounded first slice of [PE-03](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a password manager or data-deletion service. It classifies a fixed... |
+
 ## Verify
 
 Run the checks from `language/objc`:
@@ -82,6 +94,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

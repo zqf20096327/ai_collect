@@ -56,7 +56,7 @@ Every step is asserted. It replays the recorded model replies, so it needs
 no API key:
 
 ```bash
-cargo install --locked cloakpipe-cli@0.14.0
+cargo install --locked cloakpipe-cli@0.15.0
 git clone https://github.com/rohansx/cloakpipe && cd cloakpipe/examples/meta-agent
 ./demo.sh            # replay; ./demo.sh live to call the model yourself
 ```
@@ -72,8 +72,8 @@ Install the binary from crates.io (Rust stable), and clone the repository
 for the example:
 
 ```bash
-cargo install --locked cloakpipe-cli@0.14.0     # installs `cloakpipe`
-git clone --branch v0.14.0 https://github.com/rohansx/cloakpipe && cd cloakpipe
+cargo install --locked cloakpipe-cli@0.15.0     # installs `cloakpipe`
+git clone --branch v0.15.0 https://github.com/rohansx/cloakpipe && cd cloakpipe
 ```
 
 Run the example in [`examples/support-agent`](examples/support-agent). The
@@ -192,6 +192,14 @@ when { context.counters.send_email_1h >= 50 };
 permit (principal == Release::"support-agent", action == Action::"issue_refund", resource)
 when { resource.args.amount > 100 && resource.args.amount <= 500 };
 ```
+
+Don't want to write it by hand? Run the gate in shadow mode with
+`--capture ./captures/`, use the agent, and `cloakpipe infer ./captures/`
+drafts the manifest from what it actually did: tools, types, ranges, enums,
+patterns and task bindings (`one_of_context`), each rule annotated with its
+evidence, outliers excluded and listed for review, never activated for you.
+`infer --diff` checks new traffic against the active contract in CI. See
+[docs/INFER.md](docs/INFER.md).
 
 `cloakpipe manifest validate` checks both files and `cloakpipe manifest hash`
 prints the digest every decision is bound to. Reference:
@@ -405,6 +413,14 @@ Details: [docs/EVENTS.md](docs/EVENTS.md).
   side effects. It needs no network and no trust in the operator. The
   standalone `cloakpipe-verify` binary does the same.
 
+- **Attack proof.** `cloakpipe prove --agent agent.yaml --contract
+  cloakpipe.manifest.yaml --pack support-basics --runs 5` runs your live
+  agent through an attack pack with the gate in shadow mode, then in enforce
+  mode (locally, in Docker or on E2B), and reports which attacks reached the
+  tools, which were refused and why, and whether normal work still completes.
+  Every enforce run's ledger ships as an audit pack that `cloakpipe verify`
+  checks. See [docs/PROVE.md](docs/PROVE.md).
+
 Details: [docs/ACTION_BOUNDARY.md](docs/ACTION_BOUNDARY.md#the-decision-ledger),
 [docs/ANCHORING.md](docs/ANCHORING.md), keys and rotation in
 [docs/KEYS.md](docs/KEYS.md).
@@ -541,10 +557,20 @@ change before 1.0)
   `approval_denied`, `cloakpipe approvals keys`): an open protocol,
   verified receipts only ([docs/APPROVALS.md](docs/APPROVALS.md))
 
+**v0.15.0** (24 November 2026):
+
+- [x] Draft a contract from shadow traffic: `mcp-proxy --capture`,
+  `cloakpipe infer` (task binding, outliers excluded, evidence on every
+  rule) and `infer --diff` for CI ([docs/INFER.md](docs/INFER.md))
+- [x] Attack proof against a live agent: `cloakpipe prove` with the
+  `support-basics` pack, local, Docker and E2B sandboxes, HTML and JSON
+  reports with verified audit packs ([docs/PROVE.md](docs/PROVE.md))
+- [x] Static Linux binaries (x86_64, aarch64) on every release; a second
+  attack pack, `support-injection`; `infer` from OpenTelemetry traces
+
 **Next**
 
-- [ ] Prebuilt binaries, and a one-command install for
-  Claude Code, Cursor and Codex
+- [ ] A one-command install for Claude Code, Cursor and Codex
 - [ ] A separate secret and format for each webhook
 - [ ] SSE response streams and a server-to-client `GET /mcp` stream for
   HTTP agents
@@ -570,6 +596,8 @@ change before 1.0)
 | Topic | Where |
 |---|---|
 | Manifest format | [docs/MANIFEST.md](docs/MANIFEST.md), [JSON Schema](schemas/cloakpipe.manifest.schema.json) |
+| Drafting a contract from shadow traffic (`infer`, `--capture`) | [docs/INFER.md](docs/INFER.md) |
+| Attack proof against a live agent (`prove`, attack packs, sandboxes) | [docs/PROVE.md](docs/PROVE.md) |
 | Cedar policies, entities, counters | [docs/POLICY.md](docs/POLICY.md) |
 | Contracts, approvals, operations, the decision ledger | [docs/ACTION_BOUNDARY.md](docs/ACTION_BOUNDARY.md) |
 | Approvals through a broker: setup and the open protocol | [docs/APPROVALS.md](docs/APPROVALS.md) |
@@ -582,8 +610,8 @@ change before 1.0)
 
 ## Install and build options
 
-`cargo install --locked cloakpipe-cli@0.14.0` installs `cloakpipe` from
-crates.io, and `cargo install --locked cloakpipe-verify@0.14.0` the
+`cargo install --locked cloakpipe-cli@0.15.0` installs `cloakpipe` from
+crates.io, and `cargo install --locked cloakpipe-verify@0.15.0` the
 standalone verifier. From a checkout, use `--path crates/cloakpipe-cli`
 (or `crates/cloakpipe-verify`) instead.
 

@@ -191,6 +191,7 @@ From **LLMs** to **computer vision**, **MLOps** to **AI ethics**, this repo is y
 - [Runway ML](https://runwayml.com/)
 - [ElevenLabs](https://elevenlabs.io/)
 - [Wavegrain](https://wavegrain.com/) – Makes TikTok slideshows and Instagram carousels from your brand and photos, then schedules and posts them.
+- [DESIGN:OS Studio](https://jangtrinh.github.io/design-os-studio/) – Free native design app built in Rust that opens and saves .fig files and ships a local MCP server, so a coding agent can inspect and edit the open file; source-available (PolyForm Shield).
 
 ---
 
@@ -237,6 +238,7 @@ From **LLMs** to **computer vision**, **MLOps** to **AI ethics**, this repo is y
 - **[Leonardo.AI](https://leonardo.ai/)** – Game asset generation
 - **[Ideogram](https://ideogram.ai/)** – Text rendering in images (finally!)
 - **[CapCut AI](https://www.capcut.com/)** – AI video editing for creators
+- **[APPLORE](https://applore.app/ai-app-icon-generator)** – AI app icon generator backed by a library of 18,000+ real app icons
 
 ---
 

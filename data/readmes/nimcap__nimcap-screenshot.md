@@ -10,6 +10,8 @@ NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌�
 
 项目属于 `nimcap`，原名 SnapSharp，当前 GitHub 主仓库为 `nimcap/nimcap-screenshot`；Gitee 作为镜像入口保留旧仓库名。软件使用 C#、WPF 和 .NET 10 构建，面向 Windows x64，通过系统托盘和全局快捷键调用。旧版升级与数据目录选择见[迁移说明](#upgrade)。
 
+现已加入独立命令行工具 **`nimcap.exe`**，可通过脚本完成截图、查找窗口和显示器，以及环境诊断。完整用法与示例见 [CLI 使用说明](docs/CLI.md)。
+
 ## 离线 AI 可以做什么
 
 | 需要完成的工作 | 本机处理方式 | 得到的结果 |
@@ -37,7 +39,7 @@ NimCap 截图工具（NimCap Screenshot）是一款面向 Windows 的开源桌�
 
 **本地处理与联网功能分开控制。** 在线翻译和以图搜图默认关闭，启用后每次发送仍需确认。模型下载和更新检查也需要网络；离线 AI 表示推理可脱离互联网运行，不表示程序绝不发起网络请求。历史图片保存在本地，未加密；保存位置、模型管理和数据目录迁移见[配置与依赖](docs/配置与依赖.md)。
 
-[软件介绍](#software) · [快速上手](#start) · [首次配置](#settings) · [文档与开发](#development)
+[软件介绍](#software) · [快速上手](#start) · [首次配置](#settings) · [CLI 自动化](#cli) · [文档与开发](#development)
 
 <a id="software"></a>
 
@@ -205,6 +207,23 @@ MP4 使用 H.264，可选择系统声音、麦克风和摄像头，音频使用 
 
 ONNX 图像推理在独立子进程中执行；GPU 初始化、推理失败或显存预算不足时，可在条件允许时回退 CPU。本地翻译的 Vulkan 失败不会自动切换 CPU。模型与设备限制见[配置与依赖](docs/配置与依赖.md)，常见问题见[使用指南](docs/使用指南.md#faq)。
 
+<a id="cli"></a>
+
+## CLI 自动化
+
+发布包包含独立 `nimcap.exe`，支持全屏、固定区域、指定显示器和窗口截图，以及窗口/显示器列表、进程与标题筛选、环境诊断、JSON 结果、退出码、超时和取消，可供 PowerShell、批处理或 Agent 调用：
+
+```powershell
+.\nimcap.exe capture --full --output .\screen.png --json
+.\nimcap.exe capture --rect "0,0,1280,720" --output .\region.png --json
+.\nimcap.exe windows --json
+.\nimcap.exe monitors --json
+.\nimcap.exe capture --monitor 1 --output .\primary.png --json
+.\nimcap.exe doctor --backend auto --json
+```
+
+需要可访问的交互式 Windows 桌面。完整参数、退出码及开发检查见 [CLI 使用说明](docs/CLI.md)。
+
 <a id="development"></a>
 
 ## 文档与开发
@@ -220,9 +239,9 @@ ONNX 图像推理在独立子进程中执行；GPU 初始化、推理失败或�
 
 ## 反馈与联系
 
-欢迎反馈使用问题和功能建议。请统一通过主仓库的 [GitHub Issues](https://github.com/nimcap/nimcap-screenshot/issues) 提交，并附上软件版本、Windows 版本、复现步骤和必要截图。检索旧问题时可同时搜索 `NimCap Screenshot` 和 `SnapSharp`；反馈旧版问题时注明旧名与具体版本，便于关联历史记录。涉及隐私的内容请勿公开，可通过邮箱或微信联系。
+欢迎反馈使用问题和功能建议。请统一通过主仓库的 [GitHub Issues](https://github.com/nimcap/nimcap-screenshot/issues) 提交，并附上软件版本、Windows 版本、复现步骤和必要截图。
 
-- 邮箱：[509918688@qq.com](mailto:509918688@qq.com)
-- 微信号：`nimcap`
+QQ群
+<img width="238" height="250" alt="NimCap群聊二维码" src="https://github.com/user-attachments/assets/bdfdbcb5-ea16-4e45-8e0a-42fc8edf2450" />
 
 Copyright 2026 leelongjiang 与 NimCap Screenshot contributors。项目采用 [Apache License 2.0](LICENSE)，第三方组件与模型的许可分别见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。

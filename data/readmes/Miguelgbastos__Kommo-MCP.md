@@ -44,17 +44,17 @@ Desktop, etc.).
   compatibilidade stateless para clientes da família 2025
 - **Dois transportes oficiais**: Streamable HTTP para serviços remotos e
   `stdio` para clientes locais
-- **23 tools**: leads, contatos, empresas, tarefas, pipelines, notas,
-  relatórios, dashboard, Salesbot, motivos de perda
+- **33 tools**: leads, contatos, empresas, tarefas, busca unificada, vínculos,
+  pipelines, notas, relatórios, dashboard, Salesbot, motivos de perda
 - **5 resources**: relatório de vendas, pipelines, motivos de perda,
   dashboard, conta
 - **4 prompts**: templates para análise de vendas, leads, pipelines e motivos
   de perda
-- **`ask_kommo`**: interface conversacional em linguagem natural
+- **`ask_kommo`**: interface conversacional com plano de consulta e citações
 - **Arquitetura modular**: código organizado em módulos (`kommo-api`, `mcp/`,
   `ask-kommo`)
-- **Segurança**: validação de Origin, validação dos argumentos das tools e
-  autenticação obrigatória fora de localhost
+- **Segurança**: validação de Origin, allow-list de IPs, modo somente leitura,
+  autenticação obrigatória fora de localhost e `/metrics` sem PII
 
 ## Pré-requisitos
 
@@ -91,21 +91,24 @@ O servidor sobe em `http://127.0.0.1:3001/mcp`.
 
 ### Variáveis de ambiente
 
-| Variável                    | Descrição                                                    | Default     |
-| --------------------------- | ------------------------------------------------------------ | ----------- |
-| `KOMMO_BASE_URL`            | URL da conta Kommo (`https://<subdominio>.kommo.com`)        | —           |
-| `KOMMO_ACCESS_TOKEN`        | Token de acesso (integração privada ou OAuth2)               | —           |
-| `KOMMO_TIMEOUT_MS`          | Timeout de cada requisição ao Kommo                          | `15000`     |
-| `KOMMO_MAX_RETRIES`         | Retentativas de leituras em `429`/`5xx`                      | `3`         |
-| `KOMMO_REQUESTS_PER_SECOND` | Limite coordenado de chamadas por processo (máximo 6)        | `6`         |
-| `KOMMO_TIMEZONE`            | Fuso IANA dos relatórios; por padrão usa o fuso da conta     | conta Kommo |
-| `PORT`                      | Porta HTTP do servidor MCP                                   | `3001`      |
-| `MCP_HOST`                  | Host de binding                                              | `127.0.0.1` |
-| `MCP_ALLOWED_ORIGINS`       | Origens permitidas (separadas por vírgula)                   | —           |
-| `MCP_AUTH_TOKEN`            | Protege `/mcp`; obrigatório quando `MCP_HOST` não é loopback | —           |
-| `MCP_RATE_LIMIT_PER_MINUTE` | Limite de requisições ao `/mcp` por endereço e por processo  | `120`       |
-| `MCP_CONFIRM_WRITES`        | Exige `confirm=true`; somente `false` desativa a proteção    | `true`      |
-| `LOG_LEVEL`                 | Nível de log                                                 | `info`      |
+| Variável                    | Descrição                                                       | Default     |
+| --------------------------- | --------------------------------------------------------------- | ----------- |
+| `KOMMO_BASE_URL`            | URL da conta Kommo (`https://<subdominio>.kommo.com`)           | —           |
+| `KOMMO_ACCESS_TOKEN`        | Token de acesso (integração privada ou OAuth2)                  | —           |
+| `KOMMO_TIMEOUT_MS`          | Timeout de cada requisição ao Kommo                             | `15000`     |
+| `KOMMO_MAX_RETRIES`         | Retentativas de leituras em `429`/`5xx`                         | `3`         |
+| `KOMMO_REQUESTS_PER_SECOND` | Limite coordenado de chamadas por processo (máximo 6)           | `6`         |
+| `KOMMO_TIMEZONE`            | Fuso IANA dos relatórios; por padrão usa o fuso da conta        | conta Kommo |
+| `PORT`                      | Porta HTTP do servidor MCP                                      | `3001`      |
+| `MCP_HOST`                  | Host de binding                                                 | `127.0.0.1` |
+| `MCP_ALLOWED_ORIGINS`       | Origens permitidas (separadas por vírgula)                      | —           |
+| `MCP_AUTH_TOKEN`            | Protege `/mcp`; obrigatório quando `MCP_HOST` não é loopback    | —           |
+| `MCP_ALLOWED_IPS`           | Allow-list de IPs clientes para `/mcp` (vírgula)                | —           |
+| `MCP_TRUST_PROXY`           | Confia em `X-Forwarded-For` (`1`=um hop; `true`=cadeia inteira) | `false`     |
+| `MCP_RATE_LIMIT_PER_MINUTE` | Limite de requisições ao `/mcp` por endereço e por processo     | `120`       |
+| `MCP_CONFIRM_WRITES`        | Exige `confirm=true`; somente `false` desativa a proteção       | `true`      |
+| `MCP_READ_ONLY`             | Bloqueia tools de escrita (`true`/`1`)                          | `false`     |
+| `LOG_LEVEL`                 | Nível de log                                                    | `info`      |
 
 ## Execução
 
@@ -138,10 +141,14 @@ docker run -d -p 3001:3001 \
 ```
 
 > Em produção, coloque o servidor atrás de um reverse proxy com TLS e defina
-> `MCP_AUTH_TOKEN` + `MCP_ALLOWED_ORIGINS`. O servidor se recusa a iniciar em
-> um endereço não local sem `MCP_AUTH_TOKEN`, inclusive quando `createApp()` é
-> usado diretamente. A imagem Docker usa `127.0.0.1` por padrão; para publicar
-> a porta, configure conscientemente `MCP_HOST=0.0.0.0` junto com um token longo.
+> `MCP_AUTH_TOKEN`, `MCP_ALLOWED_ORIGINS` e, preferencialmente, `MCP_ALLOWED_IPS`.
+> Com proxy, use `MCP_TRUST_PROXY=1` (um hop) — ou outro número de hops — para o
+> rate limit e a allow-list enxergarem o IP do cliente. Evite `true`: isso confia
+> na cadeia inteira de `X-Forwarded-For` e permite spoofing. O servidor se recusa
+> a iniciar em um endereço não local sem `MCP_AUTH_TOKEN`, inclusive quando
+> `createApp()` é usado diretamente. A imagem Docker usa `127.0.0.1` por padrão;
+> para publicar a porta, configure conscientemente `MCP_HOST=0.0.0.0` junto com
+> um token longo.
 
 > A confirmação explícita é obrigatória por padrão nas tools de escrita. Use
 > `MCP_CONFIRM_WRITES=false` somente em automações controladas que assumam esse
@@ -203,6 +210,8 @@ pela tela de Connectors.
 - **Health**: `GET http://localhost:3001/health`
 - **Readiness**: `GET http://localhost:3001/ready` — verifica se URL e token
   obrigatórios foram configurados
+- **Metrics**: `GET http://localhost:3001/metrics` — contadores operacionais
+  sem tokens ou dados pessoais
 
 ## Ferramentas MCP
 
@@ -232,13 +241,23 @@ pela tela de Connectors.
 
 ### Contatos, empresas e tarefas
 
-| Tool            | Descrição                         |
-| --------------- | --------------------------------- |
-| `get_contacts`  | Listar contatos                   |
-| `get_companies` | Listar empresas                   |
-| `get_tasks`     | Listar tarefas                    |
-| `create_task`   | Criar tarefa vinculada a entidade |
-| `get_users`     | Listar usuários da conta          |
+| Tool              | Descrição                                         |
+| ----------------- | ------------------------------------------------- |
+| `get_contacts`    | Listar contatos (`query` opcional)                |
+| `get_contact`     | Obter contato por ID                              |
+| `create_contact`  | Criar contato                                     |
+| `update_contact`  | Atualizar contato                                 |
+| `get_companies`   | Listar empresas (`query` opcional)                |
+| `get_company`     | Obter empresa por ID                              |
+| `create_company`  | Criar empresa                                     |
+| `update_company`  | Atualizar empresa                                 |
+| `get_tasks`       | Listar tarefas                                    |
+| `get_task`        | Obter tarefa por ID                               |
+| `create_task`     | Criar tarefa vinculada a entidade                 |
+| `update_task`     | Atualizar tarefa                                  |
+| `search_entities` | Busca unificada em leads/contatos/empresas        |
+| `link_entities`   | Vincular entidades (`/api/v4/{entity}/{id}/link`) |
+| `get_users`       | Listar usuários da conta                          |
 
 ### Notas
 

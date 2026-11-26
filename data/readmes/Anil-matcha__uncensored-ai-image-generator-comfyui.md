@@ -63,6 +63,7 @@ Fields differ between families, so do not copy a payload from one endpoint to an
 - [Spicy-AI-Image-Generator-API](https://github.com/Anil-matcha/Spicy-AI-Image-Generator-API): request schemas, cURL and Python examples for the same image endpoints.
 - [awesome-uncensored-ai-image-models](https://github.com/Anil-matcha/awesome-uncensored-ai-image-models): a community catalog of open, low-filter AI image models.
 - [Muapi](https://muapi.ai): the API behind the nodes. See the [spicy AI image generator page](https://muapi.ai/ai-spicy-image-generator).
+- [NSFW-AI-API](https://github.com/Anil-matcha/NSFW-AI-API) — NSFW detection and moderation for text and images, to screen prompts and outputs
 
 ## License
 

@@ -6,7 +6,7 @@
 
 **Universal Local-to-Web AI Coding Harness**
 
-[![npm version](https://img.shields.io/badge/npm-v1.1.1-D2FF00.svg?style=flat-square&logo=npm)](https://www.npmjs.com/package/@markmayandi/bridge)
+[![npm version](https://img.shields.io/badge/npm-v1.2.1-D2FF00.svg?style=flat-square&logo=npm)](https://www.npmjs.com/package/@markmayandi/bridge)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=flat-square)](https://github.com/Manimaran-tech/bridge)
@@ -18,6 +18,12 @@
 
 <p align="center">
   Securely connect your local codebases and development environments to Claude Web, ChatGPT, Gemini, and DeepSeek in seconds via the Model Context Protocol (MCP).
+</p>
+
+<p align="center">
+  <img src="./images/bridge-demo.gif" alt="Bridge demo: install, run bridge, pick a project folder, get the MCP URL" width="820" />
+  <br />
+  <sub>Install → run <code>bridge</code> → pick a project → copy your MCP URL (<a href="./images/bridge-demo.mp4">MP4 version</a>)</sub>
 </p>
 
 ---
@@ -179,6 +185,8 @@ Modern web AI clients (Claude Web, ChatGPT Web, Gemini, and MCP extensions) conn
 
 No legacy JSON configuration files or manual port forwarding required.
 
+> **Gemini: use Task, not Chat.** Start your Bridge work in a Gemini **Task** instead of a normal **Chat**. Multi-step coding work with Bridge's tools runs more reliably in a Task.
+>
 > **Gemini tip:** Gemini shows its own "Let Gemini use …?" card before tool calls. This is Gemini's permission system, separate from Bridge's approval modes. To stop the cards, open **Gemini → Customize → Connectors → Bridge** ([gemini.google.com/customize/connectors](https://gemini.google.com/customize/connectors)) and set each action under **App actions** to **Always allow**. A quick tunnel gets a new URL on every restart, so use a [named tunnel](#optional-fixed-mcp-url-cloudflare-named-tunnels) if you want these settings to stick.
 
 ---
@@ -193,8 +201,32 @@ Cloud-based AI models cannot safely access files on your physical machine withou
 * **Undo & Trash:** Every write keeps an undo snapshot, and deleted files move to `~/.bridge/trash` instead of being erased.
 * **Long-Running Calls:** Tool replies stream over SSE with keepalives, so long builds and tests survive Cloudflare's 100-second timeout.
 * **Zero-Setup Anycast Tunnel:** Public HTTPS tunneling powered by Cloudflare with automatic SSL and clipboard sync. Run `bridge setup` once if you prefer a fixed named-tunnel URL.
-* **Terminal Dashboard:** Monospaced LN4 Volt interface with live traffic streaming and real-time directory switching. Adapts to any terminal size, from small windows to full screen.
+* **Terminal Dashboard:** Monospaced LN4 Volt interface with live traffic streaming and real-time directory switching. Adapts to any terminal size, from small windows to full screen, and redraws cleanly when you resize or maximize the window, even during the loading screens.
+* **Overview Panel:** Review every change the AI made with diffs and undo, verify files on disk, and watch or stop running commands. Open it with `[S]` or by clicking the `≡` button in the top-right corner.
+* **Live Tunnel Animation:** While the tunnel starts, a two-lane link shows requests going out and replies coming back through the Cloudflare edge, with a checklist of each startup stage.
+* **Multiple Bridges:** Run several Bridges side by side for different projects. A new Bridge never stops another running Bridge's server; it picks the next free port instead.
 * **Self-Healing Server:** If the MCP server crashes, Bridge restarts it automatically with backoff, and cleans up every child process on exit.
+* **Auto Context Compaction:** Bridge meters the tool output it sends into the chat and asks the AI to save a checkpoint before the context fills up (see [Context Compaction](#context-compaction)).
+
+---
+
+## Context Compaction
+
+Long coding sessions fill a chat's context with file contents and command output. Bridge cannot erase a cloud chat's history, so it compacts the way a human would: summarize, then continue from the summary.
+
+1. **Metering:** Bridge estimates the tokens of every tool call and result (about 4 characters per token). At 60% of the budget it appends a `[Bridge context notice]` to the tool result; at 85% the notice becomes urgent and repeats every 5 calls.
+2. **`compact_context`:** The AI writes a summary (goal, decisions, progress, next steps, open questions, key files). Bridge adds what it knows itself: the plan, files changed through Bridge, recent commands, running background jobs and `git status`. The checkpoint is saved and the meter resets. The AI then works from the checkpoint instead of re-reading earlier output.
+3. **`resume_context`:** In a new chat, ask the AI to "resume" (or use the `resume_session` MCP prompt). It loads the newest checkpoint for the active project; `list=true` shows all of them.
+
+Checkpoints are stored outside your project in `~/.bridge/context/<project-hash>/` (the last 20 per project). After 60 idle minutes the meter resets, since that usually means a new chat.
+
+| Setting | Default | Description |
+| :--- | :--- | :--- |
+| `BRIDGE_CONTEXT_BUDGET` / `--context-budget <n>` | `100000` | Tokens of tool traffic before notices start. `0` turns notices off. |
+| `BRIDGE_CONTEXT_IDLE_RESET_MIN` | `60` | Idle minutes after which the meter resets. `0` never resets. |
+| `BRIDGE_CONTEXT_DIR` | `~/.bridge/context` | Where checkpoints are stored. |
+
+The meter only sees Bridge's own tool traffic, not your messages or the AI's replies, so set the budget well below your model's context window.
 
 ---
 
@@ -211,7 +243,7 @@ Press `[M]` in the dashboard (or launch with `--mode=<mode>`) to choose when Bri
 
 When Bridge asks, the request appears in the dashboard with the full command. Press `[Y]` to approve or `[N]` to deny. Unanswered requests are denied automatically after 90 seconds.
 
-**Always blocked:** disk formatting, shutdown/reboot, `sudo`/`runas`, registry and boot configuration edits, user and service changes, disabling Defender or the firewall, scheduled tasks, piping downloads into a shell (`curl … | sh`, `iwr … | iex`), encoded PowerShell, and changes to system folders.
+**Always blocked:** disk formatting, shutdown/reboot, `sudo`/`runas`, registry and boot configuration edits, user and service changes, disabling Defender or the firewall, scheduled tasks, piping downloads into a shell (`curl … | sh`, `iwr … | iex`), decoding base64 straight into a shell (`base64 -d … | sh`, `FromBase64String … | iex`), encoded PowerShell, and changes to system folders.
 
 **Switching folders:** an AI can move to another project folder when you ask it to. Drive roots, your home folder and system folders are always refused. Depending on the mode, Bridge asks you first.
 
@@ -244,8 +276,20 @@ When Bridge asks, the request appears in the dashboard with the full command. Pr
 | `[D]` | Opens the In-Terminal Directory Navigator to switch project folders without restarting. |
 | `[L]` | Toggles real-time streaming traffic and tool execution logs. |
 | `[M]` | Opens the approval mode picker (`1` Turbo, `2` Review, `3` Default, `4` Auto). |
+| `[S]` | Opens the Overview panel (`[R]` Review, `[F]` Files, `[T]` Terminals, `[H]` Help). You can also click the `≡` button in the top-right corner. |
 | `[Y]` / `[N]` | Approves or denies a pending permission request. |
 | `[Q]` | Asks for confirmation (`Y`/`N`), then closes the tunnel, stops all jobs, releases ports, and exits. |
+
+### Overview Panel
+
+Press `[S]` or click the `≡` button in the dashboard's top-right corner to open the live **Overview** menu (click an item to open it, click elsewhere to close) with session `+added / −removed` totals, touched file counts, and running process counts:
+
+* **`[R]` Review:** Inspect every file the AI created, edited, or deleted in the current session with a unified diff, `(edited outside)` detection, `[U]` undo (reuses revert snapshots), and `[O]` open in your default editor.
+* **`[F]` Files:** Verify on disk (`✔` exists, `✘` missing, `🗑` in trash) that files the AI touched actually exist. Press `[A]` to toggle the full sandboxed project tree or `Enter` to jump to a file's diff.
+* **`[T]` Terminals:** View running and finished commands and background jobs, stop any process tree with `[X]`, or press `Enter` to attach full-screen in Chrome-style tabs (`Ctrl+←/→` switch tab, `Ctrl+W` close, `Ctrl+X` stop, `Ctrl+]` detach, `Ctrl+T` list). Attached terminals provide local line editing and multi-line paste on a bottom prompt line (`Enter` sends the line, `Backspace` deletes, `←/→` moves the cursor, `Ctrl+U` clears the line, `Ctrl+D` flushes any pending text and sends EOF, and `Esc` forwards immediately).
+* **`[H]` Help:** Built-in scrollable reference for all shortcuts, icons, approval modes, safety boundaries, and log paths.
+
+Approval prompts (`[Y]`/`[N]`) always appear on top of every Overview view; while attached to a terminal, approval keys require a short pause in typing before `[Y]`/`[N]`/`[Esc]` are accepted.
 
 ---
 
@@ -253,7 +297,8 @@ When Bridge asks, the request appears in the dashboard with the full command. Pr
 
 * **Gemini keeps showing "Connecting to Bridge":** Check `~/.bridge/logs/server_requests.log`. If no new lines appear, the request never left Gemini, so resend your prompt. A `[CLIENT-ABORT]` or `[SSE-CLOSE]` line shows the connection dropped and why.
 * **Gemini keeps asking for permission:** See the Gemini tip under [Connecting to Any AI Client](#connecting-to-any-ai-client).
-* **Port 3000 is busy:** Quick tunnels pick a free port from 3001–3020 automatically. Named tunnels need port 3000; Bridge only stops old Bridge servers on it and never other apps.
+* **Port 3000 is busy:** Quick tunnels pick a free port from 3001–3020 automatically. Named tunnels need port 3000, so only one Bridge can use a named tunnel at a time. Bridge only stops a Bridge server on port 3000 if the Bridge that started it has exited; it never stops another running Bridge or any other app.
+* **Selecting text in the dashboard:** Bridge listens for mouse clicks (for the `≡` button), so hold `Shift` while dragging to select text. `[C]` copies the MCP URL directly.
 * **Update banner:** Bridge checks npm on startup and shows an update only when a newer version exists. Upgrade with `npm install -g @markmayandi/bridge@latest`.
 
 ---

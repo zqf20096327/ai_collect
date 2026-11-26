@@ -78,7 +78,7 @@ automation, knowledge base, and mobile apps for iOS and Android.
 
 **Works with any client that supports remote MCP servers with OAuth**
 
-Grok, Devin, OpenCode, and others. See the
+Grok, Devin, OpenCode, [Docker MCP Toolkit](#docker-mcp-toolkit), and others. See the
 [step-by-step setup guides](https://developers.chatway.app/mcp/guides.mcp_connect_clients)
 for each client.
 
@@ -427,6 +427,19 @@ enter `Chatway` as the display name and `https://mcp.chatway.app/mcp` as the ser
 The connection is saved to your Replit account, so Replit Agent can use it in any app. Try:
 "Use Chatway to list my 5 most recent unresolved conversations." To react to new messages in an
 app you build on Replit, pair it with [Chatway webhooks](#real-time-events-with-webhooks).
+
+### Docker MCP Toolkit
+
+Chatway is available in the [Docker MCP Catalog](https://hub.docker.com/mcp). In Docker Desktop,
+open **MCP Toolkit → Catalog**, search for **Chatway** and add it. Then open its **OAuth** tab,
+click **Authorize** and sign in to Chatway. Connect your AI client under **MCP Toolkit → Clients**.
+
+From the command line:
+
+```bash
+docker mcp server enable chatway
+docker mcp oauth authorize chatway
+```
 
 ### Other clients
 

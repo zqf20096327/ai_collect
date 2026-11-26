@@ -19,13 +19,14 @@ Maintainer: Francesco Moca ([@franzmoca](https://github.com/franzmoca)).
 
 The target build is the
 [Xylolabs Q4_K_M](https://huggingface.co/Xylolabs/Hy4-flash-GGUF): a 97.8 GB
-trunk kept resident, plus the 63.4 GB FP8 Engram shard read from disk. The
-[AngelSlim Q4_K_M](https://huggingface.co/AngelSlim/Hy4-flash-GGUF) loads
+trunk kept resident, plus the 63.4 GB FP8 Engram shard read from disk. The [AngelSlim Q4_K_M](https://huggingface.co/AngelSlim/Hy4-flash-GGUF) loads
 too: its `block_count` counts a `nextn` draft layer after the 42 backbone
-layers, which stays on disk (DFly2 has its own checkpoint), and its LM head
-is BF16 instead of F16. The DFly2 drafter comes from Tencent's checkpoint
-(`model-00148-of-00148.safetensors`), and the vision tower is the Xylolabs
-repository's `mmproj-Hy4-flash-BF16.gguf`.
+layers, which stays on disk (DFly2 has its own checkpoint), its LM head is BF16
+instead of F16, and its 24 suffixed special tokens use `:6124c78e` instead of
+`:opensource` (canonicalized to `:opensource` at tokenizer load so chat,
+reasoning, tool calls and vision work identically on both trunks). The DFly2
+drafter comes from Tencent's checkpoint (`model-00148-of-00148.safetensors`),
+and the vision tower is the Xylolabs repository's `mmproj-Hy4-flash-BF16.gguf`.
 
 ## Build with Gufo
 
@@ -44,14 +45,14 @@ cmake --build --preset release --parallel 4
 ## Install as a module
 
 `gufo extension install` builds the extension against the Gufo you run, so it
-needs the extension API of the pinned revision (0.3.29, Gufo `main` `0a473ebf`)
+needs the extension API of the pinned revision (0.3.43, Gufo `main` `abebd1c0`)
 or later in the same 0.3 series. The v0.35.0 release, and the `latest`
 container built from it, report API 0.3.20 and are rejected. Use the `edge`
 container, which follows `main`:
 
 ```sh
 podman pull ghcr.io/gufo-org/toolboxes/gufo-runtime:edge
-gufo extension install https://github.com/franzmoca/hy4-gufo-extension@v0.2.1 --yes
+gufo extension install https://github.com/franzmoca/hy4-gufo-extension@v0.3.1 --yes
 ```
 
 Mount the extensions volume at `/home/gufo/.local/share/gufo/extensions` so

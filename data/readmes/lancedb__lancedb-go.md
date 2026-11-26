@@ -12,21 +12,31 @@ Rust toolchain, no C compiler and no `CGO_ENABLED=1` build.
 
 ## Install
 
+Preview releases are published on the
+[releases page](https://github.com/lancedb/lancedb-go/releases). The planned
+next preview is `v0.2.0-preview.3`, the first release with offline native
+loading. When it is published, install that preview explicitly:
+
 ```bash
-# The preview must be requested explicitly: @latest currently resolves to the
-# stable v0.1.2 module, which predates this migration.
-go get github.com/lancedb/lancedb-go@v0.2.0-preview.1
+go get github.com/lancedb/lancedb-go@v0.2.0-preview.3
 ```
 
-The first `Connect` downloads the pinned `lancedb-c` release for the running
-target, verifies both the archive and extracted library SHA-256 digests, and
-loads it from a private per-user cache. No source build happens on the consumer
-machine.
+`@latest` resolves the newest stable release (currently `v0.1.2`), which
+predates the pure-Go preview and does not contain the native payload or the
+`lancedb-go-native` helper, so name the preview version explicitly.
 
-To pre-seed the cache (for example in an offline image or CI):
+The native library for the running target is delivered as a compiled-in
+companion module (`go.lancedb.io/lancedb-go/artifacts/<target>`) that the root
+module requires. The first `Connect` verifies and extracts its payload into a
+private per-user cache; it never downloads anything at runtime, so the SDK
+works offline once `go get` has resolved the modules. No source build happens
+on the consumer machine.
+
+To pre-seed the cache (for example in an offline image or CI), run the helper
+from the same preview version:
 
 ```bash
-go run github.com/lancedb/lancedb-go/pkg/cmd/lancedb-go-native@v0.2.0-preview.1
+go run github.com/lancedb/lancedb-go/pkg/cmd/lancedb-go-native@v0.2.0-preview.3
 ```
 
 Discovery can be controlled explicitly:
@@ -35,7 +45,6 @@ Discovery can be controlled explicitly:
 | --- | --- |
 | `LANCEDB_C_LIBRARY_PATH` | Use this shared library file. When set, it is the only candidate; a bad path fails instead of falling back. |
 | `LANCEDB_C_CACHE_DIR` | Override the private cache root. Default: the platform user cache directory plus `lancedb-go/native`. |
-| `LANCEDB_C_RELEASE_BASE_URL` | Use a release mirror or loopback fixture. The pinned asset names and digests still apply. |
 
 The runtime version must match the C header the module was built against. For
 diagnostics, `lancedb.RuntimeVersion()` returns the loaded library's reported
@@ -152,7 +161,7 @@ mutate process environment variables.
 
 ## SQL predicates
 
-The migration adopts the current LanceDB SDK SQL dialect. Double quotes delimit
+The migration adopts the LanceDB SDK SQL dialect. Double quotes delimit
 column identifiers; single quotes delimit string literals. An existing update or
 delete can therefore succeed while selecting different rows. Read
 [MIGRATION.md](MIGRATION.md) before upgrading.
@@ -161,7 +170,7 @@ delete can therefore succeed while selecting different rows. Read
 
 ```bash
 make test-native       # loader, cache and ABI layout checks
-make test              # full suite (downloads the pinned native artifact)
+make test              # full suite (uses the compiled-in native payload)
 make test-integration  # authenticated S3 + AWS profile/DynamoDB loopback tests
 make vet fmt-check
 ```

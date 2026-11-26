@@ -51,7 +51,7 @@
 
 
 
-<p align = "right"><b><i>Last updated</i></b>: <!-- LAST_UPDATED -->Nov 23, 2026<!-- END_LAST_UPDATED --></p>
+<p align = "right"><b><i>Last updated</i></b>: <!-- LAST_UPDATED -->Nov 25, 2026<!-- END_LAST_UPDATED --></p>
 
 
 | ![space-1.jpg](https://github.com/Tanu-N-Prabhu/Python/blob/master/Img/logo.jpg) | 
@@ -787,11 +787,11 @@ A curated selection of tutorials, insights, and guides on programming, software 
 
 ## 🔥 Trending Tech Topics (Auto-updated daily)
 <!-- START_TRENDING -->
-- [Necoz Is Building a New House!! 🛸 All Cats, Follow Me!! 🐈🚀](https://dev.to/necoz/necoz-is-building-a-new-house-all-cats-follow-me-530n)
-- [The Third Cup: Five Elements, One IT Company](https://dev.to/thethirdcup/the-third-cup-five-elements-one-it-company-1bca)
-- [I turned my GitHub contribution graph into a Bloomberg-style trading terminal](https://dev.to/necoz/i-turned-my-github-contribution-graph-into-a-bloomberg-style-trading-terminal-31eh)
-- [I Made My RAG Safer. It Got Worse Under Load](https://dev.to/ayush_singh_9b0d83152be5b/i-made-my-rag-safer-it-got-worse-under-load-3olm)
-- [Day 90: A Mask in the Way and a Policy Pointing at Nothing](https://dev.to/ndcodes/day-90-a-mask-in-the-way-and-a-policy-pointing-at-nothing-390o)
+- [The Third Cup: After Everything Has a Name](https://dev.to/thethirdcup/the-third-cup-after-everything-has-a-name-2b14)
+- [Why Your Android App Drops Frames: The Jetpack Compose Architecture Guide That Fixes Recomposition Forever](https://dev.to/smtahosin/why-your-android-app-drops-frames-the-jetpack-compose-architecture-guide-that-fixes-recomposition-3oh3)
+- [Why Your AI Release Notes Hallucinate: The "Why vs What" Problem in Git History](https://dev.to/necoz/why-your-ai-release-notes-hallucinate-the-why-vs-what-problem-in-git-history-5ch0)
+- [I Let Claude Code Create My AWS Account](https://dev.to/aws/i-let-claude-code-create-my-aws-account-12gb)
+- [A Year of Hacking: a Cloudinary Hackathon Retrospective](https://dev.to/cloudinary/a-year-of-hacking-a-cloudinary-hackathon-retrospective-3odm)
 <!-- END_TRENDING -->
 
 ---

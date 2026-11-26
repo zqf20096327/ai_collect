@@ -6,7 +6,7 @@ Turn scattered AI agent skills into organized workflows.
 
 [中文](./README.zh.md) · [日本語](./README.ja.md)
 
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20-43853d?style=flat-square)](https://nodejs.org)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D22-43853d?style=flat-square)](https://nodejs.org)
 [![npm Version](https://img.shields.io/npm/v/skill-flow?style=flat-square)](https://www.npmjs.com/package/skill-flow)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](./LICENSE)
 
@@ -71,6 +71,8 @@ Or run without a global install:
 ```bash
 npx skill-flow --help
 ```
+
+The interactive CLI uses Ink 8 and requires Node.js 22 or newer.
 
 ### Desktop prerequisites
 

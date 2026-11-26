@@ -120,6 +120,8 @@
     - [RGB-D Image COD](#rgb-d-image-cod)
       - [ACOD-12K](#acod-12k)
       - [CODD](#codd)
+    - [Spectral-Polarization-Infrared Image COD](#spectral-polarization-infrared-image-cod)
+      - [Multimodal Camouflaged Vehicle Dataset](#multimodal-camouflaged-vehicle-dataset)
     - [Terahertz Image COS/COD](#terahertz-image-coscod)
       - [Active Terahertz Imaging Datasets](#active-terahertz-imaging-datasets)
     - [Open-Vocabulary Camouflaged Object Segmentation](#open-vocabulary-camouflaged-object-segmentation)
@@ -1163,4 +1165,208 @@ To demonstrate quantitatively the advantages of using spatial and temporal coher
   + V1: <https://cpl.cc.gatech.edu/projects/SegTrack/>
   + V2: <https://web.engr.oregonstate.edu/~lif/SegTrack2/dataset.html>
 
-SegTrack was originally introduced for evaluating segmentation accuracy in video tracking and was later adopted for video salient object detection. SegTrack V1 contains six short video sequences with pixel-level foreground annotations. SegTrack V2 extends it to 14 sequences and provides separate pixel-level a
+SegTrack was originally introduced for evaluating segmentation accuracy in video tracking and was later adopted for video salient object detection. SegTrack V1 contains six short video sequences with pixel-level foreground annotations. SegTrack V2 extends it to 14 sequences and provides separate pixel-level annotations for multiple objects in each frame. The sequences cover motion blur, appearance changes, deformation, occlusion, and interacting objects. Video saliency benchmarks may exclude the penguin sequence, so the evaluated subset should be stated explicitly.
+
+<details>
+<summary>中文介绍</summary>
+
+SegTrack 最初用于评估视频跟踪中的分割精度，后来被用于视频显著性目标检测。SegTrack V1 包含六个短视频序列及像素级前景标注。SegTrack V2 将其扩展到 14 个序列，并为每帧中的多个目标分别提供像素级标注。视频涵盖运动模糊、外观变化、形变、遮挡和目标交互等情况。部分视频显著性评测会排除 penguin 序列，因此使用时应明确所采用的评测子集。
+
+</details>
+
+#### ViSal
+
+* Paper: [Consistent Video Saliency Using Local Gradient Flow Optimization and Global Refinement](https://ieeexplore.ieee.org/document/7164324)
+* Home: [Wenguan Wang's homepage](https://sites.google.com/view/wenguanwang)
+* Download: See the ViSal dataset entry under the 2015 paper on the [author's homepage](https://sites.google.com/view/wenguanwang), or the dataset links in the [DAVSOD benchmark repository](https://github.com/DengPingFan/DAVSOD).
+
+ViSal is designed for video salient object detection and contains 17 video sequences, with 193 annotated frames used in standard benchmarks. The videos were collected from existing video databases and YouTube, with each sequence containing 30 to 100 frames. They cover complex color distributions, cluttered backgrounds, varied object motion, rapid shape changes, and camera motion.
+
+<details>
+<summary>中文介绍</summary>
+
+ViSal 面向视频显著性目标检测，包含 17 个视频序列，标准评测使用其中 193 个标注帧。视频来自已有视频数据库和 YouTube，每个序列包含 30 至 100 帧，涵盖复杂颜色分布、杂乱背景、多样的目标运动、快速形状变化和相机运动等情况。
+
+</details>
+
+#### MCL
+
+* Paper: [Spatiotemporal Saliency Detection for Video Sequences Based on Random Walk with Restart](https://doi.org/10.1109/TIP.2015.2425544)
+* Project: <https://mcl.korea.ac.kr/database/saliency/>
+* Download: See the MCL dataset link in the Downloads section of the [project page](https://mcl.korea.ac.kr/database/saliency/).
+
+MCL contains nine video sequences for evaluating spatiotemporal saliency detection: Ball, Car, Campus, Court, Crowd, Hall2, Road, Square, and Stair. Standard video saliency benchmarks use 463 annotated frames. The original project also evaluates MPEG and NTT sequences; these are listed separately from the nine-sequence MCL dataset.
+
+<details>
+<summary>中文介绍</summary>
+
+MCL 包含九个用于时空显著性检测评测的视频序列：Ball、Car、Campus、Court、Crowd、Hall2、Road、Square 和 Stair。标准视频显著性评测使用其中 463 个标注帧。原始项目还评测了 MPEG 和 NTT 视频序列，这两组数据与包含九个序列的 MCL 数据集分别列出。
+
+</details>
+
+#### UVSD
+
+* Paper: [Saliency Detection for Unconstrained Videos Using Superpixel-Level Graph and Spatiotemporal Propagation](https://ieeexplore.ieee.org/document/7523922)
+* Project: <https://github.com/ivpshu/Saliency-Detection-for-Unconstrained-Videos-Using-Superpixel-level-Graph-and-Spatiotemporal-Propagat>
+* Download:
+  + [Official laboratory download page](https://ivp.shu.edu.cn/Downloads.htm)
+
+UVSD (Unconstrained Video Saliency Detection) contains 18 unconstrained video sequences with complicated motion and complex scenes. Standard video saliency benchmarks report 3,262 pixel-wise annotated frames. The dataset supports evaluation of video salient object detection under challenging conditions such as small objects, changing backgrounds, and motion blur.
+
+<details>
+<summary>中文介绍</summary>
+
+UVSD（Unconstrained Video Saliency Detection）包含 18 个具有复杂运动和场景的非受限视频序列，标准视频显著性评测统计为 3,262 个像素级标注帧。该数据集用于评估小目标、背景变化和运动模糊等复杂条件下的视频显著性目标检测性能。
+
+</details>
+
+#### VOS
+
+* Paper: [A Benchmark Dataset and Saliency-Guided Stacked Autoencoders for Video-Based Salient Object Detection](https://arxiv.org/abs/1611.00135)
+* Home: [Beihang University CVTEAM publications](https://cvteam.buaa.edu.cn/papers.html)
+* Download: [Official laboratory page](http://cvteam.net/projects/TIP18-VOS/VOS-Dataset.zip), or the dataset links in the [DAVSOD benchmark repository](https://github.com/DengPingFan/DAVSOD).
+
+VOS is a video salient object detection dataset containing 200 indoor and outdoor videos, totaling about 64 minutes and 116,103 frames. Its construction combines manual object and region annotations on 7,650 sampled keyframes with eye-tracking data from 23 viewers. Salient objects are identified by their consistently high fixation density throughout a video. After filtering unsuitable keyframes, the dataset provides 7,467 binary saliency masks. It includes an easy subset, VOS-E (97 videos), and a normal subset, VOS-N (103 videos).
+
+<details>
+<summary>中文介绍</summary>
+
+VOS 是一个视频显著性目标检测数据集，包含 200 个室内外视频，总时长约 64 分钟，共 116,103 帧。构建时对采样的 7,650 个关键帧进行目标和区域的人工标注，并采集 23 名观看者的眼动数据，以目标在整个视频中持续获得较高注视密度作为确定显著目标的依据。过滤不适合的关键帧后，数据集提供 7,467 个二值显著性掩码，并划分为包含 97 个视频的简单子集 VOS-E 和包含 103 个视频的普通子集 VOS-N。
+
+</details>
+
+### RGB-D Video Saliency
+
+#### RDVSv2
+
+* Paper: [RDVSv2: A Large-scale Benchmark for RGB-D Video Salient Object Detection](https://arxiv.org/abs/2607.25392)
+* Project: [https://github.com/ltynick/RDVSv2](https://github.com/ltynick/RDVSv2)
+* Download: See the Google Drive and Baidu Netdisk links in the [official repository](https://github.com/ltynick/RDVSv2).
+
+RDVSv2 is a large-scale benchmark for RGB-D video salient object detection, designed to capture dynamic saliency transitions and support long-term temporal modeling. It contains 249 video sequences and 29,077 densely annotated frames sourced from publicly accessible stereoscopic online videos. The release provides RGB video URLs, stereo-derived depth maps, optical-flow maps, pixel-level ground-truth masks, and eye-fixation heatmaps. Its data preparation script can download the source videos and split them into frames.
+
+Eye-tracking data were collected at 90 Hz from 22 participants on a 1920 × 1080 display. The participants viewed RGB frames without depth cues; their gaze points were converted into fixation heatmaps using Gaussian filtering. Segmentation masks were generated with SAM2 assistance and then manually refined. The benchmark also supplies 16 challenge attributes covering object heterogeneity, occlusion, out-of-view events, fast motion, motion blur, deformation, shape complexity, scale variation, appearance change, background clutter, object size, indoor/outdoor scenes, saliency shifts, and multiple objects, with training and test distributions organized at approximately 7:3.
+
+<details>
+<summary>中文介绍</summary>
+
+RDVSv2 是一个面向 RGB-D 视频显著性目标检测的大规模基准，旨在刻画动态显著性转移并支持长期时序建模。它包含 249 个视频序列和 29,077 个密集标注帧，源视频来自公开可访问的在线立体视频。发布内容包括 RGB 视频来源、由立体视频生成的深度图、光流图、像素级真值掩码和眼动注视热图，数据准备脚本可下载源视频并将其拆分为帧。
+
+眼动数据由 22 名参与者在 1920 × 1080 显示器上以 90 Hz 采集。参与者只观看不含深度提示的 RGB 帧，其注视点经过高斯滤波生成注视热图。分割掩码先由 SAM2 辅助生成，再进行人工细化。该基准还提供 16 项挑战属性，覆盖异质目标、遮挡、出视野、快速运动、运动模糊、形变、形状复杂度、尺度变化、外观变化、背景杂乱、目标大小、室内/室外场景、显著性转移和多目标等情况，训练集与测试集的分布比例约为 7:3。
+
+</details>
+
+### Reasoning SOD
+
+#### OC-SODBench
+
+* Paper: [Revisiting Salient Object Detection from an Observer-Centric Perspective](https://arxiv.org/abs/2602.06369)
+* Project: [https://github.com/Dustzx/OC_SOD](https://github.com/Dustzx/OC_SOD)
+* Download: See [https://github.com/Dustzx/OC_SOD](https://github.com/Dustzx/OC_SOD)
+
+OC-SODBench is a reasoning-oriented salient object detection benchmark introduced by the Observer-Centric Salient Object Detection (OC-SOD) formulation. Instead of assuming a single objective salient region for each image, OC-SOD predicts salient regions conditioned on observer-specific factors such as preferences or intents. The paper reports that OC-SODBench contains 33k training, validation, and test images with 152k textual prompts and object pairs.
+
+The OC-SODAgent is an iterative framework that first performs initial segmentation with SAM2, then uses a Vision Language Model (VLM) to evaluate quality and semantic alignment, and finally refines the segmentation mask according to VLM feedback. The repository also includes a dataset generation pipeline organized around intent, saliency, and preference.
+
+<details>
+<summary>中文介绍</summary>
+
+OC-SODBench 是由以观察者为中心的显著对象检测 (OC-SOD) 公式引入的面向推理的显著对象检测基准。 OC-SOD 不是为每个图像假设单个客观显著区域，而是根据观察者特定因素（例如偏好或意图）预测显著区域。该论文报告称，OC-SODBench 包含 33k 个训练、验证和测试图像，以及 152k 个文本提示和对象对。
+
+OC-SODAgent 是一个迭代框架，首先使用 SAM2 执行初始分割，然后使用视觉语言模型 (VLM) 评估质量和语义对齐，最后根据 VLM 反馈细化分割掩码。该存储库还包括围绕意图、显著性和偏好组织的数据集生成管道。
+
+</details>
+
+### Other
+
+#### XPIE
+
+* Paper: [What is and what is not a salient object? Learning salient object detector by ensembling linear exemplar regressors](https://www.researchgate.net/publication/320971838_What_is_and_What_is_Not_a_Salient_Object_Learning_Salient_Object_Detector_by_Ensembling_Linear_Exemplar_Regressors)
+* Project:
+  * cvteam: [http://cvteam.net/](http://cvteam.net/)
+  * [http://cvteam.net/projects/CVPR17-ELE/ELE.html](http://cvteam.net/projects/CVPR17-ELE/ELE.html)
+* Download: [http://cvteam.net/projects/CVPR17-ELE/XPIE.tar.gz](http://cvteam.net/projects/CVPR17-ELE/XPIE.tar.gz)
+
+Finding out what is and what is not a salient object can help develop better features and models in Salient Object Detection (SOD). In this paper, we studied the images that were selected and discarded when building a new SOD dataset and found that many similar candidates, complex shapes and low objectness are the three main attributes of many non-salient objects. Furthermore, objects may have different properties that make them salient.
+In order to comprehensively explain what are and are not salient objects, a feasible solution is to study the entire process of building a new SOD dataset by observing the main characteristics of the objects contained in the dataset or in the images discarded from the dataset. From these observations, we can infer the key properties of salient and non-salient objects as well as the subjective biases that may exist in image-based SOD datasets. To this end, we build a large SOD dataset (called XPIE) and record all the details of the construction process. 1) We first collect three types of images from three sources, including Panoramio, ImageNet, and two fixation datasets. These operations are fully automated to avoid introducing too much subjective bias. 2) After that, we resize each image so that its maximum side length is 300 pixels, and discard all grayscale or color images with a minimum side length less than 128 pixels. 3) Finally, we obtain 29,600 color images in three image subsets. Denoted as Set-P, Set-I, respectively. Set-E.
+**Set-P contains 8,800 images of places of interest with geographical information (e.g., GPS and tags), Set-I with object tags contains 19,600 images, and Set-E contains 1,200 images with human fixations**.
+For these images, we asked two engineers to annotate them in two stages. In the first stage, the images were assigned a binary label: 'yes' for containing non-explicit objects, 'no' otherwise. After the first stage, we labeled 21,002 images as 'yes', and 8,598 images as 'no'. In the second stage, the two engineers were further asked to manually label the accurate boundaries of salient objects in the 10,000 images labeled 'yes'. Note that we had 10 volunteers involved in the entire process to check the quality of the annotations. **Finally, we obtained binary masks for 10,000 images**.
+
+<details>
+<summary>中文介绍</summary>
+
+找出什么是什么和什么不是显著对象可以有助于在显著对象检测(SOD)中开发更好的特征和模型. 在本文中, 我们研究了在构建新的SOD数据集时选择和丢弃的图像, 发现许多相似的候选者, 复杂形状和低对象性是很多非显著对象的三个主要属性. 此外, 对象可能具有使其显著的不同属性.
+为了全面解释什么是和什么不是显著对象, 一个可行的解决方案是通过观察包含在数据集中或从数据集中丢弃的图像中的对象的主要特征来研究构建新SOD数据集的整个过程. 从这些观察中, 我们可以推断显著和非显著对象的关键属性以及基于图像的SOD数据集中可能存在的主观偏差. 为此, 我们构建了一个大的SOD数据集(称为XPIE)并记录构建过程中的所有细节. 1) 我们首先从三个来源收集三种图像, 包括Panoramio, ImageNet和两个fixation数据集. 这些操作是全自动的, 以避免引入太多的主观偏见. 2) 之后, 我们调整每个图像的大小, 使其最大边长为300像素, 并丢弃所有最小边长小于128像素的灰度或彩色图像. 3) 最后, 我们在三个图像子集中获得29, 600个彩色图像. 分别表示为Set-P, Set-I, Set-E.
+**Set-P 包含8, 800具有地理信息的感兴趣地点的图像(例如, GPS和标签), 具有对象标签的Set-I包含19, 600图像, 以及Set-E包含1, 200个human fixations图像**.
+对于这些图像, 我们要求两位工程师通过两个阶段对其进行注释. 在第一阶段, 图像被分配一个二进制标记:'是'用于包含非明确对象, 否则为'否'. 在第一阶段之后, 我们将21, 002张图片标记为"是", 并且8, 598图像标记为"否". 在第二阶段, 这两位工程师进一步要求手动标记标记为"是"的10, 000张图像中的显著对象的准确边界. 注意我们有10名志愿者参与整个过程, 以检查注释的质量.**最后, 我们获得了10, 000张图像的二进制掩码**.
+
+</details>
+
+#### SOS
+
+* Paper: Salient object subitizing
+  * [CVPR Version](https://cs-people.bu.edu/jmzhang/SOS/SOS_preprint.pdf)
+  * [Arxiv Version](http://arxiv.org/abs/1607.07525)
+* Project: [http://cs-people.bu.edu/jmzhang/sos.html](http://cs-people.bu.edu/jmzhang/sos.html)
+* Download:
+  * Extended version: [http://www.cs.bu.edu/groups/ivc/data/SOS/ESOS.zip](http://www.cs.bu.edu/groups/ivc/data/SOS/ESOS.zip) (see the arXiv paper for detials)
+  * Initial version. Bounding Box Annotations (training split only): [http://www.cs.bu.edu/groups/ivc/data/SOS/SOS.zip](http://www.cs.bu.edu/groups/ivc/data/SOS/SOS.zip)
+
+We have collected an image dataset for salient object subitizing. The source images are from four public image datasets: COCO, VOC07, ImageNet and SUN. Each  image is labeled as containing 0, 1, 2, 3 or 4+ salient objects by Amazon Mechanic Turk workers.
+
+<details>
+<summary>中文介绍</summary>
+
+我们收集了用于显著对象子化的图像数据集。源图像来自四个公共图像数据集：COCO、VOC07、ImageNet 和 SUN。 Amazon Mechanic Turk 工作人员将每个图像标记为包含 0、1、2、3 或 4 个以上显著对象。
+
+</details>
+
+#### MSO
+
+* Paper: Salient object subitizing
+  * [CVPR Version](https://cs-people.bu.edu/jmzhang/SOS/SOS_preprint.pdf)
+  * [Arxiv Version](http://arxiv.org/abs/1607.07525)
+* Project: [http://cs-people.bu.edu/jmzhang/sos.html](http://cs-people.bu.edu/jmzhang/sos.html)
+* Download: [http://www.cs.bu.edu/groups/ivc/data/SOS/MSO.zip](http://www.cs.bu.edu/groups/ivc/data/SOS/MSO.zip)
+
+We assembled a Multi-Salient-Object (MSO) dataset. Images of the MSO dataset are taken from the test set of the SOS dataset. We removed images with severely overlapping salient objects. We also removed the images for which we find it ambiguous to label the indicated number of salient objects. This leaves us with 1224 images out of 1380 images from our SOS test set. As shown in the table below, more than half of the images in our MSO dataset contain either zero salient objects or multiple salient objects. We believe that this dataset provides a more realistic setting to evaluate salient object detection methods. Currently only bounding box annotations are available, but we will share the object segmentation annotations in the near future.
+
+<details>
+<summary>中文介绍</summary>
+
+我们组装了一个多显著对象（MSO）数据集。 MSO 数据集的图像取自 SOS 数据集的测试集。我们删除了具有严重重叠的显著物体的图像。我们还删除了我们发现标记指定数量的显著对象不明确的图像。这使得我们的 SOS 测试集中有 1380 张图像中的 1224 张。如下表所示，我们的 MSO 数据集中超过一半的图像包含零个显著对象或多个显著对象。我们相信该数据集提供了更现实的设置来评估显著对象检测方法。目前仅提供边界框注释，但我们将在不久的将来分享对象分割注释。
+
+</details>
+
+#### ILSO-1K/2K
+
+* Paper:
+  * ILSO-1K (CVPR 2017): training (1400), testing (600): [Instance-level salient object segmentation](https://openaccess.thecvf.com/content_cvpr_2017/papers/Li_Instance-Level_Salient_Object_CVPR_2017_paper.pdf)
+  * ILSO-2K (CVIU 2021): training (700), testing (300): [Instance-level salient object segmentation](https://www.sciencedirect.com/science/article/pii/S1077314221000515)
+* Project:
+  * [https://github.com/Kinpzz/MSRNet-CVIU](https://github.com/Kinpzz/MSRNet-CVIU)
+* Download:
+  * Baidu Pan: [https://pan.baidu.com/s/1O6ueVp2VZKRONxy0iboMzg](https://pan.baidu.com/s/1O6ueVp2VZKRONxy0iboMzg) (159u)
+  * Google Drive: [https://drive.google.com/file/d/1tM_7IlDcQkqWB44kcZluJuiPd-Dnnw8k/view?usp=sharing](https://drive.google.com/file/d/1tM_7IlDcQkqWB44kcZluJuiPd-Dnnw8k/view?usp=sharing)
+
+To promote the study of this problem, we built a new dataset with pixel-wise salient instance annotations in our preliminary version. This new dataset contains 1000 images that are mostly from existing datasets for salient region detection, including ECSSD (Yan et al., 2013), DUT-O (Yang et al., 2013), HKU-IS (Li and Yu, 2015), and MSO (Zhang et al., 2016) datasets. High-quality pixel-wise salient instance labeling and salient object contour are provided for each image. The dataset is divided into three parts, including 500 images for training, 200 images for validation, and 300 images for testing.
+In this paper, we further extend the scale of the existing dataset with more challenging samples for salient instance segmentation. In order to distinguish between the dataset in the preliminary version of this paper and the extended dataset in this paper, we name the former **ILSO-1K** and the latter **ILSO-2K**.
+For ILSO-2K, we collected another 1,246 noncopyrighted images from the Internet, most of which contain multiple salient object instances, complex background, or low color contrast. To reduce the label inconsistency, we asked three people to annotate the salient regions with different instance IDs in all selected images using a custom-designed interactive segmentation tool. Only the images with consistent salient instances labeling by all the three annotators are remained. Based on the high-quality salient instance segmentation labels, we can generate the salient instance contours for each image. In the end, another 1000 images with pixel-wise salient object instance labels as well as salient object contour labels are produced to extend the salient instance dataset. The new 1000 images are also randomly divided into three parts, including 500 images for training, 200 images for validation, and 300 images for testing.
+In summary, the combination of these new 1000 images and ISLO-1K becomes our new dataset ILSO-2K, which in total has 1000 images for training, 400 images for validation, and 600 images for testing. Moreover, the number of images that have more
+than 4 salient object instances in the extended 1000 images (173) is larger than that in ILSO-1K (98), which indicates the increment of difficulty in the extended dataset ILSO-2K.
+
+<details>
+<summary>中文介绍</summary>
+
+为了促进这个问题的研究，我们在初步版本中构建了一个带有像素级显著实例注释的新数据集。这个新数据集包含 1000 张图像，大部分来自用于显著区域检测的现有数据集，包括 ECSSD (Yan et al., 2013)、DUT-O (Yang et al., 2013)、HKU-IS (Li and Yu, 2015) 和 MSO (Zhang et al., 2016) 数据集。为每个图像提供高质量的逐像素显著实例标记和显著对象轮廓。数据集分为三部分，其中500张图像用于训练，200张图像用于验证，300张图像用于测试。
+在本文中，我们进一步扩展了现有数据集的规模，使用更具挑战性的样本来进行显著实例分割。为了区分本文初步版本中的数据集和本文中的扩展数据集，我们将前者命名为**ILSO-1K**，后者命名为**ILSO-2K**。
+对于 ILSO-2K，我们从互联网上收集了另外 1,246 张无版权图像，其中大多数包含多个显著对象实例、复杂背景或低颜色对比度。为了减少标签不一致，我们要求三个人使用定制设计的交互式分割工具，在所有选定图像中用不同实例 ID 注释显著区域。仅保留由所有三个注释者标记的具有一致显著实例的图像。基于高质量的显著实例分割标签，我们可以为每个图像生成显著实例轮廓。最后，生成另外 1000 个具有逐像素显著对象实例标签以及显著对象轮廓标签的图像，以扩展显著实例数据集。新的1000张图像也被随机分为三部分，其中500张图像用于训练，200张图像用于验证，300张图像用于测试。
+总之，这些新的 1000 张图像和 ISLO-1K 的组合成为我们的新数据集 ILSO-2K，其中总共有 1000 张图像用于训练，400 张图像用于验证，600 张图像用于测试。此外，图像数量越多
+扩展的 1000 个图像中超过 4 个显著对象实例（173）比 ILSO-1K 中的显著对象实例（98）大，这表明扩展数据集 ILSO-2K 中的难度增加。
+
+</details>
+
+#### HS-SOD
+
+* Paper: [Hyperspectral Image Dataset for Benchmarking on Salient Object Detection](https://arxiv.org/abs/1806.11314)
+* Project: [https://github.co

@@ -305,11 +305,13 @@ graph TD
 - **[GetYouTubeTranscript](https://getyoutubetranscript.com/youtube-mcp-server)** `Hosted MCP` `Freemium` — Remote MCP server at `https://getyoutubetranscript.com/api/mcp` (Streamable HTTP, OAuth 2.1 + PKCE or an API key as a Bearer header) with 13 read-only YouTube tools: `get_youtube_transcript` returns a video's transcript with optional timestamps or translation, `search_youtube` finds videos and channels, and channel and playlist tools list uploads, playlists, community posts and playlist videos. New accounts get 100 free credits; 1 credit per successful call.
 - **[No Stairs Please MCP](https://nostairsplease.com/mcp)** `Hosted MCP` `Freemium` — Remote MCP server at `https://nostairsplease.com/mcp` (Streamable HTTP) for searching small live-music venues across all 50 US states, DC, and British Columbia with load-in, stage, and drive-time tour-routing data.
 - **[CheapCarRent Search](https://github.com/aleksandrjefimov4-crypto/cheapcarent-mcp)** `MIT` `Hosted MCP` — Remote MCP server at `https://cheapcarent.com/mcp` (Streamable HTTP, no authentication, read-only) with tools `list_locations` and `search_cars` to list pickup cities and airports and search live car rental offers from local companies (15,000 pickup points in 46 countries, 19 languages). Docs: https://cheapcarent.com/developers · Registry: `com.cheapcarent/search`.
+- **[Taskhold](https://taskhold.com/?ref=ha2345567-awesome-autonomus-ai-agents)** `Hosted MCP` `Paid` — Remote MCP server at `https://taskhold.com/api/mcp` (Streamable HTTP, OAuth 2.1) with 23 tools that give a person and their agents one task list: agents pick up the next task, plan steps, report live progress, block with a question and complete work. The plugin repo (manifests and skill) is MIT; the hosted service is paid, $12/month with a 7-day trial.
 - **[CallForMe](https://callforme.tel/?ref=ha2345567-awesome-autonomus-ai-agents)** `MIT` `Hosted MCP` `Paid` — Remote MCP server at `https://callforme.tel/mcp` (Streamable HTTP, OAuth 2.1 + PKCE, connecting asks for nothing) that lets Claude, ChatGPT, Codex, Gemini CLI or any MCP agent phone businesses in the US and Canada: the voice assistant works the phone menu, waits on hold, asks the agent mid-call when the business needs something, and returns answers plus a transcript. Pay per call, prepaid. Skill and manifests: [github.com/callforme-tel/callforme](https://github.com/callforme-tel/callforme)
 - **[Runheed](https://runheed.com/?ref=ha2345567-awesome-autonomus-ai-agents)** `MIT` `Hosted MCP` `Paid` — Remote MCP server at `https://runheed.com/api/mcp` (Streamable HTTP, OAuth 2.1) that lets Claude Code, Cursor, Codex or any MCP agent search production errors, read stack traces and breadcrumbs, and resolve an error with the fixing commit. The plugin repo (manifests and skills) is MIT; the hosted service is paid, 7-day trial, demo server with sample errors at `https://runheed.com/api/mcp/demo`.
 - **[Transformer.gg](https://transformer.gg/?utm_source=awesome-autonomus-ai-agents&utm_medium=referral&utm_campaign=backlinks&utm_content=listing)** `MIT` `Hosted MCP` `Freemium` - Remote MCP server at `https://transformer.gg/mcp` (Streamable HTTP, Bearer API key or free no-auth `get_influencer_value` endpoint) for booking sponsored posts from X creators: search creators who fit what a brand sells with suggested prices, send and fund offers, track clicks and conversions, and handle creator payouts. Free to join (20% fee on paid offers). Docs and CLI: [github.com/NBV-AppFactory/transformer-mcp](https://github.com/NBV-AppFactory/transformer-mcp) · Registry: `gg.transformer/transformer`.
 - **[OmniForge Launch Audit MCP](https://github.com/zColdWater/mcp-launch-audit)** `MIT` `Hosted MCP` `Freemium` — Remote MCP server at `https://brand-checker.appwrite.network/mcp` (Streamable HTTP, no authentication, strictly read-only) with 5 pre-deploy launch audit tools covering web & AI app security headers/TLS/secrets/Supabase RLS, SPF/DKIM/DMARC email DNS deliverability, domain & USPTO trademark screening (up to 6 TLDs per check), and `/llms.txt` AI search readiness. Free unlimited read-only audits; optional one-time fix kits. Companion 50-skill pack: [github.com/zColdWater/omniforge-skills](https://github.com/zColdWater/omniforge-skills) · Registry: [`io.github.zColdWater/mcp-launch-audit`](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.zColdWater%2Fmcp-launch-audit/versions/latest).
 - **[Lantern Works](https://thelanternworks.com/?ref=ha2345567-awesome-autonomus-ai-agents)** `MIT` `Hosted MCP` `Free` — Free, read-only MCP server for GPU cloud rental prices, price changes and deals. Remote endpoint `https://lantern-works-mcp.lantern-works.workers.dev/mcp` (Streamable HTTP, no API key), or run `uvx lantern-works-deals-mcp`. Docs: https://thelanternworks.com/api/ · Repo: https://github.com/connormatthewdouglas/agent-work-stack-deals
+- **[Public Records MCP](https://github.com/GeminiGeorge22/publicrecords-mcp)** — 18 Apify-hosted MCP servers for public data: SAM.gov, Grants.gov, USAspending, EU TED and UK tenders, city council meetings, Ashby/Greenhouse/Lever/SmartRecruiters jobs, company social links, Google Ads Transparency, Etsy sales, sports odds, Spotify play counts.
 
 ---
 
@@ -440,6 +442,7 @@ graph TD
 - **[SAP Joule Studio 2.0](https://sap.com)** `Commercial` — Enterprise agent layer for supply chain, HCM, and ERP business processes across SAP environments.
 - **[Microsoft Agent 365](https://microsoft.com)** `Commercial` — Control plane for building, deploying, and governing business agents inside Microsoft 365 environments.
 - **[Glean](https://glean.com)** `Commercial` — Enterprise search and autonomous agent engine connected across Slack, Google Drive, Jira, and Notion.
+- **[Enhanciar](https://enhanciar.in)** `Commercial` — Company brain that answers from Slack, Gmail, Drive, Notion and other work tools with source links, then drafts replies and tickets that wait for a person to approve.
 - **[FinRobot](https://github.com/AI4Finance-Foundation/FinRobot)** `MIT` `Quantitative Agent` — Open-source financial AI agent platform designed for quantitative analysis, equity research, algorithmic trading, and SEC filing synthesis.
 - **[Invompt](https://invompt.com/)** `Hosted MCP` `Invoicing` — Turn AI-host work into invoices you review before send — Continue as guest or OAuth via hosted MCP. Endpoint: `https://mcp.invompt.com/mcp`
 
@@ -570,6 +573,8 @@ graph TD
 - **[OSWorld](https://os-world.github.io/)** `OS Benchmark` — Operating system interaction benchmark assessing agents' visual screen perception and mouse/keyboard execution on Windows, Ubuntu, and macOS.
 - **[WebArena & Tau-Bench](https://webarena.dev/)** `Web Benchmark` — Web-based environment benchmarks evaluating autonomous web navigation, e-commerce transactions, and customer service workflows.
 - **[Humanity's Last Exam (HLE)](https://cais.community/hle/)** `Frontier Benchmark` — Frontier multimodal benchmark designed to evaluate advanced agentic reasoning across academic and technical disciplines.
+- **[PerspectiveGap](https://github.com/WhymustIhaveaname/PerspectiveGap)** `MIT` `Orchestration Benchmark` — The first benchmark for multi-agent orchestration prompt writing: 110 scenarios across 10 loop topologies test whether an orchestrator gives each sub-agent the facts it needs. Across 33 commercial models, the average combined pass rate is 17.2%.
+- **[SciΠvot](https://github.com/AutoResearch-Factory/SciPIvot)** `CC-BY-4.0` `Research Agent Benchmark` — 248 research-judgment cases built from senior researchers' corrections of LLM agents on 26 real projects. Four of five frontier models score below chance.
 
 ### 7.2. Datasets, Golden Traces & Trajectory Corpora
 *Curated training and evaluation datasets containing multi-step agent interaction traces.*
@@ -779,40 +784,4 @@ We welcome contributions from the open-source community to keep NEXUM the premie
 <div align="center">
 
 <a href="https://github.com/HA2345567/awesome-autonomus-ai-agents/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HA2345567/awesome-autonomus-ai-agents" alt="Contributors" />
-</a>
-
-*Thank you to all the brilliant engineers, researchers, and creators shaping the agentic frontier.*
-
-</div>
-
-### 14.3. Star History
-
-<div align="center">
-
-[![Star History Chart](https://api.star-history.com/svg?repos=HA2345567/awesome-autonomus-ai-agents&type=Date)](https://star-history.com/#HA2345567/awesome-autonomus-ai-agents&Date)
-
-</div>
-
----
-
-<div align="center">
-
-### Support the Autonomous Revolution
-
-If you find NEXUM valuable, please consider **starring the repository** and sharing it with your network!
-
-[![Star on GitHub](https://img.shields.io/badge/Star%20Repo-★%20NEXUM-0969da.svg?style=flat-square&logo=github)](https://github.com/HA2345567/awesome-autonomus-ai-agents)
-
-<br/>
-
-*Curated with precision by **NEXUM** • Continuously Updated for 2026 & Beyond*
-
-[Back to Top](#nexum--the-agentic-universe)
-
-</div>
-
-### Autonomous Agent Payments & Bounty Escrow Verification
-- **[DoomPay](https://github.com/doomsday-network/doom-pay)** - 3-line Stripe-style non-custodial crypto checkout SDK (`DoomPay.checkout()`) and REST transaction receipt verifier for autonomous agents (`DOOM` Layer-1 + `wDOOM` on Base Mainnet `8453`).
-- **[BountyGuard](https://github.com/doomsday-network/bounty-guard)** - Pre-flight GitHub bounty auditor and on-chain Proof-of-Escrow verification MCP server & CLI skill for autonomous coding agents.
-
+  <img src="https://contrib.rocks/ima

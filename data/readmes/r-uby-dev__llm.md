@@ -26,6 +26,9 @@ Works with and without Rails.
 It requires nothing but Ruby's standard library.  
 It can be extended with optional, opt-in dependencies.
 
+It ships builtin tools that are loaded on-demand.  
+All builtin tools and MCP/A2A tools are Ractor-safe **by default**.
+
 ## Install
 
 ##### v17
@@ -37,9 +40,9 @@ This version works with older rubies and dependencies (ie: json v2).
 gem install llm.rb -v 17.0.1
 ```
 
-##### Latest (v21)
+##### Latest (v22)
 
-v21 is the recommended release.
+v22 is the recommended release.
 
 The v19 release is a smaller release that includes a 
 tiny eval framework that was authored for the [micro1](https://micro1.ai)
@@ -1956,7 +1959,7 @@ a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a title="r.uby.dev" href="https://www.youtube.com/watch?v=s-1u-hSVZvk">
+      <a title="r.uby.dev" href="https://www.youtube.com/shorts/NjHGjB_ctM4">
         <img src="cerealkiller-128.png" width="128" alt="r.uby.dev">
       </a>
     </td>

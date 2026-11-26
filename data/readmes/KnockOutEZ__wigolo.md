@@ -244,7 +244,7 @@ docker run -p 3333:3333 -v wigolo-data:/data \
   ghcr.io/knockoutez/wigolo serve --host 0.0.0.0
 ```
 
-The slim image lazy-loads models into the volume; `ghcr.io/knockoutez/wigolo:latest-full` preinstalls the browser engine. Versioned releases use the same `-full` suffix (for example, `0.3.2-full`). Also on Docker Hub as `towhid69420/wigolo`. → [installation & all channels](docs/installation.md)
+The slim image lazy-loads models into the volume; `ghcr.io/knockoutez/wigolo:latest-full` preinstalls the browser engine. Versioned releases use the same `-full` suffix (for example, `0.3.4-full`). Also on Docker Hub as `towhid69420/wigolo`. → [installation & all channels](docs/installation.md)
 
 ### Agent skills
 
@@ -401,7 +401,7 @@ That's the on-device brain: a full browser engine plus the ranking and embedding
 - **PyPI** — [`wigolo`](https://pypi.org/project/wigolo/) *(Python SDK)*
 - **Docker** — [`ghcr.io/knockoutez/wigolo`](https://github.com/KnockOutEZ/wigolo/pkgs/container/wigolo) · [`towhid69420/wigolo`](https://hub.docker.com/r/towhid69420/wigolo)
 - **Official MCP Registry** — `io.github.KnockOutEZ/wigolo`
-- **Directories** — [Glama](https://glama.ai/mcp/servers/KnockOutEZ/wigolo) · [Smithery](https://smithery.ai/server/ktowhid20/wigolo) · [mcp.so](https://mcp.so/server/wigolo/KnockOutEZ) · [LobeHub](https://lobehub.com/mcp/knockoutez-wigolo)
+- **Directories** — [Glama](https://glama.ai/mcp/servers/KnockOutEZ/wigolo) · [mcp.so](https://mcp.so/server/wigolo/KnockOutEZ) · [LobeHub](https://lobehub.com/mcp/knockoutez-wigolo)
 
 Homebrew, `curl | sh`, and the single-file binary are covered in the [installation guide](docs/installation.md). Use one channel per machine; they all share `~/.wigolo`.
 

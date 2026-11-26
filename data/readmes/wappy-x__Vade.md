@@ -5,29 +5,46 @@
   <img src="docs/assets/vade-banner.webp" width="100%" alt="VADE drawn in lit monospace characters over a slow field of dots and dashes, as on vade.lol, above one line of text: Pure-Rust inference engine for the DGX Spark.">
 </picture>
 
-Vade is an inference engine for the NVIDIA DGX Spark. It is written in Rust from the GPU kernels up, and it has zero third-party crates. Its one rule is exactness: the same request, with the same settings, gives the same answer every time, and linking Sparks together does not change that.
+Vade is an inference engine for the NVIDIA DGX Spark. It is written in Rust from the GPU kernels up, with zero third-party crates. Its one rule is exactness: the same request with the same settings returns the same token IDs every time, across runs and across supported Spark counts.
 
-The kernels compile to PTX, NVIDIA's portable GPU assembly, and use short inline PTX for the few instructions that have no Rust spelling. The installer and the Spark setup scripts are shell scripts. At run time, Vade needs only the NVIDIA driver. The installer also needs curl, and a source build also needs a C compiler (`cc`) and Rust.
+The GPU kernels compile to PTX (NVIDIA's portable GPU assembly) and use short inline PTX for the few instructions that have no Rust spelling. The installer and Spark setup helpers are shell scripts. At run time, Vade needs only the NVIDIA driver. The installer also needs `curl`. A build from source also needs a C compiler (`cc`) and Rust.
 
-One command installs it. One more pulls the model, 102 GB. One more starts it.
+One command installs Vade. One command pulls the model (102 GB). One command starts the engine.
 
 ```sh
 curl -fsSL https://vade.lol/install.sh | sh
 ```
 
-If you want to check the script before you run it, its SHA-256 is at https://dl.vade.lol/install.sh.sha256.
+Check the script before you run it with its SHA-256 at https://dl.vade.lol/install.sh.sha256.
 
-Then get the model with `vade pull nvidia/Qwen3.8-Flash-Next-FP4-Local@b9ce18a6887e18c089fdea8509a33e63429a3300` and run `vade up`. [Quick start](#quick-start) gives the full commands. The engine is ready for any OpenAI client, and for `vade chat`, a coding agent in your terminal.
+Next, pull the model with `vade pull nvidia/Qwen3.8-Flash-Next-FP4-Local@b9ce18a6887e18c089fdea8509a33e63429a3300` and start it with `vade up`. [Quick start](#quick-start) lists all three commands. The engine serves any OpenAI client and `vade chat`, Vade's built-in terminal coding agent.
+
+<a id="models"></a>
+
+## Models
+
+<div align="center">
+
+| Model | Sparks | Status | Start it with |
+| :--- | :---: | :--- | :--- |
+| Qwen3.8 Flash-Next FP4-Local | 1, 2 or 4 | Supported, exact | `vade up` |
+| Qwen3.8 Flash-Next FP8 | 2 or 4 | Supported, exact | `vade up --fp8` (controller) |
+| GLM 5.3 Flash FP4-Local | 2 | Diagnostic text service, not qualified | `vade up --sparks 2 --diagnostic-unqualified-text` (controller) |
+| Inkling 2 Mini | 1 | Text-only preview, not qualified | `VADE_MODELS=<folder> vade up` |
+
+</div>
+
+Qwen3.8 Flash-Next is the supported product. GLM 5.3 Flash and Inkling 2 Mini run text only, are not qualified yet, and their speed and limits can still change. [Other models](#other-models) shows how to pull and start them.
 
 <a id="what-it-is"></a>
 
 ## What you get
 
-- **Exact answers.** The same request and settings give the same token IDs on every run. You can test this yourself with `vade verify`.
-- **Speed from more Sparks.** Link two or four Sparks together and one chat gets faster. The answers stay the same.
+- **Exact answers.** The same request and settings return identical token IDs on every run. Test your own engine with `vade verify`.
+- **Speed from linked Sparks.** Link two or four Sparks and one chat runs faster without changing the token IDs.
 - **FP4 and FP8.** Vade runs Qwen3.8 Flash-Next in both formats. FP4-Local fits on one Spark. FP8 needs two or more.
-- **An OpenAI-compatible API.** Any OpenAI client works. Claude Code, Codex and other coding tools connect with a short setup. `vade chat` opens Vade's own coding agent.
-- **Receipts.** [Results](docs/results.md) names the source of each benchmark row and links the published receipts.
+- **OpenAI-compatible API and coding agent.** Any OpenAI client works. Claude Code, Codex and other coding tools connect with a short setup. `vade chat` opens Vade's own coding agent.
+- **Receipts.** [Results](docs/results.md) names the build, settings and record behind every number.
 
 <a id="pick-your-path"></a>
 <a id="install"></a>
@@ -35,7 +52,7 @@ Then get the model with `vade pull nvidia/Qwen3.8-Flash-Next-FP4-Local@b9ce18a68
 
 ## Quick start
 
-You need a DGX Spark with curl, a driver with CUDA 13.0 or newer, nothing else using the GPU, and 112 GB of free disk. Only a build from source also needs a C compiler (`cc`).
+You need a DGX Spark with `curl`, an NVIDIA driver with CUDA 13.0 or newer, an idle GPU, and 112 GB of free disk. A build from source also needs a C compiler (`cc`).
 
 Run these three commands on the Spark. Allow time for the download and the first full model check.
 
@@ -45,29 +62,47 @@ vade pull nvidia/Qwen3.8-Flash-Next-FP4-Local@b9ce18a6887e18c089fdea8509a33e6342
 vade up
 ```
 
-1. **Install** checks the GPU and the driver, then installs the prebuilt Vade build. It does not need sudo. It does not change your shell profile. Follow its PATH advice before you run the next command. When a login shell finds Vade, it prints `Open a new terminal, then run: vade up`. Otherwise, run its `export PATH="$HOME/.vade/bin:$PATH"` line. Pull the model before you run `vade up`.
-2. **Pull** downloads the model (102 GB) and checks every file. The long hash after `@` pins the exact revision we tested. If the download stops, run the same command again. It continues where it stopped.
-3. **Up** starts the engine on this Spark. `vade launch` starts it and opens the coding agent in the current folder. On the Spark, the agent reads, searches and edits files, but it does not run shell commands. `vade down` stops it.
+1. **Install.** Checks the GPU and driver, then installs the prebuilt Vade bundle into `~/.vade`. It needs no sudo and does not edit your shell profile. Follow its PATH advice before the next command: when a login shell finds Vade, it prints `Open a new terminal, then run: vade up`. Otherwise, run its `export PATH="$HOME/.vade/bin:$PATH"` line.
+2. **Pull.** Downloads the model (102.26 GB, 32 files) and checks every file. The hash after `@` pins the tested revision. If the download stops, run the same command again to resume.
+3. **Up.** Starts the engine on this Spark. Use `vade launch` to start it and open the coding agent in the current folder. On the Spark, the agent reads, searches and edits files, but does not run shell commands. Use `vade down` to stop the engine.
 
-The chat hint uses `vade launch` when a login shell finds Vade.
-Otherwise, it uses `~/.vade/bin/vade launch`. A custom `VADE_HOME` uses its own `bin/vade` path.
+The chat hint uses `vade launch` when a login shell finds Vade, `~/.vade/bin/vade launch` otherwise, or your custom `VADE_HOME` path.
 
-**First-run time.** The [download record](docs/benchmarks.md#rented-cloud-gb10-vms) gives about 80 minutes to over three hours on rented GB10 VMs. With the model on disk, the full check still takes time on each Spark. The [install record for build 5a22651](bench/receipts/2026-10-24/2026-10-24_2014_qwen3.8-flash-next-nvfp4_local-2spark_5a22651-drafting-off-thinking-off/README.txt) gives 74.2 s and 77.9 s for the checks on a pair of Sparks. After the checks and install, `vade up` took 27.0 s. Times depend on the network, disk and build.
-
-The full check runs once per Spark while its files and check cache stay the same. `vade pull` writes a model check record on that Spark. A local `vade install` also writes the record after a check, if the model folder permits writes. Keep that record so later installs can reuse it. A copy to another Spark needs its own check. See [first-run time and records](docs/INSTALL.md#first-run-time-and-records).
+**First-run time.** On rented GB10 VMs, the download took about 80 minutes to over three hours ([download record](docs/benchmarks.md#rented-cloud-gb10-vms)). With the model on disk, the first full file check on a pair of Sparks took 74.2 s and 77.9 s, and `vade up` after install took 27.0 s ([install record for build 5a22651](bench/receipts/2026-10-24/2026-10-24_2014_qwen3.8-flash-next-nvfp4_local-2spark_5a22651-drafting-off-thinking-off/README.txt)). Each Spark keeps a check record so later starts reuse it ([first-run time and records](docs/INSTALL.md#first-run-time-and-records)).
 
 Next steps:
 
 - Two or four Sparks: [Two and more Sparks](docs/INSTALL.md#two-and-more-sparks).
 - FP8: [FP8 install](docs/install-fp8.md).
-- A build from a clone, and every setting: [INSTALL.md](docs/INSTALL.md).
-- The same steps on one short page, with a check and the way to remove Vade: [Quickstart](docs/quickstart.md).
-- A coding agent is doing the setup for you: give it the [install page for agents](docs/agents/install.md), then the [agent quickstart](docs/agents/quickstart.md).
+- Source build and every setting: [INSTALL.md](docs/INSTALL.md).
+- One-page checklist with check and uninstall commands: [Quickstart](docs/quickstart.md).
+- Setup by a coding agent: [install page for agents](docs/agents/install.md) and [agent quickstart](docs/agents/quickstart.md).
+
+<a id="other-models"></a>
+
+### Other models
+
+Both models below run text only and are not qualified yet. [GLM and Inkling](docs/INSTALL.md#glm-and-inkling-2-mini) gives every step and limit.
+
+**Inkling 2 Mini on one Spark:**
+
+```sh
+vade pull thinkingmachines/Inkling-2-Mini@b85c3cfa615fc413cc9af3379f491b963f3b586a
+VADE_MODELS=~/models/thinkingmachines/Inkling-2-Mini vade up
+```
+
+On current `main`, Inkling keeps 20.83 GB of resident weights, admits up to 36 concurrent chats with `--mtp 7` (42 plain) at 32K context, accepts configured contexts up to 1,048,576 tokens, and keeps the prompt cache on by default (`--cache-bytes 0` turns it off). `vade up` defaults to plain decode (`--mtp 0`) and accepts explicit `--mtp 0..=7` up to the checkpoint's declared draft depth.
+
+**GLM 5.3 Flash on two Sparks.** Pull it on both Sparks, set the controller config to that folder and revision, then start it from the controller:
+
+```sh
+vade pull nvidia/GLM-5.3-Flash-FP4-Local@76348ddb2be2e35e39ecfc00e75dc07703f4f3d5
+vade up --sparks 2 --diagnostic-unqualified-text
+```
 
 ## Use the API
 
-The engine serves the OpenAI protocol on the Spark at port 18080, so the client you already use can talk to it. Point it at `http://127.0.0.1:18080/v1` with any API key.
-If port 18080 was in use at the first start, Vade took another free port and keeps it. `vade status` shows the port.
+The engine serves the OpenAI protocol on the Spark at `http://127.0.0.1:18080/v1` with any API key. If port 18080 was busy at first start, Vade picks another free port and saves it; run `vade status` to print the address.
 
 ```python
 from openai import OpenAI
@@ -81,19 +116,23 @@ reply = client.chat.completions.create(
 print(reply.choices[0].message.content)
 ```
 
-The model thinks before it answers unless you turn that off, as this example does. The [OpenAI API](docs/openai-api.md) page lists every endpoint and field. The engine listens only on the Spark itself. [INSTALL.md](docs/INSTALL.md#from-a-windows-computer) shows the SSH port forward that reaches it from another computer. The [client setup guide](harness/docs/passthrough-matrix.md) walks through Claude Code, Codex, Hermes, OpenCode and Pi.
+The model thinks before it answers unless you turn thinking off, as shown above. See [OpenAI API](docs/openai-api.md) for every route and field. The engine listens on loopback only; [INSTALL.md](docs/INSTALL.md#from-a-windows-computer) shows SSH port forwarding from another machine. [Client setup](harness/docs/passthrough-matrix.md) covers Claude Code, Codex, Hermes, OpenCode and Pi.
 
 <a id="benchmark-results"></a>
 
 ## Benchmarks
 
-The numbers are tokens per second (tok/s). Drafting is Vade's speculative decoding: the model's own prediction head guesses a few tokens ahead, and the full model checks each guess. It is on by default. On FP4-Local, the first column is what you get out of the box. The middle column shows the same runs with drafting off.
+All speeds below are completion tokens per second (tok/s) measured on live `main` or released candidates. Every row names its revision and source. Unmerged private-branch development runs are listed separately in [Results](docs/results.md#unmerged-private-branch-receipts-not-on-main).
+
+### Qwen3.8 Flash-Next
+
+Drafting is Vade's speculative decoding: the model's prediction head proposes a few tokens ahead, and the full model verifies every token. It is on by default. On FP4-Local, the first column is the default behavior and the middle column is the same build with drafting off.
 
 <!-- bench-docs:start -->
 
 <div align="center">
 
-| Setup | One chat | One chat, drafting off | Eight chats at once (total) |
+| Setup | One chat (tok/s) | One chat, drafting off (tok/s) | Eight chats at once, total (tok/s) |
 | :---: | :---: | :---: | :---: |
 | FP4-Local · 1 Spark | 42.1 | 27.9 | 179.8 |
 | FP4-Local · 2 Sparks | 54.5 | 36.1 | 230.9 |
@@ -103,34 +142,77 @@ The numbers are tokens per second (tok/s). Drafting is Vade's speculative decodi
 
 </div>
 
-These rows come from separate main revisions:
+These rows come from two main revisions:
 
-- **FP4-Local.** We measured main `8976c4f` on the morning of 2026-11-02. The [receipts](bench/receipts/2026-11-02/README.md) hold the raw records.
-- **FP8.** We measured main `acb49bc` on the afternoon of 2026-11-01. The [receipts](bench/receipts/2026-11-01/README.md) hold the raw records.
+- **FP4-Local.** Main `8976c4f`, measured on the morning of 2026-11-02 ([receipts](bench/receipts/2026-11-02/README.md)).
+- **FP8.** Main `acb49bc`, measured on the afternoon of 2026-11-01 ([receipts](bench/receipts/2026-11-01/README.md)).
 
-One chat writes prose of up to 8192 tokens. Every row is one server start.
+One chat writes prose of up to 8,192 tokens. Every row is one server start.
 
-Drafting on means a fixed draft depth: 3 for FP4-Local and 2 for FP8. A default FP8 server chooses the depth itself. [Results](docs/results.md#current-fp8-main-acb49bc-2026-11-01-afternoon) gives those speeds too.
+Drafting on uses a fixed depth: 3 for FP4-Local and 2 for FP8. A default FP8 server chooses the depth itself ([FP8 chooser speeds](docs/results.md#current-fp8-main-1a07e3a-2026-11-01-morning)).
 
 <!-- bench-docs:end -->
 
-The [32K-token chat](docs/results.md#fp4-local-32k-token-chat) of the same FP4-Local starts gives the cached second question its first token in 0.366 s on one Spark, 0.767 s on two and 1.058 s on four. The same section gives the cold times and links the receipts.
+In the [32K-token chat](docs/results.md#fp4-local-32k-token-chat) on those FP4-Local starts, the cached second question returned its first token in 0.366 s on one Spark, 0.767 s on two and 1.058 s on four.
 
-[Results](docs/results.md) has every cell of these runs, with the build, the server commands and the request settings. [Benchmark history](docs/benchmarks.md) keeps every earlier run.
+[Results](docs/results.md) lists every cell, build, start command and setting. [Benchmark history](docs/benchmarks.md) keeps all earlier runs.
+
+### GLM 5.3 Flash · 2 Sparks
+
+Measured for rc.24 on one pair of Sparks (mean of two starts against rc.23 on the same pair).
+
+<div align="center">
+
+| Load | rc.23 (tok/s) | rc.24 (tok/s) |
+| :--- | :---: | :---: |
+| One chat, drafting on, prose | 27.15 | 29.22 |
+| One chat, drafting on, code | 33.12 | 35.82 |
+| One chat, drafting on, structured | 43.59 | 46.23 |
+| One chat, drafting off | 24.2 | 24.2 |
+| Two chats at once (total) | 33.81 | 34.88 |
+| Four chats at once (total) | 49.94 | 51.50 |
+| Eight chats at once (total) | 64.34 | 65.55 |
+
+</div>
+
+All 16,800 compared token IDs matched, and every compared drafted answer matched plain decoding token for token. Source: [rc.24 release](https://github.com/wappy-x/Vade/releases/tag/v0.2.0-rc.24) and [changelog](CHANGELOG.md#v020-rc24---2026-11-21).
+
+### Inkling 2 Mini · 1 Spark
+
+Live `main` (GPU kernel code of the measured build `f54f31841d`) is much faster than `rc.26`. The table below shows released `rc.25` and `rc.26` alongside fresh full RigMark cards from 2026-11-25 on `f54f31841d` (one Spark, 32,768-token context, 5 decode runs per workload, 8,192-token prefill, 8-chat concurrency).
+
+<div align="center">
+
+| Load | rc.25 / rc.26 | Live `main` (`f54f31841d`) |
+| :--- | :---: | :---: |
+| First token, cold 8,192-token prompt (drafted / plain card) | 96.7 s / 50.6 s | 2.62 s / 2.63 s |
+| First token, cached 8,192-token replay (drafted / plain card) | unmeasured | 0.008 s / 0.007 s |
+| One chat, plain decode (prose / code / structured) | unmeasured | 37.8 / 37.1 / 38.0 tok/s |
+| One chat, adaptive drafting (`--mtp 7`, prose / code / structured) | unavailable | 47.6 / 84.2 / 118.3 tok/s |
+| Eight chats at once (total, `C8`, plain / drafted card) | unmeasured | 162.3 / 161.1 tok/s |
+| Resident weights on GPU (32K admission) | 67.85 GB | 20.83 GB (36 chats `--mtp 7`, 42 plain) |
+
+</div>
+
+How to read the live `main` column:
+
+- **Launch and numbers.** All speeds came from launching `flash-serve --diagnostic-unqualified-text --mtp 7` (drafted card) or `--mtp 0` (plain card) directly on one Spark (greedy, reasoning `effort 0`). Adaptive drafting on `f54f31841d` reached medians of 47.61 / 84.17 / 118.26 tok/s on prose / code / structured (5 runs each, up from 46.71 / 79.79 / 110.91 on `e38ae8201a`). Plain decode reached 37.79 / 37.11 / 37.97 tok/s (up from 37.64 / 37.01 / 37.90 on `aed09f3c2d`), eight chats reached 162.34 tok/s plain and 161.08 tok/s on the drafted card (up from 158.79 / 150.57 on `aed09f3c2d`), 16 and 32 concurrent 256-token code chats at 32K context under `--mtp 7` reached 218.5 / 218.6 tok/s (`C16`) and 274.5 / 271.9 tok/s (`C32`, plain / auto, 0 mismatches across 24,576 token IDs), cold 8,192-token first token was 2.623 s (3,122.6 tok/s read) on the drafted card and 2.628 s (3,117.0 tok/s read) on the plain card, and cached 8,192-token replay returned in 0.008 s drafted / 0.007 s plain (8,192 of 8,192 tokens restored). Through `vade up`, Inkling defaults to plain decode (`--mtp 0`) with prompt caching on and accepts explicit `--mtp 0..=7`.
+- **Token IDs.** `f54f31841d` stays bit-exact with the owner-approved self-exact Inkling baseline `e38ae8201a` across every compared decode, prefill, concurrency, and multi-width stream.
+- **Checks and source.** All 15 RigMark single-chat output checks passed on both cards (prose 5/5, code 5/5, structured 5/5). Cross-card plain vs drafted replies (and both cards against `e38ae8201a`) matched identically on 15/15 decode streams (36,437 token IDs, 0 mismatches) and 30/30 prefill plus C8 streams (6,192 token IDs, 0 mismatches); served multi-width exactness matched `e38ae8201a` on 160/160 streams (5,120 token IDs) plus 31/31 C1–C16 drafted cohorts (992 token IDs), and 8/8 `compute-sanitizer` (`memcheck` + `synccheck`) runs reported 0 errors. These are private lab receipts (see `https://vade.lol/results/`, not committed under `bench/receipts/`). See [Results](docs/results.md#inkling-2-mini-one-spark-rc26) for every cell and for unmerged private-branch receipts.
 
 ## Exactness
 
-**The same answer every time, with the same settings.** Vade has one path, and it is the exact one.
+**The same answer every time, with the same settings.** Vade keeps one arithmetic path, and it is exact.
 
-Exact means the same request with the same settings gives the same token IDs. This holds on every run and on every Spark count under "Covered today" below. It holds for a request alone or in a batch. It holds with or without the prefix cache. It holds when Vade splits a long prompt into chunks. For requests that always pick the most likely token, it also holds with drafting on or off.
+Exact means the same request with the same settings returns identical token IDs across runs and across supported Spark counts. This holds alone or in a batch, cached or uncached, and across any prompt chunk split. For greedy requests, it also holds with drafting on or off.
 
-Every change to engine arithmetic, scheduling, caching or transport must pass a device check before it merges. The check compares token IDs across repeated runs on real Sparks.
+Every change to engine arithmetic, scheduling, caching or transport must pass a device check on real Sparks before it merges.
 
 ### Covered today
 
 - FP4-Local on 1, 2 and 4 Sparks.
-- FP8 on 2 and 4 Sparks with the default drafting mode, since 2026-10-31. The four-Spark cards of 2026-11-01 match the two-Spark cards of 2026-10-31 in 66 of 66 replies ([FP8 token IDs](docs/results.md#fp8-token-ids)).
-- Seeds. A request with a fixed `seed` gets the same sampled reply every time. Tested on FP4-Local on 1 and 2 Sparks, with drafting off.
+- FP8 on 2 and 4 Sparks with the default drafting mode (the 2026-11-01 four-Spark cards match the 2026-10-31 two-Spark cards in 66 of 66 replies; [FP8 token IDs](docs/results.md#fp8-token-ids)).
+- Fixed `seed` sampled replies on FP4-Local on 1 and 2 Sparks with drafting off.
 
 ### Not covered yet
 
@@ -138,26 +220,27 @@ Every change to engine arithmetic, scheduling, caching or transport must pass a 
 - The opt-in `fast` and `sampled` draft modes on FP8.
 - Seeds with drafting on, on FP8, or on four Sparks.
 - Other NVIDIA driver versions.
+- GLM 5.3 Flash and Inkling 2 Mini. Neither is qualified yet. On GLM, all 16,800 compared drafted token IDs matched plain decoding ([rc.24](CHANGELOG.md#v020-rc24---2026-11-21)). On Inkling (`f54f31841d`), plain and drafted replies (and both cards against baseline `e38ae8201a`) matched identically on 15/15 decode streams (36,437 token IDs) and 30/30 prefill plus C8 streams (6,192 token IDs), and served multi-width exactness matched `e38ae8201a` on 160/160 streams plus 31/31 C1–C16 drafted cohorts.
 
 <a id="defaults-by-route"></a>
 
-**Defaults.** FP4-Local always picks the most likely token unless a request sets sampling fields, so it is exact out of the box. FP8 samples by default, with a new seed for each request. For exact FP8 replies, send `temperature` 0, `repetition_penalty` 1, `presence_penalty` 0 and `frequency_penalty` 0 ([FP8 defaults](docs/install-fp8.md#defaults-and-drafting)).
+**Defaults.** FP4-Local uses greedy decoding when a request sets no sampling fields, so it is exact out of the box. FP8 samples by default with a fresh seed per request. For exact FP8 replies, send `temperature` 0, `repetition_penalty` 1, `presence_penalty` 0 and `frequency_penalty` 0 ([FP8 defaults](docs/install-fp8.md#defaults-and-drafting)).
 
-**Driver.** We tested the same-answer promise on one NVIDIA driver, version 580.178.04 ([receipts](bench/receipts/2026-10-31/README.md#what-was-run)). If NVIDIA ships a new driver, we test again before we say it still holds.
+**Driver.** Exactness was tested on NVIDIA driver `580.178.04` ([receipts](bench/receipts/2026-10-31/README.md#what-was-run)). New driver versions require re-testing before we claim exactness on them.
 
-To check your own engine, run `vade verify`. [Token IDs](docs/results.md#token-ids) shows our checks. On main `1a07e3a`, FP8 on two and four Sparks gave the same token IDs ([FP8 token IDs](docs/results.md#fp8-token-ids)). [Architecture](docs/architecture.md#exactness-and-model-quality) gives the full rule and what each check proves.
+Run `vade verify` to test your own server. [Token IDs](docs/results.md#token-ids) records our comparisons, and [Architecture](docs/architecture.md#exactness-and-model-quality) states the full contract.
 
 <a id="supported-systems"></a>
 <a id="what-works-today-and-what-doesnt-yet"></a>
 
 ## What runs where
 
-- **Model.** Qwen3.8 Flash-Next, text only, at pinned revisions of `nvidia/Qwen3.8-Flash-Next-FP4-Local` and `Qwen/Qwen3.8-Flash-Next-FP8`. To add a model, read [Adding a model](docs/adding-a-model.md).
-- **Hardware.** DGX Spark (NVIDIA GB10) on Linux `aarch64`.
-- **Sparks.** FP4-Local runs on 1, 2 or 4 Sparks over RDMA, or as a layer chain of 3 to 24 Sparks. We have measured chains up to four Sparks. FP8 runs on 2, 4 or 6 Sparks. We have measured 2 and 4 Sparks, and they give the same token IDs. Six Sparks start, but no benchmark run has measured them, and they give other token IDs. FP8 does not fit on one Spark.
-- **Controller.** A controller drives linked Sparks over SSH. It runs on Linux or macOS. From Windows, connect to a Spark and work there ([how](docs/INSTALL.md#from-a-windows-computer)).
-- **Coding agent.** The agent reads, searches and edits files anywhere. Its shell tool needs the macOS sandbox, so on the Spark itself it does not run commands.
-- **Prefix cache.** On by default on one Spark, on the FP4-Local tensor split (two Sparks, or four over RDMA) and on FP8. Off on the FP4-Local layer chain ([settings](docs/INSTALL.md#the-prefix-cache)).
+- **Models.** Qwen3.8 Flash-Next (text only) at pinned revisions of `nvidia/Qwen3.8-Flash-Next-FP4-Local` and `Qwen/Qwen3.8-Flash-Next-FP8`. Unqualified text services for GLM 5.3 Flash on two Sparks and Inkling 2 Mini on one Spark ([Models](#models)). To add a model, read [Adding a model](docs/adding-a-model.md).
+- **Hardware.** NVIDIA DGX Spark (GB10) on Linux `aarch64`.
+- **Sparks.** FP4-Local runs on 1, 2 or 4 Sparks over RDMA, or as a layer chain of 3 to 24 Sparks (measured up to 4 Sparks). FP8 runs on 2, 4 or 6 Sparks (measured on 2 and 4 Sparks, which return identical token IDs; 6 Sparks start but are unmeasured and return different token IDs; FP8 does not fit on 1 Spark).
+- **Controller.** Drives linked Sparks over SSH from Linux or macOS. From Windows, connect to a Spark over SSH ([how](docs/INSTALL.md#from-a-windows-computer)).
+- **Coding agent.** Reads, searches and edits files on Linux and macOS. Its shell tool requires the macOS sandbox, so on the Spark it does not run shell commands.
+- **Prefix cache.** On by default on one Spark (FP4-Local and Inkling), on the FP4-Local tensor split (2 Sparks, or 4 over RDMA), on FP8, and on the two-Spark GLM text service. Off on the FP4-Local layer chain ([settings](docs/INSTALL.md#the-prefix-cache)).
 
 ## Where things are
 
@@ -165,9 +248,9 @@ To check your own engine, run `vade verify`. [Token IDs](docs/results.md#token-i
 
 | Page | What it is for |
 | :---: | :---: |
-| [INSTALL.md](docs/INSTALL.md) | The full install, settings and recovery |
+| [INSTALL.md](docs/INSTALL.md) | Full install, settings and recovery |
 | [Quickstart](docs/quickstart.md) | One Spark, from nothing to a first answer, on one short page |
-| [Install page for agents](docs/agents/install.md) | The install commands, their JSON, exit codes and failures |
+| [Install page for agents](docs/agents/install.md) | Install commands, JSON output, exit codes and failures |
 | [Agent quickstart](docs/agents/quickstart.md) | Setup steps written for coding agents |
 | [FP8 install](docs/install-fp8.md) | FP8 on two or more Sparks |
 | [CLI reference](cli/README.md) | Every `vade` command |
@@ -175,19 +258,19 @@ To check your own engine, run `vade verify`. [Token IDs](docs/results.md#token-i
 | [Client setup](harness/docs/passthrough-matrix.md) | Claude Code, Codex, Hermes, OpenCode and Pi |
 | [Harness](harness/README.md) | The coding agent and its tools |
 | [Examples](examples/README.md) | Short scripts against a running engine |
-| [Results](docs/results.md) | Every benchmark cell with its settings |
-| [Receipts](bench/receipts/README.md) | The records behind the numbers |
-| [Benchmarks](docs/benchmarks.md) | All runs, and how to repeat them |
-| [Architecture](docs/architecture.md) | How a request flows, and the exactness rule |
+| [Results](docs/results.md) | Every benchmark cell, settings, live-on-main and private-branch receipts |
+| [Receipts](bench/receipts/README.md) | Published records behind the numbers |
+| [Benchmarks](docs/benchmarks.md) | All runs and how to repeat them |
+| [Architecture](docs/architecture.md) | Request flow and the exactness rule |
 | [Why Vade](docs/why-vade.md) | Why Vade exists |
-| [Security](.github/SECURITY.md) | How to report a vulnerability privately |
-| [Code of conduct](.github/CODE_OF_CONDUCT.md) | How we treat each other, and how to report a problem |
+| [Security](.github/SECURITY.md) | Private vulnerability reporting |
+| [Code of conduct](.github/CODE_OF_CONDUCT.md) | Community rules and reporting |
 | [Contributing](.github/CONTRIBUTING.md) | House rules, validation and review |
 | [Changelog](CHANGELOG.md) | Changes since v0.1.0 |
-| [Credits](docs/CREDITS.md) | Everyone Vade builds on, on one page |
+| [Credits](docs/CREDITS.md) | Everyone Vade builds on |
 
 </div>
 
-Everything else is in [docs](docs/README.md). Coding agents that change Vade read [AGENTS.md](AGENTS.md) first.
+Everything else is indexed in [docs](docs/README.md). Coding agents that modify Vade read [AGENTS.md](AGENTS.md) first.
 
-Vade is licensed under [Apache-2.0](LICENSE). The bundled tokenizer and template fixtures keep their own licenses, and so do the models. [NOTICE](NOTICE) lists them. [Credits](docs/CREDITS.md) names everyone Vade builds on, on one page.
+Vade is licensed under [Apache-2.0](LICENSE). Bundled tokenizer fixtures, templates and models keep their own licenses; see [NOTICE](NOTICE) and [Credits](docs/CREDITS.md).

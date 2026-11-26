@@ -2,7 +2,7 @@
 
 English · [Français](README.fr.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
-GoldenBrain is a local control desk for work handed to AI coding agents. Each task is a Markdown note in your vault (a plain folder of notes, Obsidian or not) and its work is an ordinary conversation of a command-line harness — Claude Code, Codex, OpenCode, GitHub Copilot CLI or Antigravity — that you can resume at any time. GoldenBrain places, queues, supervises and links these conversations; the agent reports a short summary card into the note, and you validate.
+GoldenBrain is an app that runs on your computer: you hand tasks to AI assistants and follow them all from one screen. Each task is a Markdown note in your vault (a plain folder of notes, Obsidian or not) and its work is an ordinary conversation of an AI assistant you already use in the terminal — Claude Code, Codex, OpenCode, GitHub Copilot CLI or Antigravity — that you can resume at any time. GoldenBrain places, queues, supervises and links these conversations; the agent reports a short summary card into the note, and you validate.
 
 ![Task tree as a cascade, with status, live activity and engine](docs/captures/arbre-en.png)
 
@@ -52,21 +52,21 @@ Set-Content python.local "$PWD\.venv\Scripts\python.exe" -Encoding ascii
 .\lancer.cmd
 ```
 
-Then open http://127.0.0.1:8300 (always this address, not `localhost`; `lancer.cmd` opens it for you). The first launch creates `config.toml`, which holds only your deviations; everything else comes from `config.exemple.toml`. Another vault: in `config.toml`, `[vault]` then `racine = "~/path/to/vault"`. Another port: `[serveur]` then `port = 8301`.
+Then open http://127.0.0.1:8300 (stay on this address: `localhost` also answers, but the browser keeps separate data per address; `lancer.cmd` opens it for you). The first launch creates `config.toml`, which holds only your deviations; everything else comes from `config.exemple.toml`. Another vault: in `config.toml`, `[vault]` then `racine = "~/path/to/vault"`. Another port: `[serveur]` then `port = 8301`. First launch opens “Configure your second brain”: pick your vault folder in the interface (an existing Obsidian vault is used in place), no file editing.
 
-| Harness | Install | Log in |
+| AI assistant | Install (the app can do it for you) | Log in |
 |---|---|---|
-| Claude Code | `npm install -g @anthropic-ai/claude-code` | `claude`, then `/login` |
+| Claude Code | `curl -fsSL https://claude.ai/install.sh \| bash` (macOS, Linux) · `irm https://claude.ai/install.ps1 \| iex` (Windows) | `claude`, then `/login` |
 | Codex | `npm install -g @openai/codex` | `codex login` |
 | GitHub Copilot CLI | `npm install -g @github/copilot` | `copilot login` |
-| OpenCode | see opencode.ai | see its documentation |
+| OpenCode | `npm install -g opencode-ai` | see its documentation |
 | Antigravity (`agy`) | see its documentation | from the application |
 
 The full guide — first steps, every screen, troubleshooting, start at login with systemd — is [`docs/GUIDE.en.md`](docs/GUIDE.en.md), also in the app (« ? » button) and by `python orch.py guide`.
 
 ## Key features
 
-- **Tasks handed to harnesses**: « Nouvelle tâche » (New task), a title, « Lancer tout de suite » (Launch now). Harness and model are chosen per task; queue, priorities, prerequisites and a cap on simultaneous agents (fixed, or by free RAM).
+- **Tasks handed to AI assistants**: « Nouvelle tâche » (New task), a title, « Lancer tout de suite » (Launch now). Assistant and model are chosen per task; queue, priorities, prerequisites and a cap on simultaneous agents (fixed, or by free RAM).
 - **Conversation and Notes panes**: the task shows the agent's live conversation next to your own dated notes, which the agent reads but never writes. « Interface native du harnais » reopens the same conversation in a terminal.
 - **Me / AI**: a switch in the task header says who leads it. « Moi » (Me): no agent works on it; « IA » (AI): « Confier la suite » (Hand over) gives it back, with your notes as context.
 - **Second brain and graph**: browse, search and edit the whole vault; backlinks, unlinked mentions, local and global graph of notes, tasks and projects. A gardener agent proposes moves and links; nothing changes without your click.
@@ -78,16 +78,17 @@ The full guide — first steps, every screen, troubleshooting, start at login wi
 
 ## Driving GoldenBrain from an agent
 
-Any harness (Claude Code, Codex, OpenCode, Gemini CLI…) can steer GoldenBrain through `python orch.py` or the local REST API. Read [`AGENTS.md`](AGENTS.md) and the « Pour un agent IA » section of the guide: commands, routes, rules and end-to-end examples.
+Any command-line AI assistant (Claude Code, Codex, OpenCode…) can steer GoldenBrain through `python orch.py` or the local REST API. Read [`AGENTS.md`](AGENTS.md) and the « Pour un agent IA » section of the guide: commands, routes, rules and end-to-end examples.
 
 ## Known limitations
 
+- Agents run **without asking for confirmation** by default (`--dangerously-skip-permissions` for Claude Code and Antigravity, `--dangerously-bypass-approvals-and-sandbox` Codex, `--auto` OpenCode, `--allow-all-tools --no-ask-user` Copilot), from your home folder unless the task names another one: an agent can read, change or delete your files. Try it on a harmless instruction first, and read [SECURITY.md](SECURITY.md) before handing it real work; the arguments are in `config.exemple.toml`.
 - Single user, single workstation: the server listens on `127.0.0.1` with no authentication. Never expose it to the Internet; remote access goes through Tailscale only.
 - Interface in French, English, German and Spanish; configuration keys and design documents stay in French.
 - Windows and Linux (Debian) are used daily; macOS is expected to work but has not been tried.
-- A harness must be installed and logged in by you; GoldenBrain neither installs nor pays for one. The Copilot CLI adapter has not yet been tried against a real subscription.
+- An AI assistant must be logged in by you, with your own subscription or key: GoldenBrain can offer to install it, but never logs in or pays for you. Node.js is needed for the `npm` ones. The Copilot CLI adapter has not yet been tried against a real subscription.
 - Interface tests (Playwright) do not run in continuous integration; only `python scripts/check.py` does.
-- No data leaves the machine because of GoldenBrain itself; the harnesses you launch talk to their own providers.
+- GoldenBrain keeps your data on the machine. It only reaches GitHub (to check for updates and, once, to offer a star), and Telegram or Microsoft 365 if you turn them on; the assistants you launch talk to their own providers.
 
 ## For developers
 

@@ -357,6 +357,7 @@ Agents for bookkeeping, reconciliation, invoices, tax, and reporting, plus MCP a
 - [mcp-fiscal-brasil](https://github.com/DeHor-Labs/mcp-fiscal-brasil) - Brazilian tax and fiscal MCP: CNPJ, NF-e, SPED, Simples Nacional, and more.
 - [opentax](https://github.com/filedcom/opentax) - Open-source US federal tax engine shipped as a single CLI with agent skills.
 - [Agent Payment Node](https://github.com/nuanu-ai/agent-payment-node) - Local-first CLI and stdio MCP payment runtime for agents, with transfers, x402, receipts, and owner-set limits. macOS Apple Silicon with Node 24 only; it is a payment-execution layer, not a bookkeeping ledger.
+- [xrechnung-validator](https://github.com/wenboteng/xrechnung-validator) - MCP server and CLI that let an agent check German XRechnung (UBL/CII) and ZUGFeRD/Factur-X e-invoices against the official KoSIT rules and get rule IDs, locations and fix hints back. The client is MIT; validation runs on the free hosted API at checkxrechnung.com (no key, daily limit).
 
 ### Accounting-system MCP servers
 
@@ -417,6 +418,7 @@ Budgeting, spending analysis, net-worth tracking, and local-first finance apps t
 - [Finance-Guru](https://github.com/AojdevStudio/Finance-Guru) - Self-hosted family-office engine with typed calculators, a private ledger, and specialist agents.
 - [ray-finance](https://github.com/cdinnison/ray-finance) - Open-source AI financial advisor that keeps context about your situation across conversations.
 - [beancount-io](https://github.com/bex-co/beancount-io) - Plain-text double-entry bookkeeping apps for people and AI agents (iOS/Android).
+- [Moedux Agent Tools](https://github.com/jhonnysabino/moedux-agent-tools) - Hosted remote MCP for Brazilian personal finance: you supply a balance, monthly income and fixed expenses, and it returns a projected zero-balance date and a 12-month balance forecast (no signup). The repository is an MIT-licensed docs and contract mirror, not the service implementation; the hosted service is proprietary. The full account API requires an API key, and some features are paid.
 
 ### Pitfall Tip
 

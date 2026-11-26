@@ -106,7 +106,7 @@ flowchart LR
 
 遇到问题请提到 [GitHub Issues](https://github.com/luoz76070-art/MobiCodex/issues)，写清手机型号、App 版本和复现步骤。
 
-也可以在 App 的「设置 → 反馈问题」或长按消息选「反馈这条」。反馈默认存到你电脑上的网关；网关配置了 GitHub 仓库的话（见[网关说明](plugins/mobile-codex/README.md)），可以在手机上选仓库、预览后直接提交成 issue，提交前会隐藏本机路径、用户名、邮箱、网址、IP 地址和密钥。反馈只收文字，不带截图。
+也可以在 App 的「设置 → 反馈问题」或长按消息选「反馈这条」。反馈默认存到你电脑上的网关；网关配置了 GitHub 仓库的话（见[网关说明](plugins/mobile-codex/README.md)），可以在手机上选仓库、预览后直接提交成 issue，提交前会隐藏本机路径、用户名、邮箱、网址、IP 地址和密钥。反馈只收文字，不带截图；处理完的反馈 7 天后从电脑上自动清理。
 
 ## 开发与构建
 

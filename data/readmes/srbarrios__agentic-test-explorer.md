@@ -26,9 +26,9 @@ https://github.com/user-attachments/assets/9a17d846-5bee-4055-a97a-f9dd7ee191c2
 
 ## 🏗️ Architecture
 
-The framework is built on a **Supervisor-Worker Swarm** pattern. Based on the mission type
-(determined by the `thread_id` keyword), the system spins up either a **Standard** or
-**Advanced** routing graph.
+The framework is built on a **Supervisor-Worker Swarm** pattern. Each mission declares the
+graph it runs on with a `graph:` field (`standard` or `advanced`), and the system spins up
+the matching routing graph.
 
 ```mermaid
 graph TD
@@ -81,12 +81,12 @@ graph TD
 
 ### Architecture Details
 
-1. **Mission Dispatcher (`main.py`)**: Loads `missions/*.yaml` files and provisions the
-   correct graph network based on `thread_id` naming conventions
-   (`accessibility`, `data_heavy`, `impatient`, `returning`, `explorer`, `chaos`, or
-   `autonomous` route to the advanced graph; everything else to the standard 3-persona
-   swarm). Can also accept a `--pr-url` to auto-generate missions from a GitHub Pull
-   Request via `pr_analyzer.py`.
+1. **Mission Dispatcher (`main.py`)**: Loads `missions/*.yaml` files, builds the standard
+   (3 personas) and advanced (4 personas plus the autonomous explorer) graphs from the
+   persona registry, and runs every mission on the graph named by its `graph:` field.
+   A mission without `graph:` falls back to the deprecated `thread_id` keyword inference
+   and prints a warning. Can also accept a `--pr-url` to auto-generate missions from a
+   GitHub Pull Request via `pr_analyzer.py`.
 2. **Supervisor-Worker Flow**: A Supervisor node dynamically evaluates the workspace state
    and dispatches control to specialized worker nodes.
 3. **Record-and-Translate Browser Engine** (`src/agentic_explorer/tools/browser/engine.py`):
@@ -123,9 +123,49 @@ graph TD
    The supervisor receives a `MEMORY_CONTEXT` section with known pages, bugs, quirks,
    agent observations, and high-risk areas on every routing cycle.
 
+### Mission Lifecycle and Node Resilience
+
+Stop with Ctrl-C at any time; the same command resumes where it left off.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Running: agent-explorer --missions ...
+    Running --> Running: node finishes, checkpoint saved
+    Running --> Draining: 1st Ctrl-C / SIGTERM (request_drain)
+    Draining --> Stopped: current step done, checkpoint saved, exit 130
+    Stopped --> Running: same command again (same thread_id) resumes
+    Draining --> Aborted: 2nd Ctrl-C
+    Running --> Reporting: Supervisor answers FINISH
+    Reporting --> [*]: test_report.md + episode memory written
+```
+
+What happens when a single node hangs or fails:
+
+```mermaid
+flowchart TD
+    N[Agent or Supervisor node runs] --> T{Idle for more than node_idle_timeout_s?}
+    T -- no --> OK[Update returned, checkpoint saved]
+    T -- yes --> R{Retries left? node_retries}
+    R -- yes --> N
+    R -- no --> E{Transient API error?}
+    E -- yes --> W[Re-raised: with_retry backs off and waits]
+    E -- no --> F[NODE FAILED message]
+    F --> S[Summarizer] --> SV[Supervisor picks another approach]
+```
+
+
 ### Source Layout
 
-- `src/agentic_explorer/main.py` — CLI entry, swarm graph compiler, transient-error retry
+- `src/agentic_explorer/main.py` — entry point: wires configuration, browser, memory and the
+  graphs together and runs the missions
+- `src/agentic_explorer/cli.py` — command-line flags and their validation
+- `src/agentic_explorer/runtime/runner.py` — runs one mission (stream, trace, report,
+  episode memory) and a batch of them, with graceful stop and resume
+- `src/agentic_explorer/runtime/missions.py` — where missions come from (YAML, PR,
+  regression catalog) and `--export-model`
+- `src/agentic_explorer/runtime/retry.py` — transient-error classification and retry with
+  backoff · `drain.py` — Ctrl-C / SIGTERM stop at a safe point · `tracing.py` — `traces.log`
+- `src/agentic_explorer/reporting.py` — mission transcript → LLM report → `test_report.md`
 - `src/agentic_explorer/pr_analyzer.py` — PR-driven test scenario generation (GitHub MCP
   server preferred, `gh` CLI fallback)
 - `src/agentic_explorer/auth_setup.py` — generic login flow that saves `auth.json`
@@ -133,21 +173,27 @@ graph TD
 - `src/agentic_explorer/utils/llm.py` — `make_llm()` multi-provider factory; supports
   Claude (API key / Vertex AI) and Gemini (API key / OAuth) with auto-detection
 - `src/agentic_explorer/utils/llm_json.py` — YAML/JSON extraction helpers for LLM responses
+- `src/agentic_explorer/orchestration/personas.py` — the single registry of QA personas
+  (8 of them, in two tiers) and how a mission picks its graph
+- `src/agentic_explorer/orchestration/graph.py` — builds the supervisor/worker swarm for a
+  tier · `resilience.py` — node timeouts, retries and failure handling
 - `src/agentic_explorer/orchestration/graph_base.py` — shared graph infrastructure
-  (`AgentState`, node factories, tool filtering)
-- `src/agentic_explorer/orchestration/standard_graph.py` — 3 standard QA personas
-- `src/agentic_explorer/orchestration/advanced_graph.py` — 4 advanced personas plus autonomous explorer
+  (`AgentState`, node factories, summarizer, tool filtering). `standard_graph.py` and
+  `advanced_graph.py` are deprecated wrappers over `graph.py`
 - `src/agentic_explorer/memory.py` — cross-session memory: semantic (pages, selectors,
-  quirks, Langmem-managed agent observations), episodic (session summaries, bug catalog),
-  procedural (self-improving prompts via Langmem prompt optimizer), semantic-search recall
-  tool, proactive observation tool, regression mission generation, app model export, test
-  prioritization
+  quirks, agent observations), episodic (session summaries, bug catalog), procedural
+  (self-improving prompts), keyword/semantic recall tool, regression mission generation,
+  app model export, test prioritization
+- `src/agentic_explorer/memory_backends.py` — the only module that imports Langmem, behind
+  small adapters · `memory_health.py` — memory failures are logged and counted, never
+  silent · `memory_admin.py` — the `--clear-*` flags
 - `src/agentic_explorer/tools/browser/engine.py` — Record-and-Translate browser engine
 - `src/agentic_explorer/tools/common/custom_tools.py` — screenshot, MCP loader,
   Skills tools
 - `src/agentic_explorer/ui/state_emitter.py` — non-blocking state bridge for Visual Mode
 - `src/agentic_explorer/ui/swarm_diagram.py` — Mermaid diagram generator
 - `src/agentic_explorer/ui/dashboard.py` — Streamlit dashboard app
+- `src/agentic_explorer/ui/launcher.py` — starts and stops the dashboard
 
 ---
 
@@ -164,6 +210,11 @@ graph TD
   `data-test-subj` → `aria-label` → visible text priority.
 * **Self-Healing Browser Execution**: Playwright actions are wrapped to catch uncaught
   exceptions. Errors are returned as natural language so agents can adapt strategies.
+* **Resilient Runs**: A hung agent is cancelled after `runtime.node_idle_timeout_s`
+  without activity (any LLM or tool call renews the timer, so long healthy turns are never
+  cut) and the supervisor picks another approach. Transient API errors (429/503/529) are
+  retried with backoff, resuming from the checkpoint. Press **Ctrl-C once** to stop at a
+  safe point (exit status 130) and run the same command again to resume; twice to abort.
 * **Screenshot Evidence**: Agents capture full-page screenshots when bugs or anomalies are
   detected, then generate reproducible Playwright specs from the Action Tape.
 * **Bring-Your-Own MCP**: Plug in any MCP servers via a standard
@@ -199,7 +250,9 @@ graph TD
 
 ### 1. Dependencies
 
-Python 3.11+ is required. A virtual environment is highly recommended.
+Python 3.11 or 3.12 is required (3.14 cannot currently build `pyarrow`, a dependency of
+`langchain-google-vertexai`). A virtual environment is highly recommended. For a
+reproducible install use `uv pip install -r requirements.txt && uv pip install -e . --no-deps`.
 
 ```bash
 # Create and activate a virtual environment (plain venv or uv)
@@ -263,9 +316,17 @@ ANTHROPIC_API_KEY="your_anthropic_api_key_here"
 # produced by: gemini auth login
 
 # --- Application under test ---
-APP_URL="https://your-app.example.com"
-APP_USERNAME="your_user"
-APP_PASSWORD="your_password"
+# The defaults target the public demo shop https://www.saucedemo.com/ (its login page
+# publishes these credentials). Replace all three with your own app's values.
+APP_URL="https://www.saucedemo.com/"
+APP_USERNAME="standard_user"
+APP_PASSWORD="secret_sauce"
+
+# Optional: revision of the app under test (commit, version, build id). Recorded in the tape header and in
+# generated specs. Overridden by --app-revision; falls back to app.revision in config.yaml.
+# APP_REVISION="v1.4.2"
+# Optional: how many per-step snapshots (what the agent saw) to keep per mission. Default 200; 0 turns them off.
+# AGENT_SNAPSHOT_KEEP="200"
 
 APP_CONFIG="./config.yaml"
 MCP_SERVERS_CONFIG="./mcp_servers.json"
@@ -300,17 +361,20 @@ Copy `config.yaml.example` → `config.yaml` and customize for your application:
 
 ```yaml
 app:
-  name: "My Web Application"
+  name: "Swag Labs (Sauce Demo)"
   url: ${APP_URL}
-  description: "Brief description used to give agent prompts domain context."
+  description: "Demo online shop: login, product inventory, cart and checkout."
+  # revision: "v1.4.2"   # optional; recorded in tape_meta.json (--app-revision / APP_REVISION override it)
+  # seed:                # optional preconditions, copied to the tape header and the generated spec
+  #   - "logged in as standard_user with an empty cart"
 
 auth:
   method: form
   selectors:
-    username: 'input[name="username"]'
-    password: 'input[name="password"]'
-    submit:   'button[type="submit"]'
-  post_login_check: 'a[href="/home"]'   # selector that confirms login worked
+    username: '[data-test="username"]'
+    password: '[data-test="password"]'
+    submit:   '[data-test="login-button"]'
+  post_login_check: '[data-test="inventory-container"]'   # selector that confirms login worked
 
 paths:
   mcp_servers: ./mcp_servers.json
@@ -500,6 +564,9 @@ agent-explorer --missions missions/new_user_agent.yaml --clear-learned
 # Override the supervisor step limit (default: 30)
 agent-explorer --missions missions/new_user_agent.yaml --max-steps 50
 
+# Record which revision of the app is under test (tape header and spec header)
+agent-explorer --missions missions/new_user_agent.yaml --app-revision "$(git -C ../my-app rev-parse --short HEAD)"
+
 # Suppress verbose ReAct console output (traces.log still captures everything)
 agent-explorer --missions missions/new_user_agent.yaml --quiet
 ```
@@ -548,21 +615,91 @@ hand-written ones and can be re-run later with `--missions`.
 
 ---
 
+## 🧪 Development
+
+```bash
+uv pip install -e ".[dev]"
+pytest -q
+```
+
+The suite needs no LLM, browser or network: agents run on fake chat models, and the
+streaming, resilience and stop/resume tests use real compiled LangGraph graphs. It does
+not exercise a real model, so prompt quality is not covered. CI (GitHub Actions) runs it on
+Python 3.11 and 3.12 and checks that `requirements.txt` stays installable.
+
+---
+
 ## 📊 Test Artifacts
 
 For every mission, the framework generates a `report_<thread_id>/` directory containing:
 
-1. **`traces.log`** — Full audit trail of every thought, plan, and tool invocation.
+1. **`traces.log`** — Full audit trail of every thought, plan, and tool invocation. If a
+   stopped mission is resumed, the trace is appended with a `=== RESUMED ===` marker.
 2. **`test_report.md`** — Concise executive summary generated by the LLM (objective,
-   actions, bugs, Action Tape stats, PASS/FAIL).
+   actions, bugs, Action Tape stats, PASS/FAIL), plus a `Memory errors` count when a
+   long-term memory operation failed.
 3. **`action_tape.jsonl`** — Line-delimited JSON log of every deterministic browser
-   command. The source for reproduction scripts.
+   command. The source for reproduction scripts. Each entry may carry a `snapshot_ref`.
+   Values typed into password/token/OTP fields are redacted (`"<redacted>"`) in the tape, the
+   spec and `traces.log`; the generated spec reads them from `REPLAY_SECRET_1`, `REPLAY_SECRET_2`, ...
+   Next to it, **`tape_meta.json`** records where the tape came from (see
+   [Provenance and Evidence](#provenance-and-evidence)) and **`snapshots/`** holds what the
+   agent saw at each step.
 4. **`reproduction_*.spec.ts`** — Auto-generated Playwright TypeScript tests, one per bug
    detected. Run with:
    ```bash
    npx playwright test report_<thread_id>/reproduction_*.spec.ts --headed
    ```
+   The header lists the app revision and the session it was recorded with, and a setup
+   check fails with `SETUP_FAILURE` (not a timeout) when the session is gone. Steps time out
+   after 5 s, like the recording, and a spec with no symptom assertion says so: a pass does not
+   mean the bug is fixed.
 5. **`screenshots/`** — Image evidence captured on every detected bug.
+
+### Provenance and Evidence
+
+A spec can fail for two very different reasons: the bug reproduced, or the setup is not the
+one that was recorded (expired session, missing data). Each mission therefore records
+`report_<thread_id>/tape_meta.json`: app name and URL, **app revision**, session start,
+a SHA-256 fingerprint of `auth.json` (never its content), the tool version and the optional
+`app.seed` preconditions. The revision comes from `--app-revision`, then `APP_REVISION`,
+then `app.revision` in `config.yaml`; if none is given it is `null`, never guessed.
+
+```mermaid
+flowchart TD
+    R[Run the generated spec] --> S{Which error?}
+    S -- SETUP_FAILURE --> A[Not the bug: the session or the starting data differs from the recording]
+    A --> B[Refresh auth.json with agent-auth, check the preconditions in the header, run again]
+    S -- any other error --> C[The BUG STEPS ran: this is the reproduction]
+    S -- passes --> D[Not reproduced: compare the app revision and the data in the header]
+```
+
+To check that a bug really reproduces, replay its tape with no model and no credentials:
+
+```bash
+agent-explorer --replay <thread_id>   # exit 0 reproduced, 1 not reproduced, 2 setup failure, 3 diverged, 4 inconclusive
+```
+
+It re-executes `report_<thread_id>/action_tape.jsonl` in a fresh browser and writes
+`replay.json`. It runs the recorded actions against the real app, so it has the same side
+effects as the mission.
+
+If the saved session (`auth.json`) expires during a mission, the run stops cleanly with exit
+code 130 and a message instead of testing the login page: run `agent-auth`, then the same
+command to resume with the tape intact.
+
+Run the spec once in a clean session before reporting a bug. The redirect check recognises
+login pages by path (`/login`, `/signin`, `/sso`, `/auth`), so an app whose login lives at `/`
+is not detected.
+
+Agents also report **evidence** in the closing `<bugs_found>` block: optional `observed`,
+`observed_at`, `expected` and `confidence` (`confirmed` or `uncertain`). `test_report.md`
+lists each confirmed bug with *Observed / Expected / Where*, and findings the agent could
+not confirm go to a separate **Not determined** section (also in the dashboard); they never
+count as bugs. When the agent passes `expected`, the generated spec asserts it with
+`toContain` instead of only checking that some text exists. Set `AGENT_SNAPSHOT_KEEP=0` to
+stop saving per-step snapshots (default: keep the last 200). Details in
+[ARCHITECTURE_GUIDE.md](ARCHITECTURE_GUIDE.md).
 
 ---
 

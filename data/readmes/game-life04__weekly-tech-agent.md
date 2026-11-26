@@ -12,49 +12,57 @@
 
 <!-- wta:latest:start -->
 
-## 每日快讯 · 11.23（周一）
+## 每日快讯 · 11.25（周三）
 
-> 今日 AI 与开源要闻 **10** 条，3 分钟速读。<br>
-> [单独打开](daily/2026/2026-11-23-kuaixun.md) · [公众号排版版](daily/2026/2026-11-23-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-11-23.md) · [往期日报](daily/README.md)
+> 今日 AI 与开源要闻 **14** 条，3 分钟速读。<br>
+> [单独打开](daily/2026/2026-11-25-kuaixun.md) · [公众号排版版](daily/2026/2026-11-25-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-11-25.md) · [往期日报](daily/README.md)
 
 <details>
 <summary>群消息文字版（点开后，点代码框右上角的按钮整段复制）</summary>
 
 ```text
-【每日科技快讯】11月23日 周一
-今日 AI 与开源要闻 10 条，3 分钟速读
+【每日科技快讯】11月25日 周三
+今日 AI 与开源要闻 14 条，3 分钟速读
+
+【俱乐部动态】
+1. 开放原子开源俱乐部合并 1 个 PR、提交 4 次
+2. AtomGit-Mobile4Android 合并 1 个 PR
+3. .github 提交 3 次
 
 【国内动态】
-1. 腾讯元宝×KCL发布群聊Agent记忆基准
-→ 腾讯元宝与KCL联合发布GroupAssistBench，基于80,299条群聊消息构建评测题，检验Agent记忆的召回与使用能力。
+4. 智谱发布全新架构GLM-5.4
+→ 智谱采用Loop Transformer架构发布GLM-5.4，非高峰时段最高可达200 Token/s。
 
 【开源项目】
-2. worker755：扮演 AI 管理员的子代理
-→ gulivan 创建了一个浏览器游戏，玩家扮演 AI 管理员的子代理，需在 90 秒内完成任务。
-3. 本地 AI 入门指南：Inkling、Qwen 和 Unsloth
-→ 使用 Unsloth 和 Inkling 或 Qwen 在 PC 上搭建免费私有的 ChatGPT。
-4. fast-anything：用智能体加速慢速代码
-→ fast-anything 项目利用编码代理将 Python、Node 或 Ruby 应用中 5% 的慢速部分重写为 Rust。
-5. anthropics/claude-cookbooks
-→ anthropics/claude-cookbooks展示了使用Claude的有趣且有效方式的笔记本和食谱集合。
-6. superdesigndev/treg：智能体工具的OpenRouter
-→ superdesigndev/treg提供智能体工具的OpenRouter，并包含社区Discord。
+5. vLLM Day-0 Support for ERNIE 5.5 Flash Preview: Plugin Deployment and E2E Infer…
+→ vLLM发布0.32.0版本，支持百度ERNIE 5.5 Flash Preview，提供插件部署和端到端推理加速。
+6. LangChain推出Agent Lake
+→ LangChain推出Agent Lake，用于存储和筛选智能体产生的轨迹，将其转化为修复方案和微调模型。
+7. agy-fast：Google Antigravity MCP 加速插件
+→ Google Antigravity 的非侵入式 MCP 加速插件可减少 LLM 轮次、代币配额和上传流量。
+8. pierridotite/mobile-agent-testers
+→ 在 GitHub 免费运行器上，20 个 Claude Code 智能体并行在 iOS 模拟器和 Android 模拟器中测试手机应用。
+9. Anthropic发布Python SDK v2.14.0
+→ Anthropic发布Python SDK v2.14.0，新增Google数据控制、合规审查支持，修复代理配置问题。
 
 【学术前沿】
-7. OpenAI提出Perplexity衡量AI模型进展
-→ OpenAI提出Perplexity指标，旨在帮助开发者建立统一的评估新兴能力的标准。
-8. Mind2Act World：具身智能体诊断基准
-→ Mind2Act World基准包含30个模拟操作任务，通过Mind、Act和Mind2Act三种视图评估系统的认知推理、物理执行及二者结合能力。
-9. Qwen3研究辨别反馈机制
-→ 研究小模型如何通过辨别用户反馈来持续改进，发现基于辨别反馈的机制能保持性能。
-10. Tideway优化MoE推理内存
-→ 提出Tideway系统统一管理主机内存与GPU显存，显著提升消费设备上MoE模型的推理延迟和吞吐量。
+10. WeMM-Ecom：微信电商多模态内容理解
+→ WeMM-Ecom 是一套多模态大语言模型，通过两阶段预训练和混合思维后训练提升电商能力。
+11. OpenAI提出GPT-6蛋白质设计新方法
+→ OpenAI利用推理和代码设计蛋白质结构和序列，实验室测试显示在五个目标上具有结合证据。
+12. Google提出DeepCrossAttention架构
+→ Google提出DeepCrossAttention架构，通过可学习权重和深度交叉注意力动态结合层输出，防止信息稀释。
+13. Nemotron-Labs-VisualCreation：像素即代码的智能体视觉创作
+→ Nemotron-Labs-VisualCreation 框架通过像素即代码连接视觉创作能力，使用离散视觉标记和显式程序表示图像。
+
+【产业纵横】
+14. Tidal 将禁止完全 AI 生成的音乐
+→ Tidal 将于 12 月 9 日起移除完全 AI 生成的曲目，成为首个全面禁止 AI 音乐的流媒体平台。
 
 【活动预告】
 · 12月3日 EuroVis 2027 论文截稿
 
-上周快讯（11.16–11.22）已出：https://github.com/game-life04/weekly-tech-agent/blob/main/weekly/2026-W47.md
-完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-11-23-kuaixun.md
+完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-11-25-kuaixun.md
 标题和要点由 AI 整理，可能有误，请以原文为准。
 ```
 
@@ -62,37 +70,49 @@
 
 ### 今日快讯
 
+#### 俱乐部动态
+
+**开放原子开源俱乐部合并 1 个 PR、提交 4 次**<br>11月24日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 3 个有人参与开发，共新增 PR 4 个、合并 1 个，提交 4 次，新增代码 1515 行、删除 131 行，3 位贡献者参与，其中 1 位是第一次贡献。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
+
+**AtomGit-Mobile4Android 合并 1 个 PR**<br>11月24日，Agent SIG的 AtomGit-Mobile4Android 仓库新增 PR 1 个、合并 1 个、提交 1 次、新增代码 1500 行，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-Mobile4Android)）</sub>
+
+**.github 提交 3 次**<br>11月24日，数字基础设施维护 SIG的 .github 仓库新增 PR 1 个、提交 3 次、新增代码 15 行，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/.github)）</sub>
+
 #### 国内动态
 
-**腾讯元宝×KCL发布群聊Agent记忆基准**<br>11月21日，腾讯元宝与KCL联合发布GroupAssistBench，基于80,299条群聊消息构建评测题，检验Agent记忆的召回与使用能力。<br><sub>（来源：[量子位](https://www.qbitai.com/2026/11/511841.html)）</sub>
+**智谱发布全新架构GLM-5.4**<br>11月24日，智谱采用Loop Transformer架构发布GLM-5.4，非高峰时段最高可达200 Token/s。<br><sub>（来源：[量子位](https://www.qbitai.com/2026/11/512423.html)）</sub>
 
 #### 开源项目
 
-**worker755：扮演 AI 管理员的子代理**<br>11月22日，gulivan 创建了一个浏览器游戏，玩家扮演 AI 管理员的子代理，需在 90 秒内完成任务。<br><sub>（来源：[Hacker News](https://github.com/gulivan/worker755)）</sub>
+**vLLM Day-0 Support for ERNIE 5.5 Flash Preview: Plugin Deployment and E2E Infer…**<br>11月24日，vLLM发布0.32.0版本，支持百度ERNIE 5.5 Flash Preview，提供插件部署和端到端推理加速。<br><sub>（来源：[vLLM 博客](https://vllm.ai/blog/2026-11-24-ernie-5-5-flash-preview)）</sub>
 
-**本地 AI 入门指南：Inkling、Qwen 和 Unsloth**<br>11月23日，使用 Unsloth 和 Inkling 或 Qwen 在 PC 上搭建免费私有的 ChatGPT。<br><sub>（来源：[Hacker News](https://www.gpupartner.com/blog/beginners-guide-local-ai-inkling-qwen-unsloth)）</sub>
+**LangChain推出Agent Lake**<br>11月25日，LangChain推出Agent Lake，用于存储和筛选智能体产生的轨迹，将其转化为修复方案和微调模型。<br><sub>（来源：[LangChain 博客](https://www.langchain.com/blog/the-agent-lake)）</sub>
 
-**fast-anything：用智能体加速慢速代码**<br>11月23日消息，fast-anything 项目利用编码代理将 Python、Node 或 Ruby 应用中 5% 的慢速部分重写为 Rust。<br><sub>（来源：[GitHub 新项目](https://github.com/EL4CTEO/fast-anything)）</sub>
+**agy-fast：Google Antigravity MCP 加速插件**<br>11月25日消息，Google Antigravity 的非侵入式 MCP 加速插件可减少 LLM 轮次、代币配额和上传流量。<br><sub>（来源：[GitHub 新项目](https://github.com/INK-Q/agy-fast)）</sub>
 
-**anthropics/claude-cookbooks**<br>11月23日消息，anthropics/claude-cookbooks展示了使用Claude的有趣且有效方式的笔记本和食谱集合。<br><sub>（来源：[GitHub Trending](https://github.com/anthropics/claude-cookbooks)）</sub>
+**pierridotite/mobile-agent-testers**<br>11月25日消息，在 GitHub 免费运行器上，20 个 Claude Code 智能体并行在 iOS 模拟器和 Android 模拟器中测试手机应用。<br><sub>（来源：[GitHub 新项目](https://github.com/pierridotite/mobile-agent-testers)）</sub>
 
-**superdesigndev/treg：智能体工具的OpenRouter**<br>11月23日消息，superdesigndev/treg提供智能体工具的OpenRouter，并包含社区Discord。<br><sub>（来源：[GitHub Trending](https://github.com/superdesigndev/treg)）</sub>
+**Anthropic发布Python SDK v2.14.0**<br>11月25日，Anthropic发布Python SDK v2.14.0，新增Google数据控制、合规审查支持，修复代理配置问题。<br><sub>（来源：[GitHub 版本发布](https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.14.0)）</sub>
 
 #### 学术前沿
 
-**OpenAI提出Perplexity衡量AI模型进展**<br>11月22日，OpenAI提出Perplexity指标，旨在帮助开发者建立统一的评估新兴能力的标准。<br><sub>（来源：[OpenAI](https://openai.com/index/perplexity-and-intelligence)）</sub>
+**WeMM-Ecom：微信电商多模态内容理解**<br>11月23日，WeMM-Ecom 是一套多模态大语言模型，通过两阶段预训练和混合思维后训练提升电商能力。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2611.30662)）</sub>
 
-**Mind2Act World：具身智能体诊断基准**<br>11月23日消息，Mind2Act World基准包含30个模拟操作任务，通过Mind、Act和Mind2Act三种视图评估系统的认知推理、物理执行及二者结合能力。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2611.26444)）</sub>
+**OpenAI提出GPT-6蛋白质设计新方法**<br>11月24日，OpenAI利用推理和代码设计蛋白质结构和序列，实验室测试显示在五个目标上具有结合证据。<br><sub>（来源：[OpenAI](https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities)）</sub>
 
-**Qwen3研究辨别反馈机制**<br>11月23日消息，研究小模型如何通过辨别用户反馈来持续改进，发现基于辨别反馈的机制能保持性能。<br><sub>（来源：[arXiv · 高效推理](https://arxiv.org/abs/2611.23716)）</sub>
+**Google提出DeepCrossAttention架构**<br>11月24日，Google提出DeepCrossAttention架构，通过可学习权重和深度交叉注意力动态结合层输出，防止信息稀释。<br><sub>（来源：[Google Research](https://research.google/blog/supercharging-transformer-residual-connections/)）</sub>
 
-**Tideway优化MoE推理内存**<br>11月23日消息，提出Tideway系统统一管理主机内存与GPU显存，显著提升消费设备上MoE模型的推理延迟和吞吐量。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2611.14848)）</sub>
+**Nemotron-Labs-VisualCreation：像素即代码的智能体视觉创作**<br>11月24日，Nemotron-Labs-VisualCreation 框架通过像素即代码连接视觉创作能力，使用离散视觉标记和显式程序表示图像。<br><sub>（来源：[arXiv · 智能体](https://arxiv.org/abs/2611.31358)）</sub>
+
+#### 产业纵横
+
+**Tidal 将禁止完全 AI 生成的音乐**<br>11月25日，Tidal 将于 12 月 9 日起移除完全 AI 生成的曲目，成为首个全面禁止 AI 音乐的流媒体平台。<br><sub>（来源：[Hacker News](https://variety.com/2026/music/news/tidal-bans-ai-generated-music-1236956924/)）</sub>
 
 ### 活动预告
 
 **EuroVis 2027 论文截稿**<br>12月3日，Eurographics Conference on Visualization（EuroVis 2027，CCF-B 类，图形学与多媒体）Full papers的论文提交截止时间为北京时间12月3日 19:59，摘要截止时间为11月24日 19:59。会议将于 May 31-June 4, 2027 在 Stuttgart, Germany 举行。<br><sub>（来源：[会议官网](https://eurovis27.github.io/web/)）</sub>
 
-<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-11-23 10:00（北京时间）自动生成。</sub>
+<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为11月24日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-11-25 17:51（北京时间）自动生成。</sub>
 
 ## 每周快讯 第 6 期 · 11.16–11.22
 

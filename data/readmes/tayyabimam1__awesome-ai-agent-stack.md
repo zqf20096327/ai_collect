@@ -475,6 +475,7 @@
 - [ultraworkers/claw-code](https://github.com/ultraworkers/claw-code) - An agent-managed museum exhibit, built in Rust with Gajae-Code / LazyCodex, developed and maintained with no human intervention.
 - [yynxxxxx/Codex-X](https://github.com/yynxxxxx/Codex-X) - Visual manager for OpenAI Codex desktop/CLI: provider/API switching, session sync, prompt injection, Skills/MCP management, visual TOML config.
 - [agentclientprotocol/claude-agent-acp](https://github.com/agentclientprotocol/claude-agent-acp) - Adapter that lets any ACP client use the Claude Agent SDK.
+- [eclipse-theia/theia](https://github.com/eclipse-theia/theia) - Eclipse Theia is an open-source platform for building custom IDEs and tools. It includes Theia AI, the vendor-neutral AI harness platform.
 
 ## Skills, Plugins & Context Engineering
 
@@ -783,5 +784,4 @@
 - [Jakeschincariol/linkedin-agent-skill](https://github.com/Jakeschincariol/linkedin-agent-skill) - Collection of Claude skills for managing LinkedIn accounts and content.
 - [white0dew/XiaohongshuSkills](https://github.com/white0dew/XiaohongshuSkills) - Skills for automating Xiaohongshu publishing, commenting, and retrieval.
 - [himself65/finance-skills](https://github.com/himself65/finance-skills) - Collection of agent skills for AI-assisted financial analysis.
-- [agenticnotetaking/arscontexta](https://github.com/agenticnotetaking/arscontexta) - Claude Code plugin that generates individualized knowledge systems from conversation.
-- [dickwu/apple-design-skill](https://github.com/dickwu/apple-design-skill) - Skill t
+- [agenticnotetaking/arscontexta](https://github.com

@@ -4,7 +4,7 @@
 
 [English](README.md) · [Türkçe](README-TR.md)
 
-[Research archive DOI (always the latest version): 10.5281/zenodo.22864660](https://doi.org/10.5281/zenodo.22864660) · [Research reports](docs/publications/README.md)
+[Research archive DOI (always the latest version): 10.5281/zenodo.22864660](https://doi.org/10.5281/zenodo.22864660) · [v7: 10.5281/zenodo.24494960](https://doi.org/10.5281/zenodo.24494960) · [Research reports](docs/publications/README.md) · [The paper: Cevahir Zihin, a Living Evidence Mind](docs/research/living_evidence_mind_2026_11_24/PAPER.md)
 
 > **Latest update — November 2026: Cevahir Zihin, a mind that learns by living. Not a Transformer.**
 >
@@ -14,6 +14,48 @@
 > told, imitated, its own act, inferred or imagined. It reads what to expect from a single rule:
 > `e = c·(f − ½) + ½`. The earlier Transformer engine described below is still in the repository.
 >
+> - **Cevahir: one layer (24 November 2026, new).** Everything built so far meets in one layer, and Cevahir is that
+>   mind (`living/cevahir.py`, `python -m living`). Zihin, the evidence mind with every one of its mechanisms, lives
+>   each word; the cortex of the Living Intelligence study lives each letter; they meet in the harmony, where Zihin's
+>   expectations are one more voice, trusted by the one rule on its own record. When Cevahir answers, Zihin's answer is
+>   the thought and a prefrontal decision says it token by token, trusting Zihin or the harmony where they differ by the
+>   record of who was right when they differed. The hippocampus keeps every dialogue and answers an utterance never
+>   lived from the lived ones it differs from in a few places at once, and one longer than any lived by its parts: a
+>   part is taken out, the rest answered, and the part's effect on lived answers put back. The amygdala keeps the
+>   outcomes of judged answers; a night's sleep forgets the contexts that did not recur (2 to 3.8 times fewer, for
+>   0.4–1.1 % more bits); a script never met opens a channel that is watched until it shows structure; any entry can be
+>   forgotten exactly; the whole mind is kept and loaded bit for bit.
+>
+>   Measured: on the six published SCAN splits it answers 1,199 of 1,200 test commands (200 of each), and with the final
+>   code 300 of 300 (50 of each), wrong and silent on none. Where an answer has to put together facts read apart, it
+>   answers every question, and a Transformer trained on the very stream it lived answers none. At school it answers 342
+>   of 405 examination questions, every one of the 63 deductions among them (a Transformer trained on the same lessons:
+>   203, and none of the deductions). On COGS the hippocampus alone answers all 3,000 in-distribution test sentences and
+>   20,914 of the 21,000 sentences of the generalisation set (99.6 %; 2 wrong, 84 silent), every sentence of twelve of
+>   its 21 kinds: among them 999 of the 1,000 with a phrase on the subject where phrases were lived only on objects, 994
+>   of 1,000 with phrases nested deeper than any it lived, a kind on which published Transformers score 0 %, 935 of
+>   1,000 with clauses nested so, 1,990 of the 2,000 names met only as subjects or alone and asked as objects, and 2,999
+>   of the 3,000 whose verb decides the part its noun plays, read from what a word's token always had after it where the
+>   word was said. Answering by parts is held to records of its own, read by the one rule from what was lived, says its
+>   answers in the order of the places their items name at every step, makes a change in the item it stands for,
+>   believes an answer no further than the roles it gives its words, alone and together, and the turns its marks take
+>   were lived, and where nothing lived around a part answers, reads every word by its kind, takes that part out first
+>   and puts back as items what parts of its shape add elsewhere. Alone on SCAN it says nothing wrong.
+>   [The model, section 12](research/living_intelligence_2026_11_24/MODEL.md) · [the measurements, section 8](research/living_intelligence_2026_11_24/NOTES.md)
+> - **Living Intelligence, a new study (24 November 2026):** a new body for the mind, on the same rule. It keeps no list
+>   of words and no vector per word. It keeps a cortex of letter contexts that grows with what it lives, sublinearly.
+>   Words are paths that the mind numbers itself and spells back from the number, and the alphabet is its own: a
+>   stream new to every channel it has becomes a new channel. A language it does not know is watched in silence until
+>   the evidence reaches the speaking line. On a made-up language in an unused script, it was silent for 302 symbols,
+>   then right 83.5 % of the time it spoke; on noise, it never spoke. The rule `e = c·(f − ½) + ½` turns out to be the
+>   Krichevsky–Trofimov estimator.
+>
+>   On four texts (two English, two Turkish) the cortex alone, reading once, beat gzip and bzip2 on all four and xz on
+>   three, and was 0.14–0.18 bits per character behind PPMd. It beat a character Transformer trained from scratch on
+>   every text, both offline (20 minutes of four cores) and living through the text in order. A new word costs the
+>   cortex 26–62 % of its first price at its second meeting; the Transformer still pays 94–96 %. Retracting a document
+>   leaves a store byte for byte identical to one that never read it.
+>   [The model](research/living_intelligence_2026_11_24/MODEL.md) · [the notes](research/living_intelligence_2026_11_24/NOTES.md)
 > - **The whole mind (new):** `python -m zihin` raises a mind with every mechanism below in use, and gives a mind you
 >   load the ones it was raised without (`--kapat name` keeps one off; `--variant speaking` is the earlier default; the
 >   `--ac name` in the entries below is the name of each mechanism). All of them together had never been measured:
@@ -67,8 +109,8 @@
 >
 > **There is no separate training phase; the model learns in every conversation. Please speak to it kindly.**
 >
-> Theory and architecture: [docs/ZIHIN_THEORY.md](docs/ZIHIN_THEORY.md) · guide (Turkish):
-> [docs/ZIHIN_KILAVUZ.md](docs/ZIHIN_KILAVUZ.md) · measurements and negative results:
+> Theory and architecture: [docs/ZIHIN_THEORY.md](docs/ZIHIN_THEORY.md) · the paper:
+> [PAPER.md](docs/research/living_evidence_mind_2026_11_24/PAPER.md) · measurements and negative results:
 > [research/living_mind_2026_11_15/NOTES.md](research/living_mind_2026_11_15/NOTES.md)
 
 ### Run Cevahir Zihin on your computer
@@ -198,7 +240,7 @@ In November 2026 I started a new core, separate from the Transformer: **Zihin** 
 
 **Not yet:** learning to learn gave only a small gain, in one direction (F24). Curiosity, imagination and dreams are first forms: the reality score cannot yet tell a plausible construction from a weak leap. Scaling is partly solved: the cost per moment now grows little with memory and memory per tie is 3.5x smaller, but memory still grows linearly with lived data; measurements and the plan are [here](research/living_mind_2026_11_15/NOTES.md). It has no voice of its own (no speech output). On real data its chat is mostly imitation; it answers questions about itself with the true things it was told, and its self unit does not steer what it says yet. The worlds are small and the Transformer comparison covers only the small-data regime. This is not a claim of consciousness or of general intelligence; neither can be measured for any machine today. The aim and the road map are explicit: a mind that learns by living, builds its own concepts, makes sense of what it acquired and knows itself. The design layers (deliberate focus, automatic reflexes, inner and outer voice, drives and will, knowing itself) are [here](research/living_mind_2026_11_14/LAYERS.md), the vision [here](research/living_mind_2026_11_14/design/VISION.md), the latest work (sleep and dreams, hearing) [here](research/living_mind_2026_11_15/NOTES.md).
 
-**Try it** (full guide in Turkish: [docs/ZIHIN_KILAVUZ.md](docs/ZIHIN_KILAVUZ.md); from PowerShell: `.\cevahir.ps1`):
+**Try it** (from PowerShell: `.\cevahir.ps1`; a mind raised on public material only: `python -m zihin --load minds/cevahir-open.zihin`, see [minds/README.md](minds/README.md)):
 
 ```
 python -m zihin                      # a new mind
@@ -214,7 +256,7 @@ python -m zihin                      # a new mind
 
 **[Cevahir AI — Anatomy of an AI Engine: table of contents](docs/book/README.md)**
 
-The modular Turkish book connects AI fundamentals to the real Cevahir implementation: tokenization, neural computation, Transformer blocks, training, checkpoints, generation, memory, cognition, tools and open research. Each chapter follows actual callers, inputs, outputs, configuration gates and evidence. [English reading guide](docs/book/README-en.md) · [Source map](docs/book/KAYNAK_HARITASI.md) · [Keeping code and documentation aligned](docs/book/BAKIM.md).
+The Turkish chapters of this book were withdrawn by their author on 20 November 2026; their full text is in release v6 ([DOI 10.5281/zenodo.24279940](https://doi.org/10.5281/zenodo.24279940)). The book connected AI fundamentals to the real Cevahir implementation: tokenization, neural computation, Transformer blocks, training, checkpoints, generation, memory, cognition, tools and open research. Each chapter follows actual callers, inputs, outputs, configuration gates and evidence. [English reading guide](docs/book/README-en.md) · [Source map](docs/book/KAYNAK_HARITASI.md) · [Keeping code and documentation aligned](docs/book/BAKIM.md).
 
 The [research laboratory](docs/book/tr/11-arastirma-laboratuvari.md) preserves successful and negative experiments. The [research publication series](docs/publications/README.md) presents nine reports by Muhammed Yasin Yılmaz, with English abstracts, full methods, evidence and limitations. The [latest future-query study](docs/research/living_learning_query_state_2026_09_21/REPORT_TR.md) distinguishes the information needed for future queries and corrections. These bounded results do not solve the general living-learning problem. [Version and DOI record](docs/publications/release.json).
 
@@ -429,38 +471,4 @@ For the full interface, pass settings through `CevahirConfig(model={...}, tokeni
 
 Architecture configuration is normalized by [config_schema.py](model_management/config_schema.py). Change the configuration supplied to the system; editing the default class definitions in `model/cevahir.py` is not required. Cache preparation and training still have separate entry-point settings, which must agree.
 
-## Application integration
-
-The integrated Flask entry point is [api.app_factory.create_app](api/app_factory.py). It wires the model, ChattingManager, services, authentication, health checks and database access. Configure the database, an explicit `JWT_SECRET_KEY`, model path and matching tokenizer before starting the application. Model overrides can be supplied through `CEVAHIR_MODEL_CONFIG` in the factory configuration. The older `api/app.py` retains an obsolete configuration import and is not the recommended entry point.
-
-Requests are attributed to a user only through a verified `Authorization: Bearer <JWT>` header. The API verifies tokens but does not issue them: there is no login, registration or token endpoint, so your own code must create tokens with `api.security.jwt.create_access_token` and the same `JWT_SECRET_KEY`. [api/api_config.py](api/api_config.py) selects the mode from `FLASK_ENV`; any other value is an error:
-
-- **Unset or `default`:** debug off, rate limiting on, CORS limited to `http(s)://localhost`, `127.0.0.1` and `[::1]` origins on any port.
-- **`development`:** Flask's `DEBUG` setting on and rate limiting off for local work; CORS as in the default. Adding `CEVAHIR_TRUST_X_USER_ID=1` makes the unauthenticated `X-User-ID` header act as the caller's identity, with a warning logged on every use. Any caller can then act as any user, so the setting is accepted only in `development` and `testing`; in other modes the configuration refuses to load.
-- **`testing`:** for test runs: `DEBUG` on, rate limiting and metrics off; `CEVAHIR_TRUST_X_USER_ID=1` is accepted as in `development`.
-- **`production`:** refuses to load unless `PRODUCTION_SECRET_KEY` and `JWT_SECRET_KEY` are two different values of at least 32 characters; placeholders such as `change-me-in-production` are rejected. Whether a value is random cannot be checked, so generate both, for example with `python -c "import secrets; print(secrets.token_urlsafe(48))"`. Rate limiting is always on, and browsers get cross-origin access only for origins listed in `CORS_ORIGINS`.
-
-A comma-separated `CORS_ORIGINS` replaces the default origins; each entry is an exact origin (an IPv6 host goes in brackets, as in `http://[::1]:3000`) or a regular expression that must match the whole `Origin`. A non-matching `Origin` receives no CORS headers. `*`, and any pattern that matches every origin such as `.*`, is sent as a literal `*`, and credentials are never allowed. Rate limits are kept in process memory unless `RATELIMIT_STORAGE_URI` names a shared store. The unauthenticated `/api/v3/health/detailed` returns only generic component messages; error details go to the server log. `python api/app_factory.py` starts Flask's development server on `127.0.0.1:5000` with debug off in every mode, `development` included; `--host`/`CEVAHIR_API_HOST`, `--port`/`PORT` and `--debug`/`CEVAHIR_API_DEBUG=1` change that, and debug is refused in production. Real deployments still need a production WSGI server and TLS in front of the API. These behaviors are covered by the contract tests in [tests/evolution/test_api_security.py](tests/evolution/test_api_security.py); they have not been checked against a deployed service or by a penetration test.
-
-## Repository map
-
-| Directory | Responsibility |
-|---|---|
-| [src/](src) | Neural decoder, attention, FFN/MoE, normalization and KV cache |
-| [tokenizer_management/](tokenizer_management) | BPE training, encoding/decoding, vocabulary and merge management |
-| [data_loader_management/](data_loader_management) | Document and question-answer loading, chunking and source identity |
-| [data_processing/](data_processing), [dataset_subtitle/](dataset_subtitle) | Data collection, document conversion and subtitle-to-text tools |
-| [training_system/](training_system) | Data preparation, cache, batching and training service |
-| [training_management/](training_management) | Training loop, optimization, monitoring and checkpoints |
-| [model_management/](model_management) | Configuration, construction, loading, saving, profiling and inference |
-| [model/](model) | Unified Cevahir interface and generation adapter |
-| [cognitive_management/](cognitive_management) | Strategies, tools, critic, scoped memory and middleware |
-| [chatting_management/](chatting_management) | Sessions, conversation history and context |
-| [api/](api), [database/](database) | HTTP services, authentication and persistence |
-| [benchmarks/](benchmarks), [tests/](tests), [scripts/](scripts) | Measurements, behavior verification and standalone diagnostic tools |
-| [research/](research) | Isolated research experiments, including the deterministic representation witness audit |
-| [docs/](docs) | Architecture, module guides and development history |
-
-## Verification and development status
-
-I've shared examples from my model training above. In current engineering checks, I also use small CPU models to compare cached/full-sequence results, gradients, save/load behavior, tokenizer identity and state isolatio
+#

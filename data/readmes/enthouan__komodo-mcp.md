@@ -1,17 +1,26 @@
 # komodo-mcp
 
+Download the [v0.9.0 release files](https://github.com/enthouan/komodo-mcp/releases/tag/v0.9.0) and their [Corresponding Source archive](https://github.com/enthouan/komodo-mcp/releases/download/v0.9.0/komodo-mcp-v0.9.0-source.tar.gz).
+
 [Repository maintenance](docs/maintenance.md) documents dependency updates,
 required checks, main protection, and release compatibility.
 
-The [inventory benchmark](benchmarks/README.md) compares the release executable
-with a pinned TypeScript stdio reference using synthetic Core fixtures. See the
-[benchmark findings](benchmarks/results/README.md) for
-provisional results and repeatable commands.
+The [tool catalog](https://komodo-mcp.com/reference/tools/) documents every built-in
+tool’s local grants, input bounds, output shape and effects. Use `tools/list` to inspect your instance.
+The [operator walkthrough](docs/operator-quickstart.md) covers transport credentials,
+resource permissions, a three-tool diagnosis and recovery after a lost reply.
+The [self-hosted beta guide](docs/self-hosted-beta.md) covers a verified native
+archive and authenticated HTTP with a version-matched Compose checkout.
+
+On Intel macOS, the benchmark compares the selected native komodo-mcp package
+with independent Rust and TypeScript reference servers. It covers synthetic
+inventory and incident triage, plus a seven-Stack inventory against a disposable
+Core. See the [measurements and reproduction instructions](benchmarks/results/README.md).
 
 A Rust [Model Context Protocol](https://modelcontextprotocol.io/) server for
 Komodo, using the official [rmcp 3.11.0 SDK](https://docs.rs/rmcp/3.11.0/rmcp/).
 It connects to Komodo Core using the official **komodo_client 2.3.2**, pinned
-exactly with optional features disabled. Sixty-four read-only tools list and inspect
+exactly with optional features disabled. Sixty-six read-only tools list and inspect
 Servers, Stacks, Deployments, Repos, Builders, Builds, Procedures and Actions, summarize fleet health, inspect alerts/update
 history, read bounded logs, and diagnose a stack in one call.
 The [scoped TOML export](docs/export.md) returns a sanitized inspection document
@@ -19,8 +28,9 @@ for explicit resources/groups, with separate opt-in to all Core variables.
 The [Swarm inspection tools](docs/swarms.md) inspect existing clusters, nodes,
 services and tasks, trace placement failures, and read bounded exact-service logs.
 Cached lists and fresh inspection remain distinct.
-The [Docker inspection tools](docs/docker.md) list and inspect images, networks
-and volumes on one Server, with safe image history and explicit cache limits.
+The [Docker inspection tools](docs/docker.md) list containers, images, networks
+and volumes on one Server. Inspect a stopped container by its returned identity
+to see fresh state, exit code, health status and restart count.
 The [pruning workflow](docs/pruning.md) adds a separate default-off opt-in for
 one reviewed category on one Server, with explicit destructive acknowledgement
 and read-only recovery after uncertain replies.
@@ -138,6 +148,9 @@ A permission-filtered empty inventory is a successful result.
 
 ### Authenticated Streamable HTTP
 
+For Docker installation, private CA configuration and container health checks,
+see [Run Komodo MCP with Docker Compose](docs/container.md).
+
 A source build can run as a persistent MCP server at `http://127.0.0.1:3000/mcp`.
 Set the three Core variables above in the server environment. Generate an inbound
 token in a private shell and keep it in the server and client secret stores.
@@ -241,7 +254,7 @@ Discovery, tool lookup and direct dispatch use the same restricted router.
 Disabled, unknown and unclassified tools are rejected before argument handling,
 target reads or execution; constructing a call manually cannot bypass discovery.
 With both selection settings unset, every grant combination includes the
-sixty-four read tools, including `get_update` and `list_updates` for recovery. Core still
+sixty-six read tools, including `get_update` and `list_updates` for recovery. Core still
 controls which resources and history that identity can read. Configuration editing
 adds `preview_stack_create`/`apply_stack_create` and
 `preview_stack_update`/`apply_stack_update`. Core `Write` on an existing Stack,
@@ -698,14 +711,18 @@ enter these projections.
 
 ## Version evidence
 
-The dependency is **komodo_client 2.3.2**; the local HTTP fixtures represent
-**Komodo Core 2.3.2**. The observed remote version comes from `GetVersion`, not
-from the dependency or fixture version. Other valid SemVer responses are retained
-without a claim of compatibility. See the [fixture sources and limitations](tests/fixtures/core-2.3.2/README.md).
-Verification used synthetic, enabled non-admin fixtures with resource read
-access. **No running Core release was exercised**, because no test Core or
-credentials were configured. Compatibility beyond these wire fixtures remains
-unverified; changes to Core's HTTP 500 permission signature may require an update.
+The [v0.9.0 compatibility matrix](docs/v0-9-0-compatibility.md) identifies the
+package, client, transport and service versions for each workflow. Compare the
+MCP tools and their grants with the [Komodo API](docs/v0-9-0-api-coverage.md)
+and the [official `km` CLI](docs/v0-9-0-cli-coverage.md).
+
+The Rust dependency and synthetic HTTP fixtures target Komodo Core 2.3.2.
+The fixtures exercise scoped non-admin reads and Core's permission errors.
+Running Core instances report their version through `GetVersion`. On Linux
+x86-64, the packaged v0.9 milestone candidate completed container diagnostics,
+configuration preview/apply and interrupted Deployment recovery against Core
+and Periphery 2.3.2 over native stdio and authenticated Streamable HTTP.
+[Disposable regression evidence](docs/releases/v0.9.0/disposable-regression.md)
 
 No optional `komodo_client` features are enabled. Its mandatory dependencies
 enable reqwest's `json`, `stream`, `form`, `query`, and `rustls` features, plus
@@ -715,6 +732,9 @@ compatible with the SDK's `0.13.4` requirement; the lockfile resolves both to
 was needed.
 
 ## Contributing and reporting
+
+Read how the server handles Core credentials, tool results and logs in the
+[security and data flow guide](https://komodo-mcp.com/guides/security/).
 
 The [contributing guide](https://komodo-mcp.com/reference/contributing/) covers
 pull requests and the Rust and website checks. For ordinary bugs, follow the

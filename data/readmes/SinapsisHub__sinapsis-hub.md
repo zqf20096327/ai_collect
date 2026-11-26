@@ -25,8 +25,8 @@ Compose and build AI systems from reusable components. Combine models, framework
 
 <p align="center">
   <a href="https://docs.sinapsis.tech/">📚 Documentation</a> ·
-  <a href="#-quick-start">🚀 Quick start</a> ·
-  <a href="#-why-sinapsis">⚡ Why Sinapsis?</a> ·
+  <a href="#-quickstart">⚡ Quickstart</a> ·
+  <a href="#-why-sinapsis">🚀 Why Sinapsis?</a> ·
   <a href="https://platform.sinapsis.tech/">☁️ Sinapsis Cloud</a>
 </p>
 
@@ -42,11 +42,15 @@ Join us on our <a href="https://discord.gg/uuBqQqu2vS"> Discord Server </a> to c
 
 ---
 
-## 🚀 Quick Start
+## ⚡ Quickstart
 
-Sinapsis requires Python 3.10 or later. We recommend [`uv`](https://docs.astral.sh/uv/).
+Below are two quickstart examples of agents in Sinapsis.
 
-### 1. Install Sinapsis
+<details>
+<summary><strong>Receipt OCR:</strong> extract receipt fields from your CPU</summary>
+
+### a. Install Sinapsis
+Sinapsis requires Python 3.13 or later. We recommend [`uv`](https://docs.astral.sh/uv/).
 
 ```bash
 uv venv --python 3.13
@@ -55,7 +59,156 @@ source .venv/bin/activate
 uv pip install sinapsis-cli
 ```
 
-### 2. Install the capabilities you need
+### b. Install the capabilities you need
+
+```bash
+uv pip install sinapsis-doctr sinapsis-data-readers "sinapsis-data-visualization[all]" sinapsis-data-writers
+```
+
+Sinapsis discovers Templates exposed by installed packages.
+
+### c. Define an Agent
+
+Create `agent_config.yml`:
+
+```yaml
+agent:
+  name: my_agent_test
+  description: "Agent to read image from folder, perform DocTR-OCR prediction and save the inference image in file."
+  attributes:
+    agent_mode: generator
+
+templates:
+  - template_name: InputTemplate
+    class_name: InputTemplate
+    attributes: {}
+
+  - template_name: FolderImageDatasetCV2
+    class_name: FolderImageDatasetCV2
+    template_input: InputTemplate
+    attributes:
+      root_dir: public/assets/quickstart
+      data_dir: ocr-images
+      batch_size: 1
+
+  - template_name: DocTROCRPrediction
+    class_name: DocTROCRPrediction
+    template_input: FolderImageDatasetCV2
+    attributes:
+      recognized_characters_as_labels: True
+      artefact_type_as_labels: False
+      det_arch: "fast_base"
+      reco_arch: "crnn_vgg16_bn"
+      pretrained: True
+      pretrained_backbone: True
+      assume_straight_pages: True
+      preserve_aspect_ratio: True
+      symmetric_pad: True
+      export_as_straight_boxes: False
+      detect_orientation: False
+      straighten_pages: False
+      detect_language: False
+
+  - template_name: BBoxDrawer
+    class_name: BBoxDrawer
+    template_input: DocTROCRPrediction
+    attributes:
+      draw_confidence: True
+      draw_extra_labels: True
+      randomized_color: False
+
+  - template_name: ImageSaver
+    class_name: ImageSaver
+    template_input: BBoxDrawer
+    attributes:
+      save_dir: output
+      root_dir: .
+```
+
+### d. Run your Agent
+
+```bash
+sinx-venv jobs run agent_config.yml
+```
+See outputs in the directory `output/`. In the agent config you can change the directories to suit your needs.
+
+<!-- Show the expected output here. -->
+
+</details>
+
+<details>
+<summary><strong>Using ChatGPT</strong></summary>
+
+### a. Prerequisites
+
+Replace `<YOUR_KEY>` with your OpenAI key
+```bash
+export OPENAI_API_KEY=<YOUR KEY>
+```
+
+### b. Install Sinapsis
+Sinapsis requires Python 3.13 or later. We recommend [`uv`](https://docs.astral.sh/uv/).
+
+```bash
+uv venv --python 3.13
+source .venv/bin/activate
+
+uv pip install sinapsis-cli
+```
+
+### c. Install the capabilities you need
+```bash
+uv pip install sinapsis-openai
+```
+
+### d. Define Agent Config
+```yaml
+agent:
+  name: my_test_agent
+  description: "OpenAI chat creation"
+
+templates:
+  - template_name: InputTemplate
+    class_name: InputTemplate
+    attributes: {}
+
+  - template_name: TextInput
+    class_name: TextInput
+    template_input: InputTemplate
+    attributes:
+      text : find the weather forecast for London tomorrow
+
+  - template_name: OpenAIChat
+    class_name: OpenAIChatWrapper
+    template_input: InputTemplate
+    attributes:
+      model : gpt-5.4-mini-2026-03-17
+      openai_init: {}
+      create: {}
+```
+
+### e. Run your Agent
+```bash
+sinx-venv jobs run agent_config.yml
+```
+
+</details>
+
+
+## 🚀 Installation
+
+Sinapsis requires Python 3.13 or later. We recommend [`uv`](https://docs.astral.sh/uv/).
+
+### a. Install Sinapsis
+
+```bash
+uv venv --python 3.13
+source .venv/bin/activate
+
+uv pip install sinapsis-cli
+```
+
+### b. Install the capabilities you need only
 
 ```bash
 uv pip install sinapsis-anthropic
@@ -65,7 +218,7 @@ uv pip install sinapsis-ultralytics
 
 Sinapsis discovers Templates exposed by installed packages.
 
-### 3. Define an Agent
+### c. Define an Agent
 
 Create `agent_config.yml`:
 
@@ -85,18 +238,18 @@ templates:
       display_text: "Hello from Sinapsis!"
 ```
 
-### 4. Run your Agent
+### d. Run your Agent
 
 ```bash
-uv run sinx jobs run agent_config.yml
+sinx-venv jobs run agent_config.yml
 ```
 
-### 5. Explore available Templates
+### e. Explore available Templates
 
 ```bash
-uv run sinx jobs  templates show-all
-uv run sinx jobs  templates docstring TemplateName
-uv run sinx jobs  templates example-config TemplateName
+sinx-venv jobs  templates show-all
+sinx-venv jobs  templates docstring TemplateName
+sinx-venv jobs  templates example-config TemplateName
 ```
 
 The same Agent model is accessible through Python, the CLI, Sinapsis UI, VS Code, and the API.

@@ -17,20 +17,12 @@ It runs more than 20 AI agents, such as Claude Code, Codex, and Gemini, as a tea
 Give each bot a job. Watch it work. Approve the steps that matter.</p>
 
 <p>
-  <a href="https://github.com/seira-bot/seira/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/seira-bot/seira?style=flat-square&logo=github&label=release&color=E11D48"></a>
-  <a href="https://github.com/seira-bot/seira/releases"><img alt="Downloads of all releases" src="https://img.shields.io/github/downloads/seira-bot/seira/total?style=flat-square&label=downloads&color=E11D48"></a>
-  <a href="https://www.npmjs.com/package/@seira-bot/seira"><img alt="npm version of @seira-bot/seira" src="https://img.shields.io/npm/v/@seira-bot/seira?style=flat-square&logo=npm&label=npm&color=E11D48"></a>
-  <a href="https://www.npmjs.com/package/@seira-bot/seira"><img alt="npm downloads each month" src="https://img.shields.io/npm/dm/@seira-bot/seira?style=flat-square&logo=npm&label=npm%20downloads&color=E11D48"></a>
-  <br>
-  <a href="https://github.com/seira-bot/seira/actions/workflows/ci.yml?query=branch%3Amain"><img alt="CI status on main" src="https://img.shields.io/github/actions/workflow/status/seira-bot/seira/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI"></a>
-  <a href="https://github.com/seira-bot/seira/actions/workflows/github-code-scanning/codeql"><img alt="CodeQL status" src="https://img.shields.io/github/actions/workflow/status/seira-bot/seira/github-code-scanning%2Fcodeql?style=flat-square&logo=github&label=CodeQL"></a>
-  <a href="https://github.com/seira-bot/seira/pkgs/container/seira"><img alt="Status of the server image on ghcr.io" src="https://img.shields.io/github/actions/workflow/status/seira-bot/seira/server-image.yml?branch=main&style=flat-square&logo=docker&logoColor=white&label=server%20image"></a>
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/seira-bot/seira?style=flat-square&color=blue"></a>
-  <br>
-  <a href="https://discord.gg/wAAgETJpFS"><img alt="Members of the Seira Discord server" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Fv9%2Finvites%2FwAAgETJpFS%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&suffix=%20members&label=Discord&style=flat-square&logo=discord&logoColor=white&color=5865F2"></a>
-  <a href="https://whatsapp.com/channel/0029VbEEDHAAojYjWCQr2c1G"><img alt="Follow the Seira channel on WhatsApp" src="https://img.shields.io/badge/WhatsApp-channel-25D366?style=flat-square&logo=whatsapp&logoColor=white"></a>
-  <a href="https://github.com/seira-bot/seira"><img alt="GitHub stars" src="https://img.shields.io/github/stars/seira-bot/seira?style=flat-square&logo=github&label=stars"></a>
-  <a href="https://github.com/seira-bot/seira/commits/main"><img alt="Commits each month" src="https://img.shields.io/github/commit-activity/m/seira-bot/seira?style=flat-square&logo=git&logoColor=white&label=commits"></a>
+  <a href="https://github.com/seira-bot/seira/actions/workflows/ci.yml?query=branch%3Amain"><img alt="CI status on main" src="https://github.com/seira-bot/seira/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/seira-bot/seira/actions/workflows/github-code-scanning/codeql"><img alt="CodeQL status" src="https://github.com/seira-bot/seira/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main"></a>
+  <a href="https://github.com/seira-bot/seira/pkgs/container/seira"><img alt="Status of the server image on ghcr.io" src="https://github.com/seira-bot/seira/actions/workflows/server-image.yml/badge.svg?branch=main"></a>
+  <a href="LICENSE"><img alt="License: Apache 2.0" src="docs/assets/badges/license.svg"></a>
+  <a href="https://discord.gg/wAAgETJpFS"><img alt="Join the Seira Discord server" src="docs/assets/badges/discord.svg"></a>
+  <a href="https://whatsapp.com/channel/0029VbEEDHAAojYjWCQr2c1G"><img alt="Follow the Seira channel on WhatsApp" src="docs/assets/badges/whatsapp.svg"></a>
 </p>
 
 <p>
@@ -41,7 +33,15 @@ Give each bot a job. Watch it work. Approve the steps that matter.</p>
   <a href="https://play.google.com/store/apps/details?id=bot.seira.companion"><b>Android app</b></a>
 </p>
 
+<p>If Seira helps you, a ⭐ on GitHub helps other people find it.</p>
+
 </div>
+
+<p align="center">
+  <a href="docs/assets/demo/seira-demo.mp4">
+    <img src="docs/assets/demo/seira-demo.gif" alt="A 23-second demo of Seira: a person gives the bot Pepper a job, Pepper asks for approval before it runs a command, the person selects Allow once, and Pepper finishes the job" width="900">
+  </a>
+</p>
 
 <p align="center">
   <img src="docs/screenshots/docs-model-picker.png" alt="The Seira app: the Bots list on the left, a chat with the bot Pepper in the middle, and the model picker open on the right" width="900">
@@ -52,7 +52,7 @@ Give each bot a job. Watch it work. Approve the steps that matter.</p>
 
 ## Quick start
 
-1. **Get Seira.** [Download it](#install) for Windows or Linux, then open it.
+1. **Get Seira.** Get it from the [Microsoft Store](https://apps.microsoft.com/detail/9MVFVK4VTFDH), or [download it](#install) for Windows or Linux, then open it.
 2. **Connect an AI that you already use.** Select **Sign in with Claude**, or connect Codex, Gemini, or [another engine](#engines).
    No AI yet? Seira installs OpenCode with its free models, so you can chat at once.
 3. **Give a bot a job.** Watch it work. Each risky step shows as a card that you allow or deny.
@@ -88,9 +88,11 @@ Give each bot a job. Watch it work. Approve the steps that matter.</p>
 
 ## Install
 
+<a href="https://apps.microsoft.com/detail/9MVFVK4VTFDH"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" height="56"></a>
+
 | System | Download | How to install |
 |---|---|---|
-| **Windows** 10 or later, x64 | [`Seira-setup.exe`](https://github.com/seira-bot/seira/releases/latest/download/Seira-setup.exe) | Open the file. If Windows warns you, select **More info**, then **Run anyway**. |
+| **Windows** 10 or later, x64 | [Microsoft Store](https://apps.microsoft.com/detail/9MVFVK4VTFDH) (recommended), or [`Seira-setup.exe`](https://github.com/seira-bot/seira/releases/latest/download/Seira-setup.exe) | Store: select **Get**. Installer: open the file. If Windows warns you, select **More info**, then **Run anyway**. |
 | **Ubuntu 24.04**, x64 | [`Seira-amd64.deb`](https://github.com/seira-bot/seira/releases/latest/download/Seira-amd64.deb) | `sudo apt install ./Seira-amd64.deb` |
 | **Other Linux**, x64 | [`Seira.AppImage`](https://github.com/seira-bot/seira/releases/latest/download/Seira.AppImage) | `chmod +x Seira.AppImage`, then open it. |
 | **Linux with Flatpak**, x64 | [`seira.flatpakref`](https://flatpak.seira.bot/seira.flatpakref) | `flatpak install --user https://flatpak.seira.bot/seira.flatpakref` |

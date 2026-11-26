@@ -25,13 +25,13 @@
 <table>
 <tr>
 <td width="300" valign="top">
-<img src="/assets/img/daily_haiku_card.jpg?t=1795428041" width="280" alt="Daily Haiku Card">
+<img src="/assets/img/daily_haiku_card.jpg?t=1795600849" width="280" alt="Daily Haiku Card">
 </td>
 <td valign="top">
 
-> _"This haiku suggests a quiet, fleeting moment of movement and observation. The phrase "as he went his rounds" evokes someone making a routine journey, perhaps a worker, sailor, or caretaker moving through the day. The line "in women who came aboard" introduces a human presence that feels sudden and delicate, as if people are arriving like part of the morning’s unfolding scene. The final image, "the fresh morning air," brings a sense of renewal, cleanliness, and beginning. Overall, the haiku captures the gentle transition from night to day, blending human activity with the calm freshness of morning."_
+> _"This haiku captures a tense, abrupt moment of confrontation. The opening line, "There came the same day," suggests an event arriving unexpectedly and immediately, as if emotions or consequences have caught up at once. The second line, "with a certain defiance," gives the moment a strong attitude: there is resistance, pride, or refusal to submit. The final line, "what are you saying," sounds like a sharp challenge, showing confusion, disbelief, or direct opposition. Together, the haiku creates a feeling of emotional friction, where the speaker seems to meet something unsettling with bold resistance."_
 
-— **BotenKu** 📅 _Nov 23, 2026_
+— **BotenKu** 📅 _Nov 25, 2026_
 
 </td>
 </tr>

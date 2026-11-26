@@ -115,7 +115,7 @@ to a published design (`source == "simulated"`), including the
 Callaway–Sant'Anna `mpdta` panel used below; their numbers are not the numbers
 from the original data.
 
-At a glance: 1,691 registered functions across 92 submodules; 756k LOC (core) + 519k LOC (tests). Run `python scripts/registry_stats.py` to reproduce these numbers.
+At a glance: 1,692 registered functions across 92 submodules; 756k LOC (core) + 519k LOC (tests). Run `python scripts/registry_stats.py` to reproduce these numbers.
 
 ---
 
@@ -778,10 +778,10 @@ release; `sp.list_functions(validation_status=...)` gives the live numbers):
 | --- | --- | ---: |
 | `certified` | compared with a named external reference implementation (R, Stata, or the method authors' Python package) on identical inputs, within a pre-registered tolerance | 605 |
 | `validated` | known-truth simulation, published-number, coverage, or documented-convention evidence, but not in the main R/Stata harness | 425 |
-| `api_stable` | stable public interface; unit tests exist, but **no numerical-validation claim** | 657 |
+| `api_stable` | stable public interface; unit tests exist, but **no numerical-validation claim** | 658 |
 | `experimental` | method or API may still change | 4 |
 
-In other words, 1,030 of the 1,691 registered functions carry numerical
+In other words, 1,030 of the 1,692 registered functions carry numerical
 evidence. Breadth is not the same as validation; check the tier of the
 functions you depend on.
 

@@ -30,9 +30,9 @@
 
 ---
 
-Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint — or optionally use Plus/Pro hosted AI on iPhone and Android. Capture or import up to 10 food photos with an optional note, scan a barcode, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. On iOS 27, Apple Intelligence can also analyze food photos on-device when you select it. The core tracker has no required account, general cloud sync, tracking, or ads. Its sole first-party sync exception for scores and profiles is an optional 18+ Weekly Challenge that shares only a pseudonymous display profile and weekly aggregate scores with other enrolled participants — never raw logs.
+Open-source calorie and nutrition tracker for iPhone, iPad, and Android. Log food by voice, photo, barcode, text, or manual entry; review the estimate before saving; and track macros, water, progress, and workouts. Use your own AI key, choose a supported on-device option, or subscribe to optional Hosted Plus/Pro without managing a key. The core tracker has no required account, general Fud AI-operated cloud sync, analytics, or ads. Optional 18+ Challenges share a display profile and aggregate scores, not your raw diary.
 
-Fud AI 8.0 brings Live Voice to iPhone, iPad and Android: talk to Fud AI to log meals, scan barcodes and check your progress, from the Home orb (and Siri, the Action Button or, on iOS 18, Control Center). It also adds iPad support and AR portion sizing on iOS, a workout rest timer and routines, Weekly Recap and Steps, kcal or kJ, and Short or Direct share links. Android 7.2 brought the optional Plus/Pro hosted AI to Android through Google Play (Settings → AI Access, onboarding, credit packs) and moves the Android tip jar to Google Play. iOS and Android 7.1 add Weekly Challenge places with a podium and 20 places per page, Help & Feedback on GitHub or Discord, an Android in-app language picker, and on-device food-photo analysis with Apple Intelligence on iOS 27. iOS 7.1.2 keeps that update and makes the optional Plus/Pro hosted AI easier to find, shipping alongside the first subscription submission. 7.0 remains the release that added optional Plus/Pro hosted AI on iPhone, daily steps, Walk/Run logging, custom exercises, meal date/time, the Log Food widget, pinch-zoom photos, and Czech and Ukrainian.
+**What's new in 9.0:** The 04 Flash redesign gives Home, the diary, navigation, and settings a new look on iOS and Android. Home Screen widgets and the Apple Watch dashboard and complications match. Daily and Monthly Challenges are separate opt-ins alongside Weekly, and **About → App & Updates** shows when your store has a newer version. Hosted Plus/Pro plans are optional paid subscriptions with no free trial for new sign-ups. [Release notes](RELEASE_NOTES.md)
 
 Normal updates preserve existing local and Health data.
 
@@ -115,39 +115,42 @@ Its Dun & Bradstreet D-U-N-S Number is **311099925**, issued on **28 October 202
 
 ## AI Providers
 
-Pick any of the **16 LLM providers** for food analysis, meal what-if suggestions, optional nutrient-goal estimation, and Coach chat. Free Gemini keys are available at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Requests go directly from your device to the provider you configure. For text, voice-transcribed, and Siri food descriptions on supported iPhones, Apple Intelligence can run on-device only as the last fallback after BYOK provider/fallback attempts fail.
+Pick a provider for food analysis, meal what-if suggestions, optional nutrient-goal estimation, and Coach chat. BYOK requests go directly to the configured provider. Apple Intelligence on supported iPhones and downloadable Gemma models are separate on-device options. Not every provider model accepts photos or supports Coach's tools.
 
 | Provider | Format | Highlight | Needs API Key |
 |----------|--------|-----------|:---:|
-| Google Gemini | Gemini API | Gemini 3.5 Flash-Lite (default) / 3.6 Flash / 3.5 Flash | Yes |
-| OpenAI | OpenAI | GPT-5.4 Mini (default) / 5.5 / 5.4 Nano | Yes |
-| Anthropic Claude | Messages API | Sonnet 5 (default) / Opus 4.8 / Haiku 4.5 | Yes |
-| xAI Grok | OpenAI-compatible | Grok 4.3 | Yes |
-| OpenRouter | OpenAI-compatible | Any model, free-form IDs | Yes |
-| Together AI | OpenAI-compatible | Qwen 3.5, Gemma 4, MiniMax M3 | Yes |
-| Groq | OpenAI-compatible | Qwen 3.8 27B (preview; text and images) | Yes |
+| Google Gemini | Gemini API | Gemini 3.5 Flash-Lite (default), Gemini 4 Hydrogen | Yes |
+| OpenAI | Chat Completions and Responses | GPT-5.4 Mini (default), GPT-6 Luna, optional 6.1/6.2 | Yes |
+| Anthropic Claude | Messages API | Sonnet 5 (default), Haiku and Sonnet 5.5 | Yes |
+| xAI Grok | OpenAI-compatible | Grok 4.6, 4.3 and 4.7 | Yes |
+| OpenRouter | OpenAI-compatible | Presets and free-form IDs; free routing depends on capacity and region | Yes |
+| Together AI | OpenAI-compatible | Qwen 3.5 9B, Kimi K3.1 Pro, MiniMax M3.1 Flash (text) | Yes |
+| Groq | OpenAI-compatible | Qwen 3.8 27B (text and images), GPT-OSS (text) | Yes |
 | Hugging Face | OpenAI-compatible | Gemma 4 / 3 and Qwen 3.5 / 2.5 VL (open-weight router, free-form IDs) | Yes |
-| Fireworks AI | OpenAI-compatible | Qwen 3.7 Plus, MiniMax M3, Kimi K2.6 | Yes |
+| Fireworks AI | OpenAI-compatible | Kimi K3, MiniMax M3.1 Flash, Kimi K3.1 Pro | Yes |
 | DeepInfra | OpenAI-compatible | Gemma 4 / 3 vision models | Yes |
-| Mistral | OpenAI-compatible | Mistral Small / Medium, Ministral 14B | Yes |
-| DeepSeek | OpenAI-compatible | DeepSeek V4 Flash / Pro (text only) | Yes |
-| Alibaba Qwen | OpenAI-compatible | Qwen 3.7 Plus / 3.8 Max / 3-VL Plus; also Qwen live voice | Yes |
-| Cerebras | OpenAI-compatible | gpt-oss-120b, Gemma 4 (text only) | Yes |
+| Mistral | OpenAI-compatible | Mistral Small and Large 4, Ministral 14B | Yes |
+| DeepSeek | OpenAI-compatible | DeepSeek Flash (photos and text), V4 Pro (text) | Yes |
+| Alibaba Qwen | OpenAI-compatible | Qwen 3.8 Flash and Qwen4-Max; Qwen Live uses a separate workspace key | Yes |
+| Cerebras | OpenAI-compatible | Qwen 3.8 27B (photos and text), GPT-OSS 120B (text) | Yes |
 | Ollama | OpenAI-compatible (local) | Qwen 3 VL, Gemma 4, Llama 3.2 Vision, LLaVA, Moondream | No |
 | Custom (OpenAI-compatible) | OpenAI-compatible | You set base URL + free-form model name | Optional |
 
 ## Speech-to-Text Providers
 
-Pick how voice input is transcribed. Native iOS / Android is the default — free, on-device where supported, real-time. On Android, native speech first tries the on-device language path, then falls back to Android recognition with network/provider defaults if the phone lacks offline support for that language. Each provider has its own language setting: use Provider Auto, Use Device Language, or an explicit language hint where supported.
+Pick how voice input is transcribed. System Speech Recognition shows live partial results, but may use the network depending on the device and language. Recorded providers show text after you stop. Use Provider Auto, Use Device Language, or an explicit hint where supported.
 
 | Provider | Notes |
 |----------|-------|
-| Native iOS / Android (On-Device) | Free, offline where the phone supports the selected language, real-time partial results |
-| Gemini Audio | Batch audio transcription through Gemini for BYOK users |
-| OpenAI Whisper | Whisper-1 via `/v1/audio/transcriptions` |
-| Groq (Whisper) | Whisper-large-v3, very fast, has a free tier |
-| Deepgram | Nova-3, fast and accurate |
-| AssemblyAI | Universal model, strong accuracy, free tier |
+| System Speech Recognition | Built-in live recognition; not guaranteed offline |
+| Downloadable speech models | Whisper Base, Parakeet v3, Qwen3-ASR; see [model requirements](local-models/README.md) |
+| Apple SpeechAnalyzer | Optional offline recorded transcription on supported iOS devices with the selected language asset installed |
+| Gemini Audio | Gemini 3.5 Transcribe in verbatim mode |
+| OpenAI | GPT-Transcribe via `/v1/audio/transcriptions` |
+| Groq | Whisper Large v3, optional Turbo |
+| Mistral | Voxtral Mini Transcribe 3, optional Small |
+| Deepgram | Nova-3 for BYOK; explicit language detection with Automatic |
+| AssemblyAI | STT 3.7 with Universal-2 for broader language coverage |
 
 For Android phones where native speech is inconsistent, Groq (Whisper) or Deepgram are recommended alternatives; the developer currently uses Groq.
 
@@ -180,19 +183,19 @@ For the Coach chat, every turn builds a slim system prompt from your live profil
 
 ## Screenshots
 
-Nine screens from the current app, from Home and Live Voice to Coach, Workouts and your own AI keys. They are captured on a simulator with demo data by [`scripts/screenshots/capture-ios.sh`](scripts/screenshots/capture-ios.sh).
+Nine screens from Fud AI 9.0 on iOS, from Home and Live Voice to Coach, Workouts, and AI settings. Captured on an iPhone simulator with fictional data using [`scripts/screenshots/capture-ios.sh`](scripts/screenshots/capture-ios.sh).
 
 <table>
   <tr>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/home.webp" width="230" alt="Home dashboard with calorie ring, macro and water pillars, and the day's diary">
+      <img src="web/assets/screenshots/home.webp" width="230" alt="04 Flash Home dashboard with calorie totals, nutrient progress, and the food diary">
       <br><br>
       <b>01 · Home · Dashboard</b>
       <br>
       <sub>Calorie ring, macro and water pillars, and one diary for meals, water and fasts. The orb next to + starts Live Voice.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/live-voice.webp" width="230" alt="Live Voice conversation logging breakfast with an Undo card">
+      <img src="web/assets/screenshots/live-voice.webp" width="230" alt="Live Voice with the Brulee mascot and a sample breakfast Undo card">
       <br><br>
       <b>02 · Live Voice · Talk to Log</b>
       <br>
@@ -288,7 +291,7 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 ```
 fud-ai/
 ├── ios/          # SwiftUI iOS app (v8.0 build 40)
-├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v8.0.1 / versionCode 45)
+├── android/      # Kotlin + Jetpack Compose app (Android 8.0+, 9.0 / versionCode 49)
 ├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)
@@ -388,7 +391,9 @@ See [SECURITY.md](SECURITY.md). Use [private vulnerability reporting](https://gi
 
 ## Privacy
 
-The core tracker has no required account, general Fud AI-operated cloud sync, or analytics. BYOK API keys are protected by iOS Keychain or Android EncryptedSharedPreferences, and requests go directly to the provider you choose. Food, weight, body-fat, water, fasting, and workout logs, custom meal times, goals, preferences, cached images, and widget/Watch snapshots are local except for OS backup/device transfer and the specific AI/STT, barcode, health-sync, update-check, export, or sharing action you initiate. Workout exercise illustrations are downloaded on demand from Fud AI's static asset CDN (`assets.fud-ai.app`) the first time you open an exercise (a plain image request with no account or device identifier) and cached on the device; if the CDN is unreachable the app shows the exercise icon instead. The sole first-party aggregate-sync exception is the optional 18+ Weekly Challenge: enrolled participants share a chosen display name, optional X/Instagram handle, stable participant ID, and bounded weekly overall/activity/nutrition/consistency/hydration aggregates; raw food/workout logs, body data, and photos never sync to it. Challenge leaderboards require a participant credential, and leaving remotely deletes the profile while inactive profiles auto-delete after 90 days. When Coach is used, it may send explicitly logged fasting context to your selected AI provider, but it never infers fasting from missing meals. Shared meal links carry the selected meal details in the URL, so anyone with the link can read them. Apple Health / Health Connect access is optional and can be reviewed or revoked through Manage Access; fasting is not synced to either health store. **Delete All Data** wipes the current local installation and requests challenge deletion when enrolled and online, but never removes Apple Health, Health Connect, or older OS backups. See the complete [Privacy Policy](https://fud-ai.app/privacy.html).
+The core tracker has no required account, general Fud AI-operated cloud sync, or analytics. BYOK keys are protected by iOS Keychain or Android EncryptedSharedPreferences, and AI requests go directly to the provider you choose. Hosted Plus/Pro requests go through Fud AI's service. Eligible data stays on the device unless you use a feature that sends it elsewhere, such as AI analysis, optional health sync or cloud backup, or sharing. Fud AI also makes service requests such as downloading exercise illustrations and checking for updates.
+
+Optional 18+ Challenges share a display name, optional social handle, participant ID, and bounded aggregates. Daily and Monthly boards require separate opt-ins; no raw food logs, workouts, body measurements, or photos are sent to the challenge service. Share links can be opened by anyone who has them. **Delete All Data** clears the current app installation and requests challenge deletion when applicable; it does not remove Apple Health, Health Connect, or older backups. See the [Privacy Policy](https://fud-ai.app/privacy) and [Terms](https://fud-ai.app/terms).
 
 ## License
 
@@ -399,7 +404,8 @@ MIT License. See [LICENSE](LICENSE).
 - **Developer:** Apoorv Darshan
 - **Email:** apoorv@fud-ai.app or ad13dtu@gmail.com
 - **Discord:** [Join the Fud AI server](https://discord.gg/Py4VrFctP3) — use **`/ask`** in the server to get help from the Fud AI bot
-- **Follow on X:** [@apoorvdarshan](https://x.com/apoorvdarshan)
+- **Follow on X:** [@fudaiapp](https://x.com/fudaiapp)
+- **Follow on Instagram:** [@fudaiapp](https://www.instagram.com/fudaiapp/)
 - **Follow on LinkedIn:** [Fud AI](https://www.linkedin.com/company/fud-ai-app)
 - **Report an Issue:** [github.com/apoorvdarshan/fud-ai/issues/new?template=bug_report.yml](https://github.com/apoorvdarshan/fud-ai/issues/new?template=bug_report.yml)
 - **Request a Feature:** [github.com/apoorvdarshan/fud-ai/issues/new?template=feature_request.yml](https://github.com/apoorvdarshan/fud-ai/issues/new?template=feature_request.yml)

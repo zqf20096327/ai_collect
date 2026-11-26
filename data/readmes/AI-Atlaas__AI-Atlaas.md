@@ -308,6 +308,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [Roblox GUI Maker](https://robloxguimaker.dev/)
    Free AI-assisted Roblox Studio GUI planner for ScreenGui layouts, HUDs, menus, and Lua UI starter-code ideas.
 
+- [Kite](https://kite.new)  
+   Kite is a design tool your AI agents and your team share. Claude, ChatGPT, Cursor or Codex connect through a hosted MCP server and draw real, editable layers in the same file your team edits live.
+
 #### Viedo & Multi-Media
 
 - [Runway](https://runwayml.com/)  
@@ -381,6 +384,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [Magic Hour](https://magichour.ai/)  
    Create AI videos and images with tools for text-to-video, image-to-video, face swap, lip sync, and video-to-video.
+
+- [FastScribe](https://fastscribe.org/)  
+   Transcribes recorded video and audio into editable text with speaker labels and exports timestamped subtitles as SRT files.
 
 #### Modeling & 3D
 
@@ -843,6 +849,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [Totur GPT](https://github.com/plastic-labs/tutor-gpt)  
    Tutor-GPT is an LLM powered learning companion. It dynamically reasons about your learning needs and updates its own prompts to best serve you.
 
+- [StudyArena](https://studyarena.com)  
+   Compare three AI explanations for the same study question, vote for the most helpful answer, then reveal the models. The free plan requires an account.
+
 ---
 
 ### 🔮 Open-source & Self-hosted
@@ -1131,6 +1140,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [RunPod](https://www.runpod.io/)  
    Globally distributed GPU cloud built for production. Develop, train, and scale AI applications.
+
+- [Apidly Cloud](https://apidly.com/)  
+   Managed GPU servers and serverless GPU endpoints for AI, with ready-made templates and per-second billing.
 
 - [Lightning](https://lightning.ai/)  
    Code together. Prototype. Train. Deploy. Host AI web apps. From your browser - with zero setup.

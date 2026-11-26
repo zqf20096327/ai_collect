@@ -1,6 +1,6 @@
 # AI Skills Collection
 
-A curated collection of specialized AI skills for WordPress development, content creation, marketing, and more. These skills follow the [agentskills.io](https://agentskills.io) standard and work with Claude, ChatGPT, and other AI assistants.
+A curated collection of specialized AI skills for WordPress development, running WordPress sites, content creation, marketing, and more. These skills follow the [agentskills.io](https://agentskills.io) standard and work with Claude, ChatGPT, and other AI assistants.
 
 ## What are AI Skills?
 
@@ -117,6 +117,48 @@ Architecture and development guidelines for WordPress plugins published on wordp
 
 *More WordPress skills coming soon: Interactivity API, Block Development, Block Themes, REST API, and more.*
 
+### WordPress for site owners
+
+#### [Review a WordPress plugin — English](https://github.com/fernandotellado/ai-skills/blob/main/review-wordpress-plugin-en/SKILL.md)
+Helps people who run a WordPress site, whether or not they can code, decide if a plugin can be trusted before installing it, and review the plugins they already have. It works only with public signals: where the plugin comes from, its status in the WordPress.org directory, how it is maintained, its vulnerability history and how fast each flaw was fixed, support, ownership changes and the external services it uses. It does not read or run code, and it says what it could not check. For code review, use the WordPress Plugin Security skill.
+
+**Key topics:**
+- Origin checks: official directory, vendor site, GPL redistributors, nulled copies
+- Directory notices: closed plugins and their reasons, the "not tested with the latest 3 major releases" warning
+- Maintenance signals: changelog quality, release frequency read in context, support, vulnerability reporting channel
+- Vulnerability history in public databases, read by severity, access needed, time to fix and repetition
+- Ownership changes and external services
+- A three-level verdict (install / install with precautions / do not install), with sources and a list of what was not checked
+- Periodic review of all installed plugins, sorted by urgency
+
+**Includes reference files:**
+- `references/signals.md` — How to read each signal, and the criteria for each verdict level
+- `references/report.md` — Report templates for one plugin and for a full review
+
+**Compatibility:** Any AI assistant. With web access it checks the sources itself. Without it, it asks the user to paste the data.
+
+---
+
+#### [Revisar un plugin de WordPress — Español](https://github.com/fernandotellado/ai-skills/blob/main/revisar-plugin-wordpress-es/SKILL.md)
+Ayuda a quien gestiona una web WordPress, sepa o no programar, a decidir si un plugin es de fiar antes de instalarlo y a repasar los que ya tiene instalados. Trabaja solo con señales públicas: de dónde viene el plugin, su estado en el directorio de WordPress.org, cómo se mantiene, su historial de vulnerabilidades y cuánto se tardó en corregir cada una, el soporte, los cambios de dueño y los servicios externos que usa. No lee ni ejecuta código, y dice qué no ha podido comprobar. Para revisar el código está la skill WordPress Plugin Security.
+
+**Key topics:**
+- Comprobación del origen: directorio oficial, web del autor, redistribuidores GPL, copias «nulled»
+- Avisos del directorio: plugins cerrados y sus motivos, aviso de no probado con las tres últimas versiones mayores
+- Señales de mantenimiento: calidad del registro de cambios, frecuencia de versiones leída en contexto, soporte, canal para avisar de vulnerabilidades
+- Historial de vulnerabilidades en bases de datos públicas, valorado por gravedad, acceso necesario, tiempo de corrección y repetición
+- Cambios de dueño y servicios externos
+- Veredicto en tres niveles (instalar, instalar con precauciones, no instalar), con fuentes y lista de lo que no se ha comprobado
+- Repaso periódico de todos los plugins instalados, ordenado por urgencia
+
+**Includes reference files:**
+- `references/senales.md` — Cómo interpretar cada señal y criterios de cada nivel del veredicto
+- `references/informe.md` — Plantillas del informe de un plugin y del repaso completo
+
+**Compatibility:** Cualquier asistente de IA. Con acceso a la web consulta las fuentes por su cuenta. Sin él, pide al usuario que pegue los datos.
+
+---
+
 ### Writing & Content
 
 #### [Humanize Text — English](https://github.com/fernandotellado/ai-skills/blob/main/humanize-text-en/SKILL.md)
@@ -218,7 +260,7 @@ description: "Brief description"
 compatibility: "Version/platform requirements"
 license: GPL-2.0-or-later
 metadata:
-  author: ayudawp
+  author: fernando-tellado
   version: "1.0"
 ---
 ```
@@ -279,6 +321,7 @@ Skills are based on:
 - Official WordPress Developer Resources
 - WordPress Coding Standards
 - WordPress VIP Documentation
+- WordPress.org plugin directory documentation and public vulnerability databases (Patchstack, WPScan, Wordfence Intelligence)
 - Post-incident reviews of real plugin vulnerabilities, including CVE-2026-81754
 - Wikipedia's "Signs of AI writing" guide (WikiProject AI Cleanup)
 - Community projects: [stop-slop](https://github.com/hardikpandya/stop-slop), [humanizer](https://github.com/blader/humanizer)

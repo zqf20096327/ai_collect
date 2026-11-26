@@ -19,8 +19,8 @@
   <a href="https://membase.com">Website</a> ·
   <a href="https://docs.membase.com">Docs</a> ·
   <a href="https://app.membase.com">Web app</a> ·
-  <a href="https://discord.gg/nB9EfPGsSf">Discord</a> ·
-  <a href="https://x.com/Unibase_AI">X</a>
+  <a href="https://discord.gg/G6frJAJxdV">Discord</a> ·
+  <a href="https://x.com/Membase_">X</a>
 </p>
 
 <p align="center">
@@ -150,4 +150,4 @@ entry, with and without a developer key.
 ## License
 
 MIT; see [LICENSE](https://github.com/membaseai/membase/blob/main/LICENSE). `membase-ai[local]` also
-installs membase-core, the compiled engine, under its own Unibase license.
+installs membase-core, the compiled engine, under its own proprietary license (Membase Core License).

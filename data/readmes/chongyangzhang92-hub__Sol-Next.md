@@ -1,3 +1,5 @@
+> 当前版本 7.0.7-public（构建号 727）基于 6.5.1-public 原始 APK 提升版本重新签名发布；本次验证签名、文件保留和 Android 16 安装启动，历史性能数据未在本次重新测量。
+
 <div align="center">
 
 <img src="docs/media/hero-banner.png" alt="Sol Next v6.3 Public Edition — 致敬并深度重构自 Mika 的新一代极速安卓 AI 助理" width="100%" />
@@ -12,7 +14,7 @@
 
 <br/>
 
-<a href="https://github.com/chongyangzhang92-hub/Sol-Next/releases/latest"><img src="https://img.shields.io/badge/下载公开版%20APK-v6.3.0%20(零内置%20Key)-10b981?style=for-the-badge&logo=android&logoColor=white" alt="下载公开版 APK" /></a>
+<a href="https://github.com/chongyangzhang92-hub/Sol-Next/releases/latest"><img src="https://img.shields.io/badge/下载公开版%20APK-v7.0.7%20(零内置%20Key)-10b981?style=for-the-badge&logo=android&logoColor=white" alt="下载公开版 APK" /></a>
 <a href="https://chongyangzhang92-hub.github.io/Sol-Next/"><img src="https://img.shields.io/badge/在线产品官网-高清视频演示-0284c7?style=for-the-badge&logo=googlechrome&logoColor=white" alt="在线产品官网" /></a>
 <a href="https://github.com/wangzan101/Mika"><img src="https://img.shields.io/badge/致敬原作者-wangzan101%2FMika-6366f1?style=for-the-badge&logo=github&logoColor=white" alt="致敬 Mika" /></a>
 
@@ -86,7 +88,7 @@
 
 ### 5. 完整功能全景对比表（Comparison / Alternatives）
 
-| 对比维度 | Mika 原版 (`wangzan101/Mika`) | **Sol Next 公开版 (`v6.3.0-public`)** |
+| 对比维度 | Mika 原版 (`wangzan101/Mika`) | **Sol Next 公开版 (`v7.0.7-public`)** |
 |---|---|---|
 | **开源协议与渊源** | Apache-2.0 原创开源标杆 | Apache-2.0 · 致敬并基于 Mika 深度重构演进 |
 | **模型接入与隐私** | BYOK 自带 Key / 账号登录，无中转服务器 | **纯公开零内置 Key（BYOK）**，直连用户所选服务商，支持 DeepSeek / OpenAI / OpenRouter / 硅基流动 / 通义千问一键预设 + 实时握手测速 |
@@ -158,8 +160,8 @@
 
 ### 第 1 步：下载安装公开版 APK
 前往 [**Releases 页面**](https://github.com/chongyangzhang92-hub/Sol-Next/releases/latest) 下载：
-- **`Sol-Next-v6.3.0-public-arm64.apk`**（推荐绝大多数现代安卓手机，85 MB，包名 `ai.sol.next`）
-- **`Sol-Next-v6.3.0-public-universal.apk`**（全架构通用包，含 `arm64-v8a` + `x86_64`，106 MB）
+- **`Sol-Next-v7.0.7-public-arm64.apk`**（推荐绝大多数现代安卓手机，33.7 MB，包名 `ai.sol.next`）
+- **`Sol-Next-v7.0.7-public-universal.apk`**（全架构通用包，含 `arm64-v8a` + `x86_64`，46.5 MB）
 
 > 公开版使用独立包名 `ai.sol.next`，与任何其他应用互不冲突，且**不包含任何内置密钥、不连接任何私有服务器**。
 

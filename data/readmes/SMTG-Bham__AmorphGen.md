@@ -8,6 +8,7 @@
   <a href="https://github.com/SMTG-Bham/AmorphGen/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://pypi.org/project/amorphgen/"><img src="https://img.shields.io/pypi/v/amorphgen?label=PyPI" alt="PyPI"></a>
   <a href="https://doi.org/10.5281/zenodo.24207926"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24207926.svg" alt="DOI"></a>
+  <a href="https://arxiv.org/abs/2611.29539"><img src="https://img.shields.io/badge/arXiv-2611.29539-b31b1b.svg" alt="arXiv"></a>
 </p>
 
 <p align="center">
@@ -1215,11 +1216,20 @@ dependency conditions and restart limits.
 <details>
 <summary><h2>Citation</h2></summary>
 
-If you use AmorphGen in your research, please cite the package
-and the potential(s) you used.
+If you use AmorphGen in your research, please cite the paper
+(arXiv:2611.29539), the software version you used, and the potential(s) you used.
 
 **AmorphGen:**
 ```bibtex
+@article{kaewmeechai2026amorphgen,
+  author  = {Kaewmeechai, Chaiyawat and Slocombe, Louie and Manche, Alexis G. and Scanlon, David O.},
+  title   = {AmorphGen: A Python package for amorphous structure generation
+             with machine-learning and classical interatomic potentials},
+  journal = {arXiv preprint arXiv:2611.29539},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2611.29539}
+}
+
 @misc{amorphgen,
   author = {Kaewmeechai, Chaiyawat and Slocombe, Louie and Manche, Alexis G. and Scanlon, David O.},
   title  = {AmorphGen: A Python package for amorphous structure generation
@@ -1229,8 +1239,6 @@ and the potential(s) you used.
   url    = {https://github.com/SMTG-Bham/AmorphGen}
 }
 ```
-
-A Zenodo DOI for tagged releases will be added on first stable release.
 
 **Foundation potentials (cite the one you used):**
 

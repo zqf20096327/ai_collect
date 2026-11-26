@@ -1,7 +1,7 @@
 # GroundFoil: deep learning for inverted airfoils in ground effect
 
 [![Code DOI](https://zenodo.org/badge/1454795941.svg)](https://doi.org/10.5281/zenodo.24176980)
-[![Dataset DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24424329.svg)](https://doi.org/10.5281/zenodo.24424329)
+[![Dataset DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24424328.svg)](https://doi.org/10.5281/zenodo.24424328)
 
 **GroundFoil** predicts the flow around **inverted airfoils in ground effect**
 (F1 front wings) with a U-Net trained on our own RANS simulations. It builds on
@@ -121,8 +121,8 @@ The study in eighteen steps, each with its own page:
     from the mesh: a thick wing with a blunt trailing edge has two steady
     solutions on the normal mesh at the lowest speed, one on the fine mesh.
 
-**Data:** the simulations, the trained models and the NACA 4412 sweep are on
-Zenodo, https://doi.org/10.5281/zenodo.24424329. All commands are in
+**Data:** the simulations, the trained models, the ride-height sweeps and the
+map of the peaks are on Zenodo, https://doi.org/10.5281/zenodo.24424328. All commands are in
 [How to run it](docs/howto.md).
 
 ## What the network learns
@@ -272,7 +272,7 @@ GitHub's "Cite this repository" button gives the same in other formats.
 
 To cite the dataset and the trained models: M. T. A. Sial, *GroundFoil dataset:
 RANS simulations of inverted airfoils in ground effect, and trained surrogate
-models*, version 1.0, Zenodo, https://doi.org/10.5281/zenodo.24424329.
+models*, version 1.1, Zenodo, https://doi.org/10.5281/zenodo.24537289.
 
 Other references used on these pages: [References](docs/references.md).
 

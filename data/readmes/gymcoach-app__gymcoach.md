@@ -287,9 +287,10 @@ on your own key - all self-hosted.
   set belongs to in its `block` column. A block is the row's
   position among the workout's copies of that lift, so reordering, removing
   or replacing one of those rows re-assigns sets logged before.
-- **Reorder a workout** - "Move up" and "Move down" in an exercise's menu
-  change the order of a workout's exercises, and the next session follows it;
-  a superset moves as one block.
+- **Reorder a workout** - drag an exercise by its grip (mouse, finger or
+  pen), or use "Move up" and "Move down" in its menu, to change the order of a
+  workout's exercises; the next session follows it, and a superset moves as
+  one block.
 - **Cardio in a program** - a cardio exercise is prescribed by a duration and
   an optional distance ("20 min · 5 km") instead of sets, reps and RIR, and the
   live session starts its inputs from that target.
@@ -428,8 +429,9 @@ backups alongside the database.
 
 ## Testing
 
-Three tiers: unit/component (Vitest + jsdom), integration (Vitest against a
-real Postgres), and end to end (Playwright driving the built app).
+Three tiers: unit/component (Vitest, in Node, with jsdom for the tests that ask
+for a DOM), integration (Vitest against a real Postgres), and end to end
+(Playwright driving the built app).
 
 ```bash
 npm run test            # unit and component tests

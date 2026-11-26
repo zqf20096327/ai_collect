@@ -179,6 +179,23 @@ layerpool train --model Qwen/Qwen3-8B --data data.jsonl --method sft --epochs 1 
 ```
 
 `--method` also takes `cpt`, `dpo`, `ipo`, `simpo` and `orpo`. In Python the same loop is `run.train("data.jsonl", method="sft")`.
+
+`--data` is a `.jsonl`, `.json`, `.txt` or `.md` file, or the name of a dataset on Hugging Face (with `pip install "layerpool[hf]"`):
+
+```bash
+layerpool train --model Qwen/Qwen3-8B --data yahma/alpaca-cleaned --split "train[:5000]" --out my-adapter
+```
+
+`--split` picks its split (`train` by default) and `--subset` its configuration, when it has several. Rows are read as they are:
+
+| Format | Fields |
+| --- | --- |
+| Chat | `messages` |
+| ShareGPT | `conversations` |
+| Alpaca | `instruction`, `output`, and `input` when there is one |
+| Prompt and completion | `prompt` and `completion`, or `question` and `answer` |
+| Plain text | `text` |
+| Preference (`dpo`, `ipo`, `simpo`, `orpo`) | `prompt`, `chosen` and `rejected`, or whole conversations in `chosen` and `rejected` |
 </details>
 
 ## What you can train
@@ -286,6 +303,21 @@ dashboard or with `layerpool approve CODE`.
 | `LAYERPOOL_REPLAY_GB` | GB of recent steps the pool keeps on disk to redo them after a device drops out; past it, devices save a new checkpoint (default `4`) |
 
 </details>
+
+## Compared to other tools
+
+| | layerpool | [FSDP](https://docs.pytorch.org/tutorials/intermediate/FSDP_tutorial.html) / [DeepSpeed](https://github.com/deepspeedai/DeepSpeed) | [Petals](https://github.com/bigscience-workshop/petals) | [exo](https://github.com/exo-explore/exo) |
+| :--- | :---: | :---: | :---: | :---: |
+| Trains the model's own layers | ✅ | ✅ | ❌ | ❌ |
+| LoRA, QLoRA and full fine-tuning | ✅ | ✅ | ❌ | ❌ |
+| Training from scratch | ✅ | ✅ | ❌ | ❌ |
+| Works with the Hugging Face Trainer | ✅ | ✅ | – | ❌ |
+| NVIDIA, Apple Silicon and CPU in one model | ✅ | ❌ | partly | ❌ |
+| Over the internet, no port forwarding | ✅ | ❌ | ✅ | ❌ |
+| Stronger devices get more layers | ✅ | ❌ | ✅ | ✅ |
+| Goes on when a device drops out | ✅ | ❌ | ✅ | – |
+
+<sub>From each project's documentation, November 2026.</sub>
 
 ## FAQ
 

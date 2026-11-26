@@ -140,7 +140,13 @@ export ANTHROPIC_API_KEY=...          # or OPENAI_API_KEY, or ~/.rpi/agent/model
 rpi                                   # interactive TUI
 rpi -p "summarize the README"         # one-shot
 rpi --mode json -p "list the crates"  # machine-readable event stream
+rpi --mini "explain this error"       # low-memory text run
 ```
+
+`--mini` accepts prompts from arguments or piped input and prints the final
+reply. It keeps conversation context only for the current invocation and skips
+session storage, durable workflows, extension loading, and prompt resource
+discovery. Add `--tools read` to enable the built-in `read` tool.
 
 Sessions persist as JSONL and survive a crash mid-run; `rpi` resumes from the
 last committed frame rather than replaying the turn. Custom Anthropic or
@@ -482,7 +488,7 @@ machine. See [`docs/remote/user-guide.md`](docs/remote/user-guide.md).
 
 | | |
 | --- | --- |
-| Current release | **[0.27.1](https://github.com/bigfish1913/pi-rust/releases)** (eleven workspace crates, one shared version) |
+| Current release | **[0.28.0](https://github.com/bigfish1913/pi-rust/releases)** (eleven workspace crates, one shared version) |
 | Stability | `rpi-ai`, `rpi-agent`, `rpi-tools`, `rpi-harness`, `rpi-plugin-sdk` are the intended stable surface |
 | MSRV | 1.88 |
 | Platforms | Linux (GNU and musl), macOS, Windows (CI runs the suite on Linux) |
@@ -566,7 +572,7 @@ Join us to ask questions, share ideas and try early builds.
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="https://assets.bigfisharc.cn/images/support/weixin.png?date=2026-11-23"><img src="https://assets.bigfisharc.cn/images/support/weixin.png?date=2026-11-23" width="230" alt="微信交流群二维码 / WeChat group QR code"></a><br>
+      <a href="https://assets.bigfisharc.cn/images/support/weixin.png?date=2026-11-25"><img src="https://assets.bigfisharc.cn/images/support/weixin.png?date=2026-11-25" width="230" alt="微信交流群二维码 / WeChat group QR code"></a><br>
       <sub><b>WeChat / 微信交流群</b> — 扫码加入 / Scan to join</sub>
     </td>
     <td align="center" width="50%">

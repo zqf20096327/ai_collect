@@ -68,6 +68,7 @@ local-first and fully open source (AGPL-3.0).
   <a href="#what-you-can-hand-to-nika"><b>Examples</b></a> ·
   <a href="#why-a-file-and-not-a-chat"><b>Why a file</b></a> ·
   <a href="#works-where-you-already-work"><b>Where it works</b></a> ·
+  <a href="#behind-your-application-nika-serve"><b>Serve</b></a> ·
   <a href="#know-the-limits"><b>Limits</b></a> ·
   <a href="https://docs.nika.sh"><b>Docs</b></a>
 </p>
@@ -286,20 +287,20 @@ curl -LsSf https://nika.sh/install.sh | sh
   `node_modules/.bin`). The package bundles the engine of its own version:
   check `nika --version`.
 - **A container** (Linux, amd64 and arm64), built from the same release
-  binaries: `docker run --rm ghcr.io/nika-open/nika:0.124.5 --version`.
+  binaries: `docker run --rm ghcr.io/nika-open/nika:0.125.1 --version`.
   Mount a project to check or run its files, for example
-  `docker run --rm -v "$PWD:/work" -w /work ghcr.io/nika-open/nika:0.124.5 check hello.nika`.
+  `docker run --rm -v "$PWD:/work" -w /work ghcr.io/nika-open/nika:0.125.1 check hello.nika`.
   Images up to 0.124.4 stay at `ghcr.io/supernovae-st/nika`.
 - **A release archive:** download one from the
   [latest release](https://github.com/nika-open/nika/releases/latest).
   Every release ships a checksum manifest, a GitHub attestation and SLSA
   provenance; [RELEASING.md](RELEASING.md#what-a-user-can-prove) gives the
   three verification commands, for example
-  `gh attestation verify nika-macos-arm64-0.124.5.tar.gz --repo nika-open/nika`.
+  `gh attestation verify nika-macos-arm64-0.125.1.tar.gz --repo nika-open/nika`.
   Releases up to 0.124.4 were built in `supernovae-st/nika`, and that
   organization serves their attestations: verify one of them with
   `--owner supernovae-st --signer-repo supernovae-st/nika` instead of `--repo`.
-- **Nix:** `nix profile install github:nika-open/nika/v0.124.5` builds
+- **Nix:** `nix profile install github:nika-open/nika/v0.125.1` builds
   the release from the repository's flake. Without the tag, the flake builds
   the default branch, which can be ahead of the latest release.
 - **Windows:** use WSL2 and the Linux binary. Native Windows binaries are
@@ -442,7 +443,7 @@ file for you, and the check keeps it honest:
 | Where | What you get | Watch |
 |---|---|---|
 | **Your coding agent** · [nika-plugins](https://github.com/nika-open/nika-plugins) | Claude Code, Codex, Cursor and others learn to write a workflow, check it and repair what the check finds. | ▶ [above](media/gifs/agent-plugin.optimized.gif) |
-| **Your editor** · `nika lsp` | The language server inside the binary: the check's findings as you type, in any LSP client. The VS Code extension ([nika-vscode](https://github.com/nika-open/nika-vscode)) stays at 0.120 and is not qualified with 0.124; point its `nika.server.path` at your 0.124 binary ([known limits](https://docs.nika.sh/changelog/known-limits#the-vs-code-extension-stays-at-0-120)). | ▶ [The audit, as you type](media/gifs/editor-diagnostics.optimized.gif) |
+| **Your editor** · `nika lsp` | The language server inside the binary: the check's findings as you type, in any LSP client. The VS Code extension ([nika-vscode](https://github.com/nika-open/nika-vscode)) stays at 0.120 and is not qualified with 0.125; point its `nika.server.path` at your 0.125 binary ([known limits](https://docs.nika.sh/changelog/known-limits#the-vs-code-extension-stays-at-0-120)). | ▶ [The audit, as you type](media/gifs/editor-diagnostics.optimized.gif) |
 | **Your pull requests** · [nika-action](https://github.com/nika-open/nika-action) | One comment with the verdict, before anyone spends a token. | ▶ [Every pull request gets a verdict](media/gifs/pr-check-comment.optimized.gif) |
 | **Your app** · [nika-client](https://github.com/nika-open/nika-client) | Run a workflow from TypeScript ([the package](https://www.npmjs.com/package/@nika-open/nika)), get a typed result and verify its receipt, with the engine the package bundles or against your `nika serve`. | ▶ [Run it from your app, prove what ran](media/gifs/typescript-client.optimized.gif) · ▶ [One client, two doors](media/gifs/sdk-doors.optimized.gif) |
 
@@ -504,14 +505,59 @@ whole API.
 </p>
 <p align="center"><sub>Your app asks, the engine decides, the receipt proves it. The code is the quick start above, which the capture ran, with lines 3 and 6 also shown as its server driver ran them against <code>nika serve</code>. Every event, verdict, hash and version on screen was captured from <code>@supernovae-st/nika</code> 0.124.0, the engine it bundles and <code>nika serve</code> in a <code>mock/echo</code> rehearsal; the cards, lanes, packets and pacing are illustration.</sub></p>
 
+### Behind your application: `nika serve`
+
+`nika serve --bind` runs the same engine as an HTTP server beside your
+backend. It admits a job by workflow name, queues and runs it, and keeps its
+record. Since 0.125 one server holds the jobs of the many users of an
+application:
+
+- A job carries the `owner` and `labels` your backend states, and
+  `GET /v1/jobs` finds jobs again by owner, label, status and date.
+- Waiting jobs are shared fairly between owners: a user who submits fifty
+  jobs does not delay the user who submits one. `--provider-concurrency`
+  caps the model calls in flight on one provider across every job.
+- `--job-retention` forgets settled jobs after a window.
+- A job a restart interrupted runs again as a new attempt of the same job
+  only when asked: `--retry-interrupted` is off by default, and
+  `POST /v1/jobs/{id}/retry` starts one on request.
+
+In a Nika project (a directory with a `nika.yaml`), with your workflows under
+`./workflows`:
+
+```sh
+umask 077 && mkdir -p .nika && openssl rand -hex 24 > .nika/serve.token
+nika serve --bind 127.0.0.1:8787 --workflows ./workflows \
+  --token-file .nika/serve.token --job-retention 7d --max-concurrent-per-owner 2
+```
+
+Then, from your backend or another terminal:
+
+```sh
+AUTH="Authorization: Bearer $(cat .nika/serve.token)"
+curl -s -X POST http://127.0.0.1:8787/v1/jobs -H "$AUTH" \
+  -H 'Idempotency-Key: report-user_123-1' -H 'Content-Type: application/json' \
+  -d '{"workflow": "workflows/report.nika", "owner": "user_123"}'
+curl -s -H "$AUTH" 'http://127.0.0.1:8787/v1/jobs?owner=user_123&status=failed,interrupted'
+```
+
+`owner` attributes a job; it does not control access. Whoever holds the token
+reads, lists, cancels and retries every job, so keep the token in your
+backend and apply your own authorization there. The TypeScript SDK does not
+call these routes yet: call them over HTTP. The
+[resident server guide](https://docs.nika.sh/sdk/operations/resident-server)
+covers the routes, and the
+[server runbook](https://docs.nika.sh/sdk/operations/server-runbook) covers
+sizing, an upgrade that keeps a way back and a support retry.
+
 ## Know the limits
 
-- **0.124 is the current release line.** Work stays focused on
+- **0.125 is the current release line.** Work stays focused on
   maintenance, security and the media capabilities workflows need; native
-  video is planned for 0.125. The 0.123.x line is the previous one, and
-  there is no hosted service. The known limits are listed in plain words,
+  video is planned for a later release. The 0.124.x line is the previous
+  one, and there is no hosted service. The known limits are listed in plain words,
   each with a way around it:
-  [Known limits in 0.124](https://docs.nika.sh/changelog/known-limits).
+  [Known limits in 0.125](https://docs.nika.sh/changelog/known-limits).
 - **Some requests cannot be expressed.** Nika then says what stopped it
   and writes nothing.
 - **A clean check is not a true answer.** It describes a file's structure
@@ -520,9 +566,9 @@ whole API.
   read a page or a model's answer for injected instructions, and a person
   who answers yes approves what follows. On a harness seat, what `permits:`
   covers is listed per seat ([harness agents](docs/usage/harness-agents.md)).
-- **This README describes the released 0.124.5.** Compare `nika --version`
+- **This README describes the released 0.125.1.** Compare `nika --version`
   with the [changelog](CHANGELOG.md), which lists what each release
-  changed. Until the next release, each change merged after 0.124.5 is
+  changed. Until the next release, each change merged after 0.125.1 is
   described in its own file under [`changelog.d/`](changelog.d/README.md),
   and the release folds those files into the changelog.
 
@@ -606,7 +652,7 @@ judgement.
 | 🦋 | **[nika](https://github.com/nika-open/nika)** | **The engine and CLI: write, check, run and verify AI workflows** |
 | 📖 | [nika-docs](https://github.com/nika-open/nika-docs) | The documentation, live at [docs.nika.sh](https://docs.nika.sh) |
 | 📜 | [nika-spec](https://github.com/nika-open/nika-spec) | The language specification and the suite that proves an engine follows it |
-| 🧩 | [nika-vscode](https://github.com/nika-open/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.124: use `nika lsp` and the JSON Schema |
+| 🧩 | [nika-vscode](https://github.com/nika-open/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.125: use `nika lsp` and the JSON Schema |
 | 🟦 | [nika-client](https://github.com/nika-open/nika-client) | Run and verify workflows from TypeScript |
 | ✅ | [nika-action](https://github.com/nika-open/nika-action) | A GitHub Action that posts a `nika check` verdict on your pull requests |
 | 🚀 | [nika-actions-starter](https://github.com/nika-open/nika-actions-starter) | A ready template: workflows, editor setup and CI from the first push |
@@ -627,13 +673,13 @@ repositories drive this engine without adding to its authority.
 [Examples](examples/README.md) ·
 [Documentation](https://docs.nika.sh) ·
 [TypeScript SDK](https://www.npmjs.com/package/@nika-open/nika) ·
-[Editor extension (0.120, not qualified with 0.124)](https://marketplace.visualstudio.com/items?itemName=supernovae.nika) ·
+[Editor extension (0.120, not qualified with 0.125)](https://marketplace.visualstudio.com/items?itemName=supernovae.nika) ·
 [Open specification](https://github.com/nika-open/nika-spec) ·
 [Registry](https://github.com/nika-open/nika-registry) ·
 [Planning archive](https://github.com/orgs/supernovae-st/projects/3) ·
 [Website](https://nika.sh)
 
-Nika 0.124 is the current open-source release line, usable today and
+Nika 0.125 is the current open-source release line, usable today and
 maintained. The engine is
 [AGPL-3.0-or-later](LICENSE); the specification and the TypeScript SDK are
 Apache-2.0.

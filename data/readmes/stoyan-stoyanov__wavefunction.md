@@ -48,7 +48,7 @@ Other agents take over your mouse, keyboard and screen to get things done. Wavef
 - **Secure sign-ins.** When a site needs your login, you sign in privately. The agent pauses and never sees what you type, and the chat stays signed in for next time.
 - **Files in and out.** Downloads come to your computer in the folder you choose, and files you add are ready to upload.
 
-Computer use needs Docker Desktop and a model that can read images. It's macOS-only for now.
+Computer use needs Docker Desktop, or Docker Engine on Linux, and a model that can read images.
 
 ## Connectors and skills
 
@@ -94,7 +94,7 @@ On a Mac, download the DMG from the [latest release](https://github.com/stoyan-s
 
 You need a Mac with Apple Silicon (macOS 11 or later). Setup walks you through connecting a provider, choosing models and creating your first project. Model usage is billed by your provider.
 
-On Linux there's no download yet: [build it from source](#linux-experimental). Linux support is experimental.
+On Linux (x86-64), the same release has an AppImage and a `.deb`: see [Linux](#linux-experimental). Linux support is experimental.
 
 <p>
   <img src="docs/assets/wavefunction-onboarding-provider-dark.png" width="49%" alt="Setup, step 1: connect a provider">
@@ -117,15 +117,20 @@ open src-tauri/target/release/bundle/macos/Wavefunction.app
 
 ### Linux (experimental)
 
-Linux support is experimental and community-supported. There are no Linux downloads or updates yet, so you build the app yourself, and computer use, notifications and dictation are macOS-only for now. Commands run in a [Bubblewrap](https://github.com/containers/bubblewrap) sandbox with a seccomp filter, from the same grants as on macOS; without `/usr/bin/bwrap` the app runs no commands at all.
+Linux support is experimental and community-supported. Dictation is macOS-only for now. Commands run in a [Bubblewrap](https://github.com/containers/bubblewrap) sandbox with a seccomp filter, from the same grants as on macOS; without `/usr/bin/bwrap` the app runs no commands at all.
 
-These steps are for Ubuntu 24.04 or later, on x86-64 or arm64:
+Each [release](https://github.com/stoyan-stoyanov/wavefunction/releases/latest) has x86-64 downloads for Ubuntu 22.04, Debian 12 and later. They aren't signed: compare them with the release's `SHA256SUMS-linux` (`sha256sum -c --ignore-missing SHA256SUMS-linux`).
+
+- **AppImage**: install Bubblewrap (`sudo apt install bubblewrap`), then `chmod +x Wavefunction-<version>-linux-x86_64.AppImage` and run it. It updates itself, as the Mac app does, from **Settings › About**, so keep it in a folder you can write to, such as `~/Applications`.
+- **`.deb`**: `sudo apt install ./Wavefunction-<version>-linux-x86_64.deb`, which also installs Bubblewrap. It doesn't update itself: install each new release's `.deb` the same way.
+
+To build it yourself, on arm64 among others, follow these steps for Ubuntu 24.04 or later:
 
 1. Install Node.js 22 or later (from [nodejs.org](https://nodejs.org) or nvm), [uv](https://docs.astral.sh/uv/getting-started/installation/) and [Rust](https://rustup.rs).
 2. Install Bubblewrap and the libraries Tauri needs:
 
    ```sh
-   sudo apt install bubblewrap build-essential file libwebkit2gtk-4.1-dev \
+   sudo apt install bubblewrap build-essential file git libwebkit2gtk-4.1-dev \
      libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
    ```
 
@@ -140,7 +145,7 @@ These steps are for Ubuntu 24.04 or later, on x86-64 or arm64:
 
 4. Install the `.deb` with `sudo apt install ./dist/desktop/*.deb`, or run the AppImage from `dist/desktop` directly.
 
-Other distributions need the same libraries under their own names (Tauri lists them in its [prerequisites](https://v2.tauri.app/start/prerequisites/#linux)). If Settings › Access says the sandbox is unavailable, your distribution may stop `bwrap` from making user namespaces: Ubuntu 23.10 and later do unless an AppArmor profile allows it, which `sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0` lifts until the next restart. The app keeps its data in `~/.local/share/app.harness.coding`. To update, pull the latest code and build again.
+Other distributions need the same libraries under their own names (Tauri lists them in its [prerequisites](https://v2.tauri.app/start/prerequisites/#linux)). If Settings › Access says the sandbox is unavailable, your distribution may stop `bwrap` from making user namespaces: Ubuntu 23.10 and later do unless an AppArmor profile allows it, which `sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0` lifts until the next restart. The app keeps its data in `~/.local/share/app.harness.coding`. To update a build of your own, pull the latest code and build again.
 
 While working on the interface, `npm run dev:fixture` runs it in your browser against a disposable synthetic workspace, with no account or model provider. `npm run desktop:dev` runs the app itself with the interface reloading as you edit. Before a pull request:
 

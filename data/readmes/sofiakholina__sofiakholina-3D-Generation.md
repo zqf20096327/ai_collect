@@ -1,3 +1,4 @@
+
 # sofiakholina-3D-Generation
 
 **Русский** · [English](#english)
@@ -6,33 +7,31 @@
 
 Workflow:
 
-- **3D-Gen_TripoSplat - генерация по одному фото** (точно, но со следами сплатов на меше)
-- **3D-Gen_Trellis - генерация по одному фото** (приблизительно, но без артефактов)
-- **3D-Gen_Pixal_MV - генерация по 1-4 видам** (результат не слишком хороший, но часто виды нужны)
+- **3D-Gen_TripoSplat - генерация по одному фото** (точный результат, но с "квадратными" следами на модели)
+- **3D-Gen_Trellis - генерация по одному фото** (результат средний, но поверхность гладкая)
+- **3D-Gen_Pixal_MV - генерация по 1-4 видам** (результат не слишком хороший, но есть мультивиды)
 
 **Видео по этим Workflow на [YouTube](https://youtu.be/Sw3rYAtZyCk) и [VK](https://vkvideo.ru/video-226908262_456239133)**
 
-**Workflow текстурирования любой вашей 3D-модели здесь:** [sofiakholina-3D-Texturing](https://github.com/sofiakholina/sofiakholina-3D-Texturing).
+**Workflow для текстурирования любой вашей 3D-модели:** [sofiakholina-3D-Texturing](https://github.com/sofiakholina/sofiakholina-3D-Texturing).
 
 ## Установка
 
-**Только для Windows, видеокарт NVIDIA от 6 GB VRAM с актуальным драйвером и ComfyUI версии 0.45+. Свободное место на диске: ComfyUI — около 6 GB, модели — около 16 GB для 3-х workflow.**
+**Только для Windows, видеокарт NVIDIA от 6 GB VRAM с актуальным драйвером и ComfyUI версии 0.45.0 или новее.**
+
+Свободное место на диске: ComfyUI — около 6 GB, модели — около 16 GB для 3-х workflow (можно использовать только один).
 
 ### Автоматически
 
 1. Установите ComfyUI: [Comfy Desktop](https://www.comfy.org/download), также подойдёт [ComfyUI Portable](https://github.com/Comfy-Org/ComfyUI/releases).
-2. Скачайте этот репозиторий: зелёная кнопка **Code** вверху страницы → **Download ZIP**, распакуйте в любую папку. После установки эту папку можно удалить (для Check.bat и Uninstall.bat скачайте архив заново).
-3. Закройте ComfyUI.
-4. Запустите **Install.bat**. 
-Если Windows покажет «Система Windows защитила ваш компьютер» — **Подробнее → Выполнить в любом случае**.
-5. Выберите, какие workflow установить (Enter — все), и ответьте, скачивать ли модели. При повторном запуске Install.bat загрузка продолжится с места остановки.
-6. Запустите ComfyUI: workflow — в левой панели, **Рабочие процессы** (клавиша W).
+2. Скачайте этот репозиторий: зелёная кнопка **Code** вверху страницы → **Download ZIP**, распакуйте в любую папку. После успешной установки эту папку можно удалить.
+3. Запустите **Install.bat**, далее установщик задаст вопросы и сделает все сам.
 
-Проверка: при открытом ComfyUI запустите **Check.bat** — он покажет, все ли ноды и модели на месте.
+   Если Windows покажет «Система Windows защитила ваш компьютер» — **Подробнее → Выполнить в любом случае**.
 
-**После обновления Comfy Desktop** запустите Install.bat ещё раз.
+4. Workflow находятся в ComfyUI в левой панели **Рабочие процессы** (клавиша W в открытом Comfy).
 
-**Удаление:** Uninstall.bat. Удаляет всё, что установил установщик; модели — только после вашего подтверждения. Файлы — в Корзину (с флешки и сетевых дисков — сразу, без Корзины).
+**Для удаления** запустите **Uninstall.bat**. В Корзину перемещаются подтверждённые файлы проекта. Изменённые и общие файлы сохраняются. Модели и s_tools в отдельной установке требуют отдельного подтверждения.
 
 ### Вручную
 
@@ -40,14 +39,11 @@ Workflow:
 
 ## Если не работает
 
-1. При открытом ComfyUI запустите **Check.bat** — он покажет, чего не хватает.
-2. Перезапустите ComfyUI.
-3. После обновления Comfy Desktop запустите Install.bat ещё раз.
-4. Не помогло — напишите мне в Telegram: https://t.me/sofiakholina и приложите скриншот ошибки.
+Запустите **Check.bat** и следуйте инструкциям. Если проблема осталась, найдите файл `diagnostic_report.txt` рядом с Install.bat или по пути из окна проверки, затем отправьте разработчику в [Telegram](https://t.me/sofiakholina).
 
 ## Известные особенности
 
-- Portable не запускается с ошибкой c10.dll — установите Microsoft Visual C++ Redistributable: https://aka.ms/vc14/vc_redist.x64.exe
+- Если Windows сообщает об отсутствующей VCRUNTIME140.dll или MSVCP140.dll, установите Microsoft Visual C++ Redistributable: https://aka.ms/vc14/vc_redist.x64.exe
 - В старом интерфейсе Comfy (не Nodes 2.0) видны служебные настройки Save 3D — их не нужно менять.
 
 ## Лицензия
@@ -58,13 +54,13 @@ GPL-3.0 (файл LICENSE). Сторонние шаблоны workflow и мод
 
 ## English
 
-**Generate an untextured 3D model from one or several views in ComfyUI: 3 workflows + installer.**
+**Generate an untextured 3D model from one or more views in ComfyUI. Includes three workflows and an installer.**
 
 Workflows:
 
-- **3D-Gen_TripoSplat - generation from one photo** (accurate, but with splat traces on the mesh)
-- **3D-Gen_Trellis - generation from one photo** (approximate, but without artifacts)
-- **3D-Gen_Pixal_MV - generation from 1-4 views** (the result is not very good, but views are often needed)
+- **3D-Gen_TripoSplat — from one photo** (accurate results, with square marks on the model)
+- **3D-Gen_Trellis — from one photo** (fair results, with a smooth surface)
+- **3D-Gen_Pixal_MV — from 1–4 views** (limited quality, with support for multiple views)
 
 **Videos about these workflows on [YouTube](https://youtu.be/Sw3rYAtZyCk) and [VK](https://vkvideo.ru/video-226908262_456239133)**
 
@@ -72,42 +68,35 @@ Workflows:
 
 ## Install
 
-**Windows only, NVIDIA GPU with 6 GB VRAM or more and a current driver, ComfyUI 0.45+. Free disk space: ComfyUI — about 6 GB, models — about 16 GB for the 3 workflows.**
+**Requires Windows, an NVIDIA GPU with at least 6 GB VRAM and an up-to-date driver, and ComfyUI 0.45.0 or later.**
 
-Workflow notes are in Russian.
+Free disk space: about 6 GB for ComfyUI and 16 GB for all three workflows’ models. You can use just one workflow.
 
 ### Automatic
 
-1. Install ComfyUI: [Comfy Desktop](https://www.comfy.org/download); [ComfyUI Portable](https://github.com/Comfy-Org/ComfyUI/releases) works too.
-2. Download this repository: green **Code** button at the top of the page → **Download ZIP**, unzip it to any folder. You can delete this folder after installing (download the archive again for Check.bat and Uninstall.bat).
-3. Close ComfyUI.
-4. Run **Install.bat**. 
-If Windows shows "Windows protected your PC", click **More info → Run anyway**.
-5. Choose which workflows to install (Enter — all) and whether to download the models. Running Install.bat again resumes the download.
-6. Start ComfyUI: the workflows are in the left sidebar, **Workflows** (W key).
+1. Install [Comfy Desktop](https://www.comfy.org/download) or [ComfyUI Portable](https://github.com/Comfy-Org/ComfyUI/releases).
+2. At the top of this repository, click the green **Code** button and choose **Download ZIP**. Unzip it to any folder. You can delete this folder after a successful installation.
+3. Run **Install.bat**. The installer will ask you a few questions and handle the rest.
 
-To verify: with ComfyUI open, run **Check.bat**; it shows whether all nodes and models are in place.
+   If Windows shows “Windows protected your PC”, select **More info → Run anyway**.
 
-**After a Comfy Desktop update**, run Install.bat again.
+4. Find your workflows in the **Workflows** panel on the left. Press W while ComfyUI is open to show it.
 
-**Uninstall:** Uninstall.bat. Removes everything the installer installed; models only after you confirm. Files go to the Recycle Bin (from USB and network drives they are deleted immediately, without the Recycle Bin).
+**To uninstall**, run **Uninstall.bat**. Verified project files go to the Recycle Bin. Modified and shared files are kept. Models and s_tools in a dedicated installation require separate confirmation.
 
 ### Manual
 
-Follow [MANUAL_INSTALL.md](MANUAL_INSTALL.md#english).
+Follow [MANUAL_INSTALL.md](MANUAL_INSTALL.md#english). The steps are also in the Russian **START** note inside each workflow.
 
 ## Troubleshooting
 
-1. With ComfyUI open, run **Check.bat** — it shows what is missing.
-2. Restart ComfyUI.
-3. After a Comfy Desktop update, run Install.bat again.
-4. Still not working — message me on Telegram: https://t.me/sofiakholina and attach a screenshot of the error.
+Run **Check.bat** and follow the instructions. If the issue persists, find `diagnostic_report.txt` next to Install.bat or at the path shown by Check, then send it to the developer on [Telegram](https://t.me/sofiakholina).
 
 ## Known issues
 
-- Portable fails with a c10.dll error: install the Microsoft Visual C++ Redistributable: https://aka.ms/vc14/vc_redist.x64.exe
-- In the legacy Comfy UI (not Nodes 2.0) the internal settings of Save 3D are visible; you don't need to change them.
+- If Windows reports a missing VCRUNTIME140.dll or MSVCP140.dll, install the Microsoft Visual C++ Redistributable: https://aka.ms/vc14/vc_redist.x64.exe
+- The older ComfyUI interface shows internal Save 3D settings. Leave them at their defaults.
 
 ## License
 
-GPL-3.0 (see LICENSE). Third-party workflow templates and models keep their own licenses, see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). s_tools nodes: [sofiakholina-s_tools](https://github.com/sofiakholina/sofiakholina-s_tools).
+GPL-3.0 (see LICENSE). Third-party workflow templates and models have their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). s_tools nodes: [sofiakholina-s_tools](https://github.com/sofiakholina/sofiakholina-s_tools).

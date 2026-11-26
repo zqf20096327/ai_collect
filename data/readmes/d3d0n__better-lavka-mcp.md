@@ -41,11 +41,13 @@ You sign in once by scanning a QR code in the Yandex app. Everything runs on you
 - **Say where once.** "Deliver home" — the assistant picks your saved address and remembers it next time.
 - **Ask what's on the shelf.** "Is there milk at Chilonzor?" — milk and its price at your Lavka.
 - **Shopping list in one message.** "Milk, bread, six eggs" — all of it lands in the cart in one go. It takes what you bought before; for anything new it shows the options and asks which one.
+- **As usual.** "What do I usually get?" — your favorites and what you bought here, most recent first.
 - **Browse the shelves.** "What's in the dairy section?" — categories and shelves with prices, like in the app.
-- **Same as last time.** "Repeat my last order" — everything from your last order goes back into the cart at today's prices, minus what's sold out.
+- **Same as last time.** "Repeat my last order" — everything from your last order goes back into the cart at today's prices; anything sold out comes with Lavka's own replacements.
+- **Pay less.** Discounts show next to prices; the preview lists your promo codes and coupons and can spend your Plus points.
 - **Read the label.** "How many calories are in this bread?" — calories, protein, fat, carbs, ingredients and shelf life from the product card.
 - **Say yes.** The assistant shows address, items, total and card; you agree, the order goes out, and if the bank wants 3-D Secure you get the link.
-- **Check on orders.** "What did I order last time?", "Cancel my order."
+- **Where is it?** "Where's my order?" — Lavka's own status, minutes left and how far the courier is. "Cancel my order."
 - **Peek at Russia and Kazakhstan.** Browse the RU and KZ storefronts and search their products.
 
 ---
@@ -64,11 +66,14 @@ You sign in once by scanning a QR code in the Yandex app. Everything runs on you
 
 | ✅ Works today | 🚧 Not yet |
 |---|---|
-| Sign in with a QR code from the Yandex app | Live order tracking (courier, ETA) |
-| Your address and card are remembered | Scheduled delivery slots |
-| Product search, catalog by category, product cards with nutrition, shopping lists, cart editing | |
-| Order history with items, repeat an order, order details | |
-| Order with a chosen card, payment status and 3-D Secure link, cancel an order | |
+| Sign in with a QR code from the Yandex app | Scheduled delivery slots |
+| Your address and card are remembered | Adding to an order that's already placed, or changing its address |
+| Search with discounts, stock and "bought before"; your usual products; catalog and product cards | Tips for the courier |
+| Shopping lists, cart editing, Lavka's replacements for sold-out items | Support chat and order feedback ("the cilantro never came") |
+| Promo codes, coupons and Plus points in the preview | Retrying a failed payment on the same order |
+| Ordering with a saved card, 3-D Secure link, cancelling | Paying in cash |
+| Live tracking: status, minutes left, courier distance | "Tell me when it's back in stock" |
+| Order history, order details, repeat an order | |
 | Browse the RU and KZ storefronts | Ordering in Russia and Kazakhstan |
 
 ---
@@ -90,7 +95,7 @@ You need [uv](https://docs.astral.sh/uv/getting-started/installation/). Add this
 
 Or with Claude Code: `claude mcp add lavka -- uvx better-lavka-mcp`.
 
-Ask the assistant to call `start_login`, scan the QR in the Yandex app, and you're in. Per-client examples (Claude Code, Claude Desktop, OpenCode, Oh My Pi) are in [docs/clients.md](https://github.com/d3d0n/better-lavka-mcp/blob/main/docs/clients.md).
+Ask the assistant to call `login`, scan the QR in the Yandex app, and you're in. Per-client examples (Claude Code, Claude Desktop, OpenCode, Oh My Pi) are in [docs/clients.md](https://github.com/d3d0n/better-lavka-mcp/blob/main/docs/clients.md).
 
 **From source:**
 ```sh
@@ -105,7 +110,7 @@ Then point the client at `/absolute/path/to/better-lavka-mcp/.venv/bin/better-la
 
 Settings:
 
-- `YANDEX_LAVKA_REGION` — startup country: `UZ` (default), `RU` or `KZ`. `select_country` changes it for this process only.
+- `YANDEX_LAVKA_REGION` — country: `UZ` (default), `RU` or `KZ`. In RU and KZ only `get_storefront_status` and `search_products` work; both also take a `country` argument for one call.
 - `YANDEX_SESSION_FILE` — where the session cookies live.
 - `BETTER_LAVKA_MCP_OUTPUT=json` — tools return raw JSON instead of the default short text. The text says what happened, lists the data, and tells the assistant what to do next; JSON is handy for scripts and debugging.
 
@@ -115,12 +120,12 @@ Products, orders and categories show up as short ids like `amber fox wave` inste
 
 ## Tools
 
-Twenty-six tools with plain verb + noun names, so the assistant picks the right one on the first try.
+Nineteen tools with plain verb + noun names, so the assistant picks the right one on the first try.
 
 | Tool | What it does |
 |---|---|
 | `use_address` | Pick the delivery address by its saved name ("Home", "Work"); remembered next time |
-| `search_products` | Find products and prices |
+| `search_products` | Find products with prices, discounts and stock; empty query = what you usually buy |
 | `list_categories` | The catalog: groups and categories |
 | `get_category_products` | Shelves and products in one category |
 | `get_product` | Product card: price, pack, nutrition, ingredients, shelf life |
@@ -128,20 +133,15 @@ Twenty-six tools with plain verb + noun names, so the assistant picks the right 
 | `repeat_order` | Put a past order back into the cart |
 | `get_cart` | What's in the cart, delivery and total |
 | `set_cart_quantity` | Change or remove one item |
-| `preview_order` | Address, card, items and total before ordering |
+| `preview_order` | Address, card, items and total before ordering; promo codes and Plus points |
 | `submit_order` | Place the order |
-| `get_payment_status` | Payment status and 3-D Secure link |
-| `list_order_history` | Past orders with their items |
-| `get_order` | One past order in full |
+| `list_order_history` | Orders with their items and, while Lavka tracks them, live status: minutes left, courier distance |
+| `get_order` | One order in full: fees, payment status (3-D Secure link), tracking |
 | `cancel_order` | Cancel an order |
-| `list_active_orders` | Whether any orders are currently tracked |
-| `list_saved_addresses` | Your saved addresses |
-| `list_saved_cards` | Your saved cards |
-| `start_login` · `get_login_status` · `cancel_login` | Sign in with a QR code |
+| `get_account` | Who is signed in, saved addresses (which is chosen) and cards (which is remembered) |
+| `login` | Sign in with a QR code; call again until the scan is confirmed |
 | `search_addresses` | Find an address by text |
-| `count_saved_addresses` | How many addresses are saved |
-| `get_storefront_status` | Is Lavka open, delivery time |
-| `select_country` | Switch between UZ, RU and KZ |
+| `get_storefront_status` | Start here: is Lavka open, delivery time, sign-in, chosen address, cart and latest order |
 | `reconcile_order_attempt` | Unblock ordering after a dropped connection |
 
 ---

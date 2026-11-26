@@ -44,7 +44,7 @@ and the list says what can be done with it, the likeliest first ([One @](#one--s
 (pinyin, built on Rime and rime-ice), French, Korean (Hangul) and Hindi (Devanagari from Latin letters), and runs
 your own scripts as commands.
 
-The magic key, the symbol commands start with, is `@` by default. In Settings → General → Magic key, pick another symbol from the menu: `#`, `%`, `&`, `*`, `+`, `|` or `~`; commands then start with it (for example, `~translate`), and `@` types normally. Letters, digits, spaces and the symbols typing needs (pinyin's keys such as `'` `-` `=` `[` `]` `` ` ``, and the ones pinyin types as Chinese punctuation, such as `,` `.` `?` `\`) can't be the magic key, so the menu doesn't offer them. You can also set it in the config file, where it's called the command trigger: `"commandTrigger": "~"`.
+The magic key, the symbol commands start with, is `@` by default. In Settings → Common → Magic key, pick another symbol from the menu: `#`, `%`, `&`, `*`, `+`, `|` or `~`; commands then start with it (for example, `~translate`), and `@` types normally. Letters, digits, spaces and the symbols typing needs (pinyin's keys such as `'` `-` `=` `[` `]` `` ` ``, and the ones pinyin types as Chinese punctuation, such as `,` `.` `?` `\`) can't be the magic key, so the menu doesn't offer them. You can also set it in the config file, where it's called the command trigger: `"commandTrigger": "~"`.
 
 ![@improve and a rough sentence, then ⏎: polished versions, plus rewrites](docs/en/improve.png)
 
@@ -56,58 +56,71 @@ For more detail (every command and setting, installation troubleshooting, privac
 Without `@`, it stays out of the way: in English, letters are typed directly and ⏎ is Return; nothing goes online.
 A new install writes English; to type Chinese, French, Korean or Hindi too, add it in the settings (see [Input and translation](#input-and-translation)).
 
+What you're typing (pinyin, a command such as `@improve …`, a note) shows only on the top line of the candidate box, with its cursor, in every app: nothing is shown in the text field until you pick, insert or run it. Leaving the field while you type (a click anywhere, in the same field too, another app, closing the window or tab) drops the pinyin not yet picked, so nothing of it is left behind.
+
+In Chinese pinyin mode, `.`, `,` and `:` stay ASCII immediately after an ASCII digit, so `3.14`, `10:30` and `1,000` type as shown. Other punctuation and punctuation after other characters keep their usual behavior.
+
 | Key | What it does |
 |---|---|
 | Type pinyin, Space / digits | In Chinese mode: pick words, as in any pinyin input method |
-| The magic key (`@` by default), at the start of a sentence | Opens the list: with nothing typed, the commands, the most used lately (in this app first) on top, 7 at a time, scrolled with ↑↓, the wheel or the trackpad. Then type anything: a command's name (`@tr`) or what you want (`@saf`, `@3*7+2`, a sentence); the rows say what ⏎ does with it ([One @](#one--say-what-you-want-new)). ⏎ does the highlighted row (the first), Tab picks a command, ↑↓ choose, Esc or → leave what you typed as it is. Digits are text there; while pinyin is typed they pick its words |
-| ⏎ | Runs the command. Works even if the pinyin isn't picked yet: it's picked first, as with Space |
-| Space, ⏎ / digits | Once the results are up: insert the highlighted / numbered one; 0 is the original. ⏎ inserts even with a refine half typed (it's dropped). In an `@question` conversation ⏎ asks the next question instead (with nothing typed it does nothing), and ⇧⏎ inserts the answer |
+| The magic key (`@` by default), at the start of a sentence | Opens the list: with nothing typed, the commands, the most used lately (in this app first) on top, 7 at a time, scrolled with ↑↓, the wheel or the trackpad. Then type anything: a command's name (`@tr`) or what you want (`@saf`, `@3*7+2`, a sentence); the rows say what ⏎ does with it ([One @](#one--say-what-you-want-new)). ⏎ does the highlighted row (the first), Tab picks a command, ↑↓ choose, Esc or → leave what you typed as it is. Each row shown has its number: ⌥ and it does that row (⌥1 the first shown, as a click on it); the key hints at the bottom say "⌥+number pick" once. Digits alone are text there; while pinyin is typed they pick its words |
+| ⏎, ⌘⏎ | Runs the command (⌘⏎ too, which chat apps use to send: the command is never sent as typed; on `@note` it saves the note). Works even if the pinyin isn't picked yet: it's picked first, as with Space |
+| Space, ⏎ / digits | Once the results are up: insert the highlighted / numbered one; 0 is the original. ⏎ inserts even with a refine half typed (it's dropped). In an `@question` conversation ⏎ asks the next question instead (with nothing typed, ⏎ and Space do nothing), and ⇧⏎ inserts the answer |
 | ⇧⏎ | With a refine typed after AI results: sends it. In an `@question` conversation: inserts the highlighted answer, dropping a question half typed. While a command is typed, or on other AI results with nothing typed: inserts what you typed as is, `@command` included. On other results (`@open`, a reminder …) it inserts the highlighted row, as ⏎ does |
 | ⌘C | Copies the highlighted result (for `@open`, the path); the candidate panel stays open |
 | ⌃V | Shows [clipboard history](#clipboard-history-new), the text and images you copied lately, newest first: ⏎ or Tab puts in the one chosen, ↓ ↑ choose, ⇧↓ ⇧↑ choose several (⏎ puts them in one per line, oldest first), ← → turn the page with more than 5 rows, Esc hides it (→ too, on one page); typing filters them (a Chinese text by its pinyin too). ⌃V ⏎ is the ⌃V you had, and ⌃V twice pastes as the app does (⌘V; ⌃V in a terminal or a code editor: vim, the shell). In a command (e.g. after `@improve `) the one you choose is appended after what you've typed instead of being pasted into the app: multiple lines become one, up to 2000 characters at a time (`@note` keeps the line breaks and takes up to 20000). Works in any app, terminals too. With clipboard history off, ⌃V in a command appends the clipboard text at once, and without a command it goes to the app as usual |
-| ← → | In a command's list once the command is picked (a script extension's or a plugin's rows, `@open`'s results, `@tasks`, `@imessage`'s recipients) and in clipboard history, with more rows than the 5 shown: the previous / next page, its first row chosen (← stays on the first page, → on the last); the footer says `← → page` and which rows show (`6–10 / 12`), and ↑↓ still move a row at a time. On one page they're as before: they move the cursor in the text after the command, and → at its end hides the list, as Esc. The command list, suggestion rows, pinyin candidates and AI results keep their own ← → |
-| ⌘V | The app's Paste. In a command it appends the clipboard text at once, no history, except where the app handles ⌘V itself (terminals such as Ghostty, iTerm2 and Terminal, and Notes) and pastes into the app as usual; use ⌃V there |
+| ← → | In a command's list once the command is picked (a script extension's or a plugin's rows, `@open`'s results, `@tasks`, `@imessage`'s recipients) and in clipboard history, with more rows than the 5 shown: the previous / next page, its first row chosen (← stays on the first page, → on the last); the footer says `← → page` and which rows show (`6–10 / 12`), and ↑↓ still move a row at a time. On one page they're as before: they move the cursor in the text after the command, and → at its end hides the list, as Esc. The command list, suggestion rows, pinyin candidates and AI results keep their own ← →. The wheel or the trackpad over the panel turns these pages too (down: the next), as it does pinyin's candidates; in the command list, one @, clipboard history and suggestions it moves a row |
+| ⌘V | The app's Paste. In a command not run yet it appends the clipboard text at once, no history, in every app: also where the app handles ⌘V itself (terminals such as Ghostty, iTerm2 and Terminal, and Notes), whose own paste then doesn't happen (with Accessibility allowed; without it they paste as well) |
 | Esc, ⌫ | Back to the sentence to keep editing; typing punctuation or digits after the results continues it. After a refine: back to the results before it |
 | Letters, once AI results are up | A follow-up: after `@question` the next question, which ⏎ asks (see [Conversations](#conversations-with-question-new)); after `@improve` or a prompt command an instruction such as `shorter`, which ⇧⏎ sends (see [Refining the results](#refining-the-results-new)). After `@translate` letters continue the sentence, and ⏎ translates it again |
-| ⌘⏎, ⌘1–⌘9 | In an `@question` conversation: shows where to continue it (the coding agents installed, the one `@agent` hands to first; Claude, ChatGPT, Gemini; or copy it); ⌘1, ⌘2 … pick one |
+| ⌘⏎, ⌥1–⌥9 | In an `@question` conversation: shows where to continue it (the coding agents installed, the one `@agent` hands to first; Claude, ChatGPT, Gemini; or copy it); ⌥1, ⌥2 … pick one |
 | Click a row | In the candidate panel: picks it, as its digit would (a word, a command in the list, a result, an `@open` file, a recipient, an extension's row); the row under the pointer is highlighted. The text field keeps the focus |
-| Right-click a candidate, ⌃⌦ | While you type pinyin: removes the candidate right-clicked (or Control-clicked), or the highlighted one with ⌃⌦ (⌃Fn⌫ on a laptop keyboard), for good: any candidate, the dictionary's words and emoji too, and the English words among the candidates (by their letters); it no longer comes up as a candidate, whatever you type (a longer phrase or a sentence with it in it still does), and what pinyin learned of it from your choices is forgotten (an emoji removed leaves the word it comes with as it was). An English word stays on your list of English words. Nothing is put in. Settings → Input → Chinese → Removed candidates brings one back (✕), and so does adding an English word again in English Words; they sync through iCloud with the learned words |
+| Right-click a candidate, ⌃⌦ | While you type pinyin: removes the candidate right-clicked (or Control-clicked), or the highlighted one with ⌃⌦ (⌃Fn⌫ on a laptop keyboard), for good: any candidate, the dictionary's words and emoji too, and the English words among the candidates (by their letters); it no longer comes up as a candidate, whatever you type (a longer phrase or a sentence with it in it still does), and what pinyin learned of it from your choices is forgotten (an emoji removed leaves the word it comes with as it was). An English word stays on your list of English words. Nothing is put in. Settings → More Settings → Input and keys → Chinese → Removed candidates brings one back (✕), and so does adding an English word again in English Words; they sync through iCloud with the learned words |
 | Tap Shift | With more than one input language: the next one, in their order (English → Chinese → French → …, then back to the first) |
-| Caps Lock | Caps Lock as usual, unless Settings → Input → Switch input language is set to Caps Lock (`switchKey`; Tap Shift is the default): then each press switches as a tap of Shift does, with what you're typing too, and the light goes off again at once. Caps Lock then no longer locks capitals (type them with Shift), and a tap of Shift switches nothing. In password fields Caps Lock is left to macOS. AllInOneIME stays under English in Input Sources |
+| Caps Lock | Caps Lock as usual, unless Settings → Common → Switch input language is set to Caps Lock (`switchKey`; Tap Shift is the default): then each press switches as a tap of Shift does, with what you're typing too, and the light goes off again at once. Caps Lock then no longer locks capitals (type them with Shift), and a tap of Shift switches nothing. In password fields Caps Lock is left to macOS. AllInOneIME stays under English in Input Sources |
 
 ## Commands
 
-Commands start with the magic key, `@` by default; with another one picked in Settings → General → Magic key, the
+Commands start with the magic key, `@` by default; with another one picked in Settings → Common → Magic key, the
 commands below start with it (`~improve`), and so does the app's own text that names them.
 
 | Command | What it does |
 |---|---|
 | `@improve` | Polish: 1–3 are three versions in the sentence's own language, the rewrite styles (added and ordered in the settings) numbered on after them, 0 is the original. No translation; with "@improve also translates" on, it works like `@translate @improve` |
-| `@translate` | Translate into the languages you added (Settings → General → Translate to, drag to reorder), a line each, three versions with only one; the sentence's own language is skipped. `@translate @improve` together translates and rewrites in one request |
+| `@translate` | Translate into the languages you added (Settings → Common → Translate to, drag to reorder), a line each, three versions with only one; the sentence's own language is skipped. `@translate @improve` together translates and rewrites in one request |
 | `@question` | Ask a question; the answer appears in the candidates, ⇧⏎ or Space inserts it, ⌘C copies it. Type on and ⏎ asks a follow-up: the panel becomes a conversation of up to 5 rounds, then offers to continue in Claude or another AI. With nothing typed after it, it lists your last 5 questions, newest first; typing narrows them down (words anywhere in the question, any case, Chinese too). A digit, ↑↓ then ⏎, or a click shows a question's saved answer at once, offline, to insert or copy as usual; ⌘R there asks it again for a fresh answer. With no match, or nothing picked, ⏎ asks what you typed |
 | `@reply` | Writes three replies to the message you're answering, in the other party's language and the tone of the app (casual in chat apps, formal in mail, where each reply is a whole email body; or the first of the app's own rewrite styles, set in an earlier version). Give it the message by selecting it, copying it and pressing ⌃V ⏎ in the draft, or taking a screenshot (⌃⇧⌘4, or WeChat's own) and pressing ⌃V ⏎; what you type after it says what to reply: `@reply politely decline`. ⌘R writes three more; see [Replying](#replying-with-reply-new) |
-| `@agent` | Hands the task to a coding agent on your Mac, picked in Settings → Commands → Agent (@agent): Claude Code (the default), Gemini CLI, Kiro CLI, or a command of your own (what you typed is added as its last argument). The page also shows whether each is installed and how it starts. Claude Code runs in the background by default, with a notification when it's done (click it to open the session in Terminal and go on), or see `@tasks`; turn off "Claude Code runs in the background and notifies me" there to open it in Terminal. The other agents open in Terminal with what you typed as their first message. Each uses its own sign-in and settings. In Google Chrome it takes the page along: the address and title, the field you typed in with its form or section (★ marks where you are), the selected text and what's visible in the window — never a password field, never the whole page — so `@agent why doesn't this work` in a sign-in form's username field is about that field, and `@agent why is this blocked` on a pipeline page is about that page; the agent judges which. The page's text goes to the agent as read, marked as coming from the web (not as instructions from you). It needs Accessibility; Chrome builds its page tree for it only while `@agent` is being written there, turned back off after (Settings → Privacy → "@agent and @reply take the Chrome page along" turns it all off). The first time it opens Terminal, macOS asks whether AllInOneIME may control Terminal: click OK. (It was `@claude` before 0.6.4.) |
+| `@agent` | Hands the task to a coding agent on your Mac, picked in Settings → Commands → Agent (@agent): Claude Code (the default), Gemini CLI, Kiro CLI, or a command of your own (what you typed is added as its last argument). The page also shows whether each is installed and how it starts. Claude Code runs in the background by default, with a notification when it's done (click it to open the session in Terminal and go on), or see `@tasks`; turn off "Claude Code runs in the background and notifies me" there to open it in Terminal. The other agents open in Terminal with what you typed as their first message. Each uses its own sign-in and settings. In Google Chrome it takes the page along: the address and title, the field you typed in with its form or section (★ marks where you are), the selected text and what's visible in the window — never a password field, never the whole page — so `@agent why doesn't this work` in a sign-in form's username field is about that field, and `@agent why is this blocked` on a pipeline page is about that page; the agent judges which. The page's text goes to the agent as read, marked as coming from the web (not as instructions from you). It needs Accessibility; Chrome builds its page tree for it only while `@agent` is being written there, turned back off after (Settings → More Settings → Privacy → "@agent and @reply take the Chrome page along" turns it all off). The first time it opens Terminal, macOS asks whether AllInOneIME may control Terminal: click OK. (It was `@claude` before 0.6.4.) |
 | `@tasks` | Lists the background Claude tasks (working / done / waiting for you) with their last replies; ⏎ opens one in Terminal, ⌘C copies the reply. The list shows at once as last seen and is brought up to date as Claude Code answers |
 | `@settings` | Opens the settings window right away (picking it is enough) |
 | `@stats` | This week's stats in one row: how many commands you ran this week and how that compares with the same days last week, where they came from on a second line. ⏎ opens Settings → This Week, ⌘C copies the picture (as Copy Image there), Esc cancels; see [This week's stats](#this-weeks-stats-new) |
 | `@open` | Lists matching files, folders and apps as you type (Spotlight). Several keywords work, separated by spaces: each must be in the path, at least one in the name (a standard folder's name counts for what's in it: `downloads pdf` finds the PDFs in Downloads). Apps and the standard folders are also found by their Chinese names, and a Chinese interface shows them that way. What you opened with `@open` comes first, then apps and those folders, then recently used or changed files; when the names find two files or fewer and no app or folder of those, the files in your home folder are searched by content too, those rows marked "content"; when there's nothing else, ⏎ lists them to pick from instead of opening the first. With a web address (`github.com`, `localhost:3000`, `https://…`), the first row is "open in the browser" and contents aren't searched; a file named exactly that (say `MANIFEST.in`) comes first. Text starting with `~/` or `/` is a path: its folder is listed as soon as it's read, never on the key you type, and the next keys narrow that listing at once (a link to a server's folder is listed as a file), Tab completes it and goes into folders; ⏎ opens, ⌘C copies the path. Spotlight looks on this Mac's own disks, not on a server's volumes |
 | `@note` | Saves the text to the Notes app, in a folder named AllInOneIME (made when missing), or where Settings → Commands → Notes (@note) says: Notion, or a folder of Markdown files (an Obsidian vault or any folder); nothing is inserted. Pasted text keeps its line breaks, up to 20000 characters |
 | `@reminder` | Adds a reminder to the Reminders app, in a list named AllInOneIME. Write the time in the text; it's read on the Mac, and a row shows what was read: ⏎ or Space adds it, Esc goes back to edit. With a time, it has an alarm then; with only a date, it's all day |
-| `@py` | Runs a line of Python (the Mac's `python3`) and inserts the result: the value of the code's last expression, e.g. `@py 2**100`, `@py import math; math.sqrt(2)`, or else what it printed. Not offered without `python3` (Xcode's command line tools have it) |
-| `@js` | Runs a line of JavaScript and inserts the same: the value of the last expression or what `console.log` printed, e.g. `@js [1, 2, 3].map(x => x * 2)`. It uses macOS's built-in JavaScriptCore, so there's nothing to install; it can't read files, reach the network or run other programs |
-| `@reportissue` | Reports a problem: opens GitHub's page for a new issue in your browser, what you typed after the command as its title, and "What happened / What you expected" to fill in. It adds the app and macOS versions, your Mac's architecture, the interface and input languages, the installed language packs, which kind of AI provider (and the model, if it's a public one; otherwise "custom"), the action key, and how many custom commands, plugins and extensions you have, never their names, your text, paths or keys. ⏎ (or your action key) first shows all of it in the candidate panel; ⏎ again, or a click on the row, opens the page, where you read it and click Submit (with your GitHub account); Esc goes back. Also in the input menu ("Report an Issue…") and Settings → About |
+| `@js` | Runs a line of JavaScript and inserts the result: the value of the code's last expression, e.g. `@js [1, 2, 3].map(x => x * 2)`, `@js 2n ** 100n`, or else what `console.log` printed. It uses macOS's built-in JavaScriptCore, so there's nothing to install; it can't read files, reach the network or run other programs |
+| `@reportissue` | Reports a problem: opens GitHub's page for a new issue in your browser, what you typed after the command as its title, and "What happened / What you expected" to fill in. It adds the app and macOS versions, your Mac's architecture, the interface and input languages, the installed language packs, which kind of AI provider (and the model, if it's a public one; otherwise "custom"), whether hiding sensitive information is on, the action key, and how many custom commands, plugins and extensions you have (and apps with their own settings, if any), never their names, your text, paths or keys. ⏎ (or your action key) first shows all of it in the candidate panel; ⏎ again, or a click on the row, opens the page, where you read it and click Submit (with your GitHub account); Esc goes back. Also in the input menu ("Report an Issue…") and Settings → About |
 | `@imessage` | Sends an iMessage: type a name, a phone number or an email (a Chinese name also by its pinyin, in full or the initials) and pick the recipient in the candidate panel (the ones you messaged lately come first; a full number or address works too), then write the message (commands inside it such as `@stock AAPL` run first). ⏎ shows "Send to Alex (…): message" in the panel, ⏎ again sends it, Esc goes back to editing; nothing is typed into the text field. The first time, macOS asks whether AllInOneIME may access Contacts and control Messages: click OK for both |
 
 Example: `@q` ⏎, type `what is quantum computing`, ⏎. `@note books to read: The Three-Body Problem` ⏎ saves a note.
 `@reminder call Bob tomorrow at 3pm` ⏎, check the time it read, then ⏎ again to add it.
 In Chinese mode, `@open` switches to English letters for the moment and goes back to Chinese when you're done.
 
-The code for `@py` and `@js` is typed in English letters, and full-width punctuation (from Chinese mode) becomes ASCII; write it on one line, with `;` between statements.
-It runs in a separate process, stopped after 10 seconds or with Esc at any time; on an error, the error's first line is shown, e.g. `ZeroDivisionError: division by zero`.
+A command you haven't run is never typed into the app, whether its text is Chinese or English: ⌘⏎ runs it, as ⏎ does
+(`@note` saves). Leaving the text field (another field or app clicked, or a click elsewhere in it), a password field
+taking over, or any other ⌘ shortcut (⌘A, ⌘S …) drops it, nothing typed in, and the shortcut goes on to the app. ⌘V
+pastes into it in every app, terminals and Notes too. ⌘← ⌘→ move to the start or end of its text, pinyin you're typing
+picked first, as with Space. ⇧⏎ still inserts it as typed, and `@note` keeps what you wrote (see
+[Notes and reminders](#notes-and-reminders)). A command that has run (its results up, or still coming in) leaves
+nothing either when you leave the field: it stops and the panel goes.
+
+The code for `@js` is typed in English letters, and full-width punctuation (from Chinese mode) becomes ASCII; write it on one line, with `;` between statements.
+It runs in a separate process, stopped after 10 seconds or with Esc at any time; on an error, the error's first line is shown, e.g. `ReferenceError: Can't find variable: x`.
 Output with several lines is inserted as printed; in a terminal it goes in as one line (a terminal runs every line it is given).
 A terminal inside an editor (VS Code, Cursor, JetBrains) can't be told apart from the editor itself, so there any command's output with several lines goes in as it is.
-Both also work inside another command's sentence: `@reply the answer is @py 2**100`; put code with spaces in quotes: `@question explain @py "sum(x * x for x in range(10))"`.
-Not the other way round: the code of `@py` and `@js` always runs exactly as you typed it, and commands in it don't run first.
+It also works inside another command's sentence: `@reply the answer is @js 2n ** 100n`; put code with spaces in quotes: `@question explain @js "[1, 2, 3].map(x => x * x)"`.
+Not the other way round: the code of `@js` always runs exactly as you typed it, and commands in it don't run first.
+
+For Python, add `@py` in Settings → Commands → Your Commands → Add Command… → Start from an Example (it was built in before 0.7.5): your own command, which runs a line of Python with your Mac's `python3` the same way (`@py 2**100`, `@py import math; math.sqrt(2)`), inside other commands' sentences too, and isn't offered without `python3` (Xcode's command line tools have it). On an error it shows the last line Python printed, e.g. `ZeroDivisionError: division by zero`. Until you add it, `@py` is just text.
 
 ![Typing @ opens the command list; @question plus a question, then ⏎ for the answer](docs/en/commands.png)
 
@@ -115,7 +128,7 @@ Not the other way round: the code of `@py` and `@js` always runs exactly as you 
 
 When `@` isn't followed by a command, as in `@john`, the list offers what can be done with the text; Esc or → puts it in
 as typed. If you often @-mention people in chat apps, change the magic key to another key, such as `~`, in Settings →
-General → Magic key.
+Common → Magic key.
 Typed right after a letter, a digit, `.`, `_` or `-`, as in `bob@example.com` or `ssh user@host`, `@` is just text: no
 list opens, in every app, terminals included. Right after `@`, a space or a mark (`.`, `:`, `/`) closes the list and
 leaves the `@` as it is; in a terminal ← → on a lone `@` only close the list.
@@ -136,8 +149,8 @@ A row that opens an app, a folder or a file shows its own icon, as Finder shows 
 | `@github.com/apple/swift` | Open it in the browser |
 | `@saf`, `@wx`, `@xtsz` | Open Safari, WeChat (微信, by its initials), System Settings (系统设置): an app, a standard folder or what `@open` opened before, by the start of a word of its name or the pinyin or initials of its Chinese name; the files Spotlight finds by name join below, never in the first row |
 | `@明天下午3点开会` | Reminder: tomorrow 3:00 PM 开会, the time as your Mac shows times (⏎ adds it) |
-| `@红烧肉怎么做`, `@how do I undo a commit` | Ask AI (what `@question` asks) |
-| `@thank you for the gift` | Translate into Chinese, when Chinese is your first input language (what `@translate` does) |
+| `@红烧肉怎么做`, `@how do I undo a commit`, `@what's the capital of Peru` | Ask AI (what `@question` asks): a `?` at the end, 吗 呢 什么 怎么 哪 几 多少 where they ask (not 几乎, 过几天, 没什么, 哪怕), or a first word such as how, what, who, is, do, did, will |
+| `@thank you for the gift` | Translate into Chinese, when Chinese is your first input language (what `@translate` does); Japanese (anything with kana) is always another language |
 | anything else | Improve (what `@improve` does) |
 
 After those come Improve and Translate (the one you use more in this app first), and once you've used them, up to
@@ -154,8 +167,8 @@ Entry): no AI rows, and an AI command typed by its name says secure input is on 
 script extensions are also found by the words of their summary, title or keywords (`@email` finds a snippet whose
 summary is "Email signature"), but `run`, `terminal` and `link` commands, snippets and script extensions are never
 offered for an arbitrary sentence.
-`@question`, `@improve`, `@translate` and `@reply` send to your own Bedrock only when you press the action key (a screenshot is read on
-this Mac and only its text is sent); `@open` searches only on this
+`@question`, `@improve`, `@translate` and `@reply` send to the AI you chose in Settings → AI only when you press the action key (a screenshot is read on
+this Mac and its text is sent; a question about one sends the image too, made smaller, to an AI that can see images); `@open` searches only on this
 Mac; `@note` and `@reminder` go only to Notes and Reminders on this Mac (`@note` to a folder or to Notion instead, if you chose one); `@agent` uses the agent installed on your Mac (Claude Code's `claude` command by default) and its own account, and it asks
 you first, as usual, before changing files or running commands. Without the agent installed, `@agent` isn't offered.
 `@imessage` reads Contacts on this Mac only (names, phone numbers, emails), never goes through the AI, and Messages sends
@@ -171,10 +184,13 @@ as it was; so does a selection you change meanwhile, which cancels the command. 
 instruction for `@improve` and `@translate` (`@translate ja`, `@improve more formal`) and the question for `@question`
 (`@question what does this mean`), about the selection. `@open`, `@agent`, `@tasks`, `@settings`, `@reminder`,
 `@imessage`, `@reportissue`, terminal commands and script extensions don't use it: they take what you type, and the
-selection stays as it is. Up to 5000 characters; never read during secure input or in a
-terminal. In apps such as Chrome and Slack the selection is read just after the `@`: a key you press while it's still
-being read is done as soon as it's read, in the order you typed. Turn it off under Settings → Advanced → "Use the
-selected text" if it misbehaves in an app.
+selection stays as it is. Up to 5000 characters; never read during secure input, in a terminal or in a password
+manager (1Password, Bitwarden, Passwords …: no text of its fields is read for a command). In apps such as Chrome and
+Slack the selection is read just after the `@`: a key you press while it's still being read is done as soon as it's
+read, in the order you typed. There is no switch for it: an app whose field doesn't take the result in place of the
+selection (the selected text still there afterwards, the result not) is remembered on this Mac, and its selection isn't
+used again; Settings → More Settings → Privacy → Learned… lists it, and Forget lets it try again.
+`"useSelection": false` in the config turns it off in every app.
 
 ### Replying with @reply (new)
 
@@ -204,6 +220,14 @@ does this say` ⌃V ⏎ asks about it, and commands without AI get its text as i
 With text selected, `@improve` and `@translate` keep working on the selection, and a notice says the screenshot wasn't
 used.
 
+A question about a screenshot (new): ⌃V in `@question`, after one @'s text (Ask AI moves to the top), or while typing a
+follow-up in the conversation attaches it, and ⏎ asks. Its text, read on this Mac, always goes; the image itself goes
+too, its long side at most 1568 pixels, when the AI can see images: the Claude API, Gemini, OpenAI's own API, Bedrock's
+Claude and Nova models, and Claude Code, Codex, Antigravity and Kiro CLI. AllInOneIME Cloud, Apple Intelligence and
+other OpenAI-compatible services get the text only. A screenshot with no text (a chart, a photo) can be asked about
+only when the AI sees images. ⌫ on an empty follow-up line takes its screenshot away. When hiding sensitive information
+took something out, the image isn't sent. A question asked with a screenshot isn't kept in the recent questions.
+
 ### Refining the results (new)
 
 While the results of `@improve`, a prompt command (your own or a plugin's) or the rewrite of a selection are up, type
@@ -223,22 +247,22 @@ the cache. `@translate` has no refine: typing after its results continues the se
 
 ### Conversations with @question (new)
 
-Once `@question` has answered, what you type is the next question: ⏎ asks it, with the questions and answers so far,
+Once `@question` starts answering, what you type is the next question (the answer goes on): ⏎ asks it once the answer is in, with the questions and answers so far,
 and the panel grows into the conversation, the earlier rounds dimmed as Q / A rows, the latest answer below them. With
-nothing typed, ⏎ does nothing: the conversation stays up. The line on top says which round comes next ("question 2/5 ›
-…"). Every answer can be inserted: its digit (1–5), ↑↓ then ⇧⏎, or a click (Space too, with nothing typed); the latest is
+nothing typed, ⏎ and Space do nothing: the conversation stays up. The line on top says which round comes next ("question 2/5 ›
+…"). Every answer can be inserted: its digit (1–5), ↑↓ then ⇧⏎, or a click; the latest is
 selected, and ⌘C copies the selected one. ⇧⏎ inserts it even with a question half typed (it's dropped). An action key
-other than ⏎ (a tap of ⌥, ⌥Space, a shortcut) does what ⏎ does here. Esc clears what you typed, then goes back one
-round; at the first, it leaves as before. The panel grows to about half the screen, then scrolls, the latest at the
+other than ⏎ (a tap of ⌥, ⌥Space, a shortcut) does what ⏎ does here. Esc closes the panel at any round, leaving nothing in
+the field, even with a question half typed; the conversation stays in your recent questions, to go on with later. The panel grows to about half the screen, then scrolls, the latest at the
 bottom.
 
 After 5 rounds (`questionRounds` in the config, 2–10) the next question's line becomes "5 rounds in: continue in Claude
-or another AI", with the choices numbered ⌘1, ⌘2 …; ⌘⏎ shows them at any round (while an answer is still coming in it
-does nothing, and never reaches the app). What you type then is the first message there; only ⌘1, ⌘2 … send it (⏎
+or another AI", numbered, picked with ⌥ and their number (the footer says "⌥+number continue"); ⌘⏎ shows them at any round (while an answer is still coming in it
+does nothing, and never reaches the app). What you type then is the first message there; only ⌥1, ⌥2 … send it (⏎
 asks nothing more, and opens nothing). A question about selected text or a screenshot takes that text along (a
 screenshot's as it was read), quoted as a block of its own. The choices:
 
-- **The coding agents installed** on this Mac, each by its name: the one `@agent` hands to first (⌘1), then the others
+- **The coding agents installed** on this Mac, each by its name: the one `@agent` hands to first (⌥1), then the others
   (Claude Code, Gemini CLI, Kiro CLI, your own command from Settings → Commands → Agent). Each opens an interactive session in
   Terminal, started as `@agent` starts it, beginning with the conversation and "Let's continue this discussion". One
   that isn't installed isn't shown.
@@ -246,8 +270,8 @@ screenshot's as it was read), quoted as a block of its own. The choices:
 - **Gemini** on the web, the conversation on the clipboard to paste.
 - **Copy the conversation**, in Markdown (**Q:** / **A:**).
 
-Which ones, and in which order (the first is the default): Settings → Commands → "Continue a conversation in"
-(`questionContinueIn` in the config); with more than 5, ⌘6 … ⌘9 pick the rest. "@agent's agent" there is whichever
+Which ones, and in which order (the first is the default): Settings → AI → AI Commands → "Continue a conversation in"
+(`questionContinueIn` in the config); with more than 5, ⌥6 … ⌥9 pick the rest. "@agent's agent" there is whichever
 agent Settings → Commands → Agent picks, by its name; an agent that isn't installed right now keeps its place in the list when you
 edit it. With Apple Intelligence on this Mac a long conversation doesn't fit its small context: the oldest answers are
 shortened, then the oldest rounds left out, and the panel says "earlier rounds shortened". A conversation is saved
@@ -255,7 +279,7 @@ under its first question in the recent questions, and picking it shows the round
 
 ### @question in a session of its own (new)
 
-Settings → AI is one choice for every AI feature (Change ▾ opens the choices, by how they connect): Claude Code, Codex,
+Settings → AI is one choice for every AI feature (every choice is a card, by how they connect; one click chooses): Claude Code, Codex,
 Antigravity (Google Antigravity's CLI, `agy`) or Kiro CLI under "With your subscription" (`questionBackend` in the
 config) has `@question` answered in the input method's own session on that CLI. (Gemini CLI is no longer one of them: it
 stopped serving personal Google accounts, which Google moved to Antigravity; a config that chose it is on Antigravity
@@ -272,7 +296,13 @@ conversation in the panel is a new conversation in the session (a new Claude Cod
 session), and its follow-ups go on in that one: the agent remembers the conversation's earlier rounds, not earlier
 conversations, and a question never carries every one before it. Whichever CLI it is, the session may read the web
 (search it, open pages) and nothing else: it can't read, list or change files on this Mac, run commands, use the CLI's
-MCP servers, extensions, plugins or apps, or start other agents, and it asks you for nothing (Claude Code:
+extensions, plugins or apps, or start other agents, and it asks you for nothing; its MCP servers only as checked under
+**MCP Servers** below the AI (Claude Code, Codex, Kiro CLI): Settings lists the servers in that CLI's own config (Claude
+Code's `.claude.json`, Codex's `config.toml`, Kiro's `~/.kiro/settings/mcp.json`; only read), none checked at first, and a
+server checked gives the session its **read-only** tools only (a tool whose `readOnlyHint` is true; one that sends,
+writes or changes anything, or doesn't say, is never given), listed as you check it and each time the page shows,
+saved as `sessionMCP` in the config (this Mac's own, never synced; the read-only tools as last listed, so a server whose tools changed is listed again as the page shows); only the servers checked start, with the web tools
+open only (Claude Code:
 `--tools WebSearch,WebFetch`; Codex: no environment for commands and files, `CODEX_EXEC_SERVER_URL=none`, with its MCP
 servers, apps and agents turned off; Antigravity: an agent with its web search (`search_web`) alone and no MCP servers,
 and a hook in `antigravity-session/.agents` that denies every other tool before it runs, with each permission it asks
@@ -301,10 +331,9 @@ is Terminal's from then on: the next `@question` (an @ typed meanwhile too) goes
 one handed off. Quitting or updating AllInOneIME ends every session's process, and after the relaunch no conversation
 from before is resumed. Whether each CLI is installed
 and signed in is looked at by Settings → AI (`claude auth status`, Codex's account, Antigravity's sign-in in the
-keychain or its settings without starting it, `kiro-cli whoami`): the CLI chosen when it shows, every CLI when you open
-the choices (Change ▾) and when you choose a CLI there. What it found stands, signed in until AllInOneIME quits and
-anything else for a minute, so showing it again runs no CLI before then; never at launch nor for a question, and with a
-provider chosen and the choices closed it runs none of them. The one chosen is tried as a question comes; one found
+keychain or its settings without starting it, `kiro-cli whoami`): every CLI when the page shows, for its card, and when
+you choose a CLI there. What it found stands, signed in until AllInOneIME quits and anything else for a minute, so
+showing the page again runs no CLI before then; never at launch nor for a question. The one chosen is tried as a question comes; one found
 signed in after it wasn't has its session's process started again by the next question. A CLI takes a second or more to
 answer, so
 what has to be fast (rewriting, translating, replies, autocomplete) goes to the provider you set up before (a key added,
@@ -345,13 +374,13 @@ conversation shows all its rounds: type to go on with it. With no match, or noth
 that goes on, replaces the saved one.
 
 - They're kept only on this Mac (see Privacy): not while secure input is on, and never for questions on selected text.
-- Settings → Privacy → "Remember recent questions" turns it off (`rememberQuestions` in the config); turned off there,
+- Settings → AI → AI Commands → "Remember recent questions" turns it off (`rememberQuestions` in the config); turned off there,
   it deletes them too. Turned off through the settings search's Change: … (see [Settings](#settings-new)), they're kept, so
   that undoing it puts back exactly what was (its preview says so); "Forget (N)" deletes them.
 
 ### Notes and reminders
 
-`@note` makes a new note; its first line is the title. After copying some text, ⌃V ⏎ after `@note ` (or ⌘V, outside terminals) saves it with its line breaks, shown as ↵ in the command.
+`@note` makes a new note; its first line is the title. After copying some text, ⌃V ⏎ after `@note ` (or ⌘V ⏎) saves it with its line breaks, shown as ↵ in the command.
 Where it goes is Settings → Commands → Notes (@note) → Save to:
 
 - **Notes** (as before): a new note in the AllInOneIME folder.
@@ -359,7 +388,7 @@ Where it goes is Settings → Commands → Notes (@note) → Save to:
 - **Notion**: Create Integration… (New integration → Internal → copy the token), paste the token (kept in the keychain), then in Notion open the page or database → ··· → Connections → add your integration, and paste its link; Test shows "✓ “Inbox” (database)". A page gets a new child page, a database a new row (the first line as its title); the rest of the note is its body, in one request. Offline or refused, nothing is kept to send later: the note comes back. During secure input `@note` doesn't send to Notion.
 
 The notice says where the note went ("Saved to Notion", "Saved to “Inbox”").
-If you leave the text field (click elsewhere, switch apps) or press ⇧⏎ (insert as typed) before a note with line breaks is saved, it isn't typed into the app (in a terminal, each line would run as a command): it goes on the clipboard instead ("The note wasn't saved; its text is on the clipboard"). A note of one line is inserted as typed.
+If you leave the text field (click elsewhere, switch apps) or press ⇧⏎ (insert as typed) before a note with line breaks is saved, it isn't typed into the app (in a terminal, each line would run as a command): it goes on the clipboard instead ("The note wasn't saved; its text is on the clipboard"). A note of one line is inserted as typed (any other command not run yet is dropped instead).
 
 `@reminder` reads times like `tomorrow at 3pm`, `in 2 hours`, `in 3 days at 3pm`, `on the 15th`, `this weekend`, `in 1 month`, `next month` (its 1st), `end of the year` (Chinese times too).
 The day and the time can be apart (`tomorrow call Bob at 5`); weeks start on Monday.
@@ -374,7 +403,7 @@ When a save fails (no permission, say), the notice says why and the text comes b
 ### Your own commands
 
 In Settings → Commands, under "Your Commands", click "Add Command…": give it a name and choose what it does (an AI
-instruction, a program, a program in Terminal, a web page, a text to insert, or suggestions from a program as you type), or start from an example. Your commands come after the built-in
+instruction, a program, a program in Terminal, a web page, a text to insert, or suggestions from a program as you type), or start from an example (Start from an Example → `@py` runs a line of Python with your `python3`, as the built-in `@py` did). Your commands come after the built-in
 ones; names are English letters only and can't be a built-in command's; they work from the next sentence.
 They're kept in `customCommands` in the config file (`~/.config/allinoneime/config.json`), which you can also edit:
 
@@ -463,7 +492,7 @@ fi
   **With title and link** (`{arg} {title} {url}` in chat apps); **Advanced** has the templates as `insert` writes them.
 - Rows, keys, the rows you picked first, the list's cache (`~/Library/Caches/AllInOneIME/suggestions/`, readable only by
   you, deleted with the command), back-off and pause are a plugin's. It's yours: no switch to turn on, it's on while it
-  exists; the **Suggestions** switch (Settings → General, the input menu) applies. The editor shows
+  exists; the **Suggestions** switch (Settings → More Settings → Suggestions, the input menu) applies. The editor shows
   how it's doing (last updated, items, last error) and Refresh Now, and so does its row in Settings → Commands → Your
   Commands.
 - Its name is a custom command's as before: letters only, and no other custom command, built-in command or plugin may
@@ -482,10 +511,10 @@ link: `@sig` ⏎ puts it in at once (Tab or Space only complete the name). Its `
 | Placeholder | Becomes |
 |---|---|
 | `{input}` | everything you wrote after the name: `@tag foo bar` with `#{input}` inserts `#foo bar` |
-| `{name?}` | a blank, filled from what you wrote, separated by commas (`,` or `，`), in order: `Dear {name?}, see you {day?}.` with `@meet Bob, Friday`. One left empty is named in a notice, and nothing goes in |
+| `{name?}` | a blank, filled from what you wrote, separated by commas (`,` or `，`), in order: `Dear {name?}, see you {day?}.` with `@meet Bob, Friday`. One left empty is named in a notice, and nothing goes in. A full-width `？` works too (`{名字？}`) |
 | `{clipboard}` | the clipboard's text (macOS may ask first) |
 | `{selection}` | the text selected when you typed `@` (it's replaced, as by any command on the selection) |
-| `{date}`, `{time}` | today as `2026-10-17`, the time as `14:05`; `{date:EEEE, MMM d}` with a [date pattern](https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table), in the interface language |
+| `{date}`, `{time}` | today as `2026-10-17`, the time as `14:05`; `{date:EEEE, MMM d}` with a [date pattern](https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table), in the interface language; a full-width `：` works too (`{date：M月d日}`) |
 | `{cursor}` | where the caret goes after it's in (once at most; not in a terminal) |
 
 - `{{` writes `{`, and the `}}` that closes it writes `}` (`{{input}}` inserts `{input}`); any other `}}` or `{…}` stays
@@ -616,7 +645,7 @@ Inside `@agent` and terminal commands they aren't run: those get the text as wri
 
 ### Action key
 
-⏎ by default; change it in Settings → General → Action key (`actionKey` in the config): click it, then press the key, as
+⏎ by default; change it in Settings → More Settings → Input and keys → Action key (`actionKey` in the config): click it, then press the key, as
 for a keyboard shortcut in System Settings: Tap ⌥ (either side: press and let go right away), ⌥Space, Space (press
 Space once more after the words are picked; twice in English mode), or a shortcut such as ⌃⏎, ⌘⏎ or F5 (a key that
 types needs ⌃, ⌥ or ⌘).
@@ -625,7 +654,7 @@ they get it first.
 
 ### Typing results out
 
-Turn on "Type results out" under Settings → Advanced (`typeOut` in the config) and a command's result is typed into the
+Turn on "Type results out" under Settings → More Settings → Advanced (`typeOut` in the config) and a command's result is typed into the
 app character by character, like a person typing, instead of going in at once; pinyin picks still go in at once. The
 slider sets the pace, from 6 seconds a character to 40 a second (`typeOutRate`), and "Speed up and slow down (like a
 person)" types in bursts of changing pace (`typeOutVaries`). Esc stops it where it is; any other key types the rest at
@@ -648,7 +677,7 @@ Typos are never made in terminals, nor in apps that don't tell the input method 
 first typo is a plain one (a wrong letter, corrected in one go), until the field has shown it takes a typo back; while a
 typo shows, the input method checks before every key that the field holds what it typed. A field that ignores where
 to replace text can't take a typo back: there that first typo stays, so the text ends up one character off (also
-after Esc or another key), and the app gets no typos again. Settings → Privacy → Learned… lists those apps; Forget
+after Esc or another key), and the app gets no typos again. Settings → More Settings → Privacy → Learned… lists those apps; Forget
 lets one try again. They're kept on this Mac only, with the rest of what it learns (see Privacy).
 
 ### Per-app settings (new)
@@ -657,8 +686,8 @@ An app has two settings of its own; everything else is the same in every app:
 
 | Setting | Where | In the config |
 | --- | --- | --- |
-| What a suggestion row inserts there: with title, or with title and link; or Off, no suggestions there | Settings → General → Suggestions → More… → "In these apps" | `suggestionsInsert` (synced with the settings); Off is `"suggestions": false` (this Mac's own: not synced) |
-| No AI: `@improve`, `@translate`, `@question`, `@agent` and your prompt commands send nothing there and say so; typing and the other commands work | Settings → Privacy → "Apps without AI" | `noAI` |
+| What a suggestion row inserts there: with title, with title and link, or a Markdown link; or Off, no suggestions there | Settings → More Settings → Suggestions → More… → "In these apps" | `suggestionsInsert` (synced with the settings); Off is `"suggestions": false` (this Mac's own: not synced) |
+| No AI: `@improve`, `@translate`, `@question`, `@agent` and your prompt commands send nothing there and say so; typing and the other commands work | Settings → More Settings → Privacy → "Apps without AI" | `noAI` |
 
 "Add App…" lists the apps you typed in lately, or picks one in /Applications; Remove takes an app off that list (its
 other setting stays). Off in "In these apps" keeps what the app's rows inserted, for when you pick one again. The input
@@ -677,7 +706,7 @@ something, never naming them.
 - **Previous per-app settings.** What an earlier version set for an app, and Settings doesn't set any more, still works
   while it's set: the input it starts in (`inputLanguage`; one the app learned comes first), Always Translate as You
   Type (`translateAlways`), autocomplete always or never (`autocomplete`), typing out or not (`typeOut`) and its rewrite
-  styles (`rewriteStyles`). Settings → Advanced → "Previous per-app settings", there only while an app has one, lists
+  styles (`rewriteStyles`). Settings → More Settings → Advanced → "Previous per-app settings", there only while an app has one, lists
   them, a row per app, and Remove clears them for that app (its Insert, Off too, and No AI stay). An app set to no
   suggestions in an earlier version (`"suggestions": false`) is under "In these apps", at Off.
   Nothing in `config.json` is renamed or removed by 0.6.7, and these values sync as they did.
@@ -688,46 +717,56 @@ something, never naming them.
 
 ### Settings (new)
 
-Settings has eight pages, in this order in the sidebar, and opens on General:
+Settings has six pages in the sidebar, in this order, and opens on Common:
 
+- **Common**: the settings most people need, and at the top a field to say what to change ("translate into English and
+  Japanese, candidates in a column"; ⏎ asks the AI, as the search's **Change: …** does). **Typing**: the input languages
+  as chips (drag to reorder, ⊗ removes one, Add… adds one; the first is the default, and Code comes after them, "Code ·
+  Python"), Chinese typing (full pinyin, Shuangpin or Zhuyin), Characters and Shape codes (for pinyin) while Chinese is
+  an input language, Switch input language (Tap Shift or Caps Lock) and the candidate layout. **Commands and
+  features**: the magic key, Translate to (`@translate`'s languages), Clipboard history (with Clear History) and
+  Autocomplete (Beta). The last line says how many settings More Settings has. A language pack's problem shows its
+  banner on this page.
+- **AI**: the AI that answers (the provider, its model, its key or AWS profile, and Test Connection; the base URL is
+  under More…, which opens by itself once one is set); then every choice as a card, by how it connects, always shown
+  (one click chooses; the one in use is outlined and says In use, the others' status is in gray); then **AI Commands**, each AI command's options together:
+  `@improve`'s rewrite styles, "@improve also translates" and the jargon list (shown with the Jargon style, or once a
+  list is set), and `@question`'s: where a conversation continues and
+  remembering recent questions (with Forget), their only place in Settings.
 - **This Week**: [this week's stats](#this-weeks-stats-new), with This Week / Last Week, the picture to copy or save, and
   "Hide my command names in the image".
-
-- **General**, from the top: the magic key and the action key; Show in Menu Bar and the interface language; Translate
-  to, the rewrite styles, "@improve also translates" and the jargon list (shown with the Jargon style, or once a list
-  is set); Autocomplete (Beta); Suggestions, with Insert and "In these apps" under More… (open by itself once either is
-  set); Clipboard history, with Clear History (and why it isn't recording, only when macOS doesn't let it); and Sync
-  through iCloud.
-- **Input**: the input languages as chips at the top: drag to reorder, ⊗ removes one, Add… adds one; the first is the
-  default, and Code comes after them ("Code · Python"); then Switch input language (Tap Shift or Caps Lock) and the candidate layout. Under them, each input has its options in a section under
-  its name, always shown, with nothing to click. English has its words; Chinese its language pack, Typing (full
-  pinyin, Shuangpin or Zhuyin), Characters and fuzzy pinyin, then Personal Dictionaries; Code its coding language, the coding languages installed and the coding language
-  library. A chip's context menu has Move Left and Move Right too. A language pack's problem shows its banner on this
-  page.
-- **AI**: the provider, its model, its key or AWS profile, and Test Connection; the base URL is under More…, which opens
-  by itself once one is set.
-- **Privacy**: hiding sensitive information before sending, the words to hide (while it's on), Apps without AI, what `@agent` and
-  `@reply` take from Chrome, remembering recent questions (with Forget), and learning English words.
 - **Commands**: your commands, the agent `@agent` hands to (and "On this Mac" when it isn't installed, or is your own
-  command), where an `@question` conversation continues, `@note` and `@search`, plugins and script extensions; last,
+  command), `@note`, plugins and script extensions; last,
   "Folders and sources…", folded unless there is an extension source, an update or an error: the plugins folder, Find
   Raycast scripts automatically, the extension folders (those that bring no new commands fold into one row), Add
   Folder… and the extension sources. A plugin or script extension command with suggestions has their switch under it,
   and **Show in the @ list** next to it.
-- **Advanced**: typing results out (speed, typos), "Use the selected text", Previous per-app settings (only while an app
-  has one), the config file and the Rime folder.
+- **More Settings**: the settings you rarely change, in five groups, a row each with what's in it; a click opens the
+  group as a page of its own, with a back button.
+  - **Input and keys**: each input's options under its name (English's words; Chinese's language pack, fuzzy pinyin,
+    Personal Dictionaries and Removed candidates; Code's coding language, the coding languages installed and the coding
+    language library), then the action key.
+  - **Suggestions**: their switch, with Insert and "In these apps" under More… (open by itself once either is set).
+  - **Privacy**: hiding sensitive information before sending, the words to hide (while it's on), Apps without AI, what
+    `@agent` and `@reply` take from Chrome, learning English words, Learned…, and sending an anonymous install ID with
+    the daily update check.
+  - **Interface and sync**: Show in Menu Bar, the interface language, Show key hints (the keys explained at the bottom
+    of the candidate box; off for a smaller box once you know them) and Sync through iCloud.
+  - **Advanced**: typing results out (speed, typos), Previous per-app settings (only while an app has one), the config
+    file and the Rime folder.
 - **About**: the version, updates and "Check for updates automatically", Troubleshoot…, the four links in a row, and
   Report an Issue….
 
 A few settings have no row unless they're set to something other than their default (by hand in the config file, or by
 an earlier version): the output tokens, temperature, timeout and Thinking (AI), a kind of sensitive information left out
 (Privacy), the settings, the jargon list and custom commands, or the learned words not synced (Sync through iCloud),
-Insert's "ID only", how many texts the clipboard history keeps (General), and a new version's notification turned off
-(About).
+Insert's "ID only" (Suggestions), how many texts the clipboard history keeps (Common), "Use the selected text" turned off
+(`useSelection`, Advanced), and a new version's notification turned off (About).
 Then their row shows, with Restore Default. Shown or not, they work as before.
 
 **Search.** Type in the field at the top of the sidebar and it lists the settings that match as you type (by name, by
-what the row says and by the words they go by, in English and Chinese), each with its page; ↑↓ choose one, and ⏎ or a
+what the row says and by the words they go by, in English and Chinese), each with its page (a group as "More
+Settings › Privacy"); ↑↓ choose one, and ⏎ or a
 click shows it on its page, outlined. The search sends nothing. Its last row, **Change: …**, asks the AI to change the
 settings as you wrote (the Assistant page before 0.6.7, `@config` before 0.6.5): "translate into Japanese and English",
 "微信里不用 AI", "candidates in a column", "turn off the typos", "use Claude". The changes show at the
@@ -787,14 +826,13 @@ touches a key.
 
 ### Sync through iCloud (new)
 
-Settings → General → **Sync through iCloud** (off by default) keeps your settings, jargon list, custom commands and the
+Settings → More Settings → Interface and sync → **Sync through iCloud** (off by default) keeps your settings, jargon list, custom commands and the
 words pinyin learned the same on all your Macs, through your own iCloud Drive: nothing else to sign in to, nothing through
 our servers. It needs iCloud Drive (System Settings → Apple Account → iCloud); without it the switch stays off and says
 so, with a button that opens that pane.
 
-Once it's on, Settings shows one status row with a ⋯ menu (Sync Now; API keys and passwords; Remove Hidden Words from
-iCloud…, Remove Recent Questions from iCloud… and Remove from iCloud…), and one switch under it: Hidden words and recent
-questions. Learned words sync with no switch of their own; turned off in the config, they show with Restore Default.
+Once it's on, Settings shows one status row with a ⋯ menu (Sync Now; API keys and passwords; Remove from iCloud…), and
+one switch under it: Hidden words and recent questions. Learned words sync with no switch of their own; turned off in the config, they show with Restore Default.
 
 | What | What syncs | Default |
 | --- | --- | --- |
@@ -829,9 +867,8 @@ the input method starts, every 30 minutes (after a pause in typing) and on Sync 
   Turning "Remember recent questions" off deletes them on that Mac only, and turned on again, the other Macs' questions
   come back to it. A Forget made while a Mac doesn't sync the recent questions (or doesn't remember them) is that Mac's
   alone.
-- Turning off hidden words and recent questions leaves what was synced in iCloud: **Remove Hidden Words from iCloud…**
-  and **Remove Recent Questions from iCloud…** in the ⋯ menu (asked first) take them out; other Macs keep theirs, and one
-  that still syncs them puts its own back.
+- Turning off hidden words and recent questions leaves what was synced in iCloud until you remove it with **Remove from
+  iCloud…** (below).
 - A value from another Mac that this one can't use (a provider without a key here, an AWS profile it doesn't have, a value
   out of range) isn't applied: the status line and Troubleshoot (Settings → About) say which.
 - A file iCloud hasn't downloaded yet is waited for, never taken as empty; a `settings.json` that can't be read is set
@@ -860,15 +897,18 @@ the input method starts, every 30 minutes (after a pause in typing) and on Sync 
   sync them: the row says so.
 - Never synced: the AllInOneIME Cloud sign-in, AWS credentials (in `~/.aws`), extension sources (they run code: each Mac decides),
   extension folders and plugins (paths on each Mac), what the input method learned on this Mac (see Privacy) and the
-  recent apps, window state, Autocomplete (its switch and each app's choice: each Mac's own), Suggestions' switches (General's and each app's), the plugins'
+  recent apps, window state, Autocomplete (its switch and each app's choice: each Mac's own), Suggestions' switches (More Settings → Suggestions' and each app's), the plugins'
   completions turned on and their preferences (`completionSources`, `pluginPreferences`), the custom commands from
   another Mac still awaiting Allow (`unconfirmedCommands`), clipboard history and its settings (`clipboardHistory`,
   `clipboardHistoryLimit`), and the sync switches themselves (each Mac's own). What a
   suggestion row inserts and Code's language do sync, with the settings.
-- Turning it off stops syncing and leaves everything as it is, on this Mac and in iCloud; **Remove from iCloud…** in the ⋯
-  menu (asked first) moves the folder to the Trash and turns sync off on this Mac.
+- Turning it off stops syncing and leaves everything as it is, on this Mac and in iCloud. **Remove from iCloud…** in the ⋯
+  menu takes all of it out of iCloud: its confirmation lists what goes (the settings, custom commands and jargon list,
+  learned words, hidden words and recent questions), then the folder goes to the Trash and sync turns off on this Mac;
+  what is on this Mac stays, and API keys stay in iCloud Keychain. Other Macs still syncing put theirs back: turn it off
+  there first.
 - The settings search's Change: … ("sync through iCloud") turns it on or off; what syncs is only chosen in Settings →
-  General. In the config: `iCloudSync` (`enabled`, `settings`, `jargon`, `learnedWords`, `hiddenWords`, `recentQuestions`, `keys`).
+  More Settings → Interface and sync. In the config: `iCloudSync` (`enabled`, `settings`, `jargon`, `learnedWords`, `hiddenWords`, `recentQuestions`, `keys`).
 
 ## This week's stats (new)
 
@@ -921,27 +961,8 @@ Swipe a row (a note, a reminder or a task) to the left with two fingers to show 
 
 The header has the counts (like "2 reminders · 1 task running"; tasks waiting for you are counted apart, like "1 waiting for you") and a refresh button.
 It never takes the focus from the app you're typing in: ticking off a reminder or refreshing leaves that app in front; only the Claude tasks' search box, once clicked, takes the keyboard.
-The icon is shown by default; turn it off with "Show in Menu Bar" in Settings → General.
+The icon is shown by default; turn it off with "Show in Menu Bar" in Settings → More Settings → Interface and sync.
 
 What it reads, and when:
 
-- Notes: the list is the panel's own record (kept while it's closed too), and Notes is never launched: only when Notes is running already, and AllInOneIME was allowed to control it before, does the panel check it for edited titles and deleted notes.
-- Reminders: the AllInOneIME list is read when the panel drops down, every 60 seconds and when reminders change. The panel never makes macOS ask for access by itself: if macOS hasn't asked you yet, it shows "Allow Access to Reminders", and only that button asks; if you said no, it shows "Open System Settings".
-- Claude tasks: the panel runs `claude agents` only while it's down: once when it drops down, on Refresh, and when `@agent` hands off a task; and every 15 seconds while a task isn't done yet, no longer once they're all done. The last replies are read from the end of Claude Code's transcripts on this Mac (`~/.claude/projects`), and only when a transcript has changed.
-- While it's closed, none of this runs; it only keeps a record of the notes `@note` saves.
-
-## Input and translation
-
-In Settings → Input:
-
-- **Input languages**: one to five of English, Chinese, French, Korean and Hindi, as chips at the top: Add… adds one (up to five), drag a chip to reorder, ⊗ removes one. Each one's options are in a section under its name, below the chips. A new install starts with English only. New text fields start in the first; tap Shift for the next, in their order; with one, Shift doesn't switch.
-  - **French** types with its own keyboard layout: AZERTY unless you pick another in its section. Its dead keys (^, ¨, `, ´, ~) compose from it too.
-  - **Korean** types Hangul in the 2-set (Dubeolsik) layout, each syllable put together as you type (g k s → 한); Shift gives ㄲ ㄸ ㅃ ㅆ ㅉ and ㅒ ㅖ.
-  - **Hindi**: type the words as they sound in Latin letters and get Devanagari (namaste → नमस्ते). Common words are spelled as Hindi writes them; otherwise Space inserts the first spelling, a digit another, ⏎ the letters as typed, and "." the danda (।).
-  - A command's name, `@open`'s text and code (`@py`, `@js`) are typed in letters whatever the language; it comes back after the command.
-  - `@improve` keeps a Korean, Hindi or French sentence in its own language, and `@translate` translates it into your languages (French is told apart from English when it's one of your input languages).
-- **Code** (new): an input for writing code, after the languages and apart from them: added with Add… → Code, its chip after the languages ("Code · Python"), with its coding language (Python, Java, Go, TypeScript, JavaScript, C or C++). Tap Shift through the languages, then Code (Chinese → English → Code). You type letters, and the rows offer that language's keywords and snippets; see [Suggestions and Code](#suggestions-and-code-new).
-- **Language packs**: the app comes with English (and French, which needs only macOS's layout). Chinese, Korean and Hindi are packs you download when you add them: adding Chinese downloads its dictionaries (about 34 MB, 125 MB unpacked) with a progress bar, and pinyin works as soon as it's done, without a restart; Korean's pack (its key table and how jamo make syllables) and Hindi's (its letters and common words) are a few kilobytes. A pack is data only (dictionaries, tables and schemas, never code), listed in a signed index and checked against its SHA-256 before it's used, like plugins. Each language's section shows its pack (version, size, where it came from) with Remove…, and removing the language offers to remove its pack. Updating from 0.6.1 or earlier keeps Chinese without a download: the installer keeps the dictionaries the old version came with.
-- **Candidate layout**: for picking words, pinyin and Hindi candidates are side by side by default (Horizontal), like the system's own input methods: ← → choose and ↑↓ (or - =) turn the page. Choose Vertical in Settings → Input → Candidate layout for one under the other (↑↓ choose). The command list and the results are always vertical.
-- Candidates, notices and the Translate as You Type chip appear without window animations. Committing a word hides its candidates immediately; the window is reused during continuous typing and closes after 400 ms of idle time.
-- **English words in pinyin** (with Chinese input): type a few letters and the English words they start come up among the candidates: bedr → Bedrock, and bedrock → Bedrock first (Space puts it in). Besides rime-ice's own English words: yours (English Words, in English's section, or in Chinese's without English: you add and remove them there), the English terms of your jargon list, and about 220 product and technical words rime-ice lacks (Bedrock, SageMaker, DynamoDB, LangGraph…). A word whose letters are all you typed comes first, unless they're pinyin too (xiaomi: second); a longer one second, or after the page while what you type may still be pinyin. The same letters put in as typed twice (bedrock ⏎, or a tap of Shift) are learned, with no command, and so is a word you type twice in English mode (after a tap of Shift; English mode itself is as it was, nothing shows there); the first time they're only remembered, until the app quits. In English mode a word is the letters between a space or a mark and a space, ⏎, a mark or a tap of Shift back to Chinese; not one you edit with ⌫ (while typing it or right after), one with a digit or a mark inside (example.com, don't, abc123), or one with a capital first (a name, a sentence's first word). Never in password fields, terminals and SSH clients, remote desktops and virtual machines, password managers, or apps with No AI (a terminal inside an editor, VS Code's say, can't be told from the editor); a password field that doesn't turn on secure input (on some web pages and in some Electron apps) can only be told apart with Accessibility, so nothing typed in a field is learned without it (System Settings → Privacy & Security → Accessibility), nor until it has confirmed that the field isn't a password field; never pinyin (rime-ice's corrected spellings too: zhogn; and your fuzzy pinyin), nothing that looks like a key or a number or holds one of your hidden words (switch: Settings → Privacy → "Lea
+- Notes: the list is the panel's own record (kept while it'

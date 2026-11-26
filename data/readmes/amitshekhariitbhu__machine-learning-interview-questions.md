@@ -356,6 +356,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [How does Semantic Segmentation work?](https://outcomeschool.com/blog/semantic-segmentation)
 - What is object detection, and how does it differ from image classification?
     - Answer: [How does Object Detection work?](https://outcomeschool.com/blog/object-detection)
+- How does a face recognition system work?
+    - Answer: [How does a face recognition system work?](https://outcomeschool.com/blog/face-recognition)
 - What are the steps to build an image recognition system?
 - What are the challenges in real-time object tracking?
 - What is feature extraction in computer vision?
@@ -585,6 +587,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [How does a Model Registry work?](https://outcomeschool.com/blog/model-registry)
 - Cloud vs on-device Model Deployment.
     - Answer: [Cloud vs On-Device Model Deployment](https://outcomeschool.com/blog/cloud-vs-on-device-model-deployment)
+- What is federated learning?
+    - Answer: [How does Federated Learning train without raw data?](https://outcomeschool.com/blog/federated-learning)
 - Tell about the Model Compression Techniques.
     - Answer: [Model Optimization](https://www.linkedin.com/posts/pallavi-shekhar_ai-machinelearning-modeloptimization-activity-7438824172996247552-x7Wt)
 

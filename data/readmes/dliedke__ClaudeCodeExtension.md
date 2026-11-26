@@ -198,6 +198,14 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 318.0
+- *Pull from git before sending* now runs again on the first prompt of every new AI session (agent start, provider switch, New chat, new chat tab), not only once per solution.
+
+### Version 317.0
+- New *Settings → Prompt → Turn "- " at the start of a line into a bullet (•)* option (off by default): typing "- " or "* " at the start of a line in the prompt box makes a bullet, as in Claude.ai, and a new line continues the list.
+- A new line on an empty bullet ends the list, and Backspace right after the bullet keeps the "- " instead.
+- Thanks to [@lpowca](https://github.com/lpowca) for the suggestion (#269).
+
 ### Version 316.0
 - "Keep planning" on a plan card with no feedback now stops the agent and waits for your next message instead of opening a question card.
 - Plan cards can now approve in Manual mode (▾ menu), so the agent carries out the plan but asks before every tool, file edits included; the Approve button's tooltip now says it continues in Accept edits.
@@ -1544,26 +1552,4 @@ Native mode now in beta phase
 - Added Windows Terminal install command to the "Not Found" dialog.
 
 ### Version 9.0
-- F5 / Ctrl+F5 / Shift+F5 forwarded from the embedded terminal to Visual Studio debug commands.
-
-### Version 8.9
-- Extension icon shown on tool window tabs.
-
-### Version 8.8
-- Auto-focus detached terminal when the extension regains focus.
-
-### Version 8.7
-- Performance: non-blocking solution / project open and provider switching.
-- Faster process termination on shutdown.
-
-### Version 8.6
-- Windows Terminal commands (model switch, effort, usage, language) fixed.
-- Codex flag updated to `--ask-for-approval never`.
-- Terminal lifecycle and layout stabilization.
-
-### Version 8.5
-- Fixed terminal zoom tracking.
-- Fixed Windows Terminal paste and text selection.
-
-### Version 8.4
-- Detach Terminal: prompt area auto-expand
+- F5 / Ctrl+F5 / Shift+F5 forwarded from the embedded terminal to Visual Studio debug command

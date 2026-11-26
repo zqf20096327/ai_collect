@@ -134,7 +134,7 @@ preview `ollama launch webbrain --model <model>` handoff. Details:
 **Cloud APIs** — OpenAI, Anthropic Claude, Google Gemini, Azure OpenAI, AWS
 Bedrock, Mistral, DeepSeek, xAI Grok, MiniMax, Kimi, Qwen, z.ai GLM, Groq,
 Together, Cloudflare, Nvidia NIM, Hugging Face, Fireworks, OpenRouter, and more.
-Settings → Models → LLM ships **125 built-in provider cards on Chromium** (124 on Firefox),
+Settings → Models → LLM ships **129 built-in provider cards on Chromium** (128 on Firefox),
 including an endpoint-free local WebGPU option with the tested LFM2.5 2.6B
 preset and an experimental custom Hugging Face ONNX repository option —
 see the [full catalog](docs/providers-and-models.md#extended-provider-catalog).
@@ -238,6 +238,7 @@ Chrome side panel shortcuts work when the WebBrain side panel has focus.
 | [Slash commands](docs/slash-commands.md)                                                                                 | Every command and flag                                   |
 | [Providers and models](docs/providers-and-models.md)                                                                     | All provider cards, local setup, tiers                   |
 | [Skills](docs/skills.md)                                                                                                 | Bundled skills, importing, skill tools                   |
+| [Omarchy integration](docs/omarchy.md)                                                                                   | Native desktop panel, selected-agent setup, and browser pairing |
 | [Security model](docs/security-model.md)                                                                                 | Permissions, credentials, trust boundaries               |
 | [Cloud Bridge approval](docs/cloud-bridge-browser-approval.md)                                                           | Opt-in browser registration and approval for backends    |
 | [Prompt-injection defense](docs/prompt-injection-defense.md)                                                             | Defense layers and known gaps                            |
@@ -267,6 +268,7 @@ src/chrome/     Manifest V3 build — service worker, chrome.scripting, sidePane
 src/firefox/    Manifest V2 build — background page, executeScript, sidebar_action
 docs/           Design and reference docs (en, zh-CN, fr)
 mcp-server/     MCP server — delegate browser tasks from Claude Code, Codex, Cursor
+integrations/omarchy/  Omarchy Quickshell plugin and selected-agent setup helper
 lmstudio-plugin/  Web tools + browser delegation as a standalone LM Studio plugin
 web/            Landing site and docs site
 test/           Node test suite, LLM scenario benchmarks, security corpora
@@ -364,6 +366,24 @@ examples, safety boundaries, and troubleshooting guide live at
 > The extension holds **one** bridge socket at a time — WebBrain Cloud (17373),
 > the MCP server (17374), or the LM Studio plugin (17375). Switch by changing
 > the URL under **Settings → Bridge**.
+
+## Omarchy integration
+
+Use WebBrain from Omarchy's native desktop panel and your selected Claude Code,
+Codex, or OpenCode agent. The user-scoped installer builds the paired MCP server
+from the same checkout and installs a task launcher without changing your
+default agent:
+
+```bash
+node integrations/omarchy/bin/webbrain-omarchy.mjs install --agent claude
+```
+
+Pair the Chromium extension under **Settings → Bridge**, then launch a browser
+task from the WebBrain bar widget or `webbrain-omarchy launch --task "..."`.
+The panel reports installation readiness; the selected agent owns the browser
+connection, results, and run controls. See the
+[Omarchy installation guide](docs/omarchy.md) for requirements, updates,
+uninstall, and troubleshooting.
 
 ## LM Studio plugin
 

@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its P
 | Package | `praxo-core-ps` |
 | Registry | [PowerShell Gallery](https://www.powershellgallery.com/packages/praxo-core-ps/0.8.1) |
 | Install | `Install-Module praxo-core-ps` |
-| Source version | `0.8.1` |
+| Source version | `0.9.0` |
 | Published version | `0.8.1` |
-| Source tag | `powershell/v0.8.1` |
+| Source tag | `powershell/v0.9.0` |
 | Tier | Core (.NET) |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/powershell/ |
@@ -81,6 +81,16 @@ Runnable examples live under [`language/powershell/examples`](language/powershel
 | [streaming](language/powershell/examples/streaming) | This example accumulates streamed chunks and checks that they reconstruct the final output. |
 | [structured-output](language/powershell/examples/structured-output) | This example validates a final JSON answer against a schema and rejects invalid output. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/powershell/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/powershell/Tutorial) | Application tutorials live in `Tutorial/`, alongside focused `language/go/examples/`. |
+| [finops-review](language/powershell/Tutorial/finops-review) | A bounded cloud cost-review tutorial. It reads fixed resource costs, computes the highest-cost resource below a 5% utilization threshold, and drafts a review-only action. No clo... |
+| [windows-diagnostics](language/powershell/Tutorial/windows-diagnostics) | A read-only Windows operations tutorial. PowerShell calls the shared C# Core through `praxo-core-ps`; the Agent has two fixed tools, `read_service` and `read_disk`. It produces... |
+
 ## Verify
 
 Run the checks from `language/powershell`:
@@ -99,6 +109,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

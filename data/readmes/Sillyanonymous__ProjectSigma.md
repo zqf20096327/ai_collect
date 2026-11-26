@@ -117,6 +117,14 @@ covers the volumes, updating, and the optional browser for the sites behind Clou
 
 New to it? [Getting started](https://sillyanonymous.github.io/ProjectSigma/guide.html#getting-started) walks through the first ten minutes.
 
+### Updating
+
+The app tells you when a new version is out (**Settings** > **Info** > **Updates**, and the notifications). A git install
+updates itself with **Update Now**: it backs up every library, brings in the new version and restarts. By hand that is
+`git pull`, then starting it again. A ZIP install updates by unpacking the new release and moving `data/` across; Docker
+by `git pull` and `docker compose -f docker/compose.yaml up -d --build`. [Updating](https://sillyanonymous.github.io/ProjectSigma/guide.html#getting-started/updating)
+has the details.
+
 ## Bringing a SillyTavern library
 
 Project Σ can bring a whole SillyTavern user folder across (the folder holding `characters/`, `chats/` and `worlds/`,

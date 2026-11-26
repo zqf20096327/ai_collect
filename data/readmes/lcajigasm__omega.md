@@ -129,7 +129,7 @@ topgrade and Mole are excellent until something breaks. Then the work is yours.
 |---|---|---|
 | **Everything** | `omega` | Checks the state, updates, cleans up and tells you what changed |
 | **A guided run** | `omega full` | Every stage that applies to this machine, on one screen, with a plan you can edit |
-| **Hands-off** | `omega unattended` | The same stages with no questions: the sudo password once, then every approval answered yes, on a screen that says what it is doing, the stage it is on and everything done so far |
+| **Hands-off** | `omega unattended` | Upkeep with no questions (checks, updates, caches): the sudo password once, then every approval answered yes, on a screen that says what it is doing. It never touches your apps, what starts at login, the menu bar or your settings, and leaves out the updates that would close an open app |
 | **Quick clean** | `omega quick` | One-click safe cleanup (trash, caches), pending updates, free disk space and battery |
 | **Update** | `omega update` | Homebrew, the App Store, apt, dnf, pacman, winget, Scoop, npm, pnpm, pipx, uv, rustup, cargo and more |
 | **Clean** | `omega clean` | Measures first, then frees what is worth it: package caches, Xcode, Docker, the Trash |
@@ -270,7 +270,7 @@ program, and tokens and cost are always on screen.
 | **Ollama, LM Studio** | Local and free |
 | **Any compatible endpoint** | MLX, llama.cpp, vLLM or a company gateway through a base URL |
 
-`omega models` shows the ranking, `omega model` fixes one.
+`omega model list` shows the ranking, `omega model` fixes one.
 [Models and cost](docs/manual/models.md) has the rest.
 
 ## Local models
@@ -332,17 +332,18 @@ and API keys: have both, or only one. More in
 - **Deterministic offline mode**: run `omega --no-ai` or `omega --offline` for completely deterministic maintenance without calling external AI models or needing API keys. It covers `full`, `quick`, `update`, `clean`, `analyze` and `health`; a request in your own words needs the AI.
 - **CI/CD & Scripting ready**: structured JSON output with `--json` (or `--format json`), also for `omega steps --json` and `omega doctor --json`; with `--no-ai`, quiet mode `-q` and assertion flags `--fail-on-warning`, `--fail-on-outdated`, and `--fail-on-critical` with semantic exit codes.
 - **Custom steps & lifecycle hooks**: define custom steps in `~/.config/omega/steps.d/*.toml` and configure lifecycle hooks (`pre_<task>`, `post_<task>`, `on_error`). A file omega cannot use is reported at startup and by `omega doctor`.
-- **Help that answers**: `omega --help` groups the commands by what they are for; `omega docs ask "how do I…?"` answers from the manual in your language; `omega man` writes a man page with every command, option and example.
-- **Autocompletions**: install completions automatically with `omega completion install`.
+- **Help that answers**: `omega --help` groups the commands by what they are for; `omega docs ask "how do I…?"` answers from the manual in your language; `omega man` shows the man page with every command, option, example and exit status.
+- **Autocompletions**: install completions automatically with `omega completion install`; they describe every command and complete providers, models, step ids, pending ids and run numbers.
 - **Speaks five languages**: English, Spanish, French, German and Portuguese,
   in the command, in the app and on the [website](https://lcajigasm.github.io/omega/).
 - **Remembers**: it learns from each run and starts there next time.
 - **Works from the official documentation**: before a fix or a setting of its
   own, the agent reads what Apple, Microsoft, your Linux distribution and each
   tool's vendor document ([how](docs/manual/tools.md#tuning-your-tools-configuration)).
-- **Runs unattended**: `omega unattended` does everything with one password
-  and no questions, and never rearranges your Dock, menu bar, shortcuts or
-  apps; plain output for scripts, cron, launchd and CI
+- **Runs unattended**: `omega unattended` checks, updates and cleans with one
+  password and no questions; it never removes apps, never touches what starts
+  at login, the menu bar, the Dock, shortcuts or your settings, and never
+  closes an app you have open; plain output for scripts, cron, launchd and CI
   ([how](docs/manual/tasks.md#unattended-runs)).
 - **Keeps a log** of every run, which `omega logs` reads back.
 - **One Go binary**, MIT licensed.

@@ -29,11 +29,11 @@ Method and full tables: [PDF to Markdown benchmarks](https://github.com/PSPDFKit
 | [`nutrient-dws`](plugins/nutrient-dws) | `dws-viewer-api` | Upload documents and mint viewer session JWTs for the Nutrient cloud Viewer API. Embeds interactive viewing, annotation, forms, and signing via cloud infrastructure — no viewing/storage servers to run (you still mint session tokens from your backend) |
 | [`nutrient-dws`](plugins/nutrient-dws) | `ai-gateway` | Call OpenAI-compatible chat models or the TypeSafe-compatible decision API (calibrated noul/choice/score judgments) via the Nutrient AI Gateway |
 | [`make-pdf`](plugins/make-pdf) | `make-pdf` | Generate PDFs from Markdown or HTML — single files or whole directories — with accessible PDF/UA, archival PDF/A, and watermark outputs, plus built-in conformance verification |
-| [`remediate-pdf`](plugins/remediate-pdf) | `remediate-pdf` | Remediate existing PDFs: auto-tag with PDF/UA semantic structure (headings, lists, tables, reading order) via the Nutrient DWS Accessibility API (auto-tag only — verify output with the bundled verify-pdf.py) |
+| [`remediate-pdf`](plugins/remediate-pdf) | `remediate-pdf` | Make existing documents accessible with the Nutrient Accessibility API: auto-tag PDFs with PDF/UA semantic structure (headings, lists, tables, reading order), validate against PDF/UA-1 with a JSON report, and route Word, image, and scanned files through conversion and OCR first (offline check: verify with the bundled verify-pdf.py) |
 | [`pdf-to-markdown`](plugins/pdf-to-markdown) | `pdf-to-markdown` | Convert PDF content to structured Markdown |
 | [`pdf-to-text`](plugins/pdf-to-text) | `pdf-to-text` | Extract layout-preserving plain text from PDFs |
 | [`query`](plugins/query) | `query` | Find relevant passages in an extracted document with ranked keyword search |
-| [`nutrient-sdk-dev`](plugins/nutrient-sdk-dev) | 13 SDK skills | Build with Nutrient SDKs — Web Viewer, Document Authoring, mobile (iOS/Android/React Native/Flutter/MAUI), server (Python/Java/Node.js/.NET), self-hosted Document Engine, and AI Assistant |
+| [`nutrient-sdk-dev`](plugins/nutrient-sdk-dev) | 14 SDK skills | Build with Nutrient SDKs — Web Viewer, Document Authoring, mobile (iOS/Android/React Native/Flutter/MAUI), server (Python/Java/Node.js/.NET), self-hosted Document Engine, and AI Assistant |
 
 ## Installation
 
@@ -54,7 +54,7 @@ npx skills add pspdfkit-labs/nutrient-skills --skill query
 npx skills add pspdfkit-labs/nutrient-skills --skill ai-gateway
 ```
 
-The `nutrient-sdk-dev` plugin's 13 per-SDK skills install the same way (e.g. `--skill nutrient-web-sdk`).
+The `nutrient-sdk-dev` plugin's skills install the same way: `--skill nutrient-sdk` for the routing skill, or one of the 13 per-SDK skills (e.g. `--skill nutrient-web-sdk`).
 
 This works with Claude Code, Codex, Cursor, Gemini CLI, and [many other agents](https://github.com/vercel-labs/skills#supported-agents).
 
@@ -113,6 +113,35 @@ git clone https://github.com/pspdfkit-labs/nutrient-skills.git
 ```
 
 Reference `SKILL.md` directly in your agent's context, or symlink the skill directory into wherever your agent resolves skills.
+
+## Updating
+
+An existing install does not pick up a new version on its own. Update it with the tool you installed with.
+
+### Claude Code
+
+Refresh the marketplace first, then update the plugin:
+
+```bash
+claude plugin marketplace update nutrient-skills
+claude plugin update nutrient-sdk-dev@nutrient-skills
+```
+
+Repeat the second command for each plugin you installed, then restart Claude Code. The plugin update compares against your local copy of the marketplace, so if you skip the first command it reports that you are already on the latest version.
+
+Claude Code turns auto-update off by default for marketplaces other than Anthropic's own. To turn it on, run `/plugin`, open the Marketplaces tab, and enable auto-update for `nutrient-skills`.
+
+### Codex
+
+```bash
+codex plugin marketplace upgrade
+```
+
+### Skills CLI
+
+```bash
+npx skills update
+```
 
 ---
 

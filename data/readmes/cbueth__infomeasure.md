@@ -40,7 +40,7 @@
 > Check out the [Rust Guide](https://docs.rs/infomeasure/latest/infomeasure/guide/index.html)
 > if you need maximum performance for production or large-scale analysis.
 > Find the [benchmark and interactive Rust vs Python performance comparison here](https://infomeasure.org/benchmarks/).
-> Project home: <https://infomeasure.org/>.
+> The Rust implementation is published in *Entropy*: <https://doi.org/10.3390/e28121309>.
 
 Continuous and discrete entropy and information measures using different estimation
 techniques.
@@ -140,6 +140,12 @@ python -m ipykernel install --user --name=im_env
 
 This allows you to run Jupyter with the kernel `im_env` (Kernel > Change Kernel >
 im_env)
+
+## Contributing
+
+Before opening a PR, read [CONTRIBUTING.md](CONTRIBUTING.md), including the
+[Use of AI](CONTRIBUTING.md#use-of-ai) policy. AI assistance is welcome, but a human
+author must understand and explain the change.
 
 ## Acknowledgments
 

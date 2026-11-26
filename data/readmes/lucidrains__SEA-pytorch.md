@@ -28,3 +28,39 @@ Explorations into [Scaling Empowered Agents](https://arxiv.org/abs/2610.13002), 
     url     = {https://arxiv.org/abs/2412.08021},
 }
 ```
+
+```bibtex
+@misc{zhang2026intelligencelearnablenovelty,
+    title   = {Intelligence from Learnable Novelty},
+    author  = {Yanbo Zhang and Michael Levin},
+    year    = {2026},
+    eprint  = {2607.18433},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2607.18433},
+}
+```
+
+```bibtex
+@misc{balestriero2025lejepaprovablescalableselfsupervised,
+    title   = {LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics},
+    author  = {Randall Balestriero and Yann LeCun},
+    year    = {2025},
+    eprint  = {2511.08544},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2511.08544},
+}
+```
+
+```bibtex
+@misc{maes2026leworldmodelstableendtoendjointembedding,
+    title   = {LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels},
+    author  = {Lucas Maes and Quentin Le Lidec and Damien Scieur and Yann LeCun and Randall Balestriero},
+    year    = {2026},
+    eprint  = {2603.19312},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2603.19312},
+}
+```

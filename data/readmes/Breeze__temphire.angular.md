@@ -223,6 +223,15 @@ Ask Quinn about their name, and they tell you where it comes from: *Punch*, the 
 after the Hindi *panch*, five, for its five ingredients, and TempHire began on IdeaBlade's Punch
 framework.  *Quinn* comes from the Latin *quinque*, five as well.
 
+An **editor** can also ask Quinn to change an existing address of a staffing resource (*Change Ann
+Lee's home address to 908 W Capital Way, Tacoma*), an experiment in letting Quinn change data.  If
+the person has several addresses, or the address service finds several matches, the pane shows them
+as radio buttons with OK and Cancel; before anything is saved, it shows the current and the new
+address with Confirm and Cancel.  Those questions come from the server's tools, and the user
+answers them, not Quinn: see
+[Changing an address through Quinn](https://github.com/Breeze/temphire.server#changing-an-address-through-quinn)
+in the server's README.
+
 On the client (`client/src/app/quinn/`):
 
 - **The pane only shows the conversation.**  It sends the conversation so far to
@@ -239,6 +248,18 @@ On the client (`client/src/app/quinn/`):
   clicks on links into the app and routes them; `ResourceMgtComponent` receives the id as its
   `resource` input (the router binds query parameters to inputs), opens the person, with the usual
   prompt if there are unsaved edits, and searches for them.
+- **What Quinn saved.**  A `saved` line in the answer stream is announced as a save
+  (`EventAggregator.savedElsewhere`): the search list reloads, and `ResourceMgtComponent` reloads
+  the resource it shows.  If the user is editing that resource with unsaved changes, it asks whether
+  to discard them; if not, the resource is read again into the sandbox, which keeps their changes
+  (Breeze merges with `PreserveChanges`) and takes the new data of everything else, so their save
+  goes through unless they changed the same thing.  The answer keeps the change's summary and sends
+  it back with the conversation (`QuinnMessage.saved`), so Quinn knows later what it did.
+- **A tool's questions.**  A question arrives in the answer stream as an `input` line, and becomes a
+  message of its own (`QuinnMessage.question`) with its choices and buttons; the answer stream
+  pauses until the user answers, and `QuinnService.answer` posts the answer to
+  `POST /api/agent/answer`.  The questions aren't sent back as part of the conversation: their
+  answers went to the tool.
 
 ### Budgets and the usage page
 
@@ -305,6 +326,9 @@ Server, shared with the React version.  It lives in its own repository,
 - serves the Breeze metadata, queries and saves, and the validation metadata, and checks every
   save against the same rules as the client, on the database as it will be after the save;
 - confines each user to their company's data, the company taken from their email domain;
+- suggests U.S. addresses as an editor types the first address line, and picking one fills the
+  address form: [address completion](https://github.com/Breeze/temphire.server#address-completion),
+  from OpenStreetMap data through Photon, with no API key;
 - signs users in as its own OAuth 2.1 authorization server, with ASP.NET Core Identity and
   OpenIddict, and enforces the Editor and Reader roles;
 - runs Quinn, with an MCP server that other MCP clients such as Claude Code can use as well;
@@ -331,6 +355,7 @@ The sections of its README:
 - [Validation](https://github.com/Breeze/temphire.server#validation):
   [validating the database as it will be after the save](https://github.com/Breeze/temphire.server#validating-the-database-as-it-will-be-after-the-save),
   [concurrency](https://github.com/Breeze/temphire.server#concurrency)
+- [Address completion](https://github.com/Breeze/temphire.server#address-completion)
 - [The database schema](https://github.com/Breeze/temphire.server#the-database-schema) and
   [using a different database](https://github.com/Breeze/temphire.server#using-a-different-database)
 - [Configuration](https://github.com/Breeze/temphire.server#configuration),
@@ -352,6 +377,7 @@ temphire.angular/
 │   ├── TempHire.Model/            # entities, DbContexts, migrations, sample data
 │   ├── TempHire.Server/           # Breeze, validation, OAuth, Quinn and MCP
 │   └── TempHire.Server.Tests/     # saves, rules, sample data, queries, who may call what
+├── temphire.ivproj                # IdeaBlade Validation Editor project (see Editing the rules)
 └── client/
     ├── metadata.json              # Breeze metadata exported from the server (npm run model:metadata)
     └── src/app/
@@ -413,6 +439,8 @@ what jQuery/lodash/moment would once have been used for.
 The client is meant to show current Angular, not just to run on it:
 
 - **Standalone components, no NgModules**, lazy-loaded routes, functional guards and interceptors.
+  Each component keeps its template and styles in their own files next to the class
+  (`.component.html`, `.component.css`, with `templateUrl` and `styleUrl`).
 - **Zoneless and OnPush.** There is no zone.js, and Angular 22 makes OnPush the default change
   detection for every component.  Views update from signals, so state lives in signals.
 - **Signals throughout.** `input()` / `output()` instead of decorators, `computed` for derived
@@ -451,8 +479,9 @@ The validation rules are written once, on the server, in two places:
   the Breeze metadata as validators;
 - **the validation metadata**, `server/TempHire.Server/Validation/validation.metadata.json`, for
   the rules annotations cannot express: an address is a U.S. address, with a state and a ZIP code;
-  a phone number has a 3-digit area code and a 7-digit number (a dash or a dot may follow the first
-  3 digits); a rate is a valid amount and not negative; dates are valid dates; a date of birth is
+  a phone number is a U.S. number in one field, in any of the common formats (10 digits; dashes,
+  dots or spaces between its parts; the area code in parentheses; a leading 1 or +1), rewritten as
+  `(206) 555-1234` when the user leaves the field; a rate is a valid amount and not negative; dates are valid dates; a date of birth is
   neither in the future nor more than 123 years ago; and a staffing resource has at least one
   address and one phone number, and it is at least 18 years old when hired.  These use
   [IdeaBlade.Validation / `ideablade-validation`](https://github.com/Breeze/ideablade-validation),
@@ -572,6 +601,17 @@ row someone else saved in the meantime fails with a concurrency conflict (409); 
 client tells the user so, in plain words, rather than showing the database's message: someone else
 changed this data, so click Refresh to load the latest, then make the changes again and save
 (`CONCURRENCY_CONFLICT` in `error-handler.service.ts`).
+
+#### Editing the rules
+
+The rules can be edited by hand, or in the
+[IdeaBlade Validation Editor](https://github.com/Breeze/ideablade-validation-editor), a desktop app
+that writes the metadata through forms and checks it with the library as you type.  Open
+`temphire.ivproj` at the root of this repo in it: that opens both metadata files, the server's
+`validation.metadata.json` and the client's `client-validation-metadata.ts`, and loads what the
+forms and the code completion in expressions offer: the entities from `client/metadata.json`
+(regenerated with `npm run model`), the list projection in `core/projections/`, and the name
+editor's `ResourceName`.  A new file in `core/projections/` is picked up as soon as it's written.
 
 ---
 

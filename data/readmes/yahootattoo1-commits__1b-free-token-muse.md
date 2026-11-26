@@ -1,6 +1,6 @@
-# 🎁 Get 1 Billion Free Muse Tokens
+# 🚀 Why Pay for AI? Get 1 Billion Free Muse Tokens
 
-### 🎁 A gift from Roozbeh — use my invite code and get 1,000,000,000 tokens — free.
+### 🎁 A $37 gift from Roozbeh — 1,000,000,000 tokens, free. Only 24 left of 30 — first come, first served.
 
 > **My Muse invite code:**
 >
@@ -132,9 +132,9 @@ So this guide stays public, free, and easy to share — no ads, no paywall, no s
 
 ---
 
-# 🎁 دریافت ۱ میلیارد توکن رایگان Muse
+# 🚀 چرا برای هوش مصنوعی پول بدی؟ ۱ میلیارد توکن رایگان موز بگیر
 
-### 🎁 هدیه‌ای از طرف روزبه — با کد دعوت من ثبت‌نام کن؛ ۱٬۰۰۰٬۰۰۰٬۰۰۰ توکن می‌گیری — رایگان.
+### 🎁 هدیهٔ ۳۷ دلاری از طرف روزبه — ۱٬۰۰۰٬۰۰۰٬۰۰۰ توکن، رایگان. فقط ۲۴ تا از ۳۰ تا مونده — هر که زودتر، همان می‌برد.
 
 > **کد دعوت من:**
 >

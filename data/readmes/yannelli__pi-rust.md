@@ -120,10 +120,12 @@ pi-rust ports the upstream `pi` CLI and its libraries. This section lists the di
   - `node:sqlite` on the bundled SQLite, `node:test` with TAP and spec output, and `repl` over any streams.
   - In-process `inspector` sessions, and `wasi` with a `WebAssembly` global on the wasmi interpreter.
 
-  The APIs that do not work throw `ERR_PI_UNSUPPORTED`. Examples are `crypto.subtle` other than `digest`, and rare `crypto` ciphers such as Camellia. `crates/pi-js/src/unsupported.rs` lists all of them. Native npm addons cannot load on QuickJS.
+  The APIs that do not work throw `ERR_PI_UNSUPPORTED`. Examples are rare `crypto` ciphers such as Camellia, and structured cloning of a `CryptoKey`. `crates/pi-js/src/unsupported.rs` lists all of them. Native npm addons cannot load on QuickJS. Packages that need one, such as pi-deltabox, @ff-labs/pi-fff, and @onkernel/browser-loop (`sharp`), run with `--extension-runtime auto` or `node`.
 
   To run extensions on Node 22 or later, set `extensionRuntime` to `"node"` or `"auto"`, or use `--extension-runtime` or `PI_EXTENSION_RUNTIME`. On Node, native addons, `child_process.fork`, and V8-only modules work. If Node is missing, pi uses QuickJS. See [Node backend](docs/agents/node-compat.md#node-backend).
-  The [extension package audit](docs/parity/extension-packages.md) lists 25 tested packages and the engine each one used.
+  The [extension package audit](docs/parity/extension-packages.md) compares the 70 most downloaded npm extension packages with upstream pi and lists the engine each one needs.
+- QuickJS comes from a vendored copy of `rquickjs-sys` 0.14.0 with one fix in `quickjs.c`: a module that waited only for a top-level-await dependency can be imported again later. Unpatched QuickJS-ng never settles that import. See `[patch.crates-io]` in `Cargo.toml`.
+- `VERSION` of `@earendil-works/pi-coding-agent` is the upstream pi version that pi-rust has parity with, so version checks written for upstream releases pass. `PI_RUST_VERSION` is the pi-rust release. Upstream has no such export.
 - IPC handle retries use a pi-js-specific wrapper. Internal handle listeners receive an object with only `close()`. Cluster connections queued to a disconnected worker are not reclaimed. See [Extension runtime](docs/parity/GAPS.md#extension-runtime-pi-js).
 - On non-Linux Unix, a concurrent child spawn can inherit an IPC socket before QuickJS marks it close-on-exec. Node closes inherited descriptors in its macOS `posix_spawn` path. See [Platform](docs/parity/GAPS.md#platform).
 - In extensions, `ctx.sessionManager` reads return copies of entries, except `getEntries()` of the extension's own session. Upstream pi returns its own entry objects from all reads.
@@ -132,9 +134,10 @@ pi-rust ports the upstream `pi` CLI and its libraries. This section lists the di
 - The extension SDK still has gaps in child sessions, resource loading, and model runtimes.
   - A `DefaultResourceLoader` with extensions serves one child session for each `reload()`. Its factories run in the caller's extension host.
   - `SettingsManager` supports custom storage and queued writes, with limits on JSON values and live object references.
+  - `createMcpExtension` starts the native MCP of pi-rust. It registers no `/mcp` command and does not take the callback options.
 
   See [Extension module exports](docs/parity/GAPS.md#extension-module-exports) for the remaining differences.
-- `pi.registerProvider(provider)` with an upstream `Provider` object, which has `getModels()` and no string `api`, registers nothing and reports a `register_provider` error. Use `pi.registerProvider(name, { api, baseUrl, models, streamSimple })`. An object with `id` and a string `api` registers as that config. See [Extension module exports](docs/parity/GAPS.md#extension-module-exports).
+- `pi.registerProvider(provider)` with an upstream `Provider` object registers its models, auth, and stream. pi-rust reads the model list of the object at registration and after each `refreshModels` publish, not on every call, and calls only `streamSimple`. An object without `getModels()` registers as a provider config. See [Extension module exports](docs/parity/GAPS.md#extension-module-exports).
 - The providers that extensions get from `@earendil-works/pi-ai/providers/all` stream, classify, generate images, and resolve auth in Rust. Their API key login asks for one key, including for Amazon Bedrock, Google Vertex AI, and Cloudflare. See [Extension module exports](docs/parity/GAPS.md#extension-module-exports).
 - When you quit the interactive mode, pi waits at most 3 seconds for the running turn and the `session_shutdown` handlers, then exits. Upstream pi waits until they finish.
 - An abort finishes in less than a second. Upstream pi waits for every tool and handler.
@@ -261,7 +264,7 @@ The numbers are upstream issue numbers.
 | [`pi-coding-agent`](crates/pi-coding-agent) | Tools, sessions, compaction, resources, extensions, the interactive TUI, the print, JSON, RPC, and ACP modes, and the `pi` CLI |
 | [`pi-chord`](crates/pi-chord) | Chord: an application composition runtime for services, replicated state, RPC, and plugins |
 | [`pi-telemetry`](crates/pi-telemetry) | Vendor-neutral telemetry contracts and typed schema utilities |
-| [`pi-schema`](crates/pi-schema) | TypeBox-compatible JSON Schema checks, defaults, and value cleanup, for pi-ai and pi-chord |
+| [`pi-schema`](crates/pi-schema) | TypeBox-compatible JSON Schema checks, defaults, and value cleanup, and the tool argument coercion and errors of upstream pi-schema, for pi-ai, pi-agent, and pi-chord |
 | [`pi-embedded`](crates/pi-embedded) | In-process pi sessions for native and Rust applications, with a C ABI (`include/pi_embedded.h`) |
 | [`pi-protocol`](crates/pi-protocol), [`pi-client`](crates/pi-client), [`pi-server`](crates/pi-server) | The CBOR wire protocol, its client, and its server over Unix sockets |
 | [`pi-durable`](crates/pi-durable) | Pi Durable: durable sessions on memory, SQLite, or JSONL storage, the harness, and its coding tools |

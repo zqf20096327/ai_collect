@@ -9,11 +9,11 @@
 
 <p align="center"><strong>Looped Transformers, latent reasoning, and test-time compute.<br>A bilingual reading guide with papers, official code, and research summaries.</strong></p>
 
-<p align="center"><a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Mrkkew/Awesome-Loop-Transformers?style=flat-square&labelColor=080b18&color=d8ff55"></a>&nbsp;<a href="#complete-catalog"><img alt="Papers in the full catalog" src="https://img.shields.io/badge/papers-277-5df2ff?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/actions/workflows/ci.yml"><img alt="Data and build" src="https://img.shields.io/github/actions/workflow/status/Mrkkew/Awesome-Loop-Transformers/ci.yml?style=flat-square&label=build&labelColor=080b18"></a>&nbsp;<a href="LICENSE"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-a78bfa?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="data/papers.json"><img alt="JSON catalog" src="https://img.shields.io/badge/data-JSON-c6ff4a?style=flat-square&labelColor=080b18"></a></p>
+<p align="center"><a href="https://github.com/Mrkkew/Awesome-Loop-Transformers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Mrkkew/Awesome-Loop-Transformers?style=flat-square&labelColor=080b18&color=d8ff55"></a>&nbsp;<a href="#complete-catalog"><img alt="Papers in the full catalog" src="https://img.shields.io/badge/papers-277-5df2ff?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/actions/workflows/ci.yml"><img alt="Data and build" src="https://img.shields.io/github/actions/workflow/status/Mrkkew/Awesome-Loop-Transformers/ci.yml?style=flat-square&label=build&labelColor=080b18"></a>&nbsp;<a href="LICENSE"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-a78bfa?style=flat-square&labelColor=080b18"></a>&nbsp;<a href="data/papers.json"><img alt="JSON catalog" src="https://img.shields.io/badge/data-JSON-c6ff4a?style=flat-square&labelColor=080b18"></a></p>
 
 <p align="center"><a href="https://awesome-loop-transformers.liyulin.workers.dev/#catalog"><strong>Search the interactive catalog ↗</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/Mrkkew/Awesome-Loop-Transformers/issues/new?template=paper-suggestion.yml">Suggest a paper</a></p>
 
-<p align="center"><a href="#start-here"><strong>🧭 Start here</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#essential-reading"><strong>📌 Essential reading</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#complete-catalog"><strong>📚 Full catalog</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#contributing"><strong>🤝 Contribute</strong></a></p>
+<p align="center"><a href="#start-here"><strong>🧭 Start here</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#tutorial"><strong>🧪 Tutorial</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#essential-reading"><strong>📌 Essential reading</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#complete-catalog"><strong>📚 Full catalog</strong></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#contributing"><strong>🤝 Contribute</strong></a></p>
 
 <p align="center"><sub>277 papers · 9 research topics · English / 简体中文 · Last research update: 2026-11-23</sub></p>
 
@@ -28,6 +28,21 @@
 - **Explore related methods** — [Coconut](https://arxiv.org/abs/2412.06769), [HRM](https://arxiv.org/abs/2506.21734), and [TRM](https://arxiv.org/abs/2510.04871) → [broader latent reasoning](#broader-latent-reasoning).
 
 → [Compare the mechanisms and learn what to measure](docs/reading-guide.md): recurrent depth, continuous thoughts, routing, and parallel loops.
+
+<a id="tutorial"></a>
+
+## Hands-on tutorial
+
+Everything below describes the literature. [`tutorials/`](tutorials/) lets you run a small version of it: a seven-chapter notebook that builds a looped Transformer out of a single block. It trains on a task whose difficulty *is* the number of sequential steps, measures what extra passes buy and where they hurt, adds an ACT halting head, and finishes by reading the source of [OpenMythos](https://github.com/kyegomez/OpenMythos). CPU only, about a minute of training, no dataset to download.
+
+- Parameters stay flat while effective depth grows: 205,255 for the looped model at any number of passes, versus 402,951 for a fixed stack at depth 8.
+- Accuracy follows `min(T, k)` and then *degrades* with extra passes: `k = 1` scores 1.00 at `T = 1` and 0.15 at `T = 6` — extra passes reopen a state that already holds the answer.
+- A halting head spends 1.4 / 2.5 / 3.7 / 5.4 loops for `k = 1…4` — 3.25 on average against a fixed four — at 0.98 mean accuracy, where four passes score 0.78.
+
+| Notebook | Language | Run it |
+| --- | :---: | :--- |
+| [`loop-transformers.ipynb`](tutorials/loop-transformers.ipynb) | English | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Mrkkew/Awesome-Loop-Transformers/blob/main/tutorials/loop-transformers.ipynb) |
+| [`loop-transformers.zh-CN.ipynb`](tutorials/loop-transformers.zh-CN.ipynb) | 简体中文 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Mrkkew/Awesome-Loop-Transformers/blob/main/tutorials/loop-transformers.zh-CN.ipynb) |
 
 <a id="essential-reading"></a>
 
@@ -1108,20 +1123,4 @@ Choose a topic below, then expand a year. Papers are ordered newest first within
 
 - **[Retrofitting Recurrent Vision-Language Models from Pretrained Backbones](https://arxiv.org/abs/2610.22075)**<br>
   Madhav Iyengar, Andreas Geiger, Hilde Kühne · *arXiv 2026*<br>
-  The authors prune layers from a pretrained VLM's language backbone, loop over a subset of survivors with a linear adapter that fuses preceding-layer tokens, and recover quality through language-only pretraining, projector alignment and visual instruction tuning, outperforming the unpruned baseline with 23.3% fewer language parameters.<br>
-  [Paper](https://arxiv.org/abs/2610.22075) · [Project](https://madhavesdios.github.io/recurrent-vlms)
-
-- **[LoopQuant: Accurate and Efficient Post-Training Quantization for Looped Transformers](https://arxiv.org/abs/2610.16368)**<br>
-  Zhixiong Zhao et al. · *arXiv 2026*<br>
-  LoopQuant canonicalizes activations across recurrent states, allocates per-loop activation precision under a fixed bit budget, and calibrates in task space so quantized inference follows the low-bit recurrent trajectory; on Ouro-2.6B its W4A4 setting outperforms all W4A8 baselines.<br>
-  [Paper](https://arxiv.org/abs/2610.16368)
-
-- **[RAMP: Recurrent Adaptive Mixed Precision for Efficient Prefill in Recurrent-Depth Language Models](https://arxiv.org/abs/2610.13041)**<br>
-  Ke Wan, Chen Chen · *arXiv 2026*<br>
-  Quantization error injected early in a recurrent trajectory is attenuated by later loops, so RAMP runs early refinement in low-precision weight-activation arithmetic and restores full precision for terminal loops, keeping prefill quality with up to 1.16x first-prefill speedup at 4K context.<br>
-  [Paper](https://arxiv.org/abs/2610.13041)
-
-- **[Scaling RNA Foundation Models through Iterative Refinement](https://arxiv.org/abs/2610.13106)**<br>
-  Pengan Chen et al. · *arXiv 2026*<br>
-  Eco-RNA is an 80M-parameter RNA foundation model whose shared, input-conditioned Transformer core is applied repeatedly, making inference depth a post-training knob; increasing refinement from one to four iterations improves RNAGym fitness prediction at fixed parameters.<br>
-  [Paper](https://a
+  The authors prune layers from a pretrained VLM's language backbone, loop over a subset of survivors with a linear adapter that fuses preceding-layer tokens, and recover quality through language-only p

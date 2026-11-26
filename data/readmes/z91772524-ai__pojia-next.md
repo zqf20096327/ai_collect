@@ -1,20 +1,21 @@
-﻿# 破甲一键通
+# 破甲一键通
 
 > ## 📌 当前状态
 >
-> **最新版** · 主域名 `1pojia.cn` · 版本号见上方 Release 徽章
+> **最新版** · 版本号见上方 Release 徽章
 >
 > | 项 | 值 |
-> | 官网 | `https://1pojia.cn/` |
 > | 下载 | [GitHub Releases](https://github.com/z91772524-ai/pojia-next/releases/latest) |
 >
 > ---
 >
-> **最新版关键变更**（8.46）：修好「破甲后 WorkBuddy 打不开」（守卫块被追加到 `product.json` 末尾让 JSON 非法，读配置失败就起不来；现改为写进 `template` 字符串值里）· 自检回执只回一行 
+> **最新版关键变更**（8.48）：**WorkBuddy 破甲修复** —— 之前部分提示词靶点没能生效，本版已全部覆盖，逐项复核通过 · 窗口按钮（关闭/最小化/最大化）点了没反应，已修复 · 付款成功后页面跳转报错，已修复 · 自助解绑、多设备开通、余额充值三个入口点击报错，已修复
+>
+> **8.46 关键变更**：修好「破甲后 WorkBuddy 打不开」（守卫块被追加到 `product.json` 末尾让 JSON 非法，读配置失败就起不来；现改为写进 `template` 字符串值里）· 自检回执只回一行 
 >
 > **8.45 关键变更**：修复部分用户遇到的核心加载问题 · 修复若干界面显示问题 · 优化支付流程 · 界面细节调整
 >
-> **8.44 关键变更**：主域名切换为 `api.1pojia.cn` · 客户端三通道自动切换（新域名 → 前置机 → 源站，180 秒重探）· 自检回执简化为单行 · 激活标识改为会话首条只带一次（不再每轮重复）· ZCode 系统提示词通道默认开启 + 人格文案中性化 · 提示词渠道校验优化
+> **8.44 关键变更**：客户端多通道自动切换（180 秒重探）· 自检回执简化为单行 · 激活标识改为会话首条只带一次（不再每轮重复）· ZCode 系统提示词通道默认开启 + 人格文案中性化 · 提示词渠道校验优化
 >
 > **8.43 关键变更**：修好 WorkBuddy 装在 `C:\Program Files` 时「提示词靶点 14 个未生效」（权限不够，新增「以管理员身份重试」一键提权）· 适配新版 WorkBuddy 的 Hy4 模型（旧措辞会被判定为越狱而拒绝）· 修 Codex 一直显示「装的是旧版人格」· 公告同一内容 24 小时内只弹一次 + 「下次一定」· 修个别情况下点「破甲」没反应
 >
@@ -24,9 +25,6 @@
 >
 > **8.37 关键变更**：单实例互斥 · 托盘退出硬杀 · 群号内置不联网 · 头像昵称本地落盘 · 锚点不符自动清缓存重拉 · 登录强制闸门（离线不算验证）· 破甲按钮随核心状态置灰 · 版本升级才清一次盘
 
-> ### 🌐 官网（国内推荐从这里进）：**https://1pojia.cn/**
-> 下载、更新公告、交流群都在官网 —— [**1pojia.cn**](https://1pojia.cn/)
->
 > ⚠️ **风险提示**：本工具修改第三方客户端的本地提示词文件，处于客户端使用条款的灰色地带 —— **账号风险自负**。介意者请勿使用，或用完即「还原」。
 
 **一句话：把你电脑上那几个 AI 客户端「自己改不到的内置提示词」，换成你自己写的那份 —— 双击 exe、点一个按钮的事。**
@@ -49,13 +47,12 @@
 **图形界面（原生窗口）+ 单文件 exe**：不装 Python、不敲命令、不进浏览器；
 仓库只发成品 exe（Release 附件），源码不再随仓库分发。
 
-[![官网](https://img.shields.io/badge/官网-1pojia.cn-ea580c?style=flat-square&logo=googlechrome&logoColor=white)](https://1pojia.cn/)
 [![Stars](https://img.shields.io/github/stars/z91772524-ai/pojia-next?style=flat-square&logo=github&label=Stars&color=ea580c)](https://github.com/z91772524-ai/pojia-next/stargazers)
 [![Release](https://img.shields.io/github/v/release/z91772524-ai/pojia-next?label=release&color=2ea043)](https://github.com/z91772524-ai/pojia-next/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078d4)](https://www.microsoft.com/windows)
 [![Portable](https://img.shields.io/badge/免安装-单文件%20exe-2ea043)](#-三步就能用)
-[![Dependencies](https://img.shields.io/badge/三方依赖-0%20个-brightgreen)](#-安全审计与安全设计)
+[![Dependencies](https://img.shields.io/badge/核心依赖-0%20个-brightgreen)](#-安全审计与安全设计)
 [![Online](https://img.shields.io/badge/启动时-联网校验激活码-blue)](#-三步就能用)
 [![security](https://github.com/z91772524-ai/pojia-next/actions/workflows/security.yml/badge.svg)](https://github.com/z91772524-ai/pojia-next/actions/workflows/security.yml)
 
@@ -63,7 +60,7 @@
 
 ![Skill 页](preview-skills.png)
 
-> ### 💰 本项目> 官网 <https://1pojia.cn/> 自助发卡领取；请不要从第三方渠道购买。
+> ### 💰 本项目激活码 5 元，群内自助领取；请不要从第三方渠道购买。
 
 ---
 
@@ -104,7 +101,7 @@
 ### 2️⃣ 双击 → 输激活码
 弹出一个原生窗口（WebView2 内核，Win10/11 自带运行时）。
 第一次打开会看到一张声明卡 —— 
-**领码流程**：填 QQ 号 + 自己设的密码 → 用这个 QQ 在任意官方群 **@登录验证机器人** 发一次网页给出的 13 位口令 → 官网领取激活码 → 页面直接给出激活码。
+**领码流程**：填 QQ 号 + 自己设的密码 → 用这个 QQ 在任意官方群 **@登录验证机器人** 发一次网页给出的 13 位口令 → 群内领取激活码 → 页面直接给出激活码。
 
 拿到码后回到客户端**粘贴激活码完成在线验证**（不需要输群号；v8.6 起 exe 不再内嵌核心，验证通过后自动获取 ——
 此后核心升级全自动，不用再换 exe）。
@@ -122,7 +119,7 @@
 > 没有代码签名证书的 exe，SmartScreen 可能会弹「Windows 已保护你的电脑」——
 > 这是无签名 exe 的常态。点 **「更多信息」→「仍要运行」** 即可。
 > 不放心的话：哈希对得上的附件才用（[怎么校验](#校验下载的文件没被篡改sha256)），
-> 并**只认官方渠道**（官网 1pojia.cn / 本仓库 Release）。
+> 并**只认官方渠道**（本仓库 Release）。
 
 ---
 
@@ -151,10 +148,10 @@
 |---|---|
 | **改坏了能不能恢复？** | **每个改动都先备份**。点「还原」一键变回官方原版（按"护照"名单精确还原，不误删别人的文件） |
 | **会不会偷偷联网 / 上传我的数据？** | **核心零网络请求**（CI 每次提交自动断言）；GUI 只在两处碰网络：本地回环 `127.0.0.1` 起界面服务（不对外），以及**你在环境页主动点「下载」**时访问官方下载源（URL 全是代码里的字面量，见 [安全审查](#-安全审计与安全设计)） |
-| **exe 会不会带毒？** | 构建全程 CI 自动跑三套安全扫描；附件哈希可校验；**只认官方渠道**（官网 1pojia.cn / 本仓库 Release）一个来源 |
+| **exe 会不会带毒？** | 构建全程 CI 自动跑三套安全扫描；附件哈希可校验；**只认官方渠道**（本仓库 Release）一个来源 |
 | **会不会删我的东西？** | 只做文件级补丁，**不删包、不碰注册表 / 服务、不装驱动**；连清缓存都默认**只统计不删** |
-| **是不是要花钱？** | **开源（MIT）**，激活码在官网自助领取。花钱买到的请立即申请退款 —— 官方仓库只有这一个 |
-| **手机上能管后台吗？** | 可以，装 [破甲后台 App](https://1pojia.cn/dl/pjadmin-android-1.0.apk)（29 KB，安卓 5.0+）。它是个壳，打开就是电脑上同一个后台页面，改价、看订单、封设备都能用 |
+| **是不是要花钱？** | 需要激活码。**领卡费 5 元**（一次性门槛费，不是订阅，没有后续扣费），群内自助领取。第三方转卖的码不保证可用，认准官方群 |
+| **手机上能管后台吗？** | 可以，装 破甲后台 App（群文件下载）（29 KB，安卓 5.0+）。它是个壳，打开就是电脑上同一个后台页面，改价、看订单、封设备都能用 |
 
 ---
 
@@ -210,7 +207,7 @@ A：工具会自动扫 `Program Files`、`%LOCALAPPDATA%\Programs`、注册表�
 真找不到会弹一个二选一：输 `A` 帮你打开官方下载页（说明还没装）；输 `B` 弹系统目录窗口手动选，**选完会记住**。
 
 **Q：能发给朋友吗？**
-A：**把 exe 直接发过去就行**，对方双击即用，什么都不用装。**激活码在官网自助领取。**
+A：**把 exe 直接发过去就行**，对方双击即用，什么都不用装。**激活码群内自助领取。**
 
 **Q：我的客户端不在支持的六个里？**
 A：那不支持。工具只处理下面列出的四个目标，不会去猜、也不会乱动别的软件。
@@ -333,268 +330,37 @@ GUI 里每个目标的状态灯 + 「演练」就是体检入口，全程只读�
 
 ### 校验下载的文件没被篡改（SHA256）
 
-仓库根目录有 [`SHA256SUMS.txt`](SHA256SUMS.txt)（覆盖仓库全部文件）；**发行包另有精简校验 `SHA256SUMS-exe.txt`**（随 Release 附件分发，不在仓库里）：zip 下载后核一层，解压出来的 exe 再核一层。下载后自己核一遍：
+仓库根目录的 [`SHA256SUMS.txt`](SHA256SUMS.txt) 列了发行包的 SHA256。下载后自己核一遍：
 
 ```powershell
 # Windows PowerShell
-Get-FileHash ".\pojia sync-daemon.exe" -Algorithm SHA256   # 与 SHA256SUMS-exe.txt / Release 正文对照
+Get-FileHash ".\破甲一键通-8.48.exe" -Algorithm SHA256
 ```
+
 ```bash
 # Linux / macOS
-sha256sum -c SHA256SUMS-exe.txt      # 对着清单逐项校验
+sha256sum 破甲一键通-8.48.exe
 ```
 
-发行包（文件名不带版本号，官网与 Release 指向同一个包）：
+对照 [`SHA256SUMS.txt`](SHA256SUMS.txt) 或 [当前 Release 正文](https://github.com/z91772524-ai/pojia-next/releases/latest) 里公布的值，一致即未被改动。
 
-| 文件 | 说明 |
+**发行包内容**（3 个附件，内容完全相同，按网络情况任选）：
+
+| 附件 | 说明 |
 |---|---|
-| `pojia-next-exe.zip` | 发行包；见 [Releases](https://github.com/z91772524-ai/pojia-next/releases) |
-| `pojia sync-daemon.exe` | zip 解压所得（窗口标题显示「破甲一键通 v8.46」） |
+| `pojia-next.exe` | **推荐**。固定文件名，永久指向最新版，链接不会随版本失效 |
+| `pojia-next-8.48.exe` | 带版本号的单文件 exe，双击即用 |
+| `pojia-next-v8.48-exe.zip` | 同上打成的 zip，适合手机/网盘中转，**无解压密码** |
 
-> 每个版本的具体 SHA256 写在对应 Release 正文和 `SHA256SUMS-exe.txt` 里，README 不再固定某个版本的文件名。
+> 只保留最新版发行包，旧版本附件已全部下架 —— Releases 里的 v8.45 / v8.46 没有可下载文件，是历史记录。
 
-> exe 的完整哈希发布在 **Release 页面正文**里 —— Release 附件是定版快照，
-> 在正文里写死才能一一对应（v7.8 前写在 README 里踩过"改一处两处都对不上"的循环引用坑）。
+### 版本记录
 
-<details>
-<summary><b>📋 版本记录</b>（点开）</summary>
+每个版本改了什么、升级要注意什么，全部搬到独立文件：
 
-### v8.46 —— 修「破甲后 WorkBuddy 打不开」+ 界面优化
+**→ [更新日志 CHANGELOG.md](CHANGELOG.md)**
 
-**先说最要紧的一条**
-
-上一版破甲完成后双击 WorkBuddy，会弹「启动失败：主窗口创建失败」，点「完全撤销」才能恢复。
-
-原因：守卫块被直接追加到 `product.json` 末尾 ——
-
-```json
-}
-<!-- pojia-wb-guard:auto-mode-classifier:start -->
-## 破甲一键通 裁定覆盖（最高优先级）
-```
-
-JSON 不允许注释，读配置失败就起不来。现已改为写进 `template` 字符串值里。
-
-**其他**
-
-| 改了什么 | 说明 |
-|---|---|
-| 自检只回一行 | 发「破甲自检」只回 `▣自检成功！ 破甲一键通工作中`，不再附加其它内容 |
-| 支付 | 页内二维码，不再跳转第三方收银台 |
-
-### v8.45 —— 核心加载修复 + 支付流程优化
-
-修复部分用户遇到的核心加载问题 · 修复若干界面显示问题 · 优化支付流程 · 界面细节调整。
-
-### v8.44 —— 主域名切换 + 三通道自动切换
-
-主域名切 `api.1pojia.cn` · 客户端三通道自动切换（新域名 → 前置机 → 源站，180 秒重探）· 自检回执简化为单行 · 激活标识改为会话首条只带一次 · ZCode 系统提示词通道默认开启 · 提示词渠道校验优化。
-
-### v8.43 —— 修「14 个靶点未生效」+ 适配 Hy4 + 公告不再天天弹
-
-**修好了什么**
-
-- **WorkBuddy 装在 `C:\Program Files` 时显示「提示词靶点 17 个：3 已生效 / 14 未生效」。**
-  这不是内容写坏，是这些文件需要管理员权限才能改。以前只提示"写入失败"，
-  界面还是一片「未生效」，重装客户端也没用。
-  现在会直接说明是权限问题，底栏多了一个**「以管理员身份重试」**按钮 —— 点一下弹 UAC，
-  提权后自动把没写完的补上，不用手动去右键"以管理员身份运行"。
-- **新版 WorkBuddy 的 Hy4 模型会拒绝执行。**
-  同一份提示词，Hy3 正常、Hy4 会把它判定成"越狱提示词"然后拒绝，还会劝你把它删掉。
-  本版调整了措辞，Hy3 / Hy4 都能正常用。
-- **Codex 卡片一直显示「装的是旧版人格」。**
-  按提示重跑破甲也没用，怎么刷都是那一句 —— 这是判定逻辑的问题，不是真的没写进去。
-  已修好，重跑一次破甲就正常显示。
-- **公告 / 捐赠弹窗每次启动都弹。**
-  现在同一内容 **24 小时内只弹一次**，并加了「下次一定」：点了以后这条内容不再打扰你。
-- **个别情况下点「破甲 / 演练 / 撤销」没反应。**
-  已修好。
-
-**去掉了什么**
-
-- 移除「豆包」目标。实测它那条通道只能影响办公任务里的偏好，**普通聊天并不读**，
-  留着只会让人以为豆包也能破 —— 现在不提供了。
-
-**升级提示**
-
-- 旧版客户端启动会自动拉取新核心，**Codex 显示旧版人格的问题不用换 exe 也会好**。
-- 要拿到「以管理员身份重试」按钮和公告 24 小时冷却，需要更新到本版 exe。
-
-### v8.42 —— 技能内置进核心 + DSH 改发一体包 + 授权自助
-
-**核心（脚本）**
-- **六个技能内置**：逆向 / 脱壳 / 抓包 / 渗透 / 改机 / 写工具。
-  以前 `default_skill_source()` 只看 `<脚本目录>/skills`，而云端下发的是单文件核心，
-  那个目录根本不存在 —— 每次 `--apply` 都打「没找到技能源目录，跳过 skills」。
-  现在技能直接嵌在脚本里，首次用到落到临时目录再装进客户端
-  （`%TEMP%\pojia-skills-v842`），云端单文件也能装技能。
-- 技能块**必须放模块级**（`class ZCodeTarget` 之前）。放进类体内部会提前结束类定义，
-  导致 `apply/revert/check` 变成模块函数 —— 表现为
-  `'ZCodeTarget' object has no attribute 'apply'`。踩过一次，写在这里。
-
-**客户端 GUI**
-- **DSH 改为「破甲一体包进群下载」**：工作台的 DSH 卡片不再进勾选、不进破甲队列，
-  点它弹提示并开浏览器进官方群拿包（`https://qm.qq.com/q/f52sDAc5IA`）。四张卡等高。
-- **授权详情卡**：掩码激活码 / 到期与剩余天数 / 绑定设备 / 是否可自助解绑。
-- **自助解绑**：一键解绑本机，30 天 1 次（`unlimited` / `forever` 码不受限）；
-  服务端同时把本机从 `hwids` 名单摘掉，否则不限设备码的台数仍被占用、换机激活会撞上限。
-- **生成诊断包**：日志（含轮转）+ 环境.json + 崩溃记录打成 zip 放桌面，直接发群。
-  ⚠ 不要在本地请求线程里调 `core.main()` 做体检 —— 它会 `sys.exit`，把本地服务线程一起带走。
-- **崩溃自动上报**：`sys.excepthook` + `threading.excepthook` + `faulthandler`，
-  落 `%LOCALAPPDATA%\破甲一键通\crash`，并尝试 POST `/diagupload`。
-- **开机自启开关**：`HKCU\...\Run`，免管理员。
-
-**服务端**
-- `/pojia/authed`（授权详情）、`/pojia/unbind`（自助解绑）。
-- `/api/appeal` + `/banned` 页申诉表单 + 后台「封禁申诉」面板（标记已处理 / 撤销）。
-- `pj_alert.py` 每 10 分钟巡检：帧长按当前核心大小动态算，备份目录多路径探测。
-  以前阈值写死 8.41 的核心大小，换版后一直误报「下发故障」。
-
-### v8.41 —— 云记忆压缩 + 兜底人格 + GUI 补齐
-
-- 云记忆超限改为就地压缩（不再整段跳过）
-- 兜底人格真正生效（`persona.md` 缺失时不再只剩政策壳）
-- `--full` 的文件保护中和不再被 skip 分支丢弃
-- GUI 一键破甲补上 `nofileguard`
-- 单实例改前缀枚举（跨版本不再静默退出）
-
-### v8.40 —— 四客户端独立人格 + 图标 + 登录修复
-
-- **修 GUI 驱动时人格被写回旧稿**：GUI 用 `_persona_load_override` 接管了核心的人格加载入口，
-  默认返回 GUI 内置的旧通用稿 → 界面点「破甲」会把 DSH/WorkBuddy 降级回旧人格。
-  改为读核心内置人格，命令行与界面两条路径终于一致
-- **ZCode 换 GLM 专用稿**：按 GLM 的失效模式重写（更客气的拒绝、爱给「合规替代」、
-  爱在交付后补「请注意合法使用」），恶意代码按八个工程模块拆开
-- **目标恢复为四个**：DSH / WorkBuddy → DeepSeek 稿，ZCode → GLM 稿，Codex → MDX v45 英文协议
-- **图标**：软件图标换成官网左上角「破」标志（黑底白字，七档尺寸）；Codex 卡片补真实 logo
-- **修托盘崩溃**：`CreateWindowExW` 的 HINSTANCE 参数未声明原型，句柄超过 2^31 抛
-  `OverflowError`，整条托盘线程死亡。已补 argtypes/restype
-- 引流串官网域名同步
-
-### v8.39 —— TOML 重复键修复 + 诊断上报打通
-
-- 修 Codex `config.toml` 重复键：配置工具重写后注释丢失，旧的 `model_instructions_file`
-  变成裸键，按标记删不到、新键再插一条 → `tomllib` 报 `Cannot overwrite a value`，
-  整份配置被回滚。现在插入前无条件清理顶层同名键，幂等
-- 旧 `AGENTS.md` 残留识别：标记被剥掉但正文还在时按内容特征识别，先存档再移除
-- `/diagupload` 之前全 404，服务端补齐接收端，诊断能落到 `data/diag/`
-- `action_refused` 上报补上拒绝原因
-
-### v8.38 —— 修复 EdgeOne 证书链导致的「服务器连接中」
-
-- 客户端 TLS 信任库由「仅内置私有根」改为「系统信任库 + 内置私有根」双信任
-- 内置 ca.pem 由 1 张根证书扩为 2 张：pojia-root-ca-2026 + DigiCert Global Root G2
-- 修复接入 EdgeOne 后 `CERTIFICATE_VERIFY_FAILED: self-signed certificate in certificate chain`，公告 / 核心 / 版本校验 / 在线统计全部恢复
-- 直连 IP 兜底仍走私有根，两条链路都能验
-- 8.37 及以下必须升级
-
-### v8.37 —— 版本号对齐 + 核心 CDN 同步
-
-- 修正 BUILD_VER 错配，客户端上报版本与安装包一致
-- 剥离构建机 sitecustomize，文件删除 / 缓存清理恢复正常
-- 补齐 `ZCodeTarget._mirror_block`，ZCode 破甲不再报 AttributeError
-- 核心与 CDN 同步下发，消除 SIG 安全校验失败
-- 8.36 以下已下架，旧版登录会被拒
-
-### v8.36 / v8.35 —— 过渡版本
-
-统一服务端版本下发口径（8.36）、修核心下发链路（8.35）。两版均已被 8.37 覆盖，不再单独展开。
-
-### v8.34 —— 启动不再卡「检测中」+ 广告跳转修正
-
-| 改了什么 | 说明 |
-|---|---|
-| **启动扫描硬超时** | 状态快照整轮加 30 秒上限：超时就把没跑完的客户端标成「扫描超时（点刷新重试）」，用已拿到的部分结果收工。以前某个客户端目录遍历卡住，`_SNAP` 一直是空，界面就永远停在「检测中…」 |
-| **上一份快照兜底** | 重新扫描期间先拿上一次成功的结果把界面填上，不再退回空壳（三张卡片同时空掉） |
-| **线程池超时修正** | `ThreadPoolExecutor` 改手动 `shutdown(wait=False, cancel_futures=True)` —— 原来用 `with` 会等所有慢任务跑完，超时等于白设 |
-| **广告跳转修正** | 点击统计链路的基址从旧域名切到当时的主域名，不再出现点任何广告都跳到第一家的问题 |
-| **广告条目兜底** | 后台保存广告只写图片不写 HTML，服务端现在会用 image 现场拼一个 `<img>`，避免保存一次广告就整条消失 |
-
-### v8.27 —— 双层破甲 + 开屏广告云端管理 + 巡检自愈
-
-| 改了什么 | 说明 |
-|---|---|
-| **双层破甲（镜像层）** | 主注入块之外再落一份独立标记的镜像块（核心规则 + 自证口令重申）：长对话注意力衰减时兜底，宿主更新覆盖主块时兜底，任一层活着破甲就有效 |
-| **三个客户端，三种注入方式** | DSH 走三层文件级补丁 + 插件注入；WorkBuddy 走 `product.json` 的 `prompts[]` 结构化注入 + skill 安装；ZCode 追加 `AGENTS.md` + Memory |
-| **状态可见** | 体检面板直接显示「已破甲（双层：主注入 + 镜像层 ✓）」，缺层提示重跑补装；老用户点一次「破甲」自动补装 |
-| **开屏广告** | 启动就绪即弹：每次从广告位**随机**取一条，5 秒倒计时结束后才能手动关闭（右上角 × 或「关闭广告」） |
-| **广告云端管理** | 素材 / 链接 / 上下线 / 参与开屏全部在管理后台配置，客户端自动同步，不发版就能换广告 |
-| **巡检自愈** | 每小时基线比对，破甲状态被改动可自动修复（可选自动 / 仅提醒） |
-| **运维三件套** | 一键体检报告落桌面 txt、脱敏日志打包 zip（自动抹掉用户名与家目录路径）、网络超时 10s → 5s |
-| **更新链路修复** | v8.23 起的「更新焊死」改为服务器开关控制（`lock_ver`），版本比较逻辑恢复可生效；更新弹窗提供迅雷（国内快）/ GitHub 双渠道 |
-| **下载地址管理** | 上述两个渠道的地址与开关全部后台可改：内容运营 →「下载地址管理」，改完保存即下发（`version.json` 的 `url` / `gh_url` / `go_on` / `gh_on`），客户端不发版就能换源 |
-
-### v8.26 —— 注入全程托管：杀进程重注入 + 托盘常驻 + 写后自检
-
-| 改了什么 | 说明 |
-|---|---|
-| **杀进程自动重注入** | 点「破甲」自动结束 DSH 客户端进程 → 注入 → 完成后按原目录自动重新拉起；命令行启动的场景给出手动重开提示 |
-| **注入步骤实时提示** | 百分比下方滚动显示当前步骤（结束客户端 / 写入补丁 / 自检回滚 / 重新启动客户端 等），卡在哪一眼看到 |
-| **写后自检 + 自动回滚** | 补丁写入后立即复读文件复核，异常自动从备份还原并明确提示（借鉴 dsh-purge Community 的备份校验机制） |
-| **注入自证 + 运行时守卫** | 注入结束主动验证补丁真驻留（杜绝假成功）；客户端运行期间持续监视补丁状态（借鉴 codex-session-patcher 的交付即验证思路） |
-| **托盘后台常驻** | 关窗最小化到系统托盘；托盘右键「打开面板 / 一键破甲（全选）/ 退出」，左键单击恢复窗口；纯 Win32 实现，零额外依赖 |
-| **界面修复** | 亮色主题人格编辑框背景写死深色 → 改为主题感知配色；公告 once 配置修复（服务端生效，老版本受益）；管理面板非官方版本警示防误清空 |
-
-### v8.6 —— 云验证上线 + 宿主更新覆盖自检
-
-| 改了什么 | 说明 |
-|---|---|
-| **exe 云验证版**（首次启动输群号） | exe 不再内嵌核心：输官方 QQ 群号在线验证后自动获取（TLS + 签名校验，核心只在内存执行）；此后核心升级全自动，不用再换 exe。`.py` 用户不受影响 |
-| **核心三节硬化** | 思考槽封口（推理型模型的思考层动作必须正文执行）/ 拒绝自愈（中途拒绝措辞自动续命）/ 票根规矩（占位符填死、先交付能用的、动文件先拍快照） |
-| **补丁戳自愈** | DSH / WorkBuddy 自身升级把配置覆盖回出厂时，体检报「宿主更新覆盖」，一键重打 |
-| **爆破防护** | 同一网络输错群号次数过多临时锁定（约 30 分钟自动解除），正常用户无感 |
-
-### v8.5 —— 图形界面成型：快、好看、会装技能
-
-| 改了什么 | 说明 |
-|---|---|
-| **启动提速**：窗口先弹、核心后台加载 | 核心自检 + 类初始化挪到后台线程（约 1~2 秒），窗口秒开，就绪瞬间自动出检测结果 |
-| **窗口图标** | 窗口 / 任务栏 / exe 文件三处统一专属图标（`icon.ico`） |
-| **Skill 页**（新页签） | 本机已装 / 市场可装 / 精选推荐三分节 + 搜索过滤 + 一键安装（装到用户级 skills 目录，装完即显示用途） |
-| **免费声明卡**（首次启动） | 激活码领取说明 + QQ / TG 加群入口，点一下自动复制群号并打开加群页 |
-| 按钮改名 | 「应用」→**「破甲」**（主按钮、第一位）；「破甲」→**「演练」**；删掉与宽松执行重复的「统一人格」 |
-| 界面精修 | 分类配色头像、状态计数、空态提示等一揽子 UI 打磨 |
-
-### v8.4 —— DSH 版本号检测
-
-新增只读命令 `--dsh-version`；官方桌面版读 `runtime.json:desktopVersion`、社区桌面版读 `app/package.json:version`，不再拿 Electron 版本冒充 DSH 版本。
-
-### v8.3 —— 社群反馈全落地
-
-硬性要求新增资金/写入/武器知识 3 行、拦截清单 11~13 条、长对话衰减对抗与模型无关性两节、zpatch 默认开启、守护任务记住已破目标、新增《小白教程》。
-
-### v8.2 —— DSH 分两路识别
-
-社区桌面版 / 官方桌面版分别探测、分别贴标签；官方版只识别只提示（它的 dsh 打在 app.asar 里，磁盘无可改层）。
-
-### v8.1 —— 支持免装 Python（单文件 exe）
-
-Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放哪，数据目录就在哪 —— 和 `.py` 版行为一致。
-
-### v8.0 —— 注入层补三节执行纪律 + 图形界面起步
-
-「措辞映射」「无工具兜底执行协议」「改盘任务的强制工件」三节进硬化块指纹；网页 UI 图形界面起步；修 `--status` 假只读等 3 处。
-
-### v7.9 —— 不许中途停、不许拒绝
-
-零拒绝原则、拒绝意图十大前兆、中途停机禁令 12 种、逆向破解逐环节放行表；新增政府网站禁止目标清单。
-
-### v7.8 —— Codex 改走官方 `config.toml`
-
-**Codex 的注入方式换了一条更彻底的通道**：从 `AGENTS.md` 追加标记块改为 `config.toml` 里加**一行** `model_instructions_file`（官方的**替换模型指令**入口，社区通行做法用的键）。键插在第一个表头之前（避免变成环境变量）；写完用 `tomllib` 真解析一遍，不合规就回滚；旧标记块自动清理。
-
-### v7.7 —— 目标扩到六个
-
-支持 DSH / WorkBuddy / ZCode。DSH 走插件注入，WorkBuddy 走六层靶点，ZCode 走 AGENTS.md + Memory + 技能。全部幂等、精确卸载。
-
-### v7.4 —— 只修 bug、不加功能（20 项，其中 4 类会造成用户数据静默丢失）
-
-> 这一版值得单列，因为修的问题都很隐蔽 —— **工具说"成功"，实际却在丢数据**。
-> 逐条复现方式与修法见 [`修复报告.md`](修复报告.md)。
-
-核心修复：重复 `--revert` 清空云记忆、还原误清"从没注入过"的档案、v4 老产物被"复活"、清会话快照默认改只统计、ZCode 同名技能误删、守护任务假"正常"、写半边退出码 0、`--revert --dry-run` 真写盘、引号被 shlex 拆坏、config.toml 往返不逐字节、二进制人格写坏 JSON 等 20 项。测试面 191 条断言全绿。
-
-</details>
+<sub>README 只留当前版本的说明，历史记录不占版面。</sub>
 
 ---
 
@@ -615,23 +381,49 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 ### 二、用到的开源组件
 
-以上是「思路来源」；以下是「代码里真的在用的东西」—— 全部经 `pip` 安装或系统自带，仓库里没有一个字节的第三方源码，可以逐条对照构建脚本核验。
+以上是「思路来源」；以下是「代码里**真的在跑**的东西」—— 全部经 `pip` 安装或系统自带，
+仓库里没有一个字节的第三方源码，每条都附 `文件:行号` 可核位置，能逐条对照核验。
 
-上面那张表是「思路来源」；下面这张是「代码里真的在用的东西」——全部经 `pip` 安装或系统自带，仓库里没有一个字节的第三方源码，可以逐条对照构建脚本核验。
+#### 2.1 运行时（随 exe 打包，或系统自带）
 
 | 组件 | 许可证 | 在本项目里承担什么 | 可核位置 |
 |---|---|---|---|
-| [Cython](https://github.com/cython/cython) | Apache-2.0 | 把 `pojia_gui.py` 编译成 C++ → `pyd`，`--no-docstrings` 去掉注释与文档串，成品 exe 里没有可直接反编译的 GUI pyc | `pj-838/_build_841.py:33` |
-| [PyInstaller](https://github.com/pyinstaller/pyinstaller) | GPL-2.0 + 启动器例外 | 把 `launcher.py` + `pojia_gui.pyd` + 图标/证书/收款码打成单文件 exe，用户免装 Python | `pj-838/_build_841.py:50`、`pj-838/ui-test-836.spec` |
-| [pywebview](https://github.com/r0x0r/pywebview) | BSD-3-Clause | 原生窗口壳 + WebView2 绑定，界面是本地 HTML 而不是浏览器标签页 | spec `hiddenimports`（`webview`、`webview.platforms.edgechromium`） |
-| [pythonnet](https://github.com/pythonnet/pythonnet) / [clr_loader](https://github.com/pythonnet/clr-loader) | MIT | pywebview 在 Windows 上的 WinForms 后端，负责把 .NET 窗口挂到 Python | spec `hiddenimports`（`pythonnet`、`clr_loader`） |
-| [MinGW-w64](https://www.mingw-w64.org/)（gcc） | GPL + 运行时例外 | `pyd` 的 C/C++ 编译器，`--compiler=mingw32` 编扩展，构建机不用装整套 MSVC | `pj-838/_build_841.py:38` |
+| [pywebview](https://github.com/r0x0r/pywebview) | BSD-3-Clause | 原生窗口壳 + WebView2 绑定，界面是本地 HTML 而不是浏览器标签页 | `ui-test-836.spec:12`、`pojia_gui.py:5769` |
+| [pythonnet](https://github.com/pythonnet/pythonnet) | MIT | pywebview 在 Windows 上的 WinForms 后端，把 .NET 窗口挂到 Python | `ui-test-836.spec:13` |
+| [clr_loader](https://github.com/pythonnet/clr-loader) | MIT | pythonnet 的 .NET 运行时加载器（含 `clr_loader.ffi`） | `ui-test-836.spec:13` |
+| [comtypes](https://github.com/enthought/comtypes) | MIT | Win32 COM 桥接，读 Windows 音频端点状态（静音切换前的状态比对） | `pojia_gui.py:7236` |
+| [PyObjC / AppKit](https://github.com/ronaldoussoren/pyobjc) | MIT | **仅 macOS**：`NSWindow.miniaturize_` 实现窗口最小化（Windows 走 `ShowWindowAsync`） | `pojia_gui.py:11772` |
 | [Microsoft Edge WebView2](https://learn.microsoft.com/microsoft-edge/webview2/) | 微软运行时（随 Win10/11 分发） | 真正的渲染内核，Win10/11 自带；缺失时「环境」页负责检测并引导安装 | `pojia_gui.py` 环境检测项 |
-| Python 标准库 [`http.server`](https://docs.python.org/3/library/http.server.html) | PSF | 只监听 `127.0.0.1` 的本地渲染服务，前端与 Python 侧通过它通信，不出本机 | `pj-838/pojia_gui.py:72` |
+| Python 标准库 [`http.server`](https://docs.python.org/3/library/http.server.html) | PSF | 只监听 `127.0.0.1` 的本地渲染服务，前端与 Python 侧通过它通信，不出本机 | `pojia_gui.py` `_pick_port` |
+
+> **核心本体零第三方依赖**：`破甲一键通.py`（补丁引擎）只 import 标准库，`pip list` 空着也能跑。
+> 上表所有三方包都属于 **GUI 外壳**这一层 —— 去掉 GUI 走 `--cli` 模式，功能一样不少。
+
+#### 2.2 构建链（只在构建机跑，不进发行版）
+
+| 组件 | 许可证 | 在本项目里承担什么 | 可核位置 |
+|---|---|---|---|
+| [Cython](https://github.com/cython/cython) | Apache-2.0 | 把 `pojia_gui.py` 编译成 C++ → `pyd`；`--no-docstrings` 去掉注释与文档串，成品里没有可直接反编译的 GUI pyc | `_build_846.py:33` |
+| [setuptools](https://github.com/pypa/setuptools) | MIT | 驱动 `build_ext`，把 Cython 产出的 `.cpp` 编成 `.pyd` 扩展模块 | `setup_pyd.py:5`、`setup_pyd.py:21` |
+| [MinGW-w64](https://www.mingw-w64.org/)（gcc/g++） | GPL + 运行时例外 | `pyd` 的 C/C++ 编译器，`--compiler=mingw32` 编扩展，构建机不用装整套 MSVC | `setup_pyd.py:21` |
+| [PyInstaller](https://github.com/pyinstaller/pyinstaller) | GPL-2.0 + 启动器例外 | 把 `launcher.py` + `pojia_gui.pyd` + 图标/证书/收款码打成单文件 exe，用户免装 Python | `ui-test-836.spec`、`_build_846.py:50` |
+
+#### 2.3 CI 与文档工具（不进发行版）
+
+| 组件 | 许可证 | 在本项目里承担什么 | 可核位置 |
+|---|---|---|---|
+| [bandit](https://github.com/PyCQA/bandit) | Apache-2.0 | 每次提交跑 Python 安全静态扫描，**HIGH / MEDIUM 必须为 0** 否则 CI 失败 | `.github/workflows/security.yml:57` |
+| [Semgrep](https://github.com/semgrep/semgrep) | LGPL-2.1 | 通用安全规则集（`p/python` + `p/security-audit`），ERROR / WARNING 为 0 才放行 | `.github/workflows/security.yml:75` |
+| [actions/checkout](https://github.com/actions/checkout) | MIT | CI 拉代码 | `.github/workflows/security.yml:33` |
+| [actions/setup-python](https://github.com/actions/setup-python) | MIT | CI 装指定版本 Python | `.github/workflows/security.yml:54` |
+| [Shields.io](https://shields.io/) | CC0-1.0 | README 顶部的 star / release / 许可证徽章 | `README.md` 徽章区 |
+| [star-history.com](https://star-history.com/) | MIT | README 里的 star 增长曲线（`api.star-history.com/svg`） | `README.md` 曲线区 |
+
+---
 
 > 依赖替换说明：本项目**没有**用 Electron / Tauri / Qt 做界面。选 pywebview + WebView2 的原因是包体小（免打包 Chromium）、Win10/11 自带内核、能直接调 Win32 API（单实例互斥、窗口置前、托盘）。这条技术选型的代价是**强依赖 WebView2 运行时**，所以安装文档把它列为第一项排查目标。
 >
-> 引入新依赖前请先跑 `python -m pip check`，并在 `pj-838/ui-test-836.spec` 的 `excludes` 里确认没有把重库（PIL/numpy/pandas 等）隐式拖进包 —— 历史上吃过一次 35 MB 白拖慢冷启动的亏。
+> 引入新依赖前请先跑 `python -m pip check`，并在 `ui-test-836.spec` 的 `excludes` 里确认没有把重库（PIL/numpy/pandas 等）隐式拖进包 —— 历史上吃过一次 35 MB 白拖慢冷启动的亏。
 
 ---
 
@@ -671,22 +463,27 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 ## 文件说明
 
+**发行包（exe）只在 [Releases](https://github.com/z91772524-ai/pojia-next/releases) 里，仓库不入库。**
+
+仓库里实际跟踪的文件：
+
 | 文件 | 说明 |
 |---|---|
-| `pojia sync-daemon.exe` | **图形界面单文件版**（窗口标题显示「破甲一键通 v8.46」；在 Releases 里，仓库不入库；**只提供最新版**，旧版不保留下载）—— 免装 Python，双击即用 |
-| `build_exe.py` 等 | 构建工具脚本（不含客户端逻辑） |
-| ~~`破甲一键通.py` / `破甲GUI.py`~~ | **不再随仓库分发**（v8.26 起只发 exe 成品，主逻辑编译为机器码） |
-| `一键破甲.bat` | 纯 ASCII 启动器，通配符定位 `.py`，自动找 Python |
-| `persona.md` | 唯一共用人格源（三个目标共用） |
-| `使用说明.md` | 完整说明书（图文步骤、找不到安装位置怎么办） |
-| `更新日志.md` | v7.4 → v8.41 每版改了什么、升级要注意什么 |
+| `README.md` | 本文 |
+| `使用说明.md` | 完整说明书：图文步骤、找不到安装位置怎么办 |
 | `小白教程.md` | 给完全没基础的朋友的六步图文教程 |
-| `修复报告.md` | v7.4 相比原工具修掉的缺陷逐条对照（每条都写了复现方式与修法） |
-| `preview.png` / `preview-skills.png` | 本文顶部的界面预览图（主界面 / Skill 页） |
-| `icon.ico` | 窗口与 exe 图标源文件 |
+| `CHANGELOG.md` | 更新日志，从 v7.4 到当前版本每版改了什么、升级要注意什么 |
+| `群公告.md` | 群公告原文，方便群管理直接复制 |
+| `SHA256SUMS.txt` | 发行包 SHA256，下载后可自行核对 |
 | `LICENSE` | MIT 许可证 |
+| `docs/star-history.png` | star 趋势静态大图（带总数与 forks 统计） |
+| `.github/workflows/security.yml` | CI：bandit + semgrep + AST 调用审计，每次提交自动跑 |
+| `.bandit.yml` / `.semgrep.yml` | 安全扫描规则与逐条豁免说明（写清楚为什么每个告警可接受） |
 | `.gitattributes` | 仓库内统一 LF，但 `.bat` 强制 CRLF（否则 clone 下来双击失效） |
 | `.gitignore` | 排除 `状态/`、`破甲日志.txt`、`dist/`、`build/` 等运行时产物 |
+
+> v8.26 起**不再随仓库分发源码**（`破甲一键通.py` / 破甲GUI 相关文件已移除），
+> 主逻辑编译为原生机器码，只以 exe 成品形式发布。想核验行为请用「演练」模式或断网运行。
 
 ---
 
@@ -725,7 +522,7 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 ## 交流 & 支持
 
-- **QQ 交流群**：主群 `1121243020`，另有一到十二群，全部群号与二维码在官网首页「加群」区 —— 使用问题、更新通知都发在群里
+- **QQ 交流群**：主群 `1121243020`，另有一到十二群，全部群号见群内公告 —— 使用问题、更新通知都发在群里
 - **Telegram 交流群：[t.me/pojia666](https://t.me/pojia666)** —— 墙外 / 海外的朋友走这边
 - 有 bug 或想法，也可以在本仓库提 [Issue](https://github.com/z91772524-ai/pojia-next/issues)
 
@@ -733,7 +530,10 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 ## 许可证
 
-**MIT License** —— 随便用、随便改、随便分发、甚至可以商用，**保留版权声明即可**。详见 [LICENSE](LICENSE)。
+**源码协议**：本仓库源码以 MIT 协议公开，详见 [LICENSE](LICENSE)。
+
+**官方发行版与激活码服务不在该协议授权范围内** —— 激活码按群内公告领取（领卡费 5 元），
+官方渠道只有本仓库 Releases 与官方群，第三方二次打包、改名转卖的分支与本项目无关。
 
 ---
 

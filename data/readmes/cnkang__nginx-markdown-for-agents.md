@@ -187,9 +187,8 @@ without a change. The release does not add, remove, or rename a directive.
   no longer block releases. NGINX 1.30.4 remains supported and release-blocking
   for performance baselines.
 - The project supports Ubuntu 24.04 LTS and Ubuntu 26.04 LTS native NGINX on
-  amd64 and arm64 through the `nginx-module-markdown-for-agents-ubuntu`
-  package. That
-  package depends on the Ubuntu ABI, so an ABI-changing security update cannot
+  amd64 and arm64 through the `nginx-module-markdown-for-agents-ubuntu` package.
+  That package depends on the Ubuntu ABI. An ABI-changing security update cannot
   leave the module loaded against an incompatible binary.
 - A new promotion path ties a supported row to a recorded evidence file. The
   weekly discovery job still adds a new version as best-effort and pending.
@@ -332,8 +331,8 @@ make harness-check
 ```
 
 After a successful release preflight, a tag for the same full commit SHA can
-reuse the fuzz and short-soak qualifications after validating their source run,
-artifact, attestation, and records. Package builds, compatibility evidence, RC
+reuse the fuzz and short-soak qualifications. The gate first validates the
+source run, artifact, attestation, and records. Package builds, compatibility evidence, RC
 and performance gates still run. Missing or mismatched evidence falls back to
 the long checks. See the [qualification reuse guide](docs/guides/RELEASE-QUALIFICATION-REUSE.md).
 

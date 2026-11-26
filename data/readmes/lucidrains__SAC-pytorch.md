@@ -70,6 +70,23 @@ agent = SAC(
 )
 ```
 
+## DAMPER
+
+Return-prioritized gradient control for smooth continuous policies (Ko et al.):
+
+```python
+agent = SAC(
+    actor = actor,
+    critics = [critic1, critic2],
+    use_damper = True,
+    damper_eta = 0.5
+)
+```
+
+```bash
+uv run train_lunar.py --use-damper
+```
+
 ## Citations
 
 ```bibtex
@@ -340,5 +357,17 @@ agent = SAC(
     year    = {2021},
     doi     = {10.1609/aaai.v35i9.16919},
     url     = {https://ojs.aaai.org/index.php/AAAI/article/view/16919},
+}
+```
+
+```bibtex
+@misc{ko2026damperreturnprioritizedgradientcontrol,
+    title   = {DAMPER: Return-Prioritized Gradient Control for Smooth Policies},
+    author  = {Seokmin Ko and Taewon Goo and Kihyuk Hong},
+    year    = {2026},
+    eprint  = {2609.38903},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2609.38903},
 }
 ```

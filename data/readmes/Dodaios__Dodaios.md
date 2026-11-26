@@ -9,7 +9,7 @@
 <h1>Dodaios</h1>
 
 <!-- the promise: word for word everywhere (docs/positioning.md) -->
-<p><b>The meta-agent that sits above all your coding agents. Talk to one orchestrator in a single chat while Dodaios automatically dispatches, monitors, and syncs complex engineering tasks across every CLI, IDE, and local agent in your stack.</b></p>
+<p><b>One self-improving AI agent that manages them all.</b></p>
 
 <p>
   <a href="https://github.com/Dodaios/Dodaios/releases/latest"><img src="https://img.shields.io/github/v/release/Dodaios/Dodaios?label=release&amp;labelColor=0A0A0A&amp;color=FAFAFA" alt="Latest release" /></a>
@@ -28,16 +28,16 @@
   <a href="#documentation">Documentation</a> ·
   <a href="https://dodaios.ai">Website</a> ·
   <a href="https://discord.gg/x7USduHxbc">Discord</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.zh-CN.md">简体中文</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.ja.md">日本語</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.es.md">Español</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.hi.md">हिन्दी</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.ar.md">العربية</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.fr.md">Français</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.bn.md">বাংলা</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.pt-BR.md">Português (Brasil)</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.ru.md">Русский</a> ·
-  <a href="https://github.com/Dodaios/Dodaios/blob/main/README.id.md">Bahasa Indonesia</a>
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.zh-CN.md">简体中文</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.ja.md">日本語</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.es.md">Español</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.hi.md">हिन्दी</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.ar.md">العربية</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.fr.md">Français</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.bn.md">বাংলা</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.pt-BR.md">Português (Brasil)</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.ru.md">Русский</a> ·
+  <a href="https://github.com/Dodaios/Dodaios/blob/main/docs/i18n/README.id.md">Bahasa Indonesia</a>
 </p>
 
 </div>

@@ -44,14 +44,14 @@ DSH (DeepSeek Harness) can do all of that — it has file/shell tools, skills, s
 |---|---|
 | 🔄 **A dead process never kills a conversation** | The identity lives on disk. A crash, an idle reap, even restarting this whole server costs you nothing — the next call transparently resumes it, memory intact (verified across processes). |
 | 🗣️ **You are never stuck waiting** | Steer a conversation mid-flight — **interject** to stop and redirect (~100 ms to reach idle, measured over four cancelled turns), or **queue** a remark for after the current turn. Interrupting never damages the conversation. |
-| 📡 **Completion notification, not polling** | Long tasks return immediately with a `run_id`. An atomic **sentinel file** wakes your host's background waiter when the turn ends. The watchdog stops stalled turns and enforces a time limit. The server writes an `interrupted` sentinel for unfinished turns on normal shutdown or on the next startup after a forced kill. |
+| 📡 **Completion notification, not polling** | Long tasks return immediately with a `run_id`. In `ask` mode, the background waiter returns `CHECK_INBOX` when an approval needs attention. An atomic **sentinel file** wakes your host's background waiter when the turn ends. The watchdog stops stalled turns and enforces a time limit. The server writes an `interrupted` sentinel for unfinished turns on normal shutdown or on the next startup after a forced kill. |
 | 🌿 **Edit the same repository at the same time** | `dsh_start(isolation="worktree")` gives the conversation its own Git worktree and branch while you keep editing the original directory. Review the changes in the worktree and merge its commits when ready. Worktree isolation is off by default. |
 | 🪟 **Many conversations at once** | `dsh_list(only_running)` shows what's live; `dsh_read` gives cursor-based incremental output. Cycle between them like windows. |
 | 👀 **You can see it yourself** | `dsh-any-agent watch` (terminal) or `dsh-any-agent dashboard` (local read-only web page) lays dispatched work out as a call chain — client → conversation → run → tool calls / approvals — with per-run tokens and context-window use, updating while the run is going. Separate processes, never touch the write lock, and show work from every client together. |
-| 🧠 **Reasoning hidden by default** | You get "thought for N chars / M seconds" statistics instead of context-burning prose — and it is never logged, never written to disk. |
+| 🧠 **Reasoning hidden by default** | The caller gets character and timing statistics. The MCP server omits reasoning from stored results by default. DSH keeps its own session log for resume. |
 | 🤫 **Silent by default** | Not one byte on stderr, so nothing pollutes your host's logs. stdout carries the protocol and nothing else. |
 | 🧩 **Capabilities compose** | DSH can mount its own MCP servers (IDA Pro, browsers, your internal tooling), so this is a bridge to a whole toolbox. |
-| 🛡️ **Read-only that really is read-only** | `read-only` sandbox plus auto-denied approvals, for working on untrusted samples. |
+| 🛡️ **Read-only sessions** | DSH restricts its file and shell tools and denies approval requests. External MCP tools use the permissions of their own servers. |
 | 🔎 **Caller review, not blind relay** | Every result carries a `review` ticket (checklist + evidence + `dsh_review` entry). The caller verifies with its own tools, then records `pass` / `partial` / `fail`. Advisory by default — it never blocks the next dispatch, and a failed review is not silently fed back to DSH. |
 
 ## 🧭 Positioning: a dispatcher, not a capability aggregator
@@ -75,8 +75,9 @@ server does not grow one MCP tool per DSH feature.
 
 **Team mode (opt-in since 0.5.0)**: off by default. Run `dsh-any-agent team on`
 and reconnect to use the `dsh-team` profile by default. From DSH `0.2.2-rc.2`, new
-sessions use DSH's shared task board and standard subagent tools. Earlier DSH
-versions use the experimental team tools. Teammates share one workspace.
+sessions use DSH's shared task board and standard subagent tools. DSH
+`0.1.7-rc.1` through `0.2.2-rc.1` replaces the standard subagent tools with
+nine experimental team tools. Teammates share one workspace in both modes.
 
 **Only dispatch semantics become tools**: start, send, read, get, review, interject,
 interrupt, approve, queue, inbox, status, release, takeover, doctor. No file I/O, no
@@ -98,6 +99,15 @@ dsh-any-agent-setup --yes
 ```
 
 The second command previews the changes; `--yes` applies them. Reconnect your client's MCP server and run the [installation check](docs/en/install.md#3-verify-the-installation). The [dispatch workflow](docs/en/usage.md) shows how to send a task in your project and collect the result.
+
+**Configure just one client.** After installing the package, replace the two setup commands above with these. The first previews the Codex configuration change and the second applies it.
+
+```bash
+dsh-any-agent-setup --only codex
+dsh-any-agent-setup --only codex --yes
+```
+
+Replace `codex` with your client ID, such as `claude-code`, `cursor`, or `vscode`. Run `dsh-any-agent-setup --help` to list all IDs.
 
 **Collect results after reconnecting.** Call `dsh_get` with the conversation ID and the original `run_id` or `client_run_id`. With only the conversation ID, it can find the most recently started turn. On startup the server prunes result files older than seven days by default. Keep the result file to retrieve the answer. During retention, a retry with the same key returns the original run ID even after the result file is deleted.
 
@@ -144,7 +154,7 @@ Only using Cursor or VS Code? Add it in one click instead (runs `npx -y dsh-any-
 | `dsh_status` | Lightweight status check (single conversation), including the write-lock holder `lock_holder` |
 | `dsh_inbox` | **Cross-conversation approval inbox**: every pending approval with reason, input and age; decide with `dsh_approval_decide` |
 | `dsh_queue` | Inspect/modify the session queue: `list` / `remove` / `update` / `promote` (created by `dsh_send(queue=true)`, memory only) |
-| `dsh_doctor` | Read-only health check: DSH version, profile, state/dir writability, orphan locks, sessions and RSS, effective config |
+| `dsh_doctor` | Read-only health check: DSH version, profile, registry locks, result-directory hard links, worktree usage, orphan locks, sessions and RSS, effective config |
 
 Every tool declares all four MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`). Six only read state and are marked read-only: `dsh_list`, `dsh_read`, `dsh_get`, `dsh_status`, `dsh_inbox`, `dsh_doctor`. Tool titles, descriptions and the server instructions come in English and Chinese: they follow your system language, or set `DSH_MCP_LANG=en|zh`. Tool results follow the same setting; a few less common error messages are still Chinese only.
 

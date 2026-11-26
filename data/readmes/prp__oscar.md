@@ -2,7 +2,7 @@
 
 Oscar is an elastic LLM offloading service for Apple Silicon machines, written in Rust, that runs mixture-of-experts (MoE) models that are larger than the machine's memory. Existing offloading LLM runtimes allocate a fixed amount of memory to a model at load time and keep the rest of the model on disk. Instead, Oscar uses a machine's spare memory elastically: it continuously adjusts its memory use, taking unused memory from other applications and returning memory when other applications demand it. Oscar exploits idle CPU and GPU cycles to prefetch model experts into memory to improve serving performance.
 
-Oscar can therefore run large quantised open-weight LLMs on Apple Silicon machines with a fraction of the memory that the models occupy. For example, on a MacBook Pro M5 Max with 64 GB of memory, Oscar runs the 2.8-trillion-parameter Kimi K3.1 Pro model, which is 577 GB in size (9× the machine's memory), at a decoding rate of 1.7 tokens/second. Models that exceed a machine's memory by smaller factors run at interactive speeds: a 178-billion-parameter Qwen3.8-Flash-Next model (113 GB) decodes at 25 tokens/second, and a 397-billion-parameter Qwen3.5-397B-A17B model (161 GB) at 12 tokens/second.
+Oscar can therefore run large quantised open-weight LLMs on Apple Silicon machines with a fraction of the memory that the models occupy. For example, on a MacBook Pro M5 Max with 64 GB of memory, Oscar runs the 2.8-trillion-parameter Kimi K3.1 Pro model, which is 577 GB in size (9× the machine's memory), at a decoding rate of 1.7 tokens/second. Models that exceed a machine's memory by smaller factors run at interactive speeds: a 178-billion-parameter Qwen3.8-Flash-Next model (113 GB) decodes at 33 tokens/second, and a 397-billion-parameter Qwen3.5-397B-A17B model (161 GB) at 12 tokens/second.
 
 <p align="center">
   <img src="docs/menu.png" width="398" alt="Oscar's menu: the decoding status, memory use, the models and a download"><br>
@@ -52,38 +52,46 @@ Oscar can therefore run large quantised open-weight LLMs on Apple Silicon machin
   <thead>
     <tr>
       <th colspan="4">Model</th>
-      <th colspan="2">Performance<br>(tokens/second)</th>
+      <th colspan="4">Performance<br>(tokens/second)</th>
       <th colspan="2">Memory</th>
     </tr>
     <tr>
-      <th align="left">Name</th>
-      <th align="right">Params</th>
-      <th align="left">Quantisation</th>
-      <th align="right">Disk<br>usage</th>
+      <th align="left" rowspan="2">Name</th>
+      <th align="right" rowspan="2">Params</th>
+      <th align="left" rowspan="2">Quantisation</th>
+      <th align="right" rowspan="2">Disk<br>usage</th>
+      <th colspan="2">1k context</th>
+      <th colspan="2">24k context</th>
+      <th align="right" rowspan="2">Oversub-<br>scription</th>
+      <th align="right" rowspan="2">Minimum</th>
+    </tr>
+    <tr>
       <th align="right">Decode</th>
       <th align="right">Prefill</th>
-      <th align="right">Oversub-<br>scription</th>
-      <th align="right">Minimum</th>
+      <th align="right">Decode</th>
+      <th align="right">Prefill</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B">Qwen3.6-35B-A3B</a></td><td align="right">35B</td><td nowrap>Q4_K</td><td align="right" nowrap>20 GB</td><td align="right" nowrap>151</td><td align="right" nowrap>3,300</td><td align="right" nowrap>0.3×</td><td align="right" nowrap>4.4 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3-Coder-Next">Qwen3-Coder-Next</a></td><td align="right">80B</td><td nowrap>Q4_K</td><td align="right" nowrap>42 GB</td><td align="right" nowrap>128</td><td align="right" nowrap>2,540</td><td align="right" nowrap>0.7×</td><td align="right" nowrap>4.6 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3.8-Flash-Next">Qwen3.8-Flash-Next</a></td><td align="right">178B</td><td nowrap>Q3_K</td><td align="right" nowrap>113 GB</td><td align="right" nowrap>25.1</td><td align="right" nowrap>315</td><td align="right" nowrap>1.8×</td><td align="right" nowrap>6.8 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3-235B-A22B">Qwen3-235B-A22B</a></td><td align="right">235B</td><td nowrap>Q4_K</td><td align="right" nowrap>124 GB</td><td align="right" nowrap>6.9</td><td align="right" nowrap>89</td><td align="right" nowrap>1.9×</td><td align="right" nowrap>13.8 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/zai-org/GLM-5.3-Flash">GLM-5.3-Flash</a></td><td align="right">321B</td><td nowrap>Q3_K</td><td align="right" nowrap>130 GB</td><td align="right" nowrap>8.6</td><td align="right" nowrap>79</td><td align="right" nowrap>2.0×</td><td align="right" nowrap>8.7 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3.5-397B-A17B">Qwen3.5-397B-A17B</a></td><td align="right">397B</td><td nowrap>Q3_K</td><td align="right" nowrap>161 GB</td><td align="right" nowrap>12.4</td><td align="right" nowrap>66</td><td align="right" nowrap>2.5×</td><td align="right" nowrap>10.7 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/zai-org/GLM-5.2">GLM-5.2</a></td><td align="right">754B</td><td nowrap>Q3_K</td><td align="right" nowrap>313 GB</td><td align="right" nowrap>2.3</td><td align="right" nowrap>33</td><td align="right" nowrap>4.9×</td><td align="right" nowrap>24.8 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/moonshotai/Kimi-K3.1-Pro">Kimi K3.1 Pro</a></td><td align="right">2.8T</td><td nowrap>KLX-IQ1_S</td><td align="right" nowrap>577 GB</td><td align="right" nowrap>1.7</td><td align="right" nowrap>23</td><td align="right" nowrap>9.0×</td><td align="right" nowrap>38.0 GB</td></tr>
-    <tr><td nowrap><a href="https://huggingface.co/moonshotai/Kimi-K3">Kimi K3</a></td><td align="right">2.8T</td><td nowrap>UD-IQ1_M</td><td align="right" nowrap>629 GB</td><td align="right" nowrap>1.6</td><td align="right" nowrap>22</td><td align="right" nowrap>9.8×</td><td align="right" nowrap>42.3 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B">Qwen3.6-35B-A3B</a></td><td align="right">35B</td><td nowrap>Q4_K</td><td align="right" nowrap>20 GB</td><td align="right" nowrap>151</td><td align="right" nowrap>3,300</td><td align="right" nowrap>120</td><td align="right" nowrap>3,760</td><td align="right" nowrap>0.3×</td><td align="right" nowrap>4.4 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3-Coder-Next">Qwen3-Coder-Next</a></td><td align="right">80B</td><td nowrap>Q4_K</td><td align="right" nowrap>42 GB</td><td align="right" nowrap>128</td><td align="right" nowrap>2,540</td><td align="right" nowrap>97.8</td><td align="right" nowrap>2,810</td><td align="right" nowrap>0.7×</td><td align="right" nowrap>4.6 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3.8-Flash-Next">Qwen3.8-Flash-Next</a></td><td align="right">178B</td><td nowrap>Q3_K</td><td align="right" nowrap>113 GB</td><td align="right" nowrap>33.4</td><td align="right" nowrap>316</td><td align="right" nowrap>30.2</td><td align="right" nowrap>620</td><td align="right" nowrap>1.8×</td><td align="right" nowrap>6.8 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3-235B-A22B">Qwen3-235B-A22B</a></td><td align="right">235B</td><td nowrap>Q4_K</td><td align="right" nowrap>124 GB</td><td align="right" nowrap>6.9</td><td align="right" nowrap>89</td><td align="right" nowrap>6.5</td><td align="right" nowrap>400</td><td align="right" nowrap>1.9×</td><td align="right" nowrap>13.8 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/zai-org/GLM-5.3-Flash">GLM-5.3-Flash</a></td><td align="right">321B</td><td nowrap>Q3_K</td><td align="right" nowrap>130 GB</td><td align="right" nowrap>8.6</td><td align="right" nowrap>79</td><td align="right" nowrap>7.6</td><td align="right" nowrap>206</td><td align="right" nowrap>2.0×</td><td align="right" nowrap>8.7 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/Qwen/Qwen3.5-397B-A17B">Qwen3.5-397B-A17B</a></td><td align="right">397B</td><td nowrap>Q3_K</td><td align="right" nowrap>161 GB</td><td align="right" nowrap>12.0</td><td align="right" nowrap>65</td><td align="right" nowrap>11.5</td><td align="right" nowrap>566</td><td align="right" nowrap>2.5×</td><td align="right" nowrap>10.7 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/zai-org/GLM-5.2">GLM-5.2</a></td><td align="right">754B</td><td nowrap>Q3_K</td><td align="right" nowrap>313 GB</td><td align="right" nowrap>2.3</td><td align="right" nowrap>33</td><td align="right" nowrap>1.5</td><td align="right" nowrap>53</td><td align="right" nowrap>4.9×</td><td align="right" nowrap>24.8 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/moonshotai/Kimi-K3.1-Pro">Kimi K3.1 Pro</a></td><td align="right">2.8T</td><td nowrap>KLX-IQ1_S</td><td align="right" nowrap>577 GB</td><td align="right" nowrap>1.7</td><td align="right" nowrap>23</td><td align="right" nowrap>1.6</td><td align="right" nowrap>33</td><td align="right" nowrap>9.0×</td><td align="right" nowrap>38.0 GB</td></tr>
+    <tr><td nowrap><a href="https://huggingface.co/moonshotai/Kimi-K3">Kimi K3</a></td><td align="right">2.8T</td><td nowrap>UD-IQ1_M</td><td align="right" nowrap>629 GB</td><td align="right" nowrap>1.6</td><td align="right" nowrap>22</td><td align="right" nowrap>1.4</td><td align="right" nowrap>30</td><td align="right" nowrap>9.8×</td><td align="right" nowrap>42.3 GB</td></tr>
   </tbody>
 </table>
 
-(Measured on a MacBook Pro M5 Max with 64 GB of memory in High Power mode, with Oscar limited to 52 GB and the models on the internal SSD; the quantisation is that of the expert weights; prompts of about 800 tokens, with memory planned for a context of 4,096 input and 1,024 output tokens.)
+(Measured on a MacBook Pro M5 Max with 64 GB of memory in High Power mode, with Oscar limited to 52 GB and the models on the internal SSD (13.5 GB/s throughput); the quantisation is that of the expert weights.)
+
+**Disk space during installation.** The table shows a model's size once installed. Installing it temporarily needs about 95 GB more, because Oscar downloads a higher-precision version in parts and converts it locally. For example, Qwen3-Coder-Next occupies 42 GB but needs 132 GB to install. The two Kimi models need no extra space.
 
 ## Running Oscar
 
-Oscar requires a Mac with Apple Silicon (M1 to M5) and macOS 27 or later, with the minimum required memory and the disk space of the chosen model (see the table above).
+Oscar requires a Mac with Apple Silicon (M1 to M5) and macOS 27 or later, with the minimum required memory of the chosen model (see the table above).
 
 ### 1. Running Oscar from the binary release
 
@@ -99,7 +107,7 @@ open it and drag Oscar to Applications.
    Oscar's O icon then appears in the menu bar. Accept the offer to install the `oscar` command if
    you want to use the command line tool.
 3. Open the menu and click the download arrow next to a model. Qwen3.6-35B-A3B is the smallest
-   supported model (20 GB on disk).
+   supported model (20 GB on disk, about 55 GB to install).
 4. Click the model's name to serve it.
 5. Choose Launch Chat to chat with the model in a terminal, or Launch OpenCode to start a coding
    session in a folder of your choice ([OpenCode](https://opencode.ai) must be installed separately).
@@ -154,6 +162,11 @@ The commands of `oscar`:
 
 Without `--model`, Oscar uses the model last selected in the menu bar app. `oscar <command> --help`
 lists all options of a command; the most important ones are described under Configuration.
+
+Each run of `oscar serve` or `oscar chat` writes a log to `~/.oscar/oscar.log`, with its memory
+plan and every request's token rates and SSD figures. The logs of the nine runs before it are kept
+as `oscar.log.1` to `oscar.log.9`, and no log grows beyond 16 MB. The menu bar app writes the same
+log (Open Log in its menu).
 
 ## Technical details
 

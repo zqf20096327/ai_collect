@@ -1,5 +1,7 @@
 # tiny-vision
 
+[![amar683/tiny-vision MCP server](https://glama.ai/mcp/servers/amar683/tiny-vision/badges/score.svg)](https://glama.ai/mcp/servers/amar683/tiny-vision) [![M8ven Score](https://m8ven.ai/badge/mcp/amar683-tiny-vision-gmgezc?v=2d58c4d5fb17d802ebb909c3547a0736)](https://m8ven.ai/mcp/amar683-tiny-vision-gmgezc?s=readme)
+
 **Let your AI assistant watch videos.** Many assistants, Claude included, can look at
 images but can't open a video file. tiny-vision runs next to them and turns a video into a
 scene-by-scene description they can read, so you can ask *"what happens in this video?"*

@@ -3,14 +3,14 @@
   <h1>Olympus Coder</h1>
   <p><strong>One native workspace for every ACP coding agent — shared <code>~/.olympus</code> memory, parallel orchestration, built-in code workbench, and end-to-end encrypted phone access.</strong></p>
   <p>
-    <code>v0.3.5</code> · <code>Apache-2.0</code> · <code>macOS · Linux VPS · Windows</code> · <code>ACP 2.6 + MCP</code> · <code>100% Free · Zero Login Wall</code>
+    <code>v0.3.10</code> · <code>Apache-2.0</code> · <code>macOS · Linux VPS · Windows</code> · <code>ACP 2.6 + MCP</code> · <code>100% Free · Zero Login Wall</code>
   </p>
   <p>
     <a href="https://www.producthunt.com/products/olympus-coder?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-olympus-coder" target="_blank" rel="noopener noreferrer"><img alt="Olympus Coder - Open-source desktop &amp; VPS workbench for 18+ AI coding agents | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1325960&amp;theme=light&amp;t=1795331946472" /></a>
   </p>
   <p>
     <a href="https://olympus.marsnext.in/"><strong>Website</strong></a> ·
-    <a href="https://github.com/martianacademy/olympus-coder/releases/latest"><strong>Download v0.3.5</strong></a> ·
+    <a href="https://github.com/martianacademy/olympus-coder/releases/latest"><strong>Download v0.3.10</strong></a> ·
     <a href="https://github.com/martianacademy/homebrew-tap"><strong>Homebrew Tap</strong></a> ·
     <a href="PRIVACY.md"><strong>Privacy Policy</strong></a>
   </p>
@@ -25,14 +25,29 @@
 
 ## Install
 
-### macOS Desktop (Apple Silicon)
+### Desktop App (macOS · Windows · Linux)
+
+macOS via Homebrew (Apple Silicon):
 
 ```sh
 brew trust martianacademy/tap
 brew install --cask martianacademy/tap/olympus-coder
 ```
 
-Or download [`Olympus.Coder-0.3.5-arm64.dmg`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder-0.3.5-arm64.dmg) from **[Releases](https://github.com/martianacademy/olympus-coder/releases/latest)** (`SHA256SUMS.txt` included; Windows & Linux desktop installers coming soon). Builds are ad-hoc signed — if Gatekeeper warns, run `xattr -dr com.apple.quarantine "/Applications/Olympus Coder.app"` once.
+Or download an installer from **[Releases](https://github.com/martianacademy/olympus-coder/releases/latest)** (`SHA256SUMS.txt` included):
+
+| Platform | Installer |
+| --- | --- |
+| macOS · Apple Silicon | [`Olympus.Coder-0.3.10-arm64.dmg`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder-0.3.10-arm64.dmg) |
+| macOS · Intel | [`Olympus.Coder-0.3.10.dmg`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder-0.3.10.dmg) |
+| Windows 10/11 · x64 | [`Olympus.Coder.Setup.0.3.10.exe`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder.Setup.0.3.10.exe) |
+| Linux · x64 (Debian/Ubuntu) | [`olympus-coder_0.3.10_amd64.deb`](https://github.com/martianacademy/olympus-coder/releases/latest/download/olympus-coder_0.3.10_amd64.deb) |
+| Linux · x64 (any distro) | [`Olympus.Coder-0.3.10.AppImage`](https://github.com/martianacademy/olympus-coder/releases/latest/download/Olympus.Coder-0.3.10.AppImage) |
+
+Builds are not code-signed yet:
+- **macOS:** if Gatekeeper warns, run `xattr -dr com.apple.quarantine "/Applications/Olympus Coder.app"` once.
+- **Windows:** on the SmartScreen prompt choose **More info → Run anyway**.
+- **Linux:** install the `.deb` with `sudo apt install ./olympus-coder_0.3.10_amd64.deb`. The AppImage needs `chmod +x` and FUSE 2 (`libfuse2`; on Ubuntu 24.04 the package is `libfuse2t64`). If the AppImage exits with a sandbox error on Ubuntu 24.04+, use the `.deb` or start it with `--no-sandbox`.
 
 ### Headless Linux / macOS VPS Server (Zero Electron, Control from Phone or Browser)
 
@@ -192,6 +207,20 @@ OLYMPUS_TEST_HIDDEN=1 npx electron . --user-data-dir=/tmp/olympus-e2e --remote-d
 </details>
 
 ---
+
+## Code signing policy
+
+- **Status:** macOS builds are ad-hoc signed. Windows installers are not code-signed yet. We are applying for the open-source program of SignPath Foundation (not approved yet). If approved, Windows releases will carry: *Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).*
+- **What gets signed:** only Windows installers built by GitHub Actions ([`build.yml`](.github/workflows/build.yml)) from a tagged commit of this public repository, after the packaged-app smoke test ([`smoke.yml`](.github/workflows/smoke.yml)) passes. Binaries built anywhere else are never signed.
+- **Open-source contents only:** installers ship only open-source components. Anthropic's proprietary Claude Agent SDK is not included. Olympus Coder downloads it from the public npm registry, and verifies its sha512 checksum, the first time you start Claude Code.
+- **Team roles:**
+  - Committers and reviewers: [Martian Academy](https://github.com/martianacademy) (maintainer). Outside contributions arrive as pull requests and are reviewed by a maintainer before merge.
+  - Approvers: [Martian Academy](https://github.com/martianacademy) approves every signing request.
+- **Privacy:** this program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. The only automatic requests are:
+  - the update check against GitHub Releases, which can be turned off in **Settings → General → Updates**;
+  - the one-time Claude Agent SDK download, made when you choose Claude Code.
+
+  Details: [PRIVACY.md](PRIVACY.md).
 
 ## Security, Contributing & License
 

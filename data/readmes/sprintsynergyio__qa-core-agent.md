@@ -4,7 +4,7 @@
 
 QA-Core is an AI agent that opens a real browser, explores your app, reviews its own work, and writes a Playwright test suite. Every test runs and passes once inside the agent before it is saved to disk, so you get specs that already work on day one.
 
-Built on [Claude](https://www.anthropic.com/) by Anthropic. Distributed through [OpenClaw](https://openclaw.dev). Drives [Playwright](https://playwright.dev/).
+Built on [Claude](https://www.anthropic.com/) by Anthropic. Drives [Playwright](https://playwright.dev/).
 
 ## Table of contents
 
@@ -20,7 +20,7 @@ Built on [Claude](https://www.anthropic.com/) by Anthropic. Distributed through 
 10. [Project layout](#project-layout)
 11. [Configuration files](#configuration-files)
 12. [Requirements](#requirements)
-13. [About the author](#about-the-author)
+13. [About SprintSynergy](#about-sprintsynergy)
 14. [License](#license)
 
 ## What it does
@@ -154,7 +154,7 @@ Healing an existing spec is handled by the published [qa-core-heal](https://www.
 ## Quick start
 
 ```bash
-git clone https://github.com/sprintsynergyhq/qa-core-agent.git
+git clone https://github.com/sprintsynergyio/qa-core-agent.git
 cd qa-core-agent
 cp .env.example .env          # then add your ANTHROPIC_API_KEY
 bash setup.sh                 # installs dependencies and Playwright Chromium
@@ -551,20 +551,17 @@ The agent's behavior is defined in plain markdown so OpenClaw can load it.
 
 ## Requirements
 
-* Node.js 20 or newer
+* Node.js 22 or newer (CI runs Node 22 and 24)
 * `ANTHROPIC_API_KEY`
 * Playwright Chromium (`npx playwright install chromium`)
 
-## About the author
+## About SprintSynergy
 
-**Muhammad Usman**
-Senior QA Automation Engineer. AI Test Engineering Lead.
-ISTQB CTFL Certified. Upwork Top Rated Plus (Top 3 percent).
-10+ years in QA automation.
+QA-Core is built and maintained by SprintSynergy, a QA automation and software testing company.
 
-* Website: [sardarusmanjutt.com](https://sardarusmanjutt.com)
-* LinkedIn: [linkedin.com/in/sardarusmanjutt](https://linkedin.com/in/sardarusmanjutt)
-* Email: [muhammad.usman101@hotmail.com](mailto:muhammad.usman101@hotmail.com)
+* Website: [sprintsynergy.com](https://sprintsynergy.com)
+* Email: [info@sprintsynergy.com](mailto:info@sprintsynergy.com)
+* Book a QA strategy call: [cal.com/sprintsynergy/qa-strategy-call](https://cal.com/sprintsynergy/qa-strategy-call)
 
 ## License
 

@@ -15,7 +15,7 @@
   <p>
     <a href="#readme"><img src="https://img.shields.io/badge/Type-Plugin%20pack-555" alt="Type: Plugin pack"></a>
     <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins"><img src="https://img.shields.io/badge/Language-Python%20%2B%20JavaScript-555" alt="Language: Python and JavaScript"></a>
-    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.33-blue" alt="Pack: 1.27.33"></a>
+    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.35-blue" alt="Pack: 1.27.35"></a>
     <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Last%20release-2026--11--22-blue" alt="Last release: 2026-11-22"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT"></a>
   </p>
@@ -27,6 +27,8 @@
 </div>
 
 ## Latest plugin update
+**RSS Reader 1.2.2** adds feeds from sites that compress the response even though the request asked for it uncompressed. The compressed bytes used to reach the parser, so a valid feed arrived as replacement characters, Subscribe said it could not find an RSS or Atom feed on the site, and the feed never appeared. The download path now decompresses the body before the charset decode, the 2 MB limit counts what arrives after decompression, and a body that claims gzip without being gzip says so instead of decoding to garbage. Feeds, articles, Reddit and feedsearch share that one path. Both editions carry it: update the plugin and restart the backend once.
+
 **Provider Status 1.6.10** reads Kimi Code membership keys (`sk-kimi-…`) against the coding quota endpoint Hermes core already uses for them. The old Moonshot balance endpoint returned `HTTP 401` for those keys, so the chip showed `error` and the settings badge `HTTP 401` even though the key worked. The chip now shows monthly quota remaining with a 5-hour row and a reset countdown, and `KIMI_API_KEY` and `KIMI_CODING_API_KEY` are recognised. Network errors and unexpected HTTP statuses return an error status rather than an `UnboundLocalError` in the chip. Both editions carry it. Update the plugin and restart Hermes Desktop once.
 
 **Intelligent Tool Break 1.3.7** fixes the composer strip staying empty during a tool call when Desktop's runtime session id differs from the assistant session id. The strip used the runtime id as an explicit `/break-status --session-id` filter, which overrode the calling session and matched no tracked tools; it now routes the command with the runtime id and lets the handler scope to the assistant session. Update both editions and restart Hermes Desktop once.
@@ -35,17 +37,9 @@
 
 **Jev Routing 1.1.2** sends an explicit `User-Agent` on every classification call. Cloudflare's Browser Integrity Check in front of `opencode.ai` answers urllib's default client signature with `HTTP 403` and `error code: 1010`, so on an affected host every turn failed open and routing never ran: in shadow mode the only symptom was a missing tier line and no savings. The header lives in the transport, which also carries `/jev-routing` and the `jev_route` tool, and a caller that supplies its own agent keeps it. Both editions carry the change, and this is the first tagged build that also leaves a cron turn unrouted instead of holding it, which had interrupted scheduled jobs; update the plugin and restart the backend once.
 
-**Delegation Nudge 1.3.0** is listed for the first time, as `hermes-delegation-nudge` in the Hermes plugin catalog, from a public edition that carries the same middleware as the personal build with nothing cut: one `llm_request` middleware, three hooks and a single read of `config.yaml`, with no app DOM, no writes and no network calls. It is the first plugin in this pack whose whole job is the agent's own habits rather than a surface. Past ten tool results in a turn with no dispatch it appends one note to the turn's user message naming the routes from your model map, with provider, model and free or cheap on each; at twenty-five results a second note names the bill in context carried. The note also asks the turn to dispatch or say in one sentence why not, which is what makes a decline readable later. Both editions gain the engraving above and a written record in the changelog.
-
 **Session Retitler 1.1.4** writes session titles through Hermes' published storage interface instead of private core helpers, so a future core change can no longer turn an automatic rename into a title that looks user-set. A rename is now skipped entirely when the existing title's source cannot be read, and the background rename runs under the active profile so a multi-profile gateway uses the right model route and session store. The counter, digest, user-title wall and 10-message default are unchanged; update and restart the backend once.
 
-**Radio Plus 1.5.4** writes its station log under the active Hermes home's `plugin-data/radio-plus` directory and checks every outbound stream address and redirect with Hermes' URL-safety policy, so a profile-scoped backend cannot log to the wrong home and the probe and track-title routes cannot be used to reach a private network. Nothing in the picker changes. Reinstall or update both editions; the backend restart is still yours.
-
 **Next Steps 1.1.6** keeps action choices on rounded chips. A model used the retired `answer` argument on a decision sheet, so the reply drew labelled reply fields where chips were expected; the `next_steps` tool no longer exposes that argument, and its handler always registers a chip block. The agent prompt no longer teaches answer mode. The `answer="1"` directive still draws the reply-field form for replies that genuinely ask for several typed answers. Both editions ship the change. A new session is needed for the frozen prompt and tool list to pick it up; the renderer is unchanged.
-
-**Catalog Redesign 1.0.12** turns the Capabilities page into a wide, one-row-per-item list for skills, plugins, connectors and tools. Each row carries a thumbnail, the name with its description, and one column that matters for that kind (tags or the short name). Artwork is real: a published plugin borrows the catalog's hero image, and a plugin outside the catalog uses a logo its own folder ships, so rows stop showing initials where the plugin has a face. Hover a row for a preview, click for a detail panel that slides in from the right with the hero image across its header, a 44px section rail, and the on/off switch beside Close. It adds its own route, sidebar row and palette entry and leaves the native Capabilities page alone. The online catalog now loads reliably, the default view is online, and there's an "Update all" button in the header. See [its README](personal/catalog-redesign/README.md).
-
-**Queue Container Fix 1.0.0** moves the per-message controls of a queued prompt from the end of its row to the start of its first line, where they stay on screen. Steer, edit, remove and send now sit before the text, resting at half strength and coming to full on hover or keyboard focus. The control column takes only the width of the buttons a row actually has, so a gateway-owned entry with no controls keeps its message at the left margin. Background commands, subagents and artifact rows are untouched. It ships personal-only (catalog review can't take a stylesheet over app markup). Enable it in Capabilities, Plugins, and the change lands without a restart.
 
 Restart Hermes Desktop after updating; the Python and desktop halves do not reload in place.
 
@@ -97,7 +91,7 @@ Agent rules for these trees live in [AGENTS.md](AGENTS.md). Catalog blockers for
 
 Each row links the personal edition you get from the pack, plus the public catalog edition where one exists.
 
-Twenty plugins are pinned in `hermes-pack.yaml` (pack version 1.27.33). Six plugins in the repo are not in the pack: **better-capabilities**, **byparr-mcp**, **byparr-tools**, **prompt-enhance**, **queue-container-fix**, and **voice-gate**. Install any of them separately. The pack pins the personal tree for those twenty.
+Twenty plugins are pinned in `hermes-pack.yaml` (pack version 1.27.35). Six plugins in the repo are not in the pack: **better-capabilities**, **byparr-mcp**, **byparr-tools**, **prompt-enhance**, **queue-container-fix**, and **voice-gate**. Install any of them separately. The pack pins the personal tree for those twenty.
 
 ### Status Bar
 

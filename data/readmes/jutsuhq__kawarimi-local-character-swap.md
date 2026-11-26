@@ -6,12 +6,16 @@
 
 **Kawarimi is a free, open-source Viggle alternative for Windows and Linux.** It swaps a person in a 4–30 s clip for
 a character from one image, with Wan 2.2 Animate on your own NVIDIA GPU. $0 per video, no account, no cloud. 12 GB of
-VRAM recommended.
+VRAM recommended. Guide, examples and FAQ: [jutsustudio.com/kawarimi](https://jutsustudio.com/kawarimi/).
 
 [![Download](https://img.shields.io/github/v/release/jutsuhq/kawarimi-local-character-swap?include_prereleases&style=for-the-badge&label=Download&labelColor=F2FF59&color=211927)](https://github.com/jutsuhq/kawarimi-local-character-swap/releases)
 
+[![GitHub stars](https://img.shields.io/github/stars/jutsuhq/kawarimi-local-character-swap?style=social)](https://github.com/jutsuhq/kawarimi-local-character-swap/stargazers)
+
+⭐ Kawarimi is free and made by a small team. A star is how other people find it; **Watch › Custom › Releases** emails you each new version.
+
 [Install](#install) · [Quick start](#quick-start) · [How it works](#how-it-works) · [Agents](#agents) ·
-[Requirements](#requirements) · [Build](#build-from-source)
+[Requirements](#requirements) · [Build](#build-from-source) · [Website](https://jutsustudio.com/kawarimi/)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-F2FF59.svg?labelColor=211927)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-211927)](#requirements)
@@ -31,7 +35,7 @@ VRAM recommended.
 | Input and output | A 4–30 s clip and one image per person. A 480p draft first, then the whole clip at 16 fps with the original sound |
 | Measured speed | RTX 3070 8 GB, 32 GB RAM: a 33-frame 480p draft in 116 s with a repeated prompt ([RENDER.md](docs/RENDER.md)). Larger cards are not measured yet |
 | Install | Windows: run `Kawarimi_<version>_x64-setup.exe`. Ubuntu, Debian: `sudo apt install ./Kawarimi_<version>_amd64.deb` |
-| Download | [Releases](https://github.com/jutsuhq/kawarimi-local-character-swap/releases) (latest: 0.2.0) |
+| Download | [Releases](https://github.com/jutsuhq/kawarimi-local-character-swap/releases) (latest: 0.2.1) |
 | Website | [jutsustudio.com/kawarimi](https://jutsustudio.com/kawarimi/) |
 
 ## Compared with

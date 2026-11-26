@@ -99,7 +99,8 @@ the directory you started from; `lovia web ~/code/app` picks another.
 
 - **It works in your folders.** It reads and edits files, runs commands, plans
   with a todo list, searches the web, draws charts and tables, and hands
-  independent work to background subagents.
+  independent work to background subagents. A panel follows what runs in the
+  background, with each command's output.
 - **Many projects at once.** The sidebar groups chats by workspace. Each chat
   has its own folder, model and permission mode, and the folder can be on an
   SSH host or in a container. Ask the assistant about your workspaces or an
@@ -113,7 +114,8 @@ the directory you started from; `lovia web ~/code/app` picks another.
   skills and `@` mentions a file.
 - **A complete chat.** Streaming, branching from any reply, steering a run
   while it works, attachments, scheduled runs, and long-term memory you can
-  edit. A run keeps going when you close the tab.
+  edit. A run keeps going when you close the tab. Optional voice input turns
+  speech into text through a transcription service you choose.
 - **Settings without restarts.** Models, MCP servers, skills and the
   assistant's instructions live in Settings. Everything is kept in one home
   directory, `~/.lovia`, never in your repository.

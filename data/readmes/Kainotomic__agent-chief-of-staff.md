@@ -106,11 +106,13 @@ Small, dependency-free Python sketches (standard library only, POSIX file locks)
 | [examples/dispatch_guard.py](examples/dispatch_guard.py) | The duplicate-dispatch guard with locked, test-and-set claims |
 | [examples/merge_gate.py](examples/merge_gate.py) | A pure merge decision function |
 | [examples/lease.py](examples/lease.py) | Primary lease: init, renew, explicit takeover, and the epoch that fences a replaced primary |
+| [examples/differential.py](examples/differential.py) | Differential check before a cutover with independent copies of each input, captured responses, and a pass bar set before the run |
 | [examples/worker-brief.md](examples/worker-brief.md) | The brief template every worker gets |
 | [examples/worker-rules.md](examples/worker-rules.md) | The shared worker rules appended to every brief |
 | [examples/test_examples.py](examples/test_examples.py) | Unit tests for the sketches |
 | [examples/test_durability.py](examples/test_durability.py) | Concurrency (threads and processes) and lease-fencing tests |
-| `examples/test_*.py` (the other 16 files) | Focused tests: close gate and proof kinds, identity and path boundaries, dispatch history, review verdicts, receipts, state fields, timer ids, archive recovery |
+| [examples/test_properties.py](examples/test_properties.py) | Property tests on the invariants in [docs/verification.md](docs/verification.md) |
+| Other `examples/test_*.py` files | Focused tests: close gate and proof kinds, identity and path boundaries, dispatch history, review verdicts, receipts, state fields, timer ids, archive recovery, differential checks |
 
 Run the tests:
 

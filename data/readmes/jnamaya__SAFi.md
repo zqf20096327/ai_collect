@@ -26,7 +26,8 @@
   - [3. Prefer a Turnkey Hardware Appliance?](#3-prefer-a-turnkey-hardware-appliance)
 - [Built-in Agents](#built-in-agents)
 - [The Governance](#the-governance)
-  - [The Five Faculties & Seven-Phase Loop](#the-five-faculties--seven-phase-loop)
+  - [Your Policies as the Supreme Law](#your-policies-as-the-supreme-law)
+  - [The Four Pillars of Runtime Governance](#the-four-pillars-of-runtime-governance)
 - [Regulatory Readiness](#regulatory-readiness)
 - [Sensitive Data Controls](#sensitive-data-controls)
 - [Roles & Permissions](#roles--permissions)
@@ -39,11 +40,11 @@
 
 ## Client-Server Architecture
 
-Unlike standalone terminal agents where API keys, rules, and logs live unmanaged on individual laptops, **SAFi separates the workstation harness from the central governance gateway**:
+Unlike standalone terminal agents where API keys, rules, and logs live unmanaged on individual laptops, **SAFi separates the workstation client from the central governance gateway**:
 
 ```text
 [ Workstation: safi-cli ] ──HTTPS──▶ [ SAFi Governance Gateway (Server / Appliance) ] ──▶ [ Local / Cloud Models ]
- • Thin terminal harness               • Central Identity (SSO / LDAP / SCIM) & RBAC
+ • Thin terminal client               • Central Identity (SSO / LDAP / SCIM) & RBAC
  • Executes repo & ops tools           • Immutable Charters & Policies (no local overrides)
  • Zero LLM API keys on laptop         • Deterministic policy & risk gates (R0–R4) + audit scoring
                                        • Unified hash-chained Audit Hub across every workstation
@@ -71,7 +72,7 @@ curl -sSL https://runsafi.com/install.sh | bash
 
 **Connect to a SAFi server or try the live demo:**
 ```bash
-safi-cli --setup
+safi --setup
 ```
 1. Enter your SAFi server URL — use **`https://safi.selfalignmentframework.com`** to try the live demo immediately, or your own self-hosted / appliance URL (e.g., `https://192.168.1.200`).
 2. Sign in with a **local account**, type **`sso`** for Google/Microsoft browser login, or press **Enter** to paste a Policy API key (`sk-safi-...`).
@@ -107,7 +108,7 @@ The **SAFi Appliance** ([runsafi.com](https://runsafi.com)) brings software engi
 
 - **15-Minute Plug-and-Play Setup:** Connect power and Ethernet, log into the web portal, and pair `safi-cli` ([Quick Start Guide](https://runsafi.com/start)).
 - **Zero Cloud Liability & True Air-Gap:** Your data, credentials, and IP never leave your physical network. Pull the network cable and all models, agents, and governance tools still run 100% locally.
-- **3 Pre-Loaded Local Reasoning Models:** Ships ready on day one with **Qwen 27B**, **Qwen MoE 35B**, and **Gemma 4 (26B)** — zero cloud API keys or token meters, with zero artificial refusals on legitimate IT diagnostics (optional bring-your-own-key cloud providers supported).
+- **3 Pre-Loaded Local Reasoning Models:** Ships ready on day one with **Qwen 27B**, **GPT-OSS 20B**, and **Gemma 4 (26B)** — zero cloud API keys or token meters, with zero artificial refusals on legitimate IT diagnostics (optional bring-your-own-key cloud providers supported).
 - **Pre-Loaded IT Agent Triad:** **Software Engineering**, **Systems Administration**, and **Security** agents operating inside your written policies with Bubblewrap sandboxes and a tamper-evident local audit trail (plus unlimited custom agents via the web portal).
 - **Predictable Economics:** Whisper-quiet edge hardware (high-bandwidth unified memory, 16-Core / 32-Thread CPU with dedicated AI acceleration, 1 TB NVMe SSD, 2.5 GbE + Wi-Fi 7, <120W) — **$4,500 one-time**, zero cloud token bills, with a 1-year advance-replacement warranty.
 
@@ -131,38 +132,21 @@ SAFi ships out of the box with **three production CLI agents**, each bound to an
 
 ## The Governance
 
-Governance in SAFi is not an afterthought or a filter, but the natural result of how the system works. Based on thousands of years of classical thinking, SAFi enforces a strict **separation of powers**: the **Intellect** proposes, the **Will** decides, the **Conscience** evaluates, and the **Spirit** tracks long-term alignment.
+Governance in SAFi is not an afterthought or a filter, but the natural result of how the system works. Every agent action is checked against your rules before it runs, and every decision leaves evidence you can audit.
 
-### Policies, Charters & Client-Server Enforcement
+### Your Policies as the Supreme Law
 
-- **Client-Server Control Plane:** Workstations run the thin `safi-cli` harness with zero LLM API keys and zero local policy overrides. Identity (SSO/LDAP/SCIM), models, Charters, Policies, and audit logs live centrally on your SAFi gateway.
-- **Two-Tier Policy Compilation (Charter → Policy):** Every agent is bound to your **Organizational Charter**, a versioned **domain Policy** (such as `Software Policy`, `Security Engineer Policy`, or `Systems Admin Policy`), or both. Synderesis compiles them into weighted values, scope boundaries, and non-negotiable hard gates on every turn.
-- **Pre-Execution Tool & Draft Enforcement:** Before any command runs or any answer is delivered, the deterministic **Will** enforces tool allow-lists, risk classes (`R0–R4`), parameter constraints, and PII checksums, while the independent **Conscience** scores drafts value-by-value against the governing policy.
-- **Tamper-Evident Audit Trail:** Every turn, tool intent, Conscience ledger, enforcement decision, and exact policy version is written to a hash-chained audit trail — powering the **Audit Hub**, **Supervisory Review Queue**, and custody-logged exports.
+In SAFi, every agent action is governed by an explicit policy written and owned by your organization. The Policy controls the identity and the actions the agent is allowed to take. Ready-to-use default policies ship with the built-in SysAdmin, Security Engineer, and Software Engineer agents, and you can tune these rules or author new role policies at any time in the web admin portal (**Control Panel → Policies**).
 
-### The Five Faculties & Seven-Phase Loop
 
-| Faculty | Module | Role |
-| :--- | :--- | :--- |
-| **Synderesis** | `synderesis.py` | Foundational compiler. Assembles immutable baseline rules, scope boundaries, and weighted value sets from the Charter and Policy. |
-| **Intellect** | `intellect.py` | Generative engine. Drafts responses or proposes tool calls inside an **Air Gap** — it can only emit *intents*, never execute them directly. |
-| **Will** | `will.py` | Deterministic gatekeeper. Approves, blocks, or redirects proposals based on structural invariants and the Conscience ledger. |
-| **Conscience** | `conscience.py` | Independent evaluator. Scores proposals against every policy rubric, producing a mathematical compliance ledger (−1.0 to +1.0 per value). |
-| **Spirit** | `spirit.py` | Long-term memory. Integrates Conscience scores into a rolling alignment vector (EMA) to detect behavioral drift over time. |
+### The Four Pillars of Runtime Governance
 
-Every user turn passes synchronously through seven phases:
+- **Controlled Execution:** The AI can never run commands on your servers directly. It can only *propose* actions, which must pass your policy rules and approvals before anything executes.
+- **Model Independence:** Your policies, agent roles, and history belong to you, not a cloud vendor. Upgrade or swap AI models at any time — your governance rules stay intact.
+- **Built-In Threat Defense:** Incoming prompts and commands are screened for attacks, prompt injections, and sensitive-data exposure *before* they are processed, keeping your systems safe.
+- **Complete Audit Trail:** Every action, tool call, and policy decision is permanently recorded in a tamper-evident, hash-chained audit log — powering the **Audit Hub**, **Supervisory Review Queue**, and custody-logged exports — giving compliance officers and auditors the exact proof they need.
 
-| Phase | Name | What Happens |
-| :--- | :--- | :--- |
-| **Phase 0** | Pre-generation Gate | Deterministic threat screening, injection signatures, per-agent blocked phrases, sensitive-data checksums (Luhn/IBAN/ABA/SSN), and embedded-instruction detection before any model runs. |
-| **Phase 1** | Scope & Context | Scope preflight and context retrieval (RAG knowledge bases, working memory, tool/plugin context). |
-| **Phase 2** | Apprehension | The Intellect drafts a response or proposes a tool call. |
-| **Phase 3** | Structural Will | Deterministic verification of structural invariants (allowed tool schemas, required disclaimers, syntax). |
-| **Phase 4** | Conscience Audit | The Conscience scores the draft against the compiled rubrics, producing the compliance ledger. |
-| **Phase 5** | Spirit & Alignment Gate | The Will checks hard gates; Spirit updates the alignment vector. Low or non-compliant scores trigger a governed Reflexion retry or redirect. |
-| **Phase 6** | Safe Execution | The audited response or authorized tool call is finalized, hash-chained into the audit trail, and delivered. |
-
-For the formal mathematical model, see the [SAFi Math Specification](https://selfalignmentframework.com/safi-math-specification/).
+The formal architecture behind these guarantees — the five faculties (Synderesis, Intellect, Will, Conscience, Spirit) and the seven-phase turn loop — is documented in the [Developer Guide](docs/DEVELOPER_GUIDE.md) and formalized in the [SAFi Math Specification](https://selfalignmentframework.com/safi-math-specification/). For regulator-facing capabilities, see [Regulatory Readiness](#regulatory-readiness).
 
 ---
 
@@ -205,11 +189,11 @@ SAFi enforces **four organization-scoped roles** (`admin` > `editor` > `auditor`
 
 | Capability | `member` | `auditor` | `editor` | `admin` |
 | :--- | :---: | :---: | :---: | :---: |
-| Chat with org agents, use `safi-cli`, view own turn verdicts & governing Charter/Policy | ✅ | ✅ | ✅ | ✅ |
-| **Audit Hub** — KPIs, drift trends, log explorer, hash-chain verification, export | — | ✅ | ✅ | ✅ |
-| **Supervisory review** — sampled queue, dispositions, coverage reports | — | ✅ | **—** | ✅ |
-| **Authoring** — create/edit agents, policies, versions, tools, and Policy API keys | — | — | ✅ | ✅ |
-| **Org administration** — members, SSO/SCIM, MFA mandate, retention, legal hold, provider allow-list, examiner exports | — | — | — | ✅ |
+| Chat with org agents, use `safi-cli`, view own turn verdicts & governing Charter/Policy | Yes | Yes | Yes | Yes |
+| **Audit Hub** — KPIs, drift trends, log explorer, hash-chain verification, export | — | Yes | Yes | Yes |
+| **Supervisory review** — sampled queue, dispositions, coverage reports | — | Yes | **—** | Yes |
+| **Authoring** — create/edit agents, policies, versions, tools, and Policy API keys | — | — | Yes | Yes |
+| **Org administration** — members, SSO/SCIM, MFA mandate, retention, legal hold, provider allow-list, examiner exports | — | — | — | Yes |
 
 - **Organization scoping:** Enforced in both API routes and SQL queries.
 - **Immediate session revocation:** Role changes revoke active sessions and journal the change in the same transaction.

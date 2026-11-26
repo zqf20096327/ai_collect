@@ -1,18 +1,18 @@
-# MLSecOps Practical Reference Guide
+# MLSecOps Reference Model & Practical Guide
 
-> **Open-source MLSecOps handbook for AI security, LLM/RAG, and secure MLOps.**
+> **Open-source MLSecOps reference model and practical guide for AI security, LLM/RAG, agentic AI, and secure MLOps.**
 
 [![Status](https://img.shields.io/badge/status-stable-blue)](CHANGELOG.md)
-[![Version](https://img.shields.io/badge/version-v1.3.0-lightgrey)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.4.0-lightgrey)](CHANGELOG.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21206780.svg)](https://doi.org/10.5281/zenodo.21206780)
 [![Documentation](https://img.shields.io/badge/docs-mhaghighian.github.io%2FMLSecOps-blue)](https://mhaghighian.github.io/MLSecOps/)
 [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-green.svg)](LICENSE)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15668/badge)](https://www.bestpractices.dev/projects/15668)
 [![OpenSSF Baseline](https://www.bestpractices.dev/projects/15668/baseline)](https://www.bestpractices.dev/projects/15668)
 
-**MLSecOps Practical Reference Guide** is an open-source handbook for **AI security**, **machine learning security**, and **secure MLOps** across the full ML lifecycle — from data and training through deployment, runtime monitoring, SOC, and governance.
+**MLSecOps Reference Model & Practical Guide** is an open-source reference model and engineering handbook for **AI security**, **machine learning security**, and **secure MLOps** across the full ML lifecycle — from data and training through deployment, runtime monitoring, SOC, and governance.
 
-It covers **LLM security**, **RAG security**, **agentic AI**, **MCP**, **AI supply chain security**, and **DevSecOps** patterns for production AI systems. Use it as a practitioner reference — not a product manual or an official OWASP, NIST, or ISO standard.
+It defines an actionable **lifecycle control model (`CP 1–10`)**, machine-readable **Evidence Pack JSON Schema**, **OPA/Conftest Policy-as-Code** admission samples, and **Secure-by-Design** blueprints covering **LLM security**, **RAG security**, **agentic AI**, **MCP**, **AI supply chain security**, and **DevSecOps** patterns for production AI systems. Independent open-source reference model and guide — not a product manual or an official OWASP, NIST, or ISO standard.
 
 **New here?** Start with [Getting started](GETTING-STARTED.md) (terms + role paths). Do not jump straight into the middle of Chapters 7 or 12.
 
@@ -21,7 +21,7 @@ It covers **LLM security**, **RAG security**, **agentic AI**, **MCP**, **AI supp
 | **Read online (recommended)** | [mhaghighian.github.io/MLSecOps](https://mhaghighian.github.io/MLSecOps/) |
 | **Source repository** | [github.com/MHaghighian/MLSecOps](https://github.com/MHaghighian/MLSecOps) |
 | **Maintainer site** | [mhsec.me](https://mhsec.me) |
-| **Latest release** | [v1.3.0](https://github.com/MHaghighian/MLSecOps/releases/tag/v1.3.0) |
+| **Latest release** | [v1.4.0](https://github.com/MHaghighian/MLSecOps/releases/tag/v1.4.0) |
 | **Cite (DOI)** | [10.5281/zenodo.21206780](https://doi.org/10.5281/zenodo.21206780) |
 | **OpenSSF** | [Best Practices Passing](https://www.bestpractices.dev/projects/15668) · [Baseline-2](https://www.bestpractices.dev/projects/15668) |
 
@@ -35,12 +35,12 @@ Security engineers, ML/MLOps teams, architects, and risk owners who need a **pra
 
 ## What this guide adds
 
-This guide **synthesizes** OWASP, MITRE ATLAS, NIST AI RMF, ISO/IEC 42001, OpenSSF Secure MLOps, and CSA MAESTRO. Its operational additions are:
+This project defines an independent **MLSecOps reference architecture and control model**, cross-mapped to OWASP, MITRE ATLAS, NIST AI RMF, ISO/IEC 42001, OpenSSF Secure MLOps, and CSA MAESTRO. Its core operational contributions are:
 
-1. **Ten lifecycle control points** — one thread from change initiation through monitoring  
-2. **Blocking release decisions** at control points **4, 7, 8** (CP 7 blocking at Level 2+) — separately, a mandatory **integrity/provenance checkpoint at CP 9** that blocks store/deploy (not a fourth policy release gate)  
-3. **`Evidence Pack`** — auditable output bundle per release  
-4. **[Implementation Reference](chapters-en/17-appendix-e-implementation-reference.md)** — architecture cards, decision matrix, templates, playbooks (patterns and checklists — **not** a bundled CI/CD product)
+1. **Ten lifecycle control points (`CP 1–10`)** — one continuous control thread from change initiation through runtime and SOC  
+2. **Blocking release decisions** at control points **4, 7, 8** (CP 7 blocking at Level 2+) — separately, a mandatory **integrity/provenance checkpoint at CP 9** bound to the CP 8 digest at admission to close the TOCTOU gap  
+3. **Auditable `Evidence Pack`** per release — with a machine-readable JSON Schema ([`schemas/`](schemas/README.md)) and OPA/Conftest admission samples ([`policies/`](policies/README.md))  
+4. **[Implementation Reference](chapters-en/17-appendix-e-implementation-reference.md)** — architecture cards, decision matrix, templates, playbooks, and end-to-end **Secure-by-Design** system blueprints (`E.7`)
 
 Learn more: [Chapter 1 — What this guide adds](chapters-en/01-intro.md#what-this-guide-adds-beyond-owasp-openssf-and-nist). See also [Getting started](GETTING-STARTED.md).
 
@@ -115,15 +115,15 @@ Executive lifecycle (detail in [Chapter 6](chapters-en/06-pipeline.md)):
 
 ## Downloads
 
-**Latest release:** **v1.3.0** · [Zenodo DOI](https://doi.org/10.5281/zenodo.21206780)
+**Latest release:** **v1.4.0** · [Zenodo DOI](https://doi.org/10.5281/zenodo.21206780)
 
 | Format | Link |
 |--------|------|
 | **Documentation site** | [mhaghighian.github.io/MLSecOps](https://mhaghighian.github.io/MLSecOps/) |
 | **Markdown** | `chapters-en/` in this repository |
-| **Source (ZIP)** | [v1.3.0 archive](https://github.com/MHaghighian/MLSecOps/archive/refs/tags/v1.3.0.zip) |
+| **Source (ZIP)** | [v1.4.0 archive](https://github.com/MHaghighian/MLSecOps/archive/refs/tags/v1.4.0.zip) |
 
-All releases: [GitHub Releases](https://github.com/MHaghighian/MLSecOps/releases). Pre-built PDF/DOCX are **not** published with releases; build Word locally if you need a printable copy (below).
+All releases: [GitHub Releases](https://github.com/MHaghighian/MLSecOps/releases). Pre-built **DOCX** (and **PDF** when conversion succeeds) plus `HANDBOOK-SHA256SUMS.txt` are attached automatically on new `v*.*.*` release tags via [`.github/workflows/handbook-artifacts.yml`](.github/workflows/handbook-artifacts.yml); for historical releases (`v1.1.1`–`v1.3.0`) or custom builds, generate Word locally (below).
 
 ### Build DOCX yourself
 
@@ -134,7 +134,7 @@ pip install -r scripts/requirements-docx.txt
 python scripts/build-docx.py --render-mermaid
 ```
 
-**Output:** `dist/MLSecOps-Practical-Reference-Guide-v{version}.docx` (version read from [CITATION.cff](CITATION.cff)). Export PDF from Word (or Pandoc) if needed.
+**Output:** `dist/MLSecOps-Reference-Model-v{version}.docx` (version read from [CITATION.cff](CITATION.cff)). Export PDF from Word (or Pandoc) if needed.
 
 | Option | Purpose |
 |--------|---------|
@@ -164,12 +164,15 @@ The build uses **Pandoc** with the project Word template (`scripts/templates/ref
 MLSecOps/
 ├── chapters-en/          # Guide chapters (English)
 ├── assets/diagrams/      # Diagram PNGs and Mermaid source (.mmd)
+├── policies/             # OPA / Conftest Policy-as-Code samples
+├── schemas/              # Machine-readable Evidence Pack JSON Schema
+├── references/           # Complementary alignment docs (e.g. AARM)
 ├── scripts/              # DOCX build (build-docx.py, mermaid_to_png.py)
 ├── dist/                 # Local DOCX output (gitignored)
 ├── GETTING-STARTED.md    # Role-based reading paths
 ├── CITATION.cff          # Citation metadata (DOI)
 ├── CHANGELOG.md
-└── .github/workflows/    # Pages deploy, docs CI, releases
+└── .github/workflows/    # Pages deploy, docs CI, releases, artifacts
 ```
 
 ---
@@ -184,7 +187,7 @@ We welcome review from practitioners.
 
 If you review the guide and agree to be listed, we can add your name under **Community reviewers** (with your permission only).
 
-**Share this project:** linking from LinkedIn, blog posts, OWASP community threads, Dev.to, or internal security wikis helps others discover the guide and improves search visibility for `MLSecOps` and `MLSecOps Practical Reference Guide`.
+**Share this project:** linking from LinkedIn, blog posts, OWASP community threads, Dev.to, or internal security wikis helps others discover the project and improves search visibility for `MLSecOps`, `MLSecOps Reference Model`, and `MLSecOps Practical Reference Guide`.
 
 ---
 
@@ -193,7 +196,7 @@ If you review the guide and agree to be listed, we can add your name under **Com
 See [CITATION.cff](CITATION.cff) for machine-readable metadata.
 
 ```text
-Haghighian, M. (2026). MLSecOps Practical Reference Guide (v1.3.0).
+Haghighian, M. (2026). MLSecOps Reference Model & Practical Guide (v1.4.0).
 Zenodo. https://doi.org/10.5281/zenodo.21206780
 ```
 

@@ -32,7 +32,7 @@ The MCP server contains embedded up-to-date `vmanomaly` documentation and is abl
   - version [1.30.5](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1305)+ for named-query shared autotune and query-policy suggestions in VMUI
   - version [1.31.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1310)+ for schedule replay in shared autotune, experimental peer-group tuning and deployment sizing
   - version [1.32.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1320)+ for metric discovery and dynamic preset artifacts, including Compose, Helm and VM Operator deployment files
-- Go 1.26.11 or higher (if building from source)
+- Go 1.27.4 or higher (if building from source)
 
 ## Installation
 
@@ -141,8 +141,8 @@ MCP Server for vmanomaly is configured via environment variables:
 | `VMANOMALY_BEARER_TOKEN_FILE` | Path to a bearer-token file, suitable for mounted container/orchestrator secrets                  | No       | -                | -                      |
 | `VMANOMALY_HEADERS`      | Custom HTTP headers for requests (comma-separated key=value pairs, e.g., X-Custom=value1,X-Auth=value2) | No       | -                | -                      |
 | `VMANOMALY_REQUEST_TIMEOUT` | HTTP timeout for calls from MCP to vmanomaly, e.g. `60s`                                             | No       | `30s`            | -                      |
-| `VMANOMALY_TLS_CA_FILE`  | PEM CA bundle added to the system trust store to verify the vmanomaly server certificate                | No       | -                | -                      |
-| `VMANOMALY_TLS_CA_CERT`  | Same as `VMANOMALY_TLS_CA_FILE`, but the PEM content itself, for runtimes without file mounts; mutually exclusive with `VMANOMALY_TLS_CA_FILE`           | No       | -                | -                      |
+| `VMANOMALY_TLS_CA_CERT_FILE` | PEM CA bundle added to the system trust store to verify the vmanomaly server certificate. `VMANOMALY_TLS_CA_FILE` is a deprecated alias                | No       | -                | -                      |
+| `VMANOMALY_TLS_CA_CERT`  | Same as `VMANOMALY_TLS_CA_CERT_FILE`, but the PEM content itself, for runtimes without file mounts; mutually exclusive with `VMANOMALY_TLS_CA_CERT_FILE`           | No       | -                | -                      |
 | `VMANOMALY_TLS_CERT_FILE` | PEM client certificate for vmanomaly servers that require mutual TLS; set together with the key file   | No       | -                | -                      |
 | `VMANOMALY_TLS_KEY_FILE` | PEM private key for `VMANOMALY_TLS_CERT_FILE`                                                           | No       | -                | -                      |
 | `VMANOMALY_TLS_INSECURE_SKIP_VERIFY` | Skip server certificate verification. **Insecure, for development and testing only**        | No       | `false`          | `false`, `true`        |
@@ -152,12 +152,19 @@ MCP Server for vmanomaly is configured via environment variables:
 | `MCP_DISABLED_TOOLS`     | Comma-separated tool denylist; takes precedence over the allowlist                                     | No       | -                | -                      |
 | `MCP_DISABLE_RESOURCES`  | Disable all resources (documentation search will continue to work)                                      | No       | `false`          | `false`, `true`        |
 | `MCP_HEARTBEAT_INTERVAL` | Heartbeat interval for streamable-http protocol (keeps connection alive through network infrastructure) | No       | `30s`            | -                      |
-| `MCP_LOG_LEVEL`          | Log level: `debug` (verbose), `info` (default), `warn`, or `error`                                      | No       | `info`           | -                      |
+| `MCP_AUTH_TOKEN`         | Bearer token MCP clients must send as `Authorization: Bearer <token>`. `/health/*` and `/metrics` stay public. An empty value disables authentication; a value of only whitespace fails startup. Only applies in `sse`/`http` modes | No | - | - |
+| `MCP_AUTH_TOKEN_FILE`    | Path to a file with the `MCP_AUTH_TOKEN` value, for mounted secrets; mutually exclusive with `MCP_AUTH_TOKEN`; an empty file fails startup | No | - | - |
+| `MCP_PASSTHROUGH_HEADERS` | HTTP header names to forward from incoming MCP requests to vmanomaly (comma-separated list). Overrides `VMANOMALY_HEADERS` on collision; a forwarded `Authorization` replaces the one built from `VMANOMALY_BEARER_TOKEN`. Cannot include `Authorization` when `MCP_AUTH_TOKEN` is set, nor headers the server sets itself (`Content-Type`, `Host`, `Content-Length` and other hop-by-hop headers). Only applies in `sse`/`http` modes | No | - | - |
+| `MCP_STATELESS`          | Run the Streamable HTTP server in stateless mode: `Mcp-Session-Id` values are ignored instead of validated. Useful behind a gateway that injects its own session IDs. `GET /mcp` then answers `405`, as no standalone notification stream is offered. Only applies in `http` mode | No | `false` | `false`, `true` |
+| `MCP_DISABLE_LOCALHOST_PROTECTION` | Disable the DNS-rebinding guard that answers `403` to a request arriving over a loopback connection whose `Host` header is not a localhost value. Needed when a same-host proxy or sidecar forwards over `127.0.0.1` and keeps the original `Host`. Applies in `http` and `sse` modes | No | `false` | `false`, `true` |
+| `MCP_LOG_LEVEL`          | Minimum log level. `debug` also logs MCP request and result payloads, raw errors and client names; see [Security](#security) | No | `info` | `debug`, `info`, `warn`, `error` |
+| `MCP_LOG_FORMAT`         | Log output format; `json` suits Kubernetes log collectors                                              | No       | `text`           | `text`, `json`         |
 | `MCP_LOG_FILE`           | Log file path (empty = stderr)                                                                          | No       | `stderr`         | -                      |
+| `MCP_INSTRUCTIONS_OVERRIDE` | Text that fully replaces the default MCP server instructions sent to clients. The defaults target VMUI Copilot and the preset workflow; override them to describe your instance, environment or conventions | No | - | - |
 
 ### Connecting to vmanomaly over HTTPS
 
-Use an `https://` URL in `VMANOMALY_ENDPOINT`. Server certificates are verified against the system trust store. For a private CA, set `VMANOMALY_TLS_CA_FILE`, or `VMANOMALY_TLS_CA_CERT` with the PEM content when the runtime cannot mount files; the CA is added to the system roots. When vmanomaly requires client certificates (mutual TLS), also set `VMANOMALY_TLS_CERT_FILE` and `VMANOMALY_TLS_KEY_FILE`. `VMANOMALY_TLS_INSECURE_SKIP_VERIFY=true` disables server certificate verification and cannot be combined with a custom CA; use it only for development or testing. Certificates are read at startup, so restart the server after rotating them.
+Use an `https://` URL in `VMANOMALY_ENDPOINT`. Server certificates are verified against the system trust store. For a private CA, set `VMANOMALY_TLS_CA_CERT_FILE`, or `VMANOMALY_TLS_CA_CERT` with the PEM content when the runtime cannot mount files; the CA is added to the system roots. When vmanomaly requires client certificates (mutual TLS), also set `VMANOMALY_TLS_CERT_FILE` and `VMANOMALY_TLS_KEY_FILE`. `VMANOMALY_TLS_INSECURE_SKIP_VERIFY=true` disables server certificate verification and cannot be combined with a custom CA; use it only for development or testing. `VMANOMALY_TLS_CA_CERT_FILE`, `VMANOMALY_TLS_CERT_FILE` and `VMANOMALY_TLS_KEY_FILE` are re-read at most once per second while requests are made, so certificates rotated in place (for example by cert-manager or a mounted Kubernetes secret) are used without a restart; new connections pick up the new files. If a rotated file is invalid or the certificate and key do not match yet, the previous version stays in use and a warning is logged. An inline `VMANOMALY_TLS_CA_CERT` is read at startup only.
 
 ### Modes
 
@@ -172,6 +179,13 @@ MCP Server supports the following modes of operation (transports):
 > Specification [(version 2025-03-26)](https://modelcontextprotocol.io/specification/2025-03-26/changelog#major-changes)
 > and was replaced by Streamable HTTP transport (`http` mode).
 > In future releases its support can be deprecated, use Streamable HTTP transport if your client supports it.
+
+> [!NOTE]
+> Some platforms, such as AWS Bedrock AgentCore Runtime, inject their own `Mcp-Session-Id`
+> header and keep the original non-localhost `Host` header while forwarding over `127.0.0.1`.
+> With default settings the server rejects such session IDs and answers `403` from the DNS-rebinding guard,
+> so tool discovery fails. Set `MCP_STATELESS=true` and `MCP_DISABLE_LOCALHOST_PROTECTION=true` together with
+> `MCP_SERVER_MODE=http` for that setup, and keep both disabled for direct or local use.
 
 More info about transports you can find in MCP docs:
 
@@ -194,6 +208,12 @@ export VMANOMALY_BEARER_TOKEN_FILE="/run/secrets/vmanomaly-token"
 # With custom headers (e.g., behind a reverse proxy)
 export VMANOMALY_HEADERS="X-Custom-Header=value1,X-Another=value2"
 
+# Require a token from MCP clients in http/sse modes
+export MCP_AUTH_TOKEN_FILE="/run/secrets/mcp-auth-token"
+
+# Forward per-client headers to vmanomaly, e.g. for vmauth header-based routing
+export MCP_PASSTHROUGH_HEADERS="X-Tenant,X-Access-Key"
+
 # Expose only the tools required by this deployment. A denylist can further
 # narrow this set and always takes precedence.
 export MCP_ENABLED_TOOLS="vmanomaly_health_check,vmanomaly_search_docs"
@@ -205,7 +225,11 @@ export MCP_LISTEN_ADDR="0.0.0.0:8080"
 
 # Logging
 export MCP_LOG_LEVEL="debug"
+export MCP_LOG_FORMAT="json"
 export MCP_LOG_FILE="/tmp/mcp-vmanomaly.log"
+
+# Replace the default instructions sent to MCP clients
+export MCP_INSTRUCTIONS_OVERRIDE="This server connects to the staging vmanomaly installation of team A."
 ```
 
 ## Endpoints
@@ -232,16 +256,22 @@ the caller's trusted-domain vmanomaly installation:
 - A local per-user `stdio` process may use that user's token as its configured upstream token.
 - A remote MCP instance dedicated to one trusted domain may use a domain-scoped service token.
 - A shared remote MCP requires per-request forwarding of a verified user token so the gateway can
-  route each call to the correct trusted domain. The current process-wide token configuration does
-  not implement this pass-through mode; do not place multiple untrusted domains behind one static
-  MCP credential.
+  route each call to the correct trusted domain. List the routing and credential headers in
+  `MCP_PASSTHROUGH_HEADERS` and let an authenticating gateway such as `vmauth` in front of
+  vmanomaly verify them and pick the installation. Do not place multiple untrusted domains behind
+  one static `VMANOMALY_BEARER_TOKEN`.
 
 - Prefer `stdio` for a local, single-user integration. It has no network listener and inherits
   access control from the process that launches it.
-- HTTP and SSE transports do not provide built-in client authentication. Keep the default
-  loopback bind where possible. If remote access is required, place the server behind an
-  authenticated TLS reverse proxy such as `vmauth`, restrict the network path, and do not expose
-  `/mcp`, `/sse`, or `/message` directly to an untrusted network.
+- HTTP and SSE transports accept clients without credentials unless `MCP_AUTH_TOKEN` (or
+  `MCP_AUTH_TOKEN_FILE`) is set. The token is one shared secret compared in constant time; it
+  does not identify users. Keep the default loopback bind where possible. If remote access is
+  required, set the token, terminate TLS in a reverse proxy such as `vmauth`, restrict the network
+  path, and do not expose `/mcp`, `/sse`, or `/message` directly to an untrusted network.
+- `MCP_PASSTHROUGH_HEADERS` forwards client-controlled values to vmanomaly. Only list headers that
+  the next hop verifies or that select between installations the caller may already reach. When
+  `MCP_AUTH_TOKEN` is set, `Authorization` cannot be forwarded, so the MCP token never reaches
+  vmanomaly; use a separate header for upstream credentials.
 - Keep `/metrics` on an internal monitoring network or protect it at the proxy; health endpoints
   can be exposed only as required by the deployment platform.
 - Give the configured vmanomaly credential the least privilege and trusted-domain scope available.
@@ -255,8 +285,15 @@ the caller's trusted-domain vmanomaly installation:
   allowlist retains backward compatibility by enabling every registered tool.
 - `MCP_DISABLE_RESOURCES=true` hides resource discovery and reads. The documentation-search tool
   remains independent and can be separately disabled with the tool policy.
-- Logs and metrics intentionally omit tool arguments/results, raw errors, client metadata, and
-  resource URIs. Treat MCP responses and downstream vmanomaly logs as sensitive nevertheless.
+- At `info` level and above, the MCP request, tool and access logs and the metrics intentionally
+  omit tool arguments/results, raw errors, client metadata, and resource URIs; failures are logged
+  with a bounded `error_class`, and client-chosen request IDs, session IDs and names are truncated.
+  `MCP_LOG_LEVEL=debug` adds request and result payloads, raw errors and client names to the
+  logs, so enable it only for troubleshooting and treat such logs as secrets. The HTTP access log
+  records method, path (without query string), status, size, duration, remote address and MCP
+  session ID. Transport failures that mcp-go reports itself, such as a broken stdio stream or a
+  recovered panic, are logged at `error` level with their original message. Treat MCP responses
+  and downstream vmanomaly logs as sensitive nevertheless.
 
 These controls reduce the MCP server's exposure but do not create tenant isolation. Treat one
 logical vmanomaly installation, including its replicas or shards, as one trusted domain. Route
@@ -314,10 +351,21 @@ See [Claude Desktop MCP docs](https://modelcontextprotocol.io/quickstart/user) f
 Run the command:
 
 ```sh
-claude mcp add vmanomaly -- /path/to/mcp-vmanomaly \
+claude mcp add vmanomaly \
   -e VMANOMALY_ENDPOINT=http://localhost:8490 \
-  -e VMANOMALY_BEARER_TOKEN=<YOUR_TOKEN> \
-  -e VMANOMALY_HEADERS="X-Custom=value1,X-Auth=value2"
+  -e VMANOMALY_BEARER_TOKEN_FILE=/path/to/vmanomaly-token \
+  -e VMANOMALY_HEADERS="X-Custom=value1,X-Auth=value2" \
+  -- /path/to/mcp-vmanomaly
+```
+
+To connect to a server running in [Streamable HTTP](#modes) mode, pass the `MCP_AUTH_TOKEN` and any
+headers listed in `MCP_PASSTHROUGH_HEADERS`. With `--scope project` the entry goes to `.mcp.json`, where Claude Code
+expands `${VMANOMALY_MCP_TOKEN}` from the environment, so the single-quoted token reference is safe to commit:
+
+```sh
+claude mcp add --scope project --transport http vmanomaly http://localhost:8080/mcp \
+  --header 'Authorization: Bearer ${VMANOMALY_MCP_TOKEN}' \
+  --header 'X-Vmanomaly-Instance: team-a'
 ```
 
 See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/tutorials#set-up-model-context-protocol-mcp) for more info.
@@ -409,6 +457,142 @@ Add the following to your Windsurf MCP config file:
 ```
 
 See [Windsurf MCP docs](https://docs.windsurf.com/windsurf/mcp) for more info.
+
+### Codex
+
+Codex CLI and the IDE extension use the same MCP configuration file: `~/.codex/config.toml`
+(or `.codex/config.toml` in a trusted project).
+
+Run the command:
+
+```sh
+codex mcp add vmanomaly \
+  --env VMANOMALY_ENDPOINT=http://localhost:8490 \
+  --env VMANOMALY_BEARER_TOKEN_FILE=/path/to/vmanomaly-token \
+  --env VMANOMALY_HEADERS="X-Custom=value1,X-Auth=value2" \
+  -- /path/to/mcp-vmanomaly
+```
+
+The command line takes the path of a token file, not the token itself, so the token stays out of shell history.
+
+Or add the following to your Codex `~/.codex/config.toml` file:
+
+```toml
+[mcp_servers.vmanomaly]
+command = "/path/to/mcp-vmanomaly"
+
+[mcp_servers.vmanomaly.env]
+VMANOMALY_ENDPOINT = "http://localhost:8490"
+VMANOMALY_BEARER_TOKEN = "<YOUR_TOKEN>"
+VMANOMALY_HEADERS = "X-Custom=value1,X-Auth=value2"
+```
+
+If you run the server in [Streamable HTTP](#modes) mode, you can register it with:
+
+```sh
+codex mcp add vmanomaly --url http://localhost:8080/mcp
+```
+
+When the server requires `MCP_AUTH_TOKEN` or forwards headers listed in `MCP_PASSTHROUGH_HEADERS`, configure them
+in `~/.codex/config.toml`. `bearer_token_env_var` names the environment variable that holds the token:
+
+```toml
+[mcp_servers.vmanomaly]
+url = "http://localhost:8080/mcp"
+bearer_token_env_var = "VMANOMALY_MCP_TOKEN"
+http_headers = { "X-Vmanomaly-Instance" = "team-a" }
+```
+
+See [Codex MCP docs](https://developers.openai.com/codex/mcp) for more info.
+
+### Gemini CLI
+
+Add the following to your Gemini CLI `~/.gemini/settings.json` file:
+
+```json
+{
+  "mcpServers": {
+    "vmanomaly": {
+      "command": "/path/to/mcp-vmanomaly",
+      "env": {
+        "VMANOMALY_ENDPOINT": "http://localhost:8490",
+        "VMANOMALY_BEARER_TOKEN": "<YOUR_TOKEN>",
+        "VMANOMALY_HEADERS": "X-Custom=value1,X-Auth=value2"
+      }
+    }
+  }
+}
+```
+
+To connect to a server running in [Streamable HTTP](#modes) mode at `http://localhost:8080`:
+
+```sh
+gemini mcp add --transport http vmanomaly http://localhost:8080/mcp
+```
+
+When the server requires `MCP_AUTH_TOKEN` or forwards headers listed in `MCP_PASSTHROUGH_HEADERS`, pass them with
+`--header` in the same command. The single quotes store `${VMANOMALY_MCP_TOKEN}` literally, and Gemini CLI expands
+it from the environment when it loads the settings, so the token is not saved in a file or in shell history:
+
+```sh
+gemini mcp add --scope user --transport http \
+  --header 'Authorization: Bearer ${VMANOMALY_MCP_TOKEN}' \
+  --header 'X-Vmanomaly-Instance: team-a' \
+  vmanomaly http://localhost:8080/mcp
+```
+
+`gemini mcp add` writes to the project's `.gemini/settings.json` unless `--scope user` is given, and project
+settings override user settings. Keep a single `vmanomaly` entry, or the one without headers wins and every
+call fails with `401`.
+
+See [Gemini CLI MCP docs](https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md) for more info.
+
+### OpenCode
+
+Add the following to your OpenCode config file in `~/.config/opencode/opencode.json`. OpenCode V2 nests servers under
+`mcp.servers`; OpenCode V1 places them directly under `mcp`:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "vmanomaly": {
+        "type": "local",
+        "command": ["/path/to/mcp-vmanomaly"],
+        "environment": {
+          "VMANOMALY_ENDPOINT": "http://localhost:8490",
+          "VMANOMALY_BEARER_TOKEN": "<YOUR_TOKEN>",
+          "VMANOMALY_HEADERS": "X-Custom=value1,X-Auth=value2"
+        }
+      }
+    }
+  }
+}
+```
+
+To connect to a server running in [Streamable HTTP](#modes) mode at `http://localhost:8080`, pass the
+`MCP_AUTH_TOKEN` and any headers listed in `MCP_PASSTHROUGH_HEADERS`. OpenCode tries OAuth for remote servers by
+default, so set `"oauth": false` when the server uses a static token:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "vmanomaly": {
+        "type": "remote",
+        "url": "http://localhost:8080/mcp",
+        "oauth": false,
+        "headers": {
+          "Authorization": "Bearer {env:VMANOMALY_MCP_TOKEN}",
+          "X-Vmanomaly-Instance": "team-a"
+        }
+      }
+    }
+  }
+}
+```
+
+See [OpenCode MCP docs](https://opencode.ai/docs/mcp-servers/) for more info.
 
 ### Using Docker instead of binary
 
@@ -633,6 +817,33 @@ VMANOMALY_ENDPOINT="http://localhost:8490" MCP_SERVER_MODE=http ./bin/mcp-vmanom
 # Query metrics
 curl http://localhost:8080/metrics
 ```
+
+## FAQ
+
+### How to use one MCP server instance for several vmanomaly installations?
+
+Set `MCP_PASSTHROUGH_HEADERS` and point `VMANOMALY_ENDPOINT` at
+[vmauth](https://docs.victoriametrics.com/victoriametrics/vmauth/) with
+[header-based routing](https://docs.victoriametrics.com/victoriametrics/vmauth/#routing-by-header), so each MCP
+client selects its installation with a header value from its own config. This is routing, not isolation: a
+client can send any value, see [Security](#security).
+
+### Which headers win when the same header is set in several places?
+
+Headers listed in `MCP_PASSTHROUGH_HEADERS` override the same headers from `VMANOMALY_HEADERS`.
+A forwarded `Authorization` header also replaces the one built from `VMANOMALY_BEARER_TOKEN`.
+Headers the server sets itself, such as `Content-Type`, `Host` and `Content-Length`, cannot be listed.
+
+`Authorization` cannot be forwarded when `MCP_AUTH_TOKEN` is set, because the incoming `Authorization`
+header then carries the MCP server's own token. Forward upstream credentials in a different header and let
+vmauth or another gateway translate it.
+
+### Why does memory usage grow after the first documentation search?
+
+The vmanomaly documentation is embedded in the binary. The first `vmanomaly_search_docs` call builds an
+in-memory full-text index over it, which stays for the lifetime of the process. If documentation search is not
+needed, add `vmanomaly_search_docs` to `MCP_DISABLED_TOOLS` so the index is never built.
+`MCP_DISABLE_RESOURCES=true` additionally stops registering every documentation section as an MCP resource.
 
 ## Roadmap
 

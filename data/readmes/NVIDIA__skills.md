@@ -1,12 +1,14 @@
 <!-- SPDX-License-Identifier: Apache-2.0 AND CC-BY-4.0 -->
 <!-- Copyright (c) 2026 NVIDIA Corporation. All rights reserved. -->
 
-# NVIDIA Agent Skills
+# NVIDIA Agent Skills and Plugins
 
-**Official, NVIDIA-verified Agent Skills for Claude Code, Codex, and other coding agents.**
+**Official, NVIDIA-verified Agent Skills & Plugins for Claude Code, Codex, and other coding agents.**
 
 [![NVIDIA](https://img.shields.io/badge/NVIDIA-Verified-76B900?style=flat&logo=nvidia&logoColor=white)](https://nvidia.com)
 [![Agent Skills Spec](https://img.shields.io/badge/Agent%20Skills-Specification-blue)](https://agentskills.io)
+[![Agent Plugins Spec](https://img.shields.io/badge/Agent%20Plugins-Specification-blue)](https://agent-plugins.org)
+[![Claude Code Plugins](https://img.shields.io/badge/Claude%20Code-Plugins-D97757)](https://code.claude.com/docs/en/plugins-reference)
 [![License](https://img.shields.io/badge/License-Apache%202.0%20%2B%20CC--BY--4.0-green.svg)](#license)
 
 > 📖 **Docs:** [docs.nvidia.com/skills](https://docs.nvidia.com/skills) &nbsp;·&nbsp;
@@ -15,23 +17,34 @@
 
 ---
 
-Skills are portable instruction sets that teach AI agents how to use NVIDIA software optimally: Physical AI and robotics workflows, simulation, CUDA-X libraries, RAG and AI Blueprints, and platform tools. This repository is a catalog: skills are maintained in their respective product repos, and mirrored here daily via an automated sync pipeline. Skills are being added continuously, so check back for updates. We are building this infrastructure in the open, and contributions are welcome. See the [Roadmap](#roadmap) for what is planned next.
+Skills are portable instruction sets that teach AI agents how to use NVIDIA software optimally: Physical AI and robotics workflows, simulation, CUDA-X libraries, RAG and AI Blueprints, and platform tools. Plugins bundle a product's skills, plus a local MCP server where the product needs one, into a single install for Claude Code, Codex, Cursor, and other agents.
+
+This repository is a catalog of both. Skills are maintained in their respective product repos and mirrored here daily through an automated sync pipeline. Plugins are maintained by product teams in their own repos, mirrored here through a matching plugin sync, and published to build.nvidia.com and the major agent marketplaces. Every skill and every NVIDIA Verified Plugin is signed, scanned, and evaluated before it ships. New skills and plugins are added continuously, so check back for updates. We are building this infrastructure in the open, and contributions are welcome. See the [Roadmap](#roadmap) for what is planned next.
 
 ---
 
 ## Quickstart
 
-Install NVIDIA skills with the default [`skills` CLI](https://github.com/vercel-labs/skills) flow. The NVIDIA Skill Finder skill will search this catalog and help you discover the right skill for your use case.
+Install individual **skills** with the [`skills` CLI](https://github.com/vercel-labs/skills), or install a whole product toolset as an NVIDIA Verified **plugin**:
 
-```bash
-npx skills add nvidia/skills --skill nvidia-skill-finder --yes
-```
+<!-- TODO: run a real install test of every plugin command, and confirm the OpenClaw and Hermes skill paths, before merge. -->
 
-This installs the skill finder, which can then find and install other skills for you. To browse the full catalog instead, run `npx skills add nvidia/skills`. You do not need to clone this repo or copy skill folders by hand.
+| Agent | Skills | Plugins |
+|-------|--------|---------|
+| **Claude Code** | `npx skills add nvidia/skills --agent claude-code` | `/plugin marketplace add NVIDIA/skills`<br>`/plugin install <plugin>@nvidia-official` |
+| **Codex** | `npx skills add nvidia/skills --agent codex` | `codex plugin marketplace add NVIDIA/skills`<br>`codex plugin add <plugin>@nvidia-official` |
+| **Cursor** | `npx skills add nvidia/skills --agent cursor` | [Cursor Marketplace](https://cursor.com/marketplace), or add the `NVIDIA/skills` marketplace |
+| **OpenClaw** | [ClawHub](https://clawhub.ai) | [ClawHub](https://clawhub.ai) |
+| **Hermes** | Hermes Hub | [Hermes plugin marketplace](https://hermes-agent.nousresearch.com/docs/plugins) |
+| **Other agents** (Kiro, Snowflake CoCo, …) | `npx skills add nvidia/skills --agent <agent>` | — |
+
+- **Skills:** the CLI prompts you to choose skills and an install destination; you do not need to clone this repo. Browse the [Skill Catalog](#skill-catalog).
+- **Plugins:** replace `<plugin>` with a name from the **Plugin** column of the [Plugin Catalog](#plugin-catalog). Verified Plugins are also listed in the Anthropic, Codex, and Cursor plugin directories.
+- **Not sure what you need?** Start with the NVIDIA Skill Finder skill, which searches this catalog and installs the right skills for your use case: `npx skills add nvidia/skills --skill nvidia-skill-finder --yes`. As a plugin, install `nvidia-skills`, which also recommends Verified Plugins first.
 
 > **Requires a current `skills` CLI (v1.5.16 or newer).** Installing via `npx skills@latest add nvidia/skills` always uses the latest. On older CLIs (v1.5.15 and earlier), skills may install but not appear in Claude Code — see [Troubleshooting](docs/advanced-install.mdx#troubleshooting).
 
-The skill is available the next time your agent loads skills and encounters a relevant task. For example, ask your agent to "solve a linear programming problem with cuOpt" and the skill guides it through the cuOpt Python API. In Claude Code, run `/reload-skills` to load newly installed skills in your current session.
+A skill is available the next time your agent loads skills and encounters a relevant task. For example, ask your agent to "solve a linear programming problem with cuOpt" and the skill guides it through the cuOpt Python API. In Claude Code, run `/reload-skills` to load newly installed skills in your current session.
 
 ### Install One Skill Without Prompts
 
@@ -120,6 +133,7 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 | **BioNeMo Libraries** | Accelerate cheminformatics, genomic analysis, biomolecular structure prediction, molecular dynamics, and equivariant model development with NVIDIA GPU libraries and tools. | [`bioir-bench-perf-oss`](skills/bioir-bench-perf-oss), [`bioir-make-data-pipeline`](skills/bioir-make-data-pipeline), [`bioir-model-onboard`](skills/bioir-model-onboard), [`bionemo-cuequivariance`](skills/bionemo-cuequivariance), [`bionemo-cuequivariance-jax`](skills/bionemo-cuequivariance-jax), [`bionemo-cuequivariance-torch`](skills/bionemo-cuequivariance-torch), [`bionemo-cupotential-install`](skills/bionemo-cupotential-install), [`bionemo-cupotential-openmm`](skills/bionemo-cupotential-openmm), [`bionemo-cupotential-custom-potentials`](skills/bionemo-cupotential-custom-potentials), [`bionemo-cupotential-validate`](skills/bionemo-cupotential-validate), [`bionemo-cupotential-benchmark`](skills/bionemo-cupotential-benchmark), [`bionemo-nvmolkit-usage`](skills/bionemo-nvmolkit-usage), [`bionemo-parabricks`](skills/bionemo-parabricks), [`bionemo-genomics-workflow-acceleration`](skills/bionemo-genomics-workflow-acceleration) |
 | **BioNeMo NIMs** | Run and combine BioNeMo NIM microservices for biomolecular research and drug discovery through hosted APIs or local deployments. | [`bionemo-drug-discovery-pipeline`](skills/bionemo-drug-discovery-pipeline), [`bionemo-msa-structure-prediction-pipeline`](skills/bionemo-msa-structure-prediction-pipeline), [`bionemo-openfold2-nim`](skills/bionemo-openfold2-nim), [`bionemo-molmim-nim`](skills/bionemo-molmim-nim), [`bionemo-diffdock-nim`](skills/bionemo-diffdock-nim), [`bionemo-genmol-nim`](skills/bionemo-genmol-nim), [`bionemo-evo2-nim`](skills/bionemo-evo2-nim), [`bionemo-rfdiffusion-nim`](skills/bionemo-rfdiffusion-nim), [`bionemo-rfd4-proteina-nim`](skills/bionemo-rfd4-proteina-nim), [`bionemo-openfold3-nim`](skills/bionemo-openfold3-nim), [`bionemo-proteinmpnn-nim`](skills/bionemo-proteinmpnn-nim), [`bionemo-msa-search-nim`](skills/bionemo-msa-search-nim), [`bionemo-boltz2-nim`](skills/bionemo-boltz2-nim) |
 | **BioNeMo Open Models** | Apply BioNeMo open models to molecular property prediction and generative protein design. | [`bionemo-codonfm-setup`](skills/bionemo-codonfm-setup), [`bionemo-codonfm-embed`](skills/bionemo-codonfm-embed), [`bionemo-codonfm-score`](skills/bionemo-codonfm-score), [`bionemo-codonfm-finetune`](skills/bionemo-codonfm-finetune), [`bionemo-complexa-evaluate-pdbs`](skills/bionemo-complexa-evaluate-pdbs), [`bionemo-complexa-sweep`](skills/bionemo-complexa-sweep), [`bionemo-complexa-target`](skills/bionemo-complexa-target), [`bionemo-kermt-add-cmim-pretrain`](skills/bionemo-kermt-add-cmim-pretrain), [`bionemo-kermt-continue-pretrain`](skills/bionemo-kermt-continue-pretrain), [`bionemo-kermt-embed`](skills/bionemo-kermt-embed), [`bionemo-kermt-finetune`](skills/bionemo-kermt-finetune), [`bionemo-kermt-infer`](skills/bionemo-kermt-infer), [`bionemo-kermt-monitor`](skills/bionemo-kermt-monitor), [`bionemo-kermt-pretrain-scratch`](skills/bionemo-kermt-pretrain-scratch), [`bionemo-kermt-setup`](skills/bionemo-kermt-setup) |
+| **CCCL** | Official NVIDIA guidance for CUDA C++ with CCCL (Thrust, CUB, libcu++), including replacing hand-written kernels with CCCL algorithms, porting to CCCL 3.x / CUDA 13, performance, streams, and deterministic results. | [`cccl`](skills/cccl) |
 | **CDF AnomalyGen** | Run Cosmos Data Factory AnomalyGen workflows for fine-tuning, synthetic defect generation, evaluation, refinement, and pseudo-labeling. | [`cdf-anomalygen`](skills/cdf-anomalygen) |
 | **CDF Augmentation** | Author, validate, and run Cosmos Data Factory augmentation pipelines for image and video generation and transformation. | [`cdf-augmentation`](skills/cdf-augmentation) |
 | **CDF Auto-Labeling** | Build and run Cosmos Data Factory auto-labeling pipelines for video enhancement, tracking, captioning, and question generation. | [`cdf-auto-labeling`](skills/cdf-auto-labeling) |
@@ -127,12 +141,14 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 | **CDF Simulation** | Build and validate Cosmos Data Factory Simulation jobs and compiled payloads for PCB-AOI workflows. | [`cdf-simulation`](skills/cdf-simulation) |
 | **CompileIQ** | Compiler autotuning for CUDA C++, Triton, and Helion kernels; set up CompileIQ, apply Booster Packs, pick a search space, write the objective, run and debug the search, and validate the winning configuration. | [`compileiq-author-objective`](skills/compileiq-author-objective), [`compileiq-booster-pack`](skills/compileiq-booster-pack), [`compileiq-bootstrap`](skills/compileiq-bootstrap), [`compileiq-debug`](skills/compileiq-debug), [`compileiq-run-search`](skills/compileiq-run-search), [`compileiq-search-space`](skills/compileiq-search-space), [`compileiq-validate-result`](skills/compileiq-validate-result) |
 | **Cosmos Data Factory Orchestration** | Build, run and monitor Cosmos Data Factory pipelines for image and video generation and transformation. | [`cdf-orchestration-preflight`](skills/cdf-orchestration-preflight), [`cdf-orchestration-setup`](skills/cdf-orchestration-setup), [`cdf-orchestration-write-dag`](skills/cdf-orchestration-write-dag), [`cdf-autonomous-vehicle-dataset-generation`](skills/cdf-autonomous-vehicle-dataset-generation), [`cdf-defect-image-generation`](skills/cdf-defect-image-generation), [`cdf-event-video-generation`](skills/cdf-event-video-generation), [`cdf-image-attribute-augmentation`](skills/cdf-image-attribute-augmentation), [`cdf-video-data-augmentation`](skills/cdf-video-data-augmentation) |
+| **CUDA Python** | Official NVIDIA guidance for CUDA Python (cuda-core, cuda-bindings, cuda-pathfinder), including compiling and launching kernels from Python, porting from PyCUDA, interop with CuPy/PyTorch/Numba, and locating CUDA headers and libraries. | [`cuda-python`](skills/cuda-python) |
 | **CUDA-Q** | Use for CUDA-Q setup, simulation targets, QPU access, and @cudaq.kernel authoring guidance. | [`cudaq-guide`](skills/cudaq-guide), [`cudaq-importing`](skills/cudaq-importing) |
 | **cuDF** | Official NVIDIA-authored guidance for NVIDIA cuDF GPU DataFrames, pandas acceleration, dask-cuDF, ETL, joins, groupby, CSV/Parquet I/O, nullable semantics, and multi-GPU DataFrame workloads. | [`accelerated-computing-cudf`](skills/accelerated-computing-cudf), [`cudf-query-engine-builder`](skills/cudf-query-engine-builder) |
 | **cuDNN Frontend** | Install cuDNN and compile, serialize, and reload C++ execution plans. | [`cudnn-compile-and-serialize`](skills/cudnn-compile-and-serialize), [`cudnn-install`](skills/cudnn-install) |
 | **cuML** | Official NVIDIA-authored guidance for cuML GPU machine learning, scikit-learn acceleration with cuml.accel, API compatibility, multi-GPU process execution, and model export. | [`cuml`](skills/cuml) |
 | **cuOpt** | GPU-accelerated optimization — LP, MILP, QP, and VRP. | [`cuopt-multi-objective-exploration`](skills/cuopt-multi-objective-exploration) |
 | **DALI** | GPU-accelerated data loading and processing with NVIDIA DALI. | [`dali-dynamic-mode`](skills/dali-dynamic-mode) |
+| **DAQIRI** | Guide DAQIRI setup, configuration, troubleshooting, and first benchmarks. | [`daqiri-onboarding`](skills/daqiri-onboarding) |
 | **DeepStream** | Agentic skills for guided DeepStream development. | [`amc-run-rtsp-calibration`](skills/amc-run-rtsp-calibration), [`amc-run-sample-calibration`](skills/amc-run-sample-calibration), [`amc-run-video-calibration`](skills/amc-run-video-calibration), [`amc-setup-calibration-stack`](skills/amc-setup-calibration-stack), [`deepstream-dev`](skills/deepstream-dev), [`deepstream-generate-pipeline`](skills/deepstream-generate-pipeline), [`deepstream-import-vision-model`](skills/deepstream-import-vision-model), [`deepstream-profile-pipeline`](skills/deepstream-profile-pipeline), [`deepstream-run-mv3dt`](skills/deepstream-run-mv3dt), [`deepstream-sop`](skills/deepstream-sop), [`rtvi-cv-customize-model`](skills/rtvi-cv-customize-model), [`rtvi-cv-scaffold-vss-service`](skills/rtvi-cv-scaffold-vss-service), [`rtvi-vlm-customize-model`](skills/rtvi-vlm-customize-model) |
 | **DGX Spark Skills** | Agent guidance for DGX Spark and related GB10 system identification, troubleshooting, updates, playbooks, NVIDIA Sync, diagnostics, and support. | [`dgx-spark-skills`](skills/dgx-spark-skills) |
 | **Digital Health** | Agent skills for (1) the clinical ASR evaluation flywheel — term curation, synthetic clinical-speech benchmark generation, KER (Keyword Error Rate) scoring, and fine-tune guidance; (2) the ambient healthcare agent creation with Nemotron Voice Agent. | [`digital-health-clinical-asr-setup`](skills/digital-health-clinical-asr-setup), [`digital-health-clinical-asr-build`](skills/digital-health-clinical-asr-build), [`digital-health-clinical-asr-eval`](skills/digital-health-clinical-asr-eval), [`digital-health-clinical-asr-finetune`](skills/digital-health-clinical-asr-finetune), [`ambient-healthcare-agent-with-nemotron-voice-agent`](skills/ambient-healthcare-agent-with-nemotron-voice-agent) |
@@ -157,6 +173,7 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 | **NeMo AutoModel** | NeMo AutoModel - PyTorch-native distributed training for LLMs/VLMs with Hugging Face support, recipes, launchers, and validation workflows. | [`nemo-automodel-distributed-training`](skills/nemo-automodel-distributed-training), [`nemo-automodel-launcher-config`](skills/nemo-automodel-launcher-config), [`nemo-automodel-model-onboarding`](skills/nemo-automodel-model-onboarding), [`nemo-automodel-recipe-development`](skills/nemo-automodel-recipe-development) |
 | **NeMo Data Designer** | Build declarative synthetic dataset generation pipelines with NeMo Data Designer. | [`data-designer`](skills/data-designer) |
 | **NeMo Fabric** | Portable skills for integrating applications with NeMo Fabric through its public SDK and building compatible third-party adapters. | [`nemo-fabric-integrate`](skills/nemo-fabric-integrate), [`nemo-fabric-build-adapter`](skills/nemo-fabric-build-adapter) |
+| **NeMo Gym** | Build RL training environments, evaluate models and agents in them, and profile per-task rewards to choose RL training tasks. | [`nemo-gym-reward-profiling`](skills/nemo-gym-reward-profiling), [`nemo-gym-run-and-babysit-eval`](skills/nemo-gym-run-and-babysit-eval), [`nemo-gym-analyzing-results`](skills/nemo-gym-analyzing-results) |
 | **NeMo MBridge** | NeMo MBridge - PyTorch-native bridge between Hugging Face and Megatron-Core for checkpoint conversion, training recipes, and NVIDIA GPU performance workflows. | [`nemo-mbridge-mlm-bridge-training`](skills/nemo-mbridge-mlm-bridge-training), [`nemo-mbridge-multi-node-slurm`](skills/nemo-mbridge-multi-node-slurm), [`nemo-mbridge-perf-activation-recompute`](skills/nemo-mbridge-perf-activation-recompute), [`nemo-mbridge-perf-cpu-offloading`](skills/nemo-mbridge-perf-cpu-offloading), [`nemo-mbridge-perf-cuda-graphs`](skills/nemo-mbridge-perf-cuda-graphs), [`nemo-mbridge-perf-expert-parallel-overlap`](skills/nemo-mbridge-perf-expert-parallel-overlap), [`nemo-mbridge-perf-hierarchical-context-parallel`](skills/nemo-mbridge-perf-hierarchical-context-parallel), [`nemo-mbridge-perf-megatron-fsdp`](skills/nemo-mbridge-perf-megatron-fsdp), [`nemo-mbridge-perf-memory-tuning`](skills/nemo-mbridge-perf-memory-tuning), [`nemo-mbridge-perf-moe-comm-overlap`](skills/nemo-mbridge-perf-moe-comm-overlap), [`nemo-mbridge-perf-moe-dispatcher-selection`](skills/nemo-mbridge-perf-moe-dispatcher-selection), [`nemo-mbridge-perf-moe-hardware-configs`](skills/nemo-mbridge-perf-moe-hardware-configs), [`nemo-mbridge-perf-moe-long-context`](skills/nemo-mbridge-perf-moe-long-context), [`nemo-mbridge-perf-moe-optimization-workflow`](skills/nemo-mbridge-perf-moe-optimization-workflow), [`nemo-mbridge-perf-moe-vlm-training`](skills/nemo-mbridge-perf-moe-vlm-training), [`nemo-mbridge-perf-parallelism-strategies`](skills/nemo-mbridge-perf-parallelism-strategies), [`nemo-mbridge-perf-sequence-packing`](skills/nemo-mbridge-perf-sequence-packing), [`nemo-mbridge-perf-tp-dp-comm-overlap`](skills/nemo-mbridge-perf-tp-dp-comm-overlap), [`nemo-mbridge-recipe-recommender`](skills/nemo-mbridge-recipe-recommender), [`nemo-mbridge-resiliency`](skills/nemo-mbridge-resiliency) |
 | **NeMo Relay** | Skills to help get started and use NeMo Relay - a runtime for instrumenting and controlling AI agents across harnesses, applications, and frameworks. | [`nemo-relay-install`](skills/nemo-relay-install), [`nemo-relay-get-started`](skills/nemo-relay-get-started), [`nemo-relay-instrument-calls`](skills/nemo-relay-instrument-calls), [`nemo-relay-instrument-context-isolation`](skills/nemo-relay-instrument-context-isolation), [`nemo-relay-instrument-typed-wrappers`](skills/nemo-relay-instrument-typed-wrappers), [`nemo-relay-plugin-adaptive-tuning`](skills/nemo-relay-plugin-adaptive-tuning), [`nemo-relay-plugin-build`](skills/nemo-relay-plugin-build), [`nemo-relay-plugin-observability`](skills/nemo-relay-plugin-observability), [`nemo-relay-migrate-from-flow`](skills/nemo-relay-migrate-from-flow), [`nemo-relay-debug-runtime-integration`](skills/nemo-relay-debug-runtime-integration) |
 | **NeMo Retriever** | NeMo Retriever - deploy NeMo Retriever Library locally, extract information from corpus of data, and answer questions against the corpus. | [`nemo-retriever`](skills/nemo-retriever), [`nemo-retriever-mcp`](skills/nemo-retriever-mcp) |
@@ -181,6 +198,7 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 | **RTX Remix** | Mod and remaster classic games with RTX Remix: manage projects and USD layers, and replace textures and models through the Toolkit MCP server. | [`rtx-remix-modding`](skills/rtx-remix-modding) |
 | **Run:ai** | Diagnose failed Run:ai workloads, summarize workload and cluster health, audit GPU quota fairness, and find idle GPU capacity through the Run:ai MCP server. | [`runai-diagnose-failed-workload`](skills/runai-diagnose-failed-workload), [`runai-get-workload-health-summary`](skills/runai-get-workload-health-summary), [`runai-get-utilization-overview`](skills/runai-get-utilization-overview), [`runai-audit-assigned-quota`](skills/runai-audit-assigned-quota), [`runai-get-cluster-health-summary`](skills/runai-get-cluster-health-summary) |
 | **Skill Card Generator** | Reads an agent skill's source files and produces a skill card plus a review table. Use when a skill directory exists and a governance card needs to be generated or updated. | [`skill-card-generator`](skills/skill-card-generator) |
+| **Structured Data Models** | Run and evaluate pretrained tabular foundation models for classification and regression in PyTorch. | [`sdm-tabular-prediction`](skills/sdm-tabular-prediction) |
 | **TAO Toolkit** | NVIDIA TAO Toolkit - fine-tune and optimize 100+ pretrained vision AI models with your own data using low-code microservices, then export production-ready models for edge or cloud deployment. | [`tao-analyze-changenet-rca`](skills/tao-analyze-changenet-rca), [`tao-finetune-huggingface-model`](skills/tao-finetune-huggingface-model), [`tao-port-huggingface-model`](skills/tao-port-huggingface-model), [`tao-run-automl`](skills/tao-run-automl), [`tao-run-automl-deft-pipeline`](skills/tao-run-automl-deft-pipeline), [`tao-run-deft-aoi`](skills/tao-run-deft-aoi), [`tao-run-deft-aoi-cosmos3`](skills/tao-run-deft-aoi-cosmos3), [`tao-run-deft-cr-its-mining`](skills/tao-run-deft-cr-its-mining), [`tao-run-deft-object-detection`](skills/tao-run-deft-object-detection), [`tao-run-deft-od-aoi`](skills/tao-run-deft-od-aoi), [`tao-run-deft-pas`](skills/tao-run-deft-pas), [`tao-run-dinov3-ssl-deft`](skills/tao-run-dinov3-ssl-deft), [`tao-run-inference-service`](skills/tao-run-inference-service), [`tao-train-single-step`](skills/tao-train-single-step), [`tao-validate-recipe-transfer`](skills/tao-validate-recipe-transfer), [`paidf-cosmos-predict`](skills/paidf-cosmos-predict), [`tao-analyze-detection-kpi`](skills/tao-analyze-detection-kpi), [`tao-analyze-gaps-od-map`](skills/tao-analyze-gaps-od-map), [`tao-analyze-gaps-visual-changenet`](skills/tao-analyze-gaps-visual-changenet), [`tao-analyze-gaps-vlm-bcq`](skills/tao-analyze-gaps-vlm-bcq), [`tao-convert-dataset-format`](skills/tao-convert-dataset-format), [`tao-finetune-anomalygennext`](skills/tao-finetune-anomalygennext), [`tao-generate-anomalies`](skills/tao-generate-anomalies), [`tao-generate-image-embeddings`](skills/tao-generate-image-embeddings), [`tao-generate-image-grounding`](skills/tao-generate-image-grounding), [`tao-generate-od-defects`](skills/tao-generate-od-defects), [`tao-generate-referring-expressions`](skills/tao-generate-referring-expressions), [`tao-generate-video-reasoning-annotations`](skills/tao-generate-video-reasoning-annotations), [`tao-mine-aoi-images`](skills/tao-mine-aoi-images), [`tao-mine-nearest-neighbors`](skills/tao-mine-nearest-neighbors), [`tao-mine-od-images`](skills/tao-mine-od-images), [`tao-prepare-anomalygennext-inputs`](skills/tao-prepare-anomalygennext-inputs), [`tao-route-visual-changenet-samples`](skills/tao-route-visual-changenet-samples), [`tao-validate-dataset-format`](skills/tao-validate-dataset-format), [`tao-finetune-clip`](skills/tao-finetune-clip), [`tao-finetune-cosmos-embed`](skills/tao-finetune-cosmos-embed), [`tao-finetune-cosmos-reason`](skills/tao-finetune-cosmos-reason), [`tao-finetune-kumo-anomaly`](skills/tao-finetune-kumo-anomaly), [`tao-finetune-kumo-forecast`](skills/tao-finetune-kumo-forecast), [`tao-finetune-video-clip`](skills/tao-finetune-video-clip), [`tao-train-action-recognition`](skills/tao-train-action-recognition), [`tao-train-bevfusion`](skills/tao-train-bevfusion), [`tao-train-centerpose`](skills/tao-train-centerpose), [`tao-train-codetr`](skills/tao-train-codetr), [`tao-train-deformable-detr`](skills/tao-train-deformable-detr), [`tao-train-depth-anything-v2`](skills/tao-train-depth-anything-v2), [`tao-train-dino`](skills/tao-train-dino), [`tao-train-dinov3`](skills/tao-train-dinov3), [`tao-train-fast-foundation-stereo`](skills/tao-train-fast-foundation-stereo), [`tao-train-foundation-stereo`](skills/tao-train-foundation-stereo), [`tao-train-grounding-dino`](skills/tao-train-grounding-dino), [`tao-train-image-classification`](skills/tao-train-image-classification), [`tao-train-mask-auto-encoder`](skills/tao-train-mask-auto-encoder), [`tao-train-mask-auto-label`](skills/tao-train-mask-auto-label), [`tao-train-mask-grounding-dino`](skills/tao-train-mask-grounding-dino), [`tao-train-mask2former`](skills/tao-train-mask2former), [`tao-train-metric-learning-recognition`](skills/tao-train-metric-learning-recognition), [`tao-train-nvdinov2`](skills/tao-train-nvdinov2), [`tao-train-nvpanoptix3d`](skills/tao-train-nvpanoptix3d), [`tao-train-ocdnet`](skills/tao-train-ocdnet), [`tao-train-ocrnet`](skills/tao-train-ocrnet), [`tao-train-oneformer`](skills/tao-train-oneformer), [`tao-train-optical-inspection`](skills/tao-train-optical-inspection), [`tao-train-pointpillars`](skills/tao-train-pointpillars), [`tao-train-pose-classification`](skills/tao-train-pose-classification), [`tao-train-reid`](skills/tao-train-reid), [`tao-train-rtdetr`](skills/tao-train-rtdetr), [`tao-train-segformer`](skills/tao-train-segformer), [`tao-train-sparse4d`](skills/tao-train-sparse4d), [`tao-train-visual-changenet`](skills/tao-train-visual-changenet), [`tao-data-io`](skills/tao-data-io), [`tao-run-on-brev`](skills/tao-run-on-brev), [`tao-run-on-docker`](skills/tao-run-on-docker), [`tao-run-on-kubernetes`](skills/tao-run-on-kubernetes), [`tao-run-on-slurm`](skills/tao-run-on-slurm), [`tao-run-on-virtualenv`](skills/tao-run-on-virtualenv), [`tao-setup-nvidia-gpu-host`](skills/tao-setup-nvidia-gpu-host), [`tao-artifacts`](skills/tao-artifacts), [`tao-launch-workflow`](skills/tao-launch-workflow), [`tao-list-capabilities`](skills/tao-list-capabilities), [`tao-setup`](skills/tao-setup), [`tao-token-efficient-execution`](skills/tao-token-efficient-execution) |
 | **TensorRT-LLM** | TensorRT LLM provides users with an easy-to-use Python API to define Large Language Models (LLMs) and supports state-of-the-art optimizations to perform inference efficiently on NVIDIA GPUs. TensorRT LLM also contains components to create Python and C++ runtimes that orchestrate the inference execution in a performant way. | [`trtllm-serve-config-guide`](skills/trtllm-serve-config-guide) |
 | **TileGym** | Tile-based GPU programming — adding new kernels, cross-framework conversion, and performance optimization. | [`tilegym-adding-cutile-kernel`](skills/tilegym-adding-cutile-kernel), [`tilegym-converting-cutile-to-julia`](skills/tilegym-converting-cutile-to-julia), [`tilegym-converting-cutile-to-triton`](skills/tilegym-converting-cutile-to-triton), [`tilegym-cutile-autotuning`](skills/tilegym-cutile-autotuning), [`tilegym-cutile-python`](skills/tilegym-cutile-python), [`tilegym-improve-cutile-kernel-perf`](skills/tilegym-improve-cutile-kernel-perf), [`tilegym-monkey-patch-kernels-to-transformers`](skills/tilegym-monkey-patch-kernels-to-transformers) |
@@ -191,16 +209,34 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 
 ---
 
+## Plugin Catalog
+
+Plugins bundle a product's skills, plus a local MCP server where the product needs one, into a single install. Each plugin is maintained in its product team's repo, signed there, and mirrored here, and each one meets the bar described in [Verifying Plugins](#verifying-plugins). Install any of them with the commands in the [Quickstart](#quickstart); the **Plugin** column is the install name. This table is regenerated automatically whenever a plugin is added or updated.
+
+The `nvidia-skills` discovery plugin is the one exception: it is built in this repo from [`plugins.d/`](plugins.d/) rather than mirrored. See [`plugins/README.md`](plugins/README.md).
+
+<!-- plugins-table-start -->
+| Plugin | Description | Version | Skills | Source |
+|--------|-------------|---------|--------|--------|
+| `nvidia-doca-plugin` | NVIDIA DOCA skills for developing, deploying, operating, and debugging applications on BlueField DPUs and ConnectX networking devices. | `1.0.0` | 53 | [DOCA](https://github.com/NVIDIA-DOCA/doca-skills) |
+| `nvidia-nvflare` | NVIDIA FLARE skills for federated learning conversion, job diagnosis, federated statistics, and Auto-FL optimization and reporting. | `1.0.0` | 9 | [NVIDIA FLARE](https://github.com/NVIDIA/NVFlare) |
+| `nvidia-skills` | Find the right NVIDIA skill for GPU acceleration, CUDA, AI agents, data loading, training, inference, robotics, Physical AI, Omniverse, simulation, and other NVIDIA-powered workflows. | `1.5.0` | 1 | This repo (built from `plugins.d/`) |
+| `nvidia-tao-toolkit` | NVIDIA TAO skill bank with generated capability discovery for model training, data processing, application workflows, AutoML, and platform execution. | `0.1.19` | 82 | [TAO Toolkit](https://github.com/NVIDIA-TAO/tao-skill-bank) |
+<!-- plugins-table-end -->
+
+---
+
 ## Getting Help & Contributing
 
 **Where to file an issue depends on what's broken:**
 
 - **Skill content issues** (a specific skill has a bug, missing functionality, or incorrect content) — file in the **source repo** for that product, using the per-product table below.
-- **Catalog issues** (catalog README errors, sync workflow problems, distribution channels, signing/verification flow, docs in this repo) — file [here](../../issues/new/choose) using the catalog issue templates: **Bug Report**, **Feature Request**, or **Documentation Request or Correction**.
+- **Plugin issues** (a Verified Plugin misbehaves, is missing a skill, or its bundled MCP server fails) — file with the **owning product team**. The plugin's **Source** link in the [Plugin Catalog](#plugin-catalog) points to that team's repo, and its row in the table below has the team's issue and security links.
+- **Catalog issues** (catalog README errors, sync workflow problems, plugin packaging and marketplace listings, distribution channels, signing/verification flow, docs in this repo) — file [here](../../issues/new/choose) using the catalog issue templates: **Bug Report**, **Feature Request**, or **Documentation Request or Correction**.
 - **Questions or general discussion** — use [Discussions](../../discussions). The issue tracker is reserved for bug reports, feature proposals with a design, and documentation issues.
 - **Security vulnerabilities** — follow the disclosure process in [SECURITY.md](SECURITY.md); do not open a public issue.
 
-Per-product source repo links:
+Per-product source repo links for skills:
 
 <!-- help-table-start -->
 | Product | Issues | Discussions | Contributing | Security |
@@ -210,6 +246,7 @@ Per-product source repo links:
 | **BioNeMo Libraries** | [Issues](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit/issues) | — | [Contributing](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit/blob/main/SECURITY.md) |
 | **BioNeMo NIMs** | [Issues](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit/issues) | — | [Contributing](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit/blob/main/SECURITY.md) |
 | **BioNeMo Open Models** | [Issues](https://github.com/NVIDIA-BioNeMo/CodonFM/issues) | — | [Contributing](https://github.com/NVIDIA-BioNeMo/CodonFM/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-BioNeMo/CodonFM/blob/main/SECURITY.md) |
+| **CCCL** | [Issues](https://github.com/NVIDIA/cccl/issues) | [Discussions](https://github.com/NVIDIA/cccl/discussions) | [Contributing](https://github.com/NVIDIA/cccl/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cccl/blob/main/SECURITY.md) |
 | **CDF AnomalyGen** | [Issues](https://github.com/NVIDIA/cdf-anomalygen/issues) | — | [Contributing](https://github.com/NVIDIA/cdf-anomalygen/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cdf-anomalygen/blob/main/SECURITY.md) |
 | **CDF Augmentation** | [Issues](https://github.com/NVIDIA/cdf-augmentation/issues) | — | [Contributing](https://github.com/NVIDIA/cdf-augmentation/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cdf-augmentation/blob/main/SECURITY.md) |
 | **CDF Auto-Labeling** | [Issues](https://github.com/NVIDIA/cdf-auto-labeling/issues) | — | [Contributing](https://github.com/NVIDIA/cdf-auto-labeling/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cdf-auto-labeling/blob/main/SECURITY.md) |
@@ -217,12 +254,14 @@ Per-product source repo links:
 | **CDF Simulation** | [Issues](https://github.com/NVIDIA/cdf-simulation/issues) | — | [Contributing](https://github.com/NVIDIA/cdf-simulation/blob/main/CONTRIBUTING.md) | — |
 | **CompileIQ** | [Issues](https://github.com/NVIDIA/CompileIQ/issues) | — | [Contributing](https://github.com/NVIDIA/CompileIQ/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/CompileIQ/blob/main/SECURITY.md) |
 | **Cosmos Data Factory Orchestration** | [Issues](https://github.com/NVIDIA/cdf-orchestration/issues) | — | [Contributing](https://github.com/NVIDIA/cdf-orchestration/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cdf-orchestration/blob/main/SECURITY.md) |
+| **CUDA Python** | [Issues](https://github.com/NVIDIA/cuda-python/issues) | [Discussions](https://github.com/NVIDIA/cuda-python/discussions) | [Contributing](https://github.com/NVIDIA/cuda-python/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cuda-python/blob/main/SECURITY.md) |
 | **CUDA-Q** | [Issues](https://github.com/NVIDIA/cuda-quantum/issues) | [Discussions](https://github.com/NVIDIA/cuda-quantum/discussions) | [Contributing](https://github.com/NVIDIA/cuda-quantum/blob/main/Contributing.md) | [Security](https://github.com/NVIDIA/cuda-quantum/blob/main/SECURITY.md) |
 | **cuDF** | [Issues](https://github.com/rapidsai/cudf/issues) | [Discussions](https://github.com/rapidsai/cudf/discussions) | [Contributing](https://github.com/rapidsai/cudf/blob/main/CONTRIBUTING.md) | [Security](https://github.com/rapidsai/cudf/blob/main/SECURITY.md) |
 | **cuDNN Frontend** | [Issues](https://github.com/NVIDIA/cudnn-frontend/issues) | [Discussions](https://github.com/NVIDIA/cudnn-frontend/discussions) | [Contributing](https://github.com/NVIDIA/cudnn-frontend/blob/develop/CONTRIBUTING.md) | — |
 | **cuML** | [Issues](https://github.com/NVIDIA/cuml/issues) | — | [Contributing](https://github.com/NVIDIA/cuml/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cuml/blob/main/SECURITY.md) |
 | **cuOpt** | [Issues](https://github.com/NVIDIA/cuopt/issues) | [Discussions](https://github.com/NVIDIA/cuopt/discussions) | [Contributing](https://github.com/NVIDIA/cuopt/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/cuopt/blob/main/SECURITY.md) |
 | **DALI** | [Issues](https://github.com/NVIDIA/DALI/issues) | — | [Contributing](https://github.com/NVIDIA/DALI/blob/main/CONTRIBUTING.md) | — |
+| **DAQIRI** | [Issues](https://github.com/NVIDIA/daqiri/issues) | [Discussions](https://github.com/NVIDIA/daqiri/discussions) | [Contributing](https://github.com/NVIDIA/daqiri/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/daqiri/blob/main/SECURITY.md) |
 | **DeepStream** | [Issues](https://github.com/NVIDIA/DeepStream/issues) | — | [Contributing](https://github.com/NVIDIA/DeepStream/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/DeepStream/blob/main/SECURITY.md) |
 | **DGX Spark Skills** | [Issues](https://github.com/NVIDIA/dgx-spark-skills/issues) | — | [Contributing](https://github.com/NVIDIA/dgx-spark-skills/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/dgx-spark-skills/blob/main/SECURITY.md) |
 | **Digital Health** | [Issues](https://github.com/NVIDIA/digital-health-examples/issues) | — | [Contributing](https://github.com/NVIDIA/digital-health-examples/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/digital-health-examples/blob/main/SECURITY.md) |
@@ -247,6 +286,7 @@ Per-product source repo links:
 | **NeMo AutoModel** | [Issues](https://github.com/NVIDIA-NeMo/Automodel/issues) | [Discussions](https://github.com/NVIDIA-NeMo/Automodel/discussions) | [Contributing](https://github.com/NVIDIA-NeMo/Automodel/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-NeMo/Automodel/blob/main/SECURITY.md) |
 | **NeMo Data Designer** | [Issues](https://github.com/NVIDIA-NeMo/DataDesigner/issues) | [Discussions](https://github.com/NVIDIA-NeMo/DataDesigner/discussions) | [Contributing](https://github.com/NVIDIA-NeMo/DataDesigner/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-NeMo/DataDesigner/blob/main/SECURITY.md) |
 | **NeMo Fabric** | [Issues](https://github.com/NVIDIA/NeMo-Fabric/issues) | — | [Contributing](https://github.com/NVIDIA/NeMo-Fabric/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/NeMo-Fabric/blob/main/SECURITY.md) |
+| **NeMo Gym** | [Issues](https://github.com/NVIDIA-NeMo/Gym/issues) | — | [Contributing](https://github.com/NVIDIA-NeMo/Gym/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-NeMo/Gym/blob/main/SECURITY.md) |
 | **NeMo MBridge** | [Issues](https://github.com/NVIDIA-NeMo/Megatron-Bridge/issues) | [Discussions](https://github.com/NVIDIA-NeMo/Megatron-Bridge/discussions) | [Contributing](https://github.com/NVIDIA-NeMo/Megatron-Bridge/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-NeMo/Megatron-Bridge/blob/main/SECURITY.md) |
 | **NeMo Relay** | [Issues](https://github.com/NVIDIA/NeMo-Relay/issues) | [Discussions](https://github.com/NVIDIA/NeMo-Relay/discussions) | [Contributing](https://github.com/NVIDIA/NeMo-Relay/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/NeMo-Relay/blob/main/SECURITY.md) |
 | **NeMo Retriever** | [Issues](https://github.com/NVIDIA/NeMo-Retriever/issues) | [Discussions](https://github.com/NVIDIA/NeMo-Retriever/discussions) | [Contributing](https://github.com/NVIDIA/NeMo-Retriever/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/NeMo-Retriever/blob/main/SECURITY.md) |
@@ -271,6 +311,7 @@ Per-product source repo links:
 | **RTX Remix** | [Issues](https://github.com/NVIDIAGameWorks/toolkit-remix/issues) | — | [Contributing](https://github.com/NVIDIAGameWorks/toolkit-remix/blob/main/docs/contributing/contributing-overview.md) | [Security](https://github.com/NVIDIAGameWorks/toolkit-remix/blob/main/SECURITY.md) |
 | **Run:ai** | [Issues](https://github.com/dsx-ai-factory/run-ai/issues) | [Discussions](https://github.com/dsx-ai-factory/run-ai/discussions) | [Contributing](https://github.com/dsx-ai-factory/run-ai/blob/main/CONTRIBUTING.md) | [Security](https://github.com/dsx-ai-factory/run-ai/blob/main/SECURITY.md) |
 | **Skill Card Generator** | [Issues](https://github.com/NVIDIA/Trustworthy-AI/issues) | — | [Contributing](https://github.com/NVIDIA/Trustworthy-AI/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/Trustworthy-AI/blob/main/SECURITY.md) |
+| **Structured Data Models** | [Issues](https://github.com/NVIDIA/structured-data-models/issues) | — | [Contributing](https://github.com/NVIDIA/structured-data-models/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/structured-data-models/blob/main/SECURITY.md) |
 | **TAO Toolkit** | [Issues](https://github.com/NVIDIA-TAO/tao-skill-bank/issues) | [Discussions](https://github.com/NVIDIA-TAO/tao-skill-bank/discussions) | [Contributing](https://github.com/NVIDIA-TAO/tao-skill-bank/blob/release/latest/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA-TAO/tao-skill-bank/blob/release/latest/SECURITY.md) |
 | **TensorRT-LLM** | [Issues](https://github.com/NVIDIA/TensorRT-LLM/issues) | [Discussions](https://github.com/NVIDIA/TensorRT-LLM/discussions) | [Contributing](https://github.com/NVIDIA/TensorRT-LLM/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/TensorRT-LLM/blob/main/SECURITY.md) |
 | **TileGym** | [Issues](https://github.com/NVIDIA/TileGym/issues) | — | [Contributing](https://github.com/NVIDIA/TileGym/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/TileGym/blob/main/SECURITY.md) |
@@ -279,7 +320,7 @@ Per-product source repo links:
 | **Warp** | [Issues](https://github.com/NVIDIA/warp/issues) | [Discussions](https://github.com/NVIDIA/warp/discussions) | [Contributing](https://github.com/NVIDIA/warp/blob/main/CONTRIBUTING.md) | [Security](https://github.com/NVIDIA/warp/blob/main/SECURITY.md) |
 <!-- help-table-end -->
 
-For issues with **this catalog repo itself** (README, structure, listing a new product): [open an issue here](../../issues).
+For issues with **this catalog repo itself** (README, structure, listing a new product or plugin): [open an issue here](../../issues).
 
 ---
 
@@ -296,7 +337,7 @@ Every published skill ships with a detached OMS signature (`skill.oms.sig`). The
 Verify a skill against the NVIDIA trust anchor [`nv-agent-root-cert.pem`](nv-agent-root-cert.pem):
 
 ```bash
-pip install model-signing
+pip install model-signing pyopenssl certifi
 model_signing verify certificate SKILL_DIR \
   --signature SKILL_DIR/skill.oms.sig \
   --certificate_chain nv-agent-root-cert.pem \
@@ -306,6 +347,42 @@ model_signing verify certificate SKILL_DIR \
 A successful verification confirms that the skill contents have not been modified since signing by NVIDIA.
 
 See [Verify Signed Agent Skills](docs/signing-agent-skills.mdx) for signature layout, the trust pipeline, and policy options.
+
+---
+
+## Verifying Plugins
+
+NVIDIA Verified Plugins carry the catalog's trust guarantees at the bundle level:
+
+| Guarantee | What it means |
+|-----------|---------------|
+| **Signed** | A detached NVIDIA signature covers the plugin's contents, including its bundled skills. |
+| **Verified** | NVSkills CI checks the plugin's files and evaluation results before signing it, and the catalog sync drops any plugin whose signature does not match its files. |
+| **Evaluated** | Each plugin publishes its evaluation results in a signed `BENCHMARK.md`, generated from its eval data. |
+| **Plugin Card** | A machine-readable card covers identity, provenance, contents, evaluation results, and behavioral boundaries. |
+| **Owned** | Each plugin is maintained in its NVIDIA product team's repo, and issues route there. |
+
+Every Verified Plugin under `plugins/<plugin>/` ships with:
+
+- Per-agent manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) and a portable `plugin.json`
+- `skills/` — the bundled skills, covered by `plugin.oms.sig`
+- `plugin-card.md` — plugin identity and governance card
+- `plugin.oms.sig` — detached signature over the whole plugin bundle
+- `BENCHMARK.md` — evaluation results, generated by NVSkills CI from the eval data (`evals.json`) and covered by `plugin.oms.sig`
+
+Verify a plugin against the same NVIDIA trust anchor:
+
+```bash
+pip install model-signing pyopenssl certifi
+model_signing verify certificate plugins/<plugin> \
+  --signature plugins/<plugin>/plugin.oms.sig \
+  --certificate_chain nv-agent-root-cert.pem \
+  --ignore_unsigned_files
+```
+
+A successful verification confirms that no file in the plugin, including its bundled skills and any local MCP server, has been modified since NVIDIA signed it. A bundled skill that carries its own `skill.oms.sig` can also be verified on its own, as described in [Verifying Skills](#verifying-skills).
+
+**What "Verified" requires.** A plugin earns the Verified mark when NVSkills CI has signed it, its evaluation results are published in a signed `BENCHMARK.md`, and its Plugin Card is complete. A bundled MCP server must run locally (stdio); remote MCP servers are not supported yet. The plugin sync mirrors a plugin only when its signature matches its files, and every sync is reviewed before it merges.
 
 ---
 
@@ -319,6 +396,7 @@ See [Verify Signed Agent Skills](docs/signing-agent-skills.mdx) for signature la
 - ✅ Skill Card with machine-readable metadata for identity, provenance, quality, and behavioral boundaries
 - ✅ Sync-time compliance gates — signature drift detection and missing-artifact enforcement
 - ✅ Syndication to external marketplaces — Skills.sh, Codex plugin, Claude Code plugin, ClawHub, Hermes Hub
+- ✅ NVIDIA Verified Plugins — signed, evaluated, product-owned plugin bundles with Plugin Cards for Claude Code, Codex, Cursor, OpenClaw, and Hermes
 - 🔲 Syndication to additional MCP hubs and partner channels
 
 ---
@@ -327,55 +405,62 @@ See [Verify Signed Agent Skills](docs/signing-agent-skills.mdx) for signature la
 
 ```
 NVIDIA/skills/
-├── skills/                      # NVIDIA-verified skills (count grows continuously),
-│   │                              synced from upstream product repos
+├── skills/                      # NVIDIA-verified skills, synced daily from product repos
 │   ├── README.md                 # Browser-facing install guidance
-│   ├── <product-prefix>-*/       # Flat layout — one dir per skill, product-prefixed
-│   │                               # e.g. cuopt-*, cupynumeric-*,
-│   │                               # dali-*, deepstream-*, dicom-*, digital-health-*,
-│   │                               # dynamo-*, earth2studio-*, holoscan-*, hsb-*,
-│   │                               # jetson-*, launch-nemo-rl, mcore-*,
-│   │                               # nemo-automodel-*, nemo-data-designer-plugin,
-│   │                               # nemo-evaluator-plugin, nemo-mbridge-* (20 skills),
-│   │                               # nemo-retriever, nemo-rl-* (4 skills),
-│   │                               # nemoclaw-user-guide, nemotron-*, nemotron-speech,
-│   │                               # nv-* (medical AI), physicsnemo-*, rag-*,
-│   │                               # skill-card-generator, tao-*, tilegym-*,
-│   │                               # vss-* (15 skills), accelerated-computing-cudf,
-│   │                               # cudaq-guide, portfolio-optimization
+│   ├── <product-prefix>-*/       # Flat layout: one dir per skill, product-prefixed
+│   │                             # (e.g. tao-*, doca-*, bionemo-*, nvflare-*, cuopt-*)
 │   ├── omniverse-*/              # Physical AI — manually staged (see manual-components.yml)
 │   └── physical-ai-*/            # Physical AI — manually staged
-├── components.d/                # Product registry — one file per component, teams onboard here
+├── components.d/                # Skill registry: one YAML per product; teams onboard here
 │   ├── README.md                 # Schema and onboarding instructions
-│   └── <product>.yml             # one file per registered product
-├── plugins/                     # Packaged plugin distributions
-│   └── nvidia-skills/            # Curated NVIDIA skills bundle (Claude Code, Codex)
-├── plugins.d/                   # Plugin build registry — config for `build-plugins.py`
+│   └── <product>.yml
+├── plugins/                     # Plugin bundles: mirrored from product repos, or built from plugins.d/ (do not edit)
 │   ├── README.md
-│   ├── _defaults.yml
-│   └── nvidia-skills.yml
-├── .claude-plugin/              # Claude Code marketplace metadata
+│   ├── nvidia-skills/            # Discovery plugin, built from plugins.d/: finds skills, recommends Verified Plugins
+│   └── <plugin>/                 # One folder per Verified Plugin, mirrored from its product repo
+│       ├── .claude-plugin/        # Claude Code manifest
+│       ├── .codex-plugin/         # Codex manifest
+│       ├── .cursor-plugin/        # Cursor manifest
+│       ├── plugin.json            # Portable Agent Plugins manifest (Hermes and others)
+│       ├── skills/                # Bundled skills, signed in the product repo
+│       ├── plugin-card.md         # Plugin identity and governance card
+│       ├── plugin.oms.sig         # Detached signature over the whole bundle
+│       ├── BENCHMARK.md           # Signed evaluation results, generated by NVSkills CI
+│       └── assets/                # Logo and marketplace images
+├── plugins.d/                   # Catalog-built plugins (nvidia-skills), read by build-plugins.py
+│   ├── README.md                 # Authoring workflow
+│   ├── _defaults.yml             # Shared defaults for every plugin
+│   └── <plugin>.yml
+├── .claude-plugin/              # Claude Code marketplace (lists every plugin)
 │   └── marketplace.json
-├── .agents/plugins/             # Agent marketplace metadata (other clients)
+├── .agents/plugins/             # Codex marketplace (lists every plugin)
+│   └── marketplace.json
+├── .cursor-plugin/              # Cursor marketplace (lists every plugin)
 │   └── marketplace.json
 ├── docs/                        # Long-form documentation (published via Fern)
 │   ├── README.md                 # How to build the docs locally
 │   ├── index.mdx
 │   ├── advanced-install.mdx
 │   ├── agent-skill-trust-pipeline.mdx
-│   ├── release-checklist.mdx
+│   ├── evaluating-agent-skills.mdx
 │   ├── scanning-agent-skills.mdx
 │   ├── signing-agent-skills.mdx
-│   └── skill-cards.mdx
+│   ├── skill-cards.mdx
+│   └── release-checklist.mdx
 ├── fern/                        # Fern docs site configuration
 ├── .github/
-│   ├── workflows/                # Sync pipeline, plugin validation, DCO check, author verify
-│   └── scripts/                  # regenerate-readme.sh, build-plugins.py,
-│                                 # manual-components.yml (temp Physical AI catalog
-│                                 # exception, removed after Computex 2026),
-│                                 # marketplace/metadata.json (skill metadata sidecar)
-├── nv-agent-root-cert.pem       # Trust anchor for OMS signature verification
+│   ├── workflows/                # Skill and plugin syncs, plugin validation, content integrity,
+│   │                             # ClawHub publishing, DCO and author checks
+│   └── scripts/                  # regenerate-readme.sh (skill tables),
+│                                 # regenerate-plugins-readme.sh (plugin table),
+│                                 # build-plugins.py, version-plugins.py,
+│                                 # verify_content_integrity.py, prune-orphans.sh,
+│                                 # manual-components.yml (manually staged skills)
+├── benchmarks.json              # Aggregated evaluation results for catalog skills
+├── versions.json                # Skill and plugin versions
 ├── skills.sh.json               # Skills.sh marketplace grouping config
+├── catalog-exceptions.yml       # skills/ dirs allowed without a components.d entry
+├── nv-agent-root-cert.pem       # Trust anchor for skill and plugin signature verification
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md              # Contribution guidelines
 ├── SECURITY.md                  # Security reporting policy
@@ -384,13 +469,15 @@ NVIDIA/skills/
 └── LICENSE-CC-BY-4.0            # CC BY 4.0 (documentation/skills)
 ```
 
-Skills are maintained in their respective product repos (see the **Source** column in the [Skill Catalog](#skill-catalog)) and synced to this repo daily. Products only appear under `skills/` after the sync pipeline confirms each skill carries:
+**Skills** are maintained in their respective product repos (see the [Skill Catalog](#skill-catalog)) and synced to this repo daily. Products only appear under `skills/` after the sync pipeline confirms each skill carries:
 
 - `skill.oms.sig` — detached OMS-format signature (verifiable against `nv-agent-root-cert.pem`)
 - `skill-card.md` — skill identity and governance card
 - A Tier-3 evaluation dataset — accepted at `evals/evals.json`, `evals/*.json`, `eval/*.json`, or `benchmark/evals.json`
 
 When evaluation runs produce a `BENCHMARK.md`, it ships alongside the skill so consumers can see verifiable benchmark uplift data.
+
+**Plugins** are maintained in their product teams' repos and registered under `plugins:` in that product's `components.d/<product>.yml`. An hourly plugin sync mirrors each one into `plugins/<name>/`, applies the same signature and compliance gates as the skills sync, and regenerates the marketplace registries and the [Plugin Catalog](#plugin-catalog). Catalog-built plugins such as `nvidia-skills` are defined in `plugins.d/` instead. See [`components.d/README.md`](components.d/README.md) for registering a plugin, [`plugins.d/README.md`](plugins.d/README.md) for catalog-built plugins, and [Verifying Plugins](#verifying-plugins) for what each plugin must carry before it is published.
 
 ---
 
@@ -402,6 +489,12 @@ This repository adheres to the [Agent Skills specification](https://agentskills.
 - Metadata uses YAML frontmatter with required `name` and `description` fields.
 - Skills follow a progressive disclosure model — lightweight metadata loads at startup, full instructions load on activation.
 - Validate your skill using the [`skills-ref`](https://github.com/agentskills/agentskills/tree/main/skills-ref) reference library.
+
+Plugins follow the [Agent Plugins specification](https://agent-plugins.org) and each agent's native plugin format, such as the [Claude Code plugins reference](https://code.claude.com/docs/en/plugins-reference), so they install the same way as any other plugin for that agent:
+
+- Each plugin ships a Claude Code manifest (`.claude-plugin/plugin.json`), a Codex manifest (`.codex-plugin/plugin.json`), and a Cursor manifest (`.cursor-plugin/plugin.json`), plus a portable [Agent Plugins](https://agent-plugins.org/schemas/1.0.0/plugin.schema.json) manifest (`plugin.json`) for compatible clients such as Hermes.
+- Self-hosted marketplace registries for Claude Code, Codex, and Cursor live at the repo root and list every plugin.
+- Skills inside a plugin are copies of catalog skills and follow the same Agent Skills specification, so every bundled skill can also be installed on its own.
 
 ---
 

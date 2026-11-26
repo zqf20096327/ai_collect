@@ -11,6 +11,7 @@
   <a href="https://github.com/complydoc/complydoc/actions/workflows/checks.yml"><img src="https://github.com/complydoc/complydoc/actions/workflows/checks.yml/badge.svg?branch=main" alt="Tests"></a>
   <a href="https://complydoc.io/docs/"><img src="https://img.shields.io/badge/docs-complydoc-56b4e0" alt="Documentation"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-56b4e0" alt="License"></a>
+  <a href="https://glama.ai/mcp/servers/complydoc/complydoc"><img src="https://glama.ai/mcp/servers/complydoc/complydoc/badges/score.svg" alt="complydoc/complydoc MCP server"></a>
 </div>
 
 <!-- mcp-name: io.github.complydoc/complydoc -->
@@ -58,7 +59,7 @@ uvx complydoc mcp --folder ~/Documents/Contracts
 It is in the [MCP Registry](https://registry.modelcontextprotocol.io) as
 `io.github.complydoc/complydoc`, as a Claude Desktop extension on the
 [releases page](https://github.com/complydoc/complydoc/releases/latest), as a Claude Code
-plugin (`/plugin install complydoc --marketplace complydoc/complydoc`) and as the image
+plugin (`/plugin marketplace add complydoc/complydoc`, then `/plugin install complydoc@complydoc`) and as the image
 `ghcr.io/complydoc/complydoc`. The setup for each client is in
 [Documents into an assistant, cleaned](https://complydoc.io/docs/guides/assistant-mcp/).
 
@@ -90,7 +91,7 @@ time, tokens, cost and the identifiers it passed on. Open it with `complydoc ui`
 ## In CI
 
 ```yaml
-- uses: complydoc/complydoc@v0.8.2
+- uses: complydoc/complydoc@v0.8.3
   with:
     path: documents
     policy: policy.yaml
@@ -119,6 +120,7 @@ when you ask for it. Questions go to the
 - Optional extras for scans and names: `complydoc doctor` says what is installed and how to
   add the rest
 - [Changelog](https://github.com/complydoc/complydoc/blob/main/src/complydoc/CHANGELOG.md) ·
-  [Contributing](https://github.com/complydoc/complydoc/blob/main/CONTRIBUTING.md) · MIT
+  [Contributing](https://github.com/complydoc/complydoc/blob/main/CONTRIBUTING.md) ·
+  [Security](https://github.com/complydoc/complydoc/blob/main/SECURITY.md) · MIT
 
 If complydoc is useful to you, a star helps other engineers find it.

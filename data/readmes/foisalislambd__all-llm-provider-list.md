@@ -1,8 +1,8 @@
 # All LLM providers
 
-**496 providers** · 4,527 model IDs · API URLs, env vars, and model names in one place.
+**501 providers** · 4,665 model IDs · API URLs, env vars, and model names in one place.
 
-Always confirm endpoints against official docs. To add or correct a provider, see [docs/contributing.md](docs/contributing.md). Updated 2026-11-22.
+Always confirm endpoints against official docs. To add or correct a provider, see [docs/contributing.md](docs/contributing.md). Updated 2026-11-25.
 
 ## Quick start
 
@@ -83,10 +83,10 @@ print(client.chat.completions.create(
 | Category | Count |
 |----------|-------|
 | [Frontier labs](#frontier-labs) | 73 |
-| [Inference platforms](#inference-platforms) | 64 |
+| [Inference platforms](#inference-platforms) | 65 |
 | [Cloud and enterprise](#cloud-and-enterprise) | 43 |
-| [Gateways and routers](#gateways-and-routers) | 136 |
-| [Aggregators](#aggregators) | 19 |
+| [Gateways and routers](#gateways-and-routers) | 137 |
+| [Aggregators](#aggregators) | 22 |
 | [OAuth and IDE](#oauth-and-ide) | 22 |
 | [Public endpoints](#public-endpoints) | 10 |
 | [Search APIs](#search-apis) | 19 |
@@ -97,7 +97,7 @@ print(client.chat.completions.create(
 | [Specialized](#specialized) | 6 |
 | [Local and self-hosted](#local-and-self-hosted) | 27 |
 | Web cookie adapters (in data only) | 34 |
-| **Total** | **496** |
+| **Total** | **501** |
 
 Unofficial **web-cookie / browser-session** adapters (34) stay in `data/providers.json` so they do not clutter this page. List them with `python llm_lookup.py --category "Web Cookie"`.
 
@@ -251,6 +251,7 @@ Hosted open-weight models — usually cheaper and faster.
 | [IteraCompute](https://iteracompute.com/docs.html) | `https://api.iteracompute.com/v1` | deepseek/deepseek-v4-pro-0813, minimax/minimax-m3, z-ai/glm-5.3 | `ITERACOMPUTE_API_KEY` |
 | [CloudRift](https://www.cloudrift.ai) | `https://inference.cloudrift.ai/v1` | Qwen/Qwen3.8-27B-FP8 | `CLOUDRIFT_API_KEY` |
 | [Powerspring](https://powerspring.eu) | `https://api.powerspring.eu/v1` | deepseek-v4.1-flash, glm-5.3-flash, gpt-oss-120b | `POWERSPRING_API_KEY` |
+| [Morse](https://trymorse.ai/inference) | `https://inference.trymorse.ai/v1` | deepseek-ai/deepseek-v4.1-flash-1017-abliterated, moonshotai/kimi-k3.1-pro, z-ai/glm-5.3 | `MORSE_API_KEY` |
 
 ## Cloud and enterprise
 
@@ -444,6 +445,7 @@ One key, many upstream providers.
 | [SmarToken](https://thesmartoken.com/docs) | `https://thesmartoken.com/v1` | deepseek-v4.1-flash | `SMTOKEN_API_KEY` |
 | [AI Code With](https://aicodewith.ai/en) | `https://api.aicodewith.ai/v1` | claude-sonnet-5-5, claude-haiku-5-5, claude-opus-4-8 | `AICODEWITH_API_KEY` |
 | [Kantro](https://kantro.dev) | `https://kantro.dev/v1` | claude-opus-5-5, claude-sonnet-5-5, claude-haiku-5-5 | `KANTRO_API_KEY` |
+| [Plugsky](https://plugsky.com) | `https://api.plugsky.com/v1` | plugsky-pro, plugsky-max, plugsky-coder | `PLUGSKY_API_KEY` |
 
 ## Aggregators
 
@@ -470,6 +472,9 @@ Multi-vendor catalogs under one bill.
 | [EmpirioLabs AI](https://docs.empiriolabs.ai) | `https://api.empiriolabs.ai/v1` | glm-5-3, kling-3-0-turbo, glm-5-3-flash | `EMPIRIOLABS_API_KEY` |
 | [CometAPI](https://apidoc.cometapi.com/guides/change-base-url-to-cometapi) | `https://api.cometapi.com/v1` | auto, mimo-v2.6-pro-ultraspeed, gpt-6-sol | `COMETAPI_KEY` |
 | [ModelRush](https://modelrush.ai) | `https://api.modelrush.ai/v1` | modelrush/deepseek-v4.1-flash, modelrush/glm-5.3 | `MODELRUSH_API_KEY` |
+| [Computorail](https://computorail.com) | `https://api.computorail.net/v1` | gpt-5.5, claude-sonnet-4-6 | `COMPUTORAIL_API_KEY` |
+| [Suanliqiao](https://suanliqiao.cn) | `https://suanliqiao.cn/v1` | kimi-k3, glm-5.3 | `SUANLIQIAO_API_KEY` |
+| [QCode.cc](https://qcode.cc) | `https://api.qcode.cc/openai/v1` | gpt-6.2-sol, glm-5.3, kimi-k3 | `QCODE_API_KEY` |
 
 ## OAuth and IDE
 

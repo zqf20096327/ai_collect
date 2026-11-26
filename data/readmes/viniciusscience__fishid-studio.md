@@ -29,6 +29,7 @@
   <a href="https://github.com/viniciusscience/fishid-studio/actions/workflows/ci.yml"><img src="https://github.com/viniciusscience/fishid-studio/actions/workflows/ci.yml/badge.svg" alt="CI Status"/></a>
   <a href="https://doi.org/10.5281/zenodo.24451918"><img src="https://zenodo.org/badge/1467922496.svg" alt="DOI"/></a>
   <img src="https://img.shields.io/badge/License-MIT-062135?style=for-the-badge" alt="Licença MIT"/>
+  <a href="https://github.com/sponsors/viniciusscience"><img src="https://img.shields.io/badge/Sponsor-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="GitHub Sponsors"/></a>
 </p>
 
 **FishID Studio** é uma plataforma aberta de visão computacional voltada à **identificação automatizada de grandes peixes migratórios marinhos** por meio de fotos, câmera de celular e vídeos. O projeto nasceu como pesquisa de mestrado em Computação Aplicada, combinando rigor científico (*ConvNeXt-Tiny*, explicabilidade via *Grad-CAM*, auto-segmentação *YOLO-World + SAM 2* e rastreamento *ByteTrack*) com uma interface imersiva em **PixiJS v8 WebGL** responsiva para empresas, pesquisadores e ciência cidadã.
@@ -187,9 +188,44 @@ docker compose up --build
 
 ---
 
-## ☕ Apoie a Pesquisa Científica
+## ☕ Apoie a Pesquisa Científica & Consultoria / Parcerias (EM & Visão Computacional)
 
-O **FishID Studio** é um projeto acadêmico **100% aberto e gratuito**. Se a ferramenta auxiliou sua pesquisa, empresa ou iniciativa de conservação marinha, considere apoiar o desenvolvimento contínuo pelo botão **☕ Apoie a Pesquisa** no topo da interface — cada incentivo fortalece a ciência aberta brasileira!
+O **FishID Studio** é um projeto acadêmico **100% aberto e gratuito (MIT)**. Se a ferramenta auxiliou sua pesquisa, empresa ou iniciativa de conservação marinha:
+- ⭐ **Deixe uma Star no GitHub** para aumentar a visibilidade da ciência aberta no Brasil!
+- 💖 **Torne-se um Patrocinador ([GitHub Sponsors](https://github.com/sponsors/viniciusscience))** ou use o botão **☕ Apoie a Pesquisa** no topo da interface web (Pix / Internacional) — patrocinadores têm destaque oficial no README e prioridade no roadmap!
+
+### 🏢 Soluções Customizadas, P&D e Implantação Industrial (Enterprise & Pesqueira)
+Precisa adaptar o pipeline do **FishID Studio** para a sua operação pesqueira, órgão ambiental, consultoria oceanográfica ou frota de embarcações? Oferecemos suporte especializado e consultoria técnica para:
+- 🎯 **Fine-Tuning Customizado (Novas Espécies & Regiões):** Treinamento de modelos `ConvNeXt` / `YOLO-World` / `SAM 2.1` para espécies costeiras, continentais ou demersais específicas da sua região.
+- 🚢 **Implantação de Monitoramento Eletrônico (EM) On-Premise / Edge GPU:** Calibração de câmeras de convés (`px ↔ cm`), integração com sistemas de bordo, auditoria automatizada de desembarque e relatórios regulatórios.
+- 🔌 **Integração via API & Cloud (`AWS S3` / `GCS` / `FastAPI`):** Arquitetura escalável para processamento em lote de vídeos de viagens pesqueiras.
+- 📬 **Contato comercial / parcerias de P&D:** [LinkedIn — José Vinícius](https://www.linkedin.com/in/viniciecomp/) · [GitHub Discussions](https://github.com/viniciusscience/fishid-studio/discussions) · [GitHub Sponsors](https://github.com/sponsors/viniciusscience)
+
+---
+
+## 🤝 Contribuidores da Comunidade
+
+Agradecemos a todos os pesquisadores e desenvolvedores que contribuem com código, testes e melhorias no **FishID Studio**:
+
+<p align="center">
+  <a href="https://github.com/viniciusscience/fishid-studio/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=viniciusscience/fishid-studio" alt="Contribuidores do FishID Studio" />
+  </a>
+</p>
+
+---
+
+## 📈 Evolução da Comunidade (Star History)
+
+<p align="center">
+  <a href="https://star-history.com/#viniciusscience/fishid-studio&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=viniciusscience/fishid-studio&type=Date&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=viniciusscience/fishid-studio&type=Date" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=viniciusscience/fishid-studio&type=Date" width="85%" />
+    </picture>
+  </a>
+</p>
 
 ---
 

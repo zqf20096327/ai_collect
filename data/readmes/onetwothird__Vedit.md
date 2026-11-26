@@ -21,6 +21,8 @@
 [How it works](#how-it-works) ·
 [Contributing](#contributing)
 
+<img src="docs/images/edit.png" alt="Vedit Studio editing a clip: the clip list, the vertical preview with captions, the tool rail and the timeline" width="900">
+
 </div>
 
 ---
@@ -50,9 +52,14 @@ Every edit is stored as a plain JSON file (`edl.json`, an *edit decision list*).
 - **Multi-format export.** Render one edit as 16:9, 9:16, 1:1 and 4:5, with face-aware cropping.
 - **Overlays.** Titles, lower thirds, b-roll, picture-in-picture, images, sound effects.
 - **Motion and color.** Ken Burns zoom and pan, speed ramps, fades, color adjustment, 3D LUTs.
+- **Transitions.** Crossfade or whip between cuts, centred on each cut so the clip keeps its length.
+- **B-roll suggestions.** Finds the moments the transcript names a thing or place and matching photos or clips in a folder.
 
 ### Captions
-- Animated word-by-word captions (`pop`, `box`) or standard subtitles (`clean`)
+- Animated word-by-word captions (`pop`, `box`, `karaoke`, `emoji`) or standard subtitles (`clean`)
+- `emoji` adds an emoji after keywords, in English and Filipino/Taglish
+- Ten bundled caption fonts (Montserrat ExtraBold by default, the usual Reels look), so the preview and the export
+  match on any computer; size, text and highlight colour, outline, shadow, all caps and an exact words-at-a-time count
 - `.srt` export for upload to YouTube and other platforms
 - Custom spelling fixes and caption colors per speaker
 
@@ -93,7 +100,7 @@ Every edit is stored as a plain JSON file (`edl.json`, an *edit decision list*).
 |---|---|
 | Python 3.9+ | |
 | FFmpeg | Must include `libass` (standard builds do) |
-| *Optional:* NVIDIA GPU | Speeds up transcription automatically |
+| *Optional:* NVIDIA GPU | Used automatically for transcription and the preview copy (NVENC). PyTorch is not needed. On Windows also run `pip install nvidia-cublas-cu12 nvidia-cudnn-cu12` (or point `VEDIT_CUDA` at a folder with `cublas64_12.dll` and `cudnn64_9.dll`). Set `VEDIT_DEVICE=cpu` to turn the GPU off |
 | *Optional:* `OPENAI_API_KEY` / `ELEVENLABS_API_KEY` | Premium voices in story mode |
 
 ## Installation
@@ -228,26 +235,51 @@ Claude analyzes the footage, drafts and refines the edit, renders a preview, che
 
 Vedit Studio is the same engine with a screen: drop in a long video, pick the best moments, edit each clip, export.
 
+Start from Home with one of five things to make:
+
+- **Clip a long video.** A podcast, stream or interview becomes many 20 to 90 second clips (the steps below).
+- **Edit a vlog.** The whole video, tidied: dead air, filler words and retakes cut, clean captions, its own shape
+  (16:9 for a landscape video). Import goes straight to Edit.
+- **Quick Reel / Short.** One phone video as a fast vertical cut with pop-up captions, for Reels, Shorts or TikTok.
+- **Photos + script → Reel.** Put photos and clips in order and write what the narrator says over each (one caption
+  per line). Pick the shape, caption style, voice and optional music, then **Make video**: Vedit records the narration
+  with a free neural voice (this needs the internet the first time), animates the photos, adds the captions and saves
+  the video to `Videos\Vedit` (or the folder chosen in Settings). A clip can keep its own sound instead; its words
+  become the captions. Stories are saved as you type and listed under Recent projects.
+- **Batch & automate.** Add many videos at once, choose clips, a vlog or a Quick Reel for each, and Vedit analyses them
+  one after another and exports the results as each one finishes (or leaves them for you to review). You can leave
+  the screen while it works; every video also appears under Recent projects.
+
+<img src="docs/images/home.png" alt="The Vedit Studio welcome screen: a podcast cut into three vertical clips, next to sign-in" width="800">
+
 1. **Import.** Choose a video. Vedit listens to it, finds the 20 to 90 second moments worth posting and frames
    them for vertical.
 2. **Pick clips.** Play each suggestion, keep the good ones, or ask for more.
+
+   <img src="docs/images/pick.png" alt="Pick clips: suggested moments with scores, the selected clip playing in 9:16, and why it was picked" width="800">
+
 3. **Edit.** One rail holds every tool, so nothing is hidden in another screen:
 
    | Tool | What it does |
    |---|---|
    | Transcript | Click a word to cut it or fix its spelling; crossed-out words are removed |
-   | Captions | Caption style, size, colours and position |
+   | Captions | Style, font, size, all caps, exact words at a time, text and highlight colour, outline, shadow, word bounce, position; Reset look |
    | Text | Add text at the playhead, type it, place it top, middle or bottom, copy or delete it |
-   | B-roll | A photo or video over the clip, full screen or in a corner, with a fade |
+   | B-roll | A photo or video over the clip, full screen or in a corner, with a fade. **Suggest b-roll** finds the moments the clip names a thing or place and the photos or videos in a folder you pick that show it (by file name, and by meaning with an AI key; only the words and file names are sent) |
    | Sound | Loudness, voice polish, noise reduction, background music |
    | Framing | Shape (9:16, 1:1, 4:5, 16:9), face tracking, zoom |
    | Color | Brightness, contrast, saturation, sharpen, vignette |
    | Speed | 1× to 2×; voices keep their pitch, captions and layers stay on their words |
+   | Transition | Cut, crossfade or whip between kept pieces, with a length; shown in the export |
 
    The timeline under the player has split, trim, delete, undo and redo, zoom, and lanes for text and b-roll you
    can drag. The preview shows what the export will draw: the same cuts, speed, captions, text, b-roll and colour
    (sharpen shows in the export only).
 4. **Export.** Every kept clip is rendered to a folder next to your video, `<video name> - Vedit`.
+
+   <img src="docs/images/export.png" alt="Export: the kept clips, formats (9:16, 1:1, 16:9), quality, subtitles and thumbnails" width="800">
+
+   Screenshots are from the built-in demo (`npm run dev:mock`). The sample footage is a Pexels podcast clip, free for commercial use.
 
 **Run it on your own videos (from source):**
 
@@ -263,6 +295,27 @@ folder. Without it, a debug build looks for the bundled engine, which only exist
 
 `npm run dev:mock` (in `app/`) opens a **demo** in the browser with a built-in sample clip and a pretend engine. It
 never reads your files, so use it to try the screens, not to edit your videos.
+
+### Building the installer
+
+Vedit Studio ships as one Windows installer (NSIS) with the engine and FFmpeg inside, so the people who install it
+need nothing else. From the repo root, on Windows with Python 3.10+, Node 20+ and Rust:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File packaging\build_installer.ps1
+```
+
+It makes a clean virtual environment with only the engine's dependencies, packs the engine with PyInstaller,
+copies FFmpeg from your PATH (or pass `--ffmpeg-dir <folder>`), and builds
+`app\src-tauri\target\release\bundle\nsis\Vedit Studio_<version>_x64-setup.exe`. The installer needs no admin
+rights; it installs for the current user.
+
+Updates are signed. The private updater key lives outside the repo (`%USERPROFILE%\.tauri\vedit-updater.key`, made
+with `npx tauri signer generate`); only its public half is in `tauri.conf.json`. Keep a backup of the private key:
+without it, installed copies can't be updated. A release uploads the setup `.exe`, its `.sig` and a `latest.json` to
+GitHub Releases, where the app checks for updates.
+
+FFmpeg is a separate program under its own license, shipped beside the app with its license file.
 
 ## Presets
 
@@ -378,10 +431,20 @@ vedit/
 ├── scripts/               Python package (installed as `vedit`)
 │   ├── vedit.py           CLI entry point
 │   ├── studio_server.py   local API the desktop app talks to (127.0.0.1, token-protected)
+│   ├── studio_jobs.py     background jobs and progress for the app
+│   ├── studio_projects.py saved projects
+│   ├── studio_stories.py  story projects for the app
+│   ├── engine_entry.py    entry point of the packaged engine
 │   ├── edl_ops.py         the edits the app sends: cut, restore, trim, fix a word, patch a section
 │   ├── auto.py            one-command pipeline
 │   ├── analyze.py         footage analysis
-│   ├── transcribe.py      word-level transcription
+│   ├── transcribe.py      word-level transcription (batched, GPU when available)
+│   ├── accel.py           NVIDIA GPU detection for speech recognition and NVENC
+│   ├── models.py          Whisper model downloads and status
+│   ├── proxy.py           fast preview copy of the source video
+│   ├── highlights.py      finds the moments worth posting
+│   ├── highlights_llm.py  optional AI ranking of those moments
+│   ├── broll.py           b-roll suggestions from the transcript
 │   ├── autocut.py         draft edit generation
 │   ├── presets.py         platform presets and brand kit
 │   ├── edl.py             edit decision list → timeline
@@ -414,7 +477,8 @@ vedit/
 | `can't open file '...\scripts\vedit.py'` | You are in the wrong folder. `cd` into the `vedit` folder first |
 | `ffmpeg not found` | Install FFmpeg and open a new terminal so `PATH` refreshes |
 | pip warnings about `license` / `BuildBackendWarning` | Harmless setuptools deprecation notices; ignore them |
-| First run is slow | The Whisper model is downloaded once (~500 MB for `small`). Use `--model base` on slower machines |
+| First run is slow | The Whisper model is downloaded once: `small` 484 MB, `large-v3` 3 GB, `large-v3-turbo` 1.6 GB. Use `--model base` on slower machines |
+| Transcription is slow on a laptop | Without an NVIDIA GPU, Vedit uses `large-v3-turbo` in place of `large-v3` (about 2× real time on a 6-core CPU). With a GPU, check `pip install nvidia-cublas-cu12 nvidia-cudnn-cu12` on Windows |
 | Wrong transcription language | Pass `--language en` (or `tl`, `es`, `ja`, …) |
 | Captions use the wrong font | Set `captions.font` to an installed font, or add `.ttf` files to `fonts/` |
 | Vertical crop misses the subject | `pip install opencv-python`, or set `crop_x` per clip (see `vedit frames VIDEO --grid`) |
@@ -427,10 +491,10 @@ See [`docs/USAGE.md`](docs/USAGE.md) for a step-by-step guide.
 
 ## Roadmap
 
-- [ ] Crossfade and whip transitions
-- [ ] Automatic b-roll suggestions from the transcript
+- [x] Crossfade and whip transitions
+- [x] Automatic b-roll suggestions from the transcript
 - [ ] Speaker diarization for single-microphone podcasts
-- [ ] Karaoke and emoji caption styles
+- [x] Karaoke and emoji caption styles
 - [ ] Claude Code plugin marketplace listing
 - [ ] PyPI release
 
@@ -453,6 +517,8 @@ Built on [FFmpeg](https://ffmpeg.org/), [libass](https://github.com/libass/libas
 
 The code is released under the [MIT License](LICENSE). © 2026 Angelito P. Decatoria III
 
-- Fonts in `fonts/` and `app/src/fonts/` are Poppins, under the [SIL Open Font License 1.1](fonts/OFL.txt).
+- Fonts in `fonts/` and `app/src/fonts/` are under the [SIL Open Font License 1.1](fonts/OFL.txt): Poppins, Montserrat,
+  Anton, Bebas Neue, Archivo Black, Bangers, Pacifico and DM Serif Display (each with its `*-OFL.txt`); Permanent Marker
+  is under the Apache License 2.0 (`fonts/PermanentMarker-LICENSE.txt`).
 - Videos you edit stay yours. No third-party footage is included in this repository or in release builds.
 - The **Juan Fact a Day** name, mascot, logo and artwork are **not** included in this repository and are not covered by the MIT License.

@@ -17,6 +17,7 @@
 - [Open-Generative-AI](https://github.com/Anil-matcha/Open-Generative-AI) — Self-hosted image and video studio for testing generative-media workflows.
 - [Muapi](https://muapi.ai) — Unified API for image, video, and audio generation, with hosted versions of many models in this catalog. See the [spicy AI image generator page](https://muapi.ai/ai-spicy-image-generator).
 - [muapi-skills](https://github.com/SamurAIGPT/muapi-skills) — Run and automate media-generation experiments from an AI coding agent.
+- [NSFW-AI-API](https://github.com/Anil-matcha/NSFW-AI-API) — NSFW detection and moderation for text and images, to screen prompts and outputs
 
 ## Contents
 

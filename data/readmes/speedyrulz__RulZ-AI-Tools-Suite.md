@@ -1,0 +1,177 @@
+<p align="center">
+  <img src="src/renderer/src/assets/logo.png" alt="RulZ" width="420">
+</p>
+
+# RulZ AI Tools Suite
+
+One launcher for the RulZ apps. Browse every tool with screenshots and its full README, install it with one
+click, keep it updated, and launch it, all from a single black-and-red window (or white-and-red, in light mode).
+
+| Dark (default) | Light |
+| --- | --- |
+| ![The launcher's home page in dark mode](docs/screenshots/home-dark.png) | ![The launcher's home page in light mode](docs/screenshots/home-light.png) |
+
+![The home page as a compact list, one row per app](docs/screenshots/home-list.png)
+
+![An app's page: highlights, screenshot gallery, details, requirements and its README](docs/screenshots/app-page.png)
+
+![Installing an app: folder, shortcuts, optional components and prerequisites](docs/screenshots/install-dialog.png)
+
+| App | What it does | How it installs |
+| --- | --- | --- |
+| [RulzTrainer](apps/RulzTrainer) | LoRA trainer for nine image models (MOSS-Image, FIBO 2.0, Krea 2, Qwen-Image 2.1, MiniMax-H3-Image and more) and two video models (MiniMax H3, PAN 2), with a guided WebUI | From source, then its `install.bat` (venv + CUDA PyTorch) |
+| [RulZ AI Trainer Optimizer](apps/RulZ-AI-Trainer-Optimizer) | Recommends starting settings for a character LoRA in RulZ AI Trainer from community reports and measured runs, exports or queues the config (on this PC or vast.ai), reads finished runs and proposes fixes, and asks Claude Code, Codex, Grok Build or Antigravity for a second opinion | From source (venv) |
+| [RulZ Image Organizer](apps/RulZ-Image-Organizer) | Offline face grouping and search for your photo library | Portable release zip |
+| [RulZ Image Tournament](apps/RulZ-Image-Tournament) | Finds your favorite image, two at a time | Portable release zip (a single .exe) |
+| [RulZ LLM Suite](apps/rulz-llm-suite) | Local LLMs with llama.cpp: models, chat, MCP tools, API server, reverse engineering | Its setup program, run silently |
+| [RulZ Coding Agent](apps/rulz-coding-agent) | Describe an app in plain English and a local model builds it (works with the LLM Suite) | Its setup program, run silently |
+| [RulZ Coding Agent for Android](apps/rulz-coding-agent-android) | Watch and control RulZ Coding Agent from an Android phone, over Tailscale | Not by the launcher: press **Coding Agent for Android** on its home page (or open the Coding Agent page) and scan the QR code with the phone to download the newest APK |
+| [Rulz Training Captioner](apps/Rulz-Training-Captioner) | Captions image datasets with a local vision LLM | From source (venv), plus an optional llama.cpp CUDA build |
+| [RulZ Simple Video Clip Extractor](apps/rulz-simple-video-clip-extractor) | Frame-accurate clips with lossless cuts, NVENC export and distortion repair | Portable release zip |
+| [RulZ Image Crawler](apps/rulz-image-crawler) | Crawls a website or folder and keeps the images that match your description (local vision model) | From source (venv + Chromium), plus the model download and an optional llama.cpp CUDA build |
+| [RulZ Image Preparer](apps/RulZ-Image-Preparer) | Cleans up image datasets for training: color noise, JPEG artifacts (fast filter or GPU AI model), detail recovery and shadow lift, globally or per image; Auto crop crops pictures to something you describe, found with SAM 3.1 | From source (venv); the AI features' PyTorch and models are set up from the app on first use |
+| [RulZ Image Grid](apps/RulZ-Image-Grid) | Arranges images into a labelled grid (file names, row and column labels) and exports it as one PNG or JPG | Portable release zip (a single .exe) |
+| [RulZ ComfyUI Launcher](apps/RulZ-ComfyUI-Launcher) | Starts and stops ComfyUI servers that run inside WSL: one saved configuration per server (GPU, port, options, environment), several at once, with live logs and GPU memory | Portable release zip |
+| [RulZ Huggingface Manager](apps/RulZ-Huggingface-Manager) | Manages your Hugging Face models, datasets, spaces and buckets: browse, upload, download, move, copy and rename files from one page, and send models straight to a vast.ai instance | From source (venv) |
+
+## Using the launcher
+
+- **Home** lists the apps: the ones you have installed first, then the others by category. Each card shows a
+  screenshot, a one-line description, the version and the status (installed, update available, running). The chips
+  above the list filter it by category, **Installed** or **Updates**, each with its count. The two buttons at the
+  right switch between cards and a compact list with one row per app. The list stays where you left it (filter and
+  scroll position) when you come back from an app's page.
+- **Search** (the box in the top bar, or Ctrl+K) finds apps by the words in their name, description, category or
+  highlights; every word you type has to match.
+- **Click an app** for its page: its highlights, a screenshot gallery (click for full size, arrow keys to browse),
+  the full README with an **On this page** list of its sections, version details, requirements and shortcuts. A bar
+  at the top stays in view while you scroll: it has the way back (also Esc, Alt+Left or the mouse's Back button),
+  the app's Launch, Update or Install button, and arrows to the previous and next app.
+- **Coding Agent for Android** on the home page shows the QR code that downloads the phone app.
+- **Install** asks where to put the app (default `%LOCALAPPDATA%\Programs\RulZ AI Tools\<app>`), whether to add
+  **Desktop** and **Start Menu** shortcuts (the Start Menu ones go in a *RulZ AI Tools Suite* folder), and any
+  optional parts. Progress, download speed and the setup log show on the page.
+- **Launch** starts the installed app. **Update** appears when GitHub has a newer release (or newer commits, for
+  apps installed from source; those update with `git pull` when Git is installed). **Update all** in the top bar
+  updates every app that has one, one at a time.
+- The **⋯** menu has *Open install folder*, *Repair* (runs the setup again), *Locate an existing install* (for a
+  copy you already have, e.g. a dev checkout), *View on GitHub*, the install log, and *Uninstall*.
+- **Uninstall** removes the shortcuts and moves the app's folder to the Recycle Bin (apps with a setup program run
+  their own uninstaller first). Installs the launcher found or that you located are only forgotten; their files
+  are never touched.
+- **Prerequisites** (Python, FFmpeg, Git, an NVIDIA GPU, .NET Framework) are checked on each app's page. When you
+  install an app, missing ones it needs are installed first with winget (Python with *Add to PATH*). Anything winget
+  can't install (a GPU driver, or any of them on a PC without winget) gets a step-by-step guide with a *Check again*
+  button, and the install waits until it's found.
+
+- **Updates:** when it starts, the launcher checks GitHub for a newer version of itself and asks whether to update
+  (it closes, installs over itself and reopens). It also checks your installed apps. Both checks can be turned off in
+  Settings.
+- **Close on launch:** an optional setting (off by default) closes the launcher when you open an app.
+- **Launch options:** some apps have switches on their page that change how **Launch** starts them. RulZ AI Trainer's
+  *Tailscale remote access* also serves its WebUI over HTTPS to your own Tailscale devices (the same as
+  `run_webui_tailscale.bat`). The switch is remembered and applies the next time you press Launch; shortcuts start
+  the app without it. Switching it off doesn't clear a `RULZ_TAILSCALE=1` you set in Windows yourself.
+- **Dark or light:** the first launch asks which look you want (dark is the default). Switch any time with the
+  sun/moon button in the top bar or under Settings ▸ Appearance.
+
+Settings and the list of installed apps are kept in `%APPDATA%\RulZ AI Tools Suite`.
+
+## Install
+
+Download `RulZ-AI-Tools-Suite-Setup-<version>.exe` from the Releases page and run it.
+
+To run it from source instead, double-click `install.bat` (needs Node.js 22+), then `run.bat`.
+
+## The apps
+
+Every app's source is in `apps/`, one folder each, imported from its former repository with the full history
+(those repositories are archived; RulZ Image Crawler, RulZ Image Preparer, RulZ Image Grid, RulZ Huggingface Manager and RulZ AI Trainer Optimizer never had one). Their guides are in the [wiki](https://github.com/speedyrulz/RulZ-AI-Tools-Suite/wiki),
+one section per app. Each app builds and runs on its own, as before: see the README in its folder.
+
+**Releasing an app.** Bump the version in the app's source, then push a tag named after the app:
+
+```
+git tag image-organizer-v1.3.0
+git push origin image-organizer-v1.3.0
+```
+
+The Android app's tag is `coding-agent-android-v<version>` (its version is in `package.json` and, as `versionName`,
+in `android/app/build.gradle`). Its release holds `RulZ-Agent-<version>.apk`, signed with the debug key in the
+`ANDROID_DEBUG_KEYSTORE` secret so it installs over the copy already on a phone. The launcher's QR code switches to
+the new APK by itself: it looks for the newest release when it starts, every 30 minutes and on **Check for updates**.
+
+Push app tags one at a time: GitHub starts no workflow for any of them when more than three tags arrive in one push.
+
+GitHub Actions (`.github/workflows/apps.yml`) builds it and publishes the release here, where the launcher picks it
+up. The tag prefixes are `rulz-trainer-v`, `image-organizer-v`, `image-tournament-v`, `llm-suite-v`, `coding-agent-v`,
+`training-captioner-v`, `clip-extractor-v`, `rulz-image-crawler-v`, `image-preparer-v`, `image-grid-v`, `hf-manager-v`, `trainer-optimizer-v` and `comfyui-launcher-v`; launcher releases keep plain `v1.2.3` tags and the *Latest* badge.
+Pushes and pull requests build every app whose folder changed, so a broken build shows up before it's tagged.
+
+**Apps installed from source** (RulZ AI Trainer, RulZ AI Trainer Optimizer, Rulz Training Captioner, RulZ Image Crawler,
+RulZ Image Preparer, RulZ Huggingface Manager) are cloned from a branch that holds just their folder: `app/rulz-trainer`,
+`app/trainer-optimizer`, `app/training-captioner`, `app/rulz-image-crawler`, `app/image-preparer` and `app/hf-manager`, rebuilt from `main` on every change by
+`.github/workflows/app-branches.yml`. The branch continues the app's old repository commit for commit, so copies
+cloned from there update with a fast-forward (the launcher switches them over on their next update). Image Crawler,
+Image Preparer, Huggingface Manager and Trainer Optimizer had no repository of their own, so their branches start at their import into the suite. A tag for a source app publishes a
+release with the change notes and no files; installs still come from the branch.
+
+## Development
+
+```
+npm install
+node node_modules/electron/install.js   # first time only: Electron downloads its binary lazily
+npm run dev          # run with hot reload
+npm test             # unit tests (catalog, README handling, versions, command lines, archives)
+npm run typecheck
+npm run build:win    # installer → dist/RulZ-AI-Tools-Suite-Setup-<version>.exe
+```
+
+Pushing a `v*` tag builds the launcher's installer on GitHub Actions and attaches it to a release.
+
+### Layout
+
+| Part | Where |
+| --- | --- |
+| The app list: names, descriptions, how each installs and launches | `src/shared/catalog.ts` |
+| Screenshots, icons and a README copy for each app | `catalog/<app id>/` |
+| Install, update, launch, uninstall, shortcuts | `src/main/apps.ts`, `src/main/shortcuts.ts` |
+| GitHub releases and downloads | `src/main/github.ts`, `src/main/download.ts`, `src/main/archive.ts` |
+| Requirement checks and winget installs | `src/main/requirements.ts` |
+| UI (React + Tailwind) | `src/renderer/src/` |
+| Logo and icon generation from `assets/logo-source.webp` | `tools/make_logo.py` |
+| How the screenshots were made (demo content only) and how to make them again | `tools/screenshots/` |
+| The Android app's download QR code (newest `coding-agent-android-v*` release) | `src/main/phoneApp.ts`, `src/renderer/src/components/PhoneAppQr.tsx` |
+| The apps' source | `apps/` |
+| App builds and releases; the source apps' branches | `.github/workflows/apps.yml`, `app-branches.yml` |
+
+### Adding an app
+
+1. Put its source in `apps/<folder>/` (to keep an existing repository's history:
+   `git subtree add --prefix=apps/<folder> <url> <branch>`).
+2. Add an entry to `src/shared/catalog.ts`. `install.kind` is `zip` (a portable zip on its latest release),
+   `installer` (an NSIS setup .exe on its latest release) or `source` (its `app/<id>` branch plus setup commands),
+   and `launch.target` is the program to start, relative to the install folder. `launch.options` adds switches to
+   the app's page, each setting environment variables for the Launch button while it's on.
+3. Add a build for it to `.github/workflows/apps.yml` (and its tag prefix to the tag list there); a source app goes
+   in `app-branches.yml` instead.
+4. Add it to `tools/sync_catalog.py` and run `npm run sync-catalog` to copy its README, README images and icon into
+   `catalog/<id>/`. Run the same command after changing any app's README.
+5. Put 2–4 screenshots in `catalog/<id>/screenshots/` (`01-…` is the card thumbnail).
+
+The launcher keeps itself current with `catalog/` on GitHub's `main` branch, so a changed README or screenshot
+reaches users once it is merged, with no launcher release. At startup (and on Refresh), at most every 30 minutes,
+it asks GitHub for the catalog's file list (two API requests), downloads only the READMEs, README images, screenshots
+and icons that differ from its bundled copy, checks each against git's hash and keeps them in
+`%APPDATA%\RulZ AI Tools Suite\catalog-cache`. Offline, it shows what it has. A launcher update clears the cache,
+since the new bundled copy is at least as new. This only picks up what is in `catalog/`, so run
+`npm run sync-catalog` and merge the result after changing an app's README. Settings → "Get the latest READMEs and
+screenshots from GitHub" turns it off. Dev runs (`npm run dev` / `npm start`) skip the cache unless
+`RULZ_CATALOG_CACHE=1` is set, so local `catalog/` edits show.
+
+## License
+
+Open source under the [MIT License](LICENSE). Each app in `apps/` carries its own MIT license file too.
+
+The RulZ name and logo are excluded from the MIT License; all rights reserved. If you fork or redistribute this
+project, remove or replace the RulZ branding. See [LOGO-NOTICE.md](LOGO-NOTICE.md).

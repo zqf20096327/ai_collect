@@ -8,7 +8,7 @@
 
 让 Claude 等 AI 助手只读查询 SAP S/4HANA 的 MCP 服务，RFC/BAPI、私有云 OData、公有云 API 都能接
 
-[English](README.en.md) · [3 步上手](#3-步上手) · [完整宣传片](https://github.com/wangyichuan0609-tech/sap-data-mcp/releases/latest) · [MIT 许可](LICENSE)
+[English](README.en.md) · [3 步上手](#3-步上手) · [完整宣传片](https://github.com/w1ccc/sap-data-mcp/releases/latest) · [MIT 许可](LICENSE)
 
 </div>
 
@@ -21,7 +21,7 @@
 需要 Python 3.12，以及一个支持 MCP 的 AI 工具，例如 Claude Desktop、Claude Code 或 Cursor。下面以公有云 API 为例（Windows PowerShell）：
 
 ```powershell
-git clone https://github.com/wangyichuan0609-tech/sap-data-mcp.git
+git clone https://github.com/w1ccc/sap-data-mcp.git
 cd sap-data-mcp
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt

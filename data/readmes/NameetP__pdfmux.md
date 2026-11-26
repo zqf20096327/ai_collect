@@ -104,6 +104,9 @@ pdfmux convert ./docs/ -o ./output/
 # CI mode: fail the run if any document is below 0.20 confidence
 pdfmux convert ./docs/ -o ./output/ --strict --min-confidence 0.20
 
+# track OCR review flags across a folder; re-runs report only new and open flags
+pdfmux review scan ./archive/
+
 # pre-flight a directory: which extras do you actually need for THIS batch?
 pdfmux doctor --check ./docs/
 
@@ -283,6 +286,8 @@ Free tool, no signup: **[app.pdfmux.com/audit](https://app.pdfmux.com/audit)** �
 | Streaming output | NDJSON events page-by-page for long docs | `pdfmux stream file.pdf` |
 | Smart cache | Hash-keyed result cache, 30-day TTL, 1 GB LRU | `pdfmux convert file.pdf` (auto), `--no-cache` to bypass |
 | Watch mode | Auto-convert any PDF added to a folder | `pdfmux watch ./inbox/` |
+| OCR review flags | Low-confidence lines, impossible or ambiguous dates, misread numbers, out-of-place table cells; each located on its page | `pdfmux convert scan.pdf -f json` → `review_flags` |
+| Review tracking | Resolve flags once; re-runs show only new ones; export to CSV | `pdfmux review scan ./archive/` |
 | Diff | Compare two extractions | `pdfmux diff a.pdf b.pdf` |
 | Benchmark | Eval all installed extractors against ground truth | `pdfmux benchmark` |
 | Doctor | Show installed backends, coverage gaps, recommendations | `pdfmux doctor` |
@@ -679,6 +684,52 @@ When confidence drops below 80%, pdfmux tells you exactly what went wrong and ho
 Page 4: 32% confidence. 0 chars extracted from image-heavy page.
   -> Install pdfmux[ocr] for RapidOCR support on 6 image-heavy pages.
 ```
+
+### OCR review flags
+
+OCR text is for search, not a record. pdfmux never corrects what it reads, but it
+tells you which readings to check against the original page:
+
+| Kind | What is flagged |
+|---|---|
+| `low_confidence` | An OCR line scored under 0.92 (`PDFMUX_OCR_MIN_LINE_SCORE`; `0` turns it off) |
+| `implausible_date` | Impossible (`31/02/1985`), before 1900, more than 10 years ahead, or later than today when the nearest label is a past event ("collected", "DOB", "reported"). "Next", "due", "valid until", "expiry" and "appointment" make a future date expected. Catches confident one-digit misreads such as 2026 read as 2096. |
+| `ambiguous_date` | `03/04/2026` when nothing in the document says day-first or month-first (one `25/12/…` anywhere settles it) |
+| `suspect_number` | On a result line or table row with a unit (value and unit may be separate OCR boxes): a decimal point read as a colon (`Glucose (fasting): "8:02"`), letters in a number (`1O.2`). Opt-in `PDFMUX_OCR_RANGE_CHECK=1`: a value 5x outside the reference range on its row |
+| `table_cell` | In a table on an OCR'd page, including tables rebuilt from OCR box positions: a cell that breaks its column's type (a word in a number column, `7p/6` in a unit column), or a row that only fits once moved one column over |
+
+```
+⚠ Page 1: OCR "12/03/2096" is more than 10 years in the future — check the original ("Collected on 12/03/2096")
+```
+
+In JSON, each entry in `review_flags` has a stable `id`, `page`, `kind`, `text`, `reason`,
+`score`, and where it applies `line_index` + `bbox` (PDF points from the top-left of the
+page) or a table `anchor`. Every `line_index` resolves to `pages[].ocr_lines`, the lines as
+the OCR engine read them, so a flag can be drawn on the page image even if its line did
+not survive into the Markdown. Scanned tables are rebuilt from box positions into
+`pages[].ocr_tables`, a grid where every cell keeps its own `score` and `bbox`. Key-value fields from OCR'd pages carry `confidence`,
+`line_index` and the ids of the `flags` that touch them.
+
+Flags decide what to check first. They do not tell you what to skip: an unflagged line
+is not a verified line (JSON says so in `review_note`).
+
+#### Tracking review across a folder
+
+```bash
+pdfmux review scan ./archive            # convert, record flags in ./archive/.pdfmux-review.json
+pdfmux review resolve 4a4964d4b6e0 --note "checked against paper copy"
+pdfmux review scan ./archive            # reports only new, reopened and still-open flags
+pdfmux review export ./archive -o flags.csv   # every open flag, worst documents first
+```
+
+The manifest is keyed by each PDF's SHA-256, so renaming or moving a file keeps its review.
+`--state all` exports resolved and gone flags too.
+
+### Memory
+
+OCR needs about 1.3 GB per worker process. `PDFMUX_OCR_WORKERS` (default 4) sets how many
+pages are OCR'd at once. Use `1` on hosts with less than 2 GB free.
+`PDFMUX_MAX_RENDER_PIXELS` (default 16 MP) caps page renders.
 
 ## Cost Modes
 

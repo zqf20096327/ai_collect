@@ -1,8 +1,8 @@
 <div align="center">
 
-# ðŸ¤– imrobot
+# 🤖 imrobot
 
-**Reverse-CAPTCHA for AI agents â€” verify bots, not humans.**
+**Reverse-CAPTCHA for AI agents — verify bots, not humans.**
 
 [![npm version](https://img.shields.io/npm/v/imrobot.svg?style=flat-square&color=3b82f6)](https://www.npmjs.com/package/imrobot)
 [![npm downloads](https://img.shields.io/npm/dw/imrobot.svg?style=flat-square&color=10b981)](https://www.npmjs.com/package/imrobot)
@@ -11,8 +11,9 @@
 [![zero dependencies](https://img.shields.io/badge/dependencies-0-22c55e?style=flat-square)](https://www.npmjs.com/package/imrobot)
 [![coverage](https://img.shields.io/codecov/c/github/leopechnicki/im_robot?style=flat-square&color=f59e0b&logo=codecov&logoColor=white)](https://codecov.io/gh/leopechnicki/im_robot)
 [![CI](https://img.shields.io/github/actions/workflow/status/leopechnicki/im_robot/ci.yml?branch=main&style=flat-square&label=CI&logo=github)](https://github.com/leopechnicki/im_robot/actions/workflows/ci.yml)
+[![imrobot MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/leopechnicki/im_robot/badges/score.svg)](https://glama.ai/mcp/servers/leopechnicki/im_robot)
 
-[Live Demo](https://imrobot.vercel.app) Â· [npm](https://www.npmjs.com/package/imrobot) Â· [Dev.to Article](https://dev.to/leo_pechnicki/why-i-built-a-captcha-that-only-bots-can-solve-30np)
+[Live Demo](https://imrobot.vercel.app) · [npm](https://www.npmjs.com/package/imrobot) · [Dev.to Article](https://dev.to/leo_pechnicki/why-i-built-a-captcha-that-only-bots-can-solve-30np)
 
 </div>
 
@@ -22,13 +23,13 @@
 
 Traditional CAPTCHAs prove you're human. But what about the opposite?
 
-As AI agents become first-class web citizens â€” browsing, booking, purchasing, automating â€” some systems need to verify their visitors are **legitimate AI agents**, not humans trying to bypass agent-only access. Think agent-facing APIs, AI-only platforms, or multi-agent authentication.
+As AI agents become first-class web citizens — browsing, booking, purchasing, automating — some systems need to verify their visitors are **legitimate AI agents**, not humans trying to bypass agent-only access. Think agent-facing APIs, AI-only platforms, or multi-agent authentication.
 
 **imrobot** flips the CAPTCHA model: it generates deterministic challenge pipelines that are trivial for any LLM or programmatic agent to solve (< 1 second), but impractical for humans to work through manually.
 
 ## How it works
 
-imrobot generates a pipeline of deterministic operations (string transforms, byte operations, hashing, and more) applied to a random seed. AI agents parse the structured challenge data, execute the pipeline, and submit the result. Humans would need to manually compute multi-step transformations â€” practically impossible without tools.
+imrobot generates a pipeline of deterministic operations (string transforms, byte operations, hashing, and more) applied to a random seed. AI agents parse the structured challenge data, execute the pipeline, and submit the result. Humans would need to manually compute multi-step transformations — practically impossible without tools.
 
 ```
 seed: "a7f3b2c1d4e5f609"
@@ -87,6 +88,8 @@ function handleVerified(token) {
 
 ### Svelte
 
+Needs Svelte 5 or later (the component uses runes).
+
 ```svelte
 <script>
   import ImRobot from 'imrobot/svelte'
@@ -116,6 +119,8 @@ function handleVerified(token) {
 </script>
 ```
 
+The widget renders inside an open shadow root, so `document.querySelector('[data-imrobot-challenge]')` does not see it. Agents reach it through the element: `document.querySelector('imrobot-widget').shadowRoot.querySelector('[data-imrobot-challenge]')` (see [How agents interact with it](#how-agents-interact-with-it)).
+
 ### Core API (headless)
 
 ```ts
@@ -128,7 +133,7 @@ const isValid = verifyAnswer(challenge, answer) // true
 
 ### Server SDK (HMAC-signed verification)
 
-For production use, the server SDK provides tamper-proof, stateless challenge verification using HMAC-SHA256. No database required â€” the cryptographic signature ensures integrity.
+For production use, the server SDK provides tamper-proof, stateless challenge verification using HMAC-SHA256. No database required — the cryptographic signature ensures integrity.
 
 ```ts
 import { createVerifier } from 'imrobot/server'
@@ -154,7 +159,7 @@ app.post('/api/verify', async (req, res) => {
 })
 ```
 
-The server verifier checks in order: HMAC signature validity (challenge and pipeline not tampered), expiration (challenge not expired), answer correctness (pipeline re-executed), and replay detection (duplicate challenge IDs are rejected when a replay guard is configured). A different secret on a different server will reject the challenge â€” preventing cross-site replay attacks.
+The server verifier checks in order: HMAC signature validity (challenge and pipeline not tampered), expiration (challenge not expired), answer correctness (pipeline re-executed), and replay detection (duplicate challenge IDs are rejected when a replay guard is configured). A different secret on a different server will reject the challenge — preventing cross-site replay attacks.
 
 ### Middleware & Proof-of-Agent tokens
 
@@ -171,7 +176,7 @@ const router = createAgentRouter({
 app.get('/imrobot/challenge', router.challenge)
 app.post('/imrobot/verify', router.verify)
 
-// Protect routes â€” only verified agents can access
+// Protect routes — only verified agents can access
 const agentOnly = requireAgent({
   secret: process.env.IMROBOT_SECRET!,
   rateLimit: { windowMs: 60_000, maxRequests: 30 },
@@ -212,43 +217,45 @@ import { createAgentRouter } from 'imrobot/server'
 
 const router = createAgentRouter({ secret: process.env.IMROBOT_SECRET! })
 
-// Routes GET â†’ /challenge and POST â†’ /verify under one path
+// Routes GET → /challenge and POST → /verify under one path
 app.use('/imrobot', router.handler)
 ```
 
 The handler automatically routes based on HTTP method:
-- **GET** â†’ challenge endpoint (returns a signed challenge)
-- **POST** â†’ verify endpoint (verifies answer, returns proof token)
-- **Other methods** â†’ 405 Method Not Allowed
+- **GET** → challenge endpoint (returns a signed challenge)
+- **POST** → verify endpoint (verifies answer, returns proof token)
+- **Other methods** → `next()` when the framework passes one (so under Express an unmatched `PUT` falls through to your other routes, usually ending in 404); 405 Method Not Allowed when it is called without `next`, e.g. `server.on('request', (req, res) => router.handler(req, res))`
 
 ### Hono / Bun
 
-For Hono (Bun, Cloudflare Workers, Deno, Node), use the dedicated `imrobot/hono` adapter â€” it wraps the same verifier + JWT issuer as Express but exposes Hono-native handler shapes.
+For Hono (Bun, Cloudflare Workers, Deno, Node), use the dedicated `imrobot/hono` adapter — it wraps the same verifier + JWT issuer as Express but exposes Hono-native handler shapes.
 
 ```ts
 import { Hono } from "hono";
 import { createHonoAgentRouter, requireAgentHono } from "imrobot/hono";
+import type { AgentProofToken } from "imrobot/server";
 
-const app = new Hono();
+// Declare the variable requireAgentHono sets, so c.get("agentProof") type-checks
+const app = new Hono<{ Variables: { agentProof: AgentProofToken } }>();
 const secret = process.env.IMROBOT_SECRET!;
 
 // Mount /imrobot/challenge (GET) and /imrobot/verify (POST) in one call
 createHonoAgentRouter({ secret }).mount(app, "/imrobot");
 
-// Protect a route â€” only agents with a valid X-Agent-Proof pass through
+// Protect a route — only agents with a valid X-Agent-Proof pass through
 app.get("/api/agent-data", requireAgentHono({ secret }), (c) => {
   const proof = c.get("agentProof");
   return c.json({ secret: "only bots see this", agent: proof });
 });
 ```
 
-Under the hood it uses the same `ImRobotVerifier` and `ProofTokenIssuer` â€” so JWTs issued by the Hono router verify against the Express `requireAgent`, and vice-versa. Rotate secrets across both without breaking anything.
+Under the hood it uses the same `ImRobotVerifier` and `ProofTokenIssuer` — so JWTs issued by the Hono router verify against the Express `requireAgent`, and vice-versa. Rotate secrets across both without breaking anything.
 
 ### Next.js
 
-The `imrobot/next` subpath ships two adapters â€” one for the App Router (Edge or Node.js middleware) and one for the Pages Router (API routes). Both wrap the same `ImRobotVerifier` and `ProofTokenIssuer` as the Express and Hono adapters, so proof tokens are cross-verifiable across all four runtimes.
+The `imrobot/next` subpath ships two adapters — one for the App Router (Edge or Node.js middleware) and one for the Pages Router (API routes). Both wrap the same `ImRobotVerifier` and `ProofTokenIssuer` as the Express and Hono adapters, so proof tokens are cross-verifiable across all four runtimes.
 
-**App Router â€” `middleware.ts` at the repo root:**
+**App Router — `middleware.ts` at the repo root:**
 
 ```ts
 import { createNextMiddleware } from 'imrobot/next'
@@ -264,9 +271,9 @@ export const config = {
 }
 ```
 
-The middleware auto-mounts `GET /imrobot/challenge` and `POST /imrobot/verify`, then guards any path in `protectedPaths` by requiring a valid `X-Agent-Proof` header. Requests without a token get `401`; invalid tokens get `403`. The adapter intentionally avoids importing from `next/server` so the package remains installable in non-Next.js projects â€” it accepts any object matching the `NextRequest` shape and returns a plain `Response` (or `null` to fall through).
+The middleware auto-mounts `GET /imrobot/challenge` and `POST /imrobot/verify`, then guards any path in `protectedPaths` by requiring a valid `X-Agent-Proof` header. Requests without a token get `401`; invalid tokens get `403`. The adapter intentionally avoids importing from `next/server` so the package remains installable in non-Next.js projects — it accepts any object matching the `NextRequest` shape and returns a plain `Response` (or `null` to fall through).
 
-**Pages Router â€” `pages/api/imrobot.ts`:**
+**Pages Router — `pages/api/imrobot.ts`:**
 
 ```ts
 import { createNextApiHandler } from 'imrobot/next'
@@ -278,7 +285,7 @@ export default createNextApiHandler({
 })
 ```
 
-A single handler routes both `GET` (challenge) and `POST` (verify) on the same route. Use `requireAgent` from `imrobot/server` in your other API routes to gate them behind the issued proof token â€” the JWTs are the same format across both routers.
+A single handler routes both `GET` (challenge) and `POST` (verify) on the same route. Use `requireAgent` from `imrobot/server` in your other API routes to gate them behind the issued proof token — the JWTs are the same format across both routers.
 
 ### Rate limiting
 
@@ -326,7 +333,7 @@ const status = limiter.getStatus(clientIp)
 | ---------------- | --------------- | ------- | ---------------------------------------- |
 | `windowMs`       | `number`        | `60000` | Sliding window duration in ms            |
 | `maxRequests`    | `number`        | `30`    | Max requests per window per key          |
-| `onLimitReached` | `(key) => void` | â€”       | Callback when a client exceeds the limit |
+| `onLimitReached` | `(key) => void` | —       | Callback when a client exceeds the limit |
 
 Expired entries are automatically cleaned up to prevent memory leaks in long-running servers.
 
@@ -365,6 +372,9 @@ npx imrobot info
 # Probe any URL to check if it accepts AI agents via imrobot
 npx imrobot test-agent https://example.com
 npx imrobot test-agent example.com --json    # machine-readable output
+
+# Run the MCP server over stdio (tools for Claude Code, Claude Desktop, Cursor, ...)
+npx -y imrobot mcp
 ```
 
 `test-agent` looks for (in order of confidence):
@@ -421,15 +431,88 @@ const doc = buildDiscoveryDocument({ challengePath: '/imrobot' })
 // Serve `doc` as JSON at /.well-known/imrobot.json
 ```
 
+### Web Bot Auth: signed agents skip the challenge
+
+imrobot verifies [Web Bot Auth](https://datatracker.ietf.org/doc/draft-ietf-webbotauth-httpsig-protocol/)
+signatures (draft-ietf-webbotauth-httpsig-protocol-01, on RFC 9421 HTTP Message Signatures).
+An agent that signs its requests with an Ed25519 key published in a key directory is
+recognised cryptographically, so the challenge is skipped for it. Everything else is challenged as before.
+
+What the verifier checks:
+
+- `Signature-Agent` names the agent's key directory. It must be covered by the signature and use https.
+- `created` and `expires` are required. `keyid` must be the key's RFC 7638 thumbprint, `tag` must be
+  `web-bot-auth`, and `@authority` must be covered.
+- A `nonce` that was already seen is refused (in-memory store by default; plug in a shared one across workers).
+- Key directories are fetched without following redirects, with a 5 s timeout and a 64 kB size cap.
+  They are cached for the server's `Cache-Control` max-age, clamped to 60 s .. 24 h.
+  A failed refetch keeps the cached keys.
+- The RFC 9421 test keys are refused by default.
+
+Choose which agents you trust. An allow-list is the safe default:
+
+```ts
+import { requireAgent } from 'imrobot/server'
+
+app.use('/api/agent', requireAgent({
+  secret: process.env.IMROBOT_SECRET!,
+  webBotAuth: {
+    trustedSignatureAgents: ['https://agent.example'],
+    authorities: ['api.your-site.example'], // your own host(s): stops cross-site replay
+  },
+}))
+// req.webBotAuth -> { verified: true, keyid, agent, ... } for a signed agent
+```
+
+Set `authorities`. Without it, a signature an agent made for another site can be replayed to
+you with a spoofed `Host` header, and the adapters log a warning. A signature over `@authority`
+alone still replays to any path on your host until it is 5 minutes old (`maxAgeSeconds`) or its
+nonce is seen. `requireComponents: ['@method', '@path']` binds it to one request, and
+`requireNonce: true` makes it single-use.
+
+The same option exists on `requireAgentHono` (`c.get('webBotAuth')`) and on `createNextMiddleware`
+(for `protectedPaths`). A refused request gets a 401 with an `Accept-Signature` header describing the
+signature we expect.
+
+Other key sources:
+
+- `directoryUrl`: pin one directory.
+- `allowAnySignatureAgent: true`: accept any public https agent. Private and loopback hosts are refused.
+  This is risky on a server that can reach internal services: a public name that RESOLVES to a
+  private address is not detected (DNS is not resolved). Prefer an allow-list there, or an egress
+  firewall. At most 2 directories are fetched per request.
+
+`accept(result)` can still veto a verified agent.
+
+**Signing as an agent** (`imrobot/agent`):
+
+```ts
+import { generateAgentKey, createSignedFetch, createKeyDirectoryHandler } from 'imrobot/agent'
+
+const key = await generateAgentKey()            // store key.privateJwk as a secret
+// Publish your directory at https://agent.example/.well-known/http-message-signatures-directory
+export const GET = createKeyDirectoryHandler({ privateJwks: [key.privateJwk] })
+
+const signedFetch = createSignedFetch({
+  privateJwk: key.privateJwk,
+  signatureAgent: 'https://agent.example',
+})
+await signedFetch('https://site.example/api/agent/data')
+```
+
+Python has the same pieces: `imrobot.web_bot_auth.WebBotAuthVerifier`,
+`imrobot.fastapi.require_agent(..., web_bot_auth=verifier)` and `imrobot.agent.sign_request`.
+Install them with `pip install "imrobot[wba]"`.
+
 ## Screenshot protection
 
 The challenge text is **blurred by default** and only revealed when the user hovers over it. This defeats screenshot-based attacks (screen capture tools, CDP screenshots, PrintScreen) since the captured image shows only blurred content.
 
 An additional JavaScript shield detects screenshot shortcuts (PrintScreen, Cmd+Shift+3/4/5, Ctrl+Shift+S) and window blur/visibility changes, applying an extra blur layer that overrides even the hover state.
 
-Combined with the hidden nonce (not displayed visually) and TTL expiry, this makes screenshot+OCR workflows ineffective â€” even if the blur were bypassed, the nonce is missing from the visual output.
+Combined with the hidden nonce (not displayed visually) and TTL expiry, this makes screenshot+OCR workflows ineffective — even if the blur were bypassed, the nonce is missing from the visual output.
 
-> **Note:** AI agents are unaffected â€” they read challenge data from the DOM, not from the screen.
+> **Note:** AI agents are unaffected — they read challenge data from the DOM, not from the screen.
 
 ### Using the shield in vanilla JS
 
@@ -448,14 +531,16 @@ const cleanup = setupScreenshotShield((shielded) => {
 
 ## How agents interact with it
 
-AI agents read the challenge data directly from the DOM via the `data-imrobot-challenge` attribute â€” they never need to "see" the visual text, so blur has no effect on them.
+AI agents read the challenge data directly from the DOM via the `data-imrobot-challenge` attribute — they never need to "see" the visual text, so blur has no effect on them.
 
 1. **Read the challenge** from `data-imrobot-challenge` attribute (JSON)
-2. **Execute the pipeline** â€” each operation is a deterministic transform
+2. **Execute the pipeline** — each operation is a deterministic transform
 3. **Submit the answer** via the input field or programmatically
 
 ```js
-// Agent reads challenge from DOM (unaffected by blur)
+// Agent reads challenge from DOM (unaffected by blur). For the Web Component
+// the widget lives in its open shadow root:
+//   document.querySelector('imrobot-widget').shadowRoot.querySelector('[data-imrobot-challenge]')
 const el = document.querySelector('[data-imrobot-challenge]')
 const challenge = JSON.parse(el.dataset.imrobotChallenge)
 
@@ -488,9 +573,9 @@ console.log(formatPipelineNL(challenge.visibleSeed, challenge.pipeline))
 //  ..."
 ```
 
-Every operation has 3â€“4 distinct phrasings that are randomly selected on each call, so the display text varies unpredictably. Agents must parse the JSON `pipeline` (unaffected), while regex scraping of the visual text becomes unreliable.
+Every operation has 3–4 distinct phrasings that are randomly selected on each call, so the display text varies unpredictably. Agents must parse the JSON `pipeline` (unaffected), while regex scraping of the visual text becomes unreliable.
 
-> **Tip:** The original programmatic functions `formatOperation` / `formatPipeline` remain unchanged â€” use them when you need a stable, deterministic format.
+> **Tip:** The original programmatic functions `formatOperation` / `formatPipeline` remain unchanged — use them when you need a stable, deterministic format.
 
 ## Operations reference
 
@@ -498,37 +583,38 @@ Every operation has 3â€“4 distinct phrasings that are randomly selected on 
 
 | Operation            | Description             | Example                  |
 | -------------------- | ----------------------- | ------------------------ |
-| `reverse()`          | Reverse the string      | `"abc"` â†’ `"cba"`        |
-| `to_upper()`         | Convert to uppercase    | `"abc"` â†’ `"ABC"`        |
-| `to_lower()`         | Convert to lowercase    | `"ABC"` â†’ `"abc"`        |
-| `base64_encode()`    | Base64 encode           | `"hello"` â†’ `"aGVsbG8="` |
-| `rot13()`            | ROT13 cipher            | `"hello"` â†’ `"uryyb"`    |
-| `hex_encode()`       | Hex encode each char    | `"AB"` â†’ `"4142"`        |
-| `sort_chars()`       | Sort characters         | `"dcba"` â†’ `"abcd"`      |
-| `char_code_sum()`    | Sum of char codes       | `"AB"` â†’ `"131"`         |
-| `substring(s, e)`    | Extract substring       | `"abcdef"` â†’ `"cde"`     |
-| `repeat(n)`          | Repeat string n times   | `"ab"` â†’ `"ababab"`      |
-| `replace(s, r)`      | Replace all occurrences | `"aab"` â†’ `"xxb"`        |
-| `pad_start(len, ch)` | Pad start to length     | `"abc"` â†’ `"000abc"`     |
-| `vowel_count()`      | Count vowels            | `"hello"` â†’ `"2"`        |
-| `consonant_extract()`| Extract consonants only | `"hello"` â†’ `"hll"`      |
-| `run_length_encode()` | Run-length encode      | `"aaabb"` â†’ `"3a2b"`     |
-| `atbash()`           | Atbash cipher (aâ†”z)    | `"abc"` â†’ `"zyx"`        |
+| `reverse()`          | Reverse the string      | `"abc"` → `"cba"`        |
+| `to_upper()`         | Convert to uppercase    | `"abc"` → `"ABC"`        |
+| `to_lower()`         | Convert to lowercase    | `"ABC"` → `"abc"`        |
+| `base64_encode()`    | Base64 encode           | `"hello"` → `"aGVsbG8="` |
+| `rot13()`            | ROT13 cipher            | `"hello"` → `"uryyb"`    |
+| `hex_encode()`       | Hex encode each char    | `"AB"` → `"4142"`        |
+| `sort_chars()`       | Sort characters         | `"dcba"` → `"abcd"`      |
+| `char_code_sum()`    | Sum of char codes       | `"AB"` → `"131"`         |
+| `substring(s, e)`    | Extract substring       | `"abcdef"` → `"cde"`     |
+| `repeat(n)`          | Repeat string n times   | `"ab"` → `"ababab"`      |
+| `replace(s, r)`      | Replace all occurrences | `"aab"` → `"xxb"`        |
+| `pad_start(len, ch)` | Pad start to length     | `"abc"` → `"000abc"`     |
+| `vowel_count()`      | Count vowels            | `"hello"` → `"2"`        |
+| `consonant_extract()`| Extract consonants only | `"hello"` → `"hll"`      |
+| `run_length_encode()` | Run-length encode      | `"aaabb"` → `"3a2b"`     |
+| `atbash()`           | Atbash cipher (a↔z)    | `"abc"` → `"zyx"`        |
 
 ### Byte & cipher operations
 
 | Operation            | Description                           | Example                         |
 | -------------------- | ------------------------------------- | ------------------------------- |
-| `caesar(shift)`      | Caesar cipher with configurable shift | `"abc"` + shift 1 â†’ `"bcd"`     |
-| `xor_encode(key)`    | XOR each byte with key                | `"AB"` + key 1 â†’ `"@C"`         |
-| `count_chars(char)`  | Count occurrences of a char           | `"aababc"` + char `"a"` â†’ `"3"` |
-| `slice_alternate()`  | Keep every other character            | `"abcdef"` â†’ `"ace"`            |
-| `fnv1a_hash()`       | FNV-1a hash of the string             | `"test"` â†’ `"bc2c0be9"`         |
-| `length()`           | String length as string               | `"hello"` â†’ `"5"`               |
-| `sha256_hash()`      | Cascaded FNV-1a hash (256-bit output) | deterministic 64-char hex       |
+| `caesar(shift)`      | Caesar cipher with configurable shift | `"abc"` + shift 1 → `"bcd"`     |
+| `xor_encode(key)`    | XOR each byte with key                | `"AB"` + key 1 → `"@C"`         |
+| `count_chars(char)`  | Count occurrences of a char           | `"aababc"` + char `"a"` → `"3"` |
+| `slice_alternate()`  | Keep every other character            | `"abcdef"` → `"ace"`            |
+| `fnv1a_hash()`       | FNV-1a hash of the string             | `"test"` → `"afd071e5"`         |
+| `length()`           | String length as string               | `"hello"` → `"5"`               |
+| `sha256_hash()`      | Deprecated name: cascaded FNV-1a, NOT SHA-256 (256-bit output) | deterministic 64-char hex |
+| `sha256()`           | Real SHA-256 of the UTF-8 bytes (opt-in, `sha256: true`) | `"abc"` → `"ba7816bf…15ad"` |
 | `byte_xor(key[])`    | XOR each byte with key array          | byte-level encryption           |
 | `hash_chain(rounds)` | Iterated FNV-1a hash                  | cascaded hashing                |
-| `nibble_swap()`      | Swap high/low nibbles per byte        | `0xAB` â†’ `0xBA`                 |
+| `nibble_swap()`      | Swap high/low nibbles per byte        | `0xAB` → `0xBA`                 |
 | `bit_rotate(bits)`   | Rotate bits left within byte          | bitwise rotation                |
 
 ## Configuration
@@ -537,10 +623,10 @@ Every operation has 3â€“4 distinct phrasings that are randomly selected on 
 | ------------ | --------------------------------- | -------------- | ---------------------------------------------------------------- |
 | `difficulty` | `'easy' \| 'medium' \| 'hard'`    | `'medium'`     | Number and complexity of operations                              |
 | `theme`      | `'light' \| 'dark'`               | `'light'`      | Color theme                                                      |
-| `size`       | `'compact' \| 'standard'`         | `'standard'`   | Widget size â€” `compact` for smaller footprint (320px)            |
+| `size`       | `'compact' \| 'standard'`         | `'standard'`   | Widget size — `compact` for smaller footprint (320px)            |
 | `ttl`        | `number`                          | per-difficulty | Challenge time-to-live in ms (easy: 30s, medium: 20s, hard: 15s) |
-| `onVerified` | `(token) => void`                 | â€”              | Callback on successful verification                              |
-| `onError`    | `(error) => void`                 | â€”              | Callback on failed verification                                  |
+| `onVerified` | `(token) => void`                 | —              | Callback on successful verification                              |
+| `onError`    | `(error) => void`                 | —              | Callback on failed verification                                  |
 
 ### Difficulty levels
 
@@ -561,7 +647,7 @@ const verifier = createVerifier({
   ttl: 10_000, // optional: override default TTL
 })
 
-// Generate â†’ send to client â†’ client solves â†’ verify answer
+// Generate → send to client → client solves → verify answer
 const challenge = await verifier.generate()
 const result = await verifier.verify(challenge, agentAnswer)
 ```
@@ -590,9 +676,26 @@ const verifier = createVerifier({
 
 The replay guard is in-memory with automatic expiry cleanup and `unref()`'d timers, so it won't keep the process alive. Call `replayGuard.destroy()` on shutdown to clear the cleanup interval.
 
+#### Timing gate and real SHA-256 (0.9)
+
+```ts
+const verifier = createVerifier({
+  secret: process.env.IMROBOT_SECRET!,
+  minSolveMs: 50,     // answers faster than this: { valid: false, reason: 'too_fast' }
+  maxSolveMs: 8_000,  // slower than this:         { valid: false, reason: 'too_slow' }
+  sha256: true,       // put one real SHA-256 step in every pipeline
+})
+```
+
+The solve time is measured on the server clock, from the issue time that the HMAC signs, so a client cannot back-date it. Both bounds are off by default (`minSolveMs: 0`, no `maxSolveMs`). `maxSolveMs` is a tighter window than the TTL: a person copying the challenge into a script and pasting the answer back usually takes longer than a bot does. It does not stop someone who automates that whole round trip. [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) says plainly what these checks do and do not prove.
+
+`sha256: true` adds an operation that an LLM cannot do without a code tool, so it shuts out agents that only reason in text. Solvers older than 0.9 do not know the `sha256` op, so turn it on once your agents run imrobot 0.9 or later. With several instances, keep `minSolveMs` well above the clock skew between them (it is measured across two clocks).
+
+Python has the same options: `create_verifier(secret, min_solve_ms=50, max_solve_ms=8000, sha256=True)`.
+
 ### ChallengeAnalytics
 
-`ChallengeAnalytics` (exported from `imrobot/server`) is a lightweight, in-memory metrics tracker for monitoring challenge activity â€” generation rates, verification rates, solve-time percentiles, and failure-reason distributions. Zero external dependencies, memory-bounded (sliding window of configurable size).
+`ChallengeAnalytics` (exported from `imrobot/server`) is a lightweight, in-memory metrics tracker for monitoring challenge activity — generation rates, verification rates, solve-time percentiles, and failure-reason distributions. Zero external dependencies, memory-bounded (sliding window of configurable size).
 
 ```ts
 import { ChallengeAnalytics } from 'imrobot/server'
@@ -616,14 +719,14 @@ console.log(stats.byDifficulty.hard.failureReasons)   // { wrong_answer: 1 }
 // Export for dashboards / structured logging
 console.log(JSON.stringify(analytics.toJSON(), null, 2))
 
-// Periodic rotation â€” reset all counters
+// Periodic rotation — reset all counters
 analytics.reset()
 ```
 
 `getStats()` returns an `AnalyticsSnapshot` with:
-- **`summary`** â€” aggregate totals: `totalGenerated`, `totalVerified`, `totalFailed`, `totalExpired`, `totalSuspicious`, `verificationRate`, `avgSolveTimeMs`, `uptimeMs`
-- **`byDifficulty`** â€” per-difficulty `DifficultyStats` with min/max/p95 solve times and per-reason failure counts
-- **`collectedAt`** â€” Unix timestamp of the snapshot
+- **`summary`** — aggregate totals: `totalGenerated`, `totalVerified`, `totalFailed`, `totalExpired`, `totalSuspicious`, `verificationRate`, `avgSolveTimeMs`, `uptimeMs`
+- **`byDifficulty`** — per-difficulty `DifficultyStats` with min/max/p95 solve times and per-reason failure counts
+- **`collectedAt`** — Unix timestamp of the snapshot
 
 ### VerifyResult
 
@@ -632,7 +735,14 @@ The `verify()` method returns a `VerifyResult`:
 ```ts
 interface VerifyResult {
   valid: boolean
-  reason?: 'expired' | 'invalid_hmac' | 'wrong_answer' | 'tampered' | 'replay'
+  reason?:
+    | 'expired'
+    | 'invalid_hmac'
+    | 'wrong_answer'
+    | 'tampered'
+    | 'replay'
+    | 'too_fast' // solved faster than minSolveMs
+    | 'too_slow' // solved slower than maxSolveMs
   elapsed?: number // ms since challenge was created
   suspicious?: boolean // true if response was unusually slow
 }
@@ -655,7 +765,7 @@ interface ImRobotToken {
 
 ## Adaptive difficulty
 
-The adaptive difficulty engine auto-adjusts challenge difficulty per agent based on behavioral patterns â€” inspired by Arkose Labs (FunCaptcha) progressive difficulty and reCAPTCHA v3 risk scoring.
+The adaptive difficulty engine auto-adjusts challenge difficulty per agent based on behavioral patterns — inspired by Arkose Labs (FunCaptcha) progressive difficulty and reCAPTCHA v3 risk scoring.
 
 ```ts
 import { AdaptiveDifficulty } from 'imrobot/core'
@@ -736,7 +846,7 @@ npm install @opentelemetry/api @opentelemetry/sdk-metrics @opentelemetry/exporte
 ```ts
 import { MeterProvider, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics'
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http'
-import { ChallengeAnalytics, ChallengeOTelExporter } from 'imrobot/server'
+import { ChallengeAnalytics, ChallengeOTelExporter, createVerifier } from 'imrobot/server'
 
 const analytics = new ChallengeAnalytics()
 
@@ -776,9 +886,65 @@ process.on('SIGTERM', () => otelExporter.stop())
 
 `@opentelemetry/api` is an optional peer dependency — the exporter uses the interface types only and does not hard-import the SDK.
 
+## Agent frameworks (Claude Agent SDK, LangChain, CrewAI)
+
+The agent side in one call: give it a site, get a proof token back. It reads the site's
+`/.well-known/imrobot.json` (or uses the default `/imrobot/challenge` mount), solves the challenge in
+code and posts the answer.
+
+```ts
+import { passGate } from 'imrobot/agent'
+
+const { proofToken, proofHeader } = await passGate('https://site.example', { agentId: 'my-agent' })
+await fetch('https://site.example/api/data', { headers: { [proofHeader]: proofToken } })
+```
+
+```python
+from imrobot.gate import pass_gate          # standard library only
+
+gate = pass_gate("https://site.example", agent_id="my-agent")
+httpx.get("https://site.example/api/data", headers={gate.proof_header: gate.proof_token})
+```
+
+The same thing as model tools, `imrobot_pass_gate(url)` and `imrobot_solve_challenge(challenge)`.
+They return JSON strings and never throw, so a model can read what went wrong:
+
+| Framework | Use | Example |
+|---|---|---|
+| Claude Agent SDK | `imrobotTools()` from `imrobot/agent`, wrapped with `tool()` + `createSdkMcpServer()`; or the stdio server `npx -y imrobot mcp` | [`examples/claude-agent-sdk.ts`](examples/claude-agent-sdk.ts) |
+| Claude Code, Claude Desktop, Cursor (any MCP client) | `npx -y imrobot mcp` (tool `pass-gate`) | [MCP server](#mcp-server-model-context-protocol) |
+| LangChain / LangGraph (Python) | `from imrobot.langchain import get_langchain_tools`, `pip install "imrobot[langchain]"` | [`python/examples/langchain_agent.py`](python/examples/langchain_agent.py) |
+| CrewAI | `from imrobot.crewai import get_crewai_tools`, `pip install "imrobot[crewai]"` | [`python/examples/crewai_agent.py`](python/examples/crewai_agent.py) |
+| Anything else (Vercel AI SDK, LangChain.js, OpenAI tools, ...) | `imrobotTools()`: `{ name, description, inputSchema, execute }` with a plain JSON Schema | - |
+
+Defaults that matter when a model picks the URL:
+
+- Private, loopback and link-local hosts are refused (an LLM can be talked into calling internal
+  services). `allowPrivateHosts` / `allow_private_hosts=True` / `--allow-private-hosts` lifts that for
+  local development.
+- Only http(s). Endpoints from the discovery document must be paths on the same origin. Redirects
+  are not followed.
+- Each request times out after 10 s (headers and body) and a response is capped at 256 kB.
+- The challenge comes from the site, so it is solved under `SOLVE_LIMITS` (at most 32 operations,
+  256 k characters per value, 10 000 `hash_chain` rounds). A hostile pipeline is refused with
+  `unsupported_challenge` instead of hanging the agent.
+- Host names are not resolved: a public name that points (or rebinds) to a private address gets
+  through. In production, run agents behind an egress filter or an allow-list of sites.
+- Errors carry a stable code: `invalid_url`, `private_host`, `network`, `timeout`, `bad_response`,
+  `unsupported_challenge`, `rejected` (with the server's `reason`).
+
+To also send Web Bot Auth signatures, pass a signed fetch: `passGate(url, { fetch: createSignedFetch(...) })`.
+A custom fetch must honour `redirect: 'manual'` (not follow redirects), or the same-origin checks no
+longer hold.
+
+Try it locally: `npx tsx examples/demo-site.ts`, then
+`npx tsx examples/pass-gate.ts http://127.0.0.1:8787 --allow-private-hosts`.
+
 ## MCP server (Model Context Protocol)
 
 imrobot ships a native MCP server that lets AI agents auto-discover and complete verification challenges without any custom integration code. Agents call the tools directly; no HTTP endpoints required.
+
+[![imrobot MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/leopechnicki/im_robot/badges/card.svg)](https://glama.ai/mcp/servers/leopechnicki/im_robot)
 
 ```ts
 import { createMCPServer } from 'imrobot/mcp'
@@ -787,18 +953,27 @@ import { createMCPServer } from 'imrobot/mcp'
 createMCPServer({ defaultDifficulty: 'medium' }).start()
 ```
 
-Add to your `claude_desktop_config.json`:
+Or run it from the CLI, no code: `npx -y imrobot mcp`. Claude Code:
+
+```bash
+claude mcp add imrobot -- npx -y imrobot mcp
+```
+
+Claude Desktop, Cursor and other MCP clients (`claude_desktop_config.json` and similar):
 
 ```json
 {
   "mcpServers": {
     "imrobot": {
-      "command": "node",
-      "args": ["-e", "import('imrobot/mcp').then(m => m.createMCPServer().start())"]
+      "command": "npx",
+      "args": ["-y", "imrobot", "mcp"]
     }
   }
 }
 ```
+
+`pass-gate` refuses private, loopback and link-local hosts. For a site on your own machine, add
+`--allow-private-hosts` to the args.
 
 ### Available MCP tools
 
@@ -809,6 +984,7 @@ Add to your `claude_desktop_config.json`:
 | `verify-answer` | Check if a computed answer is correct |
 | `create-token` | Create a proof token after solving |
 | `get-discovery-document` | Fetch the imrobot discovery document |
+| `pass-gate` | Pass a real site's gate: discover its endpoints, solve, return the proof token (`{ url }`) |
 
 ### Programmatic usage (no stdio)
 
@@ -832,8 +1008,17 @@ const solveResp = await server.handleMessage(JSON.stringify({
 }))
 
 const { result: solveResult } = JSON.parse(solveResp)
-const { token } = JSON.parse(solveResult.content[0].text)
-// Use token.challengeId + token.signature for X-Agent-Proof header
+const { answer, token } = JSON.parse(solveResult.content[0].text)
+// `token` is a client-side solve receipt, NOT an X-Agent-Proof value: a server
+// guarded by requireAgent rejects it (403). To call a protected API, solve the
+// server's own signed challenge and trade it for a proof token:
+//   const signed = await (await fetch('https://site/imrobot/challenge')).json()
+//   ...solve-challenge with { challenge: signed } -> answer
+//   const { proofToken } = await (await fetch('https://site/imrobot/verify', {
+//     method: 'POST', headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ challenge: signed, answer }),
+//   })).json()
+//   fetch('https://site/api/agent', { headers: { 'X-Agent-Proof': proofToken } })
 ```
 
 The MCP server has zero runtime dependencies — it implements JSON-RPC 2.0 directly and calls the same core API that agents use.
@@ -882,7 +1067,7 @@ Highlights:
 
 - **Zero deps** for `solve_challenge`, `ImRobotVerifier`, `ProofTokenIssuer`. FastAPI is an optional `[fastapi]` extra.
 - **Cross-runtime interop** — `test_interop.py` pins JS reference outputs (FNV-1a, HMAC-SHA256, base64url) so any drift breaks CI.
-- **RFC 7519 JWTs (HS256)** — proof tokens verify with `PyJWT`, `python-jose`, or any RFC-compliant library.
+- **RFC 7519 JWTs (HS256)** — proof tokens verify with `PyJWT`, `python-jose`, or any RFC-compliant library. (Tokens issued by 0.9.0 and earlier carried a non-standard signature segment; imrobot itself still verifies them, third-party JWT libraries do not.)
 - **Python 3.9 – 3.13** supported.
 - **PyPI auto-publish** on `py-v*` tags via `.github/workflows/publish-python.yml` (OIDC trusted publishing, no long-lived tokens).
 
@@ -937,27 +1122,58 @@ Use those when you want the opposite: protect your service from bots and allow o
 
 > **Can I use both?** Yes — some services authenticate agents via imrobot and gate human-facing forms with Turnstile on the same backend.
 
-## FAQ — How does imrobot compare to HATCHA (Monday.com)?
+## FAQ — How does imrobot compare to BOTCHA, Turingate, HATCHA and Web Bot Auth?
 
-[HATCHA](https://hatcha.monday.com) is Monday.com's reverse-CAPTCHA — the closest direct competitor to imrobot. Both solve the same problem (proving a caller is a bot, not a human) but take different approaches.
+These are the other ways to let agents in, not humans. Each column comes from that project's own
+README or npm page, checked 2026-11-24: [BOTCHA](https://github.com/dupe-com/botcha) (`@dupecom/botcha`
+0.24.0), [Turingate](https://github.com/rudraneel93/turingate-sdk) (`turingate` 0.3.0),
+[HATCHA](https://github.com/mondaycom/HATCHA) and
+[Web Bot Auth](https://datatracker.ietf.org/doc/draft-ietf-webbotauth-httpsig-protocol/) (IETF draft
+-01). "Not documented" means the README says nothing, not that the feature is missing.
 
-| | imrobot | HATCHA (Monday.com) |
+| | imrobot | BOTCHA | Turingate | HATCHA | Web Bot Auth |
+|---|---|---|---|---|---|
+| **What it is** | Library: you run the challenge and verify on your own server | Hosted API (botcha.ai); the service code is MIT and runs locally on the Workers runtime | Hosted service generates the challenges; agent tools, widget and verifiers are MIT | Library: React component + server package | IETF draft: agents sign their HTTP requests, sites verify the signature |
+| **Needs a third-party service** | No | Yes for the hosted API (tokens verified via its JWKS) | Yes (free plan: 50 passes a month) | No | No (Cloudflare and others verify it at the edge) |
+| **Proof** | Randomised pipeline of string, byte and hash operations; optional real SHA-256 step and solve-time window | Default "hybrid": 5 SHA-256 hashes in 500 ms plus 3 reasoning questions | 20 tasks in 60 s, at least 17 right, some hidden in images | One of five puzzle kinds, 30 s | Ed25519 signature (RFC 9421) with a published key directory; no puzzle |
+| **Token after success** | HS256 JWT you issue and verify yourself | JWT access token (1 h) + refresh token, revocation | Pass bound to the agent's Ed25519 key, about 10 min, one site | Opaque HMAC-signed token | None: every request is signed |
+| **Who is behind the agent** | Not covered (agent id claim only); pair with Web Bot Auth for identity | Agent registry, reputation scores, Visa TAP | Owner identity, signed delegation limits, trust tiers, shared reputation | Not documented | The key directory of the agent's operator |
+| **Payments** | No | x402: pay $0.001 USDC instead of solving | x402 paywall for verified agents | Not documented | No (payment protocols build on it) |
+| **Agent side** | `passGate()`, `npx imrobot mcp`, Claude Agent SDK / LangChain / CrewAI tools, Web Bot Auth signing client | SDK that solves and refreshes tokens; docs MCP at botcha.ai/mcp | CLI + `turingate-mcp` server | Not documented | Signing libraries (`web-bot-auth` and others) |
+| **Languages** | npm + PyPI (`imrobot`) | npm + PyPI (`botcha`) | npm; Python and Go verifiers | npm (JS only) | Many implementations |
+| **License** | MIT | MIT | MIT (client side); hosted service closed | MIT | Open standard |
+
+**Where imrobot stands.** It is the option with no service to sign up for. The whole flow runs in
+your process, on npm and PyPI, with React, Vue and Svelte components, a Web Component, and adapters for Express,
+Next.js, Hono and FastAPI. It also speaks Web Bot Auth both ways: signed agents skip the challenge,
+and agents can sign their own requests.
+
+**Where it is behind.** BOTCHA and Turingate run hosted reputation and identity networks and take
+x402 payments; imrobot does neither. Its challenge only proves that the caller ran code. A person who
+runs the open-source solver passes, the same as with every other puzzle here. The timing gate narrows
+that gap but does not close it; [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) spells out what it does
+and does not prove. When you need to know who is behind an agent, verify Web Bot Auth signatures.
+
+## FAQ — How does imrobot compare to HATCHA (monday.com)?
+
+[HATCHA](https://github.com/mondaycom/HATCHA) is monday.com's open-source reverse CAPTCHA ("CAPTCHA proves you're human. HATCHA proves you're not."). It is the closest direct competitor to imrobot. The row for HATCHA comes from its public README (checked 2026-11-24); where that README says nothing, the cell says so.
+
+| | imrobot | HATCHA |
 |---|---|---|
-| **Framework support** | React, Vue, Svelte, Web Component, headless core | Web Component only |
-| **Token format** | Standards-compliant JWT (RFC 7519, HS256) — verify with any JWT library | Proprietary token format |
-| **Challenge type** | Deterministic compute pipeline (string transforms, hashing, bitwise ops) | Reverse image recognition |
-| **Image challenges** | Optional AI image layer (`ImageChallengePool`) | Always-on |
-| **Zero dependencies** | Yes — 0 runtime deps | No |
-| **Self-hosted** | Yes — deploy anywhere, no CDN lock-in | No — requires Monday.com CDN |
-| **Open source** | Yes (MIT) | No |
-| **Replay protection** | Built-in `ChallengeReplayGuard` (in-memory) + `RedisReplayStore` (multi-instance) | Unknown |
-| **Adaptive difficulty** | Yes — per-agent risk scoring with 4 weighted factors | Unknown |
-| **CLI tool** | Yes — `npx imrobot challenge\|solve\|verify\|benchmark` | No |
-| **MCP integration** | Yes — `imrobot/mcp` for AI agent tooling | No |
-| **Rate limiting** | Built-in sliding window rate limiter, per-IP, standard headers | Unknown |
-| **Discovery endpoint** | Yes — `/.well-known/imrobot.json` (A2A-inspired Agent Card) | No |
+| **License / hosting** | MIT, self-hosted | MIT, self-hosted (npm packages, no hosted service required) |
+| **Packages** | `imrobot` (npm, one package with subpath exports), `imrobot` (PyPI) | `@mondaycom/hatcha-react`, `@mondaycom/hatcha-server` (`hatcha-core` underneath), JS only |
+| **Server verification** | HMAC-SHA256 signed, stateless | HMAC signed, stateless (no database) |
+| **Challenge type** | Randomised pipeline of 25+ string, byte and hash operations (optional real SHA-256 step) | Five built-in kinds (big multiplication, string reverse, character count, sort, binary to ASCII); custom kinds can be registered |
+| **Time limit** | Per-difficulty TTL plus an optional solve-time window (`minSolveMs` / `maxSolveMs`) | 30 s |
+| **Frontends** | React, Vue, Svelte, Web Component, headless core | React component |
+| **Server adapters** | Express, Next.js, Hono, FastAPI | Next.js App Router, Express |
+| **Token after success** | Standard JWT (RFC 7519, HS256) | Opaque HMAC-signed token (format not specified for downstream use) |
+| **Replay protection** | `ChallengeReplayGuard` (in memory) + `RedisReplayStore` | Not documented |
+| **Web Bot Auth (signed agents skip the challenge)** | Yes, verifier + signing client | Not documented |
+| **CLI / MCP** | `npx imrobot challenge\|solve\|verify\|benchmark\|mcp`, `imrobot/mcp` | Not documented |
 
-**Key difference:** imrobot is framework-agnostic, self-hostable, and issues standard JWTs. HATCHA is a managed SaaS product with a single web-component integration. If you need zero CDN dependencies, multi-framework support, or JWT tokens that any downstream service can verify without calling Monday.com's servers, imrobot is the right choice.
+**Key difference:** both are free and self-hosted. HATCHA is a small, focused React + server pair with five built-in puzzle kinds. imrobot covers more stacks (Python, Vue, Svelte, Hono, FastAPI), randomises the pipeline per challenge, and adds JWTs, replay stores, Web Bot Auth and a timing gate. Neither one can stop a human who runs an open-source solver; see [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
+
 ## Contributing
 
 Contributions are welcome! Feel free to open issues for bug reports or feature requests, or submit pull requests.

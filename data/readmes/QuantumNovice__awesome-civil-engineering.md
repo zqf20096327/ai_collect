@@ -79,6 +79,7 @@
 - [MIKE+](https://www.dhigroup.com/technologies/mikepoweredbydhi/mikeplus) - Integrated modeling of water distribution, sewer, and river networks.
 - [HEC-ResSim](https://www.hec.usace.army.mil/software/hec-ressim/) - USACE reservoir operations simulation.
 - [OpenFLUME](https://github.com/OpenFLUME/OpenFLUME) - Open-source pipe network solver for steady and transient hydraulics with pumps, valves, and tanks, usable in the browser or from Python.
+- [Fluid Network Studio](https://www.fluidnetworkstudio.com) - Browser-based pipe network solver for water, gas and heat transfer, free for liquid networks up to 50 elements, with 31 public verification cases.
 
 ## Structural Analysis & Design Software
 
@@ -326,6 +327,7 @@
 - [Concrete Calculator Hub](https://concreteestimatorhub.com/) - Concrete volume, bag count, slab, footing and material cost calculators.
 - [RoofingCalculatorHQ](https://roofingcalculatorhq.com) - Roof area, pitch, takeoff, snow/wind load and replacement cost calculators.
 - [PitchCalc](https://pitchcalc.com/?utm_source=github&utm_medium=github&utm_campaign=QuantumNovice_awesome-civil-engineering) - Free browser roof-math tools for pitch, area, rafters, and shingle bundles.
+- [Room Meadow Deck Board Calculator](https://roommeadow.com/deck-board-calculator) - Free rectangular deck board counts with stock lengths and pattern waste.
 - [Roof Cost Data](https://roofcostdata.com/roof-replacement-cost-calculator) - U.S. roof replacement cost estimator by size, material, tear-off and labor.
 - [BuildRefs](https://buildrefs.com) - Concrete, framing, NEC, Manual J and structural calculators citing their codes.
 - [Concrete Network Calculator](https://www.concretenetwork.com/concrete/howmuch/calculator.htm) - Concrete quantity calculator for slabs, footings, columns and premix bags.
@@ -342,6 +344,7 @@
 - [Build Calculator](https://www.buildcalculator.org/) - Cubic yard and tonnage calculators for gravel, concrete, mulch and asphalt.
 - [cv.cm Concrete Calculator](https://cv.cm/en/concrete/) - Slab, footing, wall, column, tube and stair volume with waste and bag counts.
 - [ProofGrit CMT Calculators](https://proofgrit.com/tools) - Free materials testing calculators: ASTM C39, ACI 318, Proctor, sieve, USCS.
+- [Alsaba Cloud Rebar Weight Calculator](https://alsaba.cloud/en/tools/rebar-weight) - Rebar weight per meter for 8-32 mm bars and total weight by count and length.
 
 ### Structure Analysis
 

@@ -6,9 +6,7 @@
 
 Anysub (formerly Whishper) makes subtitles from audio and video. Upload a recording, let Whisper transcribe it, then fix the text and timing in the editor and export. It runs on your own computer or server.
 
-<p align="center">
-  <img src="docs/images/studio.webp" alt="The Anysub studio with the video, the subtitle list and the waveform timeline" width="900">
-</p>
+https://github.com/user-attachments/assets/1d23abb7-8379-4ad3-8705-cbf8f5821c9c
 
 ## Features
 

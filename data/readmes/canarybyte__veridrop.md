@@ -15,8 +15,8 @@ the field, protocol, and cryptographic level — answering three questions:
    accounting match the official API specs?
 
 The hosted service at **[veridrop.app](https://veridrop.app)** is free,
-requires no signup, and never persists API keys. To date the community has
-run **44,000+ public detections across 6,500+ relay providers**, aggregated
+requires no signup, and never writes API keys to disk in plaintext. To date the community has
+run **179,000+ public detections across 13,800+ relay providers** (as of 2026-11-24), aggregated
 into a Bayesian-weighted public leaderboard, with **~1,500–1,800 daily unique
 visitors**. Supported protocols: Anthropic Messages API, OpenAI Chat
 Completions, and the Gemini OpenAI-compatible API.
@@ -33,7 +33,7 @@ Completions, and the Gemini OpenAI-compatible API.
 > 是否剥离了 PDF、Tool Use、Thinking、Function Calling、长上下文等关键能力,
 > 以及响应字段、流式协议、usage 计费字段是否符合官方规范。
 >
-> 线上服务：[veridrop.app](https://veridrop.app)（国内可直接访问）· 备用：[veridrop.org](https://veridrop.org)。无需注册，API key 不落盘。
+> 线上服务：[veridrop.app](https://veridrop.app)（国内可直接访问）· 备用：[veridrop.org](https://veridrop.org)。无需注册，API key 明文不落盘。
 > 也可以自托管运行,完整检测逻辑、评分权重和字段证据都在本仓库公开。
 >
 > ⭐ 如果 Veridrop 帮你识别过假中转、避过坑,欢迎给这个仓库点个 Star。
@@ -48,6 +48,22 @@ Completions, and the Gemini OpenAI-compatible API.
 
 域名如有变更，将优先更新此处。建议收藏[本 GitHub 项目页](https://github.com/canarybyte/veridrop)，以本区块公布的地址为准。
 
+## 每月检测数据
+
+最新：**[2026 年 11 月 AI 中转站实测月报](https://canarybyte.github.io/veridrop/reports/2026-11/)**（数据截至 2026-11-24）· [Markdown 版](reports/2026-11.md) · [全部月报](https://canarybyte.github.io/veridrop/)
+
+- 收录 13,856 家 API 中转站，累计 179,839 份公开检测报告，其中 6,136 家有 2 份以上报告、进入排名。
+- 进入排名的站里，中位分 70 分以上的：Claude 80%，OpenAI 98%，Gemini 91%。
+- Claude 思维签名检测里有 13% 没有通过；进入排名的 OpenAI 中转站有 14% 至少出现过一次严重问题。
+
+指南：
+
+- [中转站检测能查出什么：用中转站最怕的六件事，Veridrop 是怎么查的](https://canarybyte.github.io/veridrop/guides/zhongzhuanzhan-jiance/)
+- [AI 中转站是什么、怎么挑：五个常见的坑，每个都有实测数字](https://canarybyte.github.io/veridrop/guides/ai-zhongzhuanzhan/)
+- [Claude Code 接中转站：两个环境变量，和接完以后怎么确认是真 Claude](https://canarybyte.github.io/veridrop/guides/claude-code-zhongzhuanzhan/)
+- [Codex 和 GPT API 接中转站，怎么确认拿到的是真 GPT](https://canarybyte.github.io/veridrop/guides/gpt-zhongzhuanzhan/)
+- [中转站检测原理：拆解开源的 Veridrop，看它怎么判断模型真假](https://canarybyte.github.io/veridrop/guides/zhongzhuanzhan-jiance-yuanli/)
+
 ---
 
 一个开源的 AI API 中转站(relay / proxy)真伪与质量检测工具。给定一个 `base_url + api_key + model`,自动跑一组探针请求,把结果跟「官方真品基线」做**字段级、协议级、加密级**对比,回答三个问题:
@@ -58,7 +74,7 @@ Completions, and the Gemini OpenAI-compatible API.
 
 支持三大协议:**Anthropic Messages API**、**OpenAI Chat Completions**、**Gemini OpenAI 兼容 API**。
 
-线上服务：[veridrop.app](https://veridrop.app)（国内可直接访问）· 备用：[veridrop.org](https://veridrop.org) — 免费、无需注册、API key 不落盘。
+线上服务：[veridrop.app](https://veridrop.app)（国内可直接访问）· 备用：[veridrop.org](https://veridrop.org) — 免费、无需注册、API key 明文不落盘。
 
 ---
 
@@ -368,7 +384,7 @@ skip 的检测项不参与分母。OpenAI / Gemini 协议下,任意一项 critic
 
 ## 隐私与安全
 
-- **API key 不落盘**:只存在内存中的 `Job` 对象里,跑完(成功或失败)立即清空。不写报告 JSON、不写日志、不写磁盘。
+- **API key 明文不落盘**:本仓库的自托管版本里,key 只存在内存中的 `Job` 对象里,跑完(成功或失败)立即清空。线上服务用多进程任务队列:排队和检测期间把经过认证加密的密文临时写入任务队列,任务结束立即清空。两者都不把明文写进报告 JSON、日志或磁盘。
 - **报告里 key 脱敏**:显示为 `sk-y7xU••••••0h` 形式。
 - **代码完全开源**:可审计服务端,或直接 clone 部署到自己机器上。
 - **无追踪 / 无注册**:线上服务不要求注册账号、不写 cookie、不接埋点。

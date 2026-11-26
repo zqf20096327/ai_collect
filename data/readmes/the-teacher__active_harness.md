@@ -266,6 +266,10 @@ app/
 - [Examples](docs/TOOLS.md#3-examples)
 - [Security checklist](docs/TOOLS.md#4-security-rules-to-keep-checklist)
 
+## MCP Documentation
+
+- [Design (client, server, safety, transport options)](docs/MCP.md)
+
 ## Pipeline Documentation
 
 - [How to Create Your First Pipeline in 5 Minutes](docs/PIPELINES.md#how-to-create-your-first-pipeline-in-5-minutes)

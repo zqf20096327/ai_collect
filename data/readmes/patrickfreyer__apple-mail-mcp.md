@@ -35,6 +35,29 @@ claude plugin install apple-mail@apple-mail-mcp
 
 Then restart Claude Code.
 
+### Codex (CLI, Desktop, and IDE Extension)
+
+With `uv` installed (`uvx` available on your PATH), register the local STDIO server:
+
+```bash
+codex mcp add apple-mail -- uvx mcp-apple-mail
+codex mcp list
+```
+
+Alternatively, add this table to `~/.codex/config.toml` instead of using the CLI:
+
+```toml
+[mcp_servers.apple-mail]
+command = "uvx"
+args = ["mcp-apple-mail"]
+```
+
+The CLI, desktop app, and IDE extension share this configuration. Restart your client or start a new CLI session after adding the server. In the CLI, use `/mcp` to check the connection, then ask it to list your Apple Mail accounts.
+
+If the desktop app cannot find `uvx`, run `command -v uvx` in your terminal and use that absolute path as the TOML `command` value. Grant the macOS Automation permission to control Mail when prompted; see [Troubleshooting](#troubleshooting).
+
+This registers the MCP server. To install the optional Email Management Expert skill too, use the [npx skills method](#other-install-methods) below. See the [official Codex MCP documentation](https://developers.openai.com/codex/mcp) for more configuration options.
+
 ### Other Install Methods
 
 <details>
@@ -136,8 +159,8 @@ claude mcp add apple-mail -- /bin/bash $(pwd)/start_mcp.sh
 |------|-------------|
 | `compose_email` | Send new emails (plain text or HTML body) |
 | `reply_to_email` | Reply or reply-all with optional HTML body |
-| `forward_email` | Forward with optional message, CC/BCC |
-| `manage_drafts` | Create, list, send, and delete drafts |
+| `forward_email` | Forward with optional message, CC/BCC; `mode="draft"` saves it without a window, keeping the original attachments |
+| `manage_drafts` | Create, list, open, send, and delete drafts, by subject or draft id |
 | `create_rich_email_draft` | Export an unsent HTML `.eml` preview; Mail opens it in a read-only viewer. Use `compose_email(mode="draft")` for a sendable draft |
 
 ### Attachments
@@ -164,7 +187,7 @@ claude mcp add apple-mail -- /bin/bash $(pwd)/start_mcp.sh
 
 ### Read-Only Mode
 
-Pass `--read-only` to block delivery. Nothing leaves the machine: `compose_email` and `reply_to_email` refuse `mode="send"`, `manage_drafts` refuses `action="send"`, and `forward_email` is removed entirely because it has no non-sending mode.
+Pass `--read-only` to block delivery. Nothing leaves the machine: `compose_email`, `reply_to_email` and `forward_email` refuse `mode="send"`, and `manage_drafts` refuses `action="send"`.
 
 The composing tools stay registered so that `mode="draft"` and `mode="open"` keep working. Those never deliver anything, and they are the only place in the compose surface that supports `attachments` — `manage_drafts` and `create_rich_email_draft` cannot attach files.
 

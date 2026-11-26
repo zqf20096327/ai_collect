@@ -54,7 +54,7 @@ Start with 0 models and 0 GPUs in your own account. Requires a paid AWS account 
 
 GPUs are removed after four hours by default; the launcher stays billable until you delete the stack. New accounts may need a GPU quota increase. [Setup, quotas, and cleanup](docs/setup.md#aws).
 
-Open **Lens** for agent traces and **Grafana** for health and traffic. [Connect your agent](docs/setup.md#agent-traces-with-lens).
+Send OTLP to LiteLLM with a LiteLLM key. Open **Lens** for agent traces and **Grafana** for health and traffic. [Connect your agent](docs/setup.md#agent-traces-with-lens).
 
 [Setup and prerequisites](docs/setup.md) · [Deploy with your agent](docs/setup.md#deploy-with-your-agent)
 

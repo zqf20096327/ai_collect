@@ -38,6 +38,7 @@ in the linked files.
 | [claude-harness.md](claude-harness.md) | Running **Claude Code** against local llama.cpp models: what breaks, fixes, which model to pick, SearXNG web search |
 | [aider-harness.md](aider-harness.md) | Running **aider** against the same router |
 | [`pi-local.sh`](pi-local.sh) | Running the **Pi** coding agent against the router or Strata (the `claude-local.sh` counterpart) |
+| [pi-pagoda-demo.md](pi-pagoda-demo.md) | **Pi + Qwen3.8-27B Q8_0, unattended for 11.8 h**: a Three.js pagoda garden built from a brief in 16 tasks and 21 sessions, 60 fps, live demo on the site. What a model without image input gets wrong when it judges its own screenshots, and where the session loop broke |
 | [real-world-testing.md](real-world-testing.md) | Agentic coding through **Cline**: can the models do a job end to end |
 | [big-codebase-guide.md](big-codebase-guide.md) | Using these models on a large codebase |
 | [ddr5-9800x3d.md](ddr5-9800x3d.md) | What moving from DDR4 to DDR5 (5950X to 9800X3D) did to CPU-offloaded MoE |
@@ -1977,10 +1978,4 @@ push a request past `n_ctx` and get a bare `HTTP 400` back:
 
 | Script | Asked | Built | Overshoot |
 |---|---|---|---|
-| `semantic-recall-test.py` | 30,000 | ~35,000 | **~17%** (adds a distractor per target) |
-| `needle-test.py` | 185,000 | 199,478 | **~7.8%** |
-
-Ask for roughly **80%** of the window on the semantic probe and **90%** on the
-needle probe. A 199,478-token haystack against a 196,608 window fails with
-`request (199478 tokens) exceeds the available context size` in the server log
-and a nake
+| `semantic-recall-test.py` | 30,000 | ~35,000 | **~17%** (adds a distractor

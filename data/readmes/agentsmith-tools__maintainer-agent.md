@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" width="160" alt="maintainer-agent mark: two bars and a check, drawn in characters">
+  <img src="assets/logo.svg" width="160" alt="maintainer-agent mark: two bars and a check">
 </p>
 
 # maintainer-agent
@@ -63,6 +63,10 @@ through three documented cases and what each one changes here:
   tasks target volume, not just diffs.
 
 ## Merging: a receipt, not a rule
+
+<p align="center">
+  <img src="assets/merge-path.svg" width="860" alt="How a pull request gets merged: the agent works behind a deny wall; verify runs the test clean, applies a mutation, runs it again and signs a receipt only if it failed; merge refuses unless seven conditions hold">
+</p>
 
 The prevailing 2026 position is that agents should recommend and humans should
 merge ([PR-Agent](https://github.com/The-PR-Agent/pr-agent),

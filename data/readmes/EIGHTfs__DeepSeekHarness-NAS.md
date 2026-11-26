@@ -13,7 +13,7 @@ DeepSeek Harness（dsh）的 NAS 适配包：群晖 DSM `.spk` / 飞牛 fnOS `.f
 | 局域网限制 | 公网 IP 一律 403 提示页 | 内置，无需配置 |
 | 命令行 `dsh` / `pnpm` | 装完 SSH 直接敲，无需进套件目录 | `/usr/bin/dsh`、`/usr/bin/pnpm` |
 | 自动构建发布 | 官方更新自动对齐构建，发 Release 双产物 | GitHub Actions |
-| 架构参数化 | 同一脚本出 x86_64 / arm64 包 | `build/build-config.yaml` 的 `defaults.arch` |
+| 架构参数化 | 同一脚本出 x86_64 / arm64 包 | `build/config/build-config.yaml` 的 `defaults.arch` |
 
 ## 访问地址与端口
 
@@ -22,7 +22,7 @@ DeepSeek Harness（dsh）的 NAS 适配包：群晖 DSM `.spk` / 飞牛 fnOS `.f
 | 群晖 DSM（spk） | 30800 | 30801 | 30802 |
 | 飞牛 fnOS（fpk） | 3080 | 3081 | 3082 |
 
-权威值在 `build/build-config.yaml` 的 `defaults` / `spk` / `fpk` 三段；改端口只改这里。
+权威值在 `build/config/build-config.yaml` 的 `defaults` / `spk` / `fpk` 三段；改端口只改这里。
 
 ### 登录（OAuth）需要回环访问
 
@@ -65,8 +65,8 @@ appcenter-cli start DeepSeekHarness-NAS         # 飞牛启停（stop/status/che
 ./build/build-common.sh              # 全量约 15-20 分钟（不指定源码目录 → 按 --tag 或自探测）
 SKIP_BUILD=1 ./build/build-common.sh   # 复用已有 target（秒级）
 ./build/build-common.sh --tag dsh-v<版本>   # 构建历史版本必须显式给 tag（多版本源码并存时否则会选错）
-./build/SPK/pack-spk.sh                  # → build/staging/DeepSeekHarness-NAS_x86_64-<版本>.spk
-./build/FPK/pack-fpk.sh                  # → build/staging/DeepSeekHarness-NAS_x86-<版本>.fpk
+./build/spk/pack-spk.sh                  # → build/staging/DeepSeekHarness-NAS_x86_64-<版本>.spk
+./build/fpk/pack-fpk.sh                  # → build/staging/DeepSeekHarness-NAS_x86-<版本>.fpk
 ./scripts/promote-release.sh             # 验证通过的产物提升到 release/
 ```
 
@@ -85,15 +85,16 @@ SKIP_BUILD=1 ./build/build-common.sh   # 复用已有 target（秒级）
 | `build/build-npm-app.sh` | FPK npm 链路应用体构建；`[VERSION]`，可空 = 取当前版本 |
 | `build/build-test-fpk.sh` | 测试版 FPK 构建；无参数 |
 | `build/fix-runtime-deps.sh` | 打包期运行时依赖补齐；`<TARGET> <BUILD_SRC> <NODE> [--max-rounds N]` |
-| `build/fix-node-links.py` | pnpm 三层链接补全与错链纠正；`<应用体或 target> [--quiet]` |
-| `build/prune_common.py` | 裁剪公共模块（依赖闭包计算）；由 `PRUNE_COMMON_DIR` 定位 |
+| `build/tools/fix-node-links.py` | pnpm 三层链接补全与错链纠正；`<应用体或 target> [--quiet]` |
+| `build/tools/prune_common.py` | 裁剪公共模块（依赖闭包计算）；由 `PRUNE_COMMON_DIR` 定位 |
 | `scripts/learn-prune-whitelist.sh` | 白名单自动学习（`--scan <SRC>` / `--log <FILE>`），写入 `_autoLearned` |
 | `scripts/fetch-dsh-latest.sh` | 拉官方源码到 `src/deepseek-ai/<tag>`；`[--token <ghp>]`，`--print-tag` 只出 tag |
 | `scripts/fetch-release-mt.sh` | 下载本仓 Release 资产；`[--tag <tag>] [--only spk\|fpk] [--threads N]` |
 | `scripts/promote-release.sh` | staging → release 提升；`D_REL=<dir>` 可覆盖输出目录 |
 | `scripts/prune-release-assets.py` | 清理 Release 改名残留资产；`--tag <tag> --keep-from <dir> [--dry-run]` |
-| `scripts/check-release-assets.py` | 核对某 tag 的四资产是否齐套（缺件告警）；`--repo <owner/name> --tag <tag> [--token] [--strict] [--json]` |
-| `scripts/check-node-engines.py` | 校验随包 node 是否满足官方 engines.node；`--engines "<范围>" --node <路径>` 或 `--node-version <版本>` |
+| `scripts/guards/check-release-assets.py` | 核对某 tag 的四资产是否齐套（缺件告警）；`--repo <owner/name> --tag <tag> [--token] [--strict] [--json]` |
+| `scripts/guards/check-node-engines.py` | 校验随包 node 是否满足官方 engines.node；`--engines "<范围>" --node <路径>` 或 `--node-version <版本>` |
+| `scripts/pkg-source.py` | 通用套件源：任意 GitHub 仓库的 Release → DSM 套件源（单文件、零耦合、默认不下载）；`--repo <owner/repo> [--asset-regex] [--arches] [--check] [--from-spk-dir]`
 | `scripts/update-release-note.sh` | 单独刷新某个 Release 正文（不重新构建）；`--tag <tag> [--trigger <名>] [--dry-run]`，`--tag` 可空=最新 |
 | `scripts/collect-failure-fixtures.py` | 采集历史 CI 失败日志做回归夹具；`[--limit N] [--out <dir>] [--dry-run]` |
 
@@ -113,17 +114,19 @@ SKIP_BUILD=1 ./build/build-common.sh   # 复用已有 target（秒级）
 
 | 名称 | 检查内容 |
 |---|---|
-| `scripts/check-readme-coverage.py` | 代码里的脚本名/开关名必须在 README 出现；`--list` 只列不失败 |
-| `scripts/check-workflow-yaml.py` | `.github/**` YAML 结构、步骤缩进、`needs` 引用悬空 |
-| `scripts/check-build-config.py` | `build/build-config.yaml` 的 `defaults`/`spk`/`fpk` 必须是映射；`--file <path>` / `--list` |
-| `scripts/check-build-naming.py` | 命名规范 + 全部 `.sh`/`.py` 语法与可执行位 |
-| `scripts/check-common-functions.py` | 公共函数不得在其它脚本重复定义 |
-| `scripts/check-destructive-ops.py` | 敏感路径 `rm -rf` 必须 `--one-file-system` |
-| `scripts/check-packaging-invariants.py` | 打包不变量（含生成函数自包含、按声明范围选版本、出货裁剪并入 `_autoLearned`）；`--verbose` 列出每条检查 |
-| `scripts/check-package-parity.py` | 两包结构比对（软链/悬空/manifest）；`<基准包> <候选包> [--verbose] [--baseline-self]` |
+| `scripts/guards/check-readme-coverage.py` | 代码里的脚本名/开关名必须在 README 出现；`--list` 只列不失败 |
+| `scripts/guards/check-workflow-yaml.py` | `.github/**` YAML 结构、步骤缩进、`needs` 引用悬空 |
+| `scripts/guards/check-build-config.py` | `build/config/build-config.yaml` 的 `defaults`/`spk`/`fpk` 必须是映射；`--file <path>` / `--list` |
+| `scripts/guards/check-build-naming.py` | 命名规范 + 全部 `.sh`/`.py` 语法与可执行位 |
+| `scripts/guards/check-common-functions.py` | 公共函数不得在其它脚本重复定义 |
+| `scripts/guards/check-destructive-ops.py` | 敏感路径 `rm -rf` 必须 `--one-file-system` |
+| `scripts/guards/check-packaging-invariants.py` | 打包不变量（含生成函数自包含、按声明范围选版本、出货裁剪并入 `_autoLearned`）；`--verbose` 列出每条检查 |
+| `scripts/guards/check-platform-boundary.py` | 平台边界守卫：公共构建内核不得出现平台专有词，适配器三钩子齐备；`--verbose` 逐项列出 |
+| `scripts/guards/check-path-references.py` | 物料路径守卫：脚本引用的 `config/` `pkgsrc/` `tools/` 等必须真实存在（目录搬家后最容易漏的一类） |
+| `scripts/guards/check-package-parity.py` | 两包结构比对（软链/悬空/manifest）；`<基准包> <候选包> [--verbose] [--baseline-self]` |
 | `scripts/verify-pkg-arch.py` | 验包架构（spk/fpk 通用）：读 `bin/node` 的 ELF `e_machine` 并核 native 平台目录；`<包路径> [--arch x86_64\|arm64] [--keep]` |
 | `scripts/migrate-dsh-home.sh` | 跨版本迁移实例数据（默认含会话）：`list` / `migrate --from <旧版本> --dry-run` / `--confirm` / `prune --version <旧版本> --confirm`；`--config-only` 只迁配置，`--target` 指定目标版本，`--package`/`--group` 指向其它套件；环境变量 `DSH_PACKAGE_NAME` / `DSH_PACKAGE_GROUP` 同义 |
-| `scripts/check-fpk-payload.py` | FPK 载荷（`app.tgz` 不含软链、权限）；`<包路径> [--expect-pkg <名>]` |
+| `scripts/guards/check-fpk-payload.py` | FPK 载荷（`app.tgz` 不含软链、权限）；`<包路径> [--expect-pkg <名>]` |
 | `test/learner-dryrun.test.sh` | 白名单学习器 dry-run 回归；`bash test/learner-dryrun.test.sh` |
 | `test/prune-release-assets.test.sh` | Release 资产清理回归；`bash test/prune-release-assets.test.sh` |
 | `test/safe-rm-rf.test.sh` | 含挂载点目录绝不被删的回归；`bash test/safe-rm-rf.test.sh` |

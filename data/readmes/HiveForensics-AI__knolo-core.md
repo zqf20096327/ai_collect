@@ -33,7 +33,7 @@ import {
 
 The root `@knolo/core` entry does not load KAR. `@knolo/core/experimental/kar` remains a compatibility entry for this cycle. `SATISFIED` means the declared evidence requirements were met. It does not mean a claim is proven. `UNSATISFIED_EVIDENCE_REQUIREMENTS` means those requirements were not met. It does not mean the claim is false.
 
-Published `@knolo/core` is `6.2.3`. This tree's core package file is `6.2.3`. `6.2.1` adds optional `textQuery` plans: a kept term matches as a whole word. An EQL `SEARCH` plan without `textQuery` still requires every term as a substring, in object id order. `@knolo/langchain`, `@knolo/llamaindex`, `@knolo/semantic-ollama`, and `create-knolo-app` stay `6.2.0` and depend on `@knolo/core` `^6.0.0`. This tree's `@knolo/cli` package file is `6.2.9` and depends on `@knolo/core` `^6.2.3` and `@knolo/exchange` `^0.1.1`. npm `latest` for the CLI is `6.2.9`. That release includes `knolo ask` and `--category`. `@knolo/cli@6.2.8` has no `ask.mjs` and no `--category`. It includes `knolo kite`, `knolo research verify`, and `knolo exchange relay`. `@knolo/cli@6.2.7` includes `knolo kite` and does not include research verify or the relay. `@knolo/cli@6.2.5` does not include `knolo kite`. npm `latest` for `@knolo/exchange` is `0.1.1`. `@knolo/exchange@0.1.0` has no relay. `@knolo/tools` is `0.2.2` and depends on `@knolo/core` `^6.2.3`. `@knolo/tools@0.2.1` has no KITE evaluate or verify tools. This tree's `@knolo/mcp` is `0.2.4` and depends on `@knolo/core` `^6.2.1` and `@knolo/tools` `^0.2.2`. npm `latest` for MCP is `0.2.4`. `@knolo/mcp@0.2.3` has no KITE tools. `@knolo/ai-sdk` is `0.1.1` and depends on `@knolo/core` `^6.2.3` and `@knolo/tools` `^0.2.2`. `@knolo/ai-sdk@0.1.0` does not include the KITE host tools. npm `latest` for `@knolo/box` is `0.1.1`. `@knolo/code` is `0.1.1`. `@knolo/reflex` stays `0.2.0`. `@knolo/evidence-gate` stays `0.1.0`. Rust and the ICP canister stay `5.5.1`. Rust evaluates public KAR V5 and replays a KITE certificate. It does not implement Cortex or composition. This tree's Python package is `5.6.0`. It evaluates and verifies public KAR V5 and replays a KITE certificate. It does not implement a pack builder, Cortex, or composition. The ICP canister does not implement KAR, Cortex, or composition. The bundled contracts, policy, and operations Domain Packs are `review-required`. The local tag `v6.0.0` stays on the 6.0.0 commit. The local tag `v6.1.0` stays on the 6.1.0 commit. Do not republish these versions.
+Published `@knolo/core` is `6.2.3`. This tree's core package file is `6.2.3`. `6.2.1` adds optional `textQuery` plans: a kept term matches as a whole word. An EQL `SEARCH` plan without `textQuery` still requires every term as a substring, in object id order. `@knolo/langchain`, `@knolo/llamaindex`, `@knolo/semantic-ollama`, and `create-knolo-app` stay `6.2.0` and depend on `@knolo/core` `^6.0.0`. This tree's `@knolo/cli` package file is `6.2.10` and depends on `@knolo/core` `^6.2.3` and `@knolo/exchange` `^0.1.1`. npm `latest` for the CLI is `6.2.9`. That release includes `knolo ask` and `--category`. `knolo persona` is in this tree and is not in that published release. `@knolo/cli@6.2.8` has no `ask.mjs` and no `--category`. It includes `knolo kite`, `knolo research verify`, and `knolo exchange relay`. `@knolo/cli@6.2.7` includes `knolo kite` and does not include research verify or the relay. `@knolo/cli@6.2.5` does not include `knolo kite`. npm `latest` for `@knolo/exchange` is `0.1.1`. `@knolo/exchange@0.1.0` has no relay. `@knolo/tools` is `0.2.2` and depends on `@knolo/core` `^6.2.3`. `@knolo/tools@0.2.1` has no KITE evaluate or verify tools. This tree's `@knolo/mcp` is `0.2.4` and depends on `@knolo/core` `^6.2.1` and `@knolo/tools` `^0.2.2`. npm `latest` for MCP is `0.2.4`. `@knolo/mcp@0.2.3` has no KITE tools. `@knolo/ai-sdk` is `0.1.1` and depends on `@knolo/core` `^6.2.3` and `@knolo/tools` `^0.2.2`. `@knolo/ai-sdk@0.1.0` does not include the KITE host tools. npm `latest` for `@knolo/box` is `0.1.1`. `@knolo/code` is `0.1.1`. `@knolo/reflex` stays `0.2.0`. `@knolo/evidence-gate` stays `0.1.0`. Rust and the ICP canister stay `5.5.1`. Rust evaluates public KAR V5 and replays a KITE certificate. It does not implement Cortex or composition. This tree's Python package is `5.6.0`. It evaluates and verifies public KAR V5 and replays a KITE certificate. It does not implement a pack builder, Cortex, or composition. The ICP canister does not implement KAR, Cortex, or composition. The bundled contracts, policy, and operations Domain Packs are `review-required`. The local tag `v6.0.0` stays on the 6.0.0 commit. The local tag `v6.1.0` stays on the 6.1.0 commit. Do not republish these versions.
 
 The `description` fields in this tree name the sharing job above. npm still shows the previous descriptions until a later publish.
 
@@ -248,6 +248,20 @@ curl -sS -H "Authorization: Bearer kno_…" \
 `POST /api/v1/tokens` is not a CLI login endpoint; it is dashboard/session
 token minting only.
 
+### Serve a pinned image over MCP
+
+[`@knolo/mcp`](packages/mcp/README.md) is a read-only stdio MCP server for a
+pinned V5 Knowledge Image. Pin the image and write `knolo-mcp.json` as shown
+in [llms-install.md](packages/mcp/llms-install.md), then register the server
+with Claude Code:
+
+```bash
+claude mcp add knolo -- npx -y @knolo/mcp@0.2.4 --config /absolute/knolo-mcp.json
+```
+
+`claude mcp list` shows the server. Claude Desktop, Cursor, VS Code, and other
+clients are in the [MCP package guide](packages/mcp/README.md#clients).
+
 ### Use the V5 kernel directly
 
 ```ts
@@ -416,6 +430,8 @@ packages/core-rust/  Native Rust V5 kernel and verifier (5.5.1), including publi
 packages/cli/        Knolo command-line interface, including `knolo kar`, `knolo compose`, and `knolo cortex`
 packages/core-python/ Python V5 verifier/query package (5.6.0), including public KAR V5 evaluate/verify and KITE certificate replay. No pack builder, Cortex, or composition
 packages/icp-canister/ Internet Computer compatibility package (5.5.1, no KAR or Cortex)
+packages/mcp/        `@knolo/mcp` read-only stdio MCP server for a pinned Knowledge Image (0.2.4)
+packages/reflex/     `@knolo/reflex` verifiable behavior packs (0.2.0)
 domains/             Review-required Domain Packs
 examples/kar-v6/     Redistributable KAR demos
 examples/            Framework and product integration examples

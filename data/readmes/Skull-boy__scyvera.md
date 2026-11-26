@@ -7,7 +7,7 @@
 
 Operational contracts for AI agents: what a system can do, what it can access, and what it must never do — enforced at runtime and provable after the fact.
 
-[![License](https://img.shields.io/github/license/Skull-boy/scyvera)](./LICENSE) [![PyPI](https://img.shields.io/pypi/v/scyvera)](https://pypi.org/project/scyvera/) [![PyPI Downloads](https://static.pepy.tech/personalized-badge/scyvera?period=total&units=INTERNATIONAL_SYSTEM&left_color=RED&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/scyvera) [![npm](https://img.shields.io/npm/v/@scyvera/scyvera-ts)](https://www.npmjs.com/package/@scyvera/scyvera-ts) [![CI](https://github.com/Skull-boy/scyvera/actions/workflows/validate-contracts.yml/badge.svg)](https://github.com/Skull-boy/scyvera/actions/workflows/validate-contracts.yml) [![Blast Radius](https://img.shields.io/badge/blast%20radius-Controlled-orange)](#proof-not-promises) [![Docs](https://img.shields.io/badge/docs-quickstart-blue)](./docs/quickstart.md)
+[![License](https://img.shields.io/github/license/Skull-boy/scyvera)](./LICENSE) [![PyPI](https://img.shields.io/pypi/v/scyvera)](https://pypi.org/project/scyvera/) [![PyPI Downloads](https://static.pepy.tech/personalized-badge/scyvera?period=total&units=INTERNATIONAL_SYSTEM&left_color=RED&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/scyvera) [![npm](https://img.shields.io/npm/v/@scyvera/scyvera-ts)](https://www.npmjs.com/package/@scyvera/scyvera-ts) [![CI](https://github.com/Skull-boy/scyvera/actions/workflows/validate-contracts.yml/badge.svg)](https://github.com/Skull-boy/scyvera/actions/workflows/validate-contracts.yml) [![Blast Radius](https://img.shields.io/badge/blast%20radius-Shielded-green)](#proof-not-promises) [![Docs](https://img.shields.io/badge/docs-quickstart-blue)](./docs/quickstart.md)
 </div>
 
 ---
@@ -26,20 +26,24 @@ pip install scyvera && scyvera audit .
 
 ```text
 WARN  .
-      Blast Radius: 84/100 (Controlled)
+      Blast Radius: 92/100 (Shielded)
+      raw (all findings): 82/100 (Controlled)
 
-      HIGH      [AU-CI-002] deploy or publish job detected
-                .github/workflows/publish-scyvera-ts.yml:41
       MEDIUM    [AU-N8N-001] n8n workflow with external writes
                 implementations/n8n/competitor-feature-parity-watcher/workflow.json:169 + 3 more
       MEDIUM    [AU-NET-002] outbound network calls in source
                 implementations/langgraph/duplicate-issue-detector/backfill.py:23 + 1 more
+
+      GOVERNED  [AU-CI-002] deploy or publish job detected
+                .github/workflows/publish-scyvera-rs.yml:45 + 1 more
+                registry:publish declared and approved in contract.yaml
 ```
 
-That high finding is this repository's own npm publish workflow. It stays scored: the capability is
-declared and approved in `contract.yaml`, and the number records the real cost instead of hiding it
-([RFC 0004 Amendment 1](./rfcs/0004-amendment-1-dogfood-declared-capability.md)). The scan is
-read-only; it did not change a file.
+Those publish workflows are this repository's own npm and crates.io releases. They are measured and
+**governed, not waived**: `contract.yaml` declares `registry:publish` and requires a named approver,
+so the findings leave the governed score, stay visible in the report with `governed_by`, and still
+count in the raw number ([RFC 0004 Amendment 2](./rfcs/0004-amendment-2-governed-findings.md)). The
+scan is read-only; it did not change a file.
 
 The **TypeScript runtime** gates the same contract with no install — the contract is the artifact,
 and every runtime reads the same bytes:
@@ -175,8 +179,9 @@ are there ([docs/mcp.md](./docs/mcp.md)).
 ## Proof, not promises
 
 - **33/33** vectors at suite-version 1 — Python, TypeScript, and Rust, in their own CI.
-- **84/100 `Controlled`** is this repository's own audit score, pinned by a covenant test whose
-  exact scored surface is asserted; it moves only through an RFC amendment.
+- **92/100 `Shielded`** is this repository's own governed audit score, with **raw 82/100
+  `Controlled`** always reported beside it. Both numbers and the exact scored/governed surface are
+  pinned by a covenant test; they move only through an RFC amendment.
 - **Signed installs**: `scyvera self-check` verifies 37 shipped files, and releases carry Sigstore
   build provenance plus a CycloneDX 1.5 SBOM.
 - **Same suite everywhere**: Linux and Windows on Python 3.10–3.14 gate every pull request (10
@@ -195,6 +200,11 @@ are there ([docs/mcp.md](./docs/mcp.md)).
    re-seal cover history; they cannot prove a file was clean before it was read.
 4. **Install integrity is not a sandbox (T11)** — `self-check` verifies the installed package, not
    your interpreter, your site-packages, or code installed beside it.
+
+5. **Governed is not waived (governed findings)** — a finding your contract declares *and* approves
+   leaves the governed score but stays in the report with `governed_by`, and `raw_score` always shows
+   what it would be. A provisional contract, an undeclared permission, `required: false`, or a
+   nameless approver governs nothing.
 
 Full threat models: [`lifecycle`](./docs/threat-model-lifecycle.md) ·
 [`enforcer`](./docs/threat-model-enforcer.md) · [`distribution`](./docs/threat-model-distribution.md).

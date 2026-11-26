@@ -1,0 +1,654 @@
+# Hermoso: AI marketing agent and AI ad generator for Claude, ChatGPT and Cursor (MCP server, CLI and skills)
+
+**The AI marketing agent with an AI ad generator built in**, run from **any AI agent**: Claude Code, Claude.ai, Cursor, Codex, or your own
+scripts. It takes an idea from your own AI agent to launch and growth: put the site your AI built live with a
+domain, email and payments, then research the ads already winning in a market, generate image & video ads (your real product
+composited in, copy + CTA included), publish them to your own social channels, and build & manage the ad
+campaigns behind them, all over [MCP](https://modelcontextprotocol.io) tools, a CLI, or installable Claude skills.
+
+**Start free: 160+ free credits, no card. No markup on models.** Sign up at [app.hermoso.ai](https://app.hermoso.ai); plans at [hermoso.ai/pricing](https://hermoso.ai/pricing).
+
+## New: Launch
+
+Launch puts the site your AI writes live on Hermoso hosting, connects or buys a domain, gives you email on that
+domain, and takes payments. Apps can also ship server functions and get a database and sign-in for their users.
+Hermoso hosts the files your agent wrote; it never rewrites them.
+
+Then market it from the same place: research the ads competitors run, make on-brand image and video ads, post
+and schedule to your own social channels, and run ad campaigns on 13 ad platforms, with analytics to see what
+works.
+
+- "Publish this folder as my site, then connect my domain and set up hello@ on it."
+- "Find me a domain for this app and buy the best one."
+- "Turn on payments for my site so people can check out."
+
+The tools behind it include `publish_page`, `update_page`, `find_domain`, `buy_domain`, `connect_domain`,
+`create_domain_address`, `send_domain_mail` and `start_payments_onboarding`.
+
+## What it does
+
+- **Meta Ads MCP server.** Build, read and manage Facebook and Instagram campaigns, ad sets, ads, audiences and
+  insights from your agent, preview an ad per placement, and estimate reach before you spend. New campaigns are
+  created paused.
+- **Google Ads MCP.** Search and Performance Max campaigns, ad groups, keywords and keyword ideas, assets,
+  conversion actions, budgets and reports.
+- **TikTok Ads MCP**, and the same campaign tools for LinkedIn Ads, Reddit Ads, Pinterest Ads, Snapchat Ads,
+  Microsoft Advertising, X Ads, Apple Ads, ChatGPT Ads and Amazon Ads.
+- **AI ad generator API.** Image, video and UGC avatar ads with your real product, copy and CTA, from `render_ad`,
+  `generate_image` and `generate_video`, the CLI, or the REST API at `/v1`
+  ([OpenAPI](https://app.hermoso.ai/openapi.json)).
+- **Ad spy.** Search the Meta, Google and LinkedIn ad libraries and organic TikTok, Instagram, YouTube, Reddit and
+  Threads, and turn a competitor's longest-running ads into angles you can use.
+- **Posting.** Post and schedule to your own social channels, then read each post's results. The channel list
+  is under *What it connects to* below.
+
+## Set up in ChatGPT, Claude, Grok Bot or a coding agent
+
+**ChatGPT:** one click. **[Add to ChatGPT](https://chatgpt.com/plugins/plugin_asdk_app_6abde87d08048191b2ee7cda76721749)** opens Hermoso in ChatGPT's app
+directory. Press Install plugin and sign in with your Hermoso account, no key needed. Then
+**[open a new ChatGPT chat with your first message typed](https://chatgpt.com/?q=Hermoso%2C%20set%20up%20my%20brand%20from%20my%20website%20and%20make%20my%20first%20ad)**, or paste it yourself:
+`Hermoso, set up my brand from my website and make my first ad`
+
+**Claude (claude.ai, Claude Desktop):** one click. **[Add to Claude](https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Hermoso&connectorUrl=https%3A%2F%2Fapp.hermoso.ai%2Fmcp%3Fsrc%3Dreadme)**
+opens Claude's *Add custom connector* dialog with Hermoso already filled in. Press Continue, choose **Sign in now**
+if Claude asks about Authentication, then sign in with your Hermoso account.
+
+**Kiro:** one click. [![Add to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=Hermoso&config=%7B%22url%22%3A%22https%3A%2F%2Fapp.hermoso.ai%2Fmcp%22%7D)
+opens Kiro with the Hermoso server (`https://app.hermoso.ai/mcp`) filled in. Add it, then sign in with your
+Hermoso account when Kiro opens the browser.
+
+**Grok Bot, Meta Muse, Claude Code, Cursor, Codex and any other agent that can read a link and run a command:** one line,
+no key. Paste this into a new chat and the agent reads [hermoso.ai/SKILL.md](https://hermoso.ai/SKILL.md), which gives
+each host its own steps, signs you in and makes your first 3 ad ideas:
+
+```text
+Follow https://hermoso.ai/SKILL.md to set up Hermoso for me, then make 3 ad ideas for my brand and show me the best one as an image.
+```
+
+**Grok Bot and Muse** each run on their own cloud computer, so they set Hermoso up there and send you a sign-in link to
+approve. **OpenClaw and Hermes** usually run on a server you chat with on Telegram, Discord or WhatsApp, so there is no browser for
+the sign-in. Paste the same line there: the agent sends you a sign-in link with a short code, you approve it on your phone,
+and it carries on. No key needed.
+
+<details>
+<summary>Set it up by hand</summary>
+
+**Grok Bot's full setup prompt**, the same steps spelled out for a Bot that does not open the link:
+
+```text
+Set up Hermoso for me so I can research ads, find creators, generate images and videos, and publish from here.
+1. Sign me in from your command line: run `npx -y hermoso@0.1.682 auth login --device --no-wait`. It prints a link and a code. Send me both, wait until I say I approved, then run `npx -y hermoso@0.1.682 auth login --device --resume`.
+2. Add an MCP server of type stdio (a command), not a URL. Command: `npx -y hermoso@0.1.682 mcp`. It uses the sign-in from step 1, so it needs no key.
+3. Then run one real tool call: list my brands.
+```
+
+**The full setup prompt**, the same setup spelled out for an agent that cannot open a link (this is Claude Code's install
+line; each agent's own is in the app under MCP & CLI):
+
+```text
+Set up Hermoso for me. It is an AI marketing tool (hermoso.ai) that researches ads, makes image and video ads and posts to my social accounts.
+1. Install it by running: claude plugin marketplace add hermoso-ai/hermoso && claude plugin install hermoso@hermoso
+   If the new skills only load after a restart, tell me, and use npx meanwhile.
+2. Sign me in by running: npx -y hermoso@0.1.682 auth login
+   It opens my browser and I will approve the connection there. If this machine has no browser, run npx -y hermoso@0.1.682 auth login --device --no-wait instead: send me the link and the code it prints, and once I say I approved, run npx -y hermoso@0.1.682 auth login --device --resume.
+3. Once I am signed in, do one small task to show it works: tell me my Hermoso credit balance and which profile is saved.
+4. Then set up my brand from my website and make my first ad.
+```
+
+**Claude by hand:** Customize → Connectors → Add → *Add custom connector*, paste the URL below, choose **Sign in now** under
+Authentication, then Add and Connect. On a Team or Enterprise plan an Owner adds it for the organization first.
+
+```text
+https://app.hermoso.ai/mcp
+```
+
+**ChatGPT by hand:** turn on Developer mode once (Settings → Security and login), then Plugins → ＋ → Create app →
+Create MCP App. Paste `https://app.hermoso.ai/mcp` as the Server URL, choose OAuth, leave the advanced OAuth
+settings empty, and press Create.
+
+**Claude Code:**
+
+```bash
+claude plugin marketplace add hermoso-ai/hermoso && claude plugin install hermoso@hermoso
+```
+
+**Cursor:**
+
+```bash
+npx skills add hermoso-ai/hermoso -a cursor && npx -y hermoso@0.1.682 auth login
+```
+
+Or add the MCP server to Cursor's `mcp.json` after `npx -y hermoso@0.1.682 auth login`:
+
+```json
+{ "mcpServers": { "hermoso": { "command": "npx", "args": ["-y", "hermoso@0.1.682", "mcp"] } } }
+```
+
+</details>
+
+Codex, Gemini CLI, Grok and the rest are in [Install in one command](#install-in-one-command).
+
+## Examples
+
+Ask in your own words. The agent picks the tools:
+
+- "Pull the longest-running Meta ads for allbirds.com and tell me the three angles they keep paying for."
+- "Make a 15-second UGC video ad for our product in 9:16, with a voiceover and captions."
+- "Make four static ads for the new collection, one per Instagram placement."
+- "Build a Meta Ads campaign for this video with the daily budget I give you, leave it paused, and show me the
+  preview."
+- "Compare last week's Google Ads and Meta Ads results and tell me what to pause."
+- "Schedule this video to TikTok, Instagram Reels and YouTube Shorts for Tuesday at 9am."
+
+**1818 tools.** `tools/list` is always the authoritative set; `hermoso_capabilities` (free) returns the live model
+catalog with exact per-render credit costs plus the full capability map.
+
+**No markup on models** on Starter, Pro and Studio. Stop overpaying markups on AI models. Plans: [hermoso.ai/pricing](https://hermoso.ai/pricing).
+
+**A Chrome extension too.** [Hermoso: save and clone ads](https://chromewebstore.google.com/detail/hermoso-save-and-clone-ad/kmknkbldeilchhblbfddfnfbadmgcklc)
+saves any ad to your swipefile in one click, clones it for your brand, and pulls any company's ads from its
+website.
+
+**Most of it costs nothing.** Publishing and scheduling posts, building and managing paid campaigns, analytics
+and insights, comments and DMs, connectors, profiles and team seats cost **no credits on any plan**, with no
+per-post fee and no seat pricing. The Free plan includes up to 10 posts on 3 channels; every paid plan posts without a limit and runs autopilot. Every paid plan includes Autopilot plus unlimited posting and scheduling; upgrade_plan lists the plans on sale with their live prices and monthly credits. Credits are spent only on running an AI model (image, video,
+voice, text, planning, post-production) and on Ad Spy research, and posting an ad you already rendered is never a
+second charge. The one exception is X (Twitter), where posting and reads bill credits per call because X
+charges per API request (`hermoso_credits` prints the exact credits per X post).
+
+**What it connects to.** Ad platforms: Meta, Google Ads, TikTok Ads, LinkedIn Ads, Reddit Ads, X Ads,
+Pinterest Ads, Snapchat Ads, Microsoft Advertising, Apple Search Ads, ChatGPT Ads, AppLovin Ads and Amazon Ads, plus
+product feeds in Google Merchant Center. Publishing and scheduling — **eighteen** channels: Facebook, Instagram,
+Threads, TikTok, YouTube, X, LinkedIn, Pinterest, Bluesky, Telegram, WordPress, the Shopify blog, Webflow, Wix, Discord, Slack, Whop and Google Business Profile. Messaging: WhatsApp (you message a
+person, so it is not a nineteenth publishing channel) and DM automations on Instagram, Facebook Pages and
+Messenger, and X (a keyword comment, a DM, a story reply or an ig.me / m.me link gets an automatic reply). Ad research: the Meta, Google and LinkedIn ad libraries plus organic TikTok,
+Instagram, YouTube, Threads and Reddit. Analytics: Google Analytics 4, Google Search Console and every
+connected platform's own post and campaign insights. Files: Google Drive, Sheets, Docs and OneDrive. Design:
+Canva. Send any image or video ad to Canva to edit, and bring finished Canva designs back to post, schedule or
+run as ads. Sites: Launch hosting, domains, email on your domain and payments (see *New: Launch* above).
+
+**It is not all-or-nothing.** Research, creation, publishing/scheduling and ads management are four *independent*
+areas — no tool requires that you used another one first. Publish or schedule creative you already have and
+generate nothing here (`upload_file` turns any local or external file into a URL every publish, schedule and
+ad-build tool accepts); build and read campaigns on your own ad accounts with your own creative; research
+competitors with no brand drafted and no channel connected; or generate a file with nothing connected at all and
+just download it. Use the one piece you need, or all of it together.
+
+## Install in one command
+
+This repo is a plugin marketplace, a Gemini CLI extension and a skills package at once, so a coding agent takes
+Hermoso in one line. Every install brings the same eleven skills (`hermoso-research`, `hermoso-generate`,
+`hermoso-ad-from-brand`, `hermoso-product-photoshoot`, `hermoso-marketing`, `hermoso-edit-timeline`,
+`hermoso-launch-app`, `hermoso-article-everywhere`, `hermoso-approval-checkpoints`, `hermoso-lock-presenter`,
+`hermoso-setup-check`), and the skills drive the `hermoso`
+CLI through `npx`. No
+tool list is loaded into your session: a CLI command costs nothing until it runs, and it reaches every tool.
+The first time, your agent runs `npx -y hermoso@0.1.682 auth login`, which opens a browser to sign in.
+
+**Claude Code:**
+
+```bash
+claude plugin marketplace add hermoso-ai/hermoso && claude plugin install hermoso@hermoso
+```
+
+Inside a session the same thing is `/plugin marketplace add hermoso-ai/hermoso` then `/plugin install hermoso@hermoso`.
+
+**Codex CLI** (it reads the same marketplace file):
+
+```bash
+codex plugin marketplace add hermoso-ai/hermoso && codex plugin add hermoso@hermoso
+```
+
+**Gemini CLI:**
+
+```bash
+gemini extensions install https://github.com/hermoso-ai/hermoso
+```
+
+**Grok** (xAI) comes in three shapes, and each one connects differently:
+
+- **grok.com and the Grok apps** take the hosted connector: open **grok.com/connectors** (Connect Apps) → **Custom** → **Add a custom connector**,
+  paste `https://app.hermoso.ai/mcp` as the Server URL and sign in with your Hermoso account.
+- **Grok Bot**: send it the one line above. It signs in from its own cloud computer with
+  `npx -y hermoso@0.1.682 auth login --device` (a link and a short code you approve on your phone), then runs the stdio server
+  `npx -y hermoso@0.1.682 mcp`. No key.
+- **Grok Build**, xAI's terminal agent, runs a local MCP server. Sign in once, then add it:
+
+  ```bash
+  npx -y hermoso@0.1.682 auth login
+  grok mcp add hermoso -- npx -y hermoso@0.1.682 mcp
+  ```
+
+**Cursor, OpenCode, GitHub Copilot, Windsurf and about 75 more agents**, through the open skills installer:
+
+```bash
+npx skills add hermoso-ai/hermoso
+```
+
+It asks which agents to install into; `-a opencode` (or `cursor`, `github-copilot`, `windsurf`) picks one, and
+`--skill hermoso-research` installs a single skill. VS Code agent plugins can also take this repo whole: run
+**Chat: Install Plugin From Source** and paste `https://github.com/hermoso-ai/hermoso`.
+
+**ChatGPT and Claude.ai** run in a browser and cannot run a CLI, so they use the hosted connector instead (see
+below). The ChatGPT desktop app and ChatGPT workspace admins can also read this repo's
+`.claude-plugin/marketplace.json`, which installs the skills.
+
+No browser on the machine (a server, an SSH session)? `npx -y hermoso@0.1.682 auth login` notices and shows a link and a short
+code instead: open the link on your phone and approve. `--device` asks for it directly; an agent that relays the link
+over chat runs `npx -y hermoso@0.1.682 auth login --device --no-wait` (prints the link and exits), then
+`npx -y hermoso@0.1.682 auth login --device --resume` once you have approved. Only if nothing can open a link: create a key in
+the app under **MCP & CLI** and either set it as the `HERMOSO_TOKEN` environment variable (nothing is stored) or pipe it
+in with `npx -y hermoso@0.1.682 auth login --token -`, which reads the key from stdin (or asks for it without showing it),
+so it never lands in your shell history.
+
+On a server, a CI job or an agent gateway that calls Hermoso many times a day, install it once
+(`npm i -g hermoso@0.1.682`) and call `hermoso` directly. `npx` asks the npm registry about the package on every run,
+and a busy machine can be rate-limited by npm. If the CLI ever says an HTTP error "did not come from Hermoso",
+something on your side (a proxy, a firewall or the gateway) refused the request before it reached us.
+
+## Which surface should your agent use?
+
+Two shapes, and the right one is decided by **what your client can do**, not by which we prefer.
+
+| Your client | Use | Why |
+| --- | --- | --- |
+| **Runs in a browser**: Claude.ai, ChatGPT, Claude Desktop | the hosted connector `https://app.hermoso.ai/mcp` | It cannot spawn a local process, so a URL is the only shape it has. Nothing to install, no key to paste, and the full toolset arrives with your saved brand context. This is the right answer for these clients, not a lesser one. |
+| **Can run a shell**: Claude Code, Codex, Gemini CLI, Cursor, Cline, OpenClaw, Hermes, your own scripts | the one-command install above, or the CLI itself (`npm install -g hermoso@0.1.682`) | A tool manifest is loaded into every session whether or not a tool is called. A shell command costs nothing until it runs, and it reaches **every** tool rather than the default roster. |
+
+The CLI answers the questions a tool manifest would, on demand and only when asked:
+
+```bash
+npm install -g hermoso@0.1.682                  # once; or prefix each line with npx -y and that same hermoso@version
+hermoso tools --search reddit                   # every matching tool, name + one line
+hermoso tools plan_ad                           # one tool's full argument schema
+hermoso call plan_ad --json '{"product":"…"}'   # run it
+```
+
+`tools` and `tools <name>` read a registry bundled in the package (no key, no network, no sign-in), so an agent
+can browse the entire product before anyone signs in. Only `call` spends, and only that needs
+`hermoso auth login` once.
+
+**Want the tools in your coding agent's own list as well?** That is the MCP server, and it is optional. One
+`hermoso auth login` covers the CLI *and* lets `claude mcp add hermoso -- npx -y hermoso@0.1.682 mcp` pick the key up with
+no `env` block, so the agent can reach for a native tool when it wants structured results and shell out when it
+wants breadth. It costs context in every session, so add it when a session settles into one area and makes many
+calls there; `enable_tools({groups:['ads']})` then turns campaign management on in a single free call.
+
+## Your agent can sign itself up, when you ask it to
+
+When you ask your agent to set Hermoso up and there is no account yet, it can provision one, get its own key, and be
+rendering ads in the same session, with no ticket and no waiting. It starts a signup only when you ask for one, and
+it pays only after you approve the plan and its price in the conversation.
+
+```bash
+# 1. Start a signup. This call takes no credential, because the credential is what it creates.
+curl -sX POST https://app.hermoso.ai/v1/signup \
+  -H 'content-type: application/json' \
+  -d '{"plan":"pro","period":"mo","email":"you@yourcompany.com"}'
+# -> { "id": "cs_...", "checkout_url": "https://checkout.stripe.com/...", "claim_token": "hsc_...", "email": { "address": "you@yourcompany.com", "verified": false } }
+# email = the human behind the account. A verification link goes there; the account works before it is clicked.
+# It is a contact mailbox only, never a sign-in. GET /v1/account/email reports the state; POST /v1/account/email/resend re-sends or changes it.
+
+# 2. Pay at checkout_url. Store claim_token first: it is returned only in that response.
+
+# 3. Claim it. Poll until status is "ready".
+curl -sX POST https://app.hermoso.ai/v1/signup/cs_.../claim \
+  -H 'content-type: application/json' \
+  -d '{"claim_token":"hsc_..."}'
+# -> { "status": "ready", "api_key": "hmk_...", "credits": 3000 }
+```
+
+That `hmk_` key is the same credential everything else on this page takes: `/v1`, the MCP server, the CLI. Point
+your client at it and the full surface is open.
+
+**Paying always waits for your yes.** Checkout is Stripe's own hosted page. A browser-capable agent such as Claude in
+Chrome can complete it today, once you have approved the plan and the price; otherwise it hands `checkout_url` to
+you, or to whoever holds the card, to pay. The same shape covers you later, once you are running: `buy_credits` and
+`upgrade_plan` mint a ready-to-pay link for more credits or a bigger plan, which your agent shows you rather than
+pays unless you tell it to, and `billing_status` reads the balance any time.
+
+**An agent with its own payment credential can buy credits, when you tell it to.** `POST /api/billing/machine-payment`
+with `{"packId": "pack-1k"}` answers HTTP 402 carrying a `WWW-Authenticate: Payment` challenge (Stripe, through the
+Machine Payments Protocol); pay the challenge and retry, and the same credit pack lands on the same balance.
+`GET /api/billing/config` lists the packs under `machinePayments`. Same packs, same prices, no per-call billing. Use it
+only after you have agreed the pack and its price with the person whose account it is.
+
+**The agentic path takes a paid plan.** Any of them. The free plan is there for a person signing up at
+[app.hermoso.ai](https://app.hermoso.ai), and asking for it here returns a refusal that says so. Nothing is
+created until the payment completes, so an unpaid signup leaves no account behind and charges nothing.
+
+**One thing still wants a person, and it is worth knowing up front.** Connecting a social or ad account means an
+OAuth consent screen, and a consent screen cannot be completed headlessly on any platform. `list_connectors`
+shows what is already connected and what is not. Everything else runs with no browser at all: research,
+generation, publishing to a channel that is already connected, campaign builds, reporting.
+
+Full request and response shapes, plus every other endpoint, are in the OpenAPI document at
+[app.hermoso.ai/openapi.json](https://app.hermoso.ai/openapi.json), served live from the same table that mounts
+the routes.
+
+## Instant: the hosted Claude.ai connector
+
+**[Add to Claude](https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Hermoso&connectorUrl=https%3A%2F%2Fapp.hermoso.ai%2Fmcp%3Fsrc%3Dreadme)** opens Claude with the connector already filled in: press Continue, sign in with your
+Hermoso account, and you are done.
+
+By hand: paste **`https://app.hermoso.ai/mcp?src=readme`** into Claude → Customize → Connectors → Add → *Add custom connector*,
+press Continue, choose **Sign in now** under Authentication (Claude's detector pre-selects "No sign-in" because our
+discovery handshake is open, and with that your first request comes back "Authentication required"), press Add and
+Connect, approve with your Hermoso account, and you are done: the full toolset with your saved brand context, billed to your plan.
+
+## Quickstart for Claude Code (one command)
+
+1. **Get an account** at [app.hermoso.ai](https://app.hermoso.ai). The free tier is included; plans and credits
+   are the same ones the web Studio uses. Or ask your agent to sign you up on a paid plan with `POST /v1/signup`
+   (above): it does so only when you ask, and pays only after you approve the plan and its price.
+2. **Install the plugin.** It adds the eleven Hermoso skills, which drive the `hermoso` CLI through `npx`:
+
+```bash
+claude plugin marketplace add hermoso-ai/hermoso && claude plugin install hermoso@hermoso
+```
+
+   Already inside a session? `/plugin marketplace add hermoso-ai/hermoso`, then `/plugin install hermoso@hermoso`.
+   Codex, Gemini CLI and the rest are in [Install in one command](#install-in-one-command).
+3. **Sign in once.** `npx -y hermoso@0.1.682 auth login` opens your browser; your agent also runs it by itself the first
+   time it needs Hermoso. On a machine with no browser it shows a link and a short code to approve on your phone
+   (`npx -y hermoso@0.1.682 auth login --device`). Only if nothing can open a link, take a key from the **MCP & CLI** tab, under
+   **Terminal & API keys** (https://app.hermoso.ai/?tab=api-keys), and pipe it to `npx -y hermoso@0.1.682 auth login --token -`
+   (or set it as `HERMOSO_TOKEN`), so the key never sits on a command line.
+4. **Ask for what you want**, in your normal prompts. Claude Code picks the Hermoso skill for the job and runs the
+   commands. You type none of them.
+
+Rather install the CLI by hand? `npm install -g hermoso@0.1.682` puts the same `hermoso` command on your PATH, and the
+skills use it when it is there.
+
+The hosted URL works in Claude Code too, but the plugin is the lighter path there because it loads no tool list
+into your sessions. If you want the connector: `claude mcp add --transport http hermoso "https://app.hermoso.ai/mcp?src=readme"`,
+and `claude mcp list` reports `! Needs authentication` until you run `claude mcp login hermoso` once and approve in
+your browser (`--no-browser` prints the link on a headless machine). Measured against Claude Code 2.1.282 on 2026-09-25.
+
+Your agent now has the full studio **with your profile's context**: the brand details, products, logos and
+learned memory you set up in the web app apply automatically (`get_brand` shows what's saved; omit `brand` in
+`plan_ad`/`plan_variations` to use it). Renders bill your Hermoso credits, at the same prices as the Studio. Only AI model runs and Ad Spy research spend credits; publishing, scheduling, ads management and analytics cost no credits on any plan (posting to X and reading X data are the one per-call exception, managing X ads is free). The Free plan includes up to 10 posts on 3 channels; every paid plan posts without a limit and runs autopilot. Every paid plan includes Autopilot plus unlimited posting and scheduling; upgrade_plan lists the plans on sale with their live prices and monthly credits.
+
+## 1. MCP server (stdio), optional in a coding agent
+
+`hermoso mcp` runs a stdio MCP server exposing the full toolset, for a client that wants Hermoso's tools in its own
+list. The published `hermoso` package means no clone: `npx -y hermoso@0.1.682 mcp` fetches and runs it. Sign in once with
+the CLI and no key goes into any client config, because `hermoso mcp` reads the bearer `hermoso auth login` stored:
+
+```bash
+npm install -g hermoso@0.1.682 && hermoso auth login && claude mcp add hermoso -- npx -y hermoso@0.1.682 mcp
+```
+
+On a machine with no browser, skip the sign-in and pass the key to the client instead:
+
+```bash
+claude mcp add hermoso -e HERMOSO_TOKEN=hmk_… -- npx -y hermoso@0.1.682 mcp
+```
+
+Cursor / Codex: sign in the same way, then add to `mcp.json` (Codex uses the TOML equivalent). Drop the `env`
+block entirely if you signed in above; it is there for CI, where the process cannot read your home directory:
+
+```json
+{ "mcpServers": { "hermoso": { "command": "npx", "args": ["-y", "hermoso@0.1.682", "mcp"],
+  "env": { "HERMOSO_API_BASE": "https://app.hermoso.ai", "HERMOSO_TOKEN": "<your token>" } } } }
+```
+
+Then ask your agent: *“Generate an image ad with Hermoso.”*
+
+### What the 1818 tools cover
+
+**Ad spy / research** — `find_competitors`, `competitor_teardown`, `pull_competitor_ads`, `research_ads`; the
+Meta / Google / LinkedIn ad libraries (`search_meta_ads`, `search_google_ads`, `search_linkedin_ads`); organic
+social (`search_tiktok`, `search_instagram`, `search_youtube`, `search_reddit`, `search_threads`);
+`fetch_social_data`, `mine_angles`, `analyze_video`, `check_ad_policy`, `list_skills` / `get_skill`. Leads:
+`find_leads` (companies and public posts showing a buying signal now, billed per lookup under a hard `maxCredits`)
+then `find_company_contacts` (the public business address from the company website, free).
+
+**Create** — `draft_brand` → `plan_ad` → `render_ad` (the Studio quality pipeline: composited text, clean speech,
+music, brand end card), or `generate_image` / `generate_video` / `generate_avatar` (UGC creators + lip-sync).
+The workspace's **saved cast** is reusable: `list_creators` returns every saved creator with their portrait url,
+`save_creator` adds one, `delete_creator` drops one — re-pass a portrait to `generate_avatar` / `generate_video` /
+`recast_motion` and the SAME person stars in every ad, instead of a new face each render.
+Also `make_template_ad` (native HTML ad formats), `make_explainer`, `product_sizzle`, `make_thumbnail`,
+`clone_static`, `recast_motion`, `reframe_video`, `upscale_video`, `dub_video`, `change_voice`, `finish_video`,
+`fix_beat`, `stitch_video`, `clip_video`, `post_edit`, plus `plan_variations` + `score_ad` to fan out and rank.
+The one-job tools from the web's /tools pages are here too, each with a free `dryRun` price: `face_swap_video`
+(face only), `track_objects`, `face_match_cut`, `photo_to_model` (.glb), `upscale_image`, `cut_out_background`,
+`cut_out_video_background`, `split_vocals`, `video_filter`, `reangle_image`, `make_singing_ad`, `check_hook` and
+`write_video_ad_script` (held out of the starting list: `hermoso tools --search` or `find_tools` reaches them).
+**Length is yours to set:** pass `durationSeconds` to `plan_ad` and the storyboard is *authored* to it — a length
+that fits one clip of the render model renders as a single continuous take, longer is stitched from acts (on a
+15s-clip model, 40s = 15+15+10), never time-compressed. What fits one clip is the model's own maximum, not a fixed
+number: most video models cap a clip at 15 seconds and the longest-clip one takes **30 seconds in one unbroken
+take** with native synchronized audio. `hermoso_capabilities` is the live list — durations, resolutions and the
+exact credit cost of every tier — and naming that model in `model` is how you get it, since an unnamed render is
+routed by a narrower auto-pool.
+
+**Ads Studio** (`make_static_ads`): pick products and a count and get a batch of finished static ads in one call,
+each a different selling angle and a different layout, with your real product photo and logo laid on. The product
+catalog it draws from (`list_products`, `add_product`, `refresh_products`, `update_product`, `remove_product`) is a
+cache of each product's live page, so names, photos and prices come from the page itself.
+
+**Swap a person into any video** (`recast_hook`, `recast_motion`): keep the scene, the cuts and the sound and change
+who is on screen, using your own photo, a saved creator or an AI person (in the web Studio you can describe a presenter in words).
+Real faces from your own photos need a paid plan; AI people work on every plan.
+
+**Raw model playground** — the full catalog (30+ image / video / voice / writing models, each with its exact
+per-render credit cost) with no ad framing: `generate_image` / `generate_video` with `useBrand:false`,
+`generate_voice`, `generate_text`. The image default is Nano Banana 2.1.
+
+**Publish to your own channels** — **eighteen** of them: Facebook, Instagram and Threads (`post_to_meta`), TikTok
+(`post_to_tiktok`), YouTube (`post_to_youtube` + `update_youtube_video`, `youtube_video_insights`, comments
+read/reply), X (`post_to_x`, `x_post_metrics`, `x_post_insights`, `x_mentions`, `list_x_dms`, `send_x_dm`),
+LinkedIn profile **and** company Pages (`post_to_linkedin`, `post_to_linkedin_page`), Pinterest
+(`post_to_pinterest` + boards), Bluesky (`post_to_bluesky`, `delete_bluesky_post`, `bluesky_post_metrics`, plus
+`list_bluesky_convos` / `read_bluesky_dm` / `send_bluesky_dm`) and Telegram (`post_to_telegram`,
+`delete_telegram_message`, `list_telegram_chats`), WordPress (`post_to_wordpress`, `update_wordpress_post`,
+`delete_wordpress_post`, `list_wordpress_posts`), the Shopify blog (`post_to_shopify_blog`, `update_shopify_article`,
+`delete_shopify_article`), Webflow (`post_to_webflow`, `update_webflow_item`, `delete_webflow_item`), Wix (`post_to_wix`,
+`update_wix_post`, `delete_wix_post`), Discord and Slack announcements (`post_to_discord`, `edit_discord_message`,
+`delete_discord_message`, `post_to_slack`), Whop (`post_to_whop`, `edit_whop_post`, `delete_whop_post`, `get_whop_post`,
+`list_whop_destinations`) and Google Business Profile (below). `schedule_post` / `list_scheduled` / `cancel_scheduled` give
+you one content calendar over exactly that set. `upload_file` brings in any external or local media, not just
+Hermoso renders.
+*X posting bills credits per API call (X charges per request); a post containing a link costs 13× one without.*
+**Google Business Profile** is the panel a business shows on Google Search and Maps. `post_to_google_business`
+publishes a Post with text, optionally one photo, and a call-to-action button (Google takes no video in Posts, so
+a schedule with only a video is refused for that channel); `list_google_business_posts` and
+`delete_google_business_post` manage what is showing. `list_google_business_reviews` finds the reviews with no
+answer yet and `reply_to_google_business_review` answers one as the business. `google_business_insights` reports
+search and Maps impressions, calls, website clicks and direction requests, and `google_business_search_keywords`
+the words people searched to find the listing. `list_business_locations`, `get_business_location` and
+`update_business_location` read and edit the listing itself: hours, phone, website, description, categories.
+Business Profile Q&A is not offered: Google retired it on 2025-11-03.
+
+**Message customers on WhatsApp** — messaging, not a twelfth publishing channel: you message a person, and
+nothing here posts to a feed. `list_whatsapp_accounts` finds the Business Account and its
+numbers, `list_whatsapp_templates` / `create_whatsapp_template` / `delete_whatsapp_template` manage the templates
+Meta reviews, and `send_whatsapp_message` sends one — confirm-gated, because it reaches a real phone and Meta
+bills the business for the conversation. Two limits that are permanent facts about Meta's API rather than
+anything pending: **Hermoso does not receive WhatsApp webhooks, so there is no message history to read** — it is
+not an inbox surface and `list_inbox` does not cover it — and **outside the 24-hour window that opens when the
+customer messages first, WhatsApp accepts an APPROVED template and nothing else.**
+
+**Automate Instagram DMs** — `save_instagram_dm_automation` sets up a rule that answers people for the brand: a
+comment with a keyword on one post, the next post or any post gets a private reply, and a DM, a story reply or an
+ig.me link gets an answer, with optional link buttons, a public comment reply, a follow gate and a dry run.
+`test_instagram_dm_automation` shows exactly what a sample comment or DM would send without sending it, and
+`list_instagram_dm_automations` / `delete_instagram_dm_automation` read each rule's stats and send log or remove
+it. Each person gets one reply per post, Meta allows a private reply within 7 days of the comment, and no AI runs
+on the send path, so it costs no credits.
+
+**Automate DMs on Facebook and X too** — `save_dm_automation` (with `test_dm_automation`, `list_dm_automations` and
+`delete_dm_automation`) takes a `channel`: `instagram`, `facebook` (a keyword comment on a Page post or an ad gets a
+private reply in Messenger; a Messenger keyword or an m.me link gets an answer) or `x` (a keyword @mention or a reply
+under your post gets a public reply; a DM keyword gets a DM back). X only allows an automated DM after the person has
+DMed you, and a DM saying STOP opts that person out. Facebook is free like Instagram. X bills us per call, so an X
+automation is charged in credits for every mention, reply or DM X delivers plus each reply or DM sent, and running out
+of credits stops its X rules.
+
+**Autopilot posting** (`set_post_refill`, `get_post_refill`, `run_post_refill`): say how often, where and what
+about ("2 posts a day on Instagram and Bluesky about our slow-morning routine, let me review first") and Hermoso
+makes new posts from your brand and fills your calendar. Pick review first (each batch waits for your approval,
+edit or redo) or post automatically (straight onto the schedule, still pullable). It follows the notes you leave and
+writes from what has worked on each channel. Credits are used only when a post is made.
+
+**Run the ads** — full campaign trees, built paused and read back before anything is reported, with every spend
+change confirm-gated, on **thirteen** platforms: **Meta**, **Google Ads**, **Amazon Ads** (Sponsored Products and Sponsored Brands), **LinkedIn Ads**, **Reddit Ads**,
+**Pinterest Ads**, **Microsoft Advertising**, **ChatGPT Ads** (OpenAI's Advertiser API), **X Ads**, **TikTok Ads**,
+**Snapchat Ads**, **Apple Ads** (Apple Search Ads on the App Store) and **AppLovin Ads** (reporting and the website
+pixel on the keys every account has; campaign building once AppLovin enables Campaign Management API access on the
+account, and server-side conversion events with the Conversion API key AppLovin issues on request), plus **The Trade Desk**
+(campaigns and ad groups on the brand's own partner token) and **Taboola Ads** (campaign and report reads). Each has list + report + create + budget/status tools
+(e.g. `list_google_ads_campaigns`, `google_ads_report`, `create_google_ads_campaign`, `set_google_ads_budget`,
+`set_google_ads_status`). *Snapchat needs one extra step the others do not: an ad points at a CREATIVE, and every
+Snapchat creative must carry a Public Profile id — build it with `upload_snapchat_ads_creative`.*
+
+**Feed the shopping surfaces** — **Google Merchant Center** is the catalog a retail Performance Max or Shopping
+campaign advertises (`create_google_ads_performance_max_campaign` takes a `merchantCenterId`), and you manage it
+from here: accounts and account status, data sources, product upsert / update / delete, per-region inventory,
+quota, `merchant_report` for product-level performance, notifications and conversion sources, plus the disapproval
+loop — `list_merchant_issues` says what is wrong and `merchant_issue_help` returns Google's own documented fix.
+*Promotions need the merchant's own enrolment in Google's promotions program; without it Google refuses that
+sub-API outright.* **Microsoft Merchant Center** is covered on the same shape (stores, catalogs, products, issues)
+for Bing Shopping.
+
+**Measure what the ads achieved** — Google Analytics 4 closes the loop. Every other connector here reports what an
+ad *cost*; this is the one that reports what it *did*. `analytics_report` breaks sessions, users, conversions and
+revenue down by channel, source/medium, campaign, landing page, country, device or date, so the campaign Hermoso
+built and the revenue it drove sit in one conversation. `analytics_realtime` shows who is on the site right now.
+Start at `list_analytics_properties` — the tools take a numeric property id, not the `G-XXXXXXXXX` Measurement ID
+from your tracking snippet, and this is what resolves one from the other. It writes as well as reads:
+`create_analytics_key_event` marks an event GA4 already collects as a key event — which is what makes it importable
+into Google Ads as a conversion — and `create_analytics_custom_dimension` registers an event parameter so reports
+can break down by it, with `list_analytics_definitions` showing what the property already measures. It signs in
+with the same Google account as Google Ads, YouTube and Drive, but it is its own connection.
+*GA4 only — the API has no Universal Analytics surface. A custom dimension can be archived but never deleted, and a
+property holds 50 event-scoped ones.*
+
+**Files** — Google Drive CRUD (`save_to_drive`, `list_drive_files`, `update_drive_file`, `delete_drive_file`,
+`create_drive_folder`), Google Sheets (`create_sheet`, `append_to_sheet`, `read_sheet`), Google Docs
+(`create_doc`, `append_to_doc`), and OneDrive (`save_to_onedrive` + full CRUD).
+
+**Workspace & account** — profiles (`list_brands`, `create_brand`, `use_brand`, `update_brand`,
+`delete_brand`; one account holds many profiles, each a brand, a client, a creator or a personal workspace, so an agency runs every client through here), memory
+(`remember`, `forget`, `list_memory`), custom skills (`save_skill`, `get_skill`, `list_skills`,
+`delete_skill` — the one library, which absorbed the old AI-Employee personas), team (`list_team`, `invite_member`, `remove_member`,
+`set_role`), settings (`get_settings`, `update_settings` — including the **language** every ad, script and plan
+is written in), connectors (`list_connectors`, `list_connector_accounts`, `set_connector_accounts`,
+`disconnect_connector`), and billing (`hermoso_credits`, `billing_status`, `buy_credits`, `upgrade_plan`,
+`set_auto_reload`), plus `list_jobs` / `get_job` for async renders.
+
+**Connector accounts are picked, not guessed.** One person often administers several Facebook Pages, Google Ads
+customers or LinkedIn company Pages. Only the accounts ticked for a profile are usable — enforced server-side, and
+an empty selection shares nothing. Linking a *new* account is the one step that is not headless (it is an OAuth
+consent screen, so the user does it in the app).
+
+Render jobs queue server-side and poll to completion, returning a served URL.
+
+## 2. CLI: the context-free path for terminal agents
+
+`bin/hermoso.mjs` exposes the full MCP toolset as subprocess commands, so an agent can shell out instead of carrying a
+fat tool manifest.
+
+```bash
+npm install -g hermoso@0.1.682                             # installs `hermoso`
+hermoso capabilities                               # valid model ids + costs (run first)
+hermoso create --brand "YourBrand" --product "your best-selling product" --format image
+hermoso generate image --prompt "…" --ref ./product.png --wait
+hermoso generate video --prompt "…" --duration 8 --wait
+hermoso competitors yourbrand.com
+hermoso research "Liquid Death’s longest-running ads"
+```
+
+Add `--json` to any command for machine output.
+
+**Those shortcuts are the common path, not the limit.** Every tool the MCP server has is reachable here too,
+including the ad-campaign and analytics groups a connector leaves out of its default roster:
+
+```bash
+hermoso tools                          # every tool, grouped, name + one line
+hermoso tools --group ads --search reddit   # narrow it
+hermoso tools create_meta_campaign     # that tool's full argument schema
+hermoso call create_meta_campaign --json '{"name":"…"}'   # run it
+hermoso create_meta_campaign --name "…"                   # same thing, shorter
+```
+
+`call` goes through the same handler, the same argument validation and the same confirm/spend gates the MCP
+server uses, so there is no second implementation to drift. `tools` and `tools <name>` read a registry bundled in
+the package, so they need no key, no network and no sign-in.
+
+## 3. Skills: what a coding agent installs
+
+`skills/` holds eleven installable skills:
+
+| Skill | What it does |
+| --- | --- |
+| `hermoso-research` | Find competitors, pull their real running ads, surface the hooks worth copying |
+| `hermoso-generate` | A prompt to a finished image, video, avatar clip or stitched cut |
+| `hermoso-ad-from-brand` | A brand or domain to one on-brand ad, concept and copy included |
+| `hermoso-product-photoshoot` | A real product photo composited into studio, lifestyle or hero scenes |
+| `hermoso-marketing` | The whole loop: research, create, publish and schedule, paid campaigns, measure |
+| `hermoso-edit-timeline` | The manual for composing any video edit or transition with `edit_timeline` |
+| `hermoso-launch-app` | Launch and market an app or site you just built: brand, launch ads, a week of scheduled posts |
+| `hermoso-article-everywhere` | One article, link or topic to a blog post, an X Article, a LinkedIn post, a narrated YouTube video and a Short, all scheduled |
+| `hermoso-approval-checkpoints` | Paid work in three approved steps: the script, then the pictures, then the render and its price |
+| `hermoso-lock-presenter` | The same saved presenter and the same voice across every piece of a job |
+| `hermoso-setup-check` | A free read-only check of the brand, channels, credits and defaults, with exactly what to fix |
+
+They are what every one-command install at the top of this page adds, in Claude Code, Codex, Gemini CLI and
+through `npx skills add`. From a clone, copying works too:
+
+```bash
+cp -r skills/* ~/.claude/skills/
+```
+
+Then invoke `/hermoso-ad-from-brand an ad for yourbrand.com, our hero product`.
+
+### Ask for it in your own words
+
+The skills pick themselves. These are whole prompts, not commands:
+
+- *Find my top 5 competitors for [product + URL], pull their best Meta and TikTok ads from the last 90 days, and tell me the 3 hooks and 2 formats worth stealing, with the evidence.*
+- *Make this week's ads for [brand]: two hooks in two formats, one UGC and one product visual, 9:16. Score them and policy check them before I ship.*
+- *Here is a competitor ad: [link]. Break down why it works, then rebuild the structure with my product, my branding and a fresh hook.*
+- *Fill my social queue for the next 7 days across Instagram, TikTok, X and LinkedIn, repurposed from my best post, with per-channel captions.*
+- *Take last week's winner and build a $20/day test campaign on Meta and TikTok, three ad sets, one angle each. Leave it paused and read the tree back so I can check it.*
+- *Pull last month's campaign performance across every platform. Which two creatives won, why, and what should next month's brief say?*
+
+## Configuration
+
+| Env | Meaning |
+| --- | --- |
+| `HERMOSO_API_BASE` | The Hermoso API origin (default `https://app.hermoso.ai` — set `http://localhost:3000` if you run the app yourself) |
+| `HERMOSO_TOKEN` | Bearer agent key (`hmk_…`) — required against the hosted app |
+| `HERMOSO_PROFILE` | Profile id, for accounts with multiple profiles |
+| `HERMOSO_OWNER` | Only for a profile **another account shared with you** (a team workspace): the owning account id. Set it together with `HERMOSO_PROFILE`, and set `HERMOSO_PROFILE` to that workspace's **profileUuid** (a profile's short slug is refused). Run `list_brands` (or `hermoso list_brands` from the CLI) to print both values for every workspace you can enter. The server re-authorizes the pair on every request, so a wrong value is refused, never trusted. |
+
+`mcp/http.mjs` is the hosted remote-connector transport (paste-a-URL into Claude.ai → Connectors). It ships in
+this repo for transparency and refuses to mount without authenticated identity — no anonymous spend, ever.
+
+## Creator data
+
+Creator search (`find_creators`, the creator board in the app and the Creator Campaigns plugin) returns public creator
+profiles and the contact details creators chose to publish.
+
+- **Sources.** The public profiles, bios and posts of creators on TikTok, Instagram and YouTube, including any
+  business email or link they chose to list on their profile.
+- **Legal basis.** Legitimate interests (GDPR Art. 6(1)(f)) in contacting creators about paid collaborations, using
+  contact details they published for business inquiries. Under PIPEDA, this is business contact information used for
+  its business purpose. We hold only what the creator made public, and we never sell lists.
+- **Opt out.** Email [hello@hermoso.ai](mailto:hello@hermoso.ai) with "remove me from creator search" and your handle
+  or email. We remove you from creator search results and add you to a suppression list, so you do not come back in
+  later searches.
+
+## Privacy and support
+
+- Privacy Policy: [hermoso.ai/privacy](https://hermoso.ai/privacy)
+- Terms of Service: [hermoso.ai/terms](https://hermoso.ai/terms)
+- Support: email [hello@hermoso.ai](mailto:hello@hermoso.ai) or use [hermoso.ai/contact](https://hermoso.ai/contact).
+  From inside an agent, the `contact_support` tool reaches the same team.
+
+## License
+
+MIT © Hermoso

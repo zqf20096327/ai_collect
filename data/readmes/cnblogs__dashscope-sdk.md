@@ -300,6 +300,9 @@ Client level configuration also applies to the WebSocket API (e.g. CosyVoice), w
 - [Application Call](#application-call)
 - [Batch](#batch)
 - [Text Embeddings](#text-embeddings)
+- [Multimodal Embedding](#multimodal-embedding) - tongyi-embedding-vision-plus/flash, qwen3-vl-embedding, qwen2.5-vl-embedding, multimodal-embedding-v1. For embedding texts, images and videos into one vector space
+- [Text Rerank](#text-rerank) - qwen3-rerank, qwen3.7-text-rerank, gte-rerank-v2, qwen3-vl-rerank. For refining the documents recalled by a vector search
+- [Omni-Modal Translation (Qwen-MT-Uni)](#omni-modal-translation-qwen-mt-uni) - qwen-mt-uni. For translating texts, documents, images and audio
 
 
 ## Text Generation
@@ -2294,7 +2297,7 @@ Read the usage from the final result of each sentence, the `task-finished` event
 ### Qwen3-ASR-Flash-Realtime
 `qwen3-asr-flash-realtime` models use a separate realtime session (`CreateAsrRealtimeSocketSessionAsync`), which talks to the `/api-ws/v1/realtime` endpoint with event-based messages: configure the session (audio format, language, VAD) with `UpdateSessionAsync`, stream the audio with `AppendAudioAsync` (base64 encoded inside the messages, no binary frames) and end it with `FinishAsync`. The server closes the connection after `session.finished`, so a session cannot be reused.
 
-In the VAD mode (a non-null `TurnDetection`), the server detects speech boundaries and submits the audio automatically, delivering incremental results in `conversation.item.input_audio_transcription.text` events (the accumulated text arrives in `Stash`, `Text` stays empty) and the final one in `...completed` (with the token usage). In the manual mode (`TurnDetection` set to null), call `CommitAudioAsync` to submit the buffered audio:
+The session starts in the VAD mode, where the server detects speech boundaries and submits the audio automatically, delivering incremental results in `conversation.item.input_audio_transcription.text` events (the accumulated text arrives in `Stash`, `Text` stays empty) and the final one in `...completed` (with the token usage). Leave `TurnDetection` at its default to keep the server's VAD settings, or set a configuration to tune them. Setting it to null (sent as an explicit `turn_detection` null) switches to the manual mode, where you call `CommitAudioAsync` to submit the buffered audio:
 
 ```csharp
 using var asr = await dashScopeClient.CreateAsrRealtimeSocketSessionAsync("qwen3-asr-flash-realtime");
@@ -2304,13 +2307,16 @@ await asr.UpdateSessionAsync(
         InputAudioFormat = "pcm", // or opus
         SampleRate = 16000, // or 8000
         InputAudioTranscription = new AsrRealtimeTranscription { Language = "zh" }, // unset to auto detect
-        // non-null enables the VAD mode, null switches to the manual mode (commit below)
+        // the VAD mode with custom settings; leave it unset to keep the server settings,
+        // null switches to the manual mode (commit below)
         TurnDetection = new AsrRealtimeTurnDetection { Threshold = 0.0f, SilenceDurationMs = 400 }
     });
 await using var audio = File.OpenRead("speech.pcm");
 await asr.AppendAudioAsync(audio); // sent as base64 chunks of 3200 bytes
 // manual mode only: submit the buffered audio for recognition
 // await asr.CommitAudioAsync();
+// VAD mode only: give the server a moment after the audio, see below
+await Task.Delay(TimeSpan.FromSeconds(1));
 await asr.FinishAsync();
 
 await foreach (var e in asr.GetEventsAsync())
@@ -2326,6 +2332,8 @@ await foreach (var e in asr.GetEventsAsync())
     }
 }
 ```
+
+In the VAD mode, do not call `FinishAsync` right after the last audio: `input_audio_buffer.append` has no acknowledgement, and a finish that arrives before the server has consumed the buffered audio ends the session without any transcription. Pushing a 4 second clip in one message lost it every time, in 3200 byte chunks (the `Stream` overload above) it takes about 300 ms, so wait a second to be safe. A live microphone stream delivers the audio continuously and does not run into this.
 
 ## Real-Time Voice Conversation (Qwen-Audio-Realtime)
 The qwen-audio-3.x-realtime models (plus / flash) are full-duplex voice assistants: stream the user audio in, the server runs VAD / ASR / LLM / TTS in a pipeline and streams back the response text and audio. Create a session with `CreateAudioChatSocketSessionAsync` (same `/api-ws/v1/realtime` endpoint, event-based messages):
@@ -2343,8 +2351,8 @@ await chat.UpdateSessionAsync(
             Threshold = 0.5f,
             SilenceDurationMs = 500
         }
-        // set DisableTurnDetection = true instead for the push-to-talk mode: commit the audio
-        // with CommitAudioAsync() and trigger the inference with CreateResponseAsync()
+        // set TurnDetection = null instead for the push-to-talk mode: commit the audio with
+        // CommitAudioAsync() and trigger the inference with CreateResponseAsync()
     });
 
 // consume the events while the audio streams in (see below), then send the audio
@@ -2428,7 +2436,7 @@ await foreach (var e in translator.GetEventsAsync())
 }
 ```
 
-The qwen3.8 model takes a different shape: `OutputModalities` plus `Audio.Input.TurnDetection` (speaker_detection separates speakers, the source and the translation items are correlated via `PreviousItemId`), and voice cloning (`EnableVoiceClone` + `VoiceCloneOptions.Frequency` never / once / always, with `Voice` set to "default" or a pre-cloned voice id) works on both models. In the manual mode (`DisableTurnDetection = true`) the buffered audio is submitted with `CommitAudioAsync()`, which triggers the translation automatically.
+The qwen3.8 model takes a different shape: `OutputModalities` plus `Audio.Input.TurnDetection` (speaker_detection separates speakers, the source and the translation items are correlated via `PreviousItemId`), and voice cloning (`EnableVoiceClone` + `VoiceCloneOptions.Frequency` never / once / always, with `Voice` set to "default" or a pre-cloned voice id) works on both models. In the manual mode (`TurnDetection = null`) the buffered audio is submitted with `CommitAudioAsync()`, which triggers the translation automatically.
 
 ### Non-realtime translation (qwen3-livetranslate-flash)
 The qwen3-livetranslate-flash models translate an audio / video file in one shot. They **cannot be called via the DashScope API** - they are only served on the OpenAI compatible endpoint (`/compatible-mode/v1/chat/completions`), which the SDK exposes as the generic `OpenAiCompatibleGetChatCompletionAsync` / `OpenAiCompatibleGetChatCompletionStreamAsync` methods (the livetranslate models only support the streaming mode). Prefer the DashScope methods (or the Microsoft.Extensions.AI integration) whenever the model supports both styles; use the OpenAI compatible family only when it does not:
@@ -2543,29 +2551,4 @@ var task = await dashScopeClient.CreateSpeechTranscriptionTaskAsync(
         {
             DisfluencyRemovalEnabled = true, // remove filler words
             DiarizationEnabled = true, // speaker diarization, result carries speaker_id
-            SpeakerCount = 2 // optional reference count of speakers
-        }
-    });
-
-DashScopeTask<SpeechTranscriptionOutput, SpeechTranscriptionUsage>? result;
-do
-{
-    await Task.Delay(TimeSpan.FromSeconds(2));
-    result = await dashScopeClient.GetSpeechTranscriptionTaskAsync(task.Output.TaskId);
-}
-while (result.Output.TaskStatus is DashScopeTaskStatus.Pending or DashScopeTaskStatus.Running);
-
-// check SubTaskStatus when multiple files were submitted: the task status is SUCCEEDED
-// as long as any subtask succeeded
-foreach (var file in result.Output.Results!)
-{
-    Console.WriteLine($"{file.FileUrl}: {file.SubTaskStatus} -> {file.TranscriptionUrl}");
-}
-```
-
-## Custom Hotword Vocabularies
-Boost the recognition accuracy of domain terms with custom hotword vocabularies, managed with `CustomizeVocabularyAsync` (model `speech-biasing`, served on the workspace domain only — configure `WorkspaceId` as for the voice cloning API). The action picks the operation: create a vocabulary of hotwords (`Action = "create_vocabulary"`), then list / query / update / delete vocabularies. The returned id feeds the `VocabularyId` parameter of recognition requests and the vocabulary must be created with the same `TargetModel` as the recognition requests use:
-
-```csharp
-var created = await dashScopeClient.CustomizeVocabularyAsync(
-    new M
+            SpeakerCount =

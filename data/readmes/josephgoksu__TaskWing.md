@@ -11,14 +11,15 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/josephgoksu/TaskWing/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/josephgoksu/TaskWing/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="https://github.com/josephgoksu/TaskWing/actions/workflows/ci.yml?query=branch%3Amain+event%3Apush"><img alt="CI" src="https://github.com/josephgoksu/TaskWing/actions/workflows/ci.yml/badge.svg?branch=main&event=push"></a>
   <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-2f6bff?style=flat-square"></a>
-  <a href="go.mod"><img alt="Go version" src="https://img.shields.io/github/go-mod/go-version/josephgoksu/TaskWing?style=flat-square"></a>
+  <a href="go.mod"><img alt="Go 1.24+" src="https://img.shields.io/badge/go-1.24%2B-4f74ec?style=flat-square"></a>
   <img alt="macOS, Linux, Windows" src="https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-9ab7f9?style=flat-square">
   <img alt="Status: early" src="https://img.shields.io/badge/status-early-f59e0b?style=flat-square">
 </p>
 
 <p align="center">
+  <a href="#use-it-from-your-agent">From your agent</a> ·
   <a href="#install">Install</a> ·
   <a href="#quickstart">Quickstart</a> ·
   <a href="#the-harness">The harness</a> ·
@@ -31,16 +32,16 @@
   <img src="docs/assets/board.svg" alt="A taskwing run in the terminal: the lead plans, you approve the exam, then one line per agent while they build in their own sandboxes" width="100%">
 </p>
 
-> **Early and moving fast.** The CLI runs real tasks today with Claude Code agents in [boat](https://boat.dev) sandboxes. More agent runtimes, models and sandbox providers are next. See [Status](#status) for exactly what works.
+> **Early and moving fast.** The CLI runs real tasks today with Claude Code agents in [boat](https://boat.dev) sandboxes. Codex and other agents run in boat with `--agent` and are not yet proven in a live run. More sandbox providers are next. See [Status](#status) for exactly what works.
 
 ## How it works
 
-```
-           ┌───────────────────────── TaskWing orchestrates ─────────────────────────┐
- your task │  your agent plans  →  N agent sessions, one per sandbox  →  hidden exam │ → one tested PR
-           └─────────────────────────────────────────────────────────────────────────┘
-                      ↑ the agents are yours: Claude Code today, Codex or OpenCode next
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/swarm-dark.svg">
+  <img src="docs/assets/swarm-light.svg" alt="A swarm of coding agents: the lead agent in the middle splits your task into pieces, and TaskWing gives each piece to its own agent. Each filled square is one agent in its own sandbox: blue is working, grey is done." width="100%">
+</picture>
+
+Your task goes to your own coding agent, the lead. It splits the work into pieces that share no files, and TaskWing starts one agent session per piece, each in its own sandbox. A hidden exam checks the joined work, and you get one tested pull request. The agents are yours: Claude Code, or Codex and others in boat (`--agent`).
 
 | TaskWing | What that means for you |
 |---|---|
@@ -50,6 +51,11 @@
 
 ## Why TaskWing
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/why-dark.svg">
+  <img src="docs/assets/why-light.svg" alt="Why TaskWing: one task in, one tested pull request out. A sandbox for each agent, with no GitHub login inside any box. A hidden exam: tests written first, which the lead and the workers never see. Your own agent, logins and plans, with no API key of ours. Plugs in: boat sandboxes today, more providers next." width="100%">
+</picture>
+
 Running many coding agents is easy. What runs out is work that doesn't conflict, and your time to review it. TaskWing counts success in verified merges.
 
 - **One task in, one pull request out.** Your own coding agent plans the task and splits it into pieces that share no files. One agent builds each piece, in parallel.
@@ -57,6 +63,25 @@ Running many coding agents is easy. What runs out is work that doesn't conflict,
 - **A hidden exam.** Before any work starts, a fresh session writes the checks and the tests behind them. You approve the checks. The tests never reach the lead or any worker, so nobody can teach to them. They run in a clean sandbox on the joined work.
 - **Your agent, your subscription.** The engine has no model code and no API key of its own. The lead is your own coding agent on your machine.
 - **Plugs into what you have.** Bring your sandbox provider and your agent CLIs. TaskWing connects them through two small adapters, Box and Agent.
+
+## Use it from your agent
+
+Paste this into Claude Code, Codex, Cursor, Gemini CLI, Antigravity or any coding agent that can run commands:
+
+```text
+Read https://taskwing.app/skill.md and set up TaskWing in this repo.
+```
+
+Your agent installs the CLI, checks your logins, adds the `taskwing` skill for every agent the repository uses (`.agents/skills/` and `.claude/skills/`) and a short TaskWing section to `AGENTS.md` or `CLAUDE.md`. From then on, ask it for a task in plain words. It plans with TaskWing, shows you the plan and the exam, and starts the agents only after your yes.
+
+```
+you      "Build discount codes at checkout with TaskWing"
+agent    taskwing run "..." --plan-only   →  shows you the plan and the exam
+you      "yes, and codes must be case-insensitive"
+agent    taskwing approve <run id> --check "codes are case-insensitive"   →  one draft PR
+```
+
+The skill is [skills/taskwing/SKILL.md](skills/taskwing/SKILL.md). Any agent can drive a run; the agents inside a run are Claude Code for now ([Status](#status)).
 
 ## Install
 
@@ -68,7 +93,7 @@ brew install josephgoksu/tap/taskwing
 go install github.com/josephgoksu/TaskWing/v2/cmd/taskwing@latest
 ```
 
-> Until the first v2 tag ships, Homebrew still installs v1.23.2, which has none of these commands. Use `go install github.com/josephgoksu/TaskWing/v2/cmd/taskwing@latest` (needs Go 1.24+) for now.
+> Homebrew installs the latest v2 release (an alpha for now). The v1 knowledge layer (v1.23.2 and earlier) is a different tool, and `brew upgrade` replaces it with v2; v1 stays at tag [`v1.23.2`](https://github.com/josephgoksu/TaskWing/releases/tag/v1.23.2).
 
 Linux packages (`.deb`, `.rpm`, `.apk`) and archives for macOS, Linux and Windows are on the [releases page](https://github.com/josephgoksu/TaskWing/releases).
 
@@ -149,9 +174,9 @@ Every concept and how they connect: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 | **Run** | ✅ `taskwing run`, plan check, parallel agents, join, draft PR · ✅ `taskwing hunt` | ⬜ lead resolves join conflicts · ⬜ resume after a crash |
 | **Exam** | ✅ fresh exam writer, hidden tests, clean exam sandbox · ✅ approve before dispatch · ✅ add your own check · ✅ new plan, exam now (CLI and JSON) | ⬜ rulings after a failure · ⬜ plain-words failure reports |
 | **Sandboxes** | ✅ boat · ✅ local (no isolation, for trying it) | ⬜ E2B · ⬜ AWS · ⬜ Docker |
-| **Agents and models** | ✅ Claude Code · 🟡 lead and exam writer on any command | ⬜ a second runtime (OpenCode or Codex) · ⬜ open-weight models · ⬜ per-step model routing |
+| **Agents and models** | ✅ Claude Code · 🟡 Codex, OpenCode, pi, Kimi, Mistral and more in boat boxes (`--agent codex`), not yet proven live · 🟡 lead and exam writer on any command | ⬜ open-weight models · ⬜ per-step model routing |
 | **Safety** | ✅ no GitHub login in any box · 🟡 refuse boxes with GitHub credentials · 🟡 secret scan before destroy (GitHub tokens, SSH keys) · ✅ host git runs with hooks off on agent commits | ⬜ key proxy |
-| **Clients** | ✅ CLI with one live line per agent · ✅ JSON lines for scripts and CI (`taskwing engine --json`) | ⬜ start from a Claude Code skill |
+| **Clients** | ✅ CLI with one live line per agent · ✅ JSON lines for scripts and CI (`taskwing engine --json`) · ✅ agent skill for any harness, with plan-only and `taskwing approve` | ⬜ `taskwing status` for a run in the background |
 
 ## Contributing
 
@@ -178,6 +203,7 @@ cmd/taskwing/     the CLI entry point
 internal/engine/  runs, plan check, exam, join, pull request
 internal/box/     sandbox providers (boat, local)
 internal/proc/    child processes as a group, so a timeout or Ctrl-C stops them all
+skills/taskwing/  the agent skill: set up TaskWing and drive runs from any coding agent
 docs/             architecture, features, user guide, engine protocol, diagrams
 context/          research behind the principles
 ```

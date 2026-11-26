@@ -119,7 +119,7 @@ Download `Usagebar.zip` from the [latest release](https://github.com/betoxf/Usag
 1. Install and launch Usagebar.
 2. If you already use the provider CLIs, Usagebar discovers their local credentials automatically.
 3. Otherwise the setup window opens. Click **Sign In** next to each tool you use and it shows **Connected** on its own when you finish. To open it again, click **Usagebar Setup** in the menu bar, or choose **Connections…** under the panel's **⋯** button. Click **Connected** on a row to disconnect that tool.
-4. Right-click the menu-bar item to open the usage panel. Left-click switches providers. Settings are under the panel's **⋯** button.
+4. Click or right-click the menu-bar item to open the usage panel, and click a provider there to show it in the bar. Settings are under the panel's **⋯** button.
 
 ### Connect your tools
 
@@ -159,14 +159,14 @@ Bartender or Ice.)
 
 ## Menu-bar controls
 
-Right-click the status item to open the usage panel; its **⋯** button holds these settings.
+Click the status item to open the usage panel; its **⋯** button holds these settings.
 
 | Control | Behavior |
 | --- | --- |
 | Refresh (`⌘R`) | Rediscover credentials and fetch enabled providers, subject to server retry deadlines. |
 | Display mode | Show both windows, the five-hour window only, or the weekly window only. |
 | Provider visibility | Choose which detected providers appear, rotate, and refresh in the background. |
-| Switch cadence | Rotate providers automatically or switch manually with a left click. |
+| Switch cadence | Rotate providers automatically, or pick one in the panel (Manual). |
 | Launch at Login | Register or remove Usagebar as a macOS login item. |
 | Sign out | Reset the selected provider's Usagebar state; provider CLI sessions remain provider-owned. |
 | Updates | Check for a new version, or turn **Update Automatically** on or off. |
@@ -208,7 +208,7 @@ Don't use `sudo`, read credential files, or ask for API keys or tokens. Usagebar
 
 ## Why Usagebar
 
-Usage limits matter most while you are working. Usagebar keeps your Claude Code, Codex, and Cursor limits (the weekly allowance, plus the current five-hour window on plans that have one) visible in the menu bar, then gets out of the way. Right-click it for a panel with every provider, a meter for each limit, and its reset time.
+Usage limits matter most while you are working. Usagebar keeps your Claude Code, Codex, and Cursor limits (the weekly allowance, plus the current five-hour window on plans that have one) visible in the menu bar, then gets out of the way. Click it for a panel with every provider, a meter for each limit, and its reset time.
 
 | Capability | What it gives you |
 | --- | --- |
@@ -250,7 +250,7 @@ Kimi Code credentials ───┘
 
 The app refreshes the provider on screen every two minutes by default, or every five minutes in Low Power Mode. Enabled providers that are not on screen refresh five times less often, and as soon as they are shown or the menu opens; new sign-ins are picked up at that slower pace or when you click **Refresh**. Hidden providers stop polling and refresh when re-enabled. No connection stays open between refreshes. Background requests and automatic provider rotation pause while the display or Mac sleeps; stale usage refreshes on wake. Failed providers retry less frequently, respect server cooldowns, and keep the last successful reading. **Last Updates** in the menu shows how fresh each provider's data is.
 
-Credential discovery runs off the UI thread. Menu-bar rendering uses cached availability and reuses unchanged images; menus update when opened. Usagebar never refreshes Claude Code's or Codex's sign-in, so it can't sign you out of either; an expired one waits for that tool to renew it. See [Architecture](docs/ARCHITECTURE.md) for component boundaries, credential priority, and network destinations.
+Credential discovery runs off the UI thread. Menu-bar rendering uses cached availability and reuses unchanged images; menus update when opened. Usagebar never refreshes Claude Code's or Codex's sign-in, so it can't sign you out of either; an expired one waits for that tool to renew it, and opening the panel or clicking Refresh asks the tool to renew it right away. See [Architecture](docs/ARCHITECTURE.md) for component boundaries, credential priority, and network destinations.
 
 ## Privacy and security
 

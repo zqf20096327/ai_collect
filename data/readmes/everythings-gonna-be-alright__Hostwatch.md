@@ -37,10 +37,6 @@
   <img src="docs/images/site/network.png" alt="Hostwatch network map: who reaches this Mac, what goes out, the way out and the destinations">
 </p>
 
-<p align="center">
-  <img src="docs/images/site/hud.png" width="360" alt="Hostwatch HUD: live processes, connections and file opens, with a story on top">
-</p>
-
 <p align="center"><sub>Screenshots show made-up demo data.</sub></p>
 
 ---
@@ -60,6 +56,13 @@ Hostwatch watches what runs on your Mac, what it touches and where it connects, 
 of what happened. Its firewall and Claude Code guard can stop what you didn't allow. It never deletes anything.
 
 ## What's new
+
+**0.22.1** – easier to read tables.
+
+**0.22.0**
+- **🚨 Alerts when protection stops** – a notification, a red dot and a banner if the collector or network filter stops.
+- **💬 Questions show why** – the command behind a connection, such as `git clone`.
+- **🪟 Events and Patterns redesigned** – glass cards, details beside the list.
 
 **0.21.0**
 - **🧩 Rules for each app** – give one app its own firewall and file rules. They win over the global ones.

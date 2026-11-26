@@ -79,13 +79,13 @@ LLM4S provides a simple, robust, and scalable framework for building LLM applica
 
 ## Current Status
 
-LLM4S is under active pre-1.0 development. The latest published release is [v0.6.0](https://github.com/llm4s/llm4s/releases/tag/v0.6.0); [v0.5.0](https://github.com/llm4s/llm4s/releases/tag/v0.5.0) was the first with the split module artifacts. Both target Scala 3.7.1 and JDK 21. Its APIs are usable today but are still being stabilized ahead of the 1.0 compatibility commitment.
+The latest published release is [v1.0.0](https://github.com/llm4s/llm4s/releases/tag/v1.0.0), for Scala 3.7.1 and JDK 21. From 1.0.0 llm4s follows semantic versioning: the seven frozen modules (`llm4s-core`, `llm4s-agent`, `llm4s-openai`, `llm4s-openai-compatible`, `llm4s-anthropic`, `llm4s-gemini` and `llm4s-ollama`) are source and binary compatible across 1.x, checked by MiMa on every pull request, and a frozen API is removed only in a major release, after a deprecation. Every other module is Beta or Experimental and may change in a minor release, with a migration note; in `llm4s-agent` a small `@Stable` core is frozen and the rest of the runtime is Experimental. See the [compatibility policy](https://llm4s.org/reference/compatibility-policy) and the [support policy](https://llm4s.org/reference/support-policy).
 
 The framework already provides multi-provider clients, agents and tool calling, RAG and vector stores, memory, guardrails, tracing and metrics, reliability wrappers, workspace isolation, MCP support, and image and speech APIs.
 
-Since 0.5.0, llm4s ships as separate modules. RAG, knowledge graph, memory, MCP, shared media types, image, and speech have been carved out of `llm4s-core` into focused modules with smaller dependency footprints, and providers register through an SPI. Provider clients have moved into modules of their own - `llm4s-ollama`, `llm4s-gemini`, `llm4s-anthropic`, `llm4s-openai`, `llm4s-openai-compatible` (DeepSeek, Z.ai, OpenRouter, Mistral, Cohere and any OpenAI-compatible endpoint) and `llm4s-voyage` - and `llm4s-core` holds none. Langfuse tracing, the trace collector and store, and `CostTracker` are in `llm4s-observability`, and Prometheus metrics in `llm4s-observability-prometheus`, leaving `llm4s-core` with only the tracing and metrics contracts, console and no-op tracing, and no observability dependency. The agent runtime is in `llm4s-agent` and the built-in tools in `llm4s-agent-tools`, so `llm4s-core` is now a small spine, and its API has been cleaned up ahead of the compatibility baseline, which is set at a pre-1.0 release once the designs are final ([#1281](https://github.com/llm4s/llm4s/issues/1281)). Upgrading from 0.4.x? Start with [Upgrading from 0.4.1 to 0.5.0](https://llm4s.org/migrations/0-4-1-to-0-5-0). See the [1.0 scope](https://llm4s.org/reference/v1-scope) and [migration guide](https://github.com/llm4s/llm4s/blob/main/docs/reference/migration.md) for module maturity and upgrade details.
+Since 0.5.0, llm4s ships as separate modules. RAG, knowledge graph, memory, MCP, shared media types, image, and speech have been carved out of `llm4s-core` into focused modules with smaller dependency footprints, and providers register through an SPI. Provider clients have moved into modules of their own - `llm4s-ollama`, `llm4s-gemini`, `llm4s-anthropic`, `llm4s-openai`, `llm4s-openai-compatible` (DeepSeek, Z.ai, OpenRouter, Mistral, Cohere and any OpenAI-compatible endpoint) and `llm4s-voyage` - and `llm4s-core` holds none. Langfuse tracing, the trace collector and store, and `CostTracker` are in `llm4s-observability`, and Prometheus metrics in `llm4s-observability-prometheus`, leaving `llm4s-core` with only the tracing and metrics contracts, console and no-op tracing, and no observability dependency. The agent runtime is in `llm4s-agent` and the built-in tools in `llm4s-agent-tools`, so `llm4s-core` is now a small spine; its API review finished in 0.7.0, the release the compatibility baseline was set at ([#1281](https://github.com/llm4s/llm4s/issues/1281)). Upgrading from a 0.x release? Start with [Migrating from 0.x to 1.0](https://llm4s.org/migrations/0x-to-1x); from 0.4.x, with [Upgrading from 0.4.1 to 0.5.0](https://llm4s.org/migrations/0-4-1-to-0-5-0). See the [1.0 scope](https://llm4s.org/reference/v1-scope) and [migration guide](https://github.com/llm4s/llm4s/blob/main/docs/reference/migration.md) for module maturity and upgrade details.
 
-The path to 1.0 is focused on stable API boundaries, provider capability parity and contract tests, Java/Kotlin/Spring/Gradle interoperability, security hardening, deterministic CI, production observability and cost controls, runnable documentation, and maintained reference applications. See the [roadmap](https://llm4s.org/reference/roadmap) for the full stabilization plan.
+The work that led to 1.0 was stable API boundaries, provider capability parity and contract tests, Java/Kotlin/Spring/Gradle interoperability, security hardening, deterministic CI, production observability and cost controls, runnable documentation, and maintained reference applications. See the [roadmap](https://llm4s.org/reference/roadmap) for where each stands.
 
 ## Why Scala for LLMs?
 
@@ -102,7 +102,7 @@ Spring AI, Koog and Embabel, with a source and a date for every claim, and
 
 ## Features
 
-- **Multi-Provider Support**: Eighteen chat providers behind one API: OpenAI, Azure OpenAI, Requesty, Anthropic, Google Gemini, Vertex AI, Amazon Bedrock, IBM watsonx.ai, Mistral, Cohere, DeepSeek, xAI, Z.ai, OpenRouter, Perplexity, Ollama, Jlama (a model run inside your JVM) and any OpenAI-compatible endpoint.
+- **Multi-Provider Support**: Eighteen chat providers behind one API: OpenAI, Azure OpenAI, Requesty, Anthropic, Google Gemini, Vertex AI, Amazon Bedrock, IBM watsonx.ai (Beta, unverified against the live service), Mistral, Cohere, DeepSeek, xAI, Z.ai, OpenRouter, Perplexity, Ollama, Jlama (a model run inside your JVM) and any OpenAI-compatible endpoint.
 - **Execution Environments**: Run LLM-driven operations in secure, containerized or non-containerized setups.
 - **Error Handling**: Robust mechanisms to catch, log, and recover from failures gracefully.
 - **MCP Support**: Model Context Protocol primitives for richer tool and context integration.
@@ -167,14 +167,14 @@ To get started with the LLM4S project, check out this teaser talk presented by *
 
 ### Use LLM4S in your project
 
-LLM4S is on Maven Central; the current release is **0.6.0**, for Scala 3.7.x (built with 3.7.1) on JDK 21.
+LLM4S is on Maven Central; the current release is **1.0.0**, for Scala 3.7.x (built with 3.7.1) on JDK 21.
 `llm4s-core` holds no provider client, so add the module of the provider you call next to it:
 
 ```scala
 // build.sbt
 ThisBuild / scalaVersion := "3.7.1"
 
-val llm4sVersion = "0.6.0"
+val llm4sVersion = "1.0.0"
 
 libraryDependencies ++= Seq(
   "org.llm4s" %% "llm4s-core"   % llm4sVersion,
@@ -252,12 +252,11 @@ for a second account sets its own `apiKey = ${?OTHER_VAR}`. Nothing reads `LLM_M
 
 ```hocon
 llm4s {
+  defaultProvider = "openai-main"          # the default: the name of a section below
   providers {
-    provider = "openai-main"          # the default: the name of a section below
-
     openai-main {
       provider = "openai"
-      model    = "gpt-4o-mini"
+      model    = "gpt-5.6-luna"
     }
   }
 }
@@ -348,8 +347,8 @@ Our goal is to build a production-grade, type-safe AI application framework for 
 The roadmap covers:
 - **Current Capability Map**: What exists today and what still needs hardening
 - **Production Pillars**: Testing, API stability, provider parity, JVM adoption, security, performance, cost, documentation, and observability
-- **2026 Stabilization Phases**: The path from broad pre-1.0 functionality to a production-ready v1.0
-- **Reference Applications**: The maintained end-to-end apps needed before v1.0
+- **2026 Stabilization Phases**: The path from broad 0.x functionality to v1.0
+- **Reference Applications**: The maintained end-to-end apps
 
 ### High-Level Goals
 
@@ -360,7 +359,7 @@ The roadmap covers:
 | Agentic framework | Single-agent workflows, handoffs, memory, guardrails, streaming events, async tools, reasoning modes, and serialization exist | API freeze, replay/debugging, maintained reference apps |
 | RAG and retrieval | Vector stores, hybrid search, reranking, permission-aware RAG, RAGAS-style evaluation, and benchmarking exist | Cost/latency tracking, deployment patterns, compile-tested golden paths |
 | JVM ecosystem adoption | Scala-first path is the main supported API | Java facade, Kotlin coroutine API, Spring Boot starter, Maven/Gradle examples |
-| Stable v1.0 platform | Pre-1.0, API stabilizing | MiMa or equivalent compatibility checks, threat model, benchmarks, docs cleanup, release gates |
+| Stable v1.0 platform | 1.0.0 released: seven frozen modules, binary compatible across 1.x and checked by MiMa | Keeping the promise across 1.x: MiMa on every pull request, deprecation before removal |
 
 ## Tool Calling
 
@@ -378,9 +377,9 @@ val weatherSchema = Schema
   .withProperty(Schema.property("location", Schema.string("The city to look up")))
 
 val result = for {
-  weather <- ToolBuilder[Map[String, Any], String]("get_weather", "Current weather for a city", weatherSchema)
+  weather <- ToolBuilder[String]("get_weather", "Current weather for a city", weatherSchema)
                .withHandler(args => args.getString("location").map(city => s"Sunny in $city"))
-               .buildSafe()
+               .build()
   tools   <- ToolRegistry.of(Seq(weather))
   agent   <- Agent.builder("weather-agent", client).withTools(tools).build()
   answer  <- agent.run("What's the weather in Paris?")
@@ -457,7 +456,7 @@ sbt new llm4s/llm4s.g8 \
 --name=<your.project.name> \
 --package=<your.organization> \
 --version=<your.project.version> \
---llm4s_version=0.6.0 \
+--llm4s_version=1.0.0 \
 --scala_version=3.7.1 \
 --munit_version=1.1.1 \
 --force
@@ -485,22 +484,21 @@ llm4s exposes a single configuration flow with sensible precedence:
 Preferred typed entry points (PureConfig-backed via `Llm4sConfig`):
 
 - Provider / model:
-  - `Llm4sConfig.defaultProvider(): Result[ProviderConfig]` – the typed config of the section `llm4s.providers.provider` names.
+  - `Llm4sConfig.defaultProvider(): Result[ProviderConfig]` – the typed config of the section `llm4s.defaultProvider` names.
   - `Llm4sConfig.provider(name: String): Result[ProviderConfig]` – the typed config of the section `llm4s.providers.<name>`.
   - `LLMConnect.getClient(config: ProviderConfig): Result[LLMClient]` – builds a client from a typed config (with a `given ModelRegistryService` from `Llm4sConfig.modelRegistryService()`).
 - Tracing:
   - `Llm4sConfig.tracing(): Result[TracingSettings]` – returns typed tracing settings.
   - `Tracing.fromSettings(settings: TracingSettings): Result[Tracing]` – builds the tracer the mode selects; a missing backend is an error.
-  - `Tracing.create(settings: TracingSettings): Tracing` – the same, falling back to `NoOpTracing` with an error logged.
 - Embeddings:
-  - `Llm4sConfig.embeddings(): Result[(String, EmbeddingProviderConfig)]` – returns `(provider, config)` with validation.
-  - `EmbeddingClient.from(provider: String, cfg: EmbeddingProviderConfig): Result[EmbeddingClient]` – builds an embeddings client from typed config.
+  - `Llm4sConfig.embeddings(): Result[EmbeddingProviderConfig]` – the validated config; its `providerId` names the provider.
+  - `EmbeddingClient.from(cfg: EmbeddingProviderConfig): Result[EmbeddingClient]` – builds an embeddings client from typed config.
 
 Recommended usage patterns:
 
 - Model name for display: `Llm4sConfig.defaultProvider().map(_.model)` or prefer `completion.model` from API responses.
 - Tracing:
-  - `Llm4sConfig.tracing().flatMap(Tracing.fromSettings)`, or `.map(Tracing.create)` to fall back to no tracing.
+  - `Llm4sConfig.tracing().flatMap(Tracing.fromSettings)`; add `.getOrElse(new NoOpTracing())` to run untraced when the backend is missing.
 - Workspace (samples): `WorkspaceConfigSupport.load()` to get `workspaceDir`, `imageName`, `hostPort`.
 - Embeddings sample (samples): `EmbeddingUiSettings.loadFromEnv`, `EmbeddingTargets.loadFromEnv`, `EmbeddingQuery.loadFromEnv` (sample helpers backed by `Llm4sConfig`).
 
@@ -509,15 +507,15 @@ Recommended usage patterns:
 Use these loaders to convert flat keys and HOCON paths into typed, validated settings used by the code:
 
 - LLM provider and model selection
-  - Keys: `llm4s.providers.provider` (the default section's name) and `llm4s.providers.<name>.{provider, model, apiKey, baseUrl, ...}`.
+  - Keys: `llm4s.defaultProvider` (the default section's name) and `llm4s.providers.<name>.{provider, model, apiKey, baseUrl, ...}`.
     No environment variable is bound: bind your own with `${?VAR}` in `application.conf`
   - Type: `ProviderConfig` (with provider-specific subtypes)
-  - Loader: `Llm4sConfig.defaultProvider()` or `Llm4sConfig.provider("name")` + `LLMConnect.getClient(...)`
+  - Loader: `Llm4sConfig.defaultProvider()` or `Llm4sConfig.provider(ProviderName("name"))` + `LLMConnect.getClient(...)`
 
 - Tracing configuration
   - Keys: `llm4s.tracing.mode` | `TRACING_MODE` (`llm4s-core`); `llm4s.tracing.langfuse.*` | `LANGFUSE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_ENV`, `LANGFUSE_RELEASE`, `LANGFUSE_VERSION` (bound by `llm4s-observability`); `llm4s.tracing.opentelemetry.*` | `OTEL_SERVICE_NAME`, `OTEL_EXPORTER_OTLP_ENDPOINT` (bound by `llm4s-observability-otel`)
   - Type: `TracingSettings` (the mode, plus the selected mode's block as `extras`); `LangfuseConfig` via `LangfuseConfigLoader.default()`
-  - Loader: `Llm4sConfig.tracing()` → then `Tracing.fromSettings` or `Tracing.create`
+  - Loader: `Llm4sConfig.tracing()` → then `Tracing.fromSettings`
 
 - Workspace settings (samples)
   - Keys: `llm4s.workspace.dir` | `WORKSPACE_DIR`, `llm4s.workspace.image` | `WORKSPACE_IMAGE`, `llm4s.workspace.port` | `WORKSPACE_PORT`
@@ -537,12 +535,12 @@ Use these loaders to convert flat keys and HOCON paths into typed, validated set
   - Type: `(String, EmbeddingProviderConfig)`
   - Loader: `Llm4sConfig.embeddings()`
   - Provider-specific keys:
-    - **OpenAI**: `OPENAI_EMBEDDING_BASE_URL`, `OPENAI_EMBEDDING_MODEL`, and `OPENAI_API_KEY` - the same key
+    - **OpenAI**: `OPENAI_EMBEDDING_BASE_URL`, and `OPENAI_API_KEY` - the same key
       OpenAI chat sections use
-    - **Voyage**: `VOYAGE_EMBEDDING_BASE_URL`, `VOYAGE_EMBEDDING_MODEL`, `VOYAGE_API_KEY`
-    - **Jina**: `JINA_EMBEDDING_BASE_URL`, `JINA_EMBEDDING_MODEL`, `JINA_API_KEY`
-    - **Cohere**: `COHERE_EMBEDDING_BASE_URL`, `COHERE_EMBEDDING_MODEL`, `COHERE_API_KEY`
-    - **Ollama** (local): `OLLAMA_EMBEDDING_BASE_URL` (default: `http://localhost:11434`), `OLLAMA_EMBEDDING_MODEL`
+    - **Voyage**: `VOYAGE_EMBEDDING_BASE_URL`, `VOYAGE_API_KEY`
+    - **Jina**: `JINA_EMBEDDING_BASE_URL`, `JINA_API_KEY`
+    - **Cohere**: `COHERE_EMBEDDING_BASE_URL`, `COHERE_API_KEY`
+    - **Ollama** (local): `OLLAMA_EMBEDDING_BASE_URL` (default: `http://localhost:11434`)
 
 - Provider API keys and endpoints
   - Keys: `apiKey` and `baseUrl` inside each `llm4s.providers.<name>` section, plus the provider's own
@@ -551,7 +549,7 @@ Use these loaders to convert flat keys and HOCON paths into typed, validated set
     `llm4s.credentials.<provider>.apiKey`, which the provider module binds to `OPENAI_API_KEY`,
     `ANTHROPIC_API_KEY` and so on; a section's own `apiKey` wins
   - Type: concrete `ProviderConfig` (e.g., `OpenAIConfig`, `AnthropicConfig`, `AzureConfig`, `OllamaConfig`, `GeminiConfig`, `DeepSeekConfig`, `CohereConfig`)
-  - Loader: `Llm4sConfig.defaultProvider()` or `Llm4sConfig.provider("name")`
+  - Loader: `Llm4sConfig.defaultProvider()` or `Llm4sConfig.provider(ProviderName("name"))`
 
 Tracing
 
@@ -561,13 +559,13 @@ Tracing
 - Override with env: `TRACING_MODE=langfuse` (or system property `-Dllm4s.tracing.mode=langfuse`).
 - Build tracers:
   - Checked: `Llm4sConfig.tracing().flatMap(Tracing.fromSettings)` → `Result[Tracing]`
-  - Falling back to no tracing: `Llm4sConfig.tracing().map(Tracing.create)`
+  - Falling back to no tracing is the caller's choice, written where the tracer is built: `.getOrElse(new NoOpTracing())`
   - Low-level: `LangfuseConfigLoader.default().map(LangfuseTracing.from)` (`llm4s-observability`)
 
 Example (no application.conf required):
 
 ```
-sbt -Dllm4s.providers.provider=openai-main -Dllm4s.providers.openai-main.provider=openai -Dllm4s.providers.openai-main.model=gpt-4o -Dllm4s.providers.openai-main.apiKey=sk-... "samples/runMain org.llm4s.samples.basic.BasicLLMCallingExample"
+sbt -Dllm4s.defaultProvider=openai-main -Dllm4s.providers.openai-main.provider=openai -Dllm4s.providers.openai-main.model=gpt-5.6-terra -Dllm4s.providers.openai-main.apiKey=sk-... "samples/runMain org.llm4s.samples.basic.BasicLLMCallingExample"
 ```
 
 Or with an `openai-main` section (`provider = "openai"` and a `model`) in
@@ -893,13 +891,4 @@ Our **Google Summer of Code (GSoC) 2025** contributors have actively documented 
 | **Anshuman Awasthi**        | [Anshuman&#39;s GSoC Journey](https://awesomegsoc.hashnode.dev/)                                                                                                                                                                         | Multimodal LLM Support    |
 | **Shubham Vishwakarma**     | [Cracking the Code: My GSoC 2025 Story](https://shubhams-gsoc-journey.hashnode.dev/cracking-the-code-my-gsoc-2025-story)                                                                                                                 | Tracing and Observability |
 
-> 💡 These blogs reflect first-hand experience in building real-world AI tools using Scala, and are great resources for future contributors and researchers alike.
-
-### 📚 Where Innovation Speaks: Articles by GSoC's Brightest
-
-#### **Elvan Konukseven**
-
-- 🌐 [Main Blog](https://www.elvankonukseven.com/blog)
-- 📝 Articles:
-  - [The Application](https://elvankonukseven.com/blog/gsoc-application)
-  - [First Task](
+> 💡 These blogs reflect first-hand experience in building real-world AI too

@@ -66,9 +66,9 @@ Here is the same repo twice: an already-good AI-native codebase **before**, then
   </tr>
 </table>
 
-> **The measurable win.** In the doc-navigability graph, reachability from the entry point climbs from **30% to 89%**, orphaned docs fall from **24% to 11%**, disconnected islands drop from **43 to 20**, and the **15 broken links are gone**. The rim of orphans thins, the islands reconnect, and the lying-map reds cool - the map an agent consults before changing anything becomes honest. The heatmap stays the same repo's complexity profile throughout: it tells you which territory is dangerous, while the graph tells you whether the map is honest.
+> **The measurable win.** In the doc-navigability graph, reachability from the entry point climbs from **30% to 89%**, orphaned docs fall from **24% to 11%**, disconnected islands drop from **43 to 20**, and the **15 broken links are gone**. The rim of orphans thins, the islands reconnect, and the reds that mark a doc saying one thing while its code does another cool - the map an agent consults before changing anything becomes honest. The heatmap stays the same repo's complexity profile throughout: it tells you which territory is dangerous, while the graph tells you whether the map is honest.
 
-> **How to read them.** *Doc graph* - structure encodes reachability (centre = entry, rings = link-distance from entry, rim = unreachable, dashed ring = orphan, solid edge = link, dotted edge = reference); colour encodes staleness (vivid red = a frozen doc beside churning code, a *lying map*); size encodes file length. *Heatmap* - size encodes estimated tokens (~chars/4 - the keyhole size unit; the familiar LOC is one hover away in the tooltip), hue encodes cyclomatic complexity (red = high), saturation encodes recent git churn (vivid = active); the vivid-red blocks are the migration risk an agent (or human) is most likely to break next week. Both SVGs are colour-blind-safe (OrRd ramp, no red-green).
+> **How to read them.** *Doc graph* - structure encodes reachability (centre = entry, rings = link-distance from entry, rim = unreachable, dashed ring = orphan, solid edge = link, dotted edge = reference); colour encodes staleness (vivid red = a frozen doc beside churning code: the doc says one thing, the code does another); size encodes file length. *Heatmap* - size encodes estimated tokens (~chars/4 - the keyhole size unit; the familiar LOC is one hover away in the tooltip), hue encodes cyclomatic complexity (red = high), saturation encodes recent git churn (vivid = active); the vivid-red blocks are the migration risk an agent (or human) is most likely to break next week. Both SVGs are colour-blind-safe (OrRd ramp, no red-green).
 
 ### The same lens, three real public repos
 
@@ -140,7 +140,9 @@ So `/assess` is grounded in the accumulated practice of legacy-code engineering,
 
 The goal is a codebase that stays legible to whoever — or whatever — works on it next: that its self-descriptions (docs, tests, types, instructions) are kept *honest under pressure*, not merely present. That honesty is what lets an agent (or a new hire) act without first having to rediscover the whole system.
 
-The report's scorecard has one row per practice, in reading order. It is detail, not a score: the Step reads its gates, and the per-tag strip groups conditions by truth tag. Older versions numbered these practices as layers 0-8; the numbers survive only inside the maturity model's row ids (`layer-0-instructions` and so on) and the alias that lets older configs and fleet history resolve. Read in order, the practices run from **read-side** (can the agent form a true picture?) through **write-side** (can it be trusted to produce good output?) to **meta** (does the system keep itself honest?). The full list of conditions, their grades and their tags is in [What /assess measures](docs/what-we-measure.md); the decisions behind the model are in the [scoring model](skills/assess/references/scoring-model.md).
+The report's scorecard has one row per practice, in reading order. It is detail, not a score: the Step reads its gates, and the per-tag strip groups conditions by truth tag. Older versions numbered these practices as layers 0-8; the numbers survive only inside the maturity model's row ids (`layer-0-instructions` and so on) and the alias that lets older configs and fleet history resolve. Read in order, the practices run from **read-side** (can the agent form a true picture?) through **write-side** (can it be trusted to produce good output?) to **meta** (does the system keep itself honest?). The full list of conditions, their grades and their tags is in [What /assess measures](docs/what-we-measure.md), and the [check reference page](https://bjcoombs.github.io/ai-native-toolkit/checks.html) shows each one as a card with its rule, why and fix, plus how to configure the checks; the decisions behind the model are in the [scoring model](skills/assess/references/scoring-model.md).
+
+**Make it yours.** To score a practice your team holds, such as a coverage gate of at least 80, follow [Build your own practice](docs/build-your-own-practice.md). It copies a model, adds the practice and runs it with `--levels`.
 
 | Practice | Band | What it enforces |
 |----------|------|------------------|
@@ -214,7 +216,7 @@ The same gate runs on GitLab merge request pipelines. Add these three lines to y
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/bjcoombs/ai-native-toolkit/v3.0.0/templates/assess-gate.yml
+  - remote: https://raw.githubusercontent.com/bjcoombs/ai-native-toolkit/v4.0.0/templates/assess-gate.yml
     inputs: { config: .assess/config.toml }
 ```
 
@@ -239,7 +241,27 @@ If your `.gitlab-ci.yml` already has `workflow: rules`, keep them and add the me
 
 To post the summary as a merge request note too, add a project access token with `api` scope as a masked CI/CD variable named `ASSESS_GATE_TOKEN`. Without it the job tries `CI_JOB_TOKEN`, which most GitLab versions don't allow to post notes, so the summary stays in the job log and the job carries on. Each pipeline adds a new note.
 
-The other inputs are `mr_note`, `toolkit_ref` (keep it equal to the tag in the include line), `toolkit_url` (for a mirror on a self-hosted GitLab), `image` and `stage`. The file follows the CI/CD component layout (`templates/assess-gate.yml` with `spec: inputs`), so a team that mirrors this repository onto its GitLab can include it as a component instead: `component: $CI_SERVER_FQDN/<group>/ai-native-toolkit/assess-gate@<version>`.
+The other inputs are `mr_note`, `toolkit_ref` (keep it equal to the tag in the include line), `toolkit_url` (for a mirror on a self-hosted GitLab), `image` and `stage`. The file follows the CI/CD component layout (`templates/assess-gate.yml` with `spec: inputs`), so a team that mirrors this repository onto its GitLab can include it as a component instead: `component: $CI_SERVER_FQDN/<group>/ai-native-toolkit/assess-gate@<version>`. `/assess` recognises that component form only when the mirror is cloned under `--ghsync-root`; otherwise the include reads as unread, and the CI test signal reads not measured.
+
+### Use the refiner in your repository
+
+Backlog refinement as three GitHub workflows any repository calls with one `uses:` line each: triage when an issue is opened or commented on, duplicate detection when one is opened, and a sweep twice a day. A script checks each issue against your definition of ready; only an issue it cannot settle goes to a model, which runs with a read-only token and returns a plan that a job with no model applies under fixed rules. The sweep can also keep a GitHub project's Status, Size and Verdict fields in sync.
+
+```yaml
+jobs:
+  sweep:
+    if: vars.REFINE_ENABLED == 'true'
+    uses: bjcoombs/ai-native-toolkit/.github/workflows/reusable-refine-sweep.yml@v4.0.0
+    with:
+      enabled: ${{ vars.REFINE_ENABLED == 'true' }}
+      mode: ${{ vars.REFINE_MODE || 'dry-run' }}
+```
+
+- **Credential for triage and dedupe.** The simplest is `CLAUDE_CODE_OAUTH_TOKEN`, a Claude subscription's OAuth token: it bills the subscription's usage limits, has no spend cap of its own, and competes with the subscriber's own sessions for those limits. For a team, `REFINE_ANTHROPIC_API_KEY` from a Console workspace with a monthly spend limit stays the recommended setup, and wins when both are set. Workload Identity Federation also works. `REFINE_PROJECT_TOKEN` is needed only for the project sync.
+- **Kill switch.** Nothing runs until the variable `REFINE_ENABLED` is `true`.
+- **Dry-run first.** Writes are logged, not sent, until `REFINE_MODE` is `live`. Stay in dry-run until [#1341](https://github.com/bjcoombs/ai-native-toolkit/issues/1341) is closed.
+
+The workflows first ship in the release after 4.0.0. All three callers, the settings and the project fields: [Backlog refinement](docs/refine.md). On GitLab, one `include:` of `templates/refine.yml` runs the same refiner from a pipeline schedule: [GitLab](docs/refine.md#gitlab). For a one-off pass from the terminal, use `/refine`.
 
 > **Portability split.** The framework pieces (`/assess`, `/huddle`, `/deslop`, `/skill-forge`, `/semantic-compress`, `/ghsync`, `/ghreport`, `/fleet`, `/doc-contradictions`, `/6hats`, `/understand` and their agents) are portable and work in any Claude Code session (`/fleet`'s `ROOT` mode reads the `<repo>-main` + `worktree/` layout that `/ghsync` creates). The workflow commands (`/tm`, `/issues`, `/fix-pr`, `/fix-develop`) bake in one author's daily setup: a `<repo>-main/` + `worktree/` layout, GitHub + `gh` CLI, Task Master, CodeRabbit/claude[bot] review threads, and the Agent Teams capability flag. See [Adapting](#adapting-for-your-workflow) before relying on them in a different setup.
 
@@ -409,6 +431,7 @@ Workflow (personal setup, opt-in - see [Adapting](#adapting-for-your-workflow)):
 |---------|-------------|
 | [`/tm`](skills/tm/SKILL.md) | Task Master orchestration - context-aware: starts, reviews, or cleans up tasks based on current state |
 | [`/issues`](skills/issues/SKILL.md) | GitHub-issue marathon - triage open issues (tag `agent-ready` or post clarifying questions), then run agent-ready ones to merge with Agent Teams; mirrors `/tm`'s plan-then-marathon flow |
+| [`/refine [issue]`](skills/refine/SKILL.md) | Backlog refinement on demand - check open issues against the definition of ready, research the ones that need judgement, and apply only the labels, sizes and blocked-by edges you confirm one by one. The same checks run as GitHub workflows: [Use the refiner in your repository](#use-the-refiner-in-your-repository) |
 | [`/tm-marathon-config-example`](skills/tm-marathon-config-example/SKILL.md) | Reference configuration block to drop into a project's `CLAUDE.md` for marathon-mode `/tm` and `/issues` |
 | [`/fix-pr`](skills/fix-pr/SKILL.md) | Autonomous PR fixing loop - iterates on CI failures and review comments until green |
 | [`/fix-develop`](skills/fix-develop/SKILL.md) | Autonomous fix loop for failing CI on the repo's default branch |
@@ -505,7 +528,7 @@ ai-native-toolkit/
 │   ├── assess-findings/ assess-pr/    # /assess render-time helpers
 │   ├── huddle/ deslop/ skill-forge/ semantic-compress/
 │   ├── ghsync/ ghreport/              # SKILL.md + scripts/*.sh
-│   ├── fleet/                         # SKILL.md + scripts/fleet.py, heatmap.py, fleet_labels.py, fleet_next_steps.py, fleet_targets_import.py + references/{repos,groups,labels}.schema.json
+│   ├── fleet/                         # SKILL.md + scripts/fleet.py, heatmap.py, fleet_labels.py, fleet_next_steps.py, fleet_include_list.py, fleet_targets_import.py + references/{repos,groups,labels}.schema.json
 │   ├── doc-contradictions/            # SKILL.md, tests/fixtures/ (eval inputs)
 │   ├── 6hats/ understand/             # User-invoked framework skills
 │   ├── tm/ issues/ fix-pr/ fix-develop/ tm-marathon-config-example/   # User-invoked workflows

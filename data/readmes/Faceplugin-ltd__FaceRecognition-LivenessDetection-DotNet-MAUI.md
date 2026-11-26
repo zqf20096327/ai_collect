@@ -7,7 +7,7 @@
 #### 🛟 Help Center - [Here](https://doc.faceplugin.com)
 #### 🐳 Docker Hub - [Here](https://hub.docker.com/r/faceplugin/face-recognition)
 
-# FacePlugin Face Recognition + Liveness Detection — .NET MAUI (Fully On-Premise)
+# FacePlugin Face Recognition + 1:N Identification + Liveness Detection — .NET MAUI (Fully On-Premise)
 
 Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [Run the demo](#run-the-demo) · [SDK License](#sdk-license) · [Setup on your own app](#setup-on-your-own-app) · [About SDK](#about-sdk)
 
@@ -21,7 +21,7 @@ Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [R
 
 ## Introduction
 
-FacePlugin **Face Recognition + Liveness Detection for .NET MAUI** runs face recognition and passive liveness entirely on the device. Nothing is sent to a FacePlugin server, which is what banking, access control, and privacy-first identity apps need.
+FacePlugin **Face Recognition + Liveness Detection for .NET MAUI** runs face recognition and passive liveness entirely on the device. Nothing is sent to a FacePlugin server, which is what banking, access control, and privacy-first identity apps need. Its headline capability is **1:N identification**: enroll your people once, then ask *who is this?* of a camera frame or a photo and get a ranked candidate list back — searched against the templates your app keeps on the device, so no face ever leaves it.
 
 This repository is the whole product: the **MAUI app project**, the native bindings for Android and iOS (`FaceSdk`), and a **demo UI** built on top of them — so what you read here is what the demo runs.
 
@@ -31,11 +31,11 @@ The engine binaries are the same ones the native apps use, so you get identical 
 
 | Feature | API |
 | ------- | --- |
+| **1:N identification** on a live camera feed | `StartVideoWorkerAsync` · `SyncDatabaseAsync` · `AddFrameAsync` · `PollEventAsync` |
 | Face detection (bounding box, landmarks, pose, attributes) | `FaceSdk.DetectAsync` |
-| passive liveness (anti-spoofing) | `FaceSdk.DetectAsync` with the liveness flag, live worker events |
+| Passive liveness (anti-spoofing) | `FaceSdk.DetectAsync` with the liveness flag, live worker events |
 | Face template extraction | `FaceSdk.DetectWithTemplatesAsync` |
 | Template similarity | `FaceSdk.SimilarityAsync` · `FaceSdk.SimilarityManyAsync` |
-| **1:N identification** on a live camera feed | `StartVideoWorkerAsync` · `SyncDatabaseAsync` · `AddFrameAsync` · `PollEventAsync` |
 | Face crop for enrollment | `FaceSdk.CropFaceAsync` |
 | License and engine lifecycle | `GetMachineCodeAsync` · `SetActivationAsync` · `InitAsync` · `GetLicenseStatusAsync` |
 
@@ -162,26 +162,35 @@ The demo has five tabs:
 
 ## SDK License
 
-Licenses are **offline** and bound to your application id / bundle identifier.
+The demo runs as it is: a FacePlugin key for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS) is already in the code. Licenses are **offline** — once activated, nothing phones home — and each one is bound to your application id and bundle identifier, so your own app needs its own key.
 
-The demo already includes valid keys for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS). You only need a new key when you use different ids.
+### Set your SDK license
 
-### How to get a license
+| What | File | What to find |
+| ---- | ---- | ------------ |
+| The keys | [`LicenseKeys.cs`](src/FaceRecognition.Net.Maui/LicenseKeys.cs) | `public const string Android`, `Ios` |
+| Where they are used | [`FaceSdk.cs`](src/FaceRecognition.Net.Maui/FaceSdk.cs) | `SetActivationAsync(LicenseKeys.Demo)` |
+| The ids they are bound to | [`FaceRecognition.Net.Maui.csproj`](src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj) | `<ApplicationId>` |
 
-The code below shows how the license is used:
+Find this, and put your key in place of the demo one:
 
-[https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-DotNet-MAUI/blob/main/src/FaceRecognition.Net.Maui/LicenseKeys.cs#L8-L22](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-DotNet-MAUI/blob/main/src/FaceRecognition.Net.Maui/LicenseKeys.cs#L8-L22)
+```csharp
+public const string Android =
+    "FP1.RlBMMQMAAQDJx5NBpyjuxrTSuz8MAgAA…";
+```
 
-Please [contact us](#contact) to get a license for **your own app**. Send us the ids you will ship, and `FaceSdk.GetMachineCodeAsync()` if we ask for it.
+Rebuild for the target you ship. `LicenseKeys.Demo` picks the Android or iOS key at compile time, so set both.
+
+### How to get a key
+
+[Contact us](#contact) with the id you will ship. If we ask for a machine code, `FaceSdk.GetMachineCodeAsync()` returns it. After activation, `FaceSdk.GetLicenseStatusAsync()` reports what the key unlocks.
 
 ### License capabilities (Recognition + Liveness)
-
-After activation, `FaceSdk.GetLicenseStatusAsync()` reports what the key unlocks. Settings shows the same summary.
 
 | Capability | Meaning |
 | ---------- | ------- |
 | **Recognition** | Detection, attributes, quality, templates, 1:1 similarity, and 1:N identification |
-| **Liveness** | passive anti-spoofing on camera frames and stills |
+| **Liveness** | Passive anti-spoofing on camera frames and stills |
 
 ## Setup on your own app
 

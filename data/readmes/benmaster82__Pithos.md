@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <b>A dependency-free C inference engine for Liquid AI's LFM2 / LFM2.5 / LFM3 models and Qwen3.6.</b><br>
+  <b>A dependency-free C inference engine for Liquid AI's LFM2 / LFM2.5 / LFM3 models, Qwen3.6 and Inkling 2 Mini.</b><br>
   Terminal chat, an OpenAI-compatible server, a web agent, a terminal agent and a voice, all in one executable.
 </p>
 
@@ -15,6 +15,7 @@
   <img alt="GPU: OpenCL, Direct3D 12 or Vulkan, optional" src="https://img.shields.io/badge/GPU-OpenCL%20%7C%20Direct3D%2012%20%7C%20Vulkan%2C%20optional-f5a05a">
   <a href="#lfm3-audio-2b-speech-input-and-output-experimental"><img alt="Speech in and out with LFM3-Audio" src="https://img.shields.io/badge/speech-LFM3--Audio%20in%20%26%20out-14b8a6"></a>
   <a href="#qwen36-35b-a3b-experimental"><img alt="Qwen3.6-35B-A3B (experimental)" src="https://img.shields.io/badge/model-Qwen3.6--35B--A3B%20%28experimental%29-6366f1"></a>
+  <a href="#inkling-2-mini-experimental"><img alt="Inkling 2 Mini (experimental)" src="https://img.shields.io/badge/model-Inkling%202%20Mini%20%28experimental%29-8b5cf6"></a>
   <a href="#server-and-web-chat"><img alt="OpenAI-compatible API: chat and audio" src="https://img.shields.io/badge/API-OpenAI--compatible%20chat%20%26%20audio-6b7280"></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2ea043"></a>
 </p>
@@ -47,7 +48,9 @@ are validated too: [LFM2.5-8B-A1B](#lfm25-8b-a1b-the-middle-ground), a mixture o
 in 8 GB of RAM (about 22 tokens per second on the CPU alone), and the small
 [LFM3-1.7B](#lfm3-17b-small-and-fast): about 80 tokens per second with the GPU, 20 on the CPU alone.
 [LFM3-Audio-2B](#lfm3-audio-2b-speech-input-and-output-experimental) (experimental) adds speech: it
-transcribes, translates, speaks and holds voice conversations.
+transcribes, translates, speaks and holds voice conversations. Two models of other families run too,
+as experimental: [Qwen3.6-35B-A3B](#qwen36-35b-a3b-experimental), the largest, and
+[Inkling 2 Mini](#inkling-2-mini-experimental), a looped mixture of experts.
 
 **Pithos** is the engine and the server (in the myth, the *pithos* is Pandora's jar: it holds the
 model). **Pandora** is the agent in the web interface.
@@ -137,7 +140,7 @@ On Linux / macOS the binary is `build/pithos`, with the same options. For the co
 [Xbox One](#xbox-one): the app is built on a Windows PC and installed over the network.
 
 ### Downloading the model
-Three models are validated, and Qwen3.6 is experimental. Choose by the memory of your computer:
+Three models are validated, and Qwen3.6 and Inkling 2 Mini are experimental. Choose by the memory of your computer:
 
 | Model | Download | RAM | Best for |
 |---|---:|---:|---|
@@ -145,6 +148,7 @@ Three models are validated, and Qwen3.6 is experimental. Choose by the memory of
 | [LFM2.5-8B-A1B](#lfm25-8b-a1b-the-middle-ground) (MoE) | 4.8 GiB | 8 GB | a larger model on the CPU: it fits in RAM and generates as fast as LFM3-1.7B there |
 | [LFM3-1.7B](#lfm3-17b-small-and-fast) (dense) | 1.0 GiB | 4 GB | modest hardware, the fastest with a GPU (the whole model in VRAM), the Xbox One |
 | [Qwen3.6-35B-A3B](#qwen36-35b-a3b-experimental) (MoE, experimental) | 19.1 GiB | 16 GB | the largest; it runs from disk when it does not fit in RAM, best with a GPU |
+| [Inkling 2 Mini](#inkling-2-mini-experimental) (looped MoE, experimental) | 10.9 GiB | 16 GB | strong at coding and agents for its size; each token runs 48 layers |
 
 For speech, [LFM3-Audio-2B](#lfm3-audio-2b-speech-input-and-output-experimental) (experimental,
 1.2 GiB with its audio projector, 4 GB of RAM) transcribes, translates, speaks and holds voice
@@ -396,6 +400,64 @@ with `-m`:
 ```
 build/pithos -m models/Qwen3.6-35B-A3B-Q4_K_M.gguf -i
 build/pithos -m models/Qwen3.6-35B-A3B-Q4_K_M.gguf --server --open
+```
+
+### Inkling 2 Mini (experimental)
+[thinkingmachines/Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini) is a looped
+transformer: 24 layers, the middle 12 of which run three times with the same weights, so each token
+goes through 48 layers. Its feed-forward layers are mixtures of 128 experts, 8 per token (26.4 billion
+parameters, 3.4 billion active per layer pass). Attention has no rotary positions: a learned
+relative-position bias, 20 layers with a 1,024-token window and 4 over the whole context; the later
+passes of the loop get messages from the earlier ones. Its experts were trained in NVFP4, a 4-bit
+format. It reasons before it answers (its "thinking effort", set with
+`--reasoning` or `reasoning_effort`) and calls tools in JSON, with the same chat, server, Pandora and
+terminal agent as the other models. Images are not supported yet.
+
+Four of Unsloth's files were tested with Pithos, all from
+[unsloth/Inkling-2-Mini-GGUF](https://huggingface.co/unsloth/Inkling-2-Mini-GGUF), folder
+`Mainline_Support` (the llama.cpp layout; there they are named `.gguf_file`: rename them to
+`.gguf`). The 3-bit one is the default: it fits in 16 GB of RAM with everything else, while the two
+4-bit ones read their less used experts from the disk on 16 GB. The smallest one (1–2 bits) fits in
+12 GB and is a little faster, but it is further from the original: against the logits of the Q4_K_M
+file its KL divergence is 0.246 and its top token the same 85.6% of the time (the 3-bit file: 0.049
+and 92.9%).
+
+| File | Size | Experts | Against llama.cpp, same file | `bash build.sh` |
+|---|---:|---|---|---|
+| **`Inkling-2-Mini-UD-IQ3_XXS.gguf`** (default) | 10.9 GiB | IQ3_XXS and IQ2, NVFP4, IQ4_NL | same top token 97.4%, KL divergence 0.011 | `--download-model=inkling-2-mini` |
+| `Inkling-2-Mini-UD-IQ4_XS.gguf` | 14.7 GiB | NVFP4, IQ4_XS, IQ4_NL, Q5_0, Q4_K / Q5_K | 97.1%, 0.008 | `--download-model=inkling-2-mini-iq4xs` |
+| `Inkling-2-Mini-UD-Q4_K_M.gguf` | 15.5 GiB | NVFP4, Q5_K, Q8_0 | 97.1%, 0.011 | `--download-model=inkling-2-mini-q4` |
+| `Inkling-2-Mini-UD-IQ1_M.gguf` (smallest) | 7.5 GiB | IQ1_S and IQ2, Q2_0, NVFP4 | 96.9%, 0.011 | `--download-model=inkling-2-mini-iq1m` |
+
+With Vulkan (the default for this model on a discrete NVIDIA GPU) every layer runs on the GPU and the
+routed experts on the CPU, the most used of them also in the VRAM that is left (about 450, 1.9 GB on a
+4 GB GPU), computed by the GPU while the CPU computes the others. The window layers keep only their
+last positions, so the KV cache takes about 32 KB per token.
+
+| Inkling 2 Mini on the reference laptop (6-core CPU, 16 GB, 4 GB laptop GPU), warm; prompt / generation, tok/s | Pithos, Vulkan (default here) | Pithos, CPU only (`--gpu off`) | llama.cpp b12670, CUDA, experts on the CPU |
+|---|---:|---:|---:|
+| UD-IQ3_XXS | **17–19 / 9.6–9.7** | 11 / 4.6–5.5 | 5.5–6.1 / 4.0–4.6 |
+| UD-IQ4_XS | 7.0 / 8.9–9.3 | 5.6–7.2 / 4.3–4.6 | 5.2 / 2.9 |
+| UD-Q4_K_M | 6.0 / 8.1–8.4 | 5.1–7.1 / 3.9–4.2 | 2.9–5.0 / 3.2 |
+| UD-IQ1_M | 18–20 / 10.0 | 11 / 5.3 | 29.6 / 7.0 |
+
+Pithos: a 249-token prompt, then 128 tokens; llama.cpp: `llama-bench` with 256 and 64–128. Each token
+reads about 1.3 GB of experts with the 3-bit file, twice as much as Qwen3.6. The KL divergence is
+measured on 3 × 256 tokens of the model license against llama.cpp's own logits; the tokenizer gives
+the same ids as Hugging Face's, and the chat template the same text as the model's own.
+
+| File | Bytes | SHA-256 |
+|---|---:|---|
+| `Inkling-2-Mini-UD-IQ3_XXS.gguf` | 11,663,310,784 | `fd9ccedae17c1bb89744612fbb46730b5275f2a342133d0419776bd1ae311657` |
+| `Inkling-2-Mini-UD-IQ4_XS.gguf` | 15,733,756,512 | `374970bf6f151fc50da49419751c3e77b82e373a3b9445ded617bd386cd12163` |
+| `Inkling-2-Mini-UD-Q4_K_M.gguf` | 16,610,544,608 | `78fcedcf93c5d1bfe83e225513b71392bb52259be0eaa5f8899c856a2e5834ae` |
+| `Inkling-2-Mini-UD-IQ1_M.gguf` | 8,024,442,304 | `af7b45e1c0097fb2602d4c69abf72a009cad78e54201da2265853f5ef11a514a` |
+
+Keep about 1 GB more than the file free on the disk. License: Apache 2.0 (see the model card).
+
+```
+build/pithos -m models/Inkling-2-Mini-UD-IQ3_XXS.gguf -i
+build/pithos -m models/Inkling-2-Mini-UD-IQ3_XXS.gguf --server --open
 ```
 
 ## Results
@@ -1119,8 +1181,8 @@ checkpoint and only processes the rest:
 
 | `--gpu` | What runs on the GPU | Best for |
 |---|---|---|
-| `auto` (default) | dense models (LFM3): the whole forward pass through Vulkan, on a **discrete NVIDIA GPU** only; models with experts (LFM2.5-24B and 8B), or without such a GPU: OpenCL as below, on a dedicated GPU; otherwise the CPU | not having to choose |
-| `vulkan` | the whole forward pass of dense models; the matmuls of models with experts (Windows, Linux; experimental) | LFM3, fastest generation measured |
+| `auto` (default) | dense models (LFM3), Qwen3.6 and Inkling 2 Mini: the whole forward pass through Vulkan, on a **discrete NVIDIA GPU** only (Qwen3.6 and Inkling keep their most used experts in VRAM, the others run on the CPU); the LFM2.5 models with experts (24B and 8B), or without such a GPU: OpenCL as below, on a dedicated GPU; otherwise the CPU | not having to choose |
+| `vulkan` | the whole forward pass of dense models, Qwen3.6 and Inkling 2 Mini; the matmuls of the LFM2.5 models with experts (Windows, Linux; experimental) | LFM3, Qwen3.6 and Inkling 2 Mini, fastest measured |
 | `d3d12` | the same through Direct3D 12 (Windows; Xbox in Game mode) | LFM3 on Windows, the Xbox |
 | `opencl` | hot experts and all dense layers in VRAM, the other experts on the CPU in parallel; on a dedicated GPU with an int8 dot product in hardware, the prompt matmuls and the resident experts of the prompt too | the MoE models (LFM2.5-24B, 8B), fastest measured |
 | `opencl+vulkan`, `opencl+d3d12` | OpenCL as above, with the prompt matmuls on the other backend | GPUs where OpenCL leaves the prompt on the CPU |
@@ -1160,11 +1222,12 @@ without its reasoning is processed again.
 
 ### Other models
 Any GGUF of the `lfm2` (dense), `lfm2moe` or `lfm3` architecture loads, as long as its tensors use
-the supported formats: Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16, F32. BF16, Q2_K, Q3_K and IQ formats are
-not supported. GPU acceleration needs Q4_K / Q6_K weights (the Q4_K_M files; a Q4_0 file runs on
-the CPU): MoE models keep their hot experts and
-dense layers in VRAM, dense models (LFM3) all their layers. Validated so far: LFM2.5-24B-A2B,
-LFM2.5-8B-A1B and LFM3-1.7B.
+the supported formats: Q4_K, Q5_K, Q6_K, Q8_0, Q5_0, Q4_0, Q2_0, NVFP4, IQ1_S, IQ2_XXS, IQ2_XS, IQ2_S,
+IQ3_XXS, IQ3_S, IQ4_NL, IQ4_XS, F16, F32. BF16, Q2_K, Q3_K, IQ1_M and MXFP4 are not supported. The
+`qwen35moe` and `inkling2_loop` architectures load too (Qwen3.6, Inkling 2 Mini; the latter also as
+Unsloth's IQ files). GPU acceleration of the LFM models needs Q4_K / Q6_K weights (the Q4_K_M files;
+a Q4_0 file runs on the CPU): MoE models keep their hot experts and dense layers in VRAM, dense
+models (LFM3) all their layers. Validated so far: LFM2.5-24B-A2B, LFM2.5-8B-A1B and LFM3-1.7B.
 
 `lfm3` adds to LFM2: an RMSNorm on the output of every block before the residual sum (sandwich
 norm), a sigmoid gate per head on the attention output, sliding-window attention (256 tokens) on 5
@@ -1192,7 +1255,7 @@ for each of the 30 convolution layers.
 | `src/gguf.c` | zero-copy GGUF reader on the memory-mapped file |
 | `src/tokenizer.c` | GPT-2 byte-level BPE with LFM2's pre-tokenizer and special tokens; generated Unicode tables (`tools/gen_unicode.py`) |
 | `src/model.c` | forward pass, KV cache, matmul scheduler, MoE, prefetch |
-| `src/quant.c`, `quant_avx2.c`, `quant_neon.c` | Q4_K/Q5_K/Q6_K/Q8_0/Q4_0/F16/F32 formats; scalar, AVX2 and NEON kernels |
+| `src/quant.c`, `quant_avx2.c`, `quant_neon.c`, `iq_tables.h` | Q4_K/Q5_K/Q6_K/Q8_0/Q5_0/Q4_0/NVFP4/IQ/F16/F32 formats; scalar kernels for all, AVX2 for all, NEON for Q4_K and Q6_K |
 | `src/gpu_opencl.c`, `src/kernels.cl` | expert cache and dense layers in VRAM through OpenCL loaded at runtime |
 | `src/gpu_d3d12.c`, `src/kernels_dx.hlsl`, `src/kernels_dx_token.hlsl` | Direct3D 12 backend: matmul kernels and the other steps of the forward pass (compiled into `src/kernels_dx.h` by `tools\dx_shaders.cmd`, which needs `fxc` from the Windows SDK) |
 | `src/gpu_vulkan.c`, `src/kernels_vk.h` | Vulkan backend: the Direct3D 12 HLSL kernels compiled to SPIR-V (`tools\vk_shaders.cmd` or `tools/vk_shaders.sh`, which need `dxc` with SPIR-V support) |
@@ -1395,8 +1458,9 @@ for each of the 30 convolution layers.
 ## Limitations
 Planned improvements, in order of priority, are in [ROADMAP.md](ROADMAP.md).
 
-- Only the `lfm2` / `lfm2moe` / `lfm3` architectures. Formats Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16
-  and F32; on the GPU only Q4_K and Q6_K. With OpenCL only decoding runs on the GPU, and the prompt
+- Only the `lfm2` / `lfm2moe` / `lfm3` architectures, plus `qwen35moe` and `inkling2_loop`
+  (experimental). Formats: the K-quants Q4_K to Q6_K, Q8_0, Q5_0, Q4_0, NVFP4, the IQ2 / IQ3 / IQ4
+  codebooks, F16 and F32; on the GPU, for the LFM models, only Q4_K and Q6_K. With OpenCL only decoding runs on the GPU, and the prompt
   is read on the CPU. Direct3D 12 runs the whole forward pass of dense models only: for MoE models
   it takes just the prompt matmuls. `--ppl` (logits of every token) uses its matmuls-only path.
   Vulkan, the same.

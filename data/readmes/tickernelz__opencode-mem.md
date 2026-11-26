@@ -68,7 +68,9 @@ This plugin uses embedded Turso (`@tursodatabase/database`) with `F32_BLOB` vect
 - Internet access on first use if you use the default local embedding model, because the model is downloaded by `@huggingface/transformers`.
 - For source/development installs, run `bun install` before building or testing. The published plugin package installs its runtime dependencies automatically through OpenCode.
 
-**CI-tested platforms:** Linux, Windows, and macOS 15 / macOS 26 on Apple Silicon (`darwin/arm64`). **Intel Mac (`darwin/x64`) is not supported** — `@tursodatabase/database` and fixed `onnxruntime-node` releases ship no x64 native binding. Older macOS releases are not excluded by that matrix; they are simply outside the current GitHub-hosted runner set.
+**CI-tested platforms:** Ubuntu 24.04 / 26.04, Windows, and macOS 15 / 26 on Apple Silicon (`darwin/arm64`). Older macOS versions are outside the current GitHub-hosted runner set.
+
+**Native database requirements:** `@tursodatabase/database` provides bindings for glibc Linux (x64 and arm64), Apple Silicon macOS, and x64 Windows. Alpine and other musl-based Linux distributions ([#418](https://github.com/tickernelz/opencode-mem/issues/418)) and Intel Macs (`darwin/x64`) lack a compatible binding. Remote embeddings still require this local database.
 
 **Notes:**
 
@@ -87,7 +89,7 @@ opencode-mem does **not** require a GPU. Local embeddings run on CPU via `@huggi
 | **Remote embeddings** (`embeddingApiUrl` + `embeddingApiKey`) | Negligible local ML RAM — only plugin + Turso overhead.                                                                                                                                                                                                                 |
 | **Database / plugin**                                         | Turso/libSQL on disk under `storagePath`. Size grows with how many memories you store, not with GPU memory.                                                                                                                                                             |
 
-Platform limits above still apply (no Intel Mac `darwin/x64`; use Apple Silicon, Linux, Windows, or a remote embedding endpoint). See [Choosing / configuring embeddings](#choosing--configuring-embeddings).
+For the supported host platforms, see [Prerequisites](#prerequisites). For the local and remote options, see [Choosing / configuring embeddings](#choosing--configuring-embeddings).
 
 ### Upgrading from legacy SQLite shards
 
@@ -270,9 +272,11 @@ If you have chatted for a while and still see the message, check that auto-captu
 
 ### Web UI
 
-Open `http://127.0.0.1:4747` to browse the memory–prompt timeline, inspect captures, and manage the user profile. The UI has five views: **Project memories** (`/project-memories`), **User profile** (`/user-profile`), **Skill library** (`/skill-library`), **Markdown vault** (`/markdown-vault`) and **Stats** (`/stats`). Change the port with `webServerPort`, or set `webServerEnabled: false` to run without the web UI. If you bind the server beyond loopback, see [Web UI HTTP Basic Auth](#web-ui-http-basic-auth).
+Open `http://127.0.0.1:4747` to browse the memory–prompt timeline, inspect captures, and manage the user profile. The UI has six views: **Project memories** (`/project-memories`), **User profile** (`/user-profile`), **Skill library** (`/skill-library`), **Markdown vault** (`/markdown-vault`), **Stats** (`/stats`) and **Model** (`/model-settings`). Change the port with `webServerPort`, or set `webServerEnabled: false` to run without the web UI. If you bind the server beyond loopback, see [Web UI HTTP Basic Auth](#web-ui-http-basic-auth).
 
 The timeline shows each memory and prompt once. If several capture prompts refer to one memory, its current prompt is paired with it when available on the page; earlier prompts remain visible as separate entries.
+
+The tag-migration dialog picks the provider/model used for tagging. Because tag migration has no live session, `opencodeModel: "inherit"` cannot be used there, so the dialog lists OpenCode's connected providers and models, lets you choose one, and writes `opencodeProvider` / `opencodeModel` back to the config file that supplied them (global or project). The running plugin reloads the config in place, so no restart is needed.
 
 ## Usage Examples
 
@@ -470,7 +474,11 @@ Example — local bge-m3 (pooling defaults to CLS via preset; override if needed
 
 Changing `embeddingModel`, dimensions, pooling, or task prefixes can require re-embedding stored memories so store and query vectors stay aligned. Prefer picking a model (and pooling/prefix settings) once and sticking with them for a given data directory.
 
-**Unsupported — Intel Mac (`darwin/x64`):** Local persistence requires `@tursodatabase/database`, which does not publish an Intel Mac native binding. Fixed `onnxruntime-node` releases (`1.24.1+`, including the pinned `1.31.1`) also lack darwin/x64. Use an Apple Silicon Mac, Linux, or Windows, or a remote endpoint via `embeddingApiUrl` + `embeddingApiKey` (example above). On supported platforms, `opencode-mem` pins `onnxruntime-node@1.31.1` (Ort::Env teardown fix from `1.24.1` / #225) and loads transformers through a CJS resolve shim so OpenCode nested installs keep that binding. Transformers is resolved to an absolute path before that shim is installed so OpenCode's Bun `--compile` host does not fail with `Cannot find module '@huggingface/transformers' from ''`. After upgrading, clear OpenCode's nested plugin cache (`~/.cache/opencode/packages/opencode-mem@*`) and reinstall.
+Remote embeddings bypass the local ONNX runtime on supported hosts. The plugin still needs the local database binding listed under [Prerequisites](#prerequisites).
+
+**Windows + OpenCode/Bun:** Local embeddings run `onnxruntime-node` in a **subprocess** (never inside the OpenCode host) so Bun↔ORT NAPI segfaults cannot take down `opencode serve` ([#518](https://github.com/tickernelz/opencode-mem/issues/518), [oven-sh/bun#28008](https://github.com/oven-sh/bun/issues/28008)). Runtime order: Node.js → Bun on PATH → the OpenCode binary itself via `BUN_BE_BUN=1` (Bun ≥ 1.2.16; no separate Node install required). Or set `embeddingApiUrl` + `embeddingApiKey` for remote embeddings. Override with `OPENCODE_MEM_EMBEDDING_SUBPROCESS=0` (in-process, not recommended on Windows) or `=1` (force subprocess on other OSes). The parent `SIGKILL`s the worker on dispose/idle/timeout and re-spawns after a worker crash.
+
+On supported platforms, `opencode-mem` pins `onnxruntime-node@1.31.1` (Ort::Env teardown fix from `1.24.1` / #225) and loads transformers through a CJS resolve shim so OpenCode nested installs keep that binding. Transformers is resolved to an absolute path before that shim is installed so OpenCode's Bun `--compile` host does not fail with `Cannot find module '@huggingface/transformers' from ''`. After upgrading, clear OpenCode's nested plugin cache (`~/.cache/opencode/packages/opencode-mem@*`) and reinstall.
 
 ### Memory Scope
 
@@ -709,6 +717,12 @@ Manual `memoryProvider` modes:
   "memoryApiKey": "env://UBERLLM_API_KEY",
   ```
   When this provider is selected, auto-capture / profile prompts, model responses, and relevant conversation context are transmitted to `https://api.uberllm.dev`.
+- `aigrow`: OpenAI-compatible Chat Completions preset for [AIGROW](https://aigrow.gg/ai-api). `memoryApiUrl` and `memoryModel` are optional: they default to `https://aigrow.gg/v1` and `claude-haiku-5.5`. If `memoryApiKey` is omitted, `AIGROW_API_KEY` from the environment is used (create a key at https://aigrow.gg/dashboard/api; API docs: https://aigrow.gg/ai-api/guide). Example:
+  ```jsonc
+  "memoryProvider": "aigrow",
+  "memoryApiKey": "env://AIGROW_API_KEY",
+  ```
+  When this provider is selected, auto-capture / profile prompts, model responses, and relevant conversation context are transmitted to `https://aigrow.gg`.
 
 Troubleshooting:
 
@@ -752,10 +766,11 @@ Troubleshooting:
 - If auto-capture reports that a provider is not connected, confirm the provider name with `opencode providers list` and configure that provider in opencode first.
 - If a proxy or custom provider returns plain text instead of structured/tool output, choose another model/provider or use one of the manual provider modes above.
 - For models that reject `temperature`, add `"memoryTemperature": false` when using manual API configuration.
-- For models that reject forced tool calls (`tool_choice: "required"`, e.g. some thinking modes), add `"forceToolChoice": false` when using `openai-chat` / `orcarouter` / `atlas-cloud` / `cheaper-inference` / `api-route` / `runcrate` / `cloudgpu` / `standardcompute` / `uberllm`.
+- For models that reject forced tool calls (`tool_choice: "required"`, e.g. some thinking modes), add `"forceToolChoice": false` when using `openai-chat` / `orcarouter` / `atlas-cloud` / `cheaper-inference` / `api-route` / `runcrate` / `cloudgpu` / `standardcompute` / `uberllm` / `aigrow`.
 - For `opencodeProvider` / `opencodeModel` (e.g. DeepSeek V4 thinking), OpenCode still sends forced `tool_choice` for structured output. opencode-mem disables thinking on the internal `opencode-mem-structured` agent (and re-applies that in `chat.params` after variant merge) so auto-capture and profile learning can complete. Your interactive chat agent is unchanged. If capture still fails with a thinking/`tool_choice` error, pick a non-thinking model for `opencodeModel` or configure a complete manual fallback (`memoryModel` + `memoryApiUrl`).
 - **`opencode-claude-auth` / Claude Code:** auto-capture uses OpenCode with your authenticated `anthropic` provider. Forced `format: json_schema` often loops with Claude-auth, so opencode-mem uses an auth-preserving **text-JSON** path for `opencodeProvider: "anthropic"` (no forced `StructuredOutput` tools; reply is parsed with Zod). A step watchdog still aborts runaway internal sessions after 2 steps. If capture still fails, configure a complete manual Anthropic API-key fallback (`memoryProvider: "anthropic"` + `memoryModel` + `memoryApiUrl` + `memoryApiKey`) — Claude Pro/Max OAuth cannot be reused outside OpenCode.
-- **Unsupported platforms:** Intel Mac (`darwin/x64`) is not supported — `@tursodatabase/database` and fixed `onnxruntime-node` releases (pinned `1.31.1`) ship no x64 native binding. Use Apple Silicon, Linux, or Windows, or a remote embedding endpoint via `embeddingApiUrl` + `embeddingApiKey`. MLX is not supported.
+- **Unsupported platforms:** If the plugin fails to load a native binding, check the [native database requirements](#prerequisites). For containers that use musl, use a glibc-based Linux image. MLX is not supported.
+- **Windows segfault in `onnxruntime_binding.node`:** Local embeddings run ORT in a subprocess (#518), using Node, Bun, or the OpenCode binary (`BUN_BE_BUN=1`). If that still fails, configure remote embeddings (`embeddingApiUrl` + `embeddingApiKey`).
 
 ## Public Subpath Exports
 

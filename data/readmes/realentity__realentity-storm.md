@@ -11,7 +11,9 @@ it. It reads your email, watches websites, feeds and APIs, works real web pages 
 prepares replies, form entries, uploads and calendar events. **Nothing leaves the system until you have seen exactly
 what will be sent and pressed Act.** It learns from how you edit what it proposes.
 
-Single user. Runs with Docker on a machine of yours, reached over your private network, not the Internet.
+Single user. Runs with Docker on a machine of yours, reached over your private network, not the Internet. Its LLM is
+Claude, or **models on your own hardware** (Ollama or any OpenAI-compatible server), for every task or only some:
+off by default, switched on and off in Settings ([docs/local-models.md](docs/local-models.md)).
 
 ![The Job Search App: postings scored against what you look for, grouped by where you are with each](docs/images/job-search.png)
 
@@ -154,7 +156,7 @@ Storm doesn't fine-tune a model. It keeps what it learns from you as data you ca
   whether you approved, edited or rejected it.
 - **Your approved texts become examples.** A reply or text you approve is kept with what it answered. The next draft
   of the same kind gets your three most similar approved texts as examples, for tone, length and structure, never for
-  facts. This needs `OPENAI_API_KEY` for the embeddings.
+  facts. This needs embeddings (Settings → AI: OpenAI's, or a model on your own server).
 - **Your edits become rules.** Every night, a review of your edits and rejections suggests rules, such as "shorten
   recruiter replies" or "drop the opening pleasantries". A suggestion does nothing until you approve or edit it on the
   **Rules** page. From then on it goes into every LLM step it applies to.
@@ -177,13 +179,16 @@ Storm doesn't fine-tune a model. It keeps what it learns from you as data you ca
   addresses come from real data or from the pipeline, never from LLM text.
 - **Secrets never reach the LLM.** Credentials are encrypted in PostgreSQL (envelope encryption, the key in `.env`);
   the LLM sees only references like `{{cred:github}}`; the real value is opened only for the step that uses it, and
-  only on the hosts it is for. Email passwords and Google tokens are sealed the same way.
+  only on the hosts it is for. Email passwords and Google tokens are sealed the same way. The web-facing api seals
+  them to a public key and holds no key that opens them: only the worker does.
 - **You choose what each pipeline uses.** A pipeline names what it needs (a credential, an email or Google account, a
   setting), never your credentials themselves; you fill it on its **What it needs** card, once per pipeline or per
   App. Several email and Google accounts are fine, one the default.
 - **Limits you set.** Allowed domains per pipeline, rate limits per step type, a monthly LLM budget, a kill switch.
   Private and VPN addresses are never fetched. The one exception: an uptime check (`http.check`, `net.check`) of an
   address you typed yourself on a Monitor, which says only whether it answers; a cloud's metadata address never.
+- **Your email can stay at home.** With local models switched on, the steps that read your email, pages and
+  documents send them to a model on your own hardware instead of an API ([docs/local-models.md](docs/local-models.md)).
 - **A browser you can watch and take over.** Browser steps run in a real Chromium, visible live in the app. CAPTCHAs,
   2FA and odd dialogs are handed to you; you click and type on the site, then continue.
 - **Everything recorded.** Each run keeps its pipeline version, steps, inputs, outputs, screenshots and traces.
@@ -193,14 +198,15 @@ Storm doesn't fine-tune a model. It keeps what it learns from you as data you ca
 | What | For | |
 |---|---|---|
 | **Docker** with Compose v2, about 4 GB of free memory and 5 GB of disk | Running Storm (Linux, macOS, or Windows with WSL) | Required |
-| **A Claude API key** ([platform.claude.com](https://platform.claude.com/settings/keys)) | The builder and every LLM step: triage, scoring, drafts, summaries. Paid per use; set a monthly budget in Settings or `.env` | Required |
+| **A Claude API key** ([platform.claude.com](https://platform.claude.com/settings/keys)), entered in **Settings → AI** | The builder and every LLM step: triage, scoring, drafts, summaries. Paid per use; set a monthly budget in Settings | Required, unless local models do it all |
+| **A local model server**: [Ollama](https://ollama.com), llama.cpp, vLLM, LM Studio | Running the LLM steps on your own hardware instead of Claude, for every task or only some. Off until you switch it on in Settings ([docs/local-models.md](docs/local-models.md)) | Optional |
 | **PostgreSQL 17** with the `vector` (pgvector) and `citext` extensions | Storm's data. A bundled container works for trying it out | Required (bundled) |
 | **An authenticator app** | The login: a password and a one-time code | Required |
 | **A way to reach it over HTTPS**: Tailscale, a reverse proxy, or a VPN | Using it from other devices. Not needed on `localhost` | On a server |
 | **A mailbox** with IMAP and SMTP (for Gmail, an app password), added in Settings | The email steps | Optional |
-| **A Telegram bot** of your own, from @BotFather | Approvals and notifications on your phone. Commands and buttons also need a public address for webhooks | Optional |
-| **A Google Cloud OAuth client** | Google Calendar steps and topics' Drive folders (several accounts, connected in Settings) | Optional |
-| **An OpenAI API key** | Past replies as examples in new drafts (embeddings). The email text then also goes to OpenAI | Optional |
+| **A Telegram bot** of your own, from @BotFather, entered in **Settings → Telegram** | Approvals and notifications on your phone. Commands and buttons also need a public address for webhooks | Optional |
+| **A Google Cloud OAuth client**, entered in **Settings → Google** | Google Calendar steps and topics' Drive folders (several accounts, connected in Settings) | Optional |
+| **Embeddings**: an OpenAI API key, or a model on your own server, in **Settings → AI** | Past replies as examples in new drafts, topics by meaning. That text then also goes to that server | Optional |
 
 ## Setup
 
@@ -221,7 +227,6 @@ Set these in `.env` (no spaces around `=`):
 
 ```
 ENCRYPTION_KEY=<the 64 characters from openssl>
-ANTHROPIC_API_KEY=<your Claude API key>
 APP_ORIGIN=http://localhost:7100
 TZ=Europe/London
 ```
@@ -229,6 +234,9 @@ TZ=Europe/London
 The keys are already in the file: change their values, don't add second lines. `APP_ORIGIN` is the address you open
 (7100 is `STORM_PORT`'s default). `DATABASE_URL` already points at the PostgreSQL container (`postgres` is its name on
 the Docker network): leave it as it is.
+
+**`.env` holds only the database, the encryption key and your login.** Claude, OpenAI and models on your own hardware
+are set up in the app, in **Settings → AI**, after the first sign-in (step 7).
 
 **The login, before the first start.** Storm has one user, who signs in with a password and a 6-digit code from an
 authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, …). Both live in `.env`, so they have to
@@ -267,6 +275,10 @@ be there before Storm starts.
 
 6. Open `http://localhost:7100` and sign in with the password and the current code from the app.
 
+7. **Settings → AI → Model servers → Add**: Claude with its API key, or a server of your own (Ollama:
+   [docs/local-models.md](docs/local-models.md)), or both. Saving a key asks for the code from the app again. Each
+   server has an on/off switch, and **Model per task** chooses which model does what.
+
 **Apps → Examples** installs ready-made Apps and pipelines, each with a checklist of what it still needs. The
 **Builder** makes new ones from a description.
 
@@ -283,8 +295,8 @@ Calendar, updates, backups and the restore test.
 ```bash
 # Node 22.12+ or 24, pnpm 10, Docker
 pnpm install
-cp .env.example .env                                   # then set ENCRYPTION_KEY, ANTHROPIC_API_KEY and
-                                                       # DATABASE_URL to the localhost line above it
+cp .env.example .env                                   # then set ENCRYPTION_KEY and DATABASE_URL to the
+                                                       # localhost line above it; Claude goes in Settings → AI
 docker compose -f docker/docker-compose.yml up -d postgres
 pnpm db:migrate
 pnpm auth:setup                                        # the login: password + authenticator code, into .env
@@ -305,18 +317,20 @@ to start with an invalid value and names the key, never the value.
 | `DATABASE_URL` | The PostgreSQL connection | Always |
 | `ENCRYPTION_KEY` | Encrypts every stored credential. **Keep a copy outside the server**: without it no credential opens, not even from a backup | Always |
 | `APP_ADMIN_PASSWORD_HASH`, `APP_TOTP_SECRET` | The login, from `auth-setup` (until they're set, nobody can sign in) | Always |
-| `ANTHROPIC_API_KEY` | The Claude API | Always, in practice |
 | `APP_ORIGIN` | Exactly the address you open in the browser, without a trailing `/`. Live updates accept only this origin | Always, except in development |
 | `TZ` | Your time zone, for schedules, the morning brief and the weekly review. Empty: UTC in the containers | Recommended |
-| `LLM_MONTHLY_BUDGET_USD` | Pauses non-essential pipelines when the month's LLM cost reaches it (also in Settings) | Recommended |
 | `VNC_PASSWORD`, `VNC_VIEW_PASSWORD` | Watching and taking over browser runs live. Empty: browser runs still work, unwatched | Browser steps |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`, `HOOKS_PUBLIC_URL` | The bot, your Telegram user id, and the webhook address ([docs/telegram.md](docs/telegram.md)) | Telegram, webhooks |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | [docs/google-setup.md](docs/google-setup.md) | Calendar steps, Drive folders |
-| `OPENAI_API_KEY` | Embeddings: your most similar replies as examples in drafts, and the passages and facts of your topics closest to an email (without it, by their words) | Optional |
 | `HEALTH_REPORT_TOKEN` | Lets the server's own jobs (backups, disk checks) report to the Health page | Optional |
 
-The rest can stay as it is: the models have defaults (changeable per step type in Settings), and the containers set
-the ports and folders themselves.
+The rest can stay as it is: the containers set the ports and folders themselves. **Not in `.env`:** they are settings,
+changed without a restart, their secrets sealed in the database and saved with your authenticator code:
+
+| Where | What |
+|---|---|
+| **Settings → AI** | Claude, OpenAI, models on your own servers, the model per task, the embeddings, the monthly budget |
+| **Settings → Telegram** | The Storm bot (its token, your Telegram user id, the webhook secret) and the hooks address ([docs/telegram.md](docs/telegram.md)) |
+| **Settings → Google** | Google's OAuth client, for the calendar steps and Drive folders ([docs/google-setup.md](docs/google-setup.md)) |
+| **Settings → Runs & browser** | How long run files are kept, the live view's takeover timeout, the largest download |
 
 ## Documentation
 
@@ -327,6 +341,7 @@ the ports and folders themselves.
 | [docs/topics.md](docs/topics.md) | Topics: what Storm knows about your projects and customers, and how your replies use it |
 | [docs/design.md](docs/design.md) | How it works: principles, pipelines, gates, architecture, security, data model |
 | [docs/self-hosting.md](docs/self-hosting.md) | Install, HTTPS, webhooks and Telegram, updates, backups |
+| [docs/local-models.md](docs/local-models.md) | Local models: switching them on and off, which model, measured on a GPU and a CPU |
 | [docs/telegram.md](docs/telegram.md) | What the bot does |
 | [docs/google-setup.md](docs/google-setup.md) | Connecting Google: Calendar, and Drive for topics |
 | [examples/](examples/) | Example pipelines and Apps |

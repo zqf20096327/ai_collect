@@ -428,6 +428,18 @@ come from your `~/.pi/agent/models.json` when it lists the model. See
 [ADR 0011](docs/adr/0011-a-model-per-role.md) and
 [ADR 0015](docs/adr/0015-swapping-role-models.md).
 
+`--thinking LEVEL` sets how hard every role reasons (default `medium`;
+`off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max`), and
+`--thinking-for ROLE=LEVEL` gives one role its own, for example
+`--thinking-for reviewer=high --thinking-for builder=low` to judge at
+`high` and build at `low`. Repeat it for more roles; the others keep
+`--thinking`. Each session's agent is configured with its role's level,
+and the engine proxy asks for that level's reasoning effort when the
+agent sends none. With fx, OpenCode and Qwen Code, `off` only means no
+effort is asked for: an engine that thinks by default still thinks.
+`tenaz status` names the roles with a level of their own. See
+[ADR 0042](docs/adr/0042-a-thinking-level-per-role.md).
+
 `--vision` says the model reads images. `--set key=value` overrides a
 parameter; `tenaz params` lists them. Whatever its model, the diff a
 reviewer is shown takes at most `diffShare` (0.25) of the reviewer's
@@ -449,6 +461,16 @@ engine's prefix cache breaks once per step, not every turn
 ([ADR 0028](docs/adr/0028-remove-past-reasoning-in-steps.md)).
 `--set pastReasoningTokens=0` removes it every turn, and
 `--set keepPastReasoning=true` sends it all.
+One reply, reasoning included, may have 16,384 tokens; a reply cut there
+loses its work, and the next session of its role reasons at a lower
+effort. `--set maxOutputTokens=65536` raises the limit for every role and
+harness, for a model whose reasoning needs it
+([ADR 0041](docs/adr/0041-a-run-parameter-for-the-output-limit.md)).
+The reply shares the window with the session: `init` and `run` refuse a
+limit that leaves a role's model no room for a prompt, warn when a
+session at its context budget would leave less than the limit (with the
+`contextBudget` or the limit that keeps the room: 0.50, or 45,876 tokens,
+for 65,536 of 131,072), and a prompt must fit what the limit leaves.
 A video file the agent read reaches the engine as a note that says to
 read it as frames, since the local engines do not decode video files
 ([ADR 0024](docs/adr/0024-a-note-in-place-of-a-video-file.md)).
@@ -506,7 +528,8 @@ compaction, so Tenaz's context budget ends a session; a summary request
 dsh still sends is refused and ends the session (ADR 0030).
 dsh does not ask before its tool calls, and the media tools and pinned
 skills are not offered to it yet.
-The thinking level maps to its reasoning effort (`high` is its `xhigh`).
+The thinking level (each role's, with `--thinking-for`) maps to its
+reasoning effort (`high` and above are its `xhigh`).
 It has finished two runs with Qwen3.8-Flash-Next on Sushi, the longer
 one a 19-hour game brief; pass `--vision` for it to read images. See
 [Compatibility](docs/COMPATIBILITY.md).
@@ -519,7 +542,7 @@ mode, and `<command> --version` must answer. Before each session Tenaz
 writes `acp-session.json` in the run's private folder and passes its path in
 `TENAZ_AGENT_SESSION`: the engine's base URL (the proxy), the session's
 model, its context window, output limit and inputs, the reasoning effort
-and the media MCP servers. A small script reads it, configures the agent
+of the session's role and the media MCP servers. A small script reads it, configures the agent
 and starts it. Tenaz isolates nothing here: the agent keeps your `HOME`,
 your settings and its memory, so a run on it is only as reproducible as
 your script makes it ([ADR 0027](docs/adr/0027-acp-agents-behind-one-trait.md)).

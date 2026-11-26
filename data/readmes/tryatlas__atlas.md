@@ -248,6 +248,33 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). One thing catches people out:
   <img src="https://contrib.rocks/image?repo=tryatlas/atlas" />
 </a>
 
+---
+
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://signpath.io), certificate by
+[SignPath Foundation](https://signpath.org).
+
+Only the Windows installer built by this repository's release workflow
+(`.github/workflows/release.yml`) from a tagged release on `main` is signed.
+
+**Team roles**
+
+- Committers and reviewers: [@ahammadnafiz](https://github.com/ahammadnafiz),
+  [@monzim](https://github.com/monzim), [@pacifio](https://github.com/pacifio),
+  [@Ukaykhingmarma28](https://github.com/Ukaykhingmarma28), [@uzayer](https://github.com/uzayer)
+- Approvers: [@pacifio](https://github.com/pacifio)
+
+**Privacy**
+
+Atlas sends usage data to PostHog by default. It can be turned off at any time in
+Settings → General → "Share usage data", and with it off nothing is sent.
+[TELEMETRY.md](TELEMETRY.md) lists every event and property, and what is never
+collected. Beyond that, Atlas contacts other systems only when you ask it to: the
+agent and model providers you configure, and the update check.
+
+---
+
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE).

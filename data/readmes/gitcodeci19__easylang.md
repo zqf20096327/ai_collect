@@ -15,6 +15,9 @@ Tarayıcınızda gezinirken aktif hatırlama, sesli dikte ve yapay zekâ destekl
   <a href="LICENSE">
     <img src="https://img.shields.io/github/license/gitcodeci19/easylang?style=for-the-badge&label=Lisans&color=3b82f6" alt="Lisans" />
   </a>
+  <a href="https://chromewebstore.google.com/detail/hdgeghpdigcljjacjdnjnaffocoogbck">
+    <img src="https://img.shields.io/badge/Chrome%20Web%20Store-Y%C3%BCkle-ea580c?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Chrome Web Store'dan Yükle" />
+  </a>
 </p>
 
 ## Öne Çıkan Özellikler
@@ -36,9 +39,11 @@ Tarayıcınızda gezinirken aktif hatırlama, sesli dikte ve yapay zekâ destekl
 
 ## Kurulum (Chrome / Edge / Brave)
 
-1. **[Releases](https://github.com/gitcodeci19/easylang/releases/latest)** sayfasından `LingoEx-v2.3.0-Ultimate.zip` dosyasını indirip bir klasöre çıkartın.
-2. Tarayıcıda `chrome://extensions` adresini açıp sağ üstten **Geliştirici modu**nu etkinleştirin.
-3. **Paketlenmemiş öğe yükle** butonuna tıklayıp çıkarttığınız klasörü seçin.
+- **Tek Tıkla Kurulum (Önerilen):** **[Chrome Web Store — LingoEx](https://chromewebstore.google.com/detail/hdgeghpdigcljjacjdnjnaffocoogbck)** sayfasından doğrudan ekleyin.
+- **Manuel ZIP Kurulumu:**
+  1. **[Releases](https://github.com/gitcodeci19/easylang/releases/latest)** sayfasından `LingoEx-v2.3.0-Ultimate.zip` dosyasını indirip bir klasöre çıkartın.
+  2. Tarayıcıda `chrome://extensions` adresini açıp sağ üstten **Geliştirici modu**nu etkinleştirin.
+  3. **Paketlenmemiş öğe yükle** butonuna tıklayıp çıkarttığınız klasörü seçin.
 
 > Python, Node.js veya ek bir kurulum gerekmez; tüm ses motorları doğrudan tarayıcı içinde çalışır.
 

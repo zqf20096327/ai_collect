@@ -13,7 +13,7 @@
 </div>
 
 Pulse is a self-hosted monitoring and alerting dashboard for Proxmox, Docker,
-Kubernetes, TrueNAS, vSphere, and Linux/Windows/macOS hosts. One lightweight
+Kubernetes, TrueNAS, and Linux/Windows/macOS hosts. One lightweight
 server tracks health, backups, availability checks, and metric history, and
 alerts you when something needs attention.
 
@@ -51,7 +51,6 @@ Thresholds plus Ping, TCP, UDP, HTTP(S), and TLS expiry checks via email, Discor
 | Kubernetes | Clusters, nodes, workloads, pods, services, storage, events |
 | TrueNAS SCALE & CORE | Pools, datasets, disks, snapshots, replication, apps, VMs |
 | Linux, Windows & macOS | Host health, filesystems, networking, temperatures, RAID, availability |
-| VMware vSphere *(early access)* | Hosts, clusters, VMs, datastores, networks, snapshots |
 
 <details>
 <summary><strong>More full-screen views: Docker and Podman, Kubernetes, and Pulse Patrol</strong></summary>
@@ -75,7 +74,7 @@ Multi-cluster health, degraded nodes, pods, deployments, storage, and events in 
 
 ## Install
 
-Single container or Linux service on port `7655` (swap the tag if a [newer release](https://github.com/rcourtman/Pulse/releases/latest) is out).
+Single container or Linux service on port `7655` (swap the tag if a [newer release](https://github.com/rcourtman/Pulse/releases/latest) is out). Runs as one Go binary with built-in SQLite history (no external database): recommended baseline is 1-2 vCPU, 1 GiB RAM, and 4 GiB disk (~55 MiB idle RAM, ~200-250 MiB on a typical homelab, `amd64`/`arm64`, see [system requirements](docs/INSTALL.md#system-requirements)).
 
 ### Docker
 
@@ -86,7 +85,7 @@ docker run -d \
   -v pulse_data:/data \
   -e PULSE_DEPLOYMENT_METHOD=docker_run \
   --restart unless-stopped \
-  rcourtman/pulse:v6.8.0
+  rcourtman/pulse:v6.9.0
 ```
 
 <details>
@@ -95,7 +94,7 @@ docker run -d \
 ```yaml
 services:
   pulse:
-    image: rcourtman/pulse:v6.8.0
+    image: rcourtman/pulse:v6.9.0
     container_name: pulse
     ports:
       - "7655:7655"
@@ -115,7 +114,7 @@ volumes:
 Signed installer: downloads, verifies against the pinned `pulse-installer` key, then runs:
 
 ```bash
-export PULSE_VERSION=v6.8.0
+export PULSE_VERSION=v6.9.0
 curl -fsSLO "https://github.com/rcourtman/Pulse/releases/download/${PULSE_VERSION}/install.sh" &&
 curl -fsSLO "https://github.com/rcourtman/Pulse/releases/download/${PULSE_VERSION}/install.sh.sshsig" &&
 ssh-keygen -Y verify \

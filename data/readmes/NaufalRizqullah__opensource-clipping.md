@@ -1,27 +1,43 @@
-<br />
 <div align="center">
   <a href="https://github.com/NaufalRizqullah/opensource-clipping">
-    <img src="assets/images/opensource-clipping-logo-editable.svg" alt="Logo" width="350">
+    <img src="assets/images/opensource-clipping-logo-editable.svg" alt="OpenSource Clipping" width="300">
   </a>
 
-  <h3 align="center">OpenSource Clipping</h3>
-
-  <p align="center">
-    <strong>Ultimate AI Auto-Clipper & Teaser Generator</strong><br>
-    An open-source content factory that transforms long-form videos into cinematic short-form highlights with hook teasers, karaoke subtitles, and auto-thumbnails.
-    <br />
-    <br />
-    <a href="docs/README_ID.md">🇮🇩 Baca dalam Bahasa Indonesia</a>
-    &middot;
-    <a href="https://github.com/NaufalRizqullah/opensource-clipping/issues/new">Report Bug</a>
-    &middot;
-    <a href="https://github.com/NaufalRizqullah/opensource-clipping/issues/new">Request Feature</a>
+  <p>
+    <strong>Ultimate AI Auto-Clipper &amp; Teaser Generator</strong><br>
+    Turn long-form videos into cinematic short clips with AI-powered highlights, karaoke subtitles, and auto-thumbnails.<br>
+    <sub>
+      <a href="docs/README_ID.md"><img src="https://flagcdn.com/w40/id.png" width="16" alt="ID"> Bahasa Indonesia</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/NaufalRizqullah/opensource-clipping/issues/new">🐛 Report Bug</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/NaufalRizqullah/opensource-clipping/issues/new">💡 Request Feature</a>
+    </sub>
   </p>
 </div>
 
 ---
 
-🟢 **Actively Maintained**: contributions, bug reports, and feature PRs are welcome.
+## 🤝 Sponsors
+
+<div align="center">
+  <p>
+    <sub>Special thanks to our sponsors for supporting the continued development of OpenSource Clipping.</sub>
+  </p>
+</div>
+
+  <h3>🌟 Featured Sponsor: Mozhenzhen</h3>
+
+  <a href="https://mozhenzhen.com/go/opensource-clipping">
+    <img src="assets\sponsors\opensource-clippingxMozhenzhen.png" alt="OpenSource Clipping × Mozhenzhen">
+  </a>
+
+- 🐼 **Partner Pick: Stop overpaying for AI! Overpriced APIs? Fake models? Getting ripped off? Check [Mozhenzhen](https://mozhenzhen.com/go/opensource-clipping) before you buy:**
+- 🏷️ **Tired of overpaying for tokens? [Price Check]** 2,000+ models · 350K+ listings. Compare official subscriptions, API relays, and pay-as-you-go rates side-by-side.
+- 🛡️ **Worried about fake or nerfed models? [Verification]** 5,000+ API relays · 100K verification reports. Check real developer reviews and audit model authenticity.
+- 🧭 **Looking for reliable accounts or top-ups? [Account & Top-Up Directory]** 1,200+ sellers · 20K+ products (accounts, top-ups, team seats) with upfront pricing, delivery speed, and warranty terms.
+- 🎁 **Looking for free API credits? [Free Perks]** Daily updated free tiers, promos, and community relay hubs you can claim anytime.
+- ⭐ **Always Free · Mozhenzhen doesn't sell AI services — rankings are purely data-driven** 👉 Check now: [mozhenzhen.com](https://mozhenzhen.com/go/opensource-clipping)
 
 ---
 
@@ -726,6 +742,10 @@ We provide a simple bash script to safely clean up all temporary files while pre
 ```bash
 bash cleanup.sh
 ```
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=naufalrizqullah/opensource-clipping&type=date&legend=top-left)](https://www.star-history.com/?repos=naufalrizqullah%2Fopensource-clipping&type=date&legend=top-left)
 
 ## ❤️ Support & Contributing
 

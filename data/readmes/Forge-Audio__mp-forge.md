@@ -105,7 +105,7 @@ What you need besides MP Forge itself:
 
 ## Where it stands
 
-- **Version 0.1.5 is out**, with installers for macOS, Windows and Linux on the [download page][download].
+- **Version 0.1.13 is out**, with installers for macOS, Windows and Linux on the [download page][download].
   They are not signed yet, so macOS and Windows each warn the first time MP Forge is opened.
   [Getting started][get-started] says what to do.
 - **Written on a Mac, and tested by hand on a Mac and on Windows.** Linux is tested by automated tests so

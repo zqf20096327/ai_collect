@@ -7,7 +7,7 @@ Open-source design editor. Opens `.fig` and `.pen` design files, includes built-
 
 > **Status:** Active development. Usable today, with some rough edges as features evolve.
 
-**[Download](https://github.com/BadryansahBangsawan/pairdraw/releases/latest)** · [Documentation](packages/docs/) · [Roadmap](packages/docs/development/roadmap.md)
+**[Download](https://github.com/BadryansahBangsawan/pairdraw/releases/latest)** · [Documentation](https://pairdraw.dev) · [Roadmap](packages/docs/development/roadmap.md)
 
 ![Pairdraw editor: an AI agent designing a five-screen budgeting app on the canvas while the chat explains its work](packages/docs/public/screenshot.png)
 
@@ -32,7 +32,7 @@ Pairdraw sends no usage data: no daily ping, analytics, or usage statistics. The
 - **Components and variants** — create reusable components, group variants into component sets, insert local assets as instances, and switch variants from the inspector
 - **Working controls** — give a component a Reka UI behaviour (switch, slider, tabs, text field, …) and preview it live over the canvas, with real inputs, focus, and keyboard
 - **Script layers** — draw a layer's contents from a JavaScript program stored in the document, with `@input` controls bindable to variables, live re-runs, and one step to convert the result into ordinary layers ([Script layers](packages/docs/user-guide/script-layers.md))
-- **Prototypes** — link frames with click or after-delay interactions that navigate, open or close an overlay, or go back, then play them on the canvas with instant or dissolve transitions ([Playing a prototype](packages/docs/user-guide/playing-a-prototype.md))
+- **Prototypes** — link frames with click or after-delay interactions that navigate, open or close an overlay, or go back, then play them on the canvas with instant, dissolve, or Smart animate transitions ([Playing a prototype](packages/docs/user-guide/playing-a-prototype.md))
 - **Image vectorization** — convert image layers into editable vector layers with Recraft or fal.ai
 - **Design-to-code export** — export selections as JSX/Tailwind, generate token outputs, and map designs into component-oriented code workflows
 - **VS Code extension** — open and save `.fig` and `.pen` files in a VS Code custom editor that runs the web editor; it is not published to a marketplace, so build it from the repository ([VS Code extension](packages/docs/programmable/vscode.md))
@@ -193,9 +193,9 @@ Pairdraw has no live peer-to-peer rooms: local documents have no Share link, and
 
 ## Why
 
-Figma is a closed platform that resists programmatic access: its MCP server is read-only, and automation outside the Plugin API breaks when it ships a point release. Your design files are in a proprietary binary format that only its software can fully read.
+Figma is a closed platform that resists programmatic access: its MCP server still only offers a beta that writes to the canvas through `use_figma`, and automation outside the Plugin API breaks when it ships a point release. Your design files are in a proprietary binary format that only its software can fully read.
 
-Pairdraw is the alternative: open source (MIT), local-first, reads .fig files natively, and every operation is scriptable.
+Pairdraw is the alternative: open source (MIT), local-first, no seat or usage-based billing, works with any agent, reads `.fig` files natively, and every operation is scriptable — on files you own.
 
 See the [roadmap](packages/docs/development/roadmap.md) for product direction and current Figma compatibility gaps.
 

@@ -27,7 +27,7 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
 ## What it does
 
 - **One window for every agent.** Codex, Claude Code, OpenCode, Cursor Agent, Antigravity CLI,
-  Kimi Code, Grok Build, Pi and others share the same sidebar, conversation view, composer and
+  Kimi Code, Grok Build, Kiro CLI, Pi and others share the same sidebar, conversation view, composer and
   approval cards. Controls stay in the same place; the choices and values come from each agent.
 - **Sessions stay where the agent keeps them.** Codex runs against your normal `CODEX_HOME` and
   Claude Code against its own store, so a session started in Yardlet resumes in the original app or
@@ -74,9 +74,10 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
 
 ## Install
 
-Download the notarized disk image from [Releases](../../releases): `Yardlet-<version>.dmg` for a Mac
-with Apple silicon (M1 or later), `Yardlet-<version>-x86_64.dmg` for an Intel Mac. Open it and drag
-Yardlet to Applications. Or install it with [Homebrew](https://github.com/zzunkie/homebrew-tap),
+Download the notarized disk image for
+[Apple silicon (M1 or later)](https://dl.yardlet.app/readme/arm64) or an
+[Intel Mac](https://dl.yardlet.app/readme/x86_64) (earlier versions and checksums are on
+[Releases](../../releases)). Open it and drag Yardlet to Applications. Or install it with [Homebrew](https://github.com/zzunkie/homebrew-tap),
 which picks the one for your Mac:
 
 ```sh
@@ -125,8 +126,8 @@ Settings > General > Login Items & Extensions**. To remove Yardlet's own data as
 
 ## Privacy
 
-Yardlet has no analytics and no server that receives your work. Task metadata, drafts and reading
-caches live under `~/.yardlet`; agent sessions stay in each agent's own store. If you pair a phone
+Yardlet has no analytics: the app collects and sends no usage data, and no server receives your work.
+Task metadata, drafts and reading caches live under `~/.yardlet`; agent sessions stay in each agent's own store. If you pair a phone
 or another Mac with the remote and it is away from your network, its end-to-end encrypted messages pass
 through Yardlet's relay at `relay.yardlet.app`, which cannot read them and stores none
 ([relay/README.md](relay/README.md)). The Mac also reaches the same relay at `yardlet-relay-pages.pages.dev`, which
@@ -134,7 +135,15 @@ is often nearer, and keeps whichever answers first. Connector sign-ins are kept 
 macOS Keychain, and connector calls go straight from your Mac to the service. What an agent reads
 through a connector is sent to that agent's provider under your account with it. The daily update
 check asks `yardlet.app` for the appcast with Yardlet's and Sparkle's versions in its user agent and
-sends no system profile; updates download from GitHub Releases. When Yardlet's main thread stays
+sends no system profile; updates download from GitHub Releases. On their side, Yardlet's servers count
+what reaches them anyway, anonymously: relay connections and pushes, remote sign-ins and registered Macs,
+update checks by Yardlet version and architecture, and downloads through `dl.yardlet.app` by link and
+architecture. The counts hold no IP address, device, account, room or message
+([relay/README.md](relay/README.md#what-is-counted)). Feedback you write and send from the app goes
+privately to the Yardlet team by email, with what the window shows it will include (the app version and
+screen, and for a problem report the macOS version, agent and error code) and the reply address if you
+give one; the relay forwards it, keeps no copy and stores no IP address
+([relay/README.md](relay/README.md#feedback)). When Yardlet's main thread stays
 busy for more than 250 ms, it writes the time and the stack (function names only) to
 `~/Library/Logs/Yardlet/hangs.log`, with earlier entries in `hangs.1.log` to `hangs.4.log`, kept to
 about 20 MB in all and sent nowhere;
@@ -185,7 +194,7 @@ Three helpers in the app bundle do work outside the main process:
   videos; WebM video (VP9, AV1) plays. The Intel version uses CEF's own Chromium build, which leaves
   those codecs out; the Apple silicon version has them.
 - Connectors, browser tools and session tools reach Codex, Claude Code and the agents that use ACP
-  (OpenCode, Antigravity CLI, Kimi Code, Grok Build, Hermes). Cursor Agent, Pi and Muse Code have
+  (OpenCode, Antigravity CLI, Kimi Code, Grok Build, Hermes, Kiro CLI). Cursor Agent, Pi and Muse Code have
   no way to add an MCP server to one session, so their tasks run without them.
 - Scheduled tasks run only while Yardlet is open. A run missed while it was closed runs once when it
   opens again, within 7 days. A one-time continuation waits for a busy task to become available,

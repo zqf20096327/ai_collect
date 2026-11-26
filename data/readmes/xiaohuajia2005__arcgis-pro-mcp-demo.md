@@ -320,6 +320,7 @@ arcgis-pro-mcp-demo/
 │   ├── mcp-config.example.json   # 通用 MCP 客户端配置样例
 │   └── deepseek-harness.example.yml  # DeepSeek Harness 配置片段
 ├── docs/
+│   ├── PRODUCT-RESEARCH.md       # 产品研究报告（定位、竞品、能力地图、路线图）
 │   ├── TROUBLESHOOTING.md        # 常见故障与处理
 │   └── screenshots/
 │       └── buffer-500m.png
@@ -336,6 +337,9 @@ arcgis-pro-mcp-demo/
 **不包含** Super-Agent 侧的任务规划、意图理解与多 Worker 调度代码——那部分不属于本仓库。
 
 代码以「跑通链路、验证可行性」为目标，未做生产级加固（无测试覆盖、无错误重试策略、无并发处理）。
+
+产品层面的分析——为什么定位成 Worker 而不是 Copilot、与现有开源项目（ArcGIS-Pro-MCP / ARCclaude / QGIS 系）差在哪、下一步该补什么——
+见 [`docs/PRODUCT-RESEARCH.md`](docs/PRODUCT-RESEARCH.md)。
 
 示例数据为公开的 OpenStreetMap 道路与水系，以及公开 DEM，不含任何敏感信息。
 

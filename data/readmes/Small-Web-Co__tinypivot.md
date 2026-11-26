@@ -1,21 +1,60 @@
 # TinyPivot
 
-A lightweight data grid with free pivot tables, Pro charts, and optional AI-powered data exploration for Vue 3 and React. Focused, batteries-included, and easy to adopt.
+**A data analysis studio for AI agents (MCP), plus lightweight React & Vue 3 data grids, pivot tables, charts and an embedded AI analyst.**
 
-**[Live Demo](https://tiny-pivot.com)** · **[Buy License](https://tiny-pivot.com/#pricing)** · **[GitHub Sponsors](https://github.com/sponsors/Small-Web-Co)**
+**[TinyPivot MCP](https://tiny-pivot.com)** · **[Docs](https://tiny-pivot.com/docs)** · **[Live Demo](https://tiny-pivot.com/ui#demo)** · **[Pricing](https://tiny-pivot.com/pricing)** · **[npm (`@smallwebco/tinypivot-mcp`)](https://www.npmjs.com/package/@smallwebco/tinypivot-mcp)**
 
 ⭐ **If you find TinyPivot useful, please consider giving it a star!** It helps others discover the project.
 
 [![Star on GitHub](https://img.shields.io/github/stars/Small-Web-Co/tinypivot?style=social)](https://github.com/Small-Web-Co/tinypivot)
+[![MCP Package](https://img.shields.io/badge/npm-@smallwebco%2Ftinypivot--mcp-10b981)](https://www.npmjs.com/package/@smallwebco/tinypivot-mcp)
 [![React Package](https://img.shields.io/badge/npm-React-61dafb)](https://www.npmjs.com/package/@smallwebco/tinypivot-react)
 [![Vue Package](https://img.shields.io/badge/npm-Vue%203-42b883)](https://www.npmjs.com/package/@smallwebco/tinypivot-vue)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
 
-**Try it instantly:**
+### One Engine, Three Ways to Use TinyPivot
+
+| Who it's for | Package | What it does |
+|---|---|---|
+| **AI Users & Data Analysts** | `@smallwebco/tinypivot-mcp` | Interactive Charts, Pivot Tables, Terminal Cards, Live Ghostty TUI, Drill-Through & Excel inside **Antigravity, Claude Code / Desktop (native Plugin), Cursor, OpenCode, Codex CLI & pi** (`npx @smallwebco/tinypivot-mcp@latest init`) |
+| **Frontend & SaaS Engineers** | `@smallwebco/tinypivot-react` / `-vue` | Lightweight Excel-like `<DataGrid />` with free Pivot Tables & Core Charts for React and Vue 3 apps |
+| **Product Teams** | Embedded AI Data Analyst (BYOK) | Natural-language SQL querying inside your web app using your own OpenAI/Anthropic key over DuckDB WASM or Postgres |
+
+**Try the UI library online:**
 [![React StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Small-Web-Co/tinypivot/tree/master/examples/stackblitz-react)
 [![Vue StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Small-Web-Co/tinypivot/tree/master/examples/stackblitz-vue)
 
 ![TinyPivot Demo](https://bvallieres.com/images/tinypivot_demo.gif)
+
+## In-Agent Analytics (TinyPivot MCP App & Claude Plugin)
+
+**Watch your agent work the data, and check every step.** Your agent loads files, runs SQL and builds charts and pivot tables through **`@smallwebco/tinypivot-mcp`**. Each step appears live in **TinyPivot Studio** on localhost, with the agent's reason and the exact SQL behind it: edit and rerun that SQL, reopen any earlier result, and send the agent notes it picks up on its next step. In the chat, compact chart and table cards show progress. Totals come from `@smallwebco/tinypivot-core`, not from model arithmetic, and file rows stay out of the model's context.
+
+- **1-Command Multi-Harness Setup + Native Claude Plugin:** Run `npx @smallwebco/tinypivot-mcp@latest init` to auto-detect and configure all installed AI harnesses, or install the bundled Claude Code / Desktop plugin (`.claude-plugin/plugin.json` + `.mcp.json` + `skills/tinypivot/SKILL.md`).
+- **Screenshot-Ready Terminal Cards & Live Ghostty TUI:** In terminal harnesses (Claude Code, Ghostty, OpenCode, pi, Codex CLI), TinyPivot prints crisp rounded-border Unicode charts (sub-block bars, stacked legends, 2x4 Braille line charts) and sparkline pivot tables directly in scrollback, supports direct stdin piping, and includes a live SSE-updating split-pane TUI (`npx @smallwebco/tinypivot-mcp@latest tui`) plus localhost TinyPivot Studio.
+- **Generous Free Tier (Core Charts Included):** Free includes Core Charts (`bar`, `stackedBar`, `line`, `area`, `pie`, `donut`), Basic Pivot (`sum`), `Code` theme, Terminal Cards, Live Ghostty TUI, TinyPivot Studio, and up to **2,500 rows** (with unmistakable UI + LLM warnings whenever a larger dataset is truncated — never silent truncation).
+- **Real, Cache-Aware Token Savings:** `load_file` (and optional direct `query_postgres`) send only a short summary (a few hundred tokens: the chart card plus column notes) to the LLM and stream full rows locally to the UI at 0 tokens — and every local click (Chart ↔ Pivot ↔ Data, sort, filter, drill-through) costs `$0`.
+- **Works With Any Database (Not Postgres-Only):** Query **BigQuery, Snowflake, MySQL, DuckDB, Databricks, SQLite, ClickHouse, or PostgreSQL** via CLI export to `load_file`, stdin pipe (`... | tinypivot-mcp --open`), or MCP/API piping to `load_data` (zero intermediate CSV needed for `<500` in-memory rows) — plus an optional AST-validated read-only direct PostgreSQL connector (`query_postgres` on Pro).
+- **Pro / Team (`$19/mo`, `$149/yr`, `$399` Local Lifetime, or `$79/mo` Team 5-Seat):** Unlocks unlimited rows, all 10 visual themes (`Code`, `Phosphor`, `Nord`, `Thermal`, `Mono`, `Paper`, `Greenbar`, `1-Bit`, `Amber CRT`, `Green CRT`), double-click Drill-Through, all 9+ aggregations, styled `.xlsx` exports, watermark-free UI/terminal cards, and optional direct `query_postgres` (uses dedicated `TP-MCP*` keys).
+
+### Quick Setup for AI Harnesses
+
+```bash
+# 1. Auto-detect & wire Claude Code, Claude Desktop, Cursor, Antigravity, OpenCode, Codex CLI, and pi
+npx @smallwebco/tinypivot-mcp@latest init
+
+# 2. Or install as a native Claude Code plugin (includes .claude-plugin/plugin.json, .mcp.json & SKILL.md)
+claude plugin install ./packages/mcp
+# (or test for a single session without installing: claude --plugin-dir ./packages/mcp)
+
+# 3. Attach the live Ghostty / split-pane TUI alongside your running AI agent
+npx @smallwebco/tinypivot-mcp@latest tui
+
+# 4. Or pipe any SQL CLI / CSV / JSON directly from stdin
+duckdb -csv -c "SELECT * FROM 'sales.parquet'" | npx @smallwebco/tinypivot-mcp@latest --open
+```
+
+> **Privacy & Optional Env Vars:** Row data, column names, SQL, and file paths never leave your machine. Disable minimal anonymous telemetry anytime with `TINYPIVOT_TELEMETRY=0` or `DO_NOT_TRACK=1`. Set `TINYPIVOT_LICENSE_KEY` for Pro/Team features and optionally `DATABASE_URL` (+ `TINYPIVOT_ALLOWED_TABLES`) for direct read-only PostgreSQL (`query_postgres`). See the full [In-Agent Analytics (MCP) Guide](https://tiny-pivot.com/docs) and [`packages/mcp/README.md`](./packages/mcp/README.md).
 
 ## Why TinyPivot?
 
@@ -930,7 +969,7 @@ setLicenseKey('YOUR_LICENSE_KEY')
 | Unlimited Projects | $149 | All your projects |
 | Team License | $399 | Up to 10 developers |
 
-**[Purchase at tiny-pivot.com/#pricing](https://tiny-pivot.com/#pricing)**
+**[Purchase at tiny-pivot.com/pricing](https://tiny-pivot.com/pricing?product=ui)**
 
 ## Styling
 
@@ -946,7 +985,7 @@ import '@smallwebco/tinypivot-react/style.css'
 
 ## Theming
 
-TinyPivot ships **22 themes** — 2 neutral (`light`, `dark`) plus 10 brand themes each with a light and dark variant. Themes are applied via the `theme` prop on `DataGrid`.
+TinyPivot ships **27 themes** — 2 neutral (`light`, `dark`), 10 brand themes each with a light and dark variant, and 5 unified themes that style the grid and its charts together. Themes are applied via the `theme` prop on `DataGrid`.
 
 ```vue
 <!-- Vue -->
@@ -975,6 +1014,20 @@ TinyPivot ships **22 themes** — 2 neutral (`light`, `dark`) plus 10 brand them
 | `amber` / `amber-dark` | `#f59e0b` warm orange | Energy / wellness |
 | `solar` / `solar-dark` | `#b58900` mustard | Solarized — warm cream + dark teal |
 | `mono` / `mono-dark` | `#000` / `#fff` | Editorial — pure grayscale |
+
+### Unified themes
+
+A unified theme styles the grid, pivot table and charts as one. Set it once on `theme`; charts pick up the matching palette and rendering style automatically (pass `chartTheme` to override).
+
+| Theme | Surface | Charts |
+|---|---|---|
+| `paper` | Warm paper, black ink, orange accent | Flat fills, square bars |
+| `greenbar` | Ledger printer paper with green stripes | Flat fills, square bars |
+| `onebit` | One ink, square corners, hard shadow | Pattern fills instead of colour |
+| `crt-amber` | Dark amber phosphor with scanlines | Flat marks with glow |
+| `crt-green` | Dark green phosphor with scanlines | Flat marks with glow |
+
+The same five ids are valid `chartTheme` values, so `<DataGrid theme="slate" chartTheme="paper" />` also works. The MCP widget and terminal output use the same names.
 
 ### Custom themes
 
@@ -1048,10 +1101,12 @@ import type {
 
 ## License
 
-- **Free Tier**: MIT License for core grid and pivot features
-- **Pro Features**: Commercial license required
+TinyPivot is **source-available (dual-licensed)**:
 
-See [LICENSE.md](./LICENSE.md) for details.
+- **Free Tier**: MIT License (core UI grid & basic pivots; TinyPivot Studio / MCP up to 2,500 rows)
+- **Pro & Team Features**: Commercial license required (removing or bypassing license checks is not permitted)
+
+See [LICENSE.md](./LICENSE.md) for full terms.
 
 ---
 
@@ -1065,7 +1120,3 @@ This repository uses the following topics for discoverability:
 Built with ❤️ by [Small Web, LLC](https://thesmallweb.co)
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-❤️-pink)](https://github.com/sponsors/Small-Web-Co)
-
-## License
-
-TinyPivot is licensed under the MIT License. See [LICENSE.md](./LICENSE.md) for details.

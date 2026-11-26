@@ -668,7 +668,7 @@ A test checks that every endpoint the skills document is one the gateway actuall
 
 ### Multi-agent collaboration
 
-Built from the research in `reports/Multi agent collaboration design.md` (Anthropic's multi-agent research system, OpenAI Agents SDK, LangGraph, AutoGen/Magentic-One, CrewAI, MetaGPT, the A2A spec, debate and voting studies, and the MAST failure taxonomy). Default to one agent; collaborate when the task needs it.
+Built from published research (Anthropic's multi-agent research system, OpenAI Agents SDK, LangGraph, AutoGen/Magentic-One, CrewAI, MetaGPT, the A2A spec, debate and voting studies, and the MAST failure taxonomy). Default to one agent; collaborate when the task needs it.
 
 | Pattern | When | How it stops |
 |---|---|---|
@@ -1011,4 +1011,4 @@ lib/integration-config.js  per-type field schema, validation, Keychain storage a
 lib/price-sync.js      live model prices from OpenRouter's public list, cached in .cache/prices.json
 lib/openrouter.js      OpenRouter models, endpoints, providers, account and the rankings-page parser (cached in .cache/)
 lib/gateway/           Agent Gateway: keys and rate limits, providers and model router (quota, cooldown, token refresh), format
-                       translation (translate.js), token
+                       translation (translate.js), token saver (rtk.js), usage, sessions and memory

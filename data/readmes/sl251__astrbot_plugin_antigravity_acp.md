@@ -7,11 +7,11 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20Docker-blue)
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![AstrBot](https://img.shields.io/badge/AstrBot-%3E%3D4.29.4%2C%3C4.30-orange)
-![Status](https://img.shields.io/badge/Status-v0.7.5-brightgreen)
+![Status](https://img.shields.io/badge/main-v0.8.3-brightgreen)
 
 通过 Google 官方 `agy` 客户端内置的 ACP（Agent Client Protocol）协议，把 Antigravity 模型安全、稳定地接入 AstrBot，作为日常对话主力。
 
-> 💡 **版本速递（v0.7.5，2026-11-22）**：修复 #28——AstrBot 插件页运行在受限 sandbox iframe 且面板常走 HTTP，`navigator.clipboard` 不可用导致「复制」按钮全部失效（含卡住 Google 登录的授权链接）。现在复制改走「Clipboard API → `execCommand` 同步兜底 → 选中文本」三级降级，按钮就地反馈并新增「在新标签打开」；同时修正轮询打断手工选区、bfcache 失效、浅色对比度与三态主题等 21 项 UI 问题。详细改动见 [CHANGELOG.md](CHANGELOG.md)。
+> 💡 **主分支 v0.8.3（2026-11-25）** 完成模型管理与路由交互重构（[#36](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/36) / [PR #37](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/37)）：默认首页保持「运行监控」并新增全局默认摘要条与异常恢复横幅；支持原地编辑（保留 `provider_id`）、配置漂移一键同步、受控默认迁移及「跟随全局」思考档位明示。可通过下方主分支 ZIP 或页面重装并重载插件。
 
 ---
 
@@ -55,7 +55,7 @@
 
 - **官方通道直连**：原生 stdio 管道通信，享受 Google 官方客户端的稳定连接与低风控保障（这不构成账号安全或上游可用性的绝对保证）。
 - **双模能力支持**：支持多模态识图（Vision）以及内置 MCP 桥接工具调用（Tool Use），可无缝调用 AstrBot 的各种技能插件。
-- **WebUI 运行监控**：在 AstrBot 插件详情 →「首次设置」查看，按「概览 / 详细统计 / 高级诊断」分层展示会话池、近 24 小时用量与上下文缓存情况。纯本地轻量渲染，只读脱敏快照，不额外消耗模型额度。
+- **可视化运行监控与管理面板**：运行监控首页、模型管理与环境认证三标签页协同，含会话池分段条、环形统计、Token 堆叠与延迟图，支持原位编辑、漂移修复、受控默认迁移及主题切换；路由和失败诊断为只读展示，不额外消耗模型额度。
 - **智能防雪崩**：具备 429 限流快速熔断、错误提前中断与疑似压缩后的上下文退役机制，避免异常重试浪费资源。
 
 ---
@@ -106,6 +106,7 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 - **只读诊断与统计指令**：
   - `/agy doctor`：进行无损连通性与会话自检。
   - `/agy cost`：查看各实例只读缓存复用、近 24 小时 Token 统计与进程池摘要（不发任何模型请求）。
+- **同一会话连续出现 `history_rewrite`**：升级至含 #33 修复的 v0.8.2 后，在同一会话连续发送消息，检查后续轮是否显示 `reused=true`。真实历史编辑等情况仍会触发重建。详情见 [会话复用排障](docs/troubleshooting.md#会话复用与历史重写)。
 
 ---
 
@@ -113,8 +114,12 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 
 *(完整历史见 [`CHANGELOG.md`](./CHANGELOG.md))*
 
+- **v0.8.3**：重构「运行监控 / 模型管理 / 环境与认证」三标签页、新增原位编辑（`provider-update`）与配置漂移修复（`provider-repair`）、支持受控默认迁移及思考「跟随全局」明示（[#36](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/36) · [PR #37](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/37)）。
+- **v0.8.2**：修复临时用户文本导致的会话误重建，覆盖普通续聊及工具回填。[#35](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/35)
+- **v0.8.1**：替换为 feat/ui-redesign 原生可视化前端，兼容监控 v2 与复制降级，保留 v0.8.0 后端（实机待 #31）。
+- **v0.8.0**：原生 Dashboard 重构、默认模型路由核对、当前用户输入与历史分离、历史图片预算修复、无正文且未交接工具时的安全 fallback、持久失败诊断（[#34](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/34)；实机待 #31）。
 - **v0.7.5**：修复设置面板复制按钮在 sandbox iframe + 非 HTTPS 下全部失效（#28）——三级降级复制、按钮就地反馈、授权链接「在新标签打开」；轮询差量渲染与 5/10/20/30s 退避、bfcache 恢复、监控重建签名跳过、浅色对比度达 AA、三态主题持久化等 21 项 UI 修正（[#29](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/29)）。
-- **v0.7.4**：修复会话重建时历史窗口图片被重复提取为当前轮附件（#24）——仅当前最新用户消息的图片随请求附带，历史图在转录中保留哈希占位；跨轮重发同图不被误去重，预算裁剪不丢当前轮图片；**仍会预检历史图片（旧图源失效或累计预算可能报错）**；新增 8 项单元回归与 3 项会话级集成测试（[#25](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/25)）。
+- **v0.7.4**：修复会话重建时历史窗口图片被重复提取为当前轮附件（#24）——仅当前最新用户消息的图片随请求附带，历史图在转录中保留哈希占位；跨轮重发同图不被误去重，预算裁剪不丢当前轮图片；当时仍会预检历史图片（该限制在 v0.8.0 修复）；新增 8 项单元回归与 3 项会话级集成测试（[#25](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/25)）。
 - **v0.7.3**：修复 Python 3.12+ 工具桥关闭死锁与同会话并发请求误杀活跃工具轮；补全 `anyOf`/联合类型数组 schema 适配；无损剥离 PNG 压缩辅助块并支持 8 位索引色；CLI 探测缓存、长历史二分裁剪与 ZIP 归档瘦身（[#22](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/22)）。
 - **v0.7.2**：定点兼容 AstrBot 4.29.4 Safe Mode 第 4 条规则触发的上游伪 429（`style/role-play` 等义改写，fail-open，不改冷却语义）。
 - **v0.7.1**：429 结构化标签过滤扩展至 AstrBot 4.30 已知声明，新增内容相关 429 候选遥测（`content_429_candidate`，不改冷却语义）；WebUI 监控三层重构与纯 SVG 可视化。
@@ -125,14 +130,14 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 
 # 🤖 给 Agent 看的上下文
 
-先读 [AGENTS.md](AGENTS.md)。当前发布基线为 **v0.7.5**；仅支持 AstrBot **`>=4.29.4,<4.30`**、Python **3.11+**。本节只保留当前有效契约，历史实现和既有验收见 [CHANGELOG](CHANGELOG.md)。
+先读 [AGENTS.md](AGENTS.md)。当前版本以 [metadata.yaml](metadata.yaml) 为准，支持 AstrBot **`>=4.29.4,<4.30`**、Python **3.11+**。历次变更与验收见 [CHANGELOG](CHANGELOG.md)。
 
 | 当前契约 | 详细说明与证据入口 |
 | --- | --- |
 | 模型请求只走官方 `agy acp` stdio；每会话隔离目录，认证由官方 CLI 管理，不读取或记录凭据内容 | [架构与认证](docs/architecture.md)，[启动/登录排障](docs/troubleshooting.md#启动登录与模型设置) |
 | CLI 内置文件、终端、web search/browser 继续拒绝；只有当前活跃 prompt 中已观测且匹配的快照 MCP 调用可获唯一 `allow_once`，宿主审批/校验/预算仍有效 | [MCP 权限与 schema](docs/architecture.md#mcp-的两层权限与两份-schema)，[#12 排障](docs/troubleshooting.md#empty权限拒绝与-12) |
 | 模型 schema 适配（含 `anyOf`/联合类型数组）与宿主原始契约独立；执行按原始 schema 校验，两者均参与工具指纹 | [#13 参数排障](docs/troubleshooting.md#tool_arguments-与-13) |
-| 默认严格会话复用；活跃工具轮等待回填期间同会话并发新请求按 `queue_timeout` 排队隔离；已输出正文/思考或交接工具后失败禁止重试/fallback | [会话与防重放](docs/architecture.md#会话历史与防重放) |
+| 默认严格会话复用；活跃工具轮等待回填期间同会话并发新请求按 `queue_timeout` 排队隔离；已输出可见正文、交接工具或进入工具续轮后失败禁止重试/fallback；仅思考/进度且未交接的失败可保留显式 fallback 资格 | [会话与防重放](docs/architecture.md#会话历史与防重放) |
 | system 仅过滤已知宿主能力声明并定点兼容改写已知 Safe Mode 单句；4.30 文案处理不是 4.30 宿主兼容证明；`content_429_candidate` 是候选遥测，不是上游根因 | [过滤与 429 边界](docs/architecture.md#system-过滤与-429-的证据边界)，[#14 / #19 排障](docs/troubleshooting.md#rate_limit--quota-与-14) |
 | 检测/保存不等于真实生成；用量缺失保留未知；监控只读现有脱敏快照，不发模型请求 | [排障 SOP](docs/troubleshooting.md)，[实机验收分层](docs/testing.md#实机验收) |
 | 工具/图片默认关闭，要求插件与宿主双开关；PNG 校验 CRC 后剥离压缩辅助块并支持 8 位索引色；不支持音频、视频、PDF 或图片生成；会话重建时仅附带当前最新用户消息中的图片，历史图保留哈希占位 | [关键配置](docs/architecture.md#关键配置)、[配置 schema](_conf_schema.json) |

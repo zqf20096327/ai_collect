@@ -1,0 +1,737 @@
+<!-- Both badges stay on ONE source line: a block-level HTML comment between
+     them would end the paragraph and stack them, which is what this used to
+     do. The Scorecard badge reads api.scorecard.dev through shields'
+     dynamic/json route, because Scorecard's own badge endpoint redirects to
+     shields' `ossf-scorecard` route, which reads the LEGACY
+     api.securityscorecards.dev — and that host 404s for this repo, rendering
+     "invalid repo path" (as HTTP 200, so a status check does not catch it).
+     Switch back to
+     `https://api.scorecard.dev/projects/github.com/claymore666/ccu-mcp/badge`
+     once `curl -sS -o /dev/null -w '%{http_code}'
+     https://api.securityscorecards.dev/projects/github.com/claymore666/ccu-mcp`
+     returns 200. -->
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13919/badge)](https://www.bestpractices.dev/projects/13919) [![OpenSSF Scorecard](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.scorecard.dev%2Fprojects%2Fgithub.com%2Fclaymore666%2Fccu-mcp&query=%24.score&label=openssf%20scorecard&suffix=%20%2F%2010)](https://scorecard.dev/viewer/?uri=github.com/claymore666/ccu-mcp)
+
+# ccu-mcp
+
+Talk to your HomeMatic smart home from Claude, Cursor, or any MCP client.
+
+<a href="https://glama.ai/mcp/servers/claymore666/ccu-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/claymore666/ccu-mcp/badge" alt="ccu-mcp MCP server" />
+</a>
+
+ccu-mcp connects to the CCU's built-in JSON-RPC API and exposes your devices, rooms, programs, and system variables as MCP tools. No addons, no XML-API, no cloud — just a direct connection to the CCU on your local network.
+
+Works with any HomeMatic CCU: [debmatic](https://github.com/alexreinert/debmatic) (HomeMatic on Debian), a CCU3, or [OpenCCU](https://github.com/OpenCCU/OpenCCU) (formerly RaspberryMatic) — anything that exposes the standard `/api/homematic.cgi` endpoint.
+
+## What can it do?
+
+Ask your AI assistant things like:
+
+- "What's the temperature in the bathroom?"
+- "Are any windows open?"
+- "Set the living room heating to 21 degrees"
+- "Show me all devices with low battery"
+- "What's the gas meter reading?"
+- "Which devices have low battery or haven't been seen in a long time?"
+- "Find all channels whose names don't match their device name"
+- "Rename all devices to follow a consistent naming convention with floor labels (UG/OG/EG)"
+- "Which room is the window sensor in?"
+
+The MCP server handles device discovery, type resolution, session management, and value conversion — the AI just calls the tools.
+
+## Prerequisites
+
+- A running HomeMatic CCU (debmatic, CCU3, or OpenCCU — formerly RaspberryMatic) reachable on your network
+- The CCU's admin username and password (the same credentials you use to log into the WebUI)
+- Node.js 24+ (for running from source or stdio mode) or Docker
+
+## Quick start
+
+```bash
+export CCU_HOST=your-ccu-hostname-or-ip
+export CCU_PASSWORD=your-ccu-admin-password
+npx ccu-mcp --stdio
+```
+
+If it prints `server_ready` to stderr, it's working. Press Ctrl+C to stop. Now set it up in your MCP client — see below.
+
+A `cache_save_failed … mkdir '/data'` line alongside it is harmless here but
+worth fixing for real use: `CACHE_DIR` defaults to `/data` (the Docker layout),
+so outside a container the device-type cache and the CCU session are never
+persisted between runs. Point it somewhere writable:
+`export CACHE_DIR="$HOME/.cache/ccu-mcp"` (or the same key in your `.env` /
+`env` block).
+
+Prefer a guided setup? `npx ccu-mcp init` probes your CCU, pins its TLS
+certificate, tests the login, writes a ready-to-use `.env` file, and prints the
+matching MCP client config — see [Command-line flags](#command-line-flags).
+
+## Installation
+
+There are two ways to run this: **stdio** (the server runs as a subprocess of your MCP client) or **HTTP** (the server runs standalone in Docker and clients connect over the network). Pick one.
+
+### Option A: stdio (direct, simplest)
+
+This is the easiest setup. Your MCP client (Claude Code, Cursor, etc.) starts the server as a child process — no Docker, no network config, no auth tokens.
+
+For Claude Code, create a `.mcp.json` file in your project directory (or any directory where you'll use Claude Code):
+
+```json
+{
+  "mcpServers": {
+    "ccu-mcp": {
+      "command": "npx",
+      "args": ["ccu-mcp", "--stdio"],
+      "env": {
+        "CCU_HOST": "your-ccu-hostname-or-ip",
+        "CCU_PASSWORD": "your-ccu-admin-password"
+      }
+    }
+  }
+}
+```
+
+Replace `your-ccu-hostname-or-ip` with your CCU's hostname (like `homematic-ccu3`) or IP (like `192.168.1.50`), and `your-ccu-admin-password` with the password you use to log into the CCU WebUI.
+
+Restart Claude Code. Run `/mcp` to check it connected. You should see `ccu-mcp` in the list.
+
+Alternatively, use the Claude Code CLI:
+
+```bash
+claude mcp add ccu-mcp -- npx ccu-mcp --stdio
+```
+
+### Option B: Docker (standalone HTTP server)
+
+Use this if you want the server running independently — for example on a home server, accessible to multiple clients, or when your MCP client supports HTTP remotes.
+
+**1. Start the container.** Images are published to GHCR for `linux/amd64` and
+`linux/arm64` (so a Raspberry Pi next to the CCU works), built natively on each
+architecture and attested — `gh attestation verify oci://ghcr.io/claymore666/ccu-mcp:latest --repo claymore666/ccu-mcp`
+proves the image came from this repository's release workflow.
+
+```bash
+docker pull ghcr.io/claymore666/ccu-mcp:latest
+```
+
+Every release also publishes its own `X.Y.Z` tag — pin that instead of `latest`
+if you'd rather upgrade deliberately. To build from source instead:
+
+```bash
+git clone https://github.com/claymore666/ccu-mcp.git && cd ccu-mcp
+docker build -t ghcr.io/claymore666/ccu-mcp .
+```
+
+Then run it:
+
+```bash
+docker run -d \
+  --name ccu-mcp \
+  -e CCU_HOST=your-ccu-hostname-or-ip \
+  -e CCU_PASSWORD=your-ccu-admin-password \
+  -e MCP_ALLOWED_HOSTS=your-server-ip:3000 \
+  -v ccu-data:/data \
+  -p 3000:3000 \
+  ghcr.io/claymore666/ccu-mcp:latest
+```
+
+> **`MCP_ALLOWED_HOSTS` is required for remote clients.** The server's
+> DNS-rebinding protection rejects any request whose `Host` header isn't on
+> the allowlist — by default only `localhost`/`127.0.0.1`/`[::1]` on the MCP
+> port. Set it to every name/IP clients will use to reach the server
+> (comma-separated, `host:port`). Without it, the local health check works
+> but every remote MCP request gets **403 Invalid Host header**.
+
+**2. Get the auth token.** The server generates a random bearer token on first startup and saves it inside the container's data volume. You need this token to authenticate your MCP client. Grab it with:
+
+```bash
+docker exec ccu-mcp grep MCP_AUTH_TOKEN /data/.env
+```
+
+This prints something like `MCP_AUTH_TOKEN=e96suzi1iG0H-GPif6K2...`. The part after `=` is your token.
+
+**3. Configure your MCP client.** If your client uses `.mcp.json`, add the HTTP server:
+
+```json
+{
+  "mcpServers": {
+    "ccu-mcp": {
+      "url": "http://your-server-ip:3000",
+      "headers": {
+        "Authorization": "Bearer PASTE-YOUR-TOKEN-HERE"
+      }
+    }
+  }
+}
+```
+
+To inject the token automatically (requires `jq`):
+
+```bash
+TOKEN=$(docker exec ccu-mcp grep MCP_AUTH_TOKEN /data/.env | cut -d= -f2)
+jq --arg t "$TOKEN" '.mcpServers["ccu-mcp"].headers.Authorization = "Bearer " + $t' .mcp.json > .mcp.json.tmp && mv .mcp.json.tmp .mcp.json
+```
+
+This only updates the `ccu-mcp` entry — other servers in your `.mcp.json` are left alone.
+
+**4. Check it's healthy:**
+
+```bash
+curl http://localhost:3000/health
+```
+
+#### Browser-based clients (CORS)
+
+By default the HTTP server sends **no** CORS headers, so a random web page can't drive a local instance. To let browser-based MCP clients like [MCP Inspector](https://github.com/modelcontextprotocol/inspector) connect directly, set `MCP_ALLOWED_ORIGINS` to a comma-separated allowlist of trusted origins (e.g. `https://app.example,http://localhost:6274`). A request whose `Origin` is on the list gets that **exact** origin reflected in `Access-Control-Allow-Origin` — never the wildcard `*`, which would let any site drive a local instance that controls real CCU hardware. A request from any other origin gets no CORS headers (the browser blocks it) and is rejected server-side by DNS-rebinding protection. Authentication is always enforced regardless: every MCP request needs the bearer token.
+
+The HTTP transport also has **DNS-rebinding protection** on by default: it rejects requests whose `Host` header isn't `localhost`/`127.0.0.1`/`[::1]` on the configured port. If you reach the server under another hostname or IP (reverse proxy, container DNS name, the server's LAN address), list those hosts in `MCP_ALLOWED_HOSTS` or legitimate requests get a `403`.
+
+**TLS.** The bearer token travels in the request, so anything beyond loopback should be encrypted. You have two options: terminate TLS at a reverse proxy (Caddy/nginx) in front and bind the server to loopback (`MCP_HOST=127.0.0.1`), or let the server serve HTTPS itself by setting `MCP_TLS_CERT` and `MCP_TLS_KEY` to a PEM cert/key pair. Plain HTTP is still fully supported — it stays the zero-config default — but the server logs a warning at startup when it's serving the token over unencrypted HTTP on a non-loopback bind; set `MCP_ALLOW_PLAINTEXT=true` to acknowledge that and silence it.
+
+**Token rotation & expiry.** By default the bearer token lives forever. Two optional, composable controls let you rotate it without dropping clients:
+
+- *Auto-generated token* — set `MCP_AUTH_TOKEN_TTL_DAYS` (fractional days allowed) to give the generated token a lifetime. The server rotates it **automatically at runtime** shortly before it lapses (no restart needed; also on startup if it expired while the server was down), prints the new token on stderr, and keeps the just-replaced token validating for `MCP_AUTH_TOKEN_GRACE_HOURS` (default 24) so in-flight clients survive the swap. To force a rotation sooner, delete `$CACHE_DIR/.env` (or just its `MCP_AUTH_TOKEN` line) and restart.
+- *Explicit token* — when you set `MCP_AUTH_TOKEN` yourself, you own its lifetime (TTL doesn't apply). To rotate, put the new token in `MCP_AUTH_TOKEN`, move the old one to `MCP_AUTH_TOKEN_PREVIOUS`, and restart; both are accepted during the overlap. Drop `MCP_AUTH_TOKEN_PREVIOUS` and restart once every client is on the new token. Comparison stays timing-safe across every currently-valid token.
+
+**Brute-force protection (fail2ban).** The auto-generated token is 256 bits of randomness, so guessing it is infeasible. If you set `MCP_AUTH_TOKEN` yourself, **make it long and random** (e.g. `openssl rand -base64 32`) — a short or guessable token is the one case brute force matters. The server does **not** rate-limit or lock out failed logins in-process; that job belongs to a firewall-level tool like [fail2ban](https://www.fail2ban.org/), which bans the source IP before the request ever reaches the server. To make that easy, every rejected request logs a structured line to stderr:
+
+```json
+{"ts":"2026-06-18T17:28:00.370Z","level":"warn","msg":"auth_failed","client":"203.0.113.7","hadToken":true}
+```
+
+Ready-to-use fail2ban config ships in [`fail2ban/`](fail2ban/): copy `filter.d/ccu-mcp.conf` to `/etc/fail2ban/filter.d/` and the jail in `jail.d/ccu-mcp.local` to `/etc/fail2ban/jail.d/` (it defaults to 5 failures in 10 minutes → 1-hour ban). The server logs to stderr, so point fail2ban at wherever you collect it — the journal (`backend = systemd`) when run as a unit, or a file when you redirect stderr/`docker logs`; both are spelled out in the jail file. Requires `LOG_LEVEL=warn` or lower (`info`, the default, is fine; `error` suppresses the line). Behind a reverse proxy the logged IP is the proxy's, so run fail2ban against the proxy's access log instead.
+
+CORS support was first implemented by [@marcinn2](https://github.com/marcinn2) in his fork [marcinn2/debmatic-mcp](https://github.com/marcinn2/debmatic-mcp) — thanks!
+
+### HTTPS
+
+If your CCU uses HTTPS (self-signed certificates are fine), add these environment variables:
+
+```bash
+CCU_HTTPS=true
+CCU_PORT=443
+```
+
+The server accepts self-signed certificates automatically — certificate verification is **off by default** because CCUs ship with self-signed certs (the server logs a warning when running unverified). To actually verify the connection and close the MITM gap, you have three options:
+
+- **Pin the fingerprint** (simplest for a self-signed appliance cert): set `CCU_TLS_FINGERPRINT` to the cert's SHA-256 (hex, with or without colons). The connection is rejected unless the CCU presents exactly that certificate. Read it with:
+  ```bash
+  echo | openssl s_client -connect "$CCU_HOST:443" 2>/dev/null | openssl x509 -noout -fingerprint -sha256
+  ```
+- **Trust a CA/self-signed PEM**: point `CCU_CA_CERT` at the certificate file for standard chain validation.
+- **System trust store**: if your CCU has a publicly-trusted certificate, set `CCU_TLS_VERIFY=true`.
+
+`CCU_TLS_FINGERPRINT` takes precedence over `CCU_CA_CERT`, which takes precedence over `CCU_TLS_VERIFY`.
+
+`ccu-mcp init` does the pinning for you: it shows the certificate the CCU
+presents and writes the fingerprint into the env file on confirmation, and
+`ccu-mcp doctor` re-checks the pin later (offering a refresh after a
+legitimate certificate rotation).
+
+## Configuration
+
+All configuration is via environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CCU_HOST` | required | Hostname or IP of your CCU |
+| `CCU_PASSWORD` | required | CCU admin password. Must be set, but may be empty for a box without one (a fresh OpenCCU) |
+| `CCU_USER` | `Admin` | CCU username |
+| `CCU_PORT` | `80` | API port (`443` when using HTTPS) |
+| `CCU_HTTPS` | `false` | Connect via HTTPS (self-signed certs supported) |
+| `CCU_TLS_VERIFY` | `false` | Verify the CCU's TLS certificate against the system trust store (for a publicly-trusted cert) |
+| `CCU_TLS_FINGERPRINT` | unset | Pin the CCU's self-signed leaf cert by its SHA-256 fingerprint (hex, colons optional). Takes precedence over the other TLS options |
+| `CCU_CA_CERT` | unset | Path to the CCU's CA/self-signed PEM for chain validation |
+| `CCU_TIMEOUT` | `10000` | CCU request timeout in milliseconds |
+| `CCU_SCRIPT_TIMEOUT` | `30000` | HM Script execution timeout in milliseconds |
+| `LOG_LEVEL` | `info` | `error`, `warn`, `info`, or `debug` |
+| `CACHE_DIR` | `/data` | Where to store device type cache and session |
+| `CACHE_TTL` | `86400` | Cache lifetime in seconds (24h) |
+| `MCP_TRANSPORT` | `http` | `http` or `stdio` (the `--stdio` CLI flag overrides this) |
+| `MCP_PORT` | `3000` | HTTP server port (HTTP mode only) |
+| `MCP_AUTH_TOKEN` | auto-generated | Bearer token for HTTP mode; generated and saved to `$CACHE_DIR/.env` on first start |
+| `MCP_AUTH_TOKEN_PREVIOUS` | unset | Previous bearer token, accepted alongside `MCP_AUTH_TOKEN` during a rotation overlap; remove it (and restart) to end the overlap. Explicit-token path only |
+| `MCP_AUTH_TOKEN_TTL_DAYS` | unset (never expires) | Lifetime of the **auto-generated** token, in days (fractional allowed). The server auto-rotates it at runtime shortly before expiry (new token announced on stderr); ignored when `MCP_AUTH_TOKEN` is set |
+| `MCP_AUTH_TOKEN_GRACE_HOURS` | `24` | Overlap (hours) after an auto-rotation during which the just-replaced token is still accepted |
+| `MCP_ALLOWED_ORIGINS` | unset | Comma-separated allowlist of browser origins. Unset = no cross-origin browser access (default-deny). An allowlisted origin is reflected exactly in `Access-Control-Allow-Origin` (never `*`); the list also drives DNS-rebinding origin checks |
+| `MCP_ALLOWED_HOSTS` | `localhost`/`127.0.0.1`/`[::1]` on the MCP port | Extra `Host` values accepted by DNS-rebinding protection (comma-separated `host:port`); add every name/IP clients use to reach the server (proxy, container DNS name, plain server IP) |
+| `MCP_HOST` | unset (all interfaces) | Bind address for the HTTP listener; set `127.0.0.1` to restrict to loopback (e.g. behind a TLS-terminating proxy), which also silences the plaintext warning |
+| `MCP_TLS_CERT` / `MCP_TLS_KEY` | unset | PEM cert/key paths. Set **both** to serve MCP over HTTPS natively; leave unset for plain HTTP. Setting only one is a configuration error |
+| `MCP_ALLOW_PLAINTEXT` | `false` | Set `true` to acknowledge serving the bearer token over plain HTTP and silence the non-loopback plaintext warning |
+| `CCU_RATE_LIMIT_BURST` | `20` | Max burst of requests sent to the CCU |
+| `CCU_RATE_LIMIT_RATE` | `10` | Sustained CCU requests per second |
+| `RESOURCE_POLL_INTERVAL` | `60` | Seconds between polls for MCP resource change notifications |
+
+To drive **several CCUs** from one server, these flat `CCU_*` vars are replaced
+by named profiles — see [Multiple CCU targets](#multiple-ccu-targets-profiles)
+below.
+
+### Command-line flags
+
+```sh
+ccu-mcp init           # interactive setup: probe the CCU, pin its TLS cert,
+                       #   test the login, write an env file (default ./.env)
+ccu-mcp doctor         # validate an env file end-to-end: reachability,
+                       #   certificate pin, login, privilege level
+ccu-mcp secret [prof]  # store ONE CCU password into an env file via a local
+                       #   hidden prompt — name the target when the file
+                       #   defines profiles, omit it for a single CCU (used by
+                       #   the LLM-guided setup below; also the rotation path)
+ccu-mcp --stdio        # serve over stdin/stdout (overrides MCP_TRANSPORT)
+ccu-mcp --http         # serve over HTTP (default)
+ccu-mcp --env <path>   # load configuration from a dotenv file (already-set
+                       #   environment variables win); also accepted by
+                       #   init/doctor/secret to pick the file they
+                       #   write/check/update (default ./.env)
+ccu-mcp --version      # print the installed version and exit
+ccu-mcp --help         # print usage and exit
+```
+
+`ccu-mcp init` walks through one or more CCU targets ([profiles](#multiple-ccu-targets-profiles)) —
+it asks up front whether you want several, then loops over name, endpoint,
+certificate pin, credentials and the two policy flags per target and asks
+which one starts active. It detects whether each configured user is ADMIN- or
+USER-level (script-based tools need ADMIN), and ends with a ready-to-paste MCP
+client snippet. It needs no pre-existing configuration. `ccu-mcp doctor` exits
+non-zero when any check fails, so it also works in scripts; run it
+interactively to be offered a pin refresh when the CCU's certificate
+legitimately rotated. Worked example:
+[Setting up several targets](#setting-up-several-targets).
+
+### LLM-guided setup (setup mode)
+
+The wizard has a conversational twin: register the server in an MCP client
+**before** configuring it. Started with `--stdio --env <path>` and a missing or
+incomplete configuration, the server comes up in **setup mode** — a minimal MCP
+server exposing only four `setup_*` tools (`setup_status`, `setup_probe`,
+`setup_write_profile`, `setup_test`) plus instructions that let the LLM walk
+you through the same probe → pin → test-login → write flow in plain chat.
+
+```json
+{
+  "mcpServers": {
+    "ccu-mcp": {
+      "command": "npx",
+      "args": ["ccu-mcp", "--stdio", "--env", "/path/to/.env"]
+    }
+  }
+}
+```
+
+Then just ask: *"set up my CCU connection"*. One deliberate exception: **the
+password never travels through the model or the chat transcript**.
+`setup_write_profile` has no password parameter; instead the assistant hands
+you a one-liner to run in a terminal — `npx ccu-mcp secret <profile> --env
+/path/to/.env`, or the equivalent for however you installed it — which prompts
+locally with echo off and writes only the password into the file (mode 0600).
+Copy the command the tool prints rather than this one: it names the build that
+printed it, so it cannot land on an older install that lacks the subcommand.
+Once `setup_test` reports green, reconnect the MCP server and the identical
+client entry starts it fully configured.
+
+Several CCUs work here too — say so ("*I have a prod and a dev CCU*") and the
+assistant repeats probe → write → secret per target: `setup_write_profile`
+takes a `name` (plus `protected`, `readonly` and `makeDefault`) and upserts
+that one target, preserving the others and their already-stored passwords.
+Each target needs its own `ccu-mcp secret <name>` run, and the server stays in
+setup mode until every configured target has one: reconnecting halfway through
+lands you back in setup mode, naming the target still missing a password and
+the exact `secret` command that finishes it. A CCU that genuinely has no
+password is not a missing one — write the key with an empty value
+(`CCU_<NAME>_PASSWORD=`) to say so deliberately.
+
+Setup mode is stdio-only (an unconfigured HTTP endpoint that writes config
+files would be an unacceptable surface), and a bare start without `--env`
+still fails loudly instead of silently serving setup tools.
+
+`--version` and `--help` need no configuration — use them to check what an
+installed copy actually is, e.g. after updating:
+
+```console
+$ npx ccu-mcp@latest --version
+1.10.0
+```
+
+Note that a bare `npx ccu-mcp` reuses the copy cached in `~/.npm/_npx` without
+re-resolving against the registry; pin `@latest` (or clear that cache) when you
+want the newest release.
+
+### How to supply these (inline, `.env`, or export)
+
+The required `CCU_HOST` / `CCU_PASSWORD` (and everything else) are **environment
+variables**. Provide them in whichever of these you prefer — you need just one:
+
+- **Inline in `.mcp.json`** — the `env` block shown in [Option A](#option-a-stdio-direct-simplest)
+  above. Simplest; self-contained.
+- **Shell `export`** — as in [Quick start](#quick-start) above.
+- **A `.env` file** — keeps secrets out of `.mcp.json`. Pass it with the
+  server's own `--env` flag (this is also what `ccu-mcp init` writes and the
+  snippet it prints):
+
+  ```json
+  {
+    "mcpServers": {
+      "ccu-mcp": {
+        "command": "npx",
+        "args": ["ccu-mcp", "--stdio", "--env", "/path/to/.env"]
+      }
+    }
+  }
+  ```
+
+  (Node's own `--env-file=` flag before the script path works too, but node
+  refuses to start when that file doesn't exist yet, and it needs the full
+  path to `dist/index.js`.)
+
+  Copy [`.env.example`](.env.example) to `.env` and fill it in (it documents every
+  variable). Docker users can pass the same file with `docker run --env-file .env`
+  or compose's `env_file:`. Keep `.env` gitignored.
+
+### Multiple CCU targets (profiles)
+
+By default the `CCU_*` vars above configure a single CCU. To reach several CCUs
+(e.g. **prod + dev**) from one server, define named profiles instead. Set these
+the same way as any other config (inline, `.env`, or export — see above):
+
+```sh
+CCU_PROFILES=prod,dev
+CCU_DEFAULT_PROFILE=prod           # active at startup (defaults to the first listed)
+
+CCU_PROD_HOST=ccu.example
+CCU_PROD_USER=ai
+CCU_PROD_PASSWORD=...
+CCU_PROD_HTTPS=true
+CCU_PROD_PROTECTED=true            # writes need confirm:true
+
+CCU_DEV_HOST=127.0.0.1
+CCU_DEV_PORT=18080
+CCU_DEV_USER=Admin
+CCU_DEV_PASSWORD=                  # may be empty (e.g. an OpenCCU dev box)
+```
+
+Each profile takes the same settings as the flat vars, prefixed
+`CCU_<NAME>_` (name upper-cased, non-alphanumerics → `_`): `HOST` (required),
+`PASSWORD` (may be empty — and, unlike the flat `CCU_PASSWORD`, may also be
+left out entirely, which reads as empty), `USER`, `PORT`, `HTTPS`, `TIMEOUT`,
+`SCRIPT_TIMEOUT`, `TLS_FINGERPRINT`, `CA_CERT`, `TLS_VERIFY` — plus two policy
+flags:
+
+- `CCU_<NAME>_PROTECTED=true` — write tools refuse unless called with
+  `confirm: true`, which unlocks writes to that target for the rest of the session.
+  Exception: `run_script` and `delete_system_variable` require `confirm: true` on
+  **every** call — they never ride on the session unlock (scripts bypass all
+  typed-tool guards; deletion is unrecoverable), and confirming them does not
+  unlock the session for other writes.
+- `CCU_<NAME>_READONLY=true` — write tools are refused outright.
+
+With `CCU_PROFILES` unset, the flat `CCU_*` vars are used as a single `default`
+profile (unchanged behavior). At runtime, `list_ccu_targets` shows the targets,
+`get_connection_info` reports the active one, and `use_ccu` switches it. Read
+tools also accept an optional `target` to read from another CCU for a single call
+without switching.
+
+#### Setting up several targets
+
+**With the wizard.** `ccu-mcp init` asks up front, then loops over name →
+endpoint → certificate pin → credentials → policy flags per target, and ends
+by asking which one starts active:
+
+```console
+$ npx ccu-mcp init --env ~/.config/ccu-mcp/.env
+ccu-mcp setup — probes your CCU, pins its TLS certificate, tests the
+login, and writes the result to /home/you/.config/ccu-mcp/.env.
+
+Set up multiple CCU targets (e.g. prod/dev)? [y/N]: y
+Profile name [prod]: prod
+CCU hostname or IP: ccu.example
+Probing ccu.example ...
+  Found the CCU API on port 443 (HTTPS).
+Use HTTPS? [Y/n]: y
+Port [443]: 443
+The CCU presents this TLS certificate:
+  Subject: ccu.example
+  Issuer:  ccu.example
+  Valid:   Jun 19 21:37:09 2026 GMT — Jun 16 21:37:09 2036 GMT
+  SHA-256: 90:0C:4C:F2:53:22:E7:78:...:40:ED:16:95:6E:BB:B1:53
+Pin this certificate's fingerprint (recommended)? [Y/n]: y
+CCU user [Admin]: ai
+CCU password (input hidden):
+Testing login ...
+  Login OK (CCU 3.87.6.20260614) — privilege level ADMIN: all tools available.
+Protect this target (write tools then require confirm:true)? [y/N]: y
+Make this target read-only (write tools refused entirely)? [y/N]: n
+Add another CCU target? [y/N]: y
+Profile name: dev
+CCU hostname or IP: 192.168.1.50
+Probing 192.168.1.50 ...
+  Found the CCU API on port 80 (HTTP).
+Use HTTPS? [Y/n]: n
+Port [80]: 80
+CCU user [Admin]: Admin
+CCU password (input hidden):
+Testing login ...
+  Login OK (CCU 3.87.6.20260614) — privilege level ADMIN: all tools available.
+Protect this target (write tools then require confirm:true)? [y/N]: n
+Make this target read-only (write tools refused entirely)? [y/N]: n
+Add another CCU target? [y/N]: n
+Default target (prod/dev) [prod]: prod
+
+Wrote /home/you/.config/ccu-mcp/.env (mode 0600).
+```
+
+The file it writes is the profile form, one commented block per target — and
+the wizard rewrites only these keys, so anything else in the file (`LOG_LEVEL`,
+`CACHE_DIR`, `MCP_*`) survives:
+
+```sh
+# Written by ccu-mcp setup — https://github.com/claymore666/ccu-mcp#configuration
+CCU_PROFILES=prod,dev
+CCU_DEFAULT_PROFILE=prod
+
+# --- target: prod ---
+CCU_PROD_HOST=ccu.example
+CCU_PROD_PORT=443
+CCU_PROD_HTTPS=true
+CCU_PROD_USER=ai
+CCU_PROD_PASSWORD="..."
+CCU_PROD_TLS_FINGERPRINT=90:0C:4C:F2:53:22:E7:78:...:40:ED:16:95:6E:BB:B1:53
+CCU_PROD_PROTECTED=true
+
+# --- target: dev ---
+CCU_DEV_HOST=192.168.1.50
+CCU_DEV_PORT=80
+CCU_DEV_HTTPS=false
+CCU_DEV_USER=Admin
+CCU_DEV_PASSWORD=""
+```
+
+Rerunning `init` on an existing file offers to replace those settings; adding a
+third target means walking the whole list again, so for a one-off addition edit
+the file (or use `setup_write_profile`, which upserts a single target) and then
+run `doctor`.
+
+**One password per target.** `ccu-mcp secret` writes exactly one key, so it
+takes the target name — `init` prompts for passwords inline, but the
+[LLM-guided flow](#llm-guided-setup-setup-mode) and every later rotation go
+through `secret`. Called without a name on a profile file it lists the runs you
+need:
+
+```console
+$ ccu-mcp secret --env ~/.config/ccu-mcp/.env
+This file configures named targets (prod, dev) — one password each:
+  node /home/you/.local/bin/ccu-mcp secret prod --env /home/you/.config/ccu-mcp/.env
+  node /home/you/.local/bin/ccu-mcp secret dev --env /home/you/.config/ccu-mcp/.env
+
+$ ccu-mcp secret prod --env ~/.config/ccu-mcp/.env
+CCU password for ai@ccu.example (input hidden):
+Wrote CCU_PROD_PASSWORD to /home/you/.config/ccu-mcp/.env (mode 0600).
+```
+
+Those hints come out as `node <path>` rather than `ccu-mcp` on purpose: the
+path is the build that printed them, so copying the line cannot land on some
+older copy that lacks the subcommand. `secret` refuses a name against a flat
+single-CCU file, and refuses an unknown one against a profile file, so it can
+never write the wrong key.
+
+**Verify everything at once.** `doctor` walks every target — configuration,
+reachability, pin, login and privilege level — and exits non-zero if any check
+fails:
+
+```console
+$ ccu-mcp doctor --env ~/.config/ccu-mcp/.env
+ccu-mcp doctor — checking /home/you/.config/ccu-mcp/.env
+  ✓ configuration loads: 2 target(s), default "prod"
+
+Target "prod" — ccu.example:443 (HTTPS)
+  ✓ CCU API reachable
+  ✓ pinned TLS fingerprint matches the presented certificate
+  ✓ login OK as "ai" (CCU 3.87.6.20260614) — privilege level ADMIN
+
+Target "dev" — 192.168.1.50:80 (HTTP)
+  ✓ CCU API reachable
+  ✓ login OK as "Admin" (CCU 3.87.6.20260614) — privilege level ADMIN
+
+All checks passed.
+```
+
+**In the client.** One MCP server entry serves all targets — the `--env` file
+carries the roster, so nothing about the client config changes when you add a
+CCU:
+
+```json
+{
+  "mcpServers": {
+    "ccu-mcp": {
+      "command": "npx",
+      "args": ["ccu-mcp", "--stdio", "--env", "/home/you/.config/ccu-mcp/.env"]
+    }
+  }
+}
+```
+
+Then, in chat: *"which CCUs are configured?"* (`list_ccu_targets`), *"read the
+living-room temperature on dev"* (a one-call `target: "dev"`), *"switch to
+dev"* (`use_ccu`). With `CCU_PROD_PROTECTED=true` as above, the first write
+against prod comes back asking for `confirm: true` and unlocks that target for
+the rest of the session — except `run_script` and `delete_system_variable`,
+which ask every time.
+
+### Configuration errors
+
+Some mistakes stop the server at startup instead of being ignored. Each of these
+would otherwise fail *silently* and much later, so the exit is deliberate.
+`ccu-mcp doctor` reports the same errors against an env file without starting
+the server, alongside its live checks (reachability, certificate pin, login).
+One exception: started with `--stdio --env <path>`, a failing configuration
+enters [setup mode](#llm-guided-setup-setup-mode) (with the error in the
+server's instructions) instead of exiting, so it can be fixed conversationally:
+
+| Message | Cause and why it's fatal |
+|---|---|
+| `CCU_HOST environment variable is required` | No CCU configured (and no `CCU_PROFILES`). |
+| `CCU_PASSWORD environment variable is required` | The variable is **absent**. An empty value is accepted — a fresh OpenCCU box has no Admin password — so this means "not set yet", which is what keeps a single-CCU setup-mode server in setup mode until `ccu-mcp secret` stores one. |
+| `no password stored yet for target <name>` | The profile-form equivalent, and setup-mode only: `CCU_<NAME>_PASSWORD` is absent. A *loaded* configuration still reads an absent key as empty (unchanged, so an OpenCCU dev target keeps working) — but for deciding whether setup is finished, absent means "not entered yet", so the server stays in setup mode and prints the `ccu-mcp secret <name>` run that completes it. Write `CCU_<NAME>_PASSWORD=` to declare an empty password deliberate. |
+| `CCU_DEFAULT_PROFILE is set but CCU_PROFILES is not` | A leftover from a profile setup. Ignoring it would point writes at the flat `CCU_HOST` box while the env file suggests a named target. |
+| `CCU_PROFILES is set but lists no profile names` | Empty or comma-only value. |
+| `CCU_PROFILES lists "<name>" more than once` | Duplicate profile name. |
+| `... both map to the same env prefix CCU_<P>_* — rename one` | Distinct names can collide once sanitised: `prod-a` and `prod.a` both read `CCU_PROD_A_*`, so they would silently be the *same* target. |
+| `CCU_DEFAULT_PROFILE="x" is not one of CCU_PROFILES (...)` | Typo in the startup profile. |
+| `profile "<name>" is missing CCU_<P>_HOST` | Every profile needs a host; the password may be empty. |
+| `TLS_FINGERPRINT/CA_CERT/TLS_VERIFY is set but HTTPS is disabled` | The verification code path only exists over HTTPS. Ignoring these would leave you believing the connection is verified while credentials travel in cleartext. Set `CCU_HTTPS=true` (or `CCU_<NAME>_HTTPS=true`) or remove them. |
+| `MCP_TLS_CERT and MCP_TLS_KEY must both be set (or both unset)` | Half a TLS config can't serve HTTPS. |
+| `MCP_TRANSPORT must be "http" or "stdio"` | Case matters. A typo like `STDIO` must not silently select HTTP and leave a stdio-spawning client waiting forever. |
+| `<VAR> must be a positive integer` | Ports, timeouts, `CACHE_TTL`, rate limits, `RESOURCE_POLL_INTERVAL`. The *whole* value has to be digits — `CCU_TIMEOUT=30s` is rejected rather than read as 30 ms, and `30.5` or `1e4` are rejected rather than truncated. |
+| `<VAR> must be a positive number` | The two duration settings, `MCP_AUTH_TOKEN_TTL_DAYS` and `MCP_AUTH_TOKEN_GRACE_HOURS`, where a fractional value is meaningful. |
+| `<VAR> must be "true" or "false"` | Any boolean setting (`CCU_HTTPS`, `CCU_TLS_VERIFY`, `CCU_<NAME>_PROTECTED`, `CCU_<NAME>_READONLY`, `MCP_ALLOW_PLAINTEXT`). Surrounding whitespace and capitalisation are fine; `yes`, `1` and `on` are not, because treating them as *false* would quietly switch a protection off. |
+| `CCU_CA_CERT could not be read` | Path is wrong or unreadable by the server user. |
+
+`ccu-mcp --version` and `--help` work without any configuration, so they stay
+usable while you sort one of these out.
+
+## Tools
+
+28 tools organized by what you'd actually want to do:
+
+**Find things** — `list_devices`, `list_rooms`, `list_functions`, `list_interfaces`, `list_programs`, `list_system_variables`, `list_links`, `describe_device_type`
+
+**Read state** — `get_value`, `get_values` (bulk), `get_paramset`
+
+**Change things** — `set_value`, `put_paramset`, `set_system_variable`, `create_system_variable`, `delete_system_variable`, `assign_channel`, `unassign_channel`, `execute_program`
+
+**Check health** — `get_service_messages`, `acknowledge_service_messages`, `get_rssi`, `get_system_info`
+
+**Switch targets** — `list_ccu_targets`, `get_connection_info`, `use_ccu` (multi-CCU profiles; see above)
+
+**Other** — `help` (context-aware), `run_script` (raw HomeMatic Script for bulk operations, renaming devices/channels, querying room membership, or anything not covered by the other tools)
+
+Most tools auto-resolve the interface and value types from the device address — you don't need to know whether a device is on BidCos-RF or HmIP-RF.
+
+## Resources and prompts
+
+Besides tools, the server exposes MCP **resources** — browsable JSON snapshots your client can attach as context:
+
+`homematic://devices`, `homematic://rooms`, `homematic://functions`, `homematic://programs`, `homematic://sysvars`, `homematic://interfaces`, `homematic://device-types`, `homematic://system`
+
+The server polls the CCU in the background (every `RESOURCE_POLL_INTERVAL` seconds) and sends `notifications/resources/updated` for resources whose content changed — to clients that subscribed to them via `resources/subscribe`.
+
+It also ships MCP **prompts** — ready-made workflows you can invoke from clients that support them (e.g. as slash commands in Claude Code):
+
+- `check-windows` — are any windows or doors open?
+- `room-status` — full status report for one room
+- `set-heating` — set a room's target temperature
+- `good-night` — prepare the house for night
+- `diagnostics` — check for device issues
+- `device-info` — detailed info about a device's capabilities and parameters
+
+The `room` and `device` arguments autocomplete: clients that support
+`completion/complete` offer the rooms and device names this CCU actually has,
+so there's no need to remember how a room was spelled in the WebUI.
+
+### MCP protocol revisions
+
+The server implements revision **`2025-11-25`** and negotiates down for older
+clients (`2025-06-18`, `2025-03-26`, `2024-11-05` are all accepted) — you do
+not need a particular client version. It advertises `tools`, `resources`
+(with `subscribe`), `prompts`, `completions` and `logging`.
+
+Revision `2026-07-28` — per-request protocol version, `server/discover` — is
+not implemented yet: the TypeScript SDK this server is built on does not
+support it at the time of writing, and this server follows the SDK.
+
+## How it works
+
+The server talks to the CCU's JSON-RPC API (the same one the WebUI uses). On startup it:
+
+1. Logs in and caches the session (reused across restarts)
+2. Loads the device type cache from disk (or warms it in the background)
+3. Starts the MCP server on stdio or HTTP
+
+Device type schemas are cached locally so the AI can look up valid parameters, types, and value ranges without hitting the CCU every time.
+
+Values come back as native types — `21.5` not `"21.500000"`, `true` not `"true"`.
+
+## Tested devices
+
+This has been tested against a production debmatic installation with:
+
+- HmIP-eTRV-2 / eTRV-2 I9F (radiator thermostats)
+- HmIP-STHD (wall thermostats with humidity)
+- HmIP-WTH-2 (wall thermostats)
+- HmIP-SWDO-I (door/window contacts)
+- HmIP-STHO (outdoor temperature/humidity)
+- HmIP-ESI (energy/gas meter)
+- HmIP-FALMOT-C12 (floor heating controller)
+- HmIP-HEATING (virtual heating groups)
+- HmIP-WRCC2 (wall remote)
+- HM-PB-6-WM55 (BidCos 6-button remote)
+- RPI-RF-MOD (radio module)
+
+Other device types should work too — the server queries the CCU for parameter descriptions rather than maintaining a static device database.
+
+## Changelog
+
+Release notes — including **behavior changes to check before upgrading**
+(stricter config validation, `/health` response shape, per-session write
+confirmation, retry semantics) — live in [CHANGELOG.md](CHANGELOG.md).
+
+## Getting help and contributing
+
+- **Something broken, or an idea for a feature?** Open an issue:
+  [github.com/claymore666/ccu-mcp/issues](https://github.com/claymore666/ccu-mcp/issues)
+- **Questions, setup help, general HomeMatic talk?** The
+  [HomeMatic forum](https://homematic-forum.de/) — the maintainer reads it as
+  `claymore666`.
+- **Found a security problem?** Please don't post it publicly. See
+  [SECURITY.md](SECURITY.md) for private reporting.
+- **Want to send a patch?** [CONTRIBUTING.md](CONTRIBUTING.md) covers the setup,
+  the branch to target, the coding standard, and the test policy.
+
+Everyone taking part is expected to follow the
+[Code of Conduct](CODE_OF_CONDUCT.md).
+
+### Project documentation
+
+| Document | What's in it |
+| --- | --- |
+| [ROADMAP.md](ROADMAP.md) | Where the project is going — and what it will deliberately never do |
+| [GOVERNANCE.md](GOVERNANCE.md) | Who decides what, and the known continuity gap |
+| [SECURITY.md](SECURITY.md) | Reporting, security requirements, threat model |
+| [docs/architecture.md](docs/architecture.md) | High-level design and request flow |
+| [docs/assurance-case.md](docs/assurance-case.md) | Why the security requirements hold, with evidence |
+| [CHANGELOG.md](CHANGELOG.md) | What changed in each release |
+
+## Related projects
+
+- [OpenCCU](https://github.com/OpenCCU/OpenCCU) — community-maintained, cloud-free CCU firmware for Raspberry Pi, x86/ARM, and CCU3/ELV-Charly hardware (formerly **RaspberryMatic**; built on the OCCU framework)
+- [debmatic](https://github.com/alexreinert/debmatic) — Run HomeMatic on Debian, Ubuntu, Raspberry Pi OS, Armbian
+- [OCCU](https://github.com/eq-3/occu) — eQ-3's original Open CCU SDK (the upstream HomeMatic software); now being superseded by the community-maintained [OpenCCU](https://github.com/OpenCCU/OpenCCU)
+- [MCP](https://modelcontextprotocol.io/) — Model Context Protocol specification
+- [ccu-ai-mcp](https://github.com/mdzio/ccu-ai-mcp) by **Mathias (mdzio)** — a
+  kindred MCP server for HomeMatic, taking a deliberately different, elegant
+  approach (a lean Go core with user-defined HM-Script tools). See his write-up
+  on the [HomeMatic forum](https://homematic-forum.de/forum/viewtopic.php?t=88226).
+
+## License
+
+MIT

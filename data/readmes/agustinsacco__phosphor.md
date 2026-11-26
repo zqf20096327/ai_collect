@@ -8,7 +8,7 @@
 
 **Your work. In context.** Phosphor is an open-source workspace for coding
 agents, built on the [pi coding agent](https://pi.dev). Run independent lanes,
-inspect changes and delegated work, keep reviewed knowledge with Brain, and
+inspect changes and delegated work, recall decisions from earlier lanes with Brain, and
 reach your own machines from Desktop or the Host-backed PWA. Desktop releases
 target macOS and Linux.
 
@@ -78,7 +78,7 @@ terminal and use `/login`, or put API keys / a local endpoint in
   ([optional gate](docs/extensions.md#optional-permission-gate-and-scratch-cleanup)).
 - **Routines on the execution machine.** Save instructions, a folder/model and a
   schedule for a fresh lane per run, with durable history, catch-up and cancellation.
-  Local runs need Desktop; Host schedules can run with clients closed. The execution
+  Local runs need Desktop's in-app runtime or This Mac's service running; Host schedules can run with clients closed. The execution
   machine must be awake and its runtime running. Enable unattended full tool access
   deliberately. [Routines](docs/routines.md).
 - **Rich responses are first-class.** GFM markdown, highlighted code, Mermaid,
@@ -132,28 +132,27 @@ Remote execution now runs on enrolled Hosts you own, separately from Swarm.
 
 Brain is **off by default, Desktop-only and machine-local**. Enable it in
 Settings → Brain, read the model terms and download the local embedding model.
-Queue lanes to read. With **Review before saving** on (the default), finished reads
-wait for **Defrag**, which runs only when you click it. Brain Agent is an ordinary
-lane in a Brain folder, marked 🧠 in the sidebar. Ask it to change its rules.
-During Defrag it approves or rejects waiting reads, settles people and things,
-folds repeats and answers flags, with a reason for each change. Recent changes
-shows who made them; undo one change or a whole run while later edits allow it.
-Erasing cannot be undone. Explore entities in 2D/3D, follow supported paths,
-inspect a read, Forget memories or merge duplicate entities.
+Queue a lane or choose Read again from its menu. A finished read saves at once.
+Personal claims never become memories. Temporary claims end on their stated date
+or after 14 days. Start on your card and walk a sentence to the other person.
+Ended relationships stay as history. Ask lights the answer’s trail; Tell Brain Agent
+sends an instruction.
 
-![Brain enabled with local search ready and review on, using fictional data](apps/site/src/assets/shots/brain-ready.webp)
+![Brain settings with local search ready, using fictional data](apps/site/src/assets/shots/brain-ready.webp)
 
 ![Brain’s local knowledge graph with fictional people and projects](apps/site/src/assets/shots/brain-graph.webp)
 
-New or restarted local lanes can use read-only `brain_search` to recall a bounded
-briefing with dates, disputes, sources and branch context, and `brain_flag` to
-file a suggestion about a wrong memory. **Local does not mean
-fully offline:** reading calls the reader model with scrubbed user and assistant
-text. Defrag sends what waits, including memories, names and scrubbed excerpts,
-to the Brain lane’s model. Brain Agent may use that lane’s connectors to check
-facts, read-only. Later recall can enter provider context. Brain does not sync to
-Hosts or run in the PWA. Turning it off retains knowledge; Reset clears it while
-keeping settings and the embedding model. Forget is permanent too.
+About a minute after reads settle, Brain Agent links people, checks groups and settles
+repeats. Automatic checks run at most six times a day. Turn them off in Settings or
+click **Defrag** to run a check yourself. **What changed** shows each saved read with
+Undo and “How it was read”. See why Brain Agent made a change and undo an eligible run. Forget and erasure are permanent.
+
+New or restarted local lanes can use `brain_search` to find a memory, expand a name or
+trace a route with sources. `brain_flag` asks Brain Agent to check a memory. **Local
+does not mean fully offline:** reading sends scrubbed lane text to the reader's provider.
+Brain Agent can receive memories and excerpts and check facts with read-only connectors.
+Later recall can enter provider context. Brain does not sync to Hosts or run in the PWA.
+Turning it off retains knowledge; Reset clears it while keeping settings and the embedding model.
 [Brain guide](https://phosphor.saccolabs.com/guides/brain/) · [Contract](docs/brain.md).
 
 ## Machines, browser and deliberate lane moves
@@ -380,6 +379,14 @@ Phosphor never imports pi's code. The protocol is hand-mirrored in
 [`libs/shared/src/rpc.ts`](libs/shared/src/rpc.ts) with compile-time drift guards, so a protocol
 change this file has not caught will not compile.
 
+On packaged macOS and Linux builds, This Mac's lanes run in the Phosphor
+service, the Host as a per-user launchd agent or systemd user unit, so they
+keep running after you quit Desktop. A new install's first launch runs in-app
+and installs the service; a later launch moves This Mac to it once, the same
+migration that moves an older in-app install's lanes. Windows and development
+builds stay in-app. [This Mac's service](docs/local-service.md) covers the
+move, recovery and the one-time reinstall for the Standard CPU priority.
+
 ```mermaid
 flowchart LR
   R["Renderer · libs/client-ui/src/<br/>React, sandboxed, no Node"]
@@ -556,7 +563,8 @@ copies.
 
 ```
 apps/desktop/electron/            main process — owns every side effect
-  main.ts            app lifecycle, window creation, quit teardown
+  main.ts            app lifecycle, window creation, quit approval
+  startup.ts         services started after ready and stopped on quit, in order
   preload.ts         the contextBridge surface (one typed `subscribe` helper)
   ipc.ts             composition root: calls the per-domain handler registrars
   ipc/               handlers by channel-prefix family
@@ -614,7 +622,7 @@ libs/brain-runtime/src/  Node-only Brain service: queue, private lane forks,
                      extraction, quote checks and recall over injected ports
   embedding/         portable model setup, validation and worker protocol;
                      native loading stays in the platform worker
-libs/memory-engine/src/  Node-only SQLite store: queue, proposals, graph, search
+libs/memory-engine/src/  Node-only SQLite store: saved reads, journal, graph, search
 libs/brain-client/src/  bounded private protocol, formatting and local transport
 libs/host-client/src/  browser-safe Host transport, asynchronous identity-proof gate,
                      lane projection and remote-lane delivery; Desktop supplies

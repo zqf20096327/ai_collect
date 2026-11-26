@@ -17,7 +17,7 @@
 <p align="center"><sub>A real Claude Code session on <a href="https://github.com/miniflux/v2">Miniflux</a>, replayed: one map call finds every endpoint, then the agent confirms them in source.</sub></p>
 
 A layered map of your codebase for coding agents. LayerMap gives Claude Code, Codex, CodeBuddy
-Code, Pi, DeepSeek Harness and other MCP clients read-only tools that answer, in one call, what an agent otherwise works out
+Code, Pi, DeepSeek Harness, Antigravity and other MCP clients read-only tools that answer, in one call, what an agent otherwise works out
 with dozens of searches:
 
 - **What calls this, and what does changing it affect?** Callers traced up to 8 levels, to the
@@ -150,6 +150,18 @@ npx layermap setup dsh
 This adds LayerMap to every dsh profile. Each session maps the project dsh was started in, and
 `npx layermap remove dsh` undoes it.
 
+**Antigravity**
+
+```
+npx layermap setup antigravity
+```
+
+Antigravity's app installs plugins only from its marketplace, so this writes LayerMap's plugin into
+`~/.gemini/config/plugins/layermap`, which Antigravity loads by itself; `npx layermap remove
+antigravity` deletes it. Antigravity asks before each map tool's first use; choose to always allow
+it. It starts the server outside the project, so the plugin's rule tells the agent to give absolute
+paths.
+
 In every agent, start a new session in a Git repository and ask as usual. LayerMap tells the agent
 when the map helps. A session started in a folder holding several repositories, or one that moves
 to another repository, works too: each map tool call maps the repository its path names. The first
@@ -180,7 +192,7 @@ CodeBuddy Code the plugin asks the agent once, before it finishes, to run this c
 and has not checked since, whether through its edit tools or shell commands, which count for the code files they name
 (changes another session makes in the same work tree do not count); the Pi extension does the same after the agent's own
 edits. Set `LAYERMAP_STOP_CHECK=0` to turn that
-off. Codex and DeepSeek Harness are told to run it.
+off. Codex, DeepSeek Harness and Antigravity are told to run it.
 
 **Without plugins:** run `npx layermap setup claude` or `npx layermap setup codex`. Setup does three
 things:
@@ -210,6 +222,11 @@ Maps stay in your user cache (`~/Library/Caches/layermap`, `~/.cache/layermap` o
 nothing anywhere ([privacy](https://github.com/coffeecoproject/layermap/blob/main/PRIVACY.md),
 [security](https://github.com/coffeecoproject/layermap/blob/main/SECURITY.md)).
 
+The versions of LayerMap your agents start are installed in the same user cache directory.
+`LAYERMAP_CACHE` moves the maps and nothing else: a program that keeps the maps of its own tests in
+a directory apart still runs the versions already installed. `LAYERMAP_HOME` names another
+directory for the versions.
+
 The MCP server tells a client that asks for progress which step a long check is on, and keeps a
 line for each tool call in `logs/calls.jsonl` in the cache: the tool, its arguments, the
 repository, how long each step took and the first line of the answer, to review how the tools are
@@ -233,6 +250,15 @@ npx layermap check test/billing.test.ts   # also: what of the change this test d
 npx layermap check --json                 # as JSON: related tests by rank, what the map cannot follow, the imports and calls it changes between files
 npx layermap imports --json               # every import of the project as it is now, test files apart: file and line, the file imported, and why the rest reach no file
 ```
+
+**A `layermap` command.** The Claude Code plugin puts one on the PATH of Claude's shell commands.
+Codex's commands, a terminal and Git hooks have none, so a program run there that calls `layermap`,
+such as one choosing tests from `layermap check --json`, does not find it. Run `npx layermap setup
+command` once: it writes a `layermap` command into `~/.local/bin`, which runs the newest version
+installed on your machine, where each agent's plugin installs the version it starts. It follows
+the plugins as they update and uses no network; where `~/.local/bin` comes before the plugin's
+directory on PATH, Claude's shell commands run it too. A file of that name that is not LayerMap's
+is left as it is. `npx layermap remove command` deletes it. macOS and Linux only.
 
 ## FAQ
 
@@ -268,6 +294,7 @@ claude -p "..." --mcp-config '{"mcpServers":{"layermap":{"command":"npx","args":
 - Codex: `codex plugin remove layermap@layermap`.
 - CodeBuddy Code: `codebuddy plugin uninstall layermap@layermap`.
 - Pi: `pi remove npm:layermap`.
+- The `layermap` command, if you set it up: `npx layermap remove command`.
 - Then delete the cache directory.
 
 ## Development

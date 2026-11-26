@@ -126,7 +126,7 @@ TeDDy is built on the belief that you should own your software delivery lifecycl
 - **High-Level Governance Rules (`PROJECT.md` & `ARCHITECTURE.md`):** The simplest way to guide agents. Define product roadmaps, engineering principles, system laws, and component boundaries in living Markdown documents that agents read on every turn.
 - **Artifact Templates (`docs/templates/`):** Standardize the artifacts produced during development. Customize the Markdown templates for vertical slices, specifications, case files, and milestones to match your documentation standards.
 - **Agent Prompts (`.teddy/prompts/`):** To change the process itself, customize the agent prompts. Each agent's workflow is broken down into structured phases and individual steps, defined entirely in Markdown. You can tweak instructions, add domain-specific quality gates, or introduce brand-new agent personas to match how your team builds software. TeDDy composes each system prompt from the agent's instructions plus a shared response protocol it appends automatically. The composed prompt is saved in the session folder. You can also run `teddy get-prompt <agent>` to retrieve it without starting a session. A customized prompt that already includes `<response_format>` opts out of the shared protocol.
-- **Command Automation (`Makefile`):** Instead of hardcoding shell commands inside agent prompts, common development and verification operations are routed through the Makefile. When you need to change a flag, runner, or environment setup, you change it once in the Makefile instead of updating instructions across multiple agent prompts.
+- **Command Automation (`justfile`):** Common development and verification operations are routed through a `justfile` (or your preferred runner documented in `PROJECT.md`) instead of hardcoded in agent prompts. Change a flag or workflow once without updating prompts.
 - **Context Filtering (`.teddyignore`):** Control which files TeDDy scans during context generation and tree traversal. A `.teddyignore` file in the project root follows standard ignore syntax and takes precedence over `.gitignore`, allowing you to ignore extra paths or re-include git-ignored files using negation patterns.
 
 > [!TIP]
@@ -150,14 +150,22 @@ uv tool install teddy-cli
 
 ### Installing Experimental Versions
 
-To install or upgrade to the latest development pre-release directly from PyPI:
+To install the latest development pre-release directly from PyPI:
 
 ```bash
-uv tool install teddy-cli --pre --force
+uv tool install teddy-cli --prerelease allow
 ```
 
+To move an existing install onto the latest pre-release:
+
+```bash
+uv tool upgrade teddy-cli --prerelease allow
+```
+
+`uv tool upgrade` re-resolves the requirement recorded in the tool receipt, so an install from a fork or a private index keeps its source, whereas a forced reinstall resets it to the default index. When the upgrade applies a new version, uv records `prerelease = "allow"` in the receipt, so later bare `uv tool upgrade teddy-cli` runs keep following pre-releases.
+
 > [!WARNING]
-> Experimental versions are published as PEP 440 dev pre-releases on PyPI and may include breaking changes or unstable features.
+> Experimental versions are published as PEP 440 dev pre-releases on PyPI and may include breaking changes or unstable features. To move back to the stable channel, run `uv tool upgrade teddy-cli --prerelease disallow`.
 
 ### Installing From a Fork or Private Index
 
@@ -295,7 +303,7 @@ TeDDy's engineering philosophy is harness-agnostic. If your team uses Claude Cod
 
 1. **System Instructions:** Copy your desired agent workflow prompt from `.teddy/prompts/` (e.g. `developer.md` or `architect.md`) into your tool's custom instruction file (such as `CLAUDE.md` for Claude Code or `.cursorrules` for Cursor).
 2. **Artifact Standards:** Keep `docs/templates/` and `docs/project/` in your repository. The agent will read these templates to create vertical slices, milestone roadmaps, and architecture documents.
-3. **Execution Tooling:** Standardize commands through the project `Makefile`. When the agent runs `make test` or `make commit`, the host harness executes the command through its native terminal runner.
+3. **Execution Tooling:** Standardize commands through a `justfile` (or your preferred runner) documented in `docs/project/PROJECT.md`. The host harness executes those commands through its native terminal runner.
 
 ### Chat-Oriented Workflow (CHOP)
 
@@ -304,14 +312,14 @@ You do not need API keys or per-token billing to use TeDDy. If you already have 
 TeDDy packages your workspace context into a single clipboard payload, and the agent prompts instruct the model to automatically format its response as an executable, self-contained Markdown plan.
 
 1. **Set the system instructions:** Copy your chosen agent persona's prompt with `teddy get-prompt <agent_name>` and paste it into your web interface's system prompt or custom instructions field.
-2. **Bundle project context:** Export your workspace context to the clipboard with `teddy context` (see [Exporting Context](#exporting-context)). This bundles system information, current git status, project structure, and the full verbatim contents of all files listed in `.teddy/init.context` into a single Markdown payload.
+2. **Bundle project context:** Export your workspace context to the clipboard with `teddy context` (see [Exporting Context](#exporting-context)). This bundles system information, current git status, project structure, the full verbatim contents of all files listed in `.teddy/init.context`, and the runtime section into a single Markdown payload.
 3. **Prompt the AI:** Paste the context payload into the chat alongside your task request. Guided by the system instructions, the model will automatically structure its response as an executable Markdown plan.
 4. **Apply changes:** Copy the full Markdown plan to your clipboard and run `teddy execute` to validate, review diffs, and apply approved changes automatically, or copy and run individual snippets manually as you would in standard CHOP.
 5. **Report back:** When `teddy execute` finishes, it automatically copies a concise execution report back to your clipboard to paste into the chat.
 
 ### Exporting Context
 
-`teddy context` bundles system information, git status, project structure, and file contents into a single Markdown payload. It copies the payload to the clipboard unless you pass `--no-copy`.
+`teddy context` bundles system information, git status, project structure, file contents, and the runtime section into a single Markdown payload. It copies the payload to the clipboard unless you pass `--no-copy`.
 
 Pass `-c/--context` to add ad-hoc values for a single run. The flag is repeatable and accepts comma-separated values. Explicit values extend the default set from `.teddy/init.context`. They do not replace it.
 
@@ -335,7 +343,7 @@ A `-c` value resolves by kind. A directory expands recursively. A URL is fetched
 teddy context -c review.context
 ```
 
-`--only` skips the default set and the session scopes. With no `-c` value the explicit set is empty, so the payload carries system information, git status, and project structure but no `Resource Contents` section.
+`--only` skips the default set and the session scopes. With no `-c` value the explicit set is empty, so the payload carries system information, git status, project structure, and the runtime section but no `Resource Contents` section.
 
 ---
 
@@ -393,6 +401,8 @@ No. TeDDy is designed to run inside existing repositories. It only creates a `.t
 <br />
 
 All strategic artifacts created by agents (roadmaps in `docs/project/`, component designs, and vertical slices) are saved directly in your repository's `docs/` directory and committed to Git like regular code. The internal `.teddy/` directory is ignored by default, keeping private session logs and environment credentials local to each developer.
+
+In a team, assign one independent **Milestone** per developer (with no unmet dependencies or overlapping boundaries) and merge completed **Slices** back to `main` continuously so branches stay short-lived. Within a milestone, a developer can run multiple agents in parallel worktrees on independent slices whose prerequisites are done. Because planning is iterative, newly discovered requirements or details can be added to an active milestone as slices are verified.
 
 </details>
 

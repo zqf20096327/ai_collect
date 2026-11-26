@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.41-green.svg" alt="Version 1.4.41" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.43-green.svg" alt="Version 1.4.43" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -254,7 +254,7 @@ Reflection runs daily when something is due, after routines configured to reflec
 | “remind me Monday at 14:00 to pay the invoice” | Delivers a durable reminder at the due minute in monitor mode, even after a restart. |
 | “Download last month's invoices from the supplier portal.” | Uses its [own managed browser](plugins/hermitd/docs/how-to-use.md#browser-tasks) by default and offers phone Take over and Hand back on Docker and Linux/WSL2 tmux. The operator's Chrome is opt-in for their account. |
 | “When I ask for a status update, include blockers.” | Remembers instructions for that channel. |
-| “What else could you be doing for me?” | Proposes new capabilities from your work and its tools. |
+| “What else could you be doing for me?” | [Make me proactive](plugins/hermitd/skills/make-me-proactive/SKILL.md) offers standing jobs such as reminders and watches. Say yes to set one up, or ask to “brainstorm capabilities” for new capability ideas. |
 
 ## Cost
 

@@ -279,7 +279,7 @@ Design ideas studied from open-source clippers: [PeakCut](https://github.com/haz
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+**AGPL-3.0** (from 24 November 2026). See [LICENSE](LICENSE) and [NOTICE](NOTICE). You may use, study, change and share NeonClipping; if you share a changed version or run it for others as a website or service, you must publish your full source code under the AGPL-3.0 too. Versions released before 24 November 2026 stay under MIT. Contributions need the [CLA](CLA.md) (see [CONTRIBUTING](CONTRIBUTING.md)). For a commercial licence, contact the author. The NeonClipping name and logo are the project's brand.
 
 ## What changed on 2026-11-21
 

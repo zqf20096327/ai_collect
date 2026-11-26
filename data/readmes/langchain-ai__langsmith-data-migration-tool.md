@@ -6,7 +6,7 @@ A Python CLI for migrating users and roles, datasets, experiments, annotation qu
 
 ```bash
 # Install (requires uv: https://docs.astral.sh/uv/)
-uv tool install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.100-py3-none-any.whl"
+uv tool install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.101-py3-none-any.whl"
 
 # Set up environment variables
 export LANGSMITH_OLD_API_KEY="your_source_api_key"
@@ -30,7 +30,7 @@ langsmith-migrator datasets
 - **Annotation Queues**: Transfer queue configurations
 - **Project Rules**: Copy automation rules with project mapping and optional project creation in interactive flows
 - **Prompts**: Migrate prompts (latest by default, full history with `--include-all-commits`)
-- **Charts**: Migrate monitoring charts with filter preservation. When the destination rejects legacy V1 chart series (LangSmith SaaS with dashboard V2), each chart is converted to V2 definitions with the destination's `/v1/platform/charts/convert-v2` endpoint and written again; series the converter skips are exported for manual apply
+- **Charts**: Migrate monitoring charts with filter preservation. When the destination rejects legacy V1 chart series (LangSmith SaaS with dashboard V2), each chart is converted to V2 definitions with the destination's `/v1/platform/charts/convert-v2` endpoint and written again; series the converter skips are exported for manual apply. Dashboards keep their Agent tag, and agent environments their default dashboard, when the destination has an agent with the same ID; dashboards are matched by title, and a default is only set when the project mapping points at that agent environment's project
 - **Custom Model Pricing**: Migrate workspace-custom model price entries (`model-pricing`). Global built-in prices are skipped since they already exist in every workspace. Idempotent: an equivalent entry on the destination is updated in place, or skipped with `--skip-existing`
 - **Engine Issues**: Migrate per-project LangSmith Engine issues-agent configs and detected issues as metadata (`issues`). Run links and trace deep-links are not migrated (see Limitations)
 - **Fleet**: Migrate agents, shared skills, MCP servers, integrations, auth providers, schedules, triggers, webhooks, usage limits, sandbox policies, and workspace secrets (`fleet`)
@@ -156,10 +156,12 @@ The tool reports rather than requires: the pre-flight prints the destination's a
 limits, runs a historical-ingest canary, and names the setting behind any value that will
 hurt. Fixing the destination and re-running costs nothing.
 
-The canary writes to the destination before your traces are migrated. It creates
-or reuses a project called `langsmith-migrator-canary` and leaves one run in it,
-stamped at the far end of your range. Nothing deletes it, so it stays until the
-destination's retention removes it. `--dry-run` skips the canary.
+The canary writes to the destination before your traces are migrated. Each run
+creates a project called `langsmith-migrator-canary-<id>`, writes one run to it,
+stamped at the far end of your range, and deletes the project when the check is
+done. If the project can't be deleted (for example, the key may not delete
+projects), the run prints its name so you can remove it by hand. `--dry-run`
+skips the canary.
 
 | Setting | Default | Why it matters |
 | --- | --- | --- |
@@ -243,20 +245,20 @@ The destination's `POST /runs/batch` endpoint rejects runs with timestamps outsi
 
 ### Option 1: uv tool install (Recommended)
 ```bash
-uv tool install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.100-py3-none-any.whl"
+uv tool install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.101-py3-none-any.whl"
 
 # To update an existing installation, use --force:
-uv tool install --force "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.100-py3-none-any.whl"
+uv tool install --force "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.101-py3-none-any.whl"
 ```
 
 ### Option 2: uvx (One-off execution, no install)
 ```bash
-uvx --from "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.100-py3-none-any.whl" langsmith-migrator test
+uvx --from "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.101-py3-none-any.whl" langsmith-migrator test
 ```
 
 ### Option 3: pip
 ```bash
-pip install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.100-py3-none-any.whl"
+pip install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.101-py3-none-any.whl"
 ```
 
 ### Option 4: From source (Development/Contributing)
@@ -691,6 +693,9 @@ The prompt default is `No` (rules are created disabled).
 --project-mapping TEXT  JSON string or file path with project ID mapping (headless, no TUI; mutually exclusive with --map-projects)
 --same-instance         Reuse source project/session IDs on destination only when both sides truly share IDs
 ```
+
+Charts that sit in a dashboard section are matched against that section on the
+destination, so re-running `charts` finds them instead of creating duplicates.
 
 ### Trace Options
 

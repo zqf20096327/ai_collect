@@ -51,7 +51,7 @@ credited in [NOTICE](docs/NOTICE.md) and in Settings > About.
   it even over text). It opens on the screen your mouse is on, and all screens
   stay selectable.
 - **Select text like on a desktop.** Drag over words to copy, translate or
-  search them. On Windows the text is readable at once with Windows' own text
+  search them, or right-click the selection for those actions. On Windows the text is readable at once with Windows' own text
   recognition; otherwise (and for Arabic or games) OpenCircle offers a one-time
   download of about 30 MB. On Windows and Linux, Arabic and pages that mix two
   languages are read part by part, each line by the reader that suits it; the
@@ -79,8 +79,11 @@ credited in [NOTICE](docs/NOTICE.md) and in Settings > About.
 - **Snip and annotate.** Press `Alt+A`: the screen freezes, hover a window and
   click it (OpenCircle's own widgets too), or drag an area (`Enter` takes the
   full screen); `Ctrl+C` copies it at its original size. One grouped toolbar
-  sits beside it: shapes, arrows, text, callouts, numbered steps, spotlight, magnifier, Blur (a
-  fine pixel mosaic that hides text for good) and a solid Redact. **Long
+  sits beside it: shapes, arrows, text, callouts, numbered steps, spotlight, magnifier, Hide (a smooth
+  frost made from the area's background that hides text for good, with a
+  Pixelate style, brush / rectangle / ellipse shapes and three strengths) and a
+  solid Redact. The active tool's options show at once in a slim row under the
+  toolbar. **Long
   capture**: scroll the page yourself and OpenCircle stitches it. **Steps** keeps
   several snips on a slim strip and copies them as one numbered image. Also a
   colour picker, a screen ruler, Pin and Share. **More** also has Copy text, Ask
@@ -133,7 +136,7 @@ enabled in **Settings > Labs**.
 - Nothing leaves your computer unless you choose an action.
 - No account, no telemetry, no image-hosting service.
 - Snips stay in memory until you save them; only what you copy or save leaves the app.
-- A small log stays on your PC (`logs/` in your local data folder) to help fix problems; nothing is sent. Settings > About has *Copy diagnostics* and *Report a problem*.
+- A small log stays on your PC (`logs/` in your local data folder) to help fix problems; nothing is sent. The Settings sidebar's *Report a problem* window has *Copy diagnostics* and *Report a problem*.
 - AI and song-search keys live in your system's keyring, never in a file.
 - Search and AI Mode open in your own browser, only when you press them. The
   picture goes from your browser to Lens; OpenCircle uploads it nowhere else.
@@ -238,9 +241,9 @@ operating it. See the [Privacy](docs/privacy.md) page.
 
 | Action | Shortcut |
 |---|---|
-| Circle to search | `Ctrl+Shift+Space` |
+| Circle to Search | `Ctrl+Shift+Space` |
 | Translate the whole screen | `Alt+Shift+T` |
-| Circle, then explain with AI | `Ctrl+Shift+E` |
+| Circle, then Ask AI | `Ctrl+Shift+E` |
 | Circle, then copy its text | `Ctrl+Shift+X` |
 | Snip | `Alt+A` |
 
@@ -260,7 +263,7 @@ Games must run in borderless or windowed mode for the translation to appear
 over them. Linux reads text with
 OpenCircle's own reader, a little slower than Windows OCR; on Wayland the
 overlay can take about half a second to appear and popups are square.
-AI-provider translation can be slower than the offline engine and may show the
+AI-provider translation can be slower than the Local engine and may show the
 whole result at once.
 
 ## Lightweight

@@ -11,7 +11,7 @@ Built by [OnlyFlows](https://onlyflows.tech) · Published by [@onlyflowstech](ht
 
 ## Governed and safe for production
 
-The server exposes 24 tools over stdio. Every call runs inside controls that
+The server exposes 26 tools over stdio. Every call runs inside controls that
 you configure and that no tool of this server can change:
 
 - **Per-profile table and field policy.** Each profile (a named ServiceNow
@@ -617,7 +617,7 @@ ServiceNow upstream can return HTTP 429 with an empty body, while this server's 
 
 ## What the tools cover
 
-The registered catalog has 24 tools (see [Tools Reference](#tools-reference)):
+The registered catalog has 26 tools (see [Tools Reference](#tools-reference)):
 
 | Area | Tools |
 |------|-------|
@@ -627,6 +627,7 @@ The registered catalog has 24 tools (see [Tools Reference](#tools-reference)):
 | CMDB and operations | `sn_relationships`, `sn_attach`, `sn_syslog`, `sn_codesearch`, `sn_discover` |
 | ATF | `sn_atf_author`, `sn_atf_run`, `sn_atf_results`, `sn_atf_readiness`, `sn_atf` |
 | Flow Designer (read-only) | `sn_flow_view` |
+| Record history and platform views (read-only) | `sn_history`, `sn_platform_view` |
 | Profiles | `sn_profile` |
 | Natural language | `sn_nl` (currently policy-denied pending a typed access plan) |
 
@@ -748,19 +749,127 @@ in this section is needed to use this server.
 
 | Tool | Description |
 |------|-------------|
-| `sn_aggregate` | COUNT, AVG, MIN, MAX, SUM with grouping |
+| `sn_aggregate` | COUNT, AVG, MIN, MAX, SUM with grouping; see [Grouped results](#sn_aggregate-grouped-results) |
 | `sn_schema` | Table field definitions, types, references |
 | `sn_health` | Instance version, cluster nodes, stuck jobs, key stats |
+
+#### sn_aggregate grouped results
+
+ServiceNow's Stats API does not page grouped results: it ignores
+`sysparm_limit` and `sysparm_offset` and returns every group. With
+`group_by`, `sn_aggregate` therefore makes one request, orders the groups
+itself and pages them with `offset` and `limit`, so `offset` is a true group
+offset and every page differs. The order is the tool's own: the groups'
+values in code-unit order (the display value first with `display_value: "all"`),
+the same on every call.
+
+- **Paging.** `metadata.pagination` (and `has_more` and `next_offset` in the
+  data) say whether another page exists and where it starts; a page cut to fit
+  the response size continues at the first group not returned. Without
+  `group_by` the result is one row and is not paged.
+- **Total.** `total_groups` is the number of groups when every group was read
+  and kept. A list with groups missing (cut at the cap, or left out by response
+  limits or field policy) has no total.
+- **Cap.** One call reads at most 5,000 groups (a group is about 100 to 150
+  bytes, so that fits the 1 MiB upstream response limit). When more exist,
+  only the first 5,000 in the instance's order by the group field can be paged
+  (the same 5,000 whether or not the instance honours `sysparm_limit`):
+  `total_groups` is left out, `truncated` is true, `metadata.truncation` says
+  `record_limit`, and `warnings` says to group by a field with fewer distinct
+  values. If the
+  group list is too large to read in one response at all, the call fails with
+  the usual too-large error (lowering `limit` does not help, since the whole
+  list is read): group by a field with fewer distinct values, or use
+  `display_value: "false"`, which makes each group smaller. The
+  request always asks for up to 5,001 groups, even for a small `limit`: an
+  instance that does honour `sysparm_limit` then sends more groups than a small
+  page needs, a deliberate trade for one request and a stable order. The text
+  of a result gives the group total, or the cap warning, after the paging line.
 
 ### CMDB & Operations
 
 | Tool | Description |
 |------|-------------|
-| `sn_relationships` | CMDB CI graph traversal — upstream/downstream/both, configurable depth |
+| `sn_relationships` | CMDB CI graph traversal, breadth first — upstream/downstream/both, configurable depth, optional map with a Mermaid diagram ([CMDB relationship traversal](#cmdb-relationship-traversal)) |
 | `sn_attach` | List attachments, return downloads as inline base64, and upload inline base64 content; never touches a host filesystem path |
 | `sn_syslog` | Query system logs with severity/source/time filters, newest first. `tail: true` starts a tail (the newest entries, oldest first, plus a `cursor`); each later call with `after_cursor` returns only the entries after it, oldest first, plus a new `cursor` ([Tailing the system log](#tailing-the-system-log)) |
 | `sn_codesearch` | Search business rules, script includes, client scripts, etc., with a snippet around each match ([Code search](#code-search)). Part of the default read grant, so a plain read grant on a code table allows it |
 | `sn_discover` | Discover tables, scoped apps, store apps, plugins |
+
+#### CMDB relationship traversal
+
+`sn_relationships` walks `cmdb_rel_ci` outward from one CI, level by level,
+to `depth` (1 to 5, default `SN_REL_DEPTH` or 3).
+
+- **Start.** Pass `sys_id`, or `ci_name`. A name that matches more than one CI
+  is refused with the matches (name, class, `sys_id`; up to 5, and a note when
+  there are more), so the retry names the one you mean. A unique name works.
+- **Shortest depth, each CI once.** Every CI appears once, at its shortest
+  distance from the start, with the `type` and `direction` of the relationship
+  that first reached it and `via`, the sys_id of the CI it was reached from.
+  The start CI is never listed. Rows come nearest first; within a depth, in
+  the order of the frontier's chunks of 50 CIs, then of the relationship rows
+  (by `sys_id`), so a longer call lists the same CIs first.
+- **Direction is in the query.** `downstream` reads relationships where the CI
+  is the parent, `upstream` where it is the child, `both` either. `impact: true`
+  is `upstream` only.
+- **Filters.** `type` is a substring of the relationship type; relationships of
+  other types are skipped, so nothing is walked through them; the filter is
+  also sent in the query (`type.nameLIKE`) and checked on the rows. `class`
+  limits which CIs are listed, not which are walked through.
+- **Paging.** `limit` and `offset` page the list. The walk reads only as much as
+  the page needs: it stops once the page and one more CI are known, which is
+  what makes `has_more` true, and it asks for no more relationship rows and
+  CIs than that takes. `meta.total` is the number of CIs found, so a lower
+  bound while `has_more` is true. `traversal_truncated` is set only when a limit
+  stopped the walk before the page was full or the depth was reached.
+- **Relationship types.** Each relationship row is read with its ends as bare
+  sys_ids and its type's name (a dot-walk of `type`); no display value of a CI
+  is requested from `cmdb_rel_ci`.
+- **Requests.** Each level reads its CIs in batches (50 CIs per `cmdb_rel_ci`
+  query, 100 per `cmdb_ci` read), paging through a CI with more relationships
+  than a page holds. `meta.traversal_requests` counts every upstream request
+  the call made: the start lookup, relationship pages and CI reads.
+
+Limits on one call. A limit that stops a walk sets `meta.traversal_truncated`,
+names the limit in `meta.truncated_by` (`cap`, its `max`, the `depth`, and
+`unread_cis`), and adds a warning that names the CIs whose relationships were
+not fully read.
+
+| Limit | Value |
+|-------|-------|
+| Upstream requests (start lookup, relationship pages and CI reads together) | 50, of which 15 are kept for reading CIs |
+| CIs read (the start CI aside) | 1,000 |
+| Relationship rows read (a row read from each end counts twice) | 2,000, in pages of 500 |
+| Upstream response bytes | The client allows 1 MiB of JSON per call. The walk keeps its own estimate and stops short of it (640 KiB for relationship rows, 180 KiB for CI reads). |
+| Output | `limit` up to 1,000 CIs; `max_response_bytes` (default 100,000, 1,000 to 1,000,000, as for `sn_query`) bounds the whole response. Rows that do not fit are dropped from the end, with `next_offset` to continue; a budget too small for any result is refused, saying to raise it |
+
+Relationships between two CIs that are both at the depth limit are not read.
+
+**CIs the profile cannot read.** Relationship rows are not domain separated,
+and the display values of their `parent` and `child` are not filtered by the
+CI's own access rules, so nothing shown about a CI comes from them. The tool
+reads each level's new CIs from `cmdb_ci`, where the instance applies the
+profile user's ACLs and domain visibility, and the profile's field policy for
+`cmdb_ci` decides which fields are shown: a `name` or `sys_class_name` the
+profile cannot read is left out. A CI that read does not return is not shown
+and is not walked through; `meta.unreadable_relationships` and a warning give
+only a count. If `parent`, `child` or `type` of `cmdb_rel_ci`, or `sys_id` of
+`cmdb_ci`, is not readable under field policy, the call is refused. `ci_name`
+and `type` may be up to 255 characters and `class` up to 80. See
+[Production security](docs/PRODUCTION-SECURITY.md#cmdb-relationships).
+
+**Map.** `map: true` adds `nodes` (the start CI and the CIs listed), `edges`
+(each relationship once, by its row's `sys_id`, with `parent`, `child` and
+`type`) and `diagram`, a Mermaid `flowchart TD` with arrows from parent to
+child. The map covers the page of CIs the call lists (nothing more is read for it), so `limit` and `offset`
+page it, and the same field policy applies to every CI attribute in it. The
+diagram draws the nearest 149 CIs at most (150 nodes, 300 edges, 20,000
+characters) and collapses the rest into one node, saying how many in
+`diagram.omitted_nodes`; the map takes at most 48% of `max_response_bytes` (about 48,000 bytes by
+default), and `meta.map_omitted_cis` says how many listed CIs it had to leave
+out. The shared `sn_flow_view` diagram grammar has no edge labels, so diagram
+edges carry no relationship types; they are in `edges`.
 
 #### Tailing the system log
 
@@ -814,6 +923,13 @@ stub and is **not published in 2.0** — it does not appear in `tools/list`. Use
 | Tool | Description |
 |------|-------------|
 | `sn_flow_view` | Show a flow or subflow as a Mermaid diagram, an outline and a structured graph: trigger, steps, branches, loops, error handling, input values under field policy, and called subflows to depth 3. Read-only through the Table API; never calls Flow Designer's internal API. See [docs/FLOW-VIEW.md](docs/FLOW-VIEW.md) |
+
+### Record history and platform views
+
+| Tool | Description |
+|------|-------------|
+| `sn_history` | One record's history, newest first: audited field changes with old and new values, comments and work notes, and the flows that ran on it. Pages by a cursor per source. Values follow field policy and the field's dictionary type. `sys_audit` and `sys_journal_field` must be granted by name; see [docs/HISTORY.md](docs/HISTORY.md) |
+| `sn_platform_view` | Read-only platform views chosen by `view`: `update_sets`, `update_set`, `changes` (with one change's XML, masked, when the profile names `payload`), `batch`, `remote_update_sets` (with preview problems), `upgrade_skipped`, `scan_findings` and `evaluate` (heuristic rules over an update set's changes). See [docs/PLATFORM-VIEW.md](docs/PLATFORM-VIEW.md) |
 
 ### Profile Management
 
@@ -1057,10 +1173,13 @@ cached just then, or the response is small and not kept), `bypass` (a `force_rec
 call made several cacheable reads with different outcomes, such as an
 `sn_codesearch` with no `table` over the code tables). It is absent when
 the call read no cache-eligible table. `timing` is `{ total_ms, upstream_ms,
-watermark_ms }` in whole milliseconds, measured wall-clock: `total_ms` is the
-whole tool call; `upstream_ms` is the time during which at least one request to
-ServiceNow other than a watermark read was in flight (retry waits included);
-`watermark_ms` is the same for the cache's watermark reads. Overlapping
+watermark_ms, field_types_ms }` in whole milliseconds, measured wall-clock:
+`total_ms` is the whole tool call; `upstream_ms` is the time during which at
+least one request to ServiceNow other than a watermark read was in flight
+(retry waits included); `watermark_ms` is the same for the cache's watermark
+reads; `field_types_ms` is the whole field-type lookup that runs before a
+field-policy tool (the memo check, its reads, and a retry with its pause), 0
+when the call made none, and its reads are not counted in `upstream_ms`. Overlapping
 requests are counted once, not summed, so each figure is at most `total_ms`,
 though the two can overlap each other and add up to more than it. A hit reports
 `upstream_ms: 0` and the watermark round trip it still costs. Callers that
@@ -1070,7 +1189,7 @@ caller's earlier read made with the same credential. Both fields hold only
 numbers and those four words, and appear whether or not the cache is on
 (`timing` always, `cache` only when a cacheable read happened). Only the server
 sets them; a tool cannot supply its own. Each tool's `outputSchema` grows by
-about 320 characters for them.
+about 385 characters for them.
 
 If a table's watermark cannot be used, its reads go straight upstream, without
 a watermark request, for a while: 15 minutes when the cause persists (an
@@ -1115,9 +1234,10 @@ means the request must change (fewer `fields`, a lower `limit`, or a higher
 `max_response_bytes`; `sn_get` reads one row). The `hint` says which.
 
 This holds for `sn_query`, `sn_syslog`, `sn_schema`, `sn_relationships`,
-`sn_codesearch`, `sn_discover`, `sn_attach` (list) and `sn_atf`, whose `offset`
-is a row offset into the rows they return. Any other collection result that is cut to size
-(for example `sn_aggregate`) reports `has_more: true` with no `next_offset`.
+`sn_codesearch`, `sn_discover`, `sn_attach` (list), `sn_atf` and `sn_aggregate`
+(grouped), whose `offset` is a row offset into the rows they return. Any other
+collection result that is cut to size reports `has_more: true` with no
+`next_offset`.
 A page that lost no rows to size is unchanged: `has_more` and `next_offset`
 come from the row after the page, and `next_offset` is `offset + limit`.
 
@@ -1375,9 +1495,13 @@ Fields of type `password`, `password2`, `masked` or `encrypted_text` are denied
 the same way, whatever their name, and a `sys_properties` value shows only for
 a known non-secret `type`. The types come from a cached `sys_dictionary` read,
 so the integration user needs read access to `sys_dictionary` and
-`sys_db_object`; without it the tools refuse, unless the profile sets
+`sys_db_object`; without it the tools refuse, naming the cause (the table
+doesn't exist, the instance refused the read, it failed and can be retried, or
+a parent table couldn't be read), unless the profile sets
 `"fieldTypes": { "dictionary": "not_required" }` to hide by name only (see
-[Production security](docs/PRODUCTION-SECURITY.md#password-type-fields)).
+[Production security](docs/PRODUCTION-SECURITY.md#password-type-fields)). A
+table whose parent tables can't all be read from `sys_db_object` (or that is
+more than 12 levels deep) is treated the same way.
 
 State it on a profile in `~/.servicenow-mcp/config.json`, beside
 `tableAccess`, in one of two forms. A profile that states both fails to load.
@@ -1466,7 +1590,7 @@ The same policy in the list form:
 }
 ```
 
-**Which tables a `"*"` entry reaches.** Tables fall into four groups:
+**Which tables a `"*"` entry reaches.** Tables fall into five groups:
 
 - **ITSM tables:** `incident`, `change_request`, `problem`, `sc_request`,
   `sc_req_item`, `sc_task`, `task`, `cmdb_ci`, `cmdb_ci_server`,
@@ -1483,13 +1607,20 @@ The same policy in the list form:
 - **The 6 named-only tables:** `sys_audit`, `sys_journal_field`,
   `sys_history_line`, `sys_audit_delete`, `sys_attachment_doc`, `sys_email`. A
   `"*"` entry reaches them once the profile names them in `tableAccess` (below).
+- **The 5 platform tables:** `sys_update_xml`, `sys_upgrade_history_log`,
+  `scan_finding`, `scan_result`, `scan_check`. A `"*"` entry reaches them,
+  named in the field policy or not. Their default reads leave out the XML,
+  script and matched-code columns. The policy card shows them as class
+  `platform`.
 
-On an ITSM table or a table without a built-in entry, named in the policy or
-not, `readable` and `writable` each resolve from the table's own entry, then
-the `"*"` entry, then every field. To keep one key open on such a table under
-a narrowing `"*"` entry, state it on the table, such as
-`"u_x": { "writable": "*" }`. The ITSM tables keep their built-in default
-projections, trimmed to the effective `readable` set.
+On an ITSM table, a platform table or a table without a built-in entry, named
+in the policy or not, `readable` and `writable` each resolve from the table's
+own entry, then the `"*"` entry, then every field. To keep one key open on such
+a table under a narrowing `"*"` entry, state it on the table, such as
+`"u_x": { "writable": "*" }`. The ITSM and platform tables keep their built-in
+default projections, trimmed to the effective `readable` set. Naming a table
+narrows that table only, not the tables that extend it (the subclasses of
+`scan_check`, for example): narrow those with the `"*"` entry, or name each.
 
 A `"*"` entry never reaches a system table, named or not: each key comes from
 the table's own entry, or else covers every field. The system tables include
@@ -1602,6 +1733,59 @@ echoes. A named read is denied with:
 Read denied by policy: field "payload" on "sys_update_xml" holds record payloads, so a readable wildcard never covers it. List it explicitly in fieldPolicy.sys_update_xml.readable to allow this read.
 ```
 
+**Process command-line columns.** Some CMDB columns hold the command line a
+process was started with, or its arguments. They follow the same rules as the
+record payload columns: no wildcard covers them, not the open default of a
+profile with no field policy, a `"*"` entry, or `"*"` on the table's own entry.
+They are `command`, `parameters` and `key_parameters` on
+`cmdb_running_process`; `running_process_command` and
+`running_process_key_parameters` on `cmdb_ci_appl`; `command` on
+`cmdb_tcp_connection`, `cmdb_tcp_half`, `cmdb_ci_docker_container` and
+`cmdb_ci_oslv_image`; `command_line` on `cmdb_ci_appl_rabbitmq_cluster`,
+`cmdb_ci_appl_mongo_config_serv`, `cmdb_ci_appl_ca_id_man`,
+`cmdb_ci_appl_generic`, `cmdb_ci_appl_rabbitmq`, `cmdb_ci_appl_ca_ent_man`,
+`cmdb_ci_appl_dot_net`, `cmdb_ci_appl_mongos` and `cmdb_ci_appl_ca_dir_server`;
+`cmd_line` on `cmdb_ci_endpoint_mq_mem` and `cmdb_ci_endpoint_wmb_depend`;
+`args` on `cmdb_ci_endpoint_storf`, `cmdb_ci_endpoint_xenapp_citrx` and
+`cmdb_ci_endpoint_app`; and `app_args` on `cmdb_ci_appl_citrix_app`.
+`running_process_command` and `running_process_key_parameters` are also covered
+by name on every table.
+
+Each is read only where it is named in that table's own `readable`, and written
+only where it is named in its own `writable`. Until then it is refused by name
+and as a filter, order, group-by, aggregate or write field, and is left out of
+`fields=all`, detailed and default reads and write echoes. `sn_history` leaves
+their audit rows out even where the profile opened them. A dotted name such as
+`ref_cmdb_running_process.command` or `parent.command` is never accepted as a
+field by any read tool.
+
+A table that extends a listed table has its columns too, and only its own entry
+opens them, not the parent's (so `cmdb_ci_appl` covers every application class,
+and `cmdb_ci_oslv_image` covers `cmdb_ci_docker_image`). A database view that
+joins a listed table (or a table with payload columns) has those columns under
+the view's prefix for that table (`rp_command` for a table joined as `rp`),
+under the same rules. Both come from the same `sys_db_object` and
+`sys_db_view_table` reads as the field types, so a table or view whose chain or
+joined tables can't be read is refused.
+
+On a profile with `"fieldTypes": { "dictionary": "not_required" }`, such a table
+or view is not refused. Where its chain or joined tables can be read, it is
+guarded as above. Where they can't, only exact names apply: the tables in the
+list above, the out-of-the-box subclass `cmdb_ci_docker_image`, the out-of-the-box
+views `related_servers` (`rp_command`, `rp_parameters`, `rp_key_parameters`),
+`classified_apps` (`p_command`, `p_parameters`, `p_key_parameters`,
+`a_running_process_command`, `a_running_process_key_parameters`),
+`application_on_servers` and `samp_lrb_to_instances_view` (both
+`appl_running_process_command` and `appl_running_process_key_parameters`), and
+the two names that apply to every table. A custom subclass or custom view is
+covered through its chain or joined tables, so where those can't be read under
+`not_required` it is covered by the names that apply to every table only. A
+named read is denied with:
+
+```text
+Read denied by policy: field "command" on "cmdb_running_process" holds process command lines, so a readable wildcard never covers it. List it explicitly in fieldPolicy.cmdb_running_process.readable to allow this read.
+```
+
 **`readable: []` and `writable: []`.** `readable: []` makes a table
 write-only: writes succeed and return only `sys_id`, reads are denied, and
 `sn_batch` cannot run there. `writable: []` blocks writes. To make a table
@@ -1611,240 +1795,4 @@ readable set.
 
 **Parent tables.** Field policy is evaluated against the table a call names.
 If a profile may write a parent table such as `task`, a write addressed to
-`task` is checked against `task`'s policy, whatever the class of the record.
-When you narrow a field such as `comments` on `incident`, narrow it on every
-write-granted parent table too, or do not grant writes on the parent. A
-`"*"` entry covers `incident` and `task` alike. The same holds for a platform
-table that stores journal entries directly, such as `sys_journal_field`: if a
-profile may write it, per-table narrowing on `incident` does not reach a
-write addressed to it, so either leave it out of the write grant or narrow
-with a `"*"` entry, which reaches it.
-
-**Schema metadata.** `sn_schema` describes the fields the profile can read on
-the table it names. It needs `tableAccess` read on `sys_dictionary`,
-`sys_db_object`, `sys_documentation` and `sys_choice`, but a field policy on
-those metadata tables does not trim the labels, types, choices and help it
-returns for the readable fields. The exception is `inherited_from`, the
-ancestor table a field comes from: it appears only where the profile can read
-`super_class` on `sys_db_object`.
-
-**Role and group-membership tables.** Nothing built in blocks
-`sys_user_role`, `sys_user_has_role`, `sys_group_has_role` or
-`sys_user_grmember`. This is deliberate: profile configuration alone decides,
-with `tableAccess` granting the table, field policy narrowing it, and the
-integration account's ServiceNow roles bounding what is left. Grant these
-tables only deliberately. `sys_user_grmember` is a system table; the other
-three have no built-in entry, so a `"*"` entry reaches them.
-
-**Validation.** Field policy is checked when profiles load, and any error
-stops the server from starting. Table keys must be unique ignoring case, a
-table may appear once in each list, and a field may appear once in each set.
-Unknown keys are rejected, including comment keys such as `_comment`: a
-`fieldPolicy` entry accepts only `defaults`, `readable` and `writable`, and a
-list entry only `table` and `fields`. Every error and its message is listed in
-[Field-policy load errors](docs/V2-MIGRATION.md#field-policy-load-errors).
-
-#### Journal fields
-
-`comments` (customer-visible) and `work_notes` (internal) are written like any
-other field through `sn_create`, `sn_update` and `sn_batch`, on any table
-granted for writes: `incident`, `change_request`, `problem`, `sc_task`, custom
-task tables. A Table API write to a journal field appends one entry; it never
-edits or removes earlier entries. Each entry is 1-8,000 characters of
-non-blank text, at most 16,384 UTF-8 bytes, without control or format
-characters other than newline, carriage return and tab.
-
-Field policy decides who may write them, and with no field policy every
-write-granted table accepts both. To keep a profile from posting
-customer-visible comments, set `writable` to an explicit list that leaves
-`comments` out: on each table, or on the `"*"` entry, and on write-granted
-parent tables such as `task` (see [Field policy](#field-policy)). On
-`incident` the same setting also denies `sn_incident_add_comment`, so both
-routes to the field agree. Leaving the dedicated tools off a target does not
-withhold journals from `sn_create`, `sn_update` or `sn_batch`.
-
-The dedicated incident tools take exactly `profile`, incident `sys_id` and
-bounded `content`, and need write access to `incident`.
-`servicenow-mcp-setup grant --write incident` binds both to the incident
-target unless you pass `--tools`.
-
-Journal handling is keyed by field name. Only `comments` and `work_notes` get
-the journal bounds and are never re-sent; a custom journal field gets the
-generic bounds. See
-[Production security boundaries](docs/PRODUCTION-SECURITY.md#journal-content).
-
-#### Write values
-
-A field approved by the field policy accepts:
-
-- a string, a boolean, a safe integer, or a finite decimal such as `12.5`
-  (not exponent forms such as `1e21`);
-- `""` or `null` to clear the field;
-- an array of scalars for a list field such as `watch_list`, sent as one
-  comma-separated value, so no element may contain a comma;
-- a `{"value": ..., "display_value": ..., "link": ...}` object, the shape
-  reads return with display values, which is written as its `value`.
-
-Values cannot contain control or format characters (newline, carriage return
-and tab are allowed) and are bounded to 100,000 characters and 400,000 UTF-8
-bytes. On `incident`,
-`short_description`, `description`, `close_notes`, the reference fields
-`caller_id`, `assignment_group` and `assigned_to`, and the choice fields keep
-typed checks: a reference takes a 32-character `sys_id` or `""`, a choice
-cannot contain `^`, `=` or `,`, and `short_description` is required on create
-and cannot be cleared. Every other incident field gets the generic bounds.
-
-#### Bulk writes
-
-`sn_batch` sends confirmed updates and deletes through the ServiceNow REST
-Batch API (`/api/now/v1/batch`), up to 50 records per request and fewer when
-field values are large, so a request body stays under 4 MiB unless one
-record's fields alone exceed about 3 MiB of JSON; such a record is sent one
-per request. Each request gets its own 1 MiB response budget, so a run can reach the 10,000-record cap
-(`limit` defaults to 200). The lookup's `sys_id`s are de-duplicated, so each
-matched record is targeted once per run.
-
-A batch request that may have reached the instance is never sent again:
-
-- If the instance refuses a batch request outright (401, 403 or 404), nothing
-  in it ran, so the run switches to one Table API call per record, for that
-  batch and the rest. Batches already confirmed are not sent again.
-- A rate limit (429) stops the run. The remaining records are reported as not
-  sent, with the `Retry-After` hint, because serial calls would only add load.
-- A record whose sub-request returns a server error (5xx or 408) is
-  unconfirmed: it may have been changed, so it is reported and never retried,
-  and the run continues.
-- The run stops, and reports the remaining records as not sent, when a batch
-  request fails or its response cannot be read or matched to the records
-  sent, when every serviced record in one batch returns a server error, or
-  when more than 10 records in the run are unconfirmed.
-
-The result's `message` says how many records were unconfirmed or not sent,
-and why a run stopped. Unconfirmed records count as neither processed nor
-failed; records not sent count as failed.
-
-The serial fallback follows the HTTP client's retry rules. A journal write
-(`comments` or `work_notes`) is never re-sent on any path. An ordinary
-`PATCH` is retried up to twice after a 502, 503, 504 or connection error, the
-same rule `sn_update` follows. The fallback stops at the first record whose
-outcome it cannot confirm, at a 429, and at a 401.
-
-**Re-running a batch appends again.** A journal-only update does not change
-which records the filter matches, so running the same `sn_batch` again
-appends another entry to every matched record, not only to the records
-reported as unconfirmed or not sent. Check the unconfirmed records and
-narrow the filter to the records still to do before you re-run it.
-
-**Practical size per call.** Each batch request must finish within the
-profile's request timeout (`timeoutMs`, or `SN_TIMEOUT_MS`; 30 seconds by
-default), and its duration grows with the server-side time each record's
-business rules take. As a rough guide, at 50-100 ms per record a 50-record
-batch takes a few seconds; at about 600 ms per record a single batch can
-reach the timeout, and its records are then reported as unconfirmed and the
-run stops. Over stdio the server sets no overall deadline on a call; the
-dormant HTTP transport ends a call after 120 seconds by default, which at
-those rates is roughly 1,200-2,400 records. For tables with heavy business
-rules, use a lower `limit` and split the work across calls with narrower
-filters. While the fields being set come to less than about 62 KB of JSON,
-each batch holds 50 records, so journal fields alone never make a batch
-smaller.
-
-### ServiceNow profiles
-
-> **Note:** A profile file is authoritative when present. Without one,
-> `SN_PROFILE_NAME` must explicitly map the canonical connection variables to
-> a named profile; there is no synthetic or default profile.
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `SN_PROFILE_NAME` | ✅* | — | Explicit name for the process-local environment profile; required before bare connection variables define any profile. |
-| `SN_INSTANCE` | ✅* | — | Instance URL (e.g. `https://yourinstance.service-now.com`) |
-| `SN_USER` | ✅* | — | ServiceNow username (basic auth / OAuth password grant) |
-| `SN_PASSWORD` | ✅* | — | ServiceNow password (basic auth / OAuth password grant) |
-| `SN_AUTH_TYPE` | ❌ | `basic` (legacy; set `oauth` explicitly) | Auth scheme: `basic`, `oauth`, or `apikey` |
-| `SN_CLIENT_ID` | ❌ | — | OAuth client id (`SN_AUTH_TYPE=oauth`) |
-| `SN_CLIENT_SECRET` | ❌ | — | OAuth client secret (`SN_AUTH_TYPE=oauth`) |
-| `SN_GRANT_TYPE` | ❌ | `client_credentials` | OAuth grant: `client_credentials` or `password` |
-| `SN_API_KEY` | ❌ | — | API key (`SN_AUTH_TYPE=apikey`) |
-| `SN_API_KEY_HEADER` | ❌ | `x-sn-apikey` | Header the API key is sent in |
-| `SN_TIMEOUT_MS` | ❌ | `30000` | Per-request timeout in milliseconds |
-| `SN_DISPLAY_VALUE` | ❌ | `true` | Default display value mode (`true`, `false`, `all`) |
-| `SN_REL_DEPTH` | ❌ | `3` | Default CMDB relationship traversal depth |
-
-*`SN_PROFILE_NAME` and `SN_INSTANCE` are not required when using
-`~/.servicenow-mcp/config.json`. Authentication-specific variables depend on
-the selected auth type.
-
----
-
-## Usage Examples
-
-Once connected, your AI assistant can:
-
-**Query incidents:**
-> "On dev, show me all P1 incidents assigned to the Network team" (`profile: "dev"`)
-
-**Create a record:**
-> "On staging, create an incident for the approved VPN test" (`profile: "staging"`)
-
-**Aggregate data:**
-> "On prod, how many incidents are grouped by priority?" (`profile: "prod"`)
-
-**Check health:**
-> "Run the dev instance health check" (`profile: "dev"`)
-
-**CMDB traversal:**
-> "On prod, show upstream dependencies for email-server-01" (`profile: "prod"`)
-
-**Schema introspection:**
-> "On dev, what fields are on change_request?" (`profile: "dev"`)
-
-**Code search:**
-> "On dev, find business rules that reference GlideRecord('incident')" (`profile: "dev"`)
-
-**ATF testing:**
-> "On staging, list the approved ATF suite" (`profile: "staging"`)
-
-**Explicit profile selection:**
-> "Query incidents on dev" (the client sends `profile: "dev"` on that call)
-
-The client must translate every example into a tool invocation containing that
-exact `profile`; no prior call creates default, active, or switch-profile state.
-
----
-
-## Safety Features
-
-This server is designed for production use with multiple safety layers:
-
-- **Delete operations** require explicit `confirm: true`
-- **Batch operations** run in dry-run mode by default — shows the match count, a sample of up to 5 records and the fields it would write, without making changes (`confirm` re-runs the query and can match different records)
-- **Bulk operations** require `confirm: true` to leave dry-run mode
-- **Unclassified composition is denied** — `sn_nl` requires a complete typed access plan; ATF suite execution requires a separate explicit `atf.execute` grant
-- **Table access is deny-by-default** with independent exact read/write allowlists; sensitive field names are denied and no configuration can grant them
-- **User input is neutralized** before interpolation into encoded queries (`^` is stripped from filter values — ServiceNow's query syntax has no escape sequence)
-
----
-
-## Development
-
-Have the approved local supervisor or keychain inject the selected ServiceNow
-authentication secret before starting the process. The commands below contain
-non-secret configuration only; never prepend or append protected values on the
-command line.
-
-```bash
-# Clone
-git clone https://github.com/onlyflowstech/servicenow-mcp.git
-cd servicenow-mcp
-
-# Install & build
-npm install
-npm run build
-
-# Run the server directly, speaking stdio on this terminal's pipes
-MCP_OWNER_ID=local-owner \
-MCP_CLIENT_ID=local-client \
-SN_ALLOWED_READ_TABLES=incident,problem,change_request \
-SN_ALLOWED_WRITE_TABLES=incident,change_request \
-SN_TABLE_ACCESS_TARGETS='[{"table":"incident","kind":"canonical","tools":["sn_query","sn_get","sn_create","sn_update","sn_incident_add_comment","sn_incident_add_work_note","sn_delete","sn_batch"],"closureComplete":true,"relatedTables":["incident"]},{"table":"problem","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["problem"]},{"table":"change_request","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables
+`task` is checked against `task`'s policy, whatever the class of the r

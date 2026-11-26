@@ -21,7 +21,7 @@ LLM serving, synthesized for your Mac
 </div>
 
 JITEngine is a collection of LLM serving engines that [SkyDiscover](https://skydiscover-ai.github.io/) builds on the
-fly for specific AI models and hardware (Apple silicon Macs in this case). The six engines featured here decode up to
+fly for specific AI models and hardware (Apple silicon Macs in this case). The seven engines featured here decode up to
 2.72 times faster than the best alternative server tested on the exact same Mac.
 
 <p align="center">
@@ -40,7 +40,7 @@ Install the build for your Mac's chip and memory (the one that measured faster o
 then serve it, or run a coding agent on it:
 
 ```bash
-curl -fsSL https://jitengine.ai/install.sh | bash -s -- flint    # or qwen3.6, flash-next
+curl -fsSL https://jitengine.ai/install.sh | bash -s -- flint    # or qwen3.6, flash-next, qwen3-1.7b
 jitengine start      # serve it on port 8080, in the background
 jitengine claude     # or run a coding agent on it: claude, codex, opencode or pi
 ```
@@ -67,6 +67,10 @@ engine then reads more experts from the SSD and runs slower, and in our tests th
 `JITENGINE_BUDGET_GIB` to choose the budget yourself. For Flint on a 24 to 36 GB Mac and Qwen3.6 on a 32 or 36 GB
 Mac, `jitengine` asks for `sudo` to raise the GPU's wired memory limit until the Mac restarts.
 
+The model comes from Hugging Face, at the revision we measured. If your Hugging Face cache (`~/.cache/huggingface`)
+already holds it, `install.sh` uses those files instead of downloading them again. Each engine's `serve --model-path`
+also takes a Hugging Face model id, such as `mlx-community/Qwen3.6-35B-A3B-4bit`, and downloads it into that cache.
+
 Each engine's README has the steps to install it by hand, with Python 3.14.
 
 </details>
@@ -81,9 +85,11 @@ Each engine's README has the steps to install it by hand, with Python 3.14.
 | [**Qwen3.8‑Flash‑Next**](engines/qwen3.8-flash-next-m2) | 24&nbsp;GB&nbsp;M2 | Evicts the experts needed last | **1.62×** vs slotstream |
 | [**Flint**](engines/flint-m4pro) int4 | 48&nbsp;GB&nbsp;M4&nbsp;Pro | One KV read for all heads | **1.22×** vs rec, 252K context |
 | [**Flint**](engines/flint-m2) int4 | 24&nbsp;GB&nbsp;M2 | SSD streaming, GPU clock held high | **2.1×** vs llama.cpp, raw decode at 1K |
+| [**Qwen3‑1.7B**](engines/qwen3-1.7b-m4pro) 4‑bit | 24&nbsp;GB&nbsp;M4&nbsp;Pro | An exact matrix multiply for 16 rows | **1.5×** vs mlx-lm, 16 requests at once |
 
-Speedups are for one user unless the row says otherwise. We ran both builds of each model on both Macs;
-[`engines/`](engines) says how the two builds differ and which one `install.sh` picks for each chip and memory size.
+Speedups are for one user unless the row says otherwise. We ran both builds of Qwen3.6, Flash-Next and Flint on both
+Macs; [`engines/`](engines) says how the two builds differ and which one `install.sh` picks for each chip and memory
+size.
 
 ## Use it with a coding agent
 

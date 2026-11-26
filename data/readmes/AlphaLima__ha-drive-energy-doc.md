@@ -32,7 +32,7 @@ Everything ends up in one list in the sidebar (with CSV and PDF printing).
 6. [Which position and which price is used](#which-position-and-which-price-is-used) · [Countries with price portals: supported and not supported](#countries-with-price-portals-supported-and-not-supported)
 7. [Receipt, accessories and odometer by message](#receipt-accessories-and-odometer-by-message) · [Receipt for refuelling](#receipt-for-refuelling) · [Accessories (AdBlue, oil, wipers …)](#accessories-adblue-oil-wipers-) · [Odometer reading](#odometer-reading)
 8. [How consumption is calculated](#how-consumption-is-calculated)
-9. [Electric vehicles](#electric-vehicles)
+9. [Electric vehicles](#electric-vehicles) · [Home charging with a home wallbox](#home-charging-with-a-home-wallbox-optional-experimental)
 10. [The panel](#the-panel) · [Example printout](#example-printout)
 11. [Sensors, event and services](#sensors-event-and-services)
 12. [Installation and setup](#installation-and-setup)
@@ -80,7 +80,7 @@ The effort is kept as small as possible: the car reports the refuelling by itsel
 | Way | What you do | What happens automatically |
 |---|---|---|
 | **1. Automatic (sensors)** | nothing | Level rises, refuelling is detected; quantity, place, odometer and (if available) price are recorded |
-| **2. Receipt photo via Telegram / WhatsApp / Companion** | photograph the receipt or pump and send it to the bot | AI reads quantity/price/total/date, the photo is cropped and stored with the entry, receipt values replace the estimated ones |
+| **2. Receipt photo via Companion / Telegram / WhatsApp** | photograph the receipt or pump and send it to the bot | AI reads quantity/price/total/date, the photo is cropped and stored with the entry, receipt values replace the estimated ones |
 | **3. Receipt as text** | write `45,93 105,13` or `27.10. 45,93 105,13` | values are assigned to the matching refuelling (no AI) |
 | **4. Accessories** | `+ 24,90`, `extra Öl 1 9,50`, short word `adblue`, or a photo with a caption | own entry, counts towards costs, not towards consumption |
 | **5. Odometer photo / `km 54210`** | photograph the odometer or send text | mileage is assigned to the refuelling that fits in time; the bot asks if in doubt |
@@ -110,7 +110,7 @@ Car sensors (level %, odometer, GPS)
         │
         ├─► look up the price (fuel price service, optional)
         ├─► create the log entry (time, quantity, price, cost, odometer, place)
-        └─► message via Telegram/WhatsApp/Companion app: "Refuelling detected – send the receipt if you like"
+        └─► message via Companion app/Telegram/WhatsApp: "Refuelling detected – send the receipt if you like"
                    │
                    ▼
         Photo of receipt / pump / text  ─►  AI reads quantity, price, total, date
@@ -190,7 +190,7 @@ function in `price.py` plus an entry in `PROVIDERS` and `BY_COUNTRY`.
 
 ## Receipt, accessories and odometer by message
 
-Messages run via **Telegram** (own bot, recommended), **WhatsApp** (Meta Cloud API) or the **Companion app** (push message; photo upload then in the panel). Per vehicle you choose which channels are used. With `?`, `h`, `help` or `hilfe` (also `/help`, `/start`) the bot lists all commands. Replies and keywords work in many languages (see *Languages*).
+Messages run via the **Companion app with the panel** (**the easiest way and our recommendation to start**: no account, token or chat ID needed; you take the photo with the camera in the panel and the push message reaches your phone; nothing leaves your home network), via **Telegram** (own bot; for sending straight from the messenger and answering questions as a chat) or via **WhatsApp** (Meta Cloud API). Per vehicle you choose which channels are used. With `?`, `h`, `help` or `hilfe` (also `/help`, `/start`) the bot lists all commands. Replies and keywords work in many languages (see *Languages*).
 
 ### Receipt for refuelling
 - Send a **photo** of the receipt or the pump. The AI reads quantity, price, total, date and, if visible, the mileage. The photo is **cropped to the receipt** (the AI gives the frame; without an AI answer a simple detection of tall, bright paper receipts takes over). The original is kept and can be viewed in the panel.
@@ -227,7 +227,7 @@ Electric cars work just like combustion cars; the differences at a glance:
 
 **Setup:** Choose the energy type **Electric** at the vehicle and enter the **usable battery capacity in kWh** as the capacity (e.g. 58). The level sensor is the **state of charge (SoC) in %**; odometer and GPS are optional as for combustion cars. Without sensors the [photo mode](#photo-mode-without-a-car-connection-fleet-management) works here too (e.g. a photo of the charger or of the app invoice).
 
-**Detection:** If the state of charge rises by at least **5 %**, a charging session is detected. It ends when the state of charge has **not risen further for 10 minutes** (default, adjustable under *Configure → Refuel detection (fine tuning)*). The **distance condition does not apply** (the car stays put while charging) but can be switched on. Many small charges per day are recorded as separate sessions as soon as they reach 5 %.
+**Detection:** If the state of charge rises by at least **5 %**, a charging session is detected. It ends when the state of charge has **not risen further for 10 minutes** (default, adjustable under *Configure → Refuel detection (fine tuning)*). The **distance condition does not apply** (the car stays put while charging) but can be switched on. With a known position, odometer or plug sensor a charge is not ended by this time at all, see [Home charging](#home-charging-with-a-home-wallbox-optional-experimental). Many small charges per day are recorded as separate sessions as soon as they reach 5 %.
 
 **Quantity:** kWh = increase in % × battery capacity. This is the energy **in the battery**; at the socket or wallbox somewhat more is usually consumed because of charging losses. If you want it exact, send the value from the receipt or the charger (e.g. `38,2 0,39 14,90`); the receipt always wins.
 
@@ -235,7 +235,13 @@ Electric cars work just like combustion cars; the differences at a glance:
 
 **Consumption:** Calculated full-to-full like for combustion cars, result in **kWh/100 km**. A charging session counts as "full" from **30 %** increase; smaller charges are added up until the next larger one. This needs mileages (sensor, odometer photo or `km 54210`).
 
-**Known limits:** The wallbox meter is not read (yet); the quantity is battery-side. If the car reports the state of charge only every few minutes, a session starts and ends with the same delay. If the state of charge shows whole percent only, very small charges are imprecise.
+**Known limits:** Without a home wallbox (see [Home charging](#home-charging-with-a-home-wallbox-optional-experimental)) the quantity is battery-side. If the car reports the state of charge only every few minutes, a session starts and ends with the same delay. If the state of charge shows whole percent only, very small charges are imprecise.
+
+### Estimate, receipt and charging losses; AC and DC
+
+The estimate (increase in % × capacity) stays on the entry even when a receipt replaces the quantity. From both values the integration learns a **correction factor** (receipt ÷ estimate; it contains charging losses and any error in the capacity you entered) per vehicle and energy type. From **three entries with receipt** on, charges **without** a receipt are corrected with the median factor and marked *calculated (corrected)*; the factor is shown in the bar above the list. The edit dialog shows the estimate and the deviation.
+
+**AC or DC** is only a guess and is saved with its source: a *charge type sensor* of the car's integration (optional) takes priority, then the AC/DC reading on the receipt or charger display, then the *peak power* of an optional *charging power* sensor against the car's maximum AC power (default 11 kW, adjustable), and last the *average power* of the session. The average power can only prove DC (e.g. 80 kW); slow DC looks like AC, so a session can also stay *unknown*. Factors are learned per type once there are three entries of that type, otherwise together. The type can be changed by hand in the edit dialog. The three optional fields are in the *Sensors* group of the vehicle.
 
 ### Plug-in hybrids
 
@@ -245,6 +251,44 @@ Tick **Plug-in hybrid** in the vehicle settings (next to the fuel type, e.g. pet
 - **Consumption** is calculated **separately** per energy type (l/100 km and kWh/100 km, each against the previous entry of the same type). The panel shows both averages, a second sensor `Electricity consumption` is added, and the costs of both are summed up. The kilometres are shared.
 - **Automatic detection of both:** besides the fuel level sensor you can enter the **battery charge level (%)** and the **battery capacity (kWh)**. Refuelling and charging are then detected independently (two sensors, two detections); charging uses the electricity price from the global settings. **Regenerative braking is ignored:** while driving, the battery level rises without charging. If the vehicle moves more than 200 m from where the rise began (GPS) or more than 1 km (odometer), the rise is not counted as charging; a candidate is discarded, and after a real charge the rises while driving away are ignored. Without a battery sensor, charging is captured by receipt, photo, message or by hand.
 - Mixed driving makes the two single values less exact than for a pure combustion or electric car: the fuel consumption of a plug-in hybrid depends on how much was driven electrically. The values are meant as a trend, the cost total is exact.
+- **Plausibility check for hybrids:** because petrol and electricity are used alternately (petrol is often the exception), the list does **not** flag a single low or high consumption per energy type, and the mileage check on photos is skipped. Instead the **combined** consumption of both (litres converted to kWh) is checked from 300 km on, and only a value that is **too high** (above about 60 kWh/100 km) gets a warning triangle; a low value is normal because not every charge (for example at home) is recorded.
+
+### Home charging with a home wallbox (optional, experimental)
+
+For cars that charge at home, a wallbox can be added. What you really pay is the energy that went through the wallbox meter, not the estimate from the state of charge. The feature is **optional and experimental** and is kept apart from the car's own sensors in a sub-menu at the very bottom of the vehicle options: *Configure → Home wallbox (optional, experimental)*. It is only offered for electric cars and plug-in hybrids (with a battery sensor).
+
+**Fields (all optional)**
+
+| Field | Meaning |
+|---|---|
+| Wallbox meter (kWh) | Total counter of the wallbox, only grows while charging (Wh counters are converted). Without it, nothing below applies. |
+| Wallbox power | Current charging power. Gives a more exact start (the last idle reading before the charge) and the kW in the live row. |
+| Price per kWh of the charge | An entity (sensor, input number), e.g. a mixed price of grid and solar power. Empty = the electricity price from the global settings. |
+| Solar share of the charge in % | A sensor with the current solar share. |
+| Plug: car connected | A binary sensor or text sensor (`on`/`off`, `connected`/`disconnected`, `charging`, `available` …). With it, a charge ends when the car is unplugged. |
+
+**Quantity and losses.** When a charge is finished, DED takes the difference of the wallbox meter between start and end of the charge. This value replaces the estimate (source *wallbox*) and includes the charging losses. Because estimate and wallbox value are both known, the losses flow into the learned correction factor like a receipt does (see above), also for charges away from home.
+The wallbox value is only taken when it is plausible: it must be 0.85 to 1.7 times the estimate. Otherwise the car charged elsewhere or two charges ran over the same meter, and the estimate stays. If two vehicles use the same wallbox entity and their charging times overlap, nothing is guessed either. The entry then carries a short note why (*shared*, *no history*, *does not match*).
+
+**Price and solar share.** During the charge the price sensor and the solar sensor are read about every 15 seconds and averaged (time-weighted; *unknown* is skipped). The entry gets this mean price (source *Wallbox*) and, if a solar sensor is set, the solar share as "☀ 62 %" in the list. Without a price sensor the global electricity price is used.
+
+*Example, mixed price and solar share as template sensors in Home Assistant:* with the wallbox power `W` and the grid import `grid` (both in W), `netz = min(W, max(grid, 0))` is covered by the grid and `solar = W − netz` by PV and battery. Solar share in % = `solar / W · 100`; mixed price = `(netz · purchase price + solar · feed-in tariff) / W` (the solar part is priced at the feed-in tariff it would otherwise earn). Below 50 W the sensors should report *unknown*. The house load is not subtracted from the PV power, so the solar share is on the cautious side.
+
+**Long pauses (surplus charging).** For electric cars a charge is **no longer ended by the completion time** (10 minutes). If the car's position or odometer is known, or a plug sensor is set, the charge stays open through pauses of hours (clouds) and continues as the same entry. It ends
+
+- when the car **drives off** (more than 200 m from the start or 1 km on the odometer; later rises of the state of charge from recuperation are ignored), or
+- when it is **unplugged** (plug sensor; the completion time is then waited for, because the car reports its state of charge with a delay), or
+- after **48 hours without a rise** at the latest.
+
+Without position, odometer and plug sensor the completion time applies as before. The wallbox meter at the start and at the last delivery is written down during the charge, so the quantity is right even after long pauses or a restart of Home Assistant.
+
+**Live row.** While a car charges, a turquoise row **"Charging now"** is on top of the list: start, state of charge from → to, quantity (wallbox kWh, otherwise estimate) and power. It is refreshed every minute and shows *paused* when nothing is delivered. It disappears when the entry is finished.
+
+**Home charging filter and colour.** Entries whose quantity comes from the home wallbox are shown with a **yellow background** and can be selected with the filter **"Home charging (n)"** (also for print and export of the filtered list).
+
+**Switching the wallbox off.** Ending a charge does not depend on the wallbox. If the wallbox is switched off or loses power, its meter keeps the last value and an unavailable power sensor counts as 0 W. If a wallbox resets its meter to zero on power loss, the quantity of that charge cannot be calculated and the estimate stays (a total counter does not do this).
+
+**Limits.** The wallbox history is kept in memory only (the start and last delivery of a running charge are saved). Averages are time-weighted, not weighted by power. The texts of the options form exist in German and English.
 
 ## The panel
 
@@ -266,11 +310,11 @@ The print (button "Print" in the panel) produces a list of all entries and, if w
 <table>
 <tr>
 <td align="center"><img src="docs/beispiel-ausdruck-liste.png" alt="Example printout: list" width="360"><br><sub>Page 1: the list</sub></td>
-<td align="center"><img src="docs/beispiel-ausdruck-belege.png" alt="Example printout: receipts" width="360"><br><sub>Page 2: receipt and odometer photos per entry</sub></td>
+<td align="center"><img src="docs/beispiel-ausdruck-belege.png" alt="Example printout: receipts" width="360"><br><sub>Page 3: receipt and odometer photos per entry</sub></td>
 </tr>
 </table>
 
-The complete example (7 pages) as PDF: [docs/beispiel-ausdruck.pdf](docs/beispiel-ausdruck.pdf).
+The complete example (15 pages) as PDF: [docs/beispiel-ausdruck.pdf](docs/beispiel-ausdruck.pdf).
 
 ## Sensors, event and services
 
@@ -278,7 +322,7 @@ Per vehicle: **status**, **last refuelling**, **last price**, **consumption** (a
 
 ## Installation and setup
 
-**Marketplace / HACS:** In the Home Assistant Marketplace (from 2026.11; before that in HACS) add the repository `AlphaLima/ha-drive-energy-doc` as a custom repository (type *Integration*; this connects a GitHub account), install, restart HA. Updates appear there as soon as a new release is published; beta versions are only shown to those who enable pre-releases. **Manually:** copy the folder `custom_components/drive_energy_doc` to `config/custom_components/` and restart HA.
+**Marketplace / HACS:** Search for *Drive Energy Doc* in the Home Assistant Marketplace (from 2026.11; before that in HACS), install, restart HA. *Fallback until the integration appears in the default catalog (or if the search does not find it):* add the repository `AlphaLima/ha-drive-energy-doc` as a custom repository (type *Integration*; this connects a GitHub account). Updates appear there as soon as a new release is published; beta versions are only shown to those who enable pre-releases. **Manually:** copy the folder `custom_components/drive_energy_doc` to `config/custom_components/` and restart HA.
 
 Then *Settings → Devices & services → Add integration → Drive Energy Doc*:
 
@@ -299,6 +343,8 @@ Receipts and odometer photos are read by an AI. Drive Energy Doc uses **Home Ass
 3. **Check the AI Task entity:** The AI integration provides an *AI Task* entity for jobs such as reading receipts (background: [AI Task](https://www.home-assistant.io/integrations/ai_task/)). You can see it under *Settings → Devices & services → Entities* (search for `ai_task`) and pick a preferred one under *Settings → System → AI*.
 4. **In Drive Energy Doc:** in the **global settings** leave the "AI" field **empty**: the integration then uses the Gemini entity automatically, otherwise the first `ai_task` entity it finds. Or you choose a specific one there.
 5. **Test:** upload a receipt photo in the panel. After a few seconds the entry appears in the list.
+
+**Using Claude (Anthropic) instead of Gemini:** works the same. Add the *Anthropic* integration, then pick its AI Task entity **explicitly** in the global settings under "AI". If you leave the field empty and both Gemini and Claude are installed, Gemini is preferred. If the chosen entity is deleted later (for example after switching providers), the integration falls back to another AI Task entity and writes a warning to the log. When the provider is overloaded (Gemini 503, Claude 529) the integration retries up to four times and then tells you to try again later.
 
 **Other providers:** Any AI integration that provides AI Task entities and understands **images** works, for example [OpenAI](https://www.home-assistant.io/integrations/openai_conversation/) ([key](https://platform.openai.com/account/api-keys), a paid service according to Home Assistant) or [Anthropic](https://www.home-assistant.io/integrations/anthropic/) ([key](https://console.anthropic.com/settings/keys), also paid). How accurately poorly photographed odometers are read depends on the model.
 

@@ -1,14 +1,11 @@
 # GeminiDotnet
 
-GeminiDotnet is a lightweight yet fully-featured library for interacting with Google's Gemini API in modern .NET. GeminiDotnet is performant and Native AOT compatible, using System.Text.Json source-generation for JSON serialization, and has minimal dependencies.
+GeminiDotnet is a .NET client for Google's Gemini API. It supports Native AOT through System.Text.Json source generation.
 
-This respository contains two packages which users can choose from. The recommended entry-point is [`GeminiDotnet.Extensions.AI`](./src/GeminiDotnet.Extensions.AI) which provides implementations of the [`Microsoft.Extensions.AI.Abstractions`](https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai) APIs. These provide common abstractions over generative AI models, allowing users to swap out their model provider without rewriting their code. Alternatively, if you'd like a direct, lightweight mapping to the Google Gemini API, you can use [`GeminiDotnet`](./src/GeminiDotnet) directly.
+- Use [`GeminiDotnet.Extensions.AI`](./src/GeminiDotnet.Extensions.AI) with [`Microsoft.Extensions.AI`](https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai) if you want to swap model providers through a common API.
+- Use [`GeminiDotnet`](./src/GeminiDotnet) for direct access to the Gemini API.
 
-- [`GeminiDotnet`](./src/GeminiDotnet) for direct interaction with Gemini API
-- [`GeminiDotnet.Extensions.AI`](./src/GeminiDotnet.Extensions.AI) for use with [`Microsoft.Extensions.AI`](https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai) (recommended).
-
-> [!NOTE]
-> Since writing this library, Google have released [first-party support for C#](https://github.com/googleapis/dotnet-genai), which you may prefer. As of [Google.GenAI](https://www.nuget.org/packages/Google.GenAI) v0.11.0, this now includes Microsoft.Extensions.AI support too.
+Google also publishes a [C# SDK with Microsoft.Extensions.AI support](https://github.com/googleapis/dotnet-genai).
 
 ### Versions
 
@@ -16,6 +13,22 @@ This respository contains two packages which users can choose from. The recommen
 | --- | --- | --- |
 | GeminiDotnet | [![NuGet Version](https://img.shields.io/nuget/v/GeminiDotnet)](https://www.nuget.org/packages/GeminiDotnet) | [![NuGet Downloads](https://img.shields.io/nuget/dt/GeminiDotnet)](https://www.nuget.org/packages/GeminiDotnet)|
 | GeminiDotnet.Extensions.AI | [![NuGet Version](https://img.shields.io/nuget/v/GeminiDotnet.Extensions.AI)](https://www.nuget.org/packages/GeminiDotnet.Extensions.AI) | [![NuGet Downloads](https://img.shields.io/nuget/dt/GeminiDotnet.Extensions.AI)](https://www.nuget.org/packages/GeminiDotnet.Extensions.AI)
+
+### Versioning policy
+
+Both packages follow [Semantic Versioning](https://semver.org/) with [Cargo’s 0.x convention](https://doc.rust-lang.org/cargo/reference/semver.html). In 0.x, minor releases may break the public API, and patches may add compatible features and fixes. See the [V1Beta exception](#v1beta-stability).
+
+Removing an adapter feature is a breaking change even if Google withdraws it.
+
+### V1Beta stability
+
+`GeminiDotnet.V1Beta` can break in any release, including a patch release. To opt in to the experimental API across a project, add `GEMINI001` to the project's `NoWarn` property.
+
+```xml
+<NoWarn>$(NoWarn);GEMINI001</NoWarn>
+```
+
+`GeminiDotnet.Extensions.AI` uses `GeminiDotnet.V1`. Use `GeminiClient.V1Beta` directly for beta-only features such as context caching and audio transcription.
 
 ## Examples
 
@@ -29,7 +42,7 @@ The following examples use the [`GeminiDotnet.Extensions.AI`](https://www.nuget.
 
 ### Streaming Text Generation
 
-To get incremental updates while the model continues to output its response, you can use the streaming overloads.
+Use `GetStreamingResponseAsync` to read updates as Gemini generates them.
 
 ```cs
 var options = new GeminiClientOptions { ApiKey = _apiKey, ModelId = "gemini-3.7-flash" };
@@ -44,7 +57,7 @@ await foreach (var update in client.GetStreamingResponseAsync("What is AI?"))
 
 ### Function Execution
 
-Using [`Microsoft.Extensions.AI.FunctionInvokingChatClient`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.ai.functioninvokingchatclient) to handle automatic function invocation, it is simple to wire up function calling to arbitrary .NET functions.
+Call `UseFunctionInvocation()` on the chat client builder to invoke declared .NET functions automatically. [FunctionInvokingChatClient documentation](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.ai.functioninvokingchatclient)
 
 ```cs
 var geminiClient = new GeminiChatClient(new GeminiClientOptions
@@ -77,7 +90,7 @@ var response = await client.GetResponseAsync(messages, options, cancellationToke
 
 ### Code Execution
 
-The Gemini API provides a code execution feature that enables the model to generate and run Python code and learn iteratively from the results until it arrives at a final output. You can enable and use this as follows.
+Add a `HostedCodeInterpreterTool` to let Gemini run Python and use the output in its response.
 
 ```cs
 var options = new GeminiClientOptions
@@ -97,8 +110,7 @@ var response = await geminiClient.GetResponseAsync(
 
 ### Remote MCP Servers
 
-Gemini can connect to a remote MCP server itself, discover its tools and call them server-side. Map a
-`HostedMcpServerTool` onto that with the server's name and its streamable HTTP endpoint.
+Pass the server name and streamable HTTP endpoint to `HostedMcpServerTool`. Gemini discovers and invokes its tools server-side.
 
 ```cs
 var options = new GeminiClientOptions
@@ -125,32 +137,16 @@ var response = await geminiClient.GetResponseAsync(
     cancellationToken);
 ```
 
-Gemini rejects a request whose MCP servers break its own naming and addressing rules:
+Gemini requires a unique lowercase snake_case `ServerName` per request and an absolute `ServerAddress` URL.
 
-- `ServerName` must be lowercase snake_case (`weather`, `rain_forecast`), and must be unique across the
-  servers in one request.
-- `ServerAddress` must be an absolute URL.
+The adapter throws `GeminiMappingException` unless these requirements hold.
 
-The rest of `HostedMcpServerTool` is what Gemini cannot honour. Rather than dropping a restriction the
-caller asked for, the mapping throws a `GeminiMappingException`:
+- Leave `AllowedTools` as `null`. Restrict tools on the server, since Gemini offers the model every tool it exposes.
+- Set `ApprovalMode` explicitly to `HostedMcpServerToolApprovalMode.NeverRequire`. Gemini invokes tools without an approval callback.
+- Use MCP servers with function declarations or on their own. Gemini rejects requests that combine MCP servers with `HostedWebSearchTool`, `HostedCodeInterpreterTool`, or `HostedFileSearchTool`.
 
-- `AllowedTools` must be `null`. Gemini accepts an allow-list and then ignores it, so the model would still
-  be offered every tool the server exposes. Restrict the tools on the server instead.
-- `ApprovalMode` must be set to `HostedMcpServerToolApprovalMode.NeverRequire`. Gemini runs the tools
-  server-side with no approval hook, so that is the only mode it can honour. The default `null` is rejected
-  too: M.E.AI documents it as a value some providers treat as `AlwaysRequire`, and the OpenAI client does
-  exactly that, so reading it as `NeverRequire` here would quietly turn "unspecified" into consent.
-- An MCP server cannot be combined with `HostedWebSearchTool`, `HostedCodeInterpreterTool` or
-  `HostedFileSearchTool` in the same request, because Gemini rejects that combination. `AIFunction` tools
-  can be used alongside it.
-
-`ServerDescription` has no Gemini counterpart and is ignored.
+The adapter ignores `ServerDescription`.
 
 ### Requiring a Tool Call
 
-`ChatOptions.ToolMode = ChatToolMode.RequireAny` (or `RequireSpecific`) makes Gemini require a *function*
-call, so the request must also declare at least one `AIFunction`. Asked to require one when only hosted
-tools are present, the model loops until it hits the tool-call cap and returns an empty response with
-`finishReason: TOO_MANY_TOOL_CALLS`, having billed every round-trip it made along the way. An MCP server is
-no exception, because Gemini runs its tools server-side and no client-visible call ever satisfies the mode.
-This library therefore throws a `GeminiMappingException` instead of sending such a request.
+Include at least one function declaration, such as an `AIFunction`, when using `ChatToolMode.RequireAny` or `RequireSpecific`. Gemini requires a function call in these modes. Hosted tools, including remote MCP tools, cannot satisfy that requirement. The adapter throws `GeminiMappingException` before sending such a request, which would otherwise risk an empty `TOO_MANY_TOOL_CALLS` response after billable tool calls.

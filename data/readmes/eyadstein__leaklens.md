@@ -13,7 +13,7 @@
 
 **Find data leakage before it inflates your metrics.** LeakLens audits the three places leakage hides — datasets, train/test splits and the code that builds the model — with optional engines for SQL, images, text, deep learning and pipeline metadata. It then reports what is left after the leak is removed. Detection is deterministic, local and CPU-first: the scanner parses code without executing it, and no dataset row leaves your machine.
 
-[Documentation](https://eyadstein.github.io/leaklens/docs.html) · [Website and demo](https://eyadstein.github.io/leaklens/) · [Changelog](CHANGELOG.md) · [Issues](https://github.com/eyadstein/leaklens/issues)
+[Documentation](https://eyadstein.github.io/leaklens/docs.html) · [Website and demo](https://eyadstein.github.io/leaklens/) · [Changelog](CHANGELOG.md) · [Support](SUPPORT.md) · [Issues](https://github.com/eyadstein/leaklens/issues)
 
 ## Contents
 
@@ -251,7 +251,7 @@ python -m pip install "leaklens-ml[parquet,images]"
 
 | Command | Purpose |
 |---|---|
-| `leaklens FILE --target COL` | audit a dataset (CSV/JSON built in) |
+| `leaklens FILE --target COL` | audit a dataset (CSV/JSON/JSONL built in) |
 | `leaklens --scan PATH...` | statically scan `.py`/`.ipynb` files or folders |
 | `leaklens splits DATASET` | audit declared COCO, YOLO or VOC split files |
 | `leaklens images TRAIN TEST` | find near-duplicate images across splits |
@@ -279,6 +279,8 @@ The Action installs the CLI and runs `leaklens --scan` on a file or folder. It d
 |---|---|---|---|
 | `path` | optional | `.` | file or folder to scan |
 | `fail-under` | optional | unset | minimum trust score (0-100); when set, the step also fails on a score below it |
+| `baseline` | optional | unset | baseline file to compare against; findings are labelled `new`/`unchanged`/`changed`/`resolved` |
+| `fail-on-new` | optional | unset | fail when a non-diagnostic finding is new relative to `baseline` |
 
 ```yaml
 name: leakage
@@ -300,6 +302,16 @@ The step fails when the scan exits `1`: a high-severity finding, or a trust scor
         with:
           path: .
           fail-under: 80
+```
+
+`baseline` and `fail-on-new` are unreleased, so a workflow that sets them must use `@main` until the next tag. Record the baseline once from a reviewed run (`leaklens --scan . --write-baseline --baseline leaklens-baseline.json`), commit it, and let CI fail only on findings that appear after it. A baseline labels findings; it does not suppress an active high-severity finding — use a documented [suppression](docs/BASELINES.md#suppressions) for an accepted one.
+
+```yaml
+      - uses: eyadstein/leaklens@main
+        with:
+          path: .
+          baseline: leaklens-baseline.json
+          fail-on-new: true
 ```
 
 Pin a tag or a full commit SHA for reproducible CI. `@main` tracks the default branch and therefore unreleased changes.
@@ -347,7 +359,7 @@ Optional engine sections (`[missingness]`, `[sql]`, `[drift]`, `[graph]`) tune t
 
 ## Built-in vs optional
 
-The base install covers CSV/JSON datasets, code scanning, split checks and missingness. Everything else is opt-in and never required for the basic workflow.
+The base install covers CSV/JSON/JSONL datasets, code scanning, split checks and missingness. Everything else is opt-in and never required for the basic workflow.
 
 | Capability | Entry point | Needs | Gate behavior |
 |---|---|---|---|
@@ -468,6 +480,8 @@ this file.
 Implemented: dataset, split and code detectors; missingness; model arena; API and workspace; HTML, SARIF, JSON and badge reports; baselines and suppressions; the evidence graph and investigation plans; group leakage; image clustering and declared-split audits; and the opt-in SQL, text, deep-learning, drift, pipeline and AI engines.
 
 Planned work and open design questions are tracked in [ROADMAP.md](ROADMAP.md), the longer-term [AI/ML expansion roadmap](docs/AI_ML_EXPANSION_ROADMAP.md) and [Issues](https://github.com/eyadstein/leaklens/issues). Proposed items there are not commitments. The full documentation index is the [docs site](https://eyadstein.github.io/leaklens/docs.html).
+
+Adoption is measured, not assumed: the baseline and growth strategy are in [docs/ADOPTION.md](docs/ADOPTION.md), and the real-world corpus method is in [docs/REALWORLD_EXPANSION.md](docs/REALWORLD_EXPANSION.md).
 
 ## License
 

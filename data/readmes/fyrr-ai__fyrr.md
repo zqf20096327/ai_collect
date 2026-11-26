@@ -106,7 +106,7 @@ build.
 
 To build from source, follow the [quickstart](docs/quickstart.md) to search a Markdown folder from
 Claude Code using a private local directory. It needs Linux x86-64 and the
-tools git, curl, unzip, openssl, Python 3.11+, rustup, uv, a C compiler, jq,
+tools git, curl, unzip, openssl, Python 3.11+, rustup, uv, a C compiler (GCC 12+ or Clang 6+), jq,
 binutils, network access and about 10 GiB free; no accounts
 or embedding keys are needed. The guide also covers adding Slack and trying
 Ada/Grace permissions. For shared deployments, see

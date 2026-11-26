@@ -27,6 +27,12 @@
   - [Customizing Banner Images (banners)](#customizing-banner-images-banners)
 - [Celebration Packs](#celebration-packs)
   - [Layout](#layout)
+  - [Santa History Delivery](#santa-history-delivery)
+  - [Polar bears on the New Year gift trigger](#polar-bears-on-the-new-year-gift-trigger)
+  - [Snow Circus in the New Year secret pool](#snow-circus-in-the-new-year-secret-pool)
+  - [Scene authoring](#scene-authoring)
+  - [Composer-carry scenes](#composer-carry-scenes)
+  - [Check](#check)
   - [Publish a Pack Version](#publish-a-pack-version)
   - [Caching](#caching)
   - [Retention](#retention)
@@ -265,9 +271,10 @@ Packs live under [static/celebrations](./static/celebrations) and never in `conf
 static/celebrations/
 ├── index.json                         # mutable: every published version and the default per event
 ├── new-year-default/
-│   ├── 1.1.0/                         # immutable once published
-│   ├── 1.1.1/                         # previous version, kept for rollback
-│   └── 1.2.0/
+│   ├── 1.2.0/                         # retained immutable version
+│   ├── 1.3.0/                         # retained immutable version
+│   ├── 1.4.0/                         # previous version, kept for rollback
+│   └── 1.5.1/
 │       ├── manifest.json              # scenes, timing, variants and the declared assets
 │       ├── bullfinch-couriers.desktop.<sha256 prefix>.json
 │       ├── bullfinch-couriers.mobile.<sha256 prefix>.json
@@ -277,12 +284,27 @@ static/celebrations/
 │       ├── gift-wrapping.poster.<sha256 prefix>.svg
 │       ├── snowman-delivery.desktop.<sha256 prefix>.json   # copy-track scene, one variant per layout
 │       ├── snowman-delivery.mobile.<sha256 prefix>.json
-│       └── snowman-delivery.poster.<sha256 prefix>.svg
+│       ├── snowman-delivery.poster.<sha256 prefix>.svg
+│       ├── santa-history-delivery.desktop.<sha256 prefix>.json
+│       ├── santa-history-delivery.mobile.<sha256 prefix>.json
+│       ├── santa-history-delivery.poster.<sha256 prefix>.svg
+│       ├── polar-bears.desktop.<sha256 prefix>.json
+│       ├── polar-bears.mobile.<sha256 prefix>.json
+│       ├── polar-bears.poster.<sha256 prefix>.svg
+│       ├── snow-circus.desktop.<sha256 prefix>.json
+│       ├── snow-circus.mobile.<sha256 prefix>.json
+│       └── snow-circus.poster.<sha256 prefix>.svg
 ├── halloween-default/
 │   └── 1.0.0/
 │       ├── manifest.json
 │       ├── cat.<sha256 prefix>.json   # one composition for every layout and story
 │       └── cat.poster.<sha256 prefix>.svg
+├── new-year-polar-bears/
+│   └── 1.0.0/                         # optional event; does not replace new-year
+│       ├── manifest.json
+│       ├── polar-bears.desktop.<sha256 prefix>.json
+│       ├── polar-bears.mobile.<sha256 prefix>.json
+│       └── polar-bears.poster.<sha256 prefix>.svg
 └── company-anniversary/
     └── 1.0.0/
         ├── manifest.json
@@ -303,6 +325,131 @@ spacing and a loose ribbon that hangs below the greeting during the handoff.
 Both static posters match the updated art. The stories, durations, composer
 contacts and required capabilities are unchanged. The JSON and SVG files are
 the authored source; publication does not generate them from Chat components.
+
+### Santa History Delivery
+
+New Year `1.3.0` adds the 27-second `santa-history-delivery` scene to the ordinary
+`new-year` event. The three existing scenes, their labels and their assets are
+preserved from `1.2.0`. Santa descends along conversation history, delivers gifts
+and leaves in a reindeer sleigh; collapsed or unavailable history uses a rope
+from above the viewport. Constrained layouts and reduced motion use the static
+poster. The native artwork is the accepted source from
+[Themes PR #190](https://github.com/epam/ai-dial-chat-themes/pull/190).
+
+Use a Chat build containing
+[Chat PR #9983](https://github.com/epam/ai-dial-chat/pull/9983). The new
+`interaction-history-ladder-v1` requirement belongs to Santa's scene, not the
+whole pack: clients without it omit Santa and keep supported scenes.
+Compatible Chat routes Santa only into the existing `happy new year` secret
+pool; a gift click never selects it. The phrase still chooses among the
+existing secret scenes, so it does not select Santa on every submission.
+
+To enable it through Config Studio (Chat schema `1.1.0` or later), activate all
+four `ui.celebrationDelivery.*` keys together in `MANAGED_CONFIG_ACTIVE_KEYS`,
+preserving its existing entries. Publish `ui.activeEventId: "new-year"` and:
+
+```json
+{
+  "ui.celebrationDelivery.mode": "prefer-external",
+  "ui.celebrationDelivery.revision": "santa-1",
+  "ui.celebrationDelivery.externalScenes": ["new-year/santa-history-delivery"],
+  "ui.celebrationDelivery.externalEvents": []
+}
+```
+
+Append Santa to any existing scene allowlist and preserve any external event
+IDs already in use. Explicit `UI_EVENT_*` environment values take precedence
+over Studio. For an environment-only deployment, set `UI_EVENT=new-year`,
+`UI_EVENT_DELIVERY_MODE=prefer-external`, append
+`new-year/santa-history-delivery` to `UI_EVENT_EXTERNAL_SCENES`, and change
+`UI_EVENT_DELIVERY_REVISION`. Keep `THEMES_CONFIG_URL` pointing at this service.
+Publishing the pack does not enable it for deployments using bundled scenes.
+
+For a Santa-only rollback, remove its allowlist entry. To roll back the whole
+pack, point `defaults.new-year` at the retained previous version and bump the
+catalog revision. Existing immutable assets are never edited.
+
+### Polar bears on the New Year gift trigger
+
+New Year `1.4.0` adds `polar-bears-workshop` to the ordinary `new-year` pack,
+preserving all four scenes from `1.3.0`, including Santa. The three bear assets
+are byte-identical to `new-year-polar-bears@1.0.0`; only their pack asset IDs
+change. Their 28-second story, desktop/mobile placement and static poster are
+unchanged. The existing separate bears event remains available.
+
+Keep `ui.activeEventId` set to `new-year`. With the four delivery keys activated
+for Config Studio as described above, publish:
+
+```json
+{
+  "ui.celebrationDelivery.mode": "prefer-external",
+  "ui.celebrationDelivery.revision": "new-year-1-4-0",
+  "ui.celebrationDelivery.externalScenes": [
+    "new-year/santa-history-delivery",
+    "new-year/polar-bears-workshop"
+  ],
+  "ui.celebrationDelivery.externalEvents": []
+}
+```
+
+Preserve any other allowlisted scenes and external events. An environment-only
+deployment can instead append `new-year/polar-bears-workshop` to
+`UI_EVENT_EXTERNAL_SCENES` with `UI_EVENT=new-year` and
+`UI_EVENT_DELIVERY_MODE=prefer-external`, then change its delivery revision.
+The existing gift button randomly selects the bears alongside other eligible
+click scenes. The bears never join the `happy new year` pool; Santa remains
+reserved for that phrase.
+
+Use a Chat build with `interaction-composer-carry-v1` (introduced in
+[Chat PR #9973](https://github.com/epam/ai-dial-chat/pull/9973)). The capability
+is required only by the bear scene, so clients without it keep the other
+supported scenes. Removing the bears' allowlist entry disables only that scene.
+For a whole-pack rollback, select retained `new-year-default@1.3.0` and bump
+the catalog revision; the separate bears event is unaffected.
+
+### Snow Circus in the New Year secret pool
+
+New Year `1.5.1` adds the penguin/snowman `snow-circus` scene to the standard
+pack, preserving every scene and asset from `1.4.0`. The catalog default is
+`new-year-default@1.5.1`. [Native source and rollout notes](./authoring/snow-circus/README.md)
+cover its editable Lottie/SVG, authored contact envelope and numerical budgets. Unsafe button locations use drawn snow to keep the cast inside the viewport.
+
+Use a Chat build supporting `interaction-button-props-v1`. Append
+`new-year/snow-circus` to the existing `UI_EVENT_EXTERNAL_SCENES` or managed
+`ui.celebrationDelivery.externalScenes` allowlist, keep the `new-year` event and
+`prefer-external` delivery, and change the delivery revision. For Config Studio,
+activate all four delivery keys as described above. Preserve other admitted
+scenes and events. Reload clients after rollout. The `happy new year` phrase randomly chooses Snow Circus alongside gift wrapping,
+reindeer takeoff and Santa. Ordinary gift clicks exclude Snow Circus and Santa.
+Use a Chat build with this secret-scene routing as well as the button-props adapter.
+
+The capability requirement is scene-local. Older clients omit Snow Circus while
+keeping the other supported scenes. Remove only its allowlist entry to disable it,
+or restore `new-year-default@1.4.0` with a new catalog revision for a pack rollback.
+Local preparation does not establish that these changes have been published.
+
+Validate its source with `node authoring/snow-circus/check.mjs` and run the
+publication checker and tests below.
+
+### Scene authoring
+
+The maintained [Santa History Delivery source](./authoring/santa-history-delivery/README.md)
+contains native desktop/mobile Lottie variants, a static poster, a scene descriptor
+and the accepted descent studies. Validate the complete source independently of
+the published catalog:
+
+```sh
+node authoring/santa-history-delivery/check.mjs
+```
+
+This stages a temporary catalog and runs the same publication checker without
+changing published assets or defaults. The complete variants and poster are
+published in `new-year-default@1.3.0`; the shorter studies remain authoring-only.
+See the authoring README for source identities and validation.
+
+The history validator also checks optional start-edge support, viewport flight
+references and bounds, and the constrained line slot used to reach the window top.
+These additions are part of `interaction-history-ladder-v1`.
 
 ### Composer-anchored scenes
 
@@ -368,6 +515,90 @@ Composition markers starting with `ct:` time the story, in actor frames: `ct:sec
 
 Every keyframe but the last of each property needs a hold or an easing: the player can throw while interpolating from a bare key (it did for a copy track's splice-edge keys), and Chat may remap the actor into any frame. The check also proves what the asset owes the player: at every splice edge each track visible there keeps its world pose (track plus that section's travel), and each track a section shows closes every cycle that section plays, with a keyframe at both edges, both within 0.25 units.
 
+### Composer-carry scenes
+
+The optional `new-year-polar-bears` event plays `polar-bears-workshop`: two bears
+tie a rope to the composer, try a small joint tug, pause, then pull its inert
+copy away with a gradually accelerating second tug. They return the decorated
+copy, untie the rope, and leave the lights visible briefly before restoring the
+page. Desktop artwork attaches beside the composer; mobile artwork attaches
+below its lower corners. The authored Lottie JSON and SVG are the source; no
+generator or Chat fixture is needed to publish them.
+
+`interaction-composer-carry-v1` requires `composer-anchor-v1` placement,
+`edge: "top"`, `fallback: "poster"`, `direction: "none"`, and no other
+`interaction-*` capability. Require the adapter on the scene only. The composition
+starts at frame zero and lasts at most 29,750 ms. Chat maps these named null layers:
+
+- `composer-carry`: exactly one unparented, opaque null with an identity transform.
+  Its position has 2–64 strictly ordered keyframes `[x, 0, 0]`, with `x` in
+  0–1000. The first key is `[0, 0, 0]` at frame zero and the last is the same at
+  `op`. Chat maps 1000 to an exit beyond the viewport and applies the same timing
+  and easing to the inert composer copy.
+- `composer-decoration`: exactly one direct child of the carrier, with an identity
+  transform and static position `[0, 0, 0]`. Draw its ornament across a 520-unit
+  reference width; Chat fits that width to the measured composer. Its opacity may
+  animate.
+- `composer-side` (optional): at most one opaque null, with an identity transform,
+  directly under the carrier. Its position is static or has 1–64 ordered keys
+  `[x, y, 0]`, where `x` in −1–1 spans the measured left/right edges and `y` in
+  0–1 spans its top/bottom. Put side actors and their contact rope beneath it.
+
+All top-level artwork must descend from the carrier, with unique layer indices
+and no missing or cyclic parents. Travel and side keys contain finite start
+values, no end values, no spatial tangents except `[0, 0, 0]`, and only hold 0/1.
+Paired temporal curves have finite values and x components in 0–1; missing
+curves mean linear interpolation. Do not add time remapping, stretch, auto
+orientation, rotation or skew to the slots.
+
+For a side composition, keep its full visible artwork below its attachment within
+`composition.h - anchorRect.y`. Chat checks room below the lowest authored side
+attachment using that extent and a 20 px viewport margin. A bottom-docked mobile
+composer without that room shows the poster. The adapter also requires an enabled
+textarea, no expanded composer menu, an untransformed composer and ancestors,
+and at most 300 nodes in its snapshot. Missing or ineligible composers, reduced
+motion and failures before playback starts use the poster. Failures after playback
+starts remove the scene. Input cancels the scene and restores the untouched draft,
+focus and selection.
+
+#### Enable the polar bears event
+
+`new-year-polar-bears@1.0.0` remains an independent event with its own static
+trigger and English labels. Selecting it switches the active event to the
+bears-only experience. To keep the ordinary New Year gift trigger and the other
+scenes, use [the ordinary pack integration](#polar-bears-on-the-new-year-gift-trigger)
+instead. The separate event's default and immutable assets are unchanged.
+
+Deploy a Chat release that supports `interaction-composer-carry-v1` before
+enabling the event. On the Chat API deployment, retain the correct
+`THEMES_CONFIG_URL` for this Themes release and set:
+
+```dotenv
+UI_EVENT=new-year-polar-bears
+UI_EVENT_DELIVERY_MODE=prefer-external
+UI_EVENT_EXTERNAL_EVENTS=new-year-polar-bears
+UI_EVENT_DELIVERY_REVISION=polar-bears-1-0-0
+```
+
+Append the event to any existing `UI_EVENT_EXTERNAL_EVENTS` allowlist; no
+`UI_EVENT_EXTERNAL_SCENES` entry is needed for an external-only event. After the
+deployment configuration takes effect, reload Chat. The start-page button
+"Play polar bears workshop" plays the single scene. Clients without the adapter
+cannot activate this event; there is no compiled bears fallback. Disable it by
+restoring the previous `UI_EVENT` and delivery policy, then reload open clients.
+The mutable index cache does not by itself refresh an already resolved event in
+an open tab.
+
+The 28-second assets have 7 layers each. Desktop is 255,420 B with 1,585
+keyframes and 1,957 authored vertices; mobile is 241,991 B with 1,409 keyframes
+and 1,965 vertices. The poster is 3,246 B. Native browser review measured 353 SVG
+nodes, within the scene's 800-node hard budget; the 320-node and 200 KiB targets
+were exceeded to retain separate foot/contact poses and the flexible wire and
+small bulbs. Review covered actual light/dark palettes at 360 and 1280 px,
+LTR/RTL, readable faces and composer text, poster fallback, cancellation, and
+natural-speed completion. These are correctness checks in a local development
+environment, not deployment performance benchmarks.
+
 ### Check
 
 Run the check before every pull request; CI runs it too:
@@ -377,7 +608,7 @@ node scripts/check-celebration-packs.mjs
 node --test scripts/check-celebration-packs.test.mjs
 ```
 
-The first command recomputes every size and hash and applies the same rules the Chat backend applies, plus the Lottie limits, the composer-anchor and slot rules, and the retention rule below. The second breaks one thing at a time in a copy of the published packs and proves that the first one rejects it: each kind of broken composer-anchor placement and outline slot, one case for every cat-borrow rule above, and the copy-track slot, marker, reference, override, pose and layer-cap rules. It also proves that tangents Chat treats as linear are accepted and that a file shared by two variants is reported once.
+The first command recomputes every size and hash and applies the same rules the Chat backend applies, plus the Lottie limits, the composer-anchor and slot rules, and the retention rule below. The second breaks one thing at a time in a copy of the published packs and proves that the first one rejects it: each kind of broken composer-anchor placement and outline slot, one case for every cat-borrow rule above, the copy-track slot, marker, reference, override, pose and layer-cap rules, composer-carry hierarchy, travel, side-slot and placement rules, and history-ladder station, marker, bounds, branch ownership and copy-visibility rules. It also proves that tangents Chat treats as linear are accepted and that a file shared by two variants is reported once.
 
 ### Publish a Pack Version
 
@@ -396,5 +627,5 @@ Publish in this order: resources, then the manifest, then `index.json`. Chat onl
 
 ### Retention
 
-Keep the version `defaults` names plus the previous one, so a rollback is one index change. The check fails when a pack directory holds more than three versions. Delete an older version, together with its `index.json` entry, in a separate change, and only once no `index.json` revision from the last 30 days names it.
+Keep the version `defaults` names plus the previous one, so a rollback is one index change. The check fails when a pack directory holds more than three versions, with one explicit exception: `new-year-default` may retain exactly `1.2.0`, `1.3.0`, `1.4.0` and `1.5.1` together so adding Snow Circus does not remove recently referenced immutable assets. Other four-version sets and any fifth version still fail. Retire this exception with the old version in a separate retention change after the window permits it. Delete an older version, together with its `index.json` entry, in a separate change, and only once no `index.json` revision from the last 30 days names it.
 

@@ -15,13 +15,12 @@ sources, check the reasoning and decide whether the experiment is worth doing.
 
 ## Run locally
 
-Use Python 3.11 to 3.14, Ollama and uv from the 0.11 series, starting at 0.11.32.
+Use Python 3.11 to 3.14, Ollama and uv 0.13.10 or later.
 From this folder, with Ollama running:
 
 ```bash
-uv sync --locked --all-groups
 ollama pull gemma3:4b
-uv run --locked abs.py
+uv run --locked --no-dev abs.py
 ```
 
 The menu walks through the topic, models and run settings. You can use one model throughout
@@ -31,7 +30,7 @@ not contact Ollama or the literature providers.
 For a run from the terminal:
 
 ```bash
-uv run --locked abstract-agent run \
+uv run --locked --no-dev abstract-agent run \
   --topic "Novel methods for language model compression" \
   --model gemma3:4b
 ```
@@ -74,7 +73,7 @@ The local settings, caches, knowledge database and generated outputs are exclude
 by the default ignore rules. Keep API keys in environment variables. More detail is in
 [privacy](docs/privacy.md) and [usage](docs/usage.md).
 
-The package version is **5.0.0**. The workflow and result schema are **6.0**.
+The package version is **5.0.1**. The workflow and result schema are **6.0**.
 They describe different parts of the project and are versioned separately.
 
 ## Keep exploring

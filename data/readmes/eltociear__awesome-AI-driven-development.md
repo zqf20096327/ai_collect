@@ -1,6 +1,6 @@
-<!-- [AI-Driven Development Summit is coming soon! Online streaming will also be available!](https://aid.connpass.com/event/411003/)
+[AI-Driven Development Summit is coming soon! Online streaming will also be available!](https://aid.connpass.com/event/411003/)
 
---- -->
+---
 
 
 ![Logo](/logo.png)
@@ -8,7 +8,7 @@
 
 <a href="https://github.com/sindresorhus/awesome"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome" height="18"></a>
 
-A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **609 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
+A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **611 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
 
 ## Contents
 
@@ -118,6 +118,7 @@ AI coding assistants and agents that work directly in your terminal or command l
 - [Atomic Agent](https://github.com/AtomicBot-ai/atomic-agent) - Local-first CLI and TUI coding agent that runs open-weight models entirely on your machine through a llama.cpp fork, with no account or API key required. Ships 56 built-in tools (browser, filesystem, git, memory, vision), MCP support, and a five-layer local memory system. Runs on macOS, Linux, and Windows.
 - [OB-1](https://github.com/Overbrilliant/ob-1) - Terminal coding agent that runs with no account, no API key and no card: an embedded router inside the CLI process answers the first message through keyless free providers using a signed bundled free-model catalog, with failover to your own keys (OpenRouter, OpenAI, Gemini, Groq) or local runtimes (Ollama, LM Studio, llama.cpp, vLLM, any OpenAI-compatible endpoint). Persistent SQLite project memory with an inspectable fact/relationship graph, repo map, MCP, and OS sandboxing (Seatbelt/bubblewrap). The keyless tier is a bootstrap path with variable model quality and shared limits. Apache-2.0, npm `@overbrilliant/ob1`.
 - [Borg](https://github.com/adelphidata/borg) - Security-first personal AI assistant and coding agent in Rust with a terminal UI, read-only Plan mode, goal loops gated on your checks, git worktrees, long-term memory, and a self-healing daemon
+- [Mel](https://openmel.dev) - Multi-agent, multi-model agentic terminal for Mac, Windows, Linux and VS Code, with configurable approvals for commands and file edits
 
 ## IDE Extensions
 
@@ -202,6 +203,7 @@ Frameworks and tools for orchestrating and managing multiple AI agents in develo
 - [GitAGU (Git Agent Unblock)](https://github.com/microsoft/gitagu) - A centralized platform for discovering, configuring, and integrating AI agents into your development workflow. Simplifies AI adoption across the entire Software Development Life Cycle
 - [Floki](https://github.com/FinnaAI/floki) - Floki creates a new paradigm for working with multiple AI coding agents in parallel, letting you build better software, faster with AI-powered assistance.
 - [Omnara](https://github.com/omnara-ai/omnara) - Get real-time visibility into what your agents are doing, and respond to their questions instantly from a single dashboard on web and mobile.
+- [Alook](https://github.com/alookai/alook) - Open-source, local-first group chat where people and local coding agents collaborate in shared rooms.
 - [nous](https://github.com/TrafficGuard/nous) - The open-source TypeScript platform for autonomous AI agents and LLM based workflows
 - [crewai-factory-crew](https://github.com/opahopa/crewai-factory-crew) - Generate fully functional crews based on the crew's purpose and desired output data
 - [Symphony v0.2](https://github.com/sincover/Symphony) - A sophisticated multi-agent software development framework designed to orchestrate AI agents in a structured, efficient workflow
@@ -672,5 +674,4 @@ Frameworks, libraries, and configurations for building and enhancing AI coding a
 - [Claude Code Subagents Collection](https://github.com/wshobson/agents) - A comprehensive collection of specialized AI subagents for Claude Code, designed to enhance development workflows with domain-specific expertise.
 - [CCPlugins](https://github.com/brennercruvinel/CCPlugins) - Best Claude Code framework that actually save time. Built by a dev tired of typing "please act like a senior engineer" in every conversation.
 - [knowhub](https://github.com/yujiosaka/knowhub) - Synchronize AI coding–agent knowledge files (rules, templates, guidelines) across your project.
-- [Claude Code Commands & Tasks (CCCT)](https://github.com/IgorWarzocha/CCCT) - Professional workflow system for Claude Code with universal slash commands and integrated task management.
-- [Polka Codes](https://github.com/polka-codes/polka-codes) - a powerful TypeScript-based AI coding assistant framework that helps developers write, improve, and maintain code through natu
+- [Claude Code Commands & Tasks (CCCT)](https://github.com/IgorWarzoch

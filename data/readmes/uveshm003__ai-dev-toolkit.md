@@ -5,7 +5,7 @@
 > Each entry says **what it does**, **when to use it** and **how to install it**. Within every section, the strongest picks come first.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/last%20verified-2026--11--19-2ea44f?style=flat-square" alt="Last verified 2026-11-19">
+  <img src="https://img.shields.io/badge/last%20verified-2026--11--24-2ea44f?style=flat-square" alt="Last verified 2026-11-24">
   <a href="https://github.com/uveshm003/ai-dev-toolkit/actions/workflows/link-check.yml"><img src="https://img.shields.io/github/actions/workflow/status/uveshm003/ai-dev-toolkit/link-check.yml?style=flat-square&label=links" alt="Link check"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC0-blue?style=flat-square" alt="License: CC0"></a>
 </p>
@@ -34,6 +34,7 @@
 
 ## 🆕 What's new
 
+- **2026-11-24:** Six new tools: [Open Code Review](#open-code-review) (Alibaba) and [Plannotator](#plannotator) for review, [Modern Web Guidance](#modern-web-guidance) (Chrome, Edge, Firefox and MDN), [Astryx](#astryx) (Meta's design system), [Marionette MCP](#marionette-mcp) for Flutter and [/brag](#brag) for launch videos. All existing repos re-checked: none archived or moved.
 - **2026-11-19:** Tags on every entry, [Pick your stack](#-pick-your-stack) recipes, side-by-side comparisons of [workflows](#which-workflow), [spec tools](#which-spec-tool) and [browser tools](#which-browser-tool), and a weekly link check. Every link and install command re-verified.
 - **2026-11-19:** Expanded into the AI Dev Toolkit: the full SDLC, writing and a [Karpathy](#-andrej-karpathy) section.
 - **2026-11-18:** First version of the list.
@@ -96,7 +97,7 @@ Not sure where to start? Pick the row that sounds like you and install those, no
 | You are… | Install these | Why this mix |
 |---|---|---|
 | 🚀 **Solo builder** | [gstack](#gstack) · [Karpathy Guidelines](#karpathy-guidelines) · [Context7](#context7) · [Impeccable](#impeccable) · [ccusage](#ccusage) | A whole team's judgment, guardrails against bloat, real docs, a UI that doesn't look AI-made, and a check on what it all costs. |
-| 💙 **Flutter dev** | [Flutter Agent Plugins](#13-mobile) · [Dart Skills](#13-mobile) · [Context7](#context7) · [Matt Pocock's Skills](#matt-pococks-skills) · [Karpathy Guidelines](#karpathy-guidelines) | Official Flutter and Dart know-how, current package docs, and `/tdd` for widget tests. |
+| 💙 **Flutter dev** | [Flutter Agent Plugins](#13-mobile) · [Dart Skills](#13-mobile) · [Marionette MCP](#marionette-mcp) · [Context7](#context7) · [Matt Pocock's Skills](#matt-pococks-skills) | Official Flutter and Dart know-how, an agent that taps through your running app to check its own work, current package docs, and `/tdd` for widget tests. |
 | 👥 **Team lead** | [Spec Kitty](#spec-kitty) · [Elephant-Goldfish Model](#elephant-goldfish-model) · [Claude Code Action](#claude-code-action) · [Claude Code Security Review](#claude-code-security-review) · [SkillSpector](#skillspector) | Shared specs whichever agent each teammate uses, fresh-eyes design review, an AI reviewer on every PR, and a safety scan before a skill goes team-wide. |
 | ✍️ **Writer** | [Humanizer](#humanizer) · [Marketing Skills](#marketing-skills) · [Anthropic Document Skills](#anthropic-document-skills) · [Diagram Design](#diagram-design) | Text that sounds human, copy that converts, real Word and PDF files, and diagrams worth publishing. |
 | 🎓 **Learning AI** | [Karpathy's learning path](#learn-how-llms-actually-work) · [LearnHarness](#learnharness) · [LLM Council](#llm-council) · [autoresearch](#autoresearch) | Build the models from scratch, learn with a tutor that tracks what you know, compare models, then let an agent run experiments. |
@@ -540,6 +541,29 @@ Run `/setup-matt-pocock-skills` once per repo.
 
 **Best for:** agents that over-engineer or rewrite things nobody asked them to.
 
+### Modern Web Guidance
+
+[GoogleChrome/modern-web-guidance](https://github.com/GoogleChrome/modern-web-guidance) ![stars](https://img.shields.io/github/stars/GoogleChrome/modern-web-guidance?style=flat-square&label=%E2%AD%90)
+
+🏢 Google Chrome, with the Edge, Firefox and MDN teams · 🤖 Claude Code, Codex, Copilot CLI, Antigravity, or any skills agent
+
+Models learned the web from years of legacy code, so they reach for heavy JavaScript and polyfills where the browser now has a native answer. This skill feeds the agent short, expert-written guides on 269 modern web features (popovers, anchor positioning, view transitions, container queries and more), with browser support data. It can also scan a codebase for legacy patterns: `legacy-scan .`
+
+<details>
+<summary>Install</summary>
+
+```bash
+npx modern-web-guidance@latest install   # interactive; needs Node 22+
+```
+
+In Claude Code you can use the plugin instead: `/plugin marketplace add GoogleChrome/modern-web-guidance`, then `/plugin install modern-web-guidance@googlechrome`.
+
+</details>
+
+**Best for:** front-end work: lighter, faster, more accessible pages.
+
+**Heads-up:** it sends anonymous usage data to Google, including the search queries your agent makes. Turn it off with `export DISABLE_TELEMETRY=1`. If you installed it from Claude Code's built-in plugin directory, switch to the `googlechrome` marketplace above: the built-in copy is stuck on an old version ([details](https://github.com/GoogleChrome/modern-web-guidance-src/issues/3533)).
+
 ### Anthropic Skills
 
 [anthropics/skills](https://github.com/anthropics/skills) ![stars](https://img.shields.io/github/stars/anthropics/skills?style=flat-square&label=%E2%AD%90)
@@ -735,6 +759,27 @@ npx skills@latest add emilkowalski/skills
 
 </details>
 
+### Astryx
+
+[meta/astryx](https://github.com/meta/astryx) ![stars](https://img.shields.io/github/stars/meta/astryx?style=flat-square&label=%E2%AD%90)
+
+🏢 Meta · 🤖 any agent that reads `AGENTS.md` or `CLAUDE.md` · React 19+
+
+Not a skill but a design system built for agents to use. It grew inside Meta over eight years and powers 13,000+ of its apps: 150+ accessible components, seven themes, dark mode and templates. `init` writes the Astryx guide into your `AGENTS.md`/`CLAUDE.md`, and the CLI serves component docs, so your agent builds from real components instead of inventing new ones. It's in beta.
+
+<details>
+<summary>Install</summary>
+
+```bash
+npm install @astryxdesign/core @astryxdesign/theme-neutral @stylexjs/stylex
+npm install -D @astryxdesign/cli
+npx @astryxdesign/cli init
+```
+
+</details>
+
+**Best for:** new React apps where you want a consistent UI without designing every screen.
+
 ---
 
 ## 6. Test and debug
@@ -816,6 +861,8 @@ claude mcp add playwright npx @playwright/mcp@latest
 
 ## 7. Review and ship
 
+Check what the agent built before it ships.
+
 ### Claude Code Action
 
 [anthropics/claude-code-action](https://github.com/anthropics/claude-code-action) ![stars](https://img.shields.io/github/stars/anthropics/claude-code-action?style=flat-square&label=%E2%AD%90)
@@ -833,6 +880,52 @@ Claude in your GitHub PRs and issues. Mention it to review a PR, answer question
 ```
 
 </details>
+
+### Open Code Review
+
+[alibaba/open-code-review](https://github.com/alibaba/open-code-review) ![stars](https://img.shields.io/github/stars/alibaba/open-code-review?style=flat-square&label=%E2%AD%90)
+
+🏢 Alibaba · 🔑 model API key, *optional* (not needed in delegation mode) · 🤖 Claude Code, Codex, Cursor, Kimi Code, or any skills agent
+
+Alibaba's internal AI code reviewer, used by tens of thousands of its developers for two years, now open source. Plain code decides which files get reviewed and groups related ones, and the agent only does the reviewing, so it doesn't skip files on a big diff or point at the wrong line. On Alibaba's benchmark of 200 real PRs, it beat Claude Code on precision and F1 with the same model and used about 1/9 of the tokens. It finds fewer issues in total: it's tuned for less noise. It reviews diffs (`ocr review`) or whole folders (`ocr scan`).
+
+<details>
+<summary>Install</summary>
+
+```bash
+npx skills add alibaba/open-code-review
+# or the CLI on its own:
+npm install -g @alibaba-group/open-code-review
+```
+
+No API key? Pick the `open-code-review-delegate` skill: your own agent does the review, following OCR's pipeline. Needs Git 2.41+.
+
+</details>
+
+**Best for:** large PRs, and teams tired of noisy AI review comments.
+
+### Plannotator
+
+[backnotprop/plannotator](https://github.com/backnotprop/plannotator) ![stars](https://img.shields.io/github/stars/backnotprop/plannotator?style=flat-square&label=%E2%AD%90)
+
+🤖 Claude Code, Codex, Copilot CLI, Gemini CLI, OpenCode, Kiro, Droid, Amp, Pi
+
+Review your agent's work in the browser, the way you'd review a teammate's. When the agent finishes a plan, it opens in a local page where you highlight lines, comment and send the feedback straight back. It does the same for diffs, GitHub PRs and GitLab MRs, HTML pages and even your running app on `localhost`. For a big diff, **Guide** sorts the change into chapters, the most important first.
+
+<details>
+<summary>Install (Claude Code)</summary>
+
+```bash
+curl -fsSL https://plannotator.ai/install.sh | bash
+```
+
+Then in Claude Code: `/plugin marketplace add backnotprop/plannotator`, `/plugin install plannotator@plannotator`, and restart. Other agents: see the [setup table](https://github.com/backnotprop/plannotator#install).
+
+</details>
+
+**Best for:** reading a plan properly before the agent starts coding.
+
+**Heads-up:** you can share a plan as a link. Large shares are uploaded encrypted and expire after 7 days, but anyone with the full link can read them. Turn sharing off with `PLANNOTATOR_SHARE=disabled`.
 
 ### GitHub MCP Server
 
@@ -1054,6 +1147,28 @@ npx skills add wheresryan22/anatomy -g
 
 </details>
 
+### /brag
+
+[latent-spaces/brag](https://github.com/latent-spaces/brag) ![stars](https://img.shields.io/github/stars/latent-spaces/brag?style=flat-square&label=%E2%AD%90)
+
+🤖 Claude Code, Codex, OpenCode, Antigravity, or any skills agent
+
+"You built it. Now brag." Turns the project you just made into a short launch video, with music, motion and share copy, in one command. You get a `brag-output/` folder with the plan, the copy and `brag.mp4`. Steer the tone with `/brag --tone "..."`.
+
+<details>
+<summary>Install (Claude Code)</summary>
+
+```
+/plugin marketplace add latent-spaces/brag
+/plugin install brag@brag
+```
+
+Other agents: `npx skills add https://github.com/latent-spaces/brag --skill brag`. Needs Node 22+, FFmpeg and the Hyperframes CLI (`npx hyperframes doctor` checks it).
+
+</details>
+
+**Best for:** launch posts for side projects.
+
 ---
 
 ## 12. Writing
@@ -1119,13 +1234,36 @@ The skills behind Claude's file creation: write and edit **Word, PDF, PowerPoint
 
 ## 13. Mobile
 
-All official, from the framework teams themselves.
+Official skills from the framework teams, plus a way for your agent to drive the running app.
 
 | Tool | What it does | Install |
 |---|---|---|
 | 🏢 [Flutter Agent Plugins](https://github.com/flutter/agent-plugins) | From the Flutter team: widget and integration tests, responsive layouts, layout-overflow fixes, architecture, JSON serialization | [docs.flutter.dev/ai/get-started](https://docs.flutter.dev/ai/get-started) |
 | 🏢 [Dart Skills](https://github.com/dart-lang/skills) | From the Dart team; pair them with the above | `npx skills add dart-lang/skills --skill '*' --agent universal --yes` |
 | 🏢 [Expo Skills](https://github.com/expo/skills) | From the Expo team: build, deploy, upgrade and debug Expo and React Native apps | `npx skills@latest add expo/skills --skill '*'` |
+
+### Marionette MCP
+
+[leancodepl/marionette_mcp](https://github.com/leancodepl/marionette_mcp) ![stars](https://img.shields.io/github/stars/leancodepl/marionette_mcp?style=flat-square&label=%E2%AD%90)
+
+🤖 Claude Code, Cursor, Codex, Gemini CLI, Copilot, or any MCP client
+
+"If you know Playwright MCP: this is that, for Flutter." Your agent connects to the Flutter app you run in debug mode, then sees the screen, taps, types, scrolls, reads the logs and hot reloads. It can also reach system dialogs outside Flutter on Android and iOS, and turn a run that worked into [Patrol](https://github.com/leancodepl/patrol) tests. From LeanCode, the makers of Patrol.
+
+<details>
+<summary>Install (Claude Code)</summary>
+
+```bash
+flutter pub add marionette_flutter   # then call MarionetteBinding.ensureInitialized() in debug builds
+dart pub global activate marionette_mcp
+claude mcp add --transport stdio marionette -- marionette_mcp
+```
+
+Run the app with `flutter run` and give the agent the `ws://…/ws` URL it prints. Using your own design system instead of Flutter's widgets? It needs [one config step](https://marionette.leancode.co/docs/configure/) first.
+
+</details>
+
+**Best for:** letting the agent check its own UI changes instead of you tapping through the app.
 
 ---
 

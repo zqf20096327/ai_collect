@@ -12,7 +12,7 @@ PipesHub exposes a remote MCP endpoint over **Streamable HTTP** at `/mcp`. MCP C
 >
 > **Claude Code plugin:** `/plugin marketplace add pipeshub-ai/mcp-server`, then `/plugin install pipeshub@pipeshub`, adds the MCP server, the skill, and the `/pipeshub:ask` and `/pipeshub:setup` commands. It connects to `${PIPESHUB_MCP_URL:-https://app.pipeshub.com/mcp}` with `Authorization: Bearer ${PIPESHUB_MCP_TOKEN}`; export both in your shell (self-hosted: set the URL to `https://<your-instance>/mcp`), then restart Claude Code.
 
-> **Cursor plugin:** a Cursor team admin imports this repository as a team marketplace (Import from Repo; `.cursor-plugin/marketplace.json`, plugin in [`cursor-plugin/`](./cursor-plugin/README.md)) to add the local MCP server, the docs search server, the skill, and the `ask` and `setup` commands. Sign in once with `pipeshub login`; no token goes in the config.
+> **Cursor plugin:** a Cursor team admin imports this repository as a team marketplace (Import from Repo; `.cursor-plugin/marketplace.json`, plugin in [`cursor-plugin/`](./cursor-plugin/README.md)) to add PipesHub's remote MCP server, the docs search server, the skill, and the `ask` and `setup` commands. The server needs its URL, `<pipeshub-instanceurl>/mcp`: the team admin sets it in the dashboard; on an individual install Cursor does not ask, so open Customize → PipesHub → **Configure**, enter **PipesHub MCP URL**, and click **Save**. Then click **Authenticate** on the `pipeshub` server and sign in with OAuth; no token goes in the config. Self-hosted: see the [plugin README](./cursor-plugin/README.md#self-hosted).
 >
 > **Looking for the tool reference?** See [TOOLS.md](./TOOLS.md) for descriptions, arguments, and a decision guide for each tool the MCP server exposes (`pipeshub_chat`, `pipeshub_search`, `pipeshub_get_record_content`, `pipeshub_download_record`, `pipeshub_directory`, `pipeshub_sources`, `pipeshub_agents`). Searching and reading records is the recommended default; `pipeshub_chat` is optional (see [Leaving `pipeshub_chat` out](#leaving-pipeshub_chat-out)).
 >
@@ -56,7 +56,7 @@ The `/.well-known/oauth-protected-resource/mcp` discovery endpoint lists the sco
 | `kb:read`, `connector:read`, `config:read` | `pipeshub_sources`, `pipeshub_get_record_content`, `pipeshub_download_record`, `pipeshub_indexing_status` |
 | `kb:write`, `kb:upload` | `pipeshub_create_collection`, `pipeshub_upload` |
 | `connector:write`, `connector:sync` | `pipeshub_add_web_source` |
-| `user:read`, `team:read`, `usergroup:read` | `pipeshub_directory` |
+| `user:read`, `team:read` | `pipeshub_directory` |
 | `code:read` | The `pipeshub_code_*` tools |
 
 Discovery also lists `offline_access`. It is not a tool scope: it lets the client get a refresh token, so it stays signed in instead of signing in again when its access token expires.

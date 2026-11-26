@@ -1,6 +1,6 @@
-# korean-humanizer
+# Korean Humanizer for AI-Generated Korean Text
 
-> A skill and prompt for editing awkward Korean AI prose while preserving meaning.
+> Edit awkward phrasing in AI-generated Korean text while keeping the original meaning and tone. Use Korean Humanizer as a skill in Claude Code or Codex, or as a standalone prompt in another LLM.
 
 [한국어](README.ko.md) · [中文](README.zh-CN.md)
 

@@ -2,9 +2,9 @@
 Use repository-root paths for local files (docs/images/logo.png, LICENSE) so they open on every
 branch. Link to the guides in this README with absolute GitHub URLs so the npm copy opens the
 rendered guides and their section links. Put pictures in docs/images/. The package omits GIFs
-from that directory. Write links and pictures as inline Markdown links or as double-quoted src,
+and WebPs from that directory. Write links and pictures as inline Markdown links or as double-quoted src,
 srcset or href attributes. Image descriptors in srcset are preserved.
-Other forms are not rewritten for npm.
+Other forms of relative path are not rewritten for npm.
 npm resolves no relative path, so the release rewrites each one in the packaged copy
 (apps/backend/src/release/npm-readme.ts): a file the package carries opens from
 https://unpkg.com/alpacawork@<version>/<path>. Pictures outside the package are served from
@@ -12,12 +12,15 @@ https://raw.githubusercontent.com/alpacakit/alpacawork/<release-commit>/<path>.
 Other links outside the package open https://github.com/alpacakit/alpacawork/blob/main/<path>.
 The setup guide an AI downloads uses a GitHub raw URL so the AI can read the Markdown directly.
 GitHub plays a video only from the URL it gives when the file is uploaded on github.com, written on
-a line of its own; it drops a <video> tag that points anywhere else, and npm shows such a URL as
-plain text.
+a line of its own; it drops a <video> tag that points anywhere else. The packaged copy turns that
+line into an explicit link to the video. To change a demo video, attach the new file to a pull
+request comment (gh pr comment --attach) and write the URL GitHub gives it.
 The name at the top is a picture (wordmark.png, wordmark-dark.png for dark pages) so that it shows
 larger than a heading can; its alt text carries the name.
-The pictures show made-up data. This file and its translations use the dark-theme pictures
-(*-dark.png); README.ja.md shows the Japanese screen (*-dark-ja.png), the others the English one.
+The pictures and videos show made-up data on the dark-theme screens. The demo under the introduction
+is an animated WebP drawn as a rounded card with alpha, so it sits on light and dark pages alike
+(demo-dark.webp). Each README shows the screens in its own language: demo-dark-<lang>.webp in the
+translations, and each plays its own upload of the demo video.
 The diagram at the top is drawn in each README's language (hero.gif, hero-dark.gif for this file;
 hero-<lang>.gif, hero-dark-<lang>.gif for the others) and switches with the page theme in a <picture>;
 its first and last frames are the finished picture.
@@ -42,7 +45,7 @@ to README.md#install): keep those headings, or change the links with them.
 <h3 align="center">Run all your AI agents from one chat.</h3>
 
 <p align="center">
-  Write a request. Claude Code and Codex on your machine split it into tasks and run them in parallel.<br/>
+  Write a request. AI agents on your machine, such as Claude Code and Codex, split it into tasks and run them in parallel.<br/>
   You answer their questions and check the results. It works from your phone too.
 </p>
 
@@ -64,10 +67,10 @@ to README.md#install): keep those headings, or change the links with them.
   </picture>
 </p>
 
-alpacawork is a tool (an AI harness) that runs the Claude Code and Codex agents already installed on your PC and assigns work to them. Write what you want in one chat box, and your point of contact, an AI called the coordinator, turns it into tasks, assigns them to other AIs and tracks progress. You do three things: ask, answer questions, and check the results. You can use it from your phone in the same way.
+alpacawork is an orchestrator for the AI coding agents already on your PC, such as Claude Code and Codex: it hands them work and keeps track of it. Write what you want in one chat box, and your point of contact, an AI called the coordinator, turns it into tasks and assigns them to other AIs. You do three things: ask, answer questions, and check the results. You can use it from your phone in the same way.
 
 <p align="center">
-  <img src="docs/images/pc-phone-dark.png" alt="alpacawork in a PC browser, with a list of ten tasks in progress and three awaiting review beside an open task's report, and a phone on the right showing the same report" width="820">
+  <img src="docs/images/demo-dark.webp" alt="A request typed into the phone's chat box becomes three tasks that run in parallel in the PC's list; a result is checked and a swipe marks its task complete, and a question from the AI is answered by picking an option; then the phone and the PC side by side" width="800">
 </p>
 
 ## Install
@@ -100,6 +103,10 @@ In a terminal, `alpacawork open` also opens it.
 
 ## What it does
 
+See the whole flow on the real screens, from sending a request to marking a task complete (about 100 seconds, no sound).
+
+https://github.com/user-attachments/assets/ab940260-e8aa-4810-bab6-0495a5207611
+
 - **Write every request in one chat box.** The coordinator turns each request into a task and hands it to an AI. You never have to switch chats or AIs from one job to the next.
 - **AI manages several AIs at once.** To add to or change work in progress, you only tell the coordinator. Write "For all three tasks in progress, also check the phone layout," and the coordinator gives that instruction to each AI working on them.
 - **Describe a workflow in words, and the AIs carry it out together.** Even an involved one, such as "Make three proposals, each with a different model. Combine them into one, have another AI review it, and fix it before you report," is carried out as you described it: AI manages the steps, and the AIs hand work to one another.
@@ -119,6 +126,7 @@ In a terminal, `alpacawork open` also opens it.
 - [Getting started](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md): install, make one request, and check it
 - [Documentation home](https://github.com/alpacakit/alpacawork/blob/main/docs/README.md): every page, including how to use it, settings and troubleshooting
 - Please report bugs in [Issues](https://github.com/alpacakit/alpacawork/issues)
+- Release announcements are posted on X at [@codemafia0000](https://x.com/codemafia0000)
 
 ## License
 

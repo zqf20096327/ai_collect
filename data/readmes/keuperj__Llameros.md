@@ -32,6 +32,18 @@ deployment. No real accounts or credentials are shown.
 
 Host telemetry, runtime controls, loaded models, and key management.
 
+In **Usage history → Hardware usage**, shaded sections mark dashboard benchmark
+runs. Llameros samples host CPU, RAM, and each GPU about once per second during
+a benchmark when hardware probes respond promptly. These are host-wide readings,
+not measurements attributed exclusively to the model being benchmarked.
+For replicated deployments, the six speed cases measure one replica. The
+sustained-load phase first checks all replicas concurrently, then balances
+requests across them. The concurrent check is separate from the sustained
+requests-per-minute score, and the pool benchmark requires all configured
+replicas to be ready. At low request rates, workers may
+take turns rather than run simultaneously. A sharded deployment has only one
+runtime, which spans its assigned GPUs.
+
 ![Admin board showing host metrics, a loaded model, and API key management](docs/screenshots/admin-board.png)
 
 ### User board

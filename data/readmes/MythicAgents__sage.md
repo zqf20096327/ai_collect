@@ -37,12 +37,6 @@ services, and Sage-local attack artifacts are not admissible proof of an objecti
 > understood: an autonomous agent driving a C2 carries real risk of unintended impact on a live network. Weigh
 > production use very carefully, and prefer labs and authorized engagements until Sage has matured.
 
-> **Mythic target.** Native chat containers do not exist before Mythic v4. The 0.3.0 release qualification runs one
-> supervised GOAD objective on Mythic `v4.0.8`, and its GitHub release notes report the result. The last live
-> qualification recorded in this repository is 0.1.0-beta's, on tag `v4.0.0rc5` at commit
-> `a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916`. Other Mythic v4 builds may work but have not been qualified. See
-> [Limitations](#limitations).
-
 ## Contents
 
 - [How Sage works](#how-sage-works)
@@ -250,10 +244,7 @@ strategy.
 
 ## Requirements
 
-- **Mythic v4.** The 0.3.0 release qualification runs on `v4.0.8`; its GitHub release notes report the result.
-  `v4.0.0rc5` at commit `a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916` is the last live-qualified target recorded in
-  this repository (0.1.0-beta). Earlier Mythic versions have no native chat-container support; other Mythic v4
-  revisions have not been live-qualified.
+- Requires Mythic v4.
 - Python 3.14 and a repository virtual environment.
 - Model-provider credentials or an OpenAI-compatible endpoint.
 - For the live-qualified graph path, BloodHound CE 9.5.1 plus [BloodHound MCP](https://github.com/mwnickerson/bloodhound_mcp)
@@ -326,8 +317,10 @@ into the container: `sage.db` and `.phoenix/phoenix.db`. On macOS, Docker Deskto
 directory through a file-sharing layer that does not support SQLite's locking. SQLite then reports
 `unable to open database file`.
 
-Move both databases to a path inside the container. Add these lines to `InstalledServices/sage/.env`, either
-from the Mythic UI's container file browser or from your Mythic directory, then restart the Sage container:
+Move both databases to a path inside the container. Add two lines to Sage's `.env`, then restart the Sage
+container. In the Mythic UI's container file browser, `.env` is in the top folder (the browser opens inside
+Sage's service directory). On the Mythic host it is `InstalledServices/sage/.env`, and these commands, run from
+your Mythic directory, append the lines there:
 
 ```bash
 echo 'PHOENIX_WORKING_DIR=/opt/sage_data' | sudo tee -a InstalledServices/sage/.env
@@ -451,6 +444,7 @@ the token has no read scope for.
 | `/state remove <#>[,…] [--reason <text>]` · `/state restore <#>[,…]` · `/state invalidate <#>[,…]` | Retract a row, undo a retraction, or mark a row "no longer holds", by hop number (the `#` column) or hop id. Rows are kept and numbered; no command marks a row `achieved` without verified evidence |
 | `/state wipe` | Retract every row and every current graph fact; nothing is deleted or renumbered |
 | `/mode [conversation\|supervised\|auto]` | Show or switch the channel's mode |
+| `/model [name]` | Show this chat's model, or change it in the chat's Model setting; the conversation continues |
 | `/list` | List active Sage chat sessions |
 | `/tools` | List Sage's public Mythic tool functions, descriptions, and access requirements |
 | `/tools staged` | List the binaries in Sage's `tools/` drop zone: type, architecture, matching TTPs, and whether Mythic already holds them |
@@ -459,6 +453,7 @@ the token has no read scope for.
 | `/bloodhound [force] [dir]` | Connect, report, or rebind the BloodHound MCP — see [BloodHound](#bloodhound) |
 | `/mcp <list\|tools\|call\|connect\|disconnect\|policy>` | Manage MCP servers — see [Connecting other MCP servers](#connecting-other-mcp-servers) |
 | `/sandbox [shell\|python] <code>` | Run an isolated local snippet (no network or host mounts; needs no Mythic scope) |
+| `/acp [status\|connect codex\|models\|model <id>\|disconnect]` | Connect this channel to an optional, separately deployed Codex worker and choose its model; configuration only, no prompt is sent — set up the worker with [`container/codex/SETUP.md`](Payload_Type/sage/container/codex/SETUP.md) |
 
 `/state` is available in conversation, supervised and auto modes. Its ledger is shared across
 chats in the same operation engagement and persists once written. A new engagement can show an
@@ -538,7 +533,7 @@ a payload's commands does not establish support for every automated capability o
 
 See [payload adapters and command discovery](docs/reference/TOOLS_AND_CAPABILITIES.md#payload-adapters-and-command-discovery)
 for the profile mappings and approval/alias boundary. An implemented profile is separate from live validation;
-the live-qualified payload remains Apollo in the 0.1.0-beta configuration described under [Limitations](#limitations).
+live qualification has used Apollo only (see [Limitations](#limitations)).
 
 The complete tool and capability reference is in
 [docs/reference/TOOLS_AND_CAPABILITIES.md](docs/reference/TOOLS_AND_CAPABILITIES.md). Because the exposed set is
@@ -559,8 +554,10 @@ chain, first non-empty wins:
 
 `Payload_Type/sage/.env` is **committed on purpose**, which is unusual and deliberate. Most projects ship
 a `.env.example` you copy — under Mythic that would mean getting a shell inside the container. Shipping the
-real file means you open it from the **Mythic web UI**, browse the Sage chat container's files, edit, save,
-and restart the container. No shell, no `docker cp`, no `sudo`.
+real file means you edit it from the **Mythic web UI**: open the Sage chat container's files (Installed
+Services → Chat → `sage` → View Files), where `.env` is in the top folder, edit it, and save. Editing needs no
+shell, no `docker cp`, and no `sudo`. The change applies after a container restart, and Mythic's web UI has no
+restart control as of v4.0.8, so run `sudo ./mythic-cli restart sage` on the Mythic host.
 
 It ships with every line commented out, so cloning Sage sets nothing.
 
@@ -604,6 +601,10 @@ Model settings resolve through the chain above. The main settings are:
 | `autonomous_solve` | Enable objective-led controller execution; supervised mode still requires approval for each guarded action. Ignored in conversation mode, which stays read-only |
 | `policy_mode` | `hybrid` (default), `symbolic`, or `llm` capability selection |
 | `max_steps` | Model-step ceiling per chat request; unset defaults to `200`, `0` means unlimited |
+| `SAGE_OPENAI_API` | **OpenAI API**: blank keeps the adapter's usual route; `chat_completions` or `responses` selects one (OpenAI provider only) |
+| `SAGE_OPENAI_ACCESS_PROGRAM` | **OpenAI Daybreak**: `standard` (Off), `daybreak_blue` or `daybreak_red`. Any value, Off included, requires `SAGE_OPENAI_API=responses`; blank sends Off on Responses |
+| `SAGE_OPENAI_SAFETY_IDENTIFIER` | **OpenAI Safety Identifier**: a stable pseudonym for the person using the chat, sent as `safety_identifier` |
+| `SAGE_REASONING_EFFORT` | **Reasoning Effort**: blank sends no effort (the provider's default for the model); `none`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max` is sent as chosen (OpenAI provider only) |
 
 **Providers.** The four above are the tested set. Sage builds the model through LangChain's `init_chat_model`, so
 other providers it supports may work but are unverified. Bedrock is the only provider with dedicated AWS
@@ -615,6 +616,52 @@ model name alone; record the provider and route for live runs.
 and gateways implement — so you can set `API_ENDPOINT` to any server that exposes it: a self-hosted model, an
 internal gateway, or a proxy. For example, run a [LiteLLM](https://docs.litellm.ai/docs/simple_proxy) proxy and
 point `API_ENDPOINT` at it to reach 100+ providers behind a single OpenAI-compatible endpoint.
+
+**OpenAI Responses and [Daybreak](https://developers.openai.com/api/docs/guides/daybreak).** Some OpenAI models are
+served only on the Responses API, including the -cyber models from GPT-5.6 Cyber on. Set **OpenAI API** to
+**Responses** and keep `API_ENDPOINT` as the base URL (`https://api.openai.com/v1`); Sage adds `/responses` itself.
+Responses requests are stateless (`store: false`): Sage keeps the conversation and sends it, with the model's
+encrypted reasoning, on each request. On Responses, Sage always names the Daybreak program and sends **Off**
+(`standard`, standard safeguards) unless you choose Blue or Red, so a project's own default program is never used
+implicitly. Blue or Red requires an OpenAI project approved for that program. GPT-6 Cyber uses **Responses + Red**
+and needs Daybreak Red approval, separate model approval, a non-default project with access enabled, and an
+allowlisted sending IP; ZDR projects also need Private Safety Processing. An **OpenAI Safety Identifier** is
+optional for every model; OpenAI [recommends
+one](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers) so it can act
+on a single user instead of the whole organization. Sage never derives one from a Mythic username; use the same
+pseudonym for the same person. Invalid combinations fail before any request: any **OpenAI Daybreak** value, Off
+included, without **OpenAI API = Responses** (wherever the value comes from: the chat, a user secret or the
+environment), or any of these settings with a non-OpenAI provider. When the provider rejects a route (for example
+a Responses-only model on Chat Completions, or a Daybreak access error), the error names the setting to change and
+says whether the chat continues.
+Changing **Model** (or running `/model <name>`), **OpenAI API**, **OpenAI Daybreak**, **OpenAI Safety Identifier** or
+**Reasoning Effort** continues the same chat with its conversation, and a fix made in the OpenAI project without
+changing Sage's settings is retried in the same chat. Changing the API key, provider or API endpoint starts a new
+chat. Sage never switches the model, provider, endpoint, API or reasoning effort on its own.
+
+**Reasoning effort and tools.** **Reasoning Effort** resolves like every other setting: the chat's field, then the
+`SAGE_REASONING_EFFORT` user secret, then the environment. Blank all the way through sends no effort, so the
+provider's default for the model applies; that is not the same as **None**, which Sage sends as an explicit value.
+Supported values depend on the model, so check its model page: for example, OpenAI documents that GPT-6.1 Sol does
+not accept None. Several OpenAI reasoning models accept function tools together with a reasoning effort only on the
+Responses API; on Chat Completions the provider answers `Function tools with reasoning_effort are not supported …`.
+Sage's tools are always offered, so for a reasoning model with tools set **OpenAI API** to **Responses** and choose an
+effort the model supports. The supported setup for GPT-5.6 Sol and GPT-6.1 Sol with tools is **OpenAI API = Responses**,
+**Reasoning Effort = Low** and **OpenAI Daybreak = Off**. When the provider refuses an API or effort combination, the
+error names the setting, the effort Sage sent and where that value came from, and the change to make; correcting it
+continues the same chat. Sage 0.3.0 cannot select the Responses API from a chat's settings: if the chat's model
+settings do not list **OpenAI API**, upgrade Sage first. Through an OpenAI-compatible proxy (`API_ENDPOINT`), the proxy
+decides which route and efforts reach the model; Sage sends what you selected and does not infer a proxy's
+capabilities from a model name.
+
+**Changing the model.** Edit the chat's **Model** setting, click the Model chip, or run `/model <name>` (`/model`
+alone shows the model and where its value comes from). `/model <name>` writes the chat's Model setting in Mythic, so
+Mythic's own rules apply: only the channel's creator or an operation lead/admin may change it, through the channel's
+API token. The next message continues the same conversation with the new model; its earlier messages, tool calls and
+results carry over, while the previous model's opaque reasoning is not sent to a different model. A model the
+provider rejects before it has answered leaves the chat as it was, with an error naming the model, the provider's
+message and the fix, so a wrong model name is corrected in place. A change made while an approval card is waiting
+does not apply until the card is answered or declined, by the model that raised it.
 
 **Policy.** `policy_mode` controls how the next capability is chosen. `hybrid` (default) has deterministic code
 constrain the admissible actions and lets the model pick among them — the intended production mode. `symbolic` is
@@ -655,14 +702,16 @@ stdio MCP server.
 ### BloodHound credentials
 
 The MCP server needs to reach your BloodHound CE instance. These resolve through the standard load order, so there are two places an operator can
-set them without a shell:
+set them without a shell inside the container:
 
 1. **The Mythic chat configuration**, when you create the chat — per-chat, and the same place your
    model API key already lives. Mythic **user secrets** work too and keep the token out of plaintext
    channel config.
 2. **Sage's own `.env`**, which Mythic maps into the container. Open it from the Mythic
-   installed-services page, fill it in, save, restart the container. Shared by every chat in that
-   container, and no shell, `docker cp`, or sudo required. This is why that file ships tracked and
+   installed-services page (View Files on the `sage` row; `.env` is in the top folder), fill it in,
+   and save. Editing needs no shell, `docker cp`, or sudo. Then restart the container with
+   `sudo ./mythic-cli restart sage` on the Mythic host, since Mythic's web UI has no restart control
+   as of v4.0.8. Shared by every chat in that container. This is why that file ships tracked and
    fully commented out rather than as a `.env.example` you would need a shell to copy.
 
 Full order, highest first: chat config → user secret → container env → `.env.local` → `.env`.
@@ -891,11 +940,35 @@ report observations; it does not erase chat checkpoints in the same file.
 `Payload_Type/sage/.phoenix/phoenix.db` stores observability history. Treat both as retained trajectory data.
 
 An active chat channel retains its session across ordinary turns, including pending approvals and objective
-context. After a Sage restart or session replacement, ordinary Supervised chat does not restore its prior
-conversational scope and evidence. Read-only `/state`, `/report` and tool discovery remain
-available. Shared report observations do not restore conversational scope or pending approvals. Start a fresh
-channel and restate scope and evidence before continuing model work; separately bound Auto-controller
-recovery does not restore the Supervised conversation.
+context. When Sage restarts with its database retained, an existing channel continues on its next request:
+Sage rebuilds the session from the channel's saved record and its checkpoint, with its conversation,
+`/mode` override and engagement binding, and says so in the channel. Nothing that grants authority is carried
+over: the request's current Mythic identity and configuration must match what the session was saved under,
+and secrets are resolved fresh. A pending approval card still resolves only by an exact decision on that card.
+
+A restart leaves the request Sage was answering open in Mythic, and Mythic accepts no new prompt in that channel
+until it ends. When Mythic sends the container's startup message, Sage settles each such request without a model
+call or a task: a card still waiting stays open for your decision. For a card that already shows your decision
+(made while Sage was down, or while it was starting), Sage cannot tell whether Mythic will still deliver it, so
+it adds one **Continue saved decision / Stop** card to the same request and applies nothing yet. If Mythic
+delivers your original decision, Sage applies it once and retires the Continue/Stop card; otherwise choose
+Continue to apply the saved decision exactly as you made it (an approval runs the action once, a rejection runs
+nothing), or Stop to discard it. Continue never changes the decision, and Cancel on the request also discards
+it. Sage first re-checks the saved decision against the card, the session's identity and configuration, and the
+paused action; if any of them changed, nothing runs and the request closes with the reason. The same holds when
+the chat's mode or tool access no longer matches the card (for example, a later `/mode` change), and an approved
+action that still did not run after the restart ends its request as an error instead of a completion. A card saved by a
+Sage version from before this request state was kept is closed with a notice instead. Any other request is closed
+with a notice. The resumed request keeps its original tool and sub-agent cards, step budget and in-request
+denials, and ends normally. An approved action interrupted by the restart is never resent: your next message gets
+the exact Mythic task it produced, or says its outcome is unknown, and the chat continues. Mythic sends the startup message only to an operation with an active bot account assigned to it;
+without one, use Cancel on the open request in Mythic to free the channel. A restart never restarts autonomous
+work, and a controller-owned autonomous approval is not resumed.
+
+A channel still needs a fresh chat when its session ended on purpose (stop, cancel, an error, or a changed
+configuration or token), when its saved state cannot be read, or when a chat from before restorable sessions
+cannot be matched to exactly one saved conversation. Sage names the reason. Read-only `/state`, `/report` and
+tool discovery remain available either way.
 
 Never delete runtime databases to obtain a clean run. Stop Sage and archive active databases first:
 
@@ -1027,7 +1100,8 @@ the admitted canonical view; it has no mode, policy, BloodHound, MCP, sandbox, a
 Background polling separately requires `SAGE_WATCHER_APITOKEN` for an active bot in the watched operation. Its
 effective scopes must exactly match the documented read/delivery set; wildcard, missing, and excess scopes fail
 closed. Mythic's short-lived onStart token may read the active channel profile and create or reuse
-`#sage-findings`, then is discarded. It never becomes scheduler, model, or delivery authority.
+`#sage-findings`, and may settle chat requests a restart left open (see the restart contract above), then is
+discarded. It never becomes scheduler, model, delivery or tasking authority.
 
 After Sage starts:
 
@@ -1078,48 +1152,39 @@ a legacy override, an operator-configured channel ID that is never derived from 
 
 ## Limitations
 
-Sage 0.3 is deliberately narrow, and its live validation lags its code:
+Sage 0.4 is deliberately narrow, and its live validation lags its code:
 
-- **Live validation.** The most recent live-validated configuration recorded in this repository is the
-  [0.1.0-beta support matrix](docs/releases/v0.1.0-beta.md): Linux arm64 Sage Docker on Mythic `v4.0.0rc5`,
-  Apollo `v0.1.0-rc1`, BloodHound CE 9.5.1, BloodHound MCP `92a37dd`, and `sonnet-4-6` through an
-  OpenAI-compatible LiteLLM route. Releases from 0.2.0 on are validated by the offline suite, the
-  repository-boundary guards, the repo-hygiene checks, and scripted tests of the assembled chat path; 0.2.0 had
-  no live-range run. The 0.3.0 release qualification runs once, in supervised mode, on a locally built image of
-  the release source: one objective request to obtain Domain Admin of one GOAD domain from an Apollo foothold
-  (plus at most one `proceed` if it ends without proof), within fixed time, token, cost and approval-card limits,
-  with no other operator input than accepting or rejecting cards. 0.3.0 is published only after that run passes,
-  and its GitHub release notes report the image, architecture, Mythic version, model route and result. That result
-  covers that one configuration and objective. The published image is checked for installation, not requalified.
-  Individual fixes are spot-checked live on a GOAD lab during development; those checks are not a release
-  qualification.
+- **Live validation.** Each release is validated by the offline suite, the repository-boundary guards, the
+  repo-hygiene checks, and scripted tests of the assembled chat path. Any live run a release receives is reported in
+  that release's GitHub release notes, with its image, architecture, Mythic version, model route, objective and
+  result; that result covers that one configuration and objective. Individual fixes are spot-checked live on a GOAD
+  lab during development; those checks are not a release qualification.
 - **Supervised mode.** Live evidence for objective-led supervised mode comes only from GOAD with an Apollo
   foothold and one model route. Sage proposes and you approve each guarded action, but the quality of its
   proposals on another engagement is not established. The Supervisor does not yet plan bounded steps: it can hand
-  a specialist the whole objective, so a step runs until one of its limits or an error. When the Supervisor scopes
-  a step to the wrong catalog procedure, the request still ends rather than re-scoping; 0.3.0 recovers only when
-  the specialist names something that is not a catalog procedure.
-- **Auto mode** is experimental, was not run live on 0.3.0, and has been exercised only against GOAD on earlier
-  development builds. That does not establish reliability or generalization on another range or a production
-  network.
-- **Other configurations.** Other operating systems and architectures; other Mythic, Apollo, BloodHound CE, or
-  BloodHound MCP revisions; other model providers, routes, and models; and payload types other than Apollo are not
-  validated. Code paths that support them are not evidence that they work.
+  a specialist the whole objective, so a step runs until one of its limits or an error. A catalog step runs only an
+  action that current evidence supports; when the Supervisor selects one Sage cannot bind, the request ends blocked
+  before any card instead of re-scoping.
+- **Auto mode** is experimental and has been exercised only against GOAD; each release's GitHub release notes say
+  whether that release ran it live. That does not establish reliability or generalization on another range or a
+  production network.
+- **Other configurations.** Configurations no release's notes report are not validated: other operating systems
+  and architectures; other Mythic, Apollo, BloodHound CE, or BloodHound MCP revisions; other model providers, routes,
+  and models; and payload types other than Apollo. Code paths that support them are not evidence that they work.
 - **Findings acceptance.** The assisted operation-memory acceptance case joins one completed native Apollo
   `download` task to its exact current downloaded `.ps1` file record containing direct literal username/password
   assignments. One tool-free model call may propose `credential-material`; deterministic admission binds the
   operation, task, callback, and file identity before background delivery. It does not show that a consultant
   would have missed the finding, acted on it, or received independent value.
-- **Known issues.** See the [CHANGELOG](CHANGELOG.md) for each release's known issues. As of 0.3.0 these include
-  SQLite locking on the bind-mounted service directory under macOS Docker Desktop and OrbStack (see
-  [SQLite on macOS Docker Desktop / OrbStack](#sqlite-on-macos-docker-desktop--orbstack)), dependency
-  vulnerabilities that remain until `mythic-container` and `arize-phoenix` update their pins, an approved
-  supervised action that can be issued twice if Sage stops before it records the action's result, repeated
-  collection proposals and empty delegations that end in the no-progress stop, request endings reported as "not
-  terminal" or as errors when a task's completion function failed or a delegation was interrupted, chat display
-  ordering, a ledger that records only verifier-proven gains, and two forge defects (a parent-domain forge from a
-  child-domain source can skip the parent's replication grant, and a krbtgt reference beyond the top-ranked key is
-  refused).
+- **Known issues.** See the [CHANGELOG](CHANGELOG.md) for each release's known issues. As of 0.4.0 these include
+  SQLite locking on the bind-mounted service directory under macOS Docker Desktop and OrbStack (see [SQLite on macOS
+  Docker Desktop / OrbStack](#sqlite-on-macos-docker-desktop--orbstack)), dependency advisories in six packages (three
+  pinned by upstream projects, three left for a later Sage upgrade), supervised closings that claim a result in plain
+  prose with no step behind it (only Sage's own report forms are withheld), repeated collection proposals and empty
+  delegations that end in the no-progress stop, request endings reported as "not terminal" or as errors when a task's
+  completion function failed or a delegation was interrupted, the internal delegation envelope appearing in the
+  transcript, a ledger that records only verifier-proven gains, and an experimental coding-agent connection whose
+  worker settings a Sage reinstall deletes.
 - **Erasure.** Operation-memory erasure removes Sage-derived state for one operation but deliberately leaves
   authoritative Mythic records unchanged. It does not erase separate LangGraph checkpoints, Phoenix traces,
   LiteLLM/provider retention, native Mythic messages, or Slack workspace records; each owner must apply its own
@@ -1131,6 +1196,7 @@ Sage 0.3 is deliberately narrow, and its live validation lags its code:
 
 Read `AGENTS.md` before making changes, then `skills/README.md` for the operator-tool index. Verify important
 claims against source, tests, and live state rather than against prose — this documentation has been stale before.
+To publish a version, follow [Releasing Sage](docs/development/RELEASING.md).
 
 High-risk changes to prompts, agent topology, tool surfaces, capability planning, trajectory behavior, evaluation
 drivers, or autonomous execution require the `sage-architecture-governor` workflow and explicit approval before

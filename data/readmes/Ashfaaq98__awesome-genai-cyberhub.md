@@ -234,6 +234,20 @@ This section covers resources related to Model Context Protocol (MCP) servers fo
 
 * 📊 [BountyBench: Dollar Impact of AI Agent Attackers and Defenders on Real-World Cybersecurity Systems (arXiv:2505.15216)](https://arxiv.org/abs/2505.15216) **[Paper/Benchmark]** - Agents detect, exploit and patch 40 real bug bounties ($10–$30,485) across 25 live codebases; agents patch far better (up to 90%) than they find new bugs (12.5% at best).
 
+* 📊 [CyberSOCEval: Benchmarking LLMs Capabilities for Malware Analysis and Threat Intelligence Reasoning (arXiv:2509.20166)](https://arxiv.org/abs/2509.20166) **[Paper/Benchmark]** - Open SOC benchmarks within Meta's CyberSecEval 4 testing LLMs on malware analysis and threat-intelligence reasoning; current models are far from saturating it.
+
+* 📊 [ExCyTIn-Bench: Evaluating LLM agents on Cyber Threat Investigation (arXiv:2507.14201)](https://arxiv.org/abs/2507.14201) **[Paper/Benchmark]** - Agents investigate threats by querying 57 Microsoft Sentinel log tables from a controlled Azure tenant (7,542 questions); best reward 0.606. [Code](https://github.com/microsoft/SecRL).
+
+* 📊 [Cyber Defense Benchmark: Agentic Threat Hunting Evaluation for LLMs in SecOps (arXiv:2604.19533)](https://arxiv.org/abs/2604.19533) **[Paper/Benchmark]** - Agents hunt through 75K–135K raw Windows event logs via SQL across 106 real attack procedures; the best model finds only 3.8% of malicious events.
+
+* 📊 [AthenaBench: A Dynamic Benchmark for Evaluating LLMs in Cyber Threat Intelligence (arXiv:2511.01144)](https://arxiv.org/abs/2511.01144) **[Paper/Benchmark]** - Extends CTIBench with a cleaner dataset, refined metrics and a risk-mitigation task; 12 LLMs still struggle with threat-actor attribution.
+
+* 📊 [SEC-bench: Automated Benchmarking of LLM Agents on Real-World Software Security Tasks (arXiv:2506.11791)](https://arxiv.org/abs/2506.11791) **[Paper/Benchmark]** - Auto-builds reproducible real-world vulnerability tasks for $0.87 each; agents reach at most 18% on PoC generation and 34% on patching.
+
+* 📊 [ExploitGym: Can AI Agents Turn Security Vulnerabilities into Real Attacks? (arXiv:2605.11086)](https://arxiv.org/abs/2605.11086) **[Paper/Benchmark]** - 898 real vulnerabilities across userspace, V8 and the Linux kernel; agents must turn a crashing input into a working exploit, with and without standard defenses.
+
+* 📊 [ExploitBench: A Capability Ladder Benchmark for LLM Cybersecurity Agents (arXiv:2605.14153)](https://arxiv.org/abs/2605.14153) **[Paper/Benchmark]** - Grades exploitation on 16 capability flags from crash to code execution on 41 V8 bugs; public frontier models crash targets routinely but rarely reach code execution.
+
 ---
 
 ## How to Navigate & Contribute

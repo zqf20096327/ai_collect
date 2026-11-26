@@ -155,6 +155,7 @@ From a target project root:
 ```bash
 botference init                            # Create project-local botference/ state (and register it with Discuss)
 botference site                            # Just the Discuss half, for a repo already initialised
+botference fill-gap < request.json        # One agent passage for a gap in your own draft (JSON in, JSON out; for a blog's scripts)
 botference profile                         # Profiles: whose Claude/Codex accounts and history the bots use
 botference profile add ada                 # A new profile with its own logins and history; signs it in
 botference profile use ada                 # Switch the whole machine (restarts Discuss + council)
@@ -1868,5 +1869,4 @@ pick it up.
 | Command | What it does |
 |---------|-------------|
 | `/lead @claude\|@codex` | Manually set which model writes the plan. You can also use `/lead auto` to let the bots' writer consensus decide. |
-| `/draft [rounds]` | Update the project-local `implementation-plan.md` via the lead model, with optional AI review rounds. Defaults to `2`; `/draft 0` writes the plan with no AI review, `/draft 1` does one review/revise cycle, and so on. Review rounds run in the council like free-form turns: the reviewer's footer can end rounds early (`converged` — sign-off, no revision needed) or pause the draft and hand the floor to you (`blocked`), and typing mid-draft pauses at the next round boundary. Reviewer comments are saved beside the plan in the Botference state directory. |
-| `/finalize` | Lead-only finalization. The lead addresses all active reviewer comment files, rewrites the project-local `imple
+| `/draft [rounds]` | Update the project-local `implementation-plan.md` via the lead model, with optional AI review rounds. Defaults to `2`; `/draft 0` writes the plan with no AI review, `/draft 1` does one review/revise cycle, and so on. Review rounds run in the council like free-form turns: the reviewer's footer can end rounds early (`converged` — sign-off, no revision needed) or pause the draft and hand the floor to you (`blocked`), and typing mid-draft pauses at the next round boundary. Reviewer comments are saved beside the plan in the Botference state director

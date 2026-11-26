@@ -140,10 +140,11 @@
       <td><b>🖥️ Multi-Platform</b></td>
       <td>
         • 🪟 Windows<br>
-        • 🍎 macOS
+        • 🍎 macOS<br>
+        • 🐧 Linux <i>(Community)</i>
       </td>
       <td>
-        • 🐧 Linux
+        • 🐧 More Linux Desktops &amp; ARM64
       </td>
     </tr>
     <tr>
@@ -173,7 +174,7 @@
 | --------- | --------------------------- |
 | 🪟 Windows | Windows 10 (10.0.19041.0)   |
 | 🍎 macOS   | Sonoma 14.0                 |
-| 🐧 Linux   | 🚧 **In Development**        |
+| 🐧 Linux   | 64-bit Ubuntu 24.04+, Debian 13+, Fedora 40+, Arch *(Community maintained; Hyprland / X11 recommended)* |
 
 ## 🚀 Getting Started
 
@@ -189,6 +190,11 @@
 **macOS**
 - `Everywhere-macOS-arm64-vx.x.x.pkg`: For Apple Silicon (M-series) Mac devices.
 - `Everywhere-macOS-x64-vx.x.x.pkg`: For Intel Mac devices.
+
+**Linux *(Community Maintained)***
+- **One-line Terminal Installer** *(Recommended)*: `curl -fsSL https://aka.sylinko.com/get-everywhere.sh | sh` (supports Ubuntu/Debian, Fedora, and Arch Linux; update anytime with `ew update`).
+- **Arch Linux (AUR)**: `paru -S everywhere-bin` or `yay -S everywhere-bin`.
+- **Direct Packages**: `.deb`, `.rpm`, and `.tar.zst` archives are available on the [download page](https://everywhere.sylinko.com/download).
 
 ### Help & Community
 
@@ -213,9 +219,11 @@ Check our [Build Guide](docs/build.md) for detailed instructions on how to set u
 
 ## 📄 License
 
-- **Everywhere Application**: Released under the **GNU Affero General Public License v3.0 (`AGPL-3.0-only`)** — see [LICENSE](LICENSE).
-- **Mod Ecosystem Permission**: Independent third-party mods complying with the documented mod interface and platform integrity boundaries may be distributed under any license chosen by their authors under the **Mod Interface Additional Permission** (AGPLv3 Section 7) — see [EXCEPTIONS](EXCEPTIONS). Modding SDK and contract packages are licensed under **Apache-2.0**.
-- **Commercial Licensing**: Organizations requiring proprietary/closed-source distribution or custom commercial rights may obtain a commercial license from **Sylinko Inc.** by emailing [contact@sylinko.com](mailto:contact@sylinko.com).
+Everywhere is **dual-licensed** under the **GNU Affero General Public License v3.0 (`AGPL-3.0-only`)** and a **Commercial License** from **Sylinko Inc.**:
+
+- **Open-Source License**: Released under the **GNU Affero General Public License v3.0 (`AGPL-3.0-only`)** — see [LICENSE](LICENSE).
+- **Commercial License**: Organizations requiring proprietary/closed-source distribution, hosted commercial deployment without AGPLv3 disclosure obligations, or enterprise terms may obtain a commercial license from **Sylinko Inc.** — see [LICENSE-COMMERCIAL.md](LICENSE-COMMERCIAL.md) or email [contact@sylinko.com](mailto:contact@sylinko.com).
+- **Mod Ecosystem Permission**: Independent third-party mods complying with the documented mod interface and platform integrity boundaries may be distributed under any license chosen by their authors under the **Mod Interface Additional Permission** (AGPLv3 Section 7) — see [EXCEPTIONS](EXCEPTIONS). Designated Modding SDK, versioning, and contract packages are licensed under **Apache-2.0**.
 - **Brand & Artwork**: Official brand names, icons, and logos are excluded from open-source code licenses — see [TRADEMARK.md](TRADEMARK.md) for the reserved asset list and naming guidelines.
 - *For third-party dependencies and open-source component licenses, see [ThirdPartyNotices.txt](ThirdPartyNotices.txt).*
 

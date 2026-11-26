@@ -38,9 +38,22 @@ https://github.com/user-attachments/assets/6ee72d6a-3a25-4380-92a9-a4b66e8b7e05
 - **Your coding agent can drive it.** A built-in MCP server, sixteen [agent skills](.agents/skills/README.md) and plugins for Claude Code, Grok Build and Antigravity let Claude Code, Grok, Antigravity, Cursor, Codex, Gemini CLI and other agents run every flow: "make a music video from this song", "film this script", "train a LoRA of this character", "swarm this refactor".
 - **You approve what matters.** Nothing posts and no voice is cloned without an explicit yes from you, and fixes Guaardvark writes for its own code wait for your review. The MCP server hides desktop, shell and browser tools unless you allowlist them.
 
+<table>
+<tr>
+<td width="50%" valign="top"><a href="#features"><img src="docs/media/readme/cards.gif" alt="Cards on the Guaardvark dashboard being dragged, recoloured, folded and rearranged by the Layout button"></a><br><b>Card workspaces.</b> Drag a card, give it a colour, fold it to its bar, and switch between four layouts with one button.</td>
+<td width="50%" valign="top"><a href="#chat-with-your-own-files-local-rag"><img src="docs/media/readme/chat.gif" alt="A question about a service agreement answered in Guaardvark chat, naming the document it came from"></a><br><b>Chat with your files.</b> Answers come from your own index, from a model on your own machine, and name the document they used.</td>
+</tr>
+<tr>
+<td width="50%" valign="top"><a href="#video-generation"><img src="docs/media/readme/video.gif" alt="A prompt typed into Video Gen, then finished dance clips opened one after another with their model, seed and settings"></a><br><b>Video Gen.</b> Wan 2.2 on your GPU. Every clip opens with the prompt, model, seed and settings that made it.</td>
+<td width="50%" valign="top"><a href="#directors-film-crew-music-videos-and-the-editor"><img src="docs/media/readme/film.gif" alt="A finished Film Crew short playing, then its pipeline and approved storyboard"></a><br><b>Film Crew.</b> A logline becomes a script, a cast, a storyboard you approve shot by shot, and a finished short.</td>
+</tr>
+</table>
+
+[All four in one 43-second cut, with music](https://www.youtube.com/watch?v=uzMIYsmd9Fg)
+
 ## Quick start
 
-**Linux with an NVIDIA GPU** (16 GB for video, 12 GB for the Wan 2.2 5B; chat, RAG and agents run on less, see the [hardware tiers](docs/HARDWARE.md)). A fresh Ubuntu desktop has no `curl` or `git`; run `sudo apt install -y curl git` first.
+**Linux with an NVIDIA GPU** (16 GB for video, 8 GB for the Wan 2.2 5B; chat, RAG and agents run on less, see the [hardware tiers](docs/HARDWARE.md)). A fresh Ubuntu desktop has no `curl` or `git`; run `sudo apt install -y curl git` first.
 
 ```bash
 curl -fsSL https://guaardvark.com/install.sh | bash
@@ -164,7 +177,7 @@ All generation runs on your GPU. No cloud APIs, no per-minute billing.
 
 | Model | Type | Max duration | Native resolution | VRAM |
 |-------|------|-------------|-------------------|------|
-| **Wan 2.2 TI2V-5B** (default) | Text + image to video | ~5 s (up to 121 frames @ 24 fps) | 1280x704 | ~11 GB |
+| **Wan 2.2 TI2V-5B** (default) | Text + image to video | ~5 s (up to 121 frames @ 24 fps) | 1280x704 | 8 GB |
 | **Wan 2.2 14B MoE** | Text to video | 5 s (81 frames @ 16 fps) | 832x480 | 16 GB |
 | **Wan 2.2 14B I2V** | Image to video | 5 s (81 frames @ 16 fps) | 832x480 | 16 GB |
 | **CogVideoX-5B** | Text to video | 6 s (49 frames @ 8 fps) | 720x480 | 16 GB |
@@ -333,6 +346,8 @@ A newer category: the coding agent runs the studio. As of October 2026, from eac
 
 Short screen recordings of the real system doing real work, narrated by its own local speech engine. **[Watch the full playlist](https://www.youtube.com/playlist?list=PLYycooXIy1Qs).**
 
+**In motion** ([watch, 0:43](https://www.youtube.com/watch?v=uzMIYsmd9Fg)): card workspaces, chat with your files, Video Gen and Film Crew, recorded on one machine and cut to "One Machine" (the song was made in Suno).
+
 | Episode | What it shows |
 |---|---|
 | [**21 · Five coding agents, one studio**](https://www.youtube.com/watch?v=VScsEFn6ZoY) (2:45) | opencode on a local model, Codex, Cursor, Grok and Antigravity each use Guaardvark's MCP tools; every picture, clip, song and voice is made on the local machine |
@@ -446,6 +461,7 @@ guaardvark status                       # System dashboard
 guaardvark chat "explain this codebase" # Chat with RAG context
 guaardvark search "query"               # Semantic search
 guaardvark files upload report.pdf      # Upload and index
+guaardvark images generate "a brass telescope" --wait --save telescope.png
 guaardvark plugins list                 # ComfyUI / Ollama / …
 guaardvark gpu status                   # VRAM and owner lock
 guaardvark mcp install --client cursor  # Wire Guaardvark into Cursor
@@ -472,6 +488,8 @@ guaardvark completion zsh               # Shell completion script
 ```
 
 Tab completion works with or without a leading `/`; `/help imagine` shows one command; unknown commands suggest a close match. While a reply is on its way, a status line says what is happening and for how long (`⠋ Searching the web… · 14s · esc to stop`); piped and `--json` output never show it, and `GUAARDVARK_NO_SPINNER=1` turns it off in a terminal too.
+
+Scripting: `--json` returns one envelope on stdout, `{"status": "success", "data": …}` or `{"status": "error", "error": {"code", "message"}}`; without it, a piped command writes its error to stderr. Exit codes: `0` done, `1` error, `2` usage, `3` server unreachable, `4` not found, `5` not authorized, `6` job failed or cancelled, `7` timed out.
 
 Config: `~/.guaardvark/cli.json` (legacy `~/.llx/config.json` is still read). Themes: `default`, `teal`, `musk`, `hacker`, `vader`, `guaardvark`, `day`, `auto`. Short terminals get a compact aardvark banner.
 

@@ -93,7 +93,7 @@ Skills are instructions for your coding agent, not running processes. The CLI wo
 
 ## Documentation
 
-Full documentation set (executive, functional, architecture, technical, user guide, security, evidence, test report, operations, legal, roadmap, glossary, assurance) lives in [`documents/`](documents/) with a designed HTML edition at `documents/html/index.html`. Repository docs: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/STATUS.md`](docs/STATUS.md), [`docs/AUDIT_REPORTS.md`](docs/AUDIT_REPORTS.md), [`docs/EVIDENCE_MODEL.md`](docs/EVIDENCE_MODEL.md), [`ROADMAP.md`](ROADMAP.md).
+Read it online: **[Docs site](https://shahvatsalofficial.github.io/localsutra-ai/)** with [real-world scenarios](https://shahvatsalofficial.github.io/localsutra-ai/14-real-world-scenarios.html) and [how it works](https://shahvatsalofficial.github.io/localsutra-ai/15-how-it-works.html). Markdown sources are in [`documents/md/`](documents/md/); rebuild with `npm run docs`. Repository docs: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/STATUS.md`](docs/STATUS.md), [`docs/AUDIT_REPORTS.md`](docs/AUDIT_REPORTS.md), [`docs/EVIDENCE_MODEL.md`](docs/EVIDENCE_MODEL.md), [`ROADMAP.md`](ROADMAP.md).
 
 ## FAQ
 

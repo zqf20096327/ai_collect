@@ -120,6 +120,7 @@ Try the Agent OS UI, 119 resume templates, and zero-login browser tools directly
 - **Agent OS Workspace**: 👉 **[https://nanfengovo.github.io/better-me/](https://nanfengovo.github.io/better-me/)**
 - **Zero-Auth ATS & JD Diagnostics**: 👉 **[https://nanfengovo.github.io/better-me/?view=ats](https://nanfengovo.github.io/better-me/?view=ats)** (pure browser deterministic scoring, no upload, no API key)
 - **Editorial Product Overview**: 👉 **[https://nanfengovo.github.io/better-me/?view=landing](https://nanfengovo.github.io/better-me/?view=landing)**
+- **Agent OS branch preview** · [Open the latest CI-approved `agent-os` build](https://nanfengovo.github.io/better-me/agent-os/). This preview uses its own BetterMe document storage namespace.
 
 ### 💻 Desktop Installers (macOS / Windows / Linux)
 Pre-built native Electron installers with bundled local services (`agent-host` + `job-service`) and verified `SHA256SUMS` are published on **[GitHub Releases](https://github.com/nanfengovo/better-me/releases/latest)**:
@@ -132,6 +133,13 @@ Pre-built native Electron installers with bundled local services (`agent-host` +
 | **Linux** | `x64` (glibc ≥ 2.34) | [`.AppImage`](https://github.com/nanfengovo/better-me/releases/latest) | `SHA256SUMS-linux-x64.txt` |
 
 > **Note**: macOS builds use ad-hoc signing and Windows builds are currently unsigned. Verify the published SHA-256 checksums before installation.
+
+
+### Recruitment accounts in BetterMe v1.4.2
+
+Open **Job Atlas → Recruitment accounts** in the desktop app to connect BOSS Zhipin, Zhaopin, Liepin, and 51job from the same window. Complete each provider's sign-in or verification on its official page. BetterMe keeps a separate local session for each platform and reuses it for search and individual job descriptions. A provider that requires verification can be resumed from the original page while the other providers continue.
+
+Embedded collection reads the current results page, up to 50 visible cards per platform. Opening the corresponding job is required to read its full description. Atlas applies the same location evidence and filters to the list and the map. The embedded account panel requires the desktop app. [v1.4.2 release notes](docs/releases/v1.4.2.md)
 
 ---
 
@@ -159,6 +167,13 @@ docker compose up -d --build --wait
 ```
 
 Open `http://127.0.0.1:8080/`. See [docs/deployment.md](docs/deployment.md) for persistent volume and OIDC options.
+
+GitHub Releases also provides versioned **Linux amd64** Docker image archives for the full runtime and the static preview. Verify `SHA256SUMS-docker-linux-amd64.txt`, then load the runtime archive in a checkout of the same release.
+
+```bash
+docker load -i BetterMe-1.4.2-docker-runtime-linux-amd64.tar.gz
+BETTER_ME_IMAGE=better-me:1.4.2 docker compose up -d --no-build --wait
+```
 
 ---
 
@@ -216,4 +231,5 @@ pnpm desktop:build      # Build & sync native Electron desktop runtime
 - [Product Boundaries (`CONTEXT.md`)](CONTEXT.md)
 - [Roadmap (`docs/ROADMAP.md`)](docs/ROADMAP.md)
 - [Docker Deployment (`docs/deployment.md`)](docs/deployment.md)
-- [Release Notes (`docs/releases/v1.3.0.md`)](docs/releases/v1.3.0.md)
+- [v1.4.2 release notes](docs/releases/v1.4.2.md)
+- [v1.3.0 release notes](docs/releases/v1.3.0.md)

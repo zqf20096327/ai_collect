@@ -31,16 +31,16 @@
 
 ## 🌟 核心特性 (Key Features)
 
-- **10 个工业级 MCP Tools**：包含环境自检、CAD 启动、图纸创建、几何原语绘制、智能尺寸标注、参数化零件生成、视口全屏缩放及无缝视口截图。
+- **11 个 MCP 工具**，支持环境自检、图纸生成、CAXA 窗口操作和原分辨率截图。
 - **严格符合国家标准 (GB/T)**：
   - 图层、线型与线宽规范完全符合 **GB/T 14665**（粗实线 0.35mm、细实线 0.18mm、红点画中心线、黄虚线、青色尺寸线）；
   - 国标标准图框与标题栏符合 **GB/T 10609.1**（180mm × 56mm 标准签字栏与分区）；
   - 完美适配 A0、A1、A2、A3、A4 横竖版图幅。
 - **CAXA CAD 深度进程与窗口联动**：
   - 自动定位本机 CAXA 2023 安装路径（`CDRAFT_M.exe`）；
-  - 自动激活窗口并置顶；
-  - 自动执行全图适量缩放（`Zoom Extents`）；
-  - 免人工干预视口高清截图回传给大模型。
+  - 优先在现有 CAXA 实例中打开图纸，并核对窗口标题后返回结果；
+  - 自动预览打开带版本编号的临时 DXF，生成工具可继续写源 DXF；
+  - 可保存 CAXA 窗口 PNG，也可通过 MCP 直接返回 PNG。
 - **解决字体缺失弹窗**：
   - 内置 `Standard` 样式映射至 CAXA 原生 `ACADTXT.SHX`；
   - 中文文字样式映射至 `SimHei` 黑体，彻底杜绝 CAXA 打开 DXF 时的“缺少字体”弹窗提示。
@@ -71,71 +71,40 @@ graph TD
 
 ---
 
-## 📦 安装指南 (Installation)
+## 安装一次 供多个 Agent 使用
 
-### 1. 系统要求
-- **操作系统**：Windows 10 / Windows 11 (x64)
-- **CAD 软件**：CAXA CAD 电子图板 2023 或更高版本（默认安装于 `E:\CAXA` 或 `C:\CAXA`）
-- **Python 环境**：Python 3.10+
+在安装了 CAXA 电子图板的 Windows 机器上运行。支持通过标准 MCP stdio 启动本地进程的客户端，客户端可选用各自的配置格式。
 
-### 2. 克隆与安装
-
-```bash
-git clone https://github.com/phosugar/caxa-mcp.git
-cd caxa-mcp
-pip install -e .
+```powershell
+uv tool install 'git+https://github.com/phosugar/caxa-mcp.git@v0.3.0'
+$CaxaMcp = Join-Path (uv tool dir --bin) 'caxa-mcp.exe'
+& $CaxaMcp --version
+& $CaxaMcp --check
 ```
 
----
+如果 CAXA 装在自定义目录，可以先在当前 PowerShell 中设置 `$env:CAXA_PATH` 为 `CDRAFT_M.exe` 的绝对路径，再执行 `--check` 或生成客户端配置。配置输出会带上找到的 CAXA 路径。
 
-## ⚙️ 接入大模型客户端配置
+本地开发可在仓库内运行 `python -m pip install -e .`。运行需要渲染图纸的示例时安装 `python -m pip install -e ".[examples]"`。
 
-### 1. Claude Desktop 配置
-编辑 `%APPDATA%\Claude\claude_desktop_config.json`：
+## 接入客户端
 
-```json
-{
-  "mcpServers": {
-    "caxa": {
-      "command": "python",
-      "args": ["-m", "caxa_mcp.server"],
-      "env": {
-        "CAXA_PATH": "E:/CAXA/caxa/2023/Bin64/CDRAFT_M.exe"
-      }
-    }
-  }
-}
+配置中的 `command` 建议填写 `caxa-mcp.exe` 的绝对路径。客户端启动它时无需指定仓库目录或某个 IDE 的 Python 环境。
+
+| 客户端 | 生成配置 | 应用方式 |
+| :--- | :--- | :--- |
+| [Codex](https://developers.openai.com/codex/mcp) | `& $CaxaMcp --config codex` | 合并到 `~/.codex/config.toml` 的用户配置，也可用下面的 CLI 命令 |
+| [VS Code](https://code.visualstudio.com/docs/agent-customization/mcp-servers) | `& $CaxaMcp --config vscode` | 用 `MCP: Open User Configuration` 打开用户级 `mcp.json` 并合并 `servers.caxa` |
+| [Claude Code](https://code.claude.com/docs/en/mcp)、Claude Desktop、[Cursor](https://cursor.com/docs/mcp)、Antigravity 及同类客户端 | `& $CaxaMcp --config generic` | 合并 `mcpServers.caxa` 到客户端的用户配置。Claude Code 也可以用下面的 CLI 命令 |
+| [OpenCode](https://opencode.ai/docs/mcp-servers/) | `& $CaxaMcp --config opencode` | 合并输出到支持 `mcp.servers` 的用户配置 |
+
+```powershell
+codex mcp add caxa -- "$CaxaMcp"
+claude mcp add --transport stdio --scope user caxa -- "$CaxaMcp"
 ```
 
-### 2. Antigravity / Gemini CLI 配置
-编辑 `~/.gemini/config/mcp_config.json`：
+如果 CAXA 需要自定义路径，用上表生成的配置，或在客户端给服务添加 `CAXA_PATH` 环境变量。重新连接后可调用 `caxa_status` 检查 CAXA 安装状态。
 
-```json
-{
-  "mcpServers": {
-    "caxa": {
-      "command": "python",
-      "args": ["-m", "caxa_mcp.server"],
-      "env": {
-        "CAXA_PATH": "E:/CAXA/caxa/2023/Bin64/CDRAFT_M.exe"
-      }
-    }
-  }
-}
-```
-
-### 3. Cursor 配置
-在 `.cursor/mcp.json` 中配置：
-
-```json
-{
-  "mcpServers": {
-    "caxa": {
-      "command": "caxa-mcp"
-    }
-  }
-}
-```
+各客户端有独立的绘图会话和临时 DXF，窗口操作会在同一个 Windows 会话内依次执行。CAXA 窗口和当前查看的图纸由各客户端共用。仅支持远程 MCP 地址的客户端无法直接启动 Windows 本机的 stdio 服务。
 
 ---
 
@@ -149,10 +118,15 @@ pip install -e .
 | `caxa_draw_primitives` | 批量绘制几何图元（直线、圆、圆弧、矩形、多段线、文字等） | `primitives` (图元列表), `auto_save` |
 | `caxa_draw_dimension` | 绘制标准机械尺寸标注（线性尺寸、直径尺寸、半径尺寸） | `dim_type` (HORIZONTAL/VERTICAL/ALIGNED/DIAMETER/RADIUS), `points` |
 | `caxa_draw_parametric_part` | 参数化快速绘制标准机械零件 | `part_type` (stepped_shaft / flange / plate), `params` |
-| `caxa_open_drawing` | 控制 CAXA CAD 打开指定 DXF/DWG 图纸并全屏展现 | `file_path`, `zoom_extents` |
+| `caxa_open_drawing` | 在 CAXA 中打开 DXF、DWG 或 EXB，返回是否确认加载 | `file_path`, `zoom_extents`（可选，尝试发送 Z/E 快捷键） |
 | `caxa_send_command` | 向 CAXA 窗口发送 CAD 命令快捷键或执行宏 | `command_string`, `press_enter` |
-| `caxa_capture_screen` | 捕获当前 CAXA CAD 绘图视口截图回传大模型 | `output_path` |
+| `caxa_capture_screen` | 原分辨率截图保存到本地，返回文件路径 | `output_path` |
+| `caxa_capture_view` | 将 CAXA 窗口原分辨率 PNG 直接返回给 MCP 客户端 | 无 |
 | `caxa_export_drawing` | 将当前绘制成果导出保存为指定文件 | `output_path` |
+
+CAXA 窗口操作需要已登录且未锁屏的 Windows 桌面。若 CAXA 弹出字体替换等对话框，先在 CAXA 中处理，再重试工具。打开失败时查看返回的 `error`。
+
+连续绘图时可以把图元和尺寸工具的 `auto_save_and_open` 设为 `false`，完成后调用一次 `caxa_open_drawing` 预览。生成工具返回的 `file_path` 或 `saved_path` 指向实际保存的 DXF。默认生成路径和预览副本都是会话临时文件，需要保留时用 `caxa_export_drawing` 导出到自己的目录，或在新建图纸时指定 `save_path`。
 
 ---
 

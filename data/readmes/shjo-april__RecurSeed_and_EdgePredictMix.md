@@ -5,6 +5,8 @@
 # RecurSeed and EdgePredictMix
 This repository is the official implementation of "RecurSeed and EdgePredictMix: Single-stage learning is sufficient for Weakly-Supervised Semantic Segmentation". Please feel free to reach out for any questions or discussions.
 
+[[project page]](https://shjo-april.github.io/RSEPM/) [[arXiv]](https://arxiv.org/abs/2204.06754)
+
 > 📢 **News:** Our follow-up work, [MARS: Model-agnostic Biased Object Removal without Additional Supervision for Weakly-Supervised Semantic Segmentation](https://github.com/shjo-april/MARS) (ICCV 2023), builds on RS+EPM and is now publicly available with its complete implementation.
 
 # Citation

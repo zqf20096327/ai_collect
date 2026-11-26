@@ -422,6 +422,68 @@ integration, AWS Bedrock support, and the native Ollama provider.
 
 ---
 
+## 🧠 Long-Term Memory
+
+Crustly keeps facts and preferences between sessions. Global memories (your preferences) apply in every repository; project memories stay in the repository they came from. Memories are stored in Crustly's database, and nothing leaves your machine unless you configure an embedding or extraction model that runs elsewhere.
+
+- Relevant memories are sent with your message, marked as data, so the model can use them without treating them as instructions.
+- Every save is announced. Model saves to the global scope ask for approval.
+- `crustly memory` lists, searches, edits, forgets, exports and imports memories. `/remember`, `/forget` and `/memory` do the same from the chat, and `/memories` opens a screen to browse, filter, search, approve and forget them.
+- Secrets are refused on every write path; forgotten memories are removed from the database and its write-ahead log.
+
+Settings live in the `[memory]` table. The defaults:
+
+```toml
+[memory]
+long_term = true              # false: save_memory writes .crustly/memory.md as before
+recall_max_tokens = 800       # never more than a sixteenth of the context window
+pinned_min_importance = 4     # preferences, conventions and decisions at this importance are recalled first
+recent_work = true            # "recent work" on a session's first request
+
+[memory.embeddings]           # semantic recall; off unless a provider is set
+provider = "none"             # "none" | "ollama" | "openai-compatible"
+model = "nomic-embed-text"
+base_url = "http://localhost:11434"
+query_timeout_ms = 1500       # then keyword recall alone
+batch_size = 16
+min_similarity = 0.35         # depends on the model; recalibrate when it changes
+# query_prefix / document_prefix override the built-in task prefixes
+# api_key_env = "MY_EMBED_KEY"  # name of the environment variable holding a key
+
+[memory.extraction]           # learn memories from conversations; off by default
+enabled = false
+provider = "inherit"          # only the active provider is supported
+every_n_user_messages = 6     # also runs before the context is compacted
+max_per_run = 5
+min_importance = 3
+review = false                # true: extracted memories wait for `crustly memory review`
+
+[memory.lifecycle]
+episode_retention_days = 180  # episodes older than this are archived by consolidation
+
+[memory.code_knowledge]       # memories anchored to code, from an okf-rs bundle
+enabled = "auto"              # auto: on when okf-mcp is on PATH and the project has a bundle; "on" | "off"
+command = "okf-mcp"
+query_timeout_ms = 300        # past it, recall carries on without code knowledge
+expose_tools = false          # also offer okf-mcp's tools to the model (full tool profile only)
+```
+
+The keys `episodic_budget_tokens`, `enable_codebase_index` and `compaction_threshold` are still accepted, but they have no effect.
+
+### Code knowledge (okf-rs)
+
+When the project has an [okf-rs](https://github.com/jyjeanne/okf-rs) bundle (`okf-rs generate`) and `okf-mcp` is on `PATH`, memory knows the project's functions and types:
+
+- A project memory that names one (`` `connect_pool` ``, `Database::run_migrations`) is anchored to it: exact, unambiguous matches only, never test code, at most three.
+- Naming that function in a request recalls the memory even with no word in common, and so does naming a function that calls it or that it calls. Reading the file that defines it brings the memory along with the tool result.
+- A recalled anchored memory shows where its code is now (`src/db/mod.rs#L154-L184`).
+- When a newer bundle no longer has the function, `crustly memory consolidate` lists the memory for review, with the closest match; nothing is changed by itself.
+- `crustly memory anchors <id> [--set ID... | --clear | --auto]` and `crustly memory add --anchor ID` manage anchors; `crustly memory status` says whether okf-mcp is ready and when the bundle is older than the source.
+
+It needs okf-rs 0.8.0 or newer ([releases](https://github.com/jyjeanne/okf-rs/releases)); an older okf-mcp answers only in text and is not used. With an older okf-mcp, no bundle, or a slow answer, memory works as without code knowledge. Crustly never regenerates the bundle itself, since that writes into the working tree.
+
+MCP servers in `[[mcp.servers]]` also take `expose = "always" | "full_profile" | "never"`: every tool schema is sent with every request, so a server with several tools can be kept for the full tool profile (windows of 32k tokens or more).
+
 ## 🔒 Interactive Approval System
 
 **Crustly gives you complete control over dangerous operations with beautiful interactive approval dialogs.**

@@ -94,9 +94,9 @@ Keys you enter stay in your browser and are only sent to your deployment's API r
 
 ## Good to know
 
-- **Storage.** Sheets live in your Neon database, cached in the browser with IndexedDB.
+- **Storage.** Sheets live in your Neon database. A browser caches the sheets it opens in IndexedDB; the Sheets list is paged and searched in the database.
 - **Access.** Each browser gets a private workspace tied to a cookie. Self-hosted copies have no accounts, so export sheets to move them between browsers. To keep an instance private, restrict access at your host or network.
-- **Limits.** 10 sheets per workspace and 1,000 rows per sheet. Change them in [workspace.ts](src/lib/workspace.ts).
+- **Limits.** 1,000 sheets per workspace and 1,000 rows per sheet. Change them in [workspace.ts](src/lib/workspace.ts).
 - **Search engines.** Self-hosted copies are `noindex` unless you set `ENRICHABLE_ALLOW_INDEXING=true`.
 - **Analytics.** Off unless you set `NEXT_PUBLIC_DATABUDDY_CLIENT_ID`. It never sends sheet contents, prompts or keys.
 

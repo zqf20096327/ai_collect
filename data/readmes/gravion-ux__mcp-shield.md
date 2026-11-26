@@ -1,6 +1,7 @@
 # mcp-shield
 
 [![codecov](https://codecov.io/gh/gravion-ux/mcp-shield/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/mcp-shield)
+[![CI](https://github.com/gravion-ux/mcp-shield/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/mcp-shield/actions/workflows/ci.yml)
 
 ![Demo](docs/demo.png)
 
@@ -36,13 +37,37 @@ the server. That creates a distinctive threat surface:
 
 `mcp-shield` checks for all of these before you ever start the server.
 
+## Requirements
+
+- **Python 3.10 or newer** (CI tests 3.10, 3.11 and 3.12).
+- **No runtime dependencies** — Python standard library only.
+- **For development / the test suite:** `pip install -e ".[dev]"`
+  (adds `pytest` and `pytest-cov`); CI runs
+  `python -m pytest -q --cov=mcp_shield --cov-report=xml`.
+
 ## Install
 
 ```bash
 pip install -e .        # from a clone of this repo
 ```
 
-Requires Python 3.9+. No third-party packages.
+Requires Python 3.10+. No third-party packages.
+
+## Quick start
+
+Audit the bundled, deliberately risky example — it is designed to be
+flagged, so a working install exits `1` with findings:
+
+```bash
+pip install -e .
+mcp-shield audit --config examples/risky-config.json --tools examples/risky-tools.json
+```
+
+Then point it at your own host configuration:
+
+```bash
+mcp-shield audit --config ~/.config/claude/claude_desktop_config.json
+```
 
 ## Usage
 
@@ -128,6 +153,27 @@ A working workflow for this repository itself lives in
 pip install -e ".[dev]"
 python -m pytest
 ```
+
+## Limitations
+
+- **Static analysis only.** `mcp-shield` reads configuration and
+  tool-definition files; it never starts an MCP server, executes
+  audited code, or observes runtime behaviour — a server that behaves
+  only when it runs is outside its view.
+- **A fixed, enumerated rule set.** Findings come from the checks in
+  the table above. A poisoning phrasing or misconfiguration that
+  matches none of those rules will not be flagged.
+- **Drift detection needs a baseline.** Rug-pull protection only works
+  if you `pin` a trusted baseline first and `check` against it later;
+  there is nothing to compare against on a first run.
+
+## Sponsors
+
+Sponsorship pays for the maintenance, triage and release time behind this tool. Sponsors are
+listed here by name, and name placement starts at the $25 a month Sponsor tier or the $50
+one-time Sponsor tier.
+
+- [Sponsor on GitHub](https://github.com/sponsors/gravion-ux)
 
 ## License
 

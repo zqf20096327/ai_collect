@@ -211,6 +211,7 @@
     - [Canva AI <sub>F, $</sub>](https://www.canva.com/ai-image-generator/) - AI 이미지 생성 및 디자인 도구
     - [Figma AI <sub>$</sub>](https://www.figma.com/ai/) - Figma의 AI 기반 디자인 도구
     - [Galileo AI <sub>$</sub>](https://www.usegalileo.ai) - 텍스트 입력을 활용한 UI 디자인 생성 도구
+    - [Kite <sub>EN, F, $</sub>](https://kite.new) - Claude·ChatGPT·Cursor·Codex 같은 AI 에이전트가 원격 MCP 서버로 팀과 같은 파일에 편집 가능한 레이어(프레임, 텍스트, 컴포넌트, 오토 레이아웃)를 그리는 디자인 도구. 프레임을 HTML·React·Tailwind로 복사 가능. 계정 필요, 무료 플랜은 파일 3개·에이전트 작업 하루 100회 제한
     - [Locofy <sub>F, $</sub>](https://www.locofy.ai) - 디자인을 프론트엔드 코드로 변환하는 AI 도구
 
   - <span id="conversational-ai">대화형 AI</span>
@@ -243,6 +244,7 @@
     - [CloudGPU <sub>EN, $</sub>](https://cloudgpu.app) - RTX 4090/5090 GPU 대여와 OpenAI 호환 모델 API를 제공하는 웹 서비스. 학습·추론·ComfyUI 작업에 사용. REST와 MCP 도구로 GPU 작업을 요청할 수 있으나, 과금되는 인스턴스 시작은 확인 절차가 필요함. 계정과 API 키(또는 브라우저에서 사용 한도를 설정하는 연결 흐름)가 필요하며 무료 플랜은 없음. 요금은 공식 가격 페이지에서 확인. 작업 파일과 프롬프트는 CloudGPU API로 전송됨. 제작자 기여.
     - [Models Rank <sub>EN, F, O</sub>](https://modelsrank.org/en/) - 주요 AI 모델을 지능·속도·비용 세 가지로만 비교하는 최소한의 리더보드. Artificial Analysis 등 제3자 공개 평가를 모아 주 1회 갱신하며 자체 벤치마크는 하지 않음. 로그인·API 키 없이 무료, 사이트 코드는 MIT(평가 데이터는 각 출처 약관 적용). 제작자 기여.
     - [GetYouTubeTranscript API <sub>EN, $</sub>](https://getyoutubetranscript.com/docs) - YouTube 영상 자막(타임스탬프 선택)·자막 언어 목록·영상/채널 검색·채널/재생목록 영상 목록을 가져오는 REST API와 원격 MCP 서버. RAG·에이전트에 YouTube 내용을 넣을 때 사용. 계정 필요(API 키 또는 MCP OAuth 로그인), 가입 시 100 크레딧 제공 후 유료, 영상에 자막이 없으면 결과 없음
+    - [Wiro AI <sub>EN, $</sub>](https://wiro.ai) - 이미지·영상·오디오·3D·LLM 모델을 API 키 하나로 호출하는 AI 모델 API 플랫폼. 앱에 생성형 AI 기능을 넣거나 여러 모델을 워크플로우로 이어 실행할 때 사용. OpenAI 호환 LLM 게이트웨이와 원격 MCP 서버도 제공. 계정과 API 키가 필요하며 실행한 만큼 선불 크레딧에서 차감되고, 모델별 가격은 공개 가격 페이지에서 확인. 입력은 Wiro AI로 전송되며 제3자 모델 사용 시 해당 제공사에 전달될 수 있음. 제작자 기여.
 
   - <span id="ai-agent">에이전트 & 프레임워크</span>
     - [LangChain <sub>F, O</sub>](https://www.langchain.com) - LLM 애플리케이션 개발 프레임워크
@@ -591,6 +593,7 @@
     - [cv.cm JWT Decoder <sub>KR, EN, F, O</sub>](https://cv.cm/ko/jwt/) - 인증 디버깅 때 JWT의 헤더와 페이로드를 브라우저 안에서 읽는 무료 도구. 계정이 필요 없고 토큰을 전송하지 않음. 서명은 검증하지 않으며 페이지에 Google Analytics가 있음
     - [Nyxiontech PDF Tools <sub>EN, F, O</sub>](https://tools.nyxiontech.com) - PDF 병합·분할·압축·서명·OCR과 이미지 변환을 브라우저에서 처리하는 무료 도구 모음. 파일을 업로드하지 않고 계정이 필요 없으며, 코드는 AGPL-3.0 라이선스로 공개
     - [KaijuConverter <sub>EN, F, $</sub>](https://kaijuconverter.com/) - 문서·이미지·오디오·비디오·데이터 포맷 변환 웹 도구와 REST API. 일부 이미지(JPG·PNG·WebP·BMP·SVG → JPG·PNG·WebP)·CSV↔JSON·SRT↔VTT는 브라우저 로컬에서 처리하고, 일부 변환과 API 작업은 파일을 서버에 업로드해 처리함(보관·삭제 기준은 개인정보처리방침 참고). 웹 기본 변환은 계정 없이 무료(파일당 15MB·일 5회, 브라우저 로컬 모드는 최대 100MB), 대용량·일괄 변환·일부 전문 포맷과 고할당량 REST API(계정·API 키 필요)는 단건 패스·유료 구독 제공. 제작자 기여
+    - [PDFHANA <sub>KR, F</sub>](https://pdfhana.com/) - PDF 합치기·나누기·압축·OCR, 한글(HWP·HWPX)↔PDF·Word 변환, 이미지 변환을 브라우저 안에서 처리하는 무료 도구 모음. 계정이 필요 없고 파일 변환은 기기 안에서 처리함(웹페이지 주소 → PDF 도구만 입력한 주소를 서버가 대신 받아 옴). 방문 통계(Cloudflare Web Analytics)가 있고 코드는 공개하지 않음. 제작자 기여
 
   - <span id="search-tool">Search</span>
     - [Google](https://www.google.com/) - 검색 엔진
@@ -637,6 +640,7 @@
   - <span id="regex">정규 표현식</span>
     - [Regex101](https://regex101.com) - 온라인 정규 표현식 학습 및 테스트
     - [Regexr](https://regexr.com) - 온라인 정규 표현식 도구
+    - [Regex Tester <sub>EN, F</sub>](https://bestlatestapps.com/tools/regex-tester/) - JavaScript 정규식을 텍스트에 바로 적용해 보는 브라우저 도구. 일치 항목 강조, 캡처·이름 있는 그룹 표, 치환 미리보기 제공. 계정 없이 무료이며 사이트에 광고가 표시됨. 제작자 기여
 
   - <span id="design-tool">Design</span>
     - [Figma <sub>$</sub>](https://figma.com) - UI/UX 디자인 및 프로토타이핑 도구

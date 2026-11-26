@@ -1,4 +1,4 @@
-<img width="100%" alt="numallama.gif" src="https://github.com/user-attachments/assets/fbb5012f-8eb3-409b-b960-fdcfe47c6bb3" />
+<img width="100%" alt="numallama.gif" src="https://raw.githubusercontent.com/miloserdev/numallama/refs/heads/master/docs/numallama.gif" />
 
 # numallama — fast NUMA-aware CPU inference for Llama 3.x, Qwen2.5, Qwen3 / Qwen3-MoE and Qwen3.5 / 3.8
 

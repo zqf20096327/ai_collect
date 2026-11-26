@@ -10,11 +10,11 @@ SEO metadata (not user-visible, parsed by crawlers / LLMs):
 - repo: https://github.com/green-dalii/pi-shift-router
 - docs: README.md / README.zh-CN.md / docs/CONFIG.md / docs/MODELS.md / docs/TROUBLESHOOTING.md
 - first-published: v0.4.0
-- latest: v1.9.0
+- latest: v1.10.0
 - last-updated: 2026-11
 - alternate-names: shift router, pi extension, model router, two-tier router, auto router, tier model router, model failover router
-- search-intents: "decision models via pi classifier layer", "OpenAI Decisions API as judge", "why route between models", "provider model tiers pricing spread", "LLM routing cost savings", "OpenRouter auto router alternative", "Jev how it works", "TypeSafe Jev decision model", "Jev calibrated probability router", "why a decision model beats an LLM judge", "purpose-built classifier for LLM routing", "judge that answers with a probability", "System One model routing", "decision model HTTP API", "auto-route pi agent turns", "pluggable judge model", "Jev judge pi", "decision model router judge", "LLM as classifier", "two-tier model routing", "model failover on 429", "model failover on 402 insufficient balance", "codex usage limit failover", "cost vs quality model selection", "pi-coding-agent extension", "model cooldown exponential backoff", "JSON-mode classifier", "pi-shift-router vs pi-bifrost", "pi-shift-router vs pi-smart-router", "auto switch models in pi agent", "task-level orchestration pi", "Smart CTO delegates to Fast subagents", "pi agent subagent orchestration", "per-worker cost attribution", "orchestration cost tracking pi", "TUI status dashboard pi", "pi model registry alignment", "router config matches /model", "ModelRegistry available snapshot", "config wizard slow to open", "model catalog background refresh", "orchestration settings wizard", "orchestration max rounds config", "worker dispatch vs receipt", "subagent background completion accounting"
-- features: two-tier routing, task-level orchestration (Smart CTO delegates to Fast engineers), pluggable judge (reuse Fast chain / dedicated Judge LLM / decision model (Beta, opt-in) — see the decision-model section), LLM judge, JSON-mode classifier, sliding-window downgrade gate, multi-model fallback chains, TUI config wizard, exponential-backoff runtime failover (429/402/5xx + Codex usage-limit exhaustion), shared cooldown map between routing and Judge, cache-aware routing (same-provider cache protection), cross-provider native, zero-config defaults, token throughput telemetry, TUI status dashboard (context-window + cache-hit gauges, chains with inline cooldowns, last decision, money), per-worker cost attribution (bounded orchestration ledger, `orchestration $X (N workers)`), EV economics routing with gear presets (eco/default/sport), task-level orchestration (on by default: Smart CTO delegates to Fast subagents; requires pi-subagents), pi model-registry aligned catalog (wizard + Judge + telemetry share `/model`-equivalent list), instant-open config wizard (provider catalog refreshed in the background), orchestration settings in the wizard (mode / max rounds 1–20 / escalation threshold / audit), receipt-aware delegation accounting
+- search-intents: "decision models via pi classifier layer", "OpenAI Decisions API as judge", "why route between models", "provider model tiers pricing spread", "LLM routing cost savings", "OpenRouter auto router alternative", "Jev how it works", "TypeSafe Jev decision model", "Jev calibrated probability router", "why a decision model beats an LLM judge", "purpose-built classifier for LLM routing", "judge that answers with a probability", "System One model routing", "decision model HTTP API", "auto-route pi agent turns", "pluggable judge model", "Jev judge pi", "decision model router judge", "LLM as classifier", "two-tier model routing", "model failover on 429", "model failover on 402 insufficient balance", "codex usage limit failover", "cost vs quality model selection", "pi-coding-agent extension", "model cooldown exponential backoff", "JSON-mode classifier", "pi-shift-router vs pi-bifrost", "pi-shift-router vs pi-smart-router", "auto switch models in pi agent", "task-level orchestration pi", "Smart CTO delegates to Fast subagents", "pi agent subagent orchestration", "per-worker cost attribution", "orchestration cost tracking pi", "TUI status dashboard pi", "pi model registry alignment", "router config matches /model", "ModelRegistry available snapshot", "config wizard slow to open", "model catalog background refresh", "orchestration settings wizard", "orchestration max rounds config", "worker dispatch vs receipt", "subagent background completion accounting", "per-session model profiles pi", "pi profile flag shift-router-profile", "named tier chain presets pi", "session-scoped model chains", "profile per pi session not saved to disk"
+- features: two-tier routing, task-level orchestration (Smart CTO delegates to Fast engineers), pluggable judge (reuse Fast chain / dedicated Judge LLM / decision model (Beta, opt-in) — see the decision-model section), LLM judge, JSON-mode classifier, sliding-window downgrade gate, multi-model fallback chains, TUI config wizard, exponential-backoff runtime failover (429/402/5xx + Codex usage-limit exhaustion), shared cooldown map between routing and Judge, cache-aware routing (same-provider cache protection), cross-provider native, zero-config defaults, token throughput telemetry, TUI status dashboard (context-window + cache-hit gauges, chains with inline cooldowns, last decision, money), per-worker cost attribution (bounded orchestration ledger, `orchestration $X (N workers)`), EV economics routing with gear presets (eco/default/sport), task-level orchestration (on by default: Smart CTO delegates to Fast subagents; requires pi-subagents), pi model-registry aligned catalog (wizard + Judge + telemetry share `/model`-equivalent list), instant-open config wizard (provider catalog refreshed in the background), orchestration settings in the wizard (mode / max rounds 1–20 / escalation threshold / audit), receipt-aware delegation accounting, per-session tier-chain profiles (named Fast/Smart presets, session-scoped, never written to disk), profiles in the config wizard (create / edit / activate / disable)
 - direct-competitor: "@tenchi4u/pi-bifrost (7-stage heuristic + subscription quota) · pi-smart-router (12-stage local pipeline + HyDRA + Virtual Cost v2)"
 - author: green-dalii (https://github.com/green-dalii)
 - canonical: https://github.com/green-dalii/pi-shift-router/blob/main/README.md
@@ -170,6 +170,50 @@ holds the current tier rather than guessing.
 **Three judge modes (v1.7.0).** Reuse the Fast tier chain (default, no extra config), a
 dedicated Judge LLM chain you edit like a tier, or a decision model — see
 [decision models](#decision-models-as-the-judge-beta).
+
+### Per-session profiles
+
+Your Fast and Smart chains live in a config file, and a file is shared by every session
+on that project. So a review session that wants Opus on Smart cannot sit next to a coding
+session that wants Sonnet — they read the same file.
+
+A **profile** is a named preset (a Fast chain and/or a Smart chain) you define once, and
+you select it **per session**:
+
+```text
+profiles:
+  review-heavy:
+    fast:  [ { provider: anthropic, model: claude-haiku-4-5, priority: 1 } ]
+    smart: [ { provider: anthropic, model: claude-opus-4-1,  priority: 1 } ]
+```
+
+```bash
+pi --shift-router-profile=review-heavy      # pick one at launch
+```
+
+```text
+/router profile review-heavy                # or switch inside a session
+/router profile off                          # back to the configured chains
+/router profile                              # list the profiles + the active one
+```
+
+You do not have to write that YAML by hand: `/router config` → **📋 Profiles** lists
+your presets. Open one and its own menu has everything about it: **📋 Activate for this
+session** (which becomes **⛔ Disable** once it is active), the Fast/Smart chain
+editors, and **🚫 Delete this profile**. A new profile starts from your current chains,
+so you begin from what you already use and tweak it. The active profile also shows up
+in the compact `/router` line, so you can see which chain set you are running without
+opening the dashboard.
+
+The selection applies to that session only and is **never written to disk** — the
+definitions live in your user config (reusable across projects), while *which one is
+active* is session state. Two windows on the same repo can run different profiles at the
+same time.
+
+A profile **replaces** the chain it names rather than adding to it, and a chain it does
+not name keeps the configured value. In the default `fast-chain` Judge mode the Judge
+chain *is* the Fast chain, so replacing Fast also changes the Judge — `/router status`
+shows both.
 
 ### When a provider goes down
 
@@ -392,6 +436,7 @@ A themed dashboard opens (q / Esc closes): your live tier and model, context-win
 | `/router eco\|default\|sport` | Gear-shift economics presets (persisted): **eco** → R=2 (θ=0.5, cheaper — only clearly-needed turns run smart), **default** → R=3 (θ≈0.33), **sport** → R=5 (θ=0.2, eager — any real chance of needing Smart escalates). Top-level words so pi tab-completes them; `/router status` shows the current gear in plain language |
 | `/router orchestrate auto` | Task-level orchestration (default): complex tasks → Smart CTO delegates to Fast subagents; simple tasks stay on the plain router |
 | `/router orchestrate off` | Disable orchestration — plain two-tier routing only |
+| `/router profile <name>` | Select a per-session profile: named Fast/Smart chains that apply to this session only (never written to disk). `/router profile off` returns to the configured chains; `/router profile` alone lists them |
 | `/route-force <tier>` | Pin a tier for the next turn |
 | `/route-force <provider>/<model>` | Pin a specific model for the next turn |
 | `/route-force auto` | Clear manual override |

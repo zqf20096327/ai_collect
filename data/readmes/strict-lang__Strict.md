@@ -23,7 +23,7 @@ Language docs: [Getting Started](https://strict-lang.org/docs/GettingStarted), [
 
 Every type is one `.strict` file, and the file name is the type name. Members come first (`has celsius Number`). A method such as `ToFahrenheit Number` starts with the tests that show how to use it (`TemperatureConverter(100).ToFahrenheit is 212`), then the implementation. Values are immutable, and there is one way to write each thing, so `strict check` and those tests accept or reject generated code without a line-by-line review. [The same example is in the docs](https://strict-lang.org/docs/Overview#a-first-look).
 
-Almost every unit test finishes in well under a millisecond. That is why a large codebase can run many millions of mutation tests in seconds: each mutant is one tiny change, and the tests that catch it are already that fast. Strict is the exact low level layer under a higher level system that is not released yet, [Ben](https://github.com/strict-lang/Ben) and TestSolver. Their goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds, 8 to 16 of them at once. Some searches try millions of variations and keep only what Strict accepts, so a world knowledge base of skills grows with the work. This is not an LLM. There is no pre-training. It is an expert system of knowledge and skills, and it becomes more useful the more it does and learns.
+Almost every unit test finishes in well under a millisecond. That is why a large codebase can run many millions of mutation tests in seconds: each mutant is one tiny change, and the tests that catch it are already that fast. Strict is the exact low level layer under a higher level system that is not released yet, [Ben](https://github.com/strict-lang/Ben) and [Solver](https://github.com/strict-lang/Solver). Their goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds, 8 to 16 of them at once. Some searches try millions of variations and keep only what Strict accepts, so a world knowledge base of skills grows with the work. This is not an LLM. There is no pre-training. It is an expert system of knowledge and skills, and it becomes more useful the more it does and learns.
 
 What Strict does today:
 - **Self-hosted**: parser, type inference, validators, the Strict VM and the native code generator (MLIR and LLVM) are written in Strict, and `strict` builds itself.
@@ -53,6 +53,9 @@ if Parent is None
 
 # How to use
 The base types are the documentation: every method starts with tests showing how to use it. Tests are `is` comparisons (`==` elsewhere, `=` assigns), every expression must be true or execution stops with an Error.
+
+[!IMPORTANT]
+Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds a temporary compiler from the seed, which then builds a release `strict` (no binaries are in this repo). A long garbage collection only warns, so the first compiler still finishes on a tight machine. After changing the compiler rebuild it with `strict build Strict.strict`; building twice gives identical output. `strict` also rebuilds itself before a command when its sources or the git history are newer (a failed rebuild keeps the current one until the sources change); an `obj/Strict.hold` file in the Strict folder holds that off while compiler sources are half done.
 
 ## Command line
 `strict` (`strict.exe` on Windows) is in this folder next to the base types, put it on the PATH. No .NET or other runtime is needed (the C# implementation that bootstrapped Strict is commit [4e4fc3da](https://github.com/strict-lang/Strict/tree/4e4fc3da6da3075da38dc3bd2f683ef27e34b26c) in the history).
@@ -102,8 +105,6 @@ strict version                            version and build time of this strict
 
 Needed tools: `mlir-opt`, `mlir-translate`, `clang`, `opt` and `llc` of LLVM 22 (on Windows the msys2 ucrt64 `mlir` package and the LLVM release). When they are missing `strict` installs them (Windows: winget and pacman, Linux: the LLVM release into `Tools/`, macOS: conda-forge with micromamba into `Tools/`). A build reruns a crashed external tool once (`ToolRunner.Retried`).
 
-Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds a temporary compiler from the seed, which then builds a release `strict`. A long garbage collection only warns, so the first compiler still finishes on a tight machine. After changing the compiler rebuild it with `strict build Strict.strict`; building twice gives identical output. `strict` also rebuilds itself before a command when its sources or the git history are newer (a failed rebuild keeps the current one until the sources change); an `obj/Strict.hold` file in the Strict folder holds that off while compiler sources are half done.
-
 ## Unit and functional tests
 Unmarked inline tests are unit tests: each should take under 10 ms, the hard limit is 200 ms of CPU time of the test thread on the VM and natively (other processes running meanwhile do not count, a test waiting longer than 1 s fails too) (slow CI machines, parallel runs), including its leading local setup. Exceeding it fails with `TestDurationMustNotExceedTwoHundredMilliseconds`, the expression and its source location; a watchdog stops tests that never return. Shared constants initialize on first use, once per run, native libraries build on their first call and the GPU opens once: that time does not count for the test that first used them. The tests of the internal packages `Compiler`, `Runtime`, `Bytecode` and `Expressions` count as Slow: builds, checks and folder runs skip them, CI and explicit runs test them (`strict test Compiler/File.strict unit` runs that file's unmarked tests, not its `slow` ones).
 
@@ -151,7 +152,7 @@ Builds, checks, folder tests on the VM, VS Code typing checks and value tracing 
 
 Details are in the README of each package. Open bugs and speed work go into `bugs.md` and `performance.md` while there are any, larger ideas are in [ideas.md](ideas.md).
 
-Design decisions: an immutable expression tree (static analysis only), validation before execution, tests that live with the code and disappear from the bytecode, strict rules first and then hardware speed. Only code that is actually called is parsed, validated, tested and executed. Unit tests are fast enough that millions of mutations finish in seconds. Millions of lines of code and tests per second is the goal of Ben and TestSolver, the higher level system on top, which is not released yet.
+Design decisions: an immutable expression tree (static analysis only), validation before execution, tests that live with the code and disappear from the bytecode, strict rules first and then hardware speed. Only code that is actually called is parsed, validated, tested and executed. Unit tests are fast enough that millions of mutations finish in seconds. Millions of lines of code and tests per second is the goal of Ben and Solver, the higher level system on top, which is not released yet.
 
 ## Examples (from Number.strict, Text.strict and List.strict)
 ```

@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed AI agent framework. This distribution 
 | Package | `Praxo::Core` |
 | Registry | [CPAN (MetaCPAN index)](https://metacpan.org/dist/Praxo-Core) |
 | Install | `cpanm Praxo::Core` |
-| Source version | `0.7.1` |
+| Source version | `0.8.0` |
 | Published version | `0.7.1` |
-| Source tag | `perl/v0.7.1` |
+| Source tag | `perl/v0.8.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/perl/ |
@@ -88,6 +88,19 @@ Runnable examples live under [`language/perl/examples`](language/perl/examples).
 | [streaming](language/perl/examples/streaming) | This example accumulates streamed chunks and checks that they reconstruct the final output. |
 | [structured-output](language/perl/examples/structured-output) | This example validates a final JSON answer against a schema and rejects invalid output. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/perl/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/perl/Tutorial) | Application tutorials live in `Tutorial/`, alongside focused `language/go/examples/`. |
+| [community-governance](language/perl/Tutorial/community-governance) | Fixed synthetic issues produce four classified items and a review-only reviewer request. No GitHub API, closure or impersonation. |
+| [compliance-tracking](language/perl/Tutorial/compliance-tracking) | Fixed policy versions yield two changed sections and a duplicate removal; Core drafts review-only remediation. No filing, audit conclusion or live source. |
+| [localization-draft](language/perl/Tutorial/localization-draft) | Fixed market rules produce a review-only localized text draft. No translation engine, CMS or publication. |
+| [log-triage](language/perl/Tutorial/log-triage) | A small operations tutorial using the native Perl Core. The Agent has one fixed tool, `summarize_log`, which reads the tutorial's own log fixture and returns severity counts. Th... |
+| [news-factcheck](language/perl/Tutorial/news-factcheck) | A bounded first slice of MD-02, not a truth-verification service. It compares fixed source excerpts for one synthetic article, cites a contradiction and drafts a review-only fac... |
+
 ## Verify
 
 Run the checks from `language/perl`:
@@ -104,6 +117,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

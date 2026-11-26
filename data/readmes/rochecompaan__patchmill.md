@@ -57,6 +57,8 @@ change the skills, as [Skills](#skills) describes. The
 ## Requirements
 
 - A git repository with an `origin` remote on GitHub, Forgejo, or Gitea.
+- Git 2.38 or later (included in the Nix package). `patchmill doctor` checks the
+  version.
 - The `gh` or `tea` CLI, logged in to that host.
 - Node.js 24 or later (included in the Nix package).
 - An account with a model provider that Pi supports, by subscription or API key.
@@ -74,8 +76,10 @@ enabled, install from GitHub:
 nix profile install github:rochecompaan/patchmill
 ```
 
-The Nix package includes Node.js, but you must provide Git and the authenticated
-`gh` or `tea` CLI separately.
+The Nix package includes Node.js and Git, but you must provide the authenticated
+`gh` or `tea` CLI separately. Its Git comes first on `PATH`. If your Git
+configuration names a system credential helper by a short name, for example
+`libsecret`, give its full path instead.
 
 ### npm
 
@@ -145,6 +149,12 @@ for a merge, the runner waits. The wait grows to `run.idleBackoff` limits. After
 an error, it waits with the `run.errorBackoff` limits. Three Needs Info stops in
 a row also count as an error, so that a broken provider does not move each ready
 issue to `needs-info` without a pause.
+
+Before new work, a pass looks for a Done issue whose open pull request now
+conflicts with the base branch. It resolves that conflict first: an agent merges
+the base into the issue branch, and Patchmill checks the pushed result. A failed
+resolution stops with Needs Info. The same pull request is not tried again until
+its head or the base changes, and at most once each `run.conflictRetryMinutes`.
 
 ```sh
 patchmill run
@@ -408,7 +418,14 @@ Each key is optional. Patchmill rejects unknown keys by name.
     "planning": ".patchmill/skills/patchmill-planning",
     "implementation": ".patchmill/skills/patchmill-implementation"
   },
-  "pi": { "agentDir": ".patchmill/pi-agent", "timeoutMinutes": 90 },
+  "pi": {
+    "agentDir": ".patchmill/pi-agent",
+    "timeoutMinutes": 90,
+    "commandTimeoutMinutes": 20,
+    "maxCommandTimeoutMinutes": 25,
+    "stallStopMinutes": 10,
+    "maxStalls": 3
+  },
   "workflow": {
     "stateTracking": "labels",
     "specApproval": { "required": false },
@@ -416,6 +433,7 @@ Each key is optional. Patchmill rejects unknown keys by name.
   },
   "run": {
     "triageIntervalMinutes": 5,
+    "conflictRetryMinutes": 30,
     "idleBackoff": { "initialSeconds": 60, "maxSeconds": 900 },
     "errorBackoff": { "initialSeconds": 30, "maxSeconds": 1800 }
   }
@@ -429,6 +447,15 @@ These keys change the most:
 - `workflow.stateTracking` selects labels on the host or
   [local state](#local-state-mode).
 - `pi.timeoutMinutes` limits each Pi session.
+- `pi.commandTimeoutMinutes` (default 20) is the timeout of an agent `bash` call
+  that sets none. `pi.maxCommandTimeoutMinutes` (default 25) is the longest
+  timeout that a call can get. `0` turns a limit off. The default must not be
+  longer than an enabled cap.
+- `pi.stallStopMinutes` (default 10) is the quiet time after which Patchmill
+  stops the turn of an unattended implementation session and asks the agent to
+  continue another way. A running `bash` call inside its timeout is not quiet.
+  `pi.maxStalls` (default 3) is the Stall that stops the Run attempt at Needs
+  Info. A second Stall of the same command also stops it. `0` turns a limit off.
 - `git.baseBranch: null` uses the default branch of the remote.
 - `run` sets the triage interval and the wait limits of `patchmill run`.
 

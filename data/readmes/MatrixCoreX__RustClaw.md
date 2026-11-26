@@ -1,6 +1,8 @@
-# Agent Runtime
+# RustClaw by MatrixCoreX
 
-Agent Runtime is a self-hosted AI agent platform written in Rust for Raspberry Pi, Ubuntu, and macOS. Use the web console or a connected messaging app to ask questions, work with files, and follow tasks as they run.
+A self-hosted AI agent platform written in Rust for Raspberry Pi, Ubuntu, and macOS. Use the web console or a connected messaging app to ask questions, work with files, and follow tasks as they run.
+
+[Official website](https://rustclaw.matrixai.one/) · [Raspberry Pi installation](https://rustclaw.matrixai.one/raspberry-pi-install/) · [MCP setup](https://rustclaw.matrixai.one/mcp/) · [RAG guide](https://rustclaw.matrixai.one/rag/)
 
 Connect external tools through the Model Context Protocol (MCP) and import your own documents into a retrieval-augmented generation (RAG) knowledge base. The agent can use a connected tool to look up a current order or cite your support handbook when answering a policy question.
 
@@ -936,5 +938,4 @@ flowchart LR
 ```
 
 - **Independent responsibilities**: NNI device admission, owner binding, heartbeat, rewards, and APR are separate from Bancor+ trading and asset transfers. Bancor+ does not require the local device to be actively earning heartbeat rewards. Binding an asset account also does not start heartbeats; joining remains an explicit action.
-- **Node selection**: heartbeat uses the selected NNI node. Bancor+ and Assets use that node by default, but each can select its own service node. Read paths use bounded structured fallback through configured nodes; node errors remain machine codes instead of language-matched decisions.
-- **Read and mutation boun
+- **Node selection**: heartbeat uses the selected NNI node. Bancor+ and Assets use tha

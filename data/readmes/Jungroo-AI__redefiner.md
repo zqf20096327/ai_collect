@@ -4,13 +4,13 @@
 
 **Pull out the entities you define, using a plain-English rulebook, on your own CPU.**
 
-A 0.8B model that extracts and labels exact spans using your plain-English rulebook. It is non-generative: it marks spans in your text and never writes new text. The name is ReDefine + NER: you redefine what counts as an entity by editing a rulebook, not by retraining. Created by [Jungroo AI Labs][jungroo].
+An open-source 0.8B model that pulls entities and details out of text by following written guidelines (a plain-English rulebook), and runs on your own servers or a laptop CPU with no GPU. It is non-generative: it marks spans in your text and never writes new text. The name is ReDefine + NER: you redefine what counts as an entity by editing a rulebook, not by retraining. Created by [Jungroo AI Labs][jungroo].
 
 <sub>On CrossNER AI it scores 68.1 F1 on a CPU server, about 5 F1 behind Claude Haiku 5.5 (73.1) and 4.3 behind Gemini 3.1 Pro (72.4), given the same rulebook. [How it compares, including where it loses](#against-frontier-models)</sub>
 
 [![CI][ci-badge]][ci]
 
-[Quickstart](#quickstart) · [Label mode](#label-mode) · [See a rule at work](#see-a-rule-at-work) · [Benchmarks](#benchmarks) · [HTTP server](#http-server) · [Limitations](#limitations) · [Weights][weights] · [Demo][demo] · [PII demo][pii-demo]
+[Quickstart](#quickstart) · [Label mode](#label-mode) · [See a rule at work](#see-a-rule-at-work) · [Benchmarks](#benchmarks) · [HTTP server](#http-server) · [Limitations](#limitations) · [Weights][weights]
 
 </div>
 
@@ -88,7 +88,7 @@ Need it on your own data? We write and test rulebooks with you and run ReDefiNER
 | Interfaces | Python (`Tagger.extract`, `Tagger.label`) and a local HTTP server (`redefiner serve`) |
 | Benchmarks | Against five frontier models and against published research models: [results](#benchmarks) |
 | Licence | Apache-2.0: free to use, change and share, including in commercial products |
-| Release | Weights 1.0 (October 2026), package 1.0.10 ([changes][changelog]) |
+| Release | Weights 1.0 (October 2026), package 1.0.11 ([changes][changelog]) |
 | Made by | [Jungroo AI Labs][jungroo]; authors Cibe Hariharan K and Sethuraman T A |
 
 ## Quickstart
@@ -184,7 +184,7 @@ mode, `confidence` is the probability of the chosen type among the rulebook's ty
 
 Every card on this page is real output: the released int8 model on a laptop CPU, with nothing retrained between runs.
 Only the rulebook changes. Green lines were added to the rulebook; spans outlined in red disappear, spans outlined
-in green are new or changed. [Try your own text and rules in the demo][demo].
+in green are new or changed.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jungroo-ai/redefiner/main/docs/assets/rules/price-limit.png" width="780" alt="Adding one rule makes the price span 'under $120' instead of '$120'"></p>
 
@@ -773,7 +773,7 @@ long IPv6 addresses and API keys, and 64 gave the same results as 48; 64 is the 
 ## Redact files
 
 <p align="center"><a href="https://huggingface.co/jungroo-ai/redefiner-pii/resolve/main/docs/assets/video/redefiner-pii.mp4"><img src="https://raw.githubusercontent.com/jungroo-ai/redefiner/main/docs/assets/video/redefiner-pii-thumb.png" width="780" alt="Play the 30-second PII redaction video"></a></p>
-<p align="center"><sub>30 seconds, with a voiceover: a clinic note masked with the PII rulebook, then by the clinic's own policy. Every mask in it is real output from this model. <a href="https://huggingface.co/spaces/jungroo-ai/redefiner-redact">Try it in your browser</a>.</sub></p>
+<p align="center"><sub>30 seconds, with a voiceover: a clinic note masked with the PII rulebook, then by the clinic's own policy. Every mask in it is real output from this model.</sub></p>
 
 ```bash
 redefiner redact notes.txt                       # the PII rulebook of jungroo-ai/redefiner-pii
@@ -872,6 +872,19 @@ A span that can't be labelled comes back with an `unsupported` reason in place o
 
 The server has no authentication and no limit on request size. Keep it on 127.0.0.1, or put it behind your own proxy
 if it has to be reachable from other machines.
+
+## Integrations
+
+ReDefiNER also runs inside these tools. Each is a separate package by Jungroo AI Labs.
+
+| Tool | Package | Install | What it does |
+|---|---|---|---|
+| spaCy | [spacy-redefiner][spacy-redefiner] | `pip install spacy-redefiner` | A pipeline component. Entities go to `doc.ents` or a span group, with a confidence per span. |
+| Presidio | [presidio-redefiner][presidio-redefiner] | `pip install presidio-redefiner` | A recognizer for Presidio's analyzer, so its anonymizer can mask what your rulebook defines. Presidio's docs include a [sample][presidio-sample]. |
+| LangChain | [langchain-redefiner][langchain-redefiner] | `pip install langchain-redefiner` | Agent middleware that redacts, masks, hashes or blocks personal data, plus document transformers. Listed in [LangChain's middleware docs][langchain-middleware-docs]. |
+| LlamaIndex | [llama-index-redefiner][llama-index-redefiner] | `pip install llama-index-redefiner` | A node postprocessor and an ingestion step that mask personal data, plus an entity extractor. |
+| NeMo Guardrails | [nemoguardrails-redefiner][nemoguardrails-redefiner] | `pip install nemoguardrails-redefiner` | Input, output and retrieval rails that detect or mask personal data before it reaches the LLM. |
+| Label Studio | [label-studio-redefiner][label-studio-redefiner] | Docker (`docker compose up`) | An ML backend that pre-annotates NER tasks, using the project's labels and their hints as the rulebook. |
 
 ## Limitations
 
@@ -974,8 +987,6 @@ Created by [Jungroo AI Labs][jungroo]. For help putting it to work on your own d
 [jungroo]: https://jungroo.com
 [ci-badge]: https://github.com/jungroo-ai/redefiner/actions/workflows/ci.yml/badge.svg
 [weights]: https://huggingface.co/jungroo-ai/redefiner-0.8b
-[demo]: https://huggingface.co/spaces/jungroo-ai/redefiner-demo
-[pii-demo]: https://huggingface.co/spaces/jungroo-ai/redefiner-redact
 [ci]: https://github.com/jungroo-ai/redefiner/actions/workflows/ci.yml
 [jungroo-redefiner]: https://jungroo.com/redefiner/
 [compare-gliner]: https://jungroo.com/redefiner/vs-gliner
@@ -1001,3 +1012,11 @@ Created by [Jungroo AI Labs][jungroo]. For help putting it to work on your own d
 [scripts]: https://github.com/jungroo-ai/redefiner/blob/main/scripts/README.md
 [gollie]: https://github.com/hitz-zentroa/GoLLIE
 [benchmark-licences]: https://github.com/jungroo-ai/redefiner/blob/main/benchmarks/README.md#datasets-and-licences
+[spacy-redefiner]: https://github.com/Jungroo-AI/spacy-redefiner
+[presidio-redefiner]: https://github.com/Jungroo-AI/presidio-redefiner
+[langchain-redefiner]: https://github.com/Jungroo-AI/langchain-redefiner
+[llama-index-redefiner]: https://github.com/Jungroo-AI/llama-index-redefiner
+[label-studio-redefiner]: https://github.com/Jungroo-AI/label-studio-redefiner
+[nemoguardrails-redefiner]: https://github.com/Jungroo-AI/nemoguardrails-redefiner
+[presidio-sample]: https://github.com/data-privacy-stack/presidio/blob/main/docs/samples/python/redefiner.md
+[langchain-middleware-docs]: https://docs.langchain.com/oss/python/integrations/middleware

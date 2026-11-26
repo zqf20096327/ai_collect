@@ -1,13 +1,15 @@
-# **WAS** Node Suite v3 &nbsp; ![ComfyUI](https://img.shields.io/badge/ComfyUI-Custom_Node-blue) [![Open Manager](https://img.shields.io/badge/Open_Manager-Compatible-yellow)](https://github.com/WASasquatch/open-manager-comfyui) ![License](https://img.shields.io/badge/License-MIT-green) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/ThompsonJordan?country.x=US&locale.x=en_US) 
+# **WAS** Node Suite v3 &nbsp; ![ComfyUI](https://img.shields.io/badge/ComfyUI-Custom_Node-blue) [![Open Manager](https://img.shields.io/badge/Open_Manager-Compatible-yellow)](https://github.com/WASasquatch/open-manager-comfyui) ![License](https://img.shields.io/badge/License-MIT-green) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/ThompsonJordan?country.x=US&locale.x=en_US) [![Discord](https://img.shields.io/badge/Discord-Open_Nodes-5865F2?logo=discord&logoColor=white)](https://discord.gg/y7FRDaNNun)
 
 <img src="was-node-suite-v3.png" width="600">
+
+### Join [Open Nodes on Discord](https://discord.gg/y7FRDaNNun) for help, release news and node development.
 
 WAS Node Suite has been going since 2023 on Civitai and on GitHub, and was among the
 first packs to put hundreds of nodes into users' hands. WAS-NS has over a million downloads, 
 and is used by thousands of users daily. It has been MIT since the first commit: use it, change it, 
 teach with it, or run it in paid services.
 
-The pack contains **757 nodes for ComfyUI**, across images, filters and colour, masking, 
+The pack contains **765 nodes for ComfyUI**, across images, filters and colour, masking, 
 text and prompts, logic and flow, numbers, latents and sampling, files, animation and video, 
 and Llama-Index in ComfyUI. 
 
@@ -71,7 +73,7 @@ group's keys, model folders and servers: [`docs/LLM.md`](docs/LLM.md).
 
 # What changed since v2
 
-757 nodes across a package of source files. The pack itself needs no packages, and nothing is
+765 nodes across a package of source files. The pack itself needs no packages, and nothing is
 fetched from a git URL. What it bundles ships in the repository with its licence beside it,
 listed in [`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md).
 
@@ -144,7 +146,9 @@ are now checkboxes, and fourteen nodes that stopped at four to eight slots now d
 twenty-four or twenty-six, drawing one empty slot below the last one filled. Saved settings are
 read back onto the new widgets and everything wired stays wired. The three batchers each gain a
 `count` output below the one they had. `Image Save`'s `prefix_as_filename` is now
-`overwrite_mode`, ticked where it read `true`. `Logic Boolean`'s 0 to 1 slider is a checkbox,
+`overwrite_mode`, ticked where it read `true`. `Image Save`'s `show_previews` is now the
+`gallery` menu in the same place: `node gallery` where it read `true`, and `interface gallery`
+where it read `false`. `Logic Boolean`'s 0 to 1 slider is a checkbox,
 ticked where it read above 0.5.
 
 **Three Custom Material takes a module file.** Its `javascript` box is gone. The node now picks
@@ -174,7 +178,7 @@ a core ComfyUI node. Only the label changed, and the old names still find them i
 
 # Nodes
 
-**757 nodes** across 75 categories. [`NODES.md`](NODES.md) carries every input, output and
+**765 nodes** across 75 categories. [`NODES.md`](NODES.md) carries every input, output and
 tooltip, and groups them by the `config.yaml` switch that gates them:
 [feature gates](NODES.md#feature-gates).
 

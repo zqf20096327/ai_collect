@@ -11,8 +11,6 @@
 
 <p align="center">
   <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest"><img src="https://img.shields.io/github/v/release/datadrivenconstruction/OpenConstructionDesign?style=flat-square&label=release&color=3b6cf6" alt="Latest release"></a>
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases"><img src="https://img.shields.io/github/downloads/datadrivenconstruction/OpenConstructionDesign/total?style=flat-square&label=downloads&color=2f855a" alt="Downloads"></a>
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/datadrivenconstruction/OpenConstructionDesign/ci.yml?branch=main&style=flat-square&label=CI" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-AGPL--3.0-3b6cf6?style=flat-square" alt="Licence: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%C2%B7%20Linux%20%C2%B7%20Browser-0f172a?style=flat-square" alt="Platforms: Windows, Linux, browser">
   <img src="https://img.shields.io/badge/rust-1.89%2B-b7410e?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.89+">
@@ -20,12 +18,7 @@
   <a href="#mcp-server"><img src="https://img.shields.io/badge/MCP-compatible-6d4aff?style=flat-square" alt="MCP compatible"></a>
   <a href="#erp-link-change-the-model-the-estimate-follows"><img src="https://img.shields.io/badge/ERP-estimate%20follows%20the%20model-e8590c?style=flat-square" alt="ERP link"></a>
   <img src="https://img.shields.io/badge/works-offline-0f172a?style=flat-square" alt="Works offline">
-  <br>
   <a href="https://openconstructiondesign.com"><img src="https://img.shields.io/badge/website-openconstructiondesign.com-3b6cf6?style=flat-square" alt="Website"></a>
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/commits/main"><img src="https://img.shields.io/github/last-commit/datadrivenconstruction/OpenConstructionDesign/main?style=flat-square" alt="Last commit"></a>
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/stargazers"><img src="https://img.shields.io/github/stars/datadrivenconstruction/OpenConstructionDesign?style=flat-square" alt="Stars"></a>
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/issues"><img src="https://img.shields.io/github/issues/datadrivenconstruction/OpenConstructionDesign?style=flat-square" alt="Open issues"></a>
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/discussions"><img src="https://img.shields.io/github/discussions/datadrivenconstruction/OpenConstructionDesign?style=flat-square" alt="Discussions"></a>
   <a href="#contributing"><img src="https://img.shields.io/badge/PRs-welcome-2f855a?style=flat-square" alt="PRs welcome"></a>
 </p>
 
@@ -53,22 +46,22 @@
 <h2 id="download" align="center">Download</h2>
 
 <p align="center">
-  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/images/download-dark.webp">
-      <img src="docs/images/download-light.webp" alt="Download for Windows (zip)" width="460">
-    </picture>
-  </a>
+  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest"><picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/images/download-windows-dark.webp">
+      <img src="docs/images/download-windows-light.webp" alt="Download for Windows (zip, 62 MB)" width="300"></picture></a>
+  <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest"><picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/images/download-linux-dark.webp">
+      <img src="docs/images/download-linux-light.webp" alt="Download for Linux (tar.gz, 71 MB)" width="300"></picture></a>
 </p>
 
 <p align="center">
-  <b>v1.1.0</b> · 62 MB · Windows 10/11 x64 · 8 GB RAM · works offline · no account
+  <b>v1.2.0</b> · Windows 10/11 x64 · Linux x64 · 8 GB RAM · works offline · no account
 </p>
 
 | Platform | Get it | Notes |
 |---|---|---|
 | **Windows 10/11 x64** | [**Download the zip**](https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest) | Full editor. Unzip and run `ddc-app.exe`. |
-| **Browser** | [Online demo](https://openconstructiondesign.com/app/) | Coming soon. |
+| **Browser** | [**Open the online demo**](https://openconstructiondesign.com/demo/) | Full editor in a browser tab with sample projects, nothing to install. Register with your email, then the editor opens right away. |
 | **Linux x64** | [**Download the tar.gz**](https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest) (71 MB) | Editor `ddc-app` and `ddc` CLI. Ubuntu 22.04+, Debian 12+ (glibc 2.35), X11 or Wayland. |
 | **macOS** | [Build from source](#build-from-source) | No release build; untested. |
 
@@ -76,6 +69,15 @@
   <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases">All releases</a> ·
   <a href="https://openconstructiondesign.com">Website</a> ·
   <a href="docs/USER_GUIDE.md">User guide</a>
+</p>
+
+<p align="center">
+  If OpenConstructionDesign is useful to you, a ⭐ on GitHub helps a lot. It is the easiest way to
+  help the project grow and reach more people who build.
+</p>
+
+<p align="center">
+  <img src="docs/images/how-to-star.gif" alt="Click Star at the top right of the repository page" width="480">
 </p>
 
 OpenConstructionDesign is a CAD-BIM editor written in Rust, with its own geometry kernel and file
@@ -86,7 +88,7 @@ or run a local model through Ollama. The model and its full change history live 
 file on your machine, and IFC goes in and out.
 
 > [!NOTE]
-> The latest release is **v1.1.0**. The project file format, the APIs and the interface
+> The latest release is **v1.2.0**. The project file format, the APIs and the interface
 > can still change between releases. Keep the original of every model you open and keep an IFC
 > export for long-term storage. See [Current limits](#current-limits).
 
@@ -544,7 +546,7 @@ Details and other platforms: [docs/BUILDING.md](docs/BUILDING.md).
 | Windows 10/11, x64 | Supported; primary development platform |
 | Linux | Editor and CLI in every release, built on Ubuntu 22.04; library crates tested in CI |
 | macOS | Code paths exist; not regularly built or tested |
-| Browser (wasm32) | Online demo coming soon; the browser build is not part of this repository yet |
+| Browser (wasm32) | [Online demo](https://openconstructiondesign.com/demo/) after a short registration; the browser build is not part of this repository yet |
 
 ## Current limits
 
@@ -576,9 +578,23 @@ Contributions are welcome; read [CONTRIBUTING.md](CONTRIBUTING.md). Every contri
 (`git commit -s`). Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities
 privately as described in [SECURITY.md](SECURITY.md), not in public issues.
 
-OpenConstructionDesign belongs to one family with [OpenConstructionERP](https://openconstructionerp.com)
-(estimates, schedules, procurement) and [OpenConstructionAcademy](https://openconstructionacademy.com)
-(courses on data-driven construction).
+## Part of the DataDrivenConstruction family
+
+<p align="center">
+  <a href="https://openconstructionerp.com"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/erp-mark-dark.svg">
+    <img src="docs/brand/erp-mark-light.svg" alt="" width="28" height="28" align="absmiddle"></picture></a>&nbsp;
+  <a href="https://github.com/datadrivenconstruction/OpenConstructionERP"><b>OpenConstructionERP</b></a>
+  &emsp;&emsp;&emsp;
+  <a href="https://openconstructionacademy.com"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/academy-mark-dark.svg">
+    <img src="docs/brand/academy-mark-light.svg" alt="" width="28" height="28" align="absmiddle"></picture></a>&nbsp;
+  <a href="https://openconstructionacademy.com"><b>OpenConstructionAcademy</b></a>
+  <br>
+  <sub>Estimates, schedules and procurement priced from your model&ensp;·&ensp;Courses on data-driven construction</sub>
+</p>
+
+Found this useful? A ⭐ at the top of the page is the best way to say thanks.
 
 ## Licence
 

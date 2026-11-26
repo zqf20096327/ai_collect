@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="banner.svg" alt="llm-router-free" width="840" />
-
 # LlmRouterFree — Free-Tier LLM Router with Automatic Fallback (Portable x64 Build, JSON Configuration)
 
 <p><strong>LlmRouterFree — Free-Tier LLM Router with Automatic Fallback (Portable x64 Build, JSON Configuration): One API key, 15+ free providers, automatic fallback. Native 64-bit portable build with hot-reloadable JSON configuration, low-overhead runtime, and prebuilt portable release.</strong></p>
@@ -95,3 +93,8 @@ cmake --build build --config Release
 
 ---
 <sub>Indexed tags: llm-router-free, llm, router, free, fallback, proxy, openai-compatible, cli, developer-tools, open-source, windows, automation, productivity, cpp, portable, prebuilt, tools</sub>
+
+## Keywords
+
+llm router free fallback proxy openai-compatible free-llm-router llm-fallback-router llm-router-free windows portable prebuilt x64 free download
+related: llm, router, free, fallback, proxy, openai-compatible

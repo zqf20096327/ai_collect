@@ -268,7 +268,7 @@ Beyond inference, **[optimized/mlx](optimized/mlx)** and **[optimized/tflite](op
 
 ## Community
 
-- [Harmonai Discord](https://discord.gg/7QM7mtY9uH): Check out our Harmonai Discord server run by the research team. Besides good discussions, we host weekly office hours talking all things AI audio and music and want to hear what you come up with!
+- [Stable Audio Discord](https://discord.gg/7QM7mtY9uH): Check out our Stable Audio Discord server! Besides good discussions, we host weekly office hours talking all things AI audio and music and want to hear what you come up with!
 
 - [Underfit](https://github.com/dada-bots/underfit): A LoRA training poweruser dream from Dadabots. If LoRA training in this repo is not enough, check out some experimental tools there like agentic LoRA orchestrations and monitoring.
 

@@ -4,6 +4,10 @@
 
 # cui-skills
 
+<p align="center"><b><a href="#setup">Install</a></b> · <a href="commands/cui-setup.md">/cui-setup</a> · <a href="#the-four-skills">Skills</a>: <a href="#cui-app--native-desktop-cc">cui-app</a> · <a href="#cui-web--webassembly-in-the-browser">cui-web</a> · <a href="#cui-py--desktop-apps-in-python-nexa">cui-py</a> · <a href="#cui-style--the-cui-look-in-plain-css">cui-style</a> · <a href="https://yappologistic.github.io/CUI/">CUI docs</a> · <a href="LICENSE">MIT</a></p>
+
+<p align="center"><a href="https://skills.sh/ChiakoRh/cui-skills"><img src="https://skills.sh/b/ChiakoRh/cui-skills?style=flat-square" alt="skills.sh"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-f4c430?style=flat-square" alt="MIT license"></a></p>
+
 Four agent skills for building UIs with [CUI](https://github.com/yappologistic/CUI) — one visual language across **C**, **WebAssembly**, **Python** and **plain CSS**, written from real build and test sessions (Windows and Linux), not from reading docs alone.
 
 - **~210 native components** in C99, zero dependencies, ~250 KB apps — see `cui-app`
@@ -118,6 +122,12 @@ Two ways:
 1. **Slash command** — copy [`commands/cui-setup.md`](commands/cui-setup.md) into your agent's command directory (OpenCode: `~/.config/opencode/command/`), then run `/cui-setup`.
 2. **Ask your agent directly** — say "set up the CUI skills"; the flow below is written for agents to follow.
 
+Or, without an agent, the bundled setup script (checks tools, clones the projects, writes `paths.json`, then installs the skills through `npx skills add` so installs are counted on skills.sh):
+
+```sh
+npx github:ChiakoRh/cui-skills        # or: git clone … && node setup.mjs
+```
+
 ### The flow (for AI agents)
 
 1. **Ask which skill branch the user wants** (multiple is fine): `cui-app` (native C), `cui-web` (WASM), `cui-py` (Python), `cui-style` (CSS only).
@@ -133,7 +143,7 @@ Two ways:
    git clone https://github.com/x017/nexa.git           # cui-py development only
    ```
    For `cui-py` alone, `pip install nexa-ui` is enough — no clone needed.
-5. **Record the paths** in [`paths.json`](paths.json) (see below).
+5. **Record the paths** in `paths.json` at the repo root (see below).
 6. **Install the skills** into the agent's skills directory if not already there.
 7. **Verify** one cheap check per branch — configure the template (`cui-app`), `clang --print-targets | grep wasm32` (`cui-web`), `python -c "import nexa"` (`cui-py`); `cui-style` needs nothing.
 
@@ -150,7 +160,7 @@ Each skill points at a local clone of the upstream project as its source of trut
 }
 ```
 
-`paths.json` is **gitignored** — it holds machine-local paths. A fresh checkout ships with `null`s; the setup flow fills them in, and the skills stay portable untouched.
+`paths.json` is **gitignored** — it holds machine-local paths, so it is not part of a fresh clone; the setup flow creates it and fills in the values. The skills themselves never hardcode paths: if the file is missing (you installed the skills by copying folders only), just ask the user where their CUI clone is — or clone it.
 
 ## Installing the skills into an agent
 
@@ -177,7 +187,9 @@ Covered at every layer, because CUI ships real BiDi + OpenType shaping:
 ```
 cui-skills/
 ├── README.md            ← you are here
-├── paths.json           ← written by setup (gitignored)
+├── setup.mjs            ← agent-less setup (npx github:ChiakoRh/cui-skills)
+├── package.json         ← makes the npx invocation work
+├── paths.json           ← written by setup (gitignored, not in a fresh clone)
 ├── commands/
 │   └── cui-setup.md     ← /cui-setup slash command
 ├── cui-app/

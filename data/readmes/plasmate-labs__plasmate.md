@@ -218,7 +218,17 @@ depending on a hard-coded count; the authoritative registration is
 [`src/mcp/server.rs`](./src/mcp/server.rs).
 
 **Tip:** use `selector="main"` (also `maincontent`/`maincontents` and the `main_content`/`main-content`/`main content` forms, plus the corresponding `primary` region aliases) to strip nav/footer, `selector="article"` (or `article_region`/`article-region`/`article region`) to isolate content, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
-to return only actionable elements, `selector="h1"` through `selector="h6"`
+to return only actionable elements. Use `selector="disabled"` or
+`selector="enabled"` to isolate controls by effective disabled state,
+including `aria-disabled` and semantic disabled hints. `selector="h1"`
+Use `selector="readonly"` (also `read-only`, `read_only`, `read only`, or
+`readonly controls` / `read-only-controls`) or `selector="locked"` (also
+`locked control`, `locked controls`, `locked_control`, and `locked-control`) to
+match readonly controls; use
+`selector="editable"` (or `selector="writable"`, including their
+`controls`/hyphenated/underscore aliases) to isolate controls by their
+effective readonly state.
+through `selector="h6"`
 (or `heading1` through `heading6`) to isolate a heading level, or an action selector such as `selector="click"`
 (the equivalent `selector="action:click"` also works), `selector="type"`,
 `selector="clear"`, `selector="select"`, `selector="toggle"`,

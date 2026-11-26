@@ -46,7 +46,7 @@ preloop login --url http://localhost:3000    # your self-hosted instance
 preloop agents discover
 ```
 
-`preloop agents discover` finds local agent configs and reports what each adapter supports. `preloop agents onboard` configures them: calls routed through the managed MCP entry reach the **MCP Firewall**, supported model routes use the **Gateway**. To talk to a running agent, install the runtime plugin with `preloop agents install-plugin` (or `preloop claude` for Claude Code). Full walkthrough: [onboard local agents](https://docs.preloop.ai/quickstart-cli/).
+`preloop agents discover` finds local agent configs and reports what each adapter supports. `preloop agents onboard` configures them: calls routed through the managed MCP entry reach the **MCP Firewall**, supported model routes use the **Gateway**. To talk to a running agent, install the runtime plugin with `preloop agents install-plugin` (or `preloop claude` for Claude Code). Full walkthrough: [onboard local agents](https://docs.preloop.ai/quickstart-cli/). For a rejected Claude subscription login, see [subscription recovery](docs/guide/clients/subscription-recovery.md).
 
 <p align="center">
   <img alt="Preloop onboarding local agents into the control plane" src="frontend/public/assets/screenshots/quickstart/dark/agents-onboarding.webp" style="width: 100%; max-width: 1135px; border-radius: 12px;" />
@@ -76,7 +76,7 @@ Jobs teams otherwise buy from several vendors, in one Apache 2.0 stack:
 | **Private runners** | Run flow agents on your own machines over an outbound WebSocket, no inbound ports. | Self-managed CI runners |
 | **Agent Control** | Talk to long-running agents from the console, phone, or watch. Steer runs with [operator notes](docs/guide/operator-notes.md). | Terminal access |
 | **Cost & Budgets** | Spend by model, agent, session, API key, flow, and user, including [imported Copilot usage](docs/guide/copilot-usage-import.md). | FinOps dashboards, vendor billing exports |
-| **Human Approvals** | Mobile, watch, Slack, Mattermost, email, webhook, or `preloop approvals`. Native `Bash`/`Edit`. Agents can `ask_user`. Opt-in [external consent hand-off](docs/guide/webhooks.md#external-approval-hand-off) after upstream scope refusals. | Custom Slack bots, Peta Desk |
+| **Human Approvals** | Mobile, watch, Slack, Mattermost, Teams Workflows, email, webhook, or `preloop approvals`. Native `Bash`/`Edit`. Agents can `ask_user`. Opt-in [external consent hand-off](docs/guide/webhooks.md#external-approval-hand-off) after upstream scope refusals. | Custom Slack bots, Peta Desk |
 | **Runtime Observability** | One session timeline: tool calls, model calls, policy, approvals, spend, outcomes, and [synchronized recordings](docs/guide/artifacts.md#recordings-synchronized-to-the-timeline). | AgentOps, Langfuse, LangSmith |
 | **Fleet Map** | People, devices, agents, models and observed work in one [map](docs/guide/fleet-map.md). | Spreadsheets |
 | **Evidence packs** | Apache flow presets write `result.json` plus an evidence directory for CRA / AI Act-style work. Not a certification. | Custom GRC folders |
@@ -95,13 +95,14 @@ One loop, end to end: an issue event arrives from GitHub, GitLab, Bitbucket Clou
 - [Issue Triage Assistant](docs/guide/flows/issue-triage.md) and issue refinement
 - [Pull Request Reviewer](docs/guide/flows/pull-request-review.md)
 - [Delivery Report](docs/guide/flows/delivery-report.md): a weekly report with proposals for human decisions and project reruns. See what landed, what the available evidence supports against stated criteria, and which gaps deserve investigation
+- [Daily CI and QA review](docs/guide/flows/daily-ci-qa-review.md): reads the last day of CI and coverage, fixes one flaky test, slow job or coverage gap in a measured pull request, and writes a daily trend report
 - [Automated issue implementation](docs/guide/flows/automated-issue-implementation.md)
 - [Security audit presets](docs/guide/flows/security-audit-presets.md): SBOM verify, exploit check, release audit. They collect machine evidence for CRA- and EU AI Act-style reviews. That is not a conformity assessment, certification, or legal advice.
 - [Observe / Eval](./backend/presets/003-observe-eval.yaml)
 - Component due diligence, architecture and strategy review, repo code health review
 - Standards compliance walk, release backport, weekly model price review
 
-Or write your own. Trigger from CI with the [`run-flow` GitHub Action](docs/guide/flows/github-actions.md); run agents on [private runners](docs/guide/runners/quickstart-linux.md); let a flow start child flows with [flow delegation](docs/guide/flows/flow-delegation.md). Tracker setup: [Bitbucket and Jira quickstart](docs/guide/bitbucket-jira-quickstart.md); [Bitbucket Data Center](docs/guide/bitbucket-data-center.md) is available as an opt-in provider. [Azure DevOps](docs/guide/azure-devops-tracker.md) supports Azure Repos pull request review and Azure Boards work items as issues.
+Or write your own. Trigger from CI with the [`run-flow` GitHub Action](docs/guide/flows/github-actions.md); run agents on [private runners](docs/guide/runners/quickstart-linux.md); let a flow start child flows with [flow delegation](docs/guide/flows/flow-delegation.md). Tracker setup: [Bitbucket and Jira quickstart](docs/guide/bitbucket-jira-quickstart.md); [Bitbucket Data Center](docs/guide/bitbucket-data-center.md) is available as an opt-in provider. [Azure DevOps](docs/guide/azure-devops-tracker.md) supports Azure Repos reviews with diff-anchored findings, one updated summary, optional token-owner voting, and Azure Boards work items as issues.
 
 ## Policy-as-code
 
@@ -145,7 +146,7 @@ the server preserves them and returns a warning.
 - **Session search:** keyword search by default, semantic as an opt-in, every search audited. [Saved searches](docs/guide/session-saved-searches.md).
 - **DORA exports:** the AI-agent slice of the ICT inventory and incident record. [Guide](docs/guide/dora-agent-slice.md).
 - **OTLP export:** off by default; emits OpenTelemetry GenAI spans. [Guide](docs/guide/observability-otlp.md).
-- **Chat:** Slack, Mattermost, and Discord for questions, opted-in flow runs with answers returned to chat, approval votes and operator notes. [Chat connections](docs/chat-connections.md).
+- **Chat:** Slack, Mattermost, Discord, and Microsoft Teams (own bot, personal chat) for questions, opted-in flow runs with answers returned to chat, approval votes and operator notes. [Chat connections](docs/chat-connections.md).
 - **Event-driven employees:** managed agents doing bounded tasks from tracker and error events. [Guide](docs/guide/virtual-employees.md).
 - **Remote sessions and deployment:** [remote sessions](docs/guide/runners/remote-sessions.md), [SSH and GCP agent deployment](docs/operations/agent-deployment.md), [environments and recovery](docs/guide/flows/environments-and-recovery.md).
 - **Runtime plugins:** [Pi and DeepSeek Harness](runtime-plugins/harness-preloop/README.md), [Nanobot](runtime-plugins/nanobot-preloop/README.md), [OpenClaw](https://docs.preloop.ai/integrations/openclaw/), [Hermes](docs/guide/hermes.md), [runtime adapters](https://docs.preloop.ai/integrations/agent-control-runtime-adapters/).
@@ -244,4 +245,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Maintainers: follow the [protected-branc
 
 Release assets carry signed Sigstore build provenance and checksums ([verification](./docs/release-verification.md)). The [release SBOM audit gate](./docs/release-sbom-audit.md) checks both architectures of every release image and the tag's security workflows. Windows CLI notes: [windows-cli.md](./docs/windows-cli.md), [code signing policy](./docs/code-signing-policy.md). Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
-Flows can also open [interactive hosted conversations](docs/guide/flows/interactive-conversations.md) in the console using OpenCode, with live follow-ups and checkpoint-based resume.
+Flows can also open [interactive hosted conversations](docs/guide/flows/interactive-conversations.md) in the console using OpenCode or DeepSeek Harness, with live follow-ups and checkpoint-based resume.
+
+For Claude Code fleet administrators, [extension restrictions](docs/operations/mdm-recipes.md#extension-restrictions)
+export reviewed account plugin denials and marketplace policy as a managed-settings
+drop-in. Preview and registration do not prove installation; vendor admin-console
+delivery for Preloop-routed agents remains unverified.

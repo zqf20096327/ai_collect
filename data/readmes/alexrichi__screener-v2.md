@@ -128,10 +128,13 @@ the same `build` string.
 
 ## What it does
 
-- Binance lists USDT spot and USDⓈ-M perpetuals; OKX, Bybit, Bitget and
+- Binance runs as two venues: `Binance` serves USDⓈ-M perpetuals and
+  `Binance Spot` serves USDT spot; OKX, Bybit, Bitget and
   Hyperliquid are perpetuals; Coinbase is spot. The picker lists all venues,
   sorted by ticker across exchanges; a chart opens the venue of the selected
-  ticker. `BTCUSDT` is Binance spot and `BTCUSDT.P` its perpetual.
+  ticker. The table's `BTCUSDT.P` is the Binance perpetual and `BTCUSDT` its
+  spot listing (`BINANCE.SPOT:BTCUSDT`). The screener starts with `Binance Spot`
+  unchecked; its threshold is its own.
 - One multi-venue screener table. Columns: a favorite star, the venue icon,
   `Symbol` with its coin badge and `perp` / `spot` tag, `Last`, `24h %`,
   `Range 24h`, `Vol 24h`, `VolΔ24h`, `RVOL 7d`, `Funding`, `VWAPσ`, `RSI 15m`,
@@ -146,12 +149,12 @@ the same `build` string.
   venue's chart; right-click offers `Open in new tab`, `Close tab` when that
   tab is open, and `Copy symbol`.
 - The sidecar watches an instrument the first time its 24h quote volume clears
-  the watch threshold and keeps it for the session: there is no row cap,
-  raising the threshold only changes which new rows activate, and falling
+  that venue's own watch threshold and keeps it for the session: there is no row
+  cap, raising the threshold only changes which new rows activate, and falling
   volume never drops a watched row. A favorite below the threshold is not
   fetched, so it does not appear. The Screener panel's gear opens Settings on
-  the screener tab, where each venue can override the default threshold for
-  itself.
+  the screener tab, where every venue has its own threshold and changing one
+  leaves the others alone.
 - Screener metrics run on one technical candle series per watched instrument
   (15m, 30m or 1h) and include the forming candle: its close follows the
   ticker's last price and its high and low widen with it, so RSI, `Range 24h`

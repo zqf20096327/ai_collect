@@ -10,6 +10,7 @@
   <img alt="Rust 1.82+" src="https://img.shields.io/badge/rust-1.82%2B-orange?logo=rust">
   <a href="https://registry.modelcontextprotocol.io"><img alt="Listed in the MCP registry" src="https://img.shields.io/badge/MCP-registry-8250df"></a>
   <a href="https://mcpservers.org/servers/ancientice/palace-rs"><img alt="Listed on mcpservers.org" src="https://mcpservers.org/badge.svg"></a>
+  <a href="https://glama.ai/mcp/servers/AncientiCe/palace-rs"><img alt="palace-rs MCP server on Glama" src="https://glama.ai/mcp/servers/AncientiCe/palace-rs/badges/score.svg"></a>
   <img alt="Works with Claude Code, Codex, Cursor, Gemini CLI, VS Code, OpenCode, Cline, Zed, Goose, Windsurf, Antigravity and Claude Desktop" src="https://img.shields.io/badge/works%20with-12%20AI%20agents-8A2BE2">
 </p>
 
@@ -476,7 +477,7 @@ Run `palace <command> --help` for every flag.
 | `palace uninstall` | Remove them again |
 | `palace doctor` | Check the binary, database, MCP configs, and rules |
 | `palace seed-adoption-facts` | Seed knowledge-graph facts that make agent recall measurable |
-| `palace feedback` | Open a pre-filled public GitHub discussion to share feedback (`--no-open` prints the link) |
+| `palace feedback` | Open a pre-filled public GitHub discussion to share feedback (`--no-open` prints the link, `--done` pauses the reminder after you posted) |
 
 **Adding memory**
 
@@ -872,13 +873,17 @@ convention question account for the difference.
   Face, and to your own Palace Server if you turn on remote mode.
 - **No telemetry.** `palace gain` statistics are written to your local
   database only.
-- **Feedback is something you post, never something Palace sends.** After 10
-  MCP sessions, and then at most every 30 days, `palace_session_context`
-  includes a link your agent may mention once. The link opens a public
+- **Feedback is something you post, never something Palace sends.** After 5
+  MCP sessions, `palace_session_context` includes a link your agent may
+  mention once, after its current task. The link opens a public
   [GitHub discussion](https://github.com/AncientiCe/palace-rs/discussions/categories/feedback)
   pre-filled with your Palace version, OS, client name, and profile. You can
   edit it before posting, or ignore it. `palace feedback` opens the same page.
-  Set `PALACE_FEEDBACK_DISABLED=1` to never see the hint.
+  Palace can't see whether you posted, so running `palace feedback` (or
+  `palace feedback --done` once you have) pauses the hint for 30 days.
+  Otherwise it returns after another 5 sessions, at most once a week, and
+  after 3 unanswered hints at most once a month. Set
+  `PALACE_FEEDBACK_DISABLED=1` to never see the hint.
 - **Back up** with `palace export`, or copy `palace.db`.
 - **Delete** a single memory with `palace_forget`, or everything by removing
   `~/.palace`.

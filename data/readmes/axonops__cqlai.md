@@ -70,6 +70,7 @@ It is built with [Bubble Tea](https://github.com/charmbracelet/bubbletea), [Bubb
     - [Ollama](#ollama-local-models)
     - [OpenRouter](#openrouter-multiple-models)
     - [Mock Provider](#mock-provider-for-testing)
+  - [OpenTelemetry Tracing](#opentelemetry-tracing)
 - [AI-Powered Query Generation](#ai-powered-query-generation)
 - [MCP Server](#mcp-server)
 - [Apache Parquet Support](#apache-parquet-support)
@@ -230,6 +231,7 @@ cqlai [options] [host [port]]
 | `--keyspace <keyspace>` | `-k` | Default keyspace (overrides config) |
 | `--username <username>` | `-u` | Username for authentication |
 | `--password <password>` | `-p` | Password for authentication* |
+| `--vault-path <path>` | | Read the username and password from Vault or OpenBao, e.g. `database/creds/myrole` (see below) |
 | `--ssl` | | Enable SSL/TLS connection |
 | `--consistency <level>` | | Default consistency level (e.g., ONE, QUORUM, LOCAL_QUORUM) |
 | `--no-confirm` | | Disable confirmation prompts for destructive commands (DROP, DELETE, TRUNCATE) |
@@ -241,6 +243,36 @@ cqlai [options] [host [port]]
 1. *Command line with `-p` (not recommended - visible in process list)*
 2. *Interactive prompt when `-u` is used without `-p` (recommended)*
 3. *Environment variable `CQLAI_PASSWORD` (good for automation)*
+
+#### Credentials from Vault or OpenBao
+
+With the database secrets engine, cqlai can fetch short-lived credentials
+instead of using a stored password:
+
+```bash
+export VAULT_ADDR=https://vault.example.com:8200   # or BAO_ADDR
+vault login -method=oidc                           # or set VAULT_TOKEN / BAO_TOKEN
+cqlai --vault-path database/creds/myrole cassandra.example.com
+```
+
+cqlai reads the path once before connecting, and its username and password
+replace `-u`/`-p`, and no password is asked for. The lease is revoked when cqlai
+exits, including on `kill` or a hangup; if the token is not allowed to revoke
+it, or cqlai is killed with `SIGKILL`, the lease runs out at its TTL instead.
+cqlai does not renew the lease: when it expires, Vault removes the user and the
+session can no longer be used.
+
+| Variable | Used for |
+|---|---|
+| `BAO_ADDR` / `VAULT_ADDR` | Server address (required) |
+| `BAO_TOKEN` / `VAULT_TOKEN` | Token; falls back to `~/.vault-token` |
+| `BAO_CACERT` / `VAULT_CACERT` | CA certificate for the server's TLS |
+| `BAO_NAMESPACE` / `VAULT_NAMESPACE` | Namespace (Vault Enterprise) |
+
+When both are set, the `BAO_` name wins.
+
+The path can also be set with `CQLAI_VAULT_PATH`, or as `vaultPath` in
+`cqlai.json`, at the top or on a saved connection.
 
 #### Batch Mode Options
 | Option | Short | Description |
@@ -256,6 +288,7 @@ cqlai [options] [host [port]]
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--config-file <path>` | | Path to config file (overrides default locations) |
+| `--otel` | | Send OpenTelemetry spans for CQL requests. See [OpenTelemetry Tracing](#opentelemetry-tracing) |
 | `--help` | `-h` | Show help message |
 | `--version` | `-v` | Print version and exit |
 
@@ -1104,6 +1137,7 @@ Meta-commands provide additional functionality beyond standard CQL:
   ```sql
   SHOW VERSION          -- Show Cassandra version
   SHOW HOST            -- Show current connection details
+  SHOW USER            -- Show the user logged in as
   SHOW SESSION         -- Show all session settings
   ```
 
@@ -1502,6 +1536,7 @@ All environment variables supported by CQLAI. `CQLAI_*` variables take precedenc
 - `CQLAI_KEYSPACE` or `CASSANDRA_KEYSPACE` - Default keyspace
 - `CQLAI_USERNAME` or `CASSANDRA_USERNAME` - Authentication username
 - `CQLAI_PASSWORD` or `CASSANDRA_PASSWORD` - Authentication password
+- `CQLAI_VAULT_PATH` - Vault/OpenBao path to read the username and password from
 - `CQLAI_CONNECT_TIMEOUT` - Connection timeout in seconds (default: 10)
 - `CQLAI_REQUEST_TIMEOUT` - Request timeout in seconds (default: 10)
 - `CQLAI_NO_CONFIRM` - Set to `true` or `1` to disable confirmation prompts for destructive commands
@@ -1520,6 +1555,10 @@ All environment variables supported by CQLAI. `CQLAI_*` variables take precedenc
 - `CQLAI_PAGE_SIZE` - Pagination size (default: 100)
 - `CQLAI_MAX_MEMORY_MB` - Maximum memory for query results in MB (default: 10)
 
+#### OpenTelemetry
+- `CQLAI_OTEL` - Set to `true` or `1` to send OpenTelemetry spans (equivalent to `--otel`)
+- `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME` and the other standard `OTEL_*` variables - where and how spans are sent. See [OpenTelemetry Tracing](#opentelemetry-tracing)
+
 #### AI Configuration
 - `CQLAI_AI_PROVIDER` or `AI_PROVIDER` - AI provider name (mock, openai, anthropic, gemini, ollama, openrouter)
 - `CQLAI_AI_API_KEY` or `AI_API_KEY` - General AI API key
@@ -1534,6 +1573,63 @@ All environment variables supported by CQLAI. `CQLAI_*` variables take precedenc
 - `OPENROUTER_API_KEY` - OpenRouter API key
 - `OPENROUTER_MODEL` - OpenRouter model name
 - `OPENROUTER_URL` - OpenRouter API URL (default: `https://openrouter.ai/api/v1`)
+
+### OpenTelemetry Tracing
+
+CQLAI can send an OpenTelemetry span for every request it makes to Cassandra, to
+an OTLP collector such as the OpenTelemetry Collector, Jaeger or Grafana Tempo.
+It is off by default. Turn it on with any one of:
+
+| Where | Setting |
+|-------|---------|
+| Command line | `--otel` |
+| Environment | `CQLAI_OTEL=true` |
+| `cqlai.json` | `"otel": {"enabled": true}`, at the top level of the file |
+
+`cqlai mcp` has no `--otel` flag; it takes `CQLAI_OTEL` or the `cqlai.json`
+setting. The `OTEL_*` variables on their own do not turn tracing on.
+
+Where the spans go is set with the standard OpenTelemetry environment variables:
+
+```bash
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf   # or grpc, with port 4317
+export OTEL_SERVICE_NAME=nightly-export            # default: cqlai
+cqlai --otel -f export.cql
+```
+
+CQLAI reads `OTEL_SERVICE_NAME`, `OTEL_RESOURCE_ATTRIBUTES` and the OTLP
+exporter variables: `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`,
+`OTEL_EXPORTER_OTLP_HEADERS`, `OTEL_EXPORTER_OTLP_TIMEOUT`,
+`OTEL_EXPORTER_OTLP_COMPRESSION`, the `OTEL_EXPORTER_OTLP_CERTIFICATE` family,
+and their `OTEL_EXPORTER_OTLP_TRACES_*` forms. `OTEL_TRACES_EXPORTER` and
+`OTEL_SDK_DISABLED` are not read: the exporter is always OTLP, and `--otel` is
+the switch. The protocols are `grpc` and `http/protobuf` (the default). Any
+other value makes CQLAI stop with an error when tracing is turned on with
+`--otel` or `CQLAI_OTEL`, and leaves tracing off, with the reason in the debug
+log, when it is turned on in `cqlai.json`.
+
+Each span is a client span named after the statement's first keyword and the
+keyspace the session is using (set by `USE` or the connection, not necessarily
+the keyspace of the table in the statement), such as `SELECT shop`. Spans carry
+`db.system.name`, `db.namespace`, `db.operation.name`,
+`db.response.returned_rows`, `server.address` and `server.port`, and
+`cassandra.request.attempt` on a retry. A batch is one `BATCH` span with
+`db.operation.batch.size`. A paged query is one span per page, and a retry is a
+span of its own.
+
+The statement text and its bound values are never recorded, since a statement
+can hold a password (`CREATE ROLE ... WITH PASSWORD`) or the data being written.
+A Cassandra error records its error code in hex, such as `0x2200`, in
+`error.type` and `db.response.status_code`. Any other failure records the Go
+error type in `error.type` and no status code. The error message is never
+recorded, since it can quote a value.
+
+CQLAI's own queries, such as reading the schema and the server version, get
+spans too.
+
+These spans have nothing to do with `TRACING ON`, which asks Cassandra to
+record its own trace of a request and is shown in the trace view.
 
 ### Migration from cqlsh
 
@@ -1760,6 +1856,7 @@ when a tool is first called.
 | `--tls-cert FILE`, `--tls-key FILE` | Serve HTTPS with this certificate and key (PEM) |
 | `--tls-client-ca FILE` | Ask each client for a certificate this CA signed (PEM) |
 | `--connection NAME` | Headless: the saved connection to use |
+| `--vault-path PATH` | Headless: read the username and password from this Vault/OpenBao path |
 | `--permit SELECT,DESCRIBE` | Permit only these commands, of those the settings permit |
 | `--keyspaces ks1,ks2` | Only these keyspaces are visible, of those the settings allow |
 | `--max-rows N` | The page size, if lower than the settings' |

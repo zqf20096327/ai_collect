@@ -229,6 +229,8 @@ on LangSmith Cloud and BYOC, not standalone self-hosted deployments.
 
 Commands print human-readable tables and trees by default. From 1.0.0, output that is piped or redirected defaults to JSON; until then such output stays pretty and the CLI warns on stderr. Pass `--format` to choose explicitly. Every command also takes `--json`, which is the same as `--format json`; combining it with a different `--format` is an error.
 
+Stdout carries only the result. Notes about it go to stderr, once per command: the profile and workspace used when more than one profile is saved, a list that stopped at `--limit` while more items match, and a run or trace list that only searched the default 7-day window. With `--format json` or `--jq` each note is one JSON object per line with a `notice` field (`active_profile`, `truncated`, `default_time_window`).
+
 ```bash
 langsmith traces list --project my-app
 ```
@@ -251,6 +253,23 @@ Every command that prints JSON takes `--jq` to filter it with a jq expression, s
 langsmith traces list --project my-app --jq '.[].trace_id'
 langsmith agents list --jq 'map(select(.name == "support")) | .[0].id'
 ```
+
+## Exit codes
+
+Every failure exits 1 until 1.0.0, which switches every command, including the ones generated from the API, to the detailed codes below so a script or agent can tell a retryable failure from one it has to fix. Set `LANGSMITH_EXIT_CODES=detailed` to use them now. Until then, a failure whose code will change writes a deprecation warning to stderr naming the new code (a JSON object with `"deprecated": true` and `"kind": "exit_code"` under `--format json` or `--jq`). The error message goes to stderr.
+
+| Code | Meaning | What to do |
+| --- | --- | --- |
+| 0 | Success | |
+| 1 | Bad input: invalid flags or arguments, a request the API rejected as invalid (400, 422), or any failure not listed below | Fix the input before retrying; for a failure not listed below, read the error message |
+| 2 | Authentication: no credentials, or the API rejected them (401, 403) | Check the API key, its workspace and region, or run `langsmith auth login` |
+| 3 | Not found (404, 410), including a `--project` name that matches no project | Check the ID or name |
+| 4 | Conflict or limit: the request is valid but the resource's state or the plan refuses it (409, 402) | Don't retry unchanged |
+| 5 | A `--wait` timed out before the operation finished | The operation may still finish; check its status with the ID in the output or error instead of starting it again |
+| 6 | Server error (5xx), a request timeout (408), or the API could not be reached | Retry reads with backoff. For writes, check whether the change took effect before repeating it |
+| 7 | Rate limited (429) | Retry with backoff |
+
+`langsmith sandboxes exec` is the exception: it exits with the remote command's own exit code. Scripts that only check for a non-zero exit are unaffected by the switch.
 
 ## Selecting a project
 
@@ -468,6 +487,7 @@ langsmith datasets get my-dataset
 
 # Create and delete
 langsmith datasets create --name my-eval-set --description "QA pairs for v2"
+langsmith datasets create --name my-eval-set --if-not-exists  # returns it if it exists
 langsmith datasets delete my-old-dataset --yes
 
 # Export examples to JSON
@@ -521,22 +541,40 @@ langsmith evaluator rule list --evaluator-id <evaluator-id>
 langsmith evaluator rule get <rule-id>
 langsmith evaluator rule delete accuracy --dataset my-eval-set --yes
 
-# Upload an offline evaluator (for experiments)
-langsmith evaluator upload evals.py \
-  --name accuracy --function check_accuracy --dataset my-eval-set
+# Upload an offline evaluator (for experiments). The file is sent unchanged, so
+# imports and helpers are kept; it must define perform_eval (Python) or
+# performEval (JavaScript/TypeScript) itself.
+langsmith evaluator upload evals.py --name accuracy --dataset my-eval-set
 
 # Upload an online evaluator (for production monitoring)
-langsmith evaluator upload evals.py \
-  --name latency-check --function check_latency --project my-app
+langsmith evaluator upload evals.py --name latency-check --project my-app
 
 # Set sampling rate (evaluate a fraction of runs, 0.0-1.0)
-langsmith evaluator upload evals.py \
-  --name latency-check --function check_latency --project my-app --sampling-rate 0.5
+langsmith evaluator upload evals.py --name latency-check --project my-app --sampling-rate 0.5
 
-# Replace an existing evaluator's code. The rule keeps its sampling rate, filters,
+# Upload an advanced evaluator, which runs in a sandbox, defines evaluate(ctx), and can install
+# dependencies (requirements.txt or package.json, sent as is) and use workspace
+# secrets. The command waits for the build and exits non-zero if it fails;
+# --no-wait returns right away. Uploads that contain what looks like a hardcoded
+# credential are refused unless you pass --ignore-credential-check, and advanced
+# evaluators that import modules from their own folder are refused unless you
+# pass --ignore-import-check.
+langsmith evaluator upload evals.py --name accuracy --dataset my-eval-set \
+  --advanced --dependencies requirements.txt --workspace-secret OPENAI_API_KEY
+
+# Score whole threads or trajectories (advanced only): --input thread,
+# all_messages, human_ai_pairs, first_human_last_ai, or trajectory
+langsmith evaluator upload thread_eval.py --name resolution --project my-app \
+  --advanced --input thread
+
+# Replace an existing evaluator's code. The evaluator stays an advanced evaluator
+# or not, unless you pass --advanced. The rule keeps its sampling rate, filters,
 # webhooks, and other actions unless you pass --sampling-rate or --trace-filter.
-langsmith evaluator upload evals.py \
-  --name accuracy --function check_accuracy_v2 --dataset my-eval-set --replace --yes
+langsmith evaluator upload evals.py --name accuracy --dataset my-eval-set --replace --yes
+
+# --function is deprecated and is removed in 1.0.0. It uploads one function,
+# renamed to perform_eval/performEval, without the rest of the file, and cannot
+# be combined with --advanced, --dependencies, --workspace-secret, --input, or --no-wait.
 
 # Create an LLM-as-judge evaluator (--model-config is always required)
 # model.json: copy the structured.model block from an existing evaluator or the UI.
@@ -588,7 +626,7 @@ langsmith hub delete acme/my-skill --yes
 
 Identifiers use `[OWNER/]REPO` format. Omitting owner defaults to `-` (the API's "current tenant" wildcard).
 
-Push excludes `.git/`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `build/`, `target/`, `.next/`, `.cache/`, plus `.env*` files, common secret extensions (`.pem`, `.key`, `.pfx`, `.p12`, `.crt`), and rejects binary or oversize (>1 MiB) files. Pull wipes the destination dir before writing; non-empty directories without a `SKILL.md`/`AGENTS.md` marker require `--yes`.
+Push excludes `.git/`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `build/`, `target/`, `.next/`, `.cache/`, plus `.env*` files, common secret extensions (`.pem`, `.key`, `.pfx`, `.p12`, `.crt`), and rejects binary or oversize (>1 MiB) files. Pull wipes the destination dir before writing; a non-empty directory, including one pulled into before, asks first; pass `--yes` when stdin is not a terminal (until 1.0.0, a directory pulled into before is still replaced without it, with a deprecation warning).
 
 ### `tunnel` and `relay` — Serve private network connections
 
@@ -645,15 +683,16 @@ langsmith was installed.
 ### `setup` — Install LangSmith skills and MCP into coding agents
 
 Detects Claude Code, Cursor, and Codex on this machine and installs the
-[LangSmith skills](https://github.com/langchain-ai/langsmith-skills) and the hosted
+[LangChain skills](https://github.com/langchain-ai/langchain-skills) and the hosted
 LangSmith MCP server into each one. It prints the plan, asks before writing, and a
-second run changes nothing. It never replaces an MCP entry named `langsmith` or a
+second run changes nothing. It replaces skills from the retired `langsmith-skills`
+package that it installed earlier. It never replaces an MCP entry named `langsmith` or a
 skill directory it didn't write unless you pass `--force`. No API key is written:
 each agent signs in to the MCP server with OAuth.
 
 | Agent | Skills | MCP server |
 |-------|--------|------------|
-| Claude Code | `langsmith-skills` plugin, via `claude plugin install` | user-scope `langsmith`, via `claude mcp add` |
+| Claude Code | `langchain-skills` plugin, via `claude plugin install` | user-scope `langsmith`, via `claude mcp add` |
 | Cursor | `~/.cursor/skills/<skill>` | `mcpServers.langsmith` in `~/.cursor/mcp.json` |
 | Codex | `$CODEX_HOME/skills/<skill>` | `[mcp_servers.langsmith]` in `$CODEX_HOME/config.toml` |
 

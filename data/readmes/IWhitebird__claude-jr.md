@@ -31,14 +31,22 @@
 
 ## Install
 
+Linux and macOS:
+
 ```sh
 curl -fsSL https://claudejr.iwhitebird.com/install | sh
 ```
 
-Linux and macOS, x86-64 and ARM; on Windows, inside WSL. Then run `claudejr`.
-It asks for an Anthropic API key the first time, or start it on another
-model: `claudejr -m ollama/qwen3`. Also on
-[Homebrew and Cargo](docs/GUIDE.md#other-ways-to-install).
+Windows, in PowerShell:
+
+```powershell
+irm https://claudejr.iwhitebird.com/install.ps1 | iex
+```
+
+Then run `claudejr`. It asks for an Anthropic API key the first time; to use
+another model instead, `claudejr -m ollama/qwen3`.
+
+Also on [Homebrew, Cargo and Docker](docs/GUIDE.md#other-ways-to-install).
 
 ## What you get
 
@@ -46,7 +54,7 @@ model: `claudejr -m ollama/qwen3`. Also on
 - **It asks first.** Five permission modes, a sandbox, and `/rewind` to take back anything it did.
 - **Many at once.** Background tasks on their own git branches, and Claude Code, Cursor or Codex can hand it work over MCP. A thousand agents fit in 500 MB.
 - **The usual kit.** Subagents, skills, MCP servers, images, web search, sessions you can resume.
-- **Tested.** 414 tests, 97% line coverage, and random-input runs against the real app in a terminal.
+- **Tested.** 423 tests, 97% line coverage, and random-input runs against the real app in a terminal.
 
 ## Use
 

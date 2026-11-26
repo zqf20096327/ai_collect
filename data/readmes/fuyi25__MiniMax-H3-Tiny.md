@@ -26,6 +26,9 @@ and few-step checkpoints.
 
 ## News
 
+- **[2026/11/24]** INT8 ComfyUI checkpoints (`minimax_h3_tiny_*_int8_convrot.safetensors`, 15–18 GB) in
+  [`MiniMax-H3-Tiny-ComfyUI`](https://huggingface.co/H3-Tiny/MiniMax-H3-Tiny-ComfyUI): about half the VRAM of bf16 at the
+  same speed. See [ComfyUI](#comfyui).
 - **[2026/11/22]** The checkpoints are renamed to `MiniMax-H3-Tiny-*` on Hugging Face (old links redirect), and the
   ComfyUI files to `minimax_h3_tiny_*.safetensors`.
 - **[2026/11/21]** ComfyUI support: single-file checkpoints in
@@ -137,10 +140,16 @@ Then load the file with **H3-Tiny Few-Step Loader** instead of Load Diffusion Mo
 **H3-Tiny Few-Step Sigmas** (6 steps by default, 4 or more work) into `SamplerCustomAdvanced` with the `euler` sampler
 and `BasicGuider`.
 
+Each file also comes in INT8 (`*_int8_convrot.safetensors`), which loads the same way and runs on ComfyUI's INT8
+kernels. At 1344×768 and 243 frames on one H200, the DiT takes about 17 GB of VRAM instead of 33 GB, sampling runs as
+fast as bf16, and the outputs keep the composition and motion of bf16. If you start ComfyUI with
+`--enable-triton-backend`, also install our nodes: they split INT8 calls that are too large for the Triton kernels.
+
 To convert a diffusers checkpoint yourself:
 
 ```bash
 python scripts/convert_comfyui.py --src ckpt/MiniMax-H3-Tiny-17B-Pruned-Ref2VA --out minimax_h3_tiny_17b_ref2va_bf16.safetensors
+python scripts/quantize_comfyui_int8.py --src minimax_h3_tiny_17b_ref2va_bf16.safetensors --out minimax_h3_tiny_17b_ref2va_int8_convrot.safetensors
 ```
 
 ## Pruning

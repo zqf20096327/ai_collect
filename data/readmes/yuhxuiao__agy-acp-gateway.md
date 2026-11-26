@@ -376,7 +376,7 @@ Explicit body fields take precedence over model-name suffixes (`<model>-high`, `
 </p>
 
 1. **5-Layer Carbon KV Cache Defense & Disconnect Rescue**:
-   - Verifies native `agy 1.5.14+` CCPA `SessionId` propagation (`SPEC_VERSION=3`) alongside Gate 5 binary trajectory `sessionID` stamping so concurrent sessions never collide on empty upstream cache keys.
+   - Verifies native `agy 1.5.14+` CCPA `SessionId` propagation (`SPEC_VERSION=4`) alongside Gate 5 binary trajectory `sessionID` stamping so concurrent sessions never collide on empty upstream cache keys.
    - Freezes Turn-1 `system`/`developer` prompts and initial tool declarations across the session lifetime; refreshes deferred MCP tools (`ToolSearch`) in place via `TOOLS_UPDATED_IN_PLACE`.
    - **Prefill Soft-Detach + Singleflight**: Holds long-context (`>=30s`) in-flight prefills alive for `45s` on client disconnect so retries re-attach without `0%` cache resets.
 2. **Dual-Channel MCP Tool Bridge (`ws-bridge`) & Sibling Batching**:
@@ -446,7 +446,7 @@ Explicit body fields take precedence over model-name suffixes (`<model>-high`, `
 Official `agy` updates frequently. Both local CLI upgrades (`scripts/agy-upgrade.sh`) and the optional host-side production agent (`deploy/prod-upgrader/agy_prod_upgrader.py`) enforce a strict **4-Gate (`G1-G4`) pipeline** before touching `bin/agy-acp-900k`:
 
 1. **G1 (Multi-Arch Supply-Chain Hash & Version)**: Verifies dual-source `SHA-512` / `SHA-256` digests across `linux_amd64`, `linux_arm64`, and `darwin_arm64`, binary size, and `--version`.
-2. **G2 (Binary Patch & Native `SessionId` Audit)**: Applies `900K` context unlock (`agy-patch.py`) + trajectory `SessionId` verification (`tools/agy_extra_patch.py --check`, `SPEC_VERSION=3`).
+2. **G2 (Binary Patch & Native `SessionId` Audit)**: Applies `900K` context unlock (`agy-patch.py`) + trajectory `SessionId` verification (`tools/agy_extra_patch.py --check`, `SPEC_VERSION=4`).
 3. **G3 (Zero-Quota Offline ACP Contract)**: Runs `scripts/agy_acp_smoke.py` in a throwaway home directory to verify JSON-RPC stdio framing and `--version` / `models` contracts.
 4. **G4 (Isolated Canary Verification & Symlink Hot-Swap)**: Validates text + 2-step MCP tool round-trips inside an isolated test instance (`:18892`), then atomically flips `data/agy/current` once active turns drain (with automatic rollback on failure).
 

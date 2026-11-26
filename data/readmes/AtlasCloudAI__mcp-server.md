@@ -30,13 +30,13 @@
 
 <!-- ATLAS-MODELS:START lang=en campaign=mcp-server -->
 <!-- ⚠️ Auto-generated from the live model catalog by AtlasCloudAI/.github/scripts/update-models-readme.mjs — do not edit by hand. -->
-- 🎬 **Video** (246) — Seedance 2.5 Flash · Seedance 2.5 · Bach 1.0 Pro · MiniMax H3 Max · MiniMax H3 Fast · Gemini Omni 1.1 Flash
-- 🎨 **Image** (158) — MiniMax H3-Image Highspeed · MiniMax H3-Image · GPT Image 2.6 Sunburst · GPT Image 2.6 Flare
+- 🎬 **Video** (247) — Seedance 2.5 Flash · Seedance 2.5 · Bach 1.0 Pro · MiniMax H3 Max · MiniMax H3 Fast · Gemini Omni 1.1 Flash
+- 🎨 **Image** (164) — MiniMax H3-Image Highspeed · MiniMax H3-Image · GPT Image 2.6 Sunburst · GPT Image 2.6 Flare
 - 🧊 **3D** (14) — Seed3D 2.0 · Tripo H3.1 · Hunyuan 3D Rapid · Hunyuan 3D Pro
-- 💬 **LLM** (98) — Hy4 · Gemini 4 Neon · Gemini 4 Hydrogen · Gemini 4 Carbon
+- 💬 **LLM** (97) — Hy4 · Gemini 4 Neon · Gemini 4 Hydrogen · Gemini 4 Carbon
 - 🔊 **Audio (TTS · Music · ASR)** (21) — Seed Audio 1.0 · MiniMax Speech 2.6 Turbo · MiniMax Speech 2.6 HD · xAI TTS v1
 
-- 📚 **Explore more** — [all 575 live models »](https://www.atlascloud.ai/models?utm_source=github&utm_campaign=mcp-server)
+- 📚 **Explore more** — [all 584 live models »](https://www.atlascloud.ai/models?utm_source=github&utm_campaign=mcp-server)
 <!-- ATLAS-MODELS:END -->
 
 > 🎬 **Newest video models** — Seedance 2.5 · Kling 4.0 · Wan 3.0 · Kling Video O3.
@@ -48,6 +48,7 @@
 - [Quick Start](#quick-start)
 - [Available Tools](#available-tools)
 - [Usage Examples](#usage-examples)
+- [Telemetry](#telemetry)
 - [Development](#development)
 - [More Atlas Cloud Tools](#more-atlas-cloud-tools)
 - [License](#license)
@@ -309,6 +310,31 @@ The assistant uses `atlas_list_predictions` to list recent tasks and `atlas_get_
 > "How much Atlas Cloud credit do I have left, and what did I spend this month?"
 
 The assistant will use `atlas_get_balance` for the current balance and `atlas_get_model_costs` for the spend breakdown.
+
+## Telemetry
+
+The npm package sends anonymous usage telemetry to Atlas Cloud (PostHog), the same way the Atlas CLI does, so we can see which clients and tools people use and where calls fail. It never includes prompts, messages, file names, paths, URLs, generated output, or your API key.
+
+**Turn it off** with any of these in the server's `env`:
+
+```json
+"env": { "ATLASCLOUD_API_KEY": "...", "ATLASCLOUD_TELEMETRY": "0" }
+```
+
+`ATLAS_TELEMETRY=0` (the CLI's switch) and `DO_NOT_TRACK=1` work too.
+
+**What is sent**
+
+| Event | When | Fields |
+| --- | --- | --- |
+| `mcp_local_install` | First run on a machine | — |
+| `mcp_local_session_start` | Your MCP client connects | client capabilities (names only), startup time |
+| `mcp_local_tool_call` | Every tool call | tool name, catalog model ID, generation type, execution mode (submit / dry run / status check / chat / upload…), outcome and error code, duration, number of API requests, retries and their routes with IDs removed, HTTP status, task status, task price, number of outputs, a one-way hash of the task ID, LLM token counts and finish reason, upload size and coarse type (image / video / audio), which arguments were given (names only), prompt length in characters, number of media links |
+| `mcp_local_session_end` | Your MCP client disconnects | session length, tool call and error counts, tools used, number of generations |
+
+Every event also carries: server version, MCP client name and version (from the MCP handshake, e.g. `claude-code`, `cursor-vscode`) and the client family it belongs to, protocol version, OS, CPU architecture, Node.js version, locale, how the package was installed (npx / global / local), a random install ID stored in `~/.config/atlascloud-mcp/telemetry.json`, a random per-session ID, and — once your key has been used — a one-way hash of your Atlas account ID. IP-based geolocation is disabled.
+
+The MCP client name and version are also sent to the Atlas API as an `X-Atlas-MCP-Client` header, so usage can be broken down by client. Like the `X-Source-From` tag, this header is part of the request to Atlas rather than a telemetry event, so it is sent even when telemetry is off.
 
 ## Development
 

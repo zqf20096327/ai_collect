@@ -65,7 +65,9 @@ final rendered prompt. Right-click a node for two more: **Copy resolved
 prompt** puts the full, untruncated text on your clipboard, and **Pin this
 pick** (Style, Artist and Modifier) writes a Random or Cycle result into
 that node's own picker and switches it to Pick — the fast way to keep
-something you landed on without setting up a `user_styles.json`.
+something you landed on without setting up a `user_styles.json`. On Sheet,
+Pin writes the drawn styles into the styles box, so you can drop or reorder
+entries, and a later release adding styles cannot reshuffle the sheet.
 
 ![The style gallery](docs/images/style-gallery.png)
 
@@ -320,7 +322,7 @@ an issue for any of it:
 - **A descriptor is wrong or unfair.** These are one-line summaries of
   real people's work and some of them will be clumsy. Tell us.
 
-Pull requests are welcome too. `ARCHITECTURE.md` covers the layout, the
+Pull requests are welcome too. [`ARCHITECTURE.md`](https://github.com/EnragedAntelope/comfyui-stylebook/blob/main/ARCHITECTURE.md) covers the layout, the
 chain protocol and how to add a style. Run
 `python scripts/pre_commit_check.py` before opening one.
 

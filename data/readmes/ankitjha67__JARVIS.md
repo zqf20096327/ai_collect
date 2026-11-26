@@ -4,7 +4,7 @@
 
 <h1 align="center">J.A.R.V.I.S.</h1>
 <p align="center">
-  <b>Personal AI Desktop Assistant for Windows</b><br/>
+  <b>Personal AI Desktop Assistant for Windows — and now macOS (beta)</b><br/>
   231 tools. 8 LLM providers. Voice control. Fully configurable. One HUD.
 </p>
 
@@ -18,9 +18,14 @@
 
 ---
 
-JARVIS is a full-stack personal AI assistant that runs entirely on your Windows machine. It routes requests to local or cloud LLMs, acts on your computer through 231 audited tools across 64 modules, and presents everything through a cinematic heads-up display you can control by voice or keyboard. Simple commands execute instantly through fast-path pattern matching without touching the LLM. New installs start with a guided onboarding wizard, and the assistant name, wake word, and branding are fully configurable.
+JARVIS is a full-stack personal AI assistant that runs entirely on your own machine: Windows 10/11, and Apple Silicon Macs in beta. It routes requests to local or cloud LLMs, acts on your computer through 231 audited tools across 64 modules, and presents everything through a cinematic heads-up display you can control by voice or keyboard. Simple commands execute instantly through fast-path pattern matching without touching the LLM. New installs start with a guided onboarding wizard, and the assistant name, wake word, and branding are fully configurable.
 
 Say it, see it happen, stay in control.
+
+> **macOS beta — testers wanted.** The Mac port passes its automated checks on a GitHub-hosted Mac, but it has
+> not yet been driven by hand on a real one. If you have an Apple Silicon Mac, follow [docs/MACOS.md](docs/MACOS.md)
+> (about ten minutes) and tell us what works with the
+> [macOS test report](https://github.com/ankitjha67/JARVIS/issues/new?template=macos-test-report.yml) form.
 
 ## Screenshots
 
@@ -77,6 +82,7 @@ Rename the assistant to anything you want from Settings or during onboarding. Th
 
 **Voice and Speech**
 - Global hotkey (Ctrl+Alt+J) summons and focuses the command bar
+- Windows: closing the window keeps JARVIS running in the notification area, so the wake word and hotkey still bring it back; right-click the icon to quit. Optional start at sign-in
 - Wispr Flow dictation integration with auto-send after quiet period
 - Text-to-speech for spoken replies (toggle on/off)
 - Wake word detection ("Jarvis")
@@ -98,7 +104,7 @@ Rename the assistant to anything you want from Settings or during onboarding. Th
 - Error explanation with fix suggestions
 - Project scaffolding (Python, Node, React, FastAPI, Flask, Next.js, HTML)
 - Project analysis (language detection, dependencies, entry points)
-- Shell command execution (PowerShell, with timeout and output cap)
+- Shell command execution (PowerShell on Windows, zsh on macOS; with timeout and output cap)
 
 **Smart Home**
 - Home Assistant integration: list devices, control lights/switches/climate
@@ -164,7 +170,7 @@ Rename the assistant to anything you want from Settings or during onboarding. Th
 - Security audit log with full action history
 - Taint tracking for untrusted content
 - Sensitive data redaction in logs
-- Credential management via Windows Credential Manager
+- Credential management via Windows Credential Manager or the macOS Keychain
 - Privacy guardian: network connection audit, listening ports scan, startup programs audit, DNS lookup logger
 - Credential health check: password strength analysis, HIBP Pwned Passwords k-anonymity check, secure password generator
 
@@ -292,7 +298,7 @@ JARVIS
 ## Quick Start
 
 ### Prerequisites
-- Windows 10/11
+- Windows 10/11, or macOS 13+ on Apple Silicon (beta — see [docs/MACOS.md](docs/MACOS.md))
 - Python 3.12+ (via [uv](https://docs.astral.sh/uv/))
 - Node.js 18+ (for HUD development)
 - At least one LLM provider (LM Studio for local, or a cloud API key)
@@ -317,12 +323,24 @@ uv run jarvis
 
 On first launch, the onboarding wizard walks you through naming your assistant, choosing a privacy mode, connecting an LLM provider, and picking a theme. You can change all of these later in Settings.
 
+On macOS, one script does the same and prints a self-check:
+
+```zsh
+git clone https://github.com/ankitjha67/JARVIS.git && cd JARVIS
+./setup-macos.sh
+uv run jarvis
+```
+
+### Self-check
+
+`uv run jarvis --doctor` checks every platform feature on your machine (key store, shell, clipboard, windows, audio, screen capture, hotkeys…) and prints a pass / warn / fail report. Include it when you report a problem.
+
 ### Hotkeys
 
-| Hotkey | Action |
-|--------|--------|
-| Ctrl+Alt+J | Summon JARVIS and focus the command bar |
-| Ctrl+Alt+Backspace | Kill switch: cancel all runs, deny pending approvals |
+| Windows | macOS | Action |
+|---------|-------|--------|
+| Ctrl+Alt+J | Ctrl+Option+J | Summon JARVIS and focus the command bar |
+| Ctrl+Alt+Backspace | Ctrl+Option+Delete | Kill switch: cancel all runs, deny pending approvals |
 
 ### Run Center and document review
 
@@ -371,12 +389,13 @@ cd android
 |-------|-----------|
 | Backend | Python 3.12, FastAPI, uvicorn, SQLite (WAL mode) |
 | Frontend | React 19, TypeScript, Zustand, Vite |
-| Desktop Shell | pywebview with WebView2 |
+| Desktop Shell | pywebview with WebView2 (Windows) or WKWebView (macOS) |
 | Android | Kotlin, Jetpack Compose, OkHttp WebSocket |
 | Browser Automation | Playwright (Edge/Chrome) |
 | Speech | Wispr Flow, faster-whisper, pyttsx3 |
 | Package Manager | uv (Python), npm (Node) |
-| Secrets | Windows Credential Manager via keyring |
+| Secrets | Windows Credential Manager / macOS Keychain via keyring |
+| Platform layer | `jarvis.host`: Win32 on Windows; osascript, Quartz and built-in tools on macOS |
 
 ## Project Structure
 
@@ -387,6 +406,8 @@ JARVIS/
 |   |-- orchestrator.py   # Agent loop, tool dispatch
 |   |-- providers/        # LLM provider implementations
 |   |-- tools/            # 231 tools across 64 modules
+|   |-- host/             # Operating-system layer (Windows, macOS)
+|   |-- doctor.py         # `jarvis --doctor` self-check
 |   |-- policy.py         # Tier enforcement, taint tracking
 |   |-- memory.py         # Long-term memory store
 |   |-- scheduler.py      # Task scheduling engine

@@ -26,6 +26,35 @@ A huge thank you to our sponsors! Want to appear here? [Contact us](#become-spon
 
 <details open>
 <summary>Click to collapse</summary>
+
+<br>
+
+Zapply is a job-application platform with an autofill Chrome extension, a dedicated job board, multiple resume profiles, and application tracking.
+
+[![Apply to jobs in seconds with Zapply.](apply-faster-banner.png)](https://app.zapply.jobs/onboarding/?ref=github-cta-ikaijua)
+
+Explore Zapply's website and check out:
+
+- Our Chrome extension, which autofills job applications in seconds.
+
+- A dedicated job board featuring the latest openings across various roles.
+
+- User accounts with multiple profiles for different resume types and roles.
+
+- Job application tracking with streaks and commitment awards.
+
+Experience an advanced career journey with us! 🚀
+
+<p align="center">
+
+<a href="https://app.zapply.jobs/onboarding/?ref=github-cta-ikaijua">
+
+<img src="get-started-button.png" alt="Visit Zapply" width="700">
+
+</a> </p>
+
+<p align="right"><sub>Sponsored by Zapply</sub></p>
+
 <br>
 <table>
   <tr>
@@ -394,13 +423,4 @@ Store and retrieve historical memory, and build context from codebases and knowl
 | Name | Description | Links | Fees |
 | --- | --- | --- | --- |
 |LeetGPU|GPU programming platform for learning, practicing, and competing on GPU programming challenges. Similar to LeetCode but for GPU programming, helping developers master GPU acceleration skills essential for AI model training and inference.|[URL](https://www.leetgpu.com/) |Freemium|
-|LeetCUDA|An open-source educational repository and question bank for CUDA programming and deep learning operator optimization. Includes 200+ kernels ranging from basic to advanced (e.g., FlashAttention-2) with PyTorch bindings.|[GitHub](https://github.com/xlite-dev/LeetCUDA) ![GitHub Repo stars](https://img.shields.io/github/stars/xlite-dev/LeetCUDA?style=social)|Free|
-
-### LLM Prompts
-| Name | Description | Links | Fees |
-| --- | --- | --- | --- |
-|System Prompts and Models of AI Tools|The most comprehensive collection of system prompts, tool definitions, and model configurations for mainstream AI tools (Cursor, Claude Code, Windsurf, Trae, v0, etc.). Essential for studying Prompt Engineering and AI Agent architectures.|[GitHub](https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools) ![GitHub Repo stars](https://img.shields.io/github/stars/x1xhlol/system-prompts-and-models-of-ai-tools?style=social)|Free|
-
-### LLM training platform
-| Name | Description | Links | Fees |
-| --- | -
+|LeetCUDA|An open-source educational repository and question bank for CUDA programming and deep learning operator opti

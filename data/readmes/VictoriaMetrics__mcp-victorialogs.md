@@ -20,6 +20,7 @@ This MCP server allows you to use almost all read-only APIs of VictoriaLogs, i.e
 - Listing available streams, fields, field values
 - Query statistics for the logs as metrics
 - UI with setup instructions and tools inspection on the root endpoint (only in Streamable HTTP mode)
+- Integration with [VictoriaMetrics Cloud](https://docs.victoriametrics.com/victoriametrics-cloud/) VictoriaLogs deployments
  
 In addition, the MCP server contains embedded up-to-date documentation and is able to search it without online access.
 
@@ -50,7 +51,7 @@ Here is example of configuration for [Claude Desktop](https://claude.ai/download
 
 ## Requirements
 
-- [VictoriaLogs](https://docs.victoriametrics.com/victorialogs/) instance: ([single-node](https://docs.victoriametrics.com/victorialogs/) or [cluster](https://docs.victoriametrics.com/victorialogs/cluster/))
+- [VictoriaLogs](https://docs.victoriametrics.com/victorialogs/) instance ([single-node](https://docs.victoriametrics.com/victorialogs/) or [cluster](https://docs.victoriametrics.com/victorialogs/cluster/)) or [VictoriaMetrics Cloud](https://docs.victoriametrics.com/victoriametrics-cloud/) account with VictoriaLogs deployments
 - Go 1.26 or higher (if you want to build from source)
 
 ## Installation
@@ -132,17 +133,20 @@ MCP Server for VictoriaLogs is configured via environment variables:
 
 | Variable                           | Description                                                                                                                                                                                                                                                           | Required | Default          | Allowed values                   |
 |------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------|----------------------------------|
-| `VL_INSTANCE_ENTRYPOINT`           | URL to VictoriaLogs instance                                                                                                                                                                                                                                          | Yes      | -                | -                                |
+| `VL_INSTANCE_ENTRYPOINT`           | URL to VictoriaLogs instance. Cannot be used with `VMC_API_KEY`                                                                                                                                                                                                       | Yes (if you don't use `VMC_API_KEY`) | - | -                    |
+| `VMC_API_KEY`                      | [API key from VictoriaMetrics Cloud Console](https://docs.victoriametrics.com/victoriametrics-cloud/api/) to work with VictoriaLogs deployments in VictoriaMetrics Cloud. Set it to `dynamic` to take the key from the `X-VM-Cloud-Access` header of every incoming MCP request instead (only in `sse`/`http` modes). Cannot be used with `VL_INSTANCE_ENTRYPOINT` | Yes (if you don't use `VL_INSTANCE_ENTRYPOINT`) | - | - |
+| `VMC_API_BASE_URL`                 | Base URL of the VictoriaMetrics Cloud API                                                                                                                                                                                                                             | No       | `https://api.victoriametrics.cloud` | -             |
 | `VL_INSTANCE_BEARER_TOKEN`         | Authentication token for VictoriaLogs API                                                                                                                                                                                                                             | No       | -                | -                                |
 | `VL_INSTANCE_HEADERS`              | Custom HTTP headers to send with requests (comma-separated key=value pairs)                                                                                                                                                                                           | No       | -                | -                                |
-| `VL_INSTANCE_CA_CERT`              | PEM-encoded CA certificate(s) to verify the TLS certificate of VictoriaLogs with, instead of the system CA bundle. Useful when mounting a CA file is not possible. Literal `\n` sequences are treated as newlines. Cannot be used with `VL_INSTANCE_CA_CERT_FILE`     | No       | -                | -                                |
-| `VL_INSTANCE_CA_CERT_FILE`         | Path to a file with PEM-encoded CA certificate(s) to verify the TLS certificate of VictoriaLogs with, instead of the system CA bundle. The file is re-read automatically, so CA rotation does not need a restart. Cannot be used with `VL_INSTANCE_CA_CERT`           | No       | -                | -                                |
+| `VL_INSTANCE_CA_CERT`              | PEM-encoded CA certificate(s) to verify the TLS certificates of VictoriaLogs and the VictoriaMetrics Cloud API with, instead of the system CA bundle. Useful when mounting a CA file is not possible. Literal `\n` sequences are treated as newlines. Cannot be used with `VL_INSTANCE_CA_CERT_FILE`     | No       | -                | -                                |
+| `VL_INSTANCE_CA_CERT_FILE`         | Path to a file with PEM-encoded CA certificate(s) to verify the TLS certificates of VictoriaLogs and the VictoriaMetrics Cloud API with, instead of the system CA bundle. The file is re-read automatically, so CA rotation does not need a restart. Cannot be used with `VL_INSTANCE_CA_CERT`           | No       | -                | -                                |
 | `MCP_PASSTHROUGH_HEADERS`          | HTTP header names to forward from incoming MCP requests to VictoriaLogs (comma-separated list). Overrides `VL_INSTANCE_HEADERS` on collision. Only applies in `sse`/`http` modes.                                                                                     | No       | -                | -                                |
 | `VL_DEFAULT_TENANT_ID`             | Default tenant ID used when tenant is not specified in requests (format: `AccountID:ProjectID` or `AccountID`)                                                                                                                                                        | No       | `0:0`            | -                                |
 | `MCP_SERVER_MODE`                  | Server operation mode. See [Modes](#modes) for details.                                                                                                                                                                                                               | No       | `stdio`          | `stdio`, `sse`, `http`           |
 | `MCP_LISTEN_ADDR`                  | Address for SSE or HTTP server to listen on                                                                                                                                                                                                                           | No       | `localhost:8081` | -                                |
 | `MCP_DISABLED_TOOLS`               | Comma-separated list of tools to disable                                                                                                                                                                                                                              | No       | -                | -                                |
 | `MCP_HEARTBEAT_INTERVAL`           | Defines the heartbeat interval for the streamable-http protocol. <br /> It means the MCP server will send a heartbeat to the client through the GET connection, <br /> to keep the connection alive from being closed by the network infrastructure (e.g. gateways)   | No       | `30s`            | -                                |
+| `MCP_MAX_RESPONSE_SIZE`            | Maximum size in bytes of a VictoriaLogs response that a tool reads. A larger response is returned as a tool error instead of being read in full. `0` disables the limit.                                                                                              | No       | `16777216`       | -                                |
 | `MCP_LOG_FORMAT`                   | Log output format                                                                                                                                                                                                                                                     | No       | `text`           | `text`, `json`                   |
 | `MCP_LOG_LEVEL`                    | Minimum log level. `debug` also logs MCP request and result payloads                                                                                                                                                                                                                                                  | No       | `info`           | `debug`, `info`, `warn`, `error` |
 | `MCP_STATELESS`                    | Run the Streamable HTTP server in stateless mode: session IDs in the `Mcp-Session-Id` header are ignored rather than validated. Useful when the server is fronted by a proxy that injects its own session id. Only applies in `http` mode.                            | No       | `false`          | `true`, `false`                  |
@@ -176,6 +180,9 @@ More info about transports you can find in MCP docs:
 ```bash
 # For a public playground
 export VL_INSTANCE_ENTRYPOINT="https://play-vmlogs.victoriametrics.com"
+
+# For VictoriaMetrics Cloud (instead of VL_INSTANCE_ENTRYPOINT)
+export VMC_API_KEY="<your-api-key>"
 
 # Require clients to send "Authorization: Bearer <token>" (optional, only for sse/http modes)
 export MCP_AUTH_TOKEN="your-secret-token"
@@ -472,6 +479,24 @@ Here's a list of available tools:
 | `stream_field_values` | List of stream field values for the query             |
 | `stream_ids`         | List of stream IDs for the query                      |
 | `streams`            | List of streams for the query                         |
+
+#### VictoriaMetrics Cloud
+
+Additional tools available for [VictoriaMetrics Cloud](https://docs.victoriametrics.com/victoriametrics-cloud/) deployments (with `VMC_API_KEY` parameter).
+In this mode every VictoriaLogs tool except `documentation` takes a required `deployment_id` argument with the ID of the VictoriaLogs deployment to work with,
+and the MCP server uses an access token of that deployment to query it: a read-only token without a tenant, or a read-write one when the deployment has no such read-only token.
+Create a read-only access token for the deployment to keep write credentials out of the MCP server.
+The `flags` tool is not available in this mode, since VictoriaMetrics Cloud does not expose the `/flags` endpoint of VictoriaLogs deployments to read access tokens.
+
+| Tool              | Description                                       |
+|-------------------|---------------------------------------------------|
+| `deployments`     | List of VictoriaLogs deployments                  |
+| `access_tokens`   | List of access tokens of a deployment             |
+| `tiers`           | List of VictoriaLogs deployment tiers             |
+| `regions`         | List of regions                                   |
+| `cloud_providers` | List of cloud providers                           |
+| `rule_filenames`  | List of alerting and recording rules files of a deployment |
+| `rule_file`       | Content of an alerting and recording rules file of a deployment |
 
 ### Prompts
 

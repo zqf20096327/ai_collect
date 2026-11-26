@@ -206,7 +206,7 @@ EV_Battery_Health_Prediction/
 ├── Python_Code/
 │   └── project.py            # main script (Version 1)
 ├── Reports/                  # charts (.png) and HTML reports
-├── Report in Main Code/      # extra report outputs
+├── Main/      # extra report outputs
 ├── Learning_Website/         # offline beginner guide with images
 ├── main.py                   # additional script
 ├── main2.py                  # additional script

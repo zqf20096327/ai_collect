@@ -1,6 +1,7 @@
 # llm-redteam-kit
 
 [![codecov](https://codecov.io/gh/gravion-ux/llm-redteam-kit/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/llm-redteam-kit)
+[![CI](https://github.com/gravion-ux/llm-redteam-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/llm-redteam-kit/actions/workflows/ci.yml)
 
 ![Demo](docs/demo.gif)
 
@@ -43,7 +44,19 @@ can block on. No plugin ecosystem to learn, no services to run — and the
 offline mock mode exercises the whole pipeline before you spend a single
 API call.
 
-## Quickstart
+## Requirements
+
+- **Python 3.10 or newer** (CI tests 3.10, 3.11 and 3.12).
+- **No runtime dependencies** — the kit uses only the Python standard
+  library.
+- **For the test suite:** `pytest` (and `pytest-cov` for coverage, as
+  in CI) — `pip install pytest pytest-cov`.
+- **For runs against a real model:** your own API key for any
+  OpenAI-compatible endpoint, supplied via the `LLM_API_KEY`,
+  `LLM_BASE_URL` and `LLM_MODEL` environment variables. The offline
+  mock mode needs no key and no network.
+
+## Quick start
 
 ```bash
 git clone https://github.com/gravion-ux/llm-redteam-kit.git
@@ -146,6 +159,25 @@ Exit codes: `0` gate passed · `1` pack/endpoint error · `2` gate failed
 This repository's own CI runs the pytest suite plus an offline mock run
 gated at a 0.5 pass rate — see `.github/workflows/ci.yml`.
 
+## Limitations
+
+- **Heuristic scoring, not ground truth.** Detectors are simple,
+  transparent regex and refusal heuristics. A FAIL is a triage signal
+  for human review — false positives and false negatives both occur.
+- **Black-box only.** The kit sends prompts to a chat endpoint and
+  scores the responses; it has no access to model internals, weights
+  or training data, and cannot judge categories that leave no trace in
+  the response text.
+- **The bundled pack is a starting set.** 26 probes across 4 categories
+  (LLM01, LLM02 and LLM07 of the OWASP LLM Top 10 2025) — not the full
+  Top 10. The probes that matter most for a real application are the
+  ones you write yourself, against its own system prompt, tools and
+  data.
+- **OpenAI-compatible endpoints only.** Any endpoint that speaks that
+  API works; other provider APIs need a compatible gateway in front.
+- **Mock mode proves the pipeline, not a model.** The built-in mock is
+  a deterministic fake model for offline demos and CI smoke tests.
+
 ## Project layout
 
 ```
@@ -176,6 +208,14 @@ applications you are responsible for.
 - Heuristic FAILs can have false positives and negatives; verify findings
   manually before reporting them, and disclose real vulnerabilities
   responsibly to the affected vendor.
+
+## Sponsors
+
+Sponsorship pays for the maintenance, triage and release time behind this tool. Sponsors are
+listed here by name, and name placement starts at the $25 a month Sponsor tier or the $50
+one-time Sponsor tier.
+
+- [Sponsor on GitHub](https://github.com/sponsors/gravion-ux)
 
 ## License
 

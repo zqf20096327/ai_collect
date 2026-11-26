@@ -1,11 +1,11 @@
 # Photoshoot
 
 [![Latest release](https://img.shields.io/github/v/release/ralksta/ComfyUI-Photoshoot?label=release)](https://github.com/ralksta/ComfyUI-Photoshoot/releases)
-[![Changelog](https://img.shields.io/badge/changelog-v3.0.0-blue)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-v3.1.0-blue)](CHANGELOG.md)
 [![Quickstart](https://img.shields.io/badge/start-quickstart-brightgreen)](docs/quickstart.md)
 [![Workflows & LoRA Guide](https://img.shields.io/badge/guide-workflows_%26_LoRAs-informational)](docs/workflows.md)
 [![Prompt Guide](https://img.shields.io/badge/how_to-prompt_guide-success)](docs/GUIDE.md)
-[![Reference Posters](https://img.shields.io/badge/reference_posters-14_sheets-orange)](docs/POSTERS.md)
+[![Reference Posters](https://img.shields.io/badge/reference_posters-15_sheets-orange)](docs/POSTERS.md)
 [![Feature ideas](https://img.shields.io/badge/feature_ideas-tell_us-blueviolet)](https://github.com/ralksta/ComfyUI-Photoshoot/discussions/9)
 
 ![Photoshoot — one person, a whole series, ComfyUI](docs/banner.png)
@@ -13,14 +13,12 @@
 **Quick jump:** [Install & Quickstart](#-installation--quickstart) · [How It Works](#how-it-works) · [Studio & Person](#studio-person-wardrobe--couples) · [10-Axis Series](#the-10-axis-series-lightbox--director) · [Reference Posters](#visual-reference-posters) · [Nodes](#all-22-nodes-at-a-glance) · [Docs](#documentation)
 
 > [!IMPORTANT]
-> **What's New in Release 3.0.0:**
-> - **Location presets (17 places, time of day, weather & seasons):** Render-tested wordings across *studio*, *urban*, *nature* and *interior* (`tools/wortlabor/orte.json`), paired lighting/weather couplings, portrait short forms, and a Series warning for swimwear in winter/snow.
-> - **Two people / Couples (`person_2_data`):** Optional second person input and **Person 1 \| Person 2** switcher with **Second person active** & **Couple interaction** in *Photoshoot Studio*, using spatial sentence separation verified against attribute bleeding (`tools/wortlabor/paare.json`).
-> - **Character Cards, Model Profiles & MiniMax-H3-Image 2K workflow:** Save/swap Person + Wardrobe + LoRA cards in *Studio → Person*, switch framing profiles (`krea2` / `Compact` / `Custom`), edit/export `.json` preset packs visually, and run the shipped 6-step `photoshoot-studio-minimax.json` workflow.
-> - **Interactive Wording Lab, Motion Bridge & Over-the-shoulder selfie:** 2-seed draft testing in *Your setup*, 17th `motion` output for I2V workflows, and 5th selfie perspective (`tools/wortlabor/selfie2.json`).
-> - **Native ComfyUI QoL integration:** 6 settings under *Photoshoot*, workflow-aware branded **Studio** / **Shoot** top-bar buttons & sidebar logo, `Alt+Shift+P/S/D/L` shortcuts, `SEARCH_ALIASES` & `OUTPUT_TOOLTIPS`, live progress text, native toasts & dark confirm dialogs.
+> **What's New in Release 3.1.0:**
+> - **Comfy Desktop 1.2 & Multi-Build Ready:** Square pack icon (`docs/icon.svg`), `PHOTOSHOOT_USER_DIR` shared-folder env var, **1-click Workspace ZIP Backup/Import** & status card in *Studio → Your setup*, and shipped **Z-Image Turbo** workflow with 1-click Comfy-Org model download links.
+> - **Quick-Shoot & Studio QoL:** New **Quick** launchpad tab, **🎲 Surprise Look**, per-tab **↺ Reset**, **Swap Person 1 ↔ 2**, and a collapsible **Live Prompt Preview** with word counter & block badges.
+> - **Sedcard Portraits & Lightbox Actions:** Pin Lightbox renders (or upload photos) as character card thumbnails in *Casting-Deck*, filter cards by name, and copy finished **Prompt** or **I2V Motion** cues in 1 click from the Lightbox.
 >
-> **Full details:** [**Read the 3.0.0 Changelog →**](CHANGELOG.md)
+> **Full details:** [**Read the 3.1.0 Changelog →**](CHANGELOG.md)
 
 **Build a person once. Now shoot 40 photos of her.** Photoshoot generates structured natural-language prompt series in ComfyUI — varying framing, perspective, pose, placement, mood, lighting, sets, outfits, aspect ratio, and seed while keeping the character consistent.
 
@@ -40,11 +38,12 @@ cd ComfyUI/custom_nodes
 git clone https://github.com/ralksta/ComfyUI-Photoshoot
 ```
 
-Restart ComfyUI, open **Templates → ComfyUI-Photoshoot**, and load one of four ready-to-run workflows:
+Restart ComfyUI, open **Templates → ComfyUI-Photoshoot**, and load one of five ready-to-run workflows (with Comfy Desktop 1.2 / ComfyUI model-download URLs embedded):
 
 | Workflow | Style | Best for |
 |---|---|---|
 | [`photoshoot-studio.json`](example_workflows/photoshoot-studio.json) | **11 nodes** (All-in-One) | Everyday shooting via the left **Studio** sidebar & compact canvas Series node |
+| [`photoshoot-studio-zimage.json`](example_workflows/photoshoot-studio-zimage.json) | **16 nodes** (Z-Image Turbo) | Fast 8-step single-pass Studio shoots (`Compact` framing profile, ~3 s/image) |
 | [`photoshoot-studio-minimax.json`](example_workflows/photoshoot-studio-minimax.json) | **14 nodes** (MiniMax-H3 2K) | Native 2K single-pass Studio shoots in 6 Euler steps (`Compact` framing profile) |
 | [`photoshoot-series.json`](example_workflows/photoshoot-series.json) | **21 nodes** (Modular) | Inspecting or wiring every builder independently on the canvas |
 | [`photoshoot-reference-qwen21.json`](example_workflows/photoshoot-reference-qwen21.json) | **30 nodes** (Reference) | Generating multi-framing datasets (`NNNN.png` + `NNNN.txt`) from anchor images |

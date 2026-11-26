@@ -117,7 +117,7 @@ node setup.mjs
 
 ```bash
 curl http://127.0.0.1:3456/v1/models
-# claude-opus-5-5, claude-opus-5, claude-opus-4-8, claude-opus-4-7, claude-opus-4-6, claude-sonnet-5-5, claude-sonnet-5, claude-sonnet-4-6, claude-haiku-4-5-20251001
+# claude-fable-5-2, claude-fable-5-1, claude-fable-5, claude-opus-5-5, claude-opus-5, claude-opus-4-8, claude-opus-4-7, claude-opus-4-6, claude-opus-4-5, claude-sonnet-5-5, claude-sonnet-5, claude-sonnet-4-6, claude-sonnet-4-5, claude-haiku-5-5, claude-haiku-4-5-20251001
 ```
 
 **Connect one IDE** — point any OpenAI-compatible tool at the proxy, then reload your shell and start a tool (Cline / Continue / Cursor / OpenCode):
@@ -206,14 +206,20 @@ Two things still describe the **host**, not the client:
 
 | Model ID | Context window | Notes |
 |----------|---------------:|-------|
-| `claude-opus-5-5` | 1M | Most capable (default for `opus` alias) |
+| `claude-fable-5-2` | 1M | Most capable; no alias, request it by id |
+| `claude-fable-5-1` | 1M | Previous Fable, retained for pinning |
+| `claude-fable-5` | 1M | Older Fable, retained for pinning |
+| `claude-opus-5-5` | 1M | Latest Opus (default for `opus` alias) |
 | `claude-opus-5` | 1M | Previous Opus, retained for pinning |
 | `claude-opus-4-8` | 1M | Older Opus, retained for pinning |
 | `claude-opus-4-7` | 1M | Older Opus, retained for pinning |
 | `claude-opus-4-6` | 200k | Older Opus, retained for pinning |
+| `claude-opus-4-5` | 200k | Older Opus, retained for pinning |
 | `claude-sonnet-5-5` | 1M | Latest Sonnet (default for `sonnet` alias) |
 | `claude-sonnet-5` | 1M | Previous Sonnet, retained for pinning |
 | `claude-sonnet-4-6` | 200k | Previous Sonnet, retained for pinning |
+| `claude-sonnet-4-5` | 200k | Older Sonnet, retained for pinning |
+| `claude-haiku-5-5` | 1M | Latest Haiku; no alias, request it by id |
 | `claude-haiku-4-5-20251001` | 200k | Fastest, lightweight (default for `haiku` alias) |
 
 Context windows match the Claude Code CLI registry. Each model's prompt truncation ceiling is
@@ -823,6 +829,4 @@ OCP runs under a small set of binding documents so contributions stay aligned wi
 - **[`ALIGNMENT.md`](./ALIGNMENT.md)** — the constitution. Every Class A endpoint (the `cli.js`-mirror surface) must correspond to something `cli.js` actually does, with a line-number citation. Class B endpoints — OCP's OpenAI-compatible and administrative surface, where `cli.js` is not the wire authority — cite OpenAI's specification or their authorizing ADR instead. Background in [ADR 0002](./docs/adr/0002-alignment-constitution.md) and [ADR 0006](./docs/adr/0006-openai-shim-scope.md).
 - **[`.github/workflows/alignment.yml`](./.github/workflows/alignment.yml)** — CI guardrail. Greps `server.mjs` for known-hallucinated tokens and fails the build on any hit. Not suppressible without an `ALIGNMENT.md` amendment PR.
 - **[`AGENTS.md`](./AGENTS.md)** — guidelines any AI coding agent (Claude Code / Cursor / Copilot / Codex / Gemini) should read before touching this repo.
-- **[`docs/governance/b2-response-keys.json`](./docs/governance/b2-response-keys.json)** — a per-release record of every grandfathered Class B.2 endpoint's response key set, taken from the wire rather than from prose, and enforced by `npm test`. Adding a field to `/health`, `/status`, `/cache/stats` or any other B.2 response fails the suite until the snapshot is updated and the addition is authorized under [ADR 0012](./docs/adr/0012-additive-fields-on-grandfathered-b2.md). Replaces the CHANGELOG grep that used to serve this role; see [ADR 0012](./docs/adr/0012-additive-fields-on-grandfathered-b2.md) and `CLAUDE.md` § `governance_audits`.
-- **[`models.json`](./models.json)** — single source of truth for the model registry. See [ADR 0003](./docs/adr/0003-models-json-spot.md).
-- **[`docs/adr/`](./docs/adr/)** — architecture decision records explaining why current structure
+- **[`docs/governance/b2-response-keys.json`](./docs/governance/b2-response-keys.json)** — a per-release record of every grandfathered Class B.2 endpoint's response key set, taken from the wire rather than from prose, and enforced by `npm test`. Adding a field to `/health`, `/status`, `/cache/stats` or any other B.2 response fails the suite until the snapshot is updated a

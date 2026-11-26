@@ -32,6 +32,8 @@
 
 **Hydra picks the model best suited to each task, and can check the answer before you rely on it.**
 
+![A terminal: hyctl oracle ground --by-sentence marks a summary that says 1.9 hours, when the report says 1.4, NOT SUPPORTED and exits 1; the corrected summary is supported by report lines 2 to 3 and exits 0](docs/demo/ground.gif)
+
 You probably have several models to hand: hosted APIs (OpenAI, Anthropic, Gemini, Bedrock, Mistral and others), local models through Ollama or llama.cpp, and CLI agents. Each is good at different work, and none of them tells you when its answer is wrong. Hydra sits in front of all of them.
 
 - **It finds your models.** API keys, local model servers and CLI agents, with no configuration.
@@ -101,6 +103,10 @@ hyctl edit --file "$PWD/slug.go" --enum MODERATE --prompt "drop punctuation and 
 | Analyse | compare numbers, explain a trend | a script recomputes the figures | any command via `--check cmd:...` or `hyctl oracle verify` |
 | Code | edit, generate, review | tests, build, lint; a file many others depend on needs more confidence | `hyctl edit`, `hyctl vet`, `hyctl graph blast`, `hyverify`; Go tests another model writes for the change, run with the network off, via `--check gen:tests=<file>` |
 
+A check is not equally good on every model's answers. Strong models make subtler mistakes, so their wrong answers get past tests more often: in a public pilot, HumanEval+ base tests passed 0.7% of vicuna-7b's wrong answers and 40.6% of gpt-4's. `hyctl trust certify-table` keeps each check's false-pass rate per model and kind of work, with an upper bound, and never pools models. A model with few labelled wrong answers gets a wide bound, which is valid and simply counts for little.
+
+`hyctl dispatch --certify 0.05 --check ...` uses these bounds for high-stakes work: it prints "certified" only when the checks' evidence clears a bar set by alpha, and otherwise "not verified" with the reason, such as how many labelled wrong answers it still needs. The outcome is written on the answer's span. Alpha is the chance of accepting a wrong answer, per task. It is never the chance that an accepted answer is wrong: that is not bounded. Grounded answers and writing will mostly print "not verified" until their checks get much stronger, and that is the correct answer.
+
 `--check` judges one answer, and a real fail reruns once on a stronger model: [how checks work](https://hydra.uvansa.com/docs.html#check). Each kind of work also has a menu of [recipes](https://hydra.uvansa.com/docs.html#recipe).
 
 ---
@@ -110,7 +116,7 @@ hyctl edit --file "$PWD/slug.go" --enum MODERATE --prompt "drop punctuation and 
 The CLI is **`hyctl`** (the product is Hydra). Every method installs the same prebuilt binary and checks its checksum.
 
 ```bash
-brew install ankit373/hydra/hyctl                                           # Homebrew, macOS and Linux
+brew trust ankit373/hydra && brew install ankit373/hydra/hyctl              # Homebrew, macOS and Linux
 npm install -g hyctl                                                        # or run once with npx hyctl
 pip install hyctl                                                           # Python 3.8+
 curl -fsSL https://raw.githubusercontent.com/ankit373/hydra/main/install.sh | sh   # macOS and Linux
@@ -144,7 +150,7 @@ curl -fsSL https://raw.githubusercontent.com/ankit373/hydra/main/install-app.sh 
 It resolves the newest release (the asset names embed their version, so GitHub's `/latest/download/`
 shortcut cannot address them), verifies the download against the published `.sha256`, installs the
 `.app` to `/Applications`, or the binary to `~/.local/share/hydra` with a `~/.local/bin` symlink on
-Linux, and clears the macOS quarantine flag so the first launch works. `HYDRA_VERSION=v1.8.0` pins
+Linux, and clears the macOS quarantine flag so the first launch works. `HYDRA_VERSION=v1.9.0` pins
 a release; `HYDRA_APP_DIR` changes where it lands.
 
 <!-- x-release-please-end -->
@@ -174,6 +180,8 @@ Every command: [command reference](https://hydra.uvansa.com/docs.html#commands).
 **Privacy and local-only.** Files like `.env` or `~/.aws/credentials` never reach a model that leaves your machine, and with local-only on, a prompt holding personal data goes to a local model. Each agent gets only its own key. `hyctl security` reads the audit log and says what the agents did. [Egress gate](https://hydra.uvansa.com/docs.html#egress) · [PII](https://hydra.uvansa.com/docs.html#policy) · [least privilege](https://hydra.uvansa.com/docs.html#least-privilege) · [security](https://hydra.uvansa.com/docs.html#security)
 
 **Serve.** `hyctl serve` puts the router behind an OpenAI-compatible endpoint on loopback, so any tool that speaks OpenAI routes through Hydra. [hyctl serve](https://hydra.uvansa.com/docs.html#serve) · [routing objective](https://hydra.uvansa.com/docs.html#serve-objective)
+
+**Long conversations.** While a conversation is idle, Hydra can shrink it on a local model into the goal, the rules word for word, the decisions and pointers back to every original, check that against the originals, and use it only when the provider's cache has expired. Off by default, local models only, and `hyctl context restore` undoes it. [compacting while idle](https://hydra.uvansa.com/docs.html#idle)
 
 **The TUI and the desktop app.** `hyctl tui` is a terminal cockpit where you type a task and it runs, with several tasks at once in their own threads. The desktop app does the same in a window and needs no terminal. [TUI](https://hydra.uvansa.com/docs.html#tui) · [desktop app](https://hydra.uvansa.com/docs.html#app)
 

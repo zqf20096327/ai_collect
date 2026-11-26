@@ -7,6 +7,7 @@
 [![CI](https://github.com/AtharvRaotole/weave/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AtharvRaotole/weave/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/AtharvRaotole/weave)](https://github.com/AtharvRaotole/weave/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AtharvRaotole/weave/blob/main/LICENSE)
+[![AtharvRaotole/weave MCP server](https://glama.ai/mcp/servers/AtharvRaotole/weave/badges/score.svg)](https://glama.ai/mcp/servers/AtharvRaotole/weave)
 
 [Quickstart](#quickstart) · [Getting started](https://github.com/AtharvRaotole/weave/blob/main/docs/getting-started.md) · [Benchmarks](https://github.com/AtharvRaotole/weave/blob/main/docs/benchmarks.md) · [Paper](https://github.com/AtharvRaotole/weave/blob/main/docs/paper/weave.md) · [Production](https://github.com/AtharvRaotole/weave/blob/main/docs/production.md) · [Full reference](https://github.com/AtharvRaotole/weave/blob/main/docs/reference.md)
 
@@ -33,6 +34,11 @@ print(warmest, temps[warmest])
 ```
 
 Weave runs the three `get_weather` calls at the same time and hands back one line: `Tokyo 22`.
+
+The whole script is checked before the first call runs: unknown tools, a misspelled keyword
+(`get_weather(cty="Paris")` gets "did you mean `city`?"), a missing argument, or for MCP tools a
+literal that doesn't match the tool's JSON schema. So a typo on the last line stops the script before
+the first line's write happens. [What the check covers](https://github.com/AtharvRaotole/weave/blob/main/docs/reference.md#what-the-check-catches-before-anything-runs).
 
 Does it help? On a pre-registered fan-out suite against real services it passed 40/40 tasks vs 27/40 for plain
 function calling, at about half the cost. It's not a win everywhere though: on BFCL multi-turn it was a small,
@@ -70,7 +76,7 @@ the model sees them. Skip it when each step waits for a person, or when a small 
 ```bash
 pip install weave-lang
 # or a GitHub release wheel:  curl -fsSL https://raw.githubusercontent.com/AtharvRaotole/weave/main/scripts/install.sh | sh
-# or from source (needs Rust):  pip install "git+https://github.com/AtharvRaotole/weave@v1.1.2"
+# or from source (needs Rust):  pip install "git+https://github.com/AtharvRaotole/weave@v1.2.1"
 ```
 
 The package is `weave-lang` (import `weave`). Python 3.9–3.13, Linux, macOS and Windows.

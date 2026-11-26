@@ -1,12 +1,40 @@
 # metaphor-bridge
 
-OpenAI-compatible local bridge for [Metaphor](https://withmetaphor.com) model access — no macOS/Windows app required.
+OpenAI-compatible local API for [Metaphor](https://withmetaphor.com) models — no macOS or
+Windows app required. Mints your own account's WorkOS token with the same OAuth flow the
+desktop app uses, keeps it fresh, and proxies `/v1/*` over HTTP/2 on `127.0.0.1`.
 
-Metaphor ships a desktop coding agent; the models behind it are served by a plain
-OpenAI/Anthropic-compatible gateway (`https://llms.withmetaphor.com`). This project
-mints your own account's bearer token through WorkOS (the identity provider
-Metaphor uses), keeps it fresh, and exposes the gateway on `127.0.0.1` so any
-OpenAI client can talk to it.
+![metaphor-bridge demo](docs/demo.gif)
+
+*Terminal capture of the real binary: build → token status → serve → `/v1/models` →
+streaming `/v1/chat/completions` (first token ~1.1 s). The clip points the bridge at a live
+vLLM upstream with `METAPHOR_UPSTREAM` so it does not touch a Metaphor account quota; the
+proxy path, streaming and queue are the same ones used against
+`https://llms.withmetaphor.com` by default.*
+
+## Quick start
+
+```bash
+go build -o metaphor-go .                       # 1. build (Go 1.22+, no deps beyond x/net)
+./metaphor-go auth start                        # 2. open the printed URL, approve on GitHub
+./metaphor-go auth finish "<metaphor://…code>"  #    paste the redirect URL (or just the code)
+./metaphor-go serve                             # 3. bridge on http://127.0.0.1:8190
+```
+
+First request:
+
+```bash
+curl -sS http://127.0.0.1:8190/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"minimax-m3","messages":[{"role":"user","content":"hi"}]}'
+```
+
+Any OpenAI SDK works: `base_url = http://127.0.0.1:8190/v1`, `api_key` = anything (it is
+local). Already have a GitHub browser session? Skip the two auth steps:
+
+```bash
+./metaphor-go auth gh "user_session=…; _gh_sess=…"   # walks GitHub → WorkOS → code for you
+```
 
 ```
 your client ──HTTP/1.1 or h2c──> metaphor-bridge :8190 ──HTTP/2──> llms.withmetaphor.com
@@ -53,6 +81,46 @@ caveats: [BENCHMARK.md](BENCHMARK.md).
 Rate limiter: ~25–30 sequential requests go through, then
 `429 Too many concurrent Darwin requests` with `retry-after: 2` until the window
 drains — the reason the bridge queues requests (`METAPHOR_CONCURRENCY`, default 1).
+
+## Security and credentials
+
+Short version: the bridge never sees your password, stores one bearer token on your disk,
+and talks to exactly two hosts.
+
+**How login works.** `auth start` opens WorkOS's authorize URL for the public client
+`client_01KAHJW6K5B09TYCG4P597H63N` with a PKCE challenge; the redirect target is Metaphor's
+own deep link (`metaphor://auth/callback`). After you approve on GitHub, the browser lands on
+a `metaphor://…?code=…` URL that the OS cannot open — you paste it back, and the binary
+exchanges the code with its local `code_verifier`. No client secret exists to leak, and the
+code is single-use and useless without the verifier.
+
+**What is stored, where.**
+
+| File | Contents | Permissions |
+| --- | --- | --- |
+| `$METAPHOR_DIR/tokens.json` | WorkOS access JWT + refresh token | `0600` |
+| `$METAPHOR_DIR/pkce.json` | the in-flight PKCE verifier/state | `0600` |
+| `$METAPHOR_DIR/login_url.txt` | the last authorize URL (no secret) | `0644` |
+
+`METAPHOR_DIR` defaults to `/root/metaphor` on Linux, `%AppData%\metaphor-bridge` on
+Windows, `~/.metaphor` on macOS — always outside the repository. The access token is a ~24 h
+JWT; `auth refresh` (and the running bridge) exchanges the refresh token when the `exp`
+claim is close. Credentials are only re-read when the file's mtime changes, so minting a
+token in another shell does not disturb a running bridge.
+
+**Network.** The process contacts `llms.withmetaphor.com` (inference) and, during login or
+refresh only, `api.workos.com` and `github.com`. There is no telemetry, no analytics and no
+call home. If you set `-proxy` / `METAPHOR_PROXY`, *every* one of those hops goes through
+your proxy, including the auth chain.
+
+**Revoking access.** Delete `tokens.json`, stop the bridge, and sign out of Metaphor (or
+sign out of all GitHub sessions used for the login). The old refresh token is invalidated
+server-side when the session is revoked.
+
+**Relationship to Metaphor.** This is an independent client for your own account, not
+affiliated with or endorsed by Metaphor. It reproduces the OAuth flow their public desktop
+build uses; if they change it, the flow breaks (see [AGENTS.md](AGENTS.md) for the failure
+playbook). Using it to resell access would violate their terms — keep it personal.
 
 ## Build
 
@@ -134,6 +202,7 @@ open or register it as a scheduled task (`schtasks /create /tn metaphor-bridge /
 | Var | Default | Meaning |
 | --- | --- | --- |
 | `METAPHOR_PORT` | `8190` | listen port (127.0.0.1 only) |
+| `METAPHOR_UPSTREAM` | `https://llms.withmetaphor.com` | override the upstream base URL (local vLLM, mirror, tests) |
 | `METAPHOR_CONCURRENCY` | `1` | max in-flight upstream requests |
 | `METAPHOR_PROXY` | *(empty)* | egress proxy: `http://`, `https://`, `socks5://` |
 | `METAPHOR_PROXY_INSECURE` | `false` | skip TLS verification of the proxy itself |

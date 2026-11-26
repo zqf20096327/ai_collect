@@ -31,7 +31,7 @@ flowchart TB
 |---|---|---|
 | 零代码 | 想最快出片 | [即梦 AI](https://jimeng.jianying.com/) / [可灵 AI](https://kling.ai/) 出镜头 + [IndexTTS](https://github.com/index-tts/index-tts) 配音 + [VideoCaptioner](https://github.com/WEIFENG2333/VideoCaptioner) 字幕 |
 | 一站式开源平台 | 想要完整工作台、可自部署 | [Toonflow](https://github.com/HBAI-Ltd/Toonflow-app) 或 [LocalMiniDrama](https://github.com/xuanyustudio/LocalMiniDrama)，接入自己的模型 Key |
-| 全本地 | 有显卡、想控制每一步 | [ComfyUI](https://github.com/Comfy-Org/ComfyUI) + [Wan2.2](https://github.com/Wan-Video/Wan2.2) + [Qwen-Image](https://github.com/QwenLM/Qwen-Image) 做角色图 + [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) + [InfiniteTalk](https://github.com/MeiGen-AI/InfiniteTalk) 对口型 |
+| 全本地 | 有显卡、想控制每一步 | [ComfyUI](https://github.com/Comfy-Org/ComfyUI) + [Wan2.2](https://github.com/Wan-Video/Wan2.2) + [Qwen-Image](https://github.com/QwenLM/Qwen-Image) 做角色图 + [GPT-SoVITS](https://github.com/bilibili/GPT-SoVITS) + [InfiniteTalk](https://github.com/MeiGen-AI/InfiniteTalk) 对口型 |
 | Agent 工作流 | 用 Claude Code / Codex 写剧本分镜 | [shuohao-skills](https://github.com/eternityspring/shuohao-skills) 或 [drama-skills](https://github.com/zenstory-ai/drama-skills) 出剧本和分镜，再交给任意视频模型 |
 
 ## 目录
@@ -53,7 +53,7 @@ flowchart TB
 - [相关合集](#相关合集)
 - [参与贡献](#参与贡献)
 
-图例：🆕 近 90 天内新建　💤 超过一年没有更新　⭐ 星标数（2026-11-23 更新）
+图例：🆕 近 90 天内新建　💤 超过一年没有更新　⭐ 星标数（2026-11-25 更新）
 
 ## 一站式短剧 / 漫剧创作平台
 
@@ -61,29 +61,32 @@ flowchart TB
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
-| [Toonflow-app](https://github.com/HBAI-Ltd/Toonflow-app) | 短剧、漫剧制作平台，无限画布 + AI Agent + 可视化工作流，覆盖剧本、分镜、角色场景资产与图像视频生成，支持本地部署、MCP 和插件。 | 22.6k | 2026-11 |
-| [huobao-drama](https://github.com/chatfire-AI/huobao-drama) | 火宝短剧，一句话生成完整短剧，从剧本到成片全自动。 | 17.9k | 2026-11 |
+| [Toonflow-app](https://github.com/HBAI-Ltd/Toonflow-app) | 短剧、漫剧制作平台，无限画布 + AI Agent + 可视化工作流，覆盖剧本、分镜、角色场景资产与图像视频生成，支持本地部署、MCP 和插件。 | 22.8k | 2026-11 |
+| [huobao-drama](https://github.com/chatfire-AI/huobao-drama) | 火宝短剧，一句话生成完整短剧，从剧本到成片全自动。 | 18.0k | 2026-11 |
 | [Jellyfish](https://github.com/Forget-C/Jellyfish) | 面向 AI 短剧的端到端生产工作台：剧本输入、结构化分镜、一致性管理、镜头准备、视频生成到导出。 | 7.3k | 2026-11 |
-| [printfilm](https://github.com/yi1108/printfilm) 🆕 | AI 短视频营销与 AI 短剧创作平台。 | 7.2k | 2026-11 |
 | [dramaclaw](https://github.com/dramaclaw/dramaclaw) | 通用 AIGC 视频引擎，剧本到成片一条流水线，漫剧、广告、电商视频都能做。 | 7.2k | 2026-11 |
-| [ArcReel](https://github.com/ArcReel/ArcReel) | Agent 驱动、可自部署的视频工作台，把小说和剧本转成角色、场景、道具资产、分镜、视频和剪映草稿，带跨镜头一致性和费用追踪。 | 6.7k | 2026-11 |
+| [printfilm](https://github.com/yi1108/printfilm) 🆕 | AI 短视频营销与 AI 短剧创作平台。 | 7.2k | 2026-11 |
+| [ArcReel](https://github.com/ArcReel/ArcReel) | Agent 驱动、可自部署的视频工作台，把小说和剧本转成角色、场景、道具资产、分镜、视频和剪映草稿，带跨镜头一致性和费用追踪。 | 6.8k | 2026-11 |
+| [moyin-creator](https://github.com/MemeCalculate/moyin-creator) | 桌面端 AI 影视 / 短剧制作工具：剧本解析、角色设定绑定参考图、带镜头参数的分镜，批量出图出视频，支持 Seedance 2.0 多参考生成。 | 4.9k | 2026-11 |
 | [LocalMiniDrama](https://github.com/xuanyustudio/LocalMiniDrama) | 本地运行的 AI 短剧 / 漫剧生成工具，故事 → 分镜 → 视频，数据不出本机，已接入 Seedance 2。 | 2.5k | 2026-11 |
 | [BigBanana-AI-Director](https://github.com/shuyu-labs/BigBanana-AI-Director) | 一站式 AI 短剧 / 漫剧导演平台，采用 Script-to-Asset-to-Keyframe 工作流控制角色一致性和镜头运动。 | 2.5k | 2026-11 |
 | [ai_story](https://github.com/xhongc/ai_story) | AI 视频、AI 动漫、AI 短剧 / 漫剧自动化生成工具。 | 2.1k | 2026-10 |
+| [open-ai-canvas](https://github.com/ddcat-ai/open-ai-canvas) | 影策，面向 AI 影视创作的无限画布工作台，管理剧本、角色场景和结构化分镜，带 3D 预演、多模态生成、素材库和时间线剪辑。 | 2.0k | 2026-11 |
 | [AIComicBuilder](https://github.com/LingyiChen-AI/AIComicBuilder) | 把剧本变成动态漫画视频，含 AI 角色设计、分镜和视频合成。 | 2.0k | 2026-04 |
 | [ai-fusion-video](https://github.com/Stonewuu/ai-fusion-video) | 融光，基于 Agent 的全流程 AI 短剧 / 漫剧 / 视频创作平台（Java + AgentScope）。 | 1.8k | 2026-11 |
+| [aid-studio](https://github.com/shijue-aid/aid-studio) | AI 漫剧、短剧、电影与漫画创作平台，支持剧本、角色场景、智能分镜、出图出视频、配音和成片预览，可自部署。 | 1.8k | 2026-11 |
 | [LingGuo-Drama](https://github.com/LingGuoAI/LingGuo-Drama) | 灵果短剧 AI，一句话生成完整短剧或漫剧。 | 1.7k | 2026-08 |
-| [aid-studio](https://github.com/shijue-aid/aid-studio) | AI 漫剧、短剧、电影与漫画创作平台，支持剧本、角色场景、智能分镜、出图出视频、配音和成片预览，可自部署。 | 1.7k | 2026-11 |
 | [lumenx](https://github.com/alibaba/lumenx) | 阿里开源的 LumenX Studio，把小说文本转成动态视频，打通剧本分析、角色定制、分镜绘制到视频合成。 | 1.5k | 2026-10 |
 | [StoryGen-Atelier](https://github.com/0xsline/StoryGen-Atelier) | 分镜与视频生成工具，用 Gemini 写分镜和出关键帧、Veo 生成过渡镜头、ffmpeg 拼接成片。 | 1.0k | 2026-09 |
-| [novanova-studio](https://github.com/Swayingleaves/novanova-studio) | Agent 驱动的全流程平台，集出图出视频、无限画布、小说转短剧、3D 导演台于一体。 | 984 | 2026-11 |
+| [novanova-studio](https://github.com/Swayingleaves/novanova-studio) | Agent 驱动的全流程平台，集出图出视频、无限画布、小说转短剧、3D 导演台于一体。 | 1.0k | 2026-11 |
+| [reveric](https://github.com/looplj/reveric) 🆕 | 幻界，Agent 驱动的桌面创作工作台，集小说与剧本编辑、分镜画布、3D 导演台和多轨剪辑于一体，模型用自己的 Key 接入。 | 998 | 2026-11 |
 | [TypeTale](https://github.com/TypeTale/TypeTale) | 字字动画，免费的 AIGC 视频生成软件，主打 AI 短剧、AI 电影和小说推文。 | 918 | 2026-08 |
-| [wind-comic](https://github.com/ChrisChen667788/wind-comic) | 多 Agent 流水线，一行文字生成短剧：剧本、电影感分镜、角色一致的视频，模型供应商可替换。 | 723 | 2026-11 |
-| [Nomi](https://github.com/aqm857886159/Nomi) | 本地优先的 AI 视频工作台，可接任意模型或本地 ComfyUI，让 Claude Code / Codex 通过 MCP 来执导，输出可编辑的时间线初剪。 | 665 | 2026-11 |
-| [Open-AI-Micro-Drama-Generator](https://github.com/Anil-matcha/Open-AI-Micro-Drama-Generator) | 多 Agent 微短剧生成器，编剧 → 分镜 → 关键帧 → 视频。 | 588 | 2026-08 |
-| [CineGen-ShortDrama](https://github.com/UllrAI/CineGen-ShortDrama) | AI 导演系统，生成漫剧、动漫、短剧、解说漫和动态漫。 | 582 | 2026-09 |
-| [AI-Canvas-tauri](https://github.com/Tenney95/AI-Canvas-tauri) | 免费轻量的 AI 无限画布，支持短剧剧本、角色、分镜、出图出视频和剪辑，集成 ComfyUI、Agent、MCP。 | 397 | 2026-11 |
-| [novelvids](https://github.com/Anning01/novelvids) | AI 漫剧与短剧创作工作台，覆盖故事创作、角色资产、分镜和出图出视频，支持本地部署。 | 389 | 2026-11 |
+| [wind-comic](https://github.com/ChrisChen667788/wind-comic) | 多 Agent 流水线，一行文字生成短剧：剧本、电影感分镜、角色一致的视频，模型供应商可替换。 | 726 | 2026-11 |
+| [Nomi](https://github.com/aqm857886159/Nomi) | 本地优先的 AI 视频工作台，可接任意模型或本地 ComfyUI，让 Claude Code / Codex 通过 MCP 来执导，输出可编辑的时间线初剪。 | 666 | 2026-11 |
+| [Open-AI-Micro-Drama-Generator](https://github.com/Anil-matcha/Open-AI-Micro-Drama-Generator) | 多 Agent 微短剧生成器，编剧 → 分镜 → 关键帧 → 视频。 | 591 | 2026-08 |
+| [CineGen-ShortDrama](https://github.com/UllrAI/CineGen-ShortDrama) | AI 导演系统，生成漫剧、动漫、短剧、解说漫和动态漫。 | 583 | 2026-09 |
+| [AI-Canvas-tauri](https://github.com/Tenney95/AI-Canvas-tauri) | 免费轻量的 AI 无限画布，支持短剧剧本、角色、分镜、出图出视频和剪辑，集成 ComfyUI、Agent、MCP。 | 404 | 2026-11 |
+| [novelvids](https://github.com/Anning01/novelvids) | AI 漫剧与短剧创作工作台，覆盖故事创作、角色资产、分镜和出图出视频，支持本地部署。 | 392 | 2026-11 |
 | [Kinema](https://github.com/chillzhuang/Kinema) | 由 Codex、Claude Code 驱动的影像智能体，管理章节与分镜规划、角色场景道具资产，直到成片。 | 248 | 2026-11 |
 
 ## Agent Skills（剧本 · 分镜 · 提示词）
@@ -93,19 +96,19 @@ flowchart TB
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
 | [seedance-2.0](https://github.com/Emily2040/seedance-2.0) | 围绕 Seedance 2.0 的完整制作流程（剧本、分镜、提示词到成片）。 | 8.3k | 2026-10 |
-| [shuohao-skills](https://github.com/eternityspring/shuohao-skills) | AI 短剧制作 Skill：拆角色、排大纲、出场景与道具设定、写剧本、切分镜。 | 7.0k | 2026-11 |
-| [drama-skills](https://github.com/zenstory-ai/drama-skills) | 小说改剧本、角色三视图、分镜脚本、生图生视频提示词和成片审片。 | 4.8k | 2026-11 |
+| [shuohao-skills](https://github.com/eternityspring/shuohao-skills) | AI 短剧制作 Skill：拆角色、排大纲、出场景与道具设定、写剧本、切分镜。 | 7.1k | 2026-11 |
+| [drama-skills](https://github.com/zenstory-ai/drama-skills) | 小说改剧本、角色三视图、分镜脚本、生图生视频提示词和成片审片。 | 5.0k | 2026-11 |
 | [seedance2-skill](https://github.com/dexhunter/seedance2-skill) | 为 Seedance 2.0 写出高质量视频提示词的 Skill。 | 4.6k | 2026-09 |
+| [manju-laoli-skill](https://github.com/lixiaoxiao9888-create/manju-laoli-skill) | 漫剧全流程套装：1 个总控 + 12 个子技能，覆盖素材、剧本、资产、分镜和质检。 | 3.1k | 2026-11 |
 | [seedance-prompt-skill](https://github.com/songguoxs/seedance-prompt-skill) | 生成 Seedance 2.0 视频提示词的 Skill。 | 3.0k | 2026-02 |
-| [Seedance2-Storyboard-Generator](https://github.com/liangdabiao/Seedance2-Storyboard-Generator) | 把小说或故事转成多集视频剧本和分镜，针对 Seedance 2.0 设计。 | 2.9k | 2026-11 |
-| [manju-laoli-skill](https://github.com/lixiaoxiao9888-create/manju-laoli-skill) | 漫剧全流程套装：1 个总控 + 12 个子技能，覆盖素材、剧本、资产、分镜和质检。 | 2.7k | 2026-11 |
+| [Seedance2-Storyboard-Generator](https://github.com/liangdabiao/Seedance2-Storyboard-Generator) | 把小说或故事转成多集视频剧本和分镜，针对 Seedance 2.0 设计。 | 3.0k | 2026-11 |
 | [short-drama](https://github.com/0xsline/short-drama) | 短剧剧本创作 Skill，从选题立项、分集撰写到质量自检、合规审核和出海。 | 1.7k | 2026-04 |
-| [ai-manju-skills](https://github.com/zhanghao123vip/ai-manju-skills) 🆕 | 21 个题材的 AI 漫剧全流程 Skill，一句点子生成企划、资产提示词、分集剧本、分镜和视频提示词。 | 985 | 2026-11 |
-| [short-drama-factory](https://github.com/lixiaoxiao9888-create/short-drama-factory) | 面向抖音 / 红果的工业化短剧编剧系统，网文或创意改成 30 至 100 集剧本。 | 660 | 2026-11 |
+| [ai-manju-skills](https://github.com/zhanghao123vip/ai-manju-skills) 🆕 | 21 个题材的 AI 漫剧全流程 Skill，一句点子生成企划、资产提示词、分集剧本、分镜和视频提示词。 | 1.0k | 2026-11 |
+| [short-drama-factory](https://github.com/lixiaoxiao9888-create/short-drama-factory) | 面向抖音 / 红果的工业化短剧编剧系统，网文或创意改成 30 至 100 集剧本。 | 682 | 2026-11 |
 | [screen-creative-skills](https://github.com/VanGong1999/screen-creative-skills) | 31 个影视策划与评估 Skill：IP 改编、题材提炼、人物小传、拉片分析、大纲生成。 | 520 | 2026-11 |
-| [OnlyShot](https://github.com/A-cat-with-carrots/OnlyShot) | 一句话 → 剧本、分镜、分镜图、视频、剪辑五步出短剧，集成即梦 / Seedance。 | 425 | 2026-11 |
-| [Micro-Drama-Skills](https://github.com/zhaihao118/Micro-Drama-Skills) | 用 Claude Skills 串起剧本、角色设计、分镜生成到视频提交的短剧自动化流程。 | 342 | 2026-02 |
-| [story-shot-agent](https://github.com/neopen/story-shot-agent) | 剧本分镜智能体，把任意格式剧本拆成镜头片段并生成跨片段一致的视频提示词。 | 244 | 2026-11 |
+| [OnlyShot](https://github.com/A-cat-with-carrots/OnlyShot) | 一句话 → 剧本、分镜、分镜图、视频、剪辑五步出短剧，集成即梦 / Seedance。 | 426 | 2026-11 |
+| [Micro-Drama-Skills](https://github.com/zhaihao118/Micro-Drama-Skills) | 用 Claude Skills 串起剧本、角色设计、分镜生成到视频提交的短剧自动化流程。 | 343 | 2026-02 |
+| [story-shot-agent](https://github.com/neopen/story-shot-agent) | 剧本分镜智能体，把任意格式剧本拆成镜头片段并生成跨片段一致的视频提示词。 | 247 | 2026-11 |
 | [Wan-skills](https://github.com/Wan-Video/Wan-skills) | 万相官方 Agent Skills，让智能体直接调用 Wan 的生成能力。 | 80 | 2026-04 |
 
 ## 开源视频生成模型
@@ -115,10 +118,11 @@ flowchart TB
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
 | [Open-Sora](https://github.com/hpcaitech/Open-Sora) | Open-Sora，面向所有人的高效开源视频生成。 | 29.9k | 2026-04 |
-| [Wan2.2](https://github.com/Wan-Video/Wan2.2) | 阿里万相 Wan2.2，开源大规模视频生成模型，文生视频、图生视频都支持。 | 18.8k | 2026-09 |
+| [Wan2.2](https://github.com/Wan-Video/Wan2.2) | 阿里万相 Wan2.2，开源大规模视频生成模型，文生视频、图生视频都支持。 | 18.9k | 2026-09 |
 | [Wan2.1](https://github.com/Wan-Video/Wan2.1) | 万相 Wan2.1，上一代开源视频模型，社区工作流和 LoRA 资源丰富。 | 17.5k | 2026-03 |
 | [FramePack](https://github.com/lllyasviel/FramePack) 💤 | 让视频扩散在消费级显卡上也能跑长视频的框架。 | 17.4k | 2025-10 |
 | [HunyuanVideo](https://github.com/Tencent-Hunyuan/HunyuanVideo) | 腾讯混元视频生成框架。 | 12.8k | 2026-10 |
+| [MiniMax-H3](https://github.com/MiniMax-AI/MiniMax-H3) | MiniMax 开放权重的音视频联合生成模型，支持文生视频、首尾帧和参考图 / 视频 / 音频生成，输出带立体声的 4 至 15 秒视频。 | 12.2k | 2026-10 |
 | [LTX-Video](https://github.com/Lightricks/LTX-Video) | LTX-Video，速度快的开源视频模型。 | 11.5k | 2026-11 |
 | [LTX-2](https://github.com/Lightricks/LTX-2) | LTX-2 音视频联合生成模型，附 LoRA 训练工具。 | 10.4k | 2026-11 |
 | [SkyReels-V2](https://github.com/SkyworkAI/SkyReels-V2) | 昆仑天工 SkyReels-V2，支持无限时长的影视级视频生成。 | 7.8k | 2026-01 |
@@ -143,15 +147,17 @@ flowchart TB
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
-| [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) | 1 分钟语音就能训练出可用的声音模型，中文社区使用广泛。 | 64.2k | 2026-11 |
+| [GPT-SoVITS](https://github.com/bilibili/GPT-SoVITS) | 1 分钟语音就能训练出可用的声音模型，中文社区使用广泛。 | 64.3k | 2026-11 |
 | [VibeVoice](https://github.com/microsoft/VibeVoice) | 微软开源语音模型，支持长篇多说话人语音合成。 | 57.5k | 2026-10 |
-| [fish-speech](https://github.com/fishaudio/fish-speech) | Fish Speech 开源 TTS，中英日等多语言。 | 33.8k | 2026-11 |
-| [index-tts](https://github.com/index-tts/index-tts) | B 站开源的 IndexTTS，工业级可控的零样本 TTS。 | 25.2k | 2026-09 |
+| [fish-speech](https://github.com/fishaudio/fish-speech) | Fish Speech 开源 TTS，中英日等多语言。 | 33.9k | 2026-11 |
+| [index-tts](https://github.com/index-tts/index-tts) | B 站开源的 IndexTTS，工业级可控的零样本 TTS。 | 25.3k | 2026-09 |
 | [CosyVoice](https://github.com/QwenAudio/CosyVoice) | 通义 CosyVoice 多语言语音生成，推理、训练、部署全套。 | 24.5k | 2026-05 |
-| [F5-TTS](https://github.com/SWivid/F5-TTS) | 基于 Flow Matching 的零样本 TTS。 | 15.6k | 2026-11 |
+| [F5-TTS](https://github.com/SWivid/F5-TTS) | 基于 Flow Matching 的零样本 TTS。 | 15.7k | 2026-11 |
 | [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) | 通义 Qwen3-TTS，支持流式合成、自由描述音色设计和声音克隆。 | 14.6k | 2026-03 |
 | [higgs-audio](https://github.com/boson-ai/higgs-audio) | Boson AI 的文本-音频基础模型，表现力强。 | 8.4k | 2026-06 |
 | [MegaTTS3](https://github.com/bytedance/MegaTTS3) | 字节 MegaTTS 3，中英零样本语音合成。 | 6.1k | 2026-06 |
+| [FireRedTTS3](https://github.com/FireRedTeam/FireRedTTS3) | FireRedTTS3，24 种语言和 21 种中文方言的零样本声音克隆，Instruct 版可按文字描述设计音色并编辑语音（README 注明克隆功能仅供学术研究）。 | 1.7k | 2026-09 |
+| [AuK](https://github.com/Tencent-Hunyuan/AuK) | 腾讯混元 AuK 语音基础模型，零样本和指令式 TTS 之外，还能替换、插入、删除已录台词里的字词，调整语速、音高和情绪，带 ComfyUI 节点。 | 1.6k | 2026-11 |
 | [MOSS-TTSD](https://github.com/OpenMOSS/MOSS-TTSD) | 多说话人长对话合成，零样本克隆，适合角色对白。 | 1.4k | 2026-09 |
 
 ## 口型同步与对话视频
@@ -167,6 +173,7 @@ flowchart TB
 | [HunyuanVideo-Avatar](https://github.com/Tencent-Hunyuan/HunyuanVideo-Avatar) | 混元视频数字人，音频驱动的多角色动画。 | 2.2k | 2025-12 |
 | [fantasy-talking](https://github.com/Fantasy-AMAP/fantasy-talking) | 动作连贯的说话人像生成。 | 1.6k | 2026-01 |
 | [echomimic_v3](https://github.com/antgroup/echomimic_v3) | 蚂蚁 EchoMimic V3，1.3B 参数的多模态人体动画。 | 1.1k | 2026-03 |
+| [X-Dub](https://github.com/KlingAIResearch/X-Dub) | 可灵团队的 X-Dub，无需遮罩的视频对口型：给已有视频里的人物换一段音频并重新生成嘴型，目前只支持单人画面。 | 242 | 2026-08 |
 
 ## 配乐与音效
 
@@ -174,9 +181,9 @@ flowchart TB
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
-| [ACE-Step-1.5](https://github.com/ace-step/ACE-Step-1.5) | 本地音乐生成模型，支持 Mac、AMD、Intel 和 CUDA。 | 15.1k | 2026-11 |
+| [ACE-Step-1.5](https://github.com/ace-step/ACE-Step-1.5) | 本地音乐生成模型，支持 Mac、AMD、Intel 和 CUDA。 | 15.2k | 2026-11 |
 | [YuE](https://github.com/multimodal-art-projection/YuE) | YuE 完整歌曲生成，支持翻唱和音乐编辑。 | 13.7k | 2026-11 |
-| [ace-step-ui](https://github.com/fspecii/ace-step-ui) | ACE-Step 1.5 的图形界面，免费本地生成音乐。 | 5.2k | 2026-06 |
+| [ace-step-ui](https://github.com/fspecii/ace-step-ui) | ACE-Step 1.5 的图形界面，免费本地生成音乐。 | 5.3k | 2026-06 |
 | [heartlib](https://github.com/HeartMuLa/heartlib) | HeartMuLa 开源音乐生成模型。 | 3.8k | 2026-11 |
 | [DiffRhythm](https://github.com/ASLP-lab/DiffRhythm) | 快速的端到端整首歌曲生成。 | 2.4k | 2025-11 |
 | [MMAudio](https://github.com/hkchengrex/MMAudio) | 根据视频生成匹配的音频。 | 2.3k | 2026-02 |
@@ -190,14 +197,14 @@ flowchart TB
 |---|---|---:|---|
 | [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) 💤 | 通用的图像 / 视频超分辨率修复（较老，仍很常用）。 | 37.6k | 2024-08 |
 | [faster-whisper](https://github.com/SYSTRAN/faster-whisper) | 更快的 Whisper 语音识别，做字幕的基础组件。 | 27.0k | 2026-11 |
-| [whisperX](https://github.com/m-bain/whisperX) | 带词级时间戳和说话人分离的语音识别。 | 25.6k | 2026-11 |
+| [whisperX](https://github.com/m-bain/whisperX) | 带词级时间戳和说话人分离的语音识别。 | 25.7k | 2026-11 |
 | [video2x](https://github.com/k4yt3x/video2x) | 基于机器学习的视频超分和补帧。 | 22.9k | 2026-03 |
 | [pyvideotrans](https://github.com/jianchang512/pyvideotrans) | 视频翻译，自动配音并嵌入字幕，适合短剧出海。 | 19.8k | 2026-11 |
 | [VideoLingo](https://github.com/Huanshere/VideoLingo) | Netflix 级字幕切分、翻译、对齐，还能配音，一键全自动。 | 19.4k | 2026-11 |
 | [Waifu2x-Extension-GUI](https://github.com/AaronFeng753/Waifu2x-Extension-GUI) | 视频 / 图片 / GIF 超分和补帧图形工具，集成 Real-ESRGAN、Real-CUGAN、RIFE 等，动漫画面效果好。 | 17.3k | 2026-11 |
 | [VideoCaptioner](https://github.com/WEIFENG2333/VideoCaptioner) | 卡卡字幕助手，基于大模型做字幕生成、断句、校正和翻译。 | 16.6k | 2026-09 |
 | [shotcut](https://github.com/mltframework/shotcut) | 跨平台开源视频剪辑软件。 | 15.8k | 2026-11 |
-| [SmartSub](https://github.com/buxuku/SmartSub) | 视频转字幕、翻译、AI 配音与声音克隆、字幕烧录的一站式桌面工具。 | 6.1k | 2026-11 |
+| [SmartSub](https://github.com/buxuku/SmartSub) | 视频转字幕、翻译、AI 配音与声音克隆、字幕烧录的一站式桌面工具。 | 6.2k | 2026-11 |
 | [SeedVR](https://github.com/ByteDance-Seed/SeedVR) | 字节 SeedVR / SeedVR2，基于扩散模型的视频修复和超分。 | 1.5k | 2026-01 |
 | [Practical-RIFE](https://github.com/hzwer/Practical-RIFE) | 实用的视频补帧，提升流畅度。 | 1.1k | 2026-08 |
 
@@ -207,10 +214,10 @@ flowchart TB
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
-| [MoneyPrinterTurbo](https://github.com/harry0703/MoneyPrinterTurbo) | 输入主题或关键词，一键生成高清短视频。 | 145.2k | 2026-11 |
+| [MoneyPrinterTurbo](https://github.com/harry0703/MoneyPrinterTurbo) | 输入主题或关键词，一键生成高清短视频。 | 145.6k | 2026-11 |
 | [NarratoAI](https://github.com/linyqh/NarratoAI) | 用大模型一键生成解说并剪辑视频，适合影视和短剧解说。 | 11.9k | 2026-10 |
-| [YouDub-webui](https://github.com/liuzhao1225/YouDub-webui) | 视频翻译配音：语音识别、字幕翻译、声音克隆、混音渲染。 | 5.9k | 2026-11 |
-| [dramaxis](https://github.com/Agions/dramaxis) | 剧枢，多智能体影视叙事与解说平台，可与剪映草稿互通。 | 466 | 2026-11 |
+| [YouDub-Desktop](https://github.com/liuzhao1225/YouDub-Desktop) | 视频翻译配音桌面工具（原 YouDub-webui）：语音识别、字幕翻译、逐句声音克隆、人声分离和混音渲染。 | 5.9k | 2026-11 |
+| [dramaxis](https://github.com/Agions/dramaxis) | 剧枢，多智能体影视叙事与解说平台，可与剪映草稿互通。 | 468 | 2026-11 |
 | [AI_novel](https://github.com/tyxben/AI_novel) | 小说一键转短视频（有声书 + AI 配图），适用于抖音 / 小红书。 | 270 | 2026-08 |
 
 ## ComfyUI 生态
@@ -219,11 +226,12 @@ flowchart TB
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
-| [ComfyUI](https://github.com/Comfy-Org/ComfyUI) | 节点式扩散模型界面与后端，本地 AIGC 的事实标准。 | 148.2k | 2026-11 |
+| [ComfyUI](https://github.com/Comfy-Org/ComfyUI) | 节点式扩散模型界面与后端，本地 AIGC 的事实标准。 | 148.5k | 2026-11 |
 | [ComfyUI-WanVideoWrapper](https://github.com/kijai/ComfyUI-WanVideoWrapper) | 在 ComfyUI 里使用万相等视频模型的封装节点。 | 6.8k | 2026-11 |
-| [ComfyUI-VideoHelperSuite](https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite) | 视频加载、合成、导出等常用视频节点。 | 1.9k | 2026-09 |
+| [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo) | Lightricks 官方 ComfyUI 节点和示例工作流，用于 LTX-2 / LTX-2.3 音视频生成，带姿态、深度、镜头运动等 IC-LoRA 控制和放大模型。 | 4.3k | 2026-11 |
+| [ComfyUI-VideoHelperSuite](https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite) | 视频加载、合成、导出等常用视频节点。 | 1.9k | 2026-11 |
 | [ComfyUI-Frame-Interpolation](https://github.com/Fannovel16/ComfyUI-Frame-Interpolation) | ComfyUI 补帧节点。 | 1.1k | 2026-03 |
-| [comfyui-AICG3D](https://github.com/JGRFW/comfyui-AICG3D) 🆕 | ComfyUI 本地短剧工作台插件，支持长视频生成。 | 680 | 2026-11 |
+| [comfyui-AICG3D](https://github.com/JGRFW/comfyui-AICG3D) 🆕 | ComfyUI 本地短剧工作台插件，支持长视频生成。 | 703 | 2026-11 |
 
 ## 提示词与案例库
 
@@ -233,7 +241,7 @@ flowchart TB
 |---|---|---:|---|
 | [awesome-image-video-prompts](https://github.com/ai-boost/awesome-image-video-prompts) | 主流图像 / 视频模型的可复制提示词，附真实输出和出处。 | 3.5k | 2026-11 |
 | [ZeroLu/awesome-seedance](https://github.com/ZeroLu/awesome-seedance) | Seedance 2.0 高质量提示词与资源，覆盖电影、动漫、广告等场景。 | 2.9k | 2026-11 |
-| [LearnPrompt/awesome-seedance](https://github.com/LearnPrompt/awesome-seedance) 🆕 | 有出处可查的 Seedance 提示词库，带跨模型复测和模板，中英日三语。 | 2.6k | 2026-11 |
+| [LearnPrompt/awesome-seedance](https://github.com/LearnPrompt/awesome-seedance) | 有出处可查的 Seedance 提示词库，带跨模型复测和模板，中英日三语。 | 2.6k | 2026-11 |
 
 ## 商用模型与平台（非开源）
 
@@ -262,7 +270,7 @@ flowchart TB
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
 | [awesome-short-drama-skills](https://github.com/UnderleveledBuilder/awesome-short-drama-skills) 🆕 | AI 短剧 · 漫剧 Skill 精选（只收技能包）。 | 2.8k | 2026-11 |
-| [awesome-ai-media-cn](https://github.com/JuneYaooo/awesome-ai-media-cn) | AI 视频制作与自媒体运营工具合集。 | 417 | 2026-11 |
+| [awesome-ai-media-cn](https://github.com/JuneYaooo/awesome-ai-media-cn) | AI 视频制作与自媒体运营工具合集。 | 420 | 2026-11 |
 | [awesome-ai-video](https://github.com/zhaotoday/awesome-ai-video) 🆕 | AI 视频生产资源索引。 | 66 | 2026-11 |
 
 ## 参与贡献

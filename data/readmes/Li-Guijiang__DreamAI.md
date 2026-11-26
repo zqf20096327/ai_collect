@@ -263,6 +263,11 @@ reaches the screen. Both are now explicit.
 | Admission deadline | Queued requests fail fast with a typed error | `DREAMAI_ADMISSION_TIMEOUT` |
 | Counted recovery | Retries, fallbacks and queueing time are measured separately | `on_retry` / `on_fallback`, `/api/usage` |
 | Delivery gates | CI checks asset pins, links, anchors and the release manifest | `web/tools/check_site.py` |
+| Cache integrity | Expired slots are reclaimed and sampling settings are part of the key | `ResponseCache.prune()`, `make_key()` |
+| Expiry jitter | Burst-written answers expire at spread-out times | `DREAMAI_CACHE_TTL_JITTER` |
+| Snapshot health | Load status and write failures are published, with periodic flushes | `DREAMAI_USAGE_STATE`, `/api/usage.usageState` |
+| Configuration contract | All 44 server settings documented and guarded in CI | `docs/CONFIGURATION.md`, `check_env_docs.py` |
+| Metadata guard | Open Graph tags, icons and the four-version map checked in CI | `check_meta.py`, `check_versions.py` |
 | Real usage | Token counts from all three wire formats, one usage event per stream | `usage_from_chunk()`, `DREAMAI_STREAM_USAGE` |
 | Price corrections | `DREAMAI_PRICE_OVERRIDES` fixes a stale price without a release | `pricing.configure_prices()` |
 | Provider view | `/api/usage` groups turns per vendor, not just per model | `byProvider` |

@@ -352,16 +352,17 @@ The repo ships with a full AI agent setup out of the box. If you use Claude Code
 **One-time setup after cloning:**
 ```bash
 uv sync                   # installs all deps including the MCP server
-GITNEXUS_HOME=.gitnexus-home npx gitnexus analyze --skip-agents-md
 ```
+
+The code-intelligence server (`tencentdb-knowledge`) starts on demand from `.mcp.json`; see `docs/developer_memory.rst` for its one-time setup.
 
 **What you get automatically:**
 
 - **`synth-logs` MCP server** (`mcp_servers/synth_logs.py`) — gives AI agents structured access to all log files across rotations. Instead of reading raw log files, agents can call `get_recent_errors()`, `search_logs()`, and `tail_log()` directly. Logs rotate fast in DEBUG mode (2000 lines), so this saves a lot of manual hunting.
 
-- **GitNexus code intelligence** — pre-configured in `.mcp.json` and `.vscode/mcp.json`. Gives agents a queryable map of the codebase: callers, callees, execution flows, and safe rename/refactor operations. Use the workspace-local analysis command above to build or refresh the index after large changes. PowerShell users should first run `$env:GITNEXUS_HOME = ".gitnexus-home"`, then `npx gitnexus analyze --skip-agents-md`.
+- **`tencentdb-knowledge` code intelligence** — pre-configured in `.mcp.json`. Gives agents a queryable map of the codebase (callers, callees, impact of a change) and a repository wiki. See `docs/developer_memory.rst` and `AGENTS.md` §8.
 
-Both servers are pre-configured for **Claude Code** (`.mcp.json`) and **VS Code Copilot** (`.vscode/mcp.json`). No additional service configuration is required after dependency sync and index creation.
+Both servers are pre-configured for **Claude Code** (`.mcp.json`). No additional service configuration is required after dependency sync.
 
 **`AGENTS.md`** contains the repository-wide operating rules and durable architecture constraints for coding agents. The exported knowledge base under **`docs/wiki/`** provides architecture and subsystem discovery; maintained documentation under **`docs/`**, component guides, source code, and tests establish current behavior. Read `AGENTS.md` before starting a non-trivial task, then load only the documentation relevant to that work.
 
@@ -370,12 +371,13 @@ Both servers are pre-configured for **Claude Code** (`.mcp.json`) and **VS Code 
 ## What's next (Planned features & fixes)
 Here are the main improvements and integrations we plan to work on — contributions are welcome:
 
-- Multimodal persistence: allow SyntH to take video calls from the WebUI and stream their own video as a webcam, useful for those who wish to stream gameplays or just talk face to face, even on other applications
+- ~~Multimodal persistence: allow SyntH to take video calls from the WebUI and stream their own video as a webcam, useful for those who wish to stream gameplays or just talk face to face, even on other applications~~ [done](https://github.com/XargonWan/Synthetic_Heart/pull/418)
 - ~~VR Support: meet your SyntH in a VR space~~ [done](https://mod.io/g/retroxr/m/synthetic-heart-rift)
+- Plugins repository: search and download new plugins and add community plugin repositories [doing]
 - More games added: Now the Rift Vessels supports Minecraft and RetroXR, but other game plugins are planned to be added next
 - Extended goals support: the Synth will be able to use the goals system outside the gaming context for real life matters
-- Plugins store / repository: search and download new plugins and add community plugin repositories
-- Live2D models
+- Karada State server: Live2D/Inochi2D model adapter
 - More interfaces
+- Even further improvements to self consciousness and personal will
 
 If you're interested in helping implement these features or testing them, open an issue or a PR and tag it with the relevant area (e.g. `interface`, `cortex`, `plugin`, etc.).

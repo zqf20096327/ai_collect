@@ -538,6 +538,10 @@ CGO_ENABLED=0 go build -tags embedui -o artex ./cmd/artex
 |---|---|---|
 | **MCP 工具描述 pinning + 阻断批准** | 描述 sha256 基线存 settings；变更时默认**阻断**（工具从模型上下文移除，快照入隔离区），管理员在面板批准后基线推进、下次装配自动恢复。`mcp_pin_enforce` 可关（仅告警）；首次连接/读库失败 fail-open 避免误伤 | 🔒 供应链 / Rug Pull 防御 |
 | **外部内容不可信标记** | WebFetch 网页 / MCP 工具返回的成功文本统一包成 `<untrusted_external_data>` 数据块：加来源与内容 sha256、`<`/`>` 边界转义（防伪造闭合标签逃出围栏）、剥离零宽/双向控制字符（防隐藏 IPI）；系统提示词尾部注入可信边界声明（代码拥有、DB 改不掉）。`untrusted_marking` 默认开启，可在设置页关闭 | 🔒 上下文层 / 间接提示注入 |
+| **反蜜罐外泄防护** | 对照凌度安全《Artex 二开系列：反蜜罐》：① Bash 子进程屏蔽 `ARTEX_PG_DSN`/`ARTEX_MASTER_KEY`/LLM Key（os/exec dedup last-wins，无需改 SDK），被诱导 `env` 也无密可泄；② Guard 补 7 条外泄拦截规则（下载执行/身份外发/dev-tcp 反弹→deny；编码加密/凭据字段/C2 心跳→ask），可在拦截规则页逐条关停。复用「平台管控·非目标防御」定框 | 🔒 运行时 / 反制型蜜罐 |
+| **拦截配置变更审计** | 对照云鼎实验室 AI 攻防挑战赛复盘「自主防御本身成为新攻击面，必须可审计」：拦截规则 CRUD / 判官配置 / 工具范围 6 类写操作全部结构化留痕（`[intercept-config]` JSON：op/actor/来源IP/target/detail/degrade/why），走既有日志管线落库；关判官、`fail_action=allow`、删/禁内置安全规则自动标 `[安全基线降级]` WARN。单用户系统不强制禁改，但防御基线削弱全程可追溯 | 🔒 管理面 / 可审计 |
+| **无人值守模式** | 对照 sapper-v2「8 小时无人值守」：`unattended_mode` 一键开关。开启后判官 fail/ask 超时策略**强制收敛为 deny**（`convergeUnattended` 运行时叠加层，不改写用户配置）——即使有人把 `fail_action`/`ask_timeout_action` 降级为 allow，无人看管时也绝不自动放行破坏性操作（无人值守但可控）。默认关闭；设置页可开关 | 🔒 运行时 / 无人值守安全边界 |
+| **Finding 证据来源分级** | 对照反蜜罐「外部自述/本地效果/远端独立验证」三分：`findings.evidence_grade` 列（默认 `self_claim`）。模型入口 `report_finding` 不暴露该参数——模型只能落默认 `self_claim`，**无法把自述伪证据升级为「已独立验证」**；`remote_verified` 唯一合法来源是复测独立复现（`reproduced`/`fixed`）。列表/详情/报告/CSV 分级标注（外部自述灰 / 本地效果橙 / 远端验证绿），只有 `remote_verified` 作为已独立验证结论 | 🔒 证据层 / 伪证据反制 |
 | **MCP 命名空间隔离** | 工具全名 `mcp__<server>__<tool>`（stdio/http 同方案）；装配时维护全名 owner，跨 server 碰撞记 `[mcp-shadow]` 告警并拒绝后者（防同名 server 工具静默遮蔽 / 串台） | 🔒 工具层 |
 | **MCP 安全事件可观测** | `[mcp-pin]` / `[mcp-shadow]` 事件结构化落 `mcp_security_events`（含 server/tool/哈希摘要/时间，保留 500 条）；`GET /api/security/mcp-events` 只读查询；Settings→MCP 页「安全事件」面板可视化 | 🔒 供应链 / 事后归因 |
 | **MCP 身份改名** | `clientInfo` / `serverInfo` `name:"artex"→"baize"`、`title:"白泽"`，消除 ARTEX 家族强指纹（MCP 握手检测） | 🔒 身份指纹 |

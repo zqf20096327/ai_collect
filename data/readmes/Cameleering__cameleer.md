@@ -103,7 +103,10 @@ The table above is Cameleer `main` (2026-11-23, after 0.8.0's candidate, with th
 Apache Camel 4.23.0 on Java 21 and Camel Quarkus 3.40.0 native, all sides in one session on `c-4` droplets in
 DigitalOcean's `sfo2` region; p99 latency is lower than Camel's in every scenario.
 Absolute figures differ by 10 to 25% between the two servers of a session and by about 40% between sessions, so
-compare ratios inside a session. Under an hour of constant load, Cameleer held 49.5k req/s for HTTP into Kafka
+compare ratios inside a session. Four ratios are lower than the ones published before (2026-11-06, Cameleer 0.4.0):
+seda request-reply 5.6x (was 6.8x), the content-based router 2.6x (3.0x), CSV 2.2x (2.3x) and HTTP into Kafka 4.3x
+(5.0x, which was measured on other machines). The cause is the hardware: these droplets are faster and Camel on the
+JVM gained more from them than Cameleer did. Under an hour of constant load, Cameleer held 49.5k req/s for HTTP into Kafka
 (4.6x Camel) and 63.0k MCP calls/s (2.5x) with flat p99, threads and descriptors and about 1 MB of memory growth
 ([the soak results](benchmarks/results/2026-11-23-linux-soak/)).
 
@@ -440,8 +443,8 @@ same way. Kubernetes, Docker Compose and Cloud Run setups are in the
 
 ```toml
 [dependencies]
-cameleer-core = "0.7"
-cameleer-http = "0.7"
+cameleer-core = "0.8"
+cameleer-http = "0.8"
 ```
 
 ```rust
@@ -541,6 +544,7 @@ environment variables it needs and the exact `docker run` command.
 | AI ticket triage | [ai-ticket-triage.camel.yaml](examples/ai-ticket-triage.camel.yaml) | Kafka in, an LLM classifies each ticket P1 or P3, urgent tickets go to their own topic. Works with OpenAI or any OpenAI-compatible server (Ollama, vLLM, Azure OpenAI). |
 | Alerts to Slack | [alerts-to-slack.camel.yaml](examples/alerts-to-slack.camel.yaml) | An HTTP webhook takes monitoring alerts, keeps the critical ones and posts them to Slack. |
 | Files to S3 | [files-to-s3.camel.yaml](examples/files-to-s3.camel.yaml) | Watches a folder and uploads each new CSV file to S3, then moves it to `.done`. |
+| Logs to Splunk | [logs-to-splunk.camel.yaml](examples/logs-to-splunk.camel.yaml) | Filebeat (Lumberjack) and syslog in, debug messages dropped, everything else indexed in Splunk through the HTTP Event Collector. |
 | Rust REST service | [rest_service.rs](crates/cameleer-main/examples/rest_service.rs) | The Rust DSL with two crates: REST endpoints, JSON, an echo service. |
 | Embed YAML in Rust | [embed_yaml.rs](crates/cameleer-main/examples/embed_yaml.rs) | Your own binary that runs Camel YAML routes with every component. |
 

@@ -1,13 +1,13 @@
 # BibleMate AI
 
 > [!IMPORTANT]
-> **Latest Advance:** The latest new advance of the BibleMate AI is at the **[Biblemate Agentic Workspace](https://github.com/eliranwong/biblemate-agentic-workspace)**.
-> This is a big upgrade from all the previous BibleMate AI work, fully agent-driven.
+> **Flagship Projects & Seamless Integration:** The two flagship projects of the BibleMate ecosystem are **[BibleMate Web](https://github.com/eliranwong/biblemateweb)** and **[BibleMate Agentic Workspace](https://github.com/eliranwong/biblemate-agentic-workspace)**.
+> You can use them together with **seamless single-server integration** inside BibleMate Web via **Studio Mode** (as a standalone tool tab or side-by-side inside the **Multi-Tool Workspace**). See the [Studio Mode Guide](https://github.com/eliranwong/biblemateweb/blob/main/docs/english/ai_features/studio_mode.md) for setup details.
 
 **BibleMate AI** is a groundbreaking, autonomous AI agent designed to revolutionize your Bible study. It can create study plans, coordinate multiple Bible tools, and take multi-step actions to complete complex Bible-related tasks, such as conducting an in-depth study of a particular Bible passage.
 
 **🌐 Website:** https://biblemate.ai
-**📺 Public Demo:** https://web.biblemate.ai
+**📺 Public Demo:** https://app.biblemate.ai
 **🔌 MCP Server:** https://bible.gospelchurch.uk/mcp
 **📡 API Server:** https://biblemate.gospelchurch.uk/api/data
 
@@ -28,6 +28,15 @@ BibleMate AI is a comprehensive Bible study suite that represents a major upgrad
 - **Web GUI** - Modern web interface accessible from any browser
 - **MCP Server** - Model Context Protocol integration for AI assistants
 - **HTTP/API Server** - RESTful API for custom integrations
+
+### Best of Both Worlds: BibleMate Web + BibleMate Agentic Workspace
+
+At the heart of the BibleMate ecosystem are its two strongest projects:
+
+1. **[BibleMate Web](https://github.com/eliranwong/biblemateweb)** — Fast multi-translation Bible reading, original-language interlinear and morphology, commentaries, encyclopedias, maps, timelines, audio/podcasts, and the **Multi-Tool Workspace**.
+2. **[BibleMate Agentic Workspace](https://github.com/eliranwong/biblemate-agentic-workspace)** — Fully agent-driven Bible study powered by Antigravity CLI (`agy`), Claude Code, Codex, Grok Build, or Gemini API, complete with specialist personas, exegesis skills, saved notes, and Markdown/DOCX export.
+
+When `~/biblemate` is set up, **BibleMate Web** automatically detects the installed workspace backends and lets you launch **Studio Mode** directly inside a tool tab or as an `AI: Studio Mode` pane inside **Multi-Tool Workspace**—running on the **same single server** with synced Bible references and theme.
 
 ## Getting Started
 
@@ -73,7 +82,7 @@ biblemateapi -h
 
 **Access Web Interface:**
 - Local: http://localhost:33355
-- Public Demo: https://web.biblemate.ai
+- Public Demo: https://app.biblemate.ai
 
 ## Key Features
 

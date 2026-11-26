@@ -2,8 +2,9 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-116%20passing-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-385-brightgreen.svg)](#testing)
 [![codecov](https://codecov.io/gh/gravion-ux/gravion-ai/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/gravion-ai)
+[![CI](https://github.com/gravion-ux/gravion-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/gravion-ai/actions/workflows/ci.yml)
 
 **Gravion AI — one modular AI platform, every kind of AI a startup needs, ready to rename, re-policy and run as your own.**
 
@@ -143,7 +144,22 @@ gravion models list                     # the whole registry
 gravion models list --capability video  # only models that serve video
 ```
 
-## Quickstart
+## Requirements
+
+- **Python 3.10 or newer** (CI tests 3.10, 3.11 and 3.12).
+- **One runtime dependency:** `cryptography>=41`, which provides the
+  Ed25519 signatures the licensing subsystem is built on. Everything
+  else is the Python standard library.
+- **Development mode needs no license and no network** — it runs fully
+  offline on the built-in Gravion Core engine. Running against your
+  own inference endpoint instead requires that endpoint and your own
+  API key.
+- **Production use** additionally requires a signed commercial
+  agreement (see [Licensing](#licensing--the-short-version)).
+- **For the test suite:** `pip install -e ".[dev]"` (adds `pytest`
+  and `pytest-cov`).
+
+## Quick start
 
 Requires Python 3.10+.
 
@@ -163,6 +179,39 @@ Development mode needs **no license** and runs fully offline on
 Gravion Core. Edit `policy.md` in the deployment home
 (`~/.gravion-ai` by default, or `$GRAVION_HOME`) — that file is your
 company policy, injected into every module's system context.
+
+## Usage
+
+Day-to-day commands once a deployment exists:
+
+```bash
+gravion models list                       # the Gravion model registry
+gravion models list --capability video    # only models that serve video
+gravion chat "hello, what are you?"       # the reference module
+gravion support "where is my invoice?"    # the support module
+gravion modules list                      # installed modules
+gravion license identity                  # this deployment's cryptographic identity
+gravion license audit verify              # verify the tamper-evident audit chain
+gravion export --out my-deployment.zip    # export config, policy, registry and data
+```
+
+Your company policy lives in `policy.md` in the deployment home
+(`~/.gravion-ai` by default, or `$GRAVION_HOME`) and is injected into
+every module's system context — edit it to teach the deployment your
+company and your rules.
+
+## Demo
+
+The exact sequence CI runs on every push — development mode, no
+license, fully offline on Gravion Core:
+
+```bash
+export GRAVION_HOME=$(mktemp -d)
+gravion init --name Gravion
+gravion status
+gravion modules list
+gravion chat "hello gravion"
+```
 
 ## Licensing — the short version
 
@@ -188,6 +237,27 @@ designed in two separate layers (full detail: [docs/LICENSING.md](docs/LICENSING
 gravion license identity        # this deployment's cryptographic identity
 gravion license audit verify    # check the audit chain
 ```
+
+## Limitations
+
+- **No trained model weights or public hosting ship with this code.**
+  The bundles are the packaging and protocol around models; training
+  and hosting them are operations steps, as stated in the status note
+  at the top of this README.
+- **The long-form video pipeline is planned, not implemented.** The
+  video module produces structured briefs and a short offline MP4 for
+  development; scene planning and stitching up to ~1 hour remains on
+  the roadmap.
+- **The local agentic planner executes nothing.** It writes structured
+  plan files for review — acting on them is a separate, deliberate
+  step.
+- **Training jobs do not run here.** `gravion train` validates a job
+  spec and `gravion train prepare` prepares datasets (validation,
+  deduplication, deterministic split), but running a job requires the
+  hosted training pipeline, and the CLI says so rather than
+  pretending.
+- **Production is gated, by design.** Without a signed agreement and
+  issuer-signed licenses, a deployment stays in development mode.
 
 ## Repository layout
 
@@ -282,3 +352,14 @@ Priyanshu Kumar Thakur — [github.com/gravion-ux](https://github.com/gravion-ux
 Source code: MIT (see [LICENSE](LICENSE)). Production deployments are
 additionally governed by the commercial agreement —
 [LICENSE-COMMERCIAL.md](LICENSE-COMMERCIAL.md).
+
+## Sponsors
+
+Sponsorship pays for the maintenance, triage and release time behind this tool. Sponsors are
+listed here by name, and name placement starts at the $25 a month Sponsor tier or the $50
+one-time Sponsor tier.
+
+- [Sponsor on GitHub](https://github.com/sponsors/gravion-ux)
+
+Sponsorship supports the open-source source code. Commercial deployments remain governed by
+the commercial licence agreement.

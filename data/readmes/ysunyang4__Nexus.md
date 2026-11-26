@@ -1,35 +1,36 @@
-# Nexus
+<p align="right"><a href="README.md">English</a> · <a href="docs/README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <img src="docs/assets/nexus-mascot.png" width="160" alt="Nexus Mascot" style="border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
+  <img src="docs/assets/nexus-mascot.png" width="130" alt="Nexus Mascot" style="border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
 </p>
 
+<h1 align="center">Nexus</h1>
+
 <p align="center">
-  <b>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</b><br>
+  <strong>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</strong><br>
   <i>Powered by the LocalBridge 332 Canonical MCP Tool Architecture & Durable Action Ledger</i>
 </p>
 
 <p align="center">
-  <b>English</b> | <a href="docs/README.zh-CN.md"><b>简体中文</b></a>
+  <a href="#7-quick-start">Quick Start</a> · <a href="#1-overview">Overview</a> · <a href="#5-core-capabilities--architectural-highlights">Capabilities</a> · <a href="https://github.com/ysunyang4/webagent">WebAgent Extension</a> · <a href="https://blog.ycu.de5.net/">Blog & Docs</a> · <a href="PRIVACY.md">Privacy Policy</a> · <a href="https://github.com/ysunyang4/Nexus/issues">Issues</a> · <a href="LICENSE">License</a>
 </p>
 
 <p align="center">
-  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified"></a>
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3"><img src="https://img.shields.io/badge/version-1.3.3-blue.svg" alt="Version 1.3.3"></a>
-  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-success.svg" alt="332 MCP Tools">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
-  <img src="https://img.shields.io/badge/tests-190%2B_suites_%7C_1200%2B_tests-purple.svg" alt="Tests">
+  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://img.shields.io/badge/M8ven-Verified-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="M8ven Verified"></a>
+  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="332 MCP Tools">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="License AGPL-3.0"></a>
 </p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
+
+Nexus is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP with Bearer tokens). Ask your assistant to inspect repositories, edit code, run builds, debug, or orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
+
+<p align="center">
+  <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
+</p>
 
 ---
 
 ## 1. Overview
-
-**Nexus** is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP with Bearer tokens).
-
-Nexus allows AI agents to inspect, edit, build, debug, and orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
 
 ```text
  ChatGPT / DeepSeek / Web AI Assistants
@@ -211,12 +212,12 @@ Nexus/
 ## 7. Quick Start
 
 #### Option A: Desktop Installer (Recommended)
-1. Open the [v1.3.2 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3) and download the installer package for your operating system:
-   - **Windows (x64 Installer)**: `Nexus_1.3.2_x64-setup.exe`
-   - **macOS (Universal DMG)**: `Nexus_1.3.2_universal.dmg`
-   - **macOS (Apple Silicon DMG)**: `Nexus_1.3.2_aarch64.dmg`
-   - **Linux (Debian/Ubuntu `.deb`)**: `Nexus_1.3.2_amd64.deb`
-   - **Linux (Universal `.AppImage`)**: `Nexus_1.3.2_amd64.AppImage`
+1. Open the [v1.3.4 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.4) and download the installer package for your operating system:
+   - **Windows (x64 Installer)**: `Nexus_1.3.4_x64-setup.exe`
+   - **macOS (Universal DMG)**: `Nexus_1.3.4_universal.dmg`
+   - **macOS (Apple Silicon DMG)**: `Nexus_1.3.4_aarch64.dmg`
+   - **Linux (Debian/Ubuntu `.deb`)**: `Nexus_1.3.4_amd64.deb`
+   - **Linux (Universal `.AppImage`)**: `Nexus_1.3.4_amd64.AppImage`
    - **Browser Userscript (Tampermonkey)**: `nexus-web-agent.user.js`
 2. Run the installer. Nexus launches in your system tray with bundled Node.js runtime, language servers, and background runner daemon ready out of the box.
 
@@ -242,23 +243,32 @@ pnpm --filter @localbridge/desktop dev
 
 ## 8. Connecting AI Clients
 
+### Option A: WebAgent 2.0 Browser Extension (Recommended for ChatGPT / DeepSeek / Kimi / Qwen)
+1. Install **[WebAgent v2.0.1](https://github.com/ysunyang4/webagent/releases/latest)** in Chrome / Edge (see the [Blog Setup Guide](https://blog.ycu.de5.net/)).
+2. Open the WebAgent drawer → **Advanced Settings**, and confirm the server URL is:
+   ```text
+   http://127.0.0.1:8787
+   ```
+   *(Zero-token local loopback — no token configuration required.)*
+3. Open ChatGPT, DeepSeek, Kimi, or Qwen in your browser and start invoking local Nexus tools directly.
+
+> **Skills Hub Note:** Skills Hub starts clean by default (zero pre-bundled bloat). Mount any local skill directory (`SKILL.md` / `skill.yaml`) in **Skills Hub → Sources Management** with zero-copy hot-reloading.
+
+### Option B: Remote Tunnel / Standard MCP Clients (ChatGPT Connectors / Cursor / Windsurf)
+
 #### Step 1: Authorize a Local Project
 1. Open Nexus Desktop Control Center.
 2. Under **Workspace -> Projects**, click **Authorize Project** and select your directory (e.g., `D:\projects\my-app`).
 3. Set **Access Mode** (`read-only` or `read-write`) and **Execution Mode** (`disabled`, `safe-only`, or `project-code`)—both can be dynamically switched at any time without restarting.
 
 #### Step 2: Generate an MCP Client Token
-1. Go to **Settings -> Tokens**.
+1. Go to **Settings -> AI Connections** (or **Tokens**).
 2. Click **Generate Token**, choose `MCP Client Token` (`lb_...`), and copy the displayed token.
 
 #### Step 3: Configure Your AI Client
 
 **ChatGPT / Custom GPT Actions**:
-Add the Streamable HTTP endpoint:
-```text
-http://127.0.0.1:18080/mcp
-```
-Header: `Authorization: Bearer lb_your_token_here`
+Add the Streamable HTTP endpoint (`http://127.0.0.1:18080/mcp` or your Cloudflare Tunnel URL) with header `Authorization: Bearer lb_your_token_here` (or OAuth 2.0).
 
 **Standard MCP Client Configuration (`mcp_config.json` / Client Settings)**:
 ```json
@@ -282,84 +292,52 @@ Header: `Authorization: Bearer lb_your_token_here`
 
 ---
 
-## 9. Official Communities
-Join our developer communities for live troubleshooting, feature requests, and updates:
+## 9. Community & Discussions
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="280">
-        <img src="docs/assets/community/qq-group.jpg" width="220" alt="QQ Group 1131916140" style="border-radius: 12px;" /><br>
-        <br>
-        <b>QQ Group</b><br>
-        <code>1131916140</code>
-      </td>
-      <td align="center" width="280">
-        <img src="docs/assets/community/tg-group.png" width="220" alt="Telegram Community" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram Community</b><br>
-        <a href="https://t.me/YSUN_WEBAI"><code>@YSUN_WEBAI</code></a>
-      </td>
-    </tr>
-  </table>
-</div>
+Join the discussion, report issues, and follow updates across channels:
+- **Blog & Tutorials**: [https://blog.ycu.de5.net/](https://blog.ycu.de5.net/)
+- **X (Twitter)**: [@yngstein](https://x.com/yngstein)
+- **LINUX DO**: [yang_sunny](https://linux.do/u/yang_sunny/summary)
+- **Reddit**: [u/OutrageousRabbit3296](https://www.reddit.com/user/OutrageousRabbit3296)
+- **Issues & Bug Reports**: [GitHub Issues](https://github.com/ysunyang4/Nexus/issues)
+- **Q&A & Community Discussions**: [GitHub Discussions](https://github.com/ysunyang4/Nexus/discussions)
+- **Commercial Licensing & Enterprise Inquiries**: `ysunyang4@gmail.com`
 
-## 10. ☕ Support & Sponsorship
+---
 
-If **Nexus** has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕! Donations are completely voluntary and do not grant any extra features, proprietary services, or priority support.
+## 10. 💖 Support & Sponsorship
 
-Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
+If **Nexus** has accelerated your research, engineering workflow, or daily development, consider supporting the continuous open-source maintenance of this project. Donations are completely voluntary and help sustain infrastructure, active maintenance, and ecosystem development.
+
+- **Afdian (爱发电)**: [https://afdian.com/a/ysunyang4](https://afdian.com/a/ysunyang4)
 
 > 💼 **Enterprise Sponsorship & Commercial Licensing**  
 > For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang4@gmail.com`.
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="220">
-        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Reward" style="border-radius: 12px;" /><br />
-        <br />
-        <b>WeChat Reward</b><br />
-        <span style="font-size: 11px; color: #888;">Scan to support via WeChat</span>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay Appreciation" style="border-radius: 12px;" /><br />
-        <br />
-        <b>Alipay Appreciation</b><br />
-        <span style="font-size: 11px; color: #888;">Scan to support via Alipay</span>
-      </td>
-      <td align="center" width="240">
-        <img src="docs/assets/binance-pay.jpg" width="180" alt="Crypto (USDT / USDC)" style="border-radius: 12px;" /><br />
-        <br />
-        <b>Crypto (USDT / USDC)</b><br />
-        <code>UID: 1292741809</code><br />
-        <span style="font-size: 11px; color: #888;">Binance Pay · Ryan Sunv</span>
-      </td>
-    </tr>
-  </table>
-</div>
+### Supported Contribution Channels
 
-### Official Payment Channels
+| 🟢 WeChat Pay | 🔵 Alipay | 🟡 Binance Pay |
+| :---: | :---: | :---: |
+| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> |
 
-| Channel | Details | Verification Method |
-| :--- | :--- | :--- |
-| **Crypto (USDT / USDC)** | **UID: `1292741809`** · Name: **Ryan Sunv** | Direct internal transfer via Binance Pay |
-| **Crypto (USDT, on-chain)** | **Address: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · Network: **TRON (TRC-20)** | From any wallet or exchange — just select the **TRON (TRC-20)** network when sending |
-| **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
-| **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
+| Method | Network / Platform | Address / Account | Notes |
+| :--- | :--- | :--- | :--- |
+| **USDT (on-chain)** | **TRON (TRC-20)** | `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i` | Transfer from any wallet or exchange via **TRON (TRC-20)** |
+| **Binance Pay** | Internal Transfer | **UID: `1292741809`** | Direct zero-fee internal transfer via Binance Pay |
 
-> ☕ **Every tip, big or small, means the world to me.** Your support helps me keep improving this project — making it more complete, more polished, and more powerful. Thank you for helping it grow.
+> 🌟 **Thank you for your support.** Every contribution helps sustain active development, performance optimizations, and open-source toolkits.
 
-### Official Notice
+### Official Security Notice
 
-- **Unique Channel**: The UID, QR codes and on-chain address listed above are the **only** official donation channels for this project.
+- **Unique Official Channels**: The on-chain address and Binance UID listed above are the **only** official donation channels for this project.
 - **No Private Solicitation**: The maintainers of this project will **never** contact you privately via email, messaging apps, or social media to solicit funds, donations, or account credentials.
-- **Anti-Impersonation & Reporting**: If you encounter any repository, fork, mirror, or distribution claiming to be this project with an inconsistent UID or modified QR code, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues).
+- **Anti-Impersonation**: If you encounter any fork, mirror, or distribution claiming to be this project with inconsistent donation details, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues).
 
 ### Disclaimer
 
 - **Network & Regional Availability**: Crypto donations are subject to network handling and platform terms. Please verify whether Binance Pay is compliant and legally available in your region before transferring funds.
 - **Taxation & Compliance**: Donors are solely responsible for complying with the tax obligations and legal regulations of their local jurisdictions.
+
 ---
 
 ## 11. Development & Quality Verification
@@ -382,7 +360,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ## 12. License, Anti-Rebranding & Security Disclaimer
 
-- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.3 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
+- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.4 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
   - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.
   - **Attribution and accurate origin**: Preserve copyright, license and other legal notices as the AGPL requires, indicate relevant changes, and do not falsely represent modified builds as official releases. The AGPL's termination and reinstatement provisions are governed by Section 8; this README does not add an automatic-termination rule.
   - **Branding**: The software license does not automatically grant trademark rights or permission to imply official endorsement. See [Brand Guidelines](BRAND_GUIDELINES.md). These guidelines do not override AGPL-granted software freedoms.
@@ -390,3 +368,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 - **Security & Unrestricted Mode Disclaimer ([SECURITY.md](SECURITY.md))**:
   - By default, Nexus enforces strict path sandboxing (`read-only`) and AST command risk filtering (`safe-only`).
   - If you explicitly enable `read-write`, `project-code`, Computer Use UI automation, or **Unrestricted / Full-Control Mode**, you assume full responsibility for all commands executed and files modified by connected AI models. Always back up critical work or use Git version control.
+
+<p align="center">
+  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified" height="20"></a>
+</p>

@@ -1,5 +1,7 @@
 # laya
 
+[![GitHub stars](https://img.shields.io/github/stars/aovestdipaperino/laya-rust?logo=github&color=brightgreen)](https://github.com/aovestdipaperino/laya-rust/stargazers)
+
 Rust inference for [Laya](https://huggingface.co/convaiinnovations/laya), a non-autoregressive
 typed-decision model of the kind TypeSafe calls a
 [System One model](https://typesafe.ai/blog/introducing-system-one-models-and-jev). You give
@@ -191,9 +193,17 @@ cannot emit anything outside your option list.
 
 `rl_agent_config.json` sets the budgets: `max_len` 512 and `head_max_len` 192 on the root
 checkpoint. Options share the head budget, so a question with many long options will fail with
-an explicit `head_max_len` error rather than silently dropping options. For more than ~20
-options, raise both budgets (the encoder supports up to 8192 positions) or split the question
-into a coarse-to-fine pair.
+an explicit `head_max_len` error rather than silently dropping options. Under that ceiling, an
+option that does not fit is cut evenly across the option block and reported as `labels_clipped`
+in the web console's prompt inspector. For more than ~20 options, raise both budgets (the
+encoder supports up to 8192 positions) or split the question into a coarse-to-fine pair.
+
+Where the budgets bite, the Rust port reports where the Python reference stays silent:
+- **`state_truncated`** — when the state does not fit `max_len` it is cut, and the prompt view
+  says so. Set **`truncate_left: true`** in `rl_agent_config.json` to keep the *end* of the
+  state (the latest turns) instead of the start; the default matches the Python reference's
+  public `Agent.predict` API.
+- **`labels_clipped`** — how many option labels lost tokens to the option budget.
 
 ## Backends
 
@@ -238,4 +248,3 @@ present at `models/laya-base` (override with `LAYA_MODEL_DIR`).
 
 Apache-2.0, matching the upstream model. The console's header image is supplied by the
 repository owner and is not covered by that license.
-

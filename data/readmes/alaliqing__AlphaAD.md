@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--23-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1379-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--25-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1399-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1379 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1399 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 216 | 2026-11-19 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 115 | 2026-11-19 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 94 | 2026-11-20 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 58 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
+| Perception & Sensor Fusion | 220 | 2026-11-24 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 117 | 2026-11-24 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 96 | 2026-11-22 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 59 | 2026-11-24 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 197 | 2026-11-20 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 154 | 2026-11-19 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 31 | 2026-11-19 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 306 | 2026-11-20 | [View papers](#category-cross-cutting-other) |
+| End-to-End & VLA | 165 | 2026-11-24 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 199 | 2026-11-24 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 153 | 2026-11-23 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 32 | 2026-11-19 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 310 | 2026-11-24 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,108 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 193 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Dataset | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Synthetic Data | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 109 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 86 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 122 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 137 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| VLA | 90 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 127 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 141 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Hardware / Real-Time | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| Explainability | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 216 papers
+## Perception & Sensor Fusion · 220 papers
+
+<a id="paper-2611-32042"></a>
+
+### Instant LiDAR: Feed-Forward Gaussian Reconstruction for LiDAR Simulation ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Xin Kang, Jiahui Huang, Jiawei Ren, Sipeng Zhang, Yu Chen, et al.<br>
+**Published:** 2026-11-24<br>
+**Research tags:** Simulation<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.32042) | [PDF](https://arxiv.org/pdf/2611.32042.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** LiDAR reconstruction supports closed-loop autonomous driving simulation, but hours of per-scene optimization make large asset libraries costly to build and maintain. We present Instant LiDAR, a...
+
+<a id="paper-2611-30511"></a>
+
+### AXE: AlpaSim E2E Closed Loop Challenge Technical Report ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Joonhee Lim, Seonmyeong Lee, Sihwan Hwang, Hanbin Jang, Hiwon Shin, et al.<br>
+**Published:** 2026-11-23<br>
+**Research tags:** Simulation · Reinforcement Learning · Imitation Learning<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.30511) | [PDF](https://arxiv.org/pdf/2611.30511.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** This report presents a comprehensive pipeline for developing an end-to-end (E2E) autonomous driving model for the Physical AI AV Track. The framework consists of data curation, HD map auto-labelling,...
+
+<a id="paper-2611-30283"></a>
+
+### AdvMTO: Multimodal and Temporal Adversarial Object Attacks via 2D Gaussian Splatting for BEV-Based 3D Object Detection ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Zhiyang Cui, Hao Tan, Ruonan Li, Shibin Wu, Junjian Zhang, et al.<br>
+**Published:** 2026-11-23<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.30283) | [PDF](https://arxiv.org/pdf/2611.30283.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Adversarial object attacks pose a threat to BEV-based 3D object detectors in autonomous driving. Existing attacks typically target a single modality, coordinate camera and LiDAR observations at the...
+
+<a id="paper-2611-31667"></a>
+
+### Exteroceptive Sensor Faults in Autonomous Vehicles: A Cross-Modal Taxonomy and Fault Injection Toolkit ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Davide Possenti, Daniele Cianca, Stefano Arrigoni, Francesco Braghini<br>
+**Published:** 2026-11-23<br>
+**Research tags:** Dataset<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.31667) | [PDF](https://arxiv.org/pdf/2611.31667.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Autonomous vehicles rely on cameras, LiDAR, and radar to perceive their surroundings, yet these exteroceptive sensors can be degraded by hardware aging, environmental interference, miscalibration,...
+
+<a id="paper-2611-30023"></a>
+
+### QSRadar: Query-Conditioned Sparse Radar-Camera Fusion for Efficient 3D Object Detection ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Chenhao Yan, Hongyu Liu, Xiang Cai, Yifei Sun, Zhe Zhang<br>
+**Published:** 2026-11-22<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.30023) | [PDF](https://arxiv.org/pdf/2611.30023.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Reliable 3D object detection for autonomous trucks requires both the semantic detail provided by cameras and the geometric and motion cues measured by 4D radar. Existing radar-camera detectors...
+
+<a id="paper-2611-29753"></a>
+
+### DREAM: Dual-Memory Reasoning for Anticipatory 3D Perception in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Sriram Mandalika, Athira Nambiar<br>
+**Published:** 2026-11-22<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.29753) | [PDF](https://arxiv.org/pdf/2611.29753.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Autonomous driving systems must not only interpret the current scene but also anticipate perceptual challenges such as occlusions, sparse observations, and recurring failure patterns. However, most...
+
+<a id="paper-2611-28545"></a>
+
+### Reconstruction-Guided Dual-Branch Learning for LiDAR Anomalous Object Detection ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Guanyu Jiang, Junjie Cao, Jinshan Pan, Zhixun Su<br>
+**Published:** 2026-11-20<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.28545) | [PDF](https://arxiv.org/pdf/2611.28545.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Detecting unexpected objects is essential for autonomous driving safety. Most existing LiDAR anomaly detectors rely on semantic discrimination, which primarily captures category-discriminative...
+
+<a id="paper-2611-28191"></a>
+
+### BReD: BEV Residual Diffusion for Feed-Forward Road Gaussian Reconstruction ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Baizhi Wang<br>
+**Published:** 2026-11-20<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.28191) | [PDF](https://arxiv.org/pdf/2611.28191.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Accurate road surface reconstruction is essential for autonomous-driving mapping and simulation, but existing methods trade reconstruction quality for cross-scene inference. Optimization-based...
 
 <a id="paper-2611-27097"></a>
 
@@ -95,6 +178,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Abstract:** Semantic segmentation gives an autonomous vehicle a dense, pixel-level description of its surroundings and is a core part of scene understanding. Most segmentation networks consist of an encoder (the...
 
+<a id="paper-2611-28129"></a>
+
+### Urban State Representation for Autonomous Mobility: A Survey of Multimodal Perception, Architectures, Datasets, and Benchmarks ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Binay Kumar Singh, Niels Da Vitoria Lobo<br>
+**Published:** 2026-11-18<br>
+**Research tags:** Dataset · Benchmark · Simulation · Cooperative / V2X · VLA · World Model · Survey<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.28129) | [PDF](https://arxiv.org/pdf/2611.28129.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Cities are sensed by many platforms at once: on-board cameras, LiDAR and radar on autonomous vehicles, roadside units at intersections, drones and satellites overhead, and the GNSS traces of millions...
+
 <a id="paper-2611-24327"></a>
 
 ### Pixel2Perspective: A Benchmark for Multi-Modal and Multi-View Generalization in Vision-Language Models ![New](https://img.shields.io/badge/New-red)
@@ -108,7 +202,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-21126"></a>
 
-### IGRecon4D: Dynamic-Object-Aware Feed-Forward Reconstruction of Driving Scenes ![New](https://img.shields.io/badge/New-red)
+### IGRecon4D: Dynamic-Object-Aware Feed-Forward Reconstruction of Driving Scenes ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Yifei Tong, Ziyang Huang, Yizhao Han, Xiaoxiao Long, Hao Zhu<br>
 **Published:** 2026-11-16<br>
@@ -363,7 +457,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-33758"></a>
 
-### Road Infrastructure Perception for Autonomous Driving: Taxonomy, Representations, Tasks, and Challenges ![Recent](https://img.shields.io/badge/Recent-orange)
+### Road Infrastructure Perception for Autonomous Driving: Taxonomy, Representations, Tasks, and Challenges ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Guoyang Zhao, Weiqing Qi, Kai Zhang, Zhihai Bi, Tianshuai Hu, et al.<br>
 **Published:** 2026-10-24<br>
@@ -374,7 +468,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-33504"></a>
 
-### FreqPKC: Frequency-Aware PeakConv for Radar Semantic Segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
+### FreqPKC: Frequency-Aware PeakConv for Radar Semantic Segmentation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Yangyong Deng, Pengyu Zhang, Shaoqiu Song, Xiaotao Huang, Jian Wang<br>
 **Published:** 2026-10-24<br>
@@ -1168,7 +1262,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-24282"></a>
 
-### CARE: Camera-Residual Reserves for First Sightings in Adaptive LiDAR Sensing ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### CARE: Camera-Residual Reserves for First Sightings in Adaptive LiDAR Sensing
 
 **Authors:** Jiachen Gong, Yun Li, Ehsan Javanmardi, Wencan Mao, Manabu Tsukada<br>
 **Published:** 2026-08-25<br>
@@ -1557,106 +1651,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### A2RL V\textsubscript{max}: The A2RL autonomous racing dataset for long-range, high-speed perception and multi-vehicle interaction
 
-**Authors:** Marvin Klemp, Dominic Ebner, Cornelius Schröder, Davide Malvezzi, László Turányi, et al.<br>
-**Published:** 2026-07-20<br>
-**Research tags:** Dataset<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.17813) | [PDF](https://arxiv.org/pdf/2607.17813.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** In autonomous driving development, a perception dataset is crucial, as it provides fundamental data for training, testing, and validating algorithms for an autonomous vehicle's multimodal perception...
-
-<a id="paper-2607-17351"></a>
-
-### DeeperRadar: End-to-End MIMO Radar Design and Multi-Modal Fusion for Autonomous Vehicle Perception
-
-**Authors:** Eli Goldenshluger, Barak Pinkovich, Chaim Baskin<br>
-**Published:** 2026-07-19<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.17351) | [PDF](https://arxiv.org/pdf/2607.17351.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** DeeperRadar is a radar-centric, sensor-stack-conditioned framework that co-designs radar sensing and multi-modal 3D detection for autonomous mobility by learning a sparse acquisition pattern...
-
-<a id="paper-2607-22698"></a>
-
-### FogDrive: A Multi-Modal Synthetic Driving Dataset for Perception under Graded Fog
-
-**Authors:** Vansh Panwar, Naveen Varshney, Prashant W. Patil<br>
-**Published:** 2026-07-18<br>
-**Research tags:** Dataset · Simulation<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.22698) | [PDF](https://arxiv.org/pdf/2607.22698.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Fog degrades autonomous-driving perception across modalities: it lowers image contrast, attenuates and scatters LiDAR returns, and shifts the input distribution of every learned module downstream....
-
-<a id="paper-2607-14710"></a>
-
-### Variational Inference for Bird's Eye View Segmentation in Autonomous Driving
-
-**Authors:** Jingyue Shi, Huaicheng Li, Junhui Zhao, Yanxiang Jiang<br>
-**Published:** 2026-07-16<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.14710) | [PDF](https://arxiv.org/pdf/2607.14710.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** The bird's eye view (BEV) has emerged as a pivotal approach for environmental perception in autonomous driving, providing a unified spatial representation for vehicles. Nevertheless, despite BEV's...
-
-<a id="paper-2607-14248"></a>
-
-### 3D Lane Detection with Odometry for High-Speed Vehicle Racing
-
-**Authors:** Omoruyi Atekha, John Subosits, Marcus Greiff<br>
-**Published:** 2026-07-15<br>
-**Research tags:** Dataset<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.14248) | [PDF](https://arxiv.org/pdf/2607.14248.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Lane boundary detection is a critical component in autonomous driving systems and has been rigorously studied in regular driving scenarios. However, it is less explored in vehicle racing, where the...
-
-<a id="paper-2607-13481"></a>
-
-### GPOcc++: Unified Sparse Gaussian Occupancy Prediction with Visual Geometry Priors
-
-**Authors:** Changqing Zhou, Yueru Luo, Yulan Guo, Bing Wang, Jie Qin, et al.<br>
-**Published:** 2026-07-15<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.13481) | [PDF](https://arxiv.org/pdf/2607.13481.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Accurate 3D scene understanding is fundamental to embodied intelligence and autonomous driving, where 3D occupancy provides a unified representation of objects, structures, and free space. However,...
-
-<a id="paper-2607-12419"></a>
-
-### DeGuNet: Depth-Guided Ultra-Compact Backbones for Efficient LiDAR-Camera 3D Detection
-
-**Authors:** Haifa Zhang, Yijing Wang, Peixi Peng, Zhiqiang Zuo<br>
-**Published:** 2026-07-14<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.12419) | [PDF](https://arxiv.org/pdf/2607.12419.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** In autonomous driving perception, the fusion of LiDAR and camera modalities has become the dominant paradigm for 3D object detection. However, current multi-modal frameworks heavily rely on massive...
-
-<a id="paper-2607-11964"></a>
-
-### LIDAR-AD: A Decoder-Free Latent-Interaction Dreamer with Action-Residual Chains for Autonomous Driving
-
-**Authors:** Yongzhi Liu, Yang Xiao, Zhong Cao, Zeng Kang, Sunan Zhang, et al.<br>
-**Published:** 2026-07-12<br>
-**Research tags:** World Model<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.11964) | [PDF](https://arxiv.org/pdf/2607.11964.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Autonomous driving requires long-horizon closedloop decision making in dynamic traffic environments. Latent world models offer an effective framework for this problem by enabling imagination-based...
-
-<a id="paper-2607-10071"></a>
-
-### FlashBEV: Fast and Memory-Efficient Exact BEV Transformation with IO-Awareness
-
-**Authors:** Shunsuke Yokokawa, Hironori Kasahara<br>
-**Published:** 2026-07-10<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.10071) | [PDF](https://arxiv.org/pdf/2607.10071.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Bird's-eye-view (BEV) perception is a core component of camera-based 3D understanding in autonomous driving, where view transformation (VT) maps multi-camera image features into a unified BEV...
-
-<a id="paper-2607-09629"></a>
-
-### 4DR360: State Reasoning for Joint 3D Detection and Occupancy Prediction in 4D Radar-Camera Full-Scene Perception
-
-**Authors:** Xiaokai Bai, Lianqing Zheng, Runwei Guan, Songkai Wang, Siyuan Cao, et al.<br>
-**Published:** 2026-07-10<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.09629) | [PDF](https://arxiv.org/pdf/2607.09629.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Reliable autonomous driving requires full-scene perception that couples foreground objects with dense semantic layout. Recently, 4D millimeter-wave radar has emerged as a robust and affordable...
-
-<a id="paper-2607-09103"></a>
-
-### Equivariant Filter for High Performance 
+**Authors:** Marvin Klemp, Dominic Ebner, Cornelius Schröder, Davide Malvezzi, László Turányi, et al.<

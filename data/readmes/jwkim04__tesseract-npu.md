@@ -5,7 +5,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat"></a>
   <a href="rtl/CHANGELOG.md"><img alt="Core: 1.2.1" src="https://img.shields.io/badge/core-1.2.1-green?style=flat"></a>
-  <a href="CHANGELOG.md"><img alt="Basis: 1.6.0" src="https://img.shields.io/badge/basis-1.6.0-green?style=flat"></a>
+  <a href="CHANGELOG.md"><img alt="Basis: 1.7.0" src="https://img.shields.io/badge/basis-1.7.0-green?style=flat"></a>
   <a href="docs/platform-u200.md"><img alt="Platform: AMD Alveo U200" src="https://img.shields.io/badge/platform-AMD%20Alveo%20U200-lightgrey?style=flat"></a>
 </p>
 
@@ -55,18 +55,24 @@ simulator, the records by layer, and the device counters ([profiling](docs/prof-
 
 ## Latest releases
 
-**Tesseract Basis 1.6.0** (2026-11-18), the firmware SDK and the host side
+**Tesseract Basis 1.7.0** (2026-11-25), the firmware SDK and the host side
 
-- `./quickstart.sh` takes a fresh clone to a model that generates text on the simulated NPU, with no card. It builds
-  the stack, checks it with `tsr-selftest`, downloads Qwen2.5 0.5B Q8_0 with a checksum, runs it and profiles one
-  decode token. `./quickstart.sh chat` is a chat on the simulator ([Try it without a card](#try-it-without-a-card)).
-- On a desktop with 16 logical CPUs and 8 build jobs, the first run after a fresh clone took 121 s, the 0.7 GB
-  model download included, and the build took 83 s of it. A second run took 5 s.
-- The profile report takes a simulator run alone: `sw/tools/prof/prof_report.py report --sim DIR --out OUT` gives the
-  timeline, the records and the counters of the simulated device without a card run to compare with.
-- The firmware, the kinds and the backend are those of Basis 1.5.0 apart from the version number. Every kind keeps its
-  numerics revision, and the decode token that `quickstart.sh` profiles takes the same device cycles on the simulator
-  with both versions. Basis 1.6.0 runs on Core 1.2.1, 1.2.0, 1.1.0 and 1.0.0.
+- The PyTorch backend generates text with the KV cache on the device. With a Hugging Face static KV cache
+  (`model.forward = tt.compile(model.forward)`, `model.generate(..., cache_implementation="static")`) the attention
+  of every step runs on the device over the K and V rows that the device keeps. For a Qwen2.5 decoder a decode step
+  is one launch that sends one row ([Quick start](#quick-start)).
+- On the card Qwen2.5-0.5B-Instruct decodes at 87.11 tok/s this way. With the option off (`kv_cache=False`), where
+  the attention over the cache runs on the CPU and a decode step is 48 launches, it decodes at 57.63 tok/s. Eager
+  PyTorch on the host CPU decodes at 14.35 tok/s, and the llama.cpp path decodes the GGUF Q8_0 file of the model at
+  103.08 tok/s.
+- A graph run of the runtime moves its data in fewer transfers. In that generation a decode step is two writes to
+  the device, the positions with the mask data and then the row, and one read from it. The counters `rt_h2d_writes`
+  and `rt_d2h_reads` count them.
+- `sw/torch/examples/hf_generate.py` runs such a generation and prints the time to the first token, the decode rate
+  and the counters of every generation. `hf_check.py --generate` checks one against the stateless forward and the
+  reference executor.
+- The firmware, the kinds and the llama.cpp path are those of Basis 1.6.0 apart from the version number. Basis 1.7.0
+  runs on Core 1.2.1, 1.2.0, 1.1.0 and 1.0.0.
 
 **Tesseract Core 1.2.1** (2026-11-18), the RTL and the Alveo U200 image
 
@@ -132,7 +138,7 @@ runs here, with the supported part on the device. Qwen2.5, Gemma 4, Qwen3 MoE an
 - Graph scheduling. Tesseract Pivot orders the nodes of a graph before they are lowered, so that independent matrix products run on the MVM unit while the control core and the element-wise pipeline work on other records ([design](docs/design/07-graph-scheduler.md)).
 - Kernel SDK. Basis kernels are freestanding C++20 for the control core and build for the host as well.
 - Bit-exact simulator. `sw/sim` is the oracle for the RTL, the firmware and the host stack. The transports are `sim`, `mock` and `xrt` (the card).
-- PyTorch backend. `torch.compile(model, backend="tesseract")` runs regions of a model's aten graph on the device, one op list each, in full mode, or only the weight matmuls in matmul mode.
+- PyTorch backend. `torch.compile(model, backend="tesseract")` runs regions of a model's aten graph on the device, one op list each, in full mode, or only the weight matmuls in matmul mode. Generation with a Hugging Face static KV cache keeps the K and V rows on the device.
 - Tools. `tsr-selftest` checks a device, `klcheck` and `numcheck` compare a whole model and every weight matmul with the CPU, `tsr-prof` and the profile report show where a token spends its cycles, `tsr-top` monitors a running card, and `tsr-dbg` debugs the control core with GDB.
 
 ## Architecture
@@ -246,6 +252,15 @@ ids = tok("The capital of France is", return_tensors="pt").input_ids
 with torch.no_grad():
     logits = model(ids, use_cache=False).logits   # on the simulator unless TSR_DEVICE says otherwise
 print(tok.decode(logits[0, -1].argmax()))        # " Paris"
+```
+
+To generate text, compile the forward of the model, not the model, and use Hugging Face's static KV cache. The attention then runs on the device, which keeps the K and V rows of earlier steps, so a decode step is one launch that sends one row ([PyTorch backend](docs/torch-backend.md) §1):
+
+```python
+model = AutoModelForCausalLM.from_pretrained(path, dtype=torch.float32).eval()
+model.forward = tt.compile(model.forward)        # generate calls model.forward
+out = model.generate(ids, max_new_tokens=32, do_sample=False, cache_implementation="static")
+print(tok.decode(out[0]))
 ```
 
 For the card, configure with `-DTSR_WITH_XRT=ON` and set `TSR_DEVICE=xrt` and

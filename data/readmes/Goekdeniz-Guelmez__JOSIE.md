@@ -5,13 +5,15 @@
 <h1 align="center">JOSIE</h1>
 
 <p align="center">
-  <b>Talk to your Mac.</b><br>
+  <b>Your Mac. With a voice.</b><br>
   A voice and chat assistant that listens, knows who's speaking, talks back with a natural voice, and takes real action in your Reminders, Calendar, Maps and Messages.<br>
   Hearing, voice recognition and speech all run on your Mac, so your voice never leaves it.
 </p>
 
 <p align="center">
-  <a href="https://goekdeniz-guelmez.github.io/JOSIE-Voice/"><b>Website</b></a> ·
+  <a href="https://goekdeniz-guelmez.github.io/JOSIE/"><b>Website</b></a> ·
+  <a href="https://x.com/ActuallyIsaak/status/2111818137947852897">Watch a 6-minute call</a> ·
+  <a href="#ten-ways-to-hold-a-conversation">Call engines</a> ·
   <a href="#faq">FAQ</a>
 </p>
 
@@ -19,14 +21,14 @@
   Free · Apple Silicon (M1 or newer) · macOS 14 Sonoma or newer · No account
 </p>
 
-> [!WARNING]
-> **No download yet.** The first public Josie DMG for the Mac will be released in **December 2026**. Until then there is no installer here or in [Releases](https://github.com/Goekdeniz-Guelmez/JOSIE-Voice/releases); the 1.0.0 release notes describe what's coming.
+> [!IMPORTANT]
+> **Josie launches on 1 December 2026** (midnight, Central European Time). The [website](https://goekdeniz-guelmez.github.io/JOSIE/) counts down to it. Until then there is no installer here or in [Releases](https://github.com/Goekdeniz-Guelmez/JOSIE-Voice/releases); the 1.0.0 release notes describe what's coming.
 
 ---
 
 ## Talk or type
 
-Switch between **Voice** and **Chat** with one tap. It's the same conversation either way: start a call, hang up, keep typing, and JOSIE remembers it all. Every conversation is saved in the sidebar and in the Library.
+Switch between **Voice** and **Chat** with one tap. It's the same conversation either way: start a call, hang up, keep typing, and JOSIE remembers it all. Every conversation is saved in the sidebar and in the Library. The [website](https://goekdeniz-guelmez.github.io/JOSIE/) opens with a working copy of this screen: start a call, or switch to Chat and ask something.
 
 <table>
   <tr>
@@ -35,7 +37,93 @@ Switch between **Voice** and **Chat** with one tap. It's the same conversation e
   </tr>
 </table>
 
-### Demo videos
+## Gets things done
+
+JOSIE works with the Apple apps you already use. Ask out loud and it really happens:
+
+| App | Say | What happens |
+|---|---|---|
+| **Reminders** | "Remind me to bring a jacket at 7:30." | Added to Reminders, with the time set. |
+| **Calendar** | "What's on tomorrow? Put lunch with Sam on Friday at noon." | Reads your day and adds the event. |
+| **Maps** | "Find a pharmacy near me that's still open." | Looks up places and directions in Maps. |
+| **Messages** | "Text Alex that I'm running ten minutes late." | Writes the draft in Messages. You tap Send. |
+
+Each app is off until you turn it on in Settings → Apple tools, macOS asks your permission first, and nothing is sent without your tap.
+
+## The real thing
+
+**Six minutes. One call. No cuts.** A real session on a MacBook Pro M4 Pro, with Qwen3 speech recognition and synthesis at 4-bit and DeepSeek 4.1 Flash on Ollama Cloud: a conversation turns into work, with more than 100 tool calls along the way. No speed-ups. [Watch it on X](https://x.com/ActuallyIsaak/status/2111818137947852897).
+
+## What Josie can do
+
+| | |
+|---|---|
+| **Real conversation** | Knows when you've finished talking. Interrupt Josie just by speaking. |
+| **Knows your voice** | Learns you from three short phrases and tells people apart. |
+| **Voices you choose** | Pick a preset, clone a voice from a short recording, or describe a new one in words. Fourteen speech engines, among them Qwen3-TTS, Kokoro, Gradium Phonon, Ming-3.0 and ZONOS3-Mini with 27 voices and 44.1 kHz audio. |
+| **Choose how it hears** | Ten speech recognition engines, among them Qwen3-ASR, NVIDIA Parakeet, Voxtral Realtime, Whisper, IBM Granite Speech and Apple's on-device recognizer. All on your Mac. |
+| **Native call engines** | Nine experimental speech-to-speech engines: LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken, Haru, Sophon-Realtime and Trelis Duplex. Eight are full duplex and listen while they speak. Add your own Hugging Face fine-tune. |
+| **Private by design** | Hearing, voice recognition and speech run on your Mac. Your data stays on your Mac. No account. |
+| **Takes real action** | Adds reminders and events, finds places in Maps and drafts Messages (you tap Send). Each one is off until you turn it on. |
+| **Sees what you show it** | Turn on the camera and ask about what it sees. Needs an image-capable model. |
+| **Adapts to the room** | Volume follows background noise, with echo cancellation. |
+| **Living sky** | The background follows the real time of day under Apple's Liquid Glass design, with stars and the occasional shooting star at night. |
+| **Personas** | Talk to JOSIE, JARVIS, HAL 9000, Her, Joi or a character you write, each with its own prompt, voice and orb colour. |
+| **Your iPhone, your Mac** | On iPhone and iPad, pick your Mac as the provider, at home or over Tailscale. The call runs on your Mac, you can show Josie a photo, and the phone follows the Mac's memories, Library and name. |
+| **Wake words** | Answers when a sentence starts or ends with your wake word, with a follow-up window and listen-back. Mac only. |
+| **Apple Watch calls** | Start, end and mute a call from your Watch, or connect it straight to your server with the Watch's own microphone. |
+| **Your choice of model** | Use Ollama, Anthropic's Claude through the Messages API, an OpenAI-compatible service or Apple Intelligence for the language model. |
+| **Documents, pictures and media** | The Library reads Word and PowerPoint files, pictures and PDF figures, and embeds audio and video for search. |
+| **Speech that rests** | Unloads the speech models after a quiet period you set, from 5 to 240 minutes. The next call loads them again. |
+| **API wall** | A full-width dashboard shows the local API's clients, streams and tool calls at a glance. `/v1/realtime` talks to the loaded full-duplex engine, with up to four live or realtime sessions. |
+| **Export and tidy up** | Export recorded calls for training, as OpenAI fine-tuning data, a MoshiRAG dataset and more. Delete the chats you select, or all of them. |
+| **Its own chat prompt** | Write separate instructions for Chat and Voice. Muted in a call? Typed messages still get a text reply. |
+| **Acknowledgements** | Settings → Acknowledgements on Mac, iPhone and iPad lists the projects, model families and licences JOSIE builds on, with thanks to Neywa Labs and Lucas Newman. |
+
+## Ten ways to hold a conversation
+
+Josie is a native Mac app built with SwiftUI and MLX Swift. Pick a call engine per call: the cascaded pipeline chains specialist models you choose yourself, and the nine native engines are single speech-to-speech models. Everything except the language model runs on your Mac's Apple Silicon.
+
+**The cascaded pipeline** (the default):
+
+- **Listening:** echo cancellation and an echo gate keep JOSIE's own voice out. Silero VAD notices when you speak, and Smart Turn v3 decides whether you've finished, may have finished (the language model starts early, its answer held back), or are still talking.
+- **Speech recognition:** Qwen3-ASR by default, or one of nine others, including NVIDIA Parakeet, Voxtral Realtime, Whisper and Apple's on-device recognizer (chosen in Settings).
+- **Who's speaking:** WeSpeaker, ported to MLX, recognises your voice and any voices you add.
+- **The brain:** a language model in [Ollama](https://ollama.com) on your Mac (`qwen3.5:0.8b` by default), with up to 5 tool rounds per turn. In Settings you can switch to Anthropic's Claude or any OpenAI-compatible service with your own key, or to Apple Intelligence on macOS 26.
+- **Speech:** Qwen3-TTS by default, with voice cloning and voice design, or one of thirteen others, including Kokoro, Gradium Phonon and ZONOS3-Mini (chosen in Settings). Replies are spoken in chunks while they are still being written.
+- **Barge-in:** a second of your voice stops playback with a short fade, and the conversation keeps only the words you actually heard.
+
+**All ten engines** (native engines are experimental; memory figures are approximate):
+
+| Engine | Made by | Size | Core | Step | Remembers | Tools in JOSIE |
+|---|---|---|---|---|---|---|
+| **Cascaded pipeline** | JOSIE | Your choice | Your language model | Per turn | Last 40 turns | All tools |
+| **LFM3** | Liquid AI | Audio 2B · Omni 2B | LFM3 2B | Whole turns | 24,576 tokens | Via your LLM |
+| **Nemotron VoiceChat** | NVIDIA | 11B | Nemotron-H, 56 layers | 80 ms | About 8 min | Via your LLM |
+| **Moshi** | Kyutai | 7B | Helium 7B + depth transformer | 80 ms | About 4 min | RAG variant |
+| **Realtime Venus** | inclusionAI | Omni 9B | Qwen3-8B (MiniCPM-o) | 1 s units | 6,000–8,000 tokens | Via your LLM |
+| **caramel-1** | naklecha | 413M | Own 413M, no text | 80 ms | About 4 min | Voice only |
+| **Awaken** | Avera Labs | 8B | Qwen3-8B (Fun-Audio-Chat) | 200 ms | About 3 min | Voice only |
+| **Haru** | Higurashi AI | 4B | Qwen3.5-4B | 133 ms | Up to 60 min | Voice only |
+| **Sophon-Realtime** | Adventists AI | 4B Flash | Qwen3-4B thinker + Qwen3-TTS talker | 80 ms | 8 exchanges / 120 s | Voice only |
+| **Duplex** | Trelis | duplex-1 200M | Own 200M, two tracks | 80 ms | 3–5 min | Voice only |
+
+LFM3 answers your finished turn; the other eight native engines are full duplex. "Via your LLM" means the engine hands a request to the language model you selected, which runs your tools and returns the result to be spoken. The [website](https://goekdeniz-guelmez.github.io/JOSIE/#how) draws each engine's architecture, step by step. Sketches of the [Mac voice pipeline](docs/diagrams/02-mac-voice-pipeline.png), [tool routing](docs/diagrams/04-tools-architecture.png) and [iPhone-to-Mac calls](docs/diagrams/06-iphone-mac-live-sequence.png) are in `docs/diagrams`.
+
+When no call has run for a while (5 to 240 minutes, 15 by default), the speech models unload; the next call loads them again. After setup, everything works offline except the language model, which runs in Ollama on your Mac.
+
+## Make it yours
+
+- **Models: A mind of your choosing.** Keep the language model on your Mac with Ollama, connect Claude or an OpenAI-compatible service, or choose Apple Intelligence. Set Full or Light prompts for Voice and Chat, and pick how calls run.
+- **Tools & MCP: Connected. On your terms.** Connect the Apple apps you use, turn on web search, and add MCP servers. Set Read, Add or Full access per tool.
+- **Memory: Pick up the thread.** JOSIE remembers useful facts, finds things in earlier conversations, and pulls the right passage from your documents.
+- **Agents: A little help. A lot more done.** Agent mode searches, reads, checks and hands focused tasks to specialists. Give each one its own instructions, tools and step limit, and call it in with @.
+- **Skills: Your habits. Its instructions.** Turn a set of instructions into a reusable Markdown skill: a writing style, a meeting format, a way of explaining. Attach it with @ when it matters.
+- **Beyond the app: Your Mac, as an endpoint.** Turn on the optional OpenAI-compatible server to use the Mac’s pipeline from other apps, scripts, or your iPhone and iPad.
+
+## Screenshots and clips
+
+### Clips
 
 Click a picture to play the clip. All clips are silent.
 
@@ -241,59 +329,6 @@ Real captures are unretouched screenshots of the current app from the main branc
 
 <sub>Pictures and clips marked (mockup) are rendered from the app's source with demo content; ones marked (real capture) are recorded from the running app.</sub>
 
-## Gets things done
-
-JOSIE works with the Apple apps you already use. Ask out loud and it really happens:
-
-| App | Say | What happens |
-|---|---|---|
-| **Reminders** | "Remind me to bring a jacket at 7:30." | Added to Reminders, with the time set. |
-| **Calendar** | "What's on tomorrow? Put lunch with Sam on Friday at noon." | Reads your day and adds the event. |
-| **Maps** | "Find a pharmacy near me that's still open." | Looks up places and directions in Maps. |
-| **Messages** | "Text Alex that I'm running ten minutes late." | Writes the draft in Messages. You tap Send. |
-
-Each app is off until you turn it on in Settings → Apple tools, macOS asks your permission first, and nothing is sent without your tap.
-
-## What Josie can do
-
-| | |
-|---|---|
-| **Real conversation** | Knows when you've finished talking. Interrupt Josie just by speaking. |
-| **Knows your voice** | Learns you from three short phrases and tells people apart. |
-| **Voices you choose** | Pick a preset, clone a voice from a short recording, or describe a new one in words. Fourteen speech engines, among them Qwen3-TTS, Kokoro, Gradium Phonon, Ming-3.0 and ZONOS3-Mini with 27 voices and 44.1 kHz audio. |
-| **Private by design** | Hearing, voice recognition and speech run on your Mac. Your data stays on your Mac. No account. |
-| **Takes real action** | Adds reminders and events, finds places in Maps and drafts Messages (you tap Send). Each one is off until you turn it on. |
-| **Sees what you show it** | Turn on the camera and ask about what it sees. Needs an image-capable model. |
-| **Adapts to the room** | Volume follows background noise, with echo cancellation. |
-| **Living sky** | The background follows the real time of day, under Apple's Liquid Glass design. |
-| **Personas** | Talk to JOSIE, JARVIS, HAL 9000, Her, Joi or a character you write, each with its own prompt, voice and orb colour. |
-| **Your iPhone, your Mac** | On iPhone and iPad, pick your Mac as the provider, at home or over Tailscale. The call runs on your Mac, you can show Josie a photo, and the phone follows the Mac's memories, Library and name. |
-| **Choose how it hears** | Ten speech recognition engines, among them Qwen3-ASR, NVIDIA Parakeet, Voxtral Realtime, Whisper, IBM Granite Speech and Apple's on-device recognizer. All on your Mac. |
-| **Full-duplex voice engines** | Talk with LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken, Haru or Sophon-Realtime. They run on your Mac, on Apple Silicon, and are experimental. Add your own Hugging Face fine-tune. |
-| **Wake words** | Answers when a sentence starts or ends with your wake word, with a follow-up window and listen-back. Mac only. |
-| **Apple Watch calls** | Start, end and mute a call from your Watch, or connect it straight to your server with the Watch's own microphone. |
-| **Your choice of model** | Use Ollama, Anthropic's Claude through the Messages API, an OpenAI-compatible service or Apple Intelligence for the language model. |
-| **Documents, pictures and media** | The Library reads Word and PowerPoint files, pictures and PDF figures, and embeds audio and video for search. |
-| **Speech that rests** | Unloads the speech models after a quiet period you set, from 5 to 240 minutes. The next call loads them again. |
-| **API wall** | A full-width dashboard shows the local API's clients, streams and tool calls at a glance. `/v1/realtime` talks to the loaded full-duplex engine, with up to four live or realtime sessions. |
-| **Export and tidy up** | Export recorded calls for training, as OpenAI fine-tuning data, a MoshiRAG dataset and more. Delete the chats you select, or all of them. |
-| **Acknowledgements** | Settings → Acknowledgements on Mac, iPhone and iPad lists the projects, model families and licences JOSIE builds on, with thanks to Neywa Labs and Lucas Newman. |
-| **Its own chat prompt** | Write separate instructions for Chat and Voice. Muted in a call? Typed messages still get a text reply. |
-
-## How it works
-
-Josie is a native Mac app built with SwiftUI and MLX Swift. Everything except the language model runs on your Mac's Apple Silicon:
-
-- **Listening:** Silero VAD notices when you speak, and Smart Turn v3 knows when you've finished.
-- **Speech recognition:** Qwen3-ASR by default, or one of nine others, including NVIDIA Parakeet, Voxtral Realtime, Whisper and Apple's on-device recognizer (chosen in Settings).
-- **Who's speaking:** WeSpeaker, ported to MLX, recognises your voice and any voices you add.
-- **Speech:** Qwen3-TTS by default, with voice cloning and voice design, or one of thirteen others, including Kokoro, Gradium Phonon and ZONOS3-Mini (chosen in Settings).
-- **The brain:** a language model in [Ollama](https://ollama.com) on your Mac (`qwen3.5:0.8b` by default). In Settings you can switch to Anthropic's Claude or any OpenAI-compatible service with your own key, or to Apple Intelligence on macOS 26.
-- **Native call engines:** instead of the stages above, a call can use an experimental full-duplex engine (LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken, Haru or Sophon-Realtime) that listens while it speaks. LFM3, Nemotron and Venus can hand a request to your language model, and Moshi RAG retrieves through it. Sophon-Realtime 4B Flash, by Adventists AI, hears your speech directly, decides itself when you have finished, and speaks its reply while it writes it, with laughter and sighs, in your selected voice; on an M4 Pro it starts speaking about half a second after you stop.
-- **Resting:** after 5 to 240 minutes without a call (15 by default), the speech models unload; the next call loads them again.
-
-After setup, everything works offline except the language model, which runs in Ollama on your Mac.
-
 ## Good to know
 
 - **Other models:** in Settings, switch to Anthropic's Claude, any OpenAI-compatible service with your own key, or to Apple Intelligence on macOS 26.
@@ -304,7 +339,7 @@ After setup, everything works offline except the language model, which runs in O
 
 ## FAQ
 
-**Can I download it?** Not yet. The first public Mac DMG will be released in **December 2026** on [GitHub Releases](https://github.com/Goekdeniz-Guelmez/JOSIE-Voice/releases).
+**Can I download it?** Not yet. The first public Mac DMG arrives on **1 December 2026** on [GitHub Releases](https://github.com/Goekdeniz-Guelmez/JOSIE-Voice/releases). Watch the repository to hear the moment it ships.
 
 **Is it free?** Yes.
 
@@ -330,17 +365,27 @@ After setup, everything works offline except the language model, which runs in O
 
 **How do I uninstall it?** Drag Josie to the Trash. To remove its data and models too, delete the `Josie` folder in `~/Library/Application Support`.
 
-## The JOSIE family
+## The JOSIE model family
 
 <img src="docs/logo.png" alt="JOSIE orb" width="56" align="left">
 
-Josie comes from the JOSIE family of personality-driven language models by Gökdeniz Gülmez, trained entirely on Apple Silicon with [MLX-LM-LoRA](https://github.com/Goekdeniz-Guelmez/mlx-lm-lora). Meet the models on [Hugging Face](https://huggingface.co/Goekdeniz-Guelmez).
+The JOSIE model family is a separate project by the same author: custom fine-tuned, personality-driven language models, trained entirely on Apple Silicon with [MLX-LM-LoRA](https://github.com/Goekdeniz-Guelmez/mlx-lm-lora). The app does not need them; it works with whichever language model you choose. Meet the models on [Hugging Face](https://huggingface.co/Goekdeniz-Guelmez).
 
 <br clear="left">
 
 ## About this repository
 
-This repository hosts the Josie website and visuals: the site lives in [`docs/`](docs/) and is served by GitHub Pages. App downloads will be published in [GitHub Releases](https://github.com/Goekdeniz-Guelmez/JOSIE-Voice/releases), starting with the first DMG in December 2026; the source code is private.
+This repository hosts the Josie website and visuals. The site lives in [`docs/`](docs/) and is published by GitHub Pages at **[goekdeniz-guelmez.github.io/JOSIE/](https://goekdeniz-guelmez.github.io/JOSIE/)** on every push to `main`. It is a static page with no build step:
+
+| File | What it is |
+|---|---|
+| [`docs/index.html`](docs/index.html) | The page. Every section stays readable without JavaScript. |
+| [`docs/site.css`](docs/site.css) | The one stylesheet: the app's sky, glass, bubble and call-button styles. |
+| [`docs/site.js`](docs/site.js) | Interactions: the live app in the hero, tabs, the feature filter, the release pop-up and countdown, and the download lookup after launch. |
+| [`docs/sky.js`](docs/sky.js) | The app's Metal sky shader and time-of-day model, ported to WebGL. Scrolling moves the sky from morning to night. |
+| [`docs/orb.js`](docs/orb.js) | The app's liquid orb shader and palettes, ported to WebGL. |
+
+App downloads will be published in [GitHub Releases](https://github.com/Goekdeniz-Guelmez/JOSIE-Voice/releases), starting with the first DMG on 1 December 2026; the app's source code is private.
 
 Built with MLX Swift, Qwen3-ASR, Qwen3-TTS, Parakeet, Kokoro, Silero VAD, Smart Turn v3 and WeSpeaker. Thanks to Neywa Labs and Lucas Newman. Ollama is a separate app by its own developers.
 

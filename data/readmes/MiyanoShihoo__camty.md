@@ -8,9 +8,9 @@
 
 [English](README.en.md) | 简体中文
 
-![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
-![Tests](https://img.shields.io/badge/tests-245%20passed-brightgreen)
-![Adapters](https://img.shields.io/badge/adapters-41-orange)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Tests](https://img.shields.io/badge/tests-349%20passed-brightgreen)
+![Adapters](https://img.shields.io/badge/adapters-42-orange)
 ![License](https://img.shields.io/badge/license-Apache%202.0-black)
 
 </div>
@@ -26,7 +26,7 @@ Camty 是一套**可审计的红队交战工作台**：把一次渗透测试的�
 ## 强势点
 
 **1. 证据链优先的交战治理**
-范围白名单 deny-by-default（DNS 解析防绕过）、每动作落 JSONL 审计哈希链（防篡改可回放）、利用级动作必须引用台账中已验证发现（finding-ID 硬门控）、发现带血缘（`F-003 ← F-001` 一眼看清利用链从哪来）。
+范围白名单 deny-by-default（DNS 解析防绕过）、每动作落 JSONL 审计哈希链（局部篡改必断链，可回放；配置 `CAMTY_AUDIT_KEY` 或保存锚点后可检测全量重算重写与尾部截断）、利用级动作必须引用台账中已验证发现（finding-ID 硬门控）、发现带血缘（`F-003 ← F-001` 一眼看清利用链从哪来）。
 
 **2. 41 个结构化适配器**
 外部工具（subfinder/httpx/nuclei/fscan）+ 自研武器（js-recon 前端测绘、inj-probe 多载体注入七变体、authz-probe 鉴权矩阵、code-audit 白盒审计、mail-code 验证码收件、osint-recon 目标画像、cve-intel CVE 情报、hashcrack GPU 破解）+ 内网全家桶（impacket 13 件 + 5 引擎横向移动）+ C2 三件套。工具输出自动进台账与资产图。
@@ -48,9 +48,12 @@ HTML / docx / SRC 平台提交格式三态报告 + 复测对比；IM 推送（�
 ```bash
 git clone https://github.com/MiyanoShihoo/camty.git && cd camty
 pip install -r requirements.txt                    # 或 pip install --target vendor <pkg>
+pip install -r requirements-dev.txt                # 测试/CI 依赖（pytest + httpx2），与运行依赖分开安装
 python -m camty keys set main --kind openai --base-url https://api.deepseek.com/v1     --api-key sk-xxx --model-decide deepseek-reasoner   # 配置 LLM（引擎/审批用）
-python -m pytest tests/ -q                         # 245 项自检
+python -m pytest tests/ -q                         # 349 项自检
 ```
+
+支持 Python 3.10–3.13（CI 矩阵在 Ubuntu/Windows 实测）。
 
 ## 使用方式
 
@@ -76,19 +79,35 @@ python -m camty engine engagements/my-target.yaml --agent --budget 30 --traffic
 
 # ③ 产出
 python -m camty report engagements/my-target.yaml --format html   # / docx / src
-python -m camty audit engagements/my-target.yaml                 # 审计哈希链校验
+python -m camty audit engagements/my-target.yaml                 # 审计哈希链校验（输出 (count, head_hash) 锚点供外部存档）
 ```
 
-**面板**：`uvicorn camty.api.app:app --port 8090` → 仪表盘 / 台账 / 资产覆盖力导向图 / 攻击链 / 流量回放 / 探索图 / 审批队列，页头输入框随时注入转向指令（人在环路）。
+**审计防篡改边界**：哈希链本身检测局部编辑（改/删/插任意一条即断链）；`save_state` 与报告生成会自动把 `(count, head_hash)` 锚点写入 `state.db` 用于检测尾部截断；设置环境变量 `CAMTY_AUDIT_KEY` 后条目追加 HMAC-SHA256，可检测"篡改全部记录并重算整条链"。无 key、无锚点时仅能检测局部编辑。
+
+**面板**：`uvicorn camty.api.app:app --port 8090` → 仪表盘 / 台账 / 资产覆盖力导向图 / 攻击链 / 流量回放 / 探索图 / 审批队列，页头输入框随时注入转向指令（人在环路）。 面板 `/api/*` 需要 Bearer token：设置 `CAMTY_PANEL_TOKEN` 时用指定值，未设置时自动生成随机 token 并打印到 stderr。
 
 **多目标并行**：`python -m camty multi a.yaml b.yaml c.yaml` —— 每交战一进程，汇总结录。
+
+**交互式重放（Repeater）**：`python -m camty repeater engagements/my-target.yaml --port 8895` —— 手工验证向量时的提速器：持久会话（cookie 全程携带）、POST 前自动提取 csrf、向量批测一次打 N 条 payload 按指纹聚簇（只有异类簇需要人眼看）、`mode=browser` 走持久 stealth 浏览器（`render:true` 完整渲染，过反自动化客户端检测）。每个请求照过 scope 白名单 + 限速 + 审计哈希链三道闸。
+
+```bash
+# 单发：自动提取标题/表单/CSRF/错误标记，与该路径基线自动比对
+curl -X POST localhost:8895/req -H "Content-Type: application/json" \
+  -d '{"method":"GET","url":"https://target.example/"}'
+# 批测：N 条 payload 一次打完，返回基线簇 + 异类簇
+curl -X POST localhost:8895/vector -H "Content-Type: application/json" \
+  -d '{"url":"https://target.example/","param":"q","payloads":["a","b","c"]}'
+# POST 带 CSRF 自动跟随：auto_csrf 指向表单页即可
+curl -X POST localhost:8895/req -H "Content-Type: application/json" \
+  -d '{"method":"POST","url":"https://target.example/login","body":{"user":"x","pass":"y"},"auto_csrf":"https://target.example/login"}'
+```
 
 ## 交战纪律（引擎强制，不靠自觉）
 
 - 范围白名单外的目标一律拒绝（含 DNS 解析校验防"形似目标"）
 - 利用级动作必须引用台账已验证发现，否则引擎拒绝执行
 - 破坏性动作规则门 deny（删除类接口/SQL 破坏语句/危险 shell）
-- 全动作审计留痕，哈希链防篡改；测试凭据/会话不进仓库（.gitignore 强制）
+- 全动作审计留痕，哈希链 + seq + 可选 HMAC/锚点防篡改（无 key/锚点时仅能检测局部编辑；有 key/锚点可检测全量重算重写与尾部截断）；测试凭据/会话不进仓库（.gitignore 强制）
 
 ## 合规与免责声明
 
@@ -128,7 +147,7 @@ camty/
 │   │   └── state.py          #     Engagement + 血缘台账
 │   ├── guardrail/            #   治理层
 │   │   ├── scope.py          #     范围白名单（deny-by-default + DNS 校验 + 速率）
-│   │   ├── audit.py          #     审计哈希链（防篡改可回放）
+│   │   ├── audit.py          #     审计哈希链 + seq + 可选 HMAC/锚定（防篡改可回放）
 │   │   ├── rules.py          #     破坏性动作规则门（deny 规则库）
 │   │   ├── approval.py       #     三模式审批（交互/模型兜底/自动）
 │   │   ├── preauth.py        #     预授权队列（批量放行 + 审计）
@@ -154,7 +173,7 @@ camty/
 ├── packs/                    # 场景包：single-web / ext-web / int-ad（阶段链 + 攻击图）
 ├── playbooks/                # 战术手册：web/（10+ 服务指纹应对）+ ad/（ASREP/Kerberoast/
 │                             #   LAPS/委派/SMB relay）
-├── tests/                    # 245 项测试（16 个套件：引擎/越权/对抗/MITM E2E/破解实测...）
+├── tests/                    # 349 项测试（27 个套件：引擎/越权/对抗/MITM E2E/破解实测...）
 ├── scripts/                  # 辅助（build_beacon/pack_xor/smoke_browser/fetch_tools/build_dist）
 ├── docs/                     # design.md + c2-design.md（协议与路线）
 ├── engagements/              # 交战配置（demo 模板；真实交战数据被 .gitignore 隔离）

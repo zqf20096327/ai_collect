@@ -34,7 +34,7 @@ The installer only runs in a folder with no `ComfyUI` or `python_embeded` subfol
 **Coming from v0.8:** install into a new folder. To keep your models where they are, see [Models](#models).
 
 Demo on YouTube:
-[![demo](https://i.ytimg.com/vi/BHuoCsjz0Hg/maxresdefault.jpg)](https://www.youtube.com/watch?v=BHuoCsjz0Hg)
+[![demo](https://i.ytimg.com/vi/pKBRxelqL64/maxresdefault.jpg)](https://www.youtube.com/watch?v=pKBRxelqL64)
 
 ## What you get
 

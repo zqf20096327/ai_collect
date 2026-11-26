@@ -90,7 +90,7 @@ Find more specialized finetuned models on [huggingface.co](https://huggingface.c
 - **Tagging**<br>
   Models for generating keyword captions for images and videos.
   - [JoyTag](https://github.com/fpgaminer/joytag)
-  - [PixAI Tagger (onnx)](https://huggingface.co/deepghs/pixai-tagger-v0.9-onnx)
+  - [PixAI Tagger v0.9 (onnx)](https://huggingface.co/deepghs/pixai-tagger-v0.9-onnx), [PixAI Tagger v1.0](https://huggingface.co/pixai-labs/pixai-tagger-v1.0)
   - [WD (onnx)](https://huggingface.co/SmilingWolf/wd-eva02-large-tagger-v3) (eva02 recommended)
 
 - **Captioning**<br>

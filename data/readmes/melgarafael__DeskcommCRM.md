@@ -126,10 +126,16 @@ usuário, retoma de onde parou.
 ### Outra hospedagem? (Hostinger, Coolify, Dokploy, CapRover…)
 
 Funciona. Se a sua VPS já vem com um **proxy reverso próprio** ocupando as portas 80/443, o
-instalador **detecta isso sozinho** e publica o CRM através dele, em vez de tentar subir um
-Caddy que não caberia. Num caso específico — proxy em `--network host`, como faz a Hostinger —
-ele **pergunta em vez de adivinhar**, porque publicar atrás do proxy errado instala "com
-sucesso" um site mudo. Detalhes em [`hostgator-setup-kit/README.md`](hostgator-setup-kit/README.md#vps-que-já-vem-com-proxy-próprio-hostinger-coolify-dokploy).
+`install.sh` (o instalador com o banco no Supabase Cloud, este aqui de cima) **detecta isso
+sozinho** e publica o CRM através dele, em vez de tentar subir um Caddy que não caberia. Num
+caso específico — proxy em `--network host`, como faz a Hostinger — ele **pergunta em vez de
+adivinhar**, porque publicar atrás do proxy errado instala "com sucesso" um site mudo.
+
+**Com o banco na mesma VPS (`install-single-server.sh`) a detecção não roda:** sem aviso, ele
+sobe o Caddy do kit, que briga pelas portas com o proxy da hospedagem. Se a sua VPS tem um
+Traefik, declare `REVERSE_PROXY=traefik` e `TRAEFIK_NETWORK` **no próprio comando**, antes de
+rodar — o exemplo pronto está em [`docs/saas/coolify.md`](docs/saas/coolify.md#passo-5--instalar-o-crm-e-o-banco).
+Detalhes em [`hostgator-setup-kit/README.md`](hostgator-setup-kit/README.md#vps-que-já-vem-com-proxy-próprio-hostinger-coolify-dokploy).
 
 ### Primeiro acesso
 
@@ -240,6 +246,7 @@ Passo a passo em linguagem simples: [`docs/ATUALIZANDO.md`](docs/ATUALIZANDO.md)
 | `restore.sh` | Restaura um backup |
 | `reset-password.sh` | Redefine a senha de um usuário |
 | `reset-mfa.sh` | Remove o MFA de quem perdeu o celular |
+| `change-email.sh` | Troca o e-mail de login (o dono criado como `admin@<domínio>`) |
 | `healthcheck.sh` | Diagnóstico de todos os serviços — sai 1 quando o app não está saudável |
 
 > **Backup importa:** o plano grátis do Supabase **não faz backup sozinho**. Vale agendar
@@ -325,7 +332,7 @@ Toda tela tem porta na navegação — o CI reprova tela que existe mas em que s
 | **WhatsApp** | WAHA Plus (engine NOWEB) + Meta Cloud API | QR pra começar rápido; canal oficial pra escala |
 | **Filas** | `event_log` table + workers (cron) | Trigger de banco nunca faz HTTP |
 | **Rate limit** | Upstash Redis (sliding window) | Serverless, free tier suficiente |
-| **AI** | Vercel AI SDK v7 — OpenRouter, Requesty, Anthropic, OpenAI e Google | Instalador pergunta qual; troca depois pela tela |
+| **AI** | Vercel AI SDK v7 — OpenRouter, Requesty, AI/ML API, Anthropic, OpenAI e Google | Instalador pergunta qual; troca depois pela tela |
 | **Validação** | Zod | Input externo, env, payloads |
 | **Observability** | Sentry (scrub em erro, transação, span e breadcrumb) | Telemetria opt-in no install |
 | **Hospedagem** | VPS com Docker (HostGator/SP na parceria) | App + WhatsApp + workers na sua máquina |
@@ -750,8 +757,4 @@ Quer apoiar o projeto de outro jeito? [Patrocine no GitHub Sponsors](https://git
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/World2576"><img src="https://avatars.githubusercontent.com/u/202460698?v=4?s=64" width="64px;" alt="World2576"/><br /><sub><b>World2576</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=World2576" title="Code">💻</a></td>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/wanjinhao1"><img src="https://avatars.githubusercontent.com/u/34562501?v=4?s=64" width="64px;" alt="Kratos"/><br /><sub><b>Kratos</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=wanjinhao1" title="Code">💻</a></td>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/Denispds"><img src="https://avatars.githubusercontent.com/u/151410339?v=4?s=64" width="64px;" alt="Denis pereira dos santos Araújo"/><br /><sub><b>Denis pereira dos santos Araújo</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=Denispds" title="Code">💻</a></td>
-      <td align="center" valign="top" width="12.5%"><a href="https://github.com/gabriel-lima-git-hub"><img src="https://avatars.githubusercontent.com/u/306846636?v=4?s=64" width="64px;" alt="gabriel-lima-git-hub"/><br /><sub><b>gabriel-lima-git-hub</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=gabriel-lima-git-hub" title="Code">💻</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="12.5%"><a href="https://github.com/lucas-nobrega"><img src="https://avatars.githubusercontent.com/u/38710249?v=4?s=64" width="64px;" alt="Lucas"/><br /><sub><b>Lucas</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Alucas-nobrega" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/gabriel-lima-git-hub"><img src="https://avatars.githubusercontent.com/u/306846636?v=4?s=64" width="64px;" alt="gabriel-lima-git-hub"/><br /><sub><b>ga

@@ -23,19 +23,29 @@ Markdownify is a Model Context Protocol (MCP) server that converts various file 
 
 ## Getting Started
 
+Prerequisites:
+
+- [Bun](https://bun.sh/) for JavaScript dependency management and builds.
+- Node.js 22 or later (also used by the Repomix CLI).
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) on `PATH` for locked Python setup.
+- Python 3.11–3.14. uv can install the development interpreter selected by `.python-version` if needed; Python 3.15 is not supported.
+
 1. Clone this repository
 2. Install dependencies:
+
    ```
-   bun install
+   bun install --frozen-lockfile
    ```
 
-   The `preinstall` step creates a Python virtual environment at `.venv` and installs `markitdown[all]`.
+   The `preinstall` step runs `uv sync --locked --extra all --no-dev`, creating `.venv` and installing MarkItDown's full feature set at the exact versions in `uv.lock`. Setup fails if the lockfile is stale or Python installation fails. If dependency lifecycle scripts are disabled, run `node preinstall.js` manually.
 
 3. Build the project:
+
    ```
    bun run build
    ```
 4. Start the server:
+
    ```
    bun start
    ```
@@ -45,6 +55,14 @@ Markdownify is a Model Context Protocol (MCP) server that converts various file 
 - Use `bun run dev` to start the TypeScript compiler in watch mode
 - Modify `src/server.ts` to customize server behavior
 - Add or modify tools in `src/tools.ts`
+
+### Updating dependencies
+
+Normal installs consume the committed lockfiles; they do not upgrade packages.
+
+- JavaScript: update the intended ranges in `package.json`, run `bun update --ignore-scripts`, then commit `package.json` and `bun.lock`.
+- Python: update `pyproject.toml` as needed, run `uv lock --upgrade`, then commit `pyproject.toml` and `uv.lock`. Both the local `all` and Docker `pdf` profiles are resolved in this one lockfile.
+- Verify with `uv lock --check`, `node preinstall.js`, `bun run build`, `bun test`, and `bash scripts/docker-smoke-test.sh` when Docker is available.
 
 ## Usage with Desktop App
 
@@ -67,16 +85,41 @@ To integrate this server with a desktop app, add the following to your app's ser
 
 All paths default to sensible values; override only when the defaults don't fit your install layout.
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `MARKITDOWN_PATH` | `<project>/.venv/bin/markitdown`, then `markitdown` on `PATH` | Absolute path to the `markitdown` executable. Set this when you've installed markitdown system-wide (e.g. `pipx install "markitdown[pdf]"`) instead of using the bundled venv. |
-| `REPOMIX_PATH` | `<project>/node_modules/.bin/repomix`, then `repomix` on `PATH` | Absolute path to the `repomix` executable used by `git-repo-to-markdown`. |
-| `MD_ALLOWED_PATHS` | unset (unrestricted) | Path-delimiter-separated list (`:` on POSIX, `;` on Windows) of directories the server is allowed to read. When set, all file-input tools (`pdf-to-markdown`, `get-markdown-file`, etc.) reject paths outside these directories. |
-| `MD_SHARE_DIR` | unset | Deprecated alias for `MD_ALLOWED_PATHS` (single directory). Still honored for backward compatibility. |
+| Variable           | Default                                                         | Purpose                                                                                                                                                                                                                          |
+| ------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MARKITDOWN_PATH`  | `<project>/.venv/bin/markitdown`, then `markitdown` on `PATH`   | Absolute path to the `markitdown` executable. Set this when you've installed markitdown system-wide (e.g. `pipx install "markitdown[pdf]"`) instead of using the bundled venv.                                                   |
+| `REPOMIX_PATH`     | `<project>/node_modules/.bin/repomix`, then `repomix` on `PATH` | Absolute path to the `repomix` executable used by `git-repo-to-markdown`.                                                                                                                                                        |
+| `MD_ALLOWED_PATHS` | unset (unrestricted)                                            | Path-delimiter-separated list (`:` on POSIX, `;` on Windows) of directories the server is allowed to read. When set, all file-input tools (`pdf-to-markdown`, `get-markdown-file`, etc.) reject paths outside these directories. |
+| `MD_SHARE_DIR`     | unset                                                           | Deprecated alias for `MD_ALLOWED_PATHS` (single directory). Still honored for backward compatibility.                                                                                                                            |
+
+## Usage with HTTP (Streamable HTTP transport)
+
+By default the server runs over `stdio`. To run it as a stateless Streamable HTTP server (listening on `127.0.0.1:3000/mcp` by default):
+
+```sh
+MD_ALLOWED_PATHS=/path/to/docs bun dist/index.js --transport=http --port=3000
+```
+
+Or via environment variables:
+
+```sh
+MCP_TRANSPORT=http MCP_PORT=3000 MD_ALLOWED_PATHS=/path/to/docs bun dist/index.js
+```
+
+| Flag / Env                                  | Default                                 | Purpose                                                                    |
+| ------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- |
+| `--transport=stdio\|http` / `MCP_TRANSPORT` | `stdio`                                 | Transport mode.                                                            |
+| `--host=HOST` / `MCP_HOST`                  | `127.0.0.1`                             | Bind address for HTTP mode. Defaults to loopback only.                     |
+| `--port=N` / `MCP_PORT`                     | `3000`                                  | Port for HTTP mode (ignored in `stdio` mode).                              |
+| `MCP_ALLOWED_HOSTS`                         | loopback hosts when bound to loopback   | Comma-separated list of allowed `Host` headers (DNS-rebinding protection). |
+| `MCP_ALLOWED_ORIGINS`                       | loopback origins when bound to loopback | Comma-separated list of allowed browser `Origin` headers.                  |
+
+> **Security note:** The HTTP transport has no built-in authentication. Always set `MD_ALLOWED_PATHS` when running over HTTP, keep `--host=127.0.0.1` for local use, or place it behind an authenticating reverse proxy with `MCP_ALLOWED_HOSTS` / `MCP_ALLOWED_ORIGINS` configured.
 
 ## Usage with Docker
 
 Build and run:
+
 ```sh
 docker build -t markdownify-mcp .
 docker run --rm -i \
@@ -86,9 +129,10 @@ docker run --rm -i \
 ```
 
 Notes for the Docker MCP catalog (`mcp/markdownify`):
+
 - Mount any host directories you want the server to read into the container, then pass the **container** paths to the tools (e.g. `/data/foo.pdf`, not `/Users/you/Documents/foo.pdf`).
 - Set `MD_ALLOWED_PATHS` to the colon-separated list of mounted directories so the server enforces a read boundary that matches the bind mount.
-- The published Docker image installs `markitdown[pdf]` only — audio transcription and image OCR (`audio-to-markdown`, `image-to-markdown`) require the `[all]` extras and will fail in the slim image. Use the local install (`bun install`) for the full feature set.
+- The Docker image installs only the locked `pdf` profile (`uv sync --locked --extra pdf`), not the full `all` profile. Audio transcription and image OCR (`audio-to-markdown`, `image-to-markdown`) require the `[all]` extras and will fail in the slim image. Use the local install (`bun install --frozen-lockfile`) for the full feature set.
 
 ## Available Tools
 

@@ -236,7 +236,7 @@ Chat + tools ────┘
 
 Both editing paths share the document and history. The host validates scope, source evidence, locks, and revisions before applying an edit. The agent can inspect sources, read skills, ask structured questions, and prepare dependent stages. Registered browser tools support consented source sampling, candidate previews, one verified correction round, and export tied to the applied revision.
 
-The accepted baseline is **local-editor-v14**, using **agent kit 0.2.9**, **loop 0.2.0**, and published **engine 1.2.3**. Older saved runs retain their original behavior and budgets. The latest shared editing behavior is reused by the commercial host through its own adapters; commercial services are not copied into this app.
+The stable source default is **local-editor-v14**, using **agent kit 0.2.10**, **loop 0.2.0**, and published **engine 1.3.1**. Brand Kits or `DOJO_VISUAL_REVIEW=1` select the 0.2.12 candidate. New local runs retain explicit authoring/visibility policies; saved runs keep their original policies. Older saved runs retain their original behavior and budgets. The latest shared editing behavior is reused by the commercial host through its own adapters; commercial services are not copied into this app.
 
 - **Web → agent:** selected editor components, managed and checked by file hashes.
 - **Engine → both apps:** published rendering/playback/export packages at exact versions.
@@ -295,6 +295,10 @@ Live provider probes are opt-in and incur your provider's charges; see [mileston
 ## License
 
 MIT for the agent and extracted editor code. Engine and third-party assets retain their notices. See [THIRD_PARTY.md](THIRD_PARTY.md).
+
+### Portable projects
+
+Use **Project package** to export an editable `.dojoproject` file with media and registered fonts. Restore it into an empty project in a fresh browser. The package excludes provider accounts/jobs and verified transcript authority; captions remain editable and new speech cuts need fresh transcription. Limits and evidence are in the readiness ledger.
 
 ### External coding agents
 

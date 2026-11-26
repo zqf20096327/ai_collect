@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://mcprush.com/madgodinc/mgi-mind-mcp"><img width="380" height="200" src="https://mcprush.com/badge/mgi-mind-mcp/card.svg" alt="MGI-Mind MCP server" loading="lazy" /></a>
+  <a href="https://glama.ai/mcp/servers/madgodinc/mgi-mind"><img src="https://glama.ai/mcp/servers/madgodinc/mgi-mind/badges/score.svg" alt="madgodinc/mgi-mind MCP server" loading="lazy" /></a>
 </p>
 
 Local long-term memory for AI assistants. One Rust binary, a local Qdrant

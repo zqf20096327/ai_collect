@@ -17,6 +17,8 @@ You slept 5 hours, your knee has an old injury, and you only packed one pair of 
 
 Open source · Use it online or run it yourself · Uses your own LLM
 
+🧪 Evaluated with [mirobody-env](https://github.com/thetahealth/mirobody-env), which builds environments to test the agent thoroughly
+
 **👉 Try it now: <https://ironm.mirobody.ai>** (no install, works in a phone browser)
 
 **English** · [简体中文](README.zh-CN.md)
@@ -243,6 +245,8 @@ make setup                             # Python environment
 make pg-install pg-init                # local PostgreSQL 18 + pgvector (needs micromamba)
 make run                               # http://127.0.0.1:18090
 ```
+
+For evaluation we use [mirobody-env](https://github.com/thetahealth/mirobody-env), which builds environments to test the agent thoroughly.
 
 ## 🙏 Acknowledgements
 

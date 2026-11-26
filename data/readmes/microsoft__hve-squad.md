@@ -1,0 +1,498 @@
+---
+title: hve-squad
+description: A GitHub Copilot plugin composing HVE Core and HVE Squad agents, skills, rules, and hooks.
+---
+
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="hve-squad logo" width="120" height="120" />
+</p>
+
+<h1 align="center">hve-squad</h1>
+
+<p align="center">
+  A GitHub Copilot plugin that bundles the pinned HVE Core cast with HVE Squad agents, skills, rules,
+  and hooks, and ships a Squad Coordinator that routes your request to agents in parallel.
+  The APM package remains available as a repository-local fallback.
+</p>
+
+<!-- markdownlint-disable MD013 MD033 -->
+<p align="center">
+  <a href="https://github.com/microsoft/hve-squad/actions/workflows/pr-validation.yml"><img src="https://github.com/microsoft/hve-squad/actions/workflows/pr-validation.yml/badge.svg" alt="PR Validation" /></a>
+  <a href="https://github.com/microsoft/hve-squad/actions/workflows/plugin-conformance.yml"><img src="https://github.com/microsoft/hve-squad/actions/workflows/plugin-conformance.yml/badge.svg" alt="Plugin Conformance" /></a>
+  <a href="https://github.com/microsoft/hve-squad/actions/workflows/codeql.yml"><img src="https://github.com/microsoft/hve-squad/actions/workflows/codeql.yml/badge.svg" alt="CodeQL" /></a>
+  <a href="https://github.com/microsoft/hve-squad/actions/workflows/zizmor.yml"><img src="https://github.com/microsoft/hve-squad/actions/workflows/zizmor.yml/badge.svg" alt="Zizmor" /></a>
+  <a href="https://github.com/microsoft/hve-squad/actions/workflows/checkov.yml"><img src="https://github.com/microsoft/hve-squad/actions/workflows/checkov.yml/badge.svg" alt="Checkov" /></a>
+  <br />
+  <!-- The canonical api.scorecard.dev/badge endpoint redirects to shields.io's
+       ossf-scorecard route, which still reads the legacy api.securityscorecards.dev
+       mirror. That mirror has not ingested this repository, so the canonical badge
+       renders "invalid repo path". Read the score from the live API instead. -->
+  <a href="https://scorecard.dev/viewer/?uri=github.com/microsoft/hve-squad"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.scorecard.dev%2Fprojects%2Fgithub.com%2Fmicrosoft%2Fhve-squad&query=%24.score&label=openssf%20scorecard&suffix=%20%2F%2010&color=brightgreen" alt="OpenSSF Scorecard" /></a>
+  <a href="https://www.bestpractices.dev/projects/14231"><img src="https://www.bestpractices.dev/projects/14231/badge" alt="OpenSSF Best Practices" /></a>
+  <a href="https://github.com/microsoft/hve-squad/releases/latest"><img src="https://img.shields.io/github/v/release/microsoft/hve-squad?sort=semver" alt="Latest release" /></a>
+  <a href="./LICENSE.TXT"><img src="https://img.shields.io/github/license/microsoft/hve-squad" alt="License" /></a>
+  <a href="https://microsoft.github.io/hve-squad/"><img src="https://img.shields.io/badge/docs-microsoft.github.io%2Fhve--squad-blue" alt="Documentation" /></a>
+</p>
+<!-- markdownlint-enable MD013 MD033 -->
+
+## New here? Chat with the Squad Coach
+
+After installing HVE Squad, select the **Squad Coach** agent and describe your goal in everyday language. No initialization is needed:
+
+```text
+I need to modernize two applications owned by different teams. Help me choose the simplest setup and walk me through every step, with the commands and prompts to use.
+```
+
+The advisory-only Coach reads current installed code, entrypoint contracts, and documentation rather
+than following a frozen feature checklist. It recommends the simplest sufficient setup, identifies
+essential and optional inputs, and gives a detailed, source-cited runbook: where to act, which agent to
+select, exact messages or commands, expected outputs, approvals, and how to resume. Ask about any
+shipped capability; the Coach discovers its workflow from source without needing a charter update.
+It reads existing state but never initializes, dispatches, changes configuration, or migrates it.
+
+- **VS Code:** select **Squad Coach** from the Copilot Chat agents dropdown, then send the message.
+- **Copilot CLI:** enter `/agent`, select **Squad Coach**, then send the message.
+- **Copilot App:** select **Squad Coach**, then send the message.
+
+Agent messages are prefix-free on all three hosts. A plugin may display the agent as
+`hve-squad:squad-coach`. The Coach also helps after setup, including taking a confirmed squad into
+autopilot, using ranked models, or planning a later federation promotion; it derives the steps from
+the installed version rather than owning those execution workflows.
+
+See [Getting Started → Squad Coach](https://microsoft.github.io/hve-squad/getting-started.html#chat-with-the-squad-coach)
+for example conversations, the topology decision guide, preparation checklists, and an end-to-end
+initialization-to-completion example. The Coach uses the terms defined on
+[Concepts](https://microsoft.github.io/hve-squad/concepts.html): read it first if team, federation, profile,
+pack, `init` or `promote` is new to you.
+
+## Prefer a visual workspace instead of chat commands? Open HVE Squad Studio
+
+Non-technical users, first-time AI users, and beginners working in the **GitHub Copilot app** can use **HVE Squad Studio** (`hve-squad-studio`)—an opt-in side-panel canvas that guides you through cards, uploads, and buttons instead of chat syntax, while keeping chat and CLI workflows completely unchanged for technical users.
+
+- **Installed with the plugin:** Installing `hve-squad` in the GitHub Copilot app (**Customize → Plugins**) includes **HVE Squad Studio** automatically in every new project session.
+- **Installed with the APM fallback (`apm install`):** Run this one-time helper command in your project (or pass `-Scope user` for your personal Copilot profile), then start a new session:
+
+```powershell
+pwsh -File .agents/skills/squad/scripts/Install-SquadStudioExtension.ps1 -Scope repository
+```
+
+- **How to start it (no agent selection or `init` needed):** Open the **Canvas** panel in the GitHub Copilot app and select **HVE Squad Studio**, or simply send `Open HVE Squad Studio` in chat—even without selecting an agent first.
+- **How it works in 3 steps:**
+  1. **Choose What to Build:** Pick a starter card (or use **Not sure where to start?**), optionally upload existing notes or documents for an automatic **Intake Gate** checkup, review any auto-suggested platform add-ons (packs) and optional **Safety, Budget & Design Checkups** (councils), and click **Start Building with HVE Squad**. Behind the scenes, **HVE Squad Studio** selects **Squad Coordinator** and pre-initializes a single chosen squad automatically.
+  2. **Watch Progress & Decide:** Follow plain-language progress, read checkup verdict cards, and answer one-question decision cards with a single click.
+  3. **Your Finished Work:** Open finished deliverables in your editor, read plain-English summaries, or apply one-click adjustments.
+
+See [Getting Started → HVE Squad Studio](https://microsoft.github.io/hve-squad/getting-started.html#use-hve-squad-studio) for the full step-by-step guide.
+
+## Documentation
+
+[![Observed efficiency benchmark: document quality, acceptance and average benchmark time](benchmarks/efficiency/badge.svg)](benchmarks/efficiency/report.md)
+
+Full documentation lives on the project site:
+
+**[microsoft.github.io/hve-squad](https://microsoft.github.io/hve-squad/)**
+
+> **Merged does not mean released.** This README and the documentation follow `main`.
+> The site shows the latest stable and rolling pre-release numbers; **Pre-release only**
+> badges identify documented features that have not shipped in stable.
+> Follow [Install and test the pre-release](https://microsoft.github.io/hve-squad/getting-started.html#testing-the-pre-release)
+> for the current tag, exact installation command, testing steps, and return-to-stable command.
+
+| Page                                                                          | What it covers                                                           |
+|-------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [Concepts](https://microsoft.github.io/hve-squad/concepts.html)               | The vocabulary in one place: teams, federations, profiles, packs, `init`, `promote`, autopilot, and where state lives |
+| [Getting Started](https://microsoft.github.io/hve-squad/getting-started.html) | Plugin install and updates, Squad Coach, HVE Squad Studio, preview testing, APM fallback, first run |
+| [Usage](https://microsoft.github.io/hve-squad/usage.html)                     | Profiles, autonomy modes, cost ceilings, remote approval, and Init Mode  |
+| [Ecosystem](https://microsoft.github.io/hve-squad/ecosystem.html)             | The plugin, APM fallback, MCP server, MAF host, and which surface to use |
+| [Maintaining](https://microsoft.github.io/hve-squad/maintaining.html)         | Dependency generation, author workflow, customization, release process   |
+| [Troubleshooting](https://microsoft.github.io/hve-squad/troubleshooting.html) | Known install errors with fixes, versioning, and repository notes        |
+
+The site source is in [docs/](docs/), with its shared shell in [site/](site/), and is
+built and published to GitHub Pages by [.github/workflows/docs.yml](.github/workflows/docs.yml).
+Documentation, package-version, and pending change-fragment updates on `main` refresh the site.
+
+## Benchmark methodology and sources
+
+The [efficiency benchmark](benchmarks/efficiency/README.md) records document quality,
+functional acceptance, workflow compliance, measured time and consumption separately.
+Each branch carries its own score in `benchmarks/efficiency/`: run
+`pwsh -NoProfile -File ./tests/tier2/live-benchmark/Invoke-Benchmark.ps1 [-Runs 1..3]`
+to refresh it (about 300 Copilot credits and 20 minutes per run) and commit the result.
+Its methodology review and measurement hardening drew on these primary sources
+(consulted 20 October 2026):
+
+| Source | How it informed the benchmark |
+|---|---|
+| Anthropic, [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) | Separate outcomes from execution trajectories; combine deterministic checks with model grading and retain failed attempts. |
+| Kapoor et al., [AI Agents That Matter](https://arxiv.org/abs/2407.01502) | Report resource consumption alongside quality, preserve reproducibility metadata and distinguish development tasks from held-out evaluation. |
+| Yao et al., [tau-bench](https://arxiv.org/abs/2406.12045) | Distinguish task success from repeated-run reliability and policy compliance; a successful final artifact alone does not establish a compliant workflow. |
+| OpenAI, [Evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices) | Use task-specific criteria, representative cases and human evidence to assess grader quality rather than trusting a scalar score alone. |
+| Zheng et al., [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685) | Treat model-judge scores as measurements requiring bias and agreement checks, not authenticated expert judgments. |
+| OpenTelemetry, [GenAI metrics](https://github.com/open-telemetry/semantic-conventions-genai/blob/547934afa90a34298441caf80c43b27255c3a292/docs/gen-ai/gen-ai-metrics.md) and [token metrics](https://github.com/open-telemetry/semantic-conventions-genai/blob/547934afa90a34298441caf80c43b27255c3a292/docs/gen-ai/gen-ai-token-metrics.md) | Define timing boundaries and token-accounting semantics explicitly. These are pinned Development-stage references, not a claim of OpenTelemetry instrumentation or conformance. |
+| NIST/SEMATECH, [Confidence intervals](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm) | Keep three-trial results descriptive; observed pass counts and resource differences do not establish statistical significance. |
+
+These sources informed the design; they do not certify it. A score from one to three runs of
+a single scenario is a regression-screening reference, not a representative
+agent leaderboard. Human calibration, repeated-judge agreement and broader held-out
+task studies remain future empirical work. See the [generated report](benchmarks/efficiency/report.md)
+for actual results and the [benchmark guide](benchmarks/efficiency/README.md) for how to run it.
+
+## Related repositories
+
+This repository is the source of truth and now publishes the installable plugin from its own
+`plugin` and `plugin-preview` branches. Two host integrations remain separate repositories:
+
+- **[hve-squad-mcp](https://github.com/Peter-N91/hve-squad-mcp)** — an outbound MCP server that
+  publishes the squad as model-invocable tools, so hosts such as Copilot Studio can call it.
+  Docs: [peter-n91.github.io/hve-squad-mcp](https://peter-n91.github.io/hve-squad-mcp/)
+- **[hve-squad-maf](https://github.com/Peter-N91/hve-squad-maf)** — the Microsoft Agent Framework
+  host for running HVE Squad through MAF without changing the plugin distribution.
+
+Use the plugin for VS Code, Copilot CLI, and the Copilot app. Use APM only when the customization
+must be copied into a repository, and use the MCP or MAF repository for those host models. See
+[Ecosystem](https://microsoft.github.io/hve-squad/ecosystem.html) for the full comparison.
+
+## Quick start
+
+**Prerequisite on every platform: PowerShell 7+ (`pwsh`).** The Squad Scribe's cost ledger
+(`Measure-SquadLedger.ps1`) and the `routing=` helper (`Resolve-SquadModelRoute.ps1`) require it;
+Windows PowerShell 5.1 is not enough. Without it the squad falls back to slower, less reliable
+hand-derived ledgers. Install it with `winget install --id Microsoft.PowerShell -e` (Windows),
+`brew install --cask powershell` (macOS) or your distribution's
+[package](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) (Linux).
+
+Install the stable plugin marketplace and its single plugin:
+
+```text
+copilot plugin marketplace add microsoft/hve-squad#plugin
+copilot plugin install hve-squad@hve-squad
+```
+
+In VS Code or the Copilot app, add `microsoft/hve-squad#plugin` from **Customize → Plugins**
+and install `hve-squad`. The one plugin already contains the exact HVE Core commit validated
+with that release and contains no MCP server registration.
+
+The APM fallback currently requires **APM CLI 0.29.0**:
+
+```powershell
+apm --version  # must report 0.29.0
+apm install "microsoft/hve-squad#vX.Y.z" --target copilot
+```
+
+See [Getting Started](https://microsoft.github.io/hve-squad/getting-started.html) for updates,
+the `plugin-preview` test channel, APM fallback commands, and troubleshooting.
+
+Then open the agents dropdown in VS Code Copilot Chat, select **Squad Coordinator**, and initialize the squad:
+
+```text
+init
+```
+
+After confirming the proposed team, send the work request separately in the same conversation:
+
+```text
+request="add input validation to the login form"
+```
+
+Add an optional model-spend ceiling when you want exact consumed-to-date accounting plus a conservative reservation for the actual next dispatch wave:
+
+```text
+request="add input validation to the login form" cost-ceiling=10
+```
+
+Within the same run, omitting the argument preserves an active ceiling. Use
+`cost-ceiling=unset` to remove it explicitly. See
+[Cost admission control](https://microsoft.github.io/hve-squad/usage.html#cost-admission-control)
+for exact metering, reservation, approval, stopping, and federation behavior. Fresh-squad initialization is outside
+admission. Complete host usage records are deduplicated in native credits; lagging checkpoints are diagnostics only. Ordinary federation routing applies the ceiling independently to each selected sub-squad;
+only untargeted federation autopilot uses one aggregate federation ceiling.
+
+### Choosing models per role (`routing=`)
+
+**Default behavior (`routing=off`):** No `model` parameter is passed to any dispatch, so each agent runs on its own frontmatter model or the session model, exactly as before this feature existed.
+
+`routing=` has four modes. The mode is **saved in `team.md`** and stays in effect on later requests until you change it, so you pass it once:
+
+| Mode | How each role's model is chosen | What `team.md` shows |
+|------|---------------------------------|----------------------|
+| `off` (default) | Not chosen; the agent's own pin or the session model runs | No `Model` column |
+| `ranked` | The squad picks the model that best fits the role's work, among the models your host offers | `Model routing: ranked` and a `Model` column listing each pick |
+| [`economy` (release availability)](https://microsoft.github.io/hve-squad/usage.html#routing-economy) | Every routed role chooses the cheapest known-price model inside its floor. Qualification is preferred and disclosed; if none qualifies, the cheapest priced floor candidate is used instead of Ranked. Consent is recorded first; gates never change | `Model routing: economy` and a `Model` column listing each pick |
+| `manual` | You pick, once, with suggestions pre-filled | `Model routing: manual` and a `Model` column holding your picks |
+
+**Ranked is capability-first; Economy is price-first for every routed role.** Policy `squad-capability-v3` uses a common versioned comparison panel, selected by independent snapshot-wide coverage, never scores, prices or host availability (`references/model-scoring.md`). Implementation retains SciCode/Terminal-Bench and a visibly reduced SciCode panel. Economy prefers candidates whose full-panel percentiles reach `0.50`, whose reduced SciCode percentile reaches `0.75`, or whose class without evidence has declared fit at least 2, then selects the lowest known Blended price. If no candidate meets that preference, `floor-only-known-price-v1` selects the cheapest priced model still inside the role's floor; it never silently leaves a role on Ranked. Confidence and cost only break genuine Ranked capability ties. The 90-day safeguard applies to genuine verification, not publication age. A `fast` floor is a minimum, not a frontier ceiling. Coordinators keep the selected session model, and the Scribe keeps its pin.
+
+The compact discovery brief no longer ranks the whole roster. `New-SquadDispatchPlan.ps1` receives the real selected units and host model list, resolves only those roles, and returns the active-mode transition or changed cells. `Set-SquadModelRouting.ps1` applies it through an exact `team.md` hash check, so first activation and refresh of ranked, economy, or manual routing do not spend a Scribe model turn. On `task` hosts, `sessionModel: auto` is metadata rather than an availability list: active routing now fails before changing `team.md` unless the coordinator supplies the tool's advertised model enum. This prevents catalog-only IDs from being persisted and then silently losing to an agent's default pin.
+
+**How manual picks are made.** When you switch to `routing=manual`, whether at squad creation or later, the coordinator asks before dispatching anything:
+
+1. Accept the suggested model for every role (the ranked picks), or
+2. choose one model per assignment class, then
+3. override any individual role.
+
+Every question lists only models **your host can run** and that meet the role's `Model Tier` floor. On the Copilot CLI and the GitHub Copilot app, that is the exact list the `task` tool advertises. VS Code does not advertise a list, so the squad offers catalog models priced at or below a concrete, priced session model; `auto`, `unknown`, tier labels, and unpriced session models produce no automatic suggestion until a concrete picker value or rejection-reported list is available. If VS Code rejects a pick, you are asked again with the list VS Code reports. You can also edit a `Model` cell by hand; the squad validates it on every read.
+
+**What a `Model` cell holds.** One exact model id from the `Model ID` column of `consumption-rates.md` (for example `claude-sonnet-5.5`). A cell below the role's floor, an unknown id, or an id containing shell or prompt metacharacters is refused and logged, never guessed. That role then falls back to its `Model Tier`, and the next interactive turn asks again.
+
+**Precedence** (highest wins, per role):
+1. `routing=manual`: the role's valid `Model` cell.
+2. `routing=ranked`: the ranked pick for that role (`routing=economy`: the economy pick).
+3. `tier=` or the role's `team.md` Model Tier — today's fallback, unchanged.
+4. Omit the parameter — the no-policy default.
+
+**Unevaluated models:** A model the host offers but the catalog does not carry is never ranked or suggested. You can still type it as a manual pick; it is then labelled `unevaluated` in the dispatch record.
+
+**Which model to start the session on.** The model you pick in the chat, or pass with `--model`, runs the coordinator: it reads the roster, plans the stages, and dispatches every role. `routing=` never changes it. Start on a fixed model from the catalog's `balanced` class (the vendor's mid tier), as capable as `claude-sonnet-5.5`. Pick any model of that class your host offers, for example `claude-sonnet-5.5`, `gpt-6-sol`, `gpt-5.6-terra`, `gemini-3.8-flash`, or `grok-4.7`; the squad skill's `references/model-catalog.md` holds the current list. A `frontier-reasoning` model adds cost to every coordinator turn without improving the work, which `ranked` already sends to frontier models where it pays off. A `fast-lightweight` model is more likely to miss required steps, such as copying the `Model` cell or sending the Scribe hand-off together with the next stage. Under `auto`, the host can switch the coordinator's model mid-run, and the ledger cannot price its share.
+
+**Examples (in the Squad Coordinator conversation):**
+
+```text
+request="..." routing=ranked
+```
+Switch to ranked selection; `team.md` gains a `Model` column showing each role's pick.
+
+```text
+request="..." routing=economy
+```
+Switch every routed role to cost-first model selection after the all-role trade is accepted.
+
+```text
+request="..." routing=manual
+```
+Switch to manual selection; you are asked for the models before the request runs, and later requests reuse your picks.
+
+```text
+request="..." routing=off
+```
+Return to the default; the `Model` column is removed, and the decision log keeps your previous picks so switching back to `manual` can offer them again.
+
+For a federation request, select **Squad Federation Coordinator** instead:
+
+```text
+squad=product routing=manual
+```
+Switch the `product` sub-squad to manual selection; each sub-squad keeps its own picks.
+
+### Choosing work depth (`depth=`)
+
+`routing=` chooses models; `depth=` independently chooses how much work runs on this turn. Omit it for `depth=standard`, which keeps the full Research -> Plan -> Implement -> Review pipeline. `depth=quick` may skip Research and Plan only through the recorded bounded-lane or fresh-artifact rules, shrink eligible work stages, and add concurrency only for a bounded request or a verified `deliverable-fan-out` plan. It never changes a model, floor, gate, or later turn, and an unattended trigger cannot activate it from issue, pull-request, or comment text.
+
+```text
+request="update the named files and run their focused tests" depth=quick
+```
+
+The former `models=<key>:<id>,...` input is retired. If you pass it, it is not applied, and the coordinator points you to `routing=manual`.
+
+**Full catalog:** See `squad-src/.github/skills/squad/references/model-catalog.md`. It is a dated snapshot (retrieved 2026-09-30) with capability classes, per-class fit scores, pricing, and host-availability notes. After 90 days the catalog counts as stale, and ranking falls back to static tier pricing.
+
+**Deterministic helper:** `.github/skills/squad/scripts/Resolve-SquadModelRoute.ps1 -SquadRoot .copilot-tracking/squad` (PowerShell 7+, read-only) reports objective, granular capability, evidence and coverage, cost basis, selection reason, policy/snapshot/date, escalation, and `Model` cell status. On the CLI, pass `-AvailableModels` with your host's model ids; on VS Code, pass `-SessionModel`. Copy `rationale` into the existing Route rationale; a routing calculation does not observe host execution.
+
+**History and identity bullets:**
+
+The squad records which model routing requested, which model actually ran (if the host substituted one), and which model the host reported. These details appear in `.copilot-tracking/squad/history/` (single squad) or `.copilot-tracking/squad/members/<name>/history/` (federation) only while routing is `ranked`, `economy`, or `manual`. See the identity bullets in those history files for: Requested model, Effective model, Observed model, and Route rationale.
+
+**Important notes:**
+
+- **Exact per-role tokens and credits** — Complete native usage records carry the active `agentId`, four billed token categories, and nano-AIU. The ledger rolls nested workers into their top-level role, combines coordinator/Scribe as orchestration, and replaces estimates only when every row reconciles to the exact session total. Estimates remain solely as a visible fallback and for future Cost Preflight reservations, which cannot be exact before execution.
+- **Availability sources** — The catalog cites three GitHub official documentation pages (fetched at catalog build time): Supported AI models, Models and pricing, and AI model comparison. URLs are listed in the catalog header.
+
+**Optional ledger check:**
+
+After a squad run, you can verify the consumed and estimated consumption against the recorded history using the read-only script:
+
+```powershell
+.github/skills/squad/scripts/Measure-SquadLedger.ps1 -SquadRoot .copilot-tracking/squad -Check
+```
+
+Or, for a sub-squad in a federation:
+
+```powershell
+.github/skills/squad/scripts/Measure-SquadLedger.ps1 -SquadRoot .copilot-tracking/squad/members/<name> -Check
+```
+
+This script (PowerShell 7+) validates history integrity and the persisted ledger. With `-SessionLog auto` (the handoff default), it writes exact per-role uncached input, cache-read, cache-write, output, USD, and AI-credit rows from complete native records; nested subagents accrue to their owning role, and the native row sum must equal the session total. It removes the former duplicate Observed Usage section and drives Cost Comparison from the same exact snapshot. If identity or reconciliation fails, it leaves the estimator visibly in place; a gap in the history never does. Usage by an agent with no history entry keeps its own row, and every history entry no native log accounts for is a `NOTE:` line in the Derivation (JSON `exact.notes`) instead of an estimate. The two historical `state.json` estimator fields receive whichever basis the ledger actually used. A federation root is not written by `-Write`; its aggregate follows the federation procedure over member ledgers.
+
+Ordinary handoffs use the same deterministic writer in `off`, `ranked`, `economy`,
+and `manual` routing modes. The coordinator runs
+[`Write-SquadHandoff.ps1`](squad-src/.github/skills/squad/scripts/Write-SquadHandoff.ps1)
+directly with `-SquadRoot <root> -PayloadPath <payload.json> -Quiet`, without
+starting a Scribe subagent. Quiet mode returns one JSON status line containing
+`status`, `turn`, `dispatchEntries`, `historyCounts`, and `ledgerCheck`; warnings
+remain on stderr. `ledgerCheck: ledger-only` preserves the existing tolerated
+accounting-warning behavior and is not reported as `PASS`. Nonzero exits stop the
+handoff; they are not permission to bypass validation with handwritten state.
+
+Council, Intake Readiness, and Discovery Verdicts are deterministic too. After
+the handoff writer records the turn's history, consumption, and state, the
+coordinator runs
+[`Write-SquadVerdict.ps1`](squad-src/.github/skills/squad/scripts/Write-SquadVerdict.ps1)
+at the same root. It validates the complete verdict schema, derives council
+most-restrictive-wins synthesis, appends `decisions.md` under the same writer
+lock, rejects replays, and returns the stable Decision Ref without starting a
+Scribe subagent. Federation members use the identical script with their
+`members/<name>/` root; verdicts never land at the federation meta-root.
+
+Confirmed fresh initialization can now run directly through the same staged
+initializer with `-Direct`. `Get-SquadInitContext.ps1` prepares the full payload
+from confirmed profile, packs, names and notification choices; no model retypes
+the roster or rate template. The legacy Scribe input remains supported.
+Federation initialization follows the same rule:
+`Get-SquadFederationInitPlan.ps1` validates every confirmed member through that
+single-squad payload builder, and `Initialize-SquadFederation.ps1` builds new
+member trees in parallel, validates their ledgers and publishes under one lock
+without a Scribe model call. On a fresh root it publishes the complete federation;
+on an existing federation it preserves every existing member byte and commits
+only the new members plus additive registry, routing, history and aggregate state.
+Making an existing team larger is script-backed too:
+`Get-SquadRosterExpansionPlan.ps1` resolves confirmed catalog roles/packs and
+seals the current root, then `Expand-SquadRoster.ps1` applies the exact plan under
+the ordinary writer lock for either a plain squad or one registered federation
+member. It writes only `team.md`, `routing.md`, and one decision; it launches no
+Scribe, preserves `consumption.md`, `state.json`, rates, notifications, and
+history byte-for-byte, and checks the ledger read-only. This prevents a roster
+addition from replacing exact native accounting with the former estimated and
+observed refresh output. Verdicts, notifications, memory, `routing=off`,
+removal/recasting, duplicate-role members, connector changes, repairs, aggregate
+federation autopilot and run summaries keep their cold procedure.
+Direct and Scribe writes are serialized per squad root, and completion still
+requires dispatch history, consumption blocks, and an advanced state turn.
+Existing Markdown and JSON artifact formats are unchanged; no migration is needed.
+The historical Scribe orchestration file records actual coordinator overhead and
+Scribe usage only when the Scribe ran, not a fictional model call for script execution.
+
+Both coordinators now start from compact runtime contracts. The
+`Get-SquadDispatchBrief.ps1 -AsJson` metadata path works in every routing mode;
+it does not enable Economy's bounded lane elsewhere. `New-SquadDispatchPlan.ps1`
+orders explicit dependencies into safe waves, while `Test-SquadTurnCompletion.ps1`
+checks the actual turn's files, history, accounting and state in one read-only call.
+These scripts do not launch models, choose a specialist's answer or grant approval.
+Cold instructions have artifact-specific scopes rather than all loading on any
+squad-state access.
+
+Ordinary federation-root writes use `Write-SquadFederationHandoff.ps1` with a
+pre-dispatch snapshot and verified inner proofs. It preserves append-only bytes,
+records cross-member inputs, carries prior root overhead once and sums member
+totals without changing the existing federation schema. Promotion is also
+script-backed: `Get-SquadPromotionPlan.ps1` seals the read-only source/candidate
+inventory, then `Promote-SquadFederation.ps1` requires its exact hash plus an
+explicit relocate/keep decision for every candidate, stages and ledger-checks the
+complete federation, and publishes it under the ordinary writer lock. Stale plans,
+replay and collisions write nothing. Unsupported operations retain the cold path.
+PowerShell 7.4+ is required for the new coordinator helpers;
+hosts without it retain the full legacy procedure. Smaller prompts and offline
+script execution are not a claim about a particular live model's elapsed time.
+
+In VS Code Copilot Harness, use the agents dropdown to select the matching HVE Squad agent. Send only
+the request text and arguments shown above; do not add a slash-command prefix.
+
+See [Getting Started](https://microsoft.github.io/hve-squad/getting-started.html) for the full flow.
+
+## Repository structure
+
+- `apm.yml`: package metadata, dependency list, and scripts
+- `apm.lock.yaml`: resolved dependency lock file
+- `scripts/Update-ApmDependencies.ps1`: dependency generator
+- `squad-src/.github/`: locally authored squad source (agents, prompts, instructions, skills)
+- `docs/`: documentation site published to GitHub Pages
+- `apm_modules/`: installed dependencies (ignored by git)
+- `.github/`: generated/deployed local assets (ignored by git, except `.github/workflows/`)
+
+## Versioning
+
+- Releases follow [Semantic Versioning](https://semver.org/).
+- See [CHANGELOG.md](CHANGELOG.md) for what is included in each version.
+- Consumers can pin to a tagged version, for example `apm install "microsoft/hve-squad#vX.Y.z"`.
+
+Releases are cut by hand, when the pending work is judged ready rather than on a schedule.
+Between releases, everything already merged is installable from a rolling pre-release tagged
+with the version it is going to become:
+
+```powershell
+apm install "microsoft/hve-squad#vX.Y.z-pre" --target copilot
+```
+
+That tag moves on every merge, so re-run the command to pick up the newest build. Use it
+to try a fix before it ships; pin a released version for anything you depend on.
+
+## Support
+
+For usage questions, troubleshooting, and bug reports, see [SUPPORT.md](SUPPORT.md). Support for
+this project is provided on a best-effort basis by maintainers and the community through GitHub
+Issues.
+
+## Security
+
+Repository workflows provide CodeQL, Checkov, Zizmor, OpenSSF Scorecard, and
+static package conformance checks. Behavioral and semantic test tiers are
+available separately; see [CONTRIBUTING.md](CONTRIBUTING.md) for what runs
+automatically and what requires a manual run. Third-party GitHub Actions are
+pinned to full commit SHAs and workflow token permissions are declared
+explicitly.
+
+Do not report vulnerabilities through public GitHub issues. Follow
+[Microsoft's security reporting guidance](https://aka.ms/SECURITY.md).
+See [SECURITY.md](SECURITY.md) for the reporting policy and project scope.
+
+## Contributing
+
+Contributions are subject to the
+[Microsoft Contributor License Agreement](https://cla.opensource.microsoft.com/).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution, build, and test instructions.
+
+This project has adopted the
+[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and the
+[Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/), or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with questions
+or comments.
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services.
+Authorized use of Microsoft trademarks or logos is subject to and must follow
+[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+Use of Microsoft trademarks or logos in modified versions of this project must
+not cause confusion or imply Microsoft sponsorship. Any use of third-party
+trademarks or logos are subject to those third-party's policies.
+
+## Privacy and external services
+
+The documentation website loads Manrope, Source Sans 3, and JetBrains Mono from
+Google Fonts. Visiting the site can make browser requests to
+`fonts.googleapis.com` and `fonts.gstatic.com`, subject to
+[Google's Privacy Policy](https://policies.google.com/privacy).
+If these services are unavailable or blocked, the site uses system fallback
+fonts.
+
+The plugin runs through your selected Copilot host and model providers; their
+privacy and data-collection settings apply separately. HVE Squad runtime artifacts
+can contain task information, and optional notification features send configured
+payloads to GitHub or a webhook. Review those destinations and avoid including
+secrets or personal information in public artifacts or notifications.
+
+## License
+
+Copyright (c) Microsoft Corporation.
+
+This project is licensed under the MIT License. See [LICENSE.TXT](LICENSE.TXT) for details.
+
+The MIT License covers the original work in this repository (the `squad-src/`
+tree, `docs/`, `scripts/`, and package metadata). It does not extend to the
+third-party dependencies this package composes, which retain their own
+licenses. Documentation fonts also retain their own licenses. See [NOTICE](NOTICE)
+for attribution details.
+
+## Acknowledgements
+
+hve-squad is a distribution and composition layer built on top of
+[microsoft/hve-core](https://github.com/microsoft/hve-core), which is licensed
+under the MIT License (© Microsoft Corporation). The plugin bundles the pinned
+HVE Core content and its upstream notices. The APM fallback declares dependencies
+in [apm.yml](apm.yml) and fetches them at install time into `apm_modules/`.
+
+Some `hve-core` skill content is derived from OWASP Foundation publications and
+is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/);
+those skills carry their own attribution. See [NOTICE](NOTICE) for the full
+third-party attribution and trademark notice, including selected
+[github/awesome-copilot](https://github.com/github/awesome-copilot) resources,
+the adapted SQL migration advisor skill, and documentation fonts.

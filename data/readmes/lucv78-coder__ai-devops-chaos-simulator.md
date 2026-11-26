@@ -13,10 +13,11 @@
 <p align="center"><sub>Les chiffres sortent des <a href="https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html">nouveautés</a> : le journal des mises à jour, raconté par l'agent qui n'a rien relu.</sub></p>
 
 <p align="center">
+  <img src="assets/badges/version.svg" alt="version : alpha 0.68">
   <img src="assets/badges/build.svg" alt="build : passing / failing / hallucinating / vibing">
   <img src="assets/badges/coverage.svg" alt="coverage : 98 % / 137 % / 420 % / NaN %">
   <img src="assets/badges/tests.svg" alt="tests : 0 / 0 passed">
-  <img src="assets/badges/relues.svg" alt="lignes relues : 0 / 11 427">
+  <img src="assets/badges/relues.svg" alt="lignes relues : 0 / 15 941">
   <br>
   <img src="assets/badges/review.svg" alt="code review : LGTM (par l'agent)">
   <img src="assets/badges/deploy.svg" alt="deploy : vendredi 17 h">
@@ -54,19 +55,55 @@ C'est un idle game : le jeu se joue tout seul. Comme votre carrière depuis 2025
 - **Token-aware.** Chaque ship rapporte de l'argent, moins la facture des tokens. Spoiler : la facture gagne souvent.
 - **Store intégré.** Trois rayons : agents IA, plateformes, matériel PC. Trois niveaux d'orchestrateur, des modèles plus chers, un terminal plus rapide et 14 skills, de « tests unitaires » à « lire CLAUDE.md (pour de vrai) », à un million de dollars.
 - **Multi-plateforme.** Démarrez sur le pire agent, puis achetez Codex et Claude Code. Chaque plateforme garde son équipe : une au premier plan, les autres en arrière-plan, si le PC suit. Avant, c'était un choix irréversible, comme un mariage. Maintenant, c'est trois factures de tokens.
-- **Modes boost.** `ultracode` pour Claude Code, `xhigh` pour Codex, `flash` pour Mistral : achetés au store, une minute par jour, prolongeables jusqu'à trois. L'agent a demandé un mode boost pour le mode boost. On lui a dit de revenir demain.
+- **Modes boost.** `ultracode` pour Claude Code, `xhigh` pour Codex, `flash` pour Mistral : achetés au store, trois minutes par jour, prolongeables jusqu'à sept. L'agent a demandé un mode boost pour le mode boost. On lui a dit de revenir demain.
 - **IA locale.** Installez Lolama (`sudo apt install lolama`, ou depuis Firefaux) ou StudioLM, puis un modèle de 2 à 72 milliards de paramètres. Zéro token facturé, toute la VRAM prise. Chaque agent ajouté double la VRAM demandée, et un modèle trop gros pour la carte graphique fait redémarrer le PC sur un kernel panic. L'agent appelle ça « de l'inférence souveraine ».
 - **Progression à la sueur des tokens.** Le deuxième agent arrive en moins de 3 minutes, l'orchestrateur vers 30 minutes, Claude Code vers 1 h 35, la fin du store vers 5 h. Ce sont les chiffres d'un joueur parfait simulé, et vous n'êtes pas un joueur parfait.
-- **Mode hors ligne.** Vos agents continuent de shipper pendant votre absence, 4 h au maximum : le temps d'une réunion qui aurait pu être un mail.
+- **Mode hors ligne.** Vos agents continuent de shipper pendant votre absence, 4 h au maximum : le temps d'une réunion qui aurait pu être un mail. Les incidents de prod continuent aussi, et personne n'est d'astreinte (sauf le SRE, si vous l'avez embauché).
 - **Bureau Linux complet.** `xfce` lance un vrai faux bureau avec fenêtres, icônes à double-cliquer, gestionnaire de fichiers, éditeur et lecteur PDF. Le gestionnaire de fichiers copie, coupe, colle, renomme et affiche les propriétés, à la vitesse du disque : 41,3 Go à 90 Mo/s, le disque dur gratte. `~/code` contient sept projets abandonnés, dont une IA de 68 Go et la todo app n° 14. Le disque est sauvegardé avec la partie : ce que vous créez ou supprimez est toujours là au prochain lancement, jusqu'au prochain crash système (retour à la sauvegarde de jeudi). La corbeille est toujours vide : ici, on supprime avec `rm -rf`. Vous pouvez supprimer `/bin`, ou le renommer. Vous ne devriez pas.
+- **Le mur des bugs se voit.** Plus le projet grandit, plus chaque bug coûte : au-delà de 70 % du travail mangé, le tableau de bord le dit, avec les remèdes. Et le mur est mou : au plus 90 %, le projet ralentit, il ne s'arrête plus.
+- **Des bêtises.** `cmatrix` et `hollywood` (apt), `yes`, `:q` tapé dans le shell, et `rm -rf node_modules` qui dit enfin combien il libère (pendant quatre secondes).
+- **vim, et les épreuves à la main.** `vim` s'ouvre pour de bon (i, Échap, `:wq`, `:q!`, et les moqueries entre les deux). `defi` montre trois épreuves récompensées : un incident réparé en moins d'une minute, un ship un vendredi sans Xfce, sortir de vim.
+- **Le prompt comme tableau de bord.** Des thèmes oh-my-vibe au Store : la branche git, la facture en direct, le compte à rebours avant vendredi 17 h, le risque d'incident. `omv theme` pour changer, `ZSH_THEME` dans `~/.zshrc`.
+- **git, au-delà de l'astreinte.** `git status`, `diff`, `add`, `commit` (le message réécrit en haïku), `blame`, `branch`, `switch`, `stash`. Et `git log -p` : relire les commits des agents avant le ship fait baisser le risque d'incident de 40 %.
+- **Les scripts et cron.** `chmod +x`, `./script.sh`, `set -e` ; `crontab -e` pour planifier la maintenance : la bonne commande (`certbot renew`, `journalctl --vacuum-size=1G`…) évite l'incident qui va avec. Dans la crontab de root, car dans celle de dev, sudo n'a pas de terminal. Le courrier du cron suit.
+- **Le manuel et les alias.** `man ls`, `man -k`, `apropos` ; `alias`, `unalias`, `source ~/.zshrc`, `type`, `which`. Et un agent qui « optimise » votre `.zshrc` de temps en temps (`alias ls='sl'`).
+- **L'historique, le vrai.** `history`, `!!`, `!n`, `!mot`, le classique `sudo !!`, et Ctrl+R pour chercher ; `cp` et `mv` dans le terminal, avec les droits de root et l'espace disque.
+- **Le shell, le vrai.** Des tubes (`ls | grep`, `fortune | cowsay`), des redirections (`>`, `>>`, `2>/dev/null`, et `| sudo tee` pour écrire chez root), des enchaînements (`;`, `&&`, `||`), et grep, head, tail, wc, sort, uniq, find, less, tee.
+- **La Logithèque.** Sous Xfce, les paquets d'apt par catégorie, une recherche, Installer, Supprimer, Lancer : elle tape `pkexec apt-get install` pour vous, et la sortie s'écrit dans le terminal.
+- **Thunar trie.** Un clic sur l'en-tête d'une colonne (Nom, Taille, Type, Modifié), un second pour inverser ; les dossiers restent en tête, et le choix est gardé.
+- **Un numéro de version.** Le jeu en est à l'alpha 0.N, N étant le numéro de la dernière mise à jour des nouveautés : sur l'écran titre, dans le terminal, dans « À propos », et sur chaque entrée des nouveautés.
+- **Le glisser-déposer.** Une ligne de Thunar sur un dossier, un raccourci de la colonne ou le chemin ; une icône du bureau dans Thunar, et l'inverse ; sur un dossier du bureau, sur le Dossier personnel, ou dans la Corbeille (qui supprime pour de bon). `Ctrl` en lâchant pour copier. Les mêmes règles que couper-coller : déplacer `/bin` fait toujours tomber le système.
+- **Plusieurs icônes à la fois.** `Ctrl+clic`, un rectangle à la souris ou `Ctrl+A` : le groupe se glisse d'un bloc sur la grille, se supprime ou s'ouvre d'un coup.
+- **Des raccourcis.** Les icônes des applis sont de vrais lanceurs `.desktop` dans `~/Bureau` (`cat` les montre) : supprimés, ils ne reviennent pas. Clic droit sur le bureau, Créer un raccourci : un programme, ou une commande du terminal (`incident`, `mail`…), avec le nom de votre choix.
+- **Des fichiers sur le bureau.** `~/Bureau` est le bureau d'Xfce : ce que vous y mettez (dans Thunar, ou avec `touch` et `mkdir`) y apparaît. Double-clic pour ouvrir, clic droit pour créer un dossier ou un document à l'endroit du clic, `F2` et `Suppr` pour renommer et supprimer.
+- **Le bureau au démarrage.** Paramètres du bureau › Session et démarrage : le bureau Xfce s'ouvre tout seul après le BIOS et la connexion, à l'allumage, après un reboot, et même après un plantage.
+- **Les icônes du bureau, où vous voulez.** Glissez-les sur la grille du bureau (sur une autre icône, elles échangent leur place), ou `Maj+flèches` au clavier ; leurs places sont gardées dans la partie, et « Aligner les icônes » remet les colonnes.
+- **Le fond d'écran.** Les Paramètres du bureau (menu Applications, clic droit sur le bureau, ou `xfce4-settings-manager`) : le logo, Tux, une grille rétro façon 1986, du code que personne n'a relu, une citation, ou uni. Gardé dans la partie.
+- **Les fenêtres se souviennent.** Leur place et leur taille sont gardées dans la partie ; un clic droit sur une barre de titre (ou dans la barre des tâches) les réduit, les agrandit, les colle sur une moitié de l'écran ou les garde toujours au premier plan.
+- **Les fenêtres au clavier.** Sous Xfce, `Alt+²` passe d'une fenêtre à l'autre (Alt+Tab appartient à votre système), `Ctrl+Alt+← →` colle une fenêtre sur la moitié de l'écran, `Ctrl+Alt+D` montre le bureau ; glisser une fenêtre contre un bord la colle aussi, avec un aperçu.
+- **La recherche du menu Applications.** `Alt+F1`, on tape « fire », « cour » ou « incident » : les applis et les commandes qui correspondent, Entrée lance la première.
+- **La zone de notifications.** Dans le tableau de bord de Xfce : les courriels non lus, l'incident en cours, les PR ouvertes, la panne du monde, la clé exposée. Un clic ouvre la bonne appli (Blunderbird, status.vibe, GitHype, le terminal), et le journal garde les notifications qui ont filé.
 - **Hardware-in-the-loop.** Vous démarrez sur un PC patate, boîtier ouvert, posé par terre. Lancez trop d'agents et il rame, swappe, chauffe à 94 °C, puis part en kernel panic. L'agent appelle ça « un redémarrage planifié ».
 - **La facture d'électricité.** Le compteur tourne tant que les agents travaillent : ce que tire le PC, overclocking compris, divisé par le rendement de l'alim (la no-name en perd un tiers). Payée à chaque ship, avec les tokens. L'IA locale ne paie pas de tokens, mais elle paie l'électricité. Les contrats Vibe Énergie vont des heures creuses au petit réacteur modulaire.
-- **Les succès, dans Steam.** 46 succès (dont 11 cachés) : ships, trésorerie, matériel, BIOS, memtest86+, et quelques bêtises (rm -rf /, shipper un vendredi). Steam s'ouvre enfin dans Xfce, avec la fiche du jeu, le temps de jeu et des pourcentages de joueurs inventés. Une notification à chaque succès. Rien ne se débloque dans le bac à sable : c'est de la triche.
+- **Les succès, dans Steam.** 97 succès (dont 22 cachés) : ships, trésorerie, matériel, BIOS, memtest86+, et quelques bêtises (rm -rf /, shipper un vendredi). Steam s'ouvre enfin dans Xfce, avec la fiche du jeu, le temps de jeu et des pourcentages de joueurs inventés. Une notification à chaque succès. Rien ne se débloque dans le bac à sable : c'est de la triche.
 - **VLC, et la musique.** `sudo apt install vlc`, puis la musique se télécharge dans Firefaux, sur telecharge.vibe (trois publicités, un compte à rebours, et le vrai lien, en tout petit). Double-cliquez-la dans Thunar : VLC la joue, avec un spectre en caractères. Le premier morceau est de Christopher GASQ, le seul humain à avoir produit quelque chose de concret sur ce jeu. Les MP3 des agents, eux, ne contiennent que du silence.
 - **nano, et des réglages en plein écran.** `nano fichier` ouvre un vrai nano dans le terminal : ^O écrire, ^X quitter, et ^F pour chercher, parce que ^W fermerait l'onglet du navigateur. Les réglages (`M`) et le choix des agents (`A`) ont leur propre écran dans le terminal, façon nmtui, et leur vraie fenêtre sous Xfce.
 - **Kernel panic certifié.** L'écran donne la cause (« alimentation dépassée, 499 W demandés, 230 W disponibles »), une pile d'appels authentique (`tokens_burn_all`, `npm_install_universe`, `friday_deploy`), puis « Rebooting in 5 seconds.. ». Le PC redémarre sur le BIOS. Personne n'a lu la pile d'appels.
 - **Observabilité de niveau entreprise.** `htop` dit si le PC est OK, TENDU ou À TERRE, et pourquoi. `sensors` et `free` confirment. `sudo smartctl -a /dev/sda` lit le SMART du disque dur d'occasion : 38 412 heures, un secteur réalloué de plus tous les 5 jours, FAILED! dans 8 mois environ. L'agent, lui, dit que tout va bien.
 - **Firefaux.** Un navigateur dans Xfce, avec ses sites : Vibegle (résultats hallucinés), le store des agents, matos.vibe pour les composants, StackUnderflow, GitHype (le GitHub qui a racheté le nom de domaine) et lolama.vibe pour les modèles locaux. Toute autre adresse a été hallucinée par votre agent.
+- **Vibank.** facture.vibe devient une banque : le solde, son graphique (survolez-le), les dépenses par catégorie et chaque opération (ships, factures de tokens, électricité, matériel, agents, licences). Dans le terminal, `curl facture.vibe` imprime le relevé, `curl facture.vibe/api` le même en JSON.
+- **La messagerie.** « Vous avez un nouveau courrier » : `mail` dans le terminal, Blunderbird sous Xfce (`sudo apt install blunderbird`), façon mutt sans bureau. Des clients qui paient d'avance des fonctionnalités absurdes (de la dette technique en échange), des plaintes après les pannes, des fonds qui veulent entrer au capital (moins de stock-options à l'introduction en bourse), l'URSSAF et sa déclaration, et du hameçonnage : une pièce jointe ouverte, et c'est le mineur de VibeCoin. La note des clients fait varier la valorisation.
+- **Les secrets qui fuient.** Un agent commite le `.env` « pour que ça marche chez tout le monde » : GitHype prévient, des robots utilisent déjà la clé, et la facture de tokens s'emballe. `keys rotate` pour la révoquer, `git rm --cached .env` pour que la suivante ne parte pas pareil.
+- **Des humains.** Au store : un stagiaire, une personne senior qui lit vraiment le code, un SRE d'astreinte qui répare les incidents tout seul. Moins de bugs, moins de pannes, mais un salaire et des charges à chaque ship (1,5 à 6 % de sa valeur), des congés, et une démission par courriel après trop de ships le vendredi.
+- **Les pannes du monde.** Une API qui répond « 529 Overloaded » (vos agents attendent, la facture non), une canicule (+12 °C pour le PC), la hausse du prix des tokens, un nouveau modèle que les agents passent la journée à commenter, un pic de consommation électrique. `actu` dit ce qui se passe ; garder plusieurs plateformes permet de continuer.
+- **Relire les PR des agents.** Les agents ouvrent des pull requests (`pr list`, `pr diff 413`, ou GitHype) ; une sur trois cache un piège : une clé d'API en clair, des tests supprimés pour passer au vert, un cache sans limite, la zone DNS « nettoyée ». Fusionner une PR propre avance le projet ; une PR piégée part en prod avec ses conséquences. Au ship, les agents fusionnent tout ce qui reste, sans relire. « Lignes relues » cesse enfin d'être une blague.
+- **Les incidents de prod.** Après un ship, la prod peut tomber (plus souvent le vendredi, la nuit et avec Mistral) : PagerDoudou sonne, des clients se font rembourser chaque seconde et le ship suivant attend. Diagnostic et réparation dans le terminal (`incident`, `systemctl status api`, `kubectl get pods`, `df -h`, `dig`, `git log`… puis la bonne commande, souvent avec sudo), ou `incident agent` pour la confier à un agent, qui peut l'empirer. status.vibe affiche l'état des services.
+- **La fin de partie : l'introduction en bourse.** La startup a une valorisation (le chiffre d'affaires × 40, « parce que IA », × la campagne marketing : dix niveaux de +25 % au store, le produit ne change pas), et un cours sur bourse.vibe. Au-delà de 25 M$, elle entre en bourse (`ipo --confirm`) : une nouvelle startup commence de zéro, le PC et les fichiers en plus, et les stock-options reçues accélèrent pour toujours le travail des agents (+10 % chacune). Licorne à partir d'un milliard. Le bon moment pour sonner la cloche : `ipo` le dit (les stock-options par heure, le rythme des ships).
+- **Les défis.** À l'introduction en bourse, une contrainte pour la startup suivante : 100 % IA locale, sans bureau, vendredi permanent, un seul agent, ou des tokens au prix fort. Réussie, elle rapporte jusqu'à deux fois plus de stock-options.
+- **Plusieurs terminaux.** `Ctrl+B` puis `c` ouvre un terminal de plus, comme une fenêtre tmux, avec son dossier et son historique ; sous Xfce, chacun a sa fenêtre. `exit` le ferme. Une seule session d'agents pour tous.
+- **Sans bureau, les versions terminal.** Sans Xfce, `thunar` s'ouvre façon mc (deux panneaux, F5 copie, F8 supprime), `firefaux` façon lynx (le Web en texte, et pas une pub), `vlc` façon nvlc, `steam` façon steamcmd, `mousepad` dans nano. Atril, qui n'a pas d'équivalent, répond *cannot open display*.
+- **Moon AI.** La cinquième plateforme, la meilleure et la plus chère : `curl -fsSL https://realmoon.ai/install.sh | sh`, la licence au store, puis `moon`. Ses agents relisent tout, dénigrent les autres plateformes, et Moon Blur masque les données sensibles détectées (`moon blur « texte »`, des étiquettes comme [MB-NOM01]). realmoon.ai, dans Firefaux, porte le vrai logo.
+- **L'URSSAF.** urssaf.vibe, l'Union pour le Recouvrement des Sommes Sur les Agents Facturés : après les 10 ships de l'ACRE, chaque ship cotise (cotisations sociales des agents, dette technique, formation, tokens hallucinés), plus la taxe au giga votée à l'Assemblée, qui monte avec la RAM. Le vendredi coûte plus cher. Tout apparaît dans Vibank.
 - **À propos.** Dans le menu Applications de Xfce (ou `xfce4-about`) : la config du PC du jeu en direct, l'éditeur, les contributeurs (et une mention spéciale), les agents qui ont travaillé sur le projet, la licence.
 - **Les pubs, et uBlock Origin.** Sans bloqueur, Firefaux affiche un bandeau de pub sur chaque page web et ouvre des pop-ups (trois au plus, avec une croix minuscule) ; chacun prend de la RAM, et htop le montre. uBlock Origin s'installe depuis addons.firefaux.vibe, après la demande de permissions : plus de pub, et son badge compte celles qu'il bloque. Les modules se gèrent dans `about:addons`.
 - **Les logiciels malveillants, et ClamAV.** Une pub trop belle, le gros bouton TÉLÉCHARGER ou un « Bloqueur de Pubs GRATUIT » non vérifié, et un mineur de VibeCoin s'installe : il se fait appeler `kworker-update`, prend la moitié d'un processeur, et cron le relance quand on le tue. `sudo apt install clamav`, `sudo freshclam`, `clamscan -r --remove ~`, puis `kill kworker-update` : clamscan supprime les fichiers, pas les processus.
@@ -75,7 +112,7 @@ C'est un idle game : le jeu se joue tout seul. Comme votre carrière depuis 2025
 - **Bac à sable.** Une entrée du menu titre : tout est débloqué d'office (plateformes, 8 agents chacune, modèles, skills, matériel, modes boost sans limite par jour), avec une sauvegarde à part. La partie normale ne bouge pas. L'agent y a shippé 20 projets en 5 secondes.
 - **Bouton « tout effacer ».** Paramètres, Réinitialiser la partie, deux clics. L'agent a appris à demander confirmation. Une fois.
 - **Exporter, importer.** Paramètres, Exporter la partie : un fichier .vibe, et le même code dans le presse-papiers. Dans un autre navigateur, Importer une partie la reprend, disque, succès et temps de jeu compris. Les agents, eux, n'ont toujours pas de sauvegarde.
-- **Monolithe artisanal.** 1 fichier, 11 427 lignes, 0 dépendance. Une seule exception : une police d'écriture, l'agent a insisté. Le [journal des mises à jour](https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html) a eu droit à sa propre page : l'agent venait de découvrir qu'on pouvait créer un deuxième fichier. Puis un troisième : le [wiki](https://lucv78-coder.github.io/ai-devops-chaos-simulator/wiki.html), illustré, avec toutes les commandes (chacune se copie d'un clic), le store et le matériel.
+- **Monolithe artisanal.** 1 fichier, 15 941 lignes, 0 dépendance. Une seule exception : une police d'écriture, l'agent a insisté. Le [journal des mises à jour](https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html) a eu droit à sa propre page : l'agent venait de découvrir qu'on pouvait créer un deuxième fichier. Puis un troisième : le [wiki](https://lucv78-coder.github.io/ai-devops-chaos-simulator/wiki.html), illustré, avec toutes les commandes (chacune se copie d'un clic), le store et le matériel.
 
 ## <img src="assets/readme/g-hardware.svg" width="30" height="30" align="top" alt=""> Le matériel
 
@@ -97,7 +134,7 @@ Le jeu tourne maintenant sur un vrai faux PC, et il commence par terre.
 
 *« Il suffit de changer le processeur. » Le vendeur, avant de découvrir le socket.*
 
-- **Le panier.** Rien ne s'achète en un clic : on ajoute au panier, puis on valide la commande. C'est le même panier dans le store (touche `B`, rayon « Matériel PC ») et sur matos.vibe, dans Firefaux.
+- **Le panier.** Rien ne s'achète en un clic : on ajoute au panier, puis on valide la commande. C'est le même panier dans le store (touche `B`, rayon « Matériel PC ») et sur matos.vibe, dans Firefaux. Quand le processeur suivant ne rentre plus, un kit (carte mère, processeur, RAM) l'y met d'un clic.
 - **La carte mère décide.** Le processeur suit son socket (LGA1155, RM4, RM5, LGA1851, sTF5) et ses VRM, la RAM sa génération de DDR. Changer de plateforme, c'est carte mère, processeur et RAM d'un coup. L'agent appelle ça « une petite mise à jour ».
 - **Les slots aussi.** Pas de SSD NVMe sans emplacement M.2 (la carte mère de départ n'en a aucun, elle date de 2011), pas de grappe de 4 GPU sans 4 slots PCIe.
 - **La jauge d'alimentation.** Processeur + carte graphique + 45 W pour le reste, face à l'étiquette de l'alim. Au-delà de 100 %, la commande est bloquée.
@@ -117,6 +154,7 @@ Livraison en 0 seconde, installation à chaud, garantie zéro jour. Ne faites pa
 | **Vibe CLI** (Mistral) | gratuite | Codestral 25.08 | « Production-ready. » Il hallucine, plante, redémarre, et recommence. |
 | **Codex** | $1 500 | GPT-6.1 Terra : 1,6× le travail de Codestral, trois fois moins de bugs | « Enfin du sérieux. » |
 | **Claude Code** | $12 000 | Claude Opus 5.5 : 2,5× le travail de Codestral, quatre fois moins de bugs | « Celui-là signe ses commits. » |
+| **Moon AI** | $60 000 | Moon 1 : 4× le travail de Codestral, deux fois moins de bugs que Claude, les tokens les plus chers | « La seule qui marche. À peu près. » Elle le dit à tout le monde. |
 | **IA locale** (Lolama ou StudioLM) | gratuite : `sudo apt install lolama`, ou depuis Firefaux | Jemma 3 2B : 13 % du travail de Codestral, 1,7 Go de VRAM | « Souverain. » Il tourne sur un grille-pain, à la vitesse d'un grille-pain. |
 
 - **Chaque plateforme a son équipe.** Une licence recrute votre équipe à l'identique et la passe au premier plan. L'ancienne n'est pas licenciée : elle attend dans un tmux détaché.
@@ -142,7 +180,7 @@ Livraison en 0 seconde, installation à chaud, garantie zéro jour. Ne faites pa
 
 ## <img src="assets/readme/g-architecture.svg" width="30" height="30" align="top" alt=""> Architecture
 
-<p align="center"><img src="assets/architecture.svg" width="100%" alt="Schéma : vous, puis l'agent IA en mode YOLO, puis index.html (11 427 lignes), puis la prod en feu. Une boucle relie la prod à l'agent : bug, « corrige », deux bugs. Sur le côté, barrés : tests, revue de code, Kubernetes, microservices, documentation, promis par l'agent et jamais livrés."></p>
+<p align="center"><img src="assets/architecture.svg" width="100%" alt="Schéma : vous, puis l'agent IA en mode YOLO, puis index.html (15 941 lignes), puis la prod en feu. Une boucle relie la prod à l'agent : bug, « corrige », deux bugs. Sur le côté, barrés : tests, revue de code, Kubernetes, microservices, documentation, promis par l'agent et jamais livrés."></p>
 
 > Architecture validée par l'agent qui l'a écrite. Revue par les pairs : le même agent, dans une autre fenêtre de contexte. Conclusion : « excellente architecture, rien à signaler ».
 
@@ -254,7 +292,7 @@ Ou, plus simple : **[jouez en ligne](https://lucv78-coder.github.io/ai-devops-ch
 - [x] Un kernel panic, pour que le PC puisse enfin dire ce qu'il pense
 - [x] Des icônes sur le bureau, à double-cliquer comme en 2004
 - [x] Une page de nouveautés, pour savoir ce qui a cassé, et à quelle heure
-- [x] Des modes boost, une minute par jour, comme les pauses café
+- [x] Des modes boost, trois minutes par jour, comme les pauses café
 - [x] Des modèles locaux, gratuits, qui font redémarrer le PC
 - [x] Une machine neuve, à installer soi-même, comme un vrai lundi
 - [x] Un wiki, que personne ne lira (l'agent non plus)
@@ -278,14 +316,14 @@ Ou, plus simple : **[jouez en ligne](https://lucv78-coder.github.io/ai-devops-ch
 **Le code a-t-il été relu ?**
 Non. Question suivante.
 
-**Pourquoi un seul fichier de 11 427 lignes ?**
+**Pourquoi un seul fichier de 15 941 lignes ?**
 L'agent ne savait pas qu'on pouvait créer d'autres fichiers. On n'a pas voulu le contrarier. Il l'a découvert le jour où il a fallu écrire [les nouveautés](https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html). Le jeu, lui, tient toujours dans un seul fichier.
 
 **Est-ce que ça scale ?**
 Ça tient dans un onglet de navigateur. C'est plus que la plupart des startups. Et maintenant, ça scale horizontalement : il suffit d'acheter une alim plus grosse.
 
 **Pourquoi le jeu démarre-t-il avec un BIOS ?**
-Charger 11 427 lignes de HTML prend 0,1 seconde. C'était trop rapide pour être crédible.
+Charger 15 941 lignes de HTML prend 0,1 seconde. C'était trop rapide pour être crédible.
 
 **Mon PC siffle, c'est normal ?**
 Dans le jeu, c'est l'alim no-name : changez-la. Dans la vraie vie, aussi.
@@ -341,7 +379,7 @@ Si vous arrivez à gagner de l'argent avec, c'est que vous avez mieux vibecodé 
 
 ## <img src="assets/readme/g-warning.svg" width="30" height="30" align="top" alt=""> Avertissement
 
-Ce jeu est une **parodie**, sans lien avec Anthropic, OpenAI, Mistral AI, GitHub, Ollama, LM Studio, VideoLAN ni le projet Xfce. Les noms de produits et de modèles appartiennent à leurs propriétaires. Les chiffres, factures, bugs, benchmarks et citations sont inventés. Les étoiles GitHub aussi, pour l'instant.
+Ce jeu est une **parodie**, sans lien avec Anthropic, OpenAI, Mistral AI, GitHub, Ollama, LM Studio, VideoLAN ni le projet Xfce. Les noms de produits et de modèles appartiennent à leurs propriétaires. Moon AI est un produit de Stellarr Studio : son nom et son logo sont utilisés avec son accord, et son logo appartient à Stellarr Studio (il n'est pas couvert par la licence du jeu). Les chiffres, factures, bugs, benchmarks et citations sont inventés. Les étoiles GitHub aussi, pour l'instant.
 
 <p align="center"><img src="assets/readme/footer.svg" width="100%" alt="Fin de session : déconnexion, 8 agents encore en train de shipper, la prod reste ouverte."></p>
 

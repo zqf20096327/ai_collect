@@ -1,6 +1,6 @@
 # Waza
 
-A Go CLI for evaluating agent workflows, skills, and custom agents — author repository, CLI, and MCP scenarios, run graded trials, and inspect the evidence.
+A Go CLI for evaluating skills, prompts, agent workflows, and custom agents — author repository, CLI, and MCP scenarios, run graded trials, and inspect the evidence.
 
 📖 **[Getting Started / Docs](https://microsoft.github.io/waza/)**
 
@@ -1999,4 +1999,4 @@ Schema `skill` uses a length-only constraint, so whitespace passes that check
 but is not a meaningful target. JSON-RPC `eval.validate` reports schema errors;
 separate preflight checks are not a universal runtime target-enforcement gate.
 Scenario `2.0` requires a nonblank `scenario` and may omit `skill`.
-Scenario `2.0` bypasses result caching with a
+Scenario `2.0` bypasses result cachi

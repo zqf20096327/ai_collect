@@ -83,6 +83,17 @@ iPad app is SwiftUI and UIKit, on the same Go core.
   dates, quotes, callouts, toggles, tables, code with syntax highlighting,
   math, diagrams, charts, images, files, videos, link cards and sandboxed
   interactive embeds.
+- Tables as a grid or with simple lines, a bold header and a hairline
+  between rows, each column aligned left, center or right.
+- Fact cards, for facts at a glance under a title and an icon: figures
+  large side by side, as a trip's time and fare, or details a line each
+  beside a picture, with a note and a chip for the pages they come from.
+- Maps of places and of a route between them, walking, cycling, driving or
+  by public transport, each bus or train line in its own color: on
+  OpenFreeMap's map on the Mac and Windows, in a page a public link
+  shares, whose visitors' browsers load its tiles, and in a PDF; on
+  Apple's on iPhone and iPad. Places are found with Photon, and routes
+  with FOSSGIS's OSRM or Transitous, which get the places asked for.
 - Markdown shortcuts, the `/` menu, `@` mentions of people, agents and
   pages, a selection toolbar with text colors, formulas typeset in the line
   from `$x^2$`, folding headings, an outline, and links to pages and to
@@ -131,6 +142,13 @@ iPad app is SwiftUI and UIKit, on the same Go core.
   gave it, and once it reads your other pages, the web is closed to it and
   to the later turns of its chat or comment thread, whose earlier replies
   may hold what it read.
+- With the web, agents also find places and routes (`find_place`,
+  `find_route`) and show them as maps, in a page or in their answers, which
+  show cards, simple-lines tables and maps as a page does.
+- Agents read Leaflet's skills (`read_skill`), guides they load when a task
+  calls for one: which block shows which content best, as a table, a chart,
+  a card, a map, a diagram, a callout or an embed, and how to use emphasis,
+  text color and highlight; and how to build an interactive embed.
 - Any OpenAI-compatible provider: presets for OpenAI, Claude, xAI,
   OpenRouter, DeepSeek and GLM, a ChatGPT Plus or Pro sign-in, custom
   endpoints, and local servers such as Ollama, LM Studio, llama.cpp and
@@ -285,7 +303,7 @@ claude mcp add -s user leaflet -e LEAFLET_DATA_DIR=<data folder> -- <executable>
 
 | Tool | What it does |
 | --- | --- |
-| `list_pages`, `search_pages` | Find pages by title, tag and text, and recordings and comments |
+| `list_pages`, `search_pages` | Find pages by title, tag and text, and recordings and comments; many pages list in parts |
 | `current_page` | See the page open in the app, with the selected text and its text color |
 | `read_page` | Read a page's blocks, with their IDs and versions |
 | `create_page`, `rename_page` | Make and rename pages |
@@ -295,6 +313,16 @@ claude mcp add -s user leaflet -e LEAFLET_DATA_DIR=<data folder> -- <executable>
 | `move_folder` | Move a folder into another folder or to the top level |
 | `write_markdown`, `insert_blocks`, `replace_block`, `move_block`, `delete_blocks` | Edit a page, as the in-app agents do |
 | `upload_files` | Add pictures, audio, video and PDFs on this computer to a page, by their paths |
+| `find_place`, `find_route` | Find places and routes, for a map block to show by the route's id, through Photon, OSRM and Transitous |
+| `read_skill` | Read a skill: a guide to making pages expressive, to building an interactive embed, or to saving what a chat settles |
+
+The server's instructions ask an agent to read the skill `expressive-pages`
+before it writes a page, so it reaches for tables, charts, cards, maps,
+diagrams and callouts where they fit, and color from the app's palette.
+They also ask it to offer, once and in a short question, to save in
+Leaflet what a chat settles that is worth keeping outside its app, such as
+a decision, a plan, findings or steps to repeat, and to save it only on a
+yes; never code that lives in a repository, a one-off answer, or secrets.
 
 The server opens the same database as the app, so it works with the app
 open or closed. Pages shared with you to view are read-only. Edits keep a
@@ -305,15 +333,22 @@ between, and sync like any other change. An edit given the version
 it since, and answers with what it holds now. One that replaces a change
 the agent never read, as a nested item someone added under a block it
 deletes, is kept as a conflict in the page's history, and its answer says
-so. `upload_files` copies files into the page as the app's Upload does,
-except into a page other people have or one with a public link. Only the
+so. So is one that replaces or deletes a block of a page the agent read so
+long ago that the server let go of what it read, until it reads the page
+again. `upload_files`
+copies files into the page as the app's Upload does, except into a page
+other people have or one with a public link, and, on Windows, only files on
+the computer's own drives, never on another computer's share. Only the
 app knows of a link another of your computers serves: it checks every two
 minutes while it runs, and without a check from the last five minutes, as
 with the app closed or offline for a while, `upload_files` adds nothing to
 pages that sync. The open app picks up
 what they write within a second and merges it with what is being typed.
 With the app closed, or no page open, `current_page` gives the page opened
-last on this device, with no selection.
+last on this device, with no selection, as it does after the app crashed.
+Started on a data folder the app never opened, as a mistyped
+`LEAFLET_DATA_DIR`, the server stops with an error rather than make an
+empty database the app would never show.
 
 While the Mac or PC app runs, in front or not, a small window in a corner
 of the screen shows the part of a page an agent is changing, as it changes
@@ -324,7 +359,9 @@ the change. Closed, it stays away until the agent pauses; Settings ›
 External agents turns it off.
 
 Agents read and write text color and highlight in text fields as
-`<span style="color:#ef4444;background:#fde68a">text</span>`, in hex.
+`<span style="color:#ef4444;background:#eab30840">text</span>`, in hex: a
+highlight is a color of the palette with alpha `40`, which stays readable
+in the dark look.
 `leaflet cat` and exports leave colors out. A formula in the line is
 `$x^2$`, in TeX.
 
@@ -353,6 +390,7 @@ adds to them, with the same tools as `leaflet mcp`:
 | `leaflet tag PAGE [TAG...]` | Set a page's tags, or print them; `--clear` takes them off |
 | `leaflet folder new NAME [--in FOLDER]`, `leaflet folder rename FOLDER NAME` | Make folders, at the top level or in another folder, and rename them |
 | `leaflet folder mv FOLDER --in FOLDER \| --top` | Move a folder into another folder or to the top level |
+| `leaflet skills [NAME]` | List the skills, guides for AI agents on writing pages, or print one as a SKILL.md |
 
 A page is named by its title, its ID, or the start of its ID as `ls`
 shows it. `--json` prints what the MCP tools return, and `leaflet
@@ -463,12 +501,13 @@ rules.
 | `internal/editor` | The block editor: model, editing, layout, input and blocks |
 | `internal/doc` | The page document model: blocks, deltas, inline Markdown, ops, per-block merge and Markdown export |
 | `internal/menu`, `internal/shortcut` | What the `/` and `@` menus offer, and what Markdown typed in a page becomes, for both apps' editors |
-| `internal/rendered` | The pages that draw diagrams (Pele) and hold embeds, in frames with no network |
+| `internal/rendered` | The pages that draw diagrams (Pele) and hold embeds, in frames with no network, and maps (MapLibre), which reach only their tile server |
 | `internal/mathtex` | Formulas laid out from TeX with Untie, for both apps to draw and for web pages as SVG |
 | `internal/webpage` | A page as a web page that stands alone, as a public link shares it and Export › PDF prints it, on both apps |
 | `internal/starters` | The templates that come with Leaflet |
 | `internal/export` | Exporting every page as Markdown in a zip, with its pictures, files and recordings |
 | `internal/web` | Link cards, pictures, video info, videos' captions and pages for agents, read from public addresses only |
+| `internal/maps` | Places and routes for map blocks, from Photon, FOSSGIS's OSRM and Transitous |
 | `internal/store` | SQLite (pure Go) tables, the outbox and settings |
 | `internal/remote` | Supabase over HTTP: Auth, PostgREST, Storage and Edge Functions |
 | `internal/sync` | Pushing the outbox, pulls, account adoption and the device heartbeat, through Supabase or iCloud Drive |
@@ -522,9 +561,15 @@ Open Font License (`internal/theme/fonts/OFL-*.txt`),
 (`internal/theme/icons/LICENSE`),
 [Pele](https://github.com/obsidianmd/pele) under the MIT license for
 diagrams ([`internal/rendered/third_party`](internal/rendered/third_party/README.md)),
-and, for formulas, [Untie](https://github.com/caelyreth/untie) under the
+[MapLibre GL JS](https://maplibre.org) under the BSD-3-Clause license for
+maps (same folder), and, for formulas, [Untie](https://github.com/caelyreth/untie) under the
 Apache 2.0 license with the New Computer Modern Math font under the GUST
 Font License (`internal/mathtex/font/GUST-FONT-LICENSE.txt`).
+Maps show [OpenStreetMap](https://www.openstreetmap.org/copyright) data, ©
+its contributors, on [OpenFreeMap](https://openfreemap.org)'s tiles; places
+come from [Photon](https://photon.komoot.io), and routes from the
+[FOSSGIS](https://routing.openstreetmap.de) servers' OSRM and from
+[Transitous](https://transitous.org/sources/).
 
 ## License
 

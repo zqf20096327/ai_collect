@@ -10,7 +10,7 @@ Mixed transactional and analytical workloads, with native AI retrieval.
 
 [English](README.md) · [简体中文](readme_cn.md)
 
-[Download](https://github.com/yzsind/mydb/releases/tag/v1.0.2) · [Why MyDB](docs/why-mydb.md) · [Performance evaluation](#performance-evaluation) · [Testing](#testing) · [Quick Start](#quick-start) · [Built for AI Agents](#built-for-ai-agents) · [Documentation](docs/README.md) · [MySQL Compatibility](docs/mysql80-compatibility.md)
+[Download](https://github.com/yzsind/mydb/releases/tag/v1.0.3) · [Why MyDB](docs/why-mydb.md) · [Performance evaluation](#performance-evaluation) · [Testing](#testing) · [Quick Start](#quick-start) · [Built for AI Agents](#built-for-ai-agents) · [Documentation](docs/README.md) · [MySQL Compatibility](docs/mysql80-compatibility.md)
 
 </div>
 
@@ -28,7 +28,8 @@ interfaces give services and agents direct access to the same engine. Automatic
 Zone Maps, online schema changes, and directly queryable backups reduce the
 work needed to tune access, evolve data structures, and inspect earlier data.
 
-MyDB 1.0.2 is a public-preview release intended for feature validation and controlled-environment evaluation.
+MyDB 1.0.3 is a public-preview release intended for feature validation and controlled-environment evaluation.
+See the [1.0.3 release notes](docs/release-notes-1.0.3.md) for changes and upgrade requirements.
 
 | Core advantage | What it gives you |
 | --- | --- |
@@ -54,6 +55,32 @@ across 10 tables, 300 client threads on a separate host over the private network
 reconnects were recorded. See the [full benchmark report](docs/sysbench-100m-300clients-2026-11-16.md)
 for configuration, methodology, and complete results.
 
+### Smart indexing: fewer full scans without manual indexes
+
+Changing filters and agent-generated SQL make query patterns hard to predict.
+MyDB enables automatic **Zone Maps** on persistent user tables by default.
+Per-block summaries let eligible scans skip blocks that cannot match a
+predicate, reducing work without requiring a hand-built B-tree index for every
+filtering pattern. Serial, parallel, and vectorized scans retain final
+predicate checks; missing or untrusted summaries fall back to a regular scan.
+
+On **15 million TPC-H SF=10 orders**, with no user-created indexes in either
+database, MyDB 1.0.3 and MySQL 8.0.46 produced these lookup results:
+
+| Lookup | MyDB median (ms) | MySQL median (ms) | Speedup |
+| --- | ---: | ---: | ---: |
+| Order ID (ordered column) | **1.206** | 7,577.824 | **6,281.8x** |
+| Customer ID (scattered column) | **32.466** | 7,678.232 | **236.5x** |
+
+Single-threaded, warm-cache medians cover five random values with three
+executions per value; speedup is MySQL time / MyDB time. See the
+[no-index lookup benchmark](docs/zone-map-no-index-benchmark.md) for the schema,
+SQL, scanned pages, disk space, and full test conditions.
+
+The benefit depends on data layout and selectivity. See the
+[feature overview](docs/feature-overview.md) for the mechanism and fallbacks.
+
+
 **MyDB vs. MySQL 8.0**, measured November 17, 2026:
 
 | Workload | MyDB | MySQL | Advantage |
@@ -70,20 +97,19 @@ historical three-engine subset. TPC-derived results are unaudited. See the
 [detailed comparison](docs/performance-comparison.md) for results, test
 conditions, result differences, and limitations.
 
-**Cohere 1M HNSW**, November 14, 2026, 768-dimensional FLOAT32 cosine top-100:
+**Cohere 1M HNSW**, November 24, 2026: 768-dimensional FLOAT32 cosine Top-100,
+with MyDB query-candidate memoization disabled.
 
-| Measurement | MyDB | PostgreSQL 18.6 + pgvector 0.8.7 | Advantage |
+| Database memory limit | MyDB, 16 clients | PostgreSQL 18.6 + pgvector 0.8.7 | MyDB throughput |
 | --- | ---: | ---: | ---: |
-| Search, 1 client | 670 queries/s | 179 queries/s | **3.7x throughput** |
-| Search, 16 clients | 5,200 queries/s | 1,954 queries/s | **2.7x throughput** |
-| Search p99 latency, 16 clients | 5.6 ms | 14.7 ms | **2.6x lower latency** |
-| Recall@100 | 94.8% | 94.4% | Comparable (+0.4 pp) |
-| HNSW build | 53 s | 118 s | **2.2x speedup** |
+| 32 GiB | 5,121 queries/s | 2,142 queries/s | **2.39x** |
+| 2 GiB | 458 queries/s | 139 queries/s | **3.29x** |
 
-The reported search throughput ratio is 2.7x at 16 clients. Both engines used
-the same 16-vCPU host,and durable commits. Sources, exact settings, and
-reporting limits are documented in the
-[November 14 Cohere 1M result record](docs/vector-cohere-1m-hnsw-benchmark-2026-11-14.md).
+Both engines used the same 16-vCPU host and durable commits. At 32 GiB,
+Recall@100 was 94.741% vs 94.395%; at 2 GiB it was
+95.331% vs 94.341%. See the
+[Cohere 1M benchmark](docs/vector-cohere-1m-hnsw-benchmark-2026-11-24.md) for index-build times,
+latency, settings, and all query rounds.
 
 ## Testing
 
@@ -111,7 +137,7 @@ separate [November 17 scheduled run in the predecessor repository](https://githu
 ## Quick Start
 
 Download prebuilt packages for macOS ARM64, Linux x86_64, and Windows x64 from the
-[1.0.2 release page](https://github.com/yzsind/mydb/releases/tag/v1.0.2), which also
+[1.0.3 release page](https://github.com/yzsind/mydb/releases/tag/v1.0.3), which also
 includes SHA256 checksums and platform validation details.
 
 ### Run a downloaded binary
@@ -271,16 +297,6 @@ contacting a model. Calls also support a single `SET @variable = AI_...`
 assignment. See [LLM and embedding calls](docs/ai.md) and the
 [AI function reference](docs/function/ai/README.md) for setup and supported SQL contexts.
 
-### Smart indexing: fewer full scans without manual indexes
-
-MyDB enables automatic **Zone Maps** on persistent user tables by default.
-Per-block summaries let eligible scans skip blocks that cannot match a
-predicate, reducing work without requiring a hand-built B-tree index for every
-filtering pattern. Serial, parallel, and vectorized scans retain final
-predicate checks; missing or untrusted summaries fall back to a regular scan.
-The benefit depends on data layout and selectivity. See the
-[feature overview](docs/feature-overview.md) for the mechanism and fallbacks.
-
 ### Online DDL: schemas that evolve with the task
 
 MyDB's heap tables keep row storage separate from indexes, so adding a primary
@@ -432,6 +448,7 @@ The full coverage map, transactional differences, and unsupported features are l
 | **`generate_series()`** | Integer, decimal, and datetime series for time axes, gap filling, and data generation. |
 | **TABLESAMPLE** | Explore data with row/page sampling, percentage or exact row counts, and repeatable samples. |
 | **B-tree INCLUDE** | Cover query columns without adding them to the search key. |
+| **Partial indexes** | Index only rows satisfying a WHERE predicate, including conditional uniqueness and supported retrieval indexes. |
 | **`CREATE OR REPLACE` routines** | Replace procedure and function definitions while preserving routine grants. |
 | **SQL ROWID** | Locate heap rows directly; physical addresses can be reused. |
 
@@ -475,6 +492,11 @@ Unimplemented SQL or protocol capabilities return clear errors rather than faili
 
 ## Documentation
 
+The guides in this checkout follow the current source, which includes changes
+after the 1.0.2 release. Start with [current source changes](docs/current-source.md)
+for new capabilities and physical-format requirements. Use documentation from
+the matching Git tag when running a downloaded release.
+
 | Entry point | Contents |
 | --- | --- |
 | [Why MyDB](docs/why-mydb.md) | HTAP mixed workloads, AI capabilities, application benefits, and performance evidence |
@@ -482,6 +504,8 @@ Unimplemented SQL or protocol capabilities return clear errors rather than faili
 | [Feature overview](docs/feature-overview.md) | Capability map and implementation boundaries |
 | [AI model calls](docs/ai.md) / [Hybrid search](docs/hybrid-search.md) | Model setup, embeddings, generation, permissions, and retrieval fusion |
 | [SQL statements](docs/statement/README.md) / [Functions](docs/function/README.md) | Syntax, semantics, and usage examples |
+| [Partial indexes](docs/partial-indexes.md) / [Zone Maps](docs/zone-maps.md) | Predicate-qualified indexes and automatic scan pruning |
+| [Time travel](docs/time-travel.md) | Historical reads, retention, and schema boundaries |
 | [Configuration guide](docs/configuration.md) / [Config template](mydb.cnf.example) | Startup options, environment variables, and runtime settings |
 | [Data directory and recovery](docs/storage-format.md) | File roles, format compatibility, durability, and crash recovery |
 

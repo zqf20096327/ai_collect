@@ -72,7 +72,7 @@ Everything is expressed as `ax.io/v1alpha1` manifests and applied with a single 
 ### 1. Install AX
 
 ```bash
-curl -fsSL https://github.com/google/ax/releases/latest/download/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/google/ax/main/install.sh | AX_VERSION=v0.4.0-rc.2 sh
 export PATH="$HOME/.ax/bin:$PATH"
 ```
 
@@ -97,7 +97,13 @@ ax install
 
 Then create a WorkerPool from [`examples/workerpool.yaml`](examples/workerpool.yaml). Without one, tasks fail to resume with `no free workers available`.
 
-Official release binaries deploy the matching release `ax-server` image by default. Prebuilt agent images (such as Antigravity) have no runner baked in, so pass `--runner-volume-image` with the digest from the release notes to run them. Building from source or pushing custom images? See [Build and push images](docs/development.md#build-and-push-images) and the [Local Installer guide](docs/local_installer.md).
+Official release binaries deploy the matching release `ax-server` image by default. Prebuilt agent images from [agentexecutor/images](https://github.com/agentexecutor/images) have no runner baked in, so pass `--runner-volume-image` with the `ax-runner-volume` digest from the [AX release notes](https://github.com/google/ax/releases):
+
+```bash
+ax local start --runner-volume-image ghcr.io/google/ax/ax-runner-volume@sha256:<digest>
+```
+
+Building from source or pushing custom images? See [Build and push images](docs/development.md#build-and-push-images) and the [Local Installer guide](docs/local_installer.md).
 
 ### Run your first task
 
@@ -119,7 +125,13 @@ The first resume also waits for the workspace to initialize (cloning its git rep
 
 Every Task runs an image pinned by digest, named by `spec.profile.image` or `spec.profile.ateTemplate.name` or inherited from its Workspace's `spec.profile`; replace the image in `examples/simple.yaml` with `$AX_TASK_IMAGE` if you built your own.
 
-Want to see the whole lifecycle end to end? Run `AX_TASK_IMAGE=... ./demo.sh` ([`demo.sh`](demo.sh)). It applies a custom workspace, resumes the task, runs commands over `ax ssh`, and suspends it again.
+### Prebuilt agent images
+
+Ready-to-run agent images, such as Antigravity, are published from [agentexecutor/images](https://github.com/agentexecutor/images). Each image's README has a complete Gateway and Task manifest.
+
+### Tour
+
+Want a tour of AX end to end? Run [`./hack/tour.sh`](hack/tour.sh) against the current context. It walks through Tasks, Gateways, Workspaces with setup, suspend and resume, fan-out from a workspace snapshot, atespaces, and Models, and deletes everything it creates when it exits.
 
 ## Documentation
 

@@ -55,7 +55,7 @@ omr --json app.apk "find the license check"  # machine-readable events for scrip
 
 - **Evidence first.** Findings cite retained Evidence IDs (`ev_…`). Open questions go to an Unknown ledger instead of being guessed.
 - **REA's full toolset.** Native, Android, Electron/JavaScript, browser, firmware and network analysis through REA, with one session journal for both your commands and the model's.
-- **Any model.** 33 built-in providers (OpenAI, Anthropic, Gemini, OpenRouter, DeepSeek and more) plus local servers (Ollama, LM Studio, vLLM, llama.cpp, LocalAI) and any OpenAI-compatible endpoint. Switch live with `/model`.
+- **Any model.** 33 built-in providers (OpenAI, Anthropic, Gemini, OpenRouter, DeepSeek and more) plus local servers (Ollama, LM Studio, vLLM, llama.cpp, LocalAI) any OpenAI-compatible endpoint, and local routers (9Router, OmniRoute) that omr detects on this computer when you open the model picker. A **Custom provider** entry at the top of the picker (`Alt+M`) connects any endpoint by base URL and optional key. Switch live with `/model`.
 - **Guided workflows.** Slash commands such as `/triage`, `/investigate`, `/crypto`, `/frida`, `/masvs`, `/firmware` and `/ioc` run structured playbooks instead of a blank prompt.
 - **Subagents.** Spawn background workers, view the task graph, steer them mid-run.
 - **Safe to interrupt.** The conversation is checkpointed after every step. `omr --resume` continues an interrupted turn.

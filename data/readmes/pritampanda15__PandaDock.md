@@ -41,11 +41,15 @@
 
 ---
 
-**SE(3)-Equivariant GNN Scoring for Molecular Docking**
+**PandaDock v5.0 — Flexible Molecular Docking, Covalent & Series SAR, PoseBusters Validation, Studio GUI & SE(3)-Equivariant GNN Scoring**
 
-[Installation](#installation) | [Quick Start](#quick-start) | [Documentation](https://pandadock.readthedocs.io/) | [Benchmark](#affinity-prediction-performance) | [Citation](#citation)
+[Official v5.0 User Manual (PDF)](docs/PandaDock_v5.0_User_Manual.pdf) | [ReadTheDocs Documentation](https://pandadock.readthedocs.io/) | [CLI Commands](#cli-commands) | [Installation](#installation) | [Quick Start](#quick-start) | [What's New in v5.0](#whats-new-in-v50) | [Benchmark](#affinity-prediction-performance) | [Citation](#citation)
 
 </div>
+
+> **New to PandaDock or looking for a step-by-step walkthrough?**
+> - **Read the Official Plain-Language User Manual (24-page A4 PDF with clickable TOC):** [`docs/PandaDock_v5.0_User_Manual.pdf`](docs/PandaDock_v5.0_User_Manual.pdf) — explains every step from preparing & protonating proteins/ligands, stripping vs. keeping pocket waters, and defining grid boxes (including clicking the X-ray ligand on a complex) to all 48 CLI commands and PandaDock Studio.
+> - **Browse the Full Online Documentation on ReadTheDocs:** [https://pandadock.readthedocs.io/](https://pandadock.readthedocs.io/) — guides, Studio GUI & PandaLens 3D/2D walkthroughs, tutorials, API reference, and troubleshooting.
 
 ---
 
@@ -64,7 +68,9 @@ so a full search costs seconds to minutes rather than hours.
 ### Key Features
 
 - **Flexible-ligand search** — all rotatable bonds searched, uniform SO(3)
-  orientation sampling, L-BFGS relaxation with analytic gradients
+  orientation sampling, L-BFGS relaxation with analytic gradients, optional
+  non-aromatic ring conformer sampling (`--sample-rings`), and multi-threaded
+  CPU chains (`--workers`)
 - **Optional GPU search** *(experimental)* — `--device cuda|mps` runs the same
   algorithm batched over thousands of chains, verified against the CPU objective.
   On the 815-complex benchmark an A10G is **8.5× faster overall and 35× on the
@@ -72,18 +78,79 @@ so a full search costs seconds to minutes rather than hours.
   [CPU vs GPU](#benchmark-cpu-vs-gpu-on-the-redocking-set)
 - **Virtual screening** — `pandadock screen` batches a library onto the device,
   reusing grids across ligands and bucketing them by size
-- **Grid-accelerated scoring** — AutoDock Vina functional form, precomputed per
-  atom type
+- **Grid-accelerated & physics scoring** — AutoDock Vina (`vina`), Vinardo
+  (`vinardo`), aligned `physics_based`, and fast vectorized differential pocket
+  MM-GBSA rescoring (`--rescoring mmgbsa`), with AutoDock Vina `XS_TYPE_Met_D`
+  catalytic metal handling
 - **PandaDock-GNN** — SE(3)-equivariant affinity scoring, R = 0.53 on PDBbind
-  (4,640 complexes, fully held out); see [performance](#affinity-prediction-performance)
+  (4,640 complexes, fully held out); checkpoint metadata (`strip_hydrogens`,
+  `site_radius`) auto-applied on load; see [performance](#affinity-prediction-performance)
 - **Separation of concerns** — the empirical function selects poses, the GNN
   estimates affinity for a chosen pose; the GNN should not rescore poses
 - **Universal rescorer** — rescore poses from any docking tool (Vina, Glide, GOLD)
-- **Rich output** — poses with bond orders, complexes, interaction analysis,
-  plots, PandaMap 2D diagrams and an HTML report
-- **Specialized modes** *(experimental)* — induced-fit, metal coordination,
-  tethered docking; not benchmarked, see [Specialized Docking](#specialized-docking)
+- **Publication-grade reports** — poses with bond orders, complexes, interaction
+  analysis, 300-DPI diagnostics (scoring funnel, MDS pose landscape, stacked
+  contact occupancies, ligand atom RMSF & torsions, residue hotspots), PandaMap
+  2D diagrams, built-in **PoseBusters** chemistry/geometry checks, an editorial
+  HTML report (`report.html`), and a multi-page A4 vector brochure PDF (`report.pdf`)
+- **v5.0 Medicinal-Chemistry Suite** — built-in **PoseBusters audit**
+  (`pandadock validate-poses`), automatic **pH 7.4 protonation/tautomer/stereo
+  enumeration** (`--enumerate-states`), **differentiable geometric / H-bond /
+  metal / MCS restraints** (`--restraint`, CPU & GPU L-BFGS), **displaceable &
+  bridging structural waters** (`--waters keep|strip|displace`), **congeneric
+  series & SAR brochure PDF** (`pandadock series`), **covalent warhead docking**
+  (`pandadock covalent`, 8 warheads), **few-shot per-target weight calibration**
+  (`pandadock calibrate` + `--weights-file`), **dual-head pose-RMSD GNN v5**,
+  and **one-command Dock-to-MD handoff** (`pandadock to-md` for OpenMM, GROMACS,
+  and PandaInsight)
+- **Specialized modes** *(experimental)* — induced-fit (`pandadock-flex` with
+  χ₁/χ₂ side-chain refinement), metal coordination (`pandadock-metal` with
+  bundled 31-metal `AD4_parameters_full.dat`), tethered docking
+  (`pandadock-tethered`); see [Specialized Docking](#specialized-docking)
 - **Reproducible** — `--seed` fixes the search; every run records its parameters
+
+---
+
+## CLI Commands
+
+PandaDock **v5.0.0** ships **10 top-level CLI entry points** totaling **48 leaf commands** (including 8 GNN subcommands mirrored under both `pandadock gnn` and `pandadock-gnn`, plus `pandadock gui` / `pandadock-gui`):
+
+### 1. `pandadock` (18 commands)
+
+| Command | Purpose |
+|---|---|
+| `pandadock dock` | Flexible-ligand docking (Vina / Vinardo / Physics-Based, CPU/GPU, `--restraint`, `--waters`, `--enumerate-states`, `--weights-file`, `--rescoring mmgbsa`, `--export-md`) |
+| `pandadock series` *(v5.0)* | Congeneric series / MCS core-tethered docking with multi-score consensus & SAR brochure PDF/HTML |
+| `pandadock covalent` *(v5.0)* | Covalent warhead docking (8 warheads) anchored to a reactive residue + PandaMap + PDF/HTML report |
+| `pandadock validate-poses` *(v5.0)* | Built-in 11-point PoseBusters chemistry & geometry validity audit |
+| `pandadock calibrate` *(v5.0)* | Per-target few-shot Vina weight calibration (Ridge LOOCV) |
+| `pandadock to-md` *(v5.0)* | One-command Dock-to-MD handoff (OpenMM / GROMACS / PandaInsight) |
+| `pandadock gui` *(v5.0)* | Launch PandaDock Studio Apple-designed web GUI (3Dmol + plots + PDF/HTML) |
+| `pandadock screen` | Batched GPU/CPU virtual screening of ligand libraries with shared grids |
+| `pandadock hybrid` | Docking followed by PandaDock-GNN rescoring |
+| `pandadock list-algorithms` | List available docking algorithms and scoring functions |
+| `pandadock gnn train` | Train SE(3)-equivariant PandaDock-GNN on protein–ligand datasets |
+| `pandadock gnn train-sair` | Train PandaDock-GNN on SAIR shard cache |
+| `pandadock gnn predict` | Predict binding affinity (and v5 pose RMSD) for a complex |
+| `pandadock gnn rescore` | Universal GNN rescorer for poses from any docking tool |
+| `pandadock gnn benchmark` | Benchmark GNN model performance on a test set |
+| `pandadock gnn compare` | Compare GNN against baseline scoring functions |
+| `pandadock gnn download-model` | Download pre-trained PandaDock-GNN checkpoint |
+| `pandadock gnn list-algorithms` | List available PandaDock-GNN models and commands |
+
+### 2. Standalone Tools (9 entry points, 30 commands)
+
+| Entry Point | Commands | Purpose |
+|---|---|---|
+| **`pandadock-gui`** *(v5.0)* | `pandadock-gui` (1) | Launch PandaDock Studio GUI directly |
+| **`pandadock-prepare`** | `pandadock-prepare` (1) | Prepare receptor & ligand structures (with `--enumerate-states --ph`) |
+| **`pandadock-gridbox`** | `pandadock-gridbox` (1) | Define binding site grid boxes (`similarity`, `cavities`, `residues`, `manual`) |
+| **`pandadock-flex`** | `pandadock-flex` (1) | Flexible / induced-fit docking (χ₁/χ₂ side-chain refinement) |
+| **`pandadock-metal`** | `analyze-protein`, `dock`, `list-metals`, `prepare-ligand`, `validate` (5) | Metalloprotein coordination docking (31 bundled metals via `AD4_parameters_full.dat`) |
+| **`pandadock-tethered`** | `analyze`, `dock`, `extract`, `validate` (4) | Tethered / crystal-reference pose validation workflows |
+| **`pandadock-report`** | `combined`, `pandamap`, `plots`, `scoring` (4) | Regenerate 300-DPI plots, PandaMap 2D/3D maps, scoring breakdowns, and PDF/HTML reports |
+| **`pandadock-ml`** | `dock`, `extract-features`, `hybrid-dock`, `list-models`, `train` (5) | Classical ML-enhanced docking & feature pipelines |
+| **`pandadock-gnn`** | `benchmark`, `compare`, `download-model`, `list-algorithms`, `predict`, `rescore`, `train`, `train-sair` (8) | Dedicated GNN CLI (mirrors `pandadock gnn *`) |
 
 ---
 
@@ -112,6 +179,7 @@ Optional extras:
 
 ```bash
 pip install -e ".[gnn]"      # PandaDock-GNN (PyTorch, PyTorch Geometric)
+pip install -e ".[gui]"      # PandaDock Studio Apple-designed web GUI
 pip install pandamap         # 2D protein-ligand interaction diagrams
 ```
 
@@ -138,6 +206,12 @@ pandadock dock -r receptor.pdb -l ligand.sdf \
                --center 10 12 8 --box 22 22 22 -o results/
 ```
 
+Or launch **PandaDock Studio** (Apple-designed GUI with interactive 3D viewer, plots, PDF & HTML reports):
+
+```bash
+pandadock-gui --port 8765 --workspace .
+```
+
 ---
 
 ## Docking
@@ -151,17 +225,114 @@ pandadock dock -r receptor.pdb -l ligand.sdf \
 | `-g, --grid-config` | — | Grid box JSON from `pandadock-gridbox` |
 | `--center X Y Z` | — | Box centre in Å (alternative to `-g`) |
 | `--box X Y Z` | — | Box dimensions in Å |
-| `-s, --scoring` | `vina` | `vina` or `physics_based` |
+| `-s, --scoring` | `vina` | `vina`, `vinardo`, or `physics_based` |
 | `-n, --num-poses` | `20` | Maximum binding modes returned |
 | `-e, --exhaustiveness` | *auto* | Independent search runs |
+| `--workers` | `1` | Parallel CPU worker threads across search runs |
+| `--sample-rings` | off | Sample non-aromatic ring conformers (ETKDGv3) |
 | `--seed` | *random* | Seed for reproducible runs |
 | `--rigid-ligand` | off | Disable torsional search |
 | `--grid-spacing` | `0.375` | Affinity grid spacing in Å |
 | `--device` | `cpu` | Where the search runs: `cpu`, `cuda`, `mps` |
 | `--n-chains` | `512` | Parallel search chains when `--device` is not `cpu` |
-| `--rescoring` | `none` | `none` or `mmgbsa` |
+| `--rescoring` | `none` | `none` or `mmgbsa` (differential 12 Å pocket MM-GBSA) |
+| `--restraint` | — | Repeatable differentiable distance restraint (e.g. `A:ZN:301:ZN<2.2:donor`) |
+| `--restraints-file` | — | JSON file of distance / pharmacophore restraints |
+| `--waters` | `strip` | Structural pocket water protocol: `strip`, `keep`, or `displace` |
+| `--enumerate-states` | off | Enumerate pH protonation, tautomer, and unassigned stereo microspecies |
+| `--ph` | `7.4` | Target pH for `--enumerate-states` Henderson–Hasselbalch penalties |
+| `--weights-file` | — | Target-calibrated Vina weights JSON from `pandadock calibrate` |
+| `--export-md` | `none` | Export top pose as MD starter package: `openmm`, `gromacs`, or `both` |
 | `-o, --output-dir` | `docking_output` | Output directory |
 | `--fast` | off | Reduced sampling for smoke tests only |
+
+---
+
+## What's New in v5.0
+
+PandaDock v5.0 adds an end-to-end medicinal-chemistry workflow built directly on
+the analytic-gradient search and Panda-family reporting engine:
+
+### 1. Congeneric Series & SAR Brochure (`pandadock series`)
+
+Dock an analog series sharing one cached receptor affinity grid (`GridCache`),
+optionally tethering the Maximum Common Substructure (MCS) core to a 3D
+reference ligand, score every top pose with **Vina + Vinardo + pocket MM-GBSA +
+PoseBusters**, and export a multi-page A4 **Series SAR Brochure PDF**
+(`series_report.pdf`), `series_report.html`, `series_results.csv`, and an
+MCS-highlighted 2D analog grid:
+
+```bash
+pandadock series -r receptor.pdb -l analogs.sdf \
+                 --center 126.5 119.2 146.1 --box 22 22 22 \
+                 --reference-pose lead.sdf --workers 4 -o series_out/
+```
+
+### 2. Covalent Warhead Docking (`pandadock covalent`)
+
+Reaction-SMARTS covalent adduct assembly for **8 medicinal-chemistry warheads**
+(`michael_acceptor`, `chloroacetamide`, `nitrile`, `epoxide`, `boronic_acid`,
+`aldehyde`, `sulfonyl_fluoride`, `disulfide`) anchored to a reactive receptor
+nucleophile (`CYS`, `SER`, `THR`, `LYS`, `TYR`, `HIS`) as the fixed root of the
+`TorsionTree`, writing PDB `LINK`-annotated complexes and full PDF/HTML reports:
+
+```bash
+pandadock covalent -r 6LU7_mpro.pdb -l nirmatrelvir.smi \
+                   --residue A:CYS:145 --warhead auto -o covalent_out/
+```
+
+### 3. Differentiable Restraints & Displaceable Waters
+
+Flat-bottom harmonic restraints work identically on CPU (`L-BFGS-B`) and
+GPU/MPS (`batched_lbfgs`) with exact analytic gradients, while `--waters displace`
+explicitly compares stripped vs. conserved crystallographic pocket waters:
+
+```bash
+# Metal-coordination restraint (Carbonic Anhydrase II + Zn + AZM)
+pandadock dock -r 3HS4.pdb -l AZM.sdf --center -4.2 -4.1 17.0 --box 18 18 18 \
+               --restraint "A:ZN:301:ZN<2.2:donor" -o restrained_out/
+
+# Displaceable / bridging crystallographic waters
+pandadock dock -r 3HS4_waters.pdb -l AZM.sdf --center -4.2 -4.1 17.0 --box 18 18 18 \
+               --waters displace -o water_out/
+```
+
+### 4. Built-In PoseBusters Audit, pH State Enumeration, Calibration & MD Handoff
+
+```bash
+# Audit poses from ANY docking tool (PandaDock, Vina, Glide, Boltz-2, AF3)
+pandadock validate-poses -p poses.sdf -r receptor.pdb -o audit.json
+
+# Automatic pH 7.4 protonation, tautomer, and unassigned stereo enumeration
+pandadock dock -r receptor.pdb -l ligand.sdf --center 10 12 8 --box 22 22 22 \
+               --enumerate-states --ph 7.4 -o states_out/
+
+# Per-target few-shot Vina weight calibration (Ridge LOOCV)
+pandadock calibrate -r receptor.pdb -p series_poses.sdf -y labels.csv -o weights.json
+pandadock dock -r receptor.pdb -l new_analog.sdf --center 10 12 8 --box 22 22 22 \
+               --weights-file weights.json -o calibrated_out/
+
+# One-command Dock-to-MD handoff (OpenMM + GROMACS + PandaInsight scripts)
+pandadock to-md -r receptor.pdb -p poses.sdf --engine both --duration-ns 25 -o md_pkg/
+```
+
+### 5. PandaDock Studio GUI (`pandadock-gui` / `pandadock gui`)
+
+Launch the local Apple-HIG web workspace to inspect 3D receptors and docked
+ligands (WebGL 3Dmol.js with live grid box, Cartoon/Surface/Binding Pocket
+styles, pose switcher, and PNG snapshots), configure & run any v5.0 workflow
+with live SSE console streaming, browse all 300-DPI diagnostic plots, and view
+embedded **PDF** and **HTML** reports in one unified window:
+
+```bash
+pandadock-gui --port 8765 --workspace .
+# or:
+pandadock gui --port 8765
+```
+
+Real-complex validation outputs across **6X3V** (GABA\_A), **3HS4** (Carbonic
+Anhydrase II + Zn + crystal waters), and **6LU7** (SARS-CoV-2 Mpro `CYS A:145`
++ Nirmatrelvir) are archived in [`test/v5_validation/VALIDATION_SUMMARY.md`](test/v5_validation/VALIDATION_SUMMARY.md).
 
 ### Exhaustiveness
 
@@ -342,17 +513,21 @@ Every run writes:
 
 | File | Contents |
 |---|---|
-| `report.html` | Run parameters and all plots in one page |
+| `report.pdf` | Multi-page A4 vector brochure report (cover silhouette, quality checks, all figures, tables, methods & references) |
+| `report.html` | Self-contained editorial HTML summary with embedded branding and all figures |
 | `poses.sdf` | All poses with bond orders, rank, score, confidence |
 | `pose{N}.pdb` | Individual ligand poses |
 | `complex{N}.pdb` | Receptor plus ligand, ligand as HETATM chain L |
 | `*_poses.json` | Full coordinates and per-term energies |
 | `*_summary.json` | Run parameters, ensemble ΔG, runtime |
 | `interaction_analysis.json` | Detected interactions, per pose |
-| `pose_scores.png` | Scores by rank, with the rank-1/rank-2 gap |
-| `energy_components.png` | Energy terms, favourable versus penalty |
-| `pose_diversity.png` | Pairwise RMSD between returned poses |
-| `interaction_fingerprint.png` | Residues contacted by each pose |
+| `protein_silhouette.png` | 2D PCA-projected receptor Cα trace with bound top ligand pose |
+| `pose_scores.png` | 3-panel energetics: ranked scores, 298 K Boltzmann populations & score-vs-RMSD funnel |
+| `energy_components.png` | Per-pose energy terms, favourable (negative) versus penalty (positive) |
+| `pose_diversity.png` | Pairwise heavy-atom RMSD matrix and 2D MDS conformational landscape |
+| `interaction_fingerprint.png` | Stacked per-residue contact occupancies by type and residue-by-pose heatmap |
+| `ligand_dynamics.png` | Per-heavy-atom RMSF across poses (anchors vs mobile tails) and rotatable torsion histograms |
+| `residue_hotspots.png` | Empirical distance-weighted contact proxy scores per pocket residue |
 | `pandamap_2d_*.png` | 2D interaction diagram (requires `pandamap`) |
 
 Prefer `poses.sdf` for downstream work: PDB cannot represent bond orders or
@@ -398,57 +573,58 @@ empirical score retained alongside for comparison.
 
 ### GNN commands
 
+Both `pandadock gnn` and standalone `pandadock-gnn` expose the same 8 subcommands:
+
 | Command | Description |
 |---|---|
-| `pandadock-gnn download-model` | Download the pre-trained model |
-| `pandadock-gnn predict` | Predict binding affinity for a complex |
+| `pandadock-gnn download-model` | Download or `--list` pre-trained models |
+| `pandadock-gnn predict` | Predict binding affinity for a complex (stdout or `-o json`) |
 | `pandadock-gnn rescore` | Rescore poses from any docking tool |
 | `pandadock-gnn train` | Train on ULVSH, PDBbind or a combined set |
+| `pandadock-gnn train-sair` | Train on target-disjoint SAIR shard caches (with optional `--target-grouped` & `--rank-weight`) |
 | `pandadock-gnn benchmark` | Evaluate on a test set |
 | `pandadock-gnn compare` | Compare against baseline scoring methods |
+| `pandadock-gnn list-algorithms` | List available GNN scoring models and training entry points |
 
 ---
 
 ## Specialized Docking
 
-> **Experimental — not benchmarked.** These modes are scaffolding for future
-> development rather than validated methods, and no published PandaDock result
-> depends on them. In particular the induced-fit path does not consult a rotamer
-> library (side-chain conformers are generated by rotating atom groups about a
-> fixed Cartesian axis rather than about residue χ bonds), reports receptor RMSD
-> as a hard-coded constant, and accepts several options — loop refinement, the
-> refinement-cycle count — that do not currently affect the calculation. The
-> metal module falls back to unvalidated parameters for metals outside its
-> curated set, which it reports at runtime. Treat any output as indicative only.
+> **Experimental — not yet benchmarked on the full 815-complex set.** No
+> manuscript result depends on these modes, though all three have been updated
+> to use real physical geometry and consistent kcal/mol scoring scales.
 
 ```bash
 # Induced-fit: refines receptor side chains around the ligand
 pandadock-flex -r receptor.pdb -l ligand.sdf --center 10 12 8 --radius 12 -o results/
 
-# Metal coordination: metal-aware scoring with geometry constraints
-pandadock-metal dock -r receptor.pdb -l ligand.sdf --center 10 12 8 --box 22 22 22 -o results/
+# Metal coordination: metal-aware scoring with bundled AD4 parameters (31 metals)
+pandadock-metal analyze-protein -r metalloprotein.pdb
+pandadock-metal dock -r metalloprotein.pdb -l ligand.sdf --center 10 12 8 --box 22 22 22 -o results/
 
 # Tethered: restrains the ligand centroid near a reference pose
 pandadock-tethered dock -r receptor.pdb -l ligand.sdf \
-                        --ref reference.sdf -t 3.0 -o results/
+                        --ref reference.pdb -t 3.0 -o results/
 ```
 
 Tethered docking applies a flat-bottom centroid restraint inside the objective:
 free movement within the radius, harmonic cost beyond it.
 
-Induced-fit docking redocks into every refined receptor, so cost scales with the
-number of poses carried into refinement: budget hours rather than minutes for a
-single ligand. Use `--initial-poses-to-retain` to control that trade-off. Output
-matches `dock`: `poses.sdf`, ligand poses, and complexes with the refined
-receptor. Refined receptors are written to a temporary directory and removed
-when the run ends, including on failure. The IFD score is the binding energy plus
-a weighted receptor-strain penalty, so a pose requiring more side-chain
-rearrangement scores worse than an equivalent one that requires none.
+Induced-fit docking (`pandadock-flex`) samples real side-chain χ₁/χ₂ rotations
+(keeping backbone and Cβ atoms fixed) with Metropolis Monte Carlo, computes
+actual heavy-atom receptor RMSD and relative MMFF94 ligand conformational
+strain, redocks with Vina scoring, and ranks poses with a calibrated IFD score
+(`binding + 0.05 * receptor_strain + 0.05 * ligand_strain + interaction_bonus`).
+Use `--initial-poses-to-retain` to control runtime. Temporary refined receptors
+are cleaned up automatically on exit or failure.
 
-Metal parameters fall back to built-in approximations when no AutoDock-format
-parameter file is supplied. Those are adequate for identifying coordination
-geometry but not for quantitative metal binding energies; pass a parameter file
-for that.
+Metal docking (`pandadock-metal`) ships `AD4_parameters_full.dat` (31 AutoDock4
+metal ion types including Zn, Mg, Fe, Ca, Mn, Cu, Co, Ni, Pt, Pd, Au, Mo, Gd)
+with case-insensitive lookup, AutoDock Vina `XS_TYPE_Met_D` catalytic metal
+handling during grid search, open-coordination-site accounting (e.g. recognizing
+a 3-His catalytic Zn site has 1 open coordination site), and nearest-donor
+geometric constraints. Supply `--metal-params` to override with custom
+AutoDock-format parameters.
 
 ---
 
@@ -535,8 +711,9 @@ backwards compatibility and all resolve to the same algorithm:
 | `genetic_algorithm_cpu` | Deprecated alias |
 | `enhanced_hierarchical_cpu` | Deprecated alias |
 
-Docking runs on CPU. The workload parallelises across ligands rather than within
-a single search, so throughput scales with core count.
+On CPU, `--workers N` parallelises independent Monte Carlo runs within a single
+docking job, and virtual screening also scales across ligands; on GPU,
+`--device cuda|mps` batches chains and ligands directly on the accelerator.
 
 ---
 

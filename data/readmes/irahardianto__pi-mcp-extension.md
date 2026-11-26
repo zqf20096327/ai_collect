@@ -40,6 +40,8 @@
 
 > **Prerequisite:** Node.js 22+ and the [Pi coding agent](https://pi.dev).
 
+> **Disable MCP for one run:** `pi --no-mcp` also disables this installed extension, even when it replaces `builtin:mcp`. No MCP config is loaded, no servers connect, and no MCP commands or tools are registered. As with Pi, `--no-mcp` has no effect when it appears after `--` or is passed as another option's value.
+
 1. **Install the extension** (or run once without installing via `pi -e npm:pi-mcp-extension`):
    ```bash
    pi install npm:pi-mcp-extension
@@ -269,6 +271,11 @@ Configured under `auth` (or `oauth`). Token and client state are persisted per s
 | `clientName` (or `oauth.clientName`) | `string` | `pi-mcp/<server name>` | `client_name` sent with Dynamic Client Registration, for servers that only accept known clients |
 | `redirectUrl` (or `oauth.callbackUrl` / `oauth.callbackPort`) | `string` | `http://127.0.0.1:19876/callback` | Local HTTP loopback callback (`localhost`, `127.0.0.1`, or `::1` with path `/callback` and an explicit non-zero port; `callbackPort` maps to `http://127.0.0.1:<port>/callback`). Scans forward from `19876` when omitted; binds the exact host and port when configured. |
 
+When both aliases are set, `oauth.callbackPort` (an integer from `1` to `65535`) fills in a missing
+port in `oauth.callbackUrl` (`http://localhost/callback` plus `19877` becomes
+`http://localhost:19877/callback`); an invalid `callbackPort` or a different port in the URL is a
+config error. Port 80 is HTTP's default and counts as missing.
+
 ## Commands
 
 Server-name arguments provide autocomplete suggestions from the configured MCP servers. `/mcp:auth` suggests only servers configured for OAuth.
@@ -292,7 +299,7 @@ In addition to user slash commands, built-in **agent tools** let the LLM inspect
 | `mcp_status` | `{}` | List configured servers with `lifecycle`, `state`, `tools` (`discovered` / `active` / `expected`, plus optional `inactiveDirect` / `indirectFiltered`), `auth` credential summary, `source` (`"global"` / `"project"` / `"extension"` / `"unknown"`), optional `instructions` (when connected), and safe `error` action hints (never returns tokens, headers, or authorization URLs) |
 | `mcp_connect` | `{ name: string }` | Connect one named server, run interactive OAuth if needed, and verify that the tools configured `direct` are active before returning success (includes sanitized server `instructions` when provided; returns fixed actionable categories on failure instead of raw server response text) |
 | `mcp_list_resources` | `{ server?: string }` | List `resources/list` entries (`uri`, `name`, `description`, `mimeType`) and `resources/templates/list` URI templates for connected servers, naming configured servers that are stopped (`stoppedServers`), servers that do not advertise the `resources` capability (`resourcesUnsupported`), and servers whose listing failed (`error`) without dropping the healthy servers' rows (read-only) |
-| `mcp_read_resource` | `{ server: string, uri: string }` | Read one resource with `resources/read`: text resources return their text (including empty text), `image/*` blobs return an image block, and other binary blobs return a `[Binary resource: uri (mimeType, N bytes)]` summary instead of filling the context window; a server without the `resources` capability is reported as such rather than as a protocol error (read-only) |
+| `mcp_read_resource` | `{ server: string, uri: string }` | Read one resource with `resources/read`: text resources return their text (including empty text), valid `image/svg+xml` blobs decode to UTF-8 SVG text, supported `image/*` raster blobs (`png`, `jpeg`, `gif`, `webp`, `bmp`, `tiff`) return an image block, and other binary blobs (including empty/invalid or unsupported `image/*` blobs) return a `[Binary resource: uri (mimeType, ...)]` summary instead of filling the context window or breaking provider adapters; a server without the `resources` capability is reported as such rather than as a protocol error (read-only) |
 
 `mcp_status` returns a JSON array of [`ServerStatusRow`](./src/server-status.ts) objects:
 

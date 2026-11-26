@@ -440,5 +440,6 @@ If you use AegisOps in your research, please cite:
 MIT License. See [LICENSE](LICENSE) for details.
 
 ---
-
+<!--
 **Built with:** Kubernetes · Kind · Prometheus · Loki · Tempo · Grafana · OpenTelemetry · Chaos Mesh · Ollama · Python · GitHub Actions
+-->

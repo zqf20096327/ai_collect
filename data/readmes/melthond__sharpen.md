@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  A Claude Code plugin that turns your plain prompt into the prompt you meant. It builds that prompt from your conversation, your code and your installed skills, agents, MCP servers and hooks, and shows it to you before anything runs.
+  A Claude Code and Codex desktop plugin that turns your plain prompt into the prompt you meant. It builds that prompt from your conversation, your code and your installed skills, agents, MCP servers and hooks, and shows it to you before anything runs.
 </p>
 
 <p align="center">
@@ -37,8 +37,8 @@ Think of the colleague who never starts the wrong task. When you say "fix the lo
 ## Highlights
 
 - **Every prompt gets engineered:** where to look, what's already decided, and how to tell it's done.
-- **Built from your real setup:** your conversation, your code, and your installed skills, agents, MCP tools and hooks. Sharpen reads the hooks for Claude, which can't see them otherwise.
-- **Nothing runs until you say so.** A review card offers **Send it** or **Run my original**, or you type changes. The prompt is also on your clipboard.
+- **Built from your real setup:** your conversation, your code, and your installed skills, agents, MCP tools and hooks. Setup hooks summarize hook names for Claude Code and Codex, which cannot see the full hook configuration otherwise.
+- **Nothing runs until you say so.** The review offers **Send it**, **Run my original**, or an edit. Claude Code also copies the prompt to your clipboard.
 - **It asks only when it has to.** "Which did you mean?" appears only when two readings would lead to different work.
 - **Ten companion skills:** write prompts for other AIs, hand off to a fresh session, split big tasks, plan in phases, coach your prompting, and more.
 - **Zero dependencies, fully local:** no API calls, no telemetry.
@@ -47,7 +47,30 @@ Think of the colleague who never starts the wrong task. When you say "fix the lo
 
 ## Install
 
-**Requires:** Claude Code with plugin support, and Node.js 18 or later (the hooks run on it).
+**Requires:** Claude Code or Codex desktop with plugin support, and Node.js 18 or later (the hooks run on it).
+
+### Codex desktop
+
+This repository includes a local marketplace at `.agents/plugins/marketplace.json` so you can discover and install Sharpen from this checkout. The repository does not enable it for contributors automatically; each person chooses whether to install and enable it in Codex.
+
+1. Open this repository folder in Codex desktop and trust it if Codex asks.
+2. Restart Codex so it discovers the repository marketplace. Open **Plugins Directory**, select **Sharpen project**, choose **Sharpen**, then select **Install**.
+3. Review and trust Sharpen's bundled hooks when Codex asks. The hooks run locally and require Node.js 18 or later.
+4. Open a new local chat and send `sharpen on` to turn on Sharpen's prompt handling. This is a user-level setting that persists across sessions wherever the plugin is enabled; installing the plugin alone leaves it off.
+5. Send `sharpen` and confirm Codex reports that Sharpen is on. Then send a harmless request such as `summarize the purpose of this repository`; the Sharpen review should appear before the task runs. Choose **Run my original** to finish the smoke check without changing files.
+
+To enable Sharpen only for this checkout, create a local `.codex/config.toml` and do not commit it:
+
+```toml
+[plugins."sharpen@sharpen-project"]
+enabled = true
+```
+
+Codex reads project settings only for trusted projects. To use the plugin in another repository, install it from a marketplace available to that project and choose whether to enable it there. To update this local install after changing plugin files, refresh or reinstall **Sharpen** from **Sharpen project**, then restart Codex. Codex installs local marketplace plugins into a cache, so it does not read later checkout edits until refreshed. See OpenAI's [local plugin and marketplace guide](https://developers.openai.com/plugins/build/plugins) for the current marketplace and project-enable behavior.
+
+Codex uses its native review form when available. If the host cannot show MCP form elicitation, Sharpen presents numbered choices in the conversation instead. Closing the review without choosing leaves the request unstarted; send a new message to continue.
+
+### Claude Code
 
 Run these in Claude Code as two separate prompts:
 
@@ -128,7 +151,7 @@ Real screenshots, taken in a small demo app.
 
 </details>
 
-Coming next: Codex, Gemini CLI and GitHub Copilot CLI.
+Codex is supported through a local marketplace in Codex desktop. Gemini CLI and GitHub Copilot CLI are not supported yet.
 
 ## How it works
 
@@ -137,7 +160,7 @@ Coming next: Codex, Gemini CLI and GitHub Copilot CLI.
 </p>
 
 1. **Gate.** Each prompt is **clear** (only context gets added), **fill-in** (one reading, so the gaps get filled) or **ambiguous** (readings lead to different work, so you get 2–3 options plus *Run as typed*).
-2. **Gather.** The conversation comes first, then up to 3 quick code searches (6 if the prompt is ambiguous), then your setup: the skills, agents, MCP tools and plugin commands Claude Code lists, plus a summary of your hooks and plugins that Sharpen builds at session start.
+2. **Gather.** The conversation comes first, then up to 3 quick code searches (6 if the prompt is ambiguous), then your setup: the skills, agents, MCP tools and plugin commands the host lists, plus a names-only summary of configured hooks and plugins that Sharpen builds at session start.
 3. **Engineer.** It sorts the intent and fills the slots that kind of request needs (below), then checks the prompt for common mistakes: vague verbs, no finish line, bundled tasks, pasted credentials.
 4. **Review card.** Nothing runs until you answer it.
 
@@ -184,16 +207,18 @@ Work that edits code or runs commands gets a full brief: **starting state, targe
 
 | You choose | What happens |
 |---|---|
-| **Send it** | Claude works on the engineered prompt |
-| **Run my original** | Claude works on what you typed |
-| **Type your changes** ("make it 15 seconds") | You get an updated card |
-| **Esc, then Ctrl+V** (⌘V on macOS) | Paste the prompt from your clipboard, edit it and send it. It won't get sharpened twice |
+| **Send it** | Your agent works on the engineered prompt |
+| **Run my original** | Your agent works on what you typed |
+| **Type your changes** ("make it 15 seconds") | You get an updated review |
+| **Esc, then Ctrl+V** (⌘V on macOS) | In Claude Code, paste the prompt from your clipboard, edit it and send it. It won't get sharpened twice |
 
-Claude Code doesn't let a plugin replace your prompt, fill the input box or send messages as you. The card plus the clipboard is as close as it gets.
+Claude Code doesn't let a plugin replace your prompt, fill the input box or send messages as you. The review plus the clipboard is as close as it gets. Codex displays reviews through its native MCP form.
 
 ## Skills
 
 Ten companion skills. They work whether Sharpen is on or off.
+
+Invoke these as `$sharpen-prompt`, `$sharpen-plan`, and so on in Codex. The slash-command forms below are for Claude Code.
 
 | Skill | What it does |
 |---|---|
@@ -218,7 +243,7 @@ Ten companion skills. They work whether Sharpen is on or off.
 | `raw: <prompt>` | Skip Sharpen for one prompt. |
 | `sharpen: <prompt>` | Force a review card for one prompt, even when the prompt is clear or Sharpen is off. |
 
-`/sharpen:sharpen on` works too. Other slash commands are never touched.
+`/sharpen:sharpen on` works too. In Codex, send `sharpen on`, `sharpen off`, or `sharpen` for status. Other slash commands are never touched, and a bare go-ahead (`continue`, `yes`, `ok`) carries on with the current task without a card.
 
 ## Status badge
 
@@ -234,14 +259,14 @@ While Sharpen is on, a red badge in the terminal status bar shows what it decide
 | `[SHARPEN - RAW]` | You skipped Sharpen with `raw:` |
 | `[SHARPEN]` | Nothing to show yet, or the prompt was a slash command |
 
-The badge reads the session transcript, so it costs no tokens and stores nothing. It sets itself up the first time you run `/sharpen on`. If you already have a status line, Sharpen **never overwrites it**. Claude offers once to chain the badge after yours.
+The badge is Claude Code-only. It reads the session transcript, so it costs no tokens and stores nothing. It sets itself up the first time you run `/sharpen on`. If you already have a status line, Sharpen **never overwrites it**. Claude offers once to chain the badge after yours.
 
 ## Privacy
 
 - **Nothing leaves your machine:** no API calls, telemetry or webhooks. The agent you already use does the thinking.
 - **Prompts are never logged.** The hooks read the prompt, decide what to do and exit.
 - **Your settings are read, not changed.** The hook summary keeps only each hook's event and script *name*, never its arguments (they can hold tokens).
-- **Your clipboard is used.** When a card appears, the engineered prompt replaces what's on it.
+- **Your clipboard is used in Claude Code.** When a review appears, the engineered prompt replaces what's on it. Codex displays the review in its native form instead.
 
 Files Sharpen writes:
 
@@ -250,8 +275,10 @@ Files Sharpen writes:
 | `~/.config/sharpen/state.json` | On or off |
 | `~/.config/sharpen/last-sharpened.txt` | The last engineered prompt, so a pasted copy isn't sharpened twice |
 | `~/.config/sharpen/stats.json` | Two counts: cards shown, and follow-ups that pushed back ("still failing"). No prompt text |
+| `~/.config/sharpen/card-pending` | Empty marker: a card was just shown, so the next prompt is checked for pushback |
 | `~/.config/sharpen/sharpen-statusline.js` | The badge script, kept outside the plugin folder so updates don't break it |
 | `~/.claude/settings.json` | Edited only to add the badge when you have no status line |
+| `~/.codex/plugins/cache/` | Codex's installed plugin copy; refresh it from the local marketplace after checkout changes |
 
 To report a security issue, see [SECURITY.md](SECURITY.md).
 
@@ -264,11 +291,16 @@ To report a security issue, see [SECURITY.md](SECURITY.md).
 
 Then **restart Claude Code**. A session that was already open keeps the old version.
 
+For Codex desktop, refresh or reinstall the plugin from the **Sharpen project** repository marketplace, then restart Codex. Send `sharpen` in a local repository chat to check the status.
+
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
 | Claude runs the prompt straight away, with no card | The session has an older version loaded (the card arrived in v1.6.0). Update, restart, and check with `/sharpen:sharpen-help`. If it still happens, [open an issue](https://github.com/melthond/sharpen/issues) with the prompt. |
+| Codex does not show Sharpen in Plugins Directory | Restart Codex with this repository open and trusted. Confirm `.agents/plugins/marketplace.json` is present, then refresh the local marketplace. |
+| Codex runs a prompt without a Sharpen review | Confirm the plugin is installed and its hooks are trusted, then send `sharpen` to check status. If it is off, send `sharpen on`; start a new chat after trusting or enabling the plugin. |
+| Codex keeps using an older local plugin copy | Refresh or reinstall Sharpen from **Sharpen project** in Plugins Directory, then restart Codex. Local marketplace plugins load from a cache. |
 | The badge doesn't show | You already had a status line, so Sharpen left it alone. Add `node "~/.config/sharpen/sharpen-statusline.js"` after your status line command. The badge only shows while Sharpen is on, and only in the terminal. |
 | Nothing lands on the clipboard (Linux) | Install `wl-copy`, `xclip` or `xsel`. Windows (`clip`) and macOS (`pbcopy`) work out of the box. |
 
@@ -301,7 +333,7 @@ No. Claude Code doesn't allow that. Press Esc, then Ctrl+V to paste it from your
 <details>
 <summary>Does it work in Codex, Gemini CLI, Copilot CLI or Cursor?</summary>
 
-Not yet. Other agents will reuse the same `SKILL.md`. Sharpen only ships to agents that let a plugin run on every prompt, so that `/sharpen off` really turns it off.
+Codex desktop is supported through the repository's local marketplace and bundled lifecycle hooks. Gemini CLI, GitHub Copilot CLI and Cursor are not supported yet. The `/sharpen off` command works in Claude Code; in Codex, send `sharpen off`.
 </details>
 
 <details>
@@ -345,6 +377,11 @@ All of Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.m
 | `hooks/sharpen-clipboard.js` | `PreToolUse` on the review card: copies the prompt to your clipboard |
 | `hooks/sharpen-core.js` | The decision table: pure functions, fully tested |
 | `hooks/sharpen-env.js` | The setup summary: hook names and enabled plugins |
+| `hooks/codex-prompt.js`, `hooks/codex-session.js` | Codex hooks: prompt gate, status commands, and session instructions |
+| `hooks/sharpen-codex-env.js` | The Codex setup summary: skill, MCP server, and hook names only |
+| `hooks/sharpen-review-mcp.js`, `mcp.json` | Native Codex review choices and numbered fallback when native elicitation is unavailable |
+| `.codex-plugin/plugin.json`, `hooks/codex-hooks.json` | Codex desktop plugin metadata and bundled lifecycle hooks |
+| `.agents/plugins/marketplace.json` | Local marketplace discovery for the Codex plugin |
 | `hooks/sharpen-state.js`, `sharpen-stats.js` | The on/off flag and the local counts |
 | `hooks/sharpen-statusline.js`, `sharpen-statusline-setup.js` | The badge, and installing it without overwriting yours |
 | `hooks/sharpen-io.js` | Shared stdin/stdout helpers |

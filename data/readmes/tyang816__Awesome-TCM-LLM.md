@@ -4,7 +4,7 @@
 
 ![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-green)  [![Awesome](https://awesome.re/badge.svg)](https://awesome.re) ![Stars](https://img.shields.io/github/stars/tyang816/Awesome-TCM-LLM?color=yellow)  ![Forks](https://img.shields.io/github/forks/tyang816/Awesome-TCM-LLM?color=blue&label=Fork) [![中文门户](https://img.shields.io/badge/中医资源-门户-blue)](https://tyang816.github.io/zh/projects/tcm/) [![Project](https://img.shields.io/badge/Project-tyang816.github.io-informational)](https://tyang816.github.io/projects/tcm/)
 
-开源中医模型、数据、论文、专利精选，也带一点相关中文医疗。现在大概有 102 条新闻、117 个模型、94 篇综述、73 件专利、206 个数据集、483 篇方法论文，以及 452 位中医药人工智能导师。[欢迎补条目](CONTRIBUTING.md)。
+开源中医模型、数据、论文、专利精选，也带一点相关中文医疗。现在大概有 104 条新闻、117 个模型、95 篇综述、73 件专利、206 个数据集、449 篇方法论文、36 门公开课，以及 [452 位中医药人工智能导师](wiki/People.md)。[欢迎补条目](CONTRIBUTING.md)。
 
 [项目页](https://tyang816.github.io/projects/tcm/) · [中文项目页](https://tyang816.github.io/zh/projects/tcm/) · [Wiki](wiki/Home.md) · [主页](https://tyang816.github.io/zh/)
 
@@ -23,1695 +23,67 @@
 | 电脑比较一般 | **[杏核 (Xinghe)](https://huggingface.co/zsyjsld/Xinghe1.2-9B)** | 9B，有 GGUF |
 | 做对比实验 | **[TCM-Ladder](https://arxiv.org/abs/2505.24063)**、**[LingLanMedBench（灵兰）](https://arxiv.org/abs/2602.01779v2)** | 任务说得比较清楚；更多在[数据集](#数据集) |
 | 写相关工作 | 近两年的 scoping review | 先翻[综述](#综述)，别从单篇模型论文起 |
-| 找导师 | [导师](#导师) | 高校、产业、医院 |
+| 找公开课 | [学习资料](#学习资料) | 高校公开课和系列讲座，只收可核验的一手链接 |
+| 找导师 | [导师](wiki/People.md) | 完整名单按高校、产业、医院和地区排列 |
 
 同名不一定是同一个东西。「仲景」至少有 ZhongJingGPT 和 AAAI 那条 CMtMedQA；TCM-Eval 也不止一套。说不清时看 [Getting Started](wiki/Getting-Started.md)。
 
 ## 导师
 
-先按地区，再按高校、医院或公司。
-
-<details>
-<summary>北京（80）</summary>
-
-<details>
-<summary>北京中医药大学（24）</summary>
-
-- **陈建新** 北京中医药大学生命科学学院教授、博士生导师。做中医药数据挖掘和中西医结合人工智能，建设 SymMap。2026 年招收中医信息学、中医药大数据方向博士。 [北京中医药大学生命科学学院] [[主页](https://shengming.bucm.edu.cn/jyjx/yjs/dsfc/584c26a2af124c56841daf796c2d24c4.htm)] [[招生](https://shengming.bucm.edu.cn/docs/2026-03/094923d029c745a7aa5b3f7493ee8d2c.pdf)]
-- **郭津丞** 北京中医药大学中医学院教授、博士生导师。做中医药生物信息学、数字孪生与智能体，建设 HERB、POINT。2026 年与中国科学院赵屹联合招收中医药生物信息学博士。 [北京中医药大学中医学院] [[主页](https://jichu.bucm.edu.cn/xygk/jxkyjg/yjstpt/zyxxxyjzx/szdw22/b1fbbc5c520c4cd88e780576f381dc05.htm)] [[招生](https://shengming.bucm.edu.cn/docs/2026-03/445adae3d9514d6580b200fb317f602c.pdf)]
-- **谷晓红** 北京中医药大学教授、博士生导师，中医疫病研究院院长。做温病与名医数智传承，并与曹鹏等合作发表中医大模型天医。 [北京中医药大学] [[主页](https://jichu.bucm.edu.cn/xygk/jxkyjg/jys/wbjys/szdw6/220d8b80aef84862a6355b25dfef5f29.htm)] [[新闻](https://www.njucm.edu.cn/2025/0910/c6754a160459/page.htm)]
-- **徐冰** 北京中医药大学中药学院教授、博士生导师、副院长。做中药智能制药，建设 iTCM 智慧制药系统，并负责薪火中国药大模型建设。 [北京中医药大学中药学院] [[主页](https://infopharm.bucm.edu.cn/kxyj/yjdw/31874.htm)] [[新闻](https://zhongyao.bucm.edu.cn/yyxw/57d9fb0a8af1496b88ca404e51e4e7d1.htm)]
-- **张晓晴** 北京中医药大学生命科学学院博士生导师。做人工智能与中医数量化辨证、头面望诊和智慧中医装备。 [北京中医药大学生命科学学院] [[主页](https://shengming.bucm.edu.cn/jyjx/yjs/dsfc/31df29a5d6b04e539b7a90e1bff9d2bc.htm)] [[招生](https://shengming.bucm.edu.cn/docs/2026-03/9f61983b960a443ea888399d6d5b09d5.pdf)]
-- **吴志生** 北京中医药大学研究员、博士生导师，中药智能制造学科带头人。做中药制造测量和中药智造平台。 [北京中医药大学] [[主页](https://infopharm.bucm.edu.cn/kxyj/yjdw/44025.htm)]
-- **王耘** 北京中医药大学中药学院研究员、博士生导师，中药信息学系主任。做中药信息融合、药性组合智能设计，以及大模型与知识图谱。 [北京中医药大学中药学院] [[主页](https://zhongyao.bucm.edu.cn/szdw/sssds/szzyxssds/f55f7fd12b174137b01a59dd3d256dd1.htm)]
-- **张燕玲** 北京中医药大学中药学院研究员、博士生导师。从虚拟筛选做到人工智能组方。 [北京中医药大学中药学院] [[主页](https://zhongyao.bucm.edu.cn/szdw/bssds/szzyx_20220622170829152708/a2c5cdca5e504f91b7f702a883bdd762.htm)]
-- **张玫** 北京中医药大学研究员、博士生导师。研发数智中医嗅诊装备，推动闻诊与辨证客观化。 [北京中医药大学] [[主页](https://zhongyao.bucm.edu.cn/szdw/bssds/zyfxxbsds_20220622170729411401/d86a8ba8fa764445b796a6f218c2a79d.htm)]
-- **王济** 北京中医药大学教授、博士生导师，国家中医体质与治未病研究院常务副院长。做中医体质、人工智能和数字健康。 [北京中医药大学] [[主页](https://tizhi.bucm.edu.cn/szdw/jsjj/2efe37af25e147e5af41ad78f80c669f.htm)]
-- **张正军** 北京中医药大学数据科学与人工智能学院院长。用大数据和系统药理学打通辨证到精准用药。 [北京中医药大学数据科学与人工智能学院] [[新闻](http://finance.people.com.cn/n1/2026/0817/c1004-40781088.html)]
-- **王旭** 北京中医药大学生命科学学院副研究员、硕士生导师。用图像和人工智能做舌、面、脑多模态证候分析。 [北京中医药大学生命科学学院] [[主页](https://shengming.bucm.edu.cn/jyjx/yjs/dsfc/ede8719994ab4d14904fd1e3f67bc5cd.htm)]
-- **乔延江** 北京中医药大学教授、博士生导师。做中药信息学、药性数据和智能制造。 [北京中医药大学] [[主页](https://infopharm.bucm.edu.cn/kxyj/yjdw/31864.htm)]
-- **牛欣** 北京中医药大学中医学院二级教授、博士生导师。做四诊合参数字化，研发脉诊仪和四诊合参辅助诊疗仪。 [北京中医药大学中医学院] [[主页](https://www.ais.cn/mentor/mentorDetail/e9bed53e-5e3b-11ec-b045-a85e45a23623)]
-- **杨学智** 北京中医药大学教授。负责便携式中医四诊合参辅助诊疗仪，把望闻问切集到一台设备。 [北京中医药大学] [[主页](https://www.bucm.edu.cn/bzyyw/10779fdcfccf41a5b46e1f58530374ab.htm)]
-- **王琦** 北京中医药大学中国工程院院士、国医大师。做中医体质辨识体系和数字化监测。 [北京中医药大学] [[主页](https://kgyjzzx.bucm.edu.cn/kjcg/zhcg/b523b0ce71924f8ea8ff5352b2252f0f.htm)]
-- **关静** 北京中医药大学中医学院中医诊断学副教授、硕士生导师。做舌诊客观化，参与智能舌诊仪研制。 [北京中医药大学中医学院] [[主页](https://jichu.bucm.edu.cn/yjsjy/dsjs/zyzdx/78a37699a21e462bad60e04054b85890.htm)]
-- **马星光** 北京中医药大学管理学院教授、研究生导师。做中医药数据库、名医医案挖掘和舌诊图像识别。 [北京中医药大学管理学院] [[主页](https://sm.bucm.edu.cn/szdw/ywds/880e3600089f422e8e747b9eeb6da0f6.htm)]
-- **史新元** 北京中医药大学中药学院教授、博士生导师。做中药信息学、生产过程质量控制和近红外定量建模。 [北京中医药大学中药学院] [[主页](https://infopharm.bucm.edu.cn/kxyj/yjdw/31867.htm)]
-- **李楠** 北京中医药大学中药信息工程研究中心副研究员、硕士生导师。做中药生产过程质量控制。 [北京中医药大学中药学院] [[主页](https://infopharm.bucm.edu.cn/kxyj/yjdw/index.htm)]
-- **戚武振** 北京中医药大学中药学院讲师。做中药智能制造仪器、光谱传感和关键质量属性检测。 [北京中医药大学中药学院] [[主页](https://infopharm.bucm.edu.cn/kxyj/yjdw/77133.htm)]
-- **戴幸星** 北京中医药大学中药学院高级实验师。做炮制工程装备、智能感官评价和过程质量数字化。 [北京中医药大学中药学院] [[主页](https://sysglzx.bucm.edu.cn/zxgk/jsdw/710b407f00ea4135b3d0d4612168b9a0.htm)]
-- **闫聪** 北京中医药大学生命科学学院教授、博士生导师。具身智能推拿机器人研发负责人，用专家大模型复现名医手法。 [北京中医药大学生命科学学院] [[主页](https://shengming.bucm.edu.cn/jyjx/yjs/dsfc/553c4da4cd0943208218068860bff928.htm)]
-- **郭淑贞** 北京中医药大学中医学院教授、博士生导师。做中西医结合药理，是 BATMAN-TCM 2.0 共同通讯作者。 [北京中医药大学中医学院] [[主页](https://jichu.bucm.edu.cn/xygk/jxkyjg/syzx/kysyzx/szdw28/9c337b804aed4160aaa36a33703db7da.htm)]
-
-</details>
-
-<details>
-<summary>中国中医科学院（20）</summary>
-
-- **许海玉** 中国中医科学院首席研究员，中药研究所整合中药学研究中心主任。做整合药理学与中医药大数据，建设 ETCM、SoFDA。2026 年在辽宁中医药大学招收中医人工智能科学与技术方向博士。 [中国中医科学院中药研究所] [[主页](https://www.icmm.ac.cn/zjjj/sxyjyd/content_128.html)] [[招生](https://gjhzjlc.lnutcm.edu.cn/liaoningzhongyiyaodaxue2026nianshenqing-kaohejishuobolianduboshiyanjiushengzhaoshengzhuanyemuluxueshuxuewei.pdf)]
-- **刘保延** 中国中医科学院首席研究员。做中医临床疗效评价与中医药大数据，参与灵丹-V2，并与固生堂合作中医药大模型和真实世界数据。 [中国中医科学院] [[简介](https://www.ch-s.wtcmaw.events/%E5%8F%82%E4%BC%9A%E5%8D%95%E4%BD%8D/%E4%B8%BB%E5%B8%AD%E5%9B%A2/speaker-bio-%E5%88%98%E4%BF%9D%E5%BB%B6)] [[论文](https://arxiv.org/abs/2610.14705)] [[新闻](https://www.gstzy.cn/news/detail/10/14073.html)]
-- **于彤** 中国中医科学院中医药信息研究所研究员、硕士生导师。做中医药知识图谱、术语系统和垂直领域大模型。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8370)]
-- **于琦** 中国中医科学院中医药信息研究所研究员、硕士生导师。做名医传承信息化、临床知识库和中医药人工智能。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8272)]
-- **李敬华** 中国中医科学院中医药信息研究所研究员、博士生导师，大健康智能研发中心主任。做中医临床辅助决策、古今医案平台和四诊机器人。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8351)]
-- **李海燕** 中国中医科学院中医药信息研究所研究员、博士生导师。做大模型中成药推荐，并用于医源中医大模型。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8065)]
-- **李兵** 中国中医科学院中药研究所研究员，本草数智中心副主任。做中医典籍知识图谱、古籍大模型和临床辅助决策。 [中国中医科学院中药研究所] [[主页](https://wenxian.sdutcm.edu.cn/info/1040/2352.htm)]
-- **张彦琼** 中国中医科学院中药研究所研究员、博士生导师，中药药性理论研究中心主任。用组学大数据和生物网络解析中药作用与合理用药。 [中国中医科学院中药研究所] [[主页](https://zhongyao.bucm.edu.cn/szdw/bssds/lczyxbsds_20220622170829152708/a055bcd9f9a04c558a83f4a9c8c28ede.htm)]
-- **杨洪军** 中国中医科学院副院长，研究员、博士生导师。做整合药理学和中医传承辅助平台，并提出 AI4TCM。 [中国中医科学院] [[主页](https://www.merc.ac.cn/zykx/detail.html?contentId=89&id=13)]
-- **汪南玥** 中国中医科学院医学实验中心研究员、博士生导师。做四诊设备和人工智能四诊合参。 [中国中医科学院医学实验中心] [[主页](https://www.merc.ac.cn/zykx/detail.html?contentId=11&id=13)]
-- **朱彦** 中国中医科学院中医药信息研究所副研究员、硕士生导师。做中医药术语、领域本体和方剂数据挖掘。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8343)]
-- **文天才** 中国中医科学院中医药数据中心正高级工程师、博士生导师。做真实世界病历挖掘和辅助决策。 [中国中医科学院中医药数据中心] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8372)]
-- **王俊文** 中国中医科学院中医基础理论研究所研究员、博士生导师。做智能中医辅助诊断技术和装备。 [中国中医科学院中医基础理论研究所] [[主页](https://www.ibtcm.ac.cn/zjds-detail.thtml?contentId=8342)]
-- **陈士林** 成都中医药大学首席教授、中国中医科学院首席研究员。创立本草基因组学，建成中药全产业链大模型本草智库。 [成都中医药大学，中国中医科学院] [[新闻](https://academics.casad.cas.cn/xshd/kxyjsqylt/2024/d180c/202507/t20250731_5078674.html)]
-- **赵玉凤** 中国中医科学院中医药信息研究所研究员、博士生导师，中医药数据中心副主任。做真实世界中医药大数据分析。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8349)]
-- **杨硕** 中国中医科学院中医药信息研究所研究员、硕士生导师。做中医证候本体、循证知识表达和数字化。 [中国中医科学院中医药信息研究所] [[主页](http://www.cintcm.ac.cn/tutor.thtml?id=8353)]
-- **高俊虹** 中国中医科学院针灸研究所研究员、博士生导师，针刺手法研究室主任。研究针灸效应机制并研发针灸装备。 [中国中医科学院针灸研究所] [[主页](https://www.acuworld.ac.cn/info_content_ds.jsp?id=922)]
-- **荣培晶** 中国中医科学院首席研究员、博士生导师，针灸研究所副所长。主持经脉功能脑表征研究，其中含经脉知识图谱。 [中国中医科学院针灸研究所] [[主页](http://www.acuworld.ac.cn/info_content.jsp?id=1583)]
-- **黄璐琦** 中国中医科学院院长、研究员。做分子生药学和中药分子鉴定。 [中国中医科学院] [[主页](https://www.nrc.ac.cn/rcyjy/rcdw/yjy/eb9d33d888a14d189c75d46fc19ced5b.htm)]
-- **袁媛** 中国中医科学院首席研究员、博士生导师。做中药鉴定和分子生药学。 [中国中医科学院] [[主页](https://www.nrc.ac.cn/rcyjy/rcdw/yjy/6c76223ab0574c35a0e8e0e35ab67249.htm)]
-
-</details>
-
-<details>
-<summary>清华大学（5）</summary>
-
-- **李梢** 清华大学教授、博士生导师，北京市中医药交叉研究所所长。做网络药理学与中医药人工智能，研究肿瘤等复杂疾病的中西医防治，招收博士后和工程博士。 [清华大学自动化系，清华大学北京市中医药交叉研究所] [[主页](https://www.tcm-x.tsinghua.edu.cn/info/1512/2662.htm)] [[招生](https://www.tcm-x.tsinghua.edu.cn/zszp.htm)]
-- **孙茂松** 清华大学计算机系长聘教授、博士生导师，人工智能研究院常务副院长。做自然语言处理与大模型，团队与固生堂合作研发中医药大模型。 [清华大学计算机系，清华大学人工智能研究院] [[主页](https://nlp.csai.tsinghua.edu.cn/staff/sms/)] [[新闻](https://www.gstzy.cn/news/detail/10/14076.html)]
-- **张鹏** 清华大学自动化系副研究员，北京市中医药交叉研究所副所长。参与中医消化模型 GastroTCM。 [清华大学自动化系，清华大学北京市中医药交叉研究所] [[主页](https://www.tcm-x.tsinghua.edu.cn/kydw.htm)]
-- **罗国安** 清华大学化学系教授。提出中医药系统对系统研究，并做中药指纹图谱。 [清华大学化学系] [[主页](https://www.chem.tsinghua.edu.cn/info/1089/1941.htm)]
-- **梁琼麟** 清华大学化学系长聘教授、博士生导师。做中药现代化、质谱多组学和器官芯片分析。 [清华大学化学系] [[主页](https://www.chem.tsinghua.edu.cn/info/1095/2735.htm)]
-
-</details>
-
-<details>
-<summary>北京科技大学（3）</summary>
-
-- **张德政** 北京科技大学计算机与通信工程学院教授、博士生导师。做中医知识图谱和智能辅助诊断，团队发布张仲景中医药大模型，并受聘河南中医药大学特聘教授。 [北京科技大学计算机与通信工程学院] [[主页](https://faculty.ustb.edu.cn/DezhengZhang/zh_CN/index.htm)] [[新闻](https://news.ustb.edu.cn/info/1087/67760.htm)]
-- **阿孜古丽·吾拉木** 北京科技大学计算机与通信工程学院教授、博士生导师。做多维望诊融合和中医临床智能辅助诊断，并指导中医药大模型。 [北京科技大学计算机与通信工程学院] [[主页](https://it.xju.edu.cn/info/1327/2835.htm)] [[新闻](https://news.ustb.edu.cn/info/1981/67772.htm)]
-- **谢永红** 北京科技大学计算机学院副教授、硕士生导师。参与张仲景中医药大模型，并做过中医知识图谱。 [北京科技大学计算机与通信工程学院] [[主页](https://faculty.ustb.edu.cn/YonghongXie/zh_CN/index.htm)]
-
-</details>
-
-<details>
-<summary>中国中医科学院望京医院（2）</summary>
-
-- **成永忠** 中国中医科学院望京医院主任医师、博士生导师。主持中医正骨智能接骨手术机器人。 [中国中医科学院望京医院] [[新闻](https://zyj.beijing.gov.cn/sy/rdzt/bjyyjkxtzyygzlyfgc/202501/P020250124625181340715.pdf)]
-- **冯敏山** 中国中医科学院望京医院主任医师、博士生导师。介绍颈椎病名医经验垂直大模型。 [中国中医科学院望京医院] [[招生](https://yanjiusheng.bucm.edu.cn/docs/2024-12/c2448d698eca42848387882e725da184.pdf)]
-
-</details>
-
-<details>
-<summary>中国中医科学院西苑医院（2）</summary>
-
-- **徐浩** 中国中医科学院首席研究员、西苑医院副院长。用深度神经网络做名老中医知识库和智能辅助诊疗。 [中国中医科学院西苑医院] [[新闻](https://xyhospital.com/Html/News/Articles/21500.html)]
-- **庞博** 中国中医科学院西苑医院副院长、博士生导师。分管信息，介绍本院数字孪生智能诊室。 [中国中医科学院西苑医院] [[主页](https://www.xyhospital.com/Html/News/Articles/22270.html)]
-
-</details>
-
-<details>
-<summary>中日友好医院（2）</summary>
-
-- **杜时雨** 中日友好医院消化科主任、博士生导师。中医脾胃大模型 GastroTCM 通讯作者。 [中日友好医院] [[主页](https://www.zryhyy.com.cn/zryh/c100442/zjxx.shtml)]
-- **左先波** 中日友好医院大数据研究部主任。介绍本院可信数据空间和专病大模型。 [中日友好医院] [[主页](https://www.zryhyy.com.cn/zryh/c105700/zjxx.shtml)]
-
-</details>
-
-<details>
-<summary>北京中医药大学东方医院（2）</summary>
-
-- **骆长永** 北京中医药大学东方医院硕士研究生导师。做中医人工智能及疫病、慢病智能化防治，发表中医大模型天医。 [北京中医药大学东方医院] [[主页](https://www.dongfangyy.com.cn/Html/News/Articles/13293.html)] [[论文](https://doi.org/10.1016/j.inffus.2025.103663)]
-- **商洪才** 北京中医药大学东方医院院长，研究员、博士生导师。做广义望诊智能采集和中医临床辅助决策。 [北京中医药大学东方医院] [[主页](https://dongfangyy.com.cn/Html/News/Articles/12504.html)]
-
-</details>
-
-<details>
-<summary>北京大学（2）</summary>
-
-- **屠鹏飞** 北京大学药学院教授、博士生导师，中医药现代研究中心主任。做中药靶点鉴定，并用量子化学计算鉴定化学异构体。 [北京大学药学院] [[主页](https://dnm.bjmu.edu.cn/szdw_20180110150803713087/trywhxyjs_20180110150803713087/192678.htm)]
-- **曾克武** 北京大学药学院研究员、博士生导师。用蛋白质组方法鉴定中药成分的直接靶点。 [北京大学药学院] [[主页](https://dnm.bjmu.edu.cn/szdw_20180110150803713087/trywhxyjs_20180110150803713087/192684.htm)]
-
-</details>
-
-<details>
-<summary>北京工业大学（2）</summary>
-
-- **张新峰** 北京工业大学信息学部副教授、硕士生导师。做舌图像分割、多标签分类和多模态舌象感知。 [北京工业大学信息学部] [[主页](https://sist.bjut.edu.cn/info/1517/4319_2.htm)]
-- **蔡轶珩** 北京工业大学信息学部教授、博士生导师。做舌象全维度采集、望诊色彩标准化和智能舌诊系统。 [北京工业大学信息学部] [[主页](https://sist.bjut.edu.cn/info/1426/2320.htm)]
-
-</details>
-
-<details>
-<summary>国家蛋白质科学中心（北京）（2）</summary>
-
-- **刘中扬** 国家蛋白质科学中心（北京）副研究员、硕士生导师。用人工智能和知识图谱做药物发现，是 BATMAN-TCM 2.0 共同通讯作者。 [国家蛋白质科学中心（北京）] [[主页](https://i-share.ncpsb.org.cn/genee/post/176)]
-- **李栋** 国家蛋白质科学中心（北京）研究员、博士生导师。做生命组学大数据挖掘，是 BATMAN-TCM 2.0 共同通讯作者。 [国家蛋白质科学中心（北京）] [[主页](http://i-share.ncpsb.org.cn/genee/post/172)]
-
-</details>
-
-<details>
-<summary>中国中医科学院广安门医院（1）</summary>
-
-- **刘震** 中国中医科学院广安门医院党委书记。牵头四诊与辨证大模型，并发布广医·岐智。 [中国中医科学院广安门医院] [[新闻](https://www.gamyy.cn/gzb/news/big/115621.html)]
-
-</details>
-
-<details>
-<summary>中国科学院计算技术研究所（1）</summary>
-
-- **吴杨** 中国科学院计算技术研究所副研究员、课题负责人。建设 HERB、SymMap、POINT 等中药大数据平台。 [中国科学院计算技术研究所] [[主页](https://www.ict.ac.cn/sourcedb/cn/jssrck/202211/t20221101_6543064.html)]
-
-</details>
-
-<details>
-<summary>中科闻歌（1）</summary>
-
-- **王磊** 中国科学院自动化研究所研究员，中科闻歌董事长。与中国中医科学院联合研发大医金匮，并任中医药智能科学与工程技术研究中心学术指导委员会委员。 [中科闻歌，中国科学院自动化研究所] [[新闻](https://news.sciencenet.cn/htmlnews/2025/5/544108.shtm)] [[网站](https://tcm.wenge.com/)]
-
-</details>
-
-<details>
-<summary>传神语联（1）</summary>
-
-- **何恩培** 传神语联创始人、董事长兼首席执行官。公司发布任度大模型和传神素问中医大模型。 [传神语联] [[主页](https://www.transn.com/mobile/about_us/intro)]
-
-</details>
-
-<details>
-<summary>北京中医药大学东直门医院（1）</summary>
-
-- **刘春玲** 北京中医药大学东直门医院数字化与智慧医院建设处处长。推进本院智慧医院和数智融合。 [北京中医药大学东直门医院] [[新闻](https://yxb.dzmyy.com.cn/Html/News/Articles/18348.html)]
-
-</details>
-
-<details>
-<summary>北京交通大学（1）</summary>
-
-- **周雪忠** 北京交通大学计算机学院教授、博士生导师、人工智能系系主任。做中医药知识图谱、大语言模型和临床人工智能，团队发布灵丹、灵丹-V2。 [北京交通大学计算机学院] [[主页](https://faculty.bjtu.edu.cn/8029/)] [[论文](https://arxiv.org/abs/2610.14705)] [[代码](https://github.com/TCMAI-BJTU/Lingdan-V2)]
-
-</details>
-
-<details>
-<summary>北京博奥晶方（1）</summary>
-
-- **杨越** 北京博奥晶方董事长。主持分子本草大模型，用通路数据做中药组方筛选和活性评价。 [北京博奥晶方] [[新闻](http://www.zj.chinanews.com.cn/jzkzj/2025-12-24/detail-iheyfaae0556576.shtml)]
-
-</details>
-
-<details>
-<summary>北京同仁堂研究院（1）</summary>
-
-- **王志斌** 北京同仁堂研究院院长。做中药生物活性测定和质量控制。 [北京同仁堂研究院] [[主页](https://zhongyao.bucm.edu.cn/szdw/sssds/zyylx_20220622164850036668/75851.htm)]
-
-</details>
-
-<details>
-<summary>北京航空航天大学（1）</summary>
-
-- **柳泽明** 北京航空航天大学计算机学院副教授。主持中医领域专业大模型关键技术研发。 [北京航空航天大学计算机学院] [[主页](https://teacher.buaa.edu.cn/liuzeming/zh_CN/kyxm/206021/content/6796.htm)]
-
-</details>
-
-<details>
-<summary>北京邮电大学（1）</summary>
-
-- **王光宇** 北京邮电大学研究员。中医领域自适应预训练模型 TCM-GPT 通讯作者。 [北京邮电大学] [[新闻](https://news.qq.com/rain/a/20250110A03RJT00)]
-
-</details>
-
-<details>
-<summary>博奥生物集团（1）</summary>
-
-- **程京** 博奥生物集团董事长兼总裁。建分子本草与中医药大模型，并推进舌诊等数字化中医诊断。 [博奥生物集团] [[主页](https://www.capitalbio.com/about/45.html)]
-
-</details>
-
-<details>
-<summary>解放军总医院（1）</summary>
-
-- **肖小河** 解放军总医院联合培养博士生导师。招生方向为基于精准网络药理学的中药作用机制研究。 [解放军总医院] [[招生](https://yanjiusheng.bucm.edu.cn/docs/2026-01/f524a5d2c485489ab2be485be376a2b3.pdf)]
-
-</details>
-
-<details>
-<summary>首都医科大学附属北京中医医院（1）</summary>
-
-- **刘宝利** 首都医科大学附属北京中医医院常务副院长、博士生导师。腹泻中医大模型 Qwen-TCM-Dia 通讯作者。 [首都医科大学附属北京中医医院] [[主页](https://www.bjzhongyi.com/gzb_team_detail/13893.html)]
-
-</details>
-
-<details>
-<summary>首都师范大学（1）</summary>
-
-- **郝博文** 首都师范大学管理学院副教授。与团队发布中医方剂模型知方丹台，用图谱检索增强生成方剂。 [首都师范大学管理学院] [[主页](https://glxy.cnu.edu.cn/szdw/zrjs/ggsyglzy_05f39083c56d46acbb48d86628e8cc70/index.htm)] [[论文](https://arxiv.org/abs/2509.05867)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>天津（28）</summary>
-
-<details>
-<summary>天津中医药大学（13）</summary>
-
-- **张俊华** 天津中医药大学教授、博士生导师，现代中医药海河实验室常务副主任。做循证中医药与组分中药，团队发布中医药循证评价智能体 AireviewAgent。 [天津中医药大学中医药研究院，现代中医药海河实验室] [[主页](https://institute.tjutcm.edu.cn/info/1049/2127.htm)] [[新闻](https://www.tjutcm.edu.cn/info/1047/1971.htm)]
-- **孟昭鹏** 天津大学教授、博士生导师，原天津中医药大学副校长。做人工智能与中医药，包括中医药大模型、智能问答和四诊设备。 [天津大学，天津中医药大学] [[主页](https://kjc.gyu.edu.cn/info/1008/2020.htm)] [[新闻](https://yuyanwenhua.tjutcm.edu.cn/info/1036/1916.htm)]
-- **周鹏** 天津大学副教授、博士生导师。做智能中医诊断装备和中医大数据，并创办依脉人工智能。 [天津大学，天津中医药大学] [[主页](https://zhongyi.tjutcm.edu.cn/info/1105/1456.htm)]
-- **庄朋伟** 天津中医药大学教师。参与海河·岐伯的方剂知识图谱增强。 [天津中医药大学] [[论文](http://fcst.ceaj.org/CN/10.3778/j.issn.1673-9418.2407082)]
-- **于志峰** 天津中医药大学中医学院教授、博士生导师，中医诊断教研室主任。用舌象采集系统分析失眠舌色、舌形和舌质。 [天津中医药大学中医学院] [[主页](https://zhongyi.tjutcm.edu.cn/info/1106/1262.htm)]
-- **王益民** 天津中医药大学中医工程教授、博士生导师、硕士生导师。用图像采集做舌诊规范分析。 [天津中医药大学] [[主页](https://institute.tjutcm.edu.cn/info/1049/2124.htm)]
-- **陆小左** 天津中医药大学教授、博士生导师。做脉图形成机制和中医诊疗仪器。 [天津中医药大学] [[主页](http://www.tjlnrdx.cn/system/2019/08/22/012340534.shtml)]
-- **李正** 天津中医药大学中药制药工程学院院长、教授。做中药制造数字孪生、干燥过程机器视觉和绿色智能制药。 [天津中医药大学中药制药工程学院] [[主页](https://zygc.tjutcm.edu.cn/info/1276/2593.htm)]
-- **李文龙** 天津中医药大学中药制药工程学院博士生导师。做近红外过程分析，覆盖煎煮、醇沉、柱层析和制剂单元。 [天津中医药大学中药制药工程学院] [[主页](https://zygc.tjutcm.edu.cn/info/1107/2597.htm)]
-- **于洋** 天津中医药大学中药制药工程学院助理研究员。与李正共同指导干燥过程机器视觉建模和数字孪生。 [天津中医药大学中药制药工程学院] [[主页](https://zygc.tjutcm.edu.cn/info/1276/2593.htm)]
-- **潘兴芳** 天津中医药大学教授。国家重点研发计划针灸机器人技术与系统课题负责人。 [天津中医药大学] [[主页](https://www.tjutcm.edu.cn/info/1039/1393.htm)]
-- **任海燕** 天津中医药大学中医学院教师、硕士生项目导师。方向含智慧中医和计算针灸，并做针灸机器人手法采集和得气分析。 [天津中医药大学中医学院] [[主页](https://zhongyi.tjutcm.edu.cn/info/1105/1243.htm)]
-- **高秀梅** 天津中医药大学校长、教授。做方剂多组分、多靶点和组分配伍。 [天津中医药大学] [[主页](https://institute.tjutcm.edu.cn/szdw/gxmjs.htm)]
-
-</details>
-
-<details>
-<summary>天士力（6）</summary>
-
-- **王文佳** 天士力数智本草大模型负责人，并参与灵丹-V2。 [天士力] [[新闻](https://www.taslypharma.com/tsl/41063.jhtml)] [[论文](https://arxiv.org/abs/2610.14705)]
-- **闫凯境** 天士力医药集团董事长。发布数智本草语言大模型和数智中药路线。 [天士力] [[新闻](http://www.news.cn/20240509/a76f15aae0544defad943093214cd38b/c.html)]
-- **周水平** 天士力研究院执行院长。用数智本草生成创新方，并做天然产物筛选。 [天士力] [[新闻](https://www.yicai.com/news/102185086.html)]
-- **苏晶** 天津天士力数智中医药科技有限公司总经理。以数智本草为起点建设中医智能体和临床决策支持。 [天士力] [[新闻](http://tjtfea.com/News/202603/2026030514254819.htm)]
-- **熊皓舒** 天士力先进制造技术经理。做中药过程检测、质量数字化和智能制造产线。 [天士力] [[新闻](http://www.banyuetan.org/ppgs/detail/20190508/1000200033137571557301637982839273_1.html)]
-- **章顺楠** 天士力医药集团股份有限公司副总经理。负责天士力数智中药和智能制造技术体系。 [天士力] [[新闻](https://www.vbdata.cn/1518965213)]
-
-</details>
-
-<details>
-<summary>天津大学（3）</summary>
-
-- **王鑫** 天津大学人工智能学院教授、博士生导师。做知识图谱与大模型，与天津中医药大学合作发布中医大模型岐伯。 [天津大学智能与计算学部] [[主页](https://cic.tju.edu.cn/info/1114/2744.htm)] [[团队](http://www.tjudb.cn/dbgroup/Xin_Wang_zh)] [[论文](https://doi.org/10.1016/j.eswa.2025.127672)]
-- **王煜** 天津大学人工智能学院教授、博士生导师。参与中医主动问诊系统 DoPI。 [天津大学人工智能学院] [[主页](https://faculty.tju.edu.cn/wangyu_ai/zh_CN/index.htm)]
-- **王学民** 天津大学精仪学院副教授、中医工程实验室主任。做脉象采集和望闻问切四诊合参系统。 [天津大学精密仪器与光电子工程学院] [[新闻](https://news.tju.edu.cn/info/1012/345719.htm)]
-
-</details>
-
-<details>
-<summary>国家超级计算天津中心（2）</summary>
-
-- **孟祥飞** 国家超级计算天津中心首席科学家。推动天河中医药大模型和医院智慧医疗合作。 [国家超级计算天津中心] [[新闻](https://www.nscc-tj.cn/xwxq.php?id=626)]
-- **傅浩** 国家超级计算天津中心数据智能部部长。介绍天河·灵枢 2.0 的中医全科推理。 [国家超级计算天津中心] [[新闻](https://epaper.tianjinwe.com/tjrb/h5/html5/2025-08/28/content_143090_2563267.htm)]
-
-</details>
-
-<details>
-<summary>天大智图（2）</summary>
-
-- **贾勇哲** 天大智图创始人、总经理。负责海河·岐伯中医药大模型的产业落地。 [天大智图] [[新闻](https://epaper.tianjinwe.com/tjrb/h5/html5/2024-05/27/content_143078_848091.htm)]
-- **徐大为** 天大智图技术总监。参与研发海河·岐伯和方剂知识增强。 [天大智图] [[新闻](https://www.tjnk.gov.cn/NKQZF/XXDT856/nkyw/202401/t20240107_6501701.html)]
-
-</details>
-
-<details>
-<summary>依脉人工智能医疗科技（天津）（1）</summary>
-
-- **周鹏** 依脉人工智能医疗科技（天津）董事长。做舌诊仪、脉诊仪等望闻问切装备。 [依脉人工智能医疗科技（天津）] [[主页](https://www.tianzhongyimai.com/NewsStd_739.html)]
-
-</details>
-
-<details>
-<summary>南开大学（1）</summary>
-
-- **白钢** 南开大学药学院教授、博士生导师。用系统生物学和网络调控解析中药复方。 [南开大学药学院] [[主页](https://pharmacy.nankai.edu.cn/info/1011/1293.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>河北（5）</summary>
-
-<details>
-<summary>河北中医药大学（2）</summary>
-
-- **王少贤** 石家庄。河北中医药大学教授、博士生导师。招生方向为中医病证基础与数智中医诊法。 [河北中医药大学] [[主页](http://static.hhkaobo.com/upload/editor/ba712818-4047-4a3c-a62d-eb12188f7339.pdf)]
-- **方朝义** 石家庄。河北中医药大学教授、博士生导师。团队研制中医四诊仪，并训练人工智能诊法模型。 [河北中医药大学] [[主页](http://static.hhkaobo.com/upload/editor/ba712818-4047-4a3c-a62d-eb12188f7339.pdf)]
-
-</details>
-
-<details>
-<summary>河北北方学院（1）</summary>
-
-- **通旭明** 河北北方学院信息科学与工程学院。悬壶和青囊两篇中医大模型论文的第一作者。 [河北北方学院] [[论文](https://link.springer.com/article/10.1186/s13020-025-01200-3)]
-
-</details>
-
-<details>
-<summary>河北大学（1）</summary>
-
-- **赵汉青** 保定。河北大学中医药信息学实验室主任、硕士生导师。做舌诊、脉诊客观化和中医大模型、知识图谱。 [河北大学] [[主页](https://zyxy.hbu.edu.cn/info/1037/2368.htm)]
-
-</details>
-
-<details>
-<summary>河北省中医院（1）</summary>
-
-- **杜艳茹** 河北省中医院副院长、博士生导师。做李佃贵经验的辨证开方大模型和脾胃病模型东垣。 [河北省中医院] [[主页](https://www.hbszyy.cn/html/product/2013-5-28/273.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>山西（4）</summary>
-
-<details>
-<summary>山西中医药大学（3）</summary>
-
-- **杨继红** 太原。山西中医药大学教授、博士生导师。做中医药古籍数字化和机器学习智能辨证。 [山西中医药大学] [[主页](https://yjsb.sxtcm.edu.cn/info/1708/4743.htm)]
-- **杜晨晖** 太原。山西中医药大学教授、博士生导师。用代谢组学和网络药理学研究晋药药效物质。 [山西中医药大学] [[主页](https://yjsb.sxtcm.edu.cn/info/1708/4736.htm)]
-- **秦雪梅** 太原。山西中医药大学教授、博士生导师。用代谢组学、化学计量和网络药理学做中药质量评价。 [山西中医药大学] [[主页](https://yjsb.sxtcm.edu.cn/info/1708/4741.htm)]
-
-</details>
-
-<details>
-<summary>中北大学（1）</summary>
-
-- **张志东** 太原。中北大学教授、博士生导师，山西中医药大学硕士生导师。做中医数字化传感和智能四诊仪、智能艾灸机器人。 [中北大学] [[主页](https://6y.nuc.edu.cn/info/1025/28296.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>内蒙古（8）</summary>
-
-<details>
-<summary>内蒙古大学（3）</summary>
-
-- **飞龙** 内蒙古大学教授、博士生导师。牵头蒙医药知识库、临床辅助和蒙医药大模型。 [内蒙古大学] [[主页](https://ccs.imu.edu.cn/info/1034/2019.htm)]
-- **高光来** 呼和浩特。内蒙古大学计算机学院博士生导师。做人工智能和蒙古文信息处理，并参与结合知识图谱的蒙医药大语言模型。 [内蒙古大学计算机学院] [[主页](https://ccs.imu.edu.cn/info/1034/2028.htm)]
-- **张晖** 呼和浩特。内蒙古大学计算机学院硕士生导师。做蒙古语语音和文字识别，并参与蒙医药大语言模型。 [内蒙古大学计算机学院] [[主页](https://ccs.imu.edu.cn/info/1021/1888.htm)]
-
-</details>
-
-<details>
-<summary>内蒙古民族大学（2）</summary>
-
-- **张春生** 通辽。内蒙古民族大学硕士生导师。主持蒙医方剂数据挖掘，并用关联规则、决策树和聚类分析蒙药。 [内蒙古民族大学] [[主页](http://school.freekaoyan.com/neimenggu/imun/daoshi/2021/06-24/16245408291512706.shtml)]
-- **张苏雅拉吐** 通辽。内蒙古民族大学硕士生导师。用激光诱导击穿光谱结合机器学习和深度学习区分蒙药材。 [内蒙古民族大学] [[主页](http://school.freekaoyan.com/neimenggu/imun/daoshi/2021/06-24/16245398151512483.shtml)]
-
-</details>
-
-<details>
-<summary>内蒙古医科大学（1）</summary>
-
-- **包哈申** 呼和浩特。内蒙古医科大学蒙医药研究院博士生导师、硕士生导师。建成蒙医药古文献数据库、方剂库和医案知识库。 [内蒙古医科大学蒙医药研究院] [[主页](https://www.ais.cn/mentor/mentorDetail/3f3173ff-5e3c-11ec-b045-a85e45a23623)]
-
-</details>
-
-<details>
-<summary>内蒙古自治区中医药研究所（1）</summary>
-
-- **李旻辉** 呼和浩特。内蒙古自治区中医药研究所博士生导师、硕士生导师。用遥感做蒙中药材种植规划，并有软件著作权。 [内蒙古自治区中医药研究所] [[主页](https://www.kczg.org.cn/xuezhe/details?id=214141)]
-
-</details>
-
-<details>
-<summary>包头医学院（1）</summary>
-
-- **阿古拉** 包头。包头医学院博士生导师。作人工智能在中医药和蒙医药中的应用报告。 [包头医学院] [[主页](https://www.btmc.edu.cn/info/1003/10449.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>辽宁（8）</summary>
-
-<details>
-<summary>辽宁中医药大学（3）</summary>
-
-- **冷锦红** 辽宁中医药大学第一临床学院博士生导师。2026 年招收中医人工智能科学与技术方向。 [辽宁中医药大学第一临床学院] [[招生](https://gjhzjlc.lnutcm.edu.cn/liaoningzhongyiyaodaxue2026nianshenqing-kaoheboshiyanjiushengzhaoshengzhuanyemuluzhuanyexuewei.pdf)]
-- **赵相轩** 辽宁中医药大学基础医学院博士生导师。方向是中医药人工智能科学。 [辽宁中医药大学基础医学院] [[招生](https://gjhzjlc.lnutcm.edu.cn/liaoningzhongyiyaodaxue2026nianshenqing-kaohejishuobolianduboshiyanjiushengzhaoshengzhuanyemuluxueshuxuewei.pdf)]
-- **乔铁** 辽宁中医药大学副教授、硕士生导师，中医人工智能学科负责人。做舌诊标准化采集与算法评估。 [辽宁中医药大学] [[主页](https://www.lnutcm.edu.cn/info/2231/55271.htm)]
-
-</details>
-
-<details>
-<summary>东北大学（1）</summary>
-
-- **覃文军** 东北大学计算机科学与工程学院教授、博士生导师。针灸机器人国家重点研发课题负责人，主持施针手法数据库和人体穴位知识图谱。 [东北大学计算机科学与工程学院] [[主页](https://faculty.neu.edu.cn/tanwenjun/zh_CN/index.htm)]
-
-</details>
-
-<details>
-<summary>中国科学院大连化学物理研究所（1）</summary>
-
-- **梁鑫淼** 中国科学院大连化学物理研究所研究员、博士生导师。提出本草物质组，并建中药标准组分库。 [中国科学院大连化学物理研究所] [[主页](https://mccm.dicp.ac.cn/info/1106/1204.htm)]
-
-</details>
-
-<details>
-<summary>沈阳药科大学（1）</summary>
-
-- **郭永学** 沈阳药科大学制药工程学院教授、副院长、硕士生导师。做过程分析技术，以及中药制药新技术和质量控制。 [沈阳药科大学制药工程学院] [[主页](https://grs.syphu.edu.cn/info/1103/7177.htm)]
-
-</details>
-
-<details>
-<summary>辽宁中医药大学附属医院（1）</summary>
-
-- **张哲** 辽宁中医药大学附属医院中医药创新工程技术中心副主任。对接中医舌诊辅助诊断应用，推动舌诊产品升级。 [辽宁中医药大学附属医院] [[主页](https://www.lnutcm.edu.cn/info/1031/44221.htm)]
-
-</details>
-
-<details>
-<summary>辽宁中医药大学附属第二医院（1）</summary>
-
-- **李国信** 沈阳。辽宁中医药大学附属第二医院博士生导师。招生方向含中西医结合临床和人工智能。 [辽宁中医药大学附属第二医院] [[主页](https://www.lnpatcm.com/product/170.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>吉林（4）</summary>
-
-<details>
-<summary>长春中医药大学（3）</summary>
-
-- **冷向阳** 长春中医药大学校长、教授。牵头 AI+中医行动，联合发布众星·长白岐黄。 [长春中医药大学] [[新闻](https://www.chinanews.com.cn/cj/2025/12-20/10537422.shtml)]
-- **陈锐** 长春。长春中医药大学基础医学院教授、博士生导师、硕士生导师。做中医诊断学和脉学。 [长春中医药大学基础医学院] [[主页](https://ccucm.teacher.360eol.com/teacherBasic/preview?teacherId=28019)]
-- **皮子凤** 长春。长春中医药大学药学院教授、博士生导师、硕士生导师。用网络药理学做中药分析。 [长春中医药大学药学院] [[主页](https://ccucm.teacher.360eol.com/teacherBasic/preview?teacherId=28131)]
-
-</details>
-
-<details>
-<summary>吉林工商学院（1）</summary>
-
-- **赵佳** 吉林工商学院副校长、教授。领衔研发众星·长白岐黄多模态中医药推理大模型。 [吉林工商学院] [[新闻](https://jl.chinadaily.com.cn/a/202512/21/WS6947b1c2a310942cc4997b6e.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>黑龙江（4）</summary>
-
-<details>
-<summary>黑龙江中医药大学（4）</summary>
-
-- **闫朝升** 黑龙江中医药大学教授、研究生导师，医学信息工程学院院长。做医学人工智能和中医经典知识图谱。 [黑龙江中医药大学医学信息工程学院] [[主页](https://rwyglxy.hljucm.net/info/1276/3122.htm)]
-- **王喜军** 黑龙江中医药大学教授、博士生导师。做中药血清药物化学和中医方证代谢组学。 [黑龙江中医药大学] [[主页](https://kjc.hljucm.net/info/1097/1129.htm)]
-- **孙晖** 黑龙江中医药大学博士生导师。做中药体内成分分析和质量标准。 [黑龙江中医药大学] [[主页](https://yjsy.hljucm.net/info/1292/6818.htm)]
-- **吴修红** 黑龙江中医药大学二级教授、博士生导师。基于中医方证代谢组研究中药质量标志物和鉴定。 [黑龙江中医药大学] [[主页](https://yjsy.hljucm.net/info/1292/6818.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>上海（45）</summary>
-
-<details>
-<summary>上海中医药大学（21）</summary>
-
-- **李颉** 上海中医药大学中医药人工智能学院教授。带队做中医药大模型、多模态智能体和中药研发数字化。 [上海中医药大学中医药人工智能学院] [[主页](https://aishutcm.shutcm.edu.cn/2026/0327/c7887a172347/page.htm)] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/f9/d9/0c9d59b941d3b1bb03c93fc8aa1c/a33367af-8441-476a-9ca6-74e1abc59992.pdf)]
-- **胡晓娟** 上海中医药大学中医药人工智能学院硕士生导师。方向是中医智能诊疗技术。 [上海中医药大学中医药人工智能学院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **屠立平** 上海中医药大学中医药人工智能学院硕士生导师。方向是中医诊断信息化与智能化。 [上海中医药大学中医药人工智能学院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **孙继佳** 上海中医药大学中医药人工智能学院硕士生导师。方向是基于人工智能的计算药物发现。 [上海中医药大学中医药人工智能学院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **李少雄** 上海中医药大学中医药人工智能学院硕士生导师。方向是医学智能算法与智能硬件。 [上海中医药大学中医药人工智能学院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **郑广勇** 上海中医药大学交叉科学研究院硕士生导师。方向是基于人工智能的中药药理。 [上海中医药大学交叉科学研究院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **陆冬** 上海中医药大学交叉科学研究院硕士生导师。方向是人工智能与药物设计，用于中药研究。 [上海中医药大学交叉科学研究院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **关晓青** 上海中医药大学交叉科学研究院硕士生导师。方向是大数据与人工智能药物研发。 [上海中医药大学交叉科学研究院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-- **许家佗** 上海中医药大学二级教授、博士生导师，中医信息科学与技术研究中心主任。主持中医智能舌诊系统研发。 [上海中医药大学] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157325/page.htm)]
-- **王忆勤** 上海中医药大学教授、博士生导师。做舌、脉、面、问四诊客观化。 [上海中医药大学] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157327/page.htm)]
-- **李福凤** 上海中医药大学教授、博士生导师。做面诊图像标准化、特征识别和智能镜。 [上海中医药大学] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157323/page.htm)]
-- **燕海霞** 上海中医药大学教授、硕士生导师。做脉诊客观化和脉图风险模型。 [上海中医药大学] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157316/page.htm)]
-- **郝一鸣** 上海中医药大学中医学院研究员、硕士生导师。做慢性病四诊客观化和舌苔代谢组。 [上海中医药大学中医学院] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157321/page.htm)]
-- **许朝霞** 上海中医药大学研究员、博士生导师。做舌象参数分析，主编《中医舌诊研究与临床应用》。 [上海中医药大学中医学院] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157324/page.htm)]
-- **郭睿** 上海中医药大学研究员、硕士生导师。做脉诊客观化，并参与智能舌诊仪。 [上海中医药大学中医学院] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157318/page.htm)]
-- **崔骥** 上海中医药大学基础医学院副教授、硕士生导师。做阵列式三维脉图和中医四诊信息化。 [上海中医药大学基础医学院] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157317/page.htm)]
-- **钱鹏** 上海中医药大学高级实验师、硕士生导师。做可自动调压的脉象采集装置和四诊客观化。 [上海中医药大学] [[主页](https://zhongyi.shutcm.edu.cn/2023/1213/c7141a157320/page.htm)]
-- **唐文超** 上海中医药大学中医药人工智能学院教授。做手针刺激量光力传感和镇痛量效建模，并带队做中医药大模型评测。 [上海中医药大学中医药人工智能学院] [[主页](https://zt.shutcm.edu.cn/2021/1019/c3352a137223/page.htm)]
-- **刘堂义** 上海中医药大学针灸推拿学院副教授、硕士生导师。研发针刺手法电针仪、单穴位电阻检测和手法仿真采集。 [上海中医药大学针灸推拿学院] [[主页](http://school.freekaoyan.com/sh/shutcm/daoshi/2021/01-23/16113955791334845.shtml)]
-- **张卫东** 上海中医药大学交叉科学研究院教授、博士生导师。做中药复方药效物质，并推动人工智能解析组方机制。 [上海中医药大学交叉科学研究院] [[主页](https://iiimr.shutcm.edu.cn/2019/0426/c4069a174532/page.htm)]
-- **杨华元** 上海。上海中医药大学教授。用人工智能做推拿机器人，可模仿一指禅并按病灶定位。 [上海中医药大学] [[主页](https://www.shutcm.edu.cn/2023/0921/c751a155057/page.htm)]
-
-</details>
-
-<details>
-<summary>上海中医药大学附属龙华医院（5）</summary>
-
-- **陈昕琳** 上海中医药大学附属龙华医院院长。负责中医多模态辅助诊断智能体和数智龙承。 [上海中医药大学附属龙华医院] [[新闻](https://www.shanghai.gov.cn/gwk/search/content/441f95ac30e7432fa24730c79128df5c)]
-- **刘萍** 上海中医药大学附属龙华医院副院长、主任医师、博士生导师。担任名中医辨证论治思维模型课题负责人。 [上海中医药大学附属龙华医院] [[主页](https://www.longhua.net/info/2921/64701.htm)]
-- **董亮** 上海中医药大学附属龙华医院信息中心主任。负责名中医思维模型的信息化和思维链标注平台对接。 [上海中医药大学附属龙华医院] [[主页](https://www.longhua.net/info/1021/87312.htm)]
-- **陈跃来** 上海中医药大学附属龙华医院时任院长。推动舌象、面象、脉象人工智能预问诊和中医临床辅助决策平台。 [上海中医药大学附属龙华医院] [[主页](https://www.longhua.net/info/1028/2519.htm)]
-- **朱亮** 上海中医药大学附属龙华医院副院长。代表医院参加医疗大模型应用验证，医院同期建设方证大模型和中医四诊模式识别。 [上海中医药大学附属龙华医院] [[主页](https://www.longhua.net/info/1021/76211.htm)]
-
-</details>
-
-<details>
-<summary>华东理工大学（5）</summary>
-
-- **阮彤** 华东理工大学信息科学与工程学院教授、博士生导师。做医疗大模型与知识图谱，建过中医药知识图谱并用于辅助开方。 [华东理工大学信息科学与工程学院] [[主页](https://faculty.ecust.edu.cn/cise/rt/main.htm)]
-- **唐赟** 华东理工大学药学院教授、博士生导师。做人工智能药物设计与网络药理学，并参与中医问诊模型 MedChatZH。 [华东理工大学药学院] [[主页](https://pharmacy.ecust.edu.cn/2008/1203/c2795a29378/page.htm)] [[论文](https://pubmed.ncbi.nlm.nih.gov/38503097/)]
-- **颜建军** 华东理工大学副教授、硕士生导师。做脉诊仪、舌图像分割和中医信号分析。 [华东理工大学] [[主页](https://mech.ecust.edu.cn/2019/0516/c11271a90164/page.htm)]
-- **虞慧群** 华东理工大学计算机学院教授、博士生导师。参与中医问诊模型 MedChatZH。 [华东理工大学计算机学院] [[主页](https://cise.ecust.edu.cn/2026/0615/c16487a191279/page.htm)]
-- **范贵生** 华东理工大学计算机学院副研究员、博士生导师。参与中医问诊模型 MedChatZH。 [华东理工大学计算机学院] [[主页](https://cise.ecust.edu.cn/_t250/2011/0615/c7766a55144/page.htm)]
-
-</details>
-
-<details>
-<summary>上海中医药大学附属曙光医院（2）</summary>
-
-- **元唯安** 上海中医药大学附属曙光医院副院长、博士生导师。负责临床试验全生命周期平台和虚拟临床试验。 [上海中医药大学附属曙光医院] [[主页](https://zyyyjy.gdpu.edu.cn/info/1082/1370.htm)]
-- **房敏** 上海中医药大学教授，曙光医院推拿研究所所长。领衔推拿仿生手机器人、脊柱筋骨评估和经穴刺激外骨骼，并做抑郁症智能诊断。 [上海中医药大学附属曙光医院] [[新闻](http://www.thepaper.cn/newsDetail_forward_31847870)]
-
-</details>
-
-<details>
-<summary>上海中医药大学附属第七人民医院（2）</summary>
-
-- **胡聃** 上海市第七人民医院院长。医院发布岐元中医大模型，与上海中医药大学、上海人工智能实验室合作。 [上海中医药大学附属第七人民医院] [[新闻](http://sh.news.cn/20260719/ef7034ccc6394653825f97a21452738e/c.html)]
-- **曾艺鹏** 上海中医药大学附属第七人民医院硕士生导师。招生方向含中医脉诊和内分泌代谢病诊疗。 [上海中医药大学附属第七人民医院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-
-</details>
-
-<details>
-<summary>中国科学院上海药物研究所（2）</summary>
-
-- **果德安** 中国科学院上海药物研究所研究员，中药标准化技术国家工程研究中心主任。做中药分析、质量标准和中药质量检测数据库。 [中国科学院上海药物研究所] [[主页](http://www.caim.org.cn/info_content_ds.jsp?id=10009)]
-- **陈凯先** 中国科学院上海药物研究所研究员、博士生导师。做计算机辅助药物设计，招生方向含中药学。 [中国科学院上海药物研究所] [[主页](https://people.ucas.ac.cn/~0009438)]
-
-</details>
-
-<details>
-<summary>华东师范大学（2）</summary>
-
-- **李洪林** 华东师范大学药学院院长、博士生导师。做人工智能药物设计。学校联合上海中医药大学等发布数智岐黄中医药大模型。 [华东师范大学药学院，临港实验室] [[主页](https://pharm.ecnu.edu.cn/46547/list.htm)] [[新闻](https://www.ecnu.edu.cn/info/1426/65503.htm)]
-- **王晓玲** 华东师范大学计算机学院教授。主持中医教育大模型关键技术，并参与神农中医药大模型。 [华东师范大学计算机学院] [[主页](https://faculty.ecnu.edu.cn/_s16/wxl2/main.psp)] [[代码](https://github.com/michael-wzhu/ShenNong-TCM-LLM)]
-
-</details>
-
-<details>
-<summary>上海中医药大学附属岳阳中西医结合医院（1）</summary>
-
-- **冯圣一** 上海中医药大学附属岳阳中西医结合医院硕士生导师。方向是人工智能赋能中医骨伤康复。 [上海中医药大学附属岳阳中西医结合医院] [[招生](https://yjsy.shutcm.edu.cn/_upload/article/files/ac/da/f6a12cc64203bf845f45303b5326/4198283c-0059-4715-8008-103bbf3ef6fa.pdf)]
-
-</details>
-
-<details>
-<summary>上海交通大学（1）</summary>
-
-- **马利庄** 上海交通大学计算机学院特聘教授、博士生导师。做中西医信息融合智能诊断，以及中医证候与面色的计算机诊断。 [上海交通大学计算机学院] [[主页](https://cs.sjtu.edu.cn/jiaoshiml/malizhuang.html)]
-
-</details>
-
-<details>
-<summary>上海工程技术大学（1）</summary>
-
-- **夏春明** 上海工程技术大学教授、博士生导师。做脉诊信息采集和四诊客观化。 [上海工程技术大学] [[主页](https://seee.sues.edu.cn/56/93/c23926a218771/page.htm)]
-
-</details>
-
-<details>
-<summary>上海道生医疗科技有限公司（1）</summary>
-
-- **李春清** 上海道生医疗科技有限公司董事长。做道生四诊仪、脉象仪和中医诊断设备标准。 [上海道生医疗科技有限公司] [[主页](https://www.acfic.org.cn/ztzlhz/2022bzcxdh/2022bzcxdh_4/202209/t20220913_313004.html)]
-
-</details>
-
-<details>
-<summary>同济大学（1）</summary>
-
-- **王昊奋** 同济大学特聘研究员、博士生导师。做知识图谱与对话系统，并指导中医大模型仲景。 [同济大学] [[主页](https://faculty.tongji.edu.cn/wanghaofen/zh_CN/index.htm)] [[代码](https://github.com/pariskang/CMLM-ZhongJing)]
-
-</details>
-
-<details>
-<summary>复旦大学（1）</summary>
-
-- **张文强** 复旦大学计算机学院研究员、博士生导师。指导中医大模型仲景 GPT，并做中医诊疗机器人。 [复旦大学计算机学院] [[主页](https://iipl.fudan.edu.cn/70/e4/c45863a684260/page.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>江苏（21）</summary>
-
-<details>
-<summary>南京中医药大学（11）</summary>
-
-- **胡孔法** 南京中医药大学副校长、博士生导师，省级人工智能学院院长。做中医药人工智能、知识图谱与大模型，主持舌诊、辨证大模型和江苏省中医垂直领域大模型。 [南京中医药大学人工智能与信息技术学院] [[主页](https://xxjs.njucm.edu.cn/2026/0424/c465a167934/pagem.htm)] [[新闻](http://xxjs.njucm.edu.cn/2025/0908/c467a160307/page.htm)]
-- **周作建** 南京中医药大学人工智能与信息技术学院教授、博士生导师，中医药人工智能交叉学科带头人。做中医药人工智能、健康物联网和智能装备。 [南京中医药大学人工智能与信息技术学院] [[主页](https://xxjs.njucm.edu.cn/2018/0928/c465a43551/pagem.htm)]
-- **曹鹏** 南京中医药大学研究员。团队与北京中医药大学谷晓红等合作发表中医大模型天医。 [南京中医药大学] [[新闻](https://www.njucm.edu.cn/2025/0910/c6754a160459/page.htm)] [[论文](https://doi.org/10.1016/j.inffus.2025.103663)]
-- **高峰** 南京中医药大学人工智能与信息技术学院博士生导师。方向是机器学习与中医药人工智能。 [南京中医药大学人工智能与信息技术学院] [[招生](https://gra.njucm.edu.cn/_upload/article/files/8f/0a/bd6170cd44ad94f0d3108af24abe/aff48fcb-3589-4b90-a66d-c93ec91ba0d1.pdf)]
-- **李海燕** 南京中医药大学人工智能与信息技术学院博士生导师。方向是机器学习与中医药人工智能。 [南京中医药大学人工智能与信息技术学院] [[招生](https://gra.njucm.edu.cn/_upload/article/files/8f/0a/bd6170cd44ad94f0d3108af24abe/aff48fcb-3589-4b90-a66d-c93ec91ba0d1.pdf)]
-- **顾万君** 南京中医药大学人工智能与信息技术学院博士生导师。方向是生物信息与中医药大数据。 [南京中医药大学人工智能与信息技术学院] [[招生](https://gra.njucm.edu.cn/_upload/article/files/8f/0a/bd6170cd44ad94f0d3108af24abe/aff48fcb-3589-4b90-a66d-c93ec91ba0d1.pdf)]
-- **杨涛** 南京中医药大学人工智能与信息技术学院教授、硕士生导师。做中医药人工智能、舌诊多模态体质辨识和医案知识图谱。 [南京中医药大学人工智能与信息技术学院] [[主页](https://xxjs.njucm.edu.cn/2021/0305/c449a71318/pagem.htm)]
-- **王天舒** 南京中医药大学人工智能与信息技术学院副教授、硕士生导师。做中医药人工智能、视觉识别和全身望诊。 [南京中医药大学人工智能与信息技术学院] [[主页](http://xxjs.njucm.edu.cn/2024/0409/c465a125588/page.htm)]
-- **戴彩艳** 南京中医药大学人工智能与信息技术学院副教授、硕士生导师。做智能图像处理、中医药网络模型和望诊信息采集。 [南京中医药大学人工智能与信息技术学院] [[主页](http://xxjs.njucm.edu.cn/2024/0409/c465a125589/page.htm)]
-- **夏有兵** 南京中医药大学博士生导师，中国针灸学会数智针灸专业委员会主任委员。构建针灸学派与不孕症知识图谱，开发智能针灸辅助系统和针灸大模型。 [南京中医药大学，南京医科大学] [[主页](https://bmei.njmu.edu.cn/2025/1107/c11345a293500/page.htm)]
-- **徐天成** 南京中医药大学特聘教授。提出数字经络并做智能针灸机器人，参与穴位定位、手法复现和得气力反馈。 [南京中医药大学] [[主页](https://zgze.cbpt.cnki.net/portal/journal/portal/client/news/zgze_b164694d-d190-4244-838a-908efa219f6e)]
-
-</details>
-
-<details>
-<summary>大经中医（3）</summary>
-
-- **李文友** 大经中医创始人、董事长。公司发布岐黄问道中医大模型，用知识图谱和临床数据做辅助诊疗。 [大经中医] [[新闻](https://www.vbdata.cn/1518996221)]
-- **赵静** 大经中医联合创始人、副总经理，南京中医药大学产业教授、研究生导师。负责岐黄问道的研究，并与高校、医院合作。 [大经中医，南京中医药大学] [[新闻](https://www.vbdata.cn/1518996221)]
-- **王祺** 大经中医技术总监。负责岐黄问道从预训练到强化学习的技术路径，并做脉诊仪和舌面诊仪。 [大经中医] [[新闻](http://js.news.cn/20230729/fa034db71a00487b819a4ad95b44673e/c.html)]
-
-</details>
-
-<details>
-<summary>中国药科大学（2）</summary>
-
-- **王引引** 中国药科大学中药学院副研究员、硕士生导师。用人工智能和多组学解析中药复方机制、配伍与归经。 [中国药科大学中药学院] [[主页](http://zyxy.cpu.edu.cn/ab/53/c19966a240467/page.htm)]
-- **贾晓斌** 中国药科大学中药学院教授、博士生导师。做智能中药学，用人工智能和图神经网络研究中药物质基础与配伍。 [中国药科大学中药学院] [[主页](https://zyxy.cpu.edu.cn/ab/47/c19965a240455/page.htm)]
-
-</details>
-
-<details>
-<summary>南京大学（1）</summary>
-
-- **黄奇** 南京大学信息管理学院教授、博士生导师。参与中医古籍大模型黄帝。 [南京大学信息管理学院] [[主页](https://im.nju.edu.cn/info/1099/33751.htm)]
-
-</details>
-
-<details>
-<summary>康缘药业（1）</summary>
-
-- **肖伟** 康缘药业董事长，中药制药过程控制与智能制造技术全国重点实验室主任。推动制药工业智能化大模型和道地药材鉴定溯源。 [康缘药业] [[主页](https://www.kanion.com/about/about_us.htm)]
-
-</details>
-
-<details>
-<summary>江苏省中医药研究院（1）</summary>
-
-- **瞿鼎** 江苏省中医药研究院博士生导师。方向是人工智能赋能创新中药制剂。 [江苏省中医药研究院] [[招生](https://gra.njucm.edu.cn/_upload/article/files/69/4f/90badc1f4e238ef01e08cf30e770/caac9243-df3c-4435-8167-f3f4d2f44416.pdf)]
-
-</details>
-
-<details>
-<summary>江苏省中医院（1）</summary>
-
-- **吴婷** 江苏省中医院博士生导师。方向是疼痛功能影像的人工智能分类和纳米诊疗。 [江苏省中医院] [[招生](https://gra.njucm.edu.cn/_upload/article/files/69/4f/90badc1f4e238ef01e08cf30e770/caac9243-df3c-4435-8167-f3f4d2f44416.pdf)]
-
-</details>
-
-<details>
-<summary>西苑医院苏州医院（1）</summary>
-
-- **吴冰** 西苑医院苏州医院血液科主任。负责叶天士血证辅助诊疗大模型。 [西苑医院苏州医院] [[新闻](https://www.xyhospital.com/Html/News/Articles/22524.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>浙江（16）</summary>
-
-<details>
-<summary>浙江大学（7）</summary>
-
-- **程翼宇** 浙江大学药学院教授、博士生导师。做医药工业人工智能、药品智能制造和质量分析。 [浙江大学药学院] [[主页](https://person.zju.edu.cn/chengyy)]
-- **瞿海斌** 浙江大学药学院教授、博士生导师，药物信息学研究所所长。做中药创制、制药过程分析和制药工业大数据。 [浙江大学药学院] [[主页](http://www.cps.zju.edu.cn/59113/list.htm)]
-- **廖杰** 浙江大学百人计划研究员、博士生导师，未来健康实验室中医药方向带头人。做中药系统生物学和中医药人工智能。 [浙江大学] [[主页](https://yrd.zju.edu.cn/2026/0326/c90460a3144544/page.htm)]
-- **王毅** 浙江大学药学院教授、博士生导师。做中药药效物质、高内涵筛选和系统药理学。 [浙江大学药学院] [[主页](https://person.zju.edu.cn/yiwang)]
-- **刘雪松** 浙江大学药学院研究员、博士生导师。做医药智能制造、近红外在线检测和生产全程质量控制。 [浙江大学药学院] [[主页](http://www.cps.zju.edu.cn/59114/list.htm)]
-- **陈勇** 浙江大学药学院研究员、博士生导师。做中药先进制造技术。 [浙江大学药学院] [[主页](http://www.cps.zju.edu.cn/59114/list.htm)]
-- **龚行楚** 浙江大学药学院副教授、博士生导师。做中药质量控制、制药工艺和装备。 [浙江大学药学院] [[主页](https://person.zju.edu.cn/gongxc)]
-
-</details>
-
-<details>
-<summary>浙江中医药大学（4）</summary>
-
-- **范骁辉** 浙江大学求是特聘教授、博士生导师，浙江中医药大学副校长。方向是中医药人工智能，课题组 TCM+X 发布 TCMChat。 [浙江大学药学院，浙江中医药大学] [[主页](https://person.zju.edu.cn/fanxh)] [[论文](https://doi.org/10.1016/j.phrs.2024.107530)] [[代码](https://github.com/ZJUFanLab/TCMChat)]
-- **赖小波** 浙江中医药大学教授、博士生导师，医学技术与信息工程学院副院长。做智慧中医药和医学影像人工智能。 [浙江中医药大学] [[主页](https://yjxx.zcmu.edu.cn/info/1071/9229.htm)]
-- **林树元** 浙江中医药大学副教授，中医药人工智能联合工程中心主任。用大模型和知识图谱做经方问诊系统轩岐问对。 [浙江中医药大学] [[主页](https://xhhos.com/department/doctor/5/30/233)]
-- **周岳君** 浙江中医药大学教授、主任中医师、硕士生导师，中医诊断学教研室主任。做舌象辨证和诊法研究。 [浙江中医药大学] [[主页](https://jc.zcmu.edu.cn/info/1164/3346.htm)]
-
-</details>
-
-<details>
-<summary>微医（1）</summary>
-
-- **廖杰远** 微医创始人、董事长。做人工智能中药平台，把老中医经验转成可调配颗粒。 [微医] [[新闻](https://www.cls.cn/detail/1661807)]
-
-</details>
-
-<details>
-<summary>杭州市中医院（1）</summary>
-
-- **张永华** 杭州市中医院主任医师、博士生导师。团队打造张永华睡眠智能体。 [杭州市中医院] [[主页](https://zyy.lanews.com.cn/content/2022-02/17/content_9341799.htm)]
-
-</details>
-
-<details>
-<summary>浙江工商大学（1）</summary>
-
-- **庄毅** 浙江工商大学计算机学院教授。中医方剂模型 TCM-KLLaMA 第一作者。 [浙江工商大学计算机学院] [[主页](https://scie.zjgsu.edu.cn/zh-hans/node/400)]
-
-</details>
-
-<details>
-<summary>浙江省中医院（1）</summary>
-
-- **陈红波** 浙江省中医院肾病科负责人、主任医师。所在科室建有中医人工智能关键技术与装备工程研究中心，方向包括名老中医数字孪生机器人和智能中医机器人。 [浙江省中医院] [[主页](https://www.zjhtcm1931.cn/departmentInfo/54)]
-
-</details>
-
-<details>
-<summary>脉景（1）</summary>
-
-- **马峻昂** 脉景董事长。做中医垂直模型、辅助开方和舌面诊图像库。 [脉景] [[新闻](https://www.vbdata.cn/51488)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>安徽（12）</summary>
-
-<details>
-<summary>安徽中医药大学（6）</summary>
-
-- **周雪梅** 安徽中医药大学教授、硕士生导师，中医基础系主任。所在诊断学团队研制人工智能舌诊实训考核平台。 [安徽中医药大学] [[主页](https://gjjk.ahtcm.edu.cn/info/1033/1970.htm)]
-- **胡继礼** 合肥。安徽中医药大学医药信息工程学院副教授、硕士生导师。用大语言模型和知识图谱做中医智能诊断，并做舌象分类。 [安徽中医药大学医药信息工程学院] [[主页](https://xxgc.ahtcm.edu.cn/info/1821/53543.htm)]
-- **俞磊** 合肥。安徽中医药大学教授、博士生导师。招收中医药信息学、医疗大数据与人工智能，做智能诊疗。 [安徽中医药大学] [[主页](https://xxgc.ahtcm.edu.cn/info/1821/56223.htm)]
-- **阚红星** 合肥。安徽中医药大学医药信息工程学院院长、教授、博士生导师。做中医药数据挖掘和医药大数据与人工智能。 [安徽中医药大学医药信息工程学院] [[主页](https://xxgc.ahtcm.edu.cn/info/1821/53623.htm)]
-- **束建华** 合肥。安徽中医药大学教授、硕士生导师。主持知识图谱和大模型驱动的新安医家智能辅助诊疗系统。 [安徽中医药大学] [[主页](https://yjsb.ahtcm.edu.cn/info/2071/41961.htm)]
-- **杨银凤** 合肥。安徽中医药大学副教授、硕士生导师，人工智能专业负责人。把人工智能用于中药成分筛选和复方优化。 [安徽中医药大学] [[主页](https://yjsb.ahtcm.edu.cn/info/2521/47781.htm)]
-
-</details>
-
-<details>
-<summary>科大讯飞（3）</summary>
-
-- **周佳峰** 科大讯飞副总裁。与北京中医药大学合作建设薪火中国药中医药教育大模型。 [科大讯飞] [[新闻](https://zhongyao.bucm.edu.cn/yyxw/57d9fb0a8af1496b88ca404e51e4e7d1.htm)]
-- **王珂** 科大讯飞副总裁。参与薪火中国药中医药教育大模型发布和后续建设。 [科大讯飞] [[新闻](https://www.bucm.edu.cn/bzyyw/1c0b0fe535764fcc886c87b560caa0ee.htm)]
-- **李礼** 科大讯飞高教研究院院长。参与薪火中国药建设，做人工智能赋能中医药高校。 [科大讯飞] [[新闻](https://zhongyao.bucm.edu.cn/yyxw/1b48fd51feea43a2964b2a19f0ae4916.htm)]
-
-</details>
-
-<details>
-<summary>合肥工业大学（1）</summary>
-
-- **高隽** 合肥工业大学计算机与信息学院教授、博士生导师。参与中医舌诊大模型 TongueVLM。 [合肥工业大学计算机与信息学院] [[主页](https://ci.hfut.edu.cn/info/1134/13735.htm)]
-
-</details>
-
-<details>
-<summary>安徽中医药大学第一附属医院（1）</summary>
-
-- **忻凌** 合肥。安徽中医药大学第一附属医院高级工程师、硕士生导师，临床研究数据中心主任。做中医药信息化、医疗大数据和中医数字化传承。 [安徽中医药大学第一附属医院] [[主页](https://yjsb.ahtcm.edu.cn/info/2071/42051.htm)]
-
-</details>
-
-<details>
-<summary>安徽中医药大学第二附属医院（1）</summary>
-
-- **董昌武** 安徽中医药大学教授、博士生导师，第二附属医院院长。做四诊客观化和多模态舌诊。 [安徽中医药大学第二附属医院] [[主页](https://yjsb.ahtcm.edu.cn/info/1501/30891.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>福建（13）</summary>
-
-<details>
-<summary>厦门大学（8）</summary>
-
-- **罗志明** 厦门大学信息学院副教授、博士生导师。做中医病势时序图谱、文本实体识别和临床评价平台。 [厦门大学信息学院] [[主页](https://faculty.xmu.edu.cn/luozhiming/zh_CN/index.htm)]
-- **王彦晖** 厦门大学医学院教授、硕士生导师。做舌象临床和舌诊辅助系统，任世界中联舌象研究专委会创会会长。 [厦门大学医学院] [[主页](https://xah.xmu.edu.cn/info/1625/2795.htm)]
-- **张绍良** 厦门大学医学院助理教授。做中医诊断信息化、舌象图像分析和脉象信号。 [厦门大学医学院] [[主页](https://med.xmu.edu.cn/info/1238/4637.htm)]
-- **何宽其** 厦门大学医学院副教授。做舌诊临床应用，研究证素、方药、体质与舌象。 [厦门大学医学院] [[主页](https://med.xmu.edu.cn/info/1237/4641.htm)]
-- **黄晓阳** 厦门大学信息学院助理教授。做开放环境舌象检测、偏色校正和苔质分离。 [厦门大学信息学院] [[主页](https://scholar.xmu.edu.cn/Authors/Index?id=HuangXiaoYang)]
-- **苏松志** 厦门大学人工智能系副教授、硕士生导师，观健在（厦门）创始人。做大语言模型、智能中医辅助诊断，以及望闻问切一体机。 [厦门大学，观健在（厦门）] [[主页](https://iai.xmu.edu.cn/team/PI/PI2024/jcll/zndmtjs.htm)] [[新闻](https://news.qq.com/rain/a/20240914A05NEU00)]
-- **李绍滋** 厦门。厦门大学教授、博士生导师，同时是福建中医药大学中医诊断学博士生导师。做智能科学与智能中医信息处理。 [厦门大学] [[主页](https://imt.xmu.edu.cn/info/1003/1182.htm)]
-- **刘昆宏** 厦门。厦门大学教授、博士生导师。做舌诊人工智能、数据挖掘和健康医疗大数据。 [厦门大学] [[主页](https://cdmc.xmu.edu.cn/info/1010/1055.htm)]
-
-</details>
-
-<details>
-<summary>福建中医药大学（4）</summary>
-
-- **丰迪生** 福建中医药大学药学院硕士生导师。方向是人工智能与代谢组学。 [福建中医药大学药学院] [[招生](https://static.kaoyan.cn/file/2025/09/22/681e4fb4056d67fff4ae7ff9501397da.pdf)]
-- **刘永静** 福建中医药大学药学院硕士生导师。方向是人工智能与代谢组学。 [福建中医药大学药学院] [[招生](https://static.kaoyan.cn/file/2025/09/22/681e4fb4056d67fff4ae7ff9501397da.pdf)]
-- **林雪娟** 福建中医药大学中医学院博士生导师。招生方向为四诊信息采集及标准化研究。 [福建中医药大学中医学院] [[招生](http://static.hhkaobo.com/upload/editor/f2e35d52-e85d-4e6b-a133-fa3eefd53cc9.pdf)]
-- **李灿东** 福州。福建中医药大学教授、博士生导师，新黄埔中医药联合创新研究院首席科学家。做中医诊断。 [福建中医药大学] [[主页](https://www.jiicm.com/info/1078/1241.htm)]
-
-</details>
-
-<details>
-<summary>福耀科技大学（1）</summary>
-
-- **朱正忠** 福耀科技大学教授、博士生导师。做健康与中医大模型，仲景 GPT 共同通讯作者。 [福耀科技大学] [[主页](https://cs.fyust.edu.cn/szdw/jsdw/zzz.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>江西（13）</summary>
-
-<details>
-<summary>江西中医药大学（11）</summary>
-
-- **杜建强** 江西中医药人工智能重点研究室研究人员。知识图谱检索增强的中医问诊大模型 DualKAG-ShenNong 通讯作者。 [江西中医药大学] [[论文](http://cea.ceaj.org/CN/Y2026/V62/I9/133)]
-- **章新友** 江西中医药大学智能医学与信息工程学院教授、博士生导师。做中药性效和方剂配伍数据挖掘。 [江西中医药大学智能医学与信息工程学院] [[主页](https://jsj.jxutcm.edu.cn/info/1071/1913.htm)]
-- **叶青** 江西中医药大学教师。做中医知识图谱。 [江西中医药大学] [[主页](https://jsj.jxutcm.edu.cn/info/1036/1277.htm)]
-- **朱彦陈** 江西中医药大学智能医学与信息工程学院教师。做中医药图像。 [江西中医药大学智能医学与信息工程学院] [[主页](https://jsj.jxutcm.edu.cn/info/1071/1917.htm)]
-- **杨明** 江西中医药大学副校长、博士生导师。做中药装备数字化，集成多光谱、高光谱成像和机器视觉。 [江西中医药大学] [[主页](https://www.jiicm.com/info/1017/1179.htm)]
-- **伍振峰** 现代中药制剂教育部重点实验室主任。负责中药制剂重点实验室，并参与中药智能制造协作。 [江西中医药大学] [[主页](https://www.catcm.org.cn/139/202407/4051.html)]
-- **张鹤林** 南昌。江西中医药大学副教授、硕士生导师。做中医色诊客观化和舌质舌苔自动分类。 [江西中医药大学] [[主页](https://jsj.jxutcm.edu.cn/info/1071/1977.htm)]
-- **熊旺平** 南昌。江西中医药大学教授、硕士生导师。做中医药数据挖掘，并主持基于知识图谱的中成药用药监测。 [江西中医药大学] [[主页](https://jsj.jxutcm.edu.cn/info/1071/1914.htm)]
-- **聂斌** 南昌。江西中医药大学教授、硕士生导师。做中药数据分析和健康大数据与人工智能。 [江西中医药大学] [[主页](https://jsj.jxutcm.edu.cn/info/1071/1921.htm)]
-- **吴地尧** 南昌。江西中医药大学副教授、硕士生导师。做中医药信息学和临床辅助决策模型。 [江西中医药大学] [[主页](https://jsj.jxutcm.edu.cn/info/1071/1928.htm)]
-- **查青林** 南昌。江西中医药大学教授、硕士生导师。用大数据和人工智能辅助健康管理与治未病。 [江西中医药大学] [[主页](https://jcyxy.jxutcm.edu.cn/info/5171/21081.htm)]
-
-</details>
-
-<details>
-<summary>华润江中（2）</summary>
-
-- **费翼城** 华润江中先进制造研究室副主任。做中药工业智能体，把生产经验数字化。 [华润江中] [[新闻](https://www.jinantimes.com.cn/news-99-11066075.html)]
-- **钟志坚** 华润江中湾里制造基地总经理。做固体制剂智能产线、制粒在线检测和人工智能视觉质检。 [华润江中] [[新闻](https://www.jinantimes.com.cn/news-99-11066075.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>山东（20）</summary>
-
-<details>
-<summary>山东中医药大学（11）</summary>
-
-- **魏本征** 山东中医药大学教授、博士生导师，医学信息工程学院院长。主持医学人工智能、中医图像分析和智慧诊疗。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1109/2430.htm)]
-- **生慧** 山东中医药大学副教授、硕士生导师，医学信息工程学院副院长。研究医疗健康大数据与中医药智能化。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1109/2445.htm)]
-- **曹慧** 山东中医药大学医学信息工程学院二级教授、博士生导师。做中医药智能化和医学数据挖掘。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1086/1972.htm)]
-- **魏德健** 山东中医药大学医学信息工程学院副教授、硕士生导师。做中医药智能化和智能医学信息处理。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1109/2439.htm)]
-- **张树剑** 山东中医药大学中医文献与文化研究院教授。主持经脉功能脑表征与脏腑调控知识图谱，用自然语言处理和深度学习重组经络文献。 [山东中医药大学中医文献与文化研究院] [[主页](https://wenxian.sdutcm.edu.cn/info/1042/1234.htm)]
-- **任健** 山东中医药大学中医学院教授、博士生导师。招生方向为四诊数实研究。 [山东中医药大学中医学院] [[主页](https://zyxyx.sdutcm.edu.cn/info/1075/5703.htm)]
-- **程肖蕊** 山东中医药大学中医药创新研究院特聘教授、博士生导师，兼招硕士。方向含中药药理学和网络药理学。 [山东中医药大学] [[主页](https://cxyjy.sdutcm.edu.cn/info/1253/2588.htm)]
-- **刘静** 济南。山东中医药大学医学信息工程学院教授、博士生导师。做中医药智能化和医学影像分析。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1109/2433.htm)]
-- **徐琬梨** 济南。山东中医药大学中医学院副教授、硕士生导师。做舌诊、脉诊和证候相关性。 [山东中医药大学中医学院] [[主页](https://zyxyx.sdutcm.edu.cn/info/1082/5763.htm)]
-- **张魁星** 济南。山东中医药大学医学信息工程学院教授，生物医学工程学科主任，山东省中医药人工智能重点学科方向带头人。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1109/2436.htm)]
-- **李明** 济南。山东中医药大学医学信息工程学院教授，研究生处副处长，医疗健康大数据学科方向带头人。 [山东中医药大学医学信息工程学院] [[主页](https://zxxy.sdutcm.edu.cn/info/1109/2432.htm)]
-
-</details>
-
-<details>
-<summary>齐鲁工业大学（3）</summary>
-
-- **鹿文鹏** 齐鲁工业大学（山东省科学院）教授、博士生导师，自然语言处理与认知计算团队负责人。做医疗大语言模型与智能体，团队发布扁仓中医大模型。 [齐鲁工业大学（山东省科学院）] [[主页](https://nlp.qlu.edu.cn/wenpeng_lu/)] [[论文](https://arxiv.org/abs/2411.11027)] [[代码](https://github.com/QLU-NLP/BianCang)]
-- **王英龙** 齐鲁工业大学（山东省科学院）教授、博士生导师。做医学人工智能与高性能计算，与团队发布扁仓中医大模型。 [齐鲁工业大学（山东省科学院）] [[主页](https://bdi.qlu.edu.cn/2021/1222/c10714a176991/page.htm)] [[代码](https://github.com/QLU-NLP/BianCang)]
-- **管红娇** 齐鲁工业大学副教授、硕士生导师。研究医疗大模型，并参与扁仓的辨证与处方评测。 [齐鲁工业大学（山东省科学院）] [[论文](http://jsxb.scsc.cn/introlist_76/794.html)]
-
-</details>
-
-<details>
-<summary>山东中医药大学附属医院（2）</summary>
-
-- **邓华亮** 山东中医药大学附属医院院长。主持省级智汇岐黄大模型，面向名医经验和基层诊疗。 [山东中医药大学附属医院] [[新闻](http://ccpd.china.com.cn/2026-04/17/content_43401621.html)]
-- **齐向华** 济南。山东中医药大学附属医院博士生导师。创立系统辨证脉学，并牵头智能化脉诊仪。 [山东中医药大学附属医院] [[主页](https://www.sdutcm.edu.cn/info/1003/9618.htm)]
-
-</details>
-
-<details>
-<summary>华润东阿阿胶（1）</summary>
-
-- **丁丰俐** 华润东阿阿胶首席信息官。布局滋补领域人工智能大模型，并用数字终端做中医体质辨识。 [华润东阿阿胶] [[新闻](https://cn.chinadaily.com.cn/a/202607/23/WS6a61a78ca310d709c2fbf393.html)]
-
-</details>
-
-<details>
-<summary>哈尔滨工业大学（威海）（1）</summary>
-
-- **初佃辉** 哈尔滨工业大学（威海）教授、博士生导师。领衔天功医疗大模型训练平台，并做中医问诊、辨证和食疗辅助。 [哈尔滨工业大学（威海）] [[主页](https://software.hit.edu.cn/12762/list.htm)]
-
-</details>
-
-<details>
-<summary>山东大学（1）</summary>
-
-- **臧恒昌** 山东大学药学院研究员、博士生导师。做中药口服制剂先进制造，以及近红外过程分析和连续制造质量可视化。 [山东大学药学院] [[主页](https://kltredp.sdu.edu.cn/rcpy/PItdjj.htm)]
-
-</details>
-
-<details>
-<summary>步长制药（1）</summary>
-
-- **束炼** 步长制药信息化建设与管理中心总经理。做中药制造板块的业财一体、仓储执行和产线机器人。 [步长制药] [[新闻](https://articles.e-works.net.cn/700/article153015.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>河南（12）</summary>
-
-<details>
-<summary>河南中医药大学（7）</summary>
-
-- **许玉龙** 河南中医药大学副教授、硕士生导师。用隐结构模型和机器学习建立中医证候辨证规则。 [河南中医药大学] [[主页](https://glxy.hactcm.edu.cn/info/1062/10540.htm)]
-- **吴嘉瑞** 河南中医药大学药学院博士生导师。招生方向为基于精准网络药理学的中药抗肿瘤机制研究。 [河南中医药大学药学院] [[招生](https://yjsy.hactcm.edu.cn/images/Userfiles/file_20250506_6388212460132763432631524.pdf)]
-- **王常海** 郑州。河南中医药大学副教授、硕士生导师。做四诊客观化、证候数据挖掘和中医诊断。 [河南中医药大学] [[主页](https://zyxy.hactcm.edu.cn/info/1110/2735.htm)]
-- **党豪** 郑州。河南中医药大学副教授、硕士生导师。做中医药人工智能、舌象脉诊、知识图谱和数据挖掘。 [河南中医药大学] [[主页](https://cs.haut.edu.cn/info/1541/8594.htm)]
-- **车志英** 郑州。河南中医药大学教授、博士生导师。做证候智能信息化和四诊信息人工智能。 [河南中医药大学] [[主页](https://zyxy.hactcm.edu.cn/info/2008/27315.htm)]
-- **宋学坤** 郑州。河南中医药大学信息技术学院硕士生导师。做计算生物医学信息学。 [河南中医药大学] [[主页](https://glxy.hactcm.edu.cn/info/1062/8030.htm)]
-- **冯素香** 郑州。河南中医药大学教授、博士生导师。做中药智能分析、多组学和质量评价。 [河南中医药大学] [[主页](https://kxy.hactcm.edu.cn/kytd/zyzlpjyxyyfsys.htm)]
-
-</details>
-
-<details>
-<summary>河南工业大学（2）</summary>
-
-- **李鹏** 河南工业大学教授、博士生导师，复杂性科学研究院院长。做中医人工智能、舌象和未病建模。 [河南工业大学] [[主页](https://computer.haut.edu.cn/info/1042/10906.htm)]
-- **吕磊** 河南工业大学教授、博士生导师。做舌象三维感知和中药材视觉品质分析。 [河南工业大学] [[主页](https://cs.haut.edu.cn/info/1541/5754.htm)]
-
-</details>
-
-<details>
-<summary>郑州大学（2）</summary>
-
-- **昝红英** 郑州大学计算机与人工智能学院教授、博士生导师。实验室做中医大模型仲景。 [郑州大学计算机与人工智能学院] [[主页](https://www5.zzu.edu.cn/nlp/info/1004/1169.htm)]
-- **贾玉祥** 郑州大学计算机与人工智能学院副教授、硕士生导师。AAAI 仲景论文通讯作者。 [郑州大学计算机与人工智能学院] [[主页](https://www5.zzu.edu.cn/nlp/info/1004/1157.htm)]
-
-</details>
-
-<details>
-<summary>河南中医药大学第一附属医院（1）</summary>
-
-- **朱明军** 河南中医药大学第一附属医院教授、岐黄学者。牵头数智中医慢病防控和中医大数据，并参与学校数智中医药研究院。 [河南中医药大学第一附属医院] [[主页](https://www.hnzhy.com/TDoctors-3.html)] [[新闻](http://www.ha.xinhua.org/20260817/ef25dd0c98e94a94be25f0f3b064ee1c/c.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>湖北（15）</summary>
-
-<details>
-<summary>湖北中医药大学（12）</summary>
-
-- **沈绍武** 湖北中医药大学研究员、博士生导师，中医药大数据知识工程研究院执行院长。做中医药信息学和临床大数据知识工程。 [湖北中医药大学] [[主页](https://xxy.hbucm.edu.cn/info/1491/11342.htm)]
-- **解丹** 湖北中医药大学信息工程学院教授、硕士生导师。做医学人工智能、数据挖掘和自然语言处理。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11262.htm)]
-- **邓文萍** 湖北中医药大学信息工程学院教师。做中医药信息化和标准化。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11272.htm)]
-- **肖勇** 武汉。湖北中医药大学信息工程学院正高级实验师、硕士生导师，中医药大数据知识工程研究院副院长。做中医药信息标准化和大数据。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11282.htm)]
-- **常凯** 武汉。湖北中医药大学信息工程学院高级实验师、硕士生导师。方向是中医药标准化、信息化和中医药人工智能。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11312.htm)]
-- **肖瑞** 武汉。湖北中医药大学信息工程学院副教授、硕士生导师。方向是自然语言处理、大数据分析和人工智能。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11802.htm)]
-- **王艳** 武汉。湖北中医药大学信息工程学院副教授、硕士生导师。方向是数据挖掘、智能优化、标准化与信息化和生物信息学。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11332.htm)]
-- **常健** 武汉。湖北中医药大学信息工程学院副教授、硕士生导师。做智慧医药、大数据分析和基于区块链的智能物联网。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/14162.htm)]
-- **付文娇** 武汉。湖北中医药大学信息工程学院副教授、硕士生导师。方向是中医药数据处理、标准化和信息化。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11792.htm)]
-- **蔡晓鸿** 武汉。湖北中医药大学信息工程学院副教授、硕士生导师，医学信息工程教研室主任。方向是中医药信息化和数据挖掘。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11302.htm)]
-- **马利** 武汉。湖北中医药大学信息工程学院教授、硕士生导师。负责中医药大数据发展研究中心，做大数据分析和循证决策。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11252.htm)]
-- **管华** 武汉。湖北中医药大学信息工程学院高级实验师、硕士生导师。做中医药大数据分析和自然语言处理。 [湖北中医药大学信息工程学院] [[主页](https://xxy.hbucm.edu.cn/info/1491/11322.htm)]
-
-</details>
-
-<details>
-<summary>湖北省中医院（2）</summary>
-
-- **肖飞** 湖北省中医院信息中心主任。推进中医药与人工智能融合、智能医疗数据挖掘和数字化传承。 [湖北省中医院] [[主页](https://xxy.hbucm.edu.cn/info/1661/13882.htm)]
-- **孙静** 湖北省中医院信息中心副主任。做智能医疗数据挖掘、中医药数字化传承，以及人工智能在诊疗和科研中的应用。 [湖北省中医院] [[主页](https://xxy.hbucm.edu.cn/info/1661/13882.htm)]
-
-</details>
-
-<details>
-<summary>武汉市中医医院（1）</summary>
-
-- **孙淼** 武汉市中医医院信息中心主任。介绍汉派中医骨伤诊疗数据集和骨伤智能体。 [武汉市中医医院] [[新闻](https://xxy.hbucm.edu.cn/info/1661/13042.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>湖南（17）</summary>
-
-<details>
-<summary>湖南中医药大学（14）</summary>
-
-- **彭绍亮** 湖南中医药大学中医学院博士生导师。方向是生物信息与人工智能。 [湖南中医药大学中医学院] [[招生](http://static.hhkaobo.com/upload/editor/7a445106-62d0-4b9e-86b1-25e9fed5229f.pdf)]
-- **晏峻峰** 湖南中医药大学教授、博士生导师。做中医人工智能与计算中医学。 [湖南中医药大学] [[主页](https://xxgc.hnucm.edu.cn/info/1036/2517.htm)]
-- **韦昌法** 湖南中医药大学教授、硕士生导师。做中医智能辅助诊疗，以及大模型与知识图谱问答。 [湖南中医药大学信息科学与工程学院] [[主页](https://xxgc.hnucm.edu.cn/info/1036/3990.htm)]
-- **梁昊** 湖南中医药大学副教授、博士生导师。带学生做智能望诊，识别染苔并降低舌诊仪成本。 [湖南中医药大学] [[主页](https://kczx.hnucm.edu.cn/info/1005/2198.htm)]
-- **丁长松** 湖南中医药大学信息科学与工程学院院长、教授、博士生导师。做中医药大数据和方剂功效的可计算研究。 [湖南中医药大学信息科学与工程学院] [[主页](https://xxgc.hnucm.edu.cn/info/1036/2522.htm)]
-- **肖晓霞** 湖南中医药大学信息科学与工程学院教授、硕士生导师。做机器视觉和中医智能诊断设备。 [湖南中医药大学信息科学与工程学院] [[主页](https://xxgc.hnucm.edu.cn/info/1036/3987.htm)]
-- **刘青萍** 湖南中医药大学信息科学与工程学院副教授、硕士生导师。做中医临床决策支持、数据挖掘和知识发现。 [湖南中医药大学信息科学与工程学院] [[主页](https://xxgc.hnucm.edu.cn/info/1036/3985.htm)]
-- **严承** 湖南中医药大学信息科学与工程学院教授、博士生导师。做中药信息学、生物信息学和人工智能。 [湖南中医药大学信息科学与工程学院] [[主页](https://xxgc.hnucm.edu.cn/info/1036/3989.htm)]
-- **李阳** 湖南中医药大学信息科学与工程学院教师。做中医药信息处理。 [湖南中医药大学信息科学与工程学院] [[主页](https://xxgc.hnucm.edu.cn/info/1036/6061.htm)]
-- **刘旺华** 湖南中医药大学中医学院博士生导师。招生方向为四诊信息数字化与辨证智能化。 [湖南中医药大学中医学院] [[招生](http://static.hhkaobo.com/upload/editor/7a445106-62d0-4b9e-86b1-25e9fed5229f.pdf)]
-- **谢梦洲** 湖南中医药大学中医学院博士生导师。招生方向为中医诊断四诊客观化。 [湖南中医药大学中医学院] [[招生](https://static.kaoyan.cn/file/2025/01/22/a5b4ec5e68ea0f116b85c64554c9f6a0.pdf)]
-- **刘密** 长沙。湖南中医药大学针灸推拿与康复学院副院长、教授、博士生导师。做中医智能康复装备和针灸数智化教学。 [湖南中医药大学针灸推拿与康复学院] [[主页](https://zjtn.hnucm.edu.cn/info/1101/2793.htm)]
-- **胡志希** 长沙。湖南中医药大学教授、博士生导师，中医诊断学学科带头人。做中医诊疗仪器，并有脉象监测和康复穿戴设备专利。 [湖南中医药大学] [[主页](https://dfzyxk.hnucm.edu.cn/info/1027/1351.htm)]
-- **周小青** 长沙。湖南中医药大学中医学院二级教授、博士生导师。做数字中医诊断和舌苔计量诊断。 [湖南中医药大学中医学院] [[主页](https://zyxy.hnucm.edu.cn/info/1124/4872.htm)]
-
-</details>
-
-<details>
-<summary>吉首大学（1）</summary>
-
-- **周恺卿** 吉首。吉首大学计算机科学与工程学院硕士生导师。主持湘西土家医、苗医胃病诊断知识库和智能决策系统。 [吉首大学计算机科学与工程学院] [[主页](https://cse.jsu.edu.cn/yjsjy/dsjj/7ee92686c2c44467988ea549cc4dc868.htm)]
-
-</details>
-
-<details>
-<summary>智慧眼（1）</summary>
-
-- **邱建华** 智慧眼创始人、董事长。公司发布多模态大模型砭石，用于问诊、舌面诊和中医四诊。 [智慧眼] [[新闻](https://www.a-eye.cn/news_list/296.html)] [[网站](https://www.a-eye.cn/)]
-
-</details>
-
-<details>
-<summary>湖南大学（1）</summary>
-
-- **梁桥康** 湖南大学人工智能与机器人学院教授、博士生导师。针灸机器人国家重点研发课题负责人，做机器人力视触觉感知和控制。 [湖南大学人工智能与机器人学院] [[主页](https://robotics.hnu.edu.cn/info/1176/3095.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>广东（30）</summary>
-
-<details>
-<summary>广州中医药大学（10）</summary>
-
-- **许能贵** 广州中医药大学二级教授、博士生导师，华南针灸研究中心主任。主持基于人工智能的针刺治疗脑病机制研究。 [广州中医药大学华南针灸研究中心] [[主页](https://scrcam.gzucm.edu.cn/info/1101/1488.htm)]
-- **赵屹** 广州中医药大学医学信息工程学院博士生导师。2026 年招收中医药人工智能方向。 [广州中医药大学医学信息工程学院] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **曹东** 广州中医药大学医学信息工程学院博士生导师。2026 年招收中医药人工智能方向。 [广州中医药大学医学信息工程学院] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **周武** 广州中医药大学医学信息工程学院博士生导师。方向是中医舌诊、面诊智能化和中医证候客观化。 [广州中医药大学医学信息工程学院] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **黎晖** 广州中医药大学基础医学院博士生导师。方向包括中医人工智能理论基础与应用。 [广州中医药大学基础医学院] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **陈新林** 广州中医药大学基础医学院博士生导师。方向是中医大数据统计分析和个体化设计评价。 [广州中医药大学基础医学院] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **林传权** 广州中医药大学科技创新中心博士生导师。方向包括人工智能与中医诊疗现代化。 [广州中医药大学科技创新中心] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **门韶洋** 广州中医药大学副教授、博士生导师。做智能中医诊断和医学信号信息处理。 [广州中医药大学医学信息工程学院] [[主页](https://ygxy.gzucm.edu.cn/info/1241/2551.htm)]
-- **刘秀峰** 广州中医药大学教授、硕士生导师。做中医知识图谱、古籍整理和中医人工智能。 [广州中医药大学医学信息工程学院] [[主页](https://ygxy.gzucm.edu.cn/info/1241/2551.htm)]
-- **潘胡丹** 广州中医药大学教授。做风湿病多模态数据和中西医结合大模型。 [广州中医药大学] [[新闻](https://www.cntcm.com.cn/content/202406/14/c251936.html)]
-
-</details>
-
-<details>
-<summary>中医药广东省实验室（4）</summary>
-
-- **刘良** 中国工程院院士，中医药广东省实验室（横琴实验室）主任。实验室从事辨证论治、现代诊疗装备和中医横琴大模型。 [中医药广东省实验室，广州中医药大学] [[招聘](https://www.gzucm.edu.cn/info/1461/117451.htm)]
-- **梁勇** 中医药广东省实验室（横琴实验室）博士生导师。2026 年在广州中医药大学招收中医药人工智能方向。 [中医药广东省实验室，广州中医药大学] [[招生](https://yjsy.gzucm.edu.cn/info/1005/17376.htm)]
-- **周华** 中医药广东省实验室副主任。负责中药新药智能自动化平台和数智诊疗基础设施。 [中医药广东省实验室，广东省中医院] [[新闻](https://www.hengqin.gov.cn/macao_zh_hans/hzqgl/dtyw/dtxx/content/post_3807664.html)]
-- **罗胜达** 中医药广东省实验室研究人员。介绍中医横琴大模型、证候推理和中西药联用智能体。 [中医药广东省实验室] [[新闻](https://www.hengqin.gov.cn/macao_zh_hans/hzqgl/dtyw/dtxx/content/post_3807664.html)]
-
-</details>
-
-<details>
-<summary>华为云（2）</summary>
-
-- **乔楠** 华为云人工智能科学计算总经理。在数智本草发布会上讲解问答、生成和天然产物分子计算。 [华为云] [[新闻](https://news.qq.com/rain/a/20240515A04TAH00)]
-- **杨鹏程** 数智本草大模型应用开发负责人。做语言与计算双模型筛方。 [华为云] [[新闻](https://bbs.huaweicloud.com/blogs/448824)]
-
-</details>
-
-<details>
-<summary>固生堂（2）</summary>
-
-- **郑项** 固生堂副总裁，负责国医 AI 分身和中医大脑。 [固生堂] [[新闻](https://www.gstzy.cn/news/detail/10/13791.html)]
-- **扈中凯** 固生堂首席技术官，负责中医大模型、临床数据和诊疗场景落地。 [固生堂] [[新闻](https://www.gstzy.cn/news/detail/10/13791.html)]
-
-</details>
-
-<details>
-<summary>广东工业大学（2）</summary>
-
-- **何昭水** 广东工业大学自动化学院教授、博士生导师。针灸机器人国家重点研发计划项目负责人，做穴位定位、进针和提插捻转。 [广东工业大学自动化学院] [[主页](https://www.gdut.edu.cn/info/1709/18526.htm)]
-- **郭靖** 广东工业大学自动化学院副教授、硕士生导师。以子课题负责人参与针灸机器人重点研发，负责手法采集、分析和复现。 [广东工业大学自动化学院] [[主页](https://teacher.gdut.edu.cn/guojing1/zh_CN/index.htm)]
-
-</details>
-
-<details>
-<summary>广药集团（2）</summary>
-
-- **李小军** 广药集团董事长。推动从药材种植介入的人工智能中药模型。 [广药集团] [[新闻](https://news.dayoo.com/guangzhou/202609/22/139995_55006504.htm)]
-- **梁海峰** 广药集团首席信息官、数字经济研究院副院长。负责药品溯源、智能制造和人工智能。 [广药集团] [[新闻](http://event.d1net.com/cioyy2024/)]
-
-</details>
-
-<details>
-<summary>华南理工大学（1）</summary>
-
-- **文贵华** 华南理工大学计算机学院教授，广东省人工智能中医工程技术研究团队负责人。做可解释舌诊、体质辨识和智能中医诊疗。 [华南理工大学计算机学院] [[主页](https://www2.scut.edu.cn/cs/2017/0629/c22284a328095/page.htm)]
-
-</details>
-
-<details>
-<summary>哈尔滨工业大学（深圳）（1）</summary>
-
-- **张大鹏** 哈尔滨工业大学（深圳）计算机学院博士生导师。做计算机舌诊、脉诊等诊察生物特征。 [哈尔滨工业大学（深圳）计算机学院] [[主页](https://csen.hitsz.edu.cn/info/1023/1904.htm)]
-
-</details>
-
-<details>
-<summary>广东省中医院（1）</summary>
-
-- **杨志敏** 广东省中医院副院长、教授、主任医师、博士生导师。做中医健康状态辨识，中心重点做便携舌诊和脉诊装备。 [广东省中医院] [[主页](https://www.jiicm.com/info/1017/1177.htm)]
-
-</details>
-
-<details>
-<summary>招联消费金融（1）</summary>
-
-- **章杨清** 招联消费金融总经理。发起中医大模型仲思。 [招联消费金融] [[新闻](http://finance.people.com.cn/n1/2025/0430/c1004-40471496.html)]
-
-</details>
-
-<details>
-<summary>暨南大学（1）</summary>
-
-- **张荣华** 暨南大学教授、博士生导师，广东省中医药信息化重点实验室主任。 [暨南大学] [[主页](https://zyxy.jnu.edu.cn/2021/0903/c6333a646617/page.htm)]
-
-</details>
-
-<details>
-<summary>深圳大学（1）</summary>
-
-- **欧阳乐** 深圳大学电子与信息工程学院副教授、博士生导师。与深圳市中医院合作中医智能问诊大模型。 [深圳大学] [[主页](https://iip.szu.edu.cn/info/1017/1231.htm)]
-
-</details>
-
-<details>
-<summary>腾讯健康（1）</summary>
-
-- **闫鹏** 腾讯健康副总裁。与津药达仁堂合作，用大模型做中医药服务和中西医结合问答。 [腾讯健康] [[新闻](https://www.pharm.com.cn/content/details59_1561.html)]
-
-</details>
-
-<details>
-<summary>香港中文大学（深圳）（1）</summary>
-
-- **王本友** 香港中文大学（深圳）数据科学学院助理教授、博士生导师、校长青年教授。做医疗多模态大模型，团队发布中医多模态模型 ShizhenGPT。 [香港中文大学（深圳）数据科学学院] [[主页](http://www.slai.edu.cn/zh-hans/teacher/208)] [[论文](https://arxiv.org/abs/2508.14706)] [[团队](https://freedomintelligence.github.io/people/)] [[代码](https://github.com/FreedomIntelligence/ShizhenGPT)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>广西（9）</summary>
-
-<details>
-<summary>广西中医药大学（5）</summary>
-
-- **邓鑫** 广西中医药大学瑞康临床医学院博士生导师。方向包括中医药治疗慢性肝病、肿瘤和中医药人工智能。 [广西中医药大学瑞康临床医学院] [[招生](https://www.gxtcmu.edu.cn/upload/yjsy/contentmanage/article/file/2025/11/25/%E5%B9%BF%E8%A5%BF%E4%B8%AD%E5%8C%BB%E8%8D%AF%E5%A4%A7%E5%AD%A62026%E5%B9%B4%E5%8D%9A%E5%A3%AB%E7%A0%94%E7%A9%B6%E7%94%9F%E6%8B%9B%E7%94%9F%E4%B8%93%E4%B8%9A%E7%9B%AE%E5%BD%95%EF%BC%88%E5%8F%91%E5%B8%83%E5%AE%98%E7%BD%91%EF%BC%89.pdf)]
-- **朱华** 南宁。广西中医药大学博士生导师、硕士生导师。指导研究生做壮瑶药饮片图像识别、光谱和数据挖掘鉴定。 [广西中医药大学] [[主页](https://www.gxtcmu.edu.cn/yjsy/dsdw1/sssds/1056zyxss/content_45370)]
-- **马雯芳** 南宁。广西中医药大学药学院硕士生导师。用人工神经网络做壮药谱效分析，并做壮药、瑶药质量标准。 [广西中医药大学药学院] [[主页](https://www.gxtcmu.edu.cn/yxy/kstd/zyjdjys/szdw11/content_47017)]
-- **周祖亮** 南宁。广西中医药大学基础医学院硕士生导师。主持壮医药词汇语料库和古壮字医药文献整理。 [广西中医药大学基础医学院] [[主页](https://www.gxtcmu.edu.cn/jcyxy/jysjs/ygwjys/szdw8/content_47715)]
-- **宋宁** 南宁。广西中医药大学壮医药学院硕士生导师。做壮医目诊教学信息化和名医用药数据挖掘。 [广西中医药大学壮医药学院] [[主页](https://www.gxtcmu.edu.cn/zyyxy/jysjs/zyjcjys/szdw1/content_46931)]
-
-</details>
-
-<details>
-<summary>广西国际壮医医院（2）</summary>
-
-- **黄国东** 南宁。广西国际壮医医院院长、博士生导师。医院已落地本地大模型体检解读、人工智能舌象辨识和远程四诊仪，并筹建壮医目诊辅助平台。 [广西国际壮医医院] [[主页](https://www.gxtcmu.edu.cn/xwzx/xyxw/fsdw/content_89250)]
-- **黄汉儒** 南宁。广西国际壮医医院博士生导师、硕士生导师。领衔人工智能壮瑶医工程研究中心。 [广西国际壮医医院] [[主页](https://www.gxtcmu.edu.cn/msmy/myi/content_64198)]
-
-</details>
-
-<details>
-<summary>南宁师范大学（1）</summary>
-
-- **彭昱忠** 南宁。南宁师范大学教授、硕士生导师。做智能计算和机器学习的生物医学应用，并参与广西中医药交叉创新。 [南宁师范大学] [[主页](https://www.gxtcmu.edu.cn/yjsy/dsdw1/sssds/1053ggws/content_68640)]
-
-</details>
-
-<details>
-<summary>广西中医药大学第一附属医院（1）</summary>
-
-- **黄瑾明** 南宁。广西中医药大学第一附属医院硕士生导师。领衔人工智能壮瑶医工程研究中心。 [广西中医药大学第一附属医院] [[主页](https://www.gxtcmu.edu.cn/xwzx/xyxw/fsdw/content_14649)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>海南（1）</summary>
-
-<details>
-<summary>海南医科大学（1）</summary>
-
-- **宫爱民** 海口。海南医科大学中医学院副院长、博士生导师、硕士生导师。用机器视觉和机器学习构建中医证候诊断模型。 [海南医科大学] [[主页](https://www.muhn.edu.cn/zyxy/info/1412/8735.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>重庆（4）</summary>
-
-<details>
-<summary>重庆中医药学院（3）</summary>
-
-- **张伟** 重庆中医药学院通识学院医学信息教研室副教授，讲授智慧医学语言基础与中医药人工智能基础，研究方向包括中医药知识图谱与语言大模型理论与应用。 [重庆中医药学院] [[主页](https://www.cqctcm.edu.cn/tsxy/2023/1220/c820a2307/page.htm)]
-- **叶华群** 重庆中医药学院通识学院医学信息教研室高级工程师，讲授智慧医学语言基础，研究方向为中医药大数据及智能信息处理。 [重庆中医药学院] [[主页](https://www.cqctcm.edu.cn/tsxy/2023/1220/c820a2307/page.htm)]
-- **王秋杰** 重庆中医药学院通识学院医学信息教研室主任、正高级工程师，中国中医药信息学会人工智能分会理事，讲授中医药人工智能基础，研究方向包括医疗健康数据分析。 [重庆中医药学院] [[主页](https://www.cqctcm.edu.cn/tsxy/2023/1220/c820a2307/page.htm)]
-
-</details>
-
-<details>
-<summary>西南大学（1）</summary>
-
-- **李莉** 西南大学计算机与信息科学学院教授、博士生导师。中医大模型 TCM-R1 通讯作者。 [西南大学计算机与信息科学学院] [[主页](https://cis.swu.edu.cn/info/1184/4082.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>四川（7）</summary>
-
-<details>
-<summary>成都中医药大学（7）</summary>
-
-- **温川飙** 成都中医药大学博士生导师。团队建设中医药 AI 模型高质量数据集，并做中医药人工智能 AIGC；数据集入选人工智能医疗器械揭榜挂帅。 [成都中医药大学] [[招生](https://zyd.cdutcm.edu.cn/yjs/dsfc/bsyjsds)] [[新闻](https://www.cdutcm.edu.cn/info/1074/138321.htm)] [[论坛](https://www.cdutcm.edu.cn/info/1074/136241.htm)]
-- **陈伟** 成都中医药大学讲席教授。团队发布中药全产业链大模型本草智库，覆盖药材基因、成分靶点和知识图谱。 [成都中医药大学] [[新闻](https://www.cdutcm.edu.cn/info/1080/4591.htm)]
-- **曾芳** 成都中医药大学教授、博士生导师、校长。做针灸效应与人工智能辅助临床决策，团队研究大模型参与腧穴配伍决策。 [成都中医药大学] [[主页](https://www.cdutcm.edu.cn/info/1004/1005.htm)] [[新闻](https://www.cdutcm.edu.cn/info/1075/138561.htm)]
-- **蒋涛** 成都中医药大学智能医学学院院长、教授、博士生导师。参与天惠中医大模型，并做中医智能装备。 [成都中医药大学智能医学学院] [[论文](https://arxiv.org/abs/2509.19834)]
-- **王德贤** 成都中医药大学副教授、硕士生导师。做针灸处方智能推荐。 [成都中医药大学] [[主页](https://www.ntu.edu.cn/2026/1008/c8083a300123/page.htm)]
-- **吴纯洁** 成都中医药大学药学院研究员、博士生导师。做中药饮片性状数字化评价，建有智能感官分析平台。 [成都中医药大学药学院] [[主页](https://www.cscsh.com/kj/198805.html)]
-- **张艺** 成都。成都中医药大学民族医药学术传承创新研究中心博士生导师。主持西南少数民族医药文献数据库，对象包括藏、傣、彝、苗等文献，团队建成藏医药古籍和《四部医典》地理信息平台。 [成都中医药大学] [[主页](https://www.cdutcm.edu.cn/info/1080/52121.htm)] [[新闻](http://hgxy.hunnu.edu.cn/info/1175/5651.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>贵州（13）</summary>
-
-<details>
-<summary>贵州中医药大学（10）</summary>
-
-- **谢泉** 贵州中医药大学信息工程学院执行院长、教授。牵头中医药全产业链语料，服务垂类大模型。 [贵州中医药大学信息工程学院] [[主页](https://xxgc.gzy.edu.cn/info/1289/3160.htm)]
-- **胡成刚** 贵阳。贵州中医药大学药学院硕士生导师、苗医药研究院副院长。主持标本馆数字化和贵州省中药资源信息数据库。 [贵州中医药大学药学院] [[主页](https://yaoxue.gzy.edu.cn/info/1458/3599.htm)]
-- **江洪** 贵阳。贵州中医药大学药学院硕士生导师。主讲苗药，并指导苗医药人工智能项目苗慧智云。 [贵州中医药大学药学院] [[主页](https://yaoxue.gzy.edu.cn/info/1383/3020.htm)]
-- **程文波** 贵阳。贵州中医药大学信息工程学院硕士生导师。招生方向为人工智能，并指导苗医药人工智能项目苗慧智云。 [贵州中医药大学信息工程学院] [[主页](https://yjs.gzy.edu.cn/info/2034/2631.htm)]
-- **张昀** 贵阳。贵州中医药大学硕士生导师。用机器学习研究非编码RNA，并做药用植物小分子RNA深度学习分析。 [贵州中医药大学] [[主页](https://xxgc.gzy.edu.cn/info/1196/1464.htm)]
-- **焦宏官** 贵阳。贵州中医药大学硕士生导师。参与中医药信息国际标准，并做苗医药文献分析。 [贵州中医药大学] [[主页](https://xxgc.gzy.edu.cn/info/1196/1464.htm)]
-- **肖巧巧** 贵阳。贵州中医药大学药学院硕士生导师。用生物信息学建设药用植物基因功能数据库。 [贵州中医药大学药学院] [[主页](https://yaoxue.gzy.edu.cn/info/1458/3695.htm)]
-- **郭正红** 贵阳。贵州中医药大学药学院硕士生导师。用计算和生物信息分析苗药等民族药活性成分。 [贵州中医药大学药学院] [[主页](https://yaoxue.gzy.edu.cn/info/1458/3571.htm)]
-- **王仁民** 贵阳。贵州中医药大学副教授、硕士生导师。2026年招收电子信息人工智能方向。 [贵州中医药大学] [[主页](https://yjs.gzy.edu.cn/info/2034/2631.htm)]
-- **杜光映** 贵阳。贵州中医药大学硕士生导师。招收人工智能和中药资源方向，并参与苗医药知识图谱分析。 [贵州中医药大学] [[主页](https://yjs.gzy.edu.cn/info/2034/2631.htm)]
-
-</details>
-
-<details>
-<summary>贵州医科大学（2）</summary>
-
-- **汤磊** 贵州医科大学党委书记，中药功效成分全国重点实验室执行主任。牵头发布民族药大模型华族本草。 [贵州医科大学] [[新闻](https://www.stdaily.com/web/gdxw/2026-08/03/content_558608.html)]
-- **杨宁线** 贵阳。贵州医科大学青年博士生导师。用人工智能评价抗菌肽，并做特色食药资源开发。 [贵州医科大学] [[主页](https://fnh.gmc.edu.cn/info/1006/2194.htm)]
-
-</details>
-
-<details>
-<summary>贵阳道生健康产业有限公司（1）</summary>
-
-- **张建锋** 贵阳。贵阳道生健康产业有限公司研究人员，贵州中医药大学硕士生导师。做中药民族药工艺质量评价和网络分析。 [贵阳道生健康产业有限公司] [[主页](https://yaoxue.gzy.edu.cn/info/1458/3562.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>云南（9）</summary>
-
-<details>
-<summary>云南中医药大学（6）</summary>
-
-- **郭沛鑫** 云南中医药大学教授、博士生导师。用人工智能、科学计算和多组学做经典名方二次开发。 [云南中医药大学] [[主页](https://www.ynucm.edu.cn/info/1045/178391.htm)]
-- **张超** 昆明。云南中医药大学博士生导师。在云南省傣医药与彝医药重点实验室负责傣医、彝医文献库、单验方库和院内制剂库。 [云南中医药大学] [[主页](https://dym.ynucm.edu.cn/info/1011/1049.htm)]
-- **钱子刚** 昆明。云南中医药大学博士生导师。为傣族、彝族药材建立 DNA 条形码鉴定库和鉴定网站。 [云南中医药大学] [[主页](https://dym.ynucm.edu.cn/info/1011/1049.htm)]
-- **温伟波** 昆明。云南中医药大学教授、博士生导师、硕士生导师。用数据挖掘做中医药临床队列，并做民族医药研发。 [云南中医药大学] [[主页](https://mbfzsys.ynucm.edu.cn/info/1020/1049.htm)]
-- **罗艳秋** 昆明。云南中医药大学硕士生导师。编纂彝族、傣族医药古籍总目，并做彝医药古籍抢救。 [云南中医药大学] [[主页](https://dym.ynucm.edu.cn/info/1013/1167.htm)]
-- **陈清华** 昆明。云南中医药大学硕士生导师、傣医学后备学科带头人。参与制定傣医病证分类代码和临床诊疗术语。 [云南中医药大学] [[主页](https://dym.ynucm.edu.cn/info/1013/1167.htm)]
-
-</details>
-
-<details>
-<summary>云南白药集团（3）</summary>
-
-- **万五洲** 云南白药集团中央研究院院长。讲人工智能赋能下从创新药到智慧中药的研发。 [云南白药集团] [[主页](https://www.yunnanbaiyao.com.cn/view/ynbyPc/1/92/view/9201.html)]
-- **李少春** 云南白药集团数字战略科学家、数智科技公司总经理、首席信息官。领衔中医药雷公大模型。 [云南白药集团] [[新闻](http://www.datayuan.cn/article/22489.htm)]
-- **范启强** 云南白药集团数智科技有限公司相关负责人。做灯塔工厂数智化和工业智能工厂升级。 [云南白药集团] [[主页](https://www.yunnanbaiyao.com.cn/view/ynbyPc/1/92/view/8368.html)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>西藏（3）</summary>
-
-<details>
-<summary>西藏大学（3）</summary>
-
-- **拥措** 拉萨。西藏大学信息科学技术学院博士生导师、硕士生导师。做藏医药文献实体关系抽取，用于知识图谱。 [西藏大学信息科学技术学院] [[主页](https://xbna.pku.edu.cn/fileup/0479-8023/HTML/2025-5-860.html)]
-- **尼玛扎西** 拉萨。西藏大学信息科学技术学院博士生导师、硕士生导师。参与藏医药文献关系抽取和藏文古籍数字化。 [西藏大学信息科学技术学院] [[招生](http://static.hhkaobo.com/upload/editor/fd7e90b8-9745-4ca6-97cc-d7fd16d332d2.pdf)]
-- **王嗣岑** 拉萨。西藏大学博士生导师。与中央民族大学合作用人工智能模型筛选抗纤维化藏药。 [西藏大学] [[主页](https://www.muc.edu.cn/info/1052/36678.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>陕西（3）</summary>
-
-<details>
-<summary>陕西中医药大学（2）</summary>
-
-- **闻永毅** 陕西中医药大学教授、硕士生导师。做中医文献数字化、知识图谱、古籍信息抽取和大语言模型。 [陕西中医药大学] [[主页](http://yzb.sntcm.edu.cn/xjsds/rwglhy/0453gjzwjy/113981.htm)]
-- **侯滢** 咸阳。陕西中医药大学人文管理学院硕士生导师。做智能医疗和中医药管理。 [陕西中医药大学] [[主页](http://yzb.sntcm.edu.cn/xjsds/rwglhy/1005z2zylglh/113986.htm)]
-
-</details>
-
-<details>
-<summary>西北大学（1）</summary>
-
-- **王永华** 西北大学生物信息中心教授。建中药系统药理学数据库 TCMSP。 [西北大学] [[主页](https://life.nwafu.edu.cn/yjsjy/yjsgl/070cf28723284d418f42b14c1175437b.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>甘肃（2）</summary>
-
-<details>
-<summary>甘肃中医药大学药学院（1）</summary>
-
-- **靳晓杰** 兰州。甘肃中医药大学药学院副教授、博士生导师。做中药化学信息学和计算机辅助药物发现。 [甘肃中医药大学药学院] [[主页](https://yxx.gszy.edu.cn/html/cid/83.html?page=1)]
-
-</details>
-
-<details>
-<summary>甘肃省中医院（1）</summary>
-
-- **张志明** 兰州。甘肃省中医院院长、博士生导师。推动数字化舌诊和人工智能辅助望诊。 [甘肃省中医院] [[主页](https://xxxy.xzhmu.edu.cn/info/1005/2985.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>青海（3）</summary>
-
-<details>
-<summary>青海大学（3）</summary>
-
-- **周则** 西宁。青海大学藏医学院硕士生导师。主持藏药药用植物图像库和藏药方剂数据库。 [青海大学藏医学院] [[主页](https://zyxy.qhu.edu.cn/szdw/qnjstd/29957.htm)]
-- **多杰** 西宁。青海大学藏医学院硕士生导师。参与藏医药文献数字化和传统医籍加工。 [青海大学藏医学院] [[主页](https://zyxy.qhu.edu.cn/kxyj/yjxm/27856.htm)]
-- **仁青东主** 西宁。青海大学藏医学院教授、博士生导师。学院青年教师团队官方简介页（发布日期2017年5月21日）写明：藏族，1973年生，博士；2017年于成都中医药大学民族医药学院获博士学位；为本科生讲授《藏医热病学》《藏医疫病学》《藏医外伤学》等课程；2001年7月至2024年3月任该院副教授，2024年4月至今任教授。本次打开了青海大学藏医学院官方师资页。 [青海大学藏医学院] [[主页](https://zyxy.qhu.edu.cn/szdw/qnjstd/29952.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>宁夏（3）</summary>
-
-<details>
-<summary>宁夏医科大学（3）</summary>
-
-- **张文学** 银川。宁夏医科大学硕士生导师。做中医药信息学、名医方剂数据挖掘和医药知识图谱。 [宁夏医科大学] [[主页](https://www.nxmu.edu.cn/lxy/info/1051/1123.htm)]
-- **杨德仁** 银川。宁夏医科大学硕士生导师。做中医药信息学。 [宁夏医科大学] [[主页](https://www.nxmu.edu.cn/lxy/info/1051/1122.htm)]
-- **陈耀庚** 银川。宁夏医科大学硕士生导师。做医药数据挖掘，并讲授中医药信息学。 [宁夏医科大学] [[主页](https://www.nxmu.edu.cn/lxy/info/1051/1120.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>新疆（3）</summary>
-
-<details>
-<summary>新疆医科大学（2）</summary>
-
-- **木拉提·哈米提** 乌鲁木齐。新疆医科大学医学工程技术学院硕士生导师。做维医异常体液病数据挖掘辅助诊断、维药材图像资源库，以及哈萨克族食管癌图像分类。 [新疆医科大学医学工程技术学院] [[主页](http://school.freekaoyan.com/xj/xjmu/zhuanye/2016/01-31/1454243071480819.shtml)]
-- **严传波** 乌鲁木齐。新疆医科大学副教授、硕士生导师。做维药材图像检索，并参与哈萨克族食管癌图像的支持向量机和神经网络分类。 [新疆医科大学医学工程技术学院] [[主页](https://xjyy.cbpt.cnki.net/portal/journal/portal/client/paper/a87ac666d8ff75c2aa5aa85b3c52f76d)]
-
-</details>
-
-<details>
-<summary>新疆大学（1）</summary>
-
-- **夏静静** 乌鲁木齐。新疆大学药学院硕士生导师。用中红外光谱和化学计量学评价维医用药毛菊苣种子，方向含机器学习和卷积神经网络。 [新疆大学药学院] [[主页](https://imm.xju.edu.cn/info/1059/1372.htm)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>香港（9）</summary>
-
-<details>
-<summary>香港浸会大学（5）</summary>
-
-- **吕爱平** 香港浸会大学副校长、中医药学院讲座教授。做中医药转化与系统医学，推动中医药和人工智能、数据科学结合。 [香港浸会大学中医药学院] [[主页](https://endowed-professorships.hkbu.edu.hk/zh-hk/endowed-professors/professor-lyu-aiping.html)] [[新闻](https://jumc.jju.edu.cn/info/1049/6997.htm)]
-- **张戈** 香港浸会大学中医药学院讲座教授、副院长。主持人工智能驱动的适配体发现。 [香港浸会大学中医药学院] [[主页](https://scholars.hkbu.edu.hk/en/persons/ZHANGGE/)]
-- **田亮** 香港浸会大学物理系副教授。做中医药数据挖掘，以及网络药理和中药质控人工智能平台。 [香港浸会大学] [[主页](https://scholars.hkbu.edu.hk/en/persons/LIANGTIAN/)]
-- **张璐** 香港浸会大学教授。做面向中药治疗胃肠癌的生物医学人工智能智能体。 [香港浸会大学] [[主页](https://research.hkbu.edu.hk/sc/1-1-1-scheme/projects)]
-- **朱褔荣** 香港浸会大学教授。用近红外和人工智能鉴别中药材真伪优劣。 [香港浸会大学] [[主页](https://research.hkbu.edu.hk/sc/1-1-1-scheme/projects)]
-
-</details>
-
-<details>
-<summary>香港中文大学（2）</summary>
-
-- **邢国良** 香港中文大学信息工程学系教授。团队做 OpenTCM，用图谱检索增强中医知识检索和诊断。 [香港中文大学] [[新闻](https://www.ie.cuhk.edu.hk/prof-guoliang-xing-and-prof-hongkai-chens-team-win-best-paper-award-at-bigcom-2025-for-innovative-traditional-chinese-medicine-ai-system/)]
-- **陈鸿凯** 香港中文大学信息工程系研究助理教授，OpenTCM（结合中医知识图谱与GraphRAG的检索与辅助诊断系统）通讯作者之一。 [香港中文大学] [[主页](https://www.ie.cuhk.edu.hk/faculty/chen-hongkai/)] [[论文](https://arxiv.org/abs/2504.20118)]
-
-</details>
-
-<details>
-<summary>香港大学（2）</summary>
-
-- **沈剑刚** 香港大学中医药学院教授。用人工智能识别中医脉象及其与体质的关联。 [香港大学中医药学院] [[主页](https://eventregscm.hku.hk/Views/People/ProfessorJiangangShen.html)]
-- **冯奕斌** 香港大学中医药学院教授、院长。用网络药理、组学和人工智能研究中医治则。 [香港大学中医药学院] [[主页](https://www.med.hku.hk/en/teaching-and-learning/postgraduate/rpg/projects/ai-assisted-investigation-to-understand-the-treatment-principle-of-chinmed)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>澳门（4）</summary>
-
-<details>
-<summary>澳门大学（2）</summary>
-
-- **路嘉宏** 澳门大学中华医药研究院副教授、副院长。用人工智能筛选抗阿尔茨海默病的中药小分子。 [澳门大学中华医药研究院] [[新闻](https://www.um.edu.mo/zh-hant/news-and-press-releases/presss-release/detail/63849/)]
-- **胡元佳** 澳门大学中华医药研究院教授。用网络药理鉴定中药质控标志物，并用神经网络生成分子库。 [澳门大学中华医药研究院] [[主页](https://repository.um.edu.mo/profile/yuanjiahu)]
-
-</details>
-
-<details>
-<summary>澳门科技大学（2）</summary>
-
-- **韩子天** 澳门科技大学教授。药食同源方剂推荐大模型 TCM-DS 的通讯作者。 [澳门科技大学] [[主页](https://fie.must.edu.mo/id-848/person/view/id-448.html)]
-- **李婷** 澳门科技大学中药质量研究国家重点实验室教授、人工智能跨学科应用研究院副院长。把人工智能用于中药机制和药物发现。 [澳门科技大学] [[简介](https://wm-fs2.must.edu.mo/group1/M00/0B/62/rBCDo2ohKsOAL4esAAMyNfTO-Ng912.pdf)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>台湾（7）</summary>
-
-<details>
-<summary>中国医药大学（3）</summary>
-
-- **罗纶谦** 中国医药大学中医诊断学科教授、台湾中医诊断学会理事长。做中医诊断。 [中国医药大学中医学系] [[主页](http://webap.cmu.edu.tw/TchEportfolio/index_1/lclo)]
-- **张恒鸿** 中国医药大学中医诊断学科教授。做中医诊断辅助仪器。 [中国医药大学中医学系] [[主页](https://webap.cmu.edu.tw/TchEportfolio/index_1/tcmchh55)]
-- **黄升腾** 中国医药大学中医学系教授兼系主任、附设医院中医部主任。研发人工智能中医临床教学。 [中国医药大学中医学系] [[主页](http://webap.cmu.edu.tw/TchEportfolio/index_1/sthuang)] [[新闻](https://chmed.cmu.edu.tw/news/293/)]
-
-</details>
-
-<details>
-<summary>长庚大学（3）</summary>
-
-- **杨贤鸿** 长庚大学中医学系教授兼系主任。与电机系合作，用深度学习做舌体分割和体质辨识。 [长庚大学中医学系] [[主页](https://pure.lib.cgu.edu.tw/en/persons/sien-hung-yang)]
-- **李建德** 长庚大学电机工程学系教授。用深度学习做舌体分割、体质辨识和舌象抑郁筛查。 [长庚大学电机工程学系] [[主页](https://pure.lib.cgu.edu.tw/en/persons/jiann-der-lee-3/)]
-- **刘耕豪** 长庚大学中医学系助理教授、医预科主任。专长脉诊、针灸和中医诊断。 [长庚大学中医学系] [[主页](https://pure.lib.cgu.edu.tw/en/persons/geng-hao-liu-2)]
-
-</details>
-
-<details>
-<summary>东华大学（1）</summary>
-
-- **颜士净** 东华大学资讯工程学系教授、人工智能实验室主持人。与慈济医院合作，用深度学习分析舌诊影像和脉诊信号。 [东华大学资讯工程学系] [[新闻](https://www.csie.ndhu.edu.tw/uncategorized/csie_ai_in_chinese_medicine_ch/)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>日本（3）</summary>
-
-<details>
-<summary>千叶大学（2）</summary>
-
-- **中口俊哉** 千叶大学前沿医工学中心教授、副中心长。做医学图像与计算机辅助诊断，并参与汉方舌诊图像研究。 [千叶大学前沿医工学中心] [[主页](https://www.cfme.chiba-u.jp/en/staff/detail.php?index=nakaguchi)] [[论坛](https://www.m.chiba-u.jp/class/wakan/tongue2021/)]
-- **并木隆雄** 千叶大学特任教授。主持汉方舌诊图像研究，推动舌诊相关国际标准。 [千叶大学] [[主页](https://www.m.chiba-u.jp/class/wakan/outline/staff.html)] [[论坛](https://www.m.chiba-u.jp/class/wakan/tongue2021/)]
-
-</details>
-
-<details>
-<summary>北里大学北里研究所医院（1）</summary>
-
-- **川锅伊晃** 北里大学北里研究所医院副部长。用机器学习量化汉方舌象，并建立健康人舌象数据库。 [北里大学北里研究所医院] [[主页](https://nrid.nii.ac.jp/en/nrid/1000040445523/)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>韩国（5）</summary>
-
-<details>
-<summary>圆光大学（2）</summary>
-
-- **李元融** 圆光大学韩医科大学教授。做韩药网络药理，并开发草药与化学药相互作用预测模型。 [圆光大学韩医科大学] [[新闻](https://www.wku.ac.kr/%ec%9d%b4%ec%9b%90%ec%9c%b5-%ea%b5%90%ec%88%98-%ec%97%b0%ea%b5%ac%ed%8c%80-%ed%95%9c%ec%95%bd-%ed%95%a9%ec%84%b1%ec%9d%98%ec%95%bd%ed%92%88-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9-%ec%98%88%ec%b8%a1-ai.html)]
-- **Jungtae Leem** 圆光大学韩医科大学研究人员。研究脉诊仪用于韩医诊断教学。 [圆光大学韩医科大学] [[论文](https://jkom.org/journal/view.php?number=5266)]
-
-</details>
-
-<details>
-<summary>庆熙大学（2）</summary>
-
-- **朴延澈** 庆熙大学韩医科大学针灸科副教授。主持韩医组学与人工智能实验室，用大数据和机器学习研究韩医诊断。 [庆熙大学韩医科大学] [[主页](https://kmoa.khu.ac.kr/members)]
-- **Yeonhak Kim** 釜山大学韩医学校兼任教授、庆熙大学研究员。把多组学和人工智能用于韩医研究。 [釜山大学韩医学校，庆熙大学] [[主页](https://kmoa.khu.ac.kr/members)]
-
-</details>
-
-<details>
-<summary>大邱庆北科学技术院（1）</summary>
-
-- **金昌业** 大邱庆北科学技术院副教授。用机器学习形式化韩医理论，并做草药网络药理。 [大邱庆北科学技术院] [[主页](https://scholar.dgist.ac.kr/researcher/0b0c2fa5-3add-421e-95cc-aeb8f8beb679)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>新加坡（1）</summary>
-
-<details>
-<summary>新加坡国立大学（1）</summary>
-
-- **陈宇综** 新加坡国立大学药学系终身教授。维护中医药数据库 TCM-ID，并用机器学习研究草药作用。 [新加坡国立大学药学系] [[主页](https://bidd.group/)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>美国（1）</summary>
-
-<details>
-<summary>密苏里大学（1）</summary>
-
-- **徐东** 密苏里大学教授。用深度学习分析舌象，并发布中医多模态问答基准 TCM-Ladder。 [密苏里大学] [[主页](https://bondlsc.missouri.edu/labs/dong-xu/)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>澳大利亚（1）</summary>
-
-<details>
-<summary>西悉尼大学（1）</summary>
-
-- **Xian Zhou** 西悉尼大学 NICM 健康研究所高级研究员。用机器学习刻画草药活性分子的协同或拮抗，并指导研究生。 [西悉尼大学 NICM 健康研究所] [[主页](https://researchers.westernsydney.edu.au/en/persons/phoebe-zhou/)]
-
-</details>
-
-
-</details>
-
-<details>
-<summary>其他（6）</summary>
-
-<details>
-<summary>中医在线（2）</summary>
-
-- **何剑** 中医在线创始人、首席执行官。用名老中医课程数据推动伊尹中医大模型。 [中医在线] [[新闻](https://www.vbdata.cn/1519007974)]
-- **任毅** 中医在线首席技术官。带领团队部署并微调中医大模型。 [中医在线] [[新闻](https://www.vbdata.cn/1519007974)]
-
-</details>
-
-<details>
-<summary>RMIT University（1）</summary>
-
-- **Charlie C. Xue** 墨尔本。RMIT University 杰出教授、副校长（国际事务）协理。学校官方简介页写明：自1987年起在高等教育和健康产业工作；2021年1月起任 Associate Deputy Vice Chancellor (International)；杰出教授职务于2024年再获续聘至2028年；曾担任该校中医学科负责人，2011–2021年任澳大利亚中医管理局国家主席，2007年起为世界卫生组织传统医学专家咨询小组成员，2005–2022年任 RMIT 世界卫生组织传统医学合作中心主任。研究兴趣包括循证医学和传统医药证据评价。本次打开了 RMIT 官方人员页。页面未见中文姓名，故条目沿用官方英文名。 [RMIT University] [[主页](https://www.rmit.edu.au/profiles/x/charlie-xue)]
-
-</details>
-
-<details>
-<summary>南洋理工大学（1）</summary>
-
-- **Christopher Khoo** 南洋理工大学黄金辉传播与信息学院副教授，主导面向东南亚传统与草药的多语医学知识图谱 Polyglot Medicine Knowledge Graph。 [南洋理工大学] [[主页](https://blogs.ntu.edu.sg/chriskhoo/2023/06/polyglot-medicine-knowledge-graph/)] [[系统](https://kgraph.sg/polyglot/)] [[论文](https://doi.org/10.1007/978-981-99-8088-8_1)]
-
-</details>
-
-<details>
-<summary>安顿健康（1）</summary>
-
-- **白伟民** 安顿健康创始人、董事长。发布七诊合参中医机器人和中医大模型。 [安顿健康] [[新闻](https://www.xinhuanet.com/finance/20260720/f6a8625c1be4412d9c311a232c7a35fa/c.html)]
-
-</details>
-
-<details>
-<summary>智赋岐黄（1）</summary>
-
-- **李坤** 智赋岐黄创始人、董事长。负责四诊仪和天功中医人工智能大模型。 [智赋岐黄] [[新闻](http://business.china.com.cn/2025-12/16/content_43307776.shtml)]
-
-</details>
-
-
-</details>
+完整名单共 452 位，写在 [Wiki · 导师](wiki/People.md)，先按地区，再按高校、医院或公司。这里只保留人数统计。
+
+**按单位类型**
+
+| 分类 | 人数 |
+| --- | ---: |
+| 高校 | 360 |
+| 产业 | 47 |
+| 医院 | 45 |
+
+**按地区**
+
+| 分类 | 人数 |
+| --- | ---: |
+| 北京 | 80 |
+| 天津 | 28 |
+| 河北 | 5 |
+| 山西 | 4 |
+| 内蒙古 | 8 |
+| 辽宁 | 8 |
+| 吉林 | 4 |
+| 黑龙江 | 4 |
+| 上海 | 45 |
+| 江苏 | 21 |
+| 浙江 | 16 |
+| 安徽 | 12 |
+| 福建 | 13 |
+| 江西 | 13 |
+| 山东 | 20 |
+| 河南 | 12 |
+| 湖北 | 15 |
+| 湖南 | 17 |
+| 广东 | 30 |
+| 广西 | 9 |
+| 海南 | 1 |
+| 重庆 | 4 |
+| 四川 | 7 |
+| 贵州 | 13 |
+| 云南 | 9 |
+| 西藏 | 3 |
+| 陕西 | 3 |
+| 甘肃 | 2 |
+| 青海 | 3 |
+| 宁夏 | 3 |
+| 新疆 | 3 |
+| 香港 | 9 |
+| 澳门 | 4 |
+| 台湾 | 7 |
+| 日本 | 3 |
+| 韩国 | 5 |
+| 新加坡 | 1 |
+| 美国 | 1 |
+| 澳大利亚 | 1 |
+| 其他 | 6 |
 
 ## 开源模型
 
@@ -1923,12 +295,477 @@
 ## 新闻
 
 <details>
-<summary>102 条，最近有：云南省人民政府办公厅印发《云南省中医药振 · 岐元 · 李强签署国务院令公布《中医药传统知识保护</summary>
+<summary>104 条，最近有：上海市卫生健康委员会、上海市中医药管理局 · 云南省人民政府办公厅印发《云南省中医药振 · 岐元</summary>
 
 <details>
-<summary>2026 · 66</summary>
+<summary>2026 · 68</summary>
 
+- [2026.11.19] 上海市卫生健康委员会、上海市中医药管理局印发《上海市中医药高质量发展实施方案（2026—2030年）》（沪卫中发〔2026〕13号，成文2026年11月16日，上海市卫生健康委员会官网中医药工作栏目发布日期2026年11月19日）。方案依据国家《中医药振兴发展“十五五”规划》和《上海市国民经济和社会发展第十五个五年规划纲要》，经市卫生健康委第97次委务会审议通过，部署完善服务体系、全生命周期服务、中西医结合、人才队伍、传承创新、产业、文化、开放发展、数智化赋能与标准化、领域改革等10个方面30项任务。到2030年的目标包括：区属公立中医类医院全市覆盖率达100%；公立中医医院中医类别执业（助理）医师比例达60%、设置老年病科比例达90%、提供儿科服务比例达100%；社区卫生服务中心第一执业点中医类别执业（助理）医师比例达20%，能提供6类15项以上中医适宜技术的比例达80%；65岁以上老年人中医药健康管理率达80%，0—36个月儿童中医药健康管理率达90%；公立中医医院电子病历系统应用水平达到4级以上的比例达95%、三级公立中医医院达到5级以上的比例达50%；居民中医药健康文化素养水平达45%左右；新增牵头发布的国际标准不低于5项。数智化部分提出打造“数智中医药”，构建开放标准语料库，深化上海中药云平台，并开展中医药人工智能大模型研发与应用。本次打开了上海市卫生健康委员会官方通知全文页，并打开了同站2026年11月24日发布的政策解读页。这是上海市“十五五”中医药实施方案，不是单项产品发布。 [[上海市卫生健康委员会](https://wsjkw.sh.gov.cn/zyygz2/20261119/5ddfb74bd99345c5a97619b324230e35.html)] [[政策解读](https://wsjkw.sh.gov.cn/zyygz2/20261124/b3aae808c20f46a19d6372a449948dde.html)]
 - [2026.11.11] 云南省人民政府办公厅印发《云南省中医药振兴发展“十五五”规划》（云政办发〔2026〕46号，成文2026年11月5日，云南省人民政府门户网站2026年11月11日公布）。规划提出到2030年中医药振兴发展取得新成效，实现人人享有中医药服务；部署建强服务体系、全生命周期服务供给、中西医协同、人才队伍、传承创新、产业和健康服务、文化繁荣、开放发展，以及加速中医药数智化赋能与标准化建设。数智化部分明确推进各级中医医疗机构规范接入省级全民健康信息平台，促进中医药高质量数据集建设和数据安全合规流通利用；探索“中医药+人工智能”，推动中医智能辅助诊疗等技术应用，加快智慧中医医院、中医互联网医院建设，并支持引进针灸、推拿机器人、智能煎制装备等数智化装备。规划还专节部署提升藏、傣、彝等少数民族医药服务能力。本次打开了云南省人民政府门户网站官方全文页。这是省级规划部署，不是已经上线的模型发布。 [[云南省人民政府](https://www.yn.gov.cn/zwgk/zcwj/yzfb/202611/t20261111_4383311.html)]
 - [2026.11.09] 中新网11月9日报道，第九届进博会上，上海市第七人民医院完成进博会首秀，中医药人工智能中心主任赵铎路演**岐元**中医垂类大模型，现场还有AI面诊智能体与中医教学机器人「小柒」。岐元已于2026年7月发布，本报道写的是进博会展示与对口支援医院应用，不是首次发布。 [[链接](https://www.chinanews.com.cn/jk/2026/11-09/10729099.shtml)]
 - [2026.11.09] 新华社北京11月9日电，国务院总理李强签署国务院令（国令第850号），公布《中医药传统知识保护条例》。条例共32条，明确建立保护数据库与保护名录等制度，自2027年1月1日起施行。 [[新华社](https://www.news.cn/politics/leaders/20261109/115bf875b154445787539419282ce542/c.html)] [[中国政府网](https://www.gov.cn/yaowen/liebiao/202611/content_7085599.htm)] [[条例全文](https://www.gov.cn/zhengce/zhengceku/202611/content_7085592.htm)]
-- [2026.11.05] 新京报11月5日转载称，第五届问止中医
+- [2026.11.05] 新京报11月5日转载称，第五届问止中医临床学术会议于11月1日在深圳举行，会上正式发布中医评测基准**TCMQA**。报道称该基准含38279道执业医考选择题，并公布101位执业中医师作答形成的参考基线；题库与评测材料已在Hugging Face开源。本站已收录该基准条目，此为发布新闻。报道未把答题成绩等同于临床辨证能力。 [[链接](https://www.bjnews.com.cn/detail/1793844088129508.html)]
+- [2026.11.05] 人民网11月5日采访国家中医药管理局监测统计中心主任厉将斌，介绍中医药独立赛道、名医智能体及高质量数据集建设。为新闻与建设线索，未附数据下载。 [[链接](https://finance.people.com.cn/n1/2026/1105/c1004-40828489.html)]
+- [2026.11.05] 中科闻歌11月5日称，其国科智医团队联合中国中医科学院构建的中医大模型辨证论治评测基准**TCM-BEST4SDT**，论文在Nature Portfolio旗下《Scientific Data》在线发表。报道称基准含600条样本、27个评测维度，数据集和评测代码已公开。本站已收录该基准条目，此为发表新闻。 [[链接](https://www.wenge.com/site/a/202611/05/1070720261105103301.html)]
+- [2026.11.04] 北京市卫健委11月4日刊载：10月30日会议讨论中医知识结构化、可信AI数据集、西苑医院中医药肿瘤科学数据系统等；报道未发布开放数据包。 [[链接](https://wjw.beijing.gov.cn/xwzx_20031/jcdt/202611/t20261104_4931739.html)]
+- [2026.11.03] 山西省卫生健康委员会、山西省发展和改革委员会印发《山西省“十五五”中医药发展规划》（晋卫中医药科技发〔2026〕3号，成文2026年10月28日，省卫生健康委官网2026年11月3日公布）。规划提出到2030年中医药强省建设取得决定性进展，以科技创新、数智化转型、中西医协同为牵引，做大做强中医药“晋”字品牌；并专章部署加速中医药数智化赋能，包括建立中医药行业可信数据空间和人工智能高质量数据集，支持多模态大模型等技术用于中医辅助决策、病历质控、名老中医经验传承和中药新药研发，加强智慧中医医院建设并推动基层应用中医智能辅助诊疗。本次打开了山西省卫生健康委官方全文页。这是省级规划部署，不是已经上线的模型发布。 [[山西省卫生健康委](https://wjw.shanxi.gov.cn/tzgg/zcwj/202611/t20261103_10251747.shtml)]
+- [2026.11.03] 山东省人民政府印发《山东省中医药发展“十五五”规划》（鲁政发〔2026〕23号，成文2026年10月23日，2026年11月3日公布）。规划提出实施齐鲁中医药振兴发展“六名四化”战略，推动中医药现代化、产业化、智慧化、生活化，到2030年实现人人享有中医药服务；重点任务包括中医药古籍数字化、数字智能应用人才培养，以及推动中医药数智化赋能。这是省级规划部署，不是已经上线的模型发布。 [[山东省人民政府](http://www.shandong.gov.cn/art/2026/11/3/art_267492_89889.html)] [[政策解读](http://www.shandong.gov.cn/art/2026/11/3/art_306404_21741.html)]
+- [2026.11.03] 数字中国建设峰会网站11月3日转载经济日报报道，介绍《人工智能赋能全球传统医学发展报告（2026）》及杭州市中医院“中医小安”机器人。报道涵盖AI传统医学整体，不等同于TCM大语言模型统计。 [[链接](https://www.digitalchina.gov.cn/2026/szzg/xyzx/202611/t20261103_5389002.htm)]
+- [2026.11.02] 广东省卫生健康委、广东省中医药局、广东省发展改革委印发《广东省中医药发展“十五五”规划》（粤卫〔2026〕4号，成文2026年10月8日，2026年11月2日在省中医药局官网公布）。规划以中西医协同、数智化转型、粤港澳联动为引领，提出到2030年全面实现人人享有优质中医药服务；并专章部署加速中医药数智化赋能，支持中医药大模型和智能体开发应用，探索建设高质量数据集、数字化平台与知识图谱，加强智慧中医医院建设。这是省级规划部署，不是已经上线的模型发布。 [[广东省中医药局](http://szyyj.gd.gov.cn/zwgk/gsgg/content/post_4974266.html)]
+- [2026.10.28] 国家中医药管理局综合司印发《2026—2028年周期全国基层中医药工作示范市（县）建设标准》（国中医药综医政函〔2026〕225号，成文2026年10月10日，国家中医药管理局官网页面标注时间为2026年10月28日）。通知依据《全国基层中医药工作示范市（县）管理办法》（国中医药医政发〔2026〕5号），规范开展本周期示范市（县）创建工作，并废止2022年印发的示范市、示范县建设标准（国中医药医政发〔2022〕1号）。本次检索打开了湖南省人民政府门户网站转载的国家中医药管理局网站全文（该站标注发文日期2026-10-10、发布时间2026-11-03、信息来源为国家中医药管理局网站），并核到官网原链为http://www.natcm.gov.cn/yizhengsi/gongzuodongtai/2026-10-28/39041.html；本轮直接访问该官网地址返回超时或HTTP 500。这是示范创建标准，不是单项产品发布。 [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/gongzuodongtai/2026-10-28/39041.html)] [[湖南省人民政府转载](http://www.hunan.gov.cn/zqt/zcsd/202611/t20261103_34093522.html)]
+- [2026.10.28] 国家中医药管理局综合司公布2026—2028年周期全国基层中医药工作示范市（县）创建单位名单（国中医药综医政函〔2026〕238号，成文2026年10月23日）。通知要求各创建单位对照本周期建设标准推进创建任务，省级中医药主管部门加强管理指导与日常监测，国家中医药管理局将在周期结束前组织评估验收，合格的正式命名。本次打开了湖南省人民政府门户网站转载的国家中医药管理局网站全文（该站标注发文日期2026-10-23、发布时间2026-11-03、信息来源为国家中医药管理局网站）；官网原链为http://www.natcm.gov.cn/yizhengsi/gongzuodongtai/2026-10-28/39040.html，本轮直接访问该官网地址返回超时或HTTP 500。这是创建单位名单公布，不是单项产品发布。 [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/gongzuodongtai/2026-10-28/39040.html)] [[湖南省人民政府转载](http://www.hunan.gov.cn/zqt/zcsd/202611/t20261103_34093548.html)]
+- [2026.10.28] 国家中医药局综合司、国家卫生健康委办公厅印发《关于推进基层中医适宜技术推广应用的通知》（国中医药综医政发〔2026〕8号，成文2026年10月14日，国家中医药管理局官网及中国政府网转载新华社稿2026年10月28日发布）。通知要求建设国家、省、市、县推广网络，到2030年县级推广中心基本全覆盖，优先推广6类15项以上中医适宜技术；并专章部署推广工作数智化支撑，探索应用人工智能辅助教学、辅助诊疗和质控分析工具。这是基层适宜技术推广政策，不是单项产品发布。 [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/gongzuodongtai/2026-10-28/39042.html)] [[中国政府网](https://www.gov.cn/lianbo/202610/content_7084413.htm)]
+- [2026.10.27] 凤凰网财经10月31日报道，天纪易岐称其端侧模型**易岐中医AI**已于10月27日完成调试并上线，可在完全断网的本地终端推理，面向体质辨识、健康评估等场景。此为公司发布稿转载，本页未独立核验其临床效果或部署范围。该模型与古籍数据库ETCM不是同一事物。 [[链接](https://news.10jqka.com.cn/20261031/c681322899.shtml)]
+- [2026.10.26] 福建省卫生健康委员会、福建省中医药管理局等十三部门印发《福建省提升中药质量促进中医药产业高质量发展的若干措施》（闽卫规〔2026〕4号，成文2026年10月15日，省卫生健康委官网2026年10月26日公布，有效期至2030年12月31日）。措施落实国办发〔2025〕11号，部署闽产道地药材保护、规范化种植、产业集群和中药工业升级等，并明确引导中药企业加快智能化改造、梯度建设智能工厂，以及建设信息化追溯系统。本次打开了省政府卫生健康委官方页面和主动公开PDF。这是省级产业质量政策，不是单项产品发布。 [[福建省卫生健康委](https://wjw.fujian.gov.cn/xxgk/fgwj/zxwj/202610/t20261026_7240705.htm)] [[官方PDF](https://wjw.fujian.gov.cn/xxgk/fgwj/zxwj/202610/P020261026658500638498.pdf)]
+- [2026.10.24] 广安门医院10月24日报道，10月17日至18日的2026世界传统医药大会上，**广医·岐智**展示院内部署与病历生成，杭州市中医院具身智能机器人**中医小安**演示舌面象和脉象采集，中科云诊则展示**妙悟岐黄**辅助诊疗与可追溯辨证。报道中的分诊人次、书写时长和辨证一致率来自参展方介绍，不宜直接当成评测结论。 [[链接](https://www.gamyy.cn/gzb/news/trends/118061.html)]
+- [2026.10.22] 湖北省卫生健康委员会官网2026年10月22日发布政策解读称，经省人民政府同意后，省卫生健康委、省发展改革委、省中医药管理局于2026年9月19日联合印发《湖北省中医药发展“十五五”规划》。解读明确规划提出到2030年实现人人享有中医药服务，并部署数智赋能与标准化等重点任务，包括持续推进智慧医院建设、深化数据资源开发利用和推进中医药人工智能建设。本次打开了湖北省卫生健康委的官方解读页；官网列出的规划正文链接在本次核验中返回404，故不以正文页作为依据。这是省级规划部署，不是已经上线的模型发布。 [[政策解读](https://wjw.hubei.gov.cn/zfxxgk/zc/zcjd_1/202610/t20261022_6037633.shtml)]
+- [2026.10.21] 智通财经10月21日报道，医渡科技在2026世界传统医药大会成果发布环节推出中医循证智能体**小黄岐**，面向古籍与指南检索、辅助辨证、方剂查询和中医术语中英互译，并称回答可追溯证据来源。报道中的知识条目数量与医院落地范围来自企业介绍，本页未独立核验。 [[链接](https://www.zhitongcaijing.com/content/detail/1509924.html)]
+- [2026.10.20] 川观新闻10月20日报道，《四川省中医药发展“十五五”规划》印发，提出支持中医药数智创新平台建设，开发名中医智能化诊疗等大模型，开展基层中医智能辅助诊疗试点，并建设高质量数据集与数智中医药协同创新中心。这是规划部署，不是已经上线的模型发布。 [[链接](https://cbgc.scol.com.cn/news/8074897)]
+- [2026.10.18] 北京市科技信息门户转载《北京日报》报道，10月18日在2026世界传统医药大会“北京成果”专场，北京数智中医产业发展研究院发布智能体“数小禾”，基于本地算力和自主知识产权知识库，提供中英文中医智能服务。 [[链接](https://www.ncsti.gov.cn/kjdt/xwjj/202610/t20261027_259363.html)]
+- [2026.10.18] 凤凰网科技10月19日转载称，传神素问与名医在线于10月18日在2026世界传统医药大会联合发布**范吉平数字孪生**，以传神素问中医大模型为底座，整理医案与诊疗资料后用于问诊、辨证和处方建议。这是名医数字孪生的单例发布，报道未给出可独立核验的临床对照结果。 [[链接](https://tech.ifeng.com/c/8xLt1uquwDi)]
+- [2026.10.16] 中国中医药报10月16日报道汉派中医骨伤诊疗数据集在湖北数据流通平台交易，涉及16.8万条结构化诊疗数据、3600个经验方与辨证论治思维链；属于许可流通案例。 [[链接](https://www.cntcm.com.cn/content/202610/16/c505880.html)]
+- [2026.10.14] 国家中医药管理局印发《中医医疗质量控制中心管理规定》（国中医药医政发〔2026〕10号，成文2026年10月8日，国家中医药管理局官网2026年10月14日公布全文，自印发之日起施行）。规定适用于各级中医质控中心建设与管理，明确国家级中心由国家中医药局设置管理，省级及以下参照执行；并规定质控中心应利用信息化手段开展质控，使用现有数据采集平台收集分析中医质控数据，落实网络和数据安全要求。本次打开了国家中医药管理局官方全文页及政策解读页。这是质控组织管理规定，不是单项产品发布。 [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-10-14/38883.html)] [[政策解读](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-10-14/38884.html)]
+- [2026.10.12] 《海南自由贸易港中医药发展促进条例》已由海南省第七届人民代表大会常务委员会第二十六次会议于2026年9月30日通过，以海南省人民代表大会常务委员会公告第114号公布，自2026年11月1日起施行，共九章五十条。条例结合海南自由贸易港实际，对中医药服务、中药保护与产业发展、黎苗等民族医药发展、人才培养与科技支撑、传承创新与文化传播、开放发展与国际合作及保障措施作出制度安排；明确鼓励智慧中医医疗机构建设，允许综合运用互联网等现代信息技术和具备医疗器械资质的人工智能设备提供中医药服务，支持黎苗医药传承人运用数字设备和人工智能建立数字化、影像化传承档案，并支持建设中医药真实世界研究平台。本次打开了三亚市人大官网登载的条例全文，以及《海南日报》2026年10月12日文件版刊登的常委会公告。这是省级地方性法规，不是已经上线的模型发布。 [[三亚市人大](https://rd.sanya.gov.cn/rdsite/jgjs/202610/abc6e991368744248da826826aa4d6f3.shtml)] [[海南日报](http://news.hndaily.cn/html/2026-10/12/content_58468_19930810.htm)]
+- [2026.10.09] 湖南省人民政府办公厅印发《湖南省中医药发展“十五五”规划》（湘政办发〔2026〕53号，发文日期2026年10月9日）。规划提出到2030年实现人人享有中医药服务，部署九个方面34项重点任务，其中包括加速中医药数智化赋能：建设智慧中医医院、探索处方共享与数据互联，加快中医药人工智能应用场景建设，扩大智能辅助诊疗和中药智能调配在基层的应用，并加强高质量数据集建设。省中医药管理局解读于2026年11月11日在省政府门户发布。这是省级规划部署，不是已经上线的模型发布。 [[湖南省人民政府](https://www.hunan.gov.cn/hnszf/xxgk/wjk/szfbgt/202610/t20261023_34087538.html)] [[政策解读](http://www.hunan.gov.cn/hnszf/xxgk/jd/bmjd/202611/t20261111_34099599.html)]
+- [2026.10.09] 报道称徐桂华团队10月9日发布灵素·艾护中医护理大模型，面向辨证施护、科研与居家康养，27所加盟医院为首批应用单位 [[链接](https://finance.sina.com.cn/jjxw/2026-10-10/doc-iniutqmk0582279.shtml)]
+- [2026.10.08] 国家中医药管理局医政司发布《关于做好中医护理方案和护理人员中医技术使用手册使用工作的通知》（国家中医药管理局官网标注时间2026年10月8日）。通知称，为提升中医护理能力、优化中医护理服务，国家中医药局委托中华中医药学会组织专家修订形成中风等13个病种中医护理方案（2026年版）和《护理人员中医技术使用手册（2026年版）》，并已在中华中医药学会网站发布，要求各级中医药主管部门组织相关医疗机构结合实际推广应用。本次打开了国家中医药管理局官方通知页。这是护理方案推广通知，不是单项产品发布。 [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-10-08/38852.html)]
+- [2026.09.30] 福建省卫生健康委员会、福建省中医药管理局印发《福建省“十五五”中医药振兴发展规划》（2026年9月29日印发，省卫生健康委官网标注发布时间2026年9月30日）。规划提出到2030年中医药高质量发展体制机制更加健全，实现人人享有中医药服务，推进中医药强省建设；部署服务体系、全生命周期服务、中西医协同、人才队伍、传承创新、产业新体系、文化传播、闽台融合与开放发展，以及数智化赋能、标准化和“三医”协同改革。数智化部分提出打造闽派中医特色高质量数据集与中医智能体，开展数据资产确权转化试点，落实“数据要素×”三年行动，支持省级中医医院打造智慧院区、建设专科大模型，归集名老中医经验，推动中医智能辅助决策系统与诊疗装备落地应用。这与已入库的《福建省提升中药质量促进中医药产业高质量发展的若干措施》不是同一份文件。本次打开了福建省卫生健康委官方全文页及附件PDF。这是省级规划部署，不是已经上线的模型发布。 [[福建省卫生健康委](https://wjw.fujian.gov.cn/xxgk/fgwj/zxwj/202610/t20261008_7222126.htm)] [[规划PDF](https://wjw.fujian.gov.cn/xxgk/fgwj/zxwj/202610/P020261008767413247349.pdf)]
+- [2026.09.30] 宁夏回族自治区卫生健康委员会、自治区发展和改革委员会印发《宁夏回族自治区中医药振兴发展“十五五”规划》（自治区人民政府宁政函〔2026〕55号于2026年9月11日批复同意，两部门2026年9月16日印发，自治区卫生健康委官网2026年9月30日公布全文）。规划提出到2030年覆盖全民和全生命周期的中医药服务体系更加健全，实现人人享有中医药服务；部署完善服务体系、提升全生命周期服务能力、中西医协同、人才队伍、传承创新、健康服务融合、文化繁荣和开放发展，以及数智化标准化赋能与治理。数智化部分提出探索人工智能赋能中医药对外交流和高质量发展路径，实施自治区中医药智慧赋能项目，规范建设智慧中医医院和智慧中药房，并加强人工智能技术在基层中医药服务中的精准应用。本次打开了自治区卫生健康委官方全文页和自治区人民政府批复页。这是省级规划部署，不是已经上线的模型发布。 [[宁夏卫生健康委](https://wsjkw.nx.gov.cn/zfxxgk_279/fdzdgknr/gfxwj/202609/t20260930_5362324.html)] [[宁夏回族自治区人民政府](https://www.nx.gov.cn/zwgk/qzfwj/202609/t20260924_5356174.html)]
+- [2026.09.24] 中国中医药报9月24日报道广安门医院慢性胃炎数据集完成产权登记，并建设中医专病可信数据空间；数据用于广医·岐智微调、科研和名医经验教学，未见公开下载。 [[链接](https://www.cntcm.com.cn/content/202609/24/c505607.html)]
+- [2026.09.22] 大洋网9月22日报道，第二届广东省人工智能应用对接大会上，广东省中医院介绍名老中医辅助诊疗大模型矩阵，并称**禤国维**皮肤病诊疗大模型已于2025年6月投用。报道写核心病种诊断准确率达95%以上、已辅助决策2917次，上述数字来自院方介绍，不是外部对照试验结论。该院矩阵启动此前已有报道。 [[链接](https://news.dayoo.com/guangzhou/202609/22/139995_55006505.htm)]
+- [2026.09.21] 中国中医药报9月30日报道，9月20日至21日，2026年数智中医药推进现场会暨数据要素综合试验区现场会在重庆举行，交流人工智能赋能中医药、数据要素与应用场景。报道提到横琴垂类模型、中药工业大模型和各地智能体实践，是会议综述，不代表新的模型首发。 [[链接](https://www.cntcm.com.cn/content/202609/30/c505658.html)]
+- [2026.09.19] 中新网报道方证大模型9月19日开放接入，覆盖临床辅助诊疗、科研数据挖掘和人才培养，并计划部署到龙华医院及医联体 [[链接](https://www.chinanews.com.cn/jk/2026/09-19/10699553.shtml)]
+- [2026.09.15] 界面新闻报道，9月15日第七届馆交会暨中医药发展大会上，传神素问推出**百医孪生计划**，拟依托其「素问」中医大模型为全国100位名老中医打造数字分身。这是计划发布，报道未列出已完成的全部名单，也未提供可独立核验的一致率数据。 [[链接](https://www.jiemian.com/article/15106308.html)]
+- [2026.09.07] 工业和信息化部等六部门印发工信部联消费〔2026〕204号意见，将中药列为历史经典产业，并部署编制人工智能赋能实施指南、建设高质量数据集、用大模型解析传统工艺，以及发展智慧药房和产业工艺知识图谱。 [[工信部](https://www.miit.gov.cn/jgsj/xfpgys/wjfb/art/2026/art_ece6902ba0b24ad2806e670618f17a9f.html)] [[新华社](http://www.news.cn/politics/20260907/1d0ae2bfeb1f4d0fb58f7611ba77a3c3/c.html)]
+- [2026.09] 中国中医科学院广安门医院在2026服贸会展示**广医·岐智2.0**，以AI医生「安安」覆盖患者服务、临床诊疗、病房管理等六大场景 [[链接](https://app.xinhuanet.com/news/article.html?articleId=202609101de3e66a53f7474ba7d373deaaa7e122)]
+- [2026.09] 2026服贸会中医药展区，北京中医药大学**首发首展**中医体质辨识体系与具身智能推拿机器人，同期还有智能诊脉设备体验 [[链接](https://wjw.beijing.gov.cn/xwzx_20031/mtjj/202608/t20260807_4812596.html)]
+- [2026.08.27] 学校官网称，8月27日“黔小杏医疗大模型”在2026数博会发布，以中医药文献、名医经验和临床数据训练，用于辅助诊断、体质辨识、养生推荐和用药指导。 [[链接](https://www.gzy.edu.cn/info/1501/12735.htm)]
+- [2026.08] 南方财经报道，广州中医药大学以通用大模型为基座、用约20亿词元中医药数据持续训练“杏林智慧教学大模型”，已在中医各家学说、中国医学史和中医外科学试点。 [[链接](https://m.21jingji.com/article/20260824/herald/ef692f3ceba10c36edd3952f4d5ca892.html)]
+- [2026.07.31] 广西壮族自治区人民政府办公厅印发《广西中医药（壮瑶医药）振兴发展“十五五”规划》（桂政办发〔2026〕50号，成文2026年7月24日，自治区人民政府门户网站2026年7月31日公布，刊于政府公报2026年第15期）。规划提出到2030年中医药传承创新发展机制更加完善，覆盖全民、全生命周期的中医药服务体系更加健全，基本形成服务惠民、产业兴旺、创新活跃、开放包容的中医药发展新格局；并专章部署加速中医药数智化赋能，实施“人工智能＋中医药”行动，建设智慧中医医院，支持基层配备中医智能辅助诊疗系统，建立中医药人工智能高质量数据集，推进人工智能在中医辅助决策、名老中医经验传承、诊疗康复等场景应用，支持自治区人工智能壮瑶医诊疗场景工程研究中心等项目。本次打开了自治区人民政府门户网站官方全文页。这是省级规划部署，不是已经上线的模型发布。 [[广西壮族自治区人民政府](http://www.gxzf.gov.cn/zfwj/zxwj/t27966422.shtml)]
+- [2026.07.29] 贵州医科大学等在中国—东盟教育交流周发布全国首个民族药创制全域智能平台**华族本草**，以数智岐黄+Qwen为底座融汇多民族医药古籍 [[链接](https://www.gmc.edu.cn/info/1058/30267.htm)]
+- [2026.07.28] 国家中医药局等十一部门印发《医疗卫生强基工程中医药行动方案》（国中医药医政发〔2026〕6号，成文2026年7月11日）。方案提出到2030年基层中医药服务网络全面建立，基础设施和数智化条件明显改善，并部署七项行动；其中明确加快县级中医医院信息化、持续推进智慧中医医院建设，探索医学人工智能辅助诊疗在基层中医药服务和名中医经验传承等场景的应用。 [[中国政府网](https://www.gov.cn/zhengce/zhengceku/202607/content_7076920.htm)] [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-07-28/38433.html)]
+- [2026.07.24] 上海中医药大学附属第七人民医院正式发布**岐元大模型**，采用预训练+领域微调+专家强化学习，支持生成式病历与名老中医Agent数字孪生，并亮相WAIC [[链接](https://dwgk.shutcm.edu.cn/2026/0725/c1890a175544/page.htm)]
+- [2026.07.23] 经国务院批复同意（国函〔2026〕71号），国家中医药局、国家发展改革委联合印发《中医药振兴发展“十五五”规划》（国中医药规财发〔2026〕8号）。规划提出到2030年实现人人享有中医药服务，并部署十个方面重点任务，其中包括加速中医药数智化赋能与标准化建设；政策解读明确提出运用人工智能等新技术挖掘和传承中医药宝库。这是国家层面的五年规划，不是单项产品发布。 [[中国政府网](https://www.gov.cn/zhengce/zhengceku/202607/content_7076394.htm)] [[国家中医药管理局](http://www.natcm.gov.cn/guicaisi/zhengcewenjian/2026-07-22/38398.html)] [[新华社](https://www.news.cn/20260723/d6c2ca040e534b9186271da832c4ec6b/c.html)]
+- [2026.07.03] 北京市卫生健康委网站转载《中国妇女报》报道，7月3日论坛以“数启岐黄·智赋本草”为主题在京举行，发布中医药智能体技术要求等标准、16项数字中医药应用场景案例，并启动“数据要素×”大赛北京分赛中医药赛道。 [[链接](https://wjw.beijing.gov.cn/xwzx_20031/mtjj/202607/t20260706_4748255.html)]
+- [2026.07.01] 山西省卫生健康委员会、山西省药品监督管理局印发《中药饮片代煎服务质量管理规范》（晋卫中医药科技规〔2026〕1号，成文2026年6月16日）。规范适用于省内各级各类医疗机构，以及承接省内中药饮片代煎服务的生产、经营企业，覆盖医疗机构委托企业代煎和患者委托零售药店代煎两类场景；明确代煎属于中药饮片使用和销售的延伸服务，坚持患者自愿。规范厘清质量责任，医疗机构对代煎剂质量负主体责任，受托企业承担直接质量责任，禁止毒性中药、麻醉类中药饮片处方委托代煎，禁止将代煎业务再委托。追溯方面要求煎药过程视频监控资料留存不少于90天，代煎药液附带追溯二维码，原始处方、煎制工艺数据和设备运行日志至少保存一年，数据保存期限不少于三年。附则写明本规范有效期五年，自2026年8月1日起施行。本次打开了山西省卫生健康委员会政策文件栏目官方全文页，该页标注发布时间为2026-07-01 13:40，页面URL路径为2026-07-29。2026年11月24日，省卫生健康委员会新闻页和人民网山西频道（来源《山西日报》）对同一规范作了报道，作为后发新闻链接保留，不另作新条目。这是省级中药饮片代煎质量规范，此前目录漏收。 [[山西省卫生健康委员会](https://wjw.shanxi.gov.cn/tzgg/zcwj/202607/t20260729_10186628.shtml)] [[省卫生健康委员会新闻](https://wjw.shanxi.gov.cn/xwzx/szyw/202611/t20261124_10265935.shtml)] [[人民网山西频道](http://sx.people.com.cn/n2/2026/1124/c352662-41759168.html)]
+- [2026.07] 新华网报道，2026年7月国家人工智能应用中试基地（医疗）在河南省人工智能大会集中发布中医经络辅诊模型、中西医结合食管癌大模型、中医药高质量数据集、中药研发大模型和名中医数字智能体。 [[链接](http://www.ha.xinhuanet.com/20260928/c8569fe1fbdb4ebc81053d86c6d93682/c.html)]
+- [2026.07] 智慧眼携**砭石云中医**亮相WAIC 2026，以已备案砭石多模态大模型为底座，展示四诊仪与辅助诊疗系统 [[链接](http://www.eeo.com.cn/2026/0720/965556.shtml)]
+- [2026.07] 安顿健康在WAIC 2026首发**七诊合参**中医机器人，集成面/红外面/舌/耳/闻/问/脉采集；报道称底座为2350亿参数的中医大模型。该页未写天回 [[链接](https://www.news.cn/finance/20260720/f6a8625c1be4412d9c311a232c7a35fa/c.html)]
+- [2026.06] 中科闻歌通过港交所上市聆讯；报道提及与中国中医科学院合作的**大医金匮**中医大模型已通过中国信通院最高级别可信AI认证 [[链接](https://www.ncsti.gov.cn/kjdt/xwjj/202606/t20260610_249369.html)]
+- [2026.05] 北京中医药大学中药学院称薪火中国药在世界数字教育大会发布，问答版已上线国家智慧教育公共服务平台 [[链接](https://zhongyao.bucm.edu.cn/yyxw/fb4b320d30c34e358de28a637c9f6f2c.htm)]
+- [2026.04.24] 浙江省人民政府办公厅印发《浙江省“十五五”中医药发展规划》（浙政办发〔2026〕14号，2026年4月24日）。规划提出到2030年基本建成中医药现代化先行省，中医药人工智能应用水平全国领先，并统筹服务、产业、科技、人才、文化、治理、数智“七位一体”现代化；主要指标明确中医类医疗机构医学大模型应用率到2030年达到100%，同时提出推动浙江成为中医药人工智能发展的重要策源地。这是省级规划部署，不是已经上线的模型发布。 [[浙江省政府公开文本](https://zjjcmspublicnew.oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/cms_files/filemanager/1567290/attach/20266/054C52CACC6589E4F1917D8B993978B9.pdf)] [[商务部转载](https://tradeinservices.mofcom.gov.cn/article/zcfb/zcfg/202607/200234.html)] [[浙江中医药大学转载](https://itc.zcmu.edu.cn/202607132.pdf)]
+- [2026.04.21] 国家中医药管理局印发《全国基层中医药工作示范市（县）管理办法》（国中医药医政发〔2026〕5号）。办法规定示范市（县）创建每3年为一个周期，由国家中医药管理局负责总体规划与组织管理；申报经市县级自评、省级审核推荐、国家局复核后确定为创建单位，创建周期结束前6个月开展省级和国家评估验收，合格后命名。中国中医药报官网全文页标注来源为国家中医药管理局、日期为2026年4月22日；官网原链为http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-04-21/37964.html。本次打开了中国中医药报全文页；本轮直接访问国家中医药管理局原页返回超时或HTTP 500。这是示范创建管理办法，不是单项产品发布。 [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-04-21/37964.html)] [[中国中医药报](https://www.cntcm.com.cn/m/content/202604/22/c502106.html)] [[政策解读](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-04-21/37965.html)]
+- [2026.04.21] 北京中医药大学牵头研发的**薪火中国药**中医药教育大模型通过国家生成式人工智能服务备案，成为国内首个获批面向公众服务的中医药领域大模型 [[链接](https://regional.chinadaily.com.cn/education/cn/2026-04/22/c_1177692.htm)]
+- [2026.04.14] 广西壮族自治区卫生健康委员会、自治区中医药管理局、自治区工业和信息化厅印发《广西中医药产业高质量发展三年行动方案（2026—2028年）》（桂中医药发〔2026〕10号，成文2026年4月9日，经自治区人民政府同意，自治区卫生健康委官网2026年4月14日公布全文）。方案提出到2028年中医药全产业链总产值突破1100亿元；部署中药材种植养殖、中药制造数智化绿色化改造、质量追溯体系，以及拓展人工智能＋中医药诊疗服务应用场景，支持基层配备中医智能辅助诊疗系统、便携式智能理疗设备和远程会诊终端，并投入支持智慧中医医院建设。这与同日核验入库的《广西中医药（壮瑶医药）振兴发展“十五五”规划》不是同一份文件。本次打开了自治区卫生健康委官方全文页及政策解读页。这是省级产业行动方案，不是已经上线的模型发布。 [[广西卫生健康委](https://wsjkw.gxzf.gov.cn/xxgk_49493/fdzdgk/gkwj/zzqzcwj/t27468144.shtml)] [[政策解读](https://wsjkw.gxzf.gov.cn/xxgk_49493/fdzdgk/gkwj/zcjd/t27468260.shtml)]
+- [2026.04.08] 国家中医药局、国家卫生健康委印发《医院中药饮片管理规范（2026版）》（国中医药医政发〔2026〕3号，成文2026年4月8日，中国政府网国务院部门文件库刊登全文）。规范适用于各级各类医院中药饮片采购、验收、贮藏与养护、调剂、临方炮制、煎煮、临方加工、处方点评等管理，自发布之日起施行，2007年版规范同时废止。文件要求以质量管理为核心，鼓励使用信息化手段加强中药饮片管理；对代煎服务明确医院负主体责任、受托机构负直接责任，并要求建立健全代煎质量跟踪、追溯、监控体系。本次打开了中国政府网官方全文页。这是部门管理规范，不是已经上线的模型发布。 [[中国政府网](https://www.gov.cn/zhengce/zhengceku/202604/content_7066059.htm)]
+- [2026.04] 山东中医药大学附属医院启动山东省卫健委「人工智能＋」中医药重点场景**智汇岐黄**大模型项目 [[链接](http://ccpd.china.com.cn/2026-04/17/content_43401621.html)]
+- [2026.03.27] 国家中医药管理局印发《三级中医医院评审标准（2026年版）》（国中医药医政函〔2026〕39号，成文2026年3月13日）。通知提出，为落实“强基、稳二、控三”工作部署和分级诊疗制度要求，优化完善中医医院评审制度，该标准自通知印发之日起实施，2017年版三级中医医院、三级中西医结合医院、三级民族医医院评审标准及其实施细则等评审规定同时废止。本次打开了中国政府网国务院部门文件页（来源标注为国家中医药局网站）及可公开下载的官方PDF（政府网文件最后修改时间为2026年3月28日）。官网原链为http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-03-27/37885.html。这是医院评审标准，不是单项产品发布。 [[中国政府网](https://www.gov.cn/zhengce/zhengceku/202603/content_7064072.htm)] [[官方PDF](https://www.gov.cn/zhengce/zhengceku/202603/P020260328646933871054.pdf)] [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-03-27/37885.html)]
+- [2026.03.23] 国家中医药局、国家卫生健康委、国家疾控局印发《乡镇卫生院 社区卫生服务中心中医药服务管理基本规范》（国中医药医政发〔2026〕2号，成文2026年3月11日），对2003年版乡镇卫生院、社区卫生服务中心两项基本规范进行合并修订。规范共六章，适用于依法设立的乡镇卫生院、社区卫生服务中心，明确中医科和中药房建设、人员配备、服务内容及业务指导等要求。本次打开了中国政府网国务院部门文件页全文（来源标注为国家中医药局网站），并核到新华社经中国政府网转发的报道（2026年3月24日）。官网原链为http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-03-23/37872.html。这是基层中医药服务管理规范，不是单项产品发布。 [[中国政府网](https://www.gov.cn/zhengce/zhengceku/202603/content_7063623.htm)] [[国家中医药管理局](http://www.natcm.gov.cn/yizhengsi/zhengcewenjian/2026-03-23/37872.html)] [[新华社报道](https://www.gov.cn/lianbo/202603/content_7063620.htm)]
+- [2026.03.17] 中国中医药报报道，2026年3月17日研讨会上，中医药信息研究所所长李海燕介绍医源中医大模型已用于医案结构化、智能问诊、处方推荐和中成药合理使用等场景。 [[链接](https://www.cntcm.com.cn/content/202603/20/c501417.html)]
+- [2026.03] 上海中医药大学称方证多模态大模型入选医疗领域国家人工智能应用中试基地阶段成果，基座为视觉语言模型 [[链接](https://kjrw.shutcm.edu.cn/2026/0330/c805a172392/page.htm)]
+- [2026.02] 工信部等八部门印发《中药工业高质量发展实施方案（2026—2030年）》，明确运用人工智能与知识图谱赋能经典名方与名老中医经验方研发 [[链接](https://www.gov.cn/zhengce/zhengceku/202602/content_7057174.htm)]
+- [2026.01.09] 科技日报报道，1月9日广东省中医院启动名老中医辅助诊疗大模型矩阵；禤国维皮肤病诊疗大模型和心血管病诊疗大模型已投入临床。 [[链接](https://www.stdaily.com/web/gdxw/2026-01/12/content_460323.html)]
+- [2026.01] 新华网报道，2025年12月24日河南健康产业大会上，河南省卫生健康委展示中医经络辅助诊断模型和豫产豫药多模态神农本草大模型，后者用于药材识别、真伪鉴别、成分定量和产地溯源。 [[链接](http://www.ha.xinhuanet.com/20260105/b91d84bacd1c46389a007e0cc201962d/c.html)]
+- [2026.01] 成都中医药大学官网称，温川飙团队牵头的“中医药AI模型高质量数据集”（项目编号2025-AISJK-02013）入选工信部与药监局2025年度人工智能医疗器械创新任务揭榜名单。 [[链接](https://www.cdutcm.edu.cn/info/1074/138321.htm)]
+- [2026.01] 中医聪宝称素问中医内容生成大模型算法列入国家网信办第十四批深度合成服务算法备案 [[链接](https://www.tcmbrain.com/?list_43/180.html)]
+
+</details>
+
+<details>
+<summary>2025 · 30</summary>
+
+- [2025.12.20] 吉林发布**众星·长白岐黄1.0** AI原生多模态中医药大模型 [[链接](https://www.chinanews.com.cn/cj/2025/12-20/10537422.shtml)]
+- [2025.12] **智明堂ZMT-M1**在国家中医执业医师资格考试模拟测试中以96.26分获得该领域最佳成绩，已在全国100余间诊室试点应用 [[链接](https://m.tech.china.com/redian/2025/1229/122025_1789291.html)]
+- [2025.12] 广安门医院官网称广医·岐智取得国家级深度合成算法备案，并称是国内首家完成该项备案的中医院 [[链接](https://www.gamyy.cn/gzb/news/big/114632.html)]
+- [2025.12] 固生堂发布“中医大脑”及国医大师施杞教授AI数字分身，已累计发布14位顶级专家数字分身。八大专科出自另一则十大分身报道，本页未写 [[链接](https://www.jjckb.cn/20251231/693ca93b14ff4f57adc359959dc0320d/c.html)]
+- [2025.11.02] 北京科技大学新闻网称，2025年11月2日郑州大会上，学校联合郑州市卫健委、郑州市中医院和河南中医药大学数智中医药研究院发布岐黄针灸大模型，四诊采集后生成针灸处方。 [[链接](https://news.ustb.edu.cn/info/1087/72015.htm)]
+- [2025.11] 国家卫健委等五部门印发《关于促进和规范”人工智能+医疗卫生”应用发展的实施意见》，明确支撑建设中医药诊疗大模型 [[链接](https://www.gov.cn/zhengce/zhengceku/202511/content_7047018.htm)]
+- [2025.10.26] 中国经济网报道10月26日发布中西医结合高血压诊疗大模型Idiom-Hypertension，用于高血压规范管理 [[链接](https://www.ce.cn/cysc/yy/hydt/202510/t20251027_2541616.shtml)]
+- [2025.10.21] 科技日报报道CTA在中医药临床疗效评价大会发布，基于Qwen2.5-14B微调，面向临床试验方案、数据管理与统计 [[链接](https://www.stdaily.com/web/gdxw/2025-10/21/content_418966.html)]
+- [2025.09.18] 中原药谷基层中医药振兴工程下，**伊尹中医经典大模型**在嵩县发布启用，融合中医教育与AI辅助诊疗服务县域基层 [[链接](http://www.ha.xinhuanet.com/20250918/a3da94037689422dbcd1fe57fa62ef94/c.html)]
+- [2025.09.12] 广安门医院官网称，2025年9月12日服贸会论坛发布广医·岐智2.0，并推出AI医生安安，已出现在门诊导诊屏和预问诊界面。 [[链接](https://www.gamyy.cn/gzb/news/big/113898.html)]
+- [2025.09] **智赋岐黄天功**中医AI大模型通过国家深度合成服务算法备案，应用于中医四诊仪与体质辨识 [[链接](http://zs.scbzol.com/zs/2025/0919/328624.html)]
+- [2025.09] 页面受评对象是**传神素问**中医大模型，获得可信AI中医药大模型4+级；正文写它由传神语联基于任度大模型打造 [[链接](https://zhongyi.gmw.cn/2025-09/10/content_38277329.htm)]
+- [2025.09] 中国中医科学院官网称，2025年9月10日至14日服贸会上，其智能科学与工程技术研究中心展示大医金匮大语言模型与多轮问诊系统，以及舌诊仪和移动中医智能检测厅。 [[链接](https://www.cacms.ac.cn/news_dynamic/detail/5080.html)]
+- [2025.08.09] 国家超算天津中心联合天津中医药大学等发布**天河·灵枢**2.0，由针灸专科扩展至20余科；同步启动中医药智能模型评价体系 [[链接](http://tj.people.com.cn/n2/2025/0809/c375366-41317410.html)]
+- [2025.08.06] 湖北日报报道，2025年8月6日湖北中医药大学、湖北时珍实验室与传神语联签约，以传神·素问中医大模型开展产学研用合作。 [[链接](https://news.hubeidaily.net/mobile/c_4393128.html)]
+- [2025.08.01] **固生堂**正式发布十大“国医AI分身”，基于国医大师及名中医临床经验构建。页面写专家模拟一致性达86%以上，不是辨证准确率 [[链接](http://sz.people.com.cn/n2/2025/0801/c202846-41310443.html)]
+- [2025.07] 中国中医科学院广安门医院与多家医联体单位成立**广医·岐智大模型智能体联盟**，推进跨机构智能诊疗能力辐射 [[链接](https://www.gamyy.cn/gzb/news/big/112751.html)]
+- [2025.06.19] **中医横琴**垂类大模型正式发布 [[链接](https://www.stdaily.com/web/gdxw/2025-06/20/content_357526.html)]
+- [2025.06.18] 国家数据局收录成都中医药大学案例：用大模型对996册中医古籍做自动分词和实体识别，并基于ChatGLM-6B关联中医术语、构建穴位-脏腑等知识图谱。 [[链接](https://www.nda.gov.cn/sjj/ywpd/szkjyjcss/0618/20250618095629525611799_pc.html)]
+- [2025.06.06] 南京中医药大学人工智能与信息技术学院页面称，2025年6月6日发布灵山中医大模型（小杏仁）和素山中药大模型（素山智思体），分别服务中医临床教学科研和中药学教学科研。 [[链接](https://xxjs.njucm.edu.cn/2025/0529/c445a156198/pagem.htm)]
+- [2025.05.17] 四川在线5月17日报道，成都体育学院联合中科视语发布中医运动医学**寰枢**大模型与智能体，定位竞技体育、大众健康和科教场景，可生成运动处方和节气养生方案。这是2025年的发布报道，本页未核验权重或对外接口是否公开。 [[链接](https://sichuan.scol.com.cn/ggxw/202505/82968100.html)]
+- [2025.05.10] 北京中医药大学官网称，2025年5月10日发布薪火中国药智思体1.0，依托讯飞星火与DeepSeek，参数超700亿，面向助学、助教、助研、助管和国际合作。 [[链接](https://www.bucm.edu.cn/bzyyw/1c0b0fe535764fcc886c87b560caa0ee.htm)]
+- [2025.05.10] 中国中医科学院发布中医药大模型评测标准 [[链接](https://www.news.cn/politics/20250510/5e6a0b4978b44b69b67dbfb7282fd220/c.html)]
+- [2025.04.11] 凤凰网报道，2025年4月11日华为云生态大会上，九为健康发布基于盘古大模型的九为神农中医大模型智能体，覆盖药物研发、复方优化和辅助诊疗。 [[链接](https://biz.ifeng.com/c/8iTNRXVw44k)]
+- [2025.04] 传神语联发布**任度·素问**中医大模型，基于全自研混合熵(moH)技术架构，支持智能问诊、辨证分析、方剂推荐 [[链接](https://www.transn.com/about_us/consult/article/1924766101036437505)]
+- [2025.03.28] 中国中医科学院广安门医院28日正式发布**广医·岐智**中医大模型，成为国内首家本地化部署”算力+模型+应用”一体化服务的中医医院 [[链接](https://www.xinhuanet.com/tech/20250328/8b1685ad8c6f48c9bdc2add1658edac3/c.html)]
+- [2025.03.20] 国务院办公厅印发《关于提升中药质量促进中医药产业高质量发展的意见》（国办发〔2025〕11号，成文2025年3月15日，中国政府网国务院文件栏目发布日期2025年3月20日）。意见经国务院同意，从中药资源保护利用、中药材产业发展、产业转型升级、药品价值评估和配备使用、科技创新、质量监管、开放发展和综合保障等方面提出措施。产业升级部分提出推进中药工业数字化智能化发展，运用数智技术、绿色技术赋能全产业链，建设数字化车间和智能工厂；临床价值评估部分提出利用循证医学等手段，开发中医药临床疗效评价大模型，促进人用经验向临床证据转化；并支持特色优势医疗机构中药制剂依法调剂使用，鼓励建设基层共享中药房。本次打开了中国政府网官方全文页。这是国务院办公厅产业质量政策，不是单项产品发布。目录此前仅有福建省落实该意见的若干措施，未收本文件本身。 [[中国政府网](https://www.gov.cn/zhengce/zhengceku/202503/content_7014717.htm)]
+- [2025.03.13] 新华网报道，2025年3月13日南京中医药大学黄煌团队与杭州脉景健康发布黄煌经方AI辅助诊疗系统，用大语言模型与知识图谱把“方人相应”做成可计算诊疗流程。 [[链接](http://www.js.xinhuanet.com/20250314/aa816bb98d1041afa0fa7bca45583d1b/c.html)]
+- [2025.03] 云诊科技官网称，公司基于自研舌诊多模态模型TongueLMM和DeepSeek-R1发布云诊华医大模型，用于辨证论治、体质辨识和诊疗报告生成。 [[链接](https://www.ai-tongue.com/pages/news/2025/04/9a6f1920-4819-406e-8d1f-6ba0b838a7f8.html)]
+- [2025.01.08] 2025年1月8日，北京科技大学联合河南中医药大学发布张仲景中医药大模型1.0，功能包括智能辨证、证素推荐、经方应用和方药分析。 [[链接](https://news.ustb.edu.cn/info/1087/67760.htm)]
+
+</details>
+
+<details>
+<summary>2024 · 5</summary>
+
+- [2024.12] 招联消费金融联合中山大学、广州中医药大学深圳医院发布中医垂直大模型**仲思**，落地深圳多家社康中心智能问诊 [[链接](https://finance.sina.com.cn/jjxw/2024-12-16/doc-inczrzsp5791684.shtml)]
+- [2024.11] 华东师范大学、上海中医药大学、华东理工大学、海军军医大学、临港实验室和华润江中一起做了**数智岐黄**。1.0 在 2024 年 1 月 19 日发布。2024 年 11 月 25 日，他们在上海一场论坛上介绍了 2.0。 [[链接](https://pharm.ecnu.edu.cn/08/27/c43775a657447/page.htm)]
+- [2024.09] 中科闻歌发布**大医金匮**中医大模型及中医智能健康管理平台，基于1500余本中医典籍及海量临床医案训练 [[链接](https://36kr.com/newsflashes/2946967562099592)]
+- [2024.07.19] 两部门印发国中医药综发〔2024〕6号意见，推动中医药数字化转型，提出加强数据要素开发利用、打造中医药大模型和智慧服务应用。文件成文日期为2024年7月19日。 [[链接](http://www.natcm.gov.cn/bangongshi/zhengcewenjian/2024-08-14/34672.html)]
+- [2024.05.10] 天士力与华为云联合发布**数智本草**大模型，基于盘古语言与药物分子模型。 [[链接](https://www.taslypharma.com/tsl/40931.jhtml)]
+
+</details>
+
+<details>
+<summary>2023 · 1</summary>
+
+- [2023.07.29] 南京大经中医发布**岐黄问道·大模型**，基于千万级知识图谱与临床数据，面向医疗机构开放内测 [[链接](http://js.news.cn/20230729/fa034db71a00487b819a4ad95b44673e/c.html)]
+
+</details>
+
+
+</details>
+
+## 综述
+
+<details>
+<summary>95 篇，按年收着</summary>
+
+<details>
+<summary>2026 · 47</summary>
+
+- [*Frontiers in Pharmacology*] **Deng et al. 2026: 人工智能解码中药复方抗癌机制的进展、挑战与展望** 赣州市人民医院邓永康、娄宗泽、李国政、黄苗、吴桂华在 Frontiers in Pharmacology 发表叙述性综述，系统整理人工智能用于解码中药复方抗癌机制的近期工作，重点覆盖多味复方及其组合机制，包括机器学习筛选、深度学习活性预测、文献挖掘、网络药理学、分子对接与虚拟筛选，以及多组学整合，并讨论数据不标准、模型可解释性不足、外部验证不够以及中医理论与生物医学计算框架衔接困难等瓶颈。页面标注日期为2026年8月19日与2026年11月4日。本次打开了期刊官方全文页。这是综述，不是新模型发布。 [Ganzhou People's Hospital] [[论文](https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2026.1972299/full)] [[DOI](https://doi.org/10.3389/fphar.2026.1972299)]
+- [*Frontiers in Pharmacology*] **Huang 等：以代谢综合征为案例评估人工智能用于中医经典名方研发的技术成熟度** Huang、Jiang、Hu、Ye、Liu 等以代谢综合征为案例，回顾知识图谱、大语言模型和高通量验证三条技术线在中医经典名方精准研发中的就绪程度。作者引用《中医方剂大辞典》第二版约 99,584 个方名条目，并称 2013–2024 年国家药监局年均批准中药新药不足 10 个（合计 77 个）。文中评估知识图谱约处在技术成熟度等级（TRL）3–6，大语言模型约在 TRL 1–5，并指出三条技术线并不均衡。这是技术就绪度叙事综述，不是新药获批报告或疗效试验。本次打开了期刊全文页。 [中药经典名方现代化国家重点实验室，南昌大学第二附属医院江西省分子医学重点实验室，江西省科技基础条件平台中心江西省计算中心，江西中医药大学附属医院，中山大学深圳校区生物医学工程学院广东省传感技术与生物医学仪器重点实验室] [[DOI](https://doi.org/10.3389/fphar.2026.1970742)] [[论文](https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2026.1970742/full)]
+- [*Frontiers in Artificial Intelligence and Applications*] **Hu Ziquan：中医药院校学科群建设中的人工智能应用定量系统综述（2023–2025）** Hu Ziquan 在 IOS Press 丛书 Frontiers in Artificial Intelligence and Applications 第 433 卷《Digitalization and Management Innovation V》发表定量系统综述（第 730–743 页），纳入 2023–2025 年 372 篇同行评议文献（国际 98、国内 274），并用作者自建的 TI、RDI、IDI、CKII 等指数描述研究主题、区域差异与技术瓶颈。文中给出五类主题的 TI 值，并报告模型可解释性总体偏低（平均 IDI=0.72）、古典中医知识融入不足（平均 CKII=0.20）等作者计算结果。页面可见摘要，未见作者单位。这是机构与学科发展导向的定量综述，不是临床试验。本次打开了 IOS Press 电子书官方页面。 [[DOI](https://doi.org/10.3233/FAIA261138)] [[论文](https://ebooks.iospress.nl/doi/10.3233/FAIA261138)]
+- [*Guidelines and Standards of Chinese Medicine*] **Liu Changning、Zhang Xiaoduo、Shang Hongcai：数智技术驱动的循证中医药研究系统整合** Liu Changning、Zhang Xiaoduo、Shang Hongcai 通讯在《Guidelines and Standards of Chinese Medicine》2026 年 10 月 26 日优先发表综述，讨论循证中医药研究体系在方法与中医整体观不完全兼容、辨证主观性和疗效评价指标共识不足等问题，并综述大数据、人工智能和“互联网+”等数智技术在证据库建设、规范化临床研究设计和中药质量保障中的可能路径。这是标准与方法学综述，不是已部署系统的效果评价。本次打开了 Ovid 期刊官方页面，可见摘要与作者单位。 [北京中医药大学东直门医院教育部中医内科学重点实验室，广州中医药大学深圳市宝安中医院心内科，北京中医药大学东方医院] [[DOI](https://doi.org/10.1097/gscm.0000000000000131)] [[论文](https://www.ovid.com/jnls/gscm/fulltext/10.1097/gscm.0000000000000131~systematic-integration-of-evidence-based-traditional-chinese)]
+- [*Frontiers in Neurology*] **Huang 等：舌诊用于中风中医辨证的诊断准确性系统综述、荟萃分析与人工智能模型叙事综合** Huang、Yin、Shao、Jiang、Wang、Xu 按诊断试验准确性方法检索至 2026 年 2 月 23 日，纳入中国大陆 10 项研究、3,437 名受试者（人工舌诊 6 项 2,191 人，人工智能辅助 4 项 1,246 人），并在 PROSPERO 注册 CRD420261288502。作者明确警告证据确定性很低、金标准独立性得不到保证，因此把结果视为与既有证候分类流程的探索性一致，而不是已经临床验证的诊断准确性。人工智能部分按 SWiM 做叙事综合。本次打开了期刊全文页。 [安徽中医药大学针灸推拿学院，安徽中医药大学医药信息工程学院，安徽中医药大学第二附属医院，安徽中医药大学第一附属医院，皖北卫生职业学院临床医学系，安徽中医药大学第一临床医学院] [[DOI](https://doi.org/10.3389/fneur.2026.1874937)] [[论文](https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2026.1874937/full)]
+- [*Frontiers in Physiology*] **Li 等：2015–2026 年中医舌诊人工智能研究的文献计量综述** Li、Yang、Lin、Wang、Yan、Zheng、Xiang、Tang 对 2015 年 1 月至 2026 年 8 月 Web of Science 核心合集与 CNKI 中的中医舌诊人工智能文献做文献计量比较，纳入 482 篇（WoSCC 295、CNKI 187），并用 CiteSpace、VOSviewer 分析合作网络、关键词与突现主题。作者强调两个库需分开分析。这是研究格局综述，不是诊断准确性的临床验证。本次打开了期刊全文页。 [广州市干部和人才健康管理中心中医科，长沙医学院护理学院，中信湘雅生殖与遗传专科医院影像科 / 湖南省生殖与遗传临床研究中心] [[DOI](https://doi.org/10.3389/fphys.2026.1895902)] [[论文](https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2026.1895902/full)]
+- [*Frontiers in Medicine*] **Wang 等：人工智能舌象分析用于胃癌、癌前病变及相关胃肠疾病无创筛查的系统综述** Wang、Li、Zhang、Shao、Gao、Zhang 按 PRISMA 2020 检索至 2026 年 6 月 10 日，纳入 2018–2025 年 9 项用机器学习或深度学习分析数字舌象、并报告定量指标的研究，覆盖胃癌、胃黏膜癌前病变或高风险筛查及相关胃肠疾病。作者报告内部验证 AUC 约 0.61–0.99，但仅 3 项有外部验证且普遍出现性能下降，校准评估少见。结论把该方法定位为有前景、仍处早期的胃镜前辅助分层工具，而不是胃镜替代。PROSPERO 注册号 CRD420261444857。本次打开了期刊全文页。 [山东中医药大学第一临床医学院，山东中医药大学附属医院神经内二科] [[DOI](https://doi.org/10.3389/fmed.2026.1931256)] [[论文](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2026.1931256/full)]
+- [*Biomedical and Environmental Sciences*] **Jia 等：中西医结合视角下心血管疾病临床决策支持系统的双轨并行与融合创新综述** Jia、Zhang、Tong 等，Ma、Li、Zhang Huamin 通讯，在《生物医学与环境科学》2026 年 39 卷 9 期第 1115–1130 页综述心血管疾病临床决策支持系统，并专节讨论中医临床决策支持系统（TCM-CDSS）借助“理法方药”、名医经验和知识图谱，形成从辨证到推荐方药的闭环。文中称高血压相关研究已报告处方和血压方面的改善，但对主要心血管事件和死亡率的影响仍需进一步评价。这是综述，不是新系统的前瞻性临床试验。本次打开了 besjournal.com 官方论文页。官网可见收稿日期 2026-03-01、接受日期 2026-08-17、在线日期 2026-09-20。 [中国中医科学院中医基础理论研究所，中国中医科学院中医药信息研究所，中国中医科学院中医临床基础医学研究所，中国中医科学院中医药数据中心，北京中医药大学中医学院，中国中医科学院中药研究所] [[DOI](https://doi.org/10.3967/bes2026.094)] [[论文](https://www.besjournal.com/en/article/doi/10.3967/bes2026.094)]
+- [*集成技术*] **贺宇翔等 2026：人工智能驱动的中医药现代化：从经验范式到数据智能范式的转变** 深圳理工大学生物医学工程学院贺宇翔、唐若凝、尤志峰、张鹏，药学院冯志炜，医疗器械产业技术研究院李健，与中国科学院深圳先进技术研究院成文翔、柯丽青等在《集成技术》发表综述。张鹏另有山东中科先进技术有限公司署名。文章以“从经验范式到数据智能范式的转变”为主线，围绕中药物质基础解析、复方配伍优化、制药工程与产业转型、知识工程与大模型应用四个方向，讨论人工智能如何通过数据建模、跨模态融合与系统推理推动中医药研究走向数据驱动、证据约束和人机协同；同时指出各方向成熟度不均衡，以及可解释性、知识标准化和伦理治理方面的挑战。期刊元数据标注刊于2026年第15卷第5期第83–101页，发表日期2026-09-16，在线日期2026-06-15，DOI为10.12146/j.issn.2095-3135.20260517001。本次打开了期刊官方论文页，并核到可公开获取的官方PDF（许可标注为CC BY 3.0）。这是综述，不是新模型发布。 [深圳理工大学，中国科学院深圳先进技术研究院，山东中科先进技术有限公司] [[论文](https://jcjs.siat.ac.cn/article/doi/10.12146/j.issn.2095-3135.20260517001)] [[PDF](https://jcjs.siat.ac.cn/cn/article/pdf/preview/10.12146/j.issn.2095-3135.20260517001.pdf)] [[DOI](https://doi.org/10.12146/j.issn.2095-3135.20260517001)]
+- [*兰州大学学报(医学版)*] **从大语言模型到智能体（兰州大学学报医学版综述）** 以「大模型→智能体」演进为主线的中医临床辅助诊疗中文系统综述，梳理研究进展、关键问题与方向（兰州大学学报(医学版) 2026;52(4):49-57） [[DOI](https://doi.org/10.13885/j.issn.2097-681X.T20260032)]
+- **Agentic and Knowledge-Grounded LLMs in TCM（预注册）** 2026 年 7 月在 OSF 登记的综述计划，准备从证据图谱、文本挖掘和能不能用到临床上，看中医里的智能体和带知识的大模型。综述还在做。 [[预注册](https://doi.org/10.17605/osf.io/kq8jx)]
+- [*International Journal of Pattern Recognition and Artificial Intelligence*] **中医大模型关键技术综述（IJPRAI）** 系统综述中医大模型知识组织、辅助诊断与临床决策支持关键技术（World Scientific IJPRAI正式发表） [Guangdong Provincial Hospital of Traditional Chinese Medicine，Guangdong University Of Finances and Economics，Guangdong University of Finance] [[DOI](https://doi.org/10.1142/s0218001426590263)]
+- [*Journal of Traditional Chinese Medical Sciences*] **AI驱动中医诊断智能化综述（JTCMS）** 综述多模态融合与大模型在中医四诊智能化中的应用、挑战与展望（JTCMS正式发表） [暨南大学，北京中医药大学] [[DOI](https://doi.org/10.1016/j.jtcms.2026.05.002)]
+- [*Frontiers in Medicine*] **Nie et al. 2026: Artificial intelligence guided acupuncture decision making and treatment: a review of research** 长春中医药大学针灸推拿学院聂茹、邓凯月、何静、贾佳琳、王鸿烨、袁淑婷、李铁在 Frontiers in Medicine 发表综述，按临床流程回顾人工智能在针灸中的应用，覆盖穴位选择标准化、定位辅助、实时安全监测和个性化疗效预测四方面，并讨论现有工作与后续智能针灸系统发展建议。作者指出已有中医人工智能综述多为宽泛概览，较少直接对照针灸临床工作流。期刊页标注文章类型为 Review，在线 2026年4月13日、发表 2026年4月27日，刊于第13卷。本次打开了 Frontiers 官方全文页并下载了官方 PDF。这是综述，不是新模型发布。 [Changchun University of Chinese Medicine] [[论文](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2026.1752082/full)] [[PDF](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2026.1752082/pdf)] [[DOI](https://doi.org/10.3389/fmed.2026.1752082)]
+- [*Frontiers in Neurology*] **Chan et al. 2026: Integrating machine learning into acupuncture research: a scoping review** 中国医药大学针灸研究所与附属安南医院 Chan Wancy、Huang Guan-Jun、Huang Chien-Chen、Chen Yi-Hung 在 Frontiers in Neurology 发表范围综述（期刊页标注文章类型为 Systematic Review），梳理 2011–2024 年 PubMed 中针灸与机器学习交叉文献。作者纳入 36 篇，称 2019 年后明显增加、多数来自中国；17 篇关注疗效预测且以疼痛相关病种为主，其余涉及手法识别、处方推荐、穴位敏化与特异性、使用频次预测、经脉传导以及针刺机器人定位等。疗效预测研究中支持向量机最常用，11 项中有 7 项将磁共振成像作为特征，并以治疗应答分类为标签。作者认为预测表现整体积极，但样本量小、方法异质、数据类型不一和缺乏标准化数据集限制了可泛化性。期刊页标注在线 2025年12月22日、发表 2026年1月14日，刊于第16卷，文章号 1689061。本次打开了 Frontiers 官方全文页并下载了官方 PDF。这是综述，不是新模型发布。 [China Medical University，An Nan Hospital, China Medical University] [[论文](https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2025.1689061/full)] [[PDF](https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2025.1689061/pdf)] [[DOI](https://doi.org/10.3389/fneur.2025.1689061)]
+- [*上海中医药杂志*] **人工智能驱动下的中医智能诊疗研究进展与挑战** 以中医辨治六步程式为骨架的全链路（四诊-辨证-处方-疗效预测）中文综述，对照监督/无监督/强化/深度学习范式（上海中医药杂志 2026;60(1)） [[DOI](https://doi.org/10.16305/j.1007-1334.2026.z20250609004)]
+- [*Chinese Science Bulletin*] **面向临床的中西药联用安全性数智评价** 中西药联用的不良反应隐匿、机制复杂，且个体差异大。文章提出一条从智能预测、风险识别、机制验证到数智决策的评价路径，覆盖用药前预警和用药中识别。 [[DOI](https://doi.org/10.1360/csb-2026-0084)]
+- [*Communications in Computer and Information Science (Springer)*] **多模态大模型驱动舌脉面诊智能化综述（Springer 书章）** 唯一以「多模态LLM×四诊感知」为题的综述性文本，覆盖舌/脉/面诊智能化（Springer CCIS 会议书章，评审强度低于期刊） [Chinese Academy of Social Sciences，Institute of Ethnology and Anthropology，University of Chinese Academy of Social Sciences] [[DOI](https://doi.org/10.1007/978-981-95-7299-1_15)]
+- [*中华中医药学刊*] **人工智能赋能中医数字化诊断：现状与挑战（中华中医药学刊）** 短文，写人工智能在中医数字化诊断里能做什么，也写了数据质量、说得清说不清、以及和中医理论怎么接上。刊在《中华中医药学刊》。 [[DOI](https://doi.org/10.13193/j.issn.1673-7717.2026.01.004)]
+- [*Chinese Medicine*] **中医为何需要可解释人工智能** 认为中医人工智能的障碍不只是预测分数，而是数据驱动模型和证候、病机这类理论推理对不上，所以需要可解释性。 [[DOI](https://doi.org/10.1186/s13020-026-01455-4)]
+- [*Healthcare*] **东亚传统医学如何进入国际卫生信息标准** 范围综述：检索 2016 年 1 月至 2026 年 3 月的英文文献，看韩医、中医和汉方概念怎样映射进主流卫生信息标准。 [[DOI](https://doi.org/10.3390/healthcare14183011)]
+- [*Integrative Medicine Research*] **Yao et al. 2026: LLM 与循证中医整合（Scoping Review）** PRISMA scoping review，纳入 12 篇（2022-11 至 2026-01），覆盖 LLM 循证中医的证据生成、合成与转化 [University of Geneva，中国医学科学院，Gansu University of Traditional Chinese Medicine，Lanzhou University] [[DOI](https://doi.org/10.1016/j.imr.2026.101349)]
+- [*Journal of Pharmaceutical Analysis*] **Xu et al. 2026: 基于 LLM 的中医智能问答系统综述** 中医智能问答系统谱系综述（KG-QA→LLM-QA、RAG） [天津大学，Tianjin haihe hospital] [[DOI](https://doi.org/10.1016/j.jpha.2025.101406)]
+- [*Engineering*] **XiangShu Omics: A Framework Based on the Spatio–Temporal Field Rhythms of Human Life and Systems Intelligence Methodology** 这篇综述首次系统提出象数组学，并写道其大模型按理、法、方、药的经典治疗逻辑整合大语言模型，例如数智岐黄。 [[DOI](https://doi.org/10.1016/j.eng.2026.02.018)]
+- [*Artificial Intelligence Review*] **Wu et al. 2026: AI 在中药材中的应用综述** 中药学×AI 全栈 survey（成分、靶点、质控，含 LLM 一节） [Northeastern University，First Hospital of China Medical University，China Medical University，Liaoning University] [[DOI](https://doi.org/10.1007/s10462-026-11513-w)]
+- [*Medical Review*] **Wang et al. 2026: 重思中医大模型评测** 指出中医大模型评测仍缺少质量底线：未筛选古籍和网页语料可能含过时或禁用建议，单病例基准也不足以代表临床 [北京中医药大学] [[DOI](https://doi.org/10.1515/mr-2026-0006)]
+- [*Chinese Medicine*] **Wang et al. 2026: 人工智能在中医药研发中的发展与应用综述** 2026年1月8日发表于 Chinese Medicine 的综述，梳理人工智能在中药研发设计、制药过程与市场准入等环节的应用与局限，并讨论与新兴技术结合的方向。 [[DOI](https://doi.org/10.1186/s13020-025-01288-7)] [[论文](https://link.springer.com/article/10.1186/s13020-025-01288-7)]
+- [*Chinese Herbal Medicines*] **Sun et al. 2026: 生成模型在中医药中的进展与应用** 综述生成模型在中医药中的进展与应用 [[DOI](https://doi.org/10.1016/j.chmed.2026.08.013)]
+- [*Information*] **Lu et al. 2026: 深度学习中医诊断方法学质量审计** 系统综述+验证缺口分析：DL 中医疾病诊断研究的方法学质量与临床转化 [香港中文大学] [[DOI](https://doi.org/10.3390/info17060554)]
+- [*ACL 2026*] **LLM-Based Multi-Agent Systems for Clinical Workflows（ACL 2026，邻近）** 工作流级多智能体综述+四层评测栈（safety/process/outcome/operations）；无TCM交集但过程评测主张方法学同构（邻近） [Sanford Health，University of Massachusetts Lowell，University of Massachusetts Amherst] [[DOI](https://doi.org/10.18653/v1/2026.acl-long.2123)]
+- [*Chinese Medicine*] **Han et al. 2026: LLM 在中医中的调优与临床应用（Scoping Review）** PRISMA-ScR scoping review，纳入 27 篇（至 2025-05），聚焦 LoRA/CPT/RAG 调优配方与临床应用统计 [中国医学科学院，Jining Traditional Chinese Medicine Hospital，中国中医科学院，北京中医药大学] [[DOI](https://doi.org/10.1186/s13020-026-01346-8)]
+- [*Chinese Medicine*] **Guo et al. 2026: AI 与多模态数据融合推动中医现代化** AI 全景综述（ML/DL/KG/NLP/LLM），LLM 为一节，附多尺度数据资源与平台编目 [Ningbo College of Health Sciences，Shenzhen Second People's Hospital，Hunan University of Traditional Chinese Medicine] [[DOI](https://doi.org/10.1186/s13020-025-01194-y)]
+- [*Chinese Medicine and Culture*] **From Empirical Wisdom to Computational Intelligence: A Knowledge-Data Dual-Driven Paradigm for Modernizing Traditional Chinese Medicine** 该文提出知识与数据双驱动范式：用大规模知识图谱和中医专用大语言模型把隐性经验变成可计算结构，并把四诊数字化为多模态中医表型。 [[DOI](https://doi.org/10.1097/mc9.0000000000000198)]
+- [*Science of Traditional Chinese Medicine*] **Dong et al. 2026: 中医处方推荐计算方法综述** 综述从临床数据学习处方规律的计算方法，覆盖智能处方推荐如何支持中医临床决策 [南京中医药大学，北京交通大学] [[DOI](https://doi.org/10.1097/st9.0000000000000110)]
+- [*Journal of Integrative Medicine*] **Deep learning in TCM（J Integr Med）** 深度学习单技术线综述：医学影像、药材物质研究、数据挖掘等应用实例（J Integr Med 2026;24(4):471-480） [天津大学] [[DOI](https://doi.org/10.1016/j.joim.2026.03.001)]
+- [*OSF Registries*] **Cong H et al. 中医古籍知识挖掘范围综述（OSF 预注册）** 2026 年 4 月 15 日在 OSF 登记的一份范围综述计划，准备梳理知识图谱、大模型和两者结合的框架怎样从中医古籍里整理知识。综述还在做。 [[DOI](https://doi.org/10.17605/osf.io/5z367)]
+- [*Science of Traditional Chinese Medicine*] **Chen et al. 2026: LLM 在中医的下一步（叙述性综述）** 叙述性前瞻：多模态、Agent 与临床落地路线 [北京中医药大学] [[DOI](https://doi.org/10.1097/st9.0000000000000109)]
+- [*OSF Registries*] **Cai R et al. 中医辨证分类范围综述（OSF 预注册）** 2026 年 4 月 3 日在 OSF 登记的一份范围综述计划，准备梳理大模型怎样做中医辨证、证素和辨证推理，并按 PRISMA-ScR 来写。综述还在做。 [[DOI](https://doi.org/10.17605/osf.io/2hyeq)]
+- [*Intelligence-Based Medicine*] **Artificial intelligence: A catalyst for the modernization of traditional Chinese medicine** 这篇范围综述检索PubMed、Web of Science和中国知网截至2025年的文献，并写道深度学习和大语言模型在舌象分析与辨证上表现有前景，部分研究接近专家水平。 [[DOI](https://doi.org/10.1016/j.ibmed.2026.100415)]
+- [*Journal of Advanced Research*] **AI-driven multi-scale target analysis of traditional Chinese medicine: From the pharmacological effects of single compounds to the synergistic mechanisms of formulae** 这篇中药多尺度靶点分析综述把研发面向中医的专用大语言模型列为未来方向，用来解码中药的药理逻辑。 [[DOI](https://doi.org/10.1016/j.jare.2026.03.050)]
+- [*Pharmacological Research - Modern Chinese Medicine*] **AI in TCM: multimodal data to pharmacology and clinical decision（PRMCM 综述）** 一篇英文综述，从多模态数据、药理研究写到临床决策。2026 年发表在 Pharmacological Research - Modern Chinese Medicine。 [Saveetha University] [[DOI](https://doi.org/10.1016/j.prmcm.2026.100842)]
+- [*Research*] **AI in TCM: Unraveling Herbal Medicine's Mechanisms（Research）** 主张AI从相关分析范式走向重建证候辨证与方剂配伍生物逻辑的药材机制中心宽口径综述（Research 2026;9:1224） [Zhejiang Chinese Medical University] [[DOI](https://doi.org/10.34133/research.1224)]
+- [*Journal of Integrative Medicine*] **AI empowers the innovation of TCM（J Integr Med 评论）** 单作者评论性综述：古籍挖掘、诊疗标准化、药物研发周期三痛点×AI（J Integr Med 2026） [上海中医药大学] [[DOI](https://doi.org/10.1016/j.joim.2026.05.004)]
+- [*Chinese Medicine and Culture*] **AI and Big Data in TCM Standardization and Internationalization（Chin Med Cult）** 谈人工智能和大数据怎样帮助中医做标准化、走到国际上去。刊在 Chinese Medicine and Culture 2026 年第 9 卷第 3 期。 [南洋理工大学] [[DOI](https://doi.org/10.1097/mc9.0000000000000203)]
+- [*Science of Traditional Chinese Medicine*] **2026: 面向中医药证据知情决策的数字智能循证** 讨论如何用数字智能循证方法，把辨证论治推进到证据知情的中医药决策 [兰州大学，University of Geneva] [[DOI](https://doi.org/10.1097/st9.0000000000000105)]
+- [*Science of Traditional Chinese Medicine*] **2026: 数字化与智能化时代的中医药机遇与挑战** 从专家系统到深度学习和大语言模型，讨论数字化、智能化给中医药带来的机遇与挑战 [中国中医科学院] [[DOI](https://doi.org/10.1097/st9.0000000000000102)]
+- [*Digital Chinese Medicine*] **2026: 中医智能诊断的跨学科融合与发展趋势** 讨论中医智能诊断的跨学科融合与发展趋势 [[DOI](https://doi.org/10.1016/j.dcmed.2026.02.001)]
+
+</details>
+
+<details>
+<summary>2025 · 29</summary>
+
+- [*Frontiers in Medicine*] **Hou et al. 2025: Artificial intelligence in acupuncture: bridging traditional knowledge and precision integrative medicine** 辽宁中医药大学针灸推拿学院侯国梁、董宝强、于本祥、戴建宇、林星星、程泽忠在 Frontiers in Medicine 发表综述，整理人工智能用于针灸疗效预测及相关技术的进展，覆盖深度学习、元分析建模、自然语言处理、计算机视觉和神经影像分析等，并举卷积神经网络用于舌象分类与证型识别、基于 Transformer 的模型从经典文献中自动抽取临床知识等例子。作者讨论数据有限且异质、标注不一致和临床验证不足，并建议建设联邦多模态数据平台、可解释框架和开放科学实践。期刊页标注文章类型为 Review，在线 2025年7月15日、发表 2025年7月31日，刊于第12卷。本次打开了 Frontiers 官方全文页并下载了官方 PDF。这是综述，不是新模型发布。 [Liaoning University of Traditional Chinese Medicine] [[论文](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2025.1633416/full)] [[PDF](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2025.1633416/pdf)] [[DOI](https://doi.org/10.3389/fmed.2025.1633416)]
+- [*协和医学杂志*] **陈子佳 et al. 2025: 大语言模型在中医药领域的应用、挑战与前景** 综述大语言模型与中医四诊合参、辨证诊疗和复方研究的结合，并讨论价值风险、可解释性、技术短板与政策准入等挑战。 [中国中医科学院] [[DOI](https://doi.org/10.12290/xhyxzz.2024-0315)] [[论文](https://xhyxzz.pumch.cn/article/doi/10.12290/xhyxzz.2024-0315)]
+- [*Pharmaceuticals*] **评估药物–草药相互作用的人工智能工具** 综述用人工智能模型评估药物和草药相互作用的工具。 [[DOI](https://doi.org/10.3390/ph18030282)]
+- [*iScience*] **计算机辅助穴位定位系统综述** 系统综述用传统算法和深度学习在不同解剖区域做穴位定位的研究，并讨论效果和限制。 [[DOI](https://doi.org/10.1016/j.isci.2025.113708)]
+- [*Chinese Medicine*] **肿瘤治疗中的草药–化学药相互作用** 综述肿瘤患者联用草药和抗癌药时的相互作用，包括药效、药代机制和风险预测。 [[DOI](https://doi.org/10.1186/s13020-025-01156-4)]
+- [*Chinese Medicine*] **深度学习穴位定位综述** 按身体部位、网络结构、定位策略和图像模态，综述深度学习穴位定位的数据集、指标和适用场景。 [[DOI](https://doi.org/10.1186/s13020-025-01173-3)]
+- [*中华中医药学刊*] **杨乐乐 et al. 2025: 大语言模型在中医药领域的应用展望思考** 梳理医学大语言模型发展脉络，展望其在中医药研究、知识挖掘与辅助诊疗中的应用，并讨论风险、对策与发展方向。 [中国中医科学院中医药信息研究所，Leipzig University] [[DOI](https://doi.org/10.13193/j.issn.1673-7717.2025.02.004)]
+- [*中华中医药学刊*] **叶桦 et al. 2025: 大语言模型赋能中医药传承：前沿进展与应用展望** 2025年11月11日网络首发的中文综述，系统梳理大语言模型在中医药数据挖掘、临床辅助决策与文化传承中的研究进展、挑战与展望。期刊页未提供DOI。 [成都中医药大学智能医学学院，成都中医药大学基础医学院] [[论文](https://zyhs.cbpt.cnki.net/portal/journal/portal/client/paper/3e19461f3fb08c22b2659ea83eb41d5a)]
+- [*Chinese Medicine*] **古籍知识图谱×多智能体融合综述（Chin Med）** 古籍KG构建（术语统一、数据标准化）挑战-展望型综述，首次把multi-agent写入中医古籍议题（Chin Med 2025;20:168） [北京大学] [[DOI](https://doi.org/10.1186/s13020-025-01226-7)]
+- [*智能系统学报*] **医疗领域的大型语言模型综述（智能系统学报，邻近）** 中文医疗LLM通用综述（训练流程/策略/场景/挑战），与中医LLM综述圈属母子集关系（邻近） [[DOI](https://doi.org/10.11992/tis.202405003)]
+- [*智能系统学报*] **医学大语言模型的研发与应用系统综述（智能系统学报，邻近）** 系统综述129个医学专用LLM（截至2024-06）+4类临床应用研究；系统检索协议方法学可比（邻近） [[DOI](https://doi.org/10.11992/tis.202410020)]
+- [*上海中医药杂志*] **刘嘉艺 et al. 2025: 生成式人工智能在中医药标准化研究中的应用前景与挑战** 综述生成式人工智能在中医药健康服务、质量提升、信息管理与智能诊疗等标准化相关场景中的应用现状、前景与挑战。 [兰州大学，中国中医科学院中医临床基础医学研究所，广东省中医院] [[DOI](https://doi.org/10.16305/j.1007-1334.2025.z20241121005)] [[论文](https://shzyyzz.shzyyzz.com/zh/article/doi/10.16305/j.1007-1334.2025.z20241121005/)]
+- [*中华中医药学刊*] **人工智能实现中医四诊的发展现状、问题及解决路径（中华中医药学刊）** 从望、闻、问、切看人工智能做中医四诊走到哪。望诊用摄像头拍面、舌、舌下、唇和眼睛，结合分割和颜色模型做量化；闻诊采集异常声音和气味，用神经网络和电子鼻做分析。刊在《中华中医药学刊》2025年第43卷第11期。 [[论文](https://www.sinomed.ac.cn/article.do?ui=2026106036)]
+- [*AI Medicine*] **Zhang et al. 2025: 中医 LLM 短综述与展望** 短 survey+展望，TCM LLM 模型与任务速览 [Northeastern University] [[DOI](https://doi.org/10.53941/aim.2025.100003)]
+- [*Journal of Evidence-Based Medicine*] **Yip et al. 2025: 中西医结合 LLM 进展与挑战** 综述：LLM 在整合医学（中西医结合）中的进展、挑战与机遇 [Hong Kong Baptist University，Guangdong-Hongkong-Macau Joint Laboratory of Collaborative Innovation for Environmental Quality] [[DOI](https://doi.org/10.1111/jebm.70031)]
+- [*Acta Materia Medica*] **Yin et al. 2025: 数据挖掘、大模型与多模态融合的中医AI综述** 从数据挖掘、大语言模型和多模态融合三条线综述人工智能如何解析中药复方的多成分、多靶点机制 [浙江大学] [[DOI](https://doi.org/10.15212/amm-2025-0045)]
+- [*American Journal of Chinese Medicine*] **Wang et al. 2025: AI 驱动中医诊断模型进展** 综述：AI 诊断模型（四诊客观化、辨证） [清华大学，南京大学] [[DOI](https://doi.org/10.1142/S0192415X25500259)]
+- [*Journal of Pharmaceutical Analysis*] **The integration of machine learning into TCM（J Pharm Anal）** 机器学习×中医整合综述：诊断客观化与机制阐释两条线（J Pharm Anal 2025;15(8):101157） [Hangzhou Normal University] [[DOI](https://doi.org/10.1016/j.jpha.2024.101157)]
+- [*American Journal of Chinese Medicine*] **Shataer et al. 2025: LLM 在中医应用（State-of-the-Art Review）** 叙述性综述，扫描 TCM LLM 应用场景（诊疗、教育、翻译、科研） [Centre for Intelligent Healthcare, Coventry University, Coventry CV1 5RW, UK] [[DOI](https://doi.org/10.1142/S0192415X25500375)]
+- [*Journal of Evidence-Based Medicine*] **Ren et al. 2025: 中医大语言模型（Scoping Review）** Arksey–O'Malley scoping review，纳入 29 篇（至 2024-04），覆盖知识管理、辅助诊疗与考试准确率 [成都中医药大学，中国医学科学院，Institute of Health Data Science Lanzhou University Lanzhou China，Institute of Global Health University of Geneva Geneva Switzerland] [[DOI](https://doi.org/10.1111/jebm.12658)]
+- [*Pharmacological Research*] **Meng et al. 2025: 大模型+虚拟细胞助力中医变革** 综述：大模型与虚拟细胞用于中风方药现代分析 [Northeastern University，Shenyang Medical College] [[DOI](https://doi.org/10.1016/j.phrs.2025.107953)]
+- [*Science of Traditional Chinese Medicine*] **Liu et al. 2025: 网络药理学推动大模型用于中医药研究** 综述网络药理学如何把药物—靶点—疾病网络与大语言模型结合起来，解释中药复方的多靶点机制 [清华大学] [[DOI](https://doi.org/10.1097/st9.0000000000000073)]
+- [*Healthcare*] **Intelligent Question-Answering Systems in Healthcare（Healthcare，邻近）** 2018-2025医疗QA综述+CiteSpace计量，明确含中医方剂开发应用场景（邻近综述，非TCM专用） [Beijing Information Science & Technology University] [[DOI](https://doi.org/10.3390/healthcare13182269)]
+- [*Journal of Evidence-Based Medicine*] **Guo et al. 2025: GPT 能否加速中医智能诊疗（综述+实证）** 综述+实证分析，讨论 GPT 适配中医诊疗的挑战与幻觉问题 [Xiyuan Hospital China Academy of Chinese Medicinal Sciences Beijing China，北京大学] [[DOI](https://doi.org/10.1111/jebm.70004)]
+- [*Asia-pacific Journal of Convergent Research Interchange*] **Domestic and International Research Trends in Artificial Intelligence Applications in Korean Medicine: An Analysis from 2019 to 2025** 作者系统回顾了2019至2025年23项韩医人工智能研究（国内10篇、国际13篇），并指出近期工作越来越多使用大语言模型和其他生成式人工智能。 [[DOI](https://doi.org/10.47116/apjcri.2025.11.02)]
+- [*Acupuncture and Herbal Medicine*] **Chen et al. 2025: 中医大语言模型系统综述** 系统综述，纳入 10 篇（至 2024 年中），聚焦生成任务证据 [天津大学，现代中药海河实验室，Italian National Institute of Health, Rome, Italy] [[DOI](https://doi.org/10.1097/HM9.0000000000000143)]
+- [*Current Medical Science*] **Artificial Intelligence in Traditional Chinese Medicine: Multimodal Fusion and Machine Learning for Enhanced Diagnosis and Treatment Efficacy** 综述人工智能在中医诊断和治疗中的多模态融合与机器学习。 [[DOI](https://doi.org/10.1007/s11596-025-00103-6)]
+- [*MedComm – Future Medicine*] **Artificial Intelligence in Traditional Chinese Medicine: Bridging Ancient Practice and Future Innovation** 该综述按“构建—应用—挑战—展望”分析中医大模型，并指出Qibo和MedChatZH等系统已经出现，但此前综述缺少对共同特征的综合分析。 [[DOI](https://doi.org/10.1002/mef2.70042)]
+- [*Current Medical Science*] **AI for Spleen-Stomach Disorders in TCM（Curr Med Sci）** 单病种（脾胃病）KG+智能诊疗综述：「症状-证候-疾病-方剂」框架的知识工程化（Curr Med Sci 2025;45(6):1348-1357） [Hubei University of Chinese Medicine，Hubei Provincial Hospital of Traditional Chinese Medicine，Hospital Conde S. Januário，Union Hospital] [[DOI](https://doi.org/10.1007/s11596-025-00128-x)]
+
+</details>
+
+<details>
+<summary>2024 · 7</summary>
+
+- [*Engineering*] **系统论框架下整合人工智能与中医药整体物质基础研究（框架综述）** 曾敬其、贾晓斌通讯。发表于 Engineering 2024 年 40 卷第 9 期的框架性综述，提出用系统功能解码模型（SFDM）把人工智能接到中医药整体物质基础研究，整理自上而下五个维度与自下而上的要素—结构—功能路径，并展望“组分-证候”端到端模型与口服制剂 IVIVC 机理模型。这不是系统评价，两种技术方案在本文中没有实现和定量评测。许可为 CC BY-NC-ND 4.0。中文正式本 25 页。 [中国药科大学中药学院，中国药科大学天然药物活性组分与药效国家重点实验室] [[DOI](https://doi.org/10.1016/j.eng.2024.04.009)] [[论文](https://www.engineering.org.cn/engi/CN/10.1016/j.eng.2024.04.009)]
+- [*中草药*] **萧文科 et al. 2024: 中医药大语言模型的关键技术与构建策略** 专论梳理中医药大模型的数据存储与处理、RAG、MoE、RLHF、知识蒸馏及训练评测方法，并提出面向中医药数据特点的构建策略与应用场景。 [成都中医药大学] [[DOI](https://doi.org/10.7501/j.issn.0253-2670.2024.17.001)] [[论文](http://www.tiprpress.com/zcy/article/pdf/20241701)]
+- [*计算机工程与应用*] **苏尤丽 et al. 2024: 人工智能在中医诊疗领域的研究综述** 中文综述：专家系统→机器学习→深度学习三阶段中医 AI 诊疗发展与挑战 [[DOI](https://doi.org/10.3778/j.issn.1002-8331.2312-0400)]
+- [*南京中医药大学学报*] **李欣桐 et al. 2024: 中医药领域大语言模型的研究进展与应用前景** 中文综述：中医药 LLM 研究过程、前沿技术（提示工程/RAG/RLHF）与应用前景 [[DOI](https://doi.org/10.14148/j.issn.1672-0482.2024.1393)]
+- [*Computers in Biology and Medicine*] **Tian et al. 2024: 四诊机器学习综述** 望闻问切四诊的 ML 传感与模型综述 [Northeastern University，Ningbo University，辽宁中医药大学] [[DOI](https://doi.org/10.1016/j.compbiomed.2024.108074)]
+- [*中国工程科学*] **Song et al. 2024: AI 辅助中医辨证关键问题与技术挑战** 战略研究综述：多模态数据融合、症状关联、证候量化与推理及中医药大模型关键问题 [Shanghai University of Engineering Science，Digital China Health (China)，Zhejiang Lab，中国医学科学院] [[DOI](https://doi.org/10.15302/J-SSCAE-2024.02.010)]
+- [*Computer Materials & Continua*] **Qu et al. 2024: 中医知识图谱综述** 中医知识图谱的分析、构建、应用与展望 [中国医学科学院，Beijing Forestry University] [[DOI](https://doi.org/10.32604/cmc.2024.055671)]
+
+</details>
+
+<details>
+<summary>2023 · 3</summary>
+
+- [*Chinese Medicine*] **中医药与天然产物中的机器学习：现状与展望** Ma、Liu、Li 共同第一，Li 与 Wang 通讯。这是发表于 Chinese Medicine 的叙述性综述，回顾中医药与天然产物研究中的机器学习，介绍团队的冠心病证素模型，并提出把机器学习、中医理论和计算生物学结合起来的展望。不是系统评价，表中准确率来自被引文献。未见新代码或新数据。许可为 CC BY 4.0。 [中国中医科学院广安门医院，天津中医药大学] [[DOI](https://doi.org/10.1186/s13020-023-00741-9)] [[论文](https://cmjournal.biomedcentral.com/articles/10.1186/s13020-023-00741-9)]
+- [*Annals of Translational Medicine*] **中医四诊人工智能研究现状与趋势的科学计量研究** Tian、Hongwu Wang 通讯等。发表于 Annals of Translational Medicine 2023 年 11 卷第 3 期的科学计量研究，用 Web of Science、VOSviewer 和 CiteSpace 分析中医四诊人工智能文献。正文写 2007–2022 年 136 篇有效研究，不是系统评价，也没有 PRISMA。许可为 CC BY-NC-ND 4.0。正式本 16 页，DOI 10.21037/atm-22-6431。与本站已有 surv-tian2024 不是同一篇。 [天津中医药大学健康科学与工程学院，华北理工大学中医学院，南京中医药大学研究生院，南京中医药大学附属医院高血压研究所] [[DOI](https://doi.org/10.21037/atm-22-6431)] [[论文](https://atm.amegroups.org/article/view/109099)]
+- [*Current Opinion in Structural Biology*] **中药计算毒性研究小综述** 综述用计算方法研究中药毒性的工作。 [[DOI](https://doi.org/10.1016/j.sbi.2023.102588)]
+
+</details>
+
+<details>
+<summary>2022 · 1</summary>
+
+- [*Frontiers in Pharmacology*] **人工智能在补充替代医学中的应用：系统性范围综述** Chu、Youn 通讯等按 JBI 和 PRISMA-ScR 梳理人工智能在补充替代医学中的应用，检索三个英文库，终选 32 篇，主要涉及针灸、舌唇诊和草药。这是系统性范围综述，不是元分析。正文、流程图和表 1 的计数不完全一致。未见新代码或新数据。许可为 CC BY。 [仁川 Daecheong Public Health Subcenter，庆熙大学研究生院，圆光大学韩医学院，韩国韩医药振兴院，庆熙大学韩医学院预防医学科] [[DOI](https://doi.org/10.3389/fphar.2022.826044)] [[论文](https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2022.826044/full)]
+
+</details>
+
+<details>
+<summary>2021 · 2</summary>
+
+- [*Frontiers in Pharmacology*] **人工智能、深度学习与云计算用于中西医诊治类风湿关节炎** Wang、Hou 共同第一，Zhang 与 Wang 通讯。这是发表于 Frontiers in Pharmacology 的叙述性综述，讨论人工智能、深度学习和云计算在传统医学与西医诊治类风湿关节炎中的应用设想，并给出概念模型。不是系统评价，也不是已实现的诊疗系统。未见新代码或新数据。许可为 CC BY。 [成都中医药大学民族医药学院，成都中医药大学药学院，成都市第二人民医院，西南特色中药资源国家重点实验室，成都中医药大学中医药创新研究院] [[DOI](https://doi.org/10.3389/fphar.2021.765435)] [[论文](https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2021.765435/full)]
+- [*Computers in Biology and Medicine*] **Zhang et al. 2021: 计算中医诊断文献综述** 计算化中医诊断的文献综述（症状采集、辨证建模与系统） [澳门大学] [[DOI](https://doi.org/10.1016/j.compbiomed.2021.104358)]
+
+</details>
+
+<details>
+<summary>2020 · 1</summary>
+
+- [*Artificial Intelligence in Medicine*] **Chu et al. 2020: 中医定量知识表示模型综述** 中医知识定量表示模型（本体、规则、统计）综述 [Xidian University，Xi'an Polytechnic University，Guangdong Polytechnic Normal University，CM Hospital] [[DOI](https://doi.org/10.1016/j.artmed.2020.101810)]
+
+</details>
+
+<details>
+<summary>2019 · 1</summary>
+
+- [*Engineering*] **中药安全性研究：方法、应用与展望** 综述中药不良反应为何难研究：成分复杂，药物和机体的相互作用也难事先判断，和化学药、生物药的毒性研究不是同一类问题。 [[DOI](https://doi.org/10.1016/j.eng.2018.11.019)]
+
+</details>
+
+<details>
+<summary>2018 · 1</summary>
+
+- [*Journal of Clinical and Translational Hepatology*] **中药肝损伤与药物性肝损伤的比较（叙述性综述）** Jing 与 Teschke 通讯。2018 年发表于 Journal of Clinical and Translational Hepatology 的叙述性综述，比较中药／草药性肝损伤与化学药物性肝损伤的流行病学、临床特征和 RUCAM 分级。不是系统评价，主要比较表转述既有队列。摘要与表 4、正文与表 6／图 2 存在文字和数字冲突。许可为 CC BY-NC 4.0。 [中国人民解放军医学院，解放军第302医院整合医学中心，哈瑙医院内科II消化与肝病科（歌德大学教学医院）] [[DOI](https://doi.org/10.14218/JCTH.2017.00033)] [[论文](https://www.xiahepublishing.com/ArticleFullText.aspx?sid=2&jid=1&id=10.14218%2fJCTH.2017.00033)]
+
+</details>
+
+<details>
+<summary>2015 · 1</summary>
+
+- [*Evidence-Based Complementary and Alternative Medicine*] **Zhao et al. 2015: 中医患者分类进展（ML 视角）** ML 驱动的中医病人/证候分类综述 [同济大学] [[DOI](https://doi.org/10.1155/2015/376716)]
+
+</details>
+
+<details>
+<summary>2013 · 1</summary>
+
+- [*Briefings in Bioinformatics*] **Gu & Chen 2013: 生物信息学遇见中医** 生物信息学×中医（组学、文本挖掘）历史综述 [浙江大学] [[DOI](https://doi.org/10.1093/bib/bbt063)]
+
+</details>
+
+<details>
+<summary>2007 · 1</summary>
+
+- [*Computer Methods and Programs in Biomedicine*] **Lukman et al. 2007: 中医计算方法综述** 计算方法（专家系统、ML、数据挖掘）全景，中医计算研究的方法学鼻祖 [University of Cambridge，University of Reading，南洋理工大学] [[DOI](https://doi.org/10.1016/j.cmpb.2007.09.008)]
+
+</details>
+
+
+</details>
+
+## 专利
+
+收中医大模型、知识图谱、RAG、智能问诊与处方推荐等系统专利，不限中国；不收中药组方、制剂专利全集。
+
+<details>
+<summary>73 件，按公开年收着</summary>
+
+<details>
+<summary>2026 · 33</summary>
+
+- [*CN122531762A*] **基于生成式模拟医案构建的定制化中医处方推荐大模型** 用规则引擎穷举结构化中医特征，再由大语言模型写成模拟医案，并微调得到定制化处方推荐大模型（公开，未授权） [北京中医药大学] [[专利](https://patents.google.com/patent/CN122531762A/zh)]
+- [*CN122529089A*] **基于大语言模型的中医对话生成方法及装置** 用长期记忆库与用户画像生成个性化中医对话（公开，未授权） [杭州旺柴科技] [[专利](https://patents.google.com/patent/CN122529089A/zh)]
+- [*CN122508432A*] **一种面向中医药知识图谱的综合质量评估方法** 把小样本送入中医药微调大语言模型，做知识图谱质量预评估（公开，未授权） [湖北省标准化与质量研究院] [[专利](https://patents.google.com/patent/CN122508432A/zh)]
+- [*CN122599028A*] **一种基于AI大模型的中医天地岁人四维辨证辅助诊疗系统** 结合多部位多压力脉象、时序节律编码与体质识别，生成中药和经络穴位推荐。2026年8月18日公开；原页显示Pending，仅为技术方案公开。 [Gaobele Biotech Guangzhou Co ltd] [[专利](https://patents.google.com/patent/CN122599028A/zh)]
+- [*CN122436154A*] **张锡纯中医理法方药数字化传承与智能分析系统** 辨病辨证规则 + 三路检索 + LLM 融合，做张锡纯学派理法方药分析（公开，未授权） [广州知云草堂医疗科技] [[专利](https://eureka.patsnap.com/patent/CN122436154A)]
+- [*CN122436116A*] **基于知识图谱与大语言模型的脾胃学派理法方药分析系统** 融合脾胃学派知识图谱、向量检索与大语言模型，完成选方验证、安全校验和处方生成（公开，未授权） [广州智韵草堂医学科技有限公司] [[专利](https://patents.google.com/patent/CN122436116A/zh)]
+- [*CN122436251A*] **一种融合时空特征的针灸推理模型构建方法、系统及设备** 对齐四诊与病程的时空特征，检索历史针灸方案后，用微调大模型和思维链做针灸推理并三维展示（公开，未授权） [北京科技大学] [[专利](https://patents.google.com/patent/CN122436251A/zh)]
+- [*CN121436110B*] **一种基于知识图谱的中医垂域大模型的训练方法** 以证候—症状词库、易混元组和上下文消歧整理预训练语料。A公开页时间线显示2026年7月31日授权并公布B文本；B正文此次未取得，技术摘要依据A公开文本。 [Daan Health Technology Beijing Co ltd] [[授权](https://patents.google.com/patent/CN121436110B/zh)] [[公开](https://patents.google.com/patent/CN121436110A/zh)]
+- [*CN122364665A*] **一种基于大语言模型的中医古籍症状标准化处理方法** 用大语言模型从中医古籍切片识别候选症状，并映射到标准症状语义场完成术语标准化（公开，未授权） [黑龙江中医药大学] [[专利](https://patents.google.com/patent/CN122364665A/zh)]
+- [*CN122135923A*] **辅助诊断结果和参考处方生成方法、装置、介质及计算机设备** 病历和诊疗思路各走向量与文本两路，四路召回后融合排序，由大模型生成中医诊断、证型、西医诊断和中药处方。2026年6月2日公开，尚未授权。 [浙江固生智能科技有限公司] [[专利](https://eureka.patsnap.com/patent/CN122135923A)]
+- [*CN122245713A*] **基于大语言模型的中医智能问诊方法及系统** 从多模态问诊数据解析问诊意图，再用双路径检索中医知识，生成问诊结果（公开，未授权） [深圳市蓝宇飞扬科技有限公司] [[专利](https://patents.google.com/patent/CN122245713A/zh)]
+- [*CN120913881B*] **基于多模态中医大语言模型的数据分析方法、系统、终端及介质** 用舌象、语音和问诊文本训练多模态中医大模型，输出初步中医分析。2026年6月12日授权。 [深圳心语心言智能技术有限公司] [[专利](https://eureka.patsnap.com/patent/CN120913881B)]
+- [*CN122135936A*] **一种面向中医方剂推荐的知识图谱大模型问答方法及系统** 用中文指令大语言模型编码病历语义，与动态中医知识图谱的图向量做门控融合，推荐方剂并生成问答结果（公开，未授权） [北京科技大学] [[专利](https://patents.google.com/patent/CN122135936A/zh)]
+- [*CN122025029A*] **融合类别信息与LLM的因果驱动对比学习与图注意力的中药处方推荐方法** 症状-草药异构/同构图 + LLM 增强因果机制做处方推荐（公开，未授权） [湖州师范学院] [[专利](https://eureka.patsnap.com/patent/CN122025029A)]
+- [*CN122050861A*] **基于大模型结合双通道检索的中医智慧诊疗平台构建方法** LLM+中医知识图谱双通道检索，面向名医经验传承与处方生成（公开，未授权） [上海中医药大学附属岳阳中西医结合医院，上海市皮肤病医院] [[专利](https://patents.google.com/patent/CN122050861A/zh)]
+- [*CN120913769B*] **基于多模态大模型的中医舌诊药饮推荐方法** 用大模型根据舌象生成病症描述并推荐药饮。2025年11月7日公开，2026年5月29日授权。 [天大智图（天津）科技有限公司，桂林电子科技大学] [[专利](https://patents.google.com/patent/CN120913769B/zh)]
+- [*CN122117314A*] **一种基于大语言模型的智能针灸诊断Agent系统及诊断方法** 针灸知识库 + 图谱 + 向量检索 + 重排序，LLM 智能体分类问题并主动追问（公开，未授权） [河南工业大学] [[专利](https://eureka.patsnap.com/patent/CN122117314A)]
+- [*CN121436111B*] **一种基于多模态数据融合的中医智能辨证模型训练系统及方法** 通过症状链、证候要素评分、证型逻辑组合与矛盾检测组织辨证推理。2026年5月15日授权，Google Patents显示Active；其权利要求侧重结构化推理，未据此认定公开了LLM权重。 [Daan Health Technology Beijing Co ltd] [[专利](https://patents.google.com/patent/CN121436111B/zh)]
+- [*CN122091073A*] **一种基于多任务联合优化的中药处方生成方法与装置** 预训练大模型做自回归处方序列 + 草药集合预测，照顾低频药（公开，未授权） [杭州电子科技大学] [[专利](https://eureka.patsnap.com/patent/CN122091073A)]
+- [*CN122050683A*] **一种基于图注意力网络与大语言模型的中药处方生成方法** 把中药处方生成转为多标签分类，用图注意力网络和大语言模型建模药物协同与禁忌。2026年5月15日公开。 [杭州市第一人民医院（西湖大学附属杭州市第一人民医院）] [[专利](https://patents.google.com/patent/CN122050683A/zh)]
+- [*CN121862376A*] **基于知识图谱和大语言模型的中医辨证问答系统及方法** 古籍/医案分块抽实体建图谱，再按局部与全局关键词检索生成辨证问答（公开，未授权） [南京邮电大学] [[专利](https://patents.google.com/patent/CN121862376A/zh)]
+- [*CN121687367A*] **基于结构化证据子图检索增强生成的中医草药推荐方法及系统** 多跳证据子图 + Hopfield 联想检索做草药推荐，并用图谱约束压幻觉（公开，未授权） [浙江中医药大学] [[专利](https://patents.google.com/patent/CN121687367A/zh)]
+- [*CN121743505A*] **基于知识增强的中医医案按语生成方法及装置** 图谱子图混合检索后，按病因病机、治则、方药、预后四要素生成医案按语（公开，未授权） [浙江大学] [[专利](https://patents.google.com/patent/CN121743505A/zh)]
+- [*CN121709160A*] **一种基于视觉语言模型的中医舌诊智能分析方法** 以Qwen-VL为舌诊视觉语言模型，经舌诊知识引导微调后，由舌象生成舌色、苔色等结构化结果及自然语言描述（公开，未授权） [中国计量大学] [[专利](https://patents.google.com/patent/CN121709160A/zh)]
+- [*CN121480736A*] **基于知识蒸馏与强化学习的肿瘤中医智能处方推荐方法及系统** GPT-4o 教师蒸馏 Qwen 学生，再 DPO，做可解释的肿瘤中医处方（公开，未授权） [南京中医药大学] [[专利](https://patents.google.com/patent/CN121480736A/zh)]
+- [*CN121524286A*] **一种心血管疾病的基于针灸诊疗知识图谱的智能问答系统** 构建心血管疾病针灸诊疗知识图谱，结构化查询结果交云端大语言模型润色；查不到时由大语言模型直接作答并提示仅供参考（公开，未授权） [天津中医药大学第一附属医院，江汉大学] [[专利](https://patents.google.com/patent/CN121524286A/zh)]
+- [*CN121562809A*] **一种基于动态语义分块、知识图谱与多跳路径规划的中医大语言模型AI题库智能生成方法及系统** 对中医文本做语义分块和知识图谱多跳路径，再训练大语言模型生成中医题库（公开，未授权） [北京安戈普罗科技有限公司] [[专利](https://patents.google.com/patent/CN121562809A/zh)]
+- [*CN121460056A*] **一种基于人工智能的方剂配制方法、系统、介质和设备** 用大语言模型从医案实体判定病名与证型并生成初步方剂，再由大语言模型评分，未达标则按结构化建议重新生成（公开，未授权） [中国计量大学] [[专利](https://patents.google.com/patent/CN121460056A/zh)]
+- [*CN121460113A*] **一种基于中医语言大模型的中医智能分析方法及系统** 用LoRA微调得到中医语言大模型，按证型和主诉输出方剂（公开，未授权） [杭州轩岐智能科技有限公司，浙江中医药大学附属第三医院，北京航空航天大学] [[专利](https://patents.google.com/patent/CN121460113A/zh)]
+- [*CN121393746A*] **基于大语言模型的经络辨证与针灸方案生成方法及系统** 把多源诊疗数据量化并提质后，结合经络辨证知识库和大语言模型生成针灸方案。2026年1月23日公开。 [广州双龙脉健康产业科技有限公司] [[专利](https://patents.google.com/patent/CN121393746A/zh)]
+- [*CN121281871A*] **基于医学大语言模型多智能体的中医药临床数据自动化处理系统** 任务理解智能体、临床数据治理工具库和数据治理智能体协作，做中医疗效评价数据的结构化、标准化与流程生成。2026年1月6日公开；Google Patents显示Pending。 [四川大学华西医院] [[专利](https://patents.google.com/patent/CN121281871A/zh)]
+- [*CN121331451A*] **一种融合舌象、心率及文本的多模态健康状态评估方法** 以舌象为主、结合心率和使用者自述文本，用提示词引导DeepSeek大模型生成健康状态评估（公开，未授权） [刘家豪] [[专利](https://patents.google.com/patent/CN121331451A/zh)]
+- [*CN121436134A*] **一种多模态知识图谱构建方法及系统** 用大模型从中医药文本抽三元组，再融合真实病历层做成多模态图谱（公开，未授权） [杭州甘之草科技] [[专利](https://patents.google.com/patent/CN121436134A/zh)]
+
+</details>
+
+<details>
+<summary>2025 · 25</summary>
+
+- [*CN121210613A*] **基于检索增强生成的针灸大模型构建方法、系统及装置** 训练针灸大语言模型，问答请求做知识库向量检索后生成回答，诊断请求再检索针灸方案库给出治疗条目。2025年12月26日公开。 [北京科技大学] [[专利](https://patents.google.com/patent/CN121210613A/zh)]
+- [*CN120690391B*] **一种基于知识图谱技术的中药经典名方智能推荐方法** 口语到术语的语义映射 + 体质过滤 + 多症状协同，推荐经典名方。2025年12月16日授权。 [顺福科技集团] [[专利](https://patents.google.com/patent/CN120690391B/zh)]
+- [*CN121212280A*] **一种基于大语言模型的人-信息-物理三元数据融合中药制造知识图谱构建系统、电子设备及存储介质** 用大语言模型按中药术语和关系约束从制造文本抽取三元组，再按人-信息-物理本体构建中药制造知识图谱。2025年12月25日公开。 [北京中医药大学] [[专利](https://patents.google.com/patent/CN121212280A/zh)]
+- [*CN121096596A*] **一种基于多模态大语言模型的中医临床辅助决策系统和方法** 融合舌象视觉特征与临床文本，检索相似病例后，由多模态大语言模型生成证候、诊断、中药处方和推理过程。2025年12月9日公开。 [清华大学深圳国际研究生院] [[专利](https://patents.google.com/patent/CN121096596A/zh)]
+- [*CN121034544A*] **融合动态知识图谱的针灸大模型辨证方法及调理优化系统** 动态更新针灸知识图谱，结合患者时序临床特征，用图注意力和强化学习辨证并生成针灸方案。2025年11月28日公开。 [广东中科凯泽信息科技有限公司] [[专利](https://patents.google.com/patent/CN121034544A/zh)]
+- [*CN120998428A*] **大小模型协同中药方剂优化方法、系统、终端及存储介质** 用方剂优化大语言模型给出宏观优化方，再用药效物质小模型溯源药材并调整组成，综合后形成最终方剂推荐。2025年11月20日公开，尚未授权。 [天津中医药大学] [[专利](https://patents.google.com/patent/CN120998428A/zh)]
+- [*CN120809097A*] **基于大语言模型的中医五音疗疾个性化音乐生成系统及其构建方法** 先用大语言模型做中医辨证，再在五音特征约束下生成个性化五音治疗音乐。2025年10月17日公开。 [苏州昂升网络科技有限公司] [[专利](https://patents.google.com/patent/CN120809097A/zh)]
+- [*CN120674039A*] **针灸穴位推荐方法及其模型获取方法、装置、设备及介质** 用病历对语言模型做初步训练，建立症状与针灸穴位的语义映射，再经参数微调与策略优化得到穴位推荐模型（公开，未授权） [河南工业大学] [[专利](https://patents.google.com/patent/CN120674039A/zh)]
+- [*CN120337029A*] **一种基于大模型的中药分类方法** 对多源中药数据做实体识别并映射现代药理指标，再自适应微调预训练大模型完成中药分类。2025年7月18日公开。 [湖南省中医药研究院] [[专利](https://patents.google.com/patent/CN120337029A/zh)]
+- [*CN120299726A*] **一种基于大模型智能体协作规划的中医诊断场景模拟方法** 把非结构化医案做成结构化知识，再用患者、医生、助手和专家几类大模型智能体协作，模拟中医诊断流程。2025年7月11日公开，尚未授权。 [华南理工大学] [[专利](https://eureka.patsnap.com/patent/CN120299726A)]
+- [*CN120108651A*] **基于胸肺科中医问诊报告大语言模型的中医方剂推荐方法和系统** 用多知识域共享微调胸肺科中医问诊大语言模型，输出体质和症状参数，并推荐药食同源方剂。2025年6月5日公开。 [澳门科技大学] [[专利](https://patents.google.com/patent/CN120108651A/zh)]
+- [*CN120108694A*] **基于知识图谱与医案增强RAG的中医智能问诊方法及系统** Leiden 子图检索 + 全局/本地混合召回，再由大模型统一生成问诊建议（公开，未授权） [江苏大学] [[专利](https://patents.google.com/patent/CN120108694A/zh)]
+- [*CN120216657A*] **基于大语言模型的中药药物警戒问答系统的构建方法** 建立中药知识库并训练药物警戒检索增强模型PV-RAG，按自然语言提问生成中药安全回答。2025年6月27日公开。 [南京邮电大学] [[专利](https://patents.google.com/patent/CN120216657A/zh)]
+- [*CN120221058A*] **基于多模态知识图谱与大语言模型的中医康复诊断系统** 舌苔、脉象与问诊特征对齐知识图谱嵌入，再交给中医康复专家大模型（公开，未授权） [浙江中医药大学] [[专利](https://patents.google.com/patent/CN120221058A/zh)]
+- [*CN120067279B*] **基于AI大语言模型的中医智能问诊方法及系统** 面舌形体图像、语音气息与病症库融合的多模态问诊系统。2025年6月27日授权。 [医脉人工智能医疗科技（天津）] [[专利](https://patents.google.com/patent/CN120067279B/zh)]
+- [*CN120148827A*] **一种基于大模型的心血管疾病医疗决策支持方法** 用预训练大模型融合中医证候知识和西医病理图谱，生成含西药、中医方剂和非药物干预的心血管决策方案。2025年6月13日公开，尚未授权。 [溧阳市中医医院] [[专利](https://eureka.patsnap.com/patent/CN120148827A)]
+- [*CN119941636A*] **中医药多模态LLM训练方法及其应用** 分别提取舌苔与脉象特征，经跨模态注意力与文本特征融合后接入大语言模型，训练中医药多模态LLM。2025年5月6日公开。 [粤港澳大湾区精准医学研究院（广州）] [[专利](https://patents.google.com/patent/CN119941636A/zh)]
+- [*CN119811630A*] **应用大语言模型的泌尿科中医问诊结果预测方法和系统** 用大语言模型从泌尿科中医问诊描述预测病灶核心关键词，并按反馈数据实时调整模型参数。2025年4月11日公开。 [中医药广东省实验室] [[专利](https://patents.google.com/patent/CN119811630A/zh)]
+- [*CN119905208A*] **基于多源特征融合的中医方剂智能推荐方法、介质和设备** 融合内容推荐、协同过滤，并用大语言模型分析症状文本，按加权得分推荐个性化方剂（公开，未授权） [福建中医药大学] [[专利](https://patents.google.com/patent/CN119905208A/zh)]
+- [*CN119763764A*] **一种基于大语言模型的中药处方推荐方法及系统** 软提示 + 交叉注意力把患者文本送进大模型，输出可控中药处方（公开，未授权） [杭州甘之草科技] [[专利](https://patents.google.com/patent/CN119763764A/zh)]
+- [*CN119811698A*] **一种基于OCR识别和大模型的中药方数据解析方法及装置** 对手写中药方做OCR，把相冲、用量和服药建议拼成提示词送入大模型，生成处方综合判断。2025年4月11日公开。 [同力天合（北京）管理软件股份有限公司] [[专利](https://patents.google.com/patent/CN119811698A/zh)]
+- [*CN119416782A*] **基于大语言模型的中医方学习方法、装置、设备及介质** 用 Qwen 等大模型对齐文言医案术语与白话，做名老中医方学习（公开，未授权） [成都字节流科技] [[专利](https://patents.google.com/patent/CN119416782A/zh)]
+- [*CN119517372A*] **一种基于大语言模型的中医问答系统及方法** 从中医药文献构建数据集并训练大语言模型，接收用户医学问题后生成对话回答。2025年2月27日公开。 [郑新翰] [[专利](https://patents.google.com/patent/CN119517372A/zh)]
+- [*CN119446558A*] **一种基于大语言模型的中医知识图谱生成方法及系统** 以中药和诊察治疗数据训练模型，按患者信息可视化输出治疗方案，并用疗效反馈继续更新模型。2025年2月17日公开。 [中国中医科学院中医药信息研究所] [[专利](https://patents.google.com/patent/CN119446558A/zh)]
+- [*CN119252469A*] **一种用于智能中医系统的大语言模型的构建方法** 用舌诊图像标记和历史病历训练舌诊问诊模型，并据此构建用于智能中医系统的大语言模型。2025年1月7日公开。 [深圳问止中医健康科技有限公司] [[专利](https://patents.google.com/patent/CN119252469A/zh)]
+
+</details>
+
+<details>
+<summary>2024 · 15</summary>
+
+- [*CN119149754A*] **基于大模型和知识图谱的中医药方剂配伍方法及装置** 中医药大模型与知识图谱协同做方剂配伍（公开，未授权） [天津大学，天大智图（天津）科技] [[专利](https://patents.google.com/patent/CN119149754A/zh)]
+- [*CN119069137A*] **利用AI大模型进行舌象分析的方法及装置** 在中医舌诊场景用AI大模型按体质、症状和综合解读做舌象分析（公开，未授权） [深圳伯德睿捷健康科技有限公司] [[专利](https://patents.google.com/patent/CN119069137A/zh)]
+- [*CN119092157B*] **一种基于大语言模型的中药问答方法、装置、设备及介质** 在 Baichuan2-7B-Chat 上做中药问答。2025年2月7日授权。 [浙江大学，长三角智慧绿洲创新中心] [[专利](https://patents.google.com/patent/CN119092157B/zh)]
+- [*CN119049664A*] **基于AI大模型的中医元气充盈智能健康管理系统** 把可穿戴数据转成中医术语后送入AI中医大模型（公开；2026-02-06已视为撤回） [重庆鼐龙生物科技有限公司] [[专利](https://patents.google.com/patent/CN119049664A/zh)]
+- [*CN119049665A*] **基于AI大模型智能人体域网的中医六经辨证智能对话健康管理系统** 包含中医六经辨证术语大模型和对话式健康管理（公开；2026-02-06已视为撤回） [重庆鼐龙生物科技有限公司] [[专利](https://patents.google.com/patent/CN119049665A/zh)]
+- [*CN118899077A*] **一种基于多模态大模型的中医舌诊分析系统及方法** 用云诊 TongueAI 生成舌面象解读、多轮问答和体质推理数据，指令微调得到 TongueLMM，用于舌诊解读、多轮问答和体质推理。2024年11月8日公开。 [合肥云诊信息科技有限公司] [[专利](https://patents.google.com/patent/CN118899077A/zh)]
+- [*CN118838996A*] **基于大语言模型和知识图谱的中医药问答系统构建方法** LLM 生成与知识图谱补全闭环的中医药问答（公开，未授权） [北京理工大学，北京理工大学唐山研究院] [[专利](https://patents.google.com/patent/CN118838996A/zh)]
+- [*CN118430833A*] **一种基于大语言模型的中医知识深度挖掘方法** 同时训练检索增强和模型微调，使系统既能解释中医名词和证候，也能按患者输入给出治疗方案（公开，未授权） [西南大学] [[专利](https://patents.google.com/patent/CN118430833A/zh)]
+- [*CN117828050B*] **基于长文档检索增强生成的中医问答方法、设备及介质** 长文档 RAG（扩展、召回、重排序、来源标注）做中医问答。2024年4月5日公开，2024年7月9日授权。 [北京智谱华章科技] [[专利](https://patents.google.com/patent/CN117828050B/zh)]
+- [*CN118280556A*] **一种基于计算视觉与大语言模型辅助中医诊疗的系统** 大语言模型处理语音问诊，计算机视觉把患者图像转成诊断信息，检索增强后作为大语言模型输入，辅助中医诊疗（公开，未授权） [深圳金草健康科技有限公司] [[专利](https://patents.google.com/patent/CN118280556A/zh)]
+- [*CN118230893A*] **一种基于AI大模型的中医处方智能推荐方法和系统** 用病历训练 AI 大模型生成个性化中药处方，并接到医院信息系统（公开，未授权） [杭州甘之草科技] [[专利](https://patents.google.com/patent/CN118230893A/zh)]
+- [*CN118098506A*] **一种基于大语言模型的针灸辅助诊疗和模型评价的方法** 用标注症状和穴位操作的数据微调ChatGLM3-6B，输出针灸方案，并用句子相似度评价生成结果（公开，未授权） [东北大学] [[专利](https://patents.google.com/patent/CN118098506A/zh)]
+- [*CN118070907A*] **一种基于大语言模型的中医客服回复系统** 用同义词增广中医资料并训练Transformer大语言模型，微调后解析客户请求并生成回复；该申请于2024-07-09授权为CN118070907B [卓世智星（天津）科技有限公司] [[专利](https://patents.google.com/patent/CN118070907A/zh)]
+- [*CN117786590A*] **以大语言模型为先验的智能中医系统** 用大语言模型优化患者诊断文本，再做语义理解，预测中医证候和病因并给出治疗建议。2024年4月1日公开。 [上海源庐加佳信息科技有限公司] [[专利](https://patents.google.com/patent/CN117786590A/zh)]
+- [*CN117493579A*] **一种基于大语言模型的中医知识图谱构建方法** 用大语言模型从中医文本抽取命名实体和实体关系，按相似度融合后生成中医知识图谱（公开，未授权） [同济大学] [[专利](https://patents.google.com/patent/CN117493579A/zh)]
+
+</details>
+
+
+</details>
+
+## 论文
+
+这里只收方法、评测和系统论文。发布了领域大模型的条目在「开源模型」，不在这里重复。
+
+<details>
+<summary>Agent（20）：问诊流程、多智能体</summary>
+
+<details>
+<summary>2026 · 12</summary>
+
+- [*Chinese Medicine*] **MAGR-TCM：知识图谱驱动的多智能体中医妇科居家问诊与分诊模型（Lv 等）** Lv、Pan、Li、Hu、Xu、Jin、Fang 等提出 MAGR-TCM，在专家监督下从 741 份高质量医案抽取知识图谱（文中称 10,231 个实体、32,051 条关系），并以四个智能体组成的检索增强生成框架，试图从口语化主诉重建中医“病–证–法–方–药”推理链，用于妇科居家健康咨询与分诊。作者报告该模型在 RAGAS 自动评估和专家人工评估中优于所比较基线，并在安全性测试集上达到 100% 敏感度与特异度；这些数字均为论文自报。这是面向居家场景的方法学与原型评估，不是临床疗效试验。本次打开了 Springer Nature / Chinese Medicine 论文页。 [安徽中医药大学医药信息工程学院，安徽中医药大学中医学院，安徽中医药大学中西医结合学院] [[DOI](https://doi.org/10.1186/s13020-026-01485-y)] [[论文](https://link.springer.com/article/10.1186/s13020-026-01485-y)]
+- [*arXiv*] **Evidence-Based TCM Visualization Diagnosis System** 以症状—证候知识图谱、症状匹配和信息增益策略进行主动问诊，配合诊疗可视化；问诊策略展示以案例为主。 [[论文](https://arxiv.org/abs/2606.06869)]
+- [*arXiv*] **DeepTCM1.0** 基于DeepSeek V3.2的11专家多智能体，解析中药复方机制（桂枝汤验证）；Research Square后上到arXiv [广州中医药大学，Chinese Medicine Guangdong Laboratory (Hengqin)，Changzhi Medical College] [[论文](https://arxiv.org/abs/2608.18103)] [[预印本](https://doi.org/10.21203/rs.3.rs-9844166/v1)]
+- [*arXiv*] **DeepRoot** 多智能体把《神农本草经》建成可核验Neo4j图谱再做治疗推理，代码与评测脚本已开源 [[论文](https://arxiv.org/abs/2606.15931)] [[代码](https://github.com/CarlisleMa/deeprootv1)]
+- [*Studies in Health Technology and Informatics*] **韩医CPX场景自动生成** 用大模型和检索增强，加上多模态临床线索，自动生成韩医标准化病人CPX场景并给出量化反馈；10名专家验证 [韩国韩医学研究院] [[DOI](https://doi.org/10.3233/shti260671)]
+- [*arXiv*] **TCMScience** 中医科研发现智能体，把语言模型提案与执行、发布权限分开，避免不同证据类型混推 [[论文](https://arxiv.org/abs/2610.24601)]
+- [*Journal of Pharmaceutical Analysis*] **TCM-Agent** 面向网络药理学与中药发现的 LLM 多智能体系统 [[论文](https://doi.org/10.1016/j.jpha.2026.101581)] [[代码](https://github.com/AITCM/TCM-Agent)]
+- [*arXiv*] **MACAT** 多智能体文化感知翻译框架，实验覆盖中医经典与《论语》文化负载词英译 [[论文](https://arxiv.org/abs/2606.01276)]
+- [*Applied Sciences*] **KM-Agent** 韩医/东亚传统医学工具增强Agent，检索4780条药材–证候–穴位元数据，并在TCMBench等上评测。MDPI/OpenAlex 署名圆光大学、釜山大学、东国大学等 [圆光大学，釜山大学等] [[论文](https://www.mdpi.com/2076-3417/16/7/3377)] [[代码](https://github.com/wonyung-lee/km-agent)]
+- [*arXiv*] **DERM-3R** 资源受限下的中医皮肤病多模态多智能体框架（识别/表征/辨证论治三智能体） [[论文](https://arxiv.org/abs/2604.09596)]
+- [*arXiv*] **CORE-Acu** 针灸临床决策：结构化推理轨迹与知识图谱安全否决闭环 [[论文](https://arxiv.org/abs/2603.08321)]
+- [*Engineering Applications of Artificial Intelligence*] **AcuModel / AcuAgent** 结合 AcuModel、针灸知识图谱、语义路由与规则约束，进行主动追问和针灸推理；公开项目说明及样例，完整权重与训练数据需向作者申请。 [[DOI](https://doi.org/10.1016/j.engappai.2026.116139)] [[资料](https://github.com/mosheng555/AcuModel-And-AcuAgent)]
+
+</details>
+
+<details>
+<summary>2025 · 7</summary>
+
+- [*arXiv*] **经方 (Jingfang)** 多智能体中医问诊与辨证论治系统，结合十问歌引导问诊、证候判别模型和双阶段处方检索。 [[论文](https://arxiv.org/abs/2502.04345)]
+- [*中医杂志*] **基于雅意大模型的中医智能预问诊** 刘奕清、李迎、杨洪军等用 DeepSpeed ZeRO-3 微调 YAYI 2-30B，并用症状关系带权无向图做智能体辨证。模拟测试里，执业医师题正确率 94.09%，执业中药师 78.00%，症状术语 87.50%，经络 68.80%。临床测试辨证准确率 88.33%，问诊轮次和时间少于主治医师。2025年第 66 卷第 9 期 895–900 页。 [中国中医科学院医学实验中心，中国科学院自动化研究所，天津中科闻歌科技有限公司，中国中医科学院中医基础理论研究所] [[DOI](https://doi.org/10.13288/j.11-2166/r.2025.09.005)] [[论文](https://link.cnki.net/doi/10.13288/j.11-2166/r.2025.09.005)]
+- **仁术AI (RenShu-AI)** FastAPI + LangGraph 多智能体中医问诊系统，融合 GraphRAG 与 DeepSeek-TCM [[代码](https://github.com/yanlinPeng-code/RenShu-AI)]
+- [*Information*] **中药化合物检索智能体** 中药化合物信息检索AI智能体系统 [郑州大学] [[DOI](https://doi.org/10.3390/info16070543)]
+- [*Journal of King Saud University Computer and Information Sciences*] **DiagX-DT** 辨证排除式推理框架，结合思维链与外部中医知识库迭代剔除不合理证候选项 [[DOI](https://doi.org/10.1007/s44443-025-00123-1)]
+- [*proceedings-article*] **An Intelligent TCM Diagnosis System with Localized LLMs and Modular Multimodal Reasoning Enhanced by RAG** 该本地部署系统用望、闻、问、切四个智能体，经模块化组件处理和多模态检索增强生成，把舌象、声音、脉象和症状交给中心推理模块生成诊断与健康建议。 [Hosei University，Fuzhou University，Hong Kong Polytechnic University，Beihang University] [[DOI](https://doi.org/10.1109/cyberscitech68397.2025.00061)]
+- [*Neurocomputing*] **AcuGPT-Agent** 围绕针灸治疗不孕，结合专科大模型、知识图谱和跨知识库路由，并以 EvalAcu 评估知识与任务能力。 [南京中医药大学] [[DOI](https://doi.org/10.1016/j.neucom.2025.131116)]
+
+</details>
+
+<details>
+<summary>2024 · 1</summary>
+
+- [*대한한의학회지*] **Pilot Development of a 'Clinical Performance Examination (CPX) Practicing Chatbot' Utilizing Prompt Engineering** 作者把韩国韩医学研究院的标准化病人情景改写成文本，用角色提示和少样本提示调用GPT-4，做成韩医临床技能考试练习聊天机器人；内部评价中正确性和依从性较高，保密性和自然度仍需改进。 [Gachon University，Pusan National University] [[DOI](https://doi.org/10.13048/jkm.24013)]
+
+</details>
+
+
+</details>
+
+<details>
+<summary>多模态 / 四诊（37）：舌、面、脉</summary>
+
+<details>
+<summary>2026 · 17</summary>
+
+- [*arXiv*] **Seeing Is Not Enough: Knowledge-Grounded Active Inquiry from Uncertain Visual Evidence** 牛津大学 Yucheng Liu 与中国科学院北京纳米能源与系统研究所 Everett X. Wang（通讯）提出，在中医舌诊中相似舌象可能对应不同证候，而关键症状并不出现在照片里，因此用舌象与脉象预测来引导针对性地问诊，并用获得的回答收窄证候清单后再报告。作者构建 2600 例由真实舌象照片、指定证候、模拟症状回答和生成脉象组成的病例，其中 2599 例进入来源不相交的五折评估。论文称在干净图像上，仅用舌象/脉象预测的细粒度证候准确率为 46.4%；在获取代价为 12 时，不问诊图像/脉象证据的问诊准确率为 34.4%，二者结合达到 65.8%，前三纳入率为 90.8%。本次打开了 arXiv 摘要页与真实 PDF（2610.38774，页面为 v2）。结果均为作者自报。 [University of Oxford，Beijing Institute of Nanoenergy and Nanosystems, Chinese Academy of Sciences] [[论文](https://arxiv.org/abs/2610.38774)] [[PDF](https://arxiv.org/pdf/2610.38774)]
+- [*arXiv*] **acuSimNet: Multi-View Self-Occlusion-Awared Visibility Learning for Cranio-Cervical Acupuncture Points** 佐治亚理工学院马佳涛与德比大学孙启磊提出面向头颈部穴位多视角、自遮挡可见性预测的多任务网络 acuSimNet。论文称穴位由抽象原则定义而非清晰解剖标志，现有方法多为单视角或依赖相对位置推算，对自身、毛发或衣物遮挡关注不足；该工作在174个头颈部穴位的高维分类设定下训练，作者报告验证集准确率达99.97%，并将达到99%准确率的训练轮次从既有方法的约3000轮降至86轮。标题按原文保留 Awared 拼写。本次打开了arXiv摘要页（2611.20025，2026年11月15日提交）。结果均为作者自报。 [Georgia Institute of Technology，University of Derby] [[论文](https://arxiv.org/abs/2611.20025)] [[PDF](https://arxiv.org/pdf/2611.20025)]
+- [*arXiv*] **SEAT: Sign-Type Evidence-Audited Transport for Multi-Label Tongue Diagnosis** 东北大学徐柳怡、王青、梁子凯、卢安阳与钱一宁（通讯，东北大学秦皇岛分校）提出面向多标签舌诊的证据审核框架 SEAT。论文称单张舌象常同时出现多种体征，证据类型包括局部形态、全局色度及标签共现，既有方法多用共享表征和统一多标签头，难以核验预测是否来自临床相关证据。SEAT 在冻结的 DINOv2 图像块特征上，分别用掩膜引导的体征特异注意力处理局部形态，用 LAB/HSV 颜色原型上的半松弛最优传输强化淡白舌识别，并用共现感知传输正则塑造批次级标签边际。作者报告在 TongueDx 基准上，六个随机种子的平均宏平均 F1 为 72.59（标准差 1.04），六模型集成达到 74.15。论文注明已投 IEEE。本次打开了 arXiv 摘要页与真实 PDF（2611.19748），并打开了作者给出的代码仓库页。结果均为作者自报。 [Northeastern University] [[论文](https://arxiv.org/abs/2611.19748)] [[PDF](https://arxiv.org/pdf/2611.19748)] [[代码](https://github.com/NEU-TCM-Lab/Sign-type-Evidence-Audited-Transport)]
+- [*Frontiers in Medicine*] **Cracks-YOLO：结合可切换空洞卷积与 Transformer 的舌裂纹 YOLOv5 检测方法（Ding 等）** Ding、Wu、Shen、Lin、Men 针对舌裂纹形态、尺度和分布多变、既有检测精度与速度不足的问题，在 YOLOv5 骨干中引入可切换空洞卷积以调整感受野，并加入 Transformer 编码器以捕捉长程依赖，用于中医舌裂纹检测。这是目标检测方法论文；本次打开的摘要未在提取范围内给出完整定量结果，故不转写具体准确率。不是临床疗效试验。本次打开了期刊全文页。 [广州中医药大学医药信息工程学院，香港城市大学商学院] [[DOI](https://doi.org/10.3389/fmed.2026.1901533)] [[论文](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2026.1901533/full)]
+- [*Health Information Science and Systems*] **ConsTCM: aligning fundus images with constitution differentiation in multimodal language model for Traditional Chinese Medicine** 天津大学纪翔宇、饶国政等提出 ConsTCM，用两阶段监督微调把眼底影像与中医体质辨识对齐到多模态语言模型：先在通用眼底检查数据上做基础微调，再以医院真实自标注病例做面向体质任务的特定微调，并混合已有分类任务与医院数据构建微调集。作者报告相对基线提升 5.6%，消融中相对基础模型在客观评估上提升 47%。期刊页标注在线 2026年4月6日，刊于 Health Information Science and Systems 2026年14卷1期文章号 50，封面日期 2026年12月。本次打开了 Springer 官方文章页。页面版权为版权所有、非开放获取，官方 PDF 链路返回的是 HTML 而非 PDF。指标均为作者自报。 [Tianjin University，Tianjin University of Traditional Chinese Medicine，La Trobe University，Institute of Science Tokyo] [[论文](https://link.springer.com/article/10.1007/s13755-026-00442-1)] [[DOI](https://doi.org/10.1007/s13755-026-00442-1)]
+- [*BMC Medical Informatics and Decision Making*] **脉波与语音联合筛查冠心病和心衰** 上海中医药大学等把桡动脉脉搏波当作脉诊，把语音当作闻诊，用来筛查冠心病和心力衰竭。同步记了 553 人，包括健康人、冠心病和心衰，另有 194 人做外部验证。 [[DOI](https://doi.org/10.1186/s12911-026-03518-w)]
+- [*Sensors*] **红外热像面部穴位两级定位** 按骨度分寸和中医解剖规则整理多姿态红外面部热像，先检测人脸，再回归穴位位置。 [[DOI](https://doi.org/10.3390/s26144498)]
+- [*Journal of Traditional Chinese Medicine*] **空腹过程的寸关尺脉图定量** 51 名健康人在空腹前（第 0 天）、空腹中（第 4 天）和空腹后（第 7 天）采集左寸、右寸和右关脉图，比较与胃肠虚实有关的脉象参数。 [[DOI](https://doi.org/10.19852/j.cnki.jtcm.2026.02.019)]
+- [*arXiv*] **白睛异常分割（HD-DinoMoE）** 中医目诊看白睛缺少定量。这篇用分层混合专家网络，在复杂拍摄条件下分割巩膜表面异常。 [[论文](https://arxiv.org/abs/2606.04888)]
+- [*Medicine in Novel Technology and Devices*] **基于中医脉诊矩阵的客观脉象分析** 用中医脉诊矩阵做客观脉象分析。文章认为现有脉图定义不完整，客观化标准也不统一。 [[DOI](https://doi.org/10.1016/j.medntd.2026.100429)]
+- [*IEEE Journ

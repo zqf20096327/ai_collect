@@ -1,17 +1,36 @@
 # FarmAIQ: Precision Agriculture Decision Platform
 ## An Intelligent Agro-Advisory and Predictive Decision Support System
 
+[![Author](https://img.shields.io/badge/Author-Mohd%20Shami-0A66C2?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mohdshamii)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Framework](https://img.shields.io/badge/Framework-Flask%203.0-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
 [![PyTorch](https://img.shields.io/badge/Deep%20Learning-PyTorch%20ResNet9-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Machine Learning](https://img.shields.io/badge/ML-Random%20Forest%20%7C%20XGBoost-2E9C34?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
-[![License](https://img.shields.io/badge/License-MIT-F7DC6F?style=for-the-badge)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-21%2F21%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](tests/test_app.py)
+[![Docs](https://img.shields.io/badge/Docs-Complete%20Suite-blueviolet?style=for-the-badge&logo=read-the-docs&logoColor=white)](docs/README.md)
+[![License](https://img.shields.io/badge/License-Academic%20Open%20Source-F7DC6F?style=for-the-badge)](docs/PROJECT_LICENSE.md)
+
+---
+
+## Table of Contents
+- [1. Executive Summary & Abstract](#1-executive-summary--research-abstract)
+- [2. Production Application Visuals](#2-production-application-visuals)
+- [3. Complete Documentation Library](#3-complete-documentation-library)
+- [4. System Architecture](#4-system-architecture)
+- [5. Core Modules & Key Capabilities](#5-core-modules--key-capabilities)
+- [6. Machine Learning Benchmarks](#6-machine-learning--deep-learning-benchmarks)
+- [7. Installation & Quickstart](#7-installation--execution)
+- [8. REST API Reference](#8-rest-api-documentation)
+- [9. Academic Citation](#9-academic-submission--citation-reference)
+- [10. Author & Co-Authorship](#10-authors--acknowledgments)
 
 ---
 
 ## 1. Executive Summary & Research Abstract
 
-**FarmAIQ** is an end-to-end, enterprise-grade Precision Agriculture Decision Platform designed specifically for Indian smallholder farmers, agronomists, and agricultural extension officers. The system bridges the gap between agricultural data science, deep computer vision pathology, and practical field husbandry.
+**FarmAIQ** is an end-to-end, enterprise-grade Precision Agriculture Decision Platform designed specifically for Indian smallholder farmers, agronomists, and agricultural extension officers. The platform unifies agricultural data science, deep computer vision pathology, and agro-economic market intelligence.
+
+Repository: **[https://github.com/mohdshamii/FarmAIQ](https://github.com/mohdshamii/FarmAIQ)**
 
 By integrating soil chemistry telemetry, agro-meteorological indices, and market rates, FarmAIQ provides evidence-based recommendations across eight essential agricultural domains:
 1. **Multi-Factor Crop Suitability Recommendation** (99.5% accuracy via Random Forest ensemble)
@@ -25,7 +44,69 @@ By integrating soil chemistry telemetry, agro-meteorological indices, and market
 
 ---
 
-## 2. System Architecture
+## 2. Production Application Visuals
+
+The FarmAIQ web application delivers a clean, modern user experience designed for rapid decision-making in the field:
+
+### 2.1 Unified Executive Agro-Dashboard
+Centralizes soil measurements, local weather conditions, quick agronomic presets, and one-click access to all intelligence tools.
+
+![FarmAIQ Executive Dashboard](img/Dashboard.png)
+*Figure 1: FarmAIQ Unified Executive Agro-Dashboard displaying soil telemetry, quick recommendations, and live weather conditions.*
+
+---
+
+### 2.2 Integrated Agricultural Services Suite
+Unified directory of 8 core agricultural decision modules covering the entire crop lifecycle from sowing to harvest monetization.
+
+![FarmAIQ Services Suite](img/Services.png)
+*Figure 2: FarmAIQ Agricultural Decision Services Suite showcasing the 8 integrated functional modules.*
+
+---
+
+### 2.3 Deep Vision Leaf Pathology Diagnosis
+PyTorch ResNet9 convolutional vision network diagnosing foliar disease from field photographs and outputting precise chemical and biological remediation protocols.
+
+![Plant Disease Vision Diagnosis](img/leaf_disease_prediction.png)
+*Figure 3: PyTorch ResNet9 Deep Vision Pathology Engine diagnosing disease from leaf specimen and displaying remedial protocols.*
+
+---
+
+### 2.4 Central Government Welfare & DBT Portal
+Comprehensive directory of central agricultural subsidy programs, eligibility criteria, and direct application portals.
+
+![Kisaan Schemes Portal](img/kisaan_Sceme_portal.png)
+*Figure 4: Central Government Welfare Schemes Directory providing eligibility criteria, subsidy amounts, and direct application links.*
+
+---
+
+## 3. Complete Documentation Library
+
+Detailed engineering specifications, mathematical formulations, and operational guides are documented in the [docs/](docs/) directory:
+
+| Technical Manual | Key Topics Covered | Reference Link |
+|:---|:---|:---:|
+| **System Architecture** | C4 model, layered design, data flows, security boundaries | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| **Machine Learning & Deep Learning** | Model zoo, 5-fold CV, feature weights, ResNet9 vision | [ML_MODELS.md](docs/ML_MODELS.md) |
+| **REST API Reference** | JSON schemas, curl examples, status codes, health telemetry | [API_REFERENCE.md](docs/API_REFERENCE.md) |
+| **Core Modules Deep Dive** | 8 services breakdown, deficit stoichiometry, crop coefficients | [MODULES.md](docs/MODULES.md) |
+| **Installation & Setup** | Windows, Linux, macOS, virtualenv, dependencies, troubleshooting | [INSTALLATION.md](docs/INSTALLATION.md) |
+| **User & Operator Manual** | Step-by-step visual workflows for farmers and field workers | [USER_GUIDE.md](docs/USER_GUIDE.md) |
+| **Agricultural Datasets** | Data dictionary, class distributions, PlantVillage partition | [DATASET.md](docs/DATASET.md) |
+| **Soil Health Science** | Soil Fertility Index (SFI) formula, chemical amendment roadmaps | [SOIL_HEALTH.md](docs/SOIL_HEALTH.md) |
+| **Smart Irrigation Engineering** | FAO-56 Penman-Monteith ETc formula, drip water savings math | [IRRIGATION_GUIDE.md](docs/IRRIGATION_GUIDE.md) |
+| **Production Deployment** | Gunicorn WSGI, worker sizing, systemd daemon, Docker | [DEPLOYMENT.md](docs/DEPLOYMENT.md) |
+| **Automated Testing Guide** | 21-point test suite, coverage analysis, regression testing | [TESTING.md](docs/TESTING.md) |
+| **Academic Capstone Paper** | Formal research paper draft, methodology, and citations | [ACADEMIC_SPECIFICATION.md](docs/ACADEMIC_SPECIFICATION.md) |
+| **Community Guidelines** | Scientific integrity, respectful collaboration, ethics | [COMMUNITY_GUIDELINES.md](docs/COMMUNITY_GUIDELINES.md) |
+| **Security Policy** | Input sanitization, image upload limits, vulnerability reporting | [SECURITY.md](docs/SECURITY.md) |
+| **Frequently Asked Questions** | Common developer, agronomist, and farmer inquiries | [FAQ.md](docs/FAQ.md) |
+| **Product Roadmap** | Edge AI INT8 quantization, LoRaWAN sensors, satellite NDVI | [ROADMAP.md](docs/ROADMAP.md) |
+| **Version Changelog** | Version history from v1.0.0 through v2.4.0 | [CHANGELOG.md](docs/CHANGELOG.md) |
+
+---
+
+## 4. System Architecture
 
 ```mermaid
 graph TD
@@ -63,7 +144,7 @@ graph TD
 
 ---
 
-## 3. Core Modules & Key Capabilities
+## 5. Core Modules & Key Capabilities
 
 ### Module 1: AI Crop Recommendation
 - **Algorithm**: Calibrated Random Forest Classifier backed by an ensemble of Decision Trees, Naive Bayes, SVM, and XGBoost.
@@ -73,17 +154,17 @@ graph TD
 
 ### Module 2: Smart Fertilizer & Nutrient Gap Advisor
 - **Methodology**: Computes quantitative elemental deficits against optimal crop benchmarks for 22 crops.
-- **Dosage Calculations**:
-  - Direct conversion of nutrient deficits to commercial fertilizer units: **Neem Coated Urea (46% N)**, **DAP (18% N, 46% P2O5)**, and **MOP (60% K2O)**.
+- **Stoichiometry**:
+  $$\Delta N = \max(0, N_{\text{opt}} - N_{\text{soil}}), \quad \Delta P = \max(0, P_{\text{opt}} - P_{\text{soil}}), \quad \Delta K = \max(0, K_{\text{opt}} - K_{\text{soil}})$$
+- **Commercial Bag Conversions**:
   - Accounts for the 18% nitrogen contribution of DAP before calculating supplemental urea.
-  - Generates exact bag requirements (45 kg and 50 kg bags) based on farmer plot acreage.
+  - Converts deficits to 45 kg and 50 kg commercial bags based on cultivated acreage.
 - **Application Schedule**: Basal dose (sowing) vs Top-dressing split applications (25-35 DAS and 50-65 DAS).
 - **Organic Guidance**: Farmyard Manure (FYM), Vermicompost, and Biofertilizers (Azotobacter, Rhizobium, PSB).
 
 ### Module 3: Deep Computer Vision Plant Pathology Diagnosis
 - **Architecture**: Residual Convolutional Neural Network (PyTorch ResNet9).
-- **Dataset**: Trained on RGB leaf pathology imagery from the PlantVillage dataset.
-- **Supported Crops**: Apple, Corn (Maize), Grape, Cherry, Orange, Blueberry.
+- **Dataset**: Trained on RGB leaf pathology imagery from the PlantVillage dataset across 16 disease classes.
 - **Inference Output**: Top-1 and Top-3 probabilities, causative organism details, chemical controls (fungicides with dosage per liter), organic bio-controls, and cultural field sanitation practices.
 
 ### Module 4: Crop Yield Prediction
@@ -104,6 +185,8 @@ graph TD
 ### Module 7: Soil Health Card Evaluator
 - **Standard**: Ministry of Agriculture & Farmers Welfare Soil Health Card framework.
 - **Parameters**: Macronutrients (N, P, K), Physico-chemical properties (pH, EC, Organic Carbon %), and Micronutrients (Zinc, Iron, Sulfur).
+- **Composite Formulation**:
+  $$\text{SFI} = \sum_{i=1}^{n} w_i \times S_i(v_i)$$
 - **Outputs**: Soil Fertility Index (SFI score 0-100), categorical Health Grade (Grade A through D), and customized soil conditioning roadmaps (Agricultural Lime, Gypsum, Green Manuring).
 
 ### Module 8: Government Welfare Schemes Hub
@@ -119,7 +202,7 @@ graph TD
 
 ---
 
-## 4. Machine Learning & Deep Learning Benchmarks
+## 6. Machine Learning & Deep Learning Benchmarks
 
 All models were evaluated using 5-Fold Stratified Cross-Validation on the curated 2,200 sample agricultural dataset:
 
@@ -222,25 +305,26 @@ FarmAIQ-main/
 
 ---
 
-## 6. Installation & Execution
+## 7. Installation & Execution
 
 ### Prerequisites
 - Python 3.10 or 3.11
 - pip package manager
+- git version control
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/codexshami/FarmAIQ.git
+git clone https://github.com/mohdshamii/FarmAIQ.git
 cd FarmAIQ
 ```
 
 ### Step 2: Create and Activate Virtual Environment
 ```bash
-# Windows
+# Windows (PowerShell)
 python -m venv .venv
 .venv\Scripts\activate
 
-# Linux / macOS
+# Linux / macOS (Bash)
 python3 -m venv .venv
 source .venv/bin/activate
 ```
@@ -265,16 +349,20 @@ The application will be live at: **`http://127.0.0.1:5000`**
 ```bash
 python -m unittest tests/test_app.py
 ```
-*(All 21 unit and integration tests pass in ~0.3 seconds).*
+*(All 21 unit and integration tests pass in ~0.5 seconds).*
 
 ---
 
-## 7. REST API Documentation
+## 8. REST API Documentation
 
-FarmAIQ provides standard JSON API endpoints for integration into mobile applications, IoT soil sensors, and government portals:
+FarmAIQ provides standard JSON API endpoints for integration into mobile applications, IoT soil sensors, and government portals. For complete endpoint schemas, see [docs/API_REFERENCE.md](docs/API_REFERENCE.md).
 
 ### Health Check
 - **Endpoint**: `GET /api/health`
+- **Example**:
+```bash
+curl http://127.0.0.1:5000/api/health
+```
 - **Response**:
 ```json
 {
@@ -291,53 +379,55 @@ FarmAIQ provides standard JSON API endpoints for integration into mobile applica
 
 ### Crop Recommendation API
 - **Endpoint**: `POST /api/crop-recommend`
-- **Payload**:
-```json
-{
-  "N": 90,
-  "P": 42,
-  "K": 43,
-  "temperature": 24.0,
-  "humidity": 80.0,
-  "ph": 6.8,
-  "rainfall": 210.0
-}
+- **Example**:
+```bash
+curl -X POST http://127.0.0.1:5000/api/crop-recommend \
+  -H "Content-Type: application/json" \
+  -d '{"N": 90, "P": 42, "K": 43, "temperature": 24.0, "humidity": 80.0, "ph": 6.8, "rainfall": 210.0}'
 ```
 
 ### Fertilizer Advisory API
 - **Endpoint**: `POST /api/fertilizer-recommend`
-- **Payload**:
-```json
-{
-  "crop": "rice",
-  "N": 50,
-  "P": 30,
-  "K": 30,
-  "area_acres": 2.5
-}
+- **Example**:
+```bash
+curl -X POST http://127.0.0.1:5000/api/fertilizer-recommend \
+  -H "Content-Type: application/json" \
+  -d '{"crop": "rice", "N": 50, "P": 30, "K": 30, "area_acres": 2.5}'
 ```
 
 ### Mandi Market Rates API
 - **Endpoint**: `GET /api/mandi-rates?state=Punjab`
+- **Example**:
+```bash
+curl "http://127.0.0.1:5000/api/mandi-rates?state=Punjab"
+```
 
 ---
 
-## 8. Academic Submission & Citation Reference
+## 9. Academic Submission & Citation Reference
 
-For academic submission, capstone presentations, and research papers, cite this project as:
+For capstone project evaluation, academic research submissions, and conference proceedings, cite FarmAIQ as:
 
 ```bibtex
-@software{FarmAIQ_2026,
-  author = {Precision Agriculture Research Group},
+@software{Shami_FarmAIQ_2026,
+  author = {Mohd Shami},
   title = {FarmAIQ: Intelligent Agro-Decision Support System Fusing Ensemble Machine Learning, Deep Vision Pathology, and Market Intelligence},
   year = {2026},
   publisher = {Department of Computer Science and Engineering},
-  url = {https://github.com/codexshami/FarmAIQ}
+  url = {https://github.com/mohdshamii/FarmAIQ}
 }
 ```
 
 ---
 
-## 9. License
+## 10. Authors & Acknowledgments
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for complete details.
+- **Lead Developer & Researcher**: **Mohd Shami** ([@mohdshamii](https://github.com/mohdshamii))
+- **Co-Authored By**: **Antigravity** (Google DeepMind Agentic AI Assistant)
+- **Academic Domain**: Department of Computer Science & Engineering (Final Year Capstone Project)
+
+---
+
+## 11. License & Usage Terms
+
+This project is made available for academic and agricultural research purposes. See [docs/PROJECT_LICENSE.md](docs/PROJECT_LICENSE.md) for full terms and attribution guidelines.

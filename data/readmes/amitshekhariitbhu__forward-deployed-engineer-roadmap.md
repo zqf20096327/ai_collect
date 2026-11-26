@@ -350,6 +350,8 @@ In this step, we will see everything come together in one of the most requested 
 - [How does a voice agent manage conversation state across a long call?](https://outcomeschool.com/blog/conversation-state-in-voice-agents)
 - [How do multi-agent handoffs work in a voice AI system?](https://outcomeschool.com/blog/multi-agent-handoffs-in-voice-ai)
 - [How does a voice agent decide when to end the call?](https://outcomeschool.com/blog/call-ending-in-voice-agents)
+- [How do pronunciation dictionaries fix how TTS says names and brands?](https://outcomeschool.com/blog/pronunciation-dictionaries-for-tts)
+- [How does keyword boosting help ASR recognize domain words?](https://outcomeschool.com/blog/keyword-boosting-in-asr)
 - [How does a voice AI agent answer a phone call?](https://outcomeschool.com/blog/phone-calls-in-voice-agents)
 - [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
 - [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)

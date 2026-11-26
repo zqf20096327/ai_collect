@@ -41,7 +41,7 @@ YouTube Machine là bộ 28 skill cho trợ lý AI chạy trên máy, dùng tố
 | Cắt | Cắt theo lời: bỏ câu hỏng, khoảng lặng, từ đệm | `yt-07f-cat-theo-chu` |
 | Soát | Soát kỹ thuật và đối chiếu lời hứa của video trước khi đăng | `yt-07x-soat` |
 | Shorts | Chọn đoạn đứng độc lập, cắt dọc, thêm phụ đề | `yt-07r-shorts` |
-| 7k | Shorts dọc 3D tự dựng, 10 phong cách (khối pixel, đất sét, giấy gấp, len nỉ...), không tốn tín dụng hình | `yt-07k-khoi-vuong` |
+| 7k | Video tự dựng bằng WebGL: 10 phong cách khối (dọc) và 6 phong cách diễn xuất (ngang hoặc dọc), không tốn tín dụng hình | `yt-07k-khoi-vuong` |
 | Thumbnail | Ghép chữ đúng dấu tiếng Việt, so ở cỡ nhỏ | `yt-08t-thumbnail` |
 | 8 | Gói SEO: 5 tiêu đề, mô tả, chương, tag, checklist đăng | `yt-08-seo-publish` |
 | 9 | 48 giờ đầu sau khi đăng, xử lý khi video ít lượt xem | `yt-09-post-publish` |

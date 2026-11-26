@@ -7,6 +7,10 @@ A curated directory of language models people use or evaluate for programming, s
 
 “Uncensored” is an informal label, not a standardized model property or promise. It does not mean a model is unrestricted, accurate, secure, private, or suitable for every use. Evaluate the exact model and host for your task, and follow the applicable terms and acceptable-use rules.
 
+## Related Projects
+
+- [NSFW-AI-API](https://github.com/Anil-matcha/NSFW-AI-API) — NSFW detection and moderation for text and images, to screen prompts and outputs
+
 ## Contents
 
 - [Coding use cases](#coding-use-cases)

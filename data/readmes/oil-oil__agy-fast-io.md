@@ -92,6 +92,13 @@ agy plugin enable fast-io
 - **白名单会变。** 白名单是 Antigravity 内置的，以后版本变了，规则里的命令清单也要跟着改。
 - 规则是用中文写的。
 
+## 更多 Oil 系列作品
+
+- **[Oil Oil 首页](https://www.oiloil.org/?utm_source=github&utm_medium=readme&utm_campaign=agy-fast-io)** · 开源 Agent Skills 与桌面工具合集。
+- **[Oil UI](https://ui.oiloil.org/?utm_source=github&utm_medium=readme&utm_campaign=agy-fast-io)** · AI 界面与 UI/UX 设计 Skill，支持三方向并排对比与真浏览器截图打磨。
+- **[Oil Studio](https://studio.oiloil.org/?utm_source=github&utm_medium=readme&utm_campaign=agy-fast-io)** · Apple Silicon Mac 原生自动缩放录屏与离线 Whisper 按字剪辑工具。
+- **[Oil Book](https://book.oiloil.org/?utm_source=github&utm_medium=readme&utm_campaign=agy-fast-io)** · AI 实战课程、Agent 工程实测笔记与海外一手精译专栏。
+
 ## 许可证
 
 [MIT](LICENSE)

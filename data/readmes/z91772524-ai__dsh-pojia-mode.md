@@ -1,5 +1,20 @@
 # DSH 破甲模式 v1.1
 
+> ## ⚠️ 本方案在新版 DSH 上已失效（2026-11 更新）
+>
+> **DSH 0.2.x 起，preset 机制换成 `@deepseek-ai/dsh-agent-preset-registry`，不再扫描 `$DSH_HOME\.agent-presets\`** ——
+> 也就是说这个工具装进去的 preset，新版本 DSH **根本不会列出来**。
+>
+> **请改用能用的方案：**
+>
+> | 你要什么 | 用哪个 |
+> |---|---|
+> | DSH 破甲（当前可用） | **[破甲DSH](https://github.com/z91772524-ai/pojia-dsh)** —— 走官方 `AGENTS.md` 通道，改完下一句对话就生效 |
+> | WorkBuddy / ZCode / Codex 破甲 | **[破甲一键通](https://github.com/z91772524-ai/pojia-next)** —— 图形界面，双击即用 |
+>
+> 本仓库保留只为存档与追溯，**不再更新**。
+
+
 **双击一个文件，你的 DSH（DeepSeek Harness）就多出一个「破甲模式」** —— 不改 DSH 一字节代码、不动官方目录、升级不丢；零依赖（系统自带 PowerShell）、改前自动备份、装完当场可自证、随时可一键卸载。
 
 [![Release](https://img.shields.io/github/v/release/z91772524-ai/dsh-pojia-mode?label=release&color=2ea043)](https://github.com/z91772524-ai/dsh-pojia-mode/releases)

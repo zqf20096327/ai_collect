@@ -21,10 +21,18 @@
 **Adaptive Action & Reasoning Agent**
 
 [![Website](https://img.shields.io/badge/website-fischerf.github.io%2Faar-blue?style=flat-square)](https://fischerf.github.io/aar/)
+[![Made in the EU](https://img.shields.io/badge/made%20in%20the-EU-003399?style=flat-square)](#)
+[![Runs fully local](https://img.shields.io/badge/runs%20fully%20local-Ollama-2ea44f?style=flat-square)](#)
+[![No telemetry](https://img.shields.io/badge/telemetry-none-2ea44f?style=flat-square)](#)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](LICENSE)
 
 </div>
 
 A lean, provider-agnostic agent framework with a thin core loop, typed event model, sandboxed tool execution, pluggable transports, and an extension API.
+
+**Made in the EU, open source, no telemetry.** aar collects no usage data. With a local model via Ollama, your
+prompts, files and sessions never leave your machine, which makes GDPR-compliant use easy. With a cloud provider,
+only what you send to that provider leaves it.
 
 <table width="100%">
   <tr>
@@ -42,6 +50,18 @@ A lean, provider-agnostic agent framework with a thin core loop, typed event mod
     </td>
   </tr>
 </table>
+
+## Aar Desktop – aar for everyone on Windows
+
+[**Aar Desktop**](https://github.com/fischerf/aar-desktop) puts aar into a small eagle in the corner of the screen,
+no terminal needed. Ask in plain words: it opens programs, clicks, types, reads documents and finds photos by what
+is in them, and asks before it changes anything. One installer brings aar, its own Python and a Windows desktop
+MCP server along and runs locally with Ollama. See the [website](https://fischerf.github.io/aar-desktop/) or
+the [releases](https://github.com/fischerf/aar-desktop/releases).
+
+<div align="center">
+  <img src="https://fischerf.github.io/aar-desktop/img/en/aar-desktop.gif" alt="Aar Desktop opens Paint and paints a sunset over the sea" width="800" />
+</div>
 
 ## Design goals
 

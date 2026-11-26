@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://artk0de.github.io/TeaRAGs-MCP/">
-    <img src="public/logo.png" alt="TeaRAGs logo">
+    <img src="public/logo-readme.png" alt="TeaRAGs logo" width="540">
   </a>
 </p>
 
@@ -8,7 +8,7 @@
 
 <p align="center">
   <strong>Codebase Intelligence layer for AI coding agents</strong><br>
-  <sub>Trajectory Enrichment-Aware RAG · served over MCP · 100% local</sub>
+  <sub>Trajectory Enrichment-Aware RAG · served over MCP · local by default</sub>
 </p>
 
 <p align="center">
@@ -22,19 +22,139 @@
 
 ---
 
-**Your coding agent copies the first code it finds — not the right one.**
+**🧠 Your codebase grows faster than your team can understand it.**
 
-TeaRAGs is a **Codebase Intelligence layer** your agent queries over MCP. It
-indexes the repository on your machine into five layers — three that read the
-code and two that judge its interfaces:
+Even experienced developers know only parts of a large system. AI agents face
+the same problem: finding similar code is easier than knowing whether it is a
+good example or what a change might affect.
 
-- 🔍 **What it does** — semantic and hybrid search over AST-aware chunks
-- 🕸️ **How it is connected** — callers, callees, fan-in, transitive impact
-- 🧬 **How it has lived** — churn, bug-fix rate, ownership, age
-- 🏛️ **Whether it is laid out right** — dependency direction, leaking facades,
-  files that change together with no edge between them
-- 🔤 **What the project calls things** — the naming vocabulary, inferred from
-  the call graph, and a verdict on every new name
+**🔬 TeaRAGs is a microscope for your codebase.** It gives coding agents
+semantic search, a code graph, Git history, and architecture and naming signals
+over MCP — helping them find relevant code, investigate risks, and prepare
+changes for review. Fully local by default; cloud embeddings are optional.
+
+## 🚀 Quick Start
+
+We recommend Node.js 24+. With Node.js and [Ollama](https://ollama.com)
+installed:
+
+```bash
+npm install -g tea-rags
+ollama pull unclemusclez/jina-embeddings-v2-base-code:latest
+tea-rags index-codebase /path/to/repo --name myrepo
+tea-rags prime /path/to/repo
+```
+
+[Connect your agent](#-installation): setup instructions for Claude Code, Codex,
+Cursor, ZCode, and other MCP clients are below. Qdrant downloads and starts
+automatically on first use. For cloud embeddings or an alternative local
+provider, see the
+[installation guide](https://artk0de.github.io/TeaRAGs-MCP/quickstart/installation).
+
+Then ask your agent:
+
+- _"How does auth work in this project?"_
+- _"Find stable examples of retry logic I can reuse."_
+- _"What might be affected if I change the payment module?"_
+
+## 🔬 A closer look
+
+Even experienced developers know a system unevenly: their own modules well,
+neighboring ones less well, and the rest only in broad strokes. Much of a
+project's established practice lives in the code itself. Every change means
+rebuilding context: finding the implementation, tracing dependencies, comparing
+approaches, studying past fixes, and finding people who know the area.
+
+Even human review can miss the problem. Code may look reasonable locally while
+introducing an unwanted dependency, duplicating an existing mechanism, or
+repeating a fragile approach. AI coding agents face the same limitation: finding
+similar code is much easier than knowing whether to use it as a model.
+
+**🔬 TeaRAGs is a microscope for your codebase, helping your agent examine it
+from different angles.** This local **Codebase Intelligence layer**, queried
+over MCP, combines semantic and graph indexes with Git history: what code does,
+how it connects, how it has changed, where risks concentrate, and who knows it
+best. Architecture detectors and project vocabulary analysis help surface
+structural problems and inconsistencies that are easy to miss when reading
+isolated files.
+
+**🔍 Search by meaning, then navigate by relationships.**
+[Semantic indexing](https://arxiv.org/abs/1909.09436) helps locate
+implementations from a description of the task, even before you know method
+names or the project's terminology.
+[Graph indexing](https://docs.joern.io/code-property-graph/) lets you
+investigate structural relationships: who calls the code, which dependencies
+surround it, and which components execution passes through.
+
+TeaRAGs retains the benefits of both approaches. An agent can start with a
+natural-language question, find the relevant code, and follow its connections.
+Git signals add another perspective: how that code has evolved and where to
+exercise caution.
+
+These signals are inferred from observed code and change history. They help
+agents investigate established practices and make decisions; explicit team rules
+and agent instructions retain priority.
+
+This removes much of the routine investigation. Instead of searching through
+files one after another, the agent gets the symbols, relationships, and evidence
+needed for a specific question. Developers have fewer details to keep in their
+heads, fewer search steps to direct manually, and less information to assemble
+by hand.
+
+The benefits extend beyond search:
+
+- **🎯 Better-informed decisions.** Fix history, dependencies, and potential
+  impact help agents choose an implementation, assess risk, and decide how much
+  verification a change needs.
+- **👥 More targeted review.** Authorship and ownership analysis help
+  automatically identify reviewer candidates familiar with the affected code and
+  highlight areas that need their attention.
+- **📉 Less unnecessary context.** Reading the relevant symbols and
+  relationships reduces input tokens and intermediate search steps. Compact,
+  relevant context leaves fewer distractions. This aligns with
+  [context rot research](https://www.trychroma.com/research/context-rot), which
+  shows declining model reliability as context grows, and may make tasks easier
+  for less capable models.
+- **♻️ More purposeful refactoring.** Detectors help locate structural problems
+  and decide where to invest effort. Better structure can reduce the
+  investigation and cost of subsequent changes, paying back the initial
+  investment.
+
+**🧩 Especially useful for less capable models.** In our observations, giving
+these models more relevant code and explicit relationships helps them make
+better use of their capabilities. Frontier models often produce comparable code
+quality with or without TeaRAGs; for them, the benefit is more about the time
+spent finding and assembling context. Semantic search has generally saved
+investigation time in our sessions, although we have not consistently observed
+that speed advantage in Codex. The benefit depends on the model and agent
+harness, not just the search engine.
+
+### 📊 Refactoring TeaRAGs with TeaRAGs
+
+In TeaRAGs' own development, we measured Claude Code agents before and after a
+program of structural refactoring. This compares development before and after
+structural improvements, rather than search with and without TeaRAGs:
+
+| Metric per feature   | Before refactoring |  After | Change |
+| -------------------- | -----------------: | -----: | -----: |
+| Median elapsed time  |             68 min | 17 min |   −75% |
+| Agent steps          |                117 |     68 |   −42% |
+| Context processed    |       23.3M tokens |  12.7M |   −45% |
+| Weighted token cost¹ |               4.5M |   1.8M |   −60% |
+
+¹ `input + 2 × cache_write + 0.1 × cache_read + 5 × output`. This is an
+aggregate cost metric, not a separate measurement of output tokens.
+
+These are observations from real development tasks using the same model, not a
+controlled A/B experiment. The working process did not change substantially. The
+`review_changes` check was added after refactoring, so the reductions already
+include its additional overhead.
+
+**💡 You do not need to keep the whole system in your head. You need to see what
+matters for the change in front of you.**
+
+_Your code should be as powerful as a T-rex, not a collection of dinosaur
+remains. 🦖_
 
 <p align="center">
   <img src="public/five-layers.png" alt="Five layers behind one MCP interface: Semantic index, Codegraph, Trajectory, Architecture, Lexicon. The first three read the code, the last two judge its borders and names; every result comes back as a dossier">
@@ -44,89 +164,64 @@ The first three layers and why an agent needs all of them at once are laid out
 in [Codebase Intelligence для агента](https://habr.com/ru/articles/1084028/)
 (Habr, in Russian).
 
-TeaRAGs also ships agent skills that know which layer a task needs. The agent
-stops guessing which code is safe to copy, what is critical, and what a change
-will break — it reads the dossier instead.
-
 📖 **[Documentation](https://artk0de.github.io/TeaRAGs-MCP/)** · 🏁
 **[15-minute quickstart](https://artk0de.github.io/TeaRAGs-MCP/quickstart/installation)**
 · 🧠
 **[Core concepts](https://artk0de.github.io/TeaRAGs-MCP/introduction/core-concepts)**
 
-## 👀 See It
+## 👀 See What Changes the Decision
 
-Three questions an agent asks before touching code, answered by TeaRAGs on its
-own repository. Every number below is a real response, trimmed.
+Finding code is the beginning. The useful question is what the evidence changes
+about the next step. These independent examples use real TeaRAGs responses from
+its own repository, trimmed. The decisions below illustrate how an agent can use
+that evidence; they are not a recorded implementation session.
 
-### 1. "Find retry logic I can reuse"
+### 1. 🧬 The closest match may be the wrong example
+
+**Question:** “Which retry implementation should I reuse?”
+
+Similarity puts `OllamaEmbeddings#retryWithBackoff` first. Its history gives the
+agent a reason to look beyond that first result:
+
+| Evidence                      | First semantic match: `OllamaEmbeddings#retryWithBackoff` | Second match: `DeletionRetryHelper#execute` |
+| ----------------------------- | --------------------------------------------------------: | ------------------------------------------: |
+| Commits to the file           |                                                        28 |                                           1 |
+| Share classified as bug fixes |                                       54% · 🔴 concerning |                             0% · 🟢 healthy |
+| Last changed                  |                                                2 days ago |                                 86 days ago |
+| Callers                       |                                                         2 |                                           1 |
+
+**Decision:** investigate why the closest match keeps being fixed before copying
+it, and compare the quieter helper's approach. One commit and no recorded fixes
+are limited evidence, not a guarantee of quality.
+
+<details>
+<summary>Query and how to read the signals</summary>
 
 `semantic_search { query: "retry a failed request with exponential backoff", rerank: "hotspots" }`
 
-Similarity alone puts `OllamaEmbeddings#retryWithBackoff` first. The dossiers of
-the top two candidates tell different stories:
-
-|                           | 🥇 `OllamaEmbeddings#retryWithBackoff` | 🥈 `DeletionRetryHelper#execute` |
-| ------------------------- | -------------------------------------- | -------------------------------- |
-| Similarity rank           | #1                                     | #2 (`retry-helper.ts`)           |
-| Commits to the file       | 28                                     | 1                                |
-| Share that were bug fixes | 54% · 🔴 _concerning_                  | 0% · 🟢 _healthy_                |
-| Last changed              | 2 days ago · _recent_                  | 86 days ago · _old_              |
-| Callers                   | 2                                      | 1                                |
-
-The closest match keeps getting fixed. The agent copies the quiet helper's shape
-— or learns why the first one keeps breaking before it repeats the mistake.
-
-<details>
-<summary>Raw response for the first hit (trimmed)</summary>
-
-```json
-{
-  "symbolId": "OllamaEmbeddings#retryWithBackoff",
-  "relativePath": "src/core/adapters/embeddings/ollama.ts",
-  "startLine": 290,
-  "endLine": 378,
-  "preset": "hotspots",
-  "git": {
-    "file": {
-      "commitCount": 28,
-      "ageDays": { "value": 2, "label": "recent" },
-      "bugFixRate": { "value": 54, "label": "concerning" },
-      "relativeChurn": { "value": 2.55, "label": "normal" }
-    },
-    "chunk": {
-      "commitCount": { "value": 11, "label": "extreme" },
-      "relativeChurn": { "value": 9.09, "label": "high" }
-    }
-  },
-  "codegraph": { "symbols": { "chunk": { "fanIn": 2, "fanOut": 6 } } }
-}
-```
-
-Labels are computed from **this repository's own percentiles**, so _extreme_
-means extreme for this codebase, not for some global average.
+The semantic match locates candidates; Git history gives another axis for
+comparison. Labels are computed from this repository's own distributions.
+Bug-fix classification is a history heuristic, not a count of defects in the
+current implementation.
 
 </details>
 
-### 2. "What is risky to touch around vector writes?"
+### 2. 🕸️ A local edit can reach far beyond the file
 
-`semantic_search { query: "write points to the vector database in batches", rerank: "dangerous" }`
+**Question:** “What needs verification before I change this write method?”
 
-Similarity alone ranks `PointsAccumulator#flushBatch`,
-`QdrantPointStore#addPointsOptimized` and `QdrantPointStore#addPoints` first.
-The `dangerous` preset reorders by risk and says why:
+`QdrantManager#addPointsWithSparse` has **10 call sites across 8 files**. Its
+file has a **transitive impact of 47 files**. Callers span ingestion, API
+operations, schema management, and migrations.
 
-| #   | Ranked by risk                               | Why it moved up                                                             |
-| --- | -------------------------------------------- | --------------------------------------------------------------------------- |
-| 1   | `ChunkPipeline#createBatchHandler`           | 16 outgoing calls, 77 lines, 5 commits · _high_                             |
-| 2   | `QdrantManager#addPointsWithSparseOptimized` | file with 45 commits, relative churn 8.09 · 🔴 _high_, 4 authors            |
-| 3   | `PointsAccumulator#flushBatch`               | one author owns 100% of the live lines · 🟠 _deep-silo_, 158 days untouched |
+**Decision:** include those entry points in the verification plan rather than
+judge the change by the size of the method. Transitive impact identifies
+potential exposure; it does not mean all 47 files will break.
 
-### 3. "Who calls it before I change it?"
+<details>
+<summary>Query and call sites</summary>
 
 `get_callers { symbolId: "QdrantManager#addPointsWithSparse" }`
-
-Ten exact call sites across eight files — method fan-in 10 · _central_, file
-transitive impact 47 · _regional_:
 
 ```text
 ChunkPipeline#createBatchHandler          ingest/pipeline/chunk-pipeline.ts
@@ -140,16 +235,92 @@ SparseStoreAdapter#rebuildSparseVectors   maintenance/migration/adapters/sparse-
 SparseStoreAdapter#storeSparseVersion     maintenance/migration/adapters/sparse-store-adapter.ts
 ```
 
-Need the whole chain from an entry point to this call? `trace_path` enumerates
-every A→B path and, with a rerank preset, sorts them by how dangerous each step
-is.
+`trace_path` can follow A→B call paths; risk ranking helps decide which steps
+deserve closer investigation. Ownership signals help identify reviewer
+candidates familiar with the affected areas.
+
+</details>
+
+### 3. 🔗 No graph edge does not mean independent changes
+
+**Question:** “Why do these two resolvers keep changing together?”
+
+The Go and Java resolvers changed together in **5 sessions**. Every Java change
+in that sample came with a Go change (**lift 86.5**), despite no import or call
+connecting them.
+
+**Decision:** investigate a shared convention or duplicated responsibility
+before changing either resolver in isolation. Check whether the other needs a
+matching update, or whether common behavior belongs in the language kernel.
+Co-change is a lead for investigation, not proof of a missing abstraction.
+
+<details>
+<summary>Where the evidence comes from</summary>
+
+`get_architecture_report` combines structural relationships with change history.
+Its silent-coupling detector surfaces co-change that has no corresponding graph
+edge. A call graph alone would not reveal this relationship.
+
+</details>
+
+### 4. 🔤 A reasonable name can introduce a second vocabulary
+
+**Question:** “Does this new name speak the project's language?”
+
+| Draft                        | Evidence from the project                                                            | Review result                     |
+| ---------------------------- | ------------------------------------------------------------------------------------ | --------------------------------- |
+| `const meta: GitFileSignals` | Values of this type are named after `assembleFileSignals`                            | **MISFIT** → `fileSignals`        |
+| `type SignalStatistics`      | Existing term `stats` has semantic similarity 0.93, above the chance-corrected floor | **NEW_TERM**, alternative `stats` |
+
+**Decision:** prefer the established name when it describes the same role or
+concept. The agent gets evidence for a naming discussion instead of adding
+another plausible synonym. Explicit team naming rules retain priority.
+
+<details>
+<summary>Review query and evidence isolation</summary>
+
+`review_changes { changes: { base: "main" }, sections: ["naming"] }`
+
+The vocabulary is inferred from the project's call graph. Only declarations on
+added lines are judged, and changed files are excluded from the evidence so a
+diff cannot establish its own convention. `get_ontology_report` can audit the
+wider vocabulary for synonyms, homonyms, and outliers.
+
+</details>
+
+### 5. 🏛️ A working import can still cross the wrong boundary
+
+**Question:** “Does this change fit how the component is used?”
+
+`bootstrap/factory.ts` reaches past the `bootstrap/config` facade into
+`env-snapshot.ts` for **3 names the facade does not export**. Meanwhile, **7 of
+9 importers** use the facade.
+
+**Decision:** examine whether the factory should use the facade or whether the
+facade's contract needs an intentional change. A valid import and passing local
+tests do not answer that architectural question.
+
+<details>
+<summary>Detector and interpretation</summary>
+
+`get_architecture_report` identifies the bypass using import edges and observed
+facade adoption. This is an inferred boundary to investigate; an explicit
+architectural rule or an intentional exception can take precedence.
+
+</details>
+
+**The microscope changes what the agent checks, copies, names, and asks a human
+to verify — with evidence attached to each decision.**
 
 ## ❓ What It Answers
 
-Ask in plain language. **The plugin picks the skill, tools and rerank presets
-for every question automatically** — it ships a decision table that maps intent
-to the right call, so nobody has to know a preset name. Other MCP clients get
-the same routing guide as an MCP resource (`tea-rags://schema/search-guide`).
+<details>
+<summary>Explore questions, evidence, and agent workflows</summary>
+
+Ask in plain language. **The plugin routes tasks to relevant skills, tools and
+rerank presets** — it ships a decision table that maps intent to the right call,
+so nobody has to know a preset name. Other MCP clients get the same routing
+guide as an MCP resource (`tea-rags://schema/search-guide`).
 
 One question per layer, most distinctive first. Every number is a real response
 on TeaRAGs' own repository.
@@ -207,7 +378,8 @@ Similarity finds all four; history decides. `proven` ranks long-lived,
 low-bug-rate, multi-author code first, and every result carries its dossier —
 commits, bug-fix share, age, owners — labelled against this repository's own
 percentiles. The closest match by text is often the one fixed every sprint; see
-[See It → 1](#1-find-retry-logic-i-can-reuse) for a real pair.
+[retry comparison](#1--the-closest-match-may-be-the-wrong-example) for a real
+pair.
 
 ### 4. 🕸️ _"How does a request get from the API to the card charge, and which step is riskiest?"_
 
@@ -216,8 +388,8 @@ percentiles. The closest match by text is often the one fixed every sprint; see
 Every call path between the two symbols, resolved from the call graph rather
 than guessed from names, with each step ranked by how risky it is to touch. An
 ambiguous call is reported as ambiguous, never picked at random. See
-[See It → 3](#3-who-calls-it-before-i-change-it) for the ten call sites of a
-real write path.
+[impact example](#2--a-local-edit-can-reach-far-beyond-the-file) for the ten
+call sites of a real write path.
 
 ### 5. 🔍 _"Where do we charge a bill with a saved card?"_ — when the code says `invoice`
 
@@ -279,6 +451,8 @@ The right column shows what runs under the hood.
 
 </details>
 
+</details>
+
 ## ✨ Features
 
 - 📈 **Git- and codegraph-aware ranking** — 23 rerank presets blend churn,
@@ -286,8 +460,8 @@ The right column shows what runs under the hood.
   (`proven`, `hotspots`, `techDebt`, `blastRadius`, `criticalPath`, …), plus 12
   filter presets
 - 🕸️ **Call graph** — callers, callees, cycles and A→B paths (`get_callers`,
-  `get_callees`, `find_cycles`, `trace_path`) for TypeScript, JavaScript, Ruby,
-  Swift and Python at a high tier
+  `get_callees`, `find_cycles`, `trace_path`) with resolution depth varying by
+  language and driver availability — see [Language Support](#language-support)
 - 🏛️ **Architecture report** — Stable Dependencies at component level, imports
   that leak past an adopted facade, files that change together with no edge
   between them, and distance from the main sequence (`get_architecture_report`)
@@ -295,23 +469,20 @@ The right column shows what runs under the hood.
   off the project vocabulary, co-change partners the change left untouched,
   per-file cohesion, and new edges that break architecture boundaries
   (`review_changes`)
-- 🔤 **Naming review** — the project's vocabulary inferred from the call graph:
-  verdicts on value and type names, the project's own word for a synonym, a
-  review of every name a diff declares (`review_changes`), and a whole-code
-  audit of synonyms, homonyms and outliers (`get_ontology_report`)
-- 🧠 **Agent skills** — the plugin routes every question to the right tools and
-  presets on its own; 15 ready-made workflows (`explore`, `bug-hunt`,
-  `risk-assessment`, `data-driven-generation`, `mr-review`, …) plus
+- 🧠 **Agent skills** — the plugin routes tasks to relevant tools and presets;
+  15 ready-made workflows (`explore`, `bug-hunt`, `risk-assessment`,
+  `data-driven-generation`, `mr-review`, …) plus
   [`dinopowers`](https://artk0de.github.io/TeaRAGs-MCP/usage/skills/#dinopowers--wrappers-over-superpowers),
   10 wrappers that feed index signals into
   [`superpowers`](https://github.com/obra/superpowers)
-- 🔒 **100% local** — embedded Qdrant and DuckDB, no Docker; embeddings through
-  Ollama — on the laptop or on any machine in your network, with the laptop as
-  an automatic fallback (see [Embedding providers](#embedding-providers)) — with
-  OpenAI, Cohere and Voyage optional
-- 🔄 **Always fresh** — incremental reindex, auto-update on a target branch,
-  per-worktree index clones, and a drift report that names the exact command to
-  run
+- 🔒 **Fully local by default** — embedded Qdrant and DuckDB, no Docker;
+  embeddings through Ollama — on the laptop or on any machine in your network,
+  with the laptop as an automatic fallback (see
+  [Embedding providers](#embedding-providers)) — with OpenAI, Cohere and Voyage
+  optional
+- 🔄 **Incremental updates & worktree support** — incremental reindex,
+  auto-update on a target branch, per-worktree index clones, and a drift report
+  that names the exact command to run
 - 🏢 **Built for enterprise monorepos** — AST chunking for 12 languages,
   parallel pipelines, validated on a 3.5M-line production monolith
 
@@ -334,8 +505,8 @@ Disk taken by real indexes (turbo quantization, dense + sparse vectors):
 | Production monolith (Ruby + TypeScript) | **3.3M lines of Ruby + TypeScript, tests included + 162K lines of docs** · ~34k files · 175k chunks | 2.0 GB                | ~460 MB             |
 | TeaRAGs itself (TypeScript)             | 686K LoC + 290K lines of docs · ~3.5k files · 45k chunks                                            | 1.2 GB                | 40 MB               |
 
-The call graph grows with the code; the vector index much less — a codebase five
-times smaller still takes 1.2 GB.
+These are measured examples, not a sizing formula. Storage depends on chunk
+count, embedding dimensions, quantization, and graph density.
 
 Pull the code-embedding model:
 
@@ -343,10 +514,10 @@ Pull the code-embedding model:
 ollama pull unclemusclez/jina-embeddings-v2-base-code:latest
 ```
 
-The repository is a plugin marketplace for Claude Code, Codex and Cursor. Each
-harness gets `tea-rags` (MCP server, skills, session hooks) and `dinopowers`
-(wrappers over [superpowers](https://github.com/obra/superpowers) — install
-superpowers first).
+The repository is a plugin marketplace for Claude Code, Codex, Cursor and ZCode.
+Each harness gets `tea-rags` (MCP server, skills, session hooks) and
+`dinopowers` (wrappers over [superpowers](https://github.com/obra/superpowers) —
+install superpowers first).
 
 <details>
 <summary><b>Claude Code</b> — plugins plus a setup wizard</summary>
@@ -399,6 +570,27 @@ yet verified). Details: [`harness/cursor/README.md`](harness/cursor/README.md).
 </details>
 
 <details>
+<summary><b>ZCode</b></summary>
+
+```bash
+npm install -g tea-rags
+zcode plugins marketplace add "$(npm root -g)/tea-rags/harness/zcode"
+zcode plugins install tea-rags-setup@tea-rags
+```
+
+Then run the `tea-rags-setup:install` skill in a ZCode session — the wizard
+detects the zcode host and finishes the setup (tea-rags plugin + MCP server,
+project registration, first index). Manual alternative:
+`zcode plugins install tea-rags@tea-rags` (+ `dinopowers@tea-rags`); the plugin
+carries its own MCP server and hooks on ZCode's seven events (no SubagentStart —
+the subagent search block rides a PreToolUse(Agent) hook). `tea-rags update`
+keeps the installed plugins at the client's release through this marketplace. A
+workspace server override lives in `.zcode/config.json` → `mcp.servers`.
+Details: [`harness/zcode/README.md`](harness/zcode/README.md).
+
+</details>
+
+<details>
 <summary><b>Any other MCP client</b> (Roo Code, Continue, …)</summary>
 
 ```bash
@@ -426,34 +618,6 @@ Voyage), an external Qdrant, and the built-in ONNX provider (beta) are covered
 in the
 [installation guide](https://artk0de.github.io/TeaRAGs-MCP/quickstart/installation).
 
-### 🕸️ The call graph
-
-The call graph is **on by default**. To index a project without it, set
-`CODEGRAPH_ENABLED=false` for that run, or pin it on an indexed project:
-
-```bash
-tea-rags projects set-env --name <alias> CODEGRAPH_ENABLED=false
-```
-
-The flag is recorded per project, so later runs from the CLI, the MCP server or
-auto-update keep each project's choice. Projects indexed while the call graph
-was opt-in keep the state they were indexed with; turn it on for one with
-`CODEGRAPH_ENABLED=true` in the same command. Details:
-[Codegraph Enrichments](https://artk0de.github.io/TeaRAGs-MCP/usage/advanced/codegraph-enrichments).
-
-## 🚀 Quick Start
-
-```bash
-tea-rags index-codebase /path/to/repo --name myrepo   # first index: register + index
-tea-rags prime /path/to/repo                          # index state, drift, signal thresholds
-```
-
-In Claude Code, `/tea-rags:index` does the same. Then ask your agent:
-
-- _"How does auth work in this project?"_
-- _"Find stable examples of retry logic I can copy."_
-- _"What breaks if I change the payment module?"_
-
 ## 🤔 Why TeaRAGs?
 
 |                              | `grep` / `ripgrep` | Embedding search | **TeaRAGs**                                           |
@@ -462,7 +626,7 @@ In Claude Code, `/tea-rags:index` does the same. Then ask your agent:
 | **Knows history**            | —                  | —                | Churn, bug fixes, owners, age                         |
 | **Knows callers**            | —                  | —                | Fan-in, transitive impact, call paths                 |
 | **Ranks for the task**       | —                  | Similarity only  | 23 presets — see [What It Answers](#-what-it-answers) |
-| **Cost on a large monorepo** | Many agent turns   | One query        | One query                                             |
+| **Cost on a large monorepo** | Many agent turns   | One query        | Targeted queries with code, graph and history         |
 
 ### 🆚 Compared to other tools
 
@@ -591,7 +755,7 @@ your own corpus.
 
 <!-- BEGIN lang-compat -->
 
-## Languages Compatibilities
+## Language Support
 
 <!-- markdownlint-disable MD033 -->
 <details>
@@ -608,12 +772,12 @@ Rows are ordered by overall capability, richest support first.
 
 | Language          | AST chunking                                                                                                      | Test chunking                                                                                                                                                                              | Codegraph                                                                                                                                                                                   |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **_TypeScript_**  | 🌔 **full** · tree-sitter (comment attachment, method-body splitting, describe/it scopes)                         | 🌖 **high** · testScopeChunker (describe/it scopes, one addressable chunk per example; in-source blocks marked isTest and pruned from the codegraph)                                       | 🌖 **high** — 14-strategy chain (10 tree-sitter + 4 ts.Program/typeChecker) + cone dispatch + typeChecker-backed union-receiver fan-out                                                     |
+| **_TypeScript_**  | 🌔 **full** · tree-sitter (comment attachment, method-body splitting, describe/it scopes)                         | 🌖 **high** · testScopeChunker (describe/it scopes, one addressable chunk per example; in-source blocks marked isTest and pruned from the codegraph)                                       | 🌕 **maximum** — 14-strategy chain (10 tree-sitter + 4 ts.Program/typeChecker) + cone dispatch + typeChecker-backed union-receiver fan-out                                                  |
+| **_Rust_**        | 🌔 **full** · tree-sitter (named-item extraction, #[cfg(test)] / #[test] scopes)                                  | 🌖 **high** · attribute-AST test scope chunking (#[cfg(test)] with all/any/not evaluation, #[test]-family attributes); inline tests marked isTest and pruned from the codegraph            | 🌕 **maximum** — 10-strategy (rustc call-site driver first); trait dispatch; return/field chains (Self, generics, assoc-fn heads, aliases); call-result locals; crate impls                 |
 | **_JavaScript_**  | 🌔 **full** · tree-sitter (assignment chunking, describe/it scopes, module/class split)                           | 🌖 **high** · testScopeChunker (describe/it scopes, one addressable chunk per example; in-source blocks marked isTest and pruned from the codegraph)                                       | 🌖 **high** — 6-strategy; CommonJS/ESM require resolution (dynamic gaps)                                                                                                                    |
 | **_Ruby_**        | 🌔 **full** · tree-sitter (RSpec block grouping, comment attachment, spec scope splitting, method-body splitting) | 🌖 **high** · RSpec scope chunker (one chunk per example, ancestor setup injected)                                                                                                         | untyped 🌖 **high** · YARD 🌕 **maximum** · RBS/Sorbet 🌑 **TBD** — 15-strategy chain + 4 dispatch components + 20-grammar DSL catalogue + YARD type-source + db/schema.rb column accessors |
 | **_Swift_**       | 🌔 **full** · tree-sitter                                                                                         | 🌖 **high** · XCTest + swift-testing recognition (test cases, setUp/tearDown, @Test/@Suite) plus Quick/Nimble DSL scope chunking (per-scenario chunks with ancestor beforeEach spliced in) | 🌖 **high** — 10-strategy chain + superclass dispatch + field and return-type receiver typing + nested-type and module-value receivers; no import narrowing                                 |
 | **_Python_**      | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌖 **high** — 10-strategy chain + C3 MRO + cone/union/callable-param/dict-table dispatch + re-export-aware imports + inferred return types + gated framework vocabularies                   |
-| **_Rust_**        | 🌔 **full** · tree-sitter (named-item extraction, #[cfg(test)] / #[test] scopes)                                  | 🌖 **high** · attribute-AST test scope chunking (#[cfg(test)] with all/any/not evaluation, #[test]-family attributes); inline tests marked isTest and pruned from the codegraph            | 🌗 **moderate** — 10-strategy (rustc call-site driver first); trait dispatch; return/field chains (Self, generics, assoc-fn heads, aliases); call-result locals; crate impls                |
 | **_Go_**          | 🌔 **full** · tree-sitter (func/type split)                                                                       | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — 7-pass chain + scope-aware typed locals + struct-field chains + embedding promotion + go.mod module-path imports; no interface dispatch                                   |
 | **_Java_**        | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — 6-strategy + java.lang stdlib whitelist + overload disambiguation                                                                                                         |
 | **_PHP_**         | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — same-file $this members, typed locals, same-file and imported scoped calls, same-file functions, unique global functions, use-to-file edges                               |
@@ -635,7 +799,7 @@ or syntax-blind fallback. Internal revisions only route index rebuilds.
 
 | Language   | Language / toolchain policy | Grammar package version                        | Internal revisions (chunking / walker / codegraphSchema) | Evidence and limits                                                                                                                                                                                                                                            |
 | ---------- | --------------------------- | ---------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ruby       | grammar-bounded             | tree-sitter-ruby@0.23.1                        | 3 / 11 / 2                                               | Installed grammar and project fixtures bound Ruby syntax; no Ruby/MRI release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                                                                           |
+| ruby       | grammar-bounded             | tree-sitter-ruby@0.23.1                        | 4 / 11 / 2                                               | Installed grammar and project fixtures bound Ruby syntax; no Ruby/MRI release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                                                                           |
 | typescript | grammar-bounded             | tree-sitter-typescript@0.23.2                  | 4 / 17 / 2                                               | Installed TypeScript/TSX grammar and project fixtures bound syntax; TypeScript compiler package version does not certify a language release range · tests/core/domains/language/capability/version-policy.test.ts                                              |
 | javascript | grammar-bounded             | tree-sitter-javascript@0.25.0                  | 4 / 6 / 2                                                | Installed JavaScript/JSX grammar and project fixtures bound syntax; no ECMAScript edition or Node/browser runtime range certified · tests/core/domains/language/capability/version-policy.test.ts                                                              |
 | python     | grammar-bounded             | tree-sitter-python@0.25.0                      | 1 / 12 / 2                                               | Installed grammar and project fixtures bound Python syntax; no Python/CPython release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                                                                   |
@@ -664,6 +828,7 @@ decides how much of the tooling on top of the MCP server you get.
 | **Claude Code**                                 | ✅ stdio                                                 | ✅ plus the plugin's routing rules        | ✅ plugins                              | ✅ `/tea-rags-setup:install` |
 | **Codex CLI**                                   | ✅ stdio                                                 | ✅ plus the plugin's core skill and hooks | ✅ plugins (`$name` skills)             | — manual install             |
 | **Cursor**                                      | ✅ stdio                                                 | ✅ plus the plugin's sessionStart digest  | ✅ plugins (`/name` skills)             | — manual install             |
+| **ZCode**                                       | ✅ stdio                                                 | ✅ plus the plugin's SessionStart hooks   | ✅ plugins (`tea-rags:name` skills)     | ✅ `tea-rags-setup:install`  |
 | **Other stdio clients** (Roo Code, Continue, …) | ✅ `tea-rags server`                                     | ✅ where the client reads MCP resources   | —                                       | — manual install             |
 | **HTTP clients**                                | ✅ `tea-rags server --http` (Streamable HTTP, port 3000) | ✅ where the client reads MCP resources   | —                                       | — manual install             |
 
@@ -761,7 +926,7 @@ is incremental — only changed files are re-embedded.
 graph of varying depth: TypeScript, JavaScript, Ruby, Python, Swift, Go, Java,
 Rust, Bash, Objective-C, PHP, and Kotlin. Markdown is chunked by heading and
 YAML by key path; SQL and JSON fall back to plain character chunks. Per-language
-depth is in [Languages Compatibilities](#languages-compatibilities).
+depth is in [Language Support](#language-support).
 
 **How accurate are the git signals?** They are read from your real history; the
 one heuristic is bug-fix detection. A commit counts as a bug fix when its

@@ -396,8 +396,9 @@ memory for a full inference run are not tested.
 
 ## Slicer Extension
 
-**SlicerDDSurfer will be open-sourced soon** at
-[ChengjinLii/SlicerDDSurfer](https://github.com/ChengjinLii/SlicerDDSurfer).
+DDSurfer is available as a 3D Slicer extension in **SlicerDSpace**:
+[Official Website](https://neurodmri.github.io/SlicerDSpace/) |
+[GitHub Repository](https://github.com/NeuroDMRI/SlicerDSpace).
 
 Surface OBJ files declare `SPACE=RAS` in their header for automatic coordinate
 selection in 3D Slicer. For older outputs without this declaration, select

@@ -1,51 +1,105 @@
 ---
 description: Instruções e fluxo de trabalho para agentes de código.
-language: pt
+language: pt-BR
 ---
 
 # Pathbit AI - AgentDevKit
 
-[English](README.en.md) · [Español](README.es.md) · [Pacote npm][npm-package]
+[Português (Brasil)][reading-pt] · [English][reading-en] · [Español][reading-es]
+· [Pacote no npmjs][npm-package] · [Versões no GitHub][github-releases]
 
 [![npm][npm-badge]][npm-package] [![MIT][license-badge]](LICENSE)
 
-O AgentDevKit reúne instruções reutilizáveis para planejar, implementar e
-verificar o trabalho com agentes de código. A pasta `.pbai4devs` guarda
-skills, regras, comandos e perfis. O kit gera referências para
+O AgentDevKit ajuda agentes de código a entender o projeto, planejar mudanças
+e verificar entregas. As instruções ficam em `.pbai4devs` e podem ser usadas em
+projetos de qualquer linguagem. O kit gera referências para
 [Codex, Claude, Cursor, Copilot, OpenCode e outros clientes](.pbai4devs/COMPATIBILIDADE.md).
 
-## Começar em um projeto
+## Pré-requisitos
 
-Prepare [Node.js 24+ e npm](docs/guides/prerequisites.md) no Windows, macOS ou
-Linux. Abra o terminal na pasta do seu projeto. Se ele já tem arquivos,
-[simule a instalação][preview] para conferir o que vai mudar. Instale pelo
-**npm público**, sem login:
+- **Obrigatório para a CLI.** Instale Node.js 24 LTS ou superior com npm e
+  `npx`, incluídos na distribuição oficial. No Windows, use no mínimo a versão
+  24.13.1 na série 24 LTS ou escolha a série 26 LTS ou superior.
+  [Baixar Node.js][node-download] · [Instalação por sistema][prerequisites]
+- **Git, quando usar um repositório.** Instale para clonar o código e verificar
+  as exclusões do Git. Em uma pasta sem Git, a instalação do kit funciona.
+  [Baixar Git][git-download]
+- **Cliente de IA e ferramentas do projeto.** Abra o projeto no cliente que
+  você usa para trabalhar com os agentes. Para compilar e testar a aplicação,
+  siga os requisitos do próprio projeto. [Clientes compatíveis][clients]
 
-```console
-npx @pathbit/agentdevkit init
-```
+## Começo rápido
 
-O assistente de primeiro uso reúne idioma, clientes e objetivo. Se você já
-souber a seleção, passe `--agents codex,claude`. Sem escolha explícita ou
-salva, `none` prepara os recursos compartilhados e `AGENTS.md`, sem criar
-pastas de clientes. A escolha fica salva por projeto e a CLI aceita `pt`, `en`
-e `es`. Veja as
-[opções de instalação][install], incluindo pnpm, Yarn, Bun e
-[GitHub Packages com autenticação][github-install].
-
-Em um projeto com Git, confira a instalação e a sincronização:
+Abra um terminal na pasta do projeto. O npmjs é o caminho principal.
+Use `@latest` para receber a versão estável mais recente. Informe o número
+para executar sempre a mesma versão.
 
 ```console
-npx @pathbit/agentdevkit doctor
-npx @pathbit/agentdevkit sync --check
+npx --yes @pathbit/agentdevkit@latest init --lang pt --purpose agents
+npx --yes @pathbit/agentdevkit@0.0.39 init --lang pt --purpose agents
 ```
+
+No assistente, use as setas para navegar e **Espaço** para marcar cada
+agente. Confirme com **Enter**. Pressione **Esc** para cancelar. Se confirmar
+sem marcar nenhum, o kit instala apenas os recursos compartilhados.
+
+Para mudar a seleção depois:
+
+```console
+npx @pathbit/agentdevkit agents --select
+```
+
+Em uma pasta existente, você pode [ver o plano antes de instalar][preview].
+Para automação ou terminais sem menu, passe os IDs dos clientes:
+
+```console
+npx @pathbit/agentdevkit init --lang pt --agents codex,claude --dry-run
+npx @pathbit/agentdevkit init --lang pt --agents codex,claude
+```
+
+Abra o projeto no seu agente de código e peça:
+
+> Leia o AGENTS.md e o README. Mostre os comandos do projeto e proponha um
+> primeiro passo. Por enquanto, só leia os arquivos.
+
+Confira a seleção com `npx @pathbit/agentdevkit agents`.
+[Opções de instalação][install] · [Clientes compatíveis][clients]
+
+## Outras formas de executar
+
+### Pelo GitHub Release
+
+Use o arquivo `.tgz` de uma versão publicada. Node.js e o `npx` que vem com
+ele bastam.
+
+<!-- markdownlint-disable MD013 -->
+
+```console
+npx --yes https://github.com/pathbit/AgentDevKit/releases/download/v0.0.39/agentdevkit-0.0.39.tgz init --lang pt --purpose agents
+```
+
+<!-- markdownlint-enable MD013 -->
+
+### Direto do código no GitHub
+
+Com [Git instalado][git-download], execute a versão em desenvolvimento
+da branch `main`.
+
+<!-- markdownlint-disable MD013 -->
+
+```console
+npx --yes "git+https://github.com/pathbit/AgentDevKit.git#main" init --lang pt --purpose agents
+```
+
+<!-- markdownlint-enable MD013 -->
 
 ## Escolha o que quer fazer
 
 | Quero… | Rode no terminal |
 | --- | --- |
+| Selecionar agentes | `npx @pathbit/agentdevkit agents --select` |
 | Planejar produto | `npx @pathbit/agentdevkit next --intent product` |
-| Rodar a aplicação | `npx @pathbit/agentdevkit next --intent run` |
+| Saber como rodar a aplicação | `npx @pathbit/agentdevkit next --intent run` |
 | Documentar o sistema | `npx @pathbit/agentdevkit next --intent document` |
 | Inventariar antes de instalar | `npx @pathbit/agentdevkit document` |
 
@@ -99,23 +153,36 @@ As ferramentas locais têm instalação separada. Os artefatos e as somas da
 [release][release] permitem conferir o pacote publicado nos
 [dois registries][packages].
 
-## Licença e autoria
-
-Mantido pela [PathBit](https://www.pathbit.com.br),
-sob a licença [MIT](LICENSE).
-A instalação inclui a licença do kit em `.pbai4devs/LICENSE` e preserva
-a licença e os arquivos próprios do seu projeto.
-
 [Changelog](CHANGELOG.md) · [Roadmap](docs/product/roadmap.md)
 · [Plugins e créditos](docs/guides/plugins.md)
 
+---
+
+## Contributing and Branch Protection
+
+Envie o pull request do seu fork para `main`. Consulte o
+[guia de contribuição](CONTRIBUTING.md) para rodar as
+verificações antes de enviar.
+
 Encontrou um problema ou tem uma ideia? [Abra uma issue][issues] pelos
 [formulários de contribuição](docs/maintainers/community.md).
+
+---
+
+## 📄 License
+
+Distribuído sob a [licença MIT](LICENSE).
+A instalação inclui a licença do kit em `.pbai4devs/LICENSE` e preserva
+a licença e os arquivos próprios do seu projeto.
 
 [tests]: docs/guides/tools-and-testing.md
 [cli]: docs/guides/cli.md
 [help]: docs/guides/troubleshooting.md
 [install]: docs/guides/installation.md
+[prerequisites]: docs/guides/prerequisites.md
+[node-download]: https://nodejs.org/en/download
+[git-download]: https://git-scm.com/install/
+[clients]: .pbai4devs/COMPATIBILIDADE.md
 [preview]: docs/guides/installation.md#simular-em-um-projeto-existente
 [update]: docs/guides/installation.md#atualizar-e-escolher-agentes
 [workflow]: docs/guides/workflow.md
@@ -124,7 +191,15 @@ Encontrou um problema ou tem uma ideia? [Abra uma issue][issues] pelos
 [issues]: https://github.com/pathbit/AgentDevKit/issues/new/choose
 [packages]: docs/maintainers/packages.md
 [release]: https://github.com/pathbit/AgentDevKit/releases/latest
+[github-releases]: https://github.com/pathbit/AgentDevKit/releases
 [npm-package]: https://www.npmjs.com/package/@pathbit/agentdevkit
 [npm-badge]: https://img.shields.io/npm/v/%40pathbit%2Fagentdevkit
 [license-badge]: https://img.shields.io/badge/license-MIT-blue
-[github-install]: docs/guides/installation.md#github-packages
+
+[reading-pt]: README.md
+[reading-en]: README.en.md
+[reading-es]: README.es.md
+
+---
+
+Developed with ❤️ by [Pathbit](https://www.pathbit.com.br/)

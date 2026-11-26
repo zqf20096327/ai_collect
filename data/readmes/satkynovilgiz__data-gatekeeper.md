@@ -19,8 +19,8 @@ raw.csv ──► Module 1: Profile ──► Module 2: Clean ──► Module 3
 |---|---|---|
 | 1. Profiling & Metadata Intelligence | ✅ **complete** (v1.2, Sprint 3): CLI + API + JSON Schema, disguised missing, quality score, cleaning suggestions | `profiling_report.json` + charts |
 | 2. Cleaning & Transformation | ✅ **complete** (Sprint 6): core cleaning pipeline · ML imputation + evaluation · outliers · fuzzy duplicates · ML transformation (fit on train only) · PII detection + masking · REST API — summary: [`docs/module2_summary.md`](docs/module2_summary.md) | `cleaned_data.csv`, `cleaning_log.json`, `schema.json`, `train/test_transformed.csv` + `.joblib`, `masked_data.csv` + `pii_report.json` |
-| 3. AI Validation & Anomaly Detection | ⏳ | `validation_report.json` |
-| 4. Integration, CLI & Docker | ⏳ | `python pipeline.py --input ... --output ...` |
+| 3. AI Validation & Anomaly Detection | ✅ **complete** (Sprint 9): data contracts · drift (PSI + KS) · explained anomalies · impact on a model · one report with a JSON Schema — slides: [`docs/module3_presentation.md`](docs/module3_presentation.md) | `validation_report.json`, `<name>_impact.json`, `run_<time>/summary.json` |
+| 4. Integration, CLI & Docker | 🔄 pipeline, Docker and CI already work (`gatekeeper run`); left: HTML report, `POST /run`, final demo | `gatekeeper run --config pipeline.yaml` |
 
 ## Quick start
 
@@ -162,6 +162,74 @@ All personal data in `data/raw/customers_pii.csv` is **fake**, taken from ranges
 (`@example.com`, `555-01xx` phones, SSN areas 000/666, payment test cards, TEST-NET IPs).
 Summary for the presentation: [`docs/module2_summary.md`](docs/module2_summary.md) · [`docs/sprint6_summary.md`](docs/sprint6_summary.md)
 
+## Data contracts & drift (Sprint 7)
+A contract (`contracts/<name>.yaml`) says what a dataset must look like; `drift` measures how far
+new data moved from a reference (PSI + KS). Exit codes: 0 pass, 1 fail (error rule / major drift), 2 bad input.
+```bash
+python gatekeeper.py contract init data/demo/bank_reference.csv --name bank_marketing   # draft, then edit
+python gatekeeper.py validate new.csv --contract contracts/bank_marketing.yaml          # -> reports/new_contract.json
+python gatekeeper.py drift data/demo/bank_reference.csv new.csv --contract contracts/bank_marketing.yaml
+docker build -t data-gatekeeper .
+docker run --rm -v "$PWD:/work" -w /work data-gatekeeper validate new.csv --contract contracts/bank_marketing.yaml
+```
+Demo (Bank Marketing, seed 42): the clean 30% split passes 97/97 rules with 21/21 columns stable; the
+shifted file fails 2 rules and shows major drift on exactly `duration` (PSI 8.26), `contact` (0.58) and
+`age` (0.31). Example with every rule: [`contracts/example.yaml`](contracts/example.yaml). Details: [`docs/sprint-07.md`](docs/sprint-07.md)
+
+## Does cleaning help? (impact, Sprint 8)
+`gatekeeper impact` trains the same models on the same 5 stratified folds (seed 42) after three
+preparations: **A** raw (median/mode + one-hot), **B** the full gatekeeper (cleaning steps, train-only
+dedupe, iterative imputer, Sprint 6 transform), **C** = B with a median imputer. Everything that learns
+is fitted on the train rows of each fold only (a test spies on every `fit()`).
+```bash
+python gatekeeper.py impact data/raw/bank_marketing.csv --target y          # ~9 min, + robustness
+python gatekeeper.py impact data.csv --target y --no-robustness --sample 5000   # quick look
+```
+Bank Marketing, honest result: **no ROC-AUC gain** for either model (LogReg B−A −0.0002, 95% CI
+[−0.0020, +0.0016]; HistGradientBoosting +0.0001 [−0.0004, +0.0006]). LogReg gets a better PR-AUC
+(+0.0197 [+0.0108, +0.0285]) and Brier score, equally with C, so not from the imputer. On dirty test
+data B holds up much better against missing values and decimal-comma numbers, but **loses** to A for
+HistGradientBoosting when unrecognised `999` sentinels are mixed in (the imputer learns from them).
+Tables, chart and the diagnosis: [`docs/sprint-08.md`](docs/sprint-08.md).
+
+## One-command pipeline (Sprint 8)
+```bash
+python gatekeeper.py run --config pipeline.yaml                 # profile -> validate -> clean ->
+python gatekeeper.py run --config pipeline.yaml --skip impact   #   mask_pii -> quality -> drift -> impact
+docker run --rm -v "$PWD:/work" -w /work data-gatekeeper run --config pipeline.yaml --skip impact
+```
+Steps run in that order (any subset). A failed error rule in the contract stops the run (exit 1);
+drift stops it only with `gate: true`; a bad config or a crashing step gives exit 2. Every run writes
+`reports/run_<UTC time>/summary.json` + `summary.md` next to each step's own files.
+Example config: [`pipeline.yaml`](pipeline.yaml) · CI fixture: [`tests/fixtures/pipeline_ci.yaml`](tests/fixtures/pipeline_ci.yaml).
+
+## Validation report (Sprint 9)
+One file per dataset answers "can we use it?": the **contract** (pass / fail), **drift** against a reference
+(when given) and **anomalies** (when asked), in `reports/<dataset>_validation_report.json`
+(format: [`docs/validation_report.schema.json`](docs/validation_report.schema.json)).
+```bash
+python gatekeeper.py validate new.csv --contract contracts/bank_marketing.yaml \
+       --reference data/demo/bank_reference.csv --anomalies --exclude y
+curl -F file=@new.csv -F contract=@contracts/bank_marketing.yaml -F reference=@data/demo/bank_reference.csv \
+     "http://127.0.0.1:8000/validate?anomalies=true&exclude=y"
+```
+Exit codes stay 0 pass / 1 data failed / 2 bad input. Drift and anomalies are information only, unless you set
+`--fail-on-anomaly-share 0.05` (more than 5% of rows flagged → exit 1). Also: `POST /drift`, `POST /anomalies`.
+On new rows the cleaner now turns values outside the train range and unseen sentinels (999, −1 …) into missing
+before imputing (step 8b). That fixed the Sprint 8 weakness: HistGradientBoosting with 20% corruption went from
+0.6368 to 0.7508 ROC-AUC. Details: [`docs/sprint-09.md`](docs/sprint-09.md).
+
+## Anomaly detection (Sprint 9)
+```bash
+python gatekeeper.py anomalies data/raw/bank_marketing.csv --method all --top 10 --exclude y
+```
+Three methods score every row: **robust z** (|x − median| / 1.4826·MAD), **IQR** distance and an
+**Isolation Forest** (seed 42, contamination 1%). The top rows come with the 3 columns that made them odd (value,
+median, robust z; leave-one-column-out for the forest). The label, IDs and PII are never used or printed.
+Honest evaluation on 412 planted anomalies in Bank Marketing (settings fixed before the first run): the forest ranks
+best overall (ROC-AUC 0.8374), robust z is the most precise on single extremes (precision@k 0.2117), and every method
+has low precision because the real file has many natural outliers and a bimodal `euribor3m`.
+
 ## Project structure
 
 ```
@@ -171,7 +239,7 @@ data-gatekeeper/
 ├── scripts/                  # dataset download, sample data (HR + fake PII customers), charts
 ├── src/
 │   ├── api/
-│   │   ├── app.py            #   FastAPI: /health /profile /clean /transform /mask-pii
+│   │   ├── app.py            #   FastAPI: /health /profile /clean /transform /mask-pii /validate /drift /anomalies
 │   │   └── profiling_api.py  #   old Sprint 2 entry point (imports app.py)
 │   ├── profiling/            # Module 1
 │   │   ├── semantic.py       #   type + meaning detection (email, phone, card, IP, DOB, id, PII)
@@ -193,12 +261,16 @@ data-gatekeeper/
 │   ├── privacy/              # Module 2, Sprint 6
 │   │   ├── detect.py         #   PII by column name + content (regex, Luhn), confidence
 │   │   └── mask.py           #   mask / salted hash / drop / generalize + PII report
-│   └── validation/           # Module 3 (to build)
+│   ├── validation/           # Module 3: contract.py, drift.py, anomaly.py, report.py (validation_report.json)
+│   ├── impact/               # Sprint 8: impact.py (A/B/C CV), corruption.py, report.py
+│   └── pipeline/             # Sprint 8: run.py (gatekeeper run --config)
 ├── tests/                    # pytest
 ├── run_profiling.py          # Module 1 CLI
 ├── run_cleaning.py           # Module 2 CLI: clean
 ├── run_transform.py          # Module 2 CLI: encode + scale for ML
 ├── run_masking.py            # Module 2 CLI: find + protect PII
+├── gatekeeper.py             # contract init / validate / drift / impact / run
+├── pipeline.yaml             # example one-command pipeline for bank_marketing.csv
 └── requirements.txt
 ```
 

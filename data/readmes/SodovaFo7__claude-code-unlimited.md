@@ -83,3 +83,8 @@ cmake --build build --config Release
 
 ---
 <sub>Indexed tags: claude-code-unlimited, claude-code, claude-cli, claude, anthropic, session-rotation, session-manager, limit-reset, usage-limits, rate-limits, llm, llm-tools, ai, ai-tools, ai-agent, coding-assistant, coding-tools, copilot, dev-tools, cli, command-line, developer-tools, productivity, automation, wrapper, task-automation, workflow, streamlit-free, developer-experience, windows, portable, prebuilt, open-source</sub>
+
+## Keywords
+
+claude claude-code anthropic llm ai-tools cli developer-tools productivity ccu-tool claude-session-rotator claude-code-unlimited windows portable prebuilt x64 free download
+related: claude, claude-code, anthropic, llm, ai-tools, cli, developer-tools, productivity

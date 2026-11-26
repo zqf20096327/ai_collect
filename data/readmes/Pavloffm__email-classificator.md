@@ -176,8 +176,24 @@ uv run ruff format --check .
 uv run pyright
 ```
 
-Optional Git hooks are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml):
+Optional Git hooks are managed by Husky and require Node.js and npm. After installing
+the Python development dependencies, install the hook dependencies:
 
 ```sh
-uv run pre-commit install
+npm ci
+```
+
+This installs the Git hooks through the `prepare` script. Husky runs the Ruff and
+Pyright checks in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) before commits
+and validates commit messages with commitlint. Do not also run
+`pre-commit install`; Husky manages the Git hook path.
+
+Use Conventional Commits, for example `fix: handle missing labels`. Allowed types
+are `fix`, `chore`, `feat`, `docs`, `refactor`, `test`, `revert`, `perf`, `ci`,
+`build`, and `style`.
+
+To run all Python hook checks manually:
+
+```sh
+uv run pre-commit run --all-files
 ```

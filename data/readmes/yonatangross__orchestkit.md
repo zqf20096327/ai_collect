@@ -5,7 +5,7 @@
 
 **<!--ork:skills-->115<!--/ork--> skills · <!--ork:agents-->36<!--/ork--> agents · <!--ork:hooks-->163<!--/ork--> hooks**
 
-[![Claude Code](https://img.shields.io/badge/Claude_Code-≥2.1.327-7C3AED?style=for-the-badge&logo=anthropic)](https://claude.ai/claude-code)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-≥2.1.328-7C3AED?style=for-the-badge&logo=anthropic)](https://claude.ai/claude-code)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/yonatangross/orchestkit?style=for-the-badge&logo=github)](https://github.com/yonatangross/orchestkit)
 [![Community](https://img.shields.io/badge/Community-WhatsApp-25D366?style=for-the-badge&logo=whatsapp)](https://platform.yonyon.ai/circle?ref=readme)
@@ -65,7 +65,7 @@ Measured 2026-09-08 on pi 0.85, Codex CLI and cursor-agent. Details, commands an
 
 | Host | Skills | Agents | Hooks | Install | Needs |
 |---|---|---|---|---|---|
-| Claude Code | 82 + 33 ork-extras | 36 | 163 | plugin (CLI) | Claude Code 2.1.327 or newer |
+| Claude Code | 82 + 33 ork-extras | 36 | 163 | plugin (CLI) | Claude Code 2.1.328 or newer |
 | Cursor | 82 + 33 ork-extras | 36 | not yet (#4004) | plugin (Settings) |  |
 | Codex | 9 | 4 roles | not yet (#4004) | ork-codex pack |  |
 | Devin | 82 | 36 | 58 of 103 | plugin (git) |  |
@@ -650,7 +650,7 @@ Run `/ork:doctor` to diagnose.
 <details>
 <summary><strong>Claude Code version?</strong></summary>
 
-Requires **≥2.1.327** (supported floor; Opus 5 as the default Opus, Opus 5.5 from 2.1.280, `xhigh` effort, dynamic workflows, `sandbox.network.strictAllowlist`, native binary, hardened `Bash(rm:*)`/`Bash(find:*)` rules). Check with `claude --version`.
+Requires **≥2.1.328** (supported floor; Opus 5 as the default Opus, Opus 5.5 from 2.1.280, `xhigh` effort, dynamic workflows, `sandbox.network.strictAllowlist`, native binary, hardened `Bash(rm:*)`/`Bash(find:*)` rules). Check with `claude --version`.
 
 Raising this floor is a breaking change and ships as a major release. See [STABILITY.md](STABILITY.md) for the full contract, and `shared/cc-support.json` for the authoritative window.
 </details>
@@ -683,6 +683,28 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!--ork:whats-new-->
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
+
+**[v10.19.0](https://github.com/yonatangross/orchestkit/compare/v10.18.1...v10.19.0)** · 2026-11-25
+
+- **site:** shared MCP view element, search results on it (#5448)
+- **site:** skill card and install picker on the shared view element (#5449)
+- **bug:** accept search result URLs in hosted docs MCP read (#5429)
+- **bug:** add rate-limit headers to bare API discovery (#5438)
+- **bug:** honor Markdown rejection in docs Accept headers (#5422)
+- …and 33 more (see [CHANGELOG.md](CHANGELOG.md))
+
+**[v10.18.1](https://github.com/yonatangross/orchestkit/compare/v10.18.0...v10.18.1)** · 2026-11-24
+
+- **mcp:** clarify Docs MCP tools by transport (#5404)
+
+**[v10.18.0](https://github.com/yonatangross/orchestkit/compare/v10.17.0...v10.18.0)** · 2026-11-24
+
+- **cc:** adopt Claude Code 2.1.331 (#5399)
+- **cli:** accept full URLs and docs/ paths in read (#5391)
+- **cli:** derive doctor exit code from check outcomes (#5400)
+- **docs:** retain indexed URLs in the budgeted dump (#5402)
+- **hooks:** limit task-tracking nudges to one per session (#5349)
+- …and 6 more (see [CHANGELOG.md](CHANGELOG.md))
 
 **[v10.17.0](https://github.com/yonatangross/orchestkit/compare/v10.16.0...v10.17.0)** · 2026-11-23
 
@@ -724,33 +746,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 - **hooks:** record a fixed error_class on PostToolUseFailure telemetry (#5248)
 - **review-pr:** proven-by-a-run tier in review-fanout (#5274)
 - …and 27 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.13.0](https://github.com/yonatangross/orchestkit/compare/v10.12.0...v10.13.0)** · 2026-11-15
-
-- **ci:** scheduled whole-tree npm audit with a cannot-audit item (#5230)
-- **plugins:** move 26 reference skills to the opt-in ork-extras plugin (#5220)
-- **ci:** make the nightly health report prove its Claude call (#5221)
-- **ci:** the npm audit gate judges the change, not the tree (#5233)
-- **disk-cleanup:** ask before images, keep new snapshots, pin apply (#5213)
-- …and 11 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.12.0](https://github.com/yonatangross/orchestkit/compare/v10.11.0...v10.12.0)** · 2026-11-12
-
-- **hooks:** ship 2 hook processes per tool call, not 3 (#5214)
-- **skills:** add /ork:disk-cleanup (#5211)
-- **cursor:** commands run skill scripts only from the installed plugin (#5216)
-- **docs:** hook pages say when the shipped plugin skips an event (#5215)
-- **docs:** try Chromium before apt, so the mirror is not on every build (#5212)
-- …and 5 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.11.0](https://github.com/yonatangross/orchestkit/compare/v10.10.8...v10.11.0)** · 2026-11-10
-
-- **cc:** adopt Claude Code 2.1.310 through 2.1.322 (#5181)
-- **demo-producer:** add code-drawn mode, storyboard renders the film (#5185)
-- **docs-site:** count page views cookieless before consent (#5180)
-- **docs-site:** make the consent banner easier to notice (#5179)
-- **agents:** raise builder maxTurns above documented workload (#5192)
-- …and 11 more (see [CHANGELOG.md](CHANGELOG.md))
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->

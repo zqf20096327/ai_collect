@@ -12,6 +12,11 @@
 [![GitHub Stars](https://img.shields.io/github/stars/888newstep/ai-agent-platform?style=flat)](https://github.com/888newstep/ai-agent-platform/stargazers)
 [![Last Commit](https://img.shields.io/github/last-commit/888newstep/ai-agent-platform)](https://github.com/888newstep/ai-agent-platform/commits/main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/888newstep/ai-agent-platform)](https://github.com/888newstep/ai-agent-platform/releases)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/888newstep/ai-agent-platform/releases/tag/v2.0.0)
+[![CodeQL](https://github.com/888newstep/ai-agent-platform/actions/workflows/codeql.yml/badge.svg)](https://github.com/888newstep/ai-agent-platform/actions/workflows/codeql.yml)
+[![Issues](https://img.shields.io/github/issues/888newstep/ai-agent-platform)](https://github.com/888newstep/ai-agent-platform/issues)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/888newstep/ai-agent-platform)](https://github.com/888newstep/ai-agent-platform/commits/main)
 
 [快速开始](#快速开始) · [架构设计](docs/ARCHITECTURE.md) · [评测证据](docs/EVIDENCE_VERIFICATION.md) · [安全说明](SECURITY.md) · [参与贡献](CONTRIBUTING.md)
 
@@ -219,7 +224,7 @@ curl -X POST \
 - [ ] 完善 CrossEncoder 可插拔精排和模型路由评测
 - [ ] 补充前端演示与完整部署案例
 
-当前主线为 **v1.0.0**。详细变更以 [Releases](https://github.com/888newstep/ai-agent-platform/releases) 和 Git 提交记录为准。
+当前主线为 **v2.0.0**：新增深色控制台（SSE 流式对话、登录认证、指标卡片）、CodeQL 安全扫描，依赖与代码安全治理完成（详见 Releases）。历史变更以 [Releases](https://github.com/888newstep/ai-agent-platform/releases) 和 Git 提交记录为准。
 
 ## 贡献与支持
 

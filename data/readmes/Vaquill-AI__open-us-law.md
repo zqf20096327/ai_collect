@@ -6,6 +6,8 @@
 
 **[Download](https://oss-data-us.vaquill.ai/index.html)** · **[Watch the video](https://youtu.be/PvSEd6bdaO0)** · **[Hugging Face](https://huggingface.co/datasets/vaquill/open-us-law)** · **[Ask on Discord](https://discord.gg/GQtnwxf8nQ)**
 
+**Free API, forever, for students, academics, researchers and legal aid.** [Sign up](https://app.vaquill.ai/auth/signup) or [log in](https://app.vaquill.ai/auth/login?redirect=%2Fdeveloper%3Ftab%3Dapi-key) to get your key with 1,000 credits. Need more? Email [contact@vaquill.ai](mailto:contact@vaquill.ai?subject=Open%20US%20Law%20API%20credits) and we will add as many as you need, free.
+
 <a href="https://youtu.be/PvSEd6bdaO0"><img src="https://raw.githubusercontent.com/Vaquill-AI/open-us-law/main/assets/walkthrough-thumb.png" alt="Watch the Open US Law walkthrough" width="480"></a>
 
 ## What's inside
@@ -92,7 +94,8 @@ For other types of law, see the [file list](https://oss-data-us.vaquill.ai/index
 <details>
 <summary><b>Free API access for non-commercial projects</b></summary>
 
-- Email [contact@vaquill.ai](mailto:contact@vaquill.ai?subject=Open%20US%20Law%20API%20-%20non-commercial) with who you are and what you are building.
+- [Sign up](https://app.vaquill.ai/auth/signup) or [log in](https://app.vaquill.ai/auth/login?redirect=%2Fdeveloper%3Ftab%3Dapi-key) to get a key. It starts with 1,000 free credits.
+- Need more? Email [contact@vaquill.ai](mailto:contact@vaquill.ai?subject=Open%20US%20Law%20API%20credits) with who you are and what you are building, and we will add more, free.
 - Free keys have rate limits and no uptime guarantee.
 
 </details>

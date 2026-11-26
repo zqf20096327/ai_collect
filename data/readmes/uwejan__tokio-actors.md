@@ -159,6 +159,22 @@ This is the kind of edge-case thinking production systems need.
 cargo add tokio-actors
 ```
 
+### Cargo Features
+
+| Feature | Default | Adds |
+|---|---|---|
+| `telemetry` | on | Delivery of the typed events of the `telemetry` module to handlers (`attach_telemetry`) and to actors (`ctx.subscribe`), the system snapshot and `is_quiescent`, the system monitor, turn tracking, the turn watchdog and wait-cycle detection |
+| `sys` | on | `ActorHandle::sys()`: suspend and resume, statistics, the debug log and trace, installed debug functions and state access, with the `debug` and `allow_state_access` spawn options |
+| `tracing` | off | The crate's log statements, through the `tracing` crate |
+
+Everything else is compiled in every build: actors, supervision, timers, streams, monitors, links, process groups, aliases, requests, state machines, event managers and applications. To build that alone, turn the default features off:
+
+```bash
+cargo add tokio-actors --no-default-features
+```
+
+The Turn Watchdog and Telemetry sections below describe the `telemetry` feature, and so do the `subscribe` and `unsubscribe` rows of the ActorContext table and the rows of the ActorSystem table from `set_turn_warning_threshold` to `is_quiescent`. The three telemetry settings of `SystemConfig` are fields of every build and have no effect without the feature.
+
 ### Counter: The Basics
 
 ```rust
@@ -544,7 +560,7 @@ A caller of the message that returned `Next::Stop` still gets the response, afte
 
 ### State Machines
 
-A `StateMachine` is the `gen_statem` behaviour: a plain type with one `handle_event` that cannot await. It gets the state, a `StatemEvent` and a `StatemContext`, and returns a `Transition`. `StatemActor::new(machine, initial)` runs it as an ordinary actor, and a `Harness` runs the same machine in a test with no runtime. Below, `Lock` holds a `code: u32`; clients use `door.cast(code)`, `door.call(())` and `door.call_timeout(call, d)`.
+A `StateMachine` is the `gen_statem` behaviour: a plain type with one `handle_event` that cannot await. It gets the state, a `StatemEvent` and a `StatemContext`, and returns a `Transition`. `StatemActor::new(machine, initial)` runs it as an ordinary actor, and a `Harness` runs the same machine in a test with no runtime. `Harness` is `Send`, and `Sync` when the machine and its associated types are `Sync`. Below, `Lock` holds a `code: u32`; clients use `door.cast(code)`, `door.call(())` and `door.call_timeout(call, d)`.
 
 The events are `Cast`, `Call` with its `ReplyTo`, `Internal` (inserted with `cx.next_event`) and the time-outs `EventTimeout`, `StateTimeout` and `Timeout(name, ..)`. A `Transition` is `Next(state)`, a state change only when the state differs, `Keep`, `Repeat`, which runs `on_enter` again, or `Stop(reason)`. `on_enter` runs once before the first event and after every state change. A call is answered with `cx.reply(from, value)`, at once or after `cx.postpone`, which handles the event again, oldest first, after the next state change; `postpone` and `next_event` refuse, returning the event, once the events the machine holds (postponed, inserted, queued time-out events and a continued event) have reached the mailbox capacity (64 under a `Harness`). A state change cancels the state time-out, any other event handled cancels the event time-out, and under `StatemActor` each time-out setter needs the Tokio time driver and panics without it; a `Harness` needs none. A `ReplyTo` dropped without a reply while the machine runs answers its caller `AskError::Actor(ActorError::NoReply)`; once the machine is stopping or ended, the caller reads `AskError::ResponseDropped` with the machine's final reason. A panic in `handle_event` fails the machine, and the calls it holds then read `AskError::ResponseDropped` with the failure. `Transition::Stop(reason)` handles no further event and sends the replies recorded in that call first; `Stop(StopReason::Kill)` is refused and fails the machine with an error. `terminate` runs once at the stop, unless the machine is killed or its start failed, and has no context, so it cannot reply: a call still held ends with the machine. See `examples/statem_door.rs`.
 
@@ -751,6 +767,8 @@ async fn handle(&mut self, msg: Job, _ctx: &mut ActorContext<Self>) -> ActorResu
 
 Recipes for Erlang/OTP behaviors the crate does not offer directly, built from the API above.
 
+The `otp_map` module page lists the Erlang/OTP facilities with their counterparts here, or the reason one has none.
+
 | To get | Pattern |
 |---|---|
 | `spawn_request` | Spawn without waiting: `tokio::spawn` the spawn future (it is `Send`) and `notify` its result back to the actor that asked. |
@@ -766,7 +784,4 @@ Recipes for Erlang/OTP behaviors the crate does not offer directly, built from t
 | A worker that cleans up when its supervisor is killed | Call `trap_exit` in the worker: when its supervisor is killed the worker is stopped in order with `ParentKilled`, within its own `Shutdown`, and runs `on_stopped`; a worker that does not trap exits receives `Kill` and begins no further hook. |
 | `supervisor_bridge` | An actor whose `on_started` spawns the task and attaches `futures::stream::once(task)` over the task's `JoinHandle` as a one-item stream, whose `handle` turns the task's end into an `Err`, so the actor stops with `StopReason::Failure` (a `supervisor_bridge` stops with the subsystem's own exit reason), and whose `on_stopped` aborts the task. |
 | Pipelined replies (the actor-model `become`) | Update state, hand the rest of the work to a task or a child actor, and take its result later as a message. |
-| Kill latency, or turn atomicity | `kill_grace(Duration::ZERO)` gives Erlang/OTP's kill latency for a callback that awaits; a grace beyond any practical bound keeps every turn whole, and makes every wait that runs on that grace, its parent's stop budget included, last for the grace, which in practice is as long as under `Shutdown::Infinity`, while `stop_within(StopReason::Kill, d)` still aborts after `d`. |
-| Locality | An actor reaches only the actors whose handles it holds, except through its system, which knows every registered actor by id: `get` and `get_by_id` return a typed handle to a registered actor of the type asked for (`get` only for a named one), `actor_ids`, `registered` and `actor_status` read the registry, `stop` and `kill` act on a named actor, and `kill_by_id` on any registered id. |
-| Address identity | An actor's address is its handle's channels; its `ActorId` and name are aliases a restarted child keeps, so a handle to an ended incarnation and one to its successor compare equal: check `is_alive()` or resolve the id again with `get_by_id`. A caller that talks to a restartable actor resolves it by name (`get`) or by id (`get_by_id`) for each call instead of keeping a handle: a lookup that finds nothing is final for an actor that nothing restarts; for a supervised actor it means either that the next incarnation is not registered yet or that its supervisor will not restart it, so bound the retries, and a handle whose send returned `Closed` belongs to an ending incarnation, so wait for it with `wait_stopped` and look the actor up again. |
-| Postpone, stash | Push the message on
+| Kill latency, or turn atomicity | `kill_grace(Duration::ZERO)` gives Erlang/OTP's kill latency for a callback that awaits; a grace beyond any practical bound kee

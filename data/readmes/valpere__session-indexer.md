@@ -5,13 +5,12 @@
 
 Per-project semantic search over Claude Code session history. Indexes JSONL
 transcripts into a per-project SQLite store; retrieves via bge-m3 embeddings
-(Ollama) with FTS5 BM25 fallback. Automatically injects relevant past context
-at session start.
+(Ollama) with FTS5 BM25 fallback. Recall is on demand (`/recall`, `search`) —
+nothing is auto-injected by semantic search at session start.
 
 **Problem it solves:** returning to a project after a week and needing to find
-"what did we decide about X" across dozens of past sessions. `session-end`
-gives you "where I left off last time"; `session-indexer` gives you "what we
-discussed across all history" — by semantic similarity, not grep.
+"what did we decide about X" across dozens of past sessions. `session-indexer`
+gives you "what we discussed across all history" — by semantic similarity, not grep.
 
 **Scope: single developer, single machine.** This indexes *your own*
 individual sessions with Claude Code in a project — not a team's shared
@@ -43,7 +42,7 @@ can break another.
 
 ## Prerequisites
 
-- **Go 1.26.9+** — to build the binary
+- **Go 1.26.11+** — to build the binary
 - **Ollama** — for vector embeddings (optional but recommended)
   - Install: [ollama.com/download](https://ollama.com/download) — native packages for macOS, Linux, Windows
   - `ollama pull bge-m3:latest` — 1024-dim multilingual model (EN + UA)
@@ -59,19 +58,16 @@ go install ./cmd/session-indexer
 ollama pull bge-m3:latest
 
 # 3. Wire the hooks into your project (one-time setup)
-#    Copy session-index.sh + session-recall.sh → .claude/hooks/
-#    Update .claude/settings.local.json with Stop + SessionStart entries
-#    /recall is a user-level skill (~/.claude/skills/session-recall/, symlinked
-#    from ~/wrk/common/skills/session-recall/) — no per-project install needed.
+#    Copy session-index.sh (+ _lib/) → .claude/hooks/
+#    Add the Stop entry to .claude/settings.local.json
+#    /recall is a user-level skill (~/.claude/skills/session-recall/;
+#    canonical source ~/wrk/common_claude/skills/session-recall/) — no per-project install.
 #    See "Hook Setup" below for the exact steps.
 
 # 4. End a Claude Code session — Stop hook mines it into .claude/sessions.db
 #    (The hook silently no-ops until session-indexer is in PATH)
 
-# 5. Open a new session — SessionStart hook injects relevant past context
-#    automatically based on current git branch + recent commits
-
-# 6. Search manually at any time
+# 5. Search manually at any time
 session-indexer search "config validation approach" --db .claude/sessions.db
 # or from inside Claude Code:
 # /recall config validation approach
@@ -267,8 +263,8 @@ to FTS5 BM25 with per-term OR recall and notes this in the output.
 
 ## Hook Setup
 
-Two Stop hooks run on every session end (wired in a single `Stop` entry of
-`settings.local.json` — Claude Code 2.1.x runs only the first top-level entry):
+One Stop hook runs on every session end (keep Stop commands in a single `Stop`
+entry of `settings.local.json` — Claude Code 2.1.x runs only the first top-level entry):
 
 ```json
 {
@@ -276,16 +272,7 @@ Two Stop hooks run on every session end (wired in a single `Stop` entry of
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "bash .claude/hooks/session-end.sh",   "timeout": 60 },
           { "type": "command", "command": "bash .claude/hooks/session-index.sh", "timeout": 60 }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          { "type": "command", "command": "bash .claude/hooks/session-last.sh",   "timeout": 10 },
-          { "type": "command", "command": "bash .claude/hooks/session-recall.sh", "timeout": 15 }
         ]
       }
     ]
@@ -293,8 +280,9 @@ Two Stop hooks run on every session end (wired in a single `Stop` entry of
 }
 ```
 
-`session-index.sh` silently no-ops until `session-indexer` is on PATH.
-`session-recall.sh` no-ops until `.claude/sessions.db` exists (after the first indexed session).
+`session-index.sh` silently no-ops until `session-indexer` is on PATH and skips
+under `CLAUDE_NON_INTERACTIVE=1`. Nothing is injected at session start; search
+past sessions with `/recall` or `session-indexer search`.
 
 Hook logs go to `~/.cache/<project-name>/hooks.log`.
 

@@ -37,7 +37,7 @@ D-FINE-seg is a framework for real-time **object detection**, **keypoint estimat
 
 - End-to-end workflow - dataset prep -> training (DDP, EMA, AMP, mosaic) -> export (ONNX, TensorRT, OpenVINO, CoreML) -> benchmarked multi-backend inference
 - Accuracy - Cityscapes semantic segmentation at native 1024x2048: D-FINE-seg-X reaches 84.84 mIoU at 14.6 ms end-to-end, the highest of [28 models](https://github.com/ArgoHA/cityscapes-benchmark/blob/main/results/RESULTS_SEMSEG_NATIVE.csv) - +1.26 mIoU over YOLO26-x, and +1.5 mIoU over Mask2Former Swin-L with 6.4x lower latency and a quarter of the params - and D-FINE-seg-L matches or beats YOLO26-x on every axis; also beats YOLO26 and RF-DETR on 640 Cityscapes detection & instance-seg F1, YOLO26 on TACO and VisDrone, and YOLO26s-pose on COCO person keypoints with S - 65.4 vs 62.7 AP at the same latency (TensorRT FP16, end-to-end protocol)
-- Paper - [D-FINE-seg: Object Detection and Instance Segmentation Framework with Multi-Backend Deployment](https://arxiv.org/abs/2602.23043)
+- Paper - [D-FINE-seg: Object Detection and Instance Segmentation Framework with Multi-Backend Deployment](https://arxiv.org/abs/2602.23043); applied to radio astronomy in [Revisiting RadioGalaxyNET](https://arxiv.org/abs/2611.29798) (radio galaxies and their infrared hosts)
 - Not a fork: the detection core follows the [D-FINE paper](https://github.com/Peterande/D-FINE); segmentation heads, training, export and inference are implemented from scratch.
 
 One frame, three tasks, one config flag:

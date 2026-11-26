@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed AI agent framework. This package is it
 | Package | `praxo-core` |
 | Registry | [Hackage](https://hackage.haskell.org/package/praxo-core-0.8.0) |
 | Install | `cabal install praxo-core` |
-| Source version | `0.8.0` |
+| Source version | `0.9.0` |
 | Published version | `0.8.0` |
-| Source tag | `haskell/v0.8.0` |
+| Source tag | `haskell/v0.9.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/haskell/ |
@@ -85,6 +85,18 @@ Runnable examples live under [`language/haskell/examples`](language/haskell/exam
 | [streaming](language/haskell/examples/streaming) | This example accumulates streamed chunks and checks that they reconstruct the final output. |
 | [structured-output](language/haskell/examples/structured-output) | This example validates a final JSON answer against a schema and rejects invalid output. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/haskell/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/haskell/Tutorial) | - [Rule DSL](rule-dsl/README.md): typed access-rule parsing, allow/deny conflict counterexample and a review-only revision; no policy publication. - [Literature Review (SC-01)](... |
+| [literature-review](language/haskell/Tutorial/literature-review) | A bounded first slice of [SC-01](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not autonomous scientific discovery. It searches a fixed synthetic pape... |
+| [policy-simulation](language/haskell/Tutorial/policy-simulation) | A bounded first slice of OG-02, not a policy-prediction engine. It simulates a small fixed synthetic population and drafts a review-only sensitivity report using the source Hask... |
+| [rule-dsl](language/haskell/Tutorial/rule-dsl) | A bounded business-rule validation tutorial. It parses a small access-rule DSL into a typed Haskell structure, detects allow/deny conflicts and returns a counterexample. Core co... |
+| [test-generation](language/haskell/Tutorial/test-generation) | A bounded first slice of SE-04, not a test-execution or load-testing service. It generates three bounded tests for a fixed local fixture and records zero executions. No load tar... |
+
 ## Verify
 
 Run the checks from `language/haskell`:
@@ -100,6 +112,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

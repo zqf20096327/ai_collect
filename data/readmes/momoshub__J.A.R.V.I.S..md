@@ -88,7 +88,7 @@ Required / notable env (see `.env.example`):
 | `STALE_PROMISE_INTERVAL_MS` / `STALE_PROMISE_MIN_AGE_MS` / `STALE_PROMISE_WINDOW_MS` / `STALE_PROMISE_MAX_NUDGES` | Stale-promise sweep (default every 15 min, a promise must be 30 min old, threads active in the last 24 h, at most 3 nudges per sweep; interval `0` turns it off). See "Stale promises" below. Each nudge is logged as `[stale-promise] ...` |
 | `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | required only when `LLM_PROVIDER=anthropic` |
 | `BOT_NAME` | bootstrap bot name for a fresh DB (default `Assistant`) |
-| `BOT_THINKING_LABEL` / `BOT_THINKING_DONE_LABEL` | bootstrap "thinking" step labels |
+| `BOT_THINKING_LABEL` | bootstrap "thinking" line label |
 | `COMMAND_PREFIX` | message command trigger (default `//bot`; legacy `!` always works) |
 | `SLASH_COMMAND` | Slack slash command to register (default `/bot`) |
 | `OWNER_SLACK_ID` | the owner, cannot be removed |
@@ -104,6 +104,7 @@ Required / notable env (see `.env.example`):
 | `GITHUB_APP_ALLOWED_OWNERS` | repo owners the app acts for, comma list (default empty: the app acts for no owner until set) |
 | `GITHUB_APP_LABEL` | label that calls it on an issue/PR (default `jarvis`) |
 | `SELF_PR_AUTHOR` / `SELF_PR_REVIEWER` | gh logins for the bot's own PRs: the author opens the PR and answers reviews, the reviewer posts its reviews (request changes or approve) and merges. Both or neither, and not the same login (otherwise: one account) |
+| `ACCEPTED_BOT_IDS` | Slack bot ids, comma list, whose messages are answered as the person they post for. A bot that posts with a person's user token carries both a `bot_id` and that person's `user`; with its id listed the message is handled as that user speaking, authorized through the normal access check (exactly that person's role, never more). A bot message without a `user` is still ignored, and after 3 accepted-bot turns in a row in one thread with no person writing, the bot stops answering bots there until a person does. The turn's context marks such a message `via bot` next to the person. Default empty: every bot message is ignored |
 | `REVIEW_EXTENDED_OWNERS` | GitHub owners, comma list (case-insensitive), whose PRs `quick-review` also posts non-blocking findings for. Default empty: blockers only everywhere |
 | `TURN_ENV_PASSTHROUGH` | secret-shaped variable names (`*_TOKEN`, `*_SECRET`, `*_API_KEY`...) an agent turn may still inherit, comma list; default none. A turn's environment is the bot's **minus every credential-shaped variable** (`SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN`, `ANTHROPIC_API_KEY`, the webhook secret, ...): a turn reads untrusted text, so anything in its environment is one `curl` from leaving. `CLAUDE_CODE_OAUTH_TOKEN` is always kept (the CLI needs it). Slack goes through a per-turn ticket instead, see "Secrets and turns". Name a variable here only when a tool a turn runs genuinely needs it |
 | `DB_MCP_SERVERS` | names of the local database MCP servers on this host (as `claude mcp list` shows them, e.g. `pg-prod,clickhouse-ro`), comma list. **Security setting:** each is denied by name to every role that may not use databases (pal, executer, side questions), and a denial has to name the server, so a server missing here is reachable by EVERY role. Default empty denies nothing - list every database server you configure (at boot the activity log warns about local servers in `~/.claude.json` that are not listed) |
@@ -141,7 +142,7 @@ The **Console** tab additionally needs read scopes to list and open conversation
 ## Talking to the bot
 
 - DM it, or @-mention it in a channel it is in
-- It replies in-thread, streaming the answer live, with tool calls shown as a task timeline
+- It replies in-thread, streaming the answer live, with tool calls listed in a separate status message that goes away when the turn ends (kept, collapsed, if a step failed)
 - Long messages show a configurable "thinking" step first
 - It only answers allowlisted users; the owner is always allowed
 - Someone it does not know is not turned away: every holder of `access:decide` (the owner, and `admin` as seeded) gets a DM with who spoke and what they said, and whichever of them gets there first decides with a reaction - ✅ adds them under the default role (`role default`, `pal` as seeded), ❌ declines. Either way the person is answered where they asked, and the other copies settle so nobody decides twice. They are answered **once**: tagging again while the request is open says nothing, and someone who was declined cannot re-raise it by asking - there is a 24h cooldown before their asking counts again
@@ -291,13 +292,22 @@ takes the tools it lists as its baseline; a tool it lists later is hidden from
 every turn and refused if called until the owner runs `X/jv mcp-tools approve
 <server> <tool>` (`X/jv mcp-tools pending` lists what is waiting).
 
-**Code mode.** A full-access turn can call a tool from the shell instead of
+**Code mode.** A full-access turn can use a tool from the shell instead of
 loading its result into the conversation: `bun bin/mcp.ts list | search <query> |
-schema <server> <tool> | call <server> <tool> '<json>' [--fields a,b.c]`. A call
-starts the real server (the same command and env the bot uses), writes the whole
-result to a file under the temp directory and prints only its path, size, row
-count and a short head; `--fields` keeps only those dotted paths of a JSON result.
-It refuses a server or tool the turn's role may not use.
+schema <server> <tool> | call <server> <tool> '<json>' [--fields a,b.c] | types
+[<server>...] | run <file.ts | ->`. A call starts the real server (the same
+command and env the bot uses), writes the whole result to a file under the temp
+directory and prints only its path, size, row count and a short head; `--fields`
+keeps only those dotted paths of a JSON result. For many calls or a lot of data,
+`types` prints TypeScript declarations of the tools and `run` executes one script
+written against them in an isolate with no network, files, process or env (QuickJS
+compiled to WebAssembly): it sees only `mcp.<server>.<tool>(args)` and
+`console.log`, chains, loops and filters there, and only its final value and logs
+reach the context, as a file path and a short head. Credentials stay on the host;
+the script has a time (60s), memory (64 MB), tool-call (100) and output limit
+(`--timeout`, `--memory`, `--max-calls`). Both refuse a server or tool the turn's
+role may not use, check it again on every call a script makes, and honour the
+owner's tool approvals.
 
 ## Investigating
 
@@ -1255,32 +1265,4 @@ credential: the bot hands it back for the `git-auth` action (same ticket, same
 grant gate (an executer gets the identity with no token, so it can commit but not push), same command log row, no token in the log) and the helper puts
 it in that one git process's environment as `http.extraheader` through
 `GIT_CONFIG_*` - never in a remote url, `.git/config`, argv or any file. A
-cherry-picked commit keeps its original author unless you pass `--reset-author`.
-
-```
-bin/github-app.sh git acme/acme-api ~/Workspaces/be -- commit -m "fix: x"
-bin/github-app.sh push acme/acme-api ~/Workspaces/be fix/x
-```
-
-In the `acme` org, every PR is committed and opened as the app
-(`git` + `push` + `pr-create` above); review comments and the merge are done as
-`kai-at-acme`.
-
-**Orca workers** outlive the turn that started them, and a turn's ticket is
-gone after 3 hours, so a worker gets its own scoped one. In the turn (a role holding
-`command:worker-ticket`, admin and owner as seeded, through the run helper; the command refuses anything that is not the
-brain's own run bridge, so a typed line, a schedule, an errand or the menu never
-mint one):
-
-```
-worker-ticket <owner/repo> pending [pr-create|comment|pr-edit|push|labels-add|reviewers-request ...] [--ttl 3h]
-worker-ticket bind <id> <ctx_...>      # after worker-start prints the dispatch id
-worker-ticket revoke <id|ctx_...>
-worker-ticket renew <id|ctx_...> [--ttl 3h]   # admin; also revives one that lapsed but was never revoked
-```
-
-The result holds `JARVIS_RUN_TICKET_FILE=<path>`, **never the token**: the token
-is written once to a mode-0600 file in a 0700 folder
-(`~/.config/jarvis/worker-tickets/<id>`) and the worker brief carries only the
-path, to `export` before `bin/github-app.sh` (the helper reads the first line of
-that file; the brain never reads, prints or posts it, and th
+cherry-picked commit keeps its original author unless you pass `--reset-aut

@@ -18,7 +18,9 @@ https://github.com/user-attachments/assets/9417c9fc-2e13-4844-9b17-5fc4cdbefcee
 **Dyva** is a dynamic proxy that routes to 
 [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [Axon](https://github.com/HaseebKhalid1507/axon), [ExLlamaV3](https://github.com/turboderp-org/exllamav3), [oMLX](https://github.com/jundot/omlx), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Strata](https://github.com/Niko1221/Strata), [Fooocus](https://github.com/lllyasviel/Fooocus), [ComfyUI](https://comfy.org), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [FishAudio](https://github.com/fishaudio), [Chatterbox](https://github.com/resemble-ai/chatterbox), and [Gradio](https://gradio.app/) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [Hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling and compression, and honeypot detection. 
 
-Capable of text generation, embeddings, systemone (JEV) decision models, vision, tool calling, image generation and editing, video generation, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
+These are all continually tested through reference installations of the current and historical versions.
+
+Dyva is capable of text generation, embeddings, systemone (JEV) decision models, vision, tool calling, image generation and editing, video generation, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
 
 Dyva supports unified workflows for stable diffusion, MiniMax H3, Z-image, LTX 2.2, 2.3, 2.5, Qwen-Image, loras, iris, Flux.1, 2 and 3, including the Klein variations, and much more. You can just chat with the agent and have it do it for you.
 
@@ -38,7 +40,9 @@ It installs to `~/dyva`; start it again anytime with `~/dyva/start.sh` (any dyva
 
 Along with being so ollama-compatible the ollama client doesn't know the difference, dyva has a feature-rich front-end with chat that includes image generation, web search, sub-agents, documents, host drilldown and exploration, video generation, tts, stats, geomaps, and even graphically tweaking the routing algorithm.
 
-Memory footprint is under 200MB. Has both light and dark mode. Out of whim and mischief you toggle it by clicking on the D in the logo. what do the letters do? Find out!
+Memory footprint is under 300MB. The demo server which often serves over 1B tokens a day without any issue, is a 2015 era desktop. Dyva runs just about anywhere.
+
+It has both light and dark mode. Out of whim and mischief you toggle it by clicking on the D in the logo. what do the letters do? Find out!
 <div align="center">
   <img width="45%" alt="sshot" src="https://github.com/user-attachments/assets/7e02db46-bf57-43fd-bacb-21c83c14d3ae" />
   <img width="45%" alt="sshot" src="https://github.com/user-attachments/assets/5126f11a-5d08-4136-95cc-2cbfa37f49fa" />

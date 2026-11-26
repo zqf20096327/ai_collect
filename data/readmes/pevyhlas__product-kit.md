@@ -43,7 +43,7 @@ Product-Kit keeps the answer in one short spec inside the repository: the proble
 | **Engineering** | ✅ Architecture and decisions, with the alternatives that were rejected, in one place. Spec, code and tests change in one pull request, with review sized to risk. |
 | **QA**          | ✅ User journeys with scenarios, variations and success criteria. Tests cite the IDs they prove; done needs evidence.     |
 | **Agents**      | ✅ Short, current context to work from, and written rules on what they may do.                                           |
-| **Design**      | ⚠️ User journeys, personas and the surfaces they use, but no visual design or UI specs.                                 |
+| **Design**      | ✅ Optional one-page UI spec for the owner's direction, composition, copy and lasting decisions.                          |
 
 ## How it works
 
@@ -93,7 +93,7 @@ Agent:  Change 012 adds requirement R-04 with the code. Acceptance A1 passes on 
 | **Large products**         | ⚠️ Designed for it (layered spec, agents read only what a change touches), but proven on only a handful of projects |
 | **Agents**                 | ⚠️ Installs for Claude Code, OpenCode, Codex and other `AGENTS.md` readers; [real-agent testing](docs/harnesses.md) is still limited |
 | **Many repos**             | ⚠️ One spec per repo; a shared interface belongs to the repo that provides it                         |
-| **Maturity**               | ⚠️ Experimental: 2.1.0, one maintainer                                                                |
+| **Maturity**               | ⚠️ Experimental: 3.1.3, one maintainer                                                                |
 | **Roadmap**                | ⚠️ Lifecycle stages (Idea → MVP → GA) and which journeys belong to each; no dates or timelines        |
 | **Ticketing**              | ❌ Not a ticket tracker; the work itself lives in git, pull requests and CI                           |
 | **One-off scripts**        | ❌ A spec costs more than it saves                                                                    |
@@ -118,7 +118,7 @@ Agent:  Change 012 adds requirement R-04 with the code. Acceptance A1 passes on 
 
 ```text
 Add Product-Kit (https://github.com/pevyhlas/product-kit) to this repository as a git
-submodule at .product-kit, pinned to tag v2.1.0, and run .product-kit/scripts/init.sh.
+submodule at .product-kit, pinned to tag v3.1.3, and run .product-kit/scripts/init.sh.
 Then adopt it by following .prdkit/workflows/init.md.
 ```
 
@@ -151,7 +151,7 @@ The agent installs the kit, reads your repository, fills in the project constitu
 
 ```bash
 git submodule add https://github.com/pevyhlas/product-kit .product-kit
-git -C .product-kit checkout v2.1.0
+git -C .product-kit checkout v3.1.3
 bash .product-kit/scripts/init.sh
 ```
 
@@ -210,12 +210,10 @@ bash .prdkit/scripts/bash/check-adoption.sh    # pinned kit version and install 
 bash .prdkit/scripts/bash/doctor.sh --strict   # spec integrity, reading budgets, agent context size
 ```
 
-`check-review.sh --pr <url>` verifies publisher-authored review receipts and blockers for the exact
-head being merged. T3 also needs the owner's native approval, confirmed against the activity log.
-Native owner changes requests and dismissals block even PRs exempt from review coverage.
-It checks evidence; it does not review. The online check needs `gh`, `jq`, configured GitHub
-publisher and owner identities, and complete host reads even for T0. Offline snapshots are
-previews (a would-pass exits 3), never merge authority. See [CI gates](docs/ci-gates.md).
+`check-review.sh --pr <url>` checks the exact PR head: no approval at T0, an independent
+publisher at T1–T3, and a separate owner approval at T3. The online gate requires `gh` and `jq` at every
+tier. Local structure is only a preview. See [CI gates](docs/ci-gates.md).
+The tier governs the review work in addition to this host check:
 
 | Tier | When                                           | Independent reviewers        |
 | ---- | ---------------------------------------------- | ---------------------------- |
@@ -241,11 +239,15 @@ bash .product-kit/scripts/init.sh --check     # read-only; expected drift can ex
 ```
 
 Replace `vX.Y.Z` with the selected tag. Inspect the drift, then run
-`bash .product-kit/scripts/init.sh --upgrade` from a clean, committed checkout. Older kit
-formats are unsupported and must be reconciled manually before upgrading.
-Kit-owned commands and scripts are refreshed if unmodified; customized managed files that would be
-overwritten block the upgrade. Project-owned edits are kept and the installer never touches
-`specs/`. For a gated upgrade PR, add its numbered review record **after** installation.
+`bash .product-kit/scripts/init.sh --upgrade` from a clean, committed checkout.
+Retired files whose contents still match the install manifest are removed. Retired files with
+content edits, foreign symlinks, directories, and retired memory files are kept and listed for
+manual follow-up. If sparse checkout excludes retired tracked paths, include them before upgrading.
+Review any warnings about tracked references to removed files. Unsupported manifest formats still
+need manual reconciliation. Kit-owned commands and scripts that the kit still ships are refreshed
+if unmodified; customized managed files that would be overwritten block the upgrade. Project-owned
+edits are kept and the installer never touches `specs/`. For a gated upgrade PR, add its numbered
+review record **after** installation.
 Each [CHANGELOG](CHANGELOG.md) entry says what else to do.
 
 </details>
@@ -261,11 +263,15 @@ L0  specs/product.md            one page: stage, pains, personas, core loop, jou
     specs/product/lifecycle.md  the stage now: Idea, Demo, MVP, previews, GA, Sunset, Retired
 L1  specs/architecture.md       one page: diagram, parts and why, core loop, key decisions
     specs/architecture/         decisions (D) and topics: security, observability, data, ...
+    specs/design.md             optional UI spec: direction, composition, copy, decisions
 L2  specs/parts/<part>.md       one box: why it exists, components, behaviors, invariants
     code and tests              the exact implementation; tests cite the IDs they prove
 ```
 
-Around it: open changes in `specs/changes/` (implementation records finalize in their own PR), one line per closed change in `specs/log.md` (written as `specs/log/<id>.md`, folded in at compaction), owner direction and open questions in `specs/inbox.md`, and holds, waivers and deployments in `specs/records.md`. A small project can keep everything in one `specs/SPEC.md`.
+Open changes live in `specs/changes/`, owner direction and open questions in `specs/inbox.md`,
+and holds, waivers and deployments in `specs/records.md`. A small project can keep its canon
+in one `specs/SPEC.md`. Closed changes go in tracked `.prdkit/history/log/<id>.md`, one line
+each, folded into `.prdkit/history/log.md` at compaction. The spec never cites history.
 
 <details>
 <summary><b>Example: a product page and a journey</b> (from <a href="examples/request-service"><code>examples/request-service</code></a>)</summary>
@@ -383,7 +389,7 @@ Pick one owner per change: the kit creates the worktree, or open changes with `-
 
 ## Status
 
-⚠️ **Experimental.** One maintainer builds Product-Kit and uses it on a handful of projects. Interfaces can change between releases; see the [CHANGELOG](CHANGELOG.md) for upgrade notes and the work deferred to 2.1.
+⚠️ **Experimental.** One maintainer builds Product-Kit and uses it on a handful of projects. Interfaces can change between releases; see the [CHANGELOG](CHANGELOG.md) for upgrade notes.
 
 ## Contributing
 

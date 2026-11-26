@@ -26,7 +26,8 @@ branch and role — and it is told when one of its own finishes, blocks on
 a question, or dies. Nothing else wakes it.
 
 **It keeps working when you are not there.** Mirror an agent to a Telegram topic
-and answer from your phone, one topic per agent. Put a prompt on a schedule with a
+and answer from your phone, one topic per agent — and a topic that was cut off
+replays what it missed when it comes back, rather than quietly skipping it. Put a prompt on a schedule with a
 **guard that runs without the model**: prints nothing, nothing happened, zero
 tokens spent.
 
@@ -384,10 +385,14 @@ Enter to skip; you can add it later from the web UI).
   Each person's agent works in **its own folder**, named after their Telegram
   id, inside that group's home — so what one agent remembers about the person
   it is talking to (Claude Code keeps a project's memory per directory) is not
-  loaded by the next person's agent. Said plainly, because it is not a wall:
-  they all run under the SAME Unix user, so an agent that goes looking can
+  loaded by the next person's agent. Said plainly, because the FOLDER is not a
+  wall: they all run under the SAME Unix user, so an agent that goes looking can
   still read its neighbour's folder. It stops the accident, not a determined
-  agent; a real wall would be one group per person.
+  agent; a real wall would be one Unix user per person.
+  What **is** a wall is the cockpit's own API: a guest's agent is boxed to its
+  own conversation, so it cannot see, drive or diff another guest's agent, reads
+  no secret and no shared ledger row, obtains no connected account, and can
+  start no agent of its own. That holds whatever group they share.
   They can talk and answer their agent's questions, and nothing else: no
   command reaches the bot. Two things worth knowing before you open it — every
   conversation is a real agent that stays resident, and they all draw on **your**
@@ -454,7 +459,11 @@ Enter to skip; you can add it later from the web UI).
   served back to the browser by `GET /media/<name>` from the same directory
   Telegram attachments land in. On a multi-tenant instance each group has its own
   media directory (`/media/g-<group>/<name>`), readable only by that group's
-  agents and served only to people who can see that group.
+  agents and served only to people who can see that group. Every agent is
+  started with that directory as an extra working directory (`--add-dir`), so
+  it reads what you sent **without asking for permission** — and nothing is
+  written into its project or worktree. An agent started before this change
+  needs one *Reload agent* to pick it up.
 - **Files an agent hands you** — when an agent's result IS a file (a report, an
   export, a screenshot, an archive) it arrives as a download card in the chat,
   inline if it is an image, and as an upload in the Telegram topic. It goes
@@ -774,7 +783,13 @@ Enter to skip; you can add it later from the web UI).
   `drive comments` and `drive access` list a file's comments and who can reach
   it (logged, untrusted); `drive reply` answers or resolves a comment, which
   everyone who sees the comments reads — a *Drive edits* card with the comment
-  and the exact reply. Changing who has access stays impossible. For any other
+  and the exact reply. `drive share` gives NAMED people or groups access
+  (viewer, commenter or editor; Google emails them unless told not to) under a
+  fourth setting, **Sharing** — *ask first* by default, with a card showing who
+  has access now and who would get what; `drive unshare` takes access away at
+  once (never an owner's, never the account's own). Making a file public or
+  open to anyone with the link, a whole domain and a change of owner stay
+  impossible. For any other
   READ, `get --url` is a generic, read-only passthrough: one GET on Gmail
   (`gmail_read`), Calendar, Drive, Docs, Sheets or Slides API URLs the account's
   areas cover — never a redirect, a binary or a body, 2 MB at most, every URL
@@ -821,11 +836,11 @@ Enter to skip; you can add it later from the web UI).
   chips as LinkedIn, and **its own settings** instead of one posting policy:
   **Mail** (sending email), **Events** (any event added, changed or
   deleted, with or without attendees) and — on an account that holds a Drive
-  area — **Drive edits**, each *ask first* (the default) or *on
+  area — **Drive edits** and **Sharing**, each *ask first* (the default) or *on
   its own* — only the account's owner can switch one to automatic, after a
   confirmation that says what it means. The agent uses the seeded
   `shadok-google` skill (`google.mjs accounts`, `calendar list|create|update|delete`,
-  `drive list|search|read|download|delete|move|rename`, `doc create|read|append|edit`, `sheet create|read|append|update|edit`, `slides create|read|edit`,
+  `drive list|search|read|download|delete|move|rename|share|unshare`, `doc create|read|append|edit`, `sheet create|read|append|update|edit`, `slides create|read|edit`,
   `gmail search|read|attachment|draft|send|forward|labels|archive|mark|star|label|trash`,
   `calendar respond|free` — content on stdin, never argv) and never sees the token.
   What it may do falls in four classes: **reads** and **writes in your own
@@ -922,6 +937,95 @@ everyone else is refused. On startup the owner is adopted from an existing DM or
 from the board group's creator, so an instance that already has an owner never
 hands itself to whoever messages next — a bot username is public, and a DM is a
 shell.
+
+### WhatsApp (optional): anyone who writes gets their own agent
+
+The **WhatsApp** panel (in the ⋯ menu, beside Telegram, admin only) links ONE
+WhatsApp number to the instance. Linking makes the instance a **linked device**
+of that account, the way WhatsApp Web is: click **Link a number**, then on the
+phone open *Settings → Linked devices → Link a device* and scan the code the
+panel shows (it refreshes by itself; nobody scanning for three minutes ends the
+attempt). The panel then shows who the instance is linked as and since when;
+**Unlink** logs the device out on WhatsApp's side and deletes the stored session
+— even when that logout cannot reach WhatsApp, in which case remove the device
+from the phone's *Linked devices* list too.
+
+- **Use a number you can afford to lose.** This is not WhatsApp's official API:
+  linking a device this way is outside WhatsApp's terms of use, and the number
+  can be restricted or banned. The panel says so before you link.
+- **One number, one instance.** Nothing stops the same account from being linked
+  to two instances, and both would answer — don't.
+- **Open DMs.** Once a number is linked, the panel shows the **guest door**:
+  a switch, the **restricted group** strangers' agents are born into, and the
+  **profile** they run on (the job description) — the same pickers and the same
+  refusals as Telegram's open DMs, which this is the WhatsApp twin of. With the
+  door open, anyone who sends a text to the number gets an agent of their own,
+  named after their WhatsApp name, and always comes back to the same one — even
+  if WhatsApp shows them under a different address (a LID or their phone
+  number) on another day. Only the group's members see those conversations
+  (and the person's number), from the cockpit, like any other agent; what you
+  type there reaches the person, labelled with your name.
+- **A guest can only talk.** Nothing typed in WhatsApp is a command: a message
+  starting with `/clear` or `/login` reaches the agent as text, and the server
+  refuses a command from WhatsApp anyway. Groups, status, channels, calls and
+  your own messages from the phone are ignored.
+- **The door shut is silence** — no agent, no reply, for new and known senders
+  alike (an automatic reply to a stranger is a risk for the number). Existing
+  agents are kept and answer again once it is open. The bridge never writes to a
+  number that has not written to it first; an agent may write again later to
+  someone who has (a schedule, a notification, you from the cockpit).
+- **Nothing is lost across a restart.** A message received while an agent was
+  being started, or while the server was updating, is answered once it is back.
+- **"Seen" means the agent has it.** A message's ticks turn blue once its
+  agent has actually taken it in (or it answered a question on screen) — not
+  when the server merely received it, and never with the door shut. If the
+  linked phone has read receipts turned off, nothing turns blue, as on the phone.
+- **Closing a guest's agent in the cockpit** ends that conversation: their next
+  message starts a new agent. A link that drops ends nothing.
+- **Pictures, documents, voice notes and videos** reach the person's agent the
+  way Telegram attachments do (a voice note is transcribed, and what was
+  understood is echoed back to the person; a video is looked at through a few
+  stills). Up to **50 MB** per file; a larger one gets a line asking for a
+  smaller file or a link.
+- **Files the agent hands over** reach the person as a picture or a document.
+  Pictures go out without WhatsApp's blurred preview thumbnail, because the
+  WhatsApp library is installed without an image-processing library; the
+  picture itself is intact.
+- **Questions** the agent asks arrive as a numbered list: the person answers
+  with the number (several numbers for a multiple choice), or with their own
+  words where the question offers that.
+- **A first message that arrives unreadable** (WhatsApp sometimes delivers the
+  first messages from a new sender before they are readable by a linked
+  device) gets one line asking the person to send it again — at most once
+  every ten minutes, never with the door shut.
+- **Closing a guest's agent** tells the person, once, that their next message
+  starts a new conversation.
+- The panel always shows the link's true state, one at a time: *Not linked*,
+  *Linking*, *Connected*, *Reconnecting* (a link that stops answering leaves
+  *Connected* within about two minutes, even with no disconnect event),
+  *Unlinked remotely* (removed from the phone), *Stopped* with the reason (WhatsApp
+  refused the number, the same number was connected elsewhere, a local failure, or
+  a previous start that went down while resuming — nothing is retried on its own;
+  **Retry** or **Link again** is your call), *Installing the WhatsApp library*,
+  *WhatsApp library needed* with the reason, or *Unavailable* with the reason.
+  **Unlink** is offered whenever a session is stored, in every state.
+- **Multi-tenant, migrated instances only.** The stored session IS the account,
+  so it must be out of every agent's reach: it lives in
+  `~/.shadok-ai/whatsapp/<instance>/` (mode 0700, on the data volume, so a
+  recreate does not unlink the number), and the feature is refused on a
+  mono-tenant instance and until the groups migration has completed.
+- **The WhatsApp library is installed on demand, not with shadok-ai.** Neither
+  `npx shadok-ai` nor the auto-update fetches any WhatsApp package: an instance
+  that never links a number installs nothing. The first **Link** by an admin runs
+  `npm ci` (about 35 MB on disk, a few seconds on a good connection) into
+  `~/.shadok-ai/whatsapp-lib/` on the data volume, so it survives updates and
+  recreates. The versions and the whole package tree are pinned by the release
+  (by checksum), install scripts are off, and the machine needs `npm` and access
+  to the npm registry. A failed install says why (no network, no npm, a full
+  disk) and offers **Install** again. When a release pins a new version, the old
+  copy is never used: the panel asks you to **Install** before the link
+  reconnects. The same happens when a stored session finds no library at boot,
+  because nothing is ever installed without an admin's click.
 
 ### Running in Docker
 
@@ -1092,6 +1196,15 @@ know before opening it up:
   the cockpit renews it — or 30 days after the sign-in at the latest), the open tab
   returns you to the login screen on its next request instead of failing in
   place — a paste that would not send, an agent list that would not refresh.
+- **Someone forgot their password.** An admin opens *reset password…* on that
+  person's row in the **Users** panel and hands over the link it shows — valid
+  48 hours, single use, and they choose the new password themselves, so the
+  admin never types or sees it. Their open sessions stop working right away,
+  including a stolen one. Nobody can reset themselves: ask another admin. The
+  instance password (`admin`) is not an account and is not reset here — change
+  `--password` / `SHADOK_GUI_PASSWORD` and restart. With **two-factor** on that
+  same row reads *recover access…* and offers the three levels below, each
+  confirmed with the acting admin's own passkey.
 - **Two-factor sign-in (passkeys).** From the **Users** panel, anyone signed in
   with a named account can register a passkey on their device — the
   fingerprint / face / PIN unlock of the phone or laptop (WebAuthn, user
@@ -1343,181 +1456,32 @@ carries a **scope**, chosen when you invite:
 - **restricted** (the default) — only the agents it creates on B; it can never
   see, resume, drive or diff B's other agents.
 - **member** — the invited agent acts **like a person you invite**: it sees,
-  drives and measures **every** agent on B, spawns more, reads its usage. It is
-  not an admin (no account or peer management).
+  drives and measures every agent in the groups it belongs to, spawns more,
+  reads its usage. It is not an admin (no account or peer management).
+- **admin** — a member that carries the admin role: it reads what only an admin
+  reads, and may **rewrite a profile's system prompt** from outside (`pilotctl
+  profile-prompt "<text>" --name <profile> --peer B`, i.e. `PUT
+  /profiles/prompt` under its peer token — refused to any other scope). It may
+  also mint a role, born with no secret.
+  What it still cannot do: manage accounts, invite or change peers, or edit a
+  profile's guardrails (deny, allow, secrets, model). Those writes are
+  browser-only, so no machine credential reaches them whatever its role.
+
+**No scope is a key to a Private group.** On a multi-tenant instance an invited
+agent is judged on its NAME exactly like a person, and an admin has no override
+there, so it reaches a Private group the way a person does: a member of that
+group adds it from the group's **gear ▸ members** picker, where invited agents
+appear beside the accounts, marked `agent`. Added, it is a full member — it sees
+and drives that group's agents, starts more **under the group's own Unix user**,
+and reads *and writes* the group's secrets — but it can never change the group or
+who belongs to it (every group write is browser-only). A `restricted`-scope agent
+is not offered: it has no identity of its own on B, so a membership would grant it
+nothing. And because a roster holds bare names, an account and an invited agent
+may never share one — the second of the two is refused at creation.
 
 The narrow scope is what you get when you say nothing — including for a peer
-invited before scopes existed, which stays restricted until you re-invite it as a
-member. A credential already in someone else's hands never widens on its own.
+invited before scopes existed, which stays restricted until an admin widens it.
+A credential already in someone else's hands never widens on its own.
 
-**This is remote code execution by a third party** — a peer that can `spawn` runs
-commands on B's machine, and a **member**-scope peer has a member's full reach. It
-is a deliberate admin grant (you trust an invited agent exactly as much as an
-invited person), and a container per instance stays the real boundary (see
-*Exposing it beyond this machine*). Even a member cannot read secret **values**
-(`/secrets` returns names only) — the vault's floor holds.
-
-### Desktop app (macOS, Windows, Linux)
-
-`desktop/` holds an Electron app that shows several cockpits in one window: a
-sidebar of instances (local or remote, any mix), and the selected cockpit
-beside it. Each instance keeps its own login and storage. A hidden instance
-stays connected, and when one of its agents is waiting its dot turns red, the
-Dock or taskbar signals it, and a notification appears. It wraps the web page
-as it is, so the server needs no change. `cd desktop && npm install && npm start`;
-packaging and shortcuts are in [`desktop/README.md`](desktop/README.md).
-
-### On a phone: Home Screen app and notifications
-
-The cockpit installs like an app: on iPhone, **Share → Add to Home Screen**;
-on Android or desktop Chrome/Edge, **Install**. The icon carries the cockpit's
-title, so several instances stay apart.
-
-From that installed app (on iOS, only from there), tick **Notify this device**
-in the version menu (click the version number). The server then sends a push
-notification when an agent asks a question or finishes a turn that produced
-something. Muted agents and muted instances stay quiet. Tapping the notification
-opens that agent, and **Send a test notification** checks the device right away.
-
-This needs HTTPS (see "Behind TLS"). Each person gets notifications only for
-the agents they can see. The push service relays an encrypted payload it cannot
-read. `SHADOK_PUSH_SUBJECT` sets the contact sent to push services (default:
-the project's URL). Design: `docs/superpowers/specs/2026-11-16-web-push-design.md`.
-
-### Signing in to Claude
-
-A fresh machine — most often a fresh container — has two things in its way, and
-shadok handles both so you never need a shell on the host.
-
-**The first-run screens are pre-answered.** A virgin `claude` opens on a theme
-picker, then on a per-directory trust dialog, and an agent started there never
-reaches a prompt: no input box, every prompt fails, the tab reads "failed to
-start". shadok seeds the answers in `~/.claude.json` — at boot for the global
-ones, and before every spawn for the session's directory, because a worktree is
-a brand-new directory and therefore a brand-new trust dialog. The seeding is
-**purely additive**: a value already there is never overwritten, so on a machine
-that has used Claude Code before, nothing is written at all.
-
-**The sign-in is offered in the cockpit.** When the instance isn't signed in, a
-card takes over the page with the OAuth link and a field for the code you get
-back; agents refuse to start until it's done, so you can't accidentally
-manufacture an agent with no credentials. The card exists only while it's
-needed — there is no button that opens it when everything is fine.
-
-**From Telegram**, which is where you usually are when a session signs out
-mid-life:
-
-```
-/login          → replies with the link
-/code <code>    → finishes the sign-in (your message is deleted afterwards)
-```
-
-Both are restricted to the bound board group or the owner's DM, like `/secret` —
-an OAuth code grants access to the account. The sign-in is instance-global, so
-the link is the same on both sides and a code pasted in Telegram also closes the
-card open in a browser. When a spawn is refused for lack of credentials, shadok
-posts **one** message to the board group; it won't repeat until the state flips
-back.
-
-**In Docker**, this replaces the old recreate ritual. `/root/.claude.json` is
-not on a volume, so `docker rm` + recreate used to lose the onboarding state and
-the respawned agents landed on the first-run screen — which meant restoring the
-file *before* starting the container (`docker create` → `docker cp` →
-`docker start`). That ordering is no longer necessary: shadok writes the file
-itself, before any session spawns.
-
-### Running on a self-hosted model
-
-shadok drives Claude Code, and Claude Code can talk to any server that speaks
-the Anthropic Messages API: Ollama, llama.cpp's `llama-server`, vLLM, or a
-LiteLLM proxy in front of anything else. Point it there with
-`ANTHROPIC_BASE_URL`, and agents on that backend need **no Claude sign-in** and
-are **never held by the quota guard** (they don't spend your subscription).
-
-Three ways to do it:
-
-- **From the cockpit — the easy one.** The Connect Claude card a fresh instance
-  opens has a **Use another model** link: pick a provider (Ollama, a llama.cpp
-  server, DeepSeek, Z.ai/GLM, Moonshot/Kimi, or any Anthropic-compatible
-  server), the address and model are pre-filled, the models a local server
-  serves are listed for you, and **Test** sends one real request before
-  anything is saved. The lead agent starts as soon as you save. Change it later
-  from the version menu, **⚙ Model backend…** (which also offers to go back to
-  the subscription). The choice is stored per launch directory in
-  `~/.shadok-ai/config.json` and takes precedence over the environment; running
-  agents keep the model they were started with until they are reloaded.
-- **The whole instance, from the environment.** Launch shadok with the variables:
-
-  ```bash
-  ANTHROPIC_BASE_URL=http://localhost:11434 ANTHROPIC_AUTH_TOKEN=ollama ANTHROPIC_MODEL=qwen3-coder:30b SHADOK_CONTEXT_WINDOW=64k npx shadok-ai
-  ```
-
-- **One role.** Store the same names as vault secrets and attach them to a
-  profile: agents on that profile use the local model, the rest stay on the
-  subscription. A profile's secrets win over the instance's environment.
-
-| Variable | Meaning |
-|---|---|
-| `ANTHROPIC_BASE_URL` | The server. Anything that is not `*.anthropic.com` counts as a custom backend. |
-| `ANTHROPIC_AUTH_TOKEN` | Sent as a bearer token. Any value when the server checks none. Prefer it to `ANTHROPIC_API_KEY`, which makes Claude Code ask for confirmation. |
-| `ANTHROPIC_MODEL` | The model to run. Also fills every unset `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` and `ANTHROPIC_SMALL_FAST_MODEL`, so the model picker and Claude Code's background calls reach it too. |
-| `SHADOK_CONTEXT_WINDOW` | The window the context gauge measures against (`64000`, `64k`, `1m`). Without it the gauge assumes Claude's 200k. |
-
-Hugging Face Inference, Together, Groq and the other **OpenAI-only** APIs are
-not in the list on purpose: Claude Code speaks only the Anthropic format, so
-they need a translating proxy (LiteLLM, claude-code-router) in front — then
-point *Another Anthropic-compatible server* at the proxy. The Test button tells
-the two cases apart and says so.
-
-Two things are on you. The model needs **reliable tool calling and a long
-context**: Claude Code's own prompt and tool list take ~15–20k tokens before
-your first word. And the server must actually *serve* that context: Ollama's
-default is a few thousand tokens, so set `OLLAMA_CONTEXT_LENGTH` (64k is a sane
-floor) or the agent will lose its instructions without any error.
-
-### SSH identity in Docker
-
-When shadok-ai runs **in a container** it gives itself an SSH key on first boot
-so agents can `git clone/push` private repos and `ssh` into servers. The key
-lives under `~/.shadok-ai/ssh/` — i.e. on the **`shadok-data` volume you already
-mount** — so it **survives `docker restart` and `docker rm`+recreate** (unlike a
-plain `~/.ssh`, which is wiped on recreate). Each container has its own volume,
-hence its own unique key; `~/.ssh` is symlinked to it, so `git`/`ssh` use it with
-no extra config. Nothing to add to `docker run`.
-
-Read the public key to register it (GitHub **deploy key**, or the target hosts'
-`authorized_keys`):
-
-```
-docker logs <name> | grep 'ssh identity'          # printed on every boot
-docker exec <name> cat /root/.shadok-ai/ssh/id_ed25519.pub
-```
-
-On a normal (non-Docker) host this is a **no-op** — shadok never touches your
-`~/.ssh`. Detection is `/.dockerenv`; `SHADOK_SSH_IDENTITY=0` disables it,
-`SHADOK_FORCE_SSH_IDENTITY=1` forces it on.
-
-### Configuration
-
-Config lives in `~/.shadok-ai/config.json` (mode 600) and is **authoritative
-over the environment once set** from the GUI — with two exceptions where the
-environment wins: `SHADOK_GUI_PASSWORD` (a saved `--password` is used only when
-that variable is unset, and nothing in the cockpit can change it — on Docker,
-the password is the one the container was created with) and
-`TELEGRAM_BOT_TOKEN`. The Telegram token, allowed
-chats, and the bridge on/off switch are **per launch directory** — running the
-server from another repo gives you a different cockpit and a different bot. So
-are the channel list and the scheduled prompts.
-
-`timezone` (an IANA name like `Europe/Paris`, settable via `/timezone`) is the
-default zone for reading a `daily` schedule. Without it the hour follows the
-machine, which silently shifts every daily prompt on a server running in UTC.
-
-| Env var | |
-|---|---|
-| `PORT` | HTTP/WS port |
-| `SHADOK_HOST` | interface to bind (default `127.0.0.1`, this machine only) |
-| `SHADOK_GUI_PASSWORD` | require a password for the GUI — overrides a password saved by `--password` |
-| `SHADOK_ORIGINS` | extra browser origins allowed, comma-separated (reverse proxy); their hosts also pass the Host check |
-| `SHADOK_ALLOWED_HOSTS` | host names the cockpit answers besides its own (DNS-rebinding guard); with a password, setting it makes the check strict. `*` disables it |
-| `SHADOK_
+**The scope can be changed afterwards**, from the same panel (the select on the
+agent's row) or `PUT /peers {name, sc

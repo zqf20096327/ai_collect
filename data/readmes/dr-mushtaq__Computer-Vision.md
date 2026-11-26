@@ -18,10 +18,13 @@ computer vision course,  computer vision with Python, AI in image analysis, edge
 
 ### 🙌 Become a Sponsor
 
-You can support this project by becoming a sponsor on **[GitHub Sponsors](https://github.com/sponsors/dr-mushtaq)** or via **Gumroad:** —  📧 [Gumroad:]( https://couresesteach.gumroad.com/l/SupportCoursesTeach).
+You can support this project by becoming a sponsor on  **Gumroad:** —  📧 [Gumroad:]( https://couresesteach.gumroad.com/l/SupportCoursesTeach). or via Patron
+
+[<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" width="200">](https://www.patreon.com/cw/coursesteach)
 
 Every contribution — big or small — helps sustain the development of **AI tools and Resources**, **AI-driven educational resources**, and **data science tools**.  
 Thank you for your generous support! 🌟
+
 
 
 
@@ -497,5 +500,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 | Category | Models | Notes |
 |---|---|---|
 | **Classification** | AlexNet, VGG, ResNet, DenseNet, EfficientNet, ViT 🔴🔵, Swin Transformer 🔴🔵, ConvNeXt 🔵 | Image classification (CNNs and Transformers) |
-| **Object Detection** | R-CNN, Fast R-CNN, Faster R-CNN, YOLO, SSD, RetinaNet, DETR 🔴🔵, Mask R-CNN | Detects objects with bounding boxes or masks |
-| **Segmentation** | FCN, U
+| **Object Detection** | R-CNN, Fast R-CNN, Faster R-CNN, YOLO, SSD, Ret

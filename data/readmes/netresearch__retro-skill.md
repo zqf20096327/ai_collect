@@ -173,7 +173,7 @@ The pipeline is built in layers (the project calls them *Schicht* A/B/C/D — la
 1. **Mechanical pre-pass (layer A)** — `skills/retro/scripts/detect-mechanical.py` parses the transcript for exactly **21** deterministic signals (A1–A21): tool errors, retry clusters, output verbosity, tool-call inefficiency, sequential-vs-parallel, user-correction phrases, prompt/prompt-sequence/tool-sequence repetition, skill-reminder-vs-invoke, wrong-tool choice, re-read-same-file, skipped verification, work on `main`/`master`, bot attribution in commits, outdated-tool warnings, upstream failure, permission re-approval, repeated command shapes, wait-loop polling, and notes written into an auto-memory store. Claude Code's API request logs (`api-request`, `api-request-blob`), which replay earlier messages, are not read as conversation. Deterministic; it does **not** classify.
    Then `skills/retro/scripts/collect-review-findings.py` reads native PR/MR review threads and linked issue feedback, including issues a GitHub PR names as `GH-N` in its title or description (GitHub's own reference syntax). Other tracker integrations supply normalized local evidence with `--feedback-file`. Short branch/title/tool references remain contextual hints until explicitly resolved; they never select a tracker. See [the feedback contract](skills/retro/references/feedback-contract.md) for delegation, coverage states and migration from the removed Jira CLI flags.
 2. **LLM enrichment (layer B)** — adds **24** inferential signals, B16–B21 of them reusable-learning signals (wrong skill choice, skill capability gap, hallucination, convention violation, missing skill, repeated mistake, assumption-without-asking, doc drift, dug-out knowledge, missed situational check, skill over-specification, brief gap, …) and filters layer-A false positives. Includes a trigger-coverage sweep over every installed skill's description.
-3. **Cross-session enrichment (layer C, optional)** — consults existing memories, scoped session indexes such as Orca and original records before recommending another fix for the same problem. The [prior-attempt workflow](skills/retro/references/prior-attempts.md) includes a local Claude JSONL fallback. **6** signals: same-friction-again, cross-project pattern, memory drift, ineffective skill update, follow-up-fix session, written rule violated repeatedly.
+3. **Cross-session enrichment (layer C, optional)** — consults existing memories, scoped session indexes such as Orca and original records before recommending another fix for the same problem. The [prior-attempt workflow](skills/retro/references/prior-attempts.md) includes a local Claude JSONL fallback. **7** signals: same-friction-again, cross-project pattern, memory drift, ineffective skill update, follow-up-fix session, written rule violated repeatedly, rule never applicable.
 4. **Skill discovery (runtime)** — `skills/retro/scripts/find-org-skills.py` lists every skill in every configured marketplace, installed or not, to match the friction topic against its description and resolve the source-repo URL; `skills/retro/scripts/find-installed-skills.sh` adds on-disk paths and git remotes of installed skills.
 5. **Classification** — map each finding to one of the seven destinations, authority first (`skills/retro/references/classification-heuristic.md`), using the catalogue from step 4.
 6. **Eval consultation** — if the matched skill has an `evals/` directory, read it for context and propose an eval stub (TDD style). retro ships its **own** evals under `skills/retro/evals/` testing its classification, validated by `skills/retro/scripts/validate-evals.py`.
@@ -262,6 +262,7 @@ retro-skill/
 │       ├── collect-review-findings.py # review, issue and ticket feedback on the session's PRs/MRs
 │       ├── feedback-contract.py      # validates supplied tracker feedback (--feedback-file)
 │       ├── mask-secrets.py           # credential masking for the text five scripts quote
+│       ├── transcript-results.py     # output of Code Mode calls for the transcript readers
 │       ├── opencode-transcript.py    # renders an opencode session as layer-A JSONL
 │       ├── codex-transcript.py       # renders a Codex rollout as layer-A JSONL
 │       ├── scan-memory-inventory.py  # Promote: memory backlog pre-pass
@@ -275,6 +276,7 @@ retro-skill/
 │       └── validate-evals.py         # validates retro's own evals (RT-40..42)
 ├── commands/retro.md             # /retro slash command (Claude Code plugin only)
 ├── hooks/session-end.json        # optional SessionEnd reminder (off by default; plugin-level, outside skills/retro/)
+├── scripts/check-local.py        # development: the CI checks that run locally
 ├── tests/                        # test_*.py, run with python -m unittest discover -s tests
 ├── docs/specs/                   # retro-skill.md (original spec, superseded), retro-promote-mode.md
 ├── docs/opencode-live-test.md    # checking the opencode adapter against a real, isolated opencode 2.x
@@ -383,7 +385,7 @@ Issues and PRs are welcome at <https://github.com/netresearch/retro-skill/issues
 
 - **DCO sign-off is required** — commit with `git commit -s`. Without the `Signed-off-by` trailer the PR is blocked even when all checks pass.
 - Use **Conventional Commits** (`feat:`, `fix:`, `chore:`, …).
-- The `lint` workflow runs python compile, the unit tests and `validate-evals.py`; the `validate` workflow runs validate-skill, markdownlint, yamllint, plugin/SKILL version parity, actionlint, JSON syntax, manifest sync, ShellCheck, ruff and the checkpoint-schema check — run them locally before pushing.
+- The `lint` workflow runs python compile, the unit tests and `validate-evals.py`; the `validate` workflow runs validate-skill, markdownlint, yamllint, plugin/SKILL version parity, actionlint, JSON syntax, manifest sync, ShellCheck, ruff and the checkpoint-schema check — before pushing, run `uv run scripts/check-local.py`, which reads the test command from `lint.yml` and runs every pre-commit hook over all tracked files (its fixer hooks rewrite files); its header names the checks that run in CI only.
 
 ## License
 

@@ -138,33 +138,37 @@ uvx --from pysad pysad-live --source synthetic
 ```
 
 - The [live dashboard](https://pysad.readthedocs.io/en/stable/api/live.html) displays streaming scores and alerts in your terminal. Add `--web` to open the web dashboard, or use `--source data.csv` for your own data.
-- [`pysad.mcp`](https://pysad.readthedocs.io/en/stable/guides/mcp.html) exposes detectors, drift meters, and explanations through the Model Context Protocol (MCP). Install `pysad[mcp]`, then run `pysad-mcp` to connect an MCP client.
+- [`pysad.mcp`](https://pysad.readthedocs.io/en/stable/guides/mcp.html) exposes detectors, drift meters, and explanations through the Model Context Protocol (MCP). Install `pysad[mcp]`, then run `pysad-mcp` to connect an MCP client. The server auto-discovers detectors from `pysad.models.__all__` and statistics from `pysad.statistics.__all__`. Tool names use `pysad_<lowercase_name>`. Each tool includes metadata for constructor parameters and defaults.
 
 ### Optional PyO3 kernels (pysad_kernels)
 
-The optional PyO3 Rust extension `pysad_kernels` provides tree traversal kernels for `HalfSpaceTrees` and `RobustRandomCutForest`. It is not published on PyPI yet, so build it from the `rust/` directory of the repository. If the extension is available, these detectors load its kernels automatically. Otherwise, they use NumPy, and their scores do not change.
+Install the optional PyO3 Rust extension separately from PySAD:
 
-Install `maturin`, then build and register the extension so Python can import it:
+```bash
+pip install pysad_kernels
+```
+
+The extension provides kernels for four detectors:
+
+- `HalfSpaceTrees` and `RobustRandomCutForest` use available tree kernels automatically.
+- `LODA` uses NumPy by default. Set `use_rust=True` to use the density kernel.
+- `StreamKMPlusPlus` uses NumPy by default. Set `use_rust=True` to use the weighted Lloyd kernel. Sampling stays in Python. Floating-point rounding can change cluster assignments.
+
+If a kernel is unavailable, the detector uses NumPy. PySAD does not require the extension. Pickles also work without it.
+
+To build from a source checkout, install `maturin` and run these commands from the repository root. This requires a Rust toolchain.
 
 ```bash
 pip install maturin
-maturin develop -m rust/pyproject.toml
+maturin build --manifest-path rust/Cargo.toml --release --locked
+pip install rust/target/wheels/pysad_kernels-0.1.0-*.whl
 ```
 
-Or build a wheel and install it:
-
-```bash
-maturin build -m rust/pyproject.toml --release
-pip install target/wheels/pysad_kernels-0.1.0-*.whl
-```
-
-Once `pysad_kernels` can be imported, `HalfSpaceTrees` and `RobustRandomCutForest` use its kernels automatically. Verify the installation:
+Make sure that Python can import the extension:
 
 ```bash
 python -c "import pysad_kernels; print(pysad_kernels.__file__)"
 ```
-
-If the import fails, the detectors fall back to NumPy.
 
 ## Migration guides
 
@@ -174,6 +178,9 @@ Use these guides to map your existing workflow to PySAD:
 - [AWS Lookout for Equipment and Kinesis RCF](https://pysad.readthedocs.io/en/stable/guides/migrate_aws.html)
 - [Salesforce Merlion](https://pysad.readthedocs.io/en/stable/guides/migrate_merlion.html)
 - [Alibi Detect](https://pysad.readthedocs.io/en/stable/guides/migrate_alibi_detect.html)
+- [ADTK](https://pysad.readthedocs.io/en/stable/guides/migrate_adtk.html)
+- [StatsForecast and Nixtla](https://pysad.readthedocs.io/en/stable/guides/migrate_statsforecast.html)
+- [River](https://pysad.readthedocs.io/en/stable/guides/river_interoperability.html)
 
 ## Quick start
 
@@ -373,6 +380,7 @@ These starting points come from the design of each method. They are not benchmar
 | `ZeroShotEmbeddingDetector` | Zero-shot OOD detector using semantic anchors (Maximum Concept Matching) (Ming et al., 2022) |
 | `ABSAD` | Angle-Based Subspace Anomaly Detection (ABSAD) (Zhang et al., 2017) |
 | `DenStream` | DenStream density-based streaming anomaly detector (Cao et al., 2006) |
+| `OnlineKMeans` | Scores each instance by its squared Euclidean distance to the nearest center of the online k-means clustering of Liberty et al. (Liberty et al., 2016) |
 
 **Univariate**
 

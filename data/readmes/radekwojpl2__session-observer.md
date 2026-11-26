@@ -213,9 +213,17 @@ node scripts/demo.js
 
 The demo opens at http://localhost:4800.
 
+### Desktop notifications
+
+Choose **Notify** under **⚙ Settings** in the header to get a desktop notification when a session needs you (a permission, a question, an MCP server asking), and optionally when a turn finishes. The browser asks for permission the first time. Notifications appear only while the dashboard window is not focused. Click one to open that session.
+
+### Keyboard shortcuts
+
+Press **?** (or the **?** button in the header) for the list. **j** / **k** (or **]** / **[**) step through the turns, **Shift+J** / **Shift+K** through the sessions, **0** goes to All activity, **u** to the next session that needs you, **Esc** closes the turn, **/** goes to the search, and **1**–**5** switch between Home, Overview, Route, Chat and Context. The same dialog has a tab with common Claude Code keys, linked to its docs.
+
 ### Dashboard languages
 
-The dashboard follows your browser language. Choose another from the language menu; the selection is saved.
+The dashboard follows your browser language. Choose another under **⚙ Settings** in the header; the selection is saved.
 
 | Code | Language |
 |---|---|

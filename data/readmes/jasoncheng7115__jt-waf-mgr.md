@@ -1,4 +1,4 @@
-# jt-waf-mgr v0.5.42
+# jt-waf-mgr v0.5.47
 
 **English** · [繁體中文](README_zh-TW.md) · [日本語](README_ja.md)
 
@@ -167,10 +167,14 @@ measuring on your own traffic before you rely on it; a CDN or cloud WAF is the o
   vulnerabilities and attacks; the first set is Synology DSM (its administration APIs from the local network only,
   including the batch request and escaped-character ways around it); the second is QNAP QTS (the setup wizard, HBS 3's
   built-in session id, ../ in file names, overlong ids, shell characters in user names and session cookies; written
-  from public write-ups, not tried on a real QNAP). The software list recognises a DSM site and the
+  from public write-ups, not tried on a real QNAP); Nextcloud (non-public files and directories, ../ in the path as sent,
+  the built-in CODE server's command injection CVE-2026-110447, the updater and upgrade pages from outside) and Zimbra
+  (administration services on the user port, several logins in one GraphQL request, LDAP wildcards in login names,
+  internal servlet attributes as parameters, /h/rest, markup in identifier parameters). Every set's own requests are
+  replayed in a real nginx + ModSecurity 3.0.9 and 3.0.17 + CRS 4.30 sandbox. The software list recognises a DSM site and the
   packages on it (DSM lists the APIs it serves without a login). Pick the site and the rules and propose them as one
   change: the usual checks, the sandbox replays each rule's own attack and ordinary requests, and a person approves it;
-  the rules refuse requests from outside only.
+  most rules refuse requests from outside only.
 - **Alerts to follow up**: an attack the site may have answered, users hit by a false positive, an attack in progress,
   outside configuration changes, integrity problems, failed applies or backups — open until an approver marks them
   handled with a note; reminded until then.
@@ -233,7 +237,7 @@ measuring on your own traffic before you rely on it; a CDN or cloud WAF is the o
 
 ```sh
 sudo mkdir -p /opt/jt-waf-mgr-install && cd /opt/jt-waf-mgr-install   # a fixed place for the releases
-V=0.5.42; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
+V=0.5.47; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
 for f in jt-waf-mgr-$V.tar.gz jt-waf-mgr-$V.tar.gz.sig release-key.pem; do sudo curl -fsSLO $B/$f; done   # the release, its signature, the public key
 openssl dgst -sha256 -verify release-key.pem -signature jt-waf-mgr-$V.tar.gz.sig jt-waf-mgr-$V.tar.gz
 sudo rm -rf current && sudo mkdir current && sudo tar xzf jt-waf-mgr-$V.tar.gz -C current --strip-components=1 && cd current
@@ -458,7 +462,7 @@ the file next to the current values and writes only what you tick).
 
 ```sh
 cd /opt/jt-waf-mgr-install   # the new release, unpacked into the same current
-V=0.5.42; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
+V=0.5.47; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
 for f in jt-waf-mgr-$V.tar.gz jt-waf-mgr-$V.tar.gz.sig; do sudo curl -fsSLO $B/$f; done
 sudo rm -rf current && sudo mkdir current && sudo tar xzf jt-waf-mgr-$V.tar.gz -C current --strip-components=1 && cd current
 sudo ./upgrade.sh --check     # every check, nothing changed

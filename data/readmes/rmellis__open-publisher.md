@@ -19,9 +19,20 @@
 </p>
 
 <p align="center">
-  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.24.5" alt="Support on Patreon" height="28"/></a>
+  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.24.8" alt="Support on Patreon" height="28"/></a>
   &nbsp;
-  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.24.5" alt="Facebook Page" height="28"/></a>
+  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.24.8" alt="Facebook Page" height="28"/></a>
+</p>
+
+<p align="center">
+  <a href="#download"><strong>Download</strong></a> &nbsp;·&nbsp;
+  <a href="#features-at-a-glance">Features</a> &nbsp;·&nbsp;
+  <a href="#quick-start">Quick Start</a> &nbsp;·&nbsp;
+  <a href="#whats-new-in-version-5">What's New</a> &nbsp;·&nbsp;
+  <a href="#installation-and-platform-support">Install</a> &nbsp;·&nbsp;
+  <a href="https://kb.openpublisher.app">Documentation</a> &nbsp;·&nbsp;
+  <a href="#keyboard-shortcuts-reference">Shortcuts</a> &nbsp;·&nbsp;
+  <a href="#help-community-and-license">Help &amp; Community</a>
 </p>
 
 ---
@@ -30,11 +41,12 @@
 
 Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing application built as a free alternative to tools like Microsoft Publisher. Whether you are creating newsletters, flyers, business cards, posters, booklets, or marketing materials - Open Publisher gives you precision layout tools, rich typography, image manipulation, and comprehensive export capabilities, entirely free.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f0b61b5b-26d5-40d6-8cd9-c17092d52471" alt="Open Publisher running on Windows, , Linux and FreeBSD" width="700"/>
+  <img src="https://github.com/user-attachments/assets/f0b61b5b-26d5-40d6-8cd9-c17092d52471" alt="Open Publisher running on Windows, macOS, Linux and FreeBSD" width="700"/>
 </p>
 
 ---
 
+<a id="download"></a>
 <div align="center">
 
 ## <img width="28" alt="Download OpenPublisher" src="https://github.com/user-attachments/assets/e2daee71-533d-44b6-82db-44bdbd58d486" /> Download Open Publisher v5
@@ -97,29 +109,6 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
 
 > **Online vs. Offline Note:** The prebuilt Windows/Linux/macOS desktop packages use a **hybrid architecture** that requires an active internet connection on launch to load the latest live workspace automatically (while still processing your PDF and `.opub` files locally on your device with no server uploads). For **100% air-gapped offline use**, clone this GitHub repository and run the project locally.
 
-
----
-
-<a id="what-happened-to-the-gecko-windows-build"></a>
-<details>
-<summary><strong>ℹ️ What Happened to the Experimental Gecko Windows Build (and Why v5.23.1 Rolls Back to NW.js) - Click to expand</strong></summary>
-<br/>
-
-Over the last 41 updates, I built an experimental Mozilla Gecko-based desktop shell for OpenPublisher on Windows. It delivered roughly half the installer size, faster startup, smoother canvas performance on older hardware (including Windows 7), and a built-in wrapper updater.
-
-However, as a 100% free, self-funded GNU GPL v2 open-source project, OpenPublisher does not pay for commercial EV code-signing certificates. When the new build was promoted across software directories, the unsigned 48 KB C# launcher (`OpenPublisher.exe`) triggered an automated cloud machine-learning false positive in Microsoft Defender. Although Microsoft's security team reviewed the dispute and cleared the binary as clean (followed by Malwarebytes), the brief delay allowed automated threat feeds and dozens of third-party heuristic scanners to mirror the initial flag on VirusTotal.
-
-That automated cascade triggered software directory rejections and automated link filtering on Facebook (including retroactive removals of older release posts), even though the source code is completely public and clean.
-
-Rather than fighting an endless game of whack-a-mole with dozens of automated heuristic feeds, I made the pragmatic call to:
-1. **Retire the experimental Gecko Windows packages** and strip those binaries from all 41 historical GitHub Releases.
-2. **Restore our proven, clean NW.js Windows Installer and Portable builds** as the primary Windows release, keeping the compiled executables completely frozen so their clean binary reputation stays intact.
-3. **Deliver desktop fixes downstream through the web application (`v5.23.1`):** Instead of rebuilding `setup.exe`, `v5.23.1` eliminates the NW.js cold-start `.opub` file-association blank-canvas bug (caused by orphaned `#paper.paper-pouring` transitions and startup timing races) 100% inside the web app while preserving the wrapper's 4-step atomic save system untouched.
-
-The web app at `openpublisher.app` remains completely clean on Google Safe Browsing and VirusTotal URL scanners, and all NW.js desktop users receive `v5.23.0` (Variable Font Studio) and `v5.23.1` (cold-start `.opub` fix) automatically on launch.
-
-</details>
-
 ---
 
 > ### 📖 Documentation & Knowledge Base
@@ -137,6 +126,7 @@ The web app at `openpublisher.app` remains completely clean on Google Safe Brows
 >   You can still download the original manual here: 
 >   <a href="https://openpublisher.app/documentation.pdf">Open Publisher User Guide (PDF)</a>
 > </details>
+
 ---
 
 ## Table of Contents
@@ -145,15 +135,28 @@ The web app at `openpublisher.app` remains completely clean on Google Safe Brows
 <summary><strong>📑 Click to expand full Table of Contents</strong></summary>
 <br/>
 
-- [What's New in Version 5](#whats-new-in-version-5)
+**Start Here**
+
+- [Overview](#overview)
+- [Download](#download)
 - [Features at a Glance](#features-at-a-glance)
+- [What's New in Version 5](#whats-new-in-version-5)
 - [Installation and Platform Support](#installation-and-platform-support)
+  - [Web App, Installable PWA and iPadOS / iOS](#web-pwa-and-ipados-ios)
+  - [Run from Source (Self-Hosting)](#run-from-source)
+- [Quick Start: Your First Publication](#quick-start)
 - [The Dashboard and Startup Experience](#the-dashboard-and-startup-experience)
+
+**Workspace and Layout**
+
 - [The Interface and Workspace](#the-interface-and-workspace)
-- [Data Integrity, Saving and Recovery Systems](#data-integrity-saving-and-recovery-systems)
+- [Layout and Workspace Tools](#layout-and-workspace-tools)
 - [Page and Document Management](#page-and-document-management)
 - [Physical Measurement Units and DPI](#physical-measurement-units-and-dpi)
 - [Master Pages and Themes](#master-pages-and-themes)
+
+**Create Content**
+
 - [Text Boxes, Typography and Variable Font Studio](#text-boxes-typography-and-spellcheck)
 - [Tables](#tables)
 - [Images, Graphics and Clipboard Scrapbook](#images-graphics-and-clipboard-scrapbook)
@@ -164,16 +167,54 @@ The web app at `openpublisher.app` remains completely clean on Google Safe Brows
 - [Editable Templates, Marketing and Promotional Tools](#marketing-and-promotional-tools)
 - [Fun and Puzzle Generators (The Fun Ribbon Tab)](#fun-and-puzzle-generators)
 - [AI Studio (Layout, Image and Vector)](#ai-layout-and-command-assistant)
-- [Layout and Workspace Tools](#layout-and-workspace-tools)
+
+**Output, Files and Safety**
+
 - [Export, Presentation and Multi-Page Output](#export-presentation-and-multi-page-output)
-- [Developer Tools and Diagnostics](#developer-tools-and-diagnostics)
+- [The .opub File Format and Imports](#the-opub-file-format)
+- [Data Integrity, Saving and Recovery Systems](#data-integrity-saving-and-recovery-systems)
 - [Document Security and Privacy](#document-security-and-privacy)
-- [The .opub File Format](#the-opub-file-format)
+
+**Reference and Community**
+
+- [Developer Tools and Diagnostics](#developer-tools-and-diagnostics)
 - [Keyboard Shortcuts Reference](#keyboard-shortcuts-reference)
+- [Help, Community and License](#help-community-and-license)
 - [Supporters of Open Source](#supporters-of-open-source)
 - [Developers](#developers)
 
 </details>
+
+---
+
+<a id="features-at-a-glance"></a>
+## Features at a Glance
+
+| Category | Highlights |
+|---|---|
+| **Platforms** | Windows (Installer, Portable, Windows XP), macOS (.dmg), Linux (.flatpak, .AppImage, .run, .deb, .rpm), FreeBSD (.pkg), Web & Installable PWA |
+| **Engine and Limits** | Uncapped 8GB RAM / 4GB GPU VRAM, asynchronous IPC streams, 60 FPS hardware acceleration |
+| **Physical Units and DPI** | CM, MM, Inches, Pixels; 72/96/140/150/300 DPI or custom; DPI-aware margins, rulers, and print engine |
+| **300 DPI & Multi-Up Print** | Zero-spillage single-page printing, Booklet imposition, and Business Card / Label multi-up sheet printing with crop marks |
+| **Data Protection** | 4-step atomic save, 15-minute shadow snapshots (50 per document), external file watcher, Backup Manager, Previous Versions |
+| **Page Formats & Templates** | A3, A4, A5, Letter, Legal, Tabloid, Business Card, Square - plus 280+ editable multi-layer templates across 15 categories |
+| **Typography & Variable Fonts** | 129 bundled Variable Fonts with continuous OpenType axis sliders, 2D Matrix Explorer, and custom `.ttf`/`.otf`/`.woff2` upload; 100 Styled Text Boxes, 40 Clipart Border Art frames, RTL support, Windows font discovery, offline spellcheck & grammar |
+| **Dark Mode & 50+ UI Themes** | High-contrast Dark Mode studio appearance paired with 50+ UI accent color themes and automatic bright-theme contrast adaptation |
+| **Theme Studio** | 700+ curated page themes & fine textures, 6 live background adjustment sliders, per-page independent themes |
+| **Fun & Puzzle Generators** | Dedicated **Fun** ribbon tab featuring Word Search Studio, Crossword Builder, Connect-the-Dots Path Tool, Codebreaker Grid, Cryptogram Frames, and Bingo & Raffle Ticket Generator with multi-page output & Answer Keys |
+| **Clipboard and Assets** | Unified clipboard engine, 25-item Clipboard Scrapbook drawer, intelligent paste separation, drag-and-drop shockwave feedback |
+| **Bulk Image Import** | Select or drop multiple images; choose single-page collage or one page per image automatically |
+| **Shapes and Smart Arrows** | 200+ SVG vector shapes, 98 parametric Smart Arrows with stem-only scaling, 3D rotation engine, custom point editing |
+| **Images and Graphics** | Picture placeholders, batch picture swap, non-destructive crop, rounded corners with contour shadows, 14-shape clipping |
+| **Tables** | 100 styled templates, multi-cell selection, Excel import (xlsx/xls), convert to text, line height control |
+| **WordArt** | 214 creative styles (Curved, Neon, 3D Extrusion, Holographic, Vaporwave), live hue shifting, high-DPI vector font print baking |
+| **Clipart and Emojis** | 3,403 high-quality transparent images, searchable Twemoji gallery with skin tone picker, symbol inserter, QR code generator |
+| **AI Studio & Assistant** | Prompt-driven page layouts and scalable SVG vectors via a 7-node AI cluster, FLUX.1 raster image generation across a 7-node image cluster, workspace commands, and single-step undo (no sign-up or API keys required) |
+| **File Import** | Open and edit PDFs directly, plus dual-canvas Microsoft Publisher (`.pub`) and Word (`.doc`/`.docx`) import with editable text & preserved background graphics |
+| **Multi-Page Overview** | Decoupled from zoom, explicit toggle, keyboard navigation, thumbnail grid with double-click to edit |
+| **Security and Recovery** | AES-GCM password encryption, Document Inspector, automated crash dumps, safe mode launch flags |
+| **Workspace and Shell** | 360-degree scratch area scrolling, ruler selection span markers, group orbit rotation, system tray, developer HUD |
+| **Export and Output** | High-fidelity PDF, standalone export queue, live presentation preview, Pack and Go, HTML with SEO meta tags |
 
 ---
 
@@ -184,6 +225,18 @@ Version 5 is the most significant release in Open Publisher's history - a comple
 
 <details>
 <summary>🔍 Expand to see all V5 feature highlights</summary>
+
+### 🆕 Latest Additions (v5.23 - v5.24)
+
+- **Ubuntu Server & 11th-Gen i7 Conversion Hardware Upgrade (v5.24.8)** - Migrated the `.pub`, `.pubx`, `.doc`, and `.docx` conversion backend to an 11th-gen Intel Core i7 Ubuntu Server with expanded RAM and a 3-worker parallel LibreOffice pool, cutting typical wait times from 40 seconds - 2 minutes down to 5 - 20 seconds and rotating the conversion tunnel endpoint.
+- **Document Conversion Server Endpoint & Backend Upgrade (v5.24.7)** - Updated the Cloudflare Quick Tunnel endpoint for `.pub`, `.pubx`, `.doc`, and `.docx` imports to match the upgraded conversion backend, featuring asynchronous queued LibreOffice processing, automated pre-conversion content-safety screening with dispute notices, and real-time uptime/engine health monitoring.
+- **Bingo & Raffle Ticket Generator Studio (v5.24.6)** - New **Fun** tab studio that turns a pool of 50+ words or numbers into up to 100 randomized, strictly non-identical Bingo cards (with a printable Caller's Master Sheet) or up to 200 sequentially numbered Raffle tickets with matching tear-off stubs, laid out across multiple pages with 6 design styles, custom colors, fonts, barcodes, cut guides, and a built-in `[?]` help window.
+- **Dark Mode and Bright-Theme Contrast Polish (v5.24.5)** - Bright accent themes (such as Snapchat Gold) now use crisp dark text and icons across ribbons, galleries, floating toolbars, the Status Bar, Variable Font Studio, and help dialogs in both Light and Dark Mode, and the **Options** theme dropdown now opens above the dialog instead of behind it.
+- **iPadOS / iOS PDF Export Guidance and Theme-Aware Export Buttons (v5.24.4)** - The Export High-Res PDF dialog explains how to **Save to Files** from Safari and warns when printing and PDF export are disabled by Home Screen "Open as Web App" mode (strictly gated off on desktop builds). Export PDF and Export XPS action buttons now follow the active UI theme.
+- **Crisp High-DPI Grid Overlay (v5.24.3)** - The canvas Grid renders in a native device-pixel overlay so it stays crisp and visible when zoomed out on high-DPI pages (such as 300 DPI Fit Page), with DPI-proportional spacing and synchronized Snap to Grid intervals.
+- **NW.js Desktop Font Dropdown Compatibility (v5.24.2)** - System fonts detected by the desktop wrapper now appear in the searchable Variable Font dropdown with a dedicated **System** filter.
+- **Size and Position Precision (v5.24.1)** - The Size and Position dialog and Dimensions & Position sidebar keep your entered values, add left-side number selectors, and keep sidebar state in sync with the View ribbon.
+- **Cold-Start `.opub` Fix (v5.23.1) and Variable Font Studio (v5.23.0)** - Desktop users receive both automatically through the web app; see [the Gecko build note](#what-happened-to-the-gecko-windows-build) for the background.
 
 ### 🛡️ Saving, Backups and File Safety
 
@@ -346,41 +399,33 @@ Version 5 is the most significant release in Open Publisher's history - a comple
 
 ---
 
-<a id="features-at-a-glance"></a>
-## Features at a Glance
-
-| Category | Highlights |
-|---|---|
-| **Platforms** | Windows (Installer, Portable, Windows XP), macOS (.dmg), Linux (.flatpak, .AppImage, .run, .deb, .rpm), FreeBSD (.pkg), Web & Installable PWA |
-| **Engine and Limits** | Uncapped 8GB RAM / 4GB GPU VRAM, asynchronous IPC streams, 60 FPS hardware acceleration |
-| **Physical Units and DPI** | CM, MM, Inches, Pixels; 72/96/140/150/300 DPI or custom; DPI-aware margins, rulers, and print engine |
-| **300 DPI & Multi-Up Print** | Zero-spillage single-page printing, Booklet imposition, and Business Card / Label multi-up sheet printing with crop marks |
-| **Data Protection** | 4-step atomic save, 15-minute shadow snapshots (50 per document), external file watcher, Backup Manager, Previous Versions |
-| **Page Formats & Templates** | A3, A4, A5, Letter, Legal, Tabloid, Business Card, Square - plus 280+ editable multi-layer templates across 15 categories |
-| **Typography & Variable Fonts** | 129 bundled Variable Fonts with continuous OpenType axis sliders, 2D Matrix Explorer, and custom `.ttf`/`.otf`/`.woff2` upload; 100 Styled Text Boxes, 40 Clipart Border Art frames, RTL support, Windows font discovery, offline spellcheck & grammar |
-| **Dark Mode & 50+ UI Themes** | High-contrast Dark Mode studio appearance paired with 50+ UI accent color themes and automatic bright-theme contrast adaptation |
-| **Theme Studio** | 700+ curated page themes & fine textures, 6 live background adjustment sliders, per-page independent themes |
-| **Fun & Puzzle Generators** | Dedicated **Fun** ribbon tab featuring Word Search Studio, Crossword Builder, Connect-the-Dots Path Tool, Codebreaker Grid, and Cryptogram Frames with automatic Page 2 Answer Keys |
-| **Clipboard and Assets** | Unified clipboard engine, 25-item Clipboard Scrapbook drawer, intelligent paste separation, drag-and-drop shockwave feedback |
-| **Bulk Image Import** | Select or drop multiple images; choose single-page collage or one page per image automatically |
-| **Shapes and Smart Arrows** | 200+ SVG vector shapes, 98 parametric Smart Arrows with stem-only scaling, 3D rotation engine, custom point editing |
-| **Images and Graphics** | Picture placeholders, batch picture swap, non-destructive crop, rounded corners with contour shadows, 14-shape clipping |
-| **Tables** | 100 styled templates, multi-cell selection, Excel import (xlsx/xls), convert to text, line height control |
-| **WordArt** | 214 creative styles (Curved, Neon, 3D Extrusion, Holographic, Vaporwave), live hue shifting, high-DPI vector font print baking |
-| **Clipart and Emojis** | 3,403 high-quality transparent images, searchable Twemoji gallery with skin tone picker, symbol inserter, QR code generator |
-| **AI Studio & Assistant** | Prompt-driven page layouts and scalable SVG vectors via a 7-node AI cluster, FLUX.1 raster image generation across a 7-node image cluster, workspace commands, and single-step undo (no sign-up or API keys required) |
-| **File Import** | Open and edit PDFs directly, plus dual-canvas Microsoft Publisher (`.pub`) and Word (`.doc`/`.docx`) import with editable text & preserved background graphics |
-| **Multi-Page Overview** | Decoupled from zoom, explicit toggle, keyboard navigation, thumbnail grid with double-click to edit |
-| **Security and Recovery** | AES-GCM password encryption, Document Inspector, automated crash dumps, safe mode launch flags |
-| **Workspace and Shell** | 360-degree scratch area scrolling, ruler selection span markers, group orbit rotation, system tray, developer HUD |
-| **Export and Output** | High-fidelity PDF, standalone export queue, live presentation preview, Pack and Go, HTML with SEO meta tags |
-
 ---
 
 <a id="installation-and-platform-support"></a>
 ## Installation and Platform Support
 
 Open Publisher runs natively across **Windows** (NW.js Installer, Portable `.exe`, and Windows XP SP3 build), **macOS** (`.dmg`), **Linux** (`.flatpak`, `.AppImage`, `.run`, `.deb`, `.rpm` with bundled Noto Color Emoji COLRv1 support), **FreeBSD** (`.pkg`), and the **Web / Installable PWA**.
+
+<a id="what-happened-to-the-gecko-windows-build"></a>
+<details>
+<summary><strong>ℹ️ What Happened to the Experimental Gecko Windows Build (and Why v5.23.1 Rolls Back to NW.js) - Click to expand</strong></summary>
+<br/>
+
+Over the last 41 updates, I built an experimental Mozilla Gecko-based desktop shell for OpenPublisher on Windows. It delivered roughly half the installer size, faster startup, smoother canvas performance on older hardware (including Windows 7), and a built-in wrapper updater.
+
+However, as a 100% free, self-funded GNU GPL v2 open-source project, OpenPublisher does not pay for commercial EV code-signing certificates. When the new build was promoted across software directories, the unsigned 48 KB C# launcher (`OpenPublisher.exe`) triggered an automated cloud machine-learning false positive in Microsoft Defender. Although Microsoft's security team reviewed the dispute and cleared the binary as clean (followed by Malwarebytes), the brief delay allowed automated threat feeds and dozens of third-party heuristic scanners to mirror the initial flag on VirusTotal.
+
+That automated cascade triggered software directory rejections and automated link filtering on Facebook (including retroactive removals of older release posts), even though the source code is completely public and clean.
+
+Rather than fighting an endless game of whack-a-mole with dozens of automated heuristic feeds, I made the pragmatic call to:
+1. **Retire the experimental Gecko Windows packages** and strip those binaries from all 41 historical GitHub Releases.
+2. **Restore our proven, clean NW.js Windows Installer and Portable builds** as the primary Windows release, keeping the compiled executables completely frozen so their clean binary reputation stays intact.
+3. **Deliver desktop fixes downstream through the web application (`v5.23.1`):** Instead of rebuilding `setup.exe`, `v5.23.1` eliminates the NW.js cold-start `.opub` file-association blank-canvas bug (caused by orphaned `#paper.paper-pouring` transitions and startup timing races) 100% inside the web app while preserving the wrapper's 4-step atomic save system untouched.
+
+The web app at `openpublisher.app` remains completely clean on Google Safe Browsing and VirusTotal URL scanners, and all NW.js desktop users receive `v5.23.0` (Variable Font Studio) and `v5.23.1` (cold-start `.opub` fix) automatically on launch.
+
+</details>
+
 
 <details>
 <summary><strong>🖥️ Click to expand platform-specific installation details & screenshots (Windows, macOS, Linux, FreeBSD)</strong></summary>
@@ -394,7 +439,6 @@ Open Publisher is available in NW.js editions for Windows, alongside a dedicated
 - **NW.js Portable Version (`.exe`)** - Self-contained zero-install executable. Ideal for USB drives, restricted workstations, or running without administrator rights.
 - **Windows XP Client (`.exe`)** - Dedicated standalone client for Windows XP SP3, featuring a customized chromeless runtime, integrated window controls, and full native branding.
 - **Safe Mode Startup** - Launch with `--safe-mode` or `--reset` from the command line to purge cached data, reset layout bounds, and troubleshoot faulty extensions.
--
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/af83b0b5-6d2b-4ddd-ac1c-cb0d2e22976a" alt="Open Publisher on Windows 11" width="700"/>
@@ -450,6 +494,70 @@ Open Publisher V5 introduces an official native FreeBSD distribution:
 </p>
 
 </details>
+
+<a id="web-pwa-and-ipados-ios"></a>
+### Web App, Installable PWA and iPadOS / iOS
+
+No install is needed to try Open Publisher: open **[openpublisher.app](https://openpublisher.app)** in your browser. The web app is a rolling release, so you always load the latest version when online, and your documents and files stay on your device. Desktop-wrapper integrations (system tray, taskbar progress, native menu bar, atomic file saves, Backup Manager, and the external file watcher) are provided by the desktop apps.
+
+- **Install as an app (PWA)** - Use your browser's **Install** option (for example in the Chrome or Edge address bar), or on iPadOS / iOS tap **Share > Add to Home Screen**.
+- **Saving a PDF on iPadOS / iOS** - Apple's print system handles PDF creation, so the steps depend on how you launched Open Publisher:
+
+| How you launched it | What to do |
+|---|---|
+| **Safari (normal browser tab)** | Choose **Save as PDF** and tap **Open Print Dialog**. When Print Preview opens, tap the **Share** icon at the top (or pinch outward with two fingers on the preview page) and choose **Save to Files** to save the PDF to any folder. |
+| **Home Screen app with "Open as Web App" enabled** | iPadOS disables printing and PDF export in this mode. Open [openpublisher.app](https://openpublisher.app) directly in standard Safari, or re-add the Home Screen shortcut with **Open as Web App** switched OFF. A **Try Print Dialog Anyway** button stays available in the dialog in case Apple changes this in a future iPadOS update. |
+| **Desktop apps (Windows, macOS, Linux, FreeBSD)** | Unaffected. The standard **Open Print Dialog** flow is used. |
+
+<a id="run-from-source"></a>
+### Run from Source (Self-Hosting)
+
+<details>
+<summary><strong>🧑‍💻 Click to expand: run Open Publisher locally from this repository</strong></summary>
+<br/>
+
+Open Publisher is a static web application (plain HTML, CSS and JavaScript with no build step), so any static file server works. For example, using Python:
+
+```bash
+git clone https://github.com/rmellis/open-publisher.git
+cd open-publisher
+python -m http.server 8080
+```
+
+Then open `http://localhost:8080` in your browser. Serving over `http://localhost` (rather than opening `index.html` as a file) lets the service worker and PWA install features work.
+
+The Windows installer sources (Inno Setup scripts, wizard artwork and build steps) are documented in [`inno_scripts/README.md`](inno_scripts/README.md).
+
+</details>
+
+---
+
+<a id="quick-start"></a>
+## Quick Start: Your First Publication
+
+New to Open Publisher? This walkthrough takes you from a blank page to an exported publication. Each step links to the section with full details.
+
+1. **Start from the Dashboard.** Pick a blank paper size (A4, Letter, A5, A3, Legal, Tabloid, Business Card, Square, or **Custom Size...**) or open one of **280+ editable templates**. See [The Dashboard](#the-dashboard-and-startup-experience) and [Templates](#marketing-and-promotional-tools).
+2. **Set up the page.** Choose paper size, orientation, units (cm, mm, in, px), margins, and DPI in the New Document or Resize Document dialog, and use the ribbon margin buttons for quick changes. Pick **300 DPI** for professional print. See [Page Setup](#page-and-document-management) and [Units and DPI](#physical-measurement-units-and-dpi).
+3. **Add text.** Press `T` on the canvas or choose **Insert > Text Box** (or pick one of the 100 styled presets), then format it from the Home ribbon, the floating toolbar, or the **VF** button for Variable Fonts. See [Text and Typography](#text-boxes-typography-and-spellcheck).
+4. **Add pictures.** Drag and drop images onto the canvas, paste with `Ctrl+V`, or use **Insert > Picture**. Drop images onto placeholders to fill them, then crop, round corners, or add shadows with Picture Tools. See [Images](#images-graphics-and-clipboard-scrapbook) and [Picture Tools](#picture-tools-ribbon).
+5. **Decorate.** Add [Shapes and Smart Arrows](#shapes-and-drawing), [WordArt](#wordart), [Clipart, Emojis and QR codes](#clipart-emojis-and-symbols), and [Tables](#tables).
+6. **Style the whole publication.** Apply a page theme in the Page Design ribbon ([Theme Studio](#master-pages-and-themes)), put repeating headers, footers, and logos on the Master Page, and add automatic page numbers with **Insert > Page Number**.
+7. **Add pages and check your layout.** Use **+ Add Page** in the Navigation Pane, switch to Multi-Page Overview from the View ribbon or status bar, and use the Selection Pane to manage layered objects. See [Page Management](#page-and-document-management) and [Layout Tools](#layout-and-workspace-tools).
+8. **Save your work.** Press `Ctrl+S` to save a crash-safe `.opub` file. Auto-save, Previous Versions, and the Backup Manager protect you if anything goes wrong. See [Data Integrity](#data-integrity-saving-and-recovery-systems).
+9. **Export or print.** Save a PDF, export an image, HTML, or XPS file, or use Pack and Go for your print shop. See [Export](#export-presentation-and-multi-page-output) (iPad users: see [the iPadOS / iOS steps](#web-pwa-and-ipados-ios)).
+
+**Handy to know:**
+
+| Tip | How |
+|---|---|
+| Duplicate the selected object | `Ctrl+D` |
+| Temporarily bypass grid snapping | Hold `Ctrl` while dragging |
+| Toggle between current zoom and 100% | `F9` |
+| Summon the Clippy assistant | `Alt+H` (or right-click the canvas) |
+| Make puzzles, worksheets, Bingo cards, or raffle tickets | The **Fun** ribbon tab ([Fun and Puzzle Generators](#fun-and-puzzle-generators)) |
+| Generate a layout, image, or vector from a prompt | **Home > AI Studio** ([AI Studio](#ai-layout-and-command-assistant)) |
+| Need more help | The [Knowledge Base](https://kb.openpublisher.app), or see [all keyboard shortcuts](#keyboard-shortcuts-reference) |
 
 ---
 
@@ -542,55 +650,43 @@ Open Publisher includes first-class **Dark Mode** support alongside **more than 
 
 ---
 
-<a id="data-integrity-saving-and-recovery-systems"></a>
-## Data Integrity, Saving and Recovery Systems
+<a id="layout-and-workspace-tools"></a>
+## Layout and Workspace Tools
 
-Open Publisher V5 incorporates enterprise-grade protections - including a 4-step crash-safe atomic save pipeline, 15-minute rolling background snapshots (up to 50 per document), a dedicated Backup Manager, external file modification watching, and Chromium idle auto-save - to ensure your creative work is never lost.
+### Rulers, Guides and Snapping
 
-<details>
-<summary><strong>🛡️ Click to expand Atomic Save Pipeline, Snapshots & Backup Manager Architecture</strong></summary>
-<br/>
+- **Physical Rulers with Selection Span Markers** - Run along the top and left canvas edges in the active unit (cm, mm, in, or px). Selecting any object illuminates a teal span band inside both rulers showing its exact physical width and height, alongside 60 FPS real-time cursor position hairlines.
+- **Custom Ruler Origin** - Drag the intersection box to set a new 0,0 point; double-click to reset.
+- **Three Independent Snapping Modes** - Snap to Grid, Snap to Guides, Snap to Objects (toggle each individually).
+- **Hold `Ctrl` while dragging** to temporarily bypass grid snapping without changing the setting.
+- **Smart Guides** - Teal alignment lines appear when dragging near edges/centres of other elements; smooth fade-in/out.
 
-- **4-Step Atomic Save Pipeline**:
-  1. Writes serialized document data to an isolated temporary file (`[filename].opub.tmp`).
-  2. Verifies the written file on disk to guarantee complete, non-zero byte length.
-  3. Safely rotates the existing saved document into the backup directory (`[filename].opub.bak`).
-  4. Atomically renames the temporary file into place via OS-level `fs.renameSync`.
-- **15-Minute Background Snapshots (Previous Versions)**:
-  - Operates automatically in the background, capturing rolling snapshots every 15 minutes when unsaved modifications exist.
-  - Only activates for named (saved) files - unsaved drafts are skipped.
-  - Maintains a 50-snapshot FIFO history per document.
-  - Open snapshots via the Previous Versions button in the titlebar to inspect, restore, or open as a fresh copy.
-  - **On-Demand Snapshots**: Click "Take Snapshot" inside the dialog to capture a version instantly at any time.
-  - **Scope Filter**: Toggle between viewing versions for only the active document or across all projects.
-- **Backup Manager**:
-  - Draggable modal dialog accessible from the titlebar, Developer HUD, and system tray.
-  - Chronological listing of all `.bak` files with publication name, date, file size, and page count.
-  - Open any backup directly as a working copy (decoupled from the original file path, so Ctrl+S triggers Save As).
-  - Real-time search filter and direct folder access for manual archive management.
-- **External File Modification Watcher**:
-  - Uses filesystem observation to monitor open files. If a document is updated externally (e.g., via Dropbox, OneDrive, Git, or another editor), a debounced prompt alerts you to reload the latest version.
-- **Chromium Idle Background Auto-Save**:
-  - Automatically saves named documents after 10 minutes of system inactivity. Runs completely in the background without any UI interruption.
-  - For brand new, never-saved documents, a single non-stacking in-app modal prompts you to Save As when you return. No stacked system dialogs.
-- **Non-Blocking Async Save**:
-  - Saving large documents never freezes or stutters the UI. The entire save pipeline runs on a background IPC stream, leaving the canvas fully responsive throughout.
-- **Power Management During Save/Export**:
-  - The OS is prevented from sleeping or activating the screen saver while a save or export is in progress. Normal power behavior resumes immediately afterward.
-- **Native Desktop Save Notification**:
-  - A native OS notification toast appears each time a publication is successfully saved, confirming the save completed without needing to watch the status bar.
-- **Backup Directory Relocation**:
-  - Backup rotation files (`.bak`) are stored in a dedicated system directory (`AppData\Local\OpenPublisher\Backups`) rather than cluttering your working project folder. Old `.bak` files in working directories are automatically cleaned up on the next save.
-- **Renderer Crash Recovery**:
-  - Webview crashes are intercepted immediately; a replacement process launches automatically with the `--recovered` flag, presenting an interactive session restore modal and generating a diagnostic crash dump on the Desktop.
-- **Taskbar Progress Indication**:
-  - The Windows taskbar button shows a live green progress bar during saves and document loads, matching the status bar glow animation.
+### Canvas Navigation, Selection and Customization
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/45faebcd-49d1-4dbd-9f39-de52ea45978d" alt="Atomic Save - Backup Manager" width="500"/>
-</p>
+- **Auto-centering on load**: Opening any document automatically fits the page to the viewport and centers it. No manual scroll needed.
+- **360-Degree Scratch Area Scrolling & Return to Page Button** - Scroll freely in all four directions (including left and above the page) with automatic pasteboard expansion. If you scroll the page out of view, a floating directional **Return to Page** button appears to recenter your work in one click.
+- **Shift + Mouse Wheel Horizontal Navigation** - Smooth horizontal panning across the wide canvas pasteboard at all zoom levels.
+- **Zoom-Invariant Selection UI & Quick-Action Pill** - Selection handles, rotation grips, and bounding outlines remain crisp and consistently sized regardless of zoom level. Selecting an object displays a compact floating action pill for one-click **Duplicate (`Ctrl+D`)**, **Bring to Front**, **Send to Back**, and **Delete**.
+- **Customizable Ribbon Layout** - Rearrange ribbon button groups to match your preferred workflow in **File > Options**.
+- **Pan Hand Tool** - Click and drag the canvas to navigate. Activates from the View ribbon, the Hand tool button, or by holding the appropriate modifier.
+- **Liquid Content Pour Animation** - Cascading entrance animation with zero-flicker pre-paint clamping when documents load.
 
-</details>
+| Shortcut | Action |
+|---|---|
+| `Ctrl + Mouse Wheel` | Zoom in/out in fine increments |
+| `Shift + Mouse Wheel` | Pan canvas horizontally |
+| `F9` | Toggle between current zoom and 100% |
+| `Ctrl + Shift + L` | Whole Page View - fit full page in window |
+| `Ctrl + 0` | Reset zoom to 100% |
+| Right-click zoom slider | Preset menu: 60%, 70%, 80%, 90%, 100%, 110%, 120%, 130%, 150%, 175%, 200% |
+
+### Selection Pane
+
+**Home > Select > Selection Pane** - A scrollable list of every element on the canvas in Z-order:
+- Click to select any element (including buried or obscured objects).
+- Toggle visibility with the eye icon; hidden elements are excluded from PDF exports.
+- Rename elements inline (e.g., "Background Logo", "Footer Bar").
+- Updates in real time via MutationObserver.
 
 ---
 
@@ -609,6 +705,16 @@ Design multi-page newsletters, magazines, booklets, and reports with instant sid
 - **Page Notes** - Attach custom section labels to page thumbnails (e.g., "Front Cover", "Issue 10 Dispatch") displayed beneath each thumbnail.
 - **Scratch Area & Classic Drag** - Stage off-canvas assets in the surrounding 360-degree pasteboard, and toggle classic desktop-publishing Move Truck cursors from the **View > Show** group.
 - **Auto Page Numbering & Template Saving** - Insert dynamic, self-updating page numbers via `Insert > Page Number`, and save any multi-page layout as a reusable template.
+
+### Multi-Page Overview Controls
+
+Access Multi-Page Overview from the status bar view toggle buttons or the View ribbon:
+
+- Single-click any page slot or sidebar thumbnail to select and center it (high-visibility teal outline).
+- Double-click any page slot or press `Enter` to open that page for editing in Single-Page mode while preserving your zoom level and centering the chosen page.
+- Zoom scales all page previews simultaneously without switching modes.
+- Arrow keys cycle page selection; `Escape` returns to Single-Page mode.
+- Rulers and margin guides are suppressed during overview (they restore automatically on return).
 
 ### Page Setup
 
@@ -915,7 +1021,7 @@ Open Publisher includes **280+ ready-made publication templates** constructed fr
 <a id="fun-and-puzzle-generators"></a>
 ## Fun and Puzzle Generators (The Fun Ribbon Tab)
 
-The dedicated **Fun** ribbon tab transforms Open Publisher into a full puzzle, worksheet, and activity-page studio for teachers, parents, newsletter editors, and activity-book creators:
+The dedicated **Fun** ribbon tab transforms Open Publisher into a full puzzle, worksheet, and activity-page studio for teachers, parents, newsletter editors, and activity-book creators. Find every generator in the **Puzzles & Games** group:
 
 <p align="center">
   <img src="docs/screenshots/op-FunStuff.png" alt="Open Publisher Fun tools showing a Word Search Answer Key on the canvas and the Connect-the-Dots Path Tool modal" width="800"/>
@@ -926,7 +1032,11 @@ The dedicated **Fun** ribbon tab transforms Open Publisher into a full puzzle, w
 - **Connect-the-Dots Path Tool** - Convert built-in vector silhouettes (Rocket Ship, animals, vehicles, seasonal icons) or any custom shape on your canvas into a numbered connect-the-dots puzzle. Configure dot count, smart corner sampling, counting intervals (count by 1s, 2s, 5s, 10s, or A-Z), straight or curved guide hints, start-dot highlight, and automatic Page 2 solved answer keys.
 - **Codebreaker Grid** - Create cipher codebreaker puzzles with randomized 1-to-26 number-to-letter keys, starter letter reveals, and A-Z letter-tracking reference tables.
 - **Cryptogram Frames** - Build secret message and quote frames using Letter Substitution, Pigpen / Masonic geometric ciphers, Braille dots, or Morse code with customizable hint levels.
-- **Non-Destructive Double-Click Re-Editing** - Double-click any puzzle placed on the canvas at any time to reopen its studio dialog with all original words, clues, or path nodes restored.
+- **Bingo & Raffle Ticket Generator** - Two generators in one studio, each producing multi-page batches with a live single-item and full-sheet preview:
+  - **Bingo Cards** - Enter any pool of 50+ words, phrases, or numbers (or load a preset: Party & Game Night, Classic Numbers 1-75, Sequential Numbers, Classroom & Nature, or Office & Team Meeting) and generate up to **100 randomized, strictly non-identical cards** in 3x3, 4x4, or 5x5 grids at 1, 2, or 4 cards per page. Options include a center FREE space, a B-I-N-G-O column header row, classic 1-75 column ranges, card serial numbers (`Card #001 of 030`), a one-click **Reshuffle**, and an optional printable **Caller's Master Sheet**.
+  - **Raffle Tickets** - Generate up to **200 sequentially numbered tickets** (custom start number, prefix, zero padding, and suffix) with **matching tear-off stubs**: left or right stub, notched scissors, dotted, or dashed perforation, Name / Phone / Email write-in lines, a vector barcode strip, a price or admit badge, optional per-ticket prize tags, and 4, 5, 6, 8, or 10 tickets per page.
+  - **Styling** - 6 design styles for each generator, 6 color presets plus a full custom color picker, 6 typography fonts, dashed sheet cut guides, Dark Mode and bright-theme adaptation, and a built-in `[?]` help window.
+- **Non-Destructive Double-Click Re-Editing** - Double-click any puzzle placed on the canvas at any time to reopen its studio dialog with all original words, clues, or path nodes restored. Bingo & Raffle batches can be restyled across every page at once.
 
 ---
 
@@ -956,56 +1066,6 @@ See how Open Publisher's in-app AI tools and precision layout/layering controls 
 
 ---
 
-<a id="layout-and-workspace-tools"></a>
-## Layout and Workspace Tools
-
-### Rulers, Guides and Snapping
-
-- **Physical Rulers with Selection Span Markers** - Run along the top and left canvas edges in the active unit (cm, mm, in, or px). Selecting any object illuminates a teal span band inside both rulers showing its exact physical width and height, alongside 60 FPS real-time cursor position hairlines.
-- **Custom Ruler Origin** - Drag the intersection box to set a new 0,0 point; double-click to reset.
-- **Three Independent Snapping Modes** - Snap to Grid, Snap to Guides, Snap to Objects (toggle each individually).
-- **Hold `Ctrl` while dragging** to temporarily bypass grid snapping without changing the setting.
-- **Smart Guides** - Teal alignment lines appear when dragging near edges/centres of other elements; smooth fade-in/out.
-
-### Canvas Navigation, Selection and Customization
-
-- **Auto-centering on load**: Opening any document automatically fits the page to the viewport and centers it. No manual scroll needed.
-- **360-Degree Scratch Area Scrolling & Return to Page Button** - Scroll freely in all four directions (including left and above the page) with automatic pasteboard expansion. If you scroll the page out of view, a floating directional **Return to Page** button appears to recenter your work in one click.
-- **Shift + Mouse Wheel Horizontal Navigation** - Smooth horizontal panning across the wide canvas pasteboard at all zoom levels.
-- **Zoom-Invariant Selection UI & Quick-Action Pill** - Selection handles, rotation grips, and bounding outlines remain crisp and consistently sized regardless of zoom level. Selecting an object displays a compact floating action pill for one-click **Duplicate (`Ctrl+D`)**, **Bring to Front**, **Send to Back**, and **Delete**.
-- **Customizable Ribbon Layout** - Rearrange ribbon button groups to match your preferred workflow in **File > Options**.
-- **Pan Hand Tool** - Click and drag the canvas to navigate. Activates from the View ribbon, the Hand tool button, or by holding the appropriate modifier.
-- **Liquid Content Pour Animation** - Cascading entrance animation with zero-flicker pre-paint clamping when documents load.
-
-| Shortcut | Action |
-|---|---|
-| `Ctrl + Mouse Wheel` | Zoom in/out in fine increments |
-| `Shift + Mouse Wheel` | Pan canvas horizontally |
-| `F9` | Toggle between current zoom and 100% |
-| `Ctrl + Shift + L` | Whole Page View - fit full page in window |
-| `Ctrl + 0` | Reset zoom to 100% |
-| Right-click zoom slider | Preset menu: 60%, 70%, 80%, 90%, 100%, 110%, 120%, 130%, 150%, 175%, 200% |
-
-### Multi-Page Overview
-
-Access Multi-Page Overview from the status bar view toggle buttons or the View ribbon:
-
-- Single-click any page slot or sidebar thumbnail to select and center it (high-visibility teal outline).
-- Double-click any page slot or press `Enter` to open that page for editing in Single-Page mode while preserving your zoom level and centering the chosen page.
-- Zoom scales all page previews simultaneously without switching modes.
-- Arrow keys cycle page selection; `Escape` returns to Single-Page mode.
-- Rulers and margin guides are suppressed during overview (they restore automatically on return).
-
-### Selection Pane
-
-**Home > Select > Selection Pane** - A scrollable list of every element on the canvas in Z-order:
-- Click to select any element (including buried or obscured objects).
-- Toggle visibility with the eye icon; hidden elements are excluded from PDF exports.
-- Rename elements inline (e.g., "Background Logo", "Footer Bar").
-- Updates in real time via MutationObserver.
-
----
-
 <a id="export-presentation-and-multi-page-output"></a>
 ## Export, Presentation and Multi-Page Output
 
@@ -1022,6 +1082,8 @@ Access Multi-Page Overview from the status bar view toggle buttons or the View r
 | **Export as XPS** | Windows XML Paper Specification via the browser's native print engine |
 | **Pack and Go** | Commercial print package: extracts all images, lists all fonts used, zips everything for print shop handoff |
 
+> **iPadOS / iOS:** PDFs are saved through Safari's print preview (**Share > Save to Files**), and printing and PDF export are disabled when Open Publisher is launched from the Home Screen with "Open as Web App" enabled. See [Web App, Installable PWA and iPadOS / iOS](#web-pwa-and-ipados-ios) for the full steps.
+
 <details>
 <summary><strong>🌐 Click to expand Advanced HTML & Email Newsletter Export Options</strong></summary>
 <br/>
@@ -1036,62 +1098,6 @@ Access Multi-Page Overview from the status bar view toggle buttons or the View r
 - Include Google Fonts
 
 > **Privacy - Pack and Go:** The entire packaging process happens natively in your browser using the open-source JSZip library. Your documents and images are never uploaded to any external server.
-
-</details>
-
----
-
-<a id="developer-tools-and-diagnostics"></a>
-## Developer Tools and Diagnostics
-
-Open Publisher V5 includes built-in diagnostic and developer tooling (`Ctrl+Shift+D`), including a real-time memory/FPS HUD, standalone tearaway monitor window, IPC traffic sniffer, crash recovery logs, and the interactive Clippy assistant.
-
-<details>
-<summary><strong>🔧 Click to expand Developer HUD, IPC Sniffer & Crash Diagnostic Details</strong></summary>
-<br/>
-
-- **Developer HUD (`Ctrl+Shift+D`)**: Floating heads-up display showing live memory allocation graphs, RSS change rates, active DOM node counts, and frame rates.
-- **Standalone Tearaway HUD**: Pop out the Developer HUD into an independent floating window (`hud.html`) across multi-monitor setups.
-- **Bidirectional IPC Sniffer**: Real-time traffic monitor capturing and logging all communication passing between the host wrapper and webview.
-- **Automated Crash Logging**: Automatically dumps hardware specifications, memory statistics, and process uptime to `OpenPublisher-Crash-Log.txt` on the Desktop if a crash occurs.
-- **Safe Mode Actions**: Built-in actions to reboot the application in diagnostic Safe Mode directly from the HUD.
-- **Open AppData Folder**: Quick access button to the application data directory for manual backup and log inspection.
-- **Microsoft Agent (Clippy)**: Nostalgic interactive assistant featuring 41 authentic animations and 101 productivity tips.
-
-</details>
-
----
-
-<a id="document-security-and-privacy"></a>
-## Document Security and Privacy
-
-Protect sensitive publications with native **Web Crypto API (AES-GCM)** password encryption and scan documents for hidden metadata or off-canvas objects with the built-in **Document Inspector** (`File > Info > Inspect Document`).
-
-<details>
-<summary><strong>🔒 Click to expand AES-GCM Password Encryption & Document Inspector Details</strong></summary>
-<br/>
-
-### Password Protection
-
-Open Publisher encrypts documents using the **Web Crypto API (AES-GCM)**, an industry-standard algorithm implemented natively in the browser.
-
-- Encrypted files save as binary blobs, completely unreadable without the correct password.
-- A **Protected** status badge appears in the bottom status bar when a document is secured.
-- To open a protected document: open the file, enter the password in the decryption prompt.
-
-> **Warning:** There is no password recovery mechanism. If you lose the password, the document cannot be recovered. Always keep a backup of the unprotected source file.
-
-### Document Inspector
-
-**File > Info > Inspect Document** scans across all pages and checks:
-
-| Category | What It Finds |
-|---|---|
-| Document Properties | Embedded author, company, subject, and keyword metadata |
-| Off-Canvas Elements | Objects dragged partially or fully outside the page boundary |
-| Empty Text Boxes | Text boxes containing only invisible characters (e.g., non-breaking spaces) |
-
-Each category shows a colour-coded Found/Clean status with a one-click **Remove All** action to purge detected data.
 
 </details>
 
@@ -1136,88 +1142,115 @@ Open Publisher's native format is `.opub`:
 
 ---
 
-<a id="keyboard-shortcuts-reference"></a>
-## Keyboard Shortcuts Reference
+<a id="data-integrity-saving-and-recovery-systems"></a>
+## Data Integrity, Saving and Recovery Systems
+
+Open Publisher V5 incorporates enterprise-grade protections - including a 4-step crash-safe atomic save pipeline, 15-minute rolling background snapshots (up to 50 per document), a dedicated Backup Manager, external file modification watching, and Chromium idle auto-save - to ensure your creative work is never lost.
 
 <details>
-<summary><strong>⌨️ Click to expand Complete Keyboard Shortcuts Reference</strong></summary>
+<summary><strong>🛡️ Click to expand Atomic Save Pipeline, Snapshots & Backup Manager Architecture</strong></summary>
 <br/>
 
-| Shortcut | Action |
-|---|---|
-| `T` (on canvas) | Insert new text box |
-| `Ctrl + Z` | Undo |
-| `Ctrl + Y` / `Ctrl + Shift + Z` | Redo |
-| `Ctrl + C` | Copy element or selected text |
-| `Ctrl + X` | Cut element or selected text |
-| `Ctrl + V` | Paste with intelligent context routing |
-| `Ctrl + Shift + V` | Paste without styles |
-| `Ctrl + D` | Duplicate selected element or multi-element group |
-| `Ctrl + A` | Select all |
-| `Ctrl + S` | Save document (Atomic Pipeline) |
-| `Delete` / `Backspace` | Delete selected element |
-| `Ctrl + Left Shift` / `Ctrl + Right Shift` | Set paragraph direction to Left-to-Right (LTR) or Right-to-Left (RTL) |
-| `F9` | Toggle zoom to/from 100% |
-| `F11` | Native borderless fullscreen toggle |
-| `Shift + Mouse Wheel` | Pan canvas horizontally |
-| `Ctrl + Mouse Wheel` | Zoom in/out |
-| `Ctrl + Shift + D` | Toggle Developer HUD |
-| `Ctrl + Shift + O` / `Ctrl + Shift + P` | Bring application forward globally |
-| `Ctrl + Shift + L` | Whole Page View |
-| `Ctrl + 0` | Reset zoom to 100% |
-| `Shift + drag corner` | Proportional resize |
-| `Ctrl/Cmd + drag handle` | Scale from centre point |
-| `Ctrl/Cmd + Shift + drag` | Proportional scale from centre |
-| `Arrow keys` (Multi-Page Overview) | Cycle page selection |
-| `Enter` (Multi-Page Overview) | Open selected page for editing |
-| `Ctrl + Enter` (AI Assistant) | Generate AI layout |
-| `Escape` | Exit text editing mode / return to Single-Page from Overview |
+- **4-Step Atomic Save Pipeline**:
+  1. Writes serialized document data to an isolated temporary file (`[filename].opub.tmp`).
+  2. Verifies the written file on disk to guarantee complete, non-zero byte length.
+  3. Safely rotates the existing saved document into the backup directory (`[filename].opub.bak`).
+  4. Atomically renames the temporary file into place via OS-level `fs.renameSync`.
+- **15-Minute Background Snapshots (Previous Versions)**:
+  - Operates automatically in the background, capturing rolling snapshots every 15 minutes when unsaved modifications exist.
+  - Only activates for named (saved) files - unsaved drafts are skipped.
+  - Maintains a 50-snapshot FIFO history per document.
+  - Open snapshots via the Previous Versions button in the titlebar to inspect, restore, or open as a fresh copy.
+  - **On-Demand Snapshots**: Click "Take Snapshot" inside the dialog to capture a version instantly at any time.
+  - **Scope Filter**: Toggle between viewing versions for only the active document or across all projects.
+- **Backup Manager**:
+  - Draggable modal dialog accessible from the titlebar, Developer HUD, and system tray.
+  - Chronological listing of all `.bak` files with publication name, date, file size, and page count.
+  - Open any backup directly as a working copy (decoupled from the original file path, so Ctrl+S triggers Save As).
+  - Real-time search filter and direct folder access for manual archive management.
+- **External File Modification Watcher**:
+  - Uses filesystem observation to monitor open files. If a document is updated externally (e.g., via Dropbox, OneDrive, Git, or another editor), a debounced prompt alerts you to reload the latest version.
+- **Chromium Idle Background Auto-Save**:
+  - Automatically saves named documents after 10 minutes of system inactivity. Runs completely in the background without any UI interruption.
+  - For brand new, never-saved documents, a single non-stacking in-app modal prompts you to Save As when you return. No stacked system dialogs.
+- **Non-Blocking Async Save**:
+  - Saving large documents never freezes or stutters the UI. The entire save pipeline runs on a background IPC stream, leaving the canvas fully responsive throughout.
+- **Power Management During Save/Export**:
+  - The OS is prevented from sleeping or activating the screen saver while a save or export is in progress. Normal power behavior resumes immediately afterward.
+- **Native Desktop Save Notification**:
+  - A native OS notification toast appears each time a publication is successfully saved, confirming the save completed without needing to watch the status bar.
+- **Backup Directory Relocation**:
+  - Backup rotation files (`.bak`) are stored in a dedicated system directory (`AppData\Local\OpenPublisher\Backups`) rather than cluttering your working project folder. Old `.bak` files in working directories are automatically cleaned up on the next save.
+- **Renderer Crash Recovery**:
+  - Webview crashes are intercepted immediately; a replacement process launches automatically with the `--recovered` flag, presenting an interactive session restore modal and generating a diagnostic crash dump on the Desktop.
+- **Taskbar Progress Indication**:
+  - The Windows taskbar button shows a live green progress bar during saves and document loads, matching the status bar glow animation.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/45faebcd-49d1-4dbd-9f39-de52ea45978d" alt="Atomic Save - Backup Manager" width="500"/>
+</p>
 
 </details>
 
 ---
 
-<a id="supporters-of-open-source"></a>
-## ❤️ Supporters of Open Source
+<a id="document-security-and-privacy"></a>
+## Document Security and Privacy
 
-OpenPublisher is 100% free, ad-free, and open source (GNU GPL v2). A huge thank you to the Patreon supporter(s) helping keep the project independent and actively developed:
+Protect sensitive publications with native **Web Crypto API (AES-GCM)** password encryption and scan documents for hidden metadata or off-canvas objects with the built-in **Document Inspector** (`File > Info > Inspect Document`).
 
-- **Frank Reibold** *(Founding Supporter)*
+<details>
+<summary><strong>🔒 Click to expand AES-GCM Password Encryption & Document Inspector Details</strong></summary>
+<br/>
 
-Want to support ongoing development? [Support OpenPublisher on Patreon](https://patreon.com/OpenPublisher)
+### Password Protection
 
----
+Open Publisher encrypts documents using the **Web Crypto API (AES-GCM)**, an industry-standard algorithm implemented natively in the browser.
 
-<a id="developers"></a>
-## Developers
+- Encrypted files save as binary blobs, completely unreadable without the correct password.
+- A **Protected** status badge appears in the bottom status bar when a document is secured.
+- To open a protected document: open the file, enter the password in the decryption prompt.
 
-<table align="center">
-  <tr>
-    <td align="center">
-      <a href="https://github.com/rmellis">
-        <img src="https://github.com/rmellis.png" width="100" alt="rmellis"/><br/>
-        <sub><b>rmellis</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/Tallulah95">
-        <img src="https://github.com/Tallulah95.png" width="100" alt="Tallulah95"/><br/>
-        <sub><b>Tallulah95</b></sub>
-      </a>
-    </td>
-  </tr>
-</table>
+> **Warning:** There is no password recovery mechanism. If you lose the password, the document cannot be recovered. Always keep a backup of the unprotected source file.
 
----
+### Document Inspector
 
-<p align="center">
-  <a href="https://openpublisher.app/documentation.pdf">
-    <strong>📖 Read the full documentation for step-by-step guides, screenshots, and in-depth feature walkthroughs</strong>
-  </a>
-</p>
+**File > Info > Inspect Document** scans across all pages and checks:
+
+| Category | What It Finds |
+|---|---|
+| Document Properties | Embedded author, company, subject, and keyword metadata |
+| Off-Canvas Elements | Objects dragged partially or fully outside the page boundary |
+| Empty Text Boxes | Text boxes containing only invisible characters (e.g., non-breaking spaces) |
+
+Each category shows a colour-coded Found/Clean status with a one-click **Remove All** action to purge detected data.
+
+</details>
 
 ---
 
-<p align="center">
-  <em>Open Publisher - Professional desktop publishing, free for everyone.</em>
-</p>
+<a id="developer-tools-and-diagnostics"></a>
+## Developer Tools and Diagnostics
+
+Open Publisher V5 includes built-in diagnostic and developer tooling (`Ctrl+Shift+D`), including a real-time memory/FPS HUD, standalone tearaway monitor window, IPC traffic sniffer, crash recovery logs, and the interactive Clippy assistant.
+
+<details>
+<summary><strong>🔧 Click to expand Developer HUD, IPC Sniffer & Crash Diagnostic Details</strong></summary>
+<br/>
+
+- **Developer HUD (`Ctrl+Shift+D`)**: Floating heads-up display showing live memory allocation graphs, RSS change rates, active DOM node counts, and frame rates.
+- **Standalone Tearaway HUD**: Pop out the Developer HUD into an independent floating window (`hud.html`) across multi-monitor setups.
+- **Bidirectional IPC Sniffer**: Real-time traffic monitor capturing and logging all communication passing between the host wrapper and webview.
+- **Automated Crash Logging**: Automatically dumps hardware specifications, memory statistics, and process uptime to `OpenPublisher-Crash-Log.txt` on the Desktop if a crash occurs.
+- **Safe Mode Actions**: Built-in actions to reboot the application in diagnostic Safe Mode directly from the HUD.
+- **Open AppData Folder**: Quick access button to the application data directory for manual backup and log inspection.
+- **Microsoft Agent (Clippy)**: Nostalgic interactive assistant featuring 41 authentic animations and 101 productivity tips.
+
+</details>
+
+---
+
+<a id="keyboard-shortcuts-reference"></a>
+## Keyboard Shortcuts Reference
+
+<deta

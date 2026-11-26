@@ -11,8 +11,10 @@
 > **An unofficial fan project.** Capri is a character from *Cyberpunk: Edgerunners 2*. capri-syn isn't
 > affiliated with or endorsed by CD PROJEKT RED, Studio Trigger or Netflix. **None of the art is ours:**
 > it's borrowed from other Capri projects, [CapriCore](https://github.com/CapriChooms/CapriCore) (her
-> sprites) and [Capri](https://github.com/lachydotmcg/capri-desktop) by lachydotmcg (her animations),
-> and her app icon is a frame from the show. Credits and terms: [Credits & legal](#credits--legal).
+> sprites), [Capri](https://github.com/lachydotmcg/capri-desktop) by lachydotmcg (her animations) and
+> [mochiiwuff/capri-desktop](https://github.com/mochiiwuff/capri-desktop) (her intro close-ups and face
+> cut-ins), which the installers download onto your machine from the repositories that publish it (the
+> art files are not in this one); her app icon is a frame from the show. Credits and terms: [Credits & legal](#credits--legal).
 
 <p align="center">
   <img alt="Linux: X11 and Wayland" src="https://img.shields.io/badge/linux-X11%20%C2%B7%20Wayland-ff1438?style=flat-square&labelColor=0a0a0b">
@@ -205,10 +207,10 @@ SETTINGS from her right-click menu. A change is written the moment you make it.
 | **OS** | Windows 11 x64, or Linux x86_64 with glibc 2.35+ (Ubuntu 22.04, Debian 12, Fedora 36, Arch) on X11, Hyprland 0.40+, or GNOME, KDE or sway through XWayland. Windows 10 (1809+) and Windows 11 on Arm: untested ([Platforms](#platforms)) | X11 with a compositor, or Windows 11 |
 | **Graphics** | Linux: a Vulkan 1.1+ driver (OpenGL ES is GPUI's fallback). Windows: Direct3D 11, feature level 10.1, with compute shaders and structured buffers | A GPU with its driver. CI and the Windows VM run on software rendering (WARP): fine for layout, not for colour or timing |
 | **Tools** (Linux) | `curl` and Python 3 with `venv` (`python3-venv` on Debian and Ubuntu), for her art pack; the installer fetches what's missing, asking first | |
-| **CPU, RAM, disk** | x86_64. RAM: about 84 MB idle on Linux, measured once during development (on 1.0); Windows not measured. Disk: about 160 MB for her and her art on Linux (binary 43 MB, built art pack 115 MB); Windows: a 10 MB setup, installed size not measured | CPU speed: not measured |
+| **CPU, RAM, disk** | x86_64. RAM: about 84 MB idle on Linux, measured once during development (on 1.0); Windows not measured. Disk: about 160 MB for her and her art on Linux (binary 43 MB, built art pack 117 MB; ~1.3 GB more with `--upscale`: torch in the installer's venv, the x2 strips); Windows: a 10 MB setup, installed size not measured | CPU speed: not measured |
 | **Her brain** | [Synaps](https://github.com/HaseebKhalid1507/SynapsCLI) 0.11.0 or newer (the installers fetch 0.12.0) and one of: an account (ChatGPT, Claude, Copilot, Gemini, Grok, Kimi, Muse; Gemini needs Synaps' Google client, and Grok can't be signed in on Windows yet), an API key, or a local model: Ollama or LM Studio, with tool calling and a 16k+ context (`qwen3:8b`: ~5 GB) | A GPU for a local model; without one it is slow |
 | **Voice** (optional) | A microphone. Linux: PipeWire's `pw-record` and `pw-play`, and Python 3.10 to 3.13 (yours, else uv fetches 3.13: 105 MB more); ~540 MB (venv 169 MB, models 375 MB). Windows: Python comes with it; a 40 MB installer, 143 MB installed, 375 MB of models | Runs on the CPU, no GPU; speed not measured |
-| **Network** | To install (Synaps, her release, ~120 MB of art, the voice models) and for an account or an API key | A local model needs none once installed |
+| **Network** | To install (Synaps, her release, ~150 MB of art and its Python packages, the voice models; ~255 MB more with `--upscale`) and for an account or an API key | A local model needs none once installed |
 
 "Untested" means the installers accept it but she has never run there; "not measured" means nobody has measured it.
 Older glibc builds her from source (`install.sh` does it).
@@ -271,9 +273,10 @@ naps and plays.
   depth: [docs/WINDOWS.md](docs/WINDOWS.md).
 - **Release assets:** `synaps-avatar-x86_64-unknown-linux-gnu.tar.gz`, `capri-syn-setup-x86_64.exe`
   and `capri-syn-voice-setup-x86_64.exe`, each with a `.sha256`. Without a release, the installers build her from source.
-- **Her art** is assembled on your machine from [CapriCore](https://github.com/CapriChooms/CapriCore)
-  and [lachydotmcg/capri-desktop](https://github.com/lachydotmcg/capri-desktop)
-  (see [Credits](#credits--legal)).
+- **Her art** is assembled on your machine from [CapriCore](https://github.com/CapriChooms/CapriCore),
+  [lachydotmcg/capri-desktop](https://github.com/lachydotmcg/capri-desktop) and
+  [mochiiwuff/capri-desktop](https://github.com/mochiiwuff/capri-desktop) (`--no-local-art` leaves
+  mochi's out; see [Credits](#credits--legal)).
 
 </details>
 
@@ -492,6 +495,20 @@ machine needs a look): [docs/WATCH.md](docs/WATCH.md).
   > Required Notice: Copyright 2026 Lachy (https://github.com/lachydotmcg)
   >
   > Required Notice: Anyone who uses Capri's code, art, animations or any of its other assets must credit the Capri project (https://github.com/lachydotmcg/capri-desktop). Capri's art and animations are by her artist, who prefers to stay private. Parts made by others keep their own licences, listed in its README.
+- **Intro close-ups and face cut-ins.** Her launch close-up, the cut-ins and the faces in the Line come
+  from [mochiiwuff/capri-desktop](https://github.com/mochiiwuff/capri-desktop). Its code is under the
+  PolyForm Noncommercial License 1.0.0; of its images, its README's "Credits and rights" says:
+
+  > Capri / Project Capricorn, Cyberpunk and Cyberpunk: Edgerunners belong to CD PROJEKT RED, Studio Trigger and Netflix.
+  > This is a non-commercial fan project with no affiliation. The character images in `assets/capri/` come from frames of
+  > the show, a fan-made cut-out and fan art (her intro's close-ups); they are **not** covered by the code's license.
+  > If a rights holder wants them removed, open an issue.
+
+  The art files are not in this repository: the installers download them onto your machine from that
+  repository (`tools/make-pack --mochi`; `--no-local-art` leaves them out), and the pack's `NOTICE.md`
+  quotes the same paragraph.
+
+  > Required Notice: Copyright (c) 2026 mochiiwuff (https://github.com/mochiiwuff/capri-desktop)
 - **Unofficial.** This is a fan project. It is not affiliated with or endorsed by CD PROJEKT RED,
   R. Talsorian Games, Studio Trigger or Netflix. All trademarks belong to their owners.
 - **Her voice.** Speech uses stock Kokoro voices, blended, with light DSP.

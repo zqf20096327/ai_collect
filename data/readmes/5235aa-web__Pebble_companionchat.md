@@ -52,14 +52,19 @@ Whether running local GGUF weights, calling cloud LLM APIs, holding live voice c
 - **Up to 3 Companions per Room**: Characters appear as fanned portrait cards behind a semi-transparent reading column.
 - **Stage Direction & Pacing**: Mention specific speakers with `@`, click any card to cue their next line, enable multi-turn **Relay** rounds for autonomous back-and-forth, or manage room members with `/invite` and `/remove`.
 - **Per-Room Context**: Configure a shared room scene, room-specific user persona notes, and isolated room memories and summaries.
+- **Narration Mode (Give the conversation a break)**: One-click activation switch supporting all chat modes. In a voice-over manner, describe the behaviors and states (actions, space, psychology) of the user and character to guide the dialogue direction—affecting only the next reply without continuously contaminating surrounding context.
 
-### 3. Narration mode
-- **Give the conversation a break**: One-click activation switch, supports all types of chats. In a voice-over manner, describe the behaviors, states (such as the user's actions, the character's actions, the space, and the psychology) of the user and the character, Guide the direction of the character's dialogue, and enable the user to control the process of the chat-playing.It only affects the content of the next reply and will not continuously contaminate the surrounding context.
+### 3. Live2D
+- **Optional Local Decomposition**: This is an **optional** module (`backend/Inochi2D` + WebGL2 stage) and **does not affect normal usage** when skipped—core text chat, voice calls, picture generation, and built-in `2.5D Motion` work normally with zero PyTorch or GPU dependencies. When enabled, you can locally decompose a single character portrait or same-pose expression pack via `See-through` (`LayerDiff3D` + `Marigold`) across NVIDIA CUDA, AMD ROCm, or CPU fallback, with automatic blink-layer synthesis, collar/neck occlusion cleanup, and bilingual expression mapping.
+- **Interactive WebGL2 Stage & Multi-Outfit**: Once built, the puppet renders purely client-side in WebGL2 with breathing and body sway, spring hair/accessory physics, soft global gaze tracking, real-time TTS audio lip-sync, cheek blush shaders, and interactive pointer gestures (head pat, cheek poke/pet, and startled chest-tap recoil). Both CHARX cards and standard PNG/JSON cards can attach expression packs or add same-pose outfits incrementally through **Character Editor → Media assets** and **Live2D → Build**.
 
-### 4. Character Cards 
+### 4. Character Cards
 - **SillyTavern Ecosystem**: Import and export **PNG / JSON** character cards, with a built-in editor covering identity, dialogue fields (first message, conversation examples, advanced prompt), bound TTS voice clip/ID, system instructions, and raw JSON.
-- **CHARX Containers & Bundled Assets**: Import and export **CHARX** (`.charx` / `.zip` and polyglot image+ZIP Character Card V3 packages) via streaming extraction and chunked transfer for large archives. Alongside card text and `alternate_greetings`, Pebble extracts CCv3 `data.assets` (`embeded://`, `embedded://`, `__asset:`, inline base64 data URLs), RisuAI `emotions` / `additionalAssets`, and bundled images, audio, and video into per-character storage manageable in the editor (world book / `character_book` entries and RisuAI display scripts are not imported).
-- **Inline Media & Stage HUD**: Greetings and chat replies render sanitized Markdown/HTML and resolve bundled CHARX media inline — supporting `{{img::...}}`, `{{audio::...}}`, `{{bgm::...}}`, `{{video::...}}`, Markdown images, `<img src="...">`, `<video>`, and RisuAI `<img="...">` shorthand tags. For cards with bundled assets in single chat, an optional per-branch Stage HUD parses stripped `<<<STATE>>>` blocks to track mood, affection, location, and outfit while swapping stage portraits and cueing BGM/SFX automatically.
+- **CHARX Cards & `.risum` Modules**: Import **CHARX** (`.charx` / `.zip` Character Card V3 packages) and RisuAI **`.risum` / `module.json`** packs effortlessly—including large multi-media archives. Pebble automatically unpacks alternate greetings, character expressions, illustrations, background music, sound effects, video clips, card stylesheets, variables, and rewrite scripts into organized per-character storage that you can browse and manage right in the editor.
+- **Rich Media & Stage HUD**: Greetings and chat replies render clean Markdown, styled HTML/CSS cards, decorative SVG accents, and bundled media right inline—showing character expressions, scene art, video cards, and playable audio/BGM pills with automatic typo recovery when the AI slightly misspells an asset name. For media-rich cards in single chat, an optional Stage HUD gently tracks mood, affection, location, and outfit while swapping portraits and sound cues as the story unfolds.
+- **Scene Rules Workshop (No-Regex Customization)**: Click the quick button in the chat composer to slide open a **non-overlaying upward dock** synced automatically with your active character—no regex writing required:
+  - **Plain-Language & Offline Blocks**: Describe formatting, cleanup, or story triggers in everyday words (compiled and auto-verified against a real sample reply), or combine offline visual blocks to restyle inner thoughts, badges, OOC cleanup, context-only history trimming, and idle/time/turn-aware behaviors.
+  - **One-Click Recipes & Live Sandbox**: Toggle curated immersive presets, tweak live character variables, preview real message bubbles on the spot, or translate cryptic rules inside imported cards into plain language with one click.
 - **Global Rules**: Append shared scope, behaviour, and post-history instructions across all characters without editing individual cards.
 
 ### 5. Script Mode
@@ -78,6 +83,7 @@ Whether running local GGUF weights, calling cloud LLM APIs, holding live voice c
 
 ### 8. Picture Studio & Multimodal Attachments
 - **File & Document Parsing**: Attach images, PDFs (`pypdf`), Word documents (`python-docx`), spreadsheets (`openpyxl`), and plain-text/code files directly in chat.
+- **Video Attachments**: Send video clips (`.mp4`, `.mov`, `.mkv`, `.webm`, etc.) in single and group chats. Prefers local FFmpeg (auto-detected or user-configured in Backstage Paths, with browser `<canvas>` fallback) to extract a dense chronological frame stream (up to 180 frames at 2–4 fps) injected for the active turn only, with optional opt-in speech recognition (off by default, toggleable globally or per chip), click-to-mount throttled playback, and per-session duplicate filename filtering in the media gallery.
 - **Scene Illustration & Gallery**: Generate scene pictures manually or via story triggers with prompt rewriting, daily quotas, cooldowns, and a unified gallery across single and group rooms.
 
 ### 9. Customizable Aesthetic
@@ -146,13 +152,57 @@ companionchat/
 ### 1. Install Dependencies
 
 ```bash
-# Backend dependencies
+# Core backend dependencies
 pip install -r requirements.txt
 
 # Frontend dependencies
 cd frontendV2
 npm install
 ```
+
+#### Optional: Live2D Local Decomposition Dependencies
+
+> Skip this step if you do not plan to use local Live2D portrait decomposition; the rest of the application does not require PyTorch.
+
+**Windows:**
+
+```bat
+:: 1) Create & activate an isolated virtual environment (Python 3.11 / 3.12 recommended)
+python -m venv "%USERPROFILE%\.pebblecompanion\inochi2d-venv"
+"%USERPROFILE%\.pebblecompanion\inochi2d-venv\Scripts\activate.bat"
+
+:: 2) Install PyTorch for your GPU (see backend/Inochi2D/requirements.txt for NVIDIA CUDA / AMD ROCm / CPU notes)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+
+:: 3) Install headless Live2D inference & post-processing dependencies
+pip install -r backend\Inochi2D\requirements.txt
+```
+
+**macOS / Linux (Experimental — untested):**
+
+```bash
+# 1) Create & activate the isolated virtual environment
+python3 -m venv ~/.pebblecompanion/inochi2d-venv
+source ~/.pebblecompanion/inochi2d-venv/bin/activate
+
+# 2) Install PyTorch for your platform (CUDA 12.x on Linux; use --index-url .../whl/rocm6.3 for Linux ROCm, or plain install for macOS MPS / CPU)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+
+# 3) Install headless Live2D inference & post-processing dependencies
+pip install -r backend/Inochi2D/requirements.txt
+```
+
+Download the two `See-through` model repositories into your `Models root` directory (`seethroughv0.0.2_layerdiff3d` and `seethroughv0.0.1_marigold`):
+
+- **LayerDiff3D**: <https://huggingface.co/layerdifforg/seethroughv0.0.2_layerdiff3d> → `<modelsRoot>/seethroughv0.0.2_layerdiff3d`
+- **Marigold Depth**: <https://huggingface.co/24yearsold/seethroughv0.0.1_marigold> → `<modelsRoot>/seethroughv0.0.1_marigold`
+
+```bash
+# Optional quick download via huggingface_hub inside your inochi2d-venv
+python -c "from huggingface_hub import snapshot_download; snapshot_download('layerdifforg/seethroughv0.0.2_layerdiff3d', local_dir='<modelsRoot>/seethroughv0.0.2_layerdiff3d'); snapshot_download('24yearsold/seethroughv0.0.1_marigold', local_dir='<modelsRoot>/seethroughv0.0.1_marigold')"
+```
+
+Both source runs and packaged desktop builds share `~/.pebblecompanion/inochi2d-venv` automatically, and you can also point **Backstage → Paths → `Live2D Python`** to any existing `venv` or `conda` environment.
 
 ### 2. Run in Development
 
@@ -164,7 +214,16 @@ Run the root batch script to start both the backend and frontend dev servers in 
 companion.bat
 ```
 
-#### Option B: Manual Startup
+#### Option B: macOS / Linux Launcher (Web UI)
+
+Run the root shell script to start both the backend (`8002`) and frontend dev server (`5176`) in one terminal (press `Ctrl+C` to stop both; use `./frontendv2.sh` to start the frontend alone):
+
+```bash
+chmod +x companion.sh frontendv2.sh
+./companion.sh
+```
+
+#### Option C: Manual Startup
 
 ```bash
 # Terminal 1: Start the FastAPI backend (http://localhost:8002)

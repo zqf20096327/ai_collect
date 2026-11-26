@@ -9,9 +9,9 @@ PRAXO-CORE is a dependency-free TypeScript framework for building tool-using AI 
 | Package | `@axisvela/praxo-core` |
 | Registry | [npm](https://www.npmjs.com/package/@axisvela/praxo-core/v/0.9.0) |
 | Install | `npm install @axisvela/praxo-core@0.9.0` |
-| Source version | `0.9.0` |
+| Source version | `0.10.0` |
 | Published version | `0.9.0` |
-| Source tag | `typescript/v0.9.0` |
+| Source tag | `typescript/v0.10.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/typescript/ |
@@ -95,6 +95,29 @@ Runnable examples live under [`language/typescript/examples`](language/typescrip
 | [streaming](language/typescript/examples/streaming) | This example uses published npm `@axisvela/praxo-core@0.9.0` to consume deltas while the agent loop keeps running normally. |
 | [structured-output](language/typescript/examples/structured-output) | This example uses published npm `@axisvela/praxo-core@0.9.0` to turn free text into validated JSON with `StructuredOutput`. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/typescript/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/typescript/Tutorial) | Application-shaped tutorials live here, alongside `language/go/examples/`, which keeps mechanism checks and focused integration examples. Tutorial is intentionally capitalized i... |
+| [api-orchestration](language/typescript/Tutorial/api-orchestration) | A bounded first slice of [SE-08](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an integration platform. It maps two fixed synthetic APIs, validate... |
+| [copyright-evidence](language/typescript/Tutorial/copyright-evidence) | Compares fixed authorized assets and drafts a review-only evidence packet. No broad crawl, DMCA notice or infringement verdict. |
+| [customer-support](language/typescript/Tutorial/customer-support) | A native TypeScript Core tutorial for a customer-support reply streamed over SSE. The Agent has two fixed tools: `lookup_order` reads `order-100`, and `search_policy` reads a fi... |
+| [education-tutoring](language/typescript/Tutorial/education-tutoring) | Tracks a fixed learner fixture and drafts a graded Socratic question for review. No adaptive model or issued grade. |
+| [live-show](language/typescript/Tutorial/live-show) | Replays fixed engagement events and drafts a review-only running order. No audience profiling, coupon sends or stream control. |
+| [localization-draft](language/typescript/Tutorial/localization-draft) | A bounded first slice of [CS-07](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a legal or tax compliance system. It compares fixed localization ru... |
+| [meeting-coordination](language/typescript/Tutorial/meeting-coordination) | Reconciles fixed calendar evidence and drafts review-only minutes. No invitations or live calendar writes. |
+| [negotiation-interpretation](language/typescript/Tutorial/negotiation-interpretation) | A bounded first slice of [OG-03](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an interpreter or cultural-profiling system. It compares a fixed bi... |
+| [order-review](language/typescript/Tutorial/order-review) | First deterministic native TypeScript Core integration slice. It shares the synthetic order HTTP service with the Python example, not a remote Agent loop. The `review_order` too... |
+| [phishing-awareness](language/typescript/Tutorial/phishing-awareness) | Classifies a fixed synthetic email and drafts an authorized review-only awareness exercise. No sends, links or infrastructure attacks. |
+| [retail-replenishment](language/typescript/Tutorial/retail-replenishment) | A bounded first slice of [CS-05](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not live pricing or procurement. It checks a fixed SKU's stock and pric... |
+| [sales-crm](language/typescript/Tutorial/sales-crm) | Extracts fixed objections from a transcript and drafts a review-only CRM update. No CRM write or customer message. |
+| [storyboard-previs](language/typescript/Tutorial/storyboard-previs) | Turns a fixed script scene into a review-only shot plan. No rendering or virtual-production engine. |
+| [travel-booking](language/typescript/Tutorial/travel-booking) | A native TypeScript Core tutorial for review-only flight booking. It checks fixed `trip-100` inventory and drafts a fare hold with no payment or booking write. The model package... |
+| [workspace-plan](language/typescript/Tutorial/workspace-plan) | A bounded first slice of [SE-01](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a code-generation or deployment product. It reads a fixed allowlist... |
+
 ## Verify
 
 Run the checks from `language/typescript`:
@@ -113,6 +136,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

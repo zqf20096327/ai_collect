@@ -8,6 +8,14 @@ A standalone, visual LoRA loader node for ComfyUI — organize LoRAs into groups
 
 Only notable changes are listed here; minor visual or text tweaks are omitted.
 
+### 1.0.9
+
+- The LoRA edit dialog now shows a preview thumbnail and supports click/drag image upload or replacement
+- New nodes default to the slider weight control with the CLIP and recommended-weight columns hidden
+- Added "Edit info" to the LoRA row context menu
+- Added a top toolbar MA button that opens the Add/Replace LoRA dialog, shows the target node name, and provides a jump-to-node button for topbar launches
+- Added a global header background color for groups that are not ignored and contain enabled LoRAs
+
 ### 1.0.8
 
 - LORA string import now ignores common personal prefixes (krea2, k2, anima) and tolerates small filename differences, including OCR-confusable 1/i/I/l/L and 0/o/O; near matches open a picker with local candidates

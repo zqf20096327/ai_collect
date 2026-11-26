@@ -204,8 +204,8 @@ and starts it. Next time, `./setup.sh` starts it right away. Which size fits you
 [docs/MAC.md](docs/MAC.md). By default it sets up Qwen3.8-Flash-Next. `./setup.sh --family qwen36` or `--family lfm25`
 sets up Qwen3.6 or LFM2.5 instead, on strata-poly's Metal engine, as a beta: on an M5 Ultra, Qwen3.6 UD-Q2_K_XL wrote
 134 tokens/s in a short chat and read a 3,768-token prompt at 2,978 tokens/s. `--family inkling` sets up Inkling 2
-Mini the same way: on the M5 Ultra, UD-Q3_K_XL wrote 74 tokens/s in a short chat, read a 32,787-token prompt at 2,440
-tokens/s and wrote 61 tokens/s after it; it reads pictures on the CPU. Setup also offers GLM, DeepSeek, Ornith, Gemma
+Mini the same way: on the M5 Ultra, UD-Q3_K_XL wrote 105 tokens/s in a short chat, read a 32,768-token prompt at 2,442
+tokens/s and wrote 107 tokens/s after it; it reads pictures on the CPU. Setup also offers GLM, DeepSeek, Ornith, Gemma
 4, Tiel Coder and MiniCPM-V on a Mac, but they have not been run there with their real weights. Kolibri, Flint and
 Clover need an NVIDIA or AMD card.
 

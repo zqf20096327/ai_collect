@@ -21,7 +21,7 @@ The GitHub repository is [necoz-oss/changelog-bot](https://github.com/necoz-oss/
 - **CI-native:** Works as a GitHub Action, reusable workflow, or plain CLI—no fragile scripting required.
 
 > [!IMPORTANT]
-> This project is currently in its early stages (`v0.0.x`).
+> This project is still in the `v0.x` series (pre-`v1.0.0`).
 > Interfaces and behaviors may change without notice until `v1.0.0`.
 > If you plan to integrate it into production workflows, please pin the exact version to avoid unexpected breaking changes.
 
@@ -125,6 +125,8 @@ or out of date. The diff preview lists only added and removed lines. Because it
 never writes or delivers anything, `--check` cannot be combined with
 `--dry-run`, `--dry-run-json-report`, or `--output file|stdout`; those
 combinations exit with a usage error instead of being ignored.
+In the composite Action and the reusable workflow, set `check: 'true'` to run
+the same drift check.
 
 **Output destinations**
 
@@ -617,7 +619,7 @@ precedence are treated as the public compatibility contract.
 | Extra instructions      | `--instructions`                                     | `instructions`             | `instructions`             | `instructions`, unset                                       |
 | Instructions file       | `--instructions-file`                                | `instructions-file`        | `instructions_file`        | `instructionsFile`, unset                                   |
 | Output destination      | `--output`                                           | `output`                   | `output`                   | `output`, default `pull-request`                            |
-| Changelog drift check   | `--check` / `--no-check`                             | none                       | none                       | `check`, default `false`                                    |
+| Changelog drift check   | `--check` / `--no-check`                             | `check`                    | `check`                    | `check`, default `false`                                    |
 | Preview only            | `--dry-run` / `--no-dry-run`                         | `dry-run`                  | `dry_run`                  | `dryRun`, default `false`                                   |
 | JSON dry-run report     | `--dry-run-json-report` / `--no-dry-run-json-report` | `dry-run-json-report`      | `dry_run_json_report`      | `dryRunJsonReport`, default `false`                         |
 | Fail on provider errors | `--fail-on-llm-error` / `--no-fail-on-llm-error`     | `fail-on-llm-error`        | `fail_on_llm_error`        | `failOnLlmError`, default `false`                           |

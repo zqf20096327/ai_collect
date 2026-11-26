@@ -244,19 +244,30 @@ for official sources, layouts, support limits and cross-agent setup.
 
 ```txt
 /help
+! <command>        # run a shell command directly, then have the model react to its output
+\! <text>           # send a message that starts with ! as a prompt
 /provider
 /model
 /model <name-or-provider:name>
 /model list
 /settings
 /settings open
+/settings edit
+/editor
 /themes
 /themes <name>
-/reasoning [level|unset|reset|status]
+/reasoning [level|off|unset|reset|status]
+/thinking [level|off|unset|reset|status]
 /logs [id]
+/logs <id> view
 /lsp
 /mcp
+/plugin [inspect|install|list|remove]
+/kit
 /init
+/graph
+/graph status
+/graph delete
 /context
 /session
 /resume [id]
@@ -264,11 +275,16 @@ for official sources, layouts, support limits and cross-agent setup.
 /compact [instructions]
 /clear
 /exit
+/quit
 
 /skills
 /tips
 /fleet [--review] [--profile <name>] [--workers <provider:model>] [--concurrency <n>] <prompt>
 ```
+
+`/quit`, `/kit` and `/thinking` are aliases of `/exit`, `/plugin` and `/reasoning`. `off` means reasoning
+level `none`; `unset` sends no reasoning parameter (provider default). `/logs <id> view` pages a raw log
+through `$PAGER`; `/graph status` and `/graph delete` inspect or remove the persisted code graph.
 
 Skill management is a single interactive picker, mirroring `/provider`, `/lsp`, and `/mcp`: generate a custom skill from a description, then show info, enable/disable, validate, or remove. Disabled skills drop out of the model catalog and the `/<name>` command list until re-enabled.
 
@@ -279,6 +295,9 @@ haze --debug         # show model/tool debug logs and write detailed JSONL logs 
 haze --continue      # resume the latest saved session for this workspace
 haze --resume <id>   # resume an exact session id for this workspace
 haze --no-session    # run without durable session storage
+haze --verbose --version   # also print the commit, runtime/executable paths, and the capability registry
+haze -p "prompt" --reasoning xhigh   # one print-mode run with a reasoning effort override (off = none, unset = provider default)
+haze doctor                # print runtime provenance, verify build integrity, show the capability registry
 ```
 
 Non-interactive / print mode:
@@ -506,7 +525,7 @@ The npm package ships `bin`, `dist`, README, SECURITY.md, license, and changelog
 
 ## Release
 
-The documentation site is committed as static HTML under `docs/`; there is no in-repository generator. Before a release, update the version stamps in every `docs/*.html` page and manually reconcile `index.html`, `quickstart.html`, `commands.html`, and `tools.html` with the README and changelog.
+The public site's source is the Astro project under `website/`; the built pages are committed as static HTML under `docs/`. Update the version stamps in `website/src` (`layouts/SiteLayout.astro`, `pages/index.astro`, `pages/quickstart.astro`), run `npm run sync --prefix website`, and commit the regenerated `docs/` files. `npm run check --prefix website` detects drift.
 
 ```bash
 npm ci
@@ -514,17 +533,21 @@ npm run typecheck
 npm test
 npm run lint
 npm run build
-npm audit
+npm run release:verify
 npm pack --dry-run
 git tag vX.Y.Z
-git push origin main --tags
-npm publish --access public --provenance
+git push origin main --tags   # the Release workflow publishes to npm with provenance
 ```
+
+## What's new in 1.8.0
+
+`! <command>` runs a shell command from the chat and lets the model react to its output; dedicated Git tools and on-demand Git, code graph, and LSP tool groups; a context-left percentage in the status bar; readline-style `Ctrl+W`/`U`/`K`/`A`/`E` line editing; a provider wizard where `Esc` steps back instead of quitting. Haze now requires Node.js 22.13 or newer.
 
 <details>
 <summary>Previous release highlights</summary>
 
-## What's new in 1.7.12
+### Changes in 1.7.12
+
 
 A deterministic workspace code graph (tree-sitter WASM) powers the new `graph*` tools and `/graph` command, with bounded reverse-dependency advisories after file edits; LSP/graph tools are now gated on request intent to cut context, plus several reliability fixes.
 

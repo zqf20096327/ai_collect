@@ -1,4 +1,4 @@
-# Lysmor
+﻿# Lysmor
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
@@ -47,17 +47,30 @@ Lysmor 把一套完整的「AI 伴侣」系统拆成可复用的模块：长期�
 - ffmpeg（视频功能）
 - 一个 DeepSeek API Key（`platform.deepseek.com`）
 
-> 完整依赖与可选组件见 [`docs/模型需求清单.md`](docs/模型需求清单.md)。
+> 完整依赖与可选组件见 [`docs/model-requirements.md`](docs/model-requirements.md)。
 
 ### 三步启动
 
 ```text
-1. 装环境    按 docs/模型需求清单.md 安装（或直接用向导里的「🔧 自动装机」）
-2. 备账号    按 docs/登入清单.md 准备账号与密钥
+1. 装环境    按 docs/model-requirements.md 安装（或直接用向导里的「🔧 自动装机」）
+2. 备账号    按 docs/login-checklist.md 准备账号与密钥
 3. 配置启动  双击 一键配置.cmd →（可选：写「🧬 身份词」→ 点「✨ 用我的 API 优化成提示词」→ 保存）→ 点「⚡ 一键自动配置」→ 双击 打开入口.cmd
 ```
 
 首次配置完成后，日常使用只需双击 **`打开入口.cmd`**：自动启动服务、自动体检、自动打开总入口。
+
+### 装不上怎么办
+
+两个入口都会先跑一遍自检，缺什么会直接写出来（`python preflight.py` 可手动跑）：
+
+| 提示 | 怎么办 |
+|---|---|
+| `Python 3.12 was not found on PATH` | 去 [python.org/downloads](https://www.python.org/downloads/) 装 3.12+，**安装时勾选 Add python.exe to PATH**；或用 `winget install Python.Python.3.12` |
+| `缺少 aiohttp、Pillow…` | 在本目录执行 `python -m pip install -r requirements.txt` |
+| `config.json 还没有配置` | 双击 `一键配置.cmd` 走一遍配置向导 |
+| `ffmpeg 未找到`（可选） | 只有视频通话需要；`winget install Gyan.FFmpeg` |
+
+装完 Python 后如果双击没反应，双击 `一键配置.cmd` 再看一遍自检输出。
 
 ---
 
@@ -89,6 +102,24 @@ python code/app/launch_with_check.py
 
 ---
 
+## 桌宠直播叠加（OBS，可选）
+
+想把桌宠叠到直播画面上（背景透明）？用附带的本地静态服务 + OBS 浏览器源即可：
+
+```bat
+python code\app\obs_overlay.py --port 9455
+```
+
+然后在 OBS 里 **来源 → 加号 → 浏览器**：
+
+| 项 | 值 |
+|---|---|
+| URL | `http://127.0.0.1:9455/obs-pet.html` |
+| 宽 / 高 | 建议 480 × 800（按画面调） |
+| 其它 | 勾选「关闭源时关闭页面」 |
+
+背景本身是透明的，不需要绿幕。桌宠会把气泡台词、点头/动作等同步到画面里；
+网页源没有桌面拖拽，所以只能看和听，互动仍用桌面版。
 ## 看门狗（可选，推荐）
 
 `code/tools/watch_servers.ps1` 每 3 分钟检查一次：页面服务挂了自动拉起；
@@ -114,11 +145,11 @@ code\tools\install_watchdog.cmd /uninstall
 
 | 文档 | 内容 |
 |---|---|
-| [配置清单](docs/配置清单.md) | 从下载到跑起来的完整步骤 |
-| [模型需求清单](docs/模型需求清单.md) | 本地模型、软件环境与可选工具 |
-| [登入清单](docs/登入清单.md) | 需要准备的账号与密钥 |
-| [架构总览](docs/架构总览.md) | 模块关系与数据流 |
-| [界面设计](docs/界面设计.md) | 各页面的设计说明 |
+| [配置清单](docs/setup-checklist.md) | 从下载到跑起来的完整步骤 |
+| [模型需求清单](docs/model-requirements.md) | 本地模型、软件环境与可选工具 |
+| [登入清单](docs/login-checklist.md) | 需要准备的账号与密钥 |
+| [架构总览](docs/architecture.md) | 模块关系与数据流 |
+| [界面设计](docs/ui-design.md) | 各页面的设计说明 |
 
 ---
 
@@ -192,3 +223,4 @@ Hub 里的「控制台」卡片只是 AstrBot 管理面板，其他卡片需要�
 - 本项目不附带任何角色记忆、人格设定、日记或形象素材；
 - 使用者在本地养成的角色、产生的数据与账号，完全属于使用者自己；
 - 本项目按"现状"提供，维护者不对使用后果承担责任。
+

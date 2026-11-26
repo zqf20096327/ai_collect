@@ -158,6 +158,49 @@ writes (`hypotheses add|hold|release` and `adjudicate`), claim-bearing
 scorecards, `status`, and `theorems validate --deep` require a checkout.
 Deep theorem validation also needs the dev dependencies to collect pytest tests.
 
+### Connect an endpoint oracle
+
+`mgr group-acquire roster.json --transcript run.jsonl` reconstructs a finite
+regular group action from two commands, `0` and `1`. Provide the complete
+roster as a JSON array of distinct, opaque string labels. The oracle must be
+able to reset to the same starting state, run both marks left to right, and
+return the same label whenever it reaches the same state.
+
+An oracle driver starts the command with stdin and stdout connected. For each
+flushed stdout line such as `{"word":"010"}`, reset the oracle, execute the word
+and send one stdin line such as `{"label":"opaque-17"}`. Continue until stdout
+returns `action` with the root label and a `transitions` mapping. Each value is
+an array of the next labels for commands `0` and `1`, in that order. Protocol
+errors exit with status 2 and a diagnostic on stderr.
+
+The default uses live square closure. Pass `--compiled` at order 32, 64
+or 128 to load the release's precompiled shortest-tier policy. It uses
+the same queries as dynamic shortest-tier selection. To use the dynamic
+selector, pass `--catalogue path/to/anchor-results.zip`. The command checks
+the policy or archive before issuing its first query.
+[Audited catalogue](artifacts/probes/sizing/group-solver-baseline/anchor-results.zip) ·
+[Bundled-policy timing and replay](artifacts/campaigns/group-student/README.md#bundled-policy-in-the-installed-command)
+
+The optional transcript is a new JSON-lines file. It records setup time,
+each request and reply, and the final action or observed protocol error. A
+reply's `roundtrip_ns` includes sending the query, waiting for the driver,
+and reading its response. Measure reset, each command and endpoint read
+inside the driver if those costs need to be distinguished.
+
+For repeated acquisitions in one Python process, prepare the decision
+tree once and pass it to each session. The driver function takes a word,
+resets the oracle, executes the word left to right, and returns the final
+label. Provide the roster for each acquisition.
+
+```python
+from pathlib import Path
+
+from nanochat.group_acquisition import acquire, compile_policy, load_catalogue
+
+policy = compile_policy(load_catalogue(Path("anchor-results.zip"), order=32))
+action = acquire(roster, read_endpoint, catalogue=policy)
+```
+
 ### Quick Tour
 
 ```bash
@@ -1020,11 +1063,18 @@ retain their original dispositions.
   citations for both the directional braid and surreal optimization-rate
   results. Six ledger entries also cite files missing from the checkout.
   [Evidence and reproduction details](docs/bridge_plan.md#november-2026-assessment)
+- In exact finite-group acquisition, shortest-tier length-first used fewer
+  endpoint reads and input symbols in aggregate than live square closure
+  across all 1,874 marked actions of orders 60 and 120. Elapsed time also fell
+  after charging local catalogue preparation from exported tables. This result
+  concerns the symbolic learner. The matched transformer experiment was
+  inconclusive, and physical-device timings remain open.
+  [Exact acquisition evidence](artifacts/campaigns/group-student/README.md#scoring-only-the-shortest-informative-tier)
 
 `tests/test_practical_utility.py` produces demo-scale diagnostics with
 green/yellow/red verdicts; those are sanity checks on toy problems, not
-evidence about the transformer mechanisms. Anything stated here that is not
-in the ledger should be read as a design intention, not an observation.
+evidence about the transformer mechanisms. Treat uncited mechanism claims
+outside the ledger as design intentions.
 
 ### Open Questions
 

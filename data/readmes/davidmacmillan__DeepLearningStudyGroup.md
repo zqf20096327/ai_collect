@@ -16,6 +16,10 @@ https://www.meetup.com/handsonprogrammingevents/
 ___________________________________________________________________________________________________________
 ### ======== 2026 ========   
     
+### Paper for December 1, 2026:    
+Understanding, Predicting, and Steering LLM Behavior via Representational Effective Theory    
+https://arxiv.org/pdf/2605.09294   
+   
 ### Paper for November 24, 2026:     
 Exo: An Architecture for Self-Improving Systems at Runtime    
 https://arxiv.org/abs/2611.00463     
@@ -2305,7 +2309,4 @@ http://jmlr.csail.mit.edu/papers/volume15/wierstra14a/wierstra14a.pdf - ES paper
 Aurobindo Tripathy will reprise a talk he's going to give at Embedded Summit this year.  His talk will survey recent progress in object detection from RCNN to Single Shot MultiBox Detector and Yolo 9000.
 
 
-### Mar 20, 2017 - Hacker Dojo  
-https://arxiv.org/pdf/1612.05424.pdf - Unsupervised Pixel-level domain adaptation with generative adversarial networks   
-
-## Mar 13, 2017 
+#

@@ -19,7 +19,21 @@ Using Yada in production? Open a pull request to add your project here.
 
 ## Get started
 
-Two ways in, both on Node 24 or newer.
+All on Node 24 or newer.
+
+### Code in your terminal
+
+```sh
+curl -fsSL https://yada.edgar.co.ke/install.sh | sh
+```
+
+On Windows, `irm https://yada.edgar.co.ke/install.ps1 | iex`. Homebrew, WinGet and npm work too.
+
+Tell yada what you want changed. It finds the code, writes the diff and checks its own work, then waits for your yes. Open source, and it runs on any model you bring. See the [terminal guide](docs/terminal.md).
+
+![yada installs with curl, then edits a file after showing the diff and asking for approval](site/assets/demo/yada-terminal.gif)
+
+_The model's replies in this demo are scripted._
 
 ### Start a new agent app
 
@@ -38,7 +52,7 @@ Set your provider credentials in `.env`, then run `npm start`. See the [starter 
 npm install @edgaralochi/yada
 ```
 
-Import the runtime from `@edgaralochi/yada`, the browser client from `@edgaralochi/yada/client` and the widget from `@edgaralochi/yada/widget` (or the prebuilt `@edgaralochi/yada/widget.js` script). Narrower entry points are `/providers`, `/storage`, `/mcp`, `/skills`, `/service`, `/langchain`, `/otel` and `/evals`; the root exports all of them.
+Import the runtime from `@edgaralochi/yada`, the browser client from `@edgaralochi/yada/client` and the widget from `@edgaralochi/yada/widget` (or the prebuilt `@edgaralochi/yada/widget.js` script). Narrower entry points are `/providers`, `/storage`, `/mcp`, `/skills`, `/coding`, `/service`, `/langchain`, `/otel` and `/evals`; the root exports all of them.
 
 The core and the Anthropic and OpenAI-compatible providers need nothing else. Install only what you use:
 
@@ -91,6 +105,7 @@ Using a feature without its package fails with an error naming what to install. 
 | Topic                                         | Guide                                                                 |
 | --------------------------------------------- | --------------------------------------------------------------------- |
 | Runtime, limits and termination               | [Architecture](docs/architecture.md)                                  |
+| Coding agent in the terminal                  | [Terminal](docs/terminal.md)                                          |
 | External tool servers                         | [MCP](docs/mcp.md), [MCP OAuth](docs/mcp-oauth.md)                    |
 | Reusable skills                               | [Skills](docs/skills.md)                                              |
 | HTTP APIs and databases                       | [Connectors](docs/connectors.md)                                      |
@@ -139,6 +154,12 @@ export YADA_TEST_POSTGRES_URL=postgres://postgres:yada-test@127.0.0.1:55432/yada
 export YADA_TEST_MYSQL_URL=mysql://root:yada-test@127.0.0.1:53306/yada_test
 ```
 
+## Upgrading from 0.5
+
+- Running `yada` with no arguments now starts the [terminal coding agent](docs/terminal.md) instead of printing help. Use `yada --help` for help; `yada init` and `yada qualify-mcp` are unchanged.
+- Completed service events and assistant conversation messages can carry `sources` (`{ url, title }[]`). Validate or ignore the new field if you parse them strictly.
+- The action store throws on status changes outside the [action lifecycle](docs/actions.md#action-lifecycle).
+
 ## Upgrading from 0.4
 
 - The widget has a new default look: monochrome, with Yada's changing face in the header and on the empty screen, a single-line input and an icon send button. The title now defaults to "Yada". Set `avatar: false`, `composer`, `labels.title` and the `--yada-*` variables to change these, or `unstyled` to drop the styles.
@@ -159,7 +180,7 @@ export YADA_TEST_MYSQL_URL=mysql://root:yada-test@127.0.0.1:53306/yada_test
 - `@langchain/google-genai`, `@langchain/anthropic` and `@langchain/openai` are no longer used; Anthropic and OpenAI-compatible providers run on the official SDKs.
 - `ReadTool.execute` returns `Content` (a string or an array of text and image parts) instead of `string`.
 - Hosted `openai` always uses the Responses API; the `api` option and `YADA_LLM_OPENAI_API` are removed.
-- Provider-hosted web search is on by default for `anthropic`, `openai` and `gemini` and is billed by the provider; set `YADA_LLM_SERVER_TOOLS=none` to turn it off.
+- Provider-hosted web search is on by default for `anthropic`, `openai` and `gemini` and is billed by the provider; set `YADA_LLM_SERVER_TOOLS=none` to turn it off. Cited sources are listed under each answer, and `researchTool` adds a research sub-agent that searches several sources and returns a cited report; see [sub-agents](docs/architecture.md#sub-agents).
 - Every provider accepts every model setting and ignores ones it has no equivalent for (Anthropic ignores `temperature`; use `effort`).
 - `chatModelAdapter` moved to `@edgaralochi/yada/langchain`, and `otelTracer` is only exported from `@edgaralochi/yada/otel`.
 - Storage writes use a new encryption envelope with key ids (`v1` records stay readable) and an indexed `active` column; stop older Yada versions before upgrading, since they cannot read new records. Set `YADA_STORAGE_PREVIOUS_KEYS` to rotate keys without downtime.

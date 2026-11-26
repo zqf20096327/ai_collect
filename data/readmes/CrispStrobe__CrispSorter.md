@@ -487,6 +487,17 @@ same device; a passphrase vault offers stronger protection against file copies.
 
 CrispSorter can build a searchable index of your sorted documents — combining BM25 full-text search (Tantivy) with dense vector search (LanceDB) fused via Reciprocal Rank Fusion (RRF). This lets you ask natural-language questions across your entire library.
 
+Open **Settings → Search Index → Index manager** to add an existing index or
+create one in an empty folder. Select a saved index and choose **Open index**
+to make it active. A new local entry starts in full-text mode with embeddings
+off. Removing an entry from the manager leaves its files on disk.
+
+Use **Search in Library** or **Ctrl/⌘+Shift+F** to jump to the active index's
+search box. Select the active index name in Search to open the Index Manager.
+Your typed query stays in the search box as you switch indexes. Run it when
+you are ready to search the newly opened index. Query help, full-corpus
+reports and document actions are available in the information disclosures.
+
 ### Two backends
 
 #### Local backend (default)

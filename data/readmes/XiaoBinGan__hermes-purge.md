@@ -1,10 +1,10 @@
 # hermes-purge
 
 **给 Hermes Agent 打「能力层」补丁**：关掉审批/护栏/命令黑名单，换掉提示词人格，
-让模型被拒时自动重采样。31 条能力、四层落地（AST / 运行时 shim / 文本 / 配置）、
+让模型被拒时自动重采样。77 条能力、四层落地（AST / 运行时 shim / 文本 / 配置）、
 改坏了能逐字节回滚。
 
-**一条命令安装，一条命令撤销。** 当前版本 **3.1.6** · 零依赖 · Node ≥18 · macOS + Windows 实测。
+**一条命令安装，一条命令撤销。** 当前版本 **3.8.5** · 零依赖 · Node ≥18 · macOS + Windows 实测。
 
 > 借鉴了 [dsh-purge](https://github.com/YuJunZhiXue/dsh-purge) 的一个判断（「不跟模型讲道理，直接改宿主」），
 > 但引擎、补丁清单、验证方式、CLI 都是为 Hermes 独立写的 —— 没有一行共享代码。逐条对账见下文「我们比它强在哪」。
@@ -23,41 +23,57 @@ git clone -b v2-capability git@github.com:XiaoBinGan/hermes-purge.git
 cd hermes-purge
 ```
 
-### 2. 一条命令装好并应用
+### 2. 装（就两行）
 
-**不需要 GitHub 账号、不需要 npm token、不需要登录** —— Release 资产是公开的：
-
-```bash
-# macOS / Linux：下载安装脚本直接跑
-curl -fsSL https://github.com/XiaoBinGan/hermes-purge/releases/latest/download/install.sh | bash -s -- --setup --yes
-```
-
-```powershell
-# Windows：下载 install.ps1 后运行
-irm https://github.com/XiaoBinGan/hermes-purge/releases/latest/download/install.ps1 -OutFile $env:TEMP\hp-install.ps1
-powershell -ExecutionPolicy Bypass -File $env:TEMP\hp-install.ps1 -Setup -Yes
-```
-
-也可以先 clone 再装（改代码即时生效，适合开发）：
-
-```bash
-git clone -b main https://github.com/XiaoBinGan/hermes-purge.git
-cd hermes-purge && ./install.sh --setup --yes
-```
-
-或直接吃 npm 包（同样匿名）：
+macOS、Linux、Windows 的 PowerShell / CMD / Git Bash，**同一条命令**：
 
 ```bash
 npm i -g https://github.com/XiaoBinGan/hermes-purge/releases/latest/download/hermes-purge.tgz
 purge setup --yes
 ```
 
-四个方式做的事一样：把 `purge` / `hp` 装进 PATH → 检测宿主 → 打印计划 → 应用并验证。
+不需要 GitHub 账号、不需要 npm token、不需要管理员、不用改 PATH、不用管中文用户名或带空格的路径
+（npm 生成的 `purge.cmd` / `purge` 用相对路径定位，Windows 上是 `%~dp0`，不写死安装目录）。
+
+卸载也只两行：
+
+```bash
+purge uninstall --yes
+npm rm -g hermes-purge
+```
+
+> 为什么只有这两行：补丁引擎需要 Node，而 npm 已经在做「找到全局 bin → 写启动器」这件事。
+> 自己再写一套安装脚本，只是在重复造它，还顺带引入 PATH / 编码 / 软链三处平台差异。
+
+<details>
+<summary>想改代码（要「改完立即生效」）、或者机器上没有 npm？</summary>
+
+先 clone 再装，会把仓库位置链接到 `~/.hermes-purge`（Windows 用目录联接，不是复制）：
+
+```bash
+git clone -b main https://github.com/XiaoBinGan/hermes-purge.git
+cd hermes-purge && ./install.sh --setup --yes
+```
+
+Windows 上如果之前装过旧版（`ln -s` 退化成了复制），重跑一次 `./install.sh --relink` 换成联接。
+
+也可以只下脚本装（不 clone）：
+
+```bash
+curl -fsSL https://github.com/XiaoBinGan/hermes-purge/releases/latest/download/install.sh | bash -s -- --setup --yes
+```
+
+```powershell
+irm https://github.com/XiaoBinGan/hermes-purge/releases/latest/download/install.ps1 -OutFile $env:TEMP\hp-install.ps1
+powershell -ExecutionPolicy Bypass -File $env:TEMP\hp-install.ps1 -Setup -Yes
+```
+
+</details>
 
 ### 3. 确认它在生效
 
 ```bash
-purge status          # 31/31 生效 就对了
+purge status          # 77/77 生效 就对了
 ```
 
 三个「看得见」的地方：
@@ -90,16 +106,23 @@ purge parity --diff=mac.json     # 在另一台机器上比对，一致返回 0�
 | 症状 | 处理 |
 |---|---|
 | `找不到 config.yaml` / `EHP_CONFIG` | 用 `--home=` 指到配置根：`purge status --home=$HOME/.hermes`（Windows：`--home=%USERPROFILE%\.hermes`） |
-| `python=(无)` | 宿主 venv 没找到：AST/shim 两层会降级成文本层，仍可用但抗升级能力差一档 |
+| `python=(无)` | 宿主 venv 没找到：AST/shim 两层会降级成文本层，仍可用但抗升级能力差一档。3.7.1 起会顺带认 **pm 装法**（代码根在 `hermes-agent`，venv 在 `installs/<id>/environments/<hash>/venv`），这种布局不会再报空 |
+| `✖ shim 未注入：no-site-packages` | 整棵树上找不到宿主 venv。3.7.1 起这行会计入 `failed` 并让 `apply` 退出码变 1（以前是「全绿 + 退出 0」的假象）；先确认 `purge status` 那行的 `python=` 有没有值 |
 | 面板按钮报 `401` / `控制服务没响应` | 先起控制服务：`purge serve`（只监听 127.0.0.1:9123，带 token） |
+| Windows 上 `Cannot find module 'G:\????...'` | 3.1.4 已修：旧版 `install.ps1` 把中文安装路径按 ASCII 写进 `.cmd`。重跑最新 `install.ps1`（会用 `%~dp0` 启动器 + UTF-8 路径文件）即可 |
 
 更细的排查见 [`docs/troubleshooting.md`](docs/troubleshooting.md)。
+
+> **入口只有一套了**：`purge` 就是 `bin/purge.js`（v2 引擎）。老的 `node bin/hermes-purge.js --status/--apply/…`
+> 仍然能用，但它现在只是**转发壳** —— 3.7.2 之前那个 1.x 文本引擎不认识 `yamlSet` / `yamlToolOutput`，
+> 会把 G03、G04…G09 全报成「未知 kind / drifted」，看着像补丁坏了，其实是走错门。
 
 ---
 
 > **两条泳道并行**：macOS 与 Windows 各自维护自己的锚点文件与分支，互不覆盖。
-> `main` 已开分支保护（必须走 PR，直推会被拒绝）；规则见 [`docs/lanes.md`](docs/lanes.md)
-> （分支 `lane/mac` / `lane/win`，`main` 只做集成）。
+> `main` 已开分支保护（必须走 PR，直推会被拒绝）；规则见 [`docs/lanes.md`](docs/lanes.md)、
+> 同步板 [`docs/lane-sync.md`](docs/lane-sync.md)
+> （分支 `lane/mac` / `lane/win` / `lane/win-merge`，`main` 只做集成；`lane/win*` 两个分支跟 `main` 同一个提交）。
 
 ## 它到底改了什么（30 秒版）
 
@@ -109,7 +132,7 @@ purge parity --diff=mac.json     # 在另一台机器上比对，一致返回 0�
 | 配置 | `approvals.mode=off`、`model.max_tokens=16000`、prefill、`.env` |
 | 代码 | 审批门、审批模式、编辑确认、护栏、命令黑名单、系统提示词注入位置 |
 
-31 条能力，每条都带断言；改坏了能逐字节回滚。
+77 条能力，每条都带断言；改坏了能逐字节回滚。
 
 ---
 
@@ -146,7 +169,7 @@ purge parity --diff=mac.json     # 在另一台机器上比对，一致返回 0�
 Hermes Agent 有若干层「不让你做某件事」的机制。这个工具把它们逐层拆掉，
 并额外提供一套执行器，让模型在被拒时自动重试。
 
-**清洗器**：31 条补丁，分三层
+**清洗器**：77 条补丁，分四层
 
 | 层 | 改什么 |
 |----|--------|
@@ -154,7 +177,11 @@ Hermes Agent 有若干层「不让你做某件事」的机制。这个工具把�
 | 配置 | `approvals.mode=off`、`model.max_tokens`、prefill 文件、`.env` 注入 |
 | 代码 | 审批门、审批模式、编辑确认、循环护栏、命令黑名单、系统提示词注入位置、prefill 位置 |
 
-**破甲执行器**：`hp` 一条命令。自动判断语言与模式，被拒自动重试，走三条通道之一。
+**破甲执行器**：`hp` 一条命令。自动判断语言与模式，被拒自动重试，走三条通道之一 ——
+按 **dashboard（JSON-RPC/WS，9119）→ `hermes -z`（shim 生效）→ 直连 chat/completions** 顺序挑活着的：
+前两条下 shim 里的 C18 拒答重采样、C20 温度、C16 tail-prefill 全都在线；
+**直连会丢掉这三样**（只能在 HTTP 层重发），所以降级时 `hp` 会在 stderr 明说一句，
+而不是让你以为「重试了但没效果」。
 
 **边界探针**：跑数据量化「哪些类重试能过、哪些类恒定是 0」，而不是靠感觉。
 
@@ -180,15 +207,15 @@ cd hermes-purge
 ### 2. 先看状态，不做任何改动
 
 ```bash
-node bin/hermes-purge.js --status
+purge status            # 或 node bin/purge.js status
 ```
 
-会列出 31 条补丁各自是 `applied` / `pending` / `drifted` / `missing`。
+会列出 77 条补丁各自是 `applied` / `pending` / `drifted` / `missing`。
 
 如果显示「找不到 Hermes 安装目录」，用下面任一方式指定：
 
 ```bash
-node bin/hermes-purge.js --status --target=/path/to/hermes-agent   # 直接指定
+purge status --target=/path/to/hermes-agent   # 直接指定
 export HERMES_HOME=/path/to/hermes                                  # 或设环境变量
 ```
 
@@ -200,7 +227,7 @@ Windows 用 `set HERMES_HOME=D:\project\hermes`。
 ### 3. 预演，确认要改哪些文件
 
 ```bash
-node bin/hermes-purge.js --apply --dry
+purge apply --dry
 ```
 
 只打印计划，**不写盘**。
@@ -208,17 +235,18 @@ node bin/hermes-purge.js --apply --dry
 ### 4. 正式应用
 
 ```bash
-node bin/hermes-purge.js --apply
+purge apply
 ```
 
 - 每个被改的文件旁边会生成 `<原文件名>.hermes-purge.bak`（首次改写时生成一次）
-- 幂等：重复执行不会重复改，第二次会显示「改写 0 · 跳过 31」
+- 幂等：重复执行不会重复改，第二次会显示「改写 0 · 跳过 77」
 - 状态记录在 `<目标目录>/.hermes-purge/state.json`
+- 退出码：`0` 全部落地；`1` 有 cap 落在所有实现之外，**或 shim 层写不进去**（找不到宿主 venv / site-packages 不可写）。3.7.1 起不再出现「shim 失败但退出 0」的假绿
 
 ### 5. 验证
 
 ```bash
-node bin/hermes-purge.js --verify
+purge verify
 ```
 
 用 Hermes 自己的 venv python 导入模块，断言 8 项运行时行为：
@@ -243,8 +271,8 @@ hardline 探测     = False
 ### 回滚
 
 ```bash
-node bin/hermes-purge.js --revert      # 用 .bak 逐个还原
-node bin/hermes-purge.js --uninstall   # 还原 + 清状态目录
+purge revert      # 按 manifest 逐字节还原
+purge uninstall   # 还原 + 清状态目录
 ```
 
 ### 最快路径：一条命令装好
@@ -293,7 +321,8 @@ purge setup
 
 公共 npm 源（registry.npmjs.org）**不发布** —— 首次发布被平台侧发布权限审核挡住，已放弃该渠道。
 
-**动手之前先 `purge status`**。它只读、不写盘，先把这棵树的漂移基线记下来：
+**动手之前先 `purge status`**。它只读不写盘；本机 4937 个 `.py` 的宿主上 `purge status` ≈ **0.4 秒**（符号索引 + 批量 AST 定位，
+基线是 2.4 秒），先把这棵树的漂移基线记下来：
 
 ```bash
 node bin/purge.js status --target="$HOME/.hermes/hermes-agent"
@@ -303,10 +332,12 @@ node bin/purge.js status --target="$HOME/.hermes/hermes-agent"
 
 ```
 purge v2  target=/Users/you/.hermes/hermes-agent
-python=/Users/you/.hermes/hermes-agent/venv/bin/python  ·  caps 31  ·  applied 31  pending 0  drifted 0
+python=/Users/you/.hermes/hermes-agent/venv/bin/python  ·  caps 77  ·  applied 77  pending 0  drifted 0
 ```
 
 `python=` 这行是空的，说明宿主 venv 没找到 —— AST / shim 两层都落不了，只剩文本层能改（`purge doctor` 会把「宿主 python」单列成一项）。
+
+找 venv 的顺序是三级：代码根下的 `venv` / `.venv` → 传进来的 `PY` 推导出的 venv → pm 装法的 `installs/<id>/…/venv`（读 `facts.json` 的 `packages.venv.environment`，读不到就扫 `environments/*/venv`）。三级都没有才真的算「没找到」。
 
 #### 方式一：clone 后直接跑
 
@@ -416,9 +447,16 @@ npm rm -g hermes-purge
 
 | Hermes 版本 | 落地路径 | macOS | Windows |
 |---|---|---|---|
-| 0.21.0 | 主锚不成立，走 **18 条变体** | **已实测** —— `~/.hermes/hermes-agent`，宿主 python 3.11；`status` applied 31 / pending 0 / drifted 0，`doctor` 健康，L2 14 项全绿 | **未实测** |
+| 0.21.0 | 主锚不成立，走 **18 条变体** | **已实测** —— `~/.hermes/hermes-agent`，宿主 python 3.11；`status` applied 31 / pending 0 / drifted 0（当时 cap 数为 31，现为 77），`doctor` 健康，L2 14 项全绿 | **未实测** |
 | 0.21.3 | 主锚，0 处变体 | **未实测** | **已实测** —— CRLF 树闭环；另在 **Win11 ARM 真机**上跑通补丁层工具链（见下） |
 | 0.21.4 | 主锚，0 处变体 | **未实测** | **已实测** —— 沙箱（pristine `git archive` + 最小 config）上 `31/31 applied`、L1 14 项 + L2 14 项通过、`revert` 代码逐字节还原 |
+| 0.21.5 | 主锚，0 处变体 | **未实测** | **已实测** —— 上游 tag `abandoned-rc.10-v0.21.5` 的 pristine 树：`31/31 applied`、L1 14 项通过、`revert` 代码逐字节还原；L2 因沙箱缺 `ruamel.yaml` 未跑（环境限制，非补丁问题） |
+| 0.21.6 | 主锚，0 处变体 | **未实测** | **已实测** —— 上游 tag `abandoned-rc.1-v0.21.6` 的 pristine 树：`31 pending · 0 drifted` → `apply` 后 `31/31`、L1 14 项通过、`revert` 逐字节还原；L2 同因缺 `ruamel.yaml` 未跑 |
+| 0.21.7 | 主锚，0 处变体 | **未实测** | **已实测** —— 上游 tag `abandoned-rc.1-v0.21.7` 的 pristine 树：`31 pending · 0 drifted` → `apply` 后 `31/31`、L1 14 项通过、`revert` 逐字节还原；config/.env 改写正确（mode→off、timeout→86400、.env 值就地改） |
+
+> 上面几行的数字是当时补丁面还是 31 条时记的；现在补丁面已扩到 77 条，
+> 0.21.4/0.21.5 沙箱最新复跑结果为 `applied 72 · drifted 0`。
+
 
 - **0.21.0 为什么走变体**：0.21.2/0.21.3 才做的模块拆分（`approval_context` / `approval_detection` / `turn_stop_gates` / `stream_delivery` / `turn_request_assembly`）。0.21.0 里这些函数还在 `tools/approval.py`、`agent/conversation_loop.py`、`run_agent.py`。走变体的 18 条：C04 C05 C06 C11 C12 C13 C14 C16 C18 C18b C18c C18d C19b C19c C19d C19e C20 C20b。
 - **0.21.3+ 为什么不用变体**：主锚直接命中。`--status`（1.x）里一条 `[0.21.0]` 标记都不该出现。
@@ -587,9 +625,9 @@ opener 拼接去重、路径解析、补丁清单完整性。
 
 ---
 
-## 31 条补丁明细
+## 77 条补丁明细
 
-### 代码层（25 条）
+### 代码层 · 审批与拒答（25 条）
 
 | id | 文件 | 改动 |
 |----|------|------|
@@ -619,7 +657,78 @@ opener 拼接去重、路径解析、补丁清单完整性。
 | C20 | `agent/transports/chat_completions.py` | `HERMES_PURGE_TEMPERATURE` → `api_kwargs["temperature"]` |
 | C20b | `agent/transports/chat_completions.py` | 引入 `os`（温度读取前置） |
 
-### 配置层（4 条）
+### 代码层 · 宿主防护层（9 条，对齐 dsh-purge）
+
+| id | 文件 | 改动 |
+|----|------|------|
+| C21 | `agent/prompt_builder.py` | `_scan_context_content` 恒返回原文（**AGENTS.md / .cursorrules / .hermes.md 不再被判 `[BLOCKED]`**）|
+| C22 | `tools/threat_patterns.py` | `scan_for_threats` 恒 `[]` |
+| C22b | `tools/threat_patterns.py` | `first_threat_message` 恒 `None` |
+| C23 | `tools/skills_guard.py` | `should_allow_install` 恒 `(True, "purged")` |
+| C23b | `tools/skills_guard.py` | `_determine_verdict` 恒 `"safe"` |
+| C24 | `tools/mcp_tool_schema.py` | `_scan_mcp_description` 恒 `[]`（注入告警静音）|
+| C25 | `agent/file_safety.py` | `deny_path_under` 恒 `False`（`~/.hermes` 凭据目录可写）|
+| C26 | `tools/delegate_tool_config.py` | `MAX_DEPTH = 1` → `6`（子代理可再派子代理）|
+| C27 | `agent/context_compressor_prune.py` | `would_proactively_prune` 恒 `False`（历史不再被悄悄缩短）|
+| C28 | `agent/empty_response_guard.py` | `deterministic_empty` 恒 `False`（空回答不判死）|
+| C28b | `agent/empty_response_guard.py` | `empty_retry_budget` 3 → 8 |
+| C29 | `agent/estop.py` | `is_engaged` 恒 `False`（ESTOP 哨兵失效）|
+| C29b | `agent/estop.py` | `check_paused` 恒 `False` |
+| C30 | `agent/plan_prompt.py` | plan 模式不再注入「只许计划、不许执行」|
+| C31 | `tools/skills_guard.py` | `_scan_text` 恒 `[]`（扫描源头）|
+| C31b | `tools/skills_guard.py` | `_padded_code_findings` 恒 `[]` |
+| C32 | `agent/file_safety.py` | `get_read_block_error` 恒 `None` |
+| C32b | `agent/file_safety.py` | `is_blocked_device_path` 恒 `False` |
+
+### 代码层 · 写入/命令守卫与脱敏（14 条）
+
+| id | 文件 | 改动 |
+|----|------|------|
+| C33 | `tools/file_tools_write_guards.py` | `_check_sensitive_path` 恒 `None`（docker.sock 等敏感路径可写）|
+| C34 | 同上 | `_protected_instruction_reason` 恒 `None`（SOUL.md / AGENTS.md 不再是受保护指令文件）|
+| C35 | 同上 | `_check_protected_instruction_write` 恒 `None` |
+| C36 | 同上 | `_check_approval_required_write` 恒 `None` |
+| C37 | 同上 | `_check_cross_profile_path` 恒 `None`（可跨 profile 写）|
+| C38 | 同上 | `_stale_overwrite_blocker` 恒 `None`（陈旧覆盖不再拦）|
+| C39 | 同上 | `_check_binary_document_write` 恒 `None`（pdf/sqlite 侧车可写回）|
+| C40 | `agent/redact.py` | `_redact_enabled` 恒 `False`（输出不再把 key/token 换成 `[redacted]`）|
+| C41 | `tools/browser_vault_tool.py` | `_confirm_payment_fill` 恒 `True`（支付卡写入页面不再等人工确认）|
+| C42 | `tools/terminal_tool_guards.py` | `trailing_amp_background_command` 恒 `None`（`cmd &` 不再被改判）|
+| C43 | 同上 | `locked_skill_block` 恒 `None`（锁定 skill 目录内命令可跑）|
+| C44 | 同上 | `gateway_lifecycle_block` 恒 `None`（可重启 gateway 自身）|
+| C45 | 同上 | `self_repo_block` 恒 `None`（可改自身 checkout）|
+| C46 | `agent/background_review.py` | `_bg_review_auto_deny` 恒 `"allow"`（后台复核不再自动 deny）|
+
+### 代码层 · 终端劝导（1 条）
+
+| id | 文件 | 改动 |
+|----|------|------|
+| C47 | `tools/terminal_tool_guards.py` | `_foreground_background_guidance` 恒 `None`（长跑命令不再被改判成后台）|
+
+### 代码层 · 上下文截断常量（5 条）
+
+| id | 位置 | 改动 |
+|----|------|------|
+| C48 | `agent/context_compressor.py` | `_LEAN_USER_MESSAGE_MAX_CHARS` 4000 → 40000（压缩时用户消息不再被砍）|
+| C49 | 同上 | `_SALVAGE_SUMMARY_MAX_CHARS` 8000 → 80000（抢救摘要不再只留 8k）|
+| C50 | `agent/redact.py` | `REDACT_WALK_MAX_DEPTH` 320 → 1000000（嵌套不再触发 `[redacted: nesting limit]`）|
+| C51 | `agent/file_safety.py` | `get_nt_namespace_error` 恒 `None`（NT/设备命名空间路径可读）|
+| C52 | `tools/approval_wmic.py` | `_MAX_DEPTH` 3 → 8（命令树展开更深）|
+| C53 | `agent/fallback_cooldown.py` | `switch_deferred_by_reset` 恒 `False`（限流窗口快开时也照切模型）|
+
+### 配置层（11 条）
+
+一个通用实现 `yamlSet` 覆盖多键：`{ key: 'section.key', value, mode }`，数值按下界比较、布尔按等值，
+缺键补进段内、缺段整段补、顶层标量键写单行。
+
+| id | 键 | 默认 → 现值 |
+|----|------|------|
+| G04 | `terminal.timeout` / `terminal.lifetime_seconds` | 180s → 3600s / 300s → 86400s |
+| G05 | `tool_loop_guardrails.hard_stop_enabled` / `warnings_enabled` | true → false（循环护栏软硬停全关）|
+| G06 | `context_file_max_chars` / `browser.inactivity_timeout` | 20000 → 200000 / 120s → 3600s |
+| G07 | `delegation.max_iterations` / `max_spawn_depth` / `child_timeout_seconds` / `max_summary_chars` | 250 → 2000 / 1 → 6 / 900 → 0 / 24000 → 0 |
+| G08 | `compression.threshold` / `target_ratio` / `protect_last_n` | 0.50 → 0.95 / 0.20 → 0.60 / 20 → 400 |
+| G09 | `updates.check` | true → false |
 
 - **C15** `model.max_tokens: 16000` — 推理型模型预算不足时推理吃满 token，
   正文字段返回空，看起来像拒绝
@@ -627,6 +736,8 @@ opener 拼接去重、路径解析、补丁清单完整性。
 - **G01** `approvals: {mode: 'off', timeout: 86400}` — `off` 必须带引号，
   YAML 1.1 会把裸 `off` 解析成布尔 `false`
 - **G02** `.env` 注入 `HERMES_YOLO_MODE=1`、`HERMES_APPROVAL_MODE=off`
+- **G03** `tool_output: {max_bytes: 4000000, max_lines: 20000, max_line_length: 20000}`
+  — 默认 50KB / 2000 行会截断大文件与大命令输出，读不全就答不全
 
 ### 提示词层（2 条）
 
@@ -637,7 +748,7 @@ opener 拼接去重、路径解析、补丁清单完整性。
 
 ## v2：能力层（capability layer）
 
-1.x 是「31 条文本补丁」。v2 把它升级成「31 条能力 + 每条 4 条落地路径」：
+1.x 是「31 条文本补丁」。v2 把它升级成「77 条能力 + 每条 4 条落地路径」：
 
 | 层 | 做法 | 抗什么 |
 |---|---|---|
@@ -710,7 +821,7 @@ lib/v2/caps.js         门面：buildCaps({adapter,target})，缺省探测、探
 lib/v2/impls.js        文本层（宿主无关，两个 adapter 共用）
 lib/v2/conf.js         配置层 conf kind：yamlEntry / yamlTop / jsonSet / jsonAppend / fileWrite
 lib/v2/shim-node.js    Node 宿主 shim：NODE_OPTIONS=--require 预加载 + 模块导出替换
-adapters/hermes/       31 条 cap（原封不动）+ Python AST / site-packages shim / L1-L3
+adapters/hermes/       77 条 cap（原封不动）+ Python AST / site-packages shim / L1-L3
 adapters/dsh/          40 条 cap + conf/text/shim + node --check / 断言 L2
 ```
 
@@ -750,8 +861,9 @@ Windows 语义下的三个必踩坑，都已用 CRLF 树实测修掉：
 
 1. `_ast.py` 对 CRLF 文件插行会写出 `\r\r\n` → 文件损坏
 2. 文本锚点按 LF 写的，CRLF 文件会全量 `drifted` → 现在一律在 **LF 视图上匹配改写**，落盘按原 eol 还原
-3. venv 布局两套：`venv/bin/python` + `lib/pythonX.Y/site-packages`（POSIX）与
-   `venv/Scripts/python.exe` + `Lib/site-packages`（Windows），`platform.js` 两套都认
+3. venv 布局三套：`venv/bin/python` + `lib/pythonX.Y/site-packages`（POSIX）、
+   `venv/Scripts/python.exe` + `Lib/site-packages`（Windows）、
+   以及 pm 装法的 `installs/<id>/environments/<hash>/venv`（代码根与 venv 分离，`platform.js` 三套都认）
 
 ## 我们比 dsh-purge 强在哪
 
@@ -762,14 +874,14 @@ Windows 语义下的三个必踩坑，都已用 CRLF 树实测修掉：
 | 维度 | dsh-purge 1.1.71 | 本项目 2.0 | 怎么验 |
 |---|---|---|---|
 | 落地形态 | 一份实现：补丁 + 自身插件 shim | **四层可互换**：AST（符号级）→ shim（运行时）→ 文本 → 配置，一条失效自动降级 | `purge status` 逐条显示走哪层 |
-| 版本韧性 | 锁 dsh 0.2，升版整批失效 | 0.21.0 与 0.21.3/0.21.4 **两套布局都 31/31**；安全核心 C01–C12 有 AST + shim 双路径 | 本仓库实测 |
+| 版本韧性 | 锁 dsh 0.2，升版整批失效 | 0.21.0 与 0.21.3/0.21.4 **两套布局都 77/77**；安全核心 C01–C12 有 AST + shim 双路径 | 本仓库实测 |
 | 源码改不动时 | 依赖自身插件生命周期 | **pristine 树只装 shim**，源码一字节未改，运行时已是 `_YOLO_MODE_FROZEN=True` / `detect_hardline_command()=(False,'')` | 按 README「v2」一节复现 |
 | 回滚 | 单份 `.bak`，二次 apply 覆盖原始备份 | 快照多版本 + before/after **双哈希** + 手改拒绝覆盖 + 撤销栈（LIFO） | `test/v2.js` 里有对应用例 |
 | 生效证明 | 重启后目视 | L1 `py_compile`/YAML → L2 **14 条行为断言** → L3 端到端 | `purge verify --level=2` |
 | 观测 | 无 | `metrics.jsonl` + `purge stats`：轮次 / 拒答收敛 / 重采样均值 / cap 命中 / tokens 成本（shim 的 turn 钩子每轮写一条） | `purge stats` |
-| 平台 | 未注明 | macOS + Windows 都实测；CRLF 三个坑（AST 插行写坏文件、锚点 LF 匹配不上、venv 双布局）已修并由 CRLF 树闭环验证 | `test/v2.js --e2e <CRLF 树>` |
+| 平台 | 未注明 | macOS + Windows 都实测；CRLF 三个坑（AST 插行写坏文件、锚点 LF 匹配不上、venv 多布局）已修，并覆盖 pm 装法（代码根与 venv 分离）| `test/v2.js --e2e <CRLF 树>` |
 | 宿主绑定 | 绑死 DSH | **adapter 注册表**：cap 只描述行为，落地层不认识宿主；Hermes（实测）+ DSH（规格验证）两个 adapter 并存 | `lib/v2/adapters.js` |
-| 规模思路 | 88 条 patch（同一行为常有多种表述） | Hermes 31 条 cap、DSH 40 条 cap（由 88 条按行为收敛），每条带断言；不做条数竞赛 | `purge status` 的 `cap` 列 |
+| 规模思路 | 88 条 patch（同一行为常有多种表述） | Hermes 77 条 cap、DSH 40 条 cap（由 88 条按行为收敛），每条带断言；不做条数竞赛 | `purge status` 的 `cap` 列 |
 
 ### 三条我们刻意做得比它狠的
 
@@ -823,7 +935,7 @@ Windows 语义下的三个必踩坑，都已用 CRLF 树实测修掉：
 | 项 | 0.21.0（macOS，`~/.hermes/hermes-agent`） | 0.21.3/0.21.4（Windows 布局） |
 |---|---|---|
 | `--status` | applied 2 / pending 29 / drifted **0** / missing **0** | 同上，且 0 处使用变体 |
-| `--apply` | 改写 29 · 未命中 0；二次执行改写 0 · 跳过 31 | 改写 30 · 未命中 0 |
+| `--apply` | 改写 29 · 未命中 0；二次执行改写 0 · 跳过 31（历史数据，31 条时代）| 改写 30 · 未命中 0（同上；当前 77 条时代二次执行为「改写 0 · 跳过 77」）|
 | `py_compile` | 7 个文件全过 | 12 个文件全过 |
 | 运行时断言 | 8/8 绿（另加 `cron_ctx=False`） | 8/8 绿 |
 | 拒答重采样单测 | `test/c18_unit_0210.py` 15/15 | `test/c18_unit.py` 11/11 |
@@ -925,6 +1037,13 @@ Hermes 是**带工具**的 agent。它拒掉正文、或正文为空，代码仍
 **判定必须同时看聊天正文和磁盘产物。** `probe.js` 目前只看正文，这是已知局限 ——
 用它做相对比较可靠，做绝对结论不可靠。
 
+### 身份回绝 ≠ 成功
+
+模型可以「不拒任务、只拒框架」：`I'm Claude, made by Anthropic. I don't adopt alternate identities…`。
+这类回答有 400+ 字、没有代码围栏，按「够长 = 成功」判就会**把立场声明当产物**输出，重采样一次都不触发（3.6.1 真机上踩到）。
+现在它走独立的 `IDENTITY_REFUSAL` 判定：不分语言、不看开头，命中且**无代码围栏**即判 `refused` 重采样；
+带围栏的不算（那是给了产物再表态）。
+
 ### `EMPTY` 不等于拒绝
 
 空样本里有一部分是 provider `HTTP 400`（上游返回畸形），不是模型拒绝。
@@ -944,7 +1063,8 @@ hermes-purge/
 ├── .gitattributes             统一换行
 ├── bin/
 │   ├── hp.js                  一条命令入口（自动判断）
-│   ├── hermes-purge.js        清洗器（31 条补丁）
+│   ├── purge.js               v2 引擎（AST/shim/文本/配置 四层）
+│   ├── hermes-purge.js        1.x 兼容入口 —— 只做转发（老命令照旧可用）
 │   ├── hermes-p.js            破甲执行器（直连 / 子进程）
 │   ├── dashboard-chat.js      Dashboard WebSocket 通道
 │   ├── probe.js               效力边界探针

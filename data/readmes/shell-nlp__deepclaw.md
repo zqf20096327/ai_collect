@@ -83,6 +83,12 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 以下界面覆盖项目的主要工作流：聊天与流式工具调用、人工确认、知识库、技能管理、MCP 管理、
 渠道绑定中心与用户管理。截图基于 2026-11-02 的当前界面，使用隔离演示数据；图片位于 `assets/img/`。
 
+### 登录与账号入口
+
+![登录页](assets/img/login.png)
+
+用户名唯一登录，邮箱仅作资料展示、不参与登录。公开注册默认关闭，账号由管理员创建；配置 `ALLOW_GUEST_ACCESS=false` 后未登录访问会跳转到该页面。
+
 ### 聊天主界面
 
 ![聊天界面](assets/img/chat.png)
@@ -126,6 +132,10 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 
 管理员可创建用户、调整角色、启用停用与重置密码；停用或重置密码会即时撤销该用户全部登录令牌。
 
+### 角色管理
+
+![角色管理](assets/img/role_management.png)
+
 角色管理独立成页：左侧是角色清单，右侧按「知识库 / 能力与连接 / 用户管理 / 角色管理 / 模型管理」分组勾选权限，保存后立即生效。
 
 - 内置角色 `admin` / `user` 只读，自定义角色可新建、改名、删除
@@ -134,6 +144,18 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 - 还有账号在用的角色不能删除
 - 多实例部署时策略变更通过版本号在数秒内同步到所有进程
 
+### 模型配置
+
+![模型配置](assets/img/model_management.png)
+
+管理员维护大模型与语义模型目录：新增、编辑、删除、试连与切换当前模型，保存后自动清理智能体运行时缓存，界面只展示脱敏密钥。
+
+### 定时任务
+
+![定时任务](assets/img/schedules.png)
+
+按一次性时间、固定间隔或 Cron 表达式创建任务，结果可交付固定内容或用当前聊天模型生成正文，Markdown / Word 产物经鉴权下载。
+
 ## 技术栈
 
 | 模块 | 技术 |
@@ -141,7 +163,7 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 | Web 框架 | FastAPI + Uvicorn |
 | 智能体 | LangGraph, LangChain, DeepAgents, ag-ui-langgraph |
 | 协议 | AG-UI（HTTP + SSE） |
-| RAG | PostgreSQL + pgvector + pg_search，或 Elasticsearch（Dense Vector + BM25），检索统一走 BM25 + 向量 + RRF 混合检索；Graph DB 支持 Neo4j / NetworkX |
+| RAG | PostgreSQL + pgvector + pg_search，或 Elasticsearch（Dense Vector + BM25），检索统一走 BM25 + 向量 + RRF 混合检索 |
 | 状态存储 | LangGraph checkpoint（PostgreSQL / 内存）、Run/Thread 事件表（PostgreSQL / SQLite / 内存）、AsyncPostgresStore / InMemoryStore |
 | 前端 | Next.js 15, React 19, TypeScript, CSS Modules |
 | 执行后端 | Local Shell, Store Backend, OpenSandbox（Docker 容器沙箱） |
@@ -156,7 +178,7 @@ deepclaw/
 ├── deepclaw/
 │   ├── agent_registry.py    # Agent 基类与自动发现注册表
 │   ├── agents/              # 智能体实现：general/ 通用智能体、rag/ 知识库智能体
-│   ├── common/              # 向量库、Graph DB、Docling 解析与文本切分
+│   ├── common/              # 向量库、Docling 解析与文本切分
 │   ├── middleware/          # 业务开关、MCP、图表、NL2SQL、记忆、Python 执行、沙箱等
 │   ├── patch/               # 第三方库补丁与适配
 │   ├── sandbox/             # OpenSandbox 执行后端
@@ -169,6 +191,7 @@ deepclaw/
 ├── frontend/                # Next.js 前端（app/ 源码，out/ 为构建产物，由后端静态托管）
 ├── mcp2tool/                # FastMCP 转 LangChain 工具适配
 ├── docker/                  # PostgreSQL 等中间件镜像构建文件
+├── deploy/                  # 部署示例：OpenResty 网关配置与编排
 ├── assets/                  # README 图标与界面截图
 ├── docs/                    # 设计文档与历史归档
 ├── tests/                   # pytest 测试
@@ -183,12 +206,17 @@ deepclaw/
 └── pyproject.toml                 # 依赖与可选 extras 定义
 ```
 
-> 前端组件已按业务域拆到 `frontend/components/chat/`；旧的 `frontend/components/chat-interface/` 仍在逐步迁移。
-
 ## 系统架构
 
 ```text
 浏览器  ·  飞书  ·  钉钉  ·  微信 ClawBot
+                    │
+                    ▼
+┌───────────────────────────────────────────────────────────────────┐
+│ 边缘网关（deploy/openresty，可选）                                  │
+│                                                                   │
+│   TLS 终止 · 登录与 Run 限流 · 上传体积 1G · SSE 关缓冲 · WS 升级      │
+└───────────────────────────────────────────────────────────────────┘
                     │
                     ▼
         POST /api/agui/runs          统一 AG-UI 入口，顶层 agentId 选择智能体
@@ -198,7 +226,9 @@ deepclaw/
 ┌───────────────────────────────────────────────────────────────────┐
 │ FastAPI 应用层（deepclaw/web_backend）                             │
 │                                                                   │
-│   /api/auth/*       认证：注册、登录、退出、用户与角色管理            │
+│   /api/auth/*       认证：登录、退出、用户与角色管理（注册默认关闭）    │
+│   /api/auth/config  游客与注册开关（公开）                          │
+│   /health           存活探针（网关与负载均衡使用）                   │
 │   /api/agui/*       AG-UI：Run、Thread、SSE 事件流与重放            │
 │   /api/agent/*      技能管理                                       │
 │   /api/rag/*        知识库与文档管理                                │
@@ -320,7 +350,8 @@ uv sync --dev
 按需追加可选能力：
 
 ```bash
-uv sync --dev --extra pdf           # 知识库文档入库（文本转 PDF 与解析）
+uv sync --dev --extra pdf           # 知识库文档入库（旧命令兼容，PDF 依赖已默认安装）
+uv sync --dev --extra graph-db      # NetworkX / Neo4j 图数据库
 uv sync --dev --extra docling       # Docling 文档解析
 uv sync --dev --extra elasticsearch # Elasticsearch 向量库
 uv sync --dev --extra web-fetch     # Crawl4AI 网页抓取
@@ -332,8 +363,7 @@ uv sync --dev --extra phoenix       # Phoenix 可观测性
 uv sync --dev --extra object-storage # MinIO / S3 对象存储
 ```
 
-> 知识库上传文档依赖 `pdf` extra。缺少时上传会返回
-> `PDF 解析需要 PyMuPDF，请执行 uv sync --extra pdf 安装`。
+> 知识库上传文档所需的 PDF 解析依赖已纳入默认安装。`pdf` extra 保留用于兼容旧安装命令。
 
 #### 方式 B：pip 安装（推荐部署，不需要仓库源码）
 
@@ -345,7 +375,7 @@ python -m venv .venv            # 建议使用独立虚拟环境
 pip install .                   # 从当前目录安装；也可以直接装构建好的 wheel
 pip install -e .                # 开发用：可编辑安装，改 Python 代码立即生效
 
-pip install ".[pdf,elasticsearch]"   # 按需安装可选能力（extras 名同下文的 uv --extra）
+pip install ".[elasticsearch]"       # 按需安装可选能力（extras 名同上文的 uv --extra）
 ```
 
 安装完成后会提供 `deepclaw` 命令，等价于 `python -m deepclaw.main`：
@@ -405,9 +435,9 @@ OBJECT_STORAGE_PROVIDER=local
 > 只有配置了 `PG_DATABASE_URL`，Run / Thread / 检查点才会落到共享库，多实例部署才能共享会话状态；
 > 未配置时使用内存检查点，重启即丢失。
 
-### 4. 启动主服务
+### 4. 启动主服务（本地方式）
 
-统一从 `main` 入口启动：
+本地方式与下一节的容器方式二选一，两者都监听 `7869`，不要同时启动。统一从 `main` 入口启动：
 
 ```bash
 uv run python -m deepclaw.main
@@ -421,7 +451,9 @@ uv run python -m deepclaw.main
 - Channels API：`/api/channels/*`
 
 首次启动时，如果配置了 `AUTH_ADMIN_USERNAME` / `AUTH_ADMIN_PASSWORD` 且系统中还没有管理员，
-会自动创建这个管理员账号。未登录访问会自动降级为游客身份，技能管理与知识库管理对游客开放。
+会自动创建这个管理员账号。未登录访问默认降级为游客身份，技能管理与知识库管理对游客开放；
+把 `ALLOW_GUEST_ACCESS` 设为 `false` 后（公网部署建议），匿名请求一律返回 `401`，前端跳转 `/login`。
+公开注册默认关闭（`AUTH_ALLOW_REGISTRATION=false`），账号由管理员在「用户管理」中创建。
 
 ### 5. 启动依赖服务（可选，但推荐）
 
@@ -437,12 +469,40 @@ docker compose -f docker-compose.middleware.yml up -d postgresql elasticsearch
 docker compose -f docker-compose.middleware.yml up -d phoenix
 ```
 
-如果要用容器方式跑主服务，中间件和应用分开编排：
+如果要用容器方式跑主服务（与上面的本地方式二选一），中间件和应用分开编排：
 
 ```bash
 docker compose -f docker-compose.middleware.yml up -d   # 先起中间件
 docker compose -f docker-compose.app.yml up -d          # 再起应用
 ```
+
+应用容器默认不把 `7869` 映射到宿主机（`docker-compose.app.yml` 的 `ports` 已注释），
+浏览器统一经 OpenResty 网关访问，见下节。
+
+#### 通过 OpenResty 网关访问（容器方式）
+
+网关负责 TLS、登录与 Run 限流、上传体积（默认 1G）、SSE 关缓冲和 WebSocket 升级。
+配置位于 `deploy/openresty/deepclaw.conf`，网关编排位于 `deploy/openresty/docker-compose.yml`。
+
+```bash
+# 1) 证书：真实证书放到 deploy/openresty/certs/deepclaw.crt 与 deepclaw.key
+#    本地验证可先生成 1 天期自签证书（compose 一次性任务，执行完即退出）
+docker compose -f deploy/openresty/docker-compose.yml --profile certgen run --rm certgen
+
+# 2) 启动网关（需先启动应用容器，网关按服务名 deepclaw:7869 回源）
+docker compose -f deploy/openresty/docker-compose.yml up -d
+
+# 3) 验证
+curl -k https://127.0.0.1/health
+```
+
+启动后用 `https://127.0.0.1/` 访问（自签证书需在浏览器确认一次）。正式环境把
+`deepclaw.conf` 里的 `server_name` 换成自己的域名，并替换证书。修改配置或更换证书后执行
+`docker restart deepclaw-gateway` 生效；停止网关执行
+`docker compose -f deploy/openresty/docker-compose.yml down`，不影响应用容器。
+
+> 网关只处理 HTTPS、限流与转发，不做业务鉴权；登录态与接口权限仍由后端令牌和 RBAC 负责。
+> 本地方式启动后端时，网关的 upstream 需要改成宿主机地址，否则会返回 502。
 
 Phoenix 控制台默认地址：`http://localhost:6006`
 
@@ -481,21 +541,25 @@ pnpm build
 
 ## API 接口
 
-业务接口支持游客访问；未携带 `Authorization: Bearer <token>` 时按游客身份处理。
+业务接口支持游客访问；未携带 `Authorization: Bearer <token>` 时按游客身份处理。配置
+`ALLOW_GUEST_ACCESS=false` 后匿名请求统一返回 `401`，前端会跳转到登录页。
 用户管理接口以及渠道全量范围等管理能力需要管理员角色，不能以游客身份调用。
 
 ### 认证
 
 | 方法 | 路径 | 用途 |
 |------|------|------|
-| `POST` | `/api/auth/register` | 注册普通用户并返回访问令牌 |
-| `POST` | `/api/auth/login` | 邮箱密码登录 |
+| `GET` | `/api/auth/config` | 返回游客与注册开关（公开） |
+| `POST` | `/api/auth/register` | 注册普通用户并返回访问令牌（`AUTH_ALLOW_REGISTRATION=false` 时关闭，默认关闭） |
+| `POST` | `/api/auth/login` | 用户名密码登录，连续失败会临时锁定 |
 | `POST` | `/api/auth/logout` | 撤销当前访问令牌 |
 | `GET` | `/api/auth/me` | 返回当前鉴权主体 |
 | `POST` | `/api/auth/users/create` | 管理员创建用户（可指定角色） |
 | `POST` | `/api/auth/users/list` | 管理员查询用户列表 |
 | `POST` | `/api/auth/users/update-role` | 管理员调整用户角色 |
 | `POST` | `/api/auth/users/update-status` | 管理员启用 / 停用用户 |
+| `POST` | `/api/auth/users/update` | 管理员修改用户用户名与邮箱 |
+| `POST` | `/api/auth/users/delete` | 管理员删除用户（禁止删除自己或最后一个管理员） |
 | `POST` | `/api/auth/users/reset-password` | 管理员重置用户密码 |
 | `GET` | `/api/auth/rbac/catalog/roles` | 角色目录（含在用账号数与直接权限） |
 | `POST` | `/api/auth/rbac/catalog/roles` | 新建自定义角色 |
@@ -548,10 +612,14 @@ pnpm build
 | `POST` | `/api/rag/knowledge-bases/bulk-delete` | REST | 批量删除知识库 |
 | `POST` | `/api/rag/knowledge-bases/documents/list` | REST | 文档分页列表 |
 | `POST` | `/api/rag/knowledge-bases/documents/detail` | REST | 文档切片详情 |
-| `POST` | `/api/rag/knowledge-bases/documents/upload` | REST | 上传文档 |
+| `POST` | `/api/rag/knowledge-bases/documents/upload` | REST | 上传文档（返回 202，需轮询上传任务） |
+| `POST` | `/api/rag/knowledge-bases/documents/upload-tasks` | REST | 轮询文档上传任务进度 |
+| `POST` | `/api/rag/knowledge-bases/documents/upload-tasks/retry` | REST | 重新排队失败的上传任务 |
+| `POST` | `/api/rag/knowledge-bases/documents/upload-tasks/delete` | REST | 删除失败的上传任务记录 |
 | `POST` | `/api/rag/knowledge-bases/documents/update` | REST | 更新文档展示名 |
 | `POST` | `/api/rag/knowledge-bases/documents/delete` | REST | 删除文档 |
 | `POST` | `/api/rag/knowledge-bases/documents/bulk-delete` | REST | 批量删除文档 |
+| `POST` | `/api/rag/knowledge-bases/documents/chunks/update` | REST | 修改单个切片正文或启停状态 |
 
 ### Channels
 
@@ -582,7 +650,7 @@ pnpm build
 ```bash
 TOKEN=$(curl -s -X POST http://localhost:7869/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@example.com","password":"Admin123456"}' \
+  -d '{"username":"deepclaw","password":"Admin123456"}' \
   | python -c "import json,sys; print(json.load(sys.stdin)['token'])")
 ```
 
@@ -684,7 +752,7 @@ curl -X POST http://localhost:7869/api/rag/knowledge-bases/create \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"user_id":"demo-user","name":"产品文档","description":"示例知识库"}'
 
-# 上传文档（需要 uv sync --extra pdf）
+# 上传文档（默认安装已包含 PDF 解析依赖）
 curl -X POST http://localhost:7869/api/rag/knowledge-bases/documents/upload \
   -H "Authorization: Bearer $TOKEN" \
   -F "user_id=demo-user" \
@@ -772,6 +840,10 @@ BACKEND_TYPE=local_shell
 | `PHOENIX_COLLECTOR_ENDPOINT` | 启用 Phoenix tracing |
 | `AUTH_ADMIN_USERNAME` / `AUTH_ADMIN_PASSWORD` | 首次启动时自举的管理员账号 |
 | `AUTH_TOKEN_EXPIRE_DAYS` | 访问令牌有效期天数，默认 `1` |
+| `AUTH_ALLOW_REGISTRATION` | 是否开放公开注册，默认 `false`，账号由管理员创建 |
+| `ALLOW_GUEST_ACCESS` | 是否允许未登录游客访问，默认 `true`；公网部署建议 `false`，此时匿名请求返回 `401` 并跳转登录页 |
+| `AUTH_LOGIN_MAX_ATTEMPTS` | 连续登录失败触发账号锁定的次数，默认 `5` |
+| `AUTH_LOGIN_LOCK_MINUTES` | 登录失败后的锁定时长（分钟），默认 `15` |
 | `AGUI_RUN_RETENTION_SECONDS` | Run 与事件的保留时长，默认 `3600` |
 | `AGUI_THREAD_RETENTION_SECONDS` | Thread 索引保留时长；默认 `0` 表示不自动过期 |
 | `AGUI_RUN_MAX_EVENTS` | 单个 Run 的事件数量上限，默认 `2000` |

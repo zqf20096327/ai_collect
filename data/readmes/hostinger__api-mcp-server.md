@@ -78,14 +78,14 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (427 total)
+- `hostinger-api-mcp` — unified server over every operation (426 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
 - `hostinger-dns-mcp` — 10 operations for dns
 - `hostinger-domains-mcp` — 43 operations for domains
 - `hostinger-ecommerce-mcp` — 33 operations for ecommerce
-- `hostinger-gpu-mcp` — 13 operations for gpu
+- `hostinger-gpu-mcp` — 12 operations for gpu
 - `hostinger-horizons-mcp` — 8 operations for horizons
 - `hostinger-hosting-mcp` — 59 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
@@ -1201,7 +1201,7 @@ The move is also refused unless the domain:
 - is not a premium domain
 - is not still processing a recent renewal
 
-A move refused for one of these rules is rejected with a 404 status code and error code 2048,
+A move refused for one of these rules is rejected with a 422 status code and error code 2048,
 with a message naming the rule. The receiving account is checked first, and when it cannot
 be used the message stays generic.
 
@@ -1972,19 +1972,6 @@ Use this endpoint to monitor GPU instance load.
 - **Method**: `GET`
 - **Path**: `/api/gpu/v1/instances/{instanceId}/metrics`
 
-#### gpu_catalog_pool-groups
-
-Retrieve GPU pool groups, ordered by name.
-
-Each group bundles the pools of one GPU model and lists its currently available pools,
-whether any of them is available and the lowest hourly price, in credits, among its instance types.
-The price is returned even when the group is out of stock.
-
-Use this endpoint to show which GPU models can be ordered and from what price.
-
-- **Method**: `GET`
-- **Path**: `/api/gpu/v1/pools/groups`
-
 #### gpu_catalog_pool-instance-types
 
 Retrieve the instance types offered by a specified GPU pool, ordered by CPU core count.
@@ -2361,4 +2348,10 @@ The database name must be the full name returned by the list databases endpoint.
 #### hosting_databases_setup-website
 
 Creates a new MySQL database for the website and writes its connection details into the
-website's enviro
+website's environment variables, then restarts the application. The platform generates the
+password (and the database name and user, unless supplied). The password is never returned;
+the application reads it from the environment.
+
+Written variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` and
+`DATABASE_URL` (`mysql://user:password@host:port/name`, user and password percent-encoded).
+Existing variables are kept. If the website already has any variable with

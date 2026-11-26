@@ -12,7 +12,7 @@
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111?style=flat-square"></a>
   <a href="https://www.affectui.com/docs"><img alt="shadcn registry" src="https://img.shields.io/badge/shadcn-registry-111111?style=flat-square"></a>
   <img alt="React 19" src="https://img.shields.io/badge/React-19-111111?style=flat-square">
-  <img alt="74 free items" src="https://img.shields.io/badge/free%20items-74-2f6bff?style=flat-square">
+  <img alt="75 free items" src="https://img.shields.io/badge/free%20items-75-2f6bff?style=flat-square">
   <a href="https://github.com/flohoeller/affectui/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/flohoeller/affectui?style=flat-square&color=111111"></a>
 </p>
 
@@ -297,6 +297,7 @@ Other clients: add `{ "mcpServers": { "affectui": { "url": "https://www.affectui
 | [Layer Stack](https://www.affectui.com/illustrations/layer-stack) | Isometric stack of five layers with a list beside it | `npx shadcn@latest add https://www.affectui.com/r/layer-stack.json` |
 | [Lead Sourcing](https://www.affectui.com/illustrations/lead-sourcing) | ChatGPT tile linked to Gmail and Grok, with a shine running along the connection | `npx shadcn@latest add https://www.affectui.com/r/lead-sourcing.json` |
 | [Logo Cluster](https://www.affectui.com/illustrations/logo-cluster) | Your mark on a white disc in the middle | `npx shadcn@latest add https://www.affectui.com/r/logo-cluster.json` |
+| [Model Orbit](https://www.affectui.com/illustrations/model-orbit) | AI model makers evenly around a slanted track | `npx shadcn@latest add https://www.affectui.com/r/model-orbit.json` |
 | [Model Wheel](https://www.affectui.com/illustrations/model-wheel) | AI model names on a turning drum | `npx shadcn@latest add https://www.affectui.com/r/model-wheel.json` |
 | [Side Folder](https://www.affectui.com/illustrations/side-folder) | Glassy blue folder on its side, documents sliding out to the right as the pocket swings open on hover | `npx shadcn@latest add https://www.affectui.com/r/side-folder.json` |
 | [Tab Overload](https://www.affectui.com/illustrations/tab-overload) | Overlapping browser windows where the highlight follows the hovered tab | `npx shadcn@latest add https://www.affectui.com/r/tab-overload.json` |
@@ -313,7 +314,7 @@ Other clients: add `{ "mcpServers": { "affectui": { "url": "https://www.affectui
 
 ## affectUI Pro
 
-169 more components, screens, blocks and illustrations, including the agent components above (Agent Tree, Agent Inbox, Trace Waterfall, Context Map, Agent Handoff and more), full app screens and blocks, are part of [affectUI Pro](https://www.affectui.com/pricing): a one-time purchase with lifetime updates. Their source is not in this repository.
+179 more components, screens, blocks and illustrations, including the agent components above (Agent Tree, Agent Inbox, Trace Waterfall, Context Map, Agent Handoff and more), full app screens and blocks, are part of [affectUI Pro](https://www.affectui.com/pricing): a one-time purchase with lifetime updates. Their source is not in this repository.
 
 ## Contributing
 

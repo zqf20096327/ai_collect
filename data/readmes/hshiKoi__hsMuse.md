@@ -7,7 +7,7 @@
 **零显存、自进化的本地模块化 AI 绘画提示词工作台（ComfyUI / Flux / Krea 2 / SDXL）**  
 **Zero-VRAM Local AI Art Prompt Generator & Danbooru Tag Cleaner for ComfyUI, Flux, SDXL & Krea 2**
 
-[![Release](https://img.shields.io/github/v/release/hshiKoi/hsMuse?style=for-the-badge&label=Release&color=0DA5E8)](https://github.com/hshiKoi/hsMuse/releases/latest)
+[![Release](https://img.shields.io/github/v/release/hshiKoi/hsMuse?include_prereleases&style=for-the-badge&label=Release&color=0DA5E8)](https://github.com/hshiKoi/hsMuse/releases/latest)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20x64-1E4E8C?style=for-the-badge)](#)
 [![Languages](https://img.shields.io/badge/UI-简%20|%20繁%20|%20EN%20|%20日本語%20|%20한국어-10B981?style=for-the-badge)](#)
 [![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-64748B?style=for-the-badge)](TERMS.md)

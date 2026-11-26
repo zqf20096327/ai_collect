@@ -9,7 +9,7 @@ PDF, Word, PowerPoint, Excel, EPUB, HTML and web pages, images (OCR), audio and 
 <!-- /generated:lead -->
 
 <!-- generated:hosted -->
-Need verifiable PDF quote checks and video frames? Get [anymd Pro](https://anymd.sylphx.com/pricing) to verify PDF quotes and cite exact video frames offline for US$29 once.
+Need verifiable PDF quote checks and video frames? Get [anymd Pro](https://anymd.sylphx.com/pricing?utm_source=github&utm_medium=readme&utm_content=hero_pro) to verify PDF quotes and cite exact video frames offline for US$29 once.
 <!-- /generated:hosted -->
 
 [![npm](https://mark.sylphx.com/npm/v/@sylphx/anymd?style=flat-square&labelColor=0a0d07&color=c3f53c)](https://www.npmjs.com/package/@sylphx/anymd)
@@ -17,12 +17,13 @@ Need verifiable PDF quote checks and video frames? Get [anymd Pro](https://anymd
 [![stars](https://mark.sylphx.com/github/stars/SylphxAI/anymd?style=flat-square&labelColor=0a0d07&color=c3f53c)](https://github.com/SylphxAI/anymd/stargazers)
 [![MCP registry](https://mark.sylphx.com/badge/MCP-io.github.SylphxAI%2Fanymd-c3f53c?style=flat-square&labelColor=0a0d07)](https://registry.modelcontextprotocol.io/v0/servers?search=anymd)
 [![license](https://mark.sylphx.com/badge/license-MIT-c3f53c?style=flat-square&labelColor=0a0d07)](https://github.com/SylphxAI/anymd/blob/main/LICENSE)
+[![SylphxAI/anymd MCP server](https://glama.ai/mcp/servers/SylphxAI/anymd/badges/score.svg)](https://glama.ai/mcp/servers/SylphxAI/anymd)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/SylphxAI/anymd/badge)](https://scorecard.dev/viewer/?uri=github.com/SylphxAI/anymd) <!-- repomap:agent-ready -->[![agent-ready 93/100](https://mark.sylphx.com/badge/agent--ready-93%2F100-brightgreen?style=flat-square&labelColor=0a0d07)](https://github.com/SylphxAI/repomap#agent-readiness-score)<!-- /repomap:agent-ready -->
 
-[Install](#install) · [Benchmarks](#benchmarks) · [Tools](#mcp-tools) · [CLI](#cli) · [Formats](#formats) · [Docs](https://anymd.sylphx.com/?utm_source=github&utm_medium=readme) · [Pro, US$29 once](https://anymd.sylphx.com/pricing?utm_source=github&utm_medium=readme&utm_content=nav)
+[Install](#install) · [Benchmarks](#benchmarks) · [Tools](#mcp-tools) · [CLI](#cli) · [Formats](#formats) · [Docs](https://anymd.sylphx.com/docs?utm_source=github&utm_medium=readme&utm_content=nav) · [Studio](https://anymd.sylphx.com/studio?utm_source=github&utm_medium=readme&utm_content=nav) · [Pro, US$29 once](https://anymd.sylphx.com/pricing?utm_source=github&utm_medium=readme&utm_content=nav)
 
 <!-- generated:formerly -->
-<sub>Formerly **pdf-reader-mcp**. [Migrating from pdf-reader-mcp](https://anymd.sylphx.com/guide/migration)</sub>
+<sub>Formerly **pdf-reader-mcp**. [Migrating from pdf-reader-mcp](https://anymd.sylphx.com/docs/migration?utm_source=github&utm_medium=readme&utm_content=formerly)</sub>
 <!-- /generated:formerly -->
 
 <img src="https://raw.githubusercontent.com/SylphxAI/anymd/main/apps/web/public/demo.gif" alt="Real terminal session: anymd converts a PDF page with its table, searches a folder, reads a spreadsheet, then Claude Code answers from the PDF through the anymd MCP server" width="820" />
@@ -187,7 +188,7 @@ npm, pip and Docker ship a prebuilt binary, while `cargo install` compiles one o
 
 ## Benchmarks
 
-[AgentDocBench](https://anymd.sylphx.com/guide/benchmarks) is an open benchmark for document → Markdown conversion for agents: license-clean documents in 12 categories (math papers, two-column papers, financial tables, forms, scans, CJK, slides, spreadsheets, Word, EPUB, HTML), scored on verbatim sentences, text F1, reading order, and table cells, with time and output tokens. Every tool runs on the same kind of GitHub-hosted runner (4 CPUs):
+[AgentDocBench](https://anymd.sylphx.com/docs/benchmarks?utm_source=github&utm_medium=readme&utm_content=benchmarks) is an open benchmark for document → Markdown conversion for agents: license-clean documents in 12 categories (math papers, two-column papers, financial tables, forms, scans, CJK, slides, spreadsheets, Word, EPUB, HTML), scored on verbatim sentences, text F1, reading order, and table cells, with time and output tokens. Every tool runs on the same kind of GitHub-hosted runner (4 CPUs):
 
 <!-- headline:start -->
 
@@ -201,11 +202,11 @@ npm, pip and Docker ship a prebuilt binary, while `cargo install` compiles one o
 
 <!-- headline:end -->
 
-The generated leaderboard, per-category scores (including where anymd loses), and method are in the [benchmark guide](https://anymd.sylphx.com/guide/benchmarks). [All comparisons](https://anymd.sylphx.com/vs/?utm_source=github&utm_medium=readme&utm_content=benchmarks) puts the seven tools side by side, and head-to-head pages compare anymd with [Docling](https://anymd.sylphx.com/vs/docling?utm_source=github&utm_medium=readme&utm_content=benchmarks), [Kreuzberg](https://anymd.sylphx.com/vs/kreuzberg?utm_source=github&utm_medium=readme&utm_content=benchmarks), [Marker](https://anymd.sylphx.com/vs/marker?utm_source=github&utm_medium=readme&utm_content=benchmarks), [MarkItDown](https://anymd.sylphx.com/vs/markitdown?utm_source=github&utm_medium=readme&utm_content=benchmarks), [pdftotext](https://anymd.sylphx.com/vs/pdftotext?utm_source=github&utm_medium=readme&utm_content=benchmarks) and [Unstructured](https://anymd.sylphx.com/vs/unstructured?utm_source=github&utm_medium=readme&utm_content=benchmarks). The corpus, ground truth, adapters, and raw results are in [`bench/`](https://github.com/SylphxAI/anymd/tree/main/bench), and the [Benchmark workflow](https://github.com/SylphxAI/anymd/blob/main/.github/workflows/benchmark.yml) reruns everything; new tools can join with a single adapter file.
+The generated leaderboard, per-category scores (including where anymd loses), and method are in the [benchmark guide](https://anymd.sylphx.com/docs/benchmarks?utm_source=github&utm_medium=readme&utm_content=benchmarks). [All comparisons](https://anymd.sylphx.com/vs/?utm_source=github&utm_medium=readme&utm_content=benchmarks) puts the seven tools side by side, and head-to-head pages compare anymd with [Docling](https://anymd.sylphx.com/vs/docling?utm_source=github&utm_medium=readme&utm_content=benchmarks), [Kreuzberg](https://anymd.sylphx.com/vs/kreuzberg?utm_source=github&utm_medium=readme&utm_content=benchmarks), [Marker](https://anymd.sylphx.com/vs/marker?utm_source=github&utm_medium=readme&utm_content=benchmarks), [MarkItDown](https://anymd.sylphx.com/vs/markitdown?utm_source=github&utm_medium=readme&utm_content=benchmarks), [pdftotext](https://anymd.sylphx.com/vs/pdftotext?utm_source=github&utm_medium=readme&utm_content=benchmarks) and [Unstructured](https://anymd.sylphx.com/vs/unstructured?utm_source=github&utm_medium=readme&utm_content=benchmarks). The corpus, ground truth, adapters, and raw results are in [`bench/`](https://github.com/SylphxAI/anymd/tree/main/bench), and the [Benchmark workflow](https://github.com/SylphxAI/anymd/blob/main/.github/workflows/benchmark.yml) reruns everything; new tools can join with a single adapter file.
 
 ### Image and video extraction
 
-[Image and video benchmarks](https://anymd.sylphx.com/guide/benchmarks#image-and-video-extraction)
+[Image and video benchmarks](https://anymd.sylphx.com/docs/benchmarks?utm_source=github&utm_medium=readme&utm_content=benchmarks#image-and-video-extraction)
 cover page-image OCR and embedded video subtitles separately:
 
 | Dataset | anymd | Reference alternative |
@@ -230,7 +231,7 @@ anymd exposes four tools.
 | **`outline`** | Navigate a heading tree, with node ids and unit/Markdown ranges | `source`, `format` (`json` · `tree`) |
 | **`read`** | Turn a file, URL, or folder into Markdown | `source`, `pages` (`"1-5,8"`), `max_tokens` (default 20000), `cursor`, `ocr`, `images` (`refs` · `none`), `revisions` (`markup` · `accept` · `reject`), `transcript`, `download_asr_model` |
 | **`search`** | Find text across files, folders, and URLs | `query`, `sources`, `mode` (`auto` · `literal` · `ranked`), `glob`, `max_results` |
-| **`inspect`** | Go deeper on a PDF or video | `operation`: `render_page`, `extract_regions`, `ocr_pages`, `structure` (JSON with geometry), `compare`, `inspect`, [`cite_check`](https://anymd.sylphx.com/guide/cite-check) (quote and location support) and [`video_timeline`, `render_frame`](https://anymd.sylphx.com/guide/video-timeline) (video evidence), both [anymd Pro](https://anymd.sylphx.com/pricing?utm_source=github&utm_medium=readme&utm_content=tools) |
+| **`inspect`** | Go deeper on a PDF or video | `operation`: `render_page`, `extract_regions`, `ocr_pages`, `structure` (JSON with geometry), `compare`, `inspect`, [`cite_check`](https://anymd.sylphx.com/docs/cite-check?utm_source=github&utm_medium=readme&utm_content=cite_check) (quote and location support) and [`video_timeline`, `render_frame`](https://anymd.sylphx.com/docs/video-timeline?utm_source=github&utm_medium=readme&utm_content=video_timeline) (video evidence), both [anymd Pro](https://anymd.sylphx.com/pricing?utm_source=github&utm_medium=readme&utm_content=tools) |
 
 A `read` answer looks like this:
 
@@ -309,8 +310,8 @@ For PDFs, anymd reads glyph positions rather than text runs. Glyphs are grouped 
 
 **One-time US$29 purchase. No subscription.** Pro adds two tools for agents that must show where an answer came from. The core stays free and MIT licensed, and nothing that was free has moved to Pro.
 
-- **PDF `cite_check`.** Give it a quote and the page and area your agent cited. It answers whether the quote is there, is not there, or cannot be decided, using the text and its position on the page rather than an AI opinion, and returns the boxes on the page that support a match. [How cite-check works](https://anymd.sylphx.com/guide/cite-check)
-- **Video timelines and exact frames.** Scene changes, chapters and subtitle or transcript timings for up to 10 minutes per request (`inspect` `video_timeline`, and the `timeline` option of `read` and `outline`). `render_frame` returns the frame behind a citation with the requested time, the actual decoded timestamp and a SHA-256 hash of the image, so anyone can check which moment it shows. [How video timelines work](https://anymd.sylphx.com/guide/video-timeline)
+- **PDF `cite_check`.** Give it a quote and the page and area your agent cited. It answers whether the quote is there, is not there, or cannot be decided, using the text and its position on the page rather than an AI opinion, and returns the boxes on the page that support a match. [How cite-check works](https://anymd.sylphx.com/docs/cite-check?utm_source=github&utm_medium=readme&utm_content=cite_check)
+- **Video timelines and exact frames.** Scene changes, chapters and subtitle or transcript timings for up to 10 minutes per request (`inspect` `video_timeline`, and the `timeline` option of `read` and `outline`). `render_frame` returns the frame behind a citation with the requested time, the actual decoded timestamp and a SHA-256 hash of the image, so anyone can check which moment it shows. [How video timelines work](https://anymd.sylphx.com/docs/video-timeline?utm_source=github&utm_medium=readme&utm_content=video_timeline)
 
 **[Get anymd Pro for US$29 →](https://anymd.sylphx.com/pricing?utm_source=github&utm_medium=readme&utm_content=pro_section)**
 
@@ -344,9 +345,11 @@ See [SECURITY.md](https://github.com/SylphxAI/anymd/blob/main/SECURITY.md) to re
 
 ## Also from Sylphx
 
+Built by [Sylphx](https://sylphx.com).
+
 <!-- generated:also-from -->
-- [**repomap**](https://github.com/SylphxAI/repomap): A map of your codebase for AI agents: code graph, search, call paths and change impact.
-- [**lockdocs**](https://github.com/SylphxAI/lockdocs): Exact-version library docs from your lockfile. Local, offline, no rate limits.
+- [**Repomap**](https://github.com/SylphxAI/repomap): Local Rust MCP server for mapping a codebase, tracing calls and seeing what a change affects.
+- [**Lockdocs**](https://github.com/SylphxAI/lockdocs): Local Rust MCP server for finding library docs that match the versions in your lockfile.
 - [**skills**](https://github.com/SylphxAI/skills): Battle-tested agent skills for Claude Code and Codex, installed in one command.
 - [**readme-mark**](https://github.com/SylphxAI/readme-mark): Beautiful README images from one URL: banners, badges, icons and stats cards.
 - [**Sylphx apps**](https://sylphx.com/apps): Apps and tools from Sylphx.

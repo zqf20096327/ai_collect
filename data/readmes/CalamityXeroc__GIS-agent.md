@@ -28,7 +28,7 @@ src/gis_cli/
 ├── cartography/         # 制图：facts → design → render → qc
 ├── datacatalog/         # SQLite 数据目录（字段名 / 坐标系 / 范围）
 ├── web/                 # 本地 Web 服务（FastAPI）：datasets / profile / rows / distinct / raster bands / preview
-├── recipes/             # 48 个 GIS 方法论配方（自带验证断言）
+├── recipes/             # 47 个 GIS 方法论配方（自带验证断言）
 ├── ui/                  # 终端界面（转录 / 状态行 / 输入框 / 命令）
 ├── trace/               # 每次 run 的 JSONL + Markdown 报告
 ├── requirements/        # 需求抽取（任务书 → 可验收清单）
@@ -94,7 +94,7 @@ web/
 
 **数据与方法论**
 - SQLite 数据目录：真实字段名 / 坐标系 / 范围 / 要素数（懒扫描，启动不阻塞）
-- 48 个配方：投影 / 缓冲 / 空间连接 / 核密度 / 局部莫兰 / 可达性 / 栅格运算…
+- 47 个配方：投影 / 缓冲 / 空间连接 / 核密度 / 局部莫兰 / 可达性 / 栅格运算…
   每个配方自带 validation 断言
 - 配方沉淀：`giscli distill` 把一次成功运行泛化成候选配方（静态门禁 → 回放验证 → 采纳入库），
   采纳后下次启动自动加载并回流进 prompt；UI 里 `/distill` 同样可用
@@ -119,7 +119,6 @@ web/
 - 交互式终端：转录 / 状态行 / 输入框 / `@` 文件补全 / `/` 命令 / Esc 中断
 - 运行中再输入 = 排队，本轮结束自动合并继续
 - 会话可续（`--continue` / `--resume`）、导出 Markdown
-- CI：只跑不依赖 ArcGIS 的部分（`pytest -m "not arcpy"`，实测 2~3 分钟）
 
 ## 快速开始
 
@@ -143,23 +142,43 @@ web/
 **常见问题**：
 - ✅ **"你好，你可以做什么"** → 得到友好的中文功能介绍
 - ❌ **返回英文工具列表** → 说明意图识别有误，已在最新版修复
-- 💡 **如遇问题**：见 [docs/cli.md](docs/cli.md) 与 `giscli doctor` 的自检输出
+- 💡 **如遇问题**：先跑 `giscli doctor` 看自检输出，命令行选项见 `giscli --help`
 
-### 方式一：使用 AI Agent（推荐）
+### 方式一：装一次，之后在任何目录都能用 `giscli`（推荐）
 
-#### 快速测试
-
-在开始之前，建议先体检环境：
+前置：**Python ≥ 3.10**（只用来跑 `install.py`，不必是 ArcGIS Pro 的环境），**在仓库根目录下执行**，不需要管理员权限。
+**没有 ArcGIS Pro 也能用**：浏览数据、对话、规划都不需要它，只有真实 GIS 处理与出图才要。
+完整前置与手动安装步骤见 [`INSTALL.md`](INSTALL.md)。
 
 ```powershell
-# 体检：Pro 是否装好、arcpy 能否 import、依赖是否齐（约 10 秒）
+# 一次性安装：写 shim、只追加用户级 PATH（不需要管理员权限）
+python install.py
+
+# 新开一个终端窗口（PATH 才会生效）
+giscli --help
+giscli doctor
+giscli chat --workspace .\workspace
+```
+
+- `install.py` 会顺手做一次环境自检并打印结果；重复跑只更新 shim 内容，不会重复追加 PATH。
+- cmd / PowerShell / **Git Bash** 里都能敲 `giscli`：三份 shim 由同一个模板生成，统一转给 `gis_cli.boot`（找 Pro 的 python + `PYTHONPATH=src`）。
+- 撤销 PATH：`python scripts/install_shim.py --remove --scripts-dir "<目录>"`，目录抄 `install.py`
+  结尾打印的那行字面路径（cmd / PowerShell / Git Bash 通用）。cmd 里也可写
+  `"%LOCALAPPDATA%\Programs\giscli"`，PowerShell 写 `"$env:LOCALAPPDATA\Programs\giscli"`——
+  `%LOCALAPPDATA%` 只有 cmd 会展开。
+  （`--scripts-dir` 不能省：缺省值是 `scripts\` 自己，删的就不是这次装进去的那一条）。
+
+#### 环境自检
+
+```powershell
+# Pro python / arcpy / 核心依赖 / pyproj / web 依赖 / src / 工作空间 / token 逐项给状态与命令
 giscli doctor
 
 # 加 --deep 会多跑一次持久内核启动检查（约 20 秒）
 giscli doctor --deep
 ```
 
-7 项检查逐项给「通过 / 跳过」，全过时最后一行是 `环境正常`。跑测试套件见下文「测试覆盖」。
+全过时最后一行是 `环境正常`；「注意」不影响退出码，只有「失败」才是 1。
 
 #### 启动 Agent
 
@@ -167,14 +186,10 @@ giscli doctor --deep
 
 ```powershell
 # 启动 Agent 交互式会话（新引擎：过程可见、运行中可纠偏、Esc 中断）
-# giscli 是仓库自带入口：自己找 Pro 的 Python，不需要 pip 安装
 giscli chat --workspace .\workspace
 
 # 接续上一次会话
 giscli chat --continue
-
-# 或使用一键启动（Windows：装依赖 + 进入对话）
-.\一键启动.bat
 
 # 示例对话：
 # > 你好，你可以做什么？
@@ -189,8 +204,7 @@ giscli chat --continue
 
 > 启动时会在后台自动拉起 Web 控制台（`pythonw` 无窗口、单实例、日志在 `workspace/.gis_agent/web.log`），地址见启动输出里的 `控制台: http://127.0.0.1:8760/?token=…` 一行；`GIS_NO_WEB=1` 或 `--no-web` 可关掉，`giscli web --stop` 停止后台面板（自己手动 `giscli web` 起的实例同样会落 `workspace/.gis_agent/web.pid`，`--stop` 一样能停）。
 >
-> CLI 细节（快捷键、斜杠命令、配色、会话续聊）见 [docs/cli.md](docs/cli.md)。
-> 启动为何很快、流式输出、以及各段耗时的实测数字见 [docs/performance.md](docs/performance.md)。
+> CLI 细节（快捷键、斜杠命令、配色、会话续聊）在会话里用 `/help` 查看。
 
 #### 使用工作区
 
@@ -208,7 +222,7 @@ giscli chat --continue
 3. **Agent 会自动识别数据**：
    ```
    📁 工作区状态
-   工作区路径: E:\BST_lab\GIS CLI\workspace
+   工作区路径: <工作区>\workspace
    
    输入数据 (3 个文件):
    - province.shp (shapefile, 2.5 MB)
@@ -295,33 +309,47 @@ cp config/llm_config.example.json config/llm_config.json
 
 > **版本说明（3.7 / 3.6）**
 >
-> - Pro **3.7** 已真机实测通过：`giscli doctor --deep` 7 项全过，全量 `pytest -m "not arcpy"` 0 failed，`CalculateField` / 持久内核 / 制图导出均正常（Pro 3.7 自带 Python 3.13）。
+> - Pro **3.7** 已真机实测通过：`giscli doctor --deep` 7 项全过，`CalculateField` / 持久内核 / 制图导出均正常（Pro 3.7 自带 Python 3.13）。
 > - 解释器发现是多级回退：注册表四值 → 已知安装目录一层扫描 → `ARCGIS_PRO_PYTHON` 覆盖；`ARCGIS_PRO_PYTHON` 指到 `propy.bat` 时也会先探活再采用，不会把 `.bat` 直接丢给子进程。多版本并存时按版本降序取最高版。
 > - 3.7 把图例样式改了名（3.6 的 `图例 1..6` → 3.7 的 `中心标题图例` / `手动列图例` / `透明背景图例` 等），`config/cartography_styles.json` 已按 3.7 重生成，同时**保留 3.6 关键字**，两个版本都能出图。
 > - 换机器或重装 Pro 后若遇到 `ERROR 000574: 未安装 Python`，那是 Pro 自身的 Python 运行时注册没跟上（`HKLM\SOFTWARE\ESRI\ArcGISPro` 的 `PythonCondaRoot` 仍指向已删除的旧目录），不是本项目的代码问题：改注册表这两项，或用 `ARCGIS_PRO_PYTHON` 指向 `...\ArcGISPro3.7\bin\Python\envs\arcgispro-py3\python.exe`。
 
-1. 先检查 ArcPy 环境：
+1. 先检查环境（含 ArcPy 与 Pro 的 Python）：
 
 ```powershell
-./check_arcpy_env.bat
+giscli doctor --deep
 ```
 
-2. 一键自动执行（默认会 `--exec`）：
+2. 跑一个真实任务（跑完即退出，不经交互）：
 
 ```powershell
-./run_arcgispro_exec.bat 制图并导出广西专题图
+giscli loop "制图并导出广西专题图" --workspace .\workspace
 ```
 
-3. 输出位置：
+3. 输出位置：交付物在 `workspace/output/`，每次 run 的 trace 在 `workspace/.gis_agent/`（见下一节）。
 
-- `outputs/<task_id>/workspace/中间数据库.gdb`
-- `outputs/<task_id>/map_exports/`（JPG/PNG）
-- `outputs/<task_id>/quality_reports/`（质量报告）
+## GDAL 后端（可选，只有 `[gdal]` 配方需要）
 
-说明：
+GDAL 后端跑在独立的 venv 里（默认仓库根的 `.venv-gdal`），不装进 ArcGIS Pro 环境，也不掺进 arcpy 那套。
+它对应 `pyproject.toml` 里的 `gdal` 可选 extra：**不装不影响正常使用**——声明了
+`backend: [arcpy, gdal]` 的配方优先走 arcpy，其余配方只走 arcpy，引擎照常工作；
+只有真要跑 GDAL 这一侧时才需要装。
 
-- `--dry-run` 只做预演，主要输出 JSON/TXT；
-- `--exec` + ArcPy 可用，才会产出真实 GIS 数据。
+```powershell
+# 仓库根目录下执行；Python 3.10+ 即可，不必是 Pro 的 python
+py -3.12 -m venv .venv-gdal
+.venv-gdal\Scripts\python.exe -m pip install -e ".[gdal]"
+# 已经 pip 装过本包、不在仓库里跑：.venv-gdal\Scripts\python.exe -m pip install "gis-task-cli[gdal]"
+
+# 官方源慢（pyogrio 实测 <0.3 MB/s）就换镜像，装的是同一组包：
+# .venv-gdal\Scripts\python.exe -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple `
+#     geopandas pyogrio shapely pyproj rasterio matplotlib
+```
+
+- **不用装 OSGeo4W**：GDAL / PROJ 的二进制由各 wheel 自带，装完也不需要联网运行。
+- venv 不在默认位置就设 `GIS_GDAL_PYTHON=<解释器路径>`；查找顺序是 `GIS_GDAL_PYTHON` → 项目根 `.venv-gdal` → 当前目录 `.venv-gdal`。
+- 系统里若挂着指向 PostgreSQL 的 `PROJ_LIB` / `PROJ_DATA` / `GDAL_DATA`（那套 `proj.db` 版本过旧，会以 "EPSG 4326 unknown" 炸出来），GDAL 执行器会自动丢掉指向 venv 之外的这几个变量。
+- 缺解释器时配方报错会指到本节。
 
 ## 运行产物
 
@@ -333,50 +361,3 @@ cp config/llm_config.example.json config/llm_config.json
 - `workspace/.gis_agent/runs/<run_id>.json`：任务状态快照
 - `workspace/.gis_agent/backups/<时间戳>/`：覆盖写入前的自动备份
 - `workspace/.gis_agent/project_log.md`：跨任务的项目日志（注入下次提示词）
-
-## 测试覆盖
-
-约 **1,870 个测试**（`pytest --collect-only` 实测 1,866 条；CI 只跑不依赖 ArcGIS 的部分，该步实测 2~3 分钟）。
-
-```powershell
-# 全量
-pytest
-
-# 只跑不需要 ArcGIS 的（CI 用的就是这条）
-pytest -m "not arcpy"
-
-# 新引擎相关
-pytest tests/test_engine_*.py
-```
-
-主要覆盖：
-- 引擎循环 / 工具协议自适应 / 代码自修复 / 验收器
-- 内核往返、ZMQ 串行化、覆盖前备份、GDB 存在性判断
-- 制图设计引擎（可用假 facts 跑，不需要 ArcGIS）
-- 数据目录增量扫描 / 项目日志相关性检索
-- 终端界面（含无 ANSI 终端的回归）
-- Web 端接口与数据资产工作台前端（`tests/web`，277 条）
-- 依赖边界（新引擎不得依赖 langchain/litellm/chromadb/pydantic）
-
-## 项目路线图
-
-### 已完成 ✅
-- 有界观察-决策-执行循环（原生 tool calling，不支持时自动降级 JSON 协议）
-- 代码失败自动修复（traceback + 数据目录 + 配方提示一起回喂）
-- 持久 Jupyter 内核（一次 import arcpy，跨步保留变量）
-- 强制验收：结构断言 + 语义核对 + 图面识图 + 交付卫生
-- 制图设计引擎：facts → design → render → qc（含统一图例、迁移图叠加层）
-- SQLite 数据目录 + 48 个方法论配方（自带验证断言）
-- SKILL.md 技能渐进披露
-- 流式输出、模型熔断、前缀缓存命中率统计
-- 内核往返合并、只读工具并发、覆盖写入自动备份
-- 交互式终端（排队合并、会话续聊、导出）
-- CI（只跑无 ArcGIS 部分）
-
-### 剩余候选 📋
-- 从历史成功 run 中自动沉淀配方（经验固化闭环）
-- 工具输出按类型瘦身（现在统一按字符数截断）
-- 需求抽取合流进首轮对话（省一次往返；以稳定性为前提）
-- 跨 run 的失败归因统计（哪类失败最常见）
-- 断点续跑（从 `runs/*.json` 恢复，而不只是 `ask_user` 暂停）
-- 更多配方覆盖（空间统计、网络分析）

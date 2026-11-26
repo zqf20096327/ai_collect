@@ -222,6 +222,12 @@ Model: ![](https://img.shields.io/badge/LLM-red)
     ![](https://img.shields.io/badge/EMNLP2026-brown)
     ![](https://img.shields.io/badge/LVLM-red)
 
+- **DoubtLess: Training-Free Contrastive Decoding for Efficient Reasoning**  
+    *Minghao Luo, Liang Chen*.
+    [[pdf](https://arxiv.org/pdf/2610.18862)], [[code](https://github.com/leoluolol/DoubtLess)]
+    ![](https://img.shields.io/badge/DoubtLess-blue)
+    ![](https://img.shields.io/badge/LLM-red)
+
 #### Guided
 
 - **NeuroLogic Decoding: (Un)supervised Neural Text Generation with Predicate Logic Constraints**  
@@ -509,6 +515,13 @@ Model: ![](https://img.shields.io/badge/LLM-red)
     [[pdf](https://arxiv.org/abs/2604.07622)], [[code](https://github.com/comeusr/diversed)]
     ![](https://img.shields.io/badge/DIVERSED-blue)
     ![](https://img.shields.io/badge/AISTATS2026-brown)
+    ![](https://img.shields.io/badge/LLM-red)
+
+- **Empirical Analysis of Decoding Biases in Masked Diffusion Models**
+    *Pengcheng Huang, Tianming Liu, Zhenghao Liu, Yukun Yan, Shuo Wang, Tong Xiao, Zulong Chen, Maosong Sun*.
+    [[pdf](https://aclanthology.org/2026.acl-long.311.pdf)], [[code](https://github.com/NEUIR/Uncode)]
+    ![](https://img.shields.io/badge/Uncode-blue)
+    ![](https://img.shields.io/badge/ACL2026-brown)
     ![](https://img.shields.io/badge/LLM-red)
 
 ### Applications

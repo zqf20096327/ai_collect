@@ -1,6 +1,6 @@
 # TraxAgent: ask your AI tools about your AI spend across multiple AIs and teams
 
-[![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.traxagent%2Ftraxagent-blue)](https://registry.modelcontextprotocol.io)  [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/ccarter01011/traxagent-claude-plugin)  [![check](https://github.com/ccarter01011/traxagent-claude-plugin/actions/workflows/check.yml/badge.svg)](https://github.com/ccarter01011/traxagent-claude-plugin/actions/workflows/check.yml)  [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)  ![Read-only](https://img.shields.io/badge/tools-read--only-blue)
+[![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.traxagent%2Ftraxagent-blue)](https://registry.modelcontextprotocol.io)  [![TraxAgent MCP connector](https://glama.ai/mcp/connectors/io.traxagent/traxagent/badges/score.svg)](https://glama.ai/mcp/connectors/io.traxagent/traxagent)  [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/ccarter01011/traxagent-claude-plugin)  [![check](https://github.com/ccarter01011/traxagent-claude-plugin/actions/workflows/check.yml/badge.svg)](https://github.com/ccarter01011/traxagent-claude-plugin/actions/workflows/check.yml)  [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)  ![Read-only](https://img.shields.io/badge/tools-read--only-blue)
 
 **Who spent your AI budget last month, and on what?** Ask Claude, ChatGPT, Claude Code, Cursor, Gemini or VS Code, and get the answer from your real usage.
 
@@ -122,6 +122,47 @@ It's also listed in the official MCP Registry as `io.traxagent/traxagent`.
 
 Some companies now cap each engineer's AI spend by day, week or month. If leadership asks whether your teams need one, test a cap against your own numbers before you set it. TraxAgent shows who would hit it and how often, then warns people early, before they reach it, and again at 80% and 100%.
 
+## Claude Ship costs
+
+[Claude Ship](https://claude.com/resources/articles/introducing-claude-ship) (`/ship`, Code Review, PR Steward and Approvals) is billed on tokens through your usage credits. Observe mode is billed too, and Anthropic has no API for this spend yet. Ask Claude *"what will our approvals policy cost?"* in a repo with `.claude/approvals.yml`, and the `check_ship_policy` tool flags the rules that start billed work.
+
+Example with sample data. This policy:
+
+```yaml
+mode: observe
+rules:
+  - name: clean-review
+    if: claude/code_review.findings.high == 0
+    approve: true
+  - name: migrations
+    classifier: claude/diff
+    prompt: Does this change a database migration?
+    require: human
+```
+
+returns:
+
+```text
+2 rule(s) start billed model work, and custom classifiers have no budget.
+The policy looks to be in observe mode, which is still billed.
+
+line 4  if: claude/code_review.findings.high == 0
+        Starts a billed Code Review (on PR open and each push when used in an if condition).
+line 7  classifier: claude/diff
+        Each run of claude/diff is a billed model call.
+line 7  Custom classifiers that call a model are billed per run, and this policy sets no budget.
+```
+
+The tool also returns a spend-limit checklist, for example: PR Steward has no limit until you set one, and turning off usage credits doesn't stop billing.
+
+For the numbers, the [Claude Ship page](https://www.traxagent.io/demodashboard?ref=github-plugin#ship) takes a few figures from claude.ai. With sample figures of 120 PRs a month, 4 pushes per PR and $2.50 per review, it works out:
+
+| | Sample result |
+|---|---|
+| Review once vs after every push | $300 vs $1,200 a month: **save $900** |
+| Spend-limit forecast ($840 spent by day 24, $1,500 limit) | Projected month $1,050, stays $450 under |
+| Promo credits ($10,000 claimed 9 days ago, $2,400 used) | Needs $362 a day; at the current pace about **$2,560 expires unused** |
+
 ## Trust and security
 
 - **Read-only.** TraxAgent reads usage reports with read-only admin keys. Neither the keys nor this plugin can change anything at your providers.
@@ -137,7 +178,7 @@ More detail: [Security](https://www.traxagent.io/security?ref=github-plugin) · 
 |---|---|
 | `/spend-audit` command | Local Claude Code cost report from your session logs. No account, nothing sent |
 | `ai-spend-demo` MCP server | The same tools on a sample company, no sign-in |
-| `ai-spend` MCP server | Read-only tools: `get_spend_summary`, `get_spend`, `get_people_spend`, `list_fixes`, `get_fix_prompt`, `get_task_quality`, `get_ai_registry`, `list_api_keys` |
+| `ai-spend` MCP server | Read-only tools: `get_spend_summary`, `get_spend`, `get_people_spend`, `list_fixes`, `get_fix_prompt`, `get_task_quality`, `get_ai_registry`, `list_api_keys`, `check_ship_policy` |
 | `ai-spend` skill | Tells Claude how to answer spend questions and ship fixes as pull requests |
 | `spend-statusline` skill | Installs the TraxAgent status line, with your OK |
 

@@ -12,13 +12,15 @@ Slipstream is a fork of [llama.cpp](https://github.com/ggml-org/llama.cpp) that 
 
 It ships as a Mac app with the engine bundled inside. Download the `.dmg`, drag it to Applications, open it. Nothing to compile, no dependencies to install. Point your AI coding assistant (Kilo Code, Cline, Cursor, OpenCode, anything OpenAI-compatible) at `http://127.0.0.1:8080/v1` and go.
 
-**New in v0.3.4:** the app shell is properly clickable and properly announced.
-The four first-run path fields had labels that were never associated with them,
-so they had no accessible name and clicking the visible label text did not focus
-the field. The tab strip had no tablist semantics, so eight tabs read as plain
-buttons with no current item. Every toast — including the first-run "choose a
-model folder" error — was silent for screen readers. All fixed. This is a
-usability and accessibility release; no engine or performance behaviour changed.
+**New in v0.4.0:** the streamed 35B decodes about a third faster without changing a single
+output token, and up to 86% faster with an opt-in Turbo mode. Lookahead prefetch reads the
+experts the next layer will need while the current layer computes; Turbo nudges the router,
+while generating, towards experts already in RAM. The engine is ported to current upstream
+llama.cpp (2677 commits newer), and the app gets a live engine cockpit and a four-click first
+run. Numbers below and in [`docs/RELEASE_0.4.0.md`](docs/RELEASE_0.4.0.md).
+
+In v0.3.4 the app shell became properly clickable and announced: labelled path fields,
+tablist semantics and spoken toasts.
 
 Since v0.3.3, the macOS app carries a complete ad-hoc bundle seal. This adds
 verifiable resource integrity while keeping the honest boundary: it is not an
@@ -84,6 +86,28 @@ Numbers from a 36 GB Apple-Silicon Mac, raw logs in [`bench/RESULTS.md`](bench/R
 | 14 GiB | ~19 tok/s | ~86% |
 
 Prefill of a large (~30k-token) coding-agent prompt goes from 75 to 208 tok/s, a 2.7x gain, with `ubatch 2048` and parallel I/O threads.
+
+#### Lookahead prefetch and Turbo (v0.4.0)
+
+Measured in the app's own setup (llama-server, greedy, GGUF and PGRN on the internal NVMe):
+
+| Cache | Before | Lookahead (lossless, default) | + Turbo (opt-in) |
+|------:|-------:|------------------------------:|-----------------:|
+| 4 GiB | 7.8 tok/s | 10.3 tok/s (+32%) | 14.5 tok/s (+86%) |
+| 10 GiB | 13.1 tok/s | 17.5 tok/s (+33%)\* | 19.6 tok/s (+49%)\* |
+
+\* measured on the previous llama.cpp base; v0.4.0's base adds another 3–7%.
+
+Lookahead runs the next layer's router on the current layer's hidden state, so the experts it
+will ask for are already being read from the SSD while the current layer computes. It predicts
+83% of them and changes no output: greedy text is byte-identical with it on or off. With it on,
+the app turns MTP speculation off for streamed models, because a multi-token verify step needs
+the union of several tokens' experts, which costs more than it saves here.
+
+Turbo nudges the router, while generating, towards experts that are already in RAM or being
+prefetched. It is lossy and off by default. In our test the next token matched the unmodified
+model 93% of the time and perplexity stayed within noise; the prompt is always read exactly.
+Method, raw numbers and the experiments that lost are in [`bench/RESULTS.md`](bench/RESULTS.md).
 
 ### Laguna S 2.1 (118B-A8B, Q4), a model that does not fit in 36 GB
 
@@ -249,6 +273,8 @@ Two environment variables cover the multi-disk case:
 | `PGRN_MIRROR=/path/to/copy.pgrn` | A byte-identical PGRN copy on a second SSD. Reads get striped across both, split in proportion to each disk's probed cold-read bandwidth. |
 | `PGRN_MIRROR_WEIGHT=N` | Override that split, as a percentage sent to the primary disk. |
 | `PGRN_BUFFERED=1` | Skip `F_NOCACHE` and let the OS page cache back the reads. Faster per read, but the cache is then unbounded. See BENCHMARKS.md before using it. |
+| `PGRN_LOOKAHEAD=N` | Lookahead prefetch, on by default with `--pgrn` (N = 0). N > 0 also prefetches N extra predicted experts per layer; `-1` turns it off. Lossless. |
+| `PGRN_STEER=0.02` | Turbo: while generating, prefer experts already in RAM or being prefetched. Lossy, off by default (see Measured results). |
 
 Striping is a capacity feature first. On an internal NVMe paired with a slow USB drive it comes out slower, because they share a bus.
 

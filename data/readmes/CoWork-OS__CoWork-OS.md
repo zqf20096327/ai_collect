@@ -24,7 +24,7 @@
   <strong>English</strong> &middot; <a href="i18n/README.zh-CN.md">简体中文</a>
 </p>
 
-CoWork OS is a free, open-source desktop app for macOS and Windows that does real work for you: files, documents, the browser, your inbox and scheduled jobs. You watch every step as it happens, and with the default **Ask for approval** profile the agent works freely inside your workspace but stops and asks before anything that leaves it: sending, network access, credentials, exports, or files outside the workspace. Use the model you choose; your workspace, memory, skills and history stay on your machine. Model providers may charge for usage and receive the data needed for the tasks you run. [What you own](docs/what-you-own.md)
+CoWork OS is a free, open-source AI agent desktop app for macOS and Windows that does real work for you: files, documents, the browser, your inbox and scheduled jobs. It is a local-first alternative to Claude Cowork and OpenClaw: bring your own API key for OpenAI, Anthropic, Gemini, OpenRouter and other providers, or run local models through Ollama, and message it from WhatsApp, Telegram or Slack. You watch every step as it happens, and with the default **Ask for approval** profile the agent works freely inside your workspace but stops and asks before anything that leaves it: sending, network access, credentials, exports, or files outside the workspace. Use the model you choose; your workspace, memory, skills and history stay on your machine. Model providers may charge for usage and receive the data needed for the tasks you run. [What you own](docs/what-you-own.md)
 
 <p align="center">
   <img src="resources/branding/images/readme-demo.gif" alt="A task in CoWork OS: the plan fills in, the agent asks before running a command, and the finished spreadsheet opens beside the chat" width="820">
@@ -161,13 +161,13 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 |---|---:|---:|
 | GitHub stars | 554 | n/a |
 | GitHub forks | 101 | n/a |
-| Installer/server downloads | 3,811 | 3,811 |
-| Download delta | +58 | n/a |
-| npm downloads | 315 (last week) | 11,146 |
-| GitHub views, last 14-ish days | 1,542 total / 801 unique | n/a |
-| GitHub clones, last 14-ish days | 4,343 total / 660 unique | n/a |
+| Installer/server downloads | 3,927 | 3,927 |
+| Download delta | +71 | n/a |
+| npm downloads | 163 (last week) | 11,240 |
+| GitHub views, last 14-ish days | 1,510 total / 798 unique | n/a |
+| GitHub clones, last 14-ish days | 4,342 total / 640 unique | n/a |
 
-Generated 2026-11-23T12:30:36.647Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
+Generated 2026-11-25T12:48:13.671Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
 <!-- COWORK_PUBLIC_ADOPTION_STATS_END -->
 
 ## License

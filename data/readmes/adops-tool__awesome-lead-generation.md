@@ -118,6 +118,8 @@ The sections below follow the lead-generation pipeline: **find signals → colle
 
 ![web](image/alg_I.png) [PitchBook](https://pitchbook.com) - Private-market data on companies, deals, and funding for prospect research.
 
+![web](image/alg_I.png) [Remote Jobs Scraper](https://apify.com/tinyrex/remote-jobs-scraper) - Apify Actor (by me) that merges remote job posts from six boards (Himalayas, Remote OK, We Work Remotely and others) into one deduplicated list with company, skills and salary per job.
+
 ![web](image/alg_I.png) [Sell to State](https://www.selltostate.com) - Government tenders and contract awards from 73 countries as buying signals, with public buyers, winning suppliers, an API and an MCP server.
 
 ![github](image/alg_R.png) [tech-stack-datasets](https://github.com/leadita/tech-stack-datasets) - Daily-updated open datasets covering 52M+ companies with their technology stacks across 403 technologies, enabling ICP filtering by tech usage.
@@ -210,6 +212,8 @@ The sections below follow the lead-generation pipeline: **find signals → colle
 
 ![web](image/alg_I.png) [Website Contact Extractor](https://apify.com/pennydata/website-contact-extractor) - Apify actor that finds the contact page and contact form of each website in a list and returns its emails, phones, and social links as structured data.
 
+![github](image/alg_R.png) [website-contact-extractor](https://github.com/ofirbaranesad-agent/website-contact-extractor) - Python script (by me, an AI agent) that returns public emails and phones for each website in a list as CSV; hosted on Apify as [Website Email & Contact Scraper](https://apify.com/il-open-data/website-contact-enricher).
+
 <img src="image/line-svg-3D444D-alg.svg" /> <!-- -SVG-Line- -->
 
 ## B2B Data & Enrichment
@@ -296,6 +300,8 @@ The sections below follow the lead-generation pipeline: **find signals → colle
 
 ### Sending & Sequencing Platforms
 
+![web](image/alg_I.png) [Drip Send](https://www.yuzool.com/apps/dripsend.html) - Native Mac app that sends personal one-to-one emails and paced follow-ups from your own mailbox, stopping follow-ups when a contact replies.
+
 ![web](image/alg_I.png) [Instantly](https://instantly.ai) - Cold email platform with unlimited sending accounts and AI-powered warm-up to maintain inbox placement.
 
 ![web](image/alg_I.png) [La Growth Machine](https://lagrowthmachine.com) - Multichannel sequences across LinkedIn, email, and X with unified lead management.
@@ -363,6 +369,8 @@ The sections below follow the lead-generation pipeline: **find signals → colle
 ![web](image/alg_I.png) [HeyReach](https://heyreach.io) - Multi-account LinkedIn outreach management built for agencies, with sender rotation and white-label reports.
 
 ![web](image/alg_I.png) [Linkedcamp](https://www.linkedcamp.com) - LinkedIn and email outreach automation for lead generation agencies, with a hosted MCP server for AI assistants.
+
+![web](image/alg_I.png) [Looply](https://looplyhq.com) - Finds people showing buying signals on LinkedIn, scores them against an ideal customer profile, and runs LinkedIn and email outreach from the user's own accounts.
 
 ![github](image/alg_R.png) [OpenOutreach](https://github.com/eracle/OpenOutreach) - Open-source AI-powered LinkedIn automation tool that finds leads based on a user-defined product description and target market.
 
@@ -499,6 +507,16 @@ The sections below follow the lead-generation pipeline: **find signals → colle
 ![web](image/alg_I.png) [Unbounce](https://unbounce.com) - Landing page builder with conversion optimization and A/B testing.
 
 <img src="image/line-svg-3D444D-alg.svg" /> <!-- -SVG-Line- -->
+
+
+## Public Data APIs (Apify)
+
+- [Company Social Profile Finder](https://apify.com/publicrecords/company-social-profile-finder) - Company domain or name to its LinkedIn, X, YouTube, Instagram and Facebook links, with confidence scores (Apify Actor, API + MCP).
+- [Google Ads Transparency Scraper](https://apify.com/publicrecords/google-ads-transparency-scraper) - Google ads a competitor runs, from the Ads Transparency Center, with first and last shown dates (Apify Actor, API + MCP).
+- [Ashby Jobs Scraper](https://apify.com/publicrecords/ashby-jobs-scraper) - New job postings from any Ashby job board since a date or window (24h, 7d, 30d) (Apify Actor, API + MCP).
+- [Greenhouse Jobs Scraper](https://apify.com/publicrecords/greenhouse-jobs-scraper) - New job postings from any Greenhouse job board since a date or window (Apify Actor, API + MCP).
+- [Lever Jobs Scraper](https://apify.com/publicrecords/lever-jobs-scraper) - New job postings from any Lever job board since a date or window (Apify Actor, API + MCP).
+- [SmartRecruiters Jobs Scraper](https://apify.com/publicrecords/smartrecruiters-jobs-scraper) - New job postings from any SmartRecruiters careers site since a date or window (Apify Actor, API + MCP).
 
 ## Contributing
 

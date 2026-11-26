@@ -219,6 +219,7 @@ between agents, hit limits, or want them to work as a team.
 
 **Workspace panels**
 - Diff ("turn changes"), Git, file tree with fast search, integrated terminal (PTY), plan usage.
+- Codex plan usage from the signed-in local Codex account; percentages show quota used.
 
 **Look**
 - Ten unicode "thinking" animations (Scan, Bars, Pulse, Quads, Charge, Moon, Cipher, Chevrons,

@@ -59,7 +59,7 @@ optimizer level, double-checked at the report level.
 
 Key principle: **the quant core is fully deterministic** (plans work with no LLM —
 easy to unit-test and generate training data). **The LLM is the conversational
-interface**, driving the core through **22 tools**:
+interface**, driving the core through **26 tools**:
 
 | Tool | Purpose |
 |---|---|
@@ -84,6 +84,10 @@ interface**, driving the core through **22 tools**:
 | `get_kairos_context` | Optional Kairos ecosystem context: sibling package status, real ETF coverage, VaR/ES risk overlay, research findings |
 | `factor_forge_from_text` | Report brief → structured factor + executable code + sample validation; optionally write into the Atlas factor store |
 | `screen_assets_by_custom_factors` | Cross-sectional composite score from forged close-based factors (IC/direction weighted) |
+| `analyze_holdings` | Holdings X-Ray + target drift + rebalance trades + suitability checks |
+| `run_monte_carlo` | Wealth-path simulation + goal probability + drawdown/VaR + scenario stress |
+| `get_risk_attribution` | Return/risk/factor attribution, beta, R², alpha and residual risk |
+| `get_kairos_ensemble` | Correlation-pruned equal/inverse-vol/risk-parity strategy ensemble |
 | `explain_product` | Product risk education (risk first, return second) |
 
 ### Kairos Ecosystem Integration ★ (`integrations/kairos.py`)
@@ -117,6 +121,11 @@ as before.
   level, blends at `budget × invested`, and re-clips to suitability class caps.
   The plan/report show budget cap, actual portfolio weight and Atlas coverage.
   Disabled by default; it is an explicit research overlay, not an automatic bet.
+- **Strategy ensemble / meta-allocator** (`integrations/kairos_ensemble.py`):
+  correlation-prunes the lab leaderboard (greedy by Sharpe) and blends survivors
+  with equal / inverse-vol / risk-parity weights. The dashboard panel compares
+  ensemble vs best-single vs equal-weight and can use the ensemble as a bounded
+  satellite sleeve; `get_kairos_ensemble` exposes it to the LLM.
 - **Config** (`config/agent.yaml`):
 
 ```yaml
@@ -363,6 +372,61 @@ valuation, fundamentals, behavioral finance, HF money-flow, etc.):
   `examples/factor_library_sample`, so the knowledge base works out of the box;
   set `ATLAS_FACTOR_DIR` for the full 1000+ library).
 
+### Holdings X-Ray & Drift ★ (`portfolio/holdings.py`)
+
+Import a broker/Excel CSV (local only) to compare **actual** holdings with the
+recommended plan:
+
+```csv
+symbol,market_value,currency,fx_to_cny,shares,cost,account
+510300,150000,CNY,1,30000,4.8,brokerA
+CASH,50000,CNY,1,,,brokerA
+```
+
+- Resolves Atlas asset ids, 6-digit ETF codes, names, and `CASH`; aggregates
+  duplicate accounts; supports non-CNY rows with an explicit `fx_to_cny`.
+- X-Ray: total value, asset/class/currency weights, top-1/top-3, HHI/effective N,
+  optional P&L when cost+price are present.
+- Drift: current vs target by asset and class, turnover, estimated trading cost,
+  buy/sell/hold rebalance sheet, drift thresholds and **suitability violations**.
+- Available in the dashboard **Holdings X-Ray & Drift** panel, the
+  `analyze_holdings` LLM tool (23rd tool), and both Chinese/English reports.
+- Invalid rows (unknown ticker, missing value, non-CNY without FX, non-positive
+  market value) are reported with row numbers; nothing is silently guessed.
+
+### Monte Carlo & Stress Test ★ (`portfolio/monte_carlo.py`)
+
+The plan's walk-forward monthly return series drives seeded wealth-path
+simulation:
+
+- **Engines**: circular block bootstrap (preserves volatility clustering) and
+  parametric Student-t.
+- **Outputs**: terminal wealth 5/25/50/75/95%, probability of loss, optional
+  goal-attainment probability, max-drawdown distribution, 95% VaR/ES, and a
+  monthly percentile fan chart.
+- **Scenarios**: equity −20%, rates +100bp, crypto −50%, CNY −10%,
+  stagflation; each reports portfolio shock, value after, loss and class
+  contributions.
+- **Surfaces**: dashboard panel, Chinese/English report sections, and the
+  `run_monte_carlo` LLM tool (24th tool). Invalid path counts, horizons,
+  methods and targets return readable errors.
+
+### Risk & Factor Attribution ★ (`portfolio/attribution.py`)
+
+Explains the plan instead of only showing it:
+
+- **Return contribution**: current-weight asset/class contribution over the
+  monthly history.
+- **Risk contribution**: Euler component risk by asset/class, annualized
+  volatility and risk effective-N.
+- **Factor attribution**: market / value / momentum / low-vol / size / rates /
+  commodity / crypto proxies built from the Atlas universe; reports betas,
+  annual alpha, R² (factor risk share) and residual vol.
+- Available via the dashboard **Risk & Factor Attribution** panel, Chinese /
+  English report sections, and the `get_risk_attribution` LLM tool (25th tool).
+- Attribution uses current weights as a transparent static-weight approximation;
+  it is explanation, not a performance guarantee.
+
 ### Strategy Layer (amplify strengths, don't pile assets) ★
 
 Rather than cramming 26 assets into one portfolio, six philosophy-driven strategies, each with:
@@ -397,7 +461,7 @@ pip install -r requirements.txt          # numpy/pandas/scipy/matplotlib/openai/
 
 make demo        # offline demo: mass / affluent / HNW → examples/demo_outputs/
 make lint        # ruff static checks (pip install -r requirements-dev.txt)
-make test        # unit + integration tests (201)
+make test        # unit + integration tests (259)
 make eval        # compliance gate (weight legality / caps / disclaimer / segment access)
 make sft         # generate 400 SFT conversations → training/sft_data/train.jsonl
 
@@ -494,7 +558,7 @@ invest_agent/
                   #   backtest(walk-forward) / tactical(momentum+trend gate) /
                   #   rebalance(target-vs-current drift monitor)
   data/           # base / synthetic / akshare / kairos / universe (26 assets)
-  tools/          # 22 tools exposed to the LLM
+  tools/          # 26 tools exposed to the LLM
   charts.py, report.py, cli.py
 config/           # assets.yaml, risk_profiles.yaml, agent.yaml
 integrations/kairos_strategies.py  # ★ 106-strategy lab / cached leaderboard
@@ -506,7 +570,7 @@ docs/               # architecture, portfolio math, factors, operations and test
 training/         # README / generate_sft_data.py / build_real_dataset.py /
                   # eval/(compliance + requirement benchmark) / finetune/
 examples/factor_library_sample/  # factor-library sample (full lib: ATLAS_FACTOR_DIR)
-tests/            # 215 tests (offline, synthetic provider)
+tests/            # 259 tests (offline, synthetic provider)
 .streamlit/config.toml + dashboard/style.py  # Jane Street-style light theme
 dashboard/i18n.py  # zh-Hans / en / zh-Hant UI catalog + entity labels
 .github/workflows/ci.yml  # GitHub Actions: lint + tests (3.10/3.12/3.13) + gates

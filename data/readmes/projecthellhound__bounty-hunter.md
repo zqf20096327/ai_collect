@@ -37,15 +37,14 @@
 
 ---
 
-> [!WARNING]
+> [!NOTE]
 > ### Project Status — Where It Actually Stands
-> **Bounty Hunter — "Beast" — is under active development.** An honest read of how it performs across the environments it's run against, so you know what to expect before you point it at anything:
+> **Bounty Hunter — "Beast" — is a capable, actively-developed agent, built first for real, authorized bug-bounty programs.** It runs the full recon → exploit → verify → report loop end to end today; the same pipeline that proves a bug on a live program is also what makes it strong against training labs and CTF ranges — that's a side benefit of the design, not the primary target. An honest read of how it performs across the environments it's run against:
 >
-> - **Real, authorized bug-bounty programs** — strong at recon, scoping, triage, and surfacing/verifying genuine issues under the program's rules of engagement. Each distinct confirmed bug is recorded the moment it's proven, and a dismissed false positive can't silently reappear. It is **not yet "fire and forget"** on complex production surfaces — **review every finding before you rely on it or submit it.**
-> - **Multi-host program surfaces** — maps a whole program at once (subdomains, services on non-standard ports, framework/debug endpoints), surfaces the forgotten host or the unauthenticated service sitting one port over from a boring landing page, and works every lead to a result. Learns *mid-hunt* from 15k+ **disclosed real-world reports** to copy a proven methodology onto the target in front of it (see the HexBrain integration).
-> - **Training labs & intentionally-vulnerable ranges** (PortSwigger Web Security Academy, HackTheBox, local hardened labs) — solves them **autonomously, end to end** across a wide range of vulnerability classes: reflected / stored / DOM XSS (confirmed by firing a real `alert()` in a headless browser), SSRF, IDOR and broken access control, authentication/authorization bypass, SSTI, CORS, injection, and exposed-service / secret-leak classes. Not just recon — the full exploit, each one driven to a yes/no and verified before it's recorded.
+> - **Real, authorized bug-bounty programs — the primary use case.** Runs the full loop against production surfaces: maps a whole program at once (subdomains, services on non-standard ports, framework/debug endpoints), surfaces the forgotten host or the unauthenticated service sitting one port over from a boring landing page, and drives each lead to a verified yes/no — not just recon. Learns *mid-hunt* from 15k+ **disclosed real-world HackerOne reports** to copy a proven methodology onto the target in front of it (see the HexBrain integration). Each distinct confirmed bug is recorded the moment it's proven, and a dismissed false positive can't silently reappear. Like any autonomous agent on complex production surfaces, **review every finding before you submit it** — that's calibration, not a limitation specific to real programs.
+> - **Training labs & intentionally-vulnerable ranges** (PortSwigger Web Security Academy, HackTheBox, local hardened labs) — the same engine solves these **autonomously, end to end** across a wide range of vulnerability classes: reflected / stored / DOM XSS (confirmed by firing a real `alert()` in a headless browser), SSRF, IDOR and broken access control, authentication/authorization bypass, SSTI, CORS, injection, and exposed-service / secret-leak classes. Useful for validating a new methodology before it's ever pointed at a live program, not a separate "easy mode."
 >
-> What it reports is meant to be a *confirmed* bug, not a guess: an XSS has to actually execute (or demonstrably render unsanitized in an executing sink) to be recorded, `verify_finding` runs class-specific live checks, and each finding is evidence-gated before it goes in the report. Use responsibly and strictly on authorized targets.
+> What it reports is meant to be a *confirmed* bug, not a guess, on either kind of target: an XSS has to actually execute (or demonstrably render unsanitized in an executing sink) to be recorded, `verify_finding` runs class-specific live checks, and each finding is evidence-gated before it goes in the report. Use responsibly and strictly on authorized targets.
 
 ---
 
@@ -63,9 +62,22 @@
 
 **Three ways to drive it:**
 
-- **Desktop GUI** (`beast --gui`) — a native desktop application window with a three-pane layout: targets on the left, live agent chat in the center, findings + running actions on the right. Full markdown rendering, collapsible panels.
+- **Desktop GUI** (`beast --gui`) — a native desktop application window with a three-pane layout: targets on the left, live agent chat in the center, findings + running actions on the right. Markdown reports rendered inline, plus **the Brain** — a live knowledge graph of every skill, tool, lesson learned, and target finding (below).
 - **Interactive terminal** (`beast`) — a full-screen TUI with live streaming, collapsible tool cards, a findings browser, and a command palette.
 - **Headless** (`beast -p "..."`) — one-line runs for scripts and CI pipelines.
+
+### The Brain
+
+A live map of everything Beast knows, built straight from its own data — it updates itself as the agent runs. Skills and the full tool arsenal are grouped into domains; a separate dial is the running timeline of **lessons learned**, banded from validated down to still-exploratory. No fabricated numbers — every count is real.
+
+<p align="center">
+  <img src="Images/brain.png" alt="The Brain — Beast's knowledge graph of skills, tools and findings" width="100%"/>
+</p>
+
+<p align="center">
+  <img src="Images/brain-lessons.png" alt="The Brain — the lessons-learned timeline, built from Beast's own lessons.json" width="100%"/>
+  <br><sub>The Lessons dial: real techniques Beast confirmed across targets, banded by how often they held up.</sub>
+</p>
 
 
 ---

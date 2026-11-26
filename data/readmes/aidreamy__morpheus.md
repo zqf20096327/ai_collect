@@ -2,7 +2,7 @@
 
 **English** | [Português](./docs/readme/README.pt-BR.md) | [Español](./docs/readme/README.es.md) | [Русский](./docs/readme/README.ru.md) | [中文](./docs/readme/README.zh-CN.md) | [日本語](./docs/readme/README.ja.md)
 
-<img width="1910" height="1064" alt="Morpheus terminal interface" src="https://github.com/user-attachments/assets/a80fcff1-068a-44f8-b43d-3e7d7697ecd6" />
+<img width="1697" height="927" alt="ASCIITerminal" src="https://github.com/user-attachments/assets/7b3404d6-acd3-4f5e-a32a-5b941be99c9e" />
 
 Morpheus is a general-purpose coding agent for the terminal. It ships software engineering tools plus *computer tools* that let it interact with graphical applications.
 

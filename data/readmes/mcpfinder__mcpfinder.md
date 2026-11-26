@@ -6,6 +6,8 @@
 
 > The MCP server that helps AI agents discover, evaluate, and install other MCP servers.
 
+[![mcpfinder/mcpfinder MCP server](https://glama.ai/mcp/servers/mcpfinder/mcpfinder/badges/score.svg)](https://glama.ai/mcp/servers/mcpfinder/mcpfinder)
+
 MCPfinder is an AI-first discovery layer over the Official MCP Registry and Glama. Install it once, and your assistant can search for missing capabilities, inspect trust signals, review required secrets, and generate client-specific MCP config snippets.
 
 ## Canonical Use
@@ -658,6 +660,7 @@ from AI agents consuming the tool surface.
 ## Links
 
 - Website: [mcpfinder.dev](https://mcpfinder.dev)
+- Browse the catalog on the web at [findmcp.dev](https://findmcp.dev).
 - GitHub: [mcpfinder/mcpfinder](https://github.com/mcpfinder/mcpfinder)
 - npm: [@mcpfinder/server](https://www.npmjs.com/package/@mcpfinder/server)
 - MCP Registry: [`dev.mcpfinder/server`](https://registry.modelcontextprotocol.io/v0/servers?search=dev.mcpfinder)

@@ -239,7 +239,7 @@ require("pi").setup({
 
 ## Keymaps
 
-`pi2.nvim` ships a deliberately small default keymap set (submission, abort, history recall, `<Tab>` block toggles, `gf` file jumps, diff-review keys) and leaves the rest to you. See [doc/keymaps.md](doc/keymaps.md) for the key-spec format, the stable `pi-chat-*` filetypes, and a complete example setup you can adapt.
+`pi2.nvim` ships a deliberately small default keymap set (submission, abort, history recall, `<Tab>` block toggles, `gf` file jumps, `gy` copy-as-source, diff-review keys) and leaves the rest to you. See [doc/keymaps.md](doc/keymaps.md) for the key-spec format, the stable `pi-chat-*` filetypes, and a complete example setup you can adapt.
 
 ## Commands
 
@@ -284,7 +284,7 @@ require("pi").setup({
 | `:PiPasteImage` | Attach an image from the clipboard |
 | `:PiCopy` | Copy chat history lines: the **source** text when the range covers whole messages, the rendered lines otherwise (see [doc/usage.md](doc/usage.md#copying-messages)) |
 | `:PiCompact [instructions]` | Ask π to compact the current conversation context. With no argument it opens a focus dialog (presets + free text + recent focuses); `:PiCompact!` compacts immediately without the dialog; passing instructions compacts with that focus |
-| `:PiCompactAbort` | Abort the compaction that is running (same as a single `<Esc>` while compacting) |
+| `:PiCompactAbort` | Abort the compaction that is running (same as a double `<Esc>` while compacting) |
 | `:PiCompactRetry` | Retry the last failed or aborted compaction with the same focus instructions |
 | `:PiCompactions` | Toggle the compaction timeline: one row per compaction (reason, before → after, duration, cost, files) with jump / diff / copy / re-run actions (see [doc/usage.md](doc/usage.md#compaction-timeline-picompactions)) |
 | `:PiToggleAutoCompaction` | Toggle automatic context compaction (statusline shows the auto-compaction icon while on) |

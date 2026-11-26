@@ -19,6 +19,20 @@
 - **[`wasabihu/corpus-cn-statutes`](https://github.com/wasabihu/corpus-cn-statutes)**：依据《中华人民共和国著作权法》第五条第一项公有领域规则，将 29 部中国现行核心民商法、资本市场法规与企业会计准则按实质条文拆分为独立单条文件（100% 字节守恒校验），附完整 `MANIFEST.tsv` 清单。
 - **[`wasabihu/corpus-clinical-trials`](https://github.com/wasabihu/corpus-clinical-trials)**：收录 NIH ClinicalTrials.gov v2 已公布结果干预试验表（`CC0-1.0`）与 Europe PMC 开放获取 JATS XML 临床试验三线表（`CC-BY-4.0`，完整保留真实作者、DOI/PMCID、许可 URI 与 XML→Markdown 转换声明），与 FDA DailyMed 药品说明书形成定量疗效与安全性互补。
 
+### 配套纯洁净开源模型（Clean-Room Open Models on Hugging Face）
+
+[![Hugging Face xerj-bilingual-fin-law-384](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-xerj--bilingual--fin--law--384-FFD21E?logoColor=black)](https://huggingface.co/wasabihu/xerj-bilingual-fin-law-384)
+[![Hugging Face VeriCorpus-Reranker-0.6B](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-VeriCorpus--Reranker--0.6B-FFD21E?logoColor=black)](https://huggingface.co/wasabihu/VeriCorpus-Reranker-0.6B)
+
+以下两款开源模型均基于 **100% 纯洁净许可语料**（`CC0-1.0` 中国法规、`SEC-Public-Filing`、NLM Public Domain / `CC-BY-4.0` 临床试验表，零 CNINFO/HKEX/私有数据混入，附 `CLEAN_ROOM_AUDIT.json` 与 `SHA256SUMS.txt`）训练并公开发布：
+
+- **[`wasabihu/xerj-bilingual-fin-law-384`](https://huggingface.co/wasabihu/xerj-bilingual-fin-law-384)**（`MIT`）：基于 `intfloat/multilingual-e5-small` 的 384 维中英双语金融/法规/临床句向量模型（同时提供 FP32/FP16 ONNX 与原生 XERJ Candle `safetensors`），在 `xerj v1.0.0-rc.105` 原生 `hybrid` 混合检索中达到 `92.00%` R@1 / `100.00%` R@5（阿拉伯数字法条 `100%`、繁体查询 `97.06%`）。
+- **[`wasabihu/VeriCorpus-Reranker-0.6B`](https://huggingface.co/wasabihu/VeriCorpus-Reranker-0.6B)**（`Apache-2.0`）：基于 `Qwen/Qwen3-Reranker-0.6B` 的双语金融/法规/临床口径校准重排器，240 组零泄漏净室盲测 `Top1 0.8625 → 1.0000`、`MRR 0.9188 → 1.0000`、`StrictCal 0.2083 → 0.9833`。
+
+### 签名示例语料包（Signed Public Sample Pack）
+
+- **[`examples/formd-sample-30d/`](./examples/formd-sample-30d/)**（`SEC-Public-Filing` + 分离式 `Ed25519` 签名）：收录连续 30 个自然日（`2026-10-06` 至 `2026-11-04`，21 个 SEC 申报日）内 **3,685 条**去重后的美国 SEC EDGAR 公开 Form D 首次申报记录（`3,577` 家唯一 CIK，仅实体级公开字段、零付费 API），每条附官方 `sec_edgar_url` 与原始 XML 的 `source_xml_sha256`，运行 `python3 examples/formd-sample-30d/verify_pack.py` 可离线单命令验签并校验完整性。
+
 ---
 
 ## 核心基础设施概览

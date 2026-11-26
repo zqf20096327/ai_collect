@@ -32,6 +32,7 @@ The graphical interface is available in English and Spanish (chosen in Settings)
 - **Package and diagnostics**: an installable package on the development machine and a `doctor` command to inspect the environment.
 - **Updater**: notify about releases and apply on exit, with consent and no active orders.
 - **Forge delivery**: prepare a branch, commit, and pull request after approval.
+- **Student mode** (turned on in Settings › Student mode): study a folder or a project with a topic route, step-by-step lessons that cite your files, practice, a lab, notes with spaced review, and a tutor. The placement exam is optional. Studies are saved in the folder's `.student/`. See the [user guide](docs/USER-GUIDE.md#student-mode).
 
 The piece-by-piece detail, with status and evidence, is in the [capability table](#evidence-and-status-of-each-piece) and the [user guide](docs/USER-GUIDE.md).
 

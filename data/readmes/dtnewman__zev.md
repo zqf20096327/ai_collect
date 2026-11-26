@@ -80,6 +80,7 @@ zev 'show uncommitted changes in git'
 - Google Gemini
 - Ollama
 - Azure OpenAI
+- Anthropic (Claude)
 
 You can update your API keys and provider settings by running:
 
@@ -94,6 +95,12 @@ To use OpenAI, you need an OpenAI account and a subscription. You can create an 
 ### Google Gemini (Free)
 
 To use Google's Gemini models, you need a Google AI Studio account. You can create a Gemini API key in [Google AI Studio](https://aistudio.google.com/).
+
+### Anthropic (Claude)
+
+To use Claude models, you need an Anthropic API key, which you can create in the [Claude Console](https://platform.claude.com/settings/keys).
+
+Run `zev --setup`, pick **Anthropic**, enter your API key, and choose a model.
 
 ## 🐪 Using with Ollama
 
@@ -115,7 +122,7 @@ To use Azure OpenAI, you’ll need access to an [Azure OpenAI](https://azure.mic
 
 1. Create a deployment of the model you want to use (e.g., `gpt-5.4`, `gpt-5.4-mini` etc.).
 
-1. Install required Azure depedencies with `pipx install zev[azure]`.
+1. If you'll use Entra ID (keyless) auth instead of an API key, install the Azure dependency with `pipx install zev[azure]`.
 
 1. Run `zev --setup` and put in the proper settings. For example:
 

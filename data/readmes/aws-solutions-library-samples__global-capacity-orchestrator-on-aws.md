@@ -349,9 +349,9 @@ GCO ships with the **GCO MCP server** — an [MCP server](gco_mcp/) exposing 155
     <th><a href="https://code.visualstudio.com/docs/copilot/chat/mcp-servers">VS Code</a></th>
   </tr>
   <tr>
-    <td><a href="https://kiro.dev/launch/mcp/add?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v9.2.0%22%2C%22gco-mcp%22%5D%7D"><img src="https://kiro.dev/images/add-to-kiro.svg" alt="Add to Kiro"></a></td>
-    <td><a href="https://cursor.com/en/install-mcp?name=gco&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLXB5dGhvbiIsIjMuMTQiLCItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL2F3cy1zb2x1dGlvbnMtbGlicmFyeS1zYW1wbGVzL2dsb2JhbC1jYXBhY2l0eS1vcmNoZXN0cmF0b3Itb24tYXdzLmdpdEB2OS4yLjAiLCJnY28tbWNwIl19"><img src="https://cursor.com/deeplink/mcp-install-light.svg" alt="Add to Cursor"></a></td>
-    <td><a href="https://insiders.vscode.dev/redirect/mcp/install?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v9.2.0%22%2C%22gco-mcp%22%5D%7D"><img src="https://img.shields.io/badge/Install_on-VS_Code-FF9900?style=flat-square" alt="Install on VS Code" height="28"></a></td>
+    <td><a href="https://kiro.dev/launch/mcp/add?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v9.3.0%22%2C%22gco-mcp%22%5D%7D"><img src="https://kiro.dev/images/add-to-kiro.svg" alt="Add to Kiro"></a></td>
+    <td><a href="https://cursor.com/en/install-mcp?name=gco&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLXB5dGhvbiIsIjMuMTQiLCItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL2F3cy1zb2x1dGlvbnMtbGlicmFyeS1zYW1wbGVzL2dsb2JhbC1jYXBhY2l0eS1vcmNoZXN0cmF0b3Itb24tYXdzLmdpdEB2OS4zLjAiLCJnY28tbWNwIl19"><img src="https://cursor.com/deeplink/mcp-install-light.svg" alt="Add to Cursor"></a></td>
+    <td><a href="https://insiders.vscode.dev/redirect/mcp/install?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v9.3.0%22%2C%22gco-mcp%22%5D%7D"><img src="https://img.shields.io/badge/Install_on-VS_Code-FF9900?style=flat-square" alt="Install on VS Code" height="28"></a></td>
   </tr>
 </table>
 <!-- END MCP INSTALL TABLE -->
@@ -762,7 +762,7 @@ exceptions require an [Architecture Decision Record](docs/adr/README.md).
 │   ├── models/                          # Data models for k8s clusters, health monitor, inference monitor and manifest processor
 │   ├── services/                        # K8s services (health/inference monitors, inference proxy, manifest/queue processors)
 │   └── stacks/                          # CDK stacks (global, API gateway, regional with its PCS and HyperPod constructs, regional API gateway, monitoring, analytics)
-│       └── constants.py                 # Pinned versions: EKS addons, Lambda runtime, Aurora engine
+│       └── constants.py                 # Pinned versions: EKS addons, Lambda runtime, Aurora and Valkey engines
 │
 ├── lambda/                              # Lambda functions
 │   ├── analytics-cleanup/               # Custom resource that deletes Studio user profiles + EFS access points on stack destroy

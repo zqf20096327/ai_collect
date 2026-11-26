@@ -15,6 +15,15 @@ Scrapling 风格的隐身网页爬虫库：**自适应选择器**、**TLS 指纹
 
 📖 **完整文档**（架构详解 / API 参考 / 逆向 Agent 手册）：[https://xiaomaozjj666.github.io/web-crawler/](https://xiaomaozjj666.github.io/web-crawler/)
 
+## 最快上手
+
+```bash
+pip install "stealth-web-crawler[all]"    # 核心 + TLS 隐身 + JS 渲染；源码安装见「安装与运行」
+python -m web_crawler.app.ui --open       # 本地控制台：http://127.0.0.1:8765
+```
+
+写代码时导入名是 `web_crawler`（发行名是 `stealth-web-crawler`）；抓取 / 解析 / Spider 三段示例见 [快速开始](#快速开始)，Docker 与 MCP 接入见 [安装与运行](#安装与运行)。
+
 ## 分层架构
 
 ```mermaid
@@ -43,13 +52,13 @@ flowchart TB
 
 ## 界面预览
 
-本地 Web UI（`python -m web_crawler.app.ui`，默认 http://127.0.0.1:8765）：网页采集（图片/JS/视频/文件下载、并发与断点续传）、JS 逆向 Agent、任务历史三个入口，SSE 实时推送进度与日志。
+本地 Web UI（`python -m web_crawler.app.ui`，默认 http://127.0.0.1:8765）：网页采集（图片/JS/视频/文件下载、并发与断点续传）、JS 逆向 Agent、任务历史三个入口，SSE 实时推送进度与日志。表单顶部提供「常用预设」（单页资源 / 整站镜像 / 正文转 Markdown / 视频资源清单），一键勾好一组选项后仍可微调；勾选「只生成清单，不下载文件」后，仅下载阶段生效的选项会置灰并标注「当前不生效」，但不会禁用控件、也不改变提交的字段。
 
 | 网页采集控制台 · 本地 Web UI |
 | :---: |
 | <img src="docs/screenshots/ui-console.png" alt="Web Crawler 控制台" width="820" /> |
 
-控制台顶部显示网页采集、验证码识别和 JS 逆向的运行状态。网页采集勾选「智能数据提取」或「正文提取」后，可在任务详情的「页面提取」查看内容，并从页面筛选其来源资源。每次任务保存自己的提取结果，复用输出目录后仍可查阅旧任务。磁盘上的正文按主机和页面路径保存到 `extracted_text/`，避免不同页面的同名文件互相覆盖。
+控制台顶部显示网页采集、验证码识别和 JS 逆向的运行状态。网页采集勾选「智能数据提取」「正文提取」或「正文 Markdown」后，可在任务详情的「页面提取」查看内容（未开启正文提取时，该面板展示 Markdown 原文），并从页面筛选其来源资源。每次任务保存自己的提取结果，复用输出目录后仍可查阅旧任务。磁盘上的正文按主机和页面路径保存到 `extracted_text/`，避免不同页面的同名文件互相覆盖；Markdown 保存到 `extracted_markdown/`。
 
 正文提取保留块级结构（段落/标题/列表项各占一行），并剥离 script/style/nav/footer 等页面骨架与连续重复行——直接可作为 LLM 或人工阅读的分析输入，不再是被压成一整行、混着导航噪音的字符串。可见文本几乎为空的 SSR 页面会自动回退到内嵌 JSON 状态块（`<script type="application/json">` 与 `window.__INITIAL_STATE__ = {...}` 两类形态，覆盖 Next.js / Nuxt / React Router / 字节系 `__MODERN_SERVER_DATA__`），2026-11 实测 docs.trae.ai/solo 与 /solo/skills 从 0 字恢复到 1.8–2.5 万字符。
 
@@ -83,7 +92,9 @@ python main.py https://example.com/ --output items.jsonl
 
 表单的「导出采集配置」保存目标、采集参数和字段规则，可用 `web-crawler --load-config crawl-config.json --out ./out` 运行。也可以把 CLI 的 `--save-config` 产物导入表单。控制台导出的配置省略请求头、本机输出目录和只适用于本机任务的选项。
 
-需要把页面里以 `<a>` 链接的数据文件（CSV / Excel / JSON / Parquet / SQLite）一并下载时，加 `--download-linked-data`（默认关闭，避免把普通链接误当下载任务）。下载后的原始文件可直接交给 data-analysis-agent 等分析工具，GB18030 导出的 CSV 也能被核验链路读取。
+需要把页面里以 `<a>` 链接的数据文件（CSV / Excel / JSON / Parquet / SQLite）一并下载时，加 `--download-linked-data`（默认关闭，避免把普通链接误当下载任务）。开启后这些数据文件只作为资源下载，不再进入页面队列被当作 HTML 解析。下载后的原始文件可直接交给 data-analysis-agent 等分析工具，GB18030 导出的 CSV 也能被核验链路读取。
+
+`--crawl-pages` 跟随同域页面链接时会校验响应类型：PDF / CSV / ZIP 等非文档响应（以及 `--download-linked-data` 命中的数据文件）不会落成页面、不会做正文/Markdown 抽取，也不会生成离线页；起始 URL 不受此限制。
 
 采集时勾选「离线重写 HTML」，或在 CLI 中使用 `--rewrite-html`。采集完成后，任务详情会显示离线页面数量和目录；可从输出目录里的 `run_report.html` 进入页面索引，也可直接打开 `offline_pages/index.html`。移动结果时保留整个输出目录，已下载的资源和页间链接使用相对路径。未下载的 HTTP(S) 资源仍指向原站。
 
@@ -351,10 +362,11 @@ playwright install chromium        # 仅 DynamicFetcher / StealthyFetcher 需要
 | `web-crawler-reverse` | JS 逆向 Agent 命令行 |
 | `web-crawler-startproject` | 爬虫项目脚手架（对标 `scrapy startproject`）：生成含示例 Spider 的可跑骨架 |
 | `web-crawler-shell` | 交互式调试 shell（对标 `scrapy shell`）：`fetch <url>` 后即时试 css/xpath/links |
+| `web-captcha` | 图片验证码识别 CLI（文本 OCR / 滑块定位 / 点选坐标） |
 
 ### 统一 CLI 输出与爬取反馈
 
-六个入口均提供互斥的 `-q/--quiet`、`-v/--verbose`、`--json`：
+七个入口均提供互斥的 `-q/--quiet`、`-v/--verbose`、`--json`：
 
 | 模式 | 行为 |
 | --- | --- |
@@ -366,6 +378,37 @@ playwright install chromium        # 仅 DynamicFetcher / StealthyFetcher 需要
 TTY 下爬取进度原地刷新。重定向、管道和 CI 环境使用节流日志。结束摘要包含成功扫描的页面数、`page_scan` 中的页面失败和跳过数，以及资源、耗时和输出目录。
 
 `status` 为 `success`（完成）、`partial`（存在页面或资源失败）、`skipped`（页面按规则跳过）、`cancelled`（取消）或 `error`（无法完成扫描）。采集退出码为 `0`（完成、部分完成或按规则跳过）、`1`（取消）、`2`（参数错误）或 `3`（页面全部失败）。`listed_only` 是旧版 `skipped` 计数中的仅列出资源数。
+
+`--max-pages` 只限页面数；大站的 CSS 内资源与播放列表展开没有天然上限，需要总量护栏时用 `--max-resources N`（0 = 不限）在进入下载前截断，并输出 warning。`run_report.json` 的 `top_pages` 每项还带该页的 `status_code`、`content_type`、`description` 与 `lang`（取不到时为 `null` / 空串），便于逐页核对抓到的到底是什么。
+
+### 增量重抓：`--cache` 条件请求缓存
+
+同一输出目录重复抓取时，`--cache`（默认关闭）把上次响应的 `ETag` / `Last-Modified`
+记进 `<输出目录>/.cache/validators.json`，下次抓同一 URL 自动带上
+`If-None-Match` / `If-Modified-Since`：
+
+```bash
+web-crawler --url https://example.com --out ./out --cache
+```
+
+- 上游回 `304 Not Modified`：不下载、不写盘，直接复用上次产物。资源清单里该行状态是
+  `ok (not modified)`，`saved_path` 指向复用的文件，`bytes` 是产物实际大小，`diagnostic`
+  说明这是 304 复用。保留 `ok` 前缀是为了兼容既有聚合语义（成功数、离线重写表都按
+  `ok*` 匹配）；`run_report.json` 的 `downloaded_bytes` 只统计本轮真正传输的字节。
+- 上游回 `2xx`：正常下载并刷新校验器。服务器不发 `ETag`/`Last-Modified` 的 URL 不会
+  发条件请求（没有可比对的校验器），按普通抓取处理。
+- 缓存永不导致任务失败：缓存文件损坏 / 旧版本格式 / 条目里的产物已被删除 / 304 回来时
+  产物恰好不见了，全部退回普通抓取，并重建条目。
+- 缓存只覆盖**资源下载**。页面 HTML 每轮仍会重新抓取（页面参与正文抽取与离线重写，
+  复用旧页面会掩盖站点改版）。
+- `--list-only` 不下载任何资源，因此不写缓存；`--resume-crawl` 的进度仍写在
+  `.crawl_state.json`，两者是不同文件，各写各的、互不覆盖。
+- 条目格式：`{"version": 1, "entries": {url: {etag, last_modified, saved_path,
+  content_type, bytes}}}`；`saved_path` 是相对输出目录的路径，整个目录搬走后仍可复用。
+
+**何时该清**：缓存只信上游的校验器，不判断本地产物是否被人改过。如果手工编辑/替换过
+输出目录里的文件，删掉 `.cache/validators.json`（或整个 `.cache/`）再抓——否则上游
+一回 304 就会把被改过的旧产物当成最新。换站点、换 `--out`、或怀疑站点误报 304 时同理。
 
 ```bash
 web-crawler --url https://example.com --out ./out --json
@@ -426,9 +469,71 @@ py -m web_crawler.app.ui --host 0.0.0.0 --port 8765 --allow-remote
 PYTHONPATH=src python -m web_crawler.app.ui --open
 ```
 
-> 本仓库不附带任何一键启动脚本。个人如需解锁内网/云元数据目标，可在
-> **自己的可信环境**里设置 `WEB_CRAWLER_POWER_MODE=1` 后运行
-> （见下方 [Power Mode](#-power-mode个人全解锁默认关闭) 章节）。
+> 仓库根目录的 `启动爬虫-满血版.cmd` 是个人可信环境用的启动器：它会设置
+> `WEB_CRAWLER_POWER_MODE=1`（解锁内网/云元数据目标），**不要**在有真实
+> 凭据的机器上随意运行。常规使用请按上面的 `web-crawler` / `crawler-ui` 启动。
+
+### 一次抓取 API：`/v1/scrape`
+
+启动 `crawler-ui` 后，控制面额外提供对标 Firecrawl `/v1/scrape` 的同步接口：
+**一次调用返回单个 URL 的全部产物**，不落盘、不下载子资源。它复用采集器
+同一套抓取（`fetch`：SSRF/协议/大小限制、重试退避）与提取（正文 Markdown、
+`<a href>` 链接、标题/描述/语言）实现，默认不新增任何内网访问能力。
+
+```bash
+# GET：查询串传 URL
+curl "http://127.0.0.1:8765/v1/scrape?url=https://example.com&include_html=1"
+
+# POST：JSON（include_html 默认 false，返回 HTML 可能很大）
+curl -X POST http://127.0.0.1:8765/v1/scrape \
+  -H "content-type: application/json" \
+  -d '{"url": "https://example.com", "include_html": false}'
+
+# POST：表单编码同样可用
+curl -X POST http://127.0.0.1:8765/v1/scrape -d "url=https://example.com"
+```
+
+返回（字段形状固定；未请求 HTML 时 `html` 为 `null`）：
+
+```json
+{
+  "url": "https://example.com/",
+  "status_code": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "title": "Example Domain",
+  "markdown": "# Example Domain\n\nThis domain is for use in ...",
+  "html": null,
+  "links": ["https://www.iana.org/domains/example"],
+  "metadata": {"description": "", "lang": "en"}
+}
+```
+
+| 字段 | 说明 |
+| --- | --- |
+| `url` | 去 fragment 后的请求 URL |
+| `status_code` | 上游响应状态码 |
+| `content_type` | 上游 `Content-Type` 原值 |
+| `title` / `markdown` | `<title>` 文本 / 正文容器渲染的 Markdown（与 `--extract-markdown` 同源） |
+| `html` | 解码后的完整 HTML；仅 `include_html=true` 时返回 |
+| `links` | 页面 `<a href>` 绝对化、去重后的链接（支持 `<base href>`，仅 http/https） |
+| `metadata` | `description`（`<meta name="description">`）与 `lang`（`<html lang>`） |
+
+失败返回结构化 JSON，不抛裸异常：
+
+| 状态码 | `error` | 场景 |
+| --- | --- | --- |
+| 400 | `missing_url` / `invalid_url` / `blocked_url` | URL 为空、非 http(s)、畸形，或指向私网/环回/链路本地（SSRF 门禁，与采集器同源） |
+| 415 | `not_html` | 上游明确返回非 HTML（如 `application/pdf`、`image/*`） |
+| 502 | `upstream_error` / `fetch_failed` | 上游 4xx/5xx（`upstream_status` 透出）或传输层失败 |
+
+```json
+{"error": "not_html", "message": "上游返回非 HTML 内容（application/pdf）", "url": "https://example.com/file.pdf", "content_type": "application/pdf"}
+```
+
+与既有控制面一致：Host 白名单（DNS rebinding 防护）对所有请求生效；GET/POST
+`/v1/scrape` 都校验同源 Origin/Referer（curl 与本地脚本不带这两个头，正常放行），
+防止恶意网页借本机服务发起跨站抓取。接口无鉴权，与其余 `crawler-ui` 路由一样
+只应绑定回环地址。
 
 ### Docker
 
@@ -552,6 +657,7 @@ src/web_crawler/          # 核心库
     db.py                 # SQLite 持久化（任务 + 结果，线程安全）
     ui.py                 # 本地 Web UI（SSE 实时推送）
     static/index.html     # UI 前端模板（运行时读取）
+    static/js/*.js        # 页面脚本（文件顺序即执行顺序，经 /static/js/*.js 路由提供）
   py.typed                # PEP 561 类型标记
 tests/                    # pytest 测试套件
 benchmarks.py             # 解析器/fetcher 微基准 + 回归检测
@@ -589,7 +695,7 @@ python benchmarks.py --check-regression   # 性能回归检查（CI 模式）
 
 GitHub Actions 在每次 push 时运行 lint、类型检查、带覆盖率的测试、基准回归检查与文档构建（`--strict`）；标记为 `@pytest.mark.slow` 的慢速测试（如 Camoufox 端到端套件）默认被排除。
 
-覆盖率徽章显示 master 最新实测覆盖率（当前约 96%）；两个 CI 门禁为 `--cov-fail-under`：标准 test job 装 dev 依赖、门禁 92，`test-extras` job 装全量可选依赖、门禁 97。历史实测数字见 [CHANGELOG](CHANGELOG.md)。
+覆盖率徽章显示 master 最新实测覆盖率（当前约 96%）；两个 CI 门禁为 `--cov-fail-under`：标准 test job 装 dev 依赖、门禁 92，`test-extras` job 装全量可选依赖、门禁 96。历史实测数字见 [CHANGELOG](CHANGELOG.md)。
 
 ## 合规说明
 

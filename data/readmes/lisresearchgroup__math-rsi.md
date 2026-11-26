@@ -8,9 +8,24 @@
 
 </div>
 
+MathRSI pairs a shared base workflow with domain plugins and a per-problem research wiki, guiding Claude Code and Codex from literature survey and route selection through proof development, review, verification, and handoff. Validated results and diagnosed failures feed back to refine both the workflow and plugins.
+
+[![Historical MathRSI v0 through v6 homepage evolution](figures/mathrsi/media/evolution.gif?v=6-q7-20261120)](figures/mathrsi/media/evolution.mp4?v=6-q7-20261120)
+
+*Historical v0 → v6 homepage replay; “Current” in the recording refers to v6 at that time. Click for MP4; [interactive homepage](https://lisresearchgroup.github.io/math-rsi/) · [six case studies and verification status](case-studies/README.md).*
+
+**43-bit code research replay**
+
+[![MathRSI workbench overview](figures/mathrsi/media/workbench-en.webp)](figures/mathrsi/media/workbench-en.mp4)
+
+*Explore the [interactive workbench](https://lisresearchgroup.github.io/math-rsi/workbench/index.html?lang=en#wb-demo) · [watch the English MP4](figures/mathrsi/media/workbench-en.mp4). Three research roles retrace the completed proof using its archived generator matrix and rejection witnesses.*
+
 <a id="news"></a>
 
 ## 📢 News
+
+[November 2026 mathematical results](https://lisresearchgroup.github.io/math-rsi/november-2026.html)
+
 
 - **[v8](https://github.com/lisresearchgroup/math-rsi/releases/tag/v8)** · 2026-11-23 — Download binary linear codes for 18 improved lower bounds. On the upper-bound side, 32 new deductions settle nine optimal distances. Two further entries await final acceptance in the source project.
 - **[v7](https://github.com/lisresearchgroup/math-rsi/releases/tag/v7)** · 2026-11-22 — The working proof now extends every matching in the seven-dimensional cube to a Hamilton cycle. The Happy Ending manuscripts give ES(8) ≤ 294, ES(9) ≤ 1,100 and ES(10) ≤ 3,980.
@@ -27,41 +42,24 @@
 
 </details>
 
-[![Historical MathRSI v0 through v6 homepage evolution](figures/mathrsi/media/evolution.gif?v=6-q7-20261120)](figures/mathrsi/media/evolution.mp4?v=6-q7-20261120)
-
-*Historical v0 → v6 homepage replay; “Current” in the recording refers to v6 at that time. Click for MP4; [interactive homepage](https://lisresearchgroup.github.io/math-rsi/) · [six case studies and verification status](case-studies/README.md).*
-
-MathRSI pairs a shared base workflow with domain plugins and a per-problem research wiki, guiding Claude Code and Codex from literature survey and route selection through proof development, review, verification, and handoff. Validated results and diagnosed failures feed back to refine both the workflow and plugins.
 
 <a id="quick-start"></a>
 
 ## 1. 🚀 Quick Start
 
-After completing [setup](docs/QUICKSTART.md), open this repository in **Claude Code** or **Codex** with access to your task directory. In Codex, replace `/skill` with `$skill`. Replace the example paths below with your own.
+**Launch the mathematics workbench.** With Git, Python 3.10+, [pipx](https://pipx.pypa.io/stable/installation/) and a signed-in agent CLI, run this in your terminal:
 
-**Start from a mathematical problem**
-
-```text
-/mathrsi-research Study edge-count lower bounds for k-uniform hypergraph two-coloring; work in ../my-problem/
+```sh
+git clone --depth 1 https://github.com/lisresearchgroup/math-rsi.git
+pipx install "git+https://github.com/wanshuiyin/SuperARIS.git"
+mathrsi
 ```
 
-Connects literature research, route exploration, proof work, verification and handoff, reusing the task wiki throughout. If you already have a problem statement, you can pass `../my-problem/problem.md` instead.
+Choose your problem directory in the wizard. For the MathRSI repository, select the `math-rsi` folder you cloned, then choose your team and models. Next time, just run `mathrsi`.
 
-**Check a candidate proof or local lemma**
+**Use Claude Code or Codex directly.** Open the cloned `math-rsi` folder in your client and grant it access to your problem directory. In Claude Code, enter `/mathrsi-research Study the problem in ../my-problem/problem.md`. In Codex, use `$mathrsi-research` with the same request.
 
-```text
-/mathrsi-verify Check ../my-problem/proof.tex
-```
-
-Checks the proof or a specific obligation, repairs local omissions and identifies substantive mathematical gaps that need further proof work.
-
-**Resume an existing study** (Codex example)
-
-```text
-$mathrsi-research Continue the study in ../my-problem/
-```
-
-Reads the task's existing specification, wiki and resumption notes, then continues from the current evidence. In Claude Code, use `/mathrsi-research`.
+**Add an independent reviewer (optional).** For example, Claude Code can ask Codex to review a proof via MCP. [Connect a reviewer](docs/REVIEWER_MCP.md) · [Setup, proof checks and resuming a study](docs/QUICKSTART.md)
 
 <a id="six-mathematical-frontiers"></a>
 
@@ -145,3 +143,9 @@ Ruofeng&nbsp;Yang<sup>&#42;</sup>, Haitong&nbsp;Ma<sup>&#42;</sup>, Kaitao&nbsp;
 Listed alphabetically by surname.
 
 Haitham&nbsp;Bou&nbsp;Ammar, Dimitris&nbsp;Tsaras, Rasul&nbsp;Tutunov, Jun&nbsp;Wang, Kuan&nbsp;Yang, Qiaosheng&nbsp;Zhang, Zhinuo&nbsp;Zhou
+
+<a id="acknowledgements"></a>
+
+### 🙏 Acknowledgements
+
+Thank you to [@mizopl](https://github.com/mizopl) and the we\* project (PROOFER) for contributing ten square-free graphs of the 8-cube, an independent checker for Case 5A, and Lean 4 counting lemmas. [Explore the contribution](plugins/hypercube-extremal/tools/q8-forcing/README.md) · [Issue #60](https://github.com/lisresearchgroup/math-rsi/issues/60)

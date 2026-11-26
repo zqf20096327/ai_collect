@@ -1,8 +1,6 @@
 # Rainman Translate Book
 
-English | [中文](README.zh-CN.md) | [日本語](README.ja.md)
-
-Project page: [translate.dyu.sh/en](https://translate.dyu.sh/en/) (a one-page guide)
+[![English (current language)](https://img.shields.io/badge/English-e9c13f)](#rainman-translate-book) [![Read in Chinese (中文)](https://img.shields.io/badge/%E4%B8%AD%E6%96%87-1f6b52)](README.zh-CN.md) [![Read in Japanese (日本語)](https://img.shields.io/badge/%E6%97%A5%E6%9C%AC%E8%AA%9E-1f6b52)](README.ja.md) [![Project page: translate.dyu.sh/en, a one-page guide](https://img.shields.io/badge/Project_page-translate.dyu.sh%2Fen_%C2%B7_a_one--page_guide-e9c13f?labelColor=1f6b52)](https://translate.dyu.sh/en/)
 
 An Agent Skill for Claude Code, Codex, Cursor, OpenClaw and other Agent Skills–compatible agents that translates entire books (PDF/DOCX/EPUB) into any language using parallel subagents.
 
@@ -21,7 +19,7 @@ Input (PDF/DOCX/EPUB)
   │
   ▼
 Calibre ebook-convert → HTMLZ → HTML → Markdown
-  (or Markdown input, e.g. from MinerU / Marker, skipping Calibre)
+  (or Markdown from a layout-aware PDF parser, skipping Calibre)
   │
   ▼
 Split into chunks (chunk0001.md, chunk0002.md, ...)
@@ -47,8 +45,8 @@ Each chunk gets its own independent subagent with a fresh context window. This p
 - **Manifest validation** — SHA-256 hash tracking prevents stale or corrupt outputs from being merged
 - **Multi-format output** — HTML (with floating TOC), DOCX, EPUB, PDF
 - **Optional output controls** — explicit EPUB cover, custom temp root, and user-facing export aliases
-- **Multi-language** — zh, en, ja, ko, fr, de, es (extensible)
-- **PDF/DOCX/EPUB/Markdown input** — Calibre handles the conversion heavy lifting; formula- and table-heavy PDFs can be pre-extracted to Markdown with MinerU or Marker
+- **Multi-language** — any language code, e.g. zh, en, ja, ko, fr, de, es, it (Italian), or one with a region such as zh-TW or pt-BR
+- **PDF/DOCX/EPUB/Markdown input** — Calibre handles the conversion heavy lifting; formula- and table-heavy PDFs can be pre-extracted to Markdown with a layout-aware parser (see [Step 1](#step-1-convert))
 
 ## Prerequisites
 
@@ -58,7 +56,7 @@ Each chunk gets its own independent subagent with a fresh context window. This p
 - **Python 3** with:
   - `pypandoc` — optional (`pip install pypandoc`); without it the `pandoc` binary is called directly
   - `beautifulsoup4` — optional, for better TOC generation (`pip install beautifulsoup4`)
-- **MinerU or Marker** — optional, only to pre-extract formula- and table-heavy PDFs to Markdown (see [Step 1](#step-1-convert))
+- **A layout-aware PDF parser** — optional, only to pre-extract formula- and table-heavy PDFs to Markdown; supported parsers are listed in [Step 1](#step-1-convert)
 
 ## Quick Start
 
@@ -255,13 +253,25 @@ By default the working directory is `{book_name}_temp/` under the current direct
 Calibre reflows PDF text by coordinate heuristics. That works for plain prose, but academic and technical PDFs lose their structure: formulas break into fragments, tables flatten into one cell per line, and multi-column pages interleave. For those PDFs, extract them with a layout-aware parser first and give `convert.py` the Markdown it writes. `.md` / `.markdown` input skips Calibre entirely:
 
 ```bash
-pip install -U "mineru>=4.0,<5"                # or: pip install marker-pdf
-mineru-kit parse paper.pdf -o paper.md         # MinerU >= 4 (CPU-only basic tier: ~0.8 GB of models)
-# marker_single paper.pdf --output_dir out/    # Marker: writes out/paper/paper.md
+mineru-kit parse paper.pdf -o paper.md          # or any parser from the table below
 python3 scripts/convert.py paper.md --olang zh
 ```
 
-The parsers keep formulas as `$...$` / `$$...$$` LaTeX and tables as tables. `convert.py` copies images referenced next to the Markdown file, and decodes the base64 images MinerU inlines, into `{book_name}_temp/images/`, so chunks never carry image payloads. Display-math blocks (`$$ ... $$`) are never split across chunks. YAML front matter (`title`, `author`, `lang`) fills `config.txt` and is not sent for translation; without it, a leading `#` heading becomes `original_title`. The temp dir is named after the Markdown file, so `paper.md` maps to `paper_temp/`. If that dir was built from `paper.pdf`, `convert.py` aborts on the source-fingerprint mismatch, so delete it first. Both parsers download ML models on first run. `--strip-page-numbers` and `--detect-page-numbers` only apply to Calibre input.
+Any parser works if its Markdown follows these conventions:
+
+- **Formulas** as `$...$` / `$$...$$` LaTeX. Display-math blocks are never split across chunks.
+- **Tables** as Markdown pipe tables or HTML `<table>`.
+- **Images** as files in the Markdown file's directory or its subdirectories, or inlined as base64 data URIs. `convert.py` copies or decodes them into `{book_name}_temp/images/`, so chunks never carry image payloads. An image whose path leads outside that directory (through `..`, an absolute path, or a symlink) is not copied: `convert.py` warns and leaves the reference as it is.
+
+| Parser | Install | Extract | Markdown file | Notes |
+|---|---|---|---|---|
+| [MinerU](https://github.com/opendatalab/MinerU) >= 4 | `pip install -U "mineru>=4.0,<5"` | `mineru-kit parse paper.pdf -o paper.md` | `paper.md` | CPU-only basic tier: ~0.8 GB of models |
+| [Marker](https://github.com/datalab-to/marker) | `pip install marker-pdf` | `marker_single paper.pdf --output_dir out/` | `out/paper/paper.md` | |
+| [docling](https://github.com/docling-project/docling) | `pip install docling` | `docling paper.pdf --enrich-formula --output out/` | `out/paper.md` | Without `--enrich-formula`, every formula becomes `<!-- formula-not-decoded -->`. Only display formulas are recognized; inline math stays plain text |
+
+All of them download ML models on first run, their CLIs change between versions (check `--help` if a flag is rejected), and their licenses differ. If the Markdown still contains a parser's placeholder for a dropped formula or image (`<!-- formula-not-decoded -->`, `<!-- image -->`), `convert.py` warns: re-extract with the flag the warning names before translating. For documents with inline math, use MinerU or Marker: docling keeps display formulas only, and `convert.py` warns when it finds several display formulas but no inline math.
+
+YAML front matter (`title`, `author`, `lang`) fills `config.txt` and is not sent for translation; without it, a leading `#` heading becomes `original_title`. The temp dir is named after the Markdown file, so `paper.md` maps to `paper_temp/`. If that dir was built from `paper.pdf`, `convert.py` aborts on the source-fingerprint mismatch, so delete it first. `--strip-page-numbers` and `--detect-page-numbers` only apply to Calibre input.
 
 At build time Pandoc renders `$...$` / `$$...$$` as MathML, so formulas are typeset in `book.html` and `book.pdf`, and in `book.epub` on readers that support MathML. Calibre's DOCX output cannot typeset MathML: formulas appear there as flattened text followed by their TeX source.
 
@@ -358,7 +368,10 @@ Intermediate files stay in the temp dir after the build, so a few bad passages c
 | `Calibre ebook-convert not found` | Install Calibre and ensure `ebook-convert` is in PATH |
 | `Manifest validation failed` | Source chunks changed since splitting — re-run `convert.py` |
 | `was created from different source bytes` | The temp dir belongs to a different source file — delete the temp dir or use a fresh `--temp-root` |
-| PDF formulas/tables garbled after conversion | Extract the PDF with MinerU or Marker, delete the old temp dir, and run `convert.py` on the `.md` (see [Step 1](#step-1-convert)) |
+| PDF formulas/tables garbled after conversion | Extract the PDF with a parser from the table in [Step 1](#step-1-convert), delete the old temp dir, and run `convert.py` on the `.md` |
+| `formula(s) were not decoded` / `image(s) were exported as placeholders` | The parser dropped that content — re-extract with the flag the warning names, delete the temp dir, and run `convert.py` again |
+| `display formula(s) but no inline math` | The parser turned inline math into plain text (docling's standard pipeline does) — re-extract with MinerU or Marker, delete the temp dir, and run `convert.py` again. If the document has no inline math, ignore it |
+| `pandoc left N formula(s) as raw TeX` | pandoc could not parse that LaTeX, so the formula shows as `$$...$$` text — fix it in the `output_chunk*.md` holding the snippet the warning prints, then run `merge_and_build.py` again |
 | `Blank output` / `Empty output` | A subagent wrote a whitespace-only or empty chunk — re-run the skill to re-translate it |
 | `Missing source chunk` | Source file deleted — re-run `convert.py` to regenerate |
 | Incomplete translation | Re-run the skill — it resumes from where it stopped |
@@ -371,7 +384,7 @@ Intermediate files stay in the temp dir after the build, so a few bad passages c
 
 ## Roadmap
 
-Tracking [issue #7](https://github.com/deusyu/translate-book/issues/7) — name/term inconsistency and pronoun/gender errors across chunks. The pipeline now covers high-frequency entities, alias/spelling drift, adjacent-chunk pronoun context, and selective re-translation after glossary changes. Full-book organic validation remains a future quality pass. The plan is four independently shippable phases.
+[Issue #7](https://github.com/deusyu/translate-book/issues/7) — name/term inconsistency and pronoun/gender errors across chunks — was closed in June 2026, and Phases 1–3 have shipped. The pipeline now covers high-frequency entities, alias/spelling drift, adjacent-chunk pronoun context, and selective re-translation after glossary changes. Full-book organic validation remains a future quality pass. The plan is four independently shippable phases.
 
 ### Design principles
 
@@ -406,6 +419,10 @@ Recent PR discussions also surfaced several useful workflow improvements, but th
 - **Configurable temp workspace location (shipped).** `convert.py --temp-root <dir>` keeps the default cwd-local `{book_name}_temp/` behavior unless explicitly overridden. (context: closed #4)
 - **Safer Calibre/Pandoc artifact cleanup (partly shipped).** Page-number and Calibre-marker cleanup is regression-tested, preserving years, chapter numbers, and non-monotonic standalone numbers. Continue improving cleanup incrementally under tests. (context: closed #5)
 - **Optional user-facing export names (shipped).** `merge_and_build.py --export-name <stem>` creates alias copies while preserving canonical pipeline artifacts as `book.html`, `book_doc.html`, `book.docx`, `book.epub`, and `book.pdf`. (context: closed #6)
+
+### Next — Text inside figures (issue #66)
+
+[PR #68](https://github.com/deusyu/translate-book/pull/68), the first part of [issue #66](https://github.com/deusyu/translate-book/issues/66), added `scripts/figure_text.py`: it lists the images awaiting recognition, validates the recognition sidecars, and injects their text into the chunks so it is translated with the body. SKILL.md does not call it yet.
 
 ## Star History
 

@@ -108,7 +108,7 @@ No submissions yet. Be the first to share a model you trained and ran locally.
 
 ## Qwen Local Hackathon 2026
 
-A free online build week organized by **Qwen Pakistan**, 23 to 29 November 2026. Kickoff: Monday 23 November on Google Meet. Fine-tune a small Qwen model, quantize it and run it locally.
+A free online build week organized by **Qwen Pakistan**, 23 to 29 November 2026. Kickoff: Monday 23 November on Microsoft Teams. Fine-tune, quantize, or run a small Qwen model locally. Any one counts.
 
 **Submit by Saturday 28 November, 23:59 PKT (18:59 UTC).** Results: Sunday 29 November. [Rules, judging and submission steps](showcase/qwen-local-hackathon-2026/).
 

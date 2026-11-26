@@ -159,9 +159,12 @@ await supabase.from("messages").insert({
 });
 ```
 
-That's it. Media, templates, locations and the full message schema are covered
-in [MIGRATING_FROM_TWILIO.md](MIGRATING_FROM_TWILIO.md); third-party onboarding
-and credential capture in [INTEGRATING.md](INTEGRATING.md).
+That's it. For a runnable, read-only Supabase JS example with error handling,
+see [examples/](examples/README.md).
+
+Media, templates, locations and the full message schema are covered in
+[MIGRATING_FROM_TWILIO.md](MIGRATING_FROM_TWILIO.md); third-party onboarding and
+credential capture in [INTEGRATING.md](INTEGRATING.md).
 
 ## User interface
 
@@ -195,11 +198,12 @@ on its own — and reaches the whole API through its `query` tool.
 claude plugin install openbsp --marketplace matiasbattocchia/open-bsp-api
 ```
 
-Then, in Claude Code, `/openbsp:setup` walks you through menus in the terminal:
-Google or GitHub sign-in (a first one creates your account), creating or joining
-an organization, connecting accounts, whether Claude may send (read only, ask
-first, allow) and how often it checks. No visit to the web app is needed. See
-[`plugin/README.md`](plugin/README.md) for full documentation.
+The install asks whether Claude may send and change things (read only, ask
+first, allow; later in `/config`). Then Claude offers to set OpenBSP up, and
+asks you, one question at a time in the terminal, about Google or GitHub sign-in
+(a first one creates your account), creating or joining an organization,
+connecting accounts and how often it checks. No visit to the web app is needed.
+See [`plugin/README.md`](plugin/README.md) for full documentation.
 
 ## Description
 
@@ -249,8 +253,12 @@ Interpret and extract information from media and document files, including:
 ### MCP server
 
 The `mcp` Edge Function exposes an [MCP](https://modelcontextprotocol.io) server
-over Streamable HTTP, giving agentic access to the WhatsApp API from clients
-like Claude Code, Claude Desktop, ChatGPT, or other agent platforms.
+over Streamable HTTP: Claude, ChatGPT, Cursor or any other MCP client reads and
+answers your WhatsApp, Instagram, TikTok and Slack messages, and reaches the
+whole OpenBSP API. It reads messages the way the
+[Claude Code plugin](#claude-code-plugin) does; the plugin adds what a local
+server can, such as setup questions in Claude Code's own menus and a permission
+mode.
 
 For the hosted version at [web.openbsp.dev](https://web.openbsp.dev), the MCP
 server URL is:
@@ -261,10 +269,12 @@ https://nheelwshzbgenpavwhcy.supabase.co/functions/v1/mcp
 
 Two authentication methods:
 
-- **OAuth (humans, recommended)** — just add the server URL; the MCP client
+- **OAuth (people, recommended)** — just add the server URL; the MCP client
   discovers Supabase Auth's OAuth 2.1 server (dynamic client registration),
-  opens the browser, and you sign in with your OpenBSP account and approve on
-  the consent page. Access is scoped to your user via RLS.
+  opens the browser, and you sign in with Google or GitHub and approve on the
+  consent page. A first sign-in creates your account; then ask Claude to create
+  your organization (or join one you were invited to) and connect an account.
+  Access is scoped to your user via RLS.
 - **API key (servers and bots)** — send an `api-key: <API_KEY>` header
   (`Authorization: Bearer <API_KEY>` also works). Get it from OpenBSP > Settings
   > API Keys. Optionally, `Allowed-Contacts` and `Allowed-Accounts` headers
@@ -295,6 +305,30 @@ OAuth kicks in automatically. For headless clients, use an API key instead
 
 Available tools:
 
+| Tool               | Description                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| `status`           | What is set up: the organization, its accounts on every service and their state          |
+| `organizations`    | Your organizations and the invitations waiting for you (OAuth only)                      |
+| `set_organization` | Work in one of them, create one, or join one you were invited to (OAuth only)            |
+| `connect`          | A link that connects WhatsApp Business, Instagram or TikTok; a WhatsApp Web pairing code |
+| `inbox`            | What arrived since the last check, every service; opens one conversation                 |
+| `reply`            | Sends a text in a conversation, on its service                                           |
+| `query`            | Reads anything in the API (PostgREST, Edge Functions)                                    |
+| `change`           | Creates, updates or deletes through the API                                              |
+| `api_reference`    | Tables, PostgREST syntax and endpoints, for `query` and `change`                         |
+
+The inbox shows every one-to-one conversation in full, and each group or channel
+where people wrote as one line — how many messages, who wrote — that Claude
+opens when you want it. With OAuth it picks up where your last check left off,
+and the organization you chose stays chosen across chats: both are kept on your
+membership. An API key keeps no place: pass `since`, which each result gives.
+
+Each tool says whether it only reads (MCP annotations), so a client can let
+reads through and ask before each reply or change. Times are in UTC.
+
+API keys also get the WhatsApp tools keyed by phone number, which AI agents
+configured in the app use:
+
 | Tool                 | Description                                                   |
 | -------------------- | ------------------------------------------------------------- |
 | `list_accounts`      | List connected WhatsApp accounts                              |
@@ -304,6 +338,10 @@ Available tools:
 | `send_message`       | Send a text or template message (enforces 24h service window) |
 | `list_templates`     | List available WhatsApp templates                             |
 | `fetch_template`     | Fetch details of a specific template                          |
+
+A key narrowed by `Allowed-Contacts` or `Allowed-Accounts` sees only those in
+`inbox` and `reply`, and gets no `query`, `change` or `api_reference`: no rule
+could keep a raw API call to them.
 
 ## Hosted version
 
@@ -791,6 +829,7 @@ Configure the Instagram app
    - **Instagram**
      - `instagram_business_basic`
      - `instagram_business_manage_messages`
+     - `instagram_business_manage_comments`
 3. App review > Requests > Click **Next**
 
 ### Allowed usage
@@ -857,11 +896,26 @@ https://github.com/user-attachments/assets/d86cf719-250d-4e3d-8c15-873daa6707d6
 
 </details>
 
+<details>
+<summary>
+instagram_business_manage_comments
+</summary>
+
+#### Description
+
+We request this permission to show the comments on a business's posts and reels
+in its inbox, and to answer them: in public, under the comment, or in private,
+with a direct message to the person who commented.
+
+</details>
+
 ## TikTok integration
 
 OpenBSP connects TikTok Business Accounts through TikTok's Business Messaging
 API, part of TikTok API for Business: customers' direct messages arrive in the
-inbox, and the team or an AI agent answers them.
+inbox, and the team or an AI agent answers them. Comments on the account's posts
+arrive too, in the commenter's conversation, and the team answers them in
+public, under the comment; AI agents leave comments alone.
 
 > [!IMPORTANT]
 > TikTok reviews the Business Messaging API separately from the app itself. Only
@@ -888,24 +942,31 @@ Configure the TikTok app
    `{PUBLIC_URL}/oauth/tiktok`. It is the only one: the in-app connect and the
    onboarding links both come back to it.
 4. Apply for the **Business Messaging API** product and, once approved, enable
-   the **TikTok Accounts** scope
+   the **TikTok Accounts** scope, Business Comment included (comments come
+   through it)
 5. Copy the scopes in the portal's **TikTok account holder authorization URL**
    into `SCOPES` in `supabase/functions/_shared/tiktok.ts`
 
-### Configure the webhook
+### The webhooks
 
-TikTok has one webhook per app, not per account. Point it at this deployment
-once the secrets are deployed:
+TikTok has two webhooks per app, not per account: one for direct messages, one
+for comments. They need no setup: the first account connected points them at
+this deployment, and the TikTok cron (every 4 hours, wherever accounts are
+connected) points any that points nowhere, such as one a new version adds.
+
+One that already points somewhere is left alone, so point them by hand to move
+them, when the functions sit behind another host, or when `SUPABASE_URL` is not
+a public `https` address (a self-hosted Supabase):
 
 ```bash
 curl -X POST 'https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1/tiktok-management/webhook' \
   -H 'Authorization: Bearer {SUPABASE_SERVICE_ROLE_KEY}'
 ```
 
-Pass `{"callback_url": "…"}` in the body when the functions sit behind another
-host. A `GET` to the same URL shows where it points. As there is one per app, a
+Pass `{"callback_url": "…"}` in the body to point them at another host. A `GET`
+to the same URL shows where they point. As there is one of each per app, a
 second environment (say, a staging project) needs a TikTok app of its own to
-receive messages.
+receive messages and comments.
 
 </details>
 

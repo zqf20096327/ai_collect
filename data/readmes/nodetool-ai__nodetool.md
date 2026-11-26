@@ -8,15 +8,14 @@
 
 English · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md)
 
-**Open-source AI film studio · agent + node workflows**
+**Films · agent · node workflows**
 
-**Direct AI films, shot by shot.** Start with one sentence. The agent writes
-the story, draws a still for every shot, and cuts the clips on a timeline.
-Approve each still before you pay for its clip, reshoot any shot on its own,
-and save what works as a workflow you can run again.
+**The open-source AI studio you actually control.** Storyboard, generate, and
+cut video on a live timeline backed by editable node graphs. Run local models
+or your own API keys at list price.
 
 **[Download NodeTool Studio](https://github.com/nodetool-ai/nodetool/releases/latest)** ·
-**[Try it in your browser](https://app.nodetool.ai)** (alpha) ·
+**[Try in your browser](https://app.nodetool.ai)** (alpha) ·
 **[Quick start](#first-run-in-studio)** ·
 **[Documentation](https://docs.nodetool.ai/)** · **[MCP setup](#mcp)** ·
 **[Contribute](#contributing)**
@@ -290,6 +289,7 @@ Everything the film surfaces do is reachable on the canvas without the film.
 - **[Sketch Editor](https://docs.nodetool.ai/sketch-editor)** — Draw, mask, and generate on a layered canvas
 - **[3D Editor](https://docs.nodetool.ai/3d-editor)** — Place objects, lights, and cameras in a glTF scene
 - **[Game Editor](https://docs.nodetool.ai/game-editor)** — Build, play, and export 2D and 3D games
+- **[Document Editor](https://docs.nodetool.ai/document-editor)** — Write Markdown briefs with embedded shots, assistant edits, and snapshots
 - **[Node Packs](https://docs.nodetool.ai/packs)** — Available nodes and integrations
 - **[Custom Nodes](https://docs.nodetool.ai/developer/custom-nodes-guide)** — Extend NodeTool
 - **[Provider Guides](https://docs.nodetool.ai/developer/providers/)** — Add new models and nodes for any provider
@@ -401,7 +401,7 @@ desktop app.
 In a separate terminal, launch the desktop shell with `npm run electron`.
 The Node.js version is pinned in [`.nvmrc`](.nvmrc). Python 3.11 or newer is
 optional, for Python nodes. See
-[Python nodes without the desktop app](docs/installation.md#python-nodes-without-the-desktop-app). For locked-down environments or missing WebGPU, see
+[Python nodes without the desktop app](docs/advanced-install.md#python-nodes-without-the-desktop-app). For locked-down environments or missing WebGPU, see
 [development environment](docs/dev-environment.md).
 
 ## Testing

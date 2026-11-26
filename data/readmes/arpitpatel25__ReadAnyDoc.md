@@ -29,7 +29,7 @@ word is marked low confidence instead of pretending. A faded 1904 invoice is in 
 
 ## Results
 
-ReadAnyDoc against Reducto on public benchmarks (olmOCR-bench with 0.4.7, the others with 0.4.5), same documents and same requests, every score from the
+ReadAnyDoc against Reducto on public benchmarks (olmOCR-bench with 0.4.7, OmniDocBench with 0.4.8, the others with 0.4.5), same documents and same requests, every score from the
 benchmark's own grader or from code (no AI judge). Details, per-document scores and caveats:
 [BENCHMARKS.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/BENCHMARKS.md).
 
@@ -38,7 +38,7 @@ benchmark's own grader or from code (no AI judge). Details, per-document scores 
 | Benchmark | Reducto | ReadAnyDoc |
 |---|---|---|
 | olmOCR-bench, overall (1,403 pages) | 80.9 | **85.4** |
-| OmniDocBench, text error, lower is better (1,651 pages) | 0.095 | **0.073** |
+| OmniDocBench, text error, lower is better (1,651 pages) | 0.095 | **0.050** |
 | OmniDocBench, layout: block types right | **84.6%** | 79.0% |
 | RD-TableBench (1,000 tables) | 88.85 | 88.84 |
 | FUNSD, form question/answer pairs (199 forms) | **78.6** | 77.4 |
@@ -55,7 +55,7 @@ benchmark's own grader or from code (no AI judge). Details, per-document scores 
 | Invoices: photos, scans, handwriting (20) | 99.8%, $0.027 | 99.8%, $0.0045 |
 | Commercial contracts (CUAD, 10) | not run | 86.5%, $0.026 |
 
-Where Reducto is ahead: page layout (about 6 points), formulas, header and footer removal, precision on 10-Q
+Where Reducto is ahead: page layout (about 1 point), formulas, header and footer removal, precision on 10-Q
 filings (ReadAnyDoc writes more values than the answer key holds), and speed (seconds a page against 20-50 s here).
 
 ## Install
@@ -218,7 +218,8 @@ independent evidence. Design decisions and their reasons: [docs/decisions.md](ht
 - About 1.5-3% of pages in large public benchmarks are declined by the model provider (content filtering). Those
   pages fall back to plain OCR text at `low` confidence, or to a second model if you set
   `READANYDOC_REFUSAL_READER`; the response says so in `warnings`.
-- Confidence values are tiers from how a value was found on the page, not calibrated probabilities.
+- Confidence is a tier from how a value was found on the page; for extracted values the score is measured on
+  benchmarks (10-Qs: values marked high 94% right, low 79%), not a guarantee for other document kinds.
 
 ## Documentation
 

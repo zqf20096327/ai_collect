@@ -19,314 +19,71 @@
 </p>
 
 <p align="center">
-  <strong>🌐 Website:</strong> <a href="https://visterainer.github.io/aidea-zotero/en/">https://visterainer.github.io/aidea-zotero/en/</a>
+  <a href="https://visterainer.github.io/aidea-zotero/">Project website</a> · <a href="https://visterainer.github.io/aidea-zotero/guide/">User guide</a> · <a href="https://github.com/Visterainer/aidea-zotero/releases/latest">Download</a>
+</p>
+
+**AIdea is a free, open-source reading assistant for Zotero 7–10.** Ask about a passage in a PDF or EPUB, follow a citation back to the source, and keep the explanation in a note attached to the paper.
+
+## Read PDFs and EPUBs
+
+In [Attention Is All You Need](https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1) by Vaswani et al., ask “Why does section 3.2.1 divide the dot products by √dₖ?” Figure 2 and equation (1) show where the scaling takes place, and the text explains how it helps avoid very small softmax gradients. When an answer includes a location, its citation opens the PDF page or EPUB chapter. Add a second paper with `@` to compare methods or findings in the same conversation.
+
+Shortcuts can summarize key points, methods, or limitations. Attach a screenshot to ask about a figure. Answers support Markdown, tables, code, and LaTeX math, and can be saved as Zotero notes.
+
+<p align="center">
+  <a href="site/public/media/reader/chat-en-US.jpg"><img src="site/public/media/reader/chat-en-US.jpg" alt="Figure 2 and equation (1) alongside a question about scaling. The chat and selection screenshots use local demo responses in Simplified Chinese." width="1400" /></a>
+  <br/><em>Figure 2 and equation (1) alongside a question about scaling. The chat and selection screenshots use local demo responses in Simplified Chinese.</em>
+</p>
+
+## Translate and annotate passages
+
+Select a term or paragraph in a PDF or EPUB to read its translation alongside the source. Save the translation to a note, or keep it as the comment on a new highlight. Reopen the highlight to read it later.
+
+<p align="center">
+  <a href="site/public/media/reader/selection-en-US.jpg"><img src="site/public/media/reader/selection-en-US.jpg" alt="The English term “Scaled Dot-Product Attention” is translated as “缩放点积注意力”. The popup can save it to a note or a highlight." width="1400" /></a>
+  <br/><em>The English term “Scaled Dot-Product Attention” is translated as “缩放点积注意力”. The popup can save it to a note or a highlight.</em>
+</p>
+
+## Translate one PDF or a batch
+
+Export a **translated-only PDF** or a **bilingual PDF** as a Zotero attachment or a file in a folder. The PDF workflow corrects scan orientation before OCR and improves how translated table text fits and numeric values copy.
+
+Review multiple papers before starting a batch. By default the queue fills missing formats and destinations, preserving existing annotated translations. It can resume after a Zotero restart. If a translation was generated but filing failed, retrying delivery reuses the finished file.
+
+<p align="center">
+  <a href="site/public/media/reader/translation-en-US.jpg"><img src="site/public/media/reader/translation-en-US.jpg" alt="The NeurIPS and arXiv versions of the same paper in the batch list." width="1400" /></a>
+  <br/><em>The NeurIPS and arXiv versions of the same paper in the batch list.</em>
 </p>
 
 <p align="center">
-  <strong>A free, open-source AI assistant for Zotero</strong><br/>
-  💬 Chat with your papers · ✍️ Translate selected text · 📄 Translate full PDFs into bilingual documents
+  <a href="doc/screenshots/translate_example_table.png"><img src="doc/screenshots/translate_example_table.png" alt="English on the left and Simplified Chinese on the right. Table 1 on page 6 compares the computational complexity of different layer types." width="1400" /></a>
+  <br/><em>English on the left and Simplified Chinese on the right. Table 1 on page 6 compares the computational complexity of different layer types.</em>
 </p>
 
 <p align="center">
-  <strong>Connect any way you like:</strong><br/>
-  🔐 Your existing subscription — ChatGPT or GitHub Copilot via OAuth, no API key needed<br/>
-  🔑 Any OpenAI-compatible API — OpenAI, DeepSeek, OpenRouter, and more<br/>
-  💻 Local models — Ollama, LM Studio, vLLM, your data stays on your machine
+  <a href="site/public/media/factorminer-figure-1-en-zh.png"><img src="site/public/media/factorminer-figure-1-en-zh.png" alt="FactorMiner Figure 1, with the English architecture diagram on the left and its Simplified Chinese translation on the right" width="1400" /></a>
+  <br/><em>Full-text translation also covers labels inside architecture diagrams. In Figure 1 of FactorMiner, follow the blue arrows from “Memory Retrieval” to “Library Update” in the English original on the left. The same steps are labeled “记忆检索” and “库更新” in the Simplified Chinese translation on the right.</em>
 </p>
 
-<p align="center">
-  <img alt="OpenAI ChatGPT" src="https://img.shields.io/badge/OpenAI-ChatGPT-10A37F?style=for-the-badge&logo=openai&logoColor=white" />
-  <img alt="Google Gemini" src="https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
-  <img alt="GitHub Copilot" src="https://img.shields.io/badge/GitHub-Copilot-111111?style=for-the-badge&logo=github&logoColor=white" />
-</p>
+## Keep and move conversations
+
+Export **one conversation, all conversations for a paper, or a whole library’s conversations**. JSON preserves text and citations. ZIP can also include screenshots and uploaded files. Import merges new messages and preserves branches. Zotero syncs paper originals separately, so citations can reopen matching source files on another device.
 
 <p align="center">
-  <img alt="OpenAI Compatible API" src="https://img.shields.io/badge/OpenAI-Compatible%20API-4B5563?style=flat-square&logo=openai&logoColor=white" />
-  <img alt="Ollama" src="https://img.shields.io/badge/Ollama-1F2937?style=flat-square&logoColor=white" />
-  <img alt="LM Studio" src="https://img.shields.io/badge/LM%20Studio-2563EB?style=flat-square&logoColor=white" />
-  <img alt="vLLM" src="https://img.shields.io/badge/vLLM-7C3AED?style=flat-square&logoColor=white" />
+  <a href="site/public/media/reader/export-en-US.jpg"><img src="site/public/media/reader/export-en-US.jpg" alt="The chat menu offers three export scopes and an archive import action" width="1400" /></a>
+  <br/><em>The chat menu offers three export scopes and an archive import action</em>
 </p>
 
-<p align="center">
-  <a href="#-features">Features</a> &nbsp;|&nbsp;
-  <a href="#-installation">Installation</a> &nbsp;|&nbsp;
-  <a href="#-getting-started">Getting Started</a> &nbsp;|&nbsp;
-  <a href="#-configuration">Configuration</a> &nbsp;|&nbsp;
-  <a href="#-license">License</a>
-</p>
+## Corresponding author profiles
+
+Generate profiles for one or more papers using the paper and public scholarly records. Each profile is saved as a Zotero note under its paper and includes sources to check. Regenerating a profile updates its existing AIdea profile note.
+
+## Models and languages
+
+AIdea supports ChatGPT and GitHub Copilot accounts, OpenAI-compatible APIs, and local models served by tools such as Ollama and LM Studio. Models that expose reasoning levels can use different levels for chat, passage translation, and full-PDF translation. History and library-specific memory are stored locally. The selected model service processes the content needed for each request.
+
+The interface is available in 13 languages. The translation target can be chosen independently.
 
 ---
 
-## ✨ Features
-
-### 💬 AI Chat in the Side Panel
-
-Chat with AI directly in Zotero's side panel, available in the **Library** view and the **PDF or EPUB Reader**. Ask questions, get summaries, and stay inside the same research workflow. EPUB conversations use the book's EPUB 2/3 publisher structure and bounded local retrieval to select relevant sections without an additional planning-model request.
-
-<p align="center">
-  <img src="doc/screenshots/chat_panel_en.png" alt="Side panel chat" width="800" />
-</p>
-
-### 📄 Paper-Aware Context
-
-Select text in the PDF or EPUB reader and click **Add Text** to attach the selected passage to the context area. AIdea can then answer against the selected passage instead of relying on a generic summary.
-
-### 📝 Selection Translation
-
-Translate selected text directly in Zotero's PDF or EPUB reader popup. AIdea detects the active format automatically, with no manual switch required. Selection translation uses the same OAuth/API model list as the chat panel, but can be configured with its own enable switch, model, source language, and target language.
-
-For PDFs, the first selection translation creates a local cold-start cache with a compact paper overview and terminology summary. If that context exceeds the model's input limit, AIdea progressively reduces it and retries, then falls back to translating only the selected text if needed. EPUB selections instead use bounded, selection-anchored book context without a separate warm-up request. Translated passages can be added to Zotero notes or written into a new highlight annotation by selecting **Write translation to annotation** before choosing a color; existing annotation comments are preserved. The checkbox remembers both enabling and disabling across selections, documents, and Zotero restarts. It is off by default; when enabled, wait for the translation to finish, then choose a highlight color.
-
-<p align="center">
-  <img src="doc/screenshots/selection_translation_popup.png" alt="Selection translation popup in the PDF reader" width="800" />
-</p>
-
-<p align="center">
-  <img src="doc/screenshots/selection_translation_settings.png" alt="Selection translation settings" width="800" />
-</p>
-
-### ⚡ Quick Action Shortcuts
-
-Use one-click shortcuts for common tasks such as **Summarize**, **Explain**, and **Translate**. Shortcuts can be added, edited, reordered, or removed to match your workflow.
-
-### 🖼️ Multimodal Support
-
-Attach screenshots, figures, and charts to your messages. AIdea supports drag and drop, clipboard paste, and screenshot capture directly from PDF content.
-
-### 🔐 OAuth Login Without an API Key
-
-Sign in with your existing account through OAuth. AIdea supports multiple providers with provider-specific OAuth flows, so you can start without managing an API key manually.
-
-### 📄 Full-Document Translation
-
-Translate full papers directly inside Zotero and export a **side-by-side bilingual PDF** or a **single-language PDF**. Select the model and output path, then run the translation from the side panel.
-
-**Batch translation.** Select several library items and use the AIdea context-menu action, drop them onto the Translate tab, or use **Add selected** inside it. Adding papers prepares a list; it does not start model requests. Choose at least one format (translated-only or bilingual) and one destination (Zotero attachment or a folder), then review the counts and start. By default AIdea inspects the actual files and fills only the missing format/destination pairs. **Overwrite existing translations** is off for each new submission; replacing an annotated PDF can invalidate highlights. Folder filenames identify the source so different papers named `main.pdf` do not overwrite one another; older folder exports without a reliable source identity are not replaced. **Retry failed** does not rerun successful documents; if translation succeeded but filing failed, the queue retains the generated files and retries delivery. Restored queues wait for **Continue**.
-
-<p align="center">
-  <img src="doc/screenshots/translate_panel_en.png" alt="Full-document translation panel" width="800" />
-</p>
-
-Example outputs:
-
-<p align="center">
-  <img src="doc/screenshots/translate_example_architecture.png" alt="Bilingual architecture paper translation example" width="800" />
-</p>
-
-<p align="center">
-  <img src="doc/screenshots/translate_example_formula.png" alt="Formula-heavy paper translation example" width="800" />
-</p>
-
-<p align="center">
-  <img src="doc/screenshots/translate_example_table.png" alt="Table and prose translation example" width="800" />
-</p>
-
-### 🌐 Multi-Provider Support
-
-| Provider             | Auth Method                   | Extra Setup                           |
-| -------------------- | ----------------------------- | ------------------------------------- |
-| **OpenAI (ChatGPT)** | OAuth via Codex CLI           | Codex CLI (auto-installed)            |
-| **GitHub Copilot**   | In-plugin OAuth (Device Code) | None; GPT and Claude models available |
-
-### 📝 Note Export
-
-Save AI responses as Zotero notes with one click. Responses are stored in Markdown and support LaTeX math rendering.
-
-### 💾 Persistent Chat History
-
-All conversations are stored locally in Zotero's database. You can switch between conversations, continue previous threads, and manage local chat history.
-
-Manually export and import chat archives with optional screenshots, images, and uploaded files. Imports merge new messages and preserve conversation branches without duplicating repeated imports. Settings, credentials, and the Memory database are not included.
-
-Answers can include clickable PDF page or EPUB chapter citations when reliable locations are available. Cross-device navigation requires matching Zotero library items and unchanged source files; paper originals are not bundled in chat archives.
-
-### 🧠 Memory System
-
-AIdea captures and recalls useful information across conversations to improve continuity and context awareness over time.
-
-- **Auto-capture** detects preferences, decisions, facts, and key entities from natural conversation
-- **Per-library isolation** keeps memories scoped to each Zotero library
-- **Smart deduplication** uses Jaccard token similarity to prevent redundant memories
-- **Relevance-ranked retrieval** combines overlap, substring match, recency, and importance
-- **Prompt injection defense** blocks malicious or irrelevant content from being stored
-- **Fully local storage** keeps memory data inside Zotero's SQLite database
-
-### 🎨 Rich Rendering
-
-- Full **Markdown** rendering, including headings, lists, code blocks, and tables
-- **LaTeX** math support via KaTeX
-- **Syntax highlighting** for code blocks
-- Smooth **streaming** responses
-
-### 🌍 Interface Languages
-
-The plugin interface supports **13 UI languages**: **English**, **简体中文**, **繁體中文**, **日本語**, **한국어**, **Français**, **Deutsch**, **Español**, **Русский**, **Português**, **العربية**, **فارسی**, and **हिन्दी**. The translation target is independent of the interface language.
-
-**Persian (فارسی):** Selection translations and ordinary horizontal paragraphs in translated-only and bilingual PDFs support right-to-left text. With the verified translation environment, AIdea shapes these PDF paragraphs and preserves their logical text for selection and search in Zotero. Rotated text, overlapping elements, inline formulas and mixed-style paragraphs may retain the engine’s native layout; review the completion warnings for those pages. This correction does not modify the original side of a bilingual PDF.
-
----
-
-## 📦 Installation
-
-### Requirements
-
-- **Zotero 7 or later**
-- The standalone **Codex CLI**, required for OpenAI OAuth, is installed by the plugin when needed (no Node.js required; `curl` or `wget` must be available on macOS/Linux)
-- **Python environment** running `pdf2zh_next`, required only for full-document translation. The **Install/Update Translation Environment** button installs a tested dependency set with `uv`; existing Miniconda environments remain usable. Installation needs an internet connection unless the packages are cached.
-
-> **Note:** The Translate tab checks AIdea's independently published, tested environment catalog once per day and shows an inline notice when an update is available. **Install/Update Translation Environment** checks again when clicked and changes the environment only if installation, repair, or an update is needed. An update is installed in a new directory and activated only after validation; an upstream PyPI release alone is not treated as a verified update. The provider-card **Install/Update Env** button manages its separate OAuth CLI environment.
-
-### Install the Plugin
-
-1. Download the latest `AIdea-x.x.x.xpi` from [Releases](https://github.com/Visterainer/aidea-zotero/releases)
-2. In Zotero, go to **Tools → Add-ons**
-3. Click the gear icon ⚙️ and choose **Install Add-on From File...**
-4. Select the downloaded `.xpi` file
-5. Restart Zotero
-
-### Upgrade
-
-Install the newer `.xpi` package over the existing one. Chat history, stored memory, and local settings are preserved.
-
----
-
-## 🚀 Getting Started
-
-### 1. Open Settings
-
-Go to **Tools → Add-ons → AIdea → Settings**. On older Zotero builds, the path may appear under **Edit → Settings → AIdea**.
-
-### 2. Choose a Connection Mode
-
-AIdea supports two connection modes. You can use either one or combine both.
-
-#### Option A: OAuth Login
-
-For each provider card, the typical setup order is:
-
-> **① `Install/Update Env`** → **② `OAuth Login`** → **③ `Refresh Models`**
-
-| Button                   | What it does                                                                                                                                                                                                                         |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`Install/Update Env`** | Installs or updates the official standalone Codex CLI using OpenAI's install script. GitHub Copilot does not require this step. Run it again whenever the provider's CLI is updated upstream; this is independent of plugin updates. |
-| **`OAuth Login`**        | Starts the provider-specific login flow. OpenAI opens the browser directly. GitHub Copilot shows a device code, copies it, and opens the browser for authorization.                                                                  |
-| **`Refresh Models`**     | Loads the list of available models for the provider after login.                                                                                                                                                                     |
-| **`Remove Auth`**        | Clears the locally stored OAuth token for that provider.                                                                                                                                                                             |
-
-<p align="center">
-  <img src="doc/screenshots/settings_oauth_models_en.png" alt="OAuth providers and model management" width="700" />
-</p>
-
-> 💡 **Tip:** Each provider only needs to be configured once. The login session is stored locally and remains available after Zotero restarts.
-
-For Codex OAuth and API Key connections with explicit model capability metadata, **Reasoning effort** has its own lightbulb icon beside the chat model selector, and is also available on the **Translate** tab for full-PDF translation and in **Settings → Selection Translation**. The three choices are saved separately. The chat choice stays fixed when you switch models; the icon color indicates the effective level. If the new model does not support that level, requests use the nearest weaker supported level while the saved choice remains unchanged. Menus contain explicit levels only. An empty legacy choice is initialized once to the catalog default, or the weakest non-none supported level if no default is supplied, and saved. If no weaker compatible level exists, the request uses that same explicit fallback. Refresh the Codex model list to load each model’s supported levels, including Ultra when available. If capability data is missing, the plugin does not assume three levels: the lamp is gray with a refresh hint. For unsupported models or connection types, the gray lamp explains that effort adjustment is unavailable; chat continues without an explicit effort. For API Key connections, use **Auto Fetch Models** or refresh the saved provider list. The plugin reads explicit per-model `supported_reasoning_levels` or `reasoning.supported_efforts`; a model name or a reasoning-support flag alone is insufficient. API capability caches are isolated by endpoint and credentials, expire after 24 hours, and are cleared on a failed refresh. Requests use the declared Chat Completions field (`reasoning_effort` or `reasoning`) or Responses `reasoning.effort`. Confirmed adaptive Anthropic routes on OpenRouter use `verbosity` only when the catalog advertises it. Chat and selection translation disable the control for that connection after an explicit parameter rejection and retry without it; refreshing capabilities enables another attempt. The full-PDF proxy also removes a rejected effort and remembers that decision for the remaining translation batches.
-
-#### Option B: OpenAI-Compatible API Endpoint
-
-AIdea can also connect to any **OpenAI-compatible chat endpoint**, including local, self-hosted, or third-party services such as Ollama, LM Studio, vLLM, DeepSeek, OpenRouter, or Groq.
-
-In **Settings**, switch to **API Mode** and fill in:
-
-| Field            | Required | Description                                                                                                 |
-| ---------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| **API Base URL** | Yes      | The base URL of the compatible endpoint, such as `https://api.openai.com/v1` or `http://localhost:11434/v1` |
-| **API Key**      | No       | Required only when the endpoint expects authentication                                                      |
-| **Model**        | Yes      | Enter the model manually or click **Auto Fetch Models** to detect available models                          |
-
-<p align="center">
-  <img src="doc/screenshots/settings_api_en.png" alt="API mode custom endpoint" width="700" />
-</p>
-
-> **Note:** API mode targets compatible `/chat/completions` endpoints. It does not guarantee support for provider-specific features beyond standard chat completion.
-
-### 3. Start Chatting
-
-- In the **Library Panel**, select an item and use the AIdea panel in the right sidebar
-- In the **PDF or EPUB Reader**, open a document and use the AIdea panel in the reader sidebar
-- Type your question and press **Send** or hit `Enter`
-
-### 4. Use Quick Actions
-
-Click shortcut buttons such as **Summarize**, **Explain**, or **Translate** for one-click actions. Right-click a shortcut to edit or remove it.
-
----
-
-## ⚙️ Configuration
-
-| Setting                         | Description                                                            | Default                              |
-| ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------ |
-| **UI Language**                 | Plugin interface language                                              | Auto-detected, fallback EN           |
-| **System Prompt**               | Custom instructions for the model                                      | Empty                                |
-| **Show "Add Text"**             | Show the Add Text option in the reader selection popup                 | On                                   |
-| **Selection Translation**       | Translate selected reader text with automatic bounded document context | On                                   |
-| **Selection Translation Model** | Dedicated model for reader selection translation                       | First available model unless changed |
-| **Show All Models**             | Show all available models instead of a curated subset                  | Off                                  |
-| **Tab Bar**                     | Show or hide the tab navigation bar                                    | Hidden                               |
-
----
-
-The default chat prompt favors direct, natural answers, with enough detail for the task and citations grounded in the available material. Extracted text does not imply access to unavailable pages or figure images.
-
-To customize the response style, open **Settings → Advanced → Custom System Prompt**. Leave it blank to use the default; a non-empty value replaces the default chat prompt. Existing custom prompts are preserved. Changes apply to the next request without restarting Zotero; start a new conversation for a clean comparison because earlier answers remain in history. Selection translation, cold-start summaries, conversation compaction, and author profiles use independent task prompts, unaffected by this chat setting. Full-document translation retains its own configuration.
-
-## 🔒 Privacy & Security
-
-- OAuth tokens are stored **locally only**
-- API requests are sent **directly** to the selected provider or configured endpoint
-- AIdea **does not collect usage telemetry or user data**
-- Chat history and memory remain in Zotero's local database
-- The code is fully available for inspection on [GitHub](https://github.com/Visterainer/aidea-zotero)
-
----
-
-## 🗺️ Roadmap
-
-Planned directions for future releases include:
-
-- **One-click architecture diagrams**, for generating structural visualizations from paper content
-
-> 💡 Feature requests are welcome through [Issues](https://github.com/Visterainer/aidea-zotero/issues).
-
----
-
-## 🛠️ Development
-
-```bash
-# Install dependencies
-npm install
-
-# Development mode
-npm start
-
-# Build production XPI
-npm run build
-
-# Run tests
-npm run test:unit
-```
-
----
-
-## 📄 License
-
-[AGPL-3.0-or-later](./LICENSE)
-
-This project is derived from [llm-for-zotero](https://github.com/yilewang/llm-for-zotero) by Yile Wang. See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for attribution details.
-
----
-
-## ⭐ Star History
-
-<a href="https://star-history.com/#Visterainer/aidea-zotero&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Visterainer/aidea-zotero&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Visterainer/aidea-zotero&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Visterainer/aidea-zotero&type=Date" />
- </picture>
-</a>
-
----
-
-<p align="center">
-  Author: <strong>zhile</strong>
-</p>
+[AGPL-3.0-or-later](LICENSE) · Based on [llm-for-zotero](https://github.com/yilewang/llm-for-zotero) (Yile Wang) · [Third-party notices](THIRD_PARTY_NOTICES.md)

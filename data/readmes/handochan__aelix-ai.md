@@ -40,8 +40,10 @@ next launch), the model catalog check (models published between releases: at lau
 a model picker opens, on a `/model` that matched nothing and after `/login`, at most every
 4 hours, and whenever you run `aelix update --models`; it sends the aelix version;
 `/settings` → **Check model catalogs** leaves only the command), the
-first-use `ripgrep`/`fd` download, and the extension-catalog fetch. `--offline` turns those
-off.
+first-use `ripgrep`/`fd` download, and the extension-catalog fetch. `--offline` skips
+the checks, downloads and HTTP(S) catalog refreshes. Registered Git-over-SSH catalogs
+can still refresh, explicit Git sources can contact their remotes, and model requests
+use the configured endpoint. See [Trust and self-hosting](#trust-and-self-hosting).
 
 ## Install
 
@@ -60,15 +62,15 @@ curl -fsSL https://raw.githubusercontent.com/handochan/aelix-ai/main/install.sh 
 powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/handochan/aelix-ai/main/install.ps1 | iex"
 ```
 
-`v0.1.0-beta.2` is the release every Windows fix landed in, and the installer
-takes the newest release — so on an older one that line installs a build where
-none of this works. Scope and evidence: [Platform support](#platform-support).
+Windows became usable in `v0.1.0-beta.2`, and the installer takes the newest
+release — so pinned to an older one, that line installs a build where none of
+this works. Scope and evidence: [Platform support](#platform-support).
 
 Both read the same environment variables: `AELIX_VERSION` pins a release tag
-(`vX.Y.Z-beta.N`), `AELIX_EXTRAS` picks extras (default `tui`; empty installs the
+(`vX.Y.Z`, e.g. `v0.1.0`), `AELIX_EXTRAS` picks extras (default `tui`; empty installs the
 headless CLI, POSIX only), `AELIX_PYTHON` requests the interpreter (by default
 the range the release being installed runs on: `>=3.11,<3.15` from
-`v0.1.0-beta.3`, `>=3.11,<3.14` before it, whose pinned OpenAI SDK dies mid-turn
+`v0.1.0`, `>=3.11,<3.14` before it, whose pinned OpenAI SDK dies mid-turn
 on 3.14 — left alone, `uv tool install` takes the newest interpreter on the
 machine), `GITHUB_TOKEN` lifts the anonymous GitHub API rate limit. Each has to reach the shell on the *far* side of the pipe, which is what
 makes the obvious spelling wrong on both platforms — `VAR=x curl … | sh` sets it
@@ -81,23 +83,18 @@ installers now run `uv tool update-shell` for you instead of printing it.
 `uv tool install aelix@latest`** — uv suggests the latter itself, and it rebuilds
 the environment on the newest Python on the machine, which for beta.2 means 3.14
 and a mid-turn crash (#262). Measured: it overwrites a correct 3.13 install.
-From `v0.1.0-beta.3` aelix supports Python 3.14 (#278): its OpenAI SDK floor is
+From `v0.1.0` aelix supports Python 3.14 (#278): its OpenAI SDK floor is
 the first release that runs there, and CI tests 3.14 on Ubuntu and Windows. The
 install line stays the recommended path, since it is the one that checks
 `SHA256SUMS`.
 `uv tool uninstall aelix` removes it.
 
-> **PyPI carries a placeholder until `0.1.0b2`.** Today all four names hold a
-> metadata-only `0.0.0a0` reservation, so `pip install aelix` **exits 0 and
-> installs nothing runnable** — no `aelix` command, and `import aelix` raises
-> `ModuleNotFoundError` — while `uv tool install aelix@latest` **deletes an
-> existing install**. From `0.1.0b2` on that trap is closed: every candidate on
-> the index is a pre-release, and pip and uv both take the newest one in that
-> case, so `uv tool install 'aelix[tui]'` and `pipx install aelix` resolve the
-> real thing ([ADR-0240](docs/decisions/0240-a-pre-release-tag-publishes-to-pypi-too.md)).
-> The installer above stays the recommended path — it is the only one that checks
-> the release's `SHA256SUMS` — and an install it made upgrades by re-running it,
-> not by `uv tool upgrade`.
+> [PyPI publishes `0.1.0`](https://pypi.org/project/aelix/0.1.0/#files), a final release,
+> so `uv tool install 'aelix[tui]'` and `pipx install aelix` resolve it with no pre-release
+> flag ([ADR-0240](docs/decisions/0240-a-pre-release-tag-publishes-to-pypi-too.md)).
+> Before `0.1.0b2`, the four PyPI names carried metadata-only `0.0.0a0` reservations.
+> The recommended installer above verifies the release's `SHA256SUMS`. Re-run it
+> to upgrade an installation it created.
 
 ## Platform support
 
@@ -107,12 +104,16 @@ itself runs on Ubuntu and Windows. Windows became usable in `v0.1.0-beta.2` and 
 thinnest evidence of the three: CI runs the full suite on `ubuntu-latest` and
 `windows-latest` under Python 3.11, 3.12, 3.13 and 3.14 and runs `install.ps1` end to end
 under both pwsh and Windows PowerShell 5.1, and on 2026-09-09 one person drove
-this candidate on one Windows machine — a `bash` call's Korean output came back
+the beta.2 candidate on one Windows machine — a `bash` call's Korean output came back
 as Korean, the model reported it was on PowerShell and used PowerShell syntax
 instead of `&&`, and the TUI drew correctly on a Windows console. That is the
-whole of it: one person, one machine, one locale, plus a green leg. No
-long-running use, no second machine, no third locale, and three of this release's
-Windows fixes are argued from source and CI alone.
+whole of beta.2's Windows evidence: one person, one machine, one locale, plus a green leg. No
+long-running use, no second machine, no third locale, and three of beta.2's
+Windows fixes are argued from source and CI alone. For 0.1.0, the `candidate-smoke`
+jobs in [`release.yml`](.github/workflows/release.yml) install the candidate wheels on
+Windows, macOS and Linux and require an installed one-shot print turn against a local
+stub before publication. The workflow defines that gate; it is not by itself a record
+of a passing 0.1.0 candidate.
 
 A program that opens the Windows console directly — a git credential prompt,
 `Read-Host -AsSecureString`, `Get-Credential` — can still prompt there and burn a
@@ -159,7 +160,7 @@ directories are reached.
   Cloudflare and the GitHub Copilot seat you already sign in with. Route cheap work and hard
   reasoning to different models in one session. No metered credits, no new vendor.
 - 🔍 **Auditable and self-hosted.** Fully open source, no telemetry, built for closed
-  networks. `--offline` turns off the requests Aelix makes for itself. Trust lives in code you
+  networks. `--offline` skips automatic downloads and HTTP(S) catalog refreshes. Trust lives in code you
   can read — the answer to *"why run an agent I didn't write?"*
 - ⚙️ **Scriptable and headless.** `--print`, line-delimited `--mode json`, and a `--mode rpc`
   JSONL protocol make Aelix embeddable in pipelines, CI and evaluation loops.
@@ -212,7 +213,7 @@ aelix --mode json "run the eval suite and summarise failures"   # line-delimited
 
 See [writing an extension](docs/guides/extension-authoring.md) for the full surface, and the
 [Aelix Marketplace](https://handochan.github.io/aelix-marketplace/) — the catalog Aelix reads
-by default. It ships empty for the beta and is open for submissions.
+by default. Run `aelix extension discover` to see the cached official catalog. Use `aelix extension discover --refresh` to update it.
 
 ## Providers
 
@@ -253,6 +254,7 @@ still be refreshed. Extension installs and updates disable
 package-index lookups when no explicit or registered index is selected (#806). The configured
 model provider still needs a reachable endpoint. `aelix --offline status`,
 `aelix --offline docs`, and `aelix --offline extension …` run their commands.
+`aelix --offline update --models` reaches the update command and skips the refresh.
 Only `--offline` may precede these root commands; other launch options cause a usage error
 (exit 2). For an intentional agent prompt, use `aelix -p status` or `aelix -- status`.
 `status` and `docs` require the offline flag before the command; their own parsers reject it
@@ -281,7 +283,7 @@ and the startup `[Context]` row shows loaded paths. Files are read again on
 `/reload` and session rebuilds. See the [system prompt guide](docs/guides/getting-started.md#system-prompt-files)
 for precedence, agent profiles and Project Trust.
 
-## Known limitations (beta)
+## Known limitations
 
 Six things worth knowing before you point Aelix at something that matters.
 
@@ -290,14 +292,15 @@ cumulative token or cost budget — a model that keeps calling tools keeps costi
 money until it finishes or you stop it. `Esc`, the 600 s `bash` *default* timeout
 (an explicit per-call value is honoured up to an hour) and automatic compaction are
 real backstops; none of them bounds spend
-([#14](https://github.com/handochan/aelix-ai/issues/14),
-[#6](https://github.com/handochan/aelix-ai/issues/6),
+([#14](https://github.com/handochan/aelix-ai/issues/14), an iteration cap and
+duplicate-call detection, closed with the decision to build them as an extension
+if they are needed; [#6](https://github.com/handochan/aelix-ai/issues/6),
 [#52](https://github.com/handochan/aelix-ai/issues/52)). A delegated agent has no
 time limit either: it runs until it finishes or you stop it — `Esc` or `Ctrl+C`,
 during a turn and during `/agents run`
 ([#604](https://github.com/handochan/aelix-ai/issues/604)).
 
-**Headless mode auto-approves mutating tools.** `--print`, `--mode json` and
+**A headless parent's default gate auto-approves mutating tools.** `--print`, `--mode json` and
 `--mode rpc` have no terminal for an approval dialog, so `write`, `edit`, `bash` and
 every tool from an MCP server or an extension run without asking. `--permission-mode
 plan` does hold there: since [#188](https://github.com/handochan/aelix-ai/issues/188)
@@ -307,11 +310,15 @@ one ([ADR-0253](docs/decisions/0253-the-permission-gate-treats-any-tool-it-does-
 `GuardrailExtension`'s hard-deny patterns still go by bare tool name, whatever
 registered the tool: an extension tool named `shell` or `write_file` is checked, and
 an MCP tool, which is always named `<server>__<tool>`, is not. Give a headless run a
-container or a checkout you can throw away.
+container or a checkout you can throw away. A child delegated under `default`
+falls back to `plan` without an approver. An RPC host that opts in can answer
+its approval requests ([child approvals](docs/guides/agent-approvals.md)).
 
-**One session, one terminal.** Session JSONL is append-only and nothing locks it,
-so opening the same session twice makes one terminal's work a branch that no
-`--resume` walks — valid on disk, gone from the transcript
+**One writer per persistent session.** On filesystems that support locking,
+opening a session owned by another terminal offers **Fork**, **Open read-only**
+or **Cancel** at interactive startup. Headless startup refuses the contested
+session and suggests opening another session or using `--fork`. See the
+[two-terminal guide](docs/guides/getting-started.md#two-terminals-on-one-session)
 ([#137](https://github.com/handochan/aelix-ai/issues/137)).
 
 **Transcripts keep everything, forever, unredacted.** Every prompt, tool argument
@@ -322,17 +329,191 @@ equivalent for Aelix to set — either way the exposure is to whatever copies yo
 home directory: backups, sync clients, support bundles
 ([#138](https://github.com/handochan/aelix-ai/issues/138)).
 
-**A successful `bash` call can silently lose the tail of its output.** With the
-reader thread starved across the command's exit, up to ~64 KiB can be dropped from
-the end — `exit_code` is 0, nothing says anything went missing, and the tail is the
-part the model is shown. It did not reproduce in ~3,300 ordinary rounds
+**Check the `bash` output when the drain reaches its limit.** The tool reports
+`Output may be incomplete` when it cannot confirm the final output. On Windows,
+a reader delayed across the last pipe check can still miss trailing bytes.
+Redirect output to a file when the tail matters
 ([#260](https://github.com/handochan/aelix-ai/issues/260)).
 
-**Delegation's cleanup is not equal on every OS.** A headless parent consents to
-spawns on its own. If Aelix itself dies, Linux's `PR_SET_PDEATHSIG` and a Windows
-job object's `kill_on_close` end the child; macOS has neither, and a grandchild
-that made its own session escapes the process group that is all the containment
-there is ([#110](https://github.com/handochan/aelix-ai/issues/110)).
+**Delegation cleanup varies by platform.** On macOS, the child exits after its
+command inbox closes when the parent dies (#123). The
+[cleanup measurements](docs/guides/background-jobs.md#if-aelix-itself-dies)
+cover the tested delegation cases and the separate top-level background
+`bash` case. See the [escaped-helper limits](docs/guides/agent-profiles.md#resuming-an-agent)
+for processes outside the cleanup mechanism
+([#110](https://github.com/handochan/aelix-ai/issues/110)).
+
+### Also open in 0.1.0
+
+These issues are open in 0.1.0 as well. Each line says when it applies and
+links the issue. The `[0.1.0]` section of the [CHANGELOG](CHANGELOG.md) opens
+with the same issues. Windows is experimental
+([Platform support](#platform-support)).
+
+#### In everyday use
+
+- Near a full context window the output limit shrinks to the room left. An
+  answer cut at that limit stays as the turn's answer, and its tool calls still
+  go to execution with what the adapter recovered of their arguments: the
+  OpenAI-compatible and Responses adapters keep what parsed before the cut and
+  drop a value cut mid-string, and the Anthropic adapter uses `{}` when the
+  arguments do not parse. This comes from reading the code; whether a cut
+  argument can pass validation and run was not measured
+  ([#569](https://github.com/handochan/aelix-ai/issues/569)).
+- Logging out of an OAuth login in one aelix does not reach another aelix that
+  is already running. That one keeps sending its cached token until the token
+  expires. Its request then fails, and the error asks you to remove an
+  `auth.json` entry that is already gone. Restart other sessions after `/logout`
+  ([#481](https://github.com/handochan/aelix-ai/issues/481)).
+- `defaultThinkingLevel` applies only at launch. If a session starts on a model
+  that cannot reason and you switch with `/model` to one that can, thinking stays
+  off until you choose a level with `/thinking`
+  ([#499](https://github.com/handochan/aelix-ai/issues/499)).
+- `/thinking <level>` does not check the level. A typo or `HIGH` is shown as
+  accepted and recorded in the session, and the request is sent at the model's
+  first level, usually `off`. Use the lowercase names the `/thinking` picker shows
+  ([#582](https://github.com/handochan/aelix-ai/issues/582)).
+- `/cost` and `/stats` price only built-in catalog models. For a model defined
+  in `models.json`, even with `cost` set, RPC `get_session_stats` reports `0.0`
+  and `/cost` shows `n/a` (measured on a custom provider's model). After a
+  delegation both show only the delegated agent's share, `/cost` as `≥`. A
+  `modelOverrides` cost on a built-in model is ignored: RPC reports the catalog
+  price, and the TUI was not measured
+  ([#739](https://github.com/handochan/aelix-ai/issues/739)).
+- If `SSL_CERT_FILE` points at a file that does not exist, `aelix -p` on a
+  provider that uses the OpenAI SDK client prints an unrelated traceback and
+  then a `[Errno 2] No such file or directory` that names no file. Check the
+  path that `aelix status` shows. The Anthropic and Google adapters were not
+  measured ([#557](https://github.com/handochan/aelix-ai/issues/557)).
+- The `/model` picker lists google-vertex rows for Claude and for partner models
+  (Llama, gpt-oss, DeepSeek, Qwen, GLM, Kimi). aelix sends them Gemini's request
+  format, so they cannot work; reach those models through Anthropic or
+  OpenRouter. This comes from reading the code; it was not run against Vertex
+  ([#560](https://github.com/handochan/aelix-ai/issues/560)).
+- Under `--permission-mode auto` (opt-in; the default posture is `default`),
+  with dash as your shell, a few forms run without a dialog although dash runs
+  part of them as a command: `(( 1>FILE ))` creates `FILE`, and
+  `(( crontab -r ))` is allowed although dash would run `crontab -r` (classified
+  only; dash's reading was checked with `echo` in the command's place). With
+  dash, ksh93 or mksh, `echo $[2>FILE]` creates `FILE]`. The classifier reads
+  every shell as one POSIX dialect; a write to a protected path such as
+  `~/.bashrc` is still refused
+  ([#793](https://github.com/handochan/aelix-ai/issues/793)).
+- `aelix --agent <profile> --model <id>` runs on `<id>`, as intended, and its
+  notice says `CLI flags override model` without naming the model the profile
+  asked for. `/agents use` in a session started with `--model` says the same
+  ([#157](https://github.com/handochan/aelix-ai/issues/157)).
+- The `/model` picker's detail line names the provider's environment variable
+  (`API Key: OPENAI_API_KEY`) whatever the key's real source, such as
+  `--api-key`, `auth.json` or `models.json`
+  ([#377](https://github.com/handochan/aelix-ai/issues/377)).
+- In the TUI, a prompt on a model that was not found at startup is refused with
+  the general `could not be resolved to a known API protocol` text, not the
+  not-found reason that the startup warning gave
+  ([#378](https://github.com/handochan/aelix-ai/issues/378)).
+- A saved session drawn again (`/resume`, `--continue`, `--resume`) shows an
+  `edit` result without its diff and a `bash` result without its `exit N` row,
+  because a saved tool result keeps no `details`. This comes from reading the
+  code ([#168](https://github.com/handochan/aelix-ai/issues/168)).
+- The guide lists are kept by hand, not generated from the guide files. This
+  README's [Docs](#docs) line links 10 of the 16 guides; `aelix docs` and the
+  [guide index](docs/guides/README.md) list all 16
+  ([#265](https://github.com/handochan/aelix-ai/issues/265)).
+- No CI gate fails when a slash command, an RPC command or an environment
+  variable has no doc entry. On 2026-09-12 the issue counted 20 of 36 slash
+  commands, 29 of 29 RPC commands and 34 of 65 environment variables, among
+  other surfaces, with no doc entry. They were not re-counted for 0.1.0
+  ([#267](https://github.com/handochan/aelix-ai/issues/267)).
+
+#### Scripts and RPC hosts
+
+- `aelix -p` exits 0 when the answer was cut at the model's output-token limit,
+  and nothing on stderr says so
+  ([#543](https://github.com/handochan/aelix-ai/issues/543)).
+- `message_update`, `get_session_stats` and `agents/run` can carry a `NaN` or
+  `Infinity` cost, which a strict JSON reader rejects
+  ([#875](https://github.com/handochan/aelix-ai/issues/875)).
+- When an RPC host stops a background agent with `children/stop`, the two
+  reports disagree and neither names the host: the `aelix_child` end frame says
+  the session stopped it, and the model's job result says the user stopped it
+  with `/jobs` ([#855](https://github.com/handochan/aelix-ai/issues/855)).
+- For an extension that failed to load and whose file name holds a lone
+  surrogate, sending its read-only tool row's key to `selections/set` gets an
+  unknown-row error instead of the row's refusal, and the row shares its `group`
+  with the U+FFFD spelling of the same name
+  ([#876](https://github.com/handochan/aelix-ai/issues/876)).
+- An RPC host cannot yet observe where an in-flight input came from, or when it
+  was consumed or withdrawn
+  ([#865](https://github.com/handochan/aelix-ai/issues/865)).
+
+#### Extension authors
+
+- `ctx.abort()` stops retries but not a model request that is still streaming
+  ([#545](https://github.com/handochan/aelix-ai/issues/545)).
+- A turn that an extension starts with `send_message(…, trigger_turn=True)` while
+  the TUI is idle cannot be stopped with Esc or Ctrl+C. Only the double Ctrl+C
+  that quits aelix ends it
+  ([#674](https://github.com/handochan/aelix-ai/issues/674)).
+- A tool that catches cancellation and keeps running holds the turn: Esc does
+  nothing in a sequential batch, and after a parallel batch it holds `/exit` and
+  survives the first SIGTERM. Built-in tools are not affected
+  ([#692](https://github.com/handochan/aelix-ai/issues/692)).
+- An extension dialog opened while another dialog is open replaces it, and the
+  first one never returns. If the first was a tool approval, the turn waits until
+  Esc ([#713](https://github.com/handochan/aelix-ai/issues/713)).
+- When an extension's shortcut handler raises, its warning and traceback are
+  written over the TUI's input line and footer. An invalid descriptor module's
+  warning prints the same way, before the first screen. The other 36 such
+  warnings, for themes, widgets and descriptors among them, take the same path
+  in the code; they were not each run
+  ([#714](https://github.com/handochan/aelix-ai/issues/714)).
+- `ctx.ui.custom()` components receive no keys: `handle_input` is never called
+  and Esc does not close them, so input is blocked until the extension calls
+  `done()` ([#715](https://github.com/handochan/aelix-ai/issues/715)).
+- An `input` or `before_agent_start` handler that never returns, such as a dialog
+  nobody answers, holds `/new`, `/resume` and quit until it returns. Over RPC
+  such a dialog ends after 300 s
+  ([#851](https://github.com/handochan/aelix-ai/issues/851)).
+- Two kinds of `tool_result` hook bring back a cancelled delegation's report
+  unmasked: one that raises, and one that rewrites the result to exactly the cut
+  marker. The report copy sent with the next prompt then carries the unmasked
+  text to the model and the session file. A hook that rewrites to any other
+  text, such as `[redacted]`, is honoured
+  ([#839](https://github.com/handochan/aelix-ai/issues/839)).
+- If a newer wheel of an extension drops its `aelix.extensions` entry point,
+  `aelix extension update <name>` can reinstall the older version that a bundle
+  pinned and still exit 0
+  ([#878](https://github.com/handochan/aelix-ai/issues/878)).
+- A new session whose `session_start` handler starts a turn
+  (`send_message(…, trigger_turn=True)`) opens in the TUI with
+  `↻ Resumed session (N messages)`, though nothing was resumed
+  ([#373](https://github.com/handochan/aelix-ai/issues/373)).
+- On a launch whose model route is not decided yet, a turn that a
+  `session_start` handler requests with `trigger_turn=True` and does not wait
+  for is refused after the handlers end, and the refusal still says
+  `No turn runs while this session's session_start handlers run`
+  ([#372](https://github.com/handochan/aelix-ai/issues/372)).
+- Code that calls the Google or Vertex adapter itself with `reasoning="off"` as
+  a string does not turn thinking off: a probe sent `gemini-2.5-pro`
+  `thinkingBudget: 32768`. `--thinking off` and `/thinking off` are not
+  affected ([#259](https://github.com/handochan/aelix-ai/issues/259)).
+
+#### Windows (experimental)
+
+- `auth.json` has no cross-process lock on Windows. Two aelix processes saving
+  or refreshing a login at the same moment can lose one update, or leave a file
+  that aelix resets to empty, which removes every saved login. Run `/login`
+  again if that happens ([#46](https://github.com/handochan/aelix-ai/issues/46)).
+- Choosing "Trust parent folder" from inside a junction or symlink saves the
+  link's parent, not the real project's parent. The trust does not apply on the
+  next launch, and the folder that holds the link is trusted instead
+  ([#584](https://github.com/handochan/aelix-ai/issues/584)).
+- When a session is open in another window, aelix cannot say whether Aelix
+  Studio or the CLI holds it; the holder is reported as unknown
+  ([#881](https://github.com/handochan/aelix-ai/issues/881)).
+- Piping into `aelix` from a source that never writes hangs with no message:
+  `AELIX_STDIN_TIMEOUT` applies only on macOS and Linux
+  ([#107](https://github.com/handochan/aelix-ai/issues/107)).
 
 ## Architecture
 

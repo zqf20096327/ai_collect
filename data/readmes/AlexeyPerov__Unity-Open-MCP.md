@@ -48,7 +48,8 @@ An agent can play the running game and hand back a report a human can review.
 It puts the game on a target resolution or Device Simulator device, reads the
 screen (uGUI text, visibility, layout diagnostics), taps controls by their
 on-screen label, clicks, drags, swipes and plays multi-second gestures over real
-frames (legacy Input Manager and Input System projects alike), and waits until
+frames (legacy Input Manager and Input System projects alike), types into text
+fields through their own validation (nickname, login, promo code), and waits until
 the game gets somewhere — a log line, a label, an object, or the project's own
 predicate, optionally fast-forwarded — and traces values (HP, cooldowns,
 velocities) every N frames into a buffer it reads back, without per-frame hooks
@@ -61,7 +62,11 @@ into a Markdown report. For menu-driven and mobile UI the agent can also hand th
 tapping to a crawler that walks every screen and button on its own (never money,
 destructive or leaving controls) and files what looks wrong: overflowing text,
 controls under the notch, overlapping or tiny buttons, untranslated keys, buttons
-that do nothing, screens with no way out and the exceptions taps cause.
+that do nothing, screens with no way out and the exceptions taps cause — on one
+device or across a list of phones and tablets, with each problem's devices named.
+A flow found once — by the crawler or by the agent's own steps — becomes a
+scenario file in the project that replays without a model after every change:
+pass or fail per step, what changed on screen, and whether a failure is flaky.
 
 > **User:** Smoke-test the shop on an iPhone 13.<br>
 > **Agent:** Five steps passed; tapping *Buy* threw a `NullReferenceException`.

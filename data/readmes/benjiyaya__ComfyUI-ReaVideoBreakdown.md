@@ -5,16 +5,16 @@
 [![ComfyUI](https://img.shields.io/badge/ComfyUI-custom%20node-orange)](https://github.com/comfyanonymous/ComfyUI)
 [![Tests](https://github.com/benjiyaya/ComfyUI-ReaVideoBreakdown/actions/workflows/test.yml/badge.svg)](https://github.com/benjiyaya/ComfyUI-ReaVideoBreakdown/actions/workflows/test.yml)
 
-**Shot-by-shot video reverse engineering** (the [rea-video](https://github.com/JuneYaooo/rea-video) idea) as a single ComfyUI custom node.
+**Shot-by-shot video reverse engineering** (the [rea-video](https://github.com/JuneYaooo/rea-video) idea) as two ComfyUI nodes:
 
-Point it at any video and it splits the footage into shots, then for **every shot** tells you:
+1. **Video Breakdown (Rea · native VLM)** — point it at any video and it splits the footage into shots, then for **every shot** tells you:
+   - **how it was made** — live action / AI video / 3D render / code motion-graphics / screen capture / still pan / 2D animation / …
+   - **what is in it** — subject, setting, lighting, colour, style
+   - **the camera work** — *measured* with optical flow (pan px/s, zoom %/s, handheld vs smooth), not guessed
+   - **a ready-to-use text-to-video prompt** — one per shot, delimited and wired straight into your favourite video model
+2. **VideoPrompt Mod With References** — feeds Node 1's `breakdown_json` + reference images + a plain-English instruction ("use image_1 as the woman, replace character-1, make her speak") through the same native VLM, and rewrites the whole video as one **MiniMax H3 Ref2VA** prompt with `<Subject N>` / `<Picture N>` labels — ready for the native `MiniMaxH3ReferenceToVideo` node.
 
-- **how it was made** — live action / AI video / 3D render / code motion-graphics / screen capture / still pan / 2D animation / …
-- **what is in it** — subject, setting, lighting, colour, style
-- **the camera work** — *measured* with optical flow (pan px/s, zoom %/s, handheld vs smooth), not guessed
-- **a ready-to-use text-to-video prompt** — one per shot, delimited and wired straight into your favourite video model
-
-- Using Minimax H3 + REA VIdeo node to create some videos : https://youtu.be/oYRpAddkki8
+🎬 **Video tutorial** — making videos with MiniMax H3 + the ReaVideo nodes: [youtu.be/oYRpAddkki8](https://youtu.be/oYRpAddkki8)
 
 All reports are in the open [VIDEO.md](https://github.com/JuneYaooo/rea-video) style (`video_md`), plus structured JSON, plus plain delimited prompts.
 
@@ -75,9 +75,9 @@ The node itself has **zero extra dependencies** beyond what ComfyUI already ship
 (optional, only for nicer text previews): [pysssss Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts)
 (`Show Text`) and [comfyui-easy-use](https://github.com/yolain/ComfyUI-Easy-Use) (`Show Any`).
 
-## Use
+## Use — Node 1: Video Breakdown
 
-One node: **`Video Breakdown (Rea · native VLM)`** (category `RE-VIDEO/breakdown`).
+**`Video Breakdown (Rea · native VLM)`** (category `RE-VIDEO/breakdown`).
 
 ```
 LoadVideo ─▶ GetVideoComponents ─ images ─▶ ┐
@@ -160,6 +160,42 @@ The white sports car accelerates sharply, capturing motion blur as it speeds pas
 
 `~` marks tool-measured values (OpenCV); everything else comes from the VLM actually seeing the frames.
 
+## Use — Node 2: VideoPrompt Mod With References
+
+**`VideoPrompt Mod With References`** (category `RE-VIDEO/breakdown`) — a ComfyUI **V3** node with dynamic reference inputs, so it needs a recent ComfyUI (the version that ships the native MiniMax H3 nodes).
+
+Take Node 1's `breakdown_json`, up to **9 reference images**, and a plain-English instruction, and rewrite the entire source video as one official **MiniMax H3 full-reference (Ref2VA)** prompt:
+
+```
+ReaVideoBreakdown ─ breakdown_json ─▶ ┐
+LoadImage ×N ───── image_1..image_9 ─▶ VideoPrompt Mod With References ─ prompt ─▶ MiniMaxH3ReferenceToVideo
+user_instruction ────────────────────▶   (native VLM CLIP)           ─ prompt_json / label_map
+```
+
+The VLM emits the six H3 sections — `subject_definitions`, `summary`, `retention_analysis`, `detailed_description`, `overall_soundscape`, `non_diegetic_music` — with `<Subject N>` / `<Picture N>` labels, shot order/cuts/camera preserved from the breakdown, dialogue as `<d>[Language] …</d>` with stable `(Sx)` speaker IDs, and the timeline fitted to `target_seconds`.
+
+### Inputs
+
+| Input | Default | Meaning |
+|---|---|---|
+| `clip` | — | the same VLM text encoder as Node 1 |
+| `breakdown_json` | — | Node 1's `breakdown_json` output |
+| `user_instruction` | `""` | plain-English edit request, e.g. *"use image_1 as the woman, replace character-1, make her speak"* |
+| `ref_images` | none | dynamic `image_1`…`image_9` (Autogrow); `image_N` = `<Picture N>` |
+| `target_seconds` | `0` | total duration the rewrite must fit (`0` = source duration) |
+| `max_length` / `temperature` / `seed` | `2048` / `0.4` / `0` | VLM generation controls |
+| `max_side` | `768` | reference-image downscale cap |
+
+### Outputs
+
+| Output | Meaning |
+|---|---|
+| `prompt` | the six-section Ref2VA prompt — wire into `MiniMaxH3ReferenceToVideo.prompt` |
+| `prompt_json` | sections + label map + target duration as JSON (for scripting/debugging) |
+| `label_map` | human-readable `image_N → <Picture N>` wiring reminder |
+
+**Wiring contract:** the image you feed `image_N` here must be the *same image, same slot* you feed `ref_image_N` on the native H3 node — that's what makes `<Picture N>` line up. Audio is wired **directly into the native node** (`ref_audio_*`), never through this one; v1 deliberately does not emit `<Audio N>` tags, because the native node's audio latent conditions the model regardless of prompt tags.
+
 ## Tips
 
 - **Use a VLM, not a CLIP.** A plain SD1.5/SDXL CLIP can't see images. The node detects this and
@@ -170,6 +206,8 @@ The white sports car accelerates sharply, capturing motion blur as it speeds pas
 - **Chinese output:** set `language: zh` — report, labels and prompts all switch.
 - **Remake loop:** feed each `[Shot NN]` block of `prompts` to Wan / Kling / Veo / Sora-style nodes,
   reassemble with your edit nodes — the time codes in the delimiters give you the cut order.
+- **Node 2:** keep `image_N` here and `ref_image_N` on the native H3 node as the same image, same order — that's what `<Picture N>` refers to.
+- **Node 2:** set `target_seconds` when shortening a longer source; the VLM re-times the `[Shot N] At MM:SS.mmm` stamps to fit.
 
 ## Test (no GPU / torch needed)
 
@@ -179,17 +217,18 @@ python tests/test_offline.py
 
 Mocks the VLM `tokenize/generate/decode` contract, builds a synthetic 3-shot video, and verifies
 shot detection, per-shot records, distinct usable prompts, JSON validity, robust reply parsing, and
-example-workflow widget order. Runs on CPU in seconds; CI runs it on every push.
+example-workflow widget order. Runs on CPU in seconds; CI runs it on every push. (Covers Node 1; Node 2 needs a real ComfyUI with `comfy_api`.)
 
 ## Honest limits
 
 - Description/prompt quality = your VLM's quality. It describes what it sees; it does not invent.
-- Visual production only — no audio/BPM analysis, OCR, or subtitle export (out of scope for one node).
+- Visual production only — no audio/BPM analysis, OCR, or subtitle export. Node 2 deliberately does not manage reference audio in v1 (see the wiring contract above).
 - Shot detection is content-agnostic but conservative on extreme slow dissolves; tune `sensitivity`.
 
 ## Credits & license
 
 - Method concept: [rea-video](https://github.com/JuneYaooo/rea-video) by [JuneYaooo](https://github.com/JuneYaooo) (Apache-2.0) — the open VIDEO.md breakdown format and the `made_of` label set.
 - Built on ComfyUI's native VLM text-encoder path (`comfy_extras/nodes_textgen.py`).
+- H3 Ref2VA prompt format: the official [MiniMax-H3](https://github.com/MiniMax-AI/MiniMax-H3) `skills/h3-prompt-writing` reference.
 
 MIT — see [LICENSE](LICENSE).

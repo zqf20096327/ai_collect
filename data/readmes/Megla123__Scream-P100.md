@@ -28,7 +28,9 @@ Inkling 2 Mini (`ink2`, exact): **~84 tok/s writing · ~100 tok/s Koda edits · 
 > did 13 / 143 on the same cards. **A chat keeps its place:** the next turn reads only its new messages (0.76 s to the first
 > byte instead of ~20 s on a 16k chat), other conversations wait in RAM, and **since 23 Nov such short reads are 18-22 %
 > faster** (128 new tokens in 336 ms instead of 409). **And since 23 Nov on one P100 too** ([`ink2_1c`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#one-p100-ink2_1c-23-nov)): 40 tok/s
-> writing exactly within 8 GB of RAM, 48 with a lossy option within 6 GB. On branch [`inkling2`](https://github.com/Megla123/Scream-P100/tree/inkling2): [what it is and how to run it](#-inkling-2-mini-an-engine-of-its-own).
+> writing exactly within 8 GB of RAM, 48 with a lossy option within 6 GB. **And since 24 Nov several chats at once** (test
+> builds [`ink2_tpb` / `ink2_pp`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#several-conversations-at-once-ink2_tpb-ink2_pp-24-nov)): 121-136 tok/s in all for 2-4 agents, 162-166 for 6,
+> every answer the same as alone. On branch [`inkling2`](https://github.com/Megla123/Scream-P100/tree/inkling2): [what it is and how to run it](#-inkling-2-mini-an-engine-of-its-own).
 
 > 🧪 **Tencent Hy4 flash on the same two P100s**, with an engine of its own: 27 tok/s writing, 337 tok/s reading (442
 > with f16 sums). A test build on branch [`hy4-test`](https://github.com/Megla123/Scream-P100/tree/hy4-test):
@@ -235,6 +237,20 @@ functions like two cards, within **8 GB of RAM** (6.9 GiB used). `INK2_LOSSY=1` 
 to NVFP4: **48.0 tok/s** within **6 GB** (5.3 GiB used), 43 of 45 functions. No drafter on one card (it did not pay).
 [Details](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#one-p100-ink2_1c-23-nov).
 
+[![Inkling 2 Mini: several chats at once on two Tesla P100](docs/inkling2-multi-scream-p100.jpg)](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#several-conversations-at-once-ink2_tpb-ink2_pp-24-nov)
+
+**Several chats at once** (24 Nov, two test builds, `INK2_MULTI=tpb|pp bash engine-inkling2/run.sh DATA`): agents no longer
+wait for each other's answers. Each conversation gets a slot of its own on the cards (its KV cache and states), and its
+output is the same alone and beside the others, token for token and logit for logit.
+
+- **`ink2_tpb`** keeps production's layout (both cards on every layer) and batches the writing of up to 4 conversations
+  through one pass over the experts: **121 / 134 / 136 tok/s** in all with 2 / 3 / 4 agents instead of ~85 one after
+  another, while a single chat stays bit for bit `ink2_v1` (86 tok/s).
+- **`ink2_pp`** is a pipeline: half of the layers on each card, so the two cards work on different conversations at once:
+  **148 tok/s** with 4, **162-166** with 6.
+
+No pictures or parked conversations in these builds yet. [Details](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#several-conversations-at-once-ink2_tpb-ink2_pp-24-nov).
+
 ```bash
 git clone -b inkling2 https://github.com/Megla123/Scream-P100.git && cd Scream-P100
 bash engine-inkling2/build.sh && bash engine-inkling2/setup.sh /data/inkling2
@@ -314,7 +330,7 @@ settles. What has and has not been tested is in [Known limitations](docs/GUIDE.m
 | [tune/README.md](tune/README.md) | `check.py` and `tune.py`: diagnose and tune your own machine |
 | [Branch `poc-4x-p100`](https://github.com/Megla123/Scream-P100/tree/poc-4x-p100/docs/POC-4X.md) | ⚠️ **Unverified proof of concept**, never run on four cards: a build for four P100 behind one PCIe switch (`build.sh --4x`) |
 | [Branch `m40-2x`](https://github.com/Megla123/Scream-P100/blob/m40-2x/docs/M40.md) | ⚠️ **Test build** for two Tesla M40 24 GB (sm_52), measured on one machine only: IQ3_XXS, 256k, 32 GB of RAM (`build.sh --m40`) |
-| [Branch `inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md) | Thinking Machines' Inkling 2 Mini on the same two P100, an engine of its own (`ink2`), measured on one machine only: the whole model in VRAM, exact, ~84 tok/s writing, ~965 tok/s reading, 256k or 512k context, pictures, a chat's next turn in under a second (`engine-inkling2/`); also on **one P100** (`ink2_1c`): 40 tok/s writing within 8 GB of RAM, 48 lossy within 6 GB |
+| [Branch `inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md) | Thinking Machines' Inkling 2 Mini on the same two P100, an engine of its own (`ink2`), measured on one machine only: the whole model in VRAM, exact, ~84 tok/s writing, ~965 tok/s reading, 256k or 512k context, pictures, a chat's next turn in under a second (`engine-inkling2/`); also on **one P100** (`ink2_1c`): 40 tok/s writing within 8 GB of RAM, 48 lossy within 6 GB; **several chats at once** (test builds `ink2_tpb` / `ink2_pp`): 136 tok/s in all with 4 agents, 162-166 with 6 |
 | [Branch `hy4-test`](https://github.com/Megla123/Scream-P100/blob/hy4-test/docs/HY4.md) | ⚠️ **Test build** for Tencent Hy4 flash on the same two P100, an engine of its own, measured on one machine only: IQ3_XXS, 64k, 96 GB of RAM, 337 / 442 tok/s reading (`engine-hy4/`) |
 | [NOTICE.md](NOTICE.md) · [docs/PROVENANCE.md](docs/PROVENANCE.md) · [docs/upstream-v0.2.10.diff](docs/upstream-v0.2.10.diff) | What is ours and what is Strata's, file by file and line by line |
 
@@ -322,6 +338,21 @@ Our scripts and docs refer to sections as *(README, "Section")*. Those sections 
 
 ## 📰 News
 
+- **24 Nov 2026 (morning):** 🦑 **Inkling 2 Mini reads 3 % faster on every load** on branch [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#two-cards-on-the-one-card-sources-the-exchange-by-numa-node-p38-p41-24-nov)
+  (p38-p41, the same bits). On a two-socket server with a card on each, the reading exchange's page-locked buffers landed on
+  whichever NUMA node the loading thread ran on, and reading 4k / 30k prompts was 947 / 828 or up to 984 / 851 tok/s by the
+  load; the engine now allocates each card's buffers on that card's node (`INK2_NUMA`, it prints where they landed): 980-984 /
+  851 on every load. Writing with drafts after a 30k prompt is 1.7 % faster (a draft window's attention rows side by side),
+  and two cards now run on the one-card build's sources with every expert in VRAM.
+- **24 Nov 2026:** 🦑 **Inkling 2 Mini: several chats at once** on branch [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#several-conversations-at-once-ink2_tpb-ink2_pp-24-nov),
+  two test builds. Until now the engine wrote for one request at a time, and a second agent waited for the first answer.
+  `ink2_tpb` keeps production's layout and gives each conversation a slot of its own on both cards; the writing pieces of
+  up to 4 conversations share one pass over the experts and the dense matrices, while each conversation's attention and
+  convolutions run with the rows it would have alone, so no sum changes. 1 / 2 / 3 / 4 agents: 86 / 121 / 134 / 136 tok/s
+  in all (~85 one after another before); a single chat is bit for bit `ink2_v1`, and a long read no longer stalls the
+  writers (first token after 0.6-1.3 s, 4.5-6.8 without interleaving the read). `ink2_pp` puts half of the layers on each card and passes the
+  hidden state between them, so the cards work on different conversations: 61 / 108 / 148 tok/s with 1 / 2 / 4, 162-166
+  with 6. In both, every conversation's tokens and logits are the same alone and together.
 - **23 Nov 2026 (late evening):** 🦑 **Inkling 2 Mini: reasoning effort low by default** on branch [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#reasoning-effort-low-by-default-23-nov).
   A request that names no effort (Open WebUI sends none) now gets low (0.2) instead of 0.9: on our quality sets low gave
   45/45 functions in 29.6k tokens, medium (0.7) 42/45 in 52.0k with 3 empty answers. Effort none without tools answers

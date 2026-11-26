@@ -81,7 +81,7 @@ How claude-mem-lite differs from the major neighbors in the LLM-memory space (ve
 - **Episode batching** -- Groups related file operations into coherent episodes before LLM encoding
 - **Error-triggered recall** -- Automatically searches memory when Bash errors occur, surfacing relevant past fixes
 - **Proactive file history** -- When editing a file, automatically shows relevant past observations for that file
-- **Session summaries** -- written at every Stop (the assistant's final report when it has Done / Not done sections, else — when the final reply has no report section at all — its first 120 characters, else the first prompt and recent observation titles), then upgraded by a background model summary when the session has observations
+- **Session summaries** -- written at every Stop (the assistant's final report when it has Done / Not done sections — or the Changes / Open items parts of a `## Report`, 变更 / 遗留 in a `## 汇报` — else — when the final reply has no report section at all — its first 120 characters, else the first prompt and recent observation titles), then upgraded by a background model summary when the session has observations
 - **Project-scoped context** -- Injects recent memory into `CLAUDE.md` and session startup for immediate context
 - **Observation types** -- Categorized as `decision`, `bugfix`, `feature`, `refactor`, `discovery`, or `change`
 - **Importance grading** -- LLM assigns 1-3 importance levels (routine / notable / critical) to each observation
@@ -238,6 +238,37 @@ rm -rf ~/claude-mem-lite/   # unhidden data dir from before the first release (n
   managed/
     repos/               # Shallow-cloned source repos
 ```
+
+## Upgrading to 6.37.0
+
+**PreToolUse recall ranks a file's observations by write time before citation history; nothing to
+run, and the schema version stays 49.** To go back, set `CLAUDE_MEM_PRETOOL_RECENCY_FIRST=off` or
+pin `claude-mem-lite@6.36.0`.
+
+- **When several observations match the file being read or edited, write time now comes before
+  citation history**, which only breaks a tie between observations written in the same
+  millisecond. As before, observations with a lesson come before those without one, and matches
+  from the events table come after the observations. Read shows at most one lesson and Edit at
+  most three, so on a file with several matches the ones shown can change. Search and prompt-time
+  injection keep their ranking.
+- **The detail doc changes one line** to say where citation still ranks.
+- See CHANGELOG.md.
+
+## Upgrading to 6.36.0
+
+**A new `defer update` command, and the steering block lists the CLI write forms; nothing to run,
+and the schema version stays 49.** To go back, pin `claude-mem-lite@6.35.6`.
+
+- **`defer update D#N --title T --detail T --priority 1|2|3`** changes an open deferred item in
+  place (any one flag is enough); the id stays.
+- **The steering block gains the CLI forms for `defer update`, `save --closes-deferred`,
+  `defer drop --reason` and `save --supersedes`.** The first session refreshes the block, so a
+  `CLAUDE.md` that carries it shows a two-line change; `CLAUDE_MEM_NO_TEMPLATE_REFRESH=1` keeps it
+  as it is.
+- **`save`, `defer add`, `activity save`, `import-jsonl`, `verify-apply` and `restore`, given
+  `--project .` / `current`, are refused inside Claude Code's `projects/` folder
+  (`~/.claude/projects/` by default).**
+- See CHANGELOG.md.
 
 ## Upgrading to 6.35.0
 
@@ -1278,8 +1309,4 @@ claude-mem-lite.
 | `MEM_QUIET_HOOKS` | Low-noise hooks. `1` drops the `File Lessons` / `Key Context` sections from SessionStart injection, the lesson suffix from `[mem] Related memories`, and the `WHEN TO USE` / `Decision rules` blocks from MCP server instructions. IDs and the `Recent` table still surface so `mem_get(ids=[…])` remains reachable. Intended for users running the invited-memory adopt path or who otherwise want minimal auto-injection. **Since v2.82.0 this env no longer gates auto-adopt — use `MEM_NO_AUTO_ADOPT=1` for that.** | _(disabled)_ |
 | `CLAUDE_MEM_SESSION_EVENTS` | `1`/`on` restores the SessionStart `### Key Events` section (recent high-importance rows from the `events` table). **Off by default since v6.13.0**: an audit of 30 events read 2 accurate and 16 wrong. The UserPromptSubmit events block and PreToolUse recall are query-matched and stay on; `mem_search` still reaches every event. | _(off)_ |
 | `CLAUDE_MEM_STARTUP_RECENT_ROWS` | Rows in the SessionStart `### Recent` table: of the rows the token budget picks, the project's own first and then other projects' (each newest first). `0` hides the table. Was the whole pick before the injection-budget change (7–13 rows per SessionStart table on the corpus it was measured on, mean 9.4). | `5` |
-| `CLAUDE_MEM_DASHBOARD_EVENTS` | `1` puts the `💡 mem events: N entries` count back on the SessionStart dashboard (dropped in the injection-budget change: the model never ran `activity` from it on the corpus measured). | _(off)_ |
-| `CLAUDE_MEM_SUMMARY_TAIL` | `0`/`off` stops Stop from using the head of the final reply (first 120 characters, code blocks and line-leading markers removed) as a session's Completed line when that reply has no Done / Not done / Failed / Uncertain section; Completed then falls back to observation titles, as before v6.18.0; a line already written gives way to the titles at the session's next turn. A later reply under 400 characters does not replace an earlier one. | _(on)_ |
-| `CLAUDE_MEM_EPISODE_INPUT_FILTER` | What the episode summarizer may learn from. A subagent's tool calls stay out of the episode buffer unless they edit a file inside the project, and mutation probes (mutate → RED run → restore) and the agent's own failing inline scripts (a patch's `anchor not found`) are dropped before a window is saved or summarized — replayed over the 30 audited events, this removes 3 of the 16 that were wrong outright; with `CLAUDE_MEM_LESSON_GROUNDING` none of the 16 lessons is injected. `off` restores the unfiltered input. | _(on)_ |
-| `CLAUDE_MEM_BASH_RECALL` | File recall before a Bash command that views (`cat`, `sed -n`, `head`…) or writes (`sed -i`, `cat > f`, a python patch…) a file, like the Read / Edit recall. A bash prefilter keeps Node from starting for other commands. `off` disables this leg only. | _(on)_ |
-| `CLAUDE_MEM_PRETOOL_PATH_PRECISION` | `off` restores the name-only file match of PreToolUse recall. **On by default** (R3 O1): a lesson recorded for a same-named file in another directory of the project (`src/mcp/server/mod.rs` when you edit `src/snapshot/mod.rs`, the root `README.md` when you edit `tasks/x/README.md`) is not injected; bare names, Claude Code worktree copies, paths outside the project, spellings that cannot be 
+| `CLAUDE_MEM_DASHBOARD_EVENTS` | `1` puts the `💡 mem events: N entries` count back on the SessionStart dashboard (dropped in the injection-budget change: the model never ran `activity` from it on th

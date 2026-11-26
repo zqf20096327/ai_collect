@@ -27,13 +27,12 @@
 
 ## Highlights
 
-1. **One Leader drives development and review** — You state the goal once. The Leader opens cards, dispatches workers, watches each one finish, verifies the deliverable and organizes review. Your attention goes back to "what do I want" instead of "which agent is stuck"; the target is ten features in flight at once.
-2. **A right SidePanel board: see who is working at a glance** — One board per project. Each card carries its executor slot and a live status light, its note renders as Markdown, its links are editable in place, and the detail footer can delete the card. Click a card for the spec (goal, scope, acceptance, links), click a slot to drill into that agent's session and keep talking; worker reports arrive as Markdown-rendered agent bubbles; dispatched task briefs arrive as user-style bubbles whose body uses the same Markdown pipeline as assistant content; single newlines merge per Markdown, so use blank lines or Markdown syntax for a line break.
-3. **Arrange your agents however you want** — Two files do the arranging. `LEADER.md` holds the Leader's prompt and this project's orchestration rules: boundaries, dispatch requirements, acceptance criteria. `SLOTS.md` gives each worker role its own rules (dev / review / …). Both are evaluated before every model request and appended only when their text changes, so editing a file changes behavior without recreating sessions.
-4. **Many projects in parallel, one Leader each** — Adding a project binds a leader session to it, and the project tree lists the workers that Leader spawned; rows can be dragged to reorder, and deleting a project only drops the record while keeping the folder and the sessions (dsh workspaces are untouched). Projects stay out of each other's way. Swap in a new Leader and the existing workers plus undelivered reports move over, so it can dispatch immediately.
-5. **The `leader-mode` skill: an orchestration protocol for the Leader** — Not "you are a tech lead". Staged playbooks across discussion → design → implementation and delivery → review → merge, plus guidance on parallel collaboration and handoff.
-6. **Read back what a worker did, without waking it** — `read_worker_session` reads a worker's session log directly and returns each turn's task, body, the tools it called and why anything failed. Read-only: it does not wake the worker and triggers no model call. The completion notice tells you what came out; this tells you how it got there, so debugging does not need another round.
-7. **A worker that goes quiet gets flagged** — When a Leader-dispatched turn produces no report for 15 minutes, a plain-text background patrol notice (prefixed with 【后台巡查】) arrives with the session id, the card it holds, how long it has been silent, its last report and a copy-pasteable read-back call. At most one every 15 minutes: no polling, and no pretending it is still alive.
+1. **One Leader drives development and review** — state the goal once: it opens cards, dispatches workers, watches each one finish, checks the deliverable and organizes review. Target: ten features in flight at once.
+2. **A board that shows who is working** — one per project, as a **Work** list or a **Cinematic** workflow map. Cards carry the executor slot and a live status light; click a card for its spec, or a slot to drill into that agent's session and keep talking.
+3. **Arrangement lives in two files** — `LEADER.md` holds the Leader's prompt and this project's rules, `SLOTS.md` gives each worker role its own. Edits apply on the next request, with no session rebuild.
+4. **Many projects in parallel, one Leader each** — adding a project binds a leader session and lists its workers; deleting it keeps the folder and sessions, and a new Leader inherits the workers plus undelivered reports.
+5. **A protocol skill, not a persona line** — `leader-mode` stages the work from discussion through design, delivery, review and merge, with playbooks for parallel collaboration and handoff.
+6. **A stall surfaces instead of hanging** — a worker with no report for 15 minutes triggers a background patrol notice (【后台巡查】) carrying its card, last report and a copy-pasteable read-back call; `read_worker_session` then replays what it did, read-only and without waking it.
 
 ## Install
 
@@ -55,7 +54,7 @@ Desktop uses its own profile (`$DSH_HOME/profiles/desktop`), separate from `web`
 
 On Windows / Linux, use `runtime/cli/bin/dsh` inside the installation directory. The app reads the profile only at startup, and only one version can be mounted at a time. `DSH_HOME` must be absolute or start with `~/`. Sessions, projects, and cards are shared with `web`; plugin packages and activation are separate.
 
-For development inside this repository, `npm run desktop` mounts the current worktree, rebuilds the bundle and launches the app; `-- --remove` unmounts it.
+Development: `npm run desktop` uses an isolated root (`.dev/desktop-home`); `npm run desktop:prod` uses a shadow root (`.dev/desktop-prod-home`) linking sessions/cards to `~/.dsh`; online profile untouched. Both run local code; direct launches use the installed version. `-- --remove` cleans its root; `-- --remove --remove-mount` removes a legacy mount.
 
 ### Web install
 
@@ -73,12 +72,18 @@ For pinning a version, removing it, development installs, or trying it without a
 ## Preview
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/fengshenx/dsh-leader-agent/main/docs/assets/readme/board.png" alt="dsh-leader-agent: the project tree on the left, the Leader's conversation in the middle, the delivery board on the right" width="1200">
+  <img src="https://raw.githubusercontent.com/fengshenx/dsh-leader-agent/main/docs/assets/readme/board.png" alt="Work mode: the project tree on the left, the Leader's conversation in the middle, the delivery board as a list on the right" width="1200">
 </div>
 
-Left: projects and the workers each Leader spawned. Center: the Leader's session — the task, the dispatch, the worker reporting back, the verdict. Right: the delivery board for the project, with one card per task and a slot chip per executor. You can see the agents that are working, click one to drill into its session and talk to it directly, without going through the Leader.
+**Work mode (default).** The plain list: one card per task with a slot chip per executor. Left: projects and their workers. Center: the Leader's session — task, dispatch, report, verdict. Right: the board; click an executor to open its session.
 
-The screenshot shows a real working session.
+<div align="center">
+  <img src="https://raw.githubusercontent.com/fengshenx/dsh-leader-agent/ab19c6307736fc21675bbac2847dd9bce3bf7a81/docs/assets/readme/board-cinema.png" alt="Cinematic mode in the dark theme: the delivery board as a workflow map, with cards on a trunk and executors on animated branches" width="1200">
+</div>
+
+**Cinematic mode.** The same board as a workflow map: cards on a trunk, one branch per executor; only a running branch animates. Built for demos and social sharing. Shown in the dark theme; the light theme uses electric-blue lines.
+
+Switch under **Settings → Leader Agent → Task board**; the choice is stored per instance. Work-mode shot is a real session; cinematic shot is the browser e2e fixture (real host + local mock).
 
 ## How it runs
 
@@ -115,13 +120,13 @@ Three mechanisms make this more than "a smarter prompt":
 
 1. **Add a project.** In the left sidebar's Projects section, click Add project and pick a directory. The project is created immediately and bound to a leader session; clicking the project row opens that Leader. Selection comes in two layers: the whole row only lights up for the current Leader session, while opening a worker lights the row-start glyph and puts the row highlight on that worker's own session row. The slot at the row start shows the host's `apps-add-outline` glyph by default (three cells plus a plus sign; it replaces the host's folder icon so projects and workspaces are not the same shape in the sidebar): while the Leader is running it becomes a spinner (the Leader has no row of its own, so this holds whether the project is expanded or collapsed), and when the project is collapsed with a worker running under it, it becomes a spinner too — once expanded, each worker carries its own spinner.
 2. **Load the protocol.** In the leader session, have the model load `leader-mode`. It reads `playbooks/program.md` first, then the playbook for the current stage.
-3. **Dispatch.** `spawn_worker` requires `name` (a short role-task handle); `cardId` + `slot` optionally bind the card's executor slot in the same call. It returns a session id immediately and the worker has **not started yet**. Deliver the task body with `message_worker` (`sessionId` + `message`, optionally `rename`): the first message is what starts the turn, and a card-bound worker gets the card facts added to its request automatically, so you do not need to paste the spec. The worker's sandbox mode and approval policy are inherited from the Leader at dispatch time (an Auto Leader also passes on its review gate); the receipt states the permissions the worker actually runs with, and calls out full access by name. To see how it went about this turn — which tools it called, where it failed — use `read_worker_session` on it; that does not wake the worker.
+3. **Dispatch.** `spawn_worker` requires `name` (a short role-task handle); `cardId` + `slot` optionally bind the card's executor slot in the same call. Pass `model` / `effort` to run it on another model; defaults: the bound slot's `SLOTS.md`, then the Leader's. It returns a session id immediately and the worker has **not started yet**. Deliver the task body with `message_worker` (`sessionId` + `message`, optionally `rename`): the first message is what starts the turn, and a card-bound worker gets the card facts added to its request automatically, so you do not need to paste the spec. The worker's sandbox mode and approval policy are inherited from the Leader at dispatch time (an Auto Leader also passes on its review gate); the receipt states the permissions the worker actually runs with, and calls out full access by name. Use `read_worker_session` to see the turn's tools and failures without waking it.
 4. **Record task facts.** `create_card` opens a card (`title` required), `update_card` edits one (content changes carry `expectedRevision` for optimistic concurrency; links can be replaced wholesale with `links` or merged by id with `addLinks`), `list_cards` reads them. Links are deliverable entry points — PRs, issues, docs, assets — not comment or inline-comment anchors (`#issuecomment-` / `#discussion_r` / `#pullrequestreview-`). Comments are process evidence; write them in the report body. Cards belong to a project and are numbered globally; edits across projects are refused. `list_cards` and `create_card` are the Leader's alone, and plain sessions get neither; `update_card` is shared with workers. A worker may only edit a card it is bound to, and only derived fields such as `links` — `title` / `spec` / `status` / `kind` / `sortOrder` / `slots` belong to the Leader (the first two are the acceptance anchor and injected content, the rest organize the board and decide who executes). `read_card` is the worker's alone: it reads any card in the project, and with no `cardId` / `number` it reads the worker's single bound card — the way back to its task after compaction or a stale injection. Long specs come in 2000-character pages via `specOffset`.
-5. **Watch the board.** The Board tab in the right panel pulls cards for the project of the current session. It opens by itself when the leader creates a card; click a card for details (links editable, the card deletable, the rest read-only), click a slot chip to open the executor's session.
+5. **Watch the board.** The Board tab in the right panel pulls cards for the project of the current session. It opens by itself when the leader creates a card; click a card for details (links editable, the card deletable, the rest read-only), click a slot chip to open the executor's session. Work mode is the default; choose Cinematic under Settings → Leader Agent → Task board.
 
 ## Orchestration lives in files
 
-Three things, each covering one layer. All of them contribute prompt text only and grant no tool permissions:
+Three things, one layer each. None grant tool permissions; the two manuals contribute prompt text, and slots may set default models:
 
 | File / skill | For whom | What it holds |
 |---|---|---|
@@ -133,7 +138,7 @@ Three things, each covering one layer. All of them contribute prompt text only a
 
 The plugin only reads `LEADER.md`. A `COORDINATOR.md` that merely points at it is a compatibility shim for external tools that still look for the old file name; it is never injected, and you do not need it otherwise.
 
-Slot names are ASCII identifiers (lowercase letters, digits, underscore, hyphen, up to 32 characters); display names come from the `slots:` frontmatter at the top of `SLOTS.md`. A project without `SLOTS.md` falls back to the default two roles `dev` / `review`.
+Slot names are ASCII identifiers (lowercase letters, digits, underscore, hyphen, up to 32 characters); display names come from the `slots:` frontmatter at the top of `SLOTS.md`. A project without `SLOTS.md` falls back to the default two roles `dev` / `review`. Slots may set default `model` / `effort`; dispatch otherwise uses the Leader's model, fixed at spawn.
 
 The `init-leader-agent` skill handles project setup: it merges the repository's engineering conventions into a managed block of the target project's `AGENTS.md`, then writes `LEADER.md` (how the Leader drives this project) and `SLOTS.md` (executor roles) from the bundled skeletons. Re-running only replaces the managed block, and both manuals are read before editing. An empty directory gets the TODO skeleton plus the three questions still unanswered — project facts are never invented.
 

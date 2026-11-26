@@ -117,9 +117,9 @@ Basile has no MCP route in this plugin yet: French B2B data always needs
 Without either, everything still runs in dry run: you get the list, the copy and the
 sequence as files, nothing is sent and nothing is charged.
 
-The whole pipeline runs through the API, campaign creation and launch included. Some
-of the configuration endpoints are not in the public documentation yet, so treat them
-as not contractual for now. See [docs/SETUP.md](docs/SETUP.md).
+The whole pipeline runs through the API, campaign creation and launch included, and
+every route it uses is in the public reference at https://docs.emelia.io. See
+[docs/SETUP.md](docs/SETUP.md).
 
 **Staying up to date.** This repository moves. Ask for an update check at any time, or
 run it yourself:
@@ -162,8 +162,8 @@ Then, once you trust it:
 | `/outreach find-phone <list>` | Find direct mobile numbers |
 | `/outreach verify <list>` | Verify the addresses you brought yourself, not the ones Emelia found |
 | `/outreach enrich <list>` | Find what is missing, verify only what needs it, decide row by row |
-| `/outreach write <angle>` | Subjects, openers, follow-ups, break-up |
-| `/outreach personalize <list>` | Icebreakers and AI variables per contact |
+| `/outreach write <angle>` | The first message for every contact, follow ups shared or personalised |
+| `/outreach personalize <list>` | The sample read, every column counted, icebreakers for a shared text |
 | `/outreach sequence <spec>` | Steps, delays, conditions, A/B tests |
 | `/outreach deliverability` | SPF, DKIM, DMARC, warmup, volume, ramp plan |
 | `/outreach campaign <spec>` | Create and launch in Emelia |

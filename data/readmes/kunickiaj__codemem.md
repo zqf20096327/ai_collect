@@ -176,6 +176,17 @@ successful tools through `tool.execute.after` and failed tools through errored
 tool parts; Codemem normalizes both into the shared raw-event stream without
 double-counting repeated failure updates.
 
+OpenCode 2 Code Mode can expose individual nested tool results through the
+plugin hook. Codemem records their call IDs and assistant message IDs when
+available. OpenCode does not expose a parent call ID or guarantee a terminal
+hook for an interrupted child. Codemem excludes OpenCode wrappers that report
+memory calls from observer input. Those wrappers and their children may still
+appear in raw events, subject to capture settings.
+
+On OpenCode 2.4.1 and later 2.x releases, the plugin pins the memory search
+index and batch fetch signatures in the Code Mode catalog. Other tools remain
+discoverable, and tools configured for direct calls keep that exposure.
+
 OpenCode 1 also preserves verified delegation provenance for individual task briefs.
 A proven brief-only batch stays in raw storage without an observer call or learned
 memory; later findings recover bounded earlier instructions from the same raw stream.
@@ -207,7 +218,7 @@ their existing behavior. See
 
 2. Restart Claude Code.
 
-The plugin bundles its MCP configuration and capture/context-injection hooks, and starts MCP with the TS CLI (`codemem mcp`). No preliminary `codemem setup --claude-only` command or global CLI install is required. The prerequisites and observer-access requirements above still apply.
+The plugin bundles its MCP configuration and capture/context-injection hooks, and starts MCP with the TS CLI (`codemem mcp`). No preliminary `codemem setup --claude-only` command or global CLI install is required. The prerequisites and observer-access requirements above still apply. The plugin manifests on the repository's default branch pin the latest stable codemem release, so the plugin's MCP server and hook fallbacks run that version.
 
 <details>
 <summary>Claude and Codex adapter transport details</summary>
@@ -243,7 +254,7 @@ codex plugin add codemem@codemem
 
 2. Restart Codex.
 
-The Codex plugin bundles its MCP config (`codemem mcp`), hooks, and generated normalizer. Healthy hook ingestion uses Viewer HTTP directly and starts no `codemem` or `npx` child; those commands are fallback-only. A global install remains optional and reduces fallback latency. Validated targets are Codex CLI 0.135+ and current Desktop builds.
+The Codex plugin bundles its MCP config (`codemem mcp`), hooks, and generated normalizer. Healthy hook ingestion uses Viewer HTTP directly and starts no `codemem` or `npx` child; those commands are fallback-only. A global install remains optional and reduces fallback latency. Validated targets are Codex CLI 0.135+ and current Desktop builds. The plugin manifests on the repository's default branch pin the latest stable codemem release, so the plugin's MCP server and hook fallbacks run that version.
 
 **API-key Codex Desktop (marketplace unavailable):** When plugin installation is greyed out (non-subscription / API-key Desktop), configure codemem without the plugin surface:
 
@@ -317,6 +328,8 @@ PL->>OC: inject codemem context
 ```
 
 **Retrieval** combines keyword search via SQLite FTS5 with BM25 scoring and semantic similarity via sqlite-vec embeddings. Hybrid packs combine channel ranks rather than raw scores; recency and other preferences break exact ties. See the [ranking contract](docs/pack-ranking.md). Near-related memories stay fully rendered by default; use compact rendering or `CODEMEM_PACK_COMPRESSION=ids` only when you intentionally want ID-based expansion via `memory_get_observations`.
+
+In MCP and native OpenCode tools, pass `compact: true` to `memory_get_observations` to read the full text of selected memories without their metadata. Full rows are the default.
 
 **Injection** happens automatically. The plugin builds a query from the current session context (first prompt, latest prompt, project, recently modified files), asks the long-lived local viewer to build the pack, and appends the result to the latest user message via `experimental.chat.messages.transform`. Before sending prompt-derived POST data, it performs a payload-free viewer/profile handshake and rejects redirects. Retryable viewer transport, version, database-target, effective identity/config-target, compression-setting, embedding-setting mismatch, or pre-handshake structured request failures fall back to the existing CLI path; structured request errors become terminal only after compatibility is established. Prior injected message blocks are replayed byte-for-byte on later turns so provider prompt caches can keep the stable prefix. Set `CODEMEM_INJECT_SURFACE=system` to use the legacy system-prompt surface. Raw-event capture uses a separate queue-first path: Viewer durably accepts the envelope before SQLite ingestion and returns `202`; if Viewer is unavailable, OpenCode saves the exact envelope to a private local spool and retries it over HTTP without launching a per-event CLI process. Bounded database, identity, contract, and connection notices omit target values, paths, payloads, subprocess output, and addresses. Each retrieval and current-request cache reuse is recorded through the viewer-backed local evidence ledger with bounded memory identities, machine-readable reason codes, delivery status, and safe repository-relative working-set paths; retryable ledger transport failures retain the CLI fallback. Repository-contained absolute tool paths are converted to repository-relative `/` paths before retrieval; outside-repository, traversing, blank, and overlong paths are omitted. Prompts, pack text, memory content, and absolute paths are not copied into the ledger, historical message reconstruction creates no new attempts, and recording failures never block injection. After a plugin restart, usable context also remains fail-open when fresh ledger-identity repair fails; fallback bytes are injected without attributing delivery to either the conflicted or failed attempt.
 
@@ -586,7 +599,7 @@ For a direct share, choose **Create an invitation → Share exact Projects**:
 3. Confirm that existing memories **and future activity** from those projects will share, then send the one expiring invite.
 4. The recipient reviews and accepts the invitation, then confirms their Identity and device display names. Codemem establishes trust and Project access, then starts the first sync.
 
-Only the reviewed canonical projects are shared—similarly named or sibling projects are not included. A memory marked **Only me** stays local even when its project is shared. Removing access stops future sharing; memories already copied to another device may remain there.
+Only the reviewed canonical projects are shared—similarly named or sibling projects are not included. A memory marked **Only me** stays local even when its project is shared, and so does a memory brought in with `codemem memory import` that doesn't name the device that wrote it; the review says how many such memories stay behind. Removing access stops future sharing; memories already copied to another device may remain there. Copies of imported memories without a known author that earlier versions shared may remain on recipients' devices.
 
 ### Add, disable, or restore devices
 

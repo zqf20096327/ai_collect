@@ -5,15 +5,15 @@
 <h1 align="center">Graphite</h1>
 
 <p align="center">
-  A fast, keyboard-friendly desktop client for <b>24 databases</b>: SQL, NoSQL and cloud warehouses<br>
-  with an AI assistant and an MCP server for your own agents.
+  A free, open-source and keyboard-friendly database client (GUI) for <b>24 databases</b>: SQL, NoSQL and cloud warehouses<br>
+  on macOS, Windows and Linux, with an AI assistant and an MCP server for your own agents.
 </p>
 
 <p align="center">
   <a href="https://github.com/julioczn/graphite/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/julioczn/graphite?label=release&color=555"></a>
   <a href="https://github.com/julioczn/graphite/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/julioczn/graphite/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-555"></a>
-  <img alt="macOS and Linux" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-555">
+  <img alt="macOS, Windows and Linux" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-555">
 </p>
 
 <p align="center">
@@ -29,8 +29,10 @@
 - **SQLite, PostgreSQL, MySQL, MariaDB, TiDB, CockroachDB, GreengageDB and LibSQL/Turso** ([full list](#supported-databases)) with saved connections (passwords encrypted by the OS keychain), a
   **Test** button, **Import from URL** (paste `postgres://…`, `mysql://…`, `mongodb+srv://…`, JDBC, `DATABASE_URL=…`,
   libpq or ADO.NET strings and the form fills itself in) and a ready-to-use **demo** database.
+- **Several connections at once**: each open connection gets a tab on top and keeps its own tabs, results and
+  transaction. **Side by side** (`⌘/Ctrl+\`) shows two of them next to each other, handy for comparing databases.
 - **SQL editor** (CodeMirror 6): table/column autocomplete, current-statement highlight, several results per run,
-  inline errors. `⌘/Ctrl+Enter` runs everything or the selection, `⌘/Ctrl+Shift+Enter` runs the statement under the cursor.
+  inline errors, results capped at 100 rows by default (change it in the status bar). `⌘/Ctrl+Enter` runs everything or the selection, `⌘/Ctrl+Shift+Enter` runs the statement under the cursor.
 - **SQL snippets**: type a shortcut (`sel`, `ij`, `ups`, `ct`…) and pick it from autocomplete; templates adapt to each database.
 - **Table browser**: pagination, sorting, `WHERE` filter, structure tab (columns, indexes, DDL).
 - **Inline editing** of tables and query results (when the primary key is in the result), applied in a single
@@ -41,7 +43,8 @@
 - **ER diagram** with automatic layout, inferred relations, search, keys-only mode and SVG/PNG export.
 - **Backup and restore** in `.sql` / `.sql.gz` without `pg_dump` or `mysqldump`, streamed, with progress and cancel.
 - **Export** tables or full query results to CSV, JSON, JSON Lines or SQL `INSERT`s, with no row limit.
-- History per connection, saved queries, quick search (`⌘/Ctrl+P`), tabs.
+- History per connection, saved queries, quick search (`⌘/Ctrl+P`), tabs, and the full list of keyboard shortcuts
+  (`⌘/Ctrl+Shift+/` or the keyboard button).
 - **English, Português (Brasil) and Español**: follows the system language, switch any time from the globe icon.
 
 <details>
@@ -169,6 +172,16 @@ With **Use SSL**, pick how the server certificate is checked: *encrypt only*, *v
 host name* (the default for new connections). Point to a **CA certificate** (else the system's trusted CAs are used)
 and, for mutual TLS, a **client certificate and key** (PEM files; Graphite stores only their paths). Firebird encrypts
 its own protocol instead; MongoDB takes its TLS options in the connection URL (`tls=true&tlsCAFile=…`).
+
+### SSH tunnel
+
+For a database behind a bastion, tick **Connect through an SSH tunnel** and enter the SSH server, user and how to log
+in: a **private key** (empty = `~/.ssh/id_ed25519`, `id_ecdsa` or `id_rsa`; a passphrase if it has one), a
+**password**, or the **SSH agent**. The database's host and port are then as seen from the SSH server (`localhost` if
+the database runs on it). TLS still checks the certificate against the real host name. The SSH server's key is
+recorded on the first connection and a changed key is refused. Works for every engine reached at a host and port, and
+for MongoDB with a `mongodb://` URL (one host). The password or passphrase is saved encrypted like the database
+password and never goes to GitHub; the import from other tools brings the tunnel settings along.
 
 ### Updates
 

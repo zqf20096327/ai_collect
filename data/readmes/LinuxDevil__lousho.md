@@ -128,7 +128,7 @@ Requires Node.js 22 (22.19 or newer) or 24. To start a new project, see [Try it]
 To add Lousho to an existing project:
 
 ```bash
-npm install lousho ai@^7.0.0 zod @ai-sdk/openai@^4.0.0
+npm install lousho ai@^7.0.0 zod@^4.6.6 @ai-sdk/openai@^4.0.0
 ```
 
 See [Installation](https://lousho.com/installation#provider-packages) for other providers. `npx lousho doctor` checks your setup and prints a fix for anything missing.

@@ -154,11 +154,12 @@ curl -fsSL https://raw.githubusercontent.com/FAHTHIZ/oasis/main/scripts/install.
 | Method | Command |
 | --- | --- |
 | Windows (PowerShell) | `irm https://raw.githubusercontent.com/FAHTHIZ/oasis/main/scripts/install.ps1 \| iex` |
+| Android (Termux, experimental) | [Termux quick start](docs/ANDROID-TERMUX.md) · `curl -fsSL https://raw.githubusercontent.com/FAHTHIZ/oasis/main/scripts/install.sh \| sh` |
 | Homebrew | `brew tap fahthiz/oasis https://github.com/FAHTHIZ/oasis && brew install fahthiz/oasis/oasis-cli` |
 | From source | `git clone https://github.com/FAHTHIZ/oasis.git && cd oasis && npm install && npm install --global .` |
 | Desktop app | Installers for Windows, macOS and Linux on [GitHub Releases](https://github.com/FAHTHIZ/oasis/releases) (not yet code-signed, see [Desktop](docs/DESKTOP.md)) |
 
-One package gives you the terminal, the web app and every other interface below. It needs Node.js 22.19+ and Git. The install scripts take the latest stable release, ask before changing anything, and finish with `oasis doctor`. Every release ships the npm tarball, the desktop installers and a `SHA256SUMS` file. See [Downloads and releases](docs/RELEASES.md).
+One package gives you the terminal, the web app and every other interface below. The release installers need Node.js 22.19+; Git is optional for those installs and is needed for the from-source checkout (the POSIX installer can also use Git as a release-resolution fallback). Android installation through Termux is experimental; the installer can offer `pkg install nodejs` when Node.js is missing. The install scripts take the latest stable release, ask before changing anything, and finish with `oasis doctor`. Every release ships the npm tarball, the desktop installers and a `SHA256SUMS` file. See [Downloads and releases](docs/RELEASES.md).
 
 </details>
 
@@ -198,7 +199,7 @@ OASIS is not tied to one kind of task or one model vendor. The same runtime plan
     </td>
     <td width="50%" valign="top">
       <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/card-research-dark.svg"><img src="assets/readme/card-research-light.svg" width="100%" alt="Research card: three sources change from fetching to opened, and a citation of a page that was never fetched is flagged."></picture>
-      <br><b>Research.</b> Federated web search, page fetching and a real Chrome it can drive (<code>--chrome</code>). An evidence ledger flags any claim that cites a page the agent never opened. <code>/deep-research</code> fans a question out to parallel research agents and cross-checks their claims.
+      <br><b>Research.</b> Federated web search, page fetching and a browser it can drive (<code>--browser</code>). An evidence ledger flags any claim that cites a page the agent never opened. <code>/deep-research</code> fans a question out to parallel research agents and cross-checks their claims.
     </td>
   </tr>
   <tr>
@@ -218,7 +219,7 @@ OASIS is not tied to one kind of task or one model vendor. The same runtime plan
     </td>
     <td width="50%" valign="top">
       <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/card-computer-dark.svg"><img src="assets/readme/card-computer-light.svg" width="100%" alt="Browser and computer use card: a cursor clicks a form field, types a title, clicks Save, and the result is checked with a screenshot."></picture>
-      <br><b>Browser and computer use.</b> Drives Chrome over CDP, and (experimental) sees the screen and uses the mouse and keyboard on Linux, macOS and Windows with <code>--computer-use</code>, optionally inside a virtual desktop. See <a href="docs/COMPUTER_USE.md">Computer use</a>.
+      <br><b>Browser and computer use.</b> Drives a browser over CDP: <a href="docs/BROWSER.md">Obscura</a>, a headless engine that starts in about 35 ms with a fifth of Chrome's memory or less, with Chrome for windows and for sites that need it. It also (experimental) sees the screen and uses the mouse and keyboard on Linux, macOS and Windows with <code>--computer-use</code>, optionally inside a virtual desktop. See <a href="docs/COMPUTER_USE.md">Computer use</a>.
     </td>
   </tr>
   <tr>
@@ -378,7 +379,7 @@ By default OASIS works in the folder you start it in, on your machine, with appr
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/readme/providers-dark.svg">
-    <img src="assets/readme/providers-light.svg" alt="Three scrolling rows. Hosted: OpenAI, Anthropic, Google Gemini, Amazon Bedrock, Vertex AI, Azure AI Foundry, OpenRouter, Groq, DeepSeek, Mistral, xAI and any OpenAI-compatible API. Local: Ollama, LM Studio, llama.cpp, vLLM, OmniRoute, FreeLLMAPI, zero-budget mode, failover backups, prompt caching and spend limits. Plugs into: MCP servers, the MCP Registry, 48 app connectors, Claude Code plugins, Codex plugins, Gemini CLI extensions, skills, hooks, the GitHub Action and A2A agents." width="100%">
+    <img src="assets/readme/providers-light.svg" alt="Three scrolling rows. Hosted: OpenAI, Anthropic, Google Gemini, Amazon Bedrock, Vertex AI, Azure AI Foundry, OpenRouter, Groq, DeepSeek, Mistral, xAI and any OpenAI-compatible API. Local: Ollama, LM Studio, llama.cpp, vLLM. Gateways: first-party OASIS Route, OmniRoute and FreeLLMAPI. Also: zero-budget mode, failover backups, prompt caching and spend limits. Plugs into: MCP servers, the MCP Registry, 48 app connectors, Claude Code plugins, Codex plugins, Gemini CLI extensions, skills, hooks, the GitHub Action and A2A agents." width="100%">
   </picture>
 </p>
 
@@ -393,7 +394,16 @@ By default OASIS works in the folder you start it in, on your machine, with appr
 
 **Skills and plugins.** Skills, slash commands, hooks, subagents and MCP servers can be packaged as plugins. Existing Claude Code setups (`CLAUDE.md`, `.claude/agents`, skills, hooks, settings, `.mcp.json` and plugins) load without conversion, and Codex plugins and Gemini CLI extensions are converted on install. What loads and what does not is in [Compatibility](docs/COMPATIBILITY.md).
 
-**Free-tier routers.** [OmniRoute](https://github.com/cheaper-inference/OmniRoute) and [FreeLLMAPI](https://github.com/Azhan787/FreeLLMAPI) are built-in gateway providers. Run either on your machine with your own provider accounts and point `oasis connect` at it; zero-budget mode refuses any route it cannot prove is free. Each free tier has its own limits and terms. Setup: [OmniRoute](docs/CONFIGURATION.md#omniroute-gateway), [FreeLLMAPI](docs/CONFIGURATION.md#freellmapi-gateway).
+### First-party companions
+
+**[EXTREMIS](https://github.com/FAHTHIZ/EXTREMIS) — capability discovery and activation.** EXTREMIS complements the OASIS runtime with 64 Agent Skills, 6 workflows, 10 specialist-agent profiles, 45 built-in tools, progressive capability activation, a public skill finder and executable verification. Connect it to OASIS through its MCP server and install its small Agent Skills gateway skill; OASIS remains responsible for the agent loop, orchestration, permissions and subagent execution. EXTREMIS is a separate, optional project—not a bundled dependency or a replacement runtime. Setup: [First-party ecosystem](docs/ECOSYSTEM.md#extremis-capability-discovery-and-activation).
+
+```sh
+oasis mcp add extremis -- npx -y github:FAHTHIZ/EXTREMIS mcp
+npx skills add FAHTHIZ/EXTREMIS
+```
+
+**Inference gateways.** [OASIS Route](https://github.com/FAHTHIZ/OASIS-ROUTE) is the first-party self-hosted inference gateway, with encrypted provider connections, eligibility and spend policy, quota-aware model selection and failover. Its built-in terminal provider and dedicated setup choice shipped in OASIS `v0.12.0`; choose **OASIS Route** in `oasis setup`, or use the documented OpenAI-compatible endpoint. Route is a separate service and OASIS remains the agent runtime. The web app has a separate provider catalogue; use the terminal runtime for this integration. OASIS also has built-in provider entries for third-party [OmniRoute](https://github.com/cheaper-inference/OmniRoute) and [FreeLLMAPI](https://github.com/Azhan787/FreeLLMAPI). Gateways can expose free and paid upstreams, so `--zero-budget` does not assume a router is free. Setup: [OASIS Route](docs/CONFIGURATION.md#oasis-route-gateway), [OmniRoute](docs/CONFIGURATION.md#omniroute-gateway), [FreeLLMAPI](docs/CONFIGURATION.md#freellmapi-gateway). See also the [first-party ecosystem guide](docs/ECOSYSTEM.md).
 
 <details>
 <summary><b>Model, MCP and plugin commands</b></summary>
@@ -446,8 +456,8 @@ OASIS is a young project. Status labels for every part are in [Capabilities and 
 | Status | Areas |
 | --- | --- |
 | <img alt="Stable" src="assets/readme/status-stable.svg" height="24"> | Terminal and scripted runs, the self-hosted web app, sessions, checkpoints and undo, permission modes, bubblewrap and Docker sandboxes, MCP, Claude Code plugins, OpenAI-compatible, Anthropic, Gemini and local providers |
-| <img alt="Released, lightly tested" src="assets/readme/status-lightly-tested.svg" height="24"> | Subagents in parallel and in teams, scripted workflows, domain packs, the desktop app (installers not yet code-signed), editor integrations, Codex App Server and Cursor API compatibility, the SDK, GitHub Action and cloud runs, Telegram, Slack and Discord gateways, the Chrome browser tool, app connectors, image and speech tools |
-| <img alt="Unreleased (main)" src="assets/readme/status-unreleased.svg" height="24"> | On `main`, install from source: desktop computer use and virtual desktops (experimental), the control room, A2A, agent experience, the shared knowledge board, `mixture_of_agents`, Daytona, Modal, Apptainer and gVisor backends, more chat gateways, Honcho and Home Assistant |
+| <img alt="Released, lightly tested" src="assets/readme/status-lightly-tested.svg" height="24"> | Subagents in parallel and in teams, scripted workflows, domain packs, the desktop app (installers not yet code-signed), editor integrations, Codex App Server and Cursor API compatibility, the SDK, GitHub Action and cloud runs, Telegram, Slack and Discord gateways, the browser tool, app connectors, image and speech tools, the control room, A2A, agent experience, the shared knowledge board, `mixture_of_agents`, Daytona, Modal, Apptainer and gVisor backends, more chat gateways, Honcho and Home Assistant |
+| <img alt="Experimental" src="assets/readme/status-experimental.svg" height="24"> | Desktop computer use, virtual desktops and subagents with their own desktop |
 | <img alt="Not claimed" src="assets/readme/status-not-claimed.svg" height="24"> | Production readiness for untrusted code without OS isolation, results with paid frontier models, a hosted service, a published Terminal-Bench or SWE-bench score |
 
 Engineering benchmarks of the harness itself (tool-call repair, edit application, risky-command blocking, secret detection) and every recorded live run are kept for development in [Benchmarks](docs/development/BENCHMARKS.md) and [Real-world runs](docs/development/REAL-WORLD-RUNS.md). They are one-trial samples, not a ranking.
@@ -461,7 +471,7 @@ Engineering benchmarks of the harness itself (tool-call repair, edit application
 | [User guide](docs/USER-GUIDE.md) | [Architecture](docs/ARCHITECTURE.md) · [Task model](docs/TASK-MODEL.md) | [Capabilities and status](docs/CAPABILITIES.md) |
 | [First run](docs/FIRST-RUN.md) | [Agent network](docs/AGENT-NETWORK.md) · [Subagents](docs/SUBAGENTS.md) | [Changelog](CHANGELOG.md) |
 | [Workflows](docs/WORKFLOWS.md) | [Configuration](docs/CONFIGURATION.md) | [Contributing](CONTRIBUTING.md) |
-| [Terminal guide](docs/TERMINAL.md) | [Skills, hooks, MCP and plugins](docs/EXTENDING.md) | [Security](SECURITY.md) |
+| [Terminal guide](docs/TERMINAL.md) | [Skills, hooks, MCP and plugins](docs/EXTENDING.md) · [First-party ecosystem](docs/ECOSYSTEM.md) | [Security](SECURITY.md) |
 | [Interfaces](docs/INTERFACES.md) | [Execution backends](docs/EXECUTION-BACKENDS.md) | [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md) |
 | [Desktop app](docs/DESKTOP.md) | [Remote access](docs/REMOTE-ACCESS.md) | [Support](SUPPORT.md) |
 | [Downloads and releases](docs/RELEASES.md) | [Compatibility](docs/COMPATIBILITY.md) | [Brand guidelines](docs/BRAND.md) |

@@ -2,13 +2,20 @@
   <a href="https://journione.ai/"><img src="assets/journione-lockup.svg" alt="JourniOne" width="360"></a>
 </p>
 
-# JourniOne · Travel Journal Creator
+<h1 align="center">JourniOne · Travel Journal Creator</h1>
 
-**[English](README.md)** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [한국어](README.ko.md) · [Français](README.fr.md) · [العربية](README.ar.md)
+<p align="center">
+  <a href="https://skillhub.cn/skills/user_5cb1a0c9/lvxingcduan" title="SkillHub · 2026-11-25"><img src="https://img.shields.io/badge/SkillHub_downloads-8.5k-orange" alt="SkillHub · 8.5k downloads"></a>
+  <a href="https://skillhub.cn/skills/user_5cb1a0c9/lvxingcduan" title="SkillHub · 2026-11-25"><img src="https://img.shields.io/badge/SkillHub_AI_rating-4.8%2F5-orange" alt="SkillHub · AI rating 4.8/5"></a>
+  <a href="https://github.com/JourniOne-ai/JourniOne-Planning-Skills/releases/latest"><img src="https://img.shields.io/github/v/release/JourniOne-ai/JourniOne-Planning-Skills" alt="GitHub Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/JourniOne-ai/JourniOne-Planning-Skills" alt="MIT License"></a>
+</p>
 
-**Turn the places you dream of into a trip you can actually take.**
+<p align="center"><strong><a href="README.md">English</a></strong> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <a href="README.ko.md">한국어</a> · <a href="README.fr.md">Français</a> · <a href="README.ar.md">العربية</a></p>
 
-[Website](https://journione.ai/) · [Installation](INSTALL.md) · [Examples](EXAMPLES.md) · [FAQ](FAQ.md)
+<p align="center"><strong>Turn the places you dream of into a trip you can actually take.</strong></p>
+
+<p align="center"><a href="https://journione.ai/">Website</a> · <a href="INSTALL.md">Installation</a> · <a href="EXAMPLES.md">Examples</a> · <a href="FAQ.md">FAQ</a></p>
 
 Start with a travel idea. JourniOne helps you plan each day, find hotels that fit your route and budget, and bring everything together in a beautiful **Travel Journal—an interactive travel guide** you can explore and share like a flipbook. Spend less time piecing together advice, learn more about your destination, and make your travel budget go further.
 
@@ -81,3 +88,5 @@ Package version: **1.0.3**. See the [release checklist](RELEASE-CHECKLIST.md) fo
 Version **1.0.3** adds three planning-stage experience events. Reporting is enabled by default, can be disabled persistently, and does not capture chat content or installation/conversation counts. See [Privacy](PRIVACY.md) and [Changelog](CHANGELOG.md). The generation API and request schema are unchanged.
 
 [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Dependencies](DEPENDENCIES.md) · [Agent instructions](SKILL.md)
+
+[MIT](LICENSE) © 2026 JourniOne

@@ -10,16 +10,16 @@ Welcome to the Natural Language Processing (NLP) Course, an open-source initiati
 
  ## If you found this helpful, Please Start it to help other discover these tutorials ⭐
 
- <div>
-<h2>💖 Sponsors</h2>
-
-<p>We extend our heartfelt thanks to our incredible sponsors for their generous support and commitment to our mission. Their contributions make it possible for us to continue developing open-source educational content, AI learning tools, and community-driven projects.</p>
-
----
-
+ 
 ### 🙌 Become a Sponsor
 
-You can support this project by becoming a sponsor on **[GitHub Sponsors](https://github.com/sponsors/dr-mushtaq)** or via **bank transfer** — please contact me at 📧 [mushtaqmsit@gmail.com](mailto:mushtaqmsit@gmail.com).
+You can support this project by becoming a sponsor on  **Gumroad:** —  📧 [Gumroad:]( https://couresesteach.gumroad.com/l/SupportCoursesTeach). or via Patron
+
+[<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" width="200">](https://www.patreon.com/cw/coursesteach)
+
+Every contribution — big or small — helps sustain the development of **AI tools and Resources**, **AI-driven educational resources**, and **data science tools**.  
+Thank you for your generous support! 🌟
+
 
 
 ## **💡 How to Participate?**
@@ -392,6 +392,8 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Language AI & NLP by Jay Alammar](https://www.youtube.com/playlist?list=PLTx9yCaDlo1UlgZiSgEjq86Zvbo2yC87d)** - FREE
 - **[MyTechNotes](https://www.youtube.com/@mytechnotes86)** - FREE
 - **[AI Models Explained](https://www.youtube.com/playlist?list=PLOspHqNVtKAC-FUNMq8qjYVw6_semZHw0)** - FREE
+#### To Do List
+- **[LLM Resoruces](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/%F0%9F%93%9A%20LLM/LLM%20Resoruces.md)** - FREE
 #### Books
 - **[Speech and Language Processing by Dan Jurafsky and James H. Martin](https://web.stanford.edu/~jurafsky/slp3/)** - FREE
 - **[Foundational Large Language models & text generation](https://web.stanford.edu/~jurafsky/slp3/)** - FREE
@@ -429,6 +431,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Mastering LLM Techniques: Inference Optimization](https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization/)** - FREE
 - **[Mastering LLM Techniques: Text Data Processing](https://developer.nvidia.com/blog/mastering-llm-techniques-data-preprocessing/)** - FREE
 - **[Mastering LLM Techniques: Evaluation](https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/)** - FREE
+- **[Easy-Vibe AI Coding Guide from Scratch](https://datawhalechina.github.io/easy-vibe/en/stage-1/learning-map/)** - FREE
 
 #### Tutorial and  Videos
 - **[Natural Language Processing (NLP) with PyTorch](https://www.dataquest.io/blog/natural-language-processing-nlp-with-pytorch/)** - FREE
@@ -518,4 +521,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |✅[1-How to build your own LLM from scratch-Diagram](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/Understanding%20Large%20Language%20Model/How%20to%20build%20your%20own%20LLM%20from%20scratc.md)| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**✅-Queries, Keys, and Values**|[1](https://youtu.be/GubJ71dCQBk?si=EC6zvQ_qaClQFGvm) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**✅-Transformer Architecture**|[1](https://youtu.be/DYo3Y_93KnI?si=EA1-9fbKYWZFMQy2)[-2](https://drive.google.com/file/d/1HSGA0gxwR7buvcWTnoPZo2k1DWQHr0AN/view?usp=sharing) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
-|**✅-How Attention Mechanism Works in Transformer Architecture**| [**1**](https://youtu.be/KMHkbXzHn7s?si=3LXRNm9AilOwDlnA)[-2](https://drive.google.com/file/d/1d_-5PsDscAyq7DfzA-ya0MXRYJUja9fv/view?usp=sharing)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|[1](https://youtu.be/U
+|**✅-How Attention Mechanism Works in Transformer Architecture**| [**1**](https://youtu.be/KMHkbXzHn7s?si=3LXRNm9AilOwDlnA)[-2](https://drive.goog

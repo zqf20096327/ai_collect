@@ -186,6 +186,19 @@ git clone https://github.com/W3967/dsh-workflow-form.git
 
 两个都装会在工具列表里留下两个几乎相同的能力，模型随机挑，还会同时抢显存。在 DSH 里用插件就够了。
 
+## 命名与兼容说明
+
+| 标识 | 当前值 | 说明 |
+|---|---|---|
+| 仓库 / 包名 | `dsh-workflow-form` | 当前对外名称，对应 `package.json` 的 `name`。 |
+| 历史名称 | `dsh-comfyui-panel`、`krea2-panel` | 早期仓库与内部模块名；README 旧链接可能仍指向这些名称。 |
+| 路由前缀 | `/krea2/*` | 保留为兼容标识，不代表插件仅限 Krea 2。 |
+| Agent 工具 | `krea2_workflows`、`krea2_generate` | 名称保持不变；面向任意导入的工作流。 |
+| 插件 id | `krea2`（见 `cordis.patch.yml`） | 历史兼容 id；已有 profile 升级时不要改动，避免本地设置和预设失联。 |
+| 本地数据目录 | `~/.dsh/krea2-panel` | 历史目录名；设置、预设和参数值继续存在这里。 |
+
+内置预设确实是 Krea 2，但参数发现与表单生成面向 ComfyUI 里任意 API 格式工作流；`krea2` 前缀只是早期命名的遗留。
+
 ## 架构
 
 ```

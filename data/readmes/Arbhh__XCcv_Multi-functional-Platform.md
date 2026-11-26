@@ -69,7 +69,7 @@ pip install -r requirements.txt
 >
 > 全部不可用时输出英文指引，并调用 `tools\env_check.py` 打印中文诊断（列出每个候选
 > 是否可用及失败原因）。推荐在目标机器上写一行 `python_path.txt`，例如：
-> `C:\XCcv\venv\Scripts\python.exe`（该文件已加入 .gitignore，每台机器可不同）。
+> `<项目目录>\venv\Scripts\python.exe`（该文件已加入 .gitignore，每台机器可不同）。
 
 双击 `run_main.bat`（或 `python -m xccv.app`）打开主界面，按卡片进入各平台：
 

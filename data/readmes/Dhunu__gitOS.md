@@ -65,8 +65,9 @@ everything back, and ⌘1–⌘6 switch tabs while the tab bar is hidden.
 CLI you're already signed in to, with no API key needed, or an Anthropic API key. To sign in, run `claude`
 or `codex login` in Terminal.
 
-Tokens live in the macOS Keychain. Account switching is done with per-command `-c` flags, so
-`~/.gitconfig` and your existing keychain entries are never modified.
+Tokens and API keys are saved encrypted in `~/Library/Application Support/GitOS` (readable only by your
+macOS user), not in the Keychain, so updates never ask for your Keychain password. Account switching is done
+with per-command `-c` flags, so `~/.gitconfig` and your existing keychain entries are never modified.
 
 ## Updating
 
@@ -74,8 +75,10 @@ GitOS checks for new versions when it opens and every hour while it's running, a
 background. When an update is ready, **Restart to Update** appears in the sidebar, the GitOS menu and
 **Settings › General**. Nothing installs until you click it: if you quit instead, the update downloads again
 next time. You can turn the automatic check off in **Settings › General**, or check yourself with
-**GitOS › Check for Updates…**. Your accounts and settings are kept. After an update, macOS may ask to let GitOS
-read its saved tokens from the Keychain: click **Always Allow**.
+**GitOS › Check for Updates…** or the ⬇︎ button in the menu bar window. Both open a **Software Update**
+window that shows each step: checking, downloading, extracting, and ready to restart. Your accounts and settings
+are kept. The first time you open a version that moves tokens out of the Keychain, macOS may ask one last time to
+let GitOS read them; if you deny it, sign in again.
 
 You can also download the new `.dmg` from [Releases](https://github.com/Dhunu/gitOS/releases) and drag
 GitOS to Applications, choosing **Replace**.
@@ -83,8 +86,9 @@ GitOS to Applications, choosing **Replace**.
 ## Uninstalling
 
 1. Delete `GitOS.app` from Applications.
-2. Delete `~/Library/Application Support/GitOS` to remove your settings.
-3. In **Keychain Access**, delete the items named **GitOS GitHub token**.
+2. Delete `~/Library/Application Support/GitOS` to remove your settings and saved tokens.
+3. If you used an older version and never opened a newer one, also delete the items named
+   **GitOS GitHub token** in **Keychain Access**.
 4. If you installed the `gitos` command, delete it from `/opt/homebrew/bin`, `/usr/local/bin` or
    `~/.local/bin`.
 
@@ -94,7 +98,7 @@ GitOS to Applications, choosing **Replace**.
 ./scripts/build-app.sh            # → build/GitOS.app
 ./scripts/build-app.sh --install  # also copies to /Applications
 ./scripts/make-dmg.sh             # → build/GitOS-<version>.dmg to share
-./scripts/make-icon.sh            # re-renders Resources/AppIcon.icns
+./scripts/make-icon.sh            # re-renders Resources/AppIcon.icns from Resources/Brand/app-icon.svg
 ./scripts/release.sh 0.2.0        # publishes a GitHub Release that installed apps update to
 swift test                        # parser + real-git integration tests
 ```
@@ -105,21 +109,25 @@ Contributions are welcome. See the [contributing guide](CONTRIBUTING.md) to get 
 
 ## License
 
-GitOS is **source-available**, not open source in the OSI sense. All the code is here to read,
-build and change, under two licenses:
+GitOS is open source under the [GNU General Public License v3.0](LICENSE). You can use it for
+anything, including work, and you can read, change, build and share it, as long as anything you
+share that includes GitOS code is also under GPLv3 with its source.
 
-| Code | License | In short |
-|---|---|---|
-| Everything outside `ee/` | [PolyForm Noncommercial 1.0.0](LICENSE) | Free for personal, noncommercial use, and for charities, schools and public bodies. |
-| [`Sources/GitOS/ee/`](Sources/GitOS/ee) (AI review, PR triage) | [GitOS Commercial License](Sources/GitOS/ee/LICENSE) | Needs a GitOS Pro license to use. Free to build and change for development and testing. |
+If you build GitOS from source, every feature is unlocked. The signed app from
+[gitos.angelsaikia.com](https://gitos.angelsaikia.com) is free, with some Pro features that a
+paid license unlocks; buying it also gets you automatic updates and support.
 
-You need a commercial license from the author to:
+| Free (signed app) | Pro (signed app, 30-day trial) · or build from source |
+|---|---|
+| Changes, line and hunk staging, commits, co-authors | Unlimited GitHub accounts |
+| History, commit graph, branches, merge, fetch, pull, push | Pull requests, PR triage and CI checks |
+| Clone, stashes, SSH and GPG signing | Issues |
+| 2 GitHub accounts with folder rules | AI commit messages, PR descriptions and code review |
+| Conflicts: keep ours or theirs for the whole file | 3-way conflict editor, interactive rebase, worktrees |
+| GitOS theme, Glass and Flat, menu bar, `gitos` CLI | Every theme |
 
-- use GitOS for a business, including as an employee or as a contractor doing paid work, or
-- sell, rent or redistribute GitOS or builds of it.
+The GitOS name and icon are not covered by the GPL. See [TRADEMARK.md](TRADEMARK.md) before
+you share your own builds.
 
-Licenses are available at [gitos.angelsaikia.com](https://gitos.angelsaikia.com). The license
-files are what count; this table is only a summary.
-
-Versions up to and including 0.4.1 were released under the MIT License and stay available
-under it.
+Version 0.4.1 and earlier were released under the MIT License, and 0.4.2 under the PolyForm
+Noncommercial License. Copies of those versions stay available under those licenses.

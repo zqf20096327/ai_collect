@@ -2,7 +2,7 @@
 
 <img src="./public/logo.svg" width="92" height="92" alt="ProtoFlow AI Logo" />
 
-# ProtoFlow AI（原名 Alex）
+# ProtoFlow AI
 
 ### 开源 AI 原型设计工具 · 把需求做成能跑起来的业务原型
 
@@ -55,24 +55,24 @@
       <p>用自然语言描述业务，内置的 Hermes 协同引擎会主动识别模糊规则并向你提问澄清，随后输出模块目录、页面清单与物理表蓝图，经你确认后才批量生成，支持局部增量修改而不破坏既有设计。</p>
     </td>
     <td width="50%" valign="top">
-      <h3>02 · AST 双向画布与企业级物料库</h3>
-      <p>内置 Ant Design 风格宽屏栅格、多条件组合查询栏、主子表、抽屉弹窗、业务复合区块及沙箱自由组件。可视化画布拖拽、属性面板调参与底层 TSX DSL 实时无损同步。</p>
+      <h3>02 · AST 双向画布与 134+ 高上限物料</h3>
+      <p>内置无弹窗主从列表（Repeater）、多枚举状态泳道看板（Kanban）、排班日历（Calendar）、AI 洞察卡片、Bento 微型趋势指标卡、主子表、抽屉弹窗及沙箱自由组件；支持工程级品牌主题令牌（Design Tokens）与 TSX DSL 实时无损同步。</p>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>03 · ER 数据库建模与多页面共表</h3>
-      <p>配备 Navicat 风格可视化数据库设计器。在「新建订单」提交的数据立即出现在「订单台账」中；审批状态变更、采购转入库扣减余量、6 位小数算税公式在全工程内真实运转。</p>
+      <h3>03 · ER 物理表、Poka-Yoke 防错与 5 秒撤销</h3>
+      <p>配备 Navicat 风格数据库设计器，支持跨字段日期/库存上限防错（<code>minField</code> / <code>maxField</code>）、手机号/税号格式校验、多层外键 <code>RESTRICT / CASCADE / SET NULL</code> 保护、单号匹配二次确认及 <code>deleteRow('undo')</code> 5 秒原子撤销恢复。</p>
     </td>
     <td width="50%" valign="top">
-      <h3>04 · PC 管理后台 + 移动端同工程协同</h3>
-      <p>同一工程既能设计宽屏中后台管理系统，也能设计 App / 小程序页面（内置 iPhone 真机视口、底部胶囊导航、半屏抽屉与瀑布流物料），前后台天然共用一套物理表。</p>
+      <h3>04 · PC 后台 + iPhone 视口 + UI Stack 五态</h3>
+      <p>同一工程混排宽屏管理后台与 iPhone 现场端（含移动看板、周日程流、半屏领料抽屉），两端实时共表；顶部一键切换「理想 / 空白 / 加载 / 极值 / 异常」五态，极值压测文案严格展示隔离不污染底层数据。</p>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>05 · 12 类 ECharts 图表 + Mermaid 图谱</h3>
-      <p>原生集成柱状、折线、面积、饼图、环形、散点、雷达、仪表盘、漏斗、热力、矩形树图与桑基图，支持直接绑定工程物理表聚合计算；内置丰富的架构图、时序图与泳道图模板。</p>
+      <h3>05 · 12 类 ECharts 图表 + Axure / Figma 本地导入</h3>
+      <p>原生集成 12 类绑定物理表的 Apache ECharts 图表与 Mermaid 图谱；支持免装软件本机离线解析 <strong>Axure RP 9/11（<code>.rp</code>）</strong> 与 <strong>Figma（<code>.fig</code> 归档及链接同步）</strong>，并可按需由 AI 受控升维为数据驱动流式页面。</p>
     </td>
     <td width="50%" valign="top">
       <h3>06 · 需求便签、分屏笔记与闭环审计</h3>
@@ -137,7 +137,7 @@ flowchart TB
 
 ### 方式 A：下载安装包或本地源码启动设计器（免登录开箱即用）
 
-- **直接安装桌面端**：前往 [**ProtoFlow AI 官网下载页**](https://alex.xclubai.com/#download) 或 [**GitHub Releases**](https://github.com/EvanClub-Agent/protoflow-ai/releases) 下载对应系统的安装包（当前安装包文件沿用 `Alex-*` 命名，支持 macOS Apple Silicon / Intel `.dmg`、Windows `.exe`、Linux `.deb` / `.AppImage`）；或直接打开 [**浏览器在线沙盒**](https://alex.xclubai.com/demo/) 免下载体验 CRM 样板。
+- **直接安装桌面端**：前往 [**ProtoFlow AI 官网下载页**](https://alex.xclubai.com/#download) 或 [**GitHub Releases**](https://github.com/EvanClub-Agent/protoflow-ai/releases) 下载对应系统的安装包（新版 AppImage 使用 `ProtoFlow_AI-*` 命名，其他安装包沿用 `Alex-*`，支持 macOS Apple Silicon / Intel `.dmg`、Windows `.exe`、Linux `.deb` / `.AppImage`）；或直接打开 [**浏览器在线沙盒**](https://alex.xclubai.com/demo/) 免下载体验【星链设备售后维保与备件履约平台】多端共表活原型。
 - **从源码极速运行**（仅需 **Node.js 22+**，无需安装 Go、无需数据库、无需预先配 AI）：
 
 ```bash
@@ -159,9 +159,15 @@ npm run electron:start
 
 ---
 
-## 🐳 Docker Compose 私有化部署（3 步启动）
+## 🐳 Docker Compose 私有化部署（3 步启动 · 多架构 GHCR 镜像）
 
-如果团队需要将原型一键生成在线链接（如 `http://your-server:8088/p/xxx`）发给同事或客户在浏览器中交互体验，仓库内置了开箱即用的 `PostgreSQL 18 + Go API + Nginx Viewer` 编排配置：
+如果团队需要将原型一键生成在线链接（如 `http://your-server:8088/p/xxx`）发给同事或客户在浏览器中交互体验，仓库在 GitHub Container Registry（GHCR）提供了每次发版自动构建的 **`linux/amd64` + `linux/arm64` 多架构官方镜像**，搭配 `PostgreSQL 18` 开箱即用：
+
+| 容器服务 | 官方预编译镜像（支持 `amd64` / `arm64`） | 说明 |
+| :--- | :--- | :--- |
+| `api` | `ghcr.io/evanclub-agent/protoflow-ai-api:latest`<br/>（或固定版本 `:v0.0.10`） | Go 1.27 + Gin 发布鉴权、快照校验、远程 HTTP MCP（`/api/v1/mcp/:id`）与版本中心服务 |
+| `web` | `ghcr.io/evanclub-agent/protoflow-ai-web:latest`<br/>（或固定版本 `:v0.0.10`） | Nginx + 在线交互原型浏览端（含 UI Stack 五态切换、主题渲染、需求便签与版本管理台） |
+| `postgres` | `postgres:18-alpine` | 持久化分享快照、版本记录与发布元数据（启动时由 `api` 自动执行 SQL 迁移） |
 
 ```bash
 # 1. 复制环境变量配置（按需修改 POSTGRES_PASSWORD 与对外访问地址 PUBLIC_ORIGIN）
@@ -173,6 +179,15 @@ docker compose --env-file deploy/.env -f deploy/compose.yml up -d
 # 3. 检查健康状态（返回 ok 即部署成功）
 curl -fsS http://127.0.0.1:8088/healthz
 ```
+
+**平滑升级已有自托管服务**（拉取最新镜像并滚动重建，PostgreSQL 数据卷完整保留）：
+
+```bash
+docker compose --env-file deploy/.env -f deploy/compose.yml pull &&
+  docker compose --env-file deploy/.env -f deploy/compose.yml up -d
+```
+
+> 如需在生产环境锁定指定镜像版本，可在 `deploy/.env` 中设置 `PROTOFLOW_API_IMAGE=ghcr.io/evanclub-agent/protoflow-ai-api:v0.0.10` 与 `PROTOFLOW_WEB_IMAGE=ghcr.io/evanclub-agent/protoflow-ai-web:v0.0.10`。
 
 ### 在客户端连接你的自建服务
 
@@ -289,7 +304,7 @@ protoflow-ai/
 ├── deploy/                # Docker Compose 一键编排、Nginx 配置与 systemd 运维模板
 ├── website/               # 纯静态产品宣传与多平台下载官网
 ├── scripts/               # 物料契约编译、自动化测试与打包烟雾校验脚本
-└── tests/                 # 470+ 项前端、DSL 契约、桥接与恢复回归测试
+└── tests/                 # 600+ 项前端、DSL 契约、Poka-Yoke 防错、桥接与恢复回归测试
 ```
 
 | 常用命令 | 用途说明 |
@@ -310,7 +325,7 @@ protoflow-ai/
 
 <br/>
 
-- **如何导入 Axure 原型？** 将 Axure RP 9 或 RP 11 的 `.rp` 源文件拖到启动页或工作台，也可在启动页点击「导入 Axure 原型」。核对识别出的版本和逐页转换结果后，选择「导入为新工程」即可编辑并保存为独立的 `.pflow`。解析在本机进行，无需安装 Axure。可编辑文本、按钮、输入框、矢量图形、分组、静态表格的各个单元格、母版实例的子控件以及动态面板各状态。支持无条件点击中的当前窗口跨页跳转、即时显隐和指定动态面板状态切换。中继器、复杂交互等转换限制会显示在导入结果中。在「项目 AI」里选择 RP 迁移范围（单页、目录含子目录或全工程）。「只读分析」可盘点页面、字段和待确认的业务关系；「转换物料并生成表结构」会生成可编辑的任务草稿。发送后可核对原型表头与实际数据库字段的映射。确认后，优化版与原页保存在同一目录，表结构随工程保存。
+- **如何导入 Axure（`.rp`）与 Figma（`.fig` / 链接）设计稿？** 在欢迎启动页点击「导入设计稿（Figma · Axure RP）」或直接将 `.rp`（Axure RP 9 / 11）与 `.fig` 文件拖入工作台，解析全程在本机 Worker 离线完成（无需安装 Axure，也无需上传云端）；同时支持粘贴 Figma 文件/Frame 链接并通过系统钥匙串（OS Keychain）安全保存 PAT 拉取节点与内嵌图片。导入后不仅能可视化编辑，还可在「项目 AI」中按单页、目录或全工程范围受控升维为绑定共享物理 ER 表的流式交互页面，并保留原设计页对照。
 
 - **Q：我的工程数据与模型 API Key 保存在哪里？会自动上传吗？**  
   **A**：工程文件（`.pflow` 及解包目录）100% 保存在你选择的本机目录；模型账号与 API Key 由本机 Hermes 管理，诊断采集默认仅存本地（Opt-in）。**只有当你主动点击「发布分享」时**，页面结构与演示快照才会上传到你填写的自建服务器。

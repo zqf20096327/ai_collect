@@ -16,7 +16,9 @@
   <a href="#what-the-ontology-does">Ontology</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#examples">Examples</a> ·
-  <a href="#quick-start">Quick start</a>
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#terminal-ui">Terminal UI</a> ·
+  <a href="#providers">Connect a model</a>
 </p>
 
 </div>
@@ -290,20 +292,64 @@ With nothing left to merge, there is no final answer: the second interim is the 
 ## Quick start
 
 ```bash
-pip install git+https://github.com/gogoymh/git-ontology-agent
+git clone https://github.com/gogoymh/git-ontology-agent && cd git-ontology-agent && pip install -e .
 goa demo                                      # the budget example above, offline
 goa demo --mock                               # same, through simulated Anthropic + Typesafe APIs
 goa demo --delay 0                            # no pauses between turns (default 0.8s on a terminal)
-cp .env.example .env                          # add a key, e.g. OPENROUTER_API_KEY
-goa chat --llm openrouter --decision openrouter   # for real, with any LLM and decision model
+goa login claude                              # sign in with your Claude plan (or: goa login codex)
+goa                                           # the terminal UI: talk to it while it works
+goa ask "Plan my Busan business trip next week"   # one shot for scripts; --json for JSON lines
 goa log                                       # the conversation as a git graph
 ```
 
-Python 3.9+, zero dependencies, standard library only. Answers follow your system language (`--lang ko`, `--lang en`, ...). As a library: `Agent(".goa", llm=..., decision=...)` with `submit()`, `tick()` and `run()`; add skills by subclassing `goa.skills.Skill`.
+The engine is Python 3.9+ with zero dependencies, standard library only. Answers follow your system language (`--lang ko`, `--lang en`, ...). As a library: `Agent(".goa", llm=..., decision=...)` with `submit()`, `tick()` and `run()`; add skills by subclassing `goa.skills.Skill`.
+
+## Terminal UI
+
+`goa` on a terminal opens a React UI built with [Ink](https://github.com/vadimdemedes/ink), the approach Claude Code takes. It runs the engine as a child process and draws what the engine reports.
+
+```text
+╭──────────────────────────────────────────────────────────────╮
+│ ●━╮  Git Ontology Agent v0.1.0                               │
+│ ┃ ◆  every request is a branch, every answer is a merge      │
+│ ●━╯  claude-code · sonnet · judge llm/claude-code · you/.goa │
+╰──────────────────────────────────────────────────────────────╯
+
+R1 › Plan my Busan business trip next week
+   ◐ Got it, I've started on “Busan trip plan”. I'll keep you posted as it goes.
+     interim · req/1@5f6e368
+
+R2 › Oh, keep the budget under 500,000 won
+   ◐ KTX is set: Tue 08:00 KTX (Seoul→Busan). Applying your ₩500,000 budget, I'm picking the hotel
+     again.
+     interim · req/1@0cbc2c6 · k1 supplement
+
+ ⠼ req/1 Busan trip plan · hotel.candidates: redo (Hotel A, Hotel B)
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ›  Talk any time, even while it works                                                            │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+ enter send · /connect · /log · /help · ctrl+c quit                    claude-code · 1 open request
+```
+
+- **The prompt never locks.** A message sent mid-task gets in between two work steps, and every open `req/<n>` shows its latest commit live.
+- **It reads like a chat.** Interim answers are amber `◐`, final answers green `●`, and each names the commit it was written from.
+- **Connect once.** The first run lists your sign-ins and API keys; pick one with ↑↓ and enter and it is remembered. `/connect` switches later, `/log` shows the git graph.
+- **No surprises.** Without Node.js 22+ or a built UI, `goa` falls back to the plain-text `goa chat`. From a clone, `goa ui` builds it once (`npm --prefix ui install`). The UI logs to `GOA_UI_LOG` (default `<tmp>/goa-ui.log`).
+
+Other front ends can drive the same engine: `goa serve` reads `{"type": "submit", "text": "..."}` lines on stdin and writes `ready`, `user`, `answer`, `step`, `tasks` and `error` events as JSON lines, with logs on stderr.
 
 ## Providers
 
-Any LLM for work and answers, any decision model for judgments. Mix freely: `--llm anthropic --decision openai`.
+Two ways in: sign in with the plan you already pay for, or bring an API key. Any LLM does the work and writes the answers, any decision model judges. Mix freely: `--llm codex --decision openrouter`.
+
+| Sign in `--llm` | Runs on | Sign in with |
+| --- | --- | --- |
+| `claude-code` | your Claude subscription, through Claude Code (`claude -p`) | `goa login claude` |
+| `codex` | your ChatGPT plan, through the Codex CLI (`codex exec`) | `goa login codex` |
+
+goa never reads or stores an OAuth token. The official CLI signs in and keeps its own credentials, and goa only hands it a prompt on stdin. It runs with no tools, no saved session and an empty working folder, and it withholds `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` so the subscription is billed rather than a key in `.env`. `goa auth` lists every sign-in and key with what `auto` would pick; `goa auth --use codex` saves the default.
+
+With `--llm auto` (the default for `goa`, `ask`, `chat` and `serve`) the order is: `GOA_LLM`, then the default you saved, then a ready sign-in (Claude, then Codex), then the first API key, then offline. The judge follows the model you connected (`llm:claude-code`), uses Jev on OpenRouter for `openrouter`, and stays `local` offline.
 
 | LLM `--llm` | Key | Default model |
 | --- | --- | --- |
@@ -329,14 +375,17 @@ No key yet? `--mock` answers every provider's real request shape locally, so the
 | `llm:anthropic`, `llm:xai`, ... | that LLM's key | JSON-schema judgment |
 | `local` | none | deterministic keyword + ontology heuristic |
 
-Every backend returns the same typed answer (`choice` + `confidence` + `probabilities`, or `noul` in [0, 1]); a refusal becomes confidence 0, which makes the agent ask. Keys and defaults can live in `./.env` (see [`.env.example`](.env.example)); shell variables win. Override models with `GOA_<PROVIDER>_MODEL` (`GOA_OPENROUTER_DECISION_MODEL` for the judge) and endpoints with `TYPESAFE_URL`, `OPENAI_DECISIONS_URL`, `OPENROUTER_DECISIONS_URL`.
+Every backend returns the same typed answer (`choice` + `confidence` + `probabilities`, or `noul` in [0, 1]); a refusal becomes confidence 0, which makes the agent ask. Keys and defaults can live in `./.env` (see [`.env.example`](.env.example)); shell variables win. Override models with `GOA_<PROVIDER>_MODEL` (`GOA_CLAUDE_CODE_MODEL`, default `sonnet`; `GOA_CODEX_MODEL`, default your Codex config; `GOA_OPENROUTER_DECISION_MODEL` for the judge) and endpoints with `TYPESAFE_URL`, `OPENAI_DECISIONS_URL`, `OPENROUTER_DECISIONS_URL`. `--mock` simulates `claude -p` and `codex exec` too, so the sign-in path runs with neither installed.
 
 ## Development
 
 ```bash
 python -m unittest discover -s tests -t . -q    # no network
+npm --prefix ui install && npm --prefix ui test # the UI, against a scripted and a real engine
 GOA_LOG=debug goa demo                          # English logs for every step
 ```
+
+The UI ships only permissively licensed packages (MIT, ISC); `node ui/scripts/license-check.mjs` fails the build otherwise.
 
 The banner is built by `scripts/make_banner.py` from Codex-generated art; candidates live in [`docs/assets/candidates`](docs/assets/candidates).
 

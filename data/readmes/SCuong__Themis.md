@@ -6,6 +6,8 @@ Themis puts Claude, ChatGPT, Gemini, Grok and DeepSeek into one group chat. You 
 
 Themis is a modified version of [OpenTeam](https://github.com/afumu/openteam) and is distributed under the **PolyForm Noncommercial License 1.0.0**. See [License and credits](#license-and-credits).
 
+**My work on Themis.** I switched it to a TypeScript source build, fixed workflow completion and attachment cleanup, and added CI tests.
+
 ![Themis chat workspace](docs/screenshots/chat-light.png)
 
 ---

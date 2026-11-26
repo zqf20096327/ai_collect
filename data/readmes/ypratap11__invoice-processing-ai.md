@@ -2,7 +2,7 @@
 
 > **Advanced invoice processing system powered by Google Document AI with a beautiful Streamlit frontend**
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Document%20AI-yellow.svg)](https://cloud.google.com/document-ai)
@@ -11,7 +11,9 @@
 
 ## 🎯 **Project Overview**
 
-An end-to-end AI-powered invoice processing system that automates document processing for enterprises. Built to solve real business problems where teams spend hours manually processing invoices - **this system reduces processing time by 90%** and achieves **95%+ accuracy**.
+An end-to-end AI-powered invoice processing system that automates document processing for enterprises. Built for teams that spend hours keying invoices by hand.
+
+> **Status, honestly:** this README used to claim "95%+ accuracy". An audit on 53 labeled invoices (2026-11-23) found the app as built got **0 of 53** invoices fully right: it never extracted a single line item. After the fixes it gets **6 of 53** fully right, and its new arithmetic checks send 49 of 53 to human review. Gemini 3.8 Flash with the same checks got **48 of 53**. The test set is mostly synthetic. Full numbers, method and limits: [audit report](audit/REPORT.md) ([2-page PDF](audit/REPORT.pdf)).
 
 ### 🌟 **Live Demo**
 
@@ -22,11 +24,10 @@ An end-to-end AI-powered invoice processing system that automates document proce
 
 ### 💼 **Business Impact**
 
-- ⚡ **90% reduction** in manual processing time (from 5+ minutes to <30 seconds)
-- 🎯 **95%+ accuracy** in data extraction with confidence scoring
-- 💰 **Zero data entry errors** with automated validation
-- 📊 **100+ documents per hour** processing capability
-- 🔄 **Batch processing** for enterprise-scale operations
+- ⚡ Turns an invoice into structured data (vendor, dates, totals, line items) in seconds instead of manual keying
+- 🎯 Shows Document AI's per-field confidence, so low-confidence fields can be routed to review
+- 🔄 Batch processing for multiple documents
+- 📏 Accuracy: **measured**, see [Performance Metrics](#-performance-metrics) and the [audit report](audit/REPORT.md)
 
 ## 🏗️ **System Architecture**
 
@@ -57,15 +58,15 @@ An end-to-end AI-powered invoice processing system that automates document proce
 ### 🤖 **AI-Powered Processing**
 - **Google Document AI Integration** - Enterprise-grade document understanding
 - **Real-time Data Extraction** - Vendor info, amounts, dates, line items
-- **Confidence Scoring** - Field-level accuracy metrics with visualization
+- **Confidence Scoring** - Document AI's own per-field confidence, visualized (an estimate, not measured accuracy)
 - **Multi-format Support** - PDF, PNG, JPG, JPEG, TIFF, GIF files
 - **Intelligent Parsing** - Understands invoice structure, not just OCR
 
 ### ⚡ **Performance & Scale**
-- **Sub-10 Second Processing** - Average processing time: 3-9 seconds
+- **Fast Processing** - Typically a few seconds per document in development testing
 - **Batch Processing** - Handle up to 10 documents simultaneously
-- **100% Success Rate** - Robust error handling and validation
-- **Enterprise Ready** - Scalable architecture with Docker support
+- **Error Handling** - Validation and error handling around the Document AI call
+- **Container Ready** - Docker setup included
 - **Real-time Analytics** - Processing history and performance metrics
 
 ### 🎨 **Professional Interface**
@@ -86,7 +87,7 @@ An end-to-end AI-powered invoice processing system that automates document proce
 ### **Backend & AI**
 - **FastAPI** - High-performance async web framework
 - **Google Cloud Document AI** - Advanced document understanding
-- **Python 3.8+** - Modern Python with type hints
+- **Python 3.11+** - Modern Python with type hints
 - **Pydantic** - Data validation and serialization
 - **Uvicorn** - Lightning-fast ASGI server
 
@@ -112,7 +113,7 @@ An end-to-end AI-powered invoice processing system that automates document proce
 ## 🚀 **Quick Start**
 
 ### **Prerequisites**
-- Python 3.8+
+- Python 3.11+
 - Google Cloud Account with Document AI enabled
 - Git
 - Docker (optional)
@@ -185,13 +186,28 @@ helm install invoice-ai ./helm
 
 ## 📊 **Performance Metrics**
 
-| Metric | Achievement | Target |
-|--------|-------------|---------|
-| **Accuracy** | 95%+ | ✅ Achieved |
-| **Processing Time** | 3-9 seconds | ✅ Sub-10s |
-| **Success Rate** | 100% | ✅ Perfect |
-| **Throughput** | 100+ docs/hour | ✅ Enterprise Scale |
-| **Response Time** | <500ms | ✅ Fast API |
+Measured on 53 labeled invoices (40 generated in 5 layouts with deliberate hard cases, 13 from a public synthetic dataset), runs dated 2026-11-23. *Lenient* = formatting cleaned up the same way for every system; *strict* = values exactly as the app returns them. A *silent error* is a wrong value that is not flagged for review.
+
+| | App as built | App after fixes | Gemini 3.8 Flash + same checks |
+|---|---|---|---|
+| Invoices fully correct, lenient (strict) | 0 of 53 (0) | 6 of 53 (6) | 48 of 53 (48) |
+| Line items returned | 0 of 471 | 472 for 471 printed | 471 of 471 |
+| Values correct, lenient (strict), of 2,283 | 356 (158) | 1,864 (1,849) | 2,278 (2,278) |
+| Silent errors, lenient (strict) | 40 (195) | 31 (31) | 2 (2) |
+| Invoices sent to human review | 36 of 53 had at least one low-confidence field (the app did not route these anywhere) | 49 of 53 | 7 of 53 |
+| Cost per invoice | $0.20 (Document AI called twice) | $0.10 | about $0.006 |
+| Median time per invoice | 4.1 s | 4.1 s (same cached calls) | 7.9 s |
+
+What this means:
+- After the fixes, header fields are right 388 of 407 times (95%) and line-item values 1,476 of 1,876 (79%).
+- A 92.5% review rate is not a usable operating point. The checks stop most wrong values from passing silently, but by sending nearly every invoice to a person.
+- All remaining silent errors are on 4 scanned invoices where Document AI splits table rows into fragments.
+- The test set is mostly synthetic and small. Treat the Gemini result as a reason for a real trial, not a verdict. A local-model comparison is deferred.
+
+![Before vs after](audit/report/before_after.png)
+
+- Full report, findings and limits: [audit/REPORT.md](audit/REPORT.md) ([2-page PDF](audit/REPORT.pdf))
+- Test set, scoring rules and how to rerun: [audit/README.md](audit/README.md)
 
 ## 📁 **Project Structure**
 
@@ -227,14 +243,13 @@ invoice-processing-ai/
 
 ### **Enterprise Applications**
 - **Accounts Payable Automation** - Streamline invoice processing workflows
-- **Financial Data Entry** - Eliminate manual data entry errors
+- **Financial Data Entry** - Reduce manual keying, with low-confidence fields sent to review
 - **Audit & Compliance** - Maintain accurate financial records
-- **ERP Integration** - Feed structured data into enterprise systems
+- **Accounting Integration** - Feed structured data into accounting systems
 
 ### **Business Benefits**
-- **Cost Reduction** - Reduce processing costs by 90%
 - **Time Savings** - Process invoices in seconds, not minutes
-- **Accuracy Improvement** - Eliminate human data entry errors
+- **Review Focus** - Spend human time on low-confidence fields instead of every field
 - **Scalability** - Handle volume spikes without additional staff
 - **Compliance** - Standardized data extraction and audit trails
 
@@ -335,7 +350,7 @@ This project demonstrates:
 
 ## 👨‍💻 **About the Developer**
 
-**Yeragudipati Pratap** - Oracle ERP Expert transitioning to AI/ML Engineering
+**Pratap Yeragudipati** - Founder, Augaster. I build AI systems whose outputs can be checked.
 
 - 💼 **LinkedIn**: [Connect with me](https://www.linkedin.com/in/pratapyeragudipati/)
 - 📧 **Email**: ypratap114u@gmail.com
@@ -343,11 +358,15 @@ This project demonstrates:
 - 💻 **Portfolio**: [Live Projects](https://github.com/ypratap11?tab=repositories)
 
 ### **Background**
-Leveraging years of ERP consulting experience to build AI solutions that solve real business problems. This project combines domain expertise in financial processes with cutting-edge AI technology.
+20+ years in finance systems and program delivery, where numbers have to reconcile. This project combines that domain knowledge with modern document AI.
 
 ## 🌟 **What's Next?**
 
 ### **Immediate Roadmap**
+- [x] **Accuracy Audit** - Labeled test set, measured field-level accuracy, published method ([report](audit/REPORT.md))
+- [x] **Real Agent Tool** - The chat agent's `process_invoice` tool now runs the real extraction (it used to return sample data) on files placed in the uploads folder; nothing in the app writes there yet
+- [x] **Arithmetic Checks** - Line items + tax must equal the total, or the invoice goes to review
+- [ ] **Better Line Extraction** - Bring the review rate down from 49 of 53 (scanned invoices fragment line rows)
 - [ ] **Database Integration** - PostgreSQL for processing history
 - [ ] **User Authentication** - Secure multi-user support
 - [ ] **Advanced Analytics** - Deeper processing insights
@@ -356,7 +375,7 @@ Leveraging years of ERP consulting experience to build AI solutions that solve r
 ### **Future Enhancements**
 - [ ] **Multi-language Support** - Process invoices in various languages
 - [ ] **Custom Model Training** - Fine-tune AI with user feedback
-- [ ] **ERP Integrations** - Direct integration with SAP, Oracle, QuickBooks
+- [ ] **Accounting Integrations** - Direct integration with QuickBooks and Xero
 - [ ] **Advanced Document Types** - Purchase orders, receipts, contracts
 
 ---

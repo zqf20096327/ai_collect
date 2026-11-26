@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="License: Apache 2.0" /></a>
-  <img src="https://img.shields.io/badge/version-0.2.0-orange" alt="Version 0.2.0" />
+  <img src="https://img.shields.io/badge/version-0.3.0-orange" alt="Version 0.3.0" />
   <img src="https://img.shields.io/badge/rust-2024-informational?logo=rust" alt="Rust 2024" />
   <img src="https://img.shields.io/badge/status-early%20release-yellow" alt="Status: early release" />
 </p>
@@ -22,7 +22,7 @@ requests that GPU can safely handle.
 
 **Soulsteads Model Router** puts stable model aliases in front of your servers.
 Its managed routing checks capabilities and available capacity before choosing
-a backend. It is written in Rust and builds as the `slotline` binary.
+a backend. It is written in Rust and ships as the `soulsteads-router` executable.
 
 ```text
 Agents and OpenAI-compatible clients
@@ -102,13 +102,31 @@ No model server or prebuilt binary is bundled.
 
 ## Documentation
 
-- [Setup](docs/SETUP.md): build, configuration, first request, optional user service.
+- [Setup](docs/SETUP.md): build, configuration, first request, and service installer.
 - [Compatibility](docs/COMPATIBILITY.md): endpoints, supported request shapes, limits.
 - [Operations](docs/OPERATIONS.md): status, health, deadlines, reload, safe updates.
 - [Keys](KEYS.md): verifier store, credential lifecycle, backup, and restore.
 - [Development](docs/DEVELOPMENT.md): tests, known fixture limitations, release checks.
 - [Migration](MIGRATION.md): move an existing client safely, with rollback.
 - [All documentation](docs/README.md): observability, advanced modes, and integrations.
+
+## Debian package
+
+Build an amd64 `.deb` from a Git checkout on Debian 13 or Ubuntu 24.04. Install
+`build-essential`, `binutils`, `pkg-config`, `cmake`, `libssl-dev`, `dpkg`,
+`python3` (3.11 or newer), and Rust 1.100.0 via `rustup`.
+Router packaging also needs `jq`, `openssl`, and `systemd-analyze` for offline checks.
+
+```sh
+scripts/build-deb.sh dist/debian
+```
+
+The package installs `soulsteads-router` under `/usr/bin` and preserves the release
+license and dependency notices. Install it with `sudo apt install ./dist/debian/*.deb`
+from the checkout. Installation does not create or start a service. A build
+reflects the build host’s library ABI; use one of the stated distributions for
+portable artifacts. The release workflow also builds a downloadable test `.deb`
+on pull requests or manual runs, without attaching it to a GitHub Release.
 
 ## License and release status
 

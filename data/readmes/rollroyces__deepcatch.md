@@ -10,7 +10,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/)
-![Tests](https://img.shields.io/badge/Tests-1018%20collected-blue)()
+![Tests](https://img.shields.io/badge/Tests-1040%20collected-blue)()
 [![Real-data CI](https://img.shields.io/badge/Real_data_CI-see%20results%2F-lightgrey)](results/)
 [![Model Card](https://img.shields.io/badge/Model_Card-MODEL.md-blue)](MODEL.md)
 [![Docs](https://img.shields.io/badge/Docs-rollroyces.github.io-blue)](https://rollroyces.github.io/deepcatch/)
@@ -24,7 +24,7 @@
 
 ## 🤝 Seeking wet-lab collaborators for external cohort validation
 
-**This project has the analysis pipeline; it does not have the clinical plasma.** Everything published here runs on public data (FinaleDB, TCGA, GEO) and therefore cannot say anything about performance on a real screening population. If you run cfDNA sequencing and have a cohort with cancer/control labels, **you are exactly the collaborator this project needs** — and the analysis side is already built, validated and open source.
+**This project has the analysis pipeline; it does not have the clinical plasma.** Everything published here runs on public data (FinaleDB, TCGA, GEO) and therefore cannot say anything about performance as a *clinical assay*. If you run cfDNA sequencing and have a cohort with cancer/control labels, **you are exactly the collaborator this project needs** — and the analysis side is already built, validated and open source.
 
 What is already in place, so a collaboration starts from a working baseline rather than from scratch:
 
@@ -39,12 +39,15 @@ What is already in place, so a collaboration starts from a working baseline rath
 
 **What a collaborator contributes**: the cohort (plasma + labels + stage), and the clinical interpretation. **What we contribute**: feature extraction, harmonization, the statistical protocol (DeLong CIs, sens@spec grids, PPV at screening prevalence, leave-one-cohort-out), and the code.
 
+**One measured thing that sharpens the ask.** We have now scored a real hereditary-cancer screening cohort (99 plasma samples, Zenodo 10.5281/zenodo.15109495) and found that its cancer/control labels carry **no class signal in these channels at all**: a model fitted and cross-validated *inside* that cohort reaches AUC 0.5465, CI95 [0.4319, 0.6612] (`results/external_cohort_zenodo_phts.json`). The effect the depositor published is there, but only in the arm with the highest tumour burden (short/long ratio, AUC 0.6455, CI95 [0.5008, 0.7901]). So a low-burden screening cohort is not what this project needs — a cohort with **graded tumour burden** is, because that is the axis the signal actually follows. Every cohort we score now carries the same control, so a null is readable as "the data has no signal" rather than "the model does not transfer".
+
 Scope that would be useful, in order of what unblocks the most:
 
-1. **Unpaired plasma, cancer + non-cancer** (any tumour type) — enough to run the same external-validation protocol as the public cohort.
-2. **Serial draws** (the same patient over time) — this is what the longitudinal Stage-2 tracker cannot be evaluated on at all right now.
-3. **Stage I vs late-stage labels** — the stage breakdown is implemented and waiting for data.
-4. **Matched tumour tissue** — enables tumour-specific fragmentomics instead of tumour-agnostic ones.
+1. **Plasma with a tumour-burden axis** — ctDNA concentration / tumour fraction per sample, or stage. This is what makes a cohort informative; a binary label in a low-burden population is not.
+2. **Unpaired plasma, cancer + non-cancer** (any tumour type) — enough to run the same external-validation protocol as the public cohort.
+3. **Serial draws** (the same patient over time) — this is what the longitudinal Stage-2 tracker cannot be evaluated on at all right now.
+4. **Stage I vs late-stage labels** — the stage breakdown is implemented and waiting for data.
+5. **Matched tumour tissue** — enables tumour-specific fragmentomics instead of tumour-agnostic ones.
 
 Everything is MIT-licensed and every number in the repository traces to a committed JSON artifact, so a collaborator can audit the analysis end to end before deciding anything. See [`TEAM.md`](TEAM.md) §2 for the contribution model, [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to set the project up, run the tests and bring a cohort in, and [`docs/PRODUCTION_ROADMAP.md`](docs/PRODUCTION_ROADMAP.md) for the validation plan.
 
@@ -385,9 +388,9 @@ For the **mutation-informed channel** see `docs/CADD_WEIGHTED_LLR.md`, `docs/CAD
 env -u PYTHONPATH ./.venv/bin/python -m pytest \
     test/ src/foundation/test_integration.py \
     -m "not slow" --tb=line -q
-# → 801 passed, 19 skipped, 13 deselected (slow real-data smoke)
+# → 823 passed, 19 skipped, 13 deselected (slow real-data smoke)
 #   Without torch -- the runtime + dev install -- the deep-learning
-#   module is skipped instead: 685 passed, 54 skipped, 2 deselected.
+#   module is skipped instead: 688 passed, 54 skipped, 2 deselected.
 
 # Full per-module discovery
 env -u PYTHONPATH ./.venv/bin/python -m pytest src/ -m "not slow"
@@ -412,7 +415,7 @@ env -u PYTHONPATH ./.venv/bin/python scripts/foundation_real_smoke.py \
 | `test/test_public_tree_has_no_personal_contact.py` | 3 | ✅ all passing |
 | `src/foundation/test_integration.py` | 43 | ✅ all passing |
 | Full `src/` discovery | 228 collected | ✅ 217 run, 11 deselected (slow) |
-| **Combined fast-path gate** | **833 collected** | **801 passed + 19 skipped + 13 deselected** |
+| **Combined fast-path gate** | **855 collected** | **823 passed + 19 skipped + 13 deselected** |
 
 The 13 deselected tests are the slow real-data foundation smoke and per-study harmonization checks. Eleven of them live in `src/foundation/test_integration.py` and run in the deep-learning job of `validate.yml`, which does not deselect them. The other two — `test/test_cross_study_per_cancer_integration.py` and `test/test_load5_with_motifs.py` — need the companion repository's extracted feature cache, which CI does not have; they are deselected here and run only where that cache is present.
 
@@ -462,7 +465,7 @@ deepcatch/
 │   ├── py/                       # Python validation modules (11)
 │   ├── tcga/                     # TCGA data loaders + validators
 │   └── *.py                      # Bioinformatics-grade modules
-├── test/                         # 65 test files (790 fast-path tests)
+├── test/                         # 67 test files (812 fast-path tests)
 ├── results/                      # Cached JSON + 4 figures + ablation artifacts
 ├── paper/                        # LaTeX manuscript + REPRODUCE.sh
 ├── docs/                         # 30+ docs + 4 figures + 3 demo WebM/MP4/GIF (real browser_exec recordings) + terminal asciicasts

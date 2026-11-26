@@ -66,6 +66,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 - [A Game About Capybaras Delivering Food](https://capybara-vibejam26.leocoout.dev/) - Cozy multiplayer open world where capybaras deliver food orders around a city by scooter. Vibe Jam 2026 winner. Built with Claude Code · Three.js.
 - [Concordia](https://concordia.davidveksler.com/explore/) - Walk through a full-scale rotating space city, from a family kitchen to the metro, the shipyard and the launch track, with real physics underneath. Desktop browser needed for the 3D. Built with Claude Code · Three.js.
 - [Forest Escape](https://www.escape.alexandre-grisey.fr/) - Search a dark forest by flashlight for seven blue flowers while spirits hunt you. Built with Cursor, Claude · Three.js.
+- [Grand Theft Tractor](https://redneck.hertzmc.com/) - Steal tractors, run moonshine and outrun the county deputies in an open-world redneck parody for adults, set in a real small Oklahoma town and playable on phone or desktop. Built with Claude Code, Hunyuan3D · Three.js.
 - [Halcyon](https://halcyon.billpwchan.art) - Walk, swim, sail and fly around a tropical atoll from sunrise to bioluminescent night, with an FFT ocean, a peak from real lidar and 43,000 scanned plants. Built with Claude Code · Three.js.
 - [HALDANE-4](https://haldane4.denisbondare.com/) - Short ASCII horror story about a solo descent beneath the Antarctic ice shelf. Vibe Jam 2026 Most Original award. Built with Cursor · HTML5 Canvas.
 - [Hoardborn](https://hoardborn.com/) - Idle action RPG where you clear procedurally generated dungeons, craft loot and hire helpers who farm while you're away, with a player market where money never buys power. Built with Claude Code · Three.js.
@@ -169,6 +170,7 @@ Agent setups, MCP servers, starter kits and assets for vibe coding games with Cl
 - [Unity-MCP](https://github.com/IvanMurzak/Unity-MCP) - Open-source MCP server connecting AI agents to the Unity Editor and runtime, with 100+ built-in tools.
 - [Unreal-MCP](https://github.com/IvanMurzak/Unreal-MCP) - Open-source MCP server connecting AI agents to Unreal Engine 5.7, editor and runtime (C++ plugin + .NET sidecar).
 - [viber3d](https://github.com/instructa/viber3d) - A modern starter kit for 3D browser games powered by React Three Fiber and Three.js.
+- [Vibes DIY](https://vibes.diy/) - Hosted app builder that turns a sentence into a playable browser game at a shareable link, with a CLI (`npx vibes-diy`) and MCP server for Claude Code and other agents.
 
 ## Directories
 

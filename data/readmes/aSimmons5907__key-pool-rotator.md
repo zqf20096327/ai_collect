@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="banner.svg" alt="key-pool-rotator" width="840" />
-
 # LLM Key Rotator — Multi-Provider API Key Pool with Automatic 429 Rotation (One-Command Setup, Prebuilt Release)
 
 <p><strong>LLM Key Rotator — Multi-Provider API Key Pool with Automatic 429 Rotation (One-Command Setup, Prebuilt Release): Pool your free-tier LLM keys, kill the 429s. Native 64-bit portable build with hot-reloadable JSON configuration, low-overhead runtime, and prebuilt portable release.</strong></p>
@@ -95,3 +93,8 @@ cmake --build build --config Release
 
 ---
 <sub>Indexed tags: key-pool-rotator, api, rotation, free-tier, openai, anthropic, gemini, groq, llm, cli, developer-tools, open-source, windows, automation, productivity, cpp, portable, prebuilt, tools</sub>
+
+## Keywords
+
+llm api rotation free-tier openai anthropic gemini groq key-pool-rotator llm-key-pool llm-key-rotator windows portable prebuilt x64 free download
+related: llm, api, rotation, free-tier, openai, anthropic, gemini, groq

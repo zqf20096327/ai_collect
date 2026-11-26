@@ -126,6 +126,7 @@ cipi-cli apps fix-permissions <name>        Restore app home permissions (Cipi 5
 cipi-cli apps artisan <name> [command...]   Run Artisan (async job, Cipi 5.0.3+)
 cipi-cli apps run <name> [command...]       Run whitelisted command (Cipi 5.0.3+)
 cipi-cli apps env show|set <name>           Read/update .env keys (Cipi 5.0.3+)
+cipi-cli apps env order <name> KEY... [--after|--before KEY]  Move .env keys (5.13.0+)
 cipi-cli apps auth show|create|update|delete  Manage shared auth.json (Cipi 5.0.3+)
 cipi-cli apps basicauth status|enable|disable HTTP Basic Auth
 cipi-cli apps node status|restart <name>    Node app status / blue-green restart (5.4.0+)
@@ -162,12 +163,12 @@ cipi-cli deploy status <app> [--tail N]     Running, queued or interrupted + the
 cipi-cli deploy history <app> [--limit N]   Every recorded run of one app, newest first (5.9.0+)
 cipi-cli deploy last                        The last run of every app (5.9.0+)
 cipi-cli deploy rollback <app> [-y]         Rollback to previous release
-cipi-cli deploy unlock <app>                Unlock a stuck deployment
+cipi-cli deploy unlock <app>                Unlock a stuck deployment, resume a paused commit
 cipi-cli deploy config show|set <app>       Structured deploy.php options (5.0.3+)
 cipi-cli deploy audit <app> [--days N]      Deploy audit ledger (5.4.0+)
 ```
 
-`deploy status` says whether a deploy is running (with its phase, trigger, branch and how long ago it started), queued behind another one, or interrupted — a run that never ended with nothing running it, in which case the CLI points at `deploy unlock` — and prints the last finished run (result, release, duration, trigger, branch). `--tail N` adds the last N lines of the deploy log (max 500). Requires Cipi 5.8.4+ / API 1.37+ and the `deploy-manage` ability.
+`deploy status` says whether a deploy is running (with its phase, trigger, branch and how long ago it started), queued behind another one, or interrupted — a run that never ended with nothing running it, in which case the CLI points at `deploy unlock` — and prints the last finished run (result, release, duration, trigger, branch). With Cipi 5.13.0+ it also shows **Paused**: the commit whose automatic deploy failed, which the webhook does not deploy again by itself; the next push does, and so do a deploy that succeeds and `deploy unlock`. `--tail N` adds the last N lines of the deploy log (max 500). Requires Cipi 5.8.4+ / API 1.37+ and the `deploy-manage` ability.
 
 `deploy history` lists the recorded runs of one app (`--limit`, default 30, max 500) and `deploy last` the last run of every app, `never deployed` for an app without one. Both require Cipi 5.9.0+ / API 1.39+ and the `apps-view` or `deploy-manage` ability.
 
@@ -216,6 +217,19 @@ Alias: `redirects` → `redirect`, `proxy` → `proxies`.
 
 DNS for the app domain (and aliases) must already point to the server.
 
+### Nginx directives
+
+```
+cipi-cli nginx show <app>                   Print the app's own nginx directives
+cipi-cli nginx edit <app>                   Edit them in $VISUAL / $EDITOR, on this computer
+cipi-cli nginx set <app> --file <path>      Replace them with a file's content (- for stdin)
+cipi-cli nginx reset <app>                  Remove them
+```
+
+Headers, caching, limits, rewrites, `location` blocks of your own: Cipi keeps them and includes them in the app's server block, so they survive every change of the vhost (Cipi 5.14.0+, cipi/api 1.44+, abilities `nginx-view` / `nginx-manage`). The server tests every change with `nginx -t` before the reload; a refused text changes nothing and the reasons are printed line by line — `edit` then offers to open the editor again on your text.
+
+From the API a **subset of nginx's language** is taken: no `access_log` or `error_log` with a path, `include`, `listen`, `server_name`, `*_pass`, certificates; `root` and `alias` only under the app's home. Reverse proxies and redirects are the commands above; the whole language is `cipi nginx edit <app>` on the server.
+
 ### Aliases
 
 ```
@@ -229,7 +243,7 @@ Alias: `alias` → `aliases`.
 ### Databases
 
 ```
-cipi-cli db engines                         List DB engines + default (4.8+)
+cipi-cli db engines                         List DB engines + default (4.8+); SERVER says MySQL where `cipi db switch mysql` ran (5.13.0+)
 cipi-cli db install <engine>                Install an engine: mariadb|pgsql (5.0.6+)
 cipi-cli db list                            List all databases (engine, size, app)
 cipi-cli db create <name> [--engine] [--app] Create a database, optionally shown as an app's
@@ -290,7 +304,7 @@ Aliases: `backups` → `backup`, `profiles` → `profile`, `destinations` / `des
 
 The server backups of `cipi backup` on the host. A profile says what a run takes, when, where to and for how long it is kept; `backup status` shows each profile with its schedule, retention, last run and state (enabled, disabled, overdue, running), the reason of a failed run, and the apps and databases no enabled profile covers. `backup run` only starts the run — follow it with `backup status`. `backup verify` waits for the job and prints what the server reported.
 
-**Profile flags:** `--scope all|files|db`, `--apps`, `--databases`, `--exclude-databases`, `--exclude-tables` (comma-separated names or globs, e.g. `--exclude-tables "*.jobs,*.sessions"`), `--every 30m|6h|1d` or `--cron "0 2 * * *"` (not both), `--dest local,s3,<named>` (required on `add`), `--keep`, `--keep-days`, `--keep-weeks`, `--encrypt` (client-side AES-256; `--encrypt=false` turns it off). `profile edit` sends only the flags you pass; an empty exclusion list (`--exclude-tables ""`) clears it. The three `--keep` flags are one retention policy: giving any of them sets the others to 0, so pass together the ones you want.
+**Profile flags:** `--scope all|files|db`, `--apps`, `--databases`, `--exclude-databases`, `--exclude-tables` (comma-separated names or globs, e.g. `--exclude-tables "*.jobs,*.sessions"`), `--exclude-paths` (paths left out of the app archives, relative to the app: `storage/app/uploads,*.mp4`, `shop:public/media` for one app only — Cipi 5.13.0+ / API 1.43+), `--every 30m|6h|1d` or `--cron "0 2 * * *"` (not both), `--dest local,s3,<named>` (required on `add`), `--keep`, `--keep-days`, `--keep-weeks`, `--encrypt` (client-side AES-256; `--encrypt=false` turns it off). `profile edit` sends only the flags you pass; an empty exclusion list (`--exclude-tables ""`, `--exclude-paths ""`) clears it. The three `--keep` flags are one retention policy: giving any of them sets the others to 0, so pass together the ones you want.
 
 Destinations are read-only here: adding one takes an S3 secret key, so `cipi backup configure` and `cipi backup destination add|edit|remove` are run on the server, as are fetch, key, prune and `profile remove --purge`.
 
@@ -426,11 +440,15 @@ cipi-cli node upgrade [major] [--restart]   Latest patch of one major, or of eve
 cipi-cli node default <major|system>        Set the server-wide Node (5.9.0+)
 cipi-cli node remove <major> [-y]           Remove a Node major (5.9.0+)
 cipi-cli monitor                            System monitor checks (5.3.0+)
-cipi-cli packages                           Optional host packages catalog
+cipi-cli packages                           Optional host packages: the catalog and what is installed
+cipi-cli packages install <id>              Install an entry, e.g. browsershot, libreoffice (5.14.0+)
+cipi-cli packages remove <id> [-y]          Remove an entry, and only what nothing else needs (5.14.0+)
 cipi-cli zt                                 Cloudflare Zero Trust status (5.3.0+)
 ```
 
 `node install|upgrade|default|remove` are async jobs and take even (LTS) majors only — the CLI rejects anything else before calling the server. `node upgrade --restart` moves the SSR apps on the upgraded runtime to the new binary blue/green; without it they take it at their next deploy. Requires Cipi 5.9.0+, API 1.39+ and the `node-runtimes-manage` ability — existing tokens do not get it.
+
+`packages install|remove` are async jobs on the server's **closed catalog** (Cipi 5.14.0): `image-optimizers`, `avif`, `ffmpeg`, `imagemagick`, `poppler-utils`, `browsershot` (the libraries and fonts the Chrome Puppeteer downloads needs — Chrome itself comes with `npm install puppeteer` in the app), `fonts-cjk`, `pdftk`, `libreoffice` (headless), `pandoc`, `tesseract`, and the security scanners [Hackly](https://github.com/andreapollastri/hackly) runs: `sec-recon` (nmap, dig, whois) and `sec-gitleaks` from Ubuntu; `sec-nuclei`, `sec-zap`, `sec-nikto`, `sec-wpscan`, `sec-trivy`, `sec-semgrep`, `sec-checkov` as upstream releases Cipi pins by version and SHA-256. The list shows what each entry brings (`ffmpeg, ffprobe`, or *libraries*), its VERSION (`ubuntu`, or the pinned one — `2.16.1 → 2.17.0` when an older one is installed) and, for a partial install, what is missing — `install` completes a partial entry and updates an outdated one. `remove` asks for confirmation unless `-y`; a library entry keeps whatever other software still uses. Requires Cipi 5.14.0+, API 1.44+ and the `packages-manage` ability.
 
 ### IP whitelist
 
@@ -566,6 +584,8 @@ A token only has the abilities it was created with: a feature added later (backu
 | Server status (`status`) | — | with `GET /api/status` + `status-view` |
 | Global domain map (`domains`) | 4.5.5 | — (built from `/api/apps`) |
 | Aliases add/remove path | — | 1.31+ (`/aliases/{domain}`) |
+| `.env` order (`apps env order`, `apps env set --order`), paused commit in `deploy status`, `backup profile --exclude-paths`, MySQL in `db engines`, basic auth agent in `apps basicauth status` | 5.13.0 | 1.43+ |
+| Optional packages install / remove (`packages install`, `packages remove`), PROVIDES, VERSION and missing in `packages` | 5.14.0 | 1.44+ (`packages-manage`) |
 
 New app PHP versions must be **8.3**, **8.4**, **8.5** (Cipi 4.5.4+), or **8.6** (Cipi 5.9.1+ / API 1.39.2+).
 

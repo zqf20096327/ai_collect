@@ -29,6 +29,8 @@
   <a href="https://m8ven.ai/mcp/sumioshi-wacrew-nirsqy?s=readme"><img alt="M8ven Score" src="https://m8ven.ai/badge/mcp/sumioshi-wacrew-nirsqy" height="20"></a>
 </p>
 
+<p align="center"><a href="https://vibehub.academy/"><img alt="Supported by Vibehub Academy" src="docs/assets/apoio-vibehub-en.svg" height="32"></a></p>
+
 <p align="center"><a href="https://wacrew.com.br">wacrew.com.br</a> · <a href="./README.pt-BR.md">Leia em português</a> · ⭐ <b>If WACrew helps you, a star helps others find it.</b></p>
 
 <p align="center"><img src="docs/screenshots/demo-auto.gif" width="551" alt="The AI drafts a reply; flipping AUTO on, it types and answers on its own"></p>
@@ -106,6 +108,23 @@ Open `http://localhost:3000/config`, scan the QR code (WhatsApp › Linked devic
 cp .env.example .env   # set PANEL_USER and PANEL_PASS
 docker compose up -d
 ```
+
+**Without compose.** The same image runs with plain Docker. The named volume keeps the WhatsApp session and data when the container is recreated:
+
+```bash
+docker run -d --name wacrew --restart unless-stopped \
+  -p 3000:3000 \
+  -v wacrew-data:/data \
+  -e NODE_ENV=production -e PORT=3000 \
+  -e AUTH_DIR=/data/auth -e DATA_DIR=/data/data \
+  -e WAC_DATA_DIR=/data/data \
+  -e GROUPS_CONFIG=/data/groups.config.json \
+  -e WAC_GROUPS_CONFIG=/data/groups.config.json \
+  -e PANEL_USER=admin -e PANEL_PASS='change-this-password' \
+  ghcr.io/sumioshi/wacrew:latest
+```
+
+Then open `http://localhost:3000/config` to scan the QR code.
 
 <a href="https://www.hostinger.com/vps-hosting?REFERRALCODE=ORISHODIRBUH"><img alt="Deploy on Hostinger" src="docs/assets/deploy-hostinger-en.svg" height="32"></a> <a href="https://railway.com/deploy/wacrew?referralCode=8ZIi5q&utm_medium=integration&utm_source=template&utm_campaign=generic"><img alt="Deploy on Railway" src="https://railway.com/button.svg" height="32"></a>
 

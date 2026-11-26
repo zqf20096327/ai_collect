@@ -9,7 +9,10 @@ C++ on **Level Zero**. It loads GGUF files directly, serves an **OpenAI-, Anthro
 a web UI** (web search and voice conversation included), and plugs into the [Pi](https://pi.dev) coding agent with
 one command. Built and tuned on a Core Ultra 5 125H with 32 GB of RAM: no discrete GPU, no XMX matrix engines.
 
-**[Download](https://github.com/rizagp/inferzero/releases/latest)** · [Features](docs/features.md) · [Usage guide](USAGE.md) · [Install and build](docs/install.md) · [Measured results](docs/before-after.md) · [Changelog](CHANGELOG.md) · **[Contribute](CONTRIBUTING.md)**
+**[Download](https://github.com/rizagp/inferzero/releases/latest)** · [Features](docs/features.md) · [Usage guide](USAGE.md) · [Install and build](docs/install.md) · [Measured results](docs/before-after.md) · [Changelog](CHANGELOG.md) · **[Contribute](CONTRIBUTING.md)** · **[Support this project](#support-the-project)**
+
+> **Support this project so the code can run on real hardware, to make development faster and more accurate:**
+> [sponsor on GitHub](https://github.com/sponsors/rizagp) ([why](https://rizagp.github.io/inferzero/help.html#sponsor)).
 
 ## Why it is worth a look
 
@@ -120,10 +123,11 @@ these rows: [docs/models.md](docs/models.md).
 | Qwen3.5 / 3.6 / 3.8 | 0.8B-27B dense, 35B-A3B MoE, Flash Next (512 experts; also with Intel's AutoRound INT4 experts, `setup -Models flash-ar4`) | text, images (`mmproj`) | MTP block, DFlash2 |
 | DeepSeek-V4.1 | Flash (384 experts: ISTA's GSQ-RCO IQ2_XS, Unsloth's UD-Q8_K_XL), one GPU or several | text | |
 | Gemma 4 | E4B, 12B, 26B-A4B MoE, 31B (Google's QAT Q4_0) | text, images, audio | Gemma 4 assistant drafters |
+| Inkling 2 | Mini (26B looped MoE, 128 experts; every quant type, NVFP4 UD files included) | text | DSpark drafter (both file layouts) |
 | OCR | Xiaomi-OCR-0 | images, PDFs | |
 | Speech to text | Qwen3-ASR, Whisper large-v3 | audio, video | |
 
-GGUF files as they are (IQ1-IQ4, Q2_K-Q8_0, Q5_1, MXFP4; F16 / BF16 matrices taken as Q8_0 at load, but a MoE
+GGUF files as they are (IQ1-IQ4, Q2_K-Q8_0, Q5_1, MXFP4, NVFP4; F16 / BF16 matrices taken as Q8_0 at load, but a MoE
 model's experts in quantized types only: a BF16 MoE GGUF is refused before its expert file is written); the architectures, weight types and each
 model's details: [docs/models.md](docs/models.md).
 
@@ -232,6 +236,15 @@ its failsafes: [docs/multi-gpu.md](docs/multi-gpu.md). The plan: QUEUE.md, F31.
 | [docs/qwen3-asr.md](docs/qwen3-asr.md), [docs/whisper-native.md](docs/whisper-native.md) | speech to text, transcripts and meetings |
 | [CHANGELOG.md](CHANGELOG.md), [QUEUE.md](QUEUE.md) | what changed recently; open work and decisions |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | where the speed is still missing, how to measure your card, how to send code |
+
+## Support the project
+
+**Support this project so the code can run on real hardware, to make development faster and more accurate.**
+inferzero is built by one person on one laptop; today the speed work on discrete cards (B60, B70, A770, B390) is
+measured only by the users who own them, so every change waits for someone's run. Sponsorship buys test hardware, so
+each change can be measured and checked before it reaches you:
+[sponsor it on GitHub](https://github.com/sponsors/rizagp). What it pays for and other ways to help: the website's
+[Help out page](https://rizagp.github.io/inferzero/help.html#sponsor).
 
 ## License
 

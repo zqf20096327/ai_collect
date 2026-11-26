@@ -81,9 +81,9 @@ Real sessions on 29 repositories, with the plan registered before the run.
 
 | Claude Code with | Repeats per 100 chances |
 |---|--:|
-| No memory | 83 |
-| Built-in memory | 21 |
-| Built-in plus hippo | **11** |
+| No memory | 84 |
+| Built-in memory | 26 |
+| Built-in plus hippo | **12** |
 
 Cost with hippo: 1.006 times, the same.
 
@@ -222,15 +222,15 @@ We built hippo and ran these tests, so read them as a vendor's numbers. We ran r
 
 ### Repeat mistakes in real Claude Code sessions
 
-Each run corrects Claude Code once and then, 2 to 4 tasks later, gives it a task where the same mistake is possible. We ran it on 29 repositories, [registered first](docs/evals/2026-11-08-z0-round3-result.md).
+Each run corrects Claude Code once and then, 2 or more tasks later, gives it a task where the same mistake is possible. We ran it on 29 repositories, [registered first](docs/evals/2026-11-08-z0-round3-result.md).
 
 | Claude Code with | Repeats in 100 |
 |---|--:|
-| No memory | 83 |
-| Claude Code's built-in memory | 21 |
-| Built-in memory plus hippo | **11** |
+| No memory | 84 |
+| Claude Code's built-in memory | 26 |
+| Built-in memory plus hippo | **12** |
 
-The chart counts first chances 2 to 4 tasks after the correction. The registered measure, the first chance in each mistake family over 148 units, gives 14.9 points fewer repeats with hippo [5.5, 24.3], at the same cost, a ratio of 1.006 [0.964, 1.049]. On tasks with no lesson to apply, neither the cost nor the share solved changed.
+The chart shows the registered measure, the first chance in each mistake family over 148 units. Hippo gives 14.9 points fewer repeats [5.5, 24.3], at the same cost, a ratio of 1.006 [0.964, 1.049]. On tasks with no lesson to apply, neither the cost nor the share solved changed.
 
 Round 4, already preregistered, tests which parts of hippo drive the gain.
 
@@ -510,6 +510,8 @@ Backfill an existing channel: `SLACK_BOT_TOKEN=xoxb-... hippo slack backfill --c
 Multi-workspace deployments populate `slack_workspaces (team_id, tenant_id)` to route events per tenant; single-workspace falls back to `HIPPO_TENANT`.
 
 GitHub webhooks land the same way at `POST /v1/connectors/github/events`. Backfill a repository's issues and comments with `hippo github backfill --repo <owner/name>`. Every memory carries `kind`, `scope`, `owner` and `artifact_ref`, and one API call deletes a memory. For GitHub Enterprise Server, set `GITHUB_ENTERPRISE_URL=https://<host>`, using the host name the server is configured with. Backfill then calls `https://<host>/api/v3`, and refs, `repo:` tags, scopes and cursors carry the host, as in `github://<host>/<owner/name>/issue/<n>`; github.com refs do not change. GHES webhooks keep working unchanged while `GITHUB_ENTERPRISE_URL` is unset. Once you set it, new rows carry the host in their scope and `repo:` tag, and older rows keep the bare form. If the store took GHES webhooks before you set it and never took github.com ones, also set `GITHUB_ENTERPRISE_BARE_REFS_HOST` to the same host, so a deletion archives the older copy and a backfill skips items those webhooks stored; without it hippo never treats a row with no host as a GHES row. `hippo github dlq replay` checks the server the payload names for every row, whatever its bucket. Grant member keys the host form too, query both scopes, and set the variable before you replay any `host_mismatch` row. Once the variable is set, every github.com delivery parks as `host_mismatch`, so a store that takes both github.com and GHES hooks must keep the variable unset or split to two servers.
+
+A GitHub issue, comment or pull request is held for admin review (`hippo quarantine`) when its `author_association` is not OWNER, MEMBER or COLLABORATOR. GitHub's docs say "By default, your organization membership visibility is set to private.", and such a teammate can read as CONTRIBUTOR or NONE. Make the membership public ([GitHub's steps](https://docs.github.com/en/account-and-profile/how-tos/organization-membership/publicizing-or-hiding-organization-membership)), or list the teammate's numeric GitHub user id: `GITHUB_TRUSTED_USER_IDS=1234567,7654321`. Get an id with `gh api users/<login> --jq .id`. A bot such as Dependabot or your own CI app also reads as NONE, so its items are held too; list its id the same way (`gh api 'users/dependabot[bot]' --jq .id`). A login is refused, because GitHub lets anyone claim a login its owner gives up; an entry that is not a number stops `hippo serve` from starting. Set the list on the server, in the shell that runs `hippo github backfill`, and in the shell that runs `hippo github dlq replay`. Each reads its own environment, and a replay uses the list as it is when you replay. A listed id skips only this rule; a flagged instruction is still held. The list applies only to items from the configured server, github.com, or the `GITHUB_ENTERPRISE_URL` host once it is set, so a GHES item with the variable unset is still held. Changing the list does not release items already held: approve them with `hippo quarantine approve <id>`.
 
 ### Active task snapshots
 
@@ -1038,7 +1040,7 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo dormant [<query>]` | List faded memories sleep kept instead of deleting |
 | `hippo dormant restore <id>` | Bring a dormant memory back to active memory |
 | `hippo dormant forget <id>` | Delete a dormant memory permanently |
-| `hippo quarantine [--all] [--json]` | List memories pending review: connector text held because it read as an instruction |
+| `hippo quarantine [--all] [--json]` | List memories pending review: connector or member text held for review |
 | `hippo quarantine approve <id>` | Release a held memory under its original scope (admin) |
 | `hippo quarantine reject <id>` | Keep a held memory hidden for good (admin) |
 | `hippo quarantine edit <id> "<text>"` | Approve a held memory with your cleaned text (admin). The text is checked again, the new memory lists the held one in `parents`, and the successor keeps the lead-in of the held row the edit read. A reject drops the whole item, lead-in included. HTTP: `POST /v1/quarantine/:id/edit` |
@@ -1069,21 +1071,4 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo invalidate "<pattern>" --reason "<why>"` | Include what replaced it |
 | `hippo decide "<decision>"` | Record architectural decision |
 | `hippo decide "<decision>" --context "<why>"` | Include reasoning |
-| `hippo decide "<decision>" --supersedes <id>` | Supersede a previous decision |
-| `hippo hook list` | Show available framework hooks |
-| `hippo hook install <target>` | Install hook (claude-code also adds its 9 settings.json hook entries: session start and end, each prompt, compaction, failed tool calls, memory notes) |
-| `hippo hook uninstall <target>` | Remove hook |
-| `hippo handoff create --summary "..."` | Create a session handoff |
-| `hippo handoff latest` | Show the most recent handoff |
-| `hippo handoff show <id>` | Show a specific handoff by ID |
-| `hippo session latest` | Show latest task snapshot + events |
-| `hippo session resume` | Re-inject latest handoff as context |
-| `hippo current show` | Compact current state (task + session events) |
-| `hippo card create --title "..."` | Create a work-queue card (`--repo`, `--contract`, `--budget`, repeatable `--depends-on <id>`) |
-| `hippo card show <id>` | Show a card, its deps, runs, comments and latest handoff |
-| `hippo card list [--status <status>]` | List cards, newest-updated first |
-| `hippo card claim <id> --runtime <name>` | Claim a ready or blocked card; prints its run id and the time its 4-hour lease expires |
-| `hippo card heartbeat <id> --run <n>` | Extend a claimed card's lease |
-| `hippo card block <id> --reason "<why>" [--run <n>]` | Block a running card; the reason is recorded as a comment |
-| `hippo card review <id> [--run <n>]` | Move a running card to review |
-| `hippo card complete <id> --outcom
+| `hippo decide "<decision>" --supersedes <id>` | Supersede a previous deci

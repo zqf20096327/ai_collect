@@ -37,13 +37,13 @@ A test release from the Neotopia Foundation.
 
 ```sh
 # macOS and Linux
-curl -LO https://github.com/neotopia-foundation/offline/releases/download/v0.1.0/neotopia-offline.md
+curl -LO https://github.com/neotopia-foundation/offline/releases/download/v0.1.1/neotopia-offline.md
 shasum -a 256 neotopia-offline.md
 ```
 
 ```powershell
 # Windows PowerShell
-curl.exe -LO https://github.com/neotopia-foundation/offline/releases/download/v0.1.0/neotopia-offline.md
+curl.exe -LO https://github.com/neotopia-foundation/offline/releases/download/v0.1.1/neotopia-offline.md
 Get-FileHash neotopia-offline.md
 ```
 
@@ -61,6 +61,8 @@ Then build the drive and help me test it offline.
 ```
 
 The agent asks about your country, languages, devices, free space and data cap. A hosted agent sends your answers to its provider. Keep private medical details out of that chat.
+
+**Without an agent?** For Poland there is a ready file list and a download script in [no-agent/](no-agent/README.md). You get the files, but not the start pages and launchers that the agent writes.
 
 ## How it works
 

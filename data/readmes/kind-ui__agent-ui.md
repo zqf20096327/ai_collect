@@ -2,7 +2,7 @@
 
 # Agent UI
 
-AI interface components that people and agents can both use, for React and Web Components, built on [UI SDK](https://ui-sdk.dev/docs).
+AI interface components that people and agents can both use, for React, Vue, Svelte, Solid and Web Components, built on [UI SDK](https://ui-sdk.dev/docs).
 
 [![npm version](https://img.shields.io/npm/v/@kind-ui/agent-ui?color=0368FF&label=npm)](https://www.npmjs.com/package/@kind-ui/agent-ui)
 [![npm downloads](https://img.shields.io/npm/dm/@kind-ui/agent-ui)](https://www.npmjs.com/package/@kind-ui/agent-ui)
@@ -24,7 +24,7 @@ AI interface components that people and agents can both use, for React and Web C
 ## Features
 
 - **56 components** for AI chat and agent interfaces: conversations and streaming markdown, the steps an agent takes, the places a person answers it, the output it hands back, and the shell around a chat: its list of past chats, a sidebar and search.
-- **React and Web Components.** Every component ships as a React item and a `-web` twin with the same props, states and styles.
+- **Five frameworks.** Every component ships for React, Web Components, Vue, Svelte and Solid, rendering the same parts, options, states and styles from one behavior.
 - **Built on UI SDK.** Focus, keyboard navigation, popups, dismissal and screen reader announcements come from [UI SDK](https://ui-sdk.dev/docs), not hand-written code.
 - **Agent-operable.** An agent connected with UI SDK's `createAgent` reads the same components a person sees and runs their actions, with a person confirming the ones that matter.
 - **Built for streaming.** Markdown parses only the blocks that changed, logs follow the newest content until the reader scrolls away, and rows animate in once, when they mount.
@@ -33,9 +33,17 @@ AI interface components that people and agents can both use, for React and Web C
 
 ## Quick start
 
-Agent UI needs Tailwind CSS v4, and React 19 for the React components.
+Agent UI needs Tailwind CSS v4. Pick the layer your app uses:
 
-Add the `@kind-ui` registry to your `components.json` (run `npx shadcn@latest init` first if you have none):
+| Layer | Needs | Registry item |
+| --- | --- | --- |
+| React | React 19 | `<name>` |
+| Web Components | any page | `<name>-web` |
+| Vue | Vue 3.5 or later | `<name>-vue` |
+| Svelte | Svelte 5.33 or later, with runes | `<name>-svelte` |
+| Solid | Solid 2 (`solid-js` and `@solidjs/web`) | `<name>-solid` |
+
+Add the `@kind-ui` registry to your `components.json`. In a React app, run `npx shadcn@latest init` first if you have none; a Vue, Svelte or Solid app writes the file by hand, as [Get Started](https://kindui.dev/docs/agent-ui/#install-with-the-shadcn-cli) shows:
 
 ```json
 {
@@ -45,16 +53,27 @@ Add the `@kind-ui` registry to your `components.json` (run `npx shadcn@latest in
 }
 ```
 
-Then add components by name. Each React item has a Web Components twin ending in `-web`:
+Then add components by name, with your layer's suffix:
 
 ```bash
-npx shadcn@latest add @kind-ui/composer       # React
-npx shadcn@latest add @kind-ui/composer-web   # Web Components
+npx shadcn@latest add @kind-ui/composer          # React
+npx shadcn@latest add @kind-ui/composer-web      # Web Components
+npx shadcn@latest add @kind-ui/composer-vue      # Vue
+npx shadcn@latest add @kind-ui/composer-svelte   # Svelte
+npx shadcn@latest add @kind-ui/composer-solid    # Solid
 ```
 
-The first `add` also installs `@kind-ui/agent-ui` and `@ui-sdk/core` at their pinned versions, imports `@kind-ui/agent-ui/styles.css` into your stylesheet, and writes an `AGENTS.md` beside the components for coding agents.
+The first `add` also installs `@kind-ui/agent-ui`, `@ui-sdk/core` and your layer's UI SDK package at their pinned versions, imports `@kind-ui/agent-ui/styles.css` into your stylesheet, and writes an `AGENTS.md` beside the components for coding agents. The React components build in a default Next.js 16 app, Turbopack included, with no extra config.
 
 To set it up with a coding agent instead, copy the prompt from [Get Started](https://kindui.dev/docs/agent-ui/#quick-start).
+
+Give your coding agent the Agent UI skill, so it knows which component fits a job and how to compose them, connect the AI SDK, expose actions to agents and ask the person first:
+
+```bash
+npx skills add kind-ui/agent-ui --skill agent-ui
+```
+
+It also ships in the npm package, at `node_modules/@kind-ui/agent-ui/skills/agent-ui/SKILL.md`.
 
 ## Usage
 
@@ -80,7 +99,7 @@ Return a promise from `onSubmit` to keep the composer pending until the message 
 Each `-web` item exports a `define…` function that registers its `kind-*` elements. They render into light DOM, so the same stylesheet styles them:
 
 ```ts
-import { defineStep } from "./components/ui/web/step.js";
+import { defineStep } from "@/components/ui/web/step";
 
 defineStep();
 ```
@@ -96,12 +115,59 @@ defineStep();
 
 Props are kebab-case attributes or properties, and callbacks are lowercase DOM events. Each component page lists both.
 
+### Vue
+
+```vue
+<script setup>
+import { Composer, ComposerInput, ComposerSubmit } from "@/components/ui/vue/composer";
+
+const send = (draft) => chat.send(draft.text, draft.attachments);
+</script>
+
+<template>
+  <Composer aria-label="Message" :on-submit="send">
+    <ComposerInput aria-label="Prompt" placeholder="Ask anything" />
+    <ComposerSubmit />
+  </Composer>
+</template>
+```
+
+### Svelte
+
+```svelte
+<script lang="ts">
+  import { Composer, ComposerInput, ComposerSubmit } from "@/components/ui/svelte/composer/index.js";
+</script>
+
+<Composer aria-label="Message" onSubmit={(draft) => chat.send(draft.text, draft.attachments)}>
+  <ComposerInput aria-label="Prompt" placeholder="Ask anything" />
+  <ComposerSubmit />
+</Composer>
+```
+
+### Solid
+
+```tsx
+import { Composer, ComposerInput, ComposerSubmit } from "@/components/ui/solid/composer";
+
+export function Prompt() {
+  return (
+    <Composer aria-label="Message" onSubmit={(draft) => chat.send(draft.text, draft.attachments)}>
+      <ComposerInput aria-label="Prompt" placeholder="Ask anything" />
+      <ComposerSubmit />
+    </Composer>
+  );
+}
+```
+
+Part and option names match React's in every layer. Controlled props and callbacks follow each framework (`v-model:open` in Vue, `bind:open` in Svelte, `open` and `onOpenChange` in Solid), and each component page's API reference lists them.
+
 ### Agents
 
 Create one UI SDK agent bridge, and every Agent UI component on the page joins it:
 
 ```ts
-import { createAgent } from "@ui-sdk/react/agent"; // or "@ui-sdk/web/agent"
+import { createAgent } from "@ui-sdk/react/agent"; // or @ui-sdk/web/agent, @ui-sdk/vue/agent, …
 
 const agent = createAgent();
 
@@ -109,7 +175,7 @@ agent.snapshot(); // [{ ref: "c1", component: "kind-model-selector", label: "Mod
 await agent.act({ steps: [{ ref: "Model", action: "setValue", args: ["claude-sonnet-5.5"] }] });
 ```
 
-Each action reaches your callbacks with `details.source` set to `"agent"`. Actions that decide something, like approving a tool call or accepting a plan, wait for a person to confirm unless your `allow` lets them through. Each component page's **Agent** section lists its actions. See UI SDK's [agent docs](https://ui-sdk.dev/docs) for `query`, permissions and WebMCP tools.
+An agent sends a whole task in one `act` call. Give a model the `snapshot`, `act` and `query` tools from `agentTools`, or a browser's agent through WebMCP with `registerTools(agent, { allow })`, and pass `act` a `signal` that the chat's Stop aborts. Each action reaches your callbacks with `details.source` set to `"agent"`. Actions that decide something, like approving a tool call or accepting a plan, wait for a person to confirm unless your `allow` lets them through. Each component page's **Agent** section lists its actions, and the [Agents](https://kindui.dev/docs/agent-ui/agents/) page wires it all up.
 
 ### AI SDK
 
@@ -122,6 +188,8 @@ const rendered = fromUIMessages(messages, { status, error });
 `ai` is an optional peer dependency, imported for types only. See the [AI SDK adapter](https://kindui.dev/docs/agent-ui/adapters/ai-sdk/) page.
 
 ## Components
+
+56 components in six groups. Each name links to its docs page, with a live example and every layer's code.
 
 ### Chat
 
@@ -253,10 +321,10 @@ Set any `--kind-*` token in your own `@theme` or `:root`. Colors are `light-dark
 
 | Path | Contents |
 | --- | --- |
-| [`packages/agent-ui`](packages/agent-ui) | The `@kind-ui/agent-ui` package and the React and Web Components render files |
+| [`packages/agent-ui`](packages/agent-ui) | The `@kind-ui/agent-ui` package, its render files and the published `agent-ui` skill |
 | [`registry`](registry) | The shadcn registry catalog served at `kindui.dev/r` |
 | [`apps/docs`](apps/docs) | The docs site, with every component's page and live example |
-| [`tests`](tests) | Browser specs for both layers, fixtures and consumer type tests |
+| [`tests`](tests) | Browser specs for every layer, fixtures and consumer type tests |
 | [`scripts`](scripts) | Checks: UI SDK usage guard, packed package, bundle size, registry consumers |
 
 ## Contributing

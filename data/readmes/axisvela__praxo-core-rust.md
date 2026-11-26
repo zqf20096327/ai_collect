@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This crate is its nat
 | Package | `praxo-core` |
 | Registry | [crates.io](https://crates.io/crates/praxo-core/0.10.0) |
 | Install | `cargo add praxo-core@0.10.0` |
-| Source version | `0.10.0` |
+| Source version | `0.11.0` |
 | Published version | `0.10.0` |
-| Source tag | `rust/v0.10.0` |
+| Source tag | `rust/v0.11.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/rust/ |
@@ -94,6 +94,42 @@ Runnable examples live under [`language/rust/examples`](language/rust/examples).
 | [streaming](language/rust/examples/streaming) | This example uses published crates.io `praxo-core@0.10.0` to consume deltas while the agent loop keeps running normally. |
 | [structured-output](language/rust/examples/structured-output) | This example uses published crates.io `praxo-core@0.10.0` to validate the final answer against a JSON Schema. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/rust/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/rust/Tutorial) | Bounded Rust examples built on the native Core. Each tutorial is a small, runnable slice with explicit non-goals and an application-owned boundary; none is a complete industry p... |
+| [biodiversity-alerts](language/rust/Tutorial/biodiversity-alerts) | Classify fixed labeled observations and draft a ranger review. No production write or external system access. |
+| [bug-repair](language/rust/Tutorial/bug-repair) | Reproduces a fixed bug, drafts a patch and reruns a fixture test. No PR creation or repository write. |
+| [code-review](language/rust/Tutorial/code-review) | Reviews a fixed diff and dependency manifest, cites findings and uncertainty and drafts comments. No comments are posted. |
+| [cold-chain](language/rust/Tutorial/cold-chain) | A bounded first slice of TL-04, not a refrigeration-control or clinical-cargo system. It computes fixed temperature excursions and drafts a review-only transfer review. No refri... |
+| [construction-safety](language/rust/Tutorial/construction-safety) | A bounded first slice of BE-01, not a certified safety inspection. It reads fixed inspection labels for one site, drafts a review-only remediation checklist and records zero cer... |
+| [copyright-evidence](language/rust/Tutorial/copyright-evidence) | Compare fixed authorized assets and draft an evidence packet. No production write or external system access. |
+| [dlp-redaction](language/rust/Tutorial/dlp-redaction) | Inspect a fixed export and draft a review-only redaction. No production write or external system access. |
+| [drone-fleet-plan](language/rust/Tutorial/drone-fleet-plan) | Simulate fixed waypoints and conflict checks, then draft a plan. No production write or external system access. |
+| [fleet-map](language/rust/Tutorial/fleet-map) | Replay fixed road-topology changes and draft a reviewed map patch. No production write or external system access. |
+| [household-robot](language/rust/Tutorial/household-robot) | A bounded first slice of PE-04, not a robot controller. It observes fixed robot state with freshness, drafts a bounded review-only action that requires cancel confirmation, and... |
+| [iot-gateway](language/rust/Tutorial/iot-gateway) | A scoped edge tutorial over the published MIT `praxo-core` Rust crate. It reads one fixed gateway snapshot through an application-owned `GatewayAdapter` trait, asks a determinis... |
+| [lab-loop](language/rust/Tutorial/lab-loop) | A bounded first slice of SC-03, not an autonomous laboratory. It replays a fixed parameter/result loop with deterministic limits and drafts review-only next parameters. No labor... |
+| [leak-localization](language/rust/Tutorial/leak-localization) | A bounded first slice of CT-02, not a leak-detection or dispatch system. It ranks fixed synthetic pressure anomalies and drafts a review-only inspection list. No valve isolation... |
+| [livestock-monitor](language/rust/Tutorial/livestock-monitor) | A bounded first slice of AE-01, not a veterinary or feeding-control system. It summarizes fixed animal observations and drafts a review-only veterinary request. No diagnosis, is... |
+| [mining-slope](language/rust/Tutorial/mining-slope) | A bounded first slice of BE-03, not a collapse-prediction or dispatch system. It reads fixed slope displacement indicators and drafts a review-only alert. No collapse prediction... |
+| [pentest-lab-review](language/rust/Tutorial/pentest-lab-review) | Inventory one allowlisted loopback lab and draft a review-only report. No production write or external system access. |
+| [privacy-agent](language/rust/Tutorial/privacy-agent) | Classify fixed messages and draft a review-only deletion request. No production write or external system access. |
+| [quant-risk](language/rust/Tutorial/quant-risk) | Replays fixed prices, enforces a deterministic exposure limit and drafts a review-only order. No trade or latency claim. |
+| [supply-chain-review](language/rust/Tutorial/supply-chain-review) | Compare fixed manifests and draft a reviewed version pin. No production write or external system access. |
+| [threat-hunting](language/rust/Tutorial/threat-hunting) | Search fixed logs and draft a cited synthetic TTP timeline. No production write or external system access. |
+
+## Reference Applications
+
+Complete AI-native reference applications live under `language/rust/application`.
+
+| Path | What it shows |
+| --- | --- |
+| [application](language/rust/application) | A Rust edge CLI where the agent drives the primary gateway-diagnosis workflow: an operator submits an incident intent, the agent reads application-owned gateway telemetry, diagn... |
+
 ## Verify
 
 Run the checks from `language/rust`:
@@ -112,6 +148,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

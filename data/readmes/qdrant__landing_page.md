@@ -271,19 +271,21 @@ Tag a section of a documentation page with the products it applies to, the versi
 ## Quantization {products="clusters"}
 ## Quantization {version="1.9.0"}
 ## Quantization {products="clusters[1.20.0], edge[0.9.0], serverless"}
+## Quantization {products="clusters, hybrid-cloud, !serverless"}
+## Quantization {products="!serverless"}
 ```
 
-- `products`: one or more product keys from `data/products.yaml`, separated by commas or spaces. To give a product a version, add it in brackets after the key.
+- `products`: one or more product keys from `data/products.yaml`, separated by commas or spaces. To give a product a version, add it in brackets after the key. To name a product the section does not apply to, prefix its key with `!`. Negated products can't have a version.
 - `version`: for sections that only need to be labeled for a version (where the product is implied or clear from the context). For product-specific sections, use bracketed versions instead.
 
 How it's rendered:
 
-- The HTML page shows an italic note under the heading, for example *Only applies to dedicated clusters as of v1.20.0.* or *Applies to Qdrant Edge as of v0.9.0, dedicated clusters as of v1.20.0, and Serverless.* "Only" is used when exactly one product is listed.
+- The HTML page shows an italic note under the heading, for example *Only applies to dedicated clusters as of v1.20.0.* or *Applies to Qdrant Edge as of v0.9.0, dedicated clusters as of v1.20.0, and Serverless.* "Only" is used when exactly one product is listed. Negated products are named in a separate sentence, for example *Applies to dedicated clusters and Hybrid Cloud. Does not apply to Serverless.* or *Does not apply to Qdrant Edge or Serverless.*
 - The Markdown output (`index.md`) wraps the section in `<only-applies-to products="...">` and `</only-applies-to>` tags, and the attributes are removed from the heading.
 
 A section runs to the next heading of the same or a higher level, so its subsections are included.
 
-The build fails on an unknown or repeated product, a malformed version, or any heading attribute other than `id`, `class`, `products`, and `version`. To add a product, add a `key` and `label` to `data/products.yaml`. The list order is the order products are named in the note.
+The build fails on an unknown or repeated product (including one that's both listed and negated), a version on a negated product, a malformed version, or any heading attribute other than `id`, `class`, `products`, and `version`. To add a product, add a `key` and `label` to `data/products.yaml`. The list order is the order products are named in the note.
 
 ### Preview images for documentation pages
 
@@ -574,6 +576,72 @@ demos:
 ```
 
 Optional: `batchSize` controls how many cards show before “View More” (default `8`).
+
+## Qdrant Stars
+
+The `/stars/` page is built from one content file per section in `qdrant-landing/content/stars/`. Edit those files only; no template changes are needed for content updates.
+
+| File | Section |
+|---|---|
+| `stars-hero.md` | Hero copy, buttons, portrait images, and optional `stats` |
+| `stars-list.md` | "Meet The Stars" cards |
+| `stars-projects.md` | "Projects The Community Is Building" list |
+| `stars-perks.md` | Perks carousel and handbook banner |
+| `stars-how-to-join.md` | "Joining Is Simple" steps |
+| `stars-cta.md` | Closing call-to-action banner |
+
+### Add a Star
+
+Append an entry under `cards:` in `stars-list.md`. Cards render in list order, and the subtitle counts them automatically (`"{count} Members"`).
+
+```yaml
+cards:
+  - name: Jane Doe
+    distinguished: true          # optional; shows the Distinguished badge
+    image:
+      src: /img/stars/jane-doe.jpg
+      alt: Jane Doe Photo
+    position: AI Engineer @ Example
+    description: One or two sentences about the Star's work with Qdrant.
+    # Optional details, each rendered only when set:
+    tags: [rag, education]       # shown as #RAG #EDUCATION
+    location: Germany
+    talks: 5                     # number of talks
+    posts: 12                    # number of published pieces of content
+```
+
+Put photos in `themes/qdrant-2024/static/img/stars/`. They are shown as 64px circles, so a square image of at least 128×128px works best. `pageSize` sets how many cards show before "Load More" (default `8`).
+
+### Add a project
+
+Append an entry under `projects:` in `stars-projects.md`. `type` sets the badge: `open-source`, `product`, or `learning`.
+
+```yaml
+projects:
+  - name: My Project
+    author: Jane Doe
+    logo: /img/stars-program/projects/my-project.png  # square, at least 96×96px
+    description: One sentence about what the project does with Qdrant.
+    type: open-source
+```
+
+The "Browse All Projects" link shows only when `link.url` is set.
+
+### Stats
+
+The hero's stats bar lists its items under `stats` in `stars-hero.md`. A stat shows only when its `value` is set, and the bar shows when at least one stat has a value; the columns adjust to the number shown. `"{count}"` in a value is replaced with the number of cards in `stars-list.md`.
+
+```yaml
+stats:
+  - icon: stat-user      # icon file in themes/qdrant-2024/static/img/stars-program/icons/
+    value: "{count}"     # filled in automatically
+    label: Active Stars
+  - icon: stat-map-pin   # also: stat-mic-vocal, stat-heart
+    value: ""            # hidden until a value is added, e.g. "13"
+    label: Countries
+```
+
+The page also publishes a Markdown version at `/stars/index.md`, generated from the same files by `qdrant-landing/layouts/partials/markdown-page/stars.md`.
 
 ## Shortcodes 🧩🧩🧩
 

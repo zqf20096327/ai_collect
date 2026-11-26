@@ -75,7 +75,7 @@ trips over 92 service days. The raw output is in [docs/results.txt](docs/results
 | 425 | up | 27.4 min | 10.8% | 19.0% | 18.0 min | 31.5 min |
 | 425 | down | 27.3 min | 11.2% | 19.1% | 18.0 min | 32.9 min |
 
-Expected wait is for someone who turns up at a random time. With uneven gaps that's
+Expected wait is for someone who turns up at a random time. With uneven gaps that's it
 E[h^2] / 2E[h] rather than half the average headway, since you're more likely to land in a
 long gap. On 534 the uneven spacing about doubles the wait; on 425 it's around 1.8x.
 

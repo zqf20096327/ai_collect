@@ -13,20 +13,20 @@
 
 **Your AI writes Arabic. Sibawayh makes it _correct_ Arabic.**
 
-An open-source Agent Skill (`SKILL.md`) and Arabic spelling, grammar and punctuation checker. It makes Claude Code, Cursor, GitHub Copilot and other AI coding agents write correct, natural Modern Standard Arabic (MSA, فصحى), and check it before they answer.
+An open-source Agent Skill (`SKILL.md`) and Arabic spelling, grammar and punctuation checker. It makes Claude Code, Codex, Cursor, GitHub Copilot and other AI coding agents write correct, natural Modern Standard Arabic (MSA, فصحى), and check it before they answer.
 
-<p dir="rtl"><b>سيبويه</b> مهارة مفتوحة المصدر لوكلاء الذكاء الاصطناعي (Agent Skill)، ومدقّق إملائي ونحوي للغة العربية. تجعل Claude Code وCursor وGitHub Copilot وغيرها تكتب العربية الفصحى سليمةً وطبيعية، ثم تراجعها قبل الإجابة: الهمزات والإملاء وعلامات الترقيم والنحو والأسلوب واتجاه النص من اليمين إلى اليسار.</p>
+<p dir="rtl"><b>سيبويه</b> مهارة مفتوحة المصدر لوكلاء الذكاء الاصطناعي (Agent Skill)، ومدقّق إملائي ونحوي للغة العربية. تجعل Claude Code وCodex وCursor وGitHub Copilot وغيرها تكتب العربية الفصحى سليمةً وطبيعية، ثم تراجعها قبل الإجابة: الهمزات والإملاء وعلامات الترقيم والنحو والأسلوب واتجاه النص من اليمين إلى اليسار.</p>
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-3776ab?logo=python&logoColor=white)](#-run-the-checker-yourself)
 [![Dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen)](#-run-the-checker-yourself)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-d97757)](skills/arabic-writing/SKILL.md)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757)](#-install)
-[![AI-judged: −96% errors](https://img.shields.io/badge/AI--judged-%E2%88%9296%25%20errors-2ea44f)](evals/full_eval.md)
+[![AI-judged: −97% errors](https://img.shields.io/badge/AI--judged-%E2%88%9297%25%20errors-2ea44f)](https://anasash.github.io/Sibawayh/)
 
 <img src="docs/assets/social-preview.png" alt="Sibawayh Arabic grammar checker: typical AI-generated Arabic with errors next to corrected Arabic" width="820">
 
-[Install](#-install) · [How it works](#-how-it-works) · [What it catches](#-what-it-catches) · [Checker](#-run-the-checker-yourself) · [FAQ](#-faq) · [Contribute](#-contribute)
+[Install](#-install) · [How it works](#-how-it-works) · [What it catches](#-what-it-catches) · [Checker](#-run-the-checker-yourself) · [Evaluation](#-evaluation) · [How it is tested](https://anasash.github.io/Sibawayh/) · [بالعربية](https://anasash.github.io/Sibawayh/ar/) · [FAQ](#-faq) · [Contribute](#-contribute)
 
 </div>
 
@@ -113,11 +113,11 @@ flowchart LR
 |---|---|---|---|
 | ✏️ | Punctuation | `,` `?` `;` → ، ؟ ؛, spacing | 🤖 checker (auto-fix) |
 | 🔤 | Unicode | Persian ک/ی, presentation forms, tatweel | 🤖 checker |
-| 📝 | Spelling | إستخدام, هاذا, الى, الاطفال, المدرسه, المصرى, و الكتاب, لايوجد | 🤖 checker (word lists + frequency lexicons) |
+| 📝 | Spelling | إستخدام, هاذا, الى, الاطفال, المدرسه, المصرى, و الكتاب, لايوجد, مساءًا | 🤖 checker (word lists + frequency lexicons) |
 | 🔢 | Digits and RTL | mixed 3 / ٣, lines that flip direction | 🤖 checker |
 | 🗣️ | Dialect leakage | عشان, بدي, هيك in formal text | 🤖 checker |
 | ⚖️ | Verb endings | لم يكونون, لن يذهبون, سوف لن | 🤖 checker + 🧠 checklist |
-| 🧮 | Agreement and numbers | non-human plurals, العدد والمعدود (ثلاث ملفات → ثلاثة ملفات) | 🤖 checker (numbers 3–10) + 🧠 checklist + 📚 tables |
+| 🧮 | Agreement and numbers | non-human plurals, العدد والمعدود (ثلاث ملفات → ثلاثة ملفات, خمسة عشرة → خمس عشرة) | 🤖 checker (numbers 3–10 and 13–19) + 🧠 checklist + 📚 tables |
 | 🌐 | Translationese | تم + masdar, قام بـ, من قبل, كـ "as a"; idioms translated word for word (يصنع الفرق) | 🤖 density and idiom list + 🧠 checklist |
 | 💻 | Tech terms | واجهة برمجة التطبيقات (API) | 📚 glossary (450+ terms) |
 
@@ -127,10 +127,12 @@ flowchart LR
 
 ```
 /plugin marketplace add anasAsh/Sibawayh
-/plugin install arabic-writing@sibawayh
+/plugin install sibawayh@sibawayh
 ```
 
 That's it. The skill now loads by itself whenever Claude writes Arabic.
+
+Upgrading from 0.2.x? The plugin was called `arabic-writing` then. Run `/plugin uninstall arabic-writing@sibawayh`, then the install command above.
 
 <details>
 <summary>Prefer a manual install?</summary>
@@ -142,13 +144,51 @@ ln -s "$PWD/skills/arabic-writing" ~/.claude/skills/arabic-writing
 # or: cp -r skills/arabic-writing ~/.claude/skills/
 ```
 
-From a shell, the plugin commands are `claude plugin marketplace add anasAsh/Sibawayh` and `claude plugin install arabic-writing@sibawayh`.
+From a shell, the plugin commands are `claude plugin marketplace add anasAsh/Sibawayh` and `claude plugin install sibawayh@sibawayh`.
 
 </details>
 
-### Cursor, GitHub Copilot and other agents
+### Codex, Cursor, GitHub Copilot and most other agents
 
-Copy `skills/arabic-writing/` into your tool's skills folder; check its documentation for the path. The skill uses the standard `SKILL.md` format. If an agent has no shell, it falls back to the checklist alone.
+The skill is a standard [`SKILL.md`](https://agentskills.io/specification) folder, and most agents read skills from one shared place: `~/.agents/skills/` for all your projects, or `.agents/skills/` inside one project.
+
+```bash
+git clone https://github.com/anasAsh/Sibawayh.git
+mkdir -p ~/.agents/skills
+cp -r Sibawayh/skills/arabic-writing ~/.agents/skills/
+```
+
+According to their documentation, that folder is read by OpenAI Codex, Cursor, GitHub Copilot (CLI and VS Code), Gemini CLI, OpenCode, Amp, Goose, Roo Code, Zed, JetBrains Junie and Windsurf (Devin Local). A few agents use their own folder; copy the same `arabic-writing` folder there instead:
+
+| Agent | Folder for your user | Folder inside a project |
+|---|---|---|
+| Claude Code | plugin (above), or `~/.claude/skills/` | `.claude/skills/` |
+| Cline | `~/.cline/skills/` | `.cline/skills/` |
+| Kiro | `~/.kiro/skills/` | `.kiro/skills/` |
+| Google Antigravity | `~/.gemini/config/skills/` | `.agents/skills/` |
+
+If you use Node, [`npx skills add anasAsh/Sibawayh`](https://github.com/vercel-labs/skills) installs the skill into the agents you pick. It is a third-party tool that we have not tested.
+
+### Claude Desktop and claude.ai
+
+1. Download [`arabic-writing.zip`](https://github.com/anasAsh/Sibawayh/releases/latest/download/arabic-writing.zip) from the latest release. To build it yourself: `cd Sibawayh/skills && zip -r arabic-writing.zip arabic-writing -x '*__pycache__*'`
+2. In Claude, open **Customize → Skills**, choose **Create skill → Upload a skill**, and upload the zip.
+3. Turn on **Code execution and file creation** in **Settings → Capabilities**, so that Claude can run the checker.
+
+We have not tested the upload yet; if Claude rejects it, please open an issue.
+
+The Code tab of Claude Desktop reads `~/.claude/skills/` and Claude Code plugins, so the Claude Code install covers it.
+
+### What has been tested
+
+| Agent | Status |
+|---|---|
+| Claude Code | Full evaluation: 100 requests, see [Evaluation](#-evaluation) |
+| OpenAI Codex CLI | Smoke-tested 2026-11-24: loads the skill from `.agents/skills/` and runs the checker |
+| OpenCode | Smoke-tested 2026-11-24: loads the skill from `.agents/skills/` and runs the checker |
+| All others | Install paths taken from each agent's documentation on 2026-11-24; not run by us yet |
+
+A smoke test is one Arabic request, checked to see that the agent read `SKILL.md` and ran `check_arabic.py`. It does not measure quality. If an agent has no shell, the skill falls back to its checklist alone. Reports from other agents are welcome in the [issues](https://github.com/anasAsh/Sibawayh/issues).
 
 ## 🔍 Run the checker yourself
 
@@ -187,29 +227,33 @@ skills/arabic-writing/
 │   ├── style.md              translationese → natural Arabic
 │   ├── common-errors.md      قل ولا تقل
 │   ├── approved-forms.md     never "fix" these
+│   ├── classical.md          classical register, only on request
 │   └── glossary.md           450+ tech terms, English → Arabic
 └── scripts/
     ├── check_arabic.py       the checker (stdlib only)
     ├── archeck/              rules
     └── data/                 word lists
-evals/                        before/after evaluation harness
+evals/                        before/after evaluation harness, results and raw answers
+docs/                         the "How Sibawayh is tested" pages (English and Arabic)
 tests/                        unit tests
 research/                     the research the rules are built on
 ```
 
 ## 📊 Evaluation
 
-The harness in [`evals/`](evals/README.md) answers 50 realistic prompts with and without the skill, and a judge scores both versions blind, without knowing which is which. So far the judge is an AI model from a different family; a native-speaker round is planned. The success bar is **zero over-corrections** and **about 50% fewer errors per 100 words**, with no category getting worse. **Triggering** (does the skill load when it should?): **20/20** (18/20 in the first run).
+The harness in [`evals/`](evals/README.md) answers 100 realistic prompts with and without the skill, and a judge scores both versions blind, without knowing which is which. So far the judge is an AI model from a different family; a native-speaker round is planned. The success bar is **zero over-corrections** and **about 50% fewer errors per 100 words**, with no category getting worse. **Triggering** (does the skill load when it should?): **20/20** (18/20 in the first run).
 - All 14 requests in Arabic, or for Arabic output, loaded the skill. That includes summarise, rewrite and proofread.
 - All 4 English-only requests correctly left it unloaded.
 - The 2 dialect requests load it too, for the formatting checks only. In the first run they did not.
 
-**Full evaluation** (50 prompts, judged blind by an AI model from a different family; see [`evals/full_eval.md`](evals/full_eval.md)):
-- Errors per 100 words went from **2.02 to 0.09 (−96%)**, averaged over three blind judgings (−94%, −96%, −96%). Register errors fell to 0 and translationese by 86%.
-- The Sibawayh version was preferred in **42–46** of the 50 pairs, the baseline in 0–3.
-- **0** over-corrections. The success bar (≤50% of the baseline's errors, no category worse, no over-corrections) is met in all three judgings. The first run (2026-11-20, one judging) was −88%.
+**Full evaluation** (100 prompts, judged blind by an AI model from a different family; see [`evals/full_eval.md`](evals/full_eval.md)):
+- Errors per 100 words went from **2.26 to 0.07 (−97%)**, averaged over three blind judgings (−98%, −97% and −96%) of release 0.4.0. Register errors fell by 99% and translationese by 87%. On the 50 prompts the skill was not tuned on, the result is −95%.
+- The Sibawayh version was preferred in **92–93** of the 100 pairs, the baseline in 3–4.
+- **0** over-corrections. The success bar (≤50% of the baseline's errors, no category worse, no over-corrections) is met in all three judgings. The previous run (2026-11-23, release 0.3.0) was −96%, and the first run (2026-11-20, 50 prompts, one judging) was −88%. Answers vary from run to run, so the step from −96% to −97% is not evidence of an improvement.
 
-An AI judge is not a native reader, so a human-scored round is still to come. The answers and scores are in [`evals/results/`](evals/results/) for anyone to check.
+An AI judge is not a native reader, so a human-scored round is still to come. [How Sibawayh is tested](https://anasash.github.io/Sibawayh/) describes every test in plain language ([بالعربية](https://anasash.github.io/Sibawayh/ar/)). All 100 requests, both answers to each and the judge's counts are on the [full results page](https://anasash.github.io/Sibawayh/results/) ([بالعربية](https://anasash.github.io/Sibawayh/ar/results/)); the raw files are in [`evals/results/`](evals/results/).
+
+**Classical register** (new in 0.4.0, lightly tested; see [`evals/classical.md`](evals/classical.md)): on 20 requests for classical or elevated literary Arabic, the judge preferred the skill's answer to the no-skill answer in 17–19 of 20 pairs, and to release 0.3.0's answer in 12 of 20. It found no classical wording leaking into everyday answers. This is a small trial judged by an AI model, and it is separate from the −96% figure above.
 
 **The checker against human corrections** ([`evals/benchmarks.md`](evals/benchmarks.md)): on two public corpora that people corrected word by word, it catches **52%** of all errors in student essays (ZAEBUC) and **41%** in native-speaker comments (QALB), up from 23% and 20% in release 0.1.2. For hamza it catches 68% and 59%; for و written apart from its word, 98% and 86%. Every flag on a word the annotators left unchanged was a real error they missed, or (in ZAEBUC) a Latin comma they chose to keep.
 
@@ -232,13 +276,18 @@ No, that is the golden rule. It never flags forms approved by the Cairo Arabic L
 **Does it work with Arabic dialects?**
 Yes. When you ask for Egyptian, Gulf, Levantine or another dialect, the agent writes in that dialect. The skill then fixes only formatting (punctuation, digits, RTL lines), never the dialect itself.
 
+**Can it write classical Arabic (فصحى التراث)?**
+Yes, when you ask for it. Ask for classical or elevated literary style (فصحى التراث، أسلوب تراثي، "classical Arabic") or for a genre that is classical by nature, such as a Friday sermon, a maqama or a literary debate, and the agent switches register: weightier words, balanced sentences, sparing rhyme, and no invented quotations. Everyday requests stay in plain Modern Standard Arabic. This mode is new in 0.4.0 and has had only a small trial.
+
 **Which agents does it work with?**
-Any agent that supports the `SKILL.md` Agent Skills format, including Claude Code (as a plugin), Cursor and GitHub Copilot. Agents without a shell use the checklist alone.
+Any agent that supports the `SKILL.md` Agent Skills format: Claude Code (as a plugin), Claude Desktop, Codex, Cursor, GitHub Copilot, OpenCode and others. See [Install](#-install) for each one's folder and for which agents we have tested. Agents without a shell use the checklist alone.
 
 ## 🤝 Contribute
 
-Native-speaker review is the most valuable contribution. Three ways to help:
+Native-speaker review is the most valuable contribution. Ways to help:
 
+- 🧑‍⚖️ **Score the answers.** The evaluation was judged by an AI model. If you read Arabic natively, score a set of the blind answer pairs in [`evals/results/`](evals/results/) and [open an issue](https://github.com/anasAsh/Sibawayh/issues) with what you find. The [test page](https://anasash.github.io/Sibawayh/ar/) explains the method.
+- 🤖 **Try another agent.** Most agents in [Install](#-install) are documented but not yet tested by us. Tell us whether the skill loads and the checker runs in yours.
 - 💻 **Glossary.** Suggest better or more standard terms in [`glossary.md`](skills/arabic-writing/references/glossary.md). Some terms, such as epoch, tokenization and pipeline, still have no settled Arabic equivalent.
 - 📝 **Word lists.** Add misspellings to `scripts/data/*.tsv`. The rule is strict: an entry must be wrong in *every* context, and each entry needs a test.
 - 🚩 **False flags.** If the checker flags correct Arabic, [open an issue](https://github.com/anasAsh/Sibawayh/issues) with the sentence.

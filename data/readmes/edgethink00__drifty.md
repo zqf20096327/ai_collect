@@ -2,12 +2,20 @@
 
 AI time tracker for Mac and Windows.
 
-**[Download](https://drifty.so/download/)** · [Website](https://drifty.so/) · [Docs](https://docs.drifty.so/) · [Changelog](https://drifty.so/changelog/) · [Discord](https://discord.gg/UGCtQAaDGN) · [X](https://x.com/driftyso)
+**[Download](https://drifty.so/download/)** · [Website](https://drifty.so/) · [Docs](https://docs.drifty.so/) · [Releases](https://github.com/edgethink00/drifty/releases) · [Changelog](https://drifty.so/changelog/) · [Discord](https://discord.gg/UGCtQAaDGN) · [X](https://x.com/driftyso)
 
 Drifty records the app, window and supported browser tab
 in front of you, and AI sorts each stretch into focus, drift or neutral. You
 never start a timer or tag anything. The official app asks you to sign in with
 a Drifty account; a build from source runs without one.
+
+## Release history
+
+[GitHub Releases](https://github.com/edgethink00/drifty/releases) lists desktop
+release notes starting with 1.23.0. For the original stable installers, see
+[Legacy releases](https://github.com/edgethink00/drifty_releases/releases)
+(Mac 1.6.0–1.23.0, Windows 1.11.26–1.19.2). Get the current installer from
+[drifty.so/download](https://drifty.so/download/).
 
 ## What it does
 

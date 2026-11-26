@@ -1,8 +1,8 @@
-# MCP_CREO_MechDog 0.40.0
+# MCP_CREO_MechDog 0.45.1
 
-![version](https://img.shields.io/badge/version-0.40.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
+![version](https://img.shields.io/badge/version-0.45.1-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
 
-当前正式版 **0.40.0**（MINOR）。交付 [BUG-171](docs/work-items/BUG-171.md)、[BUG-172](docs/work-items/BUG-172.md)、[BUG-173](docs/work-items/BUG-173.md) 与 [BUG-174](docs/work-items/BUG-174.md)：恢复阶段超时写出结构化 `recovery_phase_timeout`、消除 `restore_baseline` 重复二次巡检、恢复预算扩至 1800 s 并按 edges/features/surfaces 自适应、终态 `recovery_pending` 返回 `terminal_unconfirmed` 指引；消除单次作业 10+ 次冗余全量 `inspection()` 与逐半边 `fflush()` 刷盘（B045 6 步作业耗时降至 9.1 s）；单轴倾斜三点基准面草图自动创建并复用正交辅助锚定面（`SKETCH_ANCHOR_HELPER=1`）并精准归因 `ProSectionSolve` 错误；`dump_plan_operations` 保留显式 `chamfer_type`、盲切新增 `cut_volume_check` 低去料告警、后台 runner 尝试 `CREATE_BREAKAWAY_FROM_JOB` 并披露 `runner_detached_from_job`。公开工具仍以 `creo_capabilities` 的 `tool_count` 为准。见 [版本说明](docs/RELEASE_NOTES_0.40.0.md) 和 [下载页](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.40.0)。
+当前正式版 **0.45.1**（PATCH）。改进大型曲面的 STL 细化、接缝保护、ASCII 写出和偏差诊断。公开工具以 `creo_capabilities` 的 `tool_count` 为准。 [版本说明](docs/RELEASE_NOTES_0.45.1.md) · [下载页](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.45.1)
 
 > 让 AI 客户端通过 MCP，直接在 Creo Parametric 里创建**原生可编辑的参数化特征**——不是导出网格，也不是脚本模拟。
 

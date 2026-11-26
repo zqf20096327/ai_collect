@@ -451,7 +451,7 @@ marked, support = meshioplusplus.face_support(solid, scan, return_report=True)
 
 #### Isogeometric layer: evaluate, refine, sample NURBS models
 
-The NURBS model a reader keeps beside its mesh (`mesh.info["nurbs"]` for MFEM NURBS meshes, `mesh.info["brep"]` for Kratos CAD JSON, STEP and IGES) can be acted on directly, on every surface (Python, C++, C, Fortran, Julia, R, WASM, both CLIs, MCP): **`iga_refine`** inserts knots and elevates degrees exactly, with the geometry, the NURBS fields and a trimmed face's trimming loops unchanged; **`iga_evaluate`** returns points, first derivatives, normals and the trimming test at parametric coordinates; **`iga_sample`** samples a model into Lagrange cells again. A refined MFEM model writes back as an `MFEM NURBS mesh`. See [isogeometric layer](doc/iga.md).
+The NURBS model a reader keeps beside its mesh (`mesh.info["nurbs"]` for MFEM NURBS meshes, `mesh.info["brep"]` for Kratos CAD JSON, STEP and IGES) can be acted on directly, on every surface (Python, C++, C, Fortran, Julia, R, WASM, both CLIs, MCP): **`iga_refine`** inserts knots and elevates degrees exactly, with the geometry, the NURBS fields and a trimmed face's trimming loops unchanged; **`iga_evaluate`** returns points, first derivatives, normals and the trimming test at parametric coordinates; **`iga_sample`** samples a model into Lagrange cells again; **`iga_bezier_extract`** cuts one patch into VTK Bezier cells; **`iga_remove_knots`** removes knots within a tolerance. A refined MFEM model writes back as an `MFEM NURBS mesh`. See [isogeometric layer](doc/iga.md).
 
 <!--pytest-codeblocks:skip-->
 
@@ -681,6 +681,10 @@ Pieces keep the input's block structure 1:1, so they recombine into the input: e
 out = meshioplusplus.geodesic_distance(skin, "inlet")   # the points of a region
 d = out.point_data["geodesic:distance"]
 ```
+
+#### Streamlines
+
+**`meshioplusplus.streamlines(mesh, "U", seeds=200)`** follows a point vector field through the mesh and returns the paths as a mesh of line segments with `IntegrationTime` (the field's own time, negative behind the seed), `Speed`, `SeedId` and the field, by fixed-step RK4 or adaptive Dormand–Prince 5(4), in a volume or on a surface, from a count of seeds or explicit points; the reason each line stopped is in the report. C++ core only. See `doc/streamlines.md`.
 
 #### UV parameterization
 
@@ -984,4 +988,4 @@ meshioplusplus.write("mapped.vtu", mapped)
 
 #### Slicing / cross-sections
 
-**`meshioplusplus.slice`** computes the planar cross-section of a mesh — the actual intersection of the mesh with a plane, one topological dimension below the cut cells: a 3D volume mesh yields a `triangle`/`quad` surface, a 2D surface mesh a `line` mesh. Unlike `crop` (plane mode), which keeps whole cells on one side, `slice` computes the intersection and lowers the dimension. It uses robust marching tetrahedra (the input is simplexified first, so each cell's cross-section is a well-defined convex primitive), deduping crossing points on shared edges into single nodes so the section is watertight, and win
+**`mesh

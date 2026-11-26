@@ -48,6 +48,7 @@ src/energy_brain/
   forecast/               solar + load forecasters, Forecast agent
   signals/ assets/ planner/ risk/ explainer/ evaluator/   one package per agent
   api/                    FastAPI backend for the dashboard
+  mcp_server/             read-only MCP server over the Explainer tools (docs/mcp.md)
 web/                      React dashboard (set up in #27)
 data/raw, data/processed  downloaded / generated data (git-ignored; re-create with scripts)
 data/sample/              small committed samples for tests and teammates
@@ -111,6 +112,18 @@ Open http://localhost:8000/docs. Endpoints, response shapes and settings (`EB_CO
 [docs/openapi.json](docs/openapi.json). Real plans need `data/processed/` and `models/`
 ([docs/data-sources.md](docs/data-sources.md)); without them the API still runs on the sample-data fallback and
 says so in every response. `/explain` needs `LLM_API_KEY` in `.env` (Groq).
+
+## Use GridPilot from an MCP client
+
+A read-only MCP server (stdio) exposes the Explainer's tools for any day and weight, plus the data caveats,
+site config and backtest summary. It needs no LLM key:
+
+```bash
+pip install -e ".[mcp]"
+claude mcp add gridpilot -- python -m energy_brain.mcp_server
+```
+
+Tools, resources, prompts and client setup are in [docs/mcp.md](docs/mcp.md).
 
 ## Run the dashboard
 

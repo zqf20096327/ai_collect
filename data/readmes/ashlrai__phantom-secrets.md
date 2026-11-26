@@ -9,14 +9,16 @@ Phantom replaces managed secrets in `.env` with `phm_` placeholders. Agents and 
 [![GitHub stars](https://img.shields.io/github/stars/ashlrai/phantom-secrets?style=for-the-badge&logo=github&color=blue&labelColor=0b0b14)](https://github.com/ashlrai/phantom-secrets)
 [![CI](https://img.shields.io/github/actions/workflow/status/ashlrai/phantom-secrets/ci.yml?style=for-the-badge&label=CI&logo=github&labelColor=0b0b14)](https://github.com/ashlrai/phantom-secrets/actions/workflows/ci.yml)
 <!-- fresh:begin readme-release-badges -->
-[![Verified GitHub release](https://img.shields.io/badge/verified_GitHub_release-v0.8.7-2f81f7?style=for-the-badge&labelColor=0b0b14)](https://github.com/ashlrai/phantom-secrets/releases/tag/v0.8.7)
+[![Verified GitHub release](https://img.shields.io/badge/verified_GitHub_release-v0.8.11-2f81f7?style=for-the-badge&labelColor=0b0b14)](https://github.com/ashlrai/phantom-secrets/releases/tag/v0.8.11)
 [![Source version](https://img.shields.io/badge/source_version-v0.8.11-f5a623?style=for-the-badge&labelColor=0b0b14)](CHANGELOG.md#0811---2026-11-16)
 <!-- fresh:end -->
 
-Source candidate `0.8.11` is not yet a qualified public release; the independently verified GitHub release remains `v0.8.7`.
+The independently verified GitHub release is `v0.8.11`, matching the current source version.
 
 [![Pinned toolchain: Rust 1.95](https://img.shields.io/badge/pinned_toolchain-Rust_1.95-CE412B?style=for-the-badge&logo=rust&labelColor=0b0b14)](rust-toolchain.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge&labelColor=0b0b14)](LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=0b0b14)](https://discord.gg/jBQrSU6XeD)
+[![npm downloads](https://img.shields.io/npm/dm/phantom-secrets?style=for-the-badge&labelColor=0b0b14&logo=npm&label=npm%20downloads)](https://www.npmjs.com/package/phantom-secrets)
 
 [**Quick start**](#quick-start) ·
 [**Why Phantom?**](#why-phantom) ·
@@ -36,7 +38,7 @@ Five steps. Phantom itself never prints a secret value in these steps; step 5 ru
 
 ### Get started
 
-1. **Install.** Download the archive for your OS from the [v0.8.7 release assets](#exact-v087-github-assets), check its `.sha256`, and put `phantom` and `phantom-mcp` on your `PATH`. Check it with `phantom --help`, which lists the commands. Homebrew still serves v0.7.9, which lacks `phantom agent doctor --json`. Other channels and their limits are in [distribution status](docs/distribution-status.md).
+1. **Install.** Download the archive for your OS from the [v0.8.11 release assets](#exact-v0811-github-assets), check its `.sha256`, and put `phantom` and `phantom-mcp` on your `PATH`. Check it with `phantom --help`, which lists the commands. As of 2026-11-24, the public Homebrew tap still serves v0.7.9, which lacks `phantom agent doctor --json`. Other channels and their limits are in [distribution status](docs/distribution-status.md).
 2. **Protect your `.env`.** In your project folder, run `phantom init`. You should see `Found N secret(s) to protect:` followed by one line per key name. Each value moves into the local vault, and `.env` keeps a `phm_` placeholder in its place. No `.env` yet? Run `phantom init --empty`.
 3. **Check the result.** Run `phantom list`, which prints secret names only. Then run `phantom agent doctor`, which rates the repo from `unsafe` to `compliance-ready`.
 4. **Connect your AI client.** Run `phantom setup --client claude`. Use `cursor`, `windsurf`, `codex`, or `gemini` for other clients. Restart the client, then ask it to call `phantom_status` and `phantom_list_secrets`. Do not ask it to reveal values.
@@ -59,7 +61,7 @@ phantom why OPENAI_API_KEY --json
 
 `phantom check --log` reads one agent transcript or log and reports the file, the line, and the credential shape. It does not print the secret. The same scan is the MCP tool `phantom_check` with `log_path`.
 
-`phantom status --json`, `phantom list --json`, and `phantom why OPENAI_API_KEY --json` are value-free. `phantom setup` writes that client's MCP config. Install both verified `v0.8.7` binaries first. The documented Homebrew formula is `v0.7.9`, which does not support `phantom agent doctor --json`. Version `0.8.7` has no network package-runner fallback and fails closed when neither local runtime is executable.
+`phantom status --json`, `phantom list --json`, and `phantom why OPENAI_API_KEY --json` are value-free. `phantom setup` writes that client's MCP config. Install both verified `v0.8.11` binaries first. As of 2026-11-24, the public Homebrew tap still serves `v0.7.9`, which does not support `phantom agent doctor --json`. Version `0.8.11` has no network package-runner fallback and fails closed when neither local runtime is executable.
 
 Machine-readable docs for agents:
 
@@ -143,7 +145,7 @@ No. `phantom init` works on this machine. Cloud backup is a separate hosted serv
 
 ### Where do Windows and Linux installs live?
 
-Use the matching [v0.8.7 archive](#exact-v087-github-assets), check its `.sha256` file, and put both `phantom` and `phantom-mcp` on `PATH`. Windows archives are not Authenticode-signed. The pre-commit hook is a `#!/bin/sh` script, so run commits from a terminal that has Git's `sh.exe`, or run `phantom check --staged`.
+Use the matching [v0.8.11 archive](#exact-v0811-github-assets), check its `.sha256` file, and put both `phantom` and `phantom-mcp` on `PATH`. Windows archives are not Authenticode-signed. The pre-commit hook is a `#!/bin/sh` script, so run commits from a terminal that has Git's `sh.exe`, or run `phantom check --staged`.
 
 ## Star Phantom
 
@@ -191,7 +193,7 @@ values.
 
 Use this read-only path before exploring the full tool catalog:
 
-1. Install both binaries from the reviewed [`v0.8.7` GitHub release](#installation).
+1. Install both binaries from the reviewed [`v0.8.11` GitHub release](#installation).
 2. From the project you want to inspect, run `phantom setup --client codex`,
    replacing `codex` with `claude`, `cursor`, `windsurf`, or `gemini` when
    appropriate.
@@ -207,7 +209,7 @@ team, deployment, provider, authority-kernel, or customer workflows are active
 or accepted.
 
 - **Conversation facade**: `phantom_capability` reports authority and hard denials for the small facade (not the separately gated advanced compatibility catalog); `phantom_do` canonicalizes one closed Cargo action and reports the exact activation blockers without executing it; `phantom_setup_workspace` proposes an exact value-blind plan, creates a bearerless apply request after revalidation, or reads authenticated request status. Provisioning the machine-local seal key and creating a request both require `confirm` plus an out-of-band approval token; MCP never claims or applies the request.
-- **Vault**: `phantom_list_secrets`, `phantom_status`, `phantom_init`, `phantom_add_secret_interactive`, `phantom_add_secret` (deprecated; refuses plaintext), `phantom_remove_secret`, `phantom_rotate`, `phantom_copy_secret`
+- **Vault**: `phantom_list_secrets`, `phantom_status`, `phantom_init`, `phantom_add_secret_interactive`, `phantom_add_secret` (`generate: true` creates a local random secret; plaintext input is refused), `phantom_remove_secret`, `phantom_rotate`, `phantom_copy_secret`
 - **Detection + diagnostics**: `phantom_doctor`, `phantom_why`, `phantom_check`, `phantom_env`, `phantom_validate_secret`, `phantom_validate_all`
 - **Local-to-cloud**: `phantom_wrap`, `phantom_unwrap`, `phantom_sync`, `phantom_cloud_push`, `phantom_cloud_pull`, `phantom_cloud_status`
 - **Teams**: `phantom_team_list`, `phantom_team_create`, `phantom_team_members`, `phantom_team_invite`, `phantom_team_key_publish`, `phantom_team_vault_push`, `phantom_team_vault_pull`
@@ -231,8 +233,13 @@ defeat that ceremony; leave effects disabled unless the approval command and
 `~/.phantom` approval storage are outside the requesting agent's authority.
 Conditional tools keep
 their inspection mode ungated and activate both gates only for the effectful
-parameters. Real secret values are never accepted as MCP tool arguments; new
-secrets are entered out-of-band in a trusted terminal. The exact 54-tool names,
+parameters. Real secret values are never accepted as MCP tool arguments;
+provider-issued credentials are entered out-of-band in a trusted terminal.
+For a new local random secret, `phantom_add_secret` with `generate: true`
+requires the same approval gates and returns only `name` and `fingerprint`.
+It refuses existing names and does not create a provider credential or a proxy
+route. See [generated secrets](docs/generated-secrets.md) for delivery limits.
+The exact 54-tool names,
 descriptions, and JSON schemas are mirrored from runtime `tools/list` into
 [`mcp-registry/server.json`](mcp-registry/server.json), and release smoke tests
 reject any drift.
@@ -266,7 +273,7 @@ phantom setup --client gemini     # ~/.gemini/settings.json (Gemini CLI)
 phantom setup --client claude --print   # snippet to stdout for any other client
 ```
 
-Install both `v0.8.7` release binaries before setup. Version `0.8.7` records the
+Install both `v0.8.11` release binaries before setup. Version `0.8.11` records the
 running `phantom` executable with `mcp serve` when it can resolve that executable,
 otherwise it looks for a local standalone `phantom-mcp`. Setup has no network
 package-runner fallback and fails closed when neither local runtime is
@@ -380,18 +387,19 @@ dashboard is designed to show team memberships and member lists.
 
 | Command | Description |
 |---------|-------------|
-| `phantom init` | Import `.env` secrets into vault and rewrite with phantom tokens. Use `--empty` to initialize a new project before its first `phantom add`; `add` does not auto-create project state. `--all <DIR>` processes eligible repositories found by the bounded five-level scan; discovery stops below the first matching repository. Use `--dry-run` to inspect the exact set and `--jobs N` / `-j N` to control parallelism. An existing `.env.example` is left unchanged. |
-| `phantom exec -- <cmd>` | Start an authenticated proxy and run a command with secret injection |
+| `phantom init` | Import `.env` secrets into vault and rewrite with phantom tokens. `--from PATH` / `-f PATH` reads a different dotenv file (default `.env`; `.env.local` and `.env.development` are auto-detected). Use `--empty` to initialize a new project before its first `phantom add`; `add` does not auto-create project state. `--all <DIR>` processes eligible repositories found by the bounded five-level scan; discovery stops below the first matching repository. Use `--dry-run` to inspect the exact set and `--jobs N` / `-j N` to control parallelism. An existing `.env.example` is left unchanged. |
+| `phantom exec -- <cmd>` | Start an authenticated proxy and run a command with secret injection. `--bind-source <CHECKOUT>` opts a linked git worktree into its source checkout's custody namespace; it is accepted only when both share a git common dir and a byte-identical `.phantom.toml` |
 | `phantom exec --scrub-output -- <cmd>` | Also scrub child stdout/stderr for active managed values and recognized credential formats |
+| `NAME=secret://NAME phantom exec --refs-only -- <cmd>` | Serve only the referenced names: other dotenv names get no session token, no base-URL override and no proxy route |
 | `phantom start` | Run an explicitly supervised foreground proxy; keep its trusted terminal open and press Ctrl-C there to stop |
 | `phantom start --daemon` / `phantom stop` | Detached start fails closed; stop is a TTY-only legacy-state diagnostic that never kills or deletes, not current process control |
-| `phantom list` | Show secret names stored in vault (never values; `--json` for machine-readable output; `--scope dev`, `--scope staging`, or `--scope prod` to filter an exact environment) |
-| `phantom add <KEY>` | Create a new secret name transactionally in an initialized project through a hidden terminal prompt or trusted `--stdin` producer, or locally generate a 256-bit random value with `--generate` (prints only a value-free name/fingerprint receipt); existing names are denied before any value read and are never replaced |
-| `phantom remove <KEY>` | After exact trusted-terminal confirmation, transactionally remove the vault value, lifecycle config, and exact managed-dotenv mapping; headless use fails before value access or mutation |
-| `phantom reveal <KEY>` | From an attached trusted terminal, review and type the exact challenge before printing one value or copying it for an auto-cleared 30-second clipboard window |
-| `phantom git-credential get`, `phantom git-credential store`, `phantom git-credential erase` | Supply the selected project vault credential only to a pipe for HTTPS github.com; terminals and files are refused. See [GitHub credential helper](docs/git-credential.md) for setup and the plaintext handoff boundary. |
-| `phantom status` | Show vault/mapping state and whether the machine-local lifecycle lock is held; a held lock does not authenticate or identify a listener. `--json` emits the value-free [status contract](docs/hub-status-contract.md) |
-| `phantom rotate` | After an exact attached-terminal challenge bound to the project, config, managed dotenv, and sorted protected-name digest, regenerate every local phantom token (old mappings become invalid). Headless use fails before vault access or mutation. Provider-backed `--name`/`--provider` execution is hard-denied before credential or network access in current releases. |
+| `phantom list` | Show secret names stored in vault (never values; `--json` for machine-readable output; `--scope dev`, `--scope staging`, or `--scope prod` to filter an exact environment; `--show-expiry` adds each TTL countdown; `--min-anomaly-score N` keeps secrets at or above an audit-log anomaly score of 0, 1, or 2, and an unreadable or tampered log is an error) |
+| `phantom add <KEY>` | Create a new secret name transactionally in an initialized project through a hidden terminal prompt or trusted `--stdin` producer (64 KiB cap; input with more than one line needs `--multiline` to keep every line or `--first-line` to keep only the first), or locally generate a 256-bit random value with `--generate` (prints only a value-free name/fingerprint receipt); existing names are denied before any value read and are never replaced |
+| `phantom remove <KEY>` | After exact trusted-terminal confirmation, transactionally remove the vault value, lifecycle config, and exact managed-dotenv mapping; headless use fails before value access or mutation. `--dry-run` reports the key and files the removal would write without deleting anything |
+| `phantom reveal <KEY>` | From an attached trusted terminal, review and type the exact challenge before printing one value or copying it (`--clipboard` / `-c`) for an auto-cleared 30-second clipboard window |
+| `phantom git-credential get`, `phantom git-credential store`, `phantom git-credential erase` | Supply the selected project vault credential (`--secret NAME`, default `GITHUB_TOKEN`) only to a pipe for HTTPS github.com; terminals and files are refused. See [GitHub credential helper](docs/git-credential.md) for setup and the plaintext handoff boundary. |
+| `phantom status` | Show vault/mapping state and whether the machine-local lifecycle lock is held; a held lock does not authenticate or identify a listener. `--json` emits the value-free [status contract](docs/hub-status-contract.md); `--oneline` prints a compact line for shell prompts |
+| `phantom rotate` | After an exact attached-terminal challenge bound to the project, config, managed dotenv, and sorted protected-name digest, regenerate every local phantom token (old mappings become invalid). Headless use fails before vault access or mutation. Provider-backed `--name`/`--provider` execution is hard-denied before credential or network access in current releases; `--batch` (with `--rotation-window-days N`, default 30) gives metadata-only guidance, and `--sync` is rejected for a local token remap. |
 | `phantom grant add <provider>` | Reserved provider-enrollment surface; hard-denied before credential or network access in current releases. See [Provider grants](#provider-grants). |
 | `phantom grant list` / `phantom grant status` | Read provider-grant names, providers, lifecycle state, and expiry metadata without returning credential values. |
 | `phantom grant revoke <provider>` | Reserved remote-revocation surface; currently fails closed before local mutation because provider revocation is not wired. |
@@ -406,15 +414,15 @@ dashboard is designed to show team memberships and member lists.
 | `phantom vault migrate-linux` | From an attached trusted terminal on a headed Linux desktop, copy and exactly verify this project's keyutils credentials in Secret Service, retain the source entries, and publish the private backend marker last |
 | `phantom check` | Scan for unprotected secrets (pre-commit hook, `--staged`, `--runtime`, `--log PATH`) |
 | `phantom redact --stream` | Scrub known credential shapes from stdin to stdout, flushing each line; no vault access. Rejects lines over 1 MiB; shape detection cannot cover arbitrary or encoded secrets. |
-| `phantom sync` | Push secrets to Vercel / Railway (`--dry-run --json` previews safely; `--only PATTERN` filters by glob, repeatable) |
-| `phantom pull` | Pull secrets from Vercel / Railway into vault |
-| `phantom setup` | Wire Phantom into an AI client. `--client claude` (default), `cursor`, `windsurf`, `codex`, or `gemini`. `--print` emits a snippet; `--status` reports client wiring without writes (`--json` for automation). `--dry-run` previews Cursor, Windsurf, Codex, or Gemini changes. `--replace` replaces a differing entry with a backup and manifest; `--undo` previews restoration, and `--undo --apply` applies it. |
+| `phantom sync` | Push secrets to Vercel / Railway (`--platform vercel\|railway` / `-p` picks one target, otherwise every configured target; `--project ID` overrides the project; `--dry-run --json` previews safely; `--only PATTERN` filters by glob, repeatable) |
+| `phantom pull` | Pull secrets from Vercel / Railway into vault (`--from vercel\|railway`, `--project ID`; Railway also takes `--environment`, default `production`, and `--service ID`; `--force` overwrites existing local secrets) |
+| `phantom setup` | Wire Phantom into an AI client. `--client claude` (default), `cursor`, `windsurf`, `codex`, or `gemini`. `--print` emits a snippet; `--status` reports client wiring without writes (`--json` for automation). `--dry-run` previews Cursor, Windsurf, Codex, or Gemini changes. `--replace` replaces a differing entry with a backup and manifest; `--undo` previews restoration, and `--undo --apply` applies it; add `--force-undo` to also undo files that changed after setup wrote them. `--audit-mode none\|local` configures audit encryption (`cloud-signed` is reserved and refused). |
 | `phantom mcp serve` | Run the MCP stdio server in-process; this is the entry `phantom setup` writes into AI-client configs |
 | `phantom mcp-approve <NONCE>` | From an attached trusted terminal, review the bounded value-blind effect and exact parameters for a pending MCP nonce, type its fresh challenge, and receive the one-use `approval_token` |
-| `phantom env` | Generate `.env.example` for team onboarding |
-| `phantom export` | From an attached trusted terminal, review an exact value-blind plan, type its fresh challenge, and enter a dedicated passphrase through the hidden prompt. Export `--passphrase-file`, plaintext export, argv passphrases, existing targets, symlinks, and paths outside the project fail closed. |
-| `phantom import` | From an attached trusted terminal, review and type the exact source/target/name/overwrite challenge before restoring a backup or importing Doppler, Infisical, dotenvx, 1Password, or env data. `--force` selects the reviewed overwrite set but never bypasses consent. A bounded private passphrase file is accepted only on non-Windows platforms and still requires the terminal ceremony. |
-| `phantom audit show` | Print recent audit events from the newest 8 MiB of the log (`--last N`, `--op OP`, `--name NAME`, `--json`); says when older events were not examined or lines were skipped. Requires `PHANTOM_AUDIT=1` |
+| `phantom env` | Generate `.env.example` for team onboarding (`--output FILE` / `-o FILE` picks another name) |
+| `phantom export` | From an attached trusted terminal, review an exact value-blind plan, type its fresh challenge, and enter a dedicated passphrase through the hidden prompt. `--output PATH` / `-o PATH` names the new encrypted backup, which must not already exist. Export `--passphrase-file`, plaintext export, argv passphrases, existing targets, symlinks, and paths outside the project fail closed. |
+| `phantom import` | From an attached trusted terminal, review and type the exact source/target/name/overwrite challenge before restoring a backup or importing Doppler, Infisical, dotenvx, 1Password, or env data (`--from doppler\|infisical\|dotenvx\|1password\|env` with `--file PATH`). `--force` selects the reviewed overwrite set but never bypasses consent. A bounded private passphrase file (`--passphrase-file FILE`, at most 4096 bytes) is accepted only on non-Windows platforms and still requires the terminal ceremony. |
+| `phantom audit show` | Print recent audit events from the newest 8 MiB of the log (`--last N`, `--op OP`, `--name NAME`, `--leaked-secrets` for response-leak events only, `--json`, `--output PATH` to write a new file and print a one-line summary); says when older events were not examined or lines were skipped. Requires `PHANTOM_AUDIT=1` |
 | `phantom audit tail` | Follow the audit log live (`--op`, `--name` filters) |
 | `phantom audit path` | Print the absolute path to the audit log file |
 | `phantom audit verify` | Verify HMAC-SHA256 chain integrity; exits 1 on verification failure. `--json` includes failure guidance; `--with-context` displays decrypted context and cannot be combined with JSON. |
@@ -423,30 +431,33 @@ dashboard is designed to show team memberships and member lists.
 | `phantom audit alerts` | Show persisted leak-incident alert records (`--last N`, `--json`; `--backfill` re-runs correlation first) |
 | `phantom audit stats` | Per-secret access counts and timing (`--json`, `--top N`, `--analytics`, `--min-anomaly-score`) |
 | `phantom audit anomalies` | Anomaly alerts from the audit log (`--realtime` to follow, `--threshold`, `--name`, `--max-accesses-per-hour`, `--max-quiet-days`, `--json`) |
-| `phantom audit analytics` | Export audit analytics for external dashboards (`--window DAYS`, `--format json\|csv`, `--export FILE` creates a new file, `--auto-alert-on-anomaly` exits nonzero as a CI gate) |
-| `phantom audit export` | Export timestamped access records for compliance (`--format csv\|json`, `--period 7d\|30d\|all`) |
+| `phantom audit analytics` | Export audit analytics for external dashboards (`--window DAYS`, `--format json\|csv`, `--min-anomaly-score 0.0-1.0`, `--export FILE` creates a new file, `--auto-alert-on-anomaly` exits nonzero as a CI gate) |
+| `phantom audit export` | Export timestamped access records for compliance (`--format csv\|json`, `--period 7d\|30d\|all`, `--min-anomaly-score 0.0-1.0`) |
 | `phantom audit export-range` | Export raw audit rows by date range, secret, operation or PID (`--from`, `--to`, `--name`, `--op`, `--pid`, `--format`) |
-| `phantom audit report` | Build a compliance report (`--from`, `--to`, `--compact`; `--save` also writes it to `~/.phantom/reports/`) |
-| `phantom audit feed` | Project audit NDJSON from stdin into value-free workbench events; `--follow PATH` tails a file. See [audit feed](docs/audit-feed.md). |
+| `phantom audit report` | Build a compliance report (`--type compliance`, the only and default type; `--from`, `--to`, `--compact`; `--save` also writes it to `~/.phantom/reports/`) |
+| `phantom audit feed` | Project audit NDJSON from stdin into value-free workbench events; `--follow PATH` tails a file, and `--cursor CURSOR` resumes after a cursor it emitted. See [audit feed](docs/audit-feed.md). |
 | `phantom leaks plan` | Read-only dry run of what leak response would do for active incidents (`--min-confidence`, `--json`). Writes nothing, makes no network calls, prints names only. Reads the optional `[leak_response]` policy (`on_leak = "off" | "plan" | "revoke"`, default `plan`; `revoke` needs `allow_revoke = true` and still only plans because live revoke is disabled in shipped builds) |
 | `phantom login` | From an attached trusted terminal, approve an exact network plan, then separately approve browser opening/polling and keychain persistence |
 | `phantom logout` | From an attached trusted terminal, approve deletion of persistent cloud authorization from the OS keychain |
 | `phantom cloud push` | After exact trusted-terminal confirmation, push a client-encrypted vault. Refused before the prompt when a secret is overdue under enforced rotation, demoted to read-only, or has unreadable lifecycle metadata. A remote success followed by local reconciliation failure is partial success and must not be retried automatically. |
-| `phantom cloud pull` | After exact trusted-terminal confirmation, pull and decrypt a vault. With `force=false`, skipped existing entries preserve the prior merge base and block later push until a fully reconciled approved pull. |
+| `phantom cloud pull` | After exact trusted-terminal confirmation, pull and decrypt a vault. `--force` declares overwrites and never bypasses the ceremony. Without it, skipped existing entries preserve the prior merge base and block later push until a fully reconciled approved pull. |
 | `phantom cloud status` | Authenticated provider read; requires attached trusted terminals and an exact challenge before stored-bearer or network access |
 | `phantom wrap` | Wrap selected package.json scripts with `phantom exec`; `--only A,B` selects names and `--skip X,Y` excludes them. Scripts still need a supported API route, and shell command lines are left unchanged. See [script wrapping](docs/exec.md#packagejson-scripts). |
 | `phantom unwrap` | Restore original package.json scripts |
 | `phantom watch` | Watch managed dotenv files and report new unprotected secrets. `--auto` hard-denies before mutation in current releases; use transactional `phantom init`. |
-| `phantom why <KEY>` | Explain why a key is or is not protected and how `phantom exec` delivers it (`no_route` means no built-in proxy route injects it). Works before init; `--json` prints the same shape as MCP `phantom_why` |
-| `phantom copy <KEY>` | Copy a secret to an initialized target after exact trusted-terminal confirmation; refuses existing target vault, config, or managed-dotenv ownership rather than overwriting. If both projects set `owner` in `.phantom.toml` (`personal`, `company[:name]`, `client:name`) and they differ, the copy is refused unless `--allow-cross-owner` is passed |
+| `phantom why <KEY>` | Explain why a key is or is not protected and how `phantom exec` delivers it (`no_route` means no built-in proxy route injects it). Works before init; `--json` prints the same shape as MCP `phantom_why`; `--strict` exits 2 when the key is not protected |
+| `phantom copy <KEY> --to <DIR>` | Copy a secret to the initialized target project `DIR` after exact trusted-terminal confirmation (`--rename NAME` stores it under a new name); refuses existing target vault, config, or managed-dotenv ownership rather than overwriting. If both projects set `owner` in `.phantom.toml` (`personal`, `company[:name]`, `client:name`) and they differ, the copy is refused unless `--allow-cross-owner` is passed |
 | `phantom team list` / `phantom team members` | Authenticated, value-blind provider reads. CLI requires attached trusted terminals and an exact challenge before bearer/network access; MCP requires `confirm` plus out-of-band approval. |
-| `phantom team create`, `phantom team invite`, `phantom team key-publish`, `phantom team vault-push`, `phantom team vault-pull`, `phantom team rotate-vault` | Run CLI team effects only from an attached trusted terminal and complete the exact challenge before credential, keypair, vault-value, or network access. Invites assign only `member` or `admin`. |
-| `phantom validate` / `--watch` | Send selected credentials to configured validators only after exact trusted-terminal consent; watch authorization ends when config or the vault name set changes |
-| `phantom validate schedule` | Read status without mutation; setting or disabling persistent scheduler policy requires attached terminals and an exact typed challenge |
+| `phantom team create`, `phantom team key-publish`, `phantom team vault-push`, `phantom team vault-pull`, `phantom team rotate-vault` | Run CLI team effects only from an attached trusted terminal and complete the exact challenge before credential, keypair, vault-value, or network access. |
+| `phantom team invite` | Invite only `member` (default) or `admin` through `--role`; requires an attached trusted terminal and the exact challenge before bearer or network access. |
+| `phantom validate` / `--watch` | Send selected credentials (`--check-all` for every secret; `--jobs N` / `-j N` concurrent jobs, default 4) to configured validators only after exact trusted-terminal consent; watch authorization ends when config or the vault name set changes |
+| `phantom validate schedule` | Read status without mutation (`--status`); setting or disabling (`--disable`) persistent scheduler policy requires attached terminals and an exact typed challenge |
 | `phantom validate history` | Show past validation runs (`--last N`, default 20) |
-| `phantom expiry set` | Persist lifecycle policy only after attached-terminal confirmation; `phantom expiry enforce` is read-only, while `phantom expiry rotate` is only a deprecated local token remap |
+| `phantom expiry set` | Persist lifecycle policy only after attached-terminal confirmation |
+| `phantom expiry enforce` | Read-only expiry check; `--fail-closed` also fails a secret with no expiry policy |
+| `phantom expiry rotate` | Deprecated local token remap; provider credentials and expiry metadata stay unchanged |
 | `phantom secrets-expiring-soon` | List expired or expiring secrets (`--days N`, default 7; `--json`). `--auto-rotate` is a deprecated local `phm_` token remap only; provider credentials and expiry metadata stay unchanged, and `--sync` is rejected |
-| `phantom fleet-status` | Read-only, value-free fleet posture: every secret's name, expiry state, last stored validation result, and rotation-schedule state, plus the names with overdue rotations. `--json` emits the documented [fleet-status schema](docs/fleet-status.md); `--strict` exits 2 when anything needs attention or the inventory is partial |
+| `phantom fleet-status` | Read-only, value-free fleet posture: every secret's name, expiry state, last stored validation result, and rotation-schedule state, plus the names with overdue rotations. `--json` emits the documented [fleet-status schema](docs/fleet-status.md); `--expiring-within DAYS` (default 7) sets the `expiring_soon` window; `--strict` exits 2 when anything needs attention or the inventory is partial |
 | `phantom open [page]` | From an attached trusted terminal, open only the reviewed aliases `dashboard`, `billing`, `team`, `docs`, `pricing`, `github`, `issues`, or `site`; arbitrary URLs, paths, and unknown aliases are rejected |
 | `phantom upgrade` | `--check-only` performs a read-only version lookup only for an eligible standalone install. Live standalone replacement requires attached terminals and two exact challenges; managed installs route to their owner, ambiguous installs fail closed, and `--force` is rejected. |
 | `phantom completion <shell>` | Print a shell-completion script (bash, zsh, fish, powershell, elvish) |
@@ -463,6 +474,12 @@ Use `--json` for scripts: `phantom env --json`, `phantom audit path --json`,
 and `phantom add NAME --generate --json` print one JSON object on stdout.
 Their `schema` fields are `env.v1`, `audit.path.v1`, and `add.v1`.
 They report names and metadata, never secret values or persistent mappings.
+`env.v1` and `add.v1` also include `durability_verified` (bool) and `warnings`
+(array of strings). When a verified write cannot prove directory crash
+durability, `durability_verified` is false and `warnings` holds that warning.
+Those two JSON commands then leave stderr empty, because the receipt carries
+the signal. `audit.path.v1` has no durability field, so its stderr warning
+stays.
 Command failures print `{"schema":"error.v1","code":"command_failed","message":"..."}`
 on stderr and exit nonzero. Without `--json`, output stays the same.
 Other commands keep their existing JSON support and formats.
@@ -537,7 +554,7 @@ fails closed before vendor execution. No single-provider exception exists.
 
 ## Installation
 
-### Homebrew (macOS; formula at v0.7.9)
+### Homebrew (macOS)
 
 Homebrew 6 requires explicit formula trust for third-party taps:
 
@@ -547,28 +564,33 @@ $ brew trust --formula ashlrai/phantom/phantom
 $ brew install ashlrai/phantom/phantom
 ```
 
-This formula installs both `phantom` and `phantom-mcp` from the immutable
+As of 2026-11-24, the public
+[`ashlrai/homebrew-phantom`](https://github.com/ashlrai/homebrew-phantom) tap
+still installs both `phantom` and `phantom-mcp` from the immutable
 [`v0.7.9` GitHub release](https://github.com/ashlrai/phantom-secrets/releases/tag/v0.7.9).
 The tap was bumped from `v0.7.8` to `v0.7.9` in ashlrai/homebrew-phantom#7. A `v0.7.8` Homebrew install wrote
 Claude Code MCP registration to the legacy location; see the
-[Claude Code guide](docs/claude-code.md) for the manual `.mcp.json` step, or use
-the `v0.8.7` assets below.
+[Claude Code guide](docs/claude-code.md) for the manual `.mcp.json` step.
+This repository's formula mirror now points at the verified `v0.8.11` archives
+below, which you can also install directly.
 
-### Exact v0.8.7 GitHub assets
+<a id="exact-v087-github-assets"></a>
+<a id="exact-v0811-github-assets"></a>
+### Exact v0.8.11 GitHub assets
 
 Use the asset matching your OS and architecture. Download its adjacent
 `.sha256` file from the release, verify it before extraction, and place both
 `phantom` and `phantom-mcp` (`.exe` on Windows) on `PATH`.
 
 <!-- fresh:begin readme-release-asset-table -->
-| Platform | `v0.8.7` archive | Published checksum |
+| Platform | `v0.8.11` archive | Published checksum |
 |---|---|---|
-| macOS Apple Silicon | [`phantom-aarch64-apple-darwin.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-aarch64-apple-darwin.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-aarch64-apple-darwin.tar.gz.sha256) |
-| macOS Intel | [`phantom-x86_64-apple-darwin.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-x86_64-apple-darwin.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-x86_64-apple-darwin.tar.gz.sha256) |
-| Linux x86_64 | [`phantom-x86_64-unknown-linux-gnu.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-x86_64-unknown-linux-gnu.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-x86_64-unknown-linux-gnu.tar.gz.sha256) |
-| Linux ARM64 | [`phantom-aarch64-unknown-linux-gnu.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-aarch64-unknown-linux-gnu.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-aarch64-unknown-linux-gnu.tar.gz.sha256) |
-| Windows x64 | [`phantom-x86_64-pc-windows-msvc.zip`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-x86_64-pc-windows-msvc.zip) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-x86_64-pc-windows-msvc.zip.sha256) |
-| Windows ARM64 | [`phantom-aarch64-pc-windows-msvc.zip`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-aarch64-pc-windows-msvc.zip) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7/phantom-aarch64-pc-windows-msvc.zip.sha256) |
+| macOS Apple Silicon | [`phantom-aarch64-apple-darwin.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-aarch64-apple-darwin.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-aarch64-apple-darwin.tar.gz.sha256) |
+| macOS Intel | [`phantom-x86_64-apple-darwin.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-x86_64-apple-darwin.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-x86_64-apple-darwin.tar.gz.sha256) |
+| Linux x86_64 | [`phantom-x86_64-unknown-linux-gnu.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-x86_64-unknown-linux-gnu.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-x86_64-unknown-linux-gnu.tar.gz.sha256) |
+| Linux ARM64 | [`phantom-aarch64-unknown-linux-gnu.tar.gz`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-aarch64-unknown-linux-gnu.tar.gz) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-aarch64-unknown-linux-gnu.tar.gz.sha256) |
+| Windows x64 | [`phantom-x86_64-pc-windows-msvc.zip`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-x86_64-pc-windows-msvc.zip) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-x86_64-pc-windows-msvc.zip.sha256) |
+| Windows ARM64 | [`phantom-aarch64-pc-windows-msvc.zip`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-aarch64-pc-windows-msvc.zip) | [`sha256`](https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11/phantom-aarch64-pc-windows-msvc.zip.sha256) |
 <!-- fresh:end -->
 
 On Linux, verify with `sha256sum -c <archive>.sha256`. On Windows, compare
@@ -578,7 +600,7 @@ Linux x86_64, as one shell script:
 
 ```bash
 archive=phantom-x86_64-unknown-linux-gnu.tar.gz
-base=https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.7
+base=https://github.com/ashlrai/phantom-secrets/releases/download/v0.8.11
 curl -fsSL -o "$archive" "$base/$archive"
 curl -fsSL -o "$archive.sha256" "$base/$archive.sha256"
 sha256sum -c "$archive.sha256"
@@ -596,28 +618,28 @@ timed on a measurement VM are recorded in
 
 ### Build the exact release source
 
-The `v0.8.7` tag resolves to source commit
-`a6a0413991c0bd7f3d6601f467c0b5770d0dce0c`:
+The `v0.8.11` tag resolves to source commit
+`2c93e578d8d1a8097b32c1cd89292e339681b77c`:
 
 ```bash
 $ git clone https://github.com/ashlrai/phantom-secrets.git
 $ cd phantom-secrets
-$ git checkout a6a0413991c0bd7f3d6601f467c0b5770d0dce0c
+$ git checkout 2c93e578d8d1a8097b32c1cd89292e339681b77c
 $ cargo build --release --locked --bin phantom --bin phantom-mcp
 ```
 
-See [distribution status](docs/distribution-status.md) for dated npm, Homebrew, crates.io, and MCP Registry evidence. Prefer the checksum-verified `v0.8.7` GitHub assets for an exact install.
+See [distribution status](docs/distribution-status.md) for dated npm, Homebrew, crates.io, and MCP Registry evidence. Prefer the checksum-verified `v0.8.11` GitHub assets for an exact install.
 
 ### Release-state snapshot
 
 > [!IMPORTANT]
-> **Release-state snapshot (verified 2026-11-06):** the current release is the
-> immutable `v0.8.7` GitHub release at source commit
-> `a6a0413991c0bd7f3d6601f467c0b5770d0dce0c`. Its 19-asset release set,
+> **Release-state snapshot (verified 2026-11-16):** the current release is the
+> immutable `v0.8.11` GitHub release at source commit
+> `2c93e578d8d1a8097b32c1cd89292e339681b77c`. Its 19-asset release set,
 > checksums, archive-specific SPDX SBOMs, GitHub provenance and SBOM
 > attestations, and all six native release rows are bound to that immutable
 > release record by tag-bound workflow
-> [42262099223](https://github.com/ashlrai/phantom-secrets/actions/runs/42262099223).
+> [43947823026](https://github.com/ashlrai/phantom-secrets/actions/runs/43947823026).
 > See [distribution status](docs/distribution-status.md) for the separately dated
 > package-channel snapshot and its verification limits. The GitHub receipt alone
 > does not prove npm, Homebrew, crates.io, MCP Registry, or hosted-service
@@ -691,7 +713,7 @@ dependency, and the comparison is not a feature or platform-parity claim.
 
 **`apps/web`** contains the Next.js site and backend routes for cloud vault sync, GitHub device authentication, and Stripe billing. The repository source and local tests are separate evidence from the currently deployed state at [phm.dev](https://phm.dev).
 
-**Registry tracks**: See [distribution status](docs/distribution-status.md) for dated npm, Homebrew, crates.io, and MCP Registry evidence. Prefer the checksum-verified `v0.8.7` GitHub assets for an exact install.
+**Registry tracks**: See [distribution status](docs/distribution-status.md) for dated npm, Homebrew, crates.io, and MCP Registry evidence. Prefer the checksum-verified `v0.8.11` GitHub assets for an exact install.
 
 The daily full CI run on `main` builds and tests the locked workspace, all targets, on macOS, Linux, and Windows runner environments and checks the npm and installer platform mappings. Pull requests and the merge queue run only the fast checks (formatting, Clippy, dependency policy, secret scans, and, for code changes, the npm wrapper tests). Release builds and native end-to-end acceptance are separate evidence layers; see [Platform support](docs/platform-support.md).
 
@@ -763,6 +785,21 @@ Coding agents make most changes here, through the same pull requests and CI as a
 - Agents working here never need a vault value. They use the value-free commands (`phantom status --json`, `phantom why OPENAI_API_KEY --json`). MCP tools that write state are off by default and need approval from a trusted terminal outside the agent.
 - Maintainer roles and decision authority are in [GOVERNANCE.md](GOVERNANCE.md).
 
+## Join the mission
+
+AshlrAI is an engineering firm. We build tools like Phantom Secrets to make our own work faster and more AI-native, then open-source them so every engineer can do the same. If you build with coding agents, build this with us.
+
+- **Start here:** read [CONTRIBUTING.md](CONTRIBUTING.md). Your coding agent can follow [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
+- **Pick an issue:** [`good first issue`](https://github.com/ashlrai/phantom-secrets/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or [`help wanted`](https://github.com/ashlrai/phantom-secrets/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+- **See the whole lineup:** [ashlr.ai/open-source](https://ashlr.ai/open-source).
+- **Talk with us:** join the [AshlrAI Discord](https://discord.gg/jBQrSU6XeD).
+
+### Contributors
+
+<a href="https://github.com/ashlrai/phantom-secrets/graphs/contributors">
+  <img alt="Phantom Secrets contributors" src="https://contrib.rocks/image?repo=ashlrai/phantom-secrets" />
+</a>
+
 ## Contributing
 
 Focused contributions are welcome. Start with
@@ -821,6 +858,19 @@ On a fork, diff against `upstream/main` instead of `main`.
     <img alt="Phantom Secrets star history" src="https://api.star-history.com/svg?repos=ashlrai/phantom-secrets&type=Date" />
   </picture>
 </a>
+
+## Telemetry
+
+The npm wrapper schedules an install report on first run and an activity
+report seven days after the last successful report. Failed sends may retry
+after one hour. The payload contains schema/event, tool/version, OS/architecture,
+CI/internal classification, and a random installation ID. It excludes secrets,
+placeholders, paths, project names, command arguments, and raw environment
+values. The native binary sends no usage reports.
+
+Opt out with `ASHLR_TELEMETRY=0`, `PHANTOM_TELEMETRY=0`, `DO_NOT_TRACK=1`, or
+`"disabled": true` in `~/.ashlr/usage-telemetry.json`. Details:
+[TELEMETRY.md](https://github.com/ashlrai/phantom/blob/master/docs/TELEMETRY.md).
 
 ## License
 

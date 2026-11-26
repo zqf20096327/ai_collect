@@ -1,6 +1,6 @@
 ## torch-population
 
-Colocated population and ensemble wrapper for PyTorch. Parameters, buffers, and any `torch.optim.Optimizer` state live together in one flat `PopulationParameters` container.
+Colocated population and ensemble wrapper for PyTorch. Parameters, buffers, tracked EMAs, and any `torch.optim.Optimizer` state live together in one flat `PopulationParameters` container — scaling cleanly from a zero-overhead single-model wrapper to vectorized populations, gradient surgery, and differentiable meta-learning.
 
 ## Install
 
@@ -10,7 +10,7 @@ $ pip install torch-population
 
 ## Usage
 
-### Simple: noop wrapper, population & indexing
+### 1. Simple: single-model noop wrapper → vectorized population
 
 ```python
 import torch
@@ -20,53 +20,63 @@ from torch_population import Population
 net = nn.Sequential(nn.Linear(16, 32), nn.SiLU(), nn.Linear(32, 4))
 x = torch.randn(8, 16)
 
-# zero-overhead noop wrapper (exact param aliasing)
+# zero-overhead noop wrapper (exact parameter aliasing)
 
 pop = Population(net)
 assert pop.unwrap() is net
 
-# turn into a vectorized population (or call pop.populate(4))
+# scale to a vectorized population (or call pop.populate(4) later)
 
 pop = Population(net, pop_size = 4)
 
-out = pop(x)                                              # (4, 8, 4) shared input
-out = pop(torch.randn(4, 8, 16), per_individual = True)   # (4, 8, 4) per-individual input
+out = pop(x)                                            # (4, 8, 4) shared input
+out = pop(torch.randn(4, 8, 16), per_individual = True) # (4, 8, 4) per-individual input
 
-# index out an individual as a standard single nn.Module and write it back
+# index out any individual as a normal nn.Module and write it back
 
 ind = pop[0]
 assert ind(x).shape == (8, 4)
 pop[0] = ind
 ```
 
-### Colocated optimizers (works with any `torch.optim.Optimizer`) & solo checkout
+### 2. Colocated optimizers, state sharing & individual round-trip
 
 ```python
 # wrap any torch.optim.Optimizer class (built-in or custom)
 
-opt = pop.optimizer(torch.optim.RMSprop, lr = 1e-3, shared = False)
-# opt = pop.optimizer(AnyOptimizer, lr = 1e-3, shared = True)              # 1/P shared state
+opt = pop.optimizer(torch.optim.AdamW, lr = 1e-3, shared = False)
+# opt = pop.optimizer(AnyOptimizer, lr = 1e-3, shared = True)              # 1/P shared opt state
 # opt = pop.optimizer(AnyOptimizer, lr = [1e-4, 3e-4, 1e-3, 3e-3])         # per-individual HPs
+
+opt.zero_grad()
+pop(x).pow(2).mean().backward()
+pop.clip_grad_norm_(1.0)                                # per-individual grad clipping (optional members=, names=)
+opt.step()
+
+# toggle optimizer state sharing at runtime ('mean', 'max', 'min', 'median', 'sum', 'first', 'zero', callable, or per-key dict)
+
+opt.share(reduce = {'exp_avg': 'mean', 'exp_avg_sq': 'max', 'step': 'max'})
+opt.unshare()
+
+# insert an existing standalone module + optimizer into a population, run population ops, then extract both back out
+
+solo = nn.Sequential(nn.Linear(16, 32), nn.SiLU(), nn.Linear(32, 4))
+solo_opt = torch.optim.AdamW(solo.parameters(), lr = 1e-3)
+solo(x).pow(2).mean().backward()
+solo_opt.step()
+
+pop[2] = (solo, solo_opt)                               # or pop.insert(2, solo, solo_opt)
 
 opt.zero_grad()
 pop(x).pow(2).mean().backward()
 opt.step()
 
-# toggle state sharing across the population at runtime
-# share() reduces the P separate states along the pop dim (default 'mean'; also 'max', 'min', 'sum', 'first', 'zero', member index, callable, or per-key dict)
+solo, solo_opt = pop.extract(2)                         # normal nn.Module + native torch.optim.Optimizer with updated state
+solo_opt.zero_grad()
+solo(x).pow(2).mean().backward()
+solo_opt.step()
 
-opt.share(reduce = 'mean')                                 # or opt.share(reduce = {'square_avg': 'max', 'step': 'max'})
-opt.unshare()                                              # broadcasts shared state back to P independent slots
-
-# extract one individual + its native torch.optim.Optimizer, train solo, write both back in
-
-ind, ind_opt = pop.extract(2)
-ind_opt.zero_grad()
-ind(x).pow(2).mean().backward()
-ind_opt.step()
-pop[2] = (ind, ind_opt)
-
-# or with a context manager
+# or use the checkout context manager to extract, train solo, and write both back on exit
 
 with pop.checkout(2) as (ind, ind_opt):
     ind_opt.zero_grad()
@@ -74,69 +84,139 @@ with pop.checkout(2) as (ind, ind_opt):
     ind_opt.step()
 ```
 
-### Unified `PopulationParameters`, PyTorch dicts & lifecycle
+### 3. Shared layers, arbitrary methods, lifecycle & model soups
 
 ```python
-pp = pop.population_parameters
+# share a backbone (params + buffers) while keeping independent heads
 
-pp.flat_params                       # (4, D) contiguous parameters
-pp.named_optimizer_state()           # zero-copy views into colocated optimizer state
+pop = Population(net, pop_size = 4, shared = ('0.*',))
+opt = pop.optimizer(torch.optim.AdamW, lr = 1e-3)
 
-# single-individual PyTorch-compatible dict (zero-copy views; clone = True to copy)
+sub_out = pop(x, members = (0, 2))                      # (2, 8, 4) subset forward
+hidden  = pop.call('encode', x)                         # vmap any method or callable(module, *args)
 
-ind_dict = pp[2]                     # {'parameters', 'named_parameters', 'buffers', 'state_dict', 'optimizer_state', ...}
-pop_dict = pp.as_dict()
+# parameters, buffers, tracked EMAs, and optimizer state move in lockstep
 
-# shared layers, subset forward, dynamic resizing & population soup
+pop.reset_(torch.tensor([True, False, False, False]))   # reinit masked members
+pop.replace(3, 0, reset_opt = True)                     # clone winner 0 into slot 3
+pop.delete(1)                                           # P: 4 -> 3
+pop.append(0)                                           # P: 3 -> 4
 
-pop = Population(net, pop_size = 4, shared = ('0.bias',))
-opt = pop.optimizer(torch.optim.RMSprop, lr = 1e-3)
-
-sub_out = pop(x, members = (0, 2))                        # (2, 8, 4)
-
-pop.reset_(torch.tensor([True, False, False, False]))     # reinit masked params + buffers + opt state
-pop.replace(3, 0, reset_opt = True)                       # copy member 0 into slot 3
-pop.delete(1)                                             # P: 4 -> 3 in lockstep across params & opt state
-pop.append(0)                                             # P: 3 -> 4
-avg_net = pop.mean()                                      # standalone nn.Module with averaged weights
+avg_net = pop.mean()                                    # standalone nn.Module
+med_net = pop.reduce('median')                          # or 'max', 'min', callable
 ```
 
-### Differentiable meta-learning & multi-loss gradient control (`autograd`, `functional_step`)
+### 4. Parameter & gradient EMAs (noop & populated)
+
+```python
+# runnable target / Polyak EMA (scalar or per-member multi-timescale rates)
+
+ema = pop.clone(include_opt = False)
+ema.lerp_(pop, torch.tensor([0.001, 0.005, 0.02, 0.1]))
+target_out = ema(x)
+
+# colocated, lifecycle-synced EMAs for gradients, online Fisher, or flat parameters
+# initializes without zero-bias, follows state_dict(), device moves, reset_(mask), delete/append
+
+g = opt.autograd(pop(x).pow(2).mean(), flat = True)     # (D,) in noop, (P, D) in populated
+g_ema  = opt.ema_('grad', g, decay = 0.98)              # Grokfast / smoothed gradient
+fisher = opt.ema_('fisher', g.square(), decay = 0.99)   # online diagonal Fisher
+p_ema  = pop.ema_('param', pop.flat_params, decay = 0.995)
+ages   = pop.track_('age', torch.zeros(4, dtype = torch.long))  # dtype-agnostic lifecycle-synced metadata
+
+out_ema = pop(x, params = p_ema)                        # run forward directly with flat EMA weights
+```
+
+### 5. Multi-loss gradient surgery, swapping & gradient penalties
+
+```python
+# multi-loss flat autograd & gradient projection — identical code for 1 model (D,) or P models (P, D)
+
+g1, g2 = opt.autograd(loss_a, loss_b, flat = True)
+proj = g2 - ((g1 * g2).sum(dim = -1, keepdim = True).clamp(max = 0.) / g1.square().sum(dim = -1, keepdim = True).clamp(min = 1e-8)) * g1
+opt.step(grads = g1 + proj)
+
+# optimizer-agnostic reconciliation (returns a normal scalar loss for .backward(), clip_grad_norm_, any optimizer)
+# spans multiple modules with zero state_dict() pollution and keeps unused branches at grad = None
+
+from torch_population import PopulationParameters
+
+params = PopulationParameters((actor, obs_history, action_history))
+loss = params.reconcile(loss_a, loss_b, fn = lambda g1, g2: g1 + g2)
+loss.backward()
+
+# cross-member gradient swapping / gossip mixing across a population
+
+g = opt.autograd(loss_pop, flat = True)
+opt.step(grads = g.flip(0))                             # swap grads in a population of 2 (or g.roll(1, 0) / M @ g)
+
+# parameter-gradient penalty (or input-gradient R1 / WGAN-GP with per_individual = True)
+
+g = opt.autograd(loss_pop, flat = True, create_graph = True, retain_graph = True)
+(loss_pop + 0.1 * g.square().sum()).backward()
+```
+
+### 6. Weight-space research: SAM, Evolution Strategies, Genetic Algorithms & model soups
+
+```python
+# pass any 1D (D,) or 2D (K, D) flat parameter tensor directly into pop(x, params = ...)
+
+# Sharpness-Aware Minimization (SAM) — works for 1 model or P models
+g = opt.autograd(pop(x).pow(2).mean(), flat = True)
+eps = 0.05 * g / g.norm(dim = -1, keepdim = True).clamp(min = 1e-8)
+opt.step(grads = opt.autograd(pop(x, params = pop.flat_params + eps.detach()).pow(2).mean(), flat = True))
+
+# Evolution Strategies — vmap 64 perturbations on a single noop model
+single = Population(net)
+noise = torch.randn(64, single.flat_params.numel())
+outs = single(x, params = single.flat_params.detach() + 0.05 * noise)   # (64, 8, 4)
+
+# Genetic Algorithm — tournament selection + weight-averaging crossover + mutation
+fit = -pop(x).sub(y).pow(2).mean(dim = (-2, -1))                        # (P,) fitness
+losers = fit.topk(P - elites, largest = False).indices
+cand = torch.randint(P, (len(losers), 2, tourney_size))
+p1, p2 = cand.gather(-1, fit[cand].argmax(-1, keepdim = True)).squeeze(-1).unbind(-1)
+pop[losers] = pop[p1].lerp_(pop.view(p2), 0.5)
+with torch.no_grad():
+    pop.flat_params[losers] += 0.05 * torch.randn_like(pop.flat_params[losers])
+
+# differentiable model soup & mode connectivity
+soup_out = pop(x, params = pop.flat_params.mean(dim = 0))               # (8, 4), grads flow to all P members
+```
+
+### 7. Advanced: differentiable multi-optimizer meta-learning & long-term memory consolidation
 
 ```python
 pop = Population(net, pop_size = 4)
-opt = pop.optimizer(torch.optim.RMSprop, lr = 1e-3, shared = False)
-pp = pop.population_parameters
-ema_pp = pp.clone(include_opt = False)
+ltm = pop.clone(include_opt = False)                    # long-term memory copy of the population
 
-cur_pp = pp
-for _ in range(2):
-    inner_loss = pop(x, params = cur_pp).pow(2).mean()
-    cur_pp = opt.functional_step(inner_loss, cur_pp, create_graph = True)
+# attach multiple different optimizers (each has its own colocated state)
 
-meta_loss = pop(x, params = cur_pp).pow(2).mean()
-meta_loss.backward()                                      # gradients flow through inner optimizer updates
+opt_sgd   = pop.optimizer(torch.optim.SGD, lr = 5e-2, momentum = 0.9, name = 'sgd')
+opt_rms   = pop.optimizer(torch.optim.RMSprop, lr = 1e-2, name = 'rms')
+opt_adamw = pop.optimizer(torch.optim.AdamW, lr = 1e-2, name = 'adamw')
 
-pp.copy_from_(cur_pp.detach())
-ema_pp.lerp_(pp, 0.05)
+# backprop through unrolled updates across different optimizers (or per-member via members = ...)
 
-# multi-loss / PCGrad / custom gradient lanes (works with both step() and functional_step())
+fast = pop.population_parameters
+for step_opt in (opt_sgd, opt_rms, opt_adamw):
+    inner_loss = (pop(x_tr, params = fast) - meta_target).pow(2).mean()
+    fast = step_opt.functional_step(inner_loss, fast, create_graph = True)
 
-g_task = pp.autograd(loss_task, retain_graph = True)      # {name: (P, ...)} scoped via names=
-g_aux  = pp.autograd(loss_aux)
-opt.step(grads = {k: g_task[k] + 0.5 * g_aux[k] for k in g_task})
+pop(x_val, params = fast).pow(2).mean().backward()      # meta-gradients flow through all 3 optimizers
+
+# consolidate fast weights into a long-term memory version of an individual (or whole population)
+
+ltm.view(0).lerp_(fast, 0.05)                           # Polyak EMA on individual 0
+ltm.lerp_(fast, torch.tensor([0.01, 0.05, 0.1, 0.2]))   # multi-timescale LTM across all members
+pop.view(0).ema_('ltm', fast.flat_params[0], decay = 0.95)  # or colocated LTM runnable via params=
 ```
 
-### Example: train 10 MNIST networks in parallel
+### Examples & Research Use-Case Suite
 
 ```bash
 $ python train_pop_mnist.py
-```
-
-## Tests
-
-```bash
-$ pytest
+$ pytest                                                # core tests + tests/use_cases/ research cookbook
 ```
 
 ## Citations

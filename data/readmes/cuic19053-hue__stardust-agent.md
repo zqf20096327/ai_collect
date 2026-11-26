@@ -9,8 +9,9 @@
 项目提供 35 个领域指南。后端使用 Python 和 FastAPI，支持 Ollama 本地模型和 OpenAI 兼容接口。这里的覆盖指指南与赛道目录，各赛道的模型写作、模板、图表和导出支持程度不同，尚未完成全部场景的端到端验收。仓库改动不代表已经在线上部署。
 
 [![GitHub stars](https://img.shields.io/github/stars/cuic19053-hue/stardust-agent?style=social)](https://github.com/cuic19053-hue/stardust-agent/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE) [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![MCP Protocol](https://img.shields.io/badge/MCP-Protocol-blue.svg)](https://modelcontextprotocol.io/) [![Online Platform](https://img.shields.io/badge/Online-agent.stardust.website-7952CC.svg)](https://agent.stardust.website)
+[![cuic19053-hue/stardust-agent MCP server](https://glama.ai/mcp/servers/cuic19053-hue/stardust-agent/badges/score.svg)](https://glama.ai/mcp/servers/cuic19053-hue/stardust-agent)
 
-[打开在线工作台](https://agent.stardust.website) · [查看大创 Word 样例](./examples/demos/demo_innovation_research.docx) · [Agent 设计说明](./docs/design/AGENT_REFACTOR.md) · [English](./README_EN.md)
+[打开在线工作台](https://agent.stardust.website) · [看 Qwen 口述微调回放](https://agent.stardust.website/student-intake) · [查看大创 Word 样例](./examples/demos/demo_innovation_research.docx) · [Agent 设计说明](./docs/design/AGENT_REFACTOR.md) · [English](./README_EN.md)
 
 [下载桌面客户端](https://github.com/cuic19053-hue/stardust-agent/releases/latest) · [桌面版使用说明](./desktop/README.md)
 
@@ -23,6 +24,16 @@
 例如，可以先问：“我想申报大创创新训练项目，课题是校园无人机巡检。请帮我梳理申报书结构，还需要准备哪些材料？”
 
 在线入口无需安装 Python 或使用命令行。使用平台模型无需自备 API Key，账号额度、模型可用性与费用以工作台提示为准。未知事实应保留待补充；用户确认只代表其提供或认可了信息，不代表系统完成独立核验。
+
+## 学生口述转结构化档案
+
+在项目对话里用自己的话写下成绩、经历或计划，再打开 **事实矩阵 → 学生口述档案 → 提取本项目口述**。实时提取默认使用 DeepSeek V4 Flash，按工作台积分计费。系统从 41 个字段中提取候选，每条都附有对话回合和学生原话。自述、模糊、计划和否定由学生逐项确认后按原状态入档。未知、拒答和未解决的冲突留在核对区。
+
+例如，你说“我的专业是文物保护”，工作台会用这句话核对候选的字段和值。如果同一项目出现两个预算，工作台会列出能核实的两处原话，请你确认本次申报用哪一个。部分信息需要手动核对时，你可以先确认其余通过校验的条目。
+
+免登录的免费演示回放了 Qwen2.5 7B 在五段合成口述上微调前后的真实回答。选「两份预算」可以看到，微调模型只提取了 8400 元，来源校验找回了另一回合的 4800 元，保留两处原话并请学生核对。[查看演示与评测](https://agent.stardust.website/student-intake)
+
+在另行封存的 20 段合成对话上，使用同一 MLX 底座和来源校验规则，LoRA 微调使字段 F1 从 13.6% 升至 55.07%，整例通过数从 2/20 升至 3/20。历史 Ollama 配置加相同规则通过了 8/20。最初的 24 例只用于开发回归。[训练与评测说明](./server/evals/student_intake_pilot/README.md)
 
 ## 支持哪些大学生申报材料？
 
@@ -81,7 +92,7 @@ uv run --no-sync python server/evals/review_benchmark.py --output outputs/evals/
 
 [对比方法、指标口径与复现步骤](./server/evals/REVIEW_BENCHMARK.md) · [合成样例和预期问题](./server/evals/review_cases.json) · [逐项结果与原始模型记录](./server/evals/baselines/review_pilot_20261117.json)
 
-[后续提示词实验](./docs/reports/REVIEW_CALIBRATION_2026-11-18.md)固定候选并增加四个合成回归样例。候选减少了输出条数，却增加了误报，并出现新的学校规则漏检。仓库保留失败候选、原始响应和可复现比较：核对实际输入与参数，同时检查误报、漏检和具体漏掉的问题，避免用单一汇总指标掩盖退化。
+[后续提示词实验](./docs/reports/REVIEW_CALIBRATION_2026-11-18.md) 固定候选并增加四个合成回归样例。候选减少了输出条数，却增加了误报，并出现新的学校规则漏检。仓库保留失败候选、原始响应和可复现比较：核对实际输入与参数，同时检查误报、漏检和具体漏掉的问题，避免用单一汇总指标掩盖退化。
 
 ## 本地运行与复现
 
@@ -130,7 +141,7 @@ uv run --no-sync python server/evals/run.py
 | 8 | 互联网+ · 红旅赛道 | `internet-plus-red-tour` | 65 KB |
 | 9 | 国家级项目立项逻辑评测 | `national-project-eval` | 44 KB |
 
-**🏆 评优与资助· 12 个**
+**🏆 评优与资助 · 12 个**
 
 | # | 赛道 | 编码 | 内容量 |
 |---|---|---|---|
@@ -190,7 +201,7 @@ uv run --no-sync python server/evals/run.py
 
 ## 项目与社区
 
-项目源自团队参加挑战杯、反复修改申报书的实践。同时感谢[@richyhu](https://github.com/richyhu)的帮助。欢迎通过 Issue 提供学校模板的差异、更新的申报要求和能够复现的问题。[项目演示视频](https://www.douyin.com/video/7692700167341985051) · [贡献指南](./CONTRIBUTING.md)
+项目源自团队参加挑战杯、反复修改申报书的实践。同时感谢 [@richyhu](https://github.com/richyhu) 的帮助。欢迎通过 Issue 提供学校模板的差异、更新的申报要求和能够复现的问题。[项目演示视频](https://www.douyin.com/video/7692700167341985051) · [贡献指南](./CONTRIBUTING.md)
 
 ### 交流与合作
 
@@ -205,10 +216,11 @@ uv run --no-sync python server/evals/run.py
 <details>
 <summary>社区路线图</summary>
 
-> 已突破 140 ⭐，「讲莲杯 / 创青春 / 三创赛」已进入开发队列。**点 Star = 催更。**
+> 「学创杯 / 创青春 / 三创赛」已进入开发队列（已达成 100 ⭐ 里程碑）。
 
 | 里程碑 | 解锁赛道 |
 |---|---|
+| ⭐ 100 | 学创杯、创青春、三创赛（已解锁，开发中） |
 | ⭐ 300 | 节能减排大赛、生命科学竞赛（学科专项类） |
 | ⭐ 500 | 服务外包大赛、商业精英挑战赛（商科类） |
 | ⭐ 1000 | 师范生教学技能、英语类竞赛 |

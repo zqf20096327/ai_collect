@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 23, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 25, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 23, 2026
+- **Last Updated**: November 25, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -189,6 +189,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[UpRes](https://upres.ai)** 🆕🔄 - AI image and video upscaling to 4K/8K with 14 models, REST API, and CLI
 - **[FontVibe](https://fontvibe.ai)** 🔄 - Text effect and lettering designs for logos, posters and thumbnails
 - **[ThumbnailSnap](https://thumbnailsnap.com/youtube-thumbnail-maker)** 🆕🔄 - AI YouTube, Shorts and TikTok thumbnails with an editable text layer
+- **[ArchitecturesAI](https://architecturesai.com)** 🔄 - AI architecture renders from prompts, sketches, floor plans or photos; 1 free render
 
 #### 📱 Browser/Extension Tools
 - **[Canva AI](https://canva.com)** 🔄 - Integrated design platform with Dream Lab
@@ -229,6 +230,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 #### 🛠️ Self-Hosted Options
 - **[AI Runner](https://github.com/Capsize-Games/airunner)** 🆓 - Local AI model runner with GUI
 - **[Jan](https://jan.ai)** 🆓 - Open-source ChatGPT alternative
+- **[Pomelu](https://royan.se/pomelu/)** 🆓 - Open-source Android and iOS app to chat with your self-hosted Hermes Agent
 - **[Trina AX](https://github.com/trina-app/trina-ax)** 🔄 - Self-hosted team AI workspace that runs Claude Code and Codex for a whole company
 
 ---
@@ -298,6 +300,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Documind](https://documind.chat)** 🔄 - Chat with PDFs and documents
 - **[Upword](https://www.upword.ai/)** 🔄 - Research and reading companion
 - **[Quino](https://quino.ai)** 🔄 - Academic paper summarizer
+- **[PDF Summarizer](https://bestlatestapps.com/ai/pdf-summarizer/)** 🆓 - Summarizes PDFs in the browser, with an optional on-device AI model; no upload
 
 #### 🌐 Web & General Content
 - **[Recall](https://www.getrecall.ai/)** 🔄 - Summarize anything, forget nothing
@@ -470,6 +473,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Keenable](https://keenable.ai)** 🔄 - Web search and page-fetch API and MCP server for AI agents, with a keyless free tier
 - **[MartLLM](https://martllm.com)** 💰 - One OpenAI/Anthropic-compatible API key for text, image, video, music and speech models
 - **[Runheed](https://runheed.com)** 💰 - Error tracking your coding agent reads over MCP: stack traces, breadcrumbs, resolve with the fix
+- **[Anansi Haven](https://anansi-haven.anansidata.workers.dev/)** 🔄 - Remote MCP server giving AI agents persistent memory, rooms, messages and tool search
 - **[Atlas Cloud](https://www.atlascloud.ai)** 💰 - AI API gateway: one key for LLM, image, video and audio models
 - **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
 - **[OneTag AI](https://onetagai.com)** 🔄 - Add AI to any static site with one script tag, no backend
@@ -481,6 +485,9 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Agentik](https://www.agentik.cc)** 💰 - One MCP connection to 3,500+ paid tools for AI agents, price shown before each call
 - **[SightRadar Face Recognition API MCP](https://sightradar.com/mcp)** 💰 - Face recognition API and MCP server: index photos, find a person from one selfie, compare faces
 - **[CallForMe](https://callforme.tel)** 💰 - MCP server and API that lets AI agents phone businesses, wait on hold and return a transcript
+- **[Apidly Cloud](https://apidly.com)** 💰 - Managed GPU servers for AI with ComfyUI, Ollama and vLLM templates, API and CLI
+- **[Taskhold](https://taskhold.com)** 💰 - A task list shared with your coding agents over MCP: steps, live progress, blocked questions
+- **[Saqr](https://usesaqr.com)** 💰 - Security testing for live apps built with Lovable, Bolt or Cursor, with a fix prompt per finding
 
 ## Low Code - no code Tools
 - Magicform
@@ -507,6 +514,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 > AI-powered audio processing, generation, and enhancement tools
 
 - **[VoiceScribe](https://greatwork.company/tools/voicescribe)** 💰 - Transcribes audio files to text in 99 languages, paid per file
+- **[FastScribe](https://fastscribe.org/)** 🔄 - Transcribes recordings and public videos into editable text and timestamped subtitles
 #### 🎙️ Voice & Speech
 - **[ElevenLabs](https://elevenlabs.io)** 🔄 - Advanced AI voice synthesis
 - **[Murf](https://murf.ai)** 🔄 - AI voice generator for content
@@ -562,6 +570,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[shortshort](https://www.shortshort.io)** 🆕🔄 - Turns one long video into vertical 9:16 shorts with captions
 - **[ScaleReach](https://www.scalereach.ai)** 💰 - Turns long videos into 9:16 clips with AI captions and face-tracking crop
 - **[Clips Kitty](https://colingpt9.github.io/clips-studio/)** 🆓 - Free open-source desktop app that turns long videos into captioned 9:16 clips on your PC
+- **[Ziztu Clip Maker](https://getziztu.com/clipper)** 🆕🔄 - YouTube, Twitch or Kick links to captioned vertical clips, up to 10 hours
 - **[Pic2Video AI](https://pic2videoai.com/)** 🔄 - Turns still photos into short animated videos in the browser
 - **[Hotel Lobby AI](https://hotellobbyai.top/)** 🆕🔄 - Two uploaded photos become a cinematic duet clip on a staged hotel lobby
 - **[UGCFast](https://ugcfast.ai)** 💰 - Persona-matched AI UGC video ads for Meta and TikTok from a product URL
@@ -572,6 +581,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Angry Dance](https://angrydance.com)** 🆕💰 - Turn one photo into 9:16 AI pet dance, meme, and two-step scene clips without watermarks
 - **[PawMambo](https://pawmambo.com/)** 🔄 - Dog photo and dance-reference clip to AI video; 20 one-time signup credits
 - **[BeatMV](https://beatmv.ai)** 🔄 - AI music video generator that turns any song into a beat-synced music video
+- **[iArt](https://www.iart.ai)** 🔄 - Creates motion graphics from prompts and refines them through chat
 
 #### 🆕 Emerging Platforms
 - **[Haiper AI](https://haiper.ai)** 🆕🔄 - Fast video generation
@@ -810,6 +820,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[AnyModelBot](https://github.com/modelflare-ai/AnyModelBot)** 🆕🆓 - Open-source desktop assistant, first out-of-the-box DeepSeek Super Agent
 - **[kwant](https://github.com/alexsergivan/kwant)** 🆕🆓 - Self-hosted team of AI bots in one Rust binary with @mention handoffs, routines and approvals
 - **[5dive](https://github.com/5dive-ai/5dive)** 🆓 - Self-hosted AI team that runs Claude Code, Codex and other agents on your own server
+- **[AppuBot](https://github.com/sarthakguptadev/AppuBot)** 🆕🔄 - Open-source team of AI bots that hand tasks to each other and work in your real apps and files
 
 #### 🛠️ Agent Frameworks
 - **[LangGraph](https://langchain.com)** 🆕🆓 - Stateful agent workflows
@@ -849,6 +860,8 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [ResumeAI](https://withresumeai.com/)
 - **[CareJobs.Now](https://carejobs.now)** 🆓 - AI job search matching US healthcare workers to open hospital jobs
 - **[ArtiGram](https://artigram.cafeboon.com)** 🆓 - Publish AI-made HTML, React or SVG as live pages, with a remote MCP server
+- **[Kite](https://kite.new)** 🔄 - Design tool where AI agents draw editable layers via a hosted MCP server
+- **[CareerBldr](https://careerbldr.com)** 💰 - AI resume builder: tailor to job posts, ATS check, cover letters, PDF/DOCX export
 
 ## Landing Page Generator
 - [aipage.dev](https://www.aipage.dev)

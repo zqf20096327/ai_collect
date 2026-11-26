@@ -15,6 +15,7 @@
     <a href="Cargo.toml"><img src="https://img.shields.io/badge/Rust-1.89%2B-CE422B?style=flat&logo=rust&logoColor=white" alt="Rust"></a>
     <a href="LICENSE"><img src="https://img.shields.io/github/license/Derrors/iphone-control?style=flat" alt="License"></a>
     <a href="https://m8ven.ai/mcp/derrors-iphone-control-1pcmse?s=readme"><img src="https://m8ven.ai/badge/mcp/derrors-iphone-control-1pcmse?variant=verified" alt="M8ven verified"></a>
+    <a href="https://glama.ai/mcp/servers/Derrors/iphone-control"><img src="https://glama.ai/mcp/servers/Derrors/iphone-control/badges/score.svg" alt="Derrors/iphone-control MCP server"></a>
   </p>
 
   <p align="center">
@@ -94,7 +95,7 @@ Device control has two routes, picked by iOS version:
 
 ## Quick Start
 
-You need an iPhone or iPad (iOS 27+ recommended, iOS 17+ supported) connected by a **data** cable, and an Apple Silicon Mac or a Linux machine. On iOS 26 and earlier you also need a free Apple ID (use a dedicated one) to sign WebDriverAgent.
+You need an iPhone or iPad (iOS 27+ recommended, iOS 17+ supported) connected by a **data** cable, and a Mac (macOS 11+, Apple Silicon or Intel) or a Linux machine. On iOS 26 and earlier you also need a free Apple ID (use a dedicated one) to sign WebDriverAgent.
 
 **macOS or Linux, one command** (upstream example; for a fork, use the installer asset from its own signed release)
 
@@ -116,7 +117,7 @@ brew install derrors/tap/iphone-control && brew services start iphone-control
 sudo apt install ./iphone-control_<version>_amd64.deb && systemctl --user enable --now iphone-control
 ```
 
-On Linux the system usbmuxd is needed (`sudo apt install usbmuxd`; the .deb brings it). On an Intel Mac, build from source.
+On Linux the system usbmuxd is needed (`sudo apt install usbmuxd`; the .deb brings it). Intel Mac packages come with 0.2.14 and later; they are cross-compiled on Apple Silicon and were only tested under Rosetta, not yet on a real Intel Mac.
 
 **Then, on every system**
 

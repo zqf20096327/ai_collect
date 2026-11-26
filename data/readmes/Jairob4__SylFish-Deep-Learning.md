@@ -1,91 +1,87 @@
 # sylfish-dl
 
-Clasificación y segmentación de peces con deep learning, sobre la base de datos SylFishBD. Es el proyecto final de Inteligencia Artificial (Universidad del Magdalena, 2026-2). Entrega: sábado 21 de noviembre de 2026.
+Fish classification and segmentation with deep learning on the SylFishBD dataset. This is the final project for Artificial Intelligence (Universidad del Magdalena, 2026-2). Due date: Saturday, November 21, 2026.
 
-El sistema recibe la fotografía de un pez y responde dos cosas: de qué especie es, con qué confianza, y dónde está. La demo es una interfaz Gradio ejecutada en Colab (`share=True`, enlace público temporal): se sube una imagen y se obtiene la imagen con el contorno del pez y una leyenda con la especie y el porcentaje de confianza, más un resumen con el área del pez.
+The system takes a photograph of a fish and answers two questions: which species it is, with what confidence, and where the fish is. The demo is a Gradio interface run in Colab (`share=True`, temporary public link): you upload an image and get back the image with the fish outline and a caption with the species and the confidence percentage, plus a summary with the fish area.
 
-## Cómo funciona
+## How it works
 
 ```
-              ┌─► CNN (EfficientNetB0)  ─► especie + confianza ─┐
-foto del pez ─┤                                                  ├─► imagen con contorno y leyenda
-              └─► U-Net v2 (binaria)    ─► máscara pez/fondo  ───┘
+               ┌─► CNN (EfficientNetB0)  ─► species + confidence ─┐
+fish photo  ───┤                                                   ├─► image with outline and caption
+               └─► U-Net v2 (binary)     ─► fish/background mask ──┘
 ```
 
-Son dos modelos independientes que solo se unen en la demo. Se entrenan, validan y guardan por separado, de modo que el fallo de uno no contamina al otro y cada uno tiene sus propias métricas.
+These are two independent models that only meet in the demo. They are trained, validated and saved separately, so a failure in one does not contaminate the other and each has its own metrics.
 
-## Datos
+## Data
 
-SylFishBD tiene 9075 fotografías JPG a color de 500×500 píxeles. La única anotación es la clase, dada por la carpeta; no hay máscaras de segmentación. Las clases siguen este orden:
+SylFishBD has 9075 color JPG photographs of 500×500 pixels. The only annotation is the class, given by the folder; there are no segmentation masks. The classes follow this order:
 
 | boal | ilish | kalibaush | katla | koi | mrigel | pabda | rui | telapia | Total |
 |---|---|---|---|---|---|---|---|---|---|
 | 885 | 789 | 525 | 1133 | 592 | 1293 | 862 | 1670 | 1326 | 9075 |
 
-La razón entre la clase mayor y la menor es $1670/525\approx3.18$. Hay copias exactas y casi duplicadas, así que la partición se hace **por grupos de duplicados** (MD5 y dHash con distancia de Hamming $\le 5$), 70/15/15 y con semilla 42: una foto y sus copias nunca quedan en conjuntos distintos. Quedan 8975 imágenes (train 6246, val 1359, test 1370); 100 se excluyeron por ruido de etiqueta. Las imágenes, las máscaras, los `.npz` y los modelos no están en este repositorio: viven en Drive ([enlace a la carpeta de Drive]). Referencia del dataset: [completar referencia del dataset].
+The ratio between the largest and the smallest class is $1670/525\approx3.18$. There are exact and near-duplicate copies, so the split is made **by groups of duplicates** (MD5 and dHash with Hamming distance $\le 5$), 70/15/15 with seed 42: a photo and its copies never end up in different sets. This leaves 8975 images (train 6246, val 1359, test 1370); 100 were excluded for label noise. The images, masks, `.npz` files and models are not in this repository: they live on Drive ([Drive folder](https://drive.google.com/drive/folders/1taTrSyyyjND9iM3SYT313Oj7lgGljFiC?hl=es)). Dataset reference: [dataset reference to be completed].
 
-## Segmentación: máscaras con SAM 2 y U-Net v2 (módulo 05)
+## Segmentation: SAM 2 masks and U-Net v2 (module 05)
 
-**Problema.** Como el dataset no trae máscaras, la primera versión de la U-Net (`unet_v1`) se entrenó con pseudo-máscaras de GrabCut (OpenCV). GrabCut dejó 640 máscaras vacías y su control de calidad descartó 1857 de 8975 (20.7 %), sobre todo escenas con plato, balde o mesa; solo 7118 máscaras quedaron aptas.
+**Problem.** Since the dataset has no masks, the first version of the U-Net (`unet_v1`) was trained with GrabCut (OpenCV) pseudo-masks. GrabCut left 640 empty masks and its quality control discarded 1857 of 8975 (20.7 %), mostly plate, bucket or table scenes; only 7118 masks were usable.
 
-**Idea.** Usar **SAM 2** (Segment Anything Model 2, de Meta) como herramienta de **etiquetado offline**: genera máscaras nuevas una sola vez y no forma parte del sistema entregado. La U-Net se reentrena desde cero con esas máscaras.
+**Idea.** Use **SAM 2** (Segment Anything Model 2, by Meta) as an **offline labeling** tool: it generates new masks once and is not part of the delivered system. The U-Net is retrained from scratch with those masks.
 
-**Pipeline** (cuadernos `05_preparacion_mascaras_sam2_{A_prompts,B_sam2,C_unet_v2}`):
+**Pipeline** (notebooks `05_preparacion_mascaras_sam2_{A_prompts,B_sam2,C_unet_v2}`):
 
-1. **A (TensorFlow).** La `unet_v1` predice una caja y un centroide por imagen; esos son los prompts de SAM 2. Se sortea una muestra de 30 imágenes de val para revisar a ojo.
-2. **B (PyTorch).** Piloto visual con dos prompts (P1: caja fija; P3: caja de la v1 ampliada 5 % más un punto positivo en el centroide). P3 acertó en 27 de 30 imágenes (a ojo) y se aplicó al lote completo de 8975 imágenes (34 min en una T4). Posproceso con OpenCV (componente conexa mayor y relleno de huecos) y control de calidad recalibrado solo con val: $0.02 \le$ área $\le 0.35$ y banda de borde $\le 0.08$.
-3. **C (TensorFlow).** Se entrena la **U-Net v2**, con arquitectura, hiperparámetros y semilla idénticos a la v1 (1,946,993 parámetros, BCE + Dice, Adam $10^{-3}$, lote 16, semilla 42); solo cambian las etiquetas. Se elige $\tau$ en val y el test se evalúa una sola vez.
+1. **A (TensorFlow).** `unet_v1` predicts one box and one centroid per image; these are the SAM 2 prompts. A sample of 30 val images is drawn for visual review.
+2. **B (PyTorch).** Visual pilot with two prompts (P1: fixed box; P3: the v1 box enlarged by 5 % plus a positive point at the centroid). P3 was right on 27 of 30 images (by eye) and was applied to the full batch of 8975 images (34 min on a T4). OpenCV post-processing (largest connected component and hole filling) and a quality control recalibrated on val only: $0.02 \le$ area $\le 0.35$ and border band $\le 0.08$.
+3. **C (TensorFlow).** The **U-Net v2** is trained with the same architecture, hyperparameters and seed as v1 (1,946,993 parameters, BCE + Dice, Adam $10^{-3}$, batch size 16, seed 42); only the labels change. $\tau$ is chosen on val and the test set is evaluated only once.
 
-**Resultado del control de calidad.** La retención sube de 7118 a 8702 de 8975 imágenes (79.3 % a 97.0 %). Por clase, `boal` pasa de 63.3 % a 94.3 % e `ilish` de 62.6 % a 93.9 %.
+**Quality control result.** Retention rises from 7118 to 8702 of 8975 images (79.3 % to 97.0 %). By class, `boal` goes from 63.3 % to 94.3 % and `ilish` from 62.6 % to 93.9 %.
 
-**Modelo final.** Tras evaluar la opción SAM 2, el modelo de segmentación seleccionado es **`unet_v2`** (`models/unet_v2.keras`, `models/unet_v2_umbral.json`, $\tau = 0.6$). Se eligió por juicio visual directo: la v2 acertó en 27 de 30 imágenes de val (a ojo) y SAM 2 resultó mejor que GrabCut en las 30 comparadas; la v1 no se calificó y la regla de ventaja fijada de antemano no se evaluó. `unet_v1` queda como respaldo.
+**Final model.** After evaluating the SAM 2 option, the selected segmentation model is **`unet_v2`** (`models/unet_v2.keras`, `models/unet_v2_umbral.json`, $\tau = 0.6$). It was chosen by direct visual judgment: v2 was right on 27 of 30 val images (by eye) and SAM 2 was better than GrabCut on all 30 compared; v1 was not graded and the advantage rule set in advance was not evaluated. `unet_v1` is kept as a fallback.
 
-| Modelo | Etiquetas de referencia | mIoU por imagen (val) | mIoU por imagen (test) | Imágenes evaluadas (test) |
+| Model | Reference labels | Per-image mIoU (val) | Per-image mIoU (test) | Images evaluated (test) |
 |---|---|---|---|---|
 | `unet_v1` | GrabCut | 0.8334 | 0.8344 | 1119 |
 | **`unet_v2`** (final) | SAM 2 | 0.8962 | 0.8944 | 1335 |
 
-**Esas dos filas no son comparables:** cada mIoU se mide contra las máscaras con que se entrenó el modelo (GrabCut o SAM 2) y sobre un conjunto distinto de imágenes (`qc_ok` 7118 contra `sam2_qc_ok` 8702). La evidencia de que la v2 es mejor es visual y de una sola persona, no una cifra.
+**These two rows are not comparable:** each mIoU is measured against the masks the model was trained on (GrabCut or SAM 2) and on a different set of images (`qc_ok` 7118 versus `sam2_qc_ok` 8702). The evidence that v2 is better is visual and from a single person, not a number.
 
-## Evaluación
+## Evaluation
 
-Todas las decisiones (arquitectura, umbral $\tau$, prompt, umbrales del control de calidad, selección de modelo) se toman en validación. El test se evalúa una sola vez, con el modelo congelado. El test ya se había evaluado con la `unet_v1` antes de entrenar la v2, y eso se declara. La U-Net se evalúa con IoU por imagen (media y mediana) y, para la v1, también con Dice global y matriz de confusión de píxeles.
+All decisions (architecture, threshold $\tau$, prompt, quality-control thresholds, model selection) are made on validation. The test set is evaluated only once, with the model frozen. The test set had already been evaluated with `unet_v1` before v2 was trained, and this is declared. The U-Net is evaluated with per-image IoU (mean and median) and, for v1, also with global Dice and a pixel confusion matrix.
 
-## Limitaciones de la segmentación
+## Segmentation limitations
 
-- Las máscaras de SAM 2 siguen siendo pseudo-máscaras, no verdad de terreno; la comparación v1/v2 es visual, sobre 30 imágenes de val y calificada por una persona.
-- Con el prompt P3, la v2 hereda dónde localizó el pez la v1 (circularidad parcial); P1 no se calificó imagen por imagen.
-- En una auditoría a ojo, 2 de 12 máscaras aprobadas estaban contaminadas (plato o mancha extra) y 2 de 12 descartadas eran peces grandes bien segmentados que el umbral de área elimina.
-- El entrenamiento de la v2 llegó al tope de 40 épocas (mejor época 37) y se hizo una sola corrida.
-- La decisión de adoptar la v2 se tomó después de ver las cuadrículas, por juicio visual directo y sin aplicar la regla fijada antes.
-- SAM 2 corre con PyTorch, fuera del pipeline de Keras; es solo etiquetado offline.
-- El cambio de la demo a `unet_v2` y su prueba con fotos externas están pendientes.
+- The SAM 2 masks are still pseudo-masks, not ground truth; the v1/v2 comparison is visual, on 30 val images and graded by one person.
+- With prompt P3, v2 inherits where v1 located the fish (partial circularity); P1 was not graded image by image.
+- In an eyeball audit, 2 of 12 approved masks were contaminated (plate or extra stain) and 2 of 12 discarded ones were large, well-segmented fish that the area threshold removes.
+- The v2 training reached the cap of 40 epochs (best epoch 37) and was a single run.
+- The decision to adopt v2 was made after seeing the grids, by direct visual judgment and without applying the rule set beforehand.
+- SAM 2 runs on PyTorch, outside the Keras pipeline; it is used only for offline labeling.
+- Switching the demo to `unet_v2` and testing it with external photos are still pending.
 
-El detalle completo, con decisiones, cifras y glosario, está en `05_SAM2.md`.
+The full detail, with decisions, figures and glossary, is in `05_SAM2.md`.
 
-## Estructura del repositorio
+## Repository structure
 
 ```text
 sylfish-dl/
 ├── README.md
 ├── requirements.txt
 ├── notebooks/
-│   ├── 01_preparacion_datos/         cuaderno, GUIA.md y 01_PREPARACION_DATOS.md
-│   ├── 02_cnn/                       cuaderno, GUIA.md y 02_CNN.md
-│   ├── 03_unet/                      cuaderno, GUIA.md y 03_UNET.md
-│   ├── 04_demo/                      cuaderno, GUIA.md y 04_DEMO.md
-│   └── 05_sam2/                      cuadernos A, B y C y 05_SAM2.md
+│   ├── 01_preparacion_datos/         notebook, GUIA.md and 01_PREPARACION_DATOS.md
+│   ├── 02_cnn/                       notebook, GUIA.md and 02_CNN.md
+│   ├── 03_unet/                      notebook, GUIA.md and 03_UNET.md
+│   ├── 04_demo/                      notebook, GUIA.md and 04_DEMO.md
+│   └── 05_experimentacion_sam2/      notebooks A, B and C and 05_SAM2.md
 └── reports/
-    ├── figures/                      figuras de los informes
-    └── tables/                       tablas de resultados (.csv, .json)
+    ├── figures/                      report figures
+    └── tables/                       result tables (.csv, .json)
 ```
 
-El repositorio solo contiene los cuadernos, sus guías y los resultados. Los datos y los modelos están en la carpeta de Drive: [\[enlace a la carpeta de Drive\]](https://drive.google.com/drive/folders/1taTrSyyyjND9iM3SYT313Oj7lgGljFiC?hl=es). Los cuadernos del 05 requieren PyTorch y SAM 2 (cuaderno B) además de TensorFlow, en sesiones de Colab separadas; esas dependencias se documentan aparte de `requirements.txt`.
+Folder and file names are kept in Spanish, as in the code. The repository contains only the notebooks, their guides and the results. The data and models are in the [Drive folder](https://drive.google.com/drive/folders/1taTrSyyyjND9iM3SYT313Oj7lgGljFiC?hl=es). The notebooks in 05 require PyTorch and SAM 2 (notebook B) in addition to TensorFlow, in separate Colab sessions; those dependencies are documented apart from `requirements.txt`.
 
-## Cómo ejecutar
+## How to run
 
-Se copia la carpeta de Drive ([\click acá\]](https://drive.google.com/drive/folders/1taTrSyyyjND9iM3SYT313Oj7lgGljFiC?hl=es)) a `MyDrive/sylfish/` y se monta en Colab. Los módulos 01 a 04 se abren en orden; el 01 deja `splits.csv`, las máscaras y los `.npz` en Drive. El módulo 05 se ejecuta después, en tres sesiones nuevas de Colab con GPU T4 (A, B y C, en ese orden), y deja `unet_v2.keras` y `unet_v2_umbral.json` en `models/`. La demo usa la U-Net v2: carga `unet_v2.keras` y `unet_v2_umbral.json`, con el mismo preprocesamiento de entrada que la v1 (RGB 256×256, `INTER_AREA`, dividido entre 255).
-
-## Autores
-- Jairo de Jesús Blanco Pérez
-- Luis Angel Rojas Peralza
+Copy the Drive folder to `MyDrive/sylfish/` and mount it in Colab. Open modules 01 to 04 in order; 01 leaves `splits.csv`, the masks and the `.npz` files on Drive. Module 05 is run afterwards, in three new Colab sessions with a T4 GPU (A, B and C, in that order), and leaves `unet_v2.keras` and `unet_v2_umbral.json` in `models/`. The demo uses U-Net v2: it loads `unet_v2.keras` and `unet_v2_umbral.json`, with the same input preprocessing as v1 (RGB 256×256, `INTER_AREA`, divided by 255).

@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://luongnv.com/idd/"><img src="https://img.shields.io/badge/website-luongnv.com%2Fidd-00FF41.svg?labelColor=0A0A0A" alt="Website"></a>
-  <a href="https://github.com/luongnv89/idd/releases/latest"><img src="https://img.shields.io/badge/version-0.28.0-blue.svg" alt="Version 0.28.0"></a>
+  <a href="https://github.com/luongnv89/idd/releases/latest"><img src="https://img.shields.io/badge/version-0.29.0-blue.svg" alt="Version 0.29.0"></a>
   <a href="https://github.com/luongnv89/idd/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License"></a>
   <a href="https://github.com/luongnv89/idd"><img src="https://img.shields.io/badge/commands-8-blue.svg" alt="8 commands"></a>
   <a href="https://github.com/luongnv89/idd/blob/main/CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
@@ -205,7 +205,7 @@ python3 scripts/idd-lint.py corrections      # add --record to propose; see docs
 
 Checks are tagged with the spec section they enforce and mapped to the L1–L3 conformance levels (`--level L2` skips Decision-Record checks for repos not claiming L3). Exit code 0/1 makes it CI-native; `/idd-doctor` remains the deep, agent-powered health check.
 
-`stats` closes the evidence loop: it measures whether the methodology is paying for itself — what fraction of commits trace to issues, how many merged PRs carry Decision Records into git history, which pipeline phase is slowest across runs that recorded per-phase timing, and (when `gh` is available) whether normalized issues actually resolve with fewer QA cycles than unnormalized ones.
+`stats` closes the evidence loop: it measures whether the methodology is paying for itself — what fraction of commits trace to issues, how many merged PRs carry Decision Records into git history, which pipeline phase is slowest across runs that recorded per-phase timing, which review rules actually produce findings (so unused ones can be pruned), and (when `gh` is available) whether normalized issues actually resolve with fewer QA cycles than unnormalized ones.
 
 #### Run `idd-lint` from anywhere — shell shortcut
 
@@ -258,7 +258,7 @@ Everything the skills write, where it lands, and how to turn it off. Nothing in 
 |------|---------------|-------------|---------|
 | Files in the worktree | Writes `.idd.yml` and adds one line, `.idd/cache/`, to `.gitignore` | `/init-idd` | Runs only when you call it; it asks before it overwrites a config |
 | Files in the worktree | Writes local state under `.idd/`: `triage.json`, `analysis-<N>.json`, `runs.jsonl`, `run-state.json`, `run.lock`, `last-run-report.md`, `cache/` | `/issue-triage`, `/issue-analysis`, `/issue-resolver`, `/issue-pr-review` (`--revert`), `/auto-pilot` | Local state, safe to delete |
-| Files outside the worktree | Stores review receipts and progress records under `<git common dir>/idd/`, and a model-data cache under `~/.cache/idd` | `/issue-resolver`, `/issue-pr-review`, `/auto-pilot`, `/issue-creator` | Safe to delete; `IDD_CACHE_DIR` moves the cache |
+| Files outside the worktree | Stores review receipts, progress records and stage files under `<git common dir>/idd/`, and a model-data cache under `~/.cache/idd` | `/issue-resolver`, `/issue-pr-review`, `/auto-pilot`, `/issue-creator`, `/issue-analysis`, `/issue-triage`, `/plan-to-issues` | Safe to delete; `IDD_CACHE_DIR` moves the cache |
 | Git | Creates one branch per issue, commits on it and pushes it. Never commits to the default branch and never force-pushes | `/issue-resolver`, `/issue-pr-review` (fix commits) | `resolve.branch_prefix`, `resolve.max_commits` |
 | Git | Commits each screenshot you attach to `.github/issue-assets/` on an `issue-assets` storage branch, through the GitHub API; the branch is created from the default branch tip on first use. Anyone who can read the repository can open the images | `/issue-creator` | Only when you attach an image |
 | Git | Stashes uncommitted work, runs `git pull --rebase`, then restores the stash, before it reads or changes code | every skill that syncs | Commit or stash first to skip the stash step |
@@ -313,7 +313,7 @@ Don't have `asm`? `npm install -g agent-skill-manager`.
 
 #### Alternative — Claude Code plugin
 
-Claude Code users can install the same eight skills as one plugin. This repo is its own plugin marketplace, and the marketplace pins the plugin to the latest tagged release. A plugin install fetches only that release's `skills/` folder (about 3.6 MB at v0.28.0), not the rest of the repository:
+Claude Code users can install the same eight skills as one plugin. This repo is its own plugin marketplace, and the marketplace pins the plugin to the latest tagged release. A plugin install fetches only that release's `skills/` folder (about 3.8 MB at v0.29.0), not the rest of the repository:
 
 ```bash
 claude plugin marketplace add luongnv89/idd   # register the marketplace (once)
@@ -543,16 +543,18 @@ Analyzes issue #N in depth without making code changes:
 
 `/issue-analysis N --plan` runs the same analysis, then posts its recommended option on the issue as a plan comment (files, tasks, the acceptance criterion each task covers, tests, risks) and adds the `planned` label, so `/issue-resolver` can build from an agreed plan. It is the one form that writes to GitHub, and it posts only on a normalized issue.
 
+If the session dies mid-analysis, running `/issue-analysis N` again continues from the research or synthesis already returned, as long as the checked-out commit and the issue have not changed since. `/issue-triage update` reuses finished scanner batches the same way, `/issue-creator` does not create a batch item twice, and `/plan-to-issues` reports what a cut-off run already filed.
+
 ### /issue-resolver N -- Resolve Issues
 
-Resolves issue #N through a 6-step pipeline. If the session dies mid-run (a crash, a closed terminal, a host restart), `/issue-resolver N --resume` picks up at the recorded step instead of starting over; an interactive run offers this on its own. The progress record is first checked against live git and GitHub, and every safety gate runs again:
+Resolves issue #N through a 6-step pipeline. If the session dies mid-run (a crash, a closed terminal, a host restart), `/issue-resolver N --resume` picks up at the recorded step instead of starting over; an interactive run offers this on its own, an `--auto` run resumes its own idle record without the flag, and `--no-resume` always starts over. The progress record is first checked against live git and GitHub, and every safety gate runs again:
 
 ```
 [0/5] Preflight    — Check issue status, verify not already resolved
 [1/5] Research     — Scan codebase, trace dependencies
 [2/5] Plan         — Propose 3 approaches, pick one
 [3/5] Implement    — Write code + tests, atomic commits
-[4/5] QA           — Code review + test + build + fix loop
+[4/5] QA           — Code review + test + static checks + build + fix loop
 [5/5] Deliver      — Push branch, create PR with "Closes #N"
 ```
 
@@ -574,6 +576,7 @@ Fully automated loop: triage open issues, pick the highest-priority task, resolv
 /auto-pilot --limit 5                # cap to 5 iterations
 /auto-pilot --dry-run                # show plan without resolving
 /auto-pilot --resume                 # resume an interrupted run where it stopped
+/auto-pilot --no-resume              # start fresh even when a cut-off run is recorded
 /auto-pilot --stats                  # read-only: run outcomes and post-merge look-back
 ```
 

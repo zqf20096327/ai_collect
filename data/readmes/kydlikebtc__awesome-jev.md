@@ -12,7 +12,7 @@
   <source media="(max-width: 767px) and (prefers-color-scheme: light)" srcset="docs/assets/readme-cover-en-light-mobile.svg">
   <source media="(max-width: 767px)" srcset="docs/assets/readme-cover-en-dark-mobile.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-cover-en-dark.svg">
-  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,329 products built on Jev by 1,158 makers, with 1,445 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
+  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,343 products built on Jev by 1,170 makers, with 1,460 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
 </picture>
 </a>
 
@@ -56,7 +56,7 @@
 
 No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is filed on Friday and opens the next Monday: [launch a product](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml), yours or one you found, such as those rising below.
 
-### ★ Rising: 2026-11-16 to 2026-11-23
+### ★ Rising: 2026-11-18 to 2026-11-25
 
 <table>
 <tr>
@@ -64,50 +64,50 @@ No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is
 <td>
 
 **[celesto](https://kydlikebtc.github.io/awesome-jev/products/celesto.html)** — Secure and persistent computer for AI agents -- build your own Grokbot, and Muse.<br>
-<sub>1,434 → 1,874 stars (+31%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=celesto&title=Launch%3A%20celesto)</sub>
+<sub>1,553 → 1,969 stars (+27%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=celesto&title=Launch%3A%20celesto)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+440</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+416</b><br><sub>stars</sub></td>
 </tr>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/optim-jev.html"><img src="https://github.com/Oqura-ai.png?size=96" width="48" height="48" alt="optim-jev"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/xerj.html"><img src="https://github.com/xerj-org.png?size=96" width="48" height="48" alt="XERJ"></a></td>
 <td>
 
-**[optim-jev](https://kydlikebtc.github.io/awesome-jev/products/optim-jev.html)** — Claude Code plugin (Codex too) with three Jev tools: jev-compacter asks which stale tool calls and outputs can be dropped when context is compacted, jev-router picks a model and effort for each subagent, and jev-skills sends a short relevant skill list per prompt instead of the whole catalog. <sub>(written by a model)</sub><br>
-<sub>69 → 85 stars (+23%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=optim-jev&title=Launch%3A%20optim-jev)</sub>
+**[XERJ](https://kydlikebtc.github.io/awesome-jev/products/xerj.html)** — Local-first search engine and MCP server in one Rust binary. Its optional `rerank` stage asks Jev one `noul` per top hit (does `document` answer the query in the state?) and re-sorts by the probabilities. The authors report FiQA nDCG@10 rising from 0.24 to 0.36, about $0.64 for 648 searches. <sub>(written by a model)</sub><br>
+<sub>19,220 → 21,424 stars (+11%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=xerj&title=Launch%3A%20XERJ)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+16</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+2,204</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/onlyread.html"><img src="https://github.com/onlyreadai.png?size=96" width="48" height="48" alt="OnlyRead"></a></td>
 <td>
 
 **[OnlyRead](https://kydlikebtc.github.io/awesome-jev/products/onlyread.html)** — Chrome extension that keeps browser agents read-only on the sites you pick: rules, per-site decoders and a verdict cache settle most requests, and Jev answers a noul on the rest (does this request create, modify or delete stored data?); code allows, blocks or sends the middle band to a review model. <sub>(written by a model)</sub><br>
-<sub>94 → 109 stars (+16%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=onlyread&title=Launch%3A%20OnlyRead)</sub>
+<sub>99 → 109 stars (+10%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=onlyread&title=Launch%3A%20OnlyRead)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+15</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+10</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/rikkahub-sillytavern-android.html"><img src="https://github.com/MiaoWuNYA.png?size=96" width="48" height="48" alt="RikkaHub Plus · Lantern"></a></td>
 <td>
 
 **[RikkaHub Plus · Lantern](https://kydlikebtc.github.io/awesome-jev/products/rikkahub-sillytavern-android.html)** — Android chat client for SillyTavern-style character roleplay, a Kotlin fork of RikkaHub. Optional Jev decisioning asks a `noul` per stored memory (is it relevant to this conversation?) in place of embedding search, and gives the main model a `judge` tool for yes/no, choice and score questions. <sub>(written by a model)</sub><br>
-<sub>208 → 232 stars (+12%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=rikkahub-sillytavern-android&title=Launch%3A%20RikkaHub%20Plus%20%C2%B7%20Lantern)</sub>
+<sub>219 → 241 stars (+10%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=rikkahub-sillytavern-android&title=Launch%3A%20RikkaHub%20Plus%20%C2%B7%20Lantern)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+24</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+22</b><br><sub>stars</sub></td>
 </tr>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/agent-desktop.html"><img src="https://github.com/vercel-labs.png?size=96" width="48" height="48" alt="agent-desktop"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/goutoujunshi-jev-chat.html"><img src="https://github.com/shengjidaguai-china.png?size=96" width="48" height="48" alt="狗头军师 Jev Chat"></a></td>
 <td>
 
-**[agent-desktop](https://kydlikebtc.github.io/awesome-jev/products/agent-desktop.html)** — Desktop automation that reads the system accessibility tree and decides which button, menu or field to act on next.<br>
-<sub>24,382 → 26,239 stars (+8%) · 👤 a person read the call site · can launch again from 2027-01-11</sub>
+**[狗头军师 Jev Chat](https://kydlikebtc.github.io/awesome-jev/products/goutoujunshi-jev-chat.html)** — Chat-reply assistant (desktop overlay, Android floating assistant, iOS keyboard) built on Jev Android. From the visible chat or a screenshot it asks Jev the literal question, the other person's intent, a danger level, whether to reply now and the best action, then has Jev pick among drafted replies. <sub>(written by a model)</sub><br>
+<sub>651 → 698 stars (+7%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=goutoujunshi-jev-chat&title=Launch%3A%20%E7%8B%97%E5%A4%B4%E5%86%9B%E5%B8%88%20Jev%20Chat)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+1,857</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+47</b><br><sub>stars</sub></td>
 </tr>
 </table>
 
@@ -127,6 +127,16 @@ No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is
 <td align="center" width="80"><b>11-24</b><br><sub>added</sub></td>
 </tr>
 <tr>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/askjev-brian-w-zhang.html"><img src="https://github.com/brian-w-zhang.png?size=96" width="48" height="48" alt="askjev"></a></td>
+<td>
+
+**[askjev](https://kydlikebtc.github.io/awesome-jev/products/askjev-brian-w-zhang.html)** — One person's map of what Jev is like: over a million closed questions from 312 sources, filed on a tree of 1,737 topics, each answered by Jev as a noul, choice or score and shown next to real people's answers where they exist, with questions on taste, ethics, dates and pressure to conform. <sub>(written by a model)</sub><br>
+<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=askjev-brian-w-zhang&title=Launch%3A%20askjev)</sub>
+
+</td>
+<td align="center" width="80"><b>11-25</b><br><sub>added</sub></td>
+</tr>
+<tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/astra-jev-new-vegas.html"><img src="https://github.com/0mis.png?size=96" width="48" height="48" alt="Astra + Jev: Fallout: New Vegas"></a></td>
 <td>
 
@@ -137,38 +147,28 @@ No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is
 <td align="center" width="80"><b>11-23</b><br><sub>added</sub></td>
 </tr>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/codex-jev.html"><img src="https://github.com/Hyper-AI-Lab.png?size=96" width="48" height="48" alt="Codex Jev"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/bouncer.html"><img src="https://github.com/clownware.png?size=96" width="48" height="48" alt="Bouncer"></a></td>
 <td>
 
-**[Codex Jev](https://kydlikebtc.github.io/awesome-jev/products/codex-jev.html)** — Retrieval layer for Codex, as an MCP server: it finds candidate code, test, config and log excerpts locally, can then ask Jev one noul per excerpt (is it useful evidence for the query) and one per stated requirement, and returns a bounded, source-addressed set chosen by relevance and coverage. <sub>(written by a model)</sub><br>
-<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=codex-jev&title=Launch%3A%20Codex%20Jev)</sub>
+**[Bouncer](https://kydlikebtc.github.io/awesome-jev/products/bouncer.html)** — Judgment layer for Claude Code tool calls: a PreToolUse hook asks Jev plain-English questions from a YAML policy you own about each proposed call, such as whether a command destroys hard-to-recover work, and a push policy asks whether commits match the diff or leave debugging code behind. <sub>(written by a model)</sub><br>
+<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=bouncer&title=Launch%3A%20Bouncer)</sub>
 
 </td>
-<td align="center" width="80"><b>11-24</b><br><sub>added</sub></td>
+<td align="center" width="80"><b>11-25</b><br><sub>added</sub></td>
 </tr>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/decision-gate.html"><img src="https://github.com/zachlandes.png?size=96" width="48" height="48" alt="decision-gate"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/btx-skill-jev-judge.html"><img src="https://github.com/bitranox.png?size=96" width="48" height="48" alt="btx-skill-jev-judge"></a></td>
 <td>
 
-**[decision-gate](https://kydlikebtc.github.io/awesome-jev/products/decision-gate.html)** — Rate and spend limits for code that calls Jev in a loop: every request waits for room under the account's rate limit, all callers pause together on a slow-down, a daily spend ceiling per key is checked, and an answer cache stops paying twice for the same question. <sub>(written by a model)</sub><br>
-<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=decision-gate&title=Launch%3A%20decision-gate)</sub>
+**[btx-skill-jev-judge](https://kydlikebtc.github.io/awesome-jev/products/btx-skill-jev-judge.html)** — Claude Code plugin with one skill, jev-judge: when the same judgment repeats over many items, such as labelling 600 support tickets, Claude hands it to Jev through a tested command-line tool that asks each item a noul, choice or score instead of reading every item into its own context. <sub>(written by a model)</sub><br>
+<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=btx-skill-jev-judge&title=Launch%3A%20btx-skill-jev-judge)</sub>
 
 </td>
-<td align="center" width="80"><b>11-23</b><br><sub>added</sub></td>
-</tr>
-<tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/jeff-bot.html"><img src="https://github.com/saembit.png?size=96" width="48" height="48" alt="Jeff"></a></td>
-<td>
-
-**[Jeff](https://kydlikebtc.github.io/awesome-jev/products/jeff-bot.html)** — Discord bot in which every feature is a Jev question: /settle picks the better of two answers, /rank scores items on each criterion, forum posts get the fitting tag or none, help channels check whether a message is a question a FAQ entry answers, and tabletop oracle and odds games use nouls. <sub>(written by a model)</sub><br>
-<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=jeff-bot&title=Launch%3A%20Jeff)</sub>
-
-</td>
-<td align="center" width="80"><b>11-24</b><br><sub>added</sub></td>
+<td align="center" width="80"><b>11-25</b><br><sub>added</sub></td>
 </tr>
 </table>
 
-<sub>26 products entered the catalogue in 2026-W48 so far; the first 5 here, those whose call site a person read first, then a model, then by star band and title. An order, not a ranking, and each can launch. [All of them on the board](https://kydlikebtc.github.io/awesome-jev/launches.html).</sub>
+<sub>38 products entered the catalogue in 2026-W48 so far; the first 5 here, those whose call site a person read first, then a model, then by star band and title. An order, not a ranking, and each can launch. [All of them on the board](https://kydlikebtc.github.io/awesome-jev/launches.html).</sub>
 
 ### Latest results: 2026-W46
 
@@ -313,15 +313,15 @@ All 18 patterns have at least one catalogue entry. Coverage does not imply runti
 
 | Decision pattern | Decision pattern |
 | :--- | :--- |
-| [Tool selection](#tool-selection) · **305** | [Intent routing](#intent-routing) · **70** |
-| [Context compaction](#context-compaction) · **62** | [Safety gating](#safety-gating) · **198** |
-| [Output validation](#output-validation) · **189** | [Retry control](#retry-control) · **10** |
-| [Human escalation](#human-escalation) · **117** | [Model routing](#model-routing) · **107** |
-| [Speculative fan-out](#speculative-fan-out) · **54** | [Search & ranking](#search--ranking) · **109** |
-| [Structured extraction](#structured-extraction) · **40** | [Classification](#classification) · **244** |
+| [Tool selection](#tool-selection) · **307** | [Intent routing](#intent-routing) · **70** |
+| [Context compaction](#context-compaction) · **62** | [Safety gating](#safety-gating) · **201** |
+| [Output validation](#output-validation) · **191** | [Retry control](#retry-control) · **10** |
+| [Human escalation](#human-escalation) · **117** | [Model routing](#model-routing) · **110** |
+| [Speculative fan-out](#speculative-fan-out) · **55** | [Search & ranking](#search--ranking) · **109** |
+| [Structured extraction](#structured-extraction) · **41** | [Classification](#classification) · **247** |
 | [ML feature extraction](#ml-feature-extraction) · **10** | [Document triage](#document-triage) · **24** |
-| [Support triage](#support-triage) · **16** | [Content scoring](#content-scoring) · **217** |
-| [Recommendation](#recommendation) · **5** | [Overview](#overview) · **547** |
+| [Support triage](#support-triage) · **16** | [Content scoring](#content-scoring) · **218** |
+| [Recommendation](#recommendation) · **5** | [Overview](#overview) · **551** |
 
 ## Measured, not claimed
 
@@ -464,7 +464,7 @@ _Which tool or action the agent should call next._
 
 </details>
 
-**10 of 305** shown · [all 305 on one page →](docs/by-pattern/tool-selection.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=tool-selection&lang=en)
+**10 of 307** shown · [all 307 on one page →](docs/by-pattern/tool-selection.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=tool-selection&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -619,17 +619,19 @@ _Decide whether an action is safe to run. Defence in depth, never a security bou
   Coding-agent runtime in which workflows are versioned TypeScript stages with executable checks, review gates and human approvals. Its AI package lists Jev from models.dev as a System One decision model on five providers, apart from the chat models; the README does not say where a workflow calls it. <sub>(written by a model)</sub><br>
   <sub>`Project` · ★100+ · bastani-inc · `TS` · [call site](https://github.com/bastani-inc/atomic/blob/HEAD/packages/ai/src/decision-models.generated.ts), read 2026-09-24</sub>
 
+- **[Claude x Jev](https://github.com/charlesdove977/claude-x-jev)**<br>
+  Claude Code skill and commands in which Jev, through OpenRouter, sorts and Claude writes: classify, check or score batches, send only unsure items to Claude, verify Claude's drafts, and gate tool calls with a PreToolUse hook that asks whether a call can be undone and whether it serves the task. <sub>(written by a model)</sub><br>
+  <sub>`Plugin` · ★100+ · charlesdove977 · `Py` · `choice` · `noul` · `score` · [call site](https://github.com/charlesdove977/claude-x-jev/blob/HEAD/skill/scripts/jev.py), read by a model 2026-10-30</sub>
+
+  **Caveats:** `marketing`
+
 - **[deepseek-harness-jev (luobosibing2)](https://github.com/luobosibing2/dsh-jev-plugin)**<br>
   DeepSeek Harness plugin with twelve opt-in features using Jev as the judgment model: skill selection and glob-result ranking (one `noul` per candidate), completion and goal checks, drift reminders, interjection routing, tool-output and test-log filtering, and approval of single workspace operations. <sub>(written by a model)</sub><br>
   <sub>`Plugin` · ★100+ · luobosibing2 · `TS` · `noul` · [call site](https://github.com/luobosibing2/dsh-jev-plugin/blob/HEAD/packages/jev/src/selection.ts), read by a model 2026-10-28</sub>
 
-- **[grok-bot-jev](https://github.com/Bodila51/grok-bot-jev)**<br>
-  Router for Grok Bot that asks Jev, before research, browsing, retries or subagents, which action a request needs: reuse a cached artifact, stop a failing retry, run deterministic code, cap research, allow a subagent or ask a person. Shadow mode only logs; active mode relies on a pasted skill. <sub>(written by a model)</sub><br>
-  <sub>`Plugin` · ★100+ · bodila51 · `Py` · [call site](https://github.com/Bodila51/grok-bot-jev/blob/HEAD/src/jev_client.py), read 2026-09-22</sub>
-
 </details>
 
-**10 of 198** shown · [all 198 on one page →](docs/by-pattern/safety-gating.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=safety-gating&lang=en)
+**10 of 201** shown · [all 201 on one page →](docs/by-pattern/safety-gating.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=safety-gating&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -676,13 +678,15 @@ _Check a model's output against a rubric before it reaches a user._
   Guards against a coding agent claiming it finished: reads tool output, the diff and test results, then judges whether the completion claim holds.<br>
   <sub>`Project` · ★100+ · `TS` · `noul` · `score` · [call site](https://github.com/qkal/Canny/blob/HEAD/src/jev.ts), read 2026-09-22</sub>
 
-- **[deepseek-harness-jev (luobosibing2)](https://github.com/luobosibing2/dsh-jev-plugin)**<br>
-  DeepSeek Harness plugin with twelve opt-in features using Jev as the judgment model: skill selection and glob-result ranking (one `noul` per candidate), completion and goal checks, drift reminders, interjection routing, tool-output and test-log filtering, and approval of single workspace operations. <sub>(written by a model)</sub><br>
-  <sub>`Plugin` · ★100+ · luobosibing2 · `TS` · `noul` · [call site](https://github.com/luobosibing2/dsh-jev-plugin/blob/HEAD/packages/jev/src/selection.ts), read by a model 2026-10-28</sub>
+- **[Claude x Jev](https://github.com/charlesdove977/claude-x-jev)**<br>
+  Claude Code skill and commands in which Jev, through OpenRouter, sorts and Claude writes: classify, check or score batches, send only unsure items to Claude, verify Claude's drafts, and gate tool calls with a PreToolUse hook that asks whether a call can be undone and whether it serves the task. <sub>(written by a model)</sub><br>
+  <sub>`Plugin` · ★100+ · charlesdove977 · `Py` · `choice` · `noul` · `score` · [call site](https://github.com/charlesdove977/claude-x-jev/blob/HEAD/skill/scripts/jev.py), read by a model 2026-10-30</sub>
+
+  **Caveats:** `marketing`
 
 </details>
 
-**10 of 189** shown · [all 189 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
+**10 of 191** shown · [all 191 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -698,14 +702,18 @@ _Decide whether a failed step is worth retrying._
   MCP server that puts TypeSafe Jev on the coding loop in Cursor, Codex, and any MCP client <sub>(upstream description)</sub><br>
   <sub>`Plugin` · ★10+ · burnigtm · `TS` · [call site](https://github.com/burnigtm/jev-mcp/blob/HEAD/src/typesafe.ts), read 2026-09-24</sub>
 
+- **[Reflex](https://github.com/datadog-labs/reflex)**<br>
+  Rust library for control loops on observability data: Datadog metrics and Toto forecasts become typed state, Jev recommends an action as a choice, such as Open, Probe or NoChange for a circuit, and the executor applies it only when legality checks, guards and invariants allow. <sub>(written by a model)</sub><br>
+  <sub>`Project` · ★10+ · datadog-labs · `Rs` · `choice` · [call site](https://github.com/datadog-labs/reflex/blob/HEAD/crates/reflex-typesafe/src/lib.rs), read by a model 2026-11-12</sub>
+
+<details>
+<summary>7 more examples</summary>
+
 - **[DuoMind](https://github.com/j1s4nn/duomind)**<br>
   OpenAI-compatible local server that pairs a small llama.cpp model with Jev: 18 decision points before, during and after generation (needs reasoning, safety, format, should stop, needs retry) steer the local model. Prompts go to TypeSafe; generation stays local. <sub>(written by a model)</sub><br>
   <sub>`Project` · j1s4nn · `Py` · `noul` · `choice` · [call site](https://github.com/j1s4nn/duomind/blob/HEAD/src/duomind/jev_client.py), read by a model 2026-10-24</sub>
 
   **Caveats:** `vendor numbers`
-
-<details>
-<summary>7 more examples</summary>
 
 - **[Jev by Example](https://github.com/ReallyArtificial/jev-by-example)**<br>
   Ten runnable JavaScript agent decisions, one file each: reconciling a new memory against a stored one, gating whether an HTTP 200 really satisfied the task, retry vs. reconcile after an uncertain write, scoring context against a budget, checking a handoff for dropped prohibitions.<br>
@@ -732,10 +740,6 @@ _Decide whether a failed step is worth retrying._
 - **[playwright-jev](https://github.com/AdriaanVE/playwright-jev)**<br>
   Add-on for @playwright/test that asks Jev small typed questions where a suite would rerun everything or spend an LLM turn: a choice for a failure's root cause that drives retry and heal, scores to prune snapshots and order tests, nouls to verify steps and assertions, and a choice to heal locators. <sub>(written by a model)</sub><br>
   <sub>`Plugin` · AdriaanVE · `TS` · `choice` · `noul` · `score` · [call site](https://github.com/AdriaanVE/playwright-jev/blob/HEAD/src/providers/openrouter.ts), read by a model 2026-11-23</sub>
-
-- **[Reflex](https://github.com/datadog-labs/reflex)**<br>
-  Rust library for control loops on observability data: Datadog metrics and Toto forecasts become typed state, Jev recommends an action as a choice, such as Open, Probe or NoChange for a circuit, and the executor applies it only when legality checks, guards and invariants allow. <sub>(written by a model)</sub><br>
-  <sub>`Project` · datadog-labs · `Rs` · `choice` · [call site](https://github.com/datadog-labs/reflex/blob/HEAD/crates/reflex-typesafe/src/lib.rs), read by a model 2026-11-12</sub>
 
 - **[XavierJev](https://github.com/liu-x27/XavierJev)**<br>
   A local decision layer in Jev's shape: yes/no, choice and rubric questions read off one token's logprobs from a local model, with a Claude Code permission gate measured on held-out command sets.<br>
@@ -821,6 +825,10 @@ _Pick which downstream model or tier should handle a request._
 <details>
 <summary>7 more examples</summary>
 
+- **[AgentScope](https://github.com/agentscope-ai/agentscope)**<br>
+  Multi-agent framework whose classifier models include Jev: JevClassifierModel sends binary, choice and score questions to System One through TypeSafe's Python SDK, and the ModelRouter middleware asks a classifier one choice per reply to pick the chat model that answers. <sub>(written by a model)</sub><br>
+  <sub>`Project` · ★10k+ · agentscope-ai · `Py` · `choice` · `noul` · `score` · [call site](https://github.com/agentscope-ai/agentscope/blob/HEAD/src/agentscope/classifier/_jev/_model.py), read by a model 2026-11-12</sub>
+
 - **[claude-code-templates: three Jev plugins](https://github.com/davila7/claude-code-templates)**<br>
   Three independently installable Claude Code plugins — guardrails, model router and skill suggestion — each with its own hooks and tests.<br>
   <sub>`Plugin` · ★10k+ · `Py` · `TS` · `choice` · `score` · `noul` · [call site](https://github.com/davila7/claude-code-templates/blob/HEAD/scripts/jev-spike.mjs), read 2026-09-22</sub>
@@ -847,13 +855,9 @@ _Pick which downstream model or tier should handle a request._
 
   **Caveats:** `measured, not adopted`
 
-- **[agent-router](https://github.com/nidhi-singh02/agent-router)**<br>
-  CLI that picks the coding agent, model and effort for a task and starts it in Herdr: fixed rules filter by quota and a 40% reserve on shared accounts, Jev ranks the rest and picks the effort, and an unsure pick on a consequential task goes back to you. Cursor, Claude Code, Codex or OpenCode. <sub>(written by a model)</sub><br>
-  <sub>`Plugin` · ★100+ · nidhi-singh02 · `TS` · [call site](https://github.com/nidhi-singh02/agent-router/blob/HEAD/packages/router/src/semantic/typesafe-client.ts), read 2026-09-22</sub>
-
 </details>
 
-**10 of 107** shown · [all 107 on one page →](docs/by-pattern/model-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=model-routing&lang=en)
+**10 of 110** shown · [all 110 on one page →](docs/by-pattern/model-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=model-routing&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -912,7 +916,7 @@ _Pack many questions — including speculative ones — into one request and let
 
 </details>
 
-**10 of 54** shown · [all 54 on one page →](docs/by-pattern/fan-out.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=fan-out&lang=en)
+**10 of 55** shown · [all 55 on one page →](docs/by-pattern/fan-out.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=fan-out&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1022,7 +1026,7 @@ _Pull typed fields out of messy text by choosing among candidates rather than ge
 
 </details>
 
-**10 of 40** shown · [all 40 on one page →](docs/by-pattern/data-extraction.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=data-extraction&lang=en)
+**10 of 41** shown · [all 41 on one page →](docs/by-pattern/data-extraction.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=data-extraction&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1055,6 +1059,10 @@ _Put an item into a taxonomy, including deep hierarchies walked with probabiliti
   Reconstructs Markdown from plain text that lost its formatting, in two requests: one restitches hard-wrapped lines, one classifies every block.<br>
   <sub>`Official docs` · `Py`</sub>
 
+- **[TradingAgents](https://github.com/tauricresearch/tradingagents)**<br>
+  Multi-agent LLM trading framework. With a TypeSafe key set, its Sentiment Analyst screens each StockTwits or Reddit post with Jev: a noul on whether it is about the instrument, dropped below 0.3, and a choice of the author's stance, bullish, bearish or neutral, counted at confidence 0.5 or more. <sub>(written by a model)</sub><br>
+  <sub>`Project` · ★100k+ · tauricresearch · `Py` · `noul` · `choice` · [call site](https://github.com/tauricresearch/tradingagents/blob/HEAD/tradingagents/agents/post_screen.py), read by a model 2026-11-12</sub>
+
 - **[Inbox Zero: seven email decisions](https://github.com/elie222/inbox-zero)**<br>
   Seven distinct email decisions, each with its own separately chosen threshold, falling back to the normal LLM on any error.<br>
   <sub>`Project` · ★10k+ · `TS` · `choice` · `noul` · [call site](https://github.com/elie222/inbox-zero/blob/HEAD/apps/web/utils/decision-model/decision-model.ts), read by a model 2026-11-05</sub>
@@ -1073,13 +1081,9 @@ _Put an item into a taxonomy, including deep hierarchies walked with probabiliti
   Python framework that extracts structured data from documents with LLMs and decision models. Given a decision model such as Jev, it asks a yes/no question per paragraph to find each aspect's clauses and turns Boolean, label and rating concepts into noul, choice and score questions. <sub>(written by a model)</sub><br>
   <sub>`Project` · ★1k+ · shcherbak-ai · `Py` · `noul` · `choice` · `score` · [call site](https://github.com/shcherbak-ai/contextgem/blob/HEAD/contextgem/internal/base/decision_models.py), read by a model 2026-11-06</sub>
 
-- **[pg-jev](https://github.com/realZachi/pg-jev)**<br>
-  A real PostgreSQL extension exposing the primitives as SQL functions, so a semantic decision can appear in a WHERE clause over any row type.<br>
-  <sub>`Project` · ★1k+ · `Py` · `sh` · `choice` · `score` · `noul` · [call site](https://github.com/realZachi/pg-jev/blob/HEAD/sql/jev--0.2.0.sql), read 2026-09-22</sub>
-
 </details>
 
-**10 of 244** shown · [all 244 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
+**10 of 247** shown · [all 247 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1144,20 +1148,10 @@ All 10 shown · [on its own page](docs/by-pattern/feature-extraction.md) · [fil
 
 _Classify and route incoming documents, invoices and forms._
 
+- **[TradingAgents](https://github.com/tauricresearch/tradingagents)**<br>
+  Multi-agent LLM trading framework. With a TypeSafe key set, its Sentiment Analyst screens each StockTwits or Reddit post with Jev: a noul on whether it is about the instrument, dropped below 0.3, and a choice of the author's stance, bullish, bearish or neutral, counted at confidence 0.5 or more. <sub>(written by a model)</sub><br>
+  <sub>`Project` · ★100k+ · tauricresearch · `Py` · `noul` · `choice` · [call site](https://github.com/tauricresearch/tradingagents/blob/HEAD/tradingagents/agents/post_screen.py), read by a model 2026-11-12</sub>
+
 - **[docjev](https://github.com/jerryjliu/docjev)**<br>
   Classifies and splits PDF, DOCX and PPTX files: LiteParse extracts page text locally, then Jev picks a document's category with a choice over your rules, or for a packet answers per page a category choice and a noul on whether a new document starts there. Its report covers 40 real PDFs. <sub>(written by a model)</sub><br>
-  <sub>`Project` · ★100+ · jerryjliu · `Py` · [call site](https://github.com/jerryjliu/docjev/blob/HEAD/src/jev_docs/engines/jev.py), read 2026-09-22</sub>
-
-- **[formanator](https://github.com/timrogers/formanator)**<br>
-  Submits Forma benefit claims from the command line or an MCP client. With --category-provider jev, Jev picks the benefit and category with a choice over the pairs Forma allows plus no_match, seeing only merchant and description; under 0.5 confidence or no match it falls back to the configured LLM. <sub>(written by a model)</sub><br>
-  <sub>`Plugin` · ★100+ · timrogers · `Rs` · [call site](https://github.com/timrogers/formanator/blob/HEAD/src/typesafe.rs), read 2026-09-22</sub>
-
-- **[Quicksilver](https://github.com/UditAkhourii/quicksilver)**<br>
-  Claude Code skill that hands relevance calls to Jev: one noul per file, log line or ticket ('which of these files handle auth?'), asked in parallel and sorted by probability, so Claude gets a shortlist with confidences instead of reading everything. <sub>(written by a model)</sub><br>
-  <sub>`Plugin` · ★100+ · uditakhourii · `JS` · `noul` · [call site](https://github.com/UditAkhourii/quicksilver/blob/HEAD/skills/quicksilver/scripts/qs.mjs), read by a model 2026-10-24</sub>
-
-<details>
-<summary>7 more examples</summary>
-
-- **[tax-doc-classifier](https://github.com/kyotofin/tax-doc-classifier)**<br>
-  Classifies tax document pages: one request per page asks Jev two choices, page kind (7 options) and I
+  <sub>`Project` · ★100+ · jerry

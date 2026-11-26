@@ -142,19 +142,45 @@ Refactor the API client to use retry logic — handle it in isolation
 Every run prints a paste-ready `/goal` line to let the session drive itself to done, and records what it learned for the next run.
 How it works inside: [`full-tier.md`](./skills/workflow/autonomous-workflow/aw/rules/full-tier.md) · [design notes](./skills/workflow/autonomous-workflow/CLAUDE.md).
 
+## Featured: atelier <sup>experimental</sup>
+
+<img src="./skills/workflow/atelier/assets/mascot/shipped.png" width="64" align="right" alt="atelier's mascot, a painter in a beret">
+
+> [!WARNING]
+> Experimental: the stages, the state comment, and the merge gate may change between versions.
+
+[`/atelier`](./skills/workflow/atelier/README.md) takes a request, or a PR that already exists, all the way to a merged PR, then checks `main`'s pipeline for the merge commit.
+
+![atelier: merges when it can prove it, hands off when it can't. Build & review (aw, review-loop, branch-reviewer, interview, create-pr, ticket: agentic review), Verify (aw-verify, prepare, ci-auto-fix, resolve-conflicts, implement-suggestion: agentic verification), Merge (merge-gate, flag contract, approval wait, prepare --merge), Deliver (main's pipeline, one fix, revert PR), then Roll out with deployment-verify (flag 1 to 100%, auto-rollback). Any stage can stop with one box on the PR, and /atelier <pr> resumes there.](./skills/workflow/atelier/assets/atelier-flow.png)
+
+```text
+/atelier Add a CSV export to the reports page
+/atelier https://github.com/owner/repo/pull/123
+/atelier setup
+```
+
+1. **Build & review.** Runs [`aw`](#featured-autonomous-workflow), whose agent review loops until the diff is clean, and holds when a required companion (review, PR, quality pass, verification) did not run.
+2. **Verify.** Undrafts the PR, waits for real CI, gets it green with [`prepare`](./skills/delivery/prepare/SKILL.md), and requires a verify report that proves every acceptance criterion.
+3. **Merge.** A script gate refuses a user-visible change without a feature-flag contract, then squash-merges.
+4. **Deliver.** Reads `main`'s pipeline for the merge commit, fixes a red one once, and reverts the merge when the fix stays red.
+
+One sticky comment on the PR shows where the run is, with a status card for every state ([gallery](./skills/workflow/atelier/scripts/fixtures/comments/README.md)); re-running `/atelier <pr>` resumes at the first incomplete stage.
+It never flips a flag or deploys: after the merge it tells you how to roll the change out.
+
 ## Skills
 
 | Skill | What it does |
 | ----- | ------------ |
 | **`workflow/`** | *End-to-end orchestrators* |
 | [`aw`](./skills/workflow/autonomous-workflow/aw/SKILL.md) | Ships a task end to end: brief, build until green, fresh-eyes review, draft PR. |
+| [`/atelier`](./skills/workflow/atelier/README.md) | Takes a request or a PR to a merged PR — build, get green, merge — and refuses to merge a user-visible change that has no feature-flag contract. After the merge, checks `main`'s pipeline and tells you how to roll it out. Experimental. `/atelier setup` runs preflight and hands each gap to the setup skill that fixes it; with a `tracker.yml`, each run links or creates its ticket. |
 | [`/fix-bug`](./skills/workflow/fix-bug/SKILL.md) | Fixes one bug from a stack trace, span, recording, or ticket, behind a failing test. |
 | [`/implement-suggestion`](./skills/workflow/implement-suggestion/SKILL.md) | Applies PR review comments, one commit each, and resolves the threads. |
 | **`quality/`** | *Code, tests, plans, AI apps* |
 | [`/pr-review`](./skills/quality/pr-review/SKILL.md) | One read-only review of a PR: a single report plus inline findings. Drop a `REVIEW.md` in any directory to brief the reviewer, or a [team lens](./skills/quality/pr-review/README.md) in `.agents/review/lenses/` to have it check your own rules on your paths. |
 | [`/review-loop`](./skills/quality/review-loop/SKILL.md) | Reviews, fixes, and resolves a PR's threads until it converges; with no PR, it does the same on the local branch. |
-| [`/optimize-approach`](./skills/quality/optimize-approach/SKILL.md) | Asks whether a change or plan takes the best approach, and names a better one only when it clearly wins. |
-| [`/polish`](./skills/quality/polish/SKILL.md) | Pre-PR cleanup: simplifies the changed code and prunes noise comments. |
+| [`/fit`](./skills/quality/fit/SKILL.md) | Asks whether a change or plan takes the best approach, and names a better one only when it clearly wins; `--inventory` asks it of every new symbol, route, component, and file. |
+| [`/polish`](./skills/quality/polish/SKILL.md) | Pre-PR cleanup: simplifies the changed code and prunes noise comments; `debt` lists every `shortcut:` marker so a deliberate shortcut is not forgotten. |
 | [`impact-map`](./skills/quality/impact-map/SKILL.md) | An impact-first view of a PR: a verdict, one colored diagram, a migration figure when the diff has one, and the decisions a reviewer must make. |
 | [`critical`](./skills/quality/critical/SKILL.md) | A hostile pre-mortem of a plan or diff, with a steelman alternative. |
 | [`confidence`](./skills/quality/confidence/SKILL.md) | Scores how sure you can be that the work meets the requirement. |
@@ -166,6 +192,7 @@ How it works inside: [`full-tier.md`](./skills/workflow/autonomous-workflow/aw/r
 | [`/ci-auto-fix`](./skills/delivery/ci-auto-fix/SKILL.md) | Diagnoses red CI and fixes it — never by weakening a check. |
 | [`/prepare`](./skills/delivery/prepare/SKILL.md) | Gets a PR or its stack green — conflicts, CI, review threads — and with `--merge` squash-merges bottom to top. |
 | [`/resolve-conflicts`](./skills/delivery/resolve-conflicts/SKILL.md) | Resolves merge and rebase conflicts; asks on the ambiguous ones. |
+| [`/ticket`](./skills/delivery/ticket/SKILL.md) | Ties work to the repo's tracker (Linear, GitHub issues, or none): links a named ticket, asks or creates one per the repo's `tracker.yml`, and moves it as the PR goes from build to merge. |
 | [`/attach-media`](./skills/delivery/attach-media/SKILL.md) | Uploads screenshots and recordings into a PR so they render inline. |
 | [`/github-actions-author`](./skills/delivery/github-actions-author/SKILL.md) | Writes and reviews fast, cheap GitHub Actions workflows. |
 | **`testing/`** | *UI verification and end-to-end tests* |
@@ -246,6 +273,11 @@ Every skill is symlinked live into your tool, so `git pull` is the whole upgrade
 No clone? `npx skills add https://github.com/mthines/agent-skills --all --agent claude-code` installs a frozen copy.
 
 Forks, other tools, the VS Code extension, and per-project plug-ins: [`docs/setup.md`](./docs/setup.md).
+
+**What earlier reviews learned about a file, while you edit it.**
+Installed as the Claude Code plugin (`/plugin install mthines-agent-skills@mthines`, see [`docs/setup.md`](./docs/setup.md)), the root plugin also ships two hooks.
+When you read a file they fetch its `codebase-knowledge` records from LoreKit in the background, and before you edit it they add at most two one-line summaries to context, capped at eight lines per session.
+They need a LoreKit connection and do nothing without one; details in [`docs/development.md`](./docs/development.md#root-plugin-hooks).
 
 ## Contributing
 

@@ -8,6 +8,14 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-26**
+
+- <img src="https://img.shields.io/badge/MAJOR%20UPDATE-7c3aed?style=for-the-badge" alt="MAJOR UPDATE" height="22"> **Final XY grid in every image trainer** — when the training ends, the same image (same prompt and seed) is made with several checkpoints (rows) and LoRA strengths (columns), with the face likeness % on each image. It shows which step and strength to use without going to ComfyUI. Turn on **Final XY grid** in 2b. Training Previews ([details](#-final-xy-grid)) [`fe4871f`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/fe4871f)
+
+**2026-11-25**
+
+- <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **Anima 2.9B: anime and illustration LoRAs on the 40-block Anima** — Anima-Base with 12 more blocks (preview v1), trained in NF4 in under 6 GB of VRAM. It has its own card, settings, cache and outputs, and shares the code of the Anima trainer ([details](#anima-29b--anime-and-illustration-loras-on-the-40-block-anima)) [`fedc57b`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/fedc57b)
+
 **2026-11-22**
 
 - **New LR curve on resume**, in every trainer: a checkbox under the LR Scheduler. The LR curve always covered the whole training, so raising Total Steps and resuming continued half-way along the longer curve. With the checkbox, resuming starts a new curve at that step, from the current LR down to its minimum: for example 1000 steps from 4e-4 to 4e-5, then 1000 more from 1e-4 to 1e-5 ([details](#lr-scheduler)) [`dfca123`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/dfca123) ([#88](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/88))
@@ -257,6 +265,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **Z-Image** | Image LoRAs (characters, objects, styles) for Z-Image and Z-Image-Turbo | 8 GB |
 | **Ming-Image** *(experimental)* | Image LoRAs for transparent designs and edit LoRAs (before → after) on inclusionAI's Ming-Image 0.1 Design | **8 GB** with block swap (5.8 GB peak at 1024², measured) |
 | **Anima** | Anime and illustration LoRAs (characters, styles) | **4 GB** (NF4) / 6 GB (BF16) |
+| **Anima 2.9B** *(preview)* | Anime and illustration LoRAs (characters, styles) on Anima-2.9B, the 40-block Anima | **Under 6 GB** (NF4 at 512², measured) |
 | **ERNIE-Image** | Image LoRAs (characters, objects, styles); supports rsLoRA, LoRA+ and LoKr | **Under 8 GB** (NF4; verified during training) |
 | **FLUX.1 Dev** | Image LoRAs (characters, objects, styles) | **8 GB** with block swap (5.0 GB peak at 512², measured) |
 | **FLUX.2 Klein 9B** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | **8 GB** with block swap (6.0 GB peak at 768², 5.8 GB with edit LoRAs at 1024², measured) |
@@ -336,6 +345,7 @@ Each trainer downloads **only what it uses**, already quantized. The table compa
 | **MiniMax-H3 Image** | 204.0 | — | **38.4** | New trainer: the 33B transformer in NF4 (17.2 GB), its VAE (2.3 GB) and the de-distillation adapter (0.5 GB) from `AcademiaSD/MiniMax-H3-Image-NF4-for-LoRA-Training`, plus the Qwen3-VL text encoder in NF4 (18.4 GB) from the MiniMax-H3 NF4 repo. If MiniMax-H3 is already installed, the text encoder is not downloaded again (~20 GB). |
 | **Z-Image** | 20.5 | — | **5.9** | New trainer: the 6B transformer (12.3 GB) and the Qwen3-4B text encoder (8.0 GB) in NF4 (3.4 GB + 2.7 GB). |
 | **Anima** | 5.6 | — | **5.6** | New trainer: the official diffusers version of Anima-Base. The 2B model trains in BF16, or in NF4 quantized when loading (nothing extra to download). |
+| **Anima 2.9B** | 5.8 (transformer only) | — | **7.3** | New trainer: the diffusers version of Anima-2.9B (`v2ray/Anima-2.9B-preview-v1-diffusers`), with its 40-block transformer (5.6 GB), its own LLM adapter, and the Qwen3-0.6B text encoder and VAE of Anima. It trains in BF16, or in NF4 quantized when loading. |
 | **SDXL** | ~7 per model | — | **~7 per model** | New trainer: only the preset you pick is downloaded (one `.safetensors` file); your own checkpoint downloads nothing. |
 | **Ideogram 4** | 16.1 (NF4) | — | **16.1** | New trainer: the official NF4 release, which includes the unconditional transformer used only by the previews. It is downloaded from Unsloth's ungated mirror (same weights, no license gate or token needed); the Ideogram license still applies. |
 | **FLUX.1 Dev** | 33.7 | — | **13.5** | New trainer: the 12B transformer (23.8 GB) and the T5-XXL text encoder (9.5 GB) in NF4 (6.7 GB + 6.3 GB), from `diffusers/FLUX.1-dev-bnb-4bit`. |
@@ -566,6 +576,21 @@ For character LoRAs: each preview gets a badge with how much its face looks like
 - **Reference:** the largest face in each dataset image, averaged. **Likeness:** ArcFace cosine similarity of the preview's closest face to that reference, ×100. Real photos of the same person usually score above 50%; a different one, under 20-30%. Generated faces score lower: in the previews of a LoRA, 45% or more is a strong likeness. Green from 45%, amber from 30%, red below; *no face* when none is detected. Video previews are scored on their first frame.
 - **Show %** hides or shows the badges in the gallery and the chart. Video previews (Wan 2.2, LTX-2.3) are not scored; YuE2 (audio) does not have it.
 
+## 🧮 Final XY grid
+
+When the training ends, the trainer makes the same image (same prompt and seed) with several checkpoints and LoRA strengths, and joins them into one image per prompt: **checkpoints in rows, strengths in columns**. One look shows when the LoRA learned the character or style, when it starts to overcook, and which strength to use in ComfyUI.
+
+- **Turn it on** in **2b. Training Previews**, under Preview Size: **Final XY grid**, with **Checkpoints** (rows, 4 by default) and **Strengths** (columns, `0.75, 1.0, 1.25` by default, from 0 to 3; 0 is the model without the LoRA). Off by default, because it adds time at the end: one preview per image.
+- **Checkpoints** are spread over the training: with 4 and 800 steps, steps 200, 400, 600 and the final one. The trainer keeps a small copy of the LoRA at those steps while it trains (in `xy_grid/snapshots`, about the size of the LoRA), even when they are not multiples of Save Every, so **turn it on before the training ends**. A new training in the same project deletes the copies of the previous one; resuming keeps them.
+- **Prompts:** one grid per Custom Prompt or, without them, one with the caption of the first dataset image. Each image uses the same size, steps, CFG and seed as the previews (with Seed = 0, one random seed for the whole grid).
+- **Strength works as in ComfyUI:** the weight becomes W + strength × ΔW, also with DoRA and LoKr.
+- **Face likeness:** with [Face likeness](#-face-likeness-in-the-previews) installed, each image shows its % in the corner, with the colours of the gallery, and the console says which step and strength are the most alike for each prompt.
+- The grids show above the previews (click one to open it full size) and are saved as `xy_grid_step_<N>_<prompt>.png` in the `xy_grid` folder of the output, with the prompt inside the PNG. If the grid fails (for example, out of VRAM), the console says so and the LoRA is already saved.
+- **Trainers:** Z-Image, Anima, Anima 2.9B, FLUX.1 Dev, FLUX.2 Klein 9B, FLUX.3 Image Klein, Qwen-Image 2.1, Qwen-Image 2512 / Edit 2511, Krea 2, Fibo 2.0, Ideogram 4, Ming-Image, MOSS-Image, ERNIE-Image, Boogu, SDXL and MiniMax-H3 Image. Not in the video and audio trainers (LTX 2.3, LTX 2.5, MiniMax-H3, Wan 2.2, YuE2).
+- **Time:** checkpoints × strengths × prompts previews. With the defaults, 12 per prompt: about 1-2 minutes with a turbo LoRA (Z-Image, ~6 s per image at 4 steps), several minutes with 30-step previews.
+
+---
+
 ## 🧬 Dataset Forge
 
 A character dataset from a few images, even just one: new outfits, places and framings that keep the face. Open it with **🧬 Dataset Forge** in the Dataset Manager toolbar of any image or video trainer; it opens in its own tab.
@@ -629,43 +654,4 @@ The edit mode adds the tokens of the before image to the sequence, so edit LoRAs
 
 - **Normal LoRAs** (characters, objects, styles): one image + one caption each.
 - **Edit LoRAs**: pairs named `name_before.png` / `name_after.png` plus the instruction in `name.txt` (for example `make it TOSTIOK style`). Choose **LoRA Type → Edit**. The "before" image goes through the text encoder with the instruction, like the ComfyUI `TextEncodeQwenImage21` node, and the loss is computed only on the "after".
-- **Captioner:** Qwen3-VL-8B, the model's own text encoder in NF4 (~6 GB VRAM, ~11 s per image), with **Normal** and **Edit** modes. For a style or effect, one common instruction in every pair usually works better than one per pair.
-- **Text encoder for the pre-cache:** BF16 with CPU offload (exact, any GPU, default), BF16 (16 GB+ VRAM), INT8 (~9 % error, 10 GB+) or NF4 (~24 % error, 6 GB+). With 8 GB of VRAM and 16 GB of RAM, choose NF4.
-- **Previews:** 30 steps / CFG 3, or **Turbo** (Viggle Turbo LoRA, 4 steps / CFG 1: ~5 s instead of ~34 s). For edit LoRAs, pick a **before** image that is **not** in the dataset: it is the only way to see whether the effect generalizes.
-- **LoRA Targets:** *Blocks* (attention + MLP of the 32 blocks, default) combines cleanly with the Turbo LoRA; *All* also trains the shared modulation and input/output layers.
-
-| Verified starting point | Characters | Edits |
-| :--- | :--- | :--- |
-| Resolution | 512×512 | 512×512 |
-| Rank / Alpha | 8 / 8 | 8 / 8 |
-| Learning rate | 4e-4 | 4e-4 |
-| Steps | 500 (~9 min 20 s) | 300 with 30 pairs (~9 min) |
-
-8 GB cards train at 512² and 768² (previews switch to a tiled VAE decode at 768²). 768²: ~2.2 s/step, ~8.4 GB VRAM; 1024²: ~4.3 s/step.
-
-### Qwen-Image 2512 / Edit 2511 — image and edit LoRAs
-
-> **New:** full runs (pre-cache, training, previews, resume) verified on Qwen-Image-2512 and on Qwen-Image-Edit-2511 with an edit LoRA.
-
-- One trainer, two models, chosen with **Base Model**: **Qwen-Image-2512** (`Qwen/Qwen-Image-2512`, text to image) and **Qwen-Image-Edit-2511** (`Qwen/Qwen-Image-Edit-2511`, editing). An edit LoRA (`name_before` / `name_after` pairs + instruction) always uses Edit-2511. Both are Apache 2.0, share the text encoder and the VAE, and only the transformer you train on is downloaded. They are separate fine-tunes of Qwen-Image (18-23 % apart in the weights), so a LoRA trained on one is not guaranteed to work on the other.
-- The 20B transformer is **NF4** (9.9 GB instead of 40.9 GB), except the modulation of the first block, which stays in BF16: in 4 bits it leaves grain all over the image. **Blocks on GPU** keeps that many of the 60 blocks in VRAM and copies the rest from RAM one by one as they are used, while the next one is already being copied; `-1` picks the number from the free VRAM, the resolution and the rank. Each resident block costs ~0.17 GB and saves its copy time.
-- The LoRA trains attention and MLP of the 60 blocks and is exported as `transformer.transformer_blocks.N.*` with `alpha`, which ComfyUI loads with the standard LoRA loader.
-- **Edit:** the before image goes to the text encoder (~384², as in the official pipeline) and, as a clean latent at the size of the after image, behind the target in the image sequence; Edit-2511 gives those tokens timestep 0.
-- **Text encoder (pre-cache only):** Qwen2.5-VL-7B in **BF16 CPU Offload** (default; exact), **BF16** (18+ GB), **INT8** (10+ GB) or **NF4** (6+ GB). The prompt is encoded with the official templates; in edit mode the before image gets its 3D MRoPE positions, as in ComfyUI.
-- **Captioner** (Qwen3-VL-8B NF4, shared): descriptions in normal mode, imperative instructions in edit mode.
-- **Previews:** 30 steps / CFG 4 with the official norm rescaling. Edit previews always use the preview reference image, with a negative that also sees it, as in the official pipeline. **Turbo LoRA (Fast Previews)** uses lightx2v's [Lightning 4-step LoRAs](https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning) (2512 and [Edit-2511](https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning)), with their shift 3 and no CFG.
-- Default settings: 500 steps, LR 0.0002, cosine with 100 warmup steps, rank 16 / alpha 16.
-
-| Measured on an RTX 5080, PCIe 3.0 x16 (rank 16, every block from RAM) | Peak VRAM | s/step |
-| :--- | :--- | :--- |
-| Image 512² | 3.0 GB | 2.2 |
-| Image 1024² | 4.9 GB | 5.7 |
-| Edit 512² | 3.6 GB | 2.9 |
-| Edit 1024² | 7.6 GB | 14.1 |
-| Image 512², all 60 blocks on GPU | 13 GB | 1.8 |
-
-Copying the blocks from RAM costs little on a x16 slot (2.2 against 1.8 s/step at 512²); on a x4 slot or a riser it is several times slower.
-
-### Boogu Image Edit 0.1 — edit LoRAs
-
-> **New:** full runs (pre-cache, training, previews, stop and
+- **Captioner:** Qwen3-VL-8B, the model's own text encoder in NF4 (~6 GB VRAM, ~11 s per image), with **Normal** and **Edit** modes. For a style or effect, one common instructio

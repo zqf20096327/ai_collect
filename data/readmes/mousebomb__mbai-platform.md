@@ -150,7 +150,7 @@ PLATFORM_EXTRA_MODEL_DIRS=["F:/AI/ComfyUI/models"]
 | `PLATFORM_DATA_DIR` | `<仓库>/data` | 产物 / SQLite / 日志，跟着仓库走 |
 | `PLATFORM_TOOLS_DIR` | `<仓库>/tools` | `download-tools.ps1` 的落地点 |
 | `PLATFORM_COMFY_URL` | `http://127.0.0.1:8188` | ComfyUI 地址 |
-| `PLATFORM_API_URL` | `http://127.0.0.1:8000` | 平台地址（MCP 客户端连它） |
+| `PLATFORM_API_URL` | `http://127.0.0.1:8010` | 平台地址（MCP 客户端连它） |
 | `PLATFORM_WORKER_CONCURRENCY` | `1` | 单卡串行；多卡再改 |
 
 选装引擎（CosyVoice2 / CosyVoice3 / Qwen3-TTS / FramePack / See-through 拆层 / ASR 转写 / rembg 抠图）
@@ -182,10 +182,10 @@ powershell -ExecutionPolicy Bypass -File scripts\bootstrap-cosyvoice.ps1
 powershell -ExecutionPolicy Bypass -File scripts\start-engine.ps1
 
 # 窗口 B：平台（网页 + API 同一个端口）
-uv run mbai serve --host 0.0.0.0 --port 8000
+uv run mbai serve --host 0.0.0.0 --port 8010
 ```
 
-打开 **http://&lt;本机IP&gt;:8000** 即用。局域网内任何设备同一个地址，不需要再开第二个端口。
+打开 **http://&lt;本机IP&gt;:8010** 即用。局域网内任何设备同一个地址，不需要再开第二个端口。
 （换机器就换成那台机器的 IP，端口不变。）
 
 > 引擎必须跑在 torch **cu130** 上，且**不要**加 `--lowvram`：cu128 会让量化算子退回 eager，
@@ -194,7 +194,7 @@ uv run mbai serve --host 0.0.0.0 --port 8000
 ### 局域网打不开时先查这一条
 
 Windows 防火墙对 `python.exe` 有**独立的程序级规则**，Block 优先于 Allow，命令行加的端口规则
-（`New-NetFirewallRule -LocalPort 8000`）**不能替代**它。首次监听端口时系统会弹「允许访问」窗口，
+（`New-NetFirewallRule -LocalPort 8010`）**不能替代**它。首次监听端口时系统会弹「允许访问」窗口，
 必须在本机点同意；点过取消/关闭会在 `Public` 配置下留下 Block 规则。
 
 症状：客户端浏览器报 **502**（而不是超时）——因为客户端代理连不上上游时会返回 502，很容易误导成服务挂了。
@@ -242,10 +242,10 @@ Get-NetFirewallApplicationFilter | Where-Object { $_.Program -match 'uv\\python'
 ## 网页界面
 
 单端口方案：`apps/web` 构建到 `apps/web/dist`，由 FastAPI 挂 `StaticFiles` 托管在 `/`，
-`/v1/*` 仍是 API。所以 `http://<本机IP>:8000` 一个地址同时是页面和接口。
+`/v1/*` 仍是 API。所以 `http://<本机IP>:8010` 一个地址同时是页面和接口。
 
 - **日常使用**：`npm --prefix apps/web run build` 后重启服务即可
-- **改前端时**：`npm --prefix apps/web run dev`（5173，热更新，`/v1` 自动代理到 8000）
+- **改前端时**：`npm --prefix apps/web run dev`（5173，热更新，`/v1` 自动代理到 8010）
 
 页面能力：变体下拉 + 按 `manifest.yaml` 的 `inputs` 自动生成表单 + 任务列表（2s 轮询、可取消）
 + 作品墙（每页 12 件可翻历史，卡片上直接复制当次提示词）。`type: image` 的参数是「选文件即上传」，表单里存 `asset_id`，worker 执行前解析成绝对路径
@@ -256,7 +256,7 @@ Get-NetFirewallApplicationFilter | Where-Object { $_.Program -match 'uv\\python'
 ## Agent 入口（MCP）
 
 同一个队列两个入口：网页给人，**MCP 给 Agent**。MCP 服务是个薄客户端，走 HTTP 调 `/v1/*`，
-因此它能在别的机器上跑（`mbai mcp --url http://<本机IP>:8000`）。
+因此它能在别的机器上跑（`mbai mcp --url http://<本机IP>:8010`）。
 
 客户端配置（Claude Desktop / opencode 这类）：
 
@@ -294,7 +294,7 @@ wait_job("job_yyy")  → succeeded + <仓库>\data\artifacts\job_yyy\matting_000
 ## OpenAI 兼容接口
 
 给现成的 OpenAI 客户端用（Cherry Studio / Dify / LangChain / openai-python 这类）：
-base_url 填 `http://<本机IP>:8000/v1`，api_key 随便写（平台无鉴权）。只适配了两条端点，
+base_url 填 `http://<本机IP>:8010/v1`，api_key 随便写（平台无鉴权）。只适配了两条端点，
 其余能力仍走原生 `/v1/jobs`。
 
 | 端点 | 映射到 | 说明 |
@@ -306,7 +306,7 @@ base_url 填 `http://<本机IP>:8000/v1`，api_key 随便写（平台无鉴权�
 ```python
 from openai import OpenAI
 
-c = OpenAI(base_url="http://192.168.1.10:8000/v1", api_key="x")
+c = OpenAI(base_url="http://192.168.1.10:8010/v1", api_key="x")
 
 c.audio.speech.create(
     model="cosyvoice3-segmented", voice="alloy",
@@ -480,13 +480,13 @@ uv run python -c "from platform_core.voices import list_voices; [print(v.name, v
 
 ```powershell
 # 1. 上传音频，拿到 asset id
-curl.exe -F "file=@D:/path/to/output.wav" http://127.0.0.1:8000/v1/assets
+curl.exe -F "file=@D:/path/to/output.wav" http://127.0.0.1:8010/v1/assets
 
 # 2. 提交（audios 是数组，一次可以传多条）
-curl.exe -X POST http://127.0.0.1:8000/v1/jobs -H "Content-Type: application/json" -d "{\"capability\":\"audio.asr\",\"variant\":\"sensevoice-cpu\",\"params\":{\"audios\":[\"ast_xxx\"]}}"
+curl.exe -X POST http://127.0.0.1:8010/v1/jobs -H "Content-Type: application/json" -d "{\"capability\":\"audio.asr\",\"variant\":\"sensevoice-cpu\",\"params\":{\"audios\":[\"ast_xxx\"]}}"
 
 # 3. 产物是 output.jsonl，直接看
-curl.exe http://127.0.0.1:8000/v1/jobs/<job_id>/file/output.jsonl
+curl.exe http://127.0.0.1:8010/v1/jobs/<job_id>/file/output.jsonl
 ```
 
 **注意 TTS 产物不是 asset。** 要把某条 TTS 结果拿去做 ASR，得先 `POST /v1/assets` 上传一次

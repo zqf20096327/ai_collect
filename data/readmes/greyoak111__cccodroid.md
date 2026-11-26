@@ -1,6 +1,6 @@
 # cccodroid
 
-**English** · [简体中文](README.zh-CN.md) · [Discord](https://discord.gg/jE6KW8kwpe) · [Discussions](https://github.com/greyoak111/cccodroid/discussions) · [Contributing](CONTRIBUTING.md)
+**English** · [简体中文](README.zh-CN.md) · [Discussions](https://github.com/greyoak111/cccodroid/discussions) · [Contributing](CONTRIBUTING.md)
 
 **A development launcher that runs Claude Code on Android phones.** No root, no custom ROM, no chroot / proot / VM.
 
@@ -140,8 +140,7 @@ RedMagic / ZTE: App info → App battery usage → Battery optimization → **Ba
 
 ## Community and contributing
 
-- **Questions, ideas, device reports**: [GitHub Discussions](https://github.com/greyoak111/cccodroid/discussions), in English or Chinese. There is also a Chinese-speaking QQ group, 1062538743.
-- **Chat**: the [cccodroid society](https://discord.gg/jE6KW8kwpe) Discord server, English or Chinese.
+- **Questions, ideas, device reports**: [GitHub Discussions](https://github.com/greyoak111/cccodroid/discussions), in English or Chinese.
 - **Bugs**: in the app, tap Settings → Report on GitHub; your device and self-test results are filled in for you.
 
 **Day-to-day maintenance is still mostly one person, with a few community members testing, reviewing and red-teaming, so help is very welcome.** Device reports, translation fixes, component recipes, docs and code are all welcome, and you can help without writing code. See the [contributing guide](CONTRIBUTING.md).
@@ -199,6 +198,33 @@ Rules the project has held to throughout:
 - **The gateway owns runs.** The UI only subscribes to events, so a page reload, going to the background or parallel sessions never interrupt a turn in progress.
 - **Verify before trusting.** Toolkits, modules, component indexes, notices and release lists are checked against ed25519 or PGP signatures bound to a specific release.
 - **Every change gets verified.** Gateway tests run only through the runner, every release and toolkit publish step checks hashes, and components state whether they have been verified on a real device.
+
+## Privacy & data protection
+
+See **[PRIVACY.md](PRIVACY.md)** for the full breakdown. cccodroid has **no user accounts, no backend server, no cloud chat sync, and zero first-party telemetry or proprietary analytics SDKs** — every control below can be verified directly in the source tree:
+
+- **Zero telemetry, zero external CDNs & upstream CLI suppression**:
+  - No persistent install ID (`iid`), no usage or crash uploads, and no Google Play Services, ML Kit, Firebase, Sentry, or ad SDKs; all UI scripts and fonts ship offline in [`gateway/web/vendor/`](gateway/web/vendor/).
+  - When spawning the official Claude Code binary, [`gateway/gw/claude.mjs`](gateway/gw/claude.mjs) (`claudeEnv`) sets `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1"` to suppress non-essential telemetry and background auto-updater traffic.
+- **Credential isolation, local usage & scrubbed diagnostics**:
+  - `android:allowBackup="false"` in [`android/AndroidManifest.xml`](android/AndroidManifest.xml) keeps chats, settings, and keys inside `/data/data/cc.codroid/files/home/` and out of Android cloud backups.
+  - Third-party API keys live in `0600` private files read via `apiKeyHelper` rather than child environment variables ([`gateway/gw/claude.mjs`](gateway/gw/claude.mjs) `claudeEnv`), while official subscription logins talk straight to Anthropic (`ANTHROPIC_BASE_URL` is deleted so tokens never traverse the local bridge).
+  - The gateway binds loopback `127.0.0.2` (UI) and `127.0.0.1` only, requiring a 256-bit token, Host/Origin checks, and boot-scoped single-use HMAC request signatures ([`gateway/gw/access.mjs`](gateway/gw/access.mjs), [`android/java/cc/codroid/Events.java`](android/java/cc/codroid/Events.java)).
+  - Usage stats read local session files only with zero network requests ([`gateway/gw/usage.mjs`](gateway/gw/usage.mjs)); diagnostic zips scrub keys, tokens, emails, and user prompts locally before invoking the system share sheet and exclude transcripts ([`android/java/cc/codroid/Share.java`](android/java/cc/codroid/Share.java) `bundleLogs`); GitHub feedback pre-fills a browser URL only when you tap the button ([`gateway/gw/feedback.mjs`](gateway/gw/feedback.mjs) `issueDraft`).
+- **Complete outbound network inventory & switches** (aside from commands you explicitly run in chats/terminals):
+
+| Purpose | Default & Switch | Destinations | Trust Anchor & Source |
+|---|---|---|---|
+| Model inference & sign-in | When you chat or sign in | Chosen official provider or custom third-party endpoint | [`gateway/gw/claude.mjs`](gateway/gw/claude.mjs), [`gateway/gw/providers.mjs`](gateway/gw/providers.mjs), [`gateway/gw/login.mjs`](gateway/gw/login.mjs) |
+| Automatic update checks & verified list | On (updates every 6h, verified list every 3h); turn off both in **Settings → Updates → Automatic updates** | `api.github.com`, `downloads.claude.ai`, `cccodroid.net`, `dl.cccodroid.net`, `raw.githubusercontent.com`, npm mirrors | APK signing cert + SHA-256; pinned SHA-256 / `ed25519` for devkit; PGP + `ed25519` `.sig` for Claude Code ([`android/java/cc/codroid/Updater.java`](android/java/cc/codroid/Updater.java) `AUTO_EVERY`, [`gateway/gw/ccverified.mjs`](gateway/gw/ccverified.mjs) `refreshVerified`) |
+| Signed maintainer notices (every 3h) | On; turn off in **Settings → Updates → Maintainer notices** | `cccodroid.net`, `raw.githubusercontent.com` (static `GET`, no device parameters) | Pinned `ed25519` public key detached `.sig` ([`gateway/gw/notices.mjs`](gateway/gw/notices.mjs) `refreshNotices`) |
+| Third-party GitHub proxy (`gh-proxy.com`) | **Off by default**; opt in via **Settings → Updates → GitHub third-party proxy fallback** | `gh-proxy.com` (external public proxy; sees your IP and target URL if enabled) | Pinned SHA-256 and signatures still enforced ([`android/java/cc/codroid/Installer.java`](android/java/cc/codroid/Installer.java) `ghProxyEnabled`, [`gateway/gw/pget.mjs`](gateway/gw/pget.mjs) `ghProxy`) |
+| Toolkit / component / local model downloads | First-run setup or tapping Install in Extensions | GitHub Releases, `dl.cccodroid.net`, Termux & university mirrors, ModelScope / HuggingFace | Pinned SHA-256, Termux PGP signature, or `ed25519` index signature ([`gateway/gw/components.mjs`](gateway/gw/components.mjs), [`gateway/gw/modules.mjs`](gateway/gw/modules.mjs), [`android/assets/bin/pkg.mjs`](android/assets/bin/pkg.mjs)) |
+
+- **Permission minimization & protected-app screen blocking**:
+  - Never requests `CAMERA`, `RECORD_AUDIO`, `ACCESS_*_LOCATION`, contacts, SMS, call logs, `READ_CALENDAR`, `PACKAGE_USAGE_STATS`, `NotificationListenerService`, or `MediaProjection`; see [docs/permissions.md](docs/permissions.md).
+  - Device tools and accessibility are off by default, gated by lock-screen biometric check ([`android/java/cc/codroid/Consent.java`](android/java/cc/codroid/Consent.java)) and a foreground native dialog ([`android/java/cc/codroid/DeviceTools.java`](android/java/cc/codroid/DeviceTools.java)), auto-disable after 10 minutes of inactivity in the default "Auto (on demand)" mode ([`android/java/cc/codroid/A11y.java`](android/java/cc/codroid/A11y.java) `scheduleIdle`), strip `isPassword()` text, **hard-block active banking, Alipay/UnionPay/wallets, 2FA authenticators, password managers, and system permission controllers on the Accessibility channel** ([`android/java/cc/codroid/A11y.java`](android/java/cc/codroid/A11y.java) `isProtectedPackage`), and enforce an in-memory `PreToolUse` confirmation hook ([`gateway/guard/cc-guard.mjs`](gateway/guard/cc-guard.mjs)).
+  - **Custom third-party endpoints**: Prompts, code, and tool outputs sent to any model endpoint are governed by that operator's privacy policy — never use untrusted third-party endpoints for sensitive secrets or personal data.
 
 ## Terms and compliance
 
@@ -305,8 +331,9 @@ cccodroid itself is released under the [Apache License 2.0](LICENSE) (see also [
 ### Third-party components
 
 - **Claude Code**: proprietary software by Anthropic, **not distributed with this project**. Its use is subject to [Anthropic's terms](https://code.claude.com/docs/en/legal-and-compliance).
-- **Toolchain**: taken from the official Termux repositories; each component is distributed under its own license (including GPL). Versions, hashes and build recipes are in the `devkit.lock.json` / `SBOM.tsv` attached to each release. If you need a copy of the source, ask in Issues.
-- **glibc dynamic loader** (`lib/arm64-v8a/libldlinux.so`, shipped in the APK): from Termux's glibc package, LGPL-2.1-or-later. See [android/prebuilt/glibc](android/prebuilt/glibc/README.md).
+- **Toolchain**: taken from the official Termux repositories; each component is distributed under its own license (including GPL). Versions, licenses (`license`), hashes and build recipes are in the `devkit.lock.json` / `SBOM.tsv` attached to each release; source-archiving tooling is provided in [`devkit/archive-sources.mjs`](devkit/archive-sources.mjs), and complete Corresponding Source for copyleft packages is provided upon written request (for example in Issues) for at least three years from each binary release.
+- **glibc dynamic loader** (`lib/arm64-v8a/libldlinux.so`, shipped in the APK): from Termux's glibc package, LGPL-2.1-or-later. See [third_party/glibc/README.md](third_party/glibc/README.md).
+- **7-Zip command-line archiver** (`lib/arm64-v8a/libcc7zz.so`, shipped in the APK): 7-Zip 26.06, LGPL-2.1-or-later (with BSD parts and the unRAR restriction). See [third_party/7zip/README.md](third_party/7zip/README.md).
 - **Shizuku-API**: MIT, see [third_party/shizuku/LICENSE](third_party/shizuku/LICENSE).
 - **xz-decompress** (used at toolchain build time): MIT.
 - **[xterm.js](https://xtermjs.org)** (terminal): MIT, see [ThirdPartyLicenses/xterm.js](ThirdPartyLicenses/xterm.js/LICENSE).

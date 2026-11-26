@@ -58,6 +58,7 @@ git clone https://github.com/martinholovsky/SOTA-skills && cd SOTA-skills
 ./scripts/install.sh --target all    # also ~/.agents/skills (Copilot, Codex, Cursor, Gemini CLI) + Antigravity's own dirs
 ./scripts/install.sh --copy          # copy instead of symlink (pin a snapshot)
 ./scripts/install.sh --mcp           # optional: register the read-only MCP server for other agents
+./scripts/install.sh --field-reports DIR  # where /sota-report writes (default ~/.local/share/sota-skills/field-reports)
 ```
 
 The installer colour-codes what it did (`✓` done · `↻` changed or act on this ·
@@ -82,13 +83,13 @@ in **any** project, not just this one:
 
 | | When | What it does |
 |---|---|---|
-| **`/sota-init`** | **once**, in a new repo or one the library has not been applied to | Inventories what exists (licence, `.gitignore`, secret scanning, gates, agent file, where project data lives), agrees a plan, then **adds only what is missing**: never overwrites a file, never chooses your licence, creates conditional docs only when their trigger fires, and ends in **one commit `git revert` undoes** |
+| **`/sota-init`** | in a new repo, or again in one already set up (it adds only what is missing) | Inventories what exists (licence, `.gitignore`, secret scanning, gates, agent file, where project data lives), agrees a plan, then **adds only what is missing**: never overwrites a file, never chooses your licence, creates conditional docs only when their trigger fires, and ends in **one commit `git revert` undoes**. **`/sota-init data`** is its opt-in second phase: audit and fix where an existing project's data lives, each move asked for |
 | **`/sota-resume`** | **start** of a session | Finds the open work — every tracker, checkbox and `TODO` marker, swept with a **controlled** search — classifies it (ready · needs a decision · deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap**), shows you the table, then executes what you agree to against the project's own CI. |
 | **`/sota-auto`** | **unattended**, e.g. overnight | `/sota-resume`'s inventory without the stop: decides what is reversible, **queues** what is not (merges, releases, deletes, anything outside the repo, spend without a `budget=`), never waits on you, and ends with a **report of every decision taken on your behalf** (security decisions first), each with how to reverse it |
 | **`/sota-close`** | **end** of a session | The closure pass: **retract first**, record open items where the next session will trip over them, update what the session made false, **re-derive every number from its source**, say what is not done and blocked on whom, then commit the evidence. |
 | **`/sota-audit`** | **work finished**, or a codebase you did not write | Audits what is in front of you against the library: agrees and pins the scope (a diff's callers included), maps the trust boundaries, runs the scanners that are installed, maps every surface to its owning skills and **says which rules files nobody opened**, walks each Audit checklist item by item, then fixes what you agree to. |
 | **`/sota-deep-audit`** | a **milestone**, an inheritance, a go/no-go | The heavy pass, and **expensive**: the same standard as `/sota-audit`, run so you can trust the result without trusting the auditor — **the full threat model reconstructed from the code** (DFD, tested assumptions, a control-presence matrix), then the audit fanned across independent agents, re-measures the numbers past decisions rest on, and hands every serious finding to a refuter that did not find it. |
-| **`/sota-report`** | **end** of a session | Writes a gitignored field report on where the guidance failed, was absent, was wrong — or was right and did not fire. Prints a `gh issue create` line; it never posts anything itself. |
+| **`/sota-report`** | **end** of a session | Writes a private field report on where the guidance failed, was absent, was wrong — or was right and did not fire — to one inbox outside every repository (`$SOTA_FIELD_REPORTS`). Prints a `gh issue create` line; it never posts anything itself. |
 
 They take free-text arguments (`/sota-close focus on the migration branch`). Full detail:
 [slash commands](#slash-commands).
@@ -163,12 +164,17 @@ And the habits of the work itself, which no standard covers and long agent sessi
 - **where project data lives** — five classes (tracked, kept-not-committed, rebuildable,
   ephemeral, external by design), declared per project in its agent file, with checks that no doc
   or result cites a temp path and no test passes only because an ignored file exists
-  (`sota-docs-workflow` rules/06). Locations stay the project's choice;
+  (`sota-docs-workflow` rules/06). Locations stay the project's choice. `/sota-init data` runs the
+  audit and fix, and the memory guard asks before anything moves an agent's memory;
+- operating-system metadata a deploy or archive copies along: a `.DS_Store` stores the names of
+  files in its folder (42 of 304 in a measured one), so a web root or release zip should never carry
+  one, nor a `Thumbs.db` (`sota-code-security` rules/07 §4, `sota-devsecops` rules/04);
 - waiting for CI by the checks you expect: `gh pr checks --watch` returns at once before any
   check registers, and the PR still reads `CLEAN` with zero checks (`sota-shell-scripting` rules/09 §5d);
 - the shell traps an agent meets on its own machine, each measured: `rm -r link/` deletes a
   symlink's target directory on macOS at exit 0; `$!` after `cd d && cmd &` names a bash subshell;
-  an agent's `find` can be bfs, which rejects `-newermt "6 months ago"`.
+  an agent's `find` can be bfs, which rejects `-newermt "6 months ago"` and reorders its output on
+  every run; `gh run list --commit` matches only a full SHA, so a wait on a short one never ends.
   This repository runs **zizmor** over its own workflows, and its first run found a rule it broke.
 
 **Measured, not asserted** — library vs. an *unguided model* (same model, no
@@ -1095,14 +1101,16 @@ BUILD default and AUDIT baseline, and stop-and-ask on security-relevant choices.
 **3. (Optional) A per-prompt reminder.** A directive read many turns ago can
 fade from a long context; a `UserPromptSubmit` hook in `~/.claude/settings.json`
 re-injects it on every prompt. `install.sh --routing` writes exactly this, and
-`--update` offers to refresh the wording when a release changes it:
+`--update` offers to refresh the wording when a release changes it. The `grep` before
+`echo` skips background-task notifications, which reach this hook as prompts beginning
+`<task-notification>` and are not a decision point; any other input prints the reminder:
 
 ```json
 {
   "hooks": {
     "UserPromptSubmit": [
       { "hooks": [ { "type": "command",
-        "command": "echo 'sota standing rules (every answer): (1) VALIDATE — check any claim about code, system state, config, versions or facts against a primary source before asserting it, and label anything unverified. (2) KEEP DOCS CURRENT — update affected docs in the same change. (3) ROUTE BEFORE YOU ACT — if the turn touches code, a diff, a config or a build/CI file, invoke the sota skill FIRST and apply the matching sota-* skills. Reading a file counts. If you have already read code this session without routing, route now. Routing is per task SHAPE, not per session: if the work has changed shape since you last routed — different layer or language, or from building to verifying — route again. Treat ~/.claude/profiles as the stack baseline; stop and ask on security-relevant choices.'" } ] }
+        "command": "grep -qE 'prompt.:.<task-notification>' || echo 'sota standing rules (every answer): (1) VALIDATE — check any claim about code, system state, config, versions or facts against a primary source before asserting it, and label anything unverified. (2) KEEP DOCS CURRENT — update affected docs in the same change. (3) ROUTE BEFORE YOU ACT — if the turn touches code, a diff, a config or a build/CI file, invoke the sota skill FIRST and apply the matching sota-* skills. Reading a file counts. If you have already read code this session without routing, route now. Routing is per task SHAPE, not per session: if the work has changed shape since you last routed — different layer or language, or from building to verifying — route again. Treat ~/.claude/profiles as the stack baseline; stop and ask on security-relevant choices.'" } ] }
     ]
   }
 }
@@ -1219,26 +1227,4 @@ skill, *scope* to one rule file, or *stack* an exact combo.
 
 **Maintaining the library:**
 
-> Refresh the library — re-verify fast-moving claims against current primary
-> sources, apply fixes, and update the root `LAST-VERIFIED` stamp.
-
-> Create profiles/<name>.md for my stack: <stores, auth, platform, policies>.
-
-> Add a new skill for <domain>, same structure: SKILL.md + rules/ under 500 lines
-> each, claims web-verified.
-
-**Tips:**
-
-- **Say the mode if ambiguous** — "audit/review/harden" vs "build/add/design";
-  skills key off those verbs.
-- **Scope audits explicitly** — which commit/branch, static-only or may-run-tools,
-  time budget ("crown jewels only"). The methodology file asks otherwise.
-- **Ask for the report format** — default audit output is executive summary →
-  findings by severity → roadmap by risk-reduction-per-effort → positive notes.
-- **Re-verify version-sensitive facts** — web-check before pinning any version.
-
-### Slash commands
-
-`scripts/install.sh` (and therefore `scripts/update.sh`) links every file in
-[`commands/`](commands/) into `~/.claude/commands/`, so they work in **any** project, not just
-this one. `verify-setup.sh` check **1d** compares what is installed agains
+> Refresh the library — re-verify fast-movin

@@ -60,11 +60,23 @@ See the guides for [EVM](docs/evm.md), [Solana SBF](docs/sbf.md), [mobile source
 
 > Every cell is implemented, but integration depth differs. See the [architecture coverage matrix](docs/architecture.md#support-and-test-depth). Mach-O i386 uses thin relocatable objects because modern macOS cannot link historical i386 executables.
 
-**MIPS ELF analysis is experimental:** MIPS32r2/o32 and MIPS64r2/n64,
-in both byte orders, support a strict integer subset through disassembly,
-CFG recovery, C and LLVM output. Native rewriting is not supported. See the
-[MIPS coverage and firmware example](docs/mips.md) for the separately qualified
-microMIPS32, MIPS16e/e2, DSP and MIPS32r5 MSA subsets and their source restrictions.
+**MIPS ELF** supports disassembly, control-flow recovery, C and LLVM output.
+The public SDK can also recompile admitted functions to relocatable ELF using
+the NeverSight LLVM Mips backend. It preserves byte order and the o32, n32 or
+n64 calling convention. For static executables with their original objects
+and linker layout, `neverd patch --relink` can place an updated function in
+a separate section or retain its original address and size limit. See the
+[MIPS profiles, native output and relink manifest](docs/mips.md).
+
+Experimental integer ELF targets also support strict lifting, CFG recovery,
+structured C, LLVM IR and LLVM-derived C for these profiles.
+
+| Target | Qualified ELF profiles |
+|---|---|
+| RISC-V | Little-endian RV32I/ILP32 and RV64I/LP64. ELF evidence selects M, A and integer C, or the individual Zmmul, Zaamo, Zalrsc and Zca extensions. |
+| PowerPC | Big- and little-endian PPC32 System V and PPC64 ELFv1/ELFv2. PPC32 supports cross-module calls through secure PLTs and the classic BSS-PLT. Both PPC64 ABIs support cross-module PLT calls and TOC switches. ELFv1 uses function descriptors and ELFv2 supports global and local entries. The qualified scalar subset includes signed and unsigned division, its recorded CR0 result and XER overflow effects. |
+
+Native rewriting remains open for these profiles. See [RISC-V and PowerPC coverage](docs/riscv-powerpc.md).
 
 Legacy EVM bytecode is supported independently of native containers: all 150 assigned opcodes through Fusaka feed dedicated Low/Med/High IR, verified LLVM `i256`, C23 `_BitInt(256)`, and Solidity output. See [EVM decompilation](docs/evm.md).
 
@@ -202,15 +214,12 @@ The first configure builds the LLVM fork locally (often 30–60 minutes). Later 
 ```bash
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
   -DNEVERD_LLVM_PREBUILT=ON \
-  -DNEVERD_LLVM_PREBUILT_TAG=neverd-llvm-v23.0.0-r7
+  -DNEVERD_LLVM_PREBUILT_TAG=neverd-llvm-v23.0.0-r12
 cmake --build build
 ```
 
-NeverD's normal push and pull-request CI deliberately builds the LLVM submodule
-from source. When manually running the `CI` workflow, select
-`use_prebuilt_llvm` to validate the published packages; only a manually
-selected `true` enables prebuilt LLVM. Leaving it unchecked keeps the same
-source-build path as automatic CI.
+The manual `CI` workflow builds the LLVM submodule from source by default.
+Set `use_prebuilt_llvm` to `true` to validate the published packages.
 
 Published packages are selected from the host running CMake:
 
@@ -230,33 +239,33 @@ build uses ccache on macOS and Linux. Windows clang-cl builds use sccache with
 the GitHub Actions cache backend; compiler caches only accelerate rebuilds and
 are never published as release assets.
 
-The default uses the package revision `neverd-llvm-v23.0.0-r7`; unlike the
+The default uses the package revision `neverd-llvm-v23.0.0-r12`; unlike the
 legacy mutable base tag, its Git tag, release target, source commit, and three
 archive digests form one revisioned source pin that NeverD treats as
 immutable. Existing build directories still caching the legacy base tag,
 `neverd-llvm-v23.0.0-r1`, `neverd-llvm-v23.0.0-r2`, `neverd-llvm-v23.0.0-r3`,
-`neverd-llvm-v23.0.0-r4`, `neverd-llvm-v23.0.0-r5`, or `neverd-llvm-v23.0.0-r6` move to `r7`
-automatically unless they also provide an explicit `NEVERD_LLVM_PREBUILT_SHA256` override. The `Prebuilt LLVM Audit` workflow runs
-on pushes, pull requests, and every six hours. It invokes
+`neverd-llvm-v23.0.0-r4`, `neverd-llvm-v23.0.0-r5`, `neverd-llvm-v23.0.0-r6`, `neverd-llvm-v23.0.0-r7`, `neverd-llvm-v23.0.0-r8`, `neverd-llvm-v23.0.0-r9`, `neverd-llvm-v23.0.0-r10`, or `neverd-llvm-v23.0.0-r11` move to `r12`
+automatically unless they also provide an explicit `NEVERD_LLVM_PREBUILT_SHA256` override. Run the `Prebuilt LLVM Audit` workflow manually
+to check a package revision. It invokes
 `scripts/audit_prebuilt_llvm_release.py` to compare that source pin with the
 live GitHub release and each published checksum sidecar.
 
 If the LLVM fork changes while LLVM still reports `23.0.0`, publish the next
-package revision—`neverd-llvm-v23.0.0-r8`, then `-r9`—rather than overwriting
+package revision—`neverd-llvm-v23.0.0-r13`, then `-r14`—rather than overwriting
 an existing release or inventing LLVM version `23.0.1`:
 
 ```bash
 gh workflow run neverd-release.yml \
   --repo NeverSight/llvm-project \
   --ref main \
-  -f release_tag=neverd-llvm-v23.0.0-r8 \
+  -f release_tag=neverd-llvm-v23.0.0-r13 \
   -f overwrite_existing_assets=false
 ```
 
 After the workflow succeeds, update the default tag, pinned commit, and all
 three digests in `cmake/NeverDLLVMPrebuilt.cmake` together. Each package revision
 uses its own cache directory; the current default lives below
-`.cache/neverd-llvm/neverd-llvm-v23.0.0-r7`. A stale or republished archive fails
+`.cache/neverd-llvm/neverd-llvm-v23.0.0-r12`. A stale or republished archive fails
 before extraction. `overwrite_existing_assets`
 exists only for legacy recovery; the normal revision workflow leaves it off.
 

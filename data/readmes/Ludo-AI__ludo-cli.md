@@ -292,8 +292,15 @@ Every file a generation saves is recorded in `ludo-assets.json` (next to `.ludo.
 output folder): the command, its flags, the job and what it cost. `ludo assets` lists them;
 `ludo assets redo <file> --prompt "…in blue"` makes one again with changes. Files saved by
 `ludo jobs wait` are listed but can't be replayed, since the request that made them is unknown.
+`ludo image convert-to-pixel-art` and `ludo sprite accessories` answer at once rather than as a
+job; their files are saved and logged the same way, and take `--name`. The frames of
+`ludo sprite directional-preview` and `ludo sprite accessory-fit` are saved too, but not logged:
+they are checks, not assets.
 Inputs passed inline as base64 are kept once in `ludo-inputs/` beside the log (git-ignored), and
 the log points to them.
+The CLI writes only the log's `assets` list, and keeps any other top-level key as it is, so a
+project can keep notes of its own beside it (keys a later CLI adds will start with `ludo_`). Edit the
+file between runs: a generation that finishes while you edit can write over your change.
 
 ### Variations and batches
 
@@ -314,7 +321,19 @@ the log points to them.
 
 ## Staying up to date
 
-The CLI tells you, at most once a day, when a newer version is out; `ludo update` installs it.
+ludo updates itself. When a newer version is out, it runs `npm install -g @ludoai/cli@<version>`
+in the background after a command, so the command isn't slowed down and the next one runs the
+new version. It says so on stderr, and once more when the new version first runs. It does this
+only for a global npm install that you can write to without sudo (not npx, not a project's
+dependency, and only when the `npm` on your PATH installs into that same folder), never in CI or
+with `LUDO_OFFLINE=1`, at most once a day, and one install at a time however many sessions run.
+
+Turn it off with `ludo update --auto off` (`--auto on` turns it back on; `--auto` alone says which
+it is), or for one shell with `LUDO_AUTO_UPDATE=0`. Where ludo can't update itself, or with
+automatic updates off, it tells you when a newer version is out instead: once a day at a terminal,
+and on every command when an agent runs it. `ludo update` installs it. The last automatic
+install's npm output is in `~/.cache/ludo/auto-update.log`.
+
 If a version ever stops being supported, commands exit with code 10 and say how to update.
 Service notices from Ludo (an outage, say) appear the same way, on stderr.
 

@@ -96,11 +96,11 @@ evalsi eval --data agent-runs.jsonl --evaluators tool-call-accuracy,tool-errors,
 ```text
 2 records · 3 evaluators
 
-metric                        n  mean   95% CI          skipped  errors
-tool-call-accuracy.recall     2  0.750  [0.000, 1.000]        0       0
-tool-call-accuracy.precision  2  0.667  [0.000, 1.000]        0       0
-tool-errors                   2  0.500  [0.000, 1.000]        0       0
-loop-detection                2  0.500  [0.095, 0.905]        0       0
+metric                         n  mean   95% CI          skipped  errors
+tool-call-accuracy.recall      2  0.750  [0.000, 1.000]        0       0
+tool-call-accuracy.precision   2  0.667  [0.000, 1.000]        0       0
+tool-errors (lower is better)  2  0.500  [0.000, 1.000]        0       0
+loop-detection                 2  0.500  [0.095, 0.905]        0       0
 ```
 
 The first run made both expected calls. The second called `lookup_order` three times in a row, failed each time and never refunded. The table shows what that does to each metric, and how wide the interval is with two runs.
@@ -243,9 +243,10 @@ A judge served on vLLM, SGLang or Ollama can also give its decisions as probabil
 
 ```python
 import evalsi
-from evalsi import Record, Score, evaluator
+from evalsi import MetricSpec, Record, Score, ScoreType, evaluator
 
-@evaluator(name="acme/polite", version="1.0.0")
+@evaluator(name="acme/polite", version="1.0.0",
+           outputs=[MetricSpec("polite", ScoreType.PASSED, higher_is_better=True)])
 def polite(record: Record) -> Score:
     return Score(passed="please" in record.output.as_text().lower())
 

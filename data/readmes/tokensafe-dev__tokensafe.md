@@ -139,6 +139,11 @@ tokensafe digest
 tokensafe create my-app --template fullstack  # tokensafe-ui + tokensafe-python
 tokensafe create my-service --template go     # tokensafe-backend (Go)
 
+# Retrofit existing apps for AI agents (out-of-the-box stack detection)
+tokensafe integrate          # Generates .tokensafe/oumv.json with safe defaults
+tokensafe adapters           # Catalog of frontend & backend OUMV adapters
+tokensafe oumv doctor        # Verify live dev-server & static AST capabilities
+
 # Activate a Team or Solo license key
 tokensafe activate TS2.eyJlbWFpbCI6...
 ```
@@ -408,7 +413,7 @@ All hook adapters fail open: an internal error never stalls your agent. Failures
 ## Reference
 
 <details>
-<summary><b>Local MCP tools (18)</b></summary>
+<summary><b>Local MCP tools (23)</b></summary>
 
 | Tool | What it does |
 |---|---|
@@ -430,6 +435,11 @@ All hook adapters fail open: an internal error never stalls your agent. Failures
 | `compress_prompt` | Compiles a verbose developer prompt into a compact S-expression |
 | `compact_conversation` | Folds a long agent transcript into a compact state ledger |
 | `get_token_savings_metrics` | Cumulative token and cost savings analytics |
+| `oumv_status` | Status, capabilities, and connection health of frontend/backend OUMV runtimes with hybrid fallback mode |
+| `oumv_observe` | Progressive runtime observation (L0 pulse, L1 surface, L2 detail) with out-of-the-box static AST fallback |
+| `oumv_understand` | Query runtime causality, state dependencies, and backend route mappings |
+| `oumv_mutate` | Controlled mutations with optimistic concurrency control (safe-by-default, requires workspace permissions) |
+| `oumv_verify` | Transactional verification and state invariant assertions |
 </details>
 
 <details>
@@ -455,7 +465,7 @@ Endpoint: `https://api.tokensafe.dev/mcp`, auth `Authorization: Bearer <TS1./TS2
 </details>
 
 <details>
-<summary><b>Full CLI reference (30 commands)</b></summary>
+<summary><b>Full CLI reference (33 commands)</b></summary>
 
 ```text
 tokensafe stats / markdown / html     Savings analytics (terminal / .md report / dashboard)
@@ -475,6 +485,9 @@ tokensafe test "<prompt>"             Preview prompt compaction on custom input
 tokensafe guard "<command>"           Pre-flight safety check for a shell command
 tokensafe guard audit [path]          Recursive source audit for secrets & vulnerabilities
 tokensafe digest [--send]             Compile (and optionally dispatch) the weekly team digest
+tokensafe integrate [--dry-run]       Detect project stack and scaffold OUMV Retrofit config
+tokensafe adapters                    Show catalog of frontend/backend OUMV adapters
+tokensafe oumv doctor                 Audit OUMV runtime connectivity and capabilities
 tokensafe mcp list|disable|enable     Manage configured MCP servers
 tokensafe proxy [port]                Local transparent AI proxy (127.0.0.1:8765/v1)
 tokensafe proxy on/off/status         Daemon + agent wiring with one-command rollback
@@ -520,6 +533,18 @@ What runs where:
 - **Proxy-only (A/B/D)**: Tool Result Ledger (folds aged tool results in-flight, `TOKENSAFE_TOOL_LEDGER=0` to disable), session-stable cold-tool pruning (opt-in: `TOKENSAFE_TOOL_PRUNING=1`, `TOKENSAFE_TOOL_PRUNE_KEEP`, `TOKENSAFE_TOOL_PRUNE_ALLOWLIST`), managed-cloud history distillation (paid, opt-in: `TOKENSAFE_HISTORY_DISTILL=1`).
 - **Hooks (all agents)**: PostToolUse stdout compaction, PreToolUse shell/secret guards, Output Guard steering full-file writes to surgical edits, prompt compaction, history folding.
 - Folded originals are archived under `~/.tokensafe/data/tool_ledger/` and every fold carries a deterministic re-hydration anchor — nothing is destroyed, and already-folded results are never re-processed (KV-cache stable).
+
+### OUMV Retrofit: Universal Agent Runtime & Progressive Adoption
+
+TokenSafe integrates with the [OUMV Protocol](https://github.com/tokensafe-dev/oumv) (**Observe, Understand, Mutate, Verify**), providing AI coding agents with a structured, machine-readable interface to existing web and backend applications without requiring framework migrations.
+
+- **Out-of-the-Box Stack Detection**: TokenSafe automatically detects your application stack (`package.json`, `go.mod`, `pyproject.toml`, Vite, Next.js, FastAPI, Gin) and configures agent tooling dynamically.
+- **Level 1 Static AST Fallback**: When live dev-servers are offline, `oumv_observe` and `oumv_understand` gracefully fall back to zero-config static AST component trees and route maps with evidence tracking.
+- **Consolidated Adapters**:
+  - **Frontend**: `@tokensafe-ui/oumv/react`, `@tokensafe-ui/oumv/vue`, and `@tokensafe-ui/vite` with secure `.tokensafe/runtime.json` session authentication.
+  - **Backend**: Go (`gin`, `chi`, `stdhttp`) and Python (`fastapi`, `sqlalchemy`) in [`tokensafe-backend`](https://github.com/tokensafe-dev/tokensafe-backend).
+- **Safe-by-Default Mutations**: Mutation tools (`oumv_mutate`) require explicit permission in `.tokensafe/oumv.json` (`mutate: false` by default) and enforce optimistic concurrency control to prevent agent code drifts.
+- **Doctor & Integration CLI**: Run `tokensafe integrate` to scaffold project configs or `tokensafe oumv doctor` to verify dev-server connectivity and capabilities.
 
 More documentation: [docs/AGENT_SETUP.md](docs/AGENT_SETUP.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/API.md](docs/API.md) · [METRICS.md](METRICS.md) · [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md)
 

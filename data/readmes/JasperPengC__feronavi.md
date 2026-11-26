@@ -155,7 +155,7 @@ OpenAPI 描述覆盖 RAG 公共 API。检索与引用遵循当前身份、令牌
 
 ```bash
 mkdir feronavi && cd feronavi
-curl -fL https://raw.githubusercontent.com/JasperPengC/feronavi/v0.2.0/compose.yaml -o compose.yaml
+curl -fL https://raw.githubusercontent.com/JasperPengC/feronavi/v0.2.1/compose.yaml -o compose.yaml
 
 # 首次安装：生成本地数据库密码
 (umask 077; test -e .env || echo "DB_PASSWORD=$(openssl rand -hex 24)" > .env)
@@ -167,7 +167,7 @@ docker compose ps
 
 启动后打开 [http://127.0.0.1:3000/setup](http://127.0.0.1:3000/setup)，按向导创建组织和管理员。
 
-默认拉取应用 `ghcr.io/feronavi/feronavi-app:0.2.0` 与数据库 `ghcr.io/feronavi/feronavi-db:16-0.2.0`。本版预构建镜像支持并验证了 **Linux x86-64（amd64）**；其他架构尚未完成验收。
+默认拉取应用 `ghcr.io/feronavi/feronavi-app:0.2.1` 与数据库 `ghcr.io/feronavi/feronavi-db:16-0.2.0`。本版预构建镜像支持并验证了 **Linux x86-64（amd64）**；其他架构尚未完成验收。
 
 给团队开放访问前，请按[生产部署指南](https://feronavi.com/zh/docs/deployment/)配置 HTTPS 反向代理；升级已有实例前，请按[备份与升级指南](https://feronavi.com/zh/docs/operations/)备份数据库和数据卷，并核对数据库镜像的迁移要求。远程服务器的首次访问和启动排查见[快速开始](https://feronavi.com/zh/docs/quick-start/)。
 
@@ -177,7 +177,7 @@ docker compose ps
 需要修改源码时，可单独克隆本版并构建：
 
 ```bash
-git clone --branch v0.2.0 --depth 1 https://github.com/JasperPengC/feronavi.git feronavi-source
+git clone --branch v0.2.1 --depth 1 https://github.com/JasperPengC/feronavi.git feronavi-source
 cd feronavi-source
 (umask 077; test -e .env || echo "DB_PASSWORD=$(openssl rand -hex 24)" > .env)
 docker compose -f compose.yaml -f compose.source.yaml up -d --build --wait
@@ -250,6 +250,10 @@ docker compose -f compose.yaml -f compose.source.yaml up -d --build --wait
 - [千刀佬](https://linux.do/u/andrew-hh)
 
 *以上排名不分先后。*
+
+## 社区
+
+本项目在 [LINUX DO](https://linux.do) 社区推广。
 
 <a id="feedback"></a>
 

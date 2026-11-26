@@ -7,7 +7,7 @@ No instructions to the model, no sentences about what the image contains.
 
 Nodes (category **Neons**):
 
-* **Neons Style Explorer** — text in, text out
+* **Neons Style Explorer** — text in, text out, plus the name of the style used
 * **Neons Style Explorer (Encode)** — the same plus CLIP encode
 * **Neons LoRA Explorer** — a LoRA loader with a preview gallery per model folder
 * **Neons Model Explorer** — a checkpoint loader with the same gallery, and notes
@@ -70,7 +70,11 @@ masterpiece, best quality, (anime_screenshot:1.1), (anime_coloring:1.1),
   `random_source` (all / main / extra / custom) choosing the pool, `roll_scope`
   narrowing it (all / family / favourites / recent / has preview / missing
   preview) and `roll_seed` plus its control-after-generate widget (set it to
-  randomize so every run rolls anew)
+  randomize so every run rolls anew; a seed of 0 does the same)
+* `style_name` — an output carrying the style this run used, rolls and crawl
+  steps included, for filenames, labels or **Neons Gallery Capture**
+* settings that only matter while a switch is on — the crawl source, the dice's
+  source and seed, the tag separator — stay folded away until it is
 * **Named catalogs** — keep a separate preview set per model ("my Krea 2", "SDXL",
   a client project): each catalog has its own gallery, favourites and recents,
   while the style texts and your edits stay shared. Pick one from the toolbar,
@@ -141,6 +145,9 @@ model instead of one mixed pile.
   straight into your prompt.
 * **Save** files the newest generated image against the current LoRA. Saving is
   manual — no crawl, no auto-populate.
+* **random_roll** loads a random LoRA each run; **roll_scope** keeps the dice
+  inside the picked LoRA's gallery, its family, or your favourites, so it stays
+  among the LoRAs made for the model you are using.
 * Outputs: `model`, `clip`, `lora_name`, `triggers`.
 
 Previews live in `user/loras/<gallery>/` and trigger words in
@@ -157,6 +164,89 @@ node as a string. No roll: a checkpoint is a choice, not a variation.
 
 Outputs: `model`, `clip`, `vae`, `model_name`, `notes`. A diffusion model has no
 CLIP or VAE of its own, so those stay empty for one — wire your own loaders.
+If something is wired to them anyway, the node stops with a message saying so
+instead of failing further down the graph.
+
+## Style Explorer 2
+
+**Neons Style Explorer 2** is a second, separate style node. The original is
+untouched and both can sit in the same workflow, so you choose which to use.
+Version 2 has its own catalog of **5,870 styles in 16 categories**, all
+rewritten to one standard, plus 454 modifiers.
+
+* **No giant dropdown.** The styles live in a browser, and the node keeps its
+  selection as a line of text (`Oil Impasto, Film Noir:0.6`). ComfyUI starts
+  and loads workflows no slower with the node installed.
+* **The browser** has a category tree, 35 trait filters (moody, flat, vintage
+  ...), instant search across every name, description and tag, favourites,
+  your own collections, and previews you save from your own generations.
+* **Blend up to three styles**, each with a weight.
+* **strength** writes more or less of a style (light, standard, heavy) without
+  emphasis syntax, which turbo models ignore.
+* **output_as** writes natural language for Flux, Krea, Qwen and Z-Image type
+  models, booru tags for SDXL, Illustrious and Pony models, or both.
+* **Six modifier dropdowns**: lighting, palette, camera, mood, format, finish.
+* **Dice.** Put `@favourites`, `@painting`, `@<collection>` or `@all` in the
+  styles box and the node rolls a style from that set on every run.
+* **LoRA triggers.** Three `lora_triggers` inputs take the `triggers` output of
+  up to three Neons LoRA Explorer nodes and put the words at the very start
+  of the prompt, as on the original node.
+* **prompt_prefix** and **negative** boxes. The prefix leads the prompt; the
+  negative is passed through as you wrote it. Version 2 styles add nothing to
+  the negative, so leave it empty for turbo models.
+* Outputs: `positive`, `negative`, `style_text`, `style_name`, `debug`. The
+  **(Encode)** variant takes a CLIP and puts `positive_conditioning` and
+  `negative_conditioning` in front of those.
+
+Where a version 2 style was reworked from an original one, its preview is
+copied across the first time you open the browser. See MANUAL.md, section 17c.
+
+## Style Roller node
+
+**Neons Style Roller** rolls style language instead of a whole style: a handful
+of terms such as `painterly, caustic light, geometric shapes, muted palette`,
+drawn from a list of more than 21,000. It needs nothing else from the pack, so
+it works on its own, ahead of any prompt node.
+
+* **kind** narrows the roll to what suits one sort of picture: realism, anime &
+  manga, cartoon & animation, comics & print, painting, illustration & drawing,
+  3D & games, graphic design, abstract & experimental, or all.
+* **count** is how many terms to roll, 1 to 50.
+* **seed** decides the roll. The same seed and settings give the same words,
+  and a longer roll starts with the shorter one. 0 rolls afresh every run.
+* **aspect** rolls one part of a look only (look & medium, lighting, colour,
+  texture & surface, mood, composition & camera, era & movement, line &
+  shape, effects & magic). Left on **any (balanced)**, the words are spread across all of them.
+  **big changes** rolls the words that decide what kind of picture it is;
+  **fine details** rolls the ones that adjust it.
+* **vocabulary** chooses between everything, the well-known terms, the deep
+  cuts, or only your own words.
+* **theme** adds a flavour that cuts across everything else: retro & vintage,
+  futuristic & cyber, dark & gothic, bright & playful, fantasy & mythic,
+  historical & world, handmade & craft, nature & seasons, neon & glow, minimal
+  & clean, ornate & detailed.
+* **words_per_term** rolls plain single words (`gothic, rainbow, splatter`),
+  short terms, or the longer descriptions.
+* **output_as** writes plain phrases for natural-language models, or
+  `booru_style_tags` for tag-trained ones, using the real tag where one exists.
+* **weight** wraps each term as `(term:1.20)`.
+* **always_include** / **never_include** pin words to every roll or keep them
+  out; a word in never_include removes every term that contains it.
+* **preview roll** shows the words without running the workflow. With a seed
+  set, that is exactly what the next run will use.
+
+* **keep these words** sets the seed to the one the words came from and fixes
+  it, so a roll you like repeats.
+* **save as style** turns the roll you are looking at into a style for Neons
+  Style Explorer 2: a dialog asks for a name, lets you edit the words, and can
+  attach the newest generated image as its preview.
+
+A roll never repeats a term and never pairs opposites (no `monochrome` beside
+`vivid palette`). Outputs: `text` (the words joined to whatever is wired into
+the `text` input) and `words` (the rolled words alone).
+
+Your own terms go in `user/roller_words.txt`, one per line. Optionally say what
+a term is: `brass haze | lighting | painting anime`.
 
 ## The catalog
 
@@ -166,7 +256,8 @@ CLIP or VAE of its own, so those stay empty for one — wire your own loaders.
 tools/build_all.sh               # import + lint + index + docs + examples + tests
 python3 tools/lint.py --all      # every finding
 node tools/check_web.mjs         # UI: undefined calls and bad imports
-python3 tests/test_compose.py    # 57 tests
+python3 tests/test_compose.py    # 89 tests
+python3 tools/security_probe.py  # attacks every route on a throwaway copy
 ```
 
 The source of truth for the text is `tools/written/*.json`; `import_source.py`

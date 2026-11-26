@@ -10,7 +10,8 @@
   <b>Run your coding agents together.</b><br>
   Claude Code · Codex · Antigravity · Copilot CLI · Cursor · Gemini CLI · opencode · Muse · Mistral Vibe<br>
   A desktop app, a command line and a TypeScript API, on the logins you already have.<br>
-  <a href="https://grzegorz.tanczyk.pl/genaicode/"><b>Homepage</b></a> · <a href="https://www.npmjs.com/package/genaicode">npm</a> · <a href="docs/CHANGELOG.md">Changelog</a> · <a href="docs/SUPPORT.md">Help and bug reports</a>
+  <a href="docs/legal.md#your-agents-your-accounts">Runs on your machine</a> · <a href="docs/legal.md#what-genaicode-sends-over-the-network">No telemetry</a> · <a href="LICENSE">Free and open source</a>, nothing on top of your agents' plans.<br>
+  <a href="https://grzegorz.tanczyk.pl/genaicode/"><b>Homepage</b></a> · <a href="https://www.npmjs.com/package/genaicode">npm</a> · <a href="docs/CHANGELOG.md">Changelog</a> · <a href="docs/SUPPORT.md">Help and bug reports</a> · <a href="docs/legal.md">Terms and privacy</a>
 </p>
 
 <p align="center">
@@ -24,8 +25,10 @@
 ## Desktop app
 
 One window for all your agents: give one prompt, a lead agent splits the work, the others take
-a task each, and you review the changes and merge. Topics, plan limits and approvals sit in
-the menu bar. Free, signed and notarized, and it updates itself.
+a task each, and you review the changes and merge. Your chats are on the left, the conversation
+in the middle and the agents' work on the right: what each task does now, its changes and its
+artifacts. Topics, plan limits and approvals sit in the menu bar. Free, signed and notarized, and
+it updates itself.
 
 | Download                                                                                                                          | For                                  |
 | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
@@ -106,6 +109,8 @@ and no UI code.
 
 ## More
 
+- [Terms and privacy](docs/legal.md): Apache-2.0, agents run on your accounts under their
+  providers' terms, Auto-approve and YOLO are at your own risk, no telemetry
 - [Changelog](docs/CHANGELOG.md), [semver policy](docs/semver.md), [releasing](docs/releasing.md)
 - Coming from 1.x? It was a built-in coding agent; it lives on the
   [`1.x` branch](https://github.com/gtanczyk/genaicode/tree/1.x) and as `npx genaicode@1`.

@@ -193,7 +193,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Hanjun Dai, Elias B Khalil, Yuyu Zhang, Bistra Dilkina, Le Song*
 
-2. **Learning Heuristics for the TSP by Policy Gradient** CPAIOR, 2018. [paper](https://link.springer.com/chapter/10.1007/978-3-319-93031-2_12), [code](https://github.com/MichelDeudon/encode-attend-navigate)
+2. **Learning Heuristics for the TSP by Policy Gradient** CPAIOR, 2018. [paper](https://link.springer.com/chapter/10.1007/978-3-319-93031-2_12)
 
     *Michel DeudonPierre CournutAlexandre Lacoste*
 
@@ -505,7 +505,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Chengrui Gao, Haopu Shang, Ke Xue, Chao Qian*
 
-80. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/Preference-Optimization-for-Combinatorial-Optimization-Problems)
+80. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/PO4COPs)
 
     *Mingjun Pan, Guanquan Lin, You-Wei Luo, Bin Zhu, Zhien Dai, Lijun Sun, Chun Yuan*
 
@@ -623,7 +623,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Schirin Baer, Jupiter Bakakeu, Richard Meyes, Tobias Meisen*
 
-3. **Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning.** NeurIPS, 2020. [paper](https://arxiv.org/abs/2010.12367), [code](https://github.com/zcajiayin/L2D)
+3. **Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning.** NeurIPS, 2020. [paper](https://arxiv.org/abs/2010.12367), [code](https://github.com/zcaicaros/L2D)
 
     *Cong Zhang, Wen Song, Zhiguang Cao, Jie Zhang, Puay Siew Tan, Chi Xu*
 
@@ -697,7 +697,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
 ### [Flow Shop Problem](#content)
 
-1. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/Preference-Optimization-for-Combinatorial-Optimization-Problems)
+1. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/PO4COPs)
 
     *Mingjun Pan, Guanquan Lin, You-Wei Luo, Bin Zhu, Zhien Dai, Lijun Sun, Chun Yuan*
 
@@ -747,7 +747,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Yujia Xie, Hanjun Dai, Minshuo Chen, Bo Dai, Tuo Zhao, Hongyuan Zha, Wei Wei, Tomas Pfister*
 
-9. **Automatic Loss Function Search for Predict-Then-Optimize Problems with Strong Ranking Property** ICLR, 2022. [paper](https://openreview.net/forum?id=hSktDu-h94), [code](https://github.com/Microsoft/AutoPredOptConnector)
+9. **Automatic Loss Function Search for Predict-Then-Optimize Problems with Strong Ranking Property** ICLR, 2022. [paper](https://openreview.net/forum?id=hSktDu-h94)
 
     *Boshi Wang, Jialin Yi, Hang Dong, Bo Qiao, Chuan Luo, Qingwei Lin*
 
@@ -905,7 +905,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Andrew Butler, Roy H Kwon*
 
-3. **⭐Towards One-shot Neural Combinatorial Solvers: Theoretical and Empirical Notes on the Cardinality-Constrained Case** ICLR, 2023. [paper](https://openreview.net/forum?id=h21yJhdzbwz), [code](https://github.com/Thinklab-SJTU/One-Shot-Cardinality-NN-Solver)
+3. **⭐Towards One-shot Neural Combinatorial Solvers: Theoretical and Empirical Notes on the Cardinality-Constrained Case** ICLR, 2023. [paper](https://openreview.net/forum?id=h21yJhdzbwz), [code](https://github.com/Thinklab-SJTU/NAR-CO-Solver)
 
     *Runzhong Wang, Li Shen, Yiting Chen, Junchi Yan, Xiaokang Yang, Dacheng Tao*
 
@@ -927,7 +927,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Fan Yao, Renqin Cai, Hongning Wang*
 
-5. **LeNSE: Learning To Navigate Subgraph Embeddings for Large-Scale Combinatorial Optimisation** ICML, 2022. [paper](https://proceedings.mlr.press/v162/ireland22a.html), [code](https://github.com/davidireland3/LeNSE)
+5. **LeNSE: Learning To Navigate Subgraph Embeddings for Large-Scale Combinatorial Optimisation** ICML, 2022. [paper](https://proceedings.mlr.press/v162/ireland22a.html), [code](https://github.com/davidireland-iso/LeNSE)
 
     *David Ireland, G. Montana*
 
@@ -1217,7 +1217,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Chengrui Gao, Haopu Shang, Ke Xue, Chao Qian*
 
-50. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/Preference-Optimization-for-Combinatorial-Optimization-Problems)
+50. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/PO4COPs)
 
     *Mingjun Pan, Guanquan Lin, You-Wei Luo, Bin Zhu, Zhien Dai, Lijun Sun, Chun Yuan*
 
@@ -1337,7 +1337,7 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Laurin Luttmann, Lin Xie*
 
-80. **Multiagent Environments for Vehicle Routing Problems** INFORMS Journal on Computing, 2026. [paper](https://pubsonline.informs.org/doi/10.1287/ijoc.2025.1211), [code](https://github.com/MAEnvs4VRP/maenvs4vrp)
+80. **Multiagent Environments for Vehicle Routing Problems** INFORMS Journal on Computing, 2026. [paper](https://pubsonline.informs.org/doi/10.1287/ijoc.2025.1211), [code](https://github.com/MAL4VRP/maenvs4vrp)
 
     *Ricardo Gama, Ricardo Cunha, Daniel Fuertes, Carlos R. del-Blanco, Hugo L. Fernandes*
 
@@ -1597,4 +1597,10 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
 ### [Knapsack](#content)
 
-1. **A Pointer Network Based Deep Learning Algorithm  for 0-1 Knapsack Problem** ICACI, 201
+1. **A Pointer Network Based Deep Learning Algorithm  for 0-1 Knapsack Problem** ICACI, 2018. [paper](https://ieeexplore.ieee.org/abstract/document/8377505)
+
+    *Shenshen Gu, Hao Tao*
+
+2. **An Investigation into Prediction + Optimisation for the Knapsack Problem** CPAIOR, 2019. [paper](https://link.springer.com/chapter/10.1007/978-3-030-19212-9_16)
+
+    *Emir Demirovic, Peter J. Stuckey, James B

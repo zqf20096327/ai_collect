@@ -279,6 +279,7 @@ are configured in a `bots.json` in the same directory; see
 | `DISCORD_MCP_UPDATE_CHECK` | Default on for an installed copy and the Claude Desktop bundle: once a day it asks the npm registry for the latest version number, and a newer one is mentioned once per session and in `run_setup_check`. Set `false` to never ask. A source checkout and the Docker image never ask. |
 | `DISCORD_MCP_STRICT_PARAMS` | Default on: a tool that changes something refuses a parameter it does not have, or a key inside one, and a read-only tool says which it ignored. Set `false` only for a host that adds keys of its own to every call and is refused for it. |
 | `DISCORD_MCP_ALLOW_PRIVATE_URLS` | Off by default: files, emoji, stickers, sounds, and avatars are fetched only from public addresses, never from this machine or its private network. Set `true` only if you serve your own files from a private address. |
+| `DISCORD_MCP_FILES_DIR` | Optional. A folder whose images and sounds can be uploaded by file name: emoji, stickers, and soundboard sounds, role icons, the server icon and banner, and the bot's avatar and banner (the `_file` parameters). Off unless set; nothing else on this machine is read, a name that points outside the folder is refused, and a file counts only if its first bytes show an image or a sound. Message attachments still take links only. |
 | `DISCORD_MCP_GATEWAY` | Default on when a token is set: the bot shows as online and real time event subscriptions work. Set to `off` for REST only operation. |
 | `DISCORD_MCP_HOME` | Optional. One directory to hold `.env`, `bots.json`, and saved data. When set, it is the only place the token is read from. Defaults to the package root for a source checkout, `.orygn/discord-mcp` in your user folder for an installed copy. |
 | `DISCORD_MCP_DATA_DIR` | Where saved blueprints and scheduled messages live. Default: `.discord-mcp` next to `package.json` for a source checkout, `.orygn/discord-mcp` in your user folder for an installed copy. |
@@ -291,7 +292,26 @@ Each setting was named `OMNICORD_*` before 2.0, and the old names still
 work through all of 2.x. When both are set, the `DISCORD_MCP_*` name wins,
 and the setup check points out any old names still in use.
 
-Client config for stdio (Claude Desktop and compatible):
+Client config for stdio (Claude Desktop and compatible), running the
+published package with the token in the config, the same entry the
+one-click installs add:
+
+```json
+{
+  "mcpServers": {
+    "discord-mcp": {
+      "command": "npx",
+      "args": ["-y", "@orygn/discord-mcp"],
+      "env": {
+        "DISCORD_TOKEN": "your-bot-token"
+      }
+    }
+  }
+}
+```
+
+The setup wizard writes an entry without the token instead and keeps the
+token in a `.env` file. From a source checkout, point `node` at the build:
 
 ```json
 {
@@ -304,7 +324,8 @@ Client config for stdio (Claude Desktop and compatible):
 }
 ```
 
-No token goes in the client config. The server finds `.env` and
+With the wizard's entry or the source one, no token goes in the client
+config. The server finds `.env` and
 `bots.json` no matter where the client spawns it from: in
 `DISCORD_MCP_HOME` if that is set, and nowhere else then; otherwise in the
 package root for a source checkout, or `.orygn/discord-mcp` in your user

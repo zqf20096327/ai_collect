@@ -16,6 +16,11 @@ experimental. Native targets need no network once the model is on the device.
 - Image generation from text prompts on native platforms (Preview).
 - Runtime LoRA adapters for llama.cpp, observability hooks and typed capability checks.
 
+Native llama.cpp can keep generating past end-of-generation tokens with
+`GenerationParams(ignoreEos: true)`, as the `--ignore-eos` CLI option does,
+for benchmarks that need a fixed token count; it rejects a non-empty grammar,
+and the other runtimes reject it. See [runtime parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters).
+
 Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/integrations/choosing-an-api)
 for your application. Genkit is a
 [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart);
@@ -35,7 +40,7 @@ LFM2 replies cut off at a reported length limit expose raw `partialToolCalls` di
 
 ```yaml
 dependencies:
-  llamadart: ^0.20.7
+  llamadart: ^0.21.0
 ```
 
 ```bash
@@ -56,10 +61,10 @@ companion shares its core's `MAJOR.MINOR` and constrains `llamadart` to it.
 
 ```yaml
 dependencies:
-  llamadart: ^0.20.7
-  llamadart_llama_cpp_flutter: ^0.20.7 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.20.7 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.20.7 # Apple image generation, opt-in
+  llamadart: ^0.21.0
+  llamadart_llama_cpp_flutter: ^0.21.0 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.21.0 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.21.0 # Apple image generation, opt-in
 ```
 
 Pairing rules, the SwiftPM bootstrap and the privacy manifest are in
@@ -77,9 +82,14 @@ load to require the threaded core. Lazy tool-call grammars and
 custom grammar roots follow the loaded core's `lazyGrammar` capability.
 With bridge assets v0.1.93+, Chromium automatically uses JavaScript-backed
 GGUF and projector staging on confirmed memory64 cores when `modelBytesHint`
-is at most 4 GiB. Supported WebKit cores follow the bridge's browser policy.
+is at most 4 GiB. On confirmed wasm32 single-thread cores, the automatic policy
+uses JavaScript-backed staging for hints above 960 MiB through 3.75 GiB and
+rejects larger hints before downloading. Other loads follow the bridge's
+browser policy.
 Set `ModelParams.jsBackedModelStaging: false` to disable staging or `true` to
-require it with staging-capable v0.1.92+ assets.
+require it with staging-capable v0.1.92+ assets. Pass
+`ModelLoadOptions(cancelToken: token)` to stop a streamed Web GGUF load.
+Wait for the load to throw `LlamaStateException` before loading again.
 
 llamadart also ships [agent skills](https://dart.dev/tools/pub/package-skills)
 that teach coding agents its APIs. Install them from your app's root:
@@ -186,8 +196,9 @@ Current default runtime pins:
 | Runtime | Pin |
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v1.0.0-4` |
-| Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.19.1-7` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.93` |
+| Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.20.0` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.94` |
+| Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.20.0` |
 
 The Web backend reuses cached HTTP(S) projectors through the pinned bridge.
 If a direct WebAssembly core abort unloads the model, catch
@@ -198,18 +209,21 @@ ends the thinking budget and generation continues into the call. This needs
 llamadart-native `v1.0.0-4` or a WebGPU bridge core reporting
 `thinkingBudgetMultiEnd` (assets `v0.1.87+`). An explicit
 `ThinkingBudget.endTag` selects a single delimiter.
-| Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.19.0` |
 
 Native LiteRT-LM uses a lazy ABI-aware client for direct calls, services and
-speech. The public selector admits legacy runtimes and C API 1.0.x; unknown or
-future versions are refused before engine calls. The pinned runtime is
-published native
-[v0.19.1-7](https://github.com/leehack/litert-lm-native/releases/tag/v0.19.1-7),
-owner source `930a3e29` / upstream `7a03724c`. The selected loader requires
-macOS 14+ before owned library loads, including legacy libraries and custom
-paths. Web LiteRT-LM uses `@litert-lm/core@0.19.0`; through
+speech. The public selector admits legacy runtimes and C API 1.0.x and 1.1.x.
+It refuses unknown or future versions before engine calls. The pin is published native
+[v0.20.0](https://github.com/leehack/litert-lm-native/releases/tag/v0.20.0)
+(owner `d73bca7c` / upstream `95df4c2a`). It uses C API 1.1.0
+and links LiteRT and the GPU accelerators into the runtime. The selected loader
+requires macOS 14+ before owned library loads, including legacy libraries and
+custom paths. Web LiteRT-LM uses `@litert-lm/core@0.20.0`; through
 `LlamaBackend.withTextHistory()` it forwards chat history, supports tool
-calling and reports replies cut off at a token limit.
+calling and reports replies cut off at a token limit. Web apps that preload
+`window.LiteRtLmEngine` must also expose `window.LiteRtLmBackendEnum = module.Backend`
+from the same package for CPU inference. On WebGPU, a drafter-bearing bundle
+can use MTP with `loadMtp: true` and a per-request speculation flag. See the
+[LiteRT-LM Web MTP guide](https://llamadart.leehack.com/docs/guides/performance-tuning#litert-lm-web-mtp).
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and explicit
 historical or nightly `bNNNN` artifacts. New nightly wrapper rebuilds use

@@ -2,11 +2,11 @@
 
 ## What's this?
 
-"XWordGiver" (pronouncing as "crossword giver") is a Windows freeware to generate crossword data.
+"XWordGiver" (pronouncing as "crossword giver") is a Windows software to generate crossword data.
+
+It was devised not merely to generate crossword data, but with careful consideration of what constitutes highly productive crossword creation.
 
 ![Screenshot 1](images/screenshot1.png "Screenshot 1")
-
-![Screenshot 2](images/screenshot2.png "Screenshot 2")
 
 ## Usage
 
@@ -47,6 +47,11 @@ Use "Dictionary" menu.
 2. Repeat typing the arrow keys, spacebar, and letters.
 3. Once all the cells are filled, select "Find a solution (without adding blocks)" from the "Solution" menu.
 
+### If you want to create a skeleton:
+
+1. Select an appropriate "dictionary," and choose "Skeleton policy" from the "Rule presets."
+2. Select "Skeleton view" from the "View" menu to make the black squares transparent.
+
 ### Adding clues to the board
 
 1. Ensure that the entire board is filled; if any cells are empty, please fill them in.
@@ -67,6 +72,12 @@ Selecting "Delete clues and unlock board" from the "Solution" menu will unlock t
 - The quality of the algorithm and dictionary data is NOT GUARANTEED.
 - Sorry to say, this program is optimized for Japanese crossword generation. Some patterns may be improper for Latin crossword generation. I struggle, struggle, struggle. You earn, earn, earn!
 
+## About LOOKS Information
+
+The LOOKS files and image files found within the "..._files" folder, which is created alongside the main file when saving, are used to define the appearance of a crossword puzzle, including elements such as colors, line thicknesses, and fonts.
+If you only need the puzzle data itself and are not concerned with its visual presentation, you do not need these LOOKS files.
+You can copy the visual style by dragging and dropping a LOOKS file into the main window (or other appropriate areas).
+
 ## Requirements
 
 - Windows Vista/7/8.1/10/11.
@@ -76,7 +87,7 @@ Selecting "Delete clues and unlock board" from the "Solution" menu will unlock t
 
 ## License
 
-"XWordGiver" is released under the MIT License. See [LICENSE.txt](LICENSE.txt).
+"XWordGiver" is currently paid shareware. Please refer to [LICENSE.txt](LICENSE.txt) for details.
 
 ## Contact
 

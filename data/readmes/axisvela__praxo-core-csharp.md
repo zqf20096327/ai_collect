@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its n
 | Package | `Praxo.Core` |
 | Registry | [NuGet](https://www.nuget.org/packages/Praxo.Core/0.10.0) |
 | Install | `dotnet add package Praxo.Core --version 0.10.0` |
-| Source version | `0.10.0` |
+| Source version | `0.11.0` |
 | Published version | `0.10.0` |
-| Source tag | `csharp/v0.10.0` |
+| Source tag | `csharp/v0.11.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/csharp/ |
@@ -81,6 +81,31 @@ Runnable examples live under [`language/csharp/examples`](language/csharp/exampl
 | [streaming](language/csharp/examples/streaming) | This example uses published NuGet `Praxo.Core==0.10.0` to consume deltas while the agent loop keeps running normally. |
 | [structured-output](language/csharp/examples/structured-output) | This example uses published NuGet `Praxo.Core==0.10.0` to turn free text into validated JSON with `StructuredOutput`. |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/csharp/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/csharp/Tutorial) | Application tutorials live in `Tutorial/`, alongside focused `language/go/examples/`. |
+| [airport-recovery](language/csharp/Tutorial/airport-recovery) | A bounded first slice of [TL-07](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an airport operations system. It reads fixed gate/crew/connection c... |
+| [architecture-graph](language/csharp/Tutorial/architecture-graph) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [bom-review](language/csharp/Tutorial/bom-review) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [construction-safety](language/csharp/Tutorial/construction-safety) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [contract-review](language/csharp/Tutorial/contract-review) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [due-diligence](language/csharp/Tutorial/due-diligence) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [healthcare-scheduling](language/csharp/Tutorial/healthcare-scheduling) | A native C# Core tutorial for review-only appointment scheduling. It reads a fixed `appointment-100` clinic schedule, checks slot availability, and drafts a booking for human re... |
+| [internal-service-desk](language/csharp/Tutorial/internal-service-desk) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [medical-coding](language/csharp/Tutorial/medical-coding) | A bounded first slice of [HC-04](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a billing or reimbursement system. It checks fixed record completen... |
+| [order-review](language/csharp/Tutorial/order-review) | Embed the native C# Core in an ASP.NET Core minimal API. The Agent invokes a scoped order-review tool over the public synthetic business service. The same application also offer... |
+| [phishing-awareness](language/csharp/Tutorial/phishing-awareness) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [public-approval](language/csharp/Tutorial/public-approval) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [rpa-reconciliation](language/csharp/Tutorial/rpa-reconciliation) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [sales-crm](language/csharp/Tutorial/sales-crm) | A native C# Core tutorial for a review-only sales workflow. The Agent has two fixed tools: `read_customer` reads synthetic customer `customer-100`, and `draft_followup` produces... |
+| [test-generation](language/csharp/Tutorial/test-generation) | A bounded first slice of [SE-04](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a test-execution or load-testing service. It generates three bounde... |
+| [trial-screening](language/csharp/Tutorial/trial-screening) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+| [zero-trust-review](language/csharp/Tutorial/zero-trust-review) | A bounded tutorial slice over the native .NET Core. It reads one fixed fixture, enforces scope and drafts a review-only result. No production write or external system access. |
+
 ## Verify
 
 Run the checks from `language/csharp`:
@@ -99,6 +124,14 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 

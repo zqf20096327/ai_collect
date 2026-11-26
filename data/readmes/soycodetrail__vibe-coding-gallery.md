@@ -4,13 +4,13 @@
 >
 > 👈 **返回主站对应模块**：[Vibe Coding 作品展](https://soycodetrail.top/vibe-coding)  ·  🏠 全站：[https://soycodetrail.top](https://soycodetrail.top)
 >
-> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-24 01:23:11 UTC
+> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-25 22:24:28 UTC
 
 ## 📚 系列展示站（更多精选内容，互相导流）
 
 - [DeepSeek Harness 插件库](https://github.com/soycodetrail/deepseek-harness-plugins) · [主站模块 ↗](https://soycodetrail.top/dsh-plugins) · [在线浏览 ↗](https://soycodetrail.github.io/deepseek-harness-plugins/)
 
-## 📑 内容导航（819 个条目 / 15 个分类）
+## 📑 内容导航（833 个条目 / 15 个分类）
 
 - [📁 Web 应用](#cat-web-应用)
 - [📁 AI 工具](#cat-ai-工具)
@@ -379,6 +379,8 @@
   标签：7K Star / 3天涨3003 / Agent 工作流 / 人机审批 / Trending
 - [Rust Anything - 记录行为再逐条回放，让 AI 把任意应用增量迁移到 Rust](https://github.com/erkamyaman/rust-anything) — 由 erKam Yaman 开发，先录制应用的真实行为，再用这些用例对着增量 Rust 移植逐条回放验证，让重写成 Rust 这件事第一次可验收；上线 3 天新增 4,895 星、累计 8,655 星，冲上 GitHub Trending 增速榜第二。  
   标签：8.6K Star / 3天涨4895 / Rust 迁移 / 行为回放 / AI 编码
+- [Kolbo.AI - 一个订阅聚合 100 多种 AI 模型的创作工作台](https://kolbo.ai) — 用 Lovable、Cursor 与 Claude Code 打造的「AI 模型超市」，把 GPT、Claude、Midjourney、Suno、Kling、Veo、Flux、ElevenLabs 等 100+ 模型装进同一共享积分池；截至 2026-11-21 月经常性收入 48,223 美元、748 个付费订阅、累计营收 446,995 美元，经 Stripe / TrustMRR 验证，是 MissumAI 榜单上收入最高的 vibe coding 作品。  
+  标签：$48K MRR / Stripe 验证 / 748 订阅 / 100+ 模型 / AI 聚合
 
 <a id="cat-agent" name="cat-agent"></a>
 
@@ -598,6 +600,12 @@
   标签：PH 日榜#1 / 379 票 / AutoGen 团队 / 多 Agent 协作 / 共享记忆
 - [AG-UI - 把 AI Agent 接入前端应用的开放交互协议](https://github.com/ag-ui-protocol/ag-ui) — Agent-User Interaction Protocol，为 Agent 与前端之间建立标准化事件流协议，任意 Agent 后端都能无缝驱动 React/Vue 界面；2,159 fork、GitHub 21,354 星，正成为 Agent 前端集成的事实标准之一。  
   标签：21K Star / Agent 协议 / 前端集成 / 开源标准 / 事件流
+- [LoopForge - 腾讯开源的自托管编码 Agent 交付工作流编排器](https://github.com/Tencent/LoopForge) — 腾讯开源的自托管交付工作流，用脚本与人工审批关卡编排 CodeBuddy、Codex 与 Claude Code 协同完成编码任务，让编码 Agent 的产出可控、可追溯；GitHub 实测 5,986 星、单周暴涨 4,599 星，冲上 GitHub Trending 周榜第 7。  
+  标签：6K Star / 周增4599 / 腾讯开源 / 自托管 / Agent 编排
+- [OpenSRE - 给 CI/CD 自动排障的开源 SRE Agent](https://github.com/Tracer-Cloud/opensre) — 面向 CI/CD 可靠性的开源 Agent，自动定位流水线故障并给出根因分析，把值班排障经验沉淀成可复用规则；GitHub 15,484 星、当日新增约 398 星持续登上 GitHub Trending，被开发者称为「开源 SRE 可靠性智能体」。  
+  标签：15.5K 星 / CI/CD 排障 / 自动根因 / 开源 SRE / Trending
+- [Composio - 让 AI Agent 连接 1000+ 应用的工具网关](https://github.com/ComposioHQ/composio) — 用 TypeScript / Python SDK 给 Agent 提供跨 1000+ 应用的认证工具与统一调用能力，是 Agent 生态最主流的工具集成层之一；GitHub 31,292 星，被大量开源 Agent 项目作为标准工具底座。  
+  标签：31.3K 星 / 1000+ 应用 / Agent 工具网关 / 认证集成 / 开源
 
 <a id="cat-效率工具" name="cat-效率工具"></a>
 
@@ -813,6 +821,12 @@
   标签：PH 周榜#6 / 339 票 / 优惠叠加 / 比价 / 实付计算
 - [Chrome DevTools MCP - Google 官方让 AI 编码 Agent 操控真实浏览器的调试工具](https://github.com/ChromeDevTools/chrome-devtools-mcp) — Google Chrome 官方出品，通过 MCP 把真实 Chrome 的 DOM 检查、控制台、网络抓包与性能追踪能力交给 Claude Code、Gemini 等编码 Agent，让 Agent 自查页面、复现并修复前端 bug；GitHub 59,010 星，本周增长最快的开发者工具之一。  
   标签：59K Star / Google 官方 / 浏览器自动化 / MCP / 前端调试
+- [Toone - 把 Grokbot 变成可编排 Agent 工作流平台的 Mac 应用](https://trytoone.com) — 被称为「Grokbot 遇上 n8n」，用自然语言搭建精确的 Agent 工作流，每个节点都是可选模型的 Agent 对话或确定性自动步骤，支持中途暂停续跑、实时协作与 MCP；2026-11-18 登上 Product Hunt 当日榜第 3（274 票、49 条评论）。  
+  标签：PH 日榜#3 / 274 票 / Agent 工作流 / MCP / Mac
+- [Codemany - 把 GitHub Actions 账单从每月 215 美元砍到 4 美元](https://codemany.com) — 在自己的 Mac 或 Linux 上跑 GitHub Actions，每个任务分配一台全新 VM，官方实测快 3 倍且无按分钟计费，CI 账单从 10 月的 215 美元降到 11 月的 4 美元；2026-11-21 登上 Product Hunt 当日榜第 3（195 票）。  
+  标签：PH 日榜#3 / 195 票 / CI 提速3倍 / 自托管 / 省钱
+- [App Store Compliance - 上架前自动排查拒审风险的 AI 技能包](https://github.com/mjmirza/app-store-compliance) — 把 124 条真实拒审模式、112 个合规截止日期（EU AI Act / DSA / COPPA 等）做成 Claude Code、Codex 可直接调用的提交前检查 Playbook，帮 AI 生成的应用少踩审核坑；GitHub 6,416 星，2026-11-25 单日暴涨 928 星冲上 GitHub Trending。  
+  标签：6.4K 星 / 单日+928 / 124 拒审模式 / 上架合规 / 开源技能包
 
 <a id="cat-游戏" name="cat-游戏"></a>
 
@@ -1102,22 +1116,4 @@
   标签：Agent 编排 / 组织架构 / 成本管控 / 开源
 - [meetily - 本地隐私优先的 AI 会议助手](https://github.com/Zackriya-Solutions/meetily) — 100% 本地实时转录 + 说话人分离 + AI 摘要，会议数据不出本机；GitHub 3.0 万+ Star，macOS/Windows 排名第一的自托管会议记录工具。  
   标签：会议记录 / 本地 AI / Whisper / 隐私
-- [OfficeCLI - 首个专为 AI Agent 打造的 Office 套件](https://www.officecli.ai) — 单二进制免装 Office，让 Agent 直接读写自动化 Word / Excel / PPT；GitHub 2.97 万+ Star，Apache-2.0 开源。  
-  标签：Office 自动化 / Word / Excel / PPT
-- [Subscribr - 一个人的 YouTube 自动化工厂](https://subscribr.ai) — 创始人称 90% 代码由 Claude Code 写成：集 outlier 数据库、病毒脚本 Agent、缩略图与视频生成于一体，一个人跑完整 YouTube 频道。Indie Hackers 披露月营收超 $62K、年跑向 $1M，是「vibe coding 真能赚钱」的代表作。  
-  标签：90% Claude Code / $62K/月 / YouTube 自动化 / AI 视频
-- [Lightfield - AI 原生 CRM](https://lightfield.app/) — AI 原生 CRM：从你的通话、邮件、会议里自动构建每位客户的实时画像，Agent 据全量上下文生成销售管线、会前准备并推动成交。Product Hunt 2026 年 3 月 18 日榜眼（642 票），$300M 估值，由 Tome 创始人（25M 用户）打造，每日 100+ 家公司使用。  
-  标签：PH #2 / 642 票 / $300M 估值 / AI CRM
-- [Zinley - 拥有自己电话与邮箱的私人 AI 代表](https://zinley.com/) — 给你配一个“第二自我”：它有自己的电话号码、邮箱和电脑，在你的规则下接打电话、处理邮件、预订事项，并事后用你的口吻汇报。Product Hunt 2026 年 8 月 2 日榜首（392 票），集成 Gmail / Slack / 日历 / Notion / Linear / GitHub 等，免费起步。  
-  标签：PH #1 / 392 票 / 自有电话/邮箱 / 私人助理
-- [Dial - 10 秒给 AI 智能体配真实手机号](https://getdial.ai) — Genway（a16z Speedrun 领投 600 万美元种子轮）出品，一次 API 调用约 10 秒为 AI Agent 配真实号码，支持 200+ 国家语音 / 短信 / iMessage，还能自动读取验证码。Product Hunt 当日第 5（223 票），已获 Vercel官方集成。  
-  标签：a16z 投资 / PH #5/223票 / AI 手机号 / Vercel 集成
-- [career-ops - 本地运行的 AI 求职 Agent](https://github.com/career-ops-hq/career-ops) — GitHub 7.3 万+ Star 的开源 Agent：自动扫描招聘门户、评估岗位、定制简历并追踪投递进度，全程本地运行保护隐私。登上 GitHub Trending，是「垂直场景 AI 工作流自动化」最具人气的求职利器之一。  
-  标签：73K Star / AI 求职 / 本地运行 / 开源
-- [knowledge-work-plugins - Anthropic 官方知识工作者插件](https://github.com/anthropics/knowledge-work-plugins) — Anthropic 为 Claude Cowork 推出的官方插件仓库，覆盖文档、幻灯片、数据等办公场景，把知识工作流封装成可复用技能，GitHub 2.6 万+ Star。  
-  标签：26K Star / Anthropic 官方 / 办公插件 / Claude Cowork
-- [Upstream - 为人类与 Agent 共用的收件箱](https://upstream.do) — YC 支持的 AI 原生收件箱，Agent 自动分拣邮件、以你的语气起草回复并按时跟进；获 YC 等 300 万美元种子轮，月访问 5.8 万+，数千名专业人士在用。  
-  标签：YC 支持 / $3M 种子轮 / 月访问 58K / 数千用户
-- [Velozity - 让团队和 AI 智能体同处一个办公室](https://www.velozity.ai) — Product Hunt 2026-10-07 当日榜 #1（384 票）的多人协作「AI 办公室」：聊天、带转写的音视频会议、任务、日历、文件与智能体同处一个空间，团队与 Agent 共享上下文并自动执行。  
-  标签：AI 办公室 / 多人协作 / Product Hunt #1
-- [Expertise AI - 把 GTM 经验变成可订阅的 AI 技能](h
+- [OfficeCLI - 首个专为 AI Agent 打造的 Office 套件](https://www.officecli.ai) — 单二进制免装 Office，让 Agent 直接读写自动化 Word / Excel / PPT；Git

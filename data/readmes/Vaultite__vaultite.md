@@ -45,7 +45,8 @@ pages and a knowledge graph of what links to what.
    it to Applications. On Windows, the [installer](https://github.com/Vaultite/vaultite/releases/latest) (x64 or ARM64;
    not signed yet, so Windows asks: More info, Run anyway). On Linux, the
    [AppImage or the .deb](https://github.com/Vaultite/vaultite/releases/latest)
-   (`sudo apt install ./vaultite_*.deb` also sets up Chromium's sandbox on Ubuntu 24.04+).
+   (`sudo apt install ./vaultite_*.deb` also sets up Chromium's sandbox on Ubuntu 24.04+), or with Nix,
+   `nix run github:Vaultite/vaultite`.
 2. **Make a vault**, or open a folder of Markdown you already have: Vaultite changes none of it. Or try the playground,
    a made-up vault, first.
 3. **Connect your AI** in Settings, AI: Claude, ChatGPT, Muse or Grok Bot, on the web and your phone (they
@@ -69,7 +70,7 @@ VAULTITE_VAULT=/tmp/vaultite-sandbox npm start       # http://127.0.0.1:8793
 ```
 
 No accounts: keep it on `127.0.0.1` or a private network like Tailscale ([SECURITY.md](SECURITY.md)). The desktop,
-iPhone and Android apps, tests and how to send a change: [CONTRIBUTING.md](CONTRIBUTING.md). Your own plugin: `vau plugin new <id>`
+iPhone and Android apps and the tests: [CONTRIBUTING.md](CONTRIBUTING.md). Your own plugin: `vau plugin new <id>`
 ([vault plugins](core/docs/vault-plugins.md)).
 
 ## Run it on a server
@@ -86,9 +87,14 @@ tailscale serve --bg --https=8447 http://127.0.0.1:8793
 
 Then add `https://<machine>.<tailnet>.ts.net:8447` in the app.
 
+## Contributing
+
+Bug reports, ideas and pull requests are welcome: [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
-[Apache 2.0](LICENSE).
+[Apache 2.0](LICENSE). Copyright 2026 Lucas Takayasu / Vaultite. The third-party code and assets in it, and their
+licenses: [NOTICE](NOTICE).
 
 Obsidian is a trademark of Dynalist Inc. Vaultite is not affiliated with or endorsed by it; the name is used only to
 say what Vaultite is compatible with.

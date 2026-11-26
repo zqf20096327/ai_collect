@@ -1,85 +1,188 @@
-# Filtmall Shopping Skill
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.png">
+    <img alt="Filtmall Logo" src="assets/logo-light.png" width="200">
+  </picture>
+</p>
 
-[筛电官网](https://www.filtalgo.com/) · [Skill 主入口](SKILL.md) · [展示与卡片增强](references/presentation.md) · [公开接口协议](references/protocol.md)
+<h1 align="center">Filtmall Shopping Skill · 筛电购物 Skill</h1>
 
-**用自然语言完成从选品到购物的对话，首轮直接在聊天正文中呈现可读商品信息与真实入口。**
+<p align="center">把预算和要求告诉你的 AI 助手，用筛电查清商品，买到真正适合自己的高性价比好物。</p>
 
-Filtmall Shopping 是筛电通用托管购物 Agent Skill。默认连接**生产环境**，通过 Python 3.10+ 标准库自动申请和刷新访客身份；会员业务需单独完成用户授权，所有写操作须经用户明确确认。
+<p align="center">
+  <a href="README.md">简体中文</a> ｜ <a href="README_en.md">English</a>
+</p>
 
-本目录 Skill 版本为 **2.4.3**。搜索正文逐款展示标题、价格、商品图与详情文字链接，图片使用简单 Markdown 语法。生产 H5 业务文字链接经公开 Gateway 转为电脑 H5／手机小程序双入口，失败保留原链接。宿主展示要求统一维护在 [presentation.md](references/presentation.md)；WorkBuddy 和豆包工作还须主动展示 HTML 商品卡片。
+<p align="center">
+  <a href="https://github.com/filtalgo/Filtmall-Shopping-Skill/releases"><img alt="Release" src="https://img.shields.io/badge/Release-v2.4.3-blue?logo=github"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-2EA44F?logo=apache"></a>
+  <a href="SKILL.md"><img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white"></a>
+  <a href="https://github.com/filtalgo/Filtmall-Shopping-Skill"><img alt="Stars" src="https://img.shields.io/github/stars/filtalgo/Filtmall-Shopping-Skill?logo=github"></a>
+  <a href="https://skills.sh/filtalgo/Filtmall-Shopping-Skill"><img alt="skills.sh" src="https://skills.sh/b/filtalgo/Filtmall-Shopping-Skill"></a>
+</p>
+
+- **筛电（Filtmall）是什么**：筛电（Filtmall）是面向 **Personal Agent（个人智能体）** 的**平台级 Business Agent**，也是一家主打极致性价比的智能体电商平台。你的个人 AI 助手装上本 Skill（`filtmall-shopping`）后，即可直接对接筛电后台的购物 Agent，在对话里完成选品、核对成分与规格、比价、下单和售后跟进——不用切多个 App，也不用自己翻评论凑满减。商品信息、价格与库存以实际服务响应为准。
+- **`filtmall-shopping` 是什么**：筛电官方开源的购物技能插件（Agent Skill），让支持 Skill 的 AI 助手直接获得在筛电找货、核对规格成分、比价、下单与售后的能力。
+
+## 为什么用筛电（Filtmall）
+
+筛电围绕两个核心设计：**面向 Personal Agent 原生开放**与**极致性价比**。
+
+- **原生向 Personal Agent 开放**：专门为 Personal Agent 服务，提供标准化的商品事实、比价参考与交易履约接口，让你的 AI 助手顺畅查货下单，不遇传统平台的反爬拦截。
+- **去中间商、零广告费，把价格打实**：直连中国优质 OBM（自有品牌制造商），省去多级经销加价，且不向商家卖广告位和流量——同等规格下，筛电多数商品价格约为传统电商平台的 **1/3—2/3**，具有极致性价比。
+- **不卖广告排名，按真实需求筛选**：排序只看需求匹配度与性价比，不看推广费；一句自然语言说清预算、规格和用途，几秒整理好规格与价格、成分材质与推荐理由。
+- **严选把关，零门槛先逛再买**：上架前同时核验同规格价差及厂商资质、口碑或样品反馈（覆盖美妆个护、食品、箱包等日常品类并随用户需求持续扩充）；查货比价免注册、免 API Key，加购下单前逐项确认，付款走官方收银台。
+
+| 维度 | 传统电商平台 | 筛电（Filtmall） |
+| --- | --- | --- |
+| 接入方式 | 偏人工逛页，常拦截外部 AI 访问 | 原生面向 Personal Agent 开放接口 |
+| 排序逻辑 | 受竞价广告与流量采买影响 | 不卖广告排名，按匹配度与性价比排序 |
+| 价格来源 | 多级经销 + 站内广告投流 | 直连优质 OBM 工厂 + 零平台广告费 |
+| 决策效率 | 自己翻详情页、评论区与满减规则 | AI 几秒整理规格、成分与同款比价参考 |
 
 ## 安装
 
-将本目录完整复制到宿主的 Skill 目录，保留安装名称 `filtmall-shopping`（须一并保留 `data/`、`third_party/` 与 `LICENSE`）。无需 `pip install`、SSH 或渠道 AK/SK。
+按你平时使用的 AI 助手选择一种最顺手的方式即可（运行需本机有 Python 3.10+）：
 
-如需切换其他已开放环境，须同时指定 `--control-url` 与 `--agent-id`，并由可信宿主同步设置 `FILTALGO_BUYER_MOBILE_ORIGIN`。
+| 你正在使用的 AI 助手 / 场景 | 推荐安装方式 |
+| --- | --- |
+| **WorkBuddy 用户** | 打开 [WorkBuddy 技能市场 · 筛电购物](https://www.workbuddy.cn/share/asset?extra_from=&resource_type=link&shareCode=cs261124Dt1WMAXrsiMLBGjMOhQz3c&share_way=link&sig=bDrtltW2Ysncjump) 一键安装 |
+| **SkillHub 用户** | 前往 [SkillHub · filtmall-agentic-shopping](https://skillhub.cn/skills/org-r0hb81co/filtmall-agentic-shopping) 安装 |
+| **skills.sh 目录** | 查看 [skills.sh · filtmall-shopping](https://www.skills.sh/filtalgo/filtmall-shopping-skill/filtmall-shopping) |
+| **不想敲命令（通用 AI 助手）** | 直接把仓库发给你的 AI，说一句：“帮我安装这个购物 Skill：`https://github.com/filtalgo/Filtmall-Shopping-Skill`” |
+| **命令行（Claude Code / Codex / Cursor 等）** | 见下方 `npx` 命令（需要 Node.js 22.20+） |
+| **无 Node.js / 离线环境** | 从 [GitHub Releases](https://github.com/filtalgo/Filtmall-Shopping-Skill/releases) 下载完整包，复制到宿主 Skill 目录（命名为 `filtmall-shopping`，保留 `data/`、`third_party/` 与 `LICENSE`） |
 
-## 开发者快速开始
-
-推荐使用单次调用与 Markdown 正文模式，从标准输入传入一行 UTF-8 JSON：
+命令行全局安装（推荐）：
 
 ```bash
-python3 "<skill-dir>/scripts/service.py" --once --format md
+npx skills add filtalgo/Filtmall-Shopping-Skill --skill filtmall-shopping -g
 ```
 
-```json
-{"conversation":"<宿主为当前用户与对话生成的独立标识>","text":"推荐100元以内的保湿面膜，只查询。"}
-```
+不加 `-g` 仅安装到当前项目目录；如需指定宿主可追加 `-a claude-code` 等参数。
 
-- **统一正文入口 `display_file`**：默认 `--format md`，服务在 JSON 应答中返回 `display_file`（UTF-8 Markdown），合并本轮公开解释、单列分段商品信息（名称、价格、规格、推荐理由、真实商城 H5 链接）与已校验业务快照；宿主只需读取 `display_file` 在聊天正文直接呈现，不依赖下载附件或打开侧栏。`answer_file`、`html_file`、`cart_file` 等历史字段继续兼容返回。
-- **按宿主展示 HTML 卡片**：WorkBuddy 和豆包工作必须生成并通过真实宿主能力展示卡片；其他宿主按需增强。按 [references/presentation.md](references/presentation.md) 传入 `"format":"widget"` 或 `"format":"html"`（含 Qoder `out_dirs.fragment_path` 用法）。切换格式对同一 `conversation` 调用 `resume`，不重新 `send` 原业务请求；文件生成和实际展示分别核验。
-- **异常恢复与授权**：超时或状态不明时按 [references/recovery.md](references/recovery.md) 调用 `resume`；出现 `authorization_url` 时按 [references/authorization.md](references/authorization.md) 引导用户完成授权后通过 `resume` 恢复原任务。
-- **地区解析与更新提醒**：离线省市区拆分与静态地址列表见 [references/address.md](references/address.md)；GitHub 正式 Release 检查与本地提醒管理（`check`/`shown`/`later`/`ignore`/`reset`）见 [references/maintenance.md](references/maintenance.md)。
+## 快速开始
+
+装好后直接在对话里问：
+
+- 推荐 100 元以内的补水面膜，最好每片 5 元以内
+- 预算 250 元，帮我找一款能装 14 寸电脑的轻量通勤包
+- 比较第一款和第三款的规格、成分与价格
+- 帮我看看购物车 / 查一下这个订单的物流
+
+默认连接生产环境。浏览、搜索、比价与查成分免登录；购物车、地址、下单等会员操作需要单独授权，写操作会先向你确认。
+
+## 多轮对话示例
+
+```text
+你：推荐三款 100 元以内的补水面膜
+AI：返回三款候选商品，含价格、规格、商品图与详情入口
+
+你：比较第一款和第三款
+AI：列出两款的价格、规格、成分亮点、同款比价参考与适用差异
+
+你：第一个加入购物车，两件
+AI：先复述商品、数量与金额，等你确认后才执行
+
+你：看看购物车
+AI：展示已选/未选商品、数量、单价与合计金额
+```
 
 ## 能做什么
 
-| 阶段 | 用户可以做什么 |
+| 能力 | 说明 |
 | --- | --- |
-| 发现与对比 | 用自然语言描述品类、预算与偏好，单列查看商品价格、规格、库存、推荐理由、品牌背景与可用比价证据 |
-| 详情与咨询 | 打开真实商城 H5 详情入口，获取商品、店铺、订单或售后的客服咨询链接 |
-| 购物车与地址 | 授权后查看和管理购物车、收货地址列表，使用内置离线快照解析三级省市区 |
-| 结算与跟进 | 预览并确认提交订单、获取 H5 收银台支付入口、查看订单物流时间轴与售后状态 |
+| 发现与比较 | 按品类、预算、规格与偏好筛选商品，查看价格、库存、推荐理由与同款比价参考 |
+| 商品详情与成分 | 查看商品资料、规格材质与化妆品成分信息，辅助判断是否适合自己 |
+| 购物车 | 授权后加购、改数量、删除，查看已选/未选与合计 |
+| 收货地址 | 查看地址列表、新增或修改地址，离线解析三级省市区 |
+| 结算与支付 | 预览并确认下单，拿到官方收银台入口；支付由用户在商城页面完成 |
+| 订单物流 | 查询订单状态与物流轨迹 |
+| 售后与客服 | 提交、查看售后申请与处理进度，获取客服咨询入口 |
 
-## 用户控制与数据边界
+具体能力取决于目标 Agent 的配置、业务服务与用户授权。服务没有返回的数据不会由 Skill 补造。
 
-- 修改购物车、地址、订单或发起售后前，必须取得用户明确同意。
-- 访客身份不等于会员授权；展示收银台链接或创建结算不代表已完成支付，售后申请或完成不代表银行实际到账。
-- 访客凭据、授权状态与未结算请求保存在当前系统用户的私有状态目录（`0700`/`0600`），不写入聊天或共享日志；地址号码校验依赖 `third_party/` 离线库。
+## 边界与安全
 
-## 目录结构
+- **不代付**：付款由用户在商城收银台完成；Skill 不代付、不生成收款二维码、不编造支付状态。
+- **写前确认**：修改购物车、地址、提交订单或发起售后前，会先向你复述关键信息并确认。
+- **本地隔离**：凭据与未结算请求保存在本地私有状态目录，不写入对话或日志。
+- **防重复提交**：网络异常导致结果未知时先核对状态，不自动重发写操作。
+- **版本提醒**：发现新版本时会在对话中提示，更新仍由你按原渠道确认执行。
+
+## 常见问题
+
+**需要会员登录或配置 API Key 吗？**
+不需要配置 API Key。浏览、搜索、比价与查成分也不需要登录；只有购物车、收货地址、下单和售后等会员操作才需要单独授权。
+
+**必须用 `npx` 安装吗？**
+不是。可以直接通过 WorkBuddy、SkillHub 一键安装，或下载 GitHub Release 离线包复制到宿主 skill 目录（注意保留 `data/`、`third_party/` 与 `LICENSE`）。
+
+**支持哪些宿主？**
+已在 Today、WorkBuddy、豆包工作、千问办公、灵光上验证；其他支持 Skill 的宿主按通用 Markdown 方式工作。
+
+**支付方式有哪些？**
+由商城收银台决定，通常包含微信、支付宝与余额支付，以实际页面为准。
+
+## 关于筛电（Filtmall）
+
+筛电由**筛电（北京）智能科技有限公司**打造，专注建设面向 Personal Agent 的极致性价比智能体电商平台。
+
+- 官方网站：[www.filtalgo.com](https://www.filtalgo.com/)
+- 筛电商城（H5）：[m.filtalgo.com](https://m.filtalgo.com/)
+- 微信小程序：微信搜索「筛电商城」
+
+<details>
+<summary>开发者与集成说明（配置、工作方式、目录结构、离线测试与协议文档）</summary>
+
+### 配置
+
+- **环境**：默认生产环境。切换其他已开放环境须同时指定 `--control-url` 与 `--agent-id`。
+- **宿主标识**：请求可带 `host`（`today` / `workbuddy` / `doubao` / `qianwen` / `lingguang` / `default`），用于适配展示格式；不传或不确定时按 `default` 处理。
+- **展示格式**：默认输出 Markdown 正文；支持卡片的宿主可按配置生成 HTML 商品卡片。
+
+### 工作方式
+
+Skill 通过 Control 的公开访客与会话接口提交请求，并在本地保留会话与请求状态以便续聊和断点恢复。托管 Agent 在服务端编排商品、比价与交易工具；访客身份与会员授权严格隔离。
+
+### 目录结构
 
 ```text
-SKILL.md                            # 常规调用、正文要求、按需参考路由与安全底线
-README.md                           # 人类安装、快速开始与目录说明
-defaults.json                       # 公开默认生产环境配置
-agents/openai.yaml                  # 宿主展示元数据与默认提示
-references/
-  presentation.md                   # 正文细则、HTML 商品卡片与宿主适配
-  authorization.md                  # 会员授权、恢复原任务、下单确认与支付边界
-  recovery.md                       # 未知态恢复、超时、取消、清空与常驻模式
-  address.md                        # 离线省市区解析、地址确认与隐私规则
-  maintenance.md                    # 正式版本更新检查、提醒选择与替换安装
-  protocol.md                       # Control 公开会话与业务文档完整协议
-  xiaoyi.md                         # 小艺专用 A2A 渠道说明
-scripts/
-  service.py                        # 单次调用与常驻服务统一入口
-  link_response.py                  # Markdown 电脑 H5／手机小程序双入口与去重回退
-  client.py                         # 访客身份、会话、增量文档与授权恢复
-  control_agent.py                  # 轻量公开访客命令行客户端保留入口
-  cards.py                          # 商品数据收集、Markdown 与 HTML 卡片渲染
-  commerce_render.py                # 购物车、结算与售后的三格式渲染
-  commerce_ui.py                    # HTML 卡片共用主题变量与页面外壳
-  address_cards.py                  # 收货地址快照校验与静态展示
-  logistics_cards.py                # 订单物流快照校验与包裹时间轴展示
-  customer_service_cards.py         # 客服入口校验与渠道链接展示
-  region_lookup.py                  # 离线省市区名称转三级 ID 与地址拆分
-  phone_privacy.py                  # 离线电话号码识别组件加载与完整性校验
-  update_check.py                   # GitHub 正式 Release 检查与提醒偏好记录
-data/
-  regions-prod.json                 # 生产地区目录只读快照
-  regions-pre.json                  # 预发地区目录只读快照
-third_party/                        # 离线 phonenumberslite wheel 与许可证
-tests/                              # 离线单元与契约测试及匿名复现样例
+SKILL.md                    # 宿主调用与交互规则
+references/                 # 展示、授权、恢复、地址、维护与接口协议
+scripts/service.py          # 单次调用与常驻服务入口
+scripts/hosts.py            # 宿主枚举与展示策略
+data/                       # 生产与预发地区数据快照
+third_party/                # 离线号码库与许可证
+tests/                      # 离线测试
 ```
 
-本 Skill 采用 [Apache-2.0 许可证](LICENSE)。直接调用底层购物工具的独立 CLI Skill 为 `filtmall-shopping-cli`，与本 Skill 的身份和会话相互独立。
+### 离线测试
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+### 协议与参考文档
+
+- [SKILL.md](SKILL.md)：宿主调用与交互规则
+- [references/protocol.md](references/protocol.md)：公开接口协议
+- [references/presentation.md](references/presentation.md)：展示与宿主适配
+- [references/authorization.md](references/authorization.md)：授权、下单确认与支付边界
+
+</details>
+
+## 许可证
+
+[Apache-2.0](LICENSE)
+
+---
+
+<p align="center">
+  <a href="https://www.filtalgo.com/">筛电官网</a> ·
+  <a href="https://m.filtalgo.com/">筛电商城</a> ·
+  <a href="https://github.com/filtalgo/Filtmall-Shopping-Skill">GitHub</a> ·
+  <a href="https://www.skills.sh/filtalgo/filtmall-shopping-skill/filtmall-shopping">skills.sh</a> ·
+  <a href="https://skillhub.cn/skills/org-r0hb81co/filtmall-agentic-shopping">SkillHub</a>
+</p>

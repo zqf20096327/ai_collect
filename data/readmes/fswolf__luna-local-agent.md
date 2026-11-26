@@ -39,7 +39,7 @@ grew from there.
 
 <img width="1210" alt="How Luna's models work together. The chat model is her mind, in the middle, and the only one required. Whisper (her hearing, on the CPU) and the vision adapter (her eyes) feed what you say and show into it. Kokoro speaks her replies. Every turn, the embedding model and the reranker find the facts, notes and tools that fit. Only when you ask, she can put one short question to a bigger cloud model: Claude, Grok or ChatGPT. Leave the optional parts out and she does without." src="assets/luna-models.png" />
 
-<img width="1210" alt="How Luna's memory works on each turn. Your message comes in at the top. In the middle is this turn: everything she knows while she answers, put together fresh each time, and only what fits goes along. Always along, on the left: who you are, the conversation so far and her open projects. Found by meaning, on the right: the facts that fit (read again by the reranker), her pages, notes on past sessions and lessons that fit, and passages from your own notes. Afterwards, underneath: she saves facts on purpose with when they were true (a change retires the old one, forget scrubs it everywhere), writes notes on a conversation when it goes quiet, and while idle learns lessons from her own mistakes, rewrites pages and merges duplicate facts. Her memory stays on your PC in plain SQLite files." src="assets/luna-memory.png" />
+<img width="1210" alt="How Luna's memory works on each turn. Your message comes in at the top. In the middle is this turn: everything she knows while she answers, put together fresh each time, and only what fits goes along. Always along, on the left: who you are (written from your facts and what she's concluded), the conversation so far and her open projects. Found by meaning, on the right: the facts that fit (read again by the reranker), her pages, notes on past sessions and lessons that fit, passages from your own notes, and ask my memory, a question she asks herself mid-answer. Afterwards, underneath: she saves facts on purpose with when they were true and logs every change, writes notes on a conversation when it goes quiet, reads conversations back between talks and notes what she concludes about each person, and overnight learns lessons, tidies facts, merges her conclusions and lets old guesses fade. Her memory stays on your PC in plain SQLite files." src="assets/luna-memory.png" />
 
 ```bash
 git clone https://github.com/fswolf/luna-local-agent.git ~/luna-ai
@@ -62,6 +62,7 @@ What she does:
 - **Knows who's talking:** tells the people in your house apart by voice or face, uses their name and pronouns, and keeps each person's memories to themselves ([below](#she-knows-who-shes-talking-to))
 - **Talk from another room:** a phone or tablet becomes a relay station, paired by QR code. On Android, the [Luna Station app](https://github.com/fswolf/luna-station-android) makes it a room device: her portrait full screen, a mic and a speaker. Any other device works in its browser. Dedicated voice devices (ESPHome satellites) are experimental ([details](docs/stations.md))
 - **Reminders and real alarms:** she wakes you up, and nags until you're up
+- **Your calendar:** Google Calendar, calcurse or any iCal feed, read-only: she knows what's on and offers reminders
 - **Email:** checks, reads and searches your inbox; sends only with your OK ([details](docs/email.md))
 - **Files and commands:** writes and edits files and runs commands, every one shown and approved first, with read/write/execute permissions you set in the tools pane. A fresh install starts with the everyday tools on and the far-reaching ones (shell, network scans, email, desktop control) off until you switch them on
 - **Hard to steer:** a web page, an email or a stranger in chat can't quietly get her to read your files, send things out or switch something on
@@ -76,7 +77,7 @@ What she does:
 - **Learns from herself:** daily lessons from her own mistakes, notes on every conversation, fact cleanup, saying so when she's unsure ([details](docs/learning.md#learning-from-herself))
 - **Patches (experimental):** keep the replies you like with `/good`, or correct one with `/fix`, then train a small patch (a LoRA) for her model that teaches her those habits. Her model server loads only the patches made for the model it's running. Linux and AMD cards for now, and not yet tried on a real training run ([details](docs/patches.md))
 - **Streams with you:** answers pomf.tv, Twitch, YouTube and IRC chat out loud ([details](docs/chat.md))
-- **Plays games:** chess against you on a board you drag the pieces around on, and Minecraft, Zork, Vibe City, REALITI and Game Boy games you own (Pokemon Red and Blue and The Final Fantasy Legend come to her as text too) on her own when you go quiet; she remembers how she felt about them ([details](docs/games.md))
+- **Plays games:** chess against you on a board you drag the pieces around on, and Minecraft, Zork I to III, Starcross, Planetfall, The Hitchhiker's Guide, Vibe City, REALITI and Game Boy games you own (Pokemon Red and Blue and The Final Fantasy Legend come to her as text too) on her own when you go quiet; she remembers how she felt about them ([details](docs/games.md))
 - **Runs your home:** lights, plugs, sensors and the thermostat through Home Assistant on your own network; locks and garage doors always ask first ([details](docs/home.md))
 - **Adult toys (18+):** Lovense, and most other brands through Intiface Central (Buttplug.io), so she can use them in a roleplay, with limits you set ([details](docs/devices.md#lovense))
 - **From your phone:** Discord, with approvals answered right in the chat, and scheduled jobs ([details](docs/sysadmin.md))
@@ -292,6 +293,7 @@ The installer asks before anything that touches your system, and can be run agai
 - [Who she's talking to](docs/who.md): how every turn is matched to a person, the face check, privacy
 - [Relay stations](docs/stations.md): talk to her from another room on a phone or tablet, with the Android app or in the browser
 - [Reminders and alarms](docs/reminders.md)
+- [Calendar](docs/calendar.md)
 - [Knowledge](docs/knowledge.md): your notes, manuals and PDFs as something she can look things up in
 - [Memory](docs/memory.md): facts, recall by meaning, the memory manager, conversation history
 - [Her reasoning](docs/reasoning.md): thought log, token confidence, adaptive thinking, introspection
@@ -307,7 +309,7 @@ The installer asks before anything that touches your system, and can be run agai
 - [Sysadmin](docs/sysadmin.md): looking after your machines, scheduled checks, other boxes over SSH, from your phone
 - [Plugins](docs/plugins.md): how they work, writing your own, scheduled jobs and Discord
 - [Stream chat](docs/chat.md): pomf.tv, Twitch, YouTube and IRC, and what viewers can and can't reach
-- [Games](docs/games.md): chess, Minecraft, Zork, Vibe City, REALITI, Game Boy, playing on her own
+- [Games](docs/games.md): chess, Minecraft, her text adventure library, Vibe City, REALITI, Game Boy, playing on her own
 - [Home and devices](docs/devices.md): Home Assistant, Lovense, toys of most brands through Intiface Central
 - [Development](docs/development.md): project structure, extras
 
@@ -344,8 +346,11 @@ same license.
 Versions released before November 20, 2026 were under the MIT License, and
 they stay that way.
 
-Third-party parts keep their own licenses: Zork I in `games/zork/` is MIT
-(see `games/zork/LICENSE-zork1`), the bundled three.js, three-vrm, pixi.js
+Third-party parts keep their own licenses: Zork I, II and III in
+`games/zork/`, `games/zork2/` and `games/zork3/` are MIT (see the
+`LICENSE-zork` file beside each), Starcross, Planetfall and The
+Hitchhiker's Guide to the Galaxy in `games/` are Infocom's games (the
+rights are Microsoft's now, through Activision) and come out on request, the bundled three.js, three-vrm, pixi.js
 and pixi-live2d-display in `portrait/viewer/vendor/` are MIT, and the models
 and Live2D's Cubism Core that she downloads come under their publishers'
 licenses.

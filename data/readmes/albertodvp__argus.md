@@ -11,9 +11,11 @@ is a Hermes plugin that reads that work from the side of the people using the ag
 - **Edit review.** Every skill edit Hermes applies is checked against the run that produced it: did a
   failure, a success or a correction motivate it, or nothing?
 - **Proposals.** Rules of its own, backed by several intents or a recurring error, as a minimal diff
-  on the current `SKILL.md`.
+  on the current `SKILL.md`. Each cited intent must be quoted verbatim from its turns, or it does
+  not count.
 - **A person decides.** Keep or reject each edit, accept or dismiss each proposal. Argus writes a
-  skill only on an explicit apply.
+  skill only on an explicit apply, or, if you opt in, applies the best-backed additive proposals
+  itself and shows each one with its undo.
 
 <sub>Argus Panoptes was the hundred-eyed watchman whom Hermes lulled to sleep and slew; Hera set his
 eyes in the peacock's tail. Here the eyes are given back, and they watch on Hermes' side.</sub>
@@ -143,7 +145,7 @@ can be rolled back. Details, with references into the Hermes source:
 | The review is pushed to save something | edits without evidence are counted per skill among Hermes' own edits (not those a person wrote, such as an applied proposal); a skill where they are 3+ and 30%+ is flagged "needs review" |
 | Edits are per skill, work is per goal | each edit is tied to its intent and to the intents that read the skill afterwards |
 | The ledger writes `curator` for both review and curator | `review` when the entry's session has messages in `state.db`, else `curator` |
-| No rule is drawn from several sessions | proposals need 2+ intents or an error seen 5+ times |
+| No rule is drawn from several sessions | proposals need 2+ intents, each quoted verbatim from its turns, or an error seen 5+ times; Argus checks the quotes and drops the rest |
 | Nothing waits for a person | keep / reject, accept / dismiss, then apply |
 
 Edit labels:
@@ -157,6 +159,13 @@ Edit labels:
 
 Labels are a model's judgement: open the edit to check. Before/after counts describe what happened
 next; they do not prove an edit helped.
+
+A proposal shows the words it rests on: for each intent it cites, an excerpt of that intent's turns
+(what the person typed, without the skill bodies Hermes wraps around it, or a tool result; never
+the agent's own reply) the model copied verbatim, linked to the intent. Argus checks every quote
+against the stored messages (case and spacing aside, whole words, 3+ words) and drops the ones it cannot find; a proposal left without 2
+quoted intents or an error seen 5+ times is discarded, and `hermes argus derive` logs why
+([details](docs/data-model.md#proposals)). Deleting a session removes its quotes too.
 
 ### Decisions
 
@@ -178,13 +187,70 @@ write is approved it stays there, with the ledger entry the approval wrote; once
 proposal again, like after a rollback of its ledger entry. The dashboard counts proposals not yet
 carried out, accepted ones included; `/argus` and `/status` count proposals still undecided.
 
+### Auto-apply (opt-in)
+
+An approval you never refuse is not a check. With `auto_apply: true` in a profile's settings, Argus
+accepts and applies a few proposals itself at the end of each derive pass of that profile that ends
+without an error, through the same apply and checks as your click, and leaves the rest to you. A
+proposal qualifies only when all hold:
+
+- the latest proposals pass emitted it (even one that ran before you turned the setting on); the
+  backlog of older proposals is never worked through;
+- confidence `high`, 2+ intents cited and quoted verbatim (proposals from before the quotes check
+  never qualify), and a patch that only adds lines to an existing skill: never a new skill, never a
+  removed line;
+- nobody decided on it or tried to apply it, nor on another proposal for that skill citing one of
+  its intents (the same lesson reworded: you already answered it);
+- no change to that skill was rolled back since auto-apply first wrote or staged one there (from an
+  hour before, as the write precedes its record): undoing is a no, and the skill stays yours;
+- fewer than `auto_apply_per_week` (3) automatic writes in the last 7 days, counting staged ones
+  and writes Argus cannot prove (`unknown`, e.g. with `skills.ledger` off), which also end the pass.
+
+The automatic accept is recorded only if the proposal still has no decision at that moment, so a
+dismiss you click meanwhile wins. Each one is a decision and an apply attempt marked `auto` (the
+ledger entry says actor `user`, the only actor a plugin can write as); a refused or failed attempt
+gives the proposal back to you and is never retried. With `skills.write_approval` on it only stages
+the write.
+
+The dashboard tags it **auto-applied** under "carried out", its edit reads "auto-applied proposal",
+and the undo (reject that edit, or `hermes -p <profile> curator rollback <entry>`) is next to it.
+`hermes argus status` shows the week's count, the derive log names each one, and
+`hermes argus auto-apply` shows what the policy would apply now, writing nothing.
+
+![An auto-applied proposal under "carried out", with its undo](assets/showcase/11-auto-applied-proposal.png)
+
+### Enforced checks
+
+A rule in `SKILL.md` is advice the model may skip. When an accepted rule forbids something a single
+tool call shows ("never force-push", "never write under ~/.ssh"), Argus can also check it on every
+call, in Hermes' `pre_tool_call` hook, outside the model. Most rules ("before X do Y", "prefer Z")
+are not checkable and stay prose.
+
+- **Draft.** derive's last stage, `checks`, asks the `argus` model once per accepted rule for a
+  check in a small closed format: one tool, one argument, one match (`command`: program, words and
+  flags in a parsed shell command; `path`: under a directory, symlinks resolved; `equals`; `tool`).
+  No code, no regular expressions. The estimate counts these calls. A draft does nothing.
+- **Approve.** Only a person: `hermes argus checks approve <id>` from their own terminal (refused
+  without a TTY, from cron, or from a command the agent runs; you type the start of the check's
+  sha256), or the check's buttons in the dashboard. Auto-apply never approves.
+- **Observe, then enforce.** An approved check starts in observe: matching calls run and count as
+  *would block*. `hermes argus checks enforce <id>` blocks them; the agent reads the rule, the check
+  and how a person lifts it. `observe` and `revoke` undo it.
+- **Deny what it cannot read.** A relative path, `$(...)`, a script piped into a shell: a match.
+  An error inside an enforced check blocks; a broken plugin DB blocks only the tools that have an
+  enforced check, never every call. A check whose stored text no longer has its approved sha256 is
+  not enforced and is shown as such.
+
+It is not a sandbox: the agent runs as you and can reach the same goal through a script, Python, or
+by editing Argus' data. Design, failure semantics and limits: [docs/enforce.md](docs/enforce.md).
+
 | | Background review | Curator | Argus |
 |---|---|---|---|
 | Unit | one turn | skill | intent |
 | Question | what from this turn is worth saving? | is this skill still used? | did this edit come from evidence, and what should the agent learn next? |
 | Runs | end of a turn whose counter is due | at most every 7 days | idle 10 minutes, at most hourly, or on demand |
 | Model slot | `auxiliary.background_review` | `auxiliary.curator` | `auxiliary.argus` (inherits the curator's) |
-| Writes skills | yes | yes | only on an explicit apply |
+| Writes skills | yes | yes | only on an explicit apply, or with `auto_apply` on |
 
 ## What it adds to Hermes
 
@@ -193,12 +259,12 @@ tools, no middleware, no model calls in hooks.
 
 | Surface | What |
 |---|---|
-| Hooks | `pre_llm_call`, `post_tool_call`, `on_session_end`, `on_skill_lifecycle`, `on_session_delete`: tool and turn outcomes, the ledger entry of each `skill_manage`, cleanup of deleted sessions. They only enqueue rows on a writer thread. |
+| Hooks | `pre_llm_call`, `post_tool_call`, `on_session_end`, `on_skill_lifecycle`, `on_session_delete`: tool and turn outcomes, the ledger entry of each `skill_manage`, cleanup of deleted sessions. They only enqueue rows on a writer thread. `pre_tool_call`: the checks a person approved for accepted rules, read from the plugin DB (cached, re-read only after a commit); it blocks only for a check in enforce mode ([docs/enforce.md](docs/enforce.md)). |
 | Model slot | `auxiliary.argus` (`ctx.register_auxiliary_task`), chosen in `hermes model`; every call has a JSON schema |
-| CLI | `hermes argus backfill \| derive \| status \| export \| apply`, `-p <profile>` or `--all` |
+| CLI | `hermes argus backfill \| derive \| status \| export \| apply \| auto-apply` (preview) `\| checks` (`list`, `show`, `draft`; a person only: `approve`, `enforce`, `observe`, `revoke`), `-p <profile>` or `--all` |
 | Slash command | `/argus`: intent of the current session, reviews waiting (on messaging platforms only the session's intents) |
 | Dashboard | **Argus** tab, a banner on the Skills page, API at `/api/plugins/argus/` |
-| Settings | `plugins.entries.argus.settings`: `idle_minutes` (10), `interval_minutes` (60), `since_days` (30) |
+| Settings | `plugins.entries.argus.settings`: `idle_minutes` (10), `interval_minutes` (60), `since_days` (30), `auto_apply` (false), `auto_apply_per_week` (3) |
 | Storage | `plugin-data/argus/` per profile: `data.db` (SQLite), run reports, logs, locks |
 
 Argus reads `state.db`, the curator ledger and its blob store, and never writes them; skills change
@@ -213,12 +279,16 @@ only on apply, through Hermes' own functions. Storage in detail: [docs/data-mode
 - Intent assignment, judgements and edit labels are model output and can be wrong.
 - A background review whose session was deleted reads as `curator`: the ledger does not record the
   write origin.
+- Enforced checks see one argument of one call; they are not a sandbox (see
+  [docs/enforce.md](docs/enforce.md), "Threat model and known limits").
 
 ## Development
 
 Plain Python run by Hermes (3.11 to 3.14) with only what Hermes installs; copied into an install,
-never built. Strict typing: mypy with no `Any`, ruff, pytest, and `tsc` over the dashboard's
-JavaScript. Hermes is not installed for the checks: `typings/` stubs the few internals Argus imports.
+never built. Strict typing: mypy with no `Any`, ruff (imports at the top only, pytest and pathlib
+style among its rules), pytest, and `tsc` over the dashboard's JavaScript. Hermes is not installed
+for the checks: only `argus/hermes_internals.py` imports it, guarded, and `typings/` stubs the few
+internals it uses.
 
 ```bash
 nix develop -c just check        # lint, typecheck, typecheck-js, test; tools from flake.nix
@@ -232,8 +302,34 @@ Without Nix: uv 0.13.0, just and Node.js with npm.
 |---|---|
 | `argus/` | the plugin (schema in `argus/schema.sql`) |
 | `tests/`, `typings/` | checks and Hermes stubs |
-| `docs/` | [intents](docs/intents.md), [Hermes' learning loop](docs/hermes-learning-loop.md), [data model](docs/data-model.md), [showcase](docs/showcase.md) |
+| `bench/` | reproducible numbers: fixture, cassette, expected numbers ([bench/README.md](bench/README.md)) |
+| `docs/` | [intents](docs/intents.md), [Hermes' learning loop](docs/hermes-learning-loop.md), [data model](docs/data-model.md), [enforced checks](docs/enforce.md), [showcase](docs/showcase.md) |
 | `assets/` | mark, wordmark, banner, screenshots |
+
+## Reproducible numbers
+
+The numbers Argus reports on the demo (intents, proposals, skill edits by evidence, runs by status)
+can be checked by anyone, without a model or an API key:
+
+```bash
+nix develop -c just bench   # derive on bench/fixture.tar.xz from bench/cassette.jsonl, compared with bench/expected.json
+```
+
+`hermes argus derive --record PATH` writes every model call of a pass to a **cassette** (JSONL: a
+sha256 of the prompt, its purpose and the answer; no prompt text), and `--replay PATH` runs the
+pass again answering each call from it, with no model constructed and no auto-apply. One prompt
+asked twice gets its answers in recorded order; a call that failed fails again. A prompt the
+cassette does not hold fails the run, naming the stage and the key (`--lenient` makes it a failed
+call instead): a change to the inputs, to `prompts.py` or to how derive builds a prompt shows up as
+a miss.
+
+The bench fixture is a compact copy of what backfill and derive read from the fictional demo home
+(state.db rows of the history window, the ledger from its start, the blobs those entries name,
+each skill's `SKILL.md`), with the window frozen: it starts a fixed number of days before a fixed
+`now`, so the replay asks the same prompts on any day and in any directory. `just bench` unpacks it
+into a temporary Hermes home, backfills, replays the cassette strictly and compares the headline
+numbers; any difference or miss exits 1. Building the fixture and recording the cassette (about
+210 model calls on the demo): [bench/README.md](bench/README.md).
 
 ## License
 

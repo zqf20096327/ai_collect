@@ -4,7 +4,7 @@
 
 # Amadeus-L
 
-**Latest version: v3.2.1 in [`releases section`](https://github.com/cmh95209/Amadeus-L/releases)** 
+**Latest version: v3.3.0 in [`releases section`](https://github.com/cmh95209/Amadeus-L/releases)** 
 
 **Join Discord for support and discussions:** [![](https://dcbadge.limes.pink/api/server/qSYmSYkpuA)](https://discord.gg/qSYmSYkpuA)
 
@@ -230,7 +230,7 @@ choice and point Amadeus at it (on an Intel Mac, this is the way).
 
 # Development Roadmap
 
-Status as of v3.2:
+Status as of v3.3:
 
 ```text
 Live2D static rendering       ✓
@@ -262,6 +262,8 @@ Your language (v3.2)          ✓ 17 display languages
 Voice selector (v3.2)         ✓ Japanese, English, Mandarin, Cantonese, Korean
 Live weather lookups (v3.2)   ✓ she checks it herself, honest sources
 Busy-cloud retry (v3.2)       ✓ plus a Vertex AI Priority switch
+ChatGPT sign-in (v3.3)        ✓ use your ChatGPT Plus or Pro plan
+Emoji, GIF + stickers (v3.3)  ✓ picker next to Send
 Better animations/Live2D      planned
 Better web and harness tools  planned
 Agentic workflows             planned
@@ -277,11 +279,12 @@ The longer sections of this README live in the [docs/ folder](docs/).
 | Section | What's inside |
 |---------|---------------|
 | [Long-Term Memory (v2.0)](docs/long-term-memory.md) | How her memory works and where it lives |
-| [Latest features (v3.2)](docs/latest-features.md) | Everything she can do today |
+| [Latest features (v3.3)](docs/latest-features.md) | Everything she can do today |
 | [Remote access](docs/remote-access.md) | Open her on your phone through Tailscale |
 | [Architecture](docs/architecture.md) | The five components and how they talk to each other |
 | [Project Structure](docs/architecture.md#project-structure) | What lives in each folder |
 | [Technology](docs/architecture.md#technology) | The stack behind each component |
+| [Code map](ARCHITECTURE.md) | For contributors: what each code file owns and where to start a change |
 | [Manual Installation](docs/manual-installation.md) | The hand-install, step by step |
 | [Configuration](docs/using-amadeus.md#configuration) | Model server, API key, built-in model, reasoning, remote access, web access |
 | [Launching Amadeus](docs/using-amadeus.md#launching-amadeus) | What the launcher starts, and how |

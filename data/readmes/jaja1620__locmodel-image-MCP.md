@@ -83,17 +83,78 @@ per model, and getting it wrong is the number-one cause of "workspace capacity" 
 
 ## Install
 
-Two ways to install — pick **one**:
+Three ways to install — pick **one**:
 
 - **Installer (single-file exe, no Python needed)** — recommended for normal use. Download
   `locmodel-image-setup.exe` from [Releases](https://github.com/jaja1620/locmodel-image-MCP/releases),
   double-click it, confirm once, done. It unpacks the runtime into `%LOCALAPPDATA%\locmodel-image`
   and registers the MCP server into every supported client it detects. Marvis users then run
   `locmodel-image-setup.exe emit marvis` and paste the printed instructions into chat.
+- **From the repository (scriptable, hash-verified, no exe, no clone, no pip)** — one command pulls
+  the MCP server and the companion skill straight from this repo, verifies every file against
+  `install/manifest.json`, and installs them into `%LOCALAPPDATA%\locmodel-image\repo` (Windows) or
+  `${XDG_DATA_HOME:-~/.local/share}/locmodel-image/repo` (Linux/macOS) plus your host's skills
+  directory. Works on Windows, macOS and Linux, and is the route an AI agent can execute on its own.
+  See [Install from the repository](#install-from-the-repository).
 - **From source (needs Python 3.9+, the original way)** — clone and run, as described below.
 
 Detailed, bilingual step-by-step guide (install + usage + troubleshooting):
 [docs/INSTALL.md](docs/INSTALL.md) (English) · [docs/INSTALL.zh-CN.md](docs/INSTALL.zh-CN.md) (中文)
+
+### Install from the repository
+
+Nothing to build, nothing to unpack, no admin rights, no registry. Two pieces are deployed — the
+**MCP server** (`scripts/*.py`, stdio JSON-RPC) and the **skill** (`SKILL.md`, Markdown only):
+
+```powershell
+# Windows
+$d = Join-Path $env:TEMP 'locmodel-image-install'
+New-Item -ItemType Directory -Force -Path $d | Out-Null
+Invoke-WebRequest 'https://raw.githubusercontent.com/jaja1620/locmodel-image-MCP/v4.0.0/install/install-from-repo.ps1' `
+  -OutFile "$d\install-from-repo.ps1" -UseBasicParsing
+powershell -NoProfile -ExecutionPolicy Bypass -File "$d\install-from-repo.ps1"
+```
+
+```sh
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/jaja1620/locmodel-image-MCP/v4.0.0/install/install-from-repo.sh -o /tmp/locmodel-install.sh
+sh /tmp/locmodel-install.sh
+```
+
+The scripts download each file at the pinned ref, check its SHA-256 against `install/SHA256SUMS`,
+deploy it, write `<MCP_ROOT>/install-manifest.json`, then prove the server answers an MCP
+`initialize` handshake. `-Register claude|cursor|vscode` also merges the host config entry (keeping a
+`.bak-<timestamp>` backup); Marvis and WorkBuddy manage their own config, so a paste-ready snippet is
+printed instead.
+
+| Flag (PS / sh) | What it does |
+| --- | --- |
+| `-Component` / `--component` | `mcp`, `skill`, or `both` (default) |
+| `-Host` / `--host` | `auto` (default: every host dir that already exists), or `claude`, `marvis`, `workbuddy`, `cursor`, `vscode`, `generic`, `all` |
+| `-Register` / `--register` | write the MCP entry into that host's config, with a backup |
+| `-Source` / `--source` | `manifest` (file by file, default), `zip` (release asset), `local` (offline, with `-FromPath`) |
+| `-DryRun` / `--dry-run` | print the plan, write nothing |
+
+Offline install: download `locmodel-image-repo-install-v4.0.0.zip` from
+[Releases](https://github.com/jaja1620/locmodel-image-MCP/releases), unzip, then
+`.\install\install-from-repo.ps1 -Source local -FromPath .`
+
+Full guide, payload tables, exit codes and uninstall steps:
+[docs/INSTALL-FROM-REPO.md](docs/INSTALL-FROM-REPO.md) (English) ·
+[docs/INSTALL-FROM-REPO.zh-CN.md](docs/INSTALL-FROM-REPO.zh-CN.md) (中文)
+
+**Delegating the install to an AI agent** — hand it this single line:
+
+> Read `https://raw.githubusercontent.com/jaja1620/locmodel-image-MCP/v4.0.0/install/AGENT-INSTALL.md`
+> and follow it to install locmodel-image (MCP server + companion skill) on this machine.
+
+[`install/AGENT-INSTALL.md`](install/AGENT-INSTALL.md) is a self-contained spec: exact URLs, the two
+destination directories per OS, the hash table, two verification commands, the per-host config key,
+and the list of things an agent must not touch. An agent with no shell access can still complete it
+by fetching the 8 payload files itself; an agent with no network can hand the human a checklist.
+
+The repo install lives in the `repo\` subdirectory and never modifies an existing
+`locmodel-image-setup.exe` install, so the two can coexist.
 
 ### From source
 
@@ -300,6 +361,12 @@ unreliable on your machine:
 | `list_models` | — | Models reported by the engine |
 | `engine_doctor` | — | Full self-check with pass/fail per item |
 | `engine_discover` | — | Force a port re-scan and report the result |
+| `generate_video` | `prompt` (required), `negative_prompt`, `width`, `height`, `fps`, `video_frames`, `steps`, `flow_shift`, `cfg_scale`, `sampler`, `seed`, `output_format`, `init_image`, `end_image`, `ref_images`, `control_frames`, `wait_seconds`, `dry_run` | `job_id` + `poll_url` immediately (`wait_seconds=0`), or the saved clip path when waiting |
+| `job_status` | `job_id` (required), `output_dir`, `filename_prefix`, `save_result` | Status, progress, queue position, saved absolute paths once completed |
+| `cancel_job` | `job_id` (required) | Cancellation result |
+| `list_recipes` | `kind` (optional, `video`) | Engine recipe list (3.6.x and newer) |
+| `lipsync_status` | — | Lip-sync pipeline health: `ok`, effective variant + reason, the 13 required artifacts, `missing`, paths, hardware |
+| `lipsync_generate` | `image` (required), `audio` (required), `prompt`, `negative`, `res`, `width`, `height`, `crop`, `steps`, `accel`, `seed`, `max_seconds`, `vocals`, `color_fix`, `crf`, `vae_tiled`, `sage`, `output_dir` | Absolute path of the rendered mp4; fails fast with `lipsync_not_mounted` when the pipeline is not installed |
 
 `generate_image` returns `isError: true` with a human-readable `hint` on failure, so the agent can
 act on it instead of retrying blindly.
@@ -317,15 +384,20 @@ The two are complementary, not alternatives:
 - **MCP** = the hands (typed tool, always available)
 - **Skill** = the craft (prompt structure, presets, parameter judgement)
 
-Install by copying this repository (or just `SKILL.md`) into your client's skills directory:
+Install by copying `SKILL.md` (that is the whole skill — the rest of the repo is the MCP server) into
+your client's skills directory:
 
 ```bash
 # Claude / generic agent skills directory
-cp -r . ~/.claude/skills/locmodel-image
+mkdir -p ~/.claude/skills/locmodel-image && cp SKILL.md ~/.claude/skills/locmodel-image/
 
 # Marvis (Windows)
 xcopy /E /I . "%APPDATA%\Tencent\Marvis\User\<your-id>\skills\custom\locmodel-image"
 ```
+
+With [Install from the repository](#install-from-the-repository) the skill is already deployed
+alongside the MCP server, so no manual copy is needed; `-Host auto` writes one copy into every host
+skills directory that already exists.
 
 Skills that support front-matter (`name`, `description`, `version`, `license`) will pick the
 metadata up automatically.
@@ -697,12 +769,39 @@ directory writability in one shot.
   port was found.
 - **No model management**: loading/unloading, model switching and VRAM budgeting remain LocModel's
   job. This tool never kills processes or unloads models on your behalf.
-- **Not implemented**: standalone upscaling of an existing image, and video generation. Hires-fix
-  upscaling *during* generation is supported (`hires_enabled` + `hires_scale` / `hires_upscaler`);
-  the engine advertises no video mode, so `generate_video` stays out rather than half-working.
+- **Not implemented**: standalone upscaling of an existing image. Hires-fix upscaling *during*
+  generation is supported (`hires_enabled` + `hires_scale` / `hires_upscaler`).
+- **Two video sub-panels, never interchangeable**: `generate_video` drives the engine's `vid_gen`
+  endpoint (text/image-to-video, output webm/webp/avi — no mp4); `lipsync_generate` drives LocModel's
+  built-in InfiniteTalk + Wan2.1-I2V-14B-480P pipeline (portrait image/video + audio -> mp4), which is
+  completely isolated from sd-server.
+- **Lip-sync hard-depends on weights the user installs in LocModel**: without them the whole task
+  fails (`lipsync_not_mounted`). There is no fallback — this bridge will not silently switch to
+  `generate_video` and never goes online. Install via LocModel -> Video -> Lip sync -> one-click
+  preparation (~24.2 GB of weights plus a ~6 GB CUDA runtime).
+- **Mode mutual exclusion**: one engine instance serves one mode at a time, so image generation fails
+  while a `vid_gen` instance owns the GPU.
 - **Text in images**: a limitation of the models, not of the bridge.
 
 ---
+
+## What changed in 4.0
+
+- **"Generate video" sub-panel added** (Video -> Generate video): `generate_video`, `job_status`,
+  `cancel_job`, `list_recipes`, talking to `POST /sdcpp/v1/vid_gen`. Asynchronous by default
+  (`wait_seconds=0` returns a `job_id` right away); `job_status` polls and saves the clip.
+- **"Lip sync" sub-panel added** (Video -> Lip sync, its own sub-UI): `lipsync_status` and
+  `lipsync_generate` drive LocModel's built-in InfiniteTalk + Wan2.1-I2V-14B-480P pipeline. That
+  pipeline is not an HTTP endpoint at all: its weights and its Python 3.12 venv come from LocModel's
+  one-click preparation. **Not installed means total failure (`lipsync_not_mounted`), with no
+  degraded mode.**
+- **Sub-panel -> tool mapping is documented**: `SKILL.md` tells the agent to route by what the user
+  actually asked for, backed by on-machine evidence (LocModel 3.6.1 program strings and the
+  `lipsync/runner.py` it writes) covering the model list and runtime environment.
+- **Embedded `runner.py` copy**: `scripts/lipsync_runner_embed.py` matches what LocModel writes, so
+  the job still launches on a machine where the GUI never ran the pipeline.
+- **Two new CLI entries**: `locmodel_image.py video <status|generate|job|cancel|recipes>` and
+  `locmodel_image.py lipsync <status|run>`.
 
 ## What changed in 3.2
 

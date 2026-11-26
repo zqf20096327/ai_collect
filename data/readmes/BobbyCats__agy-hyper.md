@@ -92,9 +92,11 @@ Paste this prompt into **Antigravity (App or CLI), Claude Code, Codex, or Cursor
 Terminal essentials:
 
 ```bash
-agy-hyper audit --png audit.png   # 10s local burn audit + shareable 2x Retina PNG (1920x1200, pure Rust)
+agy-hyper audit --share           # 10s local burn audit + anonymized 2x Health Badge PNG (zero paths/UUIDs)
+agy-hyper audit --png audit.png   # full 2x Retina diagnostic PNG (1920x1200, pure Rust)
 agy-hyper audit --svg audit.svg   # vector dark/light SVG diagnostic card
-agy-hyper doctor                  # verify Tree-sitter grammars, gix, daemon RTT & security posture
+agy-hyper doctor --net            # audit plugin/hook conflicts, skill load, daemon RTT & dual-stack stream health
+agy-hyper update                  # SHA-256 verified 1-click release upgrade (--check to inspect only)
 agy-hyper tx diff <tx_id>         # inspect line-level unified diff for any WAL snapshot before undo
 agy-hyper bench --cache-ttl       # inspect empirical per-model prompt-cache TTL decay curves
 agy-hyper usage --window 7d       # view 24h / 7d / 30d / 90d tokens & API-equivalent value
@@ -103,9 +105,11 @@ agy-hyper ui                      # launch AGY Hyper Deck standalone at http://1
 
 ---
 
-## Local Burn Audit Card (`agy-hyper audit`)
+## Local Burn Audit, Split-Cache Diagnostics & Anonymized Share Card (`agy-hyper audit`)
 
-Run `agy-hyper audit --days 14 --png audit-card.png` (or `--svg audit-card.svg`) to audit your own Antigravity transcripts 100% locally (zero cloud uploads, zero external Chrome/ImageMagick deps). It surfaces empirical per-model cache TTL cliffs, uncached input spend, pre-edit context bloat, blanket-read turns, and an unadjusted local cohort view in a crisp shareable 2x Retina PNG or vector SVG card:
+Run `agy-hyper audit --days 14 --png audit-card.png` (or `--svg audit-card.svg`) to audit your Antigravity transcripts 100% locally (zero cloud uploads, zero external Chrome/ImageMagick deps). In **v0.5.1**, it measures empirical per-model cache TTL cliffs, uncached input spend, calibrated **Pre-Edit Bloat Delta (`pre_edit_delta_p50_tokens`)** (separating true pre-edit blanket-read growth from heavy Turn-1 skill/MCP baselines), **Upstream Stream Resets / `EOF` Retry Stalls**, and **Split-Session / Orchestrator-Executor & Model-Switch cache drops** (quantifying cache-hit drop and uncached token penalties across intra-session model switches and parent-to-subagent handoffs).
+
+Need a clean Health Badge you can share without leaking local context? Run `agy-hyper audit --share` (writes `agy-hyper-share-card.png` at `1920x1080`, or pass `--share-svg badge.svg` / `--share-png badge.png`): it stamps an objective severity verdict (`BLEEDING` / `WATCH` / `HEALTHY`) alongside `Cache Hit %`, `First-Edit Blind Read P50`, `Split/Switch Cache Drop`, and `Top Quota Drain` while **enforcing hard code-level redaction** (zero filesystem paths, zero usernames, zero repo/workspace names, zero conversation UUIDs, zero prompt snippets).
 
 <div align="center">
   <picture>
@@ -121,9 +125,9 @@ Run `agy-hyper audit --days 14 --png audit-card.png` (or `--svg audit-card.svg`)
 
 Docked directly in Antigravity's auxiliary pane via `SIDECAR_UI_ENTRYPOINT_AUX_PANE`, powered 100% offline by **Apache ECharts 6** and **i18next** (`English / 简体中文 / 日本語`, zero CDN). Luminance-synced with your host Light/Dark theme.
 
-- **Layered Zero-Intrusion Design**: start in **Observe** mode (read-only cockpit + burn audit + passive WAL capture; native tools & diff cards untouched), switch to **Safe** (bundled reads & preset checks while keeping native `edit_file` inline diffs), or unlock **Balanced / Hyper** full Rust MCP acceleration — plus granular per-tool toggles (`MCP Read`, `MCP Edit`, `MCP Check`) under **Engine**.
-- **Simple Mode** keeps daily essentials front and center: context level, Turn P50, step vs. session cache hit rate, linked subagent tree strip (highlighting active redlines, `STALLED` subagents silent `>=90s`, and `LOOP ×N` crash-looping subagents with 1-click **Rescue** prompt copy), session/tree usage ribbon with quick currency switch, **auto-calibrated per-model cache warmth bar** (empirical vs. default TTL badge & loop-guard alerts with 1-click **Copy Pivot**), 4-mode layered profile switch, and **inline WAL Unified Diff preview + 1-click Undo**.
-- **Pro Mode** opens five deep telemetry tabs: **Waterfall** (disjoint LLM vs. Hyper vs. Standard spans), **Context** (dual-axis cached/uncached curve + **Context X-Ray** composition bar with first-edit token load and blanket-read count), **Usage** (`24H / 7D / 30D / 90D` incremental ledger across 8 currencies, manual **Sync FX**, plus **Local Burn Audit & TTL Cliffs** with 1-click **Export PNG** & **SVG** card download), **Engine** (AST/pack cache hits & granular MCP layer switches), and **WAL & Audit**.
+- **Layered Zero-Intrusion Design & 1-Click Verified Upgrade (`v0.5.1`)**: start in **Observe** mode (read-only cockpit + burn audit + passive WAL capture; native tools & diff cards untouched), switch to **Safe** (bundled reads & preset checks while keeping native `edit_file` inline diffs), or unlock **Balanced / Hyper** full Rust MCP acceleration — plus granular per-tool toggles (`MCP Read`, `MCP Edit`, `MCP Check`, `Release Update Radar`) under **Engine**. When a new release ships, a non-blocking GitHub redirect tag check (zero REST API rate-limit burn, zero hook latency) lights up a subtle `↑ vX.Y.Z` topbar badge for 1-click `SHA256SUMS`-verified upgrade and seamless Sidecar reload.
+- **Simple Mode** keeps daily essentials front and center: context level, Turn P50 (with **3-segment `LLM` / `Local Tools` / `Stream Retry · EOF` latency bars**), step vs. session cache hit rate, linked **Subagent & `run_workflow` Fleet Tree** strip (rolling up synchronous & backgrounded `wf:*` workflow nodes alongside `/swarm` & subagent children, splitting **Coordinator vs. Fleet** cost, surfacing **Shared-Workspace Write-Race** collision pills, highlighting `STALLED` subagents silent `>=90s` and `LOOP ×N` crash-looping subagents with 1-click **Rescue** prompt copy, plus orchestrator→executor split-cache drop badges), session/tree usage ribbon with quick currency switch, **auto-calibrated per-model cache warmth bar** (empirical vs. default TTL badge & loop-guard alerts with 1-click **Copy Pivot**), 4-mode layered profile switch, and **inline WAL Unified Diff preview + 1-click Undo**.
+- **Pro Mode** opens five deep telemetry tabs: **Waterfall** (3-segment `LLM Inference` vs. `Local Tools` vs. `Stream Retry / EOF` attribution so network/proxy resets are immediately distinguished from model or tool slowdowns), **Context** (dual-axis cached/uncached curve + **Context X-Ray** composition bar with net pre-edit delta + live **Split-Session & Model-Switch Cache** breakdown), **Usage** (`24H / 7D / 30D / 90D` incremental ledger across 8 currencies, manual **Sync FX**, plus **Local Burn Audit & TTL Cliffs** with calibrated severity verdict, stream-reset pill, **Split-Cache & Model-Switch** diagnostics, and 1-click **Anonymized Share Card** PNG/SVG export & inline preview), **Engine** (AST/pack/singleflight pre-warm hits, release update check & granular MCP layer switches), and **WAL & Audit**.
 
 <div align="center">
 <table>
@@ -176,10 +180,10 @@ Docked directly in Antigravity's auxiliary pane via `SIDECAR_UI_ENTRYPOINT_AUX_P
 
 <br/>
 
-1. **Single-Pass Semantic Pack (`hyper_pack`)**: One parallel scan combines embedded `ripgrep`, 7 compiled Tree-sitter grammars (Rust, TypeScript/TSX, JavaScript, Python, Go, JSON), multi-language 1-hop import neighbors, `gix` hotspots, and inline source slices for top matches. Payloads stay strictly `<= 8.5KB` so they never spill past Antigravity's 10KB disk threshold; daemon true-LRU hits return in `14ms`.
-2. **3-Phase Atomic WAL (`hyper_edit`)**: Acquires an exclusive `flock` with BLAKE3 ETag CAS and BOM/CRLF preservation, `fsync`s pre-image bytes to the WAL journal, then stages temp files and commits via atomic `rename`. On `ENOSPC` or permission errors, temp files are dropped and live files remain untouched. Every commit runs `<1ms` Tree-sitter syntax verification, and `PostToolUse` logs verified native `edit_file` / `write_file` pre-images into the same 1-click Undo ledger.
-3. **Compile-Time Zero-Trust Sandbox & Anti-Hang Watchdog**: `gix` is linked with write-ref and network transports compiled out (zero `git` subprocesses). A strict `realpath` jail blocks `../`, symlink escapes, and dangling directory symlinks; Secret Shield blocks `.env`, `*.pem`, `*.key`, and `id_rsa` by default while allowing `.env.example`. `hyper_check` runs with `shell: false`, strips credential env vars, keeps a 64KB head + 512KB tail ring buffer, guards test/script runs with smart silence (`idle_timeout_secs`) and dual-condition fatal-hang (`fail_fast`) watchdogs while exempting compile/static presets from false kills, and kills entire process trees (`setsid` / `taskkill /F /T`) on abort, timeout, or cancellation.
-4. **Lock-Free Telemetry, Empirical Cache TTL, Context X-Ray, Subagent Watchdog & CLI Statusline**: Snapshot polling, CLI `StatuslinePulse`, rollbacks, and incremental byte-offset usage aggregation (`usage_ledger.json` v2, 180-day retention, 8 currencies) run outside the daemon state mutex so concurrent polls never stall MCP calls. Per-model cache decay buckets auto-calibrate each model family's effective cache TTL (`agy-hyper bench --cache-ttl`), single-pass transcript scans break down post-`/compact` context composition (file reads, command output, Hyper tools, thinking/text, media, and first-edit context load) and classify upstream transport errors (`EOF`, interrupted streams, TLS/TCP timeouts) alongside `CHECKPOINT` boundaries, `PreInvocation` arms role-aware `[AGY Hyper Loop Guard]` and parent-level `[AGY Hyper Subagent Watchdog]` alerts alongside model-adaptive watermarks (`96k / 115k`, `140k / 175k`, `180k / 280k`), an optional background daemon 1-shot desktop watchdog (`enable_watchdog_notify`, toggleable under **Engine** or disabled via `AGY_HYPER_NO_NOTIFY=1`) surfaces stuck/crash-looping subagents even when the sidecar is closed, and `agy-hyper statusline` feeds Antigravity CLI's native `statusLine` and plain-text `title` hooks (including unhealthy subagent count) in `<5ms` wall time.
+1. **Single-Pass Semantic & Symbol-Sliced Pack (`hyper_pack`)**: One parallel scan combines embedded `ripgrep`, 7 compiled Tree-sitter grammars (Rust, TypeScript/TSX, JavaScript, Python, Go, JSON), multi-language 1-hop import neighbors, `gix` hotspots, and inline source slices. Passing `symbols=[...]` (or focusing `<=2` files) inlines fuller AST-sliced symbol bodies (up to ~2.4KB per symbol with exact `L<start>-<end>` line ranges) so the agent can `hyper_edit` on the very next turn without calling `read_file`. Payloads stay strictly `<= 8.5KB`; token-normalized query keys and `(mtime_ns, byte_len, HEAD)` freshness checks return warm daemon LRU hits in `14ms`.
+2. **3-Phase Atomic WAL & Shared-Workspace Write-Race Guard (`hyper_edit`)**: Acquires an exclusive `flock` with BLAKE3 ETag CAS and BOM/CRLF preservation, `fsync`s pre-image bytes to the WAL journal, then stages temp files and commits via atomic `rename`. On `ENOSPC` or permission errors, temp files are dropped and live files remain untouched. Every commit runs `<1ms` Tree-sitter syntax verification, records per-session `writer_id` across both `hyper_edit` and edit-scoped `PostToolUse` (`edit_file|write_file`) hooks without thrashing workspace revisions on read-only commands, and feeds `detect_write_collisions` + `PreInvocation` `[AGY Hyper Write-Race Guard]` whenever parallel `/swarm` or `run_workflow` writers race on shared workspace files.
+3. **Compile-Time Zero-Trust Sandbox, Singleflight Pre-Warm & Anti-Hang Watchdog**: `gix` is linked with write-ref and network transports compiled out (zero `git` subprocesses). A strict `realpath` jail blocks `../`, symlink escapes, `$HOME`/`/` root workspaces, and dangling directory symlinks; Secret Shield blocks `.env`, `*.pem`, `*.key`, and `id_rsa` by default while allowing `.env.example`. `hyper_check` runs with `shell: false`, coalesces concurrent Tier-2 `250ms` speculative pre-warm runs via a lock-free `Condvar` singleflight coordinator (eliminating duplicate `cargo check` lock contention), guards test/script runs with smart silence (`idle_timeout_secs`) and dual-condition fatal-hang (`fail_fast`) watchdogs, and kills entire process trees (`setsid` / `taskkill /F /T`) on abort, timeout, or cancellation.
+4. **Lock-Free Telemetry, Fleet/Workflow Rollup, 3-Segment `EOF` Waterfall & Non-Blocking Update Radar**: Snapshot polling (backed by a mtime-fingerprinted `brain/` directory cache that links synchronous and backgrounded `run_workflow` nodes to their parent session trees and splits Coordinator vs. Fleet spend), CLI `StatuslinePulse`, rollbacks, and incremental byte-offset usage aggregation (`usage_ledger.json` v2, 180-day retention, 8 currencies) run outside the daemon state mutex. Transcript scans separate upstream stream `EOF`/timeout retry backoff (up to `600s` retry storms) from `llm_inference_ms` and `tool_exec_ms`, calibrate pre-edit bloat deltas, and feed `agy-hyper doctor [--net]` (which audits competing plugin hooks/rules, active `.git`-bounded `SKILL.md` scope & canonical same-target skill aliases, and dual-stack IPv4/auto stream TTFB). `SessionStart` reads local `update_state.json` in `<0.1ms` with zero synchronous network latency.
 
 ---
 
@@ -199,10 +203,10 @@ Compact tool schemas are pre-inlined in `plugin/rules/AGENTS.md` so the agent in
 
 | Tool | Mode | Purpose |
 | :--- | :---: | :--- |
-| `hyper_pack` | `read-only` | Single-pass ripgrep + Tree-sitter AST outlines & matched symbol slices + 1-hop imports + `gix` hotspots + BLAKE3 `etag`s. |
+| `hyper_pack` | `read-only` | Single-pass ripgrep + Tree-sitter AST outlines & `symbols=[...]` full body slices (`L<start>-<end>`) + 1-hop imports + `gix` hotspots + BLAKE3 `etag`s. |
 | `hyper_search` | `read-only` | Multi-pattern parallel ripgrep, gitignore-aware file globbing, and zero-subprocess `gix` read-only Git inspection. |
 | `hyper_edit` | `atomic WAL` | Multi-file exact or Tree-sitter `symbol` edits with BLAKE3 ETag CAS, BOM/CRLF preservation, WAL journal, and `<1ms` syntax check. |
-| `hyper_check` | `sandboxed` | Auto-discovered safe presets (`cargo:check`, `pkg:test`, `py:pytest`, `go:vet`, monorepo scopes) with smart `idle_timeout_secs` & dual-condition `fail_fast` watchdogs, head+tail ring buffer, Tier-2 pre-warm, and `h_xxxx` spill handles. |
+| `hyper_check` | `sandboxed` | Auto-discovered safe presets (`cargo:check`, `pkg:test`, `py:pytest`, `go:vet`, monorepo scopes) with Singleflight Tier-2 pre-warm coalescing, smart `idle_timeout_secs` & `fail_fast` watchdogs, and `h_xxxx` spill handles. |
 | `hyper_tx` | `undo / drill` | List WAL edit ledger, atomically `rollback` any `tx_id`, or `1ms` slice/grep into spilled check handles. |
 
 ---
@@ -218,7 +222,7 @@ Measured on Apple Silicon (release LTO build, cold MCP process spawn included) v
 | `hyper_search` + `gix` read-only Git (1 call) | **20 ms** | vs **43 ms** baseline `git status && git log && grep -rn` (**2.2x faster**) |
 | `hyper_pack` (cold single-pass ripgrep + AST + slices + `gix` + 1-hop) | **58 ms** | Zero external `rg` or `git` binaries |
 | `agy-hyper statusline` (warm Daemon pulse + CLI stdin) | **4.2 ms** | Full process exec + lock-free UDS RPC + ANSI/plain-title render (always exits `0`) |
-| Full Rust unit & security chaos suite (`61/61`) | **2.1 s** | Covers ENOSPC staging, dangling symlinks, 4-lang 1-hop, WAL rollback, idle/fail-fast watchdog, multi-runner semantic digest classification, transport error/checkpoint classifier, subagent crash-loop watchdog & 1-shot daemon notifier, empirical TTL migration, Context X-Ray, Loop Guard, CLI statusline, pure-Rust 2x PNG audit export, and MCP `PLUGIN_ROOT` fail-fast guard |
+| Full Rust unit & security chaos suite (`84/84`) | **2.1 s** | Covers ENOSPC staging, dangling symlinks, 4-lang 1-hop, symbol-sliced packs, WAL rollback & shared-workspace write-race detection, singleflight pre-warm, idle/fail-fast watchdog, multi-runner semantic digest classification, stream `EOF` waterfall & pre-edit delta calibration, `run_workflow` fleet tree linkage, subagent crash-loop watchdog & 1-shot daemon notifier, empirical TTL migration, Context X-Ray, Loop Guard, CLI statusline, pure-Rust 2x PNG/share audit export, release update radar, and MCP `PLUGIN_ROOT`/`$HOME` guards |
 
 ### Controlled End-to-End Paired A/B (`agy` CLI)
 
@@ -243,10 +247,11 @@ Reproduce on your own repository:
 <summary><strong>CLI Reference, Telemetry Methodology &amp; Supply-Chain Discipline</strong></summary>
 
 ```bash
-agy-hyper doctor                                # Tree-sitter, gix, daemon RTT & security self-check
+agy-hyper doctor [--net] [--json]               # Tree-sitter, gix, plugin/hook conflict audit, skill load & optional stream probe
+agy-hyper update [--check] [--dismiss <ver>] [--version <ver>] [--json]  # SHA-256 verified release check / 1-click upgrade
 agy-hyper daemon start|stop|status              # Manage the shared local Rust daemon
 agy-hyper ui [--port 47821]                     # Launch AGY Hyper Deck standalone in browser
-agy-hyper audit [--days 14] [--sessions 80] [--png card.png] [--svg card.svg] [--theme dark|light] [--json]
+agy-hyper audit [--days 14] [--sessions 80] [--share [card.png]] [--share-png card.png] [--share-svg card.svg] [--png card.png] [--svg card.svg] [--theme dark|light] [--json]
 agy-hyper usage [--window 24h|7d|30d|90d] [--currency CNY] [--json]
 agy-hyper bench [--sessions 10] [--svg waterfall.svg] [--cache-ttl] [--json]
 agy-hyper statusline [--format compact|rich|json] [--title] [--no-color]
@@ -256,15 +261,15 @@ agy-hyper tx diff <tx_id> [--json]              # Print line-level Unified Diff 
 agy-hyper tx rollback <tx_id> [--force]         # Atomically restore files to pre-edit bytes
 agy-hyper config show                           # Print active configuration
 agy-hyper config profile observe|safe|balanced|hyper    # Switch layered cockpit / MCP acceleration mode
-agy-hyper config toggle enable_mcp_read|enable_mcp_edit|enable_mcp_check true|false
+agy-hyper config toggle enable_mcp_read|enable_mcp_edit|enable_mcp_check|enable_update_check true|false
 agy-hyper config currency USD|CNY|JPY|EUR|GBP|HKD|SGD|KRW
 agy-hyper config fx <CODE> <RATE_PER_USD>       # Set custom offline FX override
 ```
 
 - **Ground-Truth Context & Compaction**: reads live `input_tokens + cache_read_tokens` directly from Antigravity's latest `PLANNER_RESPONSE`, resets counters on `/compact`, explains cross-model cache re-warming, excludes user-initiated cancellations, and tags transient network events (`proxy_reset`, `stream_timeout`) explicitly.
-- **Honest Usage & Multi-Currency Estimates**: incremental byte-offset scanner aggregates local transcripts into `usage_ledger.json` with zero background network calls. Legacy turns without `model` tags are counted in token totals and excluded from cost (attribution % shown transparently). Currency FX defaults to offline reference rates and only fetches live rates when you click **Sync FX** manually.
-- **Honest Paired TPS & Disjoint Waterfalls**: `llm_inference_ms` measures planner start -> first tool dispatch; `tool_exec_ms` measures first tool dispatch -> final tool completion. Excluded idle spans (`>180s`) are removed from both numerator and denominator.
-- **Supply-Chain Discipline**: zero silent background self-updates; every release ships with `SHA256SUMS` and Sigstore/Cosign build provenance attestation.
+- **Honest Usage & Multi-Currency Estimates**: incremental byte-offset scanner aggregates local transcripts into `usage_ledger.json` with zero background telemetry uploads. Legacy turns without `model` tags are counted in token totals and excluded from cost (attribution % shown transparently). Currency FX defaults to offline reference rates and only fetches live rates when you click **Sync FX** manually.
+- **Honest Paired TPS & 3-Segment Waterfalls**: `retry_backoff_ms` isolates upstream stream `EOF`/timeout retry stalls (up to `600s`) from `llm_inference_ms` (net model inference) and `tool_exec_ms` (first tool dispatch -> final tool completion). Excluded human idle spans (`>180s` without transport errors) are removed from both numerator and denominator.
+- **Supply-Chain Discipline**: zero silent background self-installation; `Release Update Radar` only checks release tags via GitHub `Location` redirects (disable anytime with `enable_update_check: false` or `AGY_HYPER_NO_UPDATE_CHECK=1`), and upgrades run only when you explicitly invoke `agy-hyper update` or click **Update Now**, verifying `SHA256SUMS` before atomic inode swap.
 
 </details>
 

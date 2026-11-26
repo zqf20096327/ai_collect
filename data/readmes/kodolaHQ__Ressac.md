@@ -41,7 +41,7 @@ Firefox under the hood, a quiet sidebar, nothing to sign up for, nothing to swit
 - It browses in its own tab, which you can watch; a thumbnail shows what it is doing while you keep working.
 - Before a purchase or a choice, it fills a **live recap**: criteria, independent sources, offers, sourced pros and cons.
 - It asks before opening an address it wrote itself, and hands back control when a page needs you (a login, a captcha).
-- It builds site apps, actions, add-ons and widgets for you, and changes a page's look on request (design mode).
+- It builds site apps, actions and widgets for you, and changes a page's look on request (design mode).
 
 <p align="center"><img src="docs/images/live-recap-en.gif" alt="The agent compares the world's biggest tidal bores and fills a live recap"></p>
 

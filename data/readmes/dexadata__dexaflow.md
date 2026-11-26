@@ -91,9 +91,9 @@ coexist out of the box.
 
 ```bash
 kubectl create namespace dexaflow
-helm install dexaflow oci://ghcr.io/dexadata/charts/dexaflow --version 0.5.11 -n dexaflow \
-  --set image.tag=v0.5.11 \
-  --set migrations.image.tag=v0.5.11 \
+helm install dexaflow oci://ghcr.io/dexadata/charts/dexaflow --version 0.5.12 -n dexaflow \
+  --set image.tag=v0.5.12 \
+  --set migrations.image.tag=v0.5.12 \
   --set database.url='postgres://USER:PASS@HOST:5432/dexaflow?sslmode=verify-full' \
   --set redis.url='rediss://HOST:6380/0' \
   --set auth.jwtSecret="$(openssl rand -base64 64)" \
@@ -319,7 +319,7 @@ supported and how features are deprecated is in the
 - JWT authentication, RBAC, multi-tenant schema (OIDC-ready)
 - Kubernetes-native execution (no worker pool to manage)
 - Local development on Kubernetes (k3d/kind) or a dev-only subprocess executor (ADR 0015)
-- Trigger rules: `all_success`, `all_failed`, `all_done`, `one_success`, `one_failed`
+- Trigger rules with Airflow 3 semantics: `all_success`, `all_failed`, `all_done`, `one_success`, `one_failed`, `none_failed`, `none_failed_min_one_success`, `none_skipped`, `always`
 - Clear task instance to re-run failed tasks
 - Leader election via Postgres advisory locks
 - OpenSSF Best Practices compliance, signed releases (cosign), supply chain scanning (govulncheck + Trivy + CodeQL)

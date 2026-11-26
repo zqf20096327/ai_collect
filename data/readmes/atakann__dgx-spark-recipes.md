@@ -50,6 +50,11 @@ WORKER=spark2 ./run-recipe.sh llm/qwen3.8-flash-next-fp4-vllm-tp2 --stop
 |---|---|---|---|---|
 | `ornith-1.5-122b-q4km-llamacpp` | Ornith-1.5-122B, Q4_K_M GGUF | llama.cpp v0.7.0, built for sm_121 | 1 | 28.2 tok/s |
 | `ornith-1.5-122b-nvfp4-vllm` | Ornith-1.5-122B, NVFP4 | vLLM nightly 77154ca | 1 | 26.5 tok/s, prefill 2,447 tok/s |
+| `kolibri-1.1-q8-llamacpp` | Kolibri 1.1 (Aleph Alpha), Q8_0 GGUF | llama.cpp PR #32891, built for sm_121 | 1 | 50 tok/s, 36 tok/s at 120K |
+| `diffusiongemma-26b-a4b-nvfp4-vllm` | DiffusionGemma 26B-A4B (block diffusion), NVFP4 | vLLM 0.30.0 | 1 | 112-139 tok/s end to end |
+| `minicpm-v-4.7-35b-a3b-fp8-dspark-vllm` | MiniCPM-V 4.7 35B-A3B, FP8 + DSpark | vLLM nightly f2f9edcac | 1 | 87-92 tok/s on code and JSON |
+| `minicpm-v-4.7-35b-a3b-awq-dspark-vllm` | same, OpenBMB's 4-bit AWQ + DSpark | vLLM nightly f2f9edcac | 1 | 111-120 tok/s on code, JSON, rewrites |
+| `nemotron-3.5-lightning-nvfp4-dspark-vllm` | Nemotron 3.5 Lightning 30B-A3B, NVFP4 + DSpark | vLLM 0.30.0 | 1 | 102-152 tok/s on code, JSON, rewrites, explanations |
 | `nemotron-3.5-bolt-vllm` | Nemotron 3.5 Bolt 74B, 2-bit QAD | vLLM nightly 77154ca + b12x | 1 | 29 tok/s |
 | `nemotron-3.5-bolt-lilicorr-vllm` | same, with NVIDIA's LiLiCorr draft | vLLM nightly 77154ca + b12x | 1 | 93-104 tok/s on code, JSON, rewrites |
 | `qwen3.8-flash-next-fp4-vllm` | Qwen3.8-Flash-Next FP4-Local (NVIDIA's QAD NVFP4), MTP 4 | vLLM 8244d1c (eugr/spark-vllm-b12x) | 1 | 49-64 tok/s on JSON, code, rewrites, explanations |
@@ -105,6 +110,104 @@ WORKER=spark2 ./run-recipe.sh llm/qwen3.8-flash-next-fp4-vllm-tp2 --stop
 | `yolo26-deepstream` | YOLO26s, TensorRT FP16, NvSORT, N videos in one pipeline | DeepStream 9.2, TensorRT 10.16.1 | 1 | 16 videos at 33.4 FPS each |
 
 ## CHANGELOG
+
+### 2026-11-25
+
+#### MiniCPM-V 4.7 on one Spark, with its DSpark draft
+
+`llm/minicpm-v-4.7-35b-a3b-fp8-dspark-vllm` runs OpenBMB's [MiniCPM-V 4.7 35B-A3B](https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B)
+(a vision MoE with 3B active) from OpenBMB's own FP8 build (38 GB) with its DSpark draft. vLLM 0.30.0 does not know
+the model yet, so the image is a vLLM nightly (0.34.0rc1, pinned by digest). The command is OpenBMB's DSpark command
+for one GPU, plus the reasoning and tool-call parsers its template needs, and 5 draft tokens instead of the card's 15:
+on a Spark, 5 was level on code and JSON and faster everywhere else.
+
+About 43 GiB free while serving. One user, thinking off: code 86.9 tok/s, JSON 92.1, rewrite 79.1, explain 75.5,
+story 44.1 (no draft: about 40 on every prompt). At long context the draft costs more than it gains (13.7 tok/s at
+60K against 32.8 with no draft), so drop `--speculative-config` for long documents. GPQA Diamond 79.3%, IFEval 88.7%
+(thinking off, 64K cap).
+
+```bash
+./run-recipe.sh llm/minicpm-v-4.7-35b-a3b-fp8-dspark-vllm --setup
+```
+
+#### MiniCPM-V 4.7 in OpenBMB's 4-bit AWQ
+
+`llm/minicpm-v-4.7-35b-a3b-awq-dspark-vllm` is the FP8 recipe's command with OpenBMB's own [AWQ build](https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B-AWQ)
+(4-bit weights, group 128, 22.7 GB instead of 38 GB; the vision tower stays unquantized). On the same Spark and the
+same draft it is faster on every prompt: code 119.5 tok/s against 86.9, JSON 110.9 against 92.1, rewrite 111.0 against
+79.1, explain 101.0 against 75.5. Quality is level within the 95% intervals: GPQA Diamond 81.3% against 79.3%, IFEval
+87.4% against 88.7% (thinking off, 64K cap).
+
+```bash
+./run-recipe.sh llm/minicpm-v-4.7-35b-a3b-awq-dspark-vllm --setup
+```
+
+#### Nemotron 3.5 Lightning on one Spark, with its DSpark draft
+
+`llm/nemotron-3.5-lightning-nvfp4-dspark-vllm` runs NVIDIA's NVFP4 of [Nemotron 3.5 Lightning 30B-A3B](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4)
+(a hybrid Mamba and attention MoE, 3B active) with NVIDIA's DSpark draft. The card's DGX Spark command on vLLM 0.30.0
+(Marlin MoE backend, FP8 KV cache, FlashInfer Mamba, 3 draft tokens) with 0.60 of the memory and 256K context.
+
+One user, thinking off: code 118.2 tok/s, JSON 122.8, rewrite 151.7, explain 102.7, translate 101.9, story 73.3
+(no draft: about 68). Unlike MiniCPM, the draft keeps paying at long context: 90.5 tok/s at 32K, 79.2 at 64K and
+77.3 at 128K (no draft: 61 at 128K). A second turn on the same 128K prompt starts in 8.8 s. GPQA Diamond 60.6%,
+IFEval 75.0% (thinking off, 64K cap, 3 and 8 runaway answers cut).
+
+```bash
+./run-recipe.sh llm/nemotron-3.5-lightning-nvfp4-dspark-vllm --setup
+```
+
+### 2026-11-24
+
+#### DiffusionGemma on one Spark, on vLLM
+
+`llm/diffusiongemma-26b-a4b-nvfp4-vllm` runs NVIDIA's NVFP4 of [DiffusionGemma 26B-A4B](https://huggingface.co/nvidia/diffusiongemma-26B-A4B-it-NVFP4),
+Gemma 4 26B-A4B made a block-diffusion model: it fills 256-token blocks in parallel instead of writing one token at a
+time. The card's command on vLLM 0.30.0 (V2 model runner, Triton attention) with 0.60 of the memory and 64K context.
+The server refuses `temperature`, `seed` and similar fields for diffusion models, and blocks stream whole, so the
+honest speed is tokens over the time of the whole request.
+
+About 40 GiB free while serving. One user, thinking off, 300 tokens: 112 to 139 tok/s end to end on code, JSON and
+rewrite, 86 to 95 on explain, 63 to 65 on story (the same base model in BF16 decodes 24.5 tok/s on one Spark). Prefill
+1,433 tok/s at 32K. GPQA Diamond 62.6%, IFEval 82.6% (thinking off, 16K cap, no answer cut).
+
+```bash
+./run-recipe.sh llm/diffusiongemma-26b-a4b-nvfp4-vllm --setup
+```
+
+#### Kolibri 1.1 on one Spark, on llama.cpp
+
+`llm/kolibri-1.1-q8-llamacpp` runs Aleph Alpha's [Kolibri 1.1](https://huggingface.co/Aleph-Alpha/Kolibri-1.1)
+(75B total, 3.4B active, sparse attention, German and English, Apache 2.0) from Aleph Alpha's own Q8_0 GGUF (80 GB).
+Kolibri's vLLM plugin accepts only H100 and B200 GPUs, so `images/llama-kolibri` builds llama.cpp for sm_121 from pull
+request #32891, which adds the model, at its pinned head. The flags are plain `llama-server` ones with the card's
+sampling; several slots (`-np`) need `--kv-unified` with this model.
+
+About 37 GiB free while serving. One user, thinking off: about 50 tok/s on every prompt; 43.7, 39.8 and 36.1 tok/s at
+32K, 64K and 120K context, prefill 1,533, 1,356 and 1,117 tok/s, a second turn at 120K in 0.45 s. GPQA Diamond 65.7%,
+IFEval 79.5% (thinking off, 16K cap). Two coding harnesses (Pi, opencode) built a 26-test shared-expense app with it at
+reasoning effort low: 6 of 6 takes passed, 5 to 8 minutes each.
+
+```bash
+./run-recipe.sh llm/kolibri-1.1-q8-llamacpp --setup
+```
+
+#### Qwen3.8-27B with harness-hub's Pi adapter, on vLLM
+
+`llm/qwen3.8-27b-pi-adapted-vllm` serves [harness-hub/Qwen3.8-27B-pi-adapted](https://huggingface.co/harness-hub/Qwen3.8-27B-pi-adapted),
+a LoRA for the Pi coding agent, with the adapter card's command on vLLM 0.30.0: one server answers both the base model
+and the adapted one. 4.2 to 4.5 tok/s for one user, about 30 tok/s in total for 8 requests, ready in 8 min, 43.6 GiB free.
+
+```bash
+./run-recipe.sh llm/qwen3.8-27b-pi-adapted-vllm --setup
+```
+
+#### DSpine: sampled requests fixed on the GB10
+
+On `llm/qwen3.8-27b-bf16-dspine-sglang`, requests with a temperature above 0 sometimes gave "!!!!" at about 3 tok/s:
+flashinfer's softmax returned NaN rows in the sampled verify step on the GB10, so every draft was rejected.
+`images/dspine/gb10.patch` now makes SGLang use its Triton softmax there (image `0cc92d8-gb10-2`). Measured again at
+temperature 0.7: JSON 29.6, code 26.7, rewrite 27.5, explain 15.5, story 7.5 tok/s.
 
 ### 2026-11-21
 

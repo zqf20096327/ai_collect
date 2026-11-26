@@ -39,7 +39,7 @@ If `/docs` redirects to `/docs/` and `/docs/` is the intended search URL, check 
 
 For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
 
-**Verify a first monitoring event.** [Run one Betterloop pageview on localhost](examples/betterloop-first-pageview.md) using your Free project. [Check a deployed site](https://betterloopai.com/docs/install#verify) with the same snippet. For several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
+**Verify a first monitoring event.** [Run one Betterloop pageview on localhost](examples/betterloop-first-pageview.md) with the ready-to-copy test page in your Free project. [Check a deployed site](https://betterloopai.com/docs/install#verify) with the same snippet. To count pageviews from your own Vite bundle, use the [pageview-only example](examples/betterloop-first-pageview.md#count-pageviews-from-a-vite-bundle). For several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
 
 **Test that a browser edit persists.** In a fresh private browser session, open [Plainer’s editable launch checklist](https://plainer.app/try/from-agent-guide). Add a line such as “Confirm Retry restores the controls,” reload, and check that the line is still there. To keep the edit in a free account, choose **Sign up** in the note. Open the email verification link in the same private window, then sign in there.
 
@@ -84,6 +84,8 @@ In a new project folder, paste the system prompt into your coding agent. Then [t
 
 [Catch inflated order counts in a SQL report](examples/sql-order-count.md). Run the SQLite tests, fix the count, and confirm that the report keeps orders with no line items and customers with no orders.
 
+[Check a password verifier with a coding agent](examples/password-verification.md). Run three fictional cases and prove the test fails when the verifier accepts every input.
+
 [Test whether an assistant can undo its own edit](examples/plainer-assistant-undo.md). Save a manual note, let the assistant create a second one, and check what survives Undo.
 
 [Read a project note from Gemini CLI](examples/plainer-gemini-handoff.md). Install the Plainer extension on Free, grant read access to a sample workspace, and check that the answer quotes the source note and spots a missing detail.
@@ -102,7 +104,9 @@ In a new project folder, paste the system prompt into your coding agent. Then [t
 
 [Try the free React Reset exercise](https://hiredin60.com/lessons/090/#react-state-practice) to test whether a filter toggle and results badge share the same state.
 
-For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com/l/rbzbacf?utm_source=github&utm_medium=readme&utm_campaign=coding-agent-readme-react-practice-pack) includes a free worked Git question and a sample PDF. The full pack costs $12.
+For Git interview practice, [try the free lost-commit recovery exercise](https://hiredin60.com/lessons/159/?utm_source=github&utm_medium=readme&utm_campaign=coding-agent-readme-git-recovery#git-recovery-title). Find the commit with `git reflog --oneline` and inspect it with `git show <commit>`. Create a rescue branch with `git branch recovered-work <commit>` to keep the commit reachable while leaving your current branch and working tree intact.
+
+[Preview the free sample PDF](https://hiredin60.com/quick-review-sample.pdf). For more Git undo and interview practice, [open the $12 Interview Quick Review Pack checkout](https://fainir.gumroad.com/l/rbzbacf?wanted=true&utm_source=github&utm_medium=readme&utm_campaign=coding-agent-readme-git-review-pack).
 
 ### Test the first click in a browser
 
@@ -110,9 +114,11 @@ For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com
 
 [See the first-play preview and startup check](examples/openworld-first-play.md#play-enchanted-forest). Recover a failed Three.js load with Retry and check that the same game reaches its controls.
 
+[Play Hangar Lake Resort](https://open-world.gg/play/resort-from-agent-guide). On a phone, turn it sideways. [See the controls and a short preview](examples/openworld-first-play.md#play-hangar-lake-resort).
+
 To test a file upload, open [pocket-test.csv](examples/pocket-test.csv). On desktop, choose **Download raw file**. On a phone, open **Edit and raw actions** and choose **Download**. In a signed-out browser, open [the KeepFinding guest importer](https://keepfind.ing/pocket?utm_source=github&utm_medium=readme&utm_campaign=mcasp-pocket-preview).
 
-Select **Import your Pocket export** and choose the sample file. The preview should say **1 link · read as Pocket export**. For this test, stop at the preview.
+Select **Import your Pocket export** and choose the sample file. The preview should say **1 link · read as Pocket export**. For this test, stop at the preview. To check that a saved date survives a complete import, try the [Pocket and Raindrop date exercise](examples/keepfinding-import-dates.md).
 
 ## How to use it
 
@@ -2615,42 +2621,4 @@ Recommended feed categories:
 - open-source memory, retrieval, and artifact systems
 - open-source sandbox, browser, and execution infrastructure
 - open-source eval, trace, and observability systems
-- open-source science reproducibility, experiment registry, and data-lineage systems
-- open protocols and interoperability standards
-- research papers on agents, long-horizon reasoning, browser use, tool use, memory, and evaluation
-- official provider announcements that materially change available capabilities or prices
-
-Maintain a living subsystem map for:
-- research and web intelligence
-- memory and context assembly
-- planning, tasks, and durable workflows
-- multi-agent orchestration
-- guardrails and policy enforcement
-- evals, tracing, and observability
-- tool, auth, and integration layers
-- execution sandboxes and browser infrastructure
-- control planes and human-facing operations surfaces
-
-NEWS-TO-IMPROVEMENT PIPELINE
-
-Do not just collect news. Convert it into improvement work.
-
-For every relevant external update:
-- capture the source
-- record the date
-- extract the architectural claim
-- estimate relevance to your system
-- decide whether it implies:
-  - a new eval
-  - a new skill
-  - a new playbook
-  - a new tool adapter
-  - a new workflow
-  - a new specialized harness
-  - a new profile
-  - a new policy
-  - a new schema or contract
-  - a new dashboard or control-plane view
-  - a new recurring operation
-  - a new benchmark
-  - a change to the ro
+- open-source science reproducibility, experiment registry, and dat

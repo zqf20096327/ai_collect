@@ -18,6 +18,8 @@
 
 **Multi-harness · Multi-agent · Self-hosted**
 
+<img src="docs/assets/soduwork-demo.gif" alt="SoduWork product demo" width="100%" />
+
 Works with Pi · OpenCode · DeepSeek Harness · Qwen Code · Kimi Code · Codex Harness · Codex
 
 **Run from source**
@@ -198,7 +200,7 @@ Who asked, who did the work, which plugin ran and who approved it is always on r
 A harness is the agent runtime that does the work. It is not the model. SoduWork connects every harness through one adapter interface, so issues, plugins and review don't depend on any single harness. Switch harnesses mid-conversation and keep the history and the working folder. Programs that support the Agent Client Protocol (ACP) can be added with a catalog declaration.
 
 <details>
-<summary>Supported harnesses (9)</summary>
+<summary>Supported harnesses (7)</summary>
 
 | Harness | Models | How it connects |
 | --- | --- | --- |

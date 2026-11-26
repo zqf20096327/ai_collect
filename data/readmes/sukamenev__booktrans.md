@@ -133,6 +133,13 @@ building another format from an existing translation makes no model requests.
 ./booktrans book.epub --to ru -o Book.epub
 ```
 
+When exporting image crops from visual PDF OCR, BookTrans uses JPEG for
+likely photos without small lettering or transparency when JPEG at quality
+95 with full-resolution color (4:4:4) saves at least 20% over PNG. Diagrams,
+text and uncertain cases use PNG. Use `--image-format png` to keep all OCR
+crops in PNG. Both modes preserve resolution and the files in `.work`.
+Images embedded in the source, including EPUB covers, keep their original bytes.
+
 ## Before a long run — a dry check
 
 **Always do this.** A minute against several hours of translating the wrong
@@ -650,10 +657,9 @@ and more, weighted 4, 2 or 1 by what the reader loses — and a judge model
 answers ok/fail on every trap against an answer key. The score, 0 to 100, is
 computed by code from the verdicts and the penalties for additions,
 omissions, untranslated fragments and broken structure. Only the translator
-is measured: no scouting and no editor. The judge by default is GPT-6 Sol,
-the stricter one; Opus 5.5 scores the same translations about 8 points
-higher on average and is the backup. Scores of different judges or test
-versions are not comparable.
+is measured: no scouting and no editor. The judge by default is GPT-6.2 Sol,
+with Opus 5.5 as backup. Scores of different judges or test versions are not
+comparable.
 
 Method, areas, key format, judge selection and the results table:
 [docs/bench/README.md](docs/bench/README.md) (Russian:
@@ -758,10 +764,9 @@ same poppler can hand over the markup (`pdftohtml -xml`), so the addresses come
 from there — three seconds on a 634-page book. Measured: 5374 links of the 7435
 the source carries.
 
-A link inside a pdf aims at a **page**, not a paragraph: nothing finer exists
-in the format. The target is the first block of that page, so an index entry
-leads to the start of the page the word sits on. A link that lands on itself (a
-note on the same page) is not made.
+For ordinary PDF navigation, the Poppler XML supplies a destination page.
+BookTrans uses its first block, so an index entry leads to the start of the
+page the word sits on. Links that would point to their own block are skipped.
 
 The anchor is looked for in the blocks of its own page, in order. Not found —
 silently skipped: damaged text costs more than a lost link. What goes missing
@@ -769,6 +774,16 @@ is anchors the layout broke mid-word or set in italics.
 
 Recovering PDF links does not yet enable index translation; the index feature
 below currently applies only to EPUB input.
+
+**Numbered PDF notes.** After reading all pages, BookTrans checks each match
+against the printed number, the surrounding text, the entry and its backlink
+in the PDF. A confirmed link points to the entry even when chapter numbering
+restarts. If PDFium cannot resolve a named destination, BookTrans tries
+`mutool` when installed. When building an older `.work` with the original PDF,
+confirmed links are applied to the saved translation at export. Uncertain
+pairs need review, and legacy address collisions retain the visible marks and
+note text. When PDF notes have been linked, added notes render as `[+1]`,
+`[+2]`, and so on. The translation files and their markers keep their format.
 
 ### Book indexes (EPUB)
 
@@ -956,7 +971,7 @@ Hebrew and Arabic tables, plus East Asian `shift_jis`, `euc_jp`, `gb18030`,
 --bench [DIR]         benchmark the translator on the built-in text (or a set in DIR); no book needed
 --bench-runs N        how many times to translate and judge the benchmark text; the mean is reported (default 3)
 --bench-stats [VER]   pass rate of every benchmark check over finished runs here (or in -w); VER: exact key version(s), comma-separated; "1.4." takes the whole 1.4.N branch
---judge ID            judge model for the benchmark (default codex:gpt-6-sol:medium, backup claude:claude-opus-5-5:medium)
+--judge ID            judge model for the benchmark (default codex:gpt-6.2-sol:medium, backup claude:claude-opus-5-5:medium)
 --agent NAME          agent: claude|agy|codex|openrouter|openai|cmd
 --agent-cmd 'CMD'     your own command: {system} or {system_file}
 --jobs N              threads for editing, verification and footnotes

@@ -4,7 +4,7 @@
 
 ### 让 AI 为你写一部完整的中文小说
 
-[![Version](https://img.shields.io/badge/version-2.3.2-blue.svg)](https://github.com/PenglongHuang/chinese-novelist-skill/releases)
+[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/PenglongHuang/chinese-novelist-skill/releases)
 [![Claude Code Skill](https://img.shields.io/badge/Claude_Code-Skill-blue)](https://claude.com/claude-code)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -25,12 +25,15 @@
 - **多种写作模式** - 串行 / 子Agent并行 / Agent Teams，按需选择
 - **检查与润色** - 逐章审读连贯性与表达，脚本检查字数，不达标时修复
 - **章节衔接** - 记录人物处境与事件后果，承接未解悬念
+- **小说书房** - 本地只读书房：黑白墨格界面浏览进度、正文与创作资料，随文件变化自动更新
 
 ## 🚀 快速开始
 
 安装 Skill：`npx skills add PenglongHuang/chinese-novelist-skill`
 
 装好后，说一句：`使用 chinese-novelist 帮我写一部小说`
+
+> **支持当下主流 Agent Harness**：Claude Code、Codex CLI、Gemini CLI、Cursor、Windsurf、Trae、CodeBuddy、Qwen Code、iFlow CLI、Aider、OpenCode、WorkBuddy 等均可直接安装使用，创作流程中的书房会在写作阶段自动启动，无需手动打开。
 
 ## 赞助商
 
@@ -85,119 +88,38 @@
 </p>
 
 
+## 📖 小说书房
+
+写完的章节不再是散落的文件：启动本地书房，书架、章节进度、正文与创作资料一目了然，文件变动实时刷新；审读报告还会对全书做机械比对——节奏突变、人物断档、口头禅落实，尽收眼底。
+
+<table>
+  <tr>
+    <td align="center"><b>书架 · 全部作品与进度</b></td>
+    <td align="center"><b>审读报告 · 全书体检</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/workbench-shelf.png" width="400"/></td>
+    <td><img src="assets/workbench-report.png" width="400"/></td>
+  </tr>
+</table>
+
+
 ## 创作流程
 
-```
-用户 → ┌─────────────┐    ┌──────────────────────┐    ┌──────────────┐
-       │ Phase 0     │ →  │ Phase 1              │ →  │ Phase 2      │
-       │ 初始化      │    │ 三层递进式问答        │    │ 规划 + 确认  │
-       │ ·加载偏好   │    │ L1: 核心定位 (必答)   │    │ ·大纲        │
-       │ ·检测中断   │    │ L2: 深度定制 (可选)   │    │ ·人物档案    │
-       └─────────────┘    └──────────────────────┘    │ ·写作计划JSON│
-                                                     └──────┬───────┘
-                                                            ↓
-                                            ┌───────────────────────────┐
-                                            │ Phase 2.5 写作模式选择     │
-                                            │ 串行 / 子Agent并行 / Teams │
-                                            └─────────┬─────────────────┘
-                                                      ↓
-       ┌──────────────────────────────────────────────────────────────┐
-       │ Phase 3 疯狂创作（全自动，无需确认）                         │
-       │ 逐章：写前分析 → 撰写(3000-5000字) → 润色去AI味 → 字数检查  │
-       └──────────────────────────────────────────────────────────────┘
-                            ↓
-       ┌──────────────────────────────────────────────────────────────┐
-       │ Phase 4 自动校验与修复（全自动）                             │
-       │ 文件与字数检查 → 不合格章节修复（最多3轮）                    │
-       └──────────────────────────────────────────────────────────────┘
-                            ↓
-                       全稿完成
-```
+<p align="center">
+  <img src="assets/creation-flow-q.png" width="820" alt="创作流程：初始化 → 三层问答 → 规划确认 → 写作模式选择 → 全自动创作与校验修复 → 全稿完成；小说书房全程伴读"/>
+</p>
 
-### Phase 0：初始化
 
-自动加载用户偏好（`user-preferences.json`），检测是否有未完成的项目可续写，展示个性化欢迎。
 
-### Phase 1：三层递进式问答
-
-**Layer 1 — 核心定位（必答，3问）**：题材创意、主角设定、核心冲突
-
-**Layer 2 — 深度定制（可跳过）**：世界观、叙事视角、核心主题、读者定位、章节数量
-
-> 每个问题都支持随机生成，也可以直接说"跳过"或"都用默认"。
-
-```
-Q1：题材与创意
-   ○ 悬疑推理   ○ 现代言情   ○ 奇幻玄幻   ○ 科幻未来
-   ○ 武侠仙侠   ○ 历史架空   ○ 都市现实   ○ 随机生成
-
-Q2：主角设定
-   ○ 男性主角   ○ 女性主角   ○ 双主角     ○ 群像戏
-
-Q3：核心冲突
-   ○ 生死存亡   ○ 查明真相   ○ 复仇雪恨   ○ 成长突破
-   ○ 爱情阻碍   ○ 权力争夺   ○ 守护保护
-
-   ... Layer 2 可继续定制，也可直接跳到规划 ...
-```
-
-### Phase 2：规划 + 确认
-
-AI 生成人物档案、章节大纲和写作计划，展示给你确认：
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-规划完成！请确认：
-
-基本信息
-  题材：悬疑推理  |  主角：男性侦探  |  冲突：查明真相
-  章节数：20章    |  视角：第一人称  |  基调：紧张冷峻
-
-章节规划（前5章）
-  第1章：午夜凶铃 - 接到神秘电话...
-  第2章：第一具尸体 - 发现密室杀人案...
-  ...
-
-主要角色
-  主角：李明 - 资深刑警，冷静智慧
-  反派：张华 - 高智商罪犯
-  配角：王芳 - 法医专家
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-回复"确认" → 选择写作模式 → 立即开始
-```
-
-### Phase 2.5：写作模式选择
-
-| 模式 | 说明 | 适用场景 |
-|------|------|----------|
-| **串行** | 主 Agent 逐章写，稳定可靠 | 默认推荐 |
-| **子Agent并行** | 多个子 Agent 分批并行写 | 追求速度 |
-| **Agent Teams** | Claude Code 多 Agent 协作 | 大型长篇 |
-
-### Phase 3：疯狂创作
-
-确认后按计划连续写作，无需逐章确认；中断时可从已保存的进度继续。
-
-每章严格执行：写前分析 → 撰写(3000-5000字) → 润色去AI味 → 字数检查 → 更新摘要。
-
-```
-第1章完成（3247字）
-第2章完成（3582字）
-第3章完成（3412字）
-...
-```
-
-### Phase 4：自动校验
-
-全稿完成后检查章节文件与字数，不合格章节自动修复（最多3轮）。连贯性和文字质量由 Agent 审读，仍需作者把关。
+自动加载用户偏好，检测中断续写；三层问答后规划确认，随后全自动推进到完稿。各阶段细节见 [references/flows/](references/flows/)。
 
 ---
 
 ## 📂 输出样例
 
 ```
-chinese-novelist/
+.chinese-novelist/
 ├── user-preferences.json              # 用户偏好（跨项目共享）
 └── 20260412-143000-午夜列车/
     ├── 01-大纲.md                      # 故事概述、章节规划+ 设定词典
@@ -252,10 +174,10 @@ chinese-novelist/
 
 - [GitHub Discussions](https://github.com/PenglongHuang/chinese-novelist-skill/discussions) — 使用心得、作品分享、功能想法
 - [Issues](https://github.com/PenglongHuang/chinese-novelist-skill/issues) — 问题反馈与 bug 报告
-- **微信交流群**：扫码入群
+- **微信**：交流与商务合作，扫码加我
 
 <p align="center">
-  <img src="assets/wechat-group-qr.png" width="240" alt="微信交流群二维码"/>
+  <img src="assets/wechat-personal-qr.png" width="240" alt="个人微信二维码"/>
 </p>
 
 ## 赞助

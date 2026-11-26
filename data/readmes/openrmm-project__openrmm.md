@@ -217,24 +217,17 @@ Copyright (C) 2026 Miquéias Gonçalves. Contributors retain copyright in their 
 contributions and license them under the [CLA](CLA.md). Third-party components
 and their licences are listed in [`THIRD_PARTY_NOTICES`](THIRD_PARTY_NOTICES).
 
-### Commercial licensing
-
 The AGPL is a real obligation, not a formality: if you modify OpenRMM and offer
 it to others over a network, you must offer them that modified source. That is
 fine for most self-hosted use, and deliberately awkward for building a closed
 product on top of it.
 
-If you need to embed OpenRMM in something you do not want to publish, a separate
-commercial licence is available — the same code, without the AGPL's source
-obligations. Write to contact@openrmm.io.
-
-Contributing is unaffected by that: you keep the copyright in your work. The
-[CLA](CLA.md) grants a licence broad enough to cover both distributions, because
-the alternative is a project that can never change its own terms. See
+The [CLA](CLA.md) grants a licence broad enough for the project to change its
+own terms, because the alternative is a project that can never change them. See
 [CONTRIBUTING](CONTRIBUTING.md).
 
 ### Logo
 
-The OpenRMM logo and icons belong to Miquéias Gonçalves. The AGPL licenses the
-code, not the logo: a fork is welcome with a logo of its own. See the
+The OpenRMM logo belongs to Miquéias Gonçalves. The AGPL licenses the code, not
+the logo: a fork is welcome with a logo of its own. See the
 [logo policy](TRADEMARKS.md).

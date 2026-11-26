@@ -49,7 +49,7 @@ Inside every section the newest practices come first.
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/self-contained-task-with-proof.svg" width="400" alt="Example scheme: Self-contained task with proof">
+<a href="https://inmve.github.io/agentic-coding-practices/#self-contained-task-with-proof/play"><img src="figures/self-contained-task-with-proof.svg" width="400" alt="Example scheme: Self-contained task with proof"></a>
 
 **Self-contained task with proof**
 
@@ -57,12 +57,12 @@ Each task for the agent is written as a self-contained ticket stating what is wr
 
 Sources: [Addy Osmani, 2026-10-06](https://claude.dev/blog/claude-code-in-the-cloud/); [Addy Osmani, 2026-10-06](https://claude.dev/blog/claude-code-in-the-cloud/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#self-contained-task-with-proof)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#self-contained-task-with-proof/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/confidence-markers-on-extracted-facts.svg" width="400" alt="Example scheme: Confidence markers on extracted facts">
+<a href="https://inmve.github.io/agentic-coding-practices/#confidence-markers-on-extracted-facts/play"><img src="figures/confidence-markers-on-extracted-facts.svg" width="400" alt="Example scheme: Confidence markers on extracted facts"></a>
 
 **Confidence markers on extracted facts**
 
@@ -70,14 +70,14 @@ Every fact the agent extracts from legacy code carries a green, amber or red con
 
 Sources: [Shashank Mishra, 2026-07-13](https://www.thoughtworks.com/insights/articles/ai-assisted-migration-lessons); [Shashank Mishra, 2026-07-13](https://www.thoughtworks.com/insights/articles/ai-assisted-migration-lessons).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#confidence-markers-on-extracted-facts)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#confidence-markers-on-extracted-facts/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/source-traceability.svg" width="400" alt="Example scheme: Source traceability">
+<a href="https://inmve.github.io/agentic-coding-practices/#source-traceability"><img src="figures/source-traceability.svg" width="400" alt="Example scheme: Source traceability"></a>
 
 **Source traceability**
 
@@ -88,7 +88,7 @@ Sources: [Shashank Mishra, 2026-07-13](https://www.thoughtworks.com/insights/art
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/visual-iteration-technique.svg" width="400" alt="Example scheme: Screenshot iteration">
+<a href="https://inmve.github.io/agentic-coding-practices/#visual-iteration-technique/play"><img src="figures/visual-iteration-technique.svg" width="400" alt="Example scheme: Screenshot iteration"></a>
 
 **Screenshot iteration**
 
@@ -96,7 +96,7 @@ The agent is given a screenshot of the result or of a mock-up, and the change an
 
 Sources: [kent-tokyo, 2026-06-03](https://dev.to/kent-tokyo/what-i-do-before-letting-claude-code-touch-web-app-design-53n0).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#visual-iteration-technique)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#visual-iteration-technique/play)
 
 </td>
 </tr>
@@ -112,7 +112,7 @@ Sources: [Thariq Shihipar, 2026-05-20](https://claude.dev/blog/using-claude-code
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/plan-first-before-coding.svg" width="400" alt="Example scheme: Plan before code">
+<a href="https://inmve.github.io/agentic-coding-practices/#plan-first-before-coding/play"><img src="figures/plan-first-before-coding.svg" width="400" alt="Example scheme: Plan before code"></a>
 
 **Plan before code**
 
@@ -120,14 +120,14 @@ The agent first lays out steps, risks and checks, and the developer corrects tha
 
 Sources: [Indragie Karunaratne, 2025-07-01](https://www.indragie.com/blog/i-shipped-a-macos-app-built-entirely-by-claude-code#:~:text=If%20you%20want%20to%20iterate%20on%20the%20plan); [Mitchell Hashimoto, 2025-10-11](https://mitchellh.com/writing/non-trivial-vibing#:~:text=Creating%20a%20comprehensive%20plan); [Addy Osmani, 2026-10-06](https://claude.dev/blog/claude-code-in-the-cloud/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#plan-first-before-coding)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#plan-first-before-coding/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/prototype-first-development.svg" width="400" alt="Example scheme: Generated prototype">
+<a href="https://inmve.github.io/agentic-coding-practices/#prototype-first-development/play"><img src="figures/prototype-first-development.svg" width="400" alt="Example scheme: Generated prototype"></a>
 
 **Generated prototype**
 
@@ -135,9 +135,29 @@ A project starts with a quickly generated prototype that shows whether the key r
 
 Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/using-llms-for-code/#:~:text=The%20best%20way%20to%20start%20any%20project); [Alex Grebenyuk, 2025-06-23](https://kean.github.io/post/experiencing-claude-code).
 
-Grew from: Spike solution.
+Roots: Spike solution.
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#prototype-first-development)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#prototype-first-development/play)
+
+</td>
+<td width="50%" valign="top">
+
+**Choose boring technology** (2015)
+
+A team spends a small, fixed number of “innovation tokens” on new technologies and uses well-known ones for everything else.
+
+Sources: [Dan McKinley, 2015-03-30](https://mcfunley.com/choose-boring-technology); [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/using-llms-for-code/).
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Tracer bullets** (1999)
+
+A developer first builds a small end-to-end slice of functionality that touches all layers of the system, then grows the system from that working slice.
+
+Sources: [Matt Pocock, 2026-01-22](https://www.aihero.dev/tracer-bullets); [Andy Hunt and Dave Thomas, 1999-01-01](https://www.artima.com/articles/tracer-bullets-and-prototypes).
 
 </td>
 <td width="50%" valign="top">
@@ -153,7 +173,16 @@ Sources: [Dex](https://github.com/humanlayer/advanced-context-engineering-for-co
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/vertical-slices-for-agents.svg" width="400" alt="Example scheme: Vertical slices in agent work plans">
+**Spike solution**
+
+Before building, a team writes the smallest throwaway program that shows whether an approach can work.
+
+Sources: [Ward Cunningham](http://c2.com/xp/SpikeSolution.html); [Alex Grebenyuk, 2025-06-23](https://kean.github.io/post/experiencing-claude-code).
+
+</td>
+<td width="50%" valign="top">
+
+<a href="https://inmve.github.io/agentic-coding-practices/#vertical-slices-for-agents"><img src="figures/vertical-slices-for-agents.svg" width="400" alt="Example scheme: Vertical slices in agent work plans"></a>
 
 **Vertical slices in agent work plans**
 
@@ -161,10 +190,9 @@ The agent's work plan for a feature is cut into vertical slices that cross backe
 
 Sources: [shinpr](https://github.com/shinpr/claude-code-workflows); [Dex](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md).
 
-Grew from: Tracer bullets (1999).
+Roots: Tracer bullets (1999).
 
 </td>
-<td width="50%"></td>
 </tr>
 </table>
 
@@ -174,7 +202,7 @@ Grew from: Tracer bullets (1999).
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/trace-driven-performance-fixes.svg" width="400" alt="Example scheme: Performance fixes from production traces">
+<a href="https://inmve.github.io/agentic-coding-practices/#trace-driven-performance-fixes/play"><img src="figures/trace-driven-performance-fixes.svg" width="400" alt="Example scheme: Performance fixes from production traces"></a>
 
 **Performance fixes from production traces**
 
@@ -182,7 +210,7 @@ The agent is connected to the team's own production traces and asked to find iss
 
 Sources: [Scott Cooper, 2026-11-03](https://blog.sentry.io/performance-wins-traces-coding-agent/); [Scott Cooper, 2026-11-03](https://blog.sentry.io/performance-wins-traces-coding-agent/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#trace-driven-performance-fixes)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#trace-driven-performance-fixes/play)
 
 </td>
 <td width="50%" valign="top">
@@ -198,7 +226,7 @@ Sources: [Geoffrey Huntley, 2026-10-09](https://ghuntley.com/tier/#:~:text=What%
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/benchmark-hill-climbing.svg" width="400" alt="Example scheme: Hill climbing on a metric">
+<a href="https://inmve.github.io/agentic-coding-practices/#benchmark-hill-climbing/play"><img src="figures/benchmark-hill-climbing.svg" width="400" alt="Example scheme: Hill climbing on a metric"></a>
 
 **Hill climbing on a metric**
 
@@ -206,12 +234,12 @@ An agent is given a measured number to beat and repeatedly changes the code and 
 
 Sources: [Raymond Wang, Sam Attard, and Issac G., 2026-09-23](https://claude.dev/blog/how-we-made-claude-ai-faster/); [Sankalp, 2026-07-08](https://sankalp.bearblog.dev/autoresearch/); [Alberto Gimeno, 2026-09-23](https://github.blog/engineering/user-experience/rendering-huge-pull-requests-in-the-github-copilot-app/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#benchmark-hill-climbing)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#benchmark-hill-climbing/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/disjoint-evidence-hypotheses.svg" width="400" alt="Example scheme: Hypotheses from disjoint evidence">
+<a href="https://inmve.github.io/agentic-coding-practices/#disjoint-evidence-hypotheses/play"><img src="figures/disjoint-evidence-hypotheses.svg" width="400" alt="Example scheme: Hypotheses from disjoint evidence"></a>
 
 **Hypotheses from disjoint evidence**
 
@@ -219,7 +247,7 @@ Several agents form hypotheses about a bug from separate, non-overlapping pieces
 
 Sources: [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#disjoint-evidence-hypotheses)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#disjoint-evidence-hypotheses/play)
 
 </td>
 </tr>
@@ -235,7 +263,7 @@ Sources: [Bram Cohen, 2026-04-05](https://bramcohen.com/p/the-cult-of-vibe-codin
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/cli-instead-of-mcp.svg" width="400" alt="Example scheme: CLI tools instead of MCP">
+<a href="https://inmve.github.io/agentic-coding-practices/#cli-instead-of-mcp"><img src="figures/cli-instead-of-mcp.svg" width="400" alt="Example scheme: CLI tools instead of MCP"></a>
 
 **CLI tools instead of MCP**
 
@@ -248,7 +276,7 @@ Sources: [Shrivu Shankar, 2025-11-02](https://blog.sshh.io/p/how-i-use-every-cla
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/ai-feedback-loops.svg" width="400" alt="Example scheme: Agent feedback loop">
+<a href="https://inmve.github.io/agentic-coding-practices/#ai-feedback-loops/play"><img src="figures/ai-feedback-loops.svg" width="400" alt="Example scheme: Agent feedback loop"></a>
 
 **Agent feedback loop**
 
@@ -256,12 +284,12 @@ The agent is given a check it can run (tests, a build, a linter) and repeats the
 
 Sources: [Indragie Karunaratne, 2025-07-01](https://www.indragie.com/blog/i-shipped-a-macos-app-built-entirely-by-claude-code#:~:text=Claude%20is%20most%20useful%20when); [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/); [Birgitta Böckeler, Chris Ford, 2026-05-13](https://www.thoughtworks.com/insights/blog/generative-ai/harness-engineering-agent-feedback-exploring-ai-coding-sensors).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#ai-feedback-loops)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#ai-feedback-loops/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/conservative-dependency-management.svg" width="400" alt="Example scheme: Generated code in place of dependencies">
+<a href="https://inmve.github.io/agentic-coding-practices/#conservative-dependency-management"><img src="figures/conservative-dependency-management.svg" width="400" alt="Example scheme: Generated code in place of dependencies"></a>
 
 **Generated code in place of dependencies**
 
@@ -283,7 +311,7 @@ Sources: [Armin Ronacher, 2025-06-12](https://lucumr.pocoo.org/2025/6/12/agentic
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/keep-code-dead-simple.svg" width="400" alt="Example scheme: Simple code for agents">
+<a href="https://inmve.github.io/agentic-coding-practices/#keep-code-dead-simple"><img src="figures/keep-code-dead-simple.svg" width="400" alt="Example scheme: Simple code for agents"></a>
 
 **Simple code for agents**
 
@@ -291,14 +319,14 @@ Code that agents work on is kept simple.
 
 Sources: [Armin Ronacher, 2025-06-12](https://lucumr.pocoo.org/2025/6/12/agentic-coding/#:~:text=Simple%20code%20significantly%20outperforms%20complex%20code).
 
-Grew from: KISS.
+Roots: KISS.
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/build-fast-foolproof-tools.svg" width="400" alt="Example scheme: Tools built for agents">
+<a href="https://inmve.github.io/agentic-coding-practices/#build-fast-foolproof-tools/play"><img src="figures/build-fast-foolproof-tools.svg" width="400" alt="Example scheme: Tools built for agents"></a>
 
 **Tools built for agents**
 
@@ -306,7 +334,7 @@ The tools an agent calls are made to respond quickly with little useless output 
 
 Sources: [Armin Ronacher, 2025-06-12](https://lucumr.pocoo.org/2025/6/12/agentic-coding/#:~:text=Tools%20need%20to%20be%20fast); [Shrivu Shankar, 2025-11-02](https://blog.sshh.io/p/how-i-use-every-claude-code-feature).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#build-fast-foolproof-tools)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#build-fast-foolproof-tools/play)
 
 </td>
 <td width="50%" valign="top">
@@ -322,7 +350,7 @@ Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/usin
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/choose-boring-stable-libraries.svg" width="400" alt="Example scheme: Stable libraries">
+<a href="https://inmve.github.io/agentic-coding-practices/#choose-boring-stable-libraries/play"><img src="figures/choose-boring-stable-libraries.svg" width="400" alt="Example scheme: Stable libraries"></a>
 
 **Stable libraries**
 
@@ -330,12 +358,40 @@ The developer picks stable libraries that are popular enough for many examples o
 
 Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/using-llms-for-code/#:~:text=I%20gain%20enough%20value%20from%20LLMs); [Simon Willison, 2026-03-09](https://simonwillison.net/2026/Mar/9/not-so-boring/).
 
-Grew from: Choose boring technology (2015).
+Roots: Choose boring technology (2015).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#choose-boring-stable-libraries)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#choose-boring-stable-libraries/play)
 
 </td>
-<td width="50%"></td>
+<td width="50%" valign="top">
+
+**Rubber duck debugging** (1999)
+
+A developer explains a problem aloud to a listener that need not respond, such as a rubber duck, and finds the cause while explaining.
+
+Sources: [Emma Klint, 2026-03-17](https://emmaklint.substack.com/p/why-i-explain-my-problems-to-a-robot).
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Pair programming** (1998)
+
+Two people write the same code together: one types, the other reviews and thinks ahead.
+
+Sources: [Benji Weber, 2025-07-14](https://benjiweber.co.uk/blog/?p=2657); [Matt Wynne, 2026-03-04](https://mattwynne.net/pair-programming-in-the-age-of-agents).
+
+</td>
+<td width="50%" valign="top">
+
+**KISS**
+
+The design principle of keeping a system as simple as possible.
+
+Sources: [Erick Matsen, 2025-10-30](https://matsen.fredhutch.org/general/2025/10/30/agentic-coding-principles.html).
+
+</td>
 </tr>
 </table>
 
@@ -345,7 +401,7 @@ Grew from: Choose boring technology (2015).
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/tests-as-data-files.svg" width="400" alt="Example scheme: Tests-as-data">
+<a href="https://inmve.github.io/agentic-coding-practices/#tests-as-data-files"><img src="figures/tests-as-data-files.svg" width="400" alt="Example scheme: Tests-as-data"></a>
 
 **Tests-as-data**
 
@@ -356,7 +412,7 @@ Sources: [Matteo Vaccari, 2026-11-11](https://martinfowler.com/articles/tests-as
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/read-only-database-for-agent.svg" width="400" alt="Example scheme: Read-only database for the agent">
+<a href="https://inmve.github.io/agentic-coding-practices/#read-only-database-for-agent"><img src="figures/read-only-database-for-agent.svg" width="400" alt="Example scheme: Read-only database for the agent"></a>
 
 **Read-only database for the agent**
 
@@ -369,7 +425,7 @@ Sources: [Scott Cooper, 2026-11-03](https://blog.sentry.io/performance-wins-trac
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/before-and-after-reproduction.svg" width="400" alt="Example scheme: Before-and-after recording of a fix">
+<a href="https://inmve.github.io/agentic-coding-practices/#before-and-after-reproduction/play"><img src="figures/before-and-after-reproduction.svg" width="400" alt="Example scheme: Before-and-after recording of a fix"></a>
 
 **Before-and-after recording of a fix**
 
@@ -377,12 +433,12 @@ For a bug fix, the agent reproduces the issue, records the broken behavior, impl
 
 Sources: [Michael Garfinkle, Mauricio de Meirelles, David Cortes, 2026-10-22](https://shopify.engineering/remote-dev); [Michael Garfinkle, Mauricio de Meirelles, David Cortes, 2026-10-22](https://shopify.engineering/remote-dev).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#before-and-after-reproduction)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#before-and-after-reproduction/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/tests-protected-from-agent-edits.svg" width="400" alt="Example scheme: Protected test expectations">
+<a href="https://inmve.github.io/agentic-coding-practices/#tests-protected-from-agent-edits/play"><img src="figures/tests-protected-from-agent-edits.svg" width="400" alt="Example scheme: Protected test expectations"></a>
 
 **Protected test expectations**
 
@@ -390,7 +446,7 @@ Test files and expected results that a task should not change are protected from
 
 Sources: [Matteo Vaccari, 2026-11-11](https://martinfowler.com/articles/tests-as-data.html); [Naresh Jain, 2026-10-13](https://martinfowler.com/articles/are-harnesses-worth-the-cost.html); [Matteo Vaccari, 2026-11-11](https://martinfowler.com/articles/tests-as-data.html).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#tests-protected-from-agent-edits)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#tests-protected-from-agent-edits/play)
 
 </td>
 </tr>
@@ -406,7 +462,7 @@ Sources: [Raymond Wang, Sam Attard, and Issac G., 2026-09-23](https://claude.dev
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/test-driven-development-ai.svg" width="400" alt="Example scheme: Tests before agent code">
+<a href="https://inmve.github.io/agentic-coding-practices/#test-driven-development-ai/play"><img src="figures/test-driven-development-ai.svg" width="400" alt="Example scheme: Tests before agent code"></a>
 
 **Tests before agent code**
 
@@ -414,16 +470,16 @@ Tests are written first and shown to fail, and the agent then writes the impleme
 
 Sources: [Arpan Patel, 2026-05-26](https://arps18.github.io/posts/claude-code-mastery/); [Simon Willison](https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/).
 
-Grew from: Test-driven development (2002).
+Roots: Test-driven development (2002).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#test-driven-development-ai)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#test-driven-development-ai/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/mutation-testing-of-agent-written-tests.svg" width="400" alt="Example scheme: Mutation testing of agent-written tests">
+<a href="https://inmve.github.io/agentic-coding-practices/#mutation-testing-of-agent-written-tests/play"><img src="figures/mutation-testing-of-agent-written-tests.svg" width="400" alt="Example scheme: Mutation testing of agent-written tests"></a>
 
 **Mutation testing of agent-written tests**
 
@@ -431,14 +487,14 @@ Faults are injected into the code under test to check that tests written by an a
 
 Sources: [Matteo Vaccari, 2026-11-11](https://martinfowler.com/articles/tests-as-data.html); [Senko Rašić, 2026-03-22](https://blog.senko.net/improving-ai-generated-tests-using-mutation-testing).
 
-Grew from: Mutation testing.
+Roots: Mutation testing.
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#mutation-testing-of-agent-written-tests)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#mutation-testing-of-agent-written-tests/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/browser-verification-by-agent.svg" width="400" alt="Example scheme: Browser checks by an agent">
+<a href="https://inmve.github.io/agentic-coding-practices/#browser-verification-by-agent/play"><img src="figures/browser-verification-by-agent.svg" width="400" alt="Example scheme: Browser checks by an agent"></a>
 
 **Browser checks by an agent**
 
@@ -446,14 +502,14 @@ An agent drives a browser on the running application to check a change against e
 
 Sources: [Abhishek Ray, 2026-03-10](https://www.claudecodecamp.com/p/i-m-building-agents-that-run-while-i-sleep).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#browser-verification-by-agent)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#browser-verification-by-agent/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/ci-rounds-cap.svg" width="400" alt="Example scheme: Cap on CI rounds per agent run">
+<a href="https://inmve.github.io/agentic-coding-practices/#ci-rounds-cap/play"><img src="figures/ci-rounds-cap.svg" width="400" alt="Example scheme: Cap on CI rounds per agent run"></a>
 
 **Cap on CI rounds per agent run**
 
@@ -461,12 +517,12 @@ An unattended agent gets at most a fixed number of CI rounds per task, two at St
 
 Sources: [Alistair Gray, 2026-02-09](https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#ci-rounds-cap)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#ci-rounds-cap/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/agent-readable-test-output.svg" width="400" alt="Example scheme: Agent-readable test output">
+<a href="https://inmve.github.io/agentic-coding-practices/#agent-readable-test-output"><img src="figures/agent-readable-test-output.svg" width="400" alt="Example scheme: Agent-readable test output"></a>
 
 **Agent-readable test output**
 
@@ -479,7 +535,7 @@ Sources: [Nicholas Carlini, 2026-02-05](https://www.anthropic.com/engineering/bu
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/known-good-oracle.svg" width="400" alt="Example scheme: Known-good oracle">
+<a href="https://inmve.github.io/agentic-coding-practices/#known-good-oracle/play"><img src="figures/known-good-oracle.svg" width="400" alt="Example scheme: Known-good oracle"></a>
 
 **Known-good oracle**
 
@@ -487,12 +543,12 @@ The output of agent-written code is compared against an existing known-good impl
 
 Sources: [Nicholas Carlini, 2026-02-05](https://www.anthropic.com/engineering/building-c-compiler); [Aditya Sharma and Mahesh Kharade, 2026-03-27](https://www.thoughtworks.com/insights/blog/generative-ai/reimagining-api-modernization-with-deterministic-ai-assisted-engineering).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#known-good-oracle)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#known-good-oracle/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/comprehensive-testing-mandate.svg" width="400" alt="Example scheme: Manual verification of agent code">
+<a href="https://inmve.github.io/agentic-coding-practices/#comprehensive-testing-mandate/play"><img src="figures/comprehensive-testing-mandate.svg" width="400" alt="Example scheme: Manual verification of agent code"></a>
 
 **Manual verification of agent code**
 
@@ -500,7 +556,27 @@ The developer tests that agent-written code actually works.
 
 Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/using-llms-for-code/#:~:text=The%20one%20thing%20you%20absolutely%20cannot%20outsource).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#comprehensive-testing-mandate)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#comprehensive-testing-mandate/play)
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Test-driven development** (2002)
+
+A test is written first and shown to fail, the code is then written until the test passes, and the code is refactored.
+
+Sources: [Simon Willison](https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/); [Louis Antonopoulos, 2026-01-12](https://thoughtbot.com/blog/prevent-the-robocalypse-with-tdd).
+
+</td>
+<td width="50%" valign="top">
+
+**Mutation testing**
+
+Deliberate faults are introduced into the code to check whether the tests detect them.
+
+Sources: [Senko Rašić, 2026-03-22](https://blog.senko.net/improving-ai-generated-tests-using-mutation-testing).
 
 </td>
 </tr>
@@ -512,7 +588,7 @@ Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/usin
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/alert-triage-agent-chain.svg" width="400" alt="Example scheme: Agent chain for alert triage">
+<a href="https://inmve.github.io/agentic-coding-practices/#alert-triage-agent-chain/play"><img src="figures/alert-triage-agent-chain.svg" width="400" alt="Example scheme: Agent chain for alert triage"></a>
 
 **Agent chain for alert triage**
 
@@ -520,12 +596,12 @@ An alert passes through agents: it is investigated, a plan is written, another a
 
 Sources: [Ari Salem, 2026-09-03](https://launchdarkly.com/blog/building-a-self-driving-ops-triage-loop/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#alert-triage-agent-chain)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#alert-triage-agent-chain/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/alert-first-investigation-by-agent.svg" width="400" alt="Example scheme: First investigation of an alert by an agent">
+<a href="https://inmve.github.io/agentic-coding-practices/#alert-first-investigation-by-agent/play"><img src="figures/alert-first-investigation-by-agent.svg" width="400" alt="Example scheme: First investigation of an alert by an agent"></a>
 
 **First investigation of an alert by an agent**
 
@@ -533,14 +609,14 @@ An agent does the first investigation of a production alert: reads the logs, met
 
 Sources: [Aditya Nugraha, 2026-10-22](https://getstream.io/blog/ai-agent-production-investigation/); [Sachin Malhotra, 2026-08-18](https://claude.com/resources/articles/ai-ci-cd-on-call).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#alert-first-investigation-by-agent)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#alert-first-investigation-by-agent/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/agent-security-review.svg" width="400" alt="Example scheme: Category-specific bug hunting agents">
+<a href="https://inmve.github.io/agentic-coding-practices/#agent-security-review/play"><img src="figures/agent-security-review.svg" width="400" alt="Example scheme: Category-specific bug hunting agents"></a>
 
 **Category-specific bug hunting agents**
 
@@ -548,12 +624,12 @@ Agents built to hunt one category of bug run against an application, give a test
 
 Sources: [Zack Deveau, 2026-07-29](https://shopify.engineering/building-an-agentic-harness-that-outlasts-the-model).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-security-review)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-security-review/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/agent-gated-feature-flags.svg" width="400" alt="Example scheme: Agent-controlled feature flags">
+<a href="https://inmve.github.io/agentic-coding-practices/#agent-gated-feature-flags/play"><img src="figures/agent-gated-feature-flags.svg" width="400" alt="Example scheme: Agent-controlled feature flags"></a>
 
 **Agent-controlled feature flags**
 
@@ -561,16 +637,16 @@ An agent puts its own changes behind feature flags for gradual rollout and reads
 
 Sources: [Liz Fong-Jones, 2026-07-16](https://www.honeycomb.io/blog/ai-amplifies-existing-practices-lessons-ai-first-strategy); [Sachin Malhotra, 2026-08-18](https://claude.com/resources/articles/ai-ci-cd-on-call).
 
-Grew from: Feature flags (2009).
+Roots: Feature flags (2009).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-gated-feature-flags)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-gated-feature-flags/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/one-verifier-per-rule.svg" width="400" alt="Example scheme: One verifier per rule">
+<a href="https://inmve.github.io/agentic-coding-practices/#one-verifier-per-rule"><img src="figures/one-verifier-per-rule.svg" width="400" alt="Example scheme: One verifier per rule"></a>
 
 **One verifier per rule**
 
@@ -581,7 +657,7 @@ Sources: [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/voted-review-findings.svg" width="400" alt="Example scheme: Voted review findings">
+<a href="https://inmve.github.io/agentic-coding-practices/#voted-review-findings/play"><img src="figures/voted-review-findings.svg" width="400" alt="Example scheme: Voted review findings"></a>
 
 **Voted review findings**
 
@@ -589,14 +665,14 @@ Several agents look for bugs in a change at the same time, a separate group of a
 
 Sources: [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/); [Jon Kaplan, 2026-01-15](https://cursor.com/blog/building-bugbot).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#voted-review-findings)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#voted-review-findings/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/adversarial-review.svg" width="400" alt="Example scheme: Adversarial review">
+<a href="https://inmve.github.io/agentic-coding-practices/#adversarial-review/play"><img src="figures/adversarial-review.svg" width="400" alt="Example scheme: Adversarial review"></a>
 
 **Adversarial review**
 
@@ -604,12 +680,12 @@ One agent does the work and a second agent, often on a different model, reviews 
 
 Sources: [Anthropic](https://www.anthropic.com/engineering/claude-code-best-practices#:~:text=By%20someone%20who%20didn%E2%80%99t%20write%20the); [Jesse Vincent, 2025-10-05](https://blog.fsck.com/2025/10/05/how-im-using-coding-agents-in-september-2025/#:~:text=I%20typically%20double); [Arpan Patel, 2026-05-26](https://arps18.github.io/posts/claude-code-mastery/); [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/); [Zack Deveau, 2026-07-29](https://shopify.engineering/building-an-agentic-harness-that-outlasts-the-model).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#adversarial-review)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#adversarial-review/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/agent-self-review.svg" width="400" alt="Example scheme: Agent self-review">
+<a href="https://inmve.github.io/agentic-coding-practices/#agent-self-review/play"><img src="figures/agent-self-review.svg" width="400" alt="Example scheme: Agent self-review"></a>
 
 **Agent self-review**
 
@@ -617,14 +693,14 @@ The agent reviews its own code before a person reviews it.
 
 Sources: [Chris Dzombak, 2025-08](https://www.dzombak.com/blog/2025/08/getting-good-results-from-claude-code/#:~:text=Asking%20the%20agent%20to%20perform%20a%20code%20review); [Mario Zechner, 2025-11-30](https://mariozechner.at/posts/2025-11-30-pi-coding-agent/); [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-self-review)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-self-review/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/critical-code-review-strategy.svg" width="400" alt="Example scheme: Reading agent-written code">
+<a href="https://inmve.github.io/agentic-coding-practices/#critical-code-review-strategy/play"><img src="figures/critical-code-review-strategy.svg" width="400" alt="Example scheme: Reading agent-written code"></a>
 
 **Reading agent-written code**
 
@@ -632,10 +708,38 @@ The developer reads the code an agent wrote before accepting it.
 
 Sources: [Chris Dzombak, 2025-08](https://www.dzombak.com/blog/2025/08/getting-good-results-from-claude-code/#:~:text=It%E2%80%99s%20important%20for%20me%20to%20call); [Mitchell Hashimoto, 2025-10-11](https://mitchellh.com/writing/non-trivial-vibing#:~:text=I'm%20not%20shipping%20code); [Mitchell Hashimoto, 2025-10-11](https://mitchellh.com/writing/non-trivial-vibing#:~:text=Please%20don't%20ever%20ship); [Justin Paul, 2026-07-30](https://www.jpaul.me/2026/07/the-workflow-reviewing-ai-code/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#critical-code-review-strategy)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#critical-code-review-strategy/play)
 
 </td>
-<td width="50%"></td>
+<td width="50%" valign="top">
+
+**Feature flags** (2009)
+
+A change is released behind a switch that turns it on for some users or for all, without a new release.
+
+Sources: [Liz Fong-Jones, 2026-07-16](https://www.honeycomb.io/blog/ai-amplifies-existing-practices-lessons-ai-first-strategy); [Ross Harmes, 2009-12-02](https://code.flickr.net/2009/12/02/flipping-out/).
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Pull request** (2008)
+
+A change is submitted as a request to merge, and it is discussed and reviewed there before the merge.
+
+Sources: [Andrea Griffiths, 2026-05-07](https://github.blog/ai-and-ml/generative-ai/agent-pull-requests-are-everywhere-heres-how-to-review-them/).
+
+</td>
+<td width="50%" valign="top">
+
+**Code walkthrough** (1974)
+
+The reviewer sits with the author of a change, and the author talks through its intent and structure.
+
+Sources: [Chris Hughes, 2026-02-22](https://chris-hughes10.github.io/writing/pull-requests-were-never-about-the-code/index.html); [IBM, 1974-10-01](https://bitsavers.org/pdf/ibm/generalInfo/GC20-1850-0_Improved_Programming_Technologies_-_An_Overview_1st_ed_197410.pdf).
+
+</td>
 </tr>
 </table>
 
@@ -647,7 +751,7 @@ Sources: [Chris Dzombak, 2025-08](https://www.dzombak.com/blog/2025/08/getting-g
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/lookups-on-smaller-subagents.svg" width="400" alt="Example scheme: Lookups on smaller subagents">
+<a href="https://inmve.github.io/agentic-coding-practices/#lookups-on-smaller-subagents/play"><img src="figures/lookups-on-smaller-subagents.svg" width="400" alt="Example scheme: Lookups on smaller subagents"></a>
 
 **Lookups on smaller subagents**
 
@@ -655,7 +759,7 @@ Verbose reading such as file search, logs and test output goes to subagents on a
 
 Sources: [Addy Osmani, 2026-11-09](https://claude.dev/blog/which-claude-model-should-you-build-with/); [Addy Osmani, 2026-11-09](https://claude.dev/blog/which-claude-model-should-you-build-with/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#lookups-on-smaller-subagents)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#lookups-on-smaller-subagents/play)
 
 </td>
 <td width="50%" valign="top">
@@ -691,7 +795,7 @@ Sources: [Addy Osmani, 2026-11-09](https://claude.dev/blog/which-claude-model-sh
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/smart-model-escalation.svg" width="400" alt="Example scheme: Model escalation">
+<a href="https://inmve.github.io/agentic-coding-practices/#smart-model-escalation/play"><img src="figures/smart-model-escalation.svg" width="400" alt="Example scheme: Model escalation"></a>
 
 **Model escalation**
 
@@ -699,7 +803,7 @@ Work starts on a faster and cheaper model and moves to a more capable one when t
 
 Sources: [Sankalp, 2025-07-17](https://sankalp.bearblog.dev/my-claude-code-experience-after-2-weeks-of-usage/#:~:text=Opus%20does%20well%20when%20Sonnet%20gets).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#smart-model-escalation)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#smart-model-escalation/play)
 
 </td>
 <td width="50%" valign="top">
@@ -747,7 +851,7 @@ A team corrects an agent behavior with the control of the smallest scope that st
 
 Sources: [Addie Beach, Rui Martins Lacerda, 2026-09-09](https://www.datadoghq.com/blog/ai-development-golden-paths/).
 
-Grew from: Rules in linters (1978).
+Roots: Rules in linters (1978).
 
 </td>
 </tr>
@@ -763,7 +867,7 @@ Sources: [Thariq Shihipar, 2026-06-03](https://claude.dev/blog/lessons-from-buil
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/progressive-disclosure.svg" width="400" alt="Example scheme: Progressive disclosure">
+<a href="https://inmve.github.io/agentic-coding-practices/#progressive-disclosure/play"><img src="figures/progressive-disclosure.svg" width="400" alt="Example scheme: Progressive disclosure"></a>
 
 **Progressive disclosure**
 
@@ -771,14 +875,14 @@ Agent context is split into a tree of files, and the agent is told which files e
 
 Sources: [Thariq Shihipar, 2026-07-24](https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/); [Thariq Shihipar, 2026-06-03](https://claude.dev/blog/lessons-from-building-claude-code-how-we-use-skills/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#progressive-disclosure)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#progressive-disclosure/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/repeated-prompt-to-command.svg" width="400" alt="Example scheme: Repeated prompt as a skill">
+<a href="https://inmve.github.io/agentic-coding-practices/#repeated-prompt-to-command/play"><img src="figures/repeated-prompt-to-command.svg" width="400" alt="Example scheme: Repeated prompt as a skill"></a>
 
 **Repeated prompt as a skill**
 
@@ -786,7 +890,7 @@ A prompt or workflow that the developer keeps repeating is turned into a skill.
 
 Sources: [Arpan Patel, 2026-05-26](https://arps18.github.io/posts/claude-code-mastery/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#repeated-prompt-to-command)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#repeated-prompt-to-command/play)
 
 </td>
 <td width="50%" valign="top">
@@ -798,6 +902,18 @@ Project instructions for the agent (commands, conventions, constraints) are kept
 Sources: [agents.md community](https://agents.md/#:~:text=Think%20of%20AGENTS.md%20as%20a%20README%20for%20agents); [Shrivu Shankar, 2025-11-02](https://blog.sshh.io/p/how-i-use-every-claude-code-feature); [Aditya Sharma and Mahesh Kharade, 2026-03-27](https://www.thoughtworks.com/insights/blog/generative-ai/reimagining-api-modernization-with-deterministic-ai-assisted-engineering).
 
 </td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Rules in linters** (1978)
+
+A team enforces code style and safeguards through formatters, linters and pre-commit or CI checks instead of writing them as rules in documentation.
+
+Sources: [Andrey Sitnik and Travis Turner, 2026-05-26](https://evilmartians.com/chronicles/stop-writing-rules-in-agents-md-use-agent-hooks-and-nano-staged-instead).
+
+</td>
+<td width="50%"></td>
 </tr>
 </table>
 
@@ -847,7 +963,7 @@ Sources: [Systima, 2026-07-12](https://systima.ai/blog/claude-code-vs-opencode-t
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/harness-engineering.svg" width="400" alt="Example scheme: Harness engineering">
+<a href="https://inmve.github.io/agentic-coding-practices/#harness-engineering/play"><img src="figures/harness-engineering.svg" width="400" alt="Example scheme: Harness engineering"></a>
 
 **Harness engineering** (2026)
 
@@ -855,12 +971,12 @@ After each agent mistake, the developer adds a rule, a script or a check to the 
 
 Sources: [Mitchell Hashimoto, 2026-02-05](https://mitchellh.com/writing/my-ai-adoption-journey); [Ryan Lopopolo, 2026-02-11](https://openai.com/index/harness-engineering/); [Liz Fong-Jones, 2026-07-16](https://www.honeycomb.io/blog/ai-amplifies-existing-practices-lessons-ai-first-strategy).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#harness-engineering)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#harness-engineering/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/session-log-review.svg" width="400" alt="Example scheme: Agent session log review">
+<a href="https://inmve.github.io/agentic-coding-practices/#session-log-review/play"><img src="figures/session-log-review.svg" width="400" alt="Example scheme: Agent session log review"></a>
 
 **Agent session log review**
 
@@ -868,11 +984,23 @@ Saved agent session logs are reviewed regularly, by scripts, people or another a
 
 Sources: [Shrivu Shankar, 2025-11-02](https://blog.sshh.io/p/how-i-use-every-claude-code-feature); [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/); [Michael Garfinkle, Mauricio de Meirelles, David Cortes, 2026-10-22](https://shopify.engineering/remote-dev).
 
-Grew from: Retrospective (2001).
+Roots: Retrospective (2001).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#session-log-review)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#session-log-review/play)
 
 </td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Retrospective** (2001)
+
+A team meets at regular intervals to examine what went well, what caused difficulty and what to change in how it works.
+
+Sources: [Ron Meldiner, 2026-11-04](https://www.faros.ai/blog/how-to-use-ai-session-logs-to-improve-agent-workflows).
+
+</td>
+<td width="50%"></td>
 </tr>
 </table>
 
@@ -891,7 +1019,7 @@ Sources: [Sankalp, 2026-07-08](https://sankalp.bearblog.dev/autoresearch/).
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/context-compaction.svg" width="400" alt="Example scheme: Compaction">
+<a href="https://inmve.github.io/agentic-coding-practices/#context-compaction/play"><img src="figures/context-compaction.svg" width="400" alt="Example scheme: Compaction"></a>
 
 **Compaction**
 
@@ -899,7 +1027,7 @@ A long agent session is summarized at a milestone or near the context limit, wit
 
 Sources: [Arpan Patel, 2026-05-26](https://arps18.github.io/posts/claude-code-mastery/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#context-compaction)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#context-compaction/play)
 
 </td>
 </tr>
@@ -921,14 +1049,14 @@ Decisions, plans, conventions and other context are kept as versioned files in t
 
 Sources: [Ryan Lopopolo, 2026-02-11](https://openai.com/index/harness-engineering/); [shinpr](https://github.com/shinpr/claude-code-workflows); [Shashank Mishra, 2026-07-13](https://www.thoughtworks.com/insights/articles/ai-assisted-migration-lessons).
 
-Grew from: Architecture Decision Records (2011).
+Roots: Architecture Decision Records (2011).
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/plan-and-progress-file.svg" width="400" alt="Example scheme: Document & Clear">
+<a href="https://inmve.github.io/agentic-coding-practices/#plan-and-progress-file/play"><img src="figures/plan-and-progress-file.svg" width="400" alt="Example scheme: Document & Clear"></a>
 
 **Document & Clear**
 
@@ -936,7 +1064,7 @@ For a large task, the agent writes its plan and progress to a file, the context 
 
 Sources: [Shrivu Shankar, 2025-11-02](https://blog.sshh.io/p/how-i-use-every-claude-code-feature); [Nicholas Carlini, 2026-02-05](https://www.anthropic.com/engineering/building-c-compiler); [rberg27](https://github.com/rberg27/doom-coding).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#plan-and-progress-file)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#plan-and-progress-file/play)
 
 </td>
 <td width="50%" valign="top">
@@ -959,7 +1087,15 @@ The agent is given current documentation and examples for a library that is miss
 Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/using-llms-for-code/#:~:text=LLMs%20can%20still%20help%20you%20work%20with%20libraries); [Jude Gao, 2026-01-27](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals).
 
 </td>
-<td width="50%"></td>
+<td width="50%" valign="top">
+
+**Architecture Decision Records** (2011)
+
+A team writes down each significant architectural decision as a short record kept with the code.
+
+Sources: [Edy Silva, 2026-10-16](https://blog.codeminer42.com/stale-docs-are-prompt-injection-you-wrote-yourself/).
+
+</td>
 </tr>
 </table>
 
@@ -969,7 +1105,7 @@ Sources: [Simon Willison, 2025-03-11](https://simonwillison.net/2025/Mar/11/usin
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/parallel-thread-ceiling.svg" width="400" alt="Example scheme: Ceiling on parallel agent threads">
+<a href="https://inmve.github.io/agentic-coding-practices/#parallel-thread-ceiling/play"><img src="figures/parallel-thread-ceiling.svg" width="400" alt="Example scheme: Ceiling on parallel agent threads"></a>
 
 **Ceiling on parallel agent threads**
 
@@ -977,7 +1113,7 @@ The developer keeps the number of agent threads running at once within a persona
 
 Sources: [Addy Osmani, 2026-04-07](https://addyosmani.com/blog/cognitive-parallel-agents/); [Addy Osmani, 2026-04-07](https://addyosmani.com/blog/cognitive-parallel-agents/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#parallel-thread-ceiling)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#parallel-thread-ceiling/play)
 
 </td>
 <td width="50%" valign="top">
@@ -993,7 +1129,7 @@ Sources: [Ryan Lopopolo, 2026-02-11](https://openai.com/index/harness-engineerin
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/agent-task-claiming.svg" width="400" alt="Example scheme: Task claiming by agents">
+<a href="https://inmve.github.io/agentic-coding-practices/#agent-task-claiming/play"><img src="figures/agent-task-claiming.svg" width="400" alt="Example scheme: Task claiming by agents"></a>
 
 **Task claiming by agents**
 
@@ -1001,7 +1137,7 @@ Parallel agents take work from a shared list, and an agent claims a task, for ex
 
 Sources: [Nicholas Carlini, 2026-02-05](https://www.anthropic.com/engineering/building-c-compiler); [Barry Zhang, Tianyi Peng, Elle Najt, Keller Scholl, and Lance Martin, 2026-11-09](https://claude.dev/blog/safely-scaling-multi-agent-teams-with-fable-5-2/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-task-claiming)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-task-claiming/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1017,7 +1153,7 @@ Sources: [Fabien Sanglard, 2026-08-21](https://fabiensanglard.net/agent.md/index
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/parallel-attempts.svg" width="400" alt="Example scheme: Parallel attempts">
+<a href="https://inmve.github.io/agentic-coding-practices/#parallel-attempts/play"><img src="figures/parallel-attempts.svg" width="400" alt="Example scheme: Parallel attempts"></a>
 
 **Parallel attempts**
 
@@ -1025,14 +1161,14 @@ Several agents or models work on the same problem at the same time, each with it
 
 Sources: [Lee Robinson, 2026-01-09](https://cursor.com/blog/agent-best-practices); [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/).
 
-Grew from: N-version programming (1978).
+Roots: N-version programming (1978).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#parallel-attempts)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#parallel-attempts/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/orchestrator-worker.svg" width="400" alt="Example scheme: Orchestrator and workers">
+<a href="https://inmve.github.io/agentic-coding-practices/#orchestrator-worker/play"><img src="figures/orchestrator-worker.svg" width="400" alt="Example scheme: Orchestrator and workers"></a>
 
 **Orchestrator and workers**
 
@@ -1040,7 +1176,7 @@ One agent holds the plan, hands subtasks to worker agents and merges their resul
 
 Sources: [Anthropic, 2025-06-13](https://www.anthropic.com/engineering/multi-agent-research-system); [Wilson Lin, 2026-01-14](https://cursor.com/blog/scaling-agents); [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/); [Plawan Rath, Akhil Jindal, Ashwini Verma, 2026-10-19](https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#orchestrator-worker)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#orchestrator-worker/play)
 
 </td>
 </tr>
@@ -1054,7 +1190,15 @@ Several agents work on separate tasks at the same time, each in its own isolated
 Sources: [David Crawshaw, 2025-06-08](https://crawshaw.io/blog/programming-with-agents#:~:text=By%20default%20sketch%20creates%20a%20little); [Anthropic](https://docs.anthropic.com/en/docs/claude-code/common-workflows#:~:text=Work%20on%20a%20feature%20in%20one); [Addy Osmani, 2026-10-06](https://claude.dev/blog/claude-code-in-the-cloud/); [Michael Garfinkle, Mauricio de Meirelles, David Cortes, 2026-10-22](https://shopify.engineering/remote-dev).
 
 </td>
-<td width="50%"></td>
+<td width="50%" valign="top">
+
+**N-version programming** (1978)
+
+Several independent teams implement the same specification, the versions run in parallel, and a voting rule is meant to mask the faults of a single version.
+
+Sources: [Javier Ron, Benoit Baudry, Martin Monperrus, 2026-06-18](https://arxiv.org/pdf/2606.20158).
+
+</td>
 </tr>
 </table>
 
@@ -1073,7 +1217,7 @@ Sources: [Michael Garfinkle, Mauricio de Meirelles, David Cortes, 2026-10-22](ht
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/untrusted-content-quarantine.svg" width="400" alt="Example scheme: Quarantine">
+<a href="https://inmve.github.io/agentic-coding-practices/#untrusted-content-quarantine/play"><img src="figures/untrusted-content-quarantine.svg" width="400" alt="Example scheme: Quarantine"></a>
 
 **Quarantine**
 
@@ -1081,7 +1225,7 @@ Agents that read untrusted content, such as public issues or messages, are barre
 
 Sources: [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/); [Lance Martin and CJ Avilla, 2026-10-08](https://claude.dev/blog/building-effective-agent-automations/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#untrusted-content-quarantine)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#untrusted-content-quarantine/play)
 
 </td>
 </tr>
@@ -1128,7 +1272,7 @@ Sources: [Mitchell Hashimoto, 2025-10-11](https://mitchellh.com/writing/non-triv
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/agent-loop.svg" width="400" alt="Example scheme: Ralph loop">
+<a href="https://inmve.github.io/agentic-coding-practices/#agent-loop/play"><img src="figures/agent-loop.svg" width="400" alt="Example scheme: Ralph loop"></a>
 
 **Ralph loop** (2025)
 
@@ -1136,7 +1280,7 @@ A harness runs the agent in a loop: when one task finishes, the next run starts,
 
 Sources: [Nicholas Carlini, 2026-02-05](https://www.anthropic.com/engineering/building-c-compiler); [Thariq Shihipar and Sid Bidasaria, 2026-06-02](https://claude.dev/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code/); [Geoffrey Huntley, 2025-07-14](https://ghuntley.com/ralph/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-loop)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#agent-loop/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1166,7 +1310,7 @@ Sources: [Oren Eini, 2026-04-21](https://ayende.net/blog/203940-c/using-ai-agent
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/interrupt-and-redirect-often.svg" width="400" alt="Example scheme: Early interruption">
+<a href="https://inmve.github.io/agentic-coding-practices/#interrupt-and-redirect-often/play"><img src="figures/interrupt-and-redirect-often.svg" width="400" alt="Example scheme: Early interruption"></a>
 
 **Early interruption**
 
@@ -1174,14 +1318,14 @@ The developer stops the agent as soon as it goes in a wrong direction and gives 
 
 Sources: [Anthropic](https://www.anthropic.com/engineering/claude-code-best-practices#:~:text=Watch%20the%20first%20minute%2C%20press%20Esc); [Mikayla Maki, 2026-01-23](https://zed.dev/blog/on-programming-with-agents).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#interrupt-and-redirect-often)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#interrupt-and-redirect-often/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/html-output.svg" width="400" alt="Example scheme: HTML instead of Markdown">
+<a href="https://inmve.github.io/agentic-coding-practices/#html-output"><img src="figures/html-output.svg" width="400" alt="Example scheme: HTML instead of Markdown"></a>
 
 **HTML instead of Markdown**
 
@@ -1192,7 +1336,7 @@ Sources: [Thariq Shihipar, 2026-05-20](https://claude.dev/blog/using-claude-code
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/pivot-when-assistant-struggles.svg" width="400" alt="Example scheme: Change of approach after repeated failures">
+<a href="https://inmve.github.io/agentic-coding-practices/#pivot-when-assistant-struggles/play"><img src="figures/pivot-when-assistant-struggles.svg" width="400" alt="Example scheme: Change of approach after repeated failures"></a>
 
 **Change of approach after repeated failures**
 
@@ -1200,7 +1344,7 @@ After the agent fails at the same problem several times, the developer switches 
 
 Sources: [Mitchell Hashimoto, 2025-10-11](https://mitchellh.com/writing/non-trivial-vibing#:~:text=It's%20at%20this%20point); [Addy Osmani, 2026-08-14](https://addyosmani.com/blog/practical-loop-engineering/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#pivot-when-assistant-struggles)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#pivot-when-assistant-struggles/play)
 
 </td>
 </tr>
@@ -1272,7 +1416,7 @@ Sources: [Mitchell Hashimoto, 2025-10-11](https://mitchellh.com/writing/non-triv
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/critical-paths-assistant-rest.svg" width="400" alt="Example scheme: Critical parts by hand">
+<a href="https://inmve.github.io/agentic-coding-practices/#critical-paths-assistant-rest/play"><img src="figures/critical-paths-assistant-rest.svg" width="400" alt="Example scheme: Critical parts by hand"></a>
 
 **Critical parts by hand**
 
@@ -1280,12 +1424,12 @@ The developer writes the critical and complex parts of the code and hands the re
 
 Sources: [Anton Zhiyanov, 2025-09-26](https://antonz.org/write-code/#:~:text=Write%20the%20critical%20parts%20and%20ask%20AI%20to%20do%20the%20rest).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#critical-paths-assistant-rest)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#critical-paths-assistant-rest/play)
 
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/brain-first-coding.svg" width="400" alt="Example scheme: Own draft first">
+<a href="https://inmve.github.io/agentic-coding-practices/#brain-first-coding/play"><img src="figures/brain-first-coding.svg" width="400" alt="Example scheme: Own draft first"></a>
 
 **Own draft first**
 
@@ -1293,7 +1437,7 @@ The developer drafts the solution without an agent and then gives it to an agent
 
 Sources: [Anton Zhiyanov, 2025-09-26](https://antonz.org/write-code/#:~:text=Write%20the%20initial%20version%20yourself%20and%20ask%20AI%20to%20review%20and%20improve%20it).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#brain-first-coding)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#brain-first-coding/play)
 
 </td>
 </tr>
@@ -1306,7 +1450,7 @@ The developer works with the agent as with a pair partner: nudges it when needed
 
 Sources: [Orta Therox, 2025-06-07](https://blog.puzzmo.com/posts/2025/06/07/orta-on-claude/#:~:text=Occasionally%20it%20feels%20like%20magic%2C%20but).
 
-Grew from: Pair programming (1998), Rubber duck debugging (1999).
+Roots: Pair programming (1998), Rubber duck debugging (1999).
 
 </td>
 <td width="50%" valign="top">
@@ -1362,7 +1506,7 @@ Sources: [Justin McCarthy, 2026-02-06](https://factory.strongdm.ai/); [Ryan Lopo
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/spec-driven-development-iterate.svg" width="400" alt="Example scheme: Spec-driven development">
+<a href="https://inmve.github.io/agentic-coding-practices/#spec-driven-development-iterate/play"><img src="figures/spec-driven-development-iterate.svg" width="400" alt="Example scheme: Spec-driven development"></a>
 
 **Spec-driven development**
 
@@ -1370,14 +1514,14 @@ Requirement specifications serve as the prompts from which coding agents generat
 
 Sources: [GitHub Engineering, 2025-09-30](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/); [Liu Shangqi, 2025-12-04](https://www.thoughtworks.com/insights/blog/agile-engineering-practices/spec-driven-development-unpacking-2025-new-engineering-practices).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#spec-driven-development-iterate)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#spec-driven-development-iterate/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/vibe-coding.svg" width="400" alt="Example scheme: Vibe coding">
+<a href="https://inmve.github.io/agentic-coding-practices/#vibe-coding/play"><img src="figures/vibe-coding.svg" width="400" alt="Example scheme: Vibe coding"></a>
 
 **Vibe coding** (2025)
 
@@ -1385,7 +1529,7 @@ Building software by talking to an agent without reading the code: every change 
 
 Sources: [Andrej Karpathy, 2025-02-02](https://x.com/karpathy/status/1886192184808149383).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#vibe-coding)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#vibe-coding/play)
 
 </td>
 <td width="50%"></td>
@@ -1398,7 +1542,7 @@ Sources: [Andrej Karpathy, 2025-02-02](https://x.com/karpathy/status/18861921848
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/approval-per-commit.svg" width="400" alt="Example scheme: Approval bound to a commit">
+<a href="https://inmve.github.io/agentic-coding-practices/#approval-per-commit/play"><img src="figures/approval-per-commit.svg" width="400" alt="Example scheme: Approval bound to a commit"></a>
 
 **Approval bound to a commit**
 
@@ -1406,7 +1550,7 @@ A review approval covers one specific commit, and new commits the system cannot 
 
 Sources: [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/); [Maksym Kuzmitskyi, 2026-10-19](https://dev.to/maximusft/a-review-belongs-to-a-commit-2a5b).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#approval-per-commit)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#approval-per-commit/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1417,14 +1561,14 @@ The person who directed the agent counts as one of the required reviewers of its
 
 Sources: [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/); [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/).
 
-Grew from: Pull request (2008).
+Roots: Pull request (2008).
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/every-review-finding-answered.svg" width="400" alt="Example scheme: Answer to every review finding">
+<a href="https://inmve.github.io/agentic-coding-practices/#every-review-finding-answered/play"><img src="figures/every-review-finding-answered.svg" width="400" alt="Example scheme: Answer to every review finding"></a>
 
 **Answer to every review finding**
 
@@ -1432,7 +1576,7 @@ Every finding of the review agent must be fixed or resolved with a stated reason
 
 Sources: [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/); [Addy Osmani, Morgan Westlee Lunt, and Qing Wang, 2026-10-15](https://claude.dev/blog/solving-code-review-at-anthropic/); [Christopher Olsen, 2026-08-06](https://brainchurts.com/lessons/2026-08-06-ai-reviewer-in-the-merge-gate).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#every-review-finding-answered)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#every-review-finding-answered/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1454,7 +1598,7 @@ A team has an agent review every pull request, and review by a person becomes op
 
 Sources: [Ryan Lopopolo, 2026-02-11](https://openai.com/index/harness-engineering/); [OpenAI](https://developers.openai.com/codex/learn/best-practices); [Dave North, 2026-06-01](https://rewind.com/blog/ai-approve-pull-requests-safely/).
 
-Grew from: Pull request (2008).
+Roots: Pull request (2008).
 
 </td>
 <td width="50%" valign="top">
@@ -1465,7 +1609,7 @@ Pull requests started by an agent or generated by a model must clear a higher ba
 
 Sources: [Shrivu Shankar, 2025-11-02](https://blog.sshh.io/p/how-i-use-every-claude-code-feature); [Jynn Nelson, 2026-08-05](https://blog.rust-lang.org/inside-rust/2026/08/05/rust-langrust-is-adopting-an-llm-policy/).
 
-Grew from: Pull request (2008).
+Roots: Pull request (2008).
 
 </td>
 </tr>
@@ -1478,7 +1622,7 @@ For medium- and high-risk pull requests, an agent guides the engineer through ho
 
 Sources: [Vinay Perneti and Emma Webb](https://www.augmentcode.com/downloads/state-of-ai-native-engineering-2026.pdf).
 
-Grew from: Code walkthrough (1974).
+Roots: Code walkthrough (1974).
 
 </td>
 <td width="50%"></td>
@@ -1520,7 +1664,7 @@ Sources: [Addie Beach, Rui Martins Lacerda, 2026-09-09](https://www.datadoghq.co
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/risk-based-review.svg" width="400" alt="Example scheme: Risk-based code review">
+<a href="https://inmve.github.io/agentic-coding-practices/#risk-based-review/play"><img src="figures/risk-based-review.svg" width="400" alt="Example scheme: Risk-based code review"></a>
 
 **Risk-based code review**
 
@@ -1528,14 +1672,14 @@ The depth of review for a change depends on its risk: a low-risk change gets a l
 
 Sources: [Jonathan Wage, 2026-10-13](https://blog.traderspost.io/article/risk-proportional-review-for-ai-agents); [Spotify Engineering](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint); [Chris Adams et al., 2026-06-12](https://arxiv.org/html/2605.30208).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#risk-based-review)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#risk-based-review/play)
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/track-record-before-unreviewed-landing.svg" width="400" alt="Example scheme: Track record before landing without review">
+<a href="https://inmve.github.io/agentic-coding-practices/#track-record-before-unreviewed-landing/play"><img src="figures/track-record-before-unreviewed-landing.svg" width="400" alt="Example scheme: Track record before landing without review"></a>
 
 **Track record before landing without review**
 
@@ -1543,7 +1687,7 @@ A recurring automated source of code changes, such as a fixed prompt that an age
 
 Sources: [Chris Adams et al., 2026-06-12](https://arxiv.org/html/2605.30208); [Chris Adams et al., 2026-06-12](https://arxiv.org/html/2605.30208).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#track-record-before-unreviewed-landing)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#track-record-before-unreviewed-landing/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1573,7 +1717,7 @@ Sources: [Jynn Nelson, 2026-08-05](https://blog.rust-lang.org/inside-rust/2026/0
 </td>
 <td width="50%" valign="top">
 
-<img src="figures/approved-agents-in-project-spaces.svg" width="400" alt="Example scheme: Agents in project spaces only with approval">
+<a href="https://inmve.github.io/agentic-coding-practices/#approved-agents-in-project-spaces/play"><img src="figures/approved-agents-in-project-spaces.svg" width="400" alt="Example scheme: Agents in project spaces only with approval"></a>
 
 **Agents in project spaces only with approval**
 
@@ -1581,7 +1725,7 @@ An agent may comment on or act in shared project spaces only after people approv
 
 Sources: [rnk, 2025-12-17](https://discourse.llvm.org/t/rfc-llvm-ai-tool-policy-human-in-the-loop/89159); [Wirasm](https://github.com/Wirasm/prp).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#approved-agents-in-project-spaces)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#approved-agents-in-project-spaces/play)
 
 </td>
 </tr>
@@ -1608,7 +1752,7 @@ Sources: [rnk, 2025-12-17](https://discourse.llvm.org/t/rfc-llvm-ai-tool-policy-
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/extractive-contribution-handling.svg" width="400" alt="Example scheme: Extractive contribution handling">
+<a href="https://inmve.github.io/agentic-coding-practices/#extractive-contribution-handling/play"><img src="figures/extractive-contribution-handling.svg" width="400" alt="Example scheme: Extractive contribution handling"></a>
 
 **Extractive contribution handling**
 
@@ -1616,7 +1760,7 @@ Maintainers who judge a generated contribution to cost more review time than it 
 
 Sources: [rnk, 2025-12-17](https://discourse.llvm.org/t/rfc-llvm-ai-tool-policy-human-in-the-loop/89159); [Jynn Nelson, 2026-08-05](https://blog.rust-lang.org/inside-rust/2026/08/05/rust-langrust-is-adopting-an-llm-policy/).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#extractive-contribution-handling)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#extractive-contribution-handling/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1649,7 +1793,7 @@ Sources: [OpenJDK Governing Board](https://openjdk.org/legal/ai); [Daniel P. Ber
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/interview-build-session.svg" width="400" alt="Example scheme: Build session in the interview">
+<a href="https://inmve.github.io/agentic-coding-practices/#interview-build-session/play"><img src="figures/interview-build-session.svg" width="400" alt="Example scheme: Build session in the interview"></a>
 
 **Build session in the interview**
 
@@ -1657,7 +1801,7 @@ An interview gives the candidate a few hours to build a working prototype with c
 
 Sources: [Applied Intuition, 2026-07-22](https://www.appliedintuition.com/engineering-blog/hiring-engineers-age-of-agents); [DigitalOcean, 2026-06-09](https://digitalocean.com/blog/ai-native-engineering-interview).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#interview-build-session)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#interview-build-session/play)
 
 </td>
 <td width="50%" valign="top">
@@ -1673,7 +1817,7 @@ Sources: [Sierra, 2026-04-22](https://sierra.ai/blog/the-ai-native-interview).
 <tr>
 <td width="50%" valign="top">
 
-<img src="figures/take-home-session-transcripts.svg" width="400" alt="Example scheme: Agent session transcripts in the take-home">
+<a href="https://inmve.github.io/agentic-coding-practices/#take-home-session-transcripts/play"><img src="figures/take-home-session-transcripts.svg" width="400" alt="Example scheme: Agent session transcripts in the take-home"></a>
 
 **Agent session transcripts in the take-home**
 
@@ -1681,7 +1825,7 @@ A candidate submits the transcripts of their sessions with the agent as part of 
 
 Sources: [Quentin Rousseau, 2026-02-24](https://rootly.com/blog/re-thinking-candidates-take-homes-in-the-ai-era-transcripts-over-code).
 
-[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#take-home-session-transcripts)
+[▶ Play on the site](https://inmve.github.io/agentic-coding-practices/#take-home-session-transcripts/play)
 
 </td>
 <td width="50%" valign="top">

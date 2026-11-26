@@ -2,7 +2,7 @@
 
 <a href="https://trendshift.io/repositories/21767?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-21767" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/21767" alt="timmyy123%2FLLM-Hub | Trendshift" width="250" height="55"/></a>
 
-**LLM Hub** is an open-source mobile app for on-device LLM chat, image generation, video generation, and music generation, available for both **Android** and **iOS**, and now on **Windows**, **macOS** and **Linux** as LLM Hub Desktop. It's optimized for mobile usage (CPU/GPU/NPU acceleration) and supports multiple model formats so you can run powerful models locally and privately.
+**LLM Hub** is an open-source app for on-device LLM chat, image generation, video generation, and music generation, available for both **Android** and **iOS**, and now on **Windows**, **macOS** and **Linux** as LLM Hub Desktop. It's optimized for mobile usage (CPU/GPU/NPU acceleration) and supports multiple model formats so you can run powerful models locally and privately.
 
 **Featured:** Featured by **RunAnywhere** on their website. Read the [LLM Hub iOS Case Study](https://www.runanywhere.ai/blog/llm-hub-ios-case-study)!
 
@@ -71,9 +71,10 @@ Free code signing provided by [SignPath.io](https://about.signpath.io), certific
 | **Video Moment Finder** | **[NEW]** Describe a moment in a video and jump to matching timestamps using visual and audio embeddings on Android and iOS |
 | **Text to Speech & Voice Cloning** | Android supports Kokoro, multilingual Supertonic 3 with voice-profile import, and Pocket TTS with on-device voice cloning |
 | **Image Upscale** | **[NEW]** Upscale images up to 4× using AI super-resolution models (RealESRGAN, UltraSharp) with NPU acceleration |
+| **Object Eraser** | **[NEW]** Paint over objects to remove them from photos on Android, with MI-GAN (Quick) or LaMa (HD) on the GPU with CPU fallback |
 | **Video Generator** | **[NEW]** Generate videos from text prompts or images: LTX-Video on Android (Snapdragon NPU, Vulkan GPU or CPU), Stable Video Diffusion on iOS |
 | **Translator** | Translate text, images (OCR), and audio across 50+ languages - offline |
-| **Transcriber** | Convert speech to text with on-device processing using Whisper models |
+| **Transcriber** | Convert speech to text on-device with Whisper, Parakeet, ML Kit or audio-capable Gemma models |
 | **Scam Detector** | Analyze messages and images for phishing with risk assessment |
 | **VibeVoice** | **[NEW]** Hands-free AI voice chat |
 
@@ -87,7 +88,11 @@ The **AI Agent** turns on-device LLMs into autonomous assistants with device fun
 - **AI Error Auto-Correction Loop**: When a shell command fails or encounters permission/syntax errors, the agent automatically feeds the error logs back into the LLM for self-diagnostics and auto-generates fix commands.
 
 ### Supported ASR Models (Android)
-The offline **Transcriber** feature on Android supports on-device Whisper models for high-accuracy local speech-to-text.
+The offline **Transcriber** on Android works with dedicated speech recognition models and with chat models that take audio input:
+- **Whisper Tiny and Base** (English-only and multilingual) through WhisperKit on LiteRT, with Qualcomm NPU acceleration on supported Snapdragon chips.
+- **NVIDIA Parakeet TDT 0.6B v3**: 25 European languages with automatic language detection. A LiteRT-LM build runs on any device; NPU builds run on Snapdragon 8 Gen 2, 8 Gen 3, 8 Elite and 8 Elite Gen 5, Google Tensor G5 and G6, and MediaTek Dimensity 9400 and 9500.
+- **Google ML Kit speech recognition** (Basic, and Advanced on recent flagships): the system installs and updates the model, so it uses no app storage.
+- **Gemma-3n and Gemma-4 (E2B and E4B)**: multimodal models with audio input can transcribe too.
 
 ### Android Text to Speech & Voice Cloning
 - **Kokoro**: Local speech with downloadable voices managed in Settings.
@@ -105,7 +110,7 @@ Enable **Claude Code mode** in the same settings to run Claude Code in Termux on
 
 ### Android Video Generation
 The Android Video Generator runs [Lightricks LTX-Video 2B 0.9.8 distilled](https://huggingface.co/Lightricks/LTX-Video) fully on-device, from a text prompt or a starting image, in 8 denoising steps.
-- **Snapdragon NPU**: The transformer and VAE decoder run on the Hexagon NPU as QNN context binaries, one build per Hexagon generation: v69 (8 Gen 1, 8+ Gen 1), v73 (8 Gen 2), v75 (8 Gen 3), v79 (8 Elite) and v81 (8 Elite Gen 5), plus an integer-only v73 build for chips whose NPU has no FP16 (8s Gen 4, 8s Gen 3, 7+ Gen 3, 7 Gen 4). A 25-frame 768x512 clip takes about 25 seconds on a Snapdragon 8 Elite; v69 and v73 chips generate at 512x320. Models: [timmyboy26/LTX-Video-2B-0.9.8-distilled-QNN](https://huggingface.co/timmyboy26/LTX-Video-2B-0.9.8-distilled-QNN).
+- **Snapdragon NPU**: The transformer and VAE decoder run on the Hexagon NPU as QNN context binaries, one build per Hexagon generation: v69 (8 Gen 1, 8+ Gen 1), v73 (8 Gen 2), v75 (8 Gen 3), v79 (8 Elite), v81 (8 Elite Gen 5) and v85 (8 Elite Gen 6), plus an integer-only v73 build for chips whose NPU has no FP16 (8s Gen 4, 8s Gen 3, 7+ Gen 3, 7 Gen 4). A 25-frame 768x512 clip takes about 25 seconds on a Snapdragon 8 Elite; v69 and v73 chips generate at 512x320. Models: [timmyboy26/LTX-Video-2B-0.9.8-distilled-QNN](https://huggingface.co/timmyboy26/LTX-Video-2B-0.9.8-distilled-QNN).
 - **Other chips**: GGUF models (Q4_0 / Q8_0) run through stable-diffusion.cpp with Vulkan on the GPU, or on the CPU. A 25-frame 512x320 clip takes about 3 minutes on an Exynos 1580 (Galaxy A56) and about 20 minutes on a Tensor G3 (Pixel 8 Pro).
 - Open **Video Generator**, download a model from the Video Generation tab, and choose the model and backend in the settings sheet. Detailed prompts that describe the subject, action, camera and lighting work best.
 - The scripts that build the NPU models are in [android/tools/ltxv_qnn](android/tools/ltxv_qnn).
@@ -120,11 +125,16 @@ The iOS Music Generator supports **Live generation** with Magenta Realtime 2: he
 - **Open-source** - fully transparent
 
 ### Advanced Capabilities
-- GPU/NPU acceleration for fast performance
-- Text-to-Speech with auto-readout
-- RAG with global memory for enhanced responses
-- Import custom models
-- Direct downloads from HuggingFace
+- GPU and NPU acceleration (Snapdragon Hexagon NPU, LiteRT GPU, OpenCL and Vulkan) with automatic CPU fallback
+- Several on-device engines: LiteRT-LM, MediaPipe, llama.cpp (GGUF) and ONNX Runtime on Android; llama.cpp, Apple Foundation Model and Draw Things on iOS
+- Vision and audio input with multimodal models
+- Thinking models with their reasoning shown
+- Web search with cited sources
+- RAG with global memory (EmbeddingGemma 2) for enhanced responses
+- Text-to-Speech with auto-readout and on-device voice cloning
+- Flash streaming to run mixture-of-experts models larger than the device's RAM
+- Import custom models, including GGUF vision models with their projector
+- Direct downloads from Hugging Face, and export of downloaded models
 - 22 language interfaces
 
 ### LLM Hub's patched llama.cpp (Aion, flash streaming, NPU/GPU fixes)
@@ -209,7 +219,7 @@ Acknowledgments
 - [Lightricks LTX-Video](https://huggingface.co/Lightricks/LTX-Video): Android video generation model (LTX-Video Open Weights License)
 - [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp): Android video generation runtime, extended with LTX-Video 0.9 and a QNN backend
 - [calcuis/ltxv-gguf](https://huggingface.co/calcuis/ltxv-gguf): GGUF builds of LTX-Video, T5-XXL and the VAE
-- **Google, OpenAI, Meta, Microsoft, IBM, LiquidAI, Mistral, HuggingFace**: model and tooling contributions
+- **Google, OpenAI, Meta, Microsoft, IBM, LiquidAI, Mistral, Thinking Machines, HuggingFace**: model and tooling contributions
 
 Development Setup
 

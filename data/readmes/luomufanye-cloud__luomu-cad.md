@@ -11,7 +11,7 @@
 给 Agent 装上建筑、室内、景观、机械的制图能力：读参考图 → 出 DXF → 验几何 → 按标准交付。
 每一份图纸交付前都要过一次独立审查，**工具调用成功不算数**。
 
-当前版本 **0.16.0**（2026-11-14） · [更新记录](CHANGELOG.md) · [本版实际验证与边界](references/release-validation-0.16.md) · [专业能力](references/professional-cad.md) · [作者](https://github.com/luomufanye-cloud)
+当前版本 **0.17.0**（2026-11-25） · [更新记录](CHANGELOG.md) · [本版实际验证与边界](references/release-validation-0.17.md) · [专业能力](references/professional-cad.md) · [作者](https://github.com/luomufanye-cloud)
 
 <!-- TODO(GIF)：首屏动图占位。录 examples/two-room.json → outputs/demo-001/preview.png 的 15 秒循环，存为 docs/assets/demo.gif 后取消下面这行注释
 <p align="center"><img src="docs/assets/demo.gif" alt="自然语言 → 离线 DXF → 几何质检 → PNG 预览" width="880"></p>
@@ -31,7 +31,8 @@ Luomu CAD 提供 CAD 方法组合、语义结构独立评测与 CadQuery / IfcOp
 | 按参考图逐笔复绘，保留原文字、尺寸、图名 | `workbench_redraw` |
 | PDF 图纸转可编辑 DXF，保留字形、线宽、填充、裁切 | `workbench_pdf_inventory` |
 | 几何质检：零长度、重复线、自交、尺寸覆盖 | `workbench_audit` |
-| 分行业图种与标准依据链（28 类图种 / 13 类专业配置） | `workbench_industry` · `workbench_standards` |
+| 分行业图种与标准依据链（29 个行业 / 13 类专业配置 / 98 条已查证标准题录） | `workbench_industry` · `workbench_standards` |
+| 按行业学制图：机械、产品、空间、环境、景观、食品加工的学习要点与原创示例图纸 | [行业学习要点](references/industry-learning/index.md) · `workbench_standards(operation="route")` |
 | 三维零件：CadQuery 出 STEP、IFC 洞口布尔、FreeSewing 纸样 | `workbench_solid` |
 | 操作已开着的 AutoCAD：读实体、改图、原生预览、DWG 另存 | `cad_*` |
 | 施工节点与技术知识卡：防水连续性、风盘安装、接地、穿楼板 | `workbench_technical` |
@@ -72,7 +73,7 @@ npx github:luomufanye-cloud/luomu-cad --target claude
 
 **方式 B · 手动解压**（网络访问 git 不通，或不想装 Node 时）
 
-1. 下载 [0.16.0 源码包](https://github.com/luomufanye-cloud/luomu-cad/releases/tag/v0.16.0)，解压到 Agent 的 skill 目录，目录名必须是 `luomu-cad`（不要多套一层同名目录）
+1. 下载 [0.17.0 源码包](https://github.com/luomufanye-cloud/luomu-cad/releases/tag/v0.17.0)，解压到 Agent 的 skill 目录，目录名必须是 `luomu-cad`（不要多套一层同名目录）
 2. 在技能根目录执行自检
 
 ```powershell
@@ -89,18 +90,20 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\run.ps1 -Actio
 
 ---
 
-## 0.16.0 更新
+## 0.17.0 更新
 
-- **多模型独立审查**：新增 CodeBuddy 项目与个人角色，子代理继承当前模型；后台支持 CodeBuddy，Codex 后台也可传递主会话临时选择的模型。已实测 HY4、HY3、DeepSeek、GLM 原生启动及模型继承，HY4、GLM 另完成后台证据审查。
-- **共享 CAD 任务协调**：参与的 MCP 服务可以持有任务占用，分别记录编辑、切图、保存、关闭和导出授权，后续明确指令按修订更新。
-- **审查状态比较**：文档身份、实体数、快照指纹或已知保存状态改变时更新证据；仅计数相等不能证明图纸未变。
-- **安装与近期项目经验**：更新角色安装、包完整性检查和多页 A3、局部复绘、纯设计任务指引。协作机制只覆盖已接入的适配器，记录比较不代替实时回读或客户验收。
+- **活动 CAD 剖面填充与尺寸前缀**：`cad_mutate` 新增原生 `hatch`（可直接给轮廓点，同一次写入画出闭合轮廓与孔岛），尺寸支持 `rotation` 旋转尺寸和必须保留 `<>` 实测值的 `text_override`（如 `%%c<>`）。
+- **行业标准与学习要点**：标准索引扩到 98 条、路线 24 条，新增环境设计与食品加工路线及六篇学习要点；六张原创示例图纸随路线返回，只作教学示例。
+- **安装与稳定性**：安装器修复 `--force-reinstall`、仓库身份精确识别与 `--target` 参数；Windows 后台审查状态文件的共享冲突短暂重试；发布流程从包内读取版本号。
+- 以上为工具与资料能力；不代表任何客户图纸、图片识读或工程设计已经验收。
 
-完整源码及 WorkBuddy 安装包见 [0.16.0 正式发布](https://github.com/luomufanye-cloud/luomu-cad/releases/tag/v0.16.0)。
+完整源码及 WorkBuddy 安装包见 [0.17.0 正式发布](https://github.com/luomufanye-cloud/luomu-cad/releases/tag/v0.17.0)。
 
 本仓库是供 Agent 进行图纸读取、参考复绘、离线 DXF 生成、局部修改、图纸检查及技术资料学习的通用 CAD 辅助 Skill。当前版本包含多模型独立审查、共享 CAD 任务协调和操作授权记录，并保留 28 类行业图种与标准隔离、13 类专业配置、Luomu CAD 构件库、共享房间图册及原生 DWG 对应验收。各行业工程交付与图片识读须按实际任务取证验收。
 
 ## 功能
+
+- [行业学习要点与示例图纸](references/industry-learning/index.md)：机械、产品、空间、环境、景观、食品加工六个行业的图纸组成、制图要点、设计复核项和常见错误，各配一张可复现的原创示例DXF（`examples/learning-*.dxf`）；标准查路线时直接返回对应要点和示例。只放题录、官方阅读入口与原创归纳，不含标准全文。
 
 - [共享项目与图册联动](references/shared-project-atlas.md)：统一房间完成面、墙体宿主、门窗、柜体、标高与材料编号，生成平面、地面/天花完成面、墙面立面、定向剖面及有目录/书签的PDF图册；记录修订和受影响图页。当前不包含19类完整施工图。
 

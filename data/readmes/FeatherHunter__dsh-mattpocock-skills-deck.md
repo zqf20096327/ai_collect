@@ -217,6 +217,8 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 | [@tafcear](https://github.com/tafcear) | 🌹🌹 | [#422](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/422) [#432](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/432) |
 | [@xiSage](https://github.com/xiSage) | 🌹🌹 | [#435](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/435) [#436](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/discussions/436) |
 | [@angenet](https://github.com/angenet) | 🌹🌹 | [#262](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/262) [#295](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/295) |
+| [@meimei-123](https://github.com/meimei-123) | 🌹 | [#1977](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1977) |
+| [@Stinganran](https://github.com/Stinganran) | 🌹 | [#1976](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1976) |
 | [@ajhillman](https://github.com/ajhillman) | 🌹 | [#1970](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1970) |
 | [@sukoya](https://github.com/sukoya) | 🌹 | [#1959](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1959) |
 | [@zuojinxin](https://github.com/zuojinxin) | 🌹 | [#1958](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1958) |
@@ -282,9 +284,9 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 
 <a href="https://featherhunter.github.io/dsh-mattpocock-skills-deck/star-history.html">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-dark.svg?v=202611230000" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611230000" />
-  <img alt="Star History Chart" src="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611230000" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-dark.svg?v=202611250000" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611250000" />
+  <img alt="Star History Chart" src="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611250000" />
   </picture>
 </a>
 

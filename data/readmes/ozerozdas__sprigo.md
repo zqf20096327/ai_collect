@@ -22,7 +22,7 @@
 
 ## What it does
 
-- **Courses from A1 to C2** in English, Spanish, French, German, Turkish and Hungarian (plus Romanian A1), with AI-generated exercises that adapt to your mistakes.
+- **Courses from A1 to C2** in English, Spanish, French, German, Turkish and Hungarian (plus Romanian A1 and Dutch A1 to C1), with AI-generated exercises that adapt to your mistakes.
 - **Live lessons** with an animated AI tutor: a video-call style conversation with live captions, and you can interrupt any time.
 - **Speaking and listening** with local speech recognition (whisper.cpp) and natural local voices (Piper, Kokoro).
 - **Stories, roleplay and a practice hub** for mistakes, words and timed challenges.
@@ -59,7 +59,7 @@ xattr -dr com.apple.quarantine /Applications/Sprigo.app
 
 On first launch, Sprigo looks for a local model server:
 
-- **[Ollama](https://ollama.com/download)** (recommended): install and start it. If no model is installed yet, Sprigo offers to download `qwen3:8b` (about 5.2 GB) for you. Smaller models run but write noticeably weaker lessons, so Sprigo warns when you pick one under 8B.
+- **[Ollama](https://ollama.com/download)** (recommended): install and start it. If no model is installed yet, Sprigo offers to download `qwen3.5:4b` (about 3.3 GB) for you. The AI settings show what each tested model scored in Sprigo's lesson measurements, and warn about models under 4B.
 - **[LM Studio](https://lmstudio.ai):** start its local server and load a model.
 - **Cloud:** you can also use OpenAI, Anthropic, Gemini or OpenRouter with your own API key. Pick one in **Settings → AI & voice → AI provider**; each option has a short note on what it is good at.
 

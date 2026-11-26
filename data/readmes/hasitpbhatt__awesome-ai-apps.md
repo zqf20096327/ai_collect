@@ -9,7 +9,7 @@ A curated list of the best AI applications and tools, organized by category. Upd
   <img alt="Last commit" src="https://img.shields.io/github/last-commit/hasitpbhatt/awesome-ai-apps?style=for-the-badge&logo=git&logoColor=white&color=0EA5E9">
 </p>
 
-**Total: 154 AI apps across 11 categories**
+**Total: 155 AI apps across 11 categories**
 
 ## Contents
 
@@ -168,6 +168,7 @@ A curated list of the best AI applications and tools, organized by category. Upd
 ## AI Productivity & Knowledge
 
 - **[Beautiful.ai](https://www.beautiful.ai/)**: AI presentation design that auto-formats slides as you build.
+- **[DESIGN:OS Studio](https://jangtrinh.github.io/design-os-studio/)**: Free, source-available (PolyForm Shield) native design app, built in Rust, that opens and saves .fig files, runs your own coding agent on the open file, and ships an MCP server.
 - **[Fathom](https://fathom.video/)**: Free AI notetaker that joins Zoom/Meet/Teams and summarizes.
 - **[Fireflies.ai](https://fireflies.ai/)**: AI notetaker across video-conferencing platforms.
 - **[Frank AI Researcher](https://www.hifrank.ai/)**: Voice-first tool that runs AI-moderated voice interviews with a team's own customers, in 50+ languages.

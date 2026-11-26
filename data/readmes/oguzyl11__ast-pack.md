@@ -2,6 +2,8 @@
 
 **Fold your codebase. Unfold on demand.**
 
+![ast-pack demo](assets/demo.gif)
+
 `ast-pack` is a Rust CLI and [MCP](https://modelcontextprotocol.io) server. It packs a repository into a hard token budget. Anything it leaves out keeps a stable fold id, and an agent can ask for that body later with `unfold`. Nothing is deleted. It is only deferred.
 
 ## Install
@@ -31,12 +33,12 @@ ast-pack [PATH]
     --format xml|markdown    Default: xml.
     --copy                   Copy to the clipboard. Prints to stdout if there is no clipboard.
     -o <file>                Write to a file.
-    --stats                  Token totals and the L0–L4 histogram on stderr.
+    --stats                  Token totals, the L0–L4 histogram, and estimated input-cost savings on stderr.
     --explain                Why each symbol landed on its level.
 
 ast-pack unfold [--root PATH] <id>...
 ast-pack mcp
-ast-pack setup [--remove]
+ast-pack setup [--remove] [--home DIR] [--project DIR]
 ```
 
 `--focus` that does not fit in the budget is an error. A directory prefix matches that tree (`--focus src/auth` matches `src/auth.rs` and `src/auth/token.rs`).
@@ -44,11 +46,11 @@ ast-pack setup [--remove]
 ```bash
 ast-pack . --budget 16k --focus src/main.rs --format markdown
 ast-pack --diff main --budget 32k --stats
-ast-pack unfold src/auth.rs#Session::validate
+ast-pack unfold "src/auth.rs#Session::validate"
 ast-pack mcp
 ```
 
-`setup` registers the MCP server with Cursor, Claude Code, Codex, and Gemini CLI. It copies each file it edits aside once. `setup --remove` puts those files back.
+`setup` registers the MCP server in the project (`.cursor/mcp.json`, `.mcp.json`) and in the home directory for Cursor, Claude Code (`.claude.json`), Codex (`.codex/config.toml`), and Gemini (`.gemini/settings.json`). It also writes `.claude/skills/ast-pack/SKILL.md` and `.cursor/rules/ast-pack.mdc`. Those files tell an agent to call `pack` with `--budget` and `--task` before reading whole files, and to call `unfold` on a `⟨fold:...⟩` id only when the exact body is needed. Each edited file is copied aside once. `setup --remove` restores that copy, or deletes a file that did not exist before. `--home` and `--project` override the two directories. `--stats` prices the tokens a pack avoids at Claude Sonnet 4 ($3 / 1M input tokens) and GPT-4o ($2.50 / 1M).
 
 ## Levels
 
@@ -115,7 +117,7 @@ Measured on this corpus with the `o200k` tokenizer (averages over the six repos)
 
 On this corpus the full dump is 16,003 tokens, so a 32k budget is the whole repo. At 8k, unfold spends about 538 extra tokens and retrieves every answer the full dump retrieves. That is about half the tokens of the full dump, not 15%. The 15% line stays out of this README until a larger corpus measures it.
 
-Another tool can add a row by opening a pull request with the command it ran and a script that reproduces the table. The pull request template has a checklist for that.
+repomix, aider, codesurf, and any other context tool can add a row. Open a pull request with the command you ran and a script that reproduces the numbers. The pull request template has a checklist for that.
 
 ## Adding a language
 

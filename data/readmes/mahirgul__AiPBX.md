@@ -28,15 +28,18 @@
   <img src="https://img.shields.io/badge/Asterisk-22-F68F1E?style=flat-square&logo=asterisk&logoColor=white" alt="Asterisk 22">
   <img src="https://img.shields.io/badge/PHP-8.4%2B-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.4+">
   <img src="https://img.shields.io/badge/Ubuntu_%7C_Debian-amd64_%7C_arm64-E95420?style=flat-square&logo=linux&logoColor=white" alt="Ubuntu and Debian, amd64 and arm64">
+  <img src="https://img.shields.io/badge/Development-Agentic_Engineering_%7C_AI--Assisted-0EA5E9?style=flat-square" alt="Agentic Engineering | AI-Assisted">
 </p>
 
 <p align="center">
-  <a href="#-quick-install">🚀 Quick Install</a> •
+  <a href="#-why-aipbx">💡 Why AiPBX</a> •
+  <a href="#-quick-start-3-steps">🚀 Quick Start</a> •
   <a href="#-updating">🔄 Updating</a> •
   <a href="#-features">✨ Features</a> •
   <a href="#-global-privacy--telecom-compliance-privacy">🛡️ Privacy & GDPR/KVKK</a> •
   <a href="docs/README.md">📚 Documentation</a> •
   <a href="#-architecture">🏗️ Architecture</a> •
+  <a href="#-agentic-engineering--quality-assurance">🤖 Agentic Engineering</a> •
   <a href="CHANGELOG.md">📋 Changelog</a> •
   <a href="ROADMAP.md">🗺️ Roadmap</a> •
   <a href="#-contributing">🤝 Contributing</a> •
@@ -46,13 +49,38 @@
 
 ---
 
-## 🚀 Quick Install
+## What's new in v1.82.0
+
+- **[AI setup wizard](docs/ai-apps.md#setup-wizard)**: the steps an AI agent needs as a checklist ticked from the system's real state, with a way back from every page it opens.
+- **[Smarter AI calls](docs/ai-apps.md#how-a-call-goes)**: the agent knows why a turn brought no words and asks again in its own words, a short goodbye ends the call, barge-in ignores a cough, and [advanced settings](docs/ai-apps.md#advanced-settings) tune the line, silences and interruptions per agent.
+- **[Optional call detectors](docs/local-ai.md#optional-call-detectors-advanced)**: Silero VAD and Smart Turn, one click on Local AI, chosen per agent.
+- **AI call log, reports, statistics and e-mail**, voice settings and GPU support for local models, and diagrams of [caller ID](docs/caller-id.md), the [AI agent](docs/ai-apps.md#how-a-call-goes) and the [PBX Assistant](docs/assistant.md); every help box links to its documentation.
+
+[Full release notes](CHANGELOG.md)
+
+## 💡 Why AiPBX?
+
+Legacy open-source PBXs feel stuck in the 2000s or lock essential features behind per-seat licensing. **AiPBX** gives you a modern, self-hosted enterprise phone system on **native Asterisk 22** with built-in AI, call center, and unified communications — with zero vendor lock-in:
+
+- **Native Asterisk 22 + PJSIP** — extensions, trunks, IVR, dynamic routing, time conditions, BLF, parking, and fax without legacy GUI bloat.
+- **Built-in AI Voice & Analytics** — interactive Cascade and Realtime voice agents with ARI or AudioSocket media, local Ollama or cloud LLMs, Knowledge Base RAG, voicemail summaries, and call scoring.
+- **Full Call Center Suite** — real-time queues, customizable break reasons & auto-unpause, agent wallboard, callbacks, and CDR/pause reporting.
+- **Unified Communications** — browser WebRTC softphone, video meetings, Go-powered team chat, and native Android & iOS apps.
+- **Enterprise Auth & Integrations** — Google, Microsoft Entra ID, OIDC, SAML 2.0, LDAP, REST API v1, webhooks, and CRM/DB connectors.
+- **Hardened & Offline-Ready** — automated firewalld + fail2ban, TLS/Let's Encrypt, GDPR/KVKK privacy controls, and offline `/help` docs with architecture diagrams.
+
+## 🚀 Quick Start (3 Steps)
 
 > 🖥️ **Look around first:** [aipbx.bid/demo](https://aipbx.bid/demo/) is the portal itself with a made-up company (English, Türkçe, Deutsch): every page, live call figures, nothing to install. Changes are not saved there.
 
 ```bash
-# Recommended one-liner installation (installs the latest release)
+# 1. Install the latest release on Ubuntu / Debian (64-bit)
 curl -fsSL aipbx.bid/i | sudo bash
+
+# 2. Check your generated admin credentials (also printed at the end of install)
+sudo cat /root/aipbx-credentials.txt
+
+# 3. Open https://<your-server> (or https://aipbx.local on LAN) in your browser
 ```
 
 Or via direct GitHub raw URL:
@@ -72,8 +100,8 @@ sudo bash install.sh
 ```
 
 The installer:
-1. 🌐 Asks for your **FQDN** — with Let's Encrypt if DNS points to the server, otherwise a self-signed
-   certificate; leave it blank for a LAN-only install announced as `aipbx.local` via mDNS
+1. 🌐 Sets up **aipbx.local** with a self-signed certificate. Set `AIPBX_FQDN` to use another name.
+   Configure Let's Encrypt later in **System → Certificates**.
 2. 🔑 Generates **strong random secrets** for every service (no default passwords)
 3. ⚙️ Installs and configures Asterisk, MariaDB, Nginx + Apache, PHP, coturn, the Go chat service,
    firewalld and fail2ban, and builds the database from migrations
@@ -108,6 +136,9 @@ Narrated and with subtitles — on the [AiPBX YouTube channel](https://www.youtu
 ## 🔄 Updating
 
 Releases are published as git tags (`vX.Y.Z`) with notes in [CHANGELOG.md](CHANGELOG.md).
+
+**Updating from v1.80.1 to v1.81.0** restarts Asterisk because its ARI configuration changed.
+Wait for active calls to finish before updating. [Release notes](https://github.com/mahirgul/AiPBX/releases/tag/v1.81.0)
 
 ```bash
 sudo aipbx-update --check   # installed vs. latest release
@@ -158,7 +189,7 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
   with different number formats, copy and ordering, duplicate patterns rejected
 - **Inbound and outbound call normalization** — per-device rules (desk phone, mobile app, browser) turn what users dial
   (`+90…`, `000…`) into one format before the outbound routes, per-trunk rules do the same for incoming numbers;
-  ready-made rules per country loaded on request, simulators, and a [guide to the order of all number settings](docs/number-normalization.md)
+  ready-made rules per country loaded on request, simulators, and a [guide to the order of all number settings](docs/number-normalization.md) and to [caller ID](docs/caller-id.md), with diagrams
 - **DID routing, time conditions, multi-level IVR** — optional menu repeat when no key is pressed, and
   **IVR data steps**: look up the entered digits or the caller's number in an external database or over
   HTTP and route on *found* / *not found* / *timeout* ([docs](docs/external-databases.md))
@@ -187,11 +218,11 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
 - **Local Network Phone Discovery (`/phones`)** — automated discovery daemon (`aipbx-phone-discovery`) monitors local subnets, DHCP lease files, ARP cache, and `dnsmasq` logs every 5 minutes; new devices appear instantly in the *Discovered on the network* panel
 - **Zero-Touch Pool Provisioning** — automatically allocates extensions from an administrator-configured pool (`provision_discovery_pool`) and maps detected OUI vendors to default models (`provision_discovery_models`), producing TFTP/HTTP configuration files without manual entry
 - **Multi-Vendor Provisioning Engine** — automated configuration generation for Yealink (T3x, T4x, T5x), Fanvil (X series), Grandstream (GXP, GRP), Snom, Gigaset, and Cisco (SPA series and CallManager enterprise series)
-- **Cisco 7900 & 8800 CallManager Series** — native `SEP<MAC>.cnf.xml` XML profile generation, XML directory services, and line keys across 11 enterprise models (`cisco-cm-7941g` through `7975g`, `8841`, `8851`, `8861`); see [docs/cisco-callmanager.md](docs/cisco-callmanager.md)
+- **Cisco 7841, 7900 and 8800 CallManager phones** — native `SEP<MAC>.cnf.xml` profiles, XML directory services and model-specific line keys. [Cisco provisioning](docs/cisco-callmanager.md)
 - **Phone regions** — groups of phones get their own SIP server, port, transport, proxy, NTP, syslog, codecs, time zone and language (*Provisioning → Regions*), e.g. one set inside the network and one outside
 - **SIP over TLS on port 443 (v1.71+)** — for desk phones on networks that let TLS out only on 443: the same 443 port serves the portal, TURN and these phones. nginx tells them apart by the region's own SIP server name (`sip1.example.com` beside the portal's name) or, without one, by the phones' addresses; Asterisk accepts the name and Let's Encrypt puts it on the one certificate. One switch on the region; see [docs/phones.md](docs/phones.md#sip-over-tls-on-port-443)
 - **Automated SCCP-to-SIP Firmware Switching** — model-by-model firmware migration pipeline that moves Cisco 7900 phones from proprietary SCCP to Cisco SIP firmware upon restart, with server-side `.loads` manifest validation before deployment
-- **Phonebook and LDAP directory for desk phones (v1.77.1+)** — shared company contacts (*Provisioning → Phonebook*, CSV import) served with the extensions over a read-only LDAP phonebook (389 StartTLS / 636 LDAPS): phones search by name and show the caller's name; the [`ldap-sync`](https://github.com/mahirgul/aipbx-plugins/tree/main/plugins/community/ldap-sync) plugin brings people from Active Directory or OpenLDAP; see [docs/phonebook.md](docs/phonebook.md)
+- **Phonebook and LDAP directory for desk phones (v1.77.1+)** — shared company contacts under **Panel → Phonebook**, with CSV import and a read-only LDAP directory for desk phones (389 StartTLS / 636 LDAPS). The `ldap-sync` plugin imports Active Directory or OpenLDAP contacts. [Phonebook guide](docs/phonebook.md)
 - **Yealink OpenVPN package (v1.77.2+)** — one-click `.tar` download (`vpn.cnf` + `keys/`) on *Network → VPN Server* for Yealink phones to upload under *Network → Advanced → VPN* ([docs](docs/vpn.md#yealink-phones))
 
 ### 📠 Fax
@@ -203,9 +234,8 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
 - **Agent desk and wallboard** — live queues, waiting callers (with pickup), agent states
   (idle / ringing / in call / on break), SLA, answered / missed / abandoned statistics
 - **Breaks with reasons**, applied in Asterisk per queue, and break reports
-- **[Manual queue callbacks](docs/queue-callbacks.md)** — callers press 1 while waiting, hear a
-  confirmation and hang up; assigned agents call from a shared list. Answered agent conversations
-  clear the request, including when the customer calls again; unanswered attempts stay pending.
+- **[Queue callbacks](docs/queue-callbacks.md)** — callers press 1 to request a callback. An assigned
+  agent can call from the shared list, or the queue can ring an available agent and then the customer.
 - **Listen, whisper and barge** — from the wallboard or with `*90`/`*91`/`*92`
 - **Call transfer** that keeps the caller connected through queue Local channels
 - **Queue Report Centre** — service level, answered / lost calls, average wait and talk time per queue
@@ -261,11 +291,22 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
   <img src="docs/img/app_login.jpg" width="18%" alt="Setup">
 </p>
 
-### 🤖 AI & Dialplan Assistant
-- **Cloud TTS** — turn text into speech with Google (API key or service account), Amazon Polly, Azure AI
-  Speech, ElevenLabs or OpenAI; listen, download the MP3 or save it as an announcement in one click.
-  Credentials are stored encrypted; usage is tracked per character
+### 🤖 AI Voice Agent, Local/Cloud AI & Dialplan Assistant
+- **Built-in AI Voice Agent (`/ai-agent`)** — **Cascade (STT → LLM → TTS)** and **Realtime** voice, with ARI or AudioSocket media, structured prompts, Knowledge Base RAG, saved external DB queries, DTMF and outbound IVR navigation. [AI settings](docs/ai-settings.md)
+- **Local AI (`/ai-local`) & Cloud AI (`/ai-cloud`)** — run Ollama LLMs, Faster-Whisper STT, Piper TTS, and ONNX embeddings locally via `aipbx-ai`, or connect OpenAI, Google Gemini, Groq, Deepgram, ElevenLabs, Azure, Amazon Polly, and OpenAI-compatible endpoints with encrypted secrets and quota tracking
+- **AI setup wizard (`/ai-wizard`), call log & reports** — a checklist from plugins to the first test call; the AI call log with timings, choppy-audio detection and a downloadable report per call, 30-day statistics and CSV, and an e-mail of every conversation. The agent handles silence, a quiet voice and noise in its own words, ends the call on a goodbye, and can use the optional Silero VAD and Smart Turn detectors ([how a call goes](docs/ai-apps.md#how-a-call-goes))
+- **AI TTS Studio (`/ai-tts`)**, **Voicemail AI (`/ai-voicemail`)** & **Call Analysis (`/ai-call-analysis`)** — generate and save audio announcements, transcribe/summarize voicemails, and run automated call quality scoring
 - **Dialplan Editor (`/assistant`) & Echo Reporter** — plain-language PBX change planner with dry-run preview before apply, safety validation, audit trail and one-click undo (`pbx_ai_changes`), plus the Echo diagnostic box backed by an opt-in local HEPv3 SIP signaling capture daemon (`aipbx-signaling` → `pbx_signaling_events`)
+
+```mermaid
+flowchart LR
+    Caller["Caller / Outbound Call"] <-->|"SIP / RTP"| Ast["Asterisk 22\nARI / AudioSocket"]
+    Ast <-->|"PCM Audio + DTMF"| AiSvc["aipbx-ai\nPython AI Service"]
+    Portal["AiPBX Web Portal\n/ai-agent · /ai-local · /ai-cloud"] -->|"Config & Sync"| AiSvc
+    AiSvc <-->|"Local Runtime"| Local["Ollama · Whisper\nPiper · ONNX"]
+    AiSvc <-->|"Cloud APIs"| Cloud["OpenAI · Gemini · Groq\nDeepgram · ElevenLabs"]
+    AiSvc <-->|"LLM Tools"| Tools["External DB Queries · Phonebook\nDTMF · Call Transfer"]
+```
 
 ### 💼 Microsoft Teams Integration
 - **Direct Routing** over SIP-TLS 5061 with SRTP
@@ -278,7 +319,7 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
 - **Stateless REST API (`/api/v1/*`) & OpenAPI 3.1** — 100+ endpoints covering extensions, trunks, inbound/outbound routes, queues, ring groups, IVRs, time conditions, conferences, dial permissions, call center, CDRs, recordings, voicemails, faxes, phones, sounds, AI, chat, system settings, and sync
 - **Scoped Bearer API Keys (`apbx_...`)** — per-token granular scopes (`extensions:read`, `calls:write`, `system:read`, …), IPv4/IPv6 CIDR allowlists, and per-minute sliding-window rate limits (`/api-keys`)
 - **Outbound Webhooks (`/webhooks`)** — real-time event subscriptions (`call.started`, `call.answered`, `call.ended`, `voicemail.received`, `fax.received`, `sync.applied`, …) with `X-AiPBX-Signature` (`HMAC-SHA256`), exponential retry worker (`aipbx-webhook-worker`), and DNS-pinned SSRF protection
-- **First-Class Plugin System (`/plugins`)** — zero-bloat modular integrations (`google-auth`, `ms-teams`, `web-widgets`, `ai-cloud`, `ai-tts`, `ai-apps`, `ai-models`), dedicated `plg_*` MySQL table sandbox (`schema.sql`), custom `.zip` plugin uploader, encrypted secret storage, pages for signed-in users as well as administrators (`user_page`, v1.71+), and **Safe Mode** circuit breaker (auto-disables any plugin after 5 consecutive runtime errors)
+- **First-Class Plugin System (`/plugins`)** — zero-bloat modular integrations (`google-auth`, `microsoft-auth`, `oidc-auth`, `saml-auth`, `ms-teams`, `web-widgets`, `aicloud`, `ailocal`, `ai-tts`, `ai-voicemail`, `ai-call-analysis`, `ai-knowledge`, `pbx-assistant`), dedicated `plg_*` MySQL table sandbox (`schema.sql`), custom `.zip` plugin uploader, encrypted secret storage, pages for signed-in users as well as administrators (`user_page`, v1.71+), and **Safe Mode** circuit breaker (auto-disables any plugin after 5 consecutive runtime errors)
 - **Signed community catalog** — opt-in plugin install/update with Ed25519 catalog verification (1.74+)
   and package checksums; Auto Dialer, AI Assistant and AI Voicemail are maintained in the separate
   [plugin repository](https://github.com/mahirgul/AiPBX-plugins).
@@ -302,10 +343,11 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
   session read-only with a 2.5 s statement limit, used by IVR data steps ([docs](docs/external-databases.md))
 
 ### 🔐 Authentication & Security
+- **Username, Extension, or E-mail sign-in** — portal and mobile sign-in accept username, extension, or e-mail address
 - **Two-factor authentication (TOTP)** with offline QR codes and single-use recovery codes — enforced
-  for portal, mobile and Google sign-in
+  for portal, mobile, Google, and Microsoft sign-in
 - **Passkeys (WebAuthn / FIDO2)** — passwordless sign-in with biometrics or PIN
-- **Google sign-in** (optional) with token audience and verified e-mail checks
+- **Google & Microsoft Entra ID Sign-In** (`google-auth`, `microsoft-auth`) plus **OIDC & SAML 2.0** (`oidc-auth`, `saml-auth`) with domain allowlists and optional auto-provisioning
 - **Sessions revoked on password change** — mobile and chat tokens stop working immediately
 - **User invitations** — generated passwords, forced first-login change, mobile sign-in link
 - **RBAC** — built-in roles (admin, viewer, queue manager, agent, fax, **user** — the default) and custom
@@ -417,6 +459,17 @@ and testing.
 4. 🚀 Push the branch and open a Pull Request
 
 Code comments, commit messages and documentation are written in English.
+
+---
+
+## 🤖 Agentic Engineering & Quality Assurance
+
+AiPBX is developed with **human-directed Agentic Engineering (AI-Assisted Development)** — structured, specification-driven software engineering where AI coding and verification agents operate under strict architectural rules, isolated review gates, and automated verification rather than ad-hoc trial and error:
+
+- **Static Analysis & I18n Parity:** Full PHPStan analysis across `490+` PHP files (`0` errors), strict PHP/Python syntax checks, Go `go vet`, and `web/bin/lint_lang.php` enforcing `100%` translation key parity across all 23 supported languages.
+- **Automated Test Coverage:** `1,650+` PHPUnit unit tests (RBAC, REST API v1, Asterisk PJSIP/dialplan config generators, queues & callbacks, provisioning, SSRF/security boundaries) and `300+` Python unit tests for the AI voice service, alongside companion plugin, Go, and mobile test suites.
+- **Runtime & Live Telephony Verification:** `web/bin/smoke.php` verifies routes, RBAC, API contracts, exports, and coding conventions on the live portal, backed by isolated LXD/Asterisk call-flow verification for real SIP/AudioSocket/queue scenarios.
+- **Defense-in-Depth Architecture:** `SecretBox` authenticated encryption at rest, CSRF & per-route RBAC enforcement, DNS-pinning SSRF guards, DML-only portal database access with Phinx migrations, and least-privilege Asterisk CLI/sudo isolation.
 
 ---
 

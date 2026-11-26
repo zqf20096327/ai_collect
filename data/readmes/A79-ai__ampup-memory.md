@@ -1,0 +1,233 @@
+# AmpUp Memory
+
+The memory for agents that gets better with use: it learns advice from the runs that went well and serves it
+before the next one.
+
+**[Docs](https://docs.ampup.ai/ampup-memory/overview)** · **[Website](https://www.ampup.ai/ampup-memory)** ·
+[Quickstart](https://docs.ampup.ai/ampup-memory/quickstart)
+
+A conversation is a session. Each task in it asks for advice (`get_advice`) and gets one skill for that kind of
+task: a note learned from earlier rewarded runs, or, before any exist, a procedure compiled from your documents.
+When the session ends, its transcript and outcome are judged or rewarded, and a rewarded session teaches the next
+one. Underneath is a cited memory: notes, documents and conversations become searchable passages and facts, each
+fact quoting its source and visible only to people who may read every source it cites. Everything is stored as
+Apache Iceberg tables in a catalog and bucket you run.
+
+## Install
+
+AmpUp also runs it for you: [hosted AmpUp Memory](https://memory.ampup.ai/?utm_source=github&utm_medium=readme) needs no install beyond the plugin, and
+its Starter plan is free for 30 days ([hosted quickstart](https://docs.ampup.ai/ampup-memory/quickstart#hosted)). To
+run it yourself:
+
+```bash
+uv tool install ampup-memory-cli      # or: pipx install ampup-memory-cli, or pip install ampup-memory-cli
+ampup-memory serve --local
+```
+
+That puts `ampup-memory` (server and CLI) and `ampup-memory-client` (hooks for coding agents) on your `PATH`, from
+[`ampup-memory-cli`](https://pypi.org/project/ampup-memory-cli/) on PyPI: a wheel per platform holding the two
+binaries, for macOS on Apple Silicon or Intel (13.4 or newer) or Linux on arm64/x86_64 (glibc 2.39 or newer). To run
+it without installing: `uvx --from ampup-memory-cli ampup-memory serve --local`.
+
+Or with the installer, which needs only `curl` (or `wget`) and `tar`, puts both in `~/.local/bin` from the newest
+[release](https://github.com/A79-ai/ampup-memory/releases) (PyPI gets one a week), and with
+`AMPUP_MEMORY_INSTALL=client` installs the client alone (on Linux it needs only glibc 2.28 or newer):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/A79-ai/ampup-memory/main/install.sh | sh
+```
+
+The command was `memstore` before the rename; the installer leaves `memstore` as a link to it.
+
+To build from source instead, you need `rustup` (the toolchain is pinned in `rust-toolchain.toml`) and `protoc` on
+your `PATH`:
+
+```bash
+cargo install --locked --path .                                        # ampup-memory: server and CLI
+cargo install --locked --path crates/memstore-client --root ~/.local   # ampup-memory-client: hooks for coding agents
+```
+
+For Claude Code, add this repository as a plugin marketplace and install the plugin; it downloads its client from the
+releases if none is installed ([coding agents](https://docs.ampup.ai/ampup-memory/coding-agents)):
+
+```text
+/plugin marketplace add A79-ai/ampup-memory
+/plugin install ampup-memory@ampup-memory
+```
+
+With no team server named, the plugin's memory is the local server, and a session's start runs it
+(`ampup-memory serve --local --background`) when nothing answers on port 8080, so install `ampup-memory` as above
+first (`AMPUP_MEMORY_AUTOSTART=0` turns this off). Where no model is saved yet, the first start saves the one
+Claude Code's environment names in `~/.ampup-memory/llm.json`, as `service install` does.
+
+## Run it locally
+
+```bash
+OPENROUTER_API_KEY=... AMPUP_MEMORY_EXTRACT_GOAL_BLIND=1 ampup-memory serve --local   # ~/.ampup-memory, http://127.0.0.1:8080
+claude mcp add --transport http ampup-memory http://localhost:8080/mcp
+```
+
+`--local` needs no Docker, catalog service or sign-in, and binds to 127.0.0.1. Without a model key it stores and
+searches but learns nothing; any OpenAI-compatible, Anthropic, Bedrock or Vertex AI endpoint, or a local Ollama,
+works instead of OpenRouter ([configuration](https://docs.ampup.ai/ampup-memory/configuration#models)).
+
+To keep it always on, with no terminal open, install it as a background service (a LaunchAgent on macOS, a systemd
+user unit on Linux). The key is kept in `~/.ampup-memory/llm.json`, readable by you alone:
+
+```bash
+OPENROUTER_API_KEY=... ampup-memory service install   # starts now, at login, and again if it stops
+ampup-memory service status                           # or: logs, restart, uninstall (the data stays)
+```
+
+### Offline, on your laptop
+
+No key and no network: local embeddings (the default) and a local model through [Ollama](https://ollama.com) for
+everything the memory learns.
+
+```bash
+ollama pull qwen2.5:3b                 # the default local model
+ampup-memory embed warmup              # fetch the embedding model (~130 MB) while you're online
+AMPUP_MEMORY_LLM=ollama AMPUP_MEMORY_CLIENT_UPDATE=off ampup-memory serve --local
+```
+
+`AMPUP_MEMORY_LLM_MODEL` picks another model, `AMPUP_MEMORY_LLM_URL` another server (any OpenAI-compatible one:
+LM Studio, llama.cpp, vLLM). Started in a terminal with nothing configured, `serve --local` asks once whether to
+use a key, the local Ollama, or no model, and keeps the answer in `~/.ampup-memory/llm.json`. Without the embedding
+model (`HF_HUB_OFFLINE=1`, nothing fetched yet), search ranks by keyword alone. More in the
+[quickstart](https://docs.ampup.ai/ampup-memory/quickstart#offline-on-your-laptop).
+
+### Your GitHub repositories, with the login you already have
+
+`serve --local` reads a repository's issues and pull requests by itself, with the token this machine already
+holds (`GITHUB_TOKEN`, `GH_TOKEN`, else `gh auth token`). Nothing goes through anyone else, and nothing needs a
+public address.
+
+```bash
+ampup-memory sources add github OWNER/REPO               # 30 days back; --since 2026-01-01 for more
+ampup-memory sources list                                # records read, last read, any error
+ampup-memory sources remove github OWNER/REPO            # stops reading; what it read stays
+```
+
+A running server picks a new source up within a minute and reads each one every 10 minutes.
+
+#### Merged pull requests with their reviews
+
+`ampup-memory sources add github-prs OWNER/REPO` reads the repository's merged pull requests whole: the
+description, the files changed, the reviews and discussion, and each review thread with its diff, in the format
+hosted AmpUp Memory writes. What bots and AI reviewers wrote is left out. It needs a token, even for a public
+repository (`gh auth login` is enough). Add both kinds for a repository to get its issues and open pull requests
+too: `github` then leaves the merged ones to `github-prs`.
+
+### Your local git history, with no network at all
+
+`serve --local` also reads a repository on this machine with the `git` already installed: each commit's message,
+author, date and the files it touched (lines added and removed, not the diff). So "why did we change this file" and
+"who touched that" are answered from memory, offline, with no account anywhere.
+
+```bash
+ampup-memory sources add git ~/code/my-repo              # 30 days back; --since 2026-01-01 for more
+ampup-memory sources remove git ~/code/my-repo           # stops reading; what it read stays
+```
+
+It reads the commits on whatever branch is checked out, merges left out, and after that only the commits new since
+the last one it read.
+
+### Your Linear team, with a personal API key
+
+`serve --local` reads a Linear team's issues, with their comments and the merged pull requests linked to them,
+using a personal API key (Linear's settings, Security & access) in the server's environment as `LINEAR_API_KEY`.
+The key is never stored. The target is the workspace's URL key and the team's key.
+
+```bash
+LINEAR_API_KEY=lin_api_... ampup-memory serve --local    # or have it set where the agent starts the server
+ampup-memory sources add linear acme/ENG                 # 30 days back; --since 2026-01-01 for more
+```
+
+The background service (`ampup-memory service install`) never writes keys into its file, so it has no Linear key:
+run `serve --local` yourself to read Linear.
+
+### Your Sentry projects
+
+`serve --local` also reads a Sentry project's issues, each written as an incident, with a Sentry token from the
+server's environment (`SENTRY_AUTH_TOKEN`), a file `AMPUP_MEMORY_SENTRY_TOKEN_FILE` names, or `sentry-cli login`'s
+`~/.sentryclirc`. The token needs to read the project's issues and events. For a self-hosted Sentry, or an
+organization kept in the EU, set `SENTRY_URL` (the default is `https://sentry.io`).
+
+```bash
+ampup-memory sources add sentry ORG/PROJECT              # 30 days back; --since 2026-01-01 for more
+ampup-memory sources remove sentry ORG/PROJECT
+```
+
+### Your Slack channels, with an app you make
+
+Make a Slack app in your own workspace from the read-only manifest in the
+[self-hosting guide](https://docs.ampup.ai/ampup-memory/self-hosting), install it, and give its bot token to the
+server in its environment (never a file):
+
+```bash
+export SLACK_BOT_TOKEN=xoxb-...                          # the app's Bot User OAuth Token
+ampup-memory sources add slack general                   # a channel's name or id; private ones need /invite first
+```
+
+Each message and thread reply is written as the hosted Slack connector writes it, with people's names.
+
+## First memory, search and advice
+
+```bash
+curl -s localhost:8080/remember -d '{"source": "note:deploy", "body": "Deploy billing with ./deploy.sh billing. Never from a laptop on Fridays."}'
+curl -s localhost:8080/query -d '{"data": [[0, {"find": "passages", "text": "deploy billing"}]]}'
+
+curl -s localhost:8080/sessions -d '{"context": "deploy the billing service"}'               # -> session_id
+curl -s localhost:8080/advice -d '{"session_id": "<id>", "question": "deploy the billing service"}'
+curl -s localhost:8080/sessions/end -d '{"session_id": "<id>", "transcript": "…", "outcome": "deployed", "reward": 1}'
+```
+
+A new memory has no advice to give until it has rewarded runs to learn from or documents to compile; the
+[quickstart](https://docs.ampup.ai/ampup-memory/quickstart) walks through both.
+
+HTTP routes: `/remember`, `/search`, `/query`, `/advice`, `/sessions`, `/sessions/end`, `/runs`, `/runs/reward`,
+and `/mcp` ([all routes](https://docs.ampup.ai/ampup-memory/http-api)).
+
+From code, the Python and TypeScript clients wrap the same routes:
+
+```bash
+pip install ampup-memory        # Python 3.10+, sdk/python
+npm install ampup-memory       # Node 20+, sdk/typescript
+```
+
+```python
+from ampup_memory import AmpUpMemory
+
+mem = AmpUpMemory("http://127.0.0.1:8080", None)  # a local server; from_profile() uses `ampup-memory-client join`'s sign-in
+mem.remember("note:deploy", "Deploy billing with ./deploy.sh billing.")
+print(mem.query({"find": "passages", "text": "deploy billing"})["results"])
+
+run = mem.session("deploy the billing service")  # the learning loop: advice per task, rewarded at the end
+print(run.opening["advice"])
+run.end("deployed", reward=1)
+```
+
+## Docs
+
+The docs live at **[docs.ampup.ai](https://docs.ampup.ai/ampup-memory/overview)**; the same guides are in
+[docs/guide](docs/guide) here.
+
+- [Quickstart](https://docs.ampup.ai/ampup-memory/quickstart) and [concepts](https://docs.ampup.ai/ampup-memory/concepts): episodes, facts, sessions,
+  advice, rewards.
+- [Advice](https://docs.ampup.ai/ampup-memory/advice): how notes are learned, judged and gated.
+- [MCP](https://docs.ampup.ai/ampup-memory/mcp), [HTTP API](https://docs.ampup.ai/ampup-memory/http-api), [CLI](https://docs.ampup.ai/ampup-memory/cli).
+- [Schemas and queries](https://docs.ampup.ai/ampup-memory/schemas-and-queries): typed memory, extraction, search ranking.
+- [Self-hosting](https://docs.ampup.ai/ampup-memory/self-hosting): Iceberg REST (Polaris), BigLake, Snowflake, Databricks; GCS, S3,
+  Azure.
+- [Configuration](https://docs.ampup.ai/ampup-memory/configuration) and [security model](https://docs.ampup.ai/ampup-memory/security-model).
+- [Benchmarks](benchmarks/README.md): how each published benchmark was run and scored, with its results.
+
+## Develop
+
+```bash
+cargo test    # runs on a local in-memory catalog, servers inside the test process
+```
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).

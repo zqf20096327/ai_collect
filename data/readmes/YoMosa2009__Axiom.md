@@ -4,14 +4,14 @@
 
 **A native Windows AI workspace: run models on your own PC, on your own server, or in the cloud.**
 
-![Release](https://img.shields.io/badge/release-V1.11.0-brightgreen)
+![Release](https://img.shields.io/badge/release-V1.14.0-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-blue)
 ![.NET](https://img.shields.io/badge/.NET-10%20WPF-purple)
 ![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey)
 
 ### [⬇ Download Axiom for Windows](https://github.com/YoMosa2009/Axiom/releases/latest)
 
-Free with local models or your own key · Windows 10/11 (64-bit)
+Free with local models or your own key · Code-signed installer · Windows 10/11 (64-bit)
 
 [Getting started](#getting-started) · [Changelog](CHANGELOG.md) · [Privacy](PRIVACY.md) · [Terms](TERMS.md) · [Feedback](#feedback)
 
@@ -50,7 +50,7 @@ chat.
 
 **Workplace.** For work that takes more than one pass.
 - **Single Model:** one agent plans, uses tools and checks its own result.
-- **Council:** a Builder does the work; at Extra High and Ultra effort a Critic reviews it.
+- **Council:** a Builder does the work; at Extra High and Ultra Axiom checks the result and has it fixed.
 - **Agent Access:** a terminal-style agent that runs commands and reads and writes files in a
   folder you pick. Every run ends with its steps, a file-change summary and one-click **Undo**.
   You choose Manual (approve each change) or Auto.
@@ -65,7 +65,11 @@ Axiom builds the artifact itself from the model's outline.
 <img src="docs/images/skills.png" alt="Skills panel: built-in Skills to attach, and Create custom Skill" width="360">
 
 **Effort.** Pick Light to Ultra per message. Higher levels think longer and allow more tool
-rounds; Extra High and Ultra add the Critic check.
+rounds and time per step. Extra High checks the result (runs it, validates files) and fixes what
+the checks find; Ultra adds a fresh review of the finished work.
+
+**Reply as context.** Right-click any AI reply, or select part of it and press Ctrl+Shift+L, to
+attach it to your next message. It shows as a short quote above the input box.
 
 **Themes.** Switch themes in Settings › General without restarting.
 
@@ -87,9 +91,9 @@ same model.
 ## Getting started
 
 1. Download **`Axiom-Setup-…-win-x64.exe`** from the
-   [latest release](https://github.com/YoMosa2009/Axiom/releases/latest) and run it. It installs
-   for your account only, with no admin prompt. (Or download the `…-clean.zip`, extract the whole
-   folder and run `Malx_AI.exe`.)
+   [latest release](https://github.com/YoMosa2009/Axiom/releases/latest) and run it. It is
+   code-signed and installs for your account only, with no admin prompt. (Or download the
+   `…-clean.zip`, extract the whole folder and run `Axiom Harness.exe`.)
 2. The first-run guide checks your hardware, shows which local models fit and downloads one, or
    lets you set up a cloud key or your own server.
 
@@ -97,12 +101,9 @@ same model.
 
 3. Open **Chat**, or head to **Workplace**.
 
-> **"Windows protected your PC"?** Axiom isn't code-signed yet. Click **More info**, then
-> **Run anyway**. Releases are built by this repository's GitHub Actions, and the in-app updater
-> verifies every update before installing it.
-
 **Updates** install from inside the app (Settings › General › Check for updates). Your chats,
-settings and models are kept. Your data lives in `%LOCALAPPDATA%\Axiom`.
+settings and models are kept. Your data lives in `%LOCALAPPDATA%\Axiom`, never in the install
+folder, so every new install starts empty.
 
 **Requirements:** Windows 10 or 11 (64-bit), 4 GB RAM (16 GB recommended for local models),
 optional NVIDIA GPU for faster local models.

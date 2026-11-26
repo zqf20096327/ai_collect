@@ -4,7 +4,7 @@
 
 # Claude Agent SDK for Elixir
 
-Next release: **0.21.2** (unreleased).
+Current version **0.21.2**.
 
 <p align="center">
   <a href="https://github.com/nshkrdotcom/claude_agent_sdk"><img src="https://img.shields.io/badge/GitHub-nshkrdotcom%2Fclaude_agent_sdk-24292e?logo=github" alt="GitHub"/></a>
@@ -110,9 +110,9 @@ Phase 4 finalizes the Claude release boundary:
   `ASM.Extensions.ProviderSDK.Claude`; that seam does not move the control
   family into ASM or the shared core
 - the operator publication order places the already-published Execution Plane
-  components first, then `cli_subprocess_core` 0.9.5,
-  `claude_agent_sdk` 0.21.2, then
-  `agent_session_manager`; this SDK does not import Execution Plane directly
+  components first, then `cli_subprocess_core` 0.10.2.
+  `claude_agent_sdk` 0.21.2 and `agent_session_manager` 0.17.7 can follow
+  independently
 
 ## Schema Boundary
 
@@ -184,7 +184,7 @@ actual transport model and injects the Anthropic-compatible Ollama env.
 ## Installation
 
 Claude Agent SDK 0.21.2 requires Elixir 1.19 or later and
-`cli_subprocess_core ~> 0.9.5`.
+`cli_subprocess_core ~> 0.10.2`.
 
 Add to your `mix.exs`:
 
@@ -631,8 +631,8 @@ Key options for `ClaudeAgentSDK.Options`:
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `model` | string | `"sonnet"` (default/recommended, Sonnet 5), `"sonnet[1m]"`, `"opus"` (Opus 5), `"opus[1m]"` (compatibility alias for Opus 5, itself a 1M-context model), `"fable"` (provider-dependent native alias), `"claude-fable-5"` (Fable 5), `"claude-fable-5-1"` (Fable 5.1), `"haiku"` (Haiku 4.5), or any custom model id (see `guides/model-configuration.md`) |
-| `effort` | atom | `:low`, `:medium`, `:high`, `:xhigh`, `:max` — controls reasoning effort; `:xhigh` is supported by Opus and Fable/Mythos; invalid values raise `ArgumentError` (not supported for Haiku) |
+| `model` | string | `"sonnet"` by default. Use an alias such as `"opus"`, `"haiku"` or `"fable"`, or pin a full ID. See the [model configuration guide](guides/model-configuration.md). |
+| `effort` | atom | `:low`, `:medium`, `:high`, `:xhigh` or `:max`. The shared catalog determines support for each model. |
 | `thinking` | map | `%{type: :adaptive}`, `%{type: :enabled, budget_tokens: N}`, `%{type: :disabled}` |
 | `skills` | `:all` / list | Enables Claude skills and defaults setting sources to user/project when set |
 | `task_budget` | map | `%{total: n}` passed as an SDK task budget |
@@ -736,7 +736,7 @@ The `examples/` directory contains runnable demonstrations.
 
 ### Mix Task Example (Start Here)
 
-If you want to integrate Claude into your own Mix project, see the **[mix_task_chat](examples/mix_task_chat/README.md)** example — a complete working app with Mix tasks:
+If you want to integrate Claude into your own Mix project, see the **[mix_task_chat](guides/mix-task-chat-example.md)** example — a complete working app with Mix tasks:
 
 ```bash
 cd examples/mix_task_chat
@@ -759,7 +759,7 @@ mix run examples/hooks/basic_bash_blocking.exs
 ```
 
 **Key Examples:**
-- [`mix_task_chat/`](examples/mix_task_chat/README.md) - **Full Mix task integration** (streaming + interactive chat)
+- [`mix_task_chat/`](guides/mix-task-chat-example.md) - **Full Mix task integration** (streaming + interactive chat)
 - `basic_example.exs` - Minimal SDK usage
 - `streaming_tools/quick_demo.exs` - Real-time streaming
 - `hooks/complete_workflow.exs` - Full hooks integration
@@ -775,11 +775,11 @@ Complete Mix applications demonstrating production-ready SDK integration pattern
 
 | Example | Description | Key Features |
 |---------|-------------|--------------|
-| [`phoenix_chat/`](examples/phoenix_chat/README.md) | Real-time chat with Phoenix LiveView | LiveView, Channels, streaming responses, session management |
-| [`document_generation/`](examples/document_generation/README.md) | AI-powered Excel document generation | elixlsx, natural language parsing, Mix tasks |
-| [`research_agent/`](examples/research_agent/README.md) | Multi-agent research coordination | Agent tool, subagent tracking via hooks, parallel execution |
-| [`skill_invocation/`](examples/skill_invocation/README.md) | Skill tool usage and tracking | Skill definitions, hook-based tracking, GenServer state |
-| [`email_agent/`](examples/email_agent/README.md) | AI-powered email assistant | SQLite storage, rule-based processing, natural language queries |
+| [`phoenix_chat/`](guides/phoenix-chat-example.md) | Real-time chat with Phoenix LiveView | LiveView, Channels, streaming responses, session management |
+| [`document_generation/`](guides/document-generation-example.md) | AI-powered Excel document generation | elixlsx, natural language parsing, Mix tasks |
+| [`research_agent/`](guides/research-agent-example.md) | Multi-agent research coordination | Agent tool, subagent tracking via hooks, parallel execution |
+| [`skill_invocation/`](guides/skill-invocation-example.md) | Skill tool usage and tracking | Skill definitions, hook-based tracking, GenServer state |
+| [`email_agent/`](guides/email-agent-example.md) | AI-powered email assistant | SQLite storage, rule-based processing, natural language queries |
 
 ```bash
 # Run Phoenix Chat
@@ -813,7 +813,7 @@ cd examples/email_agent && mix deps.get && mix email.assistant "find emails from
 | [Configuration](guides/configuration.md) | Complete options reference |
 | [Agents](guides/agents.md) | Custom agent personas |
 | [Sessions](guides/sessions.md) | Session management and persistence |
-| [Runtime Control](docs/RUNTIME_CONTROL.md) | SDK-local runtime control features |
+| [Runtime Control](guides/runtime-control.md) | SDK-local runtime control features |
 | [Testing](guides/testing.md) | Mock system and testing patterns |
 | [Error Handling](guides/error-handling.md) | Error types and recovery |
 | [Provider Behavior Manifest](guides/provider_behavior_manifest.md) | Evidence for Claude-native feature translation |
@@ -840,7 +840,7 @@ For breaking changes and migration notes, see `CHANGELOG.md`.
 
 **0.10.0 fix (resume turn persistence):**
 - `resume/3` no longer uses `--print --resume` (one-shot mode that dropped intermediate turns). It now uses `--resume` with `--input-format stream-json`, preserving the full conversation history across resume calls.
-- Current model defaults and aliases are owned by `cli_subprocess_core`; the native Claude default is `sonnet` (Claude Sonnet 5). Aliases: `opus` → Claude Opus 5, `opus[1m]` → Claude Opus 5 (compatibility alias; Opus 5 is itself a 1M-context model), `fable` → provider-dependent native Fable alias; explicit `claude-fable-5` and `claude-fable-5-1` remain pinned, `haiku` → Claude Haiku 4.5. A model id newer than the registry passes through to `--model` verbatim unless `allow_unknown_model: false`.
+- Core owns the model catalog. The SDK defaults to `sonnet`. Native aliases follow the installed Claude Code version and provider. Use Claude Code 2.1.321 or newer for the current model lineup. An unregistered model ID passes through to `--model` unless `allow_unknown_model: false`.
 
 **0.9.0 breaking change (streaming):**
 - Stream event wrappers now require `uuid` and `session_id`. Missing keys raise and terminate the streaming client.
@@ -887,4 +887,4 @@ the same session when possible and only replay work when a real continuation han
 
 ### Pinning Fable versions
 
-Use `claude-fable-5` for Fable 5 or `claude-fable-5-1` for Fable 5.1. Both IDs remain unchanged in CLI arguments. The short `fable` alias is passed to Claude Code, which normally selects 5.1 but can select 5 depending on provider, gateway, CLI version, or configuration. See [Claude Code model configuration](https://code.claude.com/docs/en/model-config#work-with-fable).
+Pin `claude-fable-5-2` for Fable 5.2. The previous `claude-fable-5-1` and `claude-fable-5` IDs still select their own versions. Claude Code resolves the floating `fable` alias based on your version and provider. [Claude Code model configuration](https://code.claude.com/docs/en/model-config#work-with-fable)

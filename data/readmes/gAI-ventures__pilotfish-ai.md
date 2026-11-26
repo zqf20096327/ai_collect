@@ -6,6 +6,7 @@
 [![MCP Registry: io.github.gAI-ventures/pilotfish](https://img.shields.io/badge/MCP_Registry-io.github.gAI--ventures%2Fpilotfish-blue)](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.gAI-ventures/pilotfish)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gAI-ventures/pilotfish-ai)
+[![gAI-ventures/pilotfish-ai MCP server](https://glama.ai/mcp/servers/gAI-ventures/pilotfish-ai/badges/score.svg)](https://glama.ai/mcp/servers/gAI-ventures/pilotfish-ai)
 
 pilotfish is an AI browser agent and a browser automation MCP server: a real Chrome for AI agents and for your own code,
 with 72% fewer tokens and 55% fewer tool calls than Playwright MCP. Pages go out as compact outlines with refs, and
@@ -163,6 +164,15 @@ The browser tests use Google Chrome when it is installed; set `PILOTFISH_CHROME`
 
 This repository is a mirror: it is published from pilotfish's own repository, and every sync replaces its whole tree.
 Pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Security issues: [SECURITY.md](SECURITY.md).
+
+## Acceptable use
+
+pilotfish's open MCP is free software under the MIT License, but the license governs copyright only - it doesn't authorize what you automate. By using pilotfish you agree to:
+
+- automate only sites and accounts you're authorized to use, in line with each site's terms and applicable law;
+- never use it for spam, bulk account creation, collecting personal data you have no right to, credential harvesting or phishing, or getting around blocks, bans, paywalls or rate limits a site has placed on you.
+
+Abuse of the managed service is covered by the pilotfish Terms of Service (<https://pilotfish.gai.ventures/terms>). Report security issues privately as [SECURITY.md](SECURITY.md) describes.
 
 ## License
 

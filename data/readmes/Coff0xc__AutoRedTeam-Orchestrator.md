@@ -1,14 +1,14 @@
 # AutoRedTeam-Orchestrator
 
-Two loops, one allowlist. The default is a local MCP/AI attack-surface audit: you point it at your own code, your AI client config, or your instruction files. It reads them, writes what it found with a file and a line, and only offers the tools your permission level allows.
+Two loops, one allowlist. The default is a local MCP/AI attack-surface audit: you point it at your own code, your AI client config, or your instruction files. It reads them, writes what it found with a file and a line, and only offers the tools your permission level allows. The offline map is `autort ai-surface ledger` (OWASP MCP Top 10; MCP08 is a gap).
 
 The other loop is an authorized engagement. You write one target file. Humans and models share the same steps: plan, recon, detect, verify, export. A finding is confirmed only after an outside check. The same step three times in a row stops the run.
 
-The model can decide. This program keeps the permission, the evidence, and the record.
+The model can decide. This program keeps the permission, the evidence, and the record. Package version **4.1.0**.
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Version](https://img.shields.io/badge/version-4.0.0-orange)
+![Version](https://img.shields.io/badge/version-4.1.0-orange)
 ![Status](https://img.shields.io/badge/status-Beta%20%2F%20Research%20Preview-yellow)
 
 [Maturity notes](docs/capability-maturity.md) · [Trust boundaries](docs/security-model.md) · [Gaps](GAPS.md) · [Security audits](docs/security-audits/)
@@ -23,6 +23,8 @@ Companion tool: **[AI API Key Scanner](https://github.com/Coff0xc/Github-API-sca
 
 - The default permission level is `safe`. It reads your project. It does not contact a target.
 - `autort engage init` writes a local engagement file. `engage run --dry-run` plans recon → detect → verify → export without touching the host. Live `engage run` needs `scan`.
+- Default `--help` leads with `ai-surface`, `capabilities`, `skills`, and `engage`. `pentest`, `code-agent`, `runtime-api`, and `sandbox` stay callable and are hidden from that list.
+- `autort ai-surface ledger` is the offline OWASP MCP Top 10 map. MCP08 is a gap. MCP02 is partial: this server records `tool_enable` grants (`autort capabilities grants`); it does not read another MCP server's grants.
 - There are four levels. Each higher level includes everything below it.
 - The model does not read the old notes in the code. It reads a short card: name, level, risk, effects, and limits.
 - The file reader parses Python. It does not import it, and it does not call the tools.
@@ -97,6 +99,8 @@ python -m cli.main ai-surface inventory
 python -m cli.main ai-surface ledger
 python -m cli.main ai-surface scan-mcp-config --path .mcp.json
 python -m cli.main capabilities manifest --profile safe
+python -m cli.main capabilities grants
+python -m cli.main skills catalog
 python -m cli.main engage init http://127.0.0.1:3000 --profile scan
 python -m cli.main engage run --dry-run
 ```
@@ -119,7 +123,7 @@ pip install -r requirements.txt
 python -m cli.main --help
 ```
 
-Python 3.10 or newer. Version `4.0.0` lives only in `_version.py`. The two commands are `autort` and `autoredteam-mcp`.
+Python 3.10 or newer. Version `4.1.0` lives only in `_version.py`. The two commands are `autort` and `autoredteam-mcp`.
 
 Any subcommand, including `--help`, prints the legal notice on stderr. `--help` does not ask the allowed list.
 
@@ -144,14 +148,15 @@ autort engage init http://127.0.0.1:3000 --profile scan
 autort engage next
 autort engage run --dry-run
 AUTORT_CAPABILITY_PROFILE=scan autort engage run
+autort engage confirmation-rate --url http://127.0.0.1:3000
 autort engage status
 ```
 
-`engage init`, `status`, and `next` stay on `safe`. They write or read `.autort/engage.yaml`. They do not contact the target. `engage run` needs `scan`. It applies the engagement profile, allowlist, and HITL for the duration of the run, then restores the previous environment. Live `engage.verify` asks HITL when the engagement file sets `hitl` to `approval` or `review_edit`; dry-run skips that gate. A finding is confirmed only after `vuln_verifier`, `statistical_verifier`, `oob_callback`, or `manual_review`. The same execution hash more than three times stops the loop. `--ci` exits 2 when the loop does not pass. The run JSON includes `scorecard` (`autort.engage.scorecard/v1`) with `confirmed`, `unconfirmed`, `total`, `unverified`, `contradicted`, `confirmation_rate` (null when `total` is 0), per-row `proof`, and `gaps`. An empty finding list is a gap, not a clean target. CI runs `engage run --path config/engage.lab.example.yaml --dry-run --ci`.
+`engage init`, `status`, and `next` stay on `safe`. They write or read `.autort/engage.yaml`. They do not contact the target. `engage run` needs `scan`. It applies the engagement profile, allowlist, and HITL for the duration of the run, then restores the previous environment. Live `engage.verify` asks HITL when the engagement file sets `hitl` to `approval` or `review_edit`; dry-run skips that gate. A finding is confirmed only after `vuln_verifier`, `statistical_verifier`, `oob_callback`, or `manual_review`, with a stored request/response receipt. Without that receipt the finding stays `[UNCONFIRMED]`. The same execution hash more than three times stops the loop. `--ci` exits 2 when the loop does not pass. The run JSON includes `scorecard` (`autort.engage.scorecard/v1`) with `confirmed`, `unconfirmed`, `total`, `unverified`, `contradicted`, `confirmation_rate` (null when `total` is 0), per-row `proof`, and `gaps`. An empty finding list is a gap, not a clean target. CI runs `engage run --path config/engage.lab.example.yaml --dry-run --ci`.
 
 MCP tools: `engage_init`, `engage_status`, `engage_next` (safe), `engage_run` (scan). A model that only has `safe` can still plan the next step. Live recon needs the operator to raise the level.
 
-The example lab is Juice Shop bound to `127.0.0.1:3000` in `docker-compose.lab.yml`. Copy `config/engage.lab.example.yaml` if you want the file without running `init`.
+The example lab is Juice Shop bound to `127.0.0.1:3000` in `docker-compose.lab.yml`. Copy `config/engage.lab.example.yaml` if you want the file without running `init`. `autort engage confirmation-rate` verifies product-search SQLi and scores a homepage XSS self-report so `confirmation_rate` has confirmed and unconfirmed rows. `--ci` exits 2 when the rate is 0 or empty. Default CI does not start Juice Shop.
 
 ## Four permission levels
 
@@ -309,7 +314,7 @@ Unchanged tools are left out. Parameter order alone is not a change. Each report
 
 ### OWASP MCP Top 10
 
-`autort ai-surface ledger` prints the offline coverage map (`autort.owasp.mcp/v1`). MCP08 (Lack of Audit and Telemetry) is a documented gap. MCP02 is partial. The table lives in [GAPS.md](GAPS.md).
+`autort ai-surface ledger` prints the offline coverage map (`autort.owasp.mcp/v1`). MCP08 (Lack of Audit and Telemetry) is a documented gap. MCP02 is partial: this server records `tool_enable` grants and can cap them; it does not read another MCP server's grants. The table lives in [GAPS.md](GAPS.md).
 
 ## When a result counts
 
@@ -371,18 +376,20 @@ These do not contact a target. CVE search reads the local notes.
 | `ai-surface inventory` | Local MCP client configs and skill roots, no network | `autort ai-surface inventory` |
 | `ai-surface ledger` | Offline OWASP MCP Top 10 map. MCP08 is a documented gap | `autort ai-surface ledger` |
 | `ai-surface scan-mcp-config` | A read of a client config | `autort ai-surface scan-mcp-config --path .mcp.json` |
-| `ai-surface scan-skills` | Named skill risks (`skill.prompt_injection`, secrets, downloads) | `autort ai-surface scan-skills --path ./skills` |
+| `ai-surface scan-skills` | Named skill risks (`skill.prompt_injection`, secrets, downloads, unpinned install, curl-to-shell) | `autort ai-surface scan-skills --path tests/fixtures/skills/malicious` |
 | `ai-surface diff` | What changed since a saved scan | `autort ai-surface diff --baseline tests/fixtures/ai_surface/handlers.baseline.json --path handlers --ci` |
 | `capabilities profiles` | The four levels and their counts | `autort capabilities profiles` |
 | `capabilities manifest` | One level, as data | `autort capabilities manifest --profile safe` |
+| `capabilities grants` | Catalog `tool_enable` ledger (`autort.capability.grants/v1`) | `autort capabilities grants --path .autort/grants.json` |
 | `tools lint` | A contract check of the same parse | `autort tools lint --path handlers` |
 | `cve-search` | Local CVE search | `autort cve-search "Log4j" --severity critical --has-poc -n 20` |
 | `skills catalog` | Pinned SKILL.md packs (URL, sha, license) | `autort skills catalog` |
 | `skills read` | Scan a local checkout, then print SKILL.md if it is not critical | `autort skills read --path ./skills/recon` |
 | `engage init` | Write `.autort/engage.yaml` and print the next step | `autort engage init http://127.0.0.1:3000 --profile scan` |
-| `engage status` | Config, finding counts, next step | `autort engage status` |
-| `engage next` | Next recon/detect/verify/export card | `autort engage next` |
+| `engage status` | Coverage denominator and next step | `autort engage status` |
+| `engage next` | Next gap-filling aggregator card | `autort engage next` |
 | `engage run --dry-run` | Walk the loop without contacting the host | `autort engage run --dry-run --ci` |
+| `engage confirmation-rate` | Juice Shop lab scorecard (`confirmation_rate`) | `autort engage confirmation-rate --url http://127.0.0.1:3000` |
 | `version` | The version string | `autort version` |
 
 `autort tools` is the lint group. A function of the same name still exists and is limited to the `scan` level, but the group occupies the command, so that function is not what `autort tools` runs.
@@ -390,13 +397,13 @@ These do not contact a target. CVE search reads the local notes.
 | Group | Commands | What it is |
 |---|---|---|
 | `ai-surface` | `scan`, `inventory`, `ledger`, `scan-mcp-config`, `scan-skills`, `diff` | The reader |
-| `capabilities` | `matrix`, `readiness`, `manifest`, `profiles` | The allowed list |
+| `capabilities` | `matrix`, `readiness`, `manifest`, `profiles`, `grants` | The allowed list |
 | `tools` | `lint` | Contract check |
 | `skills` | `catalog`, `read` | Pinned SKILL.md packs. Read-only |
 | `engage` | `init`, `status`, `next`, `run`, `resume` | One authorized target. Plan on `safe`, run on `scan` |
 | `ai-redteam` | `eval-run`, `catalog`, `convert`, `run` | eval-run scores local runs. `run` is plan-only Internal |
 
-Default `--help` hides `code-agent`, `runtime-api`, and `sandbox`. They stay callable.
+Default `--help` hides `code-agent`, `runtime-api`, `sandbox`, and `pentest`. They stay callable.
 
 ### Higher levels
 
@@ -410,7 +417,7 @@ Default `--help` hides `code-agent`, `runtime-api`, and `sandbox`. They stay cal
 | `nuclei` | `scan` | `autort nuclei http://127.0.0.1:8000 -t cve,rce -s high,critical` |
 | `report` | `scan` | `autort report <session-id> -f html` |
 | `exploit` | `active-lab` | `autort exploit http://127.0.0.1:8000 --cve CVE-2021-44228` |
-| `pentest` | `full` | `autort pentest http://127.0.0.1:8000 --phases recon,vuln_scan` |
+| `pentest` (hidden from default `--help`) | `full` | `autort pentest http://127.0.0.1:8000 --phases recon,vuln_scan` |
 
 `exploit` with neither `--cve` nor `--auto` exits 1 before the permission check.
 
@@ -420,7 +427,7 @@ Calls are async. Most return a dict. A failure carries an `"error"` string. If t
 
 ```python
 from autort import Engagement, Exploiter, Reporter
-from autort import __version__  # "4.0.0"
+from autort import __version__  # "4.1.0"
 
 engagement = Engagement("http://127.0.0.1:3000", profile="scan")
 plan = await engagement.run(dry_run=True)
@@ -463,7 +470,7 @@ flowchart LR
   src --> wheel --> image --> cmd
 ```
 
-The image does not install nmap. The same experimental trees are dropped, plus payload and wordlist material. The health check imports the server module. The image description is the package sentence: "Local MCP/AI attack-surface audit and evidence gate for authorized testing."
+The image does not install nmap. The same experimental trees are dropped, plus payload and wordlist material. The health check imports the server module. The image description is the package sentence: "Local MCP/AI attack-surface audit and authorized-engagement evidence gate."
 
 The server speaks stdio.
 

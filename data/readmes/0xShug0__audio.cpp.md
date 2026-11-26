@@ -96,11 +96,12 @@ Core and community models are grouped by task and listed alphabetically within e
 | **fish_audio** | TTS, Clone, Ctrl | auto, en, zh | [Fish Audio S2 Pro](docs/models/fish_audio.md) | GGUF 16/Q8, Stream, LoRA |
 | **fish_drama3** (C)<br>[@JarodMica](https://github.com/JarodMica) (base)<br>[@Th-Underscore](https://github.com/Th-Underscore) (small) | TTS, Clone, Ctrl, Edit | auto | [Drama 3 / Drama3-small](docs/models/fish_drama3.md) | Mixed Q2_K/Q3_K/Q4_K GGUF, IQ3_XXS (small), Stream |
 | **glm_tts** (C)<br>Mirek [@mirek190](https://github.com/mirek190) | TTS, Clone | zh, en | [GLM-TTS](docs/models/glm_tts.md) | GGUF |
-| **gradium_phonon** | TTS | en | [Gradium Phonon 31M](docs/models/gradium_phonon.md) | GGUF Q8, Safetensors, Stream |
+| **gradium_phonon** | TTS | en/fr/de/es/pt | [Phonon 31M EN, 40M FR/Multilingual](docs/models/gradium_phonon.md) | GGUF Q8, Safetensors, Stream |
 | **higgs_audio_tts** | TTS, Clone, Ctrl | auto | [Higgs Audio v3 TTS 4B](docs/models/higgs_audio_tts.md) | GGUF 16/Q8, Stream |
 | **index_tts2** | TTS, Clone, Ctrl | zh, en, ja, es, ar | [IndexTTS-2](docs/models/index_tts2.md)<br>IndexTTS-2.5 | GGUF 16/Q8 |
 | **inflect_v2** (C)<br>Jan [@JanWerder](https://github.com/JanWerder) | TTS | en | [Inflect Micro v2 and Nano v2](docs/models/inflect_v2.md) | GGUF FP32 |
 | **irodori_tts** | TTS, Clone, Design, Ctrl | ja | [Irodori-TTS-v4.1-Small (RF and MF)](docs/models/irodori_tts.md)<br>Irodori-TTS-v4.1-Anime<br>Irodori-TTS-500M-v3<br>Irodori-TTS-600M-v3-VoiceDesign | GGUF 16/Q8 |
+| **kale_tts** (C)<br>Kale | TTS | en | [kale-tts-1](docs/models/kale_tts.md) | GGUF FP32 |
 | **kitten_tts** (C)<br>Community | TTS | en + 15 | [Mini 0.8, TTS2 Mini](docs/models/kitten_tts.md) | GGUF FP32 |
 | **kitten_tts2** (C)<br>[@dignome](https://github.com/dignome) | TTS, Clone | en, ar, zh, fr, de, hi, it, pt, ru, es, nl, id, ja, ko, pl, tr | [Kitten TTS 2](docs/models/kitten_tts2.md) | GGUF Q8/Q4 |
 | **kokoro_tts** | TTS | en-us, en-gb, es, fr, hi, it, ja, pt-br, zh | [Kokoro 82M](docs/models/kokoro_tts.md) | Safetensors, local GGUF BF16/Q8, Stream |
@@ -211,6 +212,7 @@ Core and community models are grouped by task and listed alphabetically within e
 | **bs_roformer**<br>[@mirek190](https://github.com/mirek190) | Sep | lang agnostic | [BS-RoFormer](docs/audio_tools.md#bs-roformer) | GGUF Q8 |
 | **builtin_audio_utils** | S2S · Denoising / Enhancement | lang agnostic | [RNNoise](docs/audio_tools.md#built-in-audio-utilities)<br>DeepFilterNet2<br>ZipEnhancer<br>GTCRN Streaming<br>GTCRN DNS3<br>GTCRN VCTK<br>FlashSR | Safetensors |
 | **controlfoley** | SFX | auto | [ControlFoley](docs/models/controlfoley.md) | GGUF F32/Q8 |
+| **dettato** (C) | MIDI | music | [Dettato · Experimental](docs/models/dettato.md) | GGUF F16 |
 | **htdemucs** | Sep | lang agnostic | [HTDemucs](docs/audio_tools.md#htdemucs)<br>HTDemucs_ft<br>HTDemucs_6stems | GGUF 16/Q8 |
 | **meanvc2** | VC | lang agnostic | [MeanVC2 120 ms / 40 ms](docs/models/meanvc2.md) | GGUF F32/Q4, Stream |
 | **mel_band_roformer** | Sep | lang agnostic | [Mel-Band RoFormer](docs/audio_tools.md#mel-band-roformer) | GGUF 16/Q8 |
@@ -666,8 +668,7 @@ See the [server guide](app/server/README.md) for configuration and usage.
 | `AUDIOCPP_SERVER_FRONTENDS_DIR` | External frontend package directory containing `server_frontends.cmake`, which registers the requested modules. | empty |
 | `ENGINE_BUILD_TESTS` | Build framework unit tests. | `OFF` |
 | `ENGINE_BUILD_EXTENDED_TESTS` | Build extended non-model tests and probes, such as server/app/package-manager checks and backend graph tests. | `OFF` |
-| `ENGINE_BUILD_MODEL_TESTS` | Build model-specific tests and probes. | `OFF` |
-| `ENGINE_BUILD_WARMBENCH` | Build warmbench helper binaries. | `OFF` |
+| `ENGINE_BUILD_MODEL_TESTS` | Build model-specific tests and probes. Other test options do not enable them. | `OFF` |
 | `AUDIOCPP_BUILD_NATIVE_MODEL_MANAGER` | Build the standalone native model manager and enable server-side WebUI downloads/install management. This opt-in feature builds the HTTP/TLS dependency. | `OFF` |
 | `AUDIOCPP_USE_SYSTEM_OPENSSL` | Use system OpenSSL instead of bundled BoringSSL when native model management is enabled. | `OFF` |
 | `AUDIOCPP_DEPLOYMENT_BUILD` | Compile package specs into CLI/server binaries for standalone GGUF and package-spec fallback loading. Script builds expose this as `--deployment-build` on Linux/macOS and `-DeploymentBuild` on Windows. | `OFF` |
@@ -939,7 +940,9 @@ The repository includes both framework-level parity validation and app-level end
   <img src="assets/figure/parity_test_flow.png" alt="Parity test flow" width="720" />
 </p>
 
-The main harness under `tests/` is `tests/warmbench.py`. It is used for long-lived multi-request validation, parity checks against Python references, and performance-oriented session reuse scenarios. The `tests/` tree also contains model-specific C++ and Python warmbench entrypoints that `warmbench.py` coordinates.
+The `tests/` tree contains framework and model component checks, including comparisons against independent Python references.
+
+The pre-cleanup tests, tools and fixtures are preserved in the backup tag [`checkpoint/before-tests-cleanup`](https://github.com/0xShug0/audio.cpp/tree/checkpoint/before-tests-cleanup), including the removed warmbench system and its original instructions.
 
 The main app-facing test tooling under `tools/` is `tools/audiocpp_cli/run_audiocpp_cli_path_tests.py`. It drives `audiocpp_cli` through cataloged offline and streaming cases, verifies expected outputs such as audio or JSON artifacts, and is useful for checking real user-facing request paths rather than just lower-level model components. Streaming coverage is model-specific and applies to models documented with streaming support.
 

@@ -128,21 +128,21 @@ TODO -
 
 Revision (by concept, in this order; rust and cuda alongside inference, ml alongside training)
 
-[ ] language_basics (01-06 done, 07-11 left)
+[ ] neetcode 150 for classic dsa: https://neetcode.io/practice/practice/neetcode150
 
-[ ] arrays_and_windows (02 done, 01 and 03 left, binary search lesson deleted)
+[ ] rustfinity for the rust language, rust fundamentals then fearless concurrency: https://www.rustfinity.com/tracks/rust-fundamentals
 
-[ ] trees_and_graphs (01-05 left)
+[ ] tensortonic for ml implementations and cuda kernels, study plans build micrograd, build llm from scratch, cracking rl and cuda kernels: https://www.tensortonic.com/study-plans
 
-[ ] recursion_and_dp (01-03 left)
+the revision folder only keeps what these sites do not cover, see revision/README.md
 
-[ ] ownership_and_mutation (01-04 left)
+[ ] trees_and_graphs (01-04 left)
 
-[ ] types_and_errors (01-07 left)
+[ ] ownership_and_mutation (01-02 left)
 
-[ ] concurrency (01-10 left)
+[ ] types_and_errors (01-03 left)
 
-[ ] retries_limits_and_caching (01-06 left)
+[ ] concurrency (01-06 left)
 
 [ ] transactions_and_idempotency (01-07 left)
 
@@ -154,8 +154,8 @@ Revision (by concept, in this order; rust and cuda alongside inference, ml along
 
 [ ] agents (01-04 left)
 
-[ ] ml_training (01-10 left)
+[ ] ml_training (01-06 left)
 
-[ ] ml_inference (01-08 left)
+[ ] ml_inference (01-03 left)
 
-[ ] gpu_kernels (01-10 left, kernel bodies empty)
+[ ] gpu_kernels (01-04 left, kernel bodies empty)

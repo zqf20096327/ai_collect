@@ -50,7 +50,9 @@ List of **molecules ( small molecules, RNA, peptide, protein, enzymes, antibody,
 
 
 
-
+* **From static structures to conformational ensembles: Artificial intelligence for protein sampling and dynamics** [2026]  
+Aldo S. Pasos-Trejo and Klara Bonneau and Andrea Guljas and Ana Molina-Taborda and Cecilia Clementi.  
+[Current Opinion in Structural Biology(2026)](https://doi.org/10.1016/j.sbi.2026.103438)  
 
 * **Graphics processing unit-accelerated quantum simulation for molecular biology and drug discovery: algorithms, platforms, and emerging applications** [2026]  
 Yun-Lin Chen, Oscar K Lee.  
@@ -875,7 +877,9 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
-
+* **ChatAtom: A Multi-Agent LLM System for Molecular Dynamics Simulation and Visualization** [2026]  
+Trupti Mohanty, Ming Du, Mitchell A. Wood, Brad L. Boyce, Remi Dingreville, Mathew J. Cherukara.  
+[arXiv:2611.26782(2026)](https://doi.org/10.48550/arXiv.2611.26782)  
 
 * **OriDynamics: Towards a World Model for Biomolecular Dynamics** [2026]  
 Jiahao Yang, Dong Liu, Hongliang Li, Ji Chen, Yuehua Liu, Daoyun Ding, Duo An, Jun Li, Jiahua Rao, Ziqiao Zhang, Peicong Lin, Shuangjia Zheng.  
@@ -1122,6 +1126,12 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+
+
+
+* **MACE4IRmol: An Uncertainty-Aware Foundation Model for Molecular Infrared Spectroscopy** [2026]  
+N. Bhatia, O. Krejčí, S. Botti, P. Rinke, and M. A. L. Marques.  
+  [Advanced Science (2026)](https://doi.org/10.1002/advs.78542) | [code](https://huggingface.co/nitbha007/MACE4IR)  
 
 * **Quantum-accurate enhanced sampling and mini-protein folding through replica exchange for multiscale neural network potentials** [2026]  
 Riccardo Solazzo, Igor Gordiy, Sereina Riniker.  
@@ -1515,14 +1525,4 @@ Ademola Soyemi, Khagendra Baral, and Tibor Szilvási.
 Batatia, Ilyes, Philipp Benner, Yuan Chiang, Alin M. Elena, Dávid P. Kovács, Janosh Riebesell, Xavier R. Advincula et al.  
 [J. Chem. Phys. 163, 184110 (2025)](https://doi.org/10.1063/5.0297006) | [code](http://github.com/acesuit/mace-mp)  
 
-* **Peering inside the black box by learning the relevance of many-body functions in neural network potentials** [2025]  
-Bonneau, K., Lederer, J., Templeton, C. et al.  
-[Nat Commun 16, 9898 (2025)](https://doi.org/10.1038/s41467-025-65863-0) | [code](https://github.com/jnsLs/gnn-lrp-cg.git)  
-
-* **TorchANI 2.0: An extensible, high performance library for the design, training, and use of NN-IPs** [2025]  
-Pickering I, Xue J, Huddleston K, Terrel N, Roitberg A.  
-[J. Chem. Inf. Model. (2025)](https://doi.org/10.1021/acs.jcim.5c01853) | [ChemRxiv. (2025)](https://doi.org/10.26434/chemrxiv-2025-w0w7d) | [code](https://github.com/aiqm/torchani)  
-
-* **Python Library for Monte Carlo Simulations with Ab Initio and Machine-Learned Interatomic Potentials** [2025]  
-Woodrow N. WilsonVivek S. BharadwajNeeraj Rai*.  
-[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c01148) | [code](https://github.com/MSELRai/ASE-MC_ESI)
+* **Peering inside the black box by learning the relevance of many

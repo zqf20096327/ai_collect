@@ -52,6 +52,12 @@ knob, its buttons and its controls on the left and the tone control in EQ mode o
 curve, the band table and the preset list; and under the footer a strip of recent volume bars with
 the marks of a Warm and a Sennheiser HD 800 S recall">
 
+<img src="docs/images/web-sound.webp" width="66%" alt="The web UI's Sound popup open on its EQ
+library tab, over the dimmed page: the tabs EQ library, Loudness, Crossfeed and Virtual speakers,
+the pills AutoEq, Upload a file and Saved presets, a search for hd 650 with its one headphone and
+three measurements (the recommended one chosen), and under them the preview graph of the target,
+the fit and the shaded gap, with the fit and worst-miss numbers below">
+
 ### Web themes on a phone
 
 <img src="docs/images/web-phone-paper.webp" width="48%" alt="Paper on a phone: squared paper with a
@@ -80,6 +86,11 @@ R VU meters with their needles on the 0 VU scale">
 <img src="docs/images/tone.webp" width="100%" alt="The tone-control screen of a Gungnir 2 with the
 Sennheiser HD 800 S correction from AutoEq, measured by oratory1990, fitted to its five bands: the
 response curve, the correction's target and its filters">
+
+<img src="docs/images/computer.webp" width="100%" alt="The tone-control screen on the computer side,
+the target switch set to Computer: the response curve of the Bass preset with its correction pane, the
+stages strip under it with EQ, Loudness, Space and Bypass and the EQ's panel open on its table of
+nine points, the first one selected">
 
 <img src="docs/images/amp.webp" width="100%" alt="The device screen of an Aegir 2 amplifier,
 powered on: its controls, its L and R meters as bars with a class-A block, the live part filled and
@@ -180,7 +191,7 @@ svolder-indicator@rralex.github.io`); from a checkout, `make install-gnome-exten
 shows after you log out and in. [The GNOME indicator](docs/usage/gnome-shell.md) has the install
 steps and what each glyph means.
 
-<img src="docs/images/gnome-indicator-untouched.webp" width="49%" alt="The GNOME top bar with the svolder indicator and its open popup, the sound untouched end to end: a box with a green light, full signal bars and 0 dB, and the popup for a Bifrost 3 at 44.1 kHz with the volume slider, input, DAC preset, computer EQ, a green-green-green Path strip, scenes and Open svolder"> <img
+<img src="docs/images/gnome-indicator-untouched.webp" width="49%" alt="The GNOME top bar with the svolder indicator and its open popup, the sound untouched end to end: a box with a green light, full signal bars and 0 dB, and the popup for a Bifrost 3 at 44.1 kHz with the volume slider, input, DAC preset, computer EQ, a green-green-green Path strip with the line untouched end to end beside it, scenes and Open svolder"> <img
 src="docs/images/gnome-indicator-changed.webp" width="49%" alt="The same indicator when the DAC changes the sound: the box has a yellow light and the bar reads -24 dB; the popup shows the Path strip green, green, yellow with the line DAC: volume -24.1 dB, tone control">
 
 ## Where the details live

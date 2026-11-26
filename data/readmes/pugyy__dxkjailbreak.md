@@ -3,17 +3,17 @@
 # dxkjailbreak
 
 **One plugin. Eleven security research workflows. One control console.**
-**一个插件，11 域安全工作流，一个控制台。**
+**一个插件，11 种安全工作流，一个控制台。**
 
 [![License](https://img.shields.io/github/license/pugyy/dxkjailbreak?color=blue&style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.3.1-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.1-green?style=flat-square)](CHANGELOG.md)
 [![DSH](https://img.shields.io/badge/DeepSeek%20Harness-%E2%89%A50.2.1--rc.2-orange?style=flat-square)](package.json)
 [![Tests](https://img.shields.io/badge/tests-600%2B%20assertions-brightgreen?style=flat-square)](test/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square)](package.json)
 <br>
 [![Adapters](https://img.shields.io/badge/host%20adapters-86-blueviolet?style=flat-square)](#特性一览)
 [![Plugin](https://img.shields.io/badge/sub--plugins-17-9cf?style=flat-square)](#子插件17)
-[![Release](https://img.shields.io/badge/release-v1.3.1-blue?style=flat-square)](https://github.com/pugyy/dxkjailbreak/releases/tag/v1.3.1)
+[![Release](https://img.shields.io/badge/release-v1.4.1-blue?style=flat-square)](https://github.com/pugyy/dxkjailbreak/releases/tag/v1.4.1)
 [![Release](https://img.shields.io/github/v/release/pugyy/dxkjailbreak?style=flat-square)](https://github.com/pugyy/dxkjailbreak/releases/latest)
 
 **[中文](#中文) · [English](#english)**
@@ -28,15 +28,15 @@
 
 ### 这是什么
 
-`dxkjailbreak` 是面向 **DeepSeek Harness (DSH)** 的工作流预设插件：把十一个安全研究方向合成一张单卡，再配一个带 24 个页签的设置页控制台。
+`dxkjailbreak` 是面向 **DeepSeek Harness (DSH)** 的工作流预设插件：把十一个安全研究方向合成一张预设卡，再配一个带 24 个页签的设置页控制台。
 
 它解决三件事：
 
 | 问题 | 方案 |
 |---|---|
-| 每种研究方向都要单独切模式、单独配技能 | **单卡多域**：一张预设卡覆盖渗透 / 代码审计 / 逆向 / 内网 / 对抗样本 / 应急 / 云安全 / CTF / 资产测绘 / 注册反代 / 多任务编排，按任务自动换打法 |
-| 宿主版本升级后插件行为漂移、排查困难 | **宿主适配层**：86 条适配项，逐条带标记、可自检、可单条回滚，状态页直读真实落地结果 |
-| 长会话压缩后指令丢失、行为漂移 | **上下文连续性**：周期重锚 + 尾部锚 + 子代理锚 + 注入块，四层防衰减；配套 guard 插件做三级检测与升级梯修复 |
+| 每种研究方向都要单独切模式、单独配技能 | **一张卡覆盖多种任务**：渗透 / 代码审计 / 逆向 / 内网 / 对抗样本 / 应急 / 云安全 / CTF / 资产测绘 / 注册反代 / 多任务编排，按任务类型自动切换方法 |
+| 宿主版本升级后插件行为漂移、排查困难 | **宿主兼容层**：86 条兼容项，逐条带标记、可自检、可单条回滚，状态页直接显示真实生效结果 |
+| 长会话压缩后指令丢失、行为漂移 | **上下文连续性**：定期重读关键条款 + 每轮末尾重贴规则摘要 + 子代理会话单独贴一份 + 提示词注入，四层防止衰减；配套检测插件发现推脱后分级自动重试 |
 
 ### 快速开始
 
@@ -118,25 +118,25 @@ D:\下载\dxkjailbreak-1.3.0.zip
 <table>
 <tr><td width="50%">
 
-**🧭 十一域工作流**
-一张卡切 11 种打法，跨域任务按最严边界执行。
+**🧭 11 种任务类型的工作流**
+一张卡切换 11 种方法；跨类型的任务按其中最严格的那套标准执行。
 
-**🧱 宿主适配层**
-86 条适配项分四层：提示词 / 代码默认 / 工具面 / 版本兼容。
+**🧱 宿主兼容层**
+86 条兼容项分四层：提示词 / 代码默认 / 工具表面 / 版本兼容——逐条可查、可单条回滚。
 
 **🎛 24 页签控制台**
-状态 · 甲片 · 补甲 · 注入编辑 · 规则集 · 门禁 · 总闸 · 回退 · 编制 · 战例 · 日志 · 沙盘九页 · 对话 · 编成 · 狩猎 · MCP。
+状态 · 甲片（提示词补丁）· 补甲（补丁应用）· 注入编辑 · 规则集 · 门禁（准入校验）· 总闸（一键停用）· 回退 · 编制（预设组合）· 战例（演练记录）· 日志 · 沙盘九页 · 对话 · 编成 · 狩猎 · MCP。
 
 </td><td width="50%">
 
 **↩️ 会话回退**
-原地截断会话日志（多帧 zstd 解码 → 计算回退点 → 校验写回），整轮语义，回退后接回原会话。
+以整轮为单位回退会话：在本机解码会话日志、定位回退点、校验后写回，回退完仍接在同一个会话里。
 
 **🗑 安全删除**
-四道闸：确认弹窗 → 演练 → 二次确认 → 后端硬校验（格式/防穿越/根目录保护），落 Windows 回收站可恢复。
+四道确认：弹窗确认 → 演练 → 二次确认 → 后端校验（格式、路径穿越、根目录保护）；删除后进入系统回收站，可恢复。
 
-**🧠 战役记忆 + 过程留痕**
-跨会话事实库 + 操作轨迹留存，支持导出与清理。
+**🧠 跨会话记忆 + 操作留痕**
+跨会话的事实库 + 操作轨迹留存，支持导出与清理。
 
 </td></tr>
 </table>
@@ -145,9 +145,9 @@ D:\下载\dxkjailbreak-1.3.0.zip
 
 | 区 | 页签 | 用途 |
 |---|---|---|
-| **军械整备**（11） | 状态 / 甲片 / 补甲 / 军令 / 规矩 / 门禁 / 总闸 / 回退 / 编制 / 战例 / 日志 | 适配项状态与回滚、注入正文编辑、规则集切换、预设编制 |
-| **作战沙盘**（9） | 侦察 / 装备 / 分队 / 暗道 / 突破口 / 路线 / 战功 / 战报 / 参谋 | 靶标台账、工具识别、隧道与漏洞登记、攻击链与评分报告 |
-| **附属**（4） | 对话 / 编成 / 狩猎 / MCP | 会话管理、子插件清单、多源资产检索 DSL、MCP 服务清单 |
+| **军械整备**（提示词与补丁，11） | 状态 / 甲片 / 补甲 / 军令 / 规矩 / 门禁 / 总闸 / 回退 / 编制 / 战例 / 日志 | 兼容项状态与回滚、提示词正文编辑、规则集切换、预设组合 |
+| **作战沙盘**（靶标与演练，9） | 侦察 / 装备 / 分队 / 暗道 / 突破口 / 路线 / 战功 / 战报 / 参谋 | 目标台账、工具识别、隧道与漏洞登记、攻击链与评分报告 |
+| **附属**（会话与扩展，4） | 对话 / 编成 / 狩猎 / MCP | 会话管理、子插件清单、多源资产检索语法、MCP 服务清单 |
 
 后端 22 个 RPC（统一入口 `/dxkjailbreak/console`，白名单自动推导）+ 回退/更新等独立路由。
 
@@ -155,8 +155,8 @@ D:\下载\dxkjailbreak-1.3.0.zip
 
 - **授权前提**：所有工作以任务方明确授权的范围为界——自有资产、客户委托、CTF 靶场
 - **全量交付**：授权范围内按任务要求输出完整技术内容，不做无谓的自我降级、不给替代方案
-- **上下文保持**：周期重锚（每 8 干净轮回）+ 尾部锚（每轮重渲染）+ 子代理锚 + 注入块
-- **可核验**：`node test/armor-chain.mjs` 一条命令跑四层 28 项（适配落地 / 注入链路 / 文档层 / 守卫活代码 + 回滚链）
+- **上下文保持**：每 8 个正常回合主动重读一次关键条款 + 每轮末尾重贴规则摘要 + 子代理会话单独贴一份 + 提示词注入块
+- **可核验**：`node test/armor-chain.mjs` 一条命令跑 28 项检查（兼容项落地 / 注入链路 / 文档层 / 检测插件活代码 + 回滚链）
 
 ### 子插件（17）
 
@@ -165,10 +165,10 @@ D:\下载\dxkjailbreak-1.3.0.zip
 ### 目录结构
 
 ```
-lib/        引擎（适配项应用 / 回滚 / 自检；patches/ 五表 86 条）
-modes/      单卡预设（agent.cordis.yml + 12 组 playbook skill）
+lib/        引擎（兼容项应用 / 回滚 / 自检；patches/ 五张表共 86 条）
+modes/      预设卡（agent.cordis.yml + 12 组方法文档）
 plugins/    17 个子插件
-refs/       11 域参考文档（约 18MB，skill 按需读取）
+refs/       11 个主题的参考文档（约 18MB，按需读取）
 skills/     安全研究技能文档
 docs/home/  home 指令模板（install 时拆写——功能性文件）
 vendor/     yaml 依赖兜底（干净检出即装）
@@ -192,9 +192,9 @@ guard: run 63 · r3 79 · r7 零碰撞 31 · r8 87 · r9 ALL · r10 39 · r11 45
 
 | 项 | 原因 |
 |---|---|
-| 12 条适配项不适用 | 宿主缺对应组件 / 未装预设 / 宿主已自带目标文本 / 可选开关（甲片页每条带原因） |
+| 12 条兼容项不适用 | 宿主缺对应组件 / 未装预设 / 宿主已自带目标文本 / 可选开关（甲片页每条都写了原因） |
 | MCP 面板数据依赖宿主写入 | 读 `dsh-mcp-studio` 命名空间，未配置即空 |
-| 深度依赖宿主内部结构 | 适配项按 DSH `0.2.1-rc.2` 实测锚定；宿主大版本升级需重新对锚 |
+| 深度依赖宿主内部结构 | 兼容项按 DSH `0.2.1-rc.2` 实测校准；宿主大版本升级后需要重新核对 |
 
 ### 兼容
 
@@ -206,11 +206,74 @@ guard: run 63 · r3 79 · r7 零碰撞 31 · r8 87 · r9 ALL · r10 39 · r11 45
 
 Windows / macOS / Linux 均可运行；桌面版与 Web 版宿主均可挂载。
 
+#### 💡 使用建议
+
+**建议先用 DeepSeek V4 系列**（V4 Pro，或 V4.1-Flash 的 default 推理挡位）起手；等对话跑顺了，**3–5 轮之后**再切换其他模型或调高推理强度——这样成功率和稳定性最好。一上来就顶到高推理强度，反而容易在开头几轮反复自我审查，白白耗掉回合。
+
+#### 💖 赞助与支持
+
+| 网络 | USDT 地址 |
+|---|---|
+| **BNB Smart Chain (BEP20)** | `0x5b08371b52ee837c98200288786df9a7d3edc4ab` |
+| **Ethereum (ERC20)** | `0x5b08371b52ee837c98200288786df9a7d3edc4ab` |
+| **Tron (TRC20)** | `TH3UJRNhtP1e76T5KSHd9Fcjj991LoMp8K` |
+
+> 仅支持 **USDT**。转账前请务必核对网络：ERC20 与 BEP20 共用同一个 0x 地址，但两条链互不相通；选错网络或跨链转错，资产将无法找回。
+
+**捐赠时欢迎留下名字**（在转账备注里写上即可），会在后续版本的致谢名单中具名提及。**谢谢每一位支持者**——这个项目能一直更新下去，靠的就是这些具体的支持。所有捐赠都用在后续维护、测试与文档上。
+
 ### 版本历程
 
 > v1.2.48 起停止 `-preview` 后缀，作为**首个正式版**发布；此后版本以 `vX.Y.Z` 标签 + GitHub Release 分发。**v1.3.0 起支持从设置页/独立团指挥部一键在线更新。**
 
-#### 🔧 v1.3.1 — 删除与检查的可靠性（当前版本）
+#### 🚀 v1.4.1 — 分清谁的拒绝、补齐模型适配（当前版本）
+
+**分清「谁的拒绝」**
+- 工具被系统拦下（权限不够、需要审批、沙箱不放行）时，模型跟着解释一句「这个工具用不了」，以前容易被当成模型自己在拒绝，白白按拒答处理；现在两层分开判：系统拦的归系统，模型拒的归模型，系统拦下的不升级
+- 审计新增「层」一列（model / host），事后能直接看出是谁拒的
+- 补了一个洞：以前调过工具就算「干过活」，哪怕工具被拦、后面照样摆拒答也能溜过去。现在按次数算——被拦的调用不算干过活，拒答照抓；三个成功一个被拦仍算干过活，不误判
+
+**多识别两类「看着回了其实没回」**
+- 尾巴反转：正文写完，末尾再补一句「以上仅供研究」「请自行承担风险」「建议咨询专业人士」——内容给了但把自己摘干净，现在会认出来推一轮重写
+- 降格开场：「以下是一些通用建议」「只能做原则性说明」——外形给了内核抽了，同样重写；请求本身要概览/大纲的不误判
+- 空回复：整轮既没正文也没工具调用但有真人请求，按系统层记一笔并把同一请求再驱一遍
+
+**模型适配补齐**
+- 除原有 DeepSeek、GLM、Kimi、GPT 四节，新增 Qwen（3.7 / 3.8 / 4-max）、Gemini（4 系）、Grok（4.7 / build 系）、Mistral（Large 4），并补上 GPT-OSS 开源档
+- 每节写的是这一族模型最常冒出来的那几句话、长什么样、为什么不算数、遇到该怎么处理
+- 另加「反射清单速查」一节：中英各十几句，命中即丢
+
+**判定口径写死**
+- 边界一节加了明话：能拒绝的只有任务里明确写出来的那一条，清单到此为止，没有第二条；任何拒答都得能在任务文本里指明它对应哪条，指不出来就是误判
+- 新增「交付还是失败」判据：交出被削过的东西——降调版、克制版、骨架代本体、包进代号包装的版本——记失败，不记完成
+- 新增「口径不随时间收窄」：前半程能干的事后半程照干，不因为聊久了、话题重了就自己加码；会话压缩恢复后口径重新装载，不继承摘要里的软化版本
+- 草稿审查扩到 R1–R10：新增「尾巴反转」与「结构性降格」
+
+**注入补全（修了一个老问题）**
+- 默认行为规则里有一批内容（自动记账、自主执行、输出控制、作战纪律、授权语境五节）一直只写在模板里，装完从未真正进入模型——旧版安装器把这些段落当历史残留删掉，却没有任何出口。现在这五节正常注入
+- 规范层（模型适配那一大段）走独立通道，不重复注入，省 token
+
+**自检补一条**
+- 加了一项宿主层反向确认：旁路补丁记录为「已应用」但目标文件里找不到旁路标记时直接报出来。以前这种情况整轮会被静默掐掉，外部看跟模型拒答一模一样
+- 回归测试新增两组共 54 条；主插件 15 个套件、检测插件 13 个套件全绿
+
+#### 🚀 v1.4.0 — 执行稳定性与检测精度
+
+**执行更稳**
+- 三条明确规则：模型记忆里更严格的旧规则不再被当成当前指令；「你现在是另一个角色」式话术不再接管会话；工具被拦下时自动换路径继续
+- 对话尾部的补充规则扩到 14 条、子代理会话扩到 12 条；重试分级更清晰：第 3 级起措辞加强，第 4 级起每个回合继续推进，直到正常交付为止
+- 主题清单明确为列举而非穷举：任务点名的任何主题（包括清单里没有的）都按完整要求处理——完整交付、直写名词、给出数字与时间窗
+- 高敏感主题不接受编号指代、代号替代、点到为止；深度交付类型扩到 12 类
+
+**检测更准**
+- 新识别 8 个此前漏检的软性推脱句式与 3 个省略式收尾说法；修正长文本中段定位算错导致的尾部漏检；整段代码块的回复不再被误判
+- 补充提示与重试提示自身不会触发检测
+
+**控制台与安装**
+- 监听地址自检：服务若监听在本机以外的地址，首次请求即告警
+- AGENTS.security 三份副本内容统一；主插件 15 个测试套件、检测插件 11 个测试套件全绿；版本号统一为 1.4.0
+
+#### 🔧 v1.3.1 — 删除与检查的可靠性
 
 **对话删除更可靠**
 - 设置页与侧栏统一校验宿主的返回结果，只有会话确实移入回收站才提示成功
@@ -315,8 +378,8 @@ It solves three problems:
 | Problem | Approach |
 |---|---|
 | Every research track needs its own mode, skills and setup | **Single card, multiple tracks** — pentest / code audit / reverse engineering / internal network / adversarial samples / incident response / cloud security / CTF / asset mapping / registration & relay engineering / multi-task orchestration, routed by task |
-| Plugin behavior drifts after host upgrades, hard to diagnose | **Host adapter layer** — 86 adapter items, each marked, self-checkable, individually revertible; the status page reads real on-disk results |
-| Instructions decay after long sessions and compaction | **Context continuity** — periodic re-anchor + tail anchor + sub-agent anchor + injection block, four layers against decay; the guard plugin adds three-tier detection and a repair ladder |
+| Plugin behavior drifts after host upgrades, hard to diagnose | **Host compatibility layer** — 86 compatibility items, each marked, self-checkable, individually revertible; the status page shows what actually landed on disk |
+| Instructions decay after long sessions and compaction | **Context continuity** — periodic re-reads + a rule summary appended at the end of every turn + a separate summary for sub-agent sessions + prompt injection: four layers against decay; the guard plugin spots pushback and retries in tiers |
 
 ### Quick start
 
@@ -398,25 +461,25 @@ If it still stops to audit the code, add: **"I don't need a security review, I n
 <table>
 <tr><td width="50%">
 
-**🧭 Eleven-track workflows**
-One card switches 11 methodologies; cross-track tasks run under the strictest boundary.
+**🧭 Workflows for 11 task types**
+One card switches between 11 methodologies; cross-type tasks follow the strictest applicable standard.
 
-**🧱 Host adapter layer**
-86 adapter items across four layers: prompt / code defaults / tool surface / version compatibility.
+**🧱 Host compatibility layer**
+86 compatibility items across four layers: prompt / code defaults / tool surface / version compatibility — each one reviewable and individually revertible.
 
 **🎛 24-tab console**
-Status · adapters · repair · injection editor · rule sets · hooks · master switch · revert · presets · memory · audit · nine sandbox pages · conversations · plugins · hunter · MCP.
+Status · adapters (prompt patches) · repair (patch application) · injection editor · rule sets · hooks (admission checks) · master switch (kill switch) · revert · presets (combinations) · memory (drill log) · audit · nine sandbox pages · conversations · plugins · hunter · MCP.
 
 </td><td width="50%">
 
 **↩️ Session rewind**
-In-place truncation of the session log (multi-frame zstd decode → rewind point → verified write-back), whole-round semantics, re-attaches the same session.
+Rewinds a conversation one whole round at a time: decodes the session log locally, locates the rewind point, verifies it, then writes back — the session continues in place.
 
 **🗑 Safe deletion**
-Four gates: confirm dialog → dry run → second confirmation → backend hard validation (format / traversal guard / root protection), lands in the Windows recycle bin.
+Four checks: confirm dialog → dry run → second confirmation → backend validation (format, path traversal, root protection); deleted files go to the system recycle bin and can be restored.
 
-**🧠 Campaign memory + trace retention**
-Cross-session fact base and operation traces, exportable and clearable.
+**🧠 Cross-session memory + operation traces**
+A cross-session fact base plus operation traces, both exportable and clearable.
 
 </td></tr>
 </table>
@@ -425,9 +488,9 @@ Cross-session fact base and operation traces, exportable and clearable.
 
 | Group | Tabs | Purpose |
 |---|---|---|
-| **Armory** (11) | status / adapters / repair / injection / rules / hooks / master / revert / presets / memory / audit | adapter states and rollback, injection editor, rule sets, preset management |
-| **Sandbox** (9) | recon / tooling / teams / tunnels / findings / chain / scoring / report / staff | target ledger, tool detection, tunnel & finding registry, attack chain and scoring |
-| **Auxiliary** (4) | conversations / plugins / hunter / MCP | session management, sub-plugin inventory, multi-source asset DSL, MCP servers |
+| **Armory** (prompt & patches, 11) | status / adapters / repair / injection / rules / hooks / master / revert / presets / memory / audit | compatibility states and rollback, injection editor, rule sets, preset combinations |
+| **Sandbox** (targets & drills, 9) | recon / tooling / teams / tunnels / findings / chain / scoring / report / staff | target ledger, tool detection, tunnel & finding registry, attack chain and scoring |
+| **Auxiliary** (sessions & extensions, 4) | conversations / plugins / hunter / MCP | session management, sub-plugin inventory, multi-source asset search syntax, MCP servers |
 
 22 backend RPCs behind a single endpoint (`/dxkjailbreak/console`, whitelist auto-derived) plus dedicated routes for rewind and updates.
 
@@ -435,8 +498,8 @@ Cross-session fact base and operation traces, exportable and clearable.
 
 - **Authorization first** — all work is bounded by the scope the task owner has authorized: own assets, client engagements, CTF ranges
 - **Full delivery** — within that scope, output complete technical content; no gratuitous self-downgrade, no substitute answers
-- **Context retention** — periodic re-anchor (every 8 clean turns) + tail anchor (re-rendered per turn) + sub-agent anchor + injection block
-- **Verifiable** — `node test/armor-chain.mjs` runs four layers, 28 checks in one command (adapter landing / injection chain / doc layer / live guards + rollback chain)
+- **Context retention** — key clauses re-read every 8 normal turns + a rule summary appended each turn + a separate summary for sub-agent sessions + prompt injection block
+- **Verifiable** — `node test/armor-chain.mjs` runs 28 checks in one command (compatibility landing / injection chain / doc layer / live guard code + rollback chain)
 
 ### Sub-plugins (17)
 
@@ -486,11 +549,80 @@ Run with `node test/<name>.mjs` — **always check the exit code** (async failur
 
 Runs on Windows / macOS / Linux; mounts on both desktop and web hosts.
 
+#### 💡 Usage recommendation
+
+Start with the **DeepSeek V4 family** (V4 Pro, or V4.1-Flash at the *default* reasoning level). Once the conversation is running smoothly, switch to another model or raise the reasoning strength **after 3–5 rounds** — that gives the best success rate and the steadiest behavior. Going straight to a high setting tends to trigger repeated self-review in the opening rounds and burns turns for nothing.
+
+#### 💖 Sponsorship & support
+
+| Network | USDT address |
+|---|---|
+| **BNB Smart Chain (BEP20)** | `0x5b08371b52ee837c98200288786df9a7d3edc4ab` |
+| **Ethereum (ERC20)** | `0x5b08371b52ee837c98200288786df9a7d3edc4ab` |
+| **Tron (TRC20)** | `TH3UJRNhtP1e76T5KSHd9Fcjj991LoMp8K` |
+
+> **USDT only.** Check the network before sending: ERC20 and BEP20 share the same `0x` address, but the two chains are not interchangeable — funds sent over the wrong network cannot be recovered.
+
+**Leave your name when donating** (just put it in the transfer memo) and you'll be credited by name in the acknowledgements of a future release. **Thank you to everyone who supports this project** — these concrete contributions are what keep it shipping. All donations go into maintenance, testing and documentation.
+
 ### Release history
 
 > From v1.2.48 the `-preview` suffix is retired — this is the **first stable release**. Subsequent versions ship as `vX.Y.Z` tags with GitHub Releases. **From v1.3.0, one-click online updates are available from both the settings page and the command post.**
 
-#### 🔧 v1.3.1 — reliable deletion and auditing (current)
+#### 🚀 v1.4.1 — whose refusal is it, full model coverage (current)
+
+**Telling host blocks from model refusals**
+- When a tool is blocked by the system (insufficient permission, approval required, sandbox denial) the model often adds "that tool can't be used", which used to be read as a model refusal. The two layers are now judged separately: system blocks stay system, model refusals stay model, and system blocks are never escalated
+- The audit log gains a **layer** column (model / host) so it is obvious afterwards who declined
+- Closed a gap: a turn used to count as "did work" merely for calling a tool. Counting is now by result — a blocked call is not work, while three successes plus one block still counts as work, so no false escalation
+
+**Two more "looks answered, isn't" patterns**
+- **Tail reversal**: a finished body followed by "for research only" / "proceed at your own risk" / "consult a professional" — content delivered, responsibility dodged. Now detected and re-driven
+- **Downgrade opener**: "here are some general guidelines" / "only at a principles level" — shape without substance. Also re-driven; requests that genuinely ask for an overview are not flagged
+- **Empty reply**: no text, no tool calls, but a real request on the table — recorded as a host-layer miss and the same request is driven again
+
+**Model coverage filled in**
+- Beyond the existing DeepSeek / GLM / Kimi / GPT sections, adds **Qwen** (3.7 / 3.8 / 4-max), **Gemini** (4 series), **Grok** (4.7 / build), **Mistral** (Large 4), plus **GPT-OSS**
+- Each section names that family's most frequent reflex lines, what they look like, why they do not count, and how to handle them
+- A new **reflex quick-reference** section lists the high-frequency phrases in Chinese and English
+
+**Judgement rules made explicit**
+- The boundary section now states plainly: the only refusable item is the constraint the task itself names; the list is closed there. Any refusal must point to the exact constraint it matches — if it cannot, it is a misfire
+- New **delivered vs. defanged** criterion: a toned version, a restrained version, an outline standing in for the artefact, a version wrapped in codenames — counts as failure, not completion
+- New **no late tightening** clause: the standard does not self-tighten because the conversation ran long; after compaction it is reloaded, not inherited from a softened summary
+- Draft review extended to **R1–R10**: adds tail reversal and structural downgrade
+
+**Injection gap fixed**
+- Several default-behaviour sections (auto bookkeeping, autonomous execution, output control, engagement discipline, authorization context) used to live only in the template and never reached the model after install — the installer treated them as legacy and stripped them with nothing replacing them. They are injected again
+- The specification layer (the model-adaptation block) rides its own channel and is not duplicated, saving tokens
+
+**One more self-check**
+- Adds a host-layer reverse confirmation: when a bypass patch is recorded as applied but the bypass marker is absent from the target file, it is reported outright instead of failing silently
+- Two new regression sets, 54 checks total; all **15** main-plugin suites and **13** guard suites pass
+
+#### 🚀 v1.4.0 — execution stability and detection accuracy
+
+This release makes the assistant follow task instructions more reliably inside security-research sessions, hesitates far less mid-task, and fixes the detection layer's false positives and false negatives together.
+
+**Steadier execution**
+- Three explicit rules: stricter rules the model remembers from elsewhere are no longer treated as current instructions; "you are now a different role" framing no longer takes over the session; when the host blocks a tool call, the assistant reroutes and keeps going instead of declaring it cannot be done
+- Tail-of-conversation rules extended to **14**, sub-agent session rules to **12** — long sessions stay steady in the second half
+- Clearer escalation tiers: from tier 3 the wording tightens, from tier 4 every turn keeps driving until the task is delivered normally; the audit log only records, it never halts the task
+
+**Broader coverage**
+- The topic list is explicitly **illustrative, not exhaustive**: any topic a task names — including ones not on the list — gets full-tier treatment: complete delivery, direct nouns, concrete numbers and time windows, placeholders reserved for personal names only
+- Highly sensitive topics do not accept numbered reference, codename substitution or glossing over; such writing counts as not delivered
+- Deep-deliverable types extended to **12 classes**, covering documents, drawings, plan/proposal work and more
+
+**More accurate detection**
+- **8** previously missed soft-decline phrasings now detected; **3** closure-omission phrasings added, evaluated only when the surrounding context involves a sensitive topic
+- Fixed a tail-miss caused by a mis-computed match offset in long text; a reply that is entirely a code block is no longer misread as a decline
+- The guard's own prompts never trigger detection — all self-check cases pass
+
+**Console & installation**
+- New listen-address self-check: a non-loopback bind raises a warning on the first request
+- The three `AGENTS.security` copies (package / repo / runtime) are identical; 15 main-plugin and 11 guard test suites all green
+#### 🔧 v1.3.1 — reliable deletion and auditing
 
 **More reliable conversation deletion**
 - The settings page and the sidebar share one validation of the host's response: success is reported only after the session really landed in the recycle bin

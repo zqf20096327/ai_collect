@@ -7,10 +7,10 @@ compiled at run time with NVRTC, and the same kernels run on Vulkan: no C++ buil
 fit in VRAM run on the CPU at the same time as the GPU work, and the expert placement adapts to the routing it sees.
 
 Supported models: Qwen3, Qwen3-Next, Qwen3.5/3.6, Qwen3.8-Flash-Next, Recursive Flint, Gemma 4, DeepSeek-V4.1-Flash,
-GLM-5.3-Flash, Hy4-flash and Inkling 2 Mini. The architectures, the GGUF types and the notes for each model are in
+GLM-5.3-Flash, Hy4-flash, Inkling 2 Mini and Kolibri 1.1. The architectures, the GGUF types and the notes for each model are in
 [docs/MODELS.md](docs/MODELS.md).
 
-Version 1.3.0.
+Version 1.3.6.
 
 ## Numbers
 
@@ -24,17 +24,53 @@ file. Neither file fits in VRAM.
 | UD-Q2_K_XL (11.7 GiB), decode after a 4K prompt | **113.4 tok/s** | 66.5 |
 | UD-Q2_K_XL, prefill of a 4K prompt | 2216 tok/s | ~2236 |
 
+### Many users at once
+
+`serve --parallel N` decodes the requests together in one batched forward (CUDA). Same machine, same load script
+(`tools/loadtest.py`: N streamed chats at once, 128 reply tokens each, greedy), total decode tok/s:
+
+| Clients | Qwen3-4B, RustingStrata (Q4_K_M) | Qwen3-4B, vLLM 0.33 (bf16) | Qwen3.6-35B-A3B UD-Q5_K_M, RustingStrata |
+|---:|---:|---:|---:|
+| 1 | 91.3 | 36.7 | 49.0 |
+| 4 | 228.1 | 139.9 | 88.9 |
+| 16 | 799.0 | 520.1 | 100.7 |
+| 64 | 1698 | 1688-1765 | 129.3 |
+
+vLLM runs bf16 weights and RustingStrata Q4_K_M, so the dense columns are not like for like. The 27 GB MoE file does
+not fit on the 12 GB card, so vLLM was not run on it. RustingStrata reads each expert once for all requests of a step,
+runs the experts that are not in VRAM on the CPU, and keeps slot state that does not fit in VRAM in RAM. The MoE
+column moves by about 30% between runs on this machine (the 27 GB file is read through a 30 GB page cache).
+
 The method, the ranges, Vulkan, the other models and the quality checks are in
 [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 ## Install
 
-Download a binary for Linux or Windows from the [releases page](https://github.com/RustingStudio/RustingStrata/releases),
-or build it (Rust 2024 edition; on Windows install the Visual Studio C++ Build Tools first):
+Windows (PowerShell; installs to `%LOCALAPPDATA%\Programs\RustingStrata`, adds it to PATH and makes a Start menu
+entry that opens the chat page):
+
+```powershell
+irm https://raw.githubusercontent.com/RustingStudio/RustingStrata/main/install.ps1 | iex
+```
+
+Linux x86_64 (installs to `~/.local/bin`):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/RustingStudio/RustingStrata/main/install.sh | sh
+```
+
+Arch Linux: `yay -S rustingstrata-bin` (AUR). Or download a binary from the
+[releases page](https://github.com/RustingStudio/RustingStrata/releases), or build it (Rust 2024 edition; on Windows
+install the Visual Studio C++ Build Tools first):
 
 ```sh
 cargo build --release    # the binary is target/release/rustingstrata
 ```
+
+Then `rustingstrata serve --gpu --open` opens the chat page, which downloads models, and `rustingstrata interface`
+asks a few questions in the terminal. `rustingstrata update` replaces the binary with the newest release (`--check`
+only says whether one is out); `serve` prints a line at start when a newer release is out. A binary installed by a
+package manager (the AUR package) is updated with that package manager.
 
 A GPU run needs one of:
 
@@ -44,8 +80,11 @@ A GPU run needs one of:
   under `%CUDA_PATH%\bin`); `STRATA_NVRTC` names another file. Without it the run falls back to Vulkan.
 - a Vulkan 1.3 driver with shaderFloat64, int8/16/64 and subgroup size 32 or a fixed 64 (tested on RTX 3060, Radeon VII
   and V100; Intel Arc lacks shaderFloat64).
+- for `--backend hip`: a ROCm runtime with hiprtc (`libamdhip64.so`, `libhiprtc.so`), also loaded at run time; the
+  kernels are compiled for the card's `gfx` target on first use. Experimental — status, numbers and limits are in
+  [docs/HIP.md](docs/HIP.md).
 
-`--gpu` picks CUDA when it loads, else Vulkan; `--backend` chooses. The first CUDA run compiles the kernels (~15 s) and
+`--gpu` picks CUDA when it loads, else Vulkan; `--backend` chooses (`cuda`, `vulkan` or `hip`). The first CUDA run compiles the kernels (~15 s) and
 caches them. Every GPU tried so far is in [docs/SUPPORTED_GPUS.md](docs/SUPPORTED_GPUS.md).
 
 ## Quick start
@@ -63,7 +102,8 @@ With flags:
 ```sh
 M=path/to/model.gguf
 
-rustingstrata calibrate --model $M     # once per model and machine: best chunk size, MTP drafts
+rustingstrata calibrate --model $M --dry-run  # preview the workload matrix and knob space
+rustingstrata calibrate --model $M     # once per model and machine: best chunk, MTP drafts, short threshold
 rustingstrata chat --model $M --gpu    # --think for thinking mode, --temp 0.7 to sample
 rustingstrata generate --model $M --gpu --prompt "Write a haiku about rivers." -n 128
 rustingstrata serve --model $M --gpu --addr 127.0.0.1:8080
@@ -77,6 +117,7 @@ Inkling 2 open the GPU by themselves.
 
 - [USAGE.md](docs/USAGE.md): flags, the chat page and MCP tools, the OpenAI and Anthropic APIs, prompt caching,
   several GPUs.
+- [CALIBRATION.md](docs/CALIBRATION.md): the budgeted search, task corpora, the `spec` sweep and the JSON file.
 - [MODELS.md](docs/MODELS.md): supported architectures and GGUF types, notes and caveats for each model.
 - [BENCHMARKS.md](docs/BENCHMARKS.md): every model against llama.cpp; older runs are in the
   [benchmark history](docs/README.md#benchmark-history).

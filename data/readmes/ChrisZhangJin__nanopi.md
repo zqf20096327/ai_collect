@@ -286,7 +286,7 @@ doesn't know to `custom`:
 
 ```json
 {
-  "generated_by": "0.16.1",
+  "generated_by": "0.17.0",
   "custom": [
     { "id": "some-new-model", "vendor": "openai", "context_window": 2000000 }
   ],
@@ -356,10 +356,31 @@ every dispatched agent — background, foreground, `parallel` or `chain` — kee
 running and reports when it finishes. Agents are stopped only by
 `/agents stop <id|name-prefix>` (or `/agents stop all`), by the orchestrator's
 own `stop_agent` when you ask it to, or by quitting nanopi. Bare `/agents`
-opens a picker over every agent of the run, finished ones included; <kbd>Enter</kbd>
-prints that agent's detail card (state, time, model, task, recent activity,
-report, paths), and `/agents show <id|name-prefix>` prints one directly.
+opens a picker over every agent of the run, finished ones included
+(<kbd>↑</kbd>/<kbd>↓</kbd> to choose). <kbd>Enter</kbd> opens a **read-only live
+panel** on the right: the screen splits, the conversation and your prompt stay
+on the left, and the panel follows that agent's work as it happens — its
+replies, every tool call, the head of each tool result, its state and time.
+You cannot type to the agent; everything you type still goes to the
+orchestrator. <kbd>PgUp</kbd>/<kbd>PgDn</kbd> scroll the panel; <kbd>Esc</kbd>
+on an empty prompt (or `/agents close`) closes it, and anything printed
+meanwhile lands in your scrollback. Terminals narrower than 90 columns get
+the detail card instead. `/agents show <id|name-prefix>` prints an agent's
+detail card (state, time, model, task, recent activity, report, paths);
 `/agents list` is the plain-text version. See [docs/agents.md](docs/agents.md).
+
+**One shared status check watches all running agents.** As soon as an agent
+starts, nanopi begins checking on every live agent together — never one loop
+per agent. Each check reads only local state (each agent's state, time, how
+long its output has been quiet, and its latest activity) and asks the model
+in one small, tool-free request when to look again (30 s – 15 min: soon when
+something is about to finish or looks wrong, later during steady work) and
+whether anything looks stuck. The result is printed between turns
+(`⊙ agents: 2 running · next check in 5m`, stuck agents in yellow), the
+footer shows when the next check is due, and the checks stop by themselves
+when the last agent finishes. The watcher never stops or messages an agent,
+and it is separate from any `/loop` you run. `NANOPI_GOAL_MODEL` puts the
+checks on a cheaper model of the same endpoint.
 
 Parallel agents that write code can each get their own git worktree
 (`isolation: "worktree"`), merged back automatically, with conflicts
@@ -379,6 +400,29 @@ gets no badge. Caps for the spawned children live under `[agent]` (see
 `config.toml.example`). This is TUI-only: `nanopi -p` ignores the setting
 entirely and always keeps its full tool set, so scripted runs are never
 silently restricted.
+
+## Thinking effort (`/effort`)
+
+How hard the model thinks is one setting, shown in the footer as
+`effort:<level>`:
+
+| Command | Effect |
+|---|---|
+| `/effort` | Show the level and exactly what the current model receives |
+| `/effort low \| medium \| high \| xhigh \| max` | Set it, from the next turn (`minimal` also works, = `low`) |
+| `/effort auto` | Send nothing; the model uses its own default (`medium` on Claude Opus 5.5) |
+
+Shift+Tab cycles the same levels, and `/settings` sets the default for new
+sessions. What is sent depends on the model:
+
+- **Claude 5 and Claude 4.6–4.8**: `thinking: {type: "adaptive"}` plus
+  `output_config.effort` — these models reject a fixed thinking budget.
+  `xhigh` becomes `high` on 4.6, which has no `xhigh`. They also get
+  `max_tokens = 64000` (they think by default, and thinking counts against it).
+- **Older Claude models** (3.7, 4.0–4.5): `thinking.budget_tokens`, as before.
+- **OpenAI-compatible vendors**: each vendor's own field (`reasoning_effort`,
+  …). A Claude model behind an OpenAI-compatible gateway gets the Anthropic
+  fields above in the request; whether they reach the model is up to the gateway.
 
 ## Goals and loops (`/goal`, `/loop`)
 
@@ -730,6 +774,33 @@ Payloads cross the boundary as JSON strings rather than WIT records — one prim
 
 A worked example lives in [`examples/wasm-plugin/`](https://github.com/ChrisZhangJin/nanopi/tree/main/examples/wasm-plugin), including the build command. [`examples/wasm-plugin-minimal/`](https://github.com/ChrisZhangJin/nanopi/tree/main/examples/wasm-plugin-minimal) is a smaller skeleton to copy — two tools, split into boilerplate and the part you replace.
 
+For personal memory across sessions, nanopi now has a built-in memory (`/memory`, `/dream`, the `memory_search` / `remember` / `forget` tools; design in `docs/memory-design.md`). It lives in `~/.nanopi/memory/`, and environment entries are sent to a model only when the profile sets `memory_disclosure = "full"` for that exact endpoint (`/memory disclosure full`). The plugin below remains an example of per-project memory.
+
+**Nightly Dream (Linux):** On the first eligible interactive launch, nanopi
+asks whether to enable a daily **03:00 local time** run. It prefers a systemd
+user timer when the user manager is reachable and lingering is enabled.
+Otherwise it falls back to the current user's crontab if a cron daemon is
+running and the user's table is accessible. Neither backend uses sudo.
+NanoPi manages only its own tagged cron entry; it does not change other jobs.
+Systemd catches up missed runs once; cron does not, but pending notes stay
+queued for the next run. If neither backend is available, NanoPi warns once
+and leaves manual `/dream` available; `/dream status` shows the reason.
+
+- `/dream schedule enable 03:00` installs or re-enables the schedule using the
+  selected profile's on-disk model, endpoint and credentials. Keep the binary
+  at its installed path. CLI and project configuration overrides are ignored.
+- `/dream schedule pause` or `/dream schedule remove` stops future runs.
+  Removal does not delete memories. `nanopi --dream-schedule status` and the
+  corresponding `enable`, `pause`, and `remove` actions also work outside the TUI.
+- `/dream status` shows the next run, last result, budget and backlog;
+  `/dream log` shows changes and their reasons. A changed connection or rejected
+  credentials pauses the schedule instead of trying another endpoint.
+- `memory_dream_max_calls` (default 3) and `memory_dream_max_input_chars`
+  (default 40000, measured as serialized memory-data bytes across the run)
+  can be set in the profile. Remaining notes stay pending; an individually
+  oversized note requires increasing the budget. Dream operates on daily notes
+  and the library, not historical raw transcripts.
+
 For plugins meant to be *used* rather than read: [`examples/wasm-plugin-memory/`](https://github.com/ChrisZhangJin/nanopi/tree/main/examples/wasm-plugin-memory) is durable project memory — facts are markdown files in `.nanopi/memory/` that you can diff and commit, and only the compact index enters the model's context, with `recall` fetching the full text of whatever looks relevant. [`examples/wasm-plugin-report/`](https://github.com/ChrisZhangJin/nanopi/tree/main/examples/wasm-plugin-report) records per-tool time and failures across sessions, which answers "why was that slow" — `tool_execution_end` carries a `duration_ms` that nothing else persists.
 
 All five plugins are indexed in [`examples/README.md`](https://github.com/ChrisZhangJin/nanopi/tree/main/examples) — a table of what each one does, the grants it needs, and which WIT world it targets.
@@ -786,7 +857,8 @@ Host-side plugin state survives a reload, deliberately: the plugin's host-store 
 
 | Version | Status | Size | Notes |
 |---|---|---|---|
-| **v0.16.1** | current | 2.0 MB | `/goal` (work until a verified condition), `/loop` (fixed or self-paced), background mode (`/background`, `--foreground`); config profiles; per-command sudo gate; hybrid orchestrator; cut-off replies reported; shared input history |
+| **v0.17.0** | current | — | `/effort`; persistent experience library and nightly Dream; read-only agent panel and shared status checks |
+| v0.16.1 | released | 2.0 MB | `/goal` (work until a verified condition), `/loop` (fixed or self-paced), background mode (`/background`, `--foreground`); config profiles; per-command sudo gate; hybrid orchestrator; cut-off replies reported; shared input history |
 | v0.15.0 | released | — | MCP servers (stdio + Streamable HTTP, `/mcp`); interactive `/agents` picker; orderly SIGTERM/SIGHUP exit |
 | v0.14.0 | released | 1.8 MB | Orchestrator as the default main agent; user-editable `models.json`; context usage bar |
 | v0.13.0 | released | — | Orchestrator mode; background agent dispatch; agents strip (Ctrl+G) |

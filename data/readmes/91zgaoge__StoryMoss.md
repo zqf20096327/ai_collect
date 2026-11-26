@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.14-gold"></a>
+  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.25-gold"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-ISC-blue.svg"></a>
   <a href="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml"><img alt="Build" src="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg">
@@ -115,6 +115,61 @@ npm run build
 ## 🆕 最新动态
 
 > 完整变更日志见 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+### v0.99.25 · 日志巡检：健康探测退避失效 + 自动上传旧错误误计
+
+- **问题**：Windows v0.99.14 日志包显示，三个不可用模型跨 24 小时各被「退避重试」93–97 次且退避值恒为 30s——`probe_model` 对调用失败返回 `Ok(success=false)`，调度器只判 `Err`，把失败当成功并不断重置退避；同时 11-23 提议上传日志时称「20 条新错误」，实际全部来自 6–15 天前（`creative_workflow.log` 只追加，旧实现只按文件 mtime 过滤）。
+- **结果**：调度器改按真实 `ProbeResult.success` 判定并按 30→60→…→3600s 指数退避；自动上传错误计数增加行级时间过滤（tracing `timestamp` / 工作流 `ts` / legacy 行首时间戳）；Step2 知识生成对枚举外关系类型（真机 `同门师兄妹`）降级为 `RelatedTo`，不再让整段 JSON 解析失败。Rust **2308/17**（+4）、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.24 · 训练报告通用规则提升层 + 生产回归探针
+
+- **问题**：v0.99.23 已复用训练能力，但训练报告里的具体改进仍只回灌下一轮训练；具体书名/人名/情节不能跨故事搬运。
+- **结果**：新增 `training_rules` 与 V165 `training_rule_promotions`，从报告维度均分/通用信号提取 8 类不含书名/人名/情节的规则，按 key 去重累计；生产 writer/修订/genesis/auto_write/gate 自动注入规则块，装配后 `[ProductionProbes]` 核对文风/AI 腔/主线/承接/推进/口吻/节奏/钩子；旧报告升级时幂等补齐。Rust **2304/17**（+5）、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.23 · 续写训练能力全量复用：创世/普通续写/导演/单章均启用
+
+- **问题**：主线投影、原文语体样本/基线、前情提要（StoryBrief）、直连编审 gate 此前只在续写训练沙盒注入（训练执行器显式 `with_*`），普通创世与续写只拿到部分能力；训练出的质量改进无法进入真实创作路径。
+- **结果**：新增生产复用层——从故事大纲/CHAPTER 合同/卷纲/Blueprint 派生故事主线，从前文 scene 抽语体样本/基线（无前文退到 StyleDNA/corpus），确定性构建前情提要；genesis fastpath、单章/批量/导演续写、修订、章纲、GateRunner/后台 QC 全部接入；生产默认直连编审 JSON；genesis 自动绑定题材推荐风格 DNA；自动续写/单角色 writer 任务也注入语体样本、前情提要、红线等章号无关能力；生产写作红线 9 条。批量主线只有首章用「下一节点」，后续章用合同/卷纲 beat。训练显式字段优先，不覆盖训练 LLM brief。Rust **2299/17**（+9）、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.22 · v0.99.21 真机验证：总分 0.734 / 口吻 7.11 / 原书差距 7.07
+
+- **结果**：本机 10 章训练报告 `018e787e`（13:20–14:12）加权 **0.734**（历轮最高：v0.99.16 0.729、v0.99.20 0.689、v0.99.17 0.7175），style **7.01**、plot **7.67**、voice **7.11**、pacing **7.17**、hooks **7.28**，承接 8.9、`reference_gap` **7.07**（最初问题轮 2.9）；编审 **6 pass / 4 revise / 0 unavailable**，质量门 3 通过 / 7 修订 / 0 降级，主线探针 9/10 ✓；10 章全部落库 2.7–3.8k 字。承接近乎无缝、145/150/151 主线节点与真实章几乎逐一对应、148「妖孽，看我法宝」/151 碑线/152 身世落地。
+- **仍未根治**：146 小梅诊室试探改村口跪求、149 玉碟敕神/宋辨经考据压成三件套、147 周成荤腔纯情化、148/152/153 偶发格言/预告腔；文风探针句长仍 9.6–14.0（原文 19.2）。下一轮按报告改进项继续。测试 **2290/17**（文档验证版，数量不变）、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.21 · 创作 effort 回滚 + 封顶空稿降 effort 重试 + 文风门禁建议化
+
+- **问题**：v0.99.20 真机报告 `21b15629` 显示低 effort 让 10 章全部产出、编审 10/10 可用（上轮 8/10），但总分 **0.689**（上轮 0.7169）、style 6.75、voice 6.5（上轮 7.125）—— editor 判「黄玄然絮叨被削成短刀、陆尘音功能化、第一人称自嘲递减」。144 章 editor 原判 style 8/voice 8，确定性 style gate（句长 10.8<0.75×19.2）强制修订后报告 style 反而 6.5；空 content 仍在：writer 32768 封顶，`should_retry_truncated_empty` 因 `max_tokens < cap` 从未重试。
+- **结果**：创作 effort 回滚（结构化仍 low）；空稿封顶时仍重试一次并临时降 `reasoning_effort=low`（首次保留原 effort）；文风/AI 腔 `style_issue` 改为建议性——只在 editor 已判 RevisionRequired 且 style<7 时并入 issues，不再强制改 pass。新增断言更新；Rust **2290/17**（数量不变）、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.20 · 推理模型创作调用默认 low：训练主创不再被 CoT 吃空
+
+- **问题**：v0.99.19 真机训练启动段 12:05–12:08 连续 5 次 `agency_writer` 空 content——提示词约 37,899 tokens、completion 29,773–31,978 tokens、`finish_reason=length`；主创输出额度已是 `CREATIVE_MAX_OUTPUT_TOKENS=32768` 上限，×4 重放没有余量，第 144 章草稿只能靠 tool_loop 已写出的 board draft（2,691 字）救回。
+- **结果**：`default_reasoning_effort` 改为——profile 显式值优先；声明 `Reasoning` 能力的模型，结构化与创作散文调用都默认 `low`；未声明 Reasoning 的本地端点仍不发送未知参数。CoT 不再吃满 32k 输出额度，正文有空间落 content。测试断言同步更新；Rust **2290/17**（数量不变）、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.19 · 训练二次收敛：第一人称 POV/动作钩 + 叙述样本权重
+
+- **问题**：v0.99.18 真机报告 `29f3107d`（0.7169 / style 6.875 / voice 7.125 / `reference_gap` 6.5 / 主线探针 9/10 ✓）显示 voice 回升（145 章编审写「口语文体贴合样本，短句、自嘲、语气词都在线」），但句长仍 11.3–13.0（原文 19.2），149/150 纪年与玉碟、146 时间线仍有硬伤；gate 2 通过/8 修订，其中 144 因第一人称正文没有「周成」被判 POV 缺失、章末「路少，把门关上」不被识别为钩子。
+- **结果**：质检接受第一人称（正文「我」≥3 次即视为 POV 在场），钩子证据词扩到关门/把门/锁/威胁/刀/枪/脚步声/纸条/短信等；语体样本改为 1 口语 + 2 叙述（compact 1+1），句长阈值收紧到 0.75×基线、口语 0.65×、比喻 >3/千字。新增 1 条回归测试；Rust **2290/17**、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.18 · 训练「声音」修复：真实章关键台词/转折 + 单章 AI 腔/地点同义词
+
+- **问题**：v0.99.17 真机 10 章报告 `5a3fb41e`（0.7175 / `reference_gap` 6.5 / 主线探针 9/10 ✓ / style 6.95 / voice 6.85）证明叙述长句样本生效——144 章句长无报警，145/147/148/149/150/152/153 回到 11.6–14.2（上一轮 9.5–13.3）。但 editor 仍判「冷硬 noir/铺陈明喻加重、市井碎嘴自嘲下降」；145 立威丢失「吐烟定住保镖」的术法机制，148 的「妖孽，看我法宝！」没进正文，151 出现「心里咯噔×2/后脊梁发麻×2」，146 夜总会写成「吧台/门厅」触发主线误判修订。
+- **结果**：逐章主线任务新增真实章 `key_turn`（关键转折，必须写出机制）与 `voice_cues`（关键台词，写作时化用口气/句式）；语体样本改为全书按得分取最高 2 段口语 + 1 段叙述；`ai_ism_issue` 单章判「咯噔≥2/后脊梁发麻/后槽牙/比喻密度>4」并接入 gate；地点核对接受场景同义词（夜总会↔包厢/吧台/门厅）；红线改为每章至少 3 处市井碎嘴、比喻≤3、同章身体反应不重复；risk/emotion 证据词扩容减少正确章误判 revise。新增 4 条回归测试；Rust **2289/17**、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.17 · 训练文风硬核对：叙述长句样本 + 严重漂移强制修订
+
+- **问题**：v0.99.16 真机 10 章报告 `7b878237` 主线已修复（`reference_gap` 2.9→6.67、主线探针 9/10 ✓、AI 腔未检出），但「文风漂移探针」显示句长 9.5–13.3（原文基线 19.2）、口语词 1.1–1.4/千字（基线 3.3），第 149 章编审直接判 style 5「冷硬 noir」。原样本只抽口语/对白段落，模型越写越短；多数章 style 7 被放行，确定性漂移没有进入质检。
+- **结果**：原文语体样本新增「叙述样本」——平均句长不低于原文基线、对白占比 <25% 的段落（首/中/尾章各一段），与口语样本一起注入，明确要求两类都模仿；新增 `severe_drift_issue` 确定性判定（句长 <0.65×基线 + 口语词 <0.6×基线，或对白低 20pt、比喻 >2.5×基线），训练中即使编审放行也强制修订一次，修订直出同样带原文样本。新增 2 条回归测试；Rust **2285/17**、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。
+
+### v0.99.16 · 日志巡检：容量路由 / 记忆探针 / trace 收尾
+
+- **问题**：v0.99.14 日志包（`14356f2f`，macOS）自身窗口 0 条 ERROR，但暴露三处应用侧缺陷：①11-24 连续 8 次 Qwren127 GPU OOM——每次都在学「prompt 上限」，却按服务端 token 存、按字符数 ÷2 比，中文正文两者相差约 40%，学到的上限永远够不到，v0.99.2 的容量路由从未触发；②两份训练报告的记忆探针把 `往桌上一/周老师/明天中午/穿灰夹克/一件事/半根烟` 等跨词短语当「疑似新专名」；③6 个 trace 在应用重启后永久停在 `running`。
+- **结果**：GPU 容量上限改用客户端估算 `prompt_chars / 2` 学习，`prompt_tokens_est` 计入 system prompt，所有容量闸门同口径；记忆探针补首字动词/数词/介词过滤、时间词、称谓后缀与器物收尾；`TraceStore::new` 启动时清扫超过 30 分钟仍 running 的遗留 trace（关闭步骤、写 failed 与中断原因），多实例安全且不阻塞。新增 4 条回归测试；Rust **2283/17**、tsc 0、Vitest **732/3**、Playwright **144/5**、fmt/clippy/guard/prettier 全绿。本版同时包含上一轮未发版的 v0.99.15（原著主线投影 + 原文语体样本常驻）。
+
+### v0.99.15 · 续写训练：原著主线投影 + 原文语体样本常驻
+
+- **问题**：11-24 两轮 10 章训练（0.696 / 0.706）编审反复指出两类老大难：①原书主线被弃——第 144 章把「今晚去福摩萨正面冲撞邵卫江」推成「明日」，随后另起老曹—法林寺—三理教平行支线，10 章成为「解谜—复述—再解谜」；②风格逐章稀释——从原著的碎嘴自嘲、市井诙谐滑向冷硬 Noir，151–152 章几乎消失。根因是资产重建的故事大纲「下一节点」只由前 10 章上下文归纳（「就地审问伪装护士」），writer 严格按硬大纲写作；StyleDNA 只给六维指标，原文语体样本仅在上一轮 style<6.0 才注入，10 章批量每章只喂上一章生成稿，风格自我稀释；节拍卡仍用上一章 cast（杨晓雯），正确主线的章也被「具名阻力未出现」规则打回修订。
+- **结果**：新增 `agency::mainline`——用本轮真实后续章的逐章结构化摘要生成「逐章主线任务 + 关键人物/地点 + 硬核对要素」，写进沙盒故事大纲，并按章注入章纲规划、writer 与 gate；gate 发现必需要素缺失时即使 editor 放行也强制修订一次，报告输出逐章主线落地探针。新增 `agency::style_probe`——每章常驻原文语体样本（对白密集/第一人称碎嘴段落）与量化基线（句长/对白/第一人称/口语词/比喻），报告输出文风漂移与 AI 腔探针；训练红线补市井自嘲、反冷硬、反身体反应堆砌、开章赌注与单一强钩；`SceneBeatCard::align_to_mainline` 用主线人物/地点/推进节点覆盖陈旧节拍卡；批量 premise 去掉「第N章起」避免 editor 纠结章号。真机 18:17 训练已确认 144/145 章按福摩萨—邵卫江主线落地，editor 直接写「主线事件全部实现」。新增 11 条回归测试。
 
 ### v0.99.14 · 续写训练沙盒章号沿用原书
 

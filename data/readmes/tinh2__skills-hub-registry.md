@@ -42,7 +42,7 @@ skills-hub-registry/
 ├── analysis         # 197 skills — Domain Analysis, Research & Industry Verticals
 ├── productivity     #   9 skills — Developer Experience
 ├── integration      #  13 skills — Third-Party Service Connectors
-├── combo            #  34 skills — Multi-Skill Chains
+├── combo            #  35 skills — Multi-Skill Chains
 ├── meta             #  13 skills — Skills About Skills
 ├── education        #   8 skills — Learning & Onboarding
 └── spec             #   1 skill  — Specification Authoring

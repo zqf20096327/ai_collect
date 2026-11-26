@@ -114,6 +114,7 @@ Skills work across multiple platforms:
 - [vercel-labs/skills](https://github.com/vercel-labs/add-skill) - 40.5k ⭐ - Vercel official Skills CLI tool.
 - [microsoft/skills](https://github.com/microsoft/agent-skills) - 3.2k ⭐ - Microsoft official 131 Azure SDK Skills.
 - [microsoft/azure-skills](https://github.com/microsoft/azure-skills) - 1.7k ⭐ - Official Azure skills plugin with MCP server configurations and 20 curated Azure skills.
+- [sendbird/sendbird-client-plugin](https://github.com/sendbird/sendbird-client-plugin) - 0 ⭐ - Official Sendbird plugin with Agent Skills for adding Sendbird Chat, UIKit and Calls to iOS, Android, React and React Native apps, in Claude Code and Codex.
 - [OpenAI Codex: Agent Skills](https://developers.openai.com/codex/skills/) - OpenAI official guide for using Agent Skills in Codex CLI, IDE extension, and Codex app.
 - [GitHub Awesome Copilot](https://github.com/github/awesome-copilot) - 41.5k ⭐ - Official Copilot resources collection.
 - [Agent Skills Index](https://agent-skills.md/) - Community Skills search engine.
@@ -139,6 +140,7 @@ Skills work across multiple platforms:
 - [laolaoshiren/claude-code-skills-zh](https://github.com/laolaoshiren/claude-code-skills-zh) - 927 ⭐ - Curated Claude Code skills collection for Chinese developers, with 438+ curated skills and 20 original skills.
 - [nexscope-ai/eCommerce-Skills](https://github.com/nexscope-ai/eCommerce-Skills) - 1.5k ⭐ - E-commerce skills for AI agents covering product research, marketing, and operations across Amazon, Shopify, TikTok Shop, and more.
 - [nexscope-ai/Amazon-Skills](https://github.com/nexscope-ai/Amazon-Skills) - 886 ⭐ - Free Amazon seller skills for keyword research, competitor analysis, listing audits, and more.
+- [iart-ai/motion-skills](https://github.com/iart-ai/motion-skills) - 2.1k ⭐ - 19 motion graphics and video skill packs covering kinetic typography, data-viz, explainers, social clips, WebGL and Manim animations.
 
 ## Development Tools
 
@@ -176,6 +178,7 @@ Skills work across multiple platforms:
 - [new-term-radar](https://github.com/zhuyansen/new-term-radar) - 2.2k ⭐ - Spots new AI model, product and repo names on X, Hugging Face, GitHub and sitemaps, then ranks the search terms behind them by Google Ads volume and DataForSEO Trends (an estimate of Google search interest). Three skills and an MCP server; needs an AIsa API key, and an optional GoAnyAPI key adds Google Trends related queries and country-level trend series.
 - [answer-me-with-html](https://github.com/QingYunA/answer-me-with-html) - 6.6k ⭐ - Agent skill that writes the answer as a Markdown draft and renders one offline HTML page, using about 1/8 of the output tokens.
 - [career-ops](https://github.com/career-ops-hq/career-ops) - 84.3k ⭐ - Open-source AI job search agent for Claude Code, Codex and OpenCode: scans company career pages, scores each job posting 1-5 against your CV, tailors an ATS-friendly resume and tracks applications; you submit every application yourself. No telemetry; your CV goes only to the AI provider you choose. [Website](https://career-ops.org)
+- [last30days](https://github.com/mvanhorn/last30days-skill) - 72.7k ⭐ - Researches any topic across Reddit, X, YouTube, TikTok, Hacker News, Polymarket, GitHub, and the web from the last 30 days, ranks results by real engagement (upvotes, likes, prediction-market odds), and writes one cited brief. Reddit, Hacker News, Polymarket and GitHub need no setup.
 
 ## DevOps
 

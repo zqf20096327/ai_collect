@@ -36,6 +36,7 @@ it runs on your own server as happily as it runs on a managed platform.
 - [Tech stack](#tech-stack)
 - [Architecture](#architecture)
 - [Quick start](#quick-start)
+- [The sample sheet](#the-sample-sheet)
 - [The hosted version, and what comes next](#the-hosted-version-and-what-comes-next)
 - [Questions people actually ask](#questions-people-actually-ask)
 - [Documentation](#documentation)
@@ -202,14 +203,36 @@ Every release publishes both images to GitHub Container Registry, multi-arch
 (amd64 and arm64):
 
 ```bash
-docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/backend:5.6.0
-docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/frontend:5.6.0
+docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/backend:5.7.0
+docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/frontend:5.7.0
 ```
 
 The full guide — the memory footprint per setup, the published tags and the
 Kubernetes variant — is in the [deployment guide](docs/deployment/DEPLOYMENT.md).
 
 ## What's new
+
+**`v5.7.0`** — the demo is a product, not a screenshot.
+
+- **The catalogue is built from the official register** — the register of
+  notarial deeds is open data, free by law and needs no key, so the demo
+  answers with real flats that really changed hands; the panel registers the
+  register itself.
+- **The demo answers without a login** — every route on the public journey
+  is proved by a test that carries no token, so the promise the landing page
+  makes cannot regress.
+- **An uploaded file becomes a source you can sync again** — the sheet you
+  hand the admin panel is kept where the sync can read it, and the panel
+  names the source it created.
+- **The calls to action are measurable** — every outbound link on the
+  landing page and in the footer reports the click it caused, so the funnel
+  is read from the same numbers the product writes.
+- **The deployment says what it can do** — the capabilities endpoint tells
+  the truth about the model and the data, and the panel offers exactly the
+  formats the deployment can read.
+- **The login flow is proved against the running deployment** — register,
+  login, refresh, rotation and logout, checked against the live address by a
+  script that prints no credential.
 
 **`v5.6.0`** — the answers the product gives are the ones it measured.
 
@@ -371,7 +394,7 @@ Kubernetes variant — is in the [deployment guide](docs/deployment/DEPLOYMENT.m
 - **335 dependency alerts closed** — every critical and high advisory resolved,
   the floors pinned in both the lock file and the project file.
 
-Full notes: [v5.6.0 release](https://github.com/AleksNeStu/ai-real-estate-assistant/releases/tag/v5.6.0) ·
+Full notes: [v5.7.0 release](https://github.com/AleksNeStu/ai-real-estate-assistant/releases/tag/v5.7.0) ·
 [changelog](CHANGELOG.md).
 
 ## What it does
@@ -467,6 +490,72 @@ docker compose -f deploy/compose/docker-compose.yml up --build
 On Windows, `.\scripts\docker\start.ps1` does the same thing with the ports
 assigned for you. For the manual path (uv + npm), the API reference and the
 verification scripts, see the [5-minute quickstart](docs/development/QUICKSTART_5MIN.md).
+
+## The sample sheet
+
+Fourteen invented listings — Polish cities, prices in PLN, addresses on a
+street that does not exist — ship with the repository, so the import chain has
+something to read before you have a feed of your own.
+
+| File | What it is |
+|---|---|
+| [`samples/properties-sample.xlsx`](samples/properties-sample.xlsx) | the workbook, one sheet named `Listings` |
+| [`samples/properties-sample.csv`](samples/properties-sample.csv) | the same fourteen rows as text |
+
+Import it through the admin panel: **Admin → Data sources → Import Data →
+Upload File**, pick the file, and the panel names the source. On a deployment
+that has accounts, the admin screen asks for one first. The backend reads
+`.xlsx`, `.xls`, `.ods` and `.csv`; a deployment that can read fewer of them
+says so on the same panel.
+
+Or over the API:
+
+```bash
+curl -X POST "http://localhost:8082/api/v1/admin/ingest/upload" \
+  -H "X-API-Key: $API_ACCESS_KEY" \
+  -F "file=@samples/properties-sample.xlsx" \
+  -F "sheet_name=Listings" \
+  -F "source_name=sample sheet"
+```
+
+The upload is the creation of a data source: the deployment keeps the file it
+read under `uploads/sources/`, and the ledger carries a source that reads it —
+so the same sheet can be synced again later. A second upload of the same name
+replaces that source's file rather than piling up another one. A deployment
+whose uploads directory does not outlive its container loses the file, and the
+source says so instead of failing quietly.
+
+The header names the schema fields, so the loader maps them without guessing:
+
+| Column | Meaning |
+|---|---|
+| `title`, `description` | the headline and the text the listing carries |
+| `city`, `district`, `neighborhood` | where it is — `city` is the one that has to be there |
+| `address` | the street line |
+| `latitude`, `longitude` | the map pin; without them the loader derives it from the city |
+| `property_type` | `apartment`, `house`, `studio`, `loft`, `townhouse`, `other` |
+| `listing_type` | `rent`, `sale`, `room`, `sublease` |
+| `rooms`, `bathrooms` | how many |
+| `area_sqm` | the area in square meters |
+| `floor`, `total_floors` | the floor, and the number of floors |
+| `year_built` | the year of construction |
+| `energy_rating` | `A` to `G` |
+| `price`, `currency` | the rent per month or the asking price, and its currency |
+| `deposit` | the deposit on a rental; `0` where there is none |
+| `has_parking`, `has_garage`, `has_garden`, `has_pool`, `has_bike_room`, `is_furnished`, `pets_allowed`, `has_balcony`, `has_elevator` | the amenities, `yes` or `no` |
+| `distance_to_school`, `distance_to_transport` | distances in meters |
+
+Two rules the loader does not make obvious. A cell left empty arrives as a
+missing number, and a missing number in a money field drops the listing —
+write `0` where there is no deposit. And a column the schema does not know is
+kept as an extra field and ignored, so a sheet with a column of your own still
+loads.
+
+The file is regenerated by one command:
+
+```bash
+python scripts/utils/generate_sample_spreadsheet.py
+```
 
 <!-- HOSTED-FUNNEL-START -->
 ## The hosted version, and what comes next

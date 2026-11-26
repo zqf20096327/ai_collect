@@ -136,11 +136,11 @@ This action supports **On-Demand Skills Discovery**. Instead of cramming all you
 #### 1. Default (Built-in) Skills Included
 
 The action comes pre-packaged with a comprehensive set of default skills that are automatically available for every run. These cover:
-*   **Google Enterprise & Agent Development**: Best practices for Google ADK (Agent Development Kit), Gemini Agents API, serving endpoint management, prompt orchestration, and model tuning.
-*   **Google Cloud Best Practices**: Official architecture patterns, operational excellence, reliability, performance, security, and GCS/Cloud Run/GKE setup.
-*   **Data Analytics**: BigQuery query optimization, BigFrames, property graphs, and time-series forecasting.
+*   **Gemini API & Agent Development**: Best practices for Gemini API (`google-genai`, Interactions API, Decisions API, Live API, Omni Flash video generation), Gemini Agents API, ADK (Agent Development Kit), and Agent Platform evaluation and troubleshooting.
+*   **Google Cloud Best Practices**: Official Well-Architected Framework pillars (cost optimisation, operational excellence, reliability, performance optimisation, security), auth, Cloud Build, Cloud Logging, Cloud Run, GKE, Cloud Storage, and Firebase.
+*   **Data Analytics**: BigQuery fundamentals, SQL query optimisation, BigFrames, and BigQuery ML/AI functions.
 
-All curated starter skills are tracked declaratively in [skills-manifest.json](starter-examples/skills/skills-manifest.json) and can be updated from their upstream sources using `uv run python scripts/update_skills.py`.
+All curated starter skills are tracked declaratively in [skills-manifest.json](starter-examples/skills/skills-manifest.json) and can be updated from their upstream sources using `uv run python scripts/update_skills.py`. Note that upstream `google-agents-cli-adk-code` references `google-agents-cli-scaffold` and `google-agents-cli-deploy`, which are intentionally omitted from the lean built-in starter set because their lifecycle workflows are consolidated under `google-agents-cli-workflow`.
 
 #### 2. Adding Custom Skills to Your Repository
 
@@ -290,7 +290,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Automatically checks out the head ref for PR events,
           # and pulls the PR head branch for comment-based triggers
@@ -317,7 +317,7 @@ After adding the workflow to your repository, it should look something like this
 
 ### Pinning
 
-The examples above use floating tags (`@v1`, `@v6`) because they are easier to read. For anything beyond a personal repo, **pin to a full commit SHA instead**:
+The examples above use floating tags (`@v1`, `@v7`) because they are easier to read. For anything beyond a personal repo, **pin to a full commit SHA instead**:
 
 ```yaml
 - uses: derailed-dash/gemini-review-action@<40-char-sha> # v1.6.0
@@ -425,7 +425,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run Gemini Triage Action
         uses: derailed-dash/gemini-review-action@v1
@@ -476,25 +476,32 @@ Excluded comments never reach the prompt and are not counted in the reported tok
 | `persona` | Reviewer persona overlay (`straight`, `dazbo`, `palpatine`, `rick`). | No | `straight` |
 | `custom_instructions` | Custom instructions or guardrails to extend the review prompt. Can be inline text or a file path in the repository (e.g. `.github/review-instruction-additions.md`). | No | `.github/review-instruction-additions.md` |
 | `skip_inline_suggestions` | Whether to skip automated re-reviews when a commit is created by accepting an inline suggestion via GitHub UI. | No | `'true'` |
-| `thinking_level` | Thinking level for reasoning models (`low`, `medium`, `high`, plus `xhigh` on `gemini-4-hydrogen`; or `off`/integer token budget on Gemini 3/2.5). When omitted, the model's native default thinking behaviour applies. See [Reasoning & Thinking Budget Control](#reasoning--thinking-budget-control). | No | `''` |
+| `thinking_level` | Thinking level for reasoning models (`low`, `medium`, `high`, plus `xhigh` on `gemini-4-hydrogen` and `gemini-4-neon`; or `off`/integer token budget on Gemini 3/2.5). When omitted, the model's native default thinking behaviour applies. See [Reasoning & Thinking Budget Control](#reasoning--thinking-budget-control). | No | `''` |
+| `context_mode` | Codebase background context strategy: `'auto'` (default: Invariant Baseline / Full under `max_context_bytes`, else Sparse), `'full'` (force Full Context), `'sparse'` (force Sparse Context with file tree, core docs, and dynamic selection), or `'diff_only'` (skip repository background dump). | No | `'auto'` |
+| `max_context_bytes` | Total byte ceiling across repository text files before `'auto'` switches from Full Context Mode to Sparse Context Mode (default: 1.5 MB). | No | `'1536000'` |
+| `max_diff_full_file_bytes` | Aggregate UTF-8 byte ceiling across all `Full Current File Content` blocks attached in the diff prompt using water-fill truncation (diff patches themselves stay intact). Set to `'0'` to omit full-file copies and review diff patches only. | No | `'262144'` |
+| `attach_markdown_images` | Scope of local images extracted from Markdown files: `'all'` (default: all repository Markdown + diff docs), `'core'` (architecture/design/spec docs + `extra_context_files` + PR diff additions), `'diff'` (PR diff additions + `extra_context_files` only), or `'none'` (suppresses Markdown-linked images while keeping direct PR visual diffs). | No | `'all'` |
 | `max_candidate_files` | Maximum candidate non-core files to present to Dynamic Context Selection in Sparse Mode (default: 500). | No | `500` |
 | `extra_context_files` | Comma-separated list of repository file paths to attach as additional context, bypassing Dynamic Context Selection. | No | `''` |
 | `context_diff_directories_only` | Whether to restrict candidate context files in Sparse Mode strictly to directories containing modified files from the PR diff. | No | `'false'` |
-| `context_exclude_patterns` | Comma-separated glob patterns to exclude from candidate context files in addition to default exclusions (lockfiles, minified files, test snapshots, and binaries). | No | `''` |
+| `context_exclude_patterns` | Comma-separated glob patterns (supporting recursive `**`) to exclude from codebase background context (both Full and Sparse modes) in addition to default exclusions (lockfiles, minified files, test snapshots, and binaries). | No | `''` |
+| `diff_exclude_patterns` | Comma-separated glob patterns (supporting recursive `**`) to exclude from PR diff and visual diff review (e.g. vendored skills, generated fixtures). Exits cleanly if all PR files match. | No | `''` |
 | `max_multimodal_images` | Maximum number of multimodal images (markdown references, static attachments, visual diffs) attached to review context (default: 20). | No | `20` |
 | `max_triage_images` | Maximum number of remote screenshots attached during issue triage (default: 5). | No | `5` |
 | `image_trigger_bytes` | File size threshold in bytes above which raster images are downscaled before attachment (default: 614400 / 600 KB). | No | `614400` |
 | `image_target_bytes` | Target size in bytes when downscaling large raster images (default: 307200 / 300 KB). | No | `307200` |
-| `timeout` | Timeout for API requests in seconds (the Gemini review client enforces a 300s minimum HTTP timeout floor and automatically falls back to streaming on connection resets). | No | `60` |
+| `service_tier` | Inference tier for Google AI Studio (`GEMINI_API_KEY`): `'standard'` (default) or `'flex'` (**50% discount** across all input, cached, thinking, and output tokens with 1–15 min target latency; ignored with a warning on Vertex AI). | No | `'standard'` |
+| `service_tier_fallback` | When `service_tier` is `'flex'`, automatically fall back to `'standard'` tier after bounded retries if capacity is shed (`503`/`429`) or timed out. | No | `'true'` |
+| `timeout` | Timeout for API requests in seconds (the Gemini review client enforces a 300s minimum HTTP timeout floor — raised to 600s for `service_tier: 'flex'` — and automatically falls back to streaming on connection resets). | No | `60` |
 
 ### Reasoning & Thinking Budget Control
 
-When using reasoning models (such as `gemini-4-hydrogen`, `gemini-4-argon`, `gemini-4-carbon`, or `gemini-3.8-flash`), Gemini uses internal reasoning ("thinking") tokens to analyse code diffs, architectural implications, and complex issue triage before outputting a response.
+When using reasoning models (such as `gemini-4-hydrogen`, `gemini-4-neon`, `gemini-4-argon`, `gemini-4-carbon`, or `gemini-3.8-flash`), Gemini uses internal reasoning ("thinking") tokens to analyse code diffs, architectural implications, and complex issue triage before outputting a response.
 
 * **Default Behaviour (when omitted)**:
   If `thinking_level` is left blank (the default), no thinking configuration override is passed to the Gemini API (`thinking_config=None`), so the model's native default reasoning behaviour applies dynamically.
 * **Categorical Thinking Levels (Gemini 4 & Gemini 3)**:
-  * **`gemini-4-hydrogen` / `gemini-4-*`**: Supports `'low'`, `'medium'`, `'high'`, plus `'xhigh'` (extra-high) on `gemini-4-hydrogen`. Because Gemini 4 enforces `'low'` as its minimum reasoning level (rejecting `'minimal'` and `thinking_budget=0` with `400 INVALID_ARGUMENT`), setting `'off'`, `'false'`, `'disabled'`, `'minimal'`, or `'0'` on any `gemini-4-*` model automatically logs a warning and clamps to `'low'` upfront.
+  * **`gemini-4-hydrogen` / `gemini-4-*`**: Supports `'low'`, `'medium'`, `'high'`, plus `'xhigh'` (extra-high) on `gemini-4-hydrogen` and `gemini-4-neon`. Because Gemini 4 enforces `'low'` as its minimum reasoning level (rejecting `'minimal'` and `thinking_budget=0` with `400 INVALID_ARGUMENT`), setting `'off'`, `'false'`, `'disabled'`, `'minimal'`, or `'0'` on any `gemini-4-*` model automatically logs a warning and clamps to `'low'` upfront.
   * **Gemini 3 / 2.5**: Supports `'minimal'` (Gemini 3), `'low'`, `'medium'`, and `'high'`.
 * **Disabling Thinking or Explicit Token Budgets (Gemini 3 / 2.5 only)**:
   * Set `thinking_level` to `'off'`, `'false'`, `'disabled'`, or `0` to pass `thinking_budget=0` on models that support disabling thinking (such as Gemini 3 / 2.5).
@@ -506,26 +513,82 @@ Thinking token usage and its associated cost are tracked and reported separately
         with:
           # Recommended lightweight thinking level for fast issue triage or quick reviews on Gemini 4
           thinking_level: 'low'
-          # Or choose 'medium', 'high', or 'xhigh' (on gemini-4-hydrogen) for deeper architectural analysis
+          # Or choose 'medium', 'high', or 'xhigh' (on gemini-4-hydrogen / gemini-4-neon) for deeper architectural analysis
           # thinking_level: 'high'
 ```
 
 ### Codebase Context Configuration
 
-By default, the action uses an intelligent hybrid context engine to feed relevant repository context to the model during review:
-*   **max_context_bytes** (Default: `1500000` / 1.5 MB): The total size of all other text files in the repository. At ~375,000 tokens, 1.5 MB safely fits within Gemini's 1M+ token window while leaving plenty of headroom for the PR diff/patch and structured reviews. If the repository is smaller than this limit, the action runs in *Full Context Mode* and includes all files. If the repository exceeds this limit, it switches to *Sparse Context Mode*.
-*   **max_core_context_bytes** (Default: `500000` / 500 KB): In *Sparse Context Mode*, limits the maximum cumulative size of static core documentation and manifest files attached to the prompt. Any core files beyond this budget are deferred to Dynamic Context Selection.
+By default, the action uses an intelligent hybrid context engine designed to balance full-repository understanding against prompt token cost:
+
+*   **`context_mode`** (Default: `'auto'`):
+    *   `'auto'`: Uses **Invariant Baseline Full Context Mode** when tracked repository text files fit within `max_context_bytes`, and switches to **Sparse Context Mode** otherwise.
+    *   `'full'`: Forces Full Context Mode regardless of `max_context_bytes` (still guarded by the model token-window backstop).
+    *   `'sparse'`: Forces Sparse Context Mode (file tree + core docs/manifests + Dynamic Context Selection) even on small repositories — ideal for cutting uncached input tokens on repeated reviews.
+    *   `'diff_only'`: Skips repository background context altogether and sends only the PR diff, comment history, and any explicit `extra_context_files`.
+*   **Invariant `base_sha` Baseline & Shallow Checkout Support**:
+    *   When running Full Context Mode on a PR with a known `base_sha`, the action automatically fetches `base_sha` on demand (`git fetch --no-tags --depth=1 origin <base_sha>`) if missing from a shallow `actions/checkout@v7` (`fetch-depth: 1`) clone — so consumer workflows do **not** need `fetch-depth: 0`.
+    *   It builds a sorted, deterministic snapshot of all repository text files at `base_sha` (excluding only `context_exclude_patterns`) as an **invariant prefix** shared across commits and concurrent PRs, then automatically omits duplicate `Full Current File Content` blocks in the diff tail for any modified file already included in that baseline snapshot.
+*   **`max_context_bytes`** (Default: `'1536000'` / 1.5 MB): The total size threshold of repository text files before `'auto'` switches from Full Context Mode to Sparse Context Mode. Configurable as a workflow input, `GEMINI_MAX_CONTEXT_BYTES` env var, or `gemini-review.toml`.
+*   **`max_diff_full_file_bytes`** (Default: `'262144'` / 256 KB): When modified files are not already covered by the `base_sha` baseline (e.g. Sparse Mode, `'diff_only'`, or files excluded from repo context), this bounds total `Full Current File Content` bytes across all PR files using water-fill capping so small changed files stay complete while large files shrink gracefully (and `'0'` omits full-file copies altogether). Diff patches themselves remain unaffected.
+*   **`attach_markdown_images`** (Default: `'all'`): Controls whether Markdown-referenced local images are attached across the full repository (`'all'`), restricted to architecture/design/spec docs plus `extra_context_files` and diff additions (`'core'`), scoped to PR diff additions and `extra_context_files` only (`'diff'`), or disabled (`'none'`). PR-added Markdown images are placed in the dynamic tail so they never mutate the static baseline prefix.
+*   **`max_core_context_bytes`** (Default: `500000` / 500 KB): In *Sparse Context Mode*, limits the maximum cumulative size of static core documentation and manifest files attached to the prompt. Any core files beyond this budget are deferred to Dynamic Context Selection.
 *   **Dynamic Context Selection**: In *Sparse Context Mode*, the action evaluates modified files/diffs against candidate non-core repository files to attach up to 8 of the most relevant sister modules, utilities, domain/algorithmic precedents, or tests.
     *   **Candidate Bounding**: To safeguard large monorepos against context selection token bloat or quota exhaustion, candidates are bounded to `max_candidate_files` (default 500) using proximity and import ranking heuristics. You can also restrict candidates strictly to directories touched by the PR diff with `context_diff_directories_only: 'true'`.
-    *   **Built-in & Custom Exclusions**: Binary assets, package manager lockfiles (`pnpm-lock.yaml`, `yarn.lock`, `Cargo.lock`, `uv.lock`, `go.sum`, etc.), minified bundles (`.min.js`, `.min.css`), source maps (`.map`), and test snapshots are automatically excluded from context candidates. You can supply additional glob patterns using `context_exclude_patterns`.
+    *   **Built-in & Custom Exclusions**: Binary assets, package manager lockfiles (`pnpm-lock.yaml`, `yarn.lock`, `Cargo.lock`, `uv.lock`, `go.sum`, etc.), minified bundles (`.min.js`, `.min.css`), source maps (`.map`), and test snapshots are automatically excluded from codebase context. Both `context_exclude_patterns` (which excludes matching files across Full Context sizing/attachments, Sparse core files, and dynamic candidates) and `diff_exclude_patterns` (which excludes vendored, synced, or generated paths from PR diff and visual diff analysis before context assembly — e.g. `starter-examples/skills/**`) support recursive `**` globs.
     *   **Static Context Override**: If you know exactly which additional files Gemini needs, specify `extra_context_files` to attach them directly and bypass Dynamic Context Selection entirely.
 *   **core_file_patterns**: A list of glob patterns matching project manifests, build definitions, root documentation, templates, and shared utilities (e.g. `README*`, `CONTRIBUTING*`, `ARCHITECTURE*`, `DESIGN*`, `SPEC*`, `DEPLOYMENT*`, `INSTALL*`, `PRODUCT*`, `SDD*`, `TDD*`, `TODO*`, `GEMINI.md`, `*template*`, `*shared*`, `*util*`, `*common*`, `*core*`, `pyproject.toml`, `package.json`) that are prioritised in *Sparse Context Mode*.
+
+### Cost & Caching Optimisation (Gemini 4)
+
+Because the Google AI Studio (`GEMINI_API_KEY`) path requires zero Google Cloud setup and uses Gemini 4's best-effort global implicit caching (while Vertex AI multi-region endpoints such as `eu` and `us` provide 24-hour Durable Implicit Caching via `cacheConfig`), the action combines prompt-volume controls with prefix stability so both paths stay fast and inexpensive:
+
+* **Zero-Config AI Studio (`GEMINI_API_KEY`) Savings**: Out of the box, moving modified files into the unnumbered `base_sha` baseline and eliminating `Full Current File Content` line-number gutter inflation reduces uncached input tokens by **~15%–20%** in `context_mode: 'auto'` without losing any repository context. Opting into `context_mode: 'sparse'` (or `'diff_only'`) alongside `max_diff_full_file_bytes` cuts AI Studio uncached token costs by **~60%–85%** (while keeping patches, core documentation, and dynamically selected dependencies).
+* **Tighter Prompt Modes for High-Traffic Repos**:
+  ```yaml
+  with:
+    context_mode: 'sparse'             # File tree + core docs + dynamic selection only
+    max_diff_full_file_bytes: '65536'  # Or '0' to review patches + context without full modified copies
+    attach_markdown_images: 'core'     # Keep architecture/design diagrams, skip README screenshots
+  ```
+* **Vertex AI Durable Implicit Caching (Optional WIF/ADC)**: If your organisation authenticates via Google Cloud Workload Identity Federation (see [Alternative Authentication](#alternative-authentication)), setting `GOOGLE_CLOUD_LOCATION` to a multi-region endpoint (`eu` or `us`) rather than `global` leverages Vertex AI Durable Implicit Caching against the invariant `base_sha` prefix (typically delivering **80%–95% cached-input token hits** across commits and concurrent PRs at `0.05x` read rates; the telemetry table automatically applies the `10%` regional SKU uplift when `GOOGLE_CLOUD_LOCATION` is `eu`/`us` or another non-`global` endpoint).
+
+#### Opt-In AI Studio Flex Inference (`service_tier: 'flex'`, Preview)
+
+By default, `service_tier` is **`'standard'`** (fast responses, full priority). For latency-tolerant workflows using Google AI Studio (`GEMINI_API_KEY`), you can **opt in** to `service_tier: 'flex'` — a Preview synchronous inference tier priced at **50% off** all input, cached, thinking, and output tokens:
+
+* **How it works**: Flex sends the exact same synchronous request to the exact same model (supported on Gemini 4 Carbon/Argon/Neon/Hydrogen, Gemini 3.8/3.6/3.5, and Gemini 2.5), but Google schedules it onto **off-peak, sheddable compute capacity** rather than reserving real-time capacity. Because Google never auto-upgrades Flex requests server-side, this action raises the HTTP timeout floor to **600s**, performs bounded client-side retries (`5s`, `15s`) on transient capacity shedding (`503`/`429`/`504`), and falls back to `'standard'` when `service_tier_fallback: 'true'` (default).
+* **Pros**:
+  * **50% cost reduction** on every token with **zero GCP project or WIF setup** (same `GEMINI_API_KEY`).
+  * **Identical review quality**: same model weights, thinking level, context, and structured JSON/tool execution as `'standard'`.
+  * **Synchronous execution**: integrates directly into single-job CI steps (unlike the 24-hour async Batch API).
+* **Cons & Trade-offs**:
+  * **High & variable latency (1–15 minute target)**: reviewers waiting interactively at a PR screen will notice multi-minute delays compared to `'standard'` (`15–45s`).
+  * **GitHub Actions runner minutes**: the workflow runner stays occupied waiting for the Flex response, which can consume paid/included runner minutes on private repositories (public repos are free).
+  * **Sheddable Preview capacity & standard quotas**: traffic can be evicted during peak load (`503`/`429`), triggering retries or an automatic fallback to full `'standard'` pricing, and Flex shares standard AI Studio rate limits.
+  * **Google AI Studio only**: `GenerateContentConfig.service_tier` is not supported on Vertex AI (if enabled alongside Vertex AI, the action logs a warning and uses `'standard'`).
+
+```yaml
+with:
+  gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+  github_token: ${{ secrets.GITHUB_TOKEN }}
+  service_tier: 'flex'               # Strictly opt-in (default: 'standard'); 50% off with 1-15 min latency
+  # service_tier_fallback: 'true'    # Set 'false' to fail instead of falling back to 'standard' on 503/429
+```
+
+#### Choosing Your Mode
+
+| Option | Auth Setup | Typical Latency | Relative Token Cost | Best For |
+| :--- | :--- | :---: | :---: | :--- |
+| **AI Studio `'standard'`** *(default)* | `GEMINI_API_KEY` | Fast (`15–45s`) | Baseline (`-15%–20%` in `'auto'`, `-60%–85%` in `'sparse'`/`'diff_only'`) | Fast interactive PR feedback with zero GCP setup |
+| **AI Studio `'flex'`** *(opt-in)* | `GEMINI_API_KEY` | **Slow (`1–15 min`)** | **50% off** whichever context mode you pair it with | Public repos or async batch-style workflows prioritising API savings over speed |
+| **Vertex AI WIF (`eu` / `us`)** | GCP project + WIF | Fast (`15–45s`) | **Lowest (~80%–90%+ cached hits)** on warm pushes (`+10%` regional rate) | Best speed **and** lowest recurring cost when GCP/WIF is available |
 
 You can configure these settings by adding the following keys to your custom `.github/commands/gemini-review.toml` configuration (or via `GEMINI_MAX_CONTEXT_BYTES` and `GEMINI_MAX_CORE_CONTEXT_BYTES`):
 
 ```toml
 # Codebase Context Configuration (Optional)
-max_context_bytes = 1500000  # Threshold in bytes to trigger Sparse Mode (default 1.5 MB)
+max_context_bytes = 1536000  # Threshold in bytes to trigger Sparse Mode (default 1.5 MB)
 max_core_context_bytes = 500000  # Max bytes for static core docs/manifests/utils in Sparse Mode (default 500 KB)
 core_file_patterns = [
   "README*", "CONTRIBUTING*", "ARCHITECTURE*", "DESIGN*", "SPEC*", "DEPLOYMENT*", "INSTALL*", "PRODUCT*", "SDD*", "TDD*", "TODO*", "GEMINI.md",
@@ -695,7 +758,7 @@ Token Usage: 265,849 input tokens (94.4% cached), 210 output tokens, 2,048 think
 ### Metrics Explained
 
 * **Total Input (Prompt) Tokens**: The total size (in LLM tokens) of the context sent to Gemini (full repository codebase files, system instructions, PR comment history, and PR diff patch).
-* **Cached Context Tokens (`├── Cached Context Tokens`)**: The portion of input tokens hitting Gemini's context cache. Context caching applies **exclusively to input tokens**, delivering a **95% discount** (`0.05x`) via automatic implicit prefix caching on Gemini 4 models (`gemini-4-hydrogen`, `gemini-4-argon`), and a **90% discount** (`0.1x`) via explicit `CachedContent` handles on Gemini 3 models.
+* **Cached Context Tokens (`├── Cached Context Tokens`)**: The portion of input tokens hitting Gemini's context cache. Context caching applies **exclusively to input tokens**, delivering a **95% discount** (`0.05x`) via automatic implicit prefix caching on Gemini 4 models (`gemini-4-hydrogen`, `gemini-4-neon`, `gemini-4-argon`, `gemini-4-carbon`), and a **90% discount** (`0.1x`) via explicit `CachedContent` handles on Gemini 3 models.
 * **PR Comments History Tokens (`├── PR Comments History Tokens`)**: The exact token count consumed by historical inline review threads and conversation comments fetched via the GitHub API and included in the dynamic review context.
 * **Un-cached Fresh Tokens (`└── Un-cached Fresh Tokens`)**: The newly introduced PR diff lines and dynamic skill instructions, billed at standard input rates.
 * **Thinking / Reasoning Tokens**: The internal reasoning tokens consumed by Gemini reasoning models (e.g. `gemini-4-hydrogen`) while evaluating complex logic and diffs.
@@ -767,7 +830,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', github.event.issue.number) }}
 
@@ -782,7 +845,7 @@ jobs:
         env:
           GOOGLE_GENAI_USE_VERTEXAI: "True"
           GOOGLE_CLOUD_PROJECT: "my-project-id"
-          GOOGLE_CLOUD_LOCATION: "global" # Or your preferred model endpoint region
+          GOOGLE_CLOUD_LOCATION: "eu" # Recommended: 'eu' or 'us' for Gemini 4 Durable Implicit Caching (+10% regional rate); 'global' for standard rate
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gemini_model: 'gemini-4-hydrogen'
@@ -1004,7 +1067,10 @@ Rates for **`gemini-4-hydrogen`** (default), which the action applies automatica
 * **Cached input**: **0.05x** the input rate (**$0.075** per 1,000,000 tokens — automatic **95% discount** via implicit prefix caching)
 
 Other supported models in the built-in rate table:
+* **`gemini-4-carbon`**: **$2.00 / $10.00** per 1M input / output through **2026-11-30** (Google pays the Vertex AI promo as a 50% credit back, excluding Cyber Permissive), then **$4.00 / $20.00**. Cached input is `0.05x` the input rate. Rates are for the global endpoint; regional endpoints are 10% higher.
+* **`gemini-4-neon`**: **$3.00 / $15.00** per 1M input / output. Cached input is `0.05x` the input rate (`$0.15` per 1M tokens). Rates are for the global endpoint; regional endpoints are 10% higher.
 * **`gemini-4-argon`**: **$2.00 / $10.00** per 1M input / output through **2026-11-30** (Google pays this promo as a 50% credit back), then **$4.00 / $20.00**. Cached input is `0.05x` the input rate. Rates are for the global endpoint; regional endpoints are 10% higher.
+* **`gemini-decision-1`**: **$0.10 / $0.00** per 1M input / output (`0` output tokens; context caching not supported).
 * **`gemini-3.8-flash`** / **`gemini-3.7-flash`**: **$0.75 / $3.75** per 1M introductory rate through **2026-12-31**, then **$1.50 / $7.50**. Cached input is `0.1x` the input rate.
 
 **Calculated Cost Per PR Review** (`gemini-4-hydrogen`, uncached baseline):

@@ -37,14 +37,22 @@ Linux（ROCm 10.1，生产配置，prefill 开 MOE_A4=3，PREFILL_CHUNK=16384）
 | 平均功耗 | 约 120 W |
 | 瞬时最大功耗 | 约 130 W（爆发持续几秒后回落至 120 W 左右） |
 
-Windows（同一台机器，BIOS 划分 96 GiB 显存，托盘程序生产配置，prefill chunk 8192，10-13 实测）：
+Windows（同一台机器，BIOS 划分 96 GiB 显存，生产配置，prefill 开 MOE_A4=3，PREFILL_CHUNK=16384，11-25 实测）：
 
 | 指标 | hgn v2 | GGUF UD-IQ4_XS + MTP |
 | --- | --- | --- |
-| Prefill（32K） | 约 1560 tok/s | 约 1440 tok/s |
-| Decode（投机，2K prompt） | 58.5 tok/s | 46.8 tok/s |
-| Decode（不投机） | 31.4 tok/s | 27.7 tok/s |
+| Prefill（2K） | 1705.1 tok/s | |
+| Prefill（8K） | 1963.5 tok/s | |
+| Prefill（32K） | 1964.5 tok/s | 约 1440 tok/s（10-13） |
+| Decode（投机，2K prompt） | 58.5 tok/s（10-13） | 46.8 tok/s（10-13） |
+| Decode（不投机） | 31.4 tok/s（10-13） | 27.7 tok/s（10-13） |
 | 冷启动（整份权重读进显存） | 约 35 s | 约 50–60 s |
+
+11-25 修复了四个长期拖累 Windows prefill 的问题后（PLE 文件被 `FILE_FLAG_NO_BUFFERING`
+冲刷页缓存、`NOWARMUP` 下 BLAS kernel db 懒加载卡首请求、bench 误关 2-flight PLE 预取、
+PLE 热读受 160B ReadFile 内核路径 ~250K 行/秒硬顶——改走映射 memcpy 后热读提速两个
+数量级，见 `dev-docs/RESULT-WIN-PREFILL-FIX-20261125.md`），Windows prefill 已追平甚至
+略超 Linux：此前 32K 只有约 1200–1600 tok/s、冷读新文本时跌到 500–1000 tok/s。
 
 投机 decode 的速度随文本重复度变化很大。上表用真实文本 prompt 测得；代码、模板这类高重复内容
 草稿命中率高，同配置可达 60 tok/s 以上；采样（自适应 γ）比 greedy 略低。表中日期均为 2026 年；
@@ -216,7 +224,7 @@ bash build_win.sh    # 引擎、benchmark、API 托盘程序、根目录入口 s
 | `MAX_CONTEXT` | `262144` | 单条请求的输入 + 输出上限 |
 | `KV_POOL_TOKENS` | `0` | 所有并发请求共用的 KV 总量，0 表示等于 `MAX_CONTEXT`；每多 256K 约多占 9.6 GiB |
 | `PARALLEL` | `4` | 同时运行的请求数，1–8 |
-| `PREFILL_CHUNK` | `0` | 长 prompt 每段多少 token，0 表示 Linux 16384、Windows 6144 |
+| `PREFILL_CHUNK` | `0` | 长 prompt 每段多少 token，0 表示 Linux 16384、Windows 8192 |
 | `ROPE_FACTOR` | `1` | 1 为原生 256K；设为 2 并把 `MAX_CONTEXT` 改为 `524288` 即 YaRN 512K |
 | `MTP_GAMMA` | `0` | 草稿长度，0 表示自动，1–8 表示固定 |
 | `MOE_A4` | `0` | prefill 4-bit 加速（只对 hgn v2 生效），见下文；0 关，3 开 |
@@ -333,7 +341,7 @@ MTP 开、视觉塔开、prefill chunk 8192）：
   的多模态请求在运行时还要申请显存，512K 时建议 2–4 路。
 - **UD-IQ4_XS 带 MTP 比 v2 多占约 1.3 GiB**，512K 页池最多 2–4 路。
 - **w4b 只能开 256K**。
-- 上表在 prefill chunk 8192 下测得；默认的 6144 每项约少 1.7 GiB，PP 与 8192 只差约 0.5%。16384 放不下。
+- 上表在 prefill chunk 8192 下测得；当时默认的 6144 每项约少 1.7 GiB（现默认已为 8192）。16384 放不下。
 - 页池超过 512K 时启动器会拒绝启动。
 - UD-Q4_K_XL 常驻 77 GiB，按上表推算 256K 就要约 97 GiB，Windows 上不支持。
 - 任务管理器的“专用 GPU 内存”显示的是启动时预留的整块：上表用量加最多 4 GiB 余量（封顶 95 GiB），
@@ -341,7 +349,7 @@ MTP 开、视觉塔开、prefill chunk 8192）：
 
 ### 并发路数与显存
 
-显存主要花在页池上，不在路数上。下表是 hgn v2 在默认 prefill chunk 6144 下的实测（2026-10-14，MTP 开、
+显存主要花在页池上，不在路数上。下表是 hgn v2 在当时默认 prefill chunk 6144 下的实测（2026-10-14，MTP 开、
 视觉塔开、`MAX_CONTEXT=262144`；“实际用量”同上表口径，另两列是任务管理器的读数，单位 GB）：
 
 | 页池 | 路数 | 实际用量 | 专用 GPU 内存 | 共享 GPU 内存 |

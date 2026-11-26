@@ -1,0 +1,218 @@
+<p align="center">
+  <img src="assets/icons/illustration.png" alt="Pizza Bot" width="160" />
+</p>
+
+<h1 align="center">Pizza Bot</h1>
+
+<p align="center">
+  <strong>An inbox for long-running AI work.</strong><br />
+  Start or schedule a task, walk away, and come back to finished work in <b>Unread</b>
+  and decisions waiting for you in <b>Action</b>.
+</p>
+
+<p align="center">
+  <a href="https://github.com/pizza-bot-app/pizza-bot/actions/workflows/ci.yml"><img src="https://github.com/pizza-bot-app/pizza-bot/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
+  <a href="https://github.com/pizza-bot-app/pizza-bot/releases/latest"><img src="https://img.shields.io/github/v/release/pizza-bot-app/pizza-bot" alt="Latest release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/pizza-bot-app/pizza-bot" alt="Apache 2.0 license" /></a>
+  <a href="https://github.com/pizza-bot-app/pizza-bot/releases/latest"><img src="https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux-blue" alt="Runs on macOS, Windows, and Linux" /></a>
+  <a href="docs/RUNNING.md"><img src="https://img.shields.io/badge/node-%3E%3D%2024-339933?logo=node.js&logoColor=white" alt="Requires Node.js 24 or newer" /></a>
+  <a href="https://github.com/pizza-bot-app/pizza-bot/discussions"><img src="https://img.shields.io/badge/GitHub-Discussions-8250df?logo=github" alt="GitHub Discussions" /></a>
+</p>
+
+<p align="center">
+  <a href="#download">Download</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#why-pizza-bot">Why Pizza Bot</a> ·
+  <a href="#extend-it">Extend</a> ·
+  <a href="docs/ARCHITECTURE.md">Architecture</a> ·
+  <a href="CONTRIBUTING.md">Contributing</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="https://github.com/pizza-bot-app/pizza-bot/discussions">Discussions</a>
+</p>
+
+![Pizza Bot inbox showing unread work, an approval request, a completed launch brief, and delegated agent activity](docs/assets/pizza-bot-inbox.png)
+
+Agents keep working when you navigate away or disconnect; only the api-server
+process must remain running. The same experience runs in Electron and the
+browser, and the desktop app, web app, and terminal CLI all talk to the
+api-server over HTTP/SSE.
+
+Pizza Bot was developed at Amazon and is released under the Apache 2.0 license.
+
+## Why Pizza Bot?
+
+- **Work asynchronously.** Switch conversations without stopping their runs.
+- **Return to the right queue.** Completed work lands in Unread; durable approval
+  requests land in Action.
+- **Organize conversations.** Group threads into folders without hiding matching
+  work from the global Unread and Action queues.
+- **Resume real work.** Checkpointed runs survive client disconnects, and cron or
+  webhook triggers can start work without an open conversation.
+- **Delegate to specialists.** Skills become tool-scoped subagents whose progress
+  appears in the Activity panel.
+- **Bring your model provider.** Amazon Bedrock, Anthropic, Google Gemini,
+  OpenAI, OpenRouter, Requesty, Opper, UberLLM, Cheaper Inference, LiteLLM, and
+  Ollama are supported.
+- **Keep control of consequential actions.** Human-in-the-loop approvals,
+  long-term memory, file attachments, and desktop notifications are built into
+  the workflow.
+- **Grant local access explicitly.** Add individual read-only or writable folders
+  under **Settings > Files**; Pizza Bot receives no default home-directory access.
+
+## Download
+
+Installers are attached to every
+[release](https://github.com/pizza-bot-app/pizza-bot/releases/latest), with a
+`SHA256SUMS` to check a download against.
+
+| Platform | Packages | Notes |
+| --- | --- | --- |
+| macOS (Apple silicon, Intel) | `.dmg`, `.zip` | Signed and notarized |
+| Windows (x64) | `-setup.exe` | |
+| Linux (x64, arm64) | `.deb`, `.rpm` | Not signed; verify against `SHA256SUMS` |
+
+Each release also publishes a multi-architecture backend image,
+`ghcr.io/pizza-bot-app/pizza-bot`; see the
+[backend guide](docs/STANDALONE_BACKEND.md) for running it.
+
+## Quick start
+
+Node.js 24 or newer is required.
+
+```bash
+npm install
+npm run build
+npm run dev
+```
+
+`npm run dev` starts the Vite frontend and Electron desktop shell. The shell
+forks and supervises its own api-server, matching the packaged application's
+process model. Configure a model under **Settings > Providers** before starting
+a live run.
+
+See [Running from source](docs/RUNNING.md) for isolated data roots, browser and
+CLI development, desktop packages, and remote backends.
+
+## Ways to run
+
+| Experience | Best for | Start here |
+| --- | --- | --- |
+| Electron desktop | Local inbox with an embedded backend | `npm run dev` |
+| Browser | Web development or static deployment | [Browser development](docs/RUNNING.md#browser-development) |
+| Terminal CLI | Scripts, terminals, and remote backends | [CLI](docs/RUNNING.md#cli) |
+| Standalone backend | Remote Electron, browsers, containers, or Linux services | [Backend guide](docs/STANDALONE_BACKEND.md) |
+
+A running api-server needs access to at least one model provider; HTTP clients
+do not. Configure Amazon Bedrock, Anthropic, Google Gemini, OpenAI, OpenRouter,
+Requesty, Opper, UberLLM, Cheaper Inference, LiteLLM, or Ollama in
+**Settings > Providers**. Bedrock accepts an AWS profile, AWS access keys, or a
+Bedrock API key, with an optional region
+override; otherwise `AWS_REGION` or `us-west-2` is used. Bedrock combines its
+native catalog with the regional Mantle catalog and routes models through
+Converse, OpenAI Responses or Chat Completions, or Anthropic Messages according
+to their advertised API family.
+OpenAI and Anthropic also accept custom base URLs for compatible endpoints;
+OpenAI can explicitly select Responses or Chat Completions, and Anthropic
+supports `x-api-key` or bearer authentication. Requesty accepts a base URL
+override such as `https://router.eu.requesty.ai/v1` for its EU region. Cheaper
+Inference uses bare model ids such as `gpt-5.4-mini`. LiteLLM connects to a
+proxy URL (default `http://localhost:4000/v1`) and needs a key only when the
+proxy has a master key. OpenAI, OpenRouter, Requesty, Opper, UberLLM, Cheaper
+Inference, and LiteLLM take an optional **Advanced request JSON** that is merged
+into every request, for options such as `{"service_tier": "flex"}`. Select a
+model with `PIZZA_MODEL=<provider>:<id>`. The desktop protects entered secrets
+with Electron `safeStorage`; server configuration persists only
+environment-variable references.
+
+## Extend it
+
+Add MCP servers from the UI or `<PIZZA_DATA_ROOT>/.mcp.json`. Add Agent Skills
+under `<PIZZA_DATA_ROOT>/skills`, or install plugins that package MCP servers and
+skills together. Skills become available after their declared tools are enabled
+and connected. A custom skill can replace a Built-in or Plugin skill with the
+same id without modifying the original; removing the customization reveals the
+Built-in or Plugin version again. The Built-in **Pizza Bot Guide** can explain
+features, suggest workflows, help with setup, and point to project documentation.
+
+See [Extending Pizza Bot](docs/EXTENDING.md) for configuration, environment
+references, skill authoring, approval gates, and plugin installation.
+
+## Project layout
+
+```text
+apps/        api-server (Hono) | cli | desktop-shell (Electron) | web (React)
+packages/    core | runtime-langgraph | inference-providers | plugin-api | plugin-sdk | storage | logging
+plugins/     bundled Plugin packages and their packaging workspace
+skills/      optional Built-in Agent Skills
+tests/       LangGraph compatibility and protocol conformance
+```
+
+The production graph engine is isolated to `packages/runtime-langgraph`;
+frontends consume protocol projections rather than importing runtime or model
+bindings.
+
+## Documentation
+
+- **[Running](docs/RUNNING.md)** - desktop, browser, CLI, and package commands.
+- **[Extending](docs/EXTENDING.md)** - MCP servers, skills, and plugins.
+- **[Architecture](docs/ARCHITECTURE.md)** - system boundaries, event model,
+  persistence, transports, and design decisions.
+- **[Standalone backend](docs/STANDALONE_BACKEND.md)** - authentication, remote
+  Electron, static browser deployment, Docker, Compose, and Kubernetes.
+- **[Google Workspace](docs/GOOGLE_WORKSPACE.md)** - connect Gmail and Google
+  Calendar with the bundled plugin.
+- **[Contributing](CONTRIBUTING.md)** - development setup, CI checks, worktrees,
+  releases, and layering rules.
+- **[Security](SECURITY.md)** - network defaults, credentials, local data, and
+  plugin trust.
+- **[Logging](docs/LOGGING.md)** - diagnostics, retention, viewing, and redaction.
+- **[Roadmap](ROADMAP.md)** - exploratory directions and the principles used to
+  evaluate them.
+- **[Code of Conduct](CODE_OF_CONDUCT.md)** - community participation
+  expectations.
+
+## Security and data
+
+- **Local-first by default.** The api-server binds to `127.0.0.1`; non-loopback
+  binding requires authentication and an explicit origin allowlist.
+- **Application state stays local.** Threads, checkpoints, memories,
+  attachments, and logs live under `<PIZZA_DATA_ROOT>`
+  (`~/.pizza-bot-oss` by default). Model and tool requests go to the providers
+  and endpoints you configure.
+- **Local folders require an explicit grant.** Each folder added under
+  **Settings > Files** is read-only unless you allow writes. Remote grants name
+  paths on the backend host.
+- **MCP servers and plugins are trusted.** Their commands and materializers can
+  execute with your user account's permissions. Install only sources you trust.
+
+See [SECURITY.md](SECURITY.md) for the complete security model and vulnerability
+reporting process.
+
+## Contributors
+
+Pizza Bot was designed, built, and brought into the open by its Executive Chefs,
+Sous Chefs, and Chefs Emeritus:
+
+### Executive Chefs
+
+<a href="https://github.com/JoeDo" title="Joseph Dolivo (@JoeDo)"><img src="https://github.com/JoeDo.png?size=64" width="64" height="64" alt="Joseph Dolivo (@JoeDo)" /></a>
+<a href="https://github.com/igorfil" title="Igor Fil (@igorfil)"><img src="https://github.com/igorfil.png?size=64" width="64" height="64" alt="Igor Fil (@igorfil)" /></a>
+
+### Sous Chefs
+
+<a href="https://github.com/jwert-aws" title="Jacob Wert (@jwert-aws)"><img src="https://github.com/jwert-aws.png?size=64" width="64" height="64" alt="Jacob Wert (@jwert-aws)" /></a>
+<a href="https://github.com/spideron" title="Itzik Paz (@spideron)"><img src="https://github.com/spideron.png?size=64" width="64" height="64" alt="Itzik Paz (@spideron)" /></a>
+
+### Chefs Emeritus
+
+<a href="https://github.com/flavioschuindt" title="Flávio Schuindt (@flavioschuindt)"><img src="https://github.com/flavioschuindt.png?size=64" width="64" height="64" alt="Flávio Schuindt (@flavioschuindt)" /></a>
+<a href="https://github.com/michaelkarachewski" title="Michael Karachewski (@michaelkarachewski)"><img src="https://github.com/michaelkarachewski.png?size=64" width="64" height="64" alt="Michael Karachewski (@michaelkarachewski)" /></a>
+
+Pizza Bot was also shaped by more than 2,000 users across Amazon who tested
+earlier versions and shared feedback from real-world use. Their bug reports,
+ideas, and candid input helped make Pizza Bot ready for a broader community.
+Thank you to everyone who contributed.
+
+## License
+
+[Apache-2.0](LICENSE). See [NOTICE](NOTICE) for attribution notices.

@@ -6,7 +6,7 @@
 
 **[Live demo](https://hecate.pw)** · **[Quick start](#quick-start-docker-compose)** · [Documentation](https://docs.hecate.pw) · [How Hecate compares](#how-hecate-compares)
 
-Hecate ingests **9 vulnerability data sources** (EUVD, NVD, CISA KEV, GHSA, OSV, CIRCL, CPE, CWE, CAPEC) plus CERT, vendor and community advisory feeds, normalises everything into a single `VulnerabilityDocument` schema, and exposes the result through a REST API and a React frontend. On top of the catalogue, a hardened scanner sidecar runs Trivy, Grype, Syft, OSV Scanner, the Hecate Analyzer, Dockle, Dive, Semgrep, TruffleHog, DevSkim, and govulncheck (Go reachability) against your container images and source repos.
+Hecate ingests **9 vulnerability data sources** (EUVD, NVD, CISA KEV, GHSA, OSV, CIRCL, CPE, CWE, CAPEC) plus CERT, vendor and community advisory feeds and two exploit signals (public Nuclei templates, VulnCheck KEV with a free token), normalises everything into a single `VulnerabilityDocument` schema, and exposes the result through a REST API and a React frontend. On top of the catalogue, a hardened scanner sidecar runs Trivy, Grype, Syft, OSV Scanner, the Hecate Analyzer, Dockle, Dive, Semgrep, TruffleHog, DevSkim, and govulncheck (Go reachability) against your container images and source repos.
 
 > [!NOTE]
 > **Works without AI.** Every core feature runs without an API key: the catalogue and its search, SCA scanning, SBOM and VEX, malware detection, inventory matching, notifications, the deterministic attack-path graph per CVE and the ATT&CK chain per scan. AI analysis stays off until a provider is configured and only adds narrative and triage text on top, with a local model (Ollama, vLLM, LM Studio) or a cloud provider.
@@ -164,7 +164,7 @@ flowchart TB
     Mongo[("MongoDB :27017<br/>persistence")]
     OS[("OpenSearch :9200<br/>full-text index")]
 
-    Feeds[("External feeds<br/>EUVD · NVD · KEV · CPE<br/>CWE · CAPEC · CIRCL · GHSA · OSV<br/>CERT advisories")]
+    Feeds[("External feeds<br/>EUVD · NVD · KEV · CPE<br/>CWE · CAPEC · CIRCL · GHSA · OSV<br/>CERT advisories<br/>Nuclei templates · VulnCheck KEV")]
     AI[("AI providers (optional)<br/>OpenAI · Anthropic · Gemini<br/>OpenAI-compatible")]
 
     User --> Frontend
@@ -205,9 +205,9 @@ flowchart TB
 | --- | --- |
 | **Needs attention** | Dashboard panel of what CISA KEV listed or several CERTs or vendors named this week, with anything in your stack first. Community posts add context but never make a CVE trend. |
 | **Advisories** | Feeds of CERTs, vendors and community accounts (Mastodon, blogs) merged into topics through shared CVEs, with your stack first and round-ups kept apart. Manage the feeds on System → Data or with `CERT_FEEDS_EXTRA`. |
-| **Ingestion** | 9 vulnerability data sources (EUVD, NVD, KEV, CPE, CWE, CAPEC, CIRCL, GHSA, OSV) plus CERT, vendor and community advisory feeds — normalised into a single schema with priority-gated upserts and a 3-tier cache. |
+| **Ingestion** | 9 vulnerability data sources (EUVD, NVD, KEV, CPE, CWE, CAPEC, CIRCL, GHSA, OSV) plus CERT, vendor and community advisory feeds — normalised into a single schema with priority-gated upserts and a 3-tier cache. Public Nuclei templates and, with a free token, VulnCheck KEV mark CVEs that are easy to attack or reported exploited. |
 | **Affected-version search** | `affectedVersion:7.0.1` finds advisories that cover a version inside a range, not only those that name it, per release branch and without the platforms a product runs on. The inventory uses the same decision. |
-| **Active SCA scanning** | 11 scanners (Trivy, Grype, Syft, OSV, Hecate, Dockle, Dive, Semgrep, TruffleHog, DevSkim, govulncheck) for container images and source repos; govulncheck marks Go findings whose vulnerable code is never reached as VEX not_affected, and every SBOM component carries release-age, unmaintained and npm publisher-change signals. A package check (REST + MCP) answers block / warn / ok before an agent or CI installs a dependency. |
+| **Active SCA scanning** | 11 scanners (Trivy, Grype, Syft, OSV, Hecate, Dockle, Dive, Semgrep, TruffleHog, DevSkim, govulncheck) for container images and source repos; govulncheck marks Go findings whose vulnerable code is never reached as VEX not_affected, and every SBOM component carries release-age, unmaintained and npm publisher-change signals. Libraries compiled into prebuilt packages (sharp's libvips) get their own SBOM rows and CVEs. A package check (REST + MCP) answers block / warn / ok before an agent or CI installs a dependency. |
 | **Supply-chain malware detection** | 35 heuristic rules informed by real attacks (Shai-Hulud, LiteLLM, Trivy v0.69.4, Glassworm, Telnyx, Axios, …) plus a continuous OSV MAL-* watcher that retroactively injects findings into the latest scan of every affected target. |
 | **Provenance verification** | npm, PyPI, Go, Maven, RubyGems, Cargo, NuGet, Docker — Sigstore, PEP 740, Go sumdb, Cosign. |
 | **Attack-path graph** | Per-CVE deterministic Mermaid graph (`entry → asset → package → CVE → CWE → CAPEC → exploit → impact → fix`) with optional AI narrative. |
@@ -233,7 +233,7 @@ The tools solve different problems: Dependency-Track manages SBOM components, De
 | Operating model | Self-hosted | Self-hosted | Self-hosted; Cloud separate | Self-hosted; Pro also SaaS | Self-hosted + public instances | SaaS | SaaS; local scanner, appliance |
 | License | MIT | Apache-2.0 | BUSL-1.1 | BSD-3-Clause | AGPL-3.0 | Proprietary | Proprietary |
 | Searchable advisory DB | Keyword, DQL, regex | Lookup per vulnerability | CVEs, query language | No (findings only) | Full-text + API | security.snyk.io | Aikido Intel (browse) |
-| Data sources | EUVD, NVD, CISA KEV, GHSA, OSV, CIRCL (EPSS), CPE, CWE, CAPEC; CERT, vendor and community feeds | NVD, GHSA, OSV + analyzers; EUVD only as KEV flag | MITRE, NVD, Vulnrichment, Red Hat; EUVD not in docs | Imported reports (360+ parsers) | Many incl. CSAF, national DBs; EUVD only as KEV | NVD + own research; EUVD not mentioned | Intel, NVD, GHSA, distros; EUVD not listed |
+| Data sources | EUVD, NVD, CISA KEV, GHSA, OSV, CIRCL (EPSS), CPE, CWE, CAPEC; CERT, vendor and community feeds; Nuclei templates, VulnCheck KEV (optional) | NVD, GHSA, OSV + analyzers; EUVD only as KEV flag | MITRE, NVD, Vulnrichment, Red Hat; EUVD not in docs | Imported reports (360+ parsers) | Many incl. CSAF, national DBs; EUVD only as KEV | NVD + own research; EUVD not mentioned | Intel, NVD, GHSA, distros; EUVD not listed |
 | Version-range search | `affectedVersion:` query | Internal only | No | No | Not documented | Per-version pages | Not documented |
 | SCA scanning (images, repos) | Trivy, Grype, Syft, OSV-Scanner, Semgrep, TruffleHog, DevSkim, Dockle, Dive, Hecate Analyzer | No, ingests SBOMs | No | No, imports results | No | Yes | Yes |
 | SBOM import / export | CycloneDX, SPDX / CycloneDX 1.5, SPDX 2.3 | CycloneDX / CycloneDX | None | CycloneDX, SPDX / Pro only | None | Both, Enterprise only | CycloneDX, SPDX / CSV, SPDX, CycloneDX |
@@ -279,7 +279,7 @@ backend/
 │   ├── repositories/     Data-access layer (repository pattern)
 │   ├── schemas/          API request/response schemas
 │   ├── services/         Business logic, AI, backup, stats
-│   │   ├── ingestion/    Pipelines + clients (10 sources)
+│   │   ├── ingestion/    Pipelines + clients (12 sources)
 │   │   ├── scheduling/   APScheduler job management
 │   │   └── http/         Retry, rate limiter, SSL helper
 │   └── utils/
@@ -313,7 +313,7 @@ scanner/
 
 ### Data aggregation & automation
 
-- **10 sources** with configurable intervals, weekly full syncs (EUVD Sun, NVD Wed, OSV Fri at 02:00 UTC), and bootstrap-on-startup.
+- **12 sources** (nine vulnerability feeds, the advisory feeds, Nuclei templates, VulnCheck KEV) with configurable intervals, weekly full syncs (EUVD Sun, NVD Wed, OSV Fri at 02:00 UTC), and bootstrap-on-startup.
 - **Normaliser** funnels every source into a single `VulnerabilityDocument` schema with CVSS v2.0 / v3.0 / v3.1 / v4.0 metrics.
 - **Priority-gated NVD ↔ EUVD upserts** prevent version-identification fields from flapping between sources every cycle.
 - **Asset catalogue** (vendors, products, versions) is derived automatically from ingested data.
@@ -567,7 +567,7 @@ Vite proxies `/api` to `http://backend:8000` (Docker) or `http://localhost:8000`
 - `GET  /api/v1/stats/overview` — statistics aggregations
 - `GET  /api/v1/audit/ingestion` — audit log
 - `GET  /api/v1/changelog` — recent changes (pagination, date and source filters)
-- `POST /api/v1/sync/trigger/{job}` — sync trigger (`euvd`, `nvd`, `cpe`, `kev`, `cwe`, `capec`, `circl`, `ghsa`, `osv`)
+- `POST /api/v1/sync/trigger/{job}` — sync trigger (`euvd`, `nvd`, `cpe`, `kev`, `cwe`, `capec`, `circl`, `ghsa`, `osv`, `cert-feeds`, `nuclei-templates`, `vulncheck-kev`)
 - `POST /api/v1/sync/resync` — delete vulnerabilities and optionally re-fetch from upstream (multi-ID, wildcards, delete-only)
 - `GET  /api/v1/backup/vulnerabilities/{source}/export` · `POST /api/v1/backup/vulnerabilities/{source}/restore` — vulnerability backup (`NVD` / `EUVD` / `ALL`, streaming JSON)
 - `GET  /api/v1/backup/saved-searches/export` · `POST /api/v1/backup/saved-searches/restore` — saved-search backup
@@ -620,6 +620,8 @@ poetry run python -m app.cli sync-cwe       [--initial]
 poetry run python -m app.cli sync-capec     [--initial]
 poetry run python -m app.cli sync-circl     [--limit N]
 poetry run python -m app.cli sync-cert
+poetry run python -m app.cli sync-nuclei
+poetry run python -m app.cli sync-vulncheck-kev                            # needs VULNCHECK_API_TOKEN
 poetry run python -m app.cli sync-ghsa      [--limit N] [--initial]
 poetry run python -m app.cli sync-osv       [--limit N] [--initial]
 poetry run python -m app.cli enrich-mal     [--limit N]                    # deps.dev enrichment of existing MAL-* docs (broad >=0 → real versions)
@@ -641,7 +643,7 @@ Everything is driven through environment variables — see [`.env.example`](.env
 | **MongoDB** | `MONGO_URL`, `MONGO_USERNAME`, `MONGO_PASSWORD`, `MONGO_DB` |
 | **OpenSearch** | `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, `OPENSEARCH_PASSWORD`, `OPENSEARCH_VERIFY_CERTS`, `OPENSEARCH_CA_CERT` |
 | **AI providers** | `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_REASONING_EFFORT`, `OPENAI_MAX_OUTPUT_TOKENS`, `ANTHROPIC_API_KEY`, `GOOGLE_GEMINI_API_KEY`, `OPENAI_COMPATIBLE_BASE_URL`, `OPENAI_COMPATIBLE_API_KEY`, `OPENAI_COMPATIBLE_MODEL`, `OPENAI_COMPATIBLE_LABEL` (Ollama / vLLM / OpenRouter / LocalAI / LM Studio via `/v1/chat/completions`) |
-| **Data sources** | `CERT_FEEDS_EXTRA` (your own feeds as `Name\|URL\|kind`, kind `cert`/`vendor`/`community`), `CERT_FEEDS_ALLOW_PRIVATE_HOSTS`, `EUVD_BASE_URL`, `NVD_BASE_URL`, `NVD_API_KEY`, `NVD_TIMEOUT_SECONDS`, `NVD_MAX_RETRIES`, `NVD_RETRY_BACKOFF_SECONDS`, `KEV_FEED_URL`, `GHSA_TOKEN`, `GHSA_MAX_RETRIES`, `GHSA_RETRY_BACKOFF_SECONDS`, `CIRCL_MAX_RETRIES`, `CIRCL_RETRY_BACKOFF_SECONDS`, `OSV_BASE_URL`, `OSV_TIMEOUT_SECONDS`, `OSV_RATE_LIMIT_SECONDS`, `OSV_MAX_RETRIES`, `OSV_RETRY_BACKOFF_SECONDS`, `OSV_MAX_RECORDS_PER_RUN`, `OSV_INITIAL_SYNC_CONCURRENCY`, `OSV_INITIAL_SYNC_BATCH_SIZE` |
+| **Data sources** | `CERT_FEEDS_EXTRA` (your own feeds as `Name\|URL\|kind`, kind `cert`/`vendor`/`community`), `CERT_FEEDS_ALLOW_PRIVATE_HOSTS`, `NUCLEI_TEMPLATES_ENABLED`, `VULNCHECK_API_TOKEN`, `EUVD_BASE_URL`, `NVD_BASE_URL`, `NVD_API_KEY`, `NVD_TIMEOUT_SECONDS`, `NVD_MAX_RETRIES`, `NVD_RETRY_BACKOFF_SECONDS`, `KEV_FEED_URL`, `GHSA_TOKEN`, `GHSA_MAX_RETRIES`, `GHSA_RETRY_BACKOFF_SECONDS`, `CIRCL_MAX_RETRIES`, `CIRCL_RETRY_BACKOFF_SECONDS`, `OSV_BASE_URL`, `OSV_TIMEOUT_SECONDS`, `OSV_RATE_LIMIT_SECONDS`, `OSV_MAX_RETRIES`, `OSV_RETRY_BACKOFF_SECONDS`, `OSV_MAX_RECORDS_PER_RUN`, `OSV_INITIAL_SYNC_CONCURRENCY`, `OSV_INITIAL_SYNC_BATCH_SIZE` |
 | **Scheduler** | `SCHEDULER_ENABLED`, `SCHEDULER_*_INTERVAL_*`. CWE / CAPEC use wall-clock cron instead of intervals: `SCHEDULER_CWE_CRON_DAY_OF_WEEK` (default `mon`), `SCHEDULER_CWE_CRON_HOUR` (`3`), `SCHEDULER_CAPEC_CRON_DAY_OF_WEEK` (default `tue`), `SCHEDULER_CAPEC_CRON_HOUR` (`3`). Stale-on-startup catch-up via `SCHEDULER_CATALOG_STALE_CATCHUP_MULTIPLIER` (default `1.5`). |
 | **Inventory EOL** | `ENDOFLIFE_ENABLED` (default `true`), `ENDOFLIFE_BASE_URL` (endoflife.date v1 API), `ENDOFLIFE_TIMEOUT_SECONDS`, `ENDOFLIFE_RATE_LIMIT_SECONDS`, `ENDOFLIFE_MAX_RETRIES`, `ENDOFLIFE_RETRY_BACKOFF_SECONDS`, `ENDOFLIFE_CACHE_TTL_HOURS` — support / end-of-life enrichment for Environment Inventory items |
 | **Frontend** | `VITE_API_BASE_URL` (feature flags are derived from backend settings and exposed via `GET /api/v1/config`) |

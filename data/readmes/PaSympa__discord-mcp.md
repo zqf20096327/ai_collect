@@ -13,12 +13,12 @@
 
 [![Install in VS Code](.github/assets/install-vscode.svg)](https://vscode.dev/redirect/mcp/install?name=discord&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22discord_token%22%2C%22description%22%3A%22Discord%20bot%20token%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40pasympa%2Fdiscord-mcp%22%5D%2C%22env%22%3A%7B%22DISCORD_TOKEN%22%3A%22%24%7Binput%3Adiscord_token%7D%22%7D%7D)
 [![Install in VS Code Insiders](.github/assets/install-vscode-insiders.svg)](https://insiders.vscode.dev/redirect/mcp/install?name=discord&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22discord_token%22%2C%22description%22%3A%22Discord%20bot%20token%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40pasympa%2Fdiscord-mcp%22%5D%2C%22env%22%3A%7B%22DISCORD_TOKEN%22%3A%22%24%7Binput%3Adiscord_token%7D%22%7D%7D&quality=insiders)
-[![Install in Cursor](.github/assets/install-cursor.svg)](https://cursor.com/en/install-mcp?name=discord&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBwYXN5bXBhL2Rpc2NvcmQtbWNwIl0sImVudiI6eyJESVNDT1JEX1RPS0VOIjoiWU9VUl9CT1RfVE9LRU4ifX0%3D)
+[![Install in Cursor](.github/assets/install-cursor.svg)](https://cursor.com/install-mcp?name=discord&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBwYXN5bXBhL2Rpc2NvcmQtbWNwIl0sImVudiI6eyJESVNDT1JEX1RPS0VOIjoiWU9VUl9CT1RfVE9LRU4ifX0%3D)
 [![Install in Claude Desktop](.github/assets/install-claude-desktop.svg)](https://github.com/PaSympa/discord-mcp/releases/latest/download/discord-mcp.mcpb)
 
 </div>
 
-**discord-mcp** connects Claude, Codex, Cursor, VS Code and any other MCP client to your Discord server through your own bot. Ask in plain language: your assistant reads channels, answers, moderates, and manages roles, channels, forums and events, with 104 tools behind it.
+**discord-mcp** connects Claude, Codex, Cursor, VS Code and any other MCP client to your Discord server through your own bot. Ask in plain language: your assistant reads channels, answers, moderates, and manages roles, channels, forums and events, with 108 tools behind it.
 
 ## See it in action
 
@@ -28,7 +28,7 @@
 
 <p align="center"><a href="https://pasympa.github.io/discord-mcp/assets/demo-full.mp4">Watch the full one-minute demo</a>: a channel recap, a bug forum, the spam cleanup and an event.</p>
 
-<sub>Calls made live with Claude Code on a demo server; the panel summarizes their results. The Discord window shows real captures, except that the spot of each new message or post stays blank until it appears.</sub>
+<sub>Calls made live with Claude Code on a demo server, before 2.5.0: the recording deletes by count, where 2.5.0 deletes the message IDs from the preview. The panel summarizes their results. The Discord window shows real captures, except that the spot of each new message or post stays blank until it appears.</sub>
 
 ## What you can ask
 
@@ -48,7 +48,7 @@
 2. **Invite it to your server.** Replace `YOUR_CLIENT_ID` with the Application ID from **General Information**, then open the link:
 
    ```
-   https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot&permissions=2270896177900791
+   https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot&permissions=2833846131322103
    ```
 
    It requests the permissions most tools use. Remove the ones you do not need in the authorization screen.
@@ -73,14 +73,14 @@
 
 ## Expose only what you need
 
-The full set of 104 tools costs about 39k tokens of context when a client loads them all. Most assistants need a fraction of it: set `DISCORD_MCP_TOOLSETS` to the toolsets you want.
+The full set of 108 tools costs about 42k tokens of context when a client loads them all. Most assistants need a fraction of it: set `DISCORD_MCP_TOOLSETS` to the toolsets you want.
 
 | Profile              | `DISCORD_MCP_TOOLSETS`                           | Tools | Context     |
 | -------------------- | ------------------------------------------------ | ----- | ----------- |
-| Everything (default) | unset                                            | 104   | ~39k tokens |
-| Chat assistant       | `discovery,messages`                             | 27    | ~12k tokens |
-| Community manager    | `discovery,messages,forums,scheduled_events`     | 44    | ~18k tokens |
-| Moderator            | `discovery,members,moderation,roles,permissions` | 33    | ~11k tokens |
+| Everything (default) | unset                                            | 108   | ~42k tokens |
+| Chat assistant       | `discovery,messages`                             | 27    | ~13k tokens |
+| Community manager    | `discovery,messages,forums,scheduled_events`     | 44    | ~19k tokens |
+| Moderator            | `discovery,members,moderation,roles,permissions` | 33    | ~12k tokens |
 | Audit and stats      | `discovery,stats,moderation`                     | 6     | ~2k tokens  |
 
 ```json
@@ -90,15 +90,15 @@ The full set of 104 tools costs about 39k tokens of context when a client loads 
 }
 ```
 
-Context sizes are measured on the `tools/list` response (bytes divided by 4). Toolsets: `discovery`, `messages`, `channels`, `permissions`, `members` (includes kick, ban and timeout), `roles`, `moderation` (the audit log), `screening`, `stats`, `forums`, `webhooks`, `scheduled_events`, `invites`, `dm`. A toolset brings its whole module, destructive tools included; an unknown name stops the server at startup instead of exposing everything.
+Context sizes are measured on the `tools/list` response (bytes divided by 4). Toolsets: `discovery`, `messages`, `channels`, `permissions`, `members` (includes kick, ban and timeout), `roles`, `moderation` (the audit log), `screening`, `stats`, `forums`, `webhooks`, `scheduled_events`, `invites`, `dm`, `polls`. A toolset brings its whole module, destructive tools included; an unknown name stops the server at startup instead of exposing everything.
 
-Set `DISCORD_MCP_READ_ONLY=true` to keep only the 35 tools annotated `readOnlyHint: true`, about 14k tokens. It narrows `DISCORD_MCP_TOOLSETS` instead of replacing it: `discovery,messages` then exposes 11 tools, about 5k tokens. A selection with no read-only tool left, such as `channels` alone, stops the server at startup.
+Set `DISCORD_MCP_READ_ONLY=true` to keep only the 37 tools annotated `readOnlyHint: true`, about 15k tokens. It narrows `DISCORD_MCP_TOOLSETS` instead of replacing it: `discovery,messages` then exposes 11 tools, about 6k tokens. A selection with no read-only tool left, such as `channels` alone, stops the server at startup.
 
 ## Safety
 
 - **Your bot, your permissions.** The server can only do what the bot's Discord permissions allow.
 - **Preview before mass actions.** `discord_bulk_delete_messages`, `discord_bulk_ban`, `discord_bulk_add_role`, `discord_bulk_remove_role`, `discord_prune_members` and `discord_delete_channel` run as a dry run by default and report what would happen. Pass `dry_run: false` to apply. A bulk delete then takes the message IDs from its preview and deletes only those, so a message posted after the preview stays.
-- **Stay in your servers.** `DISCORD_ALLOWED_GUILDS` restricts every call to the guilds you list, whether the target is addressed by guild, channel, thread, webhook or invite.
+- **Stay in your servers.** `DISCORD_ALLOWED_GUILDS` restricts every call to the guilds you list, whether the target is addressed by guild, channel, thread, webhook or invite. The DM tools refuse a user who is not a member of any listed guild, even to edit, delete or read a DM sent before the user left.
 - **Clear annotations.** Every tool declares `readOnlyHint`, and every write tool declares `destructiveHint`, so clients can approve reads automatically and ask before destructive calls.
 - **Read-only mode.** With `DISCORD_MCP_READ_ONLY=true`, the server lists only the tools that declare `readOnlyHint: true`. A call to any other tool fails as an unknown tool. Two reads stay sensitive. `discord_list_webhooks` returns webhook tokens, and a token lets anyone post through its webhook without this server. `discord_read_dms` reads the bot's direct messages with a user. To hide both, leave `webhooks` and `dm` out of `DISCORD_MCP_TOOLSETS`.
 - **Keep the token out of files.** Prefer your client's secret prompt (the VS Code button asks for the token) over a config file you might commit.
@@ -168,7 +168,7 @@ Use the **Install in VS Code** button: VS Code asks for the token and stores it 
 }
 ```
 
-See the [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers).
+See the [VS Code MCP docs](https://code.visualstudio.com/docs/agent-customization/mcp-servers).
 
 </details>
 
@@ -237,7 +237,7 @@ npm install && npm run build
 }
 ```
 
-You can also put `DISCORD_TOKEN=YOUR_BOT_TOKEN` in a `.env` file at the project root; the server loads it on start.
+You can also put `DISCORD_TOKEN=YOUR_BOT_TOKEN` in a `.env` file in the folder your client starts the server from; the server loads it on start.
 
 </details>
 
@@ -302,7 +302,7 @@ url = "http://127.0.0.1:3000/mcp"
 bearer_token_env_var = "DISCORD_MCP_HTTP_TOKEN"
 ```
 
-Or run `codex mcp add discord --url http://127.0.0.1:3000/mcp --bearer-token-env-var DISCORD_MCP_HTTP_TOKEN`. Codex reads the token from that variable in its own environment. See the [Codex MCP docs](https://developers.openai.com/codex/mcp).
+Or run `codex mcp add discord --url http://127.0.0.1:3000/mcp --bearer-token-env-var DISCORD_MCP_HTTP_TOKEN`. Codex reads the token from that variable in its own environment. See the [Codex MCP docs](https://learn.chatgpt.com/docs/extend/mcp).
 
 </details>
 
@@ -329,25 +329,25 @@ When n8n runs in Docker, `127.0.0.1` is the n8n container itself. Run the server
 
 ## Configuration
 
-| Variable                         | Default     | Description                                                                                                                                                                                             |
-| -------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DISCORD_TOKEN`                  | none        | **Required.** Bot token.                                                                                                                                                                                |
-| `DISCORD_MCP_TOOLSETS`           | `all`       | Comma-separated toolsets to expose (see [Expose only what you need](#expose-only-what-you-need)). Unset, empty or `all` exposes every tool.                                                             |
-| `DISCORD_MCP_READ_ONLY`          | `false`     | Set to `true` to expose only the tools annotated `readOnlyHint: true`. Accepts true/false, 1/0, yes/no or on/off; any other value stops the server at startup.                                          |
-| `DISCORD_ALLOWED_GUILDS`         | all         | Comma-separated guild IDs the server may act on. Calls that target any other guild are rejected, whether addressed by guild ID, channel ID, thread ID, webhook or invite code.                          |
-| `DISCORD_MESSAGE_CONTENT`        | `true`      | Set to `false` to stop requesting the Message Content privileged intent at connect time.                                                                                                                |
-| `DISCORD_GUILD_MEMBERS`          | `true`      | Set to `false` to stop requesting the Server Members privileged intent at connect time.                                                                                                                 |
-| `DISCORD_MCP_TRANSPORT`          | `stdio`     | `stdio`, or `http` to serve Streamable HTTP (see [Remote clients over HTTP](#remote-clients-over-http)). Any other value stops the server at startup.                                                   |
-| `DISCORD_MCP_HTTP_TOKEN`         | none        | **Required in http mode.** Bearer token every request must carry: at least 32 characters from the RFC 6750 b64token alphabet (letters, digits, `-._~+/`, trailing `=`), different from `DISCORD_TOKEN`. |
-| `DISCORD_MCP_HTTP_HOST`          | `127.0.0.1` | Address to listen on in http mode.                                                                                                                                                                      |
-| `DISCORD_MCP_HTTP_PORT`          | `3000`      | Port to listen on in http mode.                                                                                                                                                                         |
-| `DISCORD_MCP_HTTP_ALLOWED_HOSTS` | none        | Comma-separated hostnames, without port, accepted in the `Host` header besides `localhost`, `127.0.0.1` and `[::1]`, such as the public name a reverse proxy forwards.                                  |
+| Variable                         | Default     | Description                                                                                                                                                                                                                                        |
+| -------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DISCORD_TOKEN`                  | none        | **Required.** Bot token.                                                                                                                                                                                                                           |
+| `DISCORD_MCP_TOOLSETS`           | `all`       | Comma-separated toolsets to expose (see [Expose only what you need](#expose-only-what-you-need)). Unset, empty or `all` exposes every tool.                                                                                                        |
+| `DISCORD_MCP_READ_ONLY`          | `false`     | Set to `true` to expose only the tools annotated `readOnlyHint: true`. Accepts true/false, 1/0, yes/no or on/off; any other value stops the server at startup.                                                                                     |
+| `DISCORD_ALLOWED_GUILDS`         | all         | Comma-separated guild IDs the server may act on. Calls that target any other guild are rejected, whether addressed by guild ID, channel ID, thread ID, webhook or invite code. The DM tools refuse a user who is not a member of any listed guild. |
+| `DISCORD_MESSAGE_CONTENT`        | `true`      | Set to `false` to stop requesting the Message Content privileged intent at connect time.                                                                                                                                                           |
+| `DISCORD_GUILD_MEMBERS`          | `true`      | Set to `false` to stop requesting the Server Members privileged intent at connect time.                                                                                                                                                            |
+| `DISCORD_MCP_TRANSPORT`          | `stdio`     | `stdio`, or `http` to serve Streamable HTTP (see [Remote clients over HTTP](#remote-clients-over-http)). Any other value stops the server at startup.                                                                                              |
+| `DISCORD_MCP_HTTP_TOKEN`         | none        | **Required in http mode.** Bearer token every request must carry: at least 32 characters from the RFC 6750 b64token alphabet (letters, digits, `-._~+/`, trailing `=`), different from `DISCORD_TOKEN`.                                            |
+| `DISCORD_MCP_HTTP_HOST`          | `127.0.0.1` | Address to listen on in http mode.                                                                                                                                                                                                                 |
+| `DISCORD_MCP_HTTP_PORT`          | `3000`      | Port to listen on in http mode.                                                                                                                                                                                                                    |
+| `DISCORD_MCP_HTTP_ALLOWED_HOSTS` | none        | Comma-separated hostnames, without port, accepted in the `Host` header besides `localhost`, `127.0.0.1` and `[::1]`, such as the public name a reverse proxy forwards.                                                                             |
 
 The intent flags only change what the bot requests when it connects. Requesting a privileged intent that is not enabled in the Developer Portal closes the connection with code `4014`; set the flag to `false` to connect anyway. What the tools can read is governed by the portal toggles: every message is fetched over the REST API, which Discord gates on the portal setting alone. With Message Content off in the portal, message bodies come back empty (`content`, `embeds`, `attachments`), except the bot's own messages, DMs and messages that mention the bot; with Server Members off, member listing fails.
 
 ## Tools
 
-104 tools in 14 toolsets. Each one documents its permissions, side effects and return shape in its description.
+108 tools in 15 toolsets. Each one documents its permissions, side effects and return shape in its description.
 
 <details>
 <summary><strong>Discovery</strong> (4 tools)</summary>
@@ -389,6 +389,18 @@ The intent flags only change what the bot requests when it connects. Requesting 
 | `discord_search_guild_messages`   | Search across every channel using Discord's search index |
 | `discord_crosspost_message`       | Publish a message to announcement channel followers      |
 | `discord_forward_message`         | Forward a message to another channel                     |
+
+</details>
+
+<details>
+<summary><strong>Polls</strong> (4 tools)</summary>
+
+| Tool                       | Description                                      |
+| -------------------------- | ------------------------------------------------ |
+| `discord_create_poll`      | Create a native poll with up to 10 answers       |
+| `discord_get_poll_results` | Read a poll's current question, answers, votes   |
+| `discord_end_poll`         | End a poll immediately instead of waiting it out |
+| `discord_get_poll_voters`  | List the users who voted for one answer, by page |
 
 </details>
 

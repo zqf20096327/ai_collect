@@ -20,6 +20,7 @@
   <a href="docs/INSTALLATION.md"><img src="https://img.shields.io/badge/node-%E2%89%A524-339933?logo=nodedotjs&logoColor=white" alt="Node.js 24 or later"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT license"></a>
   <a href="https://deepwiki.com/grainulation/grainulator"><img src="https://img.shields.io/badge/docs-DeepWiki-1f6feb" alt="Docs on DeepWiki"></a>
+  <a href="https://glama.ai/mcp/servers/grainulation/grainulator"><img src="https://glama.ai/mcp/servers/grainulation/grainulator/badges/score.svg" alt="grainulation/grainulator MCP server"></a>
 </p>
 
 <p align="center">
@@ -67,9 +68,10 @@ Requires **Node.js 24 or later**; Node 24 and 26 LTS are the tested release line
 **Upgrading from an earlier version?** Follow the [migration checklist](docs/UPGRADING.md) to update the plugin and keep your existing research data.
 
 ```sh
-git clone --branch v3.0.1 https://github.com/grainulation/grainulator.git
+git clone --branch v3.1.0 https://github.com/grainulation/grainulator.git
 cd grainulator
 npm ci --ignore-scripts
+npm run build
 node bin/grainulator.js doctor
 ```
 
@@ -179,9 +181,11 @@ The compiler checks the structure and support recorded in the ledger; it does no
 npm test
 npm run test:install
 npm run lint
+npm run typecheck
+npm run check:types
 ```
 
-Browser and runtime prerequisites are in [CONTRIBUTING.md](CONTRIBUTING.md). The offline `node bin/grainulator.js demo` exercises the adapter/verifier protocol without a provider account.
+Development and runtime prerequisites are in [CONTRIBUTING.md](CONTRIBUTING.md). The offline `node bin/grainulator.js demo` exercises the adapter/verifier protocol without a provider account.
 
 </details>
 

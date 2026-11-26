@@ -46,6 +46,8 @@ Everything is controlled from one Windows launcher. There is no browser UI; `127
 
 The installer bundles the Node.js runtime, Python 3.12, `wechatauto`, and the .NET 10 desktop runtime. The launcher prefers bundled runtimes and falls back to `PATH` only when needed. No `npm install` is required.
 
+The optional mobile console is installed under `手机远程控制`. Follow its [setup guide](tools/remote-console/README.md) to connect over Tailscale.
+
 ## Main features
 
 | Feature | What it does |
@@ -165,6 +167,8 @@ To the extent permitted by applicable law, third-party plugins are provided as-i
 Only download installers from **GitHub Releases**: <https://github.com/Banan1cee/whale_girl/releases>. Checksums and verification commands are in [`docs/DOWNLOAD.md`](docs/DOWNLOAD.md).
 
 ## Code signing policy
+
+The Windows launcher and installer for the 4.2.0 preview passed SignPath test signing and installation checks. Production signing is pending. [GitHub Actions results](https://github.com/Banan1cee/whale_girl/actions/runs/45573742923)
 
 Current release builds are **not signed yet**, so Windows may show "Unknown publisher". Verify `SHA256SUMS.txt` from the release before installing. The signing policy is in [`docs/CODE_SIGNING_POLICY.md`](docs/CODE_SIGNING_POLICY.md); the privacy policy is in [`docs/PRIVACY.md`](docs/PRIVACY.md).
 

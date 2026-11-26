@@ -43,6 +43,7 @@
 - [隐私与安全](#隐私与安全)
 - [当前范围](#当前范围)
 - [发布](#发布)
+- [贡献者](#贡献者)
 - [开源协议](#开源协议)
 
 ## 功能特性
@@ -50,13 +51,17 @@
 ### 互动
 
 - **全局键鼠响应** — 不需要窗口焦点，在任何应用里打字或移动鼠标都会触发动作。
-- **3D 小猫** — 圆润的程序化模型，提供六种毛色；可以新建任意多只「我的猫」，用自家猫咪的照片取色、手调色槽和花纹，或直接让 AI 通过内置 MCP 生成配色与斑纹；会敲键、看光标、伸爪够鼠标，闲置后睡觉。
+- **滚轮反应** — 滚动鼠标滚轮时，桌面小鼠标跟着滚动，中间按键缝闪一下当前毛色的眼睛色。
+- **定时语音提醒** — 设置里可按分钟间隔开启语音提醒，到点用系统本地语音朗读自定义内容，提醒后自动重新计时；提醒内容留空时跳过朗读。
+- **3D 小猫** — 圆润的程序化模型，提供十三种毛色；可以新建任意多只「我的猫」，用自家猫咪的照片取色、手调色槽（含异瞳）和花纹，或直接让 AI 通过内置 MCP 生成配色与斑纹；会敲键、看光标、伸爪够鼠标，闲置后睡觉。
+- **闲置自由动作** — 短暂无操作后随机舔爪、舔毛、揣手或蜷缩，也会伸懒腰、打哈欠和甩尾巴；动作平滑衔接，按键、鼠标、摸猫或拖拽时立即结束，可在设置里关闭。
 - **摸猫与拖拽** — 按住猫头是摸猫，按住身体拖动窗口；猫头判定由渲染器射线检测。
-- **呼噜声** — WebAudio 合成，无音频资源；按住呼噜和睡眠呼噜可独立开关。
+- **呼噜声** — 内置呼噜录音，WebAudio 循环播放并平滑淡入淡出；按住呼噜和睡眠呼噜可独立开关。
 
 ### 桌面
 
-- **点击穿透与始终置顶** — 透明区域不影响桌面操作；需要完全不挡鼠标时可在设置菜单或托盘里锁定穿透，按住 `Alt` 临时恢复鼠标操作。托盘或菜单栏图标可显示、隐藏小猫。
+- **点击穿透与始终置顶** — 透明区域不影响桌面操作；需要完全不挡鼠标时可在设置菜单或托盘里锁定穿透，按住 `Alt` 临时恢复鼠标操作。不想压在其他窗口上时可以关闭始终置顶。托盘或菜单栏图标可显示、隐藏小猫。
+- **全屏游戏置顶守卫** — Windows 10/11 无边框或全屏优化模式下持续恢复小猫置顶，不抢游戏焦点；独占式全屏和反作弊游戏不保证覆盖。关闭始终置顶后守卫不再生效。
 - **65% / 104 键盘** — 同一个安装包内运行时切换，默认 65% 紧凑布局。
 - **隐私模式** — 只保留左右手动作提示，不显示具体按键。
 - **设置持久化** — 毛色、大小、布局、睡眠时间和各项开关保存到本地。
@@ -72,6 +77,7 @@
 | Windows ARM64 | `*-arm64-setup.exe` | Windows ARM64；安装器为 x86，应用为原生 ARM64 |
 | Windows x64 便携版 | `*-x64-portable.zip` | 解压后双击运行，无需安装；需要系统已安装 WebView2 Runtime |
 | Windows ARM64 便携版 | `*-arm64-portable.zip` | 同上 |
+| Windows 7 SP1 x64 兼容便携版 | `*-win7-x64-portable.zip` | 非官方兼容构建；内置 WebView2 109 固定运行时，解压后本地运行 |
 | macOS Intel | `*-x64.dmg` | Intel Mac |
 | macOS Apple Silicon | `*-aarch64.dmg` | Apple Silicon |
 
@@ -114,14 +120,31 @@ tccutil reset All com.qoder.7paws
 - 如果提示 **Could not find the WebView2 Runtime**，常见于 Windows 10 LTSC、精简版或移除了 Edge 的系统。可安装微软官方的 [Evergreen Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)，安装后重新打开 7paws。离线环境请先在有网络的机器下载安装程序，再拷贝到目标机器。
 - 未签名安装包可能显示「未知发布者」；确认文件来自本仓库的 Releases 后，可以选择「更多信息 → 仍要运行」。
 - Windows ARM64 版需要 ARM64 WebView2 Runtime，安装包会自动尝试安装。
-- Windows 7/8 不支持。7paws 使用 Tauri 2 与当前 Rust 工具链构建。
+- Windows 便携版可在设置页创建桌面快捷方式；快捷方式指向当前 `7paws.exe`，不会复制文件或运行时。NSIS 安装版不显示该入口。
+- Windows 7 SP1 x64 兼容版的安装与限制见下文。
+
+## 全屏游戏
+
+- Windows 10/11 会持续检查小猫的 topmost 状态和前台窗口 Z 序；被无边框或全屏优化游戏盖住时，自动恢复置顶且不抢焦点。
+- 设置窗口打开、拖拽小猫或隐藏小猫时暂停守卫。
+- 如果游戏本身以管理员权限运行，可在设置页选择「以管理员身份重启」。此操作不会自动提权，需要你确认 UAC。
+- 可开启「默认以管理员身份运行」，下次启动时按需请求 UAC；已经提权时不会循环提示。默认关闭，开机自启也可能因此弹出 UAC。
+- 独占式全屏、使用内核反作弊的游戏可能禁止其他窗口覆盖；建议使用无边框窗口化，必要时暂停或隐藏小猫。
+
+## Windows 7 兼容版
+
+- 仅提供 **Windows 7 SP1 x64** 非官方兼容便携包 `*-win7-x64-portable.zip`，不支持 x86 和 Windows 8。
+- 解压全部文件，保持 `7paws.exe` 与 `WebView2Runtime` 同级，并从本地磁盘运行；不要从 UNC 或网络路径运行。
+- 内置 WebView2 **109.0.1518.78** 固定运行时，不自动更新；正常 Windows 10/11 包仍使用系统 Evergreen Runtime。
+- 小猫通过原生分层窗口呈现，帧率约 30fps，帧缓冲与窗口物理尺寸对齐；设置窗口使用不透明背景，不显示任务栏图标。
+- Windows 7 和 Runtime 109 均已停止安全维护，兼容包不代表官方或安全支持。
 
 ## 使用
 
 - 右键小猫打开设置窗口，窗口出现在猫的旁边，可拖动标题栏移动；点外部、按 `Esc` 或右上角关闭。
 - 按住猫头是摸猫；按住身体拖动窗口。
 - 托盘图标（macOS 为菜单栏图标）左键显示或隐藏小猫；菜单可切换锁定鼠标穿透、打开设置或退出。
-- 设置菜单可切换毛色（含「我的猫」：新建、照片取色、毛色码导入导出，命名多只随意切换）、键盘布局、睡眠时间、鼠标左右手、锁定鼠标穿透、托盘图标、开机自启、隐私模式、呼噜开关和按键字母。
+- 设置菜单可切换毛色（含「我的猫」：新建、照片取色、毛色码导入导出、给两只眼睛分别配色的异瞳色槽，命名多只随意切换）、键盘布局、睡眠时间、鼠标左右手、始终置顶、锁定鼠标穿透、托盘图标、开机自启、隐私模式、呼噜开关、按键字母和定时语音提醒。
 - 锁定鼠标穿透后整窗不接收鼠标操作，按住 `Alt` 可临时拖动或右键打开菜单。
 - 大小滑杆拖动时只预览百分比，松手后应用。
 - 设置窗口右上角可以检查更新、打开 GitHub 仓库，底部显示当前版本。
@@ -132,8 +155,8 @@ tccutil reset All com.qoder.7paws
   <table>
     <tr>
       <td align="center">
-        <img src="assets/settings-custom-cat.png" alt="我的猫：色槽、花纹、斑纹与照片取色" width="200" /><br />
-        <sub>我的猫：色槽、花纹与斑纹</sub>
+        <img src="assets/settings-custom-cat.png" alt="我的猫：含异瞳的色槽、花纹、斑纹与照片取色" width="200" /><br />
+        <sub>我的猫：异瞳色槽、花纹与斑纹</sub>
       </td>
       <td align="center">
         <img src="assets/settings-mcp.png" alt="毛色码与 AI 接入（MCP）配置" width="200" /><br />
@@ -188,6 +211,7 @@ tccutil reset All com.qoder.7paws
 - 「它额头有一道深色竖纹、胸口是白的、背上有一大块橘色，把这三处写进 spots。」
 - 「刚才那只猫的白胸口往上挪一点、再放大一圈。」
 - 「把当前这只改成三花：奶白底，橘色和黑色斑块，眼睛换成琥珀色。」
+- 「它有异瞳：一只眼睛蓝色、一只琥珀色。」
 - 「列出我所有的猫，然后切回奶牛猫。」
 - 「这只不像，删掉它。」
 
@@ -211,12 +235,18 @@ tccutil reset All com.qoder.7paws
 | 毛色 | 奶牛猫 |
 | 我的猫 | 无（设置里点「＋ 新建」，或让 AI 通过 MCP 创建） |
 | 睡眠时间 | 5 分钟 |
+| 闲置自由动作 | 开启 |
 | 按住呼噜声 | 开启 |
 | 自动睡眠呼噜声 | 关闭 |
 | 显示按键字母 | 开启 |
+| 定时语音提醒 | 关闭 |
+| 提醒内容 | 空 |
+| 提醒间隔 | 30 分钟（可调 1–1440） |
+| 始终置顶 | 开启 |
 | 显示托盘图标 | 开启 |
 | 允许 AI 接入（MCP） | 开启 |
 | 开机自启 | 关闭 |
+| 默认以管理员身份运行 | 关闭 |
 | 鼠标在左手边 | 关闭 |
 | 锁定鼠标穿透 | 关闭 |
 | 隐私模式 | 关闭 |
@@ -233,7 +263,7 @@ macOS 的开机自启通过 `~/Library/LaunchAgents/com.qoder.7paws.plist` 注�
 - **桌面壳** — Tauri 2 + Rust；全局键鼠钩子、窗口、托盘、点击穿透和设置持久化。
 - **前端** — TypeScript + Vite，无 UI 框架；three.js + WebGL 渲染 3D 小猫。
 - **输入** — Windows 低级键鼠钩子；macOS CGEventTap（辅助功能 + 输入监控）。
-- **音频** — WebAudio 合成呼噜声，无音频资源；没有网络请求、账号或遥测。
+- **音频** — WebAudio 播放内置呼噜录音，无网络音频资源；没有网络请求、账号或遥测。
 
 ## 从源码构建
 
@@ -255,6 +285,10 @@ pnpm tauri build --target aarch64-apple-darwin
 
 # Windows ARM64（在 Windows 上交叉编译）
 pnpm tauri build --target aarch64-pc-windows-msvc --bundles nsis
+
+# Windows 7 SP1 x64 兼容构建（独立 target-win7，不改正常包）
+pnpm tauri:win7
+pnpm verify:win7
 ```
 
 macOS 安装包必须在 macOS 上构建，Tauri 不支持从 Windows 交叉编译。按架构构建的产物位于 `src-tauri/target/<target>/release/bundle/`。
@@ -273,6 +307,7 @@ cargo check
 ├─ .github/workflows/   CI、手动构建与 tag 发布
 ├─ src/                 前端入口、适配层、毛色、音频与样式
 ├─ public/vendor/       three.js 与 3D 渲染器
+├─ public/audio/        内置呼噜录音
 ├─ src-tauri/           Tauri 窗口、全局输入、设置、托盘与平台配置
 ├─ assets/              应用图标源、备选图标与 README logo
 ├─ index.html           小猫窗口骨架与启动错误提示
@@ -290,8 +325,8 @@ pnpm dev
 浏览器预览没有 Tauri 全局钩子和原生窗口，键鼠动作不会触发全局响应，设置只保存在内存中。右键小猫会在新窗口打开设置页，也可直接访问 `settings.html`。可用参数：
 
 - `?demo=1`：自动输入演示。
-- `?localinput`：捕获当前窗口内的键盘事件。
-- `?previewCoat=tuxedo`：预览指定毛色，可选 `tuxedo`、`orange`、`tabby`、`calico`、`white`、`blue`。
+- `?localinput`：捕获当前窗口内的键盘与滚轮事件。
+- `?previewCoat=tuxedo`：预览指定毛色，可选 `tuxedo`、`orange`、`tabby`、`calico`、`siamese`、`black`、`white`、`blue`、`gray-white`、`orange-white`、`tortie`、`cream`、`silver`。
 
 ## 隐私与安全
 
@@ -302,8 +337,8 @@ pnpm dev
 
 ## 当前范围
 
-- 支持 Windows 10/11 x64 与 ARM64，macOS 10.15+ Intel 与 Apple Silicon。
-- 不支持 Windows 7/8；Linux 暂未支持，后续版本优先考虑 X11 会话。
+- 正式支持 Windows 10/11 x64 与 ARM64，macOS 10.15+ Intel 与 Apple Silicon。
+- Windows 7 SP1 x64 提供非官方兼容便携版；Windows 8 与 Linux 暂未支持，后续版本优先考虑 X11 会话。
 - macOS 以菜单栏图标驻留，不显示 Dock 图标。
 - 发布包目前未签名；macOS 26/27 上如果权限无法保持，需要 Developer ID 签名与公证。
 - 104 布局按标准全键盘排列，包含 F 区、导航区、方向键和小键盘。
@@ -315,6 +350,12 @@ pnpm dev
 3. GitHub Actions 的 Release 工作流构建 Windows x64/ARM64 NSIS 与 macOS Intel/Apple Silicon DMG，并发布 Release，附 `SHA256SUMS.txt`。
 
 发版只走 tag 触发的一次构建；不要先手动运行 “Build bundles” 再打 tag。手动构建工作流只用于排障。
+
+## 贡献者
+
+<a href="https://github.com/7wdn/7paws/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=7wdn/7paws&max=300&columns=15" alt="7paws 贡献者" />
+</a>
 
 ## 开源协议
 
