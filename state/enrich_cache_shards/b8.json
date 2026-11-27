@@ -1,10 +1,10 @@
 {
  "streamlit/streamlit": {
-  "commit_7d": 52,
-  "commit_90d": 948,
+  "commit_7d": 37,
+  "commit_90d": 923,
   "rel_ver": "1.67.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -26,10 +26,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,13 +75,13 @@
   }
  },
  "xerrors/Yuxi": {
-  "commit_7d": 37,
-  "commit_90d": 596,
-  "rel_ver": "v0.8.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 10,
+  "commit_7d": 40,
+  "commit_90d": 581,
+  "rel_ver": "v0.8.1.beta1",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 4,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 2,
   "sec_worst": "critical",
@@ -98,10 +98,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4531,8 +4531,8 @@
   }
  },
  "fainir/most-capable-agent-system-prompt": {
-  "commit_90d": 5,
-  "commit_7d": 5,
+  "commit_90d": 62,
+  "commit_7d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4541,10 +4541,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261028",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
@@ -5504,6 +5504,60 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "loak7993-code/termagent": {
+  "rel_ver": "v2.0.9",
+  "rel_pub": "2026-11-15",
+  "rel_days": 12,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 67,
+   "TypeScript": 26,
+   "CSS": 5,
+   "Shell": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "open-covenant/covenant": {
+  "rel_ver": "mizuki-escrow-3e6cc43f9f096a9c162cb472867a8ba8b7cd037b",
+  "rel_pub": "2026-10-26",
+  "rel_days": 32,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Rust": 56,
+   "TypeScript": 33,
+   "JavaScript": 8,
+   "CSS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

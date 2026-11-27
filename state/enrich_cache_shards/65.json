@@ -1,10 +1,10 @@
 {
  "ollama/ollama": {
-  "commit_7d": 10,
-  "commit_90d": 341,
-  "rel_ver": "v0.40.17-rc2",
-  "rel_pub": "2026-11-10",
-  "rel_days": 10,
+  "commit_7d": 13,
+  "commit_90d": 323,
+  "rel_ver": "v0.40.19-rc0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -20,22 +20,22 @@
    "C++": 1,
    "Objective-C": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tesseract-ocr/tesseract": {
-  "commit_7d": 59,
-  "commit_90d": 138,
-  "rel_ver": "5.5.4",
-  "rel_pub": "2026-10-28",
-  "rel_days": 23,
-  "rel_n90": 1,
+  "commit_7d": 53,
+  "commit_90d": 177,
+  "rel_ver": "5.5.5",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 20,
@@ -59,10 +59,10 @@
    "Makefile": 1,
    "NSIS": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -121,11 +121,11 @@
   }
  },
  "deepseek-ai/DeepGEMM": {
-  "commit_90d": 5,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 1,
   "rel_ver": "nv_dev_f8e8fb5",
   "rel_pub": "2026-07-20",
-  "rel_days": 123,
+  "rel_days": 130,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -141,22 +141,22 @@
    "Shell": 0,
    "CMake": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "0xPlaygrounds/rig": {
-  "commit_90d": 545,
-  "commit_7d": 113,
-  "rel_ver": "v0.46.0",
-  "rel_pub": "2026-10-31",
-  "rel_days": 20,
-  "rel_n90": 5,
+  "commit_90d": 560,
+  "commit_7d": 25,
+  "rel_ver": "v0.47.1",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -171,10 +171,10 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

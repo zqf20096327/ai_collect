@@ -60,7 +60,7 @@
   "commit_90d": 8,
   "rel_ver": "web-v0.136.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 42,
+  "rel_days": 49,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -78,21 +78,21 @@
    "Shell": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/seatunnel": {
-  "commit_7d": 45,
-  "commit_90d": 737,
+  "commit_7d": 72,
+  "commit_90d": 749,
   "rel_ver": "3.1.0",
   "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,10 +148,10 @@
  },
  "h2oai/h2o-llmstudio": {
   "commit_90d": 45,
-  "commit_7d": 5,
+  "commit_7d": 0,
   "rel_ver": "v1.15.5",
   "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -167,10 +167,10 @@
    "Gherkin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -201,12 +201,12 @@
   }
  },
  "deepflowio/deepflow": {
-  "commit_90d": 7,
+  "commit_90d": 8,
   "commit_7d": 1,
   "rel_ver": "v7.2.4",
   "rel_pub": "2026-11-12",
-  "rel_days": 8,
-  "rel_n90": 5,
+  "rel_days": 15,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -221,21 +221,21 @@
    "C++": 1,
    "xBase": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vllm-project/llm-compressor": {
-  "commit_90d": 252,
-  "commit_7d": 20,
+  "commit_90d": 240,
+  "commit_7d": 8,
   "rel_ver": "0.10.0.5",
   "rel_pub": "2026-11-09",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -249,10 +249,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4228,11 +4228,11 @@
   }
  },
  "stfc/qiskit-machine-learning": {
-  "commit_90d": 3,
-  "commit_7d": 2,
+  "commit_90d": 8,
+  "commit_7d": 5,
   "rel_ver": "0.9.1",
   "rel_pub": "2026-08-19",
-  "rel_days": 93,
+  "rel_days": 100,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -4246,10 +4246,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
@@ -5012,6 +5012,88 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "dayuwang401/VidRouteBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "pasekahq/ulei": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 81,
+   "Python": 18,
+   "Shell": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "frenchmarcel/auralis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "TypeScript": 37,
+   "Cuda": 5,
+   "C++": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "REAL-Lab-NU/MedicalRSI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

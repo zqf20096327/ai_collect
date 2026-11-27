@@ -15,10 +15,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4921,13 +4921,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261118",
    "contrib": "20261118",
-   "lang": "20261118"
-  }
+   "lang": "20261118",
+   "commit": "20261127"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "adrianofernandesvideo/afe": {
   "rel_ver": "v2.4.1-beta",

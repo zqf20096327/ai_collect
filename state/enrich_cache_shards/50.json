@@ -1,9 +1,9 @@
 {
  "livekit/agents": {
-  "commit_7d": 60,
-  "commit_90d": 673,
-  "rel_ver": "livekit-agents@1.8.13",
-  "rel_pub": "2026-11-18",
+  "commit_7d": 44,
+  "commit_90d": 674,
+  "rel_ver": "livekit-agents@1.9.0",
+  "rel_pub": "2026-11-25",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -21,21 +21,21 @@
    "Makefile": 0,
    "CMake": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BasedHardware/omi": {
-  "commit_7d": 2268,
-  "commit_90d": 16724,
-  "rel_ver": "v0.12.574+12574-macos",
-  "rel_pub": "2026-11-11",
-  "rel_days": 9,
+  "commit_7d": 1787,
+  "commit_90d": 18223,
+  "rel_ver": "v0.12.585+12585-macos",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -51,10 +51,10 @@
    "TypeScript": 13,
    "C": 6
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4562,13 +4562,16 @@
    "HTML": 1,
    "Python": 0
   },
-  "enriched_at": "20261124",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261124",
    "security": "20261124",
    "contrib": "20261124",
-   "lang": "20261124"
-  }
+   "lang": "20261124",
+   "commit": "20261127"
+  },
+  "commit_90d": 275,
+  "commit_7d": 176
  },
  "bernatsampera/show-context": {
   "rel_ver": "v0.2.1",

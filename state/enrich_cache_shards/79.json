@@ -26,10 +26,10 @@
   }
  },
  "ClickHouse/ClickHouse": {
-  "commit_7d": 2574,
-  "commit_90d": 45061,
-  "rel_ver": "v26.10.7.24-stable",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 2263,
+  "commit_90d": 46468,
+  "rel_ver": "v26.11.3.10-stable",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -54,10 +54,10 @@
    "Assembly": 5,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -90,13 +90,13 @@
   }
  },
  "OpenMined/PySyft": {
-  "commit_7d": 52,
-  "commit_90d": 674,
-  "rel_ver": "v0.9.6b6",
-  "rel_pub": "2025-04-13",
-  "rel_days": 586,
-  "rel_n90": 0,
-  "rel_pre": true,
+  "commit_7d": 56,
+  "commit_90d": 715,
+  "rel_ver": "v0.10.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -110,10 +110,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5426,6 +5426,53 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "paipiange/gongzuotai": {
+  "rel_ver": "v0.3.7",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 47,
+   "JavaScript": 47,
+   "CSS": 4,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "Rambotx/fine-grained-pose-controllable-human-image-synthesis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "HTML": 21
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

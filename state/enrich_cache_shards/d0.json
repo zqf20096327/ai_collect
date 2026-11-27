@@ -1,10 +1,10 @@
 {
  "openai/codex-security": {
-  "commit_7d": 62,
-  "commit_90d": 1720,
-  "rel_ver": "action-v0.10.1",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 51,
+  "commit_90d": 1703,
+  "rel_ver": "npm-v0.11.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Rust": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -52,11 +52,11 @@
   }
  },
  "Giskard-AI/giskard-oss": {
-  "commit_90d": 101,
-  "commit_7d": 10,
+  "commit_90d": 82,
+  "commit_7d": 2,
   "rel_ver": "giskard-scan/v1.0.2",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "Jinja": 4,
    "Makefile": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4422,6 +4422,25 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "robisantoso235-cmd/tinkercad-bridge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

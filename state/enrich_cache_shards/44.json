@@ -1,10 +1,10 @@
 {
  "blakeblackshear/frigate": {
-  "commit_7d": 38,
-  "commit_90d": 638,
+  "commit_7d": 33,
+  "commit_90d": 650,
   "rel_ver": "v0.18.3",
   "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "casdoor/casdoor": {
-  "commit_7d": 50,
-  "commit_90d": 645,
-  "rel_ver": "v4.29.0",
-  "rel_pub": "2026-11-15",
-  "rel_days": 5,
+  "commit_7d": 66,
+  "commit_90d": 698,
+  "rel_ver": "v4.31.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,21 +59,21 @@
    "HTML": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "huggingface/speech-to-speech": {
-  "commit_7d": 51,
-  "commit_90d": 833,
+  "commit_7d": 56,
+  "commit_90d": 877,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-10-24",
-  "rel_days": 27,
+  "rel_days": 34,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -87,20 +87,20 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vercel/streamdown": {
-  "commit_7d": 19,
-  "commit_90d": 98,
-  "rel_ver": "streamdown@2.8.0",
-  "rel_pub": "2026-11-17",
+  "commit_7d": 17,
+  "commit_90d": 107,
+  "rel_ver": "streamdown@2.8.1",
+  "rel_pub": "2026-11-24",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -117,10 +117,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

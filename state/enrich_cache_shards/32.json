@@ -28,11 +28,11 @@
   }
  },
  "osaurus-ai/osaurus": {
-  "commit_7d": 72,
-  "commit_90d": 792,
-  "rel_ver": "1.0.8",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 64,
+  "commit_90d": 789,
+  "rel_ver": "1.0.13",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -48,21 +48,21 @@
    "Python": 0,
    "Go": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Gentleman-Programming/gentle-ai": {
-  "commit_7d": 19,
-  "commit_90d": 2274,
-  "rel_ver": "v4.6.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 105,
+  "commit_90d": 2198,
+  "rel_ver": "v5.0.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "JavaScript": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -140,12 +140,12 @@
   }
  },
  "Countly/countly-server": {
-  "commit_7d": 54,
-  "commit_90d": 1106,
-  "rel_ver": "25.03.59",
-  "rel_pub": "2026-11-13",
-  "rel_days": 7,
-  "rel_n90": 10,
+  "commit_7d": 53,
+  "commit_90d": 961,
+  "rel_ver": "25.03.60",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 7,
@@ -168,10 +168,10 @@
    "SCSS": 3,
    "Shell": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

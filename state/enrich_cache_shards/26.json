@@ -1,10 +1,10 @@
 {
  "browser-use/browser-use": {
-  "commit_7d": 40,
-  "commit_90d": 968,
-  "rel_ver": "1.0.6",
-  "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "commit_7d": 41,
+  "commit_90d": 956,
+  "rel_ver": "1.0.9",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -21,10 +21,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -170,11 +170,11 @@
   }
  },
  "grobidOrg/grobid": {
-  "commit_90d": 67,
-  "commit_7d": 5,
+  "commit_90d": 75,
+  "commit_7d": 10,
   "rel_ver": "0.9.1",
   "rel_pub": "2026-08-04",
-  "rel_days": 108,
+  "rel_days": 115,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "Kotlin": 3,
    "Ruby": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4268,8 +4268,8 @@
   }
  },
  "Luce-Org/lucebox": {
-  "commit_90d": 690,
-  "commit_7d": 20,
+  "commit_90d": 631,
+  "commit_7d": 38,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4284,10 +4284,10 @@
    "Python": 6,
    "Metal": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"

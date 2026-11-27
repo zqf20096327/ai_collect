@@ -1,10 +1,10 @@
 {
  "hpcaitech/ColossalAI": {
-  "commit_7d": 28,
-  "commit_90d": 141,
+  "commit_7d": 1,
+  "commit_90d": 146,
   "rel_ver": "v0.5.0",
   "rel_pub": "2025-06-04",
-  "rel_days": 534,
+  "rel_days": 541,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "C++": 1,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -87,10 +87,10 @@
   }
  },
  "frankbria/ralph-claude-code": {
-  "commit_7d": 0,
-  "commit_90d": 23,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 8,
+  "commit_90d": 31,
+  "rel_ver": "v1.0.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -101,14 +101,18 @@
    "Python": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
-  }
+  },
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "anthropics/claude-for-legal": {
   "commit_7d": 0,
@@ -124,10 +128,10 @@
    "Python": 68,
    "Shell": 32
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -189,12 +193,12 @@
   }
  },
  "modelscope/modelscope": {
-  "commit_7d": 2,
-  "commit_90d": 33,
+  "commit_7d": 1,
+  "commit_90d": 32,
   "rel_ver": "v1.40.3",
   "rel_pub": "2026-11-09",
-  "rel_days": 9,
-  "rel_n90": 4,
+  "rel_days": 18,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -209,21 +213,21 @@
    "Shell": 0,
    "Smarty": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261118",
-   "release": "20261118",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "open-pencil/open-pencil": {
-  "commit_7d": 195,
-  "commit_90d": 1530,
-  "rel_ver": "v0.17.0-beta.6",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 91,
+  "commit_90d": 1609,
+  "rel_ver": "nightly",
+  "rel_pub": "2026-11-16",
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -241,10 +245,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -589,8 +593,8 @@
   }
  },
  "deepseek-ai/DeepGEMM-Ascend": {
-  "commit_7d": 2,
-  "commit_90d": 3,
+  "commit_7d": 3,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -604,10 +608,10 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1390,13 +1394,16 @@
    "Python": 3,
    "Shell": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261127"
+  },
+  "commit_90d": 45,
+  "commit_7d": 0
  },
  "AEON-7/comfyui-aeon-spark": {
   "rel_ver": null,
@@ -3218,16 +3225,16 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261122",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261122",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 383,
-  "commit_7d": 287
+  "commit_90d": 659,
+  "commit_7d": 8
  },
  "liyupi/dafeiyu-cleaner": {
   "rel_ver": "v1.3.0",

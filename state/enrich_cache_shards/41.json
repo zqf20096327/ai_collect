@@ -1,11 +1,11 @@
 {
  "sgl-project/sglang": {
-  "commit_7d": 560,
-  "commit_90d": 5925,
+  "commit_7d": 485,
+  "commit_90d": 6011,
   "rel_ver": "v0.5.23",
   "rel_pub": "2026-11-02",
-  "rel_days": 18,
-  "rel_n90": 6,
+  "rel_days": 25,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "C++": 2,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -31,11 +31,11 @@
  },
  "guillaumemeyer/watermarks-remover": {
   "commit_7d": 0,
-  "commit_90d": 162,
+  "commit_90d": 80,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-09-03",
-  "rel_days": 78,
-  "rel_n90": 2,
+  "rel_days": 85,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -50,21 +50,21 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Zipstack/unstract": {
-  "commit_90d": 185,
-  "commit_7d": 27,
+  "commit_90d": 192,
+  "commit_7d": 8,
   "rel_ver": "v0.204.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -131,11 +131,11 @@
   }
  },
  "NVIDIA/cuml": {
-  "commit_90d": 259,
-  "commit_7d": 26,
+  "commit_90d": 265,
+  "commit_7d": 15,
   "rel_ver": "v26.10.00",
   "rel_pub": "2026-10-08",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -151,10 +151,10 @@
    "Cython": 8,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4806,6 +4806,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "cheapbutsimilar/Agent-Meter": {
+  "rel_ver": "v0.2.37",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 53,
+   "JavaScript": 34,
+   "CSS": 7,
+   "Python": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

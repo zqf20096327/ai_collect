@@ -1,10 +1,10 @@
 {
  "onnx/onnx": {
-  "commit_7d": 24,
-  "commit_90d": 274,
+  "commit_7d": 13,
+  "commit_90d": 265,
   "rel_ver": "v1.23.2",
   "rel_pub": "2026-10-06",
-  "rel_days": 45,
+  "rel_days": 52,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "C": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "T8RIN/ImageToolbox": {
-  "commit_7d": 66,
-  "commit_90d": 920,
-  "rel_ver": "4.3.0-rc02",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 43,
+  "commit_90d": 918,
+  "rel_ver": "4.3.0-rc03",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -56,21 +56,21 @@
    "Kotlin": 100,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "huggingface/accelerate": {
-  "commit_7d": 29,
-  "commit_90d": 112,
+  "commit_7d": 1,
+  "commit_90d": 113,
   "rel_ver": "v1.16.0",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -85,10 +85,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -125,11 +125,11 @@
   }
  },
  "Mai-with-u/MaiBot": {
-  "commit_7d": 101,
-  "commit_90d": 1269,
-  "rel_ver": "v1.4.7",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 1,
+  "commit_90d": 1215,
+  "rel_ver": "v1.4.8",
+  "rel_pub": "2026-11-20",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -145,10 +145,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

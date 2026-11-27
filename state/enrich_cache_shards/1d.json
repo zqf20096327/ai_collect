@@ -1,11 +1,11 @@
 {
  "AlexsJones/llmfit": {
-  "commit_7d": 10,
-  "commit_90d": 286,
-  "rel_ver": "v1.1.20",
-  "rel_pub": "2026-11-03",
-  "rel_days": 17,
-  "rel_n90": 10,
+  "commit_7d": 16,
+  "commit_90d": 271,
+  "rel_ver": "v1.1.21",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openai/openai-python": {
-  "commit_7d": 22,
-  "commit_90d": 417,
-  "rel_ver": "v3.57.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 0,
+  "commit_7d": 19,
+  "commit_90d": 413,
+  "rel_ver": "v3.60.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Dockerfile": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -138,11 +138,11 @@
   }
  },
  "agentscope-ai/agentscope-java": {
-  "commit_7d": 27,
-  "commit_90d": 458,
+  "commit_7d": 38,
+  "commit_90d": 474,
   "rel_ver": "v2.0.5",
   "rel_pub": "2026-11-14",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -158,10 +158,10 @@
    "Python": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4830,6 +4830,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "dadafeiGeorge/zheqimingsi": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 46,
+   "Python": 42,
+   "Kotlin": 8,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

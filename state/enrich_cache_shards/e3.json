@@ -30,11 +30,11 @@
   }
  },
  "xbtlin/ai-berkshire": {
-  "commit_7d": 11,
-  "commit_90d": 260,
+  "commit_7d": 23,
+  "commit_90d": 234,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-04-07",
-  "rel_days": 227,
+  "rel_days": 234,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Roff": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,13 +88,13 @@
   }
  },
  "FailproofAI/failproofai": {
-  "commit_7d": 27,
-  "commit_90d": 222,
-  "rel_ver": "v1.0.16-beta.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 22,
+  "commit_90d": 217,
+  "rel_ver": "v1.0.17",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -108,10 +108,10 @@
    "Rust": 9,
    "JavaScript": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5091,6 +5091,32 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "agens-research-labs/a-graph": {
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 99,
+   "Shell": 1,
+   "Dockerfile": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

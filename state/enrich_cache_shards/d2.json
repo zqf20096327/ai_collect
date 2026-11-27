@@ -1,10 +1,10 @@
 {
  "gradio-app/gradio": {
-  "commit_7d": 5,
-  "commit_90d": 126,
+  "commit_7d": 2,
+  "commit_90d": 117,
   "rel_ver": "gradio@6.32.0",
   "rel_pub": "2026-11-12",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -29,10 +29,10 @@
    "mdsvex": 2,
    "CSS": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5409,6 +5409,108 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "ashfordeOU/aero-agent-skills": {
+  "rel_ver": "v1.31.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 63,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "JavaScript": 0,
+   "Makefile": 0,
+   "Kotlin": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "Zzhaocc/E-_commerce_Agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 73,
+   "CSS": 14,
+   "JavaScript": 11,
+   "HTML": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "pugport/pugport": {
+  "rel_ver": "v0.0.40",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-11-25",
+  "sec_ids": [
+   "GHSA-qfc5-qpq9-pgfm(-,medium)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 92,
+   "JavaScript": 4,
+   "CSS": 2,
+   "Python": 1,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "kksty/saker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 64,
+   "TypeScript": 31,
+   "JavaScript": 4,
+   "PowerShell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

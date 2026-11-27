@@ -1,7 +1,7 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
-  "commit_7d": 8,
-  "commit_90d": 475,
+  "commit_7d": 2,
+  "commit_90d": 477,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,10 +56,10 @@
   }
  },
  "aipoch/open-science": {
-  "commit_90d": 2432,
-  "commit_7d": 117,
-  "rel_ver": "v1.3.1",
-  "rel_pub": "2026-11-19",
+  "commit_90d": 2303,
+  "commit_7d": 178,
+  "rel_ver": "v1.3.5",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -76,21 +76,21 @@
    "CSS": 0,
    "R": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LazyAGI/LazyLLM": {
-  "commit_90d": 76,
-  "commit_7d": 5,
+  "commit_90d": 64,
+  "commit_7d": 0,
   "rel_ver": "v1.5.2a4",
   "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -106,18 +106,18 @@
    "CMake": 0,
    "TeX": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "morphik-org/morphik-core": {
-  "commit_90d": 21,
-  "commit_7d": 2,
+  "commit_90d": 27,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -132,10 +132,10 @@
    "PowerShell": 1,
    "Rust": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

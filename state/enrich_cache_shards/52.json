@@ -26,12 +26,12 @@
   }
  },
  "eosphoros-ai/DB-GPT": {
-  "commit_7d": 5,
-  "commit_90d": 55,
+  "commit_7d": 6,
+  "commit_90d": 58,
   "rel_ver": "v0.8.3",
   "rel_pub": "2026-11-17",
-  "rel_days": 3,
-  "rel_n90": 2,
+  "rel_days": 10,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,22 +46,22 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "budtmo/docker-android": {
-  "commit_7d": 8,
-  "commit_90d": 65,
-  "rel_ver": "v3.9.0-p2",
-  "rel_pub": "2026-11-10",
-  "rel_days": 10,
-  "rel_n90": 5,
+  "commit_7d": 11,
+  "commit_90d": 76,
+  "rel_ver": "v3.9.1-p2",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -74,10 +74,10 @@
    "Dockerfile": 8,
    "Shell": 6
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,7 +114,7 @@
   "commit_90d": 2,
   "rel_ver": "v2.4.6",
   "rel_pub": "2026-07-23",
-  "rel_days": 120,
+  "rel_days": 127,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -126,20 +126,20 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "iflytek/skillhub": {
-  "commit_7d": 14,
-  "commit_90d": 803,
-  "rel_ver": "v0.2.27",
-  "rel_pub": "2026-11-13",
+  "commit_7d": 43,
+  "commit_90d": 790,
+  "rel_ver": "v0.2.28",
+  "rel_pub": "2026-11-20",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -156,10 +156,10 @@
    "JavaScript": 4,
    "Shell": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -212,11 +212,11 @@
   }
  },
  "anthropics/anthropic-sdk-python": {
-  "commit_7d": 50,
-  "commit_90d": 585,
-  "rel_ver": "v2.11.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 34,
+  "commit_90d": 600,
+  "rel_ver": "v2.14.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -234,10 +234,10 @@
    "Dockerfile": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -348,11 +348,11 @@
   }
  },
  "microsoft/TextWorld": {
-  "commit_7d": 2,
+  "commit_7d": 0,
   "commit_90d": 12,
   "rel_ver": "1.8.0rc1",
   "rel_pub": "2026-11-10",
-  "rel_days": 4,
+  "rel_days": 17,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -368,10 +368,10 @@
    "PDDL": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5131,12 +5131,12 @@
   }
  },
  "HarnessMD/munder-difflin": {
-  "commit_90d": 592,
-  "commit_7d": 16,
+  "commit_90d": 426,
+  "commit_7d": 20,
   "rel_ver": "v0.5.5",
   "rel_pub": "2026-10-01",
-  "rel_days": 50,
-  "rel_n90": 8,
+  "rel_days": 57,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -5151,10 +5151,10 @@
    "CSS": 3,
    "Nunjucks": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"

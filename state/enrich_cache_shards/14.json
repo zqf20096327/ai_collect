@@ -1,7 +1,7 @@
 {
  "google/skills": {
-  "commit_7d": 49,
-  "commit_90d": 362,
+  "commit_7d": 31,
+  "commit_90d": 367,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "HCL": 3,
    "Go Template": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -175,11 +175,11 @@
   }
  },
  "qq362946/Fantasy": {
-  "commit_90d": 30,
-  "commit_7d": 1,
-  "rel_ver": "2026.1.2003",
-  "rel_pub": "2026-10-02",
-  "rel_days": 49,
+  "commit_90d": 32,
+  "commit_7d": 9,
+  "rel_ver": "2026.1.2005",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -195,10 +195,10 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5028,6 +5028,78 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "zbigniewsobiecki/llmist": {
+  "rel_ver": "v19.0.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 96,
+   "MDX": 3,
+   "Shell": 0,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "kuhung/minimax-h3-colab-workflow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "yangyi-student/zhidao-helper": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 20,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

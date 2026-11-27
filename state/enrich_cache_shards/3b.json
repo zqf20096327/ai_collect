@@ -1,10 +1,10 @@
 {
  "lightgbm-org/LightGBM": {
   "commit_7d": 2,
-  "commit_90d": 53,
+  "commit_90d": 50,
   "rel_ver": "v4.7.0",
   "rel_pub": "2026-07-18",
-  "rel_days": 125,
+  "rel_days": 132,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Cuda": 8,
    "C": 3
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -135,12 +135,12 @@
   }
  },
  "IBM/mcp-context-forge": {
-  "commit_7d": 47,
-  "commit_90d": 315,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-11-10",
-  "rel_days": 10,
-  "rel_n90": 6,
+  "commit_7d": 19,
+  "commit_90d": 310,
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 19,
@@ -164,10 +164,10 @@
    "Rust": 2,
    "Makefile": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -310,8 +310,8 @@
   }
  },
  "spring-projects/spring-ai-examples": {
-  "commit_7d": 2,
-  "commit_90d": 5,
+  "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -326,10 +326,10 @@
    "Shell": 3,
    "Kotlin": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

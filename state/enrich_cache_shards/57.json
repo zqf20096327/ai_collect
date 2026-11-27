@@ -82,8 +82,8 @@
   }
  },
  "heilcheng/awesome-agent-skills": {
-  "commit_7d": 0,
-  "commit_90d": 27,
+  "commit_7d": 65,
+  "commit_90d": 92,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -98,10 +98,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -128,13 +128,13 @@
   }
  },
  "crate/crate": {
-  "commit_7d": 23,
-  "commit_90d": 323,
-  "rel_ver": "6.5.1",
-  "rel_pub": "2026-11-04",
-  "rel_days": 16,
-  "rel_n90": 6,
-  "rel_pre": false,
+  "commit_7d": 34,
+  "commit_90d": 315,
+  "rel_ver": "6.5.2",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 10,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 16,
   "sec_worst": "critical",
@@ -156,10 +156,10 @@
    "ANTLR": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5015,6 +5015,69 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "gabury1/newbie-job-hunt": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "eJosR-Coding/fly-brain-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 41,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "a2zrr/hand-controller": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "C#": 7,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "paperclipai/paperclip": {
-  "commit_7d": 587,
-  "commit_90d": 4555,
+  "commit_7d": 336,
+  "commit_90d": 4723,
   "rel_ver": "v2026.1117.0",
   "rel_pub": "2026-11-18",
-  "rel_days": 2,
-  "rel_n90": 12,
+  "rel_days": 9,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 12,
@@ -29,21 +29,21 @@
    "PLpgSQL": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vercel/ai": {
-  "commit_7d": 94,
-  "commit_90d": 1699,
-  "rel_ver": "ai@7.0.177",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 87,
+  "commit_90d": 1610,
+  "rel_ver": "ai@7.0.183",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -66,10 +66,10 @@
    "Vue": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,7 +107,7 @@
   "commit_90d": 2,
   "rel_ver": "v0.6.30",
   "rel_pub": "2025-04-21",
-  "rel_days": 578,
+  "rel_days": 585,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -120,10 +120,10 @@
    "Python": 96,
    "Shell": 4
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4612,12 +4612,12 @@
   }
  },
  "guohuiyuan/go-music-dl": {
-  "commit_90d": 80,
-  "commit_7d": 15,
+  "commit_90d": 79,
+  "commit_7d": 11,
   "rel_ver": "v1.1.7",
-  "rel_pub": "2026-11-16",
-  "rel_days": 4,
-  "rel_n90": 9,
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4632,10 +4632,10 @@
    "HTML": 6,
    "Rust": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"
@@ -4828,6 +4828,80 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Silentzx2/ForMesh3D": {
+  "rel_ver": "Wheels",
+  "rel_pub": "2026-09-22",
+  "rel_days": 66,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 44,
+   "Shell": 5,
+   "CSS": 2,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "storagebits/ttlm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 45,
+   "Python": 35,
+   "JavaScript": 12,
+   "HTML": 6,
+   "Makefile": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "Fcys11/fccl": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

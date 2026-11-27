@@ -49,12 +49,12 @@
   }
  },
  "steel-dev/steel-browser": {
-  "commit_90d": 48,
-  "commit_7d": 6,
+  "commit_90d": 55,
+  "commit_7d": 9,
   "rel_ver": "v0.5.5-beta",
   "rel_pub": "2026-10-31",
-  "rel_days": 20,
-  "rel_n90": 2,
+  "rel_days": 27,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -69,10 +69,10 @@
    "Dockerfile": 1,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1269,16 +1269,16 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 306,
-  "commit_7d": 68
+  "commit_90d": 383,
+  "commit_7d": 31
  },
  "HLT-ISTI/QuaPy": {
   "rel_ver": "0.2.3",
@@ -4911,13 +4911,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261126",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261126",
    "security": "20261126",
    "contrib": "20261126",
-   "lang": "20261126"
-  }
+   "lang": "20261126",
+   "commit": "20261127"
+  },
+  "commit_90d": 29,
+  "commit_7d": 28
  },
  "caeser-org/caeser": {
   "rel_ver": "v0.2.1",
@@ -4964,6 +4967,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "JoeJiang-927117/zhixu": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 81,
+   "CSS": 12,
+   "JavaScript": 7,
+   "PowerShell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

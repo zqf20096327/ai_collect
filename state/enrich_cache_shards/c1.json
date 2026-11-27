@@ -1,10 +1,10 @@
 {
  "OpenRLHF/OpenRLHF": {
-  "commit_7d": 2,
-  "commit_90d": 39,
-  "rel_ver": "v0.11.2",
-  "rel_pub": "2026-09-14",
-  "rel_days": 51,
+  "commit_7d": 16,
+  "commit_90d": 46,
+  "rel_ver": "v0.12.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -18,23 +18,23 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vastsa/PI-Desktop": {
-  "commit_90d": 5475,
-  "commit_7d": 274,
-  "rel_ver": "v0.23.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_90d": 5594,
+  "commit_7d": 223,
+  "rel_ver": "v0.24.0-beta.5",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -48,10 +48,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -243,11 +243,11 @@
   }
  },
  "JoasASantos/NeuroSploit": {
-  "commit_90d": 173,
-  "commit_7d": 30,
+  "commit_90d": 182,
+  "commit_7d": 23,
   "rel_ver": "v4.4.2",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4883,6 +4883,51 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "BramVanroy/spacy_conll": {
+  "rel_ver": "v5.0.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "ChinmayKaitade/Resume-Builder-AI-MERN": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 99,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

@@ -22,8 +22,8 @@
   }
  },
  "huggingface/skills": {
-  "commit_7d": 1,
-  "commit_90d": 16,
+  "commit_7d": 4,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -36,21 +36,21 @@
    "Shell": 4,
    "TypeScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Companion-Inc/feynman": {
-  "commit_7d": 14,
-  "commit_90d": 465,
-  "rel_ver": "v0.5.71",
-  "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "commit_7d": 12,
+  "commit_90d": 386,
+  "rel_ver": "v0.5.74",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -66,22 +66,22 @@
    "Shell": 3,
    "Astro": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "roboflow/rf-detr": {
-  "commit_7d": 7,
-  "commit_90d": 278,
+  "commit_7d": 35,
+  "commit_90d": 295,
   "rel_ver": "1.12.1",
   "rel_pub": "2026-11-12",
-  "rel_days": 8,
-  "rel_n90": 8,
+  "rel_days": 15,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -92,10 +92,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -130,10 +130,10 @@
  },
  "dograh-hq/dograh": {
   "commit_7d": 3,
-  "commit_90d": 189,
+  "commit_90d": 187,
   "rel_ver": "dograh-v1.51.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -149,10 +149,10 @@
    "JavaScript": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4610,6 +4610,99 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "puranikyashaswin/ferrotensor": {
+  "rel_ver": "v0.7.3",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 88,
+   "Python": 7,
+   "WGSL": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "Leoomk/contextmap": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 64,
+   "HTML": 36,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "wshiqyuan/magpie-agent-vetta": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "metaspartan/RAD": {
+  "rel_ver": "v0.32.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 46,
+   "HIP": 37,
+   "Cuda": 13,
+   "Python": 4,
+   "Shell": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

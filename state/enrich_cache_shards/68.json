@@ -30,12 +30,12 @@
   }
  },
  "HKUDS/nanobot": {
-  "commit_7d": 98,
-  "commit_90d": 1244,
-  "rel_ver": "v0.4.1",
-  "rel_pub": "2026-11-06",
-  "rel_days": 14,
-  "rel_n90": 3,
+  "commit_7d": 61,
+  "commit_90d": 1222,
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 8,
@@ -59,21 +59,21 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mcp-use/mcp-use": {
-  "commit_7d": 10,
-  "commit_90d": 175,
-  "rel_ver": "mcp-use@2.12.9",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 2,
+  "commit_90d": 162,
+  "rel_ver": "mcp-use@2.12.10",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4650,6 +4650,49 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "zjunlp/Cortex": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "nacivageer/dsh-see-now-more": {
+  "rel_ver": "v0.1.1-more.40",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 92,
+   "Python": 8
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

@@ -83,12 +83,12 @@
   }
  },
  "NVIDIA/DALI": {
-  "commit_7d": 28,
-  "commit_90d": 157,
+  "commit_7d": 16,
+  "commit_90d": 160,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 25,
-  "rel_n90": 2,
+  "rel_days": 32,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -103,10 +103,10 @@
    "CMake": 2,
    "C": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -141,11 +141,11 @@
   }
  },
  "chaitin/MonkeyCode": {
-  "commit_7d": 62,
-  "commit_90d": 649,
+  "commit_7d": 48,
+  "commit_90d": 613,
   "rel_ver": "v26072801",
   "rel_pub": "2026-07-28",
-  "rel_days": 115,
+  "rel_days": 122,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "JavaScript": 2,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4404,11 +4404,11 @@
   }
  },
  "feder-cr/Jobs_Applier_AI_Agent": {
-  "commit_90d": 734,
-  "commit_7d": 13,
+  "commit_90d": 762,
+  "commit_7d": 28,
   "rel_ver": "jobs-20261108-084120",
   "rel_pub": "2026-11-08",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4422,10 +4422,10 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
@@ -5149,6 +5149,48 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "VoidEclipseAI/ReFrameVideo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 43,
+   "JavaScript": 42,
+   "CSS": 9,
+   "HTML": 5,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "Ali45504/ai-outreach-team": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

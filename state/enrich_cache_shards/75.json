@@ -30,11 +30,11 @@
   }
  },
  "InsForge/InsForge": {
-  "commit_7d": 0,
-  "commit_90d": 101,
+  "commit_7d": 2,
+  "commit_90d": 90,
   "rel_ver": "v2.3.5",
   "rel_pub": "2026-10-23",
-  "rel_days": 28,
+  "rel_days": 35,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -111,11 +111,11 @@
  },
  "opengeos/segment-geospatial": {
   "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_90d": 8,
   "rel_ver": "v1.4.2",
   "rel_pub": "2026-08-22",
-  "rel_days": 90,
-  "rel_n90": 1,
+  "rel_days": 97,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -129,10 +129,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4991,6 +4991,32 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "DomaAI/Codo": {
+  "rel_ver": "v0.30.3",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "PowerShell": 1,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

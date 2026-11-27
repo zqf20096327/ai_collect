@@ -1,10 +1,10 @@
 {
  "Unstructured-IO/unstructured": {
-  "commit_7d": 14,
-  "commit_90d": 134,
-  "rel_ver": "0.27.37",
-  "rel_pub": "2026-11-06",
-  "rel_days": 14,
+  "commit_7d": 2,
+  "commit_90d": 131,
+  "rel_ver": "0.27.38",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "Rich Text Format": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,7 +86,7 @@
  },
  "deepseek-ai/FlashMLA": {
   "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -101,10 +101,10 @@
    "C": 0,
    "AGS Script": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -161,11 +161,11 @@
   }
  },
  "astroautomata/PySR": {
-  "commit_90d": 91,
-  "commit_7d": 1,
-  "rel_ver": "v2.7.2",
-  "rel_pub": "2026-10-19",
-  "rel_days": 32,
+  "commit_90d": 90,
+  "commit_7d": 6,
+  "rel_ver": "v2.7.3",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -181,10 +181,10 @@
    "Shell": 0,
    "HCL": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

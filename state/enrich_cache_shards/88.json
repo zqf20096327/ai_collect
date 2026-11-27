@@ -89,11 +89,11 @@
   }
  },
  "huggingface/datasets": {
-  "commit_7d": 9,
-  "commit_90d": 97,
+  "commit_7d": 2,
+  "commit_90d": 98,
   "rel_ver": "5.2.0",
   "rel_pub": "2026-11-09",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -196,11 +196,11 @@
   }
  },
  "vespa-engine/vespa": {
-  "commit_90d": 2080,
-  "commit_7d": 163,
+  "commit_90d": 2057,
+  "commit_7d": 165,
   "rel_ver": "v8.788.13",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "CMake": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5284,6 +5284,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Ericfeng84/DITAEditor": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "HTML": 6,
+   "CSS": 4,
+   "JavaScript": 1,
+   "Astro": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

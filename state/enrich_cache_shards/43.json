@@ -1,10 +1,10 @@
 {
  "tensorflow/tensorflow": {
-  "commit_7d": 476,
-  "commit_90d": 5991,
+  "commit_7d": 329,
+  "commit_90d": 5845,
   "rel_ver": "v2.22.0-rc1",
   "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "Starlark": 4,
    "HTML": 4
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Arize-ai/phoenix": {
-  "commit_7d": 52,
-  "commit_90d": 1035,
-  "rel_ver": "arize-phoenix-v21.3.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 0,
+  "commit_7d": 93,
+  "commit_90d": 1065,
+  "rel_ver": "arize-phoenix-v22.1.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -61,10 +61,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,11 +95,11 @@
   }
  },
  "Project-MONAI/MONAI": {
-  "commit_7d": 7,
-  "commit_90d": 112,
+  "commit_7d": 19,
+  "commit_90d": 126,
   "rel_ver": "1.6.2",
   "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -124,21 +124,21 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HelixDB/helix-db": {
-  "commit_7d": 130,
-  "commit_90d": 1614,
+  "commit_7d": 160,
+  "commit_90d": 1686,
   "rel_ver": "v3.7.0",
   "rel_pub": "2026-11-11",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -154,10 +154,10 @@
    "Go": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -352,8 +352,8 @@
   }
  },
  "leomaurodesenv/game-datasets": {
-  "commit_7d": 3,
-  "commit_90d": 17,
+  "commit_7d": 5,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -362,10 +362,10 @@
   "sec_ids": [],
   "contrib_n": 17,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

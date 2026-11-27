@@ -1,9 +1,9 @@
 {
  "Significant-Gravitas/AutoGPT": {
-  "commit_7d": 141,
-  "commit_90d": 1772,
-  "rel_ver": "autogpt-platform-beta-v0.12.0",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 176,
+  "commit_90d": 1950,
+  "rel_ver": "autogpt-platform-beta-v0.12.1",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 11,
   "rel_pre": false,
@@ -29,21 +29,21 @@
    "JavaScript": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "simstudioai/sim": {
-  "commit_7d": 224,
-  "commit_90d": 2771,
-  "rel_ver": "v0.9.63",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 96,
+  "commit_90d": 2640,
+  "rel_ver": "v0.9.66",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Python": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -91,11 +91,11 @@
   }
  },
  "openai/openai-agents-js": {
-  "commit_90d": 274,
-  "commit_7d": 12,
+  "commit_90d": 254,
+  "commit_7d": 5,
   "rel_ver": "v0.22.0-alpha.3",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -111,10 +111,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

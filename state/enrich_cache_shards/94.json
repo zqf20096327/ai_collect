@@ -56,11 +56,11 @@
   }
  },
  "ggml-org/ggml": {
-  "commit_7d": 5,
-  "commit_90d": 905,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 7,
+  "commit_7d": 194,
+  "commit_90d": 1082,
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -76,23 +76,23 @@
    "Metal": 3,
    "GLSL": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/ax": {
-  "commit_7d": 52,
-  "commit_90d": 131,
-  "rel_ver": "v0.3.1",
-  "rel_pub": "2026-09-25",
-  "rel_days": 56,
-  "rel_n90": 2,
-  "rel_pre": false,
+  "commit_7d": 48,
+  "commit_90d": 179,
+  "rel_ver": "v0.4.0-rc.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -105,10 +105,10 @@
    "Python": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -175,11 +175,11 @@
   }
  },
  "CortexReach/memory-lancedb-pro": {
-  "commit_7d": 6,
-  "commit_90d": 30,
+  "commit_7d": 3,
+  "commit_90d": 31,
   "rel_ver": "v1.1.0-beta.10",
   "rel_pub": "2026-03-23",
-  "rel_days": 242,
+  "rel_days": 249,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4198,12 +4198,12 @@
   }
  },
  "linkcraftstudio/feedlog": {
-  "commit_90d": 211,
-  "commit_7d": 6,
+  "commit_90d": 136,
+  "commit_7d": 3,
   "rel_ver": "v0.6.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 13,
-  "rel_n90": 2,
+  "rel_days": 43,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4218,10 +4218,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

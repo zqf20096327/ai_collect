@@ -30,10 +30,10 @@
   }
  },
  "junhoyeo/tokscale": {
-  "commit_7d": 12,
-  "commit_90d": 393,
-  "rel_ver": "v4.23.0",
-  "rel_pub": "2026-11-15",
+  "commit_7d": 8,
+  "commit_90d": 336,
+  "rel_ver": "v4.23.1",
+  "rel_pub": "2026-11-22",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -50,10 +50,10 @@
    "Python": 1,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,11 +110,11 @@
   }
  },
  "elie222/rakazo": {
-  "commit_7d": 888,
-  "commit_90d": 4269,
-  "rel_ver": "v0.13.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 787,
+  "commit_90d": 4706,
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -130,10 +130,10 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5041,6 +5041,29 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "smile178998/CyberStrikeAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 42,
+   "JavaScript": 36,
+   "CSS": 13,
+   "HTML": 7,
+   "Java": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "modelscope/FunASR": {
-  "commit_7d": 46,
-  "commit_90d": 578,
-  "rel_ver": "v1.4.27",
-  "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "commit_7d": 47,
+  "commit_90d": 592,
+  "rel_ver": "v1.4.29",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "C++": 6,
    "JavaScript": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,8 +83,8 @@
   }
  },
  "dair-ai/AI-Papers-of-the-Week": {
-  "commit_7d": 1,
-  "commit_90d": 13,
+  "commit_7d": 2,
+  "commit_90d": 14,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -93,10 +93,10 @@
   "sec_ids": [],
   "contrib_n": 9,
   "lang": {},
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -133,11 +133,11 @@
   }
  },
  "xerj-org/xerj": {
-  "commit_90d": 2868,
-  "commit_7d": 152,
-  "rel_ver": "v1.0.0-rc.104",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_90d": 2831,
+  "commit_7d": 342,
+  "rel_ver": "v1.0.0-rc.105",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -153,10 +153,10 @@
    "Python": 4,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -186,12 +186,12 @@
   }
  },
  "modelscope/evalscope": {
-  "commit_90d": 388,
+  "commit_90d": 399,
   "commit_7d": 50,
   "rel_ver": "v1.15.0",
   "rel_pub": "2026-11-13",
-  "rel_days": 7,
-  "rel_n90": 7,
+  "rel_days": 14,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -206,10 +206,10 @@
    "Jinja": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1417,16 +1417,16 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 821,
-  "commit_7d": 15
+  "commit_90d": 275,
+  "commit_7d": 13
  },
  "adamzhang1987/kingdee-k3cloud-mcp": {
   "rel_ver": "v1.4.2",

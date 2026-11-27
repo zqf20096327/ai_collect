@@ -57,12 +57,12 @@
   }
  },
  "embabel/embabel-agent": {
-  "commit_90d": 155,
-  "commit_7d": 19,
+  "commit_90d": 146,
+  "commit_7d": 11,
   "rel_ver": "v1.5.4",
   "rel_pub": "2026-10-28",
-  "rel_days": 23,
-  "rel_n90": 4,
+  "rel_days": 30,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -77,10 +77,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4550,6 +4550,33 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "skygazer42/Glyph": {
+  "rel_ver": "v.0.4.0",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 79,
+   "Vue": 13,
+   "JavaScript": 4,
+   "CSS": 3,
+   "Jinja": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

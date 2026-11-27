@@ -26,13 +26,13 @@
   }
  },
  "mudler/LocalAI": {
-  "commit_7d": 313,
-  "commit_90d": 2583,
-  "rel_ver": "dev-master",
-  "rel_pub": "2026-11-15",
-  "rel_days": 5,
+  "commit_7d": 354,
+  "commit_90d": 3094,
+  "rel_ver": "v5.0.1",
+  "rel_pub": "2026-11-20",
+  "rel_days": 7,
   "rel_n90": 6,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -46,22 +46,22 @@
    "C++": 4,
    "HTML": 3
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openai/openai-agents-python": {
-  "commit_7d": 29,
-  "commit_90d": 453,
-  "rel_ver": "v0.25.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "commit_7d": 25,
+  "commit_90d": 431,
+  "rel_ver": "v0.26.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -75,21 +75,21 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "botpress/botpress": {
-  "commit_7d": 8,
-  "commit_90d": 79,
+  "commit_7d": 6,
+  "commit_90d": 81,
   "rel_ver": "v12.30.9",
   "rel_pub": "2023-06-22",
-  "rel_days": 1247,
+  "rel_days": 1254,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -105,10 +105,10 @@
    "Shell": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4459,6 +4459,29 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Heek1/prooffit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 71,
+   "TypeScript": 27,
+   "CSS": 1,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

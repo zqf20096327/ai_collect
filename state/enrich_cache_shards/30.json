@@ -30,11 +30,11 @@
   }
  },
  "topoteretes/cognee": {
-  "commit_7d": 170,
-  "commit_90d": 2898,
-  "rel_ver": "v1.6.10",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 175,
+  "commit_90d": 3060,
+  "rel_ver": "v1.6.11",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -52,10 +52,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -149,11 +149,11 @@
   }
  },
  "zenml-io/zenml": {
-  "commit_90d": 123,
+  "commit_90d": 152,
   "commit_7d": 0,
   "rel_ver": "0.99.0",
   "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "Go Template": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

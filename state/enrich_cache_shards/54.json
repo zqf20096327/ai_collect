@@ -55,8 +55,8 @@
   }
  },
  "DataTalksClub/mlops-zoomcamp": {
-  "commit_7d": 1,
-  "commit_90d": 55,
+  "commit_7d": 2,
+  "commit_90d": 56,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -71,18 +71,18 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261117",
-   "release": "20261117",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "trailhq/Trail-Code": {
-  "commit_7d": 14,
-  "commit_90d": 416,
+  "commit_7d": 0,
+  "commit_90d": 353,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -97,10 +97,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -167,11 +167,11 @@
   }
  },
  "Osmantic/ODS": {
-  "commit_90d": 4534,
-  "commit_7d": 69,
+  "commit_90d": 4448,
+  "commit_7d": 0,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 57,
+  "rel_days": 64,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "PowerShell": 5,
    "CSS": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -380,10 +380,10 @@
    "Python": 96,
    "HTML": 4
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5635,6 +5635,32 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "glauberxyz/modulato": {
+  "rel_ver": "modulato@0.15.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 32,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 69,
+   "JavaScript": 28,
+   "CSS": 3,
+   "SCSS": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

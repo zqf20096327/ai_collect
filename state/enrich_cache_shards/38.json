@@ -1,11 +1,11 @@
 {
  "TencentCloud/TencentDB-Agent-Memory": {
-  "commit_7d": 2,
-  "commit_90d": 65,
+  "commit_7d": 3,
+  "commit_90d": 60,
   "rel_ver": "v2.0.4",
   "rel_pub": "2026-11-19",
-  "rel_days": 1,
-  "rel_n90": 10,
+  "rel_days": 8,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lancedb/lancedb": {
-  "commit_7d": 76,
-  "commit_90d": 779,
-  "rel_ver": "v0.42.0-beta.20",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 118,
+  "commit_90d": 838,
+  "rel_ver": "v0.42.0-beta.37",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "TypeScript": 8,
    "Java": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -67,7 +67,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.14.0",
   "rel_pub": "2026-10-01",
-  "rel_days": 50,
+  "rel_days": 57,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -83,20 +83,20 @@
    "TypeScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Marker-Inc-Korea/AutoRAG": {
-  "commit_90d": 460,
-  "commit_7d": 39,
-  "rel_ver": "v2.14.0",
-  "rel_pub": "2026-11-19",
+  "commit_90d": 425,
+  "commit_7d": 23,
+  "rel_ver": "v2.16.0",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -113,10 +113,10 @@
    "Makefile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -181,11 +181,11 @@
   }
  },
  "southleft/figma-console-mcp": {
-  "commit_90d": 69,
-  "commit_7d": 0,
-  "rel_ver": "v1.46.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 16,
+  "commit_90d": 70,
+  "commit_7d": 2,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -202,10 +202,10 @@
    "HTML": 4,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4505,6 +4505,30 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "bettysuzuki/comfyui-0-46-portable-edition-local-ai-studio-ja": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 70,
+   "Go": 30
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

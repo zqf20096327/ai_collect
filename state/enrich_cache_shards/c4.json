@@ -1602,16 +1602,16 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 2112,
-  "commit_7d": 152
+  "commit_90d": 2400,
+  "commit_7d": 68
  },
  "grafana/o11y-bench": {
   "rel_ver": null,

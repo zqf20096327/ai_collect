@@ -1,9 +1,9 @@
 {
  "onyx-dot-app/onyx": {
-  "commit_7d": 293,
-  "commit_90d": 2148,
-  "rel_ver": "helm/onyx-0.9.56",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 273,
+  "commit_90d": 2310,
+  "rel_ver": "helm/onyx-0.9.60",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -26,21 +26,21 @@
    "HCL": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tbphp/gpt-load": {
-  "commit_7d": 11,
-  "commit_90d": 346,
-  "rel_ver": "v2.0.0-rc.65",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 7,
+  "commit_90d": 325,
+  "rel_ver": "v2.0.0-rc.67",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -63,10 +63,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -215,8 +215,8 @@
   }
  },
  "fahadshamshad/awesome-transformers-in-medical-imaging": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -225,10 +225,10 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4319,13 +4319,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261118",
    "contrib": "20261118",
-   "lang": "20261118"
-  }
+   "lang": "20261118",
+   "commit": "20261127"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "lxgicstudios/lxgic-clipper": {
   "rel_ver": null,
@@ -4496,6 +4499,56 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "elkir0/omarchy-tab-s2": {
+  "rel_ver": "v2.1.2",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 60,
+   "Python": 29,
+   "C": 7,
+   "JavaScript": 2,
+   "QML": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "chenjinxian1/Lecta": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "JavaScript": 42,
+   "CSS": 12,
+   "HTML": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

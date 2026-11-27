@@ -1,10 +1,10 @@
 {
  "zylon-ai/private-gpt": {
-  "commit_7d": 11,
-  "commit_90d": 67,
+  "commit_7d": 3,
+  "commit_90d": 66,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 155,
+  "rel_days": 162,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Jinja": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "trycua/cua": {
-  "commit_7d": 394,
-  "commit_90d": 2922,
-  "rel_ver": "cua-spaces-v0.39.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 0,
+  "commit_7d": 267,
+  "commit_90d": 3158,
+  "rel_ver": "cua-spacesd-v0.18.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -55,10 +55,10 @@
    "Swift": 10,
    "Go": 3
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -91,14 +91,14 @@
   }
  },
  "NVIDIA/NemoClaw": {
-  "commit_7d": 30,
-  "commit_90d": 1596,
-  "rel_ver": "ci-native-podman-e2e-2026-10-01",
+  "commit_7d": 14,
+  "commit_90d": 1294,
+  "rel_ver": null,
   "rel_pub": "2026-10-01",
   "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": true,
-  "rel_none": false,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -111,21 +111,21 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "triggerdotdev/trigger.dev": {
-  "commit_7d": 157,
-  "commit_90d": 994,
-  "rel_ver": "v4.8.7",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 96,
+  "commit_90d": 1045,
+  "rel_ver": "v4.8.10",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -150,21 +150,21 @@
    "CSS": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/doris": {
-  "commit_7d": 123,
-  "commit_90d": 1455,
+  "commit_7d": 117,
+  "commit_90d": 1482,
   "rel_ver": "4.1.5-release",
   "rel_pub": "2026-10-15",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -180,10 +180,10 @@
    "Shell": 1,
    "Thrift": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -247,11 +247,11 @@
   }
  },
  "pydantic/logfire": {
-  "commit_7d": 28,
-  "commit_90d": 344,
-  "rel_ver": "v6.0.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 48,
+  "commit_90d": 370,
+  "rel_ver": "v6.0.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -265,10 +265,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4381,9 +4381,9 @@
    "TypeScript": 94,
    "CSS": 6
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "release": "20261025",
+   "release": "20261127",
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025",

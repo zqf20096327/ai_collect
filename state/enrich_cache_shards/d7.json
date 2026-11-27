@@ -1,7 +1,7 @@
 {
  "dailydotdev/daily": {
-  "commit_7d": 11,
-  "commit_90d": 41,
+  "commit_7d": 1,
+  "commit_90d": 40,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -13,10 +13,10 @@
    "JavaScript": 60,
    "TypeScript": 40
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,12 +75,12 @@
   }
  },
  "plastic-labs/honcho": {
-  "commit_7d": 26,
-  "commit_90d": 318,
-  "rel_ver": "v3.6.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 9,
-  "rel_n90": 8,
+  "commit_7d": 27,
+  "commit_90d": 317,
+  "rel_ver": "v3.6.2",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -469,8 +469,8 @@
   }
  },
  "parkpow/deep-license-plate-recognition": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 5,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -485,10 +485,10 @@
    "TypeScript": 18,
    "Rust": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -1,11 +1,11 @@
 {
  "agentscope-ai/agentscope": {
-  "commit_7d": 81,
-  "commit_90d": 529,
+  "commit_7d": 66,
+  "commit_90d": 581,
   "rel_ver": "v2.0.12",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
-  "rel_n90": 7,
+  "rel_days": 11,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,10 +18,10 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,11 +1,11 @@
 {
  "rohitg00/ai-engineering-from-scratch": {
-  "commit_7d": 18,
-  "commit_90d": 987,
-  "rel_ver": "v2026.11.4",
-  "rel_pub": "2026-11-18",
+  "commit_7d": 6,
+  "commit_90d": 952,
+  "rel_ver": "v2026.11.5",
+  "rel_pub": "2026-11-25",
   "rel_days": 2,
-  "rel_n90": 11,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "TypeScript": 5,
    "Go": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,11 +107,11 @@
   }
  },
  "dyad-sh/dyad": {
-  "commit_7d": 15,
-  "commit_90d": 322,
-  "rel_ver": "v1.24.0-beta.2",
-  "rel_pub": "2026-11-20",
-  "rel_days": 0,
+  "commit_7d": 5,
+  "commit_90d": 288,
+  "rel_ver": "v1.25.0-beta.1",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -132,20 +132,20 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "googleapis/mcp-toolbox": {
-  "commit_7d": 45,
-  "commit_90d": 253,
-  "rel_ver": "v1.17.0",
-  "rel_pub": "2026-11-13",
+  "commit_7d": 20,
+  "commit_90d": 248,
+  "rel_ver": "v1.18.0",
+  "rel_pub": "2026-11-20",
   "rel_days": 7,
   "rel_n90": 9,
   "rel_pre": false,
@@ -162,10 +162,10 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -228,8 +228,8 @@
   }
  },
  "huggingface/blog": {
-  "commit_7d": 7,
-  "commit_90d": 77,
+  "commit_7d": 17,
+  "commit_90d": 88,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -242,10 +242,10 @@
    "Python": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5156,12 +5156,12 @@
   }
  },
  "cookieY/Yearning": {
-  "commit_90d": 5,
-  "commit_7d": 5,
-  "rel_ver": "v4.0.0-rc.5",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
-  "rel_n90": 1,
+  "commit_90d": 12,
+  "commit_7d": 7,
+  "rel_ver": "v4.0.0-rc.7",
+  "rel_pub": "2026-11-22",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -5176,10 +5176,10 @@
    "CSS": 1,
    "MDX": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261120",
    "contrib": "20261120",
    "lang": "20261120"

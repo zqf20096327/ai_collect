@@ -1,10 +1,10 @@
 {
  "CopilotKit/CopilotKit": {
-  "commit_7d": 156,
-  "commit_90d": 4871,
-  "rel_ver": "v1.89.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "commit_7d": 78,
+  "commit_90d": 4688,
+  "rel_ver": "v1.90.2",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "C#": 2,
    "JavaScript": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "carla-simulator/carla": {
-  "commit_7d": 23,
-  "commit_90d": 370,
+  "commit_7d": 29,
+  "commit_90d": 297,
   "rel_ver": "1.0",
   "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "C": 3,
    "CMake": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -177,11 +177,11 @@
   }
  },
  "Agenta-AI/agenta": {
-  "commit_90d": 9165,
-  "commit_7d": 421,
-  "rel_ver": "v0.129.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_90d": 10362,
+  "commit_7d": 1427,
+  "rel_ver": "v0.131.1",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -204,10 +204,10 @@
    "MDX": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

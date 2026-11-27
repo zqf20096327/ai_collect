@@ -1,10 +1,10 @@
 {
  "opendataloader-project/opendataloader-pdf": {
-  "commit_7d": 22,
-  "commit_90d": 324,
-  "rel_ver": "v2.5.23",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 10,
+  "commit_90d": 318,
+  "rel_ver": "v2.5.24",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Shell": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -60,11 +60,11 @@
   }
  },
  "huggingface/chat-ui": {
-  "commit_7d": 9,
-  "commit_90d": 169,
+  "commit_7d": 2,
+  "commit_90d": 153,
   "rel_ver": "v0.10.0",
   "rel_pub": "2026-05-11",
-  "rel_days": 193,
+  "rel_days": 200,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -80,21 +80,21 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "olimorris/codecompanion.nvim": {
-  "commit_7d": 5,
-  "commit_90d": 130,
-  "rel_ver": "v20.2.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 7,
+  "commit_7d": 6,
+  "commit_90d": 125,
+  "rel_ver": "v20.3.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 5,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -110,10 +110,10 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4200,8 +4200,8 @@
   }
  },
  "orionsheep/wordlink": {
-  "commit_90d": 90,
-  "commit_7d": 57,
+  "commit_90d": 72,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4216,10 +4216,10 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
@@ -4735,6 +4735,56 @@
    "security": "20261123",
    "contrib": "20261123",
    "lang": "20261123"
+  }
+ },
+ "mo374z/PatientsWithPersonality": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 83,
+   "Python": 16,
+   "CSS": 0,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "usehm/hm": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 98,
+   "TypeScript": 1,
+   "Swift": 0,
+   "Makefile": 0,
+   "Ruby": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

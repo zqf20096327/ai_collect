@@ -52,11 +52,11 @@
   }
  },
  "janhq/jan": {
-  "commit_7d": 9,
-  "commit_90d": 1045,
+  "commit_7d": 0,
+  "commit_90d": 977,
   "rel_ver": "v0.8.8",
   "rel_pub": "2026-10-28",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -81,10 +81,10 @@
    "JavaScript": 1,
    "Swift": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -124,12 +124,12 @@
   }
  },
  "iflytek/astron-agent": {
-  "commit_90d": 70,
-  "commit_7d": 0,
-  "rel_ver": "v1.1.2",
-  "rel_pub": "2026-09-07",
-  "rel_days": 74,
-  "rel_n90": 2,
+  "commit_90d": 42,
+  "commit_7d": 4,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -146,10 +146,10 @@
    "JavaScript": 8,
    "SCSS": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1546,16 +1546,16 @@
    "Swift": 0,
    "HTML": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 172,
-  "commit_7d": 4
+  "commit_90d": 319,
+  "commit_7d": 40
  },
  "sinanuozdemir/oreilly-optimizing-llms": {
   "rel_ver": null,

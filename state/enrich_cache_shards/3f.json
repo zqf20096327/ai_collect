@@ -80,11 +80,11 @@
   }
  },
  "alibaba/page-agent": {
-  "commit_7d": 22,
+  "commit_7d": 0,
   "commit_90d": 40,
   "rel_ver": "v1.12.4",
   "rel_pub": "2026-09-06",
-  "rel_days": 75,
+  "rel_days": 82,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -99,10 +99,10 @@
    "CSS": 4,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

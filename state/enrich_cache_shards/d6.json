@@ -1,10 +1,10 @@
 {
  "weaviate/weaviate": {
-  "commit_7d": 197,
-  "commit_90d": 3722,
-  "rel_ver": "v1.40.6",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 192,
+  "commit_90d": 3820,
+  "rel_ver": "v1.41.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -92,11 +92,11 @@
   }
  },
  "PriorLabs/TabPFN": {
-  "commit_7d": 29,
-  "commit_90d": 143,
-  "rel_ver": "v10.2.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "commit_7d": 17,
+  "commit_90d": 150,
+  "rel_ver": "v10.3.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1439,16 +1439,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 2,
-  "commit_7d": 2
+  "commit_90d": 3,
+  "commit_7d": 1
  },
  "Ruggero1912/AIDE-unipi": {
   "rel_ver": null,
@@ -5105,6 +5105,29 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Bin-hy/go-campus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 95,
+   "JavaScript": 3,
+   "Python": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

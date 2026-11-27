@@ -1,12 +1,12 @@
 {
  "openclaw/openclaw": {
-  "commit_7d": 2329,
-  "commit_90d": 49010,
-  "rel_ver": "v2026.11.10-beta.1",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 2314,
+  "commit_90d": 48467,
+  "rel_ver": "v2026.11.10",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "high",
@@ -29,10 +29,10 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -69,11 +69,11 @@
   }
  },
  "langchain-ai/langchain": {
-  "commit_7d": 80,
-  "commit_90d": 608,
-  "rel_ver": "langchain-openrouter==0.3.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 34,
+  "commit_90d": 607,
+  "rel_ver": "langchain-core==1.8.5",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -98,10 +98,10 @@
    "XSLT": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -218,11 +218,11 @@
   }
  },
  "kagent-dev/kagent": {
-  "commit_7d": 17,
-  "commit_90d": 506,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-11-12",
-  "rel_days": 8,
+  "commit_7d": 15,
+  "commit_90d": 491,
+  "rel_ver": "v0.10.7",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -238,10 +238,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3850,9 +3850,9 @@
   }
  },
  "greyoak111/cccodroid": {
-  "rel_ver": "v0.4.2",
-  "rel_pub": "2026-10-24",
-  "rel_days": 0,
+  "rel_ver": "v0.8.3",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3868,13 +3868,16 @@
    "HTML": 1,
    "C": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "release": "20261024",
+   "release": "20261127",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261127"
+  },
+  "commit_90d": 1322,
+  "commit_7d": 110
  },
  "alphaparkinc/genpark-dynamic-bundle-pricing-maximizer-skill": {
   "rel_ver": null,
@@ -4344,11 +4347,11 @@
    "CSS": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261126",
+  "enriched_at": "20261127",
   "dim_ts": {
    "commit": "20261126",
    "release": "20261126",
-   "security": "20261028",
+   "security": "20261127",
    "contrib": "20261028",
    "lang": "20261028"
   }
@@ -4912,6 +4915,29 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "internet-projects/inkling2-mlx": {
+  "rel_ver": "v0.2.8",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 209,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

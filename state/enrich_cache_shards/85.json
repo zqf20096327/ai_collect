@@ -89,12 +89,12 @@
   }
  },
  "huggingface/tokenizers": {
-  "commit_7d": 23,
-  "commit_90d": 158,
-  "rel_ver": "v1.0.0-rc.4",
-  "rel_pub": "2026-11-09",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "commit_7d": 14,
+  "commit_90d": 157,
+  "rel_ver": "v1.0.0-rc.5",
+  "rel_pub": "2026-11-20",
+  "rel_days": 7,
+  "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -109,10 +109,10 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -120,10 +120,10 @@
  },
  "miurla/morphic": {
   "commit_7d": 3,
-  "commit_90d": 100,
+  "commit_90d": 91,
   "rel_ver": "v1.10.0",
   "rel_pub": "2026-11-09",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -139,10 +139,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4907,6 +4907,28 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Xiong-Zi-Long/langchain-langgraph-tutorial": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "HTML": 17,
+   "Batchfile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

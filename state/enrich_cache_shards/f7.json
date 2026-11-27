@@ -37,10 +37,10 @@
   }
  },
  "comet-ml/opik": {
-  "commit_7d": 74,
-  "commit_90d": 1259,
-  "rel_ver": "2.2.151",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 148,
+  "commit_90d": 1306,
+  "rel_ver": "2.3.6",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -61,10 +61,10 @@
    "Jupyter Notebook": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,11 +115,11 @@
   }
  },
  "BoundaryML/baml": {
-  "commit_7d": 84,
-  "commit_90d": 632,
-  "rel_ver": "baml-language-0.25.3-nightly.20261116.a",
-  "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "commit_7d": 25,
+  "commit_90d": 607,
+  "rel_ver": "baml-language-0.26.1-nightly.20261120.a",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
    "C#": 3,
    "Python": 3
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -310,11 +310,11 @@
   }
  },
  "kubernetes-sigs/agent-sandbox": {
-  "commit_90d": 529,
-  "commit_7d": 29,
-  "rel_ver": "v1.0.11",
-  "rel_pub": "2026-11-12",
-  "rel_days": 8,
+  "commit_90d": 527,
+  "commit_7d": 27,
+  "rel_ver": "v1.0.12",
+  "rel_pub": "2026-11-20",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -330,10 +330,10 @@
    "HTML": 2,
    "Shell": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4116,13 +4116,16 @@
    "HTML": 1,
    "Swift": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261127"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "zhangjingwei/weixin-link": {
   "rel_ver": "v1.5.0",

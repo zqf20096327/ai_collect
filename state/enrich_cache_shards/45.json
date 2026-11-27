@@ -80,11 +80,11 @@
   }
  },
  "Ontos-AI/knowhere": {
-  "commit_90d": 645,
-  "commit_7d": 55,
-  "rel_ver": "v1.2.63",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_90d": 692,
+  "commit_7d": 76,
+  "rel_ver": "v1.2.72",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -100,10 +100,10 @@
    "Makefile": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -377,12 +377,12 @@
   }
  },
  "lobehub/awesome-rsi": {
-  "commit_90d": 62,
-  "commit_7d": 5,
-  "rel_ver": "v2026.08",
-  "rel_pub": "2026-08-17",
-  "rel_days": 95,
-  "rel_n90": 0,
+  "commit_90d": 111,
+  "commit_7d": 55,
+  "rel_ver": "v2026.11",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -391,10 +391,10 @@
   "sec_ids": [],
   "contrib_n": 17,
   "lang": {},
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

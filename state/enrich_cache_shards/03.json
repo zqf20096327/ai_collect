@@ -1,10 +1,10 @@
 {
  "openbq-org/OpenBB": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 26,
   "rel_ver": "openbb-v5.0.0",
   "rel_pub": "2026-09-30",
-  "rel_days": 51,
+  "rel_days": 58,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -16,21 +16,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "feast-dev/feast": {
-  "commit_90d": 243,
-  "commit_7d": 44,
+  "commit_90d": 255,
+  "commit_7d": 16,
   "rel_ver": "v0.68.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "Java": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4631,6 +4631,67 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "anandapurva55/hybrid-complaint-risk-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "Jupyter Notebook": 22,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "YDNh22844/ai-brain-library": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "TwelveNights/ComfyUI-3D-rocm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

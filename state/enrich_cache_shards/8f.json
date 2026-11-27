@@ -1,10 +1,10 @@
 {
  "jlcodes99/cockpit-tools": {
-  "commit_7d": 191,
-  "commit_90d": 827,
-  "rel_ver": "v1.4.2",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 99,
+  "commit_90d": 902,
+  "rel_ver": "v1.5.2",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Go": 4,
    "JavaScript": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -60,12 +60,12 @@
   }
  },
  "browser-use/browser-harness": {
-  "commit_7d": 50,
-  "commit_90d": 343,
-  "rel_ver": "v0.1.13",
-  "rel_pub": "2026-09-04",
-  "rel_days": 77,
-  "rel_n90": 4,
+  "commit_7d": 49,
+  "commit_90d": 456,
+  "rel_ver": "v0.1.15",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,22 +78,22 @@
    "HTML": 14,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "The-PR-Agent/pr-agent": {
-  "commit_7d": 127,
-  "commit_90d": 1502,
+  "commit_7d": 90,
+  "commit_90d": 1512,
   "rel_ver": "v0.50.0",
   "rel_pub": "2026-11-07",
-  "rel_days": 13,
-  "rel_n90": 8,
+  "rel_days": 20,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -143,9 +143,9 @@
  },
  "n4ze3m/page-assist": {
   "commit_7d": 4,
-  "commit_90d": 82,
-  "rel_ver": "v1.5.92",
-  "rel_pub": "2026-11-15",
+  "commit_90d": 81,
+  "rel_ver": "v1.5.93",
+  "rel_pub": "2026-11-22",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -161,10 +161,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -194,12 +194,12 @@
   }
  },
  "datajuicer/data-juicer": {
-  "commit_7d": 21,
-  "commit_90d": 115,
-  "rel_ver": "v1.6.2",
-  "rel_pub": "2026-11-04",
-  "rel_days": 16,
-  "rel_n90": 3,
+  "commit_7d": 25,
+  "commit_90d": 135,
+  "rel_ver": "v1.6.3",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -214,10 +214,10 @@
    "Dockerfile": 0,
    "Cython": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -277,10 +277,10 @@
   }
  },
  "Chevey339/kelivo": {
-  "commit_7d": 76,
-  "commit_90d": 797,
-  "rel_ver": "v1.3.6",
-  "rel_pub": "2026-11-15",
+  "commit_7d": 88,
+  "commit_90d": 834,
+  "rel_ver": "v1.3.7",
+  "rel_pub": "2026-11-22",
   "rel_days": 5,
   "rel_n90": 11,
   "rel_pre": false,
@@ -297,21 +297,21 @@
    "HTML": 1,
    "Objective-C": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/mcp": {
-  "commit_7d": 23,
-  "commit_90d": 494,
-  "rel_ver": "Azure.Mcp.Server-4.0.0-beta.9",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 17,
+  "commit_90d": 461,
+  "rel_ver": "Azure.Mcp.Server-4.0.0-beta.10",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -327,10 +327,10 @@
    "TypeScript": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -817,8 +817,8 @@
   }
  },
  "mukel/llama3.java": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -830,10 +830,10 @@
    "Java": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1622,7 +1622,7 @@
   }
  },
  "peonist-ai/halogen-server": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 11,
   "rel_ver": null,
   "rel_none": true,
@@ -1635,10 +1635,10 @@
    "Python": 71,
    "Shell": 29
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5586,6 +5586,27 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "agelenler/gen-ai-java-spring": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 99,
+   "Shell": 1,
+   "Smalltalk": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

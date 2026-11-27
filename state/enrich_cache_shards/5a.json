@@ -91,10 +91,10 @@
  },
  "wiltodelta/remove-ai-watermarks": {
   "commit_90d": 343,
-  "commit_7d": 32,
-  "rel_ver": "v0.64.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 35,
+  "rel_ver": "v0.76.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -107,10 +107,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

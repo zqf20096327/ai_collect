@@ -1,11 +1,11 @@
 {
  "TEN-framework/ten-framework": {
-  "commit_7d": 3,
-  "commit_90d": 64,
-  "rel_ver": "0.11.75",
-  "rel_pub": "2026-11-03",
-  "rel_days": 17,
-  "rel_n90": 4,
+  "commit_7d": 10,
+  "commit_90d": 70,
+  "rel_ver": "0.11.77",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "TypeScript": 12,
    "Rust": 11
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -493,11 +493,11 @@
  },
  "youichi-uda/godot-mcp-pro": {
   "commit_90d": 10,
-  "commit_7d": 0,
-  "rel_ver": "v1.17.1",
-  "rel_pub": "2026-09-24",
-  "rel_days": 23,
-  "rel_n90": 4,
+  "commit_7d": 2,
+  "rel_ver": "v1.18.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -509,10 +509,10 @@
    "GDScript": 98,
    "GAP": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4128,16 +4128,16 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261126",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 17,
-  "commit_7d": 17
+  "commit_90d": 57,
+  "commit_7d": 0
  },
  "mithilai/stair-toc-retrieval": {
   "rel_ver": null,
@@ -5308,6 +5308,28 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "CrystalDustt-V2/Whatsapp-Bot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 75,
+   "HTML": 21,
+   "JavaScript": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

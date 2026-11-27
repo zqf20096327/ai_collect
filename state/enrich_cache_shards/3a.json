@@ -27,11 +27,11 @@
   }
  },
  "altic-dev/FluidVoice": {
-  "commit_7d": 35,
-  "commit_90d": 509,
+  "commit_7d": 15,
+  "commit_90d": 482,
   "rel_ver": "v1.6.13",
   "rel_pub": "2026-11-13",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -47,21 +47,21 @@
    "C": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "OpenWhispr/openwhispr": {
-  "commit_7d": 50,
-  "commit_90d": 822,
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "commit_7d": 54,
+  "commit_90d": 866,
+  "rel_ver": "v1.12.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -77,10 +77,10 @@
    "C": 1,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -113,11 +113,11 @@
   }
  },
  "OpenBMB/UltraRAG": {
-  "commit_90d": 75,
+  "commit_90d": 73,
   "commit_7d": 0,
   "rel_ver": "v0.3.0.3",
   "rel_pub": "2026-09-15",
-  "rel_days": 66,
+  "rel_days": 73,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
    "JavaScript": 4,
    "Jinja": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4333,12 +4333,12 @@
   }
  },
  "jupyterlab/jupyter-ai": {
-  "commit_90d": 69,
-  "commit_7d": 2,
+  "commit_90d": 58,
+  "commit_7d": 3,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-09-03",
-  "rel_days": 78,
-  "rel_n90": 5,
+  "rel_days": 85,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4352,10 +4352,10 @@
    "Shell": 9,
    "JavaScript": 6
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"

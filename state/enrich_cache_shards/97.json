@@ -20,11 +20,11 @@
   }
  },
  "rowboatlabs/rowboat": {
-  "commit_7d": 69,
-  "commit_90d": 668,
+  "commit_7d": 14,
+  "commit_90d": 624,
   "rel_ver": "v1.0.9",
   "rel_pub": "2026-11-11",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -40,21 +40,21 @@
    "Swift": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yc-software/qm": {
-  "commit_7d": 138,
-  "commit_90d": 2154,
-  "rel_ver": "v0.1.19",
-  "rel_pub": "2026-11-12",
-  "rel_days": 8,
+  "commit_7d": 189,
+  "commit_90d": 2318,
+  "rel_ver": "v0.1.20",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -70,10 +70,10 @@
    "JavaScript": 1,
    "Rust": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,12 +110,12 @@
   }
  },
  "LearningCircuit/local-deep-research": {
-  "commit_7d": 99,
-  "commit_90d": 1246,
-  "rel_ver": "v2.0.1",
-  "rel_pub": "2026-11-15",
-  "rel_days": 5,
-  "rel_n90": 4,
+  "commit_7d": 98,
+  "commit_90d": 1289,
+  "rel_ver": "v2.0.4",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -139,10 +139,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -238,11 +238,11 @@
   }
  },
  "pytorch/torchtitan": {
-  "commit_90d": 900,
-  "commit_7d": 48,
+  "commit_90d": 927,
+  "commit_7d": 77,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -256,10 +256,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -296,7 +296,7 @@
   }
  },
  "Hufe921/canvas-editor": {
-  "commit_90d": 72,
+  "commit_90d": 71,
   "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
@@ -311,23 +311,23 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HolmesGPT/holmesgpt": {
-  "commit_90d": 131,
-  "commit_7d": 9,
-  "rel_ver": "0.47.0-alpha.1",
-  "rel_pub": "2026-11-19",
+  "commit_90d": 125,
+  "commit_7d": 4,
+  "rel_ver": "0.48.0",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
   "sec_worst": "critical",
@@ -343,10 +343,10 @@
    "TypeScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5410,6 +5410,55 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "koelony/koeltype": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-11-10",
+  "rel_days": 17,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 59,
+   "TypeScript": 33,
+   "JavaScript": 4,
+   "CSS": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "K4-23/RiskCite": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 62,
+   "TypeScript": 26,
+   "CSS": 12,
+   "HTML": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

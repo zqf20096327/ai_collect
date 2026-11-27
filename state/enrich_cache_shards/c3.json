@@ -1,10 +1,10 @@
 {
  "ultralytics/ultralytics": {
-  "commit_7d": 88,
-  "commit_90d": 1021,
-  "rel_ver": "v8.4.216",
-  "rel_pub": "2026-11-20",
-  "rel_days": 0,
+  "commit_7d": 83,
+  "commit_90d": 1022,
+  "rel_ver": "v8.4.220",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -19,18 +19,18 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "KKKKhazix/AIHOT": {
-  "commit_90d": 336,
-  "commit_7d": 53,
+  "commit_90d": 416,
+  "commit_7d": 80,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 2,
@@ -47,10 +47,10 @@
    "PLpgSQL": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1822,13 +1822,16 @@
    "HTML": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261127"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "FareedKhan-dev/long-running-agent": {
   "rel_ver": null,

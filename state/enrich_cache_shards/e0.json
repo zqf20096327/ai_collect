@@ -28,11 +28,11 @@
   }
  },
  "modular/modular": {
-  "commit_7d": 542,
-  "commit_90d": 6201,
+  "commit_7d": 504,
+  "commit_90d": 6372,
   "rel_ver": "max/v26.7.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -48,21 +48,21 @@
    "Starlark": 4,
    "MDX": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "strands-agents/harness-sdk": {
-  "commit_7d": 88,
-  "commit_90d": 900,
-  "rel_ver": "typescript/v1.26.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 57,
+  "commit_90d": 895,
+  "rel_ver": "harness-cli/v0.5.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -82,10 +82,10 @@
    "Astro": 2,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4228,12 +4228,12 @@
   }
  },
  "Sandflow-ai/sand3d": {
-  "commit_90d": 27,
-  "commit_7d": 2,
-  "rel_ver": "v1.6.3",
-  "rel_pub": "2026-11-06",
-  "rel_days": 14,
-  "rel_n90": 3,
+  "commit_90d": 37,
+  "commit_7d": 10,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4246,10 +4246,10 @@
    "Python": 11,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"

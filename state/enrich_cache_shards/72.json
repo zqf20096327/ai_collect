@@ -1,10 +1,10 @@
 {
  "Fission-AI/OpenSpec": {
-  "commit_7d": 17,
-  "commit_90d": 267,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 5,
+  "commit_90d": 260,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Nix": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/semantic-kernel": {
-  "commit_7d": 2,
-  "commit_90d": 135,
+  "commit_7d": 3,
+  "commit_90d": 130,
   "rel_ver": "dotnet-1.82.0",
   "rel_pub": "2026-11-07",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -53,21 +53,21 @@
    "TypeScript": 0,
    "Bicep": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "StarTrail-org/LEANN": {
-  "commit_7d": 18,
-  "commit_90d": 65,
+  "commit_7d": 8,
+  "commit_90d": 71,
   "rel_ver": "v0.3.9",
   "rel_pub": "2026-11-02",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -83,10 +83,10 @@
    "Jupyter Notebook": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -124,10 +124,10 @@
  },
  "InternLM/lmdeploy": {
   "commit_7d": 15,
-  "commit_90d": 145,
+  "commit_90d": 140,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-09-28",
-  "rel_days": 53,
+  "rel_days": 60,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -152,23 +152,23 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LibrePhotos/librephotos": {
-  "commit_7d": 7,
-  "commit_90d": 666,
-  "rel_ver": "1.6.0",
-  "rel_pub": "2026-11-09",
-  "rel_days": 11,
-  "rel_n90": 10,
-  "rel_pre": false,
+  "commit_7d": 48,
+  "commit_90d": 708,
+  "rel_ver": "windows-wheels-2026.11.21",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
+  "rel_n90": 11,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 16,
   "sec_worst": "high",
@@ -191,20 +191,20 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ArvinLovegood/go-stock": {
-  "commit_7d": 12,
-  "commit_90d": 163,
-  "rel_ver": "v2026.11.19.1-release",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 16,
+  "commit_90d": 170,
+  "rel_ver": "v2026.11.26.2-release",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -221,21 +221,21 @@
    "JavaScript": 2,
    "NSIS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "open-multi-agent/open-multi-agent": {
-  "commit_7d": 11,
-  "commit_90d": 109,
-  "rel_ver": "v1.24.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 7,
+  "commit_7d": 15,
+  "commit_90d": 114,
+  "rel_ver": "v1.25.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 5,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -248,21 +248,21 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "raullenchai/Rapid-MLX": {
-  "commit_7d": 75,
-  "commit_90d": 1900,
-  "rel_ver": "v1.0.4",
-  "rel_pub": "2026-11-17",
-  "rel_days": 3,
+  "commit_7d": 52,
+  "commit_90d": 1731,
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -278,10 +278,10 @@
    "HTML": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5556,6 +5556,56 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "stevenmessinger/Direct": {
+  "rel_ver": "v10.4.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 25,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 98,
+   "C++": 1,
+   "Starlark": 1,
+   "Meson": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "explAIn-channel/bratan-robot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 74,
+   "Java": 17,
+   "HTML": 4,
+   "C++": 3,
+   "C": 2
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

@@ -85,13 +85,13 @@
   }
  },
  "LMCache/LMCache": {
-  "commit_7d": 64,
-  "commit_90d": 801,
-  "rel_ver": "nightly-rocm",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 93,
+  "commit_90d": 853,
+  "rel_ver": "v0.5.9rc1-xpu",
+  "rel_pub": "2026-11-26",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
   "sec_worst": "critical",
@@ -108,10 +108,10 @@
    "C++": 2,
    "Cuda": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -173,12 +173,12 @@
   }
  },
  "SwanHubX/SwanLab": {
-  "commit_7d": 3,
-  "commit_90d": 28,
+  "commit_7d": 0,
+  "commit_90d": 23,
   "rel_ver": "v0.10.6",
   "rel_pub": "2026-11-18",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "rel_days": 9,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -192,10 +192,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4741,6 +4741,25 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "janvikamilla/Pair-Programming-Project": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

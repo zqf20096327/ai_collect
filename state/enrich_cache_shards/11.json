@@ -1,9 +1,9 @@
 {
  "HumanSignal/label-studio": {
-  "commit_7d": 63,
-  "commit_90d": 434,
+  "commit_7d": 28,
+  "commit_90d": 442,
   "rel_ver": "nightly",
-  "rel_pub": "2026-11-20",
+  "rel_pub": "2026-11-27",
   "rel_days": 0,
   "rel_n90": 3,
   "rel_pre": true,
@@ -29,10 +29,10 @@
    "CSS": 8,
    "HTML": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -68,11 +68,11 @@
   }
  },
  "InternLM/xtuner": {
-  "commit_7d": 9,
-  "commit_90d": 139,
+  "commit_7d": 12,
+  "commit_90d": 144,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-05-15",
-  "rel_days": 189,
+  "rel_days": 196,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -86,10 +86,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

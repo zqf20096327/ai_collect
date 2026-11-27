@@ -1,11 +1,11 @@
 {
  "headroomlabs-ai/headroom": {
-  "commit_7d": 89,
-  "commit_90d": 1117,
-  "rel_ver": "v0.44.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 10,
-  "rel_n90": 12,
+  "commit_7d": 55,
+  "commit_90d": 1132,
+  "rel_ver": "v0.45.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 5,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -23,21 +23,21 @@
    "JavaScript": 2,
    "HTML": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yamadashy/repomix": {
-  "commit_7d": 19,
-  "commit_90d": 456,
+  "commit_7d": 18,
+  "commit_90d": 452,
   "rel_ver": "v1.19.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -209,10 +209,10 @@
  },
  "snap-stanford/Biomni": {
   "commit_90d": 4,
-  "commit_7d": 4,
+  "commit_7d": 0,
   "rel_ver": "v0.0.8",
   "rel_pub": "2025-10-27",
-  "rel_days": 389,
+  "rel_days": 396,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "Shell": 2,
    "R": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4560,12 +4560,12 @@
   }
  },
  "guilhermeborgesbastos/live-resume": {
-  "commit_90d": 94,
-  "commit_7d": 62,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-10-27",
-  "rel_days": 1,
-  "rel_n90": 3,
+  "commit_90d": 133,
+  "commit_7d": 0,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 28,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4580,10 +4580,10 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

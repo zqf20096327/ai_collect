@@ -1,7 +1,7 @@
 {
  "shanraisshan/claude-code-best-practice": {
-  "commit_7d": 70,
-  "commit_90d": 991,
+  "commit_7d": 62,
+  "commit_90d": 972,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -13,10 +13,10 @@
    "HTML": 95,
    "Python": 5
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,12 +83,12 @@
   }
  },
  "WasmEdge/WasmEdge": {
-  "commit_7d": 34,
-  "commit_90d": 306,
+  "commit_7d": 47,
+  "commit_90d": 324,
   "rel_ver": "0.18.1",
   "rel_pub": "2026-10-22",
-  "rel_days": 29,
-  "rel_n90": 12,
+  "rel_days": 36,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -105,21 +105,21 @@
    "Shell": 1,
    "Pawn": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "oumi-ai/oumi": {
-  "commit_7d": 1,
-  "commit_90d": 104,
+  "commit_7d": 14,
+  "commit_90d": 105,
   "rel_ver": "v0.9",
   "rel_pub": "2026-09-16",
-  "rel_days": 65,
+  "rel_days": 72,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
    "Jinja": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -146,7 +146,7 @@
  },
  "vladmandic/sdnext": {
   "commit_7d": 0,
-  "commit_90d": 851,
+  "commit_90d": 703,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 7,
@@ -169,10 +169,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5055,10 +5055,10 @@
    "CSS": 3,
    "Batchfile": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261104",
-   "security": "20261028",
+   "security": "20261127",
    "contrib": "20261028",
    "lang": "20261028",
    "commit": "20261029"
@@ -5781,6 +5781,57 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "josefdc/liner-notes": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 78,
+   "Python": 12,
+   "JavaScript": 9,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "beProactive01/Bercy": {
+  "rel_ver": "v0.1.14",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "Python": 10
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

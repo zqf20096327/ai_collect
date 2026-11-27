@@ -1,10 +1,10 @@
 {
  "milvus-io/milvus": {
-  "commit_7d": 77,
-  "commit_90d": 804,
-  "rel_ver": "v3.0.6",
-  "rel_pub": "2026-11-11",
-  "rel_days": 9,
+  "commit_7d": 78,
+  "commit_90d": 823,
+  "rel_ver": "client/v3.0.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -29,18 +29,18 @@
    "Shell": 0,
    "Groovy": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ahujasid/mcp-for-blender": {
-  "commit_7d": 7,
-  "commit_90d": 98,
+  "commit_7d": 6,
+  "commit_90d": 95,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -55,10 +55,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -177,11 +177,11 @@
   }
  },
  "RediSearch/RediSearch": {
-  "commit_90d": 535,
-  "commit_7d": 56,
+  "commit_90d": 521,
+  "commit_7d": 48,
   "rel_ver": "v2.10.31",
   "rel_pub": "2026-06-17",
-  "rel_days": 156,
+  "rel_days": 163,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -199,18 +199,18 @@
    "C++": 8,
    "Shell": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "cactus-compute/cactus": {
-  "commit_90d": 115,
-  "commit_7d": 12,
+  "commit_90d": 109,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_pub": "2026-09-26",
   "rel_days": 20,
@@ -229,10 +229,10 @@
    "C": 7,
    "Metal": 2
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5609,6 +5609,32 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "lixiaoxiao9888-create/manju-laoli-skill": {
+  "commit_90d": 53,
+  "commit_7d": 7,
+  "rel_ver": "v6.9.8",
+  "rel_pub": "2026-09-20",
+  "rel_days": 68,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "commit": "20261127",
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

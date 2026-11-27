@@ -26,12 +26,12 @@
   }
  },
  "ZhuLinsen/daily_stock_analysis": {
-  "commit_7d": 27,
-  "commit_90d": 145,
+  "commit_7d": 58,
+  "commit_90d": 184,
   "rel_ver": "v3.35.0",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
-  "rel_n90": 5,
+  "rel_days": 11,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1465,16 +1465,16 @@
    "Makefile": 11,
    "Dockerfile": 6
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261127",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 110,
-  "commit_7d": 0
+  "commit_90d": 160,
+  "commit_7d": 95
  },
  "Azure-Samples/azure-sql-db-vector-search": {
   "rel_ver": null,
@@ -4210,11 +4210,11 @@
   }
  },
  "JacksonBurns/astartes": {
-  "commit_90d": 5,
-  "commit_7d": 5,
+  "commit_90d": 7,
+  "commit_7d": 0,
   "rel_ver": "v1.3.2",
   "rel_pub": "2025-07-29",
-  "rel_days": 456,
+  "rel_days": 486,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -4226,10 +4226,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

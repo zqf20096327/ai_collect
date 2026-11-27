@@ -112,11 +112,11 @@
   }
  },
  "memgraph/memgraph": {
-  "commit_7d": 21,
-  "commit_90d": 357,
+  "commit_7d": 4,
+  "commit_90d": 337,
   "rel_ver": "v3.14.0",
   "rel_pub": "2026-10-21",
-  "rel_days": 30,
+  "rel_days": 37,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -132,10 +132,10 @@
    "Gherkin": 4,
    "Shell": 3
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4992,6 +4992,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "souvik-das-tech/ssh-pro-ai": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 26,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Rust": 64,
+   "JavaScript": 19,
+   "CSS": 12,
+   "HTML": 3,
+   "Inno Setup": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

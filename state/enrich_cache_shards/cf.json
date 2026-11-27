@@ -69,11 +69,11 @@
   }
  },
  "huggingface/lerobot": {
-  "commit_7d": 22,
-  "commit_90d": 257,
+  "commit_7d": 14,
+  "commit_90d": 263,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -86,10 +86,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -198,12 +198,12 @@
   }
  },
  "MariaDB/server": {
-  "commit_90d": 646,
-  "commit_7d": 7,
-  "rel_ver": "mariadb-12.3.4",
-  "rel_pub": "2026-11-16",
-  "rel_days": 4,
-  "rel_n90": 10,
+  "commit_90d": 796,
+  "commit_7d": 40,
+  "rel_ver": "mariadb-13.1.2",
+  "rel_pub": "2026-11-21",
+  "rel_days": 6,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 28,
@@ -227,10 +227,10 @@
    "Shell": 1,
    "Yacc": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -292,11 +292,11 @@
   }
  },
  "cloudflare/agents": {
-  "commit_90d": 358,
-  "commit_7d": 11,
-  "rel_ver": "agents@0.33.0",
-  "rel_pub": "2026-11-03",
-  "rel_days": 17,
+  "commit_90d": 716,
+  "commit_7d": 374,
+  "rel_ver": "agents@0.34.1",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -315,22 +315,22 @@
    "Shell": 0,
    "Astro": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "areal-project/AReaL": {
-  "commit_90d": 161,
-  "commit_7d": 10,
+  "commit_90d": 163,
+  "commit_7d": 18,
   "rel_ver": "v2.1.1",
   "rel_pub": "2026-11-04",
-  "rel_days": 16,
-  "rel_n90": 2,
+  "rel_days": 23,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -344,10 +344,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5438,6 +5438,53 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "PSUCyberSecurityLab/AIforCybersecurity": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "Anarki-LNX/nuorb": {
+  "rel_ver": "v0.6.4",
+  "rel_pub": "2026-11-27",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "JavaScript": 35,
+   "CSS": 7,
+   "Shell": 6,
+   "HTML": 4
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

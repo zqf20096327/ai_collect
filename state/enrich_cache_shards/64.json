@@ -30,12 +30,12 @@
   }
  },
  "pingcap/tidb": {
-  "commit_7d": 64,
-  "commit_90d": 515,
+  "commit_7d": 70,
+  "commit_90d": 548,
   "rel_ver": "v8.5.8",
   "rel_pub": "2026-08-27",
-  "rel_days": 85,
-  "rel_n90": 2,
+  "rel_days": 92,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -52,22 +52,22 @@
    "Yacc": 1,
    "Jsonnet": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "adbar/trafilatura": {
-  "commit_90d": 133,
-  "commit_7d": 16,
-  "rel_ver": "v2.3.1",
-  "rel_pub": "2026-10-06",
-  "rel_days": 45,
-  "rel_n90": 2,
+  "commit_90d": 142,
+  "commit_7d": 13,
+  "rel_ver": "v2.4.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,10 +78,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,8 +110,8 @@
   }
  },
  "Astrosp/Awesome-OSINT-List": {
-  "commit_90d": 103,
-  "commit_7d": 1,
+  "commit_90d": 124,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -122,10 +122,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1383,16 +1383,16 @@
    "JavaScript": 87,
    "Shell": 13
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 31,
-  "commit_7d": 3
+  "commit_90d": 47,
+  "commit_7d": 15
  },
  "HarryHsing/OmniAgent": {
   "rel_ver": null,
@@ -5119,6 +5119,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "adonaiongaia/MikroTitan": {
+  "rel_ver": "MikroTitan",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 58,
+   "TypeScript": 41,
+   "Shell": 0,
+   "CSS": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

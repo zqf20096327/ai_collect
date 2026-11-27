@@ -1,10 +1,10 @@
 {
  "aaif-goose/goose": {
-  "commit_7d": 95,
-  "commit_90d": 611,
-  "rel_ver": "v1.60.1",
-  "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "commit_7d": 67,
+  "commit_90d": 606,
+  "rel_ver": "v1.61.1",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,22 +22,22 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HKUDS/LightRAG": {
-  "commit_7d": 550,
-  "commit_90d": 2225,
-  "rel_ver": "v1.5.8rc1",
-  "rel_pub": "2026-11-15",
-  "rel_days": 5,
-  "rel_n90": 2,
+  "commit_7d": 438,
+  "commit_90d": 2585,
+  "rel_ver": "v1.5.8",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 23,
@@ -61,21 +61,21 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "qdrant/qdrant": {
-  "commit_7d": 18,
+  "commit_7d": 0,
   "commit_90d": 746,
   "rel_ver": "v1.20.2",
   "rel_pub": "2026-11-16",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -95,10 +95,10 @@
    "HTML": 0,
    "C": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -310,11 +310,11 @@
   }
  },
  "win4r/AISuperDomain": {
-  "commit_7d": 7,
-  "commit_90d": 7,
+  "commit_7d": 3,
+  "commit_90d": 10,
   "rel_ver": "v1.1",
   "rel_pub": "2024-03-24",
-  "rel_days": 959,
+  "rel_days": 978,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -326,10 +326,10 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

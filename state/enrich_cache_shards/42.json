@@ -30,11 +30,11 @@
   }
  },
  "Comfy-Org/ComfyUI": {
-  "commit_7d": 53,
-  "commit_90d": 571,
+  "commit_7d": 47,
+  "commit_90d": 587,
   "rel_ver": "v0.46.0",
   "rel_pub": "2026-11-18",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -54,21 +54,21 @@
    "Batchfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "herdrdev/herdr": {
-  "commit_7d": 4,
-  "commit_90d": 427,
+  "commit_7d": 0,
+  "commit_90d": 405,
   "rel_ver": "v0.9.5",
   "rel_pub": "2026-10-14",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -84,21 +84,21 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "huggingface/trl": {
-  "commit_7d": 99,
-  "commit_90d": 831,
-  "rel_ver": "v1.18.2",
-  "rel_pub": "2026-11-19",
-  "rel_days": 1,
+  "commit_7d": 93,
+  "commit_90d": 876,
+  "rel_ver": "v1.19.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -113,21 +113,21 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "e2b-dev/E2B": {
-  "commit_7d": 10,
-  "commit_90d": 216,
-  "rel_ver": "e2b@2.64.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 7,
+  "commit_7d": 11,
+  "commit_90d": 207,
+  "rel_ver": "e2b@2.66.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -143,10 +143,10 @@
    "Makefile": 0,
    "Handlebars": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -154,10 +154,10 @@
  },
  "camel-ai/oasis": {
   "commit_7d": 1,
-  "commit_90d": 22,
+  "commit_90d": 17,
   "rel_ver": "v0.2.6",
   "rel_pub": "2026-11-02",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -170,21 +170,21 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Nixtla/nixtla": {
-  "commit_7d": 4,
-  "commit_90d": 61,
+  "commit_7d": 2,
+  "commit_90d": 60,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-09-21",
-  "rel_days": 60,
+  "rel_days": 67,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -200,10 +200,10 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4333,8 +4333,8 @@
   }
  },
  "Khalidabdi1/design-ai": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4343,10 +4343,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261026",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
@@ -4448,16 +4448,16 @@
    "HTML": 2,
    "Rust": 2
   },
-  "enriched_at": "20261126",
+  "enriched_at": "20261127",
   "dim_ts": {
    "release": "20261126",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027",
-   "commit": "20261028"
+   "commit": "20261127"
   },
-  "commit_90d": 2121,
-  "commit_7d": 143
+  "commit_90d": 1340,
+  "commit_7d": 98
  },
  "AminRezaeeyan/NeuroScan": {
   "rel_ver": "v2.0.0",
@@ -5460,6 +5460,53 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "R3DRUN3/reconai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 2
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
+  }
+ },
+ "hazelcaffe/sekai": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "Kotlin": 4,
+   "Swift": 2,
+   "CSS": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }

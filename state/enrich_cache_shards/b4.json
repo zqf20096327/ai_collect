@@ -30,12 +30,12 @@
   }
  },
  "agent0ai/agent-zero": {
-  "commit_7d": 18,
-  "commit_90d": 503,
+  "commit_7d": 1,
+  "commit_90d": 438,
   "rel_ver": "v2.16",
   "rel_pub": "2026-11-17",
-  "rel_days": 3,
-  "rel_n90": 6,
+  "rel_days": 10,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -50,21 +50,21 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "neuml/txtai": {
-  "commit_7d": 24,
-  "commit_90d": 287,
-  "rel_ver": "v9.14.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 45,
+  "commit_7d": 54,
+  "commit_90d": 324,
+  "rel_ver": "v9.15.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,12 +118,12 @@
   }
  },
  "YILS-LIN/short-video-factory": {
-  "commit_7d": 2,
-  "commit_90d": 45,
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-11-09",
-  "rel_days": 11,
-  "rel_n90": 2,
+  "commit_7d": 10,
+  "commit_90d": 49,
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -138,10 +138,10 @@
    "SCSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261127",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261127",
+   "release": "20261127",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5124,6 +5124,29 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "hao-ai-lab/rsibox": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "JavaScript": 3,
+   "CSS": 1,
+   "TLA": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261127",
+  "dim_ts": {
+   "release": "20261127",
+   "security": "20261127",
+   "contrib": "20261127",
+   "lang": "20261127"
   }
  }
 }
